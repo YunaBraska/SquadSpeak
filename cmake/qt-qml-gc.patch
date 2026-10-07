@@ -195,3 +195,17 @@ distribution fix 1327fce7e500e3ae2e96ab89eaad7f1727ea77b1 (property caches).
  ReturnedValue VME::exec(JSTypesStackFrame *frame, ExecutionEngine *engine)
  {
      qt_v4ResolvePendingBreakpointsHook();
+
+--- a/src/qml/qml/qqml.cpp
++++ b/src/qml/qml/qqml.cpp
+@@ -95,6 +95,10 @@
+     return data->context->engine();
+ }
+
++// QmlAttachedAccessor erases the factory's derived QObject return type.
++#if defined(__clang__)
++__attribute__((no_sanitize("function")))
++#endif
+ static QObject *resolveAttachedProperties(QQmlAttachedPropertiesFunc pf, QQmlData *data,
+                                           QObject *object, bool create)
+ {

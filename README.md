@@ -33,8 +33,8 @@ brew install --cask yunabraska/tap/squadspeak
 3. Run `bin/squadspeak.exe`. Keep the extracted folders together; you can create a shortcut to the executable.
 4. Open the SquadSpeak icon in the system tray to show your channels.
 
-For a short test with two copies on one PC, download
-`squadspeak-windows-device-test.zip` instead. Extract it and open
+For a short test with two copies on one PC, download the
+[Windows device-test package](https://github.com/YunaBraska/SquadSpeak/releases/latest/download/squadspeak-windows-device-test.zip) instead. Extract it and open
 `device-test/Start.cmd`. It includes the same app, two separate test profiles and
 German instructions. No developer tools are needed.
 

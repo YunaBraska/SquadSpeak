@@ -35,8 +35,10 @@ https://github.com/qt/qtdeclarative/commit/f2e838e86cefd91577345e093edbbc0bbd1fd
 It also retains the distribution's property-cache lifetime correction:
 https://github.com/qt/qtdeclarative/commit/1327fce7e500e3ae2e96ab89eaad7f1727ea77b1
 Instrumented Clang builds use the same sanitizer link policy described above.
-Only the VME::exec overload that calls generated JIT code excludes Clang's
-function-type check: JIT entries do not carry its compiler metadata preamble.
+Two call boundaries exclude Clang's function-type check: the VME::exec overload
+calling JIT entries has no compiler metadata preamble to inspect, and
+resolveAttachedProperties invokes factories whose derived QObject return type
+Qt's QmlAttachedAccessor erases. This preserves the existing Qt callback ABI.
 AddressSanitizer and all other undefined-behavior checks remain enabled there.
 The exact source archive and checksum are recorded in
 cmake/source_archives.json. This attribution records the source and patch;

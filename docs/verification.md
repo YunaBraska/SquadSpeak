@@ -44,25 +44,26 @@ The corrected Linux build at `da873d7`
 passes 33 groups on ARM64/x64 in 1114.20/1080.43 seconds and 32 Store groups in
 915.19 seconds, including discovery and runtime-only archive checks.
 
-The same matrix exposes a Linux x64 QML crash. Native debugger reproduction
-([37607538557](https://github.com/YunaBraska/SquadSpeak/actions/runs/37607538557))
-locates the crash in `QV4::MemoryManager::collectFromJSStack` while
-`qsTr` allocates a string. Qt's upstream correction
-`cdbacb7ba78779fc1eecc05afae3a3a874623e6e` ensures the first GC transition runs
-even when its deadline has expired. The matching Qt 6.10.2 Qml module is rebuilt
-with that correction. It does not yet resolve the observed failure: the
-[repeated native run](https://github.com/YunaBraska/SquadSpeak/actions/runs/37612345123)
-passes all 252 UI rows, then crashes during a focused repetition in the same
-collection path. The loaded library is verified, but the invalid pointer still
-requires symbolized diagnosis. Repeated UI, sanitizer and installed-library
-checks remain the release gate. Garbage collection and the failing tests remain
-enabled. A second upstream correction, `f2e838e86cefd91577345e093edbbc0bbd1fd6cd`,
-fixes allocator free-list corruption during sweep. The isolated release-mode
-[comparison](https://github.com/YunaBraska/SquadSpeak/actions/runs/37616013154)
-passes 20 focused repetitions with and without it, so this alone does not prove
-the reported crash resolved. The full preceding UI sequence is being restored
-for the comparison. Linux CI retains that order and repeats the focused cases
-20 times, stopping at the first failure.
+The matrix also exposes a Linux x64 QML crash in
+`QV4::MemoryManager::collectFromJSStack`. Backporting Qt's initial-transition
+correction `cdbacb7ba78779fc1eecc05afae3a3a874623e6e` alone does not fix it.
+The symbolized release-mode
+[comparison](https://github.com/YunaBraska/SquadSpeak/actions/runs/37617820319)
+reproduces an invalid managed value (`0x1`, with a valid mark stack) on the
+third focused repetition after all 252 UI rows pass. Adding Qt's sweep allocator
+correction `f2e838e86cefd91577345e093edbbc0bbd1fd6cd` passes the same 252-row
+sequence followed by all 20 repetitions, 14 rows each. Both jobs load the
+matching rebuilt Qt 6.10.2 Qml module. This is comparative regression evidence;
+the write that originally produced the malformed stack value was not traced.
+The isolated comparison without the preceding UI sequence passed both versions
+and was insufficient on its own. Linux CI now retains the full sequence and
+20 focused repetitions, stopping at the first failure. Garbage collection and
+JIT remain enabled; sanitizer and installed-library checks are separate gates.
+The production matrix at `4c484fd`
+([37618835531](https://github.com/YunaBraska/SquadSpeak/actions/runs/37618835531))
+passes all 33 x64 CTest groups, but its thirteenth focused repetition crashes
+again. ARM64 and Store pass. The sweep correction is therefore insufficient;
+the extended caller/stack investigation remains a release blocker.
 
 Instrumenting Qml exposed a separate sanitizer startup failure at
 `qv4vme_moth.cpp:490`, the call into generated JIT code
@@ -71,8 +72,15 @@ The fault reads eight bytes before the function entry. A header-free Clang
 probe targeting Linux x64 confirms that `-fsanitize=function` emits exactly
 that metadata read. The narrowly annotated JIT-dispatch overload omits this
 check while retaining ASan loads, pointer/alignment and signed-overflow checks
-in the generated LLVM IR. The AOT overload and remaining Qml code retain their
-function checks. Native sanitizer verification of the annotation is pending.
+in the generated LLVM IR. The next
+[native sanitizer run](https://github.com/YunaBraska/SquadSpeak/actions/runs/37618961983)
+passes the JIT boundary and reaches Qt's attached-property factory call. Qt
+registers these callbacks by casting their derived return type to `QObject *`.
+That existing ABI boundary receives the same narrow function-check annotation;
+ASan and other undefined-behavior checks remain active. The AOT overload and
+remaining Qml code retain their function checks. Verification of this second
+annotation is pending. The existing desktop startup test now runs first, so a
+startup failure stops the suite before lengthy protocol cases.
 
 CI retains CTest XML, detailed logs, rendered UI evidence and tested packages.
 A green run at an older revision does not cover newly added platform code.

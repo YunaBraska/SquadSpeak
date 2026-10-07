@@ -606,6 +606,12 @@ if(BUILD_TESTING)
     endif()
     find_package(Python3 REQUIRED COMPONENTS Interpreter)
     find_package(Qt6 6.10 REQUIRED COMPONENTS Test QuickTest)
+    add_test(NAME desktop_smoke COMMAND squadspeak --smoke-test
+        --settings-file "${CMAKE_BINARY_DIR}/smoke/audio.ini"
+        --screenshot "${CMAKE_BINARY_DIR}/smoke/audio.png")
+    set_tests_properties(desktop_smoke PROPERTIES
+        TIMEOUT 15
+        ENVIRONMENT "QT_QPA_PLATFORM=${ui_test_platform};QT_QUICK_BACKEND=software;QT_QUICK_CONTROLS_STYLE=Basic")
     add_test(NAME acceptance_handoff COMMAND ${Python3_EXECUTABLE}
         "${CMAKE_CURRENT_SOURCE_DIR}/tests/acceptance_tests.py")
     add_test(NAME translation_sources COMMAND ${Python3_EXECUTABLE}
@@ -766,12 +772,6 @@ if(BUILD_TESTING)
     # The suite launches dozens of real processes; per-operation deadlines stay
     # in the tests, while this outer budget also allows loaded CI runners.
     set_tests_properties(headless_contract PROPERTIES TIMEOUT 240)
-    add_test(NAME desktop_smoke COMMAND squadspeak --smoke-test
-        --settings-file "${CMAKE_BINARY_DIR}/smoke/audio.ini"
-        --screenshot "${CMAKE_BINARY_DIR}/smoke/audio.png")
-    set_tests_properties(desktop_smoke PROPERTIES
-        TIMEOUT 15
-        ENVIRONMENT "QT_QPA_PLATFORM=${ui_test_platform};QT_QUICK_BACKEND=software;QT_QUICK_CONTROLS_STYLE=Basic")
     add_test(NAME recording_smoke COMMAND squadspeak --smoke-test --recording-test
         --settings-file "${CMAKE_BINARY_DIR}/recording-smoke/audio.ini"
         --screenshot "${CMAKE_BINARY_DIR}/recording-smoke/recording.png")
