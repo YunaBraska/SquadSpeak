@@ -16,12 +16,15 @@ case "$mode" in
         server_pid=
         trap 'if test -n "$server_pid"; then kill "$server_pid" 2>/dev/null || true; fi; rm -rf "$work"' EXIT
         tar -xzf "/output/squadspeak-linux-$(uname -m).tar.gz" -C "$work"
-        test -s "$work/lib/libQt6Multimedia.so.6"
         ldd "$work/bin/squadspeak" > "$work/runtime-libraries.txt"
         cat "$work/runtime-libraries.txt"
-        capture_library=$(awk '$1 == "libQt6Multimedia.so.6" && $2 == "=>" { print $3 }' "$work/runtime-libraries.txt")
-        # The loader may retain bin/../lib from $ORIGIN in its output.
-        test "$(readlink -f "$capture_library")" = "$(readlink -f "$work/lib/libQt6Multimedia.so.6")"
+        for module in Multimedia Qml; do
+            library="libQt6$module.so.6"
+            test -s "$work/lib/$library"
+            resolved=$(awk -v library="$library" '$1 == library && $2 == "=>" { print $3 }' "$work/runtime-libraries.txt")
+            # The loader may retain bin/../lib from $ORIGIN in its output.
+            test "$(readlink -f "$resolved")" = "$(readlink -f "$work/lib/$library")"
+        done
         export QT_QPA_PLATFORM=offscreen QT_QUICK_BACKEND=software QT_QUICK_CONTROLS_STYLE=Basic
         export XDG_CONFIG_HOME="$work/config" XDG_DATA_HOME="$work/data" XDG_RUNTIME_DIR="$work/runtime"
         mkdir -m 700 "$XDG_RUNTIME_DIR"

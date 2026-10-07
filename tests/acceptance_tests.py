@@ -122,6 +122,8 @@ class AcceptanceTests(unittest.TestCase):
             session = json.loads((kit / tag / "audio.ini.session.json").read_text(encoding="utf-8"))
             channel = json.loads((kit / tag / "audio.ini.channel.json").read_text(encoding="utf-8"))
             self.assertEqual(session["userName"], name)
+            self.assertNotIn("channelName", session)
+            self.assertEqual(channel["channelName"], f"{name} - local test")
             self.assertTrue(session["muted"] and session["deafened"])
             self.assertEqual(channel["servicePort"], port)
         launcher = (kit / "Start.cmd").read_text(encoding="utf-8")

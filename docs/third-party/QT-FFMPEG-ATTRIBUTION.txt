@@ -24,6 +24,15 @@ archive is included in the release dependency sources. This library also
 contains dr_wav (Copyright 2023 David Reid), under MIT-0; its license text is
 in QT-SBOM/licenses/MIT-0.txt. The Qt sources retain their LGPL/GPL notices.
 
+The same Linux build bundles an ABI-matching Qt Qml shared library rebuilt
+from the checksum-pinned Qt Declarative 6.10.2 source. cmake/qt-qml-gc.patch
+backports the upstream QML garbage-collector transition correction so a
+deadline-expired incremental collection still initializes its mark stack:
+https://github.com/qt/qtdeclarative/commit/cdbacb7ba78779fc1eecc05afae3a3a874623e6e
+The exact source archive and checksum are recorded in
+cmake/source_archives.json. This attribution records the source and patch;
+runtime validation remains part of the release test gate.
+
 Qt source and licensing:
 https://www.qt.io/licensing/
 https://www.qt.io/terms-conditions/

@@ -27,6 +27,24 @@ are verified with the configured production key; they do not replace macOS
 Developer ID/notarization or Windows publisher signing. No stable publication
 or Homebrew tap update has been performed.
 
+The public-release matrix at `dda4035` ([37603176911](https://github.com/YunaBraska/SquadSpeak/actions/runs/37603176911))
+passes both macOS architectures, Linux ARM64, Store and sanitizers. Windows
+passes all 31 CTest groups, but the seeded device kit exposes a channel-profile
+migration failure: an open read handle prevents atomic replacement on Windows.
+The constructor now closes it before migration; the existing public migration
+test also covers a populated permission store and preserves its approvals,
+request policy and port. Both data rows and the host-policy regression pass
+locally; the Windows rerun must prove the repair on that platform.
+
+The same matrix exposes a Linux x64 QML crash. Native debugger reproduction
+([37607538557](https://github.com/YunaBraska/SquadSpeak/actions/runs/37607538557))
+locates a null mark stack in `QV4::MemoryManager::collectFromJSStack` while
+`qsTr` allocates a string. Qt's upstream correction
+`cdbacb7ba78779fc1eecc05afae3a3a874623e6e` ensures the first GC transition runs
+even when its deadline has expired. The matching Qt 6.10.2 Qml module is rebuilt
+with that correction; repeated UI, sanitizer and installed-library checks remain
+the release gate. Garbage collection and the failing tests remain enabled.
+
 CI retains CTest XML, detailed logs, rendered UI evidence and tested packages.
 A green run at an older revision does not cover newly added platform code.
 Native development builds use local Homebrew dependencies. Release packages

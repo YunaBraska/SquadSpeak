@@ -63,57 +63,76 @@ include(FetchContent)
 include(cmake/AudioProcessing.cmake)
 include(cmake/Media.cmake)
 
-# Qt 6.10.2's Wayland helper leaves portal sessions open and shares request
-# responses. Backport the upstream fix into the same distro ABI. Newer Qt
-# releases carry it themselves; do not substitute an unmatched Qt library.
+# Backport the portal/session and GC fixes into the distribution's exact Qt
+# ABI. Only the corrected modules are bundled; no mismatched Qt replacement.
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux" AND Qt6_VERSION VERSION_LESS "6.12.0")
     if(NOT Qt6_VERSION VERSION_EQUAL "6.10.2")
-        message(FATAL_ERROR "Linux capture requires Qt 6.10.2 with the bundled fix, or Qt 6.12 or newer.")
+        message(FATAL_ERROR "Linux requires Qt 6.10.2 with the bundled fixes, or Qt 6.12 or newer.")
     endif()
     FetchContent_Declare(qt_capture
         URL https://download.qt.io/archive/qt/6.10/6.10.2/submodules/qtmultimedia-everywhere-src-6.10.2.tar.xz
         URL_HASH SHA256=93f7ef0106fbd731165a2723f3e436c911fc5e6880f5bc987b55516c20833e2b
         SOURCE_SUBDIR unused DOWNLOAD_EXTRACT_TIMESTAMP TRUE)
-    FetchContent_MakeAvailable(qt_capture)
+    FetchContent_Declare(qt_qml
+        URL https://download.qt.io/archive/qt/6.10/6.10.2/submodules/qtdeclarative-everywhere-src-6.10.2.tar.xz
+        URL_HASH SHA256=a249914ff66cdcdbf0df8b5ffad997a2ee6dce01cc17d43c6cc56fdc1d0f4b0f
+        SOURCE_SUBDIR unused DOWNLOAD_EXTRACT_TIMESTAMP TRUE)
+    FetchContent_MakeAvailable(qt_capture qt_qml)
     find_package(Git REQUIRED)
-    set(capture_patch "${CMAKE_CURRENT_SOURCE_DIR}/cmake/qt-wayland.patch")
-    execute_process(COMMAND "${GIT_EXECUTABLE}" apply --check "${capture_patch}"
-        WORKING_DIRECTORY "${qt_capture_SOURCE_DIR}" RESULT_VARIABLE capture_unpatched
-        OUTPUT_QUIET ERROR_QUIET)
-    if(capture_unpatched EQUAL 0)
-        execute_process(COMMAND "${GIT_EXECUTABLE}" apply "${capture_patch}"
-            WORKING_DIRECTORY "${qt_capture_SOURCE_DIR}" COMMAND_ERROR_IS_FATAL ANY)
-    else()
-        execute_process(COMMAND "${GIT_EXECUTABLE}" apply --reverse --check "${capture_patch}"
-            WORKING_DIRECTORY "${qt_capture_SOURCE_DIR}" COMMAND_ERROR_IS_FATAL ANY)
-    endif()
-    # A standalone Qt module inherits its SDK's installation layout, including
-    # Debian/Ubuntu multiarch directories; INSTALL_LIBDIR cannot override it.
     get_target_property(qt_qmake Qt6::qmake LOCATION)
     execute_process(COMMAND "${qt_qmake}" -query QT_INSTALL_PREFIX
         OUTPUT_VARIABLE qt_prefix OUTPUT_STRIP_TRAILING_WHITESPACE COMMAND_ERROR_IS_FATAL ANY)
     execute_process(COMMAND "${qt_qmake}" -query QT_INSTALL_LIBS
         OUTPUT_VARIABLE qt_libs OUTPUT_STRIP_TRAILING_WHITESPACE COMMAND_ERROR_IS_FATAL ANY)
-    file(RELATIVE_PATH qt_capture_libdir "${qt_prefix}" "${qt_libs}")
-    set(qt_capture_libdir "${CMAKE_CURRENT_BINARY_DIR}/qt-capture/${qt_capture_libdir}")
-    set(qt_capture_library "${qt_capture_libdir}/libQt6Multimedia.so.6.10.2")
-    ExternalProject_Add(squad_qt_capture_build
-        SOURCE_DIR "${qt_capture_SOURCE_DIR}" DOWNLOAD_COMMAND "" UPDATE_COMMAND ""
-        BINARY_DIR "${CMAKE_CURRENT_BINARY_DIR}/qt-capture"
-        CMAKE_ARGS "-DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}" -DQT_BUILD_TESTS=OFF -DQT_BUILD_EXAMPLES=OFF
-            "-DQt6_DIR=${Qt6_DIR}" -DFEATURE_gstreamer=OFF
-            "-DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}" "-DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}"
-            "-DCMAKE_C_FLAGS=${CMAKE_C_FLAGS}" "-DCMAKE_CXX_FLAGS=${CMAKE_CXX_FLAGS}"
-            "-DCMAKE_SHARED_LINKER_FLAGS=${CMAKE_SHARED_LINKER_FLAGS}"
-        BUILD_COMMAND "${CMAKE_COMMAND}" --build <BINARY_DIR> --target Multimedia --parallel 4
-        INSTALL_COMMAND "" BUILD_BYPRODUCTS "${qt_capture_library}")
-    get_target_property(qt_multimedia_configs Qt6::Multimedia IMPORTED_CONFIGURATIONS)
-    foreach(configuration IN LISTS qt_multimedia_configs)
-        set_property(TARGET Qt6::Multimedia PROPERTY "IMPORTED_LOCATION_${configuration}" "${qt_capture_library}")
+    file(RELATIVE_PATH qt_runtime_libdir "${qt_prefix}" "${qt_libs}")
+    foreach(module IN ITEMS capture qml)
+        if(module STREQUAL "capture")
+            set(component Multimedia)
+            set(patch "${CMAKE_CURRENT_SOURCE_DIR}/cmake/qt-wayland.patch")
+        else()
+            set(component Qml)
+            set(patch "${CMAKE_CURRENT_SOURCE_DIR}/cmake/qt-qml-gc.patch")
+        endif()
+        set(source "${qt_${module}_SOURCE_DIR}")
+        execute_process(COMMAND "${GIT_EXECUTABLE}" apply --check "${patch}"
+            WORKING_DIRECTORY "${source}" RESULT_VARIABLE unpatched OUTPUT_QUIET ERROR_QUIET)
+        if(unpatched EQUAL 0)
+            execute_process(COMMAND "${GIT_EXECUTABLE}" apply "${patch}"
+                WORKING_DIRECTORY "${source}" COMMAND_ERROR_IS_FATAL ANY)
+        else()
+            execute_process(COMMAND "${GIT_EXECUTABLE}" apply --reverse --check "${patch}"
+                WORKING_DIRECTORY "${source}" COMMAND_ERROR_IS_FATAL ANY)
+        endif()
+        # Standalone modules inherit the SDK layout, including multiarch dirs.
+        set(libdir "${CMAKE_CURRENT_BINARY_DIR}/qt-${module}/${qt_runtime_libdir}")
+        set(library "${libdir}/libQt6${component}.so.6.10.2")
+        list(APPEND qt_runtime_libraries "${library}")
+        set(module_build_options
+            BINARY_DIR "${CMAKE_CURRENT_BINARY_DIR}/qt-${module}"
+            CMAKE_ARGS "-DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}" -DQT_BUILD_TESTS=OFF -DQT_BUILD_EXAMPLES=OFF
+                "-DQt6_DIR=${Qt6_DIR}" -DFEATURE_gstreamer=OFF
+                "-DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}" "-DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}"
+                "-DCMAKE_C_FLAGS=${CMAKE_C_FLAGS}" "-DCMAKE_CXX_FLAGS=${CMAKE_CXX_FLAGS}"
+                "-DCMAKE_SHARED_LINKER_FLAGS=${CMAKE_SHARED_LINKER_FLAGS}"
+            BUILD_COMMAND "${CMAKE_COMMAND}" --build <BINARY_DIR> --target ${component} --parallel 4
+            INSTALL_COMMAND "" BUILD_BYPRODUCTS "${library}")
+        if(module STREQUAL "capture")
+            ExternalProject_Add(squad_qt_capture_build
+                SOURCE_DIR "${qt_capture_SOURCE_DIR}" DOWNLOAD_COMMAND "" UPDATE_COMMAND ""
+                ${module_build_options})
+        else()
+            ExternalProject_Add(squad_qt_qml_build
+                SOURCE_DIR "${qt_qml_SOURCE_DIR}" DOWNLOAD_COMMAND "" UPDATE_COMMAND ""
+                ${module_build_options})
+        endif()
+        get_target_property(configurations Qt6::${component} IMPORTED_CONFIGURATIONS)
+        foreach(configuration IN LISTS configurations)
+            set_property(TARGET Qt6::${component} PROPERTY "IMPORTED_LOCATION_${configuration}" "${library}")
+        endforeach()
+        set_property(TARGET Qt6::${component} PROPERTY IMPORTED_LOCATION "${library}")
+        add_dependencies(Qt6::${component} squad_qt_${module}_build)
+        list(PREPEND CMAKE_BUILD_RPATH "${libdir}")
     endforeach()
-    set_property(TARGET Qt6::Multimedia PROPERTY IMPORTED_LOCATION "${qt_capture_library}")
-    add_dependencies(Qt6::Multimedia squad_qt_capture_build)
-    list(PREPEND CMAKE_BUILD_RPATH "${qt_capture_libdir}")
 endif()
 
 # Qt Multimedia and the app must resolve one FFmpeg ABI. macOS builds the
@@ -552,10 +571,11 @@ if(APPLE)
         endif()
     ]])
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
-    # Keep the corrected capture module in the distro's exact Qt ABI.
-    if(qt_capture_library)
-        install(FILES "${qt_capture_library}" DESTINATION lib RENAME libQt6Multimedia.so.6)
-    endif()
+    foreach(library IN LISTS qt_runtime_libraries)
+        get_filename_component(name "${library}" NAME)
+        string(REGEX REPLACE "\\.6\\.10\\.2$" ".6" name "${name}")
+        install(FILES "${library}" DESTINATION lib RENAME "${name}")
+    endforeach()
     # Other Qt, codec and secret-service libraries come from the distribution.
     # Keep the bounded image decoder alongside the application executable.
     install(TARGETS squadspeak squad_image_worker RUNTIME DESTINATION bin)

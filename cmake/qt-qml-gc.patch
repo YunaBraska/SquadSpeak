@@ -1,0 +1,22 @@
+Backport Qt cdbacb7ba78779fc1eecc05afae3a3a874623e6e: initialise the GC mark stack before yielding.
+
+--- a/src/qml/memory/qv4mm.cpp
++++ b/src/qml/memory/qv4mm.cpp
+@@ -1590,7 +1590,7 @@
+     if (timeLimit.count() > 0) {
+         deadline = QDeadlineTimer(timeLimit);
+         bool deadlineExpired = false;
+-        while (!(deadlineExpired = deadline.hasExpired()) && state != GCState::Invalid) {
++        do {
+             if (state > GCState::InitCallDestroyObjects) {
+                 /* initCallDestroyObjects is the last action which drains the mark
+                    stack by default. But as our write-barrier might end up putting
+@@ -1611,7 +1611,7 @@
+                                           << QMetaEnum::fromType<GCState>().key(state) << "state";
+             if (stateInfo.breakAfter)
+                 break;
+-        }
++        } while (!(deadlineExpired = deadline.hasExpired()) && state != GCState::Invalid);
+         if (deadlineExpired)
+             handleTimeout(state);
+         if (state != GCState::Invalid)

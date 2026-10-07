@@ -1732,16 +1732,37 @@ private slots:
         QVERIFY(host.channel.screenSharing());
 #endif
     }
+    void channelNameBelongsToHostStorageAndMigratesTheOldProfile_data() {
+        QTest::addColumn<bool>("existingPermissions");
+        QTest::newRow("new-channel-store") << false;
+        QTest::newRow("existing-channel-store") << true;
+    }
     void channelNameBelongsToHostStorageAndMigratesTheOldProfile() {
+        QFETCH(bool, existingPermissions);
         QTemporaryDir dir;
         const auto profilePath = dir.filePath("session.json");
         QFile profile(profilePath);
         QVERIFY(profile.open(QIODevice::WriteOnly));
         profile.write(R"({"version":1,"userName":"Person","channelName":"Existing channel","muted":true})");
         profile.close();
+        if (existingPermissions) {
+            QFile permissions(dir.filePath("channel.json"));
+            QVERIFY(permissions.open(QIODevice::WriteOnly));
+            const QJsonObject settings{{"version", 1}, {"approved", QJsonArray{QString(64, 'a')}},
+                {"attempts", QJsonObject{}}, {"requestsAllowed", false}, {"servicePort", 48765}};
+            QVERIFY(permissions.write(QJsonDocument(settings).toJson()) > 0);
+        }
         VoiceSession session(profilePath);
         LocalChannel channel(session, dir.filePath("channel.json"), TlsIdentity::create());
         QCOMPARE(channel.property("channelName").toString(), QString("Existing channel"));
+        if (existingPermissions) {
+            QCOMPARE(channel.configuredPort(), 48765);
+            QVERIFY(!channel.requestsAllowed());
+            QFile permissions(dir.filePath("channel.json"));
+            QVERIFY(permissions.open(QIODevice::ReadOnly));
+            QCOMPARE(QJsonDocument::fromJson(permissions.readAll()).object().value("approved").toArray(),
+                     QJsonArray{QString(64, 'a')});
+        }
         bool renamed = false;
         QVERIFY(QMetaObject::invokeMethod(&channel, "setChannelName", Q_RETURN_ARG(bool, renamed), Q_ARG(QString, "Server name")));
         QVERIFY(renamed);

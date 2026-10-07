@@ -201,6 +201,7 @@ LocalChannel::LocalChannel(VoiceSession& session, QString storageFile, std::opti
             throw std::runtime_error(tr("Channel permissions could not be read.").toStdString());
         QJsonParseError error;
         const auto document = QJsonDocument::fromJson(file.readAll(), &error);
+        file.close();
         const auto object = document.object();
         if (error.error != QJsonParseError::NoError || !document.isObject()
             || object.value("version").toInt() != 1 || !object.value("approved").isArray()

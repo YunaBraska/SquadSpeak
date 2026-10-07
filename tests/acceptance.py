@@ -74,10 +74,10 @@ def windows_kit(package, html):
                 ("B", "Bea", 48765, "courier", "forest")):
             profile = staged / tag
             profile.mkdir()
-            session = dict(version=1, userName=name, channelName=f"{name} - local test",
+            session = dict(version=1, userName=name,
                            muted=True, deafened=True, avatar=avatar, theme="system",
                            palette=palette, language="en")
-            channel = dict(version=1, approved=[], attempts={}, requestsAllowed=True, servicePort=port)
+            channel = dict(version=1, channelName=f"{name} - local test", approved=[], attempts={}, requestsAllowed=True, servicePort=port)
             for suffix, content in (("session", session), ("channel", channel)):
                 (profile / f"audio.ini.{suffix}.json").write_text(json.dumps(content) + "\n", encoding="utf-8")
         (staged / "Start.cmd").write_bytes(WINDOWS_LAUNCHER.replace("\n", "\r\n").encode("ascii"))
