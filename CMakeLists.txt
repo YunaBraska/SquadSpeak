@@ -115,15 +115,15 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Linux" AND Qt6_VERSION VERSION_LESS "6.12.0")
                 "-DCMAKE_C_FLAGS=${CMAKE_C_FLAGS}" "-DCMAKE_CXX_FLAGS=${CMAKE_CXX_FLAGS}"
                 "-DCMAKE_SHARED_LINKER_FLAGS=${CMAKE_SHARED_LINKER_FLAGS}"
             BUILD_COMMAND "${CMAKE_COMMAND}" --build <BINARY_DIR> --target ${component} --parallel 4
-            INSTALL_COMMAND "" BUILD_BYPRODUCTS "${library}")
+            BUILD_BYPRODUCTS "${library}")
         if(module STREQUAL "capture")
             ExternalProject_Add(squad_qt_capture_build
                 SOURCE_DIR "${qt_capture_SOURCE_DIR}" DOWNLOAD_COMMAND "" UPDATE_COMMAND ""
-                ${module_build_options})
+                INSTALL_COMMAND "" ${module_build_options})
         else()
             ExternalProject_Add(squad_qt_qml_build
                 SOURCE_DIR "${qt_qml_SOURCE_DIR}" DOWNLOAD_COMMAND "" UPDATE_COMMAND ""
-                ${module_build_options})
+                INSTALL_COMMAND "" ${module_build_options})
         endif()
         get_target_property(configurations Qt6::${component} IMPORTED_CONFIGURATIONS)
         foreach(configuration IN LISTS configurations)
