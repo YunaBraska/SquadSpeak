@@ -31,6 +31,7 @@ deadline-expired incremental collection still initializes its mark stack:
 https://github.com/qt/qtdeclarative/commit/cdbacb7ba78779fc1eecc05afae3a3a874623e6e
 It also retains the distribution's property-cache lifetime correction:
 https://github.com/qt/qtdeclarative/commit/1327fce7e500e3ae2e96ab89eaad7f1727ea77b1
+Instrumented Clang builds use the same sanitizer link policy described above.
 The exact source archive and checksum are recorded in
 cmake/source_archives.json. This attribution records the source and patch;
 runtime validation remains part of the release test gate.

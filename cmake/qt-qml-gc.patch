@@ -38,3 +38,19 @@ Retain the distribution fix 1327fce7e500e3ae2e96ab89eaad7f1727ea77b1: preserve p
              }
          }
      }
+
+--- a/src/qml/CMakeLists.txt
++++ b/src/qml/CMakeLists.txt
+@@ -12,6 +12,12 @@
+ # to determine some of the arguments to that command.
+ qt_feature_evaluate_features("${CMAKE_CURRENT_SOURCE_DIR}/configure.cmake")
+
++# Clang resolves ASan from the executable when this module is instrumented
++# against a non-instrumented Qt SDK. Preserve Qt's sanitizer link policy.
++if(CMAKE_CXX_COMPILER_ID MATCHES "Clang" AND CMAKE_CXX_FLAGS MATCHES "-fsanitize=[^ ]*address")
++    set(QT_FEATURE_sanitizer ON)
++endif()
++
+ set(extra_cmake_files)
+ set(extra_cmake_includes)
+ if(ANDROID)
