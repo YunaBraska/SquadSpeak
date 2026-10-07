@@ -123,6 +123,7 @@ Item {
             ScrollBar.vertical: ScrollBar {}
             WheelHandler {
                 target: null
+                blocking: false
                 onWheel: function(event) {
                     const delta = event.angleDelta.y || event.pixelDelta.y
                     if (delta > 0 && history.atYBeginning && root.current.hasOlderMessages) root.page(true)
@@ -209,7 +210,7 @@ Item {
                             return chatContent.format(messageRow.message.text, image ? {
                                 "hash": image.hash, "source": root.network.imageSource(image.hash),
                                 "width": image.width, "height": image.height, "displayWidth": width
-                            } : {}, Theme.accent)
+                            } : {}, Theme.accent, Theme.codeBackground, font)
                         }
                         textFormat: messageRow.systemMessage && messageRow.message.event.kind !== "announcement" ? TextEdit.PlainText : TextEdit.RichText
                         readOnly: true; selectByMouse: true; wrapMode: TextEdit.Wrap

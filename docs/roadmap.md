@@ -1,8 +1,13 @@
 # Release readiness
 
-Review date: 2026-10-06. Behavior: [specification](specs/voice-chat.md). Measurements and test history: [verification](verification.md).
+Review date: 2026-10-07. Behavior: [specification](specs/voice-chat.md). Measurements and test history: [verification](verification.md).
 
-The direct desktop release is blocked by the applicable desktop gates below. Mobile and Store delivery follow the agreed desktop-first order. `Done` means the named contract has implementation and automated evidence on the tested configuration. It does not certify every platform or physical setup. Missing behavior is never hidden in a `Done` row; platform certification and distribution have their own gates. Post-release features are not first-release blockers.
+Under U139, the first regular desktop release follows successful automated
+platform and package checks; physical device observations follow the public
+download. The qualification work and known limitations below remain visible.
+Mobile and Store delivery follow the agreed desktop-first order. `Done` means
+the named contract has implementation and automated evidence on the tested
+configuration, not certification of every platform or physical setup.
 
 ## Completed contracts
 
@@ -13,7 +18,7 @@ The direct desktop release is blocked by the applicable desktop gates below. Mob
 | Requests, preapproval, passwords, kick/ban/unban | Done | `LocalChannel`; channel, headless and UI contracts |
 | Saved channels, auto-join, one personal voice channel | Done | `LocalChannel`, `VoiceSession`, `Channels.qml`; channel/session/UI contracts |
 | Ten owned channels, shared port, global media limits | Done | Root/child `LocalChannel` and shared radio budget; protocol/CLI/UI contracts |
-| Markdown, 24h/7d/30d expiry, replay, pagination, host images | Done | `ChatContent`, `ChatHistory`, image worker and `ChatPanel`; content/channel/UI contracts |
+| 24h/7d/30d expiry, replay, pagination, host image storage | Done | `ChatHistory`, image worker and `ChatPanel`; content/channel/UI contracts. Markdown rendering has a remaining edge case below |
 | Long Supporter retention | Done | 90/180/360 days in Channel Info and headless; encrypted transactional SQLite history without an aggregate message cap, bounded paging and cleanup, legacy reader projection, 30-day fallback for new receipts after entitlement expiry. Storage, TLS, CLI, UI and packaged SQL-driver checks pass in the native matrix |
 | Input/output selection and per-device profiles | Done | `AudioModel`, `AudioProfiles`; audio and controls contracts |
 | Spectrum, manual/automatic input cuts and gain, clipping warning | Done | `AudioProcessor`, `SpectrumView`; independent per-microphone Auto flags, conservative rumble reduction and peak protection. 20 recorded voices across 80 clean/rumble cases, persistence and UI contracts. Raw ADC damage remains visible; offline reconstruction is evaluated separately |
@@ -31,6 +36,7 @@ The direct desktop release is blocked by the applicable desktop gates below. Mob
 
 | Gate | Status | Exit condition and current gap |
 | --- | --- | --- |
+| Markdown image rendering | Known limitation | Ordinary formatting, compact tables/lists and lossless image-reference replacement pass content/UI checks. Qt 6.11.3 can split an escaped image alt label into multiple image objects. Plain labels work. Correct that rendering without a second Markdown parser, collapsing intentionally repeated images or changing unrelated text; see the Markdown review in the verification record |
 | Network and sustained-load acceptance | In progress | U112's measured comparison is complete and the UDP paths are integrated. A ten-minute 64-client/eight-sender native soak delivers 15,120,000 packets with audible playback, zero reported gaps and no late sampled RSS growth. Intel at `1db25a6` passes the short 64-client realtime target (100 callbacks over 2029 ms); an earlier timing failure remains in the evidence history. Longer 16-sender runs and the combined single-process 64-sender stress miss real-time targets. Extend automated impairment and lifecycle evidence to sustained shared-uplink and cross-device runs, measuring actual playout, loss/jitter/bandwidth and CPU/RSS. Preserve independent receiver quality and voice priority; packet arrival is not acoustic latency |
 | Real audio/video quality | In progress | Prove playback-reference AEC with clock drift/double-talk, device reconnect, Bluetooth headsets, capture loss/recovery, measured A/V synchronization, sustained 4K/30 upper-tier load and overlap listening. Linux X11 application isolation/restart passes five PulseAudio and three PipeWire-Pulse repetitions per architecture on ARM64/x64 at `028a401`. Windows Server 2022 process-loopback isolation and encrypted delivery pass with the signed CI endpoint at `24b3744`; native Windows 10 execution remains unverified. U134 permits labelled computer audio when app-only capture is unavailable; the native Wayland portal/audio fixture passes on Linux ARM/x64 and with sanitizers at `483a0a8`. Selected-output echo monitoring has macOS and Linux ARM/x64 mixed-process/speech proof, including repeated PulseAudio/PipeWire capture and sanitizers. Windows mixed-process monitoring and speech-reference echo reduction pass the same native fixture. Noise/transient filtering must retain wanted speech; known music/vocal weaknesses are not target-speaker isolation |
 | Compact UI and event feedback | In progress | Shared controls, themes, About/logo, copyable info and compact/RTL scrolling have public UI evidence. Fresh avatar galleries also verify all dense frames at display size. U128 routes matching kick/ban events to remaining listeners and provides a separate System-announcement cue. Public TLS, PCM-resource and output/deafen checks pass; both installed Mac test copies have working microphone access and enabled notification permissions; visible notification/Focus delivery remains to be checked |
@@ -53,7 +59,7 @@ Bluetooth audio devices are distinct from Bluetooth-only app networking, which i
 
 ## Next implementation order
 
-1. Complete physical audio/video, network/load and notification acceptance. Measure conversation output, not only packet delivery.
+1. Finish automated sustained load, shared-uplink impairment and measured A/V timing/resource checks. Physical hearing, device and Apple notification observations use the [short prepared handoff](development.md#device-checks-with-limited-human-time), retaining scoped prior results under U138. Do not wait for user availability to run technical tests. Measure conversation output, not only packet delivery.
 2. Close direct distribution gates, then mobile/Store delivery; merchant approval, signing accounts and device access remain separate from implementation work.
 
 Keep one owner and execution path per capability. Do not split `LocalChannel` merely to reduce lines; an extraction must remove existing responsibilities. Translation catalogs and meaningful negative tests are data/evidence, not implementation bloat.

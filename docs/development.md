@@ -162,6 +162,119 @@ fallback; it does not certify every ligature or natural wording.
 
 Tests use isolated identities, local TLS/HTTP servers and synthetic media. They do not need a purchase account or access to a real microphone. Native permission prompts, device drivers, external radio uptime and subjective listening quality still need separate platform evidence.
 
+### Device checks with limited human time
+
+The maintainer runs and diagnoses automation before asking someone to test.
+Use the existing suites, not another manual chat/kick/ban checklist:
+
+| Evidence | Unattended entrypoint | Human task left |
+| --- | --- | --- |
+| Admission, history, moderation, remote control and compatible protocol extensions | `channel_contract`, `headless_contract`, `channel_controls` | None for these deterministic contracts |
+| Capture scope, audio isolation, source loss and restart | `capture_contract` on Windows/Linux; opt-in `capture_tests` on macOS | One-time macOS consent when needed |
+| Noise, speech retention, clipping, echo drift and double-talk models | `audio_contract`, `mixer_contract`, `audio_corpus` | Short listening observation on the actual microphone/headset; simulated acoustics do not certify a room |
+| Discovery changes, loss, quality adaptation, media load and lifetime | `discovery-network.sh`, media/channel/video contracts and the longer runs below | None for synthetic load/impairment; do not ask someone to create 64 clients |
+| Packaged startup, native backends and leaks | Native CI, runtime-only package checks, sanitizers and leak probes | Windows 10 startup on an available PC; Server 2022 is not Windows 10 |
+| Chat sound routing and notifications | Channel/UI/PCM contracts | Actual Apple notification and Focus behavior |
+
+On macOS, prepare two isolated copies with `tests/prepare_two_apps.py` and join
+them to one test channel before handing over. For a Windows visit without a
+maintainer present, use the standalone kit below. A captures the microphone,
+B plays through headphones; both start muted and deafened. Do not reset working
+OS permissions or touch the person's normal profile. The maintainer handles
+builds, packet measurements and log analysis. Allow initial installation and
+setup time separately from the three-minute listening/device observation.
+
+Generate the offline German handoff with the exact source checkout and build
+being supplied. The tester needs only a browser, chooses an outcome per step
+and downloads one JSON file. Nothing is uploaded or recorded by the page:
+
+```sh
+python3 tests/acceptance.py --platform macos \
+  --setup 'Exact OS version / computer model / microphone / headphones' \
+  --build '<tested commit and package version>' \
+  --runtime '<verified compiler, Qt, codec versions and build preset>' \
+  --junit /path/to/ctest.xml --output build/device-check/mac.html
+```
+
+Use `--platform windows` for the short PC visit; it adds package startup and
+omits Apple notifications. The tester can enter the actual Windows version,
+microphone and headset in the page before evaluating checks. Editing that field
+resets observations, so results cannot silently migrate to a different setup.
+No headset means a blocked device-change observation, not a failed application
+or a request to buy hardware. A problem needs only a short note about the step;
+the maintainer investigates it before requesting another attempt.
+
+#### Windows delivery without on-site help
+
+1. Freeze the candidate revision and the existing release criteria. Run Windows
+   CI before the visit. A green older commit does not certify local edits; the
+   hosted runner is Windows Server 2022, not a Windows 10 hardware substitute.
+2. The Windows job prepares `squadspeak-windows-device-test.zip` as the separate
+   `windows-device-test` workflow artifact. It contains the packaged app, its
+   runtime DLLs, Microsoft's runtime installer, `device-test/Start.cmd`, two
+   isolated profiles and `device-test/Check.html`. The regular release ZIP stays
+   unchanged. CI runs the same launcher with `--smoke-test`, checking both
+   profiles through the packaged executable without opening microphones.
+3. Download and unpack the workflow artifact on the Mac before the visit. Verify
+   the successful run's revision and take its inner device-test ZIP on USB or
+   another normal file-transfer medium. The tester should not need GitHub
+   authentication, Python, PowerShell setup, Qt or a compiler. Do not substitute
+   the older private release draft for the verified candidate.
+4. On Windows, extract the whole inner ZIP and double-click
+   `device-test/Start.cmd`. The page explains local joining via `127.0.0.1:48764`,
+   approval, headphone routing, the short hearing check and saving the result.
+   This loopback setup avoids discovery variability for the listening check;
+   it is not LAN discovery evidence. The tester stops at a failure and brings
+   the JSON receipt plus a screenshot or the two `app.log` files. Never request
+   the profile directories: they contain device identities. Both apps are
+   closed through their tray menus with `Quit`; closing a window is not quitting.
+
+To prepare the same kit locally from an already extracted Windows package:
+
+```sh
+python3 tests/acceptance.py --platform windows --setup '' \
+  --build '<exact package revision>' --runtime '<verified build identity>' \
+  --junit /path/to/windows-ctest.xml \
+  --windows-package /path/to/extracted-package \
+  --output build/device-check/windows.html
+```
+
+The generator refuses to overwrite an existing `device-test` directory. Kits
+start quiet only on first use; subsequent starts restore their last audio state,
+as the app normally does. The instructions require checking the switches before
+another listening attempt. A blocked executable is recorded, not worked around
+by disabling Windows security. Missing C++ runtime uses the bundled signed
+installer. Subjective failures do not become requests for weekend debugging.
+
+The HTML file is an offline instruction/result sheet, not an app frontend.
+SquadSpeak remains native C++/Qt. The report's own tests only verify preparation
+and evidence handling; they are not application acceptance. Keep the candidate
+fixed while evaluating it, fix observed regressions with a reproducing test,
+and rerun affected automation before handing over a replacement. Do not reopen
+unrelated features or require repeated human checks after documentation changes.
+
+Keep the downloaded receipt privately with the release evidence, then pass it
+as `--previous /path/to/squadspeak-device-check.json` when preparing the next
+check. Matching setup, verified runtime identity, instructions and affected
+source hashes retain the original outcome, time and tested build. Documentation
+changes do not require another hearing test. Build inputs, shared UI/protocol
+code and unclassified runtime files conservatively invalidate all observations;
+known subsystem changes invalidate their checks. Missing runtime identity
+disables reuse. Review this mapping when moving responsibilities between files.
+This is traceability of human observations, not binary attestation or a cached
+release gate. The maintainer must match the supplied binary to the checkout and
+update the runtime identity for compiler, dependency or build-option changes.
+
+The page distinguishes pending, passed, failed and blocked checks. It preserves
+partial work through the downloaded receipt; it does not persist notes in the
+browser. Provided JUnit results show failed/skipped cases, including nested Qt
+skips, and identify their source file hashes. They are not assumed to be a full
+matrix. Never promote one headset observation to Bluetooth/room certification.
+Full acoustic echo/double-talk evidence is still separate; prepare one bounded
+session and keep usable evidence instead of repeating a broad manual checklist
+after every unrelated change. A/V timing and sustained performance remain
+automated engineering work, not subjective user checkboxes.
+
 The existing media contracts also support longer runs without retaining all
 received packets. Run them directly so a normal CTest timeout does not cut a
 soak short:
@@ -364,12 +477,29 @@ GitHub permits squash merges only and removes merged branches automatically.
 
 Versions are UTC calendar dates in SemVer form: `YYYY.M.D`, without leading zeroes. `cmake/Version.cmake` is the canonical resolver. CI resolves a release version once and supplies it to every package job.
 
-`verify.yml` is callable by other workflows and runs desktop builds, protocol/UI tests, sanitizer checks and installed-package smoke tests. `release.yml` reuses it before assembling checksummed assets into a draft preview. Publication must use the exact tested revision. Existing tags/releases are not silently replaced.
+`verify.yml` is callable by other workflows and runs desktop builds, protocol/UI
+tests, sanitizer checks and installed-package smoke tests. Run `release.yml` on
+`main` to publish a regular desktop release. It resolves the UTC version once,
+rejects an existing tag or release before starting builds, and reuses the full
+verification matrix. Failed API requests also stop the preflight; they are not
+treated as a free version number.
+
+Publication requires matching signed macOS appcasts and all five desktop
+archives, the standalone Windows test kit and corresponding third-party sources.
+Checksums include the appcasts and generated Homebrew cask. Uploads go into a
+draft first; only a complete upload becomes a public latest release. Existing
+published packages are never replaced. If upload/publication fails, inspect the
+private draft before deleting it and retrying; do not silently replace a public
+version. The source revision stays fixed throughout the workflow. Native package
+tests run before publication; physical device observations follow the initial
+release under U139.
 
 For a focused manual check, use
 `gh workflow run verify.yml --ref <branch> -f platform=windows` (also `linux`,
-`macos`, `sanitizers`, or `all`). Pushes, pull requests and the reusable release
+`macos`, `sanitizers`, or `all`). Pushes to main, pull requests and the reusable release
 call always run every platform. A focused run does not replace the release gate.
+Feature pushes are checked by their pull request, avoiding a duplicate matrix
+for the same branch update.
 
 The separate `squadspeak-third-party-sources.tar.gz` release asset contains the
 pinned dependency archives, Qt SDK sources and Abseil build patch. Build it with
@@ -390,10 +520,10 @@ The release job generates `squadspeak.rb` from both verified macOS archives with
 After the first stable release, add that cask to `YunaBraska/homebrew-tap/Casks`.
 The tap's existing updater then follows stable releases through its repository
 and asset markers. The cask installs the app and exposes `squadspeak` for CLI use.
-Draft previews are not an installable tap release; Linux packages are not a
+Drafts and prereleases are ignored by the tap updater; Linux packages are not a
 Homebrew formula.
 
-macOS preview bundles use ad-hoc signatures. Developer ID signing, notarization and store accounts are separate release work. Store builds exclude external Supporter purchasing and activation. No signing credentials belong in this repository.
+macOS bundles currently use ad-hoc signatures. Developer ID signing, notarization and store accounts are separate distribution work. Store builds exclude external Supporter purchasing and activation. No signing credentials belong in this repository.
 
 Direct macOS packages use pinned Sparkle 2.10.0 for updates. Set the repository
 variable `SQUADSPEAK_UPDATE_PUBLIC_KEY` to its base64 Ed25519 public key and the
@@ -406,8 +536,8 @@ installation and restart require a click. Draft prereleases are deliberately
 excluded from the stable `releases/latest` feeds.
 
 Update signing is separate from Apple's Developer ID and notarization. The
-release job fails on a mismatched pair and produces no appcast when keys are
-missing. Keep a private backup of the signing seed; losing it prevents ordinary
+release job fails on a mismatched pair or missing keys. Keep a private backup
+of the signing seed; losing it prevents ordinary
 updates to already distributed clients. See [Sparkle publishing](https://sparkle-project.org/documentation/publishing/).
 
 ## iPhone and iPad

@@ -203,8 +203,22 @@ Compress-Archive -Path "$package/*" -DestinationPath $archive -Force
 $archivePackage = "$BuildRoot/archive-check"
 if (Test-Path $archivePackage) { Remove-Item $archivePackage -Recurse -Force }
 Expand-Archive -LiteralPath $archive -DestinationPath $archivePackage -Force
+$revision = (& git -C $repo rev-parse HEAD).Trim()
+if ($LASTEXITCODE -ne 0) { throw "Cannot identify the Windows test package revision" }
+Invoke-Checked python @("$repo/tests/acceptance.py", "--platform", "windows", "--setup=",
+    "--source", $repo, "--build", $revision, "--runtime", "$dependencyStamp;Qt=$((Get-Item "$QtRoot/bin/Qt6Core.dll").VersionInfo.FileVersion)",
+    "--junit", "$BuildRoot/ctest.xml", "--windows-package", $archivePackage,
+    "--output", "$BuildRoot/windows-device-check.html")
+# Keep the public app archive unchanged. The separate kit contains fresh, quiet
+# profiles; archive it before smoke tests create device identities or logs.
+$deviceArchive = "$BuildRoot/squadspeak-windows-device-test.zip"
+Compress-Archive -Path "$archivePackage/*" -DestinationPath $deviceArchive -Force
 $env:PATH = "$archivePackage/bin;$env:SystemRoot\System32;$env:SystemRoot"
 Invoke-Checked "$archivePackage/bin/squadspeak.exe" @("--smoke-test", "--settings-file", "$BuildRoot/archive-settings.ini")
+Push-Location "$archivePackage/device-test"
+try {
+    Invoke-Checked "$env:ComSpec" @("/d", "/c", "Start.cmd", "--smoke-test")
+} finally { Pop-Location }
 # Reuse the subprocess contract against the extracted executable and DLLs.
 Copy-Item "$QtRoot/bin/Qt6Test.dll" $appBuild -Force
 $env:SQUAD_TEST_APP = "$archivePackage/bin/squadspeak.exe"

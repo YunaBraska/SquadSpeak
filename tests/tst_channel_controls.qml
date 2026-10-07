@@ -2225,6 +2225,94 @@ TestCase {
         session.setUserName(previousName); channel.setChannelName(previousChannel); remoteChannel.setChannelName(previousRemote)
     }
 
+    function test_markdownCodeAndQuotesStayReadable_data() {
+        return [{tag: "dark", mode: "dark", width: 560}, {tag: "light", mode: "light", width: 560},
+                {tag: "dark-compact", mode: "dark", width: 360}, {tag: "light-compact", mode: "light", width: 360}]
+    }
+    function test_markdownCodeAndQuotesStayReadable(data) {
+        const previousTheme = session.theme
+        verify(session.setTheme(data.mode))
+        view.width = data.width; view.height = 700
+        try {
+            verify(fixtures.startHost())
+            verify(channel.openChat(channel.ownId, "127.0.0.1", channel.servicePort))
+            tryCompare(channel, "chatReady", true)
+            verify(channel.decide(remoteChannel.ownId, true))
+            verify(remoteChannel.openChat(channel.ownId, "127.0.0.1", channel.servicePort))
+            tryCompare(remoteChannel, "chatReady", true)
+            verify(channel.sendChat("Inline `test`, **bold** and *italic*."))
+            tryCompare(channel, "chatPending", false)
+            verify(remoteChannel.sendChat("> test\n> A quote stays distinct.\n\nPlain text stays plain."))
+            tryCompare(remoteChannel, "chatPending", false)
+            verify(remoteChannel.sendChat("```\ntest\n  indented_line\nconst path = '/a/long/path/that/must/stay/readable/in/a/small/chat/window';\n```\n\n[Link](https://example.org) and ~~struck text~~."))
+            tryCompare(remoteChannel, "chatPending", false)
+            view.chatExpanded = true
+            const panel = findChild(view, "chatPanel"), history = findChild(panel, "chatHistory")
+            tryCompare(history, "count", 3)
+            tryCompare(panel, "updating", false)
+            history.positionViewAtBeginning()
+            waitForRendering(history)
+            const message = channel.messages[2]
+            history.positionViewAtIndex(2, ListView.Contain)
+            tryVerify(function() { return history.itemAtIndex(2) !== null })
+            const text = findChild(history.itemAtIndex(2), "messageText_" + message.sequence)
+            verify(text.text.indexOf(Theme.codeBackground.toString()) >= 0)
+            verify(text.contentWidth <= text.width + 1, "Long code stays within the message width")
+            view.requestActivate()
+            tryCompare(view, "active", true)
+            text.forceActiveFocus()
+            tryCompare(text, "activeFocus", true)
+            keySequence(StandardKey.SelectAll)
+            keySequence(StandardKey.Copy)
+            verify(fixtures.clipboardText().indexOf("test\n  indented_line") >= 0,
+                "Styling preserves code indentation on the actual clipboard: " + JSON.stringify(fixtures.clipboardText()))
+            text.deselect()
+            waitForRendering(history)
+            if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/markdown-" + data.tag + ".png"))
+        } finally {
+            session.setTheme(previousTheme)
+        }
+    }
+
+    function test_markdownStructuresStayWithinChat_data() {
+        const cases = [
+            {tag: "lists", markdown: "# Heading\n\n## Subheading\n\n3. First numbered item\n4. Second item\n   - Nested bullet\n   - Another **bold** item\n\n- [ ] Pending task\n- [x] Finished task\n\n---\n\nText after the divider."},
+            {tag: "table", markdown: "| Name | Description | Status |\n| :--- | :--- | ---: |\n| Mira | A longer description that should wrap inside its cell | Ready |\n| Kai | `long_identifier_without_spaces_0123456789` | Away |"},
+            {tag: "links", markdown: "See https://example.org/a/very/long/path/without/spaces?first=1234567890&second=abcdef#section.\n\n[Named link](https://example.org/path?q=1#part)\n\n`https://example.org/not-a-link`\n\nEscaped \\*stars\\* and \\`backticks\\`."},
+            {tag: "nested", markdown: "> First quote\n>\n> > Nested quote with **bold** and `code`\n> >\n> > - A quoted list item\n> > - Another list item\n\nUnfinished **bold and `code\n\n```cpp\nif (ready) {\n    send(\"hello\");\n}"}
+        ]
+        const rows = []
+        for (const item of cases)
+            for (const mode of ["dark", "light"])
+                rows.push({tag: item.tag + "-" + mode, mode: mode, markdown: item.markdown})
+        return rows
+    }
+    function test_markdownStructuresStayWithinChat(data) {
+        const previousTheme = session.theme
+        verify(session.setTheme(data.mode))
+        view.width = 360; view.height = 800
+        try {
+            verify(fixtures.startHost())
+            verify(channel.openChat(channel.ownId, "127.0.0.1", channel.servicePort))
+            tryCompare(channel, "chatReady", true)
+            verify(channel.sendChat(data.markdown))
+            tryCompare(channel, "chatPending", false)
+            view.chatExpanded = true
+            const panel = findChild(view, "chatPanel"), history = findChild(panel, "chatHistory")
+            tryCompare(history, "count", 1)
+            tryCompare(panel, "updating", false)
+            history.positionViewAtBeginning()
+            tryVerify(function() { return history.itemAtIndex(0) !== null })
+            const text = findChild(history.itemAtIndex(0), "messageText_" + channel.messages[0].sequence)
+            waitForRendering(text)
+            if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/markdown-structures-" + data.tag + ".png"))
+            verify(text.contentWidth <= text.width + 1,
+                "Markdown fits the chat width: " + text.contentWidth + " > " + text.width)
+        } finally {
+            session.setTheme(previousTheme)
+        }
+    }
+
     function test_scrollLoadsOlderMessagesWithoutDownloadingThemAtOpen() {
         verify(fixtures.expireChat())
         verify(fixtures.startHost()); verify(channel.openChat(channel.ownId, "127.0.0.1", channel.servicePort))
@@ -2241,6 +2329,24 @@ TestCase {
         view.chatExpanded = true
         tryCompare(history, "count", 40)
         tryCompare(panel, "updating", false)
+        history.positionViewAtIndex(20, ListView.Center)
+        waitForRendering(history)
+        const outer = findChild(view, "channelsScroll").contentItem
+        const outerY = outer.contentY
+        const beforeWheel = history.contentY
+        mouseWheel(history, history.width / 2, history.height / 2, 0, 120)
+        tryVerify(function() { return history.contentY < beforeWheel - 1 }, 1500,
+            "A mouse wheel scrolls existing messages, not only requests older pages")
+        tryCompare(history, "moving", false)
+        compare(outer.contentY, outerY, "Scrolling messages does not move the channel list")
+        const beforeDown = history.contentY
+        const middle = history.indexAt(history.width / 2, history.contentY + history.height / 2)
+        const row = history.itemAtIndex(middle)
+        verify(row !== null)
+        const text = findChild(row, "messageText_" + row.message.sequence)
+        mouseWheel(text, text.width / 2, text.height / 2, 0, -120)
+        tryVerify(function() { return history.contentY > beforeDown + 1 }, 1500)
+        tryCompare(history, "moving", false)
         history.positionViewAtBeginning()
         waitForRendering(history)
         compare(channel.messages.length, 40)

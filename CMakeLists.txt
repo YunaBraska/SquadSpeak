@@ -586,6 +586,8 @@ if(BUILD_TESTING)
     endif()
     find_package(Python3 REQUIRED COMPONENTS Interpreter)
     find_package(Qt6 6.10 REQUIRED COMPONENTS Test QuickTest)
+    add_test(NAME acceptance_handoff COMMAND ${Python3_EXECUTABLE}
+        "${CMAKE_CURRENT_SOURCE_DIR}/tests/acceptance_tests.py")
     add_test(NAME translation_sources COMMAND ${Python3_EXECUTABLE}
         "${CMAKE_CURRENT_SOURCE_DIR}/tests/check_translation_sources.py"
         $<TARGET_FILE:Qt6::lupdate> "${CMAKE_CURRENT_SOURCE_DIR}")
@@ -605,6 +607,10 @@ if(BUILD_TESTING)
         --qt-modules Core Gui Network Qml Quick Multimedia Svg)
     add_test(NAME release_version COMMAND ${Python3_EXECUTABLE}
         "${CMAKE_CURRENT_SOURCE_DIR}/tests/release_version_tests.py")
+    if(UNIX)
+        add_test(NAME release_publication COMMAND ${Python3_EXECUTABLE}
+            "${CMAKE_CURRENT_SOURCE_DIR}/tests/release_publication_tests.py")
+    endif()
     add_test(NAME update_feeds COMMAND ${Python3_EXECUTABLE}
         "${CMAKE_CURRENT_SOURCE_DIR}/tests/test_build_appcasts.py")
     if(TARGET squad_updater)

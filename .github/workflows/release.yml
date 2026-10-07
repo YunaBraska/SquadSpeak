@@ -1,3 +1,4 @@
+# yuna-release: true
 name: Release
 
 on:
@@ -22,10 +23,21 @@ jobs:
           persist-credentials: false
       - name: Resolve UTC release version
         id: resolve
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          SOURCE_REF: ${{ github.ref }}
         shell: sh
         run: |
           set -eu
+          test "$SOURCE_REF" = refs/heads/main || { printf 'Release must run from main.\n' >&2; exit 1; }
           version=$(cmake -P cmake/Version.cmake 2>&1)
+          gh api --paginate "repos/$GH_REPO/releases?per_page=100" --jq '.[].tag_name' > "$RUNNER_TEMP/releases.txt"
+          gh api "repos/$GH_REPO/git/matching-refs/tags/$version" --jq '.[].ref' > "$RUNNER_TEMP/tags.txt"
+          if grep -Fxq "$version" "$RUNNER_TEMP/releases.txt" || grep -Fxq "refs/tags/$version" "$RUNNER_TEMP/tags.txt"; then
+            printf 'Version %s already exists. Published packages are never replaced.\n' "$version" >&2
+            exit 1
+          fi
           printf 'value=%s\n' "$version" >> "$GITHUB_OUTPUT"
   verify:
     needs: version
@@ -34,6 +46,7 @@ jobs:
       version: ${{ needs.version.outputs.value }}
 
   sources:
+    needs: version
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
@@ -57,8 +70,6 @@ jobs:
     needs: [version, verify]
     runs-on: macos-15
     timeout-minutes: 15
-    outputs:
-      signed: ${{ steps.sign.outputs.signed }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
@@ -79,8 +90,7 @@ jobs:
           pattern: release-macos-*
           path: "${{ runner.temp }}/release-assets"
           merge-multiple: true
-      - name: Sign archives and appcasts when configured
-        id: sign
+      - name: Sign archives and appcasts
         env:
           UPDATE_PUBLIC_KEY: ${{ vars.SQUADSPEAK_UPDATE_PUBLIC_KEY }}
           UPDATE_PRIVATE_KEY: ${{ secrets.SQUADSPEAK_UPDATE_PRIVATE_KEY }}
@@ -91,9 +101,8 @@ jobs:
           out="$RUNNER_TEMP/update-feeds"
           mkdir -p "$out"
           if test -z "${UPDATE_PUBLIC_KEY:-}" || test -z "${UPDATE_PRIVATE_KEY:-}"; then
-            printf 'Unsigned preview: Sparkle signing key is not configured; no appcasts were produced.\n' > "$out/UNSIGNED.txt"
-            printf 'signed=false\n' >> "$GITHUB_OUTPUT"
-            exit 0
+            printf 'Release requires the configured Sparkle signing keys.\n' >&2
+            exit 1
           fi
           keydir=$(mktemp -d "$RUNNER_TEMP/sparkle-key.XXXXXX")
           trap 'rm -rf "$keydir"' EXIT
@@ -129,8 +138,7 @@ jobs:
             "$sign_update" --ed-key-file "$keydir/private.b64" "$feed"
             "$sign_update" --ed-key-file "$keydir/private.b64" --verify "$feed"
           done
-          rm -f "$out"/*.sig "$out/UNSIGNED.txt"
-          printf 'signed=true\n' >> "$GITHUB_OUTPUT"
+          rm -f "$out"/*.sig
       - name: Preserve update feeds
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
@@ -138,7 +146,7 @@ jobs:
           path: "${{ runner.temp }}/update-feeds"
           if-no-files-found: error
 
-  draft:
+  publish:
     needs: [version, verify, sign_macos, sources]
     runs-on: ubuntu-24.04
     timeout-minutes: 10
@@ -156,31 +164,28 @@ jobs:
           path: release-assets
           merge-multiple: true
       - name: Download signed macOS appcasts
-        if: needs.sign_macos.outputs.signed == 'true'
         uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0
         with:
           name: macos-update-feeds
           path: release-assets
+      - name: Download the standalone Windows test kit
+        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0
+        with:
+          name: windows-device-test
+          path: release-assets
       - name: Verify package set and create checksums
         shell: sh
         env:
-          SIGNED: ${{ needs.sign_macos.outputs.signed }}
           RELEASE_VERSION: ${{ needs.version.outputs.value }}
         run: |
           set -eu
-          expected=6
-          if test "$SIGNED" = true; then expected=8; fi
-          test "$(find release-assets -maxdepth 1 -type f | wc -l)" -eq "$expected"
-          for file in squadspeak-linux-aarch64.tar.gz squadspeak-linux-x86_64.tar.gz squadspeak-macos-arm64.zip squadspeak-macos-x86_64.zip squadspeak-windows-x86_64.zip squadspeak-third-party-sources.tar.gz; do
+          test "$(find release-assets -maxdepth 1 -type f | wc -l)" -eq 9
+          for file in squadspeak-linux-aarch64.tar.gz squadspeak-linux-x86_64.tar.gz squadspeak-macos-arm64.zip squadspeak-macos-x86_64.zip squadspeak-windows-x86_64.zip squadspeak-windows-device-test.zip squadspeak-third-party-sources.tar.gz appcast-macos-arm64.xml appcast-macos-x86_64.xml; do
             test -s "release-assets/$file"
           done
-          if test "$SIGNED" = true; then
-            test -s release-assets/appcast-macos-arm64.xml
-            test -s release-assets/appcast-macos-x86_64.xml
-          fi
-          (cd release-assets && sha256sum *.tar.gz *.zip > SHA256SUMS && sha256sum --check SHA256SUMS)
           cmake -DSQUADSPEAK_VERSION="$RELEASE_VERSION" -DARCHIVES_DIR=release-assets -P cmake/BuildCask.cmake
-      - name: Create release draft for review
+          (cd release-assets && sha256sum *.tar.gz *.zip *.xml *.rb > SHA256SUMS && sha256sum --check SHA256SUMS)
+      - name: Publish the tested desktop release
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
@@ -189,23 +194,27 @@ jobs:
         shell: sh
         run: |
           set -eu
-          # Existing releases are never overwritten. Publishing remains separate.
+          # Upload completely before exposing the release to downloads and updates.
           cat > release-notes.md <<'NOTES'
-          Desktop preview packages:
+          Desktop packages:
 
           - macOS 13 or newer, Apple Silicon and Intel. Packages are ad-hoc signed; Developer ID signing and notarization are pending.
           - Ubuntu 26.04, ARM64 and x86_64. Packages use the distribution's Qt 6.10, OpenSSL, Opus, libsamplerate and Secret Service libraries, plus fonts-noto-core and fonts-noto-cjk for language coverage.
 
           - Windows 10 version 1903 or newer, x86_64. Extract the archive, run bin/vc_redist.x64.exe once, then bin/squadspeak.exe. Screen audio requires Windows 11 or Server 2022. CI uses Server 2022; Windows 10 runtime verification and publisher signing are pending.
 
-          Mobile packages are not part of this preview. Updates never install without your confirmation.
+          For the standalone Windows device check, use squadspeak-windows-device-test.zip instead of the regular Windows archive. Extract it and open device-test/Start.cmd. It includes the same app plus two isolated test profiles and German instructions; no developer tools or GitHub login are needed.
+
+          Automated platform and packaged-startup checks have passed for this revision. Physical microphone/headset observations, Windows 10 hardware execution and Apple notification/Focus checks follow this release. Do not interpret native Server 2022 tests as Windows 10 hardware certification. See docs/roadmap.md for remaining load and device qualification work.
+
+          Known Markdown limitation: escaped characters inside an image caption can make Qt display that image more than once. Plain image captions work; the original message and attachment are retained.
+
+          Mobile packages and Supporter purchases are not part of this release. Updates never install without your confirmation.
           squadspeak-third-party-sources.tar.gz contains the pinned dependency sources and build patches. The matching application source and build scripts are linked below.
           SHA256SUMS verifies file integrity, not publisher identity.
-          squadspeak.rb is the Homebrew cask generated from these exact macOS archives. The tap entry is added after the first stable release.
+          squadspeak.rb is the Homebrew cask generated from these exact macOS archives.
           NOTES
-          if test "${{ needs.sign_macos.outputs.signed }}" != true; then
-            printf '\nSparkle appcasts were omitted because the repository signing key was not configured.\n' >> release-notes.md
-          fi
           printf '\n[Source code (GPL-3.0)](https://github.com/%s/archive/%s.tar.gz), including build instructions. Third-party licenses remain applicable.\n' "$GH_REPO" "$SOURCE_REVISION" >> release-notes.md
           gh release create "$RELEASE_VERSION" release-assets/* --target "$SOURCE_REVISION" \
-            --title "SquadSpeak $RELEASE_VERSION" --notes-file release-notes.md --draft --prerelease --latest=false
+            --title "SquadSpeak $RELEASE_VERSION" --notes-file release-notes.md --draft --latest=false
+          gh release edit "$RELEASE_VERSION" --draft=false --prerelease=false --latest=true

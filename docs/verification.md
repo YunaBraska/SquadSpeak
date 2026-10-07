@@ -33,6 +33,69 @@ Native development builds use local Homebrew dependencies. Release packages
 separately verify the macOS 13 deployment baseline. Current capture and codec
 results are recorded below.
 
+The 2026-10-07 public release preparation passes all seven affected local CTest
+groups in 273.83 seconds: chat content, channel controls, translation sources,
+device handoff, release metadata, appcasts and publication. The publication
+suite was then extended to four passing cases covering an unused version,
+existing release/tag, API failure, non-main dispatch, incomplete asset sets and
+failed uploads. These execute the workflow's actual shell steps with only the
+GitHub API boundary substituted. They do not count as a native platform run.
+The first public regular release is authorized before physical checks under
+U139; known Markdown and hardware/load limitations remain documented.
+
+The 2026-10-07 chat regression first reproduced mouse-wheel events failing to
+move loaded messages and code lacking a distinct background. The repair keeps
+native ListView scrolling and the existing Markdown parser. Local verification
+passes `chat_content_contract` (20 rows), `channel_controls` (244 rows) and
+`translation_sources` in 268.92 seconds. After the final quote-contrast adjustment,
+the focused UI run passes seven rows covering both wheel directions, wheel input
+over message text, edge pagination, light/dark appearance at 360/560 pixels,
+long-code wrapping and exact clipboard indentation. All four rendered Markdown
+views were inspected. This is local Qt/macOS evidence, not a new platform matrix.
+
+The subsequent Markdown review reproduced loss of nested-list indentation and
+table structure when embedding an image: serializing the entire message through
+Qt's Markdown writer changed unrelated syntax. Image embedding now replaces only
+the image syntax and verifies that the parsed document otherwise stays identical.
+The content contract passes 44 rows in 21.97 seconds; 18 focused UI rows pass in
+13.28 seconds. Coverage includes headings, numbered/nested/task lists, tables,
+quotes, reference links, code URL exclusions, unsafe links, image references,
+copying and compact light/dark layouts. A 300-image-syntax code example remains
+unchanged; the 26 focused content rows complete in 537 ms locally. No new
+dependency or platform-matrix result is claimed.
+
+One separate Qt 6.11.3 rendering issue remains: an escaped character in image alt
+text, such as `![a \] label](attachment:...)`, can produce several image objects
+instead of one. The image-reference repair preserves source text but does not
+correct this parser behavior. Plain alt text and balanced nested brackets pass;
+escaped-alt rendering still needs a regression and correction before claiming
+complete image Markdown coverage.
+
+The device handoff added on 2026-10-07 reuses these reports without treating
+them as physical acceptance. `acceptance_handoff` passes its seven public-command
+cases locally through CTest in 1.23 seconds: missing/failing/skipped evidence,
+partial receipts, scoped reuse, source deletion/addition, OS/device/runtime
+changes, malformed and future-dated receipts, atomic preservation on input
+failure, Windows-specific steps and inert embedded script text. The same cases
+also pass with Python encoding warnings treated as errors. Report JavaScript
+parses successfully; browser rendering and the download interaction have not
+been verified in a browser. Generated Mac
+and Windows instruction previews contain no completed human observations.
+The new test is registered in the existing cross-platform CTest suite; no new
+native matrix or physical-device pass is claimed for this tooling-only change.
+
+The standalone Windows handoff now adds a portable `Start.cmd`, two isolated
+muted/deafened profiles and German connection instructions to a separate CI
+artifact. The launcher uses `--settings` to make both otherwise tray-only apps
+visible. The extended `acceptance_handoff` passes nine public-command cases on
+macOS in 1.43 seconds, including empty device descriptions to complete on the
+PC, invalid packages and refusal to overwrite existing profiles. Encoding-warning
+checks also pass. YAML parsing succeeds; local actionlint did not complete and
+was stopped. The Windows job is configured to smoke-test both profiles through
+the packaged executable, but that changed job has not run yet. This is prepared
+delivery tooling, not a new Windows pass or a proven complete two-app UI flow.
+Browser interaction for the changed HTML remains unverified.
+
 The `17dbfdd` channel refactor passes all 31 local CTest groups with
 `--parallel 2` in 1121.47 seconds, with no failures or skipped groups. Four
 focused discovery cases also pass, including repeated destruction during an

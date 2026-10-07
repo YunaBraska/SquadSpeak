@@ -2,6 +2,7 @@ name: Verify
 
 on:
   push:
+    branches: [main]
   pull_request:
   workflow_dispatch:
     inputs:
@@ -273,4 +274,11 @@ jobs:
         with:
           name: release-windows-x86_64
           path: build/windows-ci/squadspeak-windows-x86_64.zip
+          if-no-files-found: error
+      - name: Self-service Windows device test
+        if: success()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: windows-device-test
+          path: build/windows-ci/squadspeak-windows-device-test.zip
           if-no-files-found: error
