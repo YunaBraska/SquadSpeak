@@ -2660,10 +2660,6 @@
             <translation>Jagatud aken suleti. Valige allikas, et alustada uuesti.</translation>
         </message>
         <message>
-            <source>Screen sharing requires an active Supporter pass on the owning host.</source>
-            <translation>Ekraani jagamiseks peab omanikust hostil olema aktiivne Supporteri litsents.</translation>
-        </message>
-        <message>
             <source>The selected screen is no longer available.</source>
             <translation>Valitud ekraan pole enam saadaval.</translation>
         </message>

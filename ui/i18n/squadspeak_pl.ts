@@ -2660,10 +2660,6 @@
             <translation>Udostępnione okno zostało zamknięte. Wybierz źródło, aby rozpocząć ponownie.</translation>
         </message>
         <message>
-            <source>Screen sharing requires an active Supporter pass on the owning host.</source>
-            <translation>Udostępnianie ekranu wymaga aktywnego karnetu Supporter na hoście właściciela.</translation>
-        </message>
-        <message>
             <source>The selected screen is no longer available.</source>
             <translation>Wybrany ekran nie jest już dostępny.</translation>
         </message>

@@ -489,16 +489,12 @@ private slots:
         QVERIFY(client.channel.chatError().contains("Conflicting chat order"));
     }
     void screenAudioFollowsVoiceOrExplicitViewerAndNeverPreview() {
-#if SQUADSPEAK_STORE_BUILD
-        return;
-#else
         QTemporaryDir dir;
         Device host(dir.filePath("host"), "Screen owner"), other(dir.filePath("other"), "Other host"),
             voice(dir.filePath("voice"), "Listener"), viewer(dir.filePath("viewer"), "Viewer"),
             preview(dir.filePath("preview"), "Preview"), pending(dir.filePath("pending"), "Pending");
         QVERIFY(host.channel.listen(QHostAddress::LocalHost));
         QVERIFY(other.channel.listen(QHostAddress::LocalHost));
-        QVERIFY(host.session.setSupporterEnabled(true));
         QVERIFY(!host.channel.setScreenAudio(true));
         QVERIFY(host.channel.setScreenSharing(true));
         QVERIFY(other.channel.decide(viewer.channel.ownId(), true));
@@ -565,16 +561,11 @@ private slots:
         QTRY_VERIFY(!hasScreenAudio(preview));
         QVERIFY(host.channel.setScreenSharing(false));
         QVERIFY(!host.channel.setScreenAudio(true));
-#endif
     }
     void screenOnlyViewerReceivesUdpAudioWithoutPersonalParticipation() {
-#if SQUADSPEAK_STORE_BUILD
-        return;
-#else
         QTemporaryDir dir;
         Device host(dir.filePath("host"), "Owner"), viewer(dir.filePath("viewer"), "Viewer");
         QVERIFY(host.listenWithUdp());
-        QVERIFY(host.session.setSupporterEnabled(true));
         QVERIFY(host.channel.setScreenSharing(true)); QVERIFY(host.channel.setScreenAudio(true));
         DelayedLink link(host.channel.port()); link.udpDelay = 0;
         QVERIFY(host.channel.decide(viewer.channel.ownId(), true));
@@ -601,7 +592,6 @@ private slots:
         QTRY_COMPARE(viewer.channel.screenInfo(host.channel.ownId()).value("tier").toInt(), 1);
         QVERIFY(host.channel.sendScreenAudio(marker)); QTRY_COMPARE(received, 2);
         QVERIFY(!viewer.channel.joined());
-#endif
     }
     void screenAudioRequiresNegotiatedAndValidViewerRequests_data() {
         QTest::addColumn<QString>("scenario");
@@ -610,14 +600,10 @@ private slots:
             QTest::newRow(scenario) << QString::fromLatin1(scenario);
     }
     void screenAudioRequiresNegotiatedAndValidViewerRequests() {
-#if SQUADSPEAK_STORE_BUILD
-        return;
-#else
         QFETCH(QString, scenario);
         QTemporaryDir dir; Device host(dir.filePath("host"), "Owner");
         const auto identity = TlsIdentity::create();
         QVERIFY(host.channel.listen(QHostAddress::LocalHost));
-        QVERIFY(host.session.setSupporterEnabled(true));
         QVERIFY(host.channel.setScreenSharing(true));
         QVERIFY(host.channel.setScreenAudio(true));
         QVERIFY(host.channel.decide(identity.id(), true));
@@ -671,7 +657,6 @@ private slots:
             QTRY_VERIFY(incoming.contains("\"type\":\"pong\""));
             QVERIFY(!incoming.contains("\"type\":\"screenAudio\""));
         }
-#endif
     }
     void mediaCapacityAndScreenSourceAreSharedAcrossOwnedChannels() {
 #if SQUADSPEAK_STORE_BUILD
@@ -1070,15 +1055,11 @@ private slots:
         QTest::newRow("fragmented") << true;
     }
     void screenSocketHandoffPreservesBufferedMessages() {
-#if SQUADSPEAK_STORE_BUILD
-        return;
-#else
         QFETCH(bool, fragmented);
         QTemporaryDir dir;
         const auto identity = TlsIdentity::create();
         Device host(dir.filePath("host"), "Owner"), client(dir.filePath("client"), "Viewer", identity);
         QVERIFY(host.channel.listen(QHostAddress::LocalHost));
-        QVERIFY(host.session.setSupporterEnabled(true));
         QVERIFY(host.channel.setScreenSharing(true));
         QVERIFY(host.channel.decide(client.channel.ownId(), true));
         QVERIFY(client.channel.openChat(host.channel.ownId(), "127.0.0.1", host.channel.port()));
@@ -1110,7 +1091,6 @@ private slots:
         QCOMPARE(socket.state(), QAbstractSocket::ConnectedState);
         QCOMPARE(host.channel.hostClients().size(), 1);
         QVERIFY(client.channel.chatReady());
-#endif
     }
     void futureScreenResponsesPreserveTheClientConnection_data() {
         QTest::addColumn<bool>("qualityFirst");
@@ -1275,13 +1255,9 @@ private slots:
     void screenTransportUsesAdmissionAndDoesNotBlockChat() {
         QTemporaryDir dir;
         Device host(dir.filePath("host"), "Owner"), first(dir.filePath("first"), "First"), second(dir.filePath("second"), "Second");
-        QVERIFY(host.channel.listen(QHostAddress::LocalHost));
         QVERIFY(!host.channel.setScreenSharing(true));
-#if SQUADSPEAK_STORE_BUILD
-        QVERIFY(!host.session.setSupporterEnabled(true));
-        return;
-#else
-        QVERIFY(host.session.setSupporterEnabled(true));
+        QVERIFY(host.channel.listen(QHostAddress::LocalHost));
+        QVERIFY(!host.session.supporterEnabled());
         QVERIFY(host.channel.setScreenSharing(true));
         for (auto* client : {&first, &second}) {
             QVERIFY(!client->channel.watchScreen(host.channel.ownId(), true));
@@ -1315,20 +1291,22 @@ private slots:
         QTRY_VERIFY(!first.channel.chatReady());
         QVERIFY(host.channel.screenSharing());
         QVERIFY(!first.channel.acknowledgeScreen(host.channel.ownId(), one.first().at(1).toLongLong(), 1));
+#if !SQUADSPEAK_STORE_BUILD
+        QVERIFY(host.session.setSupporterEnabled(true));
+#endif
+        QVERIFY(host.session.setMuted(false));
         QVERIFY(host.session.setSupporterEnabled(false));
+        QVERIFY(host.channel.screenSharing());
+        QVERIFY(host.channel.setScreenSharing(false));
         QTRY_VERIFY(!host.channel.screenSharing());
         QTRY_VERIFY(!second.channel.screenView().value("available").toBool());
         QVERIFY(second.channel.chatReady());
-#endif
     }
     void screenUsesUdpWhileReliableTrafficIsDelayed() {
-#if SQUADSPEAK_STORE_BUILD
-        return;
-#else
         QTemporaryDir dir;
         Device host(dir.filePath("host"), "Owner"), viewer(dir.filePath("viewer"), "Viewer");
         QVERIFY(host.listenWithUdp());
-        QVERIFY(host.session.setSupporterEnabled(true)); QVERIFY(host.channel.setScreenSharing(true));
+        QVERIFY(host.channel.setScreenSharing(true));
         DelayedLink link(host.channel.port()); link.udpDelay = 0;
         QVERIFY(host.channel.decide(viewer.channel.ownId(), true));
         QVERIFY(viewer.channel.openChat(host.channel.ownId(), "127.0.0.1", link.port()));
@@ -1379,16 +1357,12 @@ private slots:
         QVERIFY(host.channel.sendScreenFrame(nextTier, format, payload, true));
         QVERIFY(waitForEvents([&] { return frames.size() == 4; }));
         QVERIFY(viewer.channel.chatReady());
-#endif
     }
     void hostingClientsKeepVoiceAndScreenDatagramsIndependent() {
-#if SQUADSPEAK_STORE_BUILD
-        return;
-#else
         QTemporaryDir dir;
         Device host(dir.filePath("host"), "Owner"), client(dir.filePath("client"), "Viewer"), speaker(dir.filePath("speaker"), "Speaker");
         QVERIFY(host.listenWithUdp()); QVERIFY(client.listenWithUdp());
-        QVERIFY(host.session.setSupporterEnabled(true)); QVERIFY(host.channel.setScreenSharing(true));
+        QVERIFY(host.channel.setScreenSharing(true));
         QVERIFY(host.channel.decide(client.channel.ownId(), true)); QVERIFY(host.channel.decide(speaker.channel.ownId(), true));
         DelayedLink link(host.channel.port()); link.udpDelay = 0;
         QVERIFY(client.channel.join(host.channel.ownId(), "127.0.0.1", link.port())); QVERIFY(speaker.join(host.channel));
@@ -1414,7 +1388,6 @@ private slots:
         const auto beforeAudio = audio.size(), beforeVideo = video.size();
         QTRY_VERIFY_WITH_TIMEOUT(audio.size() >= beforeAudio + 5 && video.size() >= beforeVideo + 5, 1000);
         producer.stop(); QVERIFY(client.channel.hosting()); QVERIFY(client.channel.joined());
-#endif
     }
     void screenQualityPrioritizesVoiceInAnotherOwnedChannel() {
 #if SQUADSPEAK_STORE_BUILD
@@ -1454,41 +1427,47 @@ private slots:
 #endif
     }
     void screenQualityAdaptsForOnlyTheSlowReceiver() {
-#if SQUADSPEAK_STORE_BUILD
-        return;
-#else
         QTemporaryDir dir;
         Device host(dir.filePath("host"), "Owner"), slow(dir.filePath("slow"), "Slow"), fast(dir.filePath("fast"), "Fast");
         QVERIFY(host.channel.listen(QHostAddress::LocalHost));
-        QVERIFY(host.session.setSupporterEnabled(true)); QVERIFY(host.channel.setScreenSharing(true));
+        QVERIFY(host.channel.setScreenSharing(true));
         for (auto* client : {&slow, &fast}) {
             QVERIFY(host.channel.decide(client->channel.ownId(), true));
             QVERIFY(client->channel.openChat(host.channel.ownId(), "127.0.0.1", host.channel.port()));
-            QTRY_VERIFY(client->channel.screenView().value("available").toBool());
-            QVERIFY(client->channel.watchScreen(host.channel.ownId(), true));
-            QTRY_COMPARE(client->channel.screenView().value("tier").toInt(), 1);
+            QVERIFY(waitForEvents(&client->channel, &LocalChannel::screenChanged,
+                [&] { return client->channel.screenView().value("available").toBool(); }));
+            QVERIFY(client->channel.watchScreen(host.channel.ownId(), true, client == &fast ? 1 : 0));
+            QVERIFY(waitForEvents(&client->channel, &LocalChannel::screenChanged,
+                [&] { return client->channel.screenView().value("tier").toInt() == 1; }));
         }
-        QSignalSpy frames(&slow.channel, &LocalChannel::screenFrameReceived);
+        QSignalSpy frames(&slow.channel, &LocalChannel::screenFrameReceived), fastFrames(&fast.channel, &LocalChannel::screenFrameReceived);
         connect(&fast.channel, &LocalChannel::screenFrameReceived, &fast.channel, [&](const QString& id, qint64 serial, const QJsonObject&, const QByteArray&) {
             QVERIFY(fast.channel.acknowledgeScreen(id, serial, 1));
         });
         const QJsonObject format{{"codec", "h264"}, {"width", 640}, {"height", 360}, {"extra", ""}};
-        const auto sendUntilReceived = [&](int tier, qsizetype before) {
-            // Capture continues while the host waits for an earlier ACK.
-            if (frames.size() == before && !host.channel.sendScreenFrame(tier, format, QByteArray("frame"), true)) return false;
-            return frames.size() == before + 1;
-        };
+        QTimer capture;
+        capture.setInterval(34);
+        capture.setTimerType(Qt::PreciseTimer);
+        connect(&capture, &QTimer::timeout, &host.channel, [&] {
+            // Keep both viewers receiving throughout degradation and recovery.
+            for (int tier = 1; tier <= 3; ++tier)
+                QVERIFY(host.channel.sendScreenFrame(tier, format, QByteArray("frame"), true));
+        });
+        capture.start();
+        qsizetype acknowledged = 0;
         for (int tier = 1; tier <= 3; ++tier) {
             for (int sample = 0; sample < 3; ++sample) {
-                const auto before = frames.size();
-                QTRY_VERIFY(sendUntilReceived(tier, before));
-                QVERIFY(slow.channel.acknowledgeScreen(host.channel.ownId(), frames.last().at(1).toLongLong(), 500));
+                QVERIFY(waitForEvents(&slow.channel, &LocalChannel::screenFrameReceived,
+                    [&] { return frames.size() == acknowledged + 1; }));
+                QVERIFY(slow.channel.acknowledgeScreen(host.channel.ownId(), frames.at(acknowledged++).at(1).toLongLong(), 500));
             }
-            QTRY_COMPARE(slow.channel.screenView().value("tier").toInt(), tier + 1);
+            QVERIFY(waitForEvents(&slow.channel, &LocalChannel::screenChanged,
+                [&] { return slow.channel.screenView().value("tier").toInt() == tier + 1; }));
             QCOMPARE(fast.channel.screenView().value("tier").toInt(), 1);
         }
         QVERIFY(host.channel.screenSharing());
-        QTRY_COMPARE_WITH_TIMEOUT(slow.channel.screenView().value("tier").toInt(), 3, 5000);
+        QVERIFY(fastFrames.size() >= 3);
+        const auto beforeRecovery = fastFrames.size();
         const auto acknowledgement = connect(&slow.channel, &LocalChannel::screenFrameReceived, &slow.channel,
             [&](const QString& id, qint64 serial, const QJsonObject&, const QByteArray&) {
             // Capture continues while an earlier frame is still being decoded.
@@ -1496,33 +1475,20 @@ private slots:
                 QVERIFY(slow.channel.acknowledgeScreen(id, serial, 1));
             });
         });
-        QTestEventLoop recovery;
-        QTimer capture;
-        capture.setInterval(34);
-        capture.setTimerType(Qt::PreciseTimer);
-        connect(&capture, &QTimer::timeout, &host.channel, [&] {
-            QVERIFY(host.channel.sendScreenFrame(3, format, QByteArray("frame"), true));
-            if (slow.channel.screenView().value("tier").toInt() == 2) recovery.exitLoop();
-        });
-        capture.start();
-        // A real event loop services network wakeups immediately. qWait polling
-        // adds sleeps between UDP callbacks and would distort measured quality.
-        recovery.enterLoopMSecs(25000);
+        // The state-change signal ends the wait; the timeout only bounds failure.
+        QVERIFY(waitForEvents(&slow.channel, &LocalChannel::screenChanged,
+            [&] { return slow.channel.screenView().value("tier").toInt() == 2; }, 25000));
         capture.stop(); disconnect(acknowledgement);
         QCOMPARE(slow.channel.screenView().value("tier").toInt(), 2);
         QCOMPARE(fast.channel.screenView().value("tier").toInt(), 1);
+        QVERIFY(fastFrames.size() > beforeRecovery);
         QVERIFY(slow.channel.chatReady()); QVERIFY(fast.channel.chatReady());
-#endif
     }
     void sixtyFourVideoViewersKeepIndependentQualityAndVoice() {
-#if SQUADSPEAK_STORE_BUILD
-        return;
-#else
         QElapsedTimer elapsed; elapsed.start();
         QTemporaryDir dir;
         Device host(dir.filePath("host"), "Owner");
         QVERIFY(host.channel.listen(QHostAddress::LocalHost));
-        QVERIFY(host.session.setSupporterEnabled(true));
         QVERIFY(host.channel.setScreenSharing(true));
         std::vector<std::unique_ptr<Device>> viewers;
         viewers.reserve(64);
@@ -1677,16 +1643,12 @@ private slots:
         }
         for (const auto& viewer : viewers) QVERIFY(viewer->channel.closeChat(host.channel.ownId()));
         QVERIFY(host.channel.setScreenSharing(false));
-#endif
     }
     void aDelayedVideoConnectionLeavesOtherReceiversAndChatResponsive() {
-#if SQUADSPEAK_STORE_BUILD
-        return;
-#else
         QTemporaryDir dir;
         Device host(dir.filePath("host"), "Owner"), slow(dir.filePath("slow"), "Slow"), fast(dir.filePath("fast"), "Fast");
         QVERIFY(host.listenWithUdp());
-        QVERIFY(host.session.setSupporterEnabled(true)); QVERIFY(host.channel.setScreenSharing(true));
+        QVERIFY(host.channel.setScreenSharing(true));
         DelayedLink link(host.channel.port()); link.videoOnly = true;
         QSignalSpy slowFrames(&slow.channel, &LocalChannel::screenFrameReceived);
         QSignalSpy fastFrames(&fast.channel, &LocalChannel::screenFrameReceived);
@@ -1730,7 +1692,6 @@ private slots:
         QVERIFY(slow.channel.chatReady()); QVERIFY(fast.channel.chatReady());
         for (int sample = 0; sample < 9; ++sample) QVERIFY(host.channel.reportScreenEncodeTime(400));
         QVERIFY(host.channel.screenSharing());
-#endif
     }
     void channelNameBelongsToHostStorageAndMigratesTheOldProfile_data() {
         QTest::addColumn<bool>("existingPermissions");
@@ -4894,8 +4855,7 @@ private slots:
         QVERIFY(overflow.channel.sendChat("Text still works at voice capacity."));
         QTRY_VERIFY(!memberMessages(clients.back()->channel).isEmpty());
         QCOMPARE(host.channel.hostParticipants().size(), 64);
-#if !SQUADSPEAK_STORE_BUILD
-        QVERIFY(host.session.setSupporterEnabled(true)); QVERIFY(host.channel.setScreenSharing(true));
+        QVERIFY(host.channel.setScreenSharing(true));
         QTRY_VERIFY(overflow.channel.screenView().value("available").toBool());
         QVERIFY(overflow.channel.watchScreen(host.channel.ownId(), true));
         QTRY_COMPARE(overflow.channel.screenView().value("status").toString(), QString("full"));
@@ -4913,7 +4873,6 @@ private slots:
         QVERIFY(clients.front()->join(host.channel));
         QTRY_VERIFY(clients.front()->channel.joined());
         QVERIFY(host.channel.setScreenSharing(false));
-#endif
         // Replacing an existing connection reuses its slot, even when full.
         QVERIFY(replacement->join(host.channel));
         QTRY_VERIFY(replacement->channel.joined());

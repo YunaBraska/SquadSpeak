@@ -2660,10 +2660,6 @@
             <translation>Sameiginlegur gluggi var lokaður. Veldu heimild til að byrja aftur.</translation>
         </message>
         <message>
-            <source>Screen sharing requires an active Supporter pass on the owning host.</source>
-            <translation>Skjádeiling krefst virks Supporter-passa á gestgjafanum sem á rásina.</translation>
-        </message>
-        <message>
             <source>The selected screen is no longer available.</source>
             <translation>Valdi skjárinn er ekki lengur tiltækur.</translation>
         </message>

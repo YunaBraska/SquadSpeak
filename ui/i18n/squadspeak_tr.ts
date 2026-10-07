@@ -2660,10 +2660,6 @@
             <translation>Paylaşılan pencere kapatıldı. Yeniden başlamak için bir kaynak seçin.</translation>
         </message>
         <message>
-            <source>Screen sharing requires an active Supporter pass on the owning host.</source>
-            <translation>Ekran paylaşımı, sahibi olan ana bilgisayarda etkin bir Supporter bileti gerektirir.</translation>
-        </message>
-        <message>
             <source>The selected screen is no longer available.</source>
             <translation>Seçilen ekran artık kullanılamıyor.</translation>
         </message>

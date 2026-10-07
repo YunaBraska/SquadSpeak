@@ -2660,10 +2660,6 @@
             <translation>أغلقت النافذة المشتركة. اختر مصدرا لبدء المشاركة مجددا.</translation>
         </message>
         <message>
-            <source>Screen sharing requires an active Supporter pass on the owning host.</source>
-            <translation>تتطلب مشاركة الشاشة تصريح Supporter فعالا على المضيف المالك.</translation>
-        </message>
-        <message>
             <source>The selected screen is no longer available.</source>
             <translation>لم تعد الشاشة المحددة متاحة.</translation>
         </message>

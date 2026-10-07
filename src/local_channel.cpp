@@ -439,7 +439,6 @@ LocalChannel::LocalChannel(VoiceSession& session, QString storageFile, std::opti
     connect(this, &LocalChannel::chatChanged, this, imageReady);
     connect(&session_, &VoiceSession::presenceChanged, this, changedView);
     connect(&session_, &VoiceSession::preferencesChanged, this, [this, previousSupporter = session_.supporterEnabled()]() mutable {
-        if (!session_.supporterEnabled()) setScreenSharing(false);
         if (previousSupporter != session_.supporterEnabled()) {
             previousSupporter = session_.supporterEnabled();
             for (auto* socket : peers_.keys()) sendChatKey(socket);

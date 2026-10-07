@@ -2660,10 +2660,6 @@
             <translation>Okno v skupni rabi je bilo zaprto. Izberite vir, da začnete znova.</translation>
         </message>
         <message>
-            <source>Screen sharing requires an active Supporter pass on the owning host.</source>
-            <translation>Skupna raba zaslona zahteva aktivno licenco Supporter pri gostitelju, ki jo ima.</translation>
-        </message>
-        <message>
             <source>The selected screen is no longer available.</source>
             <translation>Izbrani zaslon ni več na voljo.</translation>
         </message>

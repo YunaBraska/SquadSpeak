@@ -2660,10 +2660,6 @@
             <translation>Dirisha lililoshirikiwa limefungwa. Tafadhali chagua chanzo ili kuanza upya.</translation>
         </message>
         <message>
-            <source>Screen sharing requires an active Supporter pass on the owning host.</source>
-            <translation>Kushiriki skrini kunahitaji pasi hai ya Supporter kwenye mwenyeji anayemiliki.</translation>
-        </message>
-        <message>
             <source>The selected screen is no longer available.</source>
             <translation>Skrini iliyochaguliwa haipatikani tena.</translation>
         </message>

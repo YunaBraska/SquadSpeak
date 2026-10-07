@@ -1,3 +1,5 @@
 # Preserve the byte hashes in the reproducible audio corpus.
 tests/audio/licenses/*.txt text eol=lf
 tests/audio/manifest.json text eol=lf
+# These patches apply to byte-identical, LF-terminated upstream sources.
+cmake/*.patch text eol=lf

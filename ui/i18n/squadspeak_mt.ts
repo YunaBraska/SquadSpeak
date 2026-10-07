@@ -2660,10 +2660,6 @@
             <translation>It-tieqa maqsuma ngħalqet. Agħżel sors biex terġa' tibda.</translation>
         </message>
         <message>
-            <source>Screen sharing requires an active Supporter pass on the owning host.</source>
-            <translation>Il-qsim tal-iskrin jeħtieġ pass attiv ta' Supporter fuq il-host li għandu l-kanal.</translation>
-        </message>
-        <message>
             <source>The selected screen is no longer available.</source>
             <translation>L-iskrin magħżul m'għadux disponibbli.</translation>
         </message>

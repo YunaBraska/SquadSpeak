@@ -2660,10 +2660,6 @@
             <translation>Fereastra partajată a fost închisă. Selectați o sursă pentru a începe din nou.</translation>
         </message>
         <message>
-            <source>Screen sharing requires an active Supporter pass on the owning host.</source>
-            <translation>Partajarea ecranului necesită un permis Supporter activ pe gazda proprietară.</translation>
-        </message>
-        <message>
             <source>The selected screen is no longer available.</source>
             <translation>Ecranul selectat nu mai este disponibil.</translation>
         </message>

@@ -35,7 +35,6 @@ TestCase {
         return true
     }
     function test_screenPreviewAndSeparateResizableViewer() {
-        if (!supporterLicense.directDistribution) { verify(!fixtures.setSupporter(true)); return }
         verify(fixtures.startHost())
         verify(fixtures.startRemoteHost())
         verify(remoteChannel.decide(channel.ownId, true))

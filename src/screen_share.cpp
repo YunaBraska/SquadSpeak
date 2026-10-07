@@ -100,7 +100,7 @@ bool ScreenShare::start(int index, const QString& id) {
     captureHost_ = owner;
     audioEnabled_ = false;
     computerAudio_ = sources_[index].toMap().value("kind") == "screen";
-    if (!captureHost_->setScreenSharing(true)) return fail(tr("Screen sharing requires an active Supporter pass on the owning host."));
+    if (!captureHost_->setScreenSharing(true)) return fail(captureHost_->status());
     error_.clear(); ++generation_;
     try { encoders_ = std::make_shared<std::array<VideoCodec, 4>>(); }
     catch (const std::exception& error) { return fail(QString::fromUtf8(error.what())); }

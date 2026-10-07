@@ -2660,10 +2660,6 @@
             <translation>Заедничкиот прозорец беше затворен. Изберете извор за да започнете повторно.</translation>
         </message>
         <message>
-            <source>Screen sharing requires an active Supporter pass on the owning host.</source>
-            <translation>Споделувањето екран бара активна Supporter пропусница на хостот сопственик.</translation>
-        </message>
-        <message>
             <source>The selected screen is no longer available.</source>
             <translation>Избраниот екран повеќе не е достапен.</translation>
         </message>

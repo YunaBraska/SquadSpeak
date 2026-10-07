@@ -1,4 +1,5 @@
 #include "local_channel.hpp"
+#include <QCoreApplication>
 #include <QJsonDocument>
 #include <QLoggingCategory>
 #include <QtEndian>
@@ -47,9 +48,10 @@ bool LocalChannel::screenBusy(const Client* receiver, const LocalChannel* sender
 }
 
 bool LocalChannel::setScreenSharing(bool active) {
-    if (active && (!hosting() || !session_.supporterEnabled() || hostOnly_)) return false;
+    if (active && (!hosting() || hostOnly_)) return setStatus(tr("Channel unavailable"), false);
     if (screenSharing_ == active) return true;
-    if (active && screenBusy(nullptr, this)) return false;
+    if (active && screenBusy(nullptr, this))
+        return setStatus(QCoreApplication::translate("ScreenShare", "Close a video view before opening another stream."), false);
     screenSharing_ = active; slowScreenEncodes_ = 0;
     if (!active) { screenAudio_ = false; closeViewers(); }
     broadcastRoster(); emit screenChanged(); return true;

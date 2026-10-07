@@ -2660,10 +2660,6 @@
             <translation>مشترکہ کھڑکی بند تھی۔ دوبارہ شروع کرنے کے لیے ایک ذریعہ منتخب کریں۔</translation>
         </message>
         <message>
-            <source>Screen sharing requires an active Supporter pass on the owning host.</source>
-            <translation>اسکرین شیئرنگ کے لیے چینل کے مالک میزبان پر فعال Supporter پاس درکار ہے۔</translation>
-        </message>
-        <message>
             <source>The selected screen is no longer available.</source>
             <translation>منتخب کردہ اسکرین اب دستیاب نہیں ہے۔</translation>
         </message>

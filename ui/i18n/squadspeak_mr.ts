@@ -2660,10 +2660,6 @@
             <translation>सामायिक विंडो बंद होती. पुन्हा सुरू करण्यासाठी स्रोत निवडा.</translation>
         </message>
         <message>
-            <source>Screen sharing requires an active Supporter pass on the owning host.</source>
-            <translation>स्क्रीन शेअरिंगसाठी चॅनेलच्या मालक होस्टकडे सक्रिय Supporter पास आवश्यक आहे.</translation>
-        </message>
-        <message>
             <source>The selected screen is no longer available.</source>
             <translation>निवडलेली स्क्रीन यापुढे उपलब्ध नाही.</translation>
         </message>

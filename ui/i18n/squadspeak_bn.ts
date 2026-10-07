@@ -2660,10 +2660,6 @@
             <translation>ভাগ করা উইন্ডোটি বন্ধ ছিল। আবার শুরু করার জন্য একটি উৎস নির্বাচন করুন।</translation>
         </message>
         <message>
-            <source>Screen sharing requires an active Supporter pass on the owning host.</source>
-            <translation>স্ক্রিন শেয়ার করতে চ্যানেলের মালিক হোস্টে সক্রিয় Supporter পাস প্রয়োজন।</translation>
-        </message>
-        <message>
             <source>The selected screen is no longer available.</source>
             <translation>নির্বাচিত পর্দা আর উপলব্ধ নেই।</translation>
         </message>

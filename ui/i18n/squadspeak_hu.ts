@@ -2660,10 +2660,6 @@
             <translation>A megosztott ablak bezárult. Válassza ki a forrást az újrakezdéshez.</translation>
         </message>
         <message>
-            <source>Screen sharing requires an active Supporter pass on the owning host.</source>
-            <translation>A képernyőmegosztáshoz aktív Supporter-bérlet szükséges a tulajdonos gazdagépen.</translation>
-        </message>
-        <message>
             <source>The selected screen is no longer available.</source>
             <translation>A kiválasztott képernyő már nem érhető el.</translation>
         </message>

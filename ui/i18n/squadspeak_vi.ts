@@ -2660,10 +2660,6 @@
             <translation>Cửa sổ được chia sẻ đã đóng. Hãy chọn nguồn để bắt đầu lại.</translation>
         </message>
         <message>
-            <source>Screen sharing requires an active Supporter pass on the owning host.</source>
-            <translation>Chia sẻ màn hình yêu cầu gói Supporter đang hoạt động trên máy chủ sở hữu.</translation>
-        </message>
-        <message>
             <source>The selected screen is no longer available.</source>
             <translation>Màn hình đã chọn không còn khả dụng.</translation>
         </message>

@@ -2660,10 +2660,6 @@
             <translation>Общее окно закрыто. Выберите источник, чтобы начать снова.</translation>
         </message>
         <message>
-            <source>Screen sharing requires an active Supporter pass on the owning host.</source>
-            <translation>Для демонстрации экрана нужен действующий пропуск Supporter на хосте владельца.</translation>
-        </message>
-        <message>
             <source>The selected screen is no longer available.</source>
             <translation>Выбранный экран больше недоступен.</translation>
         </message>

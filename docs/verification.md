@@ -11,6 +11,70 @@ remains available because its cause is still unknown.
 History was consolidated at `3ede20d` with the same file tree as `5ce7455`.
 Earlier revision identifiers below refer to the original CI checkouts.
 
+## GitHub Sponsors tier preparation, 2026-10-07
+
+The authenticated YunaBraska dashboard confirms an active Sponsors profile.
+A new one-time "Yuna Supporter" draft was saved at 12 USD, with dashboard tier
+ID `665094`. The UI confirms "Draft" and one published plus one draft one-time
+tier. Existing tiers were retained. The description covers twelve months across
+participating direct-distribution apps, no automatic renewal or device limit,
+the seven-day verification window, and the confirmed SquadSpeak extras.
+
+[Edit the draft](https://github.com/sponsors/YunaBraska/dashboard/tiers/665094/edit).
+It is not published or purchasable. Saving the tier does not verify payment
+eligibility or implement GitHub sign-in. The current runtime still uses the
+previous provider; O-21 remains open. No Git commit, push or release was made.
+
+The live GraphQL schema confirms that `SponsorsActivity` contains a tier and
+event timestamp, but no payment identifier, amount or refund-to-payment link.
+`Sponsorship.createdAt` dates the relationship and `tierSelectedAt` dates its
+tier selection. Neither is documented as a payment settlement date. The
+amount-by-date aggregate cannot select a tier. These observations do not prove
+that automatic verification is impossible. Repeated one-time payments still
+need real evidence before an event can safely extend annual access. An inactive
+one-time sponsorship must not alone revoke the separately promised paid year.
+The current decision is between verifying that automatic route with real
+payments and an explicitly approved manual confirmation stored on GitHub.
+No replacement verification path has been implemented or selected implicitly.
+Sources: [GitHub Sponsors schema](https://docs.github.com/en/graphql/reference/sponsors)
+and the [Sponsors team's API discussion](https://github.com/orgs/community/discussions/77190).
+
+## Free screen sharing and avatar selection, 2026-10-07
+
+U142/U144 are implemented locally: the primary channel can publish without
+Supporter, while ownership/admission, headless restrictions and the single-stream
+budget remain. Expiry leaves its stream running but still closes additional
+channels. The normal avatar row contains available choices; a reused row shows
+colored, non-selecting previews in About. No new runtime dependency is added.
+
+Regression tests failed first at the former twenty-choice free picker and the
+Supporter-only screen action/transport gate. After the changes, the native macOS
+build passes:
+
+- `channel_tests`: 18 selected screen/audio/admission/quality cases, including 64
+  viewers and expiry of an additional channel; no failures (89.63 seconds).
+- `sixtyFourClientsHaveOneConsistentRosterAndAudioFanout`: the shared media-capacity
+  case also passes without Supporter (17.24 seconds). Its two-second, four-speaker
+  phase receives 25,200 packets with no reported gaps. Store builds now exercise
+  the same voice/viewer slot checks; this short fixture is not a sustained soak.
+- `video_tests`: four selected encrypted decode/UDP/detach/exclusivity cases;
+  no failures (5.63 seconds).
+- `controls_tests`: free screen controls, free avatar selection and configured
+  settings at narrow English/German/Arabic widths; five cases pass.
+- `ctest --test-dir build/native-release-sdk -R '^(avatar_scale_.*|screen_rendering)$' --output-on-failure`:
+  all three groups pass, including 150%/200% scale and the real rendered video window.
+- `check_translation_sources.py`: all 798 current messages occur in all 54
+  catalogs; the obsolete screen-paywall message is removed.
+
+The actual About screenshot was inspected. Store guards have also been removed
+from the now-free capture/transport cases. A subsequent native macOS run of
+`capture_tests selectedWindowReachesAnEncryptedViewer` passes all three rows in
+7.875 seconds, with no failures or skips. It captures only the test windows,
+checks actual app-scoped audio against an unrelated producer, and delivers
+decoded video over an encrypted local connection without Supporter access.
+Fresh cross-platform CI is still required. This does not verify GitHub
+eligibility or cross-product activation, which remain under O-21.
+
 ## Revisions and platform runs
 
 | Revision | Evidence | Result and scope |
@@ -59,8 +123,8 @@ the old module passes 252 UI rows then crashes on the first focused repetition.
 GDB locates raw value `0x1` in JS-stack slot 262 during a `qsTr` allocation.
 Rebuilding only Qml with the upstream correction passes the same 252-row sequence
 and all 20 focused repetitions (14 rows each). The small property-only probe
-passes both versions and is not the regression proof. This correction is now
-being integrated for each desktop SDK; final native/package gates are pending.
+passes both versions and is not the regression proof. This correction is
+integrated for each desktop SDK; current native results are recorded below.
 Garbage collection and JIT remain enabled. UI tests use a one-call JIT threshold
 and frequent collection; Linux retains the 20-repetition first-failure gate.
 
@@ -70,8 +134,8 @@ attached-property factories erase derived QObject return types. Only those two
 call boundaries exclude that one check; ASan and other UB checks remain active.
 The next [sanitizer run](https://github.com/YunaBraska/SquadSpeak/actions/runs/37625906741)
 passes both boundaries and reports an unaligned pointer store in X86Assembler.
-The patch replaces pointer reads/writes there with byte copies; this correction
-still requires the full sanitizer run. Desktop startup now runs first, exposing
+The patch replaces pointer reads/writes there with byte copies; the full
+sanitizer job at `2f85ae5` passes. Desktop startup now runs first, exposing
 that failure in 21.58 seconds of the main suite instead of after protocol tests.
 
 The integrated macOS ARM development build passes channel controls, desktop
@@ -79,7 +143,30 @@ startup, source-archive contracts and publication contracts in 274.71 seconds.
 The loader resolves the rebuilt Qml framework. Its installed-package check
 examines 111 binaries with no errors and matches the Qml UUID to that build.
 This local check uses the host's macOS 27 baseline because its Homebrew libraries
-target newer systems; the native release matrix must separately prove macOS 13.
+target newer systems; the native release matrix separately checks macOS 13.
+
+At `2f85ae5`, [37634566107](https://github.com/YunaBraska/SquadSpeak/actions/runs/37634566107)
+passes Linux ARM/x64, Store, sanitizers and macOS Intel. Both macOS package checks
+inspect 111 binaries without errors, including the corrected Qml identity and
+macOS 13 baseline. Two failures prevent release: Windows converts a source patch
+to CRLF during checkout, and the ARM video test downgrades its supposedly fast
+receiver. The Windows error is reproduced locally by changing only line endings.
+The new checkout regression fails before the LF attribute and passes afterward
+with both `core.autocrlf` settings; all 11 source-archive cases pass. Windows CI
+runs that check before dependency builds.
+
+The video fixture previously polled while measuring network turnaround. Local
+tracing shows 62-67 ms acknowledgements, close to the unchanged 68 ms tier limit.
+Continuous event processing reduces those observed samples to 4-7 ms. Both
+receivers now receive frames throughout degradation, pause and recovery; the
+fast receiver retains its tier while the slow receiver changes tiers. The test
+now waits directly for frame and state-change signals, checking existing state
+after connecting so earlier events are not missed. Timers model capture cadence
+and decoder delay; a bounded timeout reports missing events. Five consecutive
+local runs of this final fixture pass in 14.40-14.53 seconds each, without
+retry-on-failure. Source-archive and release publication CTest groups pass in
+4.75 seconds; workflow YAML parsing also passes.
+The checkout and timing corrections still need a new native CI run.
 
 CI retains CTest XML, detailed logs, rendered UI evidence and tested packages.
 A green run at an older revision does not cover newly added platform code.

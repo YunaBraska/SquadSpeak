@@ -2660,10 +2660,6 @@
             <translation>Το κοινόχρηστο παράθυρο έκλεισε. Επιλέξτε μια πηγή για να ξεκινήσετε ξανά.</translation>
         </message>
         <message>
-            <source>Screen sharing requires an active Supporter pass on the owning host.</source>
-            <translation>Η κοινή χρήση οθόνης απαιτεί ενεργό πάσο Supporter στον host που είναι ιδιοκτήτης του καναλιού.</translation>
-        </message>
-        <message>
             <source>The selected screen is no longer available.</source>
             <translation>Η επιλεγμένη οθόνη δεν είναι πλέον διαθέσιμη.</translation>
         </message>

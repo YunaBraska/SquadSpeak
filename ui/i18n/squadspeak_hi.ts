@@ -2660,10 +2660,6 @@
             <translation>साझा की गई विंडो बंद हो गई है. फिर से शुरू करने के लिए कोई स्रोत चुनें.</translation>
         </message>
         <message>
-            <source>Screen sharing requires an active Supporter pass on the owning host.</source>
-            <translation>स्क्रीन साझा करने के लिए होस्ट पर सक्रिय Supporter पास आवश्यक है.</translation>
-        </message>
-        <message>
             <source>The selected screen is no longer available.</source>
             <translation>चयनित स्क्रीन अब उपलब्ध नहीं है.</translation>
         </message>

@@ -2660,10 +2660,6 @@
             <translation>共有ウィンドウが閉じられました.もう一度ソースを選んでください.</translation>
         </message>
         <message>
-            <source>Screen sharing requires an active Supporter pass on the owning host.</source>
-            <translation>画面共有には所有ホストの有効なSupporterパスが必要です.</translation>
-        </message>
-        <message>
             <source>The selected screen is no longer available.</source>
             <translation>選択した画面は利用できなくなりました.</translation>
         </message>

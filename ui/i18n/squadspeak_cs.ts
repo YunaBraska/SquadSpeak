@@ -2660,10 +2660,6 @@
             <translation>Sdílené okno bylo zavřeno. Vyberte zdroj a začněte znovu.</translation>
         </message>
         <message>
-            <source>Screen sharing requires an active Supporter pass on the owning host.</source>
-            <translation>Sdílení obrazovky vyžaduje aktivní licenci Supporter na hostitelském zařízení.</translation>
-        </message>
-        <message>
             <source>The selected screen is no longer available.</source>
             <translation>Vybraná obrazovka není k dispozici.</translation>
         </message>

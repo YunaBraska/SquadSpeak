@@ -2660,10 +2660,6 @@
             <translation>koplietotais logs tika aizvērts. Atlasiet avotu, lai sāktu no jauna.</translation>
         </message>
         <message>
-            <source>Screen sharing requires an active Supporter pass on the owning host.</source>
-            <translation>Ekrāna koplietošanai ir nepieciešama aktīva Supporter caurlaide pie kanāla īpašnieka resursdatora.</translation>
-        </message>
-        <message>
             <source>The selected screen is no longer available.</source>
             <translation>atlasītais ekrāns vairs nav pieejams.</translation>
         </message>

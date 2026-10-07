@@ -353,9 +353,6 @@ private slots:
         catch (const std::exception& error) { QFAIL(error.what()); }
     }
     void encryptedStreamReachesTheViewerWithoutCapturePermissions() {
-#if SQUADSPEAK_STORE_BUILD
-        return;
-#else
         QTemporaryDir dir;
         VoiceSession hostProfile(dir.filePath("owner")), viewerProfile(dir.filePath("viewer"));
         LocalChannel host(hostProfile, dir.filePath("host"), TlsIdentity::create());
@@ -363,7 +360,7 @@ private slots:
         ScreenShare display(viewer);
         QVideoSink sink;
         QVERIFY(host.listen(QHostAddress::LocalHost));
-        QVERIFY(hostProfile.setSupporterEnabled(true)); QVERIFY(host.setScreenSharing(true));
+        QVERIFY(host.setScreenSharing(true));
         QVERIFY(host.decide(viewer.ownId(), true));
         QVERIFY(viewer.openChat(host.ownId(), "127.0.0.1", host.port()));
         QTRY_VERIFY(viewer.screenInfo(host.ownId()).value("available").toBool());
@@ -406,18 +403,13 @@ private slots:
         QTRY_VERIFY(!sink.videoFrame().isValid());
         QVERIFY(host.screenSharing());
         QVERIFY(display.detach(&sink));
-#endif
     }
     void udpScreenRoundTripDecodesRealFrames() {
-#if SQUADSPEAK_STORE_BUILD
-        return;
-#else
         QTemporaryDir dir;
         VoiceSession hostProfile(dir.filePath("owner")), viewerProfile(dir.filePath("viewer"));
         LocalChannel host(hostProfile, dir.filePath("host"), TlsIdentity::create());
         LocalChannel viewer(viewerProfile, dir.filePath("client"), TlsIdentity::create());
         QVERIFY(host.listen(QHostAddress::LocalHost));
-        QVERIFY(hostProfile.setSupporterEnabled(true));
         QVERIFY(host.setScreenSharing(true));
         QVERIFY(host.decide(viewer.ownId(), true));
         QVERIFY(viewer.openChat(host.ownId(), "127.0.0.1", host.port()));
@@ -474,12 +466,8 @@ private slots:
         }
         QCOMPARE(received.size(), 3);
         QVERIFY(viewer.chatReady());
-#endif
     }
     void repeatedViewerDetachDuringDecodeIsSafe() {
-#if SQUADSPEAK_STORE_BUILD
-        return;
-#else
         QTemporaryDir dir;
         VoiceSession hostProfile(dir.filePath("owner")), viewerProfile(dir.filePath("viewer"));
         LocalChannel host(hostProfile, dir.filePath("host"), TlsIdentity::create());
@@ -487,7 +475,7 @@ private slots:
         ScreenShare display(viewer);
         QVideoSink sink;
         QVERIFY(host.listen(QHostAddress::LocalHost));
-        QVERIFY(hostProfile.setSupporterEnabled(true)); QVERIFY(host.setScreenSharing(true));
+        QVERIFY(host.setScreenSharing(true));
         QVERIFY(host.decide(viewer.ownId(), true));
         QVERIFY(viewer.openChat(host.ownId(), "127.0.0.1", host.port()));
         QTRY_VERIFY_WITH_TIMEOUT(viewer.screenInfo(host.ownId()).value("available").toBool(), 5000);
@@ -517,9 +505,8 @@ private slots:
         QVERIFY(display.detach(&sink));
         QVERIFY(viewer.chatReady());
         QVERIFY(host.setScreenSharing(false));
-#endif
     }
-#if defined(SQUADSPEAK_DECODE_PROBE) && !SQUADSPEAK_STORE_BUILD
+#if defined(SQUADSPEAK_DECODE_PROBE)
     void sourceChangesKeepOnlyTheLatestPendingDecode_data() {
         QTest::addColumn<QString>("finish");
         for (const auto* finish : {"show", "detach", "invalid"}) QTest::newRow(finish) << QString(finish);
@@ -533,7 +520,7 @@ private slots:
         ScreenShare display(viewer);
         QVideoSink sink;
         QVERIFY(host.listen(QHostAddress::LocalHost));
-        QVERIFY(ownerProfile.setSupporterEnabled(true)); QVERIFY(host.setScreenSharing(true));
+        QVERIFY(host.setScreenSharing(true));
         QVERIFY(host.decide(viewer.ownId(), true));
         QVERIFY(viewer.openChat(host.ownId(), "127.0.0.1", host.port()));
         QTRY_VERIFY(viewer.screenInfo(host.ownId()).value("available").toBool());

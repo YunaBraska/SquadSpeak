@@ -2660,10 +2660,6 @@
             <translation>Det delte vindue blev lukket. Vælg en kilde for at starte igen.</translation>
         </message>
         <message>
-            <source>Screen sharing requires an active Supporter pass on the owning host.</source>
-            <translation>Skærmdeling kræver et aktivt Supporter-pas på den ejende vært.</translation>
-        </message>
-        <message>
             <source>The selected screen is no longer available.</source>
             <translation>Den valgte skærm er ikke længere tilgængelig.</translation>
         </message>

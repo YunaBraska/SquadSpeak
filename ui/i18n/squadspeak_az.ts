@@ -2660,10 +2660,6 @@
             <translation>Paylaşılan pəncərə bağlandı. Yenidən başlamaq üçün mənbə seçin.</translation>
         </message>
         <message>
-            <source>Screen sharing requires an active Supporter pass on the owning host.</source>
-            <translation>Ekran paylaşımı kanala sahib hostda aktiv Supporter keçidi tələb edir.</translation>
-        </message>
-        <message>
             <source>The selected screen is no longer available.</source>
             <translation>Seçilmiş ekran artıq mövcud deyil.</translation>
         </message>

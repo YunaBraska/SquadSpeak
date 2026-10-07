@@ -2660,10 +2660,6 @@
             <translation>Спільне вікно закрито. Виберіть джерело, щоб почати знову.</translation>
         </message>
         <message>
-            <source>Screen sharing requires an active Supporter pass on the owning host.</source>
-            <translation>Для спільного використання екрана потрібен активний пропуск Supporter на хості-власнику каналу.</translation>
-        </message>
-        <message>
             <source>The selected screen is no longer available.</source>
             <translation>вибраний екран більше не доступний.</translation>
         </message>

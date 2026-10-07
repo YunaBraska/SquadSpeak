@@ -2660,10 +2660,6 @@
             <translation>bendras langas buvo uždarytas. Norėdami pradėti iš naujo, pasirinkite šaltinį.</translation>
         </message>
         <message>
-            <source>Screen sharing requires an active Supporter pass on the owning host.</source>
-            <translation>Ekrano bendrinimui reikia aktyvaus Supporter leidimo kanalo savininko hoste.</translation>
-        </message>
-        <message>
             <source>The selected screen is no longer available.</source>
             <translation>pasirinktas ekranas nebepasiekiamas.</translation>
         </message>

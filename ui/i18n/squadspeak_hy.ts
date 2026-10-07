@@ -2660,10 +2660,6 @@
             <translation>ընդհանուր պատուհանը փակվեց։ Ընտրեք աղբյուր՝ նորից սկսելու համար:</translation>
         </message>
         <message>
-            <source>Screen sharing requires an active Supporter pass on the owning host.</source>
-            <translation>Էկրանի համօգտագործումը պահանջում է ակտիվ Supporter անցագիր ալիքի սեփականատեր հոսթում:</translation>
-        </message>
-        <message>
             <source>The selected screen is no longer available.</source>
             <translation>Ընտրված էկրանն այլևս հասանելի չէ:</translation>
         </message>

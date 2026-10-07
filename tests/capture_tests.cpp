@@ -274,7 +274,7 @@ private slots:
         });
 #endif
         QVERIFY(source.audioAvailable());
-        QVERIFY(host.listen(QHostAddress::LocalHost)); QVERIFY(ownerProfile.setSupporterEnabled(true));
+        QVERIFY(host.listen(QHostAddress::LocalHost)); QVERIFY(!ownerProfile.supporterEnabled());
         QVERIFY(host.decide(guest.ownId(), true));
         QVERIFY(guest.openChat(host.ownId(), "127.0.0.1", host.port())); QTRY_VERIFY(guest.chatReady());
         int selected = -1, otherSelected = -1;
@@ -336,10 +336,12 @@ private slots:
         QVERIFY(source.stop()); QVERIFY(source.start(selected));
         QVERIFY(source.active());
         QVERIFY(ownerProfile.setSupporterEnabled(false));
+        QVERIFY(source.active());
+        QVERIFY(source.stop());
         QTRY_VERIFY(!source.active());
         QVERIFY(!source.audioEnabled());
         QTRY_VERIFY(!sink.videoFrame().isValid());
-        QVERIFY(ownerProfile.setSupporterEnabled(true));
+        QVERIFY(!ownerProfile.supporterEnabled());
         QVERIFY(source.start(selected));
         QTRY_VERIFY_WITH_TIMEOUT(sink.videoFrame().isValid(), 15000);
         producer_.terminate(); QVERIFY(producer_.waitForFinished(3000));
@@ -439,7 +441,7 @@ void CaptureTests::computerScreenReachesAnEncryptedViewer() {
     LocalChannel guest(guestProfile, dir.filePath("guest-channel"), TlsIdentity::create());
     ScreenShare source(host), viewer(guest);
     QVERIFY(host.listen(QHostAddress::LocalHost));
-    QVERIFY(ownerProfile.setSupporterEnabled(true));
+    QVERIFY(!ownerProfile.supporterEnabled());
     QVERIFY(host.decide(guest.ownId(), true));
     QVERIFY(guest.openChat(host.ownId(), "127.0.0.1", host.port())); QTRY_VERIFY(guest.chatReady());
     QVERIFY(source.refreshSources());
@@ -481,6 +483,8 @@ void CaptureTests::computerScreenReachesAnEncryptedViewer() {
         QVERIFY(sink.videoFrame().isValid());
     }
     QVERIFY(ownerProfile.setSupporterEnabled(false));
+    QVERIFY(source.active());
+    QVERIFY(source.stop());
     QTRY_VERIFY(!source.active());
     QTRY_VERIFY(!sink.videoFrame().isValid());
 }

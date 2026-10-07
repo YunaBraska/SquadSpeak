@@ -70,7 +70,7 @@ public slots:
         return true;
     }
     bool shareTestImage(bool active = true) {
-        if (!remoteSession_->setSupporterEnabled(active) || !remoteChannel_->setScreenSharing(active)) return false;
+        if (!remoteChannel_->setScreenSharing(active)) return false;
         if (!active) return true;
         QImage source(960, 540, QImage::Format_RGBA8888); source.fill(QColor(34, 47, 59));
         QPainter painter(&source);

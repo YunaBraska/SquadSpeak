@@ -2660,10 +2660,6 @@
             <translation>Shared window don close. Select source to start again.</translation>
         </message>
         <message>
-            <source>Screen sharing requires an active Supporter pass on the owning host.</source>
-            <translation>Screen sharing require active Supporter pass on owning host.</translation>
-        </message>
-        <message>
             <source>The selected screen is no longer available.</source>
             <translation>Selected screen no dey available again.</translation>
         </message>

@@ -2660,10 +2660,6 @@
             <translation>Déi gemeinsam Fënster war zou. Wielt eng Quell fir erëm ze starten.</translation>
         </message>
         <message>
-            <source>Screen sharing requires an active Supporter pass on the owning host.</source>
-            <translation>Écran-Deele verlaangt en aktive Supporter-Pass um Host, deen de Kanal besëtzt.</translation>
-        </message>
-        <message>
             <source>The selected screen is no longer available.</source>
             <translation>De gewielte Bildschierm ass net méi verfügbar.</translation>
         </message>

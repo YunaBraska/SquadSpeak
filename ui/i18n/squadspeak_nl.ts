@@ -2660,10 +2660,6 @@
             <translation>Het gedeelde venster is gesloten. Kies opnieuw een bron om te beginnen.</translation>
         </message>
         <message>
-            <source>Screen sharing requires an active Supporter pass on the owning host.</source>
-            <translation>Scherm delen vereist een actieve Supporter-pas op de host.</translation>
-        </message>
-        <message>
             <source>The selected screen is no longer available.</source>
             <translation>Het geselecteerde scherm is niet meer beschikbaar.</translation>
         </message>

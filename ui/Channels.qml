@@ -45,9 +45,57 @@ PanelWindow {
     property var voice: session
     property var supporter: typeof supporterLicense !== "undefined" ? supporterLicense : null
     property var updates: typeof appUpdates !== "undefined" ? appUpdates : null
-    function selectAvatar(id) {
-        if (voice.avatars.indexOf(id) < 10 || voice.supporterEnabled) voice.setAvatar(id)
-        else if (supporter && supporter.directDistribution) settingsPage = 3
+    component AvatarShelf: PathView {
+        id: avatarShelf
+        property bool preview: false
+        Layout.fillWidth: true; Layout.preferredHeight: 120
+        clip: true; dragMargin: height
+        model: root.voice.supporterEnabled ? root.voice.avatars : root.voice.avatars.slice(0, 10)
+        currentIndex: preview ? 0 : Math.max(0, model.indexOf(root.voice.avatar))
+        pathItemCount: Math.ceil(width / 100) + 1
+        cacheItemCount: 2
+        preferredHighlightBegin: 0.5; preferredHighlightEnd: 0.5
+        snapMode: PathView.SnapToItem; highlightMoveDuration: 120
+        activeFocusOnTab: true
+        Keys.onLeftPressed: decrementCurrentIndex()
+        Keys.onRightPressed: incrementCurrentIndex()
+        Keys.onSpacePressed: if (!preview) root.voice.setAvatar(model[currentIndex])
+        Keys.onReturnPressed: if (!preview) root.voice.setAvatar(model[currentIndex])
+        path: Path {
+            startX: avatarShelf.width / 2 - avatarShelf.pathItemCount * 50; startY: 55
+            PathLine { x: avatarShelf.width / 2 + avatarShelf.pathItemCount * 50; y: 55 }
+        }
+        MouseArea {
+            anchors.fill: parent; acceptedButtons: Qt.NoButton
+            property real pending: 0
+            onWheel: event => {
+                const pixels = event.pixelDelta.x || event.pixelDelta.y
+                pending += pixels ? pixels / 100 : (event.angleDelta.x || event.angleDelta.y) / 120
+                const steps = Math.trunc(pending)
+                if (steps) avatarShelf.currentIndex = (avatarShelf.currentIndex - steps % avatarShelf.count + avatarShelf.count) % avatarShelf.count
+                pending -= steps
+                event.accepted = true
+            }
+        }
+        delegate: Item {
+            required property string modelData
+            required property int index
+            objectName: (avatarShelf.preview ? "avatarPreview_" : "avatarChoice_") + modelData
+            width: 96; height: 110
+            readonly property string label: modelData.split("-").map(function(word) { return word.charAt(0).toUpperCase() + word.slice(1) }).join(" ")
+            VoiceAvatar { anchors.top: parent.top; anchors.horizontalCenter: parent.horizontalCenter; width: 88; height: 88; avatar: modelData; muted: false; animated: false; online: true; Accessible.ignored: true }
+            Rectangle { anchors.horizontalCenter: parent.horizontalCenter; width: 88; height: 88; color: "transparent"; radius: Theme.panelRadius; border.color: (!avatarShelf.preview && root.voice.avatar === modelData) || (avatarShelf.activeFocus && index === avatarShelf.currentIndex) ? Theme.accent : "transparent"; border.width: 2 }
+            Label { anchors.bottom: parent.bottom; width: parent.width; text: parent.label; font.pixelSize: 11; horizontalAlignment: Text.AlignHCenter; elide: Text.ElideRight }
+            TapHandler { enabled: !avatarShelf.preview; onTapped: root.voice.setAvatar(modelData) }
+            Accessible.role: avatarShelf.preview ? Accessible.Graphic : Accessible.RadioButton
+            Accessible.name: label
+            Accessible.description: !avatarShelf.preview ? "" : qsTranslate("VoiceSession", "This avatar requires Supporter.")
+            Accessible.checked: !avatarShelf.preview && root.voice.avatar === modelData
+            Accessible.onPressAction: if (!avatarShelf.preview) root.voice.setAvatar(modelData)
+            ToolTip.visible: portraitHover.hovered
+            ToolTip.text: label
+            HoverHandler { id: portraitHover }
+        }
     }
     property var screen: typeof screenShare !== "undefined" ? screenShare : null
     property var network: channel
@@ -584,6 +632,11 @@ PanelWindow {
                             DetailText { objectName: "licenseSupportReference"; text: root.supporter ? root.supporter.supportReference : ""; visible: text.length > 0; Accessible.name: qsTr("Support reference") }
                             Label { text: root.supporter ? root.supporter.status : ""; visible: text.length > 0; color: Theme.muted; wrapMode: Text.Wrap; Layout.fillWidth: true }
                             ActionButton { text: qsTr("Resolve activation"); visible: root.supporter !== null && root.supporter.recoveryNeeded; enabled: !root.supporter || !root.supporter.busy; onClicked: resolveActivation.open() }
+                            AvatarShelf {
+                                objectName: "supporterAvatarPreview"; preview: true
+                                visible: !root.voice.supporterEnabled
+                                model: root.voice.avatars.slice(10)
+                            }
                         }
                         GridLayout {
                             columns: 2; Layout.fillWidth: true
@@ -613,60 +666,7 @@ PanelWindow {
                         objectName: "generalSettings"
                         visible: root.settingsPage === 0
                         Layout.fillWidth: true; spacing: 12
-                        PathView {
-                            id: avatarShelf
-                            objectName: "avatarShelf"
-                            Layout.fillWidth: true; Layout.preferredHeight: 120
-                            clip: true; dragMargin: height
-                            model: root.voice.avatars
-                            currentIndex: model.indexOf(root.voice.avatar)
-                            pathItemCount: Math.ceil(width / 100) + 1
-                            cacheItemCount: 2
-                            preferredHighlightBegin: 0.5; preferredHighlightEnd: 0.5
-                            snapMode: PathView.SnapToItem; highlightMoveDuration: 120
-                            activeFocusOnTab: true
-                            Keys.onLeftPressed: decrementCurrentIndex()
-                            Keys.onRightPressed: incrementCurrentIndex()
-                            Keys.onSpacePressed: root.selectAvatar(model[currentIndex])
-                            Keys.onReturnPressed: root.selectAvatar(model[currentIndex])
-                            path: Path {
-                                startX: avatarShelf.width / 2 - avatarShelf.pathItemCount * 50; startY: 55
-                                PathLine { x: avatarShelf.width / 2 + avatarShelf.pathItemCount * 50; y: 55 }
-                            }
-                            MouseArea {
-                                anchors.fill: parent; acceptedButtons: Qt.NoButton
-                                property real pending: 0
-                                onWheel: event => {
-                                    const pixels = event.pixelDelta.x || event.pixelDelta.y
-                                    pending += pixels ? pixels / 100 : (event.angleDelta.x || event.angleDelta.y) / 120
-                                    const steps = Math.trunc(pending)
-                                    if (steps) avatarShelf.currentIndex = (avatarShelf.currentIndex - steps % avatarShelf.count + avatarShelf.count) % avatarShelf.count
-                                    pending -= steps
-                                    event.accepted = true
-                                }
-                            }
-                            delegate: Item {
-                                required property string modelData
-                                required property int index
-                                readonly property bool unlocked: index < 10 || root.voice.supporterEnabled
-                                objectName: "avatarChoice_" + modelData
-                                width: 96; height: 110
-                                readonly property string label: modelData.split("-").map(function(word) { return word.charAt(0).toUpperCase() + word.slice(1) }).join(" ")
-                                VoiceAvatar { anchors.top: parent.top; anchors.horizontalCenter: parent.horizontalCenter; width: 88; height: 88; avatar: modelData; muted: false; animated: false; online: parent.unlocked; Accessible.ignored: true }
-                                Glyph { anchors.right: parent.right; anchors.top: parent.top; width: 22; height: 22; symbol: "lock"; color: Theme.muted; visible: !parent.unlocked; Accessible.ignored: true }
-                                Rectangle { anchors.horizontalCenter: parent.horizontalCenter; width: 88; height: 88; color: "transparent"; radius: Theme.panelRadius; border.color: root.voice.avatar === modelData || (avatarShelf.activeFocus && index === avatarShelf.currentIndex) ? Theme.accent : "transparent"; border.width: 2 }
-                                Label { anchors.bottom: parent.bottom; width: parent.width; text: parent.label; font.pixelSize: 11; horizontalAlignment: Text.AlignHCenter; elide: Text.ElideRight }
-                                TapHandler { onTapped: root.selectAvatar(modelData) }
-                                Accessible.role: unlocked ? Accessible.RadioButton : Accessible.Button
-                                Accessible.name: label
-                                Accessible.description: unlocked ? "" : qsTranslate("VoiceSession", "This avatar requires Supporter.")
-                                Accessible.checked: root.voice.avatar === modelData
-                                Accessible.onPressAction: root.selectAvatar(modelData)
-                                ToolTip.visible: portraitHover.hovered
-                                ToolTip.text: unlocked ? label : label + " - " + Accessible.description
-                                HoverHandler { id: portraitHover }
-                            }
-                        }
+                        AvatarShelf { objectName: "avatarShelf" }
                         RowLayout {
                             Layout.fillWidth: true
                             EntryField { id: displayName; objectName: "userName"; Layout.fillWidth: true; maximumLength: 128; Accessible.name: qsTr("Your name"); text: root.voice.userName; onAccepted: root.voice.setUserName(text); onEditingFinished: root.voice.setUserName(text) }
@@ -974,7 +974,7 @@ PanelWindow {
             readonly property bool sharingHere: root.screen && root.screen.active && root.screen.hostId === root.selectedHost
             text: sharingHere ? qsTr("Stop sharing") : qsTr("Share screen")
             destructive: sharingHere
-            enabled: sharingHere || (root.voice.supporterEnabled && root.selectedOwner && root.selectedOwner.hosting && root.screen && !root.screen.active && !root.screen.watching)
+            enabled: sharingHere || (root.selectedOwner && root.selectedOwner.hosting && root.screen && !root.screen.active && !root.screen.watching)
             onTriggered: {
                 if (root.screen.active) root.screen.stop()
                 else { root.screen.refreshSources(); screenPicker.open() }

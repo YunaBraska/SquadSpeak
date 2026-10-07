@@ -179,6 +179,8 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           persist-credentials: false
+      - name: Check source patches before dependency builds
+        run: python tests/source_archive_tests.py SourceArchiveTests.test_runtime_patches_survive_windows_checkout
       - name: Prepare virtual Windows audio
         shell: pwsh
         run: ./tests/windows-audio.ps1 -BuildRoot "$env:GITHUB_WORKSPACE/build/windows-ci"

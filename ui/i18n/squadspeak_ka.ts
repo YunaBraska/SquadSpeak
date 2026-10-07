@@ -2660,10 +2660,6 @@
             <translation>საერთო ფანჯარა დაიხურა. აირჩიეთ წყარო ხელახლა დასაწყებად.</translation>
         </message>
         <message>
-            <source>Screen sharing requires an active Supporter pass on the owning host.</source>
-            <translation>ეკრანის გაზიარებას სჭირდება აქტიური Supporter საშვი არხის მფლობელ ჰოსტზე.</translation>
-        </message>
-        <message>
             <source>The selected screen is no longer available.</source>
             <translation>არჩეული ეკრანი აღარ არის ხელმისაწვდომი.</translation>
         </message>

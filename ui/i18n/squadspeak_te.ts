@@ -2660,10 +2660,6 @@
             <translation>షేర్ చేసిన విండో మూసివేయబడింది. మళ్లీ ప్రారంభించడానికి ఒక మూలాన్ని ఎంచుకోండి.</translation>
         </message>
         <message>
-            <source>Screen sharing requires an active Supporter pass on the owning host.</source>
-            <translation>స్క్రీన్ షేరింగ్‌కు యాజమాన్య హోస్ట్‌లో సక్రియ Supporter పాస్ అవసరం.</translation>
-        </message>
-        <message>
             <source>The selected screen is no longer available.</source>
             <translation>ఎంపిక చేసిన స్క్రీన్ ఇప్పుడు అందుబాటులో లేదు.</translation>
         </message>

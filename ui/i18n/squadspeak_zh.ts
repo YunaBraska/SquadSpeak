@@ -2660,10 +2660,6 @@
             <translation>共享窗口已关闭.请选择来源重新开始.</translation>
         </message>
         <message>
-            <source>Screen sharing requires an active Supporter pass on the owning host.</source>
-            <translation>屏幕共享需要拥有主机上的有效Supporter通行证.</translation>
-        </message>
-        <message>
             <source>The selected screen is no longer available.</source>
             <translation>所选屏幕已不可用.</translation>
         </message>

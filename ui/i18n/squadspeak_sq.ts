@@ -2660,10 +2660,6 @@
             <translation>Dritarja e përbashkët u mbyll. Zgjidhni një burim për të filluar përsëri.</translation>
         </message>
         <message>
-            <source>Screen sharing requires an active Supporter pass on the owning host.</source>
-            <translation>Ndarja e ekranit kërkon një licencë aktive Supporter në hostin pronar.</translation>
-        </message>
-        <message>
             <source>The selected screen is no longer available.</source>
             <translation>Ekrani i zgjedhur nuk është më i disponueshëm.</translation>
         </message>

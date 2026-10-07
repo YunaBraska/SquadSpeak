@@ -182,9 +182,8 @@ TestCase {
     }
 
     function test_screenAudioControlsFollowSourceOwnershipAndPlatform() {
-        if (!supporterLicense.directDistribution) return
         verify(fixtures.startHost())
-        verify(fixtures.setSupporter(true))
+        compare(session.supporterEnabled, false)
         captureDisplay.active = false
         captureDisplay.audioEnabled = false
         captureDisplay.audioAvailable = true
@@ -463,7 +462,7 @@ TestCase {
         view.openSettings(0)
         const shelf = findChild(view, "avatarShelf")
         verify(shelf !== null)
-        compare(shelf.count, 20)
+        compare(shelf.count, paid ? 20 : 10)
         const previous = session.avatar
         for (let i = 0; i < shelf.count; ++i) {
             shelf.currentIndex = i
@@ -480,7 +479,7 @@ TestCase {
                 "Portrait crop contains enough pixels for its displayed size")
             waitForRendering(shelf)
             mouseClick(shelf, shelf.width / 2, 44)
-            compare(session.avatar, session.avatars[paid ? i : Math.min(i, 9)])
+            compare(session.avatar, session.avatars[i])
         }
         if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/avatar-shelf-end.png"))
         shelf.positionViewAtIndex(0, PathView.Center)
@@ -517,33 +516,32 @@ TestCase {
         view.openSettings(0)
         tryCompare(findChild(view, "settingsDialog"), "opened", true)
         const shelf = findChild(view, "avatarShelf")
+        compare(shelf.count, 10)
+        compare(shelf.model, session.avatars.slice(0, 10))
         const previous = session.avatar
-        shelf.currentIndex = 10
-        shelf.positionViewAtIndex(10, PathView.Center)
-        tryVerify(function() { return shelf.currentItem && shelf.currentItem.index === 10
-            && Math.abs(shelf.currentItem.x + shelf.currentItem.width / 2 - shelf.width / 2) < 1 })
-        verify(!shelf.currentItem.unlocked)
-        compare(shelf.currentItem.Accessible.role, Accessible.Button)
-        compare(shelf.currentItem.Accessible.description, "This avatar requires Supporter.")
-        try {
-            tryVerify(function() {
-                const current = shelf.currentItem
-                if (!current || current.index !== 10 || Math.abs(current.x + current.width / 2 - shelf.width / 2) >= 1) return false
-                const canvas = findChild(current, "avatarCanvas")
-                return canvas && fixtures.portraitHasDetail(canvas.parent, true)
-            }, 5000, "Locked choices show their portrait in grayscale")
-        } finally {
-            if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/avatar-locked.png"))
-        }
-        waitForRendering(shelf)
-        mouseClick(shelf, shelf.width / 2, 44)
+        verify(!session.setAvatar(session.avatars[10]))
         compare(session.avatar, previous)
         compare(session.supporterEnabled, false)
+        view.openSettings(3)
         if (supporterLicense.directDistribution) {
-            compare(view.settingsPage, 3)
             verify(findChild(view, "supporterSettings").visible)
             compare(findChild(view, "supporterState").text, "Not available yet")
             verify(!findChild(view, "activateLicense").enabled)
+            const preview = findChild(view, "supporterAvatarPreview")
+            compare(preview.count, session.avatars.length - 10)
+            for (let i = 0; i < preview.count; ++i) {
+                preview.positionViewAtIndex(i, PathView.Center)
+                tryVerify(function() {
+                    const item = preview.currentItem
+                    if (!item || item.index !== i) return false
+                    const canvas = findChild(item, "avatarCanvas")
+                    return canvas && canvas.parent.online && fixtures.portraitHasDetail(canvas.parent)
+                }, 5000, "Supporter preview stays in colour: " + i)
+                compare(preview.currentItem.Accessible.role, Accessible.Graphic)
+                mouseClick(preview, preview.width / 2, 44)
+                compare(session.avatar, previous, "Previewing does not select a locked avatar")
+                compare(session.supporterEnabled, false)
+            }
             if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/supporter-about.png"))
         } else {
             verify(!findChild(view, "supporterSettings").visible)
@@ -590,10 +588,10 @@ TestCase {
         shelf.forceActiveFocus()
         tryCompare(shelf, "activeFocus", true)
         for (let cycle = 0; cycle < 3; ++cycle) {
-            for (let i = 0; i < 20; ++i) keyClick(Qt.Key_Left)
+            for (let i = 0; i < shelf.count; ++i) keyClick(Qt.Key_Left)
             compare(shelf.currentIndex, 0)
-            compare(shelf.count, 20)
-            verify(shelf.pathItemCount + shelf.cacheItemCount < 20)
+            compare(shelf.count, 10)
+            verify(shelf.pathItemCount + shelf.cacheItemCount < shelf.count)
             waitForRendering(shelf)
             tryVerify(function() {
                 const allocated = shelf.children.filter(function(child) { return child.objectName.startsWith("avatarChoice_") }).length
@@ -601,11 +599,11 @@ TestCase {
             }, 5000, "Completed scrolling releases portraits outside the visible range and cache")
         }
         keyClick(Qt.Key_Left)
-        compare(shelf.currentIndex, 19)
+        compare(shelf.currentIndex, shelf.count - 1)
         keyClick(Qt.Key_Right)
         compare(shelf.currentIndex, 0)
         mouseWheel(shelf, shelf.width / 2, shelf.height / 2, 120, 0)
-        compare(shelf.currentIndex, 19)
+        compare(shelf.currentIndex, shelf.count - 1)
         mouseWheel(shelf, shelf.width / 2, shelf.height / 2, 0, -120)
         compare(shelf.currentIndex, 0)
         compare(session.avatar, selected)

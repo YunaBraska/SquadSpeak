@@ -2660,10 +2660,6 @@
             <translation>Das freigegebene Fenster wurde geschlossen. Wähle erneut eine Quelle aus.</translation>
         </message>
         <message>
-            <source>Screen sharing requires an active Supporter pass on the owning host.</source>
-            <translation>Bildschirmfreigabe erfordert einen aktiven Supporter-Pass auf dem Host.</translation>
-        </message>
-        <message>
             <source>The selected screen is no longer available.</source>
             <translation>Der ausgewählte Bildschirm ist nicht mehr verfügbar.</translation>
         </message>

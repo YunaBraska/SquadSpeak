@@ -86,6 +86,26 @@ class SourceArchiveTests(unittest.TestCase):
         self.assertEqual(changed.returncode, 2)
         self.assertIn("does not match", changed.stderr)
 
+    def test_runtime_patches_survive_windows_checkout(self) -> None:
+        repo = SCRIPT.parent.parent
+        patches = sorted(repo.glob("cmake/*.patch"))
+        self.assertTrue(patches)
+        for path in [repo / ".gitattributes", *patches]:
+            (self.root / path.relative_to(repo)).write_bytes(path.read_bytes())
+        relative = [path.relative_to(repo).as_posix() for path in patches]
+        subprocess.run(["git", "-C", str(self.root), "add", ".gitattributes", *relative], check=True)
+        for autocrlf in ("false", "true"):
+            with self.subTest(autocrlf=autocrlf):
+                checkout = self.root / autocrlf
+                subprocess.run(["git", "-C", str(self.root), "-c", f"core.autocrlf={autocrlf}",
+                                "checkout-index", f"--prefix={checkout.as_posix()}/", *relative], check=True)
+                for name in relative:
+                    patch = checkout / name
+                    result = subprocess.run(["git", "apply", "--numstat", str(patch)],
+                                            capture_output=True, text=True)
+                    self.assertEqual(result.returncode, 0, result.stderr)
+                    self.assertEqual(patch.read_bytes(), (repo / name).read_bytes())
+
     def test_build_only_project_uses_an_already_pinned_source(self) -> None:
         path = self.root / "CMakeLists.txt"
         pins = path.read_text(encoding="utf-8")

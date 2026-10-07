@@ -2660,10 +2660,6 @@
             <translation>Zajednički prikaz prozora je zatvoren. Odaberite izvor kako biste ponovno započeli.</translation>
         </message>
         <message>
-            <source>Screen sharing requires an active Supporter pass on the owning host.</source>
-            <translation>Dijeljenje zaslona zahtijeva aktivnu licencu Supporter na uređaju koji pruža kanal.</translation>
-        </message>
-        <message>
             <source>The selected screen is no longer available.</source>
             <translation>Odabrani ekran više nije dostupan.</translation>
         </message>

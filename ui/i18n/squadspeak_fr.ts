@@ -2660,10 +2660,6 @@
             <translation>La fenêtre partagée a été fermée. Sélectionnez une source pour recommencer.</translation>
         </message>
         <message>
-            <source>Screen sharing requires an active Supporter pass on the owning host.</source>
-            <translation>Le partage d'écran nécessite un pass Supporter actif sur l'hôte propriétaire.</translation>
-        </message>
-        <message>
             <source>The selected screen is no longer available.</source>
             <translation>L'écran sélectionné n'est plus disponible.</translation>
         </message>

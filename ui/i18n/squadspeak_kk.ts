@@ -2660,10 +2660,6 @@
             <translation>Ортақ терезе жабылды. Қайта бастау үшін көзді таңдаңыз.</translation>
         </message>
         <message>
-            <source>Screen sharing requires an active Supporter pass on the owning host.</source>
-            <translation>Экранды ортақ пайдалану арна иесі хостта белсенді Supporter рұқсатын қажет етеді.</translation>
-        </message>
-        <message>
             <source>The selected screen is no longer available.</source>
             <translation>Таңдалған экран енді қолжетімді емес.</translation>
         </message>

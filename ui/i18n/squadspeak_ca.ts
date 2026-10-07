@@ -2660,10 +2660,6 @@
             <translation>La finestra compartida es va tancar. Seleccioneu una font per començar de nou.</translation>
         </message>
         <message>
-            <source>Screen sharing requires an active Supporter pass on the owning host.</source>
-            <translation>Compartir la pantalla requereix un passi Supporter actiu a l'amfitrió propietari.</translation>
-        </message>
-        <message>
             <source>The selected screen is no longer available.</source>
             <translation>La pantalla seleccionada ja no està disponible.</translation>
         </message>

@@ -2660,10 +2660,6 @@
             <translation>Jendela yang dibagikan telah ditutup. Pilih sumber untuk memulai lagi.</translation>
         </message>
         <message>
-            <source>Screen sharing requires an active Supporter pass on the owning host.</source>
-            <translation>Berbagi layar memerlukan pass Supporter aktif pada host pemilik.</translation>
-        </message>
-        <message>
             <source>The selected screen is no longer available.</source>
             <translation>Layar yang dipilih tidak lagi tersedia.</translation>
         </message>

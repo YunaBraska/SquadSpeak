@@ -2660,10 +2660,6 @@
             <translation>Jaettu ikkuna suljettiin. Valitse lähde, jotta voit aloittaa uudelleen.</translation>
         </message>
         <message>
-            <source>Screen sharing requires an active Supporter pass on the owning host.</source>
-            <translation>Näytön jakaminen edellyttää aktiivista Supporter-passia omistavalla isännällä.</translation>
-        </message>
-        <message>
             <source>The selected screen is no longer available.</source>
             <translation>Valittu näyttö ei ole enää käytettävissä.</translation>
         </message>

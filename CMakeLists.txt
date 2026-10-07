@@ -722,7 +722,7 @@ if(BUILD_TESTING)
             --sign-update "${sparkle_SOURCE_DIR}/bin/sign_update")
         set_tests_properties(update_replacement_contract PROPERTIES TIMEOUT 180)
     endif()
-    if(NOT SQUADSPEAK_STORE_BUILD AND (CMAKE_SYSTEM_NAME STREQUAL "Darwin" OR WIN32 OR CMAKE_SYSTEM_NAME STREQUAL "Linux"))
+    if(CMAKE_SYSTEM_NAME STREQUAL "Darwin" OR WIN32 OR CMAKE_SYSTEM_NAME STREQUAL "Linux")
         # macOS runs explicitly with Screen Recording permission. Windows and
         # Linux CI capture only their own fixture window without a dialog.
         qt_add_executable(capture_tests MACOSX_BUNDLE tests/capture_tests.cpp)

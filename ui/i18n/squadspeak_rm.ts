@@ -2660,10 +2660,6 @@
             <translation>La fanestra cuminaivla è vegnida serrada. Tscherni ina funtauna per cumenzar da nov.</translation>
         </message>
         <message>
-            <source>Screen sharing requires an active Supporter pass on the owning host.</source>
-            <translation>La partiziun da l ecran pretenda in pass Supporter activ sin il host che posseda il chanal.</translation>
-        </message>
-        <message>
             <source>The selected screen is no longer available.</source>
             <translation>Il monitur tschernì na stat betg pli a disposiziun.</translation>
         </message>

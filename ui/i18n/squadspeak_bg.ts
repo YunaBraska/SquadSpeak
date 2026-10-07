@@ -2660,10 +2660,6 @@
             <translation>Споделеният прозорец беше затворен. Изберете източник, за да започнете отново.</translation>
         </message>
         <message>
-            <source>Screen sharing requires an active Supporter pass on the owning host.</source>
-            <translation>Споделянето на екрана изисква активен пропуск Supporter на устройството, което предоставя канала.</translation>
-        </message>
-        <message>
             <source>The selected screen is no longer available.</source>
             <translation>Избраният екран вече не е наличен.</translation>
         </message>

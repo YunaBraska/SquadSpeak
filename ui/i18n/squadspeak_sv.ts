@@ -2660,10 +2660,6 @@
             <translation>Det delade fönstret stängdes. Välj en källa för att starta igen.</translation>
         </message>
         <message>
-            <source>Screen sharing requires an active Supporter pass on the owning host.</source>
-            <translation>Skärmdelning kräver ett aktivt Supporter-pass på den ägande värden.</translation>
-        </message>
-        <message>
             <source>The selected screen is no longer available.</source>
             <translation>Den valda skärmen är inte längre tillgänglig.</translation>
         </message>

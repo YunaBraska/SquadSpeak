@@ -2660,10 +2660,6 @@
             <translation>Dúnadh an fhuinneog roinnte. Roghnaigh foinse le tosú arís.</translation>
         </message>
         <message>
-            <source>Screen sharing requires an active Supporter pass on the owning host.</source>
-            <translation>Éilíonn comhroinnt scáileáin pas Supporter gníomhach ar an óstach ar leis an gcainéal.</translation>
-        </message>
-        <message>
             <source>The selected screen is no longer available.</source>
             <translation>Níl an scáileán roghnaithe ar fáil a thuilleadh.</translation>
         </message>

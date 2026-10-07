@@ -2660,10 +2660,6 @@
             <translation>агульнае акно было зачынена. Выберыце крыніцу, каб пачаць зноў.</translation>
         </message>
         <message>
-            <source>Screen sharing requires an active Supporter pass on the owning host.</source>
-            <translation>Для абагульвання экрана на хасце-ўладальніку патрэбны актыўны пропуск Supporter.</translation>
-        </message>
-        <message>
             <source>The selected screen is no longer available.</source>
             <translation>Выбраны экран больш недаступны.</translation>
         </message>

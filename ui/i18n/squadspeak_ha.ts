@@ -2660,10 +2660,6 @@
             <translation>An ƙidaya taga da aka kunna. Zaɓi tusama don fara sabawa.</translation>
         </message>
         <message>
-            <source>Screen sharing requires an active Supporter pass on the owning host.</source>
-            <translation>Don kunna allon, yakamata a sami kasuwar 'Supporter' mai aiki akan kwamfutar da ke da ayyuka.</translation>
-        </message>
-        <message>
             <source>The selected screen is no longer available.</source>
             <translation>Taga da aka zaɓa ba ta samu ba yanzu.</translation>
         </message>
