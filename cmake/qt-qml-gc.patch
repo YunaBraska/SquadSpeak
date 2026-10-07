@@ -1,4 +1,5 @@
 Backport Qt cdbacb7ba78779fc1eecc05afae3a3a874623e6e: initialise the GC mark stack before yielding.
+Retain the distribution fix 1327fce7e500e3ae2e96ab89eaad7f1727ea77b1: preserve property caches across engines.
 
 --- a/src/qml/memory/qv4mm.cpp
 +++ b/src/qml/memory/qv4mm.cpp
@@ -20,3 +21,20 @@ Backport Qt cdbacb7ba78779fc1eecc05afae3a3a874623e6e: initialise the GC mark sta
          if (deadlineExpired)
              handleTimeout(state);
          if (state != GCState::Invalid)
+
+--- a/src/qml/jsruntime/qv4qobjectwrapper.cpp
++++ b/src/qml/jsruntime/qv4qobjectwrapper.cpp
+@@ -1583,10 +1583,9 @@
+                     o->deleteLater();
+             } else {
+                 // If the object is C++-owned, we still have to release the weak reference we have
+-                // to it.
+-                ddata->jsWrapper.clear();
+-                if (lastCall && ddata->propertyCache)
+-                    ddata->propertyCache.reset();
++                // to it. If the "main" wrapper is not ours, we should leave it alone, though.
++                if (ddata->jsWrapper.as<QObjectWrapper>() == this)
++                    ddata->jsWrapper.clear();
+             }
+         }
+     }
