@@ -185,6 +185,25 @@ jobs:
         uses: ilammy/msvc-dev-cmd@0b201ec74fa43914dc39ae48a89fd1d8cb592756
         with:
           arch: x64
+      - name: Identify MSVC dependency cache inputs
+        id: msvc-cache
+        shell: pwsh
+        run: |
+          $compiler = Get-Command cl.exe -ErrorAction Stop
+          $version = (Get-Item $compiler.Source).VersionInfo.FileVersion
+          if (-not $version) { throw "Unable to determine cl.exe version" }
+          $sdk = $env:WindowsSDKVersion
+          if (-not $sdk) { throw "Unable to determine Windows SDK version" }
+          $sdkKey = $sdk -replace '[^A-Za-z0-9._-]', '_'
+          "version=$version" >> $env:GITHUB_OUTPUT
+          "sdk=$sdkKey" >> $env:GITHUB_OUTPUT
+          Write-Host "Using cl.exe $version at $($compiler.Source)"
+          Write-Host "Using Windows SDK $sdk"
+      - name: Restore pinned audio dependency prefix
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830
+        with:
+          path: build/windows-ci/dependencies/prefix
+          key: windows-dependencies-${{ runner.os }}-${{ runner.arch }}-msvc-${{ steps.msvc-cache.outputs.version }}-sdk-${{ steps.msvc-cache.outputs.sdk }}-${{ hashFiles('tests/windows-ci.ps1', '.github/workflows/verify.yml') }}
       - name: Install Qt 6.11.3 MSVC
         uses: jurplel/install-qt-action@a9c63c7c123f3069cff414e7e482d95dfa9d8125
         with:
@@ -212,7 +231,32 @@ jobs:
           python -m pip install --disable-pip-version-check meson==1.12.1
       - name: Build, test and package
         shell: pwsh
-        run: ./tests/windows-ci.ps1 -QtRoot $env:QT_ROOT_DIR -BuildRoot "$env:GITHUB_WORKSPACE/build/windows-ci"
+        run: |
+          ./tests/windows-ci.ps1 -QtRoot $env:QT_ROOT_DIR -BuildRoot "$env:GITHUB_WORKSPACE/build/windows-ci" -DependenciesOnly
+          Copy-Item "$env:GITHUB_WORKSPACE/build/windows-ci/build.log" "$env:GITHUB_WORKSPACE/build/windows-ci/dependencies-first.log" -Force
+          ./tests/windows-ci.ps1 -QtRoot $env:QT_ROOT_DIR -BuildRoot "$env:GITHUB_WORKSPACE/build/windows-ci" -DependenciesOnly
+          Copy-Item "$env:GITHUB_WORKSPACE/build/windows-ci/build.log" "$env:GITHUB_WORKSPACE/build/windows-ci/dependencies-reuse.log" -Force
+          if (-not (Select-String -Path build/windows-ci/dependencies-reuse.log -SimpleMatch 'Dependency prefix cache hit' -Quiet)) {
+            throw 'Repeated preparation did not reuse the dependency prefix'
+          }
+          $prefix = "$env:GITHUB_WORKSPACE/build/windows-ci/dependencies/prefix"
+          $stamp = "$prefix/.squadspeak-dependencies-ready"
+          $original = Get-Content $stamp -Raw
+          try {
+            Set-Content $stamp 'incompatible inputs' -NoNewline
+            & pwsh -NoProfile -File tests/windows-ci.ps1 -QtRoot $env:QT_ROOT_DIR -BuildRoot build/windows-ci -DependenciesOnly *> build/windows-ci/dependencies-mismatch.log
+            if ($LASTEXITCODE -eq 0 -or -not (Select-String -Path build/windows-ci/dependencies-mismatch.log -SimpleMatch -Pattern 'stamp does not match' -Quiet)) {
+              throw 'Dependency preparation did not reject mismatched inputs'
+            }
+          } finally { Set-Content $stamp $original -NoNewline -Encoding ascii }
+          Move-Item "$prefix/include/openssl/ssl.h" "$prefix/include/openssl/ssl.h.saved"
+          try {
+            & pwsh -NoProfile -File tests/windows-ci.ps1 -QtRoot $env:QT_ROOT_DIR -BuildRoot build/windows-ci -DependenciesOnly *> build/windows-ci/dependencies-incomplete.log
+            if ($LASTEXITCODE -eq 0 -or -not (Select-String -Path build/windows-ci/dependencies-incomplete.log -SimpleMatch -Pattern 'required output is missing' -Quiet)) {
+              throw 'Dependency preparation did not reject an incomplete prefix'
+            }
+          } finally { Move-Item "$prefix/include/openssl/ssl.h.saved" "$prefix/include/openssl/ssl.h" }
+          ./tests/windows-ci.ps1 -QtRoot $env:QT_ROOT_DIR -BuildRoot "$env:GITHUB_WORKSPACE/build/windows-ci"
       - name: Preserve Windows verification evidence
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02

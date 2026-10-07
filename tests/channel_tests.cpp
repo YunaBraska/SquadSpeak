@@ -2654,6 +2654,26 @@ private slots:
         QVERIFY(!scanner.channel.discoverySearching());
     }
 
+    void destroyingDiscoveryClosesOutstandingConnections() {
+        QTemporaryDir dir;
+        QTcpServer stalled;
+        for (quint16 port = 48763; port <= 48783 && !stalled.isListening(); ++port)
+            stalled.listen(QHostAddress::LocalHost, port);
+        QVERIFY2(stalled.isListening(), "No bounded discovery port is available.");
+        for (int cycle = 0; cycle < 3; ++cycle) {
+            auto scanner = std::make_unique<Device>(dir.filePath(QString::number(cycle)), "Scanner");
+            QVERIFY(scanner->channel.startService(QHostAddress::LocalHost, 0));
+            QVERIFY(scanner->channel.setDiscoverySearch(true));
+            QTRY_VERIFY(stalled.hasPendingConnections());
+            auto* connection = stalled.nextPendingConnection();
+            QVERIFY(connection);
+            QCOMPARE(connection->state(), QAbstractSocket::ConnectedState);
+            scanner.reset();
+            QTRY_COMPARE(connection->state(), QAbstractSocket::UnconnectedState);
+            connection->deleteLater();
+        }
+    }
+
     void boundedDiscoverySearchIgnoresNonHostingEndpoint() {
         QTemporaryDir dir;
         QTcpServer reservation;

@@ -89,7 +89,7 @@ offers monitors only; window selection remains unavailable there.
 ```sh
 cmake -S . -B build/local -G Ninja -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=ON
 cmake --build build/local --parallel 4
-ctest --test-dir build/local --output-on-failure
+ctest --test-dir build/local --parallel 2 --output-on-failure
 ```
 
 During development, build and run the affected contract first. CTest entries
@@ -107,6 +107,16 @@ affected integration suites before the full release matrix. CLI subprocess,
 malformed-protocol, codec-lifetime and DPI checks prove different behavior;
 a passing end-to-end smoke test does not replace them. CI caches the pinned Qt
 SDK on Windows and macOS; application builds and test results are never cached.
+CTest runs two suites concurrently. Native loopback capture, video timing and
+64-client load checks run alone; desktop/audio fixtures share a resource lock.
+Windows also caches its installed OpenSSL/Opus/libsamplerate prefix, keyed by
+compiler, SDK and build-script inputs. CI checks preparation and reuse before
+building the app; incompatible or incomplete prefixes fail explicitly.
+
+`LocalChannel` retains the public API and connection ownership. Its discovery
+member owns multicast membership, scan sockets and cancellation. Chat/image and
+remote-control handlers live in separate implementation files and share the
+same framing, validation and peer state; there is no second protocol model.
 
 For macOS, install CMake, Ninja, Meson, pkg-config and NASM. The reproducible
 package path builds deployment-compatible audio, TLS and FFmpeg libraries.
@@ -348,6 +358,9 @@ The host does not relay its captured system audio back to its own device, which
 already hears the original output.
 
 ## Releases
+
+Keep branches scoped to one reviewed change and squash-merge them into `main`.
+GitHub permits squash merges only and removes merged branches automatically.
 
 Versions are UTC calendar dates in SemVer form: `YYYY.M.D`, without leading zeroes. `cmake/Version.cmake` is the canonical resolver. CI resolves a release version once and supplies it to every package job.
 

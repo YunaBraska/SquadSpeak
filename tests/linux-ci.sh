@@ -116,7 +116,7 @@ cmake --build /tmp/squadspeak-ci-build --parallel 4
 cp /tmp/squadspeak-ci-build/discovery_network_probe /output/
 # Each repetition starts a fresh X server, window manager and capture producer.
 if test "$mode" != store; then
-    ctest --test-dir /tmp/squadspeak-ci-build --output-on-failure --no-tests=error \
+    ctest --parallel 2 --test-dir /tmp/squadspeak-ci-build --output-on-failure --no-tests=error \
         -R '^capture_contract$' --repeat until-fail:5 \
         --output-junit /output/capture-startup.xml --output-log /output/capture-startup.log
     # The same libpulse API must isolate applications when PipeWire supplies
@@ -222,7 +222,7 @@ if grep -q '^SKIP *:' "$reports"/capture-*.log; then exit 1; fi
 PIPEWIRE
 fi
 result=0
-ctest --test-dir /tmp/squadspeak-ci-build --output-on-failure --no-tests=error --stop-on-failure \
+ctest --parallel 2 --test-dir /tmp/squadspeak-ci-build --output-on-failure --no-tests=error --stop-on-failure \
     --output-junit /output/ctest.xml --output-log /output/ctest.log || result=$?
 cp /tmp/squadspeak-ci-build/Testing/Temporary/LastTest.log /output/test-details.log
 if test -f /tmp/squadspeak-ci-build/audio-corpus/report.json; then

@@ -336,7 +336,7 @@ target_include_directories(squad_audio PUBLIC src)
 target_link_libraries(squad_audio PUBLIC Qt6::Core PkgConfig::OPUS PkgConfig::SAMPLERATE squad_rnnoise PRIVATE squad_apm)
 target_compile_options(squad_audio PRIVATE $<$<CXX_COMPILER_ID:AppleClang,Clang,GNU>:-Wall;-Wextra;-Wpedantic>)
 
-add_library(squad_session src/voice_session.cpp src/voice_session.hpp src/tls_identity.cpp src/tls_identity.hpp src/local_channel.cpp src/local_channel_video.cpp src/local_channel.hpp src/media_transport.cpp src/media_transport.hpp src/chat_history.cpp src/chat_history.hpp src/license.cpp src/license.hpp)
+add_library(squad_session src/voice_session.cpp src/voice_session.hpp src/tls_identity.cpp src/tls_identity.hpp src/local_channel.cpp src/local_channel_chat.cpp src/local_channel_control.cpp src/local_channel_discovery.cpp src/local_channel_video.cpp src/local_channel.hpp src/media_transport.cpp src/media_transport.hpp src/chat_history.cpp src/chat_history.hpp src/license.cpp src/license.hpp)
 target_include_directories(squad_session PUBLIC src)
 target_compile_definitions(squad_session PUBLIC SQUADSPEAK_VERSION="${PROJECT_VERSION}")
 option(SQUADSPEAK_STORE_BUILD "Build a free-only store distribution" OFF)
@@ -814,5 +814,17 @@ if(BUILD_TESTING)
     if(APPLE)
         set_tests_properties(desktop_smoke recording_smoke desktop_rendering_smoke PROPERTIES
             FAIL_REGULAR_EXPRESSION "Could not find permission plugin for QMicrophonePermission")
+    endif()
+    # Keep timing/load measurements and native loopback capture undisturbed.
+    set_tests_properties(channel_contract video_contract PROPERTIES RUN_SERIAL TRUE)
+    if(TEST capture_contract)
+        set_tests_properties(capture_contract PROPERTIES RUN_SERIAL TRUE)
+    endif()
+    # GUI, clipboard and audio-device fixtures share the runner's desktop.
+    set_tests_properties(radio_contract headless_contract desktop_smoke recording_smoke
+        audio_controls frequency_display channel_controls avatar_scale_1.5 avatar_scale_2
+        screen_rendering desktop_rendering_smoke PROPERTIES RESOURCE_LOCK desktop)
+    if(TEST linux_global_ptt)
+        set_tests_properties(linux_global_ptt PROPERTIES RESOURCE_LOCK desktop)
     endif()
 endif()

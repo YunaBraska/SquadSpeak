@@ -1,6 +1,7 @@
 param(
     [string]$QtRoot = $env:QT_ROOT_DIR,
-    [string]$BuildRoot = "$PSScriptRoot/../build/windows-ci"
+    [string]$BuildRoot = "$PSScriptRoot/../build/windows-ci",
+    [switch]$DependenciesOnly
 )
 $ErrorActionPreference = "Stop"
 Write-Host "Starting Windows build (PowerShell $($PSVersionTable.PSVersion))"
@@ -17,6 +18,33 @@ $BuildRoot = (New-Item -ItemType Directory -Force $BuildRoot).FullName
 Start-Transcript -Path "$BuildRoot/build.log" -Force | Out-Null
 $deps = New-Item -ItemType Directory -Force "$BuildRoot/dependencies"
 $prefix = New-Item -ItemType Directory -Force "$deps/prefix"
+$compiler = Get-Command cl.exe -ErrorAction Stop
+$compilerVersion = (Get-Item $compiler.Source).VersionInfo.FileVersion
+$sdkVersion = $env:WindowsSDKVersion
+if (-not $compilerVersion -or -not $sdkVersion) { throw "MSVC compiler or Windows SDK identity is unavailable" }
+$scriptHash = (Get-FileHash $MyInvocation.MyCommand.Path -Algorithm SHA256).Hash.ToLower()
+$dependencyStamp = "script=$scriptHash;cl=$compilerVersion;sdk=$sdkVersion;build=Release/shared/x64"
+$dependencyStampFile = "$prefix/.squadspeak-dependencies-ready"
+
+function Test-DependencyPrefix {
+    if (-not (Test-Path $dependencyStampFile)) { return $false }
+    $actualStamp = (Get-Content $dependencyStampFile -Raw).Trim()
+    if ($actualStamp -ne $dependencyStamp) {
+        throw "Dependency prefix stamp does not match the pinned build inputs. Refusing an unsafe cache hit."
+    }
+    foreach ($pattern in @("libcrypto-*.dll", "libssl-*.dll", "opus*.dll", "samplerate*.dll")) {
+        if (-not (Get-ChildItem "$prefix/bin/$pattern" -ErrorAction SilentlyContinue)) {
+            throw "Dependency prefix cache is incomplete; required output is missing: $pattern"
+        }
+    }
+    foreach ($file in @("lib/libcrypto.lib", "lib/libssl.lib", "lib/opus.lib", "lib/samplerate.lib",
+                        "include/openssl/ssl.h", "include/opus/opus.h", "include/samplerate.h")) {
+        if (-not (Test-Path "$prefix/$file" -PathType Leaf)) {
+            throw "Dependency prefix cache is incomplete; required output is missing: $file"
+        }
+    }
+    return $true
+}
 
 function Get-Source([string]$Name, [string]$Url, [string]$Sha256) {
     Write-Host "Preparing dependency: $Name"
@@ -42,21 +70,33 @@ function Get-Source([string]$Name, [string]$Url, [string]$Sha256) {
 
 $opus = Get-Source "opus-1.6.1.tar.gz" "https://downloads.xiph.org/releases/opus/opus-1.6.1.tar.gz" "6ffcb593207be92584df15b32466ed64bbec99109f007c82205f0194572411a1"
 $samplerate = Get-Source "libsamplerate-0.2.2.tar.xz" "https://github.com/libsndfile/libsamplerate/releases/download/0.2.2/libsamplerate-0.2.2.tar.xz" "3258da280511d24b49d6b08615bbe824d0cacc9842b0e4caf11c52cf2b043893"
-$ffmpeg = Get-Source "ffmpeg-7.1.5.tar.xz" "https://ffmpeg.org/releases/ffmpeg-7.1.5.tar.xz" "de668509caf9e35e3cd162473441fdb29538c6d96ed080292b3cf9e6fc5d558f"
 $openssl = Get-Source "openssl-3.6.5.tar.gz" "https://github.com/openssl/openssl/releases/download/openssl-3.6.5/openssl-3.6.5.tar.gz" "a2157c2830efdec3788939b00c9b0638306d3f0bbb76dc4832ee503bb397df98"
 
-Push-Location $openssl
-Invoke-Checked perl @("Configure", "VC-WIN64A", "shared", "no-tests", "--prefix=$prefix")
-Invoke-Checked nmake @()
-Invoke-Checked nmake @("install_sw")
-Pop-Location
+if (Test-DependencyPrefix) {
+    Write-Host "Dependency prefix cache hit; skipping OpenSSL, Opus and libsamplerate builds."
+} else {
+    Push-Location $openssl
+    Invoke-Checked perl @("Configure", "VC-WIN64A", "shared", "no-tests", "--prefix=$prefix")
+    Invoke-Checked nmake @()
+    Invoke-Checked nmake @("install_sw")
+    Pop-Location
 
-foreach ($pair in @(@($opus, "opus"), @($samplerate, "samplerate"))) {
-    $source = $pair[0]; $name = $pair[1]; $dir = "$BuildRoot/$name-build"
-    Invoke-Checked cmake @("-S", $source, "-B", $dir, "-G", "Ninja", "-DCMAKE_BUILD_TYPE=Release", "-DBUILD_SHARED_LIBS=ON", "-DBUILD_TESTING=OFF", "-DCMAKE_POLICY_VERSION_MINIMUM=3.5", "-DLIBSAMPLERATE_EXAMPLES=OFF", "-DOPUS_BUILD_PROGRAMS=OFF", "-DCMAKE_INSTALL_PREFIX=$prefix")
-    Invoke-Checked cmake @("--build", $dir, "--parallel", "3")
-    Invoke-Checked cmake @("--install", $dir)
+    foreach ($pair in @(@($opus, "opus"), @($samplerate, "samplerate"))) {
+        $source = $pair[0]; $name = $pair[1]; $dir = "$BuildRoot/$name-build"
+        Invoke-Checked cmake @("-S", $source, "-B", $dir, "-G", "Ninja", "-DCMAKE_BUILD_TYPE=Release", "-DBUILD_SHARED_LIBS=ON", "-DBUILD_TESTING=OFF", "-DCMAKE_POLICY_VERSION_MINIMUM=3.5", "-DLIBSAMPLERATE_EXAMPLES=OFF", "-DOPUS_BUILD_PROGRAMS=OFF", "-DCMAKE_INSTALL_PREFIX=$prefix")
+        Invoke-Checked cmake @("--build", $dir, "--parallel", "3")
+        Invoke-Checked cmake @("--install", $dir)
+    }
+    Set-Content -Path $dependencyStampFile -Value $dependencyStamp -NoNewline -Encoding ascii
 }
+
+if ($DependenciesOnly) {
+    Write-Host "Dependency preparation complete."
+    Stop-Transcript | Out-Null
+    exit 0
+}
+
+$ffmpeg = Get-Source "ffmpeg-7.1.5.tar.xz" "https://ffmpeg.org/releases/ffmpeg-7.1.5.tar.xz" "de668509caf9e35e3cd162473441fdb29538c6d96ed080292b3cf9e6fc5d558f"
 
 # The Qt kit supplies the runtime DLLs. Generate only matching MSVC import
 # libraries from their exports, then compile against official FFmpeg headers.
@@ -93,7 +133,7 @@ $env:QT_LOGGING_RULES = ""
 Start-Service Audiosrv
 Get-CimInstance Win32_SoundDevice | Select-Object Name, Status | Format-Table
 $testLog = "$BuildRoot/windows-tests.log"
-ctest --test-dir $appBuild --output-on-failure --no-tests=error --output-junit "$BuildRoot/ctest.xml" 2>&1 | Tee-Object $testLog
+ctest --test-dir $appBuild --output-on-failure --no-tests=error --parallel 2 --output-junit "$BuildRoot/ctest.xml" 2>&1 | Tee-Object $testLog
 $testExit = $LASTEXITCODE
 $details = "$appBuild/Testing/Temporary/LastTest.log"
 if (Test-Path $details) { Copy-Item $details "$BuildRoot/test-details.log" }

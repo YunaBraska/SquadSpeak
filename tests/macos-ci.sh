@@ -65,7 +65,7 @@ result=0
 network_tests='^(channel_contract|channel_controls)$'
 set --
 if test "${GITHUB_ACTIONS:-}" = true; then set -- -E "$network_tests"; fi
-QT_LOGGING_RULES='squadspeak.discovery.debug=true' ctest --test-dir "$build_root/app" --output-on-failure --no-tests=error \
+QT_LOGGING_RULES='squadspeak.discovery.debug=true' ctest --parallel 2 --test-dir "$build_root/app" --output-on-failure --no-tests=error \
     --output-junit "$build_root/artifacts/ctest.xml" "$@" > "$build_root/artifacts/ctest.log" 2>&1 || result=$?
 cp "$build_root/app/Testing/Temporary/LastTest.log" "$build_root/artifacts/test-details.log"
 if test "${GITHUB_ACTIONS:-}" = true; then
@@ -73,7 +73,7 @@ if test "${GITHUB_ACTIONS:-}" = true; then
     # Only disposable-runner network contracts use Apple's root exemption.
     # Measure realtime playout at the application's normal logging level.
     sudo -n env QT_LOGGING_RULES='' \
-        "$(command -v ctest)" --test-dir "$build_root/app" --output-on-failure --no-tests=error \
+        "$(command -v ctest)" --parallel 2 --test-dir "$build_root/app" --output-on-failure --no-tests=error \
         -R "$network_tests" --output-junit "$build_root/artifacts/network.xml" \
         > "$build_root/artifacts/network.log" 2>&1 || result=$?
     cat "$build_root/artifacts/network.log" >> "$build_root/artifacts/ctest.log"

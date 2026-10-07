@@ -7,7 +7,6 @@
 #include <QDir>
 #include <QJsonArray>
 #include <QJsonDocument>
-#include <QNetworkDatagram>
 #include <QSaveFile>
 #include <QtEndian>
 #include <QUuid>
@@ -20,54 +19,17 @@
 #include <utility>
 #include <array>
 #include <opus.h>
-#include <QNetworkInterface>
 #include <QRegularExpression>
 #include <QLoggingCategory>
-#include <cerrno>
 
 namespace {
-Q_LOGGING_CATEGORY(discoveryLog, "squadspeak.discovery", QtWarningMsg)
 Q_LOGGING_CATEGORY(mediaLog, "squadspeak.media", QtWarningMsg)
-constexpr quint16 discoveryPort = 48762;
-const QHostAddress discoveryGroup(QStringLiteral("239.255.85.73"));
-constexpr qsizetype maximumFrame = 65536;
-constexpr qsizetype maximumRemoteView = 2 * 1024 * 1024;
-constexpr int maximumWindowMessages = 160;
-constexpr qsizetype maximumWindowBytes = 512 * 1024;
-constexpr qsizetype remoteChunkSize = 16384;
 constexpr int maximumPendingPeers = 32;
 constexpr int maximumMediaParticipants = 64;
 constexpr std::array<int, 4> audioBitrates{32, 20, 12, 8};
 const QSet<QString> protocolCapabilities{
     QStringLiteral("udp-audio"), QStringLiteral("udp-screen"), QStringLiteral("adaptive-audio"), QStringLiteral("screen-share"), QStringLiteral("screen-audio"),
     QStringLiteral("remote-control"), QStringLiteral("extended-retention")};
-QJsonArray capabilityAdvertisement() {
-    QJsonArray result;
-    for (const auto& capability : protocolCapabilities) result.append(capability);
-    return result;
-}
-bool parseCapabilities(const QJsonObject& message, QSet<QString>* negotiated = nullptr) {
-    if (!message.contains("capabilities")) {
-        if (negotiated) negotiated->clear();
-        return true;
-    }
-    const auto value = message.value("capabilities");
-    if (!value.isArray() || value.toArray().size() > 32) return false;
-    static const QRegularExpression name(QStringLiteral("^[A-Za-z0-9][A-Za-z0-9._-]*$"));
-    QSet<QString> offered;
-    for (const auto& item : value.toArray()) {
-        if (!item.isString() || item.toString().size() < 1 || item.toString().size() > 64
-            || !name.match(item.toString()).hasMatch())
-            return false;
-        offered.insert(item.toString());
-    }
-    if (negotiated) *negotiated = offered & protocolCapabilities;
-    return true;
-}
-bool validMessageType(const QString& type) {
-    static const QRegularExpression name(QStringLiteral("^[A-Za-z][A-Za-z0-9._-]*$"));
-    return type.size() >= 1 && type.size() <= 64 && name.match(type).hasMatch();
-}
 const QSet<QString> knownMessageTypes{
     QStringLiteral("media"), QStringLiteral("audio"), QStringLiteral("audioAck"), QStringLiteral("audioProbe"), QStringLiteral("audioQuality"),
     QStringLiteral("chat"), QStringLiteral("chatKey"), QStringLiteral("control"), QStringLiteral("controlAck"),
@@ -80,90 +42,17 @@ const QSet<QString> knownMessageTypes{
     QStringLiteral("remoteViewStart"), QStringLiteral("roster"), QStringLiteral("screenChunk"),
     QStringLiteral("screenMedia"), QStringLiteral("screenFrame"), QStringLiteral("screenHello"), QStringLiteral("screenLimit"), QStringLiteral("screenAck"),
     QStringLiteral("screenQuality"), QStringLiteral("screenAudio"), QStringLiteral("voiceLeave")};
-const QSet<QString> knownChatKinds{
-    QStringLiteral("history"), QStringLiteral("send"), QStringLiteral("message"), QStringLiteral("time"),
-    QStringLiteral("error"), QStringLiteral("imageStart"), QStringLiteral("imageChunk"),
-    QStringLiteral("imageGet"), QStringLiteral("imageOffset"), QStringLiteral("imageData"), QStringLiteral("imageError")};
 qint64 queuedBytes(const QSslSocket* socket) {
     return socket->bytesToWrite() + socket->encryptedBytesToWrite();
 }
 
-bool addressConnectionFailure(QAbstractSocket::SocketError error, const QSslSocket* socket) {
-    // SecureTransport may emit connected before reporting a refused connection.
-    // Transport fallback stops once TLS has supplied a certificate or an error.
-    return !socket->property("squadTlsSeen").toBool()
-        && (error == QAbstractSocket::HostNotFoundError
-            || error == QAbstractSocket::ConnectionRefusedError
-            || error == QAbstractSocket::NetworkError);
-}
-void connectEndpoint(QSslSocket* socket, const QString& host, quint16 port, QAbstractSocket::NetworkLayerProtocol protocol) {
-    // RFC 6761 localhost names stay on loopback even when the system resolver
-    // filters IPv6 because no external IPv6 interface is configured.
-    auto relative = host;
-    if (relative.endsWith('.')) relative.chop(1);
-    const bool loopback = relative == "localhost" || relative.endsWith(".localhost");
-    const auto address = loopback
-        ? (protocol == QAbstractSocket::IPv6Protocol ? QStringLiteral("::1") : QStringLiteral("127.0.0.1")) : host;
-    socket->connectToHostEncrypted(address, port, host, QIODevice::ReadWrite, protocol);
-}
-bool displayName(const QJsonValue& value) {
-    if (!value.isString()) return false;
-    try { return VoiceSession::validatedName(value.toString()) == value.toString(); }
-    catch (const std::invalid_argument&) { return false; }
-}
 QVariantList humanMembers(QVariantList members) {
     members.removeIf([](const auto& value) { return value.toMap().value("music").toBool(); });
     return members;
 }
-bool validPresenceDetails(const QJsonObject& message) {
-    return (!message.contains("deafened") || message.value("deafened").isBool())
-        && (!message.contains("avatar") || VoiceSession::validAvatar(message.value("avatar").toString()))
-        && (!message.contains("avatarId") || VoiceSession::validAvatar(message.value("avatarId").toString()));
-}
 bool targetAddress(const QHostAddress& address) {
     return !address.isNull() && !address.isMulticast() && address != QHostAddress::Any
         && address != QHostAddress::AnyIPv4 && address != QHostAddress::AnyIPv6 && address != QHostAddress::Broadcast;
-}
-QString canonicalEndpointHost(const QString& value) {
-    const auto text = value.trimmed();
-    if (text.isEmpty() || text != value || text.size() > 253) return {};
-    const QHostAddress literal(text);
-    if (!literal.isNull()) return targetAddress(literal) ? literal.toString() : QString{};
-    auto host = text;
-    if (host.endsWith('.')) host.chop(1);
-    if (host.isEmpty() || host.size() > 253) return {};
-    static const QRegularExpression hostname(
-        R"(^[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?(?:\.[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?)*$)");
-    if (!hostname.match(host).hasMatch()) return {};
-    const auto numeric = std::all_of(host.begin(), host.end(), [](QChar c) { return c == '.' || c.isDigit(); });
-    return numeric ? QString{} : text.toLower();
-}
-bool validEndpointHost(const QString& value) {
-    return !canonicalEndpointHost(value).isEmpty();
-}
-QString endpointKey(const QString& host, quint16 port) {
-    const auto canonical = canonicalEndpointHost(host);
-    const QHostAddress literal(canonical);
-    return !literal.isNull()
-        ? "[" + literal.toString() + "]:" + QString::number(port)
-        : canonical + ":" + QString::number(port);
-}
-QList<QNetworkInterface> discoveryInterfaces() {
-    const auto interfaces = QNetworkInterface::allInterfaces();
-    const auto usable = [](const auto& interface) {
-        if (!interface.flags().testFlag(QNetworkInterface::IsUp)
-            || !interface.flags().testFlag(QNetworkInterface::IsRunning)) return false;
-        for (const auto& entry : interface.addressEntries())
-            if (entry.ip().protocol() == QAbstractSocket::IPv4Protocol) return true;
-        return false;
-    };
-    QList<QNetworkInterface> result, loopback;
-    for (const auto& interface : interfaces) {
-        if (!usable(interface)) continue;
-        if (interface.flags().testFlag(QNetworkInterface::IsLoopBack)) loopback.append(interface);
-        else if (interface.flags().testFlag(QNetworkInterface::CanMulticast)) result.append(interface);
-    }
-    return result.isEmpty() ? loopback : result;
 }
 }
 
@@ -204,6 +93,95 @@ struct LocalChannel::Relay final {
         return result;
     }
 };
+
+bool LocalChannel::displayName(const QJsonValue& value) {
+    if (!value.isString()) return false;
+    try { return VoiceSession::validatedName(value.toString()) == value.toString(); }
+    catch (const std::invalid_argument&) { return false; }
+}
+
+bool LocalChannel::parseCapabilities(const QJsonObject& message, QSet<QString>* negotiated) {
+    if (!message.contains("capabilities")) {
+        if (negotiated) negotiated->clear();
+        return true;
+    }
+    const auto value = message.value("capabilities");
+    if (!value.isArray() || value.toArray().size() > 32) return false;
+    static const QRegularExpression name(QStringLiteral("^[A-Za-z0-9][A-Za-z0-9._-]*$"));
+    QSet<QString> offered;
+    for (const auto& item : value.toArray()) {
+        if (!item.isString() || item.toString().size() < 1 || item.toString().size() > 64
+            || !name.match(item.toString()).hasMatch())
+            return false;
+        offered.insert(item.toString());
+    }
+    if (negotiated) *negotiated = offered & protocolCapabilities;
+    return true;
+}
+
+bool LocalChannel::validMessageType(const QString& type) {
+    static const QRegularExpression name(QStringLiteral("^[A-Za-z][A-Za-z0-9._-]*$"));
+    return type.size() >= 1 && type.size() <= 64 && name.match(type).hasMatch();
+}
+
+bool LocalChannel::validEndpointHost(const QString& value) {
+    return !canonicalEndpointHost(value).isEmpty();
+}
+
+void LocalChannel::connectEndpoint(QSslSocket* socket, const QString& host, quint16 port, QAbstractSocket::NetworkLayerProtocol protocol) {
+    // RFC 6761 localhost names stay on loopback even when the system resolver
+    // filters IPv6 because no external IPv6 interface is configured.
+    auto relative = host;
+    if (relative.endsWith('.')) relative.chop(1);
+    const bool loopback = relative == "localhost" || relative.endsWith(".localhost");
+    const auto address = loopback
+        ? (protocol == QAbstractSocket::IPv6Protocol ? QStringLiteral("::1") : QStringLiteral("127.0.0.1")) : host;
+    socket->connectToHostEncrypted(address, port, host, QIODevice::ReadWrite, protocol);
+}
+
+bool LocalChannel::addressConnectionFailure(QAbstractSocket::SocketError error, const QSslSocket* socket) {
+    // SecureTransport may emit connected before reporting a refused connection.
+    // Transport fallback stops once TLS has supplied a certificate or an error.
+    return !socket->property("squadTlsSeen").toBool()
+        && (error == QAbstractSocket::HostNotFoundError
+            || error == QAbstractSocket::ConnectionRefusedError
+            || error == QAbstractSocket::NetworkError);
+}
+
+QJsonArray LocalChannel::capabilityAdvertisement() {
+    QJsonArray result;
+    for (const auto& capability : protocolCapabilities) result.append(capability);
+    return result;
+}
+
+QString LocalChannel::canonicalEndpointHost(const QString& value) {
+    const auto text = value.trimmed();
+    if (text.isEmpty() || text != value || text.size() > 253) return {};
+    const QHostAddress literal(text);
+    if (!literal.isNull()) return targetAddress(literal) ? literal.toString() : QString{};
+    auto host = text;
+    if (host.endsWith('.')) host.chop(1);
+    if (host.isEmpty() || host.size() > 253) return {};
+    static const QRegularExpression hostname(
+        R"(^[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?(?:\.[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?)*$)");
+    if (!hostname.match(host).hasMatch()) return {};
+    const auto numeric = std::all_of(host.begin(), host.end(), [](QChar c) { return c == '.' || c.isDigit(); });
+    return numeric ? QString{} : text.toLower();
+}
+
+QString LocalChannel::endpointKey(const QString& host, quint16 port) {
+    const auto canonical = canonicalEndpointHost(host);
+    const QHostAddress literal(canonical);
+    return !literal.isNull()
+        ? "[" + literal.toString() + "]:" + QString::number(port)
+        : canonical + ":" + QString::number(port);
+}
+
+bool LocalChannel::validPresenceDetails(const QJsonObject& message) {
+    return (!message.contains("deafened") || message.value("deafened").isBool())
+        && (!message.contains("avatar") || VoiceSession::validAvatar(message.value("avatar").toString()))
+        && (!message.contains("avatarId") || VoiceSession::validAvatar(message.value("avatarId").toString()));
+}
 
 bool LocalChannel::unknownMessageType(const QString& type) { return !knownMessageTypes.contains(type); }
 
@@ -342,9 +320,6 @@ LocalChannel::LocalChannel(VoiceSession& session, QString storageFile, std::opti
         if (!TlsIdentity::peerId(socket->peerCertificate()).isEmpty() && acceptableCertificateErrors(errors))
             socket->ignoreSslErrors(errors);
     });
-    connect(&discovery_, &QUdpSocket::readyRead, this, &LocalChannel::receiveDiscovery);
-    heartbeat_.setInterval(1500);
-    connect(&heartbeat_, &QTimer::timeout, this, &LocalChannel::announce);
     maintenanceTimer_.setInterval(1000);
     connect(&maintenanceTimer_, &QTimer::timeout, this, [this] {
         const auto elapsed = controlClock_.elapsed();
@@ -433,7 +408,7 @@ LocalChannel::LocalChannel(VoiceSession& session, QString storageFile, std::opti
     });
     connect(&session_, &VoiceSession::presenceChanged, this, &LocalChannel::sendPresence);
     connect(&session_, &VoiceSession::preferencesChanged, this, [this] {
-        if (hosting()) { announce(); broadcastRoster(); }
+        if (hosting()) { discovery_.announce(); broadcastRoster(); }
         if (controlConnected_) sendControlState();
     });
     connect(this, &LocalChannel::chatSent, this, [this](const QString& text, const QString& hostId) {
@@ -495,7 +470,7 @@ LocalChannel::~LocalChannel() {
     // final shared reference is already being released.
     auto children = std::exchange(owned_, {});
     children.clear();
-    clearDiscoverySearch();
+    discovery_.clearSearch();
     controlTimer_.stop();
     closeControl();
     finishDirect();
@@ -550,25 +525,11 @@ bool LocalChannel::chatPresenceKnown() const {
     const auto* c = chatClient(); return c && c->accepted && c->presenceKnown;
 }
 
-bool LocalChannel::chatReady() const { const auto* c = chatClient(); return c && c->accepted && c->chatKey.size() == 32; }
-bool LocalChannel::chatPending() const { const auto* c = chatClient(); return c && !c->pending.isEmpty(); }
-bool LocalChannel::historyLoading() const { const auto* c = chatClient(); return c && !c->historyRequest.isEmpty(); }
-bool LocalChannel::hasOlderMessages() const { const auto* c = chatClient(); return c && c->hasOlder; }
-bool LocalChannel::hasNewerMessages() const { const auto* c = chatClient(); return c && c->hasNewer; }
-QString LocalChannel::chatError() const {
-    const auto* c = chatClient();
-    const auto text = c ? c->chatError : chatError_;
-    return text.contains(QChar::Null) ? text : tr(text.toUtf8().constData());
-}
 bool LocalChannel::passwordRequired() const { const auto* c = chatClient(); return c && c->passwordRequired; }
 bool LocalChannel::passwordSaved() const { return security_.value("saved").toObject().contains(chatHostId_); }
 
 bool LocalChannel::submitPassword(const QString& password, bool remember) {
     auto* c = chatClient(); return c && submitPassword(*c, password, remember);
-}
-
-bool LocalChannel::sendChatCommand(const QJsonObject& payload) {
-    auto* c = chatClient(); return c && sendChatCommand(*c, payload);
 }
 
 bool LocalChannel::setClientStatus(Client& c, QString text, bool result) {
@@ -613,9 +574,9 @@ bool LocalChannel::openConnection(const QString& id, const QString& address, int
         c = std::make_shared<Client>(); c->id = id; clients_.insert(id, c);
     }
     c->deviceId = ownChannel(id) ? ownId() : savedChannels_.value(id).toObject().value("deviceId").toString();
-    if (c->deviceId.isEmpty()) c->deviceId = hosts_.value(id).deviceId;
+    if (c->deviceId.isEmpty()) c->deviceId = discovery_.hosts.value(id).deviceId;
     if (c->deviceId.isEmpty()) c->deviceId = id;
-    c->name = hosts_.contains(id) ? hosts_.value(id).name
+    c->name = discovery_.hosts.contains(id) ? discovery_.hosts.value(id).name
         : savedChannels_.value(id).toObject().value("name").toString(c->name);
     c->address = canonicalAddress; c->port = quint16(port); c->voice = voice;
     c->access = "connecting"; c->passwordRequired = false; c->passwordRetryAt = 0;
@@ -641,8 +602,8 @@ bool LocalChannel::openChat(const QString& id, const QString& address, int port)
 bool LocalChannel::openSavedChat(const QString& id) {
     if (auto c = clients_.value(id)) return openChat(id, c->address, c->port);
     const auto entry = savedChannels_.value(id).toObject();
-    const auto host = hosts_.constFind(id);
-    if (entry.isEmpty() && host == hosts_.cend()) return false;
+    const auto host = discovery_.hosts.constFind(id);
+    if (entry.isEmpty() && host == discovery_.hosts.cend()) return false;
     const auto [address, port] = channelEndpoint(id);
     return openChat(id, address, port);
 }
@@ -650,8 +611,8 @@ bool LocalChannel::openSavedChat(const QString& id) {
 QPair<QString, int> LocalChannel::channelEndpoint(const QString& id) const {
     const auto entry = savedChannels_.value(id).toObject();
     const auto address = entry.value("address").toString();
-    const auto discovered = hosts_.constFind(id);
-    if ((!address.isEmpty() && QHostAddress(address).isNull()) || discovered == hosts_.cend())
+    const auto discovered = discovery_.hosts.constFind(id);
+    if ((!address.isEmpty() && QHostAddress(address).isNull()) || discovered == discovery_.hosts.cend())
         return {address, entry.value("port").toInt()};
     return {discovered->address, discovered->port};
 }
@@ -734,7 +695,7 @@ QString LocalChannel::addOwnedChannel(const QString& name) {
         ownedIds_.removeAll(id); QDir(directory).removeRecursively(); return {};
     }
     if (!syncOwnedChannels()) return {};
-    announce(); return id;
+    discovery_.announce(); return id;
 }
 
 bool LocalChannel::removeOwnedChannel(const QString& id) {
@@ -767,7 +728,7 @@ bool LocalChannel::removeOwnedChannel(const QString& id) {
     // The channel is offline before deleting its private directory. A leftover
     // deletion directory is retried at startup, without restoring access.
     const bool removed = QDir(directory + ".deleted").removeRecursively();
-    emit ownedChannelsChanged(); announce();
+    emit ownedChannelsChanged(); discovery_.announce();
     return removed || setStatus(tr("Removed channel data could not be deleted."), false);
 }
 
@@ -795,13 +756,13 @@ bool LocalChannel::receiveDirectory(const QString& device, const QJsonObject& me
         if (!saved.isEmpty() && pinned != device) return false;
         ids.insert(id);
     }
-    for (auto it = hosts_.begin(); it != hosts_.end();) {
-        if (it->deviceId == device && !ids.contains(it.key())) it = hosts_.erase(it); else ++it;
+    for (auto it = discovery_.hosts.begin(); it != discovery_.hosts.end();) {
+        if (it->deviceId == device && !ids.contains(it.key())) it = discovery_.hosts.erase(it); else ++it;
     }
     for (const auto& entry : directory) {
         const auto value = entry.toObject(); const auto id = value.value("id").toString();
-        if (hosts_.size() >= 1024 && !hosts_.contains(id)) break;
-        hosts_.insert(id, {value.value("name").toString(), address, port, clock_(), direct || hosts_.value(id).direct, scanned, device});
+        if (discovery_.hosts.size() >= 1024 && !discovery_.hosts.contains(id)) break;
+        discovery_.hosts.insert(id, {value.value("name").toString(), address, port, clock_(), direct || discovery_.hosts.value(id).direct, scanned, device});
     }
     emit hostsChanged(); return true;
 }
@@ -839,10 +800,6 @@ bool LocalChannel::setStatus(QString text, bool result) {
     status_ = std::move(text);
     emit stateChanged();
     return result;
-}
-
-bool LocalChannel::setControlStatus(QString text, bool result) {
-    controlStatus_ = std::move(text); emit controlChanged(); return result;
 }
 
 bool LocalChannel::initialize(bool hostOnly) {
@@ -1067,173 +1024,6 @@ bool LocalChannel::forgetPassword() {
     return setClientStatus(*c, tr("Saved password removed. The current connection remains active."));
 }
 
-bool LocalChannel::persistControl(const QJsonObject& control) {
-    return persist(approved_, attempts_, requestsAllowed_, endpointPins_, control, security_);
-}
-
-void LocalChannel::updateControlIntent() {
-    if (service_) return;
-    if (hostOnly_) { controlTimer_.stop(); return; }
-    const auto entries = control_.value("controllers").toObject();
-    const bool held = std::any_of(entries.begin(), entries.end(), [](const auto& entry) { return entry.toObject().value("held").toBool(); });
-    session_.setRemotePttHeld(held);
-    const auto target = control_.value("target").toObject();
-    session_.setPttLocal(!remoteMode());
-    if (remoteMode() && !target.isEmpty() && !target.value("blocked").toBool() && !controlStopped_) {
-        if (!controlTimer_.isActive()) controlTimer_.start();
-    } else controlTimer_.stop();
-    emit controlChanged();
-}
-
-bool LocalChannel::startDiscovery() {
-    if (service_) return false;
-    if (!ready()) return setStatus(tr("Device identity is not ready yet."), false);
-    if (discovery_.state() == QAbstractSocket::BoundState) return true;
-    heartbeat_.start();
-    if (!discovery_.bind(QHostAddress::AnyIPv4, discoveryPort,
-                         QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint)) {
-        discoveryError_ = tr("Local channel discovery unavailable: %1").arg(discovery_.errorString());
-        emit hostsChanged(); return false;
-    }
-    discovery_.setSocketOption(QAbstractSocket::MulticastLoopbackOption, 1);
-    discoveryInterfaces_.clear();
-    discovery_.setSocketOption(QAbstractSocket::MulticastTtlOption, 1);
-    announce();
-    return discovery_.state() == QAbstractSocket::BoundState;
-}
-
-QList<LocalChannel::ScanTarget> LocalChannel::discoveryTargets() const {
-    QList<ScanTarget> result;
-    QSet<QString> seen;
-    const auto add = [&](const QString& address, quint16 port) {
-        const auto key = address + ':' + QString::number(port);
-        if (!seen.contains(key)) { seen.insert(key); result.append({address, port}); }
-    };
-    for (quint16 port = 48763; port <= 48783; ++port) add("127.0.0.1", port);
-    if (server_.isListening() && server_.serverAddress().isLoopback()) return result;
-
-    QList<QString> addresses;
-    for (const auto& interface : QNetworkInterface::allInterfaces()) {
-        if (!interface.flags().testFlag(QNetworkInterface::IsUp)
-            || !interface.flags().testFlag(QNetworkInterface::IsRunning)) continue;
-        for (const auto& entry : interface.addressEntries()) {
-            const auto ip = entry.ip();
-            const auto value = ip.toIPv4Address();
-            const bool privateAddress = (value >= 0x0a000000u && value <= 0x0affffffu)
-                || (value >= 0xac100000u && value <= 0xac1fffffu)
-                || (value >= 0xc0a80000u && value <= 0xc0a8ffffu);
-            if (ip.protocol() != QAbstractSocket::IPv4Protocol || !privateAddress || ip.isLoopback()) continue;
-            const auto mask = entry.netmask().toIPv4Address();
-            if (!mask || !value) continue;
-            int prefix = 0;
-            for (quint32 bit = 0x80000000u; bit && (mask & bit); bit >>= 1) ++prefix;
-            const int width = std::max(prefix, 24);
-            const quint32 network = value & (0xffffffffu << (32 - width));
-            const quint32 count = 1u << (32 - width);
-            for (quint32 offset = 1; offset + 1 < count && offset <= 254; ++offset) {
-                const auto candidate = QHostAddress(network + offset).toString();
-                if (!addresses.contains(candidate)) addresses.append(candidate);
-            }
-        }
-    }
-    for (const auto& address : addresses) add(address, defaultPort);
-    for (const auto& address : addresses)
-        for (quint16 port = 48763; port <= 48783; ++port) if (port != defaultPort) add(address, port);
-    return result;
-}
-
-bool LocalChannel::setDiscoverySearch(bool enabled) {
-    if (!enabled) {
-        clearDiscoverySearch();
-        discoverySearching_ = false;
-        for (auto it = hosts_.begin(); it != hosts_.end();) {
-            it->scanned = false;
-            if (it.key() != ownId() && !it->direct && clock_() - it->seen > 6000) it = hosts_.erase(it);
-            else ++it;
-        }
-        emit hostsChanged();
-        emit discoverySearchChanged();
-        return true;
-    }
-    if (discoverySearching_) return true;
-    if (!ready()) return setStatus(tr("Device identity is not ready yet."), false);
-    discoverySearchQueue_ = discoveryTargets();
-    discoverySearching_ = true;
-    emit discoverySearchChanged();
-    pumpDiscoverySearch();
-    return true;
-}
-
-void LocalChannel::clearDiscoverySearch() {
-    discoverySearchQueue_.clear();
-    const auto sockets = discoverySearchProbes_.keys();
-    discoverySearchProbes_.clear();
-    for (auto* socket : sockets) {
-        socket->abort();
-        socket->deleteLater();
-    }
-}
-
-void LocalChannel::finishDiscoveryProbe(QSslSocket* socket) {
-    if (!discoverySearchProbes_.contains(socket)) return;
-    discoverySearchProbes_.remove(socket);
-    socket->abort();
-    socket->deleteLater();
-    if (discoverySearching_) pumpDiscoverySearch();
-}
-
-void LocalChannel::pumpDiscoverySearch() {
-    if (!discoverySearching_) return;
-    while (discoverySearchProbes_.size() < 16 && !discoverySearchQueue_.isEmpty()) {
-        const auto target = discoverySearchQueue_.takeFirst();
-        auto* socket = new QSslSocket(this);
-        discoverySearchProbes_.insert(socket, {target, {}});
-        socket->setReadBufferSize(2 * maximumFrame);
-        socket->setSslConfiguration(identity_->configuration());
-        connect(socket, &QSslSocket::sslErrors, this, [this, socket](const QList<QSslError>& errors) {
-            if (discoverySearchProbes_.contains(socket) && !TlsIdentity::peerId(socket->peerCertificate()).isEmpty()
-                && acceptableCertificateErrors(errors)) socket->ignoreSslErrors(errors);
-        });
-        connect(socket, &QSslSocket::encrypted, this, [this, socket] {
-            if (discoverySearchProbes_.contains(socket)) writeMessage(socket, {{"type", "discover"}, {"version", 1}});
-        });
-        connect(socket, &QSslSocket::readyRead, this, [this, socket] {
-            auto it = discoverySearchProbes_.find(socket);
-            if (it == discoverySearchProbes_.end()) return;
-            auto buffer = std::move(it->buffer);
-            const auto targetPort = it->target.port;
-            readMessages(socket, buffer, [this, socket, targetPort](const QJsonObject& message) {
-                const auto it = discoverySearchProbes_.find(socket);
-                if (it == discoverySearchProbes_.end()) return;
-                const auto id = TlsIdentity::peerId(socket->peerCertificate());
-                if (message.value("type") == "discovery" && message.value("version").toInt() == 1
-                    && message.value("hosting").toBool() && validId(id) && id != ownId()
-                    && displayName(message.value("channel")) && (hosts_.size() < 1024 || hosts_.contains(id))) {
-                    receiveDirectory(id, message, socket->peerAddress().toString(), targetPort, false, true);
-                }
-                finishDiscoveryProbe(socket);
-            });
-            if (discoverySearchProbes_.contains(socket)) discoverySearchProbes_[socket].buffer = std::move(buffer);
-        });
-        connect(socket, &QSslSocket::errorOccurred, this, [this, socket](QAbstractSocket::SocketError) {
-            finishDiscoveryProbe(socket);
-        });
-        connect(socket, &QSslSocket::disconnected, this, [this, socket] { finishDiscoveryProbe(socket); });
-        QTimer::singleShot(1500, socket, [this, socket] { finishDiscoveryProbe(socket); });
-        socket->connectToHostEncrypted(target.address, target.port, target.address, QIODevice::ReadWrite,
-                                       QAbstractSocket::IPv4Protocol);
-    }
-    if (discoverySearchQueue_.isEmpty() && discoverySearchProbes_.isEmpty()) {
-        discoverySearching_ = false;
-        emit discoverySearchChanged();
-    }
-}
-
-int LocalChannel::chatLifetimeDays() const {
-    const auto* c = chatClient();
-    return c && c->accepted ? c->messageLifetimeDays : 0;
-}
-
 QJsonObject LocalChannel::hostConfiguration() const {
     auto approvals = approved_.values(); std::sort(approvals.begin(), approvals.end());
     auto blocked = security_.value("blocked").toObject().keys(); std::sort(blocked.begin(), blocked.end());
@@ -1299,7 +1089,7 @@ bool LocalChannel::configureHost(const QJsonObject& configuration) {
     for (const auto& entry : configuration.value("approvedClients").toArray())
         if (!blocked.contains(entry.toString())) applyDecision(entry.toString(), true);
     if (days != previousDays) for (auto* socket : peers_.keys()) sendChatKey(socket);
-    if (hosting()) { announce(); broadcastRoster(); }
+    if (hosting()) { discovery_.announce(); broadcastRoster(); }
     return true;
 }
 
@@ -1342,8 +1132,8 @@ bool LocalChannel::listen(const QHostAddress& address, quint16 port) {
     hosting_ = true;
     botLastActive_ = clock_(); botSleeping_ = false;
     if (!service_ && !syncOwnedChannels()) { stopHost(); return false; }
-    hosts_.insert(channelId(), {channelName_, "127.0.0.1", this->port(), clock_(), false, false, ownId()});
-    announce();
+    discovery_.hosts.insert(channelId(), {channelName_, "127.0.0.1", this->port(), clock_(), false, false, ownId()});
+    discovery_.announce();
     emit hostsChanged();
     return setStatus(tr("Own channel opened."));
 }
@@ -1356,8 +1146,8 @@ bool LocalChannel::stopHost() {
     const auto sockets = peers_.keys();
     for (auto* socket : sockets) if (!peers_.value(socket).controller) socket->abort();
     history_.reset(); hostChatKey_.fill(0); hostChatKey_.clear(); hostChatEpoch_.clear();
-    hosts_.remove(channelId());
-    if (service_) { service_->hosts_.remove(channelId()); emit service_->hostsChanged(); }
+    discovery_.hosts.remove(channelId());
+    if (service_) { service_->discovery_.hosts.remove(channelId()); emit service_->hostsChanged(); }
     emit ownedChannelsChanged();
     emit hostsChanged();
     return setStatus(tr("Own channel closed."));
@@ -1365,7 +1155,7 @@ bool LocalChannel::stopHost() {
 
 QVariantList LocalChannel::hosts() const {
     QVariantList result;
-    for (auto it = hosts_.begin(); it != hosts_.end(); ++it)
+    for (auto it = discovery_.hosts.begin(); it != discovery_.hosts.end(); ++it)
         result.append(QVariantMap{{"id", it.key()}, {"deviceId", it->deviceId.isEmpty() ? it.key() : it->deviceId}, {"name", it->name}, {"address", it->address}, {"port", it->port}});
     std::sort(result.begin(), result.end(), [](const auto& a, const auto& b) {
         return a.toMap().value("name").toString().localeAwareCompare(b.toMap().value("name").toString()) < 0;
@@ -1410,7 +1200,7 @@ QVariantList LocalChannel::savedChannels() const {
     for (const auto& child : owned_) addOwn(*child);
     for (const auto& c : clients_) {
         if (entries.contains(c->id) || c->access == "blocked") continue;
-        const auto name = hosts_.contains(c->id) ? hosts_.value(c->id).name : c->name;
+        const auto name = discovery_.hosts.contains(c->id) ? discovery_.hosts.value(c->id).name : c->name;
         entries.insert(c->id, QJsonObject{{"name", name.isEmpty() ? tr("Channel") : name},
             {"address", c->address}, {"port", c->port}, {"deviceId", c->deviceId}, {"autoJoin", false}, {"lastJoined", 0}});
     }
@@ -1510,123 +1300,6 @@ QVariantList LocalChannel::requests() const {
     }
     if (!service_) for (const auto& child : owned_) result.append(child->requests());
     return result;
-}
-
-QVariantList LocalChannel::controlRequests() const {
-    QVariantList result;
-    QSet<QString> seen;
-    for (const auto& peer : peers_) {
-        if (!peer.pending || !peer.controller || seen.contains(peer.id)) continue;
-        seen.insert(peer.id); result.append(QVariantMap{{"id", peer.id}, {"name", peer.name}});
-    }
-    return result;
-}
-
-QVariantList LocalChannel::controllers() const {
-    if (service_) return service_->controllers();
-    QVariantList result;
-    const auto entries = control_.value("controllers").toObject();
-    for (auto it = entries.begin(); it != entries.end(); ++it) {
-        auto entry = it.value().toObject(); entry.insert("id", it.key()); result.append(entry.toVariantMap());
-    }
-    return result;
-}
-
-void LocalChannel::announce() {
-    if (service_) { service_->announce(); return; }
-    if (heartbeat_.isActive() && discovery_.state() != QAbstractSocket::BoundState) {
-        startDiscovery(); return;
-    }
-    const auto now = clock_();
-    for (auto it = hosts_.begin(); it != hosts_.end();) {
-        if (it.key() != ownId() && !it->direct && !it->scanned && now - it->seen > 6000) it = hosts_.erase(it);
-        else ++it;
-    }
-    if (discovery_.state() == QAbstractSocket::BoundState) {
-        const auto current = discoveryInterfaces();
-        const auto addresses = [](const auto& interface) {
-            QList<QHostAddress> result;
-            for (const auto& entry : interface.addressEntries())
-                if (entry.ip().protocol() == QAbstractSocket::IPv4Protocol) result.append(entry.ip());
-            return result;
-        };
-        const auto same = [&](const auto& a, const auto& b) {
-            // An interface index can be reused, and an existing adapter can
-            // receive a new address without changing its name or index.
-            return a.index() == b.index() && a.name() == b.name()
-                && a.hardwareAddress() == b.hardwareAddress() && addresses(a) == addresses(b);
-        };
-        if (std::any_of(discoveryInterfaces_.cbegin(), discoveryInterfaces_.cend(), [&](const auto& previous) {
-                return std::none_of(current.cbegin(), current.cend(),
-                    [&](const auto& value) { return same(previous, value); });
-            })) {
-            // A removed address may no longer be usable for leaving its old
-            // group. Rebinding drops every stale membership on all backends.
-            discovery_.close();
-            startDiscovery();
-            return;
-        }
-        for (const auto& interface : current) {
-            if (std::any_of(discoveryInterfaces_.cbegin(), discoveryInterfaces_.cend(),
-                    [&](const auto& value) { return same(interface, value); })) continue;
-            if (discovery_.joinMulticastGroup(discoveryGroup, interface)) discoveryInterfaces_.append(interface);
-            else qCDebug(discoveryLog) << "join" << interface.name() << discovery_.errorString();
-        }
-        if (discoveryInterfaces_.isEmpty()) {
-            discovery_.close();
-            discoveryError_ = tr("The network does not allow local multicast discovery.");
-            emit hostsChanged(); return;
-        }
-        discoveryError_.clear();
-    }
-    if (hosting()) {
-        for (const auto& entry : channelDirectory()) {
-            const auto value = entry.toObject();
-            hosts_.insert(value.value("id").toString(), {value.value("name").toString(), "127.0.0.1", port(), now, false, false, ownId()});
-        }
-        if (discovery_.state() == QAbstractSocket::BoundState) {
-            const auto data = QJsonDocument(QJsonObject{{"protocol", "squadspeak/1"}, {"id", ownId()},
-                {"name", channelName_}, {"port", port()}, {"channels", channelDirectory()}}).toJson(QJsonDocument::Compact);
-            bool sentAny = false;
-            QString failure;
-            for (const auto& interface : discoveryInterfaces_) {
-                discovery_.setMulticastInterface(interface);
-                const auto sent = discovery_.writeDatagram(data, discoveryGroup, discoveryPort);
-                const auto nativeError = errno;
-                if (sent >= 0) sentAny = true;
-                else failure = discovery_.errorString();
-                qCDebug(discoveryLog) << "announce" << interface.name() << sent
-                    << (sent < 0 ? discovery_.errorString() : QString{}) << "socket" << discovery_.error()
-                    << "errno" << (sent < 0 ? nativeError : 0);
-            }
-            discoveryError_ = sentAny ? QString{} : tr("Local channel discovery unavailable: %1").arg(failure);
-            if (!sentAny) discovery_.close();
-        }
-    }
-    emit hostsChanged();
-}
-
-void LocalChannel::receiveDiscovery() {
-    while (discovery_.hasPendingDatagrams()) {
-        const auto datagram = discovery_.receiveDatagram(8192);
-        qCDebug(discoveryLog) << "received" << datagram.senderAddress() << datagram.data().size() << "local" << localAddress(datagram.senderAddress());
-        if (!localAddress(datagram.senderAddress())) continue;
-        const auto object = QJsonDocument::fromJson(datagram.data()).object();
-        const auto id = object.value("id").toString();
-        const auto port = object.value("port").toInt();
-        if (object.value("protocol") != "squadspeak/1" || !validId(id) || id == ownId()
-            || !displayName(object.value("name")) || port < 1 || port > 65535) continue;
-        if (hosts_.size() >= 1024 && !hosts_.contains(id)) continue;
-        auto directory = object; directory.insert("channel", object.value("name"));
-        if (!receiveDirectory(id, directory, datagram.senderAddress().toString(), quint16(port), false, hosts_.value(id).scanned)) continue;
-        for (const auto& c : clients_) if (c->deviceId == id && c->reconnectWanted && hosts_.contains(c->id)) {
-            // Preserve explicit DNS names across endpoint changes on every channel.
-            if (!QHostAddress(c->address).isNull()) {
-                c->address = datagram.senderAddress().toString(); c->port = port;
-            }
-        }
-        emit hostsChanged();
-    }
 }
 
 bool LocalChannel::acceptableCertificateErrors(const QList<QSslError>& errors) {
@@ -2152,188 +1825,6 @@ void LocalChannel::admitPeer(QSslSocket* socket) {
     emit requestsChanged();
 }
 
-bool LocalChannel::acceptControlState(QSslSocket* socket, const QJsonObject& message) {
-    const auto id = peers_.value(socket).id;
-    auto entries = control_.value("controllers").toObject();
-    auto previous = entries.value(id).toObject();
-    const auto revision = message.value("revision").toInteger(-1);
-    if (previous.isEmpty() || !message.value("held").isBool() || revision < 0 || revision > 9007199254740991LL
-        || message.value("revision").toDouble(-1) != double(revision)) { socket->abort(); return false; }
-    const bool held = message.value("held").toBool();
-    const auto previousRevision = previous.value("revision").toInteger();
-    if (revision < previousRevision || (revision == previousRevision && previous.value("held").toBool() != held)) {
-        writeMessage(socket, {{"type", "control"}, {"result", "stale"}}); finishPeer(socket); return false;
-    }
-    if (revision == previousRevision) return true;
-    previous.insert("revision", revision); previous.insert("held", held);
-    previous.insert("name", peers_.value(socket).name);
-    entries.insert(id, previous);
-    auto next = control_; next.insert("controllers", entries);
-    if (!persistControl(next)) { socket->abort(); return false; }
-    return true;
-}
-
-bool LocalChannel::decideControl(const QString& id, bool allow) {
-    if (service_) return service_->decideControl(id, allow);
-    if (!validId(id)) return setControlStatus(tr("Invalid device identity."), false);
-    auto entries = control_.value("controllers").toObject();
-    QSslSocket* selected = nullptr;
-    if (allow) {
-        for (auto* socket : peers_.keys()) {
-            const auto& peer = peers_[socket];
-            if (peer.id == id && peer.controller && peer.pending
-                && (!selected || peer.revision > peers_.value(selected).revision)) selected = socket;
-        }
-        if (!selected) return setControlStatus(tr("No open pairing request exists for this device."), false);
-        const auto& peer = peers_[selected];
-        entries.insert(id, QJsonObject{{"name", peer.name}, {"held", peer.held}, {"revision", peer.revision},
-            {"remote", entries.value(id).toObject().value("remote").toBool()}});
-    } else entries.remove(id);
-    auto next = control_; next.insert("controllers", entries);
-    if (!persistControl(next)) return false;
-    if (allow) acceptPeer(selected);
-    else {
-        for (auto* socket : peers_.keys()) {
-            if (peers_.value(socket).id != id) continue;
-            if (peers_.value(socket).controller) {
-                writeMessage(socket, {{"type", "control"}, {"result", "revoked"}});
-                finishPeer(socket);
-            } else if (peers_.value(socket).joined && peers_.value(socket).remoteOffers) writeMessage(socket, {{"type", "remoteOffer"}, {"allowed", false}});
-        }
-    }
-    emit requestsChanged();
-    publishRemoteAvailability();
-    return setControlStatus(allow ? tr("Controller paired. Local mute takes precedence.") : tr("Pairing removed."));
-}
-
-bool LocalChannel::setRemotePermission(const QString& id, bool allow) {
-    if (service_) return service_->setRemotePermission(id, allow);
-    if (!validId(id) || id == ownId()) return setControlStatus(tr("Invalid device identity."), false);
-    if (!allow) return decideControl(id, false);
-    auto entries = control_.value("controllers").toObject();
-    if (!entries.contains(id)) {
-        auto members = hostClients();
-        for (const auto& child : owned_) members.append(child->hostClients());
-        const auto known = std::find_if(members.begin(), members.end(), [&](const auto& value) {
-            return value.toMap().value("id").toString() == id;
-        });
-        if (known == members.end()) return setControlStatus(tr("No known member exists for this device."), false);
-        entries.insert(id, QJsonObject{{"name", known->toMap().value("name").toString()}, {"held", false}, {"revision", 0}, {"remote", false}});
-    }
-    auto entry = entries.value(id).toObject();
-    entry.insert("remote", true); entries.insert(id, entry);
-    auto next = control_; next.insert("controllers", entries);
-    if (!persistControl(next)) return false;
-    for (auto* socket : peers_.keys()) {
-        const auto peer = peers_.value(socket);
-        if (peer.id != id || !peer.joined) continue;
-        if (peer.controller) {
-            const bool supported = !peer.capabilitiesAdvertised || peer.capabilities.contains("remote-control");
-            writeMessage(socket, {{"type", "control"}, {"result", "accepted"}, {"remoteAllowed", supported},
-                {"capabilities", capabilityAdvertisement()}});
-            sendRemoteView(socket);
-        } else if (peer.remoteOffers) writeMessage(socket, {{"type", "remoteOffer"}, {"allowed", true}, {"available", !hostOnly_ && !remoteMode()}});
-    }
-    publishRemoteAvailability();
-    return setControlStatus(tr("Remote control allowed for this device."));
-}
-
-QVariantList LocalChannel::remoteOffers() const {
-    QVariantList result;
-    QSet<QString> devices;
-    for (const auto& value : savedChannels()) {
-        const auto entry = value.toMap(); const auto id = entry.value("id").toString();
-        const auto device = entry.value("deviceId", id).toString();
-        if (entry.value("remoteControl").toBool() && device != ownId() && !devices.contains(device)
-            && !unavailableControlTargets_.contains(device)) { result.append(value); devices.insert(device); }
-    }
-    return result;
-}
-
-void LocalChannel::publishRemoteAvailability() {
-    const auto* device = service_ ? service_ : this;
-    const bool available = !device->hostOnly_ && !device->remoteMode();
-    if (!service_) for (const auto& child : owned_) child->publishRemoteAvailability();
-    for (auto* socket : peers_.keys()) {
-        const auto peer = peers_.value(socket);
-        if (!peer.joined) continue;
-        if (peer.controller && !available) {
-            peers_[socket].joined = false;
-            writeMessage(socket, {{"type", "control"}, {"result", "unavailable"}});
-            finishPeer(socket);
-        } else if (!peer.controller && peer.remoteOffers) {
-            writeMessage(socket, {{"type", "remoteOffer"}, {"available", available},
-                {"allowed", device->control_.value("controllers").toObject().value(peer.id).toObject().value("remote").toBool()}});
-        }
-    }
-}
-
-bool LocalChannel::receiveRemoteOffer(const QString& id, bool allowed, bool available) {
-    auto channels = savedChannels_;
-    const auto entry = channels.value(id).toObject();
-    if (entry.isEmpty()) return false;
-    const auto device = entry.value("deviceId").toString(id);
-    if (device == ownId()) return true;
-    bool changed = false;
-    for (auto it = channels.begin(); it != channels.end(); ++it) {
-        auto item = it.value().toObject();
-        if (item.value("deviceId").toString(it.key()) != device || item.value("remoteControl").toBool() == allowed) continue;
-        item.insert("remoteControl", allowed); it.value() = item; changed = true;
-    }
-    if (changed && !persist(approved_, attempts_, requestsAllowed_, endpointPins_, control_, security_, &channels)) return false;
-    if (!allowed && changed && control_.value("target").toObject().value("id").toString() == device) {
-        auto next = control_; next.insert("target", QJsonObject{}); next.insert("remoteMode", false);
-        if (!persistControl(next)) return false;
-        closeControl(); controlStopped_ = false;
-        setControlStatus(tr("Remote control permission was removed by the host."));
-    }
-    if (available) {
-        unavailableControlTargets_.remove(device);
-    } else {
-        unavailableControlTargets_.insert(device);
-    }
-    emit remoteChanged(); emit hostsChanged(); return true;
-}
-
-bool LocalChannel::chooseRemoteOffer(const QString& id) {
-    const auto entry = savedChannels_.value(id).toObject();
-    const auto device = entry.value("deviceId").toString(id);
-    if (!entry.value("remoteControl").toBool() || device == ownId() || unavailableControlTargets_.contains(device))
-        return setControlStatus(tr("This host has not allowed remote control."), false);
-    return startControl(device, entry.value("address").toString(), quint16(entry.value("port").toInt()), entry.value("name").toString(), false);
-}
-
-bool LocalChannel::setRemoteMode(bool enabled) {
-    if (hostOnly_) return false;
-    if (enabled == remoteMode()) return true;
-    const auto target = control_.value("target").toObject();
-    if (enabled && target.isEmpty()) return setControlStatus(tr("Pair a target device first."), false);
-    if (session_.pttInputHeld() || (!enabled && !target.value("revoked").toBool()
-        && (!controlConnected_ || controlAckRevision_ < session_.pttInputRevision())))
-        return setControlStatus(tr("Release first and wait for confirmation from the target."), false);
-    auto next = control_; next.insert("remoteMode", enabled);
-    if (!persistControl(next)) return false;
-    if (enabled) {
-        closeClients();
-        controlStopped_ = false;
-        updateControlIntent();
-        connectControl();
-    } else closeControl();
-    emit remoteChanged();
-    return setControlStatus(enabled ? tr("Connecting to the control target.") : tr("Using this device."));
-}
-
-bool LocalChannel::remoteAction(const QString& action, const QVariantMap& data) {
-    if (!remoteMode() || !remoteAllowed_ || !controlConnected_ || action.isEmpty() || action.size() > 32) return false;
-    auto payload = QJsonObject::fromVariantMap(data);
-    if (QJsonDocument(payload).toJson(QJsonDocument::Compact).size() > maximumFrame - 512) return false;
-    if (action != "join" && action != "leave" && action != "mute" && action != "deafen" && action != "chat" && action != "older" && action != "newer" && action != "latest" && action != "openChat") return false;
-    if (action == "chat" && (!payload.value("text").isString() || !ChatHistory::validText(payload.value("text").toString()))) return false;
-    if (action == "chat" || action == "older" || action == "newer" || action == "latest")
-        payload.insert("hostId", remoteView_.value("chatHostId").toString());
-    return writeMessage(controller_, {{"type", "remoteAction"}, {"action", action}, {"data", payload}});
-}
-
 bool LocalChannel::decide(const QString& id, bool allow) {
     if (!validId(id)) return setStatus(tr("Invalid device identity."), false);
     if (allow && security_.value("blocked").toObject().contains(id))
@@ -2496,409 +1987,6 @@ bool LocalChannel::approveAddress(const QString& endpoint) { return accessAddres
 bool LocalChannel::pairAddress(const QString& endpoint) {
     if (session_.pttInputHeld()) return setControlStatus(tr("Release the held transmit state first."), false);
     return accessAddress(endpoint, AddressAction::Pair);
-}
-
-bool LocalChannel::clearControlTarget() {
-    const auto target = control_.value("target").toObject();
-    if (target.isEmpty()) return true;
-    if (remoteMode() && (session_.pttInputHeld() || (!target.value("revoked").toBool()
-        && (!controlConnected_ || controlAckRevision_ < session_.pttInputRevision()))))
-        return setControlStatus(tr("Release first and wait for confirmation from the target. Alternatively remove pairing at the target and reconnect."), false);
-    auto next = control_; next.insert("target", QJsonObject{}); next.insert("remoteMode", false);
-    if (!persistControl(next)) return false;
-    closeControl(); controlStopped_ = false;
-    return setControlStatus(tr("The push-to-talk key controls this device again."));
-}
-
-bool LocalChannel::startControl(const QString& id, const QString& address, quint16 port, const QString& name, bool pairing) {
-    if (hostOnly_) return false;
-    // Resolve the authenticated identity before distinguishing a retry from a
-    // target change. A pending release must not be abandoned on another target.
-    const auto target = control_.value("target").toObject();
-    if (session_.pttInputHeld()) return setControlStatus(tr("Release the held transmit state first."), false);
-    if (remoteMode() && !target.isEmpty() && target.value("id") != id && !target.value("revoked").toBool()
-        && (!controlConnected_ || controlAckRevision_ < session_.pttInputRevision()))
-        return setControlStatus(tr("Before changing targets, the previous target must confirm release. Alternatively remove pairing there and reconnect."), false);
-    const auto canonicalAddress = canonicalEndpointHost(address);
-    if (canonicalAddress.isEmpty()) return setControlStatus(tr("The control target address is invalid."), false);
-    auto next = control_; next.insert("remoteMode", true);
-    next.insert("target", QJsonObject{{"id", id}, {"address", canonicalAddress}, {"port", port},
-        {"name", name}, {"pairing", pairing}, {"blocked", false}, {"revoked", false}});
-    if (!persistControl(next)) return setControlStatus(tr("Control target could not be saved."), false);
-    closeClients();
-    closeControl();
-    controlStopped_ = false;
-    updateControlIntent();
-    connectControl();
-    return true;
-}
-
-void LocalChannel::closeControl() {
-    if (controller_) {
-        auto* socket = controller_.data(); controller_ = nullptr;
-        socket->disconnect(this); socket->abort(); socket->deleteLater();
-    }
-    controlConnected_ = false; controlPending_ = false; controlAckRevision_ = -1;
-    controlBuffer_.clear();
-    remoteAllowed_ = false; remoteView_.clear(); remoteLevels_.clear(); emit remoteLevelsChanged();
-    imageQueue_.clear(); downloadingImage_.clear(); downloadedImage_.clear(); imageCache_.clear();
-    ++imageRevision_; emit imagesChanged(); remoteSnapshotBuffer_.clear();
-    remoteSnapshotId_.clear(); remoteSnapshotExpected_ = -1;
-    emit remoteChanged();
-    emit controlChanged();
-}
-
-void LocalChannel::blockControl(QString reason, bool revoked) {
-    controlStopped_ = true;
-    auto next = control_;
-    auto target = next.value("target").toObject(); target.insert("blocked", true); target.insert("revoked", revoked); next.insert("target", target);
-    if (!persistControl(next)) reason += tr(" The connection stop could not be saved.");
-    controlTimer_.stop(); closeControl(); setControlStatus(std::move(reason), false);
-}
-
-void LocalChannel::connectControl() {
-    if (service_) return;
-    const auto target = control_.value("target").toObject();
-    if (!remoteMode() || !ready() || controller_ || target.isEmpty() || target.value("blocked").toBool() || controlStopped_) return;
-    const auto address = target.value("address").toString();
-    const bool preferIpv4 = QHostAddress(address).isNull();
-    auto* socket = new QSslSocket(this);
-    controller_ = socket; controlBuffer_.clear();
-    controlReply_ = controlClock_.elapsed();
-    socket->setReadBufferSize(2 * maximumFrame);
-    socket->setSslConfiguration(identity_->configuration());
-    const auto expected = target.value("id").toString();
-    connect(socket, &QSslSocket::sslErrors, this, [this, socket, expected](const QList<QSslError>& errors) {
-        socket->setProperty("squadTlsSeen", true);
-        if (TlsIdentity::peerId(socket->peerCertificate()) != expected) {
-            blockControl(tr("The control target has a different device identity. Remote control stopped."));
-        } else if (acceptableCertificateErrors(errors)) socket->ignoreSslErrors(errors);
-    });
-    connect(socket, &QSslSocket::encrypted, this, [this, socket, expected] {
-        socket->setProperty("squadTlsSeen", true);
-        if (TlsIdentity::peerId(socket->peerCertificate()) != expected) {
-            blockControl(tr("The control target's device identity does not match.")); return;
-        }
-        socket->setSocketOption(QAbstractSocket::LowDelayOption, 1);
-        writeMessage(socket, {{"type", "controlHello"}, {"version", 1}, {"name", session_.userName()},
-            {"held", session_.pttInputHeld()}, {"revision", session_.pttInputRevision()},
-            {"pairing", control_.value("target").toObject().value("pairing")}, {"capabilities", capabilityAdvertisement()}});
-    });
-    connect(socket, &QSslSocket::readyRead, this, [this, socket] {
-        auto buffer = std::move(controlBuffer_);
-        readMessages(socket, buffer, [this](const QJsonObject& message) { controlMessage(message); });
-        if (controller_ == socket) controlBuffer_ = std::move(buffer);
-    });
-    connect(socket, &QSslSocket::errorOccurred, this, [this, socket, address, port = quint16(target.value("port").toInt()), ipv4Attempt = preferIpv4](QAbstractSocket::SocketError error) mutable {
-        if (controller_ != socket) return;
-        if (ipv4Attempt && addressConnectionFailure(error, socket)) {
-            ipv4Attempt = false;
-            socket->setProperty("squadIpv6Retry", true);
-            QTimer::singleShot(0, socket, [this, socket, address, port] {
-                if (controller_ != socket) return;
-                socket->setProperty("squadIpv6Retry", false);
-                connectEndpoint(socket, address, port, QAbstractSocket::IPv6Protocol);
-            });
-            return;
-        }
-        const auto reason = socket->errorString(); closeControl();
-        setControlStatus(tr("Remote control interrupted: %1. Reconnecting.").arg(reason), false);
-    });
-    connect(socket, &QSslSocket::disconnected, this, [this, socket] {
-        if (controller_ != socket) return;
-        if (socket->property("squadIpv6Retry").toBool()) return;
-        closeControl(); setControlStatus(tr("Control target is not connected. The last key state is retained."));
-    });
-    setControlStatus(tr("Connecting to the control target."));
-    connectEndpoint(socket, address, quint16(target.value("port").toInt()),
-        preferIpv4 ? QAbstractSocket::IPv4Protocol : QAbstractSocket::AnyIPProtocol);
-}
-
-void LocalChannel::sendControlState() {
-    if (!controlConnected_) return;
-    writeMessage(controller_, {{"type", "pttState"}, {"held", session_.pttInputHeld()}, {"revision", session_.pttInputRevision()}});
-}
-
-void LocalChannel::sendRemoteView(QSslSocket* socket) {
-    const auto controllers = control_.value("controllers").toObject();
-    QByteArray encoded;
-    for (auto* peerSocket : peers_.keys()) {
-        if (socket && peerSocket != socket) continue;
-        if (!peers_.value(peerSocket).controller || !peers_.value(peerSocket).joined
-            || !controllers.value(peers_.value(peerSocket).id).toObject().value("remote").toBool()
-            || (peers_.value(peerSocket).capabilitiesAdvertised && !peers_.value(peerSocket).capabilities.contains("remote-control"))) continue;
-        if (peers_.value(peerSocket).remoteSnapshotWaiting) { peers_[peerSocket].remoteSnapshotDirty = true; continue; }
-        if (encoded.isEmpty()) {
-            const QVariantMap view{{"channels", savedChannels()}, {"participants", participants()},
-                {"messages", messages()}, {"chatBot", chatBot()}, {"chatLifetimeDays", chatLifetimeDays()}, {"chatHostId", chatHostId_}, {"chatMembers", chatMembers()}, {"joinedHostId", joinedHostId_}, {"joined", joined()},
-                {"chatReady", chatReady()}, {"chatPending", chatPending()},
-                {"chatOnlineIds", chatOnlineIds()}, {"chatPresenceKnown", chatPresenceKnown()}, {"receiveAudioBitrate", receiveAudioBitrate()},
-                {"historyLoading", historyLoading()}, {"hasOlderMessages", hasOlderMessages()}, {"hasNewerMessages", hasNewerMessages()}, {"muted", session_.muted()},
-                {"deafened", session_.deafened()}, {"name", session_.userName()}, {"avatar", VoiceSession::avatarFallback(session_.avatar())}, {"avatarId", session_.avatar()},
-                {"available", session_.available()}, {"pushToTalk", session_.pushToTalk()}, {"ownId", ownId()}};
-            encoded = QJsonDocument(QJsonObject::fromVariantMap(view)).toJson(QJsonDocument::Compact);
-        }
-        auto snapshot = encoded;
-        if (!peers_.value(peerSocket).capabilities.contains("extended-retention")) {
-            auto view = QJsonDocument::fromJson(snapshot).object();
-            QJsonArray records;
-            const auto* client = chatClient();
-            const auto now = client && client->chatClock.isValid() ? client->serverTime + client->chatClock.elapsed() : clock_();
-            for (const auto value : view.value("messages").toArray()) {
-                const auto record = ChatHistory::forReader(value.toObject(), false);
-                if (record.value("expires").toInteger() > now) records.append(record);
-            }
-            view.insert("messages", records);
-            view.insert("chatLifetimeDays", std::min(view.value("chatLifetimeDays").toInt(), 30));
-            snapshot = QJsonDocument(view).toJson(QJsonDocument::Compact);
-        }
-        if (snapshot.size() > maximumRemoteView) { peerSocket->abort(); continue; }
-        auto& peer = peers_[peerSocket];
-        peer.remoteSnapshot = snapshot; peer.remoteSnapshotId = QUuid::createUuid().toString(QUuid::WithoutBraces);
-        peer.remoteSnapshotOffset = 0; peer.remoteSnapshotWaiting = true; peer.remoteSnapshotDirty = false;
-        const auto snapshotId = peer.remoteSnapshotId;
-        if (writeMessage(peerSocket, {{"type", "remoteViewStart"}, {"id", snapshotId}, {"size", snapshot.size()}}))
-            sendRemoteViewChunk(peerSocket);
-    }
-}
-
-void LocalChannel::sendRemoteViewChunk(QSslSocket* socket) {
-    const auto peer = peers_.constFind(socket);
-    if (peer == peers_.cend() || !peer->remoteSnapshotWaiting) return;
-    const auto chunk = peer->remoteSnapshot.mid(peer->remoteSnapshotOffset, remoteChunkSize);
-    writeMessage(socket, {{"type", "remoteViewChunk"}, {"id", peer->remoteSnapshotId},
-        {"offset", peer->remoteSnapshotOffset}, {"data", QString::fromLatin1(chunk.toBase64())}});
-}
-
-bool LocalChannel::applyRemoteView(const QByteArray& bytes) {
-    QJsonParseError error;
-    const auto document = QJsonDocument::fromJson(bytes, &error);
-    const auto view = document.object();
-    if (error.error != QJsonParseError::NoError || !document.isObject()
-        || !view.value("channels").isArray() || !view.value("participants").isArray() || !view.value("messages").isArray()
-        || !validId(view.value("ownId").toString()) || !displayName(view.value("name")) || !VoiceSession::validAvatar(view.value("avatar").toString()) || !validPresenceDetails(view)) return false;
-    for (const auto* key : {"joined", "chatReady", "chatPending", "historyLoading", "hasOlderMessages", "hasNewerMessages", "muted", "deafened", "available", "pushToTalk"})
-        if (!view.value(key).isBool()) return false;
-    if (view.contains("chatLifetimeDays")) {
-        const auto days = view.value("chatLifetimeDays").toInteger(-1);
-        if (view.value("chatLifetimeDays").toDouble(-1) != double(days)
-            || (days != 0 && days != 1 && days != 7 && days != 30)) return false;
-    }
-    const auto host = view.value("joinedHostId").toString();
-    if (!view.value("joinedHostId").isString() || (!host.isEmpty() && !validId(host)) || (view.value("joined").toBool() && host.isEmpty())) return false;
-    QSet<QString> ids;
-    for (const auto value : view.value("channels").toArray()) {
-        const auto entry = value.toObject(); const auto id = entry.value("id").toString();
-        if (!validId(id) || ids.contains(id) || !displayName(entry.value("name")) || !entry.value("online").isBool()
-            || !entry.value("autoJoin").isBool() || !validEndpointHost(entry.value("address").toString())
-            || entry.value("port").toInt() < 1 || entry.value("port").toInt() > 65535
-            || !validMembers(entry.value("members")) || (!entry.value("online").toBool() && !entry.value("members").toArray().isEmpty())
-            || !entry.value("access").isString() || entry.value("access").toString().size() > 32) return false;
-        ids.insert(id);
-    }
-    if (!validMembers(view.value("participants")) || !validMembers(view.value("chatMembers"))) return false;
-    if (view.contains("chatBot") && (!view.value("chatBot").isObject()
-        || (!view.value("chatBot").toObject().isEmpty()
-            && (!validMembers(QJsonArray{view.value("chatBot")}) || !view.value("chatBot").toObject().value("music").toBool())))) return false;
-    if (view.contains("chatPresenceKnown")) {
-        if (!view.value("chatPresenceKnown").isBool() || !view.value("chatOnlineIds").isArray()) return false;
-        QSet<QString> online;
-        for (const auto item : view.value("chatOnlineIds").toArray()) {
-            const auto id = item.toString();
-            if (!validId(id) || online.contains(id)) return false;
-            online.insert(id);
-        }
-        if ((!view.value("chatReady").toBool() || !view.value("chatPresenceKnown").toBool()) && !online.isEmpty()) return false;
-    }
-    const auto chat = view.value("chatHostId").toString();
-    if (!view.value("chatHostId").isString() || (!chat.isEmpty() && !validId(chat))
-        || (view.value("chatReady").toBool() && chat.isEmpty())) return false;
-    const auto messages = view.value("messages").toArray();
-    if ((!view.value("chatReady").toBool() && (!messages.isEmpty() || !view.value("chatMembers").toArray().isEmpty()))
-        || messages.size() > maximumWindowMessages || QJsonDocument(messages).toJson(QJsonDocument::Compact).size() > maximumWindowBytes) return false;
-    qint64 sequence = 0;
-    for (const auto value : messages) {
-        const auto entry = value.toObject();
-        if (!ChatHistory::validMessage(entry) || entry.value("sequence").toInteger() <= sequence) return false;
-        sequence = entry.value("sequence").toInteger();
-    }
-    if (remoteView_.value("chatHostId").toString() != view.value("chatHostId").toString()) {
-        imageQueue_.clear(); downloadingImage_.clear(); downloadedImage_.clear(); imageCache_.clear();
-        ++imageRevision_; emit imagesChanged();
-    }
-    if (remoteView_.value("joinedHostId").toString() != host) { remoteLevels_.clear(); emit remoteLevelsChanged(); }
-    remoteView_ = view.toVariantMap(); emit remoteChanged(); downloadImage(); return true;
-}
-
-bool LocalChannel::handleRemoteAction(QSslSocket* socket, const QJsonObject& message) {
-    const auto action = message.value("action").toString();
-    const auto data = message.value("data").toObject();
-    if (action.isEmpty() || action.size() > 32 || QJsonDocument(data).toJson(QJsonDocument::Compact).size() > maximumFrame - 512) { socket->abort(); return false; }
-    bool okay = false;
-    if ((action == "chat" || action == "older" || action == "newer" || action == "latest")
-        && data.value("hostId").toString() != chatHostId_) {
-        writeMessage(socket, {{"type", "remoteActionResult"}, {"action", action}, {"ok", false}, {"error", tr("The viewed channel changed. Try again.")}});
-        return false;
-    }
-    if (remoteMode() || !message.value("data").isObject()) {
-        writeMessage(socket, {{"type", "remoteActionResult"}, {"action", action}, {"ok", false}, {"error", tr("The target is in remote mode or the action is invalid.")}});
-        return false;
-    }
-    if (action == "join") {
-        const auto id = data.value("hostId").toString();
-        okay = validId(id) && (savedChannels_.contains(id) || ownChannel(id)) && joinSaved(id);
-    } else if (action == "openChat") {
-        const auto id = data.value("hostId").toString();
-        okay = validId(id) && (savedChannels_.contains(id) || ownChannel(id)) && openSavedChat(id);
-    } else if (action == "older") {
-        okay = loadOlderMessages();
-    } else if (action == "newer") {
-        okay = loadNewerMessages();
-    } else if (action == "latest") {
-        okay = refreshChat();
-    } else if (action == "leave") {
-        okay = leave();
-    } else if (action == "mute" && data.value("value").isBool()) {
-        okay = session_.setMuted(data.value("value").toBool());
-        if (okay) sendPresence();
-    } else if (action == "deafen" && data.value("value").isBool()) {
-        okay = session_.setDeafened(data.value("value").toBool());
-        if (okay) sendPresence();
-    } else if (action == "chat" && data.value("text").isString()) {
-        const auto text = data.value("text").toString();
-        okay = !remoteChatSocket_ && ChatHistory::validText(text) && sendChat(text);
-        if (okay) { remoteChatSocket_ = socket; remotePendingChat_ = text; remotePendingHost_ = chatHostId_; }
-    }
-    writeMessage(socket, {{"type", "remoteActionResult"}, {"action", action}, {"ok", okay}, {"pending", action == "chat" && okay},
-        {"error", okay ? QString{} : (chatError_.isEmpty() ? tr("Remote action rejected.") : chatError_)}});
-    return okay;
-}
-
-void LocalChannel::controlMessage(const QJsonObject& message) {
-    controlReply_ = controlClock_.elapsed();
-    const auto type = message.value("type").toString();
-    if (controlConnected_ && unknownMessageType(type)) return;
-    if (type == "remoteImage") {
-        if (!remoteAllowed_ || !controlConnected_) { blockControl(tr("Remote images are not authorized.")); return; }
-        if (message.value("hostId").toString() != remoteView_.value("chatHostId").toString()) return;
-        const auto payload = message.value("payload").toObject();
-        if (payload.value("kind") == "imageError") {
-            if (payload.value("hash").toString() == downloadingImage_) {
-                downloadingImage_.clear(); downloadedImage_.clear(); downloadImage();
-                setControlStatus(tr("This chat image is no longer available."), false);
-            }
-            return;
-        }
-        try { if (payload.value("kind") == "imageData" && receiveImage(payload)) return; }
-        catch (const std::exception& error) { blockControl(tr(error.what())); return; }
-        blockControl(tr("Invalid remote image.")); return;
-    }
-    if (type == "remoteLevels") {
-        if (!remoteAllowed_ || !controlConnected_ || !message.value("levels").isObject()) { blockControl(tr("Invalid speaking activity.")); return; }
-        if (message.value("hostId").toString() != remoteView_.value("joinedHostId").toString()) return;
-        QVariantMap levels;
-        const auto values = message.value("levels").toObject();
-        for (auto it = values.begin(); it != values.end(); ++it) {
-            if (!validId(it.key()) || !it.value().isDouble() || it.value().toDouble() < 0 || it.value().toDouble() > 1) {
-                blockControl(tr("Invalid speaking activity.")); return;
-            }
-            levels.insert(it.key(), it.value().toDouble());
-        }
-        remoteLevels_ = levels; emit remoteLevelsChanged(); return;
-    }
-    if (type.startsWith("remoteView")) {
-        if (!remoteMode() || !remoteAllowed_ || !controlConnected_) { blockControl(tr("Remote view is not authorized.")); return; }
-        if (type == "remoteViewStart") {
-            const auto id = message.value("id").toString(); const auto size = message.value("size").toInteger(-1);
-            if (!remoteSnapshotId_.isEmpty() || QUuid(id).isNull() || size < 2 || size > maximumRemoteView
-                || message.value("size").toDouble(-1) != double(size)) { blockControl(tr("Invalid remote view.")); return; }
-            remoteSnapshotId_ = id; remoteSnapshotExpected_ = size; remoteSnapshotBuffer_.clear(); return;
-        }
-        if (type == "remoteViewChunk") {
-            const auto id = message.value("id").toString(); const auto offset = message.value("offset").toInteger(-1);
-            const auto bytes = QByteArray::fromBase64Encoding(message.value("data").toString().toLatin1(), QByteArray::AbortOnBase64DecodingErrors);
-            if (id != remoteSnapshotId_ || id.isEmpty() || offset != remoteSnapshotBuffer_.size() || message.value("offset").toDouble(-1) != double(offset)
-                || !bytes || bytes.decoded.isEmpty() || bytes.decoded.size() > remoteChunkSize || remoteSnapshotExpected_ < 0
-                || remoteSnapshotBuffer_.size() + bytes.decoded.size() > remoteSnapshotExpected_) { blockControl(tr("Invalid remote view chunk.")); return; }
-            remoteSnapshotBuffer_.append(bytes.decoded);
-            writeMessage(controller_, {{"type", "remoteViewAck"}, {"id", id}, {"offset", offset}}); return;
-        }
-        if (type == "remoteViewEnd") {
-            if (message.value("id").toString() != remoteSnapshotId_ || remoteSnapshotId_.isEmpty()
-                || remoteSnapshotBuffer_.size() != remoteSnapshotExpected_ || !applyRemoteView(remoteSnapshotBuffer_)) {
-                blockControl(tr("Invalid or incomplete remote view.")); return;
-            }
-            remoteSnapshotBuffer_.clear(); remoteSnapshotId_.clear(); remoteSnapshotExpected_ = -1; return;
-        }
-        blockControl(tr("Invalid remote view message.")); return;
-    }
-    if (type == "remoteActionResult") {
-        const auto action = message.value("action").toString();
-        if (!remoteAllowed_ || !controlConnected_ || !message.value("ok").isBool()) { blockControl(tr("Invalid remote action result.")); return; }
-        if (!message.value("ok").toBool()) {
-            const auto error = message.value("error").toString().left(512);
-            setControlStatus(error.isEmpty() ? tr("Remote action rejected.") : error, false);
-            if (action == "chat") emit remoteChatFailed(controlStatus_);
-        } else if (action == "chat" && message.value("delivered").toBool() && message.value("text").isString())
-            emit remoteChatSent(message.value("text").toString());
-        return;
-    }
-    if (type == "controlWait" && controlPending_) return;
-    if (type == "controlAck" && controlConnected_) {
-        const auto revision = message.value("revision").toInteger(-1);
-        if (revision < 0 || revision > session_.pttInputRevision() || message.value("revision").toDouble(-1) != double(revision)) {
-            blockControl(tr("Invalid confirmation of push-to-talk state.")); return;
-        }
-        controlAckRevision_ = std::max(controlAckRevision_, revision);
-        return;
-    }
-    if (type != "control") { blockControl(tr("Invalid response from the control target.")); return; }
-    const auto result = message.value("result").toString();
-    if (result == "accepted") {
-        QSet<QString> capabilities;
-        if (!parseCapabilities(message, &capabilities)) { blockControl(tr("Invalid response from the control target.")); return; }
-        unavailableControlTargets_.remove(control_.value("target").toObject().value("id").toString());
-        auto next = control_;
-        auto target = next.value("target").toObject(); target.insert("pairing", false); next.insert("target", target);
-        if (!persistControl(next)) { controlStopped_ = true; controlTimer_.stop(); closeControl(); setControlStatus(tr("Pairing could not be saved."), false); return; }
-        controlConnected_ = true; controlPending_ = false;
-        remoteAllowed_ = message.value("remoteAllowed").toBool()
-            && (!message.contains("capabilities") || capabilities.contains("remote-control"));
-        if (!remoteAllowed_) {
-            remoteView_.clear(); remoteSnapshotBuffer_.clear(); remoteSnapshotId_.clear(); remoteSnapshotExpected_ = -1;
-            remoteLevels_.clear(); emit remoteLevelsChanged();
-            imageQueue_.clear(); downloadingImage_.clear(); downloadedImage_.clear(); imageCache_.clear();
-            ++imageRevision_; emit imagesChanged();
-        }
-        emit remoteChanged();
-        setControlStatus(remoteAllowed_ ? tr("Remote control connected. Mute at the target takes precedence.")
-            : tr("Push-to-talk connected. Enable additional controls on the target device."));
-        sendControlState();
-    } else if (result == "unavailable") {
-        unavailableControlTargets_.insert(control_.value("target").toObject().value("id").toString());
-        closeControl();
-        emit hostsChanged();
-        setControlStatus(tr("Remote control is temporarily unavailable at the target."));
-    } else if (result == "pending") {
-        controlPending_ = true;
-        setControlStatus(tr("Confirm remote push-to-talk pairing on the target device."));
-    } else if (result == "rejected") {
-        blockControl(tr("Pairing rejected. A new request is possible in %1 seconds at the earliest.").arg((message.value("retryMs").toInteger() + 999) / 1000), true);
-    } else if (result == "stale") {
-        blockControl(tr("The saved key state is stale. Confirm pairing again on the target."));
-    } else if (result == "replaced") {
-        blockControl(tr("A newer connection from this controller is active."));
-    } else if (result == "revoked") {
-        const auto id = control_.value("target").toObject().value("id").toString();
-        QString channel;
-        for (auto it = savedChannels_.begin(); it != savedChannels_.end(); ++it) {
-            const auto entry = it.value().toObject();
-            if (entry.value("deviceId").toString(it.key()) == id && entry.value("remoteControl").toBool()) { channel = it.key(); break; }
-        }
-        if (!channel.isEmpty()) {
-            if (!receiveRemoteOffer(channel, false)) blockControl(tr("Remote permission could not be saved."), true);
-        } else blockControl(tr("Pairing was removed or rejected at the target."), true);
-    } else blockControl(tr("Unknown response from the control target."));
 }
 
 void LocalChannel::finishDirect() {
@@ -3219,7 +2307,7 @@ void LocalChannel::clientMessage(Client& c, const QJsonObject& message) {
             auto next = savedChannels_;
             auto entry = next.value(c.id).toObject();
             if (c.voice || !entry.contains("lastJoined")) entry.insert("lastJoined", clock_());
-            entry.insert("name", hosts_.contains(c.id) ? hosts_.value(c.id).name
+            entry.insert("name", discovery_.hosts.contains(c.id) ? discovery_.hosts.value(c.id).name
                 : c.name.isEmpty() ? entry.value("name").toString(tr("Channel")) : c.name);
             entry.insert("address", c.address); entry.insert("port", c.port);
             if (!entry.contains("autoJoin")) entry.insert("autoJoin", false);
@@ -3328,8 +2416,8 @@ void LocalChannel::clientMessage(Client& c, const QJsonObject& message) {
         }
         emit hostsChanged();
         if (displayName(message.value("name"))) rememberChannel(c, message.value("name").toString());
-        if (hosts_.contains(c.id) && displayName(message.value("name"))) {
-            hosts_[c.id].name = message.value("name").toString(); emit hostsChanged();
+        if (discovery_.hosts.contains(c.id) && displayName(message.value("name"))) {
+            discovery_.hosts[c.id].name = message.value("name").toString(); emit hostsChanged();
         }
         emit participantsChanged();
     } else if (type == "media" && c.accepted) {
@@ -3407,562 +2495,5 @@ bool LocalChannel::sendScreenAudio(const QByteArray& packet) {
     relayAudio(nullptr, packet, true); return true;
 }
 
-QVariantList LocalChannel::messages() const {
-    const auto* c = chatClient();
-    QVariantList result;
-    if (!c || !c->accepted) return result;
-    const auto now = c->chatClock.isValid() ? c->serverTime + c->chatClock.elapsed() : c->serverTime;
-    const auto bot = chatBot();
-    for (const auto value : c->messages) {
-        auto record = value.toObject().toVariantMap();
-        if (record.value("expires").toLongLong() <= now) continue;
-        if (record.contains("event") && record.value("sender") == bot.value("id")) record.insert("name", bot.value("name"));
-        result.append(record);
-    }
-    return result;
-}
-
-void LocalChannel::sendChatKey(QSslSocket* socket) {
-    if (!history_ || !peers_.value(socket).joined || peers_.value(socket).controller) return;
-    writeMessage(socket, {{"type", "chatKey"}, {"epoch", hostChatEpoch_},
-        {"key", QString::fromLatin1(hostChatKey_.toBase64())}, {"lifetimeDays", peers_.value(socket).capabilities.contains("extended-retention") ? messageLifetimeDays() : std::min(messageLifetimeDays(), 30)}, {"now", std::max(history_->time(), clock_())}});
-}
-
-void LocalChannel::rotateChatKey() {
-    if (!hosting_ || !history_) return;
-    try {
-        hostChatKey_ = TlsIdentity::newKey();
-        hostChatEpoch_ = QUuid::createUuid().toString(QUuid::WithoutBraces);
-        for (auto* socket : peers_.keys()) sendChatKey(socket);
-    } catch (const std::exception& error) {
-        stopHost(); setStatus(tr(error.what()), false);
-    }
-}
-
-bool LocalChannel::writeChat(QSslSocket* socket, const QJsonObject& payload) {
-    const auto context = "SquadSpeak/chat/v1/" + channelId().toUtf8() + '/' + hostChatEpoch_.toUtf8() + "/host";
-    auto compatible = payload;
-    if (compatible.value("kind") == "message" && !peers_.value(socket).capabilities.contains("extended-retention")) {
-        const auto record = ChatHistory::forReader(compatible.value("record").toObject(), false);
-        if (record.value("expires").toInteger() <= compatible.value("now").toInteger()) return true;
-        compatible.insert("record", record);
-    }
-    const auto sealed = TlsIdentity::seal(QJsonDocument(compatible).toJson(QJsonDocument::Compact), hostChatKey_, context);
-    return writeMessage(socket, {{"type", "chat"}, {"epoch", hostChatEpoch_}, {"data", QString::fromLatin1(sealed.toBase64())}});
-}
-
-bool LocalChannel::sendChatCommand(Client& c, const QJsonObject& payload) {
-    if (!(c.accepted && c.chatKey.size() == 32)) return false;
-    const auto context = "SquadSpeak/chat/v1/" + c.id.toUtf8() + '/' + c.chatEpoch.toUtf8() + '/' + ownId().toUtf8();
-    const auto sealed = TlsIdentity::seal(QJsonDocument(payload).toJson(QJsonDocument::Compact), c.chatKey, context);
-    return writeMessage(c.socket, {{"type", "chat"}, {"epoch", c.chatEpoch}, {"data", QString::fromLatin1(sealed.toBase64())}});
-}
-
-QJsonObject LocalChannel::hostHistory(const QJsonObject& query) {
-    const auto cursorValue = query.value("cursor");
-    const auto cursor = cursorValue.isUndefined() ? 0 : cursorValue.toInteger(-1);
-    const auto directionValue = query.value("direction");
-    const auto direction = directionValue.isUndefined() ? QStringLiteral("latest") : directionValue.toString();
-    if (cursor < 0 || cursor > 9007199254740991LL || (!cursorValue.isUndefined()
-        && (!cursorValue.isDouble() || cursorValue.toDouble(-1) != double(cursor)))
-        || (direction != "latest" && direction != "older" && direction != "newer"))
-        throw std::invalid_argument("History requires an integer cursor from 0 to 9007199254740991 and direction latest, older or newer.");
-    if (!hosting_ || !history_) throw std::runtime_error(QT_TRANSLATE_NOOP("LocalChannel", "The local channel is not ready."));
-    history_->expire(clock_());
-    return history_->page(cursor, direction, !query.contains("extended") || query.value("extended").toBool());
-}
-
-bool LocalChannel::hostChat(QSslSocket* socket, const QJsonObject& message) {
-    if (!history_) { socket->abort(); return false; }
-    try {
-        // A membership change can race an already encrypted submission. Send
-        // the new key through authenticated TLS; retry keeps the request ID.
-        if (message.value("epoch") != hostChatEpoch_) { sendChatKey(socket); return true; }
-        const auto bytes = QByteArray::fromBase64Encoding(message.value("data").toString().toLatin1(), QByteArray::AbortOnBase64DecodingErrors);
-        if (!bytes) { socket->abort(); return false; }
-        const auto sender = peers_.value(socket).id;
-        const auto context = "SquadSpeak/chat/v1/" + channelId().toUtf8() + '/' + hostChatEpoch_.toUtf8() + '/' + sender.toUtf8();
-        QJsonParseError parse;
-        const auto document = QJsonDocument::fromJson(TlsIdentity::open(bytes.decoded, hostChatKey_, context), &parse);
-        if (parse.error != QJsonParseError::NoError || !document.isObject()) { socket->abort(); return false; }
-        const auto payload = document.object();
-        const auto kind = payload.value("kind").toString();
-        if (!validMessageType(kind)) { socket->abort(); return false; }
-        if (!knownChatKinds.contains(kind)) return true;
-        if (payload.value("kind") == "history") {
-            const auto request = payload.value("request").toString();
-            if (QUuid(request).isNull() || !payload.contains("cursor") || !payload.contains("direction")) {
-                socket->abort(); return false;
-            }
-            QJsonObject page;
-            try {
-                auto request = payload;
-                request.insert("extended", peers_.value(socket).capabilities.contains("extended-retention"));
-                page = hostHistory(request);
-            }
-            catch (const std::invalid_argument&) { socket->abort(); return false; }
-            page.insert("request", request);
-            return writeChat(socket, page);
-        }
-        history_->expire(clock_());
-        const auto now = history_->time();
-        if (payload.value("kind") == "imageGet" || payload.value("kind") == "imageChunk") return hostImage(socket, payload, now);
-        if (payload.value("kind") != "send" && payload.value("kind") != "imageStart") { socket->abort(); return false; }
-        const auto issued = payload.value("issued").toInteger(-1);
-        if (issued < 0 || issued > now + 30000 || now - issued >= ChatHistory::lifetime
-            || payload.value("issued").toDouble(-1) != double(issued))
-            return writeChat(socket, {{"kind", "error"}, {"now", now}, {"error", tr("The message is too old. Check the draft again.")}});
-        for (auto it = chatWindows_.begin(); it != chatWindows_.end();)
-            if (now - it->first >= 10000) it = chatWindows_.erase(it); else ++it;
-        auto& window = chatWindows_[sender];
-        if (!window.second) window.first = now;
-        if (++window.second > 10)
-            return writeChat(socket, {{"kind", "error"}, {"now", now}, {"error", tr("Too many messages. Please wait briefly.")}});
-        if (payload.value("kind") == "imageStart") return hostImage(socket, payload, now);
-        const auto record = history_->append(sender, peers_.value(socket).name,
-            payload.value("request").toString(), payload.value("text").toString(), now, {}, peers_.value(socket).avatar, qint64(messageLifetimeDays()) * ChatHistory::lifetime);
-        // Acknowledgement and broadcast follow the successful atomic save.
-        publishChat(record);
-        return true;
-    } catch (const std::exception& error) {
-        // Keep drafts on the client; disk/key errors never become successful receipts.
-        try { writeChat(socket, {{"kind", "error"}, {"now", std::max(history_->time(), clock_())}, {"error", QString::fromUtf8(error.what())}}); }
-        catch (const std::exception&) { socket->abort(); }
-        return false;
-    }
-}
-
-bool LocalChannel::clientChat(Client& c, const QJsonObject& message) {
-    try {
-        QJsonObject payload;
-        const bool keyMessage = message.value("type") == "chatKey";
-        if (keyMessage) {
-            const auto key = QByteArray::fromBase64Encoding(message.value("key").toString().toLatin1(), QByteArray::AbortOnBase64DecodingErrors);
-            const auto epoch = message.value("epoch").toString();
-            if (!key || key.decoded.size() != 32 || QUuid(epoch).isNull()) throw std::runtime_error(QT_TRANSLATE_NOOP("LocalChannel", "Invalid chat key."));
-            c.chatKey = key.decoded; c.chatEpoch = epoch; payload = message;
-        } else {
-            if (message.value("epoch") != c.chatEpoch) throw std::runtime_error(QT_TRANSLATE_NOOP("LocalChannel", "Unexpected chat key change."));
-            const auto bytes = QByteArray::fromBase64Encoding(message.value("data").toString().toLatin1(), QByteArray::AbortOnBase64DecodingErrors);
-            if (!bytes) throw std::runtime_error(QT_TRANSLATE_NOOP("LocalChannel", "Invalid chat data."));
-            const auto context = "SquadSpeak/chat/v1/" + c.id.toUtf8() + '/' + c.chatEpoch.toUtf8() + "/host";
-            QJsonParseError parse;
-            const auto document = QJsonDocument::fromJson(TlsIdentity::open(bytes.decoded, c.chatKey, context), &parse);
-            if (parse.error != QJsonParseError::NoError || !document.isObject()) throw std::runtime_error(QT_TRANSLATE_NOOP("LocalChannel", "Invalid chat response."));
-            payload = document.object();
-            const auto kind = payload.value("kind").toString();
-            if (!validMessageType(kind)) throw std::runtime_error(QT_TRANSLATE_NOOP("LocalChannel", "Invalid chat response."));
-            if (!knownChatKinds.contains(kind)) return true;
-        }
-        const auto now = payload.value("now").toInteger(-1);
-        if (now < 0 || now > 9007199254740991LL - ChatHistory::lifetime || payload.value("now").toDouble(-1) != double(now))
-            throw std::runtime_error(QT_TRANSLATE_NOOP("LocalChannel", "Invalid chat timestamp."));
-        c.serverTime = std::max(now, c.chatClock.isValid() ? c.serverTime + c.chatClock.elapsed() : now);
-        c.chatClock.restart();
-        if (keyMessage) {
-            const auto days = message.value("lifetimeDays").toInt(1);
-            if (!ChatHistory::validLifetime(qint64(days) * ChatHistory::lifetime)
-                || (message.contains("lifetimeDays") && message.value("lifetimeDays").toDouble() != days))
-                throw std::runtime_error(QT_TRANSLATE_NOOP("LocalChannel", "Invalid channel message lifetime."));
-            c.messageLifetimeDays = days;
-            emit hostsChanged();
-            c.chatError.clear();
-            if (c.id == chatHostId_) {
-                if (!c.historyRequest.isEmpty()) {
-                    const auto direction = c.historyDirection;
-                    c.historyRequest.clear(); requestHistory(c, direction);
-                } else if (c.messages.isEmpty()) requestHistory(c, "latest");
-            }
-            emit chatChanged();
-            if (c.id == chatHostId_) {
-                if (!downloadingImage_.isEmpty()) imageQueue_.prepend(downloadingImage_);
-                downloadingImage_.clear(); downloadedImage_.clear(); downloadImage();
-            }
-            retryChat(c); return true;
-        }
-        const auto kind = payload.value("kind").toString();
-        if (kind == "error") {
-            c.historyRequest.clear();
-            c.pending = {}; c.pendingImage.clear(); c.chatError = payload.value("error").toString().left(512); emit chatChanged(); return true;
-        }
-        if (kind == "imageOffset") {
-            const auto offset = payload.value("offset").toInteger(-1);
-            if (c.pending.isEmpty() || payload.value("request") != c.pending.value("request")) return true;
-            if (offset < 0 || offset >= c.pendingImage.size()) throw std::runtime_error(QT_TRANSLATE_NOOP("LocalChannel", "Invalid image progress."));
-            return sendChatCommand(c, {{"kind", "imageChunk"}, {"request", c.pending.value("request")}, {"offset", offset},
-                {"data", QString::fromLatin1(c.pendingImage.mid(offset, 16384).toBase64())}});
-        }
-        if (kind == "imageData") return c.id != chatHostId_ || receiveImage(payload);
-        if (kind == "imageError") {
-            if (c.id != chatHostId_) return true;
-            for (auto* socket : peers_.keys()) {
-                const auto request = peers_.value(socket).remoteImageRequest;
-                if (request.isEmpty() || request.value("hash").toString() != downloadingImage_) continue;
-                peers_[socket].remoteImageRequest = {};
-                writeMessage(socket, {{"type", "remoteImage"}, {"hostId", request.value("hostId")},
-                    {"payload", QJsonObject{{"kind", "imageError"}, {"hash", downloadingImage_}}}});
-            }
-            downloadingImage_.clear(); downloadedImage_.clear(); c.chatError = payload.value("error").toString().left(512);
-            emit chatChanged(); downloadImage(); return true;
-        }
-        if (kind == "time") { emit chatChanged(); return true; }
-        if (kind == "history") {
-            if (c.historyRequest.isEmpty() || payload.value("request").toString() != c.historyRequest) return true;
-            const auto records = payload.value("records").toArray();
-            if (!payload.value("records").isArray() || records.size() > ChatHistory::maximumPageMessages
-                || QJsonDocument(payload).toJson(QJsonDocument::Compact).size() > ChatHistory::maximumPageBytes
-                || !payload.value("older").isBool() || !payload.value("newer").isBool()
-                || payload.value("direction").toString() != c.historyDirection)
-                throw std::runtime_error(QT_TRANSLATE_NOOP("LocalChannel", "Invalid history page."));
-            const auto direction = c.historyDirection;
-            const auto first = c.historyCursor;
-            const auto last = c.historyCursor;
-            qint64 previous = 0;
-            for (const auto value : records) {
-                const auto record = value.toObject();
-                const auto sequence = record.value("sequence").toInteger();
-                if (!ChatHistory::validMessage(record) || record.value("created").toInteger() > now || sequence <= previous
-                    || (direction == "older" && sequence >= first) || (direction == "newer" && sequence <= last))
-                    throw std::runtime_error(QT_TRANSLATE_NOOP("LocalChannel", "Invalid history order."));
-                previous = sequence;
-            }
-            c.historyRequest.clear();
-            c.lastChatSequence = std::max(c.lastChatSequence, previous);
-            if (direction == "latest") { c.messages = {}; c.hasNewer = false; }
-            QJsonArray retained;
-            for (const auto value : records) if (value.toObject().value("expires").toInteger() > c.serverTime) retained.append(value);
-            if (direction == "older") {
-                for (qsizetype i = retained.size(); i > 0; --i) c.messages.prepend(retained.at(i - 1));
-                c.hasOlder = payload.value("older").toBool();
-            } else {
-                for (const auto value : retained) c.messages.append(value);
-                c.hasNewer = payload.value("newer").toBool();
-                if (direction == "latest") c.hasOlder = payload.value("older").toBool();
-            }
-            trimHistory(c, direction == "older");
-            emit chatChanged(); downloadImage(); return true;
-        }
-        if (kind != "message") throw std::runtime_error(QT_TRANSLATE_NOOP("LocalChannel", "Unknown chat response."));
-        const auto record = payload.value("record").toObject();
-        if (!ChatHistory::validMessage(record) || record.value("created").toInteger() > now)
-            throw std::runtime_error(QT_TRANSLATE_NOOP("LocalChannel", "Invalid message from host."));
-        const auto sequence = record.value("sequence").toInteger();
-        const bool fresh = sequence > c.lastChatSequence;
-        c.lastChatSequence = std::max(c.lastChatSequence, sequence);
-        bool known = false;
-        for (qsizetype i = 0; i < c.messages.size(); ++i) {
-            auto previous = c.messages.at(i).toObject();
-            if (previous.value("sequence") != record.value("sequence")) continue;
-            auto content = record;
-            for (const auto* key : {"name", "avatar", "avatarId"}) { previous.remove(key); content.remove(key); }
-            if (previous != content) throw std::runtime_error(QT_TRANSLATE_NOOP("LocalChannel", "Conflicting chat order."));
-            c.messages[i] = record;
-            known = true; break;
-        }
-        if (c.id == chatHostId_ && !c.historyRequest.isEmpty() && c.historyDirection == "older" && !known) c.hasNewer = true;
-        if (c.id == chatHostId_ && !c.hasNewer && !known && record.value("expires").toInteger() > c.serverTime) {
-            const auto position = std::lower_bound(c.messages.constBegin(), c.messages.constEnd(), sequence,
-                [](const QJsonValue& value, qint64 order) { return value.toObject().value("sequence").toInteger() < order; });
-            c.messages.insert(std::distance(c.messages.constBegin(), position), record);
-            trimHistory(c, false);
-        }
-        if (record.value("sender") == ownId() && record.value("request") == c.pending.value("request")) {
-            const auto text = c.pending.value("text").toString(); c.pending = {}; c.pendingImage.clear(); c.chatError.clear(); emit chatSent(text, c.id);
-        }
-        const auto event = record.value("event").toObject();
-        if (fresh && !hostOnly_ && !remoteMode() && c.accepted && c.voice && c.id == joinedHostId_
-            && record.value("sender") != ownId() && record.value("expires").toInteger() > c.serverTime
-            && (event.isEmpty() || event.value("kind") == "announcement"))
-            emit chatNotification(c.id, record.toVariantMap());
-        emit chatChanged();
-        return true;
-    } catch (const std::exception& error) {
-        c.chatError = QString::fromUtf8(error.what());
-        if (c.socket) c.socket->abort();
-        emit chatChanged(); return false;
-    }
-}
-
-bool LocalChannel::requestHistory(Client& c, const QString& direction) {
-    if (!(c.accepted && c.chatKey.size() == 32) || !c.historyRequest.isEmpty()) return false;
-    c.historyDirection = direction;
-    c.historyRequest = QUuid::createUuid().toString(QUuid::WithoutBraces);
-    const auto cursor = c.messages.isEmpty() || direction == "latest" ? 0
-        : c.messages.at(direction == "older" ? 0 : c.messages.size() - 1).toObject().value("sequence").toInteger();
-    c.historyCursor = cursor;
-    if (!sendChatCommand(c, {{"kind", "history"}, {"request", c.historyRequest}, {"direction", direction}, {"cursor", cursor}})) {
-        c.historyRequest.clear(); return false;
-    }
-    emit chatChanged(); return true;
-}
-
-bool LocalChannel::loadOlderMessages() {
-    if (remoteMode()) return remoteAction("older");
-    auto* c = chatClient(); return c && c->hasOlder && requestHistory(*c, "older");
-}
-
-void LocalChannel::retryChat(Client& c) {
-    if (c.pending.isEmpty() || !(c.accepted && c.chatKey.size() == 32)) return;
-    if (c.serverTime + c.chatClock.elapsed() >= c.pendingUntil) {
-        c.pending = {}; c.pendingImage.clear(); c.chatError = tr("Delivery was not confirmed. Check the draft again."); emit chatChanged(); return;
-    }
-    sendChatCommand(c, c.pending);
-}
-
-bool LocalChannel::sendChat(const QString& text, const QByteArray& image) {
-    auto* current = chatClient();
-    if (!current) return false;
-    auto& c = *current;
-    if (remoteMode() || !(c.accepted && c.chatKey.size() == 32) || !c.pending.isEmpty() || (!ChatHistory::validText(text) && !(text.isEmpty() && !image.isEmpty()))
-        || image.size() > ChatContent::maximumSourceBytes) {
-        c.chatError = tr("Chat is not ready, delivery is in progress, or the text is empty or too long (maximum 16 KiB).");
-        emit chatChanged(); return false;
-    }
-    if (!image.isEmpty() && std::any_of(clients_.begin(), clients_.end(), [](const auto& client) { return !client->pendingImage.isEmpty(); })) {
-        c.chatError = tr("An image is already being sent. Wait for its receipt before sending another."); emit chatChanged(); return false;
-    }
-    const auto issued = c.serverTime + c.chatClock.elapsed();
-    c.pendingImage = image;
-    c.pending = {{"kind", image.isEmpty() ? "send" : "imageStart"}, {"request", QUuid::createUuid().toString(QUuid::WithoutBraces)},
-        {"text", text}, {"issued", issued}, {"size", image.size()}, {"hash", QString::fromLatin1(QCryptographicHash::hash(image, QCryptographicHash::Sha256).toHex())}};
-    c.pendingUntil = issued + ChatHistory::lifetime;
-    c.chatError.clear();
-    try {
-        if (!image.isEmpty()) {
-            const auto reference = "attachment:" + c.pending.value("hash").toString();
-            if (!text.contains(reference)) c.pending.insert("text", text + (text.isEmpty() ? "" : "\n\n") + "![Bild](" + reference + ")");
-        }
-        if (!ChatHistory::validText(c.pending.value("text").toString())) throw std::runtime_error(QT_TRANSLATE_NOOP("LocalChannel", "Message with image reference is too long."));
-        if (!sendChatCommand(c, c.pending)) { c.pending = {}; c.pendingImage.clear(); c.chatError = tr("Message could not be sent."); emit chatChanged(); return false; }
-    } catch (const std::exception& error) {
-        c.pending = {}; c.pendingImage.clear(); c.chatError = QString::fromUtf8(error.what()); emit chatChanged(); return false;
-    }
-    emit chatChanged(); return true;
-}
-
-void LocalChannel::publishChat(const QJsonObject& record) {
-    for (auto* socket : peers_.keys())
-        if (peers_.value(socket).joined && !peers_.value(socket).controller)
-            writeChat(socket, {{"kind", "message"}, {"record", record}, {"now", history_->time()}});
-}
-
-void LocalChannel::publishMembership(const QString& kind, const QString& member, const QString& name) {
-    const auto text = name + (kind == "joined" ? " joined." : kind == "kicked" ? " was kicked."
-        : kind == "banned" ? " was banned from the channel." : " left.");
-    publishSystem(text, {{"kind", kind}, {"member", member}, {"name", name}});
-}
-
-bool LocalChannel::sendSystemMessage(const QString& text) {
-    if (!hosting() || !ChatHistory::validText(text)) return setStatus(tr("The local channel or message is not ready."), false);
-    return publishSystem(text, {{"kind", "announcement"}});
-}
-
-bool LocalChannel::publishSystem(const QString& text, const QJsonObject& event) {
-    if (!history_) return false;
-    try {
-        publishChat(history_->append(musicId(), botName_, QUuid::createUuid().toString(QUuid::WithoutBraces),
-            text, clock_(), {}, "system", messageLifetimeDays() * ChatHistory::lifetime, event));
-        botLastActive_ = clock_();
-        if (botSleeping_) { botSleeping_ = false; broadcastRoster(); }
-        return true;
-    } catch (const std::exception& error) {
-        return setStatus(tr("Channel event could not be saved: %1").arg(tr(error.what())), false);
-    }
-}
-
-bool LocalChannel::hostImage(QSslSocket* socket, const QJsonObject& payload, qint64 now) {
-    const auto kind = payload.value("kind").toString();
-    if (kind == "imageGet") {
-        try {
-            const auto hash = payload.value("hash").toString();
-            const auto png = history_->image(hash, now);
-            const auto offset = payload.value("offset").toInteger(-1);
-            if (offset < 0 || offset >= png.size() || payload.value("offset").toDouble(-1) != double(offset))
-                throw std::runtime_error(QT_TRANSLATE_NOOP("LocalChannel", "Invalid image section."));
-            return writeChat(socket, {{"kind", "imageData"}, {"now", now}, {"hash", hash}, {"size", png.size()},
-                {"offset", offset}, {"data", QString::fromLatin1(png.mid(offset, 16384).toBase64())}});
-        } catch (const std::exception& error) {
-            return writeChat(socket, {{"kind", "imageError"}, {"now", now}, {"error", QString::fromUtf8(error.what())}});
-        }
-    }
-    auto& peer = peers_[socket];
-    if (kind == "imageStart") {
-        const auto size = payload.value("size").toInteger(-1);
-        const auto request = payload.value("request").toString();
-        if (size < 1 || size > ChatContent::maximumSourceBytes || payload.value("size").toDouble(-1) != double(size)
-            || !validId(payload.value("hash").toString()) || QUuid(request).isNull()
-            || QUuid(request).toString(QUuid::WithoutBraces) != request
-            || (!payload.value("text").toString().isEmpty() && !ChatHistory::validText(payload.value("text").toString()))) {
-            socket->abort(); return false;
-        }
-        if (peer.imageProcessing) return true;
-        int active = 0;
-        const auto* root = service_ ? service_ : this;
-        const auto count = [&active](const LocalChannel& channel) {
-            for (const auto& other : channel.peers_)
-                if (other.imageProcessing || !other.imageRequest.isEmpty()) ++active;
-        };
-        count(*root); for (const auto& child : root->owned_) count(*child);
-        if (active >= 4 && peer.imageRequest.isEmpty())
-            return writeChat(socket, {{"kind", "error"}, {"now", now}, {"error", tr("Four images are currently being transferred. Please wait briefly.")}});
-        peer.imageRequest = payload; peer.imageUpload.clear();
-        QTimer::singleShot(120000, socket, [this, socket, request] {
-            if (!peers_.contains(socket) || peers_.value(socket).imageRequest.value("request") != request) return;
-            peers_[socket].imageRequest = {}; peers_[socket].imageUpload.clear();
-            try { writeChat(socket, {{"kind", "error"}, {"now", history_ ? history_->time() : clock_()}, {"error", tr("Image transfer took too long.")}}); }
-            catch (const std::exception&) { socket->abort(); }
-        });
-        return writeChat(socket, {{"kind", "imageOffset"}, {"now", now}, {"request", request}, {"offset", 0}});
-    }
-    const auto request = peer.imageRequest;
-    const auto bytes = QByteArray::fromBase64Encoding(payload.value("data").toString().toLatin1(), QByteArray::AbortOnBase64DecodingErrors);
-    if (request.isEmpty() || peer.imageProcessing || payload.value("request") != request.value("request") || !bytes || bytes.decoded.isEmpty()
-        || bytes.decoded.size() > 16384 || payload.value("offset").toInteger(-1) != peer.imageUpload.size()
-        || peer.imageUpload.size() + bytes.decoded.size() > request.value("size").toInteger()) { socket->abort(); return false; }
-    peer.imageUpload.append(bytes.decoded);
-    if (peer.imageUpload.size() < request.value("size").toInteger())
-        return writeChat(socket, {{"kind", "imageOffset"}, {"now", now}, {"request", request.value("request")}, {"offset", peer.imageUpload.size()}});
-    if (QString::fromLatin1(QCryptographicHash::hash(peer.imageUpload, QCryptographicHash::Sha256).toHex()) != request.value("hash")) {
-        socket->abort(); return false;
-    }
-    peer.imageProcessing = true;
-    return ChatContent::prepare(peer.imageUpload, socket, [this, socket, request](QByteArray png, QString error) {
-        if (!peers_.contains(socket)) return;
-        peers_[socket].imageProcessing = false;
-        if (!history_ || !peers_.value(socket).joined
-            || peers_.value(socket).imageRequest.value("request") != request.value("request")) return;
-        const auto sender = peers_.value(socket).id, name = peers_.value(socket).name;
-        peers_[socket].imageUpload.clear(); peers_[socket].imageRequest = {};
-        try {
-            if (png.isEmpty()) throw std::runtime_error(error.toStdString());
-            auto text = request.value("text").toString();
-            const auto storedHash = QString::fromLatin1(QCryptographicHash::hash(png, QCryptographicHash::Sha256).toHex());
-            text.replace("attachment:" + request.value("hash").toString(), "attachment:" + storedHash);
-            publishChat(history_->append(sender, name, request.value("request").toString(), text, clock_(), png, peers_.value(socket).avatar, qint64(messageLifetimeDays()) * ChatHistory::lifetime));
-        } catch (const std::exception& failure) {
-            try { writeChat(socket, {{"kind", "error"}, {"now", history_->time()}, {"error", QString::fromUtf8(failure.what())}}); }
-            catch (const std::exception&) { socket->abort(); }
-        }
-    });
-}
-
-bool LocalChannel::requestImage(const QString& hash) {
-    if (!validId(hash) || (remoteMode() ? !remoteAllowed_ || !remoteView_.value("chatReady").toBool() : !chatReady())) return false;
-    bool present = false;
-    for (const auto& value : (remoteMode() ? remoteView_.value("messages").toList() : messages())) if (value.toMap().value("image").toMap().value("hash").toString() == hash) { present = true; break; }
-    if (!present) return false;
-    if (imageCache_.contains(hash) || downloadingImage_ == hash || imageQueue_.contains(hash)) return true;
-    if (imageQueue_.size() >= 64) return false;
-    imageQueue_.append(hash); downloadImage(); return true;
-}
-
-void LocalChannel::downloadImage() {
-    if ((remoteMode() ? !remoteAllowed_ || !remoteView_.value("chatReady").toBool() : !chatReady()) || !downloadingImage_.isEmpty()) return;
-    while (!imageQueue_.isEmpty()) {
-        const auto hash = imageQueue_.takeFirst();
-        bool present = false;
-        for (const auto& value : (remoteMode() ? remoteView_.value("messages").toList() : messages())) if (value.toMap().value("image").toMap().value("hash").toString() == hash) { present = true; break; }
-        if (!present || imageCache_.contains(hash)) continue;
-        downloadingImage_ = hash; downloadedImage_.clear();
-        sendImageRequest(hash, 0); return;
-    }
-}
-
-QString LocalChannel::imageSource(const QString& hash) const {
-    const auto* png = imageCache_.object(hash);
-    if (!png) return {};
-    bool present = false;
-    for (const auto& value : (remoteMode() ? remoteView_.value("messages").toList() : messages())) if (value.toMap().value("image").toMap().value("hash").toString() == hash) { present = true; break; }
-    return present ? "data:image/png;base64," + QString::fromLatin1(png->toBase64()) : QString{};
-}
-
-bool LocalChannel::receiveImage(const QJsonObject& payload) {
-    if (payload.value("hash") != downloadingImage_ || downloadingImage_.isEmpty()) return true;
-    const auto bytes = QByteArray::fromBase64Encoding(payload.value("data").toString().toLatin1(), QByteArray::AbortOnBase64DecodingErrors);
-    const auto size = payload.value("size").toInteger(-1);
-    if (!bytes || bytes.decoded.isEmpty() || bytes.decoded.size() > 16384 || size < 1 || size > ChatContent::maximumImageBytes
-        || payload.value("offset").toInteger(-1) != downloadedImage_.size() || downloadedImage_.size() + bytes.decoded.size() > size)
-        throw std::runtime_error(QT_TRANSLATE_NOOP("LocalChannel", "Invalid image block."));
-    downloadedImage_.append(bytes.decoded);
-    if (downloadedImage_.size() < size)
-        return sendImageRequest(downloadingImage_, downloadedImage_.size());
-    const auto hash = downloadingImage_;
-    if (QString::fromLatin1(QCryptographicHash::hash(downloadedImage_, QCryptographicHash::Sha256).toHex()) != hash)
-        throw std::runtime_error(QT_TRANSLATE_NOOP("LocalChannel", "Image verification failed."));
-    const auto dimensions = ChatContent::sanitizedImageSize(downloadedImage_);
-    bool matches = false;
-    for (const auto& record : (remoteMode() ? remoteView_.value("messages").toList() : messages())) {
-        const auto attachment = record.toMap().value("image").toMap();
-        if (attachment.value("hash").toString() == hash)
-            matches = attachment.value("size").toLongLong() == size
-                && QSize(attachment.value("width").toInt(), attachment.value("height").toInt()) == dimensions;
-    }
-    if (!matches) throw std::runtime_error(QT_TRANSLATE_NOOP("LocalChannel", "Image does not match its host receipt."));
-    imageCache_.insert(hash, new QByteArray(std::move(downloadedImage_)), int(size));
-    downloadingImage_.clear(); downloadedImage_.clear();
-    ++imageRevision_; emit imagesChanged(); downloadImage(); return true;
-}
-
-bool LocalChannel::sendImageRequest(const QString& hash, qint64 offset) {
-    if (remoteMode()) return writeMessage(controller_, {{"type", "remoteImageGet"}, {"hash", hash}, {"offset", offset},
-        {"hostId", remoteView_.value("chatHostId").toString()}});
-    return sendChatCommand({{"kind", "imageGet"}, {"hash", hash}, {"offset", offset}});
-}
-
-void LocalChannel::sendRemoteImage(QSslSocket* socket) {
-    if (!peers_.contains(socket)) return;
-    const auto request = peers_.value(socket).remoteImageRequest;
-    if (request.isEmpty()) return;
-    const auto id = peers_.value(socket).id;
-    if (!peers_.value(socket).joined || !control_.value("controllers").toObject().value(id).toObject().value("remote").toBool()) {
-        peers_[socket].remoteImageRequest = {}; return;
-    }
-    const auto hash = request.value("hash").toString();
-    const auto offset = request.value("offset").toInteger();
-    QJsonObject payload{{"kind", "imageError"}, {"hash", hash}};
-    if (!remoteMode() && chatReady() && request.value("hostId").toString() == chatHostId_ && requestImage(hash)) {
-        const auto* png = imageCache_.object(hash);
-        if (!png) return;
-        if (offset < png->size()) payload = {{"kind", "imageData"}, {"hash", hash}, {"size", png->size()},
-            {"offset", offset}, {"data", QString::fromLatin1(png->mid(offset, remoteChunkSize).toBase64())}};
-    }
-    peers_[socket].remoteImageRequest = {};
-    writeMessage(socket, {{"type", "remoteImage"}, {"hostId", request.value("hostId")}, {"payload", payload}});
-}
-
-bool LocalChannel::publishLevels(const QVariantMap& levels) {
-    if (!joined()) return false;
-    QJsonObject active;
-    for (const auto& value : audioSources()) {
-        const auto id = value.toMap().value("id").toString();
-        const auto level = levels.value(id, 0).toDouble();
-        if (!std::isfinite(level) || level < 0 || level > 1) return false;
-        if (level > 0) active.insert(id, level);
-    }
-    for (auto* socket : peers_.keys()) {
-        const auto peer = peers_.value(socket);
-        if (peer.controller && peer.joined && control_.value("controllers").toObject().value(peer.id).toObject().value("remote").toBool()
-            && (!peer.capabilitiesAdvertised || peer.capabilities.contains("remote-control")))
-            writeMessage(socket, {{"type", "remoteLevels"}, {"hostId", joinedHostId_}, {"levels", active}});
-    }
-    return true;
-}
-
-
-bool LocalChannel::loadNewerMessages() {
-    if (remoteMode()) return remoteAction("newer");
-    auto* c = chatClient(); return c && c->hasNewer && requestHistory(*c, "newer");
-}
-
-bool LocalChannel::refreshChat() {
-    if (remoteMode()) return remoteAction("latest");
-    auto* c = chatClient(); return c && requestHistory(*c, "latest");
-}
-
-void LocalChannel::trimHistory(Client& c, bool older) {
-    while (c.messages.size() > maximumWindowMessages
-        || QJsonDocument(c.messages).toJson(QJsonDocument::Compact).size() > maximumWindowBytes) {
-        if (older) { c.messages.removeLast(); c.hasNewer = true; }
-        else { c.messages.removeFirst(); c.hasOlder = true; }
-    }
-}
+bool LocalChannel::startDiscovery() { return discovery_.start(); }
+bool LocalChannel::setDiscoverySearch(bool enabled) { return discovery_.search(enabled); }

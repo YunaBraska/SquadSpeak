@@ -131,8 +131,8 @@ public:
     Q_INVOKABLE bool setMessageLifetimeDays(int days);
     [[nodiscard]] QVariantList hosts() const;
     [[nodiscard]] QVariantList availableHosts() const;
-    [[nodiscard]] QString discoveryError() const { return discoveryError_; }
-    [[nodiscard]] bool discoverySearching() const { return discoverySearching_; }
+    [[nodiscard]] QString discoveryError() const { return discovery_.error; }
+    [[nodiscard]] bool discoverySearching() const { return discovery_.searching; }
     [[nodiscard]] QVariantList savedChannels() const;
     [[nodiscard]] QVariantList participants() const;
     [[nodiscard]] QVariantList chatMembers() const;
@@ -411,8 +411,6 @@ private:
     qint64 botLastActive_ = 0;
     std::shared_ptr<Relay> musicRelay_;
     struct Attempt final { int count = 0; qint64 next = 0; };
-    struct ScanTarget final { QString address; quint16 port = 0; };
-    struct ScanProbe final { ScanTarget target; QByteArray buffer; };
     struct Host final { QString name; QString address; quint16 port = 0; qint64 seen = 0; bool direct = false; bool scanned = false; QString deviceId; };
     bool setStatus(QString text, bool result = true);
     bool setControlStatus(QString text, bool result = true);
@@ -481,14 +479,24 @@ private:
     void publishMembership(const QString& kind, const QString& member, const QString& name);
     bool publishSystem(const QString& text, const QJsonObject& event);
     [[nodiscard]] QVariantMap hostBot() const;
+    bool visibleImage(const QString& hash) const;
     void downloadImage();
     bool hostImage(QSslSocket* socket, const QJsonObject& payload, qint64 now);
-    void announce();
-    void receiveDiscovery();
-    QList<ScanTarget> discoveryTargets() const;
-    void pumpDiscoverySearch();
-    void finishDiscoveryProbe(QSslSocket* socket);
-    void clearDiscoverySearch();
+    static constexpr qsizetype maximumRemoteView = 2 * 1024 * 1024;
+    static constexpr int maximumWindowMessages = 160;
+    static constexpr qsizetype maximumWindowBytes = 512 * 1024;
+    static constexpr qsizetype remoteChunkSize = 16384;
+    static constexpr qsizetype maximumFrame = 65536;
+    static bool parseCapabilities(const QJsonObject& message, QSet<QString>* negotiated = nullptr);
+    static bool validMessageType(const QString& type);
+    static bool validEndpointHost(const QString& value);
+    static void connectEndpoint(QSslSocket* socket, const QString& host, quint16 port, QAbstractSocket::NetworkLayerProtocol protocol);
+    static bool addressConnectionFailure(QAbstractSocket::SocketError error, const QSslSocket* socket);
+    static QJsonArray capabilityAdvertisement();
+    static QString canonicalEndpointHost(const QString& value);
+    static QString endpointKey(const QString& host, quint16 port);
+    static bool validPresenceDetails(const QJsonObject& message);
+    static bool displayName(const QJsonValue& value);
     static bool acceptableCertificateErrors(const QList<QSslError>& errors);
     static bool writeMessage(QSslSocket* socket, const QJsonObject& message);
     static bool readMessages(QSslSocket* socket, QByteArray& buffer,
@@ -506,12 +514,33 @@ private:
     std::optional<TlsIdentity> identity_;
     std::function<qint64()> clock_;
     QSslServer server_;
-    QUdpSocket discovery_;
-    QString discoveryError_;
-    QList<QNetworkInterface> discoveryInterfaces_;
-    QTimer heartbeat_;
-    QList<ScanTarget> discoverySearchQueue_;
-    QHash<QSslSocket*, ScanProbe> discoverySearchProbes_;
+    // Owns discovery sockets, interface membership and bounded scan work.
+    // Admission and channel-directory validation remain with the channel.
+    class Discovery final : public QObject {
+    public:
+        explicit Discovery(LocalChannel& owner);
+        ~Discovery() override;
+        bool start();
+        bool search(bool enabled);
+        void clearSearch();
+        void announce();
+        QHash<QString, Host> hosts;
+        QString error;
+        bool searching = false;
+    private:
+        struct Target final { QString address; quint16 port = 0; };
+        struct Probe final { Target target; QByteArray buffer; };
+        QList<Target> targets() const;
+        void pump();
+        void finishProbe(QSslSocket* socket);
+        void receive();
+        LocalChannel& owner_;
+        QUdpSocket socket_;
+        QList<QNetworkInterface> interfaces_;
+        QTimer heartbeat_;
+        QList<Target> queue_;
+        QHash<QSslSocket*, Probe> probes_;
+    } discovery_{*this};
     QTimer controlTimer_;
     QTimer maintenanceTimer_;
     QTimer autoJoinTimer_;
@@ -539,7 +568,6 @@ private:
     bool passwordBusy_ = false;
     QJsonObject control_{{"controllers", QJsonObject{}}, {"target", QJsonObject{}}, {"remoteMode", false}};
     QSet<QString> unavailableControlTargets_;
-    QHash<QString, Host> hosts_;
     QJsonObject savedChannels_;
     QSet<QString> pausedAutoJoin_;
     QSet<QString> triedAutoJoin_;
@@ -572,5 +600,4 @@ private:
     bool hostOnly_ = false;
     bool rosterPending_ = false;
     bool remoteViewPending_ = false;
-    bool discoverySearching_ = false;
 };

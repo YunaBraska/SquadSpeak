@@ -1,18 +1,23 @@
 # Verification evidence
 
-Updated 2026-10-06. [Release gates](roadmap.md), [requirements](specs/voice-chat.md)
+Updated 2026-10-07. [Release gates](roadmap.md), [requirements](specs/voice-chat.md)
 and [build instructions](development.md) are separate from this evidence record.
 A passed fixture proves its tested configuration, not every device, room or
 network. Superseded failed and cancelled runs have been removed from GitHub.
-Their recorded findings remain below and in this file's Git history. The latest
-Windows startup failure remains available because its cause is still unknown.
+Relevant failure investigations are summarized below. The earlier
+[Windows startup timeout](https://github.com/YunaBraska/SquadSpeak/actions/runs/37518572991)
+remains available because its cause is still unknown.
+
+History was consolidated at `3ede20d` with the same file tree as `5ce7455`.
+Earlier revision identifiers below refer to the original CI checkouts.
 
 ## Revisions and platform runs
 
 | Revision | Evidence | Result and scope |
 | --- | --- | --- |
-| `24b3744` | [37518572991](https://github.com/YunaBraska/SquadSpeak/actions/runs/37518572991) | Linux ARM/x64 pass all 31 groups in 1321.47/1260.81 seconds; Store passes 30 groups in 1064.02 seconds. The new avatar 150%/200% geometry checks pass. Both release architectures also pass native PulseAudio/PipeWire/Wayland capture, network changes and runtime-only extracted-package checks. ASan/UBSan/LSan pass all 31 groups in 1493.59 seconds, including repeated native capture and the intentional-leak check. macOS ARM passes 29 regular groups (736.87 seconds), both network groups (923.06 seconds), 111 binary/archive checks and the native codec leak probe. macOS Intel passes 29 regular groups (724.40 seconds), both network groups (905.16 seconds), 111 binary/archive checks, zero codec leaks and seven GuardMalloc rows. Windows passes 29/30 groups, including all five native capture rows; desktop_smoke exceeds its 15-second startup deadline. |
 | `08abcf3` | [37524538004](https://github.com/YunaBraska/SquadSpeak/actions/runs/37524538004) | All seven verification jobs pass. Linux ARM/x64: 31 groups in 1326.81/1118.14 seconds; Store: 30 in 1072.65; sanitizers: 31 in 1398.44, with the required failing leak canary. Native PulseAudio/PipeWire/Wayland and extracted-package checks pass. macOS ARM/Intel: 29 regular groups in 760.13/752.03 seconds plus both network groups in 983.90/876.92; both archives pass 111 checks and native codec leak probes, and Intel passes seven GuardMalloc rows. Windows: 30 groups in 1699.36 seconds, native capture, signed runtime-installer validation and extracted GUI/headless startup. Both macOS archives and appcasts pass production-key signing and verification. |
+| `17dbfdd` | [37577197475](https://github.com/YunaBraska/SquadSpeak/actions/runs/37577197475) | Six jobs pass: Linux ARM/x64 each pass 31 groups in 1107.79/1067.69 seconds; Store passes 30 in 890.87; sanitizers pass 31 in 1242.93, with the required failing leak canary. Native capture, network changes and runtime-only package checks pass. macOS ARM/Intel pass 29 regular groups in 436.92/436.53 seconds and both network groups in 958.36/868.29. Both packages pass 111 binary checks and native codec leak probes; Intel passes seven GuardMalloc rows. Windows stops in the new cache-test assertion before building the app; the workflow correction is verified separately. |
+| `999953e` | [37578635369](https://github.com/YunaBraska/SquadSpeak/actions/runs/37578635369) | Corrected Windows job passes all 30 groups in 1452.31 seconds, including five native capture rows and desktop startup. Extracted GUI/headless startup and runtime-installer signature checks pass. Dependency reuse, incompatible stamps and missing headers are verified; the prefix is saved to the GitHub cache. Only the Windows workflow differs from `17dbfdd`; application code and other platform jobs are identical. |
 
 The complete `08abcf3` release workflow also succeeds. Its private
 [2026.10.6 preview draft](https://github.com/YunaBraska/SquadSpeak/releases/tag/untagged-ba0faf2fc7d04fade94a)
@@ -27,6 +32,18 @@ A green run at an older revision does not cover newly added platform code.
 Native development builds use local Homebrew dependencies. Release packages
 separately verify the macOS 13 deployment baseline. Current capture and codec
 results are recorded below.
+
+The `17dbfdd` channel refactor passes all 31 local CTest groups with
+`--parallel 2` in 1121.47 seconds, with no failures or skipped groups. Four
+focused discovery cases also pass, including repeated destruction during an
+unfinished TLS scan. The source-translation check preserves the existing
+catalog context. Load/video tests run alone and desktop fixtures share a lock.
+
+The successful Windows dependency preparation takes 13 minutes 37 seconds; its
+immediate repetition reuses the prefix in less than one second. That measures
+dependency preparation within one job, not an entire app build or cache download.
+The initial Windows cache-test assertion misused PowerShell positional arguments.
+`999953e` names the path and pattern explicitly; application code is unchanged.
 
 The Intel timing failure occurred with per-peer media debug logging enabled.
 Local ARM comparisons with and without this logging both pass: 100 callbacks
