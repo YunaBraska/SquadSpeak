@@ -1,9 +1,76 @@
-Backport Qt cdbacb7ba78779fc1eecc05afae3a3a874623e6e: initialise the GC mark stack before yielding.
-Retain the distribution fix 1327fce7e500e3ae2e96ab89eaad7f1727ea77b1: preserve property caches across engines.
+Qt 6.10.2 fixes: cdbacb7ba78779fc1eecc05afae3a3a874623e6e (GC transitions),
+f2e838e86cefd91577345e093edbbc0bbd1fd6cd (sweep allocation), and the
+distribution fix 1327fce7e500e3ae2e96ab89eaad7f1727ea77b1 (property caches).
 
 --- a/src/qml/memory/qv4mm.cpp
 +++ b/src/qml/memory/qv4mm.cpp
-@@ -1590,7 +1590,7 @@
+@@ -554,60 +554,19 @@
+     return m;
+ }
+
+-// index based version of partition to handle potential growth at the end
+-template<class UnaryPred>
+-qsizetype partition(std::vector<Chunk *> &container, UnaryPred p)
+-{
+-    std::size_t first = 0, last = container.size();
+-    while (first != last && p(container.at(first)))
+-        ++first;
+-    // handle the case where the container has grown
+-    if (last != container.size()) {
+-        while (first != container.size() && p(container.at(first)))
+-            ++first;
+-        last = container.size();
+-    }
+-
+-    if (first == last)
+-        return first;
+-
+-    for (auto i = first++; i != last; ++i) {
+-        if (p(container.at(i))) {
+-            std::swap(container.at(i), container.at(first));
+-            ++first;
+-        }
+-    }
+-
+-    // handle the case that new chunks have been added
+-    auto newSize = container.size();
+-    if (last != newSize) {
+-        Q_ASSERT(last < newSize);
+-        // must check container.size() instead of newSize, as we would
+-        // still grow the container
+-        for (auto i = last; i != container.size(); ++i) {
+-            if (p(container.at(i))) {
+-                std::swap(container.at(i), container.at(first));
+-                ++first;
+-            }
+-        }
+-    }
+-
+-    return first;
+-}
+-
+ void BlockAllocator::sweep()
+ {
++    const auto firstEmptyChunkPos = partition(chunks, [this](const std::size_t i) {
++        return chunks.at(i)->sweep(engine);
++    });
++    const auto firstEmptyChunk = chunks.begin() + firstEmptyChunkPos;
++
+     nextFree = nullptr;
+     nFree = 0;
+     memset(freeBins, 0, sizeof(freeBins));
+
+ //    qDebug() << "BlockAlloc: sweep";
+     usedSlotsAfterLastSweep = 0;
+-
+-    auto firstEmptyChunkPos = partition(chunks, [this](Chunk *c) {
+-        return c->sweep(engine);
+-    });
+-    auto firstEmptyChunk = chunks.begin() + firstEmptyChunkPos;
+
+     std::for_each(chunks.begin(), firstEmptyChunk, [this](Chunk *c) {
+         c->sortIntoBins(freeBins, NumBins);
+@@ -1590,7 +1549,7 @@
      if (timeLimit.count() > 0) {
          deadline = QDeadlineTimer(timeLimit);
          bool deadlineExpired = false;
@@ -12,7 +79,7 @@ Retain the distribution fix 1327fce7e500e3ae2e96ab89eaad7f1727ea77b1: preserve p
              if (state > GCState::InitCallDestroyObjects) {
                  /* initCallDestroyObjects is the last action which drains the mark
                     stack by default. But as our write-barrier might end up putting
-@@ -1611,7 +1611,7 @@
+@@ -1611,7 +1570,7 @@
                                            << QMetaEnum::fromType<GCState>().key(state) << "state";
              if (stateInfo.breakAfter)
                  break;
@@ -21,6 +88,66 @@ Retain the distribution fix 1327fce7e500e3ae2e96ab89eaad7f1727ea77b1: preserve p
          if (deadlineExpired)
              handleTimeout(state);
          if (state != GCState::Invalid)
+
+--- a/src/qml/memory/qv4mm_p.h
++++ b/src/qml/memory/qv4mm_p.h
+@@ -27,6 +27,56 @@
+ QT_BEGIN_NAMESPACE
+
+ namespace QV4 {
++
++// Iterate a potentially growing container without querying the size on each iteration.
++// Return the first index where p doesn't hold, or the end of the container.
++template<typename Container, typename UnaryPred>
++typename Container::size_type reiterate(
++        Container &container, typename Container::size_type first, UnaryPred &&p)
++{
++    auto last = container.size();
++    while (first < last) {
++        do {
++            if (!p(first))
++                return first;
++        } while (++first < last);
++
++        Q_ASSERT(first == last);
++
++        // Re-fetch the container size.
++        // If the container hasn't grown, we're done since last == first, still.
++        // Otherwise, do one more round via the "while (first < last)" above.
++        last = container.size();
++    }
++
++    // Returning last here allows input of an out of range first, saving us
++    // one size check ahead of running this.
++    return last;
++}
++
++// index based version of partition to handle potential growth at the end
++template<typename Container, class UnaryPred>
++typename Container::size_type partition(Container &container, UnaryPred &&p)
++{
++    // Figure out the first entry where p doesn't hold.
++    auto first = reiterate(container, 0, p);
++
++    // Iterate the remaining entries and swap any entry where p holds
++    // to the (moving) end of the front section of the container.
++    // Any time we do that, the front section grows by 1. Therefore, the back
++    // section can only contain entries where p doesn't hold in the end.
++    reiterate(container, first + 1, [&p, &container, &first](const auto i) {
++        if (p(i)) {
++            // It's important to re-resolve container.at(i) for the std::swap.
++            // The container may have grown as result of determining p, thereby
++            // invalidating any reference to an entry taken before.
++            std::swap(container.at(i), container.at(first++));
++        }
++        return true;
++    });
++
++    return first;
++}
+
+ struct GCData { virtual ~GCData(){};};
+
 
 --- a/src/qml/jsruntime/qv4qobjectwrapper.cpp
 +++ b/src/qml/jsruntime/qv4qobjectwrapper.cpp
@@ -41,16 +168,16 @@ Retain the distribution fix 1327fce7e500e3ae2e96ab89eaad7f1727ea77b1: preserve p
 
 --- a/src/qml/CMakeLists.txt
 +++ b/src/qml/CMakeLists.txt
-@@ -12,6 +12,12 @@
+@@ -11,6 +11,12 @@
+ # qt_internal_add_qml_module() is executed because we need feature evaluation
  # to determine some of the arguments to that command.
  qt_feature_evaluate_features("${CMAKE_CURRENT_SOURCE_DIR}/configure.cmake")
-
++
 +# Clang resolves ASan from the executable when this module is instrumented
 +# against a non-instrumented Qt SDK. Preserve Qt's sanitizer link policy.
 +if(CMAKE_CXX_COMPILER_ID MATCHES "Clang" AND CMAKE_CXX_FLAGS MATCHES "-fsanitize=[^ ]*address")
 +    set(QT_FEATURE_sanitizer ON)
 +endif()
-+
+
  set(extra_cmake_files)
  set(extra_cmake_includes)
- if(ANDROID)

@@ -34,16 +34,35 @@ migration failure: an open read handle prevents atomic replacement on Windows.
 The constructor now closes it before migration; the existing public migration
 test also covers a populated permission store and preserves its approvals,
 request policy and port. Both data rows and the host-policy regression pass
-locally; the Windows rerun must prove the repair on that platform.
+locally. The Windows rerun at `281911d`
+([37611022410](https://github.com/YunaBraska/SquadSpeak/actions/runs/37611022410))
+passes all 31 groups in 1521.78 seconds, extracted GUI/headless startup and both
+seeded device-test profiles through `Start.cmd --smoke-test`. Both macOS jobs
+also pass; the Linux jobs in that run stop in module build configuration.
+The corrected Linux build at `da873d7`
+([37612824232](https://github.com/YunaBraska/SquadSpeak/actions/runs/37612824232))
+passes 33 groups on ARM64/x64 in 1114.20/1080.43 seconds and 32 Store groups in
+915.19 seconds, including discovery and runtime-only archive checks.
 
 The same matrix exposes a Linux x64 QML crash. Native debugger reproduction
 ([37607538557](https://github.com/YunaBraska/SquadSpeak/actions/runs/37607538557))
-locates a null mark stack in `QV4::MemoryManager::collectFromJSStack` while
+locates the crash in `QV4::MemoryManager::collectFromJSStack` while
 `qsTr` allocates a string. Qt's upstream correction
 `cdbacb7ba78779fc1eecc05afae3a3a874623e6e` ensures the first GC transition runs
 even when its deadline has expired. The matching Qt 6.10.2 Qml module is rebuilt
-with that correction; repeated UI, sanitizer and installed-library checks remain
-the release gate. Garbage collection and the failing tests remain enabled.
+with that correction. It does not yet resolve the observed failure: the
+[repeated native run](https://github.com/YunaBraska/SquadSpeak/actions/runs/37612345123)
+passes all 252 UI rows, then crashes during a focused repetition in the same
+collection path. The loaded library is verified, but the invalid pointer still
+requires symbolized diagnosis. Repeated UI, sanitizer and installed-library
+checks remain the release gate. Garbage collection and the failing tests remain
+enabled. A second upstream correction, `f2e838e86cefd91577345e093edbbc0bbd1fd6cd`,
+fixes allocator free-list corruption during sweep. The isolated release-mode
+[comparison](https://github.com/YunaBraska/SquadSpeak/actions/runs/37616013154)
+passes 20 focused repetitions with and without it, so this alone does not prove
+the reported crash resolved. The full preceding UI sequence is being restored
+for the comparison. Linux CI retains that order and repeats the focused cases
+20 times, stopping at the first failure.
 
 CI retains CTest XML, detailed logs, rendered UI evidence and tested packages.
 A green run at an older revision does not cover newly added platform code.
@@ -110,8 +129,8 @@ macOS in 1.43 seconds, including empty device descriptions to complete on the
 PC, invalid packages and refusal to overwrite existing profiles. Encoding-warning
 checks also pass. YAML parsing succeeds; local actionlint did not complete and
 was stopped. The Windows job is configured to smoke-test both profiles through
-the packaged executable, but that changed job has not run yet. This is prepared
-delivery tooling, not a new Windows pass or a proven complete two-app UI flow.
+the packaged executable; this now passes in `37611022410`. That proves seeded
+packaged startup, not physical audio or a complete two-app UI flow.
 Browser interaction for the changed HTML remains unverified.
 
 The `17dbfdd` channel refactor passes all 31 local CTest groups with

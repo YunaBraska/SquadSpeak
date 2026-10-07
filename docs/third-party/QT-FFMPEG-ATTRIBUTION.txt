@@ -29,6 +29,9 @@ from the checksum-pinned Qt Declarative 6.10.2 source. cmake/qt-qml-gc.patch
 backports the upstream QML garbage-collector transition correction so a
 deadline-expired incremental collection still initializes its mark stack:
 https://github.com/qt/qtdeclarative/commit/cdbacb7ba78779fc1eecc05afae3a3a874623e6e
+The sweep correction preserves allocator free lists when destruction allocates
+new objects and fixes partitioning of growing chunk lists:
+https://github.com/qt/qtdeclarative/commit/f2e838e86cefd91577345e093edbbc0bbd1fd6cd
 It also retains the distribution's property-cache lifetime correction:
 https://github.com/qt/qtdeclarative/commit/1327fce7e500e3ae2e96ab89eaad7f1727ea77b1
 Instrumented Clang builds use the same sanitizer link policy described above.

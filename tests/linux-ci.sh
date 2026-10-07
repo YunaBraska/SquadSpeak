@@ -236,6 +236,22 @@ if test -d /tmp/squadspeak-ci-build/smoke; then
 fi
 test "$result" -eq 0
 
+# Repeated chat/theme churn exposed a Qt 6.10 allocator fault after the full UI
+# suite. Keep that sequence, with frequent collection and no retry-on-failure.
+attempt=1
+while test "$attempt" -le 20; do
+    printf 'Chat collection repetition %s\n' "$attempt" >> /output/chat-collection.log
+    QV4_GC_TIMELIMIT=1 QTEST_DISABLE_STACK_DUMP=1 \
+        LSAN_OPTIONS=suppressions=/source/tests/lsan.supp \
+        SQUAD_TEST_ARTIFACTS=/output/screenshots \
+        timeout 60 /tmp/squadspeak-ci-build/controls_tests \
+        -input /source/tests/tst_channel_controls.qml \
+        DirectChannelControls::test_markdownCodeAndQuotesStayReadable \
+        DirectChannelControls::test_markdownStructuresStayWithinChat \
+        >> /output/chat-collection.log 2>&1 || { cat /output/chat-collection.log; exit 1; }
+    attempt=$((attempt + 1))
+done
+
 # Exercise the unavailable-device path separately. The main run above must
 # still see the virtual microphone; losing it cannot silently reduce coverage.
 SQUADSPEAK_TEST_INPUT=absent PULSE_SERVER=unix:/tmp/nonexistent-squadspeak-ci \
