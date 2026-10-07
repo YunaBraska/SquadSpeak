@@ -30,6 +30,7 @@ def main():
     parser.add_argument("--minimum-system", required=True, type=version)
     parser.add_argument("--architecture", required=True, choices=("arm64", "x86_64"))
     parser.add_argument("--report", required=True, type=Path)
+    parser.add_argument("--qml-reference", type=Path)
     args = parser.parse_args()
     app = args.app.resolve(strict=True)
     environment = {k: v for k, v in os.environ.items() if not k.startswith(("QT_", "QML", "DYLD_"))}
@@ -55,6 +56,21 @@ def main():
         if result.returncode:
             errors.append({"check": name, "exit": result.returncode,
                            "diagnostic": result.stderr.decode(errors="replace")[-4096:]})
+
+    if args.qml_reference:
+        # Deployment changes paths and code signatures, but retains the linked
+        # Mach-O UUID. Compare the chosen architecture with the corrected build.
+        def binary_uuid(path):
+            result = run(["/usr/bin/dwarfdump", "--uuid", str(path)])
+            check_process("qml_runtime_uuid", result)
+            match = re.search(r"UUID: ([0-9A-F-]+) \(" + args.architecture + r"\)",
+                              result.stdout.decode())
+            return match.group(1) if match else None
+
+        reference = binary_uuid(args.qml_reference)
+        installed = binary_uuid(app / "Contents/Frameworks/QtQml.framework/Versions/A/QtQml")
+        if not reference or installed != reference:
+            errors.append({"check": "corrected_qml_runtime", "expected": reference, "actual": installed})
 
     # The app and Qt Multimedia must share one patched FFmpeg runtime.
     for library in ("avcodec", "avutil", "swscale", "avformat", "swresample"):

@@ -241,7 +241,7 @@ test "$result" -eq 0
 attempt=1
 while test "$attempt" -le 20; do
     printf 'Chat collection repetition %s\n' "$attempt" >> /output/chat-collection.log
-    QV4_GC_TIMELIMIT=1 QTEST_DISABLE_STACK_DUMP=1 \
+    QV4_GC_TIMELIMIT=1 QV4_JIT_CALL_THRESHOLD=1 QTEST_DISABLE_STACK_DUMP=1 \
         LSAN_OPTIONS=suppressions=/source/tests/lsan.supp \
         SQUAD_TEST_ARTIFACTS=/output/screenshots \
         timeout 60 /tmp/squadspeak-ci-build/controls_tests \

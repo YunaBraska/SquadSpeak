@@ -127,7 +127,7 @@ $version = @()
 if ($env:SQUADSPEAK_VERSION) { $version += "-DSQUADSPEAK_VERSION=$env:SQUADSPEAK_VERSION" }
 Invoke-Checked cmake (@("-S", $repo, "-B", $appBuild, "-G", "Ninja", "-DCMAKE_BUILD_TYPE=Release", "-DBUILD_TESTING=ON", "-DCMAKE_PREFIX_PATH=$QtRoot", "-DOPENSSL_ROOT_DIR=$prefix", "-DSQUADSPEAK_AUDIO_DEPS_ROOT=$prefix", "-DSQUADSPEAK_FFMPEG_ROOT=$ffmpegStage") + $version)
 Invoke-Checked cmake @("--build", $appBuild, "--parallel", "3")
-$env:PATH = "$QtRoot/bin;$prefix/bin;$appBuild/audio-processing/bin;$env:PATH"
+$env:PATH = "$appBuild/qt-qml/bin;$QtRoot/bin;$prefix/bin;$appBuild/audio-processing/bin;$env:PATH"
 $env:QT_FORCE_STDERR_LOGGING = "1"
 $env:QT_LOGGING_RULES = ""
 Start-Service Audiosrv
@@ -160,6 +160,10 @@ foreach ($notice in Get-ChildItem "$repo/docs/third-party" -Recurse -File) {
 }
 Invoke-Checked "$QtRoot/bin/windeployqt.exe" @("--release", "--qmldir", "$repo/ui", "$package/bin/squadspeak.exe")
 Invoke-Checked "$QtRoot/bin/windeployqt.exe" @("--release", "--qmldir", "$repo/ui", "$package/bin/squad_image_worker.exe")
+Copy-Item "$appBuild/qt-qml/bin/Qt6Qml.dll" "$package/bin/Qt6Qml.dll" -Force
+if ((Get-FileHash "$appBuild/qt-qml/bin/Qt6Qml.dll").Hash -ne (Get-FileHash "$package/bin/Qt6Qml.dll").Hash) {
+    throw "The package must contain the corrected Qt Qml runtime"
+}
 if (-not (Test-Path "$package/bin/sqldrivers/qsqlite.dll")) {
     throw "Packaged Qt SQL SQLite driver is missing: bin/sqldrivers/qsqlite.dll"
 }

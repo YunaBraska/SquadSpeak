@@ -44,43 +44,42 @@ The corrected Linux build at `da873d7`
 passes 33 groups on ARM64/x64 in 1114.20/1080.43 seconds and 32 Store groups in
 915.19 seconds, including discovery and runtime-only archive checks.
 
-The matrix also exposes a Linux x64 QML crash in
-`QV4::MemoryManager::collectFromJSStack`. Backporting Qt's initial-transition
-correction `cdbacb7ba78779fc1eecc05afae3a3a874623e6e` alone does not fix it.
-The symbolized release-mode
-[comparison](https://github.com/YunaBraska/SquadSpeak/actions/runs/37617820319)
-reproduces an invalid managed value (`0x1`, with a valid mark stack) on the
-third focused repetition after all 252 UI rows pass. Adding Qt's sweep allocator
-correction `f2e838e86cefd91577345e093edbbc0bbd1fd6cd` passes the same 252-row
-sequence followed by all 20 repetitions, 14 rows each. Both jobs load the
-matching rebuilt Qt 6.10.2 Qml module. This is comparative regression evidence;
-the write that originally produced the malformed stack value was not traced.
-The isolated comparison without the preceding UI sequence passed both versions
-and was insufficient on its own. Linux CI now retains the full sequence and
-20 focused repetitions, stopping at the first failure. Garbage collection and
-JIT remain enabled; sanitizer and installed-library checks are separate gates.
-The production matrix at `4c484fd`
+The Linux x64 QML crash is traced to a managed-looking JS stack value of `0x1`.
+The first GC transition and allocator sweep backports alone do not resolve it:
+the production repetition at `4c484fd`
 ([37618835531](https://github.com/YunaBraska/SquadSpeak/actions/runs/37618835531))
-passes all 33 x64 CTest groups, but its thirteenth focused repetition crashes
-again. ARM64 and Store pass. The sweep correction is therefore insufficient;
-the extended caller/stack investigation remains a release blocker.
+still crashes, and a later 100-repetition debugger run passes without a fix,
+showing why an isolated green run is insufficient evidence.
 
-Instrumenting Qml exposed a separate sanitizer startup failure at
-`qv4vme_moth.cpp:490`, the call into generated JIT code
-([37613483448](https://github.com/YunaBraska/SquadSpeak/actions/runs/37613483448)).
-The fault reads eight bytes before the function entry. A header-free Clang
-probe targeting Linux x64 confirms that `-fsanitize=function` emits exactly
-that metadata read. The narrowly annotated JIT-dispatch overload omits this
-check while retaining ASan loads, pointer/alignment and signed-overflow checks
-in the generated LLVM IR. The next
-[native sanitizer run](https://github.com/YunaBraska/SquadSpeak/actions/runs/37618961983)
-passes the JIT boundary and reaches Qt's attached-property factory call. Qt
-registers these callbacks by casting their derived return type to `QObject *`.
-That existing ABI boundary receives the same narrow function-check annotation;
-ASan and other undefined-behavior checks remain active. The AOT overload and
-remaining Qml code retain their function checks. Verification of this second
-annotation is pending. The existing desktop startup test now runs first, so a
-startup failure stops the suite before lengthy protocol cases.
+The property-write JIT correction `4c1054b0f997f2977a54d42523856805b309db9a`
+addresses the producer: `SetLookup` treated a void runtime call as a returned
+JavaScript value. In the same-container
+[before/after comparison](https://github.com/YunaBraska/SquadSpeak/actions/runs/37628442437),
+the old module passes 252 UI rows then crashes on the first focused repetition.
+GDB locates raw value `0x1` in JS-stack slot 262 during a `qsTr` allocation.
+Rebuilding only Qml with the upstream correction passes the same 252-row sequence
+and all 20 focused repetitions (14 rows each). The small property-only probe
+passes both versions and is not the regression proof. This correction is now
+being integrated for each desktop SDK; final native/package gates are pending.
+Garbage collection and JIT remain enabled. UI tests use a one-call JIT threshold
+and frequent collection; Linux retains the 20-repetition first-failure gate.
+
+Instrumenting Qml also exposed two intentional Qt call conventions: generated
+JIT functions have no Clang function-type metadata before their entry, and
+attached-property factories erase derived QObject return types. Only those two
+call boundaries exclude that one check; ASan and other UB checks remain active.
+The next [sanitizer run](https://github.com/YunaBraska/SquadSpeak/actions/runs/37625906741)
+passes both boundaries and reports an unaligned pointer store in X86Assembler.
+The patch replaces pointer reads/writes there with byte copies; this correction
+still requires the full sanitizer run. Desktop startup now runs first, exposing
+that failure in 21.58 seconds of the main suite instead of after protocol tests.
+
+The integrated macOS ARM development build passes channel controls, desktop
+startup, source-archive contracts and publication contracts in 274.71 seconds.
+The loader resolves the rebuilt Qml framework. Its installed-package check
+examines 111 binaries with no errors and matches the Qml UUID to that build.
+This local check uses the host's macOS 27 baseline because its Homebrew libraries
+target newer systems; the native release matrix must separately prove macOS 13.
 
 CI retains CTest XML, detailed logs, rendered UI evidence and tested packages.
 A green run at an older revision does not cover newly added platform code.
@@ -617,8 +616,10 @@ failure confirms that leak detection remains active.
 - Lemon Squeezy's real test checkout charges no money and issues a tax-inclusive
   12 EUR annual pass. The approved provider test activates three devices, reuses
   a saved receipt, rejects a fourth, frees/reuses a slot, then removes every test
-  activation. Independent validation confirms 0/3 slots used. Live merchant
-  approval and production product/checkout identifiers remain external requirements.
+  activation. Independent validation confirms 0/3 slots used. On 2026-10-07 the
+  maintainer reported that the live store application was rejected. Test-mode
+  success does not authorize sales; renewed approval or an agreed provider
+  change and live identifiers remain external requirements.
 
 ## Transport comparison and primary references
 

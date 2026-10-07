@@ -63,21 +63,40 @@ include(FetchContent)
 include(cmake/AudioProcessing.cmake)
 include(cmake/Media.cmake)
 
-# Backport the portal/session and GC fixes into the distribution's exact Qt
-# ABI. Only the corrected modules are bundled; no mismatched Qt replacement.
-if(CMAKE_SYSTEM_NAME STREQUAL "Linux" AND Qt6_VERSION VERSION_LESS "6.12.0")
+# Rebuild only the affected modules against the exact installed Qt ABI.
+# Shared SDK libraries remain the owners of all other Qt functionality.
+set(qt_runtime_modules)
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     if(NOT Qt6_VERSION VERSION_EQUAL "6.10.2")
-        message(FATAL_ERROR "Linux requires Qt 6.10.2 with the bundled fixes, or Qt 6.12 or newer.")
+        message(FATAL_ERROR "The verified Linux runtime requires Qt 6.10.2 with the bundled fixes.")
     endif()
     FetchContent_Declare(qt_capture
         URL https://download.qt.io/archive/qt/6.10/6.10.2/submodules/qtmultimedia-everywhere-src-6.10.2.tar.xz
         URL_HASH SHA256=93f7ef0106fbd731165a2723f3e436c911fc5e6880f5bc987b55516c20833e2b
         SOURCE_SUBDIR unused DOWNLOAD_EXTRACT_TIMESTAMP TRUE)
-    FetchContent_Declare(qt_qml
-        URL https://download.qt.io/archive/qt/6.10/6.10.2/submodules/qtdeclarative-everywhere-src-6.10.2.tar.xz
-        URL_HASH SHA256=a249914ff66cdcdbf0df8b5ffad997a2ee6dce01cc17d43c6cc56fdc1d0f4b0f
-        SOURCE_SUBDIR unused DOWNLOAD_EXTRACT_TIMESTAMP TRUE)
-    FetchContent_MakeAvailable(qt_capture qt_qml)
+    list(APPEND qt_runtime_modules capture)
+    set(qt_capture_patches qt-wayland.patch)
+endif()
+if(CMAKE_SYSTEM_NAME MATCHES "^(Darwin|Linux|Windows)$")
+    if(Qt6_VERSION VERSION_EQUAL "6.10.2")
+        FetchContent_Declare(qt_qml
+            URL https://download.qt.io/archive/qt/6.10/6.10.2/submodules/qtdeclarative-everywhere-src-6.10.2.tar.xz
+            URL_HASH SHA256=a249914ff66cdcdbf0df8b5ffad997a2ee6dce01cc17d43c6cc56fdc1d0f4b0f
+            SOURCE_SUBDIR unused DOWNLOAD_EXTRACT_TIMESTAMP TRUE)
+        set(qt_qml_patches qt-qml-gc.patch qt-qml-runtime.patch)
+        list(APPEND qt_runtime_modules qml)
+    elseif(Qt6_VERSION VERSION_EQUAL "6.11.3")
+        FetchContent_Declare(qt_qml
+            URL https://download.qt.io/online/qtsdkrepository/all_os/qt/qt6_6113_unix_line_endings_src/qt.qt6.6113.src/6.11.3-0-202609240252qtdeclarative-everywhere-src-6.11.3.tar.xz
+            URL_HASH SHA256=b3514c650bece885052da99e6e74fe38494f169fcde91129a3f3467ecb842b19
+            SOURCE_SUBDIR unused DOWNLOAD_EXTRACT_TIMESTAMP TRUE)
+        set(qt_qml_patches qt-qml-runtime.patch)
+        list(APPEND qt_runtime_modules qml)
+    else()
+        message(FATAL_ERROR "The verified Qt Qml runtime requires Qt 6.10.2 or 6.11.3.")
+    endif()
+endif()
+if(qt_runtime_modules)
     find_package(Git REQUIRED)
     get_target_property(qt_qmake Qt6::qmake LOCATION)
     execute_process(COMMAND "${qt_qmake}" -query QT_INSTALL_PREFIX
@@ -85,37 +104,54 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Linux" AND Qt6_VERSION VERSION_LESS "6.12.0")
     execute_process(COMMAND "${qt_qmake}" -query QT_INSTALL_LIBS
         OUTPUT_VARIABLE qt_libs OUTPUT_STRIP_TRAILING_WHITESPACE COMMAND_ERROR_IS_FATAL ANY)
     file(RELATIVE_PATH qt_runtime_libdir "${qt_prefix}" "${qt_libs}")
-    foreach(module IN ITEMS capture qml)
+    foreach(module IN LISTS qt_runtime_modules)
+        FetchContent_MakeAvailable(qt_${module})
         if(module STREQUAL "capture")
             set(component Multimedia)
-            set(patch "${CMAKE_CURRENT_SOURCE_DIR}/cmake/qt-wayland.patch")
         else()
             set(component Qml)
-            set(patch "${CMAKE_CURRENT_SOURCE_DIR}/cmake/qt-qml-gc.patch")
         endif()
         set(source "${qt_${module}_SOURCE_DIR}")
-        execute_process(COMMAND "${GIT_EXECUTABLE}" apply --check "${patch}"
-            WORKING_DIRECTORY "${source}" RESULT_VARIABLE unpatched OUTPUT_QUIET ERROR_QUIET)
-        if(unpatched EQUAL 0)
-            execute_process(COMMAND "${GIT_EXECUTABLE}" apply "${patch}"
-                WORKING_DIRECTORY "${source}" COMMAND_ERROR_IS_FATAL ANY)
+        foreach(patch_name IN LISTS qt_${module}_patches)
+            set(patch "${CMAKE_CURRENT_SOURCE_DIR}/cmake/${patch_name}")
+            execute_process(COMMAND "${GIT_EXECUTABLE}" apply --check "${patch}"
+                WORKING_DIRECTORY "${source}" RESULT_VARIABLE unpatched OUTPUT_QUIET ERROR_QUIET)
+            if(unpatched EQUAL 0)
+                execute_process(COMMAND "${GIT_EXECUTABLE}" apply "${patch}"
+                    WORKING_DIRECTORY "${source}" COMMAND_ERROR_IS_FATAL ANY)
+            else()
+                execute_process(COMMAND "${GIT_EXECUTABLE}" apply --reverse --check "${patch}"
+                    WORKING_DIRECTORY "${source}" COMMAND_ERROR_IS_FATAL ANY)
+            endif()
+        endforeach()
+        set(module_build "${CMAKE_CURRENT_BINARY_DIR}/qt-${module}")
+        set(libdir "${module_build}/${qt_runtime_libdir}")
+        set(module_byproducts)
+        if(APPLE)
+            set(library "${libdir}/Qt${component}.framework/Versions/A/Qt${component}")
+        elseif(WIN32)
+            set(libdir "${module_build}/bin")
+            set(library "${libdir}/Qt6${component}.dll")
+            set(import_library "${module_build}/lib/Qt6${component}.lib")
+            list(APPEND module_byproducts "${import_library}")
         else()
-            execute_process(COMMAND "${GIT_EXECUTABLE}" apply --reverse --check "${patch}"
-                WORKING_DIRECTORY "${source}" COMMAND_ERROR_IS_FATAL ANY)
+            set(library "${libdir}/libQt6${component}.so.${Qt6_VERSION}")
+            list(APPEND qt_runtime_libraries "${library}")
         endif()
-        # Standalone modules inherit the SDK layout, including multiarch dirs.
-        set(libdir "${CMAKE_CURRENT_BINARY_DIR}/qt-${module}/${qt_runtime_libdir}")
-        set(library "${libdir}/libQt6${component}.so.6.10.2")
-        list(APPEND qt_runtime_libraries "${library}")
+        if(module STREQUAL "qml")
+            set(qt_qml_library "${library}")
+        endif()
         set(module_build_options
-            BINARY_DIR "${CMAKE_CURRENT_BINARY_DIR}/qt-${module}"
+            BINARY_DIR "${module_build}"
             CMAKE_ARGS "-DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}" -DQT_BUILD_TESTS=OFF -DQT_BUILD_EXAMPLES=OFF
                 "-DQt6_DIR=${Qt6_DIR}" -DFEATURE_gstreamer=OFF
                 "-DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}" "-DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}"
                 "-DCMAKE_C_FLAGS=${CMAKE_C_FLAGS}" "-DCMAKE_CXX_FLAGS=${CMAKE_CXX_FLAGS}"
                 "-DCMAKE_SHARED_LINKER_FLAGS=${CMAKE_SHARED_LINKER_FLAGS}"
+                "-DCMAKE_OSX_ARCHITECTURES=${CMAKE_OSX_ARCHITECTURES}"
+                "-DCMAKE_OSX_DEPLOYMENT_TARGET=${CMAKE_OSX_DEPLOYMENT_TARGET}"
             BUILD_COMMAND "${CMAKE_COMMAND}" --build <BINARY_DIR> --target ${component} --parallel 4
-            BUILD_BYPRODUCTS "${library}")
+            BUILD_BYPRODUCTS "${library}" ${module_byproducts})
         if(module STREQUAL "capture")
             ExternalProject_Add(squad_qt_capture_build
                 SOURCE_DIR "${qt_capture_SOURCE_DIR}" DOWNLOAD_COMMAND "" UPDATE_COMMAND ""
@@ -128,8 +164,14 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Linux" AND Qt6_VERSION VERSION_LESS "6.12.0")
         get_target_property(configurations Qt6::${component} IMPORTED_CONFIGURATIONS)
         foreach(configuration IN LISTS configurations)
             set_property(TARGET Qt6::${component} PROPERTY "IMPORTED_LOCATION_${configuration}" "${library}")
+            if(WIN32)
+                set_property(TARGET Qt6::${component} PROPERTY "IMPORTED_IMPLIB_${configuration}" "${import_library}")
+            endif()
         endforeach()
         set_property(TARGET Qt6::${component} PROPERTY IMPORTED_LOCATION "${library}")
+        if(WIN32)
+            set_property(TARGET Qt6::${component} PROPERTY IMPORTED_IMPLIB "${import_library}")
+        endif()
         add_dependencies(Qt6::${component} squad_qt_${module}_build)
         list(PREPEND CMAKE_BUILD_RPATH "${libdir}")
     endforeach()
@@ -507,6 +549,10 @@ if(APPLE)
         get_filename_component(ffmpeg_name "${ffmpeg_library}" NAME)
         install(CODE "file(COPY_FILE \"${ffmpeg_library}\" \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/squadspeak.app/Contents/Frameworks/${ffmpeg_name}\" ONLY_IF_DIFFERENT)")
     endforeach()
+    if(qt_qml_library)
+        # macdeployqt can resolve the SDK copy while walking plugin dependencies.
+        install(CODE "file(COPY_FILE \"${qt_qml_library}\" \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/squadspeak.app/Contents/Frameworks/QtQml.framework/Versions/A/QtQml\" ONLY_IF_DIFFERENT)")
+    endif()
     # Match deployed code to the app and remove obsolete SDK search paths
     # before refreshing signatures.
     install(CODE [[
@@ -794,7 +840,7 @@ if(BUILD_TESTING)
     add_test(NAME channel_controls COMMAND controls_tests -input "${CMAKE_CURRENT_SOURCE_DIR}/tests/tst_channel_controls.qml")
     set_tests_properties(channel_controls PROPERTIES
         TIMEOUT 600
-        ENVIRONMENT "QT_QPA_PLATFORM=${ui_test_platform};QT_QUICK_BACKEND=software;QT_QUICK_CONTROLS_STYLE=Basic;SQUAD_TEST_ARTIFACTS=${CMAKE_BINARY_DIR}/smoke")
+        ENVIRONMENT "QT_QPA_PLATFORM=${ui_test_platform};QT_QUICK_BACKEND=software;QT_QUICK_CONTROLS_STYLE=Basic;SQUAD_TEST_ARTIFACTS=${CMAKE_BINARY_DIR}/smoke;QV4_JIT_CALL_THRESHOLD=1;QV4_GC_TIMELIMIT=1")
     foreach(scale 1.5 2)
         add_test(NAME avatar_scale_${scale} COMMAND controls_tests
             -input "${CMAKE_CURRENT_SOURCE_DIR}/tests/tst_channel_controls.qml"

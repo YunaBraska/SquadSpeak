@@ -125,11 +125,13 @@ if ! cmake --install "$build_root/app" --prefix "$stage_root/install"; then
     exit 1
 fi
 python3 "$source_root/tests/check_macos_bundle.py" "$stage_root/install/squadspeak.app" \
-    --minimum-system 13.0 --architecture "$architecture" --report "$build_root/artifacts/bundle.json"
+    --minimum-system 13.0 --architecture "$architecture" --report "$build_root/artifacts/bundle.json" \
+    --qml-reference "$build_root/app/qt-qml/lib/QtQml.framework/Versions/A/QtQml"
 ditto -c -k --sequesterRsrc --keepParent "$stage_root/install/squadspeak.app" \
     "$build_root/artifacts/squadspeak-macos-$architecture.zip"
 mkdir -p "$stage_root/unpacked"
 ditto -x -k "$build_root/artifacts/squadspeak-macos-$architecture.zip" "$stage_root/unpacked"
 python3 "$source_root/tests/check_macos_bundle.py" "$stage_root/unpacked/squadspeak.app" \
-    --minimum-system 13.0 --architecture "$architecture" --report "$build_root/artifacts/archive.json"
+    --minimum-system 13.0 --architecture "$architecture" --report "$build_root/artifacts/archive.json" \
+    --qml-reference "$build_root/app/qt-qml/lib/QtQml.framework/Versions/A/QtQml"
 test "$result" -eq 0
