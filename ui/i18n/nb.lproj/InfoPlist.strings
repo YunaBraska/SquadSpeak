@@ -1,0 +1,3 @@
+"NSMicrophoneUsageDescription" = "SquadSpeak bruker den valgte mikrofonen til talechat og mikrofonforhåndsvisninger.";
+"NSLocalNetworkUsageDescription" = "SquadSpeak oppdager og kobler til kanaler på ditt lokale nettverk.";
+"NSAudioCaptureUsageDescription" = "SquadSpeak bruker høyttalerlyd lokalt for å redusere mikrofoneko. Denne referansen lagres eller deles aldri.";

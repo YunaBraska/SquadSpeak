@@ -1,0 +1,3 @@
+"NSMicrophoneUsageDescription" = "SquadSpeak таңдалған микрофонды дауыстық чат пен микрофонды алдын ала қарау үшін пайдаланады.";
+"NSLocalNetworkUsageDescription" = "SquadSpeak жергілікті желідегі арналарды тауып, оларға қосылады.";
+"NSAudioCaptureUsageDescription" = "SquadSpeak микрофон жаңғырығын азайту үшін динамик дыбысын жергілікті түрде пайдаланады. Бұл үлгі ешқашан сақталмайды және бөліспейді.";

@@ -1,0 +1,7 @@
+237-134500-0015 (LibriSpeech test-clean)
+rachelellen; LibriSpeech corpus by Vassil Panayotov
+Source: https://www.openslr.org/12/
+License evidence: https://www.openslr.org/12/
+License: CC-BY-4.0 (https://creativecommons.org/licenses/by/4.0/)
+Changes: excerpt from 0 to 8 seconds; downmixed/resampled to mono 48000 Hz PCM16.
+No endorsement is implied.

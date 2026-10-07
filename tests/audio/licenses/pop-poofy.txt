@@ -1,0 +1,7 @@
+Poofy Reel
+Kevin MacLeod (incompetech.com)
+Source: https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1100003
+License evidence: https://incompetech.com/agent-section/
+License: CC-BY-4.0 (https://creativecommons.org/licenses/by/4.0/)
+Changes: excerpt from 20 to 32 seconds; downmixed/resampled to mono 48000 Hz PCM16.
+No endorsement is implied.

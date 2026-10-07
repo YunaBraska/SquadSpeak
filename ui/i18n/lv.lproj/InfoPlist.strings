@@ -1,0 +1,3 @@
+"NSMicrophoneUsageDescription" = "SquadSpeak izmanto jūsu izvēlēto mikrofonu balss tērzēšanai un mikrofona priekšskatījumiem.";
+"NSLocalNetworkUsageDescription" = "SquadSpeak atklāj kanālus jūsu lokālajā tīklā un izveido savienojumu ar tiem.";
+"NSAudioCaptureUsageDescription" = "SquadSpeak lokāli izmanto skaļruņa skaņu, lai mazinātu mikrofona atbalsi. Šī atsauce nekad netiek saglabāta vai kopīgota.";

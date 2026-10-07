@@ -1,0 +1,3 @@
+"NSMicrophoneUsageDescription" = "SquadSpeak folosește microfonul selectat pentru chat vocal și previzualizări ale microfonului.";
+"NSLocalNetworkUsageDescription" = "SquadSpeak descoperă și se conectează la canalele din rețeaua locală.";
+"NSAudioCaptureUsageDescription" = "SquadSpeak folosește local sunetul difuzorului pentru a reduce ecoul microfonului. Această referință nu este niciodată salvată sau partajată.";

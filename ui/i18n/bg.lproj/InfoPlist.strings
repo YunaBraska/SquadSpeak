@@ -1,0 +1,3 @@
+"NSMicrophoneUsageDescription" = "SquadSpeak използва избрания от вас микрофон за гласов чат и преглед на микрофона.";
+"NSLocalNetworkUsageDescription" = "SquadSpeak открива и се свързва с канали във вашата локална мрежа.";
+"NSAudioCaptureUsageDescription" = "SquadSpeak използва звука от високоговорителя локално, за да намали ехото от микрофона. Този референтен сигнал никога не се записва или споделя.";

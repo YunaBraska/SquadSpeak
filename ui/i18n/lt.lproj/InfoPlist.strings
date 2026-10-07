@@ -1,0 +1,3 @@
+"NSMicrophoneUsageDescription" = "„SquadSpeak\" naudoja jūsų pasirinktą mikrofoną balso pokalbiams ir mikrofono peržiūroms.";
+"NSLocalNetworkUsageDescription" = "„SquadSpeak\" aptinka kanalus jūsų vietiniame tinkle ir prie jų prisijungia.";
+"NSAudioCaptureUsageDescription" = "SquadSpeak vietoje naudoja garsiakalbio garsą, kad sumažintų mikrofono aidą. Šis atskaitos signalas niekada neišsaugomas ir nesidalijamas.";

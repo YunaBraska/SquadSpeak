@@ -1,0 +1,35 @@
+# SPDX license and exception IDs from runtime Qt module SBOM component records.
+# Source: https://raw.githubusercontent.com/spdx/license-list-data/31ba1a50e5397e00a304dbadc76531740e89ee48/text/
+AFL-2.1
+Apache-2.0
+BSD-2-Clause
+BSD-3-Clause
+BSD-4-Clause
+BSD-Source-Code
+BSL-1.0
+CC0-1.0
+FTL
+GPL-2.0-only
+GPL-2.0-or-later
+GPL-3.0-only
+HPND
+HPND-sell-variant
+IJG
+ISC
+Imlib2
+LGPL-2.1-or-later
+LGPL-3.0-only
+Libpng
+Linux-syscall-note
+MIT
+MIT-0
+MIT-open-group
+MPL-2.0
+Qt-GPL-exception-1.0
+Unicode-3.0
+Unlicense
+X11
+Zlib
+blessing
+libpng-2.0
+libtiff

@@ -1,0 +1,3 @@
+"NSMicrophoneUsageDescription" = "SquadSpeak menggunakan mikrofon pilihan Anda untuk obrolan suara dan pengujian mikrofon.";
+"NSLocalNetworkUsageDescription" = "SquadSpeak menemukan dan menghubungkan Anda ke kanal di jaringan lokal.";
+"NSAudioCaptureUsageDescription" = "SquadSpeak menggunakan audio speaker secara lokal untuk mengurangi gema mikrofon. Referensi ini tidak pernah disimpan atau dibagikan.";

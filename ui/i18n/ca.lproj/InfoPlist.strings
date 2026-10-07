@@ -1,0 +1,3 @@
+"NSMicrophoneUsageDescription" = "SquadSpeak utilitza el micròfon seleccionat per al xat de veu i visualitzacions prèvies del micròfon.";
+"NSLocalNetworkUsageDescription" = "SquadSpeak descobreix i es connecta als canals de la vostra xarxa local.";
+"NSAudioCaptureUsageDescription" = "SquadSpeak utilitza localment l'àudio dels altaveus per reduir l'eco del micròfon. Aquesta referència no es desa ni es comparteix mai.";

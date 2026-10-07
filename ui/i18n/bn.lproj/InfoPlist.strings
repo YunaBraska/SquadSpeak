@@ -1,0 +1,3 @@
+"NSMicrophoneUsageDescription" = "SquadSpeak ভয়েস চ্যাট এবং মাইক্রোফোন পূর্বরূপের জন্য আপনার নির্বাচিত মাইক্রোফোন ব্যবহার করে।";
+"NSLocalNetworkUsageDescription" = "SquadSpeak আপনার স্থানীয় নেটওয়ার্কে চ্যানেলগুলি আবিষ্কার করে এবং সংযোগ করে।";
+"NSAudioCaptureUsageDescription" = "মাইক্রোফোনের প্রতিধ্বনি কমাতে SquadSpeak স্থানীয়ভাবে স্পিকার অডিও ব্যবহার করে. এই রেফারেন্স কখনও সংরক্ষণ বা শেয়ার করা হয় না.";

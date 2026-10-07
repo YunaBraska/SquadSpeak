@@ -1,0 +1,3 @@
+"NSMicrophoneUsageDescription" = "SquadSpeak იყენებს თქვენს მიერ არჩეულ მიკროფონს ხმოვანი ჩეთისა და მიკროფონის გადახედვისთვის.";
+"NSLocalNetworkUsageDescription" = "SquadSpeak აღმოაჩენს და აკავშირებს არხებს თქვენს ლოკალურ ქსელში.";
+"NSAudioCaptureUsageDescription" = "SquadSpeak დინამიკის ხმას ლოკალურად იყენებს მიკროფონის ექოს შესამცირებლად. ეს საცნობარო ხმა არასოდეს ინახება ან გაზიარდება.";

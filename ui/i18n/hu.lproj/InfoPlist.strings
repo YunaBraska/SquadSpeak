@@ -1,0 +1,3 @@
+"NSMicrophoneUsageDescription" = "A SquadSpeak a kiválasztott mikrofont használja a hangcsevegéshez és a mikrofon előnézetéhez.";
+"NSLocalNetworkUsageDescription" = "A SquadSpeak felfedezi és csatlakozik a helyi hálózat csatornáihoz.";
+"NSAudioCaptureUsageDescription" = "A SquadSpeak helyben használja a hangszóró hangját a mikrofon visszhangjának csökkentésére. Ezt a referenciát soha nem menti és nem osztja meg.";

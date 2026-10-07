@@ -1,0 +1,3 @@
+"NSMicrophoneUsageDescription" = "SquadSpeak使用您选择的麦克风进行语音聊天和麦克风测试。";
+"NSLocalNetworkUsageDescription" = "SquadSpeak查找并连接您本地网络上的频道。";
+"NSAudioCaptureUsageDescription" = "SquadSpeak 在本地使用扬声器音频来减少麦克风回声.此参考音频绝不会被保存或共享.";

@@ -1,0 +1,3 @@
+"NSMicrophoneUsageDescription" = "SquadSpeak آپ کے منتخب کردہ مائیکروفون کو صوتی چیٹ اور مائیکروفون پیش نظارہ کے لیے استعمال کرتا ہے۔";
+"NSLocalNetworkUsageDescription" = "SquadSpeak آپ کے مقامی نیٹ ورک پر چینلز کو دریافت کرتا ہے اور ان سے جڑتا ہے۔";
+"NSAudioCaptureUsageDescription" = "SquadSpeak مائیکروفون کی بازگشت کم کرنے کے لیے اسپیکر آڈیو مقامی طور پر استعمال کرتا ہے. یہ حوالہ کبھی محفوظ یا شیئر نہیں کیا جاتا.";

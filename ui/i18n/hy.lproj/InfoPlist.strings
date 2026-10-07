@@ -1,0 +1,3 @@
+"NSMicrophoneUsageDescription" = "SquadSpeak-ն օգտագործում է ձեր ընտրած խոսափողը ձայնային զրույցի և խոսափողի նախադիտման համար:";
+"NSLocalNetworkUsageDescription" = "SquadSpeak-ը հայտնաբերում և միանում է ձեր տեղական ցանցի ալիքներին:";
+"NSAudioCaptureUsageDescription" = "SquadSpeak-ը տեղային օգտագործում է բարձրախոսի ձայնը, խոսափողի արձագանքը նվազեցնելու համար. Այս հղումը երբեք չի պահվում կամ տարածվում.";

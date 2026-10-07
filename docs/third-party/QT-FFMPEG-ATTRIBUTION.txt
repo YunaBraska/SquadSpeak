@@ -1,0 +1,49 @@
+Qt and FFmpeg runtime attribution
+
+The macOS and Windows application packages use Qt 6.11.3 and its multimedia
+plugin. Windows uses the FFmpeg runtime supplied by that SDK. macOS builds
+ABI-compatible FFmpeg 7.1.5 from the pinned source with the upstream
+VideoToolbox dropped-frame allocation fix:
+https://github.com/FFmpeg/FFmpeg/commit/04ff86d0355a58c3d02dbf562ccb708942a29435
+The extradata initializer also releases its locally owned queue node when
+hardware encoder creation fails, before the software encoder is selected.
+The build options and exact patch are in CMakeLists.txt at the application's
+source revision. That shared runtime is used by both SquadSpeak and Qt.
+
+Linux Qt 6.10.2 builds bundle the ABI-matching Qt Multimedia shared library,
+rebuilt from the checksum-pinned source with cmake/qt-wayland.patch. The patch
+adapts upstream portal request routing and session cleanup, cancels pending
+requests on stop, resets capture state on restart and avoids the portal probe's
+dynamic D-Bus introspection allocation. When instrumented against a regular
+Qt SDK, the module retains Qt's Clang sanitizer link policy (ASan is supplied
+by the test executable):
+https://github.com/qt/qtmultimedia/commit/d2ae2aa07b40
+https://github.com/qt/qtmultimedia/commit/2ccfc1fcb857
+Build options and source checksum are recorded in CMakeLists.txt. The source
+archive is included in the release dependency sources. This library also
+contains dr_wav (Copyright 2023 David Reid), under MIT-0; its license text is
+in QT-SBOM/licenses/MIT-0.txt. The Qt sources retain their LGPL/GPL notices.
+
+Qt source and licensing:
+https://www.qt.io/licensing/
+https://www.qt.io/terms-conditions/
+https://code.qt.io/cgit/qt/qtmultimedia.git/tree/
+
+The macOS SDK provides these unmodified records, installed under QT-SBOM/.
+They describe the original SDK, not the rebuilt macOS FFmpeg or Linux library:
+- qtbase-6.11.3.spdx
+- qtmultimedia-6.11.3.spdx
+- qtdeclarative-6.11.3.spdx
+- qtimageformats-6.11.3.spdx
+- qtsvg-6.11.3.spdx
+- qttranslations-6.11.3.spdx
+
+The qtmultimedia SBOM identifies the bundled FFmpeg component with this
+license expression:
+LGPL-2.1-or-later AND BSD-3-Clause AND BSD-2-Clause AND BSD-Source-Code AND ISC AND MIT AND MPL-2.0
+
+The same SBOM identifies the Qt multimedia modules as available under the
+Qt commercial terms or the applicable LGPL/GPL terms. The recipient must use
+the terms matching the Qt SDK license and build configuration. This compact
+record is paired with the SDK SBOM; it is not a substitute for that SBOM or
+for the applicable license texts.

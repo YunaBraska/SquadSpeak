@@ -1,0 +1,3 @@
+"NSMicrophoneUsageDescription" = "SquadSpeak käyttää valittua mikrofonia äänichattiin ja mikrofonin esikatseluihin.";
+"NSLocalNetworkUsageDescription" = "SquadSpeak etsii paikallisen verkon kanavat ja muodostaa niihin yhteyden.";
+"NSAudioCaptureUsageDescription" = "SquadSpeak käyttää kaiutinääntä paikallisesti mikrofonikaiun vähentämiseksi. Tätä vertailusignaalia ei koskaan tallenneta eikä jaeta.";

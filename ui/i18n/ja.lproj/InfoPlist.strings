@@ -1,0 +1,3 @@
+"NSMicrophoneUsageDescription" = "SquadSpeakは、音声チャットとマイクのテストに選択したマイクを使用します。";
+"NSLocalNetworkUsageDescription" = "SquadSpeakは、ローカルネットワーク上のチャンネルを検出して接続します。";
+"NSAudioCaptureUsageDescription" = "SquadSpeak はマイクのエコーを低減するためにスピーカー音声をローカルで使用します.この参照音声が保存または共有されることはありません.";

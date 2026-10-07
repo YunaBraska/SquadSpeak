@@ -1,0 +1,7 @@
+The Charm 68
+The Cynic Project (cynicmusic.com, pixelsphere.org); vocals Julie
+Source: https://opengameart.org/content/the-charm-68
+License evidence: https://opengameart.org/content/the-charm-68
+License: CC0-1.0 (https://creativecommons.org/publicdomain/zero/1.0/)
+Changes: excerpt from 50 to 62 seconds; downmixed/resampled to mono 48000 Hz PCM16.
+No endorsement is implied.

@@ -1,0 +1,4 @@
+# FcPattern owns element storage through relative offsets, invisible to LSan.
+# Verified by fontconfig_lsan_probe.cpp; Qt/application owner leaks remain visible.
+# https://gnome.pages.gitlab.gnome.org/librsvg/devel-docs/memory_leaks.html
+leak:QFontEngineMultiFontConfig::getMatchPatternForFallback

@@ -1,0 +1,3 @@
+"NSMicrophoneUsageDescription" = "SquadSpeak dey use your selected microphone for voice chat and microphone previews.";
+"NSLocalNetworkUsageDescription" = "SquadSpeak dey discover and connect to channels on your local network.";
+"NSAudioCaptureUsageDescription" = "SquadSpeak dey use speaker sound inside the device to reduce microphone echo. Dem no dey save or share this reference ever.";

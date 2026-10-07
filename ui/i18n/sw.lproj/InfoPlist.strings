@@ -1,0 +1,3 @@
+"NSMicrophoneUsageDescription" = "SquadSpeak hutumia kipaza sauti ulichochagua kwa mazungumzo ya sauti na hakikisho la kipaza sauti.";
+"NSLocalNetworkUsageDescription" = "SquadSpeak hugundua na kuunganisha kwenye chaneli za mtandao wako wa ndani.";
+"NSAudioCaptureUsageDescription" = "SquadSpeak hutumia sauti ya spika kwenye kifaa ili kupunguza mwangwi wa maikrofoni. Rejeleo hili halihifadhiwi wala kushirikiwa kamwe.";

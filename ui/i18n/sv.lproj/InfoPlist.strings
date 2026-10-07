@@ -1,0 +1,3 @@
+"NSMicrophoneUsageDescription" = "SquadSpeak använder din valda mikrofon för röstsamtal och mikrofontester.";
+"NSLocalNetworkUsageDescription" = "SquadSpeak hittar och ansluter till kanaler i ditt lokala nätverk.";
+"NSAudioCaptureUsageDescription" = "SquadSpeak använder högtalarljud lokalt för att minska mikrofoneko. Den här referensen sparas eller delas aldrig.";

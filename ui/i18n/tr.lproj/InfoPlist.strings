@@ -1,0 +1,3 @@
+"NSMicrophoneUsageDescription" = "SquadSpeak, sesli sohbet ve mikrofon testleri için seçtiğiniz mikrofonu kullanır.";
+"NSLocalNetworkUsageDescription" = "SquadSpeak yerel ağınızdaki kanalları bulur ve bu kanallara bağlanır.";
+"NSAudioCaptureUsageDescription" = "SquadSpeak mikrofon yankısını azaltmak için hoparlör sesini yerel olarak kullanır. Bu referans hiçbir zaman kaydedilmez veya paylaşılmaz.";

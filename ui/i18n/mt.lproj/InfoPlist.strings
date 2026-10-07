@@ -1,0 +1,3 @@
+"NSMicrophoneUsageDescription" = "SquadSpeak juża l-mikrofonu magħżul tiegħek għaċ-chat tal-vuċi u għall-previżjonijiet tal-mikrofonu.";
+"NSLocalNetworkUsageDescription" = "SquadSpeak jiskopri u jgħaqqad mal-kanali fuq in-netwerk lokali tiegħek.";
+"NSAudioCaptureUsageDescription" = "SquadSpeak tuża l-awdjo tal-kelliem lokalment biex tnaqqas l-eku tal-mikrofonu. Din ir-referenza qatt ma tiġi ssejvjata jew kondiviża.";

@@ -1,0 +1,7 @@
+Megasong
+Emma_MA
+Source: https://opengameart.org/content/megasong
+License evidence: https://opengameart.org/content/megasong
+License: CC0-1.0 (https://creativecommons.org/publicdomain/zero/1.0/)
+Changes: excerpt from 20 to 32 seconds; downmixed/resampled to mono 48000 Hz PCM16.
+No endorsement is implied.

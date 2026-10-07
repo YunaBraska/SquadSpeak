@@ -1,0 +1,3 @@
+"NSMicrophoneUsageDescription" = "SquadSpeak verwendet dein ausgewähltes Mikrofon für Sprachchats und Mikrofontests.";
+"NSLocalNetworkUsageDescription" = "SquadSpeak findet Channels in deinem lokalen Netzwerk und verbindet sich mit ihnen.";
+"NSAudioCaptureUsageDescription" = "SquadSpeak verwendet Lautsprecherton lokal, um Mikrofon-Echo zu verringern. Diese Referenz wird niemals gespeichert oder geteilt.";

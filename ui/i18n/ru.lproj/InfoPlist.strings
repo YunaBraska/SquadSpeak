@@ -1,0 +1,3 @@
+"NSMicrophoneUsageDescription" = "SquadSpeak использует выбранный микрофон для голосового общения и проверки микрофона.";
+"NSLocalNetworkUsageDescription" = "SquadSpeak находит каналы в локальной сети и подключается к ним.";
+"NSAudioCaptureUsageDescription" = "SquadSpeak локально использует звук динамика, чтобы уменьшить эхо микрофона. Эта опорный сигнал никогда не сохраняется и не передается.";

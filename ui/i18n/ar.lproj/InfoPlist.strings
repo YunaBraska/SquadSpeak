@@ -1,0 +1,3 @@
+"NSMicrophoneUsageDescription" = "يستخدم SquadSpeak الميكروفون الذي اخترته للدردشة الصوتية واختبار الميكروفون.";
+"NSLocalNetworkUsageDescription" = "يعثر SquadSpeak على القنوات في شبكتك المحلية ويتصل بها.";
+"NSAudioCaptureUsageDescription" = "يستخدم SquadSpeak صوت السماعة محليًا لتقليل صدى الميكروفون. لا يُحفظ هذا المرجع ولا تتم مشاركته.";

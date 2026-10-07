@@ -1,0 +1,4 @@
+singleton Theme 1.0 Theme.qml
+
+ChoiceBox 1.0 ChoiceBox.qml
+OptionCheck 1.0 OptionCheck.qml

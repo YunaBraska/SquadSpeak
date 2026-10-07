@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=SquadSpeak
+Comment=Voice channels and chat
+Exec=squadspeak
+Icon=app.squadspeak
+Terminal=false
+Categories=Network;InstantMessaging;

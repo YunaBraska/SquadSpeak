@@ -1,0 +1,3 @@
+"NSMicrophoneUsageDescription" = "Úsáideann SquadSpeak do mhicreafón roghnaithe le haghaidh comhrá gutha agus réamhamhairc micreafón.";
+"NSLocalNetworkUsageDescription" = "Aimsíonn SquadSpeak agus nascann sé le cainéil ar do líonra áitiúil.";
+"NSAudioCaptureUsageDescription" = "Úsáideann SquadSpeak fuaim an chainteora go háitiúil chun macalla an mhicreafóin a laghdú. Ní shábháiltear ná ní roinntear an tagairt seo riamh.";

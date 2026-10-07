@@ -1,0 +1,3 @@
+"NSMicrophoneUsageDescription" = "SquadSpeak выкарыстоўвае выбраны мікрафон для галасавога чата і папярэдняга прагляду мікрафона.";
+"NSLocalNetworkUsageDescription" = "SquadSpeak выяўляе і падключаецца да каналаў у вашай лакальнай сетцы.";
+"NSAudioCaptureUsageDescription" = "SquadSpeak лакальна выкарыстоўвае гук дынамікаў, каб паменшыць рэха мікрафона. Гэты эталон ніколі не захоўваецца і не перадаецца.";

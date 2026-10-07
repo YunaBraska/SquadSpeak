@@ -1,0 +1,3 @@
+"NSMicrophoneUsageDescription" = "SquadSpeak sử dụng micrô bạn đã chọn để trò chuyện thoại và kiểm tra micrô.";
+"NSLocalNetworkUsageDescription" = "SquadSpeak tìm và kết nối với các kênh trên mạng cục bộ của bạn.";
+"NSAudioCaptureUsageDescription" = "SquadSpeak sử dụng âm thanh loa cục bộ để giảm tiếng vọng của micrô. Tham chiếu này không bao giờ được lưu hoặc chia sẻ.";

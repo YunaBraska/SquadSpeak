@@ -1,0 +1,3 @@
+"NSMicrophoneUsageDescription" = "SquadSpeak benotzt Äre gewielte Mikrofon fir Stëmmchat a Mikrofonvirschau.";
+"NSLocalNetworkUsageDescription" = "SquadSpeak entdeckt a verbënnt mat Kanäl op Ärem lokalen Netzwierk.";
+"NSAudioCaptureUsageDescription" = "SquadSpeak benotzt de Lautsprecherklang lokal, fir de Mikrofon-Echo ze reduzéieren. Dës Referenz gëtt ni gespäichert oder gedeelt.";

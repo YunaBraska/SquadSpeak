@@ -1,0 +1,232 @@
+name: Verify
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      platform:
+        description: Platform to verify manually; releases always verify all
+        type: choice
+        default: all
+        options: [all, linux, macos, windows, sanitizers]
+  workflow_call:
+    inputs:
+      version:
+        type: string
+        default: ''
+
+env:
+  SQUADSPEAK_VERSION: ${{ inputs.version }}
+  SQUADSPEAK_UPDATE_PUBLIC_KEY: ${{ vars.SQUADSPEAK_UPDATE_PUBLIC_KEY }}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verify-${{ github.workflow }}-${{ github.ref }}-${{ inputs.platform }}
+  cancel-in-progress: true
+
+jobs:
+  linux:
+    if: inputs.platform == '' || inputs.platform == 'all' || inputs.platform == 'linux'
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: ubuntu-24.04
+            mode: release
+          - runner: ubuntu-24.04-arm
+            mode: release
+          - runner: ubuntu-24.04
+            mode: store
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Prepare build environment
+        run: docker build --tag squadspeak-ci - < tests/linux.Dockerfile
+      - name: Build, test and package
+        run: |
+          mkdir -p build/ci
+          set --
+          # The real desktop portal needs its private FUSE document mount.
+          # Only the release/sanitizer test containers need this on disposable runners.
+          if test '${{ matrix.mode }}' = release; then
+            set -- --device /dev/fuse --cap-add SYS_ADMIN --security-opt apparmor=unconfined
+          fi
+          docker run --rm --init "$@" \
+            --env SQUADSPEAK_VERSION \
+            --mount "type=bind,src=$PWD,dst=/source,readonly" \
+            --mount "type=bind,src=$PWD/build/ci,dst=/output" squadspeak-ci ${{ matrix.mode }}
+      - name: Discover channels across network changes
+        run: sh tests/discovery-network.sh build/ci
+      - name: Check the archive with runtime packages only
+        if: matrix.mode == 'release'
+        run: |
+          docker build --target runtime --tag squadspeak-runtime - < tests/linux.Dockerfile
+          docker run --rm --init --user "$(id -u):$(id -g)" \
+            --mount "type=bind,src=$PWD,dst=/source,readonly" \
+            --mount "type=bind,src=$PWD/build/ci,dst=/output,readonly" \
+            squadspeak-runtime sh /source/tests/linux-ci.sh runtime
+      - name: Preserve verification evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: linux-${{ runner.arch }}-${{ matrix.mode }}
+          path: |
+            build/ci
+            ${{ job.status == 'success' && '!build/ci/squadspeak-linux-*.tar.gz' || '' }}
+          if-no-files-found: warn
+      - name: Preserve tested Linux package
+        if: matrix.mode == 'release'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: release-linux-${{ runner.arch }}
+          path: build/ci/squadspeak-linux-*.tar.gz
+          if-no-files-found: error
+
+  sanitizers:
+    if: inputs.platform == '' || inputs.platform == 'all' || inputs.platform == 'sanitizers'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Prepare build environment
+        run: docker build --tag squadspeak-ci - < tests/linux.Dockerfile
+      - name: Check memory and undefined behavior
+        run: |
+          mkdir -p build/sanitizers
+          docker run --rm --init --device /dev/fuse --cap-add SYS_ADMIN --security-opt apparmor=unconfined \
+            --env SQUADSPEAK_VERSION \
+            --mount "type=bind,src=$PWD,dst=/source,readonly" \
+            --mount "type=bind,src=$PWD/build/sanitizers,dst=/output" squadspeak-ci sanitizers
+      - name: Check network changes with sanitizers
+        run: sh tests/discovery-network.sh build/sanitizers
+      - name: Preserve sanitizer evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: linux-sanitizers
+          path: build/sanitizers
+          if-no-files-found: warn
+
+  macos:
+    if: inputs.platform == '' || inputs.platform == 'all' || inputs.platform == 'macos'
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [macos-15, macos-15-intel]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Install build tools
+        run: brew install cmake ninja meson pkgconf nasm
+      - name: Install Qt
+        uses: jurplel/install-qt-action@a9c63c7c123f3069cff414e7e482d95dfa9d8125
+        with:
+          version: '6.11.3'
+          cache: true
+          modules: 'qtmultimedia qtimageformats'
+      - name: Prepare isolated test keychain
+        shell: sh
+        run: |
+          set -eu
+          test "$GITHUB_ACTIONS" = true
+          keychain="$RUNNER_TEMP/squadspeak-tests.keychain-db"
+          security create-keychain -p isolated-runner-tests "$keychain"
+          security set-keychain-settings -lut 7200 "$keychain"
+          security unlock-keychain -p isolated-runner-tests "$keychain"
+          security default-keychain -s "$keychain"
+          security list-keychains -d user -s "$keychain"
+      - name: Build, test and package
+        shell: sh
+        run: |
+          mkdir -p build/macos-ci/artifacts
+          result=0
+          sh tests/macos-ci.sh "$QT_ROOT_DIR" build/macos-ci > build/macos-ci/artifacts/build.log 2>&1 || result=$?
+          tail -100 build/macos-ci/artifacts/build.log
+          exit "$result"
+      - name: Preserve verification evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: macos-${{ runner.arch }}
+          path: |
+            build/macos-ci/artifacts
+            !build/macos-ci/artifacts/squadspeak-macos-*.zip
+          if-no-files-found: warn
+      - name: Preserve tested macOS package
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: release-macos-${{ runner.arch }}
+          path: build/macos-ci/artifacts/squadspeak-macos-*.zip
+          if-no-files-found: error
+
+  windows:
+    if: inputs.platform == '' || inputs.platform == 'all' || inputs.platform == 'windows'
+    runs-on: windows-2022
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Prepare virtual Windows audio
+        shell: pwsh
+        run: ./tests/windows-audio.ps1 -BuildRoot "$env:GITHUB_WORKSPACE/build/windows-ci"
+      - name: Select MSVC 2022
+        uses: ilammy/msvc-dev-cmd@0b201ec74fa43914dc39ae48a89fd1d8cb592756
+        with:
+          arch: x64
+      - name: Install Qt 6.11.3 MSVC
+        uses: jurplel/install-qt-action@a9c63c7c123f3069cff414e7e482d95dfa9d8125
+        with:
+          version: '6.11.3'
+          cache: true
+          # Upstream #1000 supports Qt 6.11's architecture-specific repositories.
+          aqtsource: 'git+https://github.com/miurahr/aqtinstall.git@8c3695d4a4e1ceabf6a74dc6c79681656dc6b74b'
+          arch: win64_msvc2022_64
+          modules: 'qtmultimedia qtimageformats'
+      - name: Install build tools
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          for ($attempt = 1; $attempt -le 3; ++$attempt) {
+            choco install nasm --version=3.2.0 --no-progress --yes
+            if ($LASTEXITCODE -eq 0) { break }
+            if ($attempt -eq 3) { throw "Chocolatey NASM installation failed with exit code $LASTEXITCODE" }
+            Start-Sleep -Seconds (5 * $attempt)
+          }
+          $nasmDir = Join-Path $env:ProgramFiles 'NASM'
+          Add-Content -Path $env:GITHUB_PATH -Value $nasmDir
+          $nasmVersion = & "$nasmDir/nasm.exe" -v
+          if ($LASTEXITCODE -ne 0 -or $nasmVersion -notmatch '^NASM version 3\.02(?: |$)') { throw "Unexpected NASM version: $nasmVersion" }
+          Write-Host $nasmVersion
+          python -m pip install --disable-pip-version-check meson==1.12.1
+      - name: Build, test and package
+        shell: pwsh
+        run: ./tests/windows-ci.ps1 -QtRoot $env:QT_ROOT_DIR -BuildRoot "$env:GITHUB_WORKSPACE/build/windows-ci"
+      - name: Preserve Windows verification evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: windows-x86_64
+          path: |
+            build/windows-ci/*.log
+            build/windows-ci/ctest.xml
+            build/windows-ci/app/smoke
+            ${{ job.status != 'success' && 'build/windows-ci/squadspeak-windows-x86_64.zip' || '' }}
+          if-no-files-found: warn
+      - name: Preserve tested Windows package
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: release-windows-x86_64
+          path: build/windows-ci/squadspeak-windows-x86_64.zip
+          if-no-files-found: error

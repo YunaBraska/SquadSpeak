@@ -1,0 +1,3 @@
+"NSMicrophoneUsageDescription" = "SquadSpeak notar valinn hljóðnema fyrir talspjall og forskoðun hljóðnema.";
+"NSLocalNetworkUsageDescription" = "SquadSpeak uppgötvar og tengist rásum á staðarnetinu þínu.";
+"NSAudioCaptureUsageDescription" = "SquadSpeak notar hátalarahljóð staðbundið til að draga úr bergmáli hljóðnema. Þessi tilvísun er aldrei vistuð eða deilt.";

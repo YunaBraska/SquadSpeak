@@ -1,0 +1,3 @@
+"NSMicrophoneUsageDescription" = "SquadSpeak kasutab teie valitud mikrofoni häälvestluseks ja mikrofoni eelvaadeteks.";
+"NSLocalNetworkUsageDescription" = "SquadSpeak avastab teie kohalikus võrgus kanaleid ja loob nendega ühenduse.";
+"NSAudioCaptureUsageDescription" = "SquadSpeak kasutab mikrofoni kaja vähendamiseks kohapeal kõlariheli. Seda viidet ei salvestata ega jagata kunagi.";

@@ -1,0 +1,3 @@
+"NSMicrophoneUsageDescription" = "SquadSpeak uporablja vaš izbrani mikrofon za glasovni klepet in predogled mikrofona.";
+"NSLocalNetworkUsageDescription" = "SquadSpeak odkrije kanale v vašem lokalnem omrežju in se z njimi poveže.";
+"NSAudioCaptureUsageDescription" = "SquadSpeak lokalno uporablja zvok zvočnika za zmanjšanje odmeva mikrofona. Ta referenca se nikoli ne shrani ali deli.";

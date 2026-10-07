@@ -1,0 +1,211 @@
+name: Release
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.repository }}
+  cancel-in-progress: false
+
+jobs:
+  version:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      value: ${{ steps.resolve.outputs.value }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Resolve UTC release version
+        id: resolve
+        shell: sh
+        run: |
+          set -eu
+          version=$(cmake -P cmake/Version.cmake 2>&1)
+          printf 'value=%s\n' "$version" >> "$GITHUB_OUTPUT"
+  verify:
+    needs: version
+    uses: ./.github/workflows/verify.yml
+    with:
+      version: ${{ needs.version.outputs.value }}
+
+  sources:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Assemble matching third-party sources
+        shell: sh
+        run: |
+          set -eu
+          python3 cmake/build_sources.py --cache "$RUNNER_TEMP/source-cache" \
+            --output "$RUNNER_TEMP/source-package/squadspeak-third-party-sources.tar.gz"
+      - name: Preserve source package
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: release-third-party-sources
+          path: "${{ runner.temp }}/source-package/squadspeak-third-party-sources.tar.gz"
+          if-no-files-found: error
+
+  sign_macos:
+    needs: [version, verify]
+    runs-on: macos-15
+    timeout-minutes: 15
+    outputs:
+      signed: ${{ steps.sign.outputs.signed }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Download pinned Sparkle tools
+        shell: sh
+        run: |
+          set -eu
+          mkdir -p "$RUNNER_TEMP/sparkle"
+          curl --fail --location --retry 3 --output "$RUNNER_TEMP/sparkle/Sparkle-2.10.0.tar.xz" \
+            https://github.com/sparkle-project/Sparkle/releases/download/2.10.0/Sparkle-2.10.0.tar.xz
+          printf '%s  %s\n' c2bf58aa8387266ac179357b1415d6f2635f044da8be41042af32425dae6da0c \
+            "$RUNNER_TEMP/sparkle/Sparkle-2.10.0.tar.xz" | shasum -a 256 --check
+          tar -xf "$RUNNER_TEMP/sparkle/Sparkle-2.10.0.tar.xz" -C "$RUNNER_TEMP/sparkle"
+      - name: Download tested macOS archives
+        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0
+        with:
+          pattern: release-macos-*
+          path: "${{ runner.temp }}/release-assets"
+          merge-multiple: true
+      - name: Sign archives and appcasts when configured
+        id: sign
+        env:
+          UPDATE_PUBLIC_KEY: ${{ vars.SQUADSPEAK_UPDATE_PUBLIC_KEY }}
+          UPDATE_PRIVATE_KEY: ${{ secrets.SQUADSPEAK_UPDATE_PRIVATE_KEY }}
+          RELEASE_VERSION: ${{ needs.version.outputs.value }}
+        shell: sh
+        run: |
+          set -eu
+          out="$RUNNER_TEMP/update-feeds"
+          mkdir -p "$out"
+          if test -z "${UPDATE_PUBLIC_KEY:-}" || test -z "${UPDATE_PRIVATE_KEY:-}"; then
+            printf 'Unsigned preview: Sparkle signing key is not configured; no appcasts were produced.\n' > "$out/UNSIGNED.txt"
+            printf 'signed=false\n' >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          keydir=$(mktemp -d "$RUNNER_TEMP/sparkle-key.XXXXXX")
+          trap 'rm -rf "$keydir"' EXIT
+          chmod 700 "$keydir"
+          printf '%s' "$UPDATE_PRIVATE_KEY" > "$keydir/private.b64"
+          chmod 600 "$keydir/private.b64"
+          python3 - "$keydir/private.b64" "$keydir/private.der" "$UPDATE_PUBLIC_KEY" <<'PY'
+          import base64, pathlib, subprocess, sys
+          seed = base64.b64decode(pathlib.Path(sys.argv[1]).read_text().strip(), validate=True)
+          if len(seed) != 32:
+              raise SystemExit("Sparkle private key must decode to 32 bytes")
+          der = pathlib.Path(sys.argv[2])
+          der.write_bytes(bytes.fromhex("302e020100300506032b657004220420") + seed)
+          pub = der.with_name("public.der")
+          subprocess.run(["openssl", "pkey", "-inform", "DER", "-in", str(der), "-pubout", "-outform", "DER", "-out", str(pub)], check=True)
+          if base64.b64encode(pub.read_bytes()[-32:]).decode() != sys.argv[3]:
+              raise SystemExit("Sparkle private/public key mismatch")
+          PY
+          sign_update="$RUNNER_TEMP/sparkle/bin/sign_update"
+          test -x "$sign_update"
+          for architecture in arm64 x86_64; do
+            archive="$RUNNER_TEMP/release-assets/squadspeak-macos-$architecture.zip"
+            test -s "$archive"
+            "$sign_update" --ed-key-file "$keydir/private.b64" -p "$archive" > "$out/$architecture.sig"
+            "$sign_update" --ed-key-file "$keydir/private.b64" --verify "$archive" "$(cat "$out/$architecture.sig")"
+          done
+          python3 cmake/build_appcasts.py --version "$RELEASE_VERSION" --repository YunaBraska/SquadSpeak --output-dir "$out" \
+            --public-key "$UPDATE_PUBLIC_KEY" \
+            --arm-archive "$RUNNER_TEMP/release-assets/squadspeak-macos-arm64.zip" --arm-signature "$(cat "$out/arm64.sig")" \
+            --x86-archive "$RUNNER_TEMP/release-assets/squadspeak-macos-x86_64.zip" --x86-signature "$(cat "$out/x86_64.sig")"
+          for architecture in arm64 x86_64; do
+            feed="$out/appcast-macos-$architecture.xml"
+            "$sign_update" --ed-key-file "$keydir/private.b64" "$feed"
+            "$sign_update" --ed-key-file "$keydir/private.b64" --verify "$feed"
+          done
+          rm -f "$out"/*.sig "$out/UNSIGNED.txt"
+          printf 'signed=true\n' >> "$GITHUB_OUTPUT"
+      - name: Preserve update feeds
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: macos-update-feeds
+          path: "${{ runner.temp }}/update-feeds"
+          if-no-files-found: error
+
+  draft:
+    needs: [version, verify, sign_macos, sources]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      actions: read
+      contents: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Download tested packages
+        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0
+        with:
+          pattern: release-*
+          path: release-assets
+          merge-multiple: true
+      - name: Download signed macOS appcasts
+        if: needs.sign_macos.outputs.signed == 'true'
+        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0
+        with:
+          name: macos-update-feeds
+          path: release-assets
+      - name: Verify package set and create checksums
+        shell: sh
+        env:
+          SIGNED: ${{ needs.sign_macos.outputs.signed }}
+          RELEASE_VERSION: ${{ needs.version.outputs.value }}
+        run: |
+          set -eu
+          expected=6
+          if test "$SIGNED" = true; then expected=8; fi
+          test "$(find release-assets -maxdepth 1 -type f | wc -l)" -eq "$expected"
+          for file in squadspeak-linux-aarch64.tar.gz squadspeak-linux-x86_64.tar.gz squadspeak-macos-arm64.zip squadspeak-macos-x86_64.zip squadspeak-windows-x86_64.zip squadspeak-third-party-sources.tar.gz; do
+            test -s "release-assets/$file"
+          done
+          if test "$SIGNED" = true; then
+            test -s release-assets/appcast-macos-arm64.xml
+            test -s release-assets/appcast-macos-x86_64.xml
+          fi
+          (cd release-assets && sha256sum *.tar.gz *.zip > SHA256SUMS && sha256sum --check SHA256SUMS)
+          cmake -DSQUADSPEAK_VERSION="$RELEASE_VERSION" -DARCHIVES_DIR=release-assets -P cmake/BuildCask.cmake
+      - name: Create release draft for review
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_VERSION: ${{ needs.version.outputs.value }}
+          SOURCE_REVISION: ${{ github.sha }}
+        shell: sh
+        run: |
+          set -eu
+          # Existing releases are never overwritten. Publishing remains separate.
+          cat > release-notes.md <<'NOTES'
+          Desktop preview packages:
+
+          - macOS 13 or newer, Apple Silicon and Intel. Packages are ad-hoc signed; Developer ID signing and notarization are pending.
+          - Ubuntu 26.04, ARM64 and x86_64. Packages use the distribution's Qt 6.10, OpenSSL, Opus, libsamplerate and Secret Service libraries, plus fonts-noto-core and fonts-noto-cjk for language coverage.
+
+          - Windows 10 version 1903 or newer, x86_64. Extract the archive, run bin/vc_redist.x64.exe once, then bin/squadspeak.exe. Screen audio requires Windows 11 or Server 2022. CI uses Server 2022; Windows 10 runtime verification and publisher signing are pending.
+
+          Mobile packages are not part of this preview. Updates never install without your confirmation.
+          squadspeak-third-party-sources.tar.gz contains the pinned dependency sources and build patches. The matching application source and build scripts are linked below.
+          SHA256SUMS verifies file integrity, not publisher identity.
+          squadspeak.rb is the Homebrew cask generated from these exact macOS archives. The tap entry is added after the first stable release.
+          NOTES
+          if test "${{ needs.sign_macos.outputs.signed }}" != true; then
+            printf '\nSparkle appcasts were omitted because the repository signing key was not configured.\n' >> release-notes.md
+          fi
+          printf '\n[Source code (GPL-3.0)](https://github.com/%s/archive/%s.tar.gz), including build instructions. Third-party licenses remain applicable.\n' "$GH_REPO" "$SOURCE_REVISION" >> release-notes.md
+          gh release create "$RELEASE_VERSION" release-assets/* --target "$SOURCE_REVISION" \
+            --title "SquadSpeak $RELEASE_VERSION" --notes-file release-notes.md --draft --prerelease --latest=false

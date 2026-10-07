@@ -1,0 +1,3 @@
+"NSMicrophoneUsageDescription" = "SquadSpeak používa váš vybraný mikrofón na hlasový rozhovor a ukážky mikrofónu.";
+"NSLocalNetworkUsageDescription" = "SquadSpeak nájde kanály vo vašej lokálnej sieti a pripojí sa k nim.";
+"NSAudioCaptureUsageDescription" = "SquadSpeak používa zvuk reproduktora lokálne na zníženie ozveny mikrofónu. Táto referencia sa nikdy neukladá ani nezdieľa.";

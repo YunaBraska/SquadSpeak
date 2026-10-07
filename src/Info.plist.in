@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>CFBundleExecutable</key><string>${MACOSX_BUNDLE_EXECUTABLE_NAME}</string>
+    <key>CFBundleIdentifier</key><string>${MACOSX_BUNDLE_GUI_IDENTIFIER}</string>
+    <key>CFBundleName</key><string>SquadSpeak</string>
+    <key>CFBundleIconFile</key><string>app.icns</string>
+    <key>CFBundleVersion</key><string>${PROJECT_VERSION}</string>
+    <key>CFBundleShortVersionString</key><string>${PROJECT_VERSION}</string>
+    <key>CFBundlePackageType</key><string>APPL</string>
+    <key>CFBundleDevelopmentRegion</key><string>en</string>
+    <key>CFBundleLocalizations</key><array>@squad_bundle_localizations@</array>
+    <key>LSUIElement</key><true/>
+    <key>LSMinimumSystemVersion</key><string>${CMAKE_OSX_DEPLOYMENT_TARGET}</string>
+    <key>NSMicrophoneUsageDescription</key><string>SquadSpeak uses your selected microphone for voice chat and microphone previews.</string>
+    <key>NSAudioCaptureUsageDescription</key><string>SquadSpeak uses speaker audio locally to reduce microphone echo. This reference is never saved or shared.</string>
+    <key>NSLocalNetworkUsageDescription</key><string>SquadSpeak discovers and connects to channels on your local network.</string>
+    <key>NSHighResolutionCapable</key><true/>
+    @squad_update_plist@
+</dict>
+</plist>

@@ -1,0 +1,805 @@
+SPDXVersion: SPDX-2.3
+DataLicense: CC0-1.0
+SPDXID: SPDXRef-DOCUMENT
+DocumentName: qtimageformats-6.11.3
+DocumentNamespace: https://qt.io/spdxdocs/qtimageformats-6.11.3-host-darwin-arm64-target-macos-arm64-bc6ece26-2cdb-56e5-b623-91542c3eacd1
+Creator: Organization: TheQtCompany
+Creator: Tool: Qt Build System
+CreatorComment: <text>This SPDX document was created from CMake 4.3.2, using the qt
+build system from https://code.qt.io/cgit/qt/qtbase.git/tree/cmake/QtPublicSbomHelpers.cmake</text>
+Created: 2026-09-22T04:05:31Z
+ExternalDocumentRef: DocumentRef-qtbase-d447ae3351e4 https://qt.io/spdxdocs/qtbase-5a1194b2+HEAD-host-darwin-arm64-target-macos-arm64-7f207524-c9f5-511a-8045-0d5803570668 SHA1: a012fdf2921a5d9a2b11baf6a95c8a086ee5933b
+
+PackageName: qtimageformats
+SPDXID: SPDXRef-Package-qtimageformats-27ad897037b3
+ExternalRef: SECURITY cpe23Type cpe:2.3:a:qt:qtimageformats:6.11.3:*:*:*:*:*:*:*
+ExternalRef: PACKAGE-MANAGER purl pkg:generic/TheQtCompany/qtimageformats@6.11.3
+PackageVersion: 6.11.3
+ExternalRef: PACKAGE-MANAGER purl pkg:generic/TheQtCompany/qtimageformats@6.11.3
+PackageSupplier: Organization: TheQtCompany
+PackageDownloadLocation: git://code.qt.io/qt/qtimageformats.git
+PackageLicenseConcluded: NOASSERTION
+PackageLicenseDeclared: NOASSERTION
+PackageCopyrightText: Copyright (C) The Qt Company Ltd. and other contributors.
+PackageHomePage: https://qt.io
+PackageComment: <text>Built by CMake 4.3.2 with RelWithDebInfo configuration for Darwin (arm64)
+qtimageformats was configured with:
+    qt-configure-module <sources>/qtimageformats -- -DFEATURE_gds=OFF -DFFMPEG_DIR=/usr/local/FFmpeg-n7.1.5 -DQT_DEPLOY_FFMPEG=TRUE -DINPUT_headersclean=ON -DQT_FEATURE_open62541_security=OFF -DCMAKE_MAKE_PROGRAM=/usr/local/bin//ninja -DQT_INSTALL_CONFIG_INFO_FILES=ON -DQT_GENERATE_SBOM=ON -DQT_GENERATE_SOURCE_SBOM=ON -DQT_SBOM_VERIFY_SPDX_V2=ON -DQT_SBOM_REQUIRE_GENERATE_SPDX_V2_JSON=ON -DQT_SBOM_REQUIRE_VERIFY_SPDX_V2=ON -DQT_SBOM_VERIFY_CYDX_V1_6=ON -DQT_SBOM_REQUIRE_GENERATE_CYDX_V1_6=ON -DQT_SBOM_REQUIRE_VERIFY_CYDX_V1_6=ON -DQT_SBOM_PYTHON_INTERP=/Users/qt/.pyenv/versions/3.12.11/bin/python3 -DQT_SBOM_PYTHON_APPS_PATH=/Users/qt/.local/bin -DQT_LINT_SOURCE_SBOM=ON -DQT_INTERNAL_SBOM_DEFAULT_CHECKS=ON -DQT_INTERNAL_SBOM_AUDIT=ON -DQT_INTERNAL_SBOM_AUDIT_NO_ERROR=ON -DQT_BUILD_TESTS=OFF -DCMAKE_AUTOGEN_VERBOSE=ON -DCMAKE_MESSAGE_LOG_LEVEL=STATUS -DCMAKE_C_COMPILER_LAUNCHER=sccache -DCMAKE_CXX_COMPILER_LAUNCHER=sccache
+</text>
+FilesAnalyzed: false
+BuiltDate: 2026-09-22T04:05:31Z
+Relationship: SPDXRef-DOCUMENT DESCRIBES SPDXRef-Package-qtimageformats-27ad897037b3
+Relationship: SPDXRef-Package-qtimageformats-system-build-tool-CMake-27ad897037b3 BUILD_DEPENDENCY_OF SPDXRef-Package-qtimageformats-27ad897037b3
+RelationshipComment: <text>SPDXRef-Package-qtimageformats-27ad897037b3 is built using CMake version 4.3.2</text>
+Relationship: SPDXRef-Package-qtimageformats-system-build-tool-CMake-generator-Ninja-27ad897037b3 BUILD_DEPENDENCY_OF SPDXRef-Package-qtimageformats-27ad897037b3
+RelationshipComment: <text>SPDXRef-Package-qtimageformats-27ad897037b3 is built using generator CMAKE_GENERATOR: 'Ninja' and CMAKE_MAKE_PROGRAM: 'ninja' version '1.10.2'</text>
+Relationship: SPDXRef-Package-qtimageformats-system-build-tool-Compiler-AppleClang-27ad897037b3 BUILD_DEPENDENCY_OF SPDXRef-Package-qtimageformats-27ad897037b3
+RelationshipComment: <text>SPDXRef-Package-qtimageformats-27ad897037b3 is built by compiler: 'AppleClang' version: '16.0.0.16000026' frontend variant: 'GNU'</text>
+Relationship: SPDXRef-Package-qtimageformats-system-build-tool-Linker-AppleClang-27ad897037b3 BUILD_DEPENDENCY_OF SPDXRef-Package-qtimageformats-27ad897037b3
+RelationshipComment: <text>SPDXRef-Package-qtimageformats-27ad897037b3 is built by linker 'AppleClang' version '1115.7.3' frontend variant: 'GNU'</text>
+
+PackageName: QTgaPlugin
+SPDXID: SPDXRef-Package-qtimageformats-qt-plugin-QTgaPlugin-27ad897037b3
+PackageDownloadLocation: git://code.qt.io/qt/qtimageformats.git
+PackageVersion: 6.11.3
+PackageSupplier: Organization: TheQtCompany
+PackageLicenseConcluded: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+PackageLicenseDeclared: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+ExternalRef: PACKAGE-MANAGER purl pkg:github/qt/qtimageformats?library_name=QTgaPlugin#src/plugins/imageformats/tga
+ExternalRef: PACKAGE-MANAGER purl pkg:generic/TheQtCompany/qtimageformats-QTgaPlugin?vcs_url=https://code.qt.io/qt/qtimageformats.git&library_name=QTgaPlugin#src/plugins/imageformats/tga
+PackageCopyrightText: <text>Copyright (C) The Qt Company Ltd. and other contributors.</text>
+PrimaryPackagePurpose: LIBRARY
+PackageComment: <text>
+CMake target name: QTgaPlugin
+</text>
+ExternalRef: SECURITY cpe23Type cpe:2.3:a:qt:qt:6.11.3:*:*:*:*:*:*:*
+ExternalRef: SECURITY cpe23Type cpe:2.3:a:qt:qtimageformats:6.11.3:*:*:*:*:*:*:*
+PackageVerificationCode: ba9425e6f71e44380b1528f86c2ec49f718809e0
+FilesAnalyzed: true
+Relationship: SPDXRef-Package-qtimageformats-27ad897037b3 CONTAINS SPDXRef-Package-qtimageformats-qt-plugin-QTgaPlugin-27ad897037b3
+Relationship: SPDXRef-Package-qtimageformats-qt-plugin-QTgaPlugin-27ad897037b3 DEPENDS_ON DocumentRef-qtbase-d447ae3351e4:SPDXRef-Package-qtbase-qt-module-Core-d447ae3351e4
+Relationship: SPDXRef-Package-qtimageformats-qt-plugin-QTgaPlugin-27ad897037b3 DEPENDS_ON DocumentRef-qtbase-d447ae3351e4:SPDXRef-Package-qtbase-qt-module-Gui-d447ae3351e4
+Relationship: SPDXRef-Package-qtimageformats-qt-plugin-QTgaPlugin-27ad897037b3 DEPENDS_ON DocumentRef-qtbase-d447ae3351e4:SPDXRef-Package-qtbase-qt-module-PlatformPluginInternal-d447ae3351e4
+
+FileName: ./plugins/imageformats/libqtga.dylib
+SPDXID: SPDXRef-PackagedFile-qt-plugin-QTgaPlugin-27ad897037b3
+FileType: BINARY
+FileChecksum: SHA1: 8d60e6852342f4b65b71aa5e89e29a702895dddd
+LicenseConcluded: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+FileCopyrightText: <text>Copyright (C) The Qt Company Ltd. and other contributors.</text>
+LicenseInfoInFile: NOASSERTION
+Relationship: SPDXRef-Package-qtimageformats-qt-plugin-QTgaPlugin-27ad897037b3 CONTAINS SPDXRef-PackagedFile-qt-plugin-QTgaPlugin-27ad897037b3
+Relationship: SPDXRef-PackagedFile-qt-plugin-QTgaPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/plugins/imageformats/tga/main.cpp
+Relationship: SPDXRef-PackagedFile-qt-plugin-QTgaPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/plugins/imageformats/tga/qtgafile.cpp
+Relationship: SPDXRef-PackagedFile-qt-plugin-QTgaPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/plugins/imageformats/tga/qtgafile.h
+Relationship: SPDXRef-PackagedFile-qt-plugin-QTgaPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/plugins/imageformats/tga/qtgahandler.cpp
+Relationship: SPDXRef-PackagedFile-qt-plugin-QTgaPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/plugins/imageformats/tga/qtgahandler.h
+
+PackageName: QWbmpPlugin
+SPDXID: SPDXRef-Package-qtimageformats-qt-plugin-QWbmpPlugin-27ad897037b3
+PackageDownloadLocation: git://code.qt.io/qt/qtimageformats.git
+PackageVersion: 6.11.3
+PackageSupplier: Organization: TheQtCompany
+PackageLicenseConcluded: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+PackageLicenseDeclared: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+ExternalRef: PACKAGE-MANAGER purl pkg:github/qt/qtimageformats?library_name=QWbmpPlugin#src/plugins/imageformats/wbmp
+ExternalRef: PACKAGE-MANAGER purl pkg:generic/TheQtCompany/qtimageformats-QWbmpPlugin?vcs_url=https://code.qt.io/qt/qtimageformats.git&library_name=QWbmpPlugin#src/plugins/imageformats/wbmp
+PackageCopyrightText: <text>Copyright (C) The Qt Company Ltd. and other contributors.</text>
+PrimaryPackagePurpose: LIBRARY
+PackageComment: <text>
+CMake target name: QWbmpPlugin
+</text>
+ExternalRef: SECURITY cpe23Type cpe:2.3:a:qt:qt:6.11.3:*:*:*:*:*:*:*
+ExternalRef: SECURITY cpe23Type cpe:2.3:a:qt:qtimageformats:6.11.3:*:*:*:*:*:*:*
+PackageVerificationCode: cbeb5a990171ec25c5dd428fa79b60eb992bd897
+FilesAnalyzed: true
+Relationship: SPDXRef-Package-qtimageformats-27ad897037b3 CONTAINS SPDXRef-Package-qtimageformats-qt-plugin-QWbmpPlugin-27ad897037b3
+Relationship: SPDXRef-Package-qtimageformats-qt-plugin-QWbmpPlugin-27ad897037b3 DEPENDS_ON DocumentRef-qtbase-d447ae3351e4:SPDXRef-Package-qtbase-qt-module-Core-d447ae3351e4
+Relationship: SPDXRef-Package-qtimageformats-qt-plugin-QWbmpPlugin-27ad897037b3 DEPENDS_ON DocumentRef-qtbase-d447ae3351e4:SPDXRef-Package-qtbase-qt-module-Gui-d447ae3351e4
+Relationship: SPDXRef-Package-qtimageformats-qt-plugin-QWbmpPlugin-27ad897037b3 DEPENDS_ON DocumentRef-qtbase-d447ae3351e4:SPDXRef-Package-qtbase-qt-module-PlatformPluginInternal-d447ae3351e4
+
+FileName: ./plugins/imageformats/libqwbmp.dylib
+SPDXID: SPDXRef-PackagedFile-qt-plugin-QWbmpPlugin-27ad897037b3
+FileType: BINARY
+FileChecksum: SHA1: 7c1e2ce42d1b0868d3cb84b028724a9b9e2e67f4
+LicenseConcluded: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+FileCopyrightText: <text>Copyright (C) The Qt Company Ltd. and other contributors.</text>
+LicenseInfoInFile: NOASSERTION
+Relationship: SPDXRef-Package-qtimageformats-qt-plugin-QWbmpPlugin-27ad897037b3 CONTAINS SPDXRef-PackagedFile-qt-plugin-QWbmpPlugin-27ad897037b3
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWbmpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/plugins/imageformats/wbmp/main.cpp
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWbmpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/plugins/imageformats/wbmp/qwbmphandler.cpp
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWbmpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/plugins/imageformats/wbmp/qwbmphandler_p.h
+
+PackageName: QTiffPlugin_Attribution_libtiff
+SPDXID: SPDXRef-Package-qtimageformats-qt-3rdparty-sources-QTiffPlugin-Attribution-libtiff-27ad897037b3
+PackageDownloadLocation: https://download.osgeo.org/libtiff/tiff-4.7.2.tar.gz
+PackageVersion: 4.7.2
+PackageSupplier: Organization: TheQtCompany
+PackageLicenseConcluded: libtiff
+PackageLicenseDeclared: NOASSERTION
+ExternalRef: PACKAGE-MANAGER purl pkg:gitlab/libtiff/libtiff@v4.7.2
+ExternalRef: PACKAGE-MANAGER purl pkg:github/qt/qtimageformats?library_name=QTiffPlugin_Attribution_libtiff
+ExternalRef: PACKAGE-MANAGER purl pkg:generic/TheQtCompany/qtimageformats-QTiffPlugin_Attribution_libtiff?vcs_url=https://code.qt.io/qt/qtimageformats.git&library_name=QTiffPlugin_Attribution_libtiff
+PackageCopyrightText: <text>Copyright (c) 1988-1997 Sam Leffler
+Copyright (c) 1991-1997 Silicon Graphics, Inc.</text>
+PrimaryPackagePurpose: LIBRARY
+PackageComment: <text>
+CMake target name: QTiffPlugin_Attribution_libtiff
+    Information extracted from:
+     /src_dir/qtimageformats/src/3rdparty/libtiff/qt_attribution.json
+    Entry index: 0
+    Id: libtiff
+    Name: TIFF Software Distribution (libtiff)
+    Qt usage: Used in the qtiff image plugin if no system libtiff is found.
+    License: libtiff License
+    License file: COPYRIGHT
+</text>
+ExternalRef: SECURITY cpe23Type cpe:2.3:a:libtiff:libtiff:4.7.2:*:*:*:*:*:*:*
+FilesAnalyzed: false
+Relationship: SPDXRef-Package-qtimageformats-27ad897037b3 CONTAINS SPDXRef-Package-qtimageformats-qt-3rdparty-sources-QTiffPlugin-Attribution-libtiff-27ad897037b3
+
+PackageName: QTiffPlugin
+SPDXID: SPDXRef-Package-qtimageformats-qt-plugin-QTiffPlugin-27ad897037b3
+PackageDownloadLocation: git://code.qt.io/qt/qtimageformats.git
+PackageVersion: 6.11.3
+PackageSupplier: Organization: TheQtCompany
+PackageLicenseConcluded: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+PackageLicenseDeclared: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+ExternalRef: PACKAGE-MANAGER purl pkg:github/qt/qtimageformats?library_name=QTiffPlugin#src/plugins/imageformats/tiff
+ExternalRef: PACKAGE-MANAGER purl pkg:generic/TheQtCompany/qtimageformats-QTiffPlugin?vcs_url=https://code.qt.io/qt/qtimageformats.git&library_name=QTiffPlugin#src/plugins/imageformats/tiff
+PackageCopyrightText: <text>Copyright (C) The Qt Company Ltd. and other contributors.</text>
+PrimaryPackagePurpose: LIBRARY
+PackageComment: <text>
+CMake target name: QTiffPlugin
+</text>
+ExternalRef: SECURITY cpe23Type cpe:2.3:a:qt:qt:6.11.3:*:*:*:*:*:*:*
+ExternalRef: SECURITY cpe23Type cpe:2.3:a:qt:qtimageformats:6.11.3:*:*:*:*:*:*:*
+PackageVerificationCode: 5a4e353694149b0de2b204f0015bac3a30b72149
+FilesAnalyzed: true
+Relationship: SPDXRef-Package-qtimageformats-27ad897037b3 CONTAINS SPDXRef-Package-qtimageformats-qt-plugin-QTiffPlugin-27ad897037b3
+Relationship: SPDXRef-Package-qtimageformats-qt-plugin-QTiffPlugin-27ad897037b3 DEPENDS_ON DocumentRef-qtbase-d447ae3351e4:SPDXRef-Package-qtbase-qt-module-Core-d447ae3351e4
+Relationship: SPDXRef-Package-qtimageformats-qt-plugin-QTiffPlugin-27ad897037b3 DEPENDS_ON DocumentRef-qtbase-d447ae3351e4:SPDXRef-Package-qtbase-qt-module-Gui-d447ae3351e4
+Relationship: SPDXRef-Package-qtimageformats-qt-plugin-QTiffPlugin-27ad897037b3 DEPENDS_ON DocumentRef-qtbase-d447ae3351e4:SPDXRef-Package-qtbase-qt-module-PlatformPluginInternal-d447ae3351e4
+Relationship: SPDXRef-Package-qtimageformats-qt-plugin-QTiffPlugin-27ad897037b3 DEPENDS_ON SPDXRef-Package-qtimageformats-system-3rdparty-WrapZLIB-27ad897037b3
+Relationship: SPDXRef-Package-qtimageformats-qt-plugin-QTiffPlugin-27ad897037b3 DEPENDS_ON SPDXRef-Package-qtimageformats-qt-3rdparty-sources-QTiffPlugin-Attribution-libtiff-27ad897037b3
+
+FileName: ./plugins/imageformats/libqtiff.dylib
+SPDXID: SPDXRef-PackagedFile-qt-plugin-QTiffPlugin-27ad897037b3
+FileType: BINARY
+FileChecksum: SHA1: 74edf7bae2047767d96b7c097502c0d493fdab44
+LicenseConcluded: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+FileCopyrightText: <text>Copyright (C) The Qt Company Ltd. and other contributors.</text>
+LicenseInfoInFile: NOASSERTION
+Relationship: SPDXRef-Package-qtimageformats-qt-plugin-QTiffPlugin-27ad897037b3 CONTAINS SPDXRef-PackagedFile-qt-plugin-QTiffPlugin-27ad897037b3
+Relationship: SPDXRef-PackagedFile-qt-plugin-QTiffPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/plugins/imageformats/tiff/main.cpp
+Relationship: SPDXRef-PackagedFile-qt-plugin-QTiffPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/plugins/imageformats/tiff/qtiffhandler.cpp
+Relationship: SPDXRef-PackagedFile-qt-plugin-QTiffPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/plugins/imageformats/tiff/qtiffhandler_p.h
+Relationship: SPDXRef-PackagedFile-qt-plugin-QTiffPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libtiff/libtiff/tif_aux.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QTiffPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libtiff/libtiff/tif_close.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QTiffPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libtiff/libtiff/tif_codec.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QTiffPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libtiff/libtiff/tif_color.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QTiffPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libtiff/libtiff/tif_compress.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QTiffPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libtiff/libtiff/tif_dir.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QTiffPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libtiff/libtiff/tif_dirinfo.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QTiffPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libtiff/libtiff/tif_dirread.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QTiffPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libtiff/libtiff/tif_dirwrite.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QTiffPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libtiff/libtiff/tif_dumpmode.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QTiffPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libtiff/libtiff/tif_error.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QTiffPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libtiff/libtiff/tif_extension.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QTiffPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libtiff/libtiff/tif_fax3.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QTiffPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libtiff/libtiff/tif_fax3sm.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QTiffPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libtiff/libtiff/tif_flush.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QTiffPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libtiff/libtiff/tif_getimage.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QTiffPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libtiff/libtiff/tif_hash_set.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QTiffPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libtiff/libtiff/tif_luv.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QTiffPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libtiff/libtiff/tif_lzw.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QTiffPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libtiff/libtiff/tif_next.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QTiffPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libtiff/libtiff/tif_open.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QTiffPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libtiff/libtiff/tif_packbits.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QTiffPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libtiff/libtiff/tif_pixarlog.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QTiffPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libtiff/libtiff/tif_predict.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QTiffPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libtiff/libtiff/tif_print.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QTiffPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libtiff/libtiff/tif_read.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QTiffPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libtiff/libtiff/tif_strip.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QTiffPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libtiff/libtiff/tif_swab.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QTiffPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libtiff/libtiff/tif_thunder.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QTiffPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libtiff/libtiff/tif_tile.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QTiffPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libtiff/libtiff/tif_version.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QTiffPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libtiff/libtiff/tif_warning.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QTiffPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libtiff/libtiff/tif_write.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QTiffPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libtiff/libtiff/tif_zip.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QTiffPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libtiff/libtiff/t4.h
+Relationship: SPDXRef-PackagedFile-qt-plugin-QTiffPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libtiff/libtiff/tiff.h
+Relationship: SPDXRef-PackagedFile-qt-plugin-QTiffPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libtiff/libtiff/tif_config.h
+Relationship: SPDXRef-PackagedFile-qt-plugin-QTiffPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libtiff/libtiff/tiffconf.h
+Relationship: SPDXRef-PackagedFile-qt-plugin-QTiffPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libtiff/libtiff/tif_dir.h
+Relationship: SPDXRef-PackagedFile-qt-plugin-QTiffPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libtiff/libtiff/tiffio.h
+Relationship: SPDXRef-PackagedFile-qt-plugin-QTiffPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libtiff/libtiff/tif_fax3.h
+Relationship: SPDXRef-PackagedFile-qt-plugin-QTiffPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libtiff/libtiff/tiffiop.h
+Relationship: SPDXRef-PackagedFile-qt-plugin-QTiffPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libtiff/libtiff/tif_hash_set.h
+Relationship: SPDXRef-PackagedFile-qt-plugin-QTiffPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libtiff/libtiff/tiffvers.h
+Relationship: SPDXRef-PackagedFile-qt-plugin-QTiffPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libtiff/libtiff/tif_predict.h
+Relationship: SPDXRef-PackagedFile-qt-plugin-QTiffPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libtiff/libtiff/uvcode.h
+Relationship: SPDXRef-PackagedFile-qt-plugin-QTiffPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libtiff/libtiff/tif_unix.c
+
+PackageName: QWebpPlugin_Attribution_libwebp
+SPDXID: SPDXRef-Package-qtimageformats-qt-3rdparty-sources-QWebpPlugin-Attribution-libwebp-27ad897037b3
+PackageDownloadLocation: https://storage.googleapis.com/downloads.webmproject.org/releases/webp/libwebp-1.6.0.tar.gz
+PackageVersion: 1.6.0
+PackageSupplier: Organization: TheQtCompany
+PackageLicenseConcluded: BSD-3-Clause
+PackageLicenseDeclared: NOASSERTION
+ExternalRef: PACKAGE-MANAGER purl pkg:github/webmproject/libwebp@v1.6.0
+ExternalRef: PACKAGE-MANAGER purl pkg:github/qt/qtimageformats?library_name=QWebpPlugin_Attribution_libwebp
+ExternalRef: PACKAGE-MANAGER purl pkg:generic/TheQtCompany/qtimageformats-QWebpPlugin_Attribution_libwebp?vcs_url=https://code.qt.io/qt/qtimageformats.git&library_name=QWebpPlugin_Attribution_libwebp
+PackageCopyrightText: <text>Copyright (c) 2010, Google Inc. All rights reserved.</text>
+PrimaryPackagePurpose: LIBRARY
+PackageComment: <text>
+CMake target name: QWebpPlugin_Attribution_libwebp
+    Information extracted from:
+     /src_dir/qtimageformats/src/3rdparty/libwebp/qt_attribution.json
+    Entry index: 0
+    Id: libwebp
+    Name: WebP (libwebp)
+    Description: WebP is a new image format that provides lossless and lossy compression for images on the web.
+    Qt usage: Used in the qwebp image plugin if no system libwebp is found.
+    License: BSD 3-clause "New" or "Revised" License
+    License file: COPYING
+</text>
+ExternalRef: SECURITY cpe23Type cpe:2.3:a:webmproject:libwebp:1.6.0:*:*:*:*:*:*:*
+FilesAnalyzed: false
+Relationship: SPDXRef-Package-qtimageformats-27ad897037b3 CONTAINS SPDXRef-Package-qtimageformats-qt-3rdparty-sources-QWebpPlugin-Attribution-libwebp-27ad897037b3
+
+PackageName: QWebpPlugin
+SPDXID: SPDXRef-Package-qtimageformats-qt-plugin-QWebpPlugin-27ad897037b3
+PackageDownloadLocation: git://code.qt.io/qt/qtimageformats.git
+PackageVersion: 6.11.3
+PackageSupplier: Organization: TheQtCompany
+PackageLicenseConcluded: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+PackageLicenseDeclared: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+ExternalRef: PACKAGE-MANAGER purl pkg:github/qt/qtimageformats?library_name=QWebpPlugin#src/plugins/imageformats/webp
+ExternalRef: PACKAGE-MANAGER purl pkg:generic/TheQtCompany/qtimageformats-QWebpPlugin?vcs_url=https://code.qt.io/qt/qtimageformats.git&library_name=QWebpPlugin#src/plugins/imageformats/webp
+PackageCopyrightText: <text>Copyright (C) The Qt Company Ltd. and other contributors.</text>
+PrimaryPackagePurpose: LIBRARY
+PackageComment: <text>
+CMake target name: QWebpPlugin
+</text>
+ExternalRef: SECURITY cpe23Type cpe:2.3:a:qt:qt:6.11.3:*:*:*:*:*:*:*
+ExternalRef: SECURITY cpe23Type cpe:2.3:a:qt:qtimageformats:6.11.3:*:*:*:*:*:*:*
+PackageVerificationCode: 3c4ef93dcc42164ee554916cbd04b5517ce1cfd6
+FilesAnalyzed: true
+Relationship: SPDXRef-Package-qtimageformats-27ad897037b3 CONTAINS SPDXRef-Package-qtimageformats-qt-plugin-QWebpPlugin-27ad897037b3
+Relationship: SPDXRef-Package-qtimageformats-qt-plugin-QWebpPlugin-27ad897037b3 DEPENDS_ON DocumentRef-qtbase-d447ae3351e4:SPDXRef-Package-qtbase-qt-module-Core-d447ae3351e4
+Relationship: SPDXRef-Package-qtimageformats-qt-plugin-QWebpPlugin-27ad897037b3 DEPENDS_ON DocumentRef-qtbase-d447ae3351e4:SPDXRef-Package-qtbase-qt-module-Gui-d447ae3351e4
+Relationship: SPDXRef-Package-qtimageformats-qt-plugin-QWebpPlugin-27ad897037b3 DEPENDS_ON DocumentRef-qtbase-d447ae3351e4:SPDXRef-Package-qtbase-qt-module-PlatformPluginInternal-d447ae3351e4
+Relationship: SPDXRef-Package-qtimageformats-qt-plugin-QWebpPlugin-27ad897037b3 DEPENDS_ON SPDXRef-Package-qtimageformats-qt-3rdparty-sources-QWebpPlugin-Attribution-libwebp-27ad897037b3
+
+FileName: ./plugins/imageformats/libqwebp.dylib
+SPDXID: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3
+FileType: BINARY
+FileChecksum: SHA1: 368117f28d05e70c34eb01630d7554f3bba5e692
+LicenseConcluded: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+FileCopyrightText: <text>Copyright (C) The Qt Company Ltd. and other contributors.</text>
+LicenseInfoInFile: NOASSERTION
+Relationship: SPDXRef-Package-qtimageformats-qt-plugin-QWebpPlugin-27ad897037b3 CONTAINS SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/plugins/imageformats/webp/main.cpp
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/plugins/imageformats/webp/qwebphandler.cpp
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/plugins/imageformats/webp/qwebphandler_p.h
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/sharpyuv/sharpyuv.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/sharpyuv/sharpyuv_cpu.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/sharpyuv/sharpyuv_csp.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/sharpyuv/sharpyuv_dsp.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/sharpyuv/sharpyuv_gamma.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/sharpyuv/sharpyuv_sse2.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dec/alpha_dec.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dec/buffer_dec.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dec/frame_dec.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dec/idec_dec.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dec/io_dec.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dec/quant_dec.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dec/tree_dec.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dec/vp8_dec.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dec/vp8l_dec.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dec/webp_dec.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/demux/anim_decode.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/demux/demux.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dsp/alpha_processing.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dsp/alpha_processing_mips_dsp_r2.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dsp/alpha_processing_sse2.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dsp/alpha_processing_sse41.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dsp/cost.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dsp/cost_mips32.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dsp/cost_mips_dsp_r2.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dsp/cost_neon.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dsp/cost_sse2.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dsp/cpu.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dsp/dec.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dsp/dec_clip_tables.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dsp/dec_mips32.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dsp/dec_mips_dsp_r2.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dsp/dec_msa.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dsp/dec_sse2.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dsp/dec_sse41.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dsp/enc.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dsp/enc_mips32.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dsp/enc_mips_dsp_r2.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dsp/enc_msa.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dsp/enc_sse2.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dsp/enc_sse41.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dsp/filters.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dsp/filters_mips_dsp_r2.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dsp/filters_msa.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dsp/filters_sse2.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dsp/lossless.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dsp/lossless_avx2.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dsp/lossless_enc.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dsp/lossless_enc_avx2.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dsp/lossless_enc_mips32.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dsp/lossless_enc_mips_dsp_r2.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dsp/lossless_enc_msa.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dsp/lossless_enc_sse2.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dsp/lossless_enc_sse41.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dsp/lossless_mips_dsp_r2.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dsp/lossless_sse2.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dsp/lossless_sse41.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dsp/rescaler.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dsp/rescaler_mips32.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dsp/rescaler_mips_dsp_r2.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dsp/rescaler_msa.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dsp/rescaler_sse2.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dsp/ssim.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dsp/ssim_sse2.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dsp/upsampling.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dsp/upsampling_mips_dsp_r2.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dsp/upsampling_msa.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dsp/upsampling_sse2.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dsp/upsampling_sse41.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dsp/yuv.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dsp/yuv_mips32.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dsp/yuv_mips_dsp_r2.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dsp/yuv_sse2.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dsp/yuv_sse41.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/enc/alpha_enc.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/enc/analysis_enc.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/enc/backward_references_cost_enc.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/enc/backward_references_enc.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/enc/config_enc.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/enc/cost_enc.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/enc/filter_enc.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/enc/frame_enc.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/enc/histogram_enc.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/enc/iterator_enc.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/enc/near_lossless_enc.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/enc/picture_csp_enc.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/enc/picture_enc.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/enc/picture_psnr_enc.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/enc/picture_rescale_enc.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/enc/picture_tools_enc.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/enc/predictor_enc.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/enc/quant_enc.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/enc/syntax_enc.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/enc/token_enc.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/enc/tree_enc.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/enc/vp8l_enc.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/enc/webp_enc.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/mux/anim_encode.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/mux/muxedit.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/mux/muxinternal.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/mux/muxread.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/utils/bit_reader_utils.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/utils/bit_writer_utils.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/utils/color_cache_utils.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/utils/filters_utils.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/utils/huffman_encode_utils.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/utils/huffman_utils.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/utils/palette.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/utils/quant_levels_dec_utils.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/utils/quant_levels_utils.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/utils/random_utils.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/utils/rescaler_utils.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/utils/thread_utils.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/utils/utils.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/sharpyuv/sharpyuv_neon.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dsp/alpha_processing_neon.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dsp/dec_neon.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dsp/enc_neon.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dsp/filters_neon.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dsp/lossless_enc_neon.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dsp/lossless_neon.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dsp/rescaler_neon.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dsp/upsampling_neon.c
+Relationship: SPDXRef-PackagedFile-qt-plugin-QWebpPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/3rdparty/libwebp/src/dsp/yuv_neon.c
+
+PackageName: QMacHeifPlugin
+SPDXID: SPDXRef-Package-qtimageformats-qt-plugin-QMacHeifPlugin-27ad897037b3
+PackageDownloadLocation: git://code.qt.io/qt/qtimageformats.git
+PackageVersion: 6.11.3
+PackageSupplier: Organization: TheQtCompany
+PackageLicenseConcluded: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+PackageLicenseDeclared: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+ExternalRef: PACKAGE-MANAGER purl pkg:github/qt/qtimageformats?library_name=QMacHeifPlugin#src/plugins/imageformats/macheif
+ExternalRef: PACKAGE-MANAGER purl pkg:generic/TheQtCompany/qtimageformats-QMacHeifPlugin?vcs_url=https://code.qt.io/qt/qtimageformats.git&library_name=QMacHeifPlugin#src/plugins/imageformats/macheif
+PackageCopyrightText: <text>Copyright (C) The Qt Company Ltd. and other contributors.</text>
+PrimaryPackagePurpose: LIBRARY
+PackageComment: <text>
+CMake target name: QMacHeifPlugin
+</text>
+ExternalRef: SECURITY cpe23Type cpe:2.3:a:qt:qt:6.11.3:*:*:*:*:*:*:*
+ExternalRef: SECURITY cpe23Type cpe:2.3:a:qt:qtimageformats:6.11.3:*:*:*:*:*:*:*
+PackageVerificationCode: cddc8951c1085c137c1f4d7655c9b1ff56f8ede0
+FilesAnalyzed: true
+Relationship: SPDXRef-Package-qtimageformats-27ad897037b3 CONTAINS SPDXRef-Package-qtimageformats-qt-plugin-QMacHeifPlugin-27ad897037b3
+Relationship: SPDXRef-Package-qtimageformats-qt-plugin-QMacHeifPlugin-27ad897037b3 DEPENDS_ON DocumentRef-qtbase-d447ae3351e4:SPDXRef-Package-qtbase-qt-module-Core-d447ae3351e4
+Relationship: SPDXRef-Package-qtimageformats-qt-plugin-QMacHeifPlugin-27ad897037b3 DEPENDS_ON DocumentRef-qtbase-d447ae3351e4:SPDXRef-Package-qtbase-qt-module-Gui-d447ae3351e4
+Relationship: SPDXRef-Package-qtimageformats-qt-plugin-QMacHeifPlugin-27ad897037b3 DEPENDS_ON DocumentRef-qtbase-d447ae3351e4:SPDXRef-Package-qtbase-qt-module-PlatformPluginInternal-d447ae3351e4
+
+FileName: ./plugins/imageformats/libqmacheif.dylib
+SPDXID: SPDXRef-PackagedFile-qt-plugin-QMacHeifPlugin-27ad897037b3
+FileType: BINARY
+FileChecksum: SHA1: 238a2fe67651508decb7e6ddfb269364d723fb8e
+LicenseConcluded: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+FileCopyrightText: <text>Copyright (C) The Qt Company Ltd. and other contributors.</text>
+LicenseInfoInFile: NOASSERTION
+Relationship: SPDXRef-Package-qtimageformats-qt-plugin-QMacHeifPlugin-27ad897037b3 CONTAINS SPDXRef-PackagedFile-qt-plugin-QMacHeifPlugin-27ad897037b3
+Relationship: SPDXRef-PackagedFile-qt-plugin-QMacHeifPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/plugins/imageformats/shared/qiiofhelpers.mm
+Relationship: SPDXRef-PackagedFile-qt-plugin-QMacHeifPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/plugins/imageformats/shared/qiiofhelpers_p.h
+Relationship: SPDXRef-PackagedFile-qt-plugin-QMacHeifPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/plugins/imageformats/macheif/main.cpp
+Relationship: SPDXRef-PackagedFile-qt-plugin-QMacHeifPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/plugins/imageformats/macheif/qmacheifhandler.cpp
+Relationship: SPDXRef-PackagedFile-qt-plugin-QMacHeifPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/plugins/imageformats/macheif/qmacheifhandler.h
+
+PackageName: QICNSPlugin
+SPDXID: SPDXRef-Package-qtimageformats-qt-plugin-QICNSPlugin-27ad897037b3
+PackageDownloadLocation: git://code.qt.io/qt/qtimageformats.git
+PackageVersion: 6.11.3
+PackageSupplier: Organization: TheQtCompany
+PackageLicenseConcluded: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+PackageLicenseDeclared: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+ExternalRef: PACKAGE-MANAGER purl pkg:github/qt/qtimageformats?library_name=QICNSPlugin#src/plugins/imageformats/icns
+ExternalRef: PACKAGE-MANAGER purl pkg:generic/TheQtCompany/qtimageformats-QICNSPlugin?vcs_url=https://code.qt.io/qt/qtimageformats.git&library_name=QICNSPlugin#src/plugins/imageformats/icns
+PackageCopyrightText: <text>Copyright (C) The Qt Company Ltd. and other contributors.</text>
+PrimaryPackagePurpose: LIBRARY
+PackageComment: <text>
+CMake target name: QICNSPlugin
+</text>
+ExternalRef: SECURITY cpe23Type cpe:2.3:a:qt:qt:6.11.3:*:*:*:*:*:*:*
+ExternalRef: SECURITY cpe23Type cpe:2.3:a:qt:qtimageformats:6.11.3:*:*:*:*:*:*:*
+PackageVerificationCode: 729188541d07ba9434b1507359976fbc0941cdb8
+FilesAnalyzed: true
+Relationship: SPDXRef-Package-qtimageformats-27ad897037b3 CONTAINS SPDXRef-Package-qtimageformats-qt-plugin-QICNSPlugin-27ad897037b3
+Relationship: SPDXRef-Package-qtimageformats-qt-plugin-QICNSPlugin-27ad897037b3 DEPENDS_ON DocumentRef-qtbase-d447ae3351e4:SPDXRef-Package-qtbase-qt-module-Core-d447ae3351e4
+Relationship: SPDXRef-Package-qtimageformats-qt-plugin-QICNSPlugin-27ad897037b3 DEPENDS_ON DocumentRef-qtbase-d447ae3351e4:SPDXRef-Package-qtbase-qt-module-Gui-d447ae3351e4
+Relationship: SPDXRef-Package-qtimageformats-qt-plugin-QICNSPlugin-27ad897037b3 DEPENDS_ON DocumentRef-qtbase-d447ae3351e4:SPDXRef-Package-qtbase-qt-module-PlatformPluginInternal-d447ae3351e4
+
+FileName: ./plugins/imageformats/libqicns.dylib
+SPDXID: SPDXRef-PackagedFile-qt-plugin-QICNSPlugin-27ad897037b3
+FileType: BINARY
+FileChecksum: SHA1: db5e2ac02feab95829f837f7c0fcb0bf4f3fe80f
+LicenseConcluded: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+FileCopyrightText: <text>Copyright (C) The Qt Company Ltd. and other contributors.</text>
+LicenseInfoInFile: NOASSERTION
+Relationship: SPDXRef-Package-qtimageformats-qt-plugin-QICNSPlugin-27ad897037b3 CONTAINS SPDXRef-PackagedFile-qt-plugin-QICNSPlugin-27ad897037b3
+Relationship: SPDXRef-PackagedFile-qt-plugin-QICNSPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/plugins/imageformats/icns/main.cpp
+Relationship: SPDXRef-PackagedFile-qt-plugin-QICNSPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/plugins/imageformats/icns/qicnshandler.cpp
+Relationship: SPDXRef-PackagedFile-qt-plugin-QICNSPlugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/plugins/imageformats/icns/qicnshandler_p.h
+
+PackageName: QMacJp2Plugin
+SPDXID: SPDXRef-Package-qtimageformats-qt-plugin-QMacJp2Plugin-27ad897037b3
+PackageDownloadLocation: git://code.qt.io/qt/qtimageformats.git
+PackageVersion: 6.11.3
+PackageSupplier: Organization: TheQtCompany
+PackageLicenseConcluded: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+PackageLicenseDeclared: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+ExternalRef: PACKAGE-MANAGER purl pkg:github/qt/qtimageformats?library_name=QMacJp2Plugin#src/plugins/imageformats/macjp2
+ExternalRef: PACKAGE-MANAGER purl pkg:generic/TheQtCompany/qtimageformats-QMacJp2Plugin?vcs_url=https://code.qt.io/qt/qtimageformats.git&library_name=QMacJp2Plugin#src/plugins/imageformats/macjp2
+PackageCopyrightText: <text>Copyright (C) The Qt Company Ltd. and other contributors.</text>
+PrimaryPackagePurpose: LIBRARY
+PackageComment: <text>
+CMake target name: QMacJp2Plugin
+</text>
+ExternalRef: SECURITY cpe23Type cpe:2.3:a:qt:qt:6.11.3:*:*:*:*:*:*:*
+ExternalRef: SECURITY cpe23Type cpe:2.3:a:qt:qtimageformats:6.11.3:*:*:*:*:*:*:*
+PackageVerificationCode: efa3cc7e0d1f5c3b0df416bfeceb8af651355b89
+FilesAnalyzed: true
+Relationship: SPDXRef-Package-qtimageformats-27ad897037b3 CONTAINS SPDXRef-Package-qtimageformats-qt-plugin-QMacJp2Plugin-27ad897037b3
+Relationship: SPDXRef-Package-qtimageformats-qt-plugin-QMacJp2Plugin-27ad897037b3 DEPENDS_ON DocumentRef-qtbase-d447ae3351e4:SPDXRef-Package-qtbase-qt-module-Core-d447ae3351e4
+Relationship: SPDXRef-Package-qtimageformats-qt-plugin-QMacJp2Plugin-27ad897037b3 DEPENDS_ON DocumentRef-qtbase-d447ae3351e4:SPDXRef-Package-qtbase-qt-module-Gui-d447ae3351e4
+Relationship: SPDXRef-Package-qtimageformats-qt-plugin-QMacJp2Plugin-27ad897037b3 DEPENDS_ON DocumentRef-qtbase-d447ae3351e4:SPDXRef-Package-qtbase-qt-module-PlatformPluginInternal-d447ae3351e4
+
+FileName: ./plugins/imageformats/libqmacjp2.dylib
+SPDXID: SPDXRef-PackagedFile-qt-plugin-QMacJp2Plugin-27ad897037b3
+FileType: BINARY
+FileChecksum: SHA1: a043fbb461b207306cc9ed7601d41e5d3e234565
+LicenseConcluded: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+FileCopyrightText: <text>Copyright (C) The Qt Company Ltd. and other contributors.</text>
+LicenseInfoInFile: NOASSERTION
+Relationship: SPDXRef-Package-qtimageformats-qt-plugin-QMacJp2Plugin-27ad897037b3 CONTAINS SPDXRef-PackagedFile-qt-plugin-QMacJp2Plugin-27ad897037b3
+Relationship: SPDXRef-PackagedFile-qt-plugin-QMacJp2Plugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/plugins/imageformats/shared/qiiofhelpers.mm
+Relationship: SPDXRef-PackagedFile-qt-plugin-QMacJp2Plugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/plugins/imageformats/shared/qiiofhelpers_p.h
+Relationship: SPDXRef-PackagedFile-qt-plugin-QMacJp2Plugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/plugins/imageformats/macjp2/main.cpp
+Relationship: SPDXRef-PackagedFile-qt-plugin-QMacJp2Plugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/plugins/imageformats/macjp2/qmacjp2handler.cpp
+Relationship: SPDXRef-PackagedFile-qt-plugin-QMacJp2Plugin-27ad897037b3 GENERATED_FROM NOASSERTION
+RelationshipComment: /src_dir/qtimageformats/src/plugins/imageformats/macjp2/qmacjp2handler.h
+
+PackageName: CMake
+SPDXID: SPDXRef-Package-qtimageformats-system-build-tool-CMake-27ad897037b3
+PackageDownloadLocation: NOASSERTION
+PackageVersion: 4.3.2
+PackageSupplier: Person: Anonymous
+PackageLicenseConcluded: NOASSERTION
+PackageLicenseDeclared: NOASSERTION
+PackageCopyrightText: NOASSERTION
+PrimaryPackagePurpose: OTHER
+PackageComment: <text>
+CMake target name: qtimageformatsSbomBuildToolCMake
+</text>
+FilesAnalyzed: false
+
+
+PackageName: CMake generator Ninja
+SPDXID: SPDXRef-Package-qtimageformats-system-build-tool-CMake-generator-Ninja-27ad897037b3
+PackageDownloadLocation: NOASSERTION
+PackageVersion: 1.10.2
+PackageSupplier: Person: Anonymous
+PackageLicenseConcluded: NOASSERTION
+PackageLicenseDeclared: NOASSERTION
+PackageCopyrightText: NOASSERTION
+PrimaryPackagePurpose: OTHER
+PackageComment: <text>
+CMake target name: qtimageformatsSbomBuildToolCMakeGenerator
+</text>
+FilesAnalyzed: false
+
+
+PackageName: Compiler AppleClang
+SPDXID: SPDXRef-Package-qtimageformats-system-build-tool-Compiler-AppleClang-27ad897037b3
+PackageDownloadLocation: NOASSERTION
+PackageVersion: 16.0.0.16000026
+PackageSupplier: Person: Anonymous
+PackageLicenseConcluded: NOASSERTION
+PackageLicenseDeclared: NOASSERTION
+PackageCopyrightText: NOASSERTION
+PackageSummary: <text>The compiler as identified by CMake, running on 'Darwin' (arm64)</text>
+PrimaryPackagePurpose: OTHER
+PackageComment: <text>
+CMake target name: qtimageformatsSbomBuildToolCompiler
+</text>
+FilesAnalyzed: false
+
+
+PackageName: Linker AppleClang
+SPDXID: SPDXRef-Package-qtimageformats-system-build-tool-Linker-AppleClang-27ad897037b3
+PackageDownloadLocation: NOASSERTION
+PackageVersion: 1115.7.3
+PackageSupplier: Person: Anonymous
+PackageLicenseConcluded: NOASSERTION
+PackageLicenseDeclared: NOASSERTION
+PackageCopyrightText: NOASSERTION
+PrimaryPackagePurpose: OTHER
+PackageComment: <text>
+CMake target name: qtimageformatsSbomBuildToolLinker
+</text>
+FilesAnalyzed: false
+
+
+PackageName: WrapZLIB
+SPDXID: SPDXRef-Package-qtimageformats-system-3rdparty-WrapZLIB-27ad897037b3
+PackageDownloadLocation: NOASSERTION
+PackageVersion: 1.2.12
+PackageSupplier: Person: Anonymous
+PackageLicenseConcluded: NOASSERTION
+PackageLicenseDeclared: NOASSERTION
+PackageCopyrightText: NOASSERTION
+PrimaryPackagePurpose: LIBRARY
+PackageComment: <text>
+CMake target name: WrapZLIB::WrapZLIB
+</text>
+FilesAnalyzed: false
+
+
+LicenseID: LicenseRef-Qt-Commercial
+ExtractedText: <text>Licensees holding valid commercial Qt licenses may use this software in
+accordance with the the terms contained in a written agreement between
+you and The Qt Company. Alternatively, the terms and conditions that were
+accepted by the licensee when buying and/or downloading the
+software do apply.
+
+For the latest licensing terms and conditions, see https://www.qt.io/terms-conditions.
+For further information use the contact form at https://www.qt.io/contact-us.
+</text>

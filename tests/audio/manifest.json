@@ -1,0 +1,1007 @@
+{
+  "version": 2,
+  "synthetic_transients_ms": [1, 5, 20],
+  "sample_rate": 48000,
+  "speech_interval_seconds": [
+    2,
+    10
+  ],
+  "duration_seconds": 12,
+  "snr_db": [
+    -5,
+    0,
+    10
+  ],
+  "sources": [
+    {
+      "id": "speech1",
+      "kind": "speech",
+      "author": "Garth Comira",
+      "license_id": "CC-BY-4.0",
+      "audio": {
+        "url": "https://librosa.org/data/audio/5703-47212-0000.ogg",
+        "sha256": "a284612b46af0535f7e1873758c4387bb8369f6dbbe192ffdec1f171108f98dd"
+      },
+      "license": {
+        "url": "https://librosa.org/data/audio/5703-47212-0000.txt",
+        "sha256": "1c5bd5eb792ff0d2fbe895e3a3dd0acf3beb48ee364e64e12cde3a646304a9f4"
+      },
+      "start_sample": 0,
+      "frames": 384000,
+      "sha256": "a87ef7f1fdce34a30a0b18c604e4ed581032f5ea7e7baafeb277bc9f13036da3",
+      "category": "speech",
+      "source_sample_rate": 22050,
+      "speaker_id": "5703",
+      "language": "en"
+    },
+    {
+      "id": "speech2",
+      "kind": "speech",
+      "author": "Anders Lankford",
+      "license_id": "CC-BY-4.0",
+      "audio": {
+        "url": "https://librosa.org/data/audio/3436-172162-0000.ogg",
+        "sha256": "780e482b52f2c8a500356babf60178ce005449cc171a8537eb3ef2961eb3e855"
+      },
+      "license": {
+        "url": "https://librosa.org/data/audio/3436-172162-0000.txt",
+        "sha256": "8cf4b20e148c4366205bc607f447c169256e945d62c64ead43d0a4dfa7d3ab98"
+      },
+      "start_sample": 0,
+      "frames": 384000,
+      "sha256": "1c8090e3a582731eb767d6274f5caa618d43afc4be71fd897e584b28342228ee",
+      "category": "speech",
+      "source_sample_rate": 22050,
+      "speaker_id": "3436",
+      "language": "en"
+    },
+    {
+      "id": "speech3",
+      "kind": "speech",
+      "author": "Heather Barnett",
+      "license_id": "CC-BY-4.0",
+      "audio": {
+        "url": "https://librosa.org/data/audio/198-209-0000.ogg",
+        "sha256": "0473ba9613befa1026db5e254546f105aeffba8366b5468fc5e8d474d844ca1d"
+      },
+      "license": {
+        "url": "https://librosa.org/data/audio/198-209-0000.txt",
+        "sha256": "c5bf58b2a4aa0d6bf1e6051690312f3238960d455776a6d37e469d80db1da167"
+      },
+      "start_sample": 0,
+      "frames": 384000,
+      "sha256": "0c8658ec25d3eced0f7960861dc49bcefed3cf663afb680a04b7c430a7e5f3fb",
+      "category": "speech",
+      "source_sample_rate": 22050,
+      "speaker_id": "198",
+      "language": "en"
+    },
+    {
+      "id": "instrumental",
+      "kind": "interference",
+      "author": "Kevin MacLeod",
+      "license_id": "CC-BY-3.0",
+      "audio": {
+        "url": "https://librosa.org/data/audio/Kevin_MacLeod_-_Vibe_Ace.ogg",
+        "sha256": "6c23aed3dd5aa57f2b1652ecab68d15d9b82ad257f54e639eb2880ca09bc118a"
+      },
+      "license": {
+        "url": "https://librosa.org/data/audio/Kevin_MacLeod_-_Vibe_Ace.txt",
+        "sha256": "6c71e0525cb0452ea74c6d6f5fde6fa1e221223db7b2aa35b9914b98367ee7b9"
+      },
+      "start_sample": 240000,
+      "frames": 576000,
+      "sha256": "4088b2686e4fade292e525c80d9d6bd5217f2fc1dd59c9552b31f124ce614370",
+      "category": "instrumental",
+      "source_sample_rate": 22050
+    },
+    {
+      "id": "song",
+      "kind": "interference",
+      "author": "Karissa Hobbs",
+      "license_id": "CC-BY-3.0",
+      "audio": {
+        "url": "https://librosa.org/data/audio/Karissa_Hobbs_-_Lets_Go_Fishin.ogg",
+        "sha256": "27b3667c396c1831511aa3c415fcf582b6e8be560cafb844c5b67b76b72c1cb3"
+      },
+      "license": {
+        "url": "https://librosa.org/data/audio/Karissa_Hobbs_-_Lets_Go_Fishin.txt",
+        "sha256": "199bf3408b98916cd9d28a22b2b43c1935ab70072b46fa05c0b9f40e7882802e"
+      },
+      "start_sample": 1440000,
+      "frames": 576000,
+      "sha256": "d6b94b348edf27236ee07797c63f5d3abda75f5238a99a17ca9a5cb6f0ebb46b",
+      "category": "song",
+      "source_sample_rate": 22050
+    },
+    {
+      "id": "robin",
+      "kind": "interference",
+      "author": "InspectorJ",
+      "license_id": "CC-BY-3.0",
+      "audio": {
+        "url": "https://librosa.org/data/audio/456440__inspectorj__bird-whistling-robin-single-13.ogg",
+        "sha256": "57c2b861d028e25d7c086b48853f20eda1ae9a7a33e1125a1f3bec91539b4208"
+      },
+      "license": {
+        "url": "https://librosa.org/data/audio/456440__inspectorj__bird-whistling-robin-single-13.txt",
+        "sha256": "34d25a379408d9144fbc4ce8cceb72be5196aeb6140cec6c90e6bdcb0567cb6e"
+      },
+      "start_sample": 0,
+      "frames": 96000,
+      "sha256": "b7930b8485e231c78ac7d3112f12251c722be69578d2da5bcb90b67c42b6e8b7",
+      "category": "nature",
+      "source_sample_rate": 22050
+    },
+    {
+      "id": "traffic",
+      "kind": "interference",
+      "author": "ElemePodcast",
+      "license_id": "CC-BY-4.0",
+      "audio": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/2/2d/Audio_sound_of_a_busy_traffic_in_Porthacourt.ogg",
+        "sha256": "9702be26fec457ac8c54df61fbe62f120189119b5734377cda9e5ae442566efd",
+        "published_sha1": "0c034a1a48c88687ec69fd4c5b936644b3bdc59c"
+      },
+      "license": {
+        "url": "https://commons.wikimedia.org/w/index.php?title=File:Audio_sound_of_a_busy_traffic_in_Porthacourt.ogg&oldid=1201928475",
+        "notice": "Audio sound of a busy traffic in Porthacourt / ElemePodcast\nSource: https://commons.wikimedia.org/w/index.php?title=File:Audio_sound_of_a_busy_traffic_in_Porthacourt.ogg&oldid=1201928475\nCC-BY 4.0 https://creativecommons.org/licenses/by/4.0/\n",
+        "sha256": "a7ffb05db64a87faf7006f4cc63c931ccc6ca9b460d08ec2f7a8cacc5ebcbc71"
+      },
+      "start_sample": 96000,
+      "frames": 576000,
+      "sha256": "7308b4d86af045f0c59cedb4f2737533a32b1632f30a1e6f8ea557c1bf579d47",
+      "category": "traffic",
+      "source_sample_rate": 48000
+    },
+    {
+      "id": "speech-ls6930",
+      "kind": "speech",
+      "category": "speech",
+      "speaker_id": "6930",
+      "language": "en",
+      "title": "6930-75918-0005 (LibriSpeech test-clean)",
+      "author": "Nolan Fout; LibriSpeech corpus by Vassil Panayotov",
+      "source_page": "https://www.openslr.org/12/",
+      "source_sample_rate": 16000,
+      "license_id": "CC-BY-4.0",
+      "audio": {
+        "url": "https://www.openslr.org/resources/12/test-clean.tar.gz",
+        "sha256": "39fde525e59672dc6d1551919b1478f724438a95aa55f874b576be21967e6c23",
+        "published_md5": "32fa31d27d2e1cad72775fee3f4849a9",
+        "archive_member": "LibriSpeech/test-clean/6930/75918/6930-75918-0005.flac",
+        "member_sha256": "ccc0da025ef4f4596a4e70fbde291527d140364166d19d9bb516a48407b3491e"
+      },
+      "start_sample": 0,
+      "frames": 384000,
+      "sha256": "b5387857929594bba3bcdbe5754664207b024436942c5a5a87b35e9782c6038f",
+      "license": {
+        "url": "https://www.openslr.org/12/",
+        "notice": "6930-75918-0005 (LibriSpeech test-clean)\nNolan Fout; LibriSpeech corpus by Vassil Panayotov\nSource: https://www.openslr.org/12/\nLicense evidence: https://www.openslr.org/12/\nLicense: CC-BY-4.0 (https://creativecommons.org/licenses/by/4.0/)\nChanges: excerpt from 0 to 8 seconds; downmixed/resampled to mono 48000 Hz PCM16.\nNo endorsement is implied.\n",
+        "sha256": "940b88f9dcb61908cd710e7604522cd2e75dfc48c644b0c8e27894e4968a8398"
+      }
+    },
+    {
+      "id": "speech-ls5639",
+      "kind": "speech",
+      "category": "speech",
+      "speaker_id": "5639",
+      "language": "en",
+      "title": "5639-40744-0032 (LibriSpeech test-clean)",
+      "author": "Ulf Bjorklund; LibriSpeech corpus by Vassil Panayotov",
+      "source_page": "https://www.openslr.org/12/",
+      "source_sample_rate": 16000,
+      "license_id": "CC-BY-4.0",
+      "audio": {
+        "url": "https://www.openslr.org/resources/12/test-clean.tar.gz",
+        "sha256": "39fde525e59672dc6d1551919b1478f724438a95aa55f874b576be21967e6c23",
+        "published_md5": "32fa31d27d2e1cad72775fee3f4849a9",
+        "archive_member": "LibriSpeech/test-clean/5639/40744/5639-40744-0032.flac",
+        "member_sha256": "ecba1c65406f3d2fdfe383a22385dfe19cc117b71b126817f5e20df791f22a50"
+      },
+      "start_sample": 0,
+      "frames": 384000,
+      "sha256": "348eb7d0393b20fdf40129d7084e3e45cde9db062bb629a3ec3fa064211f9a79",
+      "license": {
+        "url": "https://www.openslr.org/12/",
+        "notice": "5639-40744-0032 (LibriSpeech test-clean)\nUlf Bjorklund; LibriSpeech corpus by Vassil Panayotov\nSource: https://www.openslr.org/12/\nLicense evidence: https://www.openslr.org/12/\nLicense: CC-BY-4.0 (https://creativecommons.org/licenses/by/4.0/)\nChanges: excerpt from 0 to 8 seconds; downmixed/resampled to mono 48000 Hz PCM16.\nNo endorsement is implied.\n",
+        "sha256": "ae3be84dc2c9ffb16ad458e97a8e152cdbe855c1746ff97f301de37db9f9053c"
+      }
+    },
+    {
+      "id": "speech-ls260",
+      "kind": "speech",
+      "category": "speech",
+      "speaker_id": "260",
+      "language": "en",
+      "title": "260-123440-0004 (LibriSpeech test-clean)",
+      "author": "Brad Bush; LibriSpeech corpus by Vassil Panayotov",
+      "source_page": "https://www.openslr.org/12/",
+      "source_sample_rate": 16000,
+      "license_id": "CC-BY-4.0",
+      "audio": {
+        "url": "https://www.openslr.org/resources/12/test-clean.tar.gz",
+        "sha256": "39fde525e59672dc6d1551919b1478f724438a95aa55f874b576be21967e6c23",
+        "published_md5": "32fa31d27d2e1cad72775fee3f4849a9",
+        "archive_member": "LibriSpeech/test-clean/260/123440/260-123440-0004.flac",
+        "member_sha256": "288d22f60ab2527ac2e4035a16c9095438c71deed8becde769d91a964234d139"
+      },
+      "start_sample": 0,
+      "frames": 384000,
+      "sha256": "83f8b04624d9897f29105e5f4a7911c658b44746c0c46e8babbc243d21bd78a5",
+      "license": {
+        "url": "https://www.openslr.org/12/",
+        "notice": "260-123440-0004 (LibriSpeech test-clean)\nBrad Bush; LibriSpeech corpus by Vassil Panayotov\nSource: https://www.openslr.org/12/\nLicense evidence: https://www.openslr.org/12/\nLicense: CC-BY-4.0 (https://creativecommons.org/licenses/by/4.0/)\nChanges: excerpt from 0 to 8 seconds; downmixed/resampled to mono 48000 Hz PCM16.\nNo endorsement is implied.\n",
+        "sha256": "b19fb7638bcb6b621f8575bea4c7ebc8c449f021ee35d0ec06e728776966124e"
+      }
+    },
+    {
+      "id": "speech-ls2094",
+      "kind": "speech",
+      "category": "speech",
+      "speaker_id": "2094",
+      "language": "en",
+      "title": "2094-142345-0059 (LibriSpeech test-clean)",
+      "author": "amycsj; LibriSpeech corpus by Vassil Panayotov",
+      "source_page": "https://www.openslr.org/12/",
+      "source_sample_rate": 16000,
+      "license_id": "CC-BY-4.0",
+      "audio": {
+        "url": "https://www.openslr.org/resources/12/test-clean.tar.gz",
+        "sha256": "39fde525e59672dc6d1551919b1478f724438a95aa55f874b576be21967e6c23",
+        "published_md5": "32fa31d27d2e1cad72775fee3f4849a9",
+        "archive_member": "LibriSpeech/test-clean/2094/142345/2094-142345-0059.flac",
+        "member_sha256": "d9e10be49f95d6c601d63e3c229eeda6cf29a03a040d10078bf6cd0975964554"
+      },
+      "start_sample": 0,
+      "frames": 384000,
+      "sha256": "7e57b3ece955807627744a4d20aee8a43cc32c51eddb83b9af7afa4a24a95804",
+      "license": {
+        "url": "https://www.openslr.org/12/",
+        "notice": "2094-142345-0059 (LibriSpeech test-clean)\namycsj; LibriSpeech corpus by Vassil Panayotov\nSource: https://www.openslr.org/12/\nLicense evidence: https://www.openslr.org/12/\nLicense: CC-BY-4.0 (https://creativecommons.org/licenses/by/4.0/)\nChanges: excerpt from 0 to 8 seconds; downmixed/resampled to mono 48000 Hz PCM16.\nNo endorsement is implied.\n",
+        "sha256": "45e1afebc2992a281f2f95acf220621ba80bbeb91a584af0525dcb84d969e9c8"
+      }
+    },
+    {
+      "id": "speech-ls2961",
+      "kind": "speech",
+      "category": "speech",
+      "speaker_id": "2961",
+      "language": "en",
+      "title": "2961-960-0006 (LibriSpeech test-clean)",
+      "author": "Leni; LibriSpeech corpus by Vassil Panayotov",
+      "source_page": "https://www.openslr.org/12/",
+      "source_sample_rate": 16000,
+      "license_id": "CC-BY-4.0",
+      "audio": {
+        "url": "https://www.openslr.org/resources/12/test-clean.tar.gz",
+        "sha256": "39fde525e59672dc6d1551919b1478f724438a95aa55f874b576be21967e6c23",
+        "published_md5": "32fa31d27d2e1cad72775fee3f4849a9",
+        "archive_member": "LibriSpeech/test-clean/2961/960/2961-960-0006.flac",
+        "member_sha256": "d4d7c0da46b3191ed90d3f4175e2b3b7ff1f02f59e8e5c83143dcdc6ea1d2953"
+      },
+      "start_sample": 0,
+      "frames": 384000,
+      "sha256": "5459e3d5276784d8d9901a7d58eeef14fc0f451cbd8899979f490ec3211e4fe4",
+      "license": {
+        "url": "https://www.openslr.org/12/",
+        "notice": "2961-960-0006 (LibriSpeech test-clean)\nLeni; LibriSpeech corpus by Vassil Panayotov\nSource: https://www.openslr.org/12/\nLicense evidence: https://www.openslr.org/12/\nLicense: CC-BY-4.0 (https://creativecommons.org/licenses/by/4.0/)\nChanges: excerpt from 0 to 8 seconds; downmixed/resampled to mono 48000 Hz PCM16.\nNo endorsement is implied.\n",
+        "sha256": "100383d389d34800b8e851c48aab56fd8c50b0b046d384622e5d03dc040c552a"
+      }
+    },
+    {
+      "id": "speech-ls1995",
+      "kind": "speech",
+      "category": "speech",
+      "speaker_id": "1995",
+      "language": "en",
+      "title": "1995-1836-0014 (LibriSpeech test-clean)",
+      "author": "AJai Hilton; LibriSpeech corpus by Vassil Panayotov",
+      "source_page": "https://www.openslr.org/12/",
+      "source_sample_rate": 16000,
+      "license_id": "CC-BY-4.0",
+      "audio": {
+        "url": "https://www.openslr.org/resources/12/test-clean.tar.gz",
+        "sha256": "39fde525e59672dc6d1551919b1478f724438a95aa55f874b576be21967e6c23",
+        "published_md5": "32fa31d27d2e1cad72775fee3f4849a9",
+        "archive_member": "LibriSpeech/test-clean/1995/1836/1995-1836-0014.flac",
+        "member_sha256": "c90576861bc6bc0b6837f0b1c340ecc276ac0339ee0a25442a4784f5fc4a4821"
+      },
+      "start_sample": 0,
+      "frames": 384000,
+      "sha256": "89421fb8780213ab6a9a78ec4bc1fca6b24a8db64cbb0c3ce4b6a73b2eb12ae1",
+      "license": {
+        "url": "https://www.openslr.org/12/",
+        "notice": "1995-1836-0014 (LibriSpeech test-clean)\nAJai Hilton; LibriSpeech corpus by Vassil Panayotov\nSource: https://www.openslr.org/12/\nLicense evidence: https://www.openslr.org/12/\nLicense: CC-BY-4.0 (https://creativecommons.org/licenses/by/4.0/)\nChanges: excerpt from 0 to 8 seconds; downmixed/resampled to mono 48000 Hz PCM16.\nNo endorsement is implied.\n",
+        "sha256": "6d2fffcab5b500591cffe94dd585010993f5b8e807ba36918b734de5be0b035c"
+      }
+    },
+    {
+      "id": "speech-ls1284",
+      "kind": "speech",
+      "category": "speech",
+      "speaker_id": "1284",
+      "language": "en",
+      "title": "1284-1181-0006 (LibriSpeech test-clean)",
+      "author": "Daniel Anaya; LibriSpeech corpus by Vassil Panayotov",
+      "source_page": "https://www.openslr.org/12/",
+      "source_sample_rate": 16000,
+      "license_id": "CC-BY-4.0",
+      "audio": {
+        "url": "https://www.openslr.org/resources/12/test-clean.tar.gz",
+        "sha256": "39fde525e59672dc6d1551919b1478f724438a95aa55f874b576be21967e6c23",
+        "published_md5": "32fa31d27d2e1cad72775fee3f4849a9",
+        "archive_member": "LibriSpeech/test-clean/1284/1181/1284-1181-0006.flac",
+        "member_sha256": "bfab917ae3717b2b6b0c820dc870521e0b2ae61b8e663e4c945647611277d0c8"
+      },
+      "start_sample": 0,
+      "frames": 384000,
+      "sha256": "86ff1e34a635e458d387b66528079799d134af11bc98a9a3199fa0fb44dcd4c6",
+      "license": {
+        "url": "https://www.openslr.org/12/",
+        "notice": "1284-1181-0006 (LibriSpeech test-clean)\nDaniel Anaya; LibriSpeech corpus by Vassil Panayotov\nSource: https://www.openslr.org/12/\nLicense evidence: https://www.openslr.org/12/\nLicense: CC-BY-4.0 (https://creativecommons.org/licenses/by/4.0/)\nChanges: excerpt from 0 to 8 seconds; downmixed/resampled to mono 48000 Hz PCM16.\nNo endorsement is implied.\n",
+        "sha256": "23c66451d13de3f809bcc2e3ea17e464054ba07019e02607038a87c2d7c694e4"
+      }
+    },
+    {
+      "id": "speech-ls4077",
+      "kind": "speech",
+      "category": "speech",
+      "speaker_id": "4077",
+      "language": "en",
+      "title": "4077-13754-0010 (LibriSpeech test-clean)",
+      "author": "Nathan Markham; LibriSpeech corpus by Vassil Panayotov",
+      "source_page": "https://www.openslr.org/12/",
+      "source_sample_rate": 16000,
+      "license_id": "CC-BY-4.0",
+      "audio": {
+        "url": "https://www.openslr.org/resources/12/test-clean.tar.gz",
+        "sha256": "39fde525e59672dc6d1551919b1478f724438a95aa55f874b576be21967e6c23",
+        "published_md5": "32fa31d27d2e1cad72775fee3f4849a9",
+        "archive_member": "LibriSpeech/test-clean/4077/13754/4077-13754-0010.flac",
+        "member_sha256": "633509dfed5eb57ed1c7ee9c98627b506f4829f547c1e29bf9dd7930af3a91c2"
+      },
+      "start_sample": 0,
+      "frames": 384000,
+      "sha256": "0e061f8937b2a1924487b18f00173588e5703af1ddd9d1a8b6f9f4ea2e7eb791",
+      "license": {
+        "url": "https://www.openslr.org/12/",
+        "notice": "4077-13754-0010 (LibriSpeech test-clean)\nNathan Markham; LibriSpeech corpus by Vassil Panayotov\nSource: https://www.openslr.org/12/\nLicense evidence: https://www.openslr.org/12/\nLicense: CC-BY-4.0 (https://creativecommons.org/licenses/by/4.0/)\nChanges: excerpt from 0 to 8 seconds; downmixed/resampled to mono 48000 Hz PCM16.\nNo endorsement is implied.\n",
+        "sha256": "6942a7cded259649d5f34edd8182243b11e5d694068f4ad6db22c1609035f19c"
+      }
+    },
+    {
+      "id": "speech-ls1221",
+      "kind": "speech",
+      "category": "speech",
+      "speaker_id": "1221",
+      "language": "en",
+      "title": "1221-135767-0022 (LibriSpeech test-clean)",
+      "author": "Dianne; LibriSpeech corpus by Vassil Panayotov",
+      "source_page": "https://www.openslr.org/12/",
+      "source_sample_rate": 16000,
+      "license_id": "CC-BY-4.0",
+      "audio": {
+        "url": "https://www.openslr.org/resources/12/test-clean.tar.gz",
+        "sha256": "39fde525e59672dc6d1551919b1478f724438a95aa55f874b576be21967e6c23",
+        "published_md5": "32fa31d27d2e1cad72775fee3f4849a9",
+        "archive_member": "LibriSpeech/test-clean/1221/135767/1221-135767-0022.flac",
+        "member_sha256": "605e4a0996766b31d74e9d07af1c4d5105c5ec715e1784dc1c159c7ac05cd494"
+      },
+      "start_sample": 0,
+      "frames": 384000,
+      "sha256": "7c2ca97ce630f4b751134e50455a728b2c4fe68e082cf6d5d671f86ad4eb55cd",
+      "license": {
+        "url": "https://www.openslr.org/12/",
+        "notice": "1221-135767-0022 (LibriSpeech test-clean)\nDianne; LibriSpeech corpus by Vassil Panayotov\nSource: https://www.openslr.org/12/\nLicense evidence: https://www.openslr.org/12/\nLicense: CC-BY-4.0 (https://creativecommons.org/licenses/by/4.0/)\nChanges: excerpt from 0 to 8 seconds; downmixed/resampled to mono 48000 Hz PCM16.\nNo endorsement is implied.\n",
+        "sha256": "beb292a70887a520bf9da2992169c91114d04d8aefa135483b24072212b1edd7"
+      }
+    },
+    {
+      "id": "speech-ls908",
+      "kind": "speech",
+      "category": "speech",
+      "speaker_id": "908",
+      "language": "en",
+      "title": "908-157963-0020 (LibriSpeech test-clean)",
+      "author": "Sam Stinson; LibriSpeech corpus by Vassil Panayotov",
+      "source_page": "https://www.openslr.org/12/",
+      "source_sample_rate": 16000,
+      "license_id": "CC-BY-4.0",
+      "audio": {
+        "url": "https://www.openslr.org/resources/12/test-clean.tar.gz",
+        "sha256": "39fde525e59672dc6d1551919b1478f724438a95aa55f874b576be21967e6c23",
+        "published_md5": "32fa31d27d2e1cad72775fee3f4849a9",
+        "archive_member": "LibriSpeech/test-clean/908/157963/908-157963-0020.flac",
+        "member_sha256": "ca2b26f6f5514c1593d51f446e5f8e0f8284accca143f7bc353ac56ba58ae5e5"
+      },
+      "start_sample": 0,
+      "frames": 384000,
+      "sha256": "537362c9cd448cbc462d002054bb8ba88b05c3da6ca0b1a1340fe42ed3ca16c1",
+      "license": {
+        "url": "https://www.openslr.org/12/",
+        "notice": "908-157963-0020 (LibriSpeech test-clean)\nSam Stinson; LibriSpeech corpus by Vassil Panayotov\nSource: https://www.openslr.org/12/\nLicense evidence: https://www.openslr.org/12/\nLicense: CC-BY-4.0 (https://creativecommons.org/licenses/by/4.0/)\nChanges: excerpt from 0 to 8 seconds; downmixed/resampled to mono 48000 Hz PCM16.\nNo endorsement is implied.\n",
+        "sha256": "53dc7bf872cdd9e64cccac44d0271e77fd5c35bfdf8b61923667906c5242ee9a"
+      }
+    },
+    {
+      "id": "speech-ls672",
+      "kind": "speech",
+      "category": "speech",
+      "speaker_id": "672",
+      "language": "en",
+      "title": "672-122797-0038 (LibriSpeech test-clean)",
+      "author": "Taylor Burton-Edward; LibriSpeech corpus by Vassil Panayotov",
+      "source_page": "https://www.openslr.org/12/",
+      "source_sample_rate": 16000,
+      "license_id": "CC-BY-4.0",
+      "audio": {
+        "url": "https://www.openslr.org/resources/12/test-clean.tar.gz",
+        "sha256": "39fde525e59672dc6d1551919b1478f724438a95aa55f874b576be21967e6c23",
+        "published_md5": "32fa31d27d2e1cad72775fee3f4849a9",
+        "archive_member": "LibriSpeech/test-clean/672/122797/672-122797-0038.flac",
+        "member_sha256": "36ff5a150b4322cdcdf0c883a3fa9fb25b7c12c649a4626422af95a384a7187e"
+      },
+      "start_sample": 0,
+      "frames": 384000,
+      "sha256": "6c053e975363a488250a019d77c2b9b100ad2a6524150d61efa60b6e74c6ed25",
+      "license": {
+        "url": "https://www.openslr.org/12/",
+        "notice": "672-122797-0038 (LibriSpeech test-clean)\nTaylor Burton-Edward; LibriSpeech corpus by Vassil Panayotov\nSource: https://www.openslr.org/12/\nLicense evidence: https://www.openslr.org/12/\nLicense: CC-BY-4.0 (https://creativecommons.org/licenses/by/4.0/)\nChanges: excerpt from 0 to 8 seconds; downmixed/resampled to mono 48000 Hz PCM16.\nNo endorsement is implied.\n",
+        "sha256": "83068ac354a79f08109d0517acd80d6a528463dbaa7a4b3b9008bb85ca60da83"
+      }
+    },
+    {
+      "id": "speech-ls2300",
+      "kind": "speech",
+      "category": "speech",
+      "speaker_id": "2300",
+      "language": "en",
+      "title": "2300-131720-0018 (LibriSpeech test-clean)",
+      "author": "Mitchell L Leopard; LibriSpeech corpus by Vassil Panayotov",
+      "source_page": "https://www.openslr.org/12/",
+      "source_sample_rate": 16000,
+      "license_id": "CC-BY-4.0",
+      "audio": {
+        "url": "https://www.openslr.org/resources/12/test-clean.tar.gz",
+        "sha256": "39fde525e59672dc6d1551919b1478f724438a95aa55f874b576be21967e6c23",
+        "published_md5": "32fa31d27d2e1cad72775fee3f4849a9",
+        "archive_member": "LibriSpeech/test-clean/2300/131720/2300-131720-0018.flac",
+        "member_sha256": "7aea995f8027306c101ee16cd0d71dae0b319ab61663ef259295d1427c98195e"
+      },
+      "start_sample": 0,
+      "frames": 384000,
+      "sha256": "d51c7a27070d2a2c50bd0380e21e2e7751d6be26bd46a87d1b5607ac97f91c35",
+      "license": {
+        "url": "https://www.openslr.org/12/",
+        "notice": "2300-131720-0018 (LibriSpeech test-clean)\nMitchell L Leopard; LibriSpeech corpus by Vassil Panayotov\nSource: https://www.openslr.org/12/\nLicense evidence: https://www.openslr.org/12/\nLicense: CC-BY-4.0 (https://creativecommons.org/licenses/by/4.0/)\nChanges: excerpt from 0 to 8 seconds; downmixed/resampled to mono 48000 Hz PCM16.\nNo endorsement is implied.\n",
+        "sha256": "03aaa3aeb61fb4d74b584a52b846ceaba91fb40c45a8f0dbe5951cc66ab32057"
+      }
+    },
+    {
+      "id": "speech-ls1580",
+      "kind": "speech",
+      "category": "speech",
+      "speaker_id": "1580",
+      "language": "en",
+      "title": "1580-141083-0001 (LibriSpeech test-clean)",
+      "author": "TinyPines; LibriSpeech corpus by Vassil Panayotov",
+      "source_page": "https://www.openslr.org/12/",
+      "source_sample_rate": 16000,
+      "license_id": "CC-BY-4.0",
+      "audio": {
+        "url": "https://www.openslr.org/resources/12/test-clean.tar.gz",
+        "sha256": "39fde525e59672dc6d1551919b1478f724438a95aa55f874b576be21967e6c23",
+        "published_md5": "32fa31d27d2e1cad72775fee3f4849a9",
+        "archive_member": "LibriSpeech/test-clean/1580/141083/1580-141083-0001.flac",
+        "member_sha256": "9914a442f04e4fed4a8144ec63326ec3b5f031ccd73203b1a9c309182a172ba7"
+      },
+      "start_sample": 0,
+      "frames": 384000,
+      "sha256": "e550cc6b8b7a088cf945df157fe3bf63af88a14259308c19591969851659b38b",
+      "license": {
+        "url": "https://www.openslr.org/12/",
+        "notice": "1580-141083-0001 (LibriSpeech test-clean)\nTinyPines; LibriSpeech corpus by Vassil Panayotov\nSource: https://www.openslr.org/12/\nLicense evidence: https://www.openslr.org/12/\nLicense: CC-BY-4.0 (https://creativecommons.org/licenses/by/4.0/)\nChanges: excerpt from 0 to 8 seconds; downmixed/resampled to mono 48000 Hz PCM16.\nNo endorsement is implied.\n",
+        "sha256": "8cb361222e9e7a2ca0fcf16c4c7ecd8f4751fda1ba34eacdd83df469e4505a8d"
+      }
+    },
+    {
+      "id": "speech-ls61",
+      "kind": "speech",
+      "category": "speech",
+      "speaker_id": "61",
+      "language": "en",
+      "title": "61-70968-0049 (LibriSpeech test-clean)",
+      "author": "Paul-Gabriel Wiener; LibriSpeech corpus by Vassil Panayotov",
+      "source_page": "https://www.openslr.org/12/",
+      "source_sample_rate": 16000,
+      "license_id": "CC-BY-4.0",
+      "audio": {
+        "url": "https://www.openslr.org/resources/12/test-clean.tar.gz",
+        "sha256": "39fde525e59672dc6d1551919b1478f724438a95aa55f874b576be21967e6c23",
+        "published_md5": "32fa31d27d2e1cad72775fee3f4849a9",
+        "archive_member": "LibriSpeech/test-clean/61/70968/61-70968-0049.flac",
+        "member_sha256": "d55ec567f9173dd1479768bafc6eae9a637b235aa472a94e9bd770bf2d2514b9"
+      },
+      "start_sample": 0,
+      "frames": 384000,
+      "sha256": "003367f051428ea89858c5b5138cf3ae6ccac7a4fc5b5e9099260bb8e651688b",
+      "license": {
+        "url": "https://www.openslr.org/12/",
+        "notice": "61-70968-0049 (LibriSpeech test-clean)\nPaul-Gabriel Wiener; LibriSpeech corpus by Vassil Panayotov\nSource: https://www.openslr.org/12/\nLicense evidence: https://www.openslr.org/12/\nLicense: CC-BY-4.0 (https://creativecommons.org/licenses/by/4.0/)\nChanges: excerpt from 0 to 8 seconds; downmixed/resampled to mono 48000 Hz PCM16.\nNo endorsement is implied.\n",
+        "sha256": "efbfddf7915fd28f50cdd00162c64b56554b9f15faf8b57558b648f78a4c72e1"
+      }
+    },
+    {
+      "id": "speech-ls237",
+      "kind": "speech",
+      "category": "speech",
+      "speaker_id": "237",
+      "language": "en",
+      "title": "237-134500-0015 (LibriSpeech test-clean)",
+      "author": "rachelellen; LibriSpeech corpus by Vassil Panayotov",
+      "source_page": "https://www.openslr.org/12/",
+      "source_sample_rate": 16000,
+      "license_id": "CC-BY-4.0",
+      "audio": {
+        "url": "https://www.openslr.org/resources/12/test-clean.tar.gz",
+        "sha256": "39fde525e59672dc6d1551919b1478f724438a95aa55f874b576be21967e6c23",
+        "published_md5": "32fa31d27d2e1cad72775fee3f4849a9",
+        "archive_member": "LibriSpeech/test-clean/237/134500/237-134500-0015.flac",
+        "member_sha256": "6ffebcfa98310cfce7cf46ac74fb602237fafc1b2b1915142c3f4c08b8f31fbe"
+      },
+      "start_sample": 0,
+      "frames": 384000,
+      "sha256": "5c1ad3633b61db12310836294beb342b221df766a28ebb22746b3a353f9bd04b",
+      "license": {
+        "url": "https://www.openslr.org/12/",
+        "notice": "237-134500-0015 (LibriSpeech test-clean)\nrachelellen; LibriSpeech corpus by Vassil Panayotov\nSource: https://www.openslr.org/12/\nLicense evidence: https://www.openslr.org/12/\nLicense: CC-BY-4.0 (https://creativecommons.org/licenses/by/4.0/)\nChanges: excerpt from 0 to 8 seconds; downmixed/resampled to mono 48000 Hz PCM16.\nNo endorsement is implied.\n",
+        "sha256": "e2b4d6b5cdf085acfe2084687cacdc9800bf2fbe663e57461da4f84c4eaad3f3"
+      }
+    },
+    {
+      "id": "speech-ls3570",
+      "kind": "speech",
+      "category": "speech",
+      "speaker_id": "3570",
+      "language": "en",
+      "title": "3570-5694-0021 (LibriSpeech test-clean)",
+      "author": "sarac; LibriSpeech corpus by Vassil Panayotov",
+      "source_page": "https://www.openslr.org/12/",
+      "source_sample_rate": 16000,
+      "license_id": "CC-BY-4.0",
+      "audio": {
+        "url": "https://www.openslr.org/resources/12/test-clean.tar.gz",
+        "sha256": "39fde525e59672dc6d1551919b1478f724438a95aa55f874b576be21967e6c23",
+        "published_md5": "32fa31d27d2e1cad72775fee3f4849a9",
+        "archive_member": "LibriSpeech/test-clean/3570/5694/3570-5694-0021.flac",
+        "member_sha256": "3fdab4b39c9e18ae48d3d5d5c504c4d61369d6bab777e0ccbcfc7aada4828c70"
+      },
+      "start_sample": 0,
+      "frames": 384000,
+      "sha256": "65313eb7b878125e294573ce5af820d212d5853fbb58dc428cd19bbf9c1e1640",
+      "license": {
+        "url": "https://www.openslr.org/12/",
+        "notice": "3570-5694-0021 (LibriSpeech test-clean)\nsarac; LibriSpeech corpus by Vassil Panayotov\nSource: https://www.openslr.org/12/\nLicense evidence: https://www.openslr.org/12/\nLicense: CC-BY-4.0 (https://creativecommons.org/licenses/by/4.0/)\nChanges: excerpt from 0 to 8 seconds; downmixed/resampled to mono 48000 Hz PCM16.\nNo endorsement is implied.\n",
+        "sha256": "0ea202c15e85e1715ffcd191144eff13eedc110167e0c4be07041853a11be9bf"
+      }
+    },
+    {
+      "id": "speech-ls121",
+      "kind": "speech",
+      "category": "speech",
+      "speaker_id": "121",
+      "language": "en",
+      "title": "121-121726-0000 (LibriSpeech test-clean)",
+      "author": "Nikolle Doolin; LibriSpeech corpus by Vassil Panayotov",
+      "source_page": "https://www.openslr.org/12/",
+      "source_sample_rate": 16000,
+      "license_id": "CC-BY-4.0",
+      "audio": {
+        "url": "https://www.openslr.org/resources/12/test-clean.tar.gz",
+        "sha256": "39fde525e59672dc6d1551919b1478f724438a95aa55f874b576be21967e6c23",
+        "published_md5": "32fa31d27d2e1cad72775fee3f4849a9",
+        "archive_member": "LibriSpeech/test-clean/121/121726/121-121726-0000.flac",
+        "member_sha256": "81378fdb3e648b43efb1cb8c4f87da3fc9cfbe19c5dda97e9e7361c4a2470d2f"
+      },
+      "start_sample": 0,
+      "frames": 384000,
+      "sha256": "b3004f255d37823726f701644bb3681017793f9ac17871b5ac25cb3b7087e342",
+      "license": {
+        "url": "https://www.openslr.org/12/",
+        "notice": "121-121726-0000 (LibriSpeech test-clean)\nNikolle Doolin; LibriSpeech corpus by Vassil Panayotov\nSource: https://www.openslr.org/12/\nLicense evidence: https://www.openslr.org/12/\nLicense: CC-BY-4.0 (https://creativecommons.org/licenses/by/4.0/)\nChanges: excerpt from 0 to 8 seconds; downmixed/resampled to mono 48000 Hz PCM16.\nNo endorsement is implied.\n",
+        "sha256": "2104f738ae41fbcff3fd08ad2fe839ef56519d4d3a1b851cd8ca153332682686"
+      }
+    },
+    {
+      "id": "rock-lead",
+      "kind": "interference",
+      "category": "rock",
+      "title": "Take the Lead",
+      "author": "Kevin MacLeod (incompetech.com)",
+      "source_page": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1100695",
+      "genre_evidence": "https://incompetech.com/music/royalty-free/pieces.json",
+      "license_id": "CC-BY-4.0",
+      "audio": {
+        "url": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Take%20the%20Lead.mp3",
+        "sha256": "f2fb95ce220ba962687715fef807d9215317388e804c84a09fb4eae7997d65fa"
+      },
+      "start_sample": 2016000,
+      "frames": 576000,
+      "sha256": "383422432066f1d880dbf604731936dcd51667fa223bbd825519a351e0e3f4a5",
+      "license": {
+        "url": "https://incompetech.com/agent-section/",
+        "notice": "Take the Lead\nKevin MacLeod (incompetech.com)\nSource: https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1100695\nLicense evidence: https://incompetech.com/agent-section/\nLicense: CC-BY-4.0 (https://creativecommons.org/licenses/by/4.0/)\nChanges: excerpt from 42 to 54 seconds; downmixed/resampled to mono 48000 Hz PCM16.\nNo endorsement is implied.\n",
+        "sha256": "1166d41c64d23eb66525b3afc0a6d22e792a48600a8dbcf1143ccf445f3db593"
+      },
+      "source_sample_rate": 48000
+    },
+    {
+      "id": "rock-rawk",
+      "kind": "interference",
+      "category": "rock",
+      "title": "Summon the Rawk",
+      "author": "Kevin MacLeod (incompetech.com)",
+      "source_page": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1200050",
+      "genre_evidence": "https://incompetech.com/music/royalty-free/pieces.json",
+      "license_id": "CC-BY-4.0",
+      "audio": {
+        "url": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Summon%20the%20Rawk.mp3",
+        "sha256": "6461faffc25196fd3f541331aaf9f365af92c1464c0bd0f47e14c031abbb7e65"
+      },
+      "start_sample": 960000,
+      "frames": 576000,
+      "sha256": "d9bcbcf534b9a5d342d872cdcdfcda61eacd2835afbe7a5d3e7fbde919e18a2e",
+      "license": {
+        "url": "https://incompetech.com/agent-section/",
+        "notice": "Summon the Rawk\nKevin MacLeod (incompetech.com)\nSource: https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1200050\nLicense evidence: https://incompetech.com/agent-section/\nLicense: CC-BY-4.0 (https://creativecommons.org/licenses/by/4.0/)\nChanges: excerpt from 20 to 32 seconds; downmixed/resampled to mono 48000 Hz PCM16.\nNo endorsement is implied.\n",
+        "sha256": "42e0a5db4857031fe2688bc67e13f577f04b4ae9d926b00f55b601f5b5567014"
+      },
+      "source_sample_rate": 44100
+    },
+    {
+      "id": "electro-sketch",
+      "kind": "interference",
+      "category": "electronic",
+      "title": "Electro (Sketch)",
+      "author": "Kevin MacLeod (incompetech.com)",
+      "source_page": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1100390",
+      "genre_evidence": "https://incompetech.com/music/royalty-free/pieces.json",
+      "license_id": "CC-BY-4.0",
+      "audio": {
+        "url": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Electro%20Sketch.mp3",
+        "sha256": "f046fdbb8cbdb8f4389537f51d8a36e91e5b7f4ba699adf81479acfec3646a17"
+      },
+      "start_sample": 960000,
+      "frames": 576000,
+      "sha256": "09b47c400f461a25df899ea298a7e198363c5e576a5c3d6cc2bbecace6c42b21",
+      "license": {
+        "url": "https://incompetech.com/agent-section/",
+        "notice": "Electro (Sketch)\nKevin MacLeod (incompetech.com)\nSource: https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1100390\nLicense evidence: https://incompetech.com/agent-section/\nLicense: CC-BY-4.0 (https://creativecommons.org/licenses/by/4.0/)\nChanges: excerpt from 20 to 32 seconds; downmixed/resampled to mono 48000 Hz PCM16.\nNo endorsement is implied.\n",
+        "sha256": "30ae38403464c704990e65f1eae2c1cba8568ef4c1eb5ddb7eeac47738437a8b"
+      },
+      "source_sample_rate": 44100
+    },
+    {
+      "id": "electro-cloud",
+      "kind": "interference",
+      "category": "electronic",
+      "title": "Cloud Dancer",
+      "author": "Kevin MacLeod (incompetech.com)",
+      "source_page": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN2300007",
+      "genre_evidence": "https://incompetech.com/music/royalty-free/pieces.json",
+      "license_id": "CC-BY-4.0",
+      "audio": {
+        "url": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Cloud%20Dancer.mp3",
+        "sha256": "d329666f15f516b8742532d9dc45309e2019cc1505d4636fdadb7bf6000a8d5c"
+      },
+      "start_sample": 1920000,
+      "frames": 576000,
+      "sha256": "eca6ef739b74324bab8ecda523b0e31cde3ddedc1903aadb32fc0aac1856493d",
+      "license": {
+        "url": "https://incompetech.com/agent-section/",
+        "notice": "Cloud Dancer\nKevin MacLeod (incompetech.com)\nSource: https://incompetech.com/music/royalty-free/index.html?isrc=USUAN2300007\nLicense evidence: https://incompetech.com/agent-section/\nLicense: CC-BY-4.0 (https://creativecommons.org/licenses/by/4.0/)\nChanges: excerpt from 40 to 52 seconds; downmixed/resampled to mono 48000 Hz PCM16.\nNo endorsement is implied.\n",
+        "sha256": "f48447ad3fee06dde79fe487a326757d64b2d55deb09dfd6dd56f4cacf29697b"
+      },
+      "source_sample_rate": 44100
+    },
+    {
+      "id": "techno-cut",
+      "kind": "interference",
+      "category": "techno-trance",
+      "title": "Cut Trance",
+      "author": "Kevin MacLeod (incompetech.com)",
+      "source_page": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1100273",
+      "genre_evidence": "https://incompetech.com/music/royalty-free/pieces.json",
+      "license_id": "CC-BY-4.0",
+      "audio": {
+        "url": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Cut%20Trance.mp3",
+        "sha256": "7c58ae5b596fcb7240324297e948f7440ccdd790ed6046173a658984d1ee646a"
+      },
+      "start_sample": 1440000,
+      "frames": 576000,
+      "sha256": "eca7086b7594f16055fbc0d2930eba5e1da40dd192f80ad9796ce204170bef38",
+      "license": {
+        "url": "https://incompetech.com/agent-section/",
+        "notice": "Cut Trance\nKevin MacLeod (incompetech.com)\nSource: https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1100273\nLicense evidence: https://incompetech.com/agent-section/\nLicense: CC-BY-4.0 (https://creativecommons.org/licenses/by/4.0/)\nChanges: excerpt from 30 to 42 seconds; downmixed/resampled to mono 48000 Hz PCM16.\nNo endorsement is implied.\n",
+        "sha256": "113016d243933284498840922754bc9251cafcc223e2e74cf6a82a79a8d45be3"
+      },
+      "source_sample_rate": 44100
+    },
+    {
+      "id": "techno-chacha",
+      "kind": "interference",
+      "category": "techno-crossover",
+      "title": "Future Cha Cha",
+      "author": "Kevin MacLeod (incompetech.com)",
+      "source_page": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1100374",
+      "genre_evidence": "https://incompetech.com/music/royalty-free/pieces.json",
+      "license_id": "CC-BY-4.0",
+      "audio": {
+        "url": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Future%20Cha%20Cha.mp3",
+        "sha256": "97ef4332539bfcf3f36add3f5910f5a09a76a268dc0912b42fd21a0db9bd8fef"
+      },
+      "start_sample": 1440000,
+      "frames": 576000,
+      "sha256": "664c6b33e83d6ef6c07fbdb703cc1865e859a1f29f307fbad1c2c4e0ea625bfb",
+      "license": {
+        "url": "https://incompetech.com/agent-section/",
+        "notice": "Future Cha Cha\nKevin MacLeod (incompetech.com)\nSource: https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1100374\nLicense evidence: https://incompetech.com/agent-section/\nLicense: CC-BY-4.0 (https://creativecommons.org/licenses/by/4.0/)\nChanges: excerpt from 30 to 42 seconds; downmixed/resampled to mono 48000 Hz PCM16.\nNo endorsement is implied.\n",
+        "sha256": "6de4867751fded032db115d18de236e3b41a3dad4d7e783fc46333904a6a002d"
+      },
+      "source_sample_rate": 44100
+    },
+    {
+      "id": "swing-hot",
+      "kind": "interference",
+      "category": "swing",
+      "title": "Hot Swing",
+      "author": "Kevin MacLeod (incompetech.com)",
+      "source_page": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1100202",
+      "genre_evidence": "https://incompetech.com/music/royalty-free/pieces.json",
+      "license_id": "CC-BY-4.0",
+      "audio": {
+        "url": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Hot%20Swing.mp3",
+        "sha256": "b8ffccb85d145b00d39505fcd405a27a7b632af153db54862511209c2232cdc5"
+      },
+      "start_sample": 960000,
+      "frames": 576000,
+      "sha256": "8e09c33eae57bdf1298078749dde7812aad31a707624ac65d83e5f775349d49a",
+      "license": {
+        "url": "https://incompetech.com/agent-section/",
+        "notice": "Hot Swing\nKevin MacLeod (incompetech.com)\nSource: https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1100202\nLicense evidence: https://incompetech.com/agent-section/\nLicense: CC-BY-4.0 (https://creativecommons.org/licenses/by/4.0/)\nChanges: excerpt from 20 to 32 seconds; downmixed/resampled to mono 48000 Hz PCM16.\nNo endorsement is implied.\n",
+        "sha256": "f30072f220533d11c95025208d6a9aa88cf1806af6b757cfba8518eb79cb6826"
+      },
+      "source_sample_rate": 48000
+    },
+    {
+      "id": "swing-vermouth",
+      "kind": "interference",
+      "category": "swing",
+      "title": "Sweeter Vermouth",
+      "author": "Kevin MacLeod (incompetech.com)",
+      "source_page": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1100712",
+      "genre_evidence": "https://incompetech.com/music/royalty-free/pieces.json",
+      "license_id": "CC-BY-4.0",
+      "audio": {
+        "url": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Sweeter%20Vermouth.mp3",
+        "sha256": "38b885879d7414369a1442b58035cc191f84e8984af15e8133e21be962ff1a41"
+      },
+      "start_sample": 240000,
+      "frames": 576000,
+      "sha256": "227718868b0d1e09644ecc45adbf8cddd07a2300cc01a422da4283a137680fc3",
+      "license": {
+        "url": "https://incompetech.com/agent-section/",
+        "notice": "Sweeter Vermouth\nKevin MacLeod (incompetech.com)\nSource: https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1100712\nLicense evidence: https://incompetech.com/agent-section/\nLicense: CC-BY-4.0 (https://creativecommons.org/licenses/by/4.0/)\nChanges: excerpt from 5 to 17 seconds; downmixed/resampled to mono 48000 Hz PCM16.\nNo endorsement is implied.\n",
+        "sha256": "d8a0e1b22508024686c4333231441c5ef3210da74bb058d1bfea9de4c0eaf437"
+      },
+      "source_sample_rate": 48000
+    },
+    {
+      "id": "pop-poofy",
+      "kind": "interference",
+      "category": "pop",
+      "title": "Poofy Reel",
+      "author": "Kevin MacLeod (incompetech.com)",
+      "source_page": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1100003",
+      "genre_evidence": "https://incompetech.com/music/royalty-free/pieces.json",
+      "license_id": "CC-BY-4.0",
+      "audio": {
+        "url": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Poofy%20Reel.mp3",
+        "sha256": "be2c30dd609ae6db0e1fbd4ee4269f7c28b293313b1b667e973d612851e31170"
+      },
+      "start_sample": 960000,
+      "frames": 576000,
+      "sha256": "4860cb5d791e3c11b3a54f1c460570a155c3dc5aa014821127a597e34de7bb1a",
+      "license": {
+        "url": "https://incompetech.com/agent-section/",
+        "notice": "Poofy Reel\nKevin MacLeod (incompetech.com)\nSource: https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1100003\nLicense evidence: https://incompetech.com/agent-section/\nLicense: CC-BY-4.0 (https://creativecommons.org/licenses/by/4.0/)\nChanges: excerpt from 20 to 32 seconds; downmixed/resampled to mono 48000 Hz PCM16.\nNo endorsement is implied.\n",
+        "sha256": "d5950338b4853f514b9ddf9fe919ea909eafb55090a8fb582afbc757237ebf98"
+      },
+      "source_sample_rate": 48000
+    },
+    {
+      "id": "pop-blown",
+      "kind": "interference",
+      "category": "pop",
+      "title": "Blown Away - No Percussion",
+      "author": "Kevin MacLeod (incompetech.com)",
+      "source_page": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1200101",
+      "genre_evidence": "https://incompetech.com/music/royalty-free/pieces.json",
+      "license_id": "CC-BY-4.0",
+      "audio": {
+        "url": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Blown%20Away%20-%20No%20Percussion.mp3",
+        "sha256": "e6435f606636840f580bb5a21b75d6a813b57ec12bcc504f9c96287415ff6e68"
+      },
+      "start_sample": 960000,
+      "frames": 576000,
+      "sha256": "e50766650bc17226bfb885d8c279fc284761030da8a13788359aa17b2ea96473",
+      "license": {
+        "url": "https://incompetech.com/agent-section/",
+        "notice": "Blown Away - No Percussion\nKevin MacLeod (incompetech.com)\nSource: https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1200101\nLicense evidence: https://incompetech.com/agent-section/\nLicense: CC-BY-4.0 (https://creativecommons.org/licenses/by/4.0/)\nChanges: excerpt from 20 to 32 seconds; downmixed/resampled to mono 48000 Hz PCM16.\nNo endorsement is implied.\n",
+        "sha256": "72b691461c8fd7adfc5fd2ab3d1576c2f7d830195f1910261919485b68ebdef9"
+      },
+      "source_sample_rate": 48000
+    },
+    {
+      "id": "funk-stick",
+      "kind": "interference",
+      "category": "funk-vocal",
+      "title": "I Got a Stick Feat James Gavins",
+      "author": "Kevin MacLeod (incompetech.com); vocals James Gavins; arrangement/instruments Bryan Teoh",
+      "source_page": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN2200003",
+      "genre_evidence": "https://incompetech.com/music/royalty-free/pieces.json",
+      "license_id": "CC-BY-4.0",
+      "audio": {
+        "url": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/I%20Got%20a%20Stick%20Feat%20James%20Gavins.mp3",
+        "sha256": "c9acc652b5279168c8cb2d73bc5a156add24682ffe91312399468152ce852cd1"
+      },
+      "start_sample": 240000,
+      "frames": 576000,
+      "sha256": "9d75e39388d7acb3e6d91416d54e1544080bc3f5fb49d80bd6288da2a74c118f",
+      "license": {
+        "url": "https://incompetech.com/agent-section/",
+        "notice": "I Got a Stick Feat James Gavins\nKevin MacLeod (incompetech.com); vocals James Gavins; arrangement/instruments Bryan Teoh\nSource: https://incompetech.com/music/royalty-free/index.html?isrc=USUAN2200003\nLicense evidence: https://incompetech.com/agent-section/\nLicense: CC-BY-4.0 (https://creativecommons.org/licenses/by/4.0/)\nChanges: excerpt from 5 to 17 seconds; downmixed/resampled to mono 48000 Hz PCM16.\nNo endorsement is implied.\n",
+        "sha256": "dc91c835df64c36c12b976c01ef5293bdec075c54bacb84cb38591cc2dc78c23"
+      },
+      "source_sample_rate": 44100
+    },
+    {
+      "id": "jazz-apero",
+      "kind": "interference",
+      "category": "jazz",
+      "title": "Apero Hour",
+      "author": "Kevin MacLeod (incompetech.com)",
+      "source_page": "https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1700070",
+      "genre_evidence": "https://incompetech.com/music/royalty-free/pieces.json",
+      "license_id": "CC-BY-4.0",
+      "audio": {
+        "url": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Apero%20Hour.mp3",
+        "sha256": "248e2bbd81c7f0bc69e4bd1ad95513e640e3eb474872acfd63b8805ed73ea9ea"
+      },
+      "start_sample": 960000,
+      "frames": 576000,
+      "sha256": "7a165a0fdbe13ac324b5f35fd8bf8244741a43595ebbe60df4d27aef04d4245e",
+      "license": {
+        "url": "https://incompetech.com/agent-section/",
+        "notice": "Apero Hour\nKevin MacLeod (incompetech.com)\nSource: https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1700070\nLicense evidence: https://incompetech.com/agent-section/\nLicense: CC-BY-4.0 (https://creativecommons.org/licenses/by/4.0/)\nChanges: excerpt from 20 to 32 seconds; downmixed/resampled to mono 48000 Hz PCM16.\nNo endorsement is implied.\n",
+        "sha256": "80600081061cdb46facc538071c675afb63d50dfd40344506825c38c7ac21e81"
+      },
+      "source_sample_rate": 44100
+    },
+    {
+      "id": "metal-mega",
+      "kind": "interference",
+      "category": "metal",
+      "title": "Megasong",
+      "author": "Emma_MA",
+      "source_page": "https://opengameart.org/content/megasong",
+      "license_id": "CC0-1.0",
+      "audio": {
+        "url": "https://opengameart.org/sites/default/files/megasong_0.mp3",
+        "sha256": "13ac89fa8e5b12b78c872f981376315d0b9d33829ab85f259972be54913f8239"
+      },
+      "start_sample": 960000,
+      "frames": 576000,
+      "sha256": "6f625820417c6b171c3af3bea2823ef5b1068636dca0156ad021acb3ced8cd0a",
+      "license": {
+        "url": "https://opengameart.org/content/megasong",
+        "notice": "Megasong\nEmma_MA\nSource: https://opengameart.org/content/megasong\nLicense evidence: https://opengameart.org/content/megasong\nLicense: CC0-1.0 (https://creativecommons.org/publicdomain/zero/1.0/)\nChanges: excerpt from 20 to 32 seconds; downmixed/resampled to mono 48000 Hz PCM16.\nNo endorsement is implied.\n",
+        "sha256": "6bd25a5240c7ae44b0c6e1c6a184f68fcbf733a2382e7c623b59c46961e1d196"
+      },
+      "source_sample_rate": 44100
+    },
+    {
+      "id": "metal-frozen",
+      "kind": "interference",
+      "category": "metal-vocal",
+      "title": "White and Frozen World",
+      "author": "The Oracle / Kaiser",
+      "source_page": "https://opengameart.org/content/white-and-frozen-world",
+      "license_id": "CC0-1.0",
+      "audio": {
+        "url": "https://opengameart.org/sites/default/files/05_white_and_frozen_world.flac",
+        "sha256": "807c030fce4e198ae24b84b8b53c9499c3e1b8e85439ba8403b16bbfcf27b880"
+      },
+      "start_sample": 2400000,
+      "frames": 576000,
+      "sha256": "e8eccca1ecf84a943810cd4491ce89b7df67c175157635fe4dfaefcc612df360",
+      "license": {
+        "url": "https://opengameart.org/content/white-and-frozen-world",
+        "notice": "White and Frozen World\nThe Oracle / Kaiser\nSource: https://opengameart.org/content/white-and-frozen-world\nLicense evidence: https://opengameart.org/content/white-and-frozen-world\nLicense: CC0-1.0 (https://creativecommons.org/publicdomain/zero/1.0/)\nChanges: excerpt from 50 to 62 seconds; downmixed/resampled to mono 48000 Hz PCM16.\nNo endorsement is implied.\n",
+        "sha256": "e7105857a8d15c40d90b33e9c628c338fec67bf1825cfd94f5070d55cf4f99b7"
+      },
+      "source_sample_rate": 44100
+    },
+    {
+      "id": "trance-charm",
+      "kind": "interference",
+      "category": "trance-vocal",
+      "title": "The Charm 68",
+      "author": "The Cynic Project (cynicmusic.com, pixelsphere.org); vocals Julie",
+      "source_page": "https://opengameart.org/content/the-charm-68",
+      "license_id": "CC0-1.0",
+      "audio": {
+        "url": "https://opengameart.org/sites/default/files/the%20charm%2068.wav",
+        "sha256": "8620ee068ec63ffc4d4a93a04ae55921ffb58e15119c4678623ed0c341fa5225"
+      },
+      "start_sample": 2400000,
+      "frames": 576000,
+      "sha256": "b7a45160b82a3d27d27831594472e8239a7ee3663eb14a7c987f0cb9b33b0b9a",
+      "license": {
+        "url": "https://opengameart.org/content/the-charm-68",
+        "notice": "The Charm 68\nThe Cynic Project (cynicmusic.com, pixelsphere.org); vocals Julie\nSource: https://opengameart.org/content/the-charm-68\nLicense evidence: https://opengameart.org/content/the-charm-68\nLicense: CC0-1.0 (https://creativecommons.org/publicdomain/zero/1.0/)\nChanges: excerpt from 50 to 62 seconds; downmixed/resampled to mono 48000 Hz PCM16.\nNo endorsement is implied.\n",
+        "sha256": "e538fb7ddba7efc481533008175941c7dbd6a7dfa9e6f058c3b2a9d2abbc6a09"
+      },
+      "source_sample_rate": 44100
+    },
+    {
+      "id": "rap-intune",
+      "kind": "interference",
+      "category": "rap-vocal",
+      "title": "In Tune",
+      "author": "Kellee Maize",
+      "source_page": "https://freemusicarchive.org/music/Kellee_Maize/Owl_Time/01__Kellee_Maize__In_Tune__Owl_Time__FROSTWIRECOM_FROSTCLICKCOM__CREATIVE_COMMONS_1179",
+      "license_id": "CC-BY-4.0",
+      "audio": {
+        "url": "https://upload.wikimedia.org/wikipedia/commons/8/88/Kellee_Maize_-_01_-_In_Tune.ogg",
+        "sha256": "0c80ee9c436d55d9f13c4b3858a545c6f7686caf715e3c4d29625028332d35de"
+      },
+      "start_sample": 1920000,
+      "frames": 576000,
+      "sha256": "d16362f3c08ac202a4d9660144307e88e81f27501f1e27072b4db6226a62a5a6",
+      "license": {
+        "url": "https://www.kelleemaize.com/exclusive-music",
+        "notice": "In Tune\nKellee Maize\nSource: https://freemusicarchive.org/music/Kellee_Maize/Owl_Time/01__Kellee_Maize__In_Tune__Owl_Time__FROSTWIRECOM_FROSTCLICKCOM__CREATIVE_COMMONS_1179\nLicense evidence: https://www.kelleemaize.com/exclusive-music\nLicense: CC-BY-4.0 (https://creativecommons.org/licenses/by/4.0/)\nChanges: excerpt from 40 to 52 seconds; downmixed/resampled to mono 48000 Hz PCM16.\nThe artist currently grants CC BY 4.0 for her music on the linked official page; older embedded file tags may name a previous license.\nNo endorsement is implied.\n",
+        "sha256": "4ed33fa64bd1edb7dcb185179d4fe5346445d78bdde76b03c4d682c51ac4fe75"
+      },
+      "source_sample_rate": 44100
+    }
+  ],
+  "decoder": "ffmpeg version 7.1.1 Copyright (c) 2000-2025 the FFmpeg developers",
+  "smoke_sources": [
+    "speech1",
+    "speech2",
+    "speech3",
+    "instrumental",
+    "song",
+    "robin",
+    "traffic"
+  ],
+  "extended": {
+    "snr_db": [
+      -15,
+      -10,
+      -5,
+      0,
+      5,
+      10,
+      20
+    ],
+    "mixture_peak_dbfs": [
+      -30,
+      -18,
+      -6
+    ]
+  }
+}
