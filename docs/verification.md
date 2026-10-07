@@ -64,6 +64,16 @@ the reported crash resolved. The full preceding UI sequence is being restored
 for the comparison. Linux CI retains that order and repeats the focused cases
 20 times, stopping at the first failure.
 
+Instrumenting Qml exposed a separate sanitizer startup failure at
+`qv4vme_moth.cpp:490`, the call into generated JIT code
+([37613483448](https://github.com/YunaBraska/SquadSpeak/actions/runs/37613483448)).
+The fault reads eight bytes before the function entry. A header-free Clang
+probe targeting Linux x64 confirms that `-fsanitize=function` emits exactly
+that metadata read. The narrowly annotated JIT-dispatch overload omits this
+check while retaining ASan loads, pointer/alignment and signed-overflow checks
+in the generated LLVM IR. The AOT overload and remaining Qml code retain their
+function checks. Native sanitizer verification of the annotation is pending.
+
 CI retains CTest XML, detailed logs, rendered UI evidence and tested packages.
 A green run at an older revision does not cover newly added platform code.
 Native development builds use local Homebrew dependencies. Release packages

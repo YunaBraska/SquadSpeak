@@ -181,3 +181,17 @@ distribution fix 1327fce7e500e3ae2e96ab89eaad7f1727ea77b1 (property caches).
 
  set(extra_cmake_files)
  set(extra_cmake_includes)
+
+--- a/src/qml/jsruntime/qv4vme_moth.cpp
++++ b/src/qml/jsruntime/qv4vme_moth.cpp
+@@ -453,6 +453,10 @@
+     });
+ }
+
++// JIT entry points have no Clang function-type metadata before their code.
++#if defined(__clang__)
++__attribute__((no_sanitize("function")))
++#endif
+ ReturnedValue VME::exec(JSTypesStackFrame *frame, ExecutionEngine *engine)
+ {
+     qt_v4ResolvePendingBreakpointsHook();
