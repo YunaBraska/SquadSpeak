@@ -151,6 +151,7 @@ if(qt_runtime_modules)
                 "-DCMAKE_OSX_ARCHITECTURES=${CMAKE_OSX_ARCHITECTURES}"
                 "-DCMAKE_OSX_DEPLOYMENT_TARGET=${CMAKE_OSX_DEPLOYMENT_TARGET}"
             BUILD_COMMAND "${CMAKE_COMMAND}" --build <BINARY_DIR> --target ${component} --parallel 4
+            USES_TERMINAL_BUILD TRUE
             BUILD_BYPRODUCTS "${library}" ${module_byproducts})
         if(module STREQUAL "capture")
             ExternalProject_Add(squad_qt_capture_build
@@ -795,8 +796,9 @@ if(BUILD_TESTING)
     target_link_libraries(chat_history_tests PRIVATE squad_session squad_content Qt6::Test)
     add_test(NAME chat_history_contract COMMAND chat_history_tests)
     qt_add_executable(media_transport_tests tests/media_transport_tests.cpp)
-    target_link_libraries(media_transport_tests PRIVATE squad_session Qt6::Test PkgConfig::OPUS)
+    target_link_libraries(media_transport_tests PRIVATE squad_session Qt6::Test PkgConfig::OPUS datachannel-static)
     add_test(NAME media_transport_contract COMMAND media_transport_tests)
+    set_tests_properties(media_transport_contract PROPERTIES TIMEOUT 120)
     qt_add_executable(channel_tests tests/channel_tests.cpp)
     target_link_libraries(channel_tests PRIVATE squad_video squad_audio squad_content Qt6::Test)
     add_test(NAME channel_contract COMMAND channel_tests)

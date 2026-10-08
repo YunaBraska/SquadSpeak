@@ -20,7 +20,7 @@ fetch() {
     name=$1 url=$2 digest=$3
     archive="$build_root/dependencies/$name"
     if test ! -f "$archive"; then
-        curl --fail --location --retry 3 --output "$archive.part" "$url"
+        curl --fail --location --connect-timeout 20 --max-time 180 --retry 3 --output "$archive.part" "$url"
         mv "$archive.part" "$archive"
     fi
     printf '%s  %s\n' "$digest" "$archive" | shasum -a 256 --check

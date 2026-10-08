@@ -11,6 +11,29 @@ remains available because its cause is still unknown.
 History was consolidated at `3ede20d` with the same file tree as `5ce7455`.
 Earlier revision identifiers below refer to the original CI checkouts.
 
+## DTLS startup ordering, 2026-10-08
+
+[Run 37838323343](https://github.com/YunaBraska/SquadSpeak/actions/runs/37838323343)
+exposed a UDP startup failure in the Linux Store contract. Repeated local
+connections reproduced it. A temporary native diagnostic confirmed that
+OpenSSL received a ClientHello before the DTLS MTU was initialized. The error
+queue was empty. The failed connection recovered only through the later restart.
+
+The pinned transport now initializes the MTU before registering receive callbacks,
+under its existing SSL mutex. This moves two statements and adds no runtime
+state or dependency. Temporary diagnostic modifications were removed. The
+existing close/reopen regression retains a single host port, avoiding a separate
+port-selection race in the fixture. An additional real UDP test holds the SDP
+answer until the peer's first datagram arrives. No handshake deadline is relaxed.
+The media group also has a 120-second process deadline and records state changes.
+
+The corrected native media group passes in 46.62 seconds. A further 100 runs
+pass with 2,000 close/reopen connections and 100 UDP blackout/recovery cycles.
+The same stress sequence reproduced the startup failure before the correction.
+All 11 source-archive cases and four release-publication cases pass. The macOS dependency downloader
+now bounds connection and transfer time. Nested Qt builds stream their output.
+Full platform verification of this correction is still required.
+
 ## GitHub Supporter implementation, 2026-10-08
 
 The runtime now replaces the retired license-key provider with GitHub device
