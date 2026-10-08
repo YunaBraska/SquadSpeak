@@ -1,6 +1,6 @@
 # Verification evidence
 
-Updated 2026-10-08. [Release gates](roadmap.md), [requirements](specs/voice-chat.md)
+Updated 2026-10-09. [Release gates](roadmap.md), [requirements](specs/voice-chat.md)
 and [build instructions](development.md) are separate from this evidence record.
 A passed fixture proves its tested configuration, not every device, room or
 network. Superseded failed and cancelled runs have been removed from GitHub.
@@ -30,9 +30,25 @@ The media group also has a 120-second process deadline and records state changes
 The corrected native media group passes in 46.62 seconds. A further 100 runs
 pass with 2,000 close/reopen connections and 100 UDP blackout/recovery cycles.
 The same stress sequence reproduced the startup failure before the correction.
-All 11 source-archive cases and four release-publication cases pass. The macOS dependency downloader
-now bounds connection and transfer time. Nested Qt builds stream their output.
-Full platform verification of this correction is still required.
+All 11 source-archive cases and four release-publication cases pass. The macOS
+dependency downloader now bounds connection and transfer time. Nested Qt builds
+stream their output.
+
+[Run 37846284525](https://github.com/YunaBraska/SquadSpeak/actions/runs/37846284525)
+passes all seven jobs for `13bbc99`: Windows, macOS ARM64/Intel, Linux ARM64/x64,
+Linux Store and sanitizers. Windows passes 32 CTest groups, each other job passes
+34. Both Linux release jobs also pass their separate Wayland fixture and
+runtime-only archive startup. The macOS archive checks and native video leak
+checks pass on both architectures. Windows packaged startup and the standalone
+device-test launchers pass. The initial Windows desktop probe takes 6.28 seconds
+within its unchanged 15-second deadline.
+
+The new early-UDP regression passes on Intel macOS. Its 64-client probe receives
+25,200 packets with no reported gaps, renders 100 frames over 2,020 ms, and passes
+the unchanged playout thresholds. This does not establish the cause of the older
+Intel timing outlier or Windows startup timeout. Their diagnostics and the
+original evidence remain available. No failing test was retried to obtain this
+green run. The record-only documentation update does not alter tested code.
 
 ## GitHub Supporter implementation, 2026-10-08
 
