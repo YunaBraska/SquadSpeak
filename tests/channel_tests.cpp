@@ -4751,6 +4751,7 @@ private slots:
         std::array<squad::VoiceMixer, 2> playback;
         std::array<int, 2> audibleFrames{};
         int renderedFrames = 0;
+        qint64 lastInputMs = 0, lastOutputMs = 0, maxInputGapMs = 0, maxOutputGapMs = 0;
         bool validAudio = true;
         QElapsedTimer sustained;
         std::vector<int> audioCounts(clients.size(), 0);
@@ -4790,6 +4791,9 @@ private slots:
         QTimer output;
         output.setTimerType(Qt::PreciseTimer);
         connect(&output, &QTimer::timeout, &reception, [&] {
+            const auto now = sustained.elapsed();
+            maxOutputGapMs = std::max(maxOutputGapMs, now - lastOutputMs);
+            lastOutputMs = now;
             ++renderedFrames;
             for (size_t i = 0; i < playback.size(); ++i) {
                 const auto samples = playback[i].render(48000, sustained.elapsed());
@@ -4802,6 +4806,9 @@ private slots:
         int sentFrames = 0;
         bool validSend = true;
         connect(&input, &QTimer::timeout, &reception, [&] {
+            const auto now = sustained.elapsed();
+            maxInputGapMs = std::max(maxInputGapMs, now - lastInputMs);
+            lastInputMs = now;
             for (int speaker = 0; speaker < speakers; ++speaker)
                 validSend &= clients[size_t(speaker)]->channel.sendAudio(packet);
             if (++sentFrames == sustainedFrames) input.stop();
@@ -4823,6 +4830,16 @@ private slots:
             }
             return true;
         }, 500);
+        const auto receivedFrames = std::accumulate(audioCounts.begin(), audioCounts.end(), 0);
+        const auto missingFrames = std::accumulate(missingCounts.begin(), missingCounts.end(), 0);
+        qInfo() << "64 clients; all-to-all burst plus" << sustainedFrames
+                << "frames per speaker; simultaneous speakers" << speakers << "requested soak seconds" << soakSeconds
+                << "received packets" << receivedFrames << "reported gaps" << missingFrames << "rendered frames" << renderedFrames
+                << "non-silent frames at listeners 0/1" << audibleFrames[0] << audibleFrames[1]
+                << "setup ms" << connectedMs << "sustained ms" << playbackMs
+                << "last input/output ms" << lastInputMs << lastOutputMs
+                << "maximum input/output gap ms" << maxInputGapMs << maxOutputGapMs
+                << "total ms" << elapsed.elapsed();
         for (size_t i = 0; i < audioCounts.size(); ++i) {
             const int expected = sustainedFrames * (speakers - (i < size_t(speakers) ? 1 : 0));
             QVERIFY(audioCounts[i] + missingCounts[i] <= expected);
@@ -4842,15 +4859,7 @@ private slots:
             for (const auto frames : audibleFrames) QVERIFY2(frames >= renderedFrames * 9 / 10,
                 qPrintable(QString("non-silent %1 / rendered %2 over %3 ms").arg(frames).arg(renderedFrames).arg(playbackMs)));
         }
-        const auto receivedFrames = std::accumulate(audioCounts.begin(), audioCounts.end(), 0);
-        const auto missingFrames = std::accumulate(missingCounts.begin(), missingCounts.end(), 0);
         for (const auto& client : clients) QVERIFY(client->channel.joined());
-        qInfo() << "64 clients; all-to-all burst plus" << sustainedFrames
-                << "frames per speaker; simultaneous speakers" << speakers << "requested soak seconds" << soakSeconds
-                << "received packets" << receivedFrames << "reported gaps" << missingFrames << "rendered frames" << renderedFrames
-                << "non-silent frames at listeners 0/1" << audibleFrames[0] << audibleFrames[1]
-                << "setup ms" << connectedMs << "sustained ms" << playbackMs
-                << "total ms" << elapsed.elapsed();
         sustained.invalidate();
         QVERIFY(overflow.join(host.channel));
         QTRY_VERIFY(overflow.channel.joined() || overflow.channel.status().contains("full"));

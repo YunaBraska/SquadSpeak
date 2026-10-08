@@ -96,7 +96,9 @@ frame proves continued delivery instead of relying on a fixed sleep.
 Local verification passes the Supporter group (30 Qt Test entries) and ten
 consecutive runs of all eleven screen-fragment cases (13 entries per run).
 `actionlint`, all four release-publication tests and `git diff --check` pass.
-The corrections still require another platform CI run, especially Windows.
+[Run 37755181118](https://github.com/YunaBraska/SquadSpeak/actions/runs/37755181118)
+verifies the corrections at `0b8eedc`. All seven jobs pass, including Windows
+and both macOS architectures.
 
 The previous run `37687168807` hit the overall 45-minute Linux and 60-minute
 sanitizer budgets while its completed tests were passing. Both job budgets now
@@ -105,6 +107,28 @@ failure handling remain unchanged.
 The macOS step also streams its log while retaining the artifact. GitHub's
 explicit Bash shell supplies `pipefail`. Local success and exit-code-7 probes
 confirm that logging preserves the build result.
+
+Commit `4b233a7` changes only six German translations to informal address.
+Source extraction covers all 792 messages in 54 catalogs, and German compilation
+reports 792 finished translations. Its
+[CI run 37804448841](https://github.com/YunaBraska/SquadSpeak/actions/runs/37804448841)
+passes six jobs. Intel fails the unchanged 64-client realtime assertion:
+100 output callbacks over 2,361 ms, below the existing 90% target. Packet-delivery
+assertions pass. The network tests run serially, so concurrent UI tests do not
+explain this result. Native video leak and guard-page checks also pass.
+The unchanged local ARM64 case receives 25,200 packets without reported gaps,
+with 100 callbacks over 2,008 ms. This does not resolve the Intel timing failure.
+
+The existing soak now reports its audio counters before the assertions and
+includes final callback times and maximum input/output callback gaps. The
+delivery, audible-output and realtime thresholds remain unchanged. These
+diagnostics distinguish callback delays from time spent after the last callback
+without adding production code, dependencies or another test case.
+The rebuilt local case passes with four senders, 25,200 delivered packets and
+100 callbacks over 2,006 ms. A deliberate 16-sender overload still fails the
+same realtime assertion: all 100,800 packets arrive, but the callbacks take
+2,353 ms, with a maximum 61 ms callback gap. The diagnostic output survives
+the failure. Build and `git diff --check` pass; Intel diagnosis remains open.
 
 ## GitHub Sponsors tier preparation, 2026-10-07
 
