@@ -1093,48 +1093,16 @@
             <translation>ID пристрою</translation>
         </message>
         <message>
-            <source>Activate</source>
-            <translation>Активувати</translation>
-        </message>
-        <message>
-            <source>Buy annual pass</source>
-            <translation>купити річний квиток</translation>
-        </message>
-        <message>
             <source>Check now</source>
             <translation>Перевір зараз</translation>
-        </message>
-        <message>
-            <source>Deactivate</source>
-            <translation>Дезактивувати</translation>
         </message>
         <message>
             <source>Free version</source>
             <translation>Безкоштовна версія</translation>
         </message>
         <message>
-            <source>License key</source>
-            <translation>Ліцензійний ключ</translation>
-        </message>
-        <message>
             <source>Not available yet</source>
             <translation>ще не доступний</translation>
-        </message>
-        <message>
-            <source>Reset</source>
-            <translation>Скинути</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot.</source>
-            <translation>скидання лише після того, як служба підтримки звільнить слот пристрою.</translation>
-        </message>
-        <message>
-            <source>Resolve activation</source>
-            <translation>Вирішити активацію</translation>
-        </message>
-        <message>
-            <source>Support reference</source>
-            <translation>Посилання на підтримку</translation>
         </message>
         <message>
             <source>Supporter</source>
@@ -1194,13 +1162,37 @@
         </message>
         <message>
             <source>Computer audio</source>
-            <translation>Звук комп&#x27;ютера</translation>
+            <translation>Звук комп'ютера</translation>
         </message>
         <message>
             <source>App audio</source>
             <translation>Звук застосунку</translation>
         </message>
-</context>
+        <message>
+            <source>Account: %1</source>
+            <translation>Обліковий запис: %1</translation>
+        </message>
+        <message>
+            <source>Signed in as %1</source>
+            <translation>Ви ввійшли як %1</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub</source>
+            <translation>Увійдіть за допомогою GitHub</translation>
+        </message>
+        <message>
+            <source>Verification code</source>
+            <translation>Код підтвердження</translation>
+        </message>
+        <message>
+            <source>Open GitHub</source>
+            <translation>Відкрийте GitHub</translation>
+        </message>
+        <message>
+            <source>Sign out</source>
+            <translation>Вийти</translation>
+        </message>
+    </context>
     <context>
         <name>ChatContent</name>
         <message>
@@ -2613,40 +2605,32 @@
     <context>
         <name>License</name>
         <message>
-            <source>Activation was declined. Check your key and available device slots.</source>
-            <translation>Активацію відхилено. Перевірте ключ і доступні слоти пристроїв.</translation>
-        </message>
-        <message>
-            <source>An activation is unresolved. Contact support before trying again.</source>
-            <translation>активація не вирішена. Перед повторною спробою зверніться до служби підтримки.</translation>
-        </message>
-        <message>
-            <source>Deactivation was declined. Contact support.</source>
-            <translation>деактивацію відхилено. Зверніться до служби підтримки.</translation>
-        </message>
-        <message>
-            <source>Enter a valid license key.</source>
-            <translation>Введіть дійсний ліцензійний ключ.</translation>
-        </message>
-        <message>
             <source>License storage is busy or unavailable.</source>
-            <translation>сховище ліцензій зайняте або недоступне.</translation>
+            <translation>Сховище ліцензій зайняте або недоступне.</translation>
         </message>
         <message>
             <source>License storage is unavailable.</source>
-            <translation>сховище ліцензій недоступне.</translation>
+            <translation>Сховище ліцензії недоступне.</translation>
         </message>
         <message>
-            <source>The license could not be checked. Your confirmed expiry is unchanged.</source>
-            <translation>Не вдалося перевірити ліцензію. Ваш підтверджений термін дії не змінився.</translation>
+            <source>Sign-in expired. Try again.</source>
+            <translation>Термін входу минув. Спробуйте знову.</translation>
         </message>
         <message>
-            <source>The license or device activation is no longer valid.</source>
-            <translation>Ліцензія або активація пристрою більше не чинні.</translation>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>Вхід на GitHub недоступний. Спробуйте знову.</translation>
         </message>
         <message>
-            <source>The license response does not match this annual pass.</source>
-            <translation>відповідь на ліцензію не відповідає цьому річному абонементу.</translation>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>Вхід у GitHub не завершено. Спробуйте знову.</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>Не вдалося перевірити GitHub. Офлайн-доступ триває не більше семи днів.</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>Знову ввійдіть за допомогою GitHub.</translation>
         </message>
     </context>
     <context>
@@ -2969,10 +2953,6 @@
             <translation>Локальний хост каналів SquadSpeak без інтерфейсу</translation>
         </message>
         <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>Пріоритет налаштувань: аргументи &gt; середовище &gt; властивості &gt; збережені значення сервера.</translation>
-        </message>
-        <message>
             <source>Environment variables (SQUADSPEAK_ prefix):</source>
             <translation>Змінні середовища (префікс SQUADSPEAK_):</translation>
         </message>
@@ -3027,26 +3007,6 @@
         <message>
             <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
             <translation>Необов'язковий ID власного каналу для команд status, configure, password, admission, history, chat і radio; типово використовується головний канал.</translation>
-        </message>
-        <message>
-            <source>License action must be status, activate, refresh, deactivate or reset.</source>
-            <translation>Дія ліцензії має бути status, activate, refresh, deactivate або reset.</translation>
-        </message>
-        <message>
-            <source>A license operation is in progress.</source>
-            <translation>Триває операція з ліцензією.</translation>
-        </message>
-        <message>
-            <source>Supporter activation is unavailable in this build.</source>
-            <translation>У цій збірці активація Supporter недоступна.</translation>
-        </message>
-        <message>
-            <source>A license key is required.</source>
-            <translation>Потрібен ліцензійний ключ.</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot. Set confirmed=true to proceed.</source>
-            <translation>Скидайте лише після звільнення місця пристрою службою підтримки. Укажіть confirmed=true для продовження.</translation>
         </message>
         <message>
             <source>Channel action must be list, add or remove.</source>
@@ -3227,6 +3187,22 @@
         <message>
             <source>SquadSpeak headless could not start: %1</source>
             <translation>Не вдалося запустити SquadSpeak без інтерфейсу: %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>Дія підтримки має бути статусом, входом, оновленням, виходом або скасуванням. status sign-in refresh sign-out cancel</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>Триває операція Supporter.</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>У цій збірці доступ для підтримки недоступний.</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>Пріоритет налаштувань: аргументи &gt; середовище &gt; властивості &gt; збережені значення сервера.</translation>
         </message>
     </context>
     <context>

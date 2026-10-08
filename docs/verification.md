@@ -1,6 +1,6 @@
 # Verification evidence
 
-Updated 2026-10-07. [Release gates](roadmap.md), [requirements](specs/voice-chat.md)
+Updated 2026-10-08. [Release gates](roadmap.md), [requirements](specs/voice-chat.md)
 and [build instructions](development.md) are separate from this evidence record.
 A passed fixture proves its tested configuration, not every device, room or
 network. Superseded failed and cancelled runs have been removed from GitHub.
@@ -10,6 +10,67 @@ remains available because its cause is still unknown.
 
 History was consolidated at `3ede20d` with the same file tree as `5ce7455`.
 Earlier revision identifiers below refer to the original CI checkouts.
+
+## GitHub Supporter implementation, 2026-10-08
+
+The runtime now replaces the retired license-key provider with GitHub device
+sign-in. It reuses the existing entitlement owner, encrypted atomic storage and
+session gates without another runtime dependency. Shared account storage lives
+under `QStandardPaths::GenericConfigLocation/YunaSupporter`. Desktop and headless
+use the same session. Store distributions remain free-only.
+
+The owner authorized registration of the shared "Yuna Supporter" OAuth app.
+GitHub confirmed creation, public client ID `Ov23li8PQoxYilNhKyrn`, and enabled
+device flow. No client secret was generated. Expiring tokens remain enabled.
+A real device-code request with that ID and `read:user` succeeded. The exact
+production GraphQL query also succeeded using the existing authorized CLI login,
+returning four activity nodes without errors. This query check still does not
+prove the new app's complete least-privilege consent flow.
+
+The selected unpublished tier resolves to `ST_kwDOANHH_84ACiYG`, dashboard ID
+`665094`, configured at 1200 USD cents and one-time. No tier was published and
+no payment was made during implementation. `CONTRIBUTORS.md` records maintainer
+numeric account IDs, beginning with the repository owner. The runtime reads the
+canonical public repository, so unpublished local edits do not grant access.
+
+The deterministic fixture runs an actual loopback HTTPS server and exercises
+production requests, OAuth polling, pagination, encrypted storage, headless
+commands and session gates. Its synthetic ledger includes multiple payments to
+the same tier, unrelated tiers/recipients/accounts, expired payments, duplicates,
+refunds and a subsequent renewal. It also tests token rotation shared between
+instances, daily scheduling, server throttling, seven-day offline expiry,
+corrupted storage, invalid TLS, account changes and failed revocation writes.
+Clock changes and completion signals drive the tests. No fixed sleeps, personal
+payment identifiers, actual purchases or user interaction are required.
+
+Local macOS verification on the final implementation:
+
+- `license_contract`: 27 behavioral cases pass, plus setup/cleanup (29 Qt Test
+  passes, no failures). The enclosing CTest run also passes
+  `desktop_smoke` and `translation_sources` (23.06 seconds total).
+- `channel_controls`: the full run initially passed 251 Qt Test entries and
+  failed one obsolete expectation that sign-in was visible in an unconfigured
+  build. After correcting that expectation, the affected free-state and narrow
+  English/German/Arabic cases pass (four cases plus setup/cleanup). The final
+  screenshots also wait for avatar decoding before capture.
+- A pagination/token-expiry regression was reproduced first, then fixed by
+  discarding the incomplete page set before retrying with the refreshed token.
+  Large server retry values are bounded before milliseconds conversion.
+- Two existing headless channel/history cases pass, including absent personal
+  participation and retention behavior. All 792 current source messages are
+  covered by 54 catalogs. `git diff --check` and the CI shell syntax check pass.
+- The Store CI configuration now supplies a GitHub client ID instead of obsolete
+  provider keys. Windows/Linux/Store and sanitizer runs for this uncommitted
+  revision have not been executed. Local links use newer Homebrew libraries,
+  so this build alone does not prove the macOS 13 deployment target.
+
+The policy uses the latest matching NEW_SPONSORSHIP date plus one calendar year.
+Reading it again never extends expiry. A matching REFUND at or after that payment
+revokes the paid grant until a newer payment. GitHub exposes no refund-to-payment
+link, so this conservative handling is not exact settlement reconciliation.
+The draft tier still needs publication and a real checkout/sign-in check before
+paid availability. The previous provider-specific probe and device-slot tests
+were removed rather than retained as irrelevant coverage.
 
 ## GitHub Sponsors tier preparation, 2026-10-07
 
@@ -22,22 +83,71 @@ the seven-day verification window, and the confirmed SquadSpeak extras.
 
 [Edit the draft](https://github.com/sponsors/YunaBraska/dashboard/tiers/665094/edit).
 It is not published or purchasable. Saving the tier does not verify payment
-eligibility or implement GitHub sign-in. The current runtime still uses the
-previous provider; O-21 remains open. No Git commit, push or release was made.
+eligibility or implement GitHub sign-in. At preparation time the runtime still used the previous provider. The implementation above supersedes that state. No Git commit, push or release was made.
 
 The live GraphQL schema confirms that `SponsorsActivity` contains a tier and
-event timestamp, but no payment identifier, amount or refund-to-payment link.
+event timestamp, but no payment identifier, settled payment amount or
+refund-to-payment link. The associated tier exposes its configured price.
 `Sponsorship.createdAt` dates the relationship and `tierSelectedAt` dates its
 tier selection. Neither is documented as a payment settlement date. The
 amount-by-date aggregate cannot select a tier. These observations do not prove
 that automatic verification is impossible. Repeated one-time payments still
 need real evidence before an event can safely extend annual access. An inactive
 one-time sponsorship must not alone revoke the separately promised paid year.
-The current decision is between verifying that automatic route with real
-payments and an explicitly approved manual confirmation stored on GitHub.
-No replacement verification path has been implemented or selected implicitly.
+Automatic verification remains the requested behavior. Manual confirmation
+was proposed but not selected. That investigation predates the replacement described above.
 Sources: [GitHub Sponsors schema](https://docs.github.com/en/graphql/reference/sponsors)
 and the [Sponsors team's API discussion](https://github.com/orgs/community/discussions/77190).
+
+### Repository evidence, 2026-10-08
+
+Public source and maintainer reports support using dated one-time activities
+instead of the current sponsorship flag. The strongest operational evidence is
+[Globalping issue 70](https://github.com/jsdelivr/globalping-dash-directus/issues/70).
+Existing monthly sponsors' additional one-time payments did not trigger the
+expected webhook. [PR 167](https://github.com/jsdelivr/globalping-dash-directus/pull/167),
+merged on 2026-05-10, adds activity polling to recover those missing credits.
+
+| Inspected implementation | Evidence and limit |
+| --- | --- |
+| [Globalping activity tests](https://github.com/jsdelivr/globalping-dash-directus/blob/899014a93483f706a2852f67b5a8f67ed840e72e/src/extensions/operations/sponsors-cron-handler/test/handle-sponsor-activities.test.ts#L448-L493) | Two distinct one-time events for the same sponsor and tier, with only one already credited, produce one additional credit. This is a synthetic regression fixture in a server-backed application, not a captured payment transcript. Source and tests were inspected, not executed. |
+| [Tyrrrz donation importer](https://github.com/Tyrrrz/Tyrrrz.me/blob/987da900159ba21e6dc70c48c3c4171f82d6adb2/data/donate/github.ts#L116-L125) | Sums each one-time NEW_SPONSORSHIP event separately per sponsor. It reconstructs donor totals rather than issuing annual access and does not process refunds. |
+| [HotSwan lifetime activation](https://hotswan.dev/docs/lifetime-license) | Documents one-time sponsorship followed by GitHub login and automatic lifetime activation. This is product documentation, not inspected verification code, and has no annual renewal rule. |
+
+This is a practical basis for the requested automatic path. It does not prove
+exact annual expiry or refund handling end to end.
+Use distinct activity IDs, the configured tier, the authenticated stable account
+ID and the original event time. Re-reading an event must not extend access.
+Do not copy the examples' server architecture or use their fixture results as
+evidence that SquadSpeak already works. No accounts, tiers or payments were
+changed during this investigation.
+
+The [current schema](https://docs.github.com/en/graphql/reference/users#user)
+also documents `viewer.sponsorsActivities(includeAsSponsor: true)`, which
+includes outgoing sponsorship events. The default omits those events. The
+[Sponsors team's explanation](https://github.com/orgs/community/discussions/3818)
+confirms that activity access is available to the sponsor or recipient in the
+relationship. This supports direct verification with the sponsor's login,
+without embedding the recipient's credentials. Retrieve pages in descending
+timestamp order and match the authenticated sponsor, recipient and tier IDs
+locally. The activity query has no recipient or tier filter. An unrelated recent
+event must not hide an older qualifying event.
+
+Direct sponsor access was verified with real events on 2026-10-08. Without
+`read:user`, activity nodes were null and sponsorship detail fields returned
+`INSUFFICIENT_SCOPES`. After the owner authorized that additional read scope and
+completed GitHub's identity confirmation, the existing CLI keyring login
+returned two distinct outgoing one-time events for two different recipients.
+Each contained an event ID, UTC timestamp, sponsor and recipient IDs, and a
+one-time tier with its ID and configured price. A repeated query returned the
+same event IDs and timestamps, with no remaining pages. The details query also
+returned the two corresponding sponsorship relationships without errors.
+
+This proves sponsor-side access without recipient credentials or an additional
+server. It does not prove repeated payments to the same tier, refunds or the
+application's eventual login flow. The existing CLI retained its other scopes,
+so this was not a least-privilege OAuth test. No payment was initiated by these
+checks. Personal payment identifiers are omitted from this public record.
 
 ## Free screen sharing and avatar selection, 2026-10-07
 

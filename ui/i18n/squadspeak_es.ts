@@ -1093,48 +1093,16 @@
             <translation>ID del dispositivo</translation>
         </message>
         <message>
-            <source>Activate</source>
-            <translation>Activar</translation>
-        </message>
-        <message>
-            <source>Buy annual pass</source>
-            <translation>Comprar pase anual</translation>
-        </message>
-        <message>
             <source>Check now</source>
             <translation>Comprobar ahora</translation>
-        </message>
-        <message>
-            <source>Deactivate</source>
-            <translation>Desactivar</translation>
         </message>
         <message>
             <source>Free version</source>
             <translation>Versión gratuita</translation>
         </message>
         <message>
-            <source>License key</source>
-            <translation>Clave de licencia</translation>
-        </message>
-        <message>
             <source>Not available yet</source>
             <translation>Aún no disponible</translation>
-        </message>
-        <message>
-            <source>Reset</source>
-            <translation>Restablecer</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot.</source>
-            <translation>Restablece solo después de que soporte haya liberado la plaza del dispositivo.</translation>
-        </message>
-        <message>
-            <source>Resolve activation</source>
-            <translation>Resolver activación</translation>
-        </message>
-        <message>
-            <source>Support reference</source>
-            <translation>Referencia para soporte</translation>
         </message>
         <message>
             <source>Supporter</source>
@@ -1200,7 +1168,31 @@
             <source>App audio</source>
             <translation>Audio de la aplicación</translation>
         </message>
-</context>
+        <message>
+            <source>Account: %1</source>
+            <translation>Cuenta: %1</translation>
+        </message>
+        <message>
+            <source>Signed in as %1</source>
+            <translation>Iniciado sesión como %1</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub</source>
+            <translation>Iniciar sesión con GitHub</translation>
+        </message>
+        <message>
+            <source>Verification code</source>
+            <translation>Código de verificación</translation>
+        </message>
+        <message>
+            <source>Open GitHub</source>
+            <translation>Abrir GitHub</translation>
+        </message>
+        <message>
+            <source>Sign out</source>
+            <translation>desconectar</translation>
+        </message>
+    </context>
     <context>
         <name>ChatContent</name>
         <message>
@@ -2613,40 +2605,32 @@
     <context>
         <name>License</name>
         <message>
-            <source>Activation was declined. Check your key and available device slots.</source>
-            <translation>Activación rechazada. Comprueba tu clave y las plazas disponibles para dispositivos.</translation>
-        </message>
-        <message>
-            <source>An activation is unresolved. Contact support before trying again.</source>
-            <translation>Hay una activación sin resolver. Contacta con soporte antes de volver a intentarlo.</translation>
-        </message>
-        <message>
-            <source>Deactivation was declined. Contact support.</source>
-            <translation>Desactivación rechazada. Contacta con soporte.</translation>
-        </message>
-        <message>
-            <source>Enter a valid license key.</source>
-            <translation>Introduce una clave de licencia válida.</translation>
-        </message>
-        <message>
             <source>License storage is busy or unavailable.</source>
-            <translation>El almacenamiento de licencias está ocupado o no disponible.</translation>
+            <translation>El almacenamiento de licencias está ocupado o no está disponible.</translation>
         </message>
         <message>
             <source>License storage is unavailable.</source>
             <translation>El almacenamiento de licencias no está disponible.</translation>
         </message>
         <message>
-            <source>The license could not be checked. Your confirmed expiry is unchanged.</source>
-            <translation>No se pudo comprobar la licencia. Su fecha de caducidad confirmada no cambia.</translation>
+            <source>Sign-in expired. Try again.</source>
+            <translation>El inicio de sesión expiró. Intentar otra vez.</translation>
         </message>
         <message>
-            <source>The license or device activation is no longer valid.</source>
-            <translation>La licencia o la activación del dispositivo ya no es válida.</translation>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>El inicio de sesión en GitHub no está disponible. Intentar otra vez.</translation>
         </message>
         <message>
-            <source>The license response does not match this annual pass.</source>
-            <translation>La respuesta de la licencia no corresponde a este pase anual.</translation>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>El inicio de sesión en GitHub no se completó. Intentar otra vez.</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>No se pudo comprobar GitHub. El acceso sin conexión dura como máximo siete días.</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>Inicie sesión con GitHub nuevamente.</translation>
         </message>
     </context>
     <context>
@@ -2969,10 +2953,6 @@
             <translation>Host de canal local headless de SquadSpeak</translation>
         </message>
         <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>Prioridad de ajustes: argumentos &gt; entorno &gt; propiedades &gt; valores guardados del servidor.</translation>
-        </message>
-        <message>
             <source>Environment variables (SQUADSPEAK_ prefix):</source>
             <translation>Variables de entorno (prefijo SQUADSPEAK_):</translation>
         </message>
@@ -3027,26 +3007,6 @@
         <message>
             <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
             <translation>ID opcional de un canal propio para los comandos status, configure, password, admission, history, chat y radio; por defecto se usa el canal principal.</translation>
-        </message>
-        <message>
-            <source>License action must be status, activate, refresh, deactivate or reset.</source>
-            <translation>La acción de licencia debe ser status, activate, refresh, deactivate o reset.</translation>
-        </message>
-        <message>
-            <source>A license operation is in progress.</source>
-            <translation>Ya hay una operación de licencia en curso.</translation>
-        </message>
-        <message>
-            <source>Supporter activation is unavailable in this build.</source>
-            <translation>La activación Supporter no está disponible en esta versión.</translation>
-        </message>
-        <message>
-            <source>A license key is required.</source>
-            <translation>Se requiere una clave de licencia.</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot. Set confirmed=true to proceed.</source>
-            <translation>Restablezca solo después de que soporte libere el cupo del dispositivo. Establezca confirmed=true para continuar.</translation>
         </message>
         <message>
             <source>Channel action must be list, add or remove.</source>
@@ -3227,6 +3187,22 @@
         <message>
             <source>SquadSpeak headless could not start: %1</source>
             <translation>SquadSpeak headless no se pudo iniciar: %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>La acción del colaborador debe ser estado, iniciar sesión, actualizar, cerrar sesión o cancelar. status sign-in refresh sign-out cancel</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>Una operación de apoyo está en curso.</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>El acceso de soporte no está disponible en esta compilación.</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>Prioridad de configuración: argumentos &gt; entorno &gt; propiedades &gt; valores guardados del servidor.</translation>
         </message>
     </context>
     <context>

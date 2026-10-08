@@ -1093,48 +1093,16 @@
             <translation>Cihaz kimliği</translation>
         </message>
         <message>
-            <source>Activate</source>
-            <translation>Etkinleştir</translation>
-        </message>
-        <message>
-            <source>Buy annual pass</source>
-            <translation>Yıllık geçiş satın al</translation>
-        </message>
-        <message>
             <source>Check now</source>
             <translation>Şimdi kontrol et</translation>
-        </message>
-        <message>
-            <source>Deactivate</source>
-            <translation>Devre dışı bırak</translation>
         </message>
         <message>
             <source>Free version</source>
             <translation>Ücretsiz sürüm</translation>
         </message>
         <message>
-            <source>License key</source>
-            <translation>Lisans anahtarı</translation>
-        </message>
-        <message>
             <source>Not available yet</source>
             <translation>Henüz kullanılamıyor</translation>
-        </message>
-        <message>
-            <source>Reset</source>
-            <translation>Sıfırla</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot.</source>
-            <translation>Yalnızca destek ekibi cihaz kontenjanını serbest bıraktıktan sonra sıfırlayın.</translation>
-        </message>
-        <message>
-            <source>Resolve activation</source>
-            <translation>Etkinleştirmeyi çöz</translation>
-        </message>
-        <message>
-            <source>Support reference</source>
-            <translation>Destek referansı</translation>
         </message>
         <message>
             <source>Supporter</source>
@@ -1200,7 +1168,31 @@
             <source>App audio</source>
             <translation>Uygulama sesi</translation>
         </message>
-</context>
+        <message>
+            <source>Account: %1</source>
+            <translation>Hesap: %1</translation>
+        </message>
+        <message>
+            <source>Signed in as %1</source>
+            <translation>%1 olarak oturum açıldı</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub</source>
+            <translation>GitHub'la oturum açın</translation>
+        </message>
+        <message>
+            <source>Verification code</source>
+            <translation>Doğrulama kodu</translation>
+        </message>
+        <message>
+            <source>Open GitHub</source>
+            <translation>GitHub'u açın</translation>
+        </message>
+        <message>
+            <source>Sign out</source>
+            <translation>oturumu Kapat</translation>
+        </message>
+    </context>
     <context>
         <name>ChatContent</name>
         <message>
@@ -2613,22 +2605,6 @@
     <context>
         <name>License</name>
         <message>
-            <source>Activation was declined. Check your key and available device slots.</source>
-            <translation>Etkinleştirme reddedildi. Anahtarınızı ve kullanılabilir cihaz kontenjanını kontrol edin.</translation>
-        </message>
-        <message>
-            <source>An activation is unresolved. Contact support before trying again.</source>
-            <translation>Bir etkinleştirme çözümlenemedi. Yeniden denemeden önce destek ekibiyle iletişime geçin.</translation>
-        </message>
-        <message>
-            <source>Deactivation was declined. Contact support.</source>
-            <translation>Devre dışı bırakma reddedildi. Destek ekibiyle iletişime geçin.</translation>
-        </message>
-        <message>
-            <source>Enter a valid license key.</source>
-            <translation>Geçerli bir lisans anahtarı girin.</translation>
-        </message>
-        <message>
             <source>License storage is busy or unavailable.</source>
             <translation>Lisans depolama alanı meşgul veya kullanılamıyor.</translation>
         </message>
@@ -2637,16 +2613,24 @@
             <translation>Lisans depolama alanı kullanılamıyor.</translation>
         </message>
         <message>
-            <source>The license could not be checked. Your confirmed expiry is unchanged.</source>
-            <translation>Lisans kontrol edilemedi. Onaylanmış sona erme tarihi değişmedi.</translation>
+            <source>Sign-in expired. Try again.</source>
+            <translation>Oturum açma süresi doldu. Tekrar deneyin.</translation>
         </message>
         <message>
-            <source>The license or device activation is no longer valid.</source>
-            <translation>Lisans veya cihaz etkinleştirmesi artık geçerli değil.</translation>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>GitHub oturum açma kullanılamıyor. Tekrar deneyin.</translation>
         </message>
         <message>
-            <source>The license response does not match this annual pass.</source>
-            <translation>Lisans yanıtı bu yıllık geçişle eşleşmiyor.</translation>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>GitHub oturum açma işlemi tamamlanmadı. Tekrar deneyin.</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>GitHub kontrol edilemedi. Çevrimdışı erişim en fazla yedi gün sürer.</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>GitHub ile tekrar oturum açın.</translation>
         </message>
     </context>
     <context>
@@ -2969,10 +2953,6 @@
             <translation>SquadSpeak başsız yerel kanal ana bilgisayarı</translation>
         </message>
         <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>Ayar önceliği: bağımsız değişkenler &gt; ortam &gt; özellikler &gt; kaydedilmiş sunucu değerleri.</translation>
-        </message>
-        <message>
             <source>Environment variables (SQUADSPEAK_ prefix):</source>
             <translation>Ortam değişkenleri (SQUADSPEAK_ öneki):</translation>
         </message>
@@ -3027,26 +3007,6 @@
         <message>
             <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
             <translation>status, configure, password, admission, history, chat ve radio komutları için isteğe bağlı kendi kanal kimliği; varsayılan birincil kanaldır.</translation>
-        </message>
-        <message>
-            <source>License action must be status, activate, refresh, deactivate or reset.</source>
-            <translation>Lisans eylemi status, activate, refresh, deactivate veya reset olmalıdır.</translation>
-        </message>
-        <message>
-            <source>A license operation is in progress.</source>
-            <translation>Bir lisans işlemi devam ediyor.</translation>
-        </message>
-        <message>
-            <source>Supporter activation is unavailable in this build.</source>
-            <translation>Bu derlemede Supporter etkinleştirmesi kullanılamıyor.</translation>
-        </message>
-        <message>
-            <source>A license key is required.</source>
-            <translation>Lisans anahtarı gerekli.</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot. Set confirmed=true to proceed.</source>
-            <translation>Sıfırlamayı ancak destek ekibi cihaz yuvasını serbest bıraktıktan sonra yapın. Devam etmek için confirmed=true ayarlayın.</translation>
         </message>
         <message>
             <source>Channel action must be list, add or remove.</source>
@@ -3227,6 +3187,22 @@
         <message>
             <source>SquadSpeak headless could not start: %1</source>
             <translation>SquadSpeak başsız ana bilgisayarı başlatılamadı: %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>Destekçinin eylemi durum, oturum açma, yenileme, oturumu kapatma veya iptal etme şeklinde olmalıdır. status sign-in refresh sign-out cancel</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>Destekçi operasyonu sürüyor.</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>Bu yapıda destekçi erişimi mevcut değil.</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>Ayarların önceliği: bağımsız değişkenler &gt; ortam &gt; özellikler &gt; kayıtlı sunucu değerleri.</translation>
         </message>
     </context>
     <context>

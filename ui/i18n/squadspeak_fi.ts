@@ -1093,48 +1093,16 @@
             <translation>Laite-ID</translation>
         </message>
         <message>
-            <source>Activate</source>
-            <translation>Aktivoi</translation>
-        </message>
-        <message>
-            <source>Buy annual pass</source>
-            <translation>Osta vuosimaksu</translation>
-        </message>
-        <message>
             <source>Check now</source>
             <translation>Tarkista nyt</translation>
-        </message>
-        <message>
-            <source>Deactivate</source>
-            <translation>Poista käytöstä</translation>
         </message>
         <message>
             <source>Free version</source>
             <translation>Ilmainen versio</translation>
         </message>
         <message>
-            <source>License key</source>
-            <translation>Lisenssiavaimen</translation>
-        </message>
-        <message>
             <source>Not available yet</source>
             <translation>Ei saatavilla vielä</translation>
-        </message>
-        <message>
-            <source>Reset</source>
-            <translation>Nollaa</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot.</source>
-            <translation>Palauta laite vasta, kun tuki on vapauttanut laitepaikan.</translation>
-        </message>
-        <message>
-            <source>Resolve activation</source>
-            <translation>Ratkaise aktivointi</translation>
-        </message>
-        <message>
-            <source>Support reference</source>
-            <translation>Tuen viitenumero</translation>
         </message>
         <message>
             <source>Supporter</source>
@@ -1200,7 +1168,31 @@
             <source>App audio</source>
             <translation>Sovelluksen ääni</translation>
         </message>
-</context>
+        <message>
+            <source>Account: %1</source>
+            <translation>Tili: %1</translation>
+        </message>
+        <message>
+            <source>Signed in as %1</source>
+            <translation>Kirjautunut sisään nimellä %1</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub</source>
+            <translation>Kirjaudu sisään GitHubilla</translation>
+        </message>
+        <message>
+            <source>Verification code</source>
+            <translation>Vahvistuskoodi</translation>
+        </message>
+        <message>
+            <source>Open GitHub</source>
+            <translation>Avaa GitHub</translation>
+        </message>
+        <message>
+            <source>Sign out</source>
+            <translation>Kirjaudu ulos</translation>
+        </message>
+    </context>
     <context>
         <name>ChatContent</name>
         <message>
@@ -2613,40 +2605,32 @@
     <context>
         <name>License</name>
         <message>
-            <source>Activation was declined. Check your key and available device slots.</source>
-            <translation>Aktivointi hylättiin. Tarkista avaimesi ja käytettävissä olevat laitepaikat.</translation>
-        </message>
-        <message>
-            <source>An activation is unresolved. Contact support before trying again.</source>
-            <translation>Aktivointi on ratkaisematon. Ota yhteyttä tukeen ennen uuden yrityksen.</translation>
-        </message>
-        <message>
-            <source>Deactivation was declined. Contact support.</source>
-            <translation>Deaktivointi epäonnistui. Ota yhteyttä tukeen.</translation>
-        </message>
-        <message>
-            <source>Enter a valid license key.</source>
-            <translation>Syötä kelvollinen lisenssiavaimen.</translation>
-        </message>
-        <message>
             <source>License storage is busy or unavailable.</source>
-            <translation>Lisenssitallennustila on käytössä tai ei ole saatavilla.</translation>
+            <translation>Lisenssitallennustila on varattu tai ei ole käytettävissä.</translation>
         </message>
         <message>
             <source>License storage is unavailable.</source>
-            <translation>Lisenssitallennustila ei ole saatavilla.</translation>
+            <translation>Lisenssitallennustila ei ole käytettävissä.</translation>
         </message>
         <message>
-            <source>The license could not be checked. Your confirmed expiry is unchanged.</source>
-            <translation>Lisenssiä ei voitu tarkistaa. Vahvistettu vanhenemispäivä ei ole muuttunut.</translation>
+            <source>Sign-in expired. Try again.</source>
+            <translation>Kirjautuminen vanhentunut. Yritä uudelleen.</translation>
         </message>
         <message>
-            <source>The license or device activation is no longer valid.</source>
-            <translation>Lisenssi tai laitteen aktivointi ei ole enää voimassa.</translation>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>GitHub-sisäänkirjautuminen ei ole käytettävissä. Yritä uudelleen.</translation>
         </message>
         <message>
-            <source>The license response does not match this annual pass.</source>
-            <translation>Lisenssitiedot eivät vastaa tätä vuosimaksua.</translation>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>GitHub-sisäänkirjautumista ei suoritettu loppuun. Yritä uudelleen.</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>GitHubia ei voitu tarkistaa. Offline-käyttö kestää enintään seitsemän päivää.</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>Kirjaudu uudelleen sisään GitHubilla.</translation>
         </message>
     </context>
     <context>
@@ -2969,10 +2953,6 @@
             <translation>SquadSpeak-paikallinen headless-kanavapalvelin</translation>
         </message>
         <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>Asetusten etusija: argumentit &gt; ympäristö &gt; ominaisuudet &gt; tallennetut palvelinarvot.</translation>
-        </message>
-        <message>
             <source>Environment variables (SQUADSPEAK_ prefix):</source>
             <translation>Ympäristömuuttujat (etuliite SQUADSPEAK_):</translation>
         </message>
@@ -3027,26 +3007,6 @@
         <message>
             <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
             <translation>Valinnainen oman kanavan tunnus komennoille status, configure, password, admission, history, chat ja radio; oletuksena pääkanava.</translation>
-        </message>
-        <message>
-            <source>License action must be status, activate, refresh, deactivate or reset.</source>
-            <translation>Lisenssitoiminnon on oltava status, activate, refresh, deactivate tai reset.</translation>
-        </message>
-        <message>
-            <source>A license operation is in progress.</source>
-            <translation>Lisenssitoiminto on jo käynnissä.</translation>
-        </message>
-        <message>
-            <source>Supporter activation is unavailable in this build.</source>
-            <translation>Supporter-aktivointi ei ole käytettävissä tässä koontiversiossa.</translation>
-        </message>
-        <message>
-            <source>A license key is required.</source>
-            <translation>Lisenssiavain vaaditaan.</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot. Set confirmed=true to proceed.</source>
-            <translation>Nollaa vasta, kun tuki on vapauttanut laitepaikan. Jatka asettamalla confirmed=true.</translation>
         </message>
         <message>
             <source>Channel action must be list, add or remove.</source>
@@ -3227,6 +3187,22 @@
         <message>
             <source>SquadSpeak headless could not start: %1</source>
             <translation>SquadSpeak-headlessia ei voitu käynnistää: %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>Tukitoimien tulee olla tila, sisäänkirjautuminen, päivitys, uloskirjautuminen tai peruutus. status sign-in refresh sign-out cancel</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>Tukioperaatio on meneillään.</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>Tukipalvelun käyttöoikeus ei ole käytettävissä tässä koontiversiossa.</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>Asetusten prioriteetti: argumentit &gt; ympäristö &gt; ominaisuudet &gt; tallennetut palvelinarvot.</translation>
         </message>
     </context>
     <context>

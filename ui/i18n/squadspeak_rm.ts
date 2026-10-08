@@ -257,7 +257,7 @@
         </message>
         <message>
             <source>App audio only</source>
-            <translation>Mo audio da l&#x27;applicaziun</translation>
+            <translation>Mo audio da l'applicaziun</translation>
         </message>
     </context>
     <context>
@@ -1093,48 +1093,16 @@
             <translation>ID d'apparats</translation>
         </message>
         <message>
-            <source>Activate</source>
-            <translation>Activar</translation>
-        </message>
-        <message>
-            <source>Buy annual pass</source>
-            <translation>Cumprar la carta da l'onn</translation>
-        </message>
-        <message>
             <source>Check now</source>
             <translation>Examinar ussa</translation>
-        </message>
-        <message>
-            <source>Deactivate</source>
-            <translation>Deactivar</translation>
         </message>
         <message>
             <source>Free version</source>
             <translation>Versiun gratuita</translation>
         </message>
         <message>
-            <source>License key</source>
-            <translation>Clav da licenza</translation>
-        </message>
-        <message>
             <source>Not available yet</source>
             <translation>Anc betg disponibel</translation>
-        </message>
-        <message>
-            <source>Reset</source>
-            <translation>Returnar</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot.</source>
-            <translation>Mo suenter ch' il support ha dà liber la sort da l' apparat.</translation>
-        </message>
-        <message>
-            <source>Resolve activation</source>
-            <translation>Schliar l'activaziun</translation>
-        </message>
-        <message>
-            <source>Support reference</source>
-            <translation>Sustegn da la referenza</translation>
         </message>
         <message>
             <source>Supporter</source>
@@ -1198,9 +1166,33 @@
         </message>
         <message>
             <source>App audio</source>
-            <translation>Audio da l&#x27;applicaziun</translation>
+            <translation>Audio da l'applicaziun</translation>
         </message>
-</context>
+        <message>
+            <source>Account: %1</source>
+            <translation>Cont: %1</translation>
+        </message>
+        <message>
+            <source>Signed in as %1</source>
+            <translation>Collegà sco %1</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub</source>
+            <translation>S’annunziar cun GitHub</translation>
+        </message>
+        <message>
+            <source>Verification code</source>
+            <translation>Code da verificaziun</translation>
+        </message>
+        <message>
+            <source>Open GitHub</source>
+            <translation>Avrir GitHub</translation>
+        </message>
+        <message>
+            <source>Sign out</source>
+            <translation>S’annunziar ora</translation>
+        </message>
+    </context>
     <context>
         <name>ChatContent</name>
         <message>
@@ -2613,40 +2605,32 @@
     <context>
         <name>License</name>
         <message>
-            <source>Activation was declined. Check your key and available device slots.</source>
-            <translation>L'activaziun è vegnida refusada. Controllai Vossa clav e las plazzas d'apparats disponiblas.</translation>
-        </message>
-        <message>
-            <source>An activation is unresolved. Contact support before trying again.</source>
-            <translation>In'activaziun n'ha betg pudì vegnir terminada. Contactai il support avant ch'empruvai anc ina giada.</translation>
-        </message>
-        <message>
-            <source>Deactivation was declined. Contact support.</source>
-            <translation>La deactivaziun è vegnida refusada. Contactai il support.</translation>
-        </message>
-        <message>
-            <source>Enter a valid license key.</source>
-            <translation>Endatai ina clav da licenza valaivla.</translation>
-        </message>
-        <message>
             <source>License storage is busy or unavailable.</source>
-            <translation>L'accumulatur da licenza è cumprovà u betg disponibel.</translation>
+            <translation>La memoria Supporter è occupada u indisponibla.</translation>
         </message>
         <message>
             <source>License storage is unavailable.</source>
-            <translation>La conservaziun da la licenza n'è betg disponibla.</translation>
+            <translation>La memoria Supporter è indisponibla.</translation>
         </message>
         <message>
-            <source>The license could not be checked. Your confirmed expiry is unchanged.</source>
-            <translation>La licenza n'ha betg pudì vegnir examinada. Sia data da scadenza confermada n'è betg vegnida midada.</translation>
+            <source>Sign-in expired. Try again.</source>
+            <translation>La sessiun d'annunziar è scadida. Emprova anc ina giada.</translation>
         </message>
         <message>
-            <source>The license or device activation is no longer valid.</source>
-            <translation>La licenza u l'activaziun d'apparats n'è betg pli valaivla.</translation>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>L'annunziaziun cun GitHub è indisponibla. Emprova anc ina giada.</translation>
         </message>
         <message>
-            <source>The license response does not match this annual pass.</source>
-            <translation>La resposta da licenza na correspunda betg a questa licenza annuala.</translation>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>L'annunziaziun cun GitHub n'è betg vegnida terminada. Emprova anc ina giada.</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>GitHub n'ha betg pudì vegnir controllà. L'access offline dura maximalmain set dis.</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>Annunzia-ti anc ina giada cun GitHub.</translation>
         </message>
     </context>
     <context>
@@ -2969,10 +2953,6 @@
             <translation>Host local da chanals SquadSpeak senza interfatscha grafica</translation>
         </message>
         <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>Prioritad da las configuraziuns: arguments &gt; ambient &gt; caracteristicas &gt; valurs memorisadas dal server.</translation>
-        </message>
-        <message>
             <source>Environment variables (SQUADSPEAK_ prefix):</source>
             <translation>Variablas d'ambient (prefix SQUADSPEAK_):</translation>
         </message>
@@ -3027,26 +3007,6 @@
         <message>
             <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
             <translation>ID opziunala d'in agen chanal per ils cumonds status, configure, password, admission, history, chat e radio; il standard è il chanal principal.</translation>
-        </message>
-        <message>
-            <source>License action must be status, activate, refresh, deactivate or reset.</source>
-            <translation>L'acziun da licenza sto esser status, activate, refresh, deactivate u reset.</translation>
-        </message>
-        <message>
-            <source>A license operation is in progress.</source>
-            <translation>Ina operaziun da licenza è en curs.</translation>
-        </message>
-        <message>
-            <source>Supporter activation is unavailable in this build.</source>
-            <translation>L'activaziun da Supporter n'è betg disponibla en questa versiun.</translation>
-        </message>
-        <message>
-            <source>A license key is required.</source>
-            <translation>Ina clav da licenza è necessaria.</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot. Set confirmed=true to proceed.</source>
-            <translation>Reinizialisar pir suenter ch'il support ha deliberà la plazza da l'apparat. Metta confirmed=true per cuntinuar.</translation>
         </message>
         <message>
             <source>Channel action must be list, add or remove.</source>
@@ -3227,6 +3187,22 @@
         <message>
             <source>SquadSpeak headless could not start: %1</source>
             <translation>Impussibel d'aviar SquadSpeak senza interfatscha grafica: %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>L'acziun Supporter sto esser status, sign-in, refresh, sign-out u cancel.</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>Ina operaziun Supporter è en curs.</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>L'access Supporter n'è betg disponibel en questa versiun.</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</translation>
         </message>
     </context>
     <context>

@@ -1003,6 +1003,8 @@ with (root / 'replies').open('wb') as replies:
         const auto license = run({{"command", "license"}, {"action", "status"}});
         QVERIFY2(license.value("ok").toBool(), qPrintable(license.value("error").toString()));
         QVERIFY(!license.value("data").toObject().value("active").toBool());
+        QVERIFY(license.value("data").toObject().contains("account"));
+        QVERIFY(license.value("data").toObject().contains("verificationUrl"));
         QVERIFY(!run({{"command", "channels"}, {"action", "add"}, {"name", "Second"}}).value("ok").toBool());
 #if SQUADSPEAK_STORE_BUILD
         QVERIFY(!session.setSupporterEnabled(true)); return;

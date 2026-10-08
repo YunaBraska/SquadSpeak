@@ -1093,48 +1093,16 @@
             <translation>పరికర గుర్తింపు (Device ID)</translation>
         </message>
         <message>
-            <source>Activate</source>
-            <translation>ప్రారంభించు</translation>
-        </message>
-        <message>
-            <source>Buy annual pass</source>
-            <translation>వార్షిక ప్యాక్ కొనండి</translation>
-        </message>
-        <message>
             <source>Check now</source>
             <translation>ఇప్పుడే తనిఖీ చేయండి</translation>
-        </message>
-        <message>
-            <source>Deactivate</source>
-            <translation>నిలిపివేయండి</translation>
         </message>
         <message>
             <source>Free version</source>
             <translation>ఉచిత వెర్షన్</translation>
         </message>
         <message>
-            <source>License key</source>
-            <translation>లైసెన్స్ కీ</translation>
-        </message>
-        <message>
             <source>Not available yet</source>
             <translation>ఇంకా అందుబాటులో లేదు</translation>
-        </message>
-        <message>
-            <source>Reset</source>
-            <translation>రీసెట్</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot.</source>
-            <translation>పరికర స్థలం సాంకేతిక నిపుణులచే విడుదల చేయబడిన తర్వాత మాత్రమే రీసెట్ చేయండి.</translation>
-        </message>
-        <message>
-            <source>Resolve activation</source>
-            <translation>క్రియాశీలతను పరిష్కరించు</translation>
-        </message>
-        <message>
-            <source>Support reference</source>
-            <translation>సాంకేతిక సహాయం కోసం సూచన</translation>
         </message>
         <message>
             <source>Supporter</source>
@@ -1200,7 +1168,31 @@
             <source>App audio</source>
             <translation>యాప్ ఆడియో</translation>
         </message>
-</context>
+        <message>
+            <source>Account: %1</source>
+            <translation>ఖాతా: % 1 %1</translation>
+        </message>
+        <message>
+            <source>Signed in as %1</source>
+            <translation>% 1గా సైన్ ఇన్ చేసారు %1</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub</source>
+            <translation>GitHubతో సైన్ ఇన్ చేయండి</translation>
+        </message>
+        <message>
+            <source>Verification code</source>
+            <translation>ధృవీకరణ కోడ్</translation>
+        </message>
+        <message>
+            <source>Open GitHub</source>
+            <translation>GitHub తెరవండి</translation>
+        </message>
+        <message>
+            <source>Sign out</source>
+            <translation>సైన్ అవుట్ చేయండి</translation>
+        </message>
+    </context>
     <context>
         <name>ChatContent</name>
         <message>
@@ -2613,40 +2605,32 @@
     <context>
         <name>License</name>
         <message>
-            <source>Activation was declined. Check your key and available device slots.</source>
-            <translation>యాక్టివేషన్ తిరస్కరించబడింది. మీ లైసెన్స్ కీ మరియు అందుబాటులో ఉన్న పరికర స్లాట్‌లను తనిఖీ చేయండి.</translation>
-        </message>
-        <message>
-            <source>An activation is unresolved. Contact support before trying again.</source>
-            <translation>ఒక యాక్టివేషన్ ఇంకా పరిష్కరించబడలేదు. మళ్లీ ప్రయత్నించే ముందు సహాయక బృందాన్ని సంప్రదించండి.</translation>
-        </message>
-        <message>
-            <source>Deactivation was declined. Contact support.</source>
-            <translation>డీయాక్టివేషన్ తిరస్కరించబడింది. సహాయక బృందాన్ని సంప్రదించండి.</translation>
-        </message>
-        <message>
-            <source>Enter a valid license key.</source>
-            <translation>చెల్లుబాటు అయ్యే లైసెన్స్ కీని నమోదు చేయండి.</translation>
-        </message>
-        <message>
             <source>License storage is busy or unavailable.</source>
-            <translation>లైసెన్స్ నిల్వ ప్రస్తుతం అందుబాటులో లేదు లేదా పని చేయడం లేదు.</translation>
+            <translation>లైసెన్స్ నిల్వ బిజీగా ఉంది లేదా అందుబాటులో లేదు.</translation>
         </message>
         <message>
             <source>License storage is unavailable.</source>
             <translation>లైసెన్స్ నిల్వ అందుబాటులో లేదు.</translation>
         </message>
         <message>
-            <source>The license could not be checked. Your confirmed expiry is unchanged.</source>
-            <translation>లైసెన్స్‌ను ధృవీకరించలేకపోయాము. మీ గడువు తేదీ మారలేదు.</translation>
+            <source>Sign-in expired. Try again.</source>
+            <translation>సైన్-ఇన్ గడువు ముగిసింది. మళ్లీ ప్రయత్నించండి.</translation>
         </message>
         <message>
-            <source>The license or device activation is no longer valid.</source>
-            <translation>లైసెన్స్ లేదా పరికర యాక్టివేషన్ ఇక చెల్లదు.</translation>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>GitHub సైన్-ఇన్ అందుబాటులో లేదు. మళ్లీ ప్రయత్నించండి.</translation>
         </message>
         <message>
-            <source>The license response does not match this annual pass.</source>
-            <translation>లైసెన్స్ ప్రతిస్పందన ఈ వార్షిక అనుమతితో సరిపోలడం లేదు.</translation>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>GitHub సైన్-ఇన్ పూర్తి కాలేదు. మళ్లీ ప్రయత్నించండి.</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>GitHubని తనిఖీ చేయడం సాధ్యపడలేదు. ఆఫ్‌లైన్ యాక్సెస్ గరిష్టంగా ఏడు రోజులు ఉంటుంది.</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>GitHubతో మళ్లీ సైన్ ఇన్ చేయండి.</translation>
         </message>
     </context>
     <context>
@@ -2969,10 +2953,6 @@
             <translation>SquadSpeak హెడ్లెస్ స్థానిక ఛానల్ హోస్ట్</translation>
         </message>
         <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>సెట్టింగ్ల ప్రాధాన్యత: ఆర్గ్యుమెంట్లు &gt; పర్యావరణం &gt; లక్షణాలు &gt; సేవ్ చేసిన సర్వర్ విలువలు.</translation>
-        </message>
-        <message>
             <source>Environment variables (SQUADSPEAK_ prefix):</source>
             <translation>పర్యావరణ వేరియబుల్స్ (SQUADSPEAK_ ఉపసర్గ):</translation>
         </message>
@@ -3027,26 +3007,6 @@
         <message>
             <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
             <translation>status, configure, password, admission, history, chat మరియు radio కమాండ్లకు ఐచ్ఛిక స్వంత ఛానల్ ID; డిఫాల్ట్గా ప్రాథమిక ఛానల్.</translation>
-        </message>
-        <message>
-            <source>License action must be status, activate, refresh, deactivate or reset.</source>
-            <translation>లైసెన్స్ చర్య status, activate, refresh, deactivate లేదా reset కావాలి.</translation>
-        </message>
-        <message>
-            <source>A license operation is in progress.</source>
-            <translation>లైసెన్స్ ఆపరేషన్ జరుగుతోంది.</translation>
-        </message>
-        <message>
-            <source>Supporter activation is unavailable in this build.</source>
-            <translation>ఈ బిల్డ్లో Supporter యాక్టివేషన్ అందుబాటులో లేదు.</translation>
-        </message>
-        <message>
-            <source>A license key is required.</source>
-            <translation>లైసెన్స్ కీ అవసరం.</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot. Set confirmed=true to proceed.</source>
-            <translation>సపోర్ట్ పరికర స్లాట్ను విడుదల చేసిన తర్వాత మాత్రమే రీసెట్ చేయండి. కొనసాగేందుకు confirmed=true సెట్ చేయండి.</translation>
         </message>
         <message>
             <source>Channel action must be list, add or remove.</source>
@@ -3227,6 +3187,22 @@
         <message>
             <source>SquadSpeak headless could not start: %1</source>
             <translation>SquadSpeak హెడ్లెస్ హోస్ట్ను ప్రారంభించలేకపోయాము: %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>మద్దతుదారు చర్య తప్పనిసరిగా స్థితి, సైన్-ఇన్, రిఫ్రెష్, సైన్ అవుట్ లేదా రద్దు చేయాలి. status sign-in refresh sign-out cancel</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>సపోర్టర్ ఆపరేషన్ ప్రోగ్రెస్‌లో ఉంది.</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>ఈ బిల్డ్‌లో సపోర్టర్ యాక్సెస్ అందుబాటులో లేదు.</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>సెట్టింగ్‌ల ప్రాధాన్యత: వాదనలు &gt; పర్యావరణం &gt; లక్షణాలు &gt; సేవ్ చేయబడిన సర్వర్ విలువలు.</translation>
         </message>
     </context>
     <context>

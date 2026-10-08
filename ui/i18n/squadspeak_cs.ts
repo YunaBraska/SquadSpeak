@@ -1093,48 +1093,16 @@
             <translation>ID zařízení</translation>
         </message>
         <message>
-            <source>Activate</source>
-            <translation>Aktivovat</translation>
-        </message>
-        <message>
-            <source>Buy annual pass</source>
-            <translation>Koupit roční předplatné</translation>
-        </message>
-        <message>
             <source>Check now</source>
             <translation>Zkontrolovat nyní</translation>
-        </message>
-        <message>
-            <source>Deactivate</source>
-            <translation>Deaktivovat</translation>
         </message>
         <message>
             <source>Free version</source>
             <translation>Bezplatná verze</translation>
         </message>
         <message>
-            <source>License key</source>
-            <translation>Licenční klíč</translation>
-        </message>
-        <message>
             <source>Not available yet</source>
             <translation>Zatím nedostupné</translation>
-        </message>
-        <message>
-            <source>Reset</source>
-            <translation>Obnovit</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot.</source>
-            <translation>Resetujte zařízení až poté, co to umožní podpora.</translation>
-        </message>
-        <message>
-            <source>Resolve activation</source>
-            <translation>Vyřešit aktivaci</translation>
-        </message>
-        <message>
-            <source>Support reference</source>
-            <translation>Odkaz na podporu</translation>
         </message>
         <message>
             <source>Supporter</source>
@@ -1200,7 +1168,31 @@
             <source>App audio</source>
             <translation>Zvuk aplikace</translation>
         </message>
-</context>
+        <message>
+            <source>Account: %1</source>
+            <translation>Účet: %1</translation>
+        </message>
+        <message>
+            <source>Signed in as %1</source>
+            <translation>Jste přihlášeni jako %1</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub</source>
+            <translation>Přihlaste se pomocí GitHubu</translation>
+        </message>
+        <message>
+            <source>Verification code</source>
+            <translation>Ověřovací kód</translation>
+        </message>
+        <message>
+            <source>Open GitHub</source>
+            <translation>Otevřete GitHub</translation>
+        </message>
+        <message>
+            <source>Sign out</source>
+            <translation>Odhlaste se</translation>
+        </message>
+    </context>
     <context>
         <name>ChatContent</name>
         <message>
@@ -2613,40 +2605,32 @@
     <context>
         <name>License</name>
         <message>
-            <source>Activation was declined. Check your key and available device slots.</source>
-            <translation>Aktivace byla zamítnuta. Zkontrolujte váš licenční klíč a dostupný počet slotů pro zařízení.</translation>
-        </message>
-        <message>
-            <source>An activation is unresolved. Contact support before trying again.</source>
-            <translation>Aktivace nebyla dokončena. Kontaktujte podporu, než znovu zkusíte.</translation>
-        </message>
-        <message>
-            <source>Deactivation was declined. Contact support.</source>
-            <translation>Deaktivace byla zamítnuta. Kontaktujte podporu.</translation>
-        </message>
-        <message>
-            <source>Enter a valid license key.</source>
-            <translation>Zadejte platný licenční klíč.</translation>
-        </message>
-        <message>
             <source>License storage is busy or unavailable.</source>
-            <translation>Úložiště licence je obsazené nebo nedostupné.</translation>
+            <translation>Úložiště licencí je zaneprázdněné nebo nedostupné.</translation>
         </message>
         <message>
             <source>License storage is unavailable.</source>
-            <translation>Úložiště licence je nedostupné.</translation>
+            <translation>Licenční úložiště není k dispozici.</translation>
         </message>
         <message>
-            <source>The license could not be checked. Your confirmed expiry is unchanged.</source>
-            <translation>Nelze ověřit licenci. Vaše potvrzená doba platnosti se nezměnila.</translation>
+            <source>Sign-in expired. Try again.</source>
+            <translation>Platnost přihlášení vypršela. Zkuste to znovu.</translation>
         </message>
         <message>
-            <source>The license or device activation is no longer valid.</source>
-            <translation>Licence nebo aktivace zařízení již nejsou platné.</translation>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>Přihlášení na GitHub není k dispozici. Zkuste to znovu.</translation>
         </message>
         <message>
-            <source>The license response does not match this annual pass.</source>
-            <translation>Odpověď licence neodpovídá této roční licenci.</translation>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>Přihlášení na GitHub nebylo dokončeno. Zkuste to znovu.</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>GitHub se nepodařilo zkontrolovat. Offline přístup trvá maximálně sedm dní.</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>Znovu se přihlaste pomocí GitHubu.</translation>
         </message>
     </context>
     <context>
@@ -2969,10 +2953,6 @@
             <translation>Místní hostitel kanálů SquadSpeak bez grafického rozhraní</translation>
         </message>
         <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>Priorita nastavení: argumenty &gt; prostředí &gt; vlastnosti &gt; uložené hodnoty serveru.</translation>
-        </message>
-        <message>
             <source>Environment variables (SQUADSPEAK_ prefix):</source>
             <translation>Proměnné prostředí (předpona SQUADSPEAK_):</translation>
         </message>
@@ -3027,26 +3007,6 @@
         <message>
             <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
             <translation>Volitelné ID vlastního kanálu pro příkazy status, configure, password, admission, history, chat a radio; výchozí je hlavní kanál.</translation>
-        </message>
-        <message>
-            <source>License action must be status, activate, refresh, deactivate or reset.</source>
-            <translation>Akce licence musí být status, activate, refresh, deactivate nebo reset.</translation>
-        </message>
-        <message>
-            <source>A license operation is in progress.</source>
-            <translation>Probíhá operace s licencí.</translation>
-        </message>
-        <message>
-            <source>Supporter activation is unavailable in this build.</source>
-            <translation>V tomto sestavení není aktivace Supporter dostupná.</translation>
-        </message>
-        <message>
-            <source>A license key is required.</source>
-            <translation>Je vyžadován licenční klíč.</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot. Set confirmed=true to proceed.</source>
-            <translation>Obnovení proveďte až po uvolnění místa zařízení podporou. Pro pokračování nastavte confirmed=true.</translation>
         </message>
         <message>
             <source>Channel action must be list, add or remove.</source>
@@ -3227,6 +3187,22 @@
         <message>
             <source>SquadSpeak headless could not start: %1</source>
             <translation>SquadSpeak bez rozhraní nelze spustit: %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>Akce podporovatele musí být stav, přihlášení, obnovení, odhlášení nebo zrušení. status sign-in refresh sign-out cancel</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>Probíhá operace Supporter.</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>V tomto sestavení není přístup pro podporovatele k dispozici.</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>Priorita nastavení: argumenty &gt; prostředí &gt; vlastnosti &gt; uložené hodnoty serveru.</translation>
         </message>
     </context>
     <context>

@@ -257,7 +257,7 @@
         </message>
         <message>
             <source>App audio only</source>
-            <translation>Només l&#x27;àudio de l&#x27;aplicació</translation>
+            <translation>Només l'àudio de l'aplicació</translation>
         </message>
     </context>
     <context>
@@ -1093,48 +1093,16 @@
             <translation>ID del dispositiu</translation>
         </message>
         <message>
-            <source>Activate</source>
-            <translation>activar</translation>
-        </message>
-        <message>
-            <source>Buy annual pass</source>
-            <translation>Compra l'abonament anual</translation>
-        </message>
-        <message>
             <source>Check now</source>
             <translation>Comproveu ara</translation>
-        </message>
-        <message>
-            <source>Deactivate</source>
-            <translation>Desactivar</translation>
         </message>
         <message>
             <source>Free version</source>
             <translation>versió gratuïta</translation>
         </message>
         <message>
-            <source>License key</source>
-            <translation>clau de llicència</translation>
-        </message>
-        <message>
             <source>Not available yet</source>
             <translation>encara no disponible</translation>
-        </message>
-        <message>
-            <source>Reset</source>
-            <translation>Restableix</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot.</source>
-            <translation>restableix només després que el suport hagi alliberat la ranura del dispositiu.</translation>
-        </message>
-        <message>
-            <source>Resolve activation</source>
-            <translation>Resol l'activació</translation>
-        </message>
-        <message>
-            <source>Support reference</source>
-            <translation>Referència de suport</translation>
         </message>
         <message>
             <source>Supporter</source>
@@ -1194,13 +1162,37 @@
         </message>
         <message>
             <source>Computer audio</source>
-            <translation>Àudio de l&#x27;ordinador</translation>
+            <translation>Àudio de l'ordinador</translation>
         </message>
         <message>
             <source>App audio</source>
-            <translation>Àudio de l&#x27;aplicació</translation>
+            <translation>Àudio de l'aplicació</translation>
         </message>
-</context>
+        <message>
+            <source>Account: %1</source>
+            <translation>Compte: %1</translation>
+        </message>
+        <message>
+            <source>Signed in as %1</source>
+            <translation>S'ha iniciat la sessió com a %1</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub</source>
+            <translation>Inicieu la sessió amb GitHub</translation>
+        </message>
+        <message>
+            <source>Verification code</source>
+            <translation>Codi de verificació</translation>
+        </message>
+        <message>
+            <source>Open GitHub</source>
+            <translation>Obriu GitHub</translation>
+        </message>
+        <message>
+            <source>Sign out</source>
+            <translation>Tanca la sessió</translation>
+        </message>
+    </context>
     <context>
         <name>ChatContent</name>
         <message>
@@ -2613,22 +2605,6 @@
     <context>
         <name>License</name>
         <message>
-            <source>Activation was declined. Check your key and available device slots.</source>
-            <translation>S'ha rebutjat l'activació. Comprova la clau i els espais de dispositiu disponibles.</translation>
-        </message>
-        <message>
-            <source>An activation is unresolved. Contact support before trying again.</source>
-            <translation>No s'ha resolt una activació. Contacta amb l'assistència abans de tornar-ho a provar.</translation>
-        </message>
-        <message>
-            <source>Deactivation was declined. Contact support.</source>
-            <translation>S'ha rebutjat la desactivació. Contacta amb l'assistència.</translation>
-        </message>
-        <message>
-            <source>Enter a valid license key.</source>
-            <translation>introduïu una clau de llicència vàlida.</translation>
-        </message>
-        <message>
             <source>License storage is busy or unavailable.</source>
             <translation>L'emmagatzematge de llicències està ocupat o no disponible.</translation>
         </message>
@@ -2637,16 +2613,24 @@
             <translation>L'emmagatzematge de llicències no està disponible.</translation>
         </message>
         <message>
-            <source>The license could not be checked. Your confirmed expiry is unchanged.</source>
-            <translation>No s'ha pogut comprovar la llicència. La vostra caducitat confirmada no ha canviat.</translation>
+            <source>Sign-in expired. Try again.</source>
+            <translation>L'inici de sessió ha caducat. Torna-ho a provar.</translation>
         </message>
         <message>
-            <source>The license or device activation is no longer valid.</source>
-            <translation>La llicència o l'activació del dispositiu ja no és vàlida.</translation>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>L'inici de sessió a GitHub no està disponible. Torna-ho a provar.</translation>
         </message>
         <message>
-            <source>The license response does not match this annual pass.</source>
-            <translation>La resposta de la llicència no coincideix amb aquest passi anual.</translation>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>L'inici de sessió a GitHub no s'ha completat. Torna-ho a provar.</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>No s'ha pogut comprovar GitHub. L'accés fora de línia dura com a màxim set dies.</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>Torna a iniciar la sessió amb GitHub.</translation>
         </message>
     </context>
     <context>
@@ -2969,10 +2953,6 @@
             <translation>Amfitrió local de canals SquadSpeak sense interfície</translation>
         </message>
         <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>Prioritat de configuració: arguments &gt; entorn &gt; propietats &gt; valors desats del servidor.</translation>
-        </message>
-        <message>
             <source>Environment variables (SQUADSPEAK_ prefix):</source>
             <translation>Variables d'entorn (prefix SQUADSPEAK_):</translation>
         </message>
@@ -3027,26 +3007,6 @@
         <message>
             <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
             <translation>ID opcional d'un canal propi per a les ordres status, configure, password, admission, history, chat i radio; per defecte s'utilitza el canal principal.</translation>
-        </message>
-        <message>
-            <source>License action must be status, activate, refresh, deactivate or reset.</source>
-            <translation>L'acció de llicència ha de ser status, activate, refresh, deactivate o reset.</translation>
-        </message>
-        <message>
-            <source>A license operation is in progress.</source>
-            <translation>Hi ha una operació de llicència en curs.</translation>
-        </message>
-        <message>
-            <source>Supporter activation is unavailable in this build.</source>
-            <translation>L'activació de Supporter no està disponible en aquesta compilació.</translation>
-        </message>
-        <message>
-            <source>A license key is required.</source>
-            <translation>Cal una clau de llicència.</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot. Set confirmed=true to proceed.</source>
-            <translation>Restableix només després que suport hagi alliberat la plaça del dispositiu. Estableix confirmed=true per continuar.</translation>
         </message>
         <message>
             <source>Channel action must be list, add or remove.</source>
@@ -3227,6 +3187,22 @@
         <message>
             <source>SquadSpeak headless could not start: %1</source>
             <translation>No s'ha pogut iniciar SquadSpeak sense interfície: %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>L'acció del suport ha de ser estat, inici de sessió, actualització, tancament o cancel·lació. status sign-in refresh sign-out</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>Hi ha una operació de suport en curs.</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>L'accés dels seguidors no està disponible en aquesta compilació.</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>Precedència de la configuració: arguments &gt; entorn &gt; propietats &gt; valors del servidor desats.</translation>
         </message>
     </context>
     <context>

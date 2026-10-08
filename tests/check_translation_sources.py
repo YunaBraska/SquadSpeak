@@ -46,7 +46,7 @@ def main():
                     tokens = re.findall(r"--[a-z]+(?:-[a-z]+)*|SQUADSPEAK_[A-Z_]*|(?:config/)?application\.properties|key=value|confirmed=true|\b(?:passwordFile|settingsFile|identityFile|channelId)\b", source)
                     for prefix, names in {
                         "Optional own channel ID": "status configure password admission history chat radio",
-                        "License action must": "status activate refresh deactivate reset",
+                        "Supporter action must": "status sign-in refresh sign-out cancel",
                         "Channel action must": "list add remove",
                         "search requires": "search query offset limit",
                         "add creates": "add id update",

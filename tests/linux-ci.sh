@@ -66,9 +66,7 @@ case "$mode" in
     release) set -- -DCMAKE_BUILD_TYPE=Release "$@" ;;
     store)
         set -- -DCMAKE_BUILD_TYPE=Release -DSQUADSPEAK_STORE_BUILD=ON \
-            -DSQUADSPEAK_LICENSE_STORE_ID=10 -DSQUADSPEAK_LICENSE_PRODUCT_ID=20 \
-            -DSQUADSPEAK_LICENSE_VARIANT_ID=30 \
-            -DSQUADSPEAK_PURCHASE_URL=https://example.lemonsqueezy.com/checkout/buy/example "$@"
+            -DSQUADSPEAK_GITHUB_CLIENT_ID=fixture_client "$@"
         ;;
     sanitizers)
         # GCC rejects valid constexpr function-pointer comparisons in Abseil

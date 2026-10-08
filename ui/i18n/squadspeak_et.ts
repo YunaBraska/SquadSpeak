@@ -1093,48 +1093,16 @@
             <translation>Seadme ID</translation>
         </message>
         <message>
-            <source>Activate</source>
-            <translation>Aktiveerida</translation>
-        </message>
-        <message>
-            <source>Buy annual pass</source>
-            <translation>Osta aastaliis</translation>
-        </message>
-        <message>
             <source>Check now</source>
             <translation>Kontrolli kohe</translation>
-        </message>
-        <message>
-            <source>Deactivate</source>
-            <translation>Deaktiveerida</translation>
         </message>
         <message>
             <source>Free version</source>
             <translation>Tasuta versioon</translation>
         </message>
         <message>
-            <source>License key</source>
-            <translation>Litsentsivõti</translation>
-        </message>
-        <message>
             <source>Not available yet</source>
             <translation>Praegu pole saadaval</translation>
-        </message>
-        <message>
-            <source>Reset</source>
-            <translation>Reset</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot.</source>
-            <translation>Resetida alles pärast seda, kui tugitiim on seadme kohta andnud loa.</translation>
-        </message>
-        <message>
-            <source>Resolve activation</source>
-            <translation>Aktiveerimine lahendatud</translation>
-        </message>
-        <message>
-            <source>Support reference</source>
-            <translation>Tugitiimi viide</translation>
         </message>
         <message>
             <source>Supporter</source>
@@ -1200,7 +1168,31 @@
             <source>App audio</source>
             <translation>Rakenduse heli</translation>
         </message>
-</context>
+        <message>
+            <source>Account: %1</source>
+            <translation>Konto: %1</translation>
+        </message>
+        <message>
+            <source>Signed in as %1</source>
+            <translation>Sisse logitud kui %1</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub</source>
+            <translation>Logige sisse GitHubiga</translation>
+        </message>
+        <message>
+            <source>Verification code</source>
+            <translation>Kinnituskood</translation>
+        </message>
+        <message>
+            <source>Open GitHub</source>
+            <translation>Avage GitHub</translation>
+        </message>
+        <message>
+            <source>Sign out</source>
+            <translation>Logi välja</translation>
+        </message>
+    </context>
     <context>
         <name>ChatContent</name>
         <message>
@@ -2613,22 +2605,6 @@
     <context>
         <name>License</name>
         <message>
-            <source>Activation was declined. Check your key and available device slots.</source>
-            <translation>Aktiveerimisest keelduti. Kontrollige võtit ja saadaolevaid seadmekohti.</translation>
-        </message>
-        <message>
-            <source>An activation is unresolved. Contact support before trying again.</source>
-            <translation>Aktiveerimine on lahendamata. Palun võtke ühendust tugiteenusega enne ukatset.</translation>
-        </message>
-        <message>
-            <source>Deactivation was declined. Contact support.</source>
-            <translation>Deaktiveerimine jäi ellu mittetoimuvaks. Palun võtke ühendust tugiteenusega.</translation>
-        </message>
-        <message>
-            <source>Enter a valid license key.</source>
-            <translation>Sisestage kehtiv litsentsivõti.</translation>
-        </message>
-        <message>
             <source>License storage is busy or unavailable.</source>
             <translation>Litsentsi salvestusruum on hõivatud või pole saadaval.</translation>
         </message>
@@ -2637,16 +2613,24 @@
             <translation>Litsentsi salvestusruum pole saadaval.</translation>
         </message>
         <message>
-            <source>The license could not be checked. Your confirmed expiry is unchanged.</source>
-            <translation>Litsentsi kontrollimine ebaõnnestus. Teie kehtivuse lõppuaeg ei ole muutunud.</translation>
+            <source>Sign-in expired. Try again.</source>
+            <translation>Sisselogimine aegus. Proovi uuesti.</translation>
         </message>
         <message>
-            <source>The license or device activation is no longer valid.</source>
-            <translation>Litsents või seadme aktiveering ei kehti enam.</translation>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>GitHubi sisselogimine pole saadaval. Proovi uuesti.</translation>
         </message>
         <message>
-            <source>The license response does not match this annual pass.</source>
-            <translation>Litsentsi vastus ei sobi selle aastapassi jaoks.</translation>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>GitHubi sisselogimine ei lõpetatud. Proovi uuesti.</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>GitHubi ei saanud kontrollida. Võrguühenduseta juurdepääs kestab kuni seitse päeva.</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>Logige uuesti GitHubiga sisse.</translation>
         </message>
     </context>
     <context>
@@ -2969,10 +2953,6 @@
             <translation>SquadSpeaki kohalik kanalihost ilma graafilise liideseta</translation>
         </message>
         <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>Seadete prioriteet: argumendid &gt; keskkond &gt; atribuudid &gt; salvestatud serveriseaded.</translation>
-        </message>
-        <message>
             <source>Environment variables (SQUADSPEAK_ prefix):</source>
             <translation>Keskkonnamuutujad (SQUADSPEAK_ prefiks):</translation>
         </message>
@@ -3027,26 +3007,6 @@
         <message>
             <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
             <translation>Valikuline oma kanali ID käskude status, configure, password, admission, history, chat ja radio jaoks; vaikimisi põhikanal.</translation>
-        </message>
-        <message>
-            <source>License action must be status, activate, refresh, deactivate or reset.</source>
-            <translation>Litsentsitoiming peab olema status, activate, refresh, deactivate või reset.</translation>
-        </message>
-        <message>
-            <source>A license operation is in progress.</source>
-            <translation>Litsentsitoiming on pooleli.</translation>
-        </message>
-        <message>
-            <source>Supporter activation is unavailable in this build.</source>
-            <translation>Supporteri aktiveerimine pole selles järgus saadaval.</translation>
-        </message>
-        <message>
-            <source>A license key is required.</source>
-            <translation>Vajalik on litsentsivõti.</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot. Set confirmed=true to proceed.</source>
-            <translation>Lähtesta alles pärast seda, kui tugi on seadme pesa vabastanud. Jätkamiseks määra confirmed=true.</translation>
         </message>
         <message>
             <source>Channel action must be list, add or remove.</source>
@@ -3227,6 +3187,22 @@
         <message>
             <source>SquadSpeak headless could not start: %1</source>
             <translation>SquadSpeaki ei saanud graafilise liideseta käivitada: %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>Toetaja tegevus peab olema olek, sisselogimine, värskendamine, väljalogimine või tühistamine. status sign-in refresh sign-out cancel</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>Toetajaoperatsioon on pooleli.</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>Toetaja juurdepääs pole selles järgus saadaval.</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>Seadete prioriteetsus: argumendid &gt; keskkond &gt; atribuudid &gt; salvestatud serveri väärtused.</translation>
         </message>
     </context>
     <context>

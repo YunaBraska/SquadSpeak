@@ -614,24 +614,43 @@ PanelWindow {
                                 Layout.fillWidth: true; wrapMode: Text.Wrap; color: Theme.muted
                                 text: !root.supporter || !root.supporter.configured ? qsTr("Not available yet")
                                     : root.supporter.active ? qsTr("Valid until %1").arg(Qt.formatDate(root.supporter.expiresAt, Qt.DefaultLocaleShortDate))
+                                    : root.supporter.account.length > 0 ? qsTr("Signed in as %1").arg(root.supporter.account)
                                     : qsTr("Free version")
                             }
-                            RowLayout {
-                                visible: root.supporter !== null && root.supporter.configured
+                            DetailText {
+                                objectName: "supporterAccount"
+                                visible: root.supporter !== null && root.supporter.account.length > 0
+                                text: qsTr("Account: %1").arg(root.supporter.account)
+                                color: Theme.muted; Layout.fillWidth: true; wrapMode: TextEdit.Wrap
+                            }
+                            ActionButton {
+                                objectName: "signInGithub"
+                                visible: root.supporter !== null && root.supporter.configured && root.supporter.account.length === 0 && !root.supporter.pending
+                                enabled: !root.supporter.busy
+                                text: qsTr("Sign in with GitHub")
                                 Layout.fillWidth: true
-                                EntryField { id: licenseKey; objectName: "licenseKey"; Layout.fillWidth: true; placeholderText: qsTr("License key"); Accessible.name: placeholderText; echoMode: TextInput.Password; maximumLength: 256; enabled: !root.supporter.busy && !root.supporter.pending }
-                                ActionButton { objectName: "activateLicense"; text: qsTr("Activate"); enabled: licenseKey.enabled && licenseKey.text.trim().length > 0; onClicked: { root.supporter.activate(licenseKey.text); licenseKey.clear() } }
+                                onClicked: root.supporter.signIn()
+                            }
+                            ColumnLayout {
+                                visible: root.supporter !== null && root.supporter.pending
+                                Layout.fillWidth: true; spacing: 6
+                                Label { text: qsTr("Verification code"); visible: root.supporter.userCode.length > 0; color: Theme.muted }
+                                DetailText { objectName: "githubUserCode"; text: root.supporter.userCode; visible: text.length > 0; Accessible.name: qsTr("Verification code"); selectByMouse: true; wrapMode: TextEdit.NoWrap }
+                                Label { text: root.supporter.status; visible: root.supporter.userCode.length === 0 && text.length > 0; color: Theme.muted; wrapMode: Text.Wrap }
+                                RowLayout {
+                                    Layout.fillWidth: true
+                                    ActionButton { objectName: "openGithubVerification"; text: qsTr("Open GitHub"); enabled: root.supporter.verificationUrl.toString().length > 0; onClicked: Qt.openUrlExternally(root.supporter.verificationUrl) }
+                                    ActionButton { objectName: "cancelGithubSignIn"; text: qsTr("Cancel"); onClicked: root.supporter.cancelSignIn() }
+                                }
                             }
                             GridLayout {
                                 visible: root.supporter !== null && root.supporter.configured
                                 Layout.fillWidth: true; columns: 2
-                                ActionButton { objectName: "buyLicense"; Layout.columnSpan: 2; Layout.fillWidth: true; text: qsTr("Buy annual pass"); visible: root.supporter !== null && root.supporter.purchaseUrl.toString().length > 0; onClicked: Qt.openUrlExternally(root.supporter.purchaseUrl) }
-                                ActionButton { objectName: "checkLicense"; Layout.fillWidth: true; text: qsTr("Check now"); enabled: root.supporter !== null && !root.supporter.busy; onClicked: root.supporter.refresh() }
-                                ActionButton { objectName: "deactivateLicense"; Layout.fillWidth: true; text: qsTr("Deactivate"); destructive: true; enabled: root.supporter !== null && !root.supporter.busy && root.supporter.supportReference.length > 0; onClicked: root.supporter.deactivate() }
+                                ActionButton { objectName: "supportLink"; Layout.columnSpan: 2; Layout.fillWidth: true; text: qsTr("Support development"); visible: root.supporter.purchaseUrl.toString().length > 0; onClicked: Qt.openUrlExternally(root.supporter.purchaseUrl) }
+                                ActionButton { objectName: "checkSupporter"; text: qsTr("Check now"); enabled: !root.supporter.busy; Layout.fillWidth: true; onClicked: root.supporter.refresh() }
+                                ActionButton { objectName: "signOutGithub"; visible: root.supporter.account.length > 0; text: qsTr("Sign out"); destructive: true; enabled: !root.supporter.busy; Layout.fillWidth: true; onClicked: root.supporter.signOut() }
                             }
-                            DetailText { objectName: "licenseSupportReference"; text: root.supporter ? root.supporter.supportReference : ""; visible: text.length > 0; Accessible.name: qsTr("Support reference") }
                             Label { text: root.supporter ? root.supporter.status : ""; visible: text.length > 0; color: Theme.muted; wrapMode: Text.Wrap; Layout.fillWidth: true }
-                            ActionButton { text: qsTr("Resolve activation"); visible: root.supporter !== null && root.supporter.recoveryNeeded; enabled: !root.supporter || !root.supporter.busy; onClicked: resolveActivation.open() }
                             AvatarShelf {
                                 objectName: "supporterAvatarPreview"; preview: true
                                 visible: !root.voice.supporterEnabled
@@ -703,18 +722,6 @@ PanelWindow {
                         OptionCheck { objectName: "animatedAvatars"; text: qsTr("Animate portraits"); checked: root.voice.animatedAvatars; onClicked: { root.voice.setAnimatedAvatars(checked); checked = Qt.binding(function() { return root.voice.animatedAvatars }) } }
                     }
                 }
-            }
-        }
-    }
-    PanelDialog {
-        id: resolveActivation
-        parent: Overlay.overlay; anchors.centerIn: parent; width: Math.min(360, parent.width - 32); modal: true
-        title: qsTr("Resolve activation")
-        contentItem: ColumnLayout {
-            Label { text: qsTr("Reset only after support has released the device slot."); wrapMode: Text.Wrap; Layout.fillWidth: true }
-            RowLayout {
-                ActionButton { text: qsTr("Cancel"); onClicked: resolveActivation.close() }
-                ActionButton { text: qsTr("Reset"); destructive: true; onClicked: { root.supporter.resetActivation(); resolveActivation.close() } }
             }
         }
     }

@@ -1093,48 +1093,16 @@
             <translation>ИД уређаја</translation>
         </message>
         <message>
-            <source>Activate</source>
-            <translation>Активирајте</translation>
-        </message>
-        <message>
-            <source>Buy annual pass</source>
-            <translation>Купите годишњу карту</translation>
-        </message>
-        <message>
             <source>Check now</source>
             <translation>Проверите сада</translation>
-        </message>
-        <message>
-            <source>Deactivate</source>
-            <translation>Деактивирај</translation>
         </message>
         <message>
             <source>Free version</source>
             <translation>Бесплатна верзија</translation>
         </message>
         <message>
-            <source>License key</source>
-            <translation>кључ лиценце</translation>
-        </message>
-        <message>
             <source>Not available yet</source>
             <translation>Још није доступно</translation>
-        </message>
-        <message>
-            <source>Reset</source>
-            <translation>Ресетовање</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot.</source>
-            <translation>Ресетујте само након што подршка ослободи слот уређаја.</translation>
-        </message>
-        <message>
-            <source>Resolve activation</source>
-            <translation>Реши активацију</translation>
-        </message>
-        <message>
-            <source>Support reference</source>
-            <translation>Референца за подршку</translation>
         </message>
         <message>
             <source>Supporter</source>
@@ -1200,7 +1168,31 @@
             <source>App audio</source>
             <translation>Звук апликације</translation>
         </message>
-</context>
+        <message>
+            <source>Account: %1</source>
+            <translation>Налог: %1</translation>
+        </message>
+        <message>
+            <source>Signed in as %1</source>
+            <translation>Пријављен као %1</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub</source>
+            <translation>Пријавите се са ГитХуб-ом</translation>
+        </message>
+        <message>
+            <source>Verification code</source>
+            <translation>Верификациони код</translation>
+        </message>
+        <message>
+            <source>Open GitHub</source>
+            <translation>Отворите ГитХуб</translation>
+        </message>
+        <message>
+            <source>Sign out</source>
+            <translation>Одјави се</translation>
+        </message>
+    </context>
     <context>
         <name>ChatContent</name>
         <message>
@@ -2613,40 +2605,32 @@
     <context>
         <name>License</name>
         <message>
-            <source>Activation was declined. Check your key and available device slots.</source>
-            <translation>Активација је одбијена. Проверите свој кључ и доступне уторе за уређаје.</translation>
-        </message>
-        <message>
-            <source>An activation is unresolved. Contact support before trying again.</source>
-            <translation>Активација није решена. Контактирајте подршку пре него што покушате поново.</translation>
-        </message>
-        <message>
-            <source>Deactivation was declined. Contact support.</source>
-            <translation>Деактивација је одбијена. Контактирајте подршку.</translation>
-        </message>
-        <message>
-            <source>Enter a valid license key.</source>
-            <translation>Унесите важећи лиценцни кључ.</translation>
-        </message>
-        <message>
             <source>License storage is busy or unavailable.</source>
-            <translation>Складиште лиценце је заузето или недоступно.</translation>
+            <translation>Складиште лиценци је заузето или недоступно.</translation>
         </message>
         <message>
             <source>License storage is unavailable.</source>
             <translation>Складиштење лиценце није доступно.</translation>
         </message>
         <message>
-            <source>The license could not be checked. Your confirmed expiry is unchanged.</source>
-            <translation>Лиценца није могла да се провери. Ваш потврђени рок је непромењен.</translation>
+            <source>Sign-in expired. Try again.</source>
+            <translation>Пријава је истекла. Покушајте поново.</translation>
         </message>
         <message>
-            <source>The license or device activation is no longer valid.</source>
-            <translation>Лиценца или активација уређаја више није важећа.</translation>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>Пријављивање на ГитХуб није доступно. Покушајте поново.</translation>
         </message>
         <message>
-            <source>The license response does not match this annual pass.</source>
-            <translation>Одговор лиценце не одговара овој годишњој пропусници.</translation>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>Пријављивање на ГитХуб није завршено. Покушајте поново.</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>ГитХуб није могао да се провери. Офлајн приступ траје највише седам дана.</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>Поново се пријавите са ГитХуб-ом.</translation>
         </message>
     </context>
     <context>
@@ -2969,10 +2953,6 @@
             <translation>SquadSpeak хост локалног канала без графичког интерфејса</translation>
         </message>
         <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>Приоритет поставки: аргументи &gt; окружење &gt; својства &gt; сачуване вредности сервера.</translation>
-        </message>
-        <message>
             <source>Environment variables (SQUADSPEAK_ prefix):</source>
             <translation>Променљиве окружења (префикс SQUADSPEAK_):</translation>
         </message>
@@ -3027,26 +3007,6 @@
         <message>
             <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
             <translation>Опциони ID сопственог канала за наредбе status, configure, password, admission, history, chat и radio; подразумевано је главни канал.</translation>
-        </message>
-        <message>
-            <source>License action must be status, activate, refresh, deactivate or reset.</source>
-            <translation>Радња лиценце мора бити status, activate, refresh, deactivate или reset.</translation>
-        </message>
-        <message>
-            <source>A license operation is in progress.</source>
-            <translation>Радња са лиценцом је у току.</translation>
-        </message>
-        <message>
-            <source>Supporter activation is unavailable in this build.</source>
-            <translation>Активација Supporter пакета није доступна у овој верзији.</translation>
-        </message>
-        <message>
-            <source>A license key is required.</source>
-            <translation>Потребан је лиценцни кључ.</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot. Set confirmed=true to proceed.</source>
-            <translation>Ресетуј тек пошто подршка ослободи место за уређај. За наставак постави confirmed=true.</translation>
         </message>
         <message>
             <source>Channel action must be list, add or remove.</source>
@@ -3227,6 +3187,22 @@
         <message>
             <source>SquadSpeak headless could not start: %1</source>
             <translation>SquadSpeak без графичког интерфејса не може да се покрене: %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>Радња подржаваоца мора бити статус, пријављивање, освежавање, одјава или отказивање. status sign-in refresh sign-out cancel</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>Операција подршке је у току.</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>Приступ за подршку није доступан у овој верзији.</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>Приоритет подешавања: аргументи &gt; окружење &gt; својства &gt; сачуване вредности сервера.</translation>
         </message>
     </context>
     <context>

@@ -1093,48 +1093,16 @@
             <translation>Kitambulisho cha kifaa</translation>
         </message>
         <message>
-            <source>Activate</source>
-            <translation>Washa</translation>
-        </message>
-        <message>
-            <source>Buy annual pass</source>
-            <translation>Nunua uanachishaji wa mwaka</translation>
-        </message>
-        <message>
             <source>Check now</source>
             <translation>Angalia sasa</translation>
-        </message>
-        <message>
-            <source>Deactivate</source>
-            <translation>Zima</translation>
         </message>
         <message>
             <source>Free version</source>
             <translation>Toleo bure</translation>
         </message>
         <message>
-            <source>License key</source>
-            <translation>Ufunguo wa leseni</translation>
-        </message>
-        <message>
             <source>Not available yet</source>
             <translation>Hapo baadaye itapatikana</translation>
-        </message>
-        <message>
-            <source>Reset</source>
-            <translation>Reset</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot.</source>
-            <translation>Angalia upya tu baada ya timu ya usaidizi kuruhusu nafasi ya kifaa.</translation>
-        </message>
-        <message>
-            <source>Resolve activation</source>
-            <translation>Sulama uanzishwaji</translation>
-        </message>
-        <message>
-            <source>Support reference</source>
-            <translation>Marejeo kwa timu ya usaidizi</translation>
         </message>
         <message>
             <source>Supporter</source>
@@ -1200,7 +1168,31 @@
             <source>App audio</source>
             <translation>Sauti ya programu</translation>
         </message>
-</context>
+        <message>
+            <source>Account: %1</source>
+            <translation>Akaunti: %1</translation>
+        </message>
+        <message>
+            <source>Signed in as %1</source>
+            <translation>Umeingia kama %1</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub</source>
+            <translation>Ingia ukitumia GitHub</translation>
+        </message>
+        <message>
+            <source>Verification code</source>
+            <translation>Msimbo wa uthibitishaji</translation>
+        </message>
+        <message>
+            <source>Open GitHub</source>
+            <translation>Fungua GitHub</translation>
+        </message>
+        <message>
+            <source>Sign out</source>
+            <translation>Ondoka</translation>
+        </message>
+    </context>
     <context>
         <name>ChatContent</name>
         <message>
@@ -2613,40 +2605,32 @@
     <context>
         <name>License</name>
         <message>
-            <source>Activation was declined. Check your key and available device slots.</source>
-            <translation>Uamilishaji umekataliwa. Kagua ufunguo wako na nafasi za vifaa zinazopatikana.</translation>
-        </message>
-        <message>
-            <source>An activation is unresolved. Contact support before trying again.</source>
-            <translation>Uanzishaji bado haujakamilika. Wasiliana na timu ya usaidizi kabla ya kujaribu tena.</translation>
-        </message>
-        <message>
-            <source>Deactivation was declined. Contact support.</source>
-            <translation>Kufuta uanzishaji kumekataliwa. Wasiliana na timu ya usaidizi.</translation>
-        </message>
-        <message>
-            <source>Enter a valid license key.</source>
-            <translation>Tafadhali ingiza nambari ya leseni iliyo sahihi.</translation>
-        </message>
-        <message>
             <source>License storage is busy or unavailable.</source>
-            <translation>Hifadhi ya leseni haipatikani au inazidiwa.</translation>
+            <translation>Hifadhi ya leseni ina shughuli nyingi au haipatikani.</translation>
         </message>
         <message>
             <source>License storage is unavailable.</source>
             <translation>Hifadhi ya leseni haipatikani.</translation>
         </message>
         <message>
-            <source>The license could not be checked. Your confirmed expiry is unchanged.</source>
-            <translation>Haijalishi kama lesheni hiyo haikuweza kuthibitishwa. Tarehe ya mwisho iliyothibitishwa bado ni sawa.</translation>
+            <source>Sign-in expired. Try again.</source>
+            <translation>Muda wa kuingia umekwisha. Jaribu tena.</translation>
         </message>
         <message>
-            <source>The license or device activation is no longer valid.</source>
-            <translation>Leseni au uamilishaji wa kifaa si halali tena.</translation>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>Kuingia kwa GitHub hakupatikani. Jaribu tena.</translation>
         </message>
         <message>
-            <source>The license response does not match this annual pass.</source>
-            <translation>Jibu la leseni havikubaliani na ruhusu hii ya mwaka.</translation>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>Kuingia kwa GitHub hakukamilishwa. Jaribu tena.</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>GitHub haikuweza kuangaliwa. Ufikiaji wa nje ya mtandao huchukua angalau siku saba.</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>Ingia kwa GitHub tena.</translation>
         </message>
     </context>
     <context>
@@ -2969,10 +2953,6 @@
             <translation>Mwenyeji wa chaneli za ndani wa SquadSpeak bila kiolesura</translation>
         </message>
         <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>Kipaumbele cha mipangilio: hoja &gt; mazingira &gt; sifa &gt; thamani zilizohifadhiwa za seva.</translation>
-        </message>
-        <message>
             <source>Environment variables (SQUADSPEAK_ prefix):</source>
             <translation>Vigeu vya mazingira (kiambishi SQUADSPEAK_):</translation>
         </message>
@@ -3027,26 +3007,6 @@
         <message>
             <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
             <translation>ID ya hiari ya chaneli yako kwa amri za status, configure, password, admission, history, chat na radio; chaguomsingi ni chaneli kuu.</translation>
-        </message>
-        <message>
-            <source>License action must be status, activate, refresh, deactivate or reset.</source>
-            <translation>Kitendo cha leseni lazima kiwe status, activate, refresh, deactivate au reset.</translation>
-        </message>
-        <message>
-            <source>A license operation is in progress.</source>
-            <translation>Operesheni ya leseni inaendelea.</translation>
-        </message>
-        <message>
-            <source>Supporter activation is unavailable in this build.</source>
-            <translation>Uanzishaji wa Supporter haupatikani katika toleo hili.</translation>
-        </message>
-        <message>
-            <source>A license key is required.</source>
-            <translation>Ufunguo wa leseni unahitajika.</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot. Set confirmed=true to proceed.</source>
-            <translation>Weka upya tu baada ya usaidizi kuachilia nafasi ya kifaa. Weka confirmed=true ili kuendelea.</translation>
         </message>
         <message>
             <source>Channel action must be list, add or remove.</source>
@@ -3227,6 +3187,22 @@
         <message>
             <source>SquadSpeak headless could not start: %1</source>
             <translation>SquadSpeak isiyo na kiolesura haikuweza kuanza: %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>Kitendo cha mfuasi lazima kiwe hali, kuingia, kuonyesha upya, kuondoka au kughairi. status sign-in refresh sign-out cancel</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>Operesheni ya Msaidizi inaendelea.</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>Ufikiaji wa wasaidizi haupatikani katika muundo huu.</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>Utangulizi wa mipangilio: hoja &gt; mazingira &gt; sifa &gt; thamani za seva zilizohifadhiwa.</translation>
         </message>
     </context>
     <context>

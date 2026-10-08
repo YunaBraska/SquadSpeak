@@ -1093,48 +1093,16 @@
             <translation>ID thiết bị</translation>
         </message>
         <message>
-            <source>Activate</source>
-            <translation>Kích hoạt</translation>
-        </message>
-        <message>
-            <source>Buy annual pass</source>
-            <translation>Mua gói hằng năm</translation>
-        </message>
-        <message>
             <source>Check now</source>
             <translation>Kiểm tra ngay</translation>
-        </message>
-        <message>
-            <source>Deactivate</source>
-            <translation>Hủy kích hoạt</translation>
         </message>
         <message>
             <source>Free version</source>
             <translation>Phiên bản miễn phí</translation>
         </message>
         <message>
-            <source>License key</source>
-            <translation>Khóa giấy phép</translation>
-        </message>
-        <message>
             <source>Not available yet</source>
             <translation>Chưa khả dụng</translation>
-        </message>
-        <message>
-            <source>Reset</source>
-            <translation>Đặt lại</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot.</source>
-            <translation>Chỉ đặt lại sau khi bộ phận hỗ trợ đã giải phóng chỗ của thiết bị.</translation>
-        </message>
-        <message>
-            <source>Resolve activation</source>
-            <translation>Giải quyết kích hoạt</translation>
-        </message>
-        <message>
-            <source>Support reference</source>
-            <translation>Mã tham chiếu hỗ trợ</translation>
         </message>
         <message>
             <source>Supporter</source>
@@ -1200,7 +1168,31 @@
             <source>App audio</source>
             <translation>Âm thanh ứng dụng</translation>
         </message>
-</context>
+        <message>
+            <source>Account: %1</source>
+            <translation>Tài khoản: %1</translation>
+        </message>
+        <message>
+            <source>Signed in as %1</source>
+            <translation>Đã đăng nhập với tên %1</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub</source>
+            <translation>Đăng nhập bằng GitHub</translation>
+        </message>
+        <message>
+            <source>Verification code</source>
+            <translation>Mã xác minh</translation>
+        </message>
+        <message>
+            <source>Open GitHub</source>
+            <translation>Mở GitHub</translation>
+        </message>
+        <message>
+            <source>Sign out</source>
+            <translation>Đăng xuất</translation>
+        </message>
+    </context>
     <context>
         <name>ChatContent</name>
         <message>
@@ -2613,40 +2605,32 @@
     <context>
         <name>License</name>
         <message>
-            <source>Activation was declined. Check your key and available device slots.</source>
-            <translation>Kích hoạt bị từ chối. Kiểm tra khóa và số chỗ thiết bị còn trống.</translation>
-        </message>
-        <message>
-            <source>An activation is unresolved. Contact support before trying again.</source>
-            <translation>Có một lần kích hoạt chưa được giải quyết. Liên hệ hỗ trợ trước khi thử lại.</translation>
-        </message>
-        <message>
-            <source>Deactivation was declined. Contact support.</source>
-            <translation>Hủy kích hoạt bị từ chối. Liên hệ hỗ trợ.</translation>
-        </message>
-        <message>
-            <source>Enter a valid license key.</source>
-            <translation>Nhập khóa giấy phép hợp lệ.</translation>
-        </message>
-        <message>
             <source>License storage is busy or unavailable.</source>
-            <translation>Bộ nhớ giấy phép đang bận hoặc không khả dụng.</translation>
+            <translation>Bộ nhớ giấy phép đang bận hoặc không có sẵn.</translation>
         </message>
         <message>
             <source>License storage is unavailable.</source>
-            <translation>Bộ nhớ giấy phép không khả dụng.</translation>
+            <translation>Lưu trữ giấy phép không có sẵn.</translation>
         </message>
         <message>
-            <source>The license could not be checked. Your confirmed expiry is unchanged.</source>
-            <translation>Không thể kiểm tra giấy phép. Ngày hết hạn đã xác nhận không thay đổi.</translation>
+            <source>Sign-in expired. Try again.</source>
+            <translation>Đăng nhập đã hết hạn. Hãy thử lại.</translation>
         </message>
         <message>
-            <source>The license or device activation is no longer valid.</source>
-            <translation>Giấy phép hoặc kích hoạt thiết bị không còn hợp lệ.</translation>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>Đăng nhập GitHub không khả dụng. Hãy thử lại.</translation>
         </message>
         <message>
-            <source>The license response does not match this annual pass.</source>
-            <translation>Phản hồi giấy phép không khớp với gói hằng năm này.</translation>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>Đăng nhập GitHub chưa hoàn tất. Hãy thử lại.</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>GitHub không thể được kiểm tra. Truy cập ngoại tuyến kéo dài tối đa bảy ngày.</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>Đăng nhập lại bằng GitHub.</translation>
         </message>
     </context>
     <context>
@@ -2969,10 +2953,6 @@
             <translation>Máy chủ kênh cục bộ không giao diện của SquadSpeak</translation>
         </message>
         <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>Ưu tiên cài đặt: đối số &gt; môi trường &gt; thuộc tính &gt; giá trị máy chủ đã lưu.</translation>
-        </message>
-        <message>
             <source>Environment variables (SQUADSPEAK_ prefix):</source>
             <translation>Biến môi trường (tiền tố SQUADSPEAK_):</translation>
         </message>
@@ -3027,26 +3007,6 @@
         <message>
             <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
             <translation>ID kênh riêng tùy chọn cho các lệnh status, configure, password, admission, history, chat và radio; mặc định là kênh chính.</translation>
-        </message>
-        <message>
-            <source>License action must be status, activate, refresh, deactivate or reset.</source>
-            <translation>Hành động giấy phép phải là status, activate, refresh, deactivate hoặc reset.</translation>
-        </message>
-        <message>
-            <source>A license operation is in progress.</source>
-            <translation>Một thao tác giấy phép đang được thực hiện.</translation>
-        </message>
-        <message>
-            <source>Supporter activation is unavailable in this build.</source>
-            <translation>Không thể kích hoạt Supporter trong bản dựng này.</translation>
-        </message>
-        <message>
-            <source>A license key is required.</source>
-            <translation>Cần có khóa giấy phép.</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot. Set confirmed=true to proceed.</source>
-            <translation>Chỉ đặt lại sau khi bộ phận hỗ trợ giải phóng chỗ thiết bị. Đặt confirmed=true để tiếp tục.</translation>
         </message>
         <message>
             <source>Channel action must be list, add or remove.</source>
@@ -3227,6 +3187,22 @@
         <message>
             <source>SquadSpeak headless could not start: %1</source>
             <translation>Không thể khởi động máy chủ SquadSpeak không giao diện: %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>Hành động của người hỗ trợ phải là trạng thái, đăng nhập, làm mới, đăng xuất hoặc hủy. status sign-in refresh sign-out cancel</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>Một hoạt động hỗ trợ đang được tiến hành.</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>Quyền truy cập của người hỗ trợ không có sẵn trong bản dựng này.</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>Ưu tiên cài đặt: đối số&gt; môi trường&gt; thuộc tính&gt; giá trị máy chủ đã lưu.</translation>
         </message>
     </context>
     <context>

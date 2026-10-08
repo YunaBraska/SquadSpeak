@@ -1093,48 +1093,16 @@
             <translation>设备 ID</translation>
         </message>
         <message>
-            <source>Activate</source>
-            <translation>激活</translation>
-        </message>
-        <message>
-            <source>Buy annual pass</source>
-            <translation>购买年卡</translation>
-        </message>
-        <message>
             <source>Check now</source>
             <translation>立即检查</translation>
-        </message>
-        <message>
-            <source>Deactivate</source>
-            <translation>停用</translation>
         </message>
         <message>
             <source>Free version</source>
             <translation>免费版</translation>
         </message>
         <message>
-            <source>License key</source>
-            <translation>许可证密钥</translation>
-        </message>
-        <message>
             <source>Not available yet</source>
             <translation>暂不可用</translation>
-        </message>
-        <message>
-            <source>Reset</source>
-            <translation>重置</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot.</source>
-            <translation>请仅在支持人员释放设备名额后重置.</translation>
-        </message>
-        <message>
-            <source>Resolve activation</source>
-            <translation>解决激活问题</translation>
-        </message>
-        <message>
-            <source>Support reference</source>
-            <translation>支持参考编号</translation>
         </message>
         <message>
             <source>Supporter</source>
@@ -1200,7 +1168,31 @@
             <source>App audio</source>
             <translation>应用音频</translation>
         </message>
-</context>
+        <message>
+            <source>Account: %1</source>
+            <translation>帐户：%1</translation>
+        </message>
+        <message>
+            <source>Signed in as %1</source>
+            <translation>以 %1 身份登录</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub</source>
+            <translation>使用 GitHub 登录</translation>
+        </message>
+        <message>
+            <source>Verification code</source>
+            <translation>验证码</translation>
+        </message>
+        <message>
+            <source>Open GitHub</source>
+            <translation>打开 GitHub</translation>
+        </message>
+        <message>
+            <source>Sign out</source>
+            <translation>登出</translation>
+        </message>
+    </context>
     <context>
         <name>ChatContent</name>
         <message>
@@ -2613,40 +2605,32 @@
     <context>
         <name>License</name>
         <message>
-            <source>Activation was declined. Check your key and available device slots.</source>
-            <translation>激活被拒绝.请检查密钥和可用设备名额.</translation>
-        </message>
-        <message>
-            <source>An activation is unresolved. Contact support before trying again.</source>
-            <translation>一次激活的结果尚未确认.请先联系支持,再重试.</translation>
-        </message>
-        <message>
-            <source>Deactivation was declined. Contact support.</source>
-            <translation>停用被拒绝.请联系支持.</translation>
-        </message>
-        <message>
-            <source>Enter a valid license key.</source>
-            <translation>请输入有效的许可证密钥.</translation>
-        </message>
-        <message>
             <source>License storage is busy or unavailable.</source>
-            <translation>许可证存储正忙或不可用.</translation>
+            <translation>许可证存储繁忙或不可用。</translation>
         </message>
         <message>
             <source>License storage is unavailable.</source>
-            <translation>许可证存储不可用.</translation>
+            <translation>许可证存储不可用。</translation>
         </message>
         <message>
-            <source>The license could not be checked. Your confirmed expiry is unchanged.</source>
-            <translation>无法检查许可证.已确认的到期日期保持不变.</translation>
+            <source>Sign-in expired. Try again.</source>
+            <translation>登录已过期。再试一次。</translation>
         </message>
         <message>
-            <source>The license or device activation is no longer valid.</source>
-            <translation>许可证或设备激活已失效.</translation>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>GitHub 登录不可用。再试一次。</translation>
         </message>
         <message>
-            <source>The license response does not match this annual pass.</source>
-            <translation>许可证响应与此年卡不匹配.</translation>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>GitHub 登录未完成。再试一次。</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>无法检查 GitHub。离线访问最多持续 7 天。</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>再次使用 GitHub 登录。</translation>
         </message>
     </context>
     <context>
@@ -2969,10 +2953,6 @@
             <translation>SquadSpeak 无界面本地频道主机</translation>
         </message>
         <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>设置优先级: 参数 &gt; 环境变量 &gt; 属性文件 &gt; 已保存的服务器设置.</translation>
-        </message>
-        <message>
             <source>Environment variables (SQUADSPEAK_ prefix):</source>
             <translation>环境变量 (前缀为 SQUADSPEAK_):</translation>
         </message>
@@ -3027,26 +3007,6 @@
         <message>
             <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
             <translation>可选的自有频道 ID, 用于 status, configure, password, admission, history, chat 和 radio 命令; 默认使用主频道.</translation>
-        </message>
-        <message>
-            <source>License action must be status, activate, refresh, deactivate or reset.</source>
-            <translation>许可证操作必须为 status, activate, refresh, deactivate 或 reset.</translation>
-        </message>
-        <message>
-            <source>A license operation is in progress.</source>
-            <translation>正在执行许可证操作.</translation>
-        </message>
-        <message>
-            <source>Supporter activation is unavailable in this build.</source>
-            <translation>此版本不支持激活 Supporter.</translation>
-        </message>
-        <message>
-            <source>A license key is required.</source>
-            <translation>需要许可证密钥.</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot. Set confirmed=true to proceed.</source>
-            <translation>仅在支持人员释放设备名额后重置. 设置 confirmed=true 以继续.</translation>
         </message>
         <message>
             <source>Channel action must be list, add or remove.</source>
@@ -3227,6 +3187,22 @@
         <message>
             <source>SquadSpeak headless could not start: %1</source>
             <translation>SquadSpeak 无界面模式无法启动: %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>支持者操作必须是状态、登录、刷新、注销或取消。 status sign-in refresh sign-out cancel</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>支持者操作正在进行中。</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>此版本中支持者访问不可用。</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>设置优先级：参数 &gt; 环境 &gt; 属性 &gt; 保存的服务器值。</translation>
         </message>
     </context>
     <context>

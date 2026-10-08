@@ -45,14 +45,24 @@ TestCase {
     QtObject {
         id: licenseDisplay
         readonly property bool directDistribution: supporterLicense.directDistribution
-        readonly property bool configured: true
-        readonly property bool active: false
-        readonly property bool busy: false
-        readonly property bool pending: false
-        readonly property bool recoveryNeeded: false
-        readonly property string status: ""
-        readonly property string supportReference: "Order 50 / License 40"
-        readonly property url purchaseUrl: "https://example.lemonsqueezy.com/checkout/buy/example"
+        property bool configured: true
+        property bool active: false
+        property bool busy: false
+        property bool pending: false
+        property string account: ""
+        property string userCode: ""
+        property url verificationUrl: "https://github.com/login/device"
+        property date expiresAt: new Date(2030, 0, 1)
+        property string status: ""
+        readonly property url purchaseUrl: "https://github.com/sponsors/YunaBraska"
+        function reset() {
+            configured = true; active = false; busy = false; pending = false
+            account = ""; userCode = ""; status = ""
+        }
+        function signIn() { pending = true; userCode = "ABCD-EFGH"; status = ""; return true }
+        function cancelSignIn() { pending = false; userCode = ""; return true }
+        function refresh() { status = "Checked"; return true }
+        function signOut() { account = ""; active = false; return true }
     }
     Loader {
         id: scene
@@ -92,6 +102,7 @@ TestCase {
 
 
     function init() {
+        licenseDisplay.reset()
         verify(fixtures.setSupporter(false))
         verify(fixtures.expireChat())
         view.show()
@@ -526,7 +537,7 @@ TestCase {
         if (supporterLicense.directDistribution) {
             verify(findChild(view, "supporterSettings").visible)
             compare(findChild(view, "supporterState").text, "Not available yet")
-            verify(!findChild(view, "activateLicense").enabled)
+            verify(!findChild(view, "signInGithub").visible)
             const preview = findChild(view, "supporterAvatarPreview")
             compare(preview.count, session.avatars.length - 10)
             for (let i = 0; i < preview.count; ++i) {
@@ -562,17 +573,51 @@ TestCase {
             return
         }
         waitForRendering(view.contentItem)
-        for (const name of ["licenseKey", "activateLicense", "buyLicense", "checkLicense", "deactivateLicense"]) {
+        const preview = findChild(view, "supporterAvatarPreview")
+        tryVerify(function() {
+            const item = preview.currentItem
+            const canvas = item ? findChild(item, "avatarCanvas") : null
+            return canvas && fixtures.portraitHasDetail(canvas.parent)
+        }, 5000, "Avatar preview is loaded before capture")
+        for (const name of ["signInGithub", "supportLink", "checkSupporter"]) {
             const control = findChild(view, name)
             verify(control.visible)
             const point = control.mapToItem(view.contentItem, 0, 0)
             verify(point.x >= 0 && point.x + control.width <= view.width, name + " fits the window")
         }
-        const input = findChild(view, "licenseKey")
-        compare(input.echoMode, TextInput.Password)
-        verify(!findChild(view, "activateLicense").enabled)
+        verify(!findChild(view, "signOutGithub").visible)
+        licenseDisplay.busy = true
+        verify(!findChild(view, "signInGithub").enabled)
+        licenseDisplay.busy = false
+        mouseClick(findChild(view, "signInGithub"))
+        tryCompare(findChild(view, "githubUserCode"), "visible", true)
+        compare(findChild(view, "githubUserCode").text, "ABCD-EFGH")
+        verify(findChild(view, "githubUserCode").selectByMouse)
+        verify(findChild(view, "openGithubVerification").visible)
+        verify(findChild(view, "cancelGithubSignIn").visible)
+        for (const name of ["githubUserCode", "openGithubVerification", "cancelGithubSignIn"]) {
+            const control = findChild(view, name)
+            const point = control.mapToItem(view.contentItem, 0, 0)
+            verify(point.x >= 0 && point.x + control.width <= view.width, name + " fits the pending row")
+        }
+        if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/supporter-pending-" + data.language + ".png"))
         openedLinks.clear()
-        mouseClick(findChild(view, "buyLicense"))
+        mouseClick(findChild(view, "openGithubVerification"))
+        tryCompare(openedLinks, "count", 1)
+        compare(openedLinks.signalArguments[0][0], licenseDisplay.verificationUrl.toString())
+        mouseClick(findChild(view, "cancelGithubSignIn"))
+        tryCompare(findChild(view, "githubUserCode"), "visible", false)
+        licenseDisplay.account = "TestAccount"
+        licenseDisplay.active = true
+        waitForRendering(view.contentItem)
+        verify(!findChild(view, "signInGithub").visible)
+        verify(findChild(view, "signOutGithub").visible)
+        verify(findChild(view, "checkSupporter").visible)
+        if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/supporter-active-" + data.language + ".png"))
+        mouseClick(findChild(view, "signOutGithub"))
+        tryCompare(licenseDisplay, "account", "")
+        openedLinks.clear()
+        mouseClick(findChild(view, "supportLink"))
         tryCompare(openedLinks, "count", 1)
         compare(openedLinks.signalArguments[0][0], licenseDisplay.purchaseUrl.toString())
         if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/supporter-" + data.language + ".png"))

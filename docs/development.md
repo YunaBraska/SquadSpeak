@@ -303,17 +303,23 @@ The 64-viewer test checks 1080p frame delivery and decoding, then isolates a
 delayed connection at the lowest video tier on every build. This permits the
 shared runner to adapt honestly when its own CPU cannot sustain 30 fps.
 
-The optional `license_provider_probe` target exercises the production `License`
-class against Lemon Squeezy. It is excluded from normal builds and CTest. Use a
-fresh test-mode license with three free slots and save the JSON response from
-`POST https://api.lemonsqueezy.com/v1/licenses/validate` privately. Build with
-`cmake --build build --target license_provider_probe`, then run
-`build/license_provider_probe /private/path/test-validation.json`. It checks three
-activations, persisted-slot reuse, rejection of a fourth device, deactivation and
-reuse, then releases its activations. It never uses the OS account's activation
-or keychain. A network failure can leave an uncertain slot; inspect the test
-license in the merchant dashboard before retrying. Never use a live customer key
-or commit the input file.
+`ctest --test-dir build -R '^license_contract$' --output-on-failure` runs
+Supporter sign-in and eligibility through a local HTTPS GitHub fixture. It drives
+the production controller with a mutable synthetic payment ledger and a controlled
+UTC clock. No purchase, GitHub account, keychain prompt or live provider is needed.
+Cases cover multiple payments to one tier, pagination, refunds, token rotation,
+rate limits, offline expiry, account changes, encrypted persistence and the real
+headless command path. UI cases in `channel_controls` cover the About controls.
+The fixture does not prove that GitHub exposes every future settlement/refund
+exactly like its documented activity schema.
+
+Direct builds use the public `SQUADSPEAK_GITHUB_CLIENT_ID` from CMake. Device flow
+requires `read:user`, not a client secret or repository write access. The owner,
+recipient database ID and one-time tier ID live in `License::distributionProduct`.
+The production query reads the canonical repository's `HEAD:CONTRIBUTORS.md`.
+Only a Markdown table row whose first cell is the authenticated numeric GitHub
+account ID grants the maintainer exemption. Local files, forks and display names
+do not grant it. Review changes to that file as access changes.
 
 On a Mac with Screen Recording permission, run the opt-in capture test:
 
@@ -399,9 +405,27 @@ after persistence, and connected members remain connected. Both commands accept
 `channelId` for an additional owned channel and create no participant. Avoid
 putting real secrets into shell history or logs.
 
-Desktop and headless share one Supporter activation per OS account, independently of server profiles. Direct builds with merchant configuration accept `{"command":"license","action":"activate","key":"YOUR-KEY"}` on stdin. Use `status`, `refresh` or `deactivate` as the action to inspect, check or release that slot. Replies include the confirmed expiry and support reference, never the key. `reset` additionally requires `"confirmed":true` and is only for a slot already released by support.
+Desktop and headless share one GitHub sign-in per OS account, independently
+of server profiles and without a device limit. Participating apps use
+`QStandardPaths::GenericConfigLocation/YunaSupporter/supporter.bin`. It contains
+encrypted tokens and confirmed eligibility. The encryption key is held by the
+OS keychain. The retired provider's `license.bin` is not accepted as a grant.
 
-With `--identity-file`, a new activation is encrypted using that protected file. The account receipt remembers its location so the desktop and other server profiles reuse the same slot. Keep that original file even if another host profile uses a different identity. Moving from existing keychain storage requires access to its original key first; unreadable storage never triggers another activation. Periodic checks and offline expiry are the same in both modes. Store builds do not activate external passes.
+Use `{"command":"license","action":"sign-in"}` on stdin. The response returns
+`userCode` and `verificationUrl` immediately. Open that GitHub URL and enter the
+code to authorize the app. `status` returns the account and entitlement,
+`refresh` checks after a new contribution, `cancel` stops a pending sign-in and
+`sign-out` clears the shared local session. Tokens never appear in replies.
+Signing out locally does not revoke the application's GitHub authorization.
+GitHub account settings can revoke that authorization separately.
+
+With `--identity-file`, a new session is encrypted using that protected file.
+The encrypted record's envelope remembers its location so desktop and other
+server profiles can reuse it. Keep the original file even if another host profile
+uses a different identity. Migrating an existing keychain record requires access
+to its original encryption key. Checks run at startup and daily, with bounded
+retry delays and at most seven days of confirmed offline access. Store builds
+exclude external sign-in and Supporter extras.
 
 ## Protocol extensions
 

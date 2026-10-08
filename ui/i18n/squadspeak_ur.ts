@@ -1093,48 +1093,16 @@
             <translation>ڈیوائس آئی ڈی</translation>
         </message>
         <message>
-            <source>Activate</source>
-            <translation>چالو کریں۔</translation>
-        </message>
-        <message>
-            <source>Buy annual pass</source>
-            <translation>سالانہ پاس خریدیں۔</translation>
-        </message>
-        <message>
             <source>Check now</source>
             <translation>ابھی چیک کریں۔</translation>
-        </message>
-        <message>
-            <source>Deactivate</source>
-            <translation>غیر فعال کریں۔</translation>
         </message>
         <message>
             <source>Free version</source>
             <translation>مفت ورژن</translation>
         </message>
         <message>
-            <source>License key</source>
-            <translation>لائسنس کی کلید</translation>
-        </message>
-        <message>
             <source>Not available yet</source>
             <translation>ابھی تک دستیاب نہیں ہے۔</translation>
-        </message>
-        <message>
-            <source>Reset</source>
-            <translation>دوبارہ ترتیب دیں۔</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot.</source>
-            <translation>سپورٹ کے آلے کی سلاٹ جاری کرنے کے بعد ہی دوبارہ ترتیب دیں۔</translation>
-        </message>
-        <message>
-            <source>Resolve activation</source>
-            <translation>ایکٹیویشن کو حل کریں۔</translation>
-        </message>
-        <message>
-            <source>Support reference</source>
-            <translation>سپورٹ حوالہ</translation>
         </message>
         <message>
             <source>Supporter</source>
@@ -1200,7 +1168,31 @@
             <source>App audio</source>
             <translation>ایپ کی آڈیو</translation>
         </message>
-</context>
+        <message>
+            <source>Account: %1</source>
+            <translation>اکاؤنٹ: %1</translation>
+        </message>
+        <message>
+            <source>Signed in as %1</source>
+            <translation>بطور %1 سائن ان</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub</source>
+            <translation>GitHub کے ساتھ سائن ان کریں۔</translation>
+        </message>
+        <message>
+            <source>Verification code</source>
+            <translation>تصدیقی کوڈ</translation>
+        </message>
+        <message>
+            <source>Open GitHub</source>
+            <translation>GitHub کھولیں۔</translation>
+        </message>
+        <message>
+            <source>Sign out</source>
+            <translation>سائن آؤٹ کریں۔</translation>
+        </message>
+    </context>
     <context>
         <name>ChatContent</name>
         <message>
@@ -2613,40 +2605,32 @@
     <context>
         <name>License</name>
         <message>
-            <source>Activation was declined. Check your key and available device slots.</source>
-            <translation>چالو کرنے سے انکار کر دیا گیا تھا۔ اپنی کلید اور دستیاب ڈیوائس سلاٹ چیک کریں۔</translation>
-        </message>
-        <message>
-            <source>An activation is unresolved. Contact support before trying again.</source>
-            <translation>ایک ایکٹیویشن غیر حل شدہ ہے۔ دوبارہ کوشش کرنے سے پہلے سپورٹ سے رابطہ کریں۔</translation>
-        </message>
-        <message>
-            <source>Deactivation was declined. Contact support.</source>
-            <translation>غیر فعال کرنے سے انکار کر دیا گیا تھا۔ سپورٹ سے رابطہ کریں۔</translation>
-        </message>
-        <message>
-            <source>Enter a valid license key.</source>
-            <translation>ایک درست لائسنس کلید درج کریں۔</translation>
-        </message>
-        <message>
             <source>License storage is busy or unavailable.</source>
             <translation>لائسنس کا ذخیرہ مصروف ہے یا دستیاب نہیں ہے۔</translation>
         </message>
         <message>
             <source>License storage is unavailable.</source>
-            <translation>لائسنس اسٹوریج دستیاب نہیں ہے۔</translation>
+            <translation>لائسنس کا ذخیرہ دستیاب نہیں ہے۔</translation>
         </message>
         <message>
-            <source>The license could not be checked. Your confirmed expiry is unchanged.</source>
-            <translation>لائسنس کی جانچ نہیں ہو سکی۔ آپ کی تصدیق شدہ میعاد میں کوئی تبدیلی نہیں ہے۔</translation>
+            <source>Sign-in expired. Try again.</source>
+            <translation>سائن ان کی میعاد ختم ہوگئی۔ دوبارہ کوشش کریں۔</translation>
         </message>
         <message>
-            <source>The license or device activation is no longer valid.</source>
-            <translation>لائسنس یا ڈیوائس ایکٹیویشن اب درست نہیں ہے۔</translation>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>GitHub سائن ان دستیاب نہیں ہے۔ دوبارہ کوشش کریں۔</translation>
         </message>
         <message>
-            <source>The license response does not match this annual pass.</source>
-            <translation>لائسنس کا جواب اس سالانہ پاس سے مماثل نہیں ہے۔</translation>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>GitHub سائن ان مکمل نہیں ہوا تھا۔ دوبارہ کوشش کریں۔</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>GitHub کو چیک نہیں کیا جا سکا۔ آف لائن رسائی زیادہ سے زیادہ سات دن تک رہتی ہے۔</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>GitHub کے ساتھ دوبارہ سائن ان کریں۔</translation>
         </message>
     </context>
     <context>
@@ -2969,10 +2953,6 @@
             <translation>SquadSpeak ہیڈ لیس مقامی چینل میزبان</translation>
         </message>
         <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>ترتیبات کی ترجیح: دلائل &gt; ماحول &gt; خصوصیات &gt; محفوظ شدہ سرور اقدار.</translation>
-        </message>
-        <message>
             <source>Environment variables (SQUADSPEAK_ prefix):</source>
             <translation>ماحولیاتی متغیرات (SQUADSPEAK_ سابقہ):</translation>
         </message>
@@ -3027,26 +3007,6 @@
         <message>
             <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
             <translation>status, configure, password, admission, history, chat اور radio کمانڈز کے لیے اختیاری اپنا چینل ID; پہلے سے طے شدہ بنیادی چینل ہے.</translation>
-        </message>
-        <message>
-            <source>License action must be status, activate, refresh, deactivate or reset.</source>
-            <translation>لائسنس کی کارروائی status, activate, refresh, deactivate یا reset ہونی چاہیے.</translation>
-        </message>
-        <message>
-            <source>A license operation is in progress.</source>
-            <translation>لائسنس آپریشن جاری ہے.</translation>
-        </message>
-        <message>
-            <source>Supporter activation is unavailable in this build.</source>
-            <translation>اس بلڈ میں Supporter ایکٹیویشن دستیاب نہیں.</translation>
-        </message>
-        <message>
-            <source>A license key is required.</source>
-            <translation>لائسنس کی کلید درکار ہے.</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot. Set confirmed=true to proceed.</source>
-            <translation>سپورٹ کی جانب سے ڈیوائس سلاٹ جاری کرنے کے بعد ہی ری سیٹ کریں. جاری رکھنے کے لیے confirmed=true سیٹ کریں.</translation>
         </message>
         <message>
             <source>Channel action must be list, add or remove.</source>
@@ -3227,6 +3187,22 @@
         <message>
             <source>SquadSpeak headless could not start: %1</source>
             <translation>SquadSpeak ہیڈ لیس میزبان شروع نہیں کیا جا سکا: %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>سپورٹر ایکشن اسٹیٹس، سائن ان، ریفریش، سائن آؤٹ یا کینسل ہونا چاہیے۔ status sign-in refresh sign-out cancel</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>ایک سپورٹر آپریشن جاری ہے۔</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>اس عمارت میں سپورٹر کی رسائی دستیاب نہیں ہے۔</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>ترتیبات کی ترجیح: دلائل &gt; ماحول &gt; خصوصیات &gt; محفوظ کردہ سرور کی قدریں۔</translation>
         </message>
     </context>
     <context>

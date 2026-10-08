@@ -1093,48 +1093,16 @@
             <translation>Aitheantas an Ghléis</translation>
         </message>
         <message>
-            <source>Activate</source>
-            <translation>Gníomhachtaigh</translation>
-        </message>
-        <message>
-            <source>Buy annual pass</source>
-            <translation>Ceannaigh pas bliantúil</translation>
-        </message>
-        <message>
             <source>Check now</source>
             <translation>Seiceáil anois</translation>
-        </message>
-        <message>
-            <source>Deactivate</source>
-            <translation>Díghníomhachtaigh</translation>
         </message>
         <message>
             <source>Free version</source>
             <translation>leagan saor in aisce</translation>
         </message>
         <message>
-            <source>License key</source>
-            <translation>Eochair cheadúnais</translation>
-        </message>
-        <message>
             <source>Not available yet</source>
             <translation>Níl sé ar fáil fós</translation>
-        </message>
-        <message>
-            <source>Reset</source>
-            <translation>Athshocraigh</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot.</source>
-            <translation>Athshocraigh ach amháin tar éis don tacaíocht sliotán an fheiste a scaoileadh.</translation>
-        </message>
-        <message>
-            <source>Resolve activation</source>
-            <translation>Réitigh gníomhachtú</translation>
-        </message>
-        <message>
-            <source>Support reference</source>
-            <translation>Tagairt tacaíochta</translation>
         </message>
         <message>
             <source>Supporter</source>
@@ -1200,7 +1168,31 @@
             <source>App audio</source>
             <translation>Fuaim na haipe</translation>
         </message>
-</context>
+        <message>
+            <source>Account: %1</source>
+            <translation>Cuntas: % 1 %1</translation>
+        </message>
+        <message>
+            <source>Signed in as %1</source>
+            <translation>Sínithe isteach mar % 1 %1</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub</source>
+            <translation>Sínigh isteach le GitHub</translation>
+        </message>
+        <message>
+            <source>Verification code</source>
+            <translation>Cód fíoraithe</translation>
+        </message>
+        <message>
+            <source>Open GitHub</source>
+            <translation>Oscail GitHub</translation>
+        </message>
+        <message>
+            <source>Sign out</source>
+            <translation>Sínigh amach</translation>
+        </message>
+    </context>
     <context>
         <name>ChatContent</name>
         <message>
@@ -2613,40 +2605,32 @@
     <context>
         <name>License</name>
         <message>
-            <source>Activation was declined. Check your key and available device slots.</source>
-            <translation>Diúltaíodh don ghníomhachtú. Seiceáil d'eochair agus sliotáin gléas atá ar fáil.</translation>
-        </message>
-        <message>
-            <source>An activation is unresolved. Contact support before trying again.</source>
-            <translation>Tá gníomhachtú gan réiteach. Déan teagmháil leis an bhfoireann tacaíochta sula ndéanfaidh tú iarracht eile.</translation>
-        </message>
-        <message>
-            <source>Deactivation was declined. Contact support.</source>
-            <translation>Diúltaíodh don díghníomhú. Tacaíocht teagmhála.</translation>
-        </message>
-        <message>
-            <source>Enter a valid license key.</source>
-            <translation>Cuir isteach eochair cheadúnais bhailí.</translation>
-        </message>
-        <message>
             <source>License storage is busy or unavailable.</source>
-            <translation>Tá stóras ceadúnais gnóthach nó níl sé ar fáil.</translation>
+            <translation>Tá stóráil ceadúnais gnóthach nó níl sé ar fáil.</translation>
         </message>
         <message>
             <source>License storage is unavailable.</source>
             <translation>Níl stóras ceadúnais ar fáil.</translation>
         </message>
         <message>
-            <source>The license could not be checked. Your confirmed expiry is unchanged.</source>
-            <translation>Níorbh fhéidir an ceadúnas a sheiceáil. Níl aon athrú ar do dhul in éag deimhnithe.</translation>
+            <source>Sign-in expired. Try again.</source>
+            <translation>Chuaigh an síniú isteach in éag. Bain triail eile as.</translation>
         </message>
         <message>
-            <source>The license or device activation is no longer valid.</source>
-            <translation>Níl an ceadúnas nó gníomhachtú an ghléis bailí a thuilleadh.</translation>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>Níl síniú isteach GitHub ar fáil. Bain triail eile as.</translation>
         </message>
         <message>
-            <source>The license response does not match this annual pass.</source>
-            <translation>Ní thagann freagra an cheadúnais leis an bpas bliantúil seo.</translation>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>Níor críochnaíodh síniú isteach GitHub. Bain triail eile as.</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>Níorbh fhéidir GitHub a sheiceáil. Maireann rochtain as líne ar a mhéad seacht lá.</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>Sínigh isteach le GitHub arís.</translation>
         </message>
     </context>
     <context>
@@ -2969,10 +2953,6 @@
             <translation>Óstach áitiúil cainéil SquadSpeak gan comhéadan grafach</translation>
         </message>
         <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>Tosaíocht socruithe: argóintí &gt; timpeallacht &gt; airíonna &gt; luachanna sábháilte an fhreastalaí.</translation>
-        </message>
-        <message>
             <source>Environment variables (SQUADSPEAK_ prefix):</source>
             <translation>Athróga timpeallachta (réimír SQUADSPEAK_):</translation>
         </message>
@@ -3027,26 +3007,6 @@
         <message>
             <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
             <translation>Aitheantas roghnach do chainéil féin do na horduithe status, configure, password, admission, history, chat agus radio; úsáidtear an príomhchainéal de réir réamhshocraithe.</translation>
-        </message>
-        <message>
-            <source>License action must be status, activate, refresh, deactivate or reset.</source>
-            <translation>Caithfidh gníomh an cheadúnais a bheith status, activate, refresh, deactivate nó reset.</translation>
-        </message>
-        <message>
-            <source>A license operation is in progress.</source>
-            <translation>Tá oibríocht cheadúnais ar siúl.</translation>
-        </message>
-        <message>
-            <source>Supporter activation is unavailable in this build.</source>
-            <translation>Níl gníomhachtú Supporter ar fáil sa leagan seo.</translation>
-        </message>
-        <message>
-            <source>A license key is required.</source>
-            <translation>Tá eochair cheadúnais riachtanach.</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot. Set confirmed=true to proceed.</source>
-            <translation>Ná hathshocraigh go dtí go mbeidh tacaíocht tar éis áit an ghléis a shaoradh. Socraigh confirmed=true chun leanúint ar aghaidh.</translation>
         </message>
         <message>
             <source>Channel action must be list, add or remove.</source>
@@ -3227,6 +3187,22 @@
         <message>
             <source>SquadSpeak headless could not start: %1</source>
             <translation>Níorbh fhéidir SquadSpeak gan comhéadan grafach a thosú: %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>Ní mór stádas, síniú isteach, athnuachan, síniú amach nó cealú a bheith i ngníomh tacaitheora. status sign-in refresh sign-out cancel</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>Tá oibríocht Tacaíochta ar siúl.</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>Níl rochtain ar thacadóir ar fáil sa leagan seo.</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>Tosaíocht socruithe: argóintí &gt; timpeallacht &gt; airíonna &gt; luachanna freastalaí sábháilte.</translation>
         </message>
     </context>
     <context>

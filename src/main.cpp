@@ -110,8 +110,8 @@ int main(int argc, char** argv) {
         }
         if (arguments.isSet("smoke-test")) qInfo("UI smoke: initializing services");
         AudioModel audio(settingsFile);
-        License license(QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation),
-            License::distributionProduct(), QUrl("https://api.lemonsqueezy.com/v1/licenses/"));
+        License license(License::storageDirectory(),
+            License::distributionProduct(), QUrl("https://api.github.com/graphql"));
         QObject::connect(&license, &License::changed, &session, [&] { session.setSupporterEnabled(license.active()); });
         QObject::connect(&app, &QGuiApplication::applicationStateChanged, &license, [&](Qt::ApplicationState state) {
             if (state == Qt::ApplicationActive && !arguments.isSet("smoke-test") && !arguments.isSet("recording-test")) license.refreshIfDue();

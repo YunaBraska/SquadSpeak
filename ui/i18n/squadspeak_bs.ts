@@ -1093,48 +1093,16 @@
             <translation>ID uređaja</translation>
         </message>
         <message>
-            <source>Activate</source>
-            <translation>Aktiviraj</translation>
-        </message>
-        <message>
-            <source>Buy annual pass</source>
-            <translation>Kupite godišnju kartu</translation>
-        </message>
-        <message>
             <source>Check now</source>
             <translation>Provjerite sada</translation>
-        </message>
-        <message>
-            <source>Deactivate</source>
-            <translation>Deaktiviraj</translation>
         </message>
         <message>
             <source>Free version</source>
             <translation>Besplatna verzija</translation>
         </message>
         <message>
-            <source>License key</source>
-            <translation>Ključ licence</translation>
-        </message>
-        <message>
             <source>Not available yet</source>
             <translation>Još nije dostupno</translation>
-        </message>
-        <message>
-            <source>Reset</source>
-            <translation>Reset</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot.</source>
-            <translation>Resetujte samo nakon što podrška oslobodi utor uređaja.</translation>
-        </message>
-        <message>
-            <source>Resolve activation</source>
-            <translation>Rješavanje aktivacije</translation>
-        </message>
-        <message>
-            <source>Support reference</source>
-            <translation>Referenca za podršku</translation>
         </message>
         <message>
             <source>Supporter</source>
@@ -1200,7 +1168,31 @@
             <source>App audio</source>
             <translation>Zvuk aplikacije</translation>
         </message>
-</context>
+        <message>
+            <source>Account: %1</source>
+            <translation>Račun: %1</translation>
+        </message>
+        <message>
+            <source>Signed in as %1</source>
+            <translation>Prijavljen kao %1</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub</source>
+            <translation>Prijavite se sa GitHub-om</translation>
+        </message>
+        <message>
+            <source>Verification code</source>
+            <translation>Verifikacioni kod</translation>
+        </message>
+        <message>
+            <source>Open GitHub</source>
+            <translation>Otvorite GitHub</translation>
+        </message>
+        <message>
+            <source>Sign out</source>
+            <translation>Odjavi se</translation>
+        </message>
+    </context>
     <context>
         <name>ChatContent</name>
         <message>
@@ -2613,40 +2605,32 @@
     <context>
         <name>License</name>
         <message>
-            <source>Activation was declined. Check your key and available device slots.</source>
-            <translation>Aktivacija je odbijena. Provjerite svoj ključ i dostupne utore za uređaje.</translation>
-        </message>
-        <message>
-            <source>An activation is unresolved. Contact support before trying again.</source>
-            <translation>Aktivacija nije riješena. Kontaktirajte podršku prije ponovnog pokušaja.</translation>
-        </message>
-        <message>
-            <source>Deactivation was declined. Contact support.</source>
-            <translation>Deaktivacija je odbijena. Kontaktirajte podršku.</translation>
-        </message>
-        <message>
-            <source>Enter a valid license key.</source>
-            <translation>Unesite važeći licencni ključ.</translation>
-        </message>
-        <message>
             <source>License storage is busy or unavailable.</source>
             <translation>Pohrana licence je zauzeta ili nedostupna.</translation>
         </message>
         <message>
             <source>License storage is unavailable.</source>
-            <translation>Skladištenje licence nije dostupno.</translation>
+            <translation>Pohrana licence nije dostupna.</translation>
         </message>
         <message>
-            <source>The license could not be checked. Your confirmed expiry is unchanged.</source>
-            <translation>Licenca se nije mogla provjeriti. Vaš potvrđeni rok trajanja je nepromijenjen.</translation>
+            <source>Sign-in expired. Try again.</source>
+            <translation>Prijava je istekla. Pokušajte ponovo.</translation>
         </message>
         <message>
-            <source>The license or device activation is no longer valid.</source>
-            <translation>Licenca ili aktivacija uređaja više nije važeća.</translation>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>Prijava na GitHub nije dostupna. Pokušajte ponovo.</translation>
         </message>
         <message>
-            <source>The license response does not match this annual pass.</source>
-            <translation>Odgovor licence ne odgovara ovoj godišnjoj propusnici.</translation>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>Prijava na GitHub nije završena. Pokušajte ponovo.</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>GitHub se nije mogao provjeriti. Offline pristup traje najviše sedam dana.</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>Ponovo se prijavite sa GitHub-om.</translation>
         </message>
     </context>
     <context>
@@ -2969,10 +2953,6 @@
             <translation>SquadSpeak host lokalnog kanala bez grafičkog interfejsa</translation>
         </message>
         <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>Prioritet postavki: argumenti &gt; okruženje &gt; svojstva &gt; sačuvane vrijednosti servera.</translation>
-        </message>
-        <message>
             <source>Environment variables (SQUADSPEAK_ prefix):</source>
             <translation>Varijable okruženja (prefiks SQUADSPEAK_):</translation>
         </message>
@@ -3027,26 +3007,6 @@
         <message>
             <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
             <translation>Opcionalni ID vlastitog kanala za naredbe status, configure, password, admission, history, chat i radio; zadano je primarni kanal.</translation>
-        </message>
-        <message>
-            <source>License action must be status, activate, refresh, deactivate or reset.</source>
-            <translation>Radnja licence mora biti status, activate, refresh, deactivate ili reset.</translation>
-        </message>
-        <message>
-            <source>A license operation is in progress.</source>
-            <translation>Radnja s licencom je u toku.</translation>
-        </message>
-        <message>
-            <source>Supporter activation is unavailable in this build.</source>
-            <translation>Aktivacija Supporter paketa nije dostupna u ovoj verziji.</translation>
-        </message>
-        <message>
-            <source>A license key is required.</source>
-            <translation>Potreban je licencni ključ.</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot. Set confirmed=true to proceed.</source>
-            <translation>Resetuj tek nakon što podrška oslobodi mjesto za uređaj. Za nastavak postavi confirmed=true.</translation>
         </message>
         <message>
             <source>Channel action must be list, add or remove.</source>
@@ -3227,6 +3187,22 @@
         <message>
             <source>SquadSpeak headless could not start: %1</source>
             <translation>SquadSpeak bez grafičkog interfejsa se ne može pokrenuti: %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>Radnja podržavaoca mora biti status, prijava, osvježavanje, odjava ili otkazivanje. sign-in refresh sign-out cancel</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>Operacija Supporter je u toku.</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>Pristup za podršku nije dostupan u ovoj verziji.</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>Prioritet postavki: argumenti &gt; okruženje &gt; svojstva &gt; sačuvane vrijednosti servera.</translation>
         </message>
     </context>
     <context>

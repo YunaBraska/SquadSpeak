@@ -1093,48 +1093,16 @@
             <translation>Apparat ID</translation>
         </message>
         <message>
-            <source>Activate</source>
-            <translation>Aktivéieren</translation>
-        </message>
-        <message>
-            <source>Buy annual pass</source>
-            <translation>Kafen Jorespass</translation>
-        </message>
-        <message>
             <source>Check now</source>
             <translation>Kuckt elo</translation>
-        </message>
-        <message>
-            <source>Deactivate</source>
-            <translation>Deaktivéieren</translation>
         </message>
         <message>
             <source>Free version</source>
             <translation>fräi Versioun</translation>
         </message>
         <message>
-            <source>License key</source>
-            <translation>Lizenzschlëssel</translation>
-        </message>
-        <message>
             <source>Not available yet</source>
             <translation>Nach net sinn</translation>
-        </message>
-        <message>
-            <source>Reset</source>
-            <translation>zréckgesat</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot.</source>
-            <translation>Reset nëmmen nodeems d'Ënnerstëtzung den Apparat Slot verëffentlecht huet.</translation>
-        </message>
-        <message>
-            <source>Resolve activation</source>
-            <translation>Opléisen Aktivatioun</translation>
-        </message>
-        <message>
-            <source>Support reference</source>
-            <translation>Ënnerstëtzung Referenz</translation>
         </message>
         <message>
             <source>Supporter</source>
@@ -1200,7 +1168,31 @@
             <source>App audio</source>
             <translation>Toun vun der App</translation>
         </message>
-</context>
+        <message>
+            <source>Account: %1</source>
+            <translation>Kont: %1</translation>
+        </message>
+        <message>
+            <source>Signed in as %1</source>
+            <translation>Ugemellt als %1</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub</source>
+            <translation>Mellt Iech un mat GitHub</translation>
+        </message>
+        <message>
+            <source>Verification code</source>
+            <translation>Verifikatiounscode</translation>
+        </message>
+        <message>
+            <source>Open GitHub</source>
+            <translation>Gitt GitHub op</translation>
+        </message>
+        <message>
+            <source>Sign out</source>
+            <translation>Zeechen aus</translation>
+        </message>
+    </context>
     <context>
         <name>ChatContent</name>
         <message>
@@ -2613,22 +2605,6 @@
     <context>
         <name>License</name>
         <message>
-            <source>Activation was declined. Check your key and available device slots.</source>
-            <translation>D'Aktivéierung gouf ofgeleent. Kontrolléiert Äre Lizenzschlëssel an déi verfügbar Apparatplazen.</translation>
-        </message>
-        <message>
-            <source>An activation is unresolved. Contact support before trying again.</source>
-            <translation>Eng Aktivatioun ass ongeléist. Kontaktéiert d'Ënnerstëtzung ier Dir nach eng Kéier probéiert.</translation>
-        </message>
-        <message>
-            <source>Deactivation was declined. Contact support.</source>
-            <translation>Deaktivéierung gouf ofgeleent. Kontakt Ënnerstëtzung.</translation>
-        </message>
-        <message>
-            <source>Enter a valid license key.</source>
-            <translation>Gitt eng valabel Lizenz Schlëssel.</translation>
-        </message>
-        <message>
             <source>License storage is busy or unavailable.</source>
             <translation>Lizenzlagerung ass beschäftegt oder net verfügbar.</translation>
         </message>
@@ -2637,16 +2613,24 @@
             <translation>Lizenzlagerung ass net verfügbar.</translation>
         </message>
         <message>
-            <source>The license could not be checked. Your confirmed expiry is unchanged.</source>
-            <translation>D'Lizenz konnt net iwwerpréift ginn. Äre bestätegt Verfall ass onverännert.</translation>
+            <source>Sign-in expired. Try again.</source>
+            <translation>Umellen ass ofgelaaf. Probéiert nach eng Kéier.</translation>
         </message>
         <message>
-            <source>The license or device activation is no longer valid.</source>
-            <translation>D'Lizenz oder d'Apparataktivéierung ass net méi gëlteg.</translation>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>GitHub Umeldung ass net verfügbar. Probéiert nach eng Kéier.</translation>
         </message>
         <message>
-            <source>The license response does not match this annual pass.</source>
-            <translation>D'Lizenz Äntwert entsprécht net dësem Jorespass.</translation>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>GitHub Umeldung war net ofgeschloss. Probéiert nach eng Kéier.</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>GitHub konnt net iwwerpréift ginn. Offline Zougang dauert maximal siwen Deeg.</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>Mellt Iech erëm mat GitHub un.</translation>
         </message>
     </context>
     <context>
@@ -2969,10 +2953,6 @@
             <translation>SquadSpeak lokalen Kanalhost ouni grafesch Uewerfläch</translation>
         </message>
         <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>Prioritéit vun den Astellungen: Argumenter &gt; Ëmfeld &gt; Eegenschaften &gt; gespäichert Serverwäerter.</translation>
-        </message>
-        <message>
             <source>Environment variables (SQUADSPEAK_ prefix):</source>
             <translation>Ëmfeldvariabelen (Präfix SQUADSPEAK_):</translation>
         </message>
@@ -3027,26 +3007,6 @@
         <message>
             <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
             <translation>Optional ID vun engem eegene Kanal fir d'Befeele status, configure, password, admission, history, chat a radio; standardméisseg gëtt den Haaptkanal benotzt.</translation>
-        </message>
-        <message>
-            <source>License action must be status, activate, refresh, deactivate or reset.</source>
-            <translation>D'Lizenzaktioun muss status, activate, refresh, deactivate oder reset sinn.</translation>
-        </message>
-        <message>
-            <source>A license operation is in progress.</source>
-            <translation>Eng Lizenzaktioun leeft schonn.</translation>
-        </message>
-        <message>
-            <source>Supporter activation is unavailable in this build.</source>
-            <translation>D'Supporter-Aktivéierung ass an dëser Versioun net disponibel.</translation>
-        </message>
-        <message>
-            <source>A license key is required.</source>
-            <translation>E Lizenzschlëssel ass néideg.</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot. Set confirmed=true to proceed.</source>
-            <translation>Eréischt zerécksetzen, nodeems de Support d'Apparatsplaz fräiginn huet. Fir weiderzefueren, confirmed=true setzen.</translation>
         </message>
         <message>
             <source>Channel action must be list, add or remove.</source>
@@ -3227,6 +3187,22 @@
         <message>
             <source>SquadSpeak headless could not start: %1</source>
             <translation>SquadSpeak ouni grafesch Uewerfläch konnt net starten: %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>D'Supporteraktioun muss de Status sinn, umellen, erfrëschen, ausloggen oder annuléieren. status sign-in refresh sign-out cancel</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>Eng Supporter Operatioun ass amgaang.</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>Supporter Zougang ass an dësem Build net verfügbar.</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>Astellunge Virrang: Argumenter&gt; Ëmfeld&gt; Eegeschafte&gt; gespäichert Serverwäerter.</translation>
         </message>
     </context>
     <context>

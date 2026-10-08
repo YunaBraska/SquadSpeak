@@ -1093,48 +1093,16 @@
             <translation>Սարքի ID</translation>
         </message>
         <message>
-            <source>Activate</source>
-            <translation>Ակտիվացրեք</translation>
-        </message>
-        <message>
-            <source>Buy annual pass</source>
-            <translation>Գնել տարեկան կտրոն</translation>
-        </message>
-        <message>
             <source>Check now</source>
             <translation>Ստուգեք հիմա</translation>
-        </message>
-        <message>
-            <source>Deactivate</source>
-            <translation>Ապաակտիվացնել</translation>
         </message>
         <message>
             <source>Free version</source>
             <translation>Անվճար տարբերակ</translation>
         </message>
         <message>
-            <source>License key</source>
-            <translation>Լիցենզիայի բանալի</translation>
-        </message>
-        <message>
             <source>Not available yet</source>
             <translation>Դեռ հասանելի չէ</translation>
-        </message>
-        <message>
-            <source>Reset</source>
-            <translation>Վերականգնել</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot.</source>
-            <translation>Վերականգնել միայն այն բանից հետո, երբ աջակցությունը թողարկի սարքի բնիկը:</translation>
-        </message>
-        <message>
-            <source>Resolve activation</source>
-            <translation>Լուծել ակտիվացումը</translation>
-        </message>
-        <message>
-            <source>Support reference</source>
-            <translation>Աջակցման հղում</translation>
         </message>
         <message>
             <source>Supporter</source>
@@ -1200,7 +1168,31 @@
             <source>App audio</source>
             <translation>Հավելվածի ձայն</translation>
         </message>
-</context>
+        <message>
+            <source>Account: %1</source>
+            <translation>Հաշիվ՝ %1</translation>
+        </message>
+        <message>
+            <source>Signed in as %1</source>
+            <translation>Մուտք եք գործել որպես %1</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub</source>
+            <translation>Մուտք գործեք GitHub-ով</translation>
+        </message>
+        <message>
+            <source>Verification code</source>
+            <translation>Ստուգման կոդը</translation>
+        </message>
+        <message>
+            <source>Open GitHub</source>
+            <translation>Բացեք GitHub-ը</translation>
+        </message>
+        <message>
+            <source>Sign out</source>
+            <translation>Դուրս գալ</translation>
+        </message>
+    </context>
     <context>
         <name>ChatContent</name>
         <message>
@@ -2613,22 +2605,6 @@
     <context>
         <name>License</name>
         <message>
-            <source>Activation was declined. Check your key and available device slots.</source>
-            <translation>Ակտիվացումը մերժվել է: Ստուգեք ձեր բանալին և սարքի հասանելի բնիկները:</translation>
-        </message>
-        <message>
-            <source>An activation is unresolved. Contact support before trying again.</source>
-            <translation>Ակտիվացումը չլուծված է: Նախքան նորից փորձելը, կապվեք աջակցության հետ:</translation>
-        </message>
-        <message>
-            <source>Deactivation was declined. Contact support.</source>
-            <translation>Ապաակտիվացումը մերժվել է: Կապվեք աջակցության հետ:</translation>
-        </message>
-        <message>
-            <source>Enter a valid license key.</source>
-            <translation>Մուտքագրեք վավեր լիցենզիայի բանալի:</translation>
-        </message>
-        <message>
             <source>License storage is busy or unavailable.</source>
             <translation>Լիցենզիայի պահեստը զբաղված է կամ անհասանելի:</translation>
         </message>
@@ -2637,16 +2613,24 @@
             <translation>Լիցենզիայի պահեստավորումն անհասանելի է:</translation>
         </message>
         <message>
-            <source>The license could not be checked. Your confirmed expiry is unchanged.</source>
-            <translation>Լիցենզիան չհաջողվեց ստուգել: Ձեր հաստատված ժամկետն անփոփոխ է:</translation>
+            <source>Sign-in expired. Try again.</source>
+            <translation>Մուտքի ժամկետը սպառվել է: Կրկին փորձեք:</translation>
         </message>
         <message>
-            <source>The license or device activation is no longer valid.</source>
-            <translation>Լիցենզիան կամ սարքի ակտիվացումն այլևս վավեր չէ:</translation>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>GitHub-ի մուտքն անհասանելի է: Կրկին փորձեք:</translation>
         </message>
         <message>
-            <source>The license response does not match this annual pass.</source>
-            <translation>Լիցենզիայի պատասխանը չի համապատասխանում այս տարեկան անցագրին:</translation>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>GitHub-ի մուտքն ավարտված չէ: Կրկին փորձեք:</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>GitHub-ը չհաջողվեց ստուգել: Անցանց մուտքը տևում է առավելագույնը յոթ օր:</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>Նորից մուտք գործեք GitHub-ով:</translation>
         </message>
     </context>
     <context>
@@ -2969,10 +2953,6 @@
             <translation>SquadSpeak տեղային ալիքի հոսթ՝ առանց գրաֆիկական միջերեսի</translation>
         </message>
         <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>Կարգավորումների առաջնահերթությունը. արգումենտներ &gt; միջավայր &gt; հատկություններ &gt; սերվերի պահված արժեքներ.</translation>
-        </message>
-        <message>
             <source>Environment variables (SQUADSPEAK_ prefix):</source>
             <translation>Միջավայրի փոփոխականներ (SQUADSPEAK_ նախածանցով).</translation>
         </message>
@@ -3027,26 +3007,6 @@
         <message>
             <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
             <translation>Սեփական ալիքի ընտրովի ID՝ status, configure, password, admission, history, chat և radio հրամանների համար. լռելյայն օգտագործվում է հիմնական ալիքը.</translation>
-        </message>
-        <message>
-            <source>License action must be status, activate, refresh, deactivate or reset.</source>
-            <translation>Արտոնագրի գործողությունը պետք է լինի status, activate, refresh, deactivate կամ reset.</translation>
-        </message>
-        <message>
-            <source>A license operation is in progress.</source>
-            <translation>Արտոնագրի գործողություն է կատարվում.</translation>
-        </message>
-        <message>
-            <source>Supporter activation is unavailable in this build.</source>
-            <translation>Supporter-ի ակտիվացումը հասանելի չէ այս տարբերակում.</translation>
-        </message>
-        <message>
-            <source>A license key is required.</source>
-            <translation>Պահանջվում է արտոնագրի բանալի.</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot. Set confirmed=true to proceed.</source>
-            <translation>Վերակայել միայն այն բանից հետո, երբ աջակցությունն ազատել է սարքի տեղը. շարունակելու համար սահմանել confirmed=true.</translation>
         </message>
         <message>
             <source>Channel action must be list, add or remove.</source>
@@ -3227,6 +3187,22 @@
         <message>
             <source>SquadSpeak headless could not start: %1</source>
             <translation>Չհաջողվեց գործարկել SquadSpeak-ն առանց գրաֆիկական միջերեսի. %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>Աջակցողի գործողությունը պետք է լինի կարգավիճակ, մուտք գործել, թարմացնել, դուրս գալ կամ չեղարկել: status sign-in refresh sign-out cancel</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>Աջակցող գործողությունն ընթացքի մեջ է:</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>Աջակցի մուտքն անհասանելի է այս նախագծում:</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>Կարգավորումների գերակայություն. արգումենտներ &gt; միջավայր &gt; հատկություններ &gt; պահպանված սերվերի արժեքներ:</translation>
         </message>
     </context>
     <context>

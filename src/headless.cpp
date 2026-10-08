@@ -194,8 +194,14 @@ HeadlessController::HeadlessController(QCoreApplication& app, LocalChannel& chan
       output_(output) {
     outputRetry_.setInterval(25);
     connect(&outputRetry_, &QTimer::timeout, this, &HeadlessController::flushOutput);
+    connect(&license_, &License::authorizationReady, this, [this] {
+        if (!licensePending_) return;
+        write(response("license", true, QJsonObject{{"pending", true}, {"verificationUrl", license_.verificationUrl().toString()},
+            {"userCode", license_.userCode()}}));
+        licensePending_ = false;
+    });
     connect(&license_, &License::changed, this, [this] {
-        if (licensePending_ && !license_.busy()) {
+        if (licensePending_ && !license_.busy() && !license_.pending()) {
             licensePending_ = false;
             write(response("license", license_.status().isEmpty(), licenseStatus(), license_.status()));
         }
@@ -476,7 +482,7 @@ void HeadlessController::process(const QJsonObject& request) {
                 QJsonObject{{"command", "chat"}, {"text", "Hello"}},
                 QJsonObject{{"command", "radio"}, {"action", "list"}},
                 QJsonObject{{"command", "license"}, {"action", "status"}},
-                QJsonObject{{"command", "license"}, {"action", "activate"}, {"key", "annual-pass-key"}},
+                QJsonObject{{"command", "license"}, {"action", "sign-in"}},
                 QJsonObject{{"command", "radio"}, {"action", "search"}, {"query", "jazz"}, {"limit", 20}}}}
         }));
         return;
@@ -492,22 +498,16 @@ void HeadlessController::process(const QJsonObject& request) {
     if (command == "license") {
         const auto action = request.value("action").toString("status");
         if ((request.contains("action") && !request.value("action").isString())
-            || (action != "status" && action != "activate" && action != "refresh" && action != "deactivate" && action != "reset")) {
-            write(response(command, false, {}, QCoreApplication::translate("Headless", "License action must be status, activate, refresh, deactivate or reset."))); return;
+            || (action != "status" && action != "sign-in" && action != "refresh" && action != "sign-out" && action != "cancel")) {
+            write(response(command, false, {}, QCoreApplication::translate("Headless", "Supporter action must be status, sign-in, refresh, sign-out or cancel."))); return;
         }
         if (action == "status") { write(response(command, true, licenseStatus())); return; }
-        if (!license_.configured() || license_.busy()) {
-            write(response(command, false, licenseStatus(), license_.busy() ? QCoreApplication::translate("Headless", "A license operation is in progress.") : QCoreApplication::translate("Headless", "Supporter activation is unavailable in this build."))); return;
-        }
-        if (action == "activate" && !request.value("key").isString()) {
-            write(response(command, false, {}, QCoreApplication::translate("Headless", "A license key is required."))); return;
-        }
-        if (action == "reset" && (!request.value("confirmed").isBool() || !request.value("confirmed").toBool())) {
-            write(response(command, false, {}, QCoreApplication::translate("Headless", "Reset only after support has released the device slot. Set confirmed=true to proceed."))); return;
+        if (!license_.configured() || (license_.busy() && !(action == "cancel" && license_.pending()))) {
+            write(response(command, false, licenseStatus(), license_.busy() ? QCoreApplication::translate("Headless", "A Supporter operation is in progress.") : QCoreApplication::translate("Headless", "Supporter access is unavailable in this build."))); return;
         }
         licensePending_ = true;
-        const bool accepted = action == "activate" ? license_.activate(request.value("key").toString())
-            : action == "refresh" ? license_.refresh() : action == "deactivate" ? license_.deactivate() : license_.resetActivation();
+        const bool accepted = action == "sign-in" ? license_.signIn()
+            : action == "refresh" ? license_.refresh() : action == "sign-out" ? license_.signOut() : license_.cancelSignIn();
         if (!accepted && licensePending_) {
             licensePending_ = false;
             write(response(command, false, licenseStatus(), license_.status()));
@@ -631,9 +631,9 @@ void HeadlessController::process(const QJsonObject& request) {
 }
 QJsonObject HeadlessController::licenseStatus() const {
     return {{"configured", license_.configured()}, {"active", license_.active()}, {"busy", license_.busy()},
-        {"pending", license_.pending()}, {"recoveryNeeded", license_.recoveryNeeded()},
-        {"expiresAt", license_.expiresAt().toString(Qt::ISODate)},
-        {"supportReference", license_.supportReference()}, {"status", license_.status()}};
+        {"pending", license_.pending()}, {"account", license_.account()},
+        {"userCode", license_.userCode()}, {"verificationUrl", license_.verificationUrl().toString()},
+        {"expiresAt", license_.expiresAt().toString(Qt::ISODate)}, {"status", license_.status()}};
 }
 void HeadlessController::handleRadio(const QJsonObject& request, RadioPlayer& radio) {
     const auto action = request.value("action").toString();
@@ -844,8 +844,8 @@ int Headless::run(int argc, char** argv) {
             identityLock = std::make_unique<QLockFile>(QFileInfo(identityPath.toString()).canonicalFilePath() + ".lock");
             if (!identityLock->tryLock(0)) throw std::runtime_error(QT_TRANSLATE_NOOP("Headless", "This identity file is already in use or cannot be locked."));
         }
-        License license(QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation),
-            License::distributionProduct(), QUrl("https://api.lemonsqueezy.com/v1/licenses/"), {}, {}, identityPath.toString());
+        License license(License::storageDirectory(),
+            License::distributionProduct(), QUrl("https://api.github.com/graphql"), {}, {}, identityPath.toString());
         QObject::connect(&license, &License::changed, &session, [&] { session.setSupporterEnabled(license.active()); });
         LocalChannel channel(session, settingsFile + ".channel.json", std::move(identity));
         RadioPlayer radio(settingsFile + ".radio.json");

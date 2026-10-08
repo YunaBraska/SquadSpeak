@@ -1093,48 +1093,16 @@
             <translation>ierīces ID</translation>
         </message>
         <message>
-            <source>Activate</source>
-            <translation>aktivizējiet</translation>
-        </message>
-        <message>
-            <source>Buy annual pass</source>
-            <translation>iegādājieties gada karti</translation>
-        </message>
-        <message>
             <source>Check now</source>
             <translation>pārbaudiet tūlīt</translation>
-        </message>
-        <message>
-            <source>Deactivate</source>
-            <translation>deaktivizēt</translation>
         </message>
         <message>
             <source>Free version</source>
             <translation>bezmaksas versija</translation>
         </message>
         <message>
-            <source>License key</source>
-            <translation>Licences atslēga</translation>
-        </message>
-        <message>
             <source>Not available yet</source>
             <translation>Vēl nav pieejams</translation>
-        </message>
-        <message>
-            <source>Reset</source>
-            <translation>atiestatīt</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot.</source>
-            <translation>atiestatiet tikai pēc tam, kad atbalsta dienests ir atbrīvojis ierīces slotu.</translation>
-        </message>
-        <message>
-            <source>Resolve activation</source>
-            <translation>Atrisiniet aktivizāciju</translation>
-        </message>
-        <message>
-            <source>Support reference</source>
-            <translation>atbalsta atsauce</translation>
         </message>
         <message>
             <source>Supporter</source>
@@ -1200,7 +1168,31 @@
             <source>App audio</source>
             <translation>Lietotnes skaņa</translation>
         </message>
-</context>
+        <message>
+            <source>Account: %1</source>
+            <translation>Konts: %1</translation>
+        </message>
+        <message>
+            <source>Signed in as %1</source>
+            <translation>Pierakstījies kā %1</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub</source>
+            <translation>Pierakstieties, izmantojot GitHub</translation>
+        </message>
+        <message>
+            <source>Verification code</source>
+            <translation>Verifikācijas kods</translation>
+        </message>
+        <message>
+            <source>Open GitHub</source>
+            <translation>Atveriet GitHub</translation>
+        </message>
+        <message>
+            <source>Sign out</source>
+            <translation>Izrakstīties</translation>
+        </message>
+    </context>
     <context>
         <name>ChatContent</name>
         <message>
@@ -2613,40 +2605,32 @@
     <context>
         <name>License</name>
         <message>
-            <source>Activation was declined. Check your key and available device slots.</source>
-            <translation>aktivizēšana tika noraidīta. Pārbaudiet savu atslēgu un pieejamos ierīces slotus.</translation>
-        </message>
-        <message>
-            <source>An activation is unresolved. Contact support before trying again.</source>
-            <translation>aktivizēšana nav atrisināta. Pirms mēģināt vēlreiz, sazinieties ar atbalsta dienestu.</translation>
-        </message>
-        <message>
-            <source>Deactivation was declined. Contact support.</source>
-            <translation>deaktivizēšana tika noraidīta. Sazinieties ar atbalsta dienestu.</translation>
-        </message>
-        <message>
-            <source>Enter a valid license key.</source>
-            <translation>ievadiet derīgu licences atslēgu.</translation>
-        </message>
-        <message>
             <source>License storage is busy or unavailable.</source>
             <translation>Licenču krātuve ir aizņemta vai nav pieejama.</translation>
         </message>
         <message>
             <source>License storage is unavailable.</source>
-            <translation>licenču krātuve nav pieejama.</translation>
+            <translation>Licenču krātuve nav pieejama.</translation>
         </message>
         <message>
-            <source>The license could not be checked. Your confirmed expiry is unchanged.</source>
-            <translation>Licenci nevarēja pārbaudīt. Jūsu apstiprinātais derīguma termiņš nav mainīts.</translation>
+            <source>Sign-in expired. Try again.</source>
+            <translation>Pierakstīšanās termiņš beidzies. Mēģiniet vēlreiz.</translation>
         </message>
         <message>
-            <source>The license or device activation is no longer valid.</source>
-            <translation>licence vai ierīces aktivizēšana vairs nav derīga.</translation>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>GitHub pierakstīšanās nav pieejama. Mēģiniet vēlreiz.</translation>
         </message>
         <message>
-            <source>The license response does not match this annual pass.</source>
-            <translation>licences atbilde neatbilst šai gada caurlaidei.</translation>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>GitHub pierakstīšanās netika pabeigta. Mēģiniet vēlreiz.</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>GitHub nevarēja pārbaudīt. Bezsaistes piekļuve ilgst ne vairāk kā septiņas dienas.</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>Pierakstieties vēlreiz, izmantojot GitHub.</translation>
         </message>
     </context>
     <context>
@@ -2969,10 +2953,6 @@
             <translation>SquadSpeak lokālais kanāla resursdators bez grafiskās saskarnes</translation>
         </message>
         <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>Iestatījumu prioritāte: argumenti &gt; vide &gt; rekvizīti &gt; saglabātie servera iestatījumi.</translation>
-        </message>
-        <message>
             <source>Environment variables (SQUADSPEAK_ prefix):</source>
             <translation>Vides mainīgie (SQUADSPEAK_ prefikss):</translation>
         </message>
@@ -3027,26 +3007,6 @@
         <message>
             <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
             <translation>Neobligāts sava kanāla ID status, configure, password, admission, history, chat un radio komandām; pēc noklusējuma primārais kanāls.</translation>
-        </message>
-        <message>
-            <source>License action must be status, activate, refresh, deactivate or reset.</source>
-            <translation>Licences darbībai jābūt status, activate, refresh, deactivate vai reset.</translation>
-        </message>
-        <message>
-            <source>A license operation is in progress.</source>
-            <translation>Licences darbība notiek.</translation>
-        </message>
-        <message>
-            <source>Supporter activation is unavailable in this build.</source>
-            <translation>Supporter aktivizēšana šajā būvē nav pieejama.</translation>
-        </message>
-        <message>
-            <source>A license key is required.</source>
-            <translation>Nepieciešama licences atslēga.</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot. Set confirmed=true to proceed.</source>
-            <translation>Atiestatīt tikai pēc tam, kad atbalsts ir atbrīvojis ierīces vietu. Lai turpinātu, iestatiet confirmed=true.</translation>
         </message>
         <message>
             <source>Channel action must be list, add or remove.</source>
@@ -3227,6 +3187,22 @@
         <message>
             <source>SquadSpeak headless could not start: %1</source>
             <translation>Neizdevās palaist SquadSpeak bez grafiskās saskarnes: %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>Atbalstītāja darbībai ir jābūt statusam, pierakstīšanās, atsvaidzināšanas, izrakstīšanās vai atcelšanai. status sign-in refresh sign-out cancel</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>Notiek atbalstītāja operācija.</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>Šajā būvniecībā atbalstītāja piekļuve nav pieejama.</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>Iestatījumu prioritāte: argumenti &gt; vide &gt; rekvizīti &gt; saglabātās servera vērtības.</translation>
         </message>
     </context>
     <context>

@@ -117,7 +117,7 @@ See [server configuration and commands](docs/development.md#headless-server) for
 Found a bug or a translation that reads strangely? [Open an issue](https://github.com/YunaBraska/SquadSpeak/issues) with your app version, operating system and steps to reproduce it. Avoid including passwords or private device keys. For security vulnerabilities, use [private reporting](https://github.com/YunaBraska/SquadSpeak/security/advisories/new).
 
 If you would like to support development, [buy Yuna a coffee](https://buymeacoffee.com/YunaBraska).
-Supporter purchases are not available yet. Voice, chat, radio, remote control and screen sharing are free. Supporter extras cover additional own channels, avatars and longer chat history.
+Voice, chat, radio, remote control and screen sharing are free. Yuna Supporter uses GitHub sign-in and adds more own channels, avatars and longer chat history. The one-time 12 USD tier is being prepared and is not available for purchase yet. It will cover one year across participating apps, with no device limit and up to seven days between online checks.
 
 Building, testing, architecture and release details belong in [docs](docs/development.md).
 

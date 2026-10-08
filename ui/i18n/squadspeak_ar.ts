@@ -1093,48 +1093,16 @@
             <translation>معرف الجهاز</translation>
         </message>
         <message>
-            <source>Activate</source>
-            <translation>تفعيل</translation>
-        </message>
-        <message>
-            <source>Buy annual pass</source>
-            <translation>شراء بطاقة سنوية</translation>
-        </message>
-        <message>
             <source>Check now</source>
             <translation>تحقق الآن</translation>
-        </message>
-        <message>
-            <source>Deactivate</source>
-            <translation>إلغاء التفعيل</translation>
         </message>
         <message>
             <source>Free version</source>
             <translation>النسخة المجانية</translation>
         </message>
         <message>
-            <source>License key</source>
-            <translation>مفتاح الترخيص</translation>
-        </message>
-        <message>
             <source>Not available yet</source>
             <translation>غير متاح بعد</translation>
-        </message>
-        <message>
-            <source>Reset</source>
-            <translation>إعادة ضبط</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot.</source>
-            <translation>لا تعد الضبط إلا بعد أن يحرر الدعم مكان الجهاز.</translation>
-        </message>
-        <message>
-            <source>Resolve activation</source>
-            <translation>حل مشكلة التفعيل</translation>
-        </message>
-        <message>
-            <source>Support reference</source>
-            <translation>مرجع الدعم</translation>
         </message>
         <message>
             <source>Supporter</source>
@@ -1200,7 +1168,31 @@
             <source>App audio</source>
             <translation>صوت التطبيق</translation>
         </message>
-</context>
+        <message>
+            <source>Account: %1</source>
+            <translation>الحساب: %1</translation>
+        </message>
+        <message>
+            <source>Signed in as %1</source>
+            <translation>تم تسجيل الدخول كـ %1</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub</source>
+            <translation>قم بتسجيل الدخول باستخدام جيثب</translation>
+        </message>
+        <message>
+            <source>Verification code</source>
+            <translation>رمز التحقق</translation>
+        </message>
+        <message>
+            <source>Open GitHub</source>
+            <translation>افتح جيثب</translation>
+        </message>
+        <message>
+            <source>Sign out</source>
+            <translation>تسجيل الخروج</translation>
+        </message>
+    </context>
     <context>
         <name>ChatContent</name>
         <message>
@@ -2613,40 +2605,32 @@
     <context>
         <name>License</name>
         <message>
-            <source>Activation was declined. Check your key and available device slots.</source>
-            <translation>تم رفض التفعيل. تحقق من المفتاح وعدد الأجهزة المتاح.</translation>
-        </message>
-        <message>
-            <source>An activation is unresolved. Contact support before trying again.</source>
-            <translation>لم يتم حسم عملية تفعيل. اتصل بالدعم قبل المحاولة مجددا.</translation>
-        </message>
-        <message>
-            <source>Deactivation was declined. Contact support.</source>
-            <translation>تم رفض إلغاء التفعيل. اتصل بالدعم.</translation>
-        </message>
-        <message>
-            <source>Enter a valid license key.</source>
-            <translation>أدخل مفتاح ترخيص صالحا.</translation>
-        </message>
-        <message>
             <source>License storage is busy or unavailable.</source>
-            <translation>مساحة تخزين الترخيص مشغولة أو غير متاحة.</translation>
+            <translation>مساحة تخزين الترخيص مشغولة أو غير متوفرة.</translation>
         </message>
         <message>
             <source>License storage is unavailable.</source>
-            <translation>مساحة تخزين الترخيص غير متاحة.</translation>
+            <translation>تخزين الترخيص غير متوفر.</translation>
         </message>
         <message>
-            <source>The license could not be checked. Your confirmed expiry is unchanged.</source>
-            <translation>تعذر التحقق من الترخيص. لم يتغير تاريخ الانتهاء المؤكد.</translation>
+            <source>Sign-in expired. Try again.</source>
+            <translation>انتهت صلاحية تسجيل الدخول. حاول ثانية.</translation>
         </message>
         <message>
-            <source>The license or device activation is no longer valid.</source>
-            <translation>لم يعد الترخيص أو تفعيل الجهاز صالحا.</translation>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>تسجيل الدخول إلى GitHub غير متاح. حاول ثانية.</translation>
         </message>
         <message>
-            <source>The license response does not match this annual pass.</source>
-            <translation>استجابة الترخيص لا تطابق هذه البطاقة السنوية.</translation>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>لم يكتمل تسجيل الدخول إلى GitHub. حاول ثانية.</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>لا يمكن التحقق من GitHub. يستمر الوصول في وضع عدم الاتصال لمدة سبعة أيام على الأكثر.</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>قم بتسجيل الدخول باستخدام GitHub مرة أخرى.</translation>
         </message>
     </context>
     <context>
@@ -2969,10 +2953,6 @@
             <translation>مضيف قناة SquadSpeak محلي دون واجهة رسومية</translation>
         </message>
         <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>أولوية الإعدادات: الوسائط &gt; البيئة &gt; الخصائص &gt; قيم الخادم المحفوظة.</translation>
-        </message>
-        <message>
             <source>Environment variables (SQUADSPEAK_ prefix):</source>
             <translation>متغيرات البيئة (البادئة SQUADSPEAK_):</translation>
         </message>
@@ -3027,26 +3007,6 @@
         <message>
             <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
             <translation>معرّف قناة خاصة اختياري لأوامر status وconfigure وpassword وadmission وhistory وchat وradio; القناة الأساسية هي الافتراضية.</translation>
-        </message>
-        <message>
-            <source>License action must be status, activate, refresh, deactivate or reset.</source>
-            <translation>يجب أن يكون إجراء الترخيص status أو activate أو refresh أو deactivate أو reset.</translation>
-        </message>
-        <message>
-            <source>A license operation is in progress.</source>
-            <translation>عملية ترخيص قيد التنفيذ.</translation>
-        </message>
-        <message>
-            <source>Supporter activation is unavailable in this build.</source>
-            <translation>تنشيط Supporter غير متاح في هذه البنية.</translation>
-        </message>
-        <message>
-            <source>A license key is required.</source>
-            <translation>مفتاح الترخيص مطلوب.</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot. Set confirmed=true to proceed.</source>
-            <translation>أعد الضبط بعد أن يحرر الدعم خانة الجهاز. اضبط confirmed=true للمتابعة.</translation>
         </message>
         <message>
             <source>Channel action must be list, add or remove.</source>
@@ -3227,6 +3187,22 @@
         <message>
             <source>SquadSpeak headless could not start: %1</source>
             <translation>تعذر بدء مضيف SquadSpeak دون واجهة رسومية: %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>يجب أن يكون إجراء الداعم هو الحالة أو تسجيل الدخول أو التحديث أو تسجيل الخروج أو الإلغاء. status sign-in refresh sign-out cancel</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>عملية الداعم جارية.</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>وصول الداعم غير متوفر في هذا الإصدار.</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>أسبقية الإعدادات: الوسائط &gt; البيئة &gt; الخصائص &gt; قيم الخادم المحفوظة.</translation>
         </message>
     </context>
     <context>
