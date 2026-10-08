@@ -3014,7 +3014,7 @@
         </message>
         <message>
             <source>Removing an own channel deletes its history, images, permissions and radio settings. Set confirmed=true to proceed.</source>
-            <translation>Das Entfernen eines eigenen Kanals löscht Verlauf, Bilder, Berechtigungen und Radioeinstellungen. Setzen Sie confirmed=true, um fortzufahren.</translation>
+            <translation>Das Entfernen eines eigenen Kanals löscht Verlauf, Bilder, Berechtigungen und Radioeinstellungen. Setze confirmed=true, um fortzufahren.</translation>
         </message>
         <message>
             <source>id must identify an additional own channel.</source>
@@ -3066,7 +3066,7 @@
         </message>
         <message>
             <source>Unknown command. Use help.</source>
-            <translation>Unbekannter Befehl. Verwenden Sie help.</translation>
+            <translation>Unbekannter Befehl. Verwende help.</translation>
         </message>
         <message>
             <source>search requires a query, non-negative offset and limit from 1 to 128.</source>
@@ -3098,7 +3098,7 @@
         </message>
         <message>
             <source>Unexpected positional arguments. Use --help.</source>
-            <translation>Unerwartete Positionsargumente. Verwenden Sie --help.</translation>
+            <translation>Unerwartete Positionsargumente. Verwende --help.</translation>
         </message>
         <message>
             <source>--config / -f requires a non-empty path.</source>
@@ -3106,15 +3106,15 @@
         </message>
         <message>
             <source>Choose --password or --password-file, not both.</source>
-            <translation>Wählen Sie entweder --password oder --password-file, nicht beide.</translation>
+            <translation>Wähle entweder --password oder --password-file, nicht beide.</translation>
         </message>
         <message>
             <source>Choose SQUADSPEAK_PASSWORD or SQUADSPEAK_PASSWORD_FILE, not both.</source>
-            <translation>Wählen Sie entweder SQUADSPEAK_PASSWORD oder SQUADSPEAK_PASSWORD_FILE, nicht beide.</translation>
+            <translation>Wähle entweder SQUADSPEAK_PASSWORD oder SQUADSPEAK_PASSWORD_FILE, nicht beide.</translation>
         </message>
         <message>
             <source>Choose password or passwordFile in one configuration layer, not both.</source>
-            <translation>Wählen Sie password oder passwordFile in einer Konfigurationsebene, nicht beide.</translation>
+            <translation>Wähle password oder passwordFile in einer Konfigurationsebene, nicht beide.</translation>
         </message>
         <message>
             <source>passwordFile must be a non-empty path.</source>
