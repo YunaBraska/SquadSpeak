@@ -1198,6 +1198,11 @@ private slots:
         socket->write(wireFrame({{"type", "screenQuality"}, {"tier", 1}, {"udp", true}}));
         QTRY_VERIFY_WITH_TIMEOUT(transport.udpActive(), 5000);
         QSignalSpy frames(&client.channel, &LocalChannel::screenFrameReceived);
+        const auto sendDatagram = [&](const QByteArray& bytes) {
+            bool sent = false;
+            return waitForEvents(&transport, &squad::MediaTransport::writable,
+                [&] { return sent || (sent = transport.sendDatagram(bytes)); }, 2000);
+        };
         QJsonObject format{{"codec", "mpeg4"}, {"width", 640}, {"height", 360}, {"extra", ""}};
         if (scenario == "invalid-format") format.insert("width", 99999);
         const auto metadata = scenario == "invalid-json" ? QByteArray("not JSON") : QJsonDocument(format).toJson(QJsonDocument::Compact);
@@ -1214,30 +1219,33 @@ private slots:
         if (scenario == "oversize") qToBigEndian<quint32>(3000000, first.data() + 12);
         if (scenario == "unaligned") qToBigEndian<quint32>(1, first.data() + 16);
         if (scenario == "invalid-serial") qToBigEndian<quint64>(0, first.data() + 4);
-        if (scenario == "unknown") QVERIFY(transport.sendDatagram("camera.future"));
+        if (scenario == "unknown") QVERIFY(sendDatagram("camera.future"));
         if (scenario == "reorder-duplicate") {
-            QVERIFY(transport.sendDatagram(fragment(1, 16364))); QVERIFY(transport.sendDatagram(fragment(1, 16364)));
+            QVERIFY(sendDatagram(fragment(1, 16364))); QVERIFY(sendDatagram(fragment(1, 16364)));
         }
-        QVERIFY(transport.sendDatagram(first));
+        QVERIFY(sendDatagram(first));
         if (scenario == "changing-size") {
             auto changed = fragment(1, 16364); qToBigEndian<quint32>(quint32(envelope.size() + 1), changed.data() + 12); changed += 'x';
-            QVERIFY(transport.sendDatagram(changed));
+            QVERIFY(sendDatagram(changed));
         } else if (scenario == "oversize-payload") {
             for (int offset = 16364; offset < envelope.size(); offset += 16364) {
-                bool sent = false;
-                QTRY_VERIFY_WITH_TIMEOUT(sent || (sent = transport.sendDatagram(fragment(1, quint32(offset)))), 2000);
-                QTest::qWait(2);
+                QVERIFY(sendDatagram(fragment(1, quint32(offset))));
             }
         } else if (scenario == "replace-incomplete") {
-            QVERIFY(transport.sendDatagram(fragment(2, 0))); QVERIFY(transport.sendDatagram(fragment(1, 16364)));
-            QVERIFY(transport.sendDatagram(fragment(2, 16364)));
+            QVERIFY(sendDatagram(fragment(2, 0))); QVERIFY(sendDatagram(fragment(1, 16364)));
+            QVERIFY(sendDatagram(fragment(2, 16364)));
         } else if (!QStringList{"short-header", "oversize", "unaligned", "invalid-serial"}.contains(scenario)) {
-            QVERIFY(transport.sendDatagram(fragment(1, 16364)));
+            QVERIFY(sendDatagram(fragment(1, 16364)));
         }
         if (accepted) {
-            QTRY_COMPARE(frames.size(), 1); QCOMPARE(frames.first().at(3).toByteArray(), payload);
+            QVERIFY(waitForEvents([&] { return frames.size() == 1; }));
+            QCOMPARE(frames.first().at(3).toByteArray(), payload);
             QVERIFY(client.channel.acknowledgeScreen(identity.id(), frames.first().at(1).toLongLong(), 1));
-            QVERIFY(transport.sendDatagram(fragment(1, 0))); QTest::qWait(50); QCOMPARE(frames.size(), 1);
+            QVERIFY(sendDatagram(fragment(1, 0)));
+            QVERIFY(sendDatagram(fragment(3, 0))); QVERIFY(sendDatagram(fragment(3, 16364)));
+            QVERIFY(waitForEvents([&] { return frames.size() == 2; }));
+            QCOMPARE(frames.last().at(1).toLongLong(), qint64(3));
+            QCOMPARE(frames.last().at(3).toByteArray(), payload);
             QCOMPARE(socket->state(), QAbstractSocket::ConnectedState);
         } else {
             QTRY_COMPARE(socket->state(), QAbstractSocket::UnconnectedState); QCOMPARE(frames.size(), 0);

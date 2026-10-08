@@ -60,9 +60,9 @@ Local macOS verification on the final implementation:
   participation and retention behavior. All 792 current source messages are
   covered by 54 catalogs. `git diff --check` and the CI shell syntax check pass.
 - The Store CI configuration now supplies a GitHub client ID instead of obsolete
-  provider keys. Windows/Linux/Store and sanitizer runs for this uncommitted
-  revision have not been executed. Local links use newer Homebrew libraries,
-  so this build alone does not prove the macOS 13 deployment target.
+  provider keys. Platform results for the published revision follow below.
+  Local links use newer Homebrew libraries, so this build alone does not prove
+  the macOS 13 deployment target.
 
 The policy uses the latest matching NEW_SPONSORSHIP date plus one calendar year.
 Reading it again never extends expiry. A matching REFUND at or after that payment
@@ -71,6 +71,40 @@ link, so this conservative handling is not exact settlement reconciliation.
 The draft tier still needs publication and a real checkout/sign-in check before
 paid availability. The previous provider-specific probe and device-slot tests
 were removed rather than retained as irrelevant coverage.
+
+### Platform CI follow-up
+
+[Run 37745921799](https://github.com/YunaBraska/SquadSpeak/actions/runs/37745921799)
+checks published commit `a158d48`.
+Linux x64, Linux ARM64, Store and AddressSanitizer/UndefinedBehaviorSanitizer each
+pass all 33 CTest groups and their additional checks. Both Linux release archives
+pass GUI, image-worker and repeated headless startup in a runtime-only container.
+The macOS Intel job also passes its tests, memory checks and package validation.
+The complete run remains failed because of the following two test issues.
+
+Windows passes 30 of 31 groups. Its new Supporter tests incorrectly asserted
+POSIX permission bits and invoked the Unix-only identity-file backend.
+macOS ARM64 passes its 31 regular groups, UI group and native video leak check,
+but one channel case assumes that UDP sends always accept data immediately.
+The temporary send refusal is part of the transport's backpressure contract.
+
+The follow-up changes test code and the CI workflow only. Shared encrypted storage
+and concurrent access run on every platform. Identity-file binding and POSIX
+mode assertions apply only where that backend exists. Screen-fragment tests
+wait for the existing writable signal and latch successful sends. A subsequent
+frame proves continued delivery instead of relying on a fixed sleep.
+Local verification passes the Supporter group (30 Qt Test entries) and ten
+consecutive runs of all eleven screen-fragment cases (13 entries per run).
+`actionlint`, all four release-publication tests and `git diff --check` pass.
+The corrections still require another platform CI run, especially Windows.
+
+The previous run `37687168807` hit the overall 45-minute Linux and 60-minute
+sanitizer budgets while its completed tests were passing. Both job budgets now
+match the existing 90-minute desktop budget. Individual test deadlines and
+failure handling remain unchanged.
+The macOS step also streams its log while retaining the artifact. GitHub's
+explicit Bash shell supplies `pipefail`. Local success and exit-code-7 probes
+confirm that logging preserves the build result.
 
 ## GitHub Sponsors tier preparation, 2026-10-07
 

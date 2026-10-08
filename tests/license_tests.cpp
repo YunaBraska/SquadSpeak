@@ -258,7 +258,10 @@ private slots:
             QFile file(dir.filePath("supporter.bin")); QVERIFY(file.open(QIODevice::ReadOnly));
             const auto bytes = file.readAll();
             QVERIFY(!bytes.contains(server.accessToken.toUtf8())); QVERIFY(!bytes.contains("fixture-member"));
+#ifndef Q_OS_WIN
+            // POSIX mode bits do not describe Windows access-control lists.
             QCOMPARE(file.permissions() & (QFile::ReadGroup | QFile::WriteGroup | QFile::ReadOther | QFile::WriteOther), QFileDevice::Permissions{});
+#endif
             server.status = 503;
         }
         License restored(dir.path(), product, server.url(), secret, [&] { return time; }, {}, nullptr, server.oauth());
@@ -419,13 +422,23 @@ private slots:
         checked(license); QVERIFY(!license.active());
     }
 
-    void sharedIdentityFileAndConcurrentOperations() {
+    void sharedStorageAndConcurrentOperations_data() {
+        QTest::addColumn<bool>("fileIdentity");
+        QTest::newRow("encrypted-storage") << false;
+#ifndef Q_OS_WIN
+        QTest::newRow("identity-file") << true;
+#endif
+    }
+
+    void sharedStorageAndConcurrentOperations() {
+        QFETCH(bool, fileIdentity);
         GitHub server; server.authorized = true; server.payment("paid", start);
         QTemporaryDir dir; qint64 time = start;
-        const auto identity = dir.filePath("identity.pem");
-        const auto generated = TlsIdentity::loadFile(identity, true); QVERIFY(!generated.id().isEmpty());
-        License first(dir.path(), product, server.url(), {}, [&] { return time; }, identity, nullptr, server.oauth());
-        License second(dir.path(), product, server.url(), {}, [&] { return time; }, {}, nullptr, server.oauth());
+        const auto identity = fileIdentity ? dir.filePath("identity.pem") : QString{};
+        const auto secret = fileIdentity ? QByteArray{} : TlsIdentity::newKey();
+        if (fileIdentity) { const auto generated = TlsIdentity::loadFile(identity, true); QVERIFY(!generated.id().isEmpty()); }
+        License first(dir.path(), product, server.url(), secret, [&] { return time; }, identity, nullptr, server.oauth());
+        License second(dir.path(), product, server.url(), secret, [&] { return time; }, {}, nullptr, server.oauth());
         QVERIFY(first.signIn()); QTRY_VERIFY(first.pending());
         QVERIFY(!second.signIn()); QVERIFY(!second.active());
         advanceAuthorization(first, time); QVERIFY(first.active());

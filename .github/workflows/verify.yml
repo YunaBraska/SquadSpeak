@@ -42,7 +42,7 @@ jobs:
           - runner: ubuntu-24.04
             mode: store
     runs-on: ${{ matrix.runner }}
-    timeout-minutes: 45
+    timeout-minutes: 90
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
@@ -92,7 +92,7 @@ jobs:
   sanitizers:
     if: inputs.platform == '' || inputs.platform == 'all' || inputs.platform == 'sanitizers'
     runs-on: ubuntu-24.04
-    timeout-minutes: 60
+    timeout-minutes: 90
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
@@ -148,13 +148,10 @@ jobs:
           security default-keychain -s "$keychain"
           security list-keychains -d user -s "$keychain"
       - name: Build, test and package
-        shell: sh
+        shell: bash
         run: |
           mkdir -p build/macos-ci/artifacts
-          result=0
-          sh tests/macos-ci.sh "$QT_ROOT_DIR" build/macos-ci > build/macos-ci/artifacts/build.log 2>&1 || result=$?
-          tail -100 build/macos-ci/artifacts/build.log
-          exit "$result"
+          sh tests/macos-ci.sh "$QT_ROOT_DIR" build/macos-ci 2>&1 | tee build/macos-ci/artifacts/build.log
       - name: Preserve verification evidence
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
