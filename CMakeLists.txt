@@ -640,12 +640,25 @@ if(BUILD_TESTING)
     endif()
     find_package(Python3 REQUIRED COMPONENTS Interpreter)
     find_package(Qt6 6.10 REQUIRED COMPONENTS Test QuickTest)
-    add_test(NAME desktop_smoke COMMAND squadspeak --smoke-test
+    set(desktop_test_command $<TARGET_FILE:squadspeak>)
+    if(WIN32)
+        list(PREPEND desktop_test_command ${Python3_EXECUTABLE}
+            "${CMAKE_CURRENT_SOURCE_DIR}/tests/run_with_deadline.py"
+            --timeout 15 --dump "${CMAKE_BINARY_DIR}/smoke/startup.dmp")
+    endif()
+    add_test(NAME desktop_smoke COMMAND ${desktop_test_command} --smoke-test
         --settings-file "${CMAKE_BINARY_DIR}/smoke/audio.ini"
         --screenshot "${CMAKE_BINARY_DIR}/smoke/audio.png")
     set_tests_properties(desktop_smoke PROPERTIES
         TIMEOUT 15
         ENVIRONMENT "QT_QPA_PLATFORM=${ui_test_platform};QT_QUICK_BACKEND=software;QT_QUICK_CONTROLS_STYLE=Basic")
+    if(WIN32)
+        # The child still has 15 seconds. Allow a bounded dump and cleanup on failure.
+        set_tests_properties(desktop_smoke PROPERTIES TIMEOUT 30)
+    endif()
+    add_test(NAME process_deadline COMMAND ${Python3_EXECUTABLE}
+        "${CMAKE_CURRENT_SOURCE_DIR}/tests/process_deadline_tests.py")
+    set_tests_properties(process_deadline PROPERTIES TIMEOUT 30)
     add_test(NAME acceptance_handoff COMMAND ${Python3_EXECUTABLE}
         "${CMAKE_CURRENT_SOURCE_DIR}/tests/acceptance_tests.py")
     add_test(NAME translation_sources COMMAND ${Python3_EXECUTABLE}

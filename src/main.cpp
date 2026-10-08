@@ -17,6 +17,7 @@
 #include <QApplication>
 #include <QCommandLineParser>
 #include <QDir>
+#include <QElapsedTimer>
 #include <QFile>
 #include <QFileInfo>
 #include <QMenu>
@@ -108,8 +109,14 @@ int main(int argc, char** argv) {
             qCritical("%s", qUtf8Printable(QCoreApplication::translate("Headless", "This SquadSpeak profile is already running or cannot be locked.")));
             return 1;
         }
-        if (arguments.isSet("smoke-test")) qInfo("UI smoke: initializing services");
+        QElapsedTimer startup;
+        startup.start();
+        const auto startupPhase = [&](const char* phase) {
+            if (arguments.isSet("smoke-test")) qInfo("UI smoke: %s (%lld ms)", phase, startup.elapsed());
+        };
+        startupPhase("initializing audio");
         AudioModel audio(settingsFile);
+        startupPhase("initializing supporter access");
         License license(License::storageDirectory(),
             License::distributionProduct(), QUrl("https://api.github.com/graphql"));
         QObject::connect(&license, &License::changed, &session, [&] { session.setSupporterEnabled(license.active()); });
@@ -122,14 +129,18 @@ int main(int argc, char** argv) {
         };
         QObject::connect(&session, &VoiceSession::preferencesChanged, &app, applyAppearance);
         applyAppearance();
+        startupPhase("initializing channels");
         LocalChannel channel(session, settingsFile + ".channel.json");
+        startupPhase("initializing screen capture");
         ScreenShare screenShare(channel);
         ChatContent chatContent;
+        startupPhase("initializing radio");
         RadioPlayer radio(settingsFile + ".radio.json");
         // Channel/radio accessors lend these objects to QML; C++ owns their lifetime.
         QQmlEngine::setObjectOwnership(&channel, QQmlEngine::CppOwnership);
         QQmlEngine::setObjectOwnership(&radio, QQmlEngine::CppOwnership);
         if (!radio.bind(channel)) throw std::runtime_error(qUtf8Printable(QCoreApplication::translate("Headless", "Radio channels could not be initialized.")));
+        startupPhase("initializing shortcuts and updates");
         PushToTalkKey pttKey(session, !arguments.isSet("smoke-test") && !arguments.isSet("recording-test"));
 #ifdef SQUADSPEAK_UPDATES
         AppUpdates updates(!arguments.isSet("smoke-test") && !arguments.isSet("recording-test"));
@@ -153,7 +164,9 @@ int main(int argc, char** argv) {
         engine.rootContext()->setContextProperty("channel", &channel);
         engine.rootContext()->setContextProperty("chatContent", &chatContent);
         engine.rootContext()->setContextProperty("pttKey", &pttKey);
+        startupPhase("loading interface");
         engine.loadFromModule("SquadSpeak", "Channels");
+        startupPhase("interface loaded");
         if (engine.rootObjects().size() != 1) return 1;
         auto* channels = qobject_cast<QQuickWindow*>(engine.rootObjects().first());
         if (!channels) return 1;

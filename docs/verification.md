@@ -128,7 +128,24 @@ The rebuilt local case passes with four senders, 25,200 delivered packets and
 100 callbacks over 2,006 ms. A deliberate 16-sender overload still fails the
 same realtime assertion: all 100,800 packets arrive, but the callbacks take
 2,353 ms, with a maximum 61 ms callback gap. The diagnostic output survives
-the failure. Build and `git diff --check` pass; Intel diagnosis remains open.
+the failure. Build and `git diff --check` pass. The next native Intel run below
+passes, but does not establish the cause of the earlier callback delay.
+
+[Run 37822286565](https://github.com/YunaBraska/SquadSpeak/actions/runs/37822286565)
+at `dc76676` passes six jobs, including Intel with 100 callbacks over 2,029 ms,
+25,200 delivered packets, no gaps and a maximum 54 ms callback gap. Windows
+again times out in `desktop_smoke` after 15 seconds, before completing service
+initialization. All other Windows groups and the later packaged startup pass.
+This repeats the unresolved cold-start failure, not a verified translation or
+Supporter regression.
+
+The startup test now records elapsed time at native service boundaries. On
+Windows an external standard-library Python runner preserves a thread minidump
+before killing and reaping a process that exceeds the unchanged 15-second
+deadline. CTest allows a further bounded interval for diagnostic capture. A real
+child-process test checks success, failure, invalid input, absent executable,
+stale evidence removal and timeout cleanup. Windows also verifies the dump header.
+These changes expose the fault. They do not yet claim to fix the startup stall.
 
 ## GitHub Sponsors tier preparation, 2026-10-07
 
