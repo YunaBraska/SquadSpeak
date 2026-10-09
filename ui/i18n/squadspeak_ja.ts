@@ -873,10 +873,6 @@
             <translation>自動参加</translation>
         </message>
         <message>
-            <source>Leave channel</source>
-            <translation>チャンネルを退出</translation>
-        </message>
-        <message>
             <source>Stream URL</source>
             <translation>ストリームURL</translation>
         </message>

@@ -873,10 +873,6 @@
             <translation>Ավտոմատ միացում</translation>
         </message>
         <message>
-            <source>Leave channel</source>
-            <translation>Հեռացեք ալիքից</translation>
-        </message>
-        <message>
             <source>Stream URL</source>
             <translation>հոսքի URL</translation>
         </message>

@@ -42,6 +42,61 @@ PanelWindow {
             Glyph { anchors.centerIn: parent; width: 12; height: 12; symbol: "check"; color: Theme.accent; visible: action.checked }
         }
     }
+    component MemberGrid: GridView {
+        id: grid
+        property string hostId: ""
+        clip: true
+        cellWidth: width < 350 ? width : width / 2
+        cellHeight: 54
+        cacheBuffer: 0
+        ScrollBar.vertical: ScrollBar { policy: grid.contentHeight > grid.height ? ScrollBar.AlwaysOn : ScrollBar.AsNeeded }
+        delegate: Item {
+            id: memberEntry
+            required property var modelData
+            width: grid.cellWidth; height: grid.cellHeight
+            objectName: "member_" + modelData.id
+            activeFocusOnTab: true
+            Accessible.role: Accessible.Button
+            Accessible.name: modelData.name
+            Accessible.onPressAction: root.memberOptions(modelData, grid.hostId)
+            Keys.onReturnPressed: root.memberOptions(modelData, grid.hostId)
+            Keys.onSpacePressed: root.memberOptions(modelData, grid.hostId)
+            Rectangle { anchors.fill: parent; visible: parent.activeFocus; color: "transparent"; radius: Theme.controlRadius; border.color: Theme.accent }
+            RowLayout {
+                anchors.fill: parent; anchors.rightMargin: 10; spacing: 5
+                VoiceAvatar {
+                    objectName: "participantAvatar"
+                    Layout.preferredWidth: 44; Layout.preferredHeight: 44; circular: true
+                    avatar: modelData.avatarId || modelData.avatar || "mossling"; name: modelData.name; music: !!modelData.music
+                    available: modelData.available; muted: modelData.muted; deafened: !!modelData.deafened; sleeping: !!modelData.sleeping
+                    identity: modelData.id; animationTime: root.avatarTime
+                    animated: root.voice.animatedAvatars && memberEntry.y + memberEntry.height >= grid.contentY && memberEntry.y <= grid.contentY + grid.height
+                    level: grid.hostId === root.activeHost ? root.memberLevel(modelData.id) : 0
+                }
+                Label { text: modelData.name; textFormat: Text.PlainText; Layout.fillWidth: true; elide: Text.ElideRight; font.pixelSize: 12 }
+            }
+            MouseArea { anchors.fill: parent; acceptedButtons: Qt.LeftButton | Qt.RightButton; onClicked: root.memberOptions(modelData, grid.hostId) }
+            TextToolTip { parent: memberEntry; text: modelData.name; visible: memberHover.hovered }
+            HoverHandler { id: memberHover }
+        }
+    }
+    PanelDialog {
+        id: memberList
+        objectName: "membersDialog"
+        property string hostId: ""
+        readonly property var entry: root.channelList.find(function(c) { return c.id === hostId }) || ({})
+        parent: Overlay.overlay; anchors.centerIn: parent
+        width: Math.min(520, parent.width - 24); height: Math.min(580, parent.height - 24)
+        title: (entry.name || "") + " (" + (entry.members || []).length + ")"
+        modal: true; focus: true; buttons: Dialog.Close
+        onOpened: allMembers.positionViewAtBeginning()
+        contentItem: MemberGrid {
+            id: allMembers
+            objectName: "allMembers"
+            hostId: memberList.hostId
+            model: memberList.visible ? memberList.entry.members || [] : []
+        }
+    }
     property var voice: session
     property var supporter: typeof supporterLicense !== "undefined" ? supporterLicense : null
     property var updates: typeof appUpdates !== "undefined" ? appUpdates : null
@@ -106,6 +161,8 @@ PanelWindow {
     readonly property var chatMembers: current.chatMembers || []
     readonly property string inspectedHost: current.chatHostId || ""
     property bool chatExpanded: true
+    readonly property bool mobileKeyboard: (Qt.platform.os === "android" || Qt.platform.os === "ios") && Qt.inputMethod.visible
+    readonly property bool compactInput: mobileKeyboard && height < 360
     property Item conversationSlot: null
     property double avatarTime: Date.now()
     Timer { interval: Atlas.frameInterval(); running: root.visible && root.voice.animatedAvatars; repeat: true; onTriggered: root.avatarTime = Date.now() }
@@ -220,8 +277,8 @@ PanelWindow {
         else openHostChat(id)
     }
     function memberLevel(id) { return remote ? (network.remoteLevels[id] || 0) : id === network.ownId ? audio.transmitLevel : (audio.playbackLevels[id] || 0) }
-    function toggleMembers(id) { return openHostChat(id) }
-    function memberOptions(member, host) { selectedMember = member; selectedMemberHost = host; memberMenu.popup() }
+    function toggleMembers(id) { memberList.hostId = id; memberList.open() }
+    function memberOptions(member, host) { selectedMember = member; selectedMemberHost = host; memberList.close(); memberMenu.popup() }
     function accessLabel(value) {
         switch (value) {
         case "pending": return qsTr("Pending")
@@ -952,6 +1009,13 @@ PanelWindow {
         width: Math.min(root.width - 24, 480); height: Math.min(root.height - 32, 440)
         buttons: Dialog.Cancel
         contentItem: ColumnLayout {
+            Label {
+                objectName: "screenCaptureError"
+                Layout.fillWidth: true
+                visible: root.screen && root.screen.error.length > 0
+                text: root.screen ? root.screen.error : ""
+                textFormat: Text.PlainText; wrapMode: Text.Wrap; color: Theme.danger
+            }
             ScrollView {
                 Layout.fillWidth: true; Layout.fillHeight: true
                 clip: true
@@ -1064,16 +1128,6 @@ PanelWindow {
             Connections { target: audio; function onProfileChanged() { memberGain.revision++ } }
         }
     }
-    header: Rectangle {
-        implicitHeight: 52
-        color: Theme.surface
-        RowLayout {
-            anchors.fill: parent; anchors.margins: 14; spacing: 8
-            Label { text: root.remote ? root.network.controlTargetName : "SquadSpeak"; textFormat: Text.PlainText; elide: Text.ElideRight; font.pixelSize: 19; font.weight: Font.DemiBold; Layout.fillWidth: true }
-            ActionButton { objectName: "addChannel"; text: qsTr("Add channel"); glyph: "plus"; iconOnly: true; flat: true; enabled: !root.remote; onClicked: discover.open() }
-            ActionButton { objectName: "openSettings"; visible: !root.remote; text: qsTr("Settings"); glyph: "settings"; iconOnly: true; flat: true; onClicked: root.openSettings(0) }
-        }
-    }
     ColumnLayout {
         anchors.fill: parent; anchors.margins: root.height < 460 ? 8 : 12; spacing: root.height < 460 ? 4 : 8
         ScrollView {
@@ -1091,11 +1145,12 @@ PanelWindow {
                         required property var channelData
                         readonly property var modelData: channelData
                         readonly property bool active: root.activeHost === modelData.id && !!root.current.joined
+                        readonly property bool owned: !!modelData.owned || modelData.id === (root.current.ownId || root.network.ownId)
                         readonly property bool selected: root.inspectedHost === modelData.id && root.chatExpanded
                         readonly property var members: modelData.members || []
                         Layout.fillWidth: true; implicitHeight: 42 + (selected ? chatSlot.height + 8 : 0)
                         radius: Theme.controlRadius; color: selected ? Theme.surface : channelHover.containsMouse ? Theme.surface : "transparent"
-                        border.width: activeFocus ? 1 : 0; border.color: Theme.accent
+                        border.width: channelRow.active || activeFocus ? 1 : 0; border.color: Theme.accent
                         MouseArea {
                             id: channelHover
                             objectName: "channelRow_" + modelData.id
@@ -1111,9 +1166,9 @@ PanelWindow {
                             anchors.left: parent.left; anchors.right: parent.right; height: 42
                             anchors.leftMargin: 8; anchors.rightMargin: 2; spacing: 6
                             Glyph { symbol: "down"; rotation: channelRow.selected ? 0 : -90; color: channelRow.selected ? Theme.accent : Theme.muted }
-                            Label { objectName: "channelName_" + modelData.id; text: modelData.name; textFormat: Text.PlainText; font.weight: channelRow.selected ? Font.DemiBold : Font.Normal; Layout.fillWidth: true; elide: Text.ElideRight }
-                            Rectangle { visible: channelRow.active; implicitWidth: 6; implicitHeight: 6; radius: Theme.smallRadius; color: Theme.accent; Accessible.name: qsTr("Connected to voice") }
-                            Label { visible: !!modelData.owned || modelData.id === (root.current.ownId || root.network.ownId); text: qsTr("You host"); font.pixelSize: 11; color: Theme.muted }
+                            Glyph { objectName: "ownedChannel_" + modelData.id; visible: channelRow.owned; symbol: "home"; description: qsTr("You host"); color: Theme.accent }
+                            Label { objectName: "channelName_" + modelData.id; text: modelData.name; textFormat: Text.PlainText; font.weight: channelRow.selected || channelRow.owned || channelRow.active ? Font.DemiBold : Font.Normal; Layout.fillWidth: true; elide: Text.ElideRight }
+                            Glyph { objectName: "joinedChannel_" + modelData.id; visible: channelRow.active; symbol: "headphones"; description: qsTr("Connected to voice"); color: Theme.accent }
                             Label {
                                 visible: !modelData.online
                                 text: root.accessLabel(modelData.access)
@@ -1121,6 +1176,7 @@ PanelWindow {
                                 Layout.maximumWidth: 75; elide: Text.ElideRight
                             }
                             Row {
+                                objectName: "memberSummary_" + modelData.id
                                 visible: !!modelData.online && channelRow.members.length > 0
                                 spacing: -5
                                 activeFocusOnTab: true
@@ -1148,6 +1204,7 @@ PanelWindow {
                                 }
                             }
                             ActionButton {
+                                objectName: "showMembers_" + modelData.id
                                 visible: !!modelData.online && channelRow.members.length > 3
                                 text: "+" + (channelRow.members.length - 3)
                                 flat: true
@@ -1163,7 +1220,7 @@ PanelWindow {
                             id: chatSlot
                             objectName: "conversationSlot_" + channelRow.modelData.id
                             anchors.left: parent.left; anchors.right: parent.right; anchors.top: parent.top; anchors.topMargin: 42
-                            height: Math.max(128, conversation.implicitHeight, scroll.height - Math.min(3, channelRows.count) * 44 - 12)
+                            height: Math.max(root.compactInput ? 0 : 128, conversation.implicitHeight, scroll.height - Math.min(3, channelRows.count) * 44 - 12)
                             visible: channelRow.selected
                             function selectSlot() {
                                 if (channelRow.selected) {
@@ -1185,7 +1242,7 @@ PanelWindow {
                         }
                         activeFocusOnTab: true
                         Accessible.role: Accessible.Button
-                        Accessible.name: modelData.name + (channelRow.active ? ", " + qsTr("Connected to voice") : "")
+                        Accessible.name: modelData.name + (channelRow.owned ? ", " + qsTr("You host") : "") + (channelRow.active ? ", " + qsTr("Connected to voice") : "")
                         Accessible.onPressAction: root.showHostChat(modelData.id)
                         Keys.onReturnPressed: root.showHostChat(modelData.id)
                         Keys.onSpacePressed: root.showHostChat(modelData.id)
@@ -1202,6 +1259,7 @@ PanelWindow {
         visible: root.showChat && root.conversationSlot !== null
         spacing: 4
         RowLayout {
+            visible: !root.compactInput
             Layout.fillWidth: true; spacing: 6
             Item { Layout.fillWidth: true }
             Label {
@@ -1213,51 +1271,11 @@ PanelWindow {
                 HoverHandler { id: expiryHover }
             }
         }
-        ScrollView {
-            objectName: "channelMembers"
-            visible: root.showChat && root.current.chatReady && root.chatMembers.length > 0
-            Layout.fillWidth: true
-            Layout.preferredHeight: Math.min(memberFlow.implicitHeight, root.height < 460 ? 48 : 100)
-            clip: true; contentWidth: availableWidth
-            Flow {
-                id: memberFlow
-                width: parent.width
-                spacing: 6
-                Repeater {
-                    model: root.chatMembers
-                    delegate: Item {
-                        required property var modelData
-                        width: Math.min(memberFlow.width, 176); height: 48
-                        activeFocusOnTab: true
-                        Accessible.role: Accessible.Button
-                        Accessible.name: modelData.name
-                        Accessible.onPressAction: root.memberOptions(modelData, root.inspectedHost)
-                        Keys.onReturnPressed: root.memberOptions(modelData, root.inspectedHost)
-                        Keys.onSpacePressed: root.memberOptions(modelData, root.inspectedHost)
-                        Rectangle { anchors.fill: parent; visible: parent.activeFocus; color: "transparent"; radius: Theme.controlRadius; border.color: Theme.accent }
-                        RowLayout {
-                            anchors.fill: parent; spacing: 5
-                            VoiceAvatar {
-                                objectName: "participantAvatar"
-                                Layout.preferredWidth: 44; Layout.preferredHeight: 44; circular: true
-                                avatar: modelData.avatarId || modelData.avatar || "mossling"; name: modelData.name; music: !!modelData.music
-                                available: modelData.available; muted: modelData.muted; deafened: !!modelData.deafened; sleeping: !!modelData.sleeping
-                                identity: modelData.id; animationTime: root.avatarTime
-                                animated: root.voice.animatedAvatars
-                                level: root.inspectedHost === root.activeHost ? root.memberLevel(modelData.id) : 0
-                            }
-                            Label { text: modelData.name; textFormat: Text.PlainText; Layout.fillWidth: true; elide: Text.ElideRight; font.pixelSize: 12 }
-                        }
-                        MouseArea { anchors.fill: parent; acceptedButtons: Qt.LeftButton | Qt.RightButton; onClicked: root.memberOptions(modelData, root.inspectedHost) }
-                    }
-                }
-            }
-        }
         Loader {
             Layout.fillWidth: true
             Layout.preferredHeight: visible ? (root.height < 460 ? 48 : 112) : 0
             active: !!root.screen
-            visible: !root.remote && !!root.network.screenView.available
+            visible: !root.compactInput && !root.remote && !!root.network.screenView.available
             sourceComponent: ScreenPanel { share: root.screen; network: root.network; hostId: root.inspectedHost }
         }
         Label {
@@ -1276,7 +1294,8 @@ PanelWindow {
         }
     }
     footer: Rectangle {
-        implicitHeight: controls.implicitHeight + 16
+        visible: !root.mobileKeyboard
+        implicitHeight: visible ? controls.implicitHeight + 16 : 0
         color: Theme.surface
         ColumnLayout {
             id: controls
@@ -1291,6 +1310,8 @@ PanelWindow {
             }
             RowLayout {
                 Layout.fillWidth: true; spacing: 4
+                ActionButton { objectName: "addChannel"; visible: !root.remote; text: qsTr("Add channel"); glyph: "plus"; iconOnly: true; flat: true; onClicked: discover.open() }
+                ActionButton { objectName: "openSettings"; visible: !root.remote; text: qsTr("Settings"); glyph: "settings"; iconOnly: true; flat: true; onClicked: root.openSettings(0) }
                 ActionButton {
                     objectName: "audioQuality"
                     readonly property int bitrate: root.current.receiveAudioBitrate || 0
@@ -1301,7 +1322,12 @@ PanelWindow {
                     ToolTip.text: qsTr("Receive quality: %1 kb/s per voice. Adjusts automatically for this device.").arg(bitrate)
                     onClicked: ToolTip.show(ToolTip.text, 5000)
                 }
-                Item { Layout.fillWidth: true }
+                Label {
+                    objectName: "remoteTargetName"
+                    Layout.fillWidth: true; Layout.minimumWidth: 0
+                    text: root.remote ? root.network.controlTargetName : ""
+                    textFormat: Text.PlainText; elide: Text.ElideRight; font.pixelSize: 12
+                }
                 ActionButton { objectName: "mute"; text: root.micMuted ? qsTr("Unmute microphone") : qsTr("Mute microphone"); glyph: root.micMuted || (!root.remote && !root.voice.available) ? "mute" : "mic"; iconOnly: true; flat: true; checked: root.micMuted; enabled: !root.remote || root.network.remoteAllowed; onClicked: root.remote ? root.network.remoteAction("mute", {value: !root.micMuted}) : root.voice.setMuted(!root.micMuted) }
                 ActionButton { objectName: "deafen"; text: root.outputMuted ? qsTr("Enable speakers") : qsTr("Mute speakers"); glyph: root.outputMuted ? "deafen" : "speaker"; iconOnly: true; flat: true; checked: root.outputMuted; enabled: !root.remote || root.network.remoteAllowed; onClicked: root.remote ? root.network.remoteAction("deafen", {value: !root.outputMuted}) : root.voice.setDeafened(!root.outputMuted) }
                 ActionButton {
@@ -1317,7 +1343,6 @@ PanelWindow {
                         else remoteTargets.open()
                     }
                 }
-                ActionButton { objectName: "leaveChannel"; text: qsTr("Leave channel"); destructive: true; glyph: "leave"; iconOnly: true; flat: true; visible: root.activeHost.length > 0; onClicked: root.leaveHost() }
             }
             ActionButton {
                 objectName: "pttButton"

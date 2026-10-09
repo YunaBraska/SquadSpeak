@@ -873,10 +873,6 @@
             <translation>الانضمام التلقائي</translation>
         </message>
         <message>
-            <source>Leave channel</source>
-            <translation>مغادرة القناة</translation>
-        </message>
-        <message>
             <source>Stream URL</source>
             <translation>عنوان URL للبث</translation>
         </message>

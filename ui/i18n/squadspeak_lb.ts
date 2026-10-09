@@ -873,10 +873,6 @@
             <translation>Auto-Join</translation>
         </message>
         <message>
-            <source>Leave channel</source>
-            <translation>Verloossen Kanal</translation>
-        </message>
-        <message>
             <source>Stream URL</source>
             <translation>Stream URL</translation>
         </message>

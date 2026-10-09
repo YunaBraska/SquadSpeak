@@ -274,6 +274,36 @@ private slots:
         for (const auto* suffix : {"", ".instance.lock", ".channel.json", ".radio.json"})
             QVERIFY(!QFile::exists(profile + suffix));
     }
+    void desktopProfileEnvironmentSurvivesArgumentlessRestart_data() {
+        QTest::addColumn<bool>("explicitPath");
+        QTest::newRow("environment") << false;
+        QTest::newRow("argument-overrides-environment") << true;
+    }
+    void desktopProfileEnvironmentSurvivesArgumentlessRestart() {
+        QFETCH(bool, explicitPath);
+        QTemporaryDir directory;
+        const auto profile = directory.filePath("environment/audio.ini");
+        const auto other = directory.filePath("explicit/audio.ini");
+        QVERIFY(QDir().mkpath(QFileInfo(profile).absolutePath()));
+        QVERIFY(QDir().mkpath(QFileInfo(other).absolutePath()));
+        VoiceSession session(profile + ".session.json"); QVERIFY(session.setLanguage("de"));
+        VoiceSession second(other + ".session.json"); QVERIFY(second.setLanguage("en"));
+        QProcess process;
+        auto environment = QProcessEnvironment::systemEnvironment();
+        environment.insert("QT_QPA_PLATFORM", "offscreen");
+        environment.insert("SQUADSPEAK_SETTINGS_FILE", profile);
+        process.setProcessEnvironment(environment);
+        QStringList arguments{"--help"};
+        if (explicitPath) arguments << "--settings-file" << other;
+        process.start(executable_, arguments);
+        QVERIFY(process.waitForFinished(5000));
+        QCOMPARE(process.exitStatus(), QProcess::NormalExit); QCOMPARE(process.exitCode(), 0);
+        const auto help = QString::fromUtf8(process.readAllStandardOutput());
+        QVERIFY2(help.contains(explicitPath ? "Open settings at startup." : QString::fromUtf8("Einstellungen beim Start öffnen.")), qPrintable(help));
+        for (const auto& path : {profile, other})
+            for (const auto* suffix : {"", ".instance.lock", ".channel.json", ".radio.json"})
+                QVERIFY(!QFile::exists(path + suffix));
+    }
     void desktopHelpAndProfileLockUseSavedLanguageWithoutStartingServices() {
         QTemporaryDir directory;
         const auto profile = directory.filePath("audio.ini");

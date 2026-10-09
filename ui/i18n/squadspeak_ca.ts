@@ -873,10 +873,6 @@
             <translation>Unió automàtica</translation>
         </message>
         <message>
-            <source>Leave channel</source>
-            <translation>Abandonar el canal</translation>
-        </message>
-        <message>
             <source>Stream URL</source>
             <translation>URL del flux</translation>
         </message>

@@ -873,10 +873,6 @@
             <translation>Shiga ta atomatik</translation>
         </message>
         <message>
-            <source>Leave channel</source>
-            <translation>Bar Tashar</translation>
-        </message>
-        <message>
             <source>Stream URL</source>
             <translation>URL na gwanon bidiyo</translation>
         </message>

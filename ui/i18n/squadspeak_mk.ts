@@ -873,10 +873,6 @@
             <translation>Автоматско приклучување</translation>
         </message>
         <message>
-            <source>Leave channel</source>
-            <translation>Оставете го каналот</translation>
-        </message>
-        <message>
             <source>Stream URL</source>
             <translation>URL-адреса за пренос</translation>
         </message>

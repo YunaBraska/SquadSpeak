@@ -873,10 +873,6 @@
             <translation>Entrada automática</translation>
         </message>
         <message>
-            <source>Leave channel</source>
-            <translation>Sair do canal</translation>
-        </message>
-        <message>
             <source>Stream URL</source>
             <translation>URL da transmissão</translation>
         </message>

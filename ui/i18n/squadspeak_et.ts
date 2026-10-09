@@ -873,10 +873,6 @@
             <translation>Automaatne liitumine</translation>
         </message>
         <message>
-            <source>Leave channel</source>
-            <translation>Kanali lahkumine</translation>
-        </message>
-        <message>
             <source>Stream URL</source>
             <translation>Striimi URL</translation>
         </message>

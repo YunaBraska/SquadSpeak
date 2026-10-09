@@ -873,10 +873,6 @@
             <translation>Αυτόματη σύνδεση</translation>
         </message>
         <message>
-            <source>Leave channel</source>
-            <translation>Αποχώρηση καναλιού</translation>
-        </message>
-        <message>
             <source>Stream URL</source>
             <translation>URL ροής</translation>
         </message>

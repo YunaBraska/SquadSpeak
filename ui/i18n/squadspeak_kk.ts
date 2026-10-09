@@ -873,10 +873,6 @@
             <translation>Автоматты қосылу</translation>
         </message>
         <message>
-            <source>Leave channel</source>
-            <translation>Арнадан шығу</translation>
-        </message>
-        <message>
             <source>Stream URL</source>
             <translation>ағынның URL мекенжайы</translation>
         </message>

@@ -873,10 +873,6 @@
             <translation>Avtomatik qoşulma</translation>
         </message>
         <message>
-            <source>Leave channel</source>
-            <translation>Kanalı tərk edin</translation>
-        </message>
-        <message>
             <source>Stream URL</source>
             <translation>Yayım URL-i</translation>
         </message>

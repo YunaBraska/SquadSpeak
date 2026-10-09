@@ -873,10 +873,6 @@
             <translation>Tgħaqqad awtomatikament</translation>
         </message>
         <message>
-            <source>Leave channel</source>
-            <translation>Oħroġ mill-kanal</translation>
-        </message>
-        <message>
             <source>Stream URL</source>
             <translation>URL tal-fluss</translation>
         </message>

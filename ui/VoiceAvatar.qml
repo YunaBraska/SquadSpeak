@@ -57,7 +57,10 @@ Item {
     onOnlineChanged: circle.requestPaint()
     onCircularChanged: circle.requestPaint()
     Rectangle {
-        anchors.fill: parent
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.bottom: parent.bottom
+        width: root.circular ? Math.min(root.width, root.height) * 0.82 : root.width
+        height: root.circular ? width : root.height
         radius: root.circular ? width / 2 : Theme.panelRadius
         color: !root.online ? (Theme.dark ? "#333333" : "#ececec") : Theme.raised
         border.color: root.activity > 0 ? Theme.accent : "transparent"
@@ -97,7 +100,11 @@ Item {
             const c = getContext("2d")
             c.reset()
             if (!isImageLoaded(atlas)) return
-            if (root.circular) { c.beginPath(); c.arc(width / 2, height / 2, Math.min(width, height) / 2, 0, Math.PI * 2); c.clip() }
+            if (root.circular) {
+                c.shadowColor = "rgba(0, 0, 0, 0.24)"
+                c.shadowBlur = 2
+                c.shadowOffsetY = 1.5
+            }
             const still = root.systemMessage && !root.animated
             const aspect = still ? 1 : crop.width / crop.height
             const w = Math.min(width, height * aspect), h = w / aspect

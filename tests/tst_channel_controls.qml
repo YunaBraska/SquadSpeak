@@ -38,8 +38,11 @@ TestCase {
         property string error: ""
         property var sources: []
         property int selectedSource: -1
-        function start(index, hostId) { selectedSource = index; return true }
-        function refreshSources() { return true }
+        property int refreshCalls: 0
+        property int startCalls: 0
+        property bool startSucceeds: true
+        function start(index, hostId) { ++startCalls; selectedSource = index; return startSucceeds }
+        function refreshSources() { ++refreshCalls; return true }
         function setAudioEnabled(enabled) { audioEnabled = enabled; return true }
     }
     QtObject {
@@ -103,6 +106,9 @@ TestCase {
 
     function init() {
         licenseDisplay.reset()
+        captureDisplay.error = ""
+        captureDisplay.refreshCalls = 0; captureDisplay.startCalls = 0
+        captureDisplay.startSucceeds = true
         verify(fixtures.setSupporter(false))
         verify(fixtures.expireChat())
         view.show()
@@ -118,6 +124,8 @@ TestCase {
 
     }
     function cleanup() {
+        Qt.inputMethod.hide()
+        tryCompare(Qt.inputMethod, "visible", false)
         for (const window of [view, controllerView]) {
             for (const action of ["autoJoinMenuItem", "inspectMember"]) {
                 const menu = findChild(window, action).menu
@@ -125,6 +133,8 @@ TestCase {
                 tryCompare(menu, "visible", false)
             }
         }
+        findChild(view, "membersDialog").close()
+        verify(fixtures.populateMembers(0))
         findChild(view, "screenPicker").close()
         view.screen = screenShare
         view.supporter = supporterLicense
@@ -152,6 +162,8 @@ TestCase {
         findChild(view, "removeOwnChannelDialog").close()
         for (const owner of channel.ownedChannels) if (owner.id !== channel.ownId) verify(channel.removeOwnedChannel(owner.id))
         radio.cancelStationCheck()
+        findChild(view, "chatDraft").text = ""
+        findChild(view, "chatPanel").drafts = ({})
         session.setAudioSettingsOpen(false)
         session.setAudioTestActive(false)
         channel.setHostPassword("")
@@ -163,8 +175,43 @@ TestCase {
         remoteChannel.stopHost()
         channel.leave()
         channel.stopHost()
-        view.width = 520
-        view.height = 700
+        view.width = Qt.platform.os === "android" ? view.Screen.desktopAvailableWidth : 520
+        view.height = Qt.platform.os === "android" ? view.Screen.desktopAvailableHeight : 700
+    }
+
+    function test_screenPickerShowsFailureWithoutRetrying_data() {
+        return [{tag: "enumeration", start: false}, {tag: "start", start: true}]
+    }
+    function test_screenPickerShowsFailureWithoutRetrying(data) {
+        verify(fixtures.startHost())
+        captureDisplay.active = false
+        captureDisplay.sources = data.start ? [{index: 0, name: "Fixture window"}] : []
+        captureDisplay.startSucceeds = false
+        view.screen = captureDisplay; view.selectedHost = channel.ownId
+        const share = findChild(view, "shareScreen"), picker = findChild(view, "screenPicker")
+        share.menu.popup()
+        tryCompare(share.menu, "opened", true)
+        waitForRendering(share)
+        mouseClick(share)
+        tryCompare(picker, "opened", true)
+        compare(captureDisplay.refreshCalls, 1)
+        if (data.start) {
+            const source = visualChild(picker.contentItem, "screenSource_0")
+            verify(source !== null); waitForRendering(source); mouseClick(source)
+        }
+        captureDisplay.error = "Screen recording permission was denied. <b>Restart the app.</b>"
+        const notice = findChild(picker, "screenCaptureError")
+        verify(notice !== null, "The source picker must show the capture failure, not an empty panel")
+        tryCompare(notice, "visible", true)
+        compare(notice.text, captureDisplay.error)
+        compare(notice.textFormat, Text.PlainText)
+        waitForRendering(notice)
+        compare(captureDisplay.refreshCalls, 1)
+        compare(captureDisplay.startCalls, data.start ? 1 : 0)
+        verify(!captureDisplay.active)
+        mouseClick(findChild(picker, "dialogCancelButton"))
+        tryCompare(picker, "visible", false)
+        compare(captureDisplay.refreshCalls, 1)
     }
 
     function test_screenSourceTitleDisplaysLiterally() {
@@ -308,6 +355,10 @@ TestCase {
         const id = channel.ownedChannels.find(function(c) { return c.id !== channel.ownId }).id
         tryCompare(channel, "chatHostId", id)
         tryCompare(channel, "chatReady", true)
+        const extraOwner = visualChild(view.contentItem, "ownedChannel_" + id)
+        const extraVoice = visualChild(view.contentItem, "joinedChannel_" + id)
+        verify(extraOwner !== null && extraOwner.visible, "Additional owned channels use the same ownership marker")
+        verify(extraVoice !== null && !extraVoice.visible, "Creating a channel does not join its voice session")
         const owner = channel.ownChannel(id)
         view.selectedHost = id
         const info = findChild(view, "channelInfoDialog")
@@ -488,13 +539,12 @@ TestCase {
             const canvas = findChild(shelf.currentItem, "avatarCanvas")
             verify(canvas.crop.width >= canvas.width && canvas.crop.height >= canvas.height,
                 "Portrait crop contains enough pixels for its displayed size")
-            waitForRendering(shelf)
             mouseClick(shelf, shelf.width / 2, 44)
             compare(session.avatar, session.avatars[i])
         }
         if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/avatar-shelf-end.png"))
         shelf.positionViewAtIndex(0, PathView.Center)
-        waitForRendering(shelf)
+        tryCompare(shelf, "currentIndex", 0)
         if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/avatar-shelf-start.png"))
         const selected = session.avatar
         const offset = shelf.offset
@@ -509,10 +559,10 @@ TestCase {
         tryCompare(galleryPortraits, "count", session.avatars.length)
         for (let i = 0; i < session.avatars.length; ++i) {
             tryVerify(function() { return galleryPortraits.itemAt(i) !== null })
-            const canvas = findChild(galleryPortraits.itemAt(i), "avatarCanvas")
-            tryVerify(function() { return canvas.isImageLoaded(canvas.atlas) })
+            const avatar = findChild(galleryPortraits.itemAt(i), "avatarCanvas").parent
+            tryVerify(function() { return fixtures.portraitHasDetail(avatar) }, 5000,
+                session.avatars[i] + " is visible in the gallery")
         }
-        waitForRendering(portraitGallery)
         if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/avatar-catalog.png"))
         portraitGallery.online = false
         for (let i = 0; i < session.avatars.length; ++i) {
@@ -668,6 +718,7 @@ TestCase {
         view.memberOptions(member, channel.ownId)
         const inspect = findChild(view, "inspectMember")
         tryCompare(inspect.menu, "opened", true)
+        waitForRendering(inspect)
         mouseClick(inspect)
         const dialog = findChild(view, "requestInfoDialog")
         tryCompare(dialog, "opened", true)
@@ -1293,8 +1344,8 @@ TestCase {
         view.chatExpanded = true
         const panel = findChild(view, "chatPanel")
         const history = findChild(panel, "chatHistory")
-        tryCompare(history, "count", channel.messages.length)
-        history.positionViewAtEnd()
+        tryCompare(history.rows, "count", channel.messages.length)
+        history.scrollTo(history.contentHeight - history.height)
         waitForRendering(panel)
         if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/system-bot-chat.png"))
     }
@@ -1632,6 +1683,54 @@ TestCase {
         }
     }
 
+    function test_all64MembersAreReachableFromChannelSummary() {
+        if (Qt.platform.os === "ios" || Qt.platform.os === "android") orientChat(false)
+        else { view.width = 460; view.height = 700 }
+        verify(fixtures.startHost())
+        verify(channel.join(channel.ownId, "127.0.0.1", channel.servicePort))
+        tryCompare(channel, "chatReady", true)
+        verify(fixtures.populateMembers(63))
+        tryVerify(function() { return channel.participants.length === 64 && view.chatMembers.length === 64 }, 30000)
+        const more = visualChild(view.contentItem, "showMembers_" + channel.ownId)
+        tryVerify(function() { return more && more.visible })
+        compare(more.text, "+61")
+        const inlineGrid = findChild(view, "channelMembers")
+        verify(!inlineGrid || !inlineGrid.visible, "The channel has one member summary, not a duplicate roster above chat")
+        compare(findChild(view, "leaveChannel"), null)
+        if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/members-64-channel.png"))
+        mouseClick(more)
+        const dialog = findChild(view, "membersDialog"), grid = findChild(view, "allMembers")
+        tryCompare(dialog, "opened", true)
+        tryCompare(grid, "count", 64)
+        verify(grid.height > 100)
+        tryVerify(function() {
+            for (const member of grid.model) {
+                const row = visualChild(grid, "member_" + member.id)
+                if (!row) continue
+                const y = row.mapToItem(grid, 0, 0).y
+                if (y >= 0 && y + row.height <= grid.height
+                    && !fixtures.portraitHasDetail(findChild(row, "participantAvatar"))) return false
+            }
+            return true
+        })
+        if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/members-64-list.png"))
+        grid.positionViewAtEnd()
+        const last = grid.model[63]
+        tryVerify(function() { return visualChild(grid, "member_" + last.id) !== null })
+        const row = visualChild(grid, "member_" + last.id)
+        tryVerify(function() { const p = row.mapToItem(grid, 0, 0); return p.y >= 0 && p.y + row.height <= grid.height + 1 })
+        mouseClick(row, row.width / 2, row.height / 2)
+        const inspect = findChild(view, "inspectMember")
+        tryCompare(inspect.menu, "opened", true)
+        waitForRendering(inspect)
+        if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/members-64-menu.png"))
+        mouseClick(inspect)
+        const info = findChild(view, "requestInfoDialog")
+        tryCompare(info, "opened", true)
+        compare(findChild(info, "requestName").text, last.name)
+        if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/members-64-inspect.png"))
+    }
+
     function test_channelTreeAndIconControlsFitCompactWindow() {
         verify(fixtures.startHost())
         verify(channel.decide(remoteChannel.ownId, true))
@@ -1640,7 +1739,11 @@ TestCase {
         tryCompare(channel, "chatReady", true)
         tryCompare(remoteChannel, "chatReady", true)
         tryVerify(function() { return channel.participants.length === 2 })
-        for (const size of [[460, 560], [360, 360]]) {
+        const inlineGrid = findChild(view, "channelMembers")
+        verify(!inlineGrid || !inlineGrid.visible, "Members are not repeated below the channel header")
+        verify(!view.header, "Channel content starts without an app header")
+        verify(findChild(view, "leaveChannel") === null, "Leave stays in the channel menu")
+        for (const size of [[460, 560], [360, 360], [900, 480]]) {
             view.width = size[0]; view.height = size[1]
             waitForRendering(view.contentItem)
             const channelScroll = findChild(view, "channelsScroll")
@@ -1649,17 +1752,30 @@ TestCase {
                 const position = send.mapToItem(channelScroll, 0, 0)
                 return position.y >= 0 && position.y + send.height <= channelScroll.height
             }, 1500, "The composer stays fully usable after shrinking the channel window")
-            for (const name of ["mute", "deafen", "leaveChannel"]) {
+            for (const name of ["addChannel", "openSettings", "mute", "deafen"]) {
                 const control = findChild(view, name)
-                const pos = control.mapToItem(view.contentItem, 0, 0)
+                const pos = control.mapToItem(view.footer, 0, 0)
                 verify(control.visible)
-                verify(pos.x >= 0 && pos.x + control.width <= view.width, name)
+                verify(pos.x >= 0 && pos.x + control.width <= view.footer.width, name)
+                verify(pos.y >= 0 && pos.y + control.height <= view.footer.height, name)
                 verify(control.iconOnly)
             }
             verify(!findChild(view, "remoteToggle").visible)
             verify(session.available)
+            for (const member of channel.participants) {
+                const avatar = visualChild(view.contentItem, "channelAvatar_" + channel.ownId + "_" + member.id)
+                tryVerify(function() { return fixtures.portraitHasDetail(avatar) }, 5000, "Every visible channel portrait is painted")
+            }
             if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/channels-new-" + size[0] + ".png"))
         }
+        const summary = visualChild(view.contentItem, "memberSummary_" + channel.ownId)
+        verify(summary && summary.visible)
+        mouseClick(summary, summary.width / 2, summary.height / 2)
+        const members = findChild(view, "membersDialog")
+        tryCompare(members, "opened", true)
+        tryCompare(findChild(members, "allMembers"), "count", 2)
+        members.close()
+        tryCompare(members, "visible", false)
         channel.leave()
         const row = visualChild(view.contentItem, "channelRow_" + channel.ownId)
         verify(row)
@@ -1669,6 +1785,10 @@ TestCase {
         mouseClick(findChild(view, "deafen")); compare(session.deafened, true)
         compare(findChild(view, "deafen").glyph, "deafen")
         mouseClick(findChild(view, "deafen")); compare(session.deafened, false)
+        mouseClick(findChild(view, "addChannel"))
+        tryCompare(findChild(view, "discoverDialog"), "opened", true)
+        findChild(view, "discoverDialog").close()
+        tryCompare(findChild(view, "discoverDialog"), "visible", false)
         mouseClick(findChild(view, "openSettings"))
         tryCompare(findChild(view, "settingsDialog"), "opened", true)
         verify(session.available)
@@ -1873,7 +1993,7 @@ TestCase {
             view.height = 420
             tryCompare(visualChild(view.contentItem, "channelName_" + channel.ownId), "text", longName)
             waitForRendering(view.contentItem)
-            for (const name of ["mute", "leaveChannel"] ) {
+            for (const name of ["mute", "deafen"] ) {
                 const control = findChild(view, name)
                 const pos = control.mapToItem(view.contentItem, 0, 0)
                 verify(control.visible)
@@ -2028,6 +2148,19 @@ TestCase {
         compare(remoteChannel.joined, false)
         controllerView.show()
         tryCompare(controllerView, "activeHost", channel.ownId)
+        tryVerify(function() {
+            const owner = visualChild(controllerView.contentItem, "ownedChannel_" + channel.ownId)
+            const joined = visualChild(controllerView.contentItem, "joinedChannel_" + channel.ownId)
+            return owner !== null && owner.visible && joined !== null && joined.visible
+        }, 5000, "Remote mode shows the controlled device's ownership and voice participation")
+        verify(!controllerView.header)
+        const targetName = findChild(controllerView, "remoteTargetName")
+        verify(targetName && targetName.visible)
+        compare(targetName.text, remoteChannel.controlTargetName)
+        const targetPosition = targetName.mapToItem(controllerView.footer, 0, 0)
+        verify(targetPosition.y >= 0 && targetPosition.y + targetName.height <= controllerView.footer.height)
+        verify(!findChild(controllerView, "addChannel").visible)
+        verify(!findChild(controllerView, "openSettings").visible)
         mouseClick(findChild(controllerView, "mute"))
         tryCompare(session, "muted", false)
         mouseClick(findChild(controllerView, "deafen"))
@@ -2119,22 +2252,22 @@ TestCase {
         compare(remoteChannel.messages[remoteChannel.messages.length - 1].text, markdown)
         verify(remoteChannel.sendChat("> Start whenever you are ready.\n\nSounds good! I brought **snacks**. Notes: https://example.org\n\n- Voice first\n- No rush"))
         tryCompare(remoteChannel, "chatPending", false)
-        tryCompare(findChild(panel, "chatHistory"), "count", initialCount + 2)
+        tryCompare(findChild(panel, "chatHistory").rows, "count", initialCount + 2)
         compare(channel.messages[initialCount + 1].sender, remoteChannel.ownId)
         draft.text = "Tip: use `Shift+Enter` for a new line.\n\n```text\nGood company. Clear voices.\n```"
         tryCompare(send, "enabled", true)
         mouseClick(send)
         tryCompare(draft, "text", "")
-        tryCompare(findChild(panel, "chatHistory"), "count", initialCount + 3)
+        tryCompare(findChild(panel, "chatHistory").rows, "count", initialCount + 3)
         verify(session.available)
         const history = findChild(panel, "chatHistory")
         waitForRendering(panel)
         tryVerify(function() {
-            history.forceLayout()
-            history.positionViewAtBeginning()
-            return history.atYBeginning && history.itemAtIndex(0) !== null
+            waitForRendering(history)
+            history.scrollTo(0)
+            return history.atYBeginning && history.rows.itemAt(0) !== null
         })
-        const systemRow = history.itemAtIndex(0)
+        const systemRow = history.rows.itemAt(0)
         verify(systemRow && systemRow.systemMessage && !systemRow.own)
         const systemAvatar = findChild(systemRow, "messageAvatar_" + systemRow.message.sender)
         verify(systemAvatar.systemMessage && systemAvatar.online && systemAvatar.animated)
@@ -2149,8 +2282,8 @@ TestCase {
         compare(futureNotice.text, futureText)
         waitForRendering(panel)
         tryVerify(function() {
-            history.positionViewAtBeginning()
-            const row = history.itemAtIndex(0)
+            history.scrollTo(0)
+            const row = history.rows.itemAt(0)
             const avatar = row ? findChild(row, "messageAvatar_" + row.message.sender) : null
             return avatar !== null && fixtures.portraitHasDetail(avatar)
         }, 5000,
@@ -2160,9 +2293,11 @@ TestCase {
             verify(fixtures.saveWindow(view, imageDirectory + "/chat-future-event-" + data.language + ".png"))
         }
         systemRow.message = originalEvent
-        tryVerify(function() { return history.itemAtIndex(initialCount) !== null && history.itemAtIndex(initialCount + 1) !== null })
-        const own = history.itemAtIndex(initialCount), other = history.itemAtIndex(initialCount + 1)
+        tryVerify(function() { return history.rows.itemAt(initialCount) !== null && history.rows.itemAt(initialCount + 1) !== null })
+        const own = history.rows.itemAt(initialCount), other = history.rows.itemAt(initialCount + 1)
         verify(own && other)
+        history.scrollTo(other.y)
+        tryVerify(function() { return findChild(other, "messageAvatar_" + remoteChannel.ownId) !== null })
         verify(findChild(other, "messageAvatar_" + remoteChannel.ownId).animated,
             "Chat portraits follow the channel animation preference")
         compare(own.own, true); compare(other.own, false)
@@ -2173,32 +2308,33 @@ TestCase {
         tryVerify(function() { return other.message.avatarId === "mechanic" })
         verify(remoteSession.setUserName(previousRemoteName)); verify(remoteSession.setAvatar("courier"))
         tryVerify(function() { return other.message.name === previousRemoteName })
-        compare(findChild(view, "audioQuality").bitrate, 32)
-        const ownPortrait = findChild(own, "messageAvatar_" + channel.ownId)
-        const otherPortrait = findChild(other, "messageAvatar_" + remoteChannel.ownId)
-        tryVerify(function() { return fixtures.portraitHasDetail(ownPortrait, false) }, 5000, "Own portrait is rendered")
-        tryVerify(function() { return fixtures.portraitHasDetail(otherPortrait, false) }, 5000, "Member portrait is rendered")
+        compare(findChild(view, "audioQuality").bitrate, channel.receiveAudioBitrate)
+        history.scrollTo(own.y)
+        tryVerify(function() { return fixtures.portraitHasDetail(findChild(own, "messageAvatar_" + channel.ownId), false) }, 5000, "Own portrait is rendered")
+        history.scrollTo(other.y)
+        tryVerify(function() { return fixtures.portraitHasDetail(findChild(other, "messageAvatar_" + remoteChannel.ownId), false) }, 5000, "Member portrait is rendered")
         if (imageDirectory.length > 0) {
-            findChild(panel, "chatHistory").positionViewAtBeginning()
+            findChild(panel, "chatHistory").scrollTo(0)
             waitForRendering(panel)
             verify(fixtures.saveWindow(view, imageDirectory + "/channel-chat.png"))
         }
         verify(remoteChannel.closeChat(channel.ownId))
         tryVerify(function() { return channel.chatPresenceKnown && !channel.chatOnlineIds.includes(remoteChannel.ownId) })
+        history.scrollTo(other.y)
         const offlinePortrait = visualChild(panel, "messageAvatar_" + remoteChannel.ownId)
         verify(offlinePortrait !== null); compare(offlinePortrait.online, false); compare(offlinePortrait.stateRow, 4)
         waitForRendering(panel)
         if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/chat-offline-avatar.png"))
         verify(fixtures.publishSystem("**Server notice**: https://example.org"))
         tryVerify(function() { return channel.messages.some(function(m) { return m.event && m.event.kind === "announcement" }) })
-        tryCompare(history, "count", channel.messages.length)
+        tryCompare(history.rows, "count", channel.messages.length)
         const announcementIndex = channel.messages.findIndex(function(m) { return m.event && m.event.kind === "announcement" })
         tryVerify(function() {
-            history.forceLayout()
-            history.positionViewAtEnd()
-            return history.atYEnd && history.itemAtIndex(announcementIndex) !== null
+            waitForRendering(history)
+            history.scrollTo(history.contentHeight - history.height)
+            return history.atYEnd && history.rows.itemAt(announcementIndex) !== null
         })
-        const announcement = history.itemAtIndex(announcementIndex)
+        const announcement = history.rows.itemAt(announcementIndex)
         verify(announcement && announcement.systemMessage && !announcement.own)
         const notice = findChild(announcement, "messageText_" + announcement.message.sequence)
         compare(notice.textFormat, TextEdit.RichText)
@@ -2209,6 +2345,52 @@ TestCase {
         channel.stopHost()
         verify(session.setUserName(previousName))
         verify(channel.setChannelName(previousChannel))
+    }
+
+    function test_returningToChatPaintsWithoutScrolling_data() {
+        return Qt.platform.os === "ios" || Qt.platform.os === "android" ? [{tag: "native"}]
+            : [{tag: "desktop", width: 520, height: 700}, {tag: "compact", width: 360, height: 640}]
+    }
+    function test_returningToChatPaintsWithoutScrolling(data) {
+        if (data.tag !== "native") { view.width = data.width; view.height = data.height }
+        session.setAnimatedAvatars(false)
+        verify(fixtures.startHost()); verify(fixtures.startRemoteHost())
+        verify(remoteChannel.decide(channel.ownId, true))
+        verify(channel.join(channel.ownId, "127.0.0.1", channel.servicePort))
+        tryVerify(function() { return channel.chatReady && !channel.historyLoading })
+        for (let i = 0; i < 24; ++i) {
+            if (i % 10 === 0) fixtures.advanceTime()
+            verify(channel.sendChat(("Message " + i + " stays visible after returning. ").repeat(i % 3 === 0 ? 12 : 2)))
+            tryCompare(channel, "chatPending", false)
+        }
+        const panel = findChild(view, "chatPanel"), history = findChild(panel, "chatHistory")
+        for (let pass = 0; pass < 4; ++pass) {
+            verify(channel.openChat(remoteChannel.ownId, "127.0.0.1", remoteChannel.servicePort))
+            tryVerify(function() { return channel.chatReady && !channel.historyLoading })
+            view.showHostChat(channel.ownId)
+            tryCompare(channel, "chatHostId", channel.ownId)
+            tryVerify(function() { return channel.chatReady && !channel.historyLoading })
+            tryCompare(history.rows, "count", channel.messages.length)
+            tryCompare(panel, "updating", false)
+            tryVerify(function() { return history.atYEnd }, 2000, "Returning shows the newest messages without a scroll event")
+            const last = history.rows.itemAt(history.rows.count - 1)
+            tryVerify(function() {
+                const point = last.mapToItem(history, 0, 0)
+                return point.y < history.height && point.y + last.height > 0
+            }, 2000, "A message occupies the visible chat area")
+            tryVerify(function() {
+                return fixtures.portraitHasDetail(findChild(last, "messageAvatar_" + last.message.sender))
+            }, 5000, "The returned message portrait is painted without scrolling")
+            view.showHostChat(channel.ownId)
+            tryCompare(panel, "visible", false)
+            verify(channel.sendChat("Arrived while the channel was collapsed."))
+            tryCompare(channel, "chatPending", false)
+            view.showHostChat(channel.ownId)
+            tryCompare(panel, "visible", true)
+            tryVerify(function() { return history.atYEnd }, 2000, "Reopening a collapsed chat follows messages received while hidden: y="
+                + history.contentY + ", height=" + history.height + ", content=" + history.contentHeight + ", follow=" + panel.followEnd)
+            tryVerify(function() { return fixtures.portraitHasDetail(findChild(last, "messageAvatar_" + last.message.sender)) })
+        }
     }
 
     function test_multipleChatsKeepDraftsAndVoiceSeparate() {
@@ -2227,6 +2409,16 @@ TestCase {
         verify(channel.openChat(remoteChannel.ownId, "127.0.0.1", remoteChannel.servicePort))
         tryCompare(channel, "chatReady", true)
         compare(channel.joinedHostId, channel.ownId)
+        const ownMarker = visualChild(view.contentItem, "ownedChannel_" + channel.ownId)
+        const otherMarker = visualChild(view.contentItem, "ownedChannel_" + remoteChannel.ownId)
+        const ownVoice = visualChild(view.contentItem, "joinedChannel_" + channel.ownId)
+        const otherVoice = visualChild(view.contentItem, "joinedChannel_" + remoteChannel.ownId)
+        verify(ownMarker !== null && ownVoice !== null, "Ownership and voice participation have separate visible symbols")
+        verify(otherMarker !== null && otherVoice !== null)
+        verify(ownMarker.visible && !otherMarker.visible)
+        verify(ownVoice.visible && !otherVoice.visible, "Reading another chat does not move the voice marker")
+        compare(ownMarker.description, "You host")
+        compare(ownVoice.description, "Connected to voice")
         const panel = findChild(view, "chatPanel"), draft = findChild(panel, "chatDraft")
         tryCompare(panel, "visible", true)
         const loungeSlot = visualChild(view.contentItem, "conversationSlot_" + remoteChannel.ownId)
@@ -2257,7 +2449,7 @@ TestCase {
         draft.text = "Reading here, still talking in **Workshop**."
         const send = findChild(panel, "sendChat")
         tryCompare(send, "enabled", true); mouseClick(send); tryCompare(draft, "text", "")
-        tryCompare(findChild(panel, "chatHistory"), "count", 3)
+        tryCompare(findChild(panel, "chatHistory").rows, "count", 3)
         waitForRendering(panel)
         if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/chat-multiple-hosts.png"))
         other = visualChild(view.contentItem, "channelRow_" + remoteChannel.ownId)
@@ -2265,6 +2457,35 @@ TestCase {
         mouseDoubleClickSequence(other, 35, other.height / 2)
         tryCompare(channel, "joinedHostId", remoteChannel.ownId)
         tryCompare(channel, "joined", true)
+        tryCompare(channel, "historyLoading", false)
+        tryCompare(findChild(panel, "chatHistory").rows, "count", channel.messages.length)
+        tryVerify(function() { return !ownVoice.visible && otherVoice.visible })
+        verify(ownMarker.visible && !otherMarker.visible, "Joining a channel does not change ownership")
+        verify(session.setMuted(true))
+        verify(otherVoice.visible, "Muted members still belong to their voice channel")
+        const previousTheme = session.theme
+        for (const mode of ["dark", "light"]) {
+            verify(session.setTheme(mode))
+            view.width = 360
+            waitForRendering(view.contentItem)
+            for (const marker of [ownMarker, otherVoice]) {
+                const position = marker.mapToItem(view.contentItem, 0, 0)
+                verify(position.x >= 0 && position.x + marker.width <= view.width)
+            }
+            if (imageDirectory.length > 0) {
+                for (const member of view.chatMembers) {
+                    tryVerify(function() {
+                        return fixtures.portraitHasDetail(visualChild(view.contentItem,
+                            "channelAvatar_" + remoteChannel.ownId + "_" + member.id))
+                    })
+                }
+                verify(fixtures.saveWindow(view, imageDirectory + "/channel-states-" + mode + ".png"))
+            }
+        }
+        verify(session.setTheme(previousTheme))
+        verify(channel.leave())
+        tryVerify(function() { return !ownVoice.visible && !otherVoice.visible })
+        verify(ownMarker.visible, "An owned host remains marked after leaving voice")
         session.setUserName(previousName); channel.setChannelName(previousChannel); remoteChannel.setChannelName(previousRemote)
     }
 
@@ -2291,14 +2512,14 @@ TestCase {
             tryCompare(remoteChannel, "chatPending", false)
             view.chatExpanded = true
             const panel = findChild(view, "chatPanel"), history = findChild(panel, "chatHistory")
-            tryCompare(history, "count", 3)
+            tryCompare(history.rows, "count", 3)
             tryCompare(panel, "updating", false)
-            history.positionViewAtBeginning()
+            history.scrollTo(0)
             waitForRendering(history)
             const message = channel.messages[2]
-            history.positionViewAtIndex(2, ListView.Contain)
-            tryVerify(function() { return history.itemAtIndex(2) !== null })
-            const text = findChild(history.itemAtIndex(2), "messageText_" + message.sequence)
+            history.scrollTo(history.rows.itemAt(2).y)
+            tryVerify(function() { return history.rows.itemAt(2) !== null })
+            const text = findChild(history.rows.itemAt(2), "messageText_" + message.sequence)
             verify(text.text.indexOf(Theme.codeBackground.toString()) >= 0)
             verify(text.contentWidth <= text.width + 1, "Long code stays within the message width")
             view.requestActivate()
@@ -2342,11 +2563,11 @@ TestCase {
             tryCompare(channel, "chatPending", false)
             view.chatExpanded = true
             const panel = findChild(view, "chatPanel"), history = findChild(panel, "chatHistory")
-            tryCompare(history, "count", 1)
+            tryCompare(history.rows, "count", 1)
             tryCompare(panel, "updating", false)
-            history.positionViewAtBeginning()
-            tryVerify(function() { return history.itemAtIndex(0) !== null })
-            const text = findChild(history.itemAtIndex(0), "messageText_" + channel.messages[0].sequence)
+            history.scrollTo(0)
+            tryVerify(function() { return history.rows.itemAt(0) !== null })
+            const text = findChild(history.rows.itemAt(0), "messageText_" + channel.messages[0].sequence)
             waitForRendering(text)
             if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/markdown-structures-" + data.tag + ".png"))
             verify(text.contentWidth <= text.width + 1,
@@ -2356,8 +2577,100 @@ TestCase {
         }
     }
 
+    function test_scrollbarTracksLoadedMessagesWithoutResizing() {
+        verify(fixtures.expireChat())
+        verify(fixtures.startHost())
+        verify(channel.openChat(channel.ownId, "127.0.0.1", channel.servicePort))
+        tryVerify(function() { return channel.chatReady && !channel.historyLoading })
+        for (let i = 0; i < 40; ++i) {
+            if (i % 10 === 0) fixtures.advanceTime()
+            verify(channel.sendChat(("Message " + i + " with **formatting** and `code`.\n\n").repeat(i % 5 === 0 ? 12 : 1)))
+            tryCompare(channel, "chatPending", false)
+        }
+        view.chatExpanded = true
+        const panel = findChild(view, "chatPanel"), history = findChild(panel, "chatHistory")
+        tryCompare(history.rows, "count", 40)
+        tryCompare(panel, "updating", false)
+        const bar = findChild(history, "chatHistoryScrollBar")
+        verify(waitForRendering(history))
+        const extent = history.contentHeight, thumb = bar.size
+        for (const direction of [1, -1]) {
+            for (let step = 0; step < 16; ++step) {
+                mouseWheel(history, history.width / 2, history.height / 2, 0, direction * 600)
+                tryCompare(history, "moving", false)
+                verify(waitForRendering(history))
+                compare(history.rows.count, 40)
+                for (let i = 0; i < history.rows.count; ++i) {
+                    const row = history.rows.itemAt(i)
+                    compare(findChild(row, "messageAvatar_" + row.message.sender) !== null, row.inViewport,
+                        "Only visible rows retain an animated portrait")
+                }
+                verify(Math.abs(history.contentHeight - extent) < 1,
+                    "Unchanged messages keep their total height: " + extent + " -> " + history.contentHeight)
+                verify(Math.abs(bar.size - thumb) * bar.height < 1,
+                    "Unchanged messages keep their scrollbar size")
+            }
+        }
+    }
+
+    function test_chatKeepsReadingPositionAcrossResize_data() {
+        return Qt.platform.os === "ios" || Qt.platform.os === "android" ? [{tag: "native"}]
+            : [{tag: "phone", width: 390, height: 844}, {tag: "tablet", width: 820, height: 1180}]
+    }
+    function orientChat(landscape) {
+        view.showMaximized()
+        if (Qt.platform.os === "android") {
+            view.width = view.Screen.desktopAvailableWidth
+            view.height = view.Screen.desktopAvailableHeight
+        }
+        view.requestActivate()
+        tryCompare(view, "active", true)
+        if ((view.width > view.height) === landscape) return
+        verify(fixtures.orientWindow(view, landscape))
+        tryVerify(function() { return (view.width > view.height) === landscape }, 5000,
+            "The native window must follow the requested orientation")
+    }
+    function test_chatKeepsReadingPositionAcrossResize(data) {
+        if (data.tag === "native") orientChat(false)
+        else { view.width = data.width; view.height = data.height }
+        verify(fixtures.startHost())
+        verify(channel.openChat(channel.ownId, "127.0.0.1", channel.servicePort))
+        tryVerify(function() { return channel.chatReady && !channel.historyLoading })
+        for (let i = 0; i < 30; ++i) {
+            if (i % 10 === 0) fixtures.advanceTime()
+            verify(channel.sendChat(("Read message " + i + " with **formatting**. ").repeat(12)))
+            tryCompare(channel, "chatPending", false)
+        }
+        view.chatExpanded = true
+        const panel = findChild(view, "chatPanel"), history = findChild(panel, "chatHistory")
+        tryCompare(history.rows, "count", 30)
+        tryCompare(panel, "updating", false)
+        history.scrollTo(history.rows.itemAt(12).y + 4)
+        verify(waitForRendering(history))
+        const draft = findChild(panel, "chatDraft"), send = findChild(panel, "sendChat")
+        draft.text = "Keep this draft while rotating"
+        for (const landscape of [true, false]) {
+            if (data.tag === "native") orientChat(landscape)
+            else { view.width = landscape ? data.height : data.width; view.height = landscape ? data.width : data.height }
+            tryCompare(panel, "updating", false)
+            verify(waitForRendering(history))
+            tryVerify(function() { return !panel.updating && history.messageAt(history.contentY + 1).message.sequence === channel.messages[12].sequence }, 2000,
+                "Resize preserves the message being read, anchor=" + panel.anchorSequence + ", y=" + history.contentY
+                + ", target=" + history.rows.itemAt(12).y + ", layout=" + panel.layoutWidth + "x" + panel.layoutHeight)
+            const row = history.messageAt(history.contentY + 1)
+            verify(Math.abs(history.contentY - row.y - 4) < 1)
+            const point = send.mapToItem(view.contentItem, 0, 0)
+            verify(point.x >= 0 && point.y >= 0 && point.x + send.width <= view.width + 1 && point.y + send.height <= view.height + 1)
+            verify(history.height > 30)
+            compare(draft.text, "Keep this draft while rotating")
+            if (imageDirectory.length > 0)
+                verify(fixtures.saveWindow(view, imageDirectory + "/chat-resize-" + data.tag + (landscape ? "-landscape" : "-portrait") + ".png"))
+        }
+    }
+
     function test_wheelScrollsInsideOversizedMessage_data() {
         return [
+            {tag: "desktop-live", width: 460, height: 560, theme: "light", scrollbar: false},
             {tag: "compact-light", width: 390, height: 780, theme: "light", scrollbar: false},
             {tag: "tablet-dark", width: 820, height: 1000, theme: "dark", scrollbar: false},
             {tag: "compact-scrollbar", width: 390, height: 780, theme: "light", scrollbar: true},
@@ -2375,15 +2688,17 @@ TestCase {
             tryVerify(function() { return channel.chatReady && !channel.historyLoading })
             const lines = []
             const lineCount = Math.max(60, Math.ceil(view.height / 10))
+            verify(channel.sendChat("Before the long message"))
+            tryCompare(channel, "chatPending", false)
             for (let i = 1; i <= lineCount; ++i) lines.push("Scroll test **" + i + "** with `inline code`.")
             verify(channel.sendChat(lines.join("\n\n")))
             tryCompare(channel, "chatPending", false)
             view.chatExpanded = true
-            const panel = findChild(view, "chatPanel"), history = findChild(panel, "chatHistory")
-            tryCompare(history, "count", 1)
+            let panel = findChild(view, "chatPanel"), history = findChild(panel, "chatHistory")
+            tryCompare(history.rows, "count", 2)
             tryCompare(panel, "updating", false)
             tryVerify(function() { return history.contentHeight > history.height + 100 })
-            history.positionViewAtEnd()
+            history.scrollTo(history.contentHeight - history.height)
             waitForRendering(history)
             const outer = findChild(view, "channelsScroll").contentItem
             const outerY = outer.contentY, bottom = history.contentY
@@ -2396,32 +2711,53 @@ TestCase {
             tryCompare(history, "moving", false)
             compare(outer.contentY, outerY)
             for (let i = 0; i < 3; ++i) {
-                verify(channel.sendChat("Short message " + i))
+                verify(fixtures.publishSystem("Short message " + i))
                 tryCompare(channel, "chatPending", false)
             }
-            tryCompare(history, "count", 4)
+            tryCompare(history.rows, "count", 5)
             tryCompare(panel, "updating", false)
-            history.positionViewAtBeginning()
-            waitForRendering(history)
+            channel.closeChat(channel.ownId)
+            verify(channel.openChat(channel.ownId, "127.0.0.1", channel.servicePort))
+            tryVerify(function() { return channel.chatReady && !channel.historyLoading })
+            panel = findChild(view, "chatPanel")
+            history = findChild(panel, "chatHistory")
+            tryCompare(history.rows, "count", 5)
+            tryCompare(panel, "updating", false)
+            history.scrollTo(0)
+            tryVerify(function() { return history.atYBeginning && history.rows.itemAt(0) !== null
+                && history.contentHeight > history.height })
+            verify(channel.sendChat("New message while reading history"))
+            tryCompare(channel, "chatPending", false)
+            tryCompare(history.rows, "count", 6)
+            tryCompare(panel, "updating", false)
+            const bar = findChild(history, "chatHistoryScrollBar")
+            const loadedHeight = history.contentHeight, loadedThumb = bar.size
             if (data.scrollbar) {
-                const bar = findChild(history, "chatHistoryScrollBar")
                 verify(bar && bar.visible)
+                tryVerify(function() { return bar.size < 1 })
                 const handle = bar.contentItem
                 const start = handle.mapToItem(bar, handle.width / 2, handle.height / 2)
                 mouseDrag(bar, start.x, start.y, 0, bar.height - start.y - 1)
             } else mouseWheel(history, history.width / 2, history.height / 2, 0, -12000)
             tryCompare(history, "moving", false)
-            tryCompare(history, "atYEnd", true)
-            tryVerify(function() { return history.itemAtIndex(2) !== null }, 2000,
+            tryCompare(history, "atYEnd", true, 5000,
+                "End position: y=" + history.contentY + ", origin=" + history.originY
+                + ", content=" + history.contentHeight + ", viewport=" + history.height)
+            verify(Math.abs(history.contentHeight - loadedHeight) < 1,
+                "Scrolling unchanged messages must not change their total height: "
+                + loadedHeight + " -> " + history.contentHeight)
+            verify(Math.abs(bar.size - loadedThumb) * bar.height < 1,
+                "Scrolling unchanged messages must not resize the scrollbar thumb")
+            tryVerify(function() { return history.rows.itemAt(4) !== null }, 2000,
                 "Scrolling to the end keeps preceding short messages in the viewport")
-            const last = history.itemAtIndex(3)
+            const last = history.rows.itemAt(5)
             verify(last !== null)
-            const preceding = history.itemAtIndex(2)
+            const preceding = history.rows.itemAt(4)
             verify(preceding !== null)
-            verify(Math.abs(last.y - preceding.y - preceding.height - history.spacing) < 1,
+            verify(Math.abs(last.y - preceding.y - preceding.height - 14) < 1,
                 "Short messages remain adjacent after scrolling past an oversized message")
-            const upperIndex = history.indexAt(history.width / 2, history.contentY + 20)
-            verify(upperIndex >= 0, "The upper viewport still contains message content at the end")
+            const upperRow = history.messageAt(history.contentY + 20)
+            verify(upperRow !== null, "The upper viewport still contains message content at the end")
             waitForRendering(history)
             if (imageDirectory.length > 0)
                 verify(fixtures.saveWindow(view, imageDirectory + "/chat-wheel-" + data.tag + ".png"))
@@ -2430,8 +2766,12 @@ TestCase {
         }
     }
 
-    function test_touchScrollsChatAndReleasesPtt() {
-        if (Qt.platform.os === "ios" || Qt.platform.os === "android") view.showMaximized()
+    function test_touchScrollsChatAndReleasesPtt_data() {
+        return Qt.platform.os === "ios" || Qt.platform.os === "android"
+            ? [{tag: "portrait", landscape: false}, {tag: "landscape", landscape: true}] : [{tag: "desktop"}]
+    }
+    function test_touchScrollsChatAndReleasesPtt(data) {
+        if (data.tag !== "desktop") orientChat(data.landscape)
         verify(fixtures.startHost())
         verify(channel.openChat(channel.ownId, "127.0.0.1", channel.servicePort))
         tryVerify(function() { return channel.chatReady && !channel.historyLoading })
@@ -2441,14 +2781,14 @@ TestCase {
         tryCompare(channel, "chatPending", false)
         view.chatExpanded = true
         const panel = findChild(view, "chatPanel"), history = findChild(panel, "chatHistory")
-        tryCompare(history, "count", 1)
+        tryCompare(history.rows, "count", 1)
         tryCompare(panel, "updating", false)
-        history.positionViewAtEnd()
+        history.scrollTo(history.contentHeight - history.height)
         waitForRendering(history)
-        const row = history.itemAtIndex(0)
+        const row = history.rows.itemAt(0)
         const text = findChild(row, "messageText_" + channel.messages[0].sequence)
         for (let attempt = 0; attempt < 2; ++attempt) {
-            history.positionViewAtEnd()
+            history.scrollTo(history.contentHeight - history.height)
             waitForRendering(history)
             const before = history.contentY
             const finger = touchEvent(history)
@@ -2460,7 +2800,7 @@ TestCase {
             finger.release(0, history, history.width / 2, history.height * 3 / 4).commit()
             tryVerify(function() { return history.contentY < before - 1 })
             tryCompare(history, "moving", false)
-            history.positionViewAtBeginning()
+            history.scrollTo(0)
             waitForRendering(history)
             mouseMove(text, 8, 8)
             mousePress(text, 8, 8)
@@ -2481,34 +2821,50 @@ TestCase {
         press.release(0, button, button.width / 2, button.height / 2).commit()
         tryCompare(session, "pttHeld", false)
         verify(!session.transmissionAllowed)
-        history.positionViewAtBeginning()
+        history.scrollTo(0)
         waitForRendering(history)
         if (imageDirectory.length > 0)
-            verify(fixtures.saveWindow(view, imageDirectory + "/chat-touch-native.png"))
-        if (Qt.platform.os === "ios") {
+            verify(fixtures.saveWindow(view, imageDirectory + "/chat-touch-" + data.tag + ".png"))
+        if (data.tag !== "desktop") {
             view.requestActivate()
             tryCompare(view, "active", true)
             const draft = findChild(panel, "chatDraft"), send = findChild(panel, "sendChat")
-            const tap = touchEvent(draft)
-            tap.press(0, draft, 20, draft.height / 2).commit()
-            tap.release(0, draft, 20, draft.height / 2).commit()
+            const heightWithoutKeyboard = view.height
+            if (Qt.platform.os === "android") verify(fixtures.tapNativeInput(draft))
+            else {
+                const tap = touchEvent(draft)
+                tap.press(0, draft, 20, draft.height / 2).commit()
+                tap.release(0, draft, 20, draft.height / 2).commit()
+            }
             tryCompare(draft, "activeFocus", true)
             Qt.inputMethod.show()
             tryCompare(Qt.inputMethod, "visible", true)
             tryCompare(Qt.inputMethod, "animating", false)
-            keyClick(Qt.Key_H)
-            keyClick(Qt.Key_I)
-            compare(draft.text, "hi")
-            const position = send.mapToItem(view.contentItem, 0, 0)
-            verify(position.y + send.height <= Qt.inputMethod.keyboardRectangle.y,
-                "The send button stays above the software keyboard")
+            verify(Qt.inputMethod.keyboardRectangle.height > 100,
+                "A software keyboard must be visible, not only a hardware-keyboard toolbar: " + Qt.inputMethod.keyboardRectangle)
+            if (Qt.platform.os === "android") verify(fixtures.commitNativeInput("hi"))
+            else { keyClick(Qt.Key_H); keyClick(Qt.Key_I) }
+            tryCompare(draft, "text", "hi")
             if (imageDirectory.length > 0)
-                verify(fixtures.saveWindow(view, imageDirectory + "/chat-keyboard-native.png"))
-            mouseClick(send)
+                verify(fixtures.saveWindow(view, imageDirectory + "/chat-keyboard-" + data.tag + ".png"))
+            tryVerify(function() {
+                const bottom = send.mapToItem(null, 0, 0).y + send.height
+                return Qt.platform.os === "android"
+                    ? view.height < heightWithoutKeyboard && bottom <= view.height
+                    : bottom <= Qt.inputMethod.keyboardRectangle.y
+            }, 2000, "The send button stays inside the area above the software keyboard")
+            if (Qt.platform.os === "android") {
+                const name = visualChild(view.contentItem, "channelName_" + channel.ownId)
+                tryVerify(function() { return name.mapToItem(view.contentItem, 0, 0).y >= 0 }, 2000,
+                    "The destination channel stays visible while typing")
+                verify(fixtures.tapNativeInput(send))
+            } else mouseClick(send)
             tryCompare(draft, "text", "")
-            tryCompare(history, "count", 2)
+            tryCompare(history.rows, "count", 2)
             Qt.inputMethod.hide()
             tryCompare(Qt.inputMethod, "visible", false)
+            tryCompare(view.footer, "visible", true)
+            if (Qt.platform.os === "android") tryCompare(view, "height", heightWithoutKeyboard)
         }
     }
 
@@ -2526,9 +2882,9 @@ TestCase {
         verify(channel.hasOlderMessages)
         const panel = findChild(view, "chatPanel"), history = findChild(panel, "chatHistory")
         view.chatExpanded = true
-        tryCompare(history, "count", 40)
+        tryCompare(history.rows, "count", 40)
         tryCompare(panel, "updating", false)
-        history.positionViewAtIndex(20, ListView.Center)
+        history.scrollTo(history.rows.itemAt(20).y - history.height / 2)
         waitForRendering(history)
         const outer = findChild(view, "channelsScroll").contentItem
         const outerY = outer.contentY
@@ -2539,19 +2895,18 @@ TestCase {
         tryCompare(history, "moving", false)
         compare(outer.contentY, outerY, "Scrolling messages does not move the channel list")
         const beforeDown = history.contentY
-        const middle = history.indexAt(history.width / 2, history.contentY + history.height / 2)
-        const row = history.itemAtIndex(middle)
+        const row = history.messageAt(history.contentY + history.height / 2)
         verify(row !== null)
         const text = findChild(row, "messageText_" + row.message.sequence)
         mouseWheel(text, text.width / 2, text.height / 2, 0, -120)
         tryVerify(function() { return history.contentY > beforeDown + 1 }, 1500)
         tryCompare(history, "moving", false)
-        history.positionViewAtBeginning()
+        history.scrollTo(0)
         waitForRendering(history)
         compare(channel.messages.length, 40)
         tryCompare(history, "atYBeginning", true)
         mouseWheel(history, history.width / 2, history.height / 2, 0, 120)
-        tryCompare(history, "count", 55)
+        tryCompare(history.rows, "count", 55)
         verify(!channel.hasOlderMessages)
         compare(channel.messages[0].text, "Scroll fixture 0")
     }

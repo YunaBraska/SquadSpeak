@@ -873,10 +873,6 @@
             <translation>ऑटो-जॉइन</translation>
         </message>
         <message>
-            <source>Leave channel</source>
-            <translation>चैनल छोड़ें</translation>
-        </message>
-        <message>
             <source>Stream URL</source>
             <translation>स्ट्रीम URL</translation>
         </message>

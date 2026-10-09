@@ -873,10 +873,6 @@
             <translation>Bashkohu automatikisht</translation>
         </message>
         <message>
-            <source>Leave channel</source>
-            <translation>Largohu nga kanali</translation>
-        </message>
-        <message>
             <source>Stream URL</source>
             <translation>URL e transmetimit</translation>
         </message>

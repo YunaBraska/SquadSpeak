@@ -873,10 +873,6 @@
             <translation>Sjálfvirk sameining</translation>
         </message>
         <message>
-            <source>Leave channel</source>
-            <translation>Farið frá rásinni</translation>
-        </message>
-        <message>
             <source>Stream URL</source>
             <translation>Slóð á streymi</translation>
         </message>

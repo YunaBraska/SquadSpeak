@@ -873,10 +873,6 @@
             <translation>Gabung otomatis</translation>
         </message>
         <message>
-            <source>Leave channel</source>
-            <translation>Keluar dari kanal</translation>
-        </message>
-        <message>
             <source>Stream URL</source>
             <translation>URL aliran</translation>
         </message>

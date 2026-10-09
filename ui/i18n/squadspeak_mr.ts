@@ -873,10 +873,6 @@
             <translation>स्वयं-सामील</translation>
         </message>
         <message>
-            <source>Leave channel</source>
-            <translation>चॅनेल सोडा</translation>
-        </message>
-        <message>
             <source>Stream URL</source>
             <translation>प्रवाह URL</translation>
         </message>

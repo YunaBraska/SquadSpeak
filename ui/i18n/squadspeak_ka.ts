@@ -873,10 +873,6 @@
             <translation>ავტომატური შეერთება</translation>
         </message>
         <message>
-            <source>Leave channel</source>
-            <translation>დატოვე არხი</translation>
-        </message>
-        <message>
             <source>Stream URL</source>
             <translation>ნაკადის URL</translation>
         </message>

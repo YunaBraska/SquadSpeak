@@ -64,6 +64,15 @@ if(WIN32)
     target_sources(squadspeak PRIVATE icons/app.rc ../src/windows.manifest)
     target_include_directories(squadspeak PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/icons")
 endif()
+if(ANDROID)
+    set_target_properties(squadspeak PROPERTIES
+        QT_ANDROID_PACKAGE_NAME "app.squadspeak.mobile"
+        QT_ANDROID_APP_NAME "SquadSpeak"
+        QT_ANDROID_TARGET_SDK_VERSION 36
+        QT_ANDROID_APP_ICON "@drawable/icon"
+        QT_ANDROID_PACKAGE_SOURCE_DIR "${squad_android_package}"
+        QT_ANDROID_EXTRA_LIBS "${squad_android_libraries}")
+endif()
 # Qt reads this template before CMake generates the bundle to link both the
 # permission plugin and its request entrypoint. Expand XML fragments now while
 # leaving CMake's ${MACOSX_BUNDLE_*} placeholders for bundle generation.

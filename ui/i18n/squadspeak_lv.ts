@@ -873,10 +873,6 @@
             <translation>automātiska pievienošanās</translation>
         </message>
         <message>
-            <source>Leave channel</source>
-            <translation>pamest kanālu</translation>
-        </message>
-        <message>
             <source>Stream URL</source>
             <translation>Straumes URL</translation>
         </message>

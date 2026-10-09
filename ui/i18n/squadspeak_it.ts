@@ -873,10 +873,6 @@
             <translation>Accesso automatico</translation>
         </message>
         <message>
-            <source>Leave channel</source>
-            <translation>Esci dal canale</translation>
-        </message>
-        <message>
             <source>Stream URL</source>
             <translation>URL del flusso</translation>
         </message>

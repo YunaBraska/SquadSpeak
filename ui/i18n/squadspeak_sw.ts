@@ -873,10 +873,6 @@
             <translation>Jiunge moja kwa moja</translation>
         </message>
         <message>
-            <source>Leave channel</source>
-            <translation>Acha chaneli</translation>
-        </message>
-        <message>
             <source>Stream URL</source>
             <translation>Anwani ya mtirisho</translation>
         </message>

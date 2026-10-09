@@ -14,21 +14,28 @@ endif()
 set(SQUADSPEAK_IOS OFF)
 if(CMAKE_SYSTEM_NAME STREQUAL "iOS")
     set(SQUADSPEAK_IOS ON)
-    set(SQUADSPEAK_IOS_DEPS_ROOT "" CACHE PATH
-        "Cross-compiled OpenSSL, Opus, libsamplerate and FFmpeg prefix for iOS")
-    if(NOT IS_DIRECTORY "${SQUADSPEAK_IOS_DEPS_ROOT}")
+endif()
+if(SQUADSPEAK_IOS OR ANDROID)
+    set(SQUADSPEAK_MOBILE_DEPS_ROOT "" CACHE PATH
+        "Cross-compiled OpenSSL, Opus, libsamplerate and FFmpeg prefix")
+    if(NOT IS_DIRECTORY "${SQUADSPEAK_MOBILE_DEPS_ROOT}")
         message(FATAL_ERROR
-            "iOS requires -DSQUADSPEAK_IOS_DEPS_ROOT=<target dependency prefix>. "
-            "Do not use host macOS libraries for an iOS build.")
+            "Mobile builds require -DSQUADSPEAK_MOBILE_DEPS_ROOT=<target dependency prefix>. "
+            "Do not use host libraries for a mobile build.")
     endif()
-    list(PREPEND CMAKE_PREFIX_PATH "${SQUADSPEAK_IOS_DEPS_ROOT}")
-    list(APPEND CMAKE_FIND_ROOT_PATH "${SQUADSPEAK_IOS_DEPS_ROOT}")
+    list(PREPEND CMAKE_PREFIX_PATH "${SQUADSPEAK_MOBILE_DEPS_ROOT}")
+    list(APPEND CMAKE_FIND_ROOT_PATH "${SQUADSPEAK_MOBILE_DEPS_ROOT}")
     set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE BOTH)
     set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY BOTH)
     set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE BOTH)
-    set(OPENSSL_ROOT_DIR "${SQUADSPEAK_IOS_DEPS_ROOT}" CACHE PATH
-        "Target OpenSSL prefix for iOS" FORCE)
-    set(OPENSSL_USE_STATIC_LIBS TRUE)
+    set(OPENSSL_ROOT_DIR "${SQUADSPEAK_MOBILE_DEPS_ROOT}" CACHE PATH
+        "Target OpenSSL prefix" FORCE)
+    set(OPENSSL_USE_STATIC_LIBS ${SQUADSPEAK_IOS})
+    if(ANDROID)
+        set(QT_USE_TARGET_ANDROID_BUILD_DIR ON CACHE BOOL "Separate Android packages for app and tests" FORCE)
+        set(OPENSSL_CRYPTO_LIBRARY "${OPENSSL_ROOT_DIR}/lib/libcrypto_3.so" CACHE FILEPATH "Android OpenSSL crypto" FORCE)
+        set(OPENSSL_SSL_LIBRARY "${OPENSSL_ROOT_DIR}/lib/libssl_3.so" CACHE FILEPATH "Android OpenSSL TLS" FORCE)
+    endif()
 endif()
 
 set(CMAKE_CXX_STANDARD 20)
@@ -41,8 +48,14 @@ if(MSVC)
     add_compile_options(/utf-8)
     add_compile_definitions(NOMINMAX)
 endif()
+if(ANDROID)
+    add_link_options(-Wl,-z,max-page-size=16384 -Wl,-z,common-page-size=16384)
+endif()
 
 find_package(Qt6 6.10 REQUIRED COMPONENTS Core Gui Widgets Quick QuickControls2 Multimedia Network Sql LinguistTools)
+if(ANDROID AND NOT Qt6_VERSION VERSION_EQUAL "6.11.3")
+    message(FATAL_ERROR "The Android FFmpeg headers require the verified Qt 6.11.3 runtime.")
+endif()
 if(SQUADSPEAK_IOS)
     find_package(Qt6 6.10 REQUIRED COMPONENTS Concurrent)
 endif()
@@ -67,13 +80,13 @@ if(WIN32)
     add_library(PkgConfig::SAMPLERATE INTERFACE IMPORTED)
     set_target_properties(PkgConfig::SAMPLERATE PROPERTIES INTERFACE_INCLUDE_DIRECTORIES
         "${squad_samplerate_include_dir}" INTERFACE_LINK_LIBRARIES "${squad_samplerate_library}")
-elseif(SQUADSPEAK_IOS)
+elseif(SQUADSPEAK_IOS OR ANDROID)
     foreach(dependency IN ITEMS OPUS SAMPLERATE)
         string(TOLOWER "${dependency}" dependency_lower)
         find_path(squad_${dependency_lower}_include_dir
-            ${dependency_lower}.h PATHS "${SQUADSPEAK_IOS_DEPS_ROOT}/include" PATH_SUFFIXES opus NO_DEFAULT_PATH REQUIRED)
+            ${dependency_lower}.h PATHS "${SQUADSPEAK_MOBILE_DEPS_ROOT}/include" PATH_SUFFIXES opus NO_DEFAULT_PATH REQUIRED)
         find_library(squad_${dependency_lower}_library
-            NAMES ${dependency_lower} PATHS "${SQUADSPEAK_IOS_DEPS_ROOT}/lib" NO_DEFAULT_PATH REQUIRED)
+            NAMES ${dependency_lower} PATHS "${SQUADSPEAK_MOBILE_DEPS_ROOT}/lib" NO_DEFAULT_PATH REQUIRED)
         add_library(PkgConfig::${dependency} INTERFACE IMPORTED)
         set_target_properties(PkgConfig::${dependency} PROPERTIES
             INTERFACE_INCLUDE_DIRECTORIES "${squad_${dependency_lower}_include_dir}"
@@ -290,23 +303,35 @@ if(APPLE AND NOT SQUADSPEAK_IOS)
         BUILD_BYPRODUCTS ${ffmpeg_libraries})
     add_dependencies(squad_ffmpeg squad_ffmpeg_build)
     target_include_directories(squad_ffmpeg INTERFACE "${ffmpeg_prefix}/include")
-elseif(SQUADSPEAK_IOS)
+elseif(SQUADSPEAK_IOS OR ANDROID)
     find_path(squad_ffmpeg_include_dir libavcodec/avcodec.h
-        PATHS "${SQUADSPEAK_IOS_DEPS_ROOT}/include" NO_DEFAULT_PATH REQUIRED)
+        PATHS "${SQUADSPEAK_MOBILE_DEPS_ROOT}/include" NO_DEFAULT_PATH REQUIRED)
     target_include_directories(squad_ffmpeg INTERFACE "${squad_ffmpeg_include_dir}")
     foreach(library IN ITEMS avcodec avutil swscale avformat swresample)
+        set(squad_codec_library_dir "${SQUADSPEAK_MOBILE_DEPS_ROOT}/lib")
+        if(ANDROID)
+            # Use the same FFmpeg runtime as Qt Multimedia, as on Windows.
+            set(squad_codec_library_dir "${QT6_INSTALL_PREFIX}/lib")
+        endif()
         find_library(squad_ffmpeg_${library} ${library}
-            PATHS "${SQUADSPEAK_IOS_DEPS_ROOT}/lib" NO_DEFAULT_PATH REQUIRED)
+            PATHS "${squad_codec_library_dir}" NO_DEFAULT_PATH REQUIRED)
         target_link_libraries(squad_ffmpeg INTERFACE "${squad_ffmpeg_${library}}")
+        if(ANDROID)
+            list(APPEND squad_android_libraries "${squad_ffmpeg_${library}}")
+        endif()
     endforeach()
-    target_link_libraries(squad_ffmpeg INTERFACE
-        "-framework AVFoundation"
-        "-framework CoreFoundation"
-        "-framework CoreMedia"
-        "-framework CoreVideo"
-        "-framework Foundation"
-        "-framework Security"
-        "-framework VideoToolbox")
+    if(SQUADSPEAK_IOS)
+        target_link_libraries(squad_ffmpeg INTERFACE
+            "-framework AVFoundation"
+            "-framework CoreFoundation"
+            "-framework CoreMedia"
+            "-framework CoreVideo"
+            "-framework Foundation"
+            "-framework Security"
+            "-framework VideoToolbox")
+    else()
+        list(APPEND squad_android_libraries "${OPENSSL_CRYPTO_LIBRARY}" "${OPENSSL_SSL_LIBRARY}")
+    endif()
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     # Use the same distro development packages that own Qt's FFmpeg plugin.
     # This keeps headers and ABI libraries in one package-manager namespace.
@@ -540,6 +565,19 @@ endif()
 
 # Keep production QML scanning inside the UI tree, away from tests and build outputs.
 include(cmake/Updates.cmake)
+if(ANDROID)
+    set(squad_android_package "${CMAKE_BINARY_DIR}/android-package")
+    file(MAKE_DIRECTORY "${squad_android_package}/res/drawable")
+    configure_file(ui/icons/app.png "${squad_android_package}/res/drawable/icon.png" COPYONLY)
+    file(READ "${QT6_INSTALL_PREFIX}/src/android/templates/AndroidManifest.xml" squad_android_manifest)
+    string(REPLACE "org.qtproject.qt.android.bindings.QtActivity" "app.squadspeak.Activity"
+        squad_android_manifest "${squad_android_manifest}")
+    string(REPLACE "android:launchMode=\"singleTop\"" "android:launchMode=\"singleTop\" android:windowSoftInputMode=\"adjustResize\""
+        squad_android_manifest "${squad_android_manifest}")
+    file(CONFIGURE OUTPUT "${squad_android_package}/AndroidManifest.xml" CONTENT "${squad_android_manifest}" @ONLY)
+    configure_file(ui/android/src/app/squadspeak/Activity.java
+        "${squad_android_package}/src/app/squadspeak/Activity.java" COPYONLY)
+endif()
 add_subdirectory(ui)
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
@@ -740,12 +778,17 @@ if(BUILD_TESTING)
         squad_add_ios_test(controls_tests channel_controls
             -input "${CMAKE_CURRENT_SOURCE_DIR}/tests/tst_channel_controls.qml"
             DirectChannelControls::test_chatSendsOnlyAfterHostReceiptAndKeepsVoiceAvailable:English
+            DirectChannelControls::test_all64MembersAreReachableFromChannelSummary
+            DirectChannelControls::test_returningToChatPaintsWithoutScrolling
             DirectChannelControls::test_compactChatSendsPreparedImageWithoutText
             DirectChannelControls::test_settingsContainProfileAndAudioInTheChannelWindow
             DirectChannelControls::test_scrollLoadsOlderMessagesWithoutDownloadingThemAtOpen
+            DirectChannelControls::test_scrollbarTracksLoadedMessagesWithoutResizing
+            DirectChannelControls::test_chatKeepsReadingPositionAcrossResize
             DirectChannelControls::test_wheelScrollsInsideOversizedMessage
             DirectChannelControls::test_touchScrollsChatAndReleasesPtt)
         set_tests_properties(channel_controls PROPERTIES
+            TIMEOUT 180
             ENVIRONMENT "SIMCTL_CHILD_SQUAD_TEST_ARTIFACTS=${CMAKE_BINARY_DIR}/smoke")
         squad_add_ios_test(channel_tests channel_contract
             tlsWithoutDeviceCertificateCannotReachAdmission
@@ -757,6 +800,67 @@ if(BUILD_TESTING)
         squad_add_ios_test(mixer_tests mixer_contract)
         squad_add_ios_test(media_transport_tests media_transport_contract)
         squad_add_ios_test(video_tests video_contract
+            roundTripAndQualityChanges nativePixelFormatsKeepColorsAcrossChanges
+            invalidFramesAndFormatsFailBoundedly udpScreenRoundTripDecodesRealFrames)
+        return()
+    endif()
+    if(ANDROID)
+        find_program(SQUAD_ANDROID_TEST_RUNNER androidtestrunner
+            HINTS "${QT_HOST_PATH}/bin" REQUIRED)
+        find_program(SQUAD_ADB adb HINTS "${ANDROID_SDK_ROOT}/platform-tools" REQUIRED)
+        function(squad_add_android_test target test_name)
+            target_link_libraries(${target} PRIVATE Qt6::Gui)
+            string(REPLACE "_" "" package_name "${target}")
+            set_target_properties(${target} PROPERTIES
+                QT_ANDROID_PACKAGE_NAME "app.squadspeak.${package_name}"
+                QT_ANDROID_APP_NAME "SquadSpeak Tests"
+                QT_ANDROID_PACKAGE_SOURCE_DIR "${squad_android_package}"
+                QT_ANDROID_TARGET_SDK_VERSION 36
+                QT_ANDROID_EXTRA_LIBS "${squad_android_libraries}")
+            if(target STREQUAL "media_transport_tests" OR target STREQUAL "mixer_tests")
+                set_property(TARGET ${target} PROPERTY QT_ANDROID_EXTRA_LIBS
+                    "${OPENSSL_CRYPTO_LIBRARY};${OPENSSL_SSL_LIBRARY}")
+            endif()
+            if(NOT target STREQUAL "controls_tests")
+                set_property(TARGET ${target} PROPERTY QT_QML_MODULE_NO_IMPORT_SCAN TRUE)
+            endif()
+            get_target_property(output ${target} BINARY_DIR)
+            set(package "${output}/android-build-${target}")
+            add_test(NAME ${test_name} COMMAND "${Python3_EXECUTABLE}"
+                "${CMAKE_CURRENT_SOURCE_DIR}/tests/run_android_test.py"
+                --adb "${SQUAD_ADB}" --package "app.squadspeak.${package_name}"
+                --log "${CMAKE_BINARY_DIR}/android-logs/${test_name}.log"
+                "${SQUAD_ANDROID_TEST_RUNNER}"
+                --path "${package}" --adb "${SQUAD_ADB}" --timeout 180
+                --apk "${package}/${target}.apk" --show-logcat --skip-install-root
+                --make "\"${CMAKE_COMMAND}\" --build \"${CMAKE_BINARY_DIR}\" --target ${target}_make_apk"
+                -- ${ARGN})
+            set_tests_properties(${test_name} PROPERTIES TIMEOUT 300 RESOURCE_LOCK android_emulator
+                ENVIRONMENT "QT_ANDROID_NO_EXIT_CALL=1"
+                FAIL_REGULAR_EXPRESSION "FAIL!|QFATAL|FORTIFY:|Fatal signal")
+        endfunction()
+        squad_add_android_test(controls_tests channel_controls
+            -input :/tests/tst_channel_controls.qml
+            DirectChannelControls::test_chatSendsOnlyAfterHostReceiptAndKeepsVoiceAvailable:English
+            DirectChannelControls::test_all64MembersAreReachableFromChannelSummary
+            DirectChannelControls::test_returningToChatPaintsWithoutScrolling
+            DirectChannelControls::test_settingsContainProfileAndAudioInTheChannelWindow
+            DirectChannelControls::test_scrollLoadsOlderMessagesWithoutDownloadingThemAtOpen
+            DirectChannelControls::test_scrollbarTracksLoadedMessagesWithoutResizing
+            DirectChannelControls::test_chatKeepsReadingPositionAcrossResize
+            DirectChannelControls::test_wheelScrollsInsideOversizedMessage
+            DirectChannelControls::test_touchScrollsChatAndReleasesPtt)
+        set_property(TEST channel_controls APPEND PROPERTY ENVIRONMENT "QT_ANDROID_NO_FULLSCREEN_KEYBOARD=1")
+        squad_add_android_test(channel_tests channel_contract
+            tlsWithoutDeviceCertificateCannotReachAdmission
+            headlessAutomaticallyAdmitsUnapprovedClientsExceptBans
+            ownerCanKickBanAndUnblockWithoutJoining
+            passwordsPreserveActiveMembersAndPersistPerHostSecrets
+            remotePttNeedsSeparateApprovalAndCombinesControllers
+            chatSurvivesHostRestartAndReplaysToNewApprovedParticipants)
+        squad_add_android_test(mixer_tests mixer_contract)
+        squad_add_android_test(media_transport_tests media_transport_contract)
+        squad_add_android_test(video_tests video_contract
             roundTripAndQualityChanges nativePixelFormatsKeepColorsAcrossChanges
             invalidFramesAndFormatsFailBoundedly udpScreenRoundTripDecodesRealFrames)
         return()

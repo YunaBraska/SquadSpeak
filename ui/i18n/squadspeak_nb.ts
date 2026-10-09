@@ -873,10 +873,6 @@
             <translation>Automatisk sammenføyning</translation>
         </message>
         <message>
-            <source>Leave channel</source>
-            <translation>Forlat kanalen</translation>
-        </message>
-        <message>
             <source>Stream URL</source>
             <translation>Strøm URL</translation>
         </message>

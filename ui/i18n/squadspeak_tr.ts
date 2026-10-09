@@ -873,10 +873,6 @@
             <translation>Otomatik katıl</translation>
         </message>
         <message>
-            <source>Leave channel</source>
-            <translation>Kanaldan ayrıl</translation>
-        </message>
-        <message>
             <source>Stream URL</source>
             <translation>Yayın URL'si</translation>
         </message>

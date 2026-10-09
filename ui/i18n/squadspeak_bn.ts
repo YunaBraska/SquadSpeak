@@ -873,10 +873,6 @@
             <translation>স্বয়ংক্রিয় যোগদান</translation>
         </message>
         <message>
-            <source>Leave channel</source>
-            <translation>চ্যানেল ছেড়ে দিন</translation>
-        </message>
-        <message>
             <source>Stream URL</source>
             <translation>স্ট্রিম URL</translation>
         </message>

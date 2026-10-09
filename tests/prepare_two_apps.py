@@ -3,6 +3,7 @@ import argparse, json, plistlib, shlex, shutil, struct, subprocess, tempfile, uu
 root = Path(__file__).resolve().parents[1]
 parser = argparse.ArgumentParser(description="Prepare two isolated native macOS test apps.")
 parser.add_argument("source", nargs="?", type=Path, help="Installed squadspeak.app bundle")
+parser.add_argument("--sign-identity", default="SquadSpeak Local Development", help="Existing stable code-signing identity. Default: SquadSpeak Local Development.")
 args = parser.parse_args()
 source = args.source or Path((root / 'build/package-check/latest-install-path.txt').read_text().strip()) / 'squadspeak.app'
 destination = Path(tempfile.mkdtemp(prefix='squadspeak-two-apps-', dir='/private/tmp'))
@@ -38,17 +39,18 @@ def set_test_uuid(executable, identifier):
 launch = ["#!/bin/sh", "set -eu"]
 for tag, name, channel, port, avatar, palette in [('A', 'Ari', 'Ari - local test', 48764, 'mossling', 'ocean'), ('B', 'Bea', 'Bea - local test', 48765, 'courier', 'forest')]:
     app = destination / ('SquadSpeak ' + tag + '.app')
+    profile = root / 'build/two-app-test' / tag
     shutil.copytree(source, app, symlinks=True, copy_function=copy_program)
     plist = app / 'Contents/Info.plist'
     data = plistlib.loads(plist.read_bytes())
     data.update(CFBundleIdentifier='app.squadspeak.test.' + tag.lower(), CFBundleName='SquadSpeak ' + tag, CFBundleDisplayName='SquadSpeak ' + tag)
+    data.setdefault('LSEnvironment', {})['SQUADSPEAK_SETTINGS_FILE'] = str(profile / 'audio.ini')
     plist.write_bytes(plistlib.dumps(data))
     set_test_uuid(app / "Contents/MacOS" / data["CFBundleExecutable"], data["CFBundleIdentifier"])
     for attribute in ['com.apple.FinderInfo', 'com.apple.ResourceFork']:
         subprocess.run(['/usr/bin/xattr', '-dr', attribute, str(app)], check=True)
-    subprocess.run(['/usr/bin/codesign', '--force', '--deep', '--sign', '-', str(app)], check=True)
+    subprocess.run(['/usr/bin/codesign', '--force', '--deep', '--sign', args.sign_identity, str(app)], check=True)
     subprocess.run(['/usr/bin/codesign', '--verify', '--deep', '--strict', str(app)], check=True)
-    profile = root / 'build/two-app-test' / tag
     profile.mkdir(parents=True, exist_ok=True)
     # Separate identities on one speaker/microphone create acoustic feedback:
     # keep first launch quiet until the output reference and permissions are ready.

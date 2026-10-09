@@ -873,10 +873,6 @@
             <translation>ఆటో-జాయిన్</translation>
         </message>
         <message>
-            <source>Leave channel</source>
-            <translation>ఛానెల్ నుండి నిష్క్రమించు</translation>
-        </message>
-        <message>
             <source>Stream URL</source>
             <translation>స్ట్రీమ్ URL</translation>
         </message>

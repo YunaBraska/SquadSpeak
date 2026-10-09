@@ -873,10 +873,6 @@
             <translation>Samodejno združevanje</translation>
         </message>
         <message>
-            <source>Leave channel</source>
-            <translation>Zapusti kanal</translation>
-        </message>
-        <message>
             <source>Stream URL</source>
             <translation>URL toka</translation>
         </message>

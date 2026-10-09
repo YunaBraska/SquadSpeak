@@ -873,10 +873,6 @@
             <translation>Liity automaattisesti</translation>
         </message>
         <message>
-            <source>Leave channel</source>
-            <translation>Poistu kanavalta</translation>
-        </message>
-        <message>
             <source>Stream URL</source>
             <translation>Striimilähde</translation>
         </message>

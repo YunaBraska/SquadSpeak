@@ -873,10 +873,6 @@
             <translation>自动加入</translation>
         </message>
         <message>
-            <source>Leave channel</source>
-            <translation>离开频道</translation>
-        </message>
-        <message>
             <source>Stream URL</source>
             <translation>流 URL</translation>
         </message>

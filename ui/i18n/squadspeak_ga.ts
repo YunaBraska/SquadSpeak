@@ -873,10 +873,6 @@
             <translation>Uath-cheangal</translation>
         </message>
         <message>
-            <source>Leave channel</source>
-            <translation>Fág an cainéal</translation>
-        </message>
-        <message>
             <source>Stream URL</source>
             <translation>Sruth URL</translation>
         </message>

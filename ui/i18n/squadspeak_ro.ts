@@ -873,10 +873,6 @@
             <translation>Conectare automată</translation>
         </message>
         <message>
-            <source>Leave channel</source>
-            <translation>Părăsiți canalul</translation>
-        </message>
-        <message>
             <source>Stream URL</source>
             <translation>Adresa URL a fluxului</translation>
         </message>

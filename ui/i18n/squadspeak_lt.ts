@@ -873,10 +873,6 @@
             <translation>Automatinis prisijungimas</translation>
         </message>
         <message>
-            <source>Leave channel</source>
-            <translation>išeiti iš kanalo</translation>
-        </message>
-        <message>
             <source>Stream URL</source>
             <translation>srauto URL</translation>
         </message>

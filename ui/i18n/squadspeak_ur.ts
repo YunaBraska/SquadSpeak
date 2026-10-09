@@ -873,10 +873,6 @@
             <translation>آٹو جوائن</translation>
         </message>
         <message>
-            <source>Leave channel</source>
-            <translation>چینل چھوڑ دو</translation>
-        </message>
-        <message>
             <source>Stream URL</source>
             <translation>اسٹریم یو آر ایل</translation>
         </message>

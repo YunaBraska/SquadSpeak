@@ -1,6 +1,6 @@
 # Development
 
-[Product requirements](specs/voice-chat.md), [feature status](roadmap.md), [verification evidence](verification.md) and [avatar production](specs/avatars.md) are the project references. The README is for people using the app.
+[Product requirements](specs/voice-chat.md), [feature status](roadmap.md) and [avatar production](specs/avatars.md) are the project references. The README is for people using the app.
 
 ## Translations
 
@@ -31,7 +31,10 @@ never repaired or overwritten after a failed load.
 ## Chat persistence
 
 Default profile paths come from `QStandardPaths::AppConfigLocation` on each OS;
-`--settings-file` overrides the profile. Host history uses
+`--settings-file` overrides `SQUADSPEAK_SETTINGS_FILE`, which overrides the default profile.
+The macOS A/B test bundles keep their isolated profile in `LSEnvironment`, so
+Finder and permission-triggered restarts retain it without command-line arguments.
+Host history uses
 `<profile>.channel.json.chat.sqlite` and encrypted image blobs beside it in
 `<profile>.channel.json.chat.images`. Test fixtures may use a different profile suffix.
 
@@ -463,8 +466,7 @@ speakers' packets after reuse. A bounded 20 ms reorder window drops stale packet
 the existing Opus decoder conceals at most six missing frames. TLS fallback uses
 the same sequence space. Unknown valid media kinds/fields preserve baseline audio.
 The library callback mailbox is bounded, Qt timers belong to their Qt owner, and
-process teardown waits for library cleanup. See [verification](verification.md)
-for measured latency, lifecycle and load coverage.
+process teardown waits for library cleanup. Run the transport and mixer contracts for latency, lifecycle and load checks.
 
 Screen video negotiates `udp-screen` on its separate, admitted TLS connection.
 Frames and decode acknowledgments prefer an unordered WebRTC DataChannel using
@@ -547,7 +549,7 @@ and asset markers. The cask installs the app and exposes `squadspeak` for CLI us
 Drafts and prereleases are ignored by the tap updater; Linux packages are not a
 Homebrew formula.
 
-macOS bundles currently use ad-hoc signatures. Developer ID signing, notarization and store accounts are separate distribution work. Store builds exclude external Supporter purchasing and activation. No signing credentials belong in this repository.
+macOS bundles currently use ad-hoc signatures. Quit running copies before replacing their bundles. An ad-hoc code identity changes with the build, so privacy permissions can require renewed approval even when System Settings still shows an enabled entry. Stable permissions across builds require a consistent signing identity. For the local A/B copies, `tests/prepare_two_apps.py` defaults to the existing `SquadSpeak Local Development` identity. Use `--sign-identity` to select another existing development identity. Reuse its private key and keep the bundle identifiers, install paths and data profiles stable across builds. Do not provision a new certificate for each build or test copy. Never commit private keys. Developer ID signing, notarization and store accounts are separate distribution work. Store builds exclude external Supporter purchasing and activation. No signing credentials belong in this repository.
 
 Direct macOS packages use pinned Sparkle 2.10.0 for updates. Set the repository
 variable `SQUADSPEAK_UPDATE_PUBLIC_KEY` to its base64 Ed25519 public key and the
@@ -575,7 +577,7 @@ The iOS build now has a reproducible Simulator path. The pinned Qt 6.11.3 kit pr
 Build the target dependencies into a clean prefix. The prefix must match the SDK, architecture and deployment target. Do not point an iOS build at host macOS libraries:
 
 ```sh
-IOS_ARCH=x86_64 sh cmake/build-ios-dependencies.sh \
+IOS_ARCH=x86_64 sh cmake/build-mobile-dependencies.sh ios-simulator \
   /private/tmp/squadspeak-ios-deps-x86-v3 \
   /private/tmp/squadspeak-ios-deps-x86-build 17.0
 ```
@@ -591,7 +593,7 @@ IOS_QT="$HOME/Library/Caches/squadspeak-qt/6.11.3/ios"
   -DCMAKE_OSX_ARCHITECTURES=x86_64 -DCMAKE_OSX_DEPLOYMENT_TARGET=17.0 \
   -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
   -DSQUADSPEAK_STORE_BUILD=ON \
-  -DSQUADSPEAK_IOS_DEPS_ROOT=/private/tmp/squadspeak-ios-deps-x86-v3 \
+  -DSQUADSPEAK_MOBILE_DEPS_ROOT=/private/tmp/squadspeak-ios-deps-x86-v3 \
   -DQT_HOST_PATH="$HOME/Library/Caches/squadspeak-qt/6.11.3/macos" \
   -DCMAKE_PREFIX_PATH="$IOS_QT" \
   -DSQUADSPEAK_IOS_SIMULATOR_DEVICE_ID="$DEVICE_ID"
@@ -611,6 +613,14 @@ ctest --test-dir build/ios-simulator --output-on-failure \
 
 CTest automatically installs each test app before launching it through `simctl`. It runs shared image, mixer and media-transport tests plus selected channel, video and QML interaction cases. Test bundles use the same device-family and launch metadata as the app. It does not register desktop capture or process-worker tests. Simulator tests run serially on the selected device and fail on Qt Test assertions even when `simctl` exits successfully. The app needs the Qt Multimedia and imageformats modules in the iOS kit, plus the target FFmpeg archives built by the dependency script.
 
+The chat UI selection requests real native portrait and landscape geometry and
+checks that rotation preserves the reading anchor and draft. It also opens the
+software keyboard and checks the Send control. A rejected native orientation
+request is a failed check, not evidence from a resized desktop window. On iPadOS
+26, some window modes reject programmatic orientation changes. Use a simulator
+window mode that permits rotation or perform device rotation before accepting
+that case. Keep software keyboards enabled when running these checks.
+
 The x86_64 Simulator codec disables x86 SIMD after color round trips exposed corruption under translation on Apple Silicon. These tests establish correctness, not native arm64 device performance. The remaining mobile work includes broader safe-area and touch review, local-network permission handling, notification integration and background lifecycle review. Native screen capture, microphone permissions, background hosting and physical hardware remain unsupported by this Simulator smoke path.
 
 The iOS 26 runtime used here fails the Chinese glyph assertion. A standalone CoreText probe reproduces missing glyphs with both x86_64 and arm64 binaries. Keep the language assertion enabled. A font-family alias does not fix the runtime's LastResort substitution. Verify another runtime or a physical device before claiming complete mobile font coverage.
@@ -618,3 +628,72 @@ The iOS 26 runtime used here fails the Chinese glyph assertion. A standalone Cor
 Local discovery needs the local-network privacy declaration and, for raw multicast on iOS, the relevant entitlement. Ask for permission in the foreground and provide direct-address entry when discovery is unavailable. Follow [Apple's local-network guidance](https://developer.apple.com/documentation/technotes/tn3179-understanding-local-network-privacy).
 
 An iPhone cannot be promised to run a silent hosting service indefinitely while suspended. Background audio/VoIP modes must serve their actual purpose; preventing idle display sleep while foregrounded does not grant background execution. Preserve hosted channel data and reconnect state across suspension. See [App Review Guidelines, 2.5.4](https://developer.apple.com/app-store/review/guidelines/).
+
+## Android emulator
+
+Use Qt 6.11.3 `android_arm64_v8a`, matching desktop host tools, NDK
+27.2.12479018, SDK/build-tools 36 and a complete JDK. The verified local JDK is
+Temurin 25.0.4. The installed GraalVM 21.0.2 distribution fails Gradle's Android
+JDK image transform. API 28 below is a build-test baseline, not an agreed
+minimum supported Android release.
+
+```sh
+export JAVA_HOME=/path/to/temurin-25/Contents/Home
+export ANDROID_SDK_ROOT="$HOME/Library/Android/sdk"
+export ANDROID_NDK_ROOT="$ANDROID_SDK_ROOT/ndk/27.2.12479018"
+export ANDROID_SERIAL=emulator-5554
+ANDROID_QT=/path/to/Qt/6.11.3/android_arm64_v8a
+MOBILE_ARCH=arm64 sh cmake/build-mobile-dependencies.sh android \
+  /private/tmp/squadspeak-android-deps-arm64 \
+  /private/tmp/squadspeak-android-build-arm64 28
+"$ANDROID_QT/bin/qt-cmake" -S . -B build/android-arm64 -G Ninja \
+  -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=ON \
+  -DANDROID_ABI=arm64-v8a -DANDROID_PLATFORM=android-28 \
+  -DANDROID_SUPPORT_FLEXIBLE_PAGE_SIZES=ON \
+  -DQT_HOST_PATH=/path/to/Qt/6.11.3/macos \
+  -DSQUADSPEAK_MOBILE_DEPS_ROOT=/private/tmp/squadspeak-android-deps-arm64 \
+  -DSQUADSPEAK_STORE_BUILD=ON -DQT_ANDROID_DEPLOYMENT_TYPE=Debug
+cmake --build build/android-arm64 --target squadspeak_make_apk --parallel 4
+ctest --test-dir build/android-arm64 --output-on-failure
+```
+
+Start an AOSP API 36 arm64 AVD before CTest. Qt's `androidtestrunner` builds,
+installs and removes each isolated test APK. `run_android_test.py` additionally
+checks device logs for fatal errors from that test process, including errors
+after QtTest returned success. Tests share one emulator resource lock.
+Native C++ is optimized, while Debug deployment provides a disposable
+APK signing key and `run-as` access. It is not a Store-signed release.
+
+Production and UI-test packages share the same small Activity wrapper. On Android
+15 and newer it applies system-bar, display-cutout and keyboard insets to the Qt
+surface. The manifest requests `adjustResize` on older releases. Chat temporarily hides the lower
+voice toolbar while the mobile software keyboard is visible and restores it
+when the keyboard closes. Very short keyboard viewports keep the destination
+Channel and composer visible, temporarily omitting the roster,
+retention label and video preview. The Android input test sends a native MotionEvent
+through the Activity and commits text through the native InputConnection before
+checking delivery. QML focus alone does not prove an Android IME connection.
+
+UI-test resources use Qt's `BIG_RESOURCES` mode in the test target's own CMake
+directory. Large portrait sheets are linked as resource data rather than
+recompiled as hundreds of megabytes of C++ after each QML change.
+
+The common dependency builder retains separate target prefixes and validates
+architecture on reuse. Android uses the exact FFmpeg 7.1.5 shared runtime from
+its Qt kit, plus matching headers, rather than loading a second codec build.
+OpenSSL uses distinct `_3` filenames and SONAMEs. The APK and native libraries
+are aligned for 16 KiB pages. The current emulator runs 4 KiB pages, so this
+does not establish 16 KiB runtime behavior.
+
+The Android app and test environment set `QT_ANDROID_NO_EXIT_CALL=1`. Qt still
+destroys the application and finishes its Activity, then Android terminates the
+process. This avoids the additional native `exit()` racing detached HWUI workers
+on API 36. The app's scoped resource owners and media-runtime cleanup finish
+first. Qt's [post-routine contract](https://doc.qt.io/qt-6/qcoreapplication.html#qAddPostRoutine)
+ties that cleanup to QCoreApplication destruction, not process-wide static
+destruction. Keep the process crash log as well as Qt Test results.
+
+Bounded image decoding needs its own Android decision. Native capture,
+notifications, background hosting and hardware audio remain outside this
+emulator acceptance. Functional assertions alone do not pass the mobile
+release gate.

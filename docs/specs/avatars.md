@@ -34,7 +34,7 @@ Idle, muted, deafened and sleeping members hold varied drawn poses between irreg
 
 Offline uses the first sleeping frame, grayscale and no motion. Disabling animation preserves the speaking border. State priority and the shared identity/time source are implemented in `VoiceAvatar.qml`. The shared clock uses half the shortest frame duration, bounded to 16-125 ms, and stops when hidden or animation is disabled. The bundled dense portrait needs a 21 ms shared clock; more frames do not speed up motion.
 
-All portraits use the same centered, aspect-preserving renderer. Circular clipping and grayscale never change the source crop or stretch it. Grayscale reads the complete physical-pixel buffer and restores its logical size, including Retina and fractional display scaling. Hidden portraits unload their canvas image. Speaking borders and status badges remain separate app overlays.
+All portraits use the same centered, aspect-preserving renderer. Circular backgrounds sit behind the complete portrait. The figure is not clipped to the circle. A subtle alpha-based shadow is rendered from the current frame, with no extra animation timer or modified artwork. Grayscale never changes the source crop or stretches it. Grayscale reads the complete physical-pixel buffer and restores its logical size, including Retina and fractional display scaling. Hidden portraits unload their canvas image. Speaking borders and status badges remain separate app overlays.
 
 ## Atlas contract
 

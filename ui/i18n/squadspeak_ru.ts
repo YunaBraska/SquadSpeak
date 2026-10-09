@@ -873,10 +873,6 @@
             <translation>Автовход</translation>
         </message>
         <message>
-            <source>Leave channel</source>
-            <translation>Выйти из канала</translation>
-        </message>
-        <message>
             <source>Stream URL</source>
             <translation>URL потока</translation>
         </message>

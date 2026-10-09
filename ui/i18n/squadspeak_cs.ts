@@ -873,10 +873,6 @@
             <translation>Automatické připojování</translation>
         </message>
         <message>
-            <source>Leave channel</source>
-            <translation>Opuštění kanálu</translation>
-        </message>
-        <message>
             <source>Stream URL</source>
             <translation>URL streamu</translation>
         </message>

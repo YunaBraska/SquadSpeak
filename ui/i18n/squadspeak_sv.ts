@@ -873,10 +873,6 @@
             <translation>Anslut automatiskt</translation>
         </message>
         <message>
-            <source>Leave channel</source>
-            <translation>Lämna kanal</translation>
-        </message>
-        <message>
             <source>Stream URL</source>
             <translation>Ström-URL</translation>
         </message>

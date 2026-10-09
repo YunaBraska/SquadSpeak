@@ -873,10 +873,6 @@
             <translation>Tự động tham gia</translation>
         </message>
         <message>
-            <source>Leave channel</source>
-            <translation>Rời kênh</translation>
-        </message>
-        <message>
             <source>Stream URL</source>
             <translation>URL luồng phát</translation>
         </message>

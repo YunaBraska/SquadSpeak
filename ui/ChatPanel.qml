@@ -28,12 +28,18 @@ Item {
     property real anchorSequence: 0
     property real anchorOffset: 0
     property bool followEnd: true
+    property real layoutWidth: 0
+    property real layoutHeight: 0
+
+    function restoreLayout() {
+        updating = true
+        restorePosition.restart()
+    }
 
     function saveAnchor() {
         if (updating) return
         followEnd = history.atYEnd && !current.hasNewerMessages
-        const index = history.indexAt(1, history.contentY + 1)
-        const item = index >= 0 ? history.itemAtIndex(index) : null
+        const item = history.messageAt(history.contentY + 1)
         anchorSequence = item ? item.message.sequence : 0
         anchorOffset = item ? history.contentY - item.y : 0
     }
@@ -56,29 +62,24 @@ Item {
                     visibleMessages.setProperty(i, "message", incoming[i])
             }
         }
-        restorePosition.atEnd = initialPage || followEnd
-        restorePosition.sequence = anchorSequence; restorePosition.offset = anchorOffset
-        restorePosition.restart()
+        restoreLayout()
     }
     Timer {
         id: restorePosition
         interval: 0
-        property bool atEnd: false
-        property real sequence: 0
-        property real offset: 0
         onTriggered: {
-            history.forceLayout()
-            if (atEnd) history.positionViewAtEnd()
-            else if (sequence > 0) {
-                for (let i = 0; i < visibleMessages.count; ++i) if (visibleMessages.get(i).message.sequence === sequence) {
-                    history.positionViewAtIndex(i, ListView.Beginning)
-                    history.contentY += offset
+            messageColumn.forceLayout()
+            if (root.initialPage || root.followEnd) history.scrollTo(history.contentHeight - history.height)
+            else if (root.anchorSequence > 0) {
+                for (let i = 0; i < visibleMessages.count; ++i) if (visibleMessages.get(i).message.sequence === root.anchorSequence) {
+                    history.scrollTo(messageRows.itemAt(i).y + root.anchorOffset)
                     break
                 }
             }
             if (visibleMessages.count > 0) root.initialPage = false
+            root.layoutWidth = history.width; root.layoutHeight = history.height
             root.updating = false
-            history.scheduleFillEnd()
+            root.saveAnchor()
         }
     }
 
@@ -100,6 +101,10 @@ Item {
     onHostIdChanged: switchDraft()
     onRemoteChanged: switchDraft()
     onRecordsChanged: updateHistory()
+    onActiveChanged: if (active) {
+        initialPage = true
+        restoreLayout()
+    }
     Component.onCompleted: switchDraft()
 
     ListModel { id: visibleMessages; dynamicRoles: true }
@@ -113,58 +118,29 @@ Item {
         id: chatLayout
         anchors.fill: parent
         spacing: 6
-        ListView {
+        Flickable {
             id: history
             objectName: "chatHistory"
             Layout.fillWidth: true; Layout.fillHeight: true; Layout.minimumHeight: 16
             clip: true
-            spacing: 14
-            model: visibleMessages
-            cacheBuffer: 0
+            contentWidth: width
+            contentHeight: messageColumn.height
+            flickableDirection: Flickable.VerticalFlick
+            property alias rows: messageRows
+            function scrollTo(y) {
+                cancelFlick()
+                contentY = Math.max(0, Math.min(y, contentHeight - height))
+            }
+            function messageAt(y) {
+                for (let i = 0; i < messageRows.count; ++i) {
+                    const row = messageRows.itemAt(i)
+                    if (row.y + row.height > y) return row
+                }
+                return null
+            }
             ScrollBar.vertical: ScrollBar {
-                id: historyBar
                 objectName: "chatHistoryScrollBar"
-                onPressedChanged: if (!pressed) history.scheduleFillEnd()
             }
-            property bool fillEndPending: false
-            Connections {
-                target: root.Window.window
-                enabled: history.fillEndPending
-                function onFrameSwapped() {
-                    history.fillEndPending = false
-                    history.fillEnd()
-                }
-            }
-            function scheduleFillEnd() {
-                if (moving || historyBar.pressed || root.updating || root.current.historyLoading || !atYEnd) return
-                fillEndPending = true
-                if (root.Window.window) root.Window.window.update()
-            }
-            function fillEnd() {
-                if (moving || historyBar.pressed || root.updating || root.current.historyLoading) return
-                if (!atYEnd || !count) return
-                let index = count - 1
-                const last = itemAtIndex(index)
-                let first = last
-                if (!first) {
-                    positionViewAtIndex(index, ListView.End)
-                    return
-                }
-                while (index > 0 && first.y > contentY + spacing) {
-                    --index
-                    first = itemAtIndex(index)
-                    if (!first) {
-                        // Qt can underestimate the total height after a large jump.
-                        // Actual row coordinates refill the gap without that estimate.
-                        contentY = last.y + last.height - height
-                        break
-                    }
-                }
-            }
-            onMovementEnded: scheduleFillEnd()
-            onAtYEndChanged: if (atYEnd) scheduleFillEnd()
-            onContentHeightChanged: scheduleFillEnd()
-            onHeightChanged: scheduleFillEnd()
             WheelHandler {
                 target: null
                 blocking: false
@@ -175,113 +151,130 @@ Item {
                     event.accepted = false
                 }
             }
+            onWidthChanged: root.restoreLayout()
+            onHeightChanged: root.restoreLayout()
+            onContentHeightChanged: root.restoreLayout()
             onContentYChanged: {
-                scheduleFillEnd()
+                if (width === root.layoutWidth && height === root.layoutHeight) root.saveAnchor()
                 if (!moving || root.updating || root.current.historyLoading) return
                 if (atYBeginning && root.current.hasOlderMessages) root.page(true)
                 else if (atYEnd && root.current.hasNewerMessages) root.page(false)
             }
-            header: Item {
-                width: history.width; height: root.current.hasOlderMessages || root.current.historyLoading ? 32 : 8
-                ActionButton {
-                    anchors.centerIn: parent
-                    objectName: "loadOlderMessages"
-                    text: root.current.historyLoading ? qsTr("Loading...") : qsTr("Earlier messages")
-                    flat: true; font.pixelSize: 11
-                    visible: !!root.current.hasOlderMessages || !!root.current.historyLoading
-                    enabled: !root.current.historyLoading
-                    onClicked: root.page(true)
-                }
-            }
-            delegate: Item {
-                id: messageRow
-                LayoutMirroring.enabled: false
-                LayoutMirroring.childrenInherit: true
-                required property var message
-                readonly property bool systemMessage: !!message.event
-                readonly property bool own: !systemMessage && message.sender === root.current.ownId
-                objectName: "messageRow_" + message.sequence
-                Component.onCompleted: history.scheduleFillEnd()
-                onYChanged: history.scheduleFillEnd()
-                onHeightChanged: history.scheduleFillEnd()
-                width: ListView.view.width - 8
-                height: messageBody.implicitHeight + 12
-                Rectangle {
-                    anchors.fill: messageBody; anchors.margins: -6
-                    visible: messageRow.own; color: Theme.raised; radius: Theme.panelRadius
-                }
-                RowLayout {
-                id: messageBody
-                objectName: "messageBody_" + messageRow.message.sequence
-                x: messageRow.own ? messageRow.width - width - 6 : 6
-                y: 6
-                width: messageRow.width * 0.88 - 12
-                layoutDirection: messageRow.own ? Qt.RightToLeft : Qt.LeftToRight
-                spacing: 8
-                VoiceAvatar {
-                    Layout.preferredWidth: 44; Layout.preferredHeight: 44; Layout.alignment: Qt.AlignTop
-                    objectName: "messageAvatar_" + messageRow.message.sender
-                    systemMessage: messageRow.systemMessage
-                    online: systemMessage || !root.current.chatPresenceKnown || (root.current.chatOnlineIds || []).includes(messageRow.message.sender)
-                    avatar: messageRow.message.avatarId || messageRow.message.avatar || "mossling"; name: messageRow.message.name
-                    readonly property var member: systemMessage ? (root.current.chatBot || {}) : (root.current.chatMembers || []).find(function(m) { return m.id === messageRow.message.sender }) || ({})
-                    identity: messageRow.message.sender; animationTime: root.animationTime
-                    available: member.available !== false; muted: !!member.muted; deafened: !!member.deafened; sleeping: !!member.sleeping
-                    level: root.memberLevel(identity)
-                    circular: true; animated: root.animatedAvatars
-                }
-                ColumnLayout {
-                    Layout.fillWidth: true
-                    spacing: 3
-                    RowLayout {
-                        Layout.fillWidth: true
-                        Label { text: messageRow.message.name; textFormat: Text.PlainText; elide: Text.ElideRight; font.weight: Font.DemiBold; Layout.fillWidth: true; horizontalAlignment: messageRow.own ? Text.AlignRight : Text.AlignLeft }
-                        Label { text: Qt.formatDateTime(new Date(messageRow.message.created), "hh:mm"); color: Theme.muted; font.pixelSize: 11 }
+            Column {
+                id: messageColumn
+                width: history.width
+                spacing: 14
+                // The protocol bounds this window to 160 messages / 512 KiB.
+                // Lay it out exactly so scrolling never changes estimated height.
+                Item {
+                    width: parent.width; height: root.current.hasOlderMessages || root.current.historyLoading ? 32 : 8
+                    ActionButton {
+                        anchors.centerIn: parent
+                        objectName: "loadOlderMessages"
+                        text: root.current.historyLoading ? qsTr("Loading...") : qsTr("Earlier messages")
+                        flat: true; font.pixelSize: 11
+                        visible: !!root.current.hasOlderMessages || !!root.current.historyLoading
+                        enabled: !root.current.historyLoading
+                        onClicked: root.page(true)
                     }
-                    TextEdit {
-                        id: messageText
-                        objectName: "messageText_" + messageRow.message.sequence
-                        Layout.fillWidth: true
-                        text: {
-                            if (messageRow.systemMessage) {
-                                const event = messageRow.message.event
-                                switch (event.kind) {
-                                case "joined": return qsTr("%1 joined.").arg(event.name)
-                                case "left": return qsTr("%1 left.").arg(event.name)
-                                case "kicked": return qsTr("%1 was kicked.").arg(event.name)
-                                case "banned": return qsTr("%1 was banned from the channel.").arg(event.name)
+                }
+                Repeater {
+                    id: messageRows
+                    model: visibleMessages
+                    delegate: Item {
+                        id: messageRow
+                        LayoutMirroring.enabled: false
+                        LayoutMirroring.childrenInherit: true
+                        required property var message
+                        readonly property bool systemMessage: !!message.event
+                        readonly property bool own: !systemMessage && message.sender === root.current.ownId
+                        objectName: "messageRow_" + message.sequence
+                        width: messageColumn.width - 8
+                        height: messageBody.implicitHeight + 12
+                        readonly property bool inViewport: root.active && y + height >= history.contentY
+                            && y <= history.contentY + history.height
+                        Rectangle {
+                            anchors.fill: messageBody; anchors.margins: -6
+                            visible: messageRow.own; color: Theme.raised; radius: Theme.panelRadius
+                        }
+                        RowLayout {
+                            id: messageBody
+                            objectName: "messageBody_" + messageRow.message.sequence
+                            x: messageRow.own ? messageRow.width - width - 6 : 6
+                            y: 6
+                            width: messageRow.width * 0.88 - 12
+                            layoutDirection: messageRow.own ? Qt.RightToLeft : Qt.LeftToRight
+                            spacing: 8
+                            Loader {
+                                Layout.preferredWidth: 44; Layout.preferredHeight: 44; Layout.alignment: Qt.AlignTop
+                                active: messageRow.inViewport
+                                sourceComponent: VoiceAvatar {
+                                    objectName: "messageAvatar_" + messageRow.message.sender
+                                    systemMessage: messageRow.systemMessage
+                                    online: systemMessage || !root.current.chatPresenceKnown || (root.current.chatOnlineIds || []).includes(messageRow.message.sender)
+                                    avatar: messageRow.message.avatarId || messageRow.message.avatar || "mossling"; name: messageRow.message.name
+                                    readonly property var member: systemMessage ? (root.current.chatBot || {}) : (root.current.chatMembers || []).find(function(m) { return m.id === messageRow.message.sender }) || ({})
+                                    identity: messageRow.message.sender; animationTime: root.animationTime
+                                    available: member.available !== false; muted: !!member.muted; deafened: !!member.deafened; sleeping: !!member.sleeping
+                                    level: root.memberLevel(identity)
+                                    circular: true; animated: root.animatedAvatars
                                 }
-                                if (event.kind !== "announcement") return messageRow.message.text
                             }
-                            root.network.imageRevision
-                            const image = messageRow.message.image
-                            return chatContent.format(messageRow.message.text, image ? {
-                                "hash": image.hash, "source": root.network.imageSource(image.hash),
-                                "width": image.width, "height": image.height, "displayWidth": width
-                            } : {}, Theme.accent, Theme.codeBackground, font)
+                            ColumnLayout {
+                                Layout.fillWidth: true
+                                spacing: 3
+                                RowLayout {
+                                    Layout.fillWidth: true
+                                    Label { text: messageRow.message.name; textFormat: Text.PlainText; elide: Text.ElideRight; font.weight: Font.DemiBold; Layout.fillWidth: true; horizontalAlignment: messageRow.own ? Text.AlignRight : Text.AlignLeft }
+                                    Label { text: Qt.formatDateTime(new Date(messageRow.message.created), "hh:mm"); color: Theme.muted; font.pixelSize: 11 }
+                                }
+                                TextEdit {
+                                    id: messageText
+                                    objectName: "messageText_" + messageRow.message.sequence
+                                    Layout.fillWidth: true
+                                    text: {
+                                        if (messageRow.systemMessage) {
+                                            const event = messageRow.message.event
+                                            switch (event.kind) {
+                                                case "joined": return qsTr("%1 joined.").arg(event.name)
+                                                case "left": return qsTr("%1 left.").arg(event.name)
+                                                case "kicked": return qsTr("%1 was kicked.").arg(event.name)
+                                                case "banned": return qsTr("%1 was banned from the channel.").arg(event.name)
+                                            }
+                                            if (event.kind !== "announcement") return messageRow.message.text
+                                        }
+                                        root.network.imageRevision
+                                        const image = messageRow.message.image
+                                        return chatContent.format(messageRow.message.text, image ? {
+                                            "hash": image.hash,
+                                            // Keep image geometry without retaining offscreen decoded images.
+                                            "source": (messageRow.inViewport && root.network.imageSource(image.hash))
+                                                || "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVR4nGNgAAIAAAUAAXpeqz8AAAAASUVORK5CYII=",
+                                            "width": image.width, "height": image.height, "displayWidth": width
+                                        } : {}, Theme.accent, Theme.codeBackground, font)
+                                    }
+                                    textFormat: messageRow.systemMessage && messageRow.message.event.kind !== "announcement" ? TextEdit.PlainText : TextEdit.RichText
+                                    readOnly: true; selectByMouse: mouseSelection.active; selectByKeyboard: true; wrapMode: TextEdit.Wrap
+                                    // A mouse drag selects text. Touch starts with no selection grab so the list can scroll.
+                                    PointHandler { id: mouseSelection; acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad }
+                                    color: messageRow.systemMessage ? Theme.muted : Theme.text; font.pixelSize: messageRow.systemMessage ? 12 : 14
+                                    function requestAttachment() {
+                                        if (messageRow.inViewport && messageRow.message.image)
+                                            root.network.requestImage(messageRow.message.image.hash)
+                                    }
+                                    Timer { interval: 0; running: true; onTriggered: messageText.requestAttachment() }
+                                    Connections { target: messageRow; function onInViewportChanged() { messageText.requestAttachment() } }
+                                    onLinkActivated: function(link) { chatContent.openLink(link) }
+                                }
+                            }
                         }
-                        textFormat: messageRow.systemMessage && messageRow.message.event.kind !== "announcement" ? TextEdit.PlainText : TextEdit.RichText
-                        readOnly: true; selectByMouse: mouseSelection.active; selectByKeyboard: true; wrapMode: TextEdit.Wrap
-                        // A mouse drag selects text. Touch starts with no selection grab so the list can scroll.
-                        PointHandler { id: mouseSelection; acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad }
-                        color: messageRow.systemMessage ? Theme.muted : Theme.text; font.pixelSize: messageRow.systemMessage ? 12 : 14
-                        function requestAttachment() {
-                            if (root.active && messageRow.message.image && messageRow.y + messageRow.height >= history.contentY
-                                    && messageRow.y <= history.contentY + history.height)
-                                root.network.requestImage(messageRow.message.image.hash)
-                        }
-                        Timer { interval: 0; running: true; onTriggered: messageText.requestAttachment() }
-                        Connections { target: root; function onActiveChanged() { messageText.requestAttachment() } }
-                        Connections { target: history; function onContentYChanged() { messageText.requestAttachment() } }
-                        onLinkActivated: function(link) { chatContent.openLink(link) }
                     }
-                }
                 }
             }
             Label {
                 anchors.centerIn: parent
                 width: parent.width - 24; horizontalAlignment: Text.AlignHCenter; wrapMode: Text.Wrap
-                visible: history.count === 0
+                visible: messageRows.count === 0
                 text: root.current.historyLoading ? qsTr("Loading...") : root.current.chatReady ? qsTr("Start the conversation.") : qsTr("Chat opens after access is approved.")
                 color: Theme.muted
             }

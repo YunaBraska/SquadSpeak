@@ -873,10 +873,6 @@
             <translation>Automatikus csatlakozás</translation>
         </message>
         <message>
-            <source>Leave channel</source>
-            <translation>Kilépés a csatornából</translation>
-        </message>
-        <message>
             <source>Stream URL</source>
             <translation>Stream URL</translation>
         </message>

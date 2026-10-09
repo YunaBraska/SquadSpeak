@@ -873,10 +873,6 @@
             <translation>Automatsko spajanje</translation>
         </message>
         <message>
-            <source>Leave channel</source>
-            <translation>Napusti kanal</translation>
-        </message>
-        <message>
             <source>Stream URL</source>
             <translation>URL strujanja</translation>
         </message>

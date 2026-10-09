@@ -41,6 +41,12 @@
 #include <cstdio>
 
 int main(int argc, char** argv) {
+#ifdef Q_OS_ANDROID
+    // QApplication and its post-routines finish before Android ends the process.
+    // Qt's additional native exit races Android HWUI's detached worker shutdown.
+    qputenv("QT_ANDROID_NO_EXIT_CALL", "1");
+    qputenv("QT_ANDROID_NO_FULLSCREEN_KEYBOARD", "1");
+#endif
 #ifdef Q_OS_MACOS
     // SecureTransport needs a temporary import for TLS. Durable device secrets
     // remain owned by QtKeychain; handshake imports do not enter the login keychain.
@@ -74,6 +80,7 @@ int main(int argc, char** argv) {
     addOptions(bootstrap);
     const bool parsed = bootstrap.parse(app.arguments());
     auto settingsFile = bootstrap.value("settings-file");
+    if (settingsFile.isEmpty()) settingsFile = qEnvironmentVariable("SQUADSPEAK_SETTINGS_FILE");
     if (settingsFile.isEmpty())
         settingsFile = QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation) + "/audio.ini";
 
