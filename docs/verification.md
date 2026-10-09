@@ -36,13 +36,39 @@ remains above it and sends a message. Test bundles use the application's
 iPhone/iPad family and launch metadata, avoiding iPhone compatibility mode
 when checking the iPad layout.
 
+A further regression reproduced blank space and missing visible rows after
+scrolling past one oversized message followed by short messages. The chat now
+refills from actual row coordinates after rendering, avoiding ListView's stale
+height estimate. It retains native wheel/touch/scrollbar handling and bounded
+history loading, with no periodic repair timer or enlarged cache. The expanded
+wheel/scrollbar regression, touch and pagination selection passes eight Qt Test
+entries on each simulator. Light and dark iPad screenshots show contiguous
+messages at the end. Evidence: `build/variable-chat-regression/actual-end-ipad-ui.log`
+and `actual-end-iphone-ui.log` in the same directory. The complete macOS
+`channel_controls` group also passes all 257 Qt Test entries in 237.02 seconds,
+with aggressive garbage collection enabled by CTest. Its log is
+`build/variable-chat-regression/actual-end-full.log`. The same eight selected
+entries also pass with macOS Metal rendering, recorded in
+`build/variable-chat-regression/actual-end-macos-native.log`.
+
 Screenshots of populated chat, Markdown, input settings and the native touch
 layout were inspected on both simulators. They retain the shared channel/chat
 layout. QQuickWindow captures show the application surface, not the separate
 system keyboard. Images are under `build/ios-simulator/smoke` and
 `build/device-check/ios/ipad-ui`. The simulator emits duplicate UIKit class and
-font-fallback warnings under translation. These do not establish behavior on
-physical devices or complete font coverage.
+font-fallback warnings. These do not establish behavior on physical devices.
+
+The additional iPad language sweep fails at the Chinese language label. Arabic
+RTL controls and focus preservation pass, but complete mobile glyph coverage
+does not. A separate CoreText probe reproduces missing Chinese glyphs without
+Qt, on both x86_64 and native arm64 in this iOS 26 runtime. Five distinct Han
+characters all resolve to the same LastResort glyph through the public PingFang
+family. Native arm64 system-font text layout through `CTLine` also returns
+six missing glyphs for six Chinese characters. Renaming the font is therefore
+not a correction. The glyph assertion remains unchanged. A different runtime or physical device must establish
+whether an application correction is necessary. Evidence is in
+`build/ios-ipad-languages.log` and the retained `ios-font-probe5*.log` and
+`font-flow.log` diagnostics under `build/device-check/ios`.
 
 The iOS image decoder uses one worker at a time, preserves the existing size
 limits, and discards callbacks after owner destruction. Success, rejection

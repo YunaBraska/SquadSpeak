@@ -78,6 +78,7 @@ Item {
             }
             if (visibleMessages.count > 0) root.initialPage = false
             root.updating = false
+            history.scheduleFillEnd()
         }
     }
 
@@ -120,7 +121,50 @@ Item {
             spacing: 14
             model: visibleMessages
             cacheBuffer: 0
-            ScrollBar.vertical: ScrollBar {}
+            ScrollBar.vertical: ScrollBar {
+                id: historyBar
+                objectName: "chatHistoryScrollBar"
+                onPressedChanged: if (!pressed) history.scheduleFillEnd()
+            }
+            property bool fillEndPending: false
+            Connections {
+                target: root.Window.window
+                enabled: history.fillEndPending
+                function onFrameSwapped() {
+                    history.fillEndPending = false
+                    history.fillEnd()
+                }
+            }
+            function scheduleFillEnd() {
+                if (moving || historyBar.pressed || root.updating || root.current.historyLoading || !atYEnd) return
+                fillEndPending = true
+                if (root.Window.window) root.Window.window.update()
+            }
+            function fillEnd() {
+                if (moving || historyBar.pressed || root.updating || root.current.historyLoading) return
+                if (!atYEnd || !count) return
+                let index = count - 1
+                const last = itemAtIndex(index)
+                let first = last
+                if (!first) {
+                    positionViewAtIndex(index, ListView.End)
+                    return
+                }
+                while (index > 0 && first.y > contentY + spacing) {
+                    --index
+                    first = itemAtIndex(index)
+                    if (!first) {
+                        // Qt can underestimate the total height after a large jump.
+                        // Actual row coordinates refill the gap without that estimate.
+                        contentY = last.y + last.height - height
+                        break
+                    }
+                }
+            }
+            onMovementEnded: scheduleFillEnd()
+            onAtYEndChanged: if (atYEnd) scheduleFillEnd()
+            onContentHeightChanged: scheduleFillEnd()
+            onHeightChanged: scheduleFillEnd()
             WheelHandler {
                 target: null
                 blocking: false
@@ -132,6 +176,7 @@ Item {
                 }
             }
             onContentYChanged: {
+                scheduleFillEnd()
                 if (!moving || root.updating || root.current.historyLoading) return
                 if (atYBeginning && root.current.hasOlderMessages) root.page(true)
                 else if (atYEnd && root.current.hasNewerMessages) root.page(false)
@@ -156,6 +201,9 @@ Item {
                 readonly property bool systemMessage: !!message.event
                 readonly property bool own: !systemMessage && message.sender === root.current.ownId
                 objectName: "messageRow_" + message.sequence
+                Component.onCompleted: history.scheduleFillEnd()
+                onYChanged: history.scheduleFillEnd()
+                onHeightChanged: history.scheduleFillEnd()
                 width: ListView.view.width - 8
                 height: messageBody.implicitHeight + 12
                 Rectangle {

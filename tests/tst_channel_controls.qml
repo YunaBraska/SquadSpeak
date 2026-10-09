@@ -2358,8 +2358,10 @@ TestCase {
 
     function test_wheelScrollsInsideOversizedMessage_data() {
         return [
-            {tag: "compact-light", width: 390, height: 780, theme: "light"},
-            {tag: "tablet-dark", width: 820, height: 1000, theme: "dark"}
+            {tag: "compact-light", width: 390, height: 780, theme: "light", scrollbar: false},
+            {tag: "tablet-dark", width: 820, height: 1000, theme: "dark", scrollbar: false},
+            {tag: "compact-scrollbar", width: 390, height: 780, theme: "light", scrollbar: true},
+            {tag: "tablet-scrollbar", width: 820, height: 1000, theme: "dark", scrollbar: true}
         ]
     }
     function test_wheelScrollsInsideOversizedMessage(data) {
@@ -2372,7 +2374,8 @@ TestCase {
             verify(channel.openChat(channel.ownId, "127.0.0.1", channel.servicePort))
             tryVerify(function() { return channel.chatReady && !channel.historyLoading })
             const lines = []
-            for (let i = 1; i <= 60; ++i) lines.push("Scroll test **" + i + "** with `inline code`.")
+            const lineCount = Math.max(60, Math.ceil(view.height / 10))
+            for (let i = 1; i <= lineCount; ++i) lines.push("Scroll test **" + i + "** with `inline code`.")
             verify(channel.sendChat(lines.join("\n\n")))
             tryCompare(channel, "chatPending", false)
             view.chatExpanded = true
@@ -2392,7 +2395,33 @@ TestCase {
             tryVerify(function() { return history.contentY > above + 1 })
             tryCompare(history, "moving", false)
             compare(outer.contentY, outerY)
+            for (let i = 0; i < 3; ++i) {
+                verify(channel.sendChat("Short message " + i))
+                tryCompare(channel, "chatPending", false)
+            }
+            tryCompare(history, "count", 4)
+            tryCompare(panel, "updating", false)
             history.positionViewAtBeginning()
+            waitForRendering(history)
+            if (data.scrollbar) {
+                const bar = findChild(history, "chatHistoryScrollBar")
+                verify(bar && bar.visible)
+                const handle = bar.contentItem
+                const start = handle.mapToItem(bar, handle.width / 2, handle.height / 2)
+                mouseDrag(bar, start.x, start.y, 0, bar.height - start.y - 1)
+            } else mouseWheel(history, history.width / 2, history.height / 2, 0, -12000)
+            tryCompare(history, "moving", false)
+            tryCompare(history, "atYEnd", true)
+            tryVerify(function() { return history.itemAtIndex(2) !== null }, 2000,
+                "Scrolling to the end keeps preceding short messages in the viewport")
+            const last = history.itemAtIndex(3)
+            verify(last !== null)
+            const preceding = history.itemAtIndex(2)
+            verify(preceding !== null)
+            verify(Math.abs(last.y - preceding.y - preceding.height - history.spacing) < 1,
+                "Short messages remain adjacent after scrolling past an oversized message")
+            const upperIndex = history.indexAt(history.width / 2, history.contentY + 20)
+            verify(upperIndex >= 0, "The upper viewport still contains message content at the end")
             waitForRendering(history)
             if (imageDirectory.length > 0)
                 verify(fixtures.saveWindow(view, imageDirectory + "/chat-wheel-" + data.tag + ".png"))

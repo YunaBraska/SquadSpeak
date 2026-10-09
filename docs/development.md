@@ -613,6 +613,8 @@ CTest automatically installs each test app before launching it through `simctl`.
 
 The x86_64 Simulator codec disables x86 SIMD after color round trips exposed corruption under translation on Apple Silicon. These tests establish correctness, not native arm64 device performance. The remaining mobile work includes broader safe-area and touch review, local-network permission handling, notification integration and background lifecycle review. Native screen capture, microphone permissions, background hosting and physical hardware remain unsupported by this Simulator smoke path.
 
+The iOS 26 runtime used here fails the Chinese glyph assertion. A standalone CoreText probe reproduces missing glyphs with both x86_64 and arm64 binaries. Keep the language assertion enabled. A font-family alias does not fix the runtime's LastResort substitution. Verify another runtime or a physical device before claiming complete mobile font coverage.
+
 Local discovery needs the local-network privacy declaration and, for raw multicast on iOS, the relevant entitlement. Ask for permission in the foreground and provide direct-address entry when discovery is unavailable. Follow [Apple's local-network guidance](https://developer.apple.com/documentation/technotes/tn3179-understanding-local-network-privacy).
 
 An iPhone cannot be promised to run a silent hosting service indefinitely while suspended. Background audio/VoIP modes must serve their actual purpose; preventing idle display sleep while foregrounded does not grant background execution. Preserve hosted channel data and reconnect state across suspension. See [App Review Guidelines, 2.5.4](https://developer.apple.com/app-store/review/guidelines/).
