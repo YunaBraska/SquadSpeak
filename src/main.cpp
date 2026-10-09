@@ -20,14 +20,19 @@
 #include <QElapsedTimer>
 #include <QFile>
 #include <QFileInfo>
+#if !defined(Q_OS_IOS) && !defined(Q_OS_ANDROID)
 #include <QMenu>
+#include <QSystemTrayIcon>
+#endif
+#ifdef Q_OS_IOS
+#include <QImageReader>
+#endif
 #include <QPainter>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include <QQuickStyle>
 #include <QQuickWindow>
 #include <QStandardPaths>
-#include <QSystemTrayIcon>
 #include <QStyleHints>
 #include <QLockFile>
 #include <QTranslator>
@@ -44,6 +49,9 @@ int main(int argc, char** argv) {
     for (int i = 1; i < argc; ++i)
         if (QString::fromLocal8Bit(argv[i]) == "--headless") return Headless::run(argc, argv);
     QApplication app(argc, argv);
+#ifdef Q_OS_IOS
+    QImageReader::setAllocationLimit(128);
+#endif
     app.setApplicationName("SquadSpeak");
     app.setOrganizationName("SquadSpeak");
     app.setApplicationVersion(QStringLiteral(SQUADSPEAK_VERSION));
@@ -235,6 +243,7 @@ int main(int argc, char** argv) {
             QMetaObject::invokeMethod(channels, "openSettings", Q_ARG(QVariant, 0));
         };
 
+#if !defined(Q_OS_IOS) && !defined(Q_OS_ANDROID)
         QPixmap mark(32, 32);
         mark.fill(Qt::transparent);
         {
@@ -298,6 +307,9 @@ int main(int argc, char** argv) {
             app.setQuitOnLastWindowClosed(true);
             showChannels();
         }
+#else
+        channels->showMaximized();
+#endif
         if (arguments.isSet("recording-test")) {
             channels->setProperty("recordingMode", true);
             if (!arguments.isSet("smoke-test")) {

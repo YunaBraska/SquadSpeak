@@ -2356,6 +2356,133 @@ TestCase {
         }
     }
 
+    function test_wheelScrollsInsideOversizedMessage_data() {
+        return [
+            {tag: "compact-light", width: 390, height: 780, theme: "light"},
+            {tag: "tablet-dark", width: 820, height: 1000, theme: "dark"}
+        ]
+    }
+    function test_wheelScrollsInsideOversizedMessage(data) {
+        const previousTheme = session.theme
+        try {
+            session.setTheme(data.theme)
+            view.width = data.width; view.height = data.height
+            verify(fixtures.expireChat())
+            verify(fixtures.startHost())
+            verify(channel.openChat(channel.ownId, "127.0.0.1", channel.servicePort))
+            tryVerify(function() { return channel.chatReady && !channel.historyLoading })
+            const lines = []
+            for (let i = 1; i <= 60; ++i) lines.push("Scroll test **" + i + "** with `inline code`.")
+            verify(channel.sendChat(lines.join("\n\n")))
+            tryCompare(channel, "chatPending", false)
+            view.chatExpanded = true
+            const panel = findChild(view, "chatPanel"), history = findChild(panel, "chatHistory")
+            tryCompare(history, "count", 1)
+            tryCompare(panel, "updating", false)
+            tryVerify(function() { return history.contentHeight > history.height + 100 })
+            history.positionViewAtEnd()
+            waitForRendering(history)
+            const outer = findChild(view, "channelsScroll").contentItem
+            const outerY = outer.contentY, bottom = history.contentY
+            mouseWheel(history, history.width / 2, history.height / 2, 0, 120)
+            tryVerify(function() { return history.contentY < bottom - 1 })
+            tryCompare(history, "moving", false)
+            const above = history.contentY
+            mouseWheel(history, history.width / 2, history.height / 2, 0, -120)
+            tryVerify(function() { return history.contentY > above + 1 })
+            tryCompare(history, "moving", false)
+            compare(outer.contentY, outerY)
+            history.positionViewAtBeginning()
+            waitForRendering(history)
+            if (imageDirectory.length > 0)
+                verify(fixtures.saveWindow(view, imageDirectory + "/chat-wheel-" + data.tag + ".png"))
+        } finally {
+            session.setTheme(previousTheme)
+        }
+    }
+
+    function test_touchScrollsChatAndReleasesPtt() {
+        if (Qt.platform.os === "ios" || Qt.platform.os === "android") view.showMaximized()
+        verify(fixtures.startHost())
+        verify(channel.openChat(channel.ownId, "127.0.0.1", channel.servicePort))
+        tryVerify(function() { return channel.chatReady && !channel.historyLoading })
+        const lines = []
+        for (let i = 1; i <= 60; ++i) lines.push("Touch scroll **" + i + "** with `inline code`.")
+        verify(channel.sendChat(lines.join("\n\n")))
+        tryCompare(channel, "chatPending", false)
+        view.chatExpanded = true
+        const panel = findChild(view, "chatPanel"), history = findChild(panel, "chatHistory")
+        tryCompare(history, "count", 1)
+        tryCompare(panel, "updating", false)
+        history.positionViewAtEnd()
+        waitForRendering(history)
+        const row = history.itemAtIndex(0)
+        const text = findChild(row, "messageText_" + channel.messages[0].sequence)
+        for (let attempt = 0; attempt < 2; ++attempt) {
+            history.positionViewAtEnd()
+            waitForRendering(history)
+            const before = history.contentY
+            const finger = touchEvent(history)
+            finger.press(0, history, history.width / 2, history.height / 4).commit()
+            for (let step = 1; step <= 4; ++step) {
+                finger.move(0, history, history.width / 2, history.height * (1 / 4 + step / 8)).commit()
+                waitForRendering(history)
+            }
+            finger.release(0, history, history.width / 2, history.height * 3 / 4).commit()
+            tryVerify(function() { return history.contentY < before - 1 })
+            tryCompare(history, "moving", false)
+            history.positionViewAtBeginning()
+            waitForRendering(history)
+            mouseMove(text, 8, 8)
+            mousePress(text, 8, 8)
+            mouseMove(text, 120, 8, 50)
+            mouseRelease(text, 120, 8)
+            verify(text.selectedText.length > 0, "Mouse text selection remains available")
+            text.copy()
+            compare(fixtures.clipboardText(), text.selectedText)
+        }
+        session.setPushToTalk(true)
+        session.setMuted(false)
+        const button = findChild(view, "pttButton")
+        tryCompare(button, "visible", true)
+        const press = touchEvent(button)
+        press.press(0, button, button.width / 2, button.height / 2).commit()
+        tryCompare(session, "pttHeld", true)
+        verify(session.transmissionAllowed)
+        press.release(0, button, button.width / 2, button.height / 2).commit()
+        tryCompare(session, "pttHeld", false)
+        verify(!session.transmissionAllowed)
+        history.positionViewAtBeginning()
+        waitForRendering(history)
+        if (imageDirectory.length > 0)
+            verify(fixtures.saveWindow(view, imageDirectory + "/chat-touch-native.png"))
+        if (Qt.platform.os === "ios") {
+            view.requestActivate()
+            tryCompare(view, "active", true)
+            const draft = findChild(panel, "chatDraft"), send = findChild(panel, "sendChat")
+            const tap = touchEvent(draft)
+            tap.press(0, draft, 20, draft.height / 2).commit()
+            tap.release(0, draft, 20, draft.height / 2).commit()
+            tryCompare(draft, "activeFocus", true)
+            Qt.inputMethod.show()
+            tryCompare(Qt.inputMethod, "visible", true)
+            tryCompare(Qt.inputMethod, "animating", false)
+            keyClick(Qt.Key_H)
+            keyClick(Qt.Key_I)
+            compare(draft.text, "hi")
+            const position = send.mapToItem(view.contentItem, 0, 0)
+            verify(position.y + send.height <= Qt.inputMethod.keyboardRectangle.y,
+                "The send button stays above the software keyboard")
+            if (imageDirectory.length > 0)
+                verify(fixtures.saveWindow(view, imageDirectory + "/chat-keyboard-native.png"))
+            mouseClick(send)
+            tryCompare(draft, "text", "")
+            tryCompare(history, "count", 2)
+            Qt.inputMethod.hide()
+            tryCompare(Qt.inputMethod, "visible", false)
+        }
+    }
+
     function test_scrollLoadsOlderMessagesWithoutDownloadingThemAtOpen() {
         verify(fixtures.expireChat())
         verify(fixtures.startHost()); verify(channel.openChat(channel.ownId, "127.0.0.1", channel.servicePort))

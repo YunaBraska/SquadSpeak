@@ -213,7 +213,9 @@ Item {
                             } : {}, Theme.accent, Theme.codeBackground, font)
                         }
                         textFormat: messageRow.systemMessage && messageRow.message.event.kind !== "announcement" ? TextEdit.PlainText : TextEdit.RichText
-                        readOnly: true; selectByMouse: true; wrapMode: TextEdit.Wrap
+                        readOnly: true; selectByMouse: mouseSelection.active; selectByKeyboard: true; wrapMode: TextEdit.Wrap
+                        // A mouse drag selects text. Touch starts with no selection grab so the list can scroll.
+                        PointHandler { id: mouseSelection; acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad }
                         color: messageRow.systemMessage ? Theme.muted : Theme.text; font.pixelSize: messageRow.systemMessage ? 12 : 14
                         function requestAttachment() {
                             if (root.active && messageRow.message.image && messageRow.y + messageRow.height >= history.contentY

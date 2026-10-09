@@ -7,7 +7,14 @@
 #include <QClipboard>
 #include <QMimeData>
 #include <QFile>
+#ifdef Q_OS_IOS
+#include <QFutureWatcher>
+#include <QSemaphore>
+#include <QScopeGuard>
+#include <QtConcurrentRun>
+#else
 #include <QProcess>
+#endif
 #include <QTimer>
 #include <QSharedPointer>
 #include <QImageReader>
@@ -344,6 +351,38 @@ bool ChatContent::prepare(const QByteArray& source, QObject* context, std::funct
     if (source.isEmpty() || source.size() > maximumSourceBytes) {
         completion({}, tr("Image file is empty or larger than 25 MiB.")); return false;
     }
+#ifdef Q_OS_IOS
+    // iOS cannot launch a decoder subprocess. Keep one bounded decode in flight
+    // and deliver results only while its owning channel still exists.
+    static QSemaphore capacity(1);
+    if (!capacity.tryAcquire()) {
+        completion({}, tr("Image decoder could not be started.")); return false;
+    }
+    auto releaseOnFailure = qScopeGuard([] { capacity.release(); });
+    using Result = std::pair<QByteArray, QString>;
+    auto* watcher = new QFutureWatcher<Result>(context);
+    auto* timeout = new QTimer(watcher);
+    timeout->setSingleShot(true);
+    QObject::connect(watcher, &QFutureWatcher<Result>::finished, watcher, [watcher, timeout, completion] {
+        timeout->stop();
+        const auto result = watcher->result();
+        watcher->deleteLater();
+        completion(result.first, result.second);
+    });
+    watcher->setFuture(QtConcurrent::run([source]() -> Result {
+        const auto release = qScopeGuard([] { capacity.release(); });
+        try { return {sanitizeImage(source), {}}; }
+        catch (const std::exception& error) { return {{}, QString::fromUtf8(error.what())}; }
+    }));
+    releaseOnFailure.dismiss();
+    QObject::connect(timeout, &QTimer::timeout, watcher, [watcher, completion] {
+        QObject::disconnect(watcher, nullptr, watcher, nullptr);
+        watcher->deleteLater();
+        completion({}, tr("Image processing took too long."));
+    });
+    timeout->start(20000);
+    return true;
+#else
     auto* process = new QProcess(context);
     struct State { QByteArray output; QByteArray diagnostic; bool done = false, timedOut = false; };
     const auto state = QSharedPointer<State>::create();
@@ -386,6 +425,7 @@ bool ChatContent::prepare(const QByteArray& source, QObject* context, std::funct
 #endif
     process->start(QCoreApplication::applicationDirPath() + helper, {});
     return true;
+#endif
 }
 
 bool ChatContent::prepareDraft(const QByteArray& source) {

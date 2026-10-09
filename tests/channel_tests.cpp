@@ -22,6 +22,7 @@
 #include <QTcpServer>
 #include <QTcpSocket>
 #include <QSslSocket>
+#include <QSslKey>
 #include <QSslServer>
 #include <QUdpSocket>
 #include <QNetworkDatagram>
@@ -287,6 +288,32 @@ private slots:
             socket.abort();
             QTRY_VERIFY(host.channel.hostClients().isEmpty() && host.channel.requests().isEmpty());
         }
+    }
+    void tlsWithoutDeviceCertificateCannotReachAdmission() {
+        QTemporaryDir dir;
+        Device host(dir.filePath("host"), "Owner");
+        QVERIFY(host.channel.listen(QHostAddress::LocalHost));
+        const auto messagesBefore = host.channel.messages().size();
+
+        QSslSocket socket;
+        auto configuration = QSslConfiguration::defaultConfiguration();
+        configuration.setLocalCertificate(QSslCertificate{});
+        configuration.setPrivateKey(QSslKey{});
+        configuration.setPeerVerifyMode(QSslSocket::VerifyNone);
+        configuration.setProtocol(QSsl::TlsV1_2OrLater);
+        configuration.setAllowedNextProtocols({"squadspeak/1"});
+        socket.setSslConfiguration(configuration);
+        connect(&socket, &QSslSocket::sslErrors, &socket,
+            [&socket](const QList<QSslError>& errors) { socket.ignoreSslErrors(errors); });
+        QSignalSpy connected(&socket, &QSslSocket::connected);
+        QSignalSpy disconnected(&socket, &QSslSocket::disconnected);
+        socket.connectToHostEncrypted("127.0.0.1", host.channel.port());
+        QTRY_VERIFY_WITH_TIMEOUT(!connected.isEmpty(), 5000);
+        QTRY_VERIFY_WITH_TIMEOUT(!disconnected.isEmpty(), 5000);
+        QVERIFY(!socket.isEncrypted());
+        QVERIFY(host.channel.hostClients().isEmpty());
+        QVERIFY(host.channel.requests().isEmpty());
+        QCOMPARE(host.channel.messages().size(), messagesBefore);
     }
     void extensionsPreserveAdmissionAndKnownMessageValidation_data() {
         QTest::addColumn<QString>("scenario");

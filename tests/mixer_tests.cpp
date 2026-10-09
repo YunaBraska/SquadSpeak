@@ -358,6 +358,26 @@ private slots:
         QCOMPARE(rms(quietReceiver.render(48000, 4820)), 0.0);
         QCOMPARE(rms(loudReceiver.render(48000, 5000)), 0.0);
     }
+    void equalizationFollowsTheSameSpeakerMovingNearAndFar() {
+        squad::VoiceMixer sender, receiver, steadySender, steadyReceiver;
+        int frame = 0;
+        double previousSteady = 0;
+        for (const double amplitude : {0.04, 0.5, 0.02, 0.25}) {
+            double adjusted = 0, steady = 0;
+            for (int settling = 0; settling < 180; ++settling, ++frame) {
+                const auto now = frame * 20;
+                QVERIFY(receiver.receive("moving", sender.encode(tone(amplitude), 48000).first(), now));
+                QVERIFY(steadyReceiver.receive("steady", steadySender.encode(tone(0.1), 48000).first(), now));
+                adjusted = rms(receiver.render(48000, now));
+                steady = rms(steadyReceiver.render(48000, now));
+                QVERIFY(std::isfinite(adjusted));
+            }
+            QVERIFY2(std::abs(adjusted - steady) < 0.015,
+                qPrintable(QString("input=%1 moving=%2 steady=%3").arg(amplitude).arg(adjusted).arg(steady)));
+            if (previousSteady > 0) QVERIFY(std::abs(steady - previousSteady) < 0.005);
+            previousSteady = steady;
+        }
+    }
     void localMuteDoesNotStopLearningOrGetUndoneByNormalization() {
         squad::VoiceMixer sender, receiver;
         receiver.setGain("source", 0);

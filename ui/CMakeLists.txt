@@ -25,7 +25,9 @@ set_source_files_properties(Theme.qml PROPERTIES QT_QML_SINGLETON_TYPE TRUE)
 qt_add_qml_module(squadspeak URI SquadSpeak VERSION 1.0
     QML_FILES ${squad_qml_files} RESOURCES ${squad_resource_files})
 target_link_libraries(squadspeak PRIVATE squad_video squad_radio squad_audio squad_session squad_content Qt6::Widgets Qt6::Quick Qt6::QuickControls2 Qt6::Multimedia ${squad_ptt_platform_libraries})
-add_dependencies(squadspeak squad_image_worker)
+if(NOT IOS)
+    add_dependencies(squadspeak squad_image_worker)
+endif()
 if(TARGET squad_updater)
     target_sources(squadspeak PRIVATE ../src/app_updates.mm ../src/app_updates.hpp)
     target_link_libraries(squadspeak PRIVATE squad_updater)
@@ -42,15 +44,21 @@ if(APPLE)
     target_sources(squadspeak PRIVATE ../src/apple_notifications.mm ../src/apple_notifications.hpp)
     set_source_files_properties(../src/apple_notifications.mm PROPERTIES COMPILE_OPTIONS "-fobjc-arc")
     target_link_libraries(squadspeak PRIVATE "-framework UserNotifications")
-    set_source_files_properties(icons/app.icns sounds/announcement.wav PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
-    target_sources(squadspeak PRIVATE icons/app.icns sounds/announcement.wav)
-    # Keep codec locations until macdeployqt resolves and bundles them. It
-    # removes these build paths after rewriting the deployed dependencies.
-    set_property(TARGET squadspeak PROPERTY INSTALL_RPATH
-        "@executable_path/../Frameworks;${OPUS_LIBRARY_DIRS};${SAMPLERATE_LIBRARY_DIRS}")
-    add_custom_command(TARGET squadspeak POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy "$<TARGET_FILE:squad_image_worker>"
-            "$<TARGET_BUNDLE_DIR:squadspeak>/Contents/MacOS/squad_image_worker")
+    if(IOS)
+        set(squad_bundle_icon icons/app.png)
+    else()
+        set(squad_bundle_icon icons/app.icns)
+    endif()
+    set_source_files_properties(${squad_bundle_icon} sounds/announcement.wav PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
+    target_sources(squadspeak PRIVATE ${squad_bundle_icon} sounds/announcement.wav)
+    if(NOT IOS)
+        # macdeployqt rewrites codec paths when creating the desktop package.
+        set_property(TARGET squadspeak PROPERTY INSTALL_RPATH
+            "@executable_path/../Frameworks;${OPUS_LIBRARY_DIRS};${SAMPLERATE_LIBRARY_DIRS}")
+        add_custom_command(TARGET squadspeak POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy "$<TARGET_FILE:squad_image_worker>"
+                "$<TARGET_BUNDLE_DIR:squadspeak>/Contents/MacOS/squad_image_worker")
+    endif()
 endif()
 if(WIN32)
     target_sources(squadspeak PRIVATE icons/app.rc ../src/windows.manifest)
@@ -59,6 +67,21 @@ endif()
 # Qt reads this template before CMake generates the bundle to link both the
 # permission plugin and its request entrypoint. Expand XML fragments now while
 # leaving CMake's ${MACOSX_BUNDLE_*} placeholders for bundle generation.
+if(IOS)
+    set(squad_platform_plist "<key>LSRequiresIPhoneOS</key><true/>
+        <key>UIDeviceFamily</key><array><integer>1</integer><integer>2</integer></array>
+        <key>UILaunchScreen</key><dict/>
+        <key>UISupportedInterfaceOrientations</key><array>
+            <string>UIInterfaceOrientationPortrait</string><string>UIInterfaceOrientationPortraitUpsideDown</string>
+            <string>UIInterfaceOrientationLandscapeLeft</string><string>UIInterfaceOrientationLandscapeRight</string></array>
+        <key>UIBackgroundModes</key><array><string>audio</string></array>
+        <key>CFBundleIconFiles</key><array><string>app.png</string></array>")
+    set_target_properties(squadspeak PROPERTIES XCODE_ATTRIBUTE_TARGETED_DEVICE_FAMILY "1,2")
+else()
+    set(squad_platform_plist "<key>CFBundleIconFile</key><string>app.icns</string>
+        <key>LSUIElement</key><true/>
+        <key>LSMinimumSystemVersion</key><string>\${CMAKE_OSX_DEPLOYMENT_TARGET}</string>")
+endif()
 configure_file(../src/Info.plist.in "${CMAKE_CURRENT_BINARY_DIR}/Info.plist.in" @ONLY)
 set_target_properties(squadspeak PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}"

@@ -5,8 +5,16 @@
 #include <QTemporaryDir>
 #include <QFile>
 #include <QFileInfo>
+#ifndef Q_OS_IOS
 #include <QProcess>
 #include <QProcessEnvironment>
+#endif
+#ifdef Q_OS_IOS
+#include <QFuture>
+#include <QSemaphore>
+#include <QThreadPool>
+#include <QtConcurrentRun>
+#endif
 #include <QTimer>
 #include <QTcpServer>
 #include <QTcpSocket>
@@ -32,6 +40,9 @@ class ChatContentTests final : public QObject {
     Q_OBJECT
 private slots:
     void decoderTimeoutWaitsForProcessExit() {
+#ifdef Q_OS_IOS
+        QSKIP("The isolated image-worker subprocess is unavailable on iOS.");
+#else
         if (!qEnvironmentVariableIsSet("SQUAD_TEST_DECODER_TIMEOUT")) {
             QTemporaryDir folder;
             QVERIFY(folder.isValid());
@@ -74,7 +85,109 @@ private slots:
         QTest::qWait(100);
         QCOMPARE(completed, 1);
         QTRY_VERIFY(context.findChildren<QProcess*>().isEmpty());
+#endif
     }
+#ifdef Q_OS_IOS
+    void inProcessDecoderSurvivesOwnerDestructionAndReuse() {
+        QImage image(32, 24, QImage::Format_RGBA8888);
+        image.fill(QColor(30, 90, 160, 128));
+        QByteArray source;
+        QBuffer buffer(&source);
+        QVERIFY(buffer.open(QIODevice::WriteOnly));
+        QVERIFY(image.save(&buffer, "PNG"));
+
+        QObject owner;
+        QByteArray prepared;
+        QString error;
+        bool completed = false;
+        QVERIFY(ChatContent::prepare(source, &owner, [&](QByteArray bytes, QString failure) {
+            prepared = std::move(bytes);
+            error = std::move(failure);
+            completed = true;
+        }));
+        QTRY_VERIFY_WITH_TIMEOUT(completed, 10000);
+        QVERIFY2(error.isEmpty(), qPrintable(error));
+        QCOMPARE(ChatContent::sanitizedImageSize(prepared), image.size());
+
+        auto* shortLived = new QObject;
+        bool calledAfterOwnerDestruction = false;
+        QVERIFY(ChatContent::prepare(source, shortLived, [&](QByteArray, QString) {
+            calledAfterOwnerDestruction = true;
+        }));
+        delete shortLived;
+        QVERIFY(QThreadPool::globalInstance()->waitForDone(10000));
+        QCoreApplication::processEvents();
+        QVERIFY(!calledAfterOwnerDestruction);
+
+        prepared.clear();
+        error.clear();
+        completed = false;
+        QVERIFY(ChatContent::prepare(source, &owner, [&](QByteArray bytes, QString failure) {
+            prepared = std::move(bytes);
+            error = std::move(failure);
+            completed = true;
+        }));
+        QTRY_VERIFY_WITH_TIMEOUT(completed, 10000);
+        QVERIFY2(error.isEmpty(), qPrintable(error));
+        QCOMPARE(ChatContent::sanitizedImageSize(prepared), image.size());
+
+        auto* pool = QThreadPool::globalInstance();
+        const auto previousMax = pool->maxThreadCount();
+        pool->setMaxThreadCount(1);
+        QSemaphore entered;
+        QSemaphore release;
+        auto blocker = QtConcurrent::run([&] {
+            entered.release();
+            release.acquire();
+        });
+        bool released = false;
+        const auto restore = qScopeGuard([&] {
+            if (!released)
+                release.release();
+            blocker.waitForFinished();
+            pool->setMaxThreadCount(previousMax);
+        });
+        QVERIFY(entered.tryAcquire(1, 10000));
+        QObject queuedOwner;
+        int queuedCompletions = 0;
+        QString queuedError;
+        QVERIFY(ChatContent::prepare(source, &queuedOwner, [&](QByteArray bytes, QString failure) {
+            QVERIFY(bytes.isEmpty());
+            queuedError = std::move(failure);
+            ++queuedCompletions;
+        }));
+        bool rejectedCompleted = false;
+        QString rejectedError;
+        QVERIFY(!ChatContent::prepare(source, &queuedOwner, [&](QByteArray, QString failure) {
+            rejectedCompleted = true;
+            rejectedError = std::move(failure);
+        }));
+        QVERIFY(rejectedCompleted);
+        QVERIFY(!rejectedError.isEmpty());
+        QCOMPARE(queuedCompletions, 0);
+        QTRY_COMPARE_WITH_TIMEOUT(queuedCompletions, 1, 25000);
+        QCOMPARE(queuedError, ChatContent::tr("Image processing took too long."));
+        QVERIFY(!ChatContent::prepare(source, &queuedOwner, [](QByteArray bytes, QString failure) {
+            QVERIFY(bytes.isEmpty());
+            QVERIFY(!failure.isEmpty());
+        }));
+        release.release();
+        released = true;
+        blocker.waitForFinished();
+        QVERIFY(QThreadPool::globalInstance()->waitForDone(10000));
+        QCoreApplication::processEvents();
+        QCOMPARE(queuedCompletions, 1);
+        completed = false;
+        QVERIFY(ChatContent::prepare(source, &owner, [&](QByteArray bytes, QString failure) {
+            prepared = std::move(bytes);
+            error = std::move(failure);
+            completed = true;
+        }));
+        QTRY_VERIFY_WITH_TIMEOUT(completed, 10000);
+        QVERIFY2(error.isEmpty(), qPrintable(error));
+        QCOMPARE(ChatContent::sanitizedImageSize(prepared), image.size());
+    }
+#endif
     void imageFailuresUseSelectedLanguage_data() {
         QTest::addColumn<QString>("language");
         for (const auto* language : {"en", "de", "ar"}) QTest::newRow(language) << QString(language);

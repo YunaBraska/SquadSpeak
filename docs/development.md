@@ -568,9 +568,50 @@ updates to already distributed clients. See [Sparkle publishing](https://sparkle
 
 Before Store publication, review the selected distribution terms against the project's GPL-3.0-only license and the exact bundled Qt/dependency licenses. Source availability and signing credentials alone do not establish compatibility. Qt's [open-source licensing FAQ](https://www.qt.io/faq/qt-open-source-licensing) explicitly makes this a per-Store check. No commercial Qt license, project-license exception or relicensing has been selected; any such change needs a separate decision.
 
-Keep the channel/chat layout, themes, portraits and shared QML controls. Adapt the containing window to safe areas, touch targets, the software keyboard and iPad resizing. Mobile needs a normal app entrypoint instead of a tray; double-click and hover affordances need equivalent tap/long-press controls.
+Keep the channel/chat layout, themes, portraits and shared QML controls. Adapt the containing window to safe areas, touch targets, the software keyboard and iPad resizing. The mobile entrypoint opens a normal window without a tray. Double-click and hover affordances still need a complete tap/long-press review.
 
-The current desktop build is not an iOS package. Qt 6.11 supports iOS/iPadOS 17 or later, but desktop FFmpeg deployment, helper-process image decoding, global keyboard hooks, screen capture and notification setup need mobile-specific integration. The [Qt platform table](https://doc.qt.io/qt-6.11/supported-platforms.html) describes the supported SDK/device configurations.
+The iOS build now has a reproducible Simulator path. The pinned Qt 6.11.3 kit provides an arm64 device slice and an x86_64 Simulator slice. On Apple Silicon, the x86_64 Simulator build requires Rosetta and the installed universal iOS 26 Simulator runtime. The dependency script currently builds the Simulator only. It does not certify an arm64 device package or device/runtime parity. The [Qt platform table](https://doc.qt.io/qt-6.11/supported-platforms.html) describes the supported SDK and device configurations.
+
+Build the target dependencies into a clean prefix. The prefix must match the SDK, architecture and deployment target. Do not point an iOS build at host macOS libraries:
+
+```sh
+IOS_ARCH=x86_64 sh cmake/build-ios-dependencies.sh \
+  /private/tmp/squadspeak-ios-deps-x86-v3 \
+  /private/tmp/squadspeak-ios-deps-x86-build 17.0
+```
+
+Configure and build with the matching Qt iOS kit and the macOS Qt host tools. Choose a simulator ID from `xcrun simctl list devices available` before configuring:
+
+```sh
+DEVICE_ID='replace-with-simulator-udid'
+IOS_QT="$HOME/Library/Caches/squadspeak-qt/6.11.3/ios"
+"$IOS_QT/bin/qt-cmake" -S . -B build/ios-simulator -G Ninja \
+  -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=ON \
+  -DCMAKE_OSX_SYSROOT=iphonesimulator \
+  -DCMAKE_OSX_ARCHITECTURES=x86_64 -DCMAKE_OSX_DEPLOYMENT_TARGET=17.0 \
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+  -DSQUADSPEAK_STORE_BUILD=ON \
+  -DSQUADSPEAK_IOS_DEPS_ROOT=/private/tmp/squadspeak-ios-deps-x86-v3 \
+  -DQT_HOST_PATH="$HOME/Library/Caches/squadspeak-qt/6.11.3/macos" \
+  -DCMAKE_PREFIX_PATH="$IOS_QT" \
+  -DSQUADSPEAK_IOS_SIMULATOR_DEVICE_ID="$DEVICE_ID"
+cmake --build build/ios-simulator --parallel 2
+```
+
+Boot and install the application and the supported simulator contracts:
+
+```sh
+DEVICE_ID='replace-with-simulator-udid'
+xcrun simctl boot "$DEVICE_ID"
+xcrun simctl install "$DEVICE_ID" build/ios-simulator/squadspeak.app
+xcrun simctl launch --console-pty --arch=x86_64 "$DEVICE_ID" app.squadspeak.desktop --smoke-test
+ctest --test-dir build/ios-simulator --output-on-failure \
+  -R '^(chat_content_contract|channel_controls|channel_contract|mixer_contract|media_transport_contract|video_contract)$'
+```
+
+CTest automatically installs each test app before launching it through `simctl`. It runs shared image, mixer and media-transport tests plus selected channel, video and QML interaction cases. Test bundles use the same device-family and launch metadata as the app. It does not register desktop capture or process-worker tests. Simulator tests run serially on the selected device and fail on Qt Test assertions even when `simctl` exits successfully. The app needs the Qt Multimedia and imageformats modules in the iOS kit, plus the target FFmpeg archives built by the dependency script.
+
+The x86_64 Simulator codec disables x86 SIMD after color round trips exposed corruption under translation on Apple Silicon. These tests establish correctness, not native arm64 device performance. The remaining mobile work includes broader safe-area and touch review, local-network permission handling, notification integration and background lifecycle review. Native screen capture, microphone permissions, background hosting and physical hardware remain unsupported by this Simulator smoke path.
 
 Local discovery needs the local-network privacy declaration and, for raw multicast on iOS, the relevant entitlement. Ask for permission in the foreground and provide direct-address entry when discovery is unavailable. Follow [Apple's local-network guidance](https://developer.apple.com/documentation/technotes/tn3179-understanding-local-network-privacy).
 

@@ -11,6 +11,81 @@ remains available because its cause is still unknown.
 History was consolidated at `3ede20d` with the same file tree as `5ce7455`.
 Earlier revision identifiers below refer to the original CI checkouts.
 
+## iPhone, iPad and current desktop checks, 2026-10-09
+
+The iPhone 17 Pro and iPad Pro 13-inch simulators run the actual application
+and shared QML controls. These are x86_64 Qt 6.11.3 builds on the universal iOS
+26 runtime, translated on Apple Silicon. They are not resized desktop windows
+or a browser preview. Both application startup checks pass. The target
+dependencies are separate from the host macOS libraries.
+
+The iPhone CTest run passes all six contract groups and six installation
+fixtures in 158.13 seconds. They exercise image sanitation, settings, history
+pagination, input, channel admission/moderation/persistence, receiver loudness,
+UDP media and encoded video. The desktop decoder-process case is explicitly
+skipped on iOS. A subsequent expanded UI selection also passes text and image
+delivery between real channel instances. On iPad, the settings/touch/keyboard
+selection passes, as do the chat delivery and two image-composer sizes.
+
+Touch testing first failed over message text on both platforms. Qt's read-only
+TextEdit kept the initial pointer grab while mouse selection was enabled.
+The shared message control now enables selection for actual mouse/touchpad
+presses. Repeated touch drags, mouse selection, clipboard copying and PTT
+press/release pass. The iOS test opens the software keyboard, checks that Send
+remains above it and sends a message. Test bundles use the application's
+iPhone/iPad family and launch metadata, avoiding iPhone compatibility mode
+when checking the iPad layout.
+
+Screenshots of populated chat, Markdown, input settings and the native touch
+layout were inspected on both simulators. They retain the shared channel/chat
+layout. QQuickWindow captures show the application surface, not the separate
+system keyboard. Images are under `build/ios-simulator/smoke` and
+`build/device-check/ios/ipad-ui`. The simulator emits duplicate UIKit class and
+font-fallback warnings under translation. These do not establish behavior on
+physical devices or complete font coverage.
+
+The iOS image decoder uses one worker at a time, preserves the existing size
+limits, and discards callbacks after owner destruction. Success, rejection
+while busy, destruction, timeout and subsequent reuse pass. The timeout test
+holds the worker with semaphores and awaits the real deadline. It confirms
+exactly one callback, retained capacity until work completes, and reuse after
+release. The deadline discards late results but cannot terminate an in-process
+decoder. The expanded content group passes in 24.32 seconds. A decoder crash
+remains an accepted iOS risk. Desktop decoding keeps its process boundary.
+
+Video color tests exposed corruption in FFmpeg's inline x86 SIMD path under
+Simulator translation. Disabling x86 assembly alone did not fix it. The
+x86_64 Simulator dependency build now disables those SIMD paths as well.
+All eight video test entries pass, including native pixel formats, malformed
+frames, quality changes up to 4K and actual UDP frame transfer. This is not a
+4K/30 performance measurement. The arm64 Simulator configuration retains its
+optimized path. Reusing the dependency prefix revalidates all nine archives
+without changing them, and SDK/architecture mismatches fail before building.
+
+On macOS, four CTest groups pass: `desktop_smoke`, `translation_sources`,
+`chat_content_contract` and `mixer_contract`. The focused UI run passes 15 Qt
+Test entries, including Markdown, wheel input in both directions, pagination,
+touch and mouse copying. The added missing-device-certificate test passes on
+both macOS and iOS. Receiver normalization also passes a same-speaker sequence
+with four input amplitudes and an independent steady source. It measures
+bounded settling behavior, not physical microphone distance or room acoustics.
+
+The installed A/B copies were replaced with the previously verified CI ARM64
+archive, preserving their profiles. The owner confirmed both Keychain prompts.
+A joined B, and scrolling the populated native chat changed the viewport.
+The copies remain muted/deafened to prevent a local acoustic loop. The local
+development build is not the macOS 13 package proof because its Homebrew
+libraries have newer deployment targets. The CI archive is that proof.
+
+Evidence: `build/ios-final-contracts.log`, `build/ios-final-chat-contract.log`,
+`build/ios-bounded-scan-ui.log`, `build/ios-timeout-contract.log`,
+`build/ios-ipad-final-ui.log`, `build/ios-ipad-chat.log`,
+`build/mobile-final-desktop-ui.log`, `build/mobile-final-desktop-tls.log` and
+`build/mobile-final-desktop-contracts.log`. Reproduction commands are in
+[development](development.md#iphone-and-ipad). These local changes have not
+yet passed the remote platform matrix. Android emulation, physical audio,
+mobile screen capture and background hosting are not covered by these results.
+
 ## DTLS startup ordering, 2026-10-08
 
 [Run 37838323343](https://github.com/YunaBraska/SquadSpeak/actions/runs/37838323343)
