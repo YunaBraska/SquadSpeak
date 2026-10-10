@@ -9,7 +9,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: squadspeak-merge-${{ github.ref }}
+  group: squadspeak-merge-${{ github.sha }}
   cancel-in-progress: false
 
 jobs:

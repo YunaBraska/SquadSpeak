@@ -567,9 +567,11 @@ For a focused manual check, use
 `gh workflow run verify.yml --ref <branch> -f platform=windows` (also `linux`,
 `macos`, `sanitizers`, or `all`). PR, merge and release callers always run the full
 matrix. Feature pushes are checked by their PR, avoiding duplicate platform runs.
-New PR checks cancel obsolete runs. Merge and release runs are not cancelled by
-newer runs. Build jobs keep read-only repository permissions. Only publication can
-write tags/releases. The application runtime gains no pipeline dependency.
+New PR checks cancel obsolete runs. Snapshot runs are grouped by commit so
+closely spaced merges do not discard a waiting snapshot. Stable releases run
+one at a time without cancelling an active release. Build jobs keep read-only
+repository permissions. Only publication can write tags/releases. The application
+runtime gains no pipeline dependency.
 
 Dependabot checks GitHub Actions and the Linux Docker base every Sunday at 00:00
 UTC, with one grouped PR per ecosystem. Ubuntu stays on 26.04 and receives digest
