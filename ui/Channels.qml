@@ -659,12 +659,12 @@ PanelWindow {
                         visible: root.settingsPage === 3
                         Layout.fillWidth: true; spacing: 18
                         RowLayout {
-                            spacing: 12
+                            Layout.fillWidth: true; spacing: 12
                             Image { objectName: "aboutLogo"; source: "icons/app.png"; Layout.preferredWidth: 52; Layout.preferredHeight: 52; fillMode: Image.PreserveAspectFit; sourceSize.width: 104; sourceSize.height: 104 }
                             ColumnLayout {
-                                spacing: 2
+                                Layout.fillWidth: true; spacing: 2
                                 Label { text: "SquadSpeak"; font.pixelSize: 20; font.weight: Font.DemiBold }
-                                Label { objectName: "aboutVersion"; text: qsTr("Version %1").arg(Qt.application.version); color: Theme.muted }
+                                Label { objectName: "aboutVersion"; Layout.fillWidth: true; text: qsTr("Version %1").arg(Qt.application.version); color: Theme.muted; wrapMode: Text.Wrap }
                                 Label {
                                     objectName: "aboutLicense"
                                     text: "YunaBraska - <a href='https://spdx.org/licenses/GPL-3.0-only.html'>GPL-3.0</a>"

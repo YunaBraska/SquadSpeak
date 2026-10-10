@@ -1932,6 +1932,34 @@ TestCase {
         view.closeSettings()
     }
 
+    function test_aboutVersionFitsAvailableWidth_data() {
+        return [
+            { tag: "stable-narrow", version: "2026.10.11", width: 320 },
+            { tag: "snapshot-narrow", version: "2026.10.11-SNAPSHOT.38093456651", width: 320 },
+            { tag: "snapshot-wide", version: "2026.10.11-SNAPSHOT.38093456651", width: 560 }
+        ]
+    }
+
+    function test_aboutVersionFitsAvailableWidth(row) {
+        const previous = Qt.application.version
+        try {
+            Qt.application.version = row.version
+            view.width = row.width
+            view.openSettings(3)
+            const about = findChild(view, "aboutSettings")
+            const version = findChild(view, "aboutVersion")
+            waitForRendering(view.contentItem)
+            tryVerify(() => about.width <= findChild(view, "settingsScroll").availableWidth)
+            verify(version.text.indexOf(row.version) >= 0)
+            tryVerify(() => version.contentWidth <= version.width + 1)
+            tryVerify(() => version.contentHeight <= version.height + 1)
+            if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/about-" + row.tag + ".png"))
+        } finally {
+            Qt.application.version = previous
+            view.closeSettings()
+        }
+    }
+
     function test_palettesAndStationCrudInSettings() {
         view.openSettings(0)
         const palette = findChild(view, "paletteChoice")
