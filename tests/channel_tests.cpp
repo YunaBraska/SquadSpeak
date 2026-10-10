@@ -1364,11 +1364,14 @@ private slots:
     }
     void screenUsesUdpWhileReliableTrafficIsDelayed_data() {
         QTest::addColumn<bool>("loseFirstLargeFrame");
-        QTest::newRow("unimpaired") << false;
-        QTest::newRow("lost-keyframe") << true;
+        QTest::addColumn<int>("decodeMs");
+        QTest::newRow("unimpaired") << false << 1;
+        QTest::newRow("lost-keyframe") << true << 1;
+        QTest::newRow("lost-keyframe-slow-decoder") << true << 100;
     }
     void screenUsesUdpWhileReliableTrafficIsDelayed() {
         QFETCH(bool, loseFirstLargeFrame);
+        QFETCH(int, decodeMs);
         QTemporaryDir dir;
         Device host(dir.filePath("host"), "Owner"), viewer(dir.filePath("viewer"), "Viewer");
         QVERIFY(host.listenWithUdp());
@@ -1381,7 +1384,7 @@ private slots:
         QVERIFY(waitForEvents([&] { return viewer.channel.screenView().value("tier").toInt() == 1; }));
         QSignalSpy frames(&viewer.channel, &LocalChannel::screenFrameReceived);
         connect(&viewer.channel, &LocalChannel::screenFrameReceived, &viewer.channel, [&](const QString& id, qint64 serial, const QJsonObject&, const QByteArray&) {
-            QVERIFY(viewer.channel.acknowledgeScreen(id, serial, 1));
+            QVERIFY(viewer.channel.acknowledgeScreen(id, serial, decodeMs));
         });
         QVERIFY(waitForEvents([&] { return link.videoDatagrams > 20; }, 5000));
         const QJsonObject format{{"codec", "mpeg4"}, {"width", 640}, {"height", 360}, {"extra", ""}};
@@ -1400,7 +1403,7 @@ private slots:
         QTimer source;
         source.setInterval(34);
         int largeFramesSent = 0;
-        connect(&source, &QTimer::timeout, &viewer.channel, [&] {
+        const auto largeSource = connect(&source, &QTimer::timeout, &viewer.channel, [&] {
             if (frames.size() != 1) return;
             const auto tiers = host.channel.screenTiers();
             if (tiers.isEmpty()) return;
@@ -1413,34 +1416,53 @@ private slots:
         const int recoveryTimeout = 2000 + link.delay + 2000;
         latency.restart(); source.start();
         QVERIFY(waitForEvents([&] { return frames.size() == 2; }, recoveryTimeout));
-        source.stop();
-        if (loseFirstLargeFrame) QVERIFY(largeFramesSent > 1);
+        source.stop(); disconnect(largeSource);
+        if (loseFirstLargeFrame) {
+            QVERIFY(largeFramesSent > 1);
+            QVERIFY(frames.last().at(1).toLongLong() > frames.first().at(1).toLongLong() + 1);
+        }
         qInfo() << "Maximum-size screen frame received after" << largeFramesSent << "source frames in" << latency.elapsed() << "ms";
         QCOMPARE(frames.last().at(3).toByteArray(), largest);
-        QVERIFY(waitForEvents([&] { return host.channel.screenTiers().contains(1); }));
+        QVERIFY(waitForEvents([&] { return !host.channel.screenTiers().isEmpty(); }));
+        const int fallbackTier = *host.channel.screenTiers().begin();
+        QVERIFY(fallbackTier >= 1 && fallbackTier <= 2);
+        if (decodeMs == 100) QCOMPARE(fallbackTier, 2);
         link.blockUdp = true; QTestEventLoop().enterLoopMSecs(450);
-        latency.restart(); QVERIFY(host.channel.sendScreenFrame(1, format, payload, true));
+        latency.restart(); QVERIFY(host.channel.sendScreenFrame(fallbackTier, format, payload, true));
         QVERIFY(waitForEvents([&] { return frames.size() == 3; }, 5000));
         QVERIFY(latency.elapsed() >= 2000);
         QVERIFY(waitForEvents([&] { return !host.channel.screenTiers().isEmpty(); }));
         const int recoveredTier = *host.channel.screenTiers().begin();
-        QVERIFY(recoveredTier >= 1 && recoveredTier <= 2);
-        link.blockUdp = false; link.delay = 0;
-        const auto recovering = link.videoDatagrams;
-        QVERIFY(waitForEvents([&] { return link.videoDatagrams > recovering + 20; }, 4000));
+        QVERIFY(recoveredTier >= fallbackTier && recoveredTier <= fallbackTier + 1);
+        link.blockUdp = false;
+        // Datagram counts can include old retransmissions. Require a fresh
+        // frame and its ACK to bypass delayed TLS before dropping UDP again.
+        bool udpRestored = false;
+        connect(&source, &QTimer::timeout, &viewer.channel, [&] {
+            const auto tiers = host.channel.screenTiers();
+            if (tiers.isEmpty() || udpRestored) return;
+            if (frames.size() > 3 && latency.elapsed() < 1000) { udpRestored = true; return; }
+            latency.restart();
+            QVERIFY(host.channel.sendScreenFrame(*tiers.begin(), format, "UDP restored", true));
+        });
+        source.start();
+        QVERIFY(waitForEvents([&] { return udpRestored; }, recoveryTimeout + link.delay));
+        source.stop(); link.delay = 0;
+        const int stableTier = *host.channel.screenTiers().begin();
+        const auto received = frames.size();
         // Lose a whole in-flight UDP frame. It must expire without closing chat,
         // and the next frame must be a fresh keyframe, not a growing backlog.
         link.blockUdp = true;
-        QVERIFY(host.channel.sendScreenFrame(recoveredTier, format, payload, true));
+        QVERIFY(host.channel.sendScreenFrame(stableTier, format, payload, true));
         QVERIFY(waitForEvents([&] { return !host.channel.screenTiers().isEmpty(); }, 3000));
         const int nextTier = *host.channel.screenTiers().begin();
-        QVERIFY(nextTier >= recoveredTier && nextTier <= recoveredTier + 1);
+        QVERIFY(nextTier >= stableTier && nextTier <= stableTier + 1);
         QVERIFY(host.channel.screenNeedsKeyFrame(nextTier));
-        QCOMPARE(frames.size(), 3);
+        QCOMPARE(frames.size(), received);
         QVERIFY(host.channel.sendScreenFrame(nextTier, format, payload, false));
-        QTestEventLoop().enterLoopMSecs(80); QCOMPARE(frames.size(), 3);
+        QTestEventLoop().enterLoopMSecs(80); QCOMPARE(frames.size(), received);
         QVERIFY(host.channel.sendScreenFrame(nextTier, format, payload, true));
-        QVERIFY(waitForEvents([&] { return frames.size() == 4; }));
+        QVERIFY(waitForEvents([&] { return frames.size() == received + 1; }));
         QVERIFY(viewer.channel.chatReady());
     }
     void hostingClientsKeepVoiceAndScreenDatagramsIndependent() {
