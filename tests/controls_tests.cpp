@@ -236,7 +236,7 @@ public slots:
     }
     bool advanceTime() { now_ += 600001; return true; }
     bool setSupporter(bool enabled) { return session_->setSupporterEnabled(enabled); }
-    bool expireChat() { now_ += ChatHistory::lifetime + 1; return true; }
+    bool expireChat(int days = 1) { now_ += days * ChatHistory::lifetime + 1; return true; }
     bool saveWindow(QObject* window, const QString& path) {
         auto* view = qobject_cast<QQuickWindow*>(window);
         return view && view->grabWindow().save(path);

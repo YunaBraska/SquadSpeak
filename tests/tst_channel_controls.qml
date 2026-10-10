@@ -2867,6 +2867,48 @@ TestCase {
         }
     }
 
+    function test_chatRemovesExpiredRowsWithoutDuplicates_data() {
+        return [
+            {tag: "middle", days: [7, 1, 7], retained: [0, 2]},
+            {tag: "several-middle", days: [7, 1, 1, 7], retained: [0, 3]},
+            {tag: "edges", days: [1, 7, 7, 1], retained: [1, 2]},
+            {tag: "all", days: [1, 1, 1], retained: []}
+        ]
+    }
+    function test_chatRemovesExpiredRowsWithoutDuplicates(data) {
+        verify(fixtures.startHost())
+        verify(channel.openChat(channel.ownId, "127.0.0.1", channel.servicePort))
+        tryVerify(function() { return channel.chatReady && !channel.historyLoading })
+        view.chatExpanded = true
+        const panel = findChild(view, "chatPanel"), history = findChild(panel, "chatHistory")
+        try {
+            for (let i = 0; i < data.days.length; ++i) {
+                verify(channel.setMessageLifetimeDays(data.days[i]))
+                verify(channel.sendChat("Retention " + i))
+                tryCompare(channel, "chatPending", false)
+            }
+            tryCompare(history.rows, "count", data.days.length)
+            verify(fixtures.expireChat())
+            tryVerify(function() { return channel.messages.length === data.retained.length })
+            tryCompare(history.rows, "count", data.retained.length)
+            for (let i = 0; i < data.retained.length; ++i) {
+                compare(history.rows.itemAt(i).message.text, "Retention " + data.retained[i])
+                compare(history.rows.itemAt(i).message.sequence, channel.messages[i].sequence)
+            }
+            verify(channel.sendChat("After expiry"))
+            tryCompare(channel, "chatPending", false)
+            tryCompare(history.rows, "count", data.retained.length + 1)
+            compare(history.rows.itemAt(data.retained.length).message.text, "After expiry")
+            channel.closeChat(channel.ownId)
+            verify(channel.openChat(channel.ownId, "127.0.0.1", channel.servicePort))
+            tryVerify(function() { return channel.chatReady && !channel.historyLoading })
+            tryCompare(history.rows, "count", data.retained.length + 1)
+        } finally {
+            verify(channel.setMessageLifetimeDays(1))
+            verify(fixtures.expireChat(7))
+        }
+    }
+
     function test_scrollLoadsOlderMessagesWithoutDownloadingThemAtOpen() {
         verify(fixtures.expireChat())
         verify(fixtures.startHost()); verify(channel.openChat(channel.ownId, "127.0.0.1", channel.servicePort))

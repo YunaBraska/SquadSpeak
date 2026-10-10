@@ -50,18 +50,16 @@ Item {
         saveAnchor()
         updating = true
         const incoming = records
-        if (incoming.length === 0) visibleMessages.clear()
-        else {
-            const first = incoming[0].sequence, last = incoming[incoming.length - 1].sequence
-            while (visibleMessages.count && visibleMessages.get(0).message.sequence < first) visibleMessages.remove(0)
-            while (visibleMessages.count && visibleMessages.get(visibleMessages.count - 1).message.sequence > last) visibleMessages.remove(visibleMessages.count - 1)
-            for (let i = 0; i < incoming.length; ++i) {
-                if (i >= visibleMessages.count || visibleMessages.get(i).message.sequence !== incoming[i].sequence)
-                    visibleMessages.insert(i, {message: incoming[i]})
-                else if (JSON.stringify(visibleMessages.get(i).message) !== JSON.stringify(incoming[i]))
-                    visibleMessages.setProperty(i, "message", incoming[i])
-            }
+        for (let i = 0; i < incoming.length; ++i) {
+            while (i < visibleMessages.count && visibleMessages.get(i).message.sequence < incoming[i].sequence)
+                visibleMessages.remove(i)
+            if (i >= visibleMessages.count || visibleMessages.get(i).message.sequence !== incoming[i].sequence)
+                visibleMessages.insert(i, {message: incoming[i]})
+            else if (JSON.stringify(visibleMessages.get(i).message) !== JSON.stringify(incoming[i]))
+                visibleMessages.setProperty(i, "message", incoming[i])
         }
+        if (visibleMessages.count > incoming.length)
+            visibleMessages.remove(incoming.length, visibleMessages.count - incoming.length)
         restoreLayout()
     }
     Timer {
