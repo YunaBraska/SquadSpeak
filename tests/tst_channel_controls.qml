@@ -2576,7 +2576,11 @@ TestCase {
         }
     }
 
-    function test_scrollbarTracksLoadedMessagesWithoutResizing() {
+    function test_scrollbarTracksLoadedMessagesWithoutResizing_data() {
+        return [{tag: "animated", animated: true}, {tag: "static", animated: false}]
+    }
+    function test_scrollbarTracksLoadedMessagesWithoutResizing(data) {
+        session.setAnimatedAvatars(data.animated)
         verify(fixtures.expireChat())
         verify(fixtures.startHost())
         verify(channel.openChat(channel.ownId, "127.0.0.1", channel.servicePort))
@@ -2591,12 +2595,14 @@ TestCase {
         tryCompare(history.rows, "count", 40)
         tryCompare(panel, "updating", false)
         const bar = findChild(history, "chatHistoryScrollBar")
+        view.update()
         verify(waitForRendering(history))
         const extent = history.contentHeight, thumb = bar.size
         for (const direction of [1, -1]) {
             for (let step = 0; step < 16; ++step) {
                 mouseWheel(history, history.width / 2, history.height / 2, 0, direction * 600)
                 tryCompare(history, "moving", false)
+                view.update()
                 verify(waitForRendering(history))
                 compare(history.rows.count, 40)
                 for (let i = 0; i < history.rows.count; ++i) {
