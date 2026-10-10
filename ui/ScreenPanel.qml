@@ -50,6 +50,7 @@ Item {
     activeFocusOnTab: true
     Accessible.role: Accessible.Button
     Accessible.name: qsTr("Open screen stream")
+    Accessible.onPressAction: panel.openViewer()
     Keys.onReturnPressed: panel.openViewer()
     Keys.onSpacePressed: panel.openViewer()
     PanelWindow {
