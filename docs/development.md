@@ -525,8 +525,12 @@ single native matrix used by all three local entrypoints.
 | `build-merge.yml` | Every main merge builds the same snapshot matrix. No tag, public release, Homebrew change or update feed. |
 | `release.yml` | Manual release. Changed product sources or `force=true` select a UTC `YYYY.M.D` release. Otherwise it builds a snapshot. Non-default branches always build snapshots. |
 
-The existing `yuna-release: true` marker also permits the central weekly release
-dispatcher to invoke that same release entrypoint when product sources change.
+Stable releases are manually dispatched. This repository deliberately omits the
+central weekly-release marker. Homebrew continues to follow published stable releases.
+
+Snapshot distribution differs between the reference projects. The shared Swift
+and .NET workflows retain native build artifacts. The [NATS workflow contract](https://github.com/nats-io/spring-nats/blob/32999e8e2eb0fd3b8c4b59170fed767e1c2a4b14/doc/spec/ci-workflows.md)
+publishes Maven snapshots after a merge, without a GitHub tag or release.
 
 Version and commit are resolved once and passed to every job. Snapshots use the
 pinned `YunaBraska/semver-info-action` and its `next_snapshot` output from the

@@ -1,4 +1,3 @@
-# yuna-release: true
 name: CD Release
 
 on:
