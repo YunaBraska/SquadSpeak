@@ -200,10 +200,11 @@ jobs:
           Write-Host "Using cl.exe $version at $($compiler.Source)"
           Write-Host "Using Windows SDK $sdk"
       - name: Restore pinned audio dependency prefix
-        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830
+        id: dependencies
+        uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830
         with:
           path: build/windows-ci/dependencies/prefix
-          key: windows-dependencies-${{ runner.os }}-${{ runner.arch }}-msvc-${{ steps.msvc-cache.outputs.version }}-sdk-${{ steps.msvc-cache.outputs.sdk }}-${{ hashFiles('tests/windows-ci.ps1', '.github/workflows/verify.yml') }}
+          key: windows-dependencies-${{ runner.os }}-${{ runner.arch }}-msvc-${{ steps.msvc-cache.outputs.version }}-sdk-${{ steps.msvc-cache.outputs.sdk }}-${{ hashFiles('tests/windows-ci.ps1') }}
       - name: Install Qt 6.11.3 MSVC
         uses: jurplel/install-qt-action@a9c63c7c123f3069cff414e7e482d95dfa9d8125
         with:
@@ -229,7 +230,7 @@ jobs:
           if ($LASTEXITCODE -ne 0 -or $nasmVersion -notmatch '^NASM version 3\.02(?: |$)') { throw "Unexpected NASM version: $nasmVersion" }
           Write-Host $nasmVersion
           python -m pip install --disable-pip-version-check meson==1.12.1
-      - name: Build, test and package
+      - name: Build and validate dependency prefix
         shell: pwsh
         run: |
           ./tests/windows-ci.ps1 -QtRoot $env:QT_ROOT_DIR -BuildRoot "$env:GITHUB_WORKSPACE/build/windows-ci" -DependenciesOnly
@@ -262,6 +263,15 @@ jobs:
               throw 'Dependency preparation did not reject an incomplete prefix'
             }
           } finally { Move-Item "$prefix/include/openssl/ssl.h.saved" "$prefix/include/openssl/ssl.h" }
+      - name: Save validated dependency prefix
+        if: steps.dependencies.outputs.cache-hit != 'true'
+        uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830
+        with:
+          path: build/windows-ci/dependencies/prefix
+          key: ${{ steps.dependencies.outputs.cache-primary-key }}
+      - name: Build, test and package
+        shell: pwsh
+        run: |
           ./tests/windows-ci.ps1 -QtRoot $env:QT_ROOT_DIR -BuildRoot "$env:GITHUB_WORKSPACE/build/windows-ci"
       - name: Preserve Windows verification evidence
         if: always()

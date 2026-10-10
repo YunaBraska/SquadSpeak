@@ -11,6 +11,7 @@
 #include <QtEndian>
 #include <QBuffer>
 #include <cmath>
+#include <ctime>
 #include <array>
 #include <numbers>
 #include <QFile>
@@ -125,6 +126,7 @@ class DelayedLink final : public QObject {
 public:
     int delay = 0, udpDelay = -1, audioDatagrams = 0, videoDatagrams = 0;
     bool blockUdp = false;
+    bool dropLargeDatagrams = false;
     bool videoOnly = false;
     explicit DelayedLink(quint16 port, int connectDelay = 0) : server_(this) {
         clock_.start(); timer_.setInterval(5);
@@ -186,6 +188,9 @@ public:
         if (!server_.isListening())
             throw std::runtime_error(QString("Delayed TLS link cannot bind port %1: %2")
                 .arg(udp_.localPort()).arg(server_.errorString()).toStdString());
+        // Match the media library's bounded receive window. OS defaults must
+        // not add packet loss to a link configured without impairment.
+        udp_.setSocketOption(QAbstractSocket::ReceiveBufferSizeSocketOption, 1024 * 1024);
         connect(&udp_, &QUdpSocket::readyRead, this, [this, port] {
             while (udp_.hasPendingDatagrams()) {
                 const auto request = udp_.receiveDatagram();
@@ -194,6 +199,7 @@ public:
                 if (!udpRoutes_.contains(clientPort)) {
                     auto* route = new QUdpSocket(this);
                     if (!route->bind(QHostAddress::LocalHost)) throw std::runtime_error("UDP fixture route cannot bind.");
+                    route->setSocketOption(QAbstractSocket::ReceiveBufferSizeSocketOption, 1024 * 1024);
                     udpRoutes_.insert(clientPort, route);
                     connect(route, &QUdpSocket::readyRead, this, [this, route, port, clientPort] {
                         while (route->hasPendingDatagrams()) {
@@ -203,6 +209,7 @@ public:
                             const bool videoData = !bytes.isEmpty() && quint8(bytes[0]) == 23;
                             if (bytes.size() > 12 && (quint8(bytes[0]) >> 6) == 2 && (quint8(bytes[1]) & 127) == 111) ++audioDatagrams;
                             if (videoData) ++videoDatagrams;
+                            if (dropLargeDatagrams && videoData && bytes.size() > 512) continue;
                             const int hold = !videoOnly || videoData ? (udpDelay < 0 ? delay : udpDelay) : 0;
                             if (hold) QTimer::singleShot(hold, this, [this, bytes, clientPort] { udp_.writeDatagram(bytes, QHostAddress::LocalHost, clientPort); });
                             else udp_.writeDatagram(bytes, QHostAddress::LocalHost, clientPort);
@@ -1355,7 +1362,13 @@ private slots:
         QTRY_VERIFY(!second.channel.screenView().value("available").toBool());
         QVERIFY(second.channel.chatReady());
     }
+    void screenUsesUdpWhileReliableTrafficIsDelayed_data() {
+        QTest::addColumn<bool>("loseFirstLargeFrame");
+        QTest::newRow("unimpaired") << false;
+        QTest::newRow("lost-keyframe") << true;
+    }
     void screenUsesUdpWhileReliableTrafficIsDelayed() {
+        QFETCH(bool, loseFirstLargeFrame);
         QTemporaryDir dir;
         Device host(dir.filePath("host"), "Owner"), viewer(dir.filePath("viewer"), "Viewer");
         QVERIFY(host.listenWithUdp());
@@ -1382,8 +1395,24 @@ private slots:
         QVERIFY(waitForEvents([&] { return host.channel.screenTiers().contains(1); }, 300));
         qInfo() << "Screen frame and decode acknowledgment bypass delayed TLS in" << latency.elapsed() << "ms";
         const QByteArray largest(2 * 1024 * 1024, 'L');
-        QVERIFY(host.channel.sendScreenFrame(1, format, largest, true));
+        // UDP may discard a frame. Keep supplying keyframes as the real capture
+        // source does, but never queue one behind a frame awaiting its ACK.
+        QTimer source;
+        source.setInterval(34);
+        int largeFramesSent = 0;
+        connect(&source, &QTimer::timeout, &viewer.channel, [&] {
+            if (frames.size() != 1) return;
+            const auto tiers = host.channel.screenTiers();
+            if (tiers.isEmpty()) return;
+            link.dropLargeDatagrams = loseFirstLargeFrame && largeFramesSent == 0;
+            QVERIFY(host.channel.sendScreenFrame(*tiers.begin(), format, largest, true));
+            ++largeFramesSent;
+        });
+        source.start();
         QVERIFY(waitForEvents([&] { return frames.size() == 2; }, 4000));
+        source.stop();
+        if (loseFirstLargeFrame) QVERIFY(largeFramesSent > 1);
+        qInfo() << "Maximum-size UDP frame received after" << largeFramesSent << "source frames";
         QCOMPARE(frames.last().at(3).toByteArray(), largest);
         QVERIFY(waitForEvents([&] { return host.channel.screenTiers().contains(1); }));
         link.blockUdp = true; QTestEventLoop().enterLoopMSecs(450);
@@ -4825,7 +4854,7 @@ private slots:
         const auto connectedMs = elapsed.elapsed();
         bool soakOk = false;
         const int soakSeconds = qEnvironmentVariableIsSet("SQUAD_SOAK_SECONDS")
-            ? qEnvironmentVariable("SQUAD_SOAK_SECONDS").toInt(&soakOk) : 2;
+            ? qEnvironmentVariable("SQUAD_SOAK_SECONDS").toInt(&soakOk) : 10;
         QVERIFY2(!qEnvironmentVariableIsSet("SQUAD_SOAK_SECONDS") || soakOk,
             "SQUAD_SOAK_SECONDS must be an integer");
         QVERIFY2(soakSeconds >= 2 && soakSeconds <= 1800,
@@ -4860,11 +4889,18 @@ private slots:
         });
         qInfo() << "Starting audio soak; simultaneous speakers" << speakers
                 << "requested seconds" << soakSeconds << "setup ms" << connectedMs;
+#ifndef Q_OS_WIN
+        // Microsoft clock() measures wall time, unlike the POSIX CPU clock.
+        const auto cpuStarted = std::clock();
+#endif
         sustained.start(); output.start(20); input.start(20);
         QVERIFY(waitForEvents([&] { return sentFrames == sustainedFrames; }, soakSeconds * 1500 + 5000));
         QVERIFY(validSend);
         output.stop();
         const auto playbackMs = sustained.elapsed();
+#ifndef Q_OS_WIN
+        qInfo() << "Audio soak process CPU ms" << (std::clock() - cpuStarted) * 1000.0 / CLOCKS_PER_SEC;
+#endif
         // RTP can report a gap only when a later packet arrives. Losing the
         // final packet cannot produce a gap report; allow a bounded drain,
         // then apply the same 95% delivery requirement to every listener.
