@@ -637,10 +637,6 @@
             <translation>Kanaal niet beschikbaar</translation>
         </message>
         <message>
-            <source>Join voice</source>
-            <translation>Deelnemen aan spraak</translation>
-        </message>
-        <message>
             <source>System (automatic)</source>
             <translation>Systeem (automatisch)</translation>
         </message>
@@ -873,10 +869,6 @@
             <translation>Automatisch deelnemen</translation>
         </message>
         <message>
-            <source>Leave channel</source>
-            <translation>Kanaal verlaten</translation>
-        </message>
-        <message>
             <source>Stream URL</source>
             <translation>Stream-URL</translation>
         </message>
@@ -1093,48 +1085,16 @@
             <translation>Apparaat-ID</translation>
         </message>
         <message>
-            <source>Activate</source>
-            <translation>Activeren</translation>
-        </message>
-        <message>
-            <source>Buy annual pass</source>
-            <translation>Jaarpas kopen</translation>
-        </message>
-        <message>
             <source>Check now</source>
             <translation>Nu controleren</translation>
-        </message>
-        <message>
-            <source>Deactivate</source>
-            <translation>Deactiveren</translation>
         </message>
         <message>
             <source>Free version</source>
             <translation>Gratis versie</translation>
         </message>
         <message>
-            <source>License key</source>
-            <translation>Licentiesleutel</translation>
-        </message>
-        <message>
             <source>Not available yet</source>
             <translation>Nog niet beschikbaar</translation>
-        </message>
-        <message>
-            <source>Reset</source>
-            <translation>Herstellen</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot.</source>
-            <translation>Herstel pas nadat ondersteuning de apparaatplaats heeft vrijgegeven.</translation>
-        </message>
-        <message>
-            <source>Resolve activation</source>
-            <translation>Activering oplossen</translation>
-        </message>
-        <message>
-            <source>Support reference</source>
-            <translation>Referentie voor ondersteuning</translation>
         </message>
         <message>
             <source>Supporter</source>
@@ -1200,7 +1160,35 @@
             <source>App audio</source>
             <translation>Appgeluid</translation>
         </message>
-</context>
+        <message>
+            <source>Account: %1</source>
+            <translation>Rekening: %1</translation>
+        </message>
+        <message>
+            <source>Signed in as %1</source>
+            <translation>Aangemeld als %1</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub</source>
+            <translation>Log in met GitHub</translation>
+        </message>
+        <message>
+            <source>Verification code</source>
+            <translation>Verificatiecode</translation>
+        </message>
+        <message>
+            <source>Open GitHub</source>
+            <translation>GitHub openen</translation>
+        </message>
+        <message>
+            <source>Sign out</source>
+            <translation>Meld u af</translation>
+        </message>
+        <message>
+            <source>This device</source>
+            <translation>Dit apparaat</translation>
+        </message>
+    </context>
     <context>
         <name>ChatContent</name>
         <message>
@@ -1417,10 +1405,6 @@
     </context>
     <context>
         <name>LocalChannel</name>
-        <message>
-            <source>Encrypted join failed: %1</source>
-            <translation>Versleutelde deelname mislukt: %1</translation>
-        </message>
         <message>
             <source>Host is not responding. Reconnecting.</source>
             <translation>Host reageert niet. Opnieuw verbinden.</translation>
@@ -2613,40 +2597,32 @@
     <context>
         <name>License</name>
         <message>
-            <source>Activation was declined. Check your key and available device slots.</source>
-            <translation>Activering geweigerd. Controleer je sleutel en de beschikbare apparaatplaatsen.</translation>
-        </message>
-        <message>
-            <source>An activation is unresolved. Contact support before trying again.</source>
-            <translation>Een activering is nog niet opgelost. Neem contact op met ondersteuning voordat je het opnieuw probeert.</translation>
-        </message>
-        <message>
-            <source>Deactivation was declined. Contact support.</source>
-            <translation>Deactivering geweigerd. Neem contact op met ondersteuning.</translation>
-        </message>
-        <message>
-            <source>Enter a valid license key.</source>
-            <translation>Voer een geldige licentiesleutel in.</translation>
-        </message>
-        <message>
             <source>License storage is busy or unavailable.</source>
-            <translation>De licentieopslag is bezet of niet beschikbaar.</translation>
+            <translation>Licentieopslag is bezet of niet beschikbaar.</translation>
         </message>
         <message>
             <source>License storage is unavailable.</source>
-            <translation>De licentieopslag is niet beschikbaar.</translation>
+            <translation>Licentieopslag is niet beschikbaar.</translation>
         </message>
         <message>
-            <source>The license could not be checked. Your confirmed expiry is unchanged.</source>
-            <translation>De licentie kon niet worden gecontroleerd. De bevestigde vervaldatum blijft ongewijzigd.</translation>
+            <source>Sign-in expired. Try again.</source>
+            <translation>Inloggen verlopen. Probeer het opnieuw.</translation>
         </message>
         <message>
-            <source>The license or device activation is no longer valid.</source>
-            <translation>De licentie of apparaatactivering is niet meer geldig.</translation>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>Inloggen op GitHub is niet beschikbaar. Probeer het opnieuw.</translation>
         </message>
         <message>
-            <source>The license response does not match this annual pass.</source>
-            <translation>Het licentieantwoord komt niet overeen met deze jaarpas.</translation>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>Het inloggen op GitHub is niet voltooid. Probeer het opnieuw.</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>GitHub kan niet worden gecontroleerd. Offline toegang duurt maximaal zeven dagen.</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>Meld u opnieuw aan bij GitHub.</translation>
         </message>
     </context>
     <context>
@@ -2658,10 +2634,6 @@
         <message>
             <source>The shared window was closed. Select a source to start again.</source>
             <translation>Het gedeelde venster is gesloten. Kies opnieuw een bron om te beginnen.</translation>
-        </message>
-        <message>
-            <source>Screen sharing requires an active Supporter pass on the owning host.</source>
-            <translation>Scherm delen vereist een actieve Supporter-pas op de host.</translation>
         </message>
         <message>
             <source>The selected screen is no longer available.</source>
@@ -2705,6 +2677,10 @@
         <message>
             <source>Screen stream</source>
             <translation>Schermstream</translation>
+        </message>
+        <message>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
         </message>
     </context>
     <context>
@@ -2973,10 +2949,6 @@
             <translation>Lokale headless-kanaalhost van SquadSpeak</translation>
         </message>
         <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>Voorrang: argumenten &gt; omgeving &gt; eigenschappen &gt; opgeslagen serverwaarden.</translation>
-        </message>
-        <message>
             <source>Environment variables (SQUADSPEAK_ prefix):</source>
             <translation>Omgevingsvariabelen (voorvoegsel SQUADSPEAK_):</translation>
         </message>
@@ -3031,26 +3003,6 @@
         <message>
             <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
             <translation>Optionele eigen kanaal-ID voor de opdrachten status, configure, password, admission, history, chat en radio; standaard het hoofdkanaal.</translation>
-        </message>
-        <message>
-            <source>License action must be status, activate, refresh, deactivate or reset.</source>
-            <translation>Licentieactie moet status, activate, refresh, deactivate of reset zijn.</translation>
-        </message>
-        <message>
-            <source>A license operation is in progress.</source>
-            <translation>Er wordt al een licentiebewerking uitgevoerd.</translation>
-        </message>
-        <message>
-            <source>Supporter activation is unavailable in this build.</source>
-            <translation>Supporter-activering is in deze build niet beschikbaar.</translation>
-        </message>
-        <message>
-            <source>A license key is required.</source>
-            <translation>Een licentiesleutel is vereist.</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot. Set confirmed=true to proceed.</source>
-            <translation>Reset pas nadat support de apparaatplek heeft vrijgegeven. Stel confirmed=true in om door te gaan.</translation>
         </message>
         <message>
             <source>Channel action must be list, add or remove.</source>
@@ -3231,6 +3183,22 @@
         <message>
             <source>SquadSpeak headless could not start: %1</source>
             <translation>SquadSpeak-headless kon niet worden gestart: %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>Supporteractie moet status, aanmelden, vernieuwen, afmelden of annuleren zijn. sign-in refresh sign-out cancel</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>Er is een Supporter-operatie aan de gang.</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>Supportertoegang is niet beschikbaar in deze build.</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>Prioriteit van instellingen: argumenten &gt; omgeving &gt; eigenschappen &gt; opgeslagen serverwaarden.</translation>
         </message>
     </context>
     <context>

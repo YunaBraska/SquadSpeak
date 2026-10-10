@@ -637,10 +637,6 @@
             <translation>Kanal tidak tersedia</translation>
         </message>
         <message>
-            <source>Join voice</source>
-            <translation>Gabung suara</translation>
-        </message>
-        <message>
             <source>System (automatic)</source>
             <translation>Sistem (otomatis)</translation>
         </message>
@@ -873,10 +869,6 @@
             <translation>Gabung otomatis</translation>
         </message>
         <message>
-            <source>Leave channel</source>
-            <translation>Keluar dari kanal</translation>
-        </message>
-        <message>
             <source>Stream URL</source>
             <translation>URL aliran</translation>
         </message>
@@ -1093,48 +1085,16 @@
             <translation>ID perangkat</translation>
         </message>
         <message>
-            <source>Activate</source>
-            <translation>Aktifkan</translation>
-        </message>
-        <message>
-            <source>Buy annual pass</source>
-            <translation>Beli akses tahunan</translation>
-        </message>
-        <message>
             <source>Check now</source>
             <translation>Periksa sekarang</translation>
-        </message>
-        <message>
-            <source>Deactivate</source>
-            <translation>Nonaktifkan</translation>
         </message>
         <message>
             <source>Free version</source>
             <translation>Versi gratis</translation>
         </message>
         <message>
-            <source>License key</source>
-            <translation>Kunci lisensi</translation>
-        </message>
-        <message>
             <source>Not available yet</source>
             <translation>Belum tersedia</translation>
-        </message>
-        <message>
-            <source>Reset</source>
-            <translation>Atur ulang</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot.</source>
-            <translation>Atur ulang hanya setelah dukungan membebaskan slot perangkat.</translation>
-        </message>
-        <message>
-            <source>Resolve activation</source>
-            <translation>Selesaikan aktivasi</translation>
-        </message>
-        <message>
-            <source>Support reference</source>
-            <translation>Referensi dukungan</translation>
         </message>
         <message>
             <source>Supporter</source>
@@ -1200,7 +1160,35 @@
             <source>App audio</source>
             <translation>Audio aplikasi</translation>
         </message>
-</context>
+        <message>
+            <source>Account: %1</source>
+            <translation>Akun: %1</translation>
+        </message>
+        <message>
+            <source>Signed in as %1</source>
+            <translation>Masuk sebagai %1</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub</source>
+            <translation>Masuk dengan GitHub</translation>
+        </message>
+        <message>
+            <source>Verification code</source>
+            <translation>Kode verifikasi</translation>
+        </message>
+        <message>
+            <source>Open GitHub</source>
+            <translation>Buka GitHub</translation>
+        </message>
+        <message>
+            <source>Sign out</source>
+            <translation>Keluar</translation>
+        </message>
+        <message>
+            <source>This device</source>
+            <translation>Perangkat ini</translation>
+        </message>
+    </context>
     <context>
         <name>ChatContent</name>
         <message>
@@ -1417,10 +1405,6 @@
     </context>
     <context>
         <name>LocalChannel</name>
-        <message>
-            <source>Encrypted join failed: %1</source>
-            <translation>Gagal bergabung terenkripsi: %1</translation>
-        </message>
         <message>
             <source>Host is not responding. Reconnecting.</source>
             <translation>Host tidak merespons. Menghubungkan kembali.</translation>
@@ -2613,40 +2597,32 @@
     <context>
         <name>License</name>
         <message>
-            <source>Activation was declined. Check your key and available device slots.</source>
-            <translation>Aktivasi ditolak. Periksa kunci dan slot perangkat yang tersedia.</translation>
-        </message>
-        <message>
-            <source>An activation is unresolved. Contact support before trying again.</source>
-            <translation>Ada aktivasi yang belum terselesaikan. Hubungi dukungan sebelum mencoba lagi.</translation>
-        </message>
-        <message>
-            <source>Deactivation was declined. Contact support.</source>
-            <translation>Penonaktifan ditolak. Hubungi dukungan.</translation>
-        </message>
-        <message>
-            <source>Enter a valid license key.</source>
-            <translation>Masukkan kunci lisensi yang valid.</translation>
-        </message>
-        <message>
             <source>License storage is busy or unavailable.</source>
-            <translation>Penyimpanan lisensi sedang sibuk atau tidak tersedia.</translation>
+            <translation>Penyimpanan lisensi sibuk atau tidak tersedia.</translation>
         </message>
         <message>
             <source>License storage is unavailable.</source>
             <translation>Penyimpanan lisensi tidak tersedia.</translation>
         </message>
         <message>
-            <source>The license could not be checked. Your confirmed expiry is unchanged.</source>
-            <translation>Lisensi tidak dapat diperiksa. Tanggal kedaluwarsa yang dikonfirmasi tidak berubah.</translation>
+            <source>Sign-in expired. Try again.</source>
+            <translation>Masa masuk sudah habis. Coba lagi.</translation>
         </message>
         <message>
-            <source>The license or device activation is no longer valid.</source>
-            <translation>Lisensi atau aktivasi perangkat tidak lagi valid.</translation>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>Proses masuk GitHub tidak tersedia. Coba lagi.</translation>
         </message>
         <message>
-            <source>The license response does not match this annual pass.</source>
-            <translation>Respons lisensi tidak cocok dengan akses tahunan ini.</translation>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>Proses masuk GitHub belum selesai. Coba lagi.</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>GitHub tidak dapat diperiksa. Akses offline berlangsung paling lama tujuh hari.</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>Masuk dengan GitHub lagi.</translation>
         </message>
     </context>
     <context>
@@ -2658,10 +2634,6 @@
         <message>
             <source>The shared window was closed. Select a source to start again.</source>
             <translation>Jendela yang dibagikan telah ditutup. Pilih sumber untuk memulai lagi.</translation>
-        </message>
-        <message>
-            <source>Screen sharing requires an active Supporter pass on the owning host.</source>
-            <translation>Berbagi layar memerlukan pass Supporter aktif pada host pemilik.</translation>
         </message>
         <message>
             <source>The selected screen is no longer available.</source>
@@ -2705,6 +2677,10 @@
         <message>
             <source>Screen stream</source>
             <translation>Stream layar</translation>
+        </message>
+        <message>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
         </message>
     </context>
     <context>
@@ -2973,10 +2949,6 @@
             <translation>Host channel lokal SquadSpeak tanpa antarmuka</translation>
         </message>
         <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>Prioritas pengaturan: argumen &gt; lingkungan &gt; properti &gt; nilai server tersimpan.</translation>
-        </message>
-        <message>
             <source>Environment variables (SQUADSPEAK_ prefix):</source>
             <translation>Variabel lingkungan (awalan SQUADSPEAK_):</translation>
         </message>
@@ -3031,26 +3003,6 @@
         <message>
             <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
             <translation>ID channel milik sendiri opsional untuk perintah status, configure, password, admission, history, chat, dan radio; bawaannya adalah channel utama.</translation>
-        </message>
-        <message>
-            <source>License action must be status, activate, refresh, deactivate or reset.</source>
-            <translation>Tindakan lisensi harus berupa status, activate, refresh, deactivate, atau reset.</translation>
-        </message>
-        <message>
-            <source>A license operation is in progress.</source>
-            <translation>Operasi lisensi sedang berlangsung.</translation>
-        </message>
-        <message>
-            <source>Supporter activation is unavailable in this build.</source>
-            <translation>Aktivasi Supporter tidak tersedia pada versi ini.</translation>
-        </message>
-        <message>
-            <source>A license key is required.</source>
-            <translation>Kunci lisensi diperlukan.</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot. Set confirmed=true to proceed.</source>
-            <translation>Reset hanya setelah dukungan membebaskan slot perangkat. Atur confirmed=true untuk melanjutkan.</translation>
         </message>
         <message>
             <source>Channel action must be list, add or remove.</source>
@@ -3231,6 +3183,22 @@
         <message>
             <source>SquadSpeak headless could not start: %1</source>
             <translation>SquadSpeak tanpa antarmuka tidak dapat dimulai: %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>Tindakan pendukung harus berupa status, masuk, segarkan, keluar, atau batal. sign-in refresh sign-out cancel</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>Operasi Pendukung sedang berlangsung.</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>Akses pendukung tidak tersedia di build ini.</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>Prioritas pengaturan: argumen &gt; lingkungan &gt; properti &gt; nilai server yang disimpan.</translation>
         </message>
     </context>
     <context>

@@ -637,10 +637,6 @@
             <translation>Channel no dey available</translation>
         </message>
         <message>
-            <source>Join voice</source>
-            <translation>Join voice</translation>
-        </message>
-        <message>
             <source>System (automatic)</source>
             <translation>System (automatic)</translation>
         </message>
@@ -873,10 +869,6 @@
             <translation>Auto-join</translation>
         </message>
         <message>
-            <source>Leave channel</source>
-            <translation>Leave di channel</translation>
-        </message>
-        <message>
             <source>Stream URL</source>
             <translation>URL for stream</translation>
         </message>
@@ -1093,48 +1085,16 @@
             <translation>ID for device</translation>
         </message>
         <message>
-            <source>Activate</source>
-            <translation>Activate</translation>
-        </message>
-        <message>
-            <source>Buy annual pass</source>
-            <translation>Buy annual pass</translation>
-        </message>
-        <message>
             <source>Check now</source>
             <translation>Check am now</translation>
-        </message>
-        <message>
-            <source>Deactivate</source>
-            <translation>Deactivate</translation>
         </message>
         <message>
             <source>Free version</source>
             <translation>Free version</translation>
         </message>
         <message>
-            <source>License key</source>
-            <translation>License key</translation>
-        </message>
-        <message>
             <source>Not available yet</source>
             <translation>E no dey available yet</translation>
-        </message>
-        <message>
-            <source>Reset</source>
-            <translation>Reset</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot.</source>
-            <translation>Reset only after support don release di device slot.</translation>
-        </message>
-        <message>
-            <source>Resolve activation</source>
-            <translation>Resolve di activation</translation>
-        </message>
-        <message>
-            <source>Support reference</source>
-            <translation>Reference for support</translation>
         </message>
         <message>
             <source>Supporter</source>
@@ -1200,7 +1160,35 @@
             <source>App audio</source>
             <translation>App sound</translation>
         </message>
-</context>
+        <message>
+            <source>Account: %1</source>
+            <translation>Account: %1</translation>
+        </message>
+        <message>
+            <source>Signed in as %1</source>
+            <translation>You don enter as %1</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub</source>
+            <translation>Enter with GitHub</translation>
+        </message>
+        <message>
+            <source>Verification code</source>
+            <translation>Code to verify</translation>
+        </message>
+        <message>
+            <source>Open GitHub</source>
+            <translation>Open GitHub</translation>
+        </message>
+        <message>
+            <source>Sign out</source>
+            <translation>Comot</translation>
+        </message>
+        <message>
+            <source>This device</source>
+            <translation>This device</translation>
+        </message>
+    </context>
     <context>
         <name>ChatContent</name>
         <message>
@@ -1417,10 +1405,6 @@
     </context>
     <context>
         <name>LocalChannel</name>
-        <message>
-            <source>Encrypted join failed: %1</source>
-            <translation>Encrypted join no work: %1</translation>
-        </message>
         <message>
             <source>Host is not responding. Reconnecting.</source>
             <translation>Host no dey respond. Reconnecting.</translation>
@@ -2613,40 +2597,32 @@
     <context>
         <name>License</name>
         <message>
-            <source>Activation was declined. Check your key and available device slots.</source>
-            <translation>Activation reject. Check your key and available device slots.</translation>
-        </message>
-        <message>
-            <source>An activation is unresolved. Contact support before trying again.</source>
-            <translation>One activation no resolve. Contact support before trying again.</translation>
-        </message>
-        <message>
-            <source>Deactivation was declined. Contact support.</source>
-            <translation>Deactivation reject. Contact support.</translation>
-        </message>
-        <message>
-            <source>Enter a valid license key.</source>
-            <translation>Enter valid license key.</translation>
-        </message>
-        <message>
             <source>License storage is busy or unavailable.</source>
-            <translation>License storage busy or no dey available.</translation>
+            <translation>Supporter storage dey busy or e no dey available.</translation>
         </message>
         <message>
             <source>License storage is unavailable.</source>
-            <translation>License storage no dey available.</translation>
+            <translation>Supporter storage no dey available.</translation>
         </message>
         <message>
-            <source>The license could not be checked. Your confirmed expiry is unchanged.</source>
-            <translation>License no fit check. Your confirmed expiry no change.</translation>
+            <source>Sign-in expired. Try again.</source>
+            <translation>Your sign-in don expire. Try again.</translation>
         </message>
         <message>
-            <source>The license or device activation is no longer valid.</source>
-            <translation>License or device activation no dey valid again.</translation>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>GitHub sign-in no dey available. Try again.</translation>
         </message>
         <message>
-            <source>The license response does not match this annual pass.</source>
-            <translation>License response no match dis annual pass.</translation>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>GitHub sign-in no complete. Try again.</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>We no fit check GitHub. Offline access fit last up to seven days.</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>Sign in with GitHub again.</translation>
         </message>
     </context>
     <context>
@@ -2658,10 +2634,6 @@
         <message>
             <source>The shared window was closed. Select a source to start again.</source>
             <translation>Shared window don close. Select source to start again.</translation>
-        </message>
-        <message>
-            <source>Screen sharing requires an active Supporter pass on the owning host.</source>
-            <translation>Screen sharing require active Supporter pass on owning host.</translation>
         </message>
         <message>
             <source>The selected screen is no longer available.</source>
@@ -2705,6 +2677,10 @@
         <message>
             <source>Screen stream</source>
             <translation>Screen stream</translation>
+        </message>
+        <message>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
         </message>
     </context>
     <context>
@@ -2973,10 +2949,6 @@
             <translation>SquadSpeak local channel host without graphical interface</translation>
         </message>
         <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>Settings priority: arguments &gt; environment &gt; properties &gt; server values wey you save.</translation>
-        </message>
-        <message>
             <source>Environment variables (SQUADSPEAK_ prefix):</source>
             <translation>Environment variables (SQUADSPEAK_ prefix):</translation>
         </message>
@@ -3031,26 +3003,6 @@
         <message>
             <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
             <translation>You fit give your own channel ID for status, configure, password, admission, history, chat and radio commands; default na di main channel.</translation>
-        </message>
-        <message>
-            <source>License action must be status, activate, refresh, deactivate or reset.</source>
-            <translation>License action must be status, activate, refresh, deactivate or reset.</translation>
-        </message>
-        <message>
-            <source>A license operation is in progress.</source>
-            <translation>One license operation dey go on.</translation>
-        </message>
-        <message>
-            <source>Supporter activation is unavailable in this build.</source>
-            <translation>Supporter activation no dey available for this build.</translation>
-        </message>
-        <message>
-            <source>A license key is required.</source>
-            <translation>You need license key.</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot. Set confirmed=true to proceed.</source>
-            <translation>Reset only after support don free di device slot. Set confirmed=true to continue.</translation>
         </message>
         <message>
             <source>Channel action must be list, add or remove.</source>
@@ -3231,6 +3183,22 @@
         <message>
             <source>SquadSpeak headless could not start: %1</source>
             <translation>SquadSpeak headless no fit start: %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>Supporter action must be status, sign-in, refresh, sign-out or cancel.</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>Supporter operation dey happen now.</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>Supporter access no dey available for this build.</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</translation>
         </message>
     </context>
     <context>

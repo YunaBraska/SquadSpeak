@@ -637,10 +637,6 @@
             <translation>Ba za a iya shiga wannan kwanar ba</translation>
         </message>
         <message>
-            <source>Join voice</source>
-            <translation>Shiga murya</translation>
-        </message>
-        <message>
             <source>System (automatic)</source>
             <translation>Tsarin (kawaɗanci)</translation>
         </message>
@@ -873,10 +869,6 @@
             <translation>Shiga ta atomatik</translation>
         </message>
         <message>
-            <source>Leave channel</source>
-            <translation>Bar Tashar</translation>
-        </message>
-        <message>
             <source>Stream URL</source>
             <translation>URL na gwanon bidiyo</translation>
         </message>
@@ -1093,48 +1085,16 @@
             <translation>Sakan na na'ura</translation>
         </message>
         <message>
-            <source>Activate</source>
-            <translation>Karfafa</translation>
-        </message>
-        <message>
-            <source>Buy annual pass</source>
-            <translation>Siyanta kuɗi na shekara</translation>
-        </message>
-        <message>
             <source>Check now</source>
             <translation>Duba yanzu</translation>
-        </message>
-        <message>
-            <source>Deactivate</source>
-            <translation>Kare</translation>
         </message>
         <message>
             <source>Free version</source>
             <translation>Sigar kyauta</translation>
         </message>
         <message>
-            <source>License key</source>
-            <translation>Lamba mai izni</translation>
-        </message>
-        <message>
             <source>Not available yet</source>
             <translation>Har yanzu ba a samu ba</translation>
-        </message>
-        <message>
-            <source>Reset</source>
-            <translation>Mayar daidaito</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot.</source>
-            <translation>Bude hanya kawai bayan kungiyar tallafi ta fitar da wurin naɗi.</translation>
-        </message>
-        <message>
-            <source>Resolve activation</source>
-            <translation>Warashi kunna</translation>
-        </message>
-        <message>
-            <source>Support reference</source>
-            <translation>Takardar kungiyar tallafi</translation>
         </message>
         <message>
             <source>Supporter</source>
@@ -1200,7 +1160,35 @@
             <source>App audio</source>
             <translation>Sautin manhaja</translation>
         </message>
-</context>
+        <message>
+            <source>Account: %1</source>
+            <translation>Asusu: %1</translation>
+        </message>
+        <message>
+            <source>Signed in as %1</source>
+            <translation>Shiga kamar %1</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub</source>
+            <translation>Shiga tare da GitHub</translation>
+        </message>
+        <message>
+            <source>Verification code</source>
+            <translation>Lambar tabbaci</translation>
+        </message>
+        <message>
+            <source>Open GitHub</source>
+            <translation>Bude GitHub</translation>
+        </message>
+        <message>
+            <source>Sign out</source>
+            <translation>Fita</translation>
+        </message>
+        <message>
+            <source>This device</source>
+            <translation>Wannan na'ura</translation>
+        </message>
+    </context>
     <context>
         <name>ChatContent</name>
         <message>
@@ -1417,10 +1405,6 @@
     </context>
     <context>
         <name>LocalChannel</name>
-        <message>
-            <source>Encrypted join failed: %1</source>
-            <translation>Kwamfocin shiga sun ƙare: %1</translation>
-        </message>
         <message>
             <source>Host is not responding. Reconnecting.</source>
             <translation>Mai karɓa baya amsa. A ƙyale haɗin.</translation>
@@ -2613,40 +2597,32 @@
     <context>
         <name>License</name>
         <message>
-            <source>Activation was declined. Check your key and available device slots.</source>
-            <translation>An ki kunna wannan. Tabbatar da maɓallin ku da wuraren naɗaɗi da ke nan.</translation>
-        </message>
-        <message>
-            <source>An activation is unresolved. Contact support before trying again.</source>
-            <translation>Wannan aikin ya kasa yadda ya kamata. Tuntuwa da hidima kafin sake gwadawa.</translation>
-        </message>
-        <message>
-            <source>Deactivation was declined. Contact support.</source>
-            <translation>An ki kashe wannan aikin. Tuntuwa da hidima.</translation>
-        </message>
-        <message>
-            <source>Enter a valid license key.</source>
-            <translation>Shigar kayan lasisi mai amshi.</translation>
-        </message>
-        <message>
             <source>License storage is busy or unavailable.</source>
-            <translation>Ajiyar kayan lasisi na aiki ko kuma ba ta samu ba.</translation>
+            <translation>Adana lasisi yana aiki ko babu.</translation>
         </message>
         <message>
             <source>License storage is unavailable.</source>
-            <translation>Ajiyar kayan lasisi ba ta samu ba.</translation>
+            <translation>Babu ajiyar lasisi.</translation>
         </message>
         <message>
-            <source>The license could not be checked. Your confirmed expiry is unchanged.</source>
-            <translation>Ba za a iya duba kayan lasisin ba. Kusan lokacin ƙidaya da aka tabbatar bai canza ba.</translation>
+            <source>Sign-in expired. Try again.</source>
+            <translation>Shiga ya ƙare. Gwada kuma.</translation>
         </message>
         <message>
-            <source>The license or device activation is no longer valid.</source>
-            <translation>Kayan lasisi ko kuma fasalin naɗi ya ƙare amshi.</translation>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>Babu shiga GitHub. Gwada kuma.</translation>
         </message>
         <message>
-            <source>The license response does not match this annual pass.</source>
-            <translation>Amsar kayan lasisin ba ta tasauki wannan kasuwar shekara-shekara.</translation>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>GitHub ba a gama shiga ba. Gwada kuma.</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>GitHub ba a iya bincika ba. Samun shiga layi yana ɗaukar akalla kwanaki bakwai.</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>Shiga tare da GitHub kuma.</translation>
         </message>
     </context>
     <context>
@@ -2658,10 +2634,6 @@
         <message>
             <source>The shared window was closed. Select a source to start again.</source>
             <translation>An ƙidaya taga da aka kunna. Zaɓi tusama don fara sabawa.</translation>
-        </message>
-        <message>
-            <source>Screen sharing requires an active Supporter pass on the owning host.</source>
-            <translation>Don kunna allon, yakamata a sami kasuwar 'Supporter' mai aiki akan kwamfutar da ke da ayyuka.</translation>
         </message>
         <message>
             <source>The selected screen is no longer available.</source>
@@ -2705,6 +2677,10 @@
         <message>
             <source>Screen stream</source>
             <translation>Shirin allo</translation>
+        </message>
+        <message>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
         </message>
     </context>
     <context>
@@ -2973,10 +2949,6 @@
             <translation>Uwar garken tashar gida ta SquadSpeak ba tare da fuskar zane ba</translation>
         </message>
         <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>Fifikon saituna: muhawara &gt; muhalli &gt; saitunan fayil &gt; ƙimomin uwar garke da aka adana.</translation>
-        </message>
-        <message>
             <source>Environment variables (SQUADSPEAK_ prefix):</source>
             <translation>Masu sauyin muhalli (gaban suna SQUADSPEAK_):</translation>
         </message>
@@ -3031,26 +3003,6 @@
         <message>
             <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
             <translation>Zaɓin ID na tasharka don umarnin status, configure, password, admission, history, chat da radio; babbar tasha ce ta asali.</translation>
-        </message>
-        <message>
-            <source>License action must be status, activate, refresh, deactivate or reset.</source>
-            <translation>Aikin lasisi dole ya zama status, activate, refresh, deactivate ko reset.</translation>
-        </message>
-        <message>
-            <source>A license operation is in progress.</source>
-            <translation>Ana gudanar da aikin lasisi.</translation>
-        </message>
-        <message>
-            <source>Supporter activation is unavailable in this build.</source>
-            <translation>Kunna Supporter ba ya samuwa a wannan sigar.</translation>
-        </message>
-        <message>
-            <source>A license key is required.</source>
-            <translation>Ana buƙatar maɓallin lasisi.</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot. Set confirmed=true to proceed.</source>
-            <translation>Sake saiti kawai bayan tallafi ya saki gurbin na'urar. Sanya confirmed=true don ci gaba.</translation>
         </message>
         <message>
             <source>Channel action must be list, add or remove.</source>
@@ -3231,6 +3183,22 @@
         <message>
             <source>SquadSpeak headless could not start: %1</source>
             <translation>SquadSpeak ba tare da fuskar zane ba ya kasa farawa: %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>Dole ne aikin goyan bayan ya zama matsayi, shiga, sabuntawa, fita ko sokewa. status sign-in refresh sign-out cancel</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>Ana ci gaba da aiki mai tallafawa.</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>Babu damar samun tallafi a cikin wannan ginin.</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>Gabatar saituna: mahawara &gt; muhalli &gt; kaddarori &gt; Ajiyayyun ƙimar uwar garken.</translation>
         </message>
     </context>
     <context>

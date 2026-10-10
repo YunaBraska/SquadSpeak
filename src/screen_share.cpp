@@ -18,18 +18,21 @@ ScreenShare::ScreenShare(LocalChannel& channel, QObject* parent) : QObject(paren
 #endif
     capture_.setVideoSink(&input_);
     connect(&input_, &QVideoSink::videoFrameChanged, this, [this](const QVideoFrame& frame) {
-        if (active() && selectedScreen_ && screen_.screen() != selectedScreen_) {
+        if (capturing() && selectedScreen_ && screen_.screen() != selectedScreen_) {
             fail(tr("The shared screen was removed. Select a source to start again.")); return;
         }
-        if (active()) latest_ = frame;
+        if (capturing()) {
+            latest_ = frame;
+            for (auto* sink : localSinks_.values()) if (localSinks_.contains(sink)) sink->setVideoFrame(frame);
+        }
     });
     connect(&screen_, &QScreenCapture::errorOccurred, this, [this](QScreenCapture::Error, const QString& text) { fail(text); });
     connect(&window_, &QWindowCapture::errorOccurred, this, [this](QWindowCapture::Error, const QString& text) { fail(text); });
     connect(qGuiApp, &QGuiApplication::screenRemoved, this, [this](QScreen* removed) {
-        if (active() && capture_.screenCapture() && selectedScreen_ == removed) fail(tr("The shared screen was removed. Select a source to start again."));
+        if (capturing() && capture_.screenCapture() && selectedScreen_ == removed) fail(tr("The shared screen was removed. Select a source to start again."));
     });
     connect(&channel_, &LocalChannel::screenChanged, this, [this] {
-        if (!active() && (tick_.isActive() || screen_.isActive() || window_.isActive())) stop();
+        if (!previewing_ && !active() && (tick_.isActive() || screen_.isActive() || window_.isActive())) stop();
         for (const auto& id : decoders_.keys()) if (channel_.screenInfo(id).value("tier", -1).toInt() < 0) {
             images_.remove(id); decoders_.remove(id);
             for (auto* sink : sinks_.keys()) if (sinks_.value(sink) == id) static_cast<QVideoSink*>(sink)->setVideoFrame({});
@@ -41,10 +44,14 @@ ScreenShare::ScreenShare(LocalChannel& channel, QObject* parent) : QObject(paren
     connect(&tick_, &QTimer::timeout, this, &ScreenShare::encodeFrame);
     sourceCheck_.setInterval(1000);
     connect(&sourceCheck_, &QTimer::timeout, this, [this] {
+        const auto time = clock_.elapsed();
+        const auto bytes = active() ? captureHost_->screenBytesSent() : 0;
+        bitrate_ = active() && time > rateAt_ ? double(bytes - rateBytes_) * 8 / (time - rateAt_) : 0;
+        rateAt_ = time; rateBytes_ = bytes; emit statisticsChanged();
 #if defined(Q_OS_MACOS) || defined(Q_OS_WIN) || (defined(Q_OS_LINUX) && !defined(Q_OS_ANDROID))
         checkNativeSource();
 #else
-        if (active() && capture_.windowCapture() && !QWindowCapture::capturableWindows().contains(window_.window()))
+        if (capturing() && capture_.windowCapture() && !QWindowCapture::capturableWindows().contains(window_.window()))
             fail(tr("The shared window was closed. Select a source to start again."));
 #endif
     });
@@ -78,7 +85,7 @@ bool ScreenShare::setAudioEnabled(bool enabled) {
     emit changed(); return true;
 }
 bool ScreenShare::refreshSources() {
-    if (active()) return false;
+    if (capturing()) return false;
 #if defined(Q_OS_MACOS) || defined(Q_OS_WIN) || (defined(Q_OS_LINUX) && !defined(Q_OS_ANDROID))
     return refreshNativeSources();
 #else
@@ -92,19 +99,37 @@ bool ScreenShare::refreshSources() {
     emit sourcesChanged(); return true;
 #endif
 }
+bool ScreenShare::previewSource(int index, QObject* object) {
+    if (active() || watching() || !qobject_cast<QVideoSink*>(object) || index < 0 || index >= sources_.size()) return false;
+    stopPreview();
+    previewing_ = true;
+    if (!startCapture(index)) return false;
+    const bool attached = attach(hostId(), object, true);
+    emit changed(); return attached;
+}
+bool ScreenShare::stopPreview() {
+    return !previewing_ || stop();
+}
 bool ScreenShare::start(int index, const QString& id) {
     if (watching()) return fail(tr("Close a video view before opening another stream."));
     if (active() || index < 0 || index >= sources_.size()) return false;
     auto* owner = channel_.ownChannel(id.isEmpty() ? channel_.channelId() : id);
     if (!owner) return false;
+    if (previewing_ && selectedSource_ != index) stopPreview();
     captureHost_ = owner;
-    audioEnabled_ = false;
-    computerAudio_ = sources_[index].toMap().value("kind") == "screen";
-    if (!captureHost_->setScreenSharing(true)) return fail(tr("Screen sharing requires an active Supporter pass on the owning host."));
-    error_.clear(); ++generation_;
+    if (!captureHost_->setScreenSharing(true)) return fail(captureHost_->status());
     try { encoders_ = std::make_shared<std::array<VideoCodec, 4>>(); }
     catch (const std::exception& error) { return fail(QString::fromUtf8(error.what())); }
-    sent_.fill(-1000);
+    if (!previewing_ && !startCapture(index)) return false;
+    previewing_ = false;
+    sent_.fill(-1000); rateAt_ = clock_.elapsed(); rateBytes_ = captureHost_->screenBytesSent(); bitrate_ = 0;
+    tick_.start(); emit changed(); emit statisticsChanged(); return true;
+}
+bool ScreenShare::startCapture(int index) {
+    selectedSource_ = index;
+    audioEnabled_ = false;
+    computerAudio_ = sources_[index].toMap().value("kind") == "screen";
+    error_.clear(); ++generation_;
 #ifdef Q_OS_MACOS
     if (!startNative(index)) return false;
 #else
@@ -123,11 +148,17 @@ bool ScreenShare::start(int index, const QString& id) {
 #endif
     sourceCheck_.start();
 #endif
-    if (!active()) return false;
-    tick_.start(); emit changed(); return true;
+    return capturing();
 }
 bool ScreenShare::stop() {
     ++generation_; tick_.stop(); sourceCheck_.stop();
+    previewing_ = false; selectedSource_ = -1; bitrate_ = 0;
+    for (auto* sink : localSinks_.values()) {
+        if (!localSinks_.remove(sink)) continue;
+        disconnect(sink, &QObject::destroyed, this, nullptr);
+        sink->setVideoFrame({});
+    }
+    emit statisticsChanged();
 #if defined(Q_OS_MACOS) || defined(Q_OS_WIN) || (defined(Q_OS_LINUX) && !defined(Q_OS_ANDROID))
     stopNative();
 #endif
@@ -142,6 +173,12 @@ bool ScreenShare::stop() {
 bool ScreenShare::attach(const QString& id, QObject* object, bool preview) {
     auto* sink = qobject_cast<QVideoSink*>(object);
     if (!sink) return false;
+    if (capturing()) {
+        if (id != hostId()) return false;
+        if (!localSinks_.contains(sink)) connect(sink, &QObject::destroyed, this, [this, sink] { localSinks_.remove(sink); });
+        localSinks_.insert(sink); sink->setVideoFrame(latest_);
+        return true;
+    }
     QSet<QString> channels{id};
     for (auto* other : sinks_.keys()) if (other != object) channels.insert(sinks_.value(other));
     // Preview and separate window share a single subscription and decoder.
@@ -157,6 +194,9 @@ bool ScreenShare::attach(const QString& id, QObject* object, bool preview) {
     emit changed(); return true;
 }
 bool ScreenShare::detach(QObject* object) {
+    if (auto* local = qobject_cast<QVideoSink*>(object); local && localSinks_.remove(local)) {
+        disconnect(local, &QObject::destroyed, this, nullptr); local->setVideoFrame({}); return true;
+    }
     auto* sink = object;
     if (!sinks_.contains(sink)) return false;
     const auto id = sinks_.take(sink); previews_.remove(sink);

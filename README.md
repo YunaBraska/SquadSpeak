@@ -10,14 +10,20 @@ No chat account is required. Each running app can provide a channel while its ow
 
 ## Try it
 
-SquadSpeak is currently a **desktop preview**, not a finished cross-platform release.
-Check [Releases](https://github.com/YunaBraska/SquadSpeak/releases) for available downloads.
-The [feature status](docs/roadmap.md) lists what is verified and what still needs work.
+Download the desktop packages from [Releases](https://github.com/YunaBraska/SquadSpeak/releases).
+The release notes distinguish automated package checks from device tests that
+still need real hardware. See [feature status and known limitations](docs/roadmap.md).
 
-- **macOS:** Native Apple Silicon and Intel builds target macOS 13 or newer. Apple Silicon does not need Rosetta. Preview packages use an ad-hoc signature; Apple notarization is pending.
+- **macOS:** Native Apple Silicon and Intel builds target macOS 13 or newer. Apple Silicon does not need Rosetta. Packages currently use an ad-hoc signature; Apple notarization is pending.
 - **Linux:** The current package targets Ubuntu 26.04. Under Wayland, screen sharing currently captures the whole screen; individual windows follow later. Global push-to-talk depends on desktop support; voice activation and the app's own push-to-talk control remain available.
-- **Windows:** Native x86_64 preview archive for Windows 10 version 1903 or newer, with runtime libraries included. Screen audio requires Windows 11 or Server 2022; Windows 10 retains screen video. CI currently runs on Server 2022; Windows 10 runtime verification and publisher signing are pending.
+- **Windows:** Native x86_64 archive for Windows 10 version 1903 or newer, with runtime libraries included. Screen audio requires Windows 11 or Server 2022; Windows 10 retains screen video. CI currently runs on Server 2022; Windows 10 runtime verification and publisher signing are pending.
 - **Android, iPhone and iPad:** Follow the desktop release; mobile packages are not ready yet.
+
+On macOS with Homebrew:
+
+```sh
+brew install --cask yunabraska/tap/squadspeak
+```
 
 <details>
 <summary>Install the Windows archive</summary>
@@ -25,6 +31,12 @@ The [feature status](docs/roadmap.md) lists what is verified and what still need
 1. Extract the ZIP into a folder you want to keep.
 2. Run `bin/vc_redist.x64.exe` once to install Microsoft's C++ runtime. Windows may ask for administrator permission. If a newer runtime is already installed, keep it.
 3. Run `bin/squadspeak.exe`. Keep the extracted folders together; you can create a shortcut to the executable.
+4. Open the SquadSpeak icon in the system tray to show your channels.
+
+For a short test with two copies on one PC, download the
+[Windows device-test package](https://github.com/YunaBraska/SquadSpeak/releases/latest/download/squadspeak-windows-device-test.zip) instead. Extract it and open
+`device-test/Start.cmd`. It includes the same app, two separate test profiles and
+German instructions. No developer tools are needed.
 
 </details>
 
@@ -105,7 +117,7 @@ See [server configuration and commands](docs/development.md#headless-server) for
 Found a bug or a translation that reads strangely? [Open an issue](https://github.com/YunaBraska/SquadSpeak/issues) with your app version, operating system and steps to reproduce it. Avoid including passwords or private device keys. For security vulnerabilities, use [private reporting](https://github.com/YunaBraska/SquadSpeak/security/advisories/new).
 
 If you would like to support development, [buy Yuna a coffee](https://buymeacoffee.com/YunaBraska).
-Supporter purchases are not available in this preview. Core voice, chat, radio and remote control are intended to remain free.
+Voice, chat, radio, remote control and screen sharing are free. Yuna Supporter uses GitHub sign-in and adds more own channels, avatars and longer chat history. The one-time 12 USD tier is being prepared and is not available for purchase yet. It will cover one year across participating apps, with no device limit and up to seven days between online checks.
 
 Building, testing, architecture and release details belong in [docs](docs/development.md).
 

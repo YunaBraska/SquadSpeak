@@ -20,14 +20,14 @@ fetch() {
     name=$1 url=$2 digest=$3
     archive="$build_root/dependencies/$name"
     if test ! -f "$archive"; then
-        curl --fail --location --retry 3 --output "$archive.part" "$url"
+        curl --fail --location --connect-timeout 20 --max-time 180 --retry 3 --output "$archive.part" "$url"
         mv "$archive.part" "$archive"
     fi
     printf '%s  %s\n' "$digest" "$archive" | shasum -a 256 --check
     tar -xf "$archive" -C "$build_root/dependencies"
 }
 fetch openssl-3.6.5.tar.gz https://github.com/openssl/openssl/releases/download/openssl-3.6.5/openssl-3.6.5.tar.gz a2157c2830efdec3788939b00c9b0638306d3f0bbb76dc4832ee503bb397df98
-fetch opus-1.6.1.tar.gz https://downloads.xiph.org/releases/opus/opus-1.6.1.tar.gz 6ffcb593207be92584df15b32466ed64bbec99109f007c82205f0194572411a1
+fetch opus-1.6.1.tar.gz https://distfiles.macports.org/libopus/opus-1.6.1.tar.gz 6ffcb593207be92584df15b32466ed64bbec99109f007c82205f0194572411a1
 fetch libsamplerate-0.2.2.tar.xz https://github.com/libsndfile/libsamplerate/releases/download/0.2.2/libsamplerate-0.2.2.tar.xz 3258da280511d24b49d6b08615bbe824d0cacc9842b0e4caf11c52cf2b043893
 fetch ffmpeg-7.1.5.tar.xz https://ffmpeg.org/releases/ffmpeg-7.1.5.tar.xz de668509caf9e35e3cd162473441fdb29538c6d96ed080292b3cf9e6fc5d558f
 
@@ -125,11 +125,13 @@ if ! cmake --install "$build_root/app" --prefix "$stage_root/install"; then
     exit 1
 fi
 python3 "$source_root/tests/check_macos_bundle.py" "$stage_root/install/squadspeak.app" \
-    --minimum-system 13.0 --architecture "$architecture" --report "$build_root/artifacts/bundle.json"
+    --minimum-system 13.0 --architecture "$architecture" --report "$build_root/artifacts/bundle.json" \
+    --qml-reference "$build_root/app/qt-qml/lib/QtQml.framework/Versions/A/QtQml"
 ditto -c -k --sequesterRsrc --keepParent "$stage_root/install/squadspeak.app" \
     "$build_root/artifacts/squadspeak-macos-$architecture.zip"
 mkdir -p "$stage_root/unpacked"
 ditto -x -k "$build_root/artifacts/squadspeak-macos-$architecture.zip" "$stage_root/unpacked"
 python3 "$source_root/tests/check_macos_bundle.py" "$stage_root/unpacked/squadspeak.app" \
-    --minimum-system 13.0 --architecture "$architecture" --report "$build_root/artifacts/archive.json"
+    --minimum-system 13.0 --architecture "$architecture" --report "$build_root/artifacts/archive.json" \
+    --qml-reference "$build_root/app/qt-qml/lib/QtQml.framework/Versions/A/QtQml"
 test "$result" -eq 0

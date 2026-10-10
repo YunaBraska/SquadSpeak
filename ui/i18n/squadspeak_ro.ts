@@ -637,10 +637,6 @@
             <translation>Canal indisponibil</translation>
         </message>
         <message>
-            <source>Join voice</source>
-            <translation>Alătură-te canalului vocal</translation>
-        </message>
-        <message>
             <source>System (automatic)</source>
             <translation>Sistem (automat)</translation>
         </message>
@@ -873,10 +869,6 @@
             <translation>Conectare automată</translation>
         </message>
         <message>
-            <source>Leave channel</source>
-            <translation>Părăsiți canalul</translation>
-        </message>
-        <message>
             <source>Stream URL</source>
             <translation>Adresa URL a fluxului</translation>
         </message>
@@ -1093,48 +1085,16 @@
             <translation>ID dispozitiv</translation>
         </message>
         <message>
-            <source>Activate</source>
-            <translation>Activați</translation>
-        </message>
-        <message>
-            <source>Buy annual pass</source>
-            <translation>Cumpărați permisul anual</translation>
-        </message>
-        <message>
             <source>Check now</source>
             <translation>Verificați acum</translation>
-        </message>
-        <message>
-            <source>Deactivate</source>
-            <translation>Dezactivați</translation>
         </message>
         <message>
             <source>Free version</source>
             <translation>versiune gratuită</translation>
         </message>
         <message>
-            <source>License key</source>
-            <translation>Cheia de licență</translation>
-        </message>
-        <message>
             <source>Not available yet</source>
             <translation>Nu este disponibil încă</translation>
-        </message>
-        <message>
-            <source>Reset</source>
-            <translation>Resetare</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot.</source>
-            <translation>Resetați numai după ce suportul a eliberat slotul dispozitivului.</translation>
-        </message>
-        <message>
-            <source>Resolve activation</source>
-            <translation>Rezolvați activarea</translation>
-        </message>
-        <message>
-            <source>Support reference</source>
-            <translation>Referință de suport</translation>
         </message>
         <message>
             <source>Supporter</source>
@@ -1200,7 +1160,35 @@
             <source>App audio</source>
             <translation>Sunetul aplicației</translation>
         </message>
-</context>
+        <message>
+            <source>Account: %1</source>
+            <translation>Cont: %1</translation>
+        </message>
+        <message>
+            <source>Signed in as %1</source>
+            <translation>Conectat ca %1</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub</source>
+            <translation>Conectați-vă cu GitHub</translation>
+        </message>
+        <message>
+            <source>Verification code</source>
+            <translation>Cod de verificare</translation>
+        </message>
+        <message>
+            <source>Open GitHub</source>
+            <translation>Deschideți GitHub</translation>
+        </message>
+        <message>
+            <source>Sign out</source>
+            <translation>Deconectare</translation>
+        </message>
+        <message>
+            <source>This device</source>
+            <translation>Acest dispozitiv</translation>
+        </message>
+    </context>
     <context>
         <name>ChatContent</name>
         <message>
@@ -1417,10 +1405,6 @@
     </context>
     <context>
         <name>LocalChannel</name>
-        <message>
-            <source>Encrypted join failed: %1</source>
-            <translation>Conectarea criptată a eșuat: %1</translation>
-        </message>
         <message>
             <source>Host is not responding. Reconnecting.</source>
             <translation>Gazda nu răspunde. Reconectare.</translation>
@@ -2613,22 +2597,6 @@
     <context>
         <name>License</name>
         <message>
-            <source>Activation was declined. Check your key and available device slots.</source>
-            <translation>Activarea a fost refuzată. Verificați cheia și sloturile disponibile pentru dispozitive.</translation>
-        </message>
-        <message>
-            <source>An activation is unresolved. Contact support before trying again.</source>
-            <translation>O activare este nerezolvată. Contactați asistența înainte de a încerca din nou.</translation>
-        </message>
-        <message>
-            <source>Deactivation was declined. Contact support.</source>
-            <translation>Dezactivarea a fost refuzată. Contactați asistența.</translation>
-        </message>
-        <message>
-            <source>Enter a valid license key.</source>
-            <translation>Introduceți o cheie de licență validă.</translation>
-        </message>
-        <message>
             <source>License storage is busy or unavailable.</source>
             <translation>Stocarea licenței este ocupată sau indisponibilă.</translation>
         </message>
@@ -2637,16 +2605,24 @@
             <translation>Stocarea licenței nu este disponibilă.</translation>
         </message>
         <message>
-            <source>The license could not be checked. Your confirmed expiry is unchanged.</source>
-            <translation>Licența nu a putut fi verificată. Data de expirare confirmată este neschimbată.</translation>
+            <source>Sign-in expired. Try again.</source>
+            <translation>Conectarea a expirat. Încearcă din nou.</translation>
         </message>
         <message>
-            <source>The license or device activation is no longer valid.</source>
-            <translation>Licența sau activarea dispozitivului nu mai este valabilă.</translation>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>Conectarea la GitHub nu este disponibilă. Încearcă din nou.</translation>
         </message>
         <message>
-            <source>The license response does not match this annual pass.</source>
-            <translation>Răspunsul de licență nu se potrivește cu acest permis anual.</translation>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>Conectarea la GitHub nu a fost finalizată. Încearcă din nou.</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>GitHub nu a putut fi verificat. Accesul offline durează cel mult șapte zile.</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>Conectați-vă din nou cu GitHub.</translation>
         </message>
     </context>
     <context>
@@ -2658,10 +2634,6 @@
         <message>
             <source>The shared window was closed. Select a source to start again.</source>
             <translation>Fereastra partajată a fost închisă. Selectați o sursă pentru a începe din nou.</translation>
-        </message>
-        <message>
-            <source>Screen sharing requires an active Supporter pass on the owning host.</source>
-            <translation>Partajarea ecranului necesită un permis Supporter activ pe gazda proprietară.</translation>
         </message>
         <message>
             <source>The selected screen is no longer available.</source>
@@ -2705,6 +2677,10 @@
         <message>
             <source>Screen stream</source>
             <translation>Flux de ecran</translation>
+        </message>
+        <message>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
         </message>
     </context>
     <context>
@@ -2973,10 +2949,6 @@
             <translation>Gazdă locală de canale SquadSpeak fără interfață</translation>
         </message>
         <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>Prioritatea setărilor: argumente &gt; mediu &gt; proprietăți &gt; valori salvate ale serverului.</translation>
-        </message>
-        <message>
             <source>Environment variables (SQUADSPEAK_ prefix):</source>
             <translation>Variabile de mediu (prefix SQUADSPEAK_):</translation>
         </message>
@@ -3031,26 +3003,6 @@
         <message>
             <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
             <translation>ID opțional al unui canal propriu pentru comenzile status, configure, password, admission, history, chat și radio; implicit se folosește canalul principal.</translation>
-        </message>
-        <message>
-            <source>License action must be status, activate, refresh, deactivate or reset.</source>
-            <translation>Acțiunea licenței trebuie să fie status, activate, refresh, deactivate sau reset.</translation>
-        </message>
-        <message>
-            <source>A license operation is in progress.</source>
-            <translation>O operațiune de licență este în curs.</translation>
-        </message>
-        <message>
-            <source>Supporter activation is unavailable in this build.</source>
-            <translation>Activarea Supporter nu este disponibilă în această versiune.</translation>
-        </message>
-        <message>
-            <source>A license key is required.</source>
-            <translation>Este necesară o cheie de licență.</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot. Set confirmed=true to proceed.</source>
-            <translation>Resetează doar după ce asistența a eliberat locul dispozitivului. Setează confirmed=true pentru a continua.</translation>
         </message>
         <message>
             <source>Channel action must be list, add or remove.</source>
@@ -3231,6 +3183,22 @@
         <message>
             <source>SquadSpeak headless could not start: %1</source>
             <translation>SquadSpeak fără interfață nu a putut porni: %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>Acțiunea suporterului trebuie să fie stare, conectare, reîmprospătare, deconectare sau anulare. status sign-in refresh sign-out cancel</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>O operațiune de suporter este în desfășurare.</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>Accesul suporterului nu este disponibil în această versiune.</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>Prioritatea setărilor: argumente &gt; mediu &gt; proprietăți &gt; valori salvate de server.</translation>
         </message>
     </context>
     <context>

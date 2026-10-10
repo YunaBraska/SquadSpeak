@@ -2,6 +2,7 @@
 
 #include <QObject>
 #include <QColor>
+#include <QFont>
 #include <QUrl>
 #include <QVariantMap>
 #include <QSize>
@@ -18,7 +19,8 @@ class ChatContent final : public QObject {
 public:
     using QObject::QObject;
     Q_INVOKABLE QString format(const QString& markdown, const QVariantMap& attachment = {},
-                               const QColor& linkColor = Qt::blue) const;
+                               const QColor& linkColor = Qt::blue, const QColor& codeBackground = Qt::lightGray,
+                               const QFont& font = {}) const;
     Q_INVOKABLE bool prepareMessage(const QString& markdown);
     [[nodiscard]] static QString embedImage(const QString& markdown, const QByteArray& image);
     Q_INVOKABLE bool openLink(const QString& link) const;

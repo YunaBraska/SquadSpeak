@@ -16,6 +16,7 @@
 #include <QQuickWindow>
 #include <QQuickItem>
 #include <QTemporaryDir>
+#include <QStandardPaths>
 #include <QImage>
 #include <QPainter>
 #include <QUrl>
@@ -28,8 +29,15 @@
 #include <QTextLayout>
 #include <QGlyphRun>
 #include <memory>
+#include <vector>
 #include <cmath>
 #include <numbers>
+#if defined(Q_OS_IOS)
+#import <UIKit/UIKit.h>
+#elif defined(Q_OS_ANDROID)
+#include <QJniObject>
+#include <QJniEnvironment>
+#endif
 
 class AudioFixtures final : public QObject {
     Q_OBJECT
@@ -42,6 +50,7 @@ class AudioFixtures final : public QObject {
     std::unique_ptr<PushToTalkKey> pttKey_;
     std::unique_ptr<VoiceSession> remoteSession_;
     std::unique_ptr<LocalChannel> remoteChannel_;
+    std::vector<std::pair<std::unique_ptr<VoiceSession>, std::unique_ptr<LocalChannel>>> members_;
     ChatContent chatContent_;
     std::unique_ptr<AudioModel> audio_;
     std::unique_ptr<RadioPlayer> radio_;
@@ -50,6 +59,102 @@ class AudioFixtures final : public QObject {
     QTranslator translation_;
     QString appliedLanguage_ = "en";
 public slots:
+    bool populateMembers(int count) {
+        if (count < 0 || count > 63) return false;
+        members_.clear();
+        for (int i = 0; i < count; ++i) {
+            const auto path = folder_.filePath(QString("member-%1").arg(i));
+            auto session = std::make_unique<VoiceSession>(path + ".session");
+            session->setUserName(QString("Member %1").arg(i + 2, 2, 10, QChar('0')));
+            session->setAvatar(session->avatars().at(i % 10));
+            session->setMuted(i % 3 == 0);
+            auto client = std::make_unique<LocalChannel>(*session, path + ".channel", TlsIdentity::create(), [this] { return now_; });
+            if (!channel_->decide(client->ownId(), true)
+                || !client->join(channel_->ownId(), "127.0.0.1", channel_->port())) return false;
+            if (!QTest::qWaitFor([&] { return client->joined(); }, 5000)) {
+                qWarning() << "Member admission failed" << i + 2 << client->status();
+                return false;
+            }
+            members_.emplace_back(std::move(session), std::move(client));
+        }
+        return true;
+    }
+    bool tapNativeInput(QObject* object) {
+#ifdef Q_OS_ANDROID
+        const auto* item = qobject_cast<QQuickItem*>(object);
+        if (!item || !item->window()) return false;
+        const auto point = item->mapToScene(QPointF(item->width() / 2, item->height() / 2))
+            * item->window()->devicePixelRatio();
+        const QJniObject view(reinterpret_cast<jobject>(item->window()->winId()));
+        QNativeInterface::QAndroidApplication::runOnAndroidMainThread([point, view] {
+            const QJniObject activity = QNativeInterface::QAndroidApplication::context();
+            QJniEnvironment env;
+            const auto location = env->NewIntArray(2);
+            view.callMethod<void>("getLocationInWindow", "([I)V", location);
+            jint origin[2]{};
+            env->GetIntArrayRegion(location, 0, 2, origin);
+            env->DeleteLocalRef(location);
+            const auto time = QJniObject::callStaticMethod<jlong>("android/os/SystemClock", "uptimeMillis");
+            for (jint action : {0, 1}) {
+                const auto event = QJniObject::callStaticObjectMethod("android/view/MotionEvent", "obtain",
+                    "(JJIFFI)Landroid/view/MotionEvent;", time, time, action, jfloat(point.x() + origin[0]), jfloat(point.y() + origin[1]), jint(0));
+                activity.callMethod<jboolean>("dispatchTouchEvent", "(Landroid/view/MotionEvent;)Z", event.object());
+                event.callMethod<void>("recycle");
+            }
+        });
+        return true;
+#else
+        Q_UNUSED(object);
+        return false;
+#endif
+    }
+    bool commitNativeInput(const QString& text) {
+#ifdef Q_OS_ANDROID
+        QNativeInterface::QAndroidApplication::runOnAndroidMainThread([text] {
+            const QJniObject activity = QNativeInterface::QAndroidApplication::context();
+            const auto view = activity.callObjectMethod("getCurrentFocus", "()Landroid/view/View;");
+            if (!view.isValid() || !view.callMethod<jboolean>("onCheckIsTextEditor")) return;
+            const QJniObject info("android/view/inputmethod/EditorInfo");
+            const auto connection = view.callObjectMethod("onCreateInputConnection",
+                "(Landroid/view/inputmethod/EditorInfo;)Landroid/view/inputmethod/InputConnection;", info.object());
+            if (connection.isValid()) connection.callMethod<jboolean>("commitText", "(Ljava/lang/CharSequence;I)Z",
+                QJniObject::fromString(text).object(), jint(1));
+        });
+        return true;
+#else
+        Q_UNUSED(text);
+        return false;
+#endif
+    }
+    bool orientWindow(QObject* object, bool landscape) {
+#if defined(Q_OS_IOS)
+        auto* window = qobject_cast<QQuickWindow*>(object);
+        if (!window) return false;
+        if (@available(iOS 16.0, *)) {
+            auto* view = reinterpret_cast<UIView*>(window->winId());
+            auto* scene = view.window.windowScene;
+            if (!scene) return false;
+            auto* preferences = [[UIWindowSceneGeometryPreferencesIOS alloc] initWithInterfaceOrientations:
+                landscape ? UIInterfaceOrientationMaskLandscapeLeft : UIInterfaceOrientationMaskPortrait];
+            [scene requestGeometryUpdateWithPreferences:preferences errorHandler:^(NSError* error) {
+                qWarning("Orientation request failed: %s", error.localizedDescription.UTF8String);
+            }];
+            [preferences release];
+            return true;
+        }
+        return false;
+#elif defined(Q_OS_ANDROID)
+        Q_UNUSED(object);
+        QNativeInterface::QAndroidApplication::runOnAndroidMainThread([landscape] {
+            QNativeInterface::QAndroidApplication::context().callMethod<void>("setRequestedOrientation", jint(landscape ? 0 : 1));
+        });
+        return true;
+#else
+        Q_UNUSED(object);
+        Q_UNUSED(landscape);
+        return false;
+#endif
+    }
     bool playEvent(const QString& kind, bool deafened) {
         audio_->setDeafened(deafened);
         const bool accepted = audio_->playEvent(kind);
@@ -69,8 +174,9 @@ public slots:
             if (run.glyphIndexes().contains(0)) return false;
         return true;
     }
+    bool setTestMusic(bool active) { return remoteChannel_->setMusicState("Test station", "playing", active); }
     bool shareTestImage(bool active = true) {
-        if (!remoteSession_->setSupporterEnabled(active) || !remoteChannel_->setScreenSharing(active)) return false;
+        if (!remoteChannel_->setScreenSharing(active)) return false;
         if (!active) return true;
         QImage source(960, 540, QImage::Format_RGBA8888); source.fill(QColor(34, 47, 59));
         QPainter painter(&source);
@@ -86,7 +192,7 @@ public slots:
     QString clipboardText() const { return QGuiApplication::clipboard()->text(); }
     void captureOpenedUrl(const QUrl& url) { emit externalUrlOpened(url.toString()); }
     QString stationUrl() const { return station_->url(); }
-    bool advertiseNearbyChannels(int count) {
+    bool advertiseNearbyChannels(int count, const QString& prefix = QStringLiteral("Nearby")) {
         if (!channel_->startDiscovery()) { qWarning() << "Fixture discovery could not start:" << channel_->status(); return false; }
         QUdpSocket sender;
         if (!sender.bind(QHostAddress(QHostAddress::AnyIPv4), 0)) return false;
@@ -110,7 +216,7 @@ public slots:
         for (int i = 0; i <= count; ++i) {
             const auto data = QJsonDocument(QJsonObject{{"protocol", "squadspeak/1"},
                 {"id", QString::number(0x7000 + i, 16).rightJustified(64, '0')},
-                {"name", QString("Nearby %1").arg(i, 2, 10, QChar('0'))},
+                {"name", QString("%1 %2").arg(prefix).arg(i, 2, 10, QChar('0'))},
                 {"port", 40000 + (i == count ? 0 : i)}}).toJson(QJsonDocument::Compact);
             bool sent = false;
             for (const auto& adapter : interfaces) {
@@ -131,7 +237,7 @@ public slots:
     }
     bool advanceTime() { now_ += 600001; return true; }
     bool setSupporter(bool enabled) { return session_->setSupporterEnabled(enabled); }
-    bool expireChat() { now_ += ChatHistory::lifetime + 1; return true; }
+    bool expireChat(int days = 1) { now_ += days * ChatHistory::lifetime + 1; return true; }
     bool saveWindow(QObject* window, const QString& path) {
         auto* view = qobject_cast<QQuickWindow*>(window);
         return view && view->grabWindow().save(path);
@@ -146,24 +252,39 @@ public slots:
         return image.rect().contains(point) ? image.pixelColor(point) : QColor{};
     }
     bool portraitHasDetail(QObject* object, bool grayscale = false) {
-        auto* item = qobject_cast<QQuickItem*>(object);
-        if (!item || !item->window()) return false;
-        const auto logicalWidth = item->window()->width();
-        const auto area = item->mapRectToScene(QRectF(item->width() * 0.3, item->height() * 0.35,
-            item->width() * 0.4, item->height() * 0.35));
+        return portraitsHaveDetail({object}, grayscale);
+    }
+    bool portraitsHaveDetail(const QList<QObject*>& objects, bool grayscale = false) {
+        if (objects.isEmpty()) return false;
+        QQuickWindow* window = nullptr;
+        QList<QRectF> areas;
+        for (auto* object : objects) {
+            auto* item = qobject_cast<QQuickItem*>(object);
+            if (!item || !item->window() || (window && item->window() != window)) return false;
+            window = item->window();
+            areas.append(item->mapRectToScene(QRectF(item->width() * 0.3, item->height() * 0.35,
+                item->width() * 0.4, item->height() * 0.35)));
+        }
+        const auto logicalWidth = window->width();
         // Grabbing can process events and recycle a PathView delegate. Capture
         // its geometry first; the returned bitmap may have no DPR metadata.
-        const auto image = item->window()->grabWindow();
+        const auto image = window->grabWindow();
         const auto ratio = qreal(image.width()) / logicalWidth;
-        int darkest = 255, lightest = 0;
-        for (int y = int(area.top() * ratio); y < int(area.bottom() * ratio); ++y)
-            for (int x = int(area.left() * ratio); x < int(area.right() * ratio); ++x) {
-                const auto pixel = image.pixelColor(x, y);
-                if (grayscale && (pixel.red() != pixel.green() || pixel.green() != pixel.blue())) return false;
-                const auto intensity = qGray(pixel.rgb());
-                darkest = std::min(darkest, intensity); lightest = std::max(lightest, intensity);
-            }
-        return lightest - darkest > 40;
+        for (const auto& area : areas) {
+            const QRect sampledArea(QPoint(int(area.left() * ratio), int(area.top() * ratio)),
+                                    QPoint(int(area.right() * ratio), int(area.bottom() * ratio)));
+            if (sampledArea.isEmpty() || !image.rect().contains(sampledArea)) return false;
+            int darkest = 255, lightest = 0;
+            for (int y = int(area.top() * ratio); y < int(area.bottom() * ratio); ++y)
+                for (int x = int(area.left() * ratio); x < int(area.right() * ratio); ++x) {
+                    const auto pixel = image.pixelColor(x, y);
+                    if (grayscale && (pixel.red() != pixel.green() || pixel.green() != pixel.blue())) return false;
+                    const auto intensity = qGray(pixel.rgb());
+                    darkest = std::min(darkest, intensity); lightest = std::max(lightest, intensity);
+                }
+            if (lightest - darkest <= 40) return false;
+        }
+        return true;
     }
     double portraitGrayscaleMismatch(QObject* colored, QObject* grayscale) {
         auto* source = qobject_cast<QQuickItem*>(colored);
@@ -194,7 +315,10 @@ public slots:
     bool startRemoteHost() { return remoteChannel_->listen(QHostAddress::LocalHost); }
     bool publishLevels(const QVariantMap& levels) { return channel_->publishLevels(levels); }
     bool publishSystem(const QString& text) { return channel_->sendSystemMessage(text); }
-    bool setBotMusicState(const QString& name, const QString& state, bool active) { return channel_->setMusicState(name, state, active); }
+    bool setBotMusicState(const QString& name, const QString& state, bool active, const QString& host = {}) {
+        auto* owner = channel_->ownChannel(host.isEmpty() ? channel_->ownId() : host);
+        return owner && owner->setMusicState(name, state, active);
+    }
     QString botId() const { return channel_ ? channel_->musicId() : QString{}; }
     Q_INVOKABLE bool startHost() { return channel_->listen(QHostAddress::LocalHost); }
     void qmlEngineAvailable(QQmlEngine* engine) {
@@ -269,7 +393,10 @@ public slots:
             {"filterResponse", [&] { QVariantList values; for (const auto db : processor.filterResponse()) values.push_back(db); return values; }()},
             {"strongestHz", levels.strongestHz}, {"fundamentalHz", levels.fundamentalHz},
             {"inputSpectrum", raw}, {"outputSpectrum", filtered}});
-        const auto imageDirectory = qEnvironmentVariable("SQUAD_TEST_ARTIFACTS");
+        auto imageDirectory = qEnvironmentVariable("SQUAD_TEST_ARTIFACTS");
+#ifdef Q_OS_ANDROID
+        if (imageDirectory.isEmpty()) imageDirectory = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/artifacts";
+#endif
         if (!imageDirectory.isEmpty()) QDir().mkpath(imageDirectory);
         engine->rootContext()->setContextProperty("imageDirectory", imageDirectory);
     }

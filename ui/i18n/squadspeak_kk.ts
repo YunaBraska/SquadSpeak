@@ -637,10 +637,6 @@
             <translation>Арна қолжетімді емес</translation>
         </message>
         <message>
-            <source>Join voice</source>
-            <translation>Дауысты қосу</translation>
-        </message>
-        <message>
             <source>System (automatic)</source>
             <translation>Жүйе (автоматты)</translation>
         </message>
@@ -873,10 +869,6 @@
             <translation>Автоматты қосылу</translation>
         </message>
         <message>
-            <source>Leave channel</source>
-            <translation>Арнадан шығу</translation>
-        </message>
-        <message>
             <source>Stream URL</source>
             <translation>ағынның URL мекенжайы</translation>
         </message>
@@ -1093,48 +1085,16 @@
             <translation>Құрылғы идентификаторы</translation>
         </message>
         <message>
-            <source>Activate</source>
-            <translation>Іске қосу</translation>
-        </message>
-        <message>
-            <source>Buy annual pass</source>
-            <translation>Жылдық билетті сатып алыңыз</translation>
-        </message>
-        <message>
             <source>Check now</source>
             <translation>Қазір тексеріңіз</translation>
-        </message>
-        <message>
-            <source>Deactivate</source>
-            <translation>Өшіру</translation>
         </message>
         <message>
             <source>Free version</source>
             <translation>Тегін нұсқа</translation>
         </message>
         <message>
-            <source>License key</source>
-            <translation>Лицензия кілті</translation>
-        </message>
-        <message>
             <source>Not available yet</source>
             <translation>Әлі қол жетімді емес</translation>
-        </message>
-        <message>
-            <source>Reset</source>
-            <translation>Қалпына келтіру</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot.</source>
-            <translation>Қолдау құрылғы ұясын босатқаннан кейін ғана қалпына келтіріңіз.</translation>
-        </message>
-        <message>
-            <source>Resolve activation</source>
-            <translation>Белсендіруді шешу</translation>
-        </message>
-        <message>
-            <source>Support reference</source>
-            <translation>Қолдау анықтамасы</translation>
         </message>
         <message>
             <source>Supporter</source>
@@ -1200,7 +1160,35 @@
             <source>App audio</source>
             <translation>Қолданба дыбысы</translation>
         </message>
-</context>
+        <message>
+            <source>Account: %1</source>
+            <translation>Тіркелгі: % 1 %1</translation>
+        </message>
+        <message>
+            <source>Signed in as %1</source>
+            <translation>% 1 ретінде кірді %1</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub</source>
+            <translation>GitHub арқылы жүйеге кіріңіз</translation>
+        </message>
+        <message>
+            <source>Verification code</source>
+            <translation>Тексеру коды</translation>
+        </message>
+        <message>
+            <source>Open GitHub</source>
+            <translation>GitHub ашыңыз</translation>
+        </message>
+        <message>
+            <source>Sign out</source>
+            <translation>Шығу</translation>
+        </message>
+        <message>
+            <source>This device</source>
+            <translation>Бұл құрылғы</translation>
+        </message>
+    </context>
     <context>
         <name>ChatContent</name>
         <message>
@@ -1417,10 +1405,6 @@
     </context>
     <context>
         <name>LocalChannel</name>
-        <message>
-            <source>Encrypted join failed: %1</source>
-            <translation>Шифрланған қосылу орындалмады: %1</translation>
-        </message>
         <message>
             <source>Host is not responding. Reconnecting.</source>
             <translation>хост жауап бермейді. Қайта қосылуда.</translation>
@@ -2613,40 +2597,32 @@
     <context>
         <name>License</name>
         <message>
-            <source>Activation was declined. Check your key and available device slots.</source>
-            <translation>Белсендіру қабылданбады. Кілтті және қолжетімді құрылғы ұяларын тексеріңіз.</translation>
-        </message>
-        <message>
-            <source>An activation is unresolved. Contact support before trying again.</source>
-            <translation>Белсендіру шешілмеді. Әрекетті қайталаудан бұрын қолдау қызметіне хабарласыңыз.</translation>
-        </message>
-        <message>
-            <source>Deactivation was declined. Contact support.</source>
-            <translation>Өшіру қабылданбады. Қолдау қызметіне хабарласыңыз.</translation>
-        </message>
-        <message>
-            <source>Enter a valid license key.</source>
-            <translation>Жарамды лицензия кілтін енгізіңіз.</translation>
-        </message>
-        <message>
             <source>License storage is busy or unavailable.</source>
             <translation>Лицензия жады бос емес немесе қолжетімсіз.</translation>
         </message>
         <message>
             <source>License storage is unavailable.</source>
-            <translation>Лицензия жады қолжетімсіз.</translation>
+            <translation>Лицензия сақтау орны қолжетімсіз.</translation>
         </message>
         <message>
-            <source>The license could not be checked. Your confirmed expiry is unchanged.</source>
-            <translation>Лицензияны тексеру мүмкін емес. Сіздің расталған жарамдылық мерзімі өзгеріссіз.</translation>
+            <source>Sign-in expired. Try again.</source>
+            <translation>Жүйеге кіру мерзімі аяқталды. Қайтадан байқап көріңіз.</translation>
         </message>
         <message>
-            <source>The license or device activation is no longer valid.</source>
-            <translation>Лицензия немесе құрылғыны белсендіру енді жарамсыз.</translation>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>GitHub жүйесіне кіру мүмкін емес. Қайтадан байқап көріңіз.</translation>
         </message>
         <message>
-            <source>The license response does not match this annual pass.</source>
-            <translation>Лицензия жауабы осы жылдық рұқсатқа сәйкес келмейді.</translation>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>GitHub жүйесіне кіру аяқталмады. Қайтадан байқап көріңіз.</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>GitHub тексерілмеді. Офлайн қолжетімділік ең көбі жеті күнге созылады.</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>GitHub арқылы қайта кіріңіз.</translation>
         </message>
     </context>
     <context>
@@ -2658,10 +2634,6 @@
         <message>
             <source>The shared window was closed. Select a source to start again.</source>
             <translation>Ортақ терезе жабылды. Қайта бастау үшін көзді таңдаңыз.</translation>
-        </message>
-        <message>
-            <source>Screen sharing requires an active Supporter pass on the owning host.</source>
-            <translation>Экранды ортақ пайдалану арна иесі хостта белсенді Supporter рұқсатын қажет етеді.</translation>
         </message>
         <message>
             <source>The selected screen is no longer available.</source>
@@ -2705,6 +2677,10 @@
         <message>
             <source>Screen stream</source>
             <translation>Экран ағыны</translation>
+        </message>
+        <message>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
         </message>
     </context>
     <context>
@@ -2973,10 +2949,6 @@
             <translation>Графикалық интерфейссіз SquadSpeak жергілікті арна хосты</translation>
         </message>
         <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>Баптаулар басымдығы: аргументтер &gt; орта &gt; қасиеттер &gt; сервердің сақталған мәндері.</translation>
-        </message>
-        <message>
             <source>Environment variables (SQUADSPEAK_ prefix):</source>
             <translation>Орта айнымалылары (SQUADSPEAK_ префиксі):</translation>
         </message>
@@ -3031,26 +3003,6 @@
         <message>
             <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
             <translation>status, configure, password, admission, history, chat және radio пәрмендеріне арналған өз арнаңыздың қосымша ID-і; әдепкіде негізгі арна қолданылады.</translation>
-        </message>
-        <message>
-            <source>License action must be status, activate, refresh, deactivate or reset.</source>
-            <translation>Лицензия әрекеті status, activate, refresh, deactivate немесе reset болуы керек.</translation>
-        </message>
-        <message>
-            <source>A license operation is in progress.</source>
-            <translation>Лицензия әрекеті орындалып жатыр.</translation>
-        </message>
-        <message>
-            <source>Supporter activation is unavailable in this build.</source>
-            <translation>Бұл нұсқада Supporter белсендіруі қолжетімсіз.</translation>
-        </message>
-        <message>
-            <source>A license key is required.</source>
-            <translation>Лицензия кілті қажет.</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot. Set confirmed=true to proceed.</source>
-            <translation>Қолдау қызметі құрылғы орнын босатқаннан кейін ғана қалпына келтіріңіз. Жалғастыру үшін confirmed=true орнатыңыз.</translation>
         </message>
         <message>
             <source>Channel action must be list, add or remove.</source>
@@ -3231,6 +3183,22 @@
         <message>
             <source>SquadSpeak headless could not start: %1</source>
             <translation>Графикалық интерфейссіз SquadSpeak іске қосылмады: %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>Қолдаушының әрекеті күй, жүйеге кіру, жаңарту, шығу немесе бас тарту болуы керек. status sign-in refresh sign-out cancel</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>Қолдау көрсету операциясы орындалуда.</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>Бұл құрылымда қолдаушыларға кіру мүмкін емес.</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>Параметрлердің басымдылығы: аргументтер &gt; орта &gt; сипаттар &gt; сақталған сервер мәндері.</translation>
         </message>
     </context>
     <context>

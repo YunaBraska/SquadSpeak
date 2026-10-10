@@ -637,10 +637,6 @@
             <translation>চ্যানেল অনুপলব্ধ৷</translation>
         </message>
         <message>
-            <source>Join voice</source>
-            <translation>ভয়েস যোগ দিন</translation>
-        </message>
-        <message>
             <source>System (automatic)</source>
             <translation>সিস্টেম (স্বয়ংক্রিয়)</translation>
         </message>
@@ -873,10 +869,6 @@
             <translation>স্বয়ংক্রিয় যোগদান</translation>
         </message>
         <message>
-            <source>Leave channel</source>
-            <translation>চ্যানেল ছেড়ে দিন</translation>
-        </message>
-        <message>
             <source>Stream URL</source>
             <translation>স্ট্রিম URL</translation>
         </message>
@@ -1093,48 +1085,16 @@
             <translation>ডিভাইস আইডি</translation>
         </message>
         <message>
-            <source>Activate</source>
-            <translation>সক্রিয় করুন</translation>
-        </message>
-        <message>
-            <source>Buy annual pass</source>
-            <translation>বার্ষিক পাস কিনুন</translation>
-        </message>
-        <message>
             <source>Check now</source>
             <translation>এখন পরীক্ষা করুন</translation>
-        </message>
-        <message>
-            <source>Deactivate</source>
-            <translation>নিষ্ক্রিয় করুন</translation>
         </message>
         <message>
             <source>Free version</source>
             <translation>বিনামূল্যে সংস্করণ</translation>
         </message>
         <message>
-            <source>License key</source>
-            <translation>লাইসেন্স কী</translation>
-        </message>
-        <message>
             <source>Not available yet</source>
             <translation>এখনও উপলব্ধ নয়</translation>
-        </message>
-        <message>
-            <source>Reset</source>
-            <translation>রিসেট করুন</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot.</source>
-            <translation>সমর্থন ডিভাইস স্লট প্রকাশ করার পরেই রিসেট করুন।</translation>
-        </message>
-        <message>
-            <source>Resolve activation</source>
-            <translation>সক্রিয়করণ সমাধান করুন</translation>
-        </message>
-        <message>
-            <source>Support reference</source>
-            <translation>সাপোর্ট রেফারেন্স</translation>
         </message>
         <message>
             <source>Supporter</source>
@@ -1200,7 +1160,35 @@
             <source>App audio</source>
             <translation>অ্যাপের অডিও</translation>
         </message>
-</context>
+        <message>
+            <source>Account: %1</source>
+            <translation>অ্যাকাউন্ট: %1</translation>
+        </message>
+        <message>
+            <source>Signed in as %1</source>
+            <translation>%1 হিসাবে সাইন ইন করেছেন</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub</source>
+            <translation>GitHub দিয়ে সাইন ইন করুন</translation>
+        </message>
+        <message>
+            <source>Verification code</source>
+            <translation>যাচাইকরণ কোড</translation>
+        </message>
+        <message>
+            <source>Open GitHub</source>
+            <translation>GitHub খুলুন</translation>
+        </message>
+        <message>
+            <source>Sign out</source>
+            <translation>সাইন আউট করুন</translation>
+        </message>
+        <message>
+            <source>This device</source>
+            <translation>এই ডিভাইস</translation>
+        </message>
+    </context>
     <context>
         <name>ChatContent</name>
         <message>
@@ -1417,10 +1405,6 @@
     </context>
     <context>
         <name>LocalChannel</name>
-        <message>
-            <source>Encrypted join failed: %1</source>
-            <translation>এনক্রিপ্ট করা যোগদান ব্যর্থ হয়েছে: %1</translation>
-        </message>
         <message>
             <source>Host is not responding. Reconnecting.</source>
             <translation>হোস্ট সাড়া দিচ্ছে না। পুনরায় সংযোগ করা হচ্ছে।</translation>
@@ -2613,40 +2597,32 @@
     <context>
         <name>License</name>
         <message>
-            <source>Activation was declined. Check your key and available device slots.</source>
-            <translation>সক্রিয়করণ প্রত্যাখ্যান করা হয়েছে। আপনার কী এবং উপলব্ধ ডিভাইস স্লট পরীক্ষা করুন.</translation>
-        </message>
-        <message>
-            <source>An activation is unresolved. Contact support before trying again.</source>
-            <translation>একটি সক্রিয়করণ অমীমাংসিত। আবার চেষ্টা করার আগে সহায়তার সাথে যোগাযোগ করুন।</translation>
-        </message>
-        <message>
-            <source>Deactivation was declined. Contact support.</source>
-            <translation>নিষ্ক্রিয়করণ প্রত্যাখ্যান করা হয়েছে। সহায়তার সাথে যোগাযোগ করুন।</translation>
-        </message>
-        <message>
-            <source>Enter a valid license key.</source>
-            <translation>একটি বৈধ লাইসেন্স কী লিখুন।</translation>
-        </message>
-        <message>
             <source>License storage is busy or unavailable.</source>
-            <translation>লাইসেন্স স্টোরেজ ব্যস্ত বা অনুপলব্ধ।</translation>
+            <translation>লাইসেন্স সঞ্চয়স্থান ব্যস্ত বা অনুপলব্ধ.</translation>
         </message>
         <message>
             <source>License storage is unavailable.</source>
-            <translation>লাইসেন্স স্টোরেজ অনুপলব্ধ।</translation>
+            <translation>লাইসেন্স সঞ্চয়স্থান অনুপলব্ধ.</translation>
         </message>
         <message>
-            <source>The license could not be checked. Your confirmed expiry is unchanged.</source>
-            <translation>লাইসেন্স চেক করা যায়নি। আপনার নিশ্চিত মেয়াদ অপরিবর্তিত.</translation>
+            <source>Sign-in expired. Try again.</source>
+            <translation>সাইন-ইন মেয়াদ শেষ। আবার চেষ্টা করুন</translation>
         </message>
         <message>
-            <source>The license or device activation is no longer valid.</source>
-            <translation>লাইসেন্স বা ডিভাইস সক্রিয়করণ আর বৈধ নয়।</translation>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>GitHub সাইন-ইন অনুপলব্ধ. আবার চেষ্টা করুন</translation>
         </message>
         <message>
-            <source>The license response does not match this annual pass.</source>
-            <translation>লাইসেন্সের প্রতিক্রিয়া এই বার্ষিক পাসের সাথে মেলে না।</translation>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>GitHub সাইন-ইন সম্পূর্ণ হয়নি। আবার চেষ্টা করুন</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>GitHub চেক করা যায়নি. অফলাইন অ্যাক্সেস সর্বাধিক সাত দিন স্থায়ী হয়।</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>GitHub দিয়ে আবার সাইন ইন করুন।</translation>
         </message>
     </context>
     <context>
@@ -2658,10 +2634,6 @@
         <message>
             <source>The shared window was closed. Select a source to start again.</source>
             <translation>ভাগ করা উইন্ডোটি বন্ধ ছিল। আবার শুরু করার জন্য একটি উৎস নির্বাচন করুন।</translation>
-        </message>
-        <message>
-            <source>Screen sharing requires an active Supporter pass on the owning host.</source>
-            <translation>স্ক্রিন শেয়ার করতে চ্যানেলের মালিক হোস্টে সক্রিয় Supporter পাস প্রয়োজন।</translation>
         </message>
         <message>
             <source>The selected screen is no longer available.</source>
@@ -2705,6 +2677,10 @@
         <message>
             <source>Screen stream</source>
             <translation>স্ক্রিন স্ট্রিম</translation>
+        </message>
+        <message>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
         </message>
     </context>
     <context>
@@ -2973,10 +2949,6 @@
             <translation>SquadSpeak হেডলেস স্থানীয় চ্যানেল হোস্ট</translation>
         </message>
         <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>সেটিংসের অগ্রাধিকার: আর্গুমেন্ট &gt; পরিবেশ &gt; বৈশিষ্ট্য &gt; সংরক্ষিত সার্ভার মান.</translation>
-        </message>
-        <message>
             <source>Environment variables (SQUADSPEAK_ prefix):</source>
             <translation>পরিবেশ ভেরিয়েবল (SQUADSPEAK_ প্রিফিক্স):</translation>
         </message>
@@ -3031,26 +3003,6 @@
         <message>
             <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
             <translation>status, configure, password, admission, history, chat এবং radio কমান্ডের জন্য ঐচ্ছিক নিজস্ব চ্যানেল ID; ডিফল্ট প্রাথমিক চ্যানেল.</translation>
-        </message>
-        <message>
-            <source>License action must be status, activate, refresh, deactivate or reset.</source>
-            <translation>লাইসেন্সের কাজ status, activate, refresh, deactivate অথবা reset হতে হবে.</translation>
-        </message>
-        <message>
-            <source>A license operation is in progress.</source>
-            <translation>একটি লাইসেন্স অপারেশন চলছে.</translation>
-        </message>
-        <message>
-            <source>Supporter activation is unavailable in this build.</source>
-            <translation>এই বিল্ডে Supporter সক্রিয়করণ উপলব্ধ নয়.</translation>
-        </message>
-        <message>
-            <source>A license key is required.</source>
-            <translation>লাইসেন্স কী প্রয়োজন.</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot. Set confirmed=true to proceed.</source>
-            <translation>সাপোর্ট ডিভাইসের স্লট মুক্ত করার পরেই রিসেট করুন. চালিয়ে যেতে confirmed=true সেট করুন.</translation>
         </message>
         <message>
             <source>Channel action must be list, add or remove.</source>
@@ -3231,6 +3183,22 @@
         <message>
             <source>SquadSpeak headless could not start: %1</source>
             <translation>SquadSpeak হেডলেস হোস্ট শুরু করা যায়নি: %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>সাপোর্টার অ্যাকশন অবশ্যই স্ট্যাটাস, সাইন-ইন, রিফ্রেশ, সাইন-আউট বা বাতিল হতে হবে। status sign-in refresh sign-out cancel</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>একটি সাপোর্টার অপারেশন চলছে।</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>এই বিল্ডে সমর্থক অ্যাক্সেস অনুপলব্ধ৷</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>সেটিংস অগ্রাধিকার: আর্গুমেন্ট &gt; পরিবেশ &gt; বৈশিষ্ট্য &gt; সংরক্ষিত সার্ভার মান।</translation>
         </message>
     </context>
     <context>

@@ -37,6 +37,12 @@ Canvas {
             line([3, 9, 7, 9, 13, 4, 13, 20, 7, 15, 3, 15, 3, 9])
             if (symbol === "deafen") { line([17, 9, 23, 15]); line([23, 9, 17, 15]) }
             else { c.beginPath(); c.arc(13, 12, 6, -.8, .8); c.stroke(); c.beginPath(); c.arc(13, 12, 10, -.8, .8); c.stroke() }
+        } else if (symbol === "home") {
+            line([3, 10, 12, 3, 21, 10]); line([5, 9, 5, 21, 10, 21, 10, 14, 14, 14, 14, 21, 19, 21, 19, 9])
+        } else if (symbol === "headphones") {
+            c.beginPath(); c.arc(12, 11, 8, Math.PI, Math.PI * 2); c.stroke()
+            c.beginPath(); c.roundedRect(4, 11, 4, 9, 2, 2); c.stroke()
+            c.beginPath(); c.roundedRect(16, 11, 4, 9, 2, 2); c.stroke()
         } else if (symbol === "music") {
             line([9, 17, 9, 5, 20, 3, 20, 15])
             c.beginPath(); c.ellipse(3, 15, 6, 5); c.fill()

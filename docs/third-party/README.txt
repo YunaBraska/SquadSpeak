@@ -22,8 +22,10 @@ release build:
 Qt and its multimedia plugin are supplied by the selected Qt SDK. macOS
 rebuilds the matching FFmpeg 7.1.5 runtime with the VideoToolbox lifetime
 fixes recorded in QT-FFMPEG-ATTRIBUTION.txt; Windows uses the SDK runtime.
-Linux Qt 6.10.2 builds rebuild the matching Multimedia library with the
-portal fixes recorded in that file; other libraries remain system packages.
+Linux Qt 6.10.2 builds rebuild the matching Multimedia and Qml libraries with
+the portal and QML garbage-collector fixes recorded in that file; other
+libraries remain system packages. The exact Qt Multimedia and Qt Declarative
+6.10.2 source archives and checksums are in cmake/source_archives.json.
 The package must use a Qt SDK whose SBOM and license terms are available to the
 recipient. The macOS ARM64 Qt 6.11.3 kit used for local release checks identifies Qt
 modules, bundled third-party components, and the FFmpeg 7.1.5 backend in its

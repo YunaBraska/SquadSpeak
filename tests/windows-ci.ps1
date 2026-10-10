@@ -51,7 +51,7 @@ function Get-Source([string]$Name, [string]$Url, [string]$Sha256) {
     $archive = "$deps/$Name"
     if (-not (Test-Path $archive)) {
         Invoke-Checked curl.exe @("--fail", "--location", "--silent", "--show-error",
-            "--connect-timeout", "20", "--max-time", "180", "--retry", "2", "--retry-max-time", "300",
+            "--connect-timeout", "20", "--max-time", "180", "--retry", "2", "--retry-all-errors", "--retry-max-time", "300",
             "--output", "$archive.partial", $Url)
         Move-Item "$archive.partial" $archive -Force
     }
@@ -68,13 +68,13 @@ function Get-Source([string]$Name, [string]$Url, [string]$Sha256) {
     return $directory
 }
 
-$opus = Get-Source "opus-1.6.1.tar.gz" "https://downloads.xiph.org/releases/opus/opus-1.6.1.tar.gz" "6ffcb593207be92584df15b32466ed64bbec99109f007c82205f0194572411a1"
-$samplerate = Get-Source "libsamplerate-0.2.2.tar.xz" "https://github.com/libsndfile/libsamplerate/releases/download/0.2.2/libsamplerate-0.2.2.tar.xz" "3258da280511d24b49d6b08615bbe824d0cacc9842b0e4caf11c52cf2b043893"
-$openssl = Get-Source "openssl-3.6.5.tar.gz" "https://github.com/openssl/openssl/releases/download/openssl-3.6.5/openssl-3.6.5.tar.gz" "a2157c2830efdec3788939b00c9b0638306d3f0bbb76dc4832ee503bb397df98"
-
 if (Test-DependencyPrefix) {
     Write-Host "Dependency prefix cache hit; skipping OpenSSL, Opus and libsamplerate builds."
 } else {
+    $opus = Get-Source "opus-1.6.1.tar.gz" "https://distfiles.macports.org/libopus/opus-1.6.1.tar.gz" "6ffcb593207be92584df15b32466ed64bbec99109f007c82205f0194572411a1"
+    $samplerate = Get-Source "libsamplerate-0.2.2.tar.xz" "https://github.com/libsndfile/libsamplerate/releases/download/0.2.2/libsamplerate-0.2.2.tar.xz" "3258da280511d24b49d6b08615bbe824d0cacc9842b0e4caf11c52cf2b043893"
+    $openssl = Get-Source "openssl-3.6.5.tar.gz" "https://github.com/openssl/openssl/releases/download/openssl-3.6.5/openssl-3.6.5.tar.gz" "a2157c2830efdec3788939b00c9b0638306d3f0bbb76dc4832ee503bb397df98"
+
     Push-Location $openssl
     Invoke-Checked perl @("Configure", "VC-WIN64A", "shared", "no-tests", "--prefix=$prefix")
     Invoke-Checked nmake @()
@@ -127,7 +127,7 @@ $version = @()
 if ($env:SQUADSPEAK_VERSION) { $version += "-DSQUADSPEAK_VERSION=$env:SQUADSPEAK_VERSION" }
 Invoke-Checked cmake (@("-S", $repo, "-B", $appBuild, "-G", "Ninja", "-DCMAKE_BUILD_TYPE=Release", "-DBUILD_TESTING=ON", "-DCMAKE_PREFIX_PATH=$QtRoot", "-DOPENSSL_ROOT_DIR=$prefix", "-DSQUADSPEAK_AUDIO_DEPS_ROOT=$prefix", "-DSQUADSPEAK_FFMPEG_ROOT=$ffmpegStage") + $version)
 Invoke-Checked cmake @("--build", $appBuild, "--parallel", "3")
-$env:PATH = "$QtRoot/bin;$prefix/bin;$appBuild/audio-processing/bin;$env:PATH"
+$env:PATH = "$appBuild/qt-qml/bin;$QtRoot/bin;$prefix/bin;$appBuild/audio-processing/bin;$env:PATH"
 $env:QT_FORCE_STDERR_LOGGING = "1"
 $env:QT_LOGGING_RULES = ""
 Start-Service Audiosrv
@@ -160,6 +160,10 @@ foreach ($notice in Get-ChildItem "$repo/docs/third-party" -Recurse -File) {
 }
 Invoke-Checked "$QtRoot/bin/windeployqt.exe" @("--release", "--qmldir", "$repo/ui", "$package/bin/squadspeak.exe")
 Invoke-Checked "$QtRoot/bin/windeployqt.exe" @("--release", "--qmldir", "$repo/ui", "$package/bin/squad_image_worker.exe")
+Copy-Item "$appBuild/qt-qml/bin/Qt6Qml.dll" "$package/bin/Qt6Qml.dll" -Force
+if ((Get-FileHash "$appBuild/qt-qml/bin/Qt6Qml.dll").Hash -ne (Get-FileHash "$package/bin/Qt6Qml.dll").Hash) {
+    throw "The package must contain the corrected Qt Qml runtime"
+}
 if (-not (Test-Path "$package/bin/sqldrivers/qsqlite.dll")) {
     throw "Packaged Qt SQL SQLite driver is missing: bin/sqldrivers/qsqlite.dll"
 }
@@ -203,8 +207,22 @@ Compress-Archive -Path "$package/*" -DestinationPath $archive -Force
 $archivePackage = "$BuildRoot/archive-check"
 if (Test-Path $archivePackage) { Remove-Item $archivePackage -Recurse -Force }
 Expand-Archive -LiteralPath $archive -DestinationPath $archivePackage -Force
+$revision = (& git -C $repo rev-parse HEAD).Trim()
+if ($LASTEXITCODE -ne 0) { throw "Cannot identify the Windows test package revision" }
+Invoke-Checked python @("$repo/tests/acceptance.py", "--platform", "windows", "--setup=",
+    "--source", $repo, "--build", $revision, "--runtime", "$dependencyStamp;Qt=$((Get-Item "$QtRoot/bin/Qt6Core.dll").VersionInfo.FileVersion)",
+    "--junit", "$BuildRoot/ctest.xml", "--windows-package", $archivePackage,
+    "--output", "$BuildRoot/windows-device-check.html")
+# Keep the public app archive unchanged. The separate kit contains fresh, quiet
+# profiles; archive it before smoke tests create device identities or logs.
+$deviceArchive = "$BuildRoot/squadspeak-windows-device-test.zip"
+Compress-Archive -Path "$archivePackage/*" -DestinationPath $deviceArchive -Force
 $env:PATH = "$archivePackage/bin;$env:SystemRoot\System32;$env:SystemRoot"
 Invoke-Checked "$archivePackage/bin/squadspeak.exe" @("--smoke-test", "--settings-file", "$BuildRoot/archive-settings.ini")
+Push-Location "$archivePackage/device-test"
+try {
+    Invoke-Checked "$env:ComSpec" @("/d", "/c", "Start.cmd", "--smoke-test")
+} finally { Pop-Location }
 # Reuse the subprocess contract against the extracted executable and DLLs.
 Copy-Item "$QtRoot/bin/Qt6Test.dll" $appBuild -Force
 $env:SQUAD_TEST_APP = "$archivePackage/bin/squadspeak.exe"

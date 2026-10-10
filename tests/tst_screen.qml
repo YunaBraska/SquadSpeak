@@ -35,7 +35,6 @@ TestCase {
         return true
     }
     function test_screenPreviewAndSeparateResizableViewer() {
-        if (!supporterLicense.directDistribution) { verify(!fixtures.setSupporter(true)); return }
         verify(fixtures.startHost())
         verify(fixtures.startRemoteHost())
         verify(remoteChannel.decide(channel.ownId, true))
@@ -74,6 +73,10 @@ TestCase {
         verify(screenChanges.count > 0, "Changing chat notifies the preview before another video frame arrives")
         tryCompare(preview, "visible", true)
         compare(channel.joinedHostId, channel.ownId)
+        viewer.close()
+        tryCompare(channel.screenView, "tier", 3)
+        verify(fixtures.pressAccessible(preview))
+        tryCompare(viewer, "visible", true)
         viewer.close()
         tryCompare(channel.screenView, "tier", 3)
         verify(channel.chatReady)

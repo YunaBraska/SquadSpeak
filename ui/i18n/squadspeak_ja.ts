@@ -637,10 +637,6 @@
             <translation>チャンネルを利用できません</translation>
         </message>
         <message>
-            <source>Join voice</source>
-            <translation>音声に参加</translation>
-        </message>
-        <message>
             <source>System (automatic)</source>
             <translation>システム (自動)</translation>
         </message>
@@ -873,10 +869,6 @@
             <translation>自動参加</translation>
         </message>
         <message>
-            <source>Leave channel</source>
-            <translation>チャンネルを退出</translation>
-        </message>
-        <message>
             <source>Stream URL</source>
             <translation>ストリームURL</translation>
         </message>
@@ -1093,48 +1085,16 @@
             <translation>デバイスID</translation>
         </message>
         <message>
-            <source>Activate</source>
-            <translation>有効化</translation>
-        </message>
-        <message>
-            <source>Buy annual pass</source>
-            <translation>年間パスを購入</translation>
-        </message>
-        <message>
             <source>Check now</source>
             <translation>今すぐ確認</translation>
-        </message>
-        <message>
-            <source>Deactivate</source>
-            <translation>無効化</translation>
         </message>
         <message>
             <source>Free version</source>
             <translation>無料版</translation>
         </message>
         <message>
-            <source>License key</source>
-            <translation>ライセンスキー</translation>
-        </message>
-        <message>
             <source>Not available yet</source>
             <translation>まだ利用できません</translation>
-        </message>
-        <message>
-            <source>Reset</source>
-            <translation>リセット</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot.</source>
-            <translation>サポートがデバイス枠を解放した後にのみリセットしてください.</translation>
-        </message>
-        <message>
-            <source>Resolve activation</source>
-            <translation>有効化の問題を解決</translation>
-        </message>
-        <message>
-            <source>Support reference</source>
-            <translation>サポート用参照番号</translation>
         </message>
         <message>
             <source>Supporter</source>
@@ -1200,7 +1160,35 @@
             <source>App audio</source>
             <translation>アプリ音声</translation>
         </message>
-</context>
+        <message>
+            <source>Account: %1</source>
+            <translation>アカウント: %1</translation>
+        </message>
+        <message>
+            <source>Signed in as %1</source>
+            <translation>%1 としてサインインしています</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub</source>
+            <translation>GitHub でサインインする</translation>
+        </message>
+        <message>
+            <source>Verification code</source>
+            <translation>検証コード</translation>
+        </message>
+        <message>
+            <source>Open GitHub</source>
+            <translation>GitHubを開く</translation>
+        </message>
+        <message>
+            <source>Sign out</source>
+            <translation>サインアウト</translation>
+        </message>
+        <message>
+            <source>This device</source>
+            <translation>このデバイス</translation>
+        </message>
+    </context>
     <context>
         <name>ChatContent</name>
         <message>
@@ -1417,10 +1405,6 @@
     </context>
     <context>
         <name>LocalChannel</name>
-        <message>
-            <source>Encrypted join failed: %1</source>
-            <translation>暗号化された参加に失敗しました: %1</translation>
-        </message>
         <message>
             <source>Host is not responding. Reconnecting.</source>
             <translation>ホストが応答していません. 再接続中です.</translation>
@@ -2613,40 +2597,32 @@
     <context>
         <name>License</name>
         <message>
-            <source>Activation was declined. Check your key and available device slots.</source>
-            <translation>有効化が拒否されました.キーと利用可能なデバイス枠を確認してください.</translation>
-        </message>
-        <message>
-            <source>An activation is unresolved. Contact support before trying again.</source>
-            <translation>結果が未確認の有効化があります.再試行する前にサポートに連絡してください.</translation>
-        </message>
-        <message>
-            <source>Deactivation was declined. Contact support.</source>
-            <translation>無効化が拒否されました.サポートに連絡してください.</translation>
-        </message>
-        <message>
-            <source>Enter a valid license key.</source>
-            <translation>有効なライセンスキーを入力してください.</translation>
-        </message>
-        <message>
             <source>License storage is busy or unavailable.</source>
-            <translation>ライセンス保存領域が使用中か,利用できません.</translation>
+            <translation>ライセンス ストレージがビジー状態か、使用不可です。</translation>
         </message>
         <message>
             <source>License storage is unavailable.</source>
-            <translation>ライセンス保存領域を利用できません.</translation>
+            <translation>ライセンス ストレージが利用できません。</translation>
         </message>
         <message>
-            <source>The license could not be checked. Your confirmed expiry is unchanged.</source>
-            <translation>ライセンスを確認できませんでした.確認済みの有効期限は変わりません.</translation>
+            <source>Sign-in expired. Try again.</source>
+            <translation>サインインの有効期限が切れました。もう一度やり直してください。</translation>
         </message>
         <message>
-            <source>The license or device activation is no longer valid.</source>
-            <translation>ライセンスまたはデバイスの有効化は無効になっています.</translation>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>GitHub サインインは利用できません。もう一度やり直してください。</translation>
         </message>
         <message>
-            <source>The license response does not match this annual pass.</source>
-            <translation>ライセンスの応答がこの年間パスと一致しません.</translation>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>GitHub のサインインが完了していません。もう一度やり直してください。</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>GitHubを確認できませんでした。オフライン アクセスは最長 7 日間持続します。</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>GitHub で再度サインインします。</translation>
         </message>
     </context>
     <context>
@@ -2658,10 +2634,6 @@
         <message>
             <source>The shared window was closed. Select a source to start again.</source>
             <translation>共有ウィンドウが閉じられました.もう一度ソースを選んでください.</translation>
-        </message>
-        <message>
-            <source>Screen sharing requires an active Supporter pass on the owning host.</source>
-            <translation>画面共有には所有ホストの有効なSupporterパスが必要です.</translation>
         </message>
         <message>
             <source>The selected screen is no longer available.</source>
@@ -2705,6 +2677,10 @@
         <message>
             <source>Screen stream</source>
             <translation>画面ストリーム</translation>
+        </message>
+        <message>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
         </message>
     </context>
     <context>
@@ -2973,10 +2949,6 @@
             <translation>SquadSpeak ヘッドレスローカルチャンネルホスト</translation>
         </message>
         <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>設定の優先順位: 引数 &gt; 環境変数 &gt; プロパティ &gt; 保存済みサーバー設定.</translation>
-        </message>
-        <message>
             <source>Environment variables (SQUADSPEAK_ prefix):</source>
             <translation>環境変数 (接頭辞 SQUADSPEAK_):</translation>
         </message>
@@ -3031,26 +3003,6 @@
         <message>
             <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
             <translation>status, configure, password, admission, history, chat, radio コマンドで使用する任意の所有チャンネル ID; 既定はメインチャンネルです.</translation>
-        </message>
-        <message>
-            <source>License action must be status, activate, refresh, deactivate or reset.</source>
-            <translation>ライセンス操作は status, activate, refresh, deactivate, reset のいずれかにしてください.</translation>
-        </message>
-        <message>
-            <source>A license operation is in progress.</source>
-            <translation>ライセンス操作が進行中です.</translation>
-        </message>
-        <message>
-            <source>Supporter activation is unavailable in this build.</source>
-            <translation>このビルドでは Supporter の有効化を利用できません.</translation>
-        </message>
-        <message>
-            <source>A license key is required.</source>
-            <translation>ライセンスキーが必要です.</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot. Set confirmed=true to proceed.</source>
-            <translation>サポートがデバイス枠を解放した後にのみリセットしてください. 続行するには confirmed=true を設定してください.</translation>
         </message>
         <message>
             <source>Channel action must be list, add or remove.</source>
@@ -3231,6 +3183,22 @@
         <message>
             <source>SquadSpeak headless could not start: %1</source>
             <translation>SquadSpeak ヘッドレスモードを起動できませんでした: %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>サポーターのアクションは、ステータス、サインイン、更新、サインアウト、またはキャンセルである必要があります。 status sign-in refresh sign-out cancel</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>サポーターオペレーションが進行中です。</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>このビルドではサポーターへのアクセスは利用できません。</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>設定の優先順位: 引数 &gt; 環境 &gt; プロパティ &gt; 保存されたサーバー値。</translation>
         </message>
     </context>
     <context>

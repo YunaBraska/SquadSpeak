@@ -3,14 +3,16 @@
 #include <QObject>
 #include <QDateTime>
 #include <QJsonObject>
+#include <QHash>
+#include <QSet>
 #include <QLockFile>
 #include <QNetworkAccessManager>
 #include <QTimer>
 #include <QUrl>
 #include <functional>
 
-// Owns one OS account's provider activation and encrypted receipt. Channel
-// identities, audio profiles and remote controllers never receive its secrets.
+// Owns the OS account's GitHub sign-in and encrypted supporter evidence.
+// Channel identities, audio profiles and remote controllers never receive tokens.
 class License final : public QObject {
     Q_OBJECT
     Q_PROPERTY(bool configured READ configured CONSTANT)
@@ -18,61 +20,67 @@ class License final : public QObject {
     Q_PROPERTY(QUrl purchaseUrl READ purchaseUrl CONSTANT)
     Q_PROPERTY(bool busy READ busy NOTIFY changed)
     Q_PROPERTY(bool active READ active NOTIFY changed)
+    Q_PROPERTY(bool signedIn READ signedIn NOTIFY changed)
     Q_PROPERTY(bool pending READ pending NOTIFY changed)
-    Q_PROPERTY(bool recoveryNeeded READ recoveryNeeded NOTIFY changed)
     Q_PROPERTY(QString status READ status NOTIFY changed)
-    Q_PROPERTY(QString supportReference READ supportReference NOTIFY changed)
+    Q_PROPERTY(QString account READ account NOTIFY changed)
+    Q_PROPERTY(QString userCode READ userCode NOTIFY changed)
+    Q_PROPERTY(QUrl verificationUrl READ verificationUrl NOTIFY changed)
     Q_PROPERTY(QDateTime expiresAt READ expiresAt NOTIFY changed)
 public:
-    // Product contains the expected public store_id, product_id and variant_id.
-    // An empty product disables licensing. The directory is shared by all local
-    // profiles and modes. An explicit identity file permits headless storage
-    // without a keychain; its location stays in the receipt envelope
-    // so the desktop can reuse it. A supplied key isolates integration tests.
+    // Configuration contains client_id, recipient_id, tier_id, owner and repository.
+    // An empty configuration disables sign-in. Endpoints are injectable HTTPS
+    // boundaries. An explicit identity file supports servers without a keychain.
+    // A supplied storage key and clock isolate deterministic integration tests.
     License(QString directory, QJsonObject product, QUrl endpoint,
             QByteArray storageKey = {}, std::function<qint64()> clock = {},
-            QString identityFile = {}, QObject* parent = nullptr);
+            QString identityFile = {}, QObject* parent = nullptr,
+            QUrl oauthEndpoint = QUrl("https://github.com"));
     ~License() override;
     [[nodiscard]] static QJsonObject distributionProduct();
+    [[nodiscard]] static QString storageDirectory();
     [[nodiscard]] static bool directDistribution();
     [[nodiscard]] static QUrl purchaseUrl();
     [[nodiscard]] bool configured() const { return directDistribution() && !product_.isEmpty(); }
     [[nodiscard]] bool busy() const { return busy_; }
     [[nodiscard]] bool active() const;
-    [[nodiscard]] bool pending() const { return record_.contains("pending"); }
-    [[nodiscard]] bool recoveryNeeded() const;
+    [[nodiscard]] bool signedIn() const { return !record_.value("token").toString().isEmpty(); }
+    [[nodiscard]] bool pending() const { return !deviceCode_.isEmpty(); }
     [[nodiscard]] QString status() const { return status_; }
-    [[nodiscard]] QString supportReference() const;
+    [[nodiscard]] QString account() const { return record_.value("login").toString(); }
+    [[nodiscard]] QString userCode() const { return userCode_; }
+    [[nodiscard]] QUrl verificationUrl() const { return verificationUrl_; }
     [[nodiscard]] QDateTime expiresAt() const;
-    // Reads the existing receipt and checks it online. Repeating activation of
-    // a known instance validates it instead of consuming another device slot.
+    Q_INVOKABLE bool signIn();
+    Q_INVOKABLE bool cancelSignIn();
+    Q_INVOKABLE bool signOut();
     Q_INVOKABLE bool refresh();
-    // Also called when the app resumes; elapsed offline time does not delay a
-    // due check, and focus changes never create extra provider requests.
+    // Also used on resume. Polling honors GitHub's interval, even if called often.
     bool refreshIfDue();
-    Q_INVOKABLE bool activate(const QString& key);
-    Q_INVOKABLE bool deactivate();
-    // Use only after manual support released an uncertain or invalid device slot.
-    // A still-valid activation and all app preferences remain untouched.
-    Q_INVOKABLE bool resetActivation();
 signals:
     void changed();
+    void authorizationReady();
 private:
-    enum class Action { Check, Activate, Deactivate, Reset };
-    bool begin(Action action, QString key = {});
-    void read(Action action, const QString& key, const QByteArray& sealed);
-    void request(const QString& action, const QString& key, const QString& instance,
-                 std::function<void(QJsonObject, bool)> completion);
-    void validate(const QString& key, const QString& instance, bool activation);
-    [[nodiscard]] QJsonObject receipt(const QJsonObject& response, const QString& key,
-                                      const QString& instance, bool activated) const;
+    enum class Action { Check, SignIn, SignOut };
+    bool begin(Action action);
+    void read(Action action, const QByteArray& sealed);
+    void request(const QUrl& url, const QJsonObject& payload, bool authenticated,
+                 std::function<void(QJsonObject, int)> completion);
+    void startAuthorization();
+    void pollAuthorization();
+    bool acceptToken(const QJsonObject& response);
+    void refreshToken();
+    void checkPage(const QString& cursor = {}, bool accountOnly = false);
+    void failCheck();
+    [[nodiscard]] QJsonObject policy() const;
     bool save(const QJsonObject& record);
     void finish(QString status, bool transient = false);
     void schedule();
     [[nodiscard]] qint64 now() const;
+    [[nodiscard]] qint64 usableUntil() const;
     QString directory_;
     QJsonObject product_;
-    QUrl endpoint_;
+    QUrl endpoint_, oauthEndpoint_;
     QByteArray storageKey_;
     QString identityFile_, receiptIdentityFile_;
     QByteArray suppliedStorageKey_;
@@ -80,12 +88,15 @@ private:
     QLockFile lock_;
     QNetworkAccessManager network_;
     QTimer timer_;
-    QJsonObject record_;
-    QJsonObject persisted_;
-    QString status_;
-    bool busy_ = false;
-    bool storageHealthy_ = true;
-    bool unsaved_ = false;
-    qint64 nextCheck_ = 0;
-    int failures_ = 0;
+    QJsonObject record_, persisted_, viewer_;
+    QHash<QString, QJsonObject> events_;
+    QSet<QString> cursors_;
+    QString status_, deviceCode_, userCode_;
+    QUrl verificationUrl_;
+    bool rotated_ = false;
+    bool busy_ = false, storageHealthy_ = true, unsaved_ = false, contributor_ = false;
+    qint64 retryAfter_ = 0;
+    qint64 nextCheck_ = 0, authorizationExpires_ = 0, nextPoll_ = 0;
+    int failures_ = 0, pollInterval_ = 5000;
+    quint64 generation_ = 0;
 };

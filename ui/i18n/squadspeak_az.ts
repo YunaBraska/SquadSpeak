@@ -637,10 +637,6 @@
             <translation>Kanal mövcud deyil</translation>
         </message>
         <message>
-            <source>Join voice</source>
-            <translation>Səsə qoşul</translation>
-        </message>
-        <message>
             <source>System (automatic)</source>
             <translation>Sistem (avtomatik)</translation>
         </message>
@@ -873,10 +869,6 @@
             <translation>Avtomatik qoşulma</translation>
         </message>
         <message>
-            <source>Leave channel</source>
-            <translation>Kanalı tərk edin</translation>
-        </message>
-        <message>
             <source>Stream URL</source>
             <translation>Yayım URL-i</translation>
         </message>
@@ -1093,48 +1085,16 @@
             <translation>Cihaz ID-si</translation>
         </message>
         <message>
-            <source>Activate</source>
-            <translation>Aktivləşdirin</translation>
-        </message>
-        <message>
-            <source>Buy annual pass</source>
-            <translation>İllik bilet alın</translation>
-        </message>
-        <message>
             <source>Check now</source>
             <translation>İndi yoxlayın</translation>
-        </message>
-        <message>
-            <source>Deactivate</source>
-            <translation>Deaktiv edin</translation>
         </message>
         <message>
             <source>Free version</source>
             <translation>Pulsuz versiya</translation>
         </message>
         <message>
-            <source>License key</source>
-            <translation>Lisenziya açarı</translation>
-        </message>
-        <message>
             <source>Not available yet</source>
             <translation>Hələ mövcud deyil</translation>
-        </message>
-        <message>
-            <source>Reset</source>
-            <translation>Sıfırlayın</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot.</source>
-            <translation>Yalnız dəstək cihaz yuvasını buraxdıqdan sonra sıfırlayın.</translation>
-        </message>
-        <message>
-            <source>Resolve activation</source>
-            <translation>Aktivləşdirməni həll edin</translation>
-        </message>
-        <message>
-            <source>Support reference</source>
-            <translation>Dəstək arayışı</translation>
         </message>
         <message>
             <source>Supporter</source>
@@ -1200,7 +1160,35 @@
             <source>App audio</source>
             <translation>Tətbiq səsi</translation>
         </message>
-</context>
+        <message>
+            <source>Account: %1</source>
+            <translation>Hesab: %1</translation>
+        </message>
+        <message>
+            <source>Signed in as %1</source>
+            <translation>%1 kimi daxil olub</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub</source>
+            <translation>GitHub ilə daxil olun</translation>
+        </message>
+        <message>
+            <source>Verification code</source>
+            <translation>Doğrulama kodu</translation>
+        </message>
+        <message>
+            <source>Open GitHub</source>
+            <translation>GitHub-ı açın</translation>
+        </message>
+        <message>
+            <source>Sign out</source>
+            <translation>Çıxın</translation>
+        </message>
+        <message>
+            <source>This device</source>
+            <translation>Bu cihaz</translation>
+        </message>
+    </context>
     <context>
         <name>ChatContent</name>
         <message>
@@ -1417,10 +1405,6 @@
     </context>
     <context>
         <name>LocalChannel</name>
-        <message>
-            <source>Encrypted join failed: %1</source>
-            <translation>Şifrələnmiş birləşmə uğursuz oldu: %1</translation>
-        </message>
         <message>
             <source>Host is not responding. Reconnecting.</source>
             <translation>Ev sahibi cavab vermir. Yenidən qoşulur.</translation>
@@ -2613,40 +2597,32 @@
     <context>
         <name>License</name>
         <message>
-            <source>Activation was declined. Check your key and available device slots.</source>
-            <translation>Aktivləşdirmə rədd edildi. Açarınızı və mövcud cihaz yuvalarını yoxlayın.</translation>
-        </message>
-        <message>
-            <source>An activation is unresolved. Contact support before trying again.</source>
-            <translation>Aktivləşdirmə həll olunmayıb. Yenidən cəhd etməzdən əvvəl dəstək ilə əlaqə saxlayın.</translation>
-        </message>
-        <message>
-            <source>Deactivation was declined. Contact support.</source>
-            <translation>Deaktivasiya rədd edildi. Dəstək ilə əlaqə saxlayın.</translation>
-        </message>
-        <message>
-            <source>Enter a valid license key.</source>
-            <translation>Etibarlı lisenziya açarını daxil edin.</translation>
-        </message>
-        <message>
             <source>License storage is busy or unavailable.</source>
             <translation>Lisenziya yaddaşı məşğuldur və ya əlçatan deyil.</translation>
         </message>
         <message>
             <source>License storage is unavailable.</source>
-            <translation>Lisenziya yaddaşı mövcud deyil.</translation>
+            <translation>Lisenziya yaddaşı əlçatan deyil.</translation>
         </message>
         <message>
-            <source>The license could not be checked. Your confirmed expiry is unchanged.</source>
-            <translation>Lisenziya yoxlanıla bilmədi. Təsdiqlənmiş son istifadə müddətiniz dəyişməyib.</translation>
+            <source>Sign-in expired. Try again.</source>
+            <translation>Daxil olma müddəti bitdi. Yenidən cəhd edin.</translation>
         </message>
         <message>
-            <source>The license or device activation is no longer valid.</source>
-            <translation>Lisenziya və ya cihazın aktivləşdirilməsi artıq etibarlı deyil.</translation>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>GitHub-a daxil olmaq mümkün deyil. Yenidən cəhd edin.</translation>
         </message>
         <message>
-            <source>The license response does not match this annual pass.</source>
-            <translation>Lisenziya cavabı bu illik keçidə uyğun gəlmir.</translation>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>GitHub-a giriş tamamlanmadı. Yenidən cəhd edin.</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>GitHub yoxlanıla bilmədi. Oflayn giriş ən çox yeddi gün davam edir.</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>GitHub ilə yenidən daxil olun.</translation>
         </message>
     </context>
     <context>
@@ -2658,10 +2634,6 @@
         <message>
             <source>The shared window was closed. Select a source to start again.</source>
             <translation>Paylaşılan pəncərə bağlandı. Yenidən başlamaq üçün mənbə seçin.</translation>
-        </message>
-        <message>
-            <source>Screen sharing requires an active Supporter pass on the owning host.</source>
-            <translation>Ekran paylaşımı kanala sahib hostda aktiv Supporter keçidi tələb edir.</translation>
         </message>
         <message>
             <source>The selected screen is no longer available.</source>
@@ -2705,6 +2677,10 @@
         <message>
             <source>Screen stream</source>
             <translation>Ekran axını</translation>
+        </message>
+        <message>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
         </message>
     </context>
     <context>
@@ -2973,10 +2949,6 @@
             <translation>Qrafik interfeyssiz SquadSpeak yerli kanal hostu</translation>
         </message>
         <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>Parametrlərin üstünlük sırası: arqumentlər &gt; mühit &gt; xüsusiyyətlər &gt; serverin saxlanmış dəyərləri.</translation>
-        </message>
-        <message>
             <source>Environment variables (SQUADSPEAK_ prefix):</source>
             <translation>Mühit dəyişənləri (SQUADSPEAK_ prefiksi):</translation>
         </message>
@@ -3031,26 +3003,6 @@
         <message>
             <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
             <translation>status, configure, password, admission, history, chat və radio əmrləri üçün öz kanalının əlavə ID-si; standart olaraq əsas kanal istifadə edilir.</translation>
-        </message>
-        <message>
-            <source>License action must be status, activate, refresh, deactivate or reset.</source>
-            <translation>Lisenziya əməliyyatı status, activate, refresh, deactivate və ya reset olmalıdır.</translation>
-        </message>
-        <message>
-            <source>A license operation is in progress.</source>
-            <translation>Lisenziya əməliyyatı davam edir.</translation>
-        </message>
-        <message>
-            <source>Supporter activation is unavailable in this build.</source>
-            <translation>Bu versiyada Supporter aktivləşdirilməsi mövcud deyil.</translation>
-        </message>
-        <message>
-            <source>A license key is required.</source>
-            <translation>Lisenziya açarı tələb olunur.</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot. Set confirmed=true to proceed.</source>
-            <translation>Yalnız dəstək xidməti cihaz yerini azad etdikdən sonra sıfırlayın. Davam etmək üçün confirmed=true təyin edin.</translation>
         </message>
         <message>
             <source>Channel action must be list, add or remove.</source>
@@ -3231,6 +3183,22 @@
         <message>
             <source>SquadSpeak headless could not start: %1</source>
             <translation>Qrafik interfeyssiz SquadSpeak işə salına bilmədi: %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>Dəstəkçi hərəkəti status, giriş, yeniləmə, çıxış və ya ləğv olmalıdır. sign-in refresh sign-out cancel</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>Dəstəkçi əməliyyatı davam edir.</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>Bu quruluşda dəstəkçi girişi mümkün deyil.</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>Parametrlərin üstünlüyü: arqumentlər &gt; mühit &gt; xassələr &gt; saxlanılan server dəyərləri.</translation>
         </message>
     </context>
     <context>

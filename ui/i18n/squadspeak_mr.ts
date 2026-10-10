@@ -637,10 +637,6 @@
             <translation>चॅनल अनुपलब्ध</translation>
         </message>
         <message>
-            <source>Join voice</source>
-            <translation>आवाजात सामील व्हा</translation>
-        </message>
-        <message>
             <source>System (automatic)</source>
             <translation>प्रणाली (स्वयंचलित)</translation>
         </message>
@@ -873,10 +869,6 @@
             <translation>स्वयं-सामील</translation>
         </message>
         <message>
-            <source>Leave channel</source>
-            <translation>चॅनेल सोडा</translation>
-        </message>
-        <message>
             <source>Stream URL</source>
             <translation>प्रवाह URL</translation>
         </message>
@@ -1093,48 +1085,16 @@
             <translation>डिव्हाइस आयडी</translation>
         </message>
         <message>
-            <source>Activate</source>
-            <translation>सक्रिय करा</translation>
-        </message>
-        <message>
-            <source>Buy annual pass</source>
-            <translation>वार्षिक पास खरेदी करा</translation>
-        </message>
-        <message>
             <source>Check now</source>
             <translation>आता तपासा</translation>
-        </message>
-        <message>
-            <source>Deactivate</source>
-            <translation>निष्क्रिय करा</translation>
         </message>
         <message>
             <source>Free version</source>
             <translation>विनामूल्य आवृत्ती</translation>
         </message>
         <message>
-            <source>License key</source>
-            <translation>परवाना की</translation>
-        </message>
-        <message>
             <source>Not available yet</source>
             <translation>अद्याप उपलब्ध नाही</translation>
-        </message>
-        <message>
-            <source>Reset</source>
-            <translation>रीसेट करा</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot.</source>
-            <translation>सपोर्टने डिव्हाइस स्लॉट रिलीझ केल्यानंतरच रीसेट करा.</translation>
-        </message>
-        <message>
-            <source>Resolve activation</source>
-            <translation>सक्रियतेचे निराकरण करा</translation>
-        </message>
-        <message>
-            <source>Support reference</source>
-            <translation>समर्थन संदर्भ</translation>
         </message>
         <message>
             <source>Supporter</source>
@@ -1200,7 +1160,35 @@
             <source>App audio</source>
             <translation>ॲपचा ऑडिओ</translation>
         </message>
-</context>
+        <message>
+            <source>Account: %1</source>
+            <translation>खाते: %1</translation>
+        </message>
+        <message>
+            <source>Signed in as %1</source>
+            <translation>%1 म्हणून साइन इन केले</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub</source>
+            <translation>GitHub सह साइन इन करा</translation>
+        </message>
+        <message>
+            <source>Verification code</source>
+            <translation>सत्यापन कोड</translation>
+        </message>
+        <message>
+            <source>Open GitHub</source>
+            <translation>GitHub उघडा</translation>
+        </message>
+        <message>
+            <source>Sign out</source>
+            <translation>साइन आउट करा</translation>
+        </message>
+        <message>
+            <source>This device</source>
+            <translation>हे उपकरण</translation>
+        </message>
+    </context>
     <context>
         <name>ChatContent</name>
         <message>
@@ -1417,10 +1405,6 @@
     </context>
     <context>
         <name>LocalChannel</name>
-        <message>
-            <source>Encrypted join failed: %1</source>
-            <translation>एनक्रिप्टेड सामील अयशस्वी: %1</translation>
-        </message>
         <message>
             <source>Host is not responding. Reconnecting.</source>
             <translation>होस्ट प्रतिसाद देत नाही. पुन्हा कनेक्ट करत आहे.</translation>
@@ -2613,22 +2597,6 @@
     <context>
         <name>License</name>
         <message>
-            <source>Activation was declined. Check your key and available device slots.</source>
-            <translation>सक्रियकरण नाकारले गेले. तुमची की आणि उपलब्ध डिव्हाइस स्लॉट तपासा.</translation>
-        </message>
-        <message>
-            <source>An activation is unresolved. Contact support before trying again.</source>
-            <translation>सक्रियकरण निराकरण झाले नाही. पुन्हा प्रयत्न करण्यापूर्वी समर्थनाशी संपर्क साधा.</translation>
-        </message>
-        <message>
-            <source>Deactivation was declined. Contact support.</source>
-            <translation>निष्क्रियीकरण नाकारण्यात आले. सपोर्टशी संपर्क साधा.</translation>
-        </message>
-        <message>
-            <source>Enter a valid license key.</source>
-            <translation>वैध परवाना की प्रविष्ट करा.</translation>
-        </message>
-        <message>
             <source>License storage is busy or unavailable.</source>
             <translation>परवाना संचय व्यस्त आहे किंवा अनुपलब्ध आहे.</translation>
         </message>
@@ -2637,16 +2605,24 @@
             <translation>परवाना संचयन अनुपलब्ध आहे.</translation>
         </message>
         <message>
-            <source>The license could not be checked. Your confirmed expiry is unchanged.</source>
-            <translation>परवाना तपासता आला नाही. तुमची पुष्टी केलेली कालबाह्यता अपरिवर्तित आहे.</translation>
+            <source>Sign-in expired. Try again.</source>
+            <translation>साइन-इन कालबाह्य झाले. पुन्हा प्रयत्न करा.</translation>
         </message>
         <message>
-            <source>The license or device activation is no longer valid.</source>
-            <translation>परवाना किंवा डिव्हाइस सक्रियकरण यापुढे वैध नाही.</translation>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>GitHub साइन-इन अनुपलब्ध आहे. पुन्हा प्रयत्न करा.</translation>
         </message>
         <message>
-            <source>The license response does not match this annual pass.</source>
-            <translation>परवाना प्रतिसाद या वार्षिक पासशी जुळत नाही.</translation>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>GitHub साइन-इन पूर्ण झाले नाही. पुन्हा प्रयत्न करा.</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>GitHub तपासता आले नाही. ऑफलाइन प्रवेश जास्तीत जास्त सात दिवस टिकतो.</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>GitHub सह पुन्हा साइन इन करा.</translation>
         </message>
     </context>
     <context>
@@ -2658,10 +2634,6 @@
         <message>
             <source>The shared window was closed. Select a source to start again.</source>
             <translation>सामायिक विंडो बंद होती. पुन्हा सुरू करण्यासाठी स्रोत निवडा.</translation>
-        </message>
-        <message>
-            <source>Screen sharing requires an active Supporter pass on the owning host.</source>
-            <translation>स्क्रीन शेअरिंगसाठी चॅनेलच्या मालक होस्टकडे सक्रिय Supporter पास आवश्यक आहे.</translation>
         </message>
         <message>
             <source>The selected screen is no longer available.</source>
@@ -2705,6 +2677,10 @@
         <message>
             <source>Screen stream</source>
             <translation>स्क्रीन प्रवाह</translation>
+        </message>
+        <message>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
         </message>
     </context>
     <context>
@@ -2973,10 +2949,6 @@
             <translation>SquadSpeak हेडलेस स्थानिक चॅनेल होस्ट</translation>
         </message>
         <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>सेटिंग प्राधान्य: आर्ग्युमेंट &gt; वातावरण &gt; गुणधर्म &gt; जतन केलेली सर्व्हर मूल्ये.</translation>
-        </message>
-        <message>
             <source>Environment variables (SQUADSPEAK_ prefix):</source>
             <translation>वातावरण चल (SQUADSPEAK_ उपसर्ग):</translation>
         </message>
@@ -3031,26 +3003,6 @@
         <message>
             <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
             <translation>status, configure, password, admission, history, chat आणि radio कमांडसाठी पर्यायी स्वतःचा चॅनेल ID; डीफॉल्ट प्राथमिक चॅनेल.</translation>
-        </message>
-        <message>
-            <source>License action must be status, activate, refresh, deactivate or reset.</source>
-            <translation>परवाना कृती status, activate, refresh, deactivate किंवा reset असणे आवश्यक आहे.</translation>
-        </message>
-        <message>
-            <source>A license operation is in progress.</source>
-            <translation>परवाना प्रक्रिया सुरू आहे.</translation>
-        </message>
-        <message>
-            <source>Supporter activation is unavailable in this build.</source>
-            <translation>या बिल्डमध्ये Supporter सक्रिय करणे उपलब्ध नाही.</translation>
-        </message>
-        <message>
-            <source>A license key is required.</source>
-            <translation>परवाना की आवश्यक आहे.</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot. Set confirmed=true to proceed.</source>
-            <translation>सपोर्टने डिव्हाइस स्लॉट मोकळा केल्यानंतरच रीसेट करा. पुढे जाण्यासाठी confirmed=true सेट करा.</translation>
         </message>
         <message>
             <source>Channel action must be list, add or remove.</source>
@@ -3231,6 +3183,22 @@
         <message>
             <source>SquadSpeak headless could not start: %1</source>
             <translation>SquadSpeak हेडलेस होस्ट सुरू करता आला नाही: %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>सपोर्टर ॲक्शन स्टेटस, साइन-इन, रिफ्रेश, साइन-आउट किंवा रद्द करणे आवश्यक आहे. status sign-in refresh sign-out cancel</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>सपोर्टर ऑपरेशन चालू आहे.</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>या बिल्डमध्ये सपोर्टर ऍक्सेस उपलब्ध नाही.</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>सेटिंग्ज प्राधान्य: वितर्क &gt; वातावरण &gt; गुणधर्म &gt; सेव्ह केलेली सर्व्हर मूल्ये.</translation>
         </message>
     </context>
     <context>

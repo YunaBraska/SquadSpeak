@@ -637,10 +637,6 @@
             <translation>Kanali i padisponueshëm</translation>
         </message>
         <message>
-            <source>Join voice</source>
-            <translation>Bashkohu me kanalin zanor</translation>
-        </message>
-        <message>
             <source>System (automatic)</source>
             <translation>Sistemi (automatik)</translation>
         </message>
@@ -873,10 +869,6 @@
             <translation>Bashkohu automatikisht</translation>
         </message>
         <message>
-            <source>Leave channel</source>
-            <translation>Largohu nga kanali</translation>
-        </message>
-        <message>
             <source>Stream URL</source>
             <translation>URL e transmetimit</translation>
         </message>
@@ -1093,48 +1085,16 @@
             <translation>ID e pajisjes</translation>
         </message>
         <message>
-            <source>Activate</source>
-            <translation>Aktivizo</translation>
-        </message>
-        <message>
-            <source>Buy annual pass</source>
-            <translation>Blini leje vjetore</translation>
-        </message>
-        <message>
             <source>Check now</source>
             <translation>Kontrollo tani</translation>
-        </message>
-        <message>
-            <source>Deactivate</source>
-            <translation>Çaktivizo</translation>
         </message>
         <message>
             <source>Free version</source>
             <translation>Version falas</translation>
         </message>
         <message>
-            <source>License key</source>
-            <translation>Çelësi i licencës</translation>
-        </message>
-        <message>
             <source>Not available yet</source>
             <translation>Nuk disponohet ende</translation>
-        </message>
-        <message>
-            <source>Reset</source>
-            <translation>Rivendos</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot.</source>
-            <translation>Rivendosni vetëm pasi mbështetja të ketë lëshuar folenë e pajisjes.</translation>
-        </message>
-        <message>
-            <source>Resolve activation</source>
-            <translation>Zgjidh aktivizimin</translation>
-        </message>
-        <message>
-            <source>Support reference</source>
-            <translation>Referenca mbështetëse</translation>
         </message>
         <message>
             <source>Supporter</source>
@@ -1200,7 +1160,35 @@
             <source>App audio</source>
             <translation>Audioja e aplikacionit</translation>
         </message>
-</context>
+        <message>
+            <source>Account: %1</source>
+            <translation>Llogaria: % 1 %1</translation>
+        </message>
+        <message>
+            <source>Signed in as %1</source>
+            <translation>Identifikuar si % 1 %1</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub</source>
+            <translation>Hyni me GitHub</translation>
+        </message>
+        <message>
+            <source>Verification code</source>
+            <translation>Kodi i verifikimit</translation>
+        </message>
+        <message>
+            <source>Open GitHub</source>
+            <translation>Hapni GitHub</translation>
+        </message>
+        <message>
+            <source>Sign out</source>
+            <translation>Dilni</translation>
+        </message>
+        <message>
+            <source>This device</source>
+            <translation>Kjo pajisje</translation>
+        </message>
+    </context>
     <context>
         <name>ChatContent</name>
         <message>
@@ -1417,10 +1405,6 @@
     </context>
     <context>
         <name>LocalChannel</name>
-        <message>
-            <source>Encrypted join failed: %1</source>
-            <translation>Bashkimi i koduar dështoi: %1</translation>
-        </message>
         <message>
             <source>Host is not responding. Reconnecting.</source>
             <translation>Pritësi nuk po përgjigjet. Rilidhja.</translation>
@@ -2613,40 +2597,32 @@
     <context>
         <name>License</name>
         <message>
-            <source>Activation was declined. Check your key and available device slots.</source>
-            <translation>Aktivizimi u refuzua. Kontrolloni çelësin dhe hapësirat e disponueshme të pajisjes.</translation>
-        </message>
-        <message>
-            <source>An activation is unresolved. Contact support before trying again.</source>
-            <translation>Një aktivizim është i pazgjidhur. Kontaktoni me mbështetjen përpara se të provoni përsëri.</translation>
-        </message>
-        <message>
-            <source>Deactivation was declined. Contact support.</source>
-            <translation>Çaktivizimi u refuzua. Kontaktoni me mbështetjen.</translation>
-        </message>
-        <message>
-            <source>Enter a valid license key.</source>
-            <translation>Futni një çelës të vlefshëm licence.</translation>
-        </message>
-        <message>
             <source>License storage is busy or unavailable.</source>
             <translation>Hapësira ruajtëse e licencës është e zënë ose e padisponueshme.</translation>
         </message>
         <message>
             <source>License storage is unavailable.</source>
-            <translation>Ruajtja e licencës nuk është e disponueshme.</translation>
+            <translation>Hapësira ruajtëse e licencës është e padisponueshme.</translation>
         </message>
         <message>
-            <source>The license could not be checked. Your confirmed expiry is unchanged.</source>
-            <translation>Licenca nuk mund të kontrollohej. Skadimi juaj i konfirmuar është i pandryshuar.</translation>
+            <source>Sign-in expired. Try again.</source>
+            <translation>Identifikimi ka skaduar. Provo sërish.</translation>
         </message>
         <message>
-            <source>The license or device activation is no longer valid.</source>
-            <translation>Licenca ose aktivizimi i pajisjes nuk është më i vlefshëm.</translation>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>Identifikimi në GitHub është i padisponueshëm. Provo sërish.</translation>
         </message>
         <message>
-            <source>The license response does not match this annual pass.</source>
-            <translation>Përgjigja e licencës nuk përputhet me këtë leje vjetore.</translation>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>Identifikimi në GitHub nuk përfundoi. Provo sërish.</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>GitHub nuk mund të kontrollohej. Qasja jashtë linje zgjat më së shumti shtatë ditë.</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>Hyni përsëri me GitHub.</translation>
         </message>
     </context>
     <context>
@@ -2658,10 +2634,6 @@
         <message>
             <source>The shared window was closed. Select a source to start again.</source>
             <translation>Dritarja e përbashkët u mbyll. Zgjidhni një burim për të filluar përsëri.</translation>
-        </message>
-        <message>
-            <source>Screen sharing requires an active Supporter pass on the owning host.</source>
-            <translation>Ndarja e ekranit kërkon një licencë aktive Supporter në hostin pronar.</translation>
         </message>
         <message>
             <source>The selected screen is no longer available.</source>
@@ -2705,6 +2677,10 @@
         <message>
             <source>Screen stream</source>
             <translation>Transmetimi i ekranit</translation>
+        </message>
+        <message>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
         </message>
     </context>
     <context>
@@ -2973,10 +2949,6 @@
             <translation>Host lokal kanali SquadSpeak pa ndërfaqe grafike</translation>
         </message>
         <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>Përparësia e cilësimeve: argumentet &gt; mjedisi &gt; vetitë &gt; vlerat e ruajtura të serverit.</translation>
-        </message>
-        <message>
             <source>Environment variables (SQUADSPEAK_ prefix):</source>
             <translation>Ndryshoret e mjedisit (prefiksi SQUADSPEAK_):</translation>
         </message>
@@ -3031,26 +3003,6 @@
         <message>
             <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
             <translation>ID opsionale e kanalit tënd për komandat status, configure, password, admission, history, chat dhe radio; si parazgjedhje përdoret kanali kryesor.</translation>
-        </message>
-        <message>
-            <source>License action must be status, activate, refresh, deactivate or reset.</source>
-            <translation>Veprimi i licencës duhet të jetë status, activate, refresh, deactivate ose reset.</translation>
-        </message>
-        <message>
-            <source>A license operation is in progress.</source>
-            <translation>Një veprim licence është në proces.</translation>
-        </message>
-        <message>
-            <source>Supporter activation is unavailable in this build.</source>
-            <translation>Aktivizimi Supporter nuk ofrohet në këtë version.</translation>
-        </message>
-        <message>
-            <source>A license key is required.</source>
-            <translation>Nevojitet çelës licence.</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot. Set confirmed=true to proceed.</source>
-            <translation>Rivendose vetëm pasi mbështetja të ketë liruar vendin e pajisjes. Vendos confirmed=true për të vazhduar.</translation>
         </message>
         <message>
             <source>Channel action must be list, add or remove.</source>
@@ -3231,6 +3183,22 @@
         <message>
             <source>SquadSpeak headless could not start: %1</source>
             <translation>SquadSpeak pa ndërfaqe grafike nuk mund të niset: %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>Veprimi i mbështetësit duhet të jetë statusi, identifikimi, rifreskimi, dalja ose anulimi. status sign-in refresh sign-out cancel</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>Një operacion mbështetës është në proces.</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>Qasja e mbështetësit nuk ofrohet në këtë version.</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>Përparësia e cilësimeve: argumentet &gt; mjedisi &gt; vetitë &gt; vlerat e ruajtura të serverit.</translation>
         </message>
     </context>
     <context>

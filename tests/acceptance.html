@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="de">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'">
+<title>SquadSpeak - kurzer Gerätetest</title>
+<style>
+:root { color-scheme: light dark; font: 16px/1.55 system-ui; }
+body { max-width: 720px; margin: 32px auto; padding: 0 20px 32px; }
+h1 { font-size: 24px; } h2, summary { font-size: 18px; font-weight: 600; }
+section, details { border-top: 1px solid #8886; padding: 20px 0; }
+summary { cursor: pointer; } li { margin: 8px 0; }
+button, textarea, select, input { font: inherit; border: 1px solid #888; border-radius: 6px; padding: 8px 12px; }
+input { box-sizing: border-box; width: 100%; }
+button { cursor: pointer; } textarea { display: block; box-sizing: border-box; width: 100%; min-height: 60px; }
+label { display: block; margin: 12px 0 4px; } select { max-width: 100%; }
+:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+#setup, #build, .history { overflow-wrap: anywhere; }
+#message { min-height: 24px; } .history { font-size: 14px; }
+</style>
+<h1>Kurzer Gerätetest</h1>
+<p id="build"></p>
+<label for="setup">Dein Testgerät: Windows-/macOS-Version, Computer, Mikrofon und Kopfhörer</label>
+<input id="setup" maxlength="500" placeholder="Vor dem Test eintragen; Modellnamen genügen, keine Seriennummern">
+<p>Etwa drei Minuten für die Hörprobe und den Gerätewechsel; beim ersten Mal zusätzlich Zeit für Einrichtung und Freigaben einplanen. Du brauchst keine Konsole.
+   Nur offene Schritte prüfen, Ergebnis wählen und unten speichern.
+   Ist etwas nicht vorbereitet oder fehlt ein Gerät: "Nicht möglich" wählen, nicht selbst lange suchen.</p>
+<details>
+  <summary>Vorbereitung und Grenzen</summary>
+  <p id="assisted">Die Testbetreuung stellt die passende App bereit und verbindet A und B mit getrennten Testprofilen.
+     A nimmt auf, B gibt über Kopfhörer wieder. Beide Mikrofone beginnen stumm.
+     Normale Chats und Einstellungen bleiben unberührt. Betriebssystemfreigaben dürfen einmal nötig sein.</p>
+  <p>Der Bogen nimmt nichts auf und sendet nichts ins Internet. Notizen werden nur in der heruntergeladenen Datei gespeichert.
+     Trage deine tatsächlichen Geräte oben ein. Eine Änderung setzt vorhandene Bewertungen zurück.</p>
+  <p>Dieser kurze Test beweist keine Raum-Echofreiheit, 64 gleichzeitigen Sprecher oder 4K-Dauerleistung.
+     Last, Netzwerkstörungen und Messungen übernimmt die Testbetreuung automatisch.</p>
+</details>
+<details id="windows" hidden open>
+  <summary>Windows: allein einrichten</summary>
+  <ol>
+    <li>Das ganze ZIP mit "Alle extrahieren" entpacken. Im entpackten Ordner device-test die Datei Start.cmd doppelklicken. Sie öffnet diesen Bogen und die Einstellungen von Ari und Bea. Jeweils mit "Done" zur Channel-Ansicht wechseln. Es werden getrennte Testprofile verwendet.</li>
+    <li>Falls eine DLL fehlt, beide Apps schließen, bin/vc_redist.x64.exe starten und Start.cmd erneut öffnen. Falls Windows den Start blockiert: als "Nicht möglich" notieren und die Meldung fotografieren. Keine Sicherheitseinstellungen ausschalten.</li>
+    <li>In beiden Apps bleiben Mikrofon und Lautsprecher zunächst ausgeschaltet. Kopfhörer anschließen. Falls eine Mikrofonfreigabe erscheint, für diesen Test erlauben.</li>
+    <li>In Ari den eigenen Channel "Ari - local test" doppelklicken. In Bea über das Plus "Add a channel" öffnen, 127.0.0.1:48764 eingeben und "Add" wählen, danach den Suchdialog mit "Close" schließen. Dies umgeht nur die Netzwerksuche für diesen lokalen Hörtest.</li>
+    <li>Beas Anfrage in Ari mit "Allow" bestätigen. In Bea "Ari - local test" doppelklicken, um demselben Sprachchannel beizutreten.</li>
+    <li>Nur in Bea den Lautsprecher einschalten und in Settings &gt; Output deine Kopfhörer wählen. Beas Mikrofon bleibt stumm. Aris Lautsprecher bleibt aus. Erst bei der Hörprobe Aris Mikrofon einschalten.</li>
+  </ol>
+  <p>Wenn ein Schritt nicht klappt: dort aufhören, unten "Nicht möglich" oder "Problem" wählen und die Meldung notieren. Keine Fehlersuche am Wochenende erforderlich. Für einen neuen Versuch beide Apps über das Tray-Menü mit "Quit" beenden. Beim erneuten Start wird ihr letzter Zustand wiederhergestellt; vor der Hörprobe die Schalter kontrollieren.</p>
+  <p>Zum Abschluss Ergebnisse speichern und beide Apps mit "Quit" beenden. Zum Zurückgeben genügen die Ergebnisdatei und gegebenenfalls ein Screenshot. Bei einer Startstörung zusätzlich A/app.log und B/app.log aus device-test mitnehmen. Nicht die gesamten Profile senden: Sie enthalten lokale Geräteidentitäten.</p>
+</details>
+<main id="checks"></main>
+<button id="save" type="button">Ergebnisse speichern</button>
+<p id="message" role="status" aria-live="polite">Auch unvollständige Ergebnisse lassen sich speichern und später fortsetzen.</p>
+<details>
+  <summary>Mitgelieferte automatische Ergebnisse</summary>
+  <p>Dies sind die angegebenen Testberichte, keine vollständige Release-Freigabe. Frühere Gerätetests werden nicht als neue CI-Ergebnisse gezählt.</p>
+  <ul id="automated"></ul>
+</details>
+<script id="report" type="application/json">REPORT_DATA</script>
+<script>
+const report = JSON.parse(document.getElementById('report').textContent);
+const labels = {pending: 'Noch offen', pass: 'Funktioniert', fail: 'Problem', blocked: 'Nicht möglich'};
+let dirty = false;
+function element(tag, text) {
+    const node = document.createElement(tag);
+    if (text !== undefined) node.textContent = text;
+    return node;
+}
+const setup = document.getElementById('setup');
+setup.value = report.setup;
+const resetObservations = [];
+if (report.standaloneWindows) {
+    document.getElementById('windows').hidden = false;
+    document.getElementById('assisted').hidden = true;
+}
+document.getElementById('build').textContent = 'Bereitgestellte Version: ' + report.build;
+for (const check of report.checks) {
+    const section = element('details');
+    section.open = check.result !== 'pass';
+    const heading = element('summary');
+    const history = element('p'); history.className = 'history';
+    const update = () => {
+        heading.textContent = check.title + ' (' + check.minutes + ' Min.) - ' + labels[check.result];
+        history.textContent = check.checkedAt ? 'Beobachtung vom ' + new Date(check.checkedAt).toLocaleString()
+            + ', Version ' + check.testedBuild + '. Nur für dieses Setup und die unveränderten betroffenen Komponenten.' : '';
+    };
+    update();
+    const steps = element('ol');
+    for (const text of check.steps) steps.append(element('li', text));
+    const outcome = element('select'); outcome.id = check.id + '-result';
+    for (const [value, text] of Object.entries(labels)) {
+        const option = element('option', text); option.value = value; outcome.append(option);
+    }
+    outcome.value = check.result;
+    const resultLabel = element('label', 'Ergebnis'); resultLabel.htmlFor = outcome.id;
+    const note = element('textarea'); note.id = check.id + '-note'; note.value = check.note; note.maxLength = 2000;
+    const noteLabel = element('label', 'Notiz, falls etwas auffällt'); noteLabel.htmlFor = note.id;
+    resetObservations.push(() => {
+        check.result = 'pending'; check.checkedAt = ''; check.testedBuild = '';
+        outcome.value = 'pending'; section.open = true; update();
+    });
+    outcome.addEventListener('change', () => {
+        check.result = outcome.value;
+        check.checkedAt = outcome.value === 'pending' ? '' : new Date().toISOString();
+        check.testedBuild = outcome.value === 'pending' ? '' : report.build;
+        dirty = true; update();
+    });
+    note.addEventListener('input', () => { check.note = note.value; dirty = true; });
+    section.append(heading, history, steps, element('p', 'Erwartet: ' + check.expected), resultLabel, outcome, noteLabel, note);
+    document.getElementById('checks').append(section);
+}
+document.getElementById('checks').hidden = !report.setup.trim();
+setup.addEventListener('input', () => {
+    report.setup = setup.value;
+    for (const reset of resetObservations) reset();
+    document.getElementById('checks').hidden = !report.setup.trim();
+    dirty = true;
+});
+const automation = document.getElementById('automated');
+if (!report.automated.length) automation.append(element('li', 'Keine Testberichte beigefügt.'));
+for (const entry of report.automated) {
+    automation.append(element('li', entry.file + ': ' + entry.counts.pass + ' bestanden, '
+        + entry.counts.fail + ' fehlgeschlagen, ' + entry.counts.skipped + ' ausgelassen/unvollständig.'));
+}
+document.getElementById('save').addEventListener('click', () => {
+    const blob = new Blob([JSON.stringify(report, null, 2) + '\n'], {type: 'application/json'});
+    const url = URL.createObjectURL(blob);
+    const link = element('a'); link.href = url; link.download = 'squadspeak-device-check.json';
+    document.body.append(link); link.click(); link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    dirty = false;
+    document.getElementById('message').textContent = 'Die Datei squadspeak-device-check.json herunterladen und zum Auswerten mitnehmen. Nichts wird automatisch hochgeladen.';
+});
+window.addEventListener('beforeunload', event => {
+    if (dirty) { event.preventDefault(); event.returnValue = ''; }
+});
+</script>
+</html>

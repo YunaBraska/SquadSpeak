@@ -24,6 +24,31 @@ archive is included in the release dependency sources. This library also
 contains dr_wav (Copyright 2023 David Reid), under MIT-0; its license text is
 in QT-SBOM/licenses/MIT-0.txt. The Qt sources retain their LGPL/GPL notices.
 
+The same Linux build bundles an ABI-matching Qt Qml shared library rebuilt
+from the checksum-pinned Qt Declarative 6.10.2 source. cmake/qt-qml-gc.patch
+backports the upstream QML garbage-collector transition correction so a
+deadline-expired incremental collection still initializes its mark stack:
+https://github.com/qt/qtdeclarative/commit/cdbacb7ba78779fc1eecc05afae3a3a874623e6e
+The sweep correction preserves allocator free lists when destruction allocates
+new objects and fixes partitioning of growing chunk lists:
+https://github.com/qt/qtdeclarative/commit/f2e838e86cefd91577345e093edbbc0bbd1fd6cd
+It also retains the distribution's property-cache lifetime correction:
+https://github.com/qt/qtdeclarative/commit/1327fce7e500e3ae2e96ab89eaad7f1727ea77b1
+All desktop builds additionally apply cmake/qt-qml-runtime.patch to the exact
+Qt Qml source (6.10.2 on Linux, 6.11.3 SDK on macOS/Windows). The JIT correction
+preserves its accumulator across property-setter calls that return no value:
+https://github.com/qt/qtdeclarative/commit/4c1054b0f997f2977a54d42523856805b309db9a
+Local changes replace unaligned pointer dereferences in X86Assembler with
+byte copies, preserving machine-code representation without alignment UB.
+Instrumented Clang builds retain Qt's sanitizer link policy. Two call boundaries
+exclude Clang's function-type check: VME::exec calls JIT entries without compiler
+metadata, and resolveAttachedProperties invokes factories whose derived QObject
+return type Qt's QmlAttachedAccessor erases. This preserves the existing Qt ABI.
+AddressSanitizer and other undefined-behavior checks remain enabled there.
+The exact source archive and checksum are recorded in
+cmake/source_archives.json. This attribution records the source and patch;
+runtime validation remains part of the release test gate.
+
 Qt source and licensing:
 https://www.qt.io/licensing/
 https://www.qt.io/terms-conditions/

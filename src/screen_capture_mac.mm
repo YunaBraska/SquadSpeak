@@ -199,14 +199,14 @@ bool ScreenShare::updateNativeAudio() {
 void ScreenShare::pollNative() {
     auto* state = (__bridge SquadScreenCapture*)native_;
     if (!state) return;
-    if (!active()) { stop(); return; }
+    if (!capturing()) { stop(); return; }
     QImage frame;
     QString error;
     std::array<float, 960> samples{};
     bool hasAudio = false;
     {
         std::lock_guard lock(state->mutex);
-        state->wantsVideo = !captureHost_->screenTiers().isEmpty();
+        state->wantsVideo = !localSinks_.isEmpty() || (active() && !captureHost_->screenTiers().isEmpty());
         frame = std::move(state->image); error = std::move(state->error);
         if (audioEnabled_ && state->audio.size() >= samples.size()) {
             std::copy_n(state->audio.begin(), samples.size(), samples.begin());
@@ -224,7 +224,7 @@ void ScreenShare::pollNative() {
 
 void ScreenShare::checkNativeSource() {
     auto* state = (__bridge SquadScreenCapture*)native_;
-    if (!state || !active()) return;
+    if (!state || !capturing()) return;
     if (state->displayId && !CGDisplayIsActive(state->displayId)) {
         fail(tr("The shared screen was removed. Select a source to start again.")); return;
     }

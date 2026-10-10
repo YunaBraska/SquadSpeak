@@ -21,7 +21,7 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-ins
     libssl-dev libopus-dev libsamplerate0-dev libpulse-dev libsecret-1-dev \
     libavcodec-dev libavformat-dev libavutil-dev libswscale-dev libswresample-dev \
     qt6-base-dev qt6-base-private-dev qt6-declarative-dev qt6-declarative-private-dev \
-    qt6-multimedia-dev qt6-shadertools-dev qt6-tools-dev qt6-l10n-tools \
+    qt6-multimedia-dev qt6-shadertools-dev qt6-svg-private-dev qt6-tools-dev qt6-l10n-tools \
     qt6-image-formats-plugins qt6-translations-l10n libqt6sql6-sqlite \
     fonts-noto-core fonts-noto-cjk libfontconfig-dev \
     libx11-dev libxi-dev libxtst-dev xvfb xauth openbox dbus gnome-keyring pulseaudio pulseaudio-utils \

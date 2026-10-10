@@ -24,6 +24,7 @@
 
 namespace {
 Q_LOGGING_CATEGORY(mediaLog, "squadspeak.media", QtWarningMsg)
+Q_LOGGING_CATEGORY(connectionLog, "squadspeak.connection", QtWarningMsg)
 constexpr int maximumPendingPeers = 32;
 constexpr int maximumMediaParticipants = 64;
 constexpr std::array<int, 4> audioBitrates{32, 20, 12, 8};
@@ -201,6 +202,7 @@ LocalChannel::LocalChannel(VoiceSession& session, QString storageFile, std::opti
             throw std::runtime_error(tr("Channel permissions could not be read.").toStdString());
         QJsonParseError error;
         const auto document = QJsonDocument::fromJson(file.readAll(), &error);
+        file.close();
         const auto object = document.object();
         if (error.error != QJsonParseError::NoError || !document.isObject()
             || object.value("version").toInt() != 1 || !object.value("approved").isArray()
@@ -313,8 +315,8 @@ LocalChannel::LocalChannel(VoiceSession& session, QString storageFile, std::opti
     }
     passwordWorkers_.setMaxThreadCount(2);
     connect(&server_, &QSslServer::pendingConnectionAvailable, this, &LocalChannel::acceptConnections);
-    connect(&server_, &QSslServer::errorOccurred, this, [this](QSslSocket* socket, QAbstractSocket::SocketError) {
-        setStatus(tr("Encrypted join failed: %1").arg(socket->errorString()), false);
+    connect(&server_, &QSslServer::errorOccurred, this, [](QSslSocket* socket, QAbstractSocket::SocketError) {
+        qCDebug(connectionLog) << "Incoming TLS handshake ended:" << socket->errorString();
     });
     connect(&server_, &QSslServer::sslErrors, this, [](QSslSocket* socket, const QList<QSslError>& errors) {
         if (!TlsIdentity::peerId(socket->peerCertificate()).isEmpty() && acceptableCertificateErrors(errors))
@@ -438,7 +440,6 @@ LocalChannel::LocalChannel(VoiceSession& session, QString storageFile, std::opti
     connect(this, &LocalChannel::chatChanged, this, imageReady);
     connect(&session_, &VoiceSession::presenceChanged, this, changedView);
     connect(&session_, &VoiceSession::preferencesChanged, this, [this, previousSupporter = session_.supporterEnabled()]() mutable {
-        if (!session_.supporterEnabled()) setScreenSharing(false);
         if (previousSupporter != session_.supporterEnabled()) {
             previousSupporter = session_.supporterEnabled();
             for (auto* socket : peers_.keys()) sendChatKey(socket);
@@ -1215,6 +1216,10 @@ QVariantList LocalChannel::savedChannels() const {
         entry.insert("lifetimeDays", owner ? owner->messageLifetimeDays() : c && c->accepted ? c->messageLifetimeDays : 0);
         entry.insert("access", c ? c->access : QStringLiteral("saved"));
         entry.insert("members", c && c->accepted ? humanMembers(c->members) : QVariantList{});
+        auto bot = owner ? owner->hostBot() : QVariantMap{};
+        if (!owner && c && c->accepted) for (const auto& member : c->members)
+            if (member.toMap().value("music").toBool()) { bot = member.toMap(); break; }
+        entry.insert("music", bot.value("musicActive").toBool() && bot.value("musicState") == "playing");
         result.append(entry);
     }
     std::sort(result.begin(), result.end(), [](const QVariant& a, const QVariant& b) {
@@ -2472,6 +2477,8 @@ bool LocalChannel::setMusicState(const QString& name, const QString& state, bool
         && state != "reconnecting" && state != "unavailable"))) return false;
     if (musicName_ == name && musicState_ == state && musicActive_ == active) return true;
     musicName_ = name; musicState_ = state; musicActive_ = active;
+    emit hostsChanged();
+    if (service_) emit service_->hostsChanged();
     if (!active) musicRelay_.reset();
     if (hosting()) broadcastRoster();
     return true;

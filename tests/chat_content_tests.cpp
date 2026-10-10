@@ -5,8 +5,16 @@
 #include <QTemporaryDir>
 #include <QFile>
 #include <QFileInfo>
+#ifndef Q_OS_IOS
 #include <QProcess>
 #include <QProcessEnvironment>
+#endif
+#ifdef Q_OS_IOS
+#include <QFuture>
+#include <QSemaphore>
+#include <QThreadPool>
+#include <QtConcurrentRun>
+#endif
 #include <QTimer>
 #include <QTcpServer>
 #include <QTcpSocket>
@@ -14,7 +22,11 @@
 #include <QCryptographicHash>
 #include <QTextDocument>
 #include <QTextCursor>
+#include <QTextBlock>
+#include <QTextList>
+#include <QTextTable>
 #include <QFont>
+#include <QFontInfo>
 #include <QTest>
 #include <QClipboard>
 #include <QMimeData>
@@ -28,6 +40,9 @@ class ChatContentTests final : public QObject {
     Q_OBJECT
 private slots:
     void decoderTimeoutWaitsForProcessExit() {
+#ifdef Q_OS_IOS
+        QSKIP("The isolated image-worker subprocess is unavailable on iOS.");
+#else
         if (!qEnvironmentVariableIsSet("SQUAD_TEST_DECODER_TIMEOUT")) {
             QTemporaryDir folder;
             QVERIFY(folder.isValid());
@@ -70,7 +85,109 @@ private slots:
         QTest::qWait(100);
         QCOMPARE(completed, 1);
         QTRY_VERIFY(context.findChildren<QProcess*>().isEmpty());
+#endif
     }
+#ifdef Q_OS_IOS
+    void inProcessDecoderSurvivesOwnerDestructionAndReuse() {
+        QImage image(32, 24, QImage::Format_RGBA8888);
+        image.fill(QColor(30, 90, 160, 128));
+        QByteArray source;
+        QBuffer buffer(&source);
+        QVERIFY(buffer.open(QIODevice::WriteOnly));
+        QVERIFY(image.save(&buffer, "PNG"));
+
+        QObject owner;
+        QByteArray prepared;
+        QString error;
+        bool completed = false;
+        QVERIFY(ChatContent::prepare(source, &owner, [&](QByteArray bytes, QString failure) {
+            prepared = std::move(bytes);
+            error = std::move(failure);
+            completed = true;
+        }));
+        QTRY_VERIFY_WITH_TIMEOUT(completed, 10000);
+        QVERIFY2(error.isEmpty(), qPrintable(error));
+        QCOMPARE(ChatContent::sanitizedImageSize(prepared), image.size());
+
+        auto* shortLived = new QObject;
+        bool calledAfterOwnerDestruction = false;
+        QVERIFY(ChatContent::prepare(source, shortLived, [&](QByteArray, QString) {
+            calledAfterOwnerDestruction = true;
+        }));
+        delete shortLived;
+        QVERIFY(QThreadPool::globalInstance()->waitForDone(10000));
+        QCoreApplication::processEvents();
+        QVERIFY(!calledAfterOwnerDestruction);
+
+        prepared.clear();
+        error.clear();
+        completed = false;
+        QVERIFY(ChatContent::prepare(source, &owner, [&](QByteArray bytes, QString failure) {
+            prepared = std::move(bytes);
+            error = std::move(failure);
+            completed = true;
+        }));
+        QTRY_VERIFY_WITH_TIMEOUT(completed, 10000);
+        QVERIFY2(error.isEmpty(), qPrintable(error));
+        QCOMPARE(ChatContent::sanitizedImageSize(prepared), image.size());
+
+        auto* pool = QThreadPool::globalInstance();
+        const auto previousMax = pool->maxThreadCount();
+        pool->setMaxThreadCount(1);
+        QSemaphore entered;
+        QSemaphore release;
+        auto blocker = QtConcurrent::run([&] {
+            entered.release();
+            release.acquire();
+        });
+        bool released = false;
+        const auto restore = qScopeGuard([&] {
+            if (!released)
+                release.release();
+            blocker.waitForFinished();
+            pool->setMaxThreadCount(previousMax);
+        });
+        QVERIFY(entered.tryAcquire(1, 10000));
+        QObject queuedOwner;
+        int queuedCompletions = 0;
+        QString queuedError;
+        QVERIFY(ChatContent::prepare(source, &queuedOwner, [&](QByteArray bytes, QString failure) {
+            QVERIFY(bytes.isEmpty());
+            queuedError = std::move(failure);
+            ++queuedCompletions;
+        }));
+        bool rejectedCompleted = false;
+        QString rejectedError;
+        QVERIFY(!ChatContent::prepare(source, &queuedOwner, [&](QByteArray, QString failure) {
+            rejectedCompleted = true;
+            rejectedError = std::move(failure);
+        }));
+        QVERIFY(rejectedCompleted);
+        QVERIFY(!rejectedError.isEmpty());
+        QCOMPARE(queuedCompletions, 0);
+        QTRY_COMPARE_WITH_TIMEOUT(queuedCompletions, 1, 25000);
+        QCOMPARE(queuedError, ChatContent::tr("Image processing took too long."));
+        QVERIFY(!ChatContent::prepare(source, &queuedOwner, [](QByteArray bytes, QString failure) {
+            QVERIFY(bytes.isEmpty());
+            QVERIFY(!failure.isEmpty());
+        }));
+        release.release();
+        released = true;
+        blocker.waitForFinished();
+        QVERIFY(QThreadPool::globalInstance()->waitForDone(10000));
+        QCoreApplication::processEvents();
+        QCOMPARE(queuedCompletions, 1);
+        completed = false;
+        QVERIFY(ChatContent::prepare(source, &owner, [&](QByteArray bytes, QString failure) {
+            prepared = std::move(bytes);
+            error = std::move(failure);
+            completed = true;
+        }));
+        QTRY_VERIFY_WITH_TIMEOUT(completed, 10000);
+        QVERIFY2(error.isEmpty(), qPrintable(error));
+        QCOMPARE(ChatContent::sanitizedImageSize(prepared), image.size());
+    }
+#endif
     void imageFailuresUseSelectedLanguage_data() {
         QTest::addColumn<QString>("language");
         for (const auto* language : {"en", "de", "ar"}) QTest::newRow(language) << QString(language);
@@ -150,6 +267,168 @@ private slots:
         QVERIFY(rendered.toPlainText().contains("Titel")); QVERIFY(rendered.toPlainText().contains("<script>"));
         QVERIFY(!ChatContent::allowedLink(QUrl("https://user:password@example.org")));
         QVERIFY(!content.openLink("file:///private/test.png"));
+    }
+    void markdownCodeAndQuotesAreVisuallyDistinctWithoutChangingCopiedText_data() {
+        QTest::addColumn<QColor>("accent");
+        QTest::addColumn<QColor>("background");
+        QTest::newRow("dark") << QColor("#b69ae0") << QColor("#19171f");
+        QTest::newRow("light") << QColor("#7958b5") << QColor("#d9d3e0");
+    }
+    void markdownCodeAndQuotesAreVisuallyDistinctWithoutChangingCopiedText() {
+        QFETCH(QColor, accent);
+        QFETCH(QColor, background);
+        ChatContent content;
+        QTextDocument rendered;
+        QFont font; font.setPixelSize(14);
+        const auto html = content.format("Ordinary text and `inline_code`.\n\n> Quoted words\n\n```\ncode_line\n  indentation\n```\n\n**Bold** and *italic*.", {}, accent, background, font);
+        rendered.setHtml(html);
+        const auto normal = rendered.find("Ordinary").charFormat();
+        const auto code = rendered.find("inline_code").charFormat();
+        QVERIFY2(code.background().style() != Qt::NoBrush, qPrintable(html));
+        QCOMPARE(code.background().color(), background);
+        QVERIFY(QFontInfo(code.font()).fixedPitch());
+        QCOMPARE(normal.background().style(), Qt::NoBrush);
+        QCOMPARE(normal.font().pixelSize(), 14);
+        const auto blockCode = rendered.find("code_line");
+        QVERIFY(QFontInfo(blockCode.charFormat().font()).fixedPitch());
+        QVERIFY(blockCode.blockFormat().background().style() != Qt::NoBrush);
+        QCOMPARE(blockCode.blockFormat().background().color(), background);
+        const auto quote = rendered.find("Quoted words");
+        QVERIFY(quote.charFormat().fontItalic());
+        QVERIFY(quote.blockFormat().leftMargin() > 0);
+        QCOMPARE(quote.blockFormat().background().style(), Qt::NoBrush);
+        QCOMPARE(quote.charFormat().foreground().color(), accent);
+        QVERIFY(rendered.toPlainText().contains("code_line\n  indentation"));
+        QVERIFY(rendered.find("Bold").charFormat().fontWeight() >= QFont::Bold);
+        QVERIFY(rendered.find("italic").charFormat().fontItalic());
+        QVERIFY(!normal.isAnchor() && !code.isAnchor() && !quote.charFormat().isAnchor());
+    }
+    void markdownStructuresSurviveImageEmbedding_data() {
+        QTest::addColumn<bool>("embed");
+        QTest::newRow("text") << false;
+        QTest::newRow("with attachment") << true;
+    }
+    void markdownStructuresSurviveImageEmbedding() {
+        QFETCH(bool, embed);
+        ChatContent content;
+        QString markdown = "# Heading\n\n## Subheading\n\n"
+            "3. Number three\n4. Number four\n   - Nested bullet\n\n"
+            "> Quote\n>\n> > Nested quote with **strong**\n\n"
+            "| Name | Count |\n| :--- | ---: |\n| Mira | 12 |\n| Kai | 7 |\n\n"
+            "Escaped \\*stars\\* and ``code `tick` ``; ~~removed~~.\n\n"
+            "```cpp\n    https://example.org/code\n```\n\n"
+            "![portrait](https://example.org/image.png)";
+        if (embed) markdown = ChatContent::embedImage(markdown, "image fixture");
+        QTextDocument rendered;
+        rendered.setHtml(content.format(markdown));
+        QCOMPARE(rendered.find("Heading").blockFormat().headingLevel(), 1);
+        QCOMPARE(rendered.find("Subheading").blockFormat().headingLevel(), 2);
+        const auto number = rendered.find("Number three");
+        QVERIFY(number.currentList());
+        QCOMPARE(number.currentList()->format().style(), QTextListFormat::ListDecimal);
+        QCOMPARE(number.currentList()->format().start(), 3);
+        QCOMPARE(number.currentList()->count(), 2);
+        const auto bullet = rendered.find("Nested bullet");
+        QVERIFY(bullet.currentList());
+        QVERIFY2(bullet.currentList()->format().indent() > number.currentList()->format().indent(), qPrintable(markdown));
+        QVERIFY(rendered.find("Nested quote").blockFormat().leftMargin() > rendered.find("Quote").blockFormat().leftMargin());
+        QVERIFY(rendered.find("strong").charFormat().fontWeight() >= QFont::Bold);
+        const auto* table = rendered.find("Mira").currentTable();
+        QVERIFY(table);
+        QCOMPARE(table->rows(), 3);
+        QCOMPARE(table->columns(), 2);
+        QVERIFY(table->cellAt(1, 1).firstCursorPosition().blockFormat().alignment().testFlag(Qt::AlignRight));
+        QCOMPARE(table->cellAt(0, 0).firstCursorPosition().block().text(), "Name");
+        QCOMPARE(table->cellAt(0, 1).firstCursorPosition().block().text(), "Count");
+        QVERIFY(rendered.toPlainText().contains("Escaped *stars* and code `tick`"));
+        QVERIFY(rendered.find("removed").charFormat().fontStrikeOut());
+        QVERIFY(!rendered.find("https://example.org/code").charFormat().isAnchor());
+        QVERIFY(rendered.toPlainText().contains("    https://example.org/code"));
+    }
+    void imageEmbeddingChangesOnlyImageSyntax_data() {
+        QTest::addColumn<QString>("markdown");
+        QTest::addColumn<QString>("expected");
+        QTest::newRow("inline") << "Before ![photo](https://example.org/p.png) **after**." << "Before ![photo](%1) **after**.";
+        QTest::newRow("code and escaped image")
+            << "`![photo](https://example.org/p.png)` \\![photo](https://example.org/p.png)\n\n![photo](https://example.org/p.png)"
+            << "`![photo](https://example.org/p.png)` \\![photo](https://example.org/p.png)\n\n![photo](%1)";
+        QTest::newRow("shared reference") << "![photo][ref] [Open][ref]\n\n[ref]: https://example.org/p.png"
+            << "![photo](%1) [Open][ref]\n\n[ref]: https://example.org/p.png";
+        QTest::newRow("shortcut") << "![photo]\n\n[photo]: https://example.org/p.png"
+            << "![photo](%1)\n\n[photo]: https://example.org/p.png";
+        QTest::newRow("collapsed") << "![photo][]\n\n[photo]: https://example.org/p.png"
+            << "![photo](%1)\n\n[photo]: https://example.org/p.png";
+        QTest::newRow("nested target") << "![photo](https://example.org/p(one).png)" << "![photo](%1)";
+        QTest::newRow("angle target and title") << "![photo](<https://example.org/p).png> \"A (caption)\")" << "![photo](%1 \"A (caption)\")";
+        QTest::newRow("repeated image") << "![one](https://example.org/p.png) and ![two](https://example.org/p.png)"
+            << "![one](%1) and ![two](%1)";
+        QTest::newRow("nested label") << "![a [label]](https://example.org/p.png)" << "![a [label]](%1)";
+        QTest::newRow("fenced example") << "```md\n![example](https://example.org/p.png)\n```\n\n![photo](https://example.org/p.png)"
+            << "```md\n![example](https://example.org/p.png)\n```\n\n![photo](%1)";
+        QTest::newRow("linked image") << "[![photo](https://example.org/p.png)](https://example.org/open)"
+            << "[![photo](%1)](https://example.org/open)";
+        QTest::newRow("unresolved multiline reference") << "![photo]\n[ref]\n\n[ref]: https://example.org/p.png"
+            << "![photo]\n[ref]\n\n[ref]: https://example.org/p.png\n\n![Image](%1)";
+        QTest::newRow("escaped label") << "![a \\] label](https://example.org/p.png)" << "![a \\] label](%1)";
+        const auto code = "```md\n" + QString("![example](https://example.org/p.png)\n").repeated(300) + "```\n\n";
+        QTest::newRow("large code example") << code + "![photo](https://example.org/p.png)" << code + "![photo](%1)";
+    }
+    void imageEmbeddingChangesOnlyImageSyntax() {
+        QFETCH(QString, markdown);
+        QFETCH(QString, expected);
+        const QByteArray bytes("image fixture");
+        const auto reference = "attachment:" + QString::fromLatin1(QCryptographicHash::hash(bytes, QCryptographicHash::Sha256).toHex());
+        const auto result = ChatContent::embedImage(markdown, bytes);
+        QCOMPARE(result, expected.arg(reference));
+        QCOMPARE(ChatContent::embedImage(result, bytes), result);
+    }
+    void formatKeepsRepeatedImagesAndIgnoresCodeImages() {
+        ChatContent content;
+        const QByteArray bytes("image fixture");
+        const auto hash = QString::fromLatin1(QCryptographicHash::hash(bytes, QCryptographicHash::Sha256).toHex());
+        QImage image(8, 8, QImage::Format_RGBA8888);
+        image.fill(Qt::green);
+        QByteArray png;
+        QBuffer buffer(&png);
+        QVERIFY(buffer.open(QIODevice::WriteOnly));
+        QVERIFY(image.save(&buffer, "PNG"));
+        const auto html = content.format(
+            "`![code](attachment:" + hash + ")`\n\n![one](attachment:" + hash + ") ![two](attachment:" + hash + ")",
+            {{"hash", hash}, {"source", "data:image/png;base64," + QString::fromLatin1(png.toBase64())},
+             {"width", image.width()}, {"height", image.height()}});
+        QTextDocument rendered;
+        rendered.setHtml(html);
+        int imageCount = 0;
+        for (auto block = rendered.begin(); block.isValid(); block = block.next())
+            for (auto it = block.begin(); !it.atEnd(); ++it)
+                if (it.fragment().isValid() && it.fragment().charFormat().isImageFormat()) ++imageCount;
+        QCOMPARE(imageCount, 2);
+        QVERIFY(rendered.toPlainText().contains("![code](attachment:"));
+    }
+    void markdownLinkBoundaries_data() {
+        QTest::addColumn<QString>("markdown");
+        QTest::addColumn<QString>("label");
+        QTest::addColumn<QString>("target");
+        QTest::newRow("raw punctuation") << "See https://example.org/a?q=1#part." << "https://example.org/a?q=1#part" << "https://example.org/a?q=1#part";
+        QTest::newRow("inline code") << "`https://example.org/a?q=1#part`" << "https://example.org/a?q=1#part" << "";
+        QTest::newRow("fenced code") << "```\nhttps://example.org/a?q=1#part\n```" << "https://example.org/a?q=1#part" << "";
+        QTest::newRow("reference") << "[Named][site]\n\n[site]: https://example.org/a?q=1#part" << "Named" << "https://example.org/a?q=1#part";
+        QTest::newRow("unsafe quote") << "> [Blocked](javascript:alert)" << "Blocked" << "";
+        QTest::newRow("unsafe code label") << "[`Blocked`](file:///secret)" << "Blocked" << "";
+        QTest::newRow("html") << "<a href=\"https://example.org\">Literal</a>" << "Literal" << "";
+        QTest::newRow("unfinished") << "[unfinished](https://example.org" << "unfinished" << "";
+    }
+    void markdownLinkBoundaries() {
+        QFETCH(QString, markdown);
+        QFETCH(QString, label);
+        QFETCH(QString, target);
+        ChatContent content;
+        QTextDocument rendered;
+        rendered.setHtml(content.format(markdown));
+        const auto cursor = rendered.find(label);
+        QVERIFY(!cursor.isNull());
+        QCOMPARE(cursor.charFormat().isAnchor(), !target.isEmpty());
+        QCOMPARE(cursor.charFormat().anchorHref(), target);
     }
     void sanitizedRasterRetainsAlphaButNoTextMetadata() {
         QImage source(16, 12, QImage::Format_ARGB32);

@@ -637,10 +637,6 @@
             <translation>Канал недаступны</translation>
         </message>
         <message>
-            <source>Join voice</source>
-            <translation>Далучыцца да голасу</translation>
-        </message>
-        <message>
             <source>System (automatic)</source>
             <translation>Сістэма (аўтаматычная)</translation>
         </message>
@@ -873,10 +869,6 @@
             <translation>Аўтаматычнае далучэнне</translation>
         </message>
         <message>
-            <source>Leave channel</source>
-            <translation>Пакінуць канал</translation>
-        </message>
-        <message>
             <source>Stream URL</source>
             <translation>URL патоку</translation>
         </message>
@@ -1093,48 +1085,16 @@
             <translation>ID прылады</translation>
         </message>
         <message>
-            <source>Activate</source>
-            <translation>Актываваць</translation>
-        </message>
-        <message>
-            <source>Buy annual pass</source>
-            <translation>Купіце гадавы абанемент</translation>
-        </message>
-        <message>
             <source>Check now</source>
             <translation>Праверце зараз</translation>
-        </message>
-        <message>
-            <source>Deactivate</source>
-            <translation>Дэактывацыя</translation>
         </message>
         <message>
             <source>Free version</source>
             <translation>Бясплатная версія</translation>
         </message>
         <message>
-            <source>License key</source>
-            <translation>Ліцэнзійны ключ</translation>
-        </message>
-        <message>
             <source>Not available yet</source>
             <translation>Пакуль недаступна</translation>
-        </message>
-        <message>
-            <source>Reset</source>
-            <translation>Скінуць</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot.</source>
-            <translation>скід толькі пасля таго, як служба падтрымкі вызваліць слот прылады.</translation>
-        </message>
-        <message>
-            <source>Resolve activation</source>
-            <translation>Развязаць актывацыю</translation>
-        </message>
-        <message>
-            <source>Support reference</source>
-            <translation>Даведка падтрымкі</translation>
         </message>
         <message>
             <source>Supporter</source>
@@ -1194,13 +1154,41 @@
         </message>
         <message>
             <source>Computer audio</source>
-            <translation>Гук камп&#x27;ютара</translation>
+            <translation>Гук камп'ютара</translation>
         </message>
         <message>
             <source>App audio</source>
             <translation>Гук праграмы</translation>
         </message>
-</context>
+        <message>
+            <source>Account: %1</source>
+            <translation>Рахунак: %1</translation>
+        </message>
+        <message>
+            <source>Signed in as %1</source>
+            <translation>Вы ўвайшлі як %1</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub</source>
+            <translation>Увайдзіце праз GitHub</translation>
+        </message>
+        <message>
+            <source>Verification code</source>
+            <translation>Праверачны код</translation>
+        </message>
+        <message>
+            <source>Open GitHub</source>
+            <translation>Адкрыйце GitHub</translation>
+        </message>
+        <message>
+            <source>Sign out</source>
+            <translation>Выйсці</translation>
+        </message>
+        <message>
+            <source>This device</source>
+            <translation>Гэта прылада</translation>
+        </message>
+    </context>
     <context>
         <name>ChatContent</name>
         <message>
@@ -1417,10 +1405,6 @@
     </context>
     <context>
         <name>LocalChannel</name>
-        <message>
-            <source>Encrypted join failed: %1</source>
-            <translation>Памылка зашыфраванага далучэння: %1</translation>
-        </message>
         <message>
             <source>Host is not responding. Reconnecting.</source>
             <translation>Хост не адказвае. Паўторнае падключэнне.</translation>
@@ -2613,40 +2597,32 @@
     <context>
         <name>License</name>
         <message>
-            <source>Activation was declined. Check your key and available device slots.</source>
-            <translation>Актывацыя была адхілена. Праверце ключ і даступныя слоты для прылады.</translation>
-        </message>
-        <message>
-            <source>An activation is unresolved. Contact support before trying again.</source>
-            <translation>Актывацыя не вырашана. Перад паўторнай спробай звярніцеся ў службу падтрымкі.</translation>
-        </message>
-        <message>
-            <source>Deactivation was declined. Contact support.</source>
-            <translation>Дэактывацыя была адхілена. Звярніцеся ў службу падтрымкі.</translation>
-        </message>
-        <message>
-            <source>Enter a valid license key.</source>
-            <translation>Увядзіце сапраўдны ліцэнзійны ключ.</translation>
-        </message>
-        <message>
             <source>License storage is busy or unavailable.</source>
             <translation>Сховішча ліцэнзій занята або недаступна.</translation>
         </message>
         <message>
             <source>License storage is unavailable.</source>
-            <translation>сховішча ліцэнзій недаступна.</translation>
+            <translation>Сховішча ліцэнзій недаступна.</translation>
         </message>
         <message>
-            <source>The license could not be checked. Your confirmed expiry is unchanged.</source>
-            <translation>Не атрымалася праверыць ліцэнзію. Ваш пацверджаны тэрмін дзеяння не змяніўся.</translation>
+            <source>Sign-in expired. Try again.</source>
+            <translation>Тэрмін уваходу скончыўся. Паспрабуйце яшчэ раз.</translation>
         </message>
         <message>
-            <source>The license or device activation is no longer valid.</source>
-            <translation>Ліцэнзія або актывацыя прылады больш не сапраўдныя.</translation>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>Уваход у GitHub недаступны. Паспрабуйце яшчэ раз.</translation>
         </message>
         <message>
-            <source>The license response does not match this annual pass.</source>
-            <translation>адказ на ліцэнзію не адпавядае гэтаму гадавому білету.</translation>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>Уваход у GitHub не завершаны. Паспрабуйце яшчэ раз.</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>Не ўдалося праверыць GitHub. Аўтаномны доступ доўжыцца не больш за сем дзён.</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>Зноў увайдзіце ў GitHub.</translation>
         </message>
     </context>
     <context>
@@ -2658,10 +2634,6 @@
         <message>
             <source>The shared window was closed. Select a source to start again.</source>
             <translation>агульнае акно было зачынена. Выберыце крыніцу, каб пачаць зноў.</translation>
-        </message>
-        <message>
-            <source>Screen sharing requires an active Supporter pass on the owning host.</source>
-            <translation>Для абагульвання экрана на хасце-ўладальніку патрэбны актыўны пропуск Supporter.</translation>
         </message>
         <message>
             <source>The selected screen is no longer available.</source>
@@ -2705,6 +2677,10 @@
         <message>
             <source>Screen stream</source>
             <translation>Экранны паток</translation>
+        </message>
+        <message>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
         </message>
     </context>
     <context>
@@ -2973,10 +2949,6 @@
             <translation>Лакальны хост канала SquadSpeak без графічнага інтэрфейсу</translation>
         </message>
         <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>Прыярытэт налад: аргументы &gt; асяроддзе &gt; уласцівасці &gt; захаваныя значэнні сервера.</translation>
-        </message>
-        <message>
             <source>Environment variables (SQUADSPEAK_ prefix):</source>
             <translation>Зменныя асяроддзя (прэфікс SQUADSPEAK_):</translation>
         </message>
@@ -3031,26 +3003,6 @@
         <message>
             <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
             <translation>Неабавязковы ID уласнага канала для каманд status, configure, password, admission, history, chat і radio; прадвызначана выкарыстоўваецца галоўны канал.</translation>
-        </message>
-        <message>
-            <source>License action must be status, activate, refresh, deactivate or reset.</source>
-            <translation>Дзеянне ліцэнзіі павінна быць status, activate, refresh, deactivate або reset.</translation>
-        </message>
-        <message>
-            <source>A license operation is in progress.</source>
-            <translation>Выконваецца аперацыя з ліцэнзіяй.</translation>
-        </message>
-        <message>
-            <source>Supporter activation is unavailable in this build.</source>
-            <translation>Актывацыя Supporter недаступная ў гэтай версіі.</translation>
-        </message>
-        <message>
-            <source>A license key is required.</source>
-            <translation>Патрабуецца ліцэнзійны ключ.</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot. Set confirmed=true to proceed.</source>
-            <translation>Скідвайце толькі пасля таго, як падтрымка вызваліць месца прылады. Каб працягнуць, задайце confirmed=true.</translation>
         </message>
         <message>
             <source>Channel action must be list, add or remove.</source>
@@ -3231,6 +3183,22 @@
         <message>
             <source>SquadSpeak headless could not start: %1</source>
             <translation>Не ўдалося запусціць SquadSpeak без графічнага інтэрфейсу: %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>Дзеянне падтрымкі павінна быць статусам, уваходам, абнаўленнем, выхадам або адменай. status sign-in refresh sign-out cancel</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>Ідзе аперацыя Supporter.</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>Доступ для падтрымкі недаступны ў гэтай зборцы.</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>Парадак налад: аргументы &gt; асяроддзе &gt; уласцівасці &gt; захаваныя значэнні сервера.</translation>
         </message>
     </context>
     <context>

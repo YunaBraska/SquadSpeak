@@ -637,10 +637,6 @@
             <translation>Kanal mhux disponibbli</translation>
         </message>
         <message>
-            <source>Join voice</source>
-            <translation>Ingħaqad mal-vuċi</translation>
-        </message>
-        <message>
             <source>System (automatic)</source>
             <translation>Sistema (awtomatika)</translation>
         </message>
@@ -873,10 +869,6 @@
             <translation>Tgħaqqad awtomatikament</translation>
         </message>
         <message>
-            <source>Leave channel</source>
-            <translation>Oħroġ mill-kanal</translation>
-        </message>
-        <message>
             <source>Stream URL</source>
             <translation>URL tal-fluss</translation>
         </message>
@@ -1093,48 +1085,16 @@
             <translation>ID tal-apparat</translation>
         </message>
         <message>
-            <source>Activate</source>
-            <translation>Attiva</translation>
-        </message>
-        <message>
-            <source>Buy annual pass</source>
-            <translation>Ixtri l-pass annwali</translation>
-        </message>
-        <message>
             <source>Check now</source>
             <translation>Iċċekkja issa</translation>
-        </message>
-        <message>
-            <source>Deactivate</source>
-            <translation>Iddiżattiva</translation>
         </message>
         <message>
             <source>Free version</source>
             <translation>Verżjoni ħielsa</translation>
         </message>
         <message>
-            <source>License key</source>
-            <translation>Ċavetta tal-liċenzja</translation>
-        </message>
-        <message>
             <source>Not available yet</source>
             <translation>Mhux disponibbli s'issa</translation>
-        </message>
-        <message>
-            <source>Reset</source>
-            <translation>Irrisettja</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot.</source>
-            <translation>Irrisettja biss wara li l-appoġġ ikun ħeles l-islott tal-apparat.</translation>
-        </message>
-        <message>
-            <source>Resolve activation</source>
-            <translation>Irrisolv il-attivazzjoni</translation>
-        </message>
-        <message>
-            <source>Support reference</source>
-            <translation>Referenza ta' appoġġ</translation>
         </message>
         <message>
             <source>Supporter</source>
@@ -1200,7 +1160,35 @@
             <source>App audio</source>
             <translation>Awdjo tal-app</translation>
         </message>
-</context>
+        <message>
+            <source>Account: %1</source>
+            <translation>Kont: %1</translation>
+        </message>
+        <message>
+            <source>Signed in as %1</source>
+            <translation>Iffirmat bħala %1</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub</source>
+            <translation>Idħol ma' GitHub</translation>
+        </message>
+        <message>
+            <source>Verification code</source>
+            <translation>Kodiċi ta' verifika</translation>
+        </message>
+        <message>
+            <source>Open GitHub</source>
+            <translation>Iftaħ GitHub</translation>
+        </message>
+        <message>
+            <source>Sign out</source>
+            <translation>Iffirma</translation>
+        </message>
+        <message>
+            <source>This device</source>
+            <translation>Dan l-apparat</translation>
+        </message>
+    </context>
     <context>
         <name>ChatContent</name>
         <message>
@@ -1417,10 +1405,6 @@
     </context>
     <context>
         <name>LocalChannel</name>
-        <message>
-            <source>Encrypted join failed: %1</source>
-            <translation>L-għaqda kriptata falliet: %1</translation>
-        </message>
         <message>
             <source>Host is not responding. Reconnecting.</source>
             <translation>Il-host mhux qed iwieġeb. Qed jerġa' jgħaqqad.</translation>
@@ -2613,40 +2597,32 @@
     <context>
         <name>License</name>
         <message>
-            <source>Activation was declined. Check your key and available device slots.</source>
-            <translation>L-attivazzjoni ġiet miċħuda. Iċċekkja ċ-ċavetta u l-islots disponibbli tal-apparat.</translation>
-        </message>
-        <message>
-            <source>An activation is unresolved. Contact support before trying again.</source>
-            <translation>Attivazzjoni mhux solvuta. Ikkuntattja l-appoġġ qabel terġa' tipprova.</translation>
-        </message>
-        <message>
-            <source>Deactivation was declined. Contact support.</source>
-            <translation>Id-diżattivazzjoni ġiet miċħuda. Ikkuntattja l-appoġġ.</translation>
-        </message>
-        <message>
-            <source>Enter a valid license key.</source>
-            <translation>Daħħal ċavetta tal-liċenzja valida.</translation>
-        </message>
-        <message>
             <source>License storage is busy or unavailable.</source>
             <translation>Il-ħażna tal-liċenzja hija okkupata jew mhux disponibbli.</translation>
         </message>
         <message>
             <source>License storage is unavailable.</source>
-            <translation>Il-ħażna tal-liċenzja mhijiex disponibbli.</translation>
+            <translation>Il-ħażna tal-liċenzja mhix disponibbli.</translation>
         </message>
         <message>
-            <source>The license could not be checked. Your confirmed expiry is unchanged.</source>
-            <translation>Il-liċenzja ma setgħetx tiġi ċċekkjata. L-iskadenza kkonfermata tiegħek ma nbidlitx.</translation>
+            <source>Sign-in expired. Try again.</source>
+            <translation>Id-dħul skada. Erġa' pprova.</translation>
         </message>
         <message>
-            <source>The license or device activation is no longer valid.</source>
-            <translation>Il-liċenzja jew l-attivazzjoni tal-apparat m'għadhiex valida.</translation>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>Id-dħul ta' GitHub mhuwiex disponibbli. Erġa' pprova.</translation>
         </message>
         <message>
-            <source>The license response does not match this annual pass.</source>
-            <translation>It-tweġiba tal-liċenzja ma taqbilx ma' dan il-pass annwali.</translation>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>Id-dħul ta' GitHub ma tlestietx. Erġa' pprova.</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>GitHub ma setax jiġi ċċekkjat. L-aċċess offline idum mhux aktar minn sebat ijiem.</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>Idħol mill-ġdid ma' GitHub.</translation>
         </message>
     </context>
     <context>
@@ -2658,10 +2634,6 @@
         <message>
             <source>The shared window was closed. Select a source to start again.</source>
             <translation>It-tieqa maqsuma ngħalqet. Agħżel sors biex terġa' tibda.</translation>
-        </message>
-        <message>
-            <source>Screen sharing requires an active Supporter pass on the owning host.</source>
-            <translation>Il-qsim tal-iskrin jeħtieġ pass attiv ta' Supporter fuq il-host li għandu l-kanal.</translation>
         </message>
         <message>
             <source>The selected screen is no longer available.</source>
@@ -2705,6 +2677,10 @@
         <message>
             <source>Screen stream</source>
             <translation>Fluss tal-iskrin</translation>
+        </message>
+        <message>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
         </message>
     </context>
     <context>
@@ -2973,10 +2949,6 @@
             <translation>Host lokali ta' kanal SquadSpeak mingħajr interfaċċa grafika</translation>
         </message>
         <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>Prijorità tas-settings: argumenti &gt; ambjent &gt; proprjetajiet &gt; valuri tas-server salvati.</translation>
-        </message>
-        <message>
             <source>Environment variables (SQUADSPEAK_ prefix):</source>
             <translation>Varjabbli tal-ambjent (prefiss SQUADSPEAK_):</translation>
         </message>
@@ -3031,26 +3003,6 @@
         <message>
             <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
             <translation>ID fakultattiv tal-kanal tiegħek għall-kmandi status, configure, password, admission, history, chat u radio; id-default huwa l-kanal prinċipali.</translation>
-        </message>
-        <message>
-            <source>License action must be status, activate, refresh, deactivate or reset.</source>
-            <translation>L-azzjoni tal-liċenzja trid tkun status, activate, refresh, deactivate jew reset.</translation>
-        </message>
-        <message>
-            <source>A license operation is in progress.</source>
-            <translation>Għaddejja operazzjoni tal-liċenzja.</translation>
-        </message>
-        <message>
-            <source>Supporter activation is unavailable in this build.</source>
-            <translation>L-attivazzjoni Supporter mhijiex disponibbli f'din il-verżjoni.</translation>
-        </message>
-        <message>
-            <source>A license key is required.</source>
-            <translation>Hija meħtieġa ċavetta tal-liċenzja.</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot. Set confirmed=true to proceed.</source>
-            <translation>Irrisettja biss wara li s-support ikun ħeles il-post tal-apparat. Issettja confirmed=true biex tkompli.</translation>
         </message>
         <message>
             <source>Channel action must be list, add or remove.</source>
@@ -3231,6 +3183,22 @@
         <message>
             <source>SquadSpeak headless could not start: %1</source>
             <translation>SquadSpeak mingħajr interfaċċa grafika ma setax jibda: %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>L-azzjoni tal-partitarju trid tkun status, sign-in, refresh, sign-out jew tikkanċella. cancel</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>Għaddejja operazzjoni ta' Supporter.</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>L-aċċess għall-partitarji mhux disponibbli f'din il-bini.</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>Preċedenza tal-issettjar: argumenti &gt; ambjent &gt; proprjetajiet &gt; valuri tas-server salvati.</translation>
         </message>
     </context>
     <context>

@@ -637,10 +637,6 @@
             <translation>არხი მიუწვდომელია</translation>
         </message>
         <message>
-            <source>Join voice</source>
-            <translation>შეუერთდი ხმას</translation>
-        </message>
-        <message>
             <source>System (automatic)</source>
             <translation>სისტემა (ავტომატური)</translation>
         </message>
@@ -873,10 +869,6 @@
             <translation>ავტომატური შეერთება</translation>
         </message>
         <message>
-            <source>Leave channel</source>
-            <translation>დატოვე არხი</translation>
-        </message>
-        <message>
             <source>Stream URL</source>
             <translation>ნაკადის URL</translation>
         </message>
@@ -1093,48 +1085,16 @@
             <translation>მოწყობილობის ID</translation>
         </message>
         <message>
-            <source>Activate</source>
-            <translation>გააქტიურება</translation>
-        </message>
-        <message>
-            <source>Buy annual pass</source>
-            <translation>შეიძინეთ წლიური საშვი</translation>
-        </message>
-        <message>
             <source>Check now</source>
             <translation>შეამოწმეთ ახლავე</translation>
-        </message>
-        <message>
-            <source>Deactivate</source>
-            <translation>გამორთეთ</translation>
         </message>
         <message>
             <source>Free version</source>
             <translation>უფასო ვერსია</translation>
         </message>
         <message>
-            <source>License key</source>
-            <translation>ლიცენზიის გასაღები</translation>
-        </message>
-        <message>
             <source>Not available yet</source>
             <translation>ჯერ არ არის ხელმისაწვდომი</translation>
-        </message>
-        <message>
-            <source>Reset</source>
-            <translation>გადატვირთვა</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot.</source>
-            <translation>გადატვირთვა მხოლოდ მას შემდეგ, რაც მხარდაჭერა გამოუშვებს მოწყობილობის სლოტს.</translation>
-        </message>
-        <message>
-            <source>Resolve activation</source>
-            <translation>აქტივაციის გადაჭრა</translation>
-        </message>
-        <message>
-            <source>Support reference</source>
-            <translation>მხარდაჭერის მითითება</translation>
         </message>
         <message>
             <source>Supporter</source>
@@ -1200,7 +1160,35 @@
             <source>App audio</source>
             <translation>აპის ხმა</translation>
         </message>
-</context>
+        <message>
+            <source>Account: %1</source>
+            <translation>ანგარიში: %1</translation>
+        </message>
+        <message>
+            <source>Signed in as %1</source>
+            <translation>შესული ხართ როგორც %1</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub</source>
+            <translation>შედით GitHub-ით</translation>
+        </message>
+        <message>
+            <source>Verification code</source>
+            <translation>დამადასტურებელი კოდი</translation>
+        </message>
+        <message>
+            <source>Open GitHub</source>
+            <translation>გახსენით GitHub</translation>
+        </message>
+        <message>
+            <source>Sign out</source>
+            <translation>გასვლა</translation>
+        </message>
+        <message>
+            <source>This device</source>
+            <translation>ეს მოწყობილობა</translation>
+        </message>
+    </context>
     <context>
         <name>ChatContent</name>
         <message>
@@ -1417,10 +1405,6 @@
     </context>
     <context>
         <name>LocalChannel</name>
-        <message>
-            <source>Encrypted join failed: %1</source>
-            <translation>დაშიფრული შეერთება ვერ მოხერხდა: %1</translation>
-        </message>
         <message>
             <source>Host is not responding. Reconnecting.</source>
             <translation>მასპინძელი არ პასუხობს. ხელახლა დაკავშირება.</translation>
@@ -2613,40 +2597,32 @@
     <context>
         <name>License</name>
         <message>
-            <source>Activation was declined. Check your key and available device slots.</source>
-            <translation>აქტივაცია უარყოფილია. შეამოწმეთ გასაღები და ხელმისაწვდომი მოწყობილობის სლოტები.</translation>
-        </message>
-        <message>
-            <source>An activation is unresolved. Contact support before trying again.</source>
-            <translation>აქტივაცია მოუგვარებელია. ხელახლა ცდამდე დაუკავშირდით მხარდაჭერას.</translation>
-        </message>
-        <message>
-            <source>Deactivation was declined. Contact support.</source>
-            <translation>დეაქტივაცია უარყოფილია. დაუკავშირდით მხარდაჭერას.</translation>
-        </message>
-        <message>
-            <source>Enter a valid license key.</source>
-            <translation>შეიყვანეთ სწორი ლიცენზიის გასაღები.</translation>
-        </message>
-        <message>
             <source>License storage is busy or unavailable.</source>
             <translation>ლიცენზიის საცავი დაკავებულია ან მიუწვდომელია.</translation>
         </message>
         <message>
             <source>License storage is unavailable.</source>
-            <translation>ლიცენზიის შენახვა მიუწვდომელია.</translation>
+            <translation>ლიცენზიის საცავი მიუწვდომელია.</translation>
         </message>
         <message>
-            <source>The license could not be checked. Your confirmed expiry is unchanged.</source>
-            <translation>ლიცენზიის შემოწმება ვერ მოხერხდა. თქვენი დადასტურებული ვადა უცვლელია.</translation>
+            <source>Sign-in expired. Try again.</source>
+            <translation>შესვლას ვადა გაუვიდა. სცადეთ ხელახლა.</translation>
         </message>
         <message>
-            <source>The license or device activation is no longer valid.</source>
-            <translation>ლიცენზია ან მოწყობილობის გააქტიურება აღარ მოქმედებს.</translation>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>GitHub შესვლა მიუწვდომელია. სცადეთ ხელახლა.</translation>
         </message>
         <message>
-            <source>The license response does not match this annual pass.</source>
-            <translation>ლიცენზიის პასუხი არ ემთხვევა ამ წლიურ პასს.</translation>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>GitHub-ში შესვლა არ დასრულებულა. სცადეთ ხელახლა.</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>GitHub ვერ შემოწმდა. ხაზგარეშე წვდომა გრძელდება მაქსიმუმ შვიდი დღის განმავლობაში.</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>ხელახლა შედით GitHub-ით.</translation>
         </message>
     </context>
     <context>
@@ -2658,10 +2634,6 @@
         <message>
             <source>The shared window was closed. Select a source to start again.</source>
             <translation>საერთო ფანჯარა დაიხურა. აირჩიეთ წყარო ხელახლა დასაწყებად.</translation>
-        </message>
-        <message>
-            <source>Screen sharing requires an active Supporter pass on the owning host.</source>
-            <translation>ეკრანის გაზიარებას სჭირდება აქტიური Supporter საშვი არხის მფლობელ ჰოსტზე.</translation>
         </message>
         <message>
             <source>The selected screen is no longer available.</source>
@@ -2705,6 +2677,10 @@
         <message>
             <source>Screen stream</source>
             <translation>ეკრანის ნაკადი</translation>
+        </message>
+        <message>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
         </message>
     </context>
     <context>
@@ -2973,10 +2949,6 @@
             <translation>SquadSpeak-ის ადგილობრივი არხის ჰოსტი გრაფიკული ინტერფეისის გარეშე</translation>
         </message>
         <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>პარამეტრების პრიორიტეტი: არგუმენტები &gt; გარემო &gt; თვისებები &gt; სერვერის შენახული მნიშვნელობები.</translation>
-        </message>
-        <message>
             <source>Environment variables (SQUADSPEAK_ prefix):</source>
             <translation>გარემოს ცვლადები (SQUADSPEAK_ პრეფიქსით):</translation>
         </message>
@@ -3031,26 +3003,6 @@
         <message>
             <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
             <translation>საკუთარი არხის არასავალდებულო ID ბრძანებებისთვის status, configure, password, admission, history, chat და radio; ნაგულისხმევად გამოიყენება ძირითადი არხი.</translation>
-        </message>
-        <message>
-            <source>License action must be status, activate, refresh, deactivate or reset.</source>
-            <translation>ლიცენზიის მოქმედება უნდა იყოს status, activate, refresh, deactivate ან reset.</translation>
-        </message>
-        <message>
-            <source>A license operation is in progress.</source>
-            <translation>ლიცენზიის ოპერაცია მიმდინარეობს.</translation>
-        </message>
-        <message>
-            <source>Supporter activation is unavailable in this build.</source>
-            <translation>Supporter-ის გააქტიურება ამ ვერსიაში მიუწვდომელია.</translation>
-        </message>
-        <message>
-            <source>A license key is required.</source>
-            <translation>საჭიროა ლიცენზიის გასაღები.</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot. Set confirmed=true to proceed.</source>
-            <translation>გაანულეთ მხოლოდ მას შემდეგ, რაც მხარდაჭერა მოწყობილობის ადგილს გაათავისუფლებს. გასაგრძელებლად მიუთითეთ confirmed=true.</translation>
         </message>
         <message>
             <source>Channel action must be list, add or remove.</source>
@@ -3231,6 +3183,22 @@
         <message>
             <source>SquadSpeak headless could not start: %1</source>
             <translation>გრაფიკული ინტერფეისის გარეშე SquadSpeak-ის გაშვება ვერ მოხერხდა: %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>მხარდამჭერის მოქმედება უნდა იყოს სტატუსი, შესვლა, განახლება, გასვლა ან გაუქმება. status sign-in refresh sign-out cancel</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>მხარდამჭერი ოპერაცია მიმდინარეობს.</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>მხარდამჭერის წვდომა მიუწვდომელია ამ build-ში.</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>პარამეტრების უპირატესობა: არგუმენტები &gt; გარემო &gt; თვისებები &gt; სერვერის შენახული მნიშვნელობები.</translation>
         </message>
     </context>
     <context>

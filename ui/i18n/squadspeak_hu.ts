@@ -637,10 +637,6 @@
             <translation>A csatorna nem elérhető</translation>
         </message>
         <message>
-            <source>Join voice</source>
-            <translation>Csatlakozás a hangcsatornához</translation>
-        </message>
-        <message>
             <source>System (automatic)</source>
             <translation>Rendszer (automatikus)</translation>
         </message>
@@ -873,10 +869,6 @@
             <translation>Automatikus csatlakozás</translation>
         </message>
         <message>
-            <source>Leave channel</source>
-            <translation>Kilépés a csatornából</translation>
-        </message>
-        <message>
             <source>Stream URL</source>
             <translation>Stream URL</translation>
         </message>
@@ -1093,48 +1085,16 @@
             <translation>Eszközazonosító</translation>
         </message>
         <message>
-            <source>Activate</source>
-            <translation>Aktiválás</translation>
-        </message>
-        <message>
-            <source>Buy annual pass</source>
-            <translation>Vásároljon éves bérletet</translation>
-        </message>
-        <message>
             <source>Check now</source>
             <translation>Ellenőrizze most</translation>
-        </message>
-        <message>
-            <source>Deactivate</source>
-            <translation>Deaktiválás</translation>
         </message>
         <message>
             <source>Free version</source>
             <translation>Ingyenes verzió</translation>
         </message>
         <message>
-            <source>License key</source>
-            <translation>Licenckulcs</translation>
-        </message>
-        <message>
             <source>Not available yet</source>
             <translation>Még nem elérhető</translation>
-        </message>
-        <message>
-            <source>Reset</source>
-            <translation>Reset</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot.</source>
-            <translation>Csak azután állítsa vissza alaphelyzetbe, hogy a támogatás felszabadította az eszköznyílást.</translation>
-        </message>
-        <message>
-            <source>Resolve activation</source>
-            <translation>Oldja meg az aktiválást</translation>
-        </message>
-        <message>
-            <source>Support reference</source>
-            <translation>Támogatási hivatkozás</translation>
         </message>
         <message>
             <source>Supporter</source>
@@ -1200,7 +1160,35 @@
             <source>App audio</source>
             <translation>Alkalmazás hangja</translation>
         </message>
-</context>
+        <message>
+            <source>Account: %1</source>
+            <translation>Fiók: %1</translation>
+        </message>
+        <message>
+            <source>Signed in as %1</source>
+            <translation>Bejelentkezve mint %1</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub</source>
+            <translation>Jelentkezzen be a GitHub segítségével</translation>
+        </message>
+        <message>
+            <source>Verification code</source>
+            <translation>Ellenőrző kód</translation>
+        </message>
+        <message>
+            <source>Open GitHub</source>
+            <translation>Nyissa meg a GitHubot</translation>
+        </message>
+        <message>
+            <source>Sign out</source>
+            <translation>Jelentkezzen ki</translation>
+        </message>
+        <message>
+            <source>This device</source>
+            <translation>Ez az eszköz</translation>
+        </message>
+    </context>
     <context>
         <name>ChatContent</name>
         <message>
@@ -1417,10 +1405,6 @@
     </context>
     <context>
         <name>LocalChannel</name>
-        <message>
-            <source>Encrypted join failed: %1</source>
-            <translation>A titkosított csatlakozás sikertelen: %1</translation>
-        </message>
         <message>
             <source>Host is not responding. Reconnecting.</source>
             <translation>A gazdagép nem válaszol. Újracsatlakozás.</translation>
@@ -2613,22 +2597,6 @@
     <context>
         <name>License</name>
         <message>
-            <source>Activation was declined. Check your key and available device slots.</source>
-            <translation>Az aktiválást elutasították. Ellenőrizze a kulcsot és a rendelkezésre álló eszközhelyeket.</translation>
-        </message>
-        <message>
-            <source>An activation is unresolved. Contact support before trying again.</source>
-            <translation>Az aktiválás nem megoldott. Mielőtt újra próbálkozna, lépjen kapcsolatba az ügyfélszolgálattal.</translation>
-        </message>
-        <message>
-            <source>Deactivation was declined. Contact support.</source>
-            <translation>A deaktiválás elutasítva. Lépjen kapcsolatba az ügyfélszolgálattal.</translation>
-        </message>
-        <message>
-            <source>Enter a valid license key.</source>
-            <translation>Adjon meg egy érvényes licenckulcsot.</translation>
-        </message>
-        <message>
             <source>License storage is busy or unavailable.</source>
             <translation>A licenctár foglalt vagy nem érhető el.</translation>
         </message>
@@ -2637,16 +2605,24 @@
             <translation>A licenctár nem érhető el.</translation>
         </message>
         <message>
-            <source>The license could not be checked. Your confirmed expiry is unchanged.</source>
-            <translation>Az engedélyt nem lehetett ellenőrizni. Megerősített lejárata változatlan.</translation>
+            <source>Sign-in expired. Try again.</source>
+            <translation>A bejelentkezés lejárt. Próbáld újra.</translation>
         </message>
         <message>
-            <source>The license or device activation is no longer valid.</source>
-            <translation>A licenc vagy az eszközaktiválás már nem érvényes.</translation>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>A GitHub bejelentkezés nem érhető el. Próbáld újra.</translation>
         </message>
         <message>
-            <source>The license response does not match this annual pass.</source>
-            <translation>A licencválasz nem egyezik az éves bérlettel.</translation>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>A GitHub bejelentkezés nem fejeződött be. Próbáld újra.</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>A GitHub ellenőrzése nem sikerült. Az offline hozzáférés legfeljebb hét napig tart.</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>Jelentkezzen be újra a GitHub használatával.</translation>
         </message>
     </context>
     <context>
@@ -2658,10 +2634,6 @@
         <message>
             <source>The shared window was closed. Select a source to start again.</source>
             <translation>A megosztott ablak bezárult. Válassza ki a forrást az újrakezdéshez.</translation>
-        </message>
-        <message>
-            <source>Screen sharing requires an active Supporter pass on the owning host.</source>
-            <translation>A képernyőmegosztáshoz aktív Supporter-bérlet szükséges a tulajdonos gazdagépen.</translation>
         </message>
         <message>
             <source>The selected screen is no longer available.</source>
@@ -2705,6 +2677,10 @@
         <message>
             <source>Screen stream</source>
             <translation>Képernyő adatfolyam</translation>
+        </message>
+        <message>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
         </message>
     </context>
     <context>
@@ -2973,10 +2949,6 @@
             <translation>SquadSpeak fej nélküli helyi csatornagazdagép</translation>
         </message>
         <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>Beállítási sorrend: argumentumok &gt; környezet &gt; tulajdonságok &gt; mentett szerverbeállítások.</translation>
-        </message>
-        <message>
             <source>Environment variables (SQUADSPEAK_ prefix):</source>
             <translation>Környezeti változók (SQUADSPEAK_ előtag):</translation>
         </message>
@@ -3031,26 +3003,6 @@
         <message>
             <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
             <translation>Választható saját csatornaazonosító a status, configure, password, admission, history, chat és radio parancsokhoz; alapértelmezésben az elsődleges csatorna.</translation>
-        </message>
-        <message>
-            <source>License action must be status, activate, refresh, deactivate or reset.</source>
-            <translation>A licencművelet status, activate, refresh, deactivate vagy reset lehet.</translation>
-        </message>
-        <message>
-            <source>A license operation is in progress.</source>
-            <translation>Egy licencművelet folyamatban van.</translation>
-        </message>
-        <message>
-            <source>Supporter activation is unavailable in this build.</source>
-            <translation>A Supporter aktiválása ebben a buildben nem érhető el.</translation>
-        </message>
-        <message>
-            <source>A license key is required.</source>
-            <translation>Licenckulcs szükséges.</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot. Set confirmed=true to proceed.</source>
-            <translation>Csak akkor állítsd vissza, ha a támogatás felszabadította az eszközhelyet. A folytatáshoz állítsd be: confirmed=true.</translation>
         </message>
         <message>
             <source>Channel action must be list, add or remove.</source>
@@ -3231,6 +3183,22 @@
         <message>
             <source>SquadSpeak headless could not start: %1</source>
             <translation>A SquadSpeak fej nélküli gazdagépe nem indítható el: %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>A támogatói tevékenységnek állapotnak, bejelentkezésnek, frissítésnek, kijelentkezésnek vagy lemondásnak kell lennie. status sign-in refresh sign-out cancel</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>A támogatói művelet folyamatban van.</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>Ebben a buildben a támogatói hozzáférés nem érhető el.</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>A beállítások elsőbbsége: argumentumok &gt; környezet &gt; tulajdonságok &gt; mentett szerverértékek.</translation>
         </message>
     </context>
     <context>

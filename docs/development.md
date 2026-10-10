@@ -1,6 +1,6 @@
 # Development
 
-[Product requirements](specs/voice-chat.md), [feature status](roadmap.md), [verification evidence](verification.md) and [avatar production](specs/avatars.md) are the project references. The README is for people using the app.
+[Product requirements](specs/voice-chat.md), [feature status](roadmap.md) and [avatar production](specs/avatars.md) are the project references. The README is for people using the app.
 
 ## Translations
 
@@ -31,7 +31,10 @@ never repaired or overwritten after a failed load.
 ## Chat persistence
 
 Default profile paths come from `QStandardPaths::AppConfigLocation` on each OS;
-`--settings-file` overrides the profile. Host history uses
+`--settings-file` overrides `SQUADSPEAK_SETTINGS_FILE`, which overrides the default profile.
+The macOS A/B test bundles keep their isolated profile in `LSEnvironment`, so
+Finder and permission-triggered restarts retain it without command-line arguments.
+Host history uses
 `<profile>.channel.json.chat.sqlite` and encrypted image blobs beside it in
 `<profile>.channel.json.chat.images`. Test fixtures may use a different profile suffix.
 
@@ -91,6 +94,13 @@ cmake -S . -B build/local -G Ninja -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=ON
 cmake --build build/local --parallel 4
 ctest --test-dir build/local --parallel 2 --output-on-failure
 ```
+
+Headless subprocess tests isolate shared account storage as well as server
+settings. macOS uses a temporary `CFFIXED_USER_HOME`, Linux a temporary
+`XDG_CONFIG_HOME`. A child-process check verifies the effective path before
+starting servers. On Windows, use a separate test account without a personal
+Supporter login. The suite refuses to start when that account has a saved login.
+GitHub Actions runners already use disposable accounts.
 
 During development, build and run the affected contract first. CTest entries
 are suites: Qt expands their data rows inside one process, not one build per
@@ -153,7 +163,7 @@ not the existence of this script.
 
 For Linux, `tests/linux.Dockerfile` and `tests/linux-ci.sh` define the same isolated dependency, virtual-audio and Secret Service environment used by CI. Run `release`, `store` or `sanitizers`; mount the checkout read-only at `/source` and a writable artifact directory at `/output`. Release and sanitizer capture tests additionally need Docker's `--device /dev/fuse --cap-add SYS_ADMIN --security-opt apparmor=unconfined` for the real desktop portal's private document mount. The default Docker AppArmor profile denies that mount even with the device and capability. Use a disposable Linux runner; Store and runtime-only package checks do not require these privileges. `tests/discovery-network.sh` additionally exercises independent network namespaces.
 
-Linux packages use the system Qt runtime, including `libqt6sql6-sqlite` for encrypted chat storage. With Qt 6.10.2, CMake rebuilds and bundles only the ABI-matching Multimedia library with `cmake/qt-wayland.patch`: portal request routing, cancellation and session cleanup. This build needs Qt's matching private development headers. Qt 6.12 includes the upstream session fixes; other older versions are rejected rather than mixing Qt ABIs. The `runtime` stage of `tests/linux.Dockerfile` installs only runtime packages. CI extracts the archive as a non-root user, verifies that it resolves the bundled capture library, and checks the GUI, image worker and headless entrypoint without development packages or a build tree.
+Linux packages use the system Qt runtime, including `libqt6sql6-sqlite` for encrypted chat storage. With Qt 6.10.2, CMake rebuilds and bundles the ABI-matching Multimedia and Qml libraries. `cmake/qt-wayland.patch` contains the portal request routing, cancellation and session cleanup fixes; `cmake/qt-qml-gc.patch` backports the QML incremental-GC transition and sweep corrections. These builds need Qt's matching private development headers. The verified Linux build requires exactly Qt 6.10.2 rather than mixing Qt ABIs. The `runtime` stage of `tests/linux.Dockerfile` installs only runtime packages. CI extracts the archive as a non-root user, verifies that it resolves the bundled capture and Qml libraries, and checks the GUI, image worker and headless entrypoint without development packages or a build tree. All desktop builds also apply `cmake/qt-qml-runtime.patch` to their exact Qml source: Qt 6.10.2 on Linux and the pinned 6.11.3 SDK on macOS/Windows. It preserves the JIT accumulator after property writes and uses unaligned-safe machine-code pointer accesses. UI tests lower the JIT threshold and collect garbage frequently. After the full UI suite, Linux CI repeats the compact Markdown/theme cases 20 times and stops on the first failure. Package checks verify that deployment retained the corrected runtime.
 
 Linux packages use system fonts. Install `fonts-noto-core` and `fonts-noto-cjk`
 alongside the runtime libraries to cover the offered scripts. The language-switch
@@ -161,6 +171,119 @@ test checks shaped glyphs for language names and settings tabs, including font
 fallback; it does not certify every ligature or natural wording.
 
 Tests use isolated identities, local TLS/HTTP servers and synthetic media. They do not need a purchase account or access to a real microphone. Native permission prompts, device drivers, external radio uptime and subjective listening quality still need separate platform evidence.
+
+### Device checks with limited human time
+
+The maintainer runs and diagnoses automation before asking someone to test.
+Use the existing suites, not another manual chat/kick/ban checklist:
+
+| Evidence | Unattended entrypoint | Human task left |
+| --- | --- | --- |
+| Admission, history, moderation, remote control and compatible protocol extensions | `channel_contract`, `headless_contract`, `channel_controls` | None for these deterministic contracts |
+| Capture scope, audio isolation, source loss and restart | `capture_contract` on Windows/Linux; opt-in `capture_tests` on macOS | One-time macOS consent when needed |
+| Noise, speech retention, clipping, echo drift and double-talk models | `audio_contract`, `mixer_contract`, `audio_corpus` | Short listening observation on the actual microphone/headset; simulated acoustics do not certify a room |
+| Discovery changes, loss, quality adaptation, media load and lifetime | `discovery-network.sh`, media/channel/video contracts and the longer runs below | None for synthetic load/impairment; do not ask someone to create 64 clients |
+| Packaged startup, native backends and leaks | Native CI, runtime-only package checks, sanitizers and leak probes | Windows 10 startup on an available PC; Server 2022 is not Windows 10 |
+| Chat sound routing and notifications | Channel/UI/PCM contracts | Actual Apple notification and Focus behavior |
+
+On macOS, prepare two isolated copies with `tests/prepare_two_apps.py` and join
+them to one test channel before handing over. For a Windows visit without a
+maintainer present, use the standalone kit below. A captures the microphone,
+B plays through headphones; both start muted and deafened. Do not reset working
+OS permissions or touch the person's normal profile. The maintainer handles
+builds, packet measurements and log analysis. Allow initial installation and
+setup time separately from the three-minute listening/device observation.
+
+Generate the offline German handoff with the exact source checkout and build
+being supplied. The tester needs only a browser, chooses an outcome per step
+and downloads one JSON file. Nothing is uploaded or recorded by the page:
+
+```sh
+python3 tests/acceptance.py --platform macos \
+  --setup 'Exact OS version / computer model / microphone / headphones' \
+  --build '<tested commit and package version>' \
+  --runtime '<verified compiler, Qt, codec versions and build preset>' \
+  --junit /path/to/ctest.xml --output build/device-check/mac.html
+```
+
+Use `--platform windows` for the short PC visit; it adds package startup and
+omits Apple notifications. The tester can enter the actual Windows version,
+microphone and headset in the page before evaluating checks. Editing that field
+resets observations, so results cannot silently migrate to a different setup.
+No headset means a blocked device-change observation, not a failed application
+or a request to buy hardware. A problem needs only a short note about the step;
+the maintainer investigates it before requesting another attempt.
+
+#### Windows delivery without on-site help
+
+1. Freeze the candidate revision and the existing release criteria. Run Windows
+   CI before the visit. A green older commit does not certify local edits; the
+   hosted runner is Windows Server 2022, not a Windows 10 hardware substitute.
+2. The Windows job prepares `squadspeak-windows-device-test.zip` as the separate
+   `windows-device-test` workflow artifact. It contains the packaged app, its
+   runtime DLLs, Microsoft's runtime installer, `device-test/Start.cmd`, two
+   isolated profiles and `device-test/Check.html`. The regular release ZIP stays
+   unchanged. CI runs the same launcher with `--smoke-test`, checking both
+   profiles through the packaged executable without opening microphones.
+3. Download and unpack the workflow artifact on the Mac before the visit. Verify
+   the successful run's revision and take its inner device-test ZIP on USB or
+   another normal file-transfer medium. The tester should not need GitHub
+   authentication, Python, PowerShell setup, Qt or a compiler. Do not substitute
+   the older private release draft for the verified candidate.
+4. On Windows, extract the whole inner ZIP and double-click
+   `device-test/Start.cmd`. The page explains local joining via `127.0.0.1:48764`,
+   approval, headphone routing, the short hearing check and saving the result.
+   This loopback setup avoids discovery variability for the listening check;
+   it is not LAN discovery evidence. The tester stops at a failure and brings
+   the JSON receipt plus a screenshot or the two `app.log` files. Never request
+   the profile directories: they contain device identities. Both apps are
+   closed through their tray menus with `Quit`; closing a window is not quitting.
+
+To prepare the same kit locally from an already extracted Windows package:
+
+```sh
+python3 tests/acceptance.py --platform windows --setup '' \
+  --build '<exact package revision>' --runtime '<verified build identity>' \
+  --junit /path/to/windows-ctest.xml \
+  --windows-package /path/to/extracted-package \
+  --output build/device-check/windows.html
+```
+
+The generator refuses to overwrite an existing `device-test` directory. Kits
+start quiet only on first use; subsequent starts restore their last audio state,
+as the app normally does. The instructions require checking the switches before
+another listening attempt. A blocked executable is recorded, not worked around
+by disabling Windows security. Missing C++ runtime uses the bundled signed
+installer. Subjective failures do not become requests for weekend debugging.
+
+The HTML file is an offline instruction/result sheet, not an app frontend.
+SquadSpeak remains native C++/Qt. The report's own tests only verify preparation
+and evidence handling; they are not application acceptance. Keep the candidate
+fixed while evaluating it, fix observed regressions with a reproducing test,
+and rerun affected automation before handing over a replacement. Do not reopen
+unrelated features or require repeated human checks after documentation changes.
+
+Keep the downloaded receipt privately with the release evidence, then pass it
+as `--previous /path/to/squadspeak-device-check.json` when preparing the next
+check. Matching setup, verified runtime identity, instructions and affected
+source hashes retain the original outcome, time and tested build. Documentation
+changes do not require another hearing test. Build inputs, shared UI/protocol
+code and unclassified runtime files conservatively invalidate all observations;
+known subsystem changes invalidate their checks. Missing runtime identity
+disables reuse. Review this mapping when moving responsibilities between files.
+This is traceability of human observations, not binary attestation or a cached
+release gate. The maintainer must match the supplied binary to the checkout and
+update the runtime identity for compiler, dependency or build-option changes.
+
+The page distinguishes pending, passed, failed and blocked checks. It preserves
+partial work through the downloaded receipt; it does not persist notes in the
+browser. Provided JUnit results show failed/skipped cases, including nested Qt
+skips, and identify their source file hashes. They are not assumed to be a full
+matrix. Never promote one headset observation to Bluetooth/room certification.
+Full acoustic echo/double-talk evidence is still separate; prepare one bounded
+session and keep usable evidence instead of repeating a broad manual checklist
+after every unrelated change. A/V timing and sustained performance remain
+automated engineering work, not subjective user checkboxes.
 
 The existing media contracts also support longer runs without retaining all
 received packets. Run them directly so a normal CTest timeout does not cut a
@@ -184,23 +307,35 @@ encoded bytes, codec and processing time, so a slow encoder is not reported as
 sender and receivers in one process and do not measure acoustic latency.
 
 The 64-client audio test keeps its 90% real-time playout threshold in
-uninstrumented builds. AddressSanitizer builds log that this timing assertion
-is disabled; they still require exact packet delivery and audible output.
+uninstrumented builds, both with normal scheduling and 45 ms delays to capture
+and playback callbacks. Network processing continues during those delays.
+Its source follows elapsed sample time. Its simulated output matches the app's
+80 ms sink and 10 ms refill cadence, with underruns counted rather than hidden.
+AddressSanitizer builds send the same packet count from the same speakers, but
+wait for each frame's fanout before sending the next. A five-second delivery
+deadline bounds each frame. They still require at least 95% packet delivery at
+every listener and audible output, without claiming realtime capacity.
 The 64-viewer test checks 1080p frame delivery and decoding, then isolates a
 delayed connection at the lowest video tier on every build. This permits the
 shared runner to adapt honestly when its own CPU cannot sustain 30 fps.
 
-The optional `license_provider_probe` target exercises the production `License`
-class against Lemon Squeezy. It is excluded from normal builds and CTest. Use a
-fresh test-mode license with three free slots and save the JSON response from
-`POST https://api.lemonsqueezy.com/v1/licenses/validate` privately. Build with
-`cmake --build build --target license_provider_probe`, then run
-`build/license_provider_probe /private/path/test-validation.json`. It checks three
-activations, persisted-slot reuse, rejection of a fourth device, deactivation and
-reuse, then releases its activations. It never uses the OS account's activation
-or keychain. A network failure can leave an uncertain slot; inspect the test
-license in the merchant dashboard before retrying. Never use a live customer key
-or commit the input file.
+`ctest --test-dir build -R '^license_contract$' --output-on-failure` runs
+Supporter sign-in and eligibility through a local HTTPS GitHub fixture. It drives
+the production controller with a mutable synthetic payment ledger and a controlled
+UTC clock. No purchase, GitHub account, keychain prompt or live provider is needed.
+Cases cover multiple payments to one tier, pagination, refunds, token rotation,
+rate limits, offline expiry, account changes, encrypted persistence and the real
+headless command path. UI cases in `channel_controls` cover the About controls.
+The fixture does not prove that GitHub exposes every future settlement/refund
+exactly like its documented activity schema.
+
+Direct builds use the public `SQUADSPEAK_GITHUB_CLIENT_ID` from CMake. Device flow
+requires `read:user`, not a client secret or repository write access. The owner,
+recipient database ID and one-time tier ID live in `License::distributionProduct`.
+The production query reads the canonical repository's `HEAD:CONTRIBUTORS.md`.
+Only a Markdown table row whose first cell is the authenticated numeric GitHub
+account ID grants the maintainer exemption. Local files, forks and display names
+do not grant it. Review changes to that file as access changes.
 
 On a Mac with Screen Recording permission, run the opt-in capture test:
 
@@ -286,9 +421,27 @@ after persistence, and connected members remain connected. Both commands accept
 `channelId` for an additional owned channel and create no participant. Avoid
 putting real secrets into shell history or logs.
 
-Desktop and headless share one Supporter activation per OS account, independently of server profiles. Direct builds with merchant configuration accept `{"command":"license","action":"activate","key":"YOUR-KEY"}` on stdin. Use `status`, `refresh` or `deactivate` as the action to inspect, check or release that slot. Replies include the confirmed expiry and support reference, never the key. `reset` additionally requires `"confirmed":true` and is only for a slot already released by support.
+Desktop and headless share one GitHub sign-in per OS account, independently
+of server profiles and without a device limit. Participating apps use
+`QStandardPaths::GenericConfigLocation/YunaSupporter/supporter.bin`. It contains
+encrypted tokens and confirmed eligibility. The encryption key is held by the
+OS keychain. The retired provider's `license.bin` is not accepted as a grant.
 
-With `--identity-file`, a new activation is encrypted using that protected file. The account receipt remembers its location so the desktop and other server profiles reuse the same slot. Keep that original file even if another host profile uses a different identity. Moving from existing keychain storage requires access to its original key first; unreadable storage never triggers another activation. Periodic checks and offline expiry are the same in both modes. Store builds do not activate external passes.
+Use `{"command":"license","action":"sign-in"}` on stdin. The response returns
+`userCode` and `verificationUrl` immediately. Open that GitHub URL and enter the
+code to authorize the app. `status` returns the account and entitlement,
+`refresh` checks after a new contribution, `cancel` stops a pending sign-in and
+`sign-out` clears the shared local session. Tokens never appear in replies.
+Signing out locally does not revoke the application's GitHub authorization.
+GitHub account settings can revoke that authorization separately.
+
+With `--identity-file`, a new session is encrypted using that protected file.
+The encrypted record's envelope remembers its location so desktop and other
+server profiles can reuse it. Keep the original file even if another host profile
+uses a different identity. Migrating an existing keychain record requires access
+to its original encryption key. Checks run at startup and daily, with bounded
+retry delays and at most seven days of confirmed offline access. Store builds
+exclude external sign-in and Supporter extras.
 
 ## Protocol extensions
 
@@ -326,8 +479,7 @@ speakers' packets after reuse. A bounded 20 ms reorder window drops stale packet
 the existing Opus decoder conceals at most six missing frames. TLS fallback uses
 the same sequence space. Unknown valid media kinds/fields preserve baseline audio.
 The library callback mailbox is bounded, Qt timers belong to their Qt owner, and
-process teardown waits for library cleanup. See [verification](verification.md)
-for measured latency, lifecycle and load coverage.
+process teardown waits for library cleanup. Run the transport and mixer contracts for latency, lifecycle and load checks.
 
 Screen video negotiates `udp-screen` on its separate, admitted TLS connection.
 Frames and decode acknowledgments prefer an unordered WebRTC DataChannel using
@@ -364,12 +516,29 @@ GitHub permits squash merges only and removes merged branches automatically.
 
 Versions are UTC calendar dates in SemVer form: `YYYY.M.D`, without leading zeroes. `cmake/Version.cmake` is the canonical resolver. CI resolves a release version once and supplies it to every package job.
 
-`verify.yml` is callable by other workflows and runs desktop builds, protocol/UI tests, sanitizer checks and installed-package smoke tests. `release.yml` reuses it before assembling checksummed assets into a draft preview. Publication must use the exact tested revision. Existing tags/releases are not silently replaced.
+`verify.yml` is callable by other workflows and runs desktop builds, protocol/UI
+tests, sanitizer checks and installed-package smoke tests. Run `release.yml` on
+`main` to publish a regular desktop release. It resolves the UTC version once,
+rejects an existing tag or release before starting builds, and reuses the full
+verification matrix. Failed API requests also stop the preflight; they are not
+treated as a free version number.
+
+Publication requires matching signed macOS appcasts and all five desktop
+archives, the standalone Windows test kit and corresponding third-party sources.
+Checksums include the appcasts and generated Homebrew cask. Uploads go into a
+draft first; only a complete upload becomes a public latest release. Existing
+published packages are never replaced. If upload/publication fails, inspect the
+private draft before deleting it and retrying; do not silently replace a public
+version. The source revision stays fixed throughout the workflow. Native package
+tests run before publication; physical device observations follow the initial
+release under U139.
 
 For a focused manual check, use
 `gh workflow run verify.yml --ref <branch> -f platform=windows` (also `linux`,
-`macos`, `sanitizers`, or `all`). Pushes, pull requests and the reusable release
+`macos`, `sanitizers`, or `all`). Pushes to main, pull requests and the reusable release
 call always run every platform. A focused run does not replace the release gate.
+Feature pushes are checked by their pull request, avoiding a duplicate matrix
+for the same branch update.
 
 The separate `squadspeak-third-party-sources.tar.gz` release asset contains the
 pinned dependency archives, Qt SDK sources and Abseil build patch. Build it with
@@ -390,10 +559,10 @@ The release job generates `squadspeak.rb` from both verified macOS archives with
 After the first stable release, add that cask to `YunaBraska/homebrew-tap/Casks`.
 The tap's existing updater then follows stable releases through its repository
 and asset markers. The cask installs the app and exposes `squadspeak` for CLI use.
-Draft previews are not an installable tap release; Linux packages are not a
+Drafts and prereleases are ignored by the tap updater; Linux packages are not a
 Homebrew formula.
 
-macOS preview bundles use ad-hoc signatures. Developer ID signing, notarization and store accounts are separate release work. Store builds exclude external Supporter purchasing and activation. No signing credentials belong in this repository.
+macOS bundles currently use ad-hoc signatures. Quit running copies before replacing their bundles. An ad-hoc code identity changes with the build, so privacy permissions can require renewed approval even when System Settings still shows an enabled entry. Stable permissions across builds require a consistent signing identity. For the local A/B copies, `tests/prepare_two_apps.py` defaults to the existing `SquadSpeak Local Development` identity. Use `--sign-identity` to select another existing development identity. Reuse its private key and keep the bundle identifiers, install paths and data profiles stable across builds. Do not provision a new certificate for each build or test copy. Never commit private keys. Developer ID signing, notarization and store accounts are separate distribution work. Store builds exclude external Supporter purchasing and activation. No signing credentials belong in this repository.
 
 Direct macOS packages use pinned Sparkle 2.10.0 for updates. Set the repository
 variable `SQUADSPEAK_UPDATE_PUBLIC_KEY` to its base64 Ed25519 public key and the
@@ -406,18 +575,138 @@ installation and restart require a click. Draft prereleases are deliberately
 excluded from the stable `releases/latest` feeds.
 
 Update signing is separate from Apple's Developer ID and notarization. The
-release job fails on a mismatched pair and produces no appcast when keys are
-missing. Keep a private backup of the signing seed; losing it prevents ordinary
+release job fails on a mismatched pair or missing keys. Keep a private backup
+of the signing seed; losing it prevents ordinary
 updates to already distributed clients. See [Sparkle publishing](https://sparkle-project.org/documentation/publishing/).
 
 ## iPhone and iPad
 
 Before Store publication, review the selected distribution terms against the project's GPL-3.0-only license and the exact bundled Qt/dependency licenses. Source availability and signing credentials alone do not establish compatibility. Qt's [open-source licensing FAQ](https://www.qt.io/faq/qt-open-source-licensing) explicitly makes this a per-Store check. No commercial Qt license, project-license exception or relicensing has been selected; any such change needs a separate decision.
 
-Keep the channel/chat layout, themes, portraits and shared QML controls. Adapt the containing window to safe areas, touch targets, the software keyboard and iPad resizing. Mobile needs a normal app entrypoint instead of a tray; double-click and hover affordances need equivalent tap/long-press controls.
+Keep the channel/chat layout, themes, portraits and shared QML controls. Adapt the containing window to safe areas, touch targets, the software keyboard and iPad resizing. The mobile entrypoint opens a normal window without a tray. Double-click and hover affordances still need a complete tap/long-press review.
 
-The current desktop build is not an iOS package. Qt 6.11 supports iOS/iPadOS 17 or later, but desktop FFmpeg deployment, helper-process image decoding, global keyboard hooks, screen capture and notification setup need mobile-specific integration. The [Qt platform table](https://doc.qt.io/qt-6.11/supported-platforms.html) describes the supported SDK/device configurations.
+The iOS build now has a reproducible Simulator path. The pinned Qt 6.11.3 kit provides an arm64 device slice and an x86_64 Simulator slice. On Apple Silicon, the x86_64 Simulator build requires Rosetta and the installed universal iOS 26 Simulator runtime. The dependency script currently builds the Simulator only. It does not certify an arm64 device package or device/runtime parity. The [Qt platform table](https://doc.qt.io/qt-6.11/supported-platforms.html) describes the supported SDK and device configurations.
+
+Build the target dependencies into a clean prefix. The prefix must match the SDK, architecture and deployment target. Do not point an iOS build at host macOS libraries:
+
+```sh
+IOS_ARCH=x86_64 sh cmake/build-mobile-dependencies.sh ios-simulator \
+  /private/tmp/squadspeak-ios-deps-x86-v3 \
+  /private/tmp/squadspeak-ios-deps-x86-build 17.0
+```
+
+Configure and build with the matching Qt iOS kit and the macOS Qt host tools. Choose a simulator ID from `xcrun simctl list devices available` before configuring:
+
+```sh
+DEVICE_ID='replace-with-simulator-udid'
+IOS_QT="$HOME/Library/Caches/squadspeak-qt/6.11.3/ios"
+"$IOS_QT/bin/qt-cmake" -S . -B build/ios-simulator -G Ninja \
+  -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=ON \
+  -DCMAKE_OSX_SYSROOT=iphonesimulator \
+  -DCMAKE_OSX_ARCHITECTURES=x86_64 -DCMAKE_OSX_DEPLOYMENT_TARGET=17.0 \
+  -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+  -DSQUADSPEAK_STORE_BUILD=ON \
+  -DSQUADSPEAK_MOBILE_DEPS_ROOT=/private/tmp/squadspeak-ios-deps-x86-v3 \
+  -DQT_HOST_PATH="$HOME/Library/Caches/squadspeak-qt/6.11.3/macos" \
+  -DCMAKE_PREFIX_PATH="$IOS_QT" \
+  -DSQUADSPEAK_IOS_SIMULATOR_DEVICE_ID="$DEVICE_ID"
+cmake --build build/ios-simulator --parallel 2
+```
+
+Boot and install the application and the supported simulator contracts:
+
+```sh
+DEVICE_ID='replace-with-simulator-udid'
+xcrun simctl boot "$DEVICE_ID"
+xcrun simctl install "$DEVICE_ID" build/ios-simulator/squadspeak.app
+xcrun simctl launch --console-pty --arch=x86_64 "$DEVICE_ID" app.squadspeak.desktop --smoke-test
+ctest --test-dir build/ios-simulator --output-on-failure \
+  -R '^(chat_content_contract|channel_controls|channel_contract|mixer_contract|media_transport_contract|video_contract)$'
+```
+
+CTest automatically installs each test app before launching it through `simctl`. It runs shared image, mixer and media-transport tests plus selected channel, video and QML interaction cases. Test bundles use the same device-family and launch metadata as the app. It does not register desktop capture or process-worker tests. Simulator tests run serially on the selected device and fail on Qt Test assertions even when `simctl` exits successfully. The app needs the Qt Multimedia and imageformats modules in the iOS kit, plus the target FFmpeg archives built by the dependency script.
+
+The chat UI selection requests real native portrait and landscape geometry and
+checks that rotation preserves the reading anchor and draft. It also opens the
+software keyboard and checks the Send control. A rejected native orientation
+request is a failed check, not evidence from a resized desktop window. On iPadOS
+26, some window modes reject programmatic orientation changes. Use a simulator
+window mode that permits rotation or perform device rotation before accepting
+that case. Keep software keyboards enabled when running these checks.
+
+The x86_64 Simulator codec disables x86 SIMD after color round trips exposed corruption under translation on Apple Silicon. These tests establish correctness, not native arm64 device performance. The remaining mobile work includes broader safe-area and touch review, local-network permission handling, notification integration and background lifecycle review. Native screen capture, microphone permissions, background hosting and physical hardware remain unsupported by this Simulator smoke path.
+
+The iOS 26 runtime used here fails the Chinese glyph assertion. A standalone CoreText probe reproduces missing glyphs with both x86_64 and arm64 binaries. Keep the language assertion enabled. A font-family alias does not fix the runtime's LastResort substitution. Verify another runtime or a physical device before claiming complete mobile font coverage.
 
 Local discovery needs the local-network privacy declaration and, for raw multicast on iOS, the relevant entitlement. Ask for permission in the foreground and provide direct-address entry when discovery is unavailable. Follow [Apple's local-network guidance](https://developer.apple.com/documentation/technotes/tn3179-understanding-local-network-privacy).
 
 An iPhone cannot be promised to run a silent hosting service indefinitely while suspended. Background audio/VoIP modes must serve their actual purpose; preventing idle display sleep while foregrounded does not grant background execution. Preserve hosted channel data and reconnect state across suspension. See [App Review Guidelines, 2.5.4](https://developer.apple.com/app-store/review/guidelines/).
+
+## Android emulator
+
+Use Qt 6.11.3 `android_arm64_v8a`, matching desktop host tools, NDK
+27.2.12479018, SDK/build-tools 36 and a complete JDK. The verified local JDK is
+Temurin 25.0.4. The installed GraalVM 21.0.2 distribution fails Gradle's Android
+JDK image transform. API 28 below is a build-test baseline, not an agreed
+minimum supported Android release.
+
+```sh
+export JAVA_HOME=/path/to/temurin-25/Contents/Home
+export ANDROID_SDK_ROOT="$HOME/Library/Android/sdk"
+export ANDROID_NDK_ROOT="$ANDROID_SDK_ROOT/ndk/27.2.12479018"
+export ANDROID_SERIAL=emulator-5554
+ANDROID_QT=/path/to/Qt/6.11.3/android_arm64_v8a
+MOBILE_ARCH=arm64 sh cmake/build-mobile-dependencies.sh android \
+  /private/tmp/squadspeak-android-deps-arm64 \
+  /private/tmp/squadspeak-android-build-arm64 28
+"$ANDROID_QT/bin/qt-cmake" -S . -B build/android-arm64 -G Ninja \
+  -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=ON \
+  -DANDROID_ABI=arm64-v8a -DANDROID_PLATFORM=android-28 \
+  -DANDROID_SUPPORT_FLEXIBLE_PAGE_SIZES=ON \
+  -DQT_HOST_PATH=/path/to/Qt/6.11.3/macos \
+  -DSQUADSPEAK_MOBILE_DEPS_ROOT=/private/tmp/squadspeak-android-deps-arm64 \
+  -DSQUADSPEAK_STORE_BUILD=ON -DQT_ANDROID_DEPLOYMENT_TYPE=Debug
+cmake --build build/android-arm64 --target squadspeak_make_apk --parallel 4
+ctest --test-dir build/android-arm64 --output-on-failure
+```
+
+Start an AOSP API 36 arm64 AVD before CTest. Qt's `androidtestrunner` builds,
+installs and removes each isolated test APK. `run_android_test.py` additionally
+checks device logs for fatal errors from that test process, including errors
+after QtTest returned success. Tests share one emulator resource lock.
+Native C++ is optimized, while Debug deployment provides a disposable
+APK signing key and `run-as` access. It is not a Store-signed release.
+
+Production and UI-test packages share the same small Activity wrapper. On Android
+15 and newer it applies system-bar, display-cutout and keyboard insets to the Qt
+surface. The manifest requests `adjustResize` on older releases. Chat temporarily hides the lower
+voice toolbar while the mobile software keyboard is visible and restores it
+when the keyboard closes. Very short keyboard viewports keep the destination
+Channel and composer visible, temporarily omitting the roster,
+retention label and video preview. The Android input test sends a native MotionEvent
+through the Activity and commits text through the native InputConnection before
+checking delivery. QML focus alone does not prove an Android IME connection.
+
+UI-test resources use Qt's `BIG_RESOURCES` mode in the test target's own CMake
+directory. Large portrait sheets are linked as resource data rather than
+recompiled as hundreds of megabytes of C++ after each QML change.
+
+The common dependency builder retains separate target prefixes and validates
+architecture on reuse. Android uses the exact FFmpeg 7.1.5 shared runtime from
+its Qt kit, plus matching headers, rather than loading a second codec build.
+OpenSSL uses distinct `_3` filenames and SONAMEs. The APK and native libraries
+are aligned for 16 KiB pages. The current emulator runs 4 KiB pages, so this
+does not establish 16 KiB runtime behavior.
+
+The Android app and test environment set `QT_ANDROID_NO_EXIT_CALL=1`. Qt still
+destroys the application and finishes its Activity, then Android terminates the
+process. This avoids the additional native `exit()` racing detached HWUI workers
+on API 36. The app's scoped resource owners and media-runtime cleanup finish
+first. Qt's [post-routine contract](https://doc.qt.io/qt-6/qcoreapplication.html#qAddPostRoutine)
+ties that cleanup to QCoreApplication destruction, not process-wide static
+destruction. Keep the process crash log as well as Qt Test results.
+
+Bounded image decoding needs its own Android decision. Native capture,
+notifications, background hosting and hardware audio remain outside this
+emulator acceptance. Functional assertions alone do not pass the mobile
+release gate.

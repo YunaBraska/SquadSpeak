@@ -276,7 +276,7 @@ bool ScreenShare::updateNativeAudio() {
     captureTick_.start(); return true;
 }
 void ScreenShare::pollNative() {
-    if (!active()) { stop(); return; }
+    if (!capturing()) { stop(); return; }
     auto& state = *static_cast<LinuxCapture*>(native_);
     std::array<float, 960> samples{};
     const auto hasAudio = state.read(samples);
@@ -288,7 +288,7 @@ void ScreenShare::pollNative() {
     }
 }
 void ScreenShare::checkNativeSource() {
-    if (!native_ || !active()) return;
+    if (!native_ || !capturing()) return;
     const auto& state = *static_cast<LinuxCapture*>(native_);
     if (capture_.windowCapture() && (!window_.window().isValid()
             || (state.selected && (state.windowPid(state.selected) != state.pid || processInfo(state.pid).value(19) != state.birth))))

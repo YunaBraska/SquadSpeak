@@ -637,10 +637,6 @@
             <translation>Kanal ni na voljo</translation>
         </message>
         <message>
-            <source>Join voice</source>
-            <translation>Pridruži se glasovnemu kanalu</translation>
-        </message>
-        <message>
             <source>System (automatic)</source>
             <translation>Sistem (samodejno)</translation>
         </message>
@@ -873,10 +869,6 @@
             <translation>Samodejno združevanje</translation>
         </message>
         <message>
-            <source>Leave channel</source>
-            <translation>Zapusti kanal</translation>
-        </message>
-        <message>
             <source>Stream URL</source>
             <translation>URL toka</translation>
         </message>
@@ -1093,48 +1085,16 @@
             <translation>ID naprave</translation>
         </message>
         <message>
-            <source>Activate</source>
-            <translation>Aktiviraj</translation>
-        </message>
-        <message>
-            <source>Buy annual pass</source>
-            <translation>Kupite letno karto</translation>
-        </message>
-        <message>
             <source>Check now</source>
             <translation>Preverite zdaj</translation>
-        </message>
-        <message>
-            <source>Deactivate</source>
-            <translation>Deaktiviraj</translation>
         </message>
         <message>
             <source>Free version</source>
             <translation>Brezplačna različica</translation>
         </message>
         <message>
-            <source>License key</source>
-            <translation>Licenčni ključ</translation>
-        </message>
-        <message>
             <source>Not available yet</source>
             <translation>še ni na voljo</translation>
-        </message>
-        <message>
-            <source>Reset</source>
-            <translation>Ponastavi</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot.</source>
-            <translation>Ponastavite šele, ko podpora sprosti režo naprave.</translation>
-        </message>
-        <message>
-            <source>Resolve activation</source>
-            <translation>Razreši aktivacijo</translation>
-        </message>
-        <message>
-            <source>Support reference</source>
-            <translation>Referenca za podporo</translation>
         </message>
         <message>
             <source>Supporter</source>
@@ -1200,7 +1160,35 @@
             <source>App audio</source>
             <translation>Zvok aplikacije</translation>
         </message>
-</context>
+        <message>
+            <source>Account: %1</source>
+            <translation>Račun: %1</translation>
+        </message>
+        <message>
+            <source>Signed in as %1</source>
+            <translation>Prijavljen kot %1</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub</source>
+            <translation>Prijavite se z GitHub</translation>
+        </message>
+        <message>
+            <source>Verification code</source>
+            <translation>Koda za preverjanje</translation>
+        </message>
+        <message>
+            <source>Open GitHub</source>
+            <translation>Odprite GitHub</translation>
+        </message>
+        <message>
+            <source>Sign out</source>
+            <translation>Odjavite se</translation>
+        </message>
+        <message>
+            <source>This device</source>
+            <translation>Ta naprava</translation>
+        </message>
+    </context>
     <context>
         <name>ChatContent</name>
         <message>
@@ -1417,10 +1405,6 @@
     </context>
     <context>
         <name>LocalChannel</name>
-        <message>
-            <source>Encrypted join failed: %1</source>
-            <translation>Šifrirana pridružitev ni uspela: %1</translation>
-        </message>
         <message>
             <source>Host is not responding. Reconnecting.</source>
             <translation>Gostitelj se ne odziva. Ponovno povezovanje.</translation>
@@ -2613,40 +2597,32 @@
     <context>
         <name>License</name>
         <message>
-            <source>Activation was declined. Check your key and available device slots.</source>
-            <translation>Aktivacija je bila zavrnjena. Preverite svoj ključ in razpoložljive reže za naprave.</translation>
-        </message>
-        <message>
-            <source>An activation is unresolved. Contact support before trying again.</source>
-            <translation>Aktivacija ni razrešena. Pred ponovnim poskusom se obrnite na podporo.</translation>
-        </message>
-        <message>
-            <source>Deactivation was declined. Contact support.</source>
-            <translation>Deaktivacija je bila zavrnjena. Obrnite se na podporo.</translation>
-        </message>
-        <message>
-            <source>Enter a valid license key.</source>
-            <translation>Vnesite veljaven licenčni ključ.</translation>
-        </message>
-        <message>
             <source>License storage is busy or unavailable.</source>
             <translation>Shramba licence je zasedena ali ni na voljo.</translation>
         </message>
         <message>
             <source>License storage is unavailable.</source>
-            <translation>Shramba licence ni na voljo.</translation>
+            <translation>Shranjevanje licence ni na voljo.</translation>
         </message>
         <message>
-            <source>The license could not be checked. Your confirmed expiry is unchanged.</source>
-            <translation>licence ni bilo mogoče preveriti. Vaš potrjen potek je nespremenjen.</translation>
+            <source>Sign-in expired. Try again.</source>
+            <translation>Prijava je potekla. poskusi ponovno</translation>
         </message>
         <message>
-            <source>The license or device activation is no longer valid.</source>
-            <translation>Licenca ali aktivacija naprave ni več veljavna.</translation>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>Prijava v GitHub ni na voljo. poskusi ponovno</translation>
         </message>
         <message>
-            <source>The license response does not match this annual pass.</source>
-            <translation>Odgovor o licenci se ne ujema s to letno vozovnico.</translation>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>Prijava v GitHub ni bila dokončana. poskusi ponovno</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>GitHub ni bilo mogoče preveriti. Dostop brez povezave traja največ sedem dni.</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>Ponovno se prijavite z GitHub.</translation>
         </message>
     </context>
     <context>
@@ -2658,10 +2634,6 @@
         <message>
             <source>The shared window was closed. Select a source to start again.</source>
             <translation>Okno v skupni rabi je bilo zaprto. Izberite vir, da začnete znova.</translation>
-        </message>
-        <message>
-            <source>Screen sharing requires an active Supporter pass on the owning host.</source>
-            <translation>Skupna raba zaslona zahteva aktivno licenco Supporter pri gostitelju, ki jo ima.</translation>
         </message>
         <message>
             <source>The selected screen is no longer available.</source>
@@ -2705,6 +2677,10 @@
         <message>
             <source>Screen stream</source>
             <translation>Tok zaslona</translation>
+        </message>
+        <message>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
         </message>
     </context>
     <context>
@@ -2973,10 +2949,6 @@
             <translation>Lokalni brezglavi gostitelj kanala SquadSpeak</translation>
         </message>
         <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>Prednost nastavitev: argumenti &gt; okolje &gt; lastnosti &gt; shranjene nastavitve strežnika.</translation>
-        </message>
-        <message>
             <source>Environment variables (SQUADSPEAK_ prefix):</source>
             <translation>Okoljske spremenljivke (predpona SQUADSPEAK_):</translation>
         </message>
@@ -3031,26 +3003,6 @@
         <message>
             <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
             <translation>Izbirni ID lastnega kanala za ukaze status, configure, password, admission, history, chat in radio; privzeto glavni kanal.</translation>
-        </message>
-        <message>
-            <source>License action must be status, activate, refresh, deactivate or reset.</source>
-            <translation>Dejanje licence mora biti status, activate, refresh, deactivate ali reset.</translation>
-        </message>
-        <message>
-            <source>A license operation is in progress.</source>
-            <translation>Licenčna operacija je v teku.</translation>
-        </message>
-        <message>
-            <source>Supporter activation is unavailable in this build.</source>
-            <translation>Aktivacija Supporter v tej gradnji ni na voljo.</translation>
-        </message>
-        <message>
-            <source>A license key is required.</source>
-            <translation>Potreben je licenčni ključ.</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot. Set confirmed=true to proceed.</source>
-            <translation>Ponastavi šele, ko podpora sprosti režo naprave. Nadaljuj z nastavitvijo confirmed=true.</translation>
         </message>
         <message>
             <source>Channel action must be list, add or remove.</source>
@@ -3231,6 +3183,22 @@
         <message>
             <source>SquadSpeak headless could not start: %1</source>
             <translation>Brezglavega gostitelja SquadSpeak ni bilo mogoče zagnati: %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>Dejanje podpornika mora biti stanje, prijava, osvežitev, odjava ali preklic. status sign-in refresh sign-out cancel</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>Operacija Supporter je v teku.</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>Dostop za podporo v tej zgradbi ni na voljo.</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>Prednost nastavitev: argumenti &gt; okolje &gt; lastnosti &gt; shranjene vrednosti strežnika.</translation>
         </message>
     </context>
     <context>

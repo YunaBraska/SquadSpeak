@@ -6,6 +6,7 @@
 #include "radio_player.hpp"
 #include <QBuffer>
 #include <QFile>
+#include <QJsonArray>
 #include <QJsonDocument>
 #include <QRegularExpression>
 #include <QSslServer>
@@ -13,38 +14,37 @@
 #include <QTemporaryDir>
 #include <QTest>
 #include <QSignalSpy>
-#include <QUrlQuery>
-#include <QElapsedTimer>
 #include <QTimeZone>
 #include <memory>
-#ifdef Q_OS_LINUX
-#include <qtkeychain/keychain.h>
-#include <QCryptographicHash>
-#include <QScopeGuard>
-#endif
 
 namespace {
-const QJsonObject product{{"store_id", 10}, {"product_id", 20}, {"variant_id", 30}};
-const QString key = "example+license-key";
-const qint64 start = QDateTime::fromString("2026-10-03T12:00:00Z", Qt::ISODate).toMSecsSinceEpoch();
+constexpr qint64 day = 86400000;
+const qint64 start = QDateTime::fromString("2026-10-08T12:00:00Z", Qt::ISODate).toMSecsSinceEpoch();
+const QJsonObject product{{"client_id", "fixture-client"}, {"recipient_id", 100},
+    {"tier_id", "ST_fixture"}, {"owner", "fixture-owner"}, {"repository", "fixture-app"}};
 
-QJsonObject accepted(const QString& action, QString instance = "device-1") {
-    return {{action == "activate" ? "activated" : action == "deactivate" ? "deactivated" : "valid", true},
-        {"error", QJsonValue::Null},
-        {"license_key", QJsonObject{{"id", 40}, {"key", key}, {"status", "active"}, {"activation_limit", 3},
-            {"activation_usage", 1}, {"expires_at", "2027-10-03T12:00:00.000Z"}}},
-        {"instance", instance.isEmpty() ? QJsonValue(QJsonValue::Null) : QJsonValue(QJsonObject{{"id", instance}})},
-        {"meta", QJsonObject{{"store_id", 10}, {"product_id", 20}, {"variant_id", 30}, {"order_id", 50}}}};
-}
-
-class Provider final : public QSslServer {
+// A stateful GitHub HTTPS boundary. Tests change its payment ledger and clock,
+// then drive the same sign-in/check methods used by QML and the terminal.
+class GitHub final : public QSslServer {
 public:
-    QList<QPair<int, QJsonObject>> replies;
-    QList<QString> actions;
-    QList<QUrlQuery> forms;
-    QString holdAction;
-    std::function<void(const QString&)> onAction;
-    Provider() {
+    QJsonArray ledger;
+    QString contributorFile;
+    qint64 viewerId = 200;
+    QString login = "fixture-member";
+    QString accessToken = "fixture-access-token";
+    QStringList paths, failures, pollErrors;
+    QList<QJsonObject> requests;
+    bool authorized = false, expiringTokens = false;
+    QString refreshToken = "fixture-refresh-token";
+    int rotations = 0;
+    int status = 200, pageSize = 2;
+    QString holdPath, unauthorizedCursor;
+    bool unauthorizedSent = false;
+    QByteArray extraHeaders, bodyOverride;
+    QString verificationOverride;
+    std::function<void(QJsonObject&)> alter;
+    std::function<void()> beforeResponse;
+    GitHub() {
         auto configuration = TlsIdentity::create().configuration();
         configuration.setPeerVerifyMode(QSslSocket::VerifyNone);
         configuration.setMissingCertificateIsFatal(false);
@@ -62,548 +62,494 @@ public:
                         .match(QString::fromLatin1(data->first(end)));
                     if (!match.hasMatch() || data->size() < end + 4 + match.captured(1).toInt()) return;
                     disconnect(socket, &QSslSocket::readyRead, this, nullptr);
-                    actions.append(QString::fromLatin1(data->split(' ').at(1)).section('/', -1));
-                    forms.append(QUrlQuery(QString::fromUtf8(data->mid(end + 4))));
-                    if (onAction) onAction(actions.last());
-                    if (actions.last() == holdAction) return;
-                    const auto response = replies.isEmpty() ? QPair<int, QJsonObject>{503, {}} : replies.takeFirst();
-                    const auto body = QJsonDocument(response.second).toJson(QJsonDocument::Compact);
-                    socket->write("HTTP/1.1 " + QByteArray::number(response.first) + " Result\r\nContent-Type: application/json\r\nContent-Length: "
-                        + QByteArray::number(body.size()) + "\r\nConnection: close\r\n\r\n" + body);
+                    const auto path = QString::fromLatin1(data->split(' ').at(1));
+                    const auto input = QJsonDocument::fromJson(data->mid(end + 4)).object();
+                    paths << path; requests << input;
+                    if (path == holdPath) return;
+                    auto response = route(path, input, data->first(end));
+                    int responseStatus = status;
+                    if (path == "/graphql" && !unauthorizedCursor.isEmpty() && !unauthorizedSent
+                        && input.value("variables").toObject().value("after") == unauthorizedCursor) {
+                        responseStatus = 401; unauthorizedSent = true;
+                    }
+                    if (alter && path == "/graphql" && input.value("query").toString().contains("sponsorsActivities")) alter(response);
+                    if (beforeResponse && path == "/graphql") beforeResponse();
+                    const auto body = bodyOverride.isEmpty() ? QJsonDocument(response).toJson(QJsonDocument::Compact) : bodyOverride;
+                    socket->write("HTTP/1.1 " + QByteArray::number(responseStatus) + " Result\r\nContent-Type: application/json\r\nContent-Length: "
+                        + QByteArray::number(body.size()) + "\r\n" + extraHeaders + "Connection: close\r\n\r\n" + body);
                     socket->disconnectFromHost();
                 };
                 connect(socket, &QSslSocket::readyRead, this, read);
                 read();
             }
         });
-        if (!listen(QHostAddress::LocalHost)) throw std::runtime_error("License fixture could not listen.");
+        if (!listen(QHostAddress::LocalHost)) throw std::runtime_error("GitHub fixture could not listen.");
     }
-    QUrl url() const { return QUrl(QString("https://127.0.0.1:%1/licenses/").arg(serverPort())); }
-    void acceptActivation() { replies << qMakePair(200, accepted("validate", {})) << qMakePair(200, accepted("activate")); }
+    QUrl oauth() const { return QUrl(QString("https://127.0.0.1:%1").arg(serverPort())); }
+    QUrl url() const { return oauth().resolved(QUrl("/graphql")); }
+    void payment(QString id, qint64 timestamp, QString action = "NEW_SPONSORSHIP", QString tier = "ST_fixture", qint64 recipient = 100, qint64 payer = 200) {
+        ledger.append(QJsonObject{{"id", id}, {"action", action},
+            {"timestamp", QDateTime::fromMSecsSinceEpoch(timestamp, QTimeZone::UTC).toString(Qt::ISODateWithMs)},
+            {"sponsor", QJsonObject{{"databaseId", payer}}}, {"sponsorable", QJsonObject{{"databaseId", recipient}}},
+            {"sponsorsTier", QJsonObject{{"id", tier}, {"isOneTime", true}, {"monthlyPriceInCents", 1200}}}});
+    }
+private:
+    QJsonObject tokenResponse() const {
+        QJsonObject result{{"access_token", accessToken}, {"scope", "read:user"}, {"token_type", "bearer"}};
+        if (expiringTokens) {
+            result.insert("refresh_token", refreshToken); result.insert("expires_in", 28800);
+            result.insert("refresh_token_expires_in", 15897600);
+        }
+        return result;
+    }
+    QJsonObject route(const QString& path, const QJsonObject& input, const QByteArray& headers) {
+        if (path == "/login/device/code") {
+            if (input != QJsonObject{{"client_id", "fixture-client"}, {"scope", "read:user"}}) failures << "device request";
+            return {{"device_code", "fixture-device-secret"}, {"user_code", "ABCD-EFGH"},
+                {"verification_uri", verificationOverride.isEmpty() ? oauth().resolved(QUrl("/login/device")).toString() : verificationOverride}, {"interval", 5}, {"expires_in", 900}};
+        }
+        if (path == "/login/oauth/access_token") {
+            if (input.value("grant_type") == "refresh_token") {
+                if (input != QJsonObject{{"client_id", "fixture-client"}, {"refresh_token", refreshToken}, {"grant_type", "refresh_token"}})
+                    return {{"error", "bad_refresh_token"}};
+                if (status != 200) return {};
+                ++rotations;
+                accessToken = QString("rotated-access-%1").arg(rotations);
+                refreshToken = QString("rotated-refresh-%1").arg(rotations);
+                return tokenResponse();
+            }
+            if (input != QJsonObject{{"client_id", "fixture-client"}, {"device_code", "fixture-device-secret"},
+                {"grant_type", "urn:ietf:params:oauth:grant-type:device_code"}}) failures << "token request";
+            if (!pollErrors.isEmpty()) return {{"error", pollErrors.takeFirst()}};
+            if (!authorized) return {{"error", "authorization_pending"}};
+            return tokenResponse();
+        }
+        if (path != "/graphql") { failures << "unknown endpoint"; return {}; }
+        if (!headers.contains("Authorization: Bearer " + accessToken.toUtf8())) failures << "missing bearer";
+        const auto query = input.value("query").toString();
+        if (query == "query { viewer { databaseId login } }")
+            return {{"data", QJsonObject{{"viewer", QJsonObject{{"databaseId", viewerId}, {"login", login}}}}}};
+        if (!query.contains("includeAsSponsor:true") || !query.contains("includePrivate:true")
+            || !query.contains("actions:[NEW_SPONSORSHIP,REFUND]") || !query.contains("HEAD:CONTRIBUTORS.md")) failures << "query contract";
+        const auto variables = input.value("variables").toObject();
+        if (variables.value("owner") != "fixture-owner" || variables.value("repository") != "fixture-app") failures << "wrong repository";
+        const auto offset = variables.value("after").toString().toInt();
+        QJsonArray nodes;
+        for (int i = offset; i < ledger.size() && i < offset + pageSize; ++i) nodes.append(ledger[i]);
+        return {{"data", QJsonObject{{"viewer", QJsonObject{{"databaseId", viewerId}, {"login", login},
+            {"sponsorsActivities", QJsonObject{{"nodes", nodes}, {"pageInfo", QJsonObject{
+                {"hasNextPage", offset + pageSize < ledger.size()}, {"endCursor", QString::number(offset + pageSize)}}}}}}},
+            {"repository", QJsonObject{{"object", contributorFile.isEmpty() ? QJsonValue(QJsonValue::Null)
+                : QJsonValue(QJsonObject{{"text", contributorFile}, {"isTruncated", false}})}}}}}};
+    }
 };
+void advanceAuthorization(License& license, qint64& time) {
+    QTRY_VERIFY(license.pending());
+    time += 5000;
+    QVERIFY(license.refreshIfDue());
+    QTRY_VERIFY_WITH_TIMEOUT(!license.busy(), 5000);
+}
+void checked(License& license) {
+    QVERIFY(license.refresh());
+    QTRY_VERIFY_WITH_TIMEOUT(!license.busy(), 5000);
+}
 }
 
 class LicenseTests final : public QObject {
     Q_OBJECT
     QSslConfiguration original_;
 private slots:
-    void distributionCannotEnablePurchasesInStoreBuilds() {
+    void distributionBoundary() {
         QTemporaryDir dir;
-        License license(dir.path(), product, QUrl("https://api.lemonsqueezy.com/v1/licenses/"));
+        License license(dir.path(), product, QUrl("https://api.github.com/graphql"));
 #if SQUADSPEAK_STORE_BUILD
-        QVERIFY(!license.configured()); QVERIFY(!license.activate(key)); QVERIFY(!license.refresh());
-        QVERIFY(!license.deactivate()); QVERIFY(!license.resetActivation()); QVERIFY(!license.active());
+        QVERIFY(!license.configured()); QVERIFY(!license.signIn()); QVERIFY(!license.signOut());
+        QVERIFY(!license.refresh()); QVERIFY(!license.active());
         QVERIFY(License::distributionProduct().isEmpty()); QVERIFY(License::purchaseUrl().isEmpty());
         QVERIFY(QDir(dir.path()).entryList(QDir::Files).isEmpty());
 #else
         QVERIFY(license.configured()); QVERIFY(License::directDistribution());
+        QCOMPARE(License::purchaseUrl().host(), "github.com");
 #endif
     }
 #if !SQUADSPEAK_STORE_BUILD
     void initTestCase() {
-        qputenv("QT_SSL_USE_TEMPORARY_KEYCHAIN", "1");
         original_ = QSslConfiguration::defaultConfiguration();
-        // Only these loopback fixture certificates are self-signed. A separate
-        // case below restores normal verification and proves rejection.
+        // Isolated loopback fixture only. Production has no TLS bypass. A test
+        // below restores certificate verification and proves rejection.
         auto fixtureTls = original_; fixtureTls.setPeerVerifyMode(QSslSocket::VerifyNone);
         QSslConfiguration::setDefaultConfiguration(fixtureTls);
     }
     void cleanupTestCase() { QSslConfiguration::setDefaultConfiguration(original_); }
 
-    void activationPersistsEncryptedAndDoesNotConsumeAnotherSlot() {
-        Provider server; server.acceptActivation();
-        QTemporaryDir dir; const auto secret = TlsIdentity::newKey();
-        qint64 time = start;
-        {
-            License license(dir.path(), product, server.url(), secret, [&] { return time; });
-            QVERIFY(license.activate(key)); QTRY_VERIFY(!license.busy());
-            QVERIFY2(license.active(), qPrintable(license.status())); QVERIFY(!license.pending());
-            QCOMPARE(license.supportReference(), "Order 50 / License 40");
-            QCOMPARE(license.expiresAt().toMSecsSinceEpoch(), start + 365LL * 86400000);
-            QCOMPARE(server.actions, QList<QString>({"validate", "activate"}));
-            for (const auto& form : server.forms) QCOMPARE(form.queryItemValue("license_key", QUrl::FullyDecoded), key);
-            QFile receipt(dir.filePath("license.bin")); QVERIFY(receipt.open(QIODevice::ReadOnly));
-            const auto bytes = receipt.readAll(); QVERIFY(!bytes.contains(key.toUtf8())); QVERIFY(!bytes.contains("device-1"));
-            receipt.close();
-            server.replies << qMakePair(200, accepted("validate"));
-            QVERIFY(license.activate(key)); QTRY_VERIFY(!license.busy()); QVERIFY(license.active());
-            QCOMPARE(server.actions.last(), "validate");
-            QCOMPARE(server.forms.last().queryItemValue("instance_id"), "device-1");
-        }
-        License restored(dir.path(), product, server.url(), secret, [&] { return time; });
-        QVERIFY(restored.refresh()); QTRY_VERIFY(!restored.busy());
-        QVERIFY(restored.active()); // Server returned 503, not a revocation.
-        QVERIFY(!restored.status().isEmpty());
-        time += 365LL * 86400000;
-        QVERIFY(!restored.active());
-    }
-
-    void existingBinaryReceiptIsNotMistakenForJsonByItsNonce() {
-        Provider server; QTemporaryDir dir;
-        // AES-256-GCM fixture: key = 32 'A' bytes, nonce = '{' then 0..10,
-        // AAD = squadspeak/license/1. An existing receipt has no format prefix.
-        const auto bytes = QByteArray::fromBase64(
-            "ewABAgMEBQYHCAkKdxLb9mHidNzk7GbTT7yYDT5Wc0m1lYl7jaAtJokRr4b7mUZBcejtkCO2gE8B+LVtSirnpPSy96pLjQ/W"
-            "fqL0zRD+GFL8jxDJnM7aONILYS4J44z8VxV4Pgxk45iI6g1WWpVweYonmuRScL3Mq8uXe/EvcHam4LR2b1EjpYcMk9zIwkbj"
-            "8by1WxavszH7TyjkACq6MNjafvIU0pgEUdiCXFUor2IikIY92e6IC1V/YvpPGZQJXcrPCGWFwi+jiX6qUI4rLw3UwTb24AVS"
-            "GA7iVTCNSXEuYvfBw57UiWM3Y9sO89fy");
-        QFile file(dir.filePath("license.bin")); QVERIFY(file.open(QIODevice::WriteOnly));
-        QCOMPARE(file.write(bytes), bytes.size()); file.close();
-        License license(dir.path(), product, server.url(), QByteArray(32, 'A'), [] { return start; });
-        QVERIFY(license.refresh()); QTRY_VERIFY(!license.busy()); QVERIFY(license.active());
-        QCOMPARE(server.actions, QList<QString>{"validate"});
-        QCOMPARE(server.forms.last().queryItemValue("instance_id"), "device-1");
-    }
-
-    void headlessLicenseCommandsValidateInputAndReplyOnce() {
-        Provider server; server.acceptActivation(); QTemporaryDir dir;
-        License license(dir.path(), product, server.url(), TlsIdentity::newKey(), [] { return start; });
+    void multiplePaymentsThroughHeadlessUnlockRenewRevokeAndRestore() {
+        GitHub server; QTemporaryDir dir; qint64 time = start;
+        License license(dir.path(), product, server.url(), TlsIdentity::newKey(), [&] { return time; }, {}, nullptr, server.oauth());
         VoiceSession session;
-        LocalChannel channel(session, dir.filePath("server.channel"), TlsIdentity::create());
+        LocalChannel host(session, dir.filePath("host.channel"), TlsIdentity::create());
+        QVERIFY(host.listen(QHostAddress::LocalHost)); QVERIFY(host.initialize(true));
+        connect(&license, &License::changed, &session, [&] { session.setSupporterEnabled(license.active()); });
         RadioPlayer radio(dir.filePath("radio.json"));
         QBuffer input, output; QVERIFY(input.open(QIODevice::ReadWrite)); QVERIFY(output.open(QIODevice::ReadWrite));
-        HeadlessController controller(*QCoreApplication::instance(), channel, radio, license, input, output, false);
-        const auto take = [&] {
-            const auto line = output.data().trimmed(); output.buffer().clear(); output.seek(0);
-            return QJsonDocument::fromJson(line).object(); // More than one reply is invalid JSON.
+        HeadlessController cli(*QCoreApplication::instance(), host, radio, license, input, output, false);
+        const auto run = [&](const QJsonObject& request) {
+            output.buffer().clear(); output.seek(0); cli.process(request);
+            return QJsonDocument::fromJson(output.data().trimmed()).object();
         };
-        for (auto request : {QJsonObject{{"action", 12}}, QJsonObject{{"action", "unknown"}},
-                QJsonObject{{"action", "activate"}}, QJsonObject{{"action", "activate"}, {"key", " "}},
-                QJsonObject{{"action", "reset"}}}) {
-            request.insert("command", "license"); controller.process(request);
-            const auto reply = take(); QVERIFY(!reply.isEmpty()); QVERIFY(!reply.value("ok").toBool());
-        }
-        QVERIFY(server.actions.isEmpty());
-        controller.process({{"command", "license"}, {"action", "activate"}, {"key", key}});
-        QVERIFY(license.busy());
-        controller.process({{"command", "license"}, {"action", "deactivate"}});
-        QVERIFY(!take().value("ok").toBool());
-        controller.process({{"command", "license"}});
-        QVERIFY(take().value("data").toObject().value("busy").toBool());
-        QTRY_VERIFY(!license.busy()); QVERIFY(take().value("ok").toBool()); QVERIFY(license.active());
-        server.replies << qMakePair(200, accepted("validate")) << qMakePair(200, accepted("deactivate"));
-        for (const auto* action : {"refresh", "deactivate", "reset"}) {
-            controller.process({{"command", "license"}, {"action", action}, {"confirmed", true}});
-            QTRY_VERIFY(!license.busy()); QVERIFY(take().value("ok").toBool());
-        }
-        QVERIFY(!license.active()); QVERIFY(!license.recoveryNeeded());
-        QCOMPARE(server.actions, QList<QString>({"validate", "activate", "validate", "deactivate"}));
+        QVERIFY(!run({{"command", "configure"}, {"values", QJsonObject{{"messageLifetimeDays", 90}}}}).value("ok").toBool());
+        run({{"command", "license"}, {"action", "sign-in"}});
+        QTRY_VERIFY(!output.data().isEmpty());
+        const auto prompt = QJsonDocument::fromJson(output.data().trimmed()).object();
+        QVERIFY(prompt.value("ok").toBool());
+        QCOMPARE(prompt.value("data").toObject().value("userCode"), "ABCD-EFGH");
+        QVERIFY(!output.data().contains("fixture-device-secret"));
+        server.authorized = true;
+        advanceAuthorization(license, time);
+        QVERIFY(!license.active()); QCOMPARE(license.account(), "fixture-member");
+        server.payment("expired", start - 500 * day);
+        server.payment("wrong-tier", start, "NEW_SPONSORSHIP", "ST_other");
+        server.payment("wrong-recipient", start, "NEW_SPONSORSHIP", "ST_fixture", 101);
+        server.payment("wrong-payer", start, "NEW_SPONSORSHIP", "ST_fixture", 100, 201);
+        server.payment("first-payment", start);
+        run({{"command", "license"}, {"action", "refresh"}});
+        QTRY_VERIFY(!license.busy()); QVERIFY2(license.active(), qPrintable(license.status()));
+        const auto firstExpiry = QDateTime::fromMSecsSinceEpoch(start, QTimeZone::UTC).addYears(1);
+        QCOMPARE(license.expiresAt(), firstExpiry);
+        for (const auto days : {90, 180, 360})
+            QVERIFY(run({{"command", "configure"}, {"values", QJsonObject{{"messageLifetimeDays", days}}}}).value("ok").toBool());
+        time += 100 * day;
+        checked(license); QCOMPARE(license.expiresAt(), firstExpiry);
+        server.payment("second-payment", time);
+        checked(license); QVERIFY(license.active());
+        QCOMPARE(license.expiresAt(), QDateTime::fromMSecsSinceEpoch(time, QTimeZone::UTC).addYears(1));
+        const auto secondExpiry = license.expiresAt();
+        checked(license); QCOMPARE(license.expiresAt(), secondExpiry);
+        time += day; server.payment("refund", time, "REFUND");
+        checked(license); QVERIFY(!license.active()); QVERIFY(!session.supporterEnabled());
+        QCOMPARE(host.messageLifetimeDays(), 30);
+        QVERIFY(!run({{"command", "configure"}, {"values", QJsonObject{{"messageLifetimeDays", 90}}}}).value("ok").toBool());
+        time += day; server.payment("third-payment", time);
+        checked(license); QVERIFY(license.active());
+        QVERIFY(!host.joined()); QVERIFY(host.hostParticipants().isEmpty());
+        const auto status = run({{"command", "license"}, {"action", "status"}});
+        QCOMPARE(status.value("data").toObject().value("account"), "fixture-member");
+        QVERIFY(status.value("data").toObject().value("signedIn").toBool());
+        QVERIFY(!output.data().contains(server.accessToken.toUtf8()));
+        QVERIFY(run({{"command", "license"}, {"action", "sign-out"}}).value("ok").toBool());
+        QVERIFY(!license.active()); QVERIFY(!license.signedIn()); QVERIFY(license.account().isEmpty());
+        run({{"command", "license"}, {"action", "sign-in"}});
+        QTRY_VERIFY(license.pending());
+        QVERIFY(run({{"command", "license"}, {"action", "cancel"}}).value("ok").toBool());
+        QVERIFY(!license.pending()); QVERIFY(!license.busy());
+        QVERIFY2(server.failures.isEmpty(), qPrintable(server.failures.join('\n')));
     }
 
+    void encryptedSharedReceiptOfflineDeadlineAndDailySchedule() {
+        GitHub server; server.authorized = true; server.payment("paid", start);
+        QTemporaryDir dir; const auto secret = TlsIdentity::newKey(); qint64 time = start;
+        qint64 checkedAt;
+        {
+            License license(dir.path(), product, server.url(), secret, [&] { return time; }, {}, nullptr, server.oauth());
+            QVERIFY(license.signIn()); advanceAuthorization(license, time); QVERIFY(license.active());
+            checkedAt = time;
+            const auto count = server.paths.size();
+            for (int i = 0; i < 20; ++i) QVERIFY(!license.refreshIfDue());
+            QCOMPARE(server.paths.size(), count);
+            time += day - 1; QVERIFY(!license.refreshIfDue()); QCOMPARE(server.paths.size(), count);
+            time += 1; QVERIFY(license.refreshIfDue()); QTRY_VERIFY(!license.busy());
+            QCOMPARE(server.paths.size(), count + 1); checkedAt = time;
+            QFile file(dir.filePath("supporter.bin")); QVERIFY(file.open(QIODevice::ReadOnly));
+            const auto bytes = file.readAll();
+            QVERIFY(!bytes.contains(server.accessToken.toUtf8())); QVERIFY(!bytes.contains("fixture-member"));
 #ifndef Q_OS_WIN
-    void desktopAndHeadlessShareOneFileBoundActivation() {
-        Provider server; server.acceptActivation(); QTemporaryDir dir;
-        const auto identity = dir.filePath("server.pem");
-        const auto device = TlsIdentity::loadFile(identity, true);
-        License headless(dir.path(), product, server.url(), {}, [] { return start; }, identity);
-        License desktop(dir.path(), product, server.url(), {}, [] { return start; });
-        VoiceSession session;
-        LocalChannel channel(session, dir.filePath("server.channel"), device);
-        QVERIFY(channel.listen(QHostAddress::LocalHost)); QVERIFY(channel.initialize(true));
-        RadioPlayer radio(dir.filePath("radio.json")); QVERIFY(radio.bind(channel));
-        connect(&headless, &License::changed, &session, [&] { session.setSupporterEnabled(headless.active()); });
-        QBuffer input, output; QVERIFY(input.open(QIODevice::ReadWrite)); QVERIFY(output.open(QIODevice::ReadWrite));
-        HeadlessController controller(*QCoreApplication::instance(), channel, radio, headless, input, output, false);
-        controller.process({{"command", "license"}, {"action", "activate"}, {"key", key}});
-        QVERIFY(!desktop.activate(key)); // The same account lock covers both modes.
-        QTRY_VERIFY(!headless.busy());
-        const auto result = QJsonDocument::fromJson(output.data().trimmed()).object();
-        QVERIFY2(result.value("ok").toBool(), qPrintable(result.value("error").toString()));
-        QVERIFY(result.value("data").toObject().value("active").toBool());
-        QVERIFY(!output.data().contains(key.toUtf8()));
-        const auto room = channel.addOwnedChannel("Second room"); QVERIFY(!room.isEmpty());
-        QVERIFY(channel.hostParticipants().isEmpty()); QVERIFY(channel.ownChannel(room)->hostParticipants().isEmpty());
-        server.replies << qMakePair(200, accepted("validate"));
-        QVERIFY(desktop.activate(key)); QTRY_VERIFY(!desktop.busy()); QVERIFY(desktop.active());
-        QCOMPARE(server.actions.count("activate"), 1);
-        QCOMPARE(server.forms.last().queryItemValue("instance_id"), "device-1");
-
-        const auto otherIdentity = dir.filePath("other-server.pem");
-        (void)TlsIdentity::loadFile(otherIdentity, true);
-        License otherServer(dir.path(), product, server.url(), {}, [] { return start; }, otherIdentity);
-        server.replies << qMakePair(200, accepted("validate"));
-        QVERIFY(otherServer.activate(key)); QTRY_VERIFY(!otherServer.busy());
-        QVERIFY2(otherServer.active(), qPrintable(otherServer.status()));
-        QCOMPARE(server.actions.count("activate"), 1);
-
-        server.replies << qMakePair(200, accepted("deactivate"));
-        QVERIFY(desktop.deactivate()); QTRY_VERIFY(!desktop.busy()); QVERIFY(!desktop.active());
-        output.buffer().clear(); output.seek(0);
-        controller.process({{"command", "license"}, {"action", "refresh"}});
-        QTRY_VERIFY(!headless.busy()); QVERIFY(!headless.active());
-        QVERIFY(QJsonDocument::fromJson(output.data().trimmed()).object().value("ok").toBool());
-        QVERIFY(!channel.ownChannel(room)->hosting()); QVERIFY(channel.hosting());
-        QVERIFY(QFileInfo::exists(dir.filePath("server.channel")));
+            // POSIX mode bits do not describe Windows access-control lists.
+            QCOMPARE(file.permissions() & (QFile::ReadGroup | QFile::WriteGroup | QFile::ReadOther | QFile::WriteOther), QFileDevice::Permissions{});
+#endif
+            server.status = 503;
+        }
+        License restored(dir.path(), product, server.url(), secret, [&] { return time; }, {}, nullptr, server.oauth());
+        checked(restored); QVERIFY(restored.active()); QVERIFY(!restored.status().isEmpty());
+        time = checkedAt + 7 * day - 1; checked(restored); QVERIFY(restored.active());
+        time += 1; QVERIFY(!restored.active()); checked(restored); QVERIFY(!restored.active());
+        server.status = 200; checked(restored); QVERIFY(restored.active());
+        time = restored.expiresAt().toMSecsSinceEpoch(); QVERIFY(!restored.active());
     }
 
-    void fileBoundActivationRejectsMissingChangedOrUnsafeIdentity_data() {
+    void malformedAndPartialPagesNeverExtendOfflineAccess_data() {
         QTest::addColumn<QString>("failure");
-        for (const auto* value : {"missing", "changed", "permissions", "malformed-envelope"})
+        for (const auto* value : {"invalid-json", "oversized", "graphql-error", "null-nodes", "null-viewer", "missing-page", "truncated-contributors", "cursor-cycle", "conflicting-event", "future-payment", "wrong-price", "monthly"})
             QTest::newRow(value) << QString(value);
     }
-    void fileBoundActivationRejectsMissingChangedOrUnsafeIdentity() {
+    void malformedAndPartialPagesNeverExtendOfflineAccess() {
         QFETCH(QString, failure);
-        Provider server; server.acceptActivation(); QTemporaryDir dir;
-        const auto path = dir.filePath("server.pem");
-        (void)TlsIdentity::loadFile(path, true);
-        License serverPass(dir.path(), product, server.url(), {}, [] { return start; }, path);
-        QVERIFY(serverPass.activate(key)); QTRY_VERIFY(!serverPass.busy()); QVERIFY(serverPass.active());
-        if (failure == "missing") QVERIFY(QFile::remove(path));
-        else if (failure == "changed") {
-            QVERIFY(QFile::remove(path)); (void)TlsIdentity::loadFile(path, true);
-        } else if (failure == "permissions") QVERIFY(QFile::setPermissions(path, QFile::ReadOwner | QFile::WriteOwner | QFile::ReadOther));
-        else {
-            QFile receipt(dir.filePath("license.bin")); QVERIFY(receipt.open(QIODevice::WriteOnly));
-            receipt.write("{\"identityFile\":\"relative.pem\",\"sealed\":\"invalid!\"}");
-        }
-        QFile receipt(dir.filePath("license.bin")); QVERIFY(receipt.open(QIODevice::ReadOnly)); const auto before = receipt.readAll(); receipt.close();
-        License desktop(dir.path(), product, server.url(), {}, [] { return start; });
-        QVERIFY(desktop.activate(key)); QTRY_VERIFY(!desktop.busy()); QVERIFY(!desktop.active());
-        QVERIFY(!desktop.status().isEmpty()); QCOMPARE(server.actions.count("activate"), 1);
-        QCOMPARE(server.actions.size(), 2);
-        QVERIFY(receipt.open(QIODevice::ReadOnly)); QCOMPARE(receipt.readAll(), before);
-        QVERIFY(serverPass.refresh()); QTRY_VERIFY(!serverPass.busy()); QVERIFY(!serverPass.active());
-        QCOMPARE(server.actions.size(), 2);
-    }
-
-    void migrationRequiresExistingReceiptKeyAndSurvivesOfflineRestart() {
-        Provider server; server.acceptActivation(); QTemporaryDir dir; const auto secret = TlsIdentity::newKey();
-        const auto path = dir.filePath("server.pem"); (void)TlsIdentity::loadFile(path, true);
-        License desktop(dir.path(), product, server.url(), secret, [] { return start; });
-        QVERIFY(desktop.activate(key)); QTRY_VERIFY(!desktop.busy()); QVERIFY(desktop.active());
-        License wrong(dir.path(), product, server.url(), TlsIdentity::newKey(), [] { return start; }, path);
-        QVERIFY(wrong.activate(key)); QTRY_VERIFY(!wrong.busy()); QVERIFY(!wrong.active());
-        QCOMPARE(server.actions.size(), 2);
-        License missing(dir.path(), product, server.url(), secret, [] { return start; }, dir.filePath("missing.pem"));
-        bool brieflyGranted = false;
-        connect(&missing, &License::changed, this, [&] { brieflyGranted = brieflyGranted || missing.active(); });
-        QVERIFY(missing.refresh()); QTRY_VERIFY(!missing.busy()); QVERIFY(!missing.active());
-        QVERIFY(!brieflyGranted);
-        License headless(dir.path(), product, server.url(), secret, [] { return start; }, path);
-        QVERIFY(headless.refresh()); QTRY_VERIFY(!headless.busy()); QVERIFY(headless.active()); // Offline 503.
-        License restored(dir.path(), product, server.url(), {}, [] { return start; });
-        QVERIFY(restored.refresh()); QTRY_VERIFY(!restored.busy()); QVERIFY(restored.active());
-        // The already-running desktop must also discover the changed backend.
-        QVERIFY(desktop.refresh()); QTRY_VERIFY(!desktop.busy()); QVERIFY(desktop.active());
-        QCOMPARE(server.actions.count("activate"), 1);
-        QCOMPARE(server.actions.size(), 5);
-    }
-#endif
-
-    void rejectionRevokesButTransportFailureDoesNot_data() {
-        QTest::addColumn<int>("http"); QTest::addColumn<QJsonObject>("response"); QTest::addColumn<bool>("remainsActive");
-        QTest::newRow("disabled") << 400 << QJsonObject{{"valid", false}, {"error", "disabled"}} << false;
-        QTest::newRow("missing-device") << 404 << QJsonObject{{"valid", false}, {"error", "unknown instance"}} << false;
-        QTest::newRow("rate-limit") << 429 << QJsonObject{{"valid", false}} << true;
-        QTest::newRow("server-error") << 503 << QJsonObject{{"valid", false}} << true;
-        QTest::newRow("malformed") << 200 << QJsonObject{{"valid", "true"}} << true;
-        QTest::newRow("redirect") << 302 << QJsonObject{{"valid", false}} << true;
-        QTest::newRow("oversized") << 200 << QJsonObject{{"valid", false}, {"error", QString(70000, 'x')}} << true;
-        QTest::newRow("contradictory-http") << 422 << accepted("validate") << true;
-    }
-    void rejectionRevokesButTransportFailureDoesNot() {
-        QFETCH(int, http); QFETCH(QJsonObject, response); QFETCH(bool, remainsActive);
-        Provider server; server.acceptActivation(); QTemporaryDir dir; const auto secret = TlsIdentity::newKey();
-        {
-            License license(dir.path(), product, server.url(), secret, [] { return start; });
-            QVERIFY(license.activate(key)); QTRY_VERIFY(!license.busy()); QVERIFY(license.active());
-            server.replies << qMakePair(http, response);
-            QVERIFY(license.refresh()); QTRY_VERIFY(!license.busy()); QCOMPARE(license.active(), remainsActive);
-        }
-        License restored(dir.path(), product, server.url(), secret, [] { return start; });
-        QVERIFY(restored.refresh()); QTRY_VERIFY(!restored.busy()); QCOMPARE(restored.active(), remainsActive);
-    }
-
-    void wrongProductOrMissingExpiryCannotActivate_data() {
-        QTest::addColumn<QJsonObject>("response");
-        auto response = accepted("validate", {});
-        auto meta = response.value("meta").toObject(); meta.insert("variant_id", 99); response.insert("meta", meta);
-        QTest::newRow("different-product") << response;
-        response = accepted("validate", {});
-        auto license = response.value("license_key").toObject(); license.insert("expires_at", QJsonValue::Null);
-        response.insert("license_key", license); QTest::newRow("no-expiry") << response;
-        license.insert("expires_at", "2020-01-01T00:00:00Z"); response.insert("license_key", license);
-        QTest::newRow("expired") << response;
-        response = accepted("validate", {}); license = response.value("license_key").toObject();
-        license.insert("activation_limit", 10); response.insert("license_key", license);
-        QTest::newRow("wrong-slot-count") << response;
-    }
-
-    void formValuesPreserveLiteralPercentSignsAndReservedCharacters() {
-        const QString value = QString::fromUtf8("key%2B+&=?/#ö");
-        Provider server; QTemporaryDir dir;
-        for (const auto* action : {"validate", "activate"}) {
-            auto response = accepted(action); auto data = response.value("license_key").toObject();
-            data.insert("key", value); response.insert("license_key", data);
-            server.replies << qMakePair(200, response);
-        }
-        License license(dir.path(), product, server.url(), TlsIdentity::newKey(), [] { return start; });
-        QVERIFY(license.activate(value)); QTRY_VERIFY(!license.busy()); QVERIFY(license.active());
-        for (const auto& form : server.forms) QCOMPARE(form.queryItemValue("license_key", QUrl::FullyDecoded), value);
-    }
-    void wrongProductOrMissingExpiryCannotActivate() {
-        QFETCH(QJsonObject, response);
-        Provider server; server.replies << qMakePair(200, response); QTemporaryDir dir;
-        License license(dir.path(), product, server.url(), TlsIdentity::newKey(), [] { return start; });
-        QVERIFY(license.activate(key)); QTRY_VERIFY(!license.busy()); QVERIFY(!license.active()); QVERIFY(!license.pending());
-        QCOMPARE(server.actions, QList<QString>{"validate"});
-    }
-
-    void simultaneousProfilesCannotDoubleActivateAndLostRepliesStayPending() {
-        Provider server; server.replies << qMakePair(200, accepted("validate", {}));
-        QTemporaryDir dir; const auto secret = TlsIdentity::newKey();
-        {
-            License first(dir.path(), product, server.url(), secret, [] { return start; });
-            License second(dir.path(), product, server.url(), secret, [] { return start; });
-            QVERIFY(first.activate(key)); QVERIFY(!second.activate(key));
-            QTRY_VERIFY(!first.busy()); QVERIFY(first.pending()); QVERIFY(!first.active());
-            QCOMPARE(first.supportReference(), "Order 50 / License 40");
-            const auto count = server.actions.size();
-            QVERIFY(first.activate(key)); QTRY_VERIFY(!first.busy()); QCOMPARE(server.actions.size(), count);
-        }
-        License restored(dir.path(), product, server.url(), secret, [] { return start; });
-        QVERIFY(restored.activate(key)); QTRY_VERIFY(!restored.busy()); QVERIFY(restored.pending());
-        QCOMPARE(server.actions.size(), 2);
-        QVERIFY(restored.resetActivation()); QTRY_VERIFY(!restored.busy()); QVERIFY(!restored.pending());
-        server.acceptActivation(); QVERIFY(restored.activate(key)); QTRY_VERIFY(!restored.busy()); QVERIFY(restored.active());
-    }
-
-    void deactivationFreesTheKnownInstanceAndPersists() {
-        Provider server; server.acceptActivation(); QTemporaryDir dir; const auto secret = TlsIdentity::newKey();
-        {
-            License license(dir.path(), product, server.url(), secret, [] { return start; });
-            QVERIFY(license.activate(key)); QTRY_VERIFY(!license.busy()); QVERIFY(license.active());
-            server.replies << qMakePair(200, accepted("deactivate"));
-            QVERIFY(license.deactivate()); QTRY_VERIFY(!license.busy()); QVERIFY(!license.active());
-            QCOMPARE(server.actions.last(), "deactivate");
-            QCOMPARE(server.forms.last().queryItemValue("instance_id"), "device-1");
-        }
-        const auto count = server.actions.size();
-        License restored(dir.path(), product, server.url(), secret, [] { return start; });
-        QVERIFY(restored.refresh()); QTRY_VERIFY(!restored.busy()); QVERIFY(!restored.active());
-        QCOMPARE(server.actions.size(), count);
-    }
-
-    void manualRecoveryCanReplaceAReleasedDeviceSlotButNeverAnActiveSlot() {
-        Provider server; server.acceptActivation(); QTemporaryDir dir;
-        License license(dir.path(), product, server.url(), TlsIdentity::newKey(), [] { return start; });
-        QVERIFY(license.activate(key)); QTRY_VERIFY(!license.busy()); QVERIFY(license.active());
-        QVERIFY(!license.recoveryNeeded());
-        QVERIFY(license.resetActivation()); QTRY_VERIFY(!license.busy()); QVERIFY(license.active());
-        QCOMPARE(server.actions.size(), 2);
-        server.replies << qMakePair(404, QJsonObject{{"valid", false}});
-        QVERIFY(license.refresh()); QTRY_VERIFY(!license.busy()); QVERIFY(license.recoveryNeeded());
-        QVERIFY(license.resetActivation()); QTRY_VERIFY(!license.busy()); QVERIFY(!license.recoveryNeeded());
-        QVERIFY(!license.active()); QCOMPARE(license.supportReference(), "Order 50 / License 40");
-        server.acceptActivation(); QVERIFY(license.activate(key)); QTRY_VERIFY(!license.busy());
-        QVERIFY(license.active()); QCOMPARE(server.actions.last(), "activate");
-    }
-
-    void aNewAnnualKeyReplacesThePassOnlyAfterSuccessfulActivation() {
-        Provider server; server.acceptActivation(); QTemporaryDir dir;
-        License license(dir.path(), product, server.url(), TlsIdentity::newKey(), [] { return start; });
-        QVERIFY(license.activate(key)); QTRY_VERIFY(!license.busy()); QVERIFY(license.active());
-        server.replies << qMakePair(400, QJsonObject{{"valid", false}});
-        QVERIFY(license.activate("mistyped-key")); QTRY_VERIFY(!license.busy()); QVERIFY(license.active());
-        for (const auto* action : {"validate", "activate"}) {
-            auto response = accepted(action, "device-2"); auto data = response.value("license_key").toObject();
-            data.insert("key", "next-year-key"); data.insert("id", 41); data.insert("expires_at", "2028-10-03T12:00:00Z");
-            response.insert("license_key", data); server.replies << qMakePair(200, response);
-        }
-        QVERIFY(license.activate("next-year-key")); QTRY_VERIFY(!license.busy()); QVERIFY(license.active());
-        QCOMPARE(license.supportReference(), "Order 50 / License 41");
-        QCOMPARE(license.expiresAt().date(), QDate(2028, 10, 3));
-        QCOMPARE(server.forms.last().queryItemValue("license_key"), "next-year-key");
-    }
-
-    void anotherProfileReusesTheSameInstanceAndObservesDeactivationOnRefresh() {
-        Provider server; server.acceptActivation(); QTemporaryDir dir; const auto secret = TlsIdentity::newKey();
-        License first(dir.path(), product, server.url(), secret, [] { return start; });
-        License second(dir.path(), product, server.url(), secret, [] { return start; });
-        QVERIFY(first.activate(key)); QTRY_VERIFY(!first.busy());
-        server.replies << qMakePair(200, accepted("validate"));
-        QVERIFY(second.activate(key)); QTRY_VERIFY(!second.busy()); QVERIFY(second.active());
-        QCOMPARE(server.actions, QList<QString>({"validate", "activate", "validate"}));
-        server.replies << qMakePair(200, accepted("deactivate"));
-        QVERIFY(first.deactivate()); QTRY_VERIFY(!first.busy()); QVERIFY(!first.active());
-        QVERIFY(second.refresh()); QTRY_VERIFY(!second.busy()); QVERIFY(!second.active());
-        QCOMPARE(server.actions.size(), 4);
-    }
-
-    void disabledConfigurationAndCorruptStorageNeverGrantAccess() {
-        Provider server; QTemporaryDir dir;
-        License disabled(dir.path(), {}, server.url());
-        QVERIFY(!disabled.configured()); QVERIFY(!disabled.activate(key)); QVERIFY(!disabled.refresh());
-        QVERIFY(!disabled.active()); QVERIFY(server.actions.isEmpty());
-        QFile file(dir.filePath("license.bin")); QVERIFY(file.open(QIODevice::WriteOnly));
-        file.write("{\"valid\":true}"); file.close();
-        License corrupt(dir.path(), product, server.url(), TlsIdentity::newKey(), [] { return start; });
-        QVERIFY(corrupt.refresh()); QTRY_VERIFY(!corrupt.busy()); QVERIFY(!corrupt.active());
-        QVERIFY(server.actions.isEmpty()); QVERIFY(!corrupt.status().isEmpty());
-        QVERIFY_THROWS_EXCEPTION(std::invalid_argument, License(dir.path(), product, QUrl("http://localhost/licenses/")));
-    }
-
-    void certificateErrorsDoNotSendTheLicenseKey() {
-        QSslConfiguration::setDefaultConfiguration(original_);
-        Provider server; QTemporaryDir dir;
-        License license(dir.path(), product, server.url(), TlsIdentity::newKey(), [] { return start; });
-        QVERIFY(license.activate(key)); QTRY_VERIFY(!license.busy());
-        QVERIFY(!license.active()); QVERIFY(server.actions.isEmpty());
-        auto fixtureTls = original_; fixtureTls.setPeerVerifyMode(QSslSocket::VerifyNone);
-        QSslConfiguration::setDefaultConfiguration(fixtureTls);
-    }
-
-    void onlineChecksAreDueEveryFifteenMinutesAndBackOffAfterFailures() {
-        Provider server; server.acceptActivation(); QTemporaryDir dir; qint64 time = start;
-        License license(dir.path(), product, server.url(), TlsIdentity::newKey(), [&] { return time; });
-        QVERIFY(license.activate(key)); QTRY_VERIFY(!license.busy());
-        time += 15 * 60000 - 1; QVERIFY(!license.refreshIfDue()); QCOMPARE(server.actions.size(), 2);
-        ++time; server.replies << qMakePair(200, accepted("validate"));
-        QVERIFY(license.refreshIfDue()); QTRY_VERIFY(!license.busy()); QCOMPARE(server.actions.size(), 3);
-        time += 15 * 60000; QVERIFY(license.refreshIfDue()); QTRY_VERIFY(!license.busy()); QVERIFY(license.active());
-        time += 60000 - 1; QVERIFY(!license.refreshIfDue());
-        ++time; QVERIFY(license.refreshIfDue()); QTRY_VERIFY(!license.busy());
-        time += 60000; QVERIFY(!license.refreshIfDue());
-        time += 60000; server.replies << qMakePair(200, accepted("validate"));
-        QVERIFY(license.refreshIfDue()); QTRY_VERIFY(!license.busy()); QVERIFY(license.active());
-        time += 2 * 60000; QVERIFY(!license.refreshIfDue());
-    }
-
-    void expiryNotifiesTheInterfaceWithoutAnInternetReply() {
-        Provider server; QTemporaryDir dir; QElapsedTimer clock; clock.start();
-        const auto expiry = QDateTime::fromMSecsSinceEpoch(start + 1500, QTimeZone::UTC).toString(Qt::ISODateWithMs);
-        for (const auto* action : {"validate", "activate"}) {
-            auto response = accepted(action); auto data = response.value("license_key").toObject();
-            data.insert("expires_at", expiry); response.insert("license_key", data);
-            server.replies << qMakePair(200, response);
-        }
-        License license(dir.path(), product, server.url(), TlsIdentity::newKey(), [&] { return start + clock.elapsed(); });
-        QVERIFY(license.activate(key)); QTRY_VERIFY(!license.busy()); QVERIFY(license.active());
-        bool observedExpiry = false;
-        connect(&license, &License::changed, &license, [&] { if (!license.active()) observedExpiry = true; });
-        QTRY_VERIFY_WITH_TIMEOUT(observedExpiry, 3000); QCOMPARE(server.actions.size(), 2);
-    }
-
-    void destructionDuringActivationLeavesARecoverablePendingReceipt() {
-        Provider server; server.holdAction = "activate";
-        server.replies << qMakePair(200, accepted("validate", {}));
-        QTemporaryDir dir; const auto secret = TlsIdentity::newKey();
-        auto license = std::make_unique<License>(dir.path(), product, server.url(), secret, [] { return start; });
-        QVERIFY(license->activate(key)); QTRY_COMPARE(server.actions.size(), 2); QVERIFY(license->busy());
-        license.reset(); QCoreApplication::processEvents();
-        License restored(dir.path(), product, server.url(), secret, [] { return start; });
-        QVERIFY(restored.refresh()); QTRY_VERIFY(!restored.busy()); QVERIFY(restored.pending());
-        QCOMPARE(restored.supportReference(), "Order 50 / License 40"); QCOMPARE(server.actions.size(), 2);
-    }
-
-    void expiryStopsExtrasWhileValidationIsUnavailable_data() {
-        QTest::addColumn<bool>("storageBusy");
-        QTest::newRow("request-pending") << false;
-        QTest::newRow("storage-locked") << true;
-    }
-    void expiryStopsExtrasWhileValidationIsUnavailable() {
-        QFETCH(bool, storageBusy);
-        Provider server; QTemporaryDir dir; QElapsedTimer clock; clock.start();
-        const auto expiry = QDateTime::fromMSecsSinceEpoch(start + 1500, QTimeZone::UTC).toString(Qt::ISODateWithMs);
-        for (const auto* action : {"validate", "activate"}) {
-            auto response = accepted(action); auto data = response.value("license_key").toObject();
-            data.insert("expires_at", expiry); response.insert("license_key", data);
-            server.replies << qMakePair(200, response);
-        }
-        VoiceSession session(dir.filePath("settings.ini"));
-        License license(dir.path(), product, server.url(), TlsIdentity::newKey(), [&] { return start + clock.elapsed(); });
-        connect(&license, &License::changed, &session, [&] { session.setSupporterEnabled(license.active()); });
-        QVERIFY(license.activate(key)); QTRY_VERIFY(!license.busy()); QVERIFY(session.supporterEnabled());
-        const auto selected = session.avatars().last(); QVERIFY(session.setAvatar(selected));
-        QLockFile otherProfile(dir.filePath("license.lock"));
-        if (storageBusy) QVERIFY(otherProfile.tryLock(0));
-        server.holdAction = "validate"; QCOMPARE(license.refresh(), !storageBusy);
-        if (!storageBusy) QTRY_COMPARE(server.actions.size(), 3);
-        QTRY_VERIFY_WITH_TIMEOUT(!session.supporterEnabled(), 3000);
-        QCOMPARE(license.busy(), !storageBusy); QVERIFY(!license.active()); QVERIFY(session.avatar() != selected);
-        QFile saved(dir.filePath("settings.ini")); QVERIFY(saved.open(QIODevice::ReadOnly));
-        QCOMPARE(QJsonDocument::fromJson(saved.readAll()).object().value("avatar").toString(), selected);
-    }
-
-    void aFailedRevocationWriteCannotRestoreTheStaleOfflineGrant() {
-        Provider server; server.acceptActivation(); QTemporaryDir dir;
-        License license(dir.path(), product, server.url(), TlsIdentity::newKey(), [] { return start; });
-        QVERIFY(license.activate(key)); QTRY_VERIFY(!license.busy()); QVERIFY(license.active());
-        const auto path = dir.filePath("license.bin");
-        QFile file(path); QVERIFY(file.open(QIODevice::ReadOnly)); const auto previous = file.readAll(); file.close();
-        server.onAction = [&](const QString& action) {
-            if (action != "validate") return;
-            QVERIFY(QFile::remove(path)); QVERIFY(QDir().mkdir(path));
+        GitHub server; server.authorized = true; server.payment("paid", start);
+        QTemporaryDir dir; qint64 time = start;
+        License license(dir.path(), product, server.url(), TlsIdentity::newKey(), [&] { return time; }, {}, nullptr, server.oauth());
+        QVERIFY(license.signIn()); advanceAuthorization(license, time); QVERIFY(license.active());
+        const auto confirmed = time;
+        if (failure == "invalid-json") server.bodyOverride = "broken";
+        if (failure == "oversized") server.bodyOverride = QByteArray(1024 * 1024 + 1, ' ');
+        server.alter = [failure](QJsonObject& response) {
+            auto data = response.value("data").toObject(); auto viewer = data.value("viewer").toObject();
+            auto activity = viewer.value("sponsorsActivities").toObject();
+            auto nodes = activity.value("nodes").toArray(); auto event = nodes.first().toObject();
+            if (failure == "graphql-error") response.insert("errors", QJsonArray{QJsonObject{{"message", "limited"}}});
+            if (failure == "null-nodes") activity.insert("nodes", QJsonArray{QJsonValue::Null});
+            if (failure == "missing-page") activity.remove("pageInfo");
+            if (failure == "cursor-cycle") activity.insert("pageInfo", QJsonObject{{"hasNextPage", true}, {"endCursor", "0"}});
+            if (failure == "truncated-contributors") data.insert("repository", QJsonObject{{"object", QJsonObject{{"text", "| 200 | test |"}, {"isTruncated", true}}}});
+            if (failure == "conflicting-event") { event.insert("timestamp", "2026-10-08T11:59:00Z"); nodes.append(event); activity.insert("nodes", nodes); }
+            if (failure == "future-payment") { event.insert("timestamp", "2099-01-01T00:00:00Z"); activity.insert("nodes", QJsonArray{event}); }
+            if (failure == "wrong-price" || failure == "monthly") {
+                auto tier = event.value("sponsorsTier").toObject();
+                tier.insert(failure == "monthly" ? "isOneTime" : "monthlyPriceInCents", failure == "monthly" ? QJsonValue(false) : QJsonValue(100));
+                event.insert("sponsorsTier", tier); activity.insert("nodes", QJsonArray{event});
+            }
+            viewer.insert("sponsorsActivities", activity); data.insert("viewer", failure == "null-viewer" ? QJsonValue(QJsonValue::Null) : QJsonValue(viewer)); response.insert("data", data);
         };
-        server.replies << qMakePair(400, QJsonObject{{"valid", false}});
-        QVERIFY(license.refresh()); QTRY_VERIFY(!license.busy()); QVERIFY(!license.active());
-        server.onAction = {};
-        QVERIFY(QDir().rmdir(path)); QVERIFY(file.open(QIODevice::WriteOnly));
-        QCOMPARE(file.write(previous), previous.size()); file.close();
-        QVERIFY(license.refresh()); QTRY_VERIFY(!license.busy()); QVERIFY(!license.active());
+        time += 6 * day; checked(license); QVERIFY(license.active()); QVERIFY(!license.status().isEmpty());
+        time = confirmed + 7 * day; checked(license); QVERIFY(!license.active());
     }
 
-    void aFailedWriteCannotOverwriteAnotherProfilesRenewal() {
-        Provider server; server.acceptActivation(); QTemporaryDir dir;
-        const auto secret = TlsIdentity::newKey();
-        License first(dir.path(), product, server.url(), secret, [] { return start; });
-        QVERIFY(first.activate(key)); QTRY_VERIFY(!first.busy()); QVERIFY(first.active());
-        const auto path = dir.filePath("license.bin");
-        QFile file(path); QVERIFY(file.open(QIODevice::ReadOnly)); const auto previous = file.readAll(); file.close();
-        server.onAction = [&](const QString&) { QVERIFY(QFile::remove(path)); QVERIFY(QDir().mkdir(path)); };
-        server.replies << qMakePair(400, QJsonObject{{"valid", false}});
-        QVERIFY(first.refresh()); QTRY_VERIFY(!first.busy()); QVERIFY(!first.active());
-        server.onAction = {};
-        QVERIFY(QDir().rmdir(path)); QVERIFY(file.open(QIODevice::WriteOnly));
-        QCOMPARE(file.write(previous), previous.size()); file.close();
-        License second(dir.path(), product, server.url(), secret, [] { return start; });
-        for (const auto* action : {"validate", "activate"}) {
-            auto response = accepted(action, "renewed-device"); auto data = response.value("license_key").toObject();
-            data.insert("key", "renewed-key"); data.insert("id", 41); response.insert("license_key", data);
-            server.replies << qMakePair(200, response);
+    void pollingSlowDownCancellationExpiryAndDenial() {
+        GitHub server; QTemporaryDir dir; qint64 time = start;
+        License license(dir.path(), product, server.url(), TlsIdentity::newKey(), [&] { return time; }, {}, nullptr, server.oauth());
+        QSignalSpy code(&license, &License::authorizationReady);
+        QVERIFY(license.signIn()); QTRY_COMPARE(code.count(), 1); QVERIFY(license.pending());
+        QCOMPARE(license.verificationUrl(), server.oauth().resolved(QUrl("/login/device")));
+        QVERIFY(!license.refresh()); QVERIFY(!license.signIn());
+        server.pollErrors << "authorization_pending" << "slow_down";
+        QSignalSpy polled(&license, &License::changed);
+        time += 5000; QVERIFY(license.refreshIfDue()); QTRY_VERIFY(polled.count() >= 2);
+        QTRY_VERIFY(server.pollErrors.size() == 1);
+        polled.clear();
+        time += 5000; QVERIFY(license.refreshIfDue()); QTRY_VERIFY(polled.count() >= 2);
+        QTRY_VERIFY(server.pollErrors.isEmpty());
+        time += 5000; QVERIFY(!license.refreshIfDue()); QCOMPARE(server.paths.size(), 3);
+        QVERIFY(license.cancelSignIn()); QVERIFY(!license.pending()); QVERIFY(!license.busy());
+        QVERIFY(license.userCode().isEmpty()); QVERIFY(!license.cancelSignIn());
+        QVERIFY(license.signIn()); QTRY_COMPARE(code.count(), 2);
+        time += 900000; license.refreshIfDue(); QVERIFY(!license.pending()); QVERIFY(!license.active());
+        QVERIFY(!license.status().isEmpty());
+        server.pollErrors << "access_denied";
+        QVERIFY(license.signIn()); advanceAuthorization(license, time);
+        QVERIFY(!license.active()); QVERIFY(!license.status().isEmpty());
+    }
+
+    void tokenRotationPreservesPaymentDeadlineAndIsSharedAcrossProcesses() {
+        GitHub server; server.authorized = true; server.expiringTokens = true; server.payment("paid", start);
+        QTemporaryDir dir; qint64 time = start; const auto secret = TlsIdentity::newKey();
+        License first(dir.path(), product, server.url(), secret, [&] { return time; }, {}, nullptr, server.oauth());
+        License second(dir.path(), product, server.url(), secret, [&] { return time; }, {}, nullptr, server.oauth());
+        QVERIFY(first.signIn()); advanceAuthorization(first, time); QVERIFY(first.active());
+        const auto expiry = first.expiresAt();
+        time += day; checked(second); QVERIFY(second.active()); QCOMPARE(server.rotations, 1);
+        checked(first); QVERIFY(first.active()); QCOMPARE(server.rotations, 1); QCOMPARE(first.expiresAt(), expiry);
+        time += day; server.status = 503; checked(first); QVERIFY(first.active()); QCOMPARE(server.rotations, 1);
+        server.status = 200; checked(first); QVERIFY(first.active()); QCOMPARE(server.rotations, 2);
+        server.refreshToken = "revoked"; time += day; checked(second); QVERIFY(!second.active());
+        checked(first); QVERIFY(!first.active());
+        QVERIFY(server.failures.isEmpty());
+    }
+
+    void tokenExpiryDuringPaginationRestartsOneConsistentRead() {
+        GitHub server; server.authorized = true; server.expiringTokens = true;
+        for (int i = 0; i < 5; ++i) server.payment(QString::number(i), start - i * day);
+        QTemporaryDir dir; qint64 time = start;
+        License license(dir.path(), product, server.url(), TlsIdentity::newKey(), [&] { return time; }, {}, nullptr, server.oauth());
+        QVERIFY(license.signIn()); advanceAuthorization(license, time); QVERIFY(license.active());
+        server.unauthorizedCursor = "2";
+        checked(license);
+        QVERIFY(server.unauthorizedSent); QCOMPARE(server.rotations, 1);
+        QVERIFY2(license.status().isEmpty(), qPrintable(license.status()));
+        QCOMPARE(license.expiresAt(), QDateTime::fromMSecsSinceEpoch(start, QTimeZone::UTC).addYears(1));
+        QVERIFY(server.failures.isEmpty());
+    }
+
+    void accountChangeAndUnauthorizedInvalidateCachedEntitlement() {
+        GitHub server; server.authorized = true; server.payment("paid", start);
+        QTemporaryDir dir; qint64 time = start;
+        License license(dir.path(), product, server.url(), TlsIdentity::newKey(), [&] { return time; }, {}, nullptr, server.oauth());
+        QVERIFY(license.signIn()); advanceAuthorization(license, time); QVERIFY(license.active());
+        server.viewerId = 201; checked(license); QVERIFY(!license.active());
+        server.login = "other-member";
+        QVERIFY(license.signIn()); advanceAuthorization(license, time); QVERIFY(!license.active());
+        QCOMPARE(license.account(), "other-member");
+        server.payment("other-payment", time, "NEW_SPONSORSHIP", "ST_fixture", 100, 201);
+        checked(license); QVERIFY(license.active());
+        server.status = 401; checked(license); QVERIFY(!license.active());
+        server.status = 503; checked(license); QVERIFY(!license.active());
+    }
+
+    void rateLimitAndClockRollbackCannotRefreshTheGrant() {
+        GitHub server; server.authorized = true; server.payment("paid", start);
+        QTemporaryDir dir; qint64 time = start;
+        License license(dir.path(), product, server.url(), TlsIdentity::newKey(), [&] { return time; }, {}, nullptr, server.oauth());
+        QVERIFY(license.signIn()); advanceAuthorization(license, time); QVERIFY(license.active());
+        const auto confirmed = time;
+        server.status = 429; server.extraHeaders = "Retry-After: 120\r\n";
+        checked(license); QVERIFY(license.active()); const auto requests = server.paths.size();
+        time += 119000; QVERIFY(!license.refresh()); QCOMPARE(server.paths.size(), requests);
+        time += 1000; server.status = 200; checked(license); QVERIFY(license.active());
+        server.status = 403; server.extraHeaders = "X-RateLimit-Remaining: 0\r\nX-RateLimit-Reset: 9223372036854775807\r\n";
+        checked(license);
+        time += day - 1; QVERIFY(!license.refresh());
+        time += 1; server.status = 200; checked(license); QVERIFY(license.active());
+        time = confirmed - 1; QVERIFY(!license.active());
+    }
+
+    void moreThanThreeDevicesAndDuplicateEventsRemainIndependent() {
+        GitHub server; server.authorized = true; server.payment("paid", start);
+        server.ledger.append(server.ledger.first());
+        QTemporaryDir dir; qint64 time = start;
+        for (int i = 0; i < 4; ++i) {
+            License license(dir.filePath(QString::number(i)), product, server.url(), TlsIdentity::newKey(), [&] { return time; }, {}, nullptr, server.oauth());
+            QVERIFY(license.signIn()); advanceAuthorization(license, time); QVERIFY(license.active());
+            QCOMPARE(license.expiresAt(), QDateTime::fromMSecsSinceEpoch(start, QTimeZone::UTC).addYears(1));
         }
-        QVERIFY(second.activate("renewed-key")); QTRY_VERIFY(!second.busy()); QVERIFY(second.active());
-        // A later retry from the first profile must not destroy that renewal.
-        QVERIFY(first.refresh()); QTRY_VERIFY(!first.busy()); QVERIFY(first.active());
-        QCOMPARE(first.supportReference(), "Order 50 / License 41");
-        QCOMPARE(server.forms.last().queryItemValue("license_key"), "renewed-key");
-        License restarted(dir.path(), product, server.url(), secret, [] { return start; });
-        QVERIFY(restarted.refresh()); QTRY_VERIFY(!restarted.busy()); QVERIFY(restarted.active());
-        QCOMPARE(restarted.supportReference(), "Order 50 / License 41");
+        QCOMPARE(server.paths.count("/login/device/code"), 4);
+        QVERIFY(server.failures.isEmpty());
     }
 
-#ifdef Q_OS_LINUX
-    void aFreeInstallationDoesNotCreateAKeychainEntryOrContactTheProvider() {
-        Provider server; QTemporaryDir dir;
-        License license(dir.path(), product, server.url(), {}, [] { return start; });
-        QVERIFY(license.refresh()); QTRY_VERIFY(!license.busy()); QVERIFY(!license.active());
-        QVERIFY(server.actions.isEmpty()); QVERIFY(QDir(dir.path()).entryList(QDir::Files).isEmpty());
-        QKeychain::ReadPasswordJob read("SquadSpeak"); read.setAutoDelete(false); read.setInsecureFallback(false);
-        read.setKey("license/" + QString::fromLatin1(QCryptographicHash::hash(dir.path().toUtf8(), QCryptographicHash::Sha256).toHex()));
-        QSignalSpy finished(&read, &QKeychain::Job::finished); read.start();
-        QVERIFY(finished.wait(5000)); QCOMPARE(read.error(), QKeychain::EntryNotFound);
-    }
-
-    void keychainEncryptionKeySurvivesRestartWithoutAPlaintextFallback() {
-        Provider server; server.acceptActivation(); QTemporaryDir dir;
-        const auto slot = "license/" + QString::fromLatin1(QCryptographicHash::hash(dir.path().toUtf8(), QCryptographicHash::Sha256).toHex());
-        const auto cleanup = qScopeGuard([&] {
-            QKeychain::DeletePasswordJob job("SquadSpeak"); job.setAutoDelete(false); job.setKey(slot); job.setInsecureFallback(false);
-            QSignalSpy finished(&job, &QKeychain::Job::finished); job.start();
-            QVERIFY(finished.wait(5000)); QCOMPARE(job.error(), QKeychain::NoError);
-        });
+    void failedFirstEligibilityCheckKeepsAuthenticatedAccountAcrossRestart() {
+        GitHub server; server.authorized = true;
+        server.alter = [](QJsonObject& response) {
+            response = {{"errors", QJsonArray{QJsonObject{{"type", "FORBIDDEN"}, {"message", "Unavailable activity"}}}}};
+        };
+        QTemporaryDir dir; qint64 time = start; const auto secret = TlsIdentity::newKey();
         {
-            License license(dir.path(), product, server.url(), {}, [] { return start; });
-            QVERIFY(license.activate(key)); QTRY_VERIFY_WITH_TIMEOUT(!license.busy(), 10000);
-            QVERIFY2(license.active(), qPrintable(license.status()));
+            License license(dir.path(), product, server.url(), secret, [&] { return time; }, {}, nullptr, server.oauth());
+            QVERIFY(license.signIn()); advanceAuthorization(license, time);
+            QCOMPARE(license.account(), "fixture-member"); QVERIFY(license.signedIn());
+            QVERIFY(!license.active()); QVERIFY(!license.status().isEmpty());
         }
-        License restored(dir.path(), product, server.url(), {}, [] { return start; });
-        QVERIFY(restored.refresh()); QTRY_VERIFY_WITH_TIMEOUT(!restored.busy(), 10000);
-        QVERIFY2(restored.active(), qPrintable(restored.status()));
+        License restored(dir.path(), product, server.url(), secret, [&] { return time; }, {}, nullptr, server.oauth());
+        checked(restored); QCOMPARE(restored.account(), "fixture-member"); QVERIFY(restored.signedIn());
+        QCOMPARE(server.paths.count("/login/device/code"), 1);
+        server.alter = {}; server.contributorFile = "| 200 | fixture-member |\n";
+        checked(restored); QVERIFY(restored.active());
+        QVERIFY(restored.signOut()); QVERIFY(restored.account().isEmpty());
+        QVERIFY(server.failures.isEmpty());
     }
+
+    void contributorDoesNotDependOnUnavailableSponsorshipEntries() {
+        GitHub server; server.authorized = true;
+        server.contributorFile = "| 200 | fixture-member |\n";
+        server.alter = [](QJsonObject& response) {
+            auto data = response.value("data").toObject(); auto viewer = data.value("viewer").toObject();
+            auto activity = viewer.value("sponsorsActivities").toObject();
+            activity.insert("nodes", QJsonArray{QJsonValue::Null});
+            viewer.insert("sponsorsActivities", activity); data.insert("viewer", viewer); response.insert("data", data);
+        };
+        QTemporaryDir dir; qint64 time = start;
+        License license(dir.path(), product, server.url(), TlsIdentity::newKey(), [&] { return time; }, {}, nullptr, server.oauth());
+        QVERIFY(license.signIn()); advanceAuthorization(license, time);
+        QVERIFY(license.active()); QCOMPARE(license.account(), "fixture-member");
+        server.contributorFile.clear(); time += 7 * day; checked(license);
+        QVERIFY(!license.active());
+    }
+
+    void contributorUsesStableIdAndExpiresAfterSevenDays() {
+        GitHub server; server.authorized = true;
+        server.contributorFile = "# Contributors\n\n| GitHub ID | Handle |\n| --- | --- |\n| 200 | fixture-member |\n";
+        QTemporaryDir dir; qint64 time = start;
+        License license(dir.path(), product, server.url(), TlsIdentity::newKey(), [&] { return time; }, {}, nullptr, server.oauth());
+        QVERIFY(license.signIn()); advanceAuthorization(license, time); QVERIFY(license.active());
+        server.login = "renamed-member"; checked(license); QVERIFY(license.active());
+        QCOMPARE(license.account(), "renamed-member");
+        server.status = 503; time += 7 * day; checked(license); QVERIFY(!license.active());
+        server.status = 200; checked(license); QVERIFY(license.active());
+        server.contributorFile = "| 201 | renamed-member |\nText 200 is not a grant.\n";
+        checked(license); QVERIFY(!license.active());
+    }
+
+    void sharedStorageAndConcurrentOperations_data() {
+        QTest::addColumn<bool>("fileIdentity");
+        QTest::newRow("encrypted-storage") << false;
+#ifndef Q_OS_WIN
+        QTest::newRow("identity-file") << true;
 #endif
+    }
+
+    void sharedStorageAndConcurrentOperations() {
+        QFETCH(bool, fileIdentity);
+        GitHub server; server.authorized = true; server.payment("paid", start);
+        QTemporaryDir dir; qint64 time = start;
+        const auto identity = fileIdentity ? dir.filePath("identity.pem") : QString{};
+        const auto secret = fileIdentity ? QByteArray{} : TlsIdentity::newKey();
+        if (fileIdentity) { const auto generated = TlsIdentity::loadFile(identity, true); QVERIFY(!generated.id().isEmpty()); }
+        License first(dir.path(), product, server.url(), secret, [&] { return time; }, identity, nullptr, server.oauth());
+        License second(dir.path(), product, server.url(), secret, [&] { return time; }, {}, nullptr, server.oauth());
+        QVERIFY(first.signIn()); QTRY_VERIFY(first.pending());
+        QVERIFY(!second.signIn()); QVERIFY(!second.active());
+        advanceAuthorization(first, time); QVERIFY(first.active());
+        server.status = 503;
+        checked(second); QVERIFY2(second.active(), qPrintable(second.status()));
+        QVERIFY(second.signOut()); QVERIFY(!second.active());
+        checked(first); QVERIFY(!first.active());
+        const auto requests = server.paths.size();
+        checked(first); QCOMPARE(server.paths.size(), requests);
+    }
+
+    void failedRevocationWriteCannotResurrectOldGrant() {
+        GitHub server; server.authorized = true; server.payment("paid", start);
+        QTemporaryDir dir; qint64 time = start; const auto secret = TlsIdentity::newKey();
+        License license(dir.path(), product, server.url(), secret, [&] { return time; }, {}, nullptr, server.oauth());
+        QVERIFY(license.signIn()); advanceAuthorization(license, time); QVERIFY(license.active());
+        const auto path = dir.filePath("supporter.bin"); QFile file(path);
+        QVERIFY(file.open(QIODevice::ReadOnly)); const auto previous = file.readAll(); file.close();
+        server.beforeResponse = [&] { QVERIFY(QFile::remove(path)); QVERIFY(QDir().mkdir(path)); };
+        server.payment("refund", time, "REFUND"); checked(license); QVERIFY(!license.active());
+        QVERIFY(!license.status().isEmpty()); server.beforeResponse = {};
+        QVERIFY(QDir().rmdir(path)); QVERIFY(file.open(QIODevice::WriteOnly)); QCOMPARE(file.write(previous), previous.size()); file.close();
+        server.status = 503; checked(license); QVERIFY(!license.active());
+        License restarted(dir.path(), product, server.url(), secret, [&] { return time; }, {}, nullptr, server.oauth());
+        checked(restarted); QVERIFY(!restarted.active());
+    }
+
+    void corruptCacheWrongKeyAndUntrustedTlsFailClosed() {
+        GitHub server; server.authorized = true; server.payment("paid", start);
+        QTemporaryDir dir; qint64 time = start; const auto secret = TlsIdentity::newKey();
+        {
+            License license(dir.path(), product, server.url(), secret, [&] { return time; }, {}, nullptr, server.oauth());
+            QVERIFY(license.signIn()); advanceAuthorization(license, time); QVERIFY(license.active());
+        }
+        const auto requests = server.paths.size();
+        License wrongKey(dir.path(), product, server.url(), TlsIdentity::newKey(), [&] { return time; }, {}, nullptr, server.oauth());
+        checked(wrongKey); QVERIFY(!wrongKey.active()); QCOMPARE(server.paths.size(), requests);
+        QFile file(dir.filePath("supporter.bin")); QVERIFY(file.open(QIODevice::WriteOnly)); file.write("broken"); file.close();
+        License broken(dir.path(), product, server.url(), secret, [&] { return time; }, {}, nullptr, server.oauth());
+        checked(broken); QVERIFY(!broken.active()); QCOMPARE(server.paths.size(), requests);
+        QSslConfiguration::setDefaultConfiguration(original_);
+        QTemporaryDir other;
+        License tls(other.path(), product, server.url(), secret, [&] { return time; }, {}, nullptr, server.oauth());
+        QVERIFY(tls.signIn()); QTRY_VERIFY(!tls.busy()); QVERIFY(!tls.pending()); QVERIFY(!tls.active());
+        QCOMPARE(server.paths.size(), requests);
+        auto fixtureTls = original_; fixtureTls.setPeerVerifyMode(QSslSocket::VerifyNone); QSslConfiguration::setDefaultConfiguration(fixtureTls);
+    }
+
+    void authorizationNeverFollowsRedirectsOrOpensUntrustedVerificationSites() {
+        GitHub server, other; QTemporaryDir dir; qint64 time = start;
+        License license(dir.path(), product, server.url(), TlsIdentity::newKey(), [&] { return time; }, {}, nullptr, server.oauth());
+        server.verificationOverride = "https://example.invalid/login/device";
+        QVERIFY(license.signIn()); QTRY_VERIFY(!license.busy());
+        QVERIFY(!license.pending()); QVERIFY(license.verificationUrl().isEmpty());
+        server.verificationOverride.clear(); server.status = 302;
+        server.extraHeaders = "Location: " + other.url().toEncoded() + "\r\n";
+        QVERIFY(license.signIn()); QTRY_VERIFY(!license.busy()); QVERIFY(!license.active());
+        QVERIFY(other.paths.isEmpty()); QVERIFY(license.verificationUrl().isEmpty());
+    }
+
+    void freeStartupDoesNotTouchKeychainOrNetworkAndInvalidConfigurationIsRejected() {
+        GitHub server; QTemporaryDir dir;
+        License license(dir.path(), product, server.url());
+        checked(license); QVERIFY(!license.active()); QVERIFY(server.paths.isEmpty());
+        QVERIFY(QDir(dir.path()).entryList(QDir::Files).isEmpty());
+        QVERIFY_THROWS_EXCEPTION(std::invalid_argument, License(dir.path(), product, QUrl("http://localhost/graphql")));
+        auto invalid = product; invalid.insert("recipient_id", -1);
+        QVERIFY_THROWS_EXCEPTION(std::invalid_argument, License(dir.path(), invalid, server.url()));
+    }
 #endif
 };
-
 QTEST_GUILESS_MAIN(LicenseTests)
 #include "license_tests.moc"

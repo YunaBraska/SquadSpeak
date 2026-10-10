@@ -17,16 +17,22 @@
 #include <QApplication>
 #include <QCommandLineParser>
 #include <QDir>
+#include <QElapsedTimer>
 #include <QFile>
 #include <QFileInfo>
+#if !defined(Q_OS_IOS) && !defined(Q_OS_ANDROID)
 #include <QMenu>
+#include <QSystemTrayIcon>
+#endif
+#ifdef Q_OS_IOS
+#include <QImageReader>
+#endif
 #include <QPainter>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include <QQuickStyle>
 #include <QQuickWindow>
 #include <QStandardPaths>
-#include <QSystemTrayIcon>
 #include <QStyleHints>
 #include <QLockFile>
 #include <QTranslator>
@@ -35,6 +41,12 @@
 #include <cstdio>
 
 int main(int argc, char** argv) {
+#ifdef Q_OS_ANDROID
+    // QApplication and its post-routines finish before Android ends the process.
+    // Qt's additional native exit races Android HWUI's detached worker shutdown.
+    qputenv("QT_ANDROID_NO_EXIT_CALL", "1");
+    qputenv("QT_ANDROID_NO_FULLSCREEN_KEYBOARD", "1");
+#endif
 #ifdef Q_OS_MACOS
     // SecureTransport needs a temporary import for TLS. Durable device secrets
     // remain owned by QtKeychain; handshake imports do not enter the login keychain.
@@ -43,6 +55,9 @@ int main(int argc, char** argv) {
     for (int i = 1; i < argc; ++i)
         if (QString::fromLocal8Bit(argv[i]) == "--headless") return Headless::run(argc, argv);
     QApplication app(argc, argv);
+#ifdef Q_OS_IOS
+    QImageReader::setAllocationLimit(128);
+#endif
     app.setApplicationName("SquadSpeak");
     app.setOrganizationName("SquadSpeak");
     app.setApplicationVersion(QStringLiteral(SQUADSPEAK_VERSION));
@@ -65,6 +80,7 @@ int main(int argc, char** argv) {
     addOptions(bootstrap);
     const bool parsed = bootstrap.parse(app.arguments());
     auto settingsFile = bootstrap.value("settings-file");
+    if (settingsFile.isEmpty()) settingsFile = qEnvironmentVariable("SQUADSPEAK_SETTINGS_FILE");
     if (settingsFile.isEmpty())
         settingsFile = QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation) + "/audio.ini";
 
@@ -108,10 +124,16 @@ int main(int argc, char** argv) {
             qCritical("%s", qUtf8Printable(QCoreApplication::translate("Headless", "This SquadSpeak profile is already running or cannot be locked.")));
             return 1;
         }
-        if (arguments.isSet("smoke-test")) qInfo("UI smoke: initializing services");
+        QElapsedTimer startup;
+        startup.start();
+        const auto startupPhase = [&](const char* phase) {
+            if (arguments.isSet("smoke-test")) qInfo("UI smoke: %s (%lld ms)", phase, startup.elapsed());
+        };
+        startupPhase("initializing audio");
         AudioModel audio(settingsFile);
-        License license(QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation),
-            License::distributionProduct(), QUrl("https://api.lemonsqueezy.com/v1/licenses/"));
+        startupPhase("initializing supporter access");
+        License license(License::storageDirectory(),
+            License::distributionProduct(), QUrl("https://api.github.com/graphql"));
         QObject::connect(&license, &License::changed, &session, [&] { session.setSupporterEnabled(license.active()); });
         QObject::connect(&app, &QGuiApplication::applicationStateChanged, &license, [&](Qt::ApplicationState state) {
             if (state == Qt::ApplicationActive && !arguments.isSet("smoke-test") && !arguments.isSet("recording-test")) license.refreshIfDue();
@@ -122,14 +144,18 @@ int main(int argc, char** argv) {
         };
         QObject::connect(&session, &VoiceSession::preferencesChanged, &app, applyAppearance);
         applyAppearance();
+        startupPhase("initializing channels");
         LocalChannel channel(session, settingsFile + ".channel.json");
+        startupPhase("initializing screen capture");
         ScreenShare screenShare(channel);
         ChatContent chatContent;
+        startupPhase("initializing radio");
         RadioPlayer radio(settingsFile + ".radio.json");
         // Channel/radio accessors lend these objects to QML; C++ owns their lifetime.
         QQmlEngine::setObjectOwnership(&channel, QQmlEngine::CppOwnership);
         QQmlEngine::setObjectOwnership(&radio, QQmlEngine::CppOwnership);
         if (!radio.bind(channel)) throw std::runtime_error(qUtf8Printable(QCoreApplication::translate("Headless", "Radio channels could not be initialized.")));
+        startupPhase("initializing shortcuts and updates");
         PushToTalkKey pttKey(session, !arguments.isSet("smoke-test") && !arguments.isSet("recording-test"));
 #ifdef SQUADSPEAK_UPDATES
         AppUpdates updates(!arguments.isSet("smoke-test") && !arguments.isSet("recording-test"));
@@ -153,7 +179,9 @@ int main(int argc, char** argv) {
         engine.rootContext()->setContextProperty("channel", &channel);
         engine.rootContext()->setContextProperty("chatContent", &chatContent);
         engine.rootContext()->setContextProperty("pttKey", &pttKey);
+        startupPhase("loading interface");
         engine.loadFromModule("SquadSpeak", "Channels");
+        startupPhase("interface loaded");
         if (engine.rootObjects().size() != 1) return 1;
         auto* channels = qobject_cast<QQuickWindow*>(engine.rootObjects().first());
         if (!channels) return 1;
@@ -222,6 +250,7 @@ int main(int argc, char** argv) {
             QMetaObject::invokeMethod(channels, "openSettings", Q_ARG(QVariant, 0));
         };
 
+#if !defined(Q_OS_IOS) && !defined(Q_OS_ANDROID)
         QPixmap mark(32, 32);
         mark.fill(Qt::transparent);
         {
@@ -285,6 +314,9 @@ int main(int argc, char** argv) {
             app.setQuitOnLastWindowClosed(true);
             showChannels();
         }
+#else
+        channels->showMaximized();
+#endif
         if (arguments.isSet("recording-test")) {
             channels->setProperty("recordingMode", true);
             if (!arguments.isSet("smoke-test")) {

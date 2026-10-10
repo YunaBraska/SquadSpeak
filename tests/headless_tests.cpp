@@ -26,6 +26,7 @@
 #include <qtkeychain/keychain.h>
 #include <future>
 #include <barrier>
+#include <cstdio>
 #ifndef Q_OS_WIN
 #include <sys/stat.h>
 #include <unistd.h>
@@ -34,6 +35,7 @@
 class HeadlessTests final : public QObject {
     Q_OBJECT
     const QString executable_ = qEnvironmentVariable("SQUAD_TEST_APP", QStringLiteral(SQUAD_HEADLESS_APP));
+    QTemporaryDir processHome_;
     QHash<QString, bool> temporaryIdentitySlots_;
     QString registerProfile(const QString& profile) {
         const auto absolute = QFileInfo(profile + ".channel.json").absoluteFilePath();
@@ -46,6 +48,25 @@ private slots:
     void initTestCase() {
         qputenv("QT_SSL_USE_TEMPORARY_KEYCHAIN", "1");
         QVERIFY(QSslSocket::supportsSsl());
+        QVERIFY(processHome_.isValid());
+#ifdef Q_OS_MACOS
+        // Foundation ignores HOME for native preference paths.
+        qputenv("CFFIXED_USER_HOME", processHome_.path().toUtf8());
+#elif defined(Q_OS_LINUX)
+        qputenv("XDG_CONFIG_HOME", processHome_.path().toUtf8());
+#endif
+#ifdef Q_OS_WIN
+        // Windows known folders belong to the OS account, not APPDATA overrides.
+        QVERIFY2(!QFileInfo::exists(License::storageDirectory() + "/supporter.bin"),
+            "Run headless process tests under a Windows test account without a personal Supporter login.");
+#else
+        QProcess probe;
+        probe.start(QCoreApplication::applicationFilePath(), {"--test-config-directory"});
+        QVERIFY(probe.waitForFinished(5000));
+        QCOMPARE(probe.exitCode(), 0);
+        const auto path = QString::fromUtf8(probe.readAllStandardOutput()).trimmed();
+        QVERIFY2(path.startsWith(processHome_.path() + '/'), qPrintable(path));
+#endif
     }
     void cleanupTestCase() {
         QStringList failures;
@@ -273,6 +294,36 @@ private slots:
         QVERIFY(file.open(QIODevice::ReadOnly)); QCOMPARE(file.readAll(), bytes);
         for (const auto* suffix : {"", ".instance.lock", ".channel.json", ".radio.json"})
             QVERIFY(!QFile::exists(profile + suffix));
+    }
+    void desktopProfileEnvironmentSurvivesArgumentlessRestart_data() {
+        QTest::addColumn<bool>("explicitPath");
+        QTest::newRow("environment") << false;
+        QTest::newRow("argument-overrides-environment") << true;
+    }
+    void desktopProfileEnvironmentSurvivesArgumentlessRestart() {
+        QFETCH(bool, explicitPath);
+        QTemporaryDir directory;
+        const auto profile = directory.filePath("environment/audio.ini");
+        const auto other = directory.filePath("explicit/audio.ini");
+        QVERIFY(QDir().mkpath(QFileInfo(profile).absolutePath()));
+        QVERIFY(QDir().mkpath(QFileInfo(other).absolutePath()));
+        VoiceSession session(profile + ".session.json"); QVERIFY(session.setLanguage("de"));
+        VoiceSession second(other + ".session.json"); QVERIFY(second.setLanguage("en"));
+        QProcess process;
+        auto environment = QProcessEnvironment::systemEnvironment();
+        environment.insert("QT_QPA_PLATFORM", "offscreen");
+        environment.insert("SQUADSPEAK_SETTINGS_FILE", profile);
+        process.setProcessEnvironment(environment);
+        QStringList arguments{"--help"};
+        if (explicitPath) arguments << "--settings-file" << other;
+        process.start(executable_, arguments);
+        QVERIFY(process.waitForFinished(5000));
+        QCOMPARE(process.exitStatus(), QProcess::NormalExit); QCOMPARE(process.exitCode(), 0);
+        const auto help = QString::fromUtf8(process.readAllStandardOutput());
+        QVERIFY2(help.contains(explicitPath ? "Open settings at startup." : QString::fromUtf8("Einstellungen beim Start öffnen.")), qPrintable(help));
+        for (const auto& path : {profile, other})
+            for (const auto* suffix : {"", ".instance.lock", ".channel.json", ".radio.json"})
+                QVERIFY(!QFile::exists(path + suffix));
     }
     void desktopHelpAndProfileLockUseSavedLanguageWithoutStartingServices() {
         QTemporaryDir directory;
@@ -1003,6 +1054,8 @@ with (root / 'replies').open('wb') as replies:
         const auto license = run({{"command", "license"}, {"action", "status"}});
         QVERIFY2(license.value("ok").toBool(), qPrintable(license.value("error").toString()));
         QVERIFY(!license.value("data").toObject().value("active").toBool());
+        QVERIFY(license.value("data").toObject().contains("account"));
+        QVERIFY(license.value("data").toObject().contains("verificationUrl"));
         QVERIFY(!run({{"command", "channels"}, {"action", "add"}, {"name", "Second"}}).value("ok").toBool());
 #if SQUADSPEAK_STORE_BUILD
         QVERIFY(!session.setSupporterEnabled(true)); return;
@@ -1295,5 +1348,13 @@ with (root / 'replies').open('wb') as replies:
     }
 };
 
-QTEST_GUILESS_MAIN(HeadlessTests)
+int main(int argc, char** argv) {
+    QCoreApplication app(argc, argv);
+    if (app.arguments().contains("--test-config-directory")) {
+        std::puts(qUtf8Printable(License::storageDirectory()));
+        return 0;
+    }
+    HeadlessTests tests;
+    return QTest::qExec(&tests, argc, argv);
+}
 #include "headless_tests.moc"

@@ -7,7 +7,14 @@
 #include <QClipboard>
 #include <QMimeData>
 #include <QFile>
+#ifdef Q_OS_IOS
+#include <QFutureWatcher>
+#include <QSemaphore>
+#include <QScopeGuard>
+#include <QtConcurrentRun>
+#else
 #include <QProcess>
+#endif
 #include <QTimer>
 #include <QSharedPointer>
 #include <QImageReader>
@@ -17,6 +24,8 @@
 #include <QTextCursor>
 #include <QTextDocument>
 #include <QTextFragment>
+#include <QFontDatabase>
+#include <QFontInfo>
 #include <QTextImageFormat>
 #include <QCryptographicHash>
 #include <QNetworkAccessManager>
@@ -42,12 +51,36 @@ bool ChatContent::openLink(const QString& link) const {
     return allowedLink(url) && QDesktopServices::openUrl(url);
 }
 
-QString ChatContent::format(const QString& markdown, const QVariantMap& attachment, const QColor& linkColor) const {
+QString ChatContent::format(const QString& markdown, const QVariantMap& attachment, const QColor& linkColor,
+                            const QColor& codeBackground, const QFont& font) const {
     DisplayDocument document;
+    document.setDefaultFont(font);
     document.setMarkdown(markdown, QTextDocument::MarkdownFeatures(QTextDocument::MarkdownDialectGitHub) | QTextDocument::MarkdownNoHTML);
+    auto codeFont = QFontDatabase::systemFont(QFontDatabase::FixedFont);
+    codeFont.setStyleHint(QFont::Monospace);
+    codeFont.setFixedPitch(true);
+    const auto codeFamily = QFontInfo(codeFont).family();
+    const auto codeBlock = [](const QTextBlock& block) {
+        const auto format = block.blockFormat();
+        return format.hasProperty(QTextFormat::BlockCodeFence) || format.hasProperty(QTextFormat::BlockCodeLanguage)
+            || format.nonBreakableLines();
+    };
     struct Change { int start; int length; QTextCharFormat format; QString text; bool replace; };
     QList<Change> changes;
     for (auto block = document.begin(); block.isValid(); block = block.next()) {
+        const bool fenced = codeBlock(block);
+        const int quote = block.blockFormat().intProperty(QTextFormat::BlockQuoteLevel);
+        if (fenced || quote > 0) {
+            auto format = block.blockFormat();
+            format.setLeftMargin(fenced ? 8 : 12 * quote);
+            format.setRightMargin(8);
+            if (fenced) {
+                format.setBackground(codeBackground);
+                format.setTopMargin(codeBlock(block.previous()) ? 0 : 8);
+                format.setBottomMargin(codeBlock(block.next()) ? 0 : 8);
+            }
+            QTextCursor(block).setBlockFormat(format);
+        }
         for (auto it = block.begin(); !it.atEnd(); ++it) {
             const auto fragment = it.fragment();
             if (!fragment.isValid()) continue;
@@ -73,11 +106,24 @@ QString ChatContent::format(const QString& markdown, const QVariantMap& attachme
                 auto description = image.property(QTextFormat::ImageAltText).toString();
                 if (description.isEmpty()) description = tr("Image");
                 changes.append({fragment.position(), fragment.length(), replacement, description, true});
-            } else if (format.isAnchor()) {
+                continue;
+            }
+            const bool code = fenced || format.fontFixedPitch() || format.fontFamilies().toStringList().contains("monospace");
+            const bool anchor = format.isAnchor();
+            if (anchor) {
                 if (allowedLink(QUrl(format.anchorHref()))) format.setForeground(linkColor);
                 else { format.setAnchor(false); format.setAnchorHref({}); format.clearForeground(); }
-                changes.append({fragment.position(), fragment.length(), format, {}, false});
             }
+            if (code) {
+                format.setFontFamilies({codeFamily});
+                format.setFontFixedPitch(true);
+                format.setBackground(codeBackground);
+            } else if (quote > 0) {
+                format.setFontItalic(true);
+                format.setForeground(linkColor);
+            }
+            if (code || quote > 0 || anchor)
+                changes.append({fragment.position(), fragment.length(), format, {}, false});
         }
     }
     // Reverse order keeps positions stable while replacing image objects.
@@ -105,11 +151,74 @@ QString ChatContent::embedImage(const QString& markdown, const QByteArray& image
         }
     if (sources.size() > 1) throw std::runtime_error(tr("Each message can contain one image. Send additional images separately.").toStdString());
     if (images.isEmpty()) return markdown + (markdown.isEmpty() ? "" : "\n\n") + "![Image](" + reference + ")";
+    if (*sources.begin() == reference) return markdown;
+    auto result = markdown;
+    qsizetype search = 0;
     for (const auto& [position, format] : images) {
-        QTextCursor cursor(&document); cursor.setPosition(position); cursor.setPosition(position + 1, QTextCursor::KeepAnchor);
-        cursor.setCharFormat(format);
+        QTextCursor current(&document);
+        current.setPosition(position); current.setPosition(position + 1, QTextCursor::KeepAnchor);
+        if (current.charFormat().toImageFormat().name() == reference) continue;
+        auto title = format.stringProperty(QTextFormat::ImageTitle);
+        title.replace("\\", "\\\\").replace("\"", "\\\"");
+        const auto expected = document.toHtml();
+        const auto expectedText = document.toPlainText();
+        bool replaced = false;
+        // Locate candidate image syntax, then let Qt prove that replacing it
+        // changes only this image. Code, links and reference definitions stay intact.
+        const auto closing = [&result](qsizetype start, QChar open, QChar close) {
+            int depth = 0;
+            QChar quote;
+            for (auto i = start; i < result.size(); ++i) {
+                const auto c = result[i];
+                if (c == '\\') { ++i; continue; }
+                if (!quote.isNull()) { if (c == quote) quote = {}; continue; }
+                if (open == '(' && (c == '<' || ((c == '\'' || c == '"') && i > start && result[i - 1].isSpace()))) {
+                    quote = c == '<' ? QChar('>') : c; continue;
+                }
+                if (c == open) ++depth;
+                else if (c == close && --depth == 0) return i;
+            }
+            return qsizetype(-1);
+        };
+        for (auto start = result.indexOf("![", search); start >= 0 && !replaced; start = result.indexOf("![", start + 2)) {
+            const auto label = closing(start + 1, '[', ']');
+            if (label < 0) continue;
+            const auto replacement = result.mid(start, label - start + 1) + '(' + reference
+                + (title.isEmpty() ? QString{} : " \"" + title + '"') + ')';
+            QList<qsizetype> ends{label};
+            auto next = label + 1;
+            while (next < result.size() && result[next].isSpace()) ++next;
+            if (next < result.size() && (result[next] == '(' || result[next] == '[')) {
+                const auto end = closing(next, result[next], result[next] == '(' ? ')' : ']');
+                if (end >= 0) ends.append(end);
+            }
+            for (const auto end : ends) {
+                auto candidate = result;
+                candidate.replace(start, end - start + 1, replacement);
+                DisplayDocument probe;
+                probe.setMarkdown(candidate, QTextDocument::MarkdownFeatures(QTextDocument::MarkdownDialectGitHub) | QTextDocument::MarkdownNoHTML);
+                if (probe.toPlainText() != expectedText) continue;
+                QTextCursor cursor(&probe);
+                cursor.setPosition(position); cursor.setPosition(position + 1, QTextCursor::KeepAnchor);
+                if (!cursor.charFormat().isImageFormat() || cursor.charFormat().toImageFormat().name() != reference) continue;
+                for (const auto& image : images) {
+                    const auto imagePosition = image.first;
+                    current.setPosition(imagePosition); current.setPosition(imagePosition + 1, QTextCursor::KeepAnchor);
+                    cursor.setPosition(imagePosition); cursor.setPosition(imagePosition + 1, QTextCursor::KeepAnchor);
+                    if (cursor.charFormat().isImageFormat() && cursor.charFormat().toImageFormat().name() == reference)
+                        cursor.setCharFormat(current.charFormat());
+                }
+                if (probe.toHtml() != expected) continue;
+                result = std::move(candidate);
+                document.setMarkdown(result, QTextDocument::MarkdownFeatures(QTextDocument::MarkdownDialectGitHub) | QTextDocument::MarkdownNoHTML);
+                search = start + replacement.size();
+                replaced = true;
+                break;
+            }
+        }
+        if (!replaced) throw std::runtime_error(tr("Image could not be sanitized.").toStdString());
     }
-    return document.toMarkdown(QTextDocument::MarkdownDialectGitHub);
+    return result;
 }
 
 bool ChatContent::prepareMessage(const QString& markdown) {
@@ -126,7 +235,9 @@ bool ChatContent::prepareMessage(const QString& markdown) {
         busy_ = false; error_ = std::move(error);
         if (error_.isEmpty()) {
             prepared_ = std::move(png);
-            const auto text = prepared_.isEmpty() ? markdown : embedImage(markdown, prepared_);
+            QString text;
+            try { text = prepared_.isEmpty() ? markdown : embedImage(markdown, prepared_); }
+            catch (const std::exception& error) { error_ = QString::fromUtf8(error.what()); emit changed(); return; }
             if (text.toUtf8().size() > 16384) error_ = tr("Message with image reference is too long (maximum 16 KiB).");
             else { emit changed(); emit messagePrepared(text, prepared_); return; }
         }
@@ -240,6 +351,38 @@ bool ChatContent::prepare(const QByteArray& source, QObject* context, std::funct
     if (source.isEmpty() || source.size() > maximumSourceBytes) {
         completion({}, tr("Image file is empty or larger than 25 MiB.")); return false;
     }
+#ifdef Q_OS_IOS
+    // iOS cannot launch a decoder subprocess. Keep one bounded decode in flight
+    // and deliver results only while its owning channel still exists.
+    static QSemaphore capacity(1);
+    if (!capacity.tryAcquire()) {
+        completion({}, tr("Image decoder could not be started.")); return false;
+    }
+    auto releaseOnFailure = qScopeGuard([] { capacity.release(); });
+    using Result = std::pair<QByteArray, QString>;
+    auto* watcher = new QFutureWatcher<Result>(context);
+    auto* timeout = new QTimer(watcher);
+    timeout->setSingleShot(true);
+    QObject::connect(watcher, &QFutureWatcher<Result>::finished, watcher, [watcher, timeout, completion] {
+        timeout->stop();
+        const auto result = watcher->result();
+        watcher->deleteLater();
+        completion(result.first, result.second);
+    });
+    watcher->setFuture(QtConcurrent::run([source]() -> Result {
+        const auto release = qScopeGuard([] { capacity.release(); });
+        try { return {sanitizeImage(source), {}}; }
+        catch (const std::exception& error) { return {{}, QString::fromUtf8(error.what())}; }
+    }));
+    releaseOnFailure.dismiss();
+    QObject::connect(timeout, &QTimer::timeout, watcher, [watcher, completion] {
+        QObject::disconnect(watcher, nullptr, watcher, nullptr);
+        watcher->deleteLater();
+        completion({}, tr("Image processing took too long."));
+    });
+    timeout->start(20000);
+    return true;
+#else
     auto* process = new QProcess(context);
     struct State { QByteArray output; QByteArray diagnostic; bool done = false, timedOut = false; };
     const auto state = QSharedPointer<State>::create();
@@ -282,6 +425,7 @@ bool ChatContent::prepare(const QByteArray& source, QObject* context, std::funct
 #endif
     process->start(QCoreApplication::applicationDirPath() + helper, {});
     return true;
+#endif
 }
 
 bool ChatContent::prepareDraft(const QByteArray& source) {

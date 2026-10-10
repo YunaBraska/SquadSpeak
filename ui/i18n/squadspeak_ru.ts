@@ -637,10 +637,6 @@
             <translation>Канал недоступен</translation>
         </message>
         <message>
-            <source>Join voice</source>
-            <translation>Войти в голосовой канал</translation>
-        </message>
-        <message>
             <source>System (automatic)</source>
             <translation>Системный (автоматически)</translation>
         </message>
@@ -873,10 +869,6 @@
             <translation>Автовход</translation>
         </message>
         <message>
-            <source>Leave channel</source>
-            <translation>Выйти из канала</translation>
-        </message>
-        <message>
             <source>Stream URL</source>
             <translation>URL потока</translation>
         </message>
@@ -1093,48 +1085,16 @@
             <translation>ID устройства</translation>
         </message>
         <message>
-            <source>Activate</source>
-            <translation>Активировать</translation>
-        </message>
-        <message>
-            <source>Buy annual pass</source>
-            <translation>Купить годовой пропуск</translation>
-        </message>
-        <message>
             <source>Check now</source>
             <translation>Проверить сейчас</translation>
-        </message>
-        <message>
-            <source>Deactivate</source>
-            <translation>Деактивировать</translation>
         </message>
         <message>
             <source>Free version</source>
             <translation>Бесплатная версия</translation>
         </message>
         <message>
-            <source>License key</source>
-            <translation>Лицензионный ключ</translation>
-        </message>
-        <message>
             <source>Not available yet</source>
             <translation>Пока недоступно</translation>
-        </message>
-        <message>
-            <source>Reset</source>
-            <translation>Сбросить</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot.</source>
-            <translation>Выполняйте сброс только после того, как поддержка освободит место устройства.</translation>
-        </message>
-        <message>
-            <source>Resolve activation</source>
-            <translation>Решить проблему активации</translation>
-        </message>
-        <message>
-            <source>Support reference</source>
-            <translation>Номер для поддержки</translation>
         </message>
         <message>
             <source>Supporter</source>
@@ -1200,7 +1160,35 @@
             <source>App audio</source>
             <translation>Звук приложения</translation>
         </message>
-</context>
+        <message>
+            <source>Account: %1</source>
+            <translation>Аккаунт: %1</translation>
+        </message>
+        <message>
+            <source>Signed in as %1</source>
+            <translation>Выполнен вход как %1</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub</source>
+            <translation>Войдите с помощью GitHub</translation>
+        </message>
+        <message>
+            <source>Verification code</source>
+            <translation>Проверочный код</translation>
+        </message>
+        <message>
+            <source>Open GitHub</source>
+            <translation>Открыть GitHub</translation>
+        </message>
+        <message>
+            <source>Sign out</source>
+            <translation>выход</translation>
+        </message>
+        <message>
+            <source>This device</source>
+            <translation>Это устройство</translation>
+        </message>
+    </context>
     <context>
         <name>ChatContent</name>
         <message>
@@ -1417,10 +1405,6 @@
     </context>
     <context>
         <name>LocalChannel</name>
-        <message>
-            <source>Encrypted join failed: %1</source>
-            <translation>Не удалось выполнить зашифрованный вход: %1</translation>
-        </message>
         <message>
             <source>Host is not responding. Reconnecting.</source>
             <translation>Хост не отвечает. Повторное подключение.</translation>
@@ -2613,22 +2597,6 @@
     <context>
         <name>License</name>
         <message>
-            <source>Activation was declined. Check your key and available device slots.</source>
-            <translation>Активация отклонена. Проверьте ключ и доступные места для устройств.</translation>
-        </message>
-        <message>
-            <source>An activation is unresolved. Contact support before trying again.</source>
-            <translation>Результат активации не определён. Перед повторной попыткой обратитесь в поддержку.</translation>
-        </message>
-        <message>
-            <source>Deactivation was declined. Contact support.</source>
-            <translation>Деактивация отклонена. Обратитесь в поддержку.</translation>
-        </message>
-        <message>
-            <source>Enter a valid license key.</source>
-            <translation>Введите действительный лицензионный ключ.</translation>
-        </message>
-        <message>
             <source>License storage is busy or unavailable.</source>
             <translation>Хранилище лицензий занято или недоступно.</translation>
         </message>
@@ -2637,16 +2605,24 @@
             <translation>Хранилище лицензий недоступно.</translation>
         </message>
         <message>
-            <source>The license could not be checked. Your confirmed expiry is unchanged.</source>
-            <translation>Не удалось проверить лицензию. Подтверждённый срок действия не изменился.</translation>
+            <source>Sign-in expired. Try again.</source>
+            <translation>Срок действия входа истек. Попробуйте еще раз.</translation>
         </message>
         <message>
-            <source>The license or device activation is no longer valid.</source>
-            <translation>Лицензия или активация устройства больше не действительна.</translation>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>Вход в GitHub недоступен. Попробуйте еще раз.</translation>
         </message>
         <message>
-            <source>The license response does not match this annual pass.</source>
-            <translation>Ответ сервера лицензий не соответствует этому годовому пропуску.</translation>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>Вход в GitHub не завершен. Попробуйте еще раз.</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>GitHub проверить не удалось. Офлайн-доступ длится максимум семь дней.</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>Войдите в систему с помощью GitHub еще раз.</translation>
         </message>
     </context>
     <context>
@@ -2658,10 +2634,6 @@
         <message>
             <source>The shared window was closed. Select a source to start again.</source>
             <translation>Общее окно закрыто. Выберите источник, чтобы начать снова.</translation>
-        </message>
-        <message>
-            <source>Screen sharing requires an active Supporter pass on the owning host.</source>
-            <translation>Для демонстрации экрана нужен действующий пропуск Supporter на хосте владельца.</translation>
         </message>
         <message>
             <source>The selected screen is no longer available.</source>
@@ -2705,6 +2677,10 @@
         <message>
             <source>Screen stream</source>
             <translation>Поток экрана</translation>
+        </message>
+        <message>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
         </message>
     </context>
     <context>
@@ -2973,10 +2949,6 @@
             <translation>Локальный хост каналов SquadSpeak без интерфейса</translation>
         </message>
         <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>Приоритет настроек: аргументы &gt; окружение &gt; свойства &gt; сохранённые настройки сервера.</translation>
-        </message>
-        <message>
             <source>Environment variables (SQUADSPEAK_ prefix):</source>
             <translation>Переменные окружения (префикс SQUADSPEAK_):</translation>
         </message>
@@ -3031,26 +3003,6 @@
         <message>
             <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
             <translation>Необязательный ID собственного канала для команд status, configure, password, admission, history, chat и radio; по умолчанию используется основной канал.</translation>
-        </message>
-        <message>
-            <source>License action must be status, activate, refresh, deactivate or reset.</source>
-            <translation>Действие с лицензией должно быть status, activate, refresh, deactivate или reset.</translation>
-        </message>
-        <message>
-            <source>A license operation is in progress.</source>
-            <translation>Операция с лицензией уже выполняется.</translation>
-        </message>
-        <message>
-            <source>Supporter activation is unavailable in this build.</source>
-            <translation>В этой сборке активация Supporter недоступна.</translation>
-        </message>
-        <message>
-            <source>A license key is required.</source>
-            <translation>Требуется лицензионный ключ.</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot. Set confirmed=true to proceed.</source>
-            <translation>Сбрасывайте только после освобождения места устройства службой поддержки. Для продолжения укажите confirmed=true.</translation>
         </message>
         <message>
             <source>Channel action must be list, add or remove.</source>
@@ -3231,6 +3183,22 @@
         <message>
             <source>SquadSpeak headless could not start: %1</source>
             <translation>Не удалось запустить SquadSpeak без интерфейса: %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>Действием сторонника должно быть статус, вход в систему, обновление, выход или отмена. status sign-in refresh sign-out cancel</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>Идет операция сторонников.</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>Доступ для сторонников в этой сборке недоступен.</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>Приоритет настроек: аргументы &gt; среда &gt; свойства &gt; сохраненные значения сервера.</translation>
         </message>
     </context>
     <context>

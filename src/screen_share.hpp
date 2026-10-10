@@ -21,6 +21,7 @@ class ScreenShare final : public QObject {
     Q_PROPERTY(bool audioEnabled READ audioEnabled NOTIFY changed)
     Q_PROPERTY(bool computerAudio READ computerAudio NOTIFY changed)
     Q_PROPERTY(bool watching READ watching NOTIFY changed)
+    Q_PROPERTY(double bitrate READ bitrate NOTIFY statisticsChanged)
     Q_PROPERTY(QString hostId READ hostId NOTIFY changed)
     Q_PROPERTY(QString error READ error NOTIFY changed)
     Q_PROPERTY(QVariantList sources READ sources NOTIFY sourcesChanged)
@@ -35,6 +36,9 @@ public:
     [[nodiscard]] bool audioAvailable() const;
     [[nodiscard]] bool audioEnabled() const { return audioEnabled_; }
     [[nodiscard]] bool computerAudio() const { return computerAudio_; }
+    [[nodiscard]] double bitrate() const { return bitrate_; }
+    Q_INVOKABLE bool previewSource(int index, QObject* sink);
+    Q_INVOKABLE bool stopPreview();
     Q_INVOKABLE bool setAudioEnabled(bool enabled);
     Q_INVOKABLE bool refreshSources();
     Q_INVOKABLE bool start(int index, const QString& hostId = {});
@@ -44,7 +48,10 @@ public:
 signals:
     void changed();
     void sourcesChanged();
+    void statisticsChanged();
 private:
+    bool startCapture(int index);
+    [[nodiscard]] bool capturing() const { return active() || previewing_; }
     void encodeFrame();
     void decodeFrame(const QString& host, qint64 serial, const QJsonObject& format, const QByteArray& packet);
     bool fail(const QString& message);
@@ -61,6 +68,11 @@ private:
     QVariantList sources_;
     QHash<QObject*, QString> sinks_;
     QSet<QObject*> previews_;
+    QSet<QVideoSink*> localSinks_;
+    bool previewing_ = false;
+    int selectedSource_ = -1;
+    double bitrate_ = 0;
+    qint64 rateAt_ = 0, rateBytes_ = 0;
     QHash<QString, QImage> images_;
     QHash<QString, std::shared_ptr<VideoCodec>> decoders_;
     std::shared_ptr<std::array<VideoCodec, 4>> encoders_;

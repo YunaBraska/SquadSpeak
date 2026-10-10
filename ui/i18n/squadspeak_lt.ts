@@ -637,10 +637,6 @@
             <translation>kanalas nepasiekiamas</translation>
         </message>
         <message>
-            <source>Join voice</source>
-            <translation>Prisijunkite prie balso</translation>
-        </message>
-        <message>
             <source>System (automatic)</source>
             <translation>sistema (automatinė)</translation>
         </message>
@@ -873,10 +869,6 @@
             <translation>Automatinis prisijungimas</translation>
         </message>
         <message>
-            <source>Leave channel</source>
-            <translation>išeiti iš kanalo</translation>
-        </message>
-        <message>
             <source>Stream URL</source>
             <translation>srauto URL</translation>
         </message>
@@ -1093,48 +1085,16 @@
             <translation>įrenginio ID</translation>
         </message>
         <message>
-            <source>Activate</source>
-            <translation>suaktyvinkite</translation>
-        </message>
-        <message>
-            <source>Buy annual pass</source>
-            <translation>Pirkite metinį bilietą</translation>
-        </message>
-        <message>
             <source>Check now</source>
             <translation>Patikrinkite dabar</translation>
-        </message>
-        <message>
-            <source>Deactivate</source>
-            <translation>išjungti</translation>
         </message>
         <message>
             <source>Free version</source>
             <translation>nemokama versija</translation>
         </message>
         <message>
-            <source>License key</source>
-            <translation>Licencijos raktas</translation>
-        </message>
-        <message>
             <source>Not available yet</source>
             <translation>dar nepasiekiama</translation>
-        </message>
-        <message>
-            <source>Reset</source>
-            <translation>atstatyti</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot.</source>
-            <translation>iš naujo nustatykite tik tada, kai palaikymo tarnyba atlaisvins įrenginio lizdą.</translation>
-        </message>
-        <message>
-            <source>Resolve activation</source>
-            <translation>išspręskite aktyvinimą</translation>
-        </message>
-        <message>
-            <source>Support reference</source>
-            <translation>palaikymo nuoroda</translation>
         </message>
         <message>
             <source>Supporter</source>
@@ -1200,7 +1160,35 @@
             <source>App audio</source>
             <translation>Programos garsas</translation>
         </message>
-</context>
+        <message>
+            <source>Account: %1</source>
+            <translation>Paskyra: %1</translation>
+        </message>
+        <message>
+            <source>Signed in as %1</source>
+            <translation>Prisijungta kaip %1</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub</source>
+            <translation>Prisijunkite naudodami „GitHub“.</translation>
+        </message>
+        <message>
+            <source>Verification code</source>
+            <translation>Patvirtinimo kodas</translation>
+        </message>
+        <message>
+            <source>Open GitHub</source>
+            <translation>Atidarykite „GitHub“.</translation>
+        </message>
+        <message>
+            <source>Sign out</source>
+            <translation>Atsijungti</translation>
+        </message>
+        <message>
+            <source>This device</source>
+            <translation>Šis įrenginys</translation>
+        </message>
+    </context>
     <context>
         <name>ChatContent</name>
         <message>
@@ -1417,10 +1405,6 @@
     </context>
     <context>
         <name>LocalChannel</name>
-        <message>
-            <source>Encrypted join failed: %1</source>
-            <translation>Šifruotas prisijungimas nepavyko: %1</translation>
-        </message>
         <message>
             <source>Host is not responding. Reconnecting.</source>
             <translation>Šeimininkas neatsako. Prisijungiama iš naujo.</translation>
@@ -2613,22 +2597,6 @@
     <context>
         <name>License</name>
         <message>
-            <source>Activation was declined. Check your key and available device slots.</source>
-            <translation>aktyvinimas atmestas. Patikrinkite raktą ir galimus įrenginio lizdus.</translation>
-        </message>
-        <message>
-            <source>An activation is unresolved. Contact support before trying again.</source>
-            <translation>aktyvinimas neišspręstas. Prieš bandydami dar kartą, susisiekite su palaikymo komanda.</translation>
-        </message>
-        <message>
-            <source>Deactivation was declined. Contact support.</source>
-            <translation>išjungimas buvo atmestas. Susisiekite su palaikymo komanda.</translation>
-        </message>
-        <message>
-            <source>Enter a valid license key.</source>
-            <translation>Įveskite galiojantį licencijos raktą.</translation>
-        </message>
-        <message>
             <source>License storage is busy or unavailable.</source>
             <translation>Licencijos saugykla užimta arba nepasiekiama.</translation>
         </message>
@@ -2637,16 +2605,24 @@
             <translation>Licencijos saugykla nepasiekiama.</translation>
         </message>
         <message>
-            <source>The license could not be checked. Your confirmed expiry is unchanged.</source>
-            <translation>Licencijos patikrinti nepavyko. Jūsų patvirtintas galiojimo laikas nepasikeitė.</translation>
+            <source>Sign-in expired. Try again.</source>
+            <translation>Prisijungimo galiojimo laikas baigėsi. Bandykite dar kartą.</translation>
         </message>
         <message>
-            <source>The license or device activation is no longer valid.</source>
-            <translation>licencija arba įrenginio aktyvinimas nebegalioja.</translation>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>Prisijungimas prie „GitHub“ nepasiekiamas. Bandykite dar kartą.</translation>
         </message>
         <message>
-            <source>The license response does not match this annual pass.</source>
-            <translation>Licencijos atsakymas neatitinka šio metinio leidimo.</translation>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>„GitHub“ prisijungimas nebuvo baigtas. Bandykite dar kartą.</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>Nepavyko patikrinti „GitHub“. Prieiga neprisijungus trunka daugiausia septynias dienas.</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>Dar kartą prisijunkite naudodami „GitHub“.</translation>
         </message>
     </context>
     <context>
@@ -2658,10 +2634,6 @@
         <message>
             <source>The shared window was closed. Select a source to start again.</source>
             <translation>bendras langas buvo uždarytas. Norėdami pradėti iš naujo, pasirinkite šaltinį.</translation>
-        </message>
-        <message>
-            <source>Screen sharing requires an active Supporter pass on the owning host.</source>
-            <translation>Ekrano bendrinimui reikia aktyvaus Supporter leidimo kanalo savininko hoste.</translation>
         </message>
         <message>
             <source>The selected screen is no longer available.</source>
@@ -2705,6 +2677,10 @@
         <message>
             <source>Screen stream</source>
             <translation>ekrano srautas</translation>
+        </message>
+        <message>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
         </message>
     </context>
     <context>
@@ -2973,10 +2949,6 @@
             <translation>SquadSpeak begalvis vietinio kanalo pagrindinis kompiuteris</translation>
         </message>
         <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>Nustatymų pirmumas: argumentai &gt; aplinka &gt; savybės &gt; išsaugoti serverio nustatymai.</translation>
-        </message>
-        <message>
             <source>Environment variables (SQUADSPEAK_ prefix):</source>
             <translation>Aplinkos kintamieji (SQUADSPEAK_ priešdėlis):</translation>
         </message>
@@ -3031,26 +3003,6 @@
         <message>
             <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
             <translation>Pasirenkamas savo kanalo ID status, configure, password, admission, history, chat ir radio komandoms; pagal numatytuosius nustatymus naudojamas pagrindinis kanalas.</translation>
-        </message>
-        <message>
-            <source>License action must be status, activate, refresh, deactivate or reset.</source>
-            <translation>Licencijos veiksmas turi būti status, activate, refresh, deactivate arba reset.</translation>
-        </message>
-        <message>
-            <source>A license operation is in progress.</source>
-            <translation>Licencijos operacija vykdoma.</translation>
-        </message>
-        <message>
-            <source>Supporter activation is unavailable in this build.</source>
-            <translation>Šioje laidoje Supporter aktyvinimas nepasiekiamas.</translation>
-        </message>
-        <message>
-            <source>A license key is required.</source>
-            <translation>Reikalingas licencijos raktas.</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot. Set confirmed=true to proceed.</source>
-            <translation>Atstatykite tik po to, kai palaikymas atlaisvins įrenginio vietą. Norėdami tęsti nustatykite confirmed=true.</translation>
         </message>
         <message>
             <source>Channel action must be list, add or remove.</source>
@@ -3231,6 +3183,22 @@
         <message>
             <source>SquadSpeak headless could not start: %1</source>
             <translation>Nepavyko paleisti SquadSpeak begalvio pagrindinio kompiuterio: %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>Rėmėjo veiksmas turi būti būsena, prisijungimas, atnaujinimas, atsijungimas arba atšaukimas. status sign-in refresh sign-out cancel</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>Vykdoma rėmėjo operacija.</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>Šiame versijoje rėmėjo prieiga nepasiekiama.</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>Nustatymų pirmenybė: argumentai &gt; aplinka &gt; ypatybės &gt; išsaugotos serverio reikšmės.</translation>
         </message>
     </context>
     <context>

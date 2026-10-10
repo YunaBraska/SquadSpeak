@@ -4,6 +4,7 @@
 #include <QNetworkDatagram>
 #include <QTest>
 #include <QTimer>
+#include <rtc/global.hpp>
 #include <opus.h>
 #include <array>
 #include <cmath>
@@ -48,6 +49,7 @@ public:
         });
     }
     quint16 port() const { return socket_.localPort(); }
+    bool receivedClientData() const { return client_ != 0; }
     void setTarget(quint16 target) { target_ = target; }
     void replay() { socket_.writeDatagram(lastAudio, QHostAddress::LocalHost, client_); }
 };
@@ -68,6 +70,9 @@ QByteArray speech() {
 class MediaTransportTests final : public QObject {
     Q_OBJECT
 private slots:
+    void initTestCase() {
+        rtc::InitLogger(rtc::LogLevel::Info);
+    }
     void dataDatagramsCarryBinaryPayloads_data() {
         QTest::addColumn<QHostAddress>("address");
         QTest::newRow("ipv4") << QHostAddress(QHostAddress::LocalHost);
@@ -120,8 +125,8 @@ private slots:
 
     void dataDatagramsReleaseQueuedMessagesWhenPeerCloses() {
         const QByteArray payload(16384, 'x');
+        const auto port = availableUdpPort(); QVERIFY(port);
         for (int repeat = 0; repeat < 20; ++repeat) {
-            const auto port = availableUdpPort(); QVERIFY(port);
             squad::MediaTransport host(true, port, QHostAddress::LocalHost, 0, squad::MediaTransport::Medium::Data);
             auto client = std::make_unique<squad::MediaTransport>(false, 0, QHostAddress::LocalHost, port,
                 squad::MediaTransport::Medium::Data);
@@ -135,6 +140,23 @@ private slots:
             host.sendDatagram(payload);
             QTRY_VERIFY_WITH_TIMEOUT(!host.udpActive(), 3000);
         }
+    }
+
+    void datagramHandshakeCanPrecedeReliableAnswer() {
+        const auto port = availableUdpPort(); QVERIFY(port);
+        DatagramLink link(port);
+        squad::MediaTransport host(true, port, QHostAddress::LocalHost, 0, squad::MediaTransport::Medium::Data);
+        squad::MediaTransport client(false, 0, QHostAddress::LocalHost, link.port(), squad::MediaTransport::Medium::Data);
+        QJsonObject answer;
+        connect(&host, &squad::MediaTransport::signaling, &client, [&](const auto& message) { QVERIFY(client.receive(message)); });
+        connect(&client, &squad::MediaTransport::signaling, &host, [&](const auto& message) { answer = message; });
+        QTRY_VERIFY_WITH_TIMEOUT(!answer.isEmpty() && link.receivedClientData(), 5000);
+        QVERIFY(host.receive(answer));
+        QTRY_VERIFY_WITH_TIMEOUT(host.udpActive() && client.udpActive(), 10000);
+        QSignalSpy received(&client, &squad::MediaTransport::datagramReceived);
+        QVERIFY(host.sendDatagram("ready"));
+        QTRY_COMPARE(received.size(), 1);
+        QCOMPARE(received.first().first().toByteArray(), QByteArray("ready"));
     }
 
     void encryptedDatagramsCarryIndependentSources_data() {
@@ -275,10 +297,17 @@ private slots:
         slow.dropEvery = 0; impaired.clear();
         QTRY_VERIFY_WITH_TIMEOUT(std::any_of(impaired.begin(), impaired.end(), [](const auto& event) { return event.first().toInt() > 0; }), 3000);
     }
+    void sourceAcknowledgmentPrecedesDatagrams_data() {
+        QTest::addColumn<bool>("expiredProbe");
+        QTest::newRow("current-probe") << false;
+        QTest::newRow("expired-probe") << true;
+    }
     void sourceAcknowledgmentPrecedesDatagrams() {
+        QFETCH(bool, expiredProbe);
         const auto port = availableUdpPort(); QVERIFY(port);
+        DatagramLink link(port);
         squad::MediaTransport host(true, port, QHostAddress::LocalHost, 0);
-        squad::MediaTransport client(false, 0, QHostAddress::LocalHost, port);
+        squad::MediaTransport client(false, 0, QHostAddress::LocalHost, link.port());
         QJsonObject acknowledgment; int fallback = 0; bool valid = true;
         connect(&host, &squad::MediaTransport::signaling, &client, [&](const auto& message) {
             fallback += message.value("kind") == "frame"; valid &= client.receive(message);
@@ -291,9 +320,20 @@ private slots:
         QTRY_VERIFY_WITH_TIMEOUT(host.udpActive() && client.udpActive(), 10000);
         const auto packet = speech(); QVERIFY(host.send(first, packet));
         QTRY_COMPARE(heard.size(), 1); QCOMPARE(fallback, 1);
+        QCOMPARE(link.audioPackets, 0);
+        if (expiredProbe) {
+            link.blocked = true;
+            QTRY_VERIFY_WITH_TIMEOUT(!host.udpActive(), 3000);
+            link.blocked = false;
+        }
         QVERIFY(!acknowledgment.isEmpty()); QVERIFY(host.receive(acknowledgment));
+        // Source approval and path liveness are independent. The first delivery
+        // can outlive a probe, so require a fresh response before expecting UDP.
+        QTRY_VERIFY_WITH_TIMEOUT(host.udpActive() && client.udpActive(), 2000);
         QVERIFY(host.send(first, packet)); QTRY_COMPARE(heard.size(), 2);
-        QCOMPARE(fallback, 1); QVERIFY(valid);
+        QCOMPARE(fallback, 1); QCOMPARE(link.audioPackets, 1); QVERIFY(valid);
+        QCOMPARE(heard.last().at(1).toByteArray(), packet);
+        QCOMPARE(heard.last().at(2).toInt(), 0);
     }
     void sourceChurnReusesBoundedEncryptedStreams() {
         const auto port = availableUdpPort(); QVERIFY(port);

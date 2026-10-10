@@ -35,7 +35,7 @@
     },
     {
       "name": "opus-1.6.1.tar.gz",
-      "url": "https://downloads.xiph.org/releases/opus/opus-1.6.1.tar.gz",
+      "url": "https://distfiles.macports.org/libopus/opus-1.6.1.tar.gz",
       "sha256": "6ffcb593207be92584df15b32466ed64bbec99109f007c82205f0194572411a1"
     },
     {
@@ -127,6 +127,11 @@
       "name": "qtmultimedia-everywhere-src-6.10.2.tar.xz",
       "url": "https://download.qt.io/archive/qt/6.10/6.10.2/submodules/qtmultimedia-everywhere-src-6.10.2.tar.xz",
       "sha256": "93f7ef0106fbd731165a2723f3e436c911fc5e6880f5bc987b55516c20833e2b"
+    },
+    {
+      "name": "qtdeclarative-everywhere-src-6.10.2.tar.xz",
+      "url": "https://download.qt.io/archive/qt/6.10/6.10.2/submodules/qtdeclarative-everywhere-src-6.10.2.tar.xz",
+      "sha256": "a249914ff66cdcdbf0df8b5ffad997a2ee6dce01cc17d43c6cc56fdc1d0f4b0f"
     }
   ]
 }

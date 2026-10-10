@@ -37,6 +37,7 @@ QtObject {
     readonly property color muted: tones[6]
     readonly property color accent: tones[7]
     readonly property color accentText: tones[8]
+    readonly property color codeBackground: dark ? input : Qt.darker(raised, 1.08)
     readonly property color warning: dark ? "#e4bb77" : "#896018"
     readonly property color danger: dark ? "#f295ad" : "#b74462"
 }

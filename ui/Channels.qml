@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls.Basic
 import QtQuick.Layouts
+import QtMultimedia
 import "AvatarAtlas.js" as Atlas
 
 PanelWindow {
@@ -42,12 +43,115 @@ PanelWindow {
             Glyph { anchors.centerIn: parent; width: 12; height: 12; symbol: "check"; color: Theme.accent; visible: action.checked }
         }
     }
+    component MemberGrid: GridView {
+        id: grid
+        property string hostId: ""
+        clip: true
+        cellWidth: width < 350 ? width : width / 2
+        cellHeight: 54
+        cacheBuffer: 0
+        ScrollBar.vertical: ScrollBar { policy: grid.contentHeight > grid.height ? ScrollBar.AlwaysOn : ScrollBar.AsNeeded }
+        delegate: Item {
+            id: memberEntry
+            required property var modelData
+            width: grid.cellWidth; height: grid.cellHeight
+            objectName: "member_" + modelData.id
+            activeFocusOnTab: true
+            Accessible.role: Accessible.Button
+            Accessible.name: modelData.name
+            Accessible.onPressAction: root.memberOptions(modelData, grid.hostId)
+            Keys.onReturnPressed: root.memberOptions(modelData, grid.hostId)
+            Keys.onSpacePressed: root.memberOptions(modelData, grid.hostId)
+            Rectangle { anchors.fill: parent; visible: parent.activeFocus; color: "transparent"; radius: Theme.controlRadius; border.color: Theme.accent }
+            RowLayout {
+                anchors.fill: parent; anchors.rightMargin: 10; spacing: 5
+                VoiceAvatar {
+                    objectName: "participantAvatar"
+                    Layout.preferredWidth: 44; Layout.preferredHeight: 44; circular: true
+                    avatar: modelData.avatarId || modelData.avatar || "mossling"; name: modelData.name; music: !!modelData.music
+                    available: modelData.available; muted: modelData.muted; deafened: !!modelData.deafened; sleeping: !!modelData.sleeping
+                    identity: modelData.id; animationTime: root.avatarTime
+                    animated: root.voice.animatedAvatars && memberEntry.y + memberEntry.height >= grid.contentY && memberEntry.y <= grid.contentY + grid.height
+                    level: grid.hostId === root.activeHost ? root.memberLevel(modelData.id) : 0
+                }
+                Label { text: modelData.name; textFormat: Text.PlainText; Layout.fillWidth: true; elide: Text.ElideRight; font.pixelSize: 12 }
+            }
+            MouseArea { anchors.fill: parent; acceptedButtons: Qt.LeftButton | Qt.RightButton; onClicked: root.memberOptions(modelData, grid.hostId) }
+            TextToolTip { parent: memberEntry; text: modelData.name; visible: memberHover.hovered }
+            HoverHandler { id: memberHover }
+        }
+    }
+    PanelDialog {
+        id: memberList
+        objectName: "membersDialog"
+        property string hostId: ""
+        readonly property var entry: root.channelList.find(function(c) { return c.id === hostId }) || ({})
+        parent: Overlay.overlay; anchors.centerIn: parent
+        width: Math.min(520, parent.width - 24); height: Math.min(580, parent.height - 24)
+        title: (entry.name || "") + " (" + (entry.members || []).length + ")"
+        modal: true; focus: true; buttons: Dialog.Close
+        onOpened: allMembers.positionViewAtBeginning()
+        contentItem: MemberGrid {
+            id: allMembers
+            objectName: "allMembers"
+            hostId: memberList.hostId
+            model: memberList.visible ? memberList.entry.members || [] : []
+        }
+    }
     property var voice: session
     property var supporter: typeof supporterLicense !== "undefined" ? supporterLicense : null
     property var updates: typeof appUpdates !== "undefined" ? appUpdates : null
-    function selectAvatar(id) {
-        if (voice.avatars.indexOf(id) < 10 || voice.supporterEnabled) voice.setAvatar(id)
-        else if (supporter && supporter.directDistribution) settingsPage = 3
+    component AvatarShelf: PathView {
+        id: avatarShelf
+        property bool preview: false
+        Layout.fillWidth: true; Layout.preferredHeight: 120
+        clip: true; dragMargin: height
+        model: root.voice.supporterEnabled ? root.voice.avatars : root.voice.avatars.slice(0, 10)
+        currentIndex: preview ? 0 : Math.max(0, model.indexOf(root.voice.avatar))
+        pathItemCount: Math.ceil(width / 100) + 1
+        cacheItemCount: 2
+        preferredHighlightBegin: 0.5; preferredHighlightEnd: 0.5
+        snapMode: PathView.SnapToItem; highlightMoveDuration: 120
+        activeFocusOnTab: true
+        Keys.onLeftPressed: decrementCurrentIndex()
+        Keys.onRightPressed: incrementCurrentIndex()
+        Keys.onSpacePressed: if (!preview) root.voice.setAvatar(model[currentIndex])
+        Keys.onReturnPressed: if (!preview) root.voice.setAvatar(model[currentIndex])
+        path: Path {
+            startX: avatarShelf.width / 2 - avatarShelf.pathItemCount * 50; startY: 55
+            PathLine { x: avatarShelf.width / 2 + avatarShelf.pathItemCount * 50; y: 55 }
+        }
+        MouseArea {
+            anchors.fill: parent; acceptedButtons: Qt.NoButton
+            property real pending: 0
+            onWheel: event => {
+                const pixels = event.pixelDelta.x || event.pixelDelta.y
+                pending += pixels ? pixels / 100 : (event.angleDelta.x || event.angleDelta.y) / 120
+                const steps = Math.trunc(pending)
+                if (steps) avatarShelf.currentIndex = (avatarShelf.currentIndex - steps % avatarShelf.count + avatarShelf.count) % avatarShelf.count
+                pending -= steps
+                event.accepted = true
+            }
+        }
+        delegate: Item {
+            required property string modelData
+            required property int index
+            objectName: (avatarShelf.preview ? "avatarPreview_" : "avatarChoice_") + modelData
+            width: 96; height: 110
+            readonly property string label: modelData.split("-").map(function(word) { return word.charAt(0).toUpperCase() + word.slice(1) }).join(" ")
+            VoiceAvatar { anchors.top: parent.top; anchors.horizontalCenter: parent.horizontalCenter; width: 88; height: 88; avatar: modelData; muted: false; animated: false; online: true; Accessible.ignored: true }
+            Rectangle { anchors.horizontalCenter: parent.horizontalCenter; width: 88; height: 88; color: "transparent"; radius: Theme.panelRadius; border.color: (!avatarShelf.preview && root.voice.avatar === modelData) || (avatarShelf.activeFocus && index === avatarShelf.currentIndex) ? Theme.accent : "transparent"; border.width: 2 }
+            Label { anchors.bottom: parent.bottom; width: parent.width; text: parent.label; font.pixelSize: 11; horizontalAlignment: Text.AlignHCenter; elide: Text.ElideRight }
+            TapHandler { enabled: !avatarShelf.preview; onTapped: root.voice.setAvatar(modelData) }
+            Accessible.role: avatarShelf.preview ? Accessible.Graphic : Accessible.RadioButton
+            Accessible.name: label
+            Accessible.description: !avatarShelf.preview ? "" : qsTranslate("VoiceSession", "This avatar requires Supporter.")
+            Accessible.checked: !avatarShelf.preview && root.voice.avatar === modelData
+            Accessible.onPressAction: if (!avatarShelf.preview) root.voice.setAvatar(modelData)
+            ToolTip.visible: portraitHover.hovered
+            ToolTip.text: label
+            HoverHandler { id: portraitHover }
+        }
     }
     property var screen: typeof screenShare !== "undefined" ? screenShare : null
     property var network: channel
@@ -58,6 +162,8 @@ PanelWindow {
     readonly property var chatMembers: current.chatMembers || []
     readonly property string inspectedHost: current.chatHostId || ""
     property bool chatExpanded: true
+    readonly property bool mobileKeyboard: (Qt.platform.os === "android" || Qt.platform.os === "ios") && Qt.inputMethod.visible
+    readonly property bool compactInput: mobileKeyboard && height < 360
     property Item conversationSlot: null
     property double avatarTime: Date.now()
     Timer { interval: Atlas.frameInterval(); running: root.visible && root.voice.animatedAvatars; repeat: true; onTriggered: root.avatarTime = Date.now() }
@@ -102,15 +208,33 @@ PanelWindow {
     }
     ListModel { id: channelRows; dynamicRoles: true }
     function updateChannelRows() {
+        const groups = new Map()
+        for (const entry of channelList) {
+            const key = entry.deviceId || entry.id
+            const label = entry.owned ? qsTr("This device") : endpoint(entry)
+            if (!groups.has(key)) groups.set(key, {key: key, label: label, channels: []})
+            const group = groups.get(key)
+            if (label.localeCompare(group.label) < 0) group.label = label
+            group.channels.push(entry)
+        }
+        const ordered = []
+        const sortedGroups = Array.from(groups.values()).sort(function(a, b) {
+            return a.label.localeCompare(b.label) || a.key.localeCompare(b.key)
+        })
+        for (const group of sortedGroups) {
+            group.channels.sort(function(a, b) {
+                return a.name.localeCompare(b.name) || a.id.localeCompare(b.id)
+            }).forEach(function(entry, index) { ordered.push({channelData: entry, groupLabel: index === 0 ? group.label : "", groupId: group.key}) })
+        }
         for (let i = channelRows.count - 1; i >= 0; --i)
             if (!channelList.some(function(entry) { return entry.id === channelRows.get(i).channelData.id })) channelRows.remove(i)
-        for (let i = 0; i < channelList.length; ++i) {
+        for (let i = 0; i < ordered.length; ++i) {
             let found = -1
-            for (let j = i; j < channelRows.count; ++j) if (channelRows.get(j).channelData.id === channelList[i].id) { found = j; break }
-            if (found < 0) channelRows.insert(i, {channelData: channelList[i]})
+            for (let j = i; j < channelRows.count; ++j) if (channelRows.get(j).channelData.id === ordered[i].channelData.id) { found = j; break }
+            if (found < 0) channelRows.insert(i, ordered[i])
             else {
                 if (found !== i) channelRows.move(found, i, 1)
-                channelRows.setProperty(i, "channelData", channelList[i])
+                channelRows.set(i, ordered[i])
             }
         }
     }
@@ -172,8 +296,8 @@ PanelWindow {
         else openHostChat(id)
     }
     function memberLevel(id) { return remote ? (network.remoteLevels[id] || 0) : id === network.ownId ? audio.transmitLevel : (audio.playbackLevels[id] || 0) }
-    function toggleMembers(id) { return openHostChat(id) }
-    function memberOptions(member, host) { selectedMember = member; selectedMemberHost = host; memberMenu.popup() }
+    function toggleMembers(id) { memberList.hostId = id; memberList.open() }
+    function memberOptions(member, host) { selectedMember = member; selectedMemberHost = host; memberList.close(); memberMenu.popup() }
     function accessLabel(value) {
         switch (value) {
         case "pending": return qsTr("Pending")
@@ -566,24 +690,48 @@ PanelWindow {
                                 Layout.fillWidth: true; wrapMode: Text.Wrap; color: Theme.muted
                                 text: !root.supporter || !root.supporter.configured ? qsTr("Not available yet")
                                     : root.supporter.active ? qsTr("Valid until %1").arg(Qt.formatDate(root.supporter.expiresAt, Qt.DefaultLocaleShortDate))
+                                    : root.supporter.signedIn && root.supporter.account.length > 0 ? qsTr("Signed in as %1").arg(root.supporter.account)
                                     : qsTr("Free version")
                             }
-                            RowLayout {
-                                visible: root.supporter !== null && root.supporter.configured
+                            DetailText {
+                                objectName: "supporterAccount"
+                                visible: root.supporter !== null && root.supporter.signedIn && root.supporter.account.length > 0
+                                text: qsTr("Account: %1").arg(root.supporter.account)
+                                color: Theme.muted; Layout.fillWidth: true; wrapMode: TextEdit.Wrap
+                            }
+                            ActionButton {
+                                objectName: "signInGithub"
+                                visible: root.supporter !== null && root.supporter.configured && !root.supporter.signedIn && !root.supporter.pending
+                                enabled: !root.supporter.busy
+                                text: qsTr("Sign in with GitHub")
                                 Layout.fillWidth: true
-                                EntryField { id: licenseKey; objectName: "licenseKey"; Layout.fillWidth: true; placeholderText: qsTr("License key"); Accessible.name: placeholderText; echoMode: TextInput.Password; maximumLength: 256; enabled: !root.supporter.busy && !root.supporter.pending }
-                                ActionButton { objectName: "activateLicense"; text: qsTr("Activate"); enabled: licenseKey.enabled && licenseKey.text.trim().length > 0; onClicked: { root.supporter.activate(licenseKey.text); licenseKey.clear() } }
+                                onClicked: root.supporter.signIn()
+                            }
+                            ColumnLayout {
+                                visible: root.supporter !== null && root.supporter.pending
+                                Layout.fillWidth: true; spacing: 6
+                                Label { text: qsTr("Verification code"); visible: root.supporter.userCode.length > 0; color: Theme.muted }
+                                DetailText { objectName: "githubUserCode"; text: root.supporter.userCode; visible: text.length > 0; Accessible.name: qsTr("Verification code"); selectByMouse: true; wrapMode: TextEdit.NoWrap }
+                                Label { text: root.supporter.status; visible: root.supporter.userCode.length === 0 && text.length > 0; color: Theme.muted; wrapMode: Text.Wrap }
+                                RowLayout {
+                                    Layout.fillWidth: true
+                                    ActionButton { objectName: "openGithubVerification"; text: qsTr("Open GitHub"); enabled: root.supporter.verificationUrl.toString().length > 0; onClicked: Qt.openUrlExternally(root.supporter.verificationUrl) }
+                                    ActionButton { objectName: "cancelGithubSignIn"; text: qsTr("Cancel"); onClicked: root.supporter.cancelSignIn() }
+                                }
                             }
                             GridLayout {
                                 visible: root.supporter !== null && root.supporter.configured
                                 Layout.fillWidth: true; columns: 2
-                                ActionButton { objectName: "buyLicense"; Layout.columnSpan: 2; Layout.fillWidth: true; text: qsTr("Buy annual pass"); visible: root.supporter !== null && root.supporter.purchaseUrl.toString().length > 0; onClicked: Qt.openUrlExternally(root.supporter.purchaseUrl) }
-                                ActionButton { objectName: "checkLicense"; Layout.fillWidth: true; text: qsTr("Check now"); enabled: root.supporter !== null && !root.supporter.busy; onClicked: root.supporter.refresh() }
-                                ActionButton { objectName: "deactivateLicense"; Layout.fillWidth: true; text: qsTr("Deactivate"); destructive: true; enabled: root.supporter !== null && !root.supporter.busy && root.supporter.supportReference.length > 0; onClicked: root.supporter.deactivate() }
+                                ActionButton { objectName: "supportLink"; Layout.columnSpan: 2; Layout.fillWidth: true; text: qsTr("Support development"); visible: root.supporter.purchaseUrl.toString().length > 0; onClicked: Qt.openUrlExternally(root.supporter.purchaseUrl) }
+                                ActionButton { objectName: "checkSupporter"; visible: root.supporter.signedIn; text: qsTr("Check now"); enabled: !root.supporter.busy; Layout.fillWidth: true; onClicked: root.supporter.refresh() }
+                                ActionButton { objectName: "signOutGithub"; visible: root.supporter.signedIn; text: qsTr("Sign out"); destructive: true; enabled: !root.supporter.busy; Layout.fillWidth: true; onClicked: root.supporter.signOut() }
                             }
-                            DetailText { objectName: "licenseSupportReference"; text: root.supporter ? root.supporter.supportReference : ""; visible: text.length > 0; Accessible.name: qsTr("Support reference") }
                             Label { text: root.supporter ? root.supporter.status : ""; visible: text.length > 0; color: Theme.muted; wrapMode: Text.Wrap; Layout.fillWidth: true }
-                            ActionButton { text: qsTr("Resolve activation"); visible: root.supporter !== null && root.supporter.recoveryNeeded; enabled: !root.supporter || !root.supporter.busy; onClicked: resolveActivation.open() }
+                            AvatarShelf {
+                                objectName: "supporterAvatarPreview"; preview: true
+                                visible: !root.voice.supporterEnabled
+                                model: root.voice.avatars.slice(10)
+                            }
                         }
                         GridLayout {
                             columns: 2; Layout.fillWidth: true
@@ -613,60 +761,7 @@ PanelWindow {
                         objectName: "generalSettings"
                         visible: root.settingsPage === 0
                         Layout.fillWidth: true; spacing: 12
-                        PathView {
-                            id: avatarShelf
-                            objectName: "avatarShelf"
-                            Layout.fillWidth: true; Layout.preferredHeight: 120
-                            clip: true; dragMargin: height
-                            model: root.voice.avatars
-                            currentIndex: model.indexOf(root.voice.avatar)
-                            pathItemCount: Math.ceil(width / 100) + 1
-                            cacheItemCount: 2
-                            preferredHighlightBegin: 0.5; preferredHighlightEnd: 0.5
-                            snapMode: PathView.SnapToItem; highlightMoveDuration: 120
-                            activeFocusOnTab: true
-                            Keys.onLeftPressed: decrementCurrentIndex()
-                            Keys.onRightPressed: incrementCurrentIndex()
-                            Keys.onSpacePressed: root.selectAvatar(model[currentIndex])
-                            Keys.onReturnPressed: root.selectAvatar(model[currentIndex])
-                            path: Path {
-                                startX: avatarShelf.width / 2 - avatarShelf.pathItemCount * 50; startY: 55
-                                PathLine { x: avatarShelf.width / 2 + avatarShelf.pathItemCount * 50; y: 55 }
-                            }
-                            MouseArea {
-                                anchors.fill: parent; acceptedButtons: Qt.NoButton
-                                property real pending: 0
-                                onWheel: event => {
-                                    const pixels = event.pixelDelta.x || event.pixelDelta.y
-                                    pending += pixels ? pixels / 100 : (event.angleDelta.x || event.angleDelta.y) / 120
-                                    const steps = Math.trunc(pending)
-                                    if (steps) avatarShelf.currentIndex = (avatarShelf.currentIndex - steps % avatarShelf.count + avatarShelf.count) % avatarShelf.count
-                                    pending -= steps
-                                    event.accepted = true
-                                }
-                            }
-                            delegate: Item {
-                                required property string modelData
-                                required property int index
-                                readonly property bool unlocked: index < 10 || root.voice.supporterEnabled
-                                objectName: "avatarChoice_" + modelData
-                                width: 96; height: 110
-                                readonly property string label: modelData.split("-").map(function(word) { return word.charAt(0).toUpperCase() + word.slice(1) }).join(" ")
-                                VoiceAvatar { anchors.top: parent.top; anchors.horizontalCenter: parent.horizontalCenter; width: 88; height: 88; avatar: modelData; muted: false; animated: false; online: parent.unlocked; Accessible.ignored: true }
-                                Glyph { anchors.right: parent.right; anchors.top: parent.top; width: 22; height: 22; symbol: "lock"; color: Theme.muted; visible: !parent.unlocked; Accessible.ignored: true }
-                                Rectangle { anchors.horizontalCenter: parent.horizontalCenter; width: 88; height: 88; color: "transparent"; radius: Theme.panelRadius; border.color: root.voice.avatar === modelData || (avatarShelf.activeFocus && index === avatarShelf.currentIndex) ? Theme.accent : "transparent"; border.width: 2 }
-                                Label { anchors.bottom: parent.bottom; width: parent.width; text: parent.label; font.pixelSize: 11; horizontalAlignment: Text.AlignHCenter; elide: Text.ElideRight }
-                                TapHandler { onTapped: root.selectAvatar(modelData) }
-                                Accessible.role: unlocked ? Accessible.RadioButton : Accessible.Button
-                                Accessible.name: label
-                                Accessible.description: unlocked ? "" : qsTranslate("VoiceSession", "This avatar requires Supporter.")
-                                Accessible.checked: root.voice.avatar === modelData
-                                Accessible.onPressAction: root.selectAvatar(modelData)
-                                ToolTip.visible: portraitHover.hovered
-                                ToolTip.text: unlocked ? label : label + " - " + Accessible.description
-                                HoverHandler { id: portraitHover }
-                            }
-                        }
+                        AvatarShelf { objectName: "avatarShelf" }
                         RowLayout {
                             Layout.fillWidth: true
                             EntryField { id: displayName; objectName: "userName"; Layout.fillWidth: true; maximumLength: 128; Accessible.name: qsTr("Your name"); text: root.voice.userName; onAccepted: root.voice.setUserName(text); onEditingFinished: root.voice.setUserName(text) }
@@ -703,18 +798,6 @@ PanelWindow {
                         OptionCheck { objectName: "animatedAvatars"; text: qsTr("Animate portraits"); checked: root.voice.animatedAvatars; onClicked: { root.voice.setAnimatedAvatars(checked); checked = Qt.binding(function() { return root.voice.animatedAvatars }) } }
                     }
                 }
-            }
-        }
-    }
-    PanelDialog {
-        id: resolveActivation
-        parent: Overlay.overlay; anchors.centerIn: parent; width: Math.min(360, parent.width - 32); modal: true
-        title: qsTr("Resolve activation")
-        contentItem: ColumnLayout {
-            Label { text: qsTr("Reset only after support has released the device slot."); wrapMode: Text.Wrap; Layout.fillWidth: true }
-            RowLayout {
-                ActionButton { text: qsTr("Cancel"); onClicked: resolveActivation.close() }
-                ActionButton { text: qsTr("Reset"); destructive: true; onClicked: { root.supporter.resetActivation(); resolveActivation.close() } }
             }
         }
     }
@@ -940,11 +1023,21 @@ PanelWindow {
     PanelDialog {
         id: screenPicker
         objectName: "screenPicker"
+        property int selectedSource: -1
+        onOpened: selectedSource = -1
+        onClosed: if (root.screen) { root.screen.detach(sourcePreview.videoSink); root.screen.stopPreview() }
         title: qsTr("Share screen")
         modal: true; anchors.centerIn: parent
         width: Math.min(root.width - 24, 480); height: Math.min(root.height - 32, 440)
         buttons: Dialog.Cancel
         contentItem: ColumnLayout {
+            Label {
+                objectName: "screenCaptureError"
+                Layout.fillWidth: true
+                visible: root.screen && root.screen.error.length > 0
+                text: root.screen ? root.screen.error : ""
+                textFormat: Text.PlainText; wrapMode: Text.Wrap; color: Theme.danger
+            }
             ScrollView {
                 Layout.fillWidth: true; Layout.fillHeight: true
                 clip: true
@@ -957,9 +1050,24 @@ PanelWindow {
                         width: ListView.view.width
                         flat: true; horizontalAlignment: Text.AlignLeft
                         text: modelData.name
-                        onClicked: { if (root.screen.start(modelData.index, root.selectedHost)) screenPicker.close() }
+                        checked: screenPicker.selectedSource === modelData.index
+                        onClicked: {
+                            screenPicker.selectedSource = modelData.index
+                            root.screen.previewSource(modelData.index, sourcePreview.videoSink)
+                        }
                     }
                 }
+            }
+            VideoOutput {
+                id: sourcePreview; objectName: "screenSourcePreview"
+                visible: screenPicker.selectedSource >= 0
+                Layout.fillWidth: true; Layout.preferredHeight: Math.min(140, screenPicker.height * 0.35)
+                fillMode: VideoOutput.PreserveAspectFit
+            }
+            ActionButton {
+                objectName: "startScreenShare"; text: qsTr("Share screen"); primary: true
+                Layout.fillWidth: true; enabled: screenPicker.selectedSource >= 0 && root.screen && !root.screen.error.length
+                onClicked: if (root.screen.start(screenPicker.selectedSource, root.selectedHost)) screenPicker.close()
             }
         }
     }
@@ -974,7 +1082,7 @@ PanelWindow {
             readonly property bool sharingHere: root.screen && root.screen.active && root.screen.hostId === root.selectedHost
             text: sharingHere ? qsTr("Stop sharing") : qsTr("Share screen")
             destructive: sharingHere
-            enabled: sharingHere || (root.voice.supporterEnabled && root.selectedOwner && root.selectedOwner.hosting && root.screen && !root.screen.active && !root.screen.watching)
+            enabled: sharingHere || (root.selectedOwner && root.selectedOwner.hosting && root.screen && !root.screen.active && !root.screen.watching)
             onTriggered: {
                 if (root.screen.active) root.screen.stop()
                 else { root.screen.refreshSources(); screenPicker.open() }
@@ -988,7 +1096,7 @@ PanelWindow {
             onTriggered: root.screen.setAudioEnabled(checked)
         }
         MenuAction { objectName: "browseStations"; text: qsTr("Browse stations"); enabled: !!root.hostRadio; visible: !root.remote && !!root.selectedOwner; onTriggered: radioBrowser.open() }
-        MenuAction { text: qsTr("Join voice"); onTriggered: root.joinHost(root.selectedHost) }
+        MenuAction { text: qsTr("Join"); onTriggered: root.joinHost(root.selectedHost) }
         Item {
             implicitWidth: 240; implicitHeight: visible ? 64 : 0
             visible: !root.remote && root.selectedHost === root.activeHost
@@ -1057,16 +1165,6 @@ PanelWindow {
             Connections { target: audio; function onProfileChanged() { memberGain.revision++ } }
         }
     }
-    header: Rectangle {
-        implicitHeight: 52
-        color: Theme.surface
-        RowLayout {
-            anchors.fill: parent; anchors.margins: 14; spacing: 8
-            Label { text: root.remote ? root.network.controlTargetName : "SquadSpeak"; textFormat: Text.PlainText; elide: Text.ElideRight; font.pixelSize: 19; font.weight: Font.DemiBold; Layout.fillWidth: true }
-            ActionButton { objectName: "addChannel"; text: qsTr("Add channel"); glyph: "plus"; iconOnly: true; flat: true; enabled: !root.remote; onClicked: discover.open() }
-            ActionButton { objectName: "openSettings"; visible: !root.remote; text: qsTr("Settings"); glyph: "settings"; iconOnly: true; flat: true; onClicked: root.openSettings(0) }
-        }
-    }
     ColumnLayout {
         anchors.fill: parent; anchors.margins: root.height < 460 ? 8 : 12; spacing: root.height < 460 ? 4 : 8
         ScrollView {
@@ -1078,110 +1176,144 @@ PanelWindow {
             ColumnLayout {
                 width: scroll.availableWidth; spacing: 2
                 Repeater {
+                    id: channelRepeater
                     model: channelRows
-                    delegate: Rectangle {
-                        id: channelRow
+                    delegate: ColumnLayout {
+                        id: channelEntry
                         required property var channelData
                         readonly property var modelData: channelData
-                        readonly property bool active: root.activeHost === modelData.id && !!root.current.joined
-                        readonly property bool selected: root.inspectedHost === modelData.id && root.chatExpanded
-                        readonly property var members: modelData.members || []
-                        Layout.fillWidth: true; implicitHeight: 42 + (selected ? chatSlot.height + 8 : 0)
-                        radius: Theme.controlRadius; color: selected ? Theme.surface : channelHover.containsMouse ? Theme.surface : "transparent"
-                        border.width: activeFocus ? 1 : 0; border.color: Theme.accent
-                        MouseArea {
-                            id: channelHover
-                            objectName: "channelRow_" + modelData.id
-                            anchors.left: parent.left; anchors.right: parent.right; height: 42
-                            hoverEnabled: true; acceptedButtons: Qt.LeftButton | Qt.RightButton
-                            onDoubleClicked: function(mouse) { if (mouse.button === Qt.LeftButton) { channelClick.stop(); root.chatExpanded = true; root.joinHost(modelData.id) } }
-                            onClicked: function(mouse) {
-                                if (mouse.button === Qt.RightButton) { root.selectedHost = modelData.id; channelMenu.popup() }
-                                else { channelClick.hostId = modelData.id; channelClick.restart() }
-                            }
-                        }
+                        required property string groupLabel
+                        required property string groupId
+                        readonly property real headingHeight: hostHeading.visible ? hostHeading.implicitHeight + hostHeading.Layout.topMargin + hostHeading.Layout.bottomMargin : 0
+                        Layout.fillWidth: true; spacing: 2
                         RowLayout {
-                            anchors.left: parent.left; anchors.right: parent.right; height: 42
-                            anchors.leftMargin: 8; anchors.rightMargin: 2; spacing: 6
-                            Glyph { symbol: "down"; rotation: channelRow.selected ? 0 : -90; color: channelRow.selected ? Theme.accent : Theme.muted }
-                            Label { objectName: "channelName_" + modelData.id; text: modelData.name; textFormat: Text.PlainText; font.weight: channelRow.selected ? Font.DemiBold : Font.Normal; Layout.fillWidth: true; elide: Text.ElideRight }
-                            Rectangle { visible: channelRow.active; implicitWidth: 6; implicitHeight: 6; radius: Theme.smallRadius; color: Theme.accent; Accessible.name: qsTr("Connected to voice") }
-                            Label { visible: !!modelData.owned || modelData.id === (root.current.ownId || root.network.ownId); text: qsTr("You host"); font.pixelSize: 11; color: Theme.muted }
-                            Label {
-                                visible: !modelData.online
-                                text: root.accessLabel(modelData.access)
-                                font.pixelSize: 11; color: Theme.muted
-                                Layout.maximumWidth: 75; elide: Text.ElideRight
+                            id: hostHeading
+                            visible: channelEntry.groupLabel.length > 0
+                            Layout.fillWidth: true; Layout.topMargin: 4; Layout.bottomMargin: 2
+                            DetailText {
+                                objectName: "hostGroup_" + channelEntry.groupId
+                                text: channelEntry.groupLabel; color: Theme.muted; font.pixelSize: 11
+                                selectByMouse: true; Layout.maximumWidth: scroll.availableWidth * 0.75
+                                wrapMode: TextEdit.WrapAnywhere
                             }
-                            Row {
-                                visible: !!modelData.online && channelRow.members.length > 0
-                                spacing: -5
-                                activeFocusOnTab: true
-                                Accessible.role: Accessible.Button
-                                Accessible.name: qsTr("Show all %1 members").arg(channelRow.members.length)
-                                Accessible.onPressAction: root.toggleMembers(channelRow.modelData.id)
-                                Keys.onReturnPressed: root.toggleMembers(channelRow.modelData.id)
-                                Keys.onSpacePressed: root.toggleMembers(channelRow.modelData.id)
-                                TapHandler { onTapped: root.toggleMembers(channelRow.modelData.id) }
-                                Repeater {
-                                    model: channelRow.members.slice(0, 3)
-                                    VoiceAvatar {
-                                        id: memberAvatar
-                                        required property var modelData
-                                        width: 36; height: 36; circular: true
-                                        avatar: modelData.avatarId || modelData.avatar || "mossling"; name: modelData.name; music: !!modelData.music
-                                        available: modelData.available; muted: modelData.muted; deafened: !!modelData.deafened; sleeping: !!modelData.sleeping
-                                        identity: modelData.id; animationTime: root.avatarTime
-                                        objectName: "channelAvatar_" + channelRow.modelData.id + "_" + modelData.id
-                                        animated: root.voice.animatedAvatars
-                                        level: channelRow.active ? root.memberLevel(modelData.id) : 0
-                                        TextToolTip { objectName: "memberTooltip"; parent: memberAvatar; text: memberAvatar.name; visible: avatarHover.hovered }
-                                        HoverHandler { id: avatarHover }
+                            Rectangle { Layout.fillWidth: true; height: 1; color: Theme.border }
+                        }
+                        Rectangle {
+                            id: channelRow
+                            readonly property var modelData: channelEntry.channelData
+                            readonly property bool active: root.activeHost === modelData.id && !!root.current.joined
+                            readonly property bool owned: !!modelData.owned || modelData.id === (root.current.ownId || root.network.ownId)
+                            readonly property bool selected: root.inspectedHost === modelData.id && root.chatExpanded
+                            readonly property var members: modelData.members || []
+                            Layout.fillWidth: true; implicitHeight: 42 + (selected ? chatSlot.height + 8 : 0)
+                            radius: Theme.controlRadius; color: selected ? Theme.surface : channelHover.containsMouse ? Theme.surface : "transparent"
+                            border.width: channelRow.active || activeFocus ? 1 : 0; border.color: Theme.accent
+                            MouseArea {
+                                id: channelHover
+                                objectName: "channelRow_" + modelData.id
+                                anchors.left: parent.left; anchors.right: parent.right; height: 42
+                                hoverEnabled: true; acceptedButtons: Qt.LeftButton | Qt.RightButton
+                                onDoubleClicked: function(mouse) { if (mouse.button === Qt.LeftButton) { channelClick.stop(); root.chatExpanded = true; root.joinHost(modelData.id) } }
+                                onClicked: function(mouse) {
+                                    if (mouse.button === Qt.RightButton) { root.selectedHost = modelData.id; channelMenu.popup() }
+                                    else { channelClick.hostId = modelData.id; channelClick.restart() }
+                                }
+                            }
+                            RowLayout {
+                                anchors.left: parent.left; anchors.right: parent.right; height: 42
+                                anchors.leftMargin: 8; anchors.rightMargin: 2; spacing: 6
+                                Glyph { symbol: "down"; rotation: channelRow.selected ? 0 : -90; color: channelRow.selected ? Theme.accent : Theme.muted }
+                                Glyph { objectName: "ownedChannel_" + modelData.id; visible: channelRow.owned; symbol: "home"; description: qsTr("You host"); color: Theme.accent }
+                                Label { objectName: "channelName_" + modelData.id; text: modelData.name; textFormat: Text.PlainText; font.weight: channelRow.selected || channelRow.owned || channelRow.active ? Font.DemiBold : Font.Normal; Layout.fillWidth: true; elide: Text.ElideRight }
+                                Glyph { objectName: "joinedChannel_" + modelData.id; visible: channelRow.active; symbol: "headphones"; description: qsTr("Connected to voice"); color: Theme.accent }
+                                Glyph { objectName: "channelMusic_" + modelData.id; visible: !!modelData.music; symbol: "music"; description: qsTr("Radio"); color: Theme.accent }
+                                Label {
+                                    visible: !modelData.online
+                                    text: root.accessLabel(modelData.access)
+                                    font.pixelSize: 11; color: Theme.muted
+                                    Layout.maximumWidth: 75; elide: Text.ElideRight
+                                }
+                                Row {
+                                    objectName: "memberSummary_" + modelData.id
+                                    visible: !!modelData.online && channelRow.members.length > 0
+                                    spacing: -5
+                                    activeFocusOnTab: true
+                                    Accessible.role: Accessible.Button
+                                    Accessible.name: qsTr("Show all %1 members").arg(channelRow.members.length)
+                                    Accessible.onPressAction: root.toggleMembers(channelRow.modelData.id)
+                                    Keys.onReturnPressed: root.toggleMembers(channelRow.modelData.id)
+                                    Keys.onSpacePressed: root.toggleMembers(channelRow.modelData.id)
+                                    TapHandler { onTapped: root.toggleMembers(channelRow.modelData.id) }
+                                    Repeater {
+                                        model: channelRow.members.slice(0, 3)
+                                        VoiceAvatar {
+                                            id: memberAvatar
+                                            required property var modelData
+                                            width: 36; height: 36; circular: true
+                                            avatar: modelData.avatarId || modelData.avatar || "mossling"; name: modelData.name; music: !!modelData.music
+                                            available: modelData.available; muted: modelData.muted; deafened: !!modelData.deafened; sleeping: !!modelData.sleeping
+                                            identity: modelData.id; animationTime: root.avatarTime
+                                            objectName: "channelAvatar_" + channelRow.modelData.id + "_" + modelData.id
+                                            animated: root.voice.animatedAvatars
+                                            level: channelRow.active ? root.memberLevel(modelData.id) : 0
+                                            TextToolTip { objectName: "memberTooltip"; parent: memberAvatar; text: memberAvatar.name; visible: avatarHover.hovered }
+                                            HoverHandler { id: avatarHover }
+                                        }
                                     }
                                 }
-                            }
-                            ActionButton {
-                                visible: !!modelData.online && channelRow.members.length > 3
-                                text: "+" + (channelRow.members.length - 3)
-                                flat: true
-                                Accessible.name: qsTr("Show all %1 members").arg(channelRow.members.length)
-                                onClicked: root.toggleMembers(modelData.id)
-                            }
-                            ActionButton {
-                                text: qsTr("Channel options"); glyph: "more"; iconOnly: true; flat: true
-                                onClicked: { root.selectedHost = modelData.id; channelMenu.popup() }
-                            }
-                        }
-                        Item {
-                            id: chatSlot
-                            objectName: "conversationSlot_" + channelRow.modelData.id
-                            anchors.left: parent.left; anchors.right: parent.right; anchors.top: parent.top; anchors.topMargin: 42
-                            height: Math.max(128, conversation.implicitHeight, scroll.height - Math.min(3, channelRows.count) * 44 - 12)
-                            visible: channelRow.selected
-                            function selectSlot() {
-                                if (channelRow.selected) {
-                                    root.conversationSlot = chatSlot
-                                    Qt.callLater(function() {
-                                        if (!channelRow.selected) return
-                                        const flick = scroll.contentItem
-                                        const bottom = channelRow.y + channelRow.height
-                                        if (channelRow.y < flick.contentY) flick.contentY = channelRow.y
-                                        else if (bottom > flick.contentY + flick.height)
-                                            flick.contentY = Math.max(0, bottom - flick.height)
-                                    })
+                                ActionButton {
+                                    objectName: "showMembers_" + modelData.id
+                                    visible: !!modelData.online && channelRow.members.length > 3
+                                    text: "+" + (channelRow.members.length - 3)
+                                    flat: true
+                                    Accessible.name: qsTr("Show all %1 members").arg(channelRow.members.length)
+                                    onClicked: root.toggleMembers(modelData.id)
                                 }
-                                else if (root.conversationSlot === chatSlot) root.conversationSlot = null
+                                ActionButton {
+                                    text: qsTr("Channel options"); glyph: "more"; iconOnly: true; flat: true
+                                    onClicked: { root.selectedHost = modelData.id; channelMenu.popup() }
+                                }
                             }
-                            Component.onCompleted: selectSlot()
-                            Component.onDestruction: if (root.conversationSlot === chatSlot) root.conversationSlot = null
-                            Connections { target: channelRow; function onSelectedChanged() { chatSlot.selectSlot() } }
+                            Item {
+                                id: chatSlot
+                                objectName: "conversationSlot_" + channelRow.modelData.id
+                                anchors.left: parent.left; anchors.right: parent.right; anchors.top: parent.top; anchors.topMargin: 42
+                                height: {
+                                    const count = Math.min(3, channelRepeater.count)
+                                    let headings = 0
+                                    for (let i = 0; i < count; ++i) {
+                                        const entry = channelRepeater.itemAt(i)
+                                        if (entry) headings += entry.headingHeight
+                                    }
+                                    return Math.max(root.compactInput ? 0 : 128, conversation.implicitHeight, scroll.height - count * 44 - headings - 12)
+                                }
+                                visible: channelRow.selected
+                                function selectSlot() {
+                                    if (channelRow.selected) {
+                                        root.conversationSlot = chatSlot
+                                        Qt.callLater(function() {
+                                            if (!channelRow.selected) return
+                                            const flick = scroll.contentItem
+                                            const top = channelRow.mapToItem(flick.contentItem, 0, 0).y
+                                            const bottom = top + channelRow.height
+                                            if (top < flick.contentY) flick.contentY = top
+                                            else if (bottom > flick.contentY + flick.height)
+                                                flick.contentY = Math.max(0, bottom - flick.height)
+                                        })
+                                    }
+                                    else if (root.conversationSlot === chatSlot) root.conversationSlot = null
+                                }
+                                Component.onCompleted: selectSlot()
+                                Component.onDestruction: if (root.conversationSlot === chatSlot) root.conversationSlot = null
+                                Connections { target: channelRow; function onSelectedChanged() { chatSlot.selectSlot() } }
+                            }
+                            activeFocusOnTab: true
+                            Accessible.role: Accessible.Button
+                            Accessible.name: modelData.name + (channelRow.owned ? ", " + qsTr("You host") : "") + (channelRow.active ? ", " + qsTr("Connected to voice") : "")
+                            Accessible.onPressAction: root.showHostChat(modelData.id)
+                            Keys.onReturnPressed: root.showHostChat(modelData.id)
+                            Keys.onSpacePressed: root.showHostChat(modelData.id)
                         }
-                        activeFocusOnTab: true
-                        Accessible.role: Accessible.Button
-                        Accessible.name: modelData.name + (channelRow.active ? ", " + qsTr("Connected to voice") : "")
-                        Accessible.onPressAction: root.showHostChat(modelData.id)
-                        Keys.onReturnPressed: root.showHostChat(modelData.id)
-                        Keys.onSpacePressed: root.showHostChat(modelData.id)
                     }
                 }
                 Label { visible: root.channelList.length === 0; text: root.remote ? root.network.controlStatus : qsTr("No channels yet"); Layout.fillWidth: true; color: Theme.muted; wrapMode: Text.Wrap }
@@ -1195,6 +1327,7 @@ PanelWindow {
         visible: root.showChat && root.conversationSlot !== null
         spacing: 4
         RowLayout {
+            visible: !root.compactInput
             Layout.fillWidth: true; spacing: 6
             Item { Layout.fillWidth: true }
             Label {
@@ -1206,51 +1339,11 @@ PanelWindow {
                 HoverHandler { id: expiryHover }
             }
         }
-        ScrollView {
-            objectName: "channelMembers"
-            visible: root.showChat && root.current.chatReady && root.chatMembers.length > 0
-            Layout.fillWidth: true
-            Layout.preferredHeight: Math.min(memberFlow.implicitHeight, root.height < 460 ? 48 : 100)
-            clip: true; contentWidth: availableWidth
-            Flow {
-                id: memberFlow
-                width: parent.width
-                spacing: 6
-                Repeater {
-                    model: root.chatMembers
-                    delegate: Item {
-                        required property var modelData
-                        width: Math.min(memberFlow.width, 176); height: 48
-                        activeFocusOnTab: true
-                        Accessible.role: Accessible.Button
-                        Accessible.name: modelData.name
-                        Accessible.onPressAction: root.memberOptions(modelData, root.inspectedHost)
-                        Keys.onReturnPressed: root.memberOptions(modelData, root.inspectedHost)
-                        Keys.onSpacePressed: root.memberOptions(modelData, root.inspectedHost)
-                        Rectangle { anchors.fill: parent; visible: parent.activeFocus; color: "transparent"; radius: Theme.controlRadius; border.color: Theme.accent }
-                        RowLayout {
-                            anchors.fill: parent; spacing: 5
-                            VoiceAvatar {
-                                objectName: "participantAvatar"
-                                Layout.preferredWidth: 44; Layout.preferredHeight: 44; circular: true
-                                avatar: modelData.avatarId || modelData.avatar || "mossling"; name: modelData.name; music: !!modelData.music
-                                available: modelData.available; muted: modelData.muted; deafened: !!modelData.deafened; sleeping: !!modelData.sleeping
-                                identity: modelData.id; animationTime: root.avatarTime
-                                animated: root.voice.animatedAvatars
-                                level: root.inspectedHost === root.activeHost ? root.memberLevel(modelData.id) : 0
-                            }
-                            Label { text: modelData.name; textFormat: Text.PlainText; Layout.fillWidth: true; elide: Text.ElideRight; font.pixelSize: 12 }
-                        }
-                        MouseArea { anchors.fill: parent; acceptedButtons: Qt.LeftButton | Qt.RightButton; onClicked: root.memberOptions(modelData, root.inspectedHost) }
-                    }
-                }
-            }
-        }
         Loader {
             Layout.fillWidth: true
             Layout.preferredHeight: visible ? (root.height < 460 ? 48 : 112) : 0
             active: !!root.screen
-            visible: !root.remote && !!root.network.screenView.available
+            visible: !root.compactInput && !root.remote && (!!root.network.screenView.available || (root.screen && root.screen.active && root.screen.hostId === root.inspectedHost))
             sourceComponent: ScreenPanel { share: root.screen; network: root.network; hostId: root.inspectedHost }
         }
         Label {
@@ -1269,7 +1362,8 @@ PanelWindow {
         }
     }
     footer: Rectangle {
-        implicitHeight: controls.implicitHeight + 16
+        visible: !root.mobileKeyboard
+        implicitHeight: visible ? controls.implicitHeight + 16 : 0
         color: Theme.surface
         ColumnLayout {
             id: controls
@@ -1284,6 +1378,8 @@ PanelWindow {
             }
             RowLayout {
                 Layout.fillWidth: true; spacing: 4
+                ActionButton { objectName: "addChannel"; visible: !root.remote; text: qsTr("Add channel"); glyph: "plus"; iconOnly: true; flat: true; onClicked: discover.open() }
+                ActionButton { objectName: "openSettings"; visible: !root.remote; text: qsTr("Settings"); glyph: "settings"; iconOnly: true; flat: true; onClicked: root.openSettings(0) }
                 ActionButton {
                     objectName: "audioQuality"
                     readonly property int bitrate: root.current.receiveAudioBitrate || 0
@@ -1294,7 +1390,12 @@ PanelWindow {
                     ToolTip.text: qsTr("Receive quality: %1 kb/s per voice. Adjusts automatically for this device.").arg(bitrate)
                     onClicked: ToolTip.show(ToolTip.text, 5000)
                 }
-                Item { Layout.fillWidth: true }
+                Label {
+                    objectName: "remoteTargetName"
+                    Layout.fillWidth: true; Layout.minimumWidth: 0
+                    text: root.remote ? root.network.controlTargetName : ""
+                    textFormat: Text.PlainText; elide: Text.ElideRight; font.pixelSize: 12
+                }
                 ActionButton { objectName: "mute"; text: root.micMuted ? qsTr("Unmute microphone") : qsTr("Mute microphone"); glyph: root.micMuted || (!root.remote && !root.voice.available) ? "mute" : "mic"; iconOnly: true; flat: true; checked: root.micMuted; enabled: !root.remote || root.network.remoteAllowed; onClicked: root.remote ? root.network.remoteAction("mute", {value: !root.micMuted}) : root.voice.setMuted(!root.micMuted) }
                 ActionButton { objectName: "deafen"; text: root.outputMuted ? qsTr("Enable speakers") : qsTr("Mute speakers"); glyph: root.outputMuted ? "deafen" : "speaker"; iconOnly: true; flat: true; checked: root.outputMuted; enabled: !root.remote || root.network.remoteAllowed; onClicked: root.remote ? root.network.remoteAction("deafen", {value: !root.outputMuted}) : root.voice.setDeafened(!root.outputMuted) }
                 ActionButton {
@@ -1310,7 +1411,6 @@ PanelWindow {
                         else remoteTargets.open()
                     }
                 }
-                ActionButton { objectName: "leaveChannel"; text: qsTr("Leave channel"); destructive: true; glyph: "leave"; iconOnly: true; flat: true; visible: root.activeHost.length > 0; onClicked: root.leaveHost() }
             }
             ActionButton {
                 objectName: "pttButton"

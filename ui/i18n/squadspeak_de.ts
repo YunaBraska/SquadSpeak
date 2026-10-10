@@ -637,10 +637,6 @@
             <translation>Channel nicht verfügbar</translation>
         </message>
         <message>
-            <source>Join voice</source>
-            <translation>Sprachchat beitreten</translation>
-        </message>
-        <message>
             <source>System (automatic)</source>
             <translation>System (automatisch)</translation>
         </message>
@@ -873,10 +869,6 @@
             <translation>Auto-Beitritt</translation>
         </message>
         <message>
-            <source>Leave channel</source>
-            <translation>Channel verlassen</translation>
-        </message>
-        <message>
             <source>Stream URL</source>
             <translation>Stream-URL</translation>
         </message>
@@ -1093,48 +1085,16 @@
             <translation>Geräte-ID</translation>
         </message>
         <message>
-            <source>Activate</source>
-            <translation>Aktivieren</translation>
-        </message>
-        <message>
-            <source>Buy annual pass</source>
-            <translation>Jahrespass kaufen</translation>
-        </message>
-        <message>
             <source>Check now</source>
             <translation>Jetzt prüfen</translation>
-        </message>
-        <message>
-            <source>Deactivate</source>
-            <translation>Deaktivieren</translation>
         </message>
         <message>
             <source>Free version</source>
             <translation>Kostenlose Version</translation>
         </message>
         <message>
-            <source>License key</source>
-            <translation>Lizenzschlüssel</translation>
-        </message>
-        <message>
             <source>Not available yet</source>
             <translation>Noch nicht verfügbar</translation>
-        </message>
-        <message>
-            <source>Reset</source>
-            <translation>Zurücksetzen</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot.</source>
-            <translation>Erst zurücksetzen, nachdem der Support den Geräteplatz freigegeben hat.</translation>
-        </message>
-        <message>
-            <source>Resolve activation</source>
-            <translation>Aktivierung klären</translation>
-        </message>
-        <message>
-            <source>Support reference</source>
-            <translation>Support-Referenz</translation>
         </message>
         <message>
             <source>Supporter</source>
@@ -1200,7 +1160,35 @@
             <source>App audio</source>
             <translation>App-Ton</translation>
         </message>
-</context>
+        <message>
+            <source>Account: %1</source>
+            <translation>Konto: %1</translation>
+        </message>
+        <message>
+            <source>Signed in as %1</source>
+            <translation>Angemeldet als %1</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub</source>
+            <translation>Melde dich mit GitHub an</translation>
+        </message>
+        <message>
+            <source>Verification code</source>
+            <translation>Bestätigungscode</translation>
+        </message>
+        <message>
+            <source>Open GitHub</source>
+            <translation>Öffne GitHub</translation>
+        </message>
+        <message>
+            <source>Sign out</source>
+            <translation>Abmelden</translation>
+        </message>
+        <message>
+            <source>This device</source>
+            <translation>Dieses Gerät</translation>
+        </message>
+    </context>
     <context>
         <name>ChatContent</name>
         <message>
@@ -1417,10 +1405,6 @@
     </context>
     <context>
         <name>LocalChannel</name>
-        <message>
-            <source>Encrypted join failed: %1</source>
-            <translation>Verschlüsselter Beitritt fehlgeschlagen: %1</translation>
-        </message>
         <message>
             <source>Host is not responding. Reconnecting.</source>
             <translation>Host antwortet nicht. Verbindung wird wiederhergestellt.</translation>
@@ -2613,40 +2597,32 @@
     <context>
         <name>License</name>
         <message>
-            <source>Activation was declined. Check your key and available device slots.</source>
-            <translation>Aktivierung abgelehnt. Prüfe den Schlüssel und die verfügbaren Geräteplätze.</translation>
-        </message>
-        <message>
-            <source>An activation is unresolved. Contact support before trying again.</source>
-            <translation>Eine Aktivierung ist ungeklärt. Kontaktiere vor einem neuen Versuch den Support.</translation>
-        </message>
-        <message>
-            <source>Deactivation was declined. Contact support.</source>
-            <translation>Deaktivierung abgelehnt. Kontaktiere den Support.</translation>
-        </message>
-        <message>
-            <source>Enter a valid license key.</source>
-            <translation>Gib einen gültigen Lizenzschlüssel ein.</translation>
-        </message>
-        <message>
             <source>License storage is busy or unavailable.</source>
-            <translation>Der Lizenzspeicher ist belegt oder nicht verfügbar.</translation>
+            <translation>Der Lizenzspeicher ist ausgelastet oder nicht verfügbar.</translation>
         </message>
         <message>
             <source>License storage is unavailable.</source>
             <translation>Der Lizenzspeicher ist nicht verfügbar.</translation>
         </message>
         <message>
-            <source>The license could not be checked. Your confirmed expiry is unchanged.</source>
-            <translation>Die Lizenz konnte nicht geprüft werden. Das bestätigte Ablaufdatum bleibt unverändert.</translation>
+            <source>Sign-in expired. Try again.</source>
+            <translation>Anmeldung abgelaufen. Versuche es erneut.</translation>
         </message>
         <message>
-            <source>The license or device activation is no longer valid.</source>
-            <translation>Die Lizenz oder Geräteaktivierung ist nicht mehr gültig.</translation>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>Die GitHub-Anmeldung ist nicht verfügbar. Versuche es erneut.</translation>
         </message>
         <message>
-            <source>The license response does not match this annual pass.</source>
-            <translation>Die Lizenzantwort passt nicht zu diesem Jahrespass.</translation>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>Die GitHub-Anmeldung wurde nicht abgeschlossen. Versuche es erneut.</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>GitHub konnte nicht überprüft werden. Der Offline-Zugriff dauert maximal sieben Tage.</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>Melde dich erneut bei GitHub an.</translation>
         </message>
     </context>
     <context>
@@ -2658,10 +2634,6 @@
         <message>
             <source>The shared window was closed. Select a source to start again.</source>
             <translation>Das freigegebene Fenster wurde geschlossen. Wähle erneut eine Quelle aus.</translation>
-        </message>
-        <message>
-            <source>Screen sharing requires an active Supporter pass on the owning host.</source>
-            <translation>Bildschirmfreigabe erfordert einen aktiven Supporter-Pass auf dem Host.</translation>
         </message>
         <message>
             <source>The selected screen is no longer available.</source>
@@ -2705,6 +2677,10 @@
         <message>
             <source>Screen stream</source>
             <translation>Bildschirmstream</translation>
+        </message>
+        <message>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
         </message>
     </context>
     <context>
@@ -2973,10 +2949,6 @@
             <translation>Lokaler SquadSpeak-Kanalhost ohne grafische Oberfläche</translation>
         </message>
         <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>Einstellungsreihenfolge: Argumente &gt; Umgebung &gt; Eigenschaften &gt; gespeicherte Serverwerte.</translation>
-        </message>
-        <message>
             <source>Environment variables (SQUADSPEAK_ prefix):</source>
             <translation>Umgebungsvariablen (Präfix SQUADSPEAK_):</translation>
         </message>
@@ -3033,32 +3005,12 @@
             <translation>Optionale eigene Kanal-ID für die Befehle status, configure, password, admission, history, chat und radio; Standard ist der Hauptkanal.</translation>
         </message>
         <message>
-            <source>License action must be status, activate, refresh, deactivate or reset.</source>
-            <translation>Lizenzaktion muss status, activate, refresh, deactivate oder reset sein.</translation>
-        </message>
-        <message>
-            <source>A license operation is in progress.</source>
-            <translation>Eine Lizenzoperation läuft bereits.</translation>
-        </message>
-        <message>
-            <source>Supporter activation is unavailable in this build.</source>
-            <translation>Supporter-Aktivierung ist in diesem Build nicht verfügbar.</translation>
-        </message>
-        <message>
-            <source>A license key is required.</source>
-            <translation>Ein Lizenzschlüssel ist erforderlich.</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot. Set confirmed=true to proceed.</source>
-            <translation>Zurücksetzen erst nach Freigabe des Geräteplatzes durch den Support. Setzen Sie confirmed=true, um fortzufahren.</translation>
-        </message>
-        <message>
             <source>Channel action must be list, add or remove.</source>
             <translation>Kanalaktion muss list, add oder remove sein.</translation>
         </message>
         <message>
             <source>Removing an own channel deletes its history, images, permissions and radio settings. Set confirmed=true to proceed.</source>
-            <translation>Das Entfernen eines eigenen Kanals löscht Verlauf, Bilder, Berechtigungen und Radioeinstellungen. Setzen Sie confirmed=true, um fortzufahren.</translation>
+            <translation>Das Entfernen eines eigenen Kanals löscht Verlauf, Bilder, Berechtigungen und Radioeinstellungen. Setze confirmed=true, um fortzufahren.</translation>
         </message>
         <message>
             <source>id must identify an additional own channel.</source>
@@ -3110,7 +3062,7 @@
         </message>
         <message>
             <source>Unknown command. Use help.</source>
-            <translation>Unbekannter Befehl. Verwenden Sie help.</translation>
+            <translation>Unbekannter Befehl. Verwende help.</translation>
         </message>
         <message>
             <source>search requires a query, non-negative offset and limit from 1 to 128.</source>
@@ -3142,7 +3094,7 @@
         </message>
         <message>
             <source>Unexpected positional arguments. Use --help.</source>
-            <translation>Unerwartete Positionsargumente. Verwenden Sie --help.</translation>
+            <translation>Unerwartete Positionsargumente. Verwende --help.</translation>
         </message>
         <message>
             <source>--config / -f requires a non-empty path.</source>
@@ -3150,15 +3102,15 @@
         </message>
         <message>
             <source>Choose --password or --password-file, not both.</source>
-            <translation>Wählen Sie entweder --password oder --password-file, nicht beide.</translation>
+            <translation>Wähle entweder --password oder --password-file, nicht beide.</translation>
         </message>
         <message>
             <source>Choose SQUADSPEAK_PASSWORD or SQUADSPEAK_PASSWORD_FILE, not both.</source>
-            <translation>Wählen Sie entweder SQUADSPEAK_PASSWORD oder SQUADSPEAK_PASSWORD_FILE, nicht beide.</translation>
+            <translation>Wähle entweder SQUADSPEAK_PASSWORD oder SQUADSPEAK_PASSWORD_FILE, nicht beide.</translation>
         </message>
         <message>
             <source>Choose password or passwordFile in one configuration layer, not both.</source>
-            <translation>Wählen Sie password oder passwordFile in einer Konfigurationsebene, nicht beide.</translation>
+            <translation>Wähle password oder passwordFile in einer Konfigurationsebene, nicht beide.</translation>
         </message>
         <message>
             <source>passwordFile must be a non-empty path.</source>
@@ -3231,6 +3183,22 @@
         <message>
             <source>SquadSpeak headless could not start: %1</source>
             <translation>SquadSpeak-Headless konnte nicht gestartet werden: %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>Die Aktion des Unterstützers muss Status, Anmelden, Aktualisieren, Abmelden oder Abbrechen sein. status sign-in refresh sign-out cancel</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>Eine Supporter-Operation ist im Gange.</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>Der Supporter-Zugriff ist in diesem Build nicht verfügbar.</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>Priorität der Einstellungen: Argumente &gt; Umgebung &gt; Eigenschaften &gt; gespeicherte Serverwerte.</translation>
         </message>
     </context>
     <context>

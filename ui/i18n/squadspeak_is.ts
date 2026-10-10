@@ -637,10 +637,6 @@
             <translation>Rás ekki tiltæk</translation>
         </message>
         <message>
-            <source>Join voice</source>
-            <translation>Taktu þátt í rödd</translation>
-        </message>
-        <message>
             <source>System (automatic)</source>
             <translation>Kerfi (sjálfvirkt)</translation>
         </message>
@@ -873,10 +869,6 @@
             <translation>Sjálfvirk sameining</translation>
         </message>
         <message>
-            <source>Leave channel</source>
-            <translation>Farið frá rásinni</translation>
-        </message>
-        <message>
             <source>Stream URL</source>
             <translation>Slóð á streymi</translation>
         </message>
@@ -1093,48 +1085,16 @@
             <translation>Auðkenni tækis</translation>
         </message>
         <message>
-            <source>Activate</source>
-            <translation>Virkja</translation>
-        </message>
-        <message>
-            <source>Buy annual pass</source>
-            <translation>Kaupa árskort</translation>
-        </message>
-        <message>
             <source>Check now</source>
             <translation>Athugaðu núna</translation>
-        </message>
-        <message>
-            <source>Deactivate</source>
-            <translation>Slökkva á</translation>
         </message>
         <message>
             <source>Free version</source>
             <translation>Ókeypis útgáfa</translation>
         </message>
         <message>
-            <source>License key</source>
-            <translation>Leyfislykill</translation>
-        </message>
-        <message>
             <source>Not available yet</source>
             <translation>Ekki tiltækt ennþá</translation>
-        </message>
-        <message>
-            <source>Reset</source>
-            <translation>Núllstilla</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot.</source>
-            <translation>Endurstilla aðeins eftir að stuðningur hefur losað tækisraufina.</translation>
-        </message>
-        <message>
-            <source>Resolve activation</source>
-            <translation>Leysa virkjun</translation>
-        </message>
-        <message>
-            <source>Support reference</source>
-            <translation>Stuðningstilvísun</translation>
         </message>
         <message>
             <source>Supporter</source>
@@ -1200,7 +1160,35 @@
             <source>App audio</source>
             <translation>Hljóð forrits</translation>
         </message>
-</context>
+        <message>
+            <source>Account: %1</source>
+            <translation>Reikningur: %1</translation>
+        </message>
+        <message>
+            <source>Signed in as %1</source>
+            <translation>Skráður inn sem %1</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub</source>
+            <translation>Skráðu þig inn með GitHub</translation>
+        </message>
+        <message>
+            <source>Verification code</source>
+            <translation>Staðfestingarkóði</translation>
+        </message>
+        <message>
+            <source>Open GitHub</source>
+            <translation>Opnaðu GitHub</translation>
+        </message>
+        <message>
+            <source>Sign out</source>
+            <translation>Skráðu þig út</translation>
+        </message>
+        <message>
+            <source>This device</source>
+            <translation>Þetta tæki</translation>
+        </message>
+    </context>
     <context>
         <name>ChatContent</name>
         <message>
@@ -1417,10 +1405,6 @@
     </context>
     <context>
         <name>LocalChannel</name>
-        <message>
-            <source>Encrypted join failed: %1</source>
-            <translation>Dulkóðuð tenging mistókst: %1</translation>
-        </message>
         <message>
             <source>Host is not responding. Reconnecting.</source>
             <translation>Gestgjafi svarar ekki. Tengist aftur.</translation>
@@ -2613,22 +2597,6 @@
     <context>
         <name>License</name>
         <message>
-            <source>Activation was declined. Check your key and available device slots.</source>
-            <translation>Virkjun var hafnað. Athugaðu lykilinn þinn og tiltæka tækisrauf.</translation>
-        </message>
-        <message>
-            <source>An activation is unresolved. Contact support before trying again.</source>
-            <translation>Virkjun er óleyst. Hafðu samband við þjónustudeild áður en þú reynir aftur.</translation>
-        </message>
-        <message>
-            <source>Deactivation was declined. Contact support.</source>
-            <translation>Slökkvun var hafnað. Hafðu samband við þjónustudeild.</translation>
-        </message>
-        <message>
-            <source>Enter a valid license key.</source>
-            <translation>Sláðu inn gildan leyfislykil.</translation>
-        </message>
-        <message>
             <source>License storage is busy or unavailable.</source>
             <translation>Leyfisgeymsla er upptekin eða ekki tiltæk.</translation>
         </message>
@@ -2637,16 +2605,24 @@
             <translation>Leyfisgeymsla er ekki tiltæk.</translation>
         </message>
         <message>
-            <source>The license could not be checked. Your confirmed expiry is unchanged.</source>
-            <translation>Ekki var hægt að athuga leyfið. Staðfest fyrning þín er óbreytt.</translation>
+            <source>Sign-in expired. Try again.</source>
+            <translation>Innskráning rann út. Reyndu aftur.</translation>
         </message>
         <message>
-            <source>The license or device activation is no longer valid.</source>
-            <translation>Leyfið eða virkjun tækisins er ekki lengur í gildi.</translation>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>GitHub innskráning er ekki tiltæk. Reyndu aftur.</translation>
         </message>
         <message>
-            <source>The license response does not match this annual pass.</source>
-            <translation>Leyfissvarið passar ekki við þennan árskort.</translation>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>GitHub innskráningu var ekki lokið. Reyndu aftur.</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>Ekki var hægt að athuga GitHub. Aðgangur án nettengingar varir í mesta lagi sjö daga.</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>Skráðu þig inn með GitHub aftur.</translation>
         </message>
     </context>
     <context>
@@ -2658,10 +2634,6 @@
         <message>
             <source>The shared window was closed. Select a source to start again.</source>
             <translation>Sameiginlegur gluggi var lokaður. Veldu heimild til að byrja aftur.</translation>
-        </message>
-        <message>
-            <source>Screen sharing requires an active Supporter pass on the owning host.</source>
-            <translation>Skjádeiling krefst virks Supporter-passa á gestgjafanum sem á rásina.</translation>
         </message>
         <message>
             <source>The selected screen is no longer available.</source>
@@ -2705,6 +2677,10 @@
         <message>
             <source>Screen stream</source>
             <translation>Skjástraumur</translation>
+        </message>
+        <message>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
         </message>
     </context>
     <context>
@@ -2973,10 +2949,6 @@
             <translation>SquadSpeak staðbundinn rásarþjónn án myndræns viðmóts</translation>
         </message>
         <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>Forgangur stillinga: viðföng &gt; umhverfi &gt; eigindi &gt; vistuð gildi þjóns.</translation>
-        </message>
-        <message>
             <source>Environment variables (SQUADSPEAK_ prefix):</source>
             <translation>Umhverfisbreytur (forskeyti SQUADSPEAK_):</translation>
         </message>
@@ -3031,26 +3003,6 @@
         <message>
             <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
             <translation>Valfrjálst auðkenni eigin rásar fyrir skipanirnar status, configure, password, admission, history, chat og radio; sjálfgefið er aðalrásin.</translation>
-        </message>
-        <message>
-            <source>License action must be status, activate, refresh, deactivate or reset.</source>
-            <translation>Leyfisaðgerð verður að vera status, activate, refresh, deactivate eða reset.</translation>
-        </message>
-        <message>
-            <source>A license operation is in progress.</source>
-            <translation>Leyfisaðgerð er í gangi.</translation>
-        </message>
-        <message>
-            <source>Supporter activation is unavailable in this build.</source>
-            <translation>Virkjun Supporter er ekki tiltæk í þessari útgáfu.</translation>
-        </message>
-        <message>
-            <source>A license key is required.</source>
-            <translation>Leyfislykill er nauðsynlegur.</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot. Set confirmed=true to proceed.</source>
-            <translation>Endurstilltu aðeins eftir að þjónustuver hefur losað tækjaplássið. Stilltu confirmed=true til að halda áfram.</translation>
         </message>
         <message>
             <source>Channel action must be list, add or remove.</source>
@@ -3231,6 +3183,22 @@
         <message>
             <source>SquadSpeak headless could not start: %1</source>
             <translation>Ekki tókst að ræsa SquadSpeak án myndræns viðmóts: %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>Aðgerð stuðningsmanna verður að vera staða, innskráning, endurnýjun, útskráning eða hætta við. status sign-in refresh sign-out cancel</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>Stuðningsmannaaðgerð er í gangi.</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>Aðgangur stuðningsmanna er ekki tiltækur í þessari byggingu.</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>Forgangur stillinga: rök &gt; umhverfi &gt; eiginleikar &gt; vistuð miðlaragildi.</translation>
         </message>
     </context>
     <context>

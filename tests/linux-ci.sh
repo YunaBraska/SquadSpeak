@@ -16,12 +16,15 @@ case "$mode" in
         server_pid=
         trap 'if test -n "$server_pid"; then kill "$server_pid" 2>/dev/null || true; fi; rm -rf "$work"' EXIT
         tar -xzf "/output/squadspeak-linux-$(uname -m).tar.gz" -C "$work"
-        test -s "$work/lib/libQt6Multimedia.so.6"
         ldd "$work/bin/squadspeak" > "$work/runtime-libraries.txt"
         cat "$work/runtime-libraries.txt"
-        capture_library=$(awk '$1 == "libQt6Multimedia.so.6" && $2 == "=>" { print $3 }' "$work/runtime-libraries.txt")
-        # The loader may retain bin/../lib from $ORIGIN in its output.
-        test "$(readlink -f "$capture_library")" = "$(readlink -f "$work/lib/libQt6Multimedia.so.6")"
+        for module in Multimedia Qml; do
+            library="libQt6$module.so.6"
+            test -s "$work/lib/$library"
+            resolved=$(awk -v library="$library" '$1 == library && $2 == "=>" { print $3 }' "$work/runtime-libraries.txt")
+            # The loader may retain bin/../lib from $ORIGIN in its output.
+            test "$(readlink -f "$resolved")" = "$(readlink -f "$work/lib/$library")"
+        done
         export QT_QPA_PLATFORM=offscreen QT_QUICK_BACKEND=software QT_QUICK_CONTROLS_STYLE=Basic
         export XDG_CONFIG_HOME="$work/config" XDG_DATA_HOME="$work/data" XDG_RUNTIME_DIR="$work/runtime"
         mkdir -m 700 "$XDG_RUNTIME_DIR"
@@ -63,9 +66,7 @@ case "$mode" in
     release) set -- -DCMAKE_BUILD_TYPE=Release "$@" ;;
     store)
         set -- -DCMAKE_BUILD_TYPE=Release -DSQUADSPEAK_STORE_BUILD=ON \
-            -DSQUADSPEAK_LICENSE_STORE_ID=10 -DSQUADSPEAK_LICENSE_PRODUCT_ID=20 \
-            -DSQUADSPEAK_LICENSE_VARIANT_ID=30 \
-            -DSQUADSPEAK_PURCHASE_URL=https://example.lemonsqueezy.com/checkout/buy/example "$@"
+            -DSQUADSPEAK_GITHUB_CLIENT_ID=fixture_client "$@"
         ;;
     sanitizers)
         # GCC rejects valid constexpr function-pointer comparisons in Abseil
@@ -77,7 +78,6 @@ case "$mode" in
             -DCMAKE_SHARED_LINKER_FLAGS=-fsanitize=address,undefined "$@"
         export ASAN_OPTIONS=detect_leaks=1:halt_on_error=1
         export UBSAN_OPTIONS=halt_on_error=1:print_stacktrace=1
-        export QT_LOGGING_RULES='squadspeak.media.debug=true'
         ;;
     *) printf 'Usage: linux-ci.sh [release|store|sanitizers|runtime] [CMake options...]\n' >&2; exit 2 ;;
 esac
@@ -232,6 +232,22 @@ if test -d /tmp/squadspeak-ci-build/smoke; then
     cp -R /tmp/squadspeak-ci-build/smoke /output/screenshots
 fi
 test "$result" -eq 0
+
+# Repeated chat/theme churn exposed a Qt 6.10 allocator fault after the full UI
+# suite. Keep that sequence, with frequent collection and no retry-on-failure.
+attempt=1
+while test "$attempt" -le 20; do
+    printf 'Chat collection repetition %s\n' "$attempt" >> /output/chat-collection.log
+    QV4_GC_TIMELIMIT=1 QV4_JIT_CALL_THRESHOLD=1 QTEST_DISABLE_STACK_DUMP=1 \
+        LSAN_OPTIONS=suppressions=/source/tests/lsan.supp \
+        SQUAD_TEST_ARTIFACTS=/output/screenshots \
+        timeout 60 /tmp/squadspeak-ci-build/controls_tests \
+        -input /source/tests/tst_channel_controls.qml \
+        DirectChannelControls::test_markdownCodeAndQuotesStayReadable \
+        DirectChannelControls::test_markdownStructuresStayWithinChat \
+        >> /output/chat-collection.log 2>&1 || { cat /output/chat-collection.log; exit 1; }
+    attempt=$((attempt + 1))
+done
 
 # Exercise the unavailable-device path separately. The main run above must
 # still see the virtual microphone; losing it cannot silently reduce coverage.

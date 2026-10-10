@@ -637,10 +637,6 @@
             <translation>Kanal utilgjengelig</translation>
         </message>
         <message>
-            <source>Join voice</source>
-            <translation>Bli med stemme</translation>
-        </message>
-        <message>
             <source>System (automatic)</source>
             <translation>System (automatisk)</translation>
         </message>
@@ -873,10 +869,6 @@
             <translation>Automatisk sammenføyning</translation>
         </message>
         <message>
-            <source>Leave channel</source>
-            <translation>Forlat kanalen</translation>
-        </message>
-        <message>
             <source>Stream URL</source>
             <translation>Strøm URL</translation>
         </message>
@@ -1093,48 +1085,16 @@
             <translation>Enhets-ID</translation>
         </message>
         <message>
-            <source>Activate</source>
-            <translation>Aktiver</translation>
-        </message>
-        <message>
-            <source>Buy annual pass</source>
-            <translation>Kjøp årskort</translation>
-        </message>
-        <message>
             <source>Check now</source>
             <translation>Sjekk nå</translation>
-        </message>
-        <message>
-            <source>Deactivate</source>
-            <translation>Deaktiver</translation>
         </message>
         <message>
             <source>Free version</source>
             <translation>Gratis versjon</translation>
         </message>
         <message>
-            <source>License key</source>
-            <translation>Lisensnøkkel</translation>
-        </message>
-        <message>
             <source>Not available yet</source>
             <translation>Ikke tilgjengelig ennå</translation>
-        </message>
-        <message>
-            <source>Reset</source>
-            <translation>Tilbakestill</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot.</source>
-            <translation>Tilbakestill bare etter at støtten har frigjort enhetssporet.</translation>
-        </message>
-        <message>
-            <source>Resolve activation</source>
-            <translation>Løs aktivering</translation>
-        </message>
-        <message>
-            <source>Support reference</source>
-            <translation>Støttereferanse</translation>
         </message>
         <message>
             <source>Supporter</source>
@@ -1200,7 +1160,35 @@
             <source>App audio</source>
             <translation>Appens lyd</translation>
         </message>
-</context>
+        <message>
+            <source>Account: %1</source>
+            <translation>Konto: %1</translation>
+        </message>
+        <message>
+            <source>Signed in as %1</source>
+            <translation>Logget på som %1</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub</source>
+            <translation>Logg på med GitHub</translation>
+        </message>
+        <message>
+            <source>Verification code</source>
+            <translation>Bekreftelseskode</translation>
+        </message>
+        <message>
+            <source>Open GitHub</source>
+            <translation>Åpne GitHub</translation>
+        </message>
+        <message>
+            <source>Sign out</source>
+            <translation>Logg ut</translation>
+        </message>
+        <message>
+            <source>This device</source>
+            <translation>Denne enheten</translation>
+        </message>
+    </context>
     <context>
         <name>ChatContent</name>
         <message>
@@ -1417,10 +1405,6 @@
     </context>
     <context>
         <name>LocalChannel</name>
-        <message>
-            <source>Encrypted join failed: %1</source>
-            <translation>Kryptert sammenføyning mislyktes: %1</translation>
-        </message>
         <message>
             <source>Host is not responding. Reconnecting.</source>
             <translation>Verten svarer ikke. Kobler til på nytt.</translation>
@@ -2613,22 +2597,6 @@
     <context>
         <name>License</name>
         <message>
-            <source>Activation was declined. Check your key and available device slots.</source>
-            <translation>Aktivering ble avvist. Sjekk nøkkelen og tilgjengelige enhetsspor.</translation>
-        </message>
-        <message>
-            <source>An activation is unresolved. Contact support before trying again.</source>
-            <translation>En aktivering er uløst. Kontakt brukerstøtten før du prøver igjen.</translation>
-        </message>
-        <message>
-            <source>Deactivation was declined. Contact support.</source>
-            <translation>Deaktivering ble avvist. Kontakt support.</translation>
-        </message>
-        <message>
-            <source>Enter a valid license key.</source>
-            <translation>Skriv inn en gyldig lisensnøkkel.</translation>
-        </message>
-        <message>
             <source>License storage is busy or unavailable.</source>
             <translation>Lisenslagring er opptatt eller utilgjengelig.</translation>
         </message>
@@ -2637,16 +2605,24 @@
             <translation>Lisenslagring er utilgjengelig.</translation>
         </message>
         <message>
-            <source>The license could not be checked. Your confirmed expiry is unchanged.</source>
-            <translation>Lisensen kunne ikke kontrolleres. Ditt bekreftede utløp er uendret.</translation>
+            <source>Sign-in expired. Try again.</source>
+            <translation>Pålogging utløpt. Prøv igjen.</translation>
         </message>
         <message>
-            <source>The license or device activation is no longer valid.</source>
-            <translation>Lisensen eller enhetsaktiveringen er ikke lenger gyldig.</translation>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>GitHub-pålogging er utilgjengelig. Prøv igjen.</translation>
         </message>
         <message>
-            <source>The license response does not match this annual pass.</source>
-            <translation>Lisenssvaret samsvarer ikke med dette årskort.</translation>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>GitHub-pålogging ble ikke fullført. Prøv igjen.</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>GitHub kunne ikke sjekkes. Frakoblet tilgang varer maksimalt syv dager.</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>Logg på med GitHub igjen.</translation>
         </message>
     </context>
     <context>
@@ -2658,10 +2634,6 @@
         <message>
             <source>The shared window was closed. Select a source to start again.</source>
             <translation>Det delte vinduet ble lukket. Velg en kilde for å starte på nytt.</translation>
-        </message>
-        <message>
-            <source>Screen sharing requires an active Supporter pass on the owning host.</source>
-            <translation>Skjermdeling krever et aktivt Supporter-pass på verten som eier kanalen.</translation>
         </message>
         <message>
             <source>The selected screen is no longer available.</source>
@@ -2705,6 +2677,10 @@
         <message>
             <source>Screen stream</source>
             <translation>Skjermstrøm</translation>
+        </message>
+        <message>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
         </message>
     </context>
     <context>
@@ -2973,10 +2949,6 @@
             <translation>Lokal headless-kanalvert for SquadSpeak</translation>
         </message>
         <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>Prioritet for innstillinger: argumenter &gt; miljø &gt; egenskaper &gt; lagrede serververdier.</translation>
-        </message>
-        <message>
             <source>Environment variables (SQUADSPEAK_ prefix):</source>
             <translation>Miljøvariabler (prefiks SQUADSPEAK_):</translation>
         </message>
@@ -3031,26 +3003,6 @@
         <message>
             <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
             <translation>Valgfri egen kanal-ID for kommandoene status, configure, password, admission, history, chat og radio; hovedkanalen brukes som standard.</translation>
-        </message>
-        <message>
-            <source>License action must be status, activate, refresh, deactivate or reset.</source>
-            <translation>Lisenshandlingen må være status, activate, refresh, deactivate eller reset.</translation>
-        </message>
-        <message>
-            <source>A license operation is in progress.</source>
-            <translation>En lisensoperasjon pågår allerede.</translation>
-        </message>
-        <message>
-            <source>Supporter activation is unavailable in this build.</source>
-            <translation>Supporter-aktivering er ikke tilgjengelig i denne versjonen.</translation>
-        </message>
-        <message>
-            <source>A license key is required.</source>
-            <translation>En lisensnøkkel kreves.</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot. Set confirmed=true to proceed.</source>
-            <translation>Tilbakestill først etter at support har frigjort enhetsplassen. Sett confirmed=true for å fortsette.</translation>
         </message>
         <message>
             <source>Channel action must be list, add or remove.</source>
@@ -3231,6 +3183,22 @@
         <message>
             <source>SquadSpeak headless could not start: %1</source>
             <translation>SquadSpeak headless kunne ikke startes: %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>Supporterhandling må være status, pålogging, oppdatering, avlogging eller kansellering. sign-in refresh sign-out cancel</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>En supporteroperasjon pågår.</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>Supportertilgang er utilgjengelig i denne versjonen.</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>Innstillingsprioritet: argumenter &gt; miljø &gt; egenskaper &gt; lagrede serververdier.</translation>
         </message>
     </context>
     <context>

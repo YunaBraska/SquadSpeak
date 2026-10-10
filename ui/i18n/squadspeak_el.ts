@@ -637,10 +637,6 @@
             <translation>Το κανάλι δεν είναι διαθέσιμο</translation>
         </message>
         <message>
-            <source>Join voice</source>
-            <translation>Join voice</translation>
-        </message>
-        <message>
             <source>System (automatic)</source>
             <translation>Σύστημα (αυτόματο)</translation>
         </message>
@@ -873,10 +869,6 @@
             <translation>Αυτόματη σύνδεση</translation>
         </message>
         <message>
-            <source>Leave channel</source>
-            <translation>Αποχώρηση καναλιού</translation>
-        </message>
-        <message>
             <source>Stream URL</source>
             <translation>URL ροής</translation>
         </message>
@@ -1093,48 +1085,16 @@
             <translation>Αναγνωριστικό συσκευής</translation>
         </message>
         <message>
-            <source>Activate</source>
-            <translation>Ενεργοποίηση</translation>
-        </message>
-        <message>
-            <source>Buy annual pass</source>
-            <translation>Αγορά ετήσιου πάσου</translation>
-        </message>
-        <message>
             <source>Check now</source>
             <translation>Ελέγξτε τώρα</translation>
-        </message>
-        <message>
-            <source>Deactivate</source>
-            <translation>Απενεργοποίηση</translation>
         </message>
         <message>
             <source>Free version</source>
             <translation>Δωρεάν έκδοση</translation>
         </message>
         <message>
-            <source>License key</source>
-            <translation>Κλειδί άδειας χρήσης</translation>
-        </message>
-        <message>
             <source>Not available yet</source>
             <translation>Δεν είναι διαθέσιμο ακόμα</translation>
-        </message>
-        <message>
-            <source>Reset</source>
-            <translation>Επαναφορά</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot.</source>
-            <translation>Επαναφορά μόνο αφού η υποστήριξη απελευθερώσει την υποδοχή συσκευής.</translation>
-        </message>
-        <message>
-            <source>Resolve activation</source>
-            <translation>Επίλυση ενεργοποίησης</translation>
-        </message>
-        <message>
-            <source>Support reference</source>
-            <translation>Αναφορά υποστήριξης</translation>
         </message>
         <message>
             <source>Supporter</source>
@@ -1200,7 +1160,35 @@
             <source>App audio</source>
             <translation>Ήχος εφαρμογής</translation>
         </message>
-</context>
+        <message>
+            <source>Account: %1</source>
+            <translation>Λογαριασμός: %1</translation>
+        </message>
+        <message>
+            <source>Signed in as %1</source>
+            <translation>Συνδεθήκατε ως %1</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub</source>
+            <translation>Συνδεθείτε με το GitHub</translation>
+        </message>
+        <message>
+            <source>Verification code</source>
+            <translation>Κωδικός επαλήθευσης</translation>
+        </message>
+        <message>
+            <source>Open GitHub</source>
+            <translation>Ανοίξτε το GitHub</translation>
+        </message>
+        <message>
+            <source>Sign out</source>
+            <translation>Αποσυνδεθείτε</translation>
+        </message>
+        <message>
+            <source>This device</source>
+            <translation>Αυτή η συσκευή</translation>
+        </message>
+    </context>
     <context>
         <name>ChatContent</name>
         <message>
@@ -1417,10 +1405,6 @@
     </context>
     <context>
         <name>LocalChannel</name>
-        <message>
-            <source>Encrypted join failed: %1</source>
-            <translation>Η κρυπτογραφημένη σύνδεση απέτυχε: %1</translation>
-        </message>
         <message>
             <source>Host is not responding. Reconnecting.</source>
             <translation>Ο οικοδεσπότης δεν ανταποκρίνεται. Επανασύνδεση.</translation>
@@ -2613,40 +2597,32 @@
     <context>
         <name>License</name>
         <message>
-            <source>Activation was declined. Check your key and available device slots.</source>
-            <translation>Η ενεργοποίηση απορρίφθηκε. Ελέγξτε το κλειδί και τις διαθέσιμες υποδοχές συσκευής.</translation>
-        </message>
-        <message>
-            <source>An activation is unresolved. Contact support before trying again.</source>
-            <translation>Μια ενεργοποίηση δεν έχει επιλυθεί. Επικοινωνήστε με την υποστήριξη πριν προσπαθήσετε ξανά.</translation>
-        </message>
-        <message>
-            <source>Deactivation was declined. Contact support.</source>
-            <translation>Η απενεργοποίηση απορρίφθηκε. Επικοινωνήστε με την υποστήριξη.</translation>
-        </message>
-        <message>
-            <source>Enter a valid license key.</source>
-            <translation>Εισαγάγετε ένα έγκυρο κλειδί άδειας χρήσης.</translation>
-        </message>
-        <message>
             <source>License storage is busy or unavailable.</source>
-            <translation>Η αποθήκευση άδειας χρήσης είναι απασχολημένη ή δεν είναι διαθέσιμη.</translation>
+            <translation>Ο χώρος αποθήκευσης άδειας χρήσης είναι απασχολημένος ή δεν είναι διαθέσιμος.</translation>
         </message>
         <message>
             <source>License storage is unavailable.</source>
-            <translation>Η αποθήκευση άδειας δεν είναι διαθέσιμη.</translation>
+            <translation>Ο χώρος αποθήκευσης άδειας δεν είναι διαθέσιμος.</translation>
         </message>
         <message>
-            <source>The license could not be checked. Your confirmed expiry is unchanged.</source>
-            <translation>Δεν ήταν δυνατός ο έλεγχος της άδειας. Η επιβεβαιωμένη λήξη σας παραμένει αμετάβλητη.</translation>
+            <source>Sign-in expired. Try again.</source>
+            <translation>Η σύνδεση έληξε. Προσπαθήστε ξανά.</translation>
         </message>
         <message>
-            <source>The license or device activation is no longer valid.</source>
-            <translation>Η ενεργοποίηση άδειας χρήσης ή συσκευής δεν είναι πλέον έγκυρη.</translation>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>Η σύνδεση στο GitHub δεν είναι διαθέσιμη. Προσπαθήστε ξανά.</translation>
         </message>
         <message>
-            <source>The license response does not match this annual pass.</source>
-            <translation>Η απάντηση της άδειας δεν ταιριάζει με αυτό το ετήσιο πάσο.</translation>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>Η σύνδεση στο GitHub δεν ολοκληρώθηκε. Προσπαθήστε ξανά.</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>Δεν ήταν δυνατός ο έλεγχος του GitHub. Η πρόσβαση εκτός σύνδεσης διαρκεί το πολύ επτά ημέρες.</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>Συνδεθείτε ξανά με το GitHub.</translation>
         </message>
     </context>
     <context>
@@ -2658,10 +2634,6 @@
         <message>
             <source>The shared window was closed. Select a source to start again.</source>
             <translation>Το κοινόχρηστο παράθυρο έκλεισε. Επιλέξτε μια πηγή για να ξεκινήσετε ξανά.</translation>
-        </message>
-        <message>
-            <source>Screen sharing requires an active Supporter pass on the owning host.</source>
-            <translation>Η κοινή χρήση οθόνης απαιτεί ενεργό πάσο Supporter στον host που είναι ιδιοκτήτης του καναλιού.</translation>
         </message>
         <message>
             <source>The selected screen is no longer available.</source>
@@ -2705,6 +2677,10 @@
         <message>
             <source>Screen stream</source>
             <translation>Ροή οθόνης</translation>
+        </message>
+        <message>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
         </message>
     </context>
     <context>
@@ -2973,10 +2949,6 @@
             <translation>Τοπικός διακομιστής καναλιού SquadSpeak χωρίς γραφικό περιβάλλον</translation>
         </message>
         <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>Προτεραιότητα ρυθμίσεων: ορίσματα &gt; περιβάλλον &gt; ιδιότητες &gt; αποθηκευμένες τιμές διακομιστή.</translation>
-        </message>
-        <message>
             <source>Environment variables (SQUADSPEAK_ prefix):</source>
             <translation>Μεταβλητές περιβάλλοντος (πρόθεμα SQUADSPEAK_):</translation>
         </message>
@@ -3031,26 +3003,6 @@
         <message>
             <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
             <translation>Προαιρετικό ID δικού σας καναλιού για τις εντολές status, configure, password, admission, history, chat και radio. Προεπιλογή είναι το κύριο κανάλι.</translation>
-        </message>
-        <message>
-            <source>License action must be status, activate, refresh, deactivate or reset.</source>
-            <translation>Η ενέργεια άδειας πρέπει να είναι status, activate, refresh, deactivate ή reset.</translation>
-        </message>
-        <message>
-            <source>A license operation is in progress.</source>
-            <translation>Μια λειτουργία άδειας βρίσκεται σε εξέλιξη.</translation>
-        </message>
-        <message>
-            <source>Supporter activation is unavailable in this build.</source>
-            <translation>Η ενεργοποίηση Supporter δεν είναι διαθέσιμη σε αυτήν την έκδοση.</translation>
-        </message>
-        <message>
-            <source>A license key is required.</source>
-            <translation>Απαιτείται κλειδί άδειας.</translation>
-        </message>
-        <message>
-            <source>Reset only after support has released the device slot. Set confirmed=true to proceed.</source>
-            <translation>Κάντε επαναφορά μόνο αφού η υποστήριξη ελευθερώσει τη θέση συσκευής. Ορίστε confirmed=true για συνέχεια.</translation>
         </message>
         <message>
             <source>Channel action must be list, add or remove.</source>
@@ -3231,6 +3183,22 @@
         <message>
             <source>SquadSpeak headless could not start: %1</source>
             <translation>Δεν ήταν δυνατή η εκκίνηση του SquadSpeak χωρίς γραφικό περιβάλλον: %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>Η ενέργεια του υποστηρικτή πρέπει να είναι η κατάσταση, η είσοδος, η ανανέωση, η αποσύνδεση ή η ακύρωση. status sign-in refresh sign-out cancel</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>Μια λειτουργία Υποστήριξης βρίσκεται σε εξέλιξη.</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>Η πρόσβαση υποστηρικτών δεν είναι διαθέσιμη σε αυτήν την έκδοση.</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>Προτεραιότητα ρυθμίσεων: ορίσματα &gt; περιβάλλον &gt; ιδιότητες &gt; αποθηκευμένες τιμές διακομιστή.</translation>
         </message>
     </context>
     <context>

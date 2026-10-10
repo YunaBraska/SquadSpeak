@@ -2,6 +2,7 @@ name: Verify
 
 on:
   push:
+    branches: [main]
   pull_request:
   workflow_dispatch:
     inputs:
@@ -41,7 +42,7 @@ jobs:
           - runner: ubuntu-24.04
             mode: store
     runs-on: ${{ matrix.runner }}
-    timeout-minutes: 45
+    timeout-minutes: 90
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
@@ -91,7 +92,7 @@ jobs:
   sanitizers:
     if: inputs.platform == '' || inputs.platform == 'all' || inputs.platform == 'sanitizers'
     runs-on: ubuntu-24.04
-    timeout-minutes: 60
+    timeout-minutes: 90
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
@@ -147,13 +148,10 @@ jobs:
           security default-keychain -s "$keychain"
           security list-keychains -d user -s "$keychain"
       - name: Build, test and package
-        shell: sh
+        shell: bash
         run: |
           mkdir -p build/macos-ci/artifacts
-          result=0
-          sh tests/macos-ci.sh "$QT_ROOT_DIR" build/macos-ci > build/macos-ci/artifacts/build.log 2>&1 || result=$?
-          tail -100 build/macos-ci/artifacts/build.log
-          exit "$result"
+          sh tests/macos-ci.sh "$QT_ROOT_DIR" build/macos-ci 2>&1 | tee build/macos-ci/artifacts/build.log
       - name: Preserve verification evidence
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
@@ -178,6 +176,8 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           persist-credentials: false
+      - name: Check source patches before dependency builds
+        run: python tests/source_archive_tests.py SourceArchiveTests.test_runtime_patches_survive_windows_checkout
       - name: Prepare virtual Windows audio
         shell: pwsh
         run: ./tests/windows-audio.ps1 -BuildRoot "$env:GITHUB_WORKSPACE/build/windows-ci"
@@ -200,7 +200,8 @@ jobs:
           Write-Host "Using cl.exe $version at $($compiler.Source)"
           Write-Host "Using Windows SDK $sdk"
       - name: Restore pinned audio dependency prefix
-        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830
+        id: dependencies
+        uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830
         with:
           path: build/windows-ci/dependencies/prefix
           key: windows-dependencies-${{ runner.os }}-${{ runner.arch }}-msvc-${{ steps.msvc-cache.outputs.version }}-sdk-${{ steps.msvc-cache.outputs.sdk }}-${{ hashFiles('tests/windows-ci.ps1', '.github/workflows/verify.yml') }}
@@ -229,12 +230,18 @@ jobs:
           if ($LASTEXITCODE -ne 0 -or $nasmVersion -notmatch '^NASM version 3\.02(?: |$)') { throw "Unexpected NASM version: $nasmVersion" }
           Write-Host $nasmVersion
           python -m pip install --disable-pip-version-check meson==1.12.1
-      - name: Build, test and package
+      - name: Build and validate dependency prefix
         shell: pwsh
         run: |
           ./tests/windows-ci.ps1 -QtRoot $env:QT_ROOT_DIR -BuildRoot "$env:GITHUB_WORKSPACE/build/windows-ci" -DependenciesOnly
           Copy-Item "$env:GITHUB_WORKSPACE/build/windows-ci/build.log" "$env:GITHUB_WORKSPACE/build/windows-ci/dependencies-first.log" -Force
-          ./tests/windows-ci.ps1 -QtRoot $env:QT_ROOT_DIR -BuildRoot "$env:GITHUB_WORKSPACE/build/windows-ci" -DependenciesOnly
+          # A restored binary prefix must work without source archives or downloads.
+          Get-ChildItem "$env:GITHUB_WORKSPACE/build/windows-ci/dependencies" |
+            Where-Object Name -ne 'prefix' | Remove-Item -Recurse -Force
+          function global:curl.exe { throw 'Unexpected download while reusing a dependency prefix' }
+          try {
+            ./tests/windows-ci.ps1 -QtRoot $env:QT_ROOT_DIR -BuildRoot "$env:GITHUB_WORKSPACE/build/windows-ci" -DependenciesOnly
+          } finally { Remove-Item Function:\curl.exe }
           Copy-Item "$env:GITHUB_WORKSPACE/build/windows-ci/build.log" "$env:GITHUB_WORKSPACE/build/windows-ci/dependencies-reuse.log" -Force
           if (-not (Select-String -Path build/windows-ci/dependencies-reuse.log -SimpleMatch 'Dependency prefix cache hit' -Quiet)) {
             throw 'Repeated preparation did not reuse the dependency prefix'
@@ -256,6 +263,17 @@ jobs:
               throw 'Dependency preparation did not reject an incomplete prefix'
             }
           } finally { Move-Item "$prefix/include/openssl/ssl.h.saved" "$prefix/include/openssl/ssl.h" }
+          # Both expected child-process failures were validated above.
+          exit 0
+      - name: Save validated dependency prefix
+        if: steps.dependencies.outputs.cache-hit != 'true'
+        uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830
+        with:
+          path: build/windows-ci/dependencies/prefix
+          key: ${{ steps.dependencies.outputs.cache-primary-key }}
+      - name: Build, test and package
+        shell: pwsh
+        run: |
           ./tests/windows-ci.ps1 -QtRoot $env:QT_ROOT_DIR -BuildRoot "$env:GITHUB_WORKSPACE/build/windows-ci"
       - name: Preserve Windows verification evidence
         if: always()
@@ -273,4 +291,11 @@ jobs:
         with:
           name: release-windows-x86_64
           path: build/windows-ci/squadspeak-windows-x86_64.zip
+          if-no-files-found: error
+      - name: Self-service Windows device test
+        if: success()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: windows-device-test
+          path: build/windows-ci/squadspeak-windows-device-test.zip
           if-no-files-found: error
