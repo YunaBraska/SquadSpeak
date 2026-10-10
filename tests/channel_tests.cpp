@@ -20,6 +20,7 @@
 #include <QSignalSpy>
 #include <QTemporaryDir>
 #include <QTest>
+#include <QThread>
 #include <QTcpServer>
 #include <QTcpSocket>
 #include <QSslSocket>
@@ -4821,7 +4822,13 @@ private slots:
         QVERIFY(!oldClient.channel.joined());
         QCOMPARE(newClient.channel.participants().size(), 1);
     }
+    void sixtyFourClientsHaveOneConsistentRosterAndAudioFanout_data() {
+        QTest::addColumn<int>("schedulerStallMs");
+        QTest::newRow("continuous") << 0;
+        QTest::newRow("brief-scheduler-stalls") << 45;
+    }
     void sixtyFourClientsHaveOneConsistentRosterAndAudioFanout() {
+        QFETCH(int, schedulerStallMs);
         bool speakersOk = false;
         const int speakers = qEnvironmentVariableIsSet("SQUAD_SOAK_SPEAKERS")
             ? qEnvironmentVariable("SQUAD_SOAK_SPEAKERS").toInt(&speakersOk) : 4;
@@ -4887,12 +4894,29 @@ private slots:
         std::fill(audioCounts.begin(), audioCounts.end(), 0);
         std::fill(missingCounts.begin(), missingCounts.end(), 0);
         const int sustainedFrames = soakSeconds * 50;
+        QTimer schedulerStall;
+        schedulerStall.setTimerType(Qt::PreciseTimer);
+        connect(&schedulerStall, &QTimer::timeout, &reception, [&] {
+            // Deliberately suspend the event loop to reproduce scheduler jitter.
+            // This is fault injection, not waiting for an asynchronous result.
+            QThread::msleep(schedulerStallMs);
+        });
         QTimer output;
         output.setTimerType(Qt::PreciseTimer);
-        connect(&output, &QTimer::timeout, &reception, [&] {
-            const auto now = sustained.elapsed();
+        qint64 queuedUntilMs = 0, playedMs = 0;
+        const auto advancePlayback = [&](qint64 now) {
+            playedMs += std::max<qint64>(0, std::min(now, queuedUntilMs) - lastOutputMs);
             maxOutputGapMs = std::max(maxOutputGapMs, now - lastOutputMs);
             lastOutputMs = now;
+        };
+        connect(&output, &QTimer::timeout, &reception, [&] {
+            const auto now = sustained.elapsed();
+            advancePlayback(now);
+            // Match AudioModel's 80 ms sink and 10 ms replenishment. The sink
+            // consumes time even while this event loop is stalled. Refill at
+            // most one 20 ms block, and keep underruns in the measured result.
+            if (queuedUntilMs - now > 60) return;
+            queuedUntilMs = std::max(queuedUntilMs, now) + 20;
             ++renderedFrames;
             for (size_t i = 0; i < playback.size(); ++i) {
                 const auto samples = playback[i].render(48000, sustained.elapsed());
@@ -4908,9 +4932,16 @@ private slots:
             const auto now = sustained.elapsed();
             maxInputGapMs = std::max(maxInputGapMs, now - lastInputMs);
             lastInputMs = now;
-            for (int speaker = 0; speaker < speakers; ++speaker)
-                validSend &= clients[size_t(speaker)]->channel.sendAudio(packet);
-            if (++sentFrames == sustainedFrames) input.stop();
+            // Capture is sample-clocked, not callback-clocked. AudioModel
+            // drains all available samples after a delayed wakeup. Keep this
+            // fixture's catch-up bounded by the receiver's six-frame queue.
+            const auto due = std::min<qint64>({now / 20, sentFrames + 6, sustainedFrames});
+            while (sentFrames < due) {
+                for (int speaker = 0; speaker < speakers; ++speaker)
+                    validSend &= clients[size_t(speaker)]->channel.sendAudio(packet);
+                ++sentFrames;
+            }
+            if (sentFrames == sustainedFrames) input.stop();
         });
         qInfo() << "Starting audio soak; simultaneous speakers" << speakers
                 << "requested seconds" << soakSeconds << "setup ms" << connectedMs;
@@ -4918,11 +4949,14 @@ private slots:
         // Microsoft clock() measures wall time, unlike the POSIX CPU clock.
         const auto cpuStarted = std::clock();
 #endif
-        sustained.start(); output.start(20); input.start(20);
-        QVERIFY(waitForEvents([&] { return sentFrames == sustainedFrames; }, soakSeconds * 1500 + 5000));
+        sustained.start(); output.start(10); input.start(10);
+        if (schedulerStallMs) schedulerStall.start(200);
+        QVERIFY(waitForEvents(&input, &QTimer::timeout, [&] { return sentFrames == sustainedFrames; }, soakSeconds * 1500 + 5000));
+        schedulerStall.stop();
         QVERIFY(validSend);
         output.stop();
         const auto playbackMs = sustained.elapsed();
+        advancePlayback(playbackMs);
 #ifndef Q_OS_WIN
         qInfo() << "Audio soak process CPU ms" << (std::clock() - cpuStarted) * 1000.0 / CLOCKS_PER_SEC;
 #endif
@@ -4943,6 +4977,7 @@ private slots:
                 << "received packets" << receivedFrames << "reported gaps" << missingFrames << "rendered frames" << renderedFrames
                 << "non-silent frames at listeners 0/1" << audibleFrames[0] << audibleFrames[1]
                 << "setup ms" << connectedMs << "sustained ms" << playbackMs
+                << "sink played/underrun ms" << playedMs << playbackMs - playedMs
                 << "last input/output ms" << lastInputMs << lastOutputMs
                 << "maximum input/output gap ms" << maxInputGapMs << maxOutputGapMs
                 << "total ms" << elapsed.elapsed();
@@ -4962,6 +4997,9 @@ private slots:
             QVERIFY2(renderedFrames >= expectedFrames * 9 / 10,
                 qPrintable(QString("rendered %1 / expected %2 over %3 ms")
                     .arg(renderedFrames).arg(expectedFrames).arg(playbackMs)));
+            QVERIFY2(playedMs >= playbackMs * 9 / 10,
+                qPrintable(QString("sink played %1 / %2 ms; underrun %3 ms")
+                    .arg(playedMs).arg(playbackMs).arg(playbackMs - playedMs)));
             for (const auto frames : audibleFrames) QVERIFY2(frames >= renderedFrames * 9 / 10,
                 qPrintable(QString("non-silent %1 / rendered %2 over %3 ms").arg(frames).arg(renderedFrames).arg(playbackMs)));
         }

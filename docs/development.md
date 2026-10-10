@@ -307,8 +307,11 @@ encoded bytes, codec and processing time, so a slow encoder is not reported as
 sender and receivers in one process and do not measure acoustic latency.
 
 The 64-client audio test keeps its 90% real-time playout threshold in
-uninstrumented builds. AddressSanitizer builds log that this timing assertion
-is disabled; they still require exact packet delivery and audible output.
+uninstrumented builds, both with normal scheduling and injected 45 ms stalls.
+Its source follows elapsed sample time. Its simulated output matches the app's
+80 ms sink and 10 ms refill cadence, with underruns counted rather than hidden.
+AddressSanitizer builds log that timing assertions are disabled; they still
+require at least 95% packet delivery at every listener and audible output.
 The 64-viewer test checks 1080p frame delivery and decoding, then isolates a
 delayed connection at the lowest video tier on every build. This permits the
 shared runner to adapt honestly when its own CPU cannot sustain 30 fps.
