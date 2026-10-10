@@ -1406,10 +1406,6 @@
     <context>
         <name>LocalChannel</name>
         <message>
-            <source>Encrypted join failed: %1</source>
-            <translation>एन्क्रिप्टेड जॉइन विफल: %1</translation>
-        </message>
-        <message>
             <source>Host is not responding. Reconnecting.</source>
             <translation>होस्ट जवाब नहीं दे रहा. फिर कनेक्ट हो रहा है.</translation>
         </message>

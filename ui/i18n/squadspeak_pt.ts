@@ -1406,10 +1406,6 @@
     <context>
         <name>LocalChannel</name>
         <message>
-            <source>Encrypted join failed: %1</source>
-            <translation>Falha ao entrar de forma encriptada: %1</translation>
-        </message>
-        <message>
             <source>Host is not responding. Reconnecting.</source>
             <translation>O host não responde. A restabelecer ligação.</translation>
         </message>

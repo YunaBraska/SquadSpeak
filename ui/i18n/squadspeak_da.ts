@@ -1406,10 +1406,6 @@
     <context>
         <name>LocalChannel</name>
         <message>
-            <source>Encrypted join failed: %1</source>
-            <translation>Krypteret tilslutning mislykkedes: %1</translation>
-        </message>
-        <message>
             <source>Host is not responding. Reconnecting.</source>
             <translation>Værten svarer ikke. Genopretter forbindelse.</translation>
         </message>

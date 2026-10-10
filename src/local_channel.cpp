@@ -24,6 +24,7 @@
 
 namespace {
 Q_LOGGING_CATEGORY(mediaLog, "squadspeak.media", QtWarningMsg)
+Q_LOGGING_CATEGORY(connectionLog, "squadspeak.connection", QtWarningMsg)
 constexpr int maximumPendingPeers = 32;
 constexpr int maximumMediaParticipants = 64;
 constexpr std::array<int, 4> audioBitrates{32, 20, 12, 8};
@@ -314,8 +315,8 @@ LocalChannel::LocalChannel(VoiceSession& session, QString storageFile, std::opti
     }
     passwordWorkers_.setMaxThreadCount(2);
     connect(&server_, &QSslServer::pendingConnectionAvailable, this, &LocalChannel::acceptConnections);
-    connect(&server_, &QSslServer::errorOccurred, this, [this](QSslSocket* socket, QAbstractSocket::SocketError) {
-        setStatus(tr("Encrypted join failed: %1").arg(socket->errorString()), false);
+    connect(&server_, &QSslServer::errorOccurred, this, [](QSslSocket* socket, QAbstractSocket::SocketError) {
+        qCDebug(connectionLog) << "Incoming TLS handshake ended:" << socket->errorString();
     });
     connect(&server_, &QSslServer::sslErrors, this, [](QSslSocket* socket, const QList<QSslError>& errors) {
         if (!TlsIdentity::peerId(socket->peerCertificate()).isEmpty() && acceptableCertificateErrors(errors))

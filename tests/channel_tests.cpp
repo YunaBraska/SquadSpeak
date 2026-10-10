@@ -294,6 +294,7 @@ private slots:
         Device host(dir.filePath("host"), "Owner");
         QVERIFY(host.channel.listen(QHostAddress::LocalHost));
         const auto messagesBefore = host.channel.messages().size();
+        const auto statusBefore = host.channel.status();
 
         QSslSocket socket;
         auto configuration = QSslConfiguration::defaultConfiguration();
@@ -314,6 +315,23 @@ private slots:
         QVERIFY(host.channel.hostClients().isEmpty());
         QVERIFY(host.channel.requests().isEmpty());
         QCOMPARE(host.channel.messages().size(), messagesBefore);
+        QCOMPARE(host.channel.status(), statusBefore);
+    }
+    void cancelledIncomingConnectionPreservesHostStatus() {
+        QTemporaryDir dir;
+        Device host(dir.filePath("host"), "Owner"), client(dir.filePath("client"), "Member");
+        QVERIFY(host.channel.listen(QHostAddress::LocalHost));
+        QVERIFY(host.channel.decide(client.channel.ownId(), true));
+        const auto statusBefore = host.channel.status();
+        QTcpSocket probe;
+        probe.connectToHost(QHostAddress::LocalHost, host.channel.port());
+        QVERIFY(waitForEvents(&probe, &QTcpSocket::connected, [&] { return probe.state() == QAbstractSocket::ConnectedState; }));
+        probe.disconnectFromHost();
+        QVERIFY(waitForEvents(&probe, &QTcpSocket::disconnected, [&] { return probe.state() == QAbstractSocket::UnconnectedState; }));
+        QVERIFY(client.join(host.channel));
+        QTRY_VERIFY(client.channel.joined());
+        QVERIFY(host.channel.hosting());
+        QCOMPARE(host.channel.status(), statusBefore);
     }
     void extensionsPreserveAdmissionAndKnownMessageValidation_data() {
         QTest::addColumn<QString>("scenario");

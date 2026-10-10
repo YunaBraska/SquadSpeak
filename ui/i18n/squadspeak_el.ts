@@ -1406,10 +1406,6 @@
     <context>
         <name>LocalChannel</name>
         <message>
-            <source>Encrypted join failed: %1</source>
-            <translation>Η κρυπτογραφημένη σύνδεση απέτυχε: %1</translation>
-        </message>
-        <message>
             <source>Host is not responding. Reconnecting.</source>
             <translation>Ο οικοδεσπότης δεν ανταποκρίνεται. Επανασύνδεση.</translation>
         </message>

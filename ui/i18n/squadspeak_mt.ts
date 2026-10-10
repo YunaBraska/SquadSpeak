@@ -1406,10 +1406,6 @@
     <context>
         <name>LocalChannel</name>
         <message>
-            <source>Encrypted join failed: %1</source>
-            <translation>L-għaqda kriptata falliet: %1</translation>
-        </message>
-        <message>
             <source>Host is not responding. Reconnecting.</source>
             <translation>Il-host mhux qed iwieġeb. Qed jerġa' jgħaqqad.</translation>
         </message>
