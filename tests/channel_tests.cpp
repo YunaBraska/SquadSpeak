@@ -1408,11 +1408,14 @@ private slots:
             QVERIFY(host.channel.sendScreenFrame(*tiers.begin(), format, largest, true));
             ++largeFramesSent;
         });
-        source.start();
-        QVERIFY(waitForEvents([&] { return frames.size() == 2; }, 4000));
+        // Loss detection takes up to two maintenance ticks. The replacement
+        // can use TLS, which this link deliberately delays, before delivery.
+        const int recoveryTimeout = 2000 + link.delay + 2000;
+        latency.restart(); source.start();
+        QVERIFY(waitForEvents([&] { return frames.size() == 2; }, recoveryTimeout));
         source.stop();
         if (loseFirstLargeFrame) QVERIFY(largeFramesSent > 1);
-        qInfo() << "Maximum-size UDP frame received after" << largeFramesSent << "source frames";
+        qInfo() << "Maximum-size screen frame received after" << largeFramesSent << "source frames in" << latency.elapsed() << "ms";
         QCOMPARE(frames.last().at(3).toByteArray(), largest);
         QVERIFY(waitForEvents([&] { return host.channel.screenTiers().contains(1); }));
         link.blockUdp = true; QTestEventLoop().enterLoopMSecs(450);
