@@ -637,10 +637,6 @@
             <translation>Kituo haipatikani</translation>
         </message>
         <message>
-            <source>Join voice</source>
-            <translation>Jiunge na sauti</translation>
-        </message>
-        <message>
             <source>System (automatic)</source>
             <translation>Mfumo (otomatiki)</translation>
         </message>
@@ -1187,6 +1183,10 @@
         <message>
             <source>Sign out</source>
             <translation>Ondoka</translation>
+        </message>
+        <message>
+            <source>This device</source>
+            <translation>Kifaa hiki</translation>
         </message>
     </context>
     <context>
@@ -2677,6 +2677,10 @@
         <message>
             <source>Screen stream</source>
             <translation>Mkondo wa skrini</translation>
+        </message>
+        <message>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
         </message>
     </context>
     <context>

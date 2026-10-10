@@ -637,10 +637,6 @@
             <translation>არხი მიუწვდომელია</translation>
         </message>
         <message>
-            <source>Join voice</source>
-            <translation>შეუერთდი ხმას</translation>
-        </message>
-        <message>
             <source>System (automatic)</source>
             <translation>სისტემა (ავტომატური)</translation>
         </message>
@@ -1187,6 +1183,10 @@
         <message>
             <source>Sign out</source>
             <translation>გასვლა</translation>
+        </message>
+        <message>
+            <source>This device</source>
+            <translation>ეს მოწყობილობა</translation>
         </message>
     </context>
     <context>
@@ -2677,6 +2677,10 @@
         <message>
             <source>Screen stream</source>
             <translation>ეკრანის ნაკადი</translation>
+        </message>
+        <message>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
         </message>
     </context>
     <context>

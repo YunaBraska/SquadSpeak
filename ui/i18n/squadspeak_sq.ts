@@ -637,10 +637,6 @@
             <translation>Kanali i padisponueshëm</translation>
         </message>
         <message>
-            <source>Join voice</source>
-            <translation>Bashkohu me kanalin zanor</translation>
-        </message>
-        <message>
             <source>System (automatic)</source>
             <translation>Sistemi (automatik)</translation>
         </message>
@@ -1187,6 +1183,10 @@
         <message>
             <source>Sign out</source>
             <translation>Dilni</translation>
+        </message>
+        <message>
+            <source>This device</source>
+            <translation>Kjo pajisje</translation>
         </message>
     </context>
     <context>
@@ -2677,6 +2677,10 @@
         <message>
             <source>Screen stream</source>
             <translation>Transmetimi i ekranit</translation>
+        </message>
+        <message>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
         </message>
     </context>
     <context>

@@ -637,10 +637,6 @@
             <translation>Cainéal ar fáil</translation>
         </message>
         <message>
-            <source>Join voice</source>
-            <translation>Bí i do ghuth</translation>
-        </message>
-        <message>
             <source>System (automatic)</source>
             <translation>Córas (uathoibríoch)</translation>
         </message>
@@ -1187,6 +1183,10 @@
         <message>
             <source>Sign out</source>
             <translation>Sínigh amach</translation>
+        </message>
+        <message>
+            <source>This device</source>
+            <translation>An gléas seo</translation>
         </message>
     </context>
     <context>
@@ -2677,6 +2677,10 @@
         <message>
             <source>Screen stream</source>
             <translation>Sruth scáileáin</translation>
+        </message>
+        <message>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
         </message>
     </context>
     <context>

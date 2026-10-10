@@ -637,10 +637,6 @@
             <translation>Канал недаступны</translation>
         </message>
         <message>
-            <source>Join voice</source>
-            <translation>Далучыцца да голасу</translation>
-        </message>
-        <message>
             <source>System (automatic)</source>
             <translation>Сістэма (аўтаматычная)</translation>
         </message>
@@ -1187,6 +1183,10 @@
         <message>
             <source>Sign out</source>
             <translation>Выйсці</translation>
+        </message>
+        <message>
+            <source>This device</source>
+            <translation>Гэта прылада</translation>
         </message>
     </context>
     <context>
@@ -2677,6 +2677,10 @@
         <message>
             <source>Screen stream</source>
             <translation>Экранны паток</translation>
+        </message>
+        <message>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
         </message>
     </context>
     <context>

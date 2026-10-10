@@ -637,10 +637,6 @@
             <translation>A csatorna nem elérhető</translation>
         </message>
         <message>
-            <source>Join voice</source>
-            <translation>Csatlakozás a hangcsatornához</translation>
-        </message>
-        <message>
             <source>System (automatic)</source>
             <translation>Rendszer (automatikus)</translation>
         </message>
@@ -1187,6 +1183,10 @@
         <message>
             <source>Sign out</source>
             <translation>Jelentkezzen ki</translation>
+        </message>
+        <message>
+            <source>This device</source>
+            <translation>Ez az eszköz</translation>
         </message>
     </context>
     <context>
@@ -2677,6 +2677,10 @@
         <message>
             <source>Screen stream</source>
             <translation>Képernyő adatfolyam</translation>
+        </message>
+        <message>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
         </message>
     </context>
     <context>

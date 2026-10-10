@@ -637,10 +637,6 @@
             <translation>Каналот е недостапен</translation>
         </message>
         <message>
-            <source>Join voice</source>
-            <translation>Придружи глас</translation>
-        </message>
-        <message>
             <source>System (automatic)</source>
             <translation>Систем (автоматски)</translation>
         </message>
@@ -1187,6 +1183,10 @@
         <message>
             <source>Sign out</source>
             <translation>Одјавете се</translation>
+        </message>
+        <message>
+            <source>This device</source>
+            <translation>Овој уред</translation>
         </message>
     </context>
     <context>
@@ -2677,6 +2677,10 @@
         <message>
             <source>Screen stream</source>
             <translation>Пренос на екранот</translation>
+        </message>
+        <message>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
         </message>
     </context>
     <context>

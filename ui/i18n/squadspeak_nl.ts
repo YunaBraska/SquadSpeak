@@ -637,10 +637,6 @@
             <translation>Kanaal niet beschikbaar</translation>
         </message>
         <message>
-            <source>Join voice</source>
-            <translation>Deelnemen aan spraak</translation>
-        </message>
-        <message>
             <source>System (automatic)</source>
             <translation>Systeem (automatisch)</translation>
         </message>
@@ -1187,6 +1183,10 @@
         <message>
             <source>Sign out</source>
             <translation>Meld u af</translation>
+        </message>
+        <message>
+            <source>This device</source>
+            <translation>Dit apparaat</translation>
         </message>
     </context>
     <context>
@@ -2677,6 +2677,10 @@
         <message>
             <source>Screen stream</source>
             <translation>Schermstream</translation>
+        </message>
+        <message>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
         </message>
     </context>
     <context>

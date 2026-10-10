@@ -95,6 +95,13 @@ cmake --build build/local --parallel 4
 ctest --test-dir build/local --parallel 2 --output-on-failure
 ```
 
+Headless subprocess tests isolate shared account storage as well as server
+settings. macOS uses a temporary `CFFIXED_USER_HOME`, Linux a temporary
+`XDG_CONFIG_HOME`. A child-process check verifies the effective path before
+starting servers. On Windows, use a separate test account without a personal
+Supporter login. The suite refuses to start when that account has a saved login.
+GitHub Actions runners already use disposable accounts.
+
 During development, build and run the affected contract first. CTest entries
 are suites: Qt expands their data rows inside one process, not one build per
 row. For example, a history change can use:

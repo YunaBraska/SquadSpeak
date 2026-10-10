@@ -9,7 +9,8 @@ Item {
     required property var share
     required property var network
     property string hostId: ""
-    readonly property var info: { const revision = network.screenView; return network.screenInfo(hostId) }
+    readonly property bool local: share && share.active && share.hostId === hostId
+    readonly property var info: { const revision = network.screenView; return local ? {available: true, watching: true, width: preview.sourceRect.width, height: preview.sourceRect.height} : network.screenInfo(hostId) }
     property string attachedHost: ""
     implicitHeight: 112
     function attachPreview() {
@@ -28,7 +29,8 @@ Item {
     onInfoChanged: Qt.callLater(attachPreview)
     Component.onCompleted: Qt.callLater(attachPreview)
     Component.onDestruction: if (share) share.detach(preview.videoSink)
-    function quality(details) {
+    function quality(details, localSource = false) {
+        if (localSource) return qsTr("%1 kbit/s").arg(Math.round(share.bitrate))
         if (details.status === "full") return qsTr("Media capacity reached")
         if (details.tier === 4 || (details.available && !details.watching)) return qsTr("Video paused")
         if (!details.available) return qsTr("Stream ended")
@@ -38,7 +40,7 @@ Item {
     VideoOutput { id: preview; objectName: "screenThumbnail"; anchors.fill: parent; anchors.margins: 4; fillMode: VideoOutput.PreserveAspectFit }
     Label {
         anchors.right: parent.right; anchors.bottom: parent.bottom; anchors.margins: 6
-        text: panel.quality(panel.info); color: Theme.text; padding: 4
+        text: panel.quality(panel.info, panel.local); color: Theme.text; padding: 4
         background: Rectangle { color: Theme.surface; radius: Theme.smallRadius }
     }
     function openViewer() {
@@ -57,7 +59,8 @@ Item {
         id: viewer
         objectName: "screenViewer"
         property string hostId: ""
-        readonly property var info: { const revision = panel.network.screenView; return panel.network.screenInfo(hostId) }
+        readonly property bool local: panel.share && panel.share.active && panel.share.hostId === hostId
+        readonly property var info: { const revision = panel.network.screenView; return local ? {available: true, watching: true} : panel.network.screenInfo(hostId) }
         title: qsTr("Screen stream")
         width: 960; height: 600; minimumWidth: 320; minimumHeight: 240
         onVisibleChanged: {
@@ -67,6 +70,6 @@ Item {
         }
         onHostIdChanged: if (visible && panel.share) panel.share.attach(hostId, fullSize.videoSink)
         VideoOutput { id: fullSize; objectName: "screenFullSize"; anchors.fill: parent; fillMode: VideoOutput.PreserveAspectFit }
-        footer: Label { text: panel.quality(viewer.info); color: Theme.muted; padding: 8 }
+        footer: Label { text: panel.quality(viewer.info, viewer.local); color: Theme.muted; padding: 8 }
     }
 }

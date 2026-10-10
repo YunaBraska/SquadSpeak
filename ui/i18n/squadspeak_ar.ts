@@ -637,10 +637,6 @@
             <translation>القناة غير متاحة</translation>
         </message>
         <message>
-            <source>Join voice</source>
-            <translation>الانضمام إلى الصوت</translation>
-        </message>
-        <message>
             <source>System (automatic)</source>
             <translation>النظام (تلقائي)</translation>
         </message>
@@ -1187,6 +1183,10 @@
         <message>
             <source>Sign out</source>
             <translation>تسجيل الخروج</translation>
+        </message>
+        <message>
+            <source>This device</source>
+            <translation>هذا الجهاز</translation>
         </message>
     </context>
     <context>
@@ -2677,6 +2677,10 @@
         <message>
             <source>Screen stream</source>
             <translation>بث الشاشة</translation>
+        </message>
+        <message>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
         </message>
     </context>
     <context>

@@ -637,10 +637,6 @@
             <translation>Canal indisponibil</translation>
         </message>
         <message>
-            <source>Join voice</source>
-            <translation>Alătură-te canalului vocal</translation>
-        </message>
-        <message>
             <source>System (automatic)</source>
             <translation>Sistem (automat)</translation>
         </message>
@@ -1187,6 +1183,10 @@
         <message>
             <source>Sign out</source>
             <translation>Deconectare</translation>
+        </message>
+        <message>
+            <source>This device</source>
+            <translation>Acest dispozitiv</translation>
         </message>
     </context>
     <context>
@@ -2677,6 +2677,10 @@
         <message>
             <source>Screen stream</source>
             <translation>Flux de ecran</translation>
+        </message>
+        <message>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
         </message>
     </context>
     <context>

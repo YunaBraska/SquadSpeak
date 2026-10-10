@@ -637,10 +637,6 @@
             <translation>Kanalen är inte tillgänglig</translation>
         </message>
         <message>
-            <source>Join voice</source>
-            <translation>Anslut till röstsamtal</translation>
-        </message>
-        <message>
             <source>System (automatic)</source>
             <translation>System (automatiskt)</translation>
         </message>
@@ -1187,6 +1183,10 @@
         <message>
             <source>Sign out</source>
             <translation>Logga ut</translation>
+        </message>
+        <message>
+            <source>This device</source>
+            <translation>Den här enheten</translation>
         </message>
     </context>
     <context>
@@ -2677,6 +2677,10 @@
         <message>
             <source>Screen stream</source>
             <translation>Skärmström</translation>
+        </message>
+        <message>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
         </message>
     </context>
     <context>

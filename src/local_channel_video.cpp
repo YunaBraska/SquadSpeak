@@ -197,7 +197,7 @@ void LocalChannel::pumpScreen(QSslSocket* socket) {
             const auto size = std::min(datagramChunk, it->packet.size() - it->offset);
             bytes.append(it->packet.constData() + it->offset, size);
             if (!media->sendDatagram(bytes)) return;
-            it->offset += size;
+            it->offset += size; screenBytesSent_ += size;
         }
         return;
     }
@@ -207,6 +207,7 @@ void LocalChannel::pumpScreen(QSslSocket* socket) {
         it->offset += chunk.size();
         if (!writeMessage(socket, {{"type", "screenChunk"}, {"serial", it->serial}, {"offset", offset},
             {"data", QString::fromLatin1(chunk.toBase64())}})) return;
+        screenBytesSent_ += chunk.size();
         it = viewers_.find(socket);
         if (it == viewers_.end()) return;
     }

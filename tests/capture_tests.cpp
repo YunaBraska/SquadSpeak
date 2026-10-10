@@ -298,6 +298,14 @@ private slots:
         QVERIFY2(enumerated, enumerationDetail.constData());
         QVERIFY2(source.error().isEmpty(), qPrintable(source.error()));
         QVERIFY2(selected >= 0, "The fixture window was not enumerated");
+        QVideoSink localPreview;
+        QVERIFY(source.previewSource(selected, &localPreview));
+        QTRY_VERIFY_WITH_TIMEOUT(receivedFixture(localPreview), 15000);
+        QVERIFY(!source.active()); QVERIFY(!source.watching());
+        QVERIFY(!guest.screenInfo(host.ownId()).value("available").toBool());
+        QVERIFY(!source.setAudioEnabled(true));
+        QVERIFY(source.stopPreview()); QVERIFY(!localPreview.videoFrame().isValid());
+        QVERIFY(source.previewSource(selected, &localPreview));
         QVERIFY(source.start(selected));
         QVERIFY(!source.computerAudio());
         QVERIFY(!source.audioEnabled());
@@ -307,6 +315,9 @@ private slots:
         // painted. Require actual content within the same startup deadline.
         QTRY_VERIFY_WITH_TIMEOUT(receivedFixture(sink), 15000);
         QVERIFY(sink.videoSize().width() > 0);
+        QTRY_VERIFY(source.bitrate() > 0);
+        QVERIFY(!source.watching());
+        QVERIFY(source.stopPreview()); QVERIFY(source.active());
         QVERIFY(otherSelected >= 0);
         for (const auto index : {selected, otherSelected}) {
             if (index != selected) { QVERIFY(source.stop()); QVERIFY(source.start(index)); }
@@ -450,6 +461,12 @@ void CaptureTests::computerScreenReachesAnEncryptedViewer() {
         selected = entry.toMap().value("index").toInt(); break;
     }
     QVERIFY(selected >= 0);
+    QVideoSink localPreview;
+    QVERIFY(source.previewSource(selected, &localPreview));
+    QTRY_VERIFY_WITH_TIMEOUT(receivedFixture(localPreview), 15000);
+    QVERIFY(!source.active());
+    QVERIFY(!guest.screenInfo(host.ownId()).value("available").toBool());
+    QVERIFY(source.stopPreview()); QVERIFY(!localPreview.videoFrame().isValid());
     // Cancelling before the portal responds must not leave a live request or
     // route its delayed response into the next capture's handshake.
     QVERIFY(source.start(selected));

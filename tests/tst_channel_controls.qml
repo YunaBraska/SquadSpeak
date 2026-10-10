@@ -40,8 +40,13 @@ TestCase {
         property int selectedSource: -1
         property int refreshCalls: 0
         property int startCalls: 0
+        property int previewCalls: 0
+        property int stopPreviewCalls: 0
         property bool startSucceeds: true
         function start(index, hostId) { ++startCalls; selectedSource = index; return startSucceeds }
+        function previewSource(index, sink) { ++previewCalls; selectedSource = index; return true }
+        function stopPreview() { ++stopPreviewCalls; return true }
+        function detach(sink) { return true }
         function refreshSources() { ++refreshCalls; return true }
         function setAudioEnabled(enabled) { audioEnabled = enabled; return true }
     }
@@ -50,6 +55,7 @@ TestCase {
         readonly property bool directDistribution: supporterLicense.directDistribution
         property bool configured: true
         property bool active: false
+        property bool signedIn: false
         property bool busy: false
         property bool pending: false
         property string account: ""
@@ -59,13 +65,13 @@ TestCase {
         property string status: ""
         readonly property url purchaseUrl: "https://github.com/sponsors/YunaBraska"
         function reset() {
-            configured = true; active = false; busy = false; pending = false
+            configured = true; active = false; signedIn = false; busy = false; pending = false
             account = ""; userCode = ""; status = ""
         }
         function signIn() { pending = true; userCode = "ABCD-EFGH"; status = ""; return true }
         function cancelSignIn() { pending = false; userCode = ""; return true }
         function refresh() { status = "Checked"; return true }
-        function signOut() { account = ""; active = false; return true }
+        function signOut() { account = ""; active = false; signedIn = false; return true }
     }
     Loader {
         id: scene
@@ -199,6 +205,7 @@ TestCase {
         if (data.start) {
             const source = visualChild(picker.contentItem, "screenSource_0")
             verify(source !== null); waitForRendering(source); mouseClick(source)
+            mouseClick(findChild(picker, "startScreenShare"))
         }
         captureDisplay.error = "Screen recording permission was denied. <b>Restart the app.</b>"
         const notice = findChild(picker, "screenCaptureError")
@@ -232,6 +239,11 @@ TestCase {
             fuzzyCompare(row.contentItem.implicitWidth, reference.implicitWidth, 0.1)
             mouseClick(row)
             compare(captureDisplay.selectedSource, 7)
+            compare(captureDisplay.startCalls, 0)
+            verify(picker.visible)
+            verify(captureDisplay.previewCalls > 0)
+            mouseClick(findChild(picker, "startScreenShare"))
+            compare(captureDisplay.startCalls, 1)
             tryCompare(picker, "visible", false)
         } finally {
             picker.close()
@@ -329,6 +341,42 @@ TestCase {
             if (match) return match
         }
         return null
+    }
+
+    function test_channelsStayGroupedAndRadioStateReachesOtherClients() {
+        if (!supporterLicense.directDistribution) return
+        verify(fixtures.startHost()); verify(fixtures.startRemoteHost()); verify(fixtures.setSupporter(true))
+        verify(channel.setChannelName("Zulu"))
+        const extra = channel.addOwnedChannel("Alpha")
+        verify(extra.length > 0)
+        const ownMusic = visualChild(view.contentItem, "channelMusic_" + extra)
+        verify(ownMusic !== null); verify(!ownMusic.visible)
+        verify(fixtures.setBotMusicState("Own station", "playing", true, extra))
+        compare(ownMusic.visible, true)
+        verify(fixtures.setBotMusicState("", "stopped", false, extra))
+        compare(ownMusic.visible, false)
+        verify(remoteChannel.decide(channel.ownId, true))
+        verify(channel.openChat(remoteChannel.ownId, "127.0.0.1", remoteChannel.servicePort))
+        tryCompare(channel, "chatReady", true)
+        const position = function(id) {
+            const row = visualChild(view.contentItem, "channelRow_" + id)
+            return row ? row.mapToItem(view.contentItem, 0, 0).y : -1
+        }
+        tryVerify(function() { return position(extra) >= 0 && position(extra) < position(channel.ownId) })
+        const ownedGroup = visualChild(view.contentItem, "hostGroup_" + channel.ownId)
+        const foreignGroup = visualChild(view.contentItem, "hostGroup_" + remoteChannel.ownId)
+        verify(ownedGroup !== null && foreignGroup !== null)
+        compare(ownedGroup.text, "This device")
+        verify(foreignGroup.text.startsWith("127.0.0.1"))
+        verify(ownedGroup.selectByMouse)
+        verify(channel.joinSaved(channel.ownId)); tryCompare(channel, "joined", true)
+        tryVerify(function() { return position(extra) < position(channel.ownId) })
+        verify(channel.joinSaved(extra)); tryCompare(channel, "joinedHostId", extra)
+        tryVerify(function() { return position(extra) < position(channel.ownId) })
+        const icon = visualChild(view.contentItem, "channelMusic_" + remoteChannel.ownId)
+        verify(icon !== null); verify(!icon.visible)
+        verify(fixtures.setTestMusic(true)); tryCompare(icon, "visible", true)
+        verify(fixtures.setTestMusic(false)); tryCompare(icon, "visible", false)
     }
 
     function test_addManageAndConfirmRemovalOfOwnedChannel() {
@@ -630,13 +678,14 @@ TestCase {
             const canvas = item ? findChild(item, "avatarCanvas") : null
             return canvas && fixtures.portraitHasDetail(canvas.parent)
         }, 5000, "Avatar preview is loaded before capture")
-        for (const name of ["signInGithub", "supportLink", "checkSupporter"]) {
+        for (const name of ["signInGithub", "supportLink"]) {
             const control = findChild(view, name)
             verify(control.visible)
             const point = control.mapToItem(view.contentItem, 0, 0)
             verify(point.x >= 0 && point.x + control.width <= view.width, name + " fits the window")
         }
         verify(!findChild(view, "signOutGithub").visible)
+        verify(!findChild(view, "checkSupporter").visible)
         licenseDisplay.busy = true
         verify(!findChild(view, "signInGithub").enabled)
         licenseDisplay.busy = false
@@ -658,6 +707,7 @@ TestCase {
         compare(openedLinks.signalArguments[0][0], licenseDisplay.verificationUrl.toString())
         mouseClick(findChild(view, "cancelGithubSignIn"))
         tryCompare(findChild(view, "githubUserCode"), "visible", false)
+        licenseDisplay.signedIn = true
         licenseDisplay.account = "TestAccount"
         licenseDisplay.active = true
         waitForRendering(view.contentItem)
@@ -946,8 +996,24 @@ TestCase {
             verify(list.height > 0 && list.contentHeight > list.height)
             list.positionViewAtEnd()
             tryVerify(function() { return list.contentY > 0 && list.atYEnd })
-            wait(1700)
-            verify(list.atYEnd, "Periodic discovery must not reset the scroll position")
+            // Keep the anchor away from the bottom clamp when deduplication
+            // removes an endpoint or another local app stops announcing.
+            list.positionViewAtIndex(list.model.findIndex(function(host) { return host.id === "7020".padStart(64, "0") }), ListView.Beginning)
+            waitForRendering(list)
+            const visibleIndex = list.indexAt(1, list.contentY + list.spacing + 1)
+            verify(visibleIndex >= 0)
+            const visibleId = list.model[visibleIndex].id
+            const visibleOffset = list.itemAtIndex(visibleIndex).y - list.contentY
+            const prefix = "Nearby refreshed " + size[0]
+            verify(fixtures.advertiseNearbyChannels(48, prefix))
+            tryVerify(function() {
+                return list.model.some(function(host) { return host.id === "702f".padStart(64, "0") && host.name.startsWith(prefix) })
+            }, 3000, "Wait for refreshed network announcements to reach the visible list")
+            waitForRendering(list)
+            const refreshedIndex = list.model.findIndex(function(host) { return host.id === visibleId })
+            verify(refreshedIndex >= 0)
+            compare(list.itemAtIndex(refreshedIndex).y - list.contentY, visibleOffset,
+                "Discovery refresh keeps the visible entry anchored, including when other apps announce channels")
             if (size[0] === 360) {
                 const anchorIndex = list.indexAt(1, list.contentY + list.spacing + 1)
                 verify(anchorIndex >= 0)
@@ -962,6 +1028,8 @@ TestCase {
                 verify(anchor !== null)
                 compare(anchor.y - list.contentY, positionBefore, "A new channel must not move the currently visible entry")
             }
+            list.positionViewAtEnd()
+            waitForRendering(list)
             const last = findChild(list, "discovered_" + "702f".padStart(64, "0"))
             verify(last !== null)
             compare(findChild(last, "addDiscovered_" + "702f".padStart(64, "0")).text, "Add")
@@ -2170,7 +2238,9 @@ TestCase {
         const draft = findChild(chat, "chatDraft")
         draft.text = "Sent from the remote keyboard"
         const send = findChild(chat, "sendChat")
-        tryCompare(send, "enabled", true); mouseClick(send)
+        tryCompare(send, "enabled", true)
+        waitForRendering(send)
+        mouseClick(send)
         tryCompare(draft, "text", "")
         const last = channel.messages[channel.messages.length - 1]
         compare(last.sender, channel.ownId)

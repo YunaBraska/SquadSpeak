@@ -219,6 +219,7 @@ public:
     bool setScreenAudio(bool enabled);
     bool sendScreenAudio(const QByteArray& packet);
     [[nodiscard]] QSet<int> screenTiers() const;
+    [[nodiscard]] qint64 screenBytesSent() const { return screenBytesSent_; }
     [[nodiscard]] bool screenNeedsKeyFrame(int tier) const;
     bool reportScreenEncodeTime(int milliseconds);
     bool sendScreenFrame(int tier, const QJsonObject& format, const QByteArray& packet, bool keyFrame);
@@ -391,6 +392,7 @@ private:
     QHash<QSslSocket*, Viewer> viewers_;
     bool screenSharing_ = false, screenAudio_ = false;
     qint64 screenSequence_ = 0;
+    qint64 screenBytesSent_ = 0;
     int slowScreenEncodes_ = 0;
     QSet<QString> mediaParticipants() const;
     void acceptViewer(QSslSocket* socket, int minimumTier, bool audioAllowed, bool audio, bool udp);

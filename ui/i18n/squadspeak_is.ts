@@ -637,10 +637,6 @@
             <translation>Rás ekki tiltæk</translation>
         </message>
         <message>
-            <source>Join voice</source>
-            <translation>Taktu þátt í rödd</translation>
-        </message>
-        <message>
             <source>System (automatic)</source>
             <translation>Kerfi (sjálfvirkt)</translation>
         </message>
@@ -1187,6 +1183,10 @@
         <message>
             <source>Sign out</source>
             <translation>Skráðu þig út</translation>
+        </message>
+        <message>
+            <source>This device</source>
+            <translation>Þetta tæki</translation>
         </message>
     </context>
     <context>
@@ -2677,6 +2677,10 @@
         <message>
             <source>Screen stream</source>
             <translation>Skjástraumur</translation>
+        </message>
+        <message>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
         </message>
     </context>
     <context>

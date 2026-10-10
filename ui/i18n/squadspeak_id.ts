@@ -637,10 +637,6 @@
             <translation>Kanal tidak tersedia</translation>
         </message>
         <message>
-            <source>Join voice</source>
-            <translation>Gabung suara</translation>
-        </message>
-        <message>
             <source>System (automatic)</source>
             <translation>Sistem (otomatis)</translation>
         </message>
@@ -1187,6 +1183,10 @@
         <message>
             <source>Sign out</source>
             <translation>Keluar</translation>
+        </message>
+        <message>
+            <source>This device</source>
+            <translation>Perangkat ini</translation>
         </message>
     </context>
     <context>
@@ -2677,6 +2677,10 @@
         <message>
             <source>Screen stream</source>
             <translation>Stream layar</translation>
+        </message>
+        <message>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
         </message>
     </context>
     <context>

@@ -637,10 +637,6 @@
             <translation>चॅनल अनुपलब्ध</translation>
         </message>
         <message>
-            <source>Join voice</source>
-            <translation>आवाजात सामील व्हा</translation>
-        </message>
-        <message>
             <source>System (automatic)</source>
             <translation>प्रणाली (स्वयंचलित)</translation>
         </message>
@@ -1187,6 +1183,10 @@
         <message>
             <source>Sign out</source>
             <translation>साइन आउट करा</translation>
+        </message>
+        <message>
+            <source>This device</source>
+            <translation>हे उपकरण</translation>
         </message>
     </context>
     <context>
@@ -2677,6 +2677,10 @@
         <message>
             <source>Screen stream</source>
             <translation>स्क्रीन प्रवाह</translation>
+        </message>
+        <message>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
         </message>
     </context>
     <context>

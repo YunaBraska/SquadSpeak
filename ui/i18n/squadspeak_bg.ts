@@ -637,10 +637,6 @@
             <translation>Каналът е недостъпен</translation>
         </message>
         <message>
-            <source>Join voice</source>
-            <translation>Присъединяване към гласов чат</translation>
-        </message>
-        <message>
             <source>System (automatic)</source>
             <translation>Система (автоматично)</translation>
         </message>
@@ -1187,6 +1183,10 @@
         <message>
             <source>Sign out</source>
             <translation>Излезте</translation>
+        </message>
+        <message>
+            <source>This device</source>
+            <translation>Това устройство</translation>
         </message>
     </context>
     <context>
@@ -2677,6 +2677,10 @@
         <message>
             <source>Screen stream</source>
             <translation>Видео поток</translation>
+        </message>
+        <message>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
         </message>
     </context>
     <context>

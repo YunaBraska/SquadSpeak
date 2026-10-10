@@ -637,10 +637,6 @@
             <translation>ఛానెల్ అందుబాటులో లేదు</translation>
         </message>
         <message>
-            <source>Join voice</source>
-            <translation>వాయిస్ ఛానెల్‌లో చేరండి</translation>
-        </message>
-        <message>
             <source>System (automatic)</source>
             <translation>సిస్టమ్ (ఆటోమేటిక్)</translation>
         </message>
@@ -1187,6 +1183,10 @@
         <message>
             <source>Sign out</source>
             <translation>సైన్ అవుట్ చేయండి</translation>
+        </message>
+        <message>
+            <source>This device</source>
+            <translation>ఈ పరికరం</translation>
         </message>
     </context>
     <context>
@@ -2677,6 +2677,10 @@
         <message>
             <source>Screen stream</source>
             <translation>స్క్రీన్ స్ట్రీమ్</translation>
+        </message>
+        <message>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
         </message>
     </context>
     <context>

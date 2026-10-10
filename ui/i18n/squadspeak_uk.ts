@@ -637,10 +637,6 @@
             <translation>Канал недоступний</translation>
         </message>
         <message>
-            <source>Join voice</source>
-            <translation>Приєднатися до голосу</translation>
-        </message>
-        <message>
             <source>System (automatic)</source>
             <translation>Система (автоматична)</translation>
         </message>
@@ -1187,6 +1183,10 @@
         <message>
             <source>Sign out</source>
             <translation>Вийти</translation>
+        </message>
+        <message>
+            <source>This device</source>
+            <translation>Цей пристрій</translation>
         </message>
     </context>
     <context>
@@ -2677,6 +2677,10 @@
         <message>
             <source>Screen stream</source>
             <translation>Потік екрана</translation>
+        </message>
+        <message>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
         </message>
     </context>
     <context>

@@ -637,10 +637,6 @@
             <translation>kanāls nav pieejams</translation>
         </message>
         <message>
-            <source>Join voice</source>
-            <translation>pievienojieties balsij</translation>
-        </message>
-        <message>
             <source>System (automatic)</source>
             <translation>sistēma (automātiska)</translation>
         </message>
@@ -1187,6 +1183,10 @@
         <message>
             <source>Sign out</source>
             <translation>Izrakstīties</translation>
+        </message>
+        <message>
+            <source>This device</source>
+            <translation>Šī ierīce</translation>
         </message>
     </context>
     <context>
@@ -2677,6 +2677,10 @@
         <message>
             <source>Screen stream</source>
             <translation>ekrāna straume</translation>
+        </message>
+        <message>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
         </message>
     </context>
     <context>

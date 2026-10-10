@@ -637,10 +637,6 @@
             <translation>Kanal mhux disponibbli</translation>
         </message>
         <message>
-            <source>Join voice</source>
-            <translation>Ingħaqad mal-vuċi</translation>
-        </message>
-        <message>
             <source>System (automatic)</source>
             <translation>Sistema (awtomatika)</translation>
         </message>
@@ -1187,6 +1183,10 @@
         <message>
             <source>Sign out</source>
             <translation>Iffirma</translation>
+        </message>
+        <message>
+            <source>This device</source>
+            <translation>Dan l-apparat</translation>
         </message>
     </context>
     <context>
@@ -2677,6 +2677,10 @@
         <message>
             <source>Screen stream</source>
             <translation>Fluss tal-iskrin</translation>
+        </message>
+        <message>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
         </message>
     </context>
     <context>

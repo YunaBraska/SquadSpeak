@@ -572,6 +572,20 @@ private slots:
         QVERIFY(viewer.chatReady());
     }
 #endif
+    void publisherPreviewDoesNotSubscribeToItsOwnMedia() {
+        QTemporaryDir dir;
+        VoiceSession profile(dir.filePath("profile"));
+        LocalChannel host(profile, dir.filePath("host"), TlsIdentity::create());
+        ScreenShare share(host); QVideoSink thumbnail, viewer;
+        QVERIFY(host.listen(QHostAddress::LocalHost));
+        QVERIFY(host.setScreenSharing(true));
+        QVERIFY(share.attach(host.ownId(), &thumbnail, true));
+        QVERIFY(share.attach(host.ownId(), &viewer));
+        QVERIFY(!share.watching()); QVERIFY(host.screenTiers().isEmpty());
+        QVERIFY(share.detach(&thumbnail)); QVERIFY(share.detach(&viewer));
+        QVERIFY(share.stop()); QVERIFY(!thumbnail.videoFrame().isValid());
+    }
+
     void screenPipelineStartsSilentAndNeedsExplicitSource() {
         QTemporaryDir dir;
         VoiceSession session(dir.filePath("profile"));

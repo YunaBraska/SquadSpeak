@@ -191,7 +191,7 @@ bool ScreenShare::updateNativeAudio() {
 
 void ScreenShare::pollNative() {
     auto& state = *static_cast<WindowsCapture*>(native_);
-    if (!active()) { stop(); return; }
+    if (!capturing()) { stop(); return; }
     std::array<float, 960> samples{};
     bool ready = false, hasAudio = false;
     QString error;
@@ -212,7 +212,7 @@ void ScreenShare::pollNative() {
 }
 
 void ScreenShare::checkNativeSource() {
-    if (!native_ || !active()) return;
+    if (!native_ || !capturing()) return;
     const auto& state = *static_cast<WindowsCapture*>(native_);
     DWORD pid = 0;
     if (state.selected) GetWindowThreadProcessId(state.selected, &pid);

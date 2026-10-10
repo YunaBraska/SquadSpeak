@@ -637,10 +637,6 @@
             <translation>チャンネルを利用できません</translation>
         </message>
         <message>
-            <source>Join voice</source>
-            <translation>音声に参加</translation>
-        </message>
-        <message>
             <source>System (automatic)</source>
             <translation>システム (自動)</translation>
         </message>
@@ -1187,6 +1183,10 @@
         <message>
             <source>Sign out</source>
             <translation>サインアウト</translation>
+        </message>
+        <message>
+            <source>This device</source>
+            <translation>このデバイス</translation>
         </message>
     </context>
     <context>
@@ -2677,6 +2677,10 @@
         <message>
             <source>Screen stream</source>
             <translation>画面ストリーム</translation>
+        </message>
+        <message>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
         </message>
     </context>
     <context>

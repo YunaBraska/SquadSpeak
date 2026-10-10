@@ -637,10 +637,6 @@
             <translation>Channel no dey available</translation>
         </message>
         <message>
-            <source>Join voice</source>
-            <translation>Join voice</translation>
-        </message>
-        <message>
             <source>System (automatic)</source>
             <translation>System (automatic)</translation>
         </message>
@@ -1187,6 +1183,10 @@
         <message>
             <source>Sign out</source>
             <translation>Comot</translation>
+        </message>
+        <message>
+            <source>This device</source>
+            <translation>This device</translation>
         </message>
     </context>
     <context>
@@ -2677,6 +2677,10 @@
         <message>
             <source>Screen stream</source>
             <translation>Screen stream</translation>
+        </message>
+        <message>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
         </message>
     </context>
     <context>

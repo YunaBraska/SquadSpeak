@@ -637,10 +637,6 @@
             <translation>Canal indisponível</translation>
         </message>
         <message>
-            <source>Join voice</source>
-            <translation>Entrar no áudio</translation>
-        </message>
-        <message>
             <source>System (automatic)</source>
             <translation>Sistema (automático)</translation>
         </message>
@@ -1187,6 +1183,10 @@
         <message>
             <source>Sign out</source>
             <translation>sair</translation>
+        </message>
+        <message>
+            <source>This device</source>
+            <translation>Este dispositivo</translation>
         </message>
     </context>
     <context>
@@ -2677,6 +2677,10 @@
         <message>
             <source>Screen stream</source>
             <translation>Transmissão do ecrã</translation>
+        </message>
+        <message>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
         </message>
     </context>
     <context>

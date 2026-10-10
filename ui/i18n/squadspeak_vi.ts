@@ -637,10 +637,6 @@
             <translation>Kênh không khả dụng</translation>
         </message>
         <message>
-            <source>Join voice</source>
-            <translation>Tham gia thoại</translation>
-        </message>
-        <message>
             <source>System (automatic)</source>
             <translation>Hệ thống (tự động)</translation>
         </message>
@@ -1187,6 +1183,10 @@
         <message>
             <source>Sign out</source>
             <translation>Đăng xuất</translation>
+        </message>
+        <message>
+            <source>This device</source>
+            <translation>Thiết bị này</translation>
         </message>
     </context>
     <context>
@@ -2677,6 +2677,10 @@
         <message>
             <source>Screen stream</source>
             <translation>Luồng màn hình</translation>
+        </message>
+        <message>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
         </message>
     </context>
     <context>

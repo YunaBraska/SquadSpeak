@@ -20,6 +20,7 @@ class License final : public QObject {
     Q_PROPERTY(QUrl purchaseUrl READ purchaseUrl CONSTANT)
     Q_PROPERTY(bool busy READ busy NOTIFY changed)
     Q_PROPERTY(bool active READ active NOTIFY changed)
+    Q_PROPERTY(bool signedIn READ signedIn NOTIFY changed)
     Q_PROPERTY(bool pending READ pending NOTIFY changed)
     Q_PROPERTY(QString status READ status NOTIFY changed)
     Q_PROPERTY(QString account READ account NOTIFY changed)
@@ -43,6 +44,7 @@ public:
     [[nodiscard]] bool configured() const { return directDistribution() && !product_.isEmpty(); }
     [[nodiscard]] bool busy() const { return busy_; }
     [[nodiscard]] bool active() const;
+    [[nodiscard]] bool signedIn() const { return !record_.value("token").toString().isEmpty(); }
     [[nodiscard]] bool pending() const { return !deviceCode_.isEmpty(); }
     [[nodiscard]] QString status() const { return status_; }
     [[nodiscard]] QString account() const { return record_.value("login").toString(); }
@@ -68,7 +70,7 @@ private:
     void pollAuthorization();
     bool acceptToken(const QJsonObject& response);
     void refreshToken();
-    void checkPage(const QString& cursor = {});
+    void checkPage(const QString& cursor = {}, bool accountOnly = false);
     void failCheck();
     [[nodiscard]] QJsonObject policy() const;
     bool save(const QJsonObject& record);

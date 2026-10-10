@@ -637,10 +637,6 @@
             <translation>Kanál je nedostupný</translation>
         </message>
         <message>
-            <source>Join voice</source>
-            <translation>Pripojiť sa k hlasovému kanálu</translation>
-        </message>
-        <message>
             <source>System (automatic)</source>
             <translation>Systém (automatický)</translation>
         </message>
@@ -1187,6 +1183,10 @@
         <message>
             <source>Sign out</source>
             <translation>Odhláste sa</translation>
+        </message>
+        <message>
+            <source>This device</source>
+            <translation>Toto zariadenie</translation>
         </message>
     </context>
     <context>
@@ -2677,6 +2677,10 @@
         <message>
             <source>Screen stream</source>
             <translation>Prúd obrazovky</translation>
+        </message>
+        <message>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
         </message>
     </context>
     <context>

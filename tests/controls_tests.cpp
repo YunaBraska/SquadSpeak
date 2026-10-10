@@ -174,6 +174,7 @@ public slots:
             if (run.glyphIndexes().contains(0)) return false;
         return true;
     }
+    bool setTestMusic(bool active) { return remoteChannel_->setMusicState("Test station", "playing", active); }
     bool shareTestImage(bool active = true) {
         if (!remoteChannel_->setScreenSharing(active)) return false;
         if (!active) return true;
@@ -191,7 +192,7 @@ public slots:
     QString clipboardText() const { return QGuiApplication::clipboard()->text(); }
     void captureOpenedUrl(const QUrl& url) { emit externalUrlOpened(url.toString()); }
     QString stationUrl() const { return station_->url(); }
-    bool advertiseNearbyChannels(int count) {
+    bool advertiseNearbyChannels(int count, const QString& prefix = QStringLiteral("Nearby")) {
         if (!channel_->startDiscovery()) { qWarning() << "Fixture discovery could not start:" << channel_->status(); return false; }
         QUdpSocket sender;
         if (!sender.bind(QHostAddress(QHostAddress::AnyIPv4), 0)) return false;
@@ -215,7 +216,7 @@ public slots:
         for (int i = 0; i <= count; ++i) {
             const auto data = QJsonDocument(QJsonObject{{"protocol", "squadspeak/1"},
                 {"id", QString::number(0x7000 + i, 16).rightJustified(64, '0')},
-                {"name", QString("Nearby %1").arg(i, 2, 10, QChar('0'))},
+                {"name", QString("%1 %2").arg(prefix).arg(i, 2, 10, QChar('0'))},
                 {"port", 40000 + (i == count ? 0 : i)}}).toJson(QJsonDocument::Compact);
             bool sent = false;
             for (const auto& adapter : interfaces) {
@@ -314,7 +315,10 @@ public slots:
     bool startRemoteHost() { return remoteChannel_->listen(QHostAddress::LocalHost); }
     bool publishLevels(const QVariantMap& levels) { return channel_->publishLevels(levels); }
     bool publishSystem(const QString& text) { return channel_->sendSystemMessage(text); }
-    bool setBotMusicState(const QString& name, const QString& state, bool active) { return channel_->setMusicState(name, state, active); }
+    bool setBotMusicState(const QString& name, const QString& state, bool active, const QString& host = {}) {
+        auto* owner = channel_->ownChannel(host.isEmpty() ? channel_->ownId() : host);
+        return owner && owner->setMusicState(name, state, active);
+    }
     QString botId() const { return channel_ ? channel_->musicId() : QString{}; }
     Q_INVOKABLE bool startHost() { return channel_->listen(QHostAddress::LocalHost); }
     void qmlEngineAvailable(QQmlEngine* engine) {

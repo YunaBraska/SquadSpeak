@@ -637,10 +637,6 @@
             <translation>Kanal utilgjengelig</translation>
         </message>
         <message>
-            <source>Join voice</source>
-            <translation>Bli med stemme</translation>
-        </message>
-        <message>
             <source>System (automatic)</source>
             <translation>System (automatisk)</translation>
         </message>
@@ -1187,6 +1183,10 @@
         <message>
             <source>Sign out</source>
             <translation>Logg ut</translation>
+        </message>
+        <message>
+            <source>This device</source>
+            <translation>Denne enheten</translation>
         </message>
     </context>
     <context>
@@ -2677,6 +2677,10 @@
         <message>
             <source>Screen stream</source>
             <translation>Skjermstrøm</translation>
+        </message>
+        <message>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
         </message>
     </context>
     <context>

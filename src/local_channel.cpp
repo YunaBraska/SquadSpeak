@@ -1216,6 +1216,10 @@ QVariantList LocalChannel::savedChannels() const {
         entry.insert("lifetimeDays", owner ? owner->messageLifetimeDays() : c && c->accepted ? c->messageLifetimeDays : 0);
         entry.insert("access", c ? c->access : QStringLiteral("saved"));
         entry.insert("members", c && c->accepted ? humanMembers(c->members) : QVariantList{});
+        auto bot = owner ? owner->hostBot() : QVariantMap{};
+        if (!owner && c && c->accepted) for (const auto& member : c->members)
+            if (member.toMap().value("music").toBool()) { bot = member.toMap(); break; }
+        entry.insert("music", bot.value("musicActive").toBool() && bot.value("musicState") == "playing");
         result.append(entry);
     }
     std::sort(result.begin(), result.end(), [](const QVariant& a, const QVariant& b) {
@@ -2473,6 +2477,8 @@ bool LocalChannel::setMusicState(const QString& name, const QString& state, bool
         && state != "reconnecting" && state != "unavailable"))) return false;
     if (musicName_ == name && musicState_ == state && musicActive_ == active) return true;
     musicName_ = name; musicState_ = state; musicActive_ = active;
+    emit hostsChanged();
+    if (service_) emit service_->hostsChanged();
     if (!active) musicRelay_.reset();
     if (hosting()) broadcastRoster();
     return true;

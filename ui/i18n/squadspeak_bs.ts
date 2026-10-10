@@ -637,10 +637,6 @@
             <translation>Kanal nedostupan</translation>
         </message>
         <message>
-            <source>Join voice</source>
-            <translation>Pridruži se glasu</translation>
-        </message>
-        <message>
             <source>System (automatic)</source>
             <translation>Sistem (automatski)</translation>
         </message>
@@ -1187,6 +1183,10 @@
         <message>
             <source>Sign out</source>
             <translation>Odjavi se</translation>
+        </message>
+        <message>
+            <source>This device</source>
+            <translation>Ovaj uređaj</translation>
         </message>
     </context>
     <context>
@@ -2677,6 +2677,10 @@
         <message>
             <source>Screen stream</source>
             <translation>Strim ekrana</translation>
+        </message>
+        <message>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
         </message>
     </context>
     <context>

@@ -637,10 +637,6 @@
             <translation>چینل دستیاب نہیں ہے۔</translation>
         </message>
         <message>
-            <source>Join voice</source>
-            <translation>آواز میں شامل ہوں۔</translation>
-        </message>
-        <message>
             <source>System (automatic)</source>
             <translation>سسٹم (خودکار)</translation>
         </message>
@@ -1187,6 +1183,10 @@
         <message>
             <source>Sign out</source>
             <translation>سائن آؤٹ کریں۔</translation>
+        </message>
+        <message>
+            <source>This device</source>
+            <translation>یہ آلہ</translation>
         </message>
     </context>
     <context>
@@ -2677,6 +2677,10 @@
         <message>
             <source>Screen stream</source>
             <translation>اسکرین اسٹریم</translation>
+        </message>
+        <message>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
         </message>
     </context>
     <context>

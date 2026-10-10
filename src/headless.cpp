@@ -631,7 +631,7 @@ void HeadlessController::process(const QJsonObject& request) {
 }
 QJsonObject HeadlessController::licenseStatus() const {
     return {{"configured", license_.configured()}, {"active", license_.active()}, {"busy", license_.busy()},
-        {"pending", license_.pending()}, {"account", license_.account()},
+        {"pending", license_.pending()}, {"signedIn", license_.signedIn()}, {"account", license_.account()},
         {"userCode", license_.userCode()}, {"verificationUrl", license_.verificationUrl().toString()},
         {"expiresAt", license_.expiresAt().toString(Qt::ISODate)}, {"status", license_.status()}};
 }

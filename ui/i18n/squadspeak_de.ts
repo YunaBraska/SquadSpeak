@@ -637,10 +637,6 @@
             <translation>Channel nicht verfügbar</translation>
         </message>
         <message>
-            <source>Join voice</source>
-            <translation>Sprachchat beitreten</translation>
-        </message>
-        <message>
             <source>System (automatic)</source>
             <translation>System (automatisch)</translation>
         </message>
@@ -1187,6 +1183,10 @@
         <message>
             <source>Sign out</source>
             <translation>Abmelden</translation>
+        </message>
+        <message>
+            <source>This device</source>
+            <translation>Dieses Gerät</translation>
         </message>
     </context>
     <context>
@@ -2677,6 +2677,10 @@
         <message>
             <source>Screen stream</source>
             <translation>Bildschirmstream</translation>
+        </message>
+        <message>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
         </message>
     </context>
     <context>

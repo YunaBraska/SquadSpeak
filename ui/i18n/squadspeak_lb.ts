@@ -637,10 +637,6 @@
             <translation>Kanal net verfügbar</translation>
         </message>
         <message>
-            <source>Join voice</source>
-            <translation>Maacht mat Stëmm</translation>
-        </message>
-        <message>
             <source>System (automatic)</source>
             <translation>System (automatesch)</translation>
         </message>
@@ -1187,6 +1183,10 @@
         <message>
             <source>Sign out</source>
             <translation>Zeechen aus</translation>
+        </message>
+        <message>
+            <source>This device</source>
+            <translation>Dësen Apparat</translation>
         </message>
     </context>
     <context>
@@ -2677,6 +2677,10 @@
         <message>
             <source>Screen stream</source>
             <translation>Écran Baach</translation>
+        </message>
+        <message>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
         </message>
     </context>
     <context>

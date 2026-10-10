@@ -637,10 +637,6 @@
             <translation>Kanal mövcud deyil</translation>
         </message>
         <message>
-            <source>Join voice</source>
-            <translation>Səsə qoşul</translation>
-        </message>
-        <message>
             <source>System (automatic)</source>
             <translation>Sistem (avtomatik)</translation>
         </message>
@@ -1187,6 +1183,10 @@
         <message>
             <source>Sign out</source>
             <translation>Çıxın</translation>
+        </message>
+        <message>
+            <source>This device</source>
+            <translation>Bu cihaz</translation>
         </message>
     </context>
     <context>
@@ -2677,6 +2677,10 @@
         <message>
             <source>Screen stream</source>
             <translation>Ekran axını</translation>
+        </message>
+        <message>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
         </message>
     </context>
     <context>

@@ -637,10 +637,6 @@
             <translation>Ba za a iya shiga wannan kwanar ba</translation>
         </message>
         <message>
-            <source>Join voice</source>
-            <translation>Shiga murya</translation>
-        </message>
-        <message>
             <source>System (automatic)</source>
             <translation>Tsarin (kawaɗanci)</translation>
         </message>
@@ -1187,6 +1183,10 @@
         <message>
             <source>Sign out</source>
             <translation>Fita</translation>
+        </message>
+        <message>
+            <source>This device</source>
+            <translation>Wannan na'ura</translation>
         </message>
     </context>
     <context>
@@ -2677,6 +2677,10 @@
         <message>
             <source>Screen stream</source>
             <translation>Shirin allo</translation>
+        </message>
+        <message>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
         </message>
     </context>
     <context>

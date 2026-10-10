@@ -637,10 +637,6 @@
             <translation>kanalas nepasiekiamas</translation>
         </message>
         <message>
-            <source>Join voice</source>
-            <translation>Prisijunkite prie balso</translation>
-        </message>
-        <message>
             <source>System (automatic)</source>
             <translation>sistema (automatinė)</translation>
         </message>
@@ -1187,6 +1183,10 @@
         <message>
             <source>Sign out</source>
             <translation>Atsijungti</translation>
+        </message>
+        <message>
+            <source>This device</source>
+            <translation>Šis įrenginys</translation>
         </message>
     </context>
     <context>
@@ -2677,6 +2677,10 @@
         <message>
             <source>Screen stream</source>
             <translation>ekrano srautas</translation>
+        </message>
+        <message>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
         </message>
     </context>
     <context>

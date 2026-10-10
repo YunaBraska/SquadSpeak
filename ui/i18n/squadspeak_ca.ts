@@ -637,10 +637,6 @@
             <translation>Canal no disponible</translation>
         </message>
         <message>
-            <source>Join voice</source>
-            <translation>Uneix-te al canal de veu</translation>
-        </message>
-        <message>
             <source>System (automatic)</source>
             <translation>sistema (automàtic)</translation>
         </message>
@@ -1187,6 +1183,10 @@
         <message>
             <source>Sign out</source>
             <translation>Tanca la sessió</translation>
+        </message>
+        <message>
+            <source>This device</source>
+            <translation>Aquest dispositiu</translation>
         </message>
     </context>
     <context>
@@ -2677,6 +2677,10 @@
         <message>
             <source>Screen stream</source>
             <translation>flux de pantalla</translation>
+        </message>
+        <message>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
         </message>
     </context>
     <context>

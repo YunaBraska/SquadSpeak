@@ -637,10 +637,6 @@
             <translation>Chanal n'è betg disponibel</translation>
         </message>
         <message>
-            <source>Join voice</source>
-            <translation>Crear ina colliaziun linguistica</translation>
-        </message>
-        <message>
             <source>System (automatic)</source>
             <translation>Sistem (automatic)</translation>
         </message>
@@ -1187,6 +1183,10 @@
         <message>
             <source>Sign out</source>
             <translation>S’annunziar ora</translation>
+        </message>
+        <message>
+            <source>This device</source>
+            <translation>Quest apparat</translation>
         </message>
     </context>
     <context>
@@ -2677,6 +2677,10 @@
         <message>
             <source>Screen stream</source>
             <translation>Screenstream</translation>
+        </message>
+        <message>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
         </message>
     </context>
     <context>

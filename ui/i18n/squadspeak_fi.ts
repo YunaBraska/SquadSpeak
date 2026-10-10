@@ -637,10 +637,6 @@
             <translation>Kanava ei ole saatavilla</translation>
         </message>
         <message>
-            <source>Join voice</source>
-            <translation>Liity puhekanavaan</translation>
-        </message>
-        <message>
             <source>System (automatic)</source>
             <translation>Järjestelmä (automaattinen)</translation>
         </message>
@@ -1187,6 +1183,10 @@
         <message>
             <source>Sign out</source>
             <translation>Kirjaudu ulos</translation>
+        </message>
+        <message>
+            <source>This device</source>
+            <translation>Tämä laite</translation>
         </message>
     </context>
     <context>
@@ -2677,6 +2677,10 @@
         <message>
             <source>Screen stream</source>
             <translation>Näyttösuoratoisto</translation>
+        </message>
+        <message>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
         </message>
     </context>
     <context>

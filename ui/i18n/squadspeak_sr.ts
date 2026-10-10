@@ -637,10 +637,6 @@
             <translation>Канал недоступан</translation>
         </message>
         <message>
-            <source>Join voice</source>
-            <translation>Придружи се гласу</translation>
-        </message>
-        <message>
             <source>System (automatic)</source>
             <translation>Систем (аутоматски)</translation>
         </message>
@@ -1187,6 +1183,10 @@
         <message>
             <source>Sign out</source>
             <translation>Одјави се</translation>
+        </message>
+        <message>
+            <source>This device</source>
+            <translation>Овај уређај</translation>
         </message>
     </context>
     <context>
@@ -2677,6 +2677,10 @@
         <message>
             <source>Screen stream</source>
             <translation>Екран стрим</translation>
+        </message>
+        <message>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
         </message>
     </context>
     <context>

@@ -637,10 +637,6 @@
             <translation>Το κανάλι δεν είναι διαθέσιμο</translation>
         </message>
         <message>
-            <source>Join voice</source>
-            <translation>Join voice</translation>
-        </message>
-        <message>
             <source>System (automatic)</source>
             <translation>Σύστημα (αυτόματο)</translation>
         </message>
@@ -1187,6 +1183,10 @@
         <message>
             <source>Sign out</source>
             <translation>Αποσυνδεθείτε</translation>
+        </message>
+        <message>
+            <source>This device</source>
+            <translation>Αυτή η συσκευή</translation>
         </message>
     </context>
     <context>
@@ -2677,6 +2677,10 @@
         <message>
             <source>Screen stream</source>
             <translation>Ροή οθόνης</translation>
+        </message>
+        <message>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
         </message>
     </context>
     <context>

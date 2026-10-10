@@ -637,10 +637,6 @@
             <translation>চ্যানেল অনুপলব্ধ৷</translation>
         </message>
         <message>
-            <source>Join voice</source>
-            <translation>ভয়েস যোগ দিন</translation>
-        </message>
-        <message>
             <source>System (automatic)</source>
             <translation>সিস্টেম (স্বয়ংক্রিয়)</translation>
         </message>
@@ -1187,6 +1183,10 @@
         <message>
             <source>Sign out</source>
             <translation>সাইন আউট করুন</translation>
+        </message>
+        <message>
+            <source>This device</source>
+            <translation>এই ডিভাইস</translation>
         </message>
     </context>
     <context>
@@ -2677,6 +2677,10 @@
         <message>
             <source>Screen stream</source>
             <translation>স্ক্রিন স্ট্রিম</translation>
+        </message>
+        <message>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
         </message>
     </context>
     <context>

@@ -280,4 +280,6 @@ def main():
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    with tempfile.TemporaryDirectory(prefix="squadspeak-package-home-") as home:
+        os.environ["CFFIXED_USER_HOME"] = home
+        raise SystemExit(main())

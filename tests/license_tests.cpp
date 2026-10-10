@@ -72,7 +72,7 @@ public:
                         && input.value("variables").toObject().value("after") == unauthorizedCursor) {
                         responseStatus = 401; unauthorizedSent = true;
                     }
-                    if (alter && path == "/graphql") alter(response);
+                    if (alter && path == "/graphql" && input.value("query").toString().contains("sponsorsActivities")) alter(response);
                     if (beforeResponse && path == "/graphql") beforeResponse();
                     const auto body = bodyOverride.isEmpty() ? QJsonDocument(response).toJson(QJsonDocument::Compact) : bodyOverride;
                     socket->write("HTTP/1.1 " + QByteArray::number(responseStatus) + " Result\r\nContent-Type: application/json\r\nContent-Length: "
@@ -127,6 +127,8 @@ private:
         if (path != "/graphql") { failures << "unknown endpoint"; return {}; }
         if (!headers.contains("Authorization: Bearer " + accessToken.toUtf8())) failures << "missing bearer";
         const auto query = input.value("query").toString();
+        if (query == "query { viewer { databaseId login } }")
+            return {{"data", QJsonObject{{"viewer", QJsonObject{{"databaseId", viewerId}, {"login", login}}}}}};
         if (!query.contains("includeAsSponsor:true") || !query.contains("includePrivate:true")
             || !query.contains("actions:[NEW_SPONSORSHIP,REFUND]") || !query.contains("HEAD:CONTRIBUTORS.md")) failures << "query contract";
         const auto variables = input.value("variables").toObject();
@@ -231,9 +233,10 @@ private slots:
         QVERIFY(!host.joined()); QVERIFY(host.hostParticipants().isEmpty());
         const auto status = run({{"command", "license"}, {"action", "status"}});
         QCOMPARE(status.value("data").toObject().value("account"), "fixture-member");
+        QVERIFY(status.value("data").toObject().value("signedIn").toBool());
         QVERIFY(!output.data().contains(server.accessToken.toUtf8()));
         QVERIFY(run({{"command", "license"}, {"action", "sign-out"}}).value("ok").toBool());
-        QVERIFY(!license.active()); QVERIFY(license.account().isEmpty());
+        QVERIFY(!license.active()); QVERIFY(!license.signedIn()); QVERIFY(license.account().isEmpty());
         run({{"command", "license"}, {"action", "sign-in"}});
         QTRY_VERIFY(license.pending());
         QVERIFY(run({{"command", "license"}, {"action", "cancel"}}).value("ok").toBool());
@@ -406,6 +409,44 @@ private slots:
         }
         QCOMPARE(server.paths.count("/login/device/code"), 4);
         QVERIFY(server.failures.isEmpty());
+    }
+
+    void failedFirstEligibilityCheckKeepsAuthenticatedAccountAcrossRestart() {
+        GitHub server; server.authorized = true;
+        server.alter = [](QJsonObject& response) {
+            response = {{"errors", QJsonArray{QJsonObject{{"type", "FORBIDDEN"}, {"message", "Unavailable activity"}}}}};
+        };
+        QTemporaryDir dir; qint64 time = start; const auto secret = TlsIdentity::newKey();
+        {
+            License license(dir.path(), product, server.url(), secret, [&] { return time; }, {}, nullptr, server.oauth());
+            QVERIFY(license.signIn()); advanceAuthorization(license, time);
+            QCOMPARE(license.account(), "fixture-member"); QVERIFY(license.signedIn());
+            QVERIFY(!license.active()); QVERIFY(!license.status().isEmpty());
+        }
+        License restored(dir.path(), product, server.url(), secret, [&] { return time; }, {}, nullptr, server.oauth());
+        checked(restored); QCOMPARE(restored.account(), "fixture-member"); QVERIFY(restored.signedIn());
+        QCOMPARE(server.paths.count("/login/device/code"), 1);
+        server.alter = {}; server.contributorFile = "| 200 | fixture-member |\n";
+        checked(restored); QVERIFY(restored.active());
+        QVERIFY(restored.signOut()); QVERIFY(restored.account().isEmpty());
+        QVERIFY(server.failures.isEmpty());
+    }
+
+    void contributorDoesNotDependOnUnavailableSponsorshipEntries() {
+        GitHub server; server.authorized = true;
+        server.contributorFile = "| 200 | fixture-member |\n";
+        server.alter = [](QJsonObject& response) {
+            auto data = response.value("data").toObject(); auto viewer = data.value("viewer").toObject();
+            auto activity = viewer.value("sponsorsActivities").toObject();
+            activity.insert("nodes", QJsonArray{QJsonValue::Null});
+            viewer.insert("sponsorsActivities", activity); data.insert("viewer", viewer); response.insert("data", data);
+        };
+        QTemporaryDir dir; qint64 time = start;
+        License license(dir.path(), product, server.url(), TlsIdentity::newKey(), [&] { return time; }, {}, nullptr, server.oauth());
+        QVERIFY(license.signIn()); advanceAuthorization(license, time);
+        QVERIFY(license.active()); QCOMPARE(license.account(), "fixture-member");
+        server.contributorFile.clear(); time += 7 * day; checked(license);
+        QVERIFY(!license.active());
     }
 
     void contributorUsesStableIdAndExpiresAfterSevenDays() {

@@ -637,10 +637,6 @@
             <translation>Ալիքն անհասանելի է</translation>
         </message>
         <message>
-            <source>Join voice</source>
-            <translation>Միավորել ձայնը</translation>
-        </message>
-        <message>
             <source>System (automatic)</source>
             <translation>Համակարգ (ավտոմատ)</translation>
         </message>
@@ -1187,6 +1183,10 @@
         <message>
             <source>Sign out</source>
             <translation>Դուրս գալ</translation>
+        </message>
+        <message>
+            <source>This device</source>
+            <translation>Այս սարքը</translation>
         </message>
     </context>
     <context>
@@ -2677,6 +2677,10 @@
         <message>
             <source>Screen stream</source>
             <translation>Էկրանի հոսք</translation>
+        </message>
+        <message>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
         </message>
     </context>
     <context>

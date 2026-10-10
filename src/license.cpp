@@ -234,7 +234,7 @@ void License::read(Action action, const QByteArray& sealed) {
     } else if (record_.value("token").toString().isEmpty()) finish({});
     else if (record_.value("token_expires").toInteger() > 0
              && record_.value("token_expires").toInteger() <= now() + 60000) refreshToken();
-    else checkPage();
+    else checkPage({}, account().isEmpty());
 }
 
 void License::request(const QUrl& url, const QJsonObject& payload, bool authenticated,
@@ -318,7 +318,7 @@ void License::pollAuthorization() {
                 return;
             }
             deviceCode_.clear(); userCode_.clear(); verificationUrl_.clear();
-            checkPage();
+            checkPage({}, true);
         });
 }
 bool License::acceptToken(const QJsonObject& response) {
@@ -356,12 +356,12 @@ void License::refreshToken() {
                 if (busy_) failCheck();
             } else {
                 events_.clear(); cursors_.clear(); viewer_ = {}; contributor_ = false;
-                checkPage();
+                checkPage({}, account().isEmpty());
             }
         });
 }
 void License::failCheck() { finish(tr("GitHub could not be checked. Offline access lasts at most seven days."), true); }
-void License::checkPage(const QString& cursor) {
+void License::checkPage(const QString& cursor, bool accountOnly) {
     static const QString query = QStringLiteral(R"(query($after:String,$owner:String!,$repository:String!) {
       viewer { databaseId login sponsorsActivities(first:100,after:$after,period:ALL,includeAsSponsor:true,
         includePrivate:true,actions:[NEW_SPONSORSHIP,REFUND],orderBy:{field:TIMESTAMP,direction:DESC}) {
@@ -372,9 +372,9 @@ void License::checkPage(const QString& cursor) {
       } }
       repository(owner:$owner,name:$repository) { object(expression:"HEAD:CONTRIBUTORS.md") { ... on Blob { text isTruncated } } }
     })");
-    request(endpoint_, {{"query", query}, {"variables", QJsonObject{{"after", cursor.isEmpty() ? QJsonValue(QJsonValue::Null) : QJsonValue(cursor)},
+    request(endpoint_, {{"query", accountOnly ? QStringLiteral("query { viewer { databaseId login } }") : query}, {"variables", QJsonObject{{"after", cursor.isEmpty() ? QJsonValue(QJsonValue::Null) : QJsonValue(cursor)},
         {"owner", product_.value("owner")}, {"repository", product_.value("repository")}}}}, true,
-        [this, cursor](const QJsonObject& response, int code) {
+        [this, cursor, accountOnly](const QJsonObject& response, int code) {
             if (code == 401 && !rotated_ && record_.contains("refresh_token")) { refreshToken(); return; }
             if (code == 401) {
                 auto next = record_; next.remove("token"); next.insert("valid", false);
@@ -386,10 +386,14 @@ void License::checkPage(const QString& cursor) {
             const auto viewer = data.value("viewer").toObject();
             const auto id = viewer.value("databaseId");
             const auto login = viewer.value("login").toString();
-            const auto activities = viewer.value("sponsorsActivities").toObject();
-            const auto page = activities.value("pageInfo").toObject();
-            if (!positiveId(id) || login.isEmpty() || !activities.value("nodes").isArray() || activities.value("nodes").toArray().size() > 100
-                || !page.value("hasNextPage").isBool() || !data.value("repository").isObject()) { failCheck(); return; }
+            if (accountOnly) {
+                if (!positiveId(id) || login.isEmpty()) { failCheck(); return; }
+                auto next = record_;
+                next.insert("account_id", id); next.insert("login", login);
+                if (save(next)) checkPage();
+                return;
+            }
+            if (!positiveId(id) || login.isEmpty() || !data.value("repository").isObject()) { failCheck(); return; }
             if ((!viewer_.isEmpty() && viewer_.value("id") != id)
                 || (record_.contains("account_id") && record_.value("account_id") != id)) {
                 auto next = record_; next.remove("token"); next.insert("valid", false);
@@ -409,29 +413,35 @@ void License::checkPage(const QString& cursor) {
                 if (!cursor.isEmpty() && contributor_ != contributor) { failCheck(); return; }
                 contributor_ = contributor;
             } else if (!cursor.isEmpty() && contributor_) { failCheck(); return; }
-            for (const auto& value : activities.value("nodes").toArray()) {
-                if (!value.isObject()) { failCheck(); return; }
-                const auto event = value.toObject();
-                const auto payer = event.value("sponsor").toObject().value("databaseId");
-                const auto recipient = event.value("sponsorable").toObject().value("databaseId");
-                if (!positiveId(payer) || !positiveId(recipient)) { failCheck(); return; }
-                if (payer != id || recipient != product_.value("recipient_id")) continue;
-                const auto tier = event.value("sponsorsTier").toObject();
-                if (!tier.contains("id")) { failCheck(); return; }
-                if (tier.value("id") != product_.value("tier_id")) continue;
-                const auto eventId = event.value("id").toString();
-                const auto action = event.value("action").toString();
-                const auto timestamp = utcTimestamp(event.value("timestamp"));
-                if (!token(eventId) || (action != "NEW_SPONSORSHIP" && action != "REFUND")
-                    || !tier.value("isOneTime").toBool() || tier.value("monthlyPriceInCents").toInt() != 1200
-                    || timestamp <= 0 || timestamp > now() + 60000
-                    || (events_.contains(eventId) && events_.value(eventId) != event)) { failCheck(); return; }
-                events_.insert(eventId, event);
-            }
-            if (page.value("hasNextPage").toBool()) {
-                const auto next = page.value("endCursor").toString();
-                if (next.isEmpty() || cursors_.contains(next) || cursors_.size() >= 99) { failCheck(); return; }
-                cursors_.insert(next); checkPage(next); return;
+            if (!contributor_) {
+                const auto activities = viewer.value("sponsorsActivities").toObject();
+                const auto page = activities.value("pageInfo").toObject();
+                if (!activities.value("nodes").isArray() || activities.value("nodes").toArray().size() > 100
+                    || !page.value("hasNextPage").isBool()) { failCheck(); return; }
+                for (const auto& value : activities.value("nodes").toArray()) {
+                    if (!value.isObject()) { failCheck(); return; }
+                    const auto event = value.toObject();
+                    const auto payer = event.value("sponsor").toObject().value("databaseId");
+                    const auto recipient = event.value("sponsorable").toObject().value("databaseId");
+                    if (!positiveId(payer) || !positiveId(recipient)) { failCheck(); return; }
+                    if (payer != id || recipient != product_.value("recipient_id")) continue;
+                    const auto tier = event.value("sponsorsTier").toObject();
+                    if (!tier.contains("id")) { failCheck(); return; }
+                    if (tier.value("id") != product_.value("tier_id")) continue;
+                    const auto eventId = event.value("id").toString();
+                    const auto action = event.value("action").toString();
+                    const auto timestamp = utcTimestamp(event.value("timestamp"));
+                    if (!token(eventId) || (action != "NEW_SPONSORSHIP" && action != "REFUND")
+                        || !tier.value("isOneTime").toBool() || tier.value("monthlyPriceInCents").toInt() != 1200
+                        || timestamp <= 0 || timestamp > now() + 60000
+                        || (events_.contains(eventId) && events_.value(eventId) != event)) { failCheck(); return; }
+                    events_.insert(eventId, event);
+                }
+                if (page.value("hasNextPage").toBool()) {
+                    const auto next = page.value("endCursor").toString();
+                    if (next.isEmpty() || cursors_.contains(next) || cursors_.size() >= 99) { failCheck(); return; }
+                    cursors_.insert(next); checkPage(next); return;
+                }
             }
             qint64 paid = 0, refunded = 0;
             for (const auto& event : std::as_const(events_)) {

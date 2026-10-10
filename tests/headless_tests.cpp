@@ -26,6 +26,7 @@
 #include <qtkeychain/keychain.h>
 #include <future>
 #include <barrier>
+#include <cstdio>
 #ifndef Q_OS_WIN
 #include <sys/stat.h>
 #include <unistd.h>
@@ -34,6 +35,7 @@
 class HeadlessTests final : public QObject {
     Q_OBJECT
     const QString executable_ = qEnvironmentVariable("SQUAD_TEST_APP", QStringLiteral(SQUAD_HEADLESS_APP));
+    QTemporaryDir processHome_;
     QHash<QString, bool> temporaryIdentitySlots_;
     QString registerProfile(const QString& profile) {
         const auto absolute = QFileInfo(profile + ".channel.json").absoluteFilePath();
@@ -46,6 +48,25 @@ private slots:
     void initTestCase() {
         qputenv("QT_SSL_USE_TEMPORARY_KEYCHAIN", "1");
         QVERIFY(QSslSocket::supportsSsl());
+        QVERIFY(processHome_.isValid());
+#ifdef Q_OS_MACOS
+        // Foundation ignores HOME for native preference paths.
+        qputenv("CFFIXED_USER_HOME", processHome_.path().toUtf8());
+#elif defined(Q_OS_LINUX)
+        qputenv("XDG_CONFIG_HOME", processHome_.path().toUtf8());
+#endif
+#ifdef Q_OS_WIN
+        // Windows known folders belong to the OS account, not APPDATA overrides.
+        QVERIFY2(!QFileInfo::exists(License::storageDirectory() + "/supporter.bin"),
+            "Run headless process tests under a Windows test account without a personal Supporter login.");
+#else
+        QProcess probe;
+        probe.start(QCoreApplication::applicationFilePath(), {"--test-config-directory"});
+        QVERIFY(probe.waitForFinished(5000));
+        QCOMPARE(probe.exitCode(), 0);
+        const auto path = QString::fromUtf8(probe.readAllStandardOutput()).trimmed();
+        QVERIFY2(path.startsWith(processHome_.path() + '/'), qPrintable(path));
+#endif
     }
     void cleanupTestCase() {
         QStringList failures;
@@ -1327,5 +1348,13 @@ with (root / 'replies').open('wb') as replies:
     }
 };
 
-QTEST_GUILESS_MAIN(HeadlessTests)
+int main(int argc, char** argv) {
+    QCoreApplication app(argc, argv);
+    if (app.arguments().contains("--test-config-directory")) {
+        std::puts(qUtf8Printable(License::storageDirectory()));
+        return 0;
+    }
+    HeadlessTests tests;
+    return QTest::qExec(&tests, argc, argv);
+}
 #include "headless_tests.moc"
