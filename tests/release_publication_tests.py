@@ -37,6 +37,7 @@ elif args[:2] == ["release", "create"]:
     pathlib.Path("uploaded").write_text("complete", encoding="utf-8")
 elif args[:2] == ["release", "edit"]:
     if not pathlib.Path("uploaded").exists(): sys.exit(6)
+    if mode == "promotion-failure": sys.exit(8)
     pathlib.Path("public").write_text("complete", encoding="utf-8")
 else: sys.exit(7)
 ''', encoding="utf-8")
@@ -81,12 +82,16 @@ else: sys.exit(7)
         assets = self.root / "release-assets"
         assets.mkdir()
         (assets / "package.zip").write_bytes(b"package fixture")
-        result = self.run_step("Publish the tested desktop release", SCENARIO="upload-failure")
-        self.assertNotEqual(result.returncode, 0)
-        self.assertFalse((self.root / "public").exists())
         trace = self.root / "trace.jsonl"
-        self.assertEqual(len(trace.read_text(encoding="utf-8").splitlines()), 1)
-        trace.unlink()
+        for mode, calls in (("upload-failure", 1), ("promotion-failure", 2)):
+            with self.subTest(mode=mode):
+                result = self.run_step("Publish the tested desktop release", SCENARIO=mode)
+                self.assertNotEqual(result.returncode, 0)
+                self.assertFalse((self.root / "public").exists())
+                self.assertEqual((self.root / "uploaded").exists(), mode == "promotion-failure")
+                self.assertEqual(len(trace.read_text(encoding="utf-8").splitlines()), calls)
+                trace.unlink()
+                (self.root / "uploaded").unlink(missing_ok=True)
         result = self.run_step("Publish the tested desktop release")
         self.assertEqual(result.returncode, 0, result.stderr)
         calls = [json.loads(line) for line in trace.read_text(encoding="utf-8").splitlines()]

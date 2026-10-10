@@ -251,27 +251,39 @@ public slots:
         return image.rect().contains(point) ? image.pixelColor(point) : QColor{};
     }
     bool portraitHasDetail(QObject* object, bool grayscale = false) {
-        auto* item = qobject_cast<QQuickItem*>(object);
-        if (!item || !item->window()) return false;
-        const auto logicalWidth = item->window()->width();
-        const auto area = item->mapRectToScene(QRectF(item->width() * 0.3, item->height() * 0.35,
-            item->width() * 0.4, item->height() * 0.35));
+        return portraitsHaveDetail({object}, grayscale);
+    }
+    bool portraitsHaveDetail(const QList<QObject*>& objects, bool grayscale = false) {
+        if (objects.isEmpty()) return false;
+        QQuickWindow* window = nullptr;
+        QList<QRectF> areas;
+        for (auto* object : objects) {
+            auto* item = qobject_cast<QQuickItem*>(object);
+            if (!item || !item->window() || (window && item->window() != window)) return false;
+            window = item->window();
+            areas.append(item->mapRectToScene(QRectF(item->width() * 0.3, item->height() * 0.35,
+                item->width() * 0.4, item->height() * 0.35)));
+        }
+        const auto logicalWidth = window->width();
         // Grabbing can process events and recycle a PathView delegate. Capture
         // its geometry first; the returned bitmap may have no DPR metadata.
-        const auto image = item->window()->grabWindow();
+        const auto image = window->grabWindow();
         const auto ratio = qreal(image.width()) / logicalWidth;
-        const QRect sampledArea(QPoint(int(area.left() * ratio), int(area.top() * ratio)),
-                                QPoint(int(area.right() * ratio), int(area.bottom() * ratio)));
-        if (sampledArea.isEmpty() || !image.rect().contains(sampledArea)) return false;
-        int darkest = 255, lightest = 0;
-        for (int y = int(area.top() * ratio); y < int(area.bottom() * ratio); ++y)
-            for (int x = int(area.left() * ratio); x < int(area.right() * ratio); ++x) {
-                const auto pixel = image.pixelColor(x, y);
-                if (grayscale && (pixel.red() != pixel.green() || pixel.green() != pixel.blue())) return false;
-                const auto intensity = qGray(pixel.rgb());
-                darkest = std::min(darkest, intensity); lightest = std::max(lightest, intensity);
-            }
-        return lightest - darkest > 40;
+        for (const auto& area : areas) {
+            const QRect sampledArea(QPoint(int(area.left() * ratio), int(area.top() * ratio)),
+                                    QPoint(int(area.right() * ratio), int(area.bottom() * ratio)));
+            if (sampledArea.isEmpty() || !image.rect().contains(sampledArea)) return false;
+            int darkest = 255, lightest = 0;
+            for (int y = int(area.top() * ratio); y < int(area.bottom() * ratio); ++y)
+                for (int x = int(area.left() * ratio); x < int(area.right() * ratio); ++x) {
+                    const auto pixel = image.pixelColor(x, y);
+                    if (grayscale && (pixel.red() != pixel.green() || pixel.green() != pixel.blue())) return false;
+                    const auto intensity = qGray(pixel.rgb());
+                    darkest = std::min(darkest, intensity); lightest = std::max(lightest, intensity);
+                }
+            if (lightest - darkest <= 40) return false;
+        }
+        return true;
     }
     double portraitGrayscaleMismatch(QObject* colored, QObject* grayscale) {
         auto* source = qobject_cast<QQuickItem*>(colored);

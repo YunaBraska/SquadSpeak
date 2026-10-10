@@ -120,7 +120,8 @@ TestCase {
         session.setMuted(true)
         session.setPttButtonHeld(false)
         session.setPushToTalk(false)
-        waitForRendering(view.contentItem)
+        view.update()
+        verify(waitForRendering(view.contentItem))
 
     }
     function cleanup() {
@@ -1534,7 +1535,6 @@ TestCase {
     }
     function test_denseAvatarFramesRenderAtDisplaySize(data) {
         view.width = 1040; view.height = 420
-        waitForRendering(view.contentItem)
         portraitGallery.visible = true
         const items = []
         for (let state = 0; state < 5; ++state) {
@@ -1554,20 +1554,19 @@ TestCase {
                 compare(item.variant, data.variant)
                 compare(item.frame, frame)
                 compare(item.stateRow, state)
-                tryVerify(function() { return fixtures.portraitHasDetail(item, false) }, 5000)
                 items.push(item)
             }
         }
         // Hide the ordinary catalog while inspecting the five animation strips.
         for (let i = 0; i < galleryPortraits.count; ++i) galleryPortraits.itemAt(i).visible = false
-        waitForRendering(portraitGallery)
+        tryVerify(function() { return fixtures.portraitsHaveDetail(items, false) }, 5000)
         if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/" + data.tag + "-motion.png"))
         for (const item of items) {
             item.muted = false; item.deafened = false
             item.online = false
             compare(item.stateRow, 4); compare(item.frame, 0)
-            tryVerify(function() { return fixtures.portraitHasDetail(item, true) }, 5000)
         }
+        tryVerify(function() { return fixtures.portraitsHaveDetail(items, true) }, 5000)
         if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/" + data.tag + "-offline.png"))
     }
 

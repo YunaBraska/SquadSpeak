@@ -1047,7 +1047,9 @@ if(BUILD_TESTING)
     add_test(NAME frequency_display COMMAND controls_tests -input "${CMAKE_CURRENT_SOURCE_DIR}/tests/tst_spectrum.qml")
     set_tests_properties(frequency_display PROPERTIES
         ENVIRONMENT "QT_QPA_PLATFORM=${ui_test_platform};QT_QUICK_BACKEND=software;QT_QUICK_CONTROLS_STYLE=Basic;SQUAD_TEST_ARTIFACTS=${CMAKE_BINARY_DIR}/smoke")
-    add_test(NAME channel_controls COMMAND controls_tests -input "${CMAKE_CURRENT_SOURCE_DIR}/tests/tst_channel_controls.qml")
+    file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/smoke")
+    add_test(NAME channel_controls COMMAND controls_tests -input "${CMAKE_CURRENT_SOURCE_DIR}/tests/tst_channel_controls.qml"
+        -o "${CMAKE_BINARY_DIR}/smoke/channel-controls.xml,junitxml" -o -,txt)
     set_tests_properties(channel_controls PROPERTIES
         TIMEOUT 600
         ENVIRONMENT "QT_QPA_PLATFORM=${ui_test_platform};QT_QUICK_BACKEND=software;QT_QUICK_CONTROLS_STYLE=Basic;SQUAD_TEST_ARTIFACTS=${CMAKE_BINARY_DIR}/smoke;QV4_JIT_CALL_THRESHOLD=1;QV4_GC_TIMELIMIT=1")
