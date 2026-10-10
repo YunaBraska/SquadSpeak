@@ -19,6 +19,7 @@ TestCase {
     SignalSpy { id: openedLinks; target: fixtures; signalName: "externalUrlOpened" }
     SignalSpy { id: dialogRejections; signalName: "rejected" }
     Component { id: variablePortrait; VoiceAvatar { width: 96; height: 112 } }
+    Component { id: portraitBackdrop; Rectangle { color: Theme.surface } }
     Component { id: atlasImage; Image { visible: false } }
     Component { id: literalName; Text { textFormat: Text.PlainText } }
     QtObject {
@@ -1469,10 +1470,14 @@ TestCase {
         return cases
     }
     function test_grayscalePreservesPortraitGeometry(data) {
-        const options = {x: 10, y: 80, width: data.size[0], height: data.size[1], avatar: data.avatar,
-            animated: false, sleeping: true, circular: data.circular, systemMessage: data.avatar === "system", z: 100}
-        const colored = createTemporaryObject(variablePortrait, view.contentItem, options)
-        const gray = createTemporaryObject(variablePortrait, view.contentItem, Object.assign({}, options, {x: 160, online: false}))
+        // Transparent portraits must composite over the same background, not different channel labels.
+        const backdrop = createTemporaryObject(portraitBackdrop, view.contentItem,
+            {x: 0, y: 70, width: 300, height: 130, z: 100})
+        verify(backdrop)
+        const options = {x: 10, y: 10, width: data.size[0], height: data.size[1], avatar: data.avatar,
+            animated: false, sleeping: true, circular: data.circular, systemMessage: data.avatar === "system"}
+        const colored = createTemporaryObject(variablePortrait, backdrop, options)
+        const gray = createTemporaryObject(variablePortrait, backdrop, Object.assign({}, options, {x: 160, online: false}))
         verify(colored && gray)
         const canvas = findChild(gray, "avatarCanvas")
         tryVerify(function() { return canvas.isImageLoaded(canvas.atlas) && fixtures.portraitHasDetail(colored) })
