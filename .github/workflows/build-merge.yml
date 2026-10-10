@@ -1,18 +1,32 @@
-name: CI Merge
+name: CD Snapshot
 
 on:
   push:
     branches: [main]
+  workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
   group: squadspeak-merge-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   build:
     uses: ./.github/workflows/verify.yml
     with:
       ref: ${{ github.sha }}
+      release_mode: snapshot
+
+  publish:
+    needs: build
+    if: needs.build.outputs.release_mode == 'snapshot'
+    permissions:
+      actions: read
+      contents: write
+    uses: ./.github/workflows/publish.yml
+    with:
+      commit_sha: ${{ needs.build.outputs.commit_sha }}
+      version: ${{ needs.build.outputs.version }}
+      release_mode: snapshot

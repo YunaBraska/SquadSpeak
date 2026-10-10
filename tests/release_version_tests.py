@@ -28,9 +28,10 @@ class ReleaseVersionTests(unittest.TestCase):
         self.assertEqual(result.stdout.strip(), "2026.1.9")
 
     def test_snapshot_retains_label_and_has_numeric_native_metadata(self):
-        result = self.resolve("2026.10.5-SNAPSHOT")
-        self.assertEqual(result.returncode, 0, result.stdout)
-        self.assertEqual(result.stdout.strip(), "2026.10.5-SNAPSHOT")
+        for version in ("2026.10.5-SNAPSHOT", "2026.10.5-SNAPSHOT.17"):
+            result = self.resolve(version)
+            self.assertEqual(result.returncode, 0, result.stdout)
+            self.assertEqual(result.stdout.strip(), version)
         repo = Path(__file__).resolve().parents[1]
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -40,7 +41,7 @@ class ReleaseVersionTests(unittest.TestCase):
                 'project(Snapshot VERSION ${SQUADSPEAK_NUMERIC_VERSION} LANGUAGES NONE)\n'
                 f'configure_file("{repo.as_posix()}/src/Info.plist.in" bundle.plist)\n')
             configured = subprocess.run(["cmake", "-S", str(root), "-B", str(root / "out"),
-                "-DSQUADSPEAK_VERSION=2026.10.5-SNAPSHOT"], capture_output=True, text=True)
+                "-DSQUADSPEAK_VERSION=2026.10.5-SNAPSHOT.17"], capture_output=True, text=True)
             self.assertEqual(configured.returncode, 0, configured.stdout + configured.stderr)
             metadata = plistlib.loads((root / "out/bundle.plist").read_bytes())
             self.assertEqual(metadata["CFBundleVersion"], "2026.10.5")
@@ -48,7 +49,8 @@ class ReleaseVersionTests(unittest.TestCase):
 
     def test_invalid_versions_fail_before_configuration(self):
         for version in ("", "2026.01.09", "v2026.1.9", "2026.1", "2026.1.9.1", "1.2.3;bad", "1.2.3\n",
-                        "1.2.3-SNAPSHOT\n", "1.2.3-SNAPSHOT;bad", "1.2.3-unknown"):
+                        "1.2.3-SNAPSHOT\n", "1.2.3-SNAPSHOT;bad", "1.2.3-unknown",
+                        "1.2.3-SNAPSHOT.0", "1.2.3-SNAPSHOT.01", "1.2.3-SNAPSHOT.1.2"):
             with self.subTest(version=version):
                 result = self.resolve(version)
                 self.assertNotEqual(result.returncode, 0)
@@ -117,7 +119,7 @@ class HomebrewTests(unittest.TestCase):
                 elif invalid != "missing":
                     intel.write_bytes(b"" if invalid == "empty" else b"intel")
                 version = '1.2.3";invalid' if invalid == "version" else "2026.10.4"
-                if invalid == "snapshot": version += "-SNAPSHOT"
+                if invalid == "snapshot": version += "-SNAPSHOT.17"
                 result = self.generate(root, version)
                 self.assertNotEqual(result.returncode, 0)
                 self.assertEqual((root / "squadspeak.rb").read_text(), "previous release")

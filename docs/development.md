@@ -521,34 +521,40 @@ single native matrix used by all three local entrypoints.
 
 | Entry | Version and result |
 | --- | --- |
-| `build-pr.yml` | Tests the PR head. Snapshot packages remain available for one day. Also supports manual branch verification. |
-| `build-merge.yml` | Every main merge builds the same snapshot matrix. No tag, public release, Homebrew change or update feed. |
-| `release.yml` | Manual release. Changed product sources or `force=true` select a UTC `YYYY.M.D` release. Otherwise it builds a snapshot. Non-default branches always build snapshots. |
+| `build-pr.yml` | Tests the PR head. Build artifacts remain available for one day. Also supports manual branch verification. No publication. |
+| `build-merge.yml` | Every main merge verifies and publishes a snapshot prerelease. No Homebrew change or stable update feed. |
+| `release.yml` | Weekly or manual stable release. Changed product sources or `force=true` select a UTC `YYYY.M.D` release. Otherwise it builds without publication. Non-default branches never publish. |
 
-Stable releases are manually dispatched. This repository deliberately omits the
-central weekly-release marker. Homebrew continues to follow published stable releases.
+The `yuna-release: true` marker lets the central weekly dispatcher invoke
+`release.yml` when product sources changed. Manual dispatch uses the same path.
+Homebrew and automatic update checks follow stable releases only.
 
 Snapshot distribution differs between the reference projects. The shared Swift
 and .NET workflows retain native build artifacts. The [NATS workflow contract](https://github.com/nats-io/spring-nats/blob/32999e8e2eb0fd3b8c4b59170fed767e1c2a4b14/doc/spec/ci-workflows.md)
-publishes Maven snapshots after a merge, without a GitHub tag or release.
+publishes Maven snapshots after a merge. SquadSpeak publishes its desktop
+snapshots as GitHub prereleases through `publish.yml`, also used by stable releases.
 
 Version and commit are resolved once and passed to every job. Snapshots use the
 pinned `YunaBraska/semver-info-action` and its `next_snapshot` output from the
-newest reachable tag by creation date, with `0.0.1` as fallback. The app displays
-the full `-SNAPSHOT` suffix. CMake and native bundle metadata use its numeric part.
-Stable versions use `cmake/Version.cmake` and UTC without leading zeroes.
+newest reachable stable tag by creation date, with `0.0.1` as fallback. The run ID
+makes each workflow version unique, for example `2026.10.12-SNAPSHOT.1234`.
+The app displays the full label. Native bundle metadata uses its numeric part.
+Stable versions use `cmake/Version.cmake` and UTC without leading zeroes. Snapshot
+tags never hide product changes since the last stable release.
 
 As in the shared flows, documentation, tests, specs, examples, benchmarks,
-licenses and `.github` changes alone do not request publication. Use `force`
-when deliberately releasing only packaging or pipeline changes, including the
+licenses and `.github` changes alone do not request a stable release. Every main
+merge still produces a snapshot. Use `force` when deliberately releasing only
+packaging or pipeline changes, including the
 packaging entrypoints under `tests/`. Force never replaces an existing version.
 Tag/release collisions and API failures stop before native builds. Snapshots
 need no publication secrets. Test reports remain available for seven days.
 
-Publication requires matching signed macOS appcasts, all five desktop archives,
-the standalone Windows test kit and corresponding third-party sources. Checksums
-include the appcasts and generated Homebrew cask. Uploads go into a draft first.
-Only a complete upload becomes a public latest release. Published assets are
+Publication requires all five desktop archives, the standalone Windows test kit
+and corresponding third-party sources. Stable releases additionally require
+matching signed macOS appcasts and a generated Homebrew cask. Checksums cover all
+assets. Uploads go into a draft first. Only a complete upload becomes public.
+Snapshots are prereleases and never become latest. Published assets are
 immutable. If publication fails, inspect the private draft before explicitly
 removing it and retrying. The source revision stays fixed throughout the workflow.
 Physical device observations follow the initial release under U139.
@@ -561,9 +567,16 @@ For a focused manual check, use
 `gh workflow run verify.yml --ref <branch> -f platform=windows` (also `linux`,
 `macos`, `sanitizers`, or `all`). PR, merge and release callers always run the full
 matrix. Feature pushes are checked by their PR, avoiding duplicate platform runs.
-New PR/merge checks cancel obsolete runs. A release is never cancelled by a newer
-snapshot. Build jobs keep read-only repository permissions. Only publication can
+New PR checks cancel obsolete runs. Merge and release runs are not cancelled by
+newer runs. Build jobs keep read-only repository permissions. Only publication can
 write tags/releases. The application runtime gains no pipeline dependency.
+
+Dependabot checks GitHub Actions and the Linux Docker base every Sunday at 00:00
+UTC, with one grouped PR per ecosystem. Ubuntu stays on 26.04 and receives digest
+updates. Changing the supported distribution is a separate decision. Custom
+dependency pins in CMake and packaging scripts still require coordinated source
+manifest updates. The central maintenance workflow handles eligible green
+Dependabot PRs using the same rules as the other repositories.
 
 The separate `squadspeak-third-party-sources.tar.gz` release asset contains the
 pinned dependency archives, Qt SDK sources and Abseil build patch. Build it with

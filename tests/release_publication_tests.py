@@ -31,8 +31,8 @@ mode = os.environ.get("SCENARIO", "")
 if args[0] == "api":
     if mode == "network": sys.exit(4)
     if "matching-refs" in " ".join(args):
-        if mode == "tag": print("refs/tags/2026.10.4")
-    elif mode == "release": print("2026.10.4")
+        if mode == "tag": print("refs/tags/" + os.environ.get("COLLISION_VERSION", "2026.10.4"))
+    elif mode == "release": print(os.environ.get("COLLISION_VERSION", "2026.10.4"))
 elif args[:2] == ["release", "create"]:
     if mode == "upload-failure": sys.exit(5)
     pathlib.Path("uploaded").write_text("complete", encoding="utf-8")
@@ -44,7 +44,7 @@ else: sys.exit(7)
 ''', encoding="utf-8")
         gh.chmod(0o700)
 
-    def run_step(self, name, workflow="release.yml", **values):
+    def run_step(self, name, workflow="publish.yml", **values):
         # Execute the actual workflow shell body, replacing only the external
         # GitHub CLI boundary. Do not duplicate publication logic in the test.
         lines = (self.repo / ".github/workflows" / workflow).read_text(encoding="utf-8").splitlines()
@@ -60,8 +60,8 @@ else: sys.exit(7)
                    GITHUB_OUTPUT=str(self.root / "output"), SOURCE_DATE_EPOCH="1791072000",
                    GH_REPO="owner/project", GH_TOKEN="test-token", SOURCE_REF="refs/heads/main",
                    RELEASE_VERSION="2026.10.4", SOURCE_REVISION="a" * 40,
-                   REQUEST_RELEASE="true", FORCE="false", DEFAULT_BRANCH="main",
-                   DRY_RUN="false", SNAPSHOT_VERSION="2026.10.4-SNAPSHOT")
+                   REQUEST_MODE="release", FORCE="false", DEFAULT_BRANCH="main",
+                   RELEASE_MODE="release", SNAPSHOT_VERSION="2026.10.4-SNAPSHOT", GITHUB_RUN_ID="17")
         env.update(values)
         return subprocess.run(["sh", "-eu", "-c", "\n".join(script)], cwd=self.root, env=env,
                               encoding="utf-8", capture_output=True)
@@ -89,26 +89,42 @@ else: sys.exit(7)
         self.assertEqual(result.returncode, 0, result.stderr)
         return self.outputs()
 
-    def test_merge_pr_and_feature_release_never_publish(self):
+    def test_build_pr_and_feature_runs_never_publish(self):
         self.repository()
-        for values in ({"REQUEST_RELEASE": "false"}, {"SOURCE_REF": "refs/heads/feature/test"},
+        for values in ({"REQUEST_MODE": "build"}, {"SOURCE_REF": "refs/heads/feature/test"},
                        {"SOURCE_REF": "refs/heads/feature/test", "FORCE": "true"},
+                       {"SOURCE_REF": "refs/heads/feature/test", "REQUEST_MODE": "snapshot"},
                        {"SOURCE_REF": "refs/pull/1/merge", "FORCE": "true"}):
             with self.subTest(values=values):
                 mode = self.mode(**values)
-                self.assertEqual(mode["dry_run"], "true")
+                self.assertEqual(mode["release_mode"], "build")
                 self.assertEqual(mode["commit_sha"], self.git("rev-parse", "HEAD"))
+        self.assertFalse((self.root / "trace.jsonl").exists())
+
+    def test_default_branch_snapshot_is_publishable_without_force(self):
+        self.repository()
+        self.git("tag", "2026.10.3")
+        self.assertEqual(self.mode(REQUEST_MODE="snapshot")["release_mode"], "snapshot")
+        self.assertEqual(self.mode(REQUEST_MODE="snapshot", DEFAULT_BRANCH="trunk",
+                                  SOURCE_REF="refs/heads/trunk")["release_mode"], "snapshot")
+
+    def test_unknown_release_mode_fails_before_publication(self):
+        self.repository()
+        result = self.run_step("Read build mode", "verify.yml", REQUEST_MODE="unknown")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("Unknown release mode", result.stderr)
+        self.assertFalse((self.root / "output").exists())
         self.assertFalse((self.root / "trace.jsonl").exists())
 
     def test_first_release_source_changes_and_explicit_force(self):
         self.repository()
-        self.assertEqual(self.mode()["dry_run"], "false")
+        self.assertEqual(self.mode()["release_mode"], "release")
         self.git("tag", "2026.10.3")
-        self.assertEqual(self.mode()["dry_run"], "true")
-        self.assertEqual(self.mode(FORCE="true")["dry_run"], "false")
+        self.assertEqual(self.mode()["release_mode"], "build")
+        self.assertEqual(self.mode(FORCE="true")["release_mode"], "release")
         (self.root / "source.cpp").write_text("changed\n")
         self.git("commit", "--quiet", "-am", "Change source")
-        self.assertEqual(self.mode()["dry_run"], "false")
+        self.assertEqual(self.mode()["release_mode"], "release")
 
     def test_documentation_tests_and_workflows_require_force(self):
         self.repository()
@@ -120,8 +136,8 @@ else: sys.exit(7)
             path.write_text("changed\n")
             self.git("add", name)
         self.git("commit", "--quiet", "-m", "Non-product changes")
-        self.assertEqual(self.mode()["dry_run"], "true")
-        self.assertEqual(self.mode(FORCE="true")["dry_run"], "false")
+        self.assertEqual(self.mode()["release_mode"], "build")
+        self.assertEqual(self.mode(FORCE="true")["release_mode"], "release")
 
     def test_latest_tag_is_reachable_and_sorted_by_creation(self):
         self.repository()
@@ -133,17 +149,42 @@ else: sys.exit(7)
         self.git("checkout", "--quiet", "main")
         self.assertEqual(self.mode()["latest_tag"], "2026.10.3")
 
+    def test_snapshot_tag_does_not_hide_changes_since_stable_release(self):
+        self.repository()
+        self.git("tag", "2026.10.3")
+        (self.root / "source.cpp").write_text("changed\n")
+        self.git("commit", "--quiet", "-am", "Change source", date="2026-10-04T12:00:00Z")
+        self.git("tag", "2026.10.4-SNAPSHOT.17")
+        mode = self.mode()
+        self.assertEqual(mode["latest_tag"], "2026.10.3")
+        self.assertEqual(mode["release_mode"], "release")
+
+    def test_snapshot_version_distinguishes_workflow_runs(self):
+        for run_id in ("17", "18"):
+            with self.subTest(run_id=run_id):
+                result = self.run_step("Resolve build version", "verify.yml", RELEASE_MODE="build",
+                                       GITHUB_RUN_ID=run_id)
+                self.assertEqual(result.returncode, 0, result.stderr)
+                self.assertEqual(self.outputs()["version"], f"2026.10.4-SNAPSHOT.{run_id}")
+        for run_id in ("", "0", "01", "17-SNAPSHOT", "17;bad"):
+            with self.subTest(invalid_run=run_id):
+                (self.root / "output").unlink(missing_ok=True)
+                result = self.run_step("Resolve build version", "verify.yml", RELEASE_MODE="build",
+                                       GITHUB_RUN_ID=run_id)
+                self.assertNotEqual(result.returncode, 0)
+                self.assertFalse((self.root / "output").exists())
+
     def test_deleted_source_is_a_product_change(self):
         self.repository()
         self.git("tag", "2026.10.3")
         self.git("rm", "source.cpp")
         self.git("commit", "--quiet", "-m", "Remove source")
-        self.assertEqual(self.mode()["dry_run"], "false")
+        self.assertEqual(self.mode()["release_mode"], "release")
 
     def test_default_branch_name_is_not_hardcoded(self):
         self.repository()
-        self.assertEqual(self.mode(SOURCE_REF="refs/heads/trunk", DEFAULT_BRANCH="trunk")["dry_run"], "false")
-        self.assertEqual(self.mode(SOURCE_REF="refs/heads/main", DEFAULT_BRANCH="trunk")["dry_run"], "true")
+        self.assertEqual(self.mode(SOURCE_REF="refs/heads/trunk", DEFAULT_BRANCH="trunk")["release_mode"], "release")
+        self.assertEqual(self.mode(SOURCE_REF="refs/heads/main", DEFAULT_BRANCH="trunk")["release_mode"], "build")
 
     def test_git_failure_stops_resolution(self):
         result = self.run_step("Read build mode", "verify.yml")
@@ -162,13 +203,13 @@ else: sys.exit(7)
         self.assertFalse((self.root / "output").exists())
 
     def test_snapshot_uses_action_version_without_github_mutations(self):
-        result = self.run_step("Resolve build version", "verify.yml", DRY_RUN="true")
+        result = self.run_step("Resolve build version", "verify.yml", RELEASE_MODE="build")
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertEqual(self.outputs()["version"], "2026.10.4-SNAPSHOT")
+        self.assertEqual(self.outputs()["version"], "2026.10.4-SNAPSHOT.17")
         self.assertFalse((self.root / "trace.jsonl").exists())
         for invalid in ("", "invalid", "2026.10.4", "1.2.3-SNAPSHOT;bad"):
             (self.root / "output").unlink(missing_ok=True)
-            result = self.run_step("Resolve build version", "verify.yml", DRY_RUN="true",
+            result = self.run_step("Resolve build version", "verify.yml", RELEASE_MODE="build",
                                    SNAPSHOT_VERSION=invalid)
             self.assertNotEqual(result.returncode, 0)
             self.assertFalse((self.root / "output").exists())
@@ -179,11 +220,21 @@ else: sys.exit(7)
         self.assertEqual(self.outputs()["version"], "2026.10.4")
 
     def test_existing_release_tag_or_api_failure_stops_before_builds(self):
-        for mode in ("release", "tag", "network"):
-            with self.subTest(mode=mode):
-                result = self.run_step("Resolve build version", "verify.yml", SCENARIO=mode)
-                self.assertNotEqual(result.returncode, 0)
-                self.assertFalse((self.root / "output").exists())
+        for release_mode, version in (("release", "2026.10.4"), ("snapshot", "2026.10.4-SNAPSHOT.17")):
+            for scenario in ("release", "tag", "network"):
+                with self.subTest(mode=release_mode, failure=scenario):
+                    result = self.run_step("Resolve build version", "verify.yml", SCENARIO=scenario,
+                                           RELEASE_MODE=release_mode, COLLISION_VERSION=version)
+                    self.assertNotEqual(result.returncode, 0)
+                    self.assertFalse((self.root / "output").exists())
+
+    def test_new_snapshot_checks_collisions_and_resolves_version(self):
+        result = self.run_step("Resolve build version", "verify.yml", RELEASE_MODE="snapshot")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(self.outputs()["version"], "2026.10.4-SNAPSHOT.17")
+        calls = [json.loads(line) for line in (self.root / "trace.jsonl").read_text().splitlines()]
+        self.assertEqual(len(calls), 2)
+        self.assertTrue(all(call[0] == "api" for call in calls))
 
     def test_publish_only_after_all_uploads_succeed(self):
         assets = self.root / "release-assets"
@@ -209,6 +260,55 @@ else: sys.exit(7)
         self.assertIn("--prerelease=false", calls[1])
         self.assertIn("--latest=true", calls[1])
         self.assertTrue((self.root / "public").exists())
+
+    def test_snapshot_publication_never_updates_latest(self):
+        assets = self.root / "release-assets"
+        assets.mkdir()
+        (assets / "package.zip").write_bytes(b"package fixture")
+        result = self.run_step("Publish the tested desktop release", RELEASE_MODE="snapshot",
+                               RELEASE_VERSION="2026.10.4-SNAPSHOT.17")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        calls = [json.loads(line) for line in (self.root / "trace.jsonl").read_text().splitlines()]
+        self.assertEqual(len(calls), 2)
+        self.assertIn("--draft", calls[0])
+        self.assertIn("a" * 40, calls[0])
+        self.assertIn("--prerelease=true", calls[1])
+        self.assertTrue(all("--latest=false" in call for call in calls))
+        self.assertTrue((self.root / "public").exists())
+        notes = (self.root / "release-notes.md").read_text()
+        self.assertIn("Snapshot preview", notes)
+        self.assertNotIn("squadspeak.rb is", notes)
+
+    def test_snapshot_package_set_omits_update_feeds_and_homebrew(self):
+        assets = self.root / "release-assets"
+        assets.mkdir()
+        expected = self.assets[:-2]
+        for name in expected:
+            (assets / name).write_bytes(name.encode())
+        values = dict(RELEASE_MODE="snapshot", RELEASE_VERSION="2026.10.4-SNAPSHOT.17")
+        for name in ("appcast-macos-arm64.xml", "squadspeak.rb"):
+            (assets / name).write_text("unexpected")
+            result = self.run_step("Verify package set and create checksums", **values)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertFalse((assets / "SHA256SUMS").exists())
+            (assets / name).unlink()
+        result = self.run_step("Verify package set and create checksums", **values)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertFalse((assets / "squadspeak.rb").exists())
+        checksums = (assets / "SHA256SUMS").read_text()
+        self.assertEqual(len(checksums.splitlines()), len(expected))
+        for name in expected:
+            self.assertIn("  " + name + "\n", checksums)
+
+    def test_publication_mode_must_match_version(self):
+        (self.root / "release-assets").mkdir()
+        for mode, version in (("snapshot", "2026.10.4"), ("release", "2026.10.4-SNAPSHOT.17"),
+                              ("unknown", "2026.10.4")):
+            with self.subTest(mode=mode):
+                result = self.run_step("Verify package set and create checksums",
+                                       RELEASE_MODE=mode, RELEASE_VERSION=version)
+                self.assertNotEqual(result.returncode, 0)
+                self.assertFalse((self.root / "release-assets/SHA256SUMS").exists())
 
     def test_package_set_rejects_missing_empty_and_unexpected_files(self):
         assets = self.root / "release-assets"
