@@ -514,31 +514,52 @@ already hears the original output.
 Keep branches scoped to one reviewed change and squash-merge them into `main`.
 GitHub permits squash merges only and removes merged branches automatically.
 
-Versions are UTC calendar dates in SemVer form: `YYYY.M.D`, without leading zeroes. `cmake/Version.cmake` is the canonical resolver. CI resolves a release version once and supplies it to every package job.
+The flow follows [PodLord's merge and release entrypoints](https://github.com/YunaBraska/podlord/tree/ffb730401033e5dab363b4923fa14e58abd90f87/.github/workflows)
+and the [shared Swift release contract](https://github.com/YunaBraska/YunaBraska/blob/036626606065b3b64488ef0611d63713abdcf70c/SWIFT_CI_CD.md).
+The shared repository has no native C++ build workflow. `verify.yml` owns the
+single native matrix used by all three local entrypoints.
 
-`verify.yml` is callable by other workflows and runs desktop builds, protocol/UI
-tests, sanitizer checks and installed-package smoke tests. Run `release.yml` on
-`main` to publish a regular desktop release. It resolves the UTC version once,
-rejects an existing tag or release before starting builds, and reuses the full
-verification matrix. Failed API requests also stop the preflight; they are not
-treated as a free version number.
+| Entry | Version and result |
+| --- | --- |
+| `build-pr.yml` | Tests the PR head. Snapshot packages remain available for one day. Also supports manual branch verification. |
+| `build-merge.yml` | Every main merge builds the same snapshot matrix. No tag, public release, Homebrew change or update feed. |
+| `release.yml` | Manual release. Changed product sources or `force=true` select a UTC `YYYY.M.D` release. Otherwise it builds a snapshot. Non-default branches always build snapshots. |
 
-Publication requires matching signed macOS appcasts and all five desktop
-archives, the standalone Windows test kit and corresponding third-party sources.
-Checksums include the appcasts and generated Homebrew cask. Uploads go into a
-draft first; only a complete upload becomes a public latest release. Existing
-published packages are never replaced. If upload/publication fails, inspect the
-private draft before deleting it and retrying; do not silently replace a public
-version. The source revision stays fixed throughout the workflow. Native package
-tests run before publication; physical device observations follow the initial
-release under U139.
+The existing `yuna-release: true` marker also permits the central weekly release
+dispatcher to invoke that same release entrypoint when product sources change.
+
+Version and commit are resolved once and passed to every job. Snapshots use the
+pinned `YunaBraska/semver-info-action` and its `next_snapshot` output from the
+newest reachable tag by creation date, with `0.0.1` as fallback. The app displays
+the full `-SNAPSHOT` suffix. CMake and native bundle metadata use its numeric part.
+Stable versions use `cmake/Version.cmake` and UTC without leading zeroes.
+
+As in the shared flows, documentation, tests, specs, examples, benchmarks,
+licenses and `.github` changes alone do not request publication. Use `force`
+when deliberately releasing only packaging or pipeline changes, including the
+packaging entrypoints under `tests/`. Force never replaces an existing version.
+Tag/release collisions and API failures stop before native builds. Snapshots
+need no publication secrets. Test reports remain available for seven days.
+
+Publication requires matching signed macOS appcasts, all five desktop archives,
+the standalone Windows test kit and corresponding third-party sources. Checksums
+include the appcasts and generated Homebrew cask. Uploads go into a draft first.
+Only a complete upload becomes a public latest release. Published assets are
+immutable. If publication fails, inspect the private draft before explicitly
+removing it and retrying. The source revision stays fixed throughout the workflow.
+Physical device observations follow the initial release under U139.
+
+The application never writes `YunaBraska/homebrew-tap`. After the first stable
+release, add the generated `squadspeak.rb` there. Its release/asset markers let
+the existing tap updater open its normal maintenance PR for later releases.
 
 For a focused manual check, use
 `gh workflow run verify.yml --ref <branch> -f platform=windows` (also `linux`,
-`macos`, `sanitizers`, or `all`). Pushes to main, pull requests and the reusable release
-call always run every platform. A focused run does not replace the release gate.
-Feature pushes are checked by their pull request, avoiding a duplicate matrix
-for the same branch update.
+`macos`, `sanitizers`, or `all`). PR, merge and release callers always run the full
+matrix. Feature pushes are checked by their PR, avoiding duplicate platform runs.
+New PR/merge checks cancel obsolete runs. A release is never cancelled by a newer
+snapshot. Build jobs keep read-only repository permissions. Only publication can
+write tags/releases. The application runtime gains no pipeline dependency.
 
 The separate `squadspeak-third-party-sources.tar.gz` release asset contains the
 pinned dependency archives, Qt SDK sources and Abseil build patch. Build it with

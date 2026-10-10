@@ -120,6 +120,27 @@ private slots:
         QVERIFY(!QFile::exists(profile + ".channel.json"));
         QVERIFY(!QFile::exists(profile + ".instance.lock"));
     }
+    void commandLineVersionKeepsTheBuildLabel_data() {
+        QTest::addColumn<QStringList>("arguments");
+        QTest::newRow("desktop") << QStringList{"--version"};
+        QTest::newRow("headless") << QStringList{"--headless", "--version"};
+    }
+    void commandLineVersionKeepsTheBuildLabel() {
+        QFETCH(QStringList, arguments);
+        QTemporaryDir directory;
+        const auto profile = directory.filePath("version.ini");
+        QProcess process;
+        auto environment = QProcessEnvironment::systemEnvironment();
+        environment.insert("QT_QPA_PLATFORM", "offscreen");
+        process.setProcessEnvironment(environment);
+        process.start(executable_, arguments + QStringList{"--settings-file", profile});
+        QVERIFY(process.waitForFinished(5000));
+        QCOMPARE(process.exitStatus(), QProcess::NormalExit);
+        QCOMPARE(process.exitCode(), 0);
+        const auto version = qEnvironmentVariable("SQUADSPEAK_VERSION", QStringLiteral(SQUADSPEAK_VERSION));
+        QCOMPARE(QString::fromUtf8(process.readAllStandardOutput()).trimmed(), "SquadSpeak " + version);
+        QVERIFY(QDir(directory.path()).entryList(QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot).isEmpty());
+    }
     void headlessLanguageOptionLoadsCatalogBeforeHelp_data() {
         QTest::addColumn<QString>("language");
         QTest::addColumn<QString>("expected");

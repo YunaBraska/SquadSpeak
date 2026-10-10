@@ -6,7 +6,7 @@ if(CMAKE_HOST_APPLE AND NOT CMAKE_OSX_DEPLOYMENT_TARGET
     set(CMAKE_OSX_DEPLOYMENT_TARGET "13.0" CACHE STRING "Minimum macOS version" FORCE)
 endif()
 include(cmake/Version.cmake)
-project(SquadSpeak VERSION ${SQUADSPEAK_VERSION} LANGUAGES C CXX)
+project(SquadSpeak VERSION ${SQUADSPEAK_NUMERIC_VERSION} LANGUAGES C CXX)
 if(APPLE)
     enable_language(OBJCXX)
 endif()
@@ -477,7 +477,7 @@ target_compile_options(squad_audio PRIVATE $<$<CXX_COMPILER_ID:AppleClang,Clang,
 
 add_library(squad_session src/voice_session.cpp src/voice_session.hpp src/tls_identity.cpp src/tls_identity.hpp src/local_channel.cpp src/local_channel_chat.cpp src/local_channel_control.cpp src/local_channel_discovery.cpp src/local_channel_video.cpp src/local_channel.hpp src/media_transport.cpp src/media_transport.hpp src/chat_history.cpp src/chat_history.hpp src/license.cpp src/license.hpp)
 target_include_directories(squad_session PUBLIC src)
-target_compile_definitions(squad_session PUBLIC SQUADSPEAK_VERSION="${PROJECT_VERSION}")
+target_compile_definitions(squad_session PUBLIC SQUADSPEAK_VERSION="${SQUADSPEAK_VERSION}")
 option(SQUADSPEAK_STORE_BUILD "Build a free-only store distribution" OFF)
 set(SQUADSPEAK_GITHUB_CLIENT_ID "Ov23li8PQoxYilNhKyrn" CACHE STRING "Public Yuna Supporter OAuth client ID")
 if(SQUADSPEAK_GITHUB_CLIENT_ID AND NOT SQUADSPEAK_GITHUB_CLIENT_ID MATCHES "^[A-Za-z0-9_]+$")

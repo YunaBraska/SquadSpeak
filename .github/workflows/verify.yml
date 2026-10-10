@@ -1,9 +1,6 @@
-name: Verify
+name: CI Build
 
 on:
-  push:
-    branches: [main]
-  pull_request:
   workflow_dispatch:
     inputs:
       platform:
@@ -13,12 +10,30 @@ on:
         options: [all, linux, macos, windows, sanitizers]
   workflow_call:
     inputs:
-      version:
+      ref:
+        description: Exact source revision.
         type: string
         default: ''
+      release:
+        description: Resolve a stable release on the default branch when source changed.
+        type: boolean
+        default: false
+      force:
+        description: Release unchanged source. Never replaces a published version.
+        type: boolean
+        default: false
+    outputs:
+      commit_sha:
+        description: Tested source revision.
+        value: ${{ jobs.prepare.outputs.commit_sha }}
+      dry_run:
+        description: Built a snapshot without publication.
+        value: ${{ jobs.prepare.outputs.dry_run }}
+      version:
+        description: Version shared by every package.
+        value: ${{ jobs.prepare.outputs.version }}
 
 env:
-  SQUADSPEAK_VERSION: ${{ inputs.version }}
   SQUADSPEAK_UPDATE_PUBLIC_KEY: ${{ vars.SQUADSPEAK_UPDATE_PUBLIC_KEY }}
 
 permissions:
@@ -26,10 +41,110 @@ permissions:
 
 concurrency:
   group: verify-${{ github.workflow }}-${{ github.ref }}-${{ inputs.platform }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ !inputs.release }}
 
 jobs:
+  prepare:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      commit_sha: ${{ steps.mode.outputs.commit_sha }}
+      dry_run: ${{ steps.mode.outputs.dry_run }}
+      version: ${{ steps.resolve.outputs.version }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          fetch-depth: 0
+          ref: ${{ inputs.ref || github.sha }}
+          persist-credentials: false
+      - name: Check release contracts before native builds
+        run: |
+          python3 -m unittest discover -s tests -p 'release_*_tests.py'
+          python3 tests/test_build_appcasts.py
+      - name: Read build mode
+        id: mode
+        env:
+          REQUEST_RELEASE: ${{ inputs.release }}
+          FORCE: ${{ inputs.force }}
+          SOURCE_REF: ${{ github.ref }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+        shell: sh
+        run: |
+          set -eu
+          commit_sha=$(git rev-parse HEAD)
+          git tag --merged HEAD --sort=-creatordate > "$RUNNER_TEMP/reachable-tags.txt"
+          latest_tag=$(sed -n '1p' "$RUNNER_TEMP/reachable-tags.txt")
+          dry_run=true
+          if test "$REQUEST_RELEASE" = true && test "$SOURCE_REF" = "refs/heads/$DEFAULT_BRANCH"; then
+            if test "$FORCE" = true || test -z "$latest_tag"; then
+              dry_run=false
+            else
+              git diff --name-only "$latest_tag" HEAD -- > "$RUNNER_TEMP/changed-files.txt"
+              while IFS= read -r path; do
+                case "$path" in
+                  README*|*/README*|docs/*|*/docs/*|*.md|.github/*|.editorconfig|.gitignore|LICENSE*|*/LICENSE*|\
+                  test/*|tests/*|spec/*|specs/*|Tests/*|*/test/*|*/tests/*|*/spec/*|*/specs/*|\
+                  example/*|examples/*|benchmark/*|benchmarks/*|*/example/*|*/examples/*|*/benchmark/*|*/benchmarks/*)
+                    ;;
+                  *) dry_run=false; break ;;
+                esac
+              done < "$RUNNER_TEMP/changed-files.txt"
+            fi
+          fi
+          {
+            printf 'commit_sha=%s\n' "$commit_sha"
+            printf 'latest_tag=%s\n' "$latest_tag"
+            printf 'dry_run=%s\n' "$dry_run"
+          } >> "$GITHUB_OUTPUT"
+      - name: Read snapshot SemVer
+        if: steps.mode.outputs.dry_run == 'true'
+        id: semver
+        uses: YunaBraska/semver-info-action@180ebf79b3c81785c50cf1f198ee236fc5591504
+        with:
+          semver-a: ${{ steps.mode.outputs.latest_tag }}
+          semver-b: 0.0.1
+          fallback-semver-a: 0.0.1
+          fallback-semver-b: 0.0.1
+      - name: Resolve build version
+        id: resolve
+        env:
+          DRY_RUN: ${{ steps.mode.outputs.dry_run }}
+          SNAPSHOT_VERSION: ${{ steps.semver.outputs.next_snapshot }}
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        shell: sh
+        run: |
+          set -eu
+          if test "$DRY_RUN" = true; then
+            case "$SNAPSHOT_VERSION" in
+              *-SNAPSHOT) version=$SNAPSHOT_VERSION ;;
+              *) printf 'Missing or invalid snapshot version.\n' >&2; exit 1 ;;
+            esac
+            cmake "-DSQUADSPEAK_VERSION=$version" -P cmake/Version.cmake
+          else
+            version=$(cmake -P cmake/Version.cmake 2>&1)
+            gh api --paginate "repos/$GH_REPO/releases?per_page=100" --jq '.[].tag_name' > "$RUNNER_TEMP/releases.txt"
+            gh api "repos/$GH_REPO/git/matching-refs/tags/$version" --jq '.[].ref' > "$RUNNER_TEMP/tags.txt"
+            if grep -Fxq "$version" "$RUNNER_TEMP/releases.txt" || grep -Fxq "refs/tags/$version" "$RUNNER_TEMP/tags.txt"; then
+              printf 'Version %s already exists. Published packages are never replaced.\n' "$version" >&2
+              exit 1
+            fi
+          fi
+          printf 'version=%s\n' "$version" >> "$GITHUB_OUTPUT"
+      - name: Check unchanged source
+        run: git diff --exit-code
+      - name: Summarize build
+        env:
+          BUILD_VERSION: ${{ steps.resolve.outputs.version }}
+          BUILD_COMMIT: ${{ steps.mode.outputs.commit_sha }}
+          DRY_RUN: ${{ steps.mode.outputs.dry_run }}
+        run: |
+          printf 'Version: %s\n\nCommit: %s\n\nSnapshot: %s\n' "$BUILD_VERSION" "$BUILD_COMMIT" "$DRY_RUN" >> "$GITHUB_STEP_SUMMARY"
+
   linux:
+    needs: prepare
+    env:
+      SQUADSPEAK_VERSION: ${{ needs.prepare.outputs.version }}
     if: inputs.platform == '' || inputs.platform == 'all' || inputs.platform == 'linux'
     strategy:
       fail-fast: false
@@ -46,6 +161,7 @@ jobs:
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
+          ref: ${{ needs.prepare.outputs.commit_sha }}
           persist-credentials: false
       - name: Prepare build environment
         run: docker build --tag squadspeak-ci - < tests/linux.Dockerfile
@@ -72,6 +188,8 @@ jobs:
             --mount "type=bind,src=$PWD,dst=/source,readonly" \
             --mount "type=bind,src=$PWD/build/ci,dst=/output,readonly" \
             squadspeak-runtime sh /source/tests/linux-ci.sh runtime
+      - name: Check unchanged source
+        run: git diff --exit-code
       - name: Preserve verification evidence
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
@@ -80,6 +198,7 @@ jobs:
           path: |
             build/ci
             ${{ job.status == 'success' && '!build/ci/squadspeak-linux-*.tar.gz' || '' }}
+          retention-days: 7
           if-no-files-found: warn
       - name: Preserve tested Linux package
         if: matrix.mode == 'release'
@@ -87,15 +206,20 @@ jobs:
         with:
           name: release-linux-${{ runner.arch }}
           path: build/ci/squadspeak-linux-*.tar.gz
+          retention-days: 1
           if-no-files-found: error
 
   sanitizers:
+    needs: prepare
+    env:
+      SQUADSPEAK_VERSION: ${{ needs.prepare.outputs.version }}
     if: inputs.platform == '' || inputs.platform == 'all' || inputs.platform == 'sanitizers'
     runs-on: ubuntu-24.04
     timeout-minutes: 90
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
+          ref: ${{ needs.prepare.outputs.commit_sha }}
           persist-credentials: false
       - name: Prepare build environment
         run: docker build --tag squadspeak-ci - < tests/linux.Dockerfile
@@ -108,15 +232,21 @@ jobs:
             --mount "type=bind,src=$PWD/build/sanitizers,dst=/output" squadspeak-ci sanitizers
       - name: Check network changes with sanitizers
         run: sh tests/discovery-network.sh build/sanitizers
+      - name: Check unchanged source
+        run: git diff --exit-code
       - name: Preserve sanitizer evidence
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: linux-sanitizers
           path: build/sanitizers
+          retention-days: 7
           if-no-files-found: warn
 
   macos:
+    needs: prepare
+    env:
+      SQUADSPEAK_VERSION: ${{ needs.prepare.outputs.version }}
     if: inputs.platform == '' || inputs.platform == 'all' || inputs.platform == 'macos'
     strategy:
       fail-fast: false
@@ -127,6 +257,7 @@ jobs:
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
+          ref: ${{ needs.prepare.outputs.commit_sha }}
           persist-credentials: false
       - name: Install build tools
         run: brew install cmake ninja meson pkgconf nasm
@@ -152,6 +283,8 @@ jobs:
         run: |
           mkdir -p build/macos-ci/artifacts
           sh tests/macos-ci.sh "$QT_ROOT_DIR" build/macos-ci 2>&1 | tee build/macos-ci/artifacts/build.log
+      - name: Check unchanged source
+        run: git diff --exit-code
       - name: Preserve verification evidence
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
@@ -160,21 +293,27 @@ jobs:
           path: |
             build/macos-ci/artifacts
             !build/macos-ci/artifacts/squadspeak-macos-*.zip
+          retention-days: 7
           if-no-files-found: warn
       - name: Preserve tested macOS package
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: release-macos-${{ runner.arch }}
           path: build/macos-ci/artifacts/squadspeak-macos-*.zip
+          retention-days: 1
           if-no-files-found: error
 
   windows:
+    needs: prepare
+    env:
+      SQUADSPEAK_VERSION: ${{ needs.prepare.outputs.version }}
     if: inputs.platform == '' || inputs.platform == 'all' || inputs.platform == 'windows'
     runs-on: windows-2022
     timeout-minutes: 90
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
+          ref: ${{ needs.prepare.outputs.commit_sha }}
           persist-credentials: false
       - name: Check source patches before dependency builds
         run: python tests/source_archive_tests.py SourceArchiveTests.test_runtime_patches_survive_windows_checkout
@@ -204,7 +343,7 @@ jobs:
         uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830
         with:
           path: build/windows-ci/dependencies/prefix
-          key: windows-dependencies-${{ runner.os }}-${{ runner.arch }}-msvc-${{ steps.msvc-cache.outputs.version }}-sdk-${{ steps.msvc-cache.outputs.sdk }}-${{ hashFiles('tests/windows-ci.ps1', '.github/workflows/verify.yml') }}
+          key: windows-dependencies-${{ runner.os }}-${{ runner.arch }}-msvc-${{ steps.msvc-cache.outputs.version }}-sdk-${{ steps.msvc-cache.outputs.sdk }}-${{ hashFiles('tests/windows-ci.ps1') }}
       - name: Install Qt 6.11.3 MSVC
         uses: jurplel/install-qt-action@a9c63c7c123f3069cff414e7e482d95dfa9d8125
         with:
@@ -275,6 +414,8 @@ jobs:
         shell: pwsh
         run: |
           ./tests/windows-ci.ps1 -QtRoot $env:QT_ROOT_DIR -BuildRoot "$env:GITHUB_WORKSPACE/build/windows-ci"
+      - name: Check unchanged source
+        run: git diff --exit-code
       - name: Preserve Windows verification evidence
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
@@ -285,12 +426,14 @@ jobs:
             build/windows-ci/ctest.xml
             build/windows-ci/app/smoke
             ${{ job.status != 'success' && 'build/windows-ci/squadspeak-windows-x86_64.zip' || '' }}
+          retention-days: 7
           if-no-files-found: warn
       - name: Preserve tested Windows package
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: release-windows-x86_64
           path: build/windows-ci/squadspeak-windows-x86_64.zip
+          retention-days: 1
           if-no-files-found: error
       - name: Self-service Windows device test
         if: success()
@@ -298,4 +441,29 @@ jobs:
         with:
           name: windows-device-test
           path: build/windows-ci/squadspeak-windows-device-test.zip
+          retention-days: 1
+          if-no-files-found: error
+
+  sources:
+    needs: prepare
+    if: needs.prepare.outputs.dry_run == 'false'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ needs.prepare.outputs.commit_sha }}
+          persist-credentials: false
+      - name: Assemble matching third-party sources
+        shell: sh
+        run: |
+          set -eu
+          python3 cmake/build_sources.py --cache "$RUNNER_TEMP/source-cache" \
+            --output "$RUNNER_TEMP/source-package/squadspeak-third-party-sources.tar.gz"
+      - name: Preserve source package
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: release-third-party-sources
+          path: "${{ runner.temp }}/source-package/squadspeak-third-party-sources.tar.gz"
+          retention-days: 1
           if-no-files-found: error

@@ -1,8 +1,14 @@
 # yuna-release: true
-name: Release
+name: CD Release
 
 on:
   workflow_dispatch:
+    inputs:
+      force:
+        description: Release unchanged source. Never replaces a published version.
+        required: true
+        default: false
+        type: boolean
 
 permissions:
   contents: read
@@ -12,67 +18,22 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  version:
-    runs-on: ubuntu-24.04
-    timeout-minutes: 5
-    outputs:
-      value: ${{ steps.resolve.outputs.value }}
-    steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
-        with:
-          persist-credentials: false
-      - name: Resolve UTC release version
-        id: resolve
-        env:
-          GH_TOKEN: ${{ github.token }}
-          GH_REPO: ${{ github.repository }}
-          SOURCE_REF: ${{ github.ref }}
-        shell: sh
-        run: |
-          set -eu
-          test "$SOURCE_REF" = refs/heads/main || { printf 'Release must run from main.\n' >&2; exit 1; }
-          version=$(cmake -P cmake/Version.cmake 2>&1)
-          gh api --paginate "repos/$GH_REPO/releases?per_page=100" --jq '.[].tag_name' > "$RUNNER_TEMP/releases.txt"
-          gh api "repos/$GH_REPO/git/matching-refs/tags/$version" --jq '.[].ref' > "$RUNNER_TEMP/tags.txt"
-          if grep -Fxq "$version" "$RUNNER_TEMP/releases.txt" || grep -Fxq "refs/tags/$version" "$RUNNER_TEMP/tags.txt"; then
-            printf 'Version %s already exists. Published packages are never replaced.\n' "$version" >&2
-            exit 1
-          fi
-          printf 'value=%s\n' "$version" >> "$GITHUB_OUTPUT"
   verify:
-    needs: version
     uses: ./.github/workflows/verify.yml
     with:
-      version: ${{ needs.version.outputs.value }}
-
-  sources:
-    needs: version
-    runs-on: ubuntu-24.04
-    timeout-minutes: 15
-    steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
-        with:
-          persist-credentials: false
-      - name: Assemble matching third-party sources
-        shell: sh
-        run: |
-          set -eu
-          python3 cmake/build_sources.py --cache "$RUNNER_TEMP/source-cache" \
-            --output "$RUNNER_TEMP/source-package/squadspeak-third-party-sources.tar.gz"
-      - name: Preserve source package
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        with:
-          name: release-third-party-sources
-          path: "${{ runner.temp }}/source-package/squadspeak-third-party-sources.tar.gz"
-          if-no-files-found: error
+      ref: ${{ github.sha }}
+      release: true
+      force: ${{ inputs.force }}
 
   sign_macos:
-    needs: [version, verify]
+    needs: verify
+    if: needs.verify.outputs.dry_run == 'false'
     runs-on: macos-15
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
+          ref: ${{ needs.verify.outputs.commit_sha }}
           persist-credentials: false
       - name: Download pinned Sparkle tools
         shell: sh
@@ -94,7 +55,7 @@ jobs:
         env:
           UPDATE_PUBLIC_KEY: ${{ vars.SQUADSPEAK_UPDATE_PUBLIC_KEY }}
           UPDATE_PRIVATE_KEY: ${{ secrets.SQUADSPEAK_UPDATE_PRIVATE_KEY }}
-          RELEASE_VERSION: ${{ needs.version.outputs.value }}
+          RELEASE_VERSION: ${{ needs.verify.outputs.version }}
         shell: sh
         run: |
           set -eu
@@ -144,10 +105,12 @@ jobs:
         with:
           name: macos-update-feeds
           path: "${{ runner.temp }}/update-feeds"
+          retention-days: 1
           if-no-files-found: error
 
   publish:
-    needs: [version, verify, sign_macos, sources]
+    needs: [verify, sign_macos]
+    if: needs.verify.outputs.dry_run == 'false'
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:
@@ -156,6 +119,7 @@ jobs:
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
+          ref: ${{ needs.verify.outputs.commit_sha }}
           persist-credentials: false
       - name: Download tested packages
         uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0
@@ -176,7 +140,7 @@ jobs:
       - name: Verify package set and create checksums
         shell: sh
         env:
-          RELEASE_VERSION: ${{ needs.version.outputs.value }}
+          RELEASE_VERSION: ${{ needs.verify.outputs.version }}
         run: |
           set -eu
           test "$(find release-assets -maxdepth 1 -type f | wc -l)" -eq 9
@@ -184,13 +148,13 @@ jobs:
             test -s "release-assets/$file"
           done
           cmake -DSQUADSPEAK_VERSION="$RELEASE_VERSION" -DARCHIVES_DIR=release-assets -P cmake/BuildCask.cmake
-          (cd release-assets && sha256sum *.tar.gz *.zip *.xml *.rb > SHA256SUMS && sha256sum --check SHA256SUMS)
+          (cd release-assets && sha256sum -- *.tar.gz *.zip *.xml *.rb > SHA256SUMS && sha256sum --check SHA256SUMS)
       - name: Publish the tested desktop release
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
-          RELEASE_VERSION: ${{ needs.version.outputs.value }}
-          SOURCE_REVISION: ${{ github.sha }}
+          RELEASE_VERSION: ${{ needs.verify.outputs.version }}
+          SOURCE_REVISION: ${{ needs.verify.outputs.commit_sha }}
         shell: sh
         run: |
           set -eu

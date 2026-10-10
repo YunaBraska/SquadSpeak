@@ -1,6 +1,7 @@
 """Exercise release metadata through public CMake scripts without configuring Qt."""
 import hashlib
 import os
+import plistlib
 from pathlib import Path
 import subprocess
 import tempfile
@@ -26,8 +27,28 @@ class ReleaseVersionTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stdout)
         self.assertEqual(result.stdout.strip(), "2026.1.9")
 
+    def test_snapshot_retains_label_and_has_numeric_native_metadata(self):
+        result = self.resolve("2026.10.5-SNAPSHOT")
+        self.assertEqual(result.returncode, 0, result.stdout)
+        self.assertEqual(result.stdout.strip(), "2026.10.5-SNAPSHOT")
+        repo = Path(__file__).resolve().parents[1]
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "CMakeLists.txt").write_text(
+                'cmake_minimum_required(VERSION 3.24)\n'
+                f'include("{repo.as_posix()}/cmake/Version.cmake")\n'
+                'project(Snapshot VERSION ${SQUADSPEAK_NUMERIC_VERSION} LANGUAGES NONE)\n'
+                f'configure_file("{repo.as_posix()}/src/Info.plist.in" bundle.plist)\n')
+            configured = subprocess.run(["cmake", "-S", str(root), "-B", str(root / "out"),
+                "-DSQUADSPEAK_VERSION=2026.10.5-SNAPSHOT"], capture_output=True, text=True)
+            self.assertEqual(configured.returncode, 0, configured.stdout + configured.stderr)
+            metadata = plistlib.loads((root / "out/bundle.plist").read_bytes())
+            self.assertEqual(metadata["CFBundleVersion"], "2026.10.5")
+            self.assertEqual(metadata["CFBundleShortVersionString"], "2026.10.5")
+
     def test_invalid_versions_fail_before_configuration(self):
-        for version in ("", "2026.01.09", "v2026.1.9", "2026.1", "2026.1.9.1", "1.2.3;bad", "1.2.3\n"):
+        for version in ("", "2026.01.09", "v2026.1.9", "2026.1", "2026.1.9.1", "1.2.3;bad", "1.2.3\n",
+                        "1.2.3-SNAPSHOT\n", "1.2.3-SNAPSHOT;bad", "1.2.3-unknown"):
             with self.subTest(version=version):
                 result = self.resolve(version)
                 self.assertNotEqual(result.returncode, 0)
@@ -41,7 +62,7 @@ class UpdateConfigurationTests(unittest.TestCase):
             script = Path(directory) / "check.cmake"
             script.write_text('set(CMAKE_SYSTEM_NAME Darwin)\n'
                               f'set(SQUADSPEAK_STORE_BUILD {"ON" if store else "OFF"})\n'
-                              f'include("{source}")\n'
+                              f'include("{source.as_posix()}")\n'
                               'if(squad_update_plist OR TARGET squad_updater)\n'
                               '  message(FATAL_ERROR "Store must not configure external updates")\nendif()\n')
             return subprocess.run(["cmake", "-DSQUADSPEAK_UPDATE_PUBLIC_KEY=" + key, "-P", str(script)],
@@ -85,7 +106,7 @@ class HomebrewTests(unittest.TestCase):
             self.assertEqual((root / "squadspeak.rb").read_text(), text)
 
     def test_invalid_input_preserves_existing_cask(self):
-        for invalid in ("missing", "empty", "directory", "version"):
+        for invalid in ("missing", "empty", "directory", "version", "snapshot"):
             with self.subTest(invalid=invalid), tempfile.TemporaryDirectory() as directory:
                 root = Path(directory)
                 (root / "squadspeak.rb").write_text("previous release")
@@ -95,7 +116,9 @@ class HomebrewTests(unittest.TestCase):
                     intel.mkdir()
                 elif invalid != "missing":
                     intel.write_bytes(b"" if invalid == "empty" else b"intel")
-                result = self.generate(root, '1.2.3";invalid' if invalid == "version" else "2026.10.4")
+                version = '1.2.3";invalid' if invalid == "version" else "2026.10.4"
+                if invalid == "snapshot": version += "-SNAPSHOT"
+                result = self.generate(root, version)
                 self.assertNotEqual(result.returncode, 0)
                 self.assertEqual((root / "squadspeak.rb").read_text(), "previous release")
 
