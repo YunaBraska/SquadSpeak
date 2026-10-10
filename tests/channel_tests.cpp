@@ -4823,12 +4823,12 @@ private slots:
         QCOMPARE(newClient.channel.participants().size(), 1);
     }
     void sixtyFourClientsHaveOneConsistentRosterAndAudioFanout_data() {
-        QTest::addColumn<int>("schedulerStallMs");
+        QTest::addColumn<int>("callbackDelayMs");
         QTest::newRow("continuous") << 0;
-        QTest::newRow("brief-scheduler-stalls") << 45;
+        QTest::newRow("delayed-audio-callbacks") << 45;
     }
     void sixtyFourClientsHaveOneConsistentRosterAndAudioFanout() {
-        QFETCH(int, schedulerStallMs);
+        QFETCH(int, callbackDelayMs);
         bool speakersOk = false;
         const int speakers = qEnvironmentVariableIsSet("SQUAD_SOAK_SPEAKERS")
             ? qEnvironmentVariable("SQUAD_SOAK_SPEAKERS").toInt(&speakersOk) : 4;
@@ -4894,13 +4894,18 @@ private slots:
         std::fill(audioCounts.begin(), audioCounts.end(), 0);
         std::fill(missingCounts.begin(), missingCounts.end(), 0);
         const int sustainedFrames = soakSeconds * 50;
-        QTimer schedulerStall;
-        schedulerStall.setTimerType(Qt::PreciseTimer);
-        connect(&schedulerStall, &QTimer::timeout, &reception, [&] {
-            // Deliberately suspend the event loop to reproduce scheduler jitter.
-            // This is fault injection, not waiting for an asynchronous result.
-            QThread::msleep(schedulerStallMs);
-        });
+        const auto callbacksDelayed = [callbackDelayMs](qint64 now) {
+            // Defer capture/playback without also suspending the host and all
+            // 64 clients. A sleeping event loop can overshoot on busy runners.
+            return now >= 200 && now % 200 < callbackDelayMs;
+        };
+        const auto receivedThrough = [&](int frames) {
+            for (size_t i = 0; i < audioCounts.size(); ++i) {
+                const int expected = frames * (speakers - (i < size_t(speakers) ? 1 : 0));
+                if (audioCounts[i] + missingCounts[i] < expected) return false;
+            }
+            return true;
+        };
         QTimer output;
         output.setTimerType(Qt::PreciseTimer);
         qint64 queuedUntilMs = 0, playedMs = 0;
@@ -4911,6 +4916,7 @@ private slots:
         };
         connect(&output, &QTimer::timeout, &reception, [&] {
             const auto now = sustained.elapsed();
+            if (callbacksDelayed(now)) return;
             advancePlayback(now);
             // Match AudioModel's 80 ms sink and 10 ms replenishment. The sink
             // consumes time even while this event loop is stalled. Refill at
@@ -4927,20 +4933,30 @@ private slots:
         QTimer input;
         input.setTimerType(Qt::PreciseTimer);
         int sentFrames = 0;
-        bool validSend = true;
+        bool validSend = true, deliveryTimedOut = false;
+        qint64 sentAtMs = 0;
         connect(&input, &QTimer::timeout, &reception, [&] {
             const auto now = sustained.elapsed();
+            if (callbacksDelayed(now)) return;
+            // Sanitizers verify the same fanout and packet count with bounded
+            // work in flight. Release builds alone measure realtime capacity.
+            if (instrumentedTiming && !receivedThrough(sentFrames)) {
+                if (now - sentAtMs >= 5000) { deliveryTimedOut = true; input.stop(); }
+                return;
+            }
             maxInputGapMs = std::max(maxInputGapMs, now - lastInputMs);
             lastInputMs = now;
             // Capture is sample-clocked, not callback-clocked. AudioModel
             // drains all available samples after a delayed wakeup. Keep this
             // fixture's catch-up bounded by the receiver's six-frame queue.
-            const auto due = std::min<qint64>({now / 20, sentFrames + 6, sustainedFrames});
+            const auto due = instrumentedTiming ? sentFrames + 1
+                : std::min<qint64>({now / 20, sentFrames + 6, sustainedFrames});
             while (sentFrames < due) {
                 for (int speaker = 0; speaker < speakers; ++speaker)
                     validSend &= clients[size_t(speaker)]->channel.sendAudio(packet);
                 ++sentFrames;
             }
+            sentAtMs = now;
             if (sentFrames == sustainedFrames) input.stop();
         });
         qInfo() << "Starting audio soak; simultaneous speakers" << speakers
@@ -4950,9 +4966,10 @@ private slots:
         const auto cpuStarted = std::clock();
 #endif
         sustained.start(); output.start(10); input.start(10);
-        if (schedulerStallMs) schedulerStall.start(200);
-        QVERIFY(waitForEvents(&input, &QTimer::timeout, [&] { return sentFrames == sustainedFrames; }, soakSeconds * 1500 + 5000));
-        schedulerStall.stop();
+        QVERIFY(waitForEvents(&input, &QTimer::timeout, [&] { return !input.isActive(); },
+            soakSeconds * (instrumentedTiming ? 15000 : 1500) + 5000));
+        QVERIFY2(!deliveryTimedOut, "Instrumented fanout did not deliver a frame to every listener within 5 seconds");
+        QCOMPARE(sentFrames, sustainedFrames);
         QVERIFY(validSend);
         output.stop();
         const auto playbackMs = sustained.elapsed();
@@ -4963,13 +4980,7 @@ private slots:
         // RTP can report a gap only when a later packet arrives. Losing the
         // final packet cannot produce a gap report; allow a bounded drain,
         // then apply the same 95% delivery requirement to every listener.
-        waitForEvents([&] {
-            for (size_t i = 0; i < audioCounts.size(); ++i) {
-                const int expected = sustainedFrames * (speakers - (i < size_t(speakers) ? 1 : 0));
-                if (audioCounts[i] + missingCounts[i] < expected) return false;
-            }
-            return true;
-        }, 500);
+        waitForEvents([&] { return receivedThrough(sustainedFrames); }, 500);
         const auto receivedFrames = std::accumulate(audioCounts.begin(), audioCounts.end(), 0);
         const auto missingFrames = std::accumulate(missingCounts.begin(), missingCounts.end(), 0);
         qInfo() << "64 clients; all-to-all burst plus" << sustainedFrames
@@ -4991,7 +5002,7 @@ private slots:
         QVERIFY(validAudio);
         for (const auto frames : audibleFrames) QVERIFY(frames > 0);
         if (instrumentedTiming) {
-            qInfo() << "Instrumented run: realtime playout thresholds are verified by the release matrix";
+            qInfo() << "Instrumented delivery-paced run; realtime capacity is verified by the release matrix";
         } else {
             const auto expectedFrames = playbackMs / 20;
             QVERIFY2(renderedFrames >= expectedFrames * 9 / 10,

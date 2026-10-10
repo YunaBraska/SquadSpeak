@@ -78,7 +78,6 @@ case "$mode" in
             -DCMAKE_SHARED_LINKER_FLAGS=-fsanitize=address,undefined "$@"
         export ASAN_OPTIONS=detect_leaks=1:halt_on_error=1
         export UBSAN_OPTIONS=halt_on_error=1:print_stacktrace=1
-        export QT_LOGGING_RULES='squadspeak.media.debug=true'
         ;;
     *) printf 'Usage: linux-ci.sh [release|store|sanitizers|runtime] [CMake options...]\n' >&2; exit 2 ;;
 esac
