@@ -234,7 +234,13 @@ jobs:
         run: |
           ./tests/windows-ci.ps1 -QtRoot $env:QT_ROOT_DIR -BuildRoot "$env:GITHUB_WORKSPACE/build/windows-ci" -DependenciesOnly
           Copy-Item "$env:GITHUB_WORKSPACE/build/windows-ci/build.log" "$env:GITHUB_WORKSPACE/build/windows-ci/dependencies-first.log" -Force
-          ./tests/windows-ci.ps1 -QtRoot $env:QT_ROOT_DIR -BuildRoot "$env:GITHUB_WORKSPACE/build/windows-ci" -DependenciesOnly
+          # A restored binary prefix must work without source archives or downloads.
+          Get-ChildItem "$env:GITHUB_WORKSPACE/build/windows-ci/dependencies" |
+            Where-Object Name -ne 'prefix' | Remove-Item -Recurse -Force
+          function global:curl.exe { throw 'Unexpected download while reusing a dependency prefix' }
+          try {
+            ./tests/windows-ci.ps1 -QtRoot $env:QT_ROOT_DIR -BuildRoot "$env:GITHUB_WORKSPACE/build/windows-ci" -DependenciesOnly
+          } finally { Remove-Item Function:\curl.exe }
           Copy-Item "$env:GITHUB_WORKSPACE/build/windows-ci/build.log" "$env:GITHUB_WORKSPACE/build/windows-ci/dependencies-reuse.log" -Force
           if (-not (Select-String -Path build/windows-ci/dependencies-reuse.log -SimpleMatch 'Dependency prefix cache hit' -Quiet)) {
             throw 'Repeated preparation did not reuse the dependency prefix'

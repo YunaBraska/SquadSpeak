@@ -51,7 +51,7 @@ function Get-Source([string]$Name, [string]$Url, [string]$Sha256) {
     $archive = "$deps/$Name"
     if (-not (Test-Path $archive)) {
         Invoke-Checked curl.exe @("--fail", "--location", "--silent", "--show-error",
-            "--connect-timeout", "20", "--max-time", "180", "--retry", "2", "--retry-max-time", "300",
+            "--connect-timeout", "20", "--max-time", "180", "--retry", "2", "--retry-all-errors", "--retry-max-time", "300",
             "--output", "$archive.partial", $Url)
         Move-Item "$archive.partial" $archive -Force
     }
@@ -68,13 +68,13 @@ function Get-Source([string]$Name, [string]$Url, [string]$Sha256) {
     return $directory
 }
 
-$opus = Get-Source "opus-1.6.1.tar.gz" "https://downloads.xiph.org/releases/opus/opus-1.6.1.tar.gz" "6ffcb593207be92584df15b32466ed64bbec99109f007c82205f0194572411a1"
-$samplerate = Get-Source "libsamplerate-0.2.2.tar.xz" "https://github.com/libsndfile/libsamplerate/releases/download/0.2.2/libsamplerate-0.2.2.tar.xz" "3258da280511d24b49d6b08615bbe824d0cacc9842b0e4caf11c52cf2b043893"
-$openssl = Get-Source "openssl-3.6.5.tar.gz" "https://github.com/openssl/openssl/releases/download/openssl-3.6.5/openssl-3.6.5.tar.gz" "a2157c2830efdec3788939b00c9b0638306d3f0bbb76dc4832ee503bb397df98"
-
 if (Test-DependencyPrefix) {
     Write-Host "Dependency prefix cache hit; skipping OpenSSL, Opus and libsamplerate builds."
 } else {
+    $opus = Get-Source "opus-1.6.1.tar.gz" "https://downloads.xiph.org/releases/opus/opus-1.6.1.tar.gz" "6ffcb593207be92584df15b32466ed64bbec99109f007c82205f0194572411a1"
+    $samplerate = Get-Source "libsamplerate-0.2.2.tar.xz" "https://github.com/libsndfile/libsamplerate/releases/download/0.2.2/libsamplerate-0.2.2.tar.xz" "3258da280511d24b49d6b08615bbe824d0cacc9842b0e4caf11c52cf2b043893"
+    $openssl = Get-Source "openssl-3.6.5.tar.gz" "https://github.com/openssl/openssl/releases/download/openssl-3.6.5/openssl-3.6.5.tar.gz" "a2157c2830efdec3788939b00c9b0638306d3f0bbb76dc4832ee503bb397df98"
+
     Push-Location $openssl
     Invoke-Checked perl @("Configure", "VC-WIN64A", "shared", "no-tests", "--prefix=$prefix")
     Invoke-Checked nmake @()
