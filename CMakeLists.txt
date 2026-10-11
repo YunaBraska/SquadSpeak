@@ -657,7 +657,11 @@ if(BUILD_TESTING)
     set_tests_properties(frequency_display PROPERTIES
         ENVIRONMENT "QT_QPA_PLATFORM=${ui_test_platform};QT_QUICK_BACKEND=software;QT_QUICK_CONTROLS_STYLE=Basic;SQUAD_TEST_ARTIFACTS=${CMAKE_BINARY_DIR}/smoke")
     file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/smoke")
-    add_test(NAME channel_controls COMMAND "${CMAKE_COMMAND}" -E env ${network_test_launcher} $<TARGET_FILE:controls_tests> -input "${CMAKE_CURRENT_SOURCE_DIR}/tests/tst_channel_controls.qml"
+    set(controls_test_command $<TARGET_FILE:controls_tests>)
+    if(network_test_launcher)
+        list(PREPEND controls_test_command "${CMAKE_COMMAND}" -E env ${network_test_launcher})
+    endif()
+    add_test(NAME channel_controls COMMAND ${controls_test_command} -input "${CMAKE_CURRENT_SOURCE_DIR}/tests/tst_channel_controls.qml"
         -o "${CMAKE_BINARY_DIR}/smoke/channel-controls.xml,junitxml" -o -,txt)
     set_tests_properties(channel_controls PROPERTIES
         TIMEOUT 600

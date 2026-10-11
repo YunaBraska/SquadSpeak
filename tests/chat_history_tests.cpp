@@ -204,6 +204,31 @@ private slots:
         ChatHistory restored(path, identity, now);
         QCOMPARE(records(restored).size(), 1);
     }
+    void lockedWriterFailsWithoutLosingReceiptAndCanBeRetried() {
+        QTemporaryDir directory;
+        const auto identity = TlsIdentity::create();
+        const auto path = directory.filePath("chat"), id = request();
+        const qint64 now = 1700000000000;
+        ChatHistory history(path, identity, now);
+        const auto connection = request();
+        {
+            auto writer = QSqlDatabase::addDatabase("QSQLITE", connection);
+            writer.setDatabaseName(path + ".sqlite");
+            QVERIFY(writer.open());
+            QSqlQuery lock(writer);
+            QVERIFY(lock.exec("BEGIN IMMEDIATE"));
+            QTest::ignoreMessage(QtWarningMsg, QRegularExpression(
+                "^Chat history SQL operation failed: BEGIN IMMEDIATE SQLite 5 database is locked$"));
+            QVERIFY_THROWS_EXCEPTION(std::runtime_error, append(history, identity, now, 1, id));
+            QVERIFY(writer.rollback());
+            writer.close();
+        }
+        QSqlDatabase::removeDatabase(connection);
+        const auto receipt = append(history, identity, now, 1, id);
+        QCOMPARE(append(history, identity, now, 1, id), receipt);
+        ChatHistory reopened(path, identity, now);
+        QCOMPARE(records(reopened), QJsonArray{receipt});
+    }
     void concurrentExpiryPreservesAnImageReusedByANewReceipt() {
         QImage pixels(8, 8, QImage::Format_RGB32); pixels.fill(Qt::blue);
         QByteArray bytes; QBuffer buffer(&bytes); QVERIFY(buffer.open(QIODevice::WriteOnly));

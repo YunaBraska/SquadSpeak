@@ -12,6 +12,7 @@
 #include <QJsonDocument>
 #include <QSaveFile>
 #include <QRegularExpression>
+#include <QSqlError>
 #include <QUuid>
 #include <algorithm>
 #include <memory>
@@ -162,7 +163,12 @@ QSqlQuery ChatHistory::query(const QString& sql, const QVariantList& values) con
     result.setForwardOnly(true);
     require(result.prepare(sql), QT_TRANSLATE_NOOP("LocalChannel", "Invalid chat history."));
     for (const auto& value : values) result.addBindValue(value);
-    require(result.exec(), QT_TRANSLATE_NOOP("LocalChannel", "Chat history could not be saved."));
+    if (!result.exec()) {
+        qWarning().noquote() << "Chat history SQL operation failed:" << sql
+                            << "SQLite" << result.lastError().nativeErrorCode()
+                            << result.lastError().databaseText();
+        require(false, QT_TRANSLATE_NOOP("LocalChannel", "Chat history could not be saved."));
+    }
     return result;
 }
 

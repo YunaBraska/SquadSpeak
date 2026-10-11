@@ -306,7 +306,7 @@ else:
         (self.root / "cmake").unlink()
         shutil.copytree(self.repo / "cmake", self.root / "cmake")
         (self.root / "tests").mkdir()
-        for name in ("CMakeLists.txt", "tests/macos-ci.sh", "tests/windows-ci.ps1"):
+        for name in ("CMakeLists.txt", "tests/macos-ci.sh", "tests/windows-ci.ps1", "tests/linux-ci.sh"):
             shutil.copy2(self.repo / name, self.root / name)
         for name in ("xcodebuild", "xcrun"):
             tool = self.root / "bin" / name
@@ -314,10 +314,12 @@ else:
             tool.chmod(0o700)
         workflow = (self.repo / ".github/workflows/verify.yml").read_text()
         selections = re.findall(r"^      cache_inputs: '(.*)'$", workflow, re.MULTILINE)
-        self.assertEqual(len(selections), 2)
+        self.assertEqual(len(selections), 3)
         for selection in selections:
             def fingerprint():
-                result = self.run_step("Read Toolchain", "wc_macos_build.yml", CACHE_INPUTS=selection)
+                linux = "tests/linux-ci.sh" in json.loads(selection)
+                result = self.run_step("Read Dependency Inputs" if linux else "Read Toolchain",
+                                       "wc_linux_build.yml" if linux else "wc_macos_build.yml", CACHE_INPUTS=selection)
                 self.assertEqual(result.returncode, 0, result.stderr)
                 return self.outputs()["inputs"]
             baseline = fingerprint()

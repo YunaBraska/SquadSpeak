@@ -245,9 +245,17 @@ jobs:
       context: tests
       image: squadspeak-ci
       cache_dependencies: ${{ matrix.mode == 'release' }}
+      cache_inputs: '["tests/linux-ci.sh", "cmake/Dependencies.cmake", "cmake/AudioProcessing.cmake", "cmake/Media.cmake", "cmake/Updates.cmake", "cmake/*.patch", "cmake/source_archives.json"]'
+      dependency_cache_paths: |
+        build/native-cache/_deps/qt_capture-*
+        build/native-cache/_deps/qt_qml-*
+        build/native-cache/qt-capture
+        build/native-cache/qt-qml
+        build/native-cache/squad_qt_capture_build-prefix
+        build/native-cache/squad_qt_qml_build-prefix
       build_command: |
         set -eu
-        mkdir -p build/ci build/compiler-cache
+        mkdir -p build/ci build/compiler-cache build/native-cache
         set --
         case "$BUILD_MODE" in
           release|sanitizers) set -- --device /dev/fuse --cap-add SYS_ADMIN --security-opt apparmor=unconfined ;;
@@ -258,6 +266,7 @@ jobs:
           --env CCACHE_DIR=/compiler-cache --env CCACHE_MAXSIZE=500M --env CTEST_PARALLEL_LEVEL=4 \
           --mount "type=bind,src=$PWD,dst=/source,readonly" \
           --mount "type=bind,src=$PWD/build/ci,dst=/output" \
+          --mount "type=bind,src=$PWD/build/native-cache,dst=/tmp/squadspeak-ci-build" \
           --mount "type=bind,src=$PWD/build/compiler-cache,dst=/compiler-cache" squadspeak-ci "$BUILD_MODE"
       integration_command: sh tests/discovery-network.sh build/ci
       package_command: |

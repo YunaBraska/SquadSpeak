@@ -42,6 +42,14 @@ on:
       cache_dependencies:
         type: boolean
         default: true
+      cache_inputs:
+        description: JSON glob list selecting dependency sources, patches and build flags.
+        type: string
+        required: true
+      dependency_cache_paths:
+        description: Compiled dependency trees with stable paths inside the container.
+        type: string
+        required: true
       mode:
         type: string
         default: release
@@ -66,6 +74,7 @@ jobs:
       - name: "🛠️ Setup Container Builder"
         uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069
       - name: "📥 Prepare Cached Build Environment"
+        id: container
         uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc
         with:
           context: ${{ inputs.context }}
@@ -75,6 +84,29 @@ jobs:
           load: true
           cache-from: type=gha,scope=linux-${{ runner.arch }}
           cache-to: ${{ inputs.cache_dependencies && format('type=gha,mode=max,scope=linux-{0}', runner.arch) || '' }}
+      - name: "🛠️ Read Dependency Inputs"
+        id: toolchain
+        env:
+          CACHE_INPUTS: ${{ inputs.cache_inputs }}
+        run: |
+          python3 - <<'PYHASH'
+          import glob, hashlib, json, os, pathlib
+          paths = sorted({name for pattern in json.loads(os.environ["CACHE_INPUTS"])
+                          for name in glob.glob(pattern, recursive=True) if pathlib.Path(name).is_file()})
+          if not paths:
+              raise SystemExit("Dependency cache input files are missing")
+          digest = hashlib.sha256()
+          for name in paths:
+              digest.update(name.encode() + b"\0" + pathlib.Path(name).read_bytes())
+          with open(os.environ["GITHUB_OUTPUT"], "a") as output:
+              output.write("inputs=" + digest.hexdigest() + "\n")
+          PYHASH
+      - name: "📥 Restore Compiled Dependencies"
+        id: dependencies
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
+        with:
+          path: ${{ inputs.dependency_cache_paths }}
+          key: dependencies-linux-${{ runner.arch }}-${{ inputs.mode }}-${{ steps.container.outputs.imageid }}-${{ steps.toolchain.outputs.inputs }}
       - name: "📥 Restore Compiler Cache"
         id: compiler-cache
         uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
@@ -84,6 +116,12 @@ jobs:
           restore-keys: compiler-linux-${{ runner.arch }}-${{ inputs.mode }}-${{ hashFiles(inputs.dockerfile) }}-
       - name: "🔨 Build and Test"
         run: ${{ inputs.build_command }}
+      - name: "📦 Cache Compiled Dependencies"
+        if: ${{ !cancelled() && steps.dependencies.outcome == 'success' && steps.dependencies.outputs.cache-hit != 'true' }}
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
+        with:
+          path: ${{ inputs.dependency_cache_paths }}
+          key: ${{ steps.dependencies.outputs.cache-primary-key }}
       - name: "📦 Cache Compiled Objects"
         if: ${{ !cancelled() && steps.compiler-cache.outcome == 'success' && steps.compiler-cache.outputs.cache-hit != 'true' }}
         uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
