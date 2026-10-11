@@ -100,6 +100,7 @@ struct MediaTransport::State::Sender final {
         std::shared_ptr<rtc::Channel> channel;
         QByteArray bytes;
         quint32 ssrc;
+        bool uplink;
         Clock::time_point expires;
         std::function<void(bool)> failed;
     };
@@ -110,6 +111,7 @@ struct MediaTransport::State::Sender final {
     rtc::Channel* active = nullptr;
     bool stopping = false;
     quint64 sent = 0, expired = 0, rejected = 0, shed = 0, peak = 0;
+    quint64 uplinkSent = 0, uplinkExpired = 0, uplinkShed = 0;
     std::thread worker{[this] {
         std::unique_lock lock(mutex);
         for (;;) {
@@ -130,6 +132,8 @@ struct MediaTransport::State::Sender final {
                 accepted = sent;
             }
             lock.lock();
+            uplinkSent += packet.uplink && accepted;
+            uplinkExpired += packet.uplink && outdated;
             sent += accepted;
             expired += outdated;
             rejected += !outdated && !accepted;
@@ -147,7 +151,8 @@ struct MediaTransport::State::Sender final {
         { std::lock_guard lock(mutex); stopping = true; queue.clear(); counts.clear(); }
         changed.notify_all();
         if (worker.joinable()) worker.join();
-        qInfo() << "Audio sender sent/expired/rejected/shed/peak" << sent << expired << rejected << shed << peak;
+        qInfo() << "Audio sender sent/expired/rejected/shed/peak" << sent << expired << rejected << shed << peak
+                << "uplink sent/expired/shed" << uplinkSent << uplinkExpired << uplinkShed;
     }
     void cancel(const std::shared_ptr<rtc::Channel>& channel, std::optional<quint32> ssrc = {}) {
         std::unique_lock lock(mutex);
@@ -159,7 +164,7 @@ struct MediaTransport::State::Sender final {
         // track/connection concurrently with encryption or socket access.
         if (!ssrc) changed.wait(lock, [&] { return active != channel.get(); });
     }
-    bool enqueue(const std::shared_ptr<rtc::Channel>& channel, QByteArray bytes, std::function<void(bool)> failed) {
+    bool enqueue(const std::shared_ptr<rtc::Channel>& channel, QByteArray bytes, bool uplink, std::function<void(bool)> failed) {
         const auto ssrc = quint8(bytes[1]) == 111 ? qFromBigEndian<quint32>(bytes.constData() + 8) : 0;
         std::lock_guard lock(mutex);
         if (stopping) return false;
@@ -169,14 +174,15 @@ struct MediaTransport::State::Sender final {
             const auto oldest = std::find_if(queue.begin(), queue.end(), [&](const Packet& packet) {
                 return packet.channel == channel && packet.ssrc == ssrc;
             });
+            uplinkShed += oldest->uplink;
             uncount(*oldest); queue.erase(oldest);
             ++shed;
         }
         // Six 20 ms frames per source, at most 4096 small RTP packets globally.
         // Shed old speech under overload instead of growing latency or TLS work.
-        if (queue.size() == 4096) { uncount(queue.front()); queue.pop_front(); ++shed; }
+        if (queue.size() == 4096) { uplinkShed += queue.front().uplink; uncount(queue.front()); queue.pop_front(); ++shed; }
         ++counts[key];
-        queue.push_back({channel, std::move(bytes), ssrc, Clock::now() + std::chrono::milliseconds(120), std::move(failed)});
+        queue.push_back({channel, std::move(bytes), ssrc, uplink, Clock::now() + std::chrono::milliseconds(120), std::move(failed)});
         peak = std::max<quint64>(peak, queue.size());
         changed.notify_one();
         return true;
@@ -193,7 +199,7 @@ bool MediaTransport::State::write(const std::shared_ptr<State>& self, const QByt
     if (medium == Medium::Audio) {
         const auto ssrc = quint8(bytes[1]) == 111 ? qFromBigEndian<quint32>(bytes.constData() + 8) : 0;
         const auto stream = outgoing.value(ssrc);
-        return sender().enqueue(channel, bytes, [weak = std::weak_ptr(self), epoch = generation, bytes, ssrc,
+        return sender().enqueue(channel, bytes, localPort == 0, [weak = std::weak_ptr(self), epoch = generation, bytes, ssrc,
                                                 source = stream.source, start = stream.start](bool fatal) {
             State::post(weak, epoch, bytes.size(), [bytes, ssrc, source, start, fatal](State& s) {
                 s.failed |= fatal;

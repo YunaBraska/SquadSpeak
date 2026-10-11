@@ -16,6 +16,9 @@ jobs:
       build_command: sh tests/macos-ci.sh auto build/macos-ci build
       test_command: |
         mkdir -p build/macos-ci/artifacts
+        sysctl kern.ipc.maxsockbuf net.inet.udp.recvspace net.inet.udp.maxdgram
+        netstat -s -p udp
+        trap 'netstat -s -p udp' EXIT
         sudo -E build/macos-ci/app/channel_tests sixtyFourClientsHaveOneConsistentRosterAndAudioFanout \
           2>&1 | tee build/macos-ci/artifacts/profile-test.log
       package_command: test -s build/macos-ci/artifacts/profile-test.log
