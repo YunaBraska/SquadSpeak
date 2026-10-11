@@ -48,6 +48,9 @@ jobs:
     name: "🪟 Windows x64"
     env:
       VERSION: ${{ inputs.version }}
+      SCCACHE_GHA_ENABLED: 'true'
+      CMAKE_C_COMPILER_LAUNCHER: sccache
+      CMAKE_CXX_COMPILER_LAUNCHER: sccache
     runs-on: windows-2022
     timeout-minutes: 60
     steps:
@@ -60,6 +63,11 @@ jobs:
         uses: ilammy/msvc-dev-cmd@0b201ec74fa43914dc39ae48a89fd1d8cb592756
         with:
           arch: x64
+      - name: "🛠️ Setup Compiler Cache"
+        uses: mozilla-actions/sccache-action@fc920bf0ec8de6ee65d409111f7ec508035751ba
+        with:
+          version: v0.16.0
+          disable_annotations: true
       - name: "🧾 Identify MSVC dependency cache inputs"
         id: msvc-cache
         env:

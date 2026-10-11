@@ -13,6 +13,7 @@
 #include <cmath>
 #include <ctime>
 #include <array>
+#include <atomic>
 #include <numbers>
 #include <QFile>
 #include <QDir>
@@ -4841,29 +4842,47 @@ private slots:
         QVERIFY2(speakers >= 2 && speakers <= 64, "SQUAD_SOAK_SPEAKERS must be between 2 and 64");
         QElapsedTimer elapsed; elapsed.start();
         QTemporaryDir dir;
-        QThread hostThread;
-        QObject hostContext;
-        hostContext.moveToThread(&hostThread);
-        hostThread.start();
-        std::unique_ptr<Device> host;
-        const auto onHost = [&](auto action) {
+        const auto on = [](QObject& context, auto action) {
+            if (context.thread() == QThread::currentThread()) return action();
             decltype(action()) result{};
             std::exception_ptr error;
-            QMetaObject::invokeMethod(&hostContext, [&] {
+            QMetaObject::invokeMethod(&context, [&] {
                 try { result = action(); }
                 catch (...) { error = std::current_exception(); }
             }, Qt::BlockingQueuedConnection);
             if (error) std::rethrow_exception(error);
             return result;
         };
-        const auto stopHost = qScopeGuard([&] {
-            onHost([&] {
-                host.reset();
-                hostContext.moveToThread(QCoreApplication::instance()->thread());
-                return true;
-            });
-            hostThread.quit();
-            hostThread.wait();
+        // The host and passive clients must not run on the audio callback loop.
+        // Two client loops bound fixture resources without simulating 64 remote
+        // applications on the microphone/playback thread of one application.
+        std::array<QThread, 3> threads;
+        std::array<QObject, 3> contexts;
+        for (size_t i = 0; i < threads.size(); ++i) {
+            contexts[i].moveToThread(&threads[i]);
+            threads[i].start();
+        }
+        std::unique_ptr<Device> host;
+        std::vector<std::unique_ptr<Device>> clients;
+        std::array<std::atomic<int>, 64> audioCounts{}, missingCounts{};
+        const auto onHost = [&](auto action) { return on(contexts[0], action); };
+        const auto onClient = [&](Device& client, auto action) {
+            return on(client.channel, [&] { return action(client); });
+        };
+        const auto stopDevices = qScopeGuard([&] {
+            for (size_t i = 0; i < clients.size(); ++i) {
+                if (i < size_t(speakers)) clients[i].reset();
+                else on(contexts[1 + i % 2], [&] { clients[i].reset(); return true; });
+            }
+            onHost([&] { host.reset(); return true; });
+            for (size_t i = 0; i < threads.size(); ++i) {
+                on(contexts[i], [&] {
+                    contexts[i].moveToThread(QCoreApplication::instance()->thread());
+                    return true;
+                });
+                threads[i].quit();
+                threads[i].wait();
+            }
         });
         // A remote listener cannot block the real host's event loop. Keep that
         // boundary here too, including when client callbacks are delayed.
@@ -4873,14 +4892,18 @@ private slots:
         }));
         const auto hostId = onHost([&] { return host->channel.ownId(); });
         const auto hostPort = onHost([&] { return host->channel.port(); });
-        const auto joinHost = [&](Device& client) { return client.channel.join(hostId, "127.0.0.1", hostPort); };
-        std::vector<std::unique_ptr<Device>> clients;
+        const auto joinHost = [&](Device& client) {
+            return onClient(client, [&](Device& c) { return c.channel.join(hostId, "127.0.0.1", hostPort); });
+        };
         const auto firstIdentity = TlsIdentity::create();
         for (int i = 0; i < 64; ++i) {
-            auto client = std::make_unique<Device>(dir.filePath(QString::number(i)), QString("Member %1").arg(i),
-                i == 0 ? firstIdentity : TlsIdentity::create());
-            QVERIFY(onHost([&, clientId = client->channel.ownId()] { return host->channel.decide(clientId, true); }));
-            clients.push_back(std::move(client));
+            const auto makeClient = [&] {
+                return std::make_unique<Device>(dir.filePath(QString::number(i)), QString("Member %1").arg(i),
+                    i == 0 ? firstIdentity : TlsIdentity::create());
+            };
+            clients.push_back(i < speakers ? makeClient() : on(contexts[1 + size_t(i) % 2], makeClient));
+            const auto clientId = onClient(*clients.back(), [](Device& c) { return c.channel.ownId(); });
+            QVERIFY(onHost([&] { return host->channel.decide(clientId, true); }));
         }
         Device overflow(dir.filePath("overflow"), "Text member");
         auto replacement = std::make_unique<Device>(dir.filePath("replacement"), "Member 0", firstIdentity);
@@ -4888,44 +4911,50 @@ private slots:
         // Real devices generate their identities on independent event loops.
         // Finish this process's CPU-bound setup before starting network timers.
         for (const auto& client : clients) QVERIFY(joinHost(*client));
-        for (const auto& client : clients) QTRY_COMPARE_WITH_TIMEOUT(client->channel.participants().size(), 64, 30000);
+        for (const auto& client : clients) QTRY_COMPARE_WITH_TIMEOUT(
+            onClient(*client, [](Device& c) { return c.channel.participants().size(); }), 64, 30000);
         std::array<squad::VoiceMixer, 2> playback;
         std::array<int, 2> audibleFrames{};
         int renderedFrames = 0;
         qint64 lastInputMs = 0, lastOutputMs = 0, maxInputGapMs = 0, maxOutputGapMs = 0;
         bool validAudio = true;
         QElapsedTimer sustained;
-        std::vector<int> audioCounts(clients.size(), 0);
-        std::vector<int> missingCounts(clients.size(), 0);
         QObject reception; // Disconnect stack captures before their state is destroyed.
         for (size_t i = 0; i < clients.size(); ++i) {
-            connect(&clients[i]->channel, &LocalChannel::audioReceived, &reception,
-                [&, i](const QString& id, const QByteArray& bytes, int missing) {
+            connect(&clients[i]->channel, &LocalChannel::audioReceived, &clients[i]->channel,
+                [&, i](const QString&, const QByteArray&, int missing) {
                     ++audioCounts[i];
                     missingCounts[i] += missing;
-                    if (sustained.isValid() && i < playback.size())
-                        validAudio &= playback[i].receive(id, bytes, sustained.elapsed(), missing);
                 });
-            QVERIFY(clients[i]->session.setMuted(false));
+            if (i < playback.size()) connect(&clients[i]->channel, &LocalChannel::audioReceived, &reception,
+                [&, i](const QString& id, const QByteArray& bytes, int missing) {
+                    if (sustained.isValid()) validAudio &= playback[i].receive(id, bytes, sustained.elapsed(), missing);
+                });
+            QVERIFY(onClient(*clients[i], [](Device& c) { return c.session.setMuted(false); }));
         }
         for (const auto& client : clients) QTRY_VERIFY([&] {
-            const auto members = client->channel.participants();
-            return std::all_of(members.begin(), members.end(), [](const auto& entry) { return !entry.toMap().value("muted").toBool(); });
+            const auto members = onClient(*client, [](Device& c) { return c.channel.participants(); });
+            return members.size() == 64 && std::all_of(members.begin(), members.end(), [](const auto& entry) { return !entry.toMap().value("muted").toBool(); });
         }());
         squad::VoiceMixer encoder;
         std::array<float, 960> samples;
         for (size_t i = 0; i < samples.size(); ++i) samples[i] = float(0.1 * std::sin(2 * std::numbers::pi * 440 * i / 48000));
         const auto packet = encoder.encode(samples, 48000).first();
-        for (const auto& client : clients) QVERIFY(client->channel.sendAudio(packet));
-        for (size_t i = 0; i < audioCounts.size(); ++i) QTRY_COMPARE(audioCounts[i], 63);
+        for (const auto& client : clients) QVERIFY(onClient(*client, [&](Device& c) {
+            const bool sent = c.channel.sendAudio(packet);
+            if (!sent) qWarning() << c.session.userName() << c.channel.status() << "joined" << c.channel.joined()
+                                 << "transmission allowed" << c.session.transmissionAllowed();
+            return sent;
+        }));
+        for (size_t i = 0; i < audioCounts.size(); ++i) QTRY_COMPARE(audioCounts[i].load(), 63);
         QMap<int, int> startingTiers;
-        for (const auto& client : clients) ++startingTiers[client->channel.receiveAudioBitrate()];
+        for (const auto& client : clients) ++startingTiers[onClient(*client, [](Device& c) { return c.channel.receiveAudioBitrate(); })];
         qInfo() << "Audio bitrates after connection and source setup" << startingTiers;
         // Recover from TLS setup and all 4032 source bindings before
         // measuring steady traffic on the independent host/client loops.
         // Three tiers need ten healthy 750 ms samples each.
         QVERIFY(waitForEvents([&] { return std::all_of(clients.begin(), clients.end(),
-            [](const auto& client) { return client->channel.receiveAudioBitrate() == 32; }); }, 30000));
+            [&](const auto& client) { return onClient(*client, [](Device& c) { return c.channel.receiveAudioBitrate() == 32; }); }); }, 30000));
         const auto connectedMs = elapsed.elapsed();
         bool soakOk = false;
         const int soakSeconds = qEnvironmentVariableIsSet("SQUAD_SOAK_SECONDS")
@@ -4934,8 +4963,8 @@ private slots:
             "SQUAD_SOAK_SECONDS must be an integer");
         QVERIFY2(soakSeconds >= 2 && soakSeconds <= 1800,
             "SQUAD_SOAK_SECONDS must be between 2 and 1800");
-        std::fill(audioCounts.begin(), audioCounts.end(), 0);
-        std::fill(missingCounts.begin(), missingCounts.end(), 0);
+        for (auto& count : audioCounts) count = 0;
+        for (auto& count : missingCounts) count = 0;
         const int sustainedFrames = soakSeconds * 50;
         const auto callbacksDelayed = [callbackDelayMs](qint64 now) {
             // Defer capture/playback without also suspending the host and all
@@ -5040,7 +5069,7 @@ private slots:
             QVERIFY(audioCounts[i] + missingCounts[i] <= expected);
             QVERIFY2(audioCounts[i] >= expected * 95 / 100,
                 qPrintable(QString("listener %1 received %2 / %3 packets; reported gaps %4")
-                    .arg(i).arg(audioCounts[i]).arg(expected).arg(missingCounts[i])));
+                    .arg(i).arg(audioCounts[i].load()).arg(expected).arg(missingCounts[i].load())));
         }
         QVERIFY(validAudio);
         for (const auto frames : audibleFrames) QVERIFY(frames > 0);
@@ -5057,7 +5086,7 @@ private slots:
             for (const auto frames : audibleFrames) QVERIFY2(frames >= renderedFrames * 9 / 10,
                 qPrintable(QString("non-silent %1 / rendered %2 over %3 ms").arg(frames).arg(renderedFrames).arg(playbackMs)));
         }
-        for (const auto& client : clients) QVERIFY(client->channel.joined());
+        for (const auto& client : clients) QVERIFY(onClient(*client, [](Device& c) { return c.channel.joined(); }));
         sustained.invalidate();
         QVERIFY(joinHost(overflow));
         QTRY_VERIFY(overflow.channel.joined() || overflow.channel.status().contains("full"));
@@ -5068,7 +5097,7 @@ private slots:
         QVERIFY(overflow.channel.openChat(hostId, "127.0.0.1", hostPort));
         QTRY_VERIFY(overflow.channel.chatReady());
         QVERIFY(overflow.channel.sendChat("Text still works at voice capacity."));
-        QTRY_VERIFY(!memberMessages(clients.back()->channel).isEmpty());
+        QTRY_VERIFY(onClient(*clients.back(), [](Device& c) { return !memberMessages(c.channel).isEmpty(); }));
         QCOMPARE(onHost([&] { return host->channel.hostParticipants().size(); }), 64);
         QVERIFY(onHost([&] { return host->channel.setScreenSharing(true); }));
         QTRY_VERIFY(overflow.channel.screenView().value("available").toBool());
@@ -5094,7 +5123,7 @@ private slots:
         QTRY_VERIFY(!clients.front()->channel.joined());
         clients.front() = std::move(replacement);
         QTRY_COMPARE(onHost([&] { return host->channel.hostParticipants().size(); }), 64);
-        QVERIFY(!participant(clients.back()->channel, firstIdentity.id()).isEmpty());
+        QVERIFY(onClient(*clients.back(), [&](Device& c) { return !participant(c.channel, firstIdentity.id()).isEmpty(); }));
         // A text-to-voice attempt cannot bypass the same capacity boundary.
         QVERIFY(joinHost(overflow));
         QTRY_VERIFY(overflow.channel.joined() || overflow.channel.status().contains("full"));
@@ -5105,8 +5134,8 @@ private slots:
         QTRY_VERIFY(overflow.channel.joined());
         QTRY_COMPARE(onHost([&] { return host->channel.hostParticipants().size(); }), 64);
         QVERIFY(overflow.channel.leave());
-        for (int i = 0; i < 32; ++i) QVERIFY(clients[size_t(i)]->channel.leave());
-        for (int i = 32; i < 64; ++i) QTRY_COMPARE(clients[size_t(i)]->channel.participants().size(), 32);
+        for (int i = 0; i < 32; ++i) QVERIFY(onClient(*clients[size_t(i)], [](Device& c) { return c.channel.leave(); }));
+        for (int i = 32; i < 64; ++i) QTRY_COMPARE(onClient(*clients[size_t(i)], [](Device& c) { return c.channel.participants().size(); }), 32);
     }
     void pendingAdmissionBudgetReleasesAfterDisconnect() {
         QTemporaryDir dir;
