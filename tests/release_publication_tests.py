@@ -1,4 +1,4 @@
-"""Exercise the Linux publication job through its real shell entrypoints."""
+"""Exercise build and publication shell entrypoints at their CLI boundaries."""
 import json
 import os
 import re
@@ -259,6 +259,34 @@ else: sys.exit(7)
                 self.assertEqual(result.returncode == 0, succeeds, result.stderr)
                 self.assertNotIn(private_key, result.stdout + result.stderr)
                 self.assertFalse((self.root / "update-key.der").exists())
+
+    def test_discovery_uses_the_image_built_by_the_linux_workflow(self):
+        workflow = (self.repo / ".github/workflows/wc_linux_build.yml").read_text()
+        image = re.search(r"^\s+tags: (\S+)$", workflow, re.MULTILINE).group(1)
+        artifacts = self.root / "artifacts"
+        artifacts.mkdir()
+        probe = artifacts / "discovery_network_probe"
+        probe.write_text("#!/bin/sh\nexit 0\n")
+        probe.chmod(0o700)
+        docker = self.root / "bin/docker"
+        # Only replace Docker. The real network-change script must use the
+        # image prepared by its caller before any probe can start.
+        docker.write_text("#!" + sys.executable + "\n" + '''import os, pathlib, sys
+args = sys.argv[1:]
+if args[0] == "run":
+    image = args[args.index("--entrypoint") + 2]
+    if image != os.environ["BUILT_IMAGE"]:
+        sys.exit("Network probe requested an image the workflow did not build: " + image)
+    evidence = next(pathlib.Path(os.environ["TEST_ARTIFACTS"]).glob("network-change.*"))
+    for name in ("receiver.ready", "sender-1.ready", "sender-2.ready", "sender-1.passed", "sender-2.passed"):
+        (evidence / name).touch()
+elif args[0] == "wait": print(0)
+''')
+        docker.chmod(0o700)
+        result = subprocess.run(["sh", str(self.repo / "tests/discovery-network.sh"), str(artifacts)],
+            env=dict(os.environ, PATH=str(self.root / "bin") + os.pathsep + os.environ["PATH"],
+                     BUILT_IMAGE=image, TEST_ARTIFACTS=str(artifacts)), capture_output=True, text=True, timeout=20)
+        self.assertEqual(result.returncode, 0, result.stderr)
 
     def test_publish_only_after_all_uploads_succeed(self):
         assets = self.root / "release-assets"
