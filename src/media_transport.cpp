@@ -8,9 +8,12 @@
 #include <QTimer>
 #include <QtEndian>
 #include <rtc/rtc.hpp>
+#include <condition_variable>
 #include <deque>
 #include <map>
 #include <mutex>
+#include <optional>
+#include <thread>
 #include <opus.h>
 
 namespace squad {
@@ -31,6 +34,8 @@ bool validOpus(const QByteArray& bytes) {
 }
 
 struct MediaTransport::State final {
+    struct Sender;
+    static Sender& sender();
     struct Stream {
         QString source;
         bool confirmed = false;
@@ -84,15 +89,117 @@ struct MediaTransport::State final {
             }
         }, Qt::QueuedConnection);
     }
-    bool write(const QByteArray& bytes) {
-        if (!channel || !channel->isOpen() || (medium == Medium::Data && channel->bufferedAmount() > 32768)) return false;
-        try {
-            const bool sent = channel->send(reinterpret_cast<const rtc::byte*>(bytes.constData()), size_t(bytes.size()));
-            return medium == Medium::Data || sent; // Data-channel false means queued, not rejected.
+    bool write(const std::shared_ptr<State>& self, const QByteArray& bytes);
+};
+
+// Track::send encrypts and writes synchronously. Share one bounded sender across
+// connections, keeping source bindings and all QObject state on the owner thread.
+struct MediaTransport::State::Sender final {
+    using Clock = std::chrono::steady_clock;
+    struct Packet {
+        std::shared_ptr<rtc::Channel> channel;
+        QByteArray bytes;
+        quint32 ssrc;
+        Clock::time_point expires;
+        std::function<void(bool)> failed;
+    };
+    std::mutex mutex;
+    std::condition_variable changed;
+    std::deque<Packet> queue;
+    std::map<std::pair<quintptr, quint32>, int> counts;
+    rtc::Channel* active = nullptr;
+    bool stopping = false;
+    std::thread worker{[this] {
+        std::unique_lock lock(mutex);
+        for (;;) {
+            changed.wait(lock, [this] { return stopping || !queue.empty(); });
+            if (stopping) return;
+            uncount(queue.front());
+            auto packet = std::move(queue.front()); queue.pop_front();
+            active = packet.channel.get();
+            lock.unlock();
+            if (Clock::now() < packet.expires) {
+                bool sent = false, fatal = false;
+                try {
+                    sent = packet.channel->send(reinterpret_cast<const rtc::byte*>(packet.bytes.constData()), size_t(packet.bytes.size()));
+                } catch (const std::exception& error) { qCDebug(mediaTransportLog) << error.what(); fatal = true; }
+                if (!sent) packet.failed(fatal);
+            }
+            lock.lock();
+            active = nullptr;
+            changed.notify_all();
         }
-        catch (const std::exception& error) { qCDebug(mediaTransportLog) << error.what(); failed = true; return false; }
+    }};
+
+    ~Sender() { stop(); }
+    void uncount(const Packet& packet) {
+        const auto it = counts.find({quintptr(packet.channel.get()), packet.ssrc});
+        if (--it->second == 0) counts.erase(it);
+    }
+    void stop() {
+        { std::lock_guard lock(mutex); stopping = true; queue.clear(); counts.clear(); }
+        changed.notify_all();
+        if (worker.joinable()) worker.join();
+    }
+    void cancel(const std::shared_ptr<rtc::Channel>& channel, std::optional<quint32> ssrc = {}) {
+        std::unique_lock lock(mutex);
+        std::erase_if(queue, [&](const Packet& packet) {
+            if (packet.channel != channel || (ssrc && packet.ssrc != *ssrc)) return false;
+            uncount(packet); return true;
+        });
+        // At most one nonblocking datagram is in flight. Never close its native
+        // track/connection concurrently with encryption or socket access.
+        if (!ssrc) changed.wait(lock, [&] { return active != channel.get(); });
+    }
+    bool enqueue(const std::shared_ptr<rtc::Channel>& channel, QByteArray bytes, std::function<void(bool)> failed) {
+        const auto ssrc = quint8(bytes[1]) == 111 ? qFromBigEndian<quint32>(bytes.constData() + 8) : 0;
+        std::lock_guard lock(mutex);
+        if (stopping) return false;
+        const auto key = std::pair{quintptr(channel.get()), ssrc};
+        const auto count = counts.find(key);
+        if (count != counts.end() && count->second == 6) {
+            const auto oldest = std::find_if(queue.begin(), queue.end(), [&](const Packet& packet) {
+                return packet.channel == channel && packet.ssrc == ssrc;
+            });
+            uncount(*oldest); queue.erase(oldest);
+        }
+        // Six 20 ms frames per source, at most 4096 small RTP packets globally.
+        // Shed old speech under overload instead of growing latency or TLS work.
+        if (queue.size() == 4096) { uncount(queue.front()); queue.pop_front(); }
+        ++counts[key];
+        queue.push_back({channel, std::move(bytes), ssrc, Clock::now() + std::chrono::milliseconds(120), std::move(failed)});
+        changed.notify_one();
+        return true;
     }
 };
+
+MediaTransport::State::Sender& MediaTransport::State::sender() {
+    static Sender instance;
+    return instance;
+}
+
+bool MediaTransport::State::write(const std::shared_ptr<State>& self, const QByteArray& bytes) {
+    if (!channel || !channel->isOpen() || (medium == Medium::Data && channel->bufferedAmount() > 32768)) return false;
+    if (medium == Medium::Audio) {
+        const auto ssrc = quint8(bytes[1]) == 111 ? qFromBigEndian<quint32>(bytes.constData() + 8) : 0;
+        const auto stream = outgoing.value(ssrc);
+        return sender().enqueue(channel, bytes, [weak = std::weak_ptr(self), epoch = generation, bytes, ssrc,
+                                                source = stream.source, start = stream.start](bool fatal) {
+            State::post(weak, epoch, bytes.size(), [bytes, ssrc, source, start, fatal](State& s) {
+                s.failed |= fatal;
+                const auto stream = s.outgoing.constFind(ssrc);
+                if (ssrc && stream != s.outgoing.cend() && stream->source == source && stream->start == start)
+                    emit s.owner->signaling({{"kind", "frame"}, {"ssrc", double(ssrc)},
+                        {"sequence", qFromBigEndian<quint16>(bytes.constData() + 2)},
+                        {"data", QString::fromLatin1(bytes.mid(12).toBase64())}});
+            });
+        });
+    }
+    try {
+        channel->send(reinterpret_cast<const rtc::byte*>(bytes.constData()), size_t(bytes.size()));
+        return true; // Data-channel false means queued, not rejected.
+    } catch (const std::exception& error) { qCDebug(mediaTransportLog) << error.what(); failed = true; return false; }
+}
 
 MediaTransport::MediaTransport(bool offerer, quint16 localPort, QHostAddress address, quint16 remotePort, Medium medium, QObject* parent)
     : QObject(parent), state_(std::make_shared<State>(this, offerer, localPort, address, remotePort, medium)) {
@@ -100,7 +207,8 @@ MediaTransport::MediaTransport(bool offerer, quint16 localPort, QHostAddress add
         rtc::SetThreadPoolSize(2);
         rtc::SctpSettings sctp; sctp.recvBufferSize = 262144; sctp.sendBufferSize = 262144;
         rtc::SetSctpSettings(sctp);
-        qAddPostRoutine([] { rtc::Cleanup().wait(); });
+        State::sender();
+        qAddPostRoutine([] { State::sender().stop(); rtc::Cleanup().wait(); });
         return true;
     }();
     Q_UNUSED(runtime);
@@ -119,8 +227,12 @@ MediaTransport::~MediaTransport() {
 
 void MediaTransport::stopUdp() {
     auto& s = *state_;
+    ++s.generation;
     s.failed = true; s.acknowledged = -10000;
-    if (s.channel) { s.channel->resetCallbacks(); s.channel->close(); s.channel.reset(); }
+    if (s.channel) {
+        if (s.medium == Medium::Audio) State::sender().cancel(s.channel);
+        s.channel->resetCallbacks(); s.channel->close(); s.channel.reset();
+    }
     if (s.connection) { s.connection->resetCallbacks(); s.connection->close(); s.connection.reset(); }
 }
 
@@ -184,7 +296,6 @@ void MediaTransport::start() {
 }
 
 void MediaTransport::restartUdp() {
-    ++state_->generation;
     stopUdp();
     state_->failed = false; state_->descriptionSeen = false;
     state_->probeAt = -1; state_->reportedReceived = state_->reportedExpected = 0;
@@ -302,7 +413,7 @@ bool MediaTransport::send(const QString& source, const QByteArray& opus, int mis
         QByteArray bytes(12, '\0'); bytes[0] = char(0x80); bytes[1] = 111;
         qToBigEndian(stream.sequence, bytes.data() + 2); qToBigEndian(stream.timestamp, bytes.data() + 4);
         qToBigEndian(found.key(), bytes.data() + 8); bytes.append(opus);
-        if (s.write(bytes)) return true;
+        if (s.write(keepAlive, bytes)) return true;
     }
     emit signaling({{"kind", "frame"}, {"ssrc", double(found.key())}, {"sequence", stream.sequence}, {"data", QString::fromLatin1(opus.toBase64())}});
     return true;
@@ -310,11 +421,14 @@ bool MediaTransport::send(const QString& source, const QByteArray& opus, int mis
 
 bool MediaTransport::sendDatagram(const QByteArray& bytes) {
     return state_->medium == Medium::Data && !bytes.isEmpty() && bytes.size() <= 16384
-        && udpActive() && state_->write(bytes);
+        && udpActive() && state_->write(state_, bytes);
 }
 
 void MediaTransport::retainSources(const QStringList& sources) {
     auto& s = *state_;
+    if (s.medium == Medium::Audio && s.channel)
+        for (auto it = s.outgoing.cbegin(); it != s.outgoing.cend(); ++it)
+            if (!sources.contains(it->source)) State::sender().cancel(s.channel, it.key());
     for (auto* streams : {&s.incoming, &s.outgoing})
         for (auto& stream : *streams) if (!sources.contains(stream.source)) {
             stream.source.clear(); stream.confirmed = false; stream.pending.clear();
@@ -344,7 +458,7 @@ void MediaTransport::packet(const QByteArray& bytes) {
         if (quint8(bytes[7]) == 0) {
             auto answer = bytes; answer[7] = 1;
             qToBigEndian(s.received, answer.data() + 16); qToBigEndian(s.expected, answer.data() + 20);
-            s.received = s.expected = 0; s.write(answer);
+            s.received = s.expected = 0; s.write(keepAlive, answer);
         } else if (quint8(bytes[7]) == 1 && serial == s.probe && s.probeAt >= 0) {
             const auto now = s.clock.elapsed(), rtt = now - s.probeAt;
             const bool recovered = now - s.acknowledged >= 300;
@@ -407,6 +521,6 @@ void MediaTransport::tick() {
     s.probeAt = s.probeSent = now;
     QByteArray probe(24, '\0'); probe[0] = char(0x80); probe[1] = char(204);
     qToBigEndian<quint16>(5, probe.data() + 2); probe.replace(8, 4, "SQSP");
-    qToBigEndian(++s.probe, probe.data() + 12); s.write(probe);
+    qToBigEndian(++s.probe, probe.data() + 12); s.write(keepAlive, probe);
 }
 }

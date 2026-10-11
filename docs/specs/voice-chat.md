@@ -349,6 +349,13 @@ port number over UDP, independently for each admitted connection. Blockage falls
 back to bounded TLS audio; recovery restores UDP. Legacy peers retain baseline
 voice/chat. Reordering, replay rejection, source-slot reuse and Opus concealment
 must be bounded. No external discovery or relay service is required.
+UDP audio encryption and socket writes MUST run outside the Qt owner thread through
+one shared sender. Its queue holds at most six 20 ms packets per source and
+connection, with a global limit of 4096 packets. Queued packets expire after
+120 ms. Overload discards old audio, preserving RTP sequence gaps for receiver
+loss feedback and adaptive quality, instead of adding stale audio to TLS.
+Source removal cancels pending packets. Connection teardown cancels the queue
+and finishes the one in-flight write before closing native transport resources.
 
 The optional `udp-screen` capability carries the existing encoded frames through
 an unordered, partially reliable WebRTC DataChannel (SCTP/DTLS/UDP). It shares

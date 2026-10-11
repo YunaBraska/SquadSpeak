@@ -478,8 +478,10 @@ membership churn from accumulating SRTP stream state. Sequence fences reject old
 speakers' packets after reuse. A bounded 20 ms reorder window drops stale packets;
 the existing Opus decoder conceals at most six missing frames. TLS fallback uses
 the same sequence space. Unknown valid media kinds/fields preserve baseline audio.
-The library callback mailbox is bounded, Qt timers belong to their Qt owner, and
-process teardown waits for library cleanup. Run the transport and mixer contracts for latency, lifecycle and load checks.
+The library callback mailbox and shared audio sender are bounded. UDP audio
+encryption and socket writes run on the sender, while source bindings and Qt timers stay on their
+owner thread. Teardown drains the active write before closing native resources.
+Run the transport and mixer contracts for latency, lifecycle and load checks.
 
 Screen video negotiates `udp-screen` on its separate, admitted TLS connection.
 Frames and decode acknowledgments prefer an unordered WebRTC DataChannel using

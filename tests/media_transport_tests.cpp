@@ -1,5 +1,6 @@
 #include "media_transport.hpp"
 #include <QSignalSpy>
+#include <QElapsedTimer>
 #include <QUdpSocket>
 #include <QNetworkDatagram>
 #include <QTest>
@@ -8,7 +9,10 @@
 #include <opus.h>
 #include <array>
 #include <cmath>
+#include <condition_variable>
 #include <memory>
+#include <mutex>
+#include <thread>
 
 namespace {
 quint16 availableUdpPort() {
@@ -66,6 +70,35 @@ QByteArray speech() {
         reinterpret_cast<unsigned char*>(packet.data()), int(packet.size()));
     return count > 0 ? packet.first(count) : QByteArray{};
 }
+
+// Observe and stall the real SRTP boundary without replacing the transport.
+class SendGate final {
+    struct State {
+        std::mutex mutex;
+        std::condition_variable changed;
+        bool entered = false, released = false, onOwner = false;
+        const std::thread::id owner = std::this_thread::get_id();
+    };
+    const std::shared_ptr<State> state_ = std::make_shared<State>();
+public:
+    SendGate() {
+        rtc::InitLogger(rtc::LogLevel::Verbose, [s = state_](rtc::LogLevel, const std::string& message) {
+            if (message.find("Protected SRTP packet, size=") == std::string::npos) return;
+            std::unique_lock lock(s->mutex);
+            if (s->entered) return;
+            s->entered = true;
+            s->onOwner = std::this_thread::get_id() == s->owner;
+            if (!s->onOwner) s->changed.wait(lock, [&] { return s->released; });
+        });
+    }
+    ~SendGate() { release(); rtc::InitLogger(rtc::LogLevel::Info); }
+    bool entered() const { std::lock_guard lock(state_->mutex); return state_->entered; }
+    bool onOwner() const { std::lock_guard lock(state_->mutex); return state_->onOwner; }
+    void release() {
+        { std::lock_guard lock(state_->mutex); state_->released = true; }
+        state_->changed.notify_all();
+    }
+};
 }
 class MediaTransportTests final : public QObject {
     Q_OBJECT
@@ -355,6 +388,94 @@ private slots:
             QCOMPARE(heard.last().at(0).toString(), source); QCOMPARE(heard.last().at(2).toInt(), 0);
         }
         QCOMPARE(streams.size(), 1); QCOMPARE(fallback, 0);
+    }
+    void audioSendsStayOffTheOwnerThreadAndBoundBacklog() {
+        const auto port = availableUdpPort(); QVERIFY(port);
+        DatagramLink link(port);
+        squad::MediaTransport host(true, port, QHostAddress::LocalHost, 0);
+        squad::MediaTransport client(false, 0, QHostAddress::LocalHost, link.port());
+        int fallback = 0;
+        connect(&host, &squad::MediaTransport::signaling, &client, [&](const auto& message) {
+            fallback += message.value("kind") == "frame";
+            QVERIFY(client.receive(message));
+        });
+        connect(&client, &squad::MediaTransport::signaling, &host, [&](const auto& message) { QVERIFY(host.receive(message)); });
+        QSignalSpy heard(&client, &squad::MediaTransport::audio);
+        QSignalSpy quality(&host, &squad::MediaTransport::quality);
+        QTRY_VERIFY_WITH_TIMEOUT(host.udpActive() && client.udpActive(), 10000);
+        const auto packet = speech();
+        SendGate gate;
+        QVERIFY(host.send(first, packet));
+        QTRY_VERIFY_WITH_TIMEOUT(gate.entered(), 1000);
+        QVERIFY2(!gate.onOwner(), "SRTP send blocks the Qt owner thread");
+        for (int i = 0; i < 1000; ++i) QVERIFY(host.send(first, packet));
+        QVERIFY(host.send(second, packet));
+        gate.release();
+        QTRY_VERIFY_WITH_TIMEOUT(std::any_of(heard.begin(), heard.end(), [](const auto& event) {
+            return event.first().toString() == second;
+        }), 3000);
+        // One in-flight frame, at most six queued frames of that speaker, then
+        // the marker. Queue pressure must not spill old speech into TLS.
+        QVERIFY(link.audioPackets <= 8);
+        QCOMPARE(fallback, 0);
+        QCOMPARE(heard.last().at(1).toByteArray(), packet);
+        QVERIFY(std::any_of(heard.begin(), heard.end(), [](const auto& event) { return event.at(2).toInt() > 0; }));
+        QTRY_VERIFY_WITH_TIMEOUT(std::any_of(quality.begin(), quality.end(), [](const auto& event) {
+            return event.first().toInt() < 0;
+        }), 3000);
+    }
+    void queuedAudioCannotOutliveItsSourceOrDeadline_data() {
+        QTest::addColumn<bool>("removeSource");
+        QTest::newRow("source-removed") << true;
+        QTest::newRow("deadline-expired") << false;
+    }
+    void queuedAudioCannotOutliveItsSourceOrDeadline() {
+        QFETCH(bool, removeSource);
+        const auto port = availableUdpPort(); QVERIFY(port);
+        DatagramLink link(port);
+        squad::MediaTransport host(true, port, QHostAddress::LocalHost, 0);
+        squad::MediaTransport client(false, 0, QHostAddress::LocalHost, link.port());
+        connect(&host, &squad::MediaTransport::signaling, &client, [&](const auto& message) { QVERIFY(client.receive(message)); });
+        connect(&client, &squad::MediaTransport::signaling, &host, [&](const auto& message) { QVERIFY(host.receive(message)); });
+        QSignalSpy heard(&client, &squad::MediaTransport::audio);
+        QTRY_VERIFY_WITH_TIMEOUT(host.udpActive() && client.udpActive(), 10000);
+        const auto packet = speech();
+        SendGate gate;
+        QVERIFY(host.send(first, packet));
+        QTRY_VERIFY_WITH_TIMEOUT(gate.entered(), 1000);
+        QVERIFY(!gate.onOwner());
+        for (int i = 0; i < 6; ++i) QVERIFY(host.send(first, packet));
+        if (removeSource) {
+            host.retainSources({}); client.retainSources({});
+        } else {
+            QElapsedTimer stalled; stalled.start();
+            QTRY_VERIFY_WITH_TIMEOUT(stalled.elapsed() >= 130, 1000);
+        }
+        QVERIFY(host.send(second, packet));
+        gate.release();
+        QTRY_VERIFY_WITH_TIMEOUT(std::any_of(heard.begin(), heard.end(), [](const auto& event) {
+            return event.first().toString() == second;
+        }), 3000);
+        // The packet already being sent can arrive. Queued old packets cannot.
+        QCOMPARE(link.audioPackets, 2);
+        if (removeSource) QCOMPARE(heard.size(), 1);
+    }
+    void audioQueuesReleaseWhenPeerCloses() {
+        const auto packet = speech();
+        for (int repeat = 0; repeat < 10; ++repeat) {
+            const auto port = availableUdpPort(); QVERIFY(port);
+            squad::MediaTransport host(true, port, QHostAddress::LocalHost, 0);
+            auto client = std::make_unique<squad::MediaTransport>(false, 0, QHostAddress::LocalHost, port);
+            connect(&host, &squad::MediaTransport::signaling, client.get(), [&](const auto& message) { QVERIFY(client->receive(message)); });
+            connect(client.get(), &squad::MediaTransport::signaling, &host, [&](const auto& message) { QVERIFY(host.receive(message)); });
+            QTRY_VERIFY_WITH_TIMEOUT(host.udpActive() && client->udpActive(), 10000);
+            for (int i = 0; i < 100; ++i) {
+                QVERIFY(host.send(first, packet));
+                QVERIFY(client->send(second, packet));
+            }
+            client.reset();
+            QTRY_VERIFY_WITH_TIMEOUT(!host.udpActive(), 3000);
+        }
     }
     void sequenceWrapReorderingAndRebindingRejectOldFrames() {
         squad::MediaTransport client(false, 0, QHostAddress::LocalHost, 0);
