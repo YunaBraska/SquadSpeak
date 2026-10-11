@@ -256,6 +256,7 @@ jobs:
       build_command: |
         set -eu
         mkdir -p build/ci build/compiler-cache build/native-cache
+        trap 'sudo chown -R "$(id -u):$(id -g)" build/native-cache' EXIT
         set --
         case "$BUILD_MODE" in
           release|sanitizers) set -- --device /dev/fuse --cap-add SYS_ADMIN --security-opt apparmor=unconfined ;;
