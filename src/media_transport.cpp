@@ -109,6 +109,7 @@ struct MediaTransport::State::Sender final {
     std::map<std::pair<quintptr, quint32>, int> counts;
     rtc::Channel* active = nullptr;
     bool stopping = false;
+    quint64 sent = 0, expired = 0, rejected = 0, shed = 0, peak = 0;
     std::thread worker{[this] {
         std::unique_lock lock(mutex);
         for (;;) {
@@ -118,14 +119,20 @@ struct MediaTransport::State::Sender final {
             auto packet = std::move(queue.front()); queue.pop_front();
             active = packet.channel.get();
             lock.unlock();
-            if (Clock::now() < packet.expires) {
+            const bool outdated = Clock::now() >= packet.expires;
+            bool accepted = false;
+            if (!outdated) {
                 bool sent = false, fatal = false;
                 try {
                     sent = packet.channel->send(reinterpret_cast<const rtc::byte*>(packet.bytes.constData()), size_t(packet.bytes.size()));
                 } catch (const std::exception& error) { qCDebug(mediaTransportLog) << error.what(); fatal = true; }
                 if (!sent) packet.failed(fatal);
+                accepted = sent;
             }
             lock.lock();
+            sent += accepted;
+            expired += outdated;
+            rejected += !outdated && !accepted;
             active = nullptr;
             changed.notify_all();
         }
@@ -140,6 +147,7 @@ struct MediaTransport::State::Sender final {
         { std::lock_guard lock(mutex); stopping = true; queue.clear(); counts.clear(); }
         changed.notify_all();
         if (worker.joinable()) worker.join();
+        qInfo() << "Audio sender sent/expired/rejected/shed/peak" << sent << expired << rejected << shed << peak;
     }
     void cancel(const std::shared_ptr<rtc::Channel>& channel, std::optional<quint32> ssrc = {}) {
         std::unique_lock lock(mutex);
@@ -162,12 +170,14 @@ struct MediaTransport::State::Sender final {
                 return packet.channel == channel && packet.ssrc == ssrc;
             });
             uncount(*oldest); queue.erase(oldest);
+            ++shed;
         }
         // Six 20 ms frames per source, at most 4096 small RTP packets globally.
         // Shed old speech under overload instead of growing latency or TLS work.
-        if (queue.size() == 4096) { uncount(queue.front()); queue.pop_front(); }
+        if (queue.size() == 4096) { uncount(queue.front()); queue.pop_front(); ++shed; }
         ++counts[key];
         queue.push_back({channel, std::move(bytes), ssrc, Clock::now() + std::chrono::milliseconds(120), std::move(failed)});
+        peak = std::max<quint64>(peak, queue.size());
         changed.notify_one();
         return true;
     }

@@ -95,6 +95,7 @@ jobs:
           if (-not $files.Count) { throw 'Dependency cache input files are missing' }
           $hashes = $files | ForEach-Object { $_.FullName.Substring($env:GITHUB_WORKSPACE.Length) + ':' + (Get-FileHash $_.FullName -Algorithm SHA256).Hash }
           $hashes += $env:CACHE_QT
+          $hashes += "$env:CMAKE_C_COMPILER_LAUNCHER|$env:CMAKE_CXX_COMPILER_LAUNCHER"
           $digest = [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes(($hashes -join "`n"))))
           "inputs=$digest" >> $env:GITHUB_OUTPUT
       - name: "📥 Restore Dependencies"
