@@ -7,7 +7,7 @@ VideoToolbox dropped-frame allocation fix:
 https://github.com/FFmpeg/FFmpeg/commit/04ff86d0355a58c3d02dbf562ccb708942a29435
 The extradata initializer also releases its locally owned queue node when
 hardware encoder creation fails, before the software encoder is selected.
-The build options and exact patch are in CMakeLists.txt at the application's
+The build options and exact patch are in cmake/Dependencies.cmake at the application's
 source revision. That shared runtime is used by both SquadSpeak and Qt.
 
 Linux Qt 6.10.2 builds bundle the ABI-matching Qt Multimedia shared library,
@@ -19,7 +19,7 @@ Qt SDK, the module retains Qt's Clang sanitizer link policy (ASan is supplied
 by the test executable):
 https://github.com/qt/qtmultimedia/commit/d2ae2aa07b40
 https://github.com/qt/qtmultimedia/commit/2ccfc1fcb857
-Build options and source checksum are recorded in CMakeLists.txt. The source
+Build options and source checksum are recorded in cmake/Dependencies.cmake. The source
 archive is included in the release dependency sources. This library also
 contains dr_wav (Copyright 2023 David Reid), under MIT-0; its license text is
 in QT-SBOM/licenses/MIT-0.txt. The Qt sources retain their LGPL/GPL notices.

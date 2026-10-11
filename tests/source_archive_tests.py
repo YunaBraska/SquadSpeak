@@ -35,7 +35,7 @@ class SourceArchiveTests(unittest.TestCase):
             "archives": [{"name": "source.tar.xz", "url": self.url, "sha256": digest}],
         }
         (self.root / "cmake/source_archives.json").write_text(json.dumps(self.manifest), encoding="utf-8")
-        for relative in ("CMakeLists.txt", "cmake/AudioProcessing.cmake", "cmake/Updates.cmake"):
+        for relative in ("CMakeLists.txt", "cmake/Dependencies.cmake", "cmake/AudioProcessing.cmake", "cmake/Updates.cmake"):
             (self.root / relative).write_text(
                 f"FetchContent_Declare(x URL {self.url} URL_HASH SHA256={digest})\n", encoding="utf-8"
             )
@@ -153,7 +153,7 @@ class SourceArchiveTests(unittest.TestCase):
                 result = self.run_tool("--check")
                 self.assertEqual(result.returncode, 2)
                 self.assertIn(message, result.stderr)
-        for relative in ("CMakeLists.txt", "cmake/AudioProcessing.cmake", "cmake/Updates.cmake", "tests/macos-ci.sh", "tests/windows-ci.ps1"):
+        for relative in ("CMakeLists.txt", "cmake/Dependencies.cmake", "cmake/AudioProcessing.cmake", "cmake/Updates.cmake", "tests/macos-ci.sh", "tests/windows-ci.ps1"):
             (self.root / relative).write_text("# no pins\n", encoding="utf-8")
         self.assertIn("no pinned source archives", self.run_tool("--check").stderr)
 
@@ -255,7 +255,7 @@ class SourceArchiveTests(unittest.TestCase):
         for route, success in (("valid", True), ("secure-redirect", True), ("corrupt", False), ("missing", False), ("large", False), ("redirect", False)):
             with self.subTest(route=route):
                 url = f"https://127.0.0.1:{secure.server_port}/{route}"
-                for relative in ("CMakeLists.txt", "cmake/AudioProcessing.cmake", "cmake/Updates.cmake", "tests/macos-ci.sh", "tests/windows-ci.ps1"):
+                for relative in ("CMakeLists.txt", "cmake/Dependencies.cmake", "cmake/AudioProcessing.cmake", "cmake/Updates.cmake", "tests/macos-ci.sh", "tests/windows-ci.ps1"):
                     path = self.root / relative
                     path.write_text(path.read_text().replace(self.url, url), encoding="utf-8")
                 self.url = url

@@ -260,7 +260,81 @@ else: sys.exit(7)
                 self.assertNotIn(private_key, result.stdout + result.stderr)
                 self.assertFalse((self.root / "update-key.der").exists())
 
-    def test_macos_stops_after_an_early_network_failure_and_keeps_reports(self):
+    def test_network_launcher_keeps_function_inventory_and_resource_guards(self):
+        executable = self.root / "network contract"
+        executable.write_text("#!" + sys.executable + "\n" + '''import sys
+if sys.argv[1] == "-functions":
+    print("boundedDiscoveryAcceptsKnownHosts()")
+    print("sixtyFourClientsHaveOneConsistentRosterAndAudioFanout()")
+else:
+    print("EXECUTED " + sys.argv[1])
+''')
+        executable.chmod(0o700)
+        launcher = self.root / "bin/launcher"
+        launcher.write_text("#!/bin/sh\n[ \"$1\" = \"argument with spaces\" ] || exit 6\nshift\nexec \"$@\"\n")
+        launcher.chmod(0o700)
+        discovered = self.root / "discovered.cmake"
+        for prefix in ("", str(launcher) + ";argument with spaces"):
+            result = subprocess.run(["cmake", "-DCHANNEL_TEST_EXECUTABLE=" + str(executable),
+                "-DOUTPUT_FILE=" + str(discovered), "-DTEST_LAUNCHER=" + prefix,
+                "-P", str(self.repo / "cmake/DiscoverChannelTests.cmake")], capture_output=True, text=True, timeout=15)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            (self.root / "CTestTestfile.cmake").write_text(discovered.read_text())
+            result = subprocess.run(["ctest", "--test-dir", str(self.root), "--show-only=json-v1"],
+                                    capture_output=True, text=True, timeout=15)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            tests = json.loads(result.stdout)["tests"]
+            self.assertEqual(len(tests), 2)
+            properties = [{p["name"]: p["value"] for p in test["properties"]} for test in tests]
+            self.assertEqual(properties[0]["RESOURCE_LOCK"], ["channel_fixed_ports"])
+            self.assertTrue(properties[1]["RUN_SERIAL"])
+            result = subprocess.run(["ctest", "--test-dir", str(self.root), "--parallel", "2", "-V"],
+                                    capture_output=True, text=True, timeout=15)
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            self.assertEqual(result.stdout.count("EXECUTED "), 2)
+
+    def test_dependency_cache_ignores_test_and_release_changes(self):
+        (self.root / "cmake").unlink()
+        shutil.copytree(self.repo / "cmake", self.root / "cmake")
+        (self.root / "tests").mkdir()
+        for name in ("CMakeLists.txt", "tests/macos-ci.sh", "tests/windows-ci.ps1"):
+            shutil.copy2(self.repo / name, self.root / name)
+        for name in ("xcodebuild", "xcrun"):
+            tool = self.root / "bin" / name
+            tool.write_text("#!/bin/sh\nprintf 'fixed toolchain\\n'\n")
+            tool.chmod(0o700)
+        workflow = (self.repo / ".github/workflows/verify.yml").read_text()
+        selections = re.findall(r"^      cache_inputs: '(.*)'$", workflow, re.MULTILINE)
+        self.assertEqual(len(selections), 2)
+        for selection in selections:
+            def fingerprint():
+                result = self.run_step("Read Toolchain", "wc_macos_build.yml", CACHE_INPUTS=selection)
+                self.assertEqual(result.returncode, 0, result.stderr)
+                return self.outputs()["inputs"]
+            baseline = fingerprint()
+            for name in ("CMakeLists.txt", "cmake/Version.cmake", "cmake/DiscoverChannelTests.cmake"):
+                with self.subTest(selection=selection, unchanged=name):
+                    path = self.root / name
+                    original = path.read_text()
+                    path.write_text(original + "\n# unrelated test or release change\n")
+                    try:
+                        self.assertEqual(fingerprint(), baseline)
+                    finally:
+                        path.write_text(original)
+            pins = ["cmake/Dependencies.cmake", "cmake/AudioProcessing.cmake", "cmake/Media.cmake",
+                    "cmake/Updates.cmake", "cmake/qt-qml-runtime.patch", "cmake/source_archives.json"]
+            pins += [name for name in json.loads(selection) if name.startswith("tests/")]
+            for name in pins:
+                with self.subTest(selection=selection, changed=name):
+                    path = self.root / name
+                    original = path.read_text()
+                    path.write_text(original + "\n# changed dependency input\n")
+                    try:
+                        self.assertNotEqual(fingerprint(), baseline)
+                    finally:
+                        path.write_text(original)
+
+    def test_macos_schedules_all_contracts_together_and_preserves_failures(self):
         for name, script in (("uname", "#!/bin/sh\nprintf 'arm64\\n'\n"),
                              ("sudo", '#!/bin/sh\nshift\nexec "$@"\n')):
             path = self.root / "bin" / name
@@ -291,7 +365,9 @@ sys.exit(9)
                 self.assertNotEqual(result.returncode, 0)
                 calls = [json.loads(line) for line in (self.root / "trace.jsonl").read_text().splitlines()]
                 self.assertEqual(len(calls), 1, result.stderr)
-                self.assertIn("-R", calls[0]["args"])
+                self.assertNotIn("-R", calls[0]["args"])
+                self.assertNotIn("-E", calls[0]["args"])
+                self.assertIn("--parallel", calls[0]["args"])
                 self.assertIn("--stop-on-failure", calls[0]["args"])
                 self.assertEqual(calls[0]["version"], expected)
                 self.assertEqual((self.root / "artifacts/test-details.log").read_text(), "failed test details")

@@ -131,8 +131,11 @@ same framing, validation and peer state; there is no second protocol model.
 For macOS, install CMake, Ninja, Meson, pkg-config and NASM. The reproducible
 package path builds deployment-compatible audio, TLS and FFmpeg libraries.
 FFmpeg 7.1.5 includes VideoToolbox dropped-frame and failed-initialization
-cleanup recorded in CMakeLists.txt. Build-tree tests and the installed Qt multimedia plugin use
-the same patched runtime; package checks reject duplicate or unpatched copies.
+cleanup recorded in `cmake/Dependencies.cmake`. Build-tree tests and the installed
+Qt multimedia plugin use the same patched runtime; package checks reject duplicate
+or unpatched copies.
+Keep dependency compiler settings in that file or its dependency modules so CI
+can reuse native libraries when only application code, tests or versions change.
 
 ```sh
 sh tests/macos-ci.sh /path/to/Qt/6.11.3/macos build/macos-ci

@@ -25,6 +25,7 @@ VERSION = re.compile(r"^[0-9]+\.[0-9]+\.[0-9]+$")
 MAX_ARCHIVE_SIZE = 512 * 1024 * 1024
 PIN_FILES = (
     "CMakeLists.txt",
+    "cmake/Dependencies.cmake",
     "cmake/AudioProcessing.cmake",
     "cmake/Updates.cmake",
     "tests/macos-ci.sh",

@@ -111,6 +111,7 @@ export SQUADSPEAK_TEST_INPUT=present SQUADSPEAK_CAPTURE_DIAGNOSTICS=1
 trap 'pulseaudio --kill' EXIT
 
 dpkg-query -W > /output/packages.txt
+ccache --zero-stats
 cmake -S /source -B /tmp/squadspeak-ci-build -G Ninja -DBUILD_TESTING=ON \
     -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache "$@"
 cmake --build /tmp/squadspeak-ci-build --parallel 4

@@ -289,7 +289,7 @@ jobs:
       build_command: sh tests/macos-ci.sh auto build/macos-ci build
       test_command: sh tests/macos-ci.sh auto build/macos-ci test
       package_command: sh tests/macos-ci.sh auto build/macos-ci package
-      cache_inputs: '["tests/macos-ci.sh", "CMakeLists.txt", "cmake/*"]'
+      cache_inputs: '["tests/macos-ci.sh", "cmake/Dependencies.cmake", "cmake/AudioProcessing.cmake", "cmake/Media.cmake", "cmake/Updates.cmake", "cmake/*.patch", "cmake/source_archives.json"]'
       cache_paths: |
         build/macos-ci/toolchain/Qt
         build/macos-ci/dependencies
@@ -379,7 +379,7 @@ jobs:
       build_command: ./tests/windows-ci.ps1 -QtRoot $env:QT_ROOT_DIR -BuildRoot "$env:GITHUB_WORKSPACE/build/windows-ci" -Phase build
       test_command: ./tests/windows-ci.ps1 -QtRoot $env:QT_ROOT_DIR -BuildRoot "$env:GITHUB_WORKSPACE/build/windows-ci" -Phase test
       package_command: ./tests/windows-ci.ps1 -QtRoot $env:QT_ROOT_DIR -BuildRoot "$env:GITHUB_WORKSPACE/build/windows-ci" -Phase package
-      cache_inputs: '["tests/windows-ci.ps1", "CMakeLists.txt", "cmake/*"]'
+      cache_inputs: '["tests/windows-ci.ps1", "cmake/Dependencies.cmake", "cmake/AudioProcessing.cmake", "cmake/Media.cmake", "cmake/Updates.cmake", "cmake/*.patch", "cmake/source_archives.json"]'
       cache_paths: |
         build/windows-ci/dependencies/prefix
         build/windows-ci/app/_deps

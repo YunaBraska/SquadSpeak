@@ -17,6 +17,7 @@ source_root=$(CDPATH='' cd "$(dirname "$0")/.." && pwd)
 if test "$qt_prefix" = auto; then qt_prefix="$build_root/toolchain/Qt/6.11.3/macos"; fi
 if test "$phase" = prepare; then
     brew install cmake ninja meson pkgconf nasm ccache
+    ccache --zero-stats
     if test ! -x "$qt_prefix/bin/qmake"; then
         python3 -m venv "$build_root/toolchain/aqt"
         "$build_root/toolchain/aqt/bin/pip" install --disable-pip-version-check \
@@ -105,27 +106,9 @@ if command -v ccache >/dev/null 2>&1; then ccache --show-stats; fi
 fi
 if test "$phase" = test || test "$phase" = all; then
 result=0
-network_tests='^(channel_contract.*|channel_controls)$'
-: > "$build_root/artifacts/ctest.log"
-: > "$build_root/artifacts/test-details.log"
-set --
-if test "${GITHUB_ACTIONS:-}" = true; then
-    # Hosted macOS runners lack interactive LAN consent (runner-images#10924).
-    # Only disposable-runner network contracts use Apple's root exemption.
-    # Run the load gates before UI checks, at normal logging verbosity.
-    sudo -n env QT_LOGGING_RULES='' \
-        "$(command -v ctest)" --parallel "${CTEST_PARALLEL_LEVEL:-4}" --test-dir "$build_root/app" --output-on-failure --no-tests=error --stop-on-failure \
-        -R "$network_tests" --output-junit "$build_root/artifacts/network.xml" \
-        --output-log "$build_root/artifacts/network.log" || result=$?
-    cat "$build_root/artifacts/network.log" >> "$build_root/artifacts/ctest.log"
-    cat "$build_root/app/Testing/Temporary/LastTest.log" >> "$build_root/artifacts/test-details.log"
-    test "$result" -eq 0
-    set -- -E "$network_tests"
-fi
 QT_LOGGING_RULES='squadspeak.discovery.debug=true' ctest --parallel "${CTEST_PARALLEL_LEVEL:-4}" --test-dir "$build_root/app" --output-on-failure --no-tests=error --stop-on-failure \
-    --output-junit "$build_root/artifacts/ctest.xml" --output-log "$build_root/artifacts/general.log" "$@" || result=$?
-cat "$build_root/artifacts/general.log" >> "$build_root/artifacts/ctest.log"
-cat "$build_root/app/Testing/Temporary/LastTest.log" >> "$build_root/artifacts/test-details.log"
+    --output-junit "$build_root/artifacts/ctest.xml" --output-log "$build_root/artifacts/ctest.log" || result=$?
+cp "$build_root/app/Testing/Temporary/LastTest.log" "$build_root/artifacts/test-details.log"
 if test -d "$build_root/app/smoke"; then cp -R "$build_root/app/smoke" "$build_root/artifacts/"; fi
 test "$result" -eq 0
 # Keep native memory checks in the same test phase.
