@@ -1,9 +1,12 @@
-"""Exercise release metadata through public CMake scripts without configuring Qt."""
+"""Check release metadata and native compilation commands."""
+import argparse
 import hashlib
+import json
 import os
 import plistlib
 from pathlib import Path
 import subprocess
+import sys
 import tempfile
 import unittest
 
@@ -126,4 +129,18 @@ class HomebrewTests(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    unittest.main()
+    parser = argparse.ArgumentParser(add_help=False)
+    parser.add_argument("--compile-commands", type=Path)
+    options, arguments = parser.parse_known_args()
+    if options.compile_commands:
+        class CompiledVersionTests(unittest.TestCase):
+            def test_snapshot_version_only_invalidates_its_consumers(self):
+                repo = Path(__file__).resolve().parents[1]
+                consumers = {repo / name for name in ("src/main.cpp", "src/headless.cpp",
+                             "tests/headless_tests.cpp", "tests/controls_tests.cpp")}
+                entries = json.loads(options.compile_commands.read_text(encoding="utf-8"))
+                affected = {Path(entry["file"]).resolve() for entry in entries
+                            if "SQUADSPEAK_VERSION=" in entry["command"]}
+                self.assertEqual(affected, consumers)
+
+    unittest.main(argv=[sys.argv[0], *arguments])

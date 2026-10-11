@@ -1,3 +1,5 @@
+set_source_files_properties(controls_tests.cpp PROPERTIES
+    COMPILE_DEFINITIONS "SQUADSPEAK_VERSION=\"${SQUADSPEAK_VERSION}\"")
 # Keep static QML plugin scanning within the test sources. Scanning the
 # repository root also reads unrelated QML from local dependency builds.
 qt_add_executable(controls_tests controls_tests.cpp

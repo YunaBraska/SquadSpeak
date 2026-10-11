@@ -1,3 +1,5 @@
+set_source_files_properties(../src/main.cpp ../src/headless.cpp PROPERTIES
+    COMPILE_DEFINITIONS "SQUADSPEAK_VERSION=\"${SQUADSPEAK_VERSION}\"")
 qt_add_executable(squadspeak MACOSX_BUNDLE ../src/main.cpp ../src/headless.cpp ../src/headless.hpp ../src/audio_model.cpp ../src/audio_model.hpp ../src/audio_recording.cpp ../src/audio_recording.hpp ../src/ptt_key.cpp ../src/ptt_key.hpp)
 set(squad_qml_files Theme.qml PanelWindow.qml PanelDialog.qml TextToolTip.qml ActionButton.qml EntryField.qml ChoiceBox.qml OptionCheck.qml Glyph.qml AudioSettings.qml RecordingPanel.qml Channels.qml ChatPanel.qml VoiceAvatar.qml AvatarAtlas.js SettingSlider.qml SpectrumView.qml ScreenPanel.qml)
 set(squad_resource_files icons/app.png avatars/mossling.png avatars/courier.png avatars/mechanic.png avatars/system.png avatars/system-animated.png

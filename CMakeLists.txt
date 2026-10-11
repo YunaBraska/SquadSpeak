@@ -62,7 +62,9 @@ target_compile_options(squad_audio PRIVATE $<$<CXX_COMPILER_ID:AppleClang,Clang,
 
 add_library(squad_session src/voice_session.cpp src/voice_session.hpp src/tls_identity.cpp src/tls_identity.hpp src/local_channel.cpp src/local_channel_chat.cpp src/local_channel_control.cpp src/local_channel_discovery.cpp src/local_channel_video.cpp src/local_channel.hpp src/media_transport.cpp src/media_transport.hpp src/chat_history.cpp src/chat_history.hpp src/license.cpp src/license.hpp)
 target_include_directories(squad_session PUBLIC src)
-target_compile_definitions(squad_session PUBLIC SQUADSPEAK_VERSION="${SQUADSPEAK_VERSION}")
+# Version changes only rebuild entrypoints that report the version.
+set_source_files_properties(src/headless.cpp tests/headless_tests.cpp PROPERTIES
+    COMPILE_DEFINITIONS "SQUADSPEAK_VERSION=\"${SQUADSPEAK_VERSION}\"")
 option(SQUADSPEAK_STORE_BUILD "Build a free-only store distribution" OFF)
 set(SQUADSPEAK_GITHUB_CLIENT_ID "Ov23li8PQoxYilNhKyrn" CACHE STRING "Public Yuna Supporter OAuth client ID")
 if(SQUADSPEAK_GITHUB_CLIENT_ID AND NOT SQUADSPEAK_GITHUB_CLIENT_ID MATCHES "^[A-Za-z0-9_]+$")
@@ -489,7 +491,8 @@ if(BUILD_TESTING)
         "${CMAKE_CURRENT_SOURCE_DIR}/docs/third-party"
         --qt-modules Core Gui Network Qml Quick Multimedia Svg)
     add_test(NAME release_version COMMAND ${Python3_EXECUTABLE}
-        "${CMAKE_CURRENT_SOURCE_DIR}/tests/release_version_tests.py")
+        "${CMAKE_CURRENT_SOURCE_DIR}/tests/release_version_tests.py"
+        --compile-commands "${CMAKE_CURRENT_BINARY_DIR}/compile_commands.json")
     if(UNIX)
         add_test(NAME release_publication COMMAND ${Python3_EXECUTABLE}
             "${CMAKE_CURRENT_SOURCE_DIR}/tests/release_publication_tests.py")
