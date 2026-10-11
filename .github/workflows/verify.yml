@@ -52,6 +52,7 @@ concurrency:
 
 jobs:
   prepare:
+    name: "🧾 Prepare"
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     outputs:
@@ -60,7 +61,7 @@ jobs:
       version: ${{ steps.resolve.outputs.version }}
     steps:
       - name: "🧑‍💻 Checkout"
-        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           fetch-depth: 0
           ref: ${{ inputs.ref || github.sha }}
@@ -81,6 +82,16 @@ jobs:
           foreach ($file in Get-ChildItem tests/*.ps1) {
             $parseErrors = $null
             [System.Management.Automation.Language.Parser]::ParseFile($file.FullName, [ref]$null, [ref]$parseErrors) | Out-Null
+            if ($parseErrors) { throw ($parseErrors | Out-String) }
+          }
+          $windows = Get-Content .github/workflows/wc_windows_build.yml -Raw
+          $caller = Get-Content .github/workflows/verify.yml -Raw
+          $windows += [regex]::Match($caller, '(?ms)^  windows:\r?\n.*?(?=^  sources:)').Value
+          $blocks = [regex]::Matches($windows, '(?m)^( +)(?:run|prepare_command): \|\r?\n((?:\1  .*\r?\n|\r?\n)+)')
+          if ($blocks.Count -lt 2) { throw "Windows workflow commands were not found" }
+          foreach ($block in $blocks) {
+            $parseErrors = $null
+            [System.Management.Automation.Language.Parser]::ParseInput($block.Groups[2].Value, [ref]$null, [ref]$parseErrors) | Out-Null
             if ($parseErrors) { throw ($parseErrors | Out-String) }
           }
       - name: "🛡️ Check release contracts before native builds"
@@ -230,6 +241,43 @@ jobs:
       version: ${{ needs.prepare.outputs.version }}
       runner: ${{ matrix.runner }}
       mode: ${{ matrix.mode }}
+      dockerfile: tests/linux.Dockerfile
+      context: tests
+      image: squadspeak-ci
+      cache_dependencies: ${{ matrix.mode == 'release' }}
+      build_command: |
+        set -eu
+        mkdir -p build/ci build/compiler-cache
+        set --
+        case "$BUILD_MODE" in
+          release|sanitizers) set -- --device /dev/fuse --cap-add SYS_ADMIN --security-opt apparmor=unconfined ;;
+          store) ;;
+          *) printf 'Invalid Linux build mode: %s\n' "$BUILD_MODE" >&2; exit 1 ;;
+        esac
+        docker run --rm --init "$@" --env SQUADSPEAK_VERSION="$VERSION" \
+          --env CCACHE_DIR=/compiler-cache --env CCACHE_MAXSIZE=500M --env CTEST_PARALLEL_LEVEL=4 \
+          --mount "type=bind,src=$PWD,dst=/source,readonly" \
+          --mount "type=bind,src=$PWD/build/ci,dst=/output" \
+          --mount "type=bind,src=$PWD/build/compiler-cache,dst=/compiler-cache" squadspeak-ci "$BUILD_MODE"
+      integration_command: sh tests/discovery-network.sh build/ci
+      package_command: |
+        set -eu
+        if test "$BUILD_MODE" = release; then
+          docker buildx build --target runtime --load --tag native-ci:runtime \
+            --cache-from "type=gha,scope=linux-$RUNNER_ARCH" --file tests/linux.Dockerfile tests
+          docker run --rm --init --user "$(id -u):$(id -g)" \
+            --mount "type=bind,src=$PWD,dst=/source,readonly" \
+            --mount "type=bind,src=$PWD/build/ci,dst=/output,readonly" \
+            native-ci:runtime sh /source/tests/linux-ci.sh runtime
+        else
+          test -s build/ci/ctest.xml
+          printf 'Verification build: test reports are the artifact.\n'
+        fi
+      artifact_prefix: ${{ matrix.mode == 'release' && 'release-linux' || format('verification-linux-{0}', matrix.mode) }}
+      package_paths: ${{ matrix.mode == 'release' && 'build/ci/squadspeak-linux-*.tar.gz' || 'build/ci' }}
+      report_paths: |
+        build/ci
+        !build/ci/squadspeak-linux-*.tar.gz
 
   macos:
     needs: prepare
@@ -275,14 +323,84 @@ jobs:
     with:
       ref: ${{ needs.prepare.outputs.commit_sha }}
       version: ${{ needs.prepare.outputs.version }}
+      qt_version: '6.11.3'
+      qt_modules: qtmultimedia qtimageformats
+      prepare_command: |
+        python tests/source_archive_tests.py SourceArchiveTests.test_runtime_patches_survive_windows_checkout
+        if ($LASTEXITCODE -ne 0) { throw "Windows source checkout changed a patch" }
+        $ErrorActionPreference = 'Stop'
+        for ($attempt = 1; $attempt -le 3; ++$attempt) {
+          choco install nasm --version=3.2.0 --no-progress --yes
+          if ($LASTEXITCODE -eq 0) { break }
+          if ($attempt -eq 3) { throw "Chocolatey NASM installation failed with exit code $LASTEXITCODE" }
+          Start-Sleep -Seconds (5 * $attempt)
+        }
+        $nasmDir = Join-Path $env:ProgramFiles 'NASM'
+        Add-Content -Path $env:GITHUB_PATH -Value $nasmDir
+        $env:Path += ";$nasmDir"
+        $nasmVersion = & "$nasmDir/nasm.exe" -v
+        if ($LASTEXITCODE -ne 0 -or $nasmVersion -notmatch '^NASM version 3\.02(?: |$)') { throw "Unexpected NASM version: $nasmVersion" }
+        Write-Host $nasmVersion
+        python -m pip install --disable-pip-version-check meson==1.12.1
+        if ($LASTEXITCODE -ne 0) { throw "Meson installation failed" }
+        ./tests/windows-audio.ps1 -BuildRoot "$env:GITHUB_WORKSPACE/build/windows-ci"
+        ./tests/windows-ci.ps1 -QtRoot $env:QT_ROOT_DIR -BuildRoot "$env:GITHUB_WORKSPACE/build/windows-ci" -DependenciesOnly
+        Copy-Item "$env:GITHUB_WORKSPACE/build/windows-ci/build.log" "$env:GITHUB_WORKSPACE/build/windows-ci/dependencies-first.log" -Force
+        # A restored binary prefix must work without source archives or downloads.
+        Get-ChildItem "$env:GITHUB_WORKSPACE/build/windows-ci/dependencies" |
+          Where-Object Name -ne 'prefix' | Remove-Item -Recurse -Force
+        function global:curl.exe { throw 'Unexpected download while reusing a dependency prefix' }
+        try {
+          ./tests/windows-ci.ps1 -QtRoot $env:QT_ROOT_DIR -BuildRoot "$env:GITHUB_WORKSPACE/build/windows-ci" -DependenciesOnly
+        } finally { Remove-Item Function:\curl.exe }
+        Copy-Item "$env:GITHUB_WORKSPACE/build/windows-ci/build.log" "$env:GITHUB_WORKSPACE/build/windows-ci/dependencies-reuse.log" -Force
+        if (-not (Select-String -Path build/windows-ci/dependencies-reuse.log -SimpleMatch 'Dependency prefix cache hit' -Quiet)) {
+          throw 'Repeated preparation did not reuse the dependency prefix'
+        }
+        $prefix = "$env:GITHUB_WORKSPACE/build/windows-ci/dependencies/prefix"
+        $stamp = "$prefix/.squadspeak-dependencies-ready"
+        $original = Get-Content $stamp -Raw
+        try {
+          Set-Content $stamp 'incompatible inputs' -NoNewline
+          & pwsh -NoProfile -File tests/windows-ci.ps1 -QtRoot $env:QT_ROOT_DIR -BuildRoot build/windows-ci -DependenciesOnly *> build/windows-ci/dependencies-mismatch.log
+          if ($LASTEXITCODE -eq 0 -or -not (Select-String -Path build/windows-ci/dependencies-mismatch.log -SimpleMatch -Pattern 'stamp does not match' -Quiet)) {
+            throw 'Dependency preparation did not reject mismatched inputs'
+          }
+        } finally { Set-Content $stamp $original -NoNewline -Encoding ascii }
+        Move-Item "$prefix/include/openssl/ssl.h" "$prefix/include/openssl/ssl.h.saved"
+        try {
+          & pwsh -NoProfile -File tests/windows-ci.ps1 -QtRoot $env:QT_ROOT_DIR -BuildRoot build/windows-ci -DependenciesOnly *> build/windows-ci/dependencies-incomplete.log
+          if ($LASTEXITCODE -eq 0 -or -not (Select-String -Path build/windows-ci/dependencies-incomplete.log -SimpleMatch -Pattern 'required output is missing' -Quiet)) {
+            throw 'Dependency preparation did not reject an incomplete prefix'
+          }
+        } finally { Move-Item "$prefix/include/openssl/ssl.h.saved" "$prefix/include/openssl/ssl.h" }
+        # Both expected child-process failures were validated above.
+        $global:LASTEXITCODE = 0
+      build_command: ./tests/windows-ci.ps1 -QtRoot $env:QT_ROOT_DIR -BuildRoot "$env:GITHUB_WORKSPACE/build/windows-ci" -Phase build
+      test_command: ./tests/windows-ci.ps1 -QtRoot $env:QT_ROOT_DIR -BuildRoot "$env:GITHUB_WORKSPACE/build/windows-ci" -Phase test
+      package_command: ./tests/windows-ci.ps1 -QtRoot $env:QT_ROOT_DIR -BuildRoot "$env:GITHUB_WORKSPACE/build/windows-ci" -Phase package
+      cache_inputs: '["tests/windows-ci.ps1", "CMakeLists.txt", "cmake/*"]'
+      cache_paths: |
+        build/windows-ci/dependencies/prefix
+        build/windows-ci/app/_deps
+        build/windows-ci/app/qt-qml
+        build/windows-ci/app/squad_qt_qml_build-prefix
+        build/windows-ci/app/squad_apm_build-prefix
+        build/windows-ci/app/audio-processing
+      package_paths: build/windows-ci/squadspeak-windows-*.zip
+      report_paths: |
+        build/windows-ci/*.log
+        build/windows-ci/ctest.xml
+        build/windows-ci/app/smoke
 
   sources:
+    name: "📚 Dependency Sources"
     needs: prepare
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
       - name: "🧑‍💻 Checkout"
-        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           ref: ${{ needs.prepare.outputs.commit_sha }}
           persist-credentials: false
@@ -293,7 +411,7 @@ jobs:
           python3 cmake/build_sources.py --cache "$RUNNER_TEMP/source-cache" \
             --output "$RUNNER_TEMP/source-package/squadspeak-third-party-sources.tar.gz"
       - name: "📦 Preserve source package"
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: release-third-party-sources
           path: "${{ runner.temp }}/source-package/squadspeak-third-party-sources.tar.gz"

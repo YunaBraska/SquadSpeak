@@ -260,9 +260,46 @@ else: sys.exit(7)
                 self.assertNotIn(private_key, result.stdout + result.stderr)
                 self.assertFalse((self.root / "update-key.der").exists())
 
+    def test_macos_stops_after_an_early_network_failure_and_keeps_reports(self):
+        for name, script in (("uname", "#!/bin/sh\nprintf 'arm64\\n'\n"),
+                             ("sudo", '#!/bin/sh\nshift\nexec "$@"\n')):
+            path = self.root / "bin" / name
+            path.write_text(script)
+            path.chmod(0o700)
+        ctest = self.root / "bin/ctest"
+        ctest.write_text("#!" + sys.executable + "\n" + '''import json, os, pathlib, sys
+root = pathlib.Path(os.environ["TEST_BUILD"])
+with open(root / "trace.jsonl", "a") as log:
+    log.write(json.dumps({"args": sys.argv[1:], "version": os.environ.get("SQUADSPEAK_VERSION")}) + "\\n")
+reports = root / "artifacts"
+(reports / "network.xml").write_text("failure report")
+(reports / pathlib.Path(sys.argv[sys.argv.index("--output-log") + 1]).name).write_text("network failed")
+details = root / "app/Testing/Temporary/LastTest.log"
+details.parent.mkdir(parents=True, exist_ok=True)
+details.write_text("failed test details")
+sys.exit(9)
+''')
+        ctest.chmod(0o700)
+        for version, native, expected in (("", "", None), ("2026.10.11-SNAPSHOT.17", "", "2026.10.11-SNAPSHOT.17"),
+                                          ("2026.10.11", "2026.10.10", "2026.10.10")):
+            with self.subTest(version=version, native=native):
+                (self.root / "trace.jsonl").unlink(missing_ok=True)
+                result = subprocess.run(["sh", str(self.repo / "tests/macos-ci.sh"), str(self.root),
+                                         str(self.root), "test"], capture_output=True, text=True, timeout=20,
+                    env=dict(os.environ, PATH=str(self.root / "bin") + os.pathsep + os.environ["PATH"],
+                             GITHUB_ACTIONS="true", TEST_BUILD=str(self.root), VERSION=version, SQUADSPEAK_VERSION=native))
+                self.assertNotEqual(result.returncode, 0)
+                calls = [json.loads(line) for line in (self.root / "trace.jsonl").read_text().splitlines()]
+                self.assertEqual(len(calls), 1, result.stderr)
+                self.assertIn("-R", calls[0]["args"])
+                self.assertIn("--stop-on-failure", calls[0]["args"])
+                self.assertEqual(calls[0]["version"], expected)
+                self.assertEqual((self.root / "artifacts/test-details.log").read_text(), "failed test details")
+                self.assertEqual((self.root / "artifacts/ctest.log").read_text(), "network failed")
+
     def test_discovery_uses_the_image_built_by_the_linux_workflow(self):
-        workflow = (self.repo / ".github/workflows/wc_linux_build.yml").read_text()
-        image = re.search(r"^\s+tags: (\S+)$", workflow, re.MULTILINE).group(1)
+        workflow = (self.repo / ".github/workflows/verify.yml").read_text()
+        image = re.search(r"^\s+image: (\S+)$", workflow, re.MULTILINE).group(1)
         artifacts = self.root / "artifacts"
         artifacts.mkdir()
         probe = artifacts / "discovery_network_probe"

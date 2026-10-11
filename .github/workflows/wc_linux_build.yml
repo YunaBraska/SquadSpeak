@@ -12,6 +12,36 @@ on:
       runner:
         type: string
         default: ubuntu-24.04
+      dockerfile:
+        type: string
+        required: true
+      context:
+        type: string
+        required: true
+      image:
+        type: string
+        required: true
+      build_command:
+        type: string
+        required: true
+      integration_command:
+        type: string
+        required: true
+      package_command:
+        type: string
+        required: true
+      artifact_prefix:
+        type: string
+        required: true
+      package_paths:
+        type: string
+        required: true
+      report_paths:
+        type: string
+        required: true
+      cache_dependencies:
+        type: boolean
+        default: true
       mode:
         type: string
         default: release
@@ -25,89 +55,59 @@ jobs:
     runs-on: ${{ inputs.runner }}
     timeout-minutes: 60
     env:
-      SQUADSPEAK_VERSION: ${{ inputs.version }}
+      VERSION: ${{ inputs.version }}
+      BUILD_MODE: ${{ inputs.mode }}
     steps:
       - name: "🧑‍💻 Checkout"
-        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           ref: ${{ inputs.ref }}
           persist-credentials: false
       - name: "🛠️ Setup Container Builder"
-        uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f
+        uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069
       - name: "📥 Prepare Cached Build Environment"
-        uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc
         with:
-          context: tests
-          file: tests/linux.Dockerfile
+          context: ${{ inputs.context }}
+          file: ${{ inputs.dockerfile }}
           target: build
-          tags: squadspeak-ci
+          tags: ${{ inputs.image }}
           load: true
           cache-from: type=gha,scope=linux-${{ runner.arch }}
-          cache-to: ${{ inputs.mode == 'release' && format('type=gha,mode=max,scope=linux-{0}', runner.arch) || '' }}
+          cache-to: ${{ inputs.cache_dependencies && format('type=gha,mode=max,scope=linux-{0}', runner.arch) || '' }}
       - name: "📥 Restore Compiler Cache"
         id: compiler-cache
-        uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
         with:
           path: build/compiler-cache
-          key: compiler-linux-${{ runner.arch }}-${{ inputs.mode }}-${{ hashFiles('tests/linux.Dockerfile') }}-${{ github.sha }}
-          restore-keys: compiler-linux-${{ runner.arch }}-${{ inputs.mode }}-${{ hashFiles('tests/linux.Dockerfile') }}-
+          key: compiler-linux-${{ runner.arch }}-${{ inputs.mode }}-${{ hashFiles(inputs.dockerfile) }}-${{ github.sha }}
+          restore-keys: compiler-linux-${{ runner.arch }}-${{ inputs.mode }}-${{ hashFiles(inputs.dockerfile) }}-
       - name: "🔨 Build and Test"
-        env:
-          BUILD_MODE: ${{ inputs.mode }}
-        run: |
-          set -eu
-          mkdir -p build/ci build/compiler-cache
-          set --
-          case "$BUILD_MODE" in
-            release|sanitizers) set -- --device /dev/fuse --cap-add SYS_ADMIN --security-opt apparmor=unconfined ;;
-            store) ;;
-            *) printf 'Invalid Linux build mode: %s\n' "$BUILD_MODE" >&2; exit 1 ;;
-          esac
-          docker run --rm --init "$@" --env SQUADSPEAK_VERSION \
-            --env CCACHE_DIR=/compiler-cache --env CCACHE_MAXSIZE=500M --env CTEST_PARALLEL_LEVEL=4 \
-            --mount "type=bind,src=$PWD,dst=/source,readonly" \
-            --mount "type=bind,src=$PWD/build/ci,dst=/output" \
-            --mount "type=bind,src=$PWD/build/compiler-cache,dst=/compiler-cache" squadspeak-ci "$BUILD_MODE"
+        run: ${{ inputs.build_command }}
       - name: "📦 Cache Compiled Objects"
         if: ${{ !cancelled() && steps.compiler-cache.outcome == 'success' && steps.compiler-cache.outputs.cache-hit != 'true' }}
-        uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
         with:
           path: build/compiler-cache
           key: ${{ steps.compiler-cache.outputs.cache-primary-key }}
-      - name: "🌐 Verify Network Changes"
-        run: sh tests/discovery-network.sh build/ci
+      - name: "🧪 Integration Tests"
+        run: ${{ inputs.integration_command }}
       - name: "📦 Check Runtime Package"
-        env:
-          BUILD_MODE: ${{ inputs.mode }}
-        run: |
-          set -eu
-          if test "$BUILD_MODE" = release; then
-            docker buildx build --target runtime --load --tag native-ci:runtime \
-              --cache-from "type=gha,scope=linux-${{ runner.arch }}" --file tests/linux.Dockerfile tests
-            docker run --rm --init --user "$(id -u):$(id -g)" \
-              --mount "type=bind,src=$PWD,dst=/source,readonly" \
-              --mount "type=bind,src=$PWD/build/ci,dst=/output,readonly" \
-              native-ci:runtime sh /source/tests/linux-ci.sh runtime
-          else
-            test -s build/ci/ctest.xml
-            printf 'Verification build: test reports are the artifact.\n'
-          fi
+        run: ${{ inputs.package_command }}
       - name: "🧼 Check Sources"
         run: git diff --exit-code
       - name: "📦 Upload Build Artifact"
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
-          name: ${{ inputs.mode == 'release' && format('release-linux-{0}', runner.arch) || format('verification-linux-{0}-{1}', runner.arch, inputs.mode) }}
-          path: ${{ inputs.mode == 'release' && 'build/ci/squadspeak-linux-*.tar.gz' || 'build/ci' }}
+          name: ${{ inputs.artifact_prefix }}-${{ runner.arch }}
+          path: ${{ inputs.package_paths }}
           retention-days: 1
           if-no-files-found: error
       - name: "📋 Upload Test Reports"
         if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: linux-${{ runner.arch }}-${{ inputs.mode }}
-          path: |
-            build/ci
-            !build/ci/squadspeak-linux-*.tar.gz
+          path: ${{ inputs.report_paths }}
           retention-days: 7
           if-no-files-found: warn

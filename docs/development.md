@@ -116,9 +116,9 @@ Use `ctest --test-dir build/local -N` to list suites; Qt test executables accept
 affected integration suites before the full release matrix. CLI subprocess,
 malformed-protocol, codec-lifetime and DPI checks prove different behavior;
 a passing end-to-end smoke test does not replace them. CI caches the pinned Qt
-SDK on Windows and macOS; application builds and test results are never cached.
-CTest runs two suites concurrently. Native loopback capture, video timing and
-64-client load checks run alone; desktop/audio fixtures share a resource lock.
+SDK on Windows and macOS, plus compiled dependency and compiler caches. Final
+linking and tests run on every build. CTest runs four suites concurrently. Native
+loopback capture, video timing and 64-client load checks run alone; desktop/audio fixtures share a resource lock.
 Windows also caches its installed OpenSSL/Opus/libsamplerate prefix, keyed by
 compiler, SDK and build-script inputs. CI checks preparation and reuse before
 building the app; incompatible or incomplete prefixes fail explicitly.
@@ -219,8 +219,8 @@ the maintainer investigates it before requesting another attempt.
 1. Freeze the candidate revision and the existing release criteria. Run Windows
    CI before the visit. A green older commit does not certify local edits; the
    hosted runner is Windows Server 2022, not a Windows 10 hardware substitute.
-2. The Windows job prepares `squadspeak-windows-device-test.zip` as the separate
-   `windows-device-test` workflow artifact. It contains the packaged app, its
+2. The Windows job prepares `squadspeak-windows-device-test.zip` in the
+   `release-windows-x86_64` workflow artifact. It contains the packaged app, its
    runtime DLLs, Microsoft's runtime installer, `device-test/Start.cmd`, two
    isolated profiles and `device-test/Check.html`. The regular release ZIP stays
    unchanged. CI runs the same launcher with `--smoke-test`, checking both
@@ -518,9 +518,10 @@ The flow follows [PodLord's merge and release entrypoints](https://github.com/Yu
 and the [shared Swift release contract](https://github.com/YunaBraska/YunaBraska/blob/036626606065b3b64488ef0611d63713abdcf70c/SWIFT_CI_CD.md).
 `verify.yml` resolves one revision and version, runs cheap preflight checks, then
 calls `wc_linux_build.yml`, `wc_macos_build.yml` and `wc_windows_build.yml`.
-These reusable workflows own native builds, tests and package artifacts. The
-macOS workflow accepts build commands, cache inputs, artifact paths and signing
-parameters rather than application names or a particular build system.
+These reusable workflows accept project commands, cache inputs and artifact
+paths. Windows supplies the MSVC/Qt toolchain, Linux the container environment.
+macOS also accepts optional signing and notarization credentials. Application
+names and package rules stay in the calling workflow.
 
 | Entry | Version and result |
 | --- | --- |
@@ -579,8 +580,8 @@ identity. Successful dependency builds are saved before tests, so a later test
 failure does not discard that work. Linux caches its container build environment.
 Compiler caches reuse unchanged C++ compilation. Channel tests are discovered
 from the executable's public QtTest function list and run four at a time, keeping
-all data rows. Realtime load and capture checks run alone. Fixed-port discovery
-and desktop tests use resource locks. No failed test is automatically retried.
+all data rows. Realtime load checks run first and alone. Capture checks run alone.
+Fixed-port discovery and desktop tests use resource locks. No failed test is automatically retried.
 
 Dependabot checks GitHub Actions and the Linux Docker base every Sunday at 00:00
 UTC, with one grouped PR per ecosystem. Ubuntu stays on 26.04 and receives digest

@@ -6,7 +6,8 @@ test "$#" -ge 2 && test "$#" -le 3 || {
     printf 'Usage: sh tests/macos-ci.sh QT_PREFIX|auto BUILD_DIRECTORY [prepare|build|test|package|all]\n' >&2; exit 2;
 }
 phase=${3:-all}
-export SQUADSPEAK_VERSION=${SQUADSPEAK_VERSION:-${VERSION:-}}
+SQUADSPEAK_VERSION=${SQUADSPEAK_VERSION:-${VERSION:-}}
+if test -n "$SQUADSPEAK_VERSION"; then export SQUADSPEAK_VERSION; else unset SQUADSPEAK_VERSION; fi
 export SQUADSPEAK_UPDATE_PUBLIC_KEY=${SQUADSPEAK_UPDATE_PUBLIC_KEY:-${UPDATE_PUBLIC_KEY:-}}
 case "$phase" in prepare|build|test|package|all) ;; *) printf 'Unknown phase: %s\n' "$phase" >&2; exit 2 ;; esac
 qt_prefix=$1
@@ -105,23 +106,28 @@ fi
 if test "$phase" = test || test "$phase" = all; then
 result=0
 network_tests='^(channel_contract.*|channel_controls)$'
+: > "$build_root/artifacts/ctest.log"
+: > "$build_root/artifacts/test-details.log"
 set --
-if test "${GITHUB_ACTIONS:-}" = true; then set -- -E "$network_tests"; fi
-QT_LOGGING_RULES='squadspeak.discovery.debug=true' ctest --parallel "${CTEST_PARALLEL_LEVEL:-4}" --test-dir "$build_root/app" --output-on-failure --no-tests=error \
-    --output-junit "$build_root/artifacts/ctest.xml" --output-log "$build_root/artifacts/ctest.log" "$@" || result=$?
-cp "$build_root/app/Testing/Temporary/LastTest.log" "$build_root/artifacts/test-details.log"
 if test "${GITHUB_ACTIONS:-}" = true; then
     # Hosted macOS runners lack interactive LAN consent (runner-images#10924).
     # Only disposable-runner network contracts use Apple's root exemption.
-    # Measure realtime playout at the application's normal logging level.
+    # Run the load gates before UI checks, at normal logging verbosity.
     sudo -n env QT_LOGGING_RULES='' \
-        "$(command -v ctest)" --parallel "${CTEST_PARALLEL_LEVEL:-4}" --test-dir "$build_root/app" --output-on-failure --no-tests=error \
+        "$(command -v ctest)" --parallel "${CTEST_PARALLEL_LEVEL:-4}" --test-dir "$build_root/app" --output-on-failure --no-tests=error --stop-on-failure \
         -R "$network_tests" --output-junit "$build_root/artifacts/network.xml" \
         --output-log "$build_root/artifacts/network.log" || result=$?
     cat "$build_root/artifacts/network.log" >> "$build_root/artifacts/ctest.log"
     cat "$build_root/app/Testing/Temporary/LastTest.log" >> "$build_root/artifacts/test-details.log"
+    test "$result" -eq 0
+    set -- -E "$network_tests"
 fi
+QT_LOGGING_RULES='squadspeak.discovery.debug=true' ctest --parallel "${CTEST_PARALLEL_LEVEL:-4}" --test-dir "$build_root/app" --output-on-failure --no-tests=error --stop-on-failure \
+    --output-junit "$build_root/artifacts/ctest.xml" --output-log "$build_root/artifacts/general.log" "$@" || result=$?
+cat "$build_root/artifacts/general.log" >> "$build_root/artifacts/ctest.log"
+cat "$build_root/app/Testing/Temporary/LastTest.log" >> "$build_root/artifacts/test-details.log"
 if test -d "$build_root/app/smoke"; then cp -R "$build_root/app/smoke" "$build_root/artifacts/"; fi
+test "$result" -eq 0
 # Keep native memory checks in the same test phase.
 # Exclude only two Apple-owned startup allocations. Codec and application
 # allocations remain checked, including VideoToolbox's dropped-frame path.

@@ -4,38 +4,67 @@ on:
   workflow_call:
     inputs:
       ref:
-        required: true
         type: string
+        required: true
       version:
-        required: true
         type: string
+        required: true
+      qt_version:
+        type: string
+        required: true
+      qt_modules:
+        type: string
+        required: true
+      prepare_command:
+        type: string
+        required: true
+      build_command:
+        type: string
+        required: true
+      test_command:
+        type: string
+        required: true
+      package_command:
+        type: string
+        required: true
+      cache_inputs:
+        type: string
+        required: true
+      cache_paths:
+        type: string
+        required: true
+      package_paths:
+        type: string
+        required: true
+      report_paths:
+        type: string
+        required: true
 
 permissions:
   contents: read
 
 jobs:
-  windows:
+  build:
+    name: "🪟 Windows x64"
     env:
-      SQUADSPEAK_VERSION: ${{ inputs.version }}
+      VERSION: ${{ inputs.version }}
     runs-on: windows-2022
     timeout-minutes: 60
     steps:
       - name: "🧑‍💻 Checkout"
-        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           ref: ${{ inputs.ref }}
           persist-credentials: false
-      - name: "🛡️ Check source patches before dependency builds"
-        run: python tests/source_archive_tests.py SourceArchiveTests.test_runtime_patches_survive_windows_checkout
-      - name: "🛠️ Prepare virtual Windows audio"
-        shell: pwsh
-        run: ./tests/windows-audio.ps1 -BuildRoot "$env:GITHUB_WORKSPACE/build/windows-ci"
       - name: "🛠️ Select MSVC 2022"
         uses: ilammy/msvc-dev-cmd@0b201ec74fa43914dc39ae48a89fd1d8cb592756
         with:
           arch: x64
       - name: "🧾 Identify MSVC dependency cache inputs"
         id: msvc-cache
+        env:
+          CACHE_INPUTS: ${{ inputs.cache_inputs }}
+          CACHE_QT: ${{ inputs.qt_version }}:${{ inputs.qt_modules }}
         shell: pwsh
         run: |
           $compiler = Get-Command cl.exe -ErrorAction Stop
@@ -48,126 +77,66 @@ jobs:
           "sdk=$sdkKey" >> $env:GITHUB_OUTPUT
           Write-Host "Using cl.exe $version at $($compiler.Source)"
           Write-Host "Using Windows SDK $sdk"
-      - name: "📥 Restore pinned audio dependency prefix"
+          $files = @($env:CACHE_INPUTS | ConvertFrom-Json | ForEach-Object {
+            Resolve-Path -Path $_ -ErrorAction Stop | ForEach-Object {
+              $item = Get-Item -LiteralPath $_.ProviderPath -ErrorAction Stop
+              if ($item.PSIsContainer) { Get-ChildItem -LiteralPath $item.FullName -File -Recurse }
+              else { $item }
+            }
+          } | Sort-Object FullName -Unique)
+          if (-not $files.Count) { throw 'Dependency cache input files are missing' }
+          $hashes = $files | ForEach-Object { $_.FullName.Substring($env:GITHUB_WORKSPACE.Length) + ':' + (Get-FileHash $_.FullName -Algorithm SHA256).Hash }
+          $hashes += $env:CACHE_QT
+          $digest = [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes(($hashes -join "`n"))))
+          "inputs=$digest" >> $env:GITHUB_OUTPUT
+      - name: "📥 Restore Dependencies"
         id: dependencies
-        uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
         with:
-          path: |
-            build/windows-ci/dependencies/prefix
-            build/windows-ci/app/_deps
-            build/windows-ci/app/qt-qml
-            build/windows-ci/app/squad_qt_qml_build-prefix
-            build/windows-ci/app/squad_apm_build-prefix
-            build/windows-ci/app/audio-processing
-          key: windows-dependencies-${{ runner.os }}-${{ runner.arch }}-msvc-${{ steps.msvc-cache.outputs.version }}-sdk-${{ steps.msvc-cache.outputs.sdk }}-${{ hashFiles('tests/windows-ci.ps1', 'CMakeLists.txt', 'cmake/**') }}
-      - name: "🛠️ Install Qt 6.11.3 MSVC"
+          path: ${{ inputs.cache_paths }}
+          key: windows-dependencies-${{ runner.os }}-${{ runner.arch }}-msvc-${{ steps.msvc-cache.outputs.version }}-sdk-${{ steps.msvc-cache.outputs.sdk }}-${{ steps.msvc-cache.outputs.inputs }}
+      - name: "🛠️ Install Qt MSVC"
         uses: jurplel/install-qt-action@a9c63c7c123f3069cff414e7e482d95dfa9d8125
         with:
-          version: '6.11.3'
+          version: ${{ inputs.qt_version }}
           cache: true
           # Upstream #1000 supports Qt 6.11's architecture-specific repositories.
           aqtsource: 'git+https://github.com/miurahr/aqtinstall.git@8c3695d4a4e1ceabf6a74dc6c79681656dc6b74b'
           arch: win64_msvc2022_64
-          modules: 'qtmultimedia qtimageformats'
-      - name: "🛠️ Install build tools"
+          modules: ${{ inputs.qt_modules }}
+      - name: "🛠️ Prepare Dependencies"
         shell: pwsh
-        run: |
-          $ErrorActionPreference = 'Stop'
-          for ($attempt = 1; $attempt -le 3; ++$attempt) {
-            choco install nasm --version=3.2.0 --no-progress --yes
-            if ($LASTEXITCODE -eq 0) { break }
-            if ($attempt -eq 3) { throw "Chocolatey NASM installation failed with exit code $LASTEXITCODE" }
-            Start-Sleep -Seconds (5 * $attempt)
-          }
-          $nasmDir = Join-Path $env:ProgramFiles 'NASM'
-          Add-Content -Path $env:GITHUB_PATH -Value $nasmDir
-          $nasmVersion = & "$nasmDir/nasm.exe" -v
-          if ($LASTEXITCODE -ne 0 -or $nasmVersion -notmatch '^NASM version 3\.02(?: |$)') { throw "Unexpected NASM version: $nasmVersion" }
-          Write-Host $nasmVersion
-          python -m pip install --disable-pip-version-check meson==1.12.1
-      - name: "🔨 Build and validate dependency prefix"
-        shell: pwsh
-        run: |
-          ./tests/windows-ci.ps1 -QtRoot $env:QT_ROOT_DIR -BuildRoot "$env:GITHUB_WORKSPACE/build/windows-ci" -DependenciesOnly
-          Copy-Item "$env:GITHUB_WORKSPACE/build/windows-ci/build.log" "$env:GITHUB_WORKSPACE/build/windows-ci/dependencies-first.log" -Force
-          # A restored binary prefix must work without source archives or downloads.
-          Get-ChildItem "$env:GITHUB_WORKSPACE/build/windows-ci/dependencies" |
-            Where-Object Name -ne 'prefix' | Remove-Item -Recurse -Force
-          function global:curl.exe { throw 'Unexpected download while reusing a dependency prefix' }
-          try {
-            ./tests/windows-ci.ps1 -QtRoot $env:QT_ROOT_DIR -BuildRoot "$env:GITHUB_WORKSPACE/build/windows-ci" -DependenciesOnly
-          } finally { Remove-Item Function:\curl.exe }
-          Copy-Item "$env:GITHUB_WORKSPACE/build/windows-ci/build.log" "$env:GITHUB_WORKSPACE/build/windows-ci/dependencies-reuse.log" -Force
-          if (-not (Select-String -Path build/windows-ci/dependencies-reuse.log -SimpleMatch 'Dependency prefix cache hit' -Quiet)) {
-            throw 'Repeated preparation did not reuse the dependency prefix'
-          }
-          $prefix = "$env:GITHUB_WORKSPACE/build/windows-ci/dependencies/prefix"
-          $stamp = "$prefix/.squadspeak-dependencies-ready"
-          $original = Get-Content $stamp -Raw
-          try {
-            Set-Content $stamp 'incompatible inputs' -NoNewline
-            & pwsh -NoProfile -File tests/windows-ci.ps1 -QtRoot $env:QT_ROOT_DIR -BuildRoot build/windows-ci -DependenciesOnly *> build/windows-ci/dependencies-mismatch.log
-            if ($LASTEXITCODE -eq 0 -or -not (Select-String -Path build/windows-ci/dependencies-mismatch.log -SimpleMatch -Pattern 'stamp does not match' -Quiet)) {
-              throw 'Dependency preparation did not reject mismatched inputs'
-            }
-          } finally { Set-Content $stamp $original -NoNewline -Encoding ascii }
-          Move-Item "$prefix/include/openssl/ssl.h" "$prefix/include/openssl/ssl.h.saved"
-          try {
-            & pwsh -NoProfile -File tests/windows-ci.ps1 -QtRoot $env:QT_ROOT_DIR -BuildRoot build/windows-ci -DependenciesOnly *> build/windows-ci/dependencies-incomplete.log
-            if ($LASTEXITCODE -eq 0 -or -not (Select-String -Path build/windows-ci/dependencies-incomplete.log -SimpleMatch -Pattern 'required output is missing' -Quiet)) {
-              throw 'Dependency preparation did not reject an incomplete prefix'
-            }
-          } finally { Move-Item "$prefix/include/openssl/ssl.h.saved" "$prefix/include/openssl/ssl.h" }
-          # Both expected child-process failures were validated above.
-          exit 0
+        run: ${{ inputs.prepare_command }}
       - name: "🔨 Build"
         shell: pwsh
-        run: ./tests/windows-ci.ps1 -QtRoot $env:QT_ROOT_DIR -BuildRoot "$env:GITHUB_WORKSPACE/build/windows-ci" -Phase build
-      - name: "📦 Save validated dependency prefix"
+        run: ${{ inputs.build_command }}
+      - name: "📦 Cache Dependencies"
         if: steps.dependencies.outputs.cache-hit != 'true'
-        uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
         with:
-          path: |
-            build/windows-ci/dependencies/prefix
-            build/windows-ci/app/_deps
-            build/windows-ci/app/qt-qml
-            build/windows-ci/app/squad_qt_qml_build-prefix
-            build/windows-ci/app/squad_apm_build-prefix
-            build/windows-ci/app/audio-processing
+          path: ${{ inputs.cache_paths }}
           key: ${{ steps.dependencies.outputs.cache-primary-key }}
       - name: "🧪 Test"
         shell: pwsh
-        run: ./tests/windows-ci.ps1 -QtRoot $env:QT_ROOT_DIR -BuildRoot "$env:GITHUB_WORKSPACE/build/windows-ci" -Phase test
+        run: ${{ inputs.test_command }}
       - name: "📦 Package"
         shell: pwsh
-        run: ./tests/windows-ci.ps1 -QtRoot $env:QT_ROOT_DIR -BuildRoot "$env:GITHUB_WORKSPACE/build/windows-ci" -Phase package
+        run: ${{ inputs.package_command }}
       - name: "🛡️ Check unchanged source"
         run: git diff --exit-code
-      - name: "📦 Preserve Windows verification evidence"
+      - name: "📦 Upload Test Reports"
         if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: windows-x86_64
-          path: |
-            build/windows-ci/*.log
-            build/windows-ci/ctest.xml
-            build/windows-ci/app/smoke
-            ${{ job.status != 'success' && 'build/windows-ci/squadspeak-windows-x86_64.zip' || '' }}
+          path: ${{ inputs.report_paths }}
           retention-days: 7
           if-no-files-found: warn
-      - name: "📦 Preserve tested Windows package"
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      - name: "📦 Upload Build Artifact"
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: release-windows-x86_64
-          path: build/windows-ci/squadspeak-windows-x86_64.zip
-          retention-days: 1
-          compression-level: 0
-          if-no-files-found: error
-      - name: "📦 Self-service Windows device test"
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        with:
-          name: windows-device-test
-          path: build/windows-ci/squadspeak-windows-device-test.zip
+          path: ${{ inputs.package_paths }}
           retention-days: 1
           compression-level: 0
           if-no-files-found: error

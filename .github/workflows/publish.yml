@@ -25,21 +25,16 @@ jobs:
       contents: write
     steps:
       - name: "🧑‍💻 Checkout"
-        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           ref: ${{ inputs.commit_sha }}
           persist-credentials: false
       - name: "📥 Download tested packages"
-        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333
         with:
           pattern: release-*
           path: release-assets
           merge-multiple: true
-      - name: "📥 Download the standalone Windows test kit"
-        uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0
-        with:
-          name: windows-device-test
-          path: release-assets
       - name: "🛡️ Verify package set and create checksums"
         shell: sh
         env:
