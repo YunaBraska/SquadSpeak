@@ -273,8 +273,17 @@ else:
         launcher = self.root / "bin/launcher"
         launcher.write_text("#!/bin/sh\n[ \"$1\" = \"argument with spaces\" ] || exit 6\nshift\nexec \"$@\"\n")
         launcher.chmod(0o700)
+        # macOS sudo is executable but not readable to the test account.
+        execute_only = self.root / "bin/execute-only-env"
+        source = self.root / "launcher.c"
+        source.write_text("#include <unistd.h>\nint main(int argc, char **argv) {\n"
+                          "    return argc > 1 ? execvp(argv[1], argv + 1) : 2;\n}\n")
+        compiled = subprocess.run(["cc", str(source), "-o", str(execute_only)],
+                                  capture_output=True, text=True, timeout=30)
+        self.assertEqual(compiled.returncode, 0, compiled.stderr)
+        execute_only.chmod(0o111)
         discovered = self.root / "discovered.cmake"
-        for prefix in ("", str(launcher) + ";argument with spaces"):
+        for prefix in ("", str(launcher) + ";argument with spaces", str(execute_only)):
             result = subprocess.run(["cmake", "-DCHANNEL_TEST_EXECUTABLE=" + str(executable),
                 "-DOUTPUT_FILE=" + str(discovered), "-DTEST_LAUNCHER=" + prefix,
                 "-P", str(self.repo / "cmake/DiscoverChannelTests.cmake")], capture_output=True, text=True, timeout=15)
