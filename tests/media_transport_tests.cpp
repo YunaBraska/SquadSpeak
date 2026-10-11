@@ -325,8 +325,10 @@ private slots:
         QTimer sender; sender.setInterval(20);
         connect(&sender, &QTimer::timeout, this, [&] { QVERIFY(a.send(first, packet)); QVERIFY(c.send(first, packet)); });
         sender.start();
-        QTRY_VERIFY_WITH_TIMEOUT(std::any_of(impaired.begin(), impaired.end(), [](const auto& event) { return event.first().toInt() < 0; }), 3000);
-        QVERIFY(std::none_of(healthy.begin(), healthy.end(), [](const auto& event) { return event.first().toInt() < 0; }));
+        // Both receivers must report a measured condition. An empty healthy
+        // spy or a transient handshake delay does not establish isolation.
+        QTRY_VERIFY_WITH_TIMEOUT(!impaired.isEmpty() && !healthy.isEmpty()
+            && impaired.last().first().toInt() < 0 && healthy.last().first().toInt() > 0, 3000);
         slow.dropEvery = 0; impaired.clear();
         QTRY_VERIFY_WITH_TIMEOUT(std::any_of(impaired.begin(), impaired.end(), [](const auto& event) { return event.first().toInt() > 0; }), 3000);
     }
@@ -409,8 +411,9 @@ private slots:
         QTRY_VERIFY_WITH_TIMEOUT(gate.entered(), 1000);
         QVERIFY2(!gate.onOwner(), "SRTP send blocks the Qt owner thread");
         for (int i = 0; i < 1000; ++i) QVERIFY(host.send(first, packet));
-        QVERIFY(host.send(second, packet));
         gate.release();
+        QTRY_VERIFY_WITH_TIMEOUT(host.udpActive() && client.udpActive(), 3000);
+        QVERIFY(host.send(second, packet));
         QTRY_VERIFY_WITH_TIMEOUT(std::any_of(heard.begin(), heard.end(), [](const auto& event) {
             return event.first().toString() == second;
         }), 3000);
@@ -449,10 +452,13 @@ private slots:
             host.retainSources({}); client.retainSources({});
         } else {
             QElapsedTimer stalled; stalled.start();
-            QTRY_VERIFY_WITH_TIMEOUT(stalled.elapsed() >= 130, 1000);
+            QTRY_VERIFY_WITH_TIMEOUT(stalled.elapsed() >= 350, 1000);
         }
-        QVERIFY(host.send(second, packet));
         gate.release();
+        // The intentional stall can expire UDP liveness too. Wait for a real
+        // probe reply before using UDP delivery as the completion marker.
+        QTRY_VERIFY_WITH_TIMEOUT(host.udpActive() && client.udpActive(), 3000);
+        QVERIFY(host.send(second, packet));
         QTRY_VERIFY_WITH_TIMEOUT(std::any_of(heard.begin(), heard.end(), [](const auto& event) {
             return event.first().toString() == second;
         }), 3000);
