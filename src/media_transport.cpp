@@ -508,7 +508,9 @@ void MediaTransport::tick() {
     }
     timer_.setInterval(pending ? 5 : 100);
     for (const auto& frame : ready) {
-        if (s.incoming.value(frame.ssrc).source == frame.source) emit audio(frame.source, frame.bytes, frame.missing);
+        const auto stream = s.incoming.constFind(frame.ssrc);
+        if (stream != s.incoming.cend() && stream->source == frame.source)
+            emit audio(frame.source, frame.bytes, frame.missing);
         if (!s.owner) return;
     }
     if (s.failed || !s.channel || !s.channel->isOpen()) {

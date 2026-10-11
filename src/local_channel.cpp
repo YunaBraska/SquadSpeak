@@ -1704,12 +1704,12 @@ void LocalChannel::startMedia(Client& client) {
     connect(media.get(), &squad::MediaTransport::audio, this, [this, id, guard](const QString& source, const QByteArray& packet, int missing) {
         const auto c = clients_.value(id);
         if (!guard || !c || c->socket != guard || !c->accepted) return;
-        const auto member = std::find_if(c->members.begin(), c->members.end(), [&](const auto& entry) {
-            return entry.toMap().value("id").toString() == source;
+        const auto member = std::find_if(c->members.cbegin(), c->members.cend(), [&](const auto& entry) {
+            return get<QVariantMap>(entry).value(QStringLiteral("id")).toString() == source;
         });
-        if (member == c->members.end()) return;
+        if (member == c->members.cend()) return;
         const bool voice = c->voice && c->id == joinedHostId_;
-        const bool screen = member->toMap().value("music").toBool() && receivesScreenAudio(*c);
+        const bool screen = get<QVariantMap>(*member).value(QStringLiteral("music")).toBool() && receivesScreenAudio(*c);
         if (voice || screen) emit audioReceived(source, packet, missing);
     });
 }

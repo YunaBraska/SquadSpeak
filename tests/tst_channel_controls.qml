@@ -76,6 +76,7 @@ TestCase {
     }
     Loader {
         id: scene
+        active: false
         sourceComponent: Item {
             property alias view: view
             property alias controllerView: controllerView
@@ -110,6 +111,14 @@ TestCase {
         }
     }
 
+
+    function initTestCase() {
+        // Show application windows only after the test harness is exposed.
+        // A transient child can otherwise cover its still-hidden parent.
+        scene.active = true
+        compare(scene.status, Loader.Ready)
+        verify(waitForRendering(view.contentItem))
+    }
 
     function init() {
         licenseDisplay.reset()

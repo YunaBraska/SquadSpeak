@@ -4880,20 +4880,20 @@ private slots:
             const auto members = client->channel.participants();
             return std::all_of(members.begin(), members.end(), [](const auto& entry) { return !entry.toMap().value("muted").toBool(); });
         }());
-        QMap<int, int> startingTiers;
-        for (const auto& client : clients) ++startingTiers[client->channel.receiveAudioBitrate()];
-        qInfo() << "Audio bitrates after connection setup" << startingTiers;
-        // This process performs every peer's TLS setup on the same event loop.
-        // Let any resulting quality reduction recover before measuring steady
-        // throughput. Three tiers need ten healthy 750 ms samples each.
-        QVERIFY(waitForEvents([&] { return std::all_of(clients.begin(), clients.end(),
-            [](const auto& client) { return client->channel.receiveAudioBitrate() == 32; }); }, 30000));
         squad::VoiceMixer encoder;
         std::array<float, 960> samples;
         for (size_t i = 0; i < samples.size(); ++i) samples[i] = float(0.1 * std::sin(2 * std::numbers::pi * 440 * i / 48000));
         const auto packet = encoder.encode(samples, 48000).first();
         for (const auto& client : clients) QVERIFY(client->channel.sendAudio(packet));
         for (size_t i = 0; i < audioCounts.size(); ++i) QTRY_COMPARE(audioCounts[i], 63);
+        QMap<int, int> startingTiers;
+        for (const auto& client : clients) ++startingTiers[client->channel.receiveAudioBitrate()];
+        qInfo() << "Audio bitrates after connection and source setup" << startingTiers;
+        // TLS setup and all 4032 source bindings share this process's event
+        // loop. Recover from that setup load before measuring steady traffic.
+        // Three tiers need ten healthy 750 ms samples each.
+        QVERIFY(waitForEvents([&] { return std::all_of(clients.begin(), clients.end(),
+            [](const auto& client) { return client->channel.receiveAudioBitrate() == 32; }); }, 30000));
         const auto connectedMs = elapsed.elapsed();
         bool soakOk = false;
         const int soakSeconds = qEnvironmentVariableIsSet("SQUAD_SOAK_SECONDS")
