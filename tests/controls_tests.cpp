@@ -32,12 +32,33 @@
 #include <vector>
 #include <cmath>
 #include <numbers>
+#include <cstdio>
+#include <cstdlib>
 #if defined(Q_OS_IOS)
 #import <UIKit/UIKit.h>
 #elif defined(Q_OS_ANDROID)
 #include <QJniObject>
 #include <QJniEnvironment>
 #endif
+
+namespace {
+QtMessageHandler previousMessageHandler = nullptr;
+
+void failOnQuickTestStartupWarning(QtMsgType type, const QMessageLogContext& context, const QString& message) {
+    const bool exposureFailure = (type == QtWarningMsg || type == QtCriticalMsg)
+        && message.contains(QStringLiteral("window was never exposed! If the test case was expecting windowShown, it will hang."));
+    if (exposureFailure) {
+        std::fprintf(stderr, "QtQuickTest startup failure: %s\n", qPrintable(message));
+        std::fflush(stderr);
+        std::_Exit(EXIT_FAILURE);
+    }
+    if (previousMessageHandler) {
+        previousMessageHandler(type, context, message);
+    } else {
+        std::fprintf(stderr, "%s\n", qPrintable(qFormatLogMessage(type, context, message)));
+    }
+}
+}
 
 class AudioFixtures final : public QObject {
     Q_OBJECT
@@ -407,6 +428,7 @@ signals:
 int main(int argc, char** argv) {
     QTEST_SET_MAIN_SOURCE_PATH
     QGuiApplication app(argc, argv);
+    previousMessageHandler = qInstallMessageHandler(failOnQuickTestStartupWarning);
     // Audio and network fixtures must be destroyed before Qt's application services.
     AudioFixtures setup;
     return quick_test_main_with_setup(argc, argv, "audio_controls", nullptr, &setup);

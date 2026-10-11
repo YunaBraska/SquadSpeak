@@ -1,4 +1,5 @@
 """Exercise the deadline runner using real child processes, including cleanup."""
+import argparse
 import os
 from pathlib import Path
 import re
@@ -65,4 +66,47 @@ class ProcessDeadlineTests(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    unittest.main()
+    parser = argparse.ArgumentParser(add_help=False)
+    parser.add_argument("--controls-tests", type=Path)
+    options, arguments = parser.parse_known_args()
+    if options.controls_tests:
+        class ControlsStartupTests(unittest.TestCase):
+            def test_visible_window_passes_and_hidden_window_fails_without_hanging(self):
+                with tempfile.TemporaryDirectory() as directory:
+                    fixture = Path(directory) / "startup.qml"
+                    for hide in (False, True):
+                        with self.subTest(hidden=hide):
+                            fixture.write_text("""import QtQuick
+import QtTest
+
+Item {
+    id: fixture
+    width: 400
+    height: 200
+    Connections {
+        target: fixture.Window.window
+        function onVisibleChanged() {
+            if (HIDE && target.visible) target.visible = false
+        }
+    }
+    TestCase {
+        name: "Startup"
+        when: windowShown
+        function test_reached() { console.warn("ordinary warning is preserved"); verify(true) }
+    }
+}
+""".replace("HIDE", str(hide).lower()), encoding="utf-8")
+                            result = subprocess.run(
+                                [str(options.controls_tests.resolve()), "-input", str(fixture)],
+                                env={**os.environ, "QT_QPA_PLATFORM": "offscreen", "QT_QUICK_BACKEND": "software",
+                                     "TMPDIR": directory, "TMP": directory, "TEMP": directory},
+                                capture_output=True, text=True, timeout=15)
+                            output = result.stderr + result.stdout
+                            if hide:
+                                self.assertEqual(result.returncode, 1, output)
+                                self.assertIn("QtQuickTest startup failure", output)
+                            else:
+                                self.assertEqual(result.returncode, 0, output)
+                                self.assertIn("ordinary warning is preserved", output)
+
+    unittest.main(argv=[sys.argv[0], *arguments])

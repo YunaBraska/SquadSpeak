@@ -469,7 +469,8 @@ if(BUILD_TESTING)
         set_tests_properties(desktop_smoke PROPERTIES TIMEOUT 30)
     endif()
     add_test(NAME process_deadline COMMAND ${Python3_EXECUTABLE}
-        "${CMAKE_CURRENT_SOURCE_DIR}/tests/process_deadline_tests.py")
+        "${CMAKE_CURRENT_SOURCE_DIR}/tests/process_deadline_tests.py"
+        --controls-tests $<TARGET_FILE:controls_tests>)
     set_tests_properties(process_deadline PROPERTIES TIMEOUT 30)
     add_test(NAME acceptance_handoff COMMAND ${Python3_EXECUTABLE}
         "${CMAKE_CURRENT_SOURCE_DIR}/tests/acceptance_tests.py")
@@ -712,9 +713,12 @@ if(BUILD_TESTING)
     if(TEST capture_contract)
         set_tests_properties(capture_contract PROPERTIES RUN_SERIAL TRUE)
     endif()
-    set_tests_properties(channel_controls radio_contract audio_corpus PROPERTIES COST 500)
+    set_tests_properties(radio_contract audio_corpus PROPERTIES COST 500)
+    if(NOT WIN32)
+        set_tests_properties(channel_controls PROPERTIES COST 500)
+    endif()
     # GUI, clipboard and audio-device fixtures share the runner's desktop.
-    set_tests_properties(headless_contract desktop_smoke recording_smoke
+    set_tests_properties(headless_contract desktop_smoke recording_smoke process_deadline
         audio_controls frequency_display channel_controls avatar_scale_1.5 avatar_scale_2
         screen_rendering desktop_rendering_smoke PROPERTIES RESOURCE_LOCK desktop)
     if(TEST linux_global_ptt)
