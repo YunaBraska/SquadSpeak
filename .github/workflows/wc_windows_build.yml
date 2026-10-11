@@ -118,8 +118,10 @@ jobs:
         run: ${{ inputs.prepare_command }}
       - name: "🔨 Build"
         shell: pwsh
+        run: ${{ inputs.build_command }}
+      - name: "📊 Compiler Cache Statistics"
+        shell: pwsh
         run: |
-          ${{ inputs.build_command }}
           sccache --show-stats
           if ($LASTEXITCODE -ne 0) { throw "Unable to read compiler cache statistics" }
       - name: "📦 Cache Dependencies"
