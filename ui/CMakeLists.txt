@@ -25,7 +25,9 @@ foreach(squad_file IN LISTS squad_qml_files squad_resource_files)
 endforeach()
 set_source_files_properties(Theme.qml PROPERTIES QT_QML_SINGLETON_TYPE TRUE)
 qt_add_qml_module(squadspeak URI SquadSpeak VERSION 1.0
-    QML_FILES ${squad_qml_files} RESOURCES ${squad_resource_files})
+    QML_FILES ${squad_qml_files})
+qt_add_resources(squadspeak portraits BIG_RESOURCES
+    PREFIX "/qt/qml/SquadSpeak" FILES ${squad_resource_files})
 target_link_libraries(squadspeak PRIVATE squad_video squad_radio squad_audio squad_session squad_content Qt6::Widgets Qt6::Quick Qt6::QuickControls2 Qt6::Multimedia ${squad_ptt_platform_libraries})
 if(NOT IOS)
     add_dependencies(squadspeak squad_image_worker)

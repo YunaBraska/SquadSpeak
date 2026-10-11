@@ -133,7 +133,16 @@ if __name__ == "__main__":
     parser.add_argument("--compile-commands", type=Path)
     options, arguments = parser.parse_known_args()
     if options.compile_commands:
-        class CompiledVersionTests(unittest.TestCase):
+        class CompiledBuildTests(unittest.TestCase):
+            def test_large_resources_bypass_cpp_array_compilation(self):
+                entries = json.loads(options.compile_commands.read_text(encoding="utf-8"))
+                resources = {Path(entry["file"]) for entry in entries
+                             if Path(entry["file"]).name.startswith("qrc_")}
+                self.assertTrue(resources)
+                for resource in resources:
+                    # Image atlases must link as objects, not enormous C++ arrays.
+                    self.assertLess(resource.stat().st_size, 64 * 1024 * 1024, str(resource))
+
             def test_snapshot_version_only_invalidates_its_consumers(self):
                 repo = Path(__file__).resolve().parents[1]
                 consumers = {repo / name for name in ("src/main.cpp", "src/headless.cpp",
