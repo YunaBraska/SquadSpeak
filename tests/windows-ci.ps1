@@ -1,7 +1,9 @@
 param(
     [string]$QtRoot = $env:QT_ROOT_DIR,
     [string]$BuildRoot = "$PSScriptRoot/../build/windows-ci",
-    [switch]$DependenciesOnly
+    [switch]$DependenciesOnly,
+    [ValidateSet("all", "build", "test", "package")]
+    [string]$Phase = "all"
 )
 $ErrorActionPreference = "Stop"
 Write-Host "Starting Windows build (PowerShell $($PSVersionTable.PSVersion))"
@@ -15,7 +17,8 @@ function Invoke-Checked([string]$File, [string[]]$Arguments) {
 if (-not $QtRoot) { throw "QT_ROOT_DIR is required" }
 $repo = (Resolve-Path "$PSScriptRoot/..").Path
 $BuildRoot = (New-Item -ItemType Directory -Force $BuildRoot).FullName
-Start-Transcript -Path "$BuildRoot/build.log" -Force | Out-Null
+$logName = if ($DependenciesOnly) { "build" } else { $Phase }
+Start-Transcript -Path "$BuildRoot/$logName.log" -Force | Out-Null
 $deps = New-Item -ItemType Directory -Force "$BuildRoot/dependencies"
 $prefix = New-Item -ItemType Directory -Force "$deps/prefix"
 $compiler = Get-Command cl.exe -ErrorAction Stop
@@ -71,6 +74,9 @@ function Get-Source([string]$Name, [string]$Url, [string]$Sha256) {
 if (Test-DependencyPrefix) {
     Write-Host "Dependency prefix cache hit; skipping OpenSSL, Opus and libsamplerate builds."
 } else {
+    if (-not $DependenciesOnly -and $Phase -notin @("all", "build")) {
+        throw "Dependency prefix is missing. Run the build phase first."
+    }
     $opus = Get-Source "opus-1.6.1.tar.gz" "https://distfiles.macports.org/libopus/opus-1.6.1.tar.gz" "6ffcb593207be92584df15b32466ed64bbec99109f007c82205f0194572411a1"
     $samplerate = Get-Source "libsamplerate-0.2.2.tar.xz" "https://github.com/libsndfile/libsamplerate/releases/download/0.2.2/libsamplerate-0.2.2.tar.xz" "3258da280511d24b49d6b08615bbe824d0cacc9842b0e4caf11c52cf2b043893"
     $openssl = Get-Source "openssl-3.6.5.tar.gz" "https://github.com/openssl/openssl/releases/download/openssl-3.6.5/openssl-3.6.5.tar.gz" "a2157c2830efdec3788939b00c9b0638306d3f0bbb76dc4832ee503bb397df98"
@@ -96,6 +102,9 @@ if ($DependenciesOnly) {
     exit 0
 }
 
+$appBuild = "$BuildRoot/app"
+$env:PATH = "$appBuild/qt-qml/bin;$QtRoot/bin;$prefix/bin;$appBuild/audio-processing/bin;$env:PATH"
+if ($Phase -in @("all", "build")) {
 $ffmpeg = Get-Source "ffmpeg-7.1.5.tar.xz" "https://ffmpeg.org/releases/ffmpeg-7.1.5.tar.xz" "de668509caf9e35e3cd162473441fdb29538c6d96ed080292b3cf9e6fc5d558f"
 
 # The Qt kit supplies the runtime DLLs. Generate only matching MSVC import
@@ -122,18 +131,19 @@ foreach ($library in @(@("avcodec-61.dll", "avcodec"), @("avutil-59.dll", "avuti
     Invoke-Checked lib @("/def:$def", "/machine:x64", "/out:$lib")
 }
 
-$appBuild = "$BuildRoot/app"
 $version = @()
 if ($env:SQUADSPEAK_VERSION) { $version += "-DSQUADSPEAK_VERSION=$env:SQUADSPEAK_VERSION" }
 Invoke-Checked cmake (@("-S", $repo, "-B", $appBuild, "-G", "Ninja", "-DCMAKE_BUILD_TYPE=Release", "-DBUILD_TESTING=ON", "-DCMAKE_PREFIX_PATH=$QtRoot", "-DOPENSSL_ROOT_DIR=$prefix", "-DSQUADSPEAK_AUDIO_DEPS_ROOT=$prefix", "-DSQUADSPEAK_FFMPEG_ROOT=$ffmpegStage") + $version)
 Invoke-Checked cmake @("--build", $appBuild, "--parallel", "3")
-$env:PATH = "$appBuild/qt-qml/bin;$QtRoot/bin;$prefix/bin;$appBuild/audio-processing/bin;$env:PATH"
+}
+if ($Phase -eq "build") { Stop-Transcript | Out-Null; exit 0 }
 $env:QT_FORCE_STDERR_LOGGING = "1"
 $env:QT_LOGGING_RULES = ""
+if ($Phase -in @("all", "test")) {
 Start-Service Audiosrv
 Get-CimInstance Win32_SoundDevice | Select-Object Name, Status | Format-Table
 $testLog = "$BuildRoot/windows-tests.log"
-ctest --test-dir $appBuild --output-on-failure --no-tests=error --parallel 2 --output-junit "$BuildRoot/ctest.xml" 2>&1 | Tee-Object $testLog
+ctest --test-dir $appBuild --output-on-failure --no-tests=error --parallel 4 --output-junit "$BuildRoot/ctest.xml" 2>&1 | Tee-Object $testLog
 $testExit = $LASTEXITCODE
 $details = "$appBuild/Testing/Temporary/LastTest.log"
 if (Test-Path $details) { Copy-Item $details "$BuildRoot/test-details.log" }
@@ -145,8 +155,9 @@ if (-not (Test-Path $details)) {
     $testExit = 1
 }
 
-# Gather independent archive evidence even after a failed contract. The final
-# test exit status still prevents the release workflow from using this package.
+if ($testExit -ne 0) { throw "Windows tests failed with exit code $testExit" }
+}
+if ($Phase -eq "test") { Stop-Transcript | Out-Null; exit 0 }
 $package = New-Item -ItemType Directory -Force "$BuildRoot/package"
 Invoke-Checked cmake @("--install", $appBuild, "--prefix", $package)
 if ((Get-FileHash "$repo/LICENSE").Hash -ne (Get-FileHash "$package/LICENSE").Hash) {
@@ -233,4 +244,3 @@ try {
 }
 Write-Host "Windows package: $BuildRoot/squadspeak-windows-x86_64.zip"
 Stop-Transcript | Out-Null
-if ($testExit -ne 0) { throw "Windows tests failed with exit code $testExit" }

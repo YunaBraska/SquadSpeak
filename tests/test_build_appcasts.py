@@ -45,7 +45,8 @@ class AppcastBuilderTests(unittest.TestCase):
                    "x86-archive": self.archives["x86_64"], "x86-signature": SIGNATURE}
         options.update(overrides)
         return subprocess.run([sys.executable, str(BUILDER)] +
-                              [argument for key, value in options.items() for argument in (f"--{key}", str(value))],
+                              [argument for key, value in options.items() if value is not None
+                               for argument in (f"--{key}", str(value))],
                               capture_output=True, text=True)
 
     def assert_rejected(self, diagnostic, **options):
@@ -67,6 +68,23 @@ class AppcastBuilderTests(unittest.TestCase):
             self.assertEqual(enclosure.attrib[f"{{{SPARKLE}}}edSignature"], SIGNATURE)
             self.assertEqual(tree.findtext(f"./channel/item/{{{SPARKLE}}}version"), "2026.10.4")
             self.assertEqual(tree.findtext(f"./channel/item/{{{SPARKLE}}}minimumSystemVersion"), "13.0")
+
+    def test_each_native_job_can_sign_its_own_feed(self):
+        for omitted, architecture in (("x86", "arm64"), ("arm", "x86_64")):
+            with self.subTest(architecture=architecture):
+                output = self.root / architecture
+                result = self.build(**{f"{omitted}-archive": None, f"{omitted}-signature": None,
+                                       "output-dir": output})
+                self.assertEqual(result.returncode, 0, result.stderr)
+                self.assertEqual([path.name for path in output.iterdir()], [f"appcast-macos-{architecture}.xml"])
+
+    def test_requires_at_least_one_complete_archive_signature_pair(self):
+        self.assert_rejected("at least one", **{f"{prefix}-{field}": None
+            for prefix in ("arm", "x86") for field in ("archive", "signature")})
+        for prefix in ("arm", "x86"):
+            for field in ("archive", "signature"):
+                with self.subTest(prefix=prefix, field=field):
+                    self.assert_rejected("both", **{f"{prefix}-{field}": None})
 
     def test_rejects_bad_options_without_partial_output(self):
         for options, diagnostic in (

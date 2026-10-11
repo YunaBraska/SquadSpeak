@@ -1,5 +1,5 @@
 # yuna-release: true
-name: CD Release
+name: "🏷️ CD · Release"
 
 on:
   workflow_dispatch:
@@ -24,6 +24,7 @@ jobs:
       ref: ${{ github.sha }}
       release_mode: release
       force: ${{ inputs.force }}
+    secrets: inherit
 
   publish:
     needs: verify
@@ -36,4 +37,3 @@ jobs:
       commit_sha: ${{ needs.verify.outputs.commit_sha }}
       version: ${{ needs.verify.outputs.version }}
       release_mode: release
-    secrets: inherit

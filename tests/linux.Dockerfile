@@ -17,7 +17,7 @@ FROM runtime AS build
 # Linux archives use the target distribution's QSQLITE runtime plugin rather
 # than bundling a second Qt runtime; the package smoke verifies create/reopen.
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-    build-essential clang llvm libclang-rt-dev cmake ninja-build meson pkg-config ca-certificates python3 git openssl \
+    build-essential ccache clang llvm libclang-rt-dev cmake ninja-build meson pkg-config ca-certificates python3 git openssl \
     libssl-dev libopus-dev libsamplerate0-dev libpulse-dev libsecret-1-dev \
     libavcodec-dev libavformat-dev libavutil-dev libswscale-dev libswresample-dev \
     qt6-base-dev qt6-base-private-dev qt6-declarative-dev qt6-declarative-private-dev \

@@ -194,6 +194,8 @@ if(qt_runtime_modules)
             CMAKE_ARGS "-DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}" -DQT_BUILD_TESTS=OFF -DQT_BUILD_EXAMPLES=OFF
                 "-DQt6_DIR=${Qt6_DIR}" -DFEATURE_gstreamer=OFF
                 "-DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}" "-DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}"
+                "-DCMAKE_C_COMPILER_LAUNCHER=${CMAKE_C_COMPILER_LAUNCHER}"
+                "-DCMAKE_CXX_COMPILER_LAUNCHER=${CMAKE_CXX_COMPILER_LAUNCHER}"
                 "-DCMAKE_C_FLAGS=${CMAKE_C_FLAGS}" "-DCMAKE_CXX_FLAGS=${CMAKE_CXX_FLAGS}"
                 "-DCMAKE_SHARED_LINKER_FLAGS=${CMAKE_SHARED_LINKER_FLAGS}"
                 "-DCMAKE_OSX_ARCHITECTURES=${CMAKE_OSX_ARCHITECTURES}"
@@ -1017,15 +1019,24 @@ if(BUILD_TESTING)
     add_test(NAME chat_history_contract COMMAND chat_history_tests)
     add_test(NAME media_transport_contract COMMAND media_transport_tests)
     set_tests_properties(media_transport_contract PROPERTIES TIMEOUT 120)
-    add_test(NAME channel_contract COMMAND channel_tests)
+    # QtTest exposes the complete function inventory through its public
+    # -functions option. Each function invocation executes all of its data
+    # rows, while CTest can schedule independent functions separately.
+    set(channel_discovery_file "${CMAKE_CURRENT_BINARY_DIR}/channel_contract_discovered.cmake")
+    set_property(DIRECTORY APPEND PROPERTY TEST_INCLUDE_FILES "${channel_discovery_file}")
+    set_property(TARGET channel_tests APPEND PROPERTY LINK_DEPENDS
+        "${CMAKE_CURRENT_SOURCE_DIR}/cmake/DiscoverChannelTests.cmake")
+    add_custom_command(TARGET channel_tests POST_BUILD
+        BYPRODUCTS "${channel_discovery_file}"
+        COMMAND "${CMAKE_COMMAND}"
+            -DCHANNEL_TEST_EXECUTABLE=$<TARGET_FILE:channel_tests>
+            -DOUTPUT_FILE=${channel_discovery_file}
+            -P "${CMAKE_CURRENT_SOURCE_DIR}/cmake/DiscoverChannelTests.cmake"
+        VERBATIM)
     if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
         qt_add_executable(discovery_network_probe tests/discovery_network_probe.cpp)
         target_link_libraries(discovery_network_probe PRIVATE squad_session squad_content)
     endif()
-    # More than 1,000 data rows, reconnect waits and 64-client cases share this
-    # budget. macOS ARM exhausted 600 seconds with no failed assertion. Qt
-    # retains its per-function watchdog; network deadlines remain unchanged.
-    set_tests_properties(channel_contract PROPERTIES TIMEOUT 900)
     qt_add_executable(headless_tests tests/headless_tests.cpp src/headless.cpp src/headless.hpp)
     target_link_libraries(headless_tests PRIVATE squad_radio squad_session Qt6::Core Qt6::Test qt6keychain)
     target_compile_definitions(headless_tests PRIVATE SQUAD_HEADLESS_APP="$<TARGET_FILE:squadspeak>"
@@ -1100,12 +1111,12 @@ if(BUILD_TESTING)
             FAIL_REGULAR_EXPRESSION "Could not find permission plugin for QMicrophonePermission")
     endif()
     # Keep timing/load measurements and native loopback capture undisturbed.
-    set_tests_properties(channel_contract video_contract PROPERTIES RUN_SERIAL TRUE)
+    set_tests_properties(video_contract PROPERTIES RUN_SERIAL TRUE)
     if(TEST capture_contract)
         set_tests_properties(capture_contract PROPERTIES RUN_SERIAL TRUE)
     endif()
     # GUI, clipboard and audio-device fixtures share the runner's desktop.
-    set_tests_properties(radio_contract headless_contract desktop_smoke recording_smoke
+    set_tests_properties(headless_contract desktop_smoke recording_smoke
         audio_controls frequency_display channel_controls avatar_scale_1.5 avatar_scale_2
         screen_rendering desktop_rendering_smoke PROPERTIES RESOURCE_LOCK desktop)
     if(TEST linux_global_ptt)

@@ -1,6 +1,7 @@
 """Exercise the Linux publication job through its real shell entrypoints."""
 import json
 import os
+import re
 import shutil
 from pathlib import Path
 import subprocess
@@ -48,7 +49,10 @@ else: sys.exit(7)
         # Execute the actual workflow shell body, replacing only the external
         # GitHub CLI boundary. Do not duplicate publication logic in the test.
         lines = (self.repo / ".github/workflows" / workflow).read_text(encoding="utf-8").splitlines()
-        start = lines.index("      - name: " + name)
+        matches = [index for index, line in enumerate(lines)
+                   if re.fullmatch(r'      - name: "?[^\n]*' + re.escape(name) + r'"?', line)]
+        self.assertEqual(len(matches), 1, f"Missing or ambiguous workflow step: {name}")
+        start = matches[0]
         run = next(i for i in range(start, len(lines)) if lines[i] == "        run: |") + 1
         script = []
         for line in lines[run:]:
@@ -235,6 +239,26 @@ else: sys.exit(7)
         calls = [json.loads(line) for line in (self.root / "trace.jsonl").read_text().splitlines()]
         self.assertEqual(len(calls), 2)
         self.assertTrue(all(call[0] == "api" for call in calls))
+
+    def test_update_keys_fail_before_native_builds(self):
+        import base64
+        seed = bytes.fromhex("9d61b19deffd5a60ba844af492ec2cc44449c5697b326919703bac031cae7f60")
+        public = bytes.fromhex("d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a")
+        private_key = base64.b64encode(seed).decode()
+        public_key = base64.b64encode(public).decode()
+        for mode in ("build", "snapshot"):
+            result = self.run_step("Validate update signing", "verify.yml", RELEASE_MODE=mode,
+                                   UPDATE_PRIVATE_KEY="", UPDATE_PUBLIC_KEY="")
+            self.assertEqual(result.returncode, 0, result.stderr)
+        for private, pub, succeeds in (("", "", False), (private_key, "", False),
+                ("invalid", public_key, False), (private_key, base64.b64encode(bytes(32)).decode(), False),
+                (private_key, public_key, True), (private_key + "\n", public_key, True)):
+            with self.subTest(valid=succeeds):
+                result = self.run_step("Validate update signing", "verify.yml", RELEASE_MODE="release",
+                                       UPDATE_PRIVATE_KEY=private, UPDATE_PUBLIC_KEY=pub)
+                self.assertEqual(result.returncode == 0, succeeds, result.stderr)
+                self.assertNotIn(private_key, result.stdout + result.stderr)
+                self.assertFalse((self.root / "update-key.der").exists())
 
     def test_publish_only_after_all_uploads_succeed(self):
         assets = self.root / "release-assets"

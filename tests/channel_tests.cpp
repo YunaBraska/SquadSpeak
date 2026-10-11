@@ -460,33 +460,36 @@ private slots:
             QVERIFY(QCoreApplication::installTranslator(&catalog));
         }
         const auto remove = qScopeGuard([&] { QCoreApplication::removeTranslator(&catalog); });
-        QTemporaryDir dir; Device client(dir.filePath("client"), "Member");
-        const auto identity = TlsIdentity::create();
+        // Every row keeps its own profile, sockets and keys. Reuse only the
+        // immutable device certificates, whose generation is tested separately.
+        static const auto identity = TlsIdentity::create();
+        static const auto clientIdentity = TlsIdentity::create();
+        QTemporaryDir dir; Device client(dir.filePath("client"), "Member", clientIdentity);
         auto configuration = identity.configuration();
         configuration.setPeerVerifyMode(QSslSocket::VerifyNone);
         QSslServer server; server.setSslConfiguration(configuration);
         QVERIFY(server.listen(QHostAddress::LocalHost));
         QVERIFY(client.channel.join(identity.id(), "127.0.0.1", server.serverPort()));
-        QTRY_VERIFY(server.hasPendingConnections());
+        QVERIFY(waitForEvents(&server, &QTcpServer::pendingConnectionAvailable, [&] { return server.hasPendingConnections(); }));
         auto* socket = qobject_cast<QSslSocket*>(server.nextPendingConnection()); QVERIFY(socket);
-        QTRY_VERIFY(socket->bytesAvailable() > 4);
+        QVERIFY(waitForEvents(socket, &QSslSocket::readyRead, [&] { return socket->bytesAvailable() > 4; }));
         socket->readAll();
         const auto key = TlsIdentity::newKey(); const auto epoch = QUuid::createUuid().toString(QUuid::WithoutBraces);
         socket->write(wireFrame({{"type", "join"}, {"result", "accepted"}}));
         socket->write(wireFrame({{"type", "chatKey"}, {"key", QString::fromLatin1(key.toBase64())}, {"epoch", epoch}, {"now", 1000}}));
-        QTRY_VERIFY(client.channel.chatReady());
+        QVERIFY(waitForEvents(&client.channel, &LocalChannel::chatChanged, [&] { return client.channel.chatReady(); }));
         QSignalSpy notifications(&client.channel, &LocalChannel::chatNotification);
         const auto data = TlsIdentity::seal(QJsonDocument(payload).toJson(QJsonDocument::Compact), key,
             "SquadSpeak/chat/v1/" + identity.id().toUtf8() + '/' + epoch.toUtf8() + "/host");
         socket->write(wireFrame({{"type", "chat"}, {"epoch", epoch}, {"data", QString::fromLatin1(data.toBase64())}}));
         if (!accepted) {
-            QTRY_COMPARE(socket->state(), QAbstractSocket::UnconnectedState);
+            QVERIFY(waitForEvents(socket, &QSslSocket::disconnected, [&] { return socket->state() == QAbstractSocket::UnconnectedState; }));
             QVERIFY(!client.channel.chatReady()); return;
         }
         // A supported roster after the extension proves both frames were parsed.
         socket->write(wireFrame({{"type", "roster"}, {"host", identity.id()}, {"members", QJsonArray{
             QJsonObject{{"id", identity.id()}, {"name", "Future host"}, {"available", true}, {"muted", false}}}}}));
-        QTRY_COMPARE(client.channel.participants().size(), 1);
+        QVERIFY(waitForEvents(&client.channel, &LocalChannel::participantsChanged, [&] { return client.channel.participants().size() == 1; }));
         QCOMPARE(participant(client.channel, identity.id()).value("name").toString(), QString("Future host"));
         QVERIFY(client.channel.chatReady());
         if (payload.value("kind") == "error" || payload.value("kind") == "imageError") {
@@ -496,7 +499,7 @@ private slots:
             else if (source.startsWith("Peer extension")) QCOMPARE(expected, source);
             QCOMPARE(client.channel.chatError(), expected);
             socket->write(wireFrame({{"type", "chatKey"}, {"key", QString::fromLatin1(key.toBase64())}, {"epoch", epoch}, {"now", 1000}}));
-            QTRY_VERIFY(client.channel.chatError().isEmpty());
+            QVERIFY(waitForEvents(&client.channel, &LocalChannel::chatChanged, [&] { return client.channel.chatError().isEmpty(); }));
             QVERIFY(client.channel.chatReady());
         } else QVERIFY(client.channel.chatError().isEmpty());
         if (payload.value("kind") == "message") {

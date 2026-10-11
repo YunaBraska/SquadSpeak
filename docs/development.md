@@ -516,8 +516,11 @@ GitHub permits squash merges only and removes merged branches automatically.
 
 The flow follows [PodLord's merge and release entrypoints](https://github.com/YunaBraska/podlord/tree/ffb730401033e5dab363b4923fa14e58abd90f87/.github/workflows)
 and the [shared Swift release contract](https://github.com/YunaBraska/YunaBraska/blob/036626606065b3b64488ef0611d63713abdcf70c/SWIFT_CI_CD.md).
-The shared repository has no native C++ build workflow. `verify.yml` owns the
-single native matrix used by all three local entrypoints.
+`verify.yml` resolves one revision and version, runs cheap preflight checks, then
+calls `wc_linux_build.yml`, `wc_macos_build.yml` and `wc_windows_build.yml`.
+These reusable workflows own native builds, tests and package artifacts. The
+macOS workflow accepts build commands, cache inputs, artifact paths and signing
+parameters rather than application names or a particular build system.
 
 | Entry | Version and result |
 | --- | --- |
@@ -563,15 +566,21 @@ The application never writes `YunaBraska/homebrew-tap`. After the first stable
 release, add the generated `squadspeak.rb` there. Its release/asset markers let
 the existing tap updater open its normal maintenance PR for later releases.
 
-For a focused manual check, use
-`gh workflow run verify.yml --ref <branch> -f platform=windows` (also `linux`,
-`macos`, `sanitizers`, or `all`). PR, merge and release callers always run the full
-matrix. Feature pushes are checked by their PR, avoiding duplicate platform runs.
+For manual branch verification, use `gh workflow run verify.yml --ref <branch>`.
+PR, merge, release and manual verification run the same complete matrix. Feature pushes are checked by their PR, avoiding duplicate platform runs.
 New PR checks cancel obsolete runs. Snapshot runs are grouped by commit so
 closely spaced merges do not discard a waiting snapshot. Stable releases run
 one at a time without cancelling an active release. Build jobs keep read-only
 repository permissions. Only publication can write tags/releases. The application
 runtime gains no pipeline dependency.
+
+Native dependencies are cached by source inputs, architecture and compiler/SDK
+identity. Successful dependency builds are saved before tests, so a later test
+failure does not discard that work. Linux caches its container build environment.
+Compiler caches reuse unchanged C++ compilation. Channel tests are discovered
+from the executable's public QtTest function list and run four at a time, keeping
+all data rows. Realtime load and capture checks run alone. Fixed-port discovery
+and desktop tests use resource locks. No failed test is automatically retried.
 
 Dependabot checks GitHub Actions and the Linux Docker base every Sunday at 00:00
 UTC, with one grouped PR per ecosystem. Ubuntu stays on 26.04 and receives digest
@@ -602,12 +611,19 @@ and asset markers. The cask installs the app and exposes `squadspeak` for CLI us
 Drafts and prereleases are ignored by the tap updater; Linux packages are not a
 Homebrew formula.
 
-macOS bundles currently use ad-hoc signatures. Quit running copies before replacing their bundles. An ad-hoc code identity changes with the build, so privacy permissions can require renewed approval even when System Settings still shows an enabled entry. Stable permissions across builds require a consistent signing identity. For the local A/B copies, `tests/prepare_two_apps.py` defaults to the existing `SquadSpeak Local Development` identity. Use `--sign-identity` to select another existing development identity. Reuse its private key and keep the bundle identifiers, install paths and data profiles stable across builds. Do not provision a new certificate for each build or test copy. Never commit private keys. Developer ID signing, notarization and store accounts are separate distribution work. Store builds exclude external Supporter purchasing and activation. No signing credentials belong in this repository.
+The macOS build workflow owns signing and notarization. Optional secrets are
+`MACOS_SIGNING_CERTIFICATE` (base64 P12), `MACOS_SIGNING_CERTIFICATE_PASSWORD`,
+`MACOS_NOTARY_KEY` (base64 P8), `MACOS_NOTARY_KEY_ID` and
+`MACOS_NOTARY_ISSUER_ID`. Partial credentials fail before compilation. A
+Developer ID identity signs the deployed bundle before package checks. Notary
+credentials additionally submit and staple it before the final archive is tested.
+An isolated runner keychain and imported credentials are removed after the job.
+Without those secrets, packages use ad-hoc signatures. Quit running copies before replacing their bundles. An ad-hoc code identity changes with the build, so privacy permissions can require renewed approval even when System Settings still shows an enabled entry. Stable permissions across builds require a consistent signing identity. For the local A/B copies, `tests/prepare_two_apps.py` defaults to the existing `SquadSpeak Local Development` identity. Use `--sign-identity` to select another existing development identity. Reuse its private key and keep the bundle identifiers, install paths and data profiles stable across builds. Do not provision a new certificate for each build or test copy. Never commit private keys. Developer ID signing, notarization and store accounts are separate distribution work. Store builds exclude external Supporter purchasing and activation. No signing credentials belong in this repository.
 
 Direct macOS packages use pinned Sparkle 2.10.0 for updates. Set the repository
 variable `SQUADSPEAK_UPDATE_PUBLIC_KEY` to its base64 Ed25519 public key and the
 Actions secret `SQUADSPEAK_UPDATE_PRIVATE_KEY` to the matching base64 32-byte seed.
-The private key is needed only by the release signing job; app binaries receive
+The private key is used by stable-release preflight and macOS packaging. App binaries receive
 the public key. Archive and architecture-specific feed signatures are required
 before installation. An unconfigured preview starts no updater. Store builds
 exclude Sparkle and headless never initializes it. Checks are automatic;
@@ -615,7 +631,7 @@ installation and restart require a click. Draft prereleases are deliberately
 excluded from the stable `releases/latest` feeds.
 
 Update signing is separate from Apple's Developer ID and notarization. The
-release job fails on a mismatched pair or missing keys. Keep a private backup
+preflight fails on a mismatched pair or missing keys before native builds. Keep a private backup
 of the signing seed; losing it prevents ordinary
 updates to already distributed clients. See [Sparkle publishing](https://sparkle-project.org/documentation/publishing/).
 
