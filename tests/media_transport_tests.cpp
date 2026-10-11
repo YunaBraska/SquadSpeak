@@ -1,4 +1,5 @@
 #include "media_transport.hpp"
+#include "event_wait.hpp"
 #include <QSignalSpy>
 #include <QElapsedTimer>
 #include <QUdpSocket>
@@ -321,16 +322,23 @@ private slots:
         connect(&d, &squad::MediaTransport::signaling, &c, [&](const auto& message) { QVERIFY(c.receive(message)); });
         QTRY_VERIFY_WITH_TIMEOUT(a.udpActive() && b.udpActive() && c.udpActive() && d.udpActive(), 10000);
         QSignalSpy impaired(&a, &squad::MediaTransport::quality), healthy(&c, &squad::MediaTransport::quality);
-        slow.dropEvery = 3; const auto packet = speech();
+        QSignalSpy impairedAudio(&b, &squad::MediaTransport::audio), healthyAudio(&d, &squad::MediaTransport::audio);
+        const auto packet = speech();
+        QVERIFY(a.send(first, packet)); QVERIFY(c.send(first, packet));
+        QVERIFY(waitForEvents([&] { return impairedAudio.count() > 0 && healthyAudio.count() > 0
+            && slow.audioPackets > 0 && fast.audioPackets > 0; }, 3000));
+        impaired.clear(); healthy.clear();
+        slow.dropEvery = 3;
         QTimer sender; sender.setInterval(20);
         connect(&sender, &QTimer::timeout, this, [&] { QVERIFY(a.send(first, packet)); QVERIFY(c.send(first, packet)); });
         sender.start();
         // Both receivers must report a measured condition. An empty healthy
         // spy or a transient handshake delay does not establish isolation.
-        QTRY_VERIFY_WITH_TIMEOUT(!impaired.isEmpty() && !healthy.isEmpty()
-            && impaired.last().first().toInt() < 0 && healthy.last().first().toInt() > 0, 3000);
+        QVERIFY(waitForEvents([&] { return !impaired.isEmpty() && !healthy.isEmpty()
+            && impaired.last().first().toInt() < 0 && healthy.last().first().toInt() > 0; }, 3000));
         slow.dropEvery = 0; impaired.clear();
-        QTRY_VERIFY_WITH_TIMEOUT(std::any_of(impaired.begin(), impaired.end(), [](const auto& event) { return event.first().toInt() > 0; }), 3000);
+        QVERIFY(waitForEvents([&] { return std::any_of(impaired.begin(), impaired.end(),
+            [](const auto& event) { return event.first().toInt() > 0; }); }, 3000));
     }
     void sourceAcknowledgmentPrecedesDatagrams_data() {
         QTest::addColumn<bool>("expiredProbe");
