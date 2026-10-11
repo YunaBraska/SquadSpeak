@@ -717,10 +717,7 @@ if(BUILD_TESTING)
     if(TEST capture_contract)
         set_tests_properties(capture_contract PROPERTIES RUN_SERIAL TRUE)
     endif()
-    set_tests_properties(radio_contract audio_corpus PROPERTIES COST 500)
-    if(NOT WIN32)
-        set_tests_properties(channel_controls PROPERTIES COST 500)
-    endif()
+    set_tests_properties(channel_controls radio_contract audio_corpus PROPERTIES COST 500)
     # GUI, clipboard and audio-device fixtures share the runner's desktop.
     set_tests_properties(headless_contract desktop_smoke recording_smoke process_deadline
         audio_controls frequency_display channel_controls avatar_scale_1.5 avatar_scale_2

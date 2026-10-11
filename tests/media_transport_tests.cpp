@@ -14,6 +14,7 @@
 #include <memory>
 #include <mutex>
 #include <thread>
+#include <vector>
 
 namespace {
 quint16 availableUdpPort() {
@@ -78,6 +79,7 @@ class SendGate final {
         std::mutex mutex;
         std::condition_variable changed;
         bool entered = false, released = false, onOwner = false;
+        std::vector<int> packetSizes;
         const std::thread::id owner = std::this_thread::get_id();
     };
     const std::shared_ptr<State> state_ = std::make_shared<State>();
@@ -86,6 +88,7 @@ public:
         rtc::InitLogger(rtc::LogLevel::Verbose, [s = state_](rtc::LogLevel, const std::string& message) {
             if (message.find("Protected SRTP packet, size=") == std::string::npos) return;
             std::unique_lock lock(s->mutex);
+            s->packetSizes.push_back(std::stoi(message.substr(message.find("size=") + 5)));
             if (s->entered) return;
             s->entered = true;
             s->onOwner = std::this_thread::get_id() == s->owner;
@@ -94,6 +97,7 @@ public:
     }
     ~SendGate() { release(); rtc::InitLogger(rtc::LogLevel::Info); }
     bool entered() const { std::lock_guard lock(state_->mutex); return state_->entered; }
+    std::vector<int> packetSizes() const { std::lock_guard lock(state_->mutex); return state_->packetSizes; }
     bool onOwner() const { std::lock_guard lock(state_->mutex); return state_->onOwner; }
     void release() {
         { std::lock_guard lock(state_->mutex); state_->released = true; }
@@ -434,6 +438,40 @@ private slots:
         QTRY_VERIFY_WITH_TIMEOUT(std::any_of(quality.begin(), quality.end(), [](const auto& event) {
             return event.first().toInt() < 0;
         }), 3000);
+    }
+    void busyAudioConnectionDoesNotStarveAnotherConnection() {
+        const auto port = availableUdpPort(); QVERIFY(port);
+        squad::MediaTransport host(true, port, QHostAddress::LocalHost, 0);
+        squad::MediaTransport client(false, 0, QHostAddress::LocalHost, port);
+        connect(&host, &squad::MediaTransport::signaling, &client, [&](const auto& message) { QVERIFY(client.receive(message)); });
+        connect(&client, &squad::MediaTransport::signaling, &host, [&](const auto& message) { QVERIFY(host.receive(message)); });
+        QSignalSpy atHost(&host, &squad::MediaTransport::audio), atClient(&client, &squad::MediaTransport::audio);
+        QTRY_VERIFY_WITH_TIMEOUT(host.udpActive() && client.udpActive(), 10000);
+        auto packet = speech();
+        const auto originalSize = int(packet.size());
+        packet.resize(1000);
+        QCOMPARE(opus_packet_pad(reinterpret_cast<unsigned char*>(packet.data()), originalSize, 1000), OPUS_OK);
+        auto marker = packet; marker.resize(1100);
+        QCOMPARE(opus_packet_pad(reinterpret_cast<unsigned char*>(marker.data()), 1000, 1100), OPUS_OK);
+        QVERIFY(host.send(first, packet)); QVERIFY(client.send(second, marker));
+        QTRY_COMPARE(atHost.size(), 1); QTRY_COMPARE(atClient.size(), 1);
+        QTRY_VERIFY(host.udpActive() && client.udpActive());
+        atHost.clear(); atClient.clear();
+        SendGate gate;
+        QVERIFY(host.send(first, packet));
+        QVERIFY(waitForEvents([&] { return gate.entered(); }, 1000));
+        QVERIFY(!gate.onOwner());
+        for (int index = 0; index < 6; ++index) QVERIFY(host.send(first, packet));
+        QVERIFY(client.send(second, marker));
+        gate.release();
+        QVERIFY(waitForEvents([&] { return !atHost.isEmpty(); }, 3000));
+        QCOMPARE(atHost.first().at(1).toByteArray(), marker);
+        const auto sizes = gate.packetSizes();
+        const auto position = std::find(sizes.begin(), sizes.end(), sizes.front() + 100);
+        QVERIFY(position != sizes.end());
+        // After the in-flight packet, each ready connection gets one turn.
+        // A full six-frame backlog must not delay the other connection.
+        QVERIFY2(position - sizes.begin() <= 2, "Microphone traffic waited behind another connection's complete backlog");
     }
     void queuedAudioCannotOutliveItsSourceOrDeadline_data() {
         QTest::addColumn<bool>("removeSource");

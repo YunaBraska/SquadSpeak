@@ -93,97 +93,108 @@ struct MediaTransport::State final {
 };
 
 // Track::send encrypts and writes synchronously. Share one bounded sender across
-// connections, keeping source bindings and all QObject state on the owner thread.
+// connections, serving each ready connection in turn. Keep source bindings
+// and all QObject state on the owner thread.
 struct MediaTransport::State::Sender final {
     using Clock = std::chrono::steady_clock;
     struct Packet {
         std::shared_ptr<rtc::Channel> channel;
         QByteArray bytes;
         quint32 ssrc;
-        bool uplink;
         Clock::time_point expires;
         std::function<void(bool)> failed;
     };
     std::mutex mutex;
     std::condition_variable changed;
-    std::deque<Packet> queue;
+    std::map<rtc::Channel*, std::deque<Packet>> queues;
+    decltype(queues)::iterator turn = queues.end();
+    size_t queued = 0;
     std::map<std::pair<quintptr, quint32>, int> counts;
     rtc::Channel* active = nullptr;
     bool stopping = false;
-    quint64 sent = 0, expired = 0, rejected = 0, shed = 0, peak = 0;
-    quint64 uplinkSent = 0, uplinkExpired = 0, uplinkShed = 0;
     std::thread worker{[this] {
         std::unique_lock lock(mutex);
         for (;;) {
-            changed.wait(lock, [this] { return stopping || !queue.empty(); });
+            changed.wait(lock, [this] { return stopping || queued; });
             if (stopping) return;
+            auto current = turn++;
+            auto& queue = current->second;
             uncount(queue.front());
-            auto packet = std::move(queue.front()); queue.pop_front();
+            auto packet = std::move(queue.front()); queue.pop_front(); --queued;
+            removeEmpty(current);
             active = packet.channel.get();
             lock.unlock();
-            const bool outdated = Clock::now() >= packet.expires;
-            bool accepted = false;
-            if (!outdated) {
+            if (Clock::now() < packet.expires) {
                 bool sent = false, fatal = false;
                 try {
                     sent = packet.channel->send(reinterpret_cast<const rtc::byte*>(packet.bytes.constData()), size_t(packet.bytes.size()));
                 } catch (const std::exception& error) { qCDebug(mediaTransportLog) << error.what(); fatal = true; }
                 if (!sent) packet.failed(fatal);
-                accepted = sent;
             }
             lock.lock();
-            uplinkSent += packet.uplink && accepted;
-            uplinkExpired += packet.uplink && outdated;
-            sent += accepted;
-            expired += outdated;
-            rejected += !outdated && !accepted;
             active = nullptr;
             changed.notify_all();
         }
     }};
 
     ~Sender() { stop(); }
+    void removeEmpty(decltype(queues)::iterator current) {
+        if (current->second.empty()) {
+            if (turn == current) ++turn;
+            queues.erase(current);
+        }
+        if (turn == queues.end()) turn = queues.begin();
+    }
     void uncount(const Packet& packet) {
         const auto it = counts.find({quintptr(packet.channel.get()), packet.ssrc});
         if (--it->second == 0) counts.erase(it);
     }
     void stop() {
-        { std::lock_guard lock(mutex); stopping = true; queue.clear(); counts.clear(); }
+        { std::lock_guard lock(mutex); stopping = true; queues.clear(); turn = queues.end(); queued = 0; counts.clear(); }
         changed.notify_all();
         if (worker.joinable()) worker.join();
-        qInfo() << "Audio sender sent/expired/rejected/shed/peak" << sent << expired << rejected << shed << peak
-                << "uplink sent/expired/shed" << uplinkSent << uplinkExpired << uplinkShed;
     }
     void cancel(const std::shared_ptr<rtc::Channel>& channel, std::optional<quint32> ssrc = {}) {
         std::unique_lock lock(mutex);
-        std::erase_if(queue, [&](const Packet& packet) {
-            if (packet.channel != channel || (ssrc && packet.ssrc != *ssrc)) return false;
-            uncount(packet); return true;
-        });
+        const auto current = queues.find(channel.get());
+        if (current != queues.end()) {
+            std::erase_if(current->second, [&](const Packet& packet) {
+                if (ssrc && packet.ssrc != *ssrc) return false;
+                uncount(packet); --queued; return true;
+            });
+            removeEmpty(current);
+        }
         // At most one nonblocking datagram is in flight. Never close its native
         // track/connection concurrently with encryption or socket access.
         if (!ssrc) changed.wait(lock, [&] { return active != channel.get(); });
     }
-    bool enqueue(const std::shared_ptr<rtc::Channel>& channel, QByteArray bytes, bool uplink, std::function<void(bool)> failed) {
+    bool enqueue(const std::shared_ptr<rtc::Channel>& channel, QByteArray bytes, std::function<void(bool)> failed) {
         const auto ssrc = quint8(bytes[1]) == 111 ? qFromBigEndian<quint32>(bytes.constData() + 8) : 0;
         std::lock_guard lock(mutex);
         if (stopping) return false;
         const auto key = std::pair{quintptr(channel.get()), ssrc};
         const auto count = counts.find(key);
         if (count != counts.end() && count->second == 6) {
+            auto& queue = queues.at(channel.get());
             const auto oldest = std::find_if(queue.begin(), queue.end(), [&](const Packet& packet) {
-                return packet.channel == channel && packet.ssrc == ssrc;
+                return packet.ssrc == ssrc;
             });
-            uplinkShed += oldest->uplink;
-            uncount(*oldest); queue.erase(oldest);
-            ++shed;
+            uncount(*oldest); queue.erase(oldest); --queued;
         }
         // Six 20 ms frames per source, at most 4096 small RTP packets globally.
         // Shed old speech under overload instead of growing latency or TLS work.
-        if (queue.size() == 4096) { uplinkShed += queue.front().uplink; uncount(queue.front()); queue.pop_front(); ++shed; }
-        ++counts[key];
-        queue.push_back({channel, std::move(bytes), ssrc, uplink, Clock::now() + std::chrono::milliseconds(120), std::move(failed)});
-        peak = std::max<quint64>(peak, queue.size());
+        if (queued == 4096) {
+            const auto oldest = std::min_element(queues.begin(), queues.end(), [](const auto& a, const auto& b) {
+                return a.second.front().expires < b.second.front().expires;
+            });
+            auto& queue = oldest->second;
+            uncount(queue.front()); queue.pop_front(); --queued;
+            removeEmpty(oldest);
+        }
+        const auto current = queues.try_emplace(channel.get()).first;
+        if (turn == queues.end()) turn = current;
+        ++counts[key]; ++queued;
+        current->second.push_back({channel, std::move(bytes), ssrc, Clock::now() + std::chrono::milliseconds(120), std::move(failed)});
         changed.notify_one();
         return true;
     }
@@ -199,7 +210,7 @@ bool MediaTransport::State::write(const std::shared_ptr<State>& self, const QByt
     if (medium == Medium::Audio) {
         const auto ssrc = quint8(bytes[1]) == 111 ? qFromBigEndian<quint32>(bytes.constData() + 8) : 0;
         const auto stream = outgoing.value(ssrc);
-        return sender().enqueue(channel, bytes, localPort == 0, [weak = std::weak_ptr(self), epoch = generation, bytes, ssrc,
+        return sender().enqueue(channel, bytes, [weak = std::weak_ptr(self), epoch = generation, bytes, ssrc,
                                                 source = stream.source, start = stream.start](bool fatal) {
             State::post(weak, epoch, bytes.size(), [bytes, ssrc, source, start, fatal](State& s) {
                 s.failed |= fatal;
