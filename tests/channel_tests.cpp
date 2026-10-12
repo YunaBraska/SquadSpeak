@@ -5,6 +5,7 @@
 #include "license.hpp"
 #include "event_wait.hpp"
 #include <QImage>
+#include <QLoggingCategory>
 #include <QFutureWatcher>
 #include <QPromise>
 #include <QThreadPool>
@@ -128,7 +129,7 @@ class DelayedLink final : public QObject {
     }
 public:
     int delay = 0, udpDelay = -1, audioDatagrams = 0, videoDatagrams = 0;
-    bool blockUdp = false;
+    bool blockUdp = false, holdReliable = false;
     bool dropLargeDatagrams = false;
     bool videoOnly = false;
     explicit DelayedLink(quint16 port, int connectDelay = 0) : server_(this) {
@@ -152,7 +153,7 @@ public:
                 const bool waiting = std::any_of(pending_.begin(), pending_.end(), [link](const auto& item) {
                     return std::get<1>(item) == link->downstream;
                 });
-                if (!link->delayed || (delay == 0 && !waiting)) {
+                if (!link->delayed || (delay == 0 && !waiting && !holdReliable)) {
                     forward(link->downstream, link->upstream->readAll());
                     return;
                 }
@@ -177,7 +178,7 @@ public:
             for (auto it = pending_.begin(); it != pending_.end();) {
                 auto& [at, target, bytes] = *it;
                 if (!target || target->state() != QAbstractSocket::ConnectedState) it = pending_.erase(it);
-                else if (at <= clock_.elapsed() && !held.contains(target)) { forward(target, bytes); it = pending_.erase(it); }
+                else if (!holdReliable && at <= clock_.elapsed() && !held.contains(target)) { forward(target, bytes); it = pending_.erase(it); }
                 else { held.insert(target); ++it; }
             }
         });
@@ -639,11 +640,14 @@ private slots:
         QTimer producer; producer.setInterval(20);
         connect(&producer, &QTimer::timeout, this, [&] { QVERIFY(host.channel.sendScreenAudio(warmup)); });
         producer.start(); QTRY_VERIFY_WITH_TIMEOUT(link.audioDatagrams > 5, 5000); producer.stop();
-        link.delay = 2000;
-        QVERIFY(host.channel.sendScreenAudio(marker)); QTRY_COMPARE_WITH_TIMEOUT(received, 1, 1000);
+        // Keep reliable traffic held until audio arrives. Prove UDP delivery
+        // directly, without racing scheduler jitter against a second timeout.
+        link.holdReliable = true;
+        QVERIFY(host.channel.sendScreenAudio(marker));
+        QVERIFY(waitForEvents(&viewer.channel, &LocalChannel::audioReceived, [&] { return received == 1; }));
         QVERIFY(!viewer.channel.joined()); QVERIFY(!viewer.channel.sendAudio(marker));
         QVERIFY(viewer.channel.chatReady());
-        link.delay = 0;
+        link.holdReliable = false;
         QVERIFY(viewer.channel.watchScreen(host.channel.ownId(), false));
         QVERIFY(host.channel.sendScreenAudio(marker)); QTest::qWait(100); QCOMPARE(received, 1);
         QVERIFY(viewer.channel.watchScreen(host.channel.ownId(), true, 0, true));
@@ -4877,6 +4881,9 @@ private slots:
         QTest::newRow("delayed-audio-callbacks") << 45;
     }
     void sixtyFourClientsHaveOneConsistentRosterAndAudioFanout() {
+        // The hosted macOS network launcher intentionally resets environment
+        // logging rules. Enable bounded diagnostics inside this test process.
+        QLoggingCategory::setFilterRules(QStringLiteral("squadspeak.media.sender.debug=true"));
         QFETCH(int, callbackDelayMs);
         bool speakersOk = false;
         const int speakers = qEnvironmentVariableIsSet("SQUAD_SOAK_SPEAKERS")
