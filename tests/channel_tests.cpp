@@ -8,11 +8,16 @@
 #include <QLoggingCategory>
 #include <QFutureWatcher>
 #include <QPromise>
+#if QT_CONFIG(process)
+#include <QProcess>
+#endif
 #include <QThreadPool>
 #include <QtEndian>
 #include <QBuffer>
 #include <cmath>
 #include <ctime>
+#include <cstdio>
+#include <thread>
 #include <array>
 #include <atomic>
 #include <numbers>
@@ -128,7 +133,7 @@ class DelayedLink final : public QObject {
         target->flush();
     }
 public:
-    int delay = 0, udpDelay = -1, audioDatagrams = 0, videoDatagrams = 0;
+    int delay = 0, udpDelay = -1, audioDatagrams = 0, videoDatagrams = 0, audioDropEvery = 0;
     bool blockUdp = false, holdReliable = false;
     bool dropLargeDatagrams = false;
     bool videoOnly = false;
@@ -211,7 +216,10 @@ public:
                             if (response.senderPort() != port || blockUdp) continue;
                             const auto bytes = response.data();
                             const bool videoData = !bytes.isEmpty() && quint8(bytes[0]) == 23;
-                            if (bytes.size() > 12 && (quint8(bytes[0]) >> 6) == 2 && (quint8(bytes[1]) & 127) == 111) ++audioDatagrams;
+                            if (bytes.size() > 12 && (quint8(bytes[0]) >> 6) == 2 && (quint8(bytes[1]) & 127) == 111) {
+                                ++audioDatagrams;
+                                if (audioDropEvery && audioDatagrams % audioDropEvery == 0) continue;
+                            }
                             if (videoData) ++videoDatagrams;
                             if (dropLargeDatagrams && videoData && bytes.size() > 512) continue;
                             const int hold = !videoOnly || videoData ? (udpDelay < 0 ? delay : udpDelay) : 0;
@@ -661,9 +669,9 @@ private slots:
         connect(&producer, &QTimer::timeout, this, [&] { QVERIFY(host.channel.sendScreenAudio(warmup)); });
         producer.start();
         if (reducedQuality) {
-            link.udpDelay = 350;
+            link.audioDropEvery = 2;
             QVERIFY(waitForEvents(&viewer.channel, &LocalChannel::audioReceived, [&] { return transcoded; }, 10000));
-            link.udpDelay = 0;
+            link.audioDropEvery = 0;
         }
         const int warmupDatagrams = link.audioDatagrams;
         QTRY_VERIFY_WITH_TIMEOUT(link.audioDatagrams > warmupDatagrams + 5, 5000); producer.stop();
@@ -4902,6 +4910,7 @@ private slots:
         QVERIFY(!oldClient.channel.joined());
         QCOMPARE(newClient.channel.participants().size(), 1);
     }
+#if QT_CONFIG(process)
     void sixtyFourClientsHaveOneConsistentRosterAndAudioFanout_data() {
         QTest::addColumn<int>("callbackDelayMs");
         QTest::newRow("continuous") << 0;
@@ -4931,28 +4940,24 @@ private slots:
             if (error) std::rethrow_exception(error);
             return result;
         };
-        // The host and passive clients must not run on the audio callback loop.
-        // Two client loops bound fixture resources without simulating 64 remote
-        // applications on the microphone/playback thread of one application.
-        std::array<QThread, 3> threads;
-        std::array<QObject, 3> contexts;
+        // Remote apps do not share the host's sender, TLS runtime or CPU budget.
+        // Run the host in a separate process and bound passive client loops.
+        std::array<QThread, 2> threads;
+        std::array<QObject, 2> contexts;
         for (size_t i = 0; i < threads.size(); ++i) {
             contexts[i].moveToThread(&threads[i]);
             threads[i].start();
         }
-        std::unique_ptr<Device> host;
         std::vector<std::unique_ptr<Device>> clients;
         std::array<std::atomic<int>, 64> audioCounts{}, missingCounts{};
-        const auto onHost = [&](auto action) { return on(contexts[0], action); };
         const auto onClient = [&](Device& client, auto action) {
             return on(client.channel, [&] { return action(client); });
         };
         const auto stopDevices = qScopeGuard([&] {
             for (size_t i = 0; i < clients.size(); ++i) {
                 if (i < size_t(speakers)) clients[i].reset();
-                else on(contexts[1 + i % 2], [&] { clients[i].reset(); return true; });
+                else on(contexts[i % 2], [&] { clients[i].reset(); return true; });
             }
-            onHost([&] { host.reset(); return true; });
             for (size_t i = 0; i < threads.size(); ++i) {
                 on(contexts[i], [&] {
                     contexts[i].moveToThread(QCoreApplication::instance()->thread());
@@ -4962,30 +4967,45 @@ private slots:
                 threads[i].wait();
             }
         });
-        // A remote listener cannot block the real host's event loop. Keep that
-        // boundary here too, including when client callbacks are delayed.
-        QVERIFY(onHost([&] {
-            host = std::make_unique<Device>(dir.filePath("host"), "Host");
-            return host->channel.listen(QHostAddress::LocalHost);
-        }));
-        const auto hostId = onHost([&] { return host->channel.ownId(); });
-        const auto hostPort = onHost([&] { return host->channel.port(); });
-        const auto joinHost = [&](Device& client) {
-            return onClient(client, [&](Device& c) { return c.channel.join(hostId, "127.0.0.1", hostPort); });
-        };
+        QJsonArray approved;
         const auto firstIdentity = TlsIdentity::create();
         for (int i = 0; i < 64; ++i) {
             const auto makeClient = [&] {
                 return std::make_unique<Device>(dir.filePath(QString::number(i)), QString("Member %1").arg(i),
                     i == 0 ? firstIdentity : TlsIdentity::create());
             };
-            clients.push_back(i < speakers ? makeClient() : on(contexts[1 + size_t(i) % 2], makeClient));
+            clients.push_back(i < speakers ? makeClient() : on(contexts[size_t(i) % 2], makeClient));
             const auto clientId = onClient(*clients.back(), [](Device& c) { return c.channel.ownId(); });
-            QVERIFY(onHost([&] { return host->channel.decide(clientId, true); }));
+            approved.append(clientId);
         }
         Device overflow(dir.filePath("overflow"), "Text member");
         auto replacement = std::make_unique<Device>(dir.filePath("replacement"), "Member 0", firstIdentity);
-        QVERIFY(onHost([&, clientId = overflow.channel.ownId()] { return host->channel.decide(clientId, true); }));
+        approved.append(overflow.channel.ownId());
+        QFile configuration(dir.filePath("host.channel"));
+        QVERIFY(configuration.open(QIODevice::WriteOnly));
+        const auto settings = QJsonDocument(QJsonObject{{"version", 1}, {"approved", approved},
+            {"attempts", QJsonObject{}}, {"requestsAllowed", true}}).toJson(QJsonDocument::Compact);
+        QCOMPARE(configuration.write(settings), settings.size()); configuration.close();
+        QProcess host;
+        QByteArray readiness;
+        connect(&host, &QProcess::readyReadStandardOutput, &host, [&] { readiness += host.readAllStandardOutput(); });
+        host.start(QCoreApplication::applicationFilePath(), {"--capacity-host", dir.filePath("host")});
+        const auto stopHost = qScopeGuard([&] {
+            host.closeWriteChannel();
+            const bool stopped = host.waitForFinished(5000);
+            if (!stopped) { host.kill(); host.waitForFinished(5000); }
+            qInfo().noquote() << host.readAllStandardError();
+            QVERIFY(stopped); QCOMPARE(host.exitStatus(), QProcess::NormalExit); QCOMPARE(host.exitCode(), 0);
+        });
+        QVERIFY(host.waitForStarted(5000));
+        QVERIFY(waitForEvents(&host, &QProcess::readyReadStandardOutput, [&] { return readiness.contains('\n'); }, 10000));
+        const auto endpoint = QJsonDocument::fromJson(readiness.trimmed()).object();
+        const auto hostId = endpoint.value("id").toString();
+        const auto hostPort = quint16(endpoint.value("port").toInt());
+        QCOMPARE(hostId.size(), 64); QVERIFY(hostPort != 0);
+        const auto joinHost = [&](Device& client) {
+            return onClient(client, [&](Device& c) { return c.channel.join(hostId, "127.0.0.1", hostPort); });
+        };
         // Real devices generate their identities on independent event loops.
         // Finish this process's CPU-bound setup before starting network timers.
         for (const auto& client : clients) QVERIFY(joinHost(*client));
@@ -5125,7 +5145,7 @@ private slots:
         const auto playbackMs = sustained.elapsed();
         advancePlayback(playbackMs);
 #ifndef Q_OS_WIN
-        qInfo() << "Audio soak process CPU ms" << (std::clock() - cpuStarted) * 1000.0 / CLOCKS_PER_SEC;
+        qInfo() << "Audio soak client process CPU ms" << (std::clock() - cpuStarted) * 1000.0 / CLOCKS_PER_SEC;
 #endif
         // RTP can report a gap only when a later packet arrives. Losing the
         // final packet cannot produce a gap report; allow a bounded drain,
@@ -5170,14 +5190,13 @@ private slots:
         QTRY_VERIFY(overflow.channel.joined() || overflow.channel.status().contains("full"));
         QVERIFY(!overflow.channel.joined());
         QVERIFY(overflow.channel.status().contains("full"));
-        QCOMPARE(onHost([&] { return host->channel.hostParticipants().size(); }), 64);
+        QCOMPARE(onClient(*clients.back(), [](Device& c) { return c.channel.participants().size(); }), 64);
         // A full voice channel still permits an authenticated text session.
         QVERIFY(overflow.channel.openChat(hostId, "127.0.0.1", hostPort));
         QTRY_VERIFY(overflow.channel.chatReady());
         QVERIFY(overflow.channel.sendChat("Text still works at voice capacity."));
         QTRY_VERIFY(onClient(*clients.back(), [](Device& c) { return !memberMessages(c.channel).isEmpty(); }));
-        QCOMPARE(onHost([&] { return host->channel.hostParticipants().size(); }), 64);
-        QVERIFY(onHost([&] { return host->channel.setScreenSharing(true); }));
+        QCOMPARE(onClient(*clients.back(), [](Device& c) { return c.channel.participants().size(); }), 64);
         QTRY_VERIFY(overflow.channel.screenView().value("available").toBool());
         QVERIFY(overflow.channel.watchScreen(hostId, true));
         QTRY_COMPARE(overflow.channel.screenView().value("status").toString(), QString("full"));
@@ -5187,34 +5206,34 @@ private slots:
         // The same device may speak and watch, but leaving voice does not free
         // its shared media slot until it also stops watching.
         QVERIFY(clients.front()->channel.leave());
-        QTRY_COMPARE(onHost([&] { return host->channel.hostParticipants().size(); }), 63);
+        QTRY_COMPARE(onClient(*clients.back(), [](Device& c) { return c.channel.participants().size(); }), 63);
         QVERIFY(joinHost(overflow));
         QTRY_VERIFY(overflow.channel.status().contains("full"));
         QVERIFY(!overflow.channel.joined());
         QVERIFY(clients.front()->channel.watchScreen(hostId, false));
         QVERIFY(joinHost(*clients.front()));
         QTRY_VERIFY(clients.front()->channel.joined());
-        QVERIFY(onHost([&] { return host->channel.setScreenSharing(false); }));
         // Replacing an existing connection reuses its slot, even when full.
         QVERIFY(joinHost(*replacement));
         QTRY_VERIFY(replacement->channel.joined());
         QTRY_VERIFY(!clients.front()->channel.joined());
         clients.front() = std::move(replacement);
-        QTRY_COMPARE(onHost([&] { return host->channel.hostParticipants().size(); }), 64);
+        QTRY_COMPARE(onClient(*clients.back(), [](Device& c) { return c.channel.participants().size(); }), 64);
         QVERIFY(onClient(*clients.back(), [&](Device& c) { return !participant(c.channel, firstIdentity.id()).isEmpty(); }));
         // A text-to-voice attempt cannot bypass the same capacity boundary.
         QVERIFY(joinHost(overflow));
         QTRY_VERIFY(overflow.channel.joined() || overflow.channel.status().contains("full"));
         QVERIFY(!overflow.channel.joined());
         QVERIFY(clients.front()->channel.leave());
-        QTRY_COMPARE(onHost([&] { return host->channel.hostParticipants().size(); }), 63);
+        QTRY_COMPARE(onClient(*clients.back(), [](Device& c) { return c.channel.participants().size(); }), 63);
         QVERIFY(joinHost(overflow));
         QTRY_VERIFY(overflow.channel.joined());
-        QTRY_COMPARE(onHost([&] { return host->channel.hostParticipants().size(); }), 64);
+        QTRY_COMPARE(onClient(*clients.back(), [](Device& c) { return c.channel.participants().size(); }), 64);
         QVERIFY(overflow.channel.leave());
         for (int i = 0; i < 32; ++i) QVERIFY(onClient(*clients[size_t(i)], [](Device& c) { return c.channel.leave(); }));
         for (int i = 32; i < 64; ++i) QTRY_COMPARE(onClient(*clients[size_t(i)], [](Device& c) { return c.channel.participants().size(); }), 32);
     }
+#endif
     void pendingAdmissionBudgetReleasesAfterDisconnect() {
         QTemporaryDir dir;
         Device host(dir.filePath("password-host"), "Password host");
@@ -5336,5 +5355,28 @@ private slots:
         QVERIFY_THROWS_EXCEPTION(std::runtime_error, LocalChannel(session, broken.fileName(), TlsIdentity::create()));
     }
 };
-QTEST_GUILESS_MAIN(ChannelTests)
+int main(int argc, char** argv) {
+    qputenv("QT_SSL_USE_TEMPORARY_KEYCHAIN", "1");
+    QCoreApplication application(argc, argv);
+#if QT_CONFIG(process)
+    const auto arguments = application.arguments();
+    if (arguments.size() == 3 && arguments[1] == "--capacity-host") {
+        QLoggingCategory::setFilterRules(QStringLiteral("squadspeak.media.sender.debug=true"));
+        Device host(arguments[2], "Host");
+        if (!host.listenWithUdp() || !host.channel.setScreenSharing(true)) return 1;
+        const auto endpoint = QJsonDocument(QJsonObject{{"id", host.channel.ownId()}, {"port", host.channel.port()}})
+            .toJson(QJsonDocument::Compact);
+        std::puts(endpoint.constData()); std::fflush(stdout);
+        std::thread shutdown([&] {
+            while (std::getchar() != EOF) {}
+            QMetaObject::invokeMethod(&application, &QCoreApplication::quit, Qt::QueuedConnection);
+        });
+        const auto result = application.exec();
+        shutdown.join();
+        return result;
+    }
+#endif
+    ChannelTests tests;
+    return QTest::qExec(&tests, argc, argv);
+}
 #include "channel_tests.moc"

@@ -306,8 +306,10 @@ and teardown; Qt Test otherwise stops each function after 300 seconds.
 Video extends the first 4K phase to 30 frames per requested second,
 then checks quality changes and recovery. It reports actual elapsed time,
 encoded bytes, codec and processing time, so a slow encoder is not reported as
-30 fps. Use external process sampling for CPU/RSS; these fixtures combine the
-sender and receivers in one process and do not measure acoustic latency.
+30 fps. Use external process sampling for CPU/RSS. The video fixture combines
+sender and receivers in one process. Audio runs its host in a separate process
+so simulated clients do not share the host's global sender. Neither fixture
+measures acoustic latency.
 
 The 64-client audio test keeps its 90% real-time playout threshold in
 uninstrumented builds, both with normal scheduling and 45 ms delays to capture
