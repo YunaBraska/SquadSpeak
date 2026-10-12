@@ -5,6 +5,7 @@
 #include <QLoggingCategory>
 #include <QRandomGenerator>
 #include <QRegularExpression>
+#include <QThread>
 #include <QTimer>
 #include <QtEndian>
 #include <rtc/rtc.hpp>
@@ -121,6 +122,9 @@ struct MediaTransport::State::Sender final {
     rtc::Channel* active = nullptr;
     bool stopping = false;
     std::thread worker{[this] {
+        // Speech expires after 120 ms. Mark this worker as latency-sensitive
+        // even when the hosting app has no foreground window.
+        QThread::currentThread()->setServiceLevel(QThread::QualityOfService::High);
         std::unique_lock lock(mutex);
         for (;;) {
             changed.wait(lock, [this] { return stopping || queued; });

@@ -621,7 +621,13 @@ private slots:
         QVERIFY(host.channel.setScreenSharing(false));
         QVERIFY(!host.channel.setScreenAudio(true));
     }
+    void screenOnlyViewerReceivesUdpAudioWithoutPersonalParticipation_data() {
+        QTest::addColumn<bool>("reducedQuality");
+        QTest::newRow("normal") << false;
+        QTest::newRow("reduced-quality") << true;
+    }
     void screenOnlyViewerReceivesUdpAudioWithoutPersonalParticipation() {
+        QFETCH(bool, reducedQuality);
         QTemporaryDir dir;
         Device host(dir.filePath("host"), "Owner"), viewer(dir.filePath("viewer"), "Viewer");
         QVERIFY(host.listenWithUdp());
@@ -632,14 +638,35 @@ private slots:
         QTRY_VERIFY(viewer.channel.screenInfo(host.channel.ownId()).value("available").toBool());
         QVERIFY(viewer.channel.watchScreen(host.channel.ownId(), true, 0, true));
         QTRY_COMPARE(viewer.channel.screenInfo(host.channel.ownId()).value("tier").toInt(), 1);
-        const auto warmup = voicePacket(), marker = voicePacket(880);
+        const auto warmup = voicePacket(0), marker = voicePacket(880);
         int received = 0;
-        connect(&viewer.channel, &LocalChannel::audioReceived, this, [&](const QString& id, const QByteArray& packet) {
-            if (id == host.channel.musicId() && packet == marker) ++received;
+        bool transcoded = false;
+        int error = 0;
+        const std::unique_ptr<OpusDecoder, decltype(&opus_decoder_destroy)> decoder(
+            opus_decoder_create(48000, 1, &error), opus_decoder_destroy);
+        QVERIFY(decoder && error == OPUS_OK);
+        QObject reception;
+        connect(&viewer.channel, &LocalChannel::audioReceived, &reception, [&](const QString& id, const QByteArray& packet) {
+            if (id != host.channel.musicId()) return;
+            if (packet != warmup) transcoded = true;
+            std::array<float, 960> samples{};
+            QCOMPARE(opus_decode_float(decoder.get(), reinterpret_cast<const unsigned char*>(packet.constData()),
+                int(packet.size()), samples.data(), int(samples.size()), 0), 960);
+            // Adaptation may re-encode Opus. Check audible content rather than
+            // requiring the original compressed bytes to survive the relay.
+            const auto energy = std::inner_product(samples.begin(), samples.end(), samples.begin(), 0.0);
+            if (energy > 0.1) ++received;
         });
         QTimer producer; producer.setInterval(20);
         connect(&producer, &QTimer::timeout, this, [&] { QVERIFY(host.channel.sendScreenAudio(warmup)); });
-        producer.start(); QTRY_VERIFY_WITH_TIMEOUT(link.audioDatagrams > 5, 5000); producer.stop();
+        producer.start();
+        if (reducedQuality) {
+            link.udpDelay = 350;
+            QVERIFY(waitForEvents(&viewer.channel, &LocalChannel::audioReceived, [&] { return transcoded; }, 10000));
+            link.udpDelay = 0;
+        }
+        const int warmupDatagrams = link.audioDatagrams;
+        QTRY_VERIFY_WITH_TIMEOUT(link.audioDatagrams > warmupDatagrams + 5, 5000); producer.stop();
         // Keep reliable traffic held until audio arrives. Prove UDP delivery
         // directly, without racing scheduler jitter against a second timeout.
         link.holdReliable = true;
