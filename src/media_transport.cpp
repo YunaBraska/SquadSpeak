@@ -19,6 +19,7 @@
 namespace squad {
 namespace {
 Q_LOGGING_CATEGORY(mediaTransportLog, "squadspeak.media.transport", QtWarningMsg)
+Q_LOGGING_CATEGORY(mediaSenderLog, "squadspeak.media.sender", QtWarningMsg)
 constexpr int maximumSources = 65;
 constexpr int maximumOpus = 4000;
 constexpr int maximumDatagram = 1200;
@@ -64,6 +65,7 @@ struct MediaTransport::State final {
     std::mutex mutex;
     std::deque<std::function<void()>> mailbox;
     qsizetype queuedBytes = 0;
+    size_t mailboxDrops = 0, lateFrames = 0, pendingDrops = 0;
 
     State(MediaTransport* value, bool offer, quint16 port, QHostAddress address, quint16 remote, Medium mode)
         : owner(value), offerer(offer), medium(mode), localPort(port), remotePort(remote), remoteAddress(std::move(address)) { clock.start(); }
@@ -74,7 +76,10 @@ struct MediaTransport::State final {
         const auto state = weak.lock();
         if (!state) return;
         std::lock_guard lock(state->mutex);
-        if (!state->owner || size > 65536 || state->mailbox.size() >= 256 || state->queuedBytes + size > 512 * 1024) return;
+        if (!state->owner) return;
+        if (size > 65536 || state->mailbox.size() >= 256 || state->queuedBytes + size > 512 * 1024) {
+            ++state->mailboxDrops; return;
+        }
         const bool schedule = state->mailbox.empty();
         state->queuedBytes += size;
         state->mailbox.emplace_back([weak, generation, action = std::move(action)] { if (auto s = weak.lock(); s && s->generation == generation) action(*s); });
@@ -109,6 +114,9 @@ struct MediaTransport::State::Sender final {
     std::map<rtc::Channel*, std::deque<Packet>> queues;
     decltype(queues)::iterator turn = queues.end();
     size_t queued = 0;
+    size_t processedCount = 0, expiredCount = 0, shedCount = 0, failureCount = 0, maximumQueued = 0;
+    Clock::time_point reportAt = Clock::now();
+    long long sendMicros = 0, maximumSendMicros = 0;
     std::map<std::pair<quintptr, quint32>, int> counts;
     rtc::Channel* active = nullptr;
     bool stopping = false;
@@ -124,15 +132,33 @@ struct MediaTransport::State::Sender final {
             removeEmpty(current);
             active = packet.channel.get();
             lock.unlock();
-            if (Clock::now() < packet.expires) {
+            const auto sendStarted = Clock::now();
+            const bool expired = sendStarted >= packet.expires;
+            bool failure = false;
+            if (!expired) {
                 bool sent = false, fatal = false;
                 try {
                     sent = packet.channel->send(reinterpret_cast<const rtc::byte*>(packet.bytes.constData()), size_t(packet.bytes.size()));
                 } catch (const std::exception& error) { qCDebug(mediaTransportLog) << error.what(); fatal = true; }
-                if (!sent) packet.failed(fatal);
+                if (!sent) { failure = true; packet.failed(fatal); }
             }
             lock.lock();
             active = nullptr;
+            if (mediaSenderLog().isDebugEnabled()) {
+                ++processedCount;
+                expiredCount += expired;
+                failureCount += failure;
+                const auto now = Clock::now();
+                const auto micros = std::chrono::duration_cast<std::chrono::microseconds>(now - sendStarted).count();
+                sendMicros += micros; maximumSendMicros = std::max<long long>(maximumSendMicros, micros);
+                if (now - reportAt >= std::chrono::seconds(1)) {
+                    qCDebug(mediaSenderLog) << "RTP dequeued" << processedCount << "expired" << expiredCount << "shed" << shedCount
+                            << "failed" << failureCount << "queue max" << maximumQueued << "send us mean/max"
+                            << sendMicros / std::max<size_t>(1, processedCount) << maximumSendMicros;
+                    processedCount = expiredCount = shedCount = failureCount = maximumQueued = 0;
+                    sendMicros = maximumSendMicros = 0; reportAt = now;
+                }
+            }
             changed.notify_all();
         }
     }};
@@ -179,7 +205,7 @@ struct MediaTransport::State::Sender final {
             const auto oldest = std::find_if(queue.begin(), queue.end(), [&](const Packet& packet) {
                 return packet.ssrc == ssrc;
             });
-            uncount(*oldest); queue.erase(oldest); --queued;
+            uncount(*oldest); queue.erase(oldest); --queued; ++shedCount;
         }
         // Six 20 ms frames per source, at most 4096 small RTP packets globally.
         // Shed old speech under overload instead of growing latency or TLS work.
@@ -188,12 +214,12 @@ struct MediaTransport::State::Sender final {
                 return a.second.front().expires < b.second.front().expires;
             });
             auto& queue = oldest->second;
-            uncount(queue.front()); queue.pop_front(); --queued;
+            uncount(queue.front()); queue.pop_front(); --queued; ++shedCount;
             removeEmpty(oldest);
         }
         const auto current = queues.try_emplace(channel.get()).first;
         if (turn == queues.end()) turn = current;
-        ++counts[key]; ++queued;
+        ++counts[key]; ++queued; maximumQueued = std::max(maximumQueued, queued);
         current->second.push_back({channel, std::move(bytes), ssrc, Clock::now() + std::chrono::milliseconds(120), std::move(failed)});
         changed.notify_one();
         return true;
@@ -247,7 +273,11 @@ MediaTransport::MediaTransport(bool offerer, quint16 localPort, QHostAddress add
 
 MediaTransport::~MediaTransport() {
     const auto s = state_;
-    { std::lock_guard lock(s->mutex); s->owner = nullptr; s->mailbox.clear(); s->queuedBytes = 0; }
+    { std::lock_guard lock(s->mutex);
+        if (s->mailboxDrops || s->lateFrames || s->pendingDrops)
+            qCDebug(mediaSenderLog) << "RTP receive drops; mailbox/late/playout" << s->mailboxDrops << s->lateFrames << s->pendingDrops;
+        s->owner = nullptr; s->mailbox.clear(); s->queuedBytes = 0;
+    }
     timer_.stop();
     stopUdp();
 }
@@ -468,10 +498,12 @@ void MediaTransport::accept(quint32 ssrc, quint16 sequence, const QByteArray& op
     if (it == s.incoming.end() || it->source.isEmpty()) return;
     auto& stream = *it;
     const qint64 serial = stream.highest < 0 ? sequence : stream.highest + qint16(sequence - quint16(stream.highest));
-    if (serial <= stream.delivered || stream.pending.contains(serial) || (stream.highest >= 0 && serial < stream.highest - 6)) return;
+    if (serial <= stream.delivered || stream.pending.contains(serial) || (stream.highest >= 0 && serial < stream.highest - 6)) {
+        ++s.lateFrames; return;
+    }
     if (datagram) { ++s.received; s.expected += quint32(stream.highest < 0 ? 1 : std::max<qint64>(0, serial - stream.highest)); }
     stream.highest = std::max(stream.highest, serial);
-    if (stream.pending.size() == 6) stream.pending.erase(stream.pending.begin());
+    if (stream.pending.size() == 6) { stream.pending.erase(stream.pending.begin()); ++s.pendingDrops; }
     stream.pending.emplace(serial, State::Stream::Frame{opus, s.clock.elapsed() + (datagram ? 20 : 0)});
     if (!timer_.isActive() || timer_.interval() != 5) timer_.start(5);
 }
