@@ -76,7 +76,7 @@ PanelWindow {
                 }
                 Label { text: modelData.name; textFormat: Text.PlainText; Layout.fillWidth: true; elide: Text.ElideRight; font.pixelSize: 12 }
             }
-            MouseArea { anchors.fill: parent; acceptedButtons: Qt.LeftButton | Qt.RightButton; onClicked: root.memberOptions(modelData, grid.hostId) }
+            MouseArea { anchors.fill: parent; acceptedButtons: Qt.LeftButton | Qt.RightButton; onClicked: mouse => root.memberOptions(modelData, grid.hostId, mouse.button === Qt.RightButton) }
             ActionButton {
                 anchors.right: parent.right; anchors.verticalCenter: parent.verticalCenter
                 text: qsTranslate("LocalLanguage", "Original text"); glyph: "chat"; iconOnly: true; flat: true
@@ -191,6 +191,11 @@ PanelWindow {
     readonly property var selectedOwner: { const revision = network.ownedChannels; return remote ? null : network.ownChannel(selectedHost) }
     readonly property var managedHost: selectedOwner || network
     readonly property var memberHost: { const revision = network.ownedChannels; return remote ? null : network.ownChannel(selectedMemberHost) }
+    readonly property bool canModerateMember: !remote && !selectedMember.music && selectedMember.id !== network.ownId
+        && (memberHost ? memberHost.hostClients : []).some(function(p) { return p.id === root.selectedMember.id })
+    readonly property bool canGrantMemberControl: !remote && !selectedMember.music && selectedMember.id !== network.ownId
+        && (canModerateMember || network.controllers.some(function(p) { return p.id === root.selectedMember.id }))
+    readonly property bool canStopMemberRadio: !remote && !!selectedMember.music && !!memberHost
     readonly property var hostRadio: { const revision = network.ownedChannels; return selectedOwner ? radio.forChannel(selectedHost) : radio }
     property string inspectedRequestHost: ""
     function decideRequest(id, hostId, allow) {
@@ -303,7 +308,12 @@ PanelWindow {
     }
     function memberLevel(id) { return remote ? (network.remoteLevels[id] || 0) : id === network.ownId ? audio.transmitLevel : (audio.playbackLevels[id] || 0) }
     function toggleMembers(id) { memberList.hostId = id; memberList.open() }
-    function memberOptions(member, host) { selectedMember = member; selectedMemberHost = host; memberList.close(); memberMenu.popup() }
+    function memberOptions(member, host, contextual) {
+        selectedMember = member; selectedMemberHost = host; inspectedRequestId = ""
+        memberList.close()
+        if (contextual) memberMenu.popup()
+        else requestInfo.open()
+    }
     function accessLabel(value) {
         switch (value) {
         case "pending": return qsTr("Pending")
@@ -941,7 +951,7 @@ PanelWindow {
                             visible: modelData.id !== root.managedHost.ownId && !modelData.music
                             Layout.fillWidth: true
                             Label { text: modelData.name; textFormat: Text.PlainText; Layout.fillWidth: true; elide: Text.ElideRight }
-                            ActionButton { objectName: "manageMember_" + modelData.id; text: qsTr("Manage member"); glyph: "more"; iconOnly: true; onClicked: root.memberOptions(modelData, root.managedHost.channelId) }
+                            ActionButton { objectName: "manageMember_" + modelData.id; text: qsTr("Manage member"); glyph: "more"; iconOnly: true; onClicked: root.memberOptions(modelData, root.managedHost.channelId, true) }
                         }
                     }
                     Label { visible: root.managedHost.blockedClients.length > 0; text: qsTr("Blocked devices"); color: Theme.muted }
@@ -964,25 +974,114 @@ PanelWindow {
         id: requestInfo
         objectName: "requestInfoDialog"
         parent: Overlay.overlay; anchors.centerIn: parent
-        width: Math.min(440, parent.width - 24); height: Math.min(390, parent.height - 24)
+        width: Math.min(440, parent.width - 24)
+        height: Math.min(requestDetails.implicitHeight + topPadding + bottomPadding + implicitHeaderHeight + implicitFooterHeight + spacing * 2, parent.height - 24)
         modal: true; focus: true; title: root.inspectedRequestId ? qsTr("Join request") : qsTr("Inspect")
         readonly property var entry: root.inspectedRequestId ? root.network.requests.find(function(r) { return r.id === root.inspectedRequestId && (!root.inspectedRequestHost || r.hostId === root.inspectedRequestHost) }) || ({}) : root.selectedMember
+        readonly property bool personalControls: !root.inspectedRequestId && !root.remote && !!entry.id && !entry.music && entry.id !== root.network.ownId
+        onOpened: {
+            requestScroll.contentItem.contentY = 0
+            if (memberLanguage.visible) memberLanguage.load()
+        }
+        onClosed: memberMenu.close()
         footer: RowLayout {
             spacing: 8
             ActionButton { objectName: "denyInspectedRequest"; text: qsTr("Deny"); destructive: true; visible: !!root.inspectedRequestId; Layout.leftMargin: 12; Layout.bottomMargin: 12; enabled: !!requestInfo.entry.id; onClicked: root.decideRequest(requestInfo.entry.id, requestInfo.entry.hostId, false) }
             Item { Layout.fillWidth: true }
-            ActionButton { text: qsTr("Close"); Layout.bottomMargin: 12; onClicked: requestInfo.close() }
+            ActionButton { text: qsTr("Close"); Layout.bottomMargin: 12; Layout.rightMargin: root.inspectedRequestId ? 0 : 12; onClicked: requestInfo.close() }
             ActionButton { objectName: "approveInspectedRequest"; text: qsTr("Approve"); primary: true; visible: !!root.inspectedRequestId; Layout.rightMargin: 12; Layout.bottomMargin: 12; enabled: !!requestInfo.entry.id; onClicked: root.decideRequest(requestInfo.entry.id, requestInfo.entry.hostId, true) }
         }
         contentItem: ScrollView {
             id: requestScroll
+            objectName: "requestDetailsScroll"
             contentWidth: availableWidth; clip: true
             ColumnLayout {
+                id: requestDetails
                 width: requestScroll.availableWidth; spacing: 12
                 RowLayout {
                     Layout.fillWidth: true
                     VoiceAvatar { objectName: "requestAvatar"; width: 56; height: 56; circular: true; animated: false; avatar: requestInfo.entry.avatarId || "mossling"; name: requestInfo.entry.name || "" }
                     DetailText { objectName: "requestName"; text: requestInfo.entry.name || ""; font.weight: Font.DemiBold }
+                    ActionButton {
+                        objectName: "memberActions"; text: qsTr("Manage member"); glyph: "more"; iconOnly: true; flat: true
+                        visible: !root.inspectedRequestId && (root.canGrantMemberControl || root.canModerateMember || root.canStopMemberRadio)
+                        onClicked: memberMenu.popup()
+                    }
+                }
+                SettingSlider {
+                    id: memberGain; objectName: "memberVolume"
+                    Layout.fillWidth: true; visible: requestInfo.personalControls
+                    caption: qsTr("Volume for me")
+                    from: 0; to: 2; stepSize: 0.05
+                    property int revision: 0
+                    value: { revision; return requestInfo.entry.id ? audio.participantVolume(requestInfo.entry.id) : 1 }
+                    valueText: Math.round(value * 100) + " %"
+                    applyValue: function(value) { return requestInfo.personalControls && audio.setParticipantVolume(requestInfo.entry.id, value) }
+                    Connections { target: audio; function onProfileChanged() { memberGain.revision++ } }
+                }
+                ColumnLayout {
+                    id: memberLanguage; objectName: "memberLanguageControls"
+                    Layout.fillWidth: true; spacing: 8
+                    visible: requestInfo.personalControls && audio.language.supported
+                    readonly property var voiceOptions: [{id: "", name: qsTranslate("LocalLanguage", "Original audio")}].concat(audio.language.voices)
+                    function choose(box, value) {
+                        const exact = box.model.findIndex(function(item) { return item.id === value })
+                        box.currentIndex = Math.max(0, exact >= 0 ? exact : box.model.findIndex(function(item) { return item.id.split("-")[0] === value.split("-")[0] }))
+                    }
+                    function save() {
+                        const source = spokenLanguage.currentValue || "en"
+                        const target = targetLanguage.currentValue || Qt.locale().name.replace("_", "-")
+                        audio.language.configure(requestInfo.entry.id, source, target, outputVoice.currentValue || "", incomingTranslation.checked)
+                    }
+                    function load() {
+                        const preference = audio.language.member(requestInfo.entry.id)
+                        choose(spokenLanguage, preference.source || "en-US")
+                        choose(targetLanguage, preference.target || Qt.locale().name.replace("_", "-"))
+                        choose(outputVoice, preference.voice || "")
+                        incomingTranslation.checked = !!preference.incoming
+                    }
+                    Label { text: qsTranslate("LocalLanguage", "Translation (experimental)"); font.weight: Font.DemiBold; Layout.fillWidth: true; wrapMode: Text.Wrap }
+                    Label { text: qsTranslate("LocalLanguage", "Spoken language"); color: Theme.muted }
+                    ChoiceBox {
+                        id: spokenLanguage; objectName: "memberSourceLanguage"
+                        Layout.fillWidth: true; model: audio.language.speechLanguages; textRole: "name"; valueRole: "id"
+                        enabled: audio.language.available
+                        onActivated: memberLanguage.save()
+                    }
+                    Label { text: qsTranslate("LocalLanguage", "Translate to"); color: Theme.muted }
+                    ChoiceBox {
+                        id: targetLanguage; objectName: "memberTargetLanguage"
+                        Layout.fillWidth: true; model: audio.language.languages; textRole: "name"; valueRole: "id"
+                        enabled: audio.language.available && !(outputVoice.currentValue || "").length
+                        onActivated: memberLanguage.save()
+                    }
+                    OptionCheck {
+                        id: incomingTranslation; objectName: "memberTranslateText"
+                        Layout.fillWidth: true; text: qsTranslate("LocalLanguage", "Translate messages")
+                        enabled: audio.language.available
+                        onClicked: memberLanguage.save()
+                    }
+                    Label { text: qsTranslate("LocalLanguage", "Translated voice"); color: Theme.muted }
+                    ChoiceBox {
+                        id: outputVoice; objectName: "memberTranslatedVoice"
+                        Layout.fillWidth: true; model: memberLanguage.voiceOptions; textRole: "name"; valueRole: "id"
+                        enabled: audio.language.available
+                        onActivated: {
+                            memberLanguage.save()
+                            memberLanguage.choose(targetLanguage, audio.language.member(requestInfo.entry.id).target)
+                        }
+                    }
+                    ActionButton {
+                        objectName: "prepareMemberLanguages"
+                        text: audio.language.preparing ? qsTr("Cancel") : qsTranslate("LocalLanguage", "Prepare languages"); glyph: audio.language.preparing ? "close" : "down"
+                        enabled: audio.language.available
+                        onClicked: { if (audio.language.preparing) audio.language.cancelPreparation(); else { memberLanguage.save(); audio.language.prepare(requestInfo.entry.id) } }
+                    }
+                    Label {
+                        Layout.fillWidth: true; wrapMode: Text.Wrap; color: Theme.muted
+                        text: !audio.language.available ? qsTranslate("LocalLanguage", "Local language processing is unavailable.") : audio.language.error
+                        visible: text.length > 0
+                    }
                 }
                 Label { text: qsTr("Channel"); visible: !!requestInfo.entry.channel; color: Theme.muted }
                 DetailText { objectName: "requestChannel"; visible: text.length > 0; text: requestInfo.entry.channel || "" }
@@ -1151,20 +1250,12 @@ PanelWindow {
         popupType: Popup.Item
         background: Rectangle { implicitWidth: 240; implicitHeight: 40; radius: Theme.controlRadius; color: Theme.surface; border.color: Theme.border }
         id: memberMenu
-        MenuAction {
-            objectName: "memberLanguageOptions"
-            text: qsTranslate("LocalLanguage", "Translation (experimental)")
-            visible: audio.language.supported && !root.remote && !root.selectedMember.music && root.selectedMember.id !== root.network.ownId
-            onTriggered: memberLanguage.open()
-        }
-        MenuAction { objectName: "inspectMember"; text: qsTr("Inspect"); onTriggered: { root.inspectedRequestId = ""; requestInfo.open() } }
+        MenuAction { objectName: "inspectMember"; text: qsTr("Inspect"); visible: !requestInfo.visible; onTriggered: requestInfo.open() }
         MenuAction {
             objectName: "allowRemoteControl"
             text: qsTr("Allow remote control")
             checkable: true
-            visible: !root.remote && !root.selectedMember.music && root.selectedMember.id !== root.network.ownId
-                && ((root.memberHost ? root.memberHost.hostClients : []).some(function(p) { return p.id === root.selectedMember.id })
-                    || root.network.controllers.some(function(p) { return p.id === root.selectedMember.id }))
+            visible: root.canGrantMemberControl
             checked: root.network.controllers.some(function(p) { return p.id === root.selectedMember.id && p.remote })
             onTriggered: {
                 const previous = root.network.controllers.some(function(p) { return p.id === root.selectedMember.id && p.remote })
@@ -1172,96 +1263,9 @@ PanelWindow {
                 checked = Qt.binding(function() { return root.network.controllers.some(function(p) { return p.id === root.selectedMember.id && p.remote }) })
             }
         }
-        MenuAction { text: qsTr("Stop radio"); visible: !root.remote && !!root.selectedMember.music && !!root.memberHost; onTriggered: { const player = radio.forChannel(root.selectedMemberHost); if (player) player.stop() } }
-        MenuAction { text: qsTr("Volume for me"); enabled: !root.remote && root.selectedMember.id !== root.network.ownId; onTriggered: memberVolume.open() }
-        MenuAction { destructive: true; text: qsTr("Kick"); visible: !root.remote && !root.selectedMember.music && !!root.memberHost && (root.memberHost ? root.memberHost.hostClients : []).some(function(p) { return p.id === root.selectedMember.id && p.id !== root.network.ownId }); onTriggered: root.memberHost.kick(root.selectedMember.id) }
-        MenuAction { destructive: true; text: qsTr("Block"); visible: !root.remote && !root.selectedMember.music && !!root.memberHost && (root.memberHost ? root.memberHost.hostClients : []).some(function(p) { return p.id === root.selectedMember.id && p.id !== root.network.ownId }); onTriggered: root.memberHost.setBlocked(root.selectedMember.id, true) }
-    }
-    PanelDialog {
-        id: memberVolume
-        parent: Overlay.overlay; anchors.centerIn: parent; width: Math.min(340, parent.width - 24)
-        title: qsTr("Volume for me")
-        buttons: Dialog.Close
-        contentItem: SettingSlider {
-            id: memberGain
-            caption: root.selectedMember.name || ""
-            from: 0; to: 2; stepSize: 0.05
-            property int revision: 0
-            value: { revision; return root.selectedMember.id ? audio.participantVolume(root.selectedMember.id) : 1 }
-            valueText: Math.round(value * 100) + " %"
-            applyValue: function(value) { return audio.setParticipantVolume(root.selectedMember.id, value) }
-            Connections { target: audio; function onProfileChanged() { memberGain.revision++ } }
-        }
-    }
-    PanelDialog {
-        id: memberLanguage
-        objectName: "memberLanguageDialog"
-        parent: Overlay.overlay; anchors.centerIn: parent; width: Math.min(380, parent.width - 24)
-        title: qsTranslate("LocalLanguage", "Translation (experimental)")
-        buttons: Dialog.Close
-        property var preference: ({})
-        property var voiceOptions: [{id: "", name: qsTranslate("LocalLanguage", "Original audio")}].concat(audio.language.voices)
-        function choose(box, value) {
-            const exact = box.model.findIndex(function(item) { return item.id === value })
-            box.currentIndex = Math.max(0, exact >= 0 ? exact : box.model.findIndex(function(item) { return item.id.split("-")[0] === value.split("-")[0] }))
-        }
-        function save() {
-            const source = spokenLanguage.currentValue || "en"
-            const target = targetLanguage.currentValue || Qt.locale().name.replace("_", "-")
-            audio.language.configure(root.selectedMember.id, source, target, outputVoice.currentValue || "", incomingTranslation.checked)
-        }
-        onOpened: {
-            preference = audio.language.member(root.selectedMember.id)
-            choose(spokenLanguage, preference.source || "en-US")
-            choose(targetLanguage, preference.target || Qt.locale().name.replace("_", "-"))
-            choose(outputVoice, preference.voice || "")
-            incomingTranslation.checked = !!preference.incoming
-        }
-        contentItem: ColumnLayout {
-            spacing: 8
-            Label { text: root.selectedMember.name || ""; textFormat: Text.PlainText; font.bold: true }
-            Label { text: qsTranslate("LocalLanguage", "Spoken language"); color: Theme.muted }
-            ChoiceBox {
-                id: spokenLanguage; objectName: "memberSourceLanguage"
-                Layout.fillWidth: true; model: audio.language.speechLanguages; textRole: "name"; valueRole: "id"
-                enabled: audio.language.available
-                onActivated: memberLanguage.save()
-            }
-            Label { text: qsTranslate("LocalLanguage", "Translate to"); color: Theme.muted }
-            ChoiceBox {
-                id: targetLanguage; objectName: "memberTargetLanguage"
-                Layout.fillWidth: true; model: audio.language.languages; textRole: "name"; valueRole: "id"
-                enabled: audio.language.available && !(outputVoice.currentValue || "").length
-                onActivated: memberLanguage.save()
-            }
-            OptionCheck {
-                id: incomingTranslation; objectName: "memberTranslateText"
-                Layout.fillWidth: true; text: qsTranslate("LocalLanguage", "Translate messages")
-                enabled: audio.language.available
-                onClicked: memberLanguage.save()
-            }
-            Label { text: qsTranslate("LocalLanguage", "Translated voice"); color: Theme.muted }
-            ChoiceBox {
-                id: outputVoice; objectName: "memberTranslatedVoice"
-                Layout.fillWidth: true; model: memberLanguage.voiceOptions; textRole: "name"; valueRole: "id"
-                enabled: audio.language.available
-                onActivated: {
-                    memberLanguage.save()
-                    memberLanguage.choose(targetLanguage, audio.language.member(root.selectedMember.id).target)
-                }
-            }
-            ActionButton {
-                objectName: "prepareMemberLanguages"
-                text: audio.language.preparing ? qsTr("Cancel") : qsTranslate("LocalLanguage", "Prepare languages"); glyph: audio.language.preparing ? "close" : "down"
-                enabled: audio.language.available
-                onClicked: { if (audio.language.preparing) audio.language.cancelPreparation(); else { memberLanguage.save(); audio.language.prepare(root.selectedMember.id) } }
-            }
-            Label {
-                Layout.fillWidth: true; wrapMode: Text.Wrap; color: Theme.muted
-                text: !audio.language.available ? qsTranslate("LocalLanguage", "Local language processing is unavailable.") : audio.language.error
-                visible: text.length > 0
-            }
-        }
+        MenuAction { text: qsTr("Stop radio"); visible: root.canStopMemberRadio; onTriggered: { const player = radio.forChannel(root.selectedMemberHost); if (player) player.stop() } }
+        MenuAction { destructive: true; text: qsTr("Kick"); visible: root.canModerateMember; onTriggered: root.memberHost.kick(root.selectedMember.id) }
+        MenuAction { destructive: true; text: qsTr("Block"); visible: root.canModerateMember; onTriggered: root.memberHost.setBlocked(root.selectedMember.id, true) }
     }
     PanelDialog {
         id: originalTranscript
@@ -1352,7 +1356,6 @@ PanelWindow {
                                     Accessible.onPressAction: root.toggleMembers(channelRow.modelData.id)
                                     Keys.onReturnPressed: root.toggleMembers(channelRow.modelData.id)
                                     Keys.onSpacePressed: root.toggleMembers(channelRow.modelData.id)
-                                    TapHandler { onTapped: root.toggleMembers(channelRow.modelData.id) }
                                     Repeater {
                                         model: channelRow.members.slice(0, 3)
                                         VoiceAvatar {
@@ -1363,6 +1366,12 @@ PanelWindow {
                                             available: modelData.available; muted: modelData.muted; deafened: !!modelData.deafened; sleeping: !!modelData.sleeping
                                             identity: modelData.id; animationTime: root.avatarTime
                                             objectName: "channelAvatar_" + channelRow.modelData.id + "_" + modelData.id
+                                            activeFocusOnTab: true
+                                            Accessible.role: Accessible.Button
+                                            Accessible.onPressAction: root.memberOptions(modelData, channelRow.modelData.id)
+                                            Keys.onReturnPressed: root.memberOptions(modelData, channelRow.modelData.id)
+                                            Keys.onSpacePressed: root.memberOptions(modelData, channelRow.modelData.id)
+                                            MouseArea { anchors.fill: parent; acceptedButtons: Qt.LeftButton | Qt.RightButton; onClicked: mouse => root.memberOptions(modelData, channelRow.modelData.id, mouse.button === Qt.RightButton) }
                                             animated: root.voice.animatedAvatars
                                             level: channelRow.active ? root.memberLevel(modelData.id) : 0
                                             TextToolTip { objectName: "memberTooltip"; parent: memberAvatar; text: memberAvatar.name; visible: avatarHover.hovered }
@@ -1466,6 +1475,7 @@ PanelWindow {
             network: root.network; animatedAvatars: root.voice.animatedAvatars
             animationTime: root.avatarTime
             memberLevel: function(id) { return root.inspectedHost === root.activeHost ? root.memberLevel(id) : 0 }
+            onMemberRequested: (member, contextual) => root.memberOptions(member, root.inspectedHost, contextual)
             active: root.visible && root.showChat
             Layout.fillWidth: true; Layout.fillHeight: true
         }

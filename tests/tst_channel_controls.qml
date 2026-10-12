@@ -496,6 +496,9 @@ TestCase {
         compare(findChild(dialog, "requestIdentity").text, remoteChannel.ownId)
         verify(findChild(dialog, "requestAddress").text.includes("127.0.0.1"))
         compare(findChild(dialog, "requestChannel").text, remoteChannel.channelName)
+        verify(!findChild(dialog, "memberVolume").visible)
+        verify(!findChild(dialog, "memberLanguageControls").visible)
+        verify(!findChild(dialog, "memberActions").visible)
         verify(!remoteChannel.chatReady)
         for (const size of [[520, 700], [360, 420]]) {
             view.width = size[0]; view.height = size[1]
@@ -769,28 +772,108 @@ TestCase {
         session.setAvatar(selected)
     }
 
+    function test_memberClickOpensPersonalControls_data() {
+        return [{tag: "desktop", width: 520, height: 720}, {tag: "compact", width: 360, height: 600},
+            {tag: "landscape", width: 740, height: 360}]
+    }
+
+    function test_memberClickOpensPersonalControls(data) {
+        view.width = data.width; view.height = data.height
+        verify(fixtures.startHost())
+        verify(channel.decide(remoteChannel.ownId, true))
+        verify(channel.join(channel.ownId, "127.0.0.1", channel.servicePort))
+        verify(remoteChannel.join(channel.ownId, "127.0.0.1", channel.servicePort))
+        tryCompare(channel, "chatReady", true)
+        tryCompare(remoteChannel, "chatReady", true)
+        tryVerify(function() { return view.chatMembers.length === 2 })
+        const portrait = visualChild(view.contentItem, "channelAvatar_" + channel.ownId + "_" + remoteChannel.ownId)
+        verify(portrait !== null)
+        verify(waitForRendering(portrait))
+        mouseClick(portrait)
+        const dialog = findChild(view, "requestInfoDialog")
+        tryCompare(dialog, "opened", true)
+        compare(findChild(dialog, "requestIdentity").text, remoteChannel.ownId)
+        const volume = findChild(dialog, "memberVolume")
+        verify(volume && volume.visible && volume.enabled)
+        const gain = findChild(volume, "valueControl")
+        const previous = audio.participantVolume(remoteChannel.ownId)
+        verify(audio.setParticipantVolume(remoteChannel.ownId, 1))
+        view.requestActivate(); tryCompare(view, "active", true)
+        gain.forceActiveFocus()
+        tryCompare(gain, "activeFocus", true)
+        keyClick(Qt.Key_Right)
+        compare(audio.participantVolume(remoteChannel.ownId), 1.05)
+        verify(audio.setParticipantVolume(remoteChannel.ownId, previous))
+        compare(findChild(dialog, "memberLanguageControls").visible, audio.language.supported)
+        verify(!findChild(dialog, "approveInspectedRequest").visible)
+        verify(!findChild(dialog, "denyInspectedRequest").visible)
+        verify(dialog.height <= view.height - 24)
+        if (imageDirectory.length > 0) {
+            tryVerify(function() { return fixtures.portraitHasDetail(findChild(dialog, "requestAvatar")) })
+            waitForRendering(dialog.contentItem)
+            verify(fixtures.saveWindow(view, imageDirectory + "/member-inspect-" + data.tag + ".png"))
+        }
+        const details = findChild(dialog, "requestDetailsScroll").contentItem
+        if (details.contentHeight > details.height) {
+            mouseWheel(details, details.width / 2, details.height / 2, 0, -2400)
+            tryVerify(function() { return details.contentY > 0 })
+            const identity = findChild(dialog, "requestIdentity")
+            tryVerify(function() { const p = identity.mapToItem(details, 0, 0); return p.y >= 0 && p.y + identity.height <= details.height + 1 })
+        }
+        dialog.close()
+        tryCompare(dialog, "visible", false)
+        verify(remoteChannel.sendChat("Click my portrait to inspect."))
+        tryVerify(function() { return channel.messages.some(function(m) { return m.sender === remoteChannel.ownId && m.text === "Click my portrait to inspect." }) })
+        view.chatExpanded = true
+        const history = findChild(view, "chatHistory")
+        history.scrollTo(history.contentHeight)
+        tryVerify(function() { return visualChild(view.contentItem, "messageAvatar_" + remoteChannel.ownId) !== null })
+        mouseClick(visualChild(view.contentItem, "messageAvatar_" + remoteChannel.ownId))
+        tryCompare(dialog, "opened", true)
+        compare(findChild(dialog, "requestIdentity").text, remoteChannel.ownId)
+        dialog.close(); tryCompare(dialog, "visible", false)
+        mouseClick(portrait, portrait.width / 2, portrait.height / 2, Qt.RightButton)
+        const inspect = findChild(view, "inspectMember")
+        tryCompare(inspect.menu, "opened", true)
+        verify(findChild(view, "allowRemoteControl").visible)
+        verify(waitForRendering(inspect))
+        mouseClick(inspect)
+        tryCompare(dialog, "opened", true)
+        compare(findChild(dialog, "requestIdentity").text, remoteChannel.ownId)
+    }
+
     function test_memberLanguageOptionsAreExplicitAndLocal() {
         view.memberOptions({id: "language-test-member", name: "Robin", available: true, muted: false}, channel.ownId)
-        const action = findChild(view, "memberLanguageOptions")
-        tryCompare(action.menu, "opened", true)
-        compare(action.visible, audio.language.supported)
-        if (!action.visible) { action.menu.close(); return }
-        waitForRendering(action); mouseClick(action)
-        const dialog = findChild(view, "memberLanguageDialog")
+        const dialog = findChild(view, "requestInfoDialog")
         tryCompare(dialog, "opened", true)
+        const controls = findChild(dialog, "memberLanguageControls")
+        compare(controls.visible, audio.language.supported)
+        verify(findChild(dialog, "memberVolume").visible)
         const voice = findChild(dialog, "memberTranslatedVoice")
-        compare(voice.currentValue, "")
+        if (controls.visible) compare(voice.currentValue, "")
         compare(findChild(dialog, "memberTranslateText").checked, false)
         compare(audio.language.member("language-test-member").voice || "", "")
+        if (controls.visible && audio.language.available) {
+            mouseClick(findChild(dialog, "memberTranslateText"))
+            compare(audio.language.member("language-test-member").incoming, true)
+            dialog.close(); tryCompare(dialog, "visible", false)
+            view.memberOptions({id: "language-test-member", name: "Robin"}, channel.ownId)
+            tryCompare(dialog, "opened", true)
+            compare(findChild(dialog, "memberTranslateText").checked, true)
+            mouseClick(findChild(dialog, "memberTranslateText"))
+            compare(audio.language.member("language-test-member").incoming, false)
+        }
         if (imageDirectory.length > 0) {
             waitForRendering(dialog.contentItem)
             verify(fixtures.saveWindow(view, imageDirectory + "/member-language.png"))
         }
-        dialog.close()
-        view.memberOptions({id: channel.ownId, name: session.userName}, channel.ownId)
-        tryCompare(action.menu, "opened", true)
-        verify(!action.visible)
-        action.menu.close()
+        for (const member of [{id: channel.ownId, name: session.userName}, {id: "system", name: "System", music: true}]) {
+            dialog.close(); tryCompare(dialog, "visible", false)
+            view.memberOptions(member, channel.ownId)
+            tryCompare(dialog, "opened", true)
+            verify(!controls.visible)
+            verify(!findChild(dialog, "memberVolume").visible)
+        }
     }
 
     function test_outgoingTranslationPreviewCannotSendAnOlderDraft() {
@@ -828,10 +911,6 @@ TestCase {
         const member = channel.participants.find(function(item) { return item.id === channel.ownId })
         verify(member)
         view.memberOptions(member, channel.ownId)
-        const inspect = findChild(view, "inspectMember")
-        tryCompare(inspect.menu, "opened", true)
-        waitForRendering(inspect)
-        mouseClick(inspect)
         const dialog = findChild(view, "requestInfoDialog")
         tryCompare(dialog, "opened", true)
         compare(findChild(dialog, "requestName").text, session.userName)
@@ -1919,15 +1998,20 @@ TestCase {
         const row = visualChild(grid, "member_" + last.id)
         tryVerify(function() { const p = row.mapToItem(grid, 0, 0); return p.y >= 0 && p.y + row.height <= grid.height + 1 })
         mouseClick(row, row.width / 2, row.height / 2)
-        const inspect = findChild(view, "inspectMember")
-        tryCompare(inspect.menu, "opened", true)
-        waitForRendering(inspect)
-        if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/members-64-menu.png"))
-        mouseClick(inspect)
         const info = findChild(view, "requestInfoDialog")
         tryCompare(info, "opened", true)
         compare(findChild(info, "requestName").text, last.name)
         if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/members-64-inspect.png"))
+        info.close(); tryCompare(info, "visible", false)
+        mouseClick(more)
+        tryCompare(dialog, "opened", true)
+        grid.positionViewAtBeginning()
+        const firstId = grid.model[0].id
+        const first = visualChild(grid, "member_" + firstId)
+        verify(first !== null)
+        first.forceActiveFocus(); keyClick(Qt.Key_Return)
+        tryCompare(info, "opened", true)
+        compare(findChild(info, "requestIdentity").text, firstId)
     }
 
     function test_channelTreeAndIconControlsFitCompactWindow() {
@@ -1969,7 +2053,7 @@ TestCase {
         }
         const summary = visualChild(view.contentItem, "memberSummary_" + channel.ownId)
         verify(summary && summary.visible)
-        mouseClick(summary, summary.width / 2, summary.height / 2)
+        verify(fixtures.pressAccessible(summary))
         const members = findChild(view, "membersDialog")
         tryCompare(members, "opened", true)
         tryCompare(findChild(members, "allMembers"), "count", 2)
@@ -2283,6 +2367,11 @@ TestCase {
         verify(remoteChannel.openChat(channel.ownId, "127.0.0.1", channel.servicePort))
         tryCompare(remoteChannel, "chatReady", true)
         view.memberOptions({id: remoteChannel.ownId, name: remoteSession.userName}, channel.ownId)
+        const memberInfo = findChild(view, "requestInfoDialog")
+        tryCompare(memberInfo, "opened", true)
+        verify(findChild(memberInfo, "memberActions").visible)
+        verify(waitForRendering(memberInfo.contentItem))
+        mouseClick(findChild(memberInfo, "memberActions"))
         const grant = findChild(view, "allowRemoteControl")
         verify(grant !== null)
         tryCompare(grant.menu, "opened", true)
@@ -2290,6 +2379,7 @@ TestCase {
         waitForRendering(grant)
         verify(fixtures.pressAccessible(grant))
         tryVerify(function() { return remoteChannel.remoteOffers.length === 1 })
+        memberInfo.close()
         verify(!remoteChannel.remoteMode)
         compare(channel.controlRequests.length, 0)
         controllerView.show()
@@ -2362,6 +2452,10 @@ TestCase {
         verify(remoteChannel.openChat(channel.ownId, "127.0.0.1", channel.servicePort))
         tryCompare(remoteChannel, "chatReady", true)
         view.memberOptions({id: remoteChannel.ownId, name: remoteSession.userName}, channel.ownId)
+        const memberInfo = findChild(view, "requestInfoDialog")
+        tryCompare(memberInfo, "opened", true)
+        verify(waitForRendering(memberInfo.contentItem))
+        mouseClick(findChild(memberInfo, "memberActions"))
         const grant = findChild(view, "allowRemoteControl")
         verify(grant !== null)
         tryCompare(grant.menu, "opened", true)
@@ -2369,12 +2463,20 @@ TestCase {
         waitForRendering(grant)
         mouseClick(grant)
         tryVerify(function() { return remoteChannel.remoteOffers.length === 1 })
+        memberInfo.close()
         verify(remoteChannel.chooseRemoteOffer(channel.ownId))
         tryCompare(remoteChannel, "remoteAllowed", true)
         tryVerify(function() { return remoteChannel.remoteView.joined === true })
         compare(remoteChannel.joined, false)
         controllerView.show()
         tryCompare(controllerView, "activeHost", channel.ownId)
+        controllerView.memberOptions({id: "remote-inspect-member", name: "Robin"}, channel.ownId)
+        const remoteInfo = findChild(controllerView, "requestInfoDialog")
+        tryCompare(remoteInfo, "opened", true)
+        verify(!findChild(remoteInfo, "memberVolume").visible)
+        verify(!findChild(remoteInfo, "memberLanguageControls").visible)
+        verify(!findChild(remoteInfo, "memberActions").visible)
+        remoteInfo.close(); tryCompare(remoteInfo, "visible", false)
         tryVerify(function() {
             const owner = visualChild(controllerView.contentItem, "ownedChannel_" + channel.ownId)
             const joined = visualChild(controllerView.contentItem, "joinedChannel_" + channel.ownId)

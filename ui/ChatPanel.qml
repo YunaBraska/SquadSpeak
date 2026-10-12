@@ -10,6 +10,7 @@ Item {
     property bool animatedAvatars: true
     property double animationTime: 0
     property var memberLevel: function(id) { return 0 }
+    signal memberRequested(var member, bool contextual)
     property bool active: visible
     readonly property bool remote: network.remoteMode
     readonly property var current: remote ? network.remoteView : network
@@ -209,6 +210,8 @@ Item {
                         LayoutMirroring.childrenInherit: true
                         required property var message
                         readonly property bool systemMessage: !!message.event
+                        readonly property var member: systemMessage ? (root.current.chatBot || {}) : (root.current.chatMembers || []).find(function(m) { return m.id === message.sender })
+                            || ({id: message.sender, name: message.name, avatarId: message.avatarId || message.avatar})
                         readonly property var translationPreference: { root.language.revision; return root.language.member(message.sender) }
                         readonly property string translationKey: root.hostId + ":" + message.sequence
                         readonly property var translated: { root.language.revision; return root.language.result(translationKey) }
@@ -247,11 +250,20 @@ Item {
                                     systemMessage: messageRow.systemMessage
                                     online: systemMessage || !root.current.chatPresenceKnown || (root.current.chatOnlineIds || []).includes(messageRow.message.sender)
                                     avatar: messageRow.message.avatarId || messageRow.message.avatar || "mossling"; name: messageRow.message.name
-                                    readonly property var member: systemMessage ? (root.current.chatBot || {}) : (root.current.chatMembers || []).find(function(m) { return m.id === messageRow.message.sender }) || ({})
+                                    readonly property var member: messageRow.member
                                     identity: messageRow.message.sender; animationTime: root.animationTime
                                     available: member.available !== false; muted: !!member.muted; deafened: !!member.deafened; sleeping: !!member.sleeping
                                     level: root.memberLevel(identity)
                                     circular: true; animated: root.animatedAvatars
+                                    activeFocusOnTab: !systemMessage
+                                    Accessible.role: systemMessage ? Accessible.Graphic : Accessible.Button
+                                    Accessible.onPressAction: if (!systemMessage) root.memberRequested(member, false)
+                                    Keys.onReturnPressed: if (!systemMessage) root.memberRequested(member, false)
+                                    Keys.onSpacePressed: if (!systemMessage) root.memberRequested(member, false)
+                                    MouseArea {
+                                        anchors.fill: parent; enabled: !messageRow.systemMessage; acceptedButtons: Qt.LeftButton | Qt.RightButton
+                                        onClicked: mouse => root.memberRequested(messageRow.member, mouse.button === Qt.RightButton)
+                                    }
                                 }
                             }
                             ColumnLayout {
@@ -259,7 +271,13 @@ Item {
                                 spacing: 3
                                 RowLayout {
                                     Layout.fillWidth: true
-                                    Label { text: messageRow.message.name; textFormat: Text.PlainText; elide: Text.ElideRight; font.weight: Font.DemiBold; Layout.fillWidth: true; horizontalAlignment: messageRow.own ? Text.AlignRight : Text.AlignLeft }
+                                    Label {
+                                        text: messageRow.message.name; textFormat: Text.PlainText; elide: Text.ElideRight; font.weight: Font.DemiBold; Layout.fillWidth: true; horizontalAlignment: messageRow.own ? Text.AlignRight : Text.AlignLeft
+                                        MouseArea {
+                                            anchors.fill: parent; enabled: !messageRow.systemMessage; acceptedButtons: Qt.LeftButton | Qt.RightButton
+                                            onClicked: mouse => root.memberRequested(messageRow.member, mouse.button === Qt.RightButton)
+                                        }
+                                    }
                                     Label { text: Qt.formatDateTime(new Date(messageRow.message.created), "hh:mm"); color: Theme.muted; font.pixelSize: 11 }
                                 }
                                 ActionButton {
