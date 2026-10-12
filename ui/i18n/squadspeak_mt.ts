@@ -259,6 +259,10 @@
             <source>App audio only</source>
             <translation>Awdjo tal-app biss</translation>
         </message>
+        <message>
+            <source>Speech output is unavailable.</source>
+            <translation>L-output tal-vuċi mhuwiex disponibbli.</translation>
+        </message>
     </context>
     <context>
         <name>AudioRecording</name>
@@ -494,10 +498,6 @@
             <translation>Neħħi t-tast mill-bogħod</translation>
         </message>
         <message>
-            <source>Playback volume</source>
-            <translation>Volum tal-daqq</translation>
-        </message>
-        <message>
             <source>Not assigned</source>
             <translation>Mhux assenjat</translation>
         </message>
@@ -508,6 +508,18 @@
         <message>
             <source>Level audio automatically</source>
             <translation>Aġġusta l-livell tal-awdjo awtomatikament</translation>
+        </message>
+        <message>
+            <source>Voice volume</source>
+            <translation>Volum taċ-chat bil-vuċi</translation>
+        </message>
+        <message>
+            <source>App sounds</source>
+            <translation>Ħsejjes tal-app</translation>
+        </message>
+        <message>
+            <source>Read bot messages aloud</source>
+            <translation>Aqra l-messaġġi tal-bot b'leħen għoli</translation>
         </message>
     </context>
     <context>
@@ -1188,6 +1200,10 @@
             <source>This device</source>
             <translation>Dan l-apparat</translation>
         </message>
+        <message>
+            <source>Use default music volume</source>
+            <translation>Uża l-volum predefinit tal-mużika</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1299,6 +1315,22 @@
             <source>The sanitized image could not be written completely.</source>
             <translation>L.immaġni sanitizzata ma setgħetx tinkiteb kompletament.</translation>
         </message>
+        <message>
+            <source>%1 joined.</source>
+            <translation>%1 ingħaqad.</translation>
+        </message>
+        <message>
+            <source>%1 left.</source>
+            <translation>%1 telaq.</translation>
+        </message>
+        <message>
+            <source>%1 was kicked.</source>
+            <translation>%1 tkeċċa.</translation>
+        </message>
+        <message>
+            <source>%1 was banned from the channel.</source>
+            <translation>%1 ġie mblukkat mill-kanal.</translation>
+        </message>
     </context>
     <context>
         <name>ChatPanel</name>
@@ -1361,22 +1393,6 @@
         <message>
             <source>Loading...</source>
             <translation>Qed jitgħabba...</translation>
-        </message>
-        <message>
-            <source>%1 joined.</source>
-            <translation>%1 ingħaqad.</translation>
-        </message>
-        <message>
-            <source>%1 left.</source>
-            <translation>%1 telaq.</translation>
-        </message>
-        <message>
-            <source>%1 was kicked.</source>
-            <translation>%1 tkeċċa.</translation>
-        </message>
-        <message>
-            <source>%1 was banned from the channel.</source>
-            <translation>%1 ġie mblukkat mill-kanal.</translation>
         </message>
         <message>
             <source>Message could not be sent. Check the connection and text length.</source>
@@ -2877,7 +2893,6 @@
             <translation>Il-password ma setgħetx tiġi vverifikata.</translation>
         </message>
     </context>
-
     <context>
         <name>Headless</name>
         <message>
@@ -3230,6 +3245,53 @@
         <message>
             <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
             <translation>It-trej tas-sistema mhux disponibbli; l-app tibqa' miftuħa f'tieqa.</translation>
+        </message>
+    </context>
+    <context>
+        <name>LocalLanguage</name>
+        <message>
+            <source>Translation (experimental)</source>
+            <translation>Traduzzjoni (sperimentali)</translation>
+        </message>
+        <message>
+            <source>Spoken language</source>
+            <translation>Lingwa mitkellma</translation>
+        </message>
+        <message>
+            <source>Translate to</source>
+            <translation>Ittraduċi għal</translation>
+        </message>
+        <message>
+            <source>Translate messages</source>
+            <translation>Ittraduċi l-messaġġi</translation>
+        </message>
+        <message>
+            <source>Translated voice</source>
+            <translation>Vuċi tradotta</translation>
+        </message>
+        <message>
+            <source>Original audio</source>
+            <translation>Awdjo oriġinali</translation>
+        </message>
+        <message>
+            <source>Original text</source>
+            <translation>Test oriġinali</translation>
+        </message>
+        <message>
+            <source>Prepare languages</source>
+            <translation>Ipprepara l-lingwi</translation>
+        </message>
+        <message>
+            <source>Local language processing is unavailable.</source>
+            <translation>L-ipproċessar lokali tal-lingwa mhux disponibbli.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be read.</source>
+            <translation>Is-settings tal-lingwa ma setgħux jinqraw.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be saved.</source>
+            <translation>Is-settings tal-lingwa ma setgħux jiġu ssejvjati.</translation>
         </message>
     </context>
 </TS>

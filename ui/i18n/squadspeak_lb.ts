@@ -259,6 +259,10 @@
             <source>App audio only</source>
             <translation>Nëmmen den Toun vun der App</translation>
         </message>
+        <message>
+            <source>Speech output is unavailable.</source>
+            <translation>D'Sproochausgab ass net disponibel.</translation>
+        </message>
     </context>
     <context>
         <name>AudioRecording</name>
@@ -494,10 +498,6 @@
             <translation>Kloer Remote Push-to-Talk Tastatur Ofkiirzung</translation>
         </message>
         <message>
-            <source>Playback volume</source>
-            <translation>Playback Volume</translation>
-        </message>
-        <message>
             <source>Not assigned</source>
             <translation>Net zougewisen</translation>
         </message>
@@ -508,6 +508,18 @@
         <message>
             <source>Level audio automatically</source>
             <translation>Niveau Audio automatesch</translation>
+        </message>
+        <message>
+            <source>Voice volume</source>
+            <translation>Lautstäerkt vum Sproochchat</translation>
+        </message>
+        <message>
+            <source>App sounds</source>
+            <translation>App-Téin</translation>
+        </message>
+        <message>
+            <source>Read bot messages aloud</source>
+            <translation>Bot-Noriichte virliesen</translation>
         </message>
     </context>
     <context>
@@ -1188,6 +1200,10 @@
             <source>This device</source>
             <translation>Dësen Apparat</translation>
         </message>
+        <message>
+            <source>Use default music volume</source>
+            <translation>Standardlautstäerkt fir Musek benotzen</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1299,6 +1315,22 @@
             <source>The sanitized image could not be written completely.</source>
             <translation>Dat gereinegt Bild konnt net komplett geschriwwe ginn.</translation>
         </message>
+        <message>
+            <source>%1 joined.</source>
+            <translation>%1 ass dobäi.</translation>
+        </message>
+        <message>
+            <source>%1 left.</source>
+            <translation>%1 ass gaangen.</translation>
+        </message>
+        <message>
+            <source>%1 was kicked.</source>
+            <translation>%1 gouf erausgehäit.</translation>
+        </message>
+        <message>
+            <source>%1 was banned from the channel.</source>
+            <translation>%1 gouf vum Kanal verbannt.</translation>
+        </message>
     </context>
     <context>
         <name>ChatPanel</name>
@@ -1361,22 +1393,6 @@
         <message>
             <source>Loading...</source>
             <translation>Lueden...</translation>
-        </message>
-        <message>
-            <source>%1 joined.</source>
-            <translation>%1 ass dobäi.</translation>
-        </message>
-        <message>
-            <source>%1 left.</source>
-            <translation>%1 ass gaangen.</translation>
-        </message>
-        <message>
-            <source>%1 was kicked.</source>
-            <translation>%1 gouf erausgehäit.</translation>
-        </message>
-        <message>
-            <source>%1 was banned from the channel.</source>
-            <translation>%1 gouf vum Kanal verbannt.</translation>
         </message>
         <message>
             <source>Message could not be sent. Check the connection and text length.</source>
@@ -2877,7 +2893,6 @@
             <translation>D'Passwuert konnt net iwwerpréift ginn.</translation>
         </message>
     </context>
-
     <context>
         <name>Headless</name>
         <message>
@@ -3230,6 +3245,53 @@
         <message>
             <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
             <translation>D'Systemberäich ass net disponibel; d'App bleift als Fënster op.</translation>
+        </message>
+    </context>
+    <context>
+        <name>LocalLanguage</name>
+        <message>
+            <source>Translation (experimental)</source>
+            <translation>Iwwersetzung (experimentell)</translation>
+        </message>
+        <message>
+            <source>Spoken language</source>
+            <translation>Geschwate Sprooch</translation>
+        </message>
+        <message>
+            <source>Translate to</source>
+            <translation>Iwwersetzen op</translation>
+        </message>
+        <message>
+            <source>Translate messages</source>
+            <translation>Noriichten iwwersetzen</translation>
+        </message>
+        <message>
+            <source>Translated voice</source>
+            <translation>Iwwersate Stëmm</translation>
+        </message>
+        <message>
+            <source>Original audio</source>
+            <translation>Originaltoun</translation>
+        </message>
+        <message>
+            <source>Original text</source>
+            <translation>Originaltext</translation>
+        </message>
+        <message>
+            <source>Prepare languages</source>
+            <translation>Sprooche virbereeden</translation>
+        </message>
+        <message>
+            <source>Local language processing is unavailable.</source>
+            <translation>Lokal Sproochveraarbechtung ass net verfügbar.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be read.</source>
+            <translation>Sproochastellunge konnten net gelies ginn.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be saved.</source>
+            <translation>Sproochastellunge konnten net gespäichert ginn.</translation>
         </message>
     </context>
 </TS>

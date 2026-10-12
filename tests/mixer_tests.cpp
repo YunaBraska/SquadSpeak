@@ -20,6 +20,34 @@ double rms(const std::vector<float>& signal) {
 class MixerTests final : public QObject {
     Q_OBJECT
 private slots:
+    void peerReplacementUsesNormalMixingAndNeverChangesOtherPeers() {
+        squad::VoiceMixer encoder, original, translated;
+        original.setAutomatic(false); translated.setAutomatic(false);
+        const auto packet = encoder.encode(tone(0.1), 48000).first();
+        for (auto* mixer : {&original, &translated}) {
+            QVERIFY(mixer->receive("alice", packet, 0));
+            QVERIFY(mixer->receive("bob", packet, 0));
+            mixer->setGain("alice", 0.5); mixer->setGain("bob", 0.25);
+        }
+        std::vector<float> bob;
+        auto normal = original.render(48000, 0, [&](const QString& id, std::span<float> frame, qint64) {
+            if (id == "bob") bob.assign(frame.begin(), frame.end());
+        });
+        auto replaced = translated.render(48000, 0, [&](const QString& id, std::span<float> frame, qint64) {
+            if (id == "alice") std::fill(frame.begin(), frame.end(), 0.1f);
+        });
+        for (size_t i = 0; i < replaced.size(); ++i) QVERIFY(std::abs(replaced[i] - (0.05f + bob[i] * 0.25f)) < 0.00001);
+        QVERIFY(normal != replaced);
+        auto tail = translated.render(48000, 20, [](const QString& id, std::span<float> frame, qint64) {
+            if (id == "alice") std::fill(frame.begin(), frame.end(), 0.2f);
+        });
+        for (auto sample : tail) QVERIFY(std::abs(sample - 0.1f) < 0.00001);
+        translated.remove("alice");
+        auto departed = translated.render(48000, 40, [](const QString& id, std::span<float> frame, qint64) {
+            if (id == "alice") std::fill(frame.begin(), frame.end(), 0.2f);
+        });
+        QCOMPARE(rms(departed), 0.0);
+    }
     void avatarActivityFollowsAdmittedAndPlayedAudioWithoutChangingPackets() {
         squad::VoiceMixer source, reference, receiver;
         const auto signal = tone(0.2);

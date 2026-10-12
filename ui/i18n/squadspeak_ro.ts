@@ -259,6 +259,10 @@
             <source>App audio only</source>
             <translation>Doar sunetul aplicației</translation>
         </message>
+        <message>
+            <source>Speech output is unavailable.</source>
+            <translation>Ieșirea vocală nu este disponibilă.</translation>
+        </message>
     </context>
     <context>
         <name>AudioRecording</name>
@@ -494,10 +498,6 @@
             <translation>Ștergeți comanda rapidă PTT la distanță</translation>
         </message>
         <message>
-            <source>Playback volume</source>
-            <translation>Volumul redării</translation>
-        </message>
-        <message>
             <source>Not assigned</source>
             <translation>Nu este atribuit</translation>
         </message>
@@ -508,6 +508,18 @@
         <message>
             <source>Level audio automatically</source>
             <translation>Nivelați automat audio</translation>
+        </message>
+        <message>
+            <source>Voice volume</source>
+            <translation>Volumul chatului vocal</translation>
+        </message>
+        <message>
+            <source>App sounds</source>
+            <translation>Sunetele aplicației</translation>
+        </message>
+        <message>
+            <source>Read bot messages aloud</source>
+            <translation>Citește mesajele botului cu voce tare</translation>
         </message>
     </context>
     <context>
@@ -1188,6 +1200,10 @@
             <source>This device</source>
             <translation>Acest dispozitiv</translation>
         </message>
+        <message>
+            <source>Use default music volume</source>
+            <translation>Folosește volumul implicit al muzicii</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1299,6 +1315,22 @@
             <source>The sanitized image could not be written completely.</source>
             <translation>Imaginea curățată nu a putut fi scrisă complet.</translation>
         </message>
+        <message>
+            <source>%1 joined.</source>
+            <translation>%1 s-a alăturat.</translation>
+        </message>
+        <message>
+            <source>%1 left.</source>
+            <translation>%1 a plecat.</translation>
+        </message>
+        <message>
+            <source>%1 was kicked.</source>
+            <translation>%1 a fost dat afară.</translation>
+        </message>
+        <message>
+            <source>%1 was banned from the channel.</source>
+            <translation>%1 a fost interzis de pe canal.</translation>
+        </message>
     </context>
     <context>
         <name>ChatPanel</name>
@@ -1361,22 +1393,6 @@
         <message>
             <source>Loading...</source>
             <translation>Se încarcă...</translation>
-        </message>
-        <message>
-            <source>%1 joined.</source>
-            <translation>%1 s-a alăturat.</translation>
-        </message>
-        <message>
-            <source>%1 left.</source>
-            <translation>%1 a plecat.</translation>
-        </message>
-        <message>
-            <source>%1 was kicked.</source>
-            <translation>%1 a fost dat afară.</translation>
-        </message>
-        <message>
-            <source>%1 was banned from the channel.</source>
-            <translation>%1 a fost interzis de pe canal.</translation>
         </message>
         <message>
             <source>Message could not be sent. Check the connection and text length.</source>
@@ -2877,7 +2893,6 @@
             <translation>Parola nu a putut fi verificată.</translation>
         </message>
     </context>
-
     <context>
         <name>Headless</name>
         <message>
@@ -3230,6 +3245,53 @@
         <message>
             <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
             <translation>Zona de notificare nu este disponibilă; aplicația rămâne deschisă într-o fereastră.</translation>
+        </message>
+    </context>
+    <context>
+        <name>LocalLanguage</name>
+        <message>
+            <source>Translation (experimental)</source>
+            <translation>Traducere (experimentală)</translation>
+        </message>
+        <message>
+            <source>Spoken language</source>
+            <translation>Limba vorbită</translation>
+        </message>
+        <message>
+            <source>Translate to</source>
+            <translation>Tradu în</translation>
+        </message>
+        <message>
+            <source>Translate messages</source>
+            <translation>Tradu mesajele</translation>
+        </message>
+        <message>
+            <source>Translated voice</source>
+            <translation>Voce tradusă</translation>
+        </message>
+        <message>
+            <source>Original audio</source>
+            <translation>Audio original</translation>
+        </message>
+        <message>
+            <source>Original text</source>
+            <translation>Text original</translation>
+        </message>
+        <message>
+            <source>Prepare languages</source>
+            <translation>Pregătește limbile</translation>
+        </message>
+        <message>
+            <source>Local language processing is unavailable.</source>
+            <translation>Procesarea locală a limbii nu este disponibilă.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be read.</source>
+            <translation>Setările de limbă nu au putut fi citite.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be saved.</source>
+            <translation>Setările de limbă nu au putut fi salvate.</translation>
         </message>
     </context>
 </TS>

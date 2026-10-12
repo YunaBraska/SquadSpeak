@@ -259,6 +259,10 @@
             <source>App audio only</source>
             <translation>アプリ音声のみ</translation>
         </message>
+        <message>
+            <source>Speech output is unavailable.</source>
+            <translation>音声読み上げを利用できません。</translation>
+        </message>
     </context>
     <context>
         <name>AudioRecording</name>
@@ -494,10 +498,6 @@
             <translation>リモートキーを消去</translation>
         </message>
         <message>
-            <source>Playback volume</source>
-            <translation>再生音量</translation>
-        </message>
-        <message>
             <source>Not assigned</source>
             <translation>未割り当て</translation>
         </message>
@@ -508,6 +508,18 @@
         <message>
             <source>Level audio automatically</source>
             <translation>オーディオレベルを自動調整</translation>
+        </message>
+        <message>
+            <source>Voice volume</source>
+            <translation>ボイスチャットの音量</translation>
+        </message>
+        <message>
+            <source>App sounds</source>
+            <translation>アプリの効果音</translation>
+        </message>
+        <message>
+            <source>Read bot messages aloud</source>
+            <translation>ボットのメッセージを読み上げる</translation>
         </message>
     </context>
     <context>
@@ -1188,6 +1200,10 @@
             <source>This device</source>
             <translation>このデバイス</translation>
         </message>
+        <message>
+            <source>Use default music volume</source>
+            <translation>音楽の既定音量を使用</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1299,6 +1315,22 @@
             <source>The sanitized image could not be written completely.</source>
             <translation>サニタイズ済み画像を完全に書き込めませんでした.</translation>
         </message>
+        <message>
+            <source>%1 joined.</source>
+            <translation>%1が参加しました.</translation>
+        </message>
+        <message>
+            <source>%1 left.</source>
+            <translation>%1が退出しました.</translation>
+        </message>
+        <message>
+            <source>%1 was kicked.</source>
+            <translation>%1が退出させられました.</translation>
+        </message>
+        <message>
+            <source>%1 was banned from the channel.</source>
+            <translation>%1がチャンネルからバンされました.</translation>
+        </message>
     </context>
     <context>
         <name>ChatPanel</name>
@@ -1361,22 +1393,6 @@
         <message>
             <source>Loading...</source>
             <translation>読み込み中...</translation>
-        </message>
-        <message>
-            <source>%1 joined.</source>
-            <translation>%1が参加しました.</translation>
-        </message>
-        <message>
-            <source>%1 left.</source>
-            <translation>%1が退出しました.</translation>
-        </message>
-        <message>
-            <source>%1 was kicked.</source>
-            <translation>%1が退出させられました.</translation>
-        </message>
-        <message>
-            <source>%1 was banned from the channel.</source>
-            <translation>%1がチャンネルからバンされました.</translation>
         </message>
         <message>
             <source>Message could not be sent. Check the connection and text length.</source>
@@ -2877,7 +2893,6 @@
             <translation>パスワードを検証できませんでした.</translation>
         </message>
     </context>
-
     <context>
         <name>Headless</name>
         <message>
@@ -3230,6 +3245,53 @@
         <message>
             <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
             <translation>システムトレイを利用できません; アプリはウィンドウで開いたままになります.</translation>
+        </message>
+    </context>
+    <context>
+        <name>LocalLanguage</name>
+        <message>
+            <source>Translation (experimental)</source>
+            <translation>翻訳（実験的）</translation>
+        </message>
+        <message>
+            <source>Spoken language</source>
+            <translation>話す言語</translation>
+        </message>
+        <message>
+            <source>Translate to</source>
+            <translation>翻訳先</translation>
+        </message>
+        <message>
+            <source>Translate messages</source>
+            <translation>メッセージを翻訳</translation>
+        </message>
+        <message>
+            <source>Translated voice</source>
+            <translation>翻訳音声</translation>
+        </message>
+        <message>
+            <source>Original audio</source>
+            <translation>元の音声</translation>
+        </message>
+        <message>
+            <source>Original text</source>
+            <translation>原文</translation>
+        </message>
+        <message>
+            <source>Prepare languages</source>
+            <translation>言語を準備</translation>
+        </message>
+        <message>
+            <source>Local language processing is unavailable.</source>
+            <translation>ローカルの言語処理は利用できません。</translation>
+        </message>
+        <message>
+            <source>Language settings could not be read.</source>
+            <translation>言語設定を読み込めませんでした。</translation>
+        </message>
+        <message>
+            <source>Language settings could not be saved.</source>
+            <translation>言語設定を保存できませんでした。</translation>
         </message>
     </context>
 </TS>

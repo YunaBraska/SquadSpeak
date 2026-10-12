@@ -246,6 +246,7 @@ signals:
     void chatChanged();
     void chatSent(const QString& text, const QString& hostId);
     void chatNotification(const QString& hostId, const QVariantMap& message);
+    void botNotification(const QVariantMap& message);
     void imagesChanged();
     void channelEvent(const QString& kind);
 private:

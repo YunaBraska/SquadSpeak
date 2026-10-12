@@ -259,6 +259,10 @@
             <source>App audio only</source>
             <translation>Vain sovelluksen ääni</translation>
         </message>
+        <message>
+            <source>Speech output is unavailable.</source>
+            <translation>Puhetoisto ei ole käytettävissä.</translation>
+        </message>
     </context>
     <context>
         <name>AudioRecording</name>
@@ -494,10 +498,6 @@
             <translation>Poista etäkäytön pikanäppäin</translation>
         </message>
         <message>
-            <source>Playback volume</source>
-            <translation>Toistotaso</translation>
-        </message>
-        <message>
             <source>Not assigned</source>
             <translation>Ei määritetty</translation>
         </message>
@@ -508,6 +508,18 @@
         <message>
             <source>Level audio automatically</source>
             <translation>Säädä äänenvoimakkuus automaattisesti</translation>
+        </message>
+        <message>
+            <source>Voice volume</source>
+            <translation>Puhechatin äänenvoimakkuus</translation>
+        </message>
+        <message>
+            <source>App sounds</source>
+            <translation>Sovelluksen äänet</translation>
+        </message>
+        <message>
+            <source>Read bot messages aloud</source>
+            <translation>Lue botin viestit ääneen</translation>
         </message>
     </context>
     <context>
@@ -1188,6 +1200,10 @@
             <source>This device</source>
             <translation>Tämä laite</translation>
         </message>
+        <message>
+            <source>Use default music volume</source>
+            <translation>Käytä musiikin oletusäänenvoimakkuutta</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1299,6 +1315,22 @@
             <source>The sanitized image could not be written completely.</source>
             <translation>Puhdistettua kuvaa ei voitu kirjoittaa kokonaan.</translation>
         </message>
+        <message>
+            <source>%1 joined.</source>
+            <translation>%1 liittyi.</translation>
+        </message>
+        <message>
+            <source>%1 left.</source>
+            <translation>%1 poistui.</translation>
+        </message>
+        <message>
+            <source>%1 was kicked.</source>
+            <translation>%1 potkittiin ulos.</translation>
+        </message>
+        <message>
+            <source>%1 was banned from the channel.</source>
+            <translation>%1 estettiin kanavalta.</translation>
+        </message>
     </context>
     <context>
         <name>ChatPanel</name>
@@ -1361,22 +1393,6 @@
         <message>
             <source>Loading...</source>
             <translation>Ladataan...</translation>
-        </message>
-        <message>
-            <source>%1 joined.</source>
-            <translation>%1 liittyi.</translation>
-        </message>
-        <message>
-            <source>%1 left.</source>
-            <translation>%1 poistui.</translation>
-        </message>
-        <message>
-            <source>%1 was kicked.</source>
-            <translation>%1 potkittiin ulos.</translation>
-        </message>
-        <message>
-            <source>%1 was banned from the channel.</source>
-            <translation>%1 estettiin kanavalta.</translation>
         </message>
         <message>
             <source>Message could not be sent. Check the connection and text length.</source>
@@ -2877,7 +2893,6 @@
             <translation>Salasanaa ei voitu vahvistaa.</translation>
         </message>
     </context>
-
     <context>
         <name>Headless</name>
         <message>
@@ -3230,6 +3245,53 @@
         <message>
             <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
             <translation>Ilmoitusalue ei ole käytettävissä; sovellus pysyy avoinna ikkunassa.</translation>
+        </message>
+    </context>
+    <context>
+        <name>LocalLanguage</name>
+        <message>
+            <source>Translation (experimental)</source>
+            <translation>Käännös (kokeellinen)</translation>
+        </message>
+        <message>
+            <source>Spoken language</source>
+            <translation>Puhuttu kieli</translation>
+        </message>
+        <message>
+            <source>Translate to</source>
+            <translation>Käännä kielelle</translation>
+        </message>
+        <message>
+            <source>Translate messages</source>
+            <translation>Käännä viestit</translation>
+        </message>
+        <message>
+            <source>Translated voice</source>
+            <translation>Käännetty puhe</translation>
+        </message>
+        <message>
+            <source>Original audio</source>
+            <translation>Alkuperäinen ääni</translation>
+        </message>
+        <message>
+            <source>Original text</source>
+            <translation>Alkuperäinen teksti</translation>
+        </message>
+        <message>
+            <source>Prepare languages</source>
+            <translation>Valmistele kielet</translation>
+        </message>
+        <message>
+            <source>Local language processing is unavailable.</source>
+            <translation>Paikallinen kielten käsittely ei ole käytettävissä.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be read.</source>
+            <translation>Kieliasetuksia ei voitu lukea.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be saved.</source>
+            <translation>Kieliasetuksia ei voitu tallentaa.</translation>
         </message>
     </context>
 </TS>

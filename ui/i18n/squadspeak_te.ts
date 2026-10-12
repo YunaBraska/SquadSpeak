@@ -259,6 +259,10 @@
             <source>App audio only</source>
             <translation>యాప్ ఆడియో మాత్రమే</translation>
         </message>
+        <message>
+            <source>Speech output is unavailable.</source>
+            <translation>వాక్కు అవుట్‌పుట్ అందుబాటులో లేదు.</translation>
+        </message>
     </context>
     <context>
         <name>AudioRecording</name>
@@ -494,10 +498,6 @@
             <translation>రిమోట్ షార్ట్‌కట్‌ను క్లియర్ చేయండి</translation>
         </message>
         <message>
-            <source>Playback volume</source>
-            <translation>ప్లేబ్యాక్ వాల్యూమ్</translation>
-        </message>
-        <message>
             <source>Not assigned</source>
             <translation>నిర్వచించబడలేదు</translation>
         </message>
@@ -508,6 +508,18 @@
         <message>
             <source>Level audio automatically</source>
             <translation>ఆడియో స్థాయిని స్వయంచాలకంగా సర్దుబాటు చేయండి</translation>
+        </message>
+        <message>
+            <source>Voice volume</source>
+            <translation>వాయిస్ చాట్ ధ్వని స్థాయి</translation>
+        </message>
+        <message>
+            <source>App sounds</source>
+            <translation>యాప్ శబ్దాలు</translation>
+        </message>
+        <message>
+            <source>Read bot messages aloud</source>
+            <translation>బాట్ సందేశాలను చదివి వినిపించు</translation>
         </message>
     </context>
     <context>
@@ -1188,6 +1200,10 @@
             <source>This device</source>
             <translation>ఈ పరికరం</translation>
         </message>
+        <message>
+            <source>Use default music volume</source>
+            <translation>సంగీతం కోసం డిఫాల్ట్ వాల్యూమ్ వాడు</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1299,6 +1315,22 @@
             <source>The sanitized image could not be written completely.</source>
             <translation>శుభ్రపరచిన చిత్రాన్ని పూర్తిగా వ్రాయలేకపోయాం.</translation>
         </message>
+        <message>
+            <source>%1 joined.</source>
+            <translation>%1 చేరారు.</translation>
+        </message>
+        <message>
+            <source>%1 left.</source>
+            <translation>%1 వెళ్లిపోయారు.</translation>
+        </message>
+        <message>
+            <source>%1 was kicked.</source>
+            <translation>%1 వెళ్లగొట్టబడ్డారు.</translation>
+        </message>
+        <message>
+            <source>%1 was banned from the channel.</source>
+            <translation>%1 ఛానెల్ నుంచి నిషేధించబడ్డారు.</translation>
+        </message>
     </context>
     <context>
         <name>ChatPanel</name>
@@ -1361,22 +1393,6 @@
         <message>
             <source>Loading...</source>
             <translation>లోడ్ చేస్తోంది...</translation>
-        </message>
-        <message>
-            <source>%1 joined.</source>
-            <translation>%1 చేరారు.</translation>
-        </message>
-        <message>
-            <source>%1 left.</source>
-            <translation>%1 వెళ్లిపోయారు.</translation>
-        </message>
-        <message>
-            <source>%1 was kicked.</source>
-            <translation>%1 వెళ్లగొట్టబడ్డారు.</translation>
-        </message>
-        <message>
-            <source>%1 was banned from the channel.</source>
-            <translation>%1 ఛానెల్ నుంచి నిషేధించబడ్డారు.</translation>
         </message>
         <message>
             <source>Message could not be sent. Check the connection and text length.</source>
@@ -2877,7 +2893,6 @@
             <translation>పాస్వర్డ్ను ధృవీకరించలేకపోయాం.</translation>
         </message>
     </context>
-
     <context>
         <name>Headless</name>
         <message>
@@ -3230,6 +3245,53 @@
         <message>
             <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
             <translation>సిస్టమ్ ట్రే అందుబాటులో లేదు; యాప్ విండోలో తెరిచి ఉంటుంది.</translation>
+        </message>
+    </context>
+    <context>
+        <name>LocalLanguage</name>
+        <message>
+            <source>Translation (experimental)</source>
+            <translation>అనువాదం (ప్రయోగాత్మకం)</translation>
+        </message>
+        <message>
+            <source>Spoken language</source>
+            <translation>మాట్లాడే భాష</translation>
+        </message>
+        <message>
+            <source>Translate to</source>
+            <translation>ఈ భాషలోకి అనువదించు</translation>
+        </message>
+        <message>
+            <source>Translate messages</source>
+            <translation>సందేశాలను అనువదించు</translation>
+        </message>
+        <message>
+            <source>Translated voice</source>
+            <translation>అనువదించిన స్వరం</translation>
+        </message>
+        <message>
+            <source>Original audio</source>
+            <translation>అసలు ఆడియో</translation>
+        </message>
+        <message>
+            <source>Original text</source>
+            <translation>అసలు వచనం</translation>
+        </message>
+        <message>
+            <source>Prepare languages</source>
+            <translation>భాషలను సిద్ధం చేయి</translation>
+        </message>
+        <message>
+            <source>Local language processing is unavailable.</source>
+            <translation>స్థానిక భాషా ప్రాసెసింగ్ అందుబాటులో లేదు.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be read.</source>
+            <translation>భాష సెట్టింగ్‌లను చదవలేకపోయింది.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be saved.</source>
+            <translation>భాష సెట్టింగ్‌లను సేవ్ చేయలేకపోయింది.</translation>
         </message>
     </context>
 </TS>

@@ -1,6 +1,7 @@
 #include "audio_processor.hpp"
 #include "audio_profiles.hpp"
 #include "echo_canceller.hpp"
+#include "speech_output.hpp"
 
 #include <QtTest>
 #include <QtEndian>
@@ -14,6 +15,113 @@
 class AudioTests final : public QObject {
     Q_OBJECT
 private slots:
+    void speechProducesLocalPcmAndStopsWithoutLatePlayback_data() {
+        QTest::addColumn<int>("rate");
+        QTest::newRow("48k") << 48000;
+        QTest::newRow("44k") << 44100;
+    }
+    void speechProducesLocalPcmAndStopsWithoutLatePlayback() {
+        QFETCH(int, rate);
+        SpeechOutput speech;
+        QVERIFY(!speech.active());
+        QVERIFY(!speech.start("", 48000));
+        QVERIFY(!speech.start(QString(401, 'a'), 48000));
+        QVERIFY(!speech.start("Hello", 0));
+        std::array<float, 960> samples{};
+        QVERIFY(!speech.mix(samples, 1));
+        if (!SpeechOutput::supported) {
+            QVERIFY(!speech.start("Hello", 48000));
+            return;
+        }
+        QVERIFY(speech.start("Hello", rate));
+        double energy = 0;
+        QTRY_VERIFY_WITH_TIMEOUT(([&] {
+            samples.fill(0);
+            speech.mix(samples, 0.5);
+            for (const auto value : samples) { if (!std::isfinite(value)) return false; energy += value * value; }
+            return energy > 0.001;
+        })(), 15000);
+        QTRY_VERIFY_WITH_TIMEOUT(([&] {
+            samples.fill(0); speech.mix(samples, 0.5);
+            return !speech.active();
+        })(), 15000);
+        QVERIFY(!speech.failed());
+        QVERIFY(!speech.mix(samples, std::numeric_limits<double>::quiet_NaN()));
+        QVERIFY(speech.start("New message", 44100));
+        speech.stop();
+        speech.stop();
+        QVERIFY(!speech.active());
+        samples.fill(0);
+        QVERIFY(!speech.mix(samples, 1));
+        for (float value : samples) QCOMPARE(value, 0);
+        // A callback may outlive cancellation and the owner. Destruction must
+        // invalidate it without requiring a Qt event loop or a playback device.
+        { SpeechOutput transient; QVERIFY(transient.start("Cancelled message", 48000)); }
+    }
+
+    void legacyMasterLevelsMigrateOnceToIndependentOutputGains() {
+        QTemporaryDir directory;
+        const auto path = directory.filePath("audio.ini");
+        {
+            QSettings legacy(path, QSettings::IniFormat);
+            legacy.setValue("output/61/volume", 0.4);
+            legacy.setValue("output/61/musicVolume", 0.8);
+        }
+        {
+            squad::AudioProfiles profiles(path);
+            QCOMPARE(profiles.output("a"), 0.4);
+            QVERIFY(std::abs(profiles.musicVolume("a") - 0.32) < 1e-12);
+            QCOMPARE(profiles.notificationVolume("a"), 0.4);
+            profiles.saveOutput("a", 0).saveNotificationVolume("a", 0.6);
+        }
+        squad::AudioProfiles restored(path);
+        QCOMPARE(restored.output("a"), 0.0);
+        QVERIFY(std::abs(restored.musicVolume("a") - 0.32) < 1e-12);
+        QCOMPARE(restored.notificationVolume("a"), 0.6);
+        restored.saveMusicVolume("a", 0.9);
+        QCOMPARE(restored.notificationVolume("a"), 0.6);
+        QCOMPARE(restored.output("a"), 0.0);
+    }
+    void musicOverridesPersistPerSourceAndOutputDevice() {
+        QTemporaryDir directory;
+        const auto path = directory.filePath("audio.ini");
+        {
+            squad::AudioProfiles profiles(path);
+            profiles.saveMusicVolume("speakers", 0.3).saveMusicVolume("headphones", 0.7);
+            QCOMPARE(profiles.musicVolume("speakers", "one"), 0.3);
+            profiles.saveChannelMusicVolume("speakers", "one", 0)
+                .saveChannelMusicVolume("speakers", "two", 0.3)
+                .saveChannelMusicVolume("headphones", "one", 0.5);
+        }
+        squad::AudioProfiles restored(path);
+        QCOMPARE(restored.musicVolume("speakers"), 0.3);
+        QCOMPARE(restored.musicVolume("speakers", "one"), 0);
+        QCOMPARE(restored.musicVolume("headphones", "one"), 0.5);
+        QCOMPARE(restored.musicVolume("headphones", "two"), 0.7);
+        restored.saveMusicVolume("speakers", 0.8);
+        QCOMPARE(restored.musicVolume("speakers", "one"), 0);
+        QCOMPARE(restored.musicVolume("speakers", "two"), 0.3);
+        QCOMPARE(restored.musicVolume("speakers", "new"), 0.8);
+        restored.saveChannelMusicVolume("speakers", "one", std::nullopt)
+            .saveChannelMusicVolume("speakers", "one", std::nullopt);
+        QCOMPARE(restored.musicVolume("speakers", "one"), 0.8);
+        QCOMPARE(restored.musicVolume("headphones", "one"), 0.5);
+        for (const auto value : {-0.1, 1.1, std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::infinity()})
+            QVERIFY_THROWS_EXCEPTION(std::invalid_argument, restored.saveChannelMusicVolume("speakers", "two", value));
+        QVERIFY_THROWS_EXCEPTION(std::invalid_argument, restored.saveChannelMusicVolume({}, "two", 0.5));
+        QVERIFY_THROWS_EXCEPTION(std::invalid_argument, restored.saveChannelMusicVolume("speakers", {}, std::nullopt));
+        QCOMPARE(restored.musicVolume("speakers", "two"), 0.3);
+        QSettings raw(path, QSettings::IniFormat);
+        const auto key = "output/" + QByteArray("speakers").toHex() + "/music/" + QByteArray("two").toHex();
+        raw.setValue(key, "broken"); raw.sync();
+        QVERIFY_THROWS_EXCEPTION(std::runtime_error, restored.musicVolume("speakers", "two"));
+        restored.saveChannelMusicVolume("speakers", "two", std::nullopt);
+        QCOMPARE(restored.musicVolume("speakers", "two"), 0.8);
+        squad::AudioProfiles reopened(path);
+        QCOMPARE(reopened.musicVolume("speakers", "one"), 0.8);
+        QCOMPARE(reopened.musicVolume("speakers", "two"), 0.8);
+    }
+
     void eventSoundAssetsAreDistinctBoundedPcm() {
         QSet<QByteArray> hashes;
         for (const auto* name : {"join", "leave", "kick", "ban", "message", "announcement"}) {
@@ -583,6 +691,8 @@ private slots:
             profiles.saveInput("airpods", {-2, 150, 6000});
             profiles.saveOutput("airpods", 0.3);
             profiles.saveOutput("speakers", 0.8);
+            profiles.saveNotificationVolume("airpods", 0.2).saveReadBotMessages("airpods", true);
+            profiles.saveNotificationVolume("speakers", 0);
             profiles.select(true, {}).select(false, "airpods");
         }
         squad::AudioProfiles restored(filename);
@@ -592,6 +702,12 @@ private slots:
         QCOMPARE(restored.output("speakers"), 0.8);
         QVERIFY((restored.input("unknown") == squad::InputProfile{0, 0, 0, true, true}));
         QCOMPARE(restored.output("unknown"), 0.5);
+        QCOMPARE(restored.notificationVolume("unknown"), 0.5);
+        QVERIFY(!restored.readBotMessages("unknown"));
+        QCOMPARE(restored.notificationVolume("airpods"), 0.2);
+        QVERIFY(restored.readBotMessages("airpods"));
+        QCOMPARE(restored.notificationVolume("speakers"), 0.0);
+        QVERIFY(!restored.readBotMessages("speakers"));
         QCOMPARE(restored.selection(true), QByteArray{});
         QCOMPARE(restored.selection(false), QByteArray("airpods"));
         restored.saveOutput("airpods", 0.1);
@@ -604,6 +720,9 @@ private slots:
         QVERIFY_THROWS_EXCEPTION(std::invalid_argument, profiles.saveInput({}, {}));
         QVERIFY_THROWS_EXCEPTION(std::invalid_argument, profiles.saveInput("a", {0, 200, 100}));
         QVERIFY_THROWS_EXCEPTION(std::invalid_argument, profiles.saveOutput("a", 2));
+        for (double value : {-0.1, 1.1, std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::infinity()})
+            QVERIFY_THROWS_EXCEPTION(std::invalid_argument, profiles.saveNotificationVolume("a", value));
+        QVERIFY_THROWS_EXCEPTION(std::invalid_argument, profiles.saveReadBotMessages({}, true));
         QVERIFY_THROWS_EXCEPTION(std::invalid_argument, profiles.saveNoiseSuppression("a", -0.1));
         QVERIFY_THROWS_EXCEPTION(std::invalid_argument, profiles.saveNoiseSuppression("a", 1.1));
         QVERIFY_THROWS_EXCEPTION(std::invalid_argument, profiles.saveNoiseSuppression("a", std::numeric_limits<double>::infinity()));
@@ -611,6 +730,21 @@ private slots:
             squad::AudioProfiles unwritable(directory.path());
             unwritable.saveOutput("a", 0.5);
         })());
+    }
+
+    void corruptedNotificationSettingsAreRejected() {
+        QTemporaryDir directory;
+        const auto path = directory.filePath("audio.ini");
+        QSettings settings(path, QSettings::IniFormat);
+        settings.setValue("output/independentVolumes", true);
+        for (const auto& value : {QVariant("invalid"), QVariant(-1), QVariant(2)}) {
+            settings.setValue("output/61/notificationVolume", value); settings.sync();
+            QVERIFY_THROWS_EXCEPTION(std::runtime_error, squad::AudioProfiles(path).notificationVolume("a"));
+        }
+        settings.setValue("output/61/readBotMessages", "sometimes"); settings.sync();
+        QVERIFY_THROWS_EXCEPTION(std::runtime_error, squad::AudioProfiles(path).readBotMessages("a"));
+        settings.setValue("output/independentVolumes", "sometimes"); settings.sync();
+        QVERIFY_THROWS_EXCEPTION(std::runtime_error, squad::AudioProfiles{path});
     }
 
     void inputAutomationPersistsPerDeviceAndPreservesLegacyManualSettings() {
@@ -681,6 +815,7 @@ private slots:
         {
             QSettings settings(file, QSettings::IniFormat);
             settings.setValue("input/61/gainDb", "not-a-number");
+            settings.setValue("output/independentVolumes", true);
             settings.setValue("output/61/volume", -1);
             settings.setValue("input/61/noiseSuppression", "not-a-number");
             settings.setValue("input/61/activation/automatic", "maybe");
@@ -717,5 +852,9 @@ private slots:
     }
 };
 
+#ifdef Q_OS_MACOS
+QTEST_MAIN(AudioTests)
+#else
 QTEST_GUILESS_MAIN(AudioTests)
+#endif
 #include "audio_tests.moc"

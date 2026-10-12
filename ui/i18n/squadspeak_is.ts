@@ -259,6 +259,10 @@
             <source>App audio only</source>
             <translation>Aðeins hljóð forrits</translation>
         </message>
+        <message>
+            <source>Speech output is unavailable.</source>
+            <translation>Talúttak er ekki tiltækt.</translation>
+        </message>
     </context>
     <context>
         <name>AudioRecording</name>
@@ -494,10 +498,6 @@
             <translation>Hreinsa fjarstýrðan taltakka</translation>
         </message>
         <message>
-            <source>Playback volume</source>
-            <translation>Hljóðstyrkur spilunar</translation>
-        </message>
-        <message>
             <source>Not assigned</source>
             <translation>Ekki úthlutað</translation>
         </message>
@@ -508,6 +508,18 @@
         <message>
             <source>Level audio automatically</source>
             <translation>Hætta hljóð sjálfkrafa</translation>
+        </message>
+        <message>
+            <source>Voice volume</source>
+            <translation>Hljóðstyrkur raddspjalls</translation>
+        </message>
+        <message>
+            <source>App sounds</source>
+            <translation>Forritshljóð</translation>
+        </message>
+        <message>
+            <source>Read bot messages aloud</source>
+            <translation>Lesa skilaboð vélmennis upphátt</translation>
         </message>
     </context>
     <context>
@@ -1188,6 +1200,10 @@
             <source>This device</source>
             <translation>Þetta tæki</translation>
         </message>
+        <message>
+            <source>Use default music volume</source>
+            <translation>Nota sjálfgefinn hljóðstyrk tónlistar</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1299,6 +1315,22 @@
             <source>The sanitized image could not be written completely.</source>
             <translation>Ekki tókst að skrifa hreinsaða mynd að fullu.</translation>
         </message>
+        <message>
+            <source>%1 joined.</source>
+            <translation>%1 tengdist.</translation>
+        </message>
+        <message>
+            <source>%1 left.</source>
+            <translation>%1 fór.</translation>
+        </message>
+        <message>
+            <source>%1 was kicked.</source>
+            <translation>%1 var rekinn.</translation>
+        </message>
+        <message>
+            <source>%1 was banned from the channel.</source>
+            <translation>%1 var bannað frá rásinni.</translation>
+        </message>
     </context>
     <context>
         <name>ChatPanel</name>
@@ -1361,22 +1393,6 @@
         <message>
             <source>Loading...</source>
             <translation>Hleður...</translation>
-        </message>
-        <message>
-            <source>%1 joined.</source>
-            <translation>%1 tengdist.</translation>
-        </message>
-        <message>
-            <source>%1 left.</source>
-            <translation>%1 fór.</translation>
-        </message>
-        <message>
-            <source>%1 was kicked.</source>
-            <translation>%1 var rekinn.</translation>
-        </message>
-        <message>
-            <source>%1 was banned from the channel.</source>
-            <translation>%1 var bannað frá rásinni.</translation>
         </message>
         <message>
             <source>Message could not be sent. Check the connection and text length.</source>
@@ -2877,7 +2893,6 @@
             <translation>Ekki tókst að staðfesta lykilorðið.</translation>
         </message>
     </context>
-
     <context>
         <name>Headless</name>
         <message>
@@ -3230,6 +3245,53 @@
         <message>
             <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
             <translation>Kerfisbakki er ekki tiltækur; forritið helst opið í glugga.</translation>
+        </message>
+    </context>
+    <context>
+        <name>LocalLanguage</name>
+        <message>
+            <source>Translation (experimental)</source>
+            <translation>Þýðing (tilraunaeiginleiki)</translation>
+        </message>
+        <message>
+            <source>Spoken language</source>
+            <translation>Talað tungumál</translation>
+        </message>
+        <message>
+            <source>Translate to</source>
+            <translation>Þýða yfir á</translation>
+        </message>
+        <message>
+            <source>Translate messages</source>
+            <translation>Þýða skilaboð</translation>
+        </message>
+        <message>
+            <source>Translated voice</source>
+            <translation>Þýdd rödd</translation>
+        </message>
+        <message>
+            <source>Original audio</source>
+            <translation>Upprunalegt hljóð</translation>
+        </message>
+        <message>
+            <source>Original text</source>
+            <translation>Upprunalegur texti</translation>
+        </message>
+        <message>
+            <source>Prepare languages</source>
+            <translation>Undirbúa tungumál</translation>
+        </message>
+        <message>
+            <source>Local language processing is unavailable.</source>
+            <translation>Staðbundin málvinnsla er ekki tiltæk.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be read.</source>
+            <translation>Ekki tókst að lesa tungumálastillingar.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be saved.</source>
+            <translation>Ekki tókst að vista tungumálastillingar.</translation>
         </message>
     </context>
 </TS>

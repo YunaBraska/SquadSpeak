@@ -259,6 +259,10 @@
             <source>App audio only</source>
             <translation>Vetëm audioja e aplikacionit</translation>
         </message>
+        <message>
+            <source>Speech output is unavailable.</source>
+            <translation>Dalja zanore nuk është e disponueshme.</translation>
+        </message>
     </context>
     <context>
         <name>AudioRecording</name>
@@ -494,10 +498,6 @@
             <translation>Pastro shkurtoren e tastierës push-to-talk në distancë</translation>
         </message>
         <message>
-            <source>Playback volume</source>
-            <translation>Vëllimi i luajtjes</translation>
-        </message>
-        <message>
             <source>Not assigned</source>
             <translation>Nuk është caktuar</translation>
         </message>
@@ -508,6 +508,18 @@
         <message>
             <source>Level audio automatically</source>
             <translation>Niveli automatikisht audio</translation>
+        </message>
+        <message>
+            <source>Voice volume</source>
+            <translation>Volumi i bisedës zanore</translation>
+        </message>
+        <message>
+            <source>App sounds</source>
+            <translation>Tingujt e aplikacionit</translation>
+        </message>
+        <message>
+            <source>Read bot messages aloud</source>
+            <translation>Lexo me zë mesazhet e botit</translation>
         </message>
     </context>
     <context>
@@ -1188,6 +1200,10 @@
             <source>This device</source>
             <translation>Kjo pajisje</translation>
         </message>
+        <message>
+            <source>Use default music volume</source>
+            <translation>Përdor volumin e parazgjedhur të muzikës</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1299,6 +1315,22 @@
             <source>The sanitized image could not be written completely.</source>
             <translation>Imazhi i pastruar nuk mund të shkruhej plotësisht.</translation>
         </message>
+        <message>
+            <source>%1 joined.</source>
+            <translation>%1 u bashkua.</translation>
+        </message>
+        <message>
+            <source>%1 left.</source>
+            <translation>%1 u largua.</translation>
+        </message>
+        <message>
+            <source>%1 was kicked.</source>
+            <translation>%1 u përjashtua.</translation>
+        </message>
+        <message>
+            <source>%1 was banned from the channel.</source>
+            <translation>%1 u ndalua nga kanali.</translation>
+        </message>
     </context>
     <context>
         <name>ChatPanel</name>
@@ -1361,22 +1393,6 @@
         <message>
             <source>Loading...</source>
             <translation>Duke u ngarkuar...</translation>
-        </message>
-        <message>
-            <source>%1 joined.</source>
-            <translation>%1 u bashkua.</translation>
-        </message>
-        <message>
-            <source>%1 left.</source>
-            <translation>%1 u largua.</translation>
-        </message>
-        <message>
-            <source>%1 was kicked.</source>
-            <translation>%1 u përjashtua.</translation>
-        </message>
-        <message>
-            <source>%1 was banned from the channel.</source>
-            <translation>%1 u ndalua nga kanali.</translation>
         </message>
         <message>
             <source>Message could not be sent. Check the connection and text length.</source>
@@ -2877,7 +2893,6 @@
             <translation>Fjalëkalimi nuk mund të verifikohej.</translation>
         </message>
     </context>
-
     <context>
         <name>Headless</name>
         <message>
@@ -3230,6 +3245,53 @@
         <message>
             <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
             <translation>Zona e njoftimeve nuk është e disponueshme; aplikacioni mbetet i hapur në një dritare.</translation>
+        </message>
+    </context>
+    <context>
+        <name>LocalLanguage</name>
+        <message>
+            <source>Translation (experimental)</source>
+            <translation>Përkthim (eksperimental)</translation>
+        </message>
+        <message>
+            <source>Spoken language</source>
+            <translation>Gjuha e folur</translation>
+        </message>
+        <message>
+            <source>Translate to</source>
+            <translation>Përkthe në</translation>
+        </message>
+        <message>
+            <source>Translate messages</source>
+            <translation>Përkthe mesazhet</translation>
+        </message>
+        <message>
+            <source>Translated voice</source>
+            <translation>Zëri i përkthyer</translation>
+        </message>
+        <message>
+            <source>Original audio</source>
+            <translation>Audioja origjinale</translation>
+        </message>
+        <message>
+            <source>Original text</source>
+            <translation>Teksti origjinal</translation>
+        </message>
+        <message>
+            <source>Prepare languages</source>
+            <translation>Përgatit gjuhët</translation>
+        </message>
+        <message>
+            <source>Local language processing is unavailable.</source>
+            <translation>Përpunimi lokal i gjuhës nuk është i disponueshëm.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be read.</source>
+            <translation>Cilësimet e gjuhës nuk mund të lexoheshin.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be saved.</source>
+            <translation>Cilësimet e gjuhës nuk mund të ruheshin.</translation>
         </message>
     </context>
 </TS>

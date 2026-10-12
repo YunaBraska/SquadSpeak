@@ -259,6 +259,10 @@
             <source>App audio only</source>
             <translation>Endast appljud</translation>
         </message>
+        <message>
+            <source>Speech output is unavailable.</source>
+            <translation>Talutmatning är inte tillgänglig.</translation>
+        </message>
     </context>
     <context>
         <name>AudioRecording</name>
@@ -494,10 +498,6 @@
             <translation>Rensa fjärrtangent</translation>
         </message>
         <message>
-            <source>Playback volume</source>
-            <translation>Uppspelningsvolym</translation>
-        </message>
-        <message>
             <source>Not assigned</source>
             <translation>Inte tilldelad</translation>
         </message>
@@ -508,6 +508,18 @@
         <message>
             <source>Level audio automatically</source>
             <translation>Jämna ut ljudnivån automatiskt</translation>
+        </message>
+        <message>
+            <source>Voice volume</source>
+            <translation>Volym för röstchatt</translation>
+        </message>
+        <message>
+            <source>App sounds</source>
+            <translation>Appljud</translation>
+        </message>
+        <message>
+            <source>Read bot messages aloud</source>
+            <translation>Läs upp botmeddelanden</translation>
         </message>
     </context>
     <context>
@@ -1188,6 +1200,10 @@
             <source>This device</source>
             <translation>Den här enheten</translation>
         </message>
+        <message>
+            <source>Use default music volume</source>
+            <translation>Använd standardvolymen för musik</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1299,6 +1315,22 @@
             <source>The sanitized image could not be written completely.</source>
             <translation>Den rensade bilden kunde inte skrivas helt.</translation>
         </message>
+        <message>
+            <source>%1 joined.</source>
+            <translation>%1 anslöt.</translation>
+        </message>
+        <message>
+            <source>%1 left.</source>
+            <translation>%1 lämnade.</translation>
+        </message>
+        <message>
+            <source>%1 was kicked.</source>
+            <translation>%1 kastades ut.</translation>
+        </message>
+        <message>
+            <source>%1 was banned from the channel.</source>
+            <translation>%1 bannlystes från kanalen.</translation>
+        </message>
     </context>
     <context>
         <name>ChatPanel</name>
@@ -1361,22 +1393,6 @@
         <message>
             <source>Loading...</source>
             <translation>Läser in...</translation>
-        </message>
-        <message>
-            <source>%1 joined.</source>
-            <translation>%1 anslöt.</translation>
-        </message>
-        <message>
-            <source>%1 left.</source>
-            <translation>%1 lämnade.</translation>
-        </message>
-        <message>
-            <source>%1 was kicked.</source>
-            <translation>%1 kastades ut.</translation>
-        </message>
-        <message>
-            <source>%1 was banned from the channel.</source>
-            <translation>%1 bannlystes från kanalen.</translation>
         </message>
         <message>
             <source>Message could not be sent. Check the connection and text length.</source>
@@ -2877,7 +2893,6 @@
             <translation>Lösenordet kunde inte verifieras.</translation>
         </message>
     </context>
-
     <context>
         <name>Headless</name>
         <message>
@@ -3230,6 +3245,53 @@
         <message>
             <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
             <translation>Systemfältet är inte tillgängligt; appen förblir öppen som ett fönster.</translation>
+        </message>
+    </context>
+    <context>
+        <name>LocalLanguage</name>
+        <message>
+            <source>Translation (experimental)</source>
+            <translation>Översättning (experimentell)</translation>
+        </message>
+        <message>
+            <source>Spoken language</source>
+            <translation>Talat språk</translation>
+        </message>
+        <message>
+            <source>Translate to</source>
+            <translation>Översätt till</translation>
+        </message>
+        <message>
+            <source>Translate messages</source>
+            <translation>Översätt meddelanden</translation>
+        </message>
+        <message>
+            <source>Translated voice</source>
+            <translation>Översatt röst</translation>
+        </message>
+        <message>
+            <source>Original audio</source>
+            <translation>Originalljud</translation>
+        </message>
+        <message>
+            <source>Original text</source>
+            <translation>Originaltext</translation>
+        </message>
+        <message>
+            <source>Prepare languages</source>
+            <translation>Förbered språk</translation>
+        </message>
+        <message>
+            <source>Local language processing is unavailable.</source>
+            <translation>Lokal språkbehandling är inte tillgänglig.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be read.</source>
+            <translation>Språkinställningarna kunde inte läsas.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be saved.</source>
+            <translation>Språkinställningarna kunde inte sparas.</translation>
         </message>
     </context>
 </TS>

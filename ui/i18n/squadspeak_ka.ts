@@ -259,6 +259,10 @@
             <source>App audio only</source>
             <translation>მხოლოდ აპის ხმა</translation>
         </message>
+        <message>
+            <source>Speech output is unavailable.</source>
+            <translation>ხმოვანი წაკითხვა მიუწვდომელია.</translation>
+        </message>
     </context>
     <context>
         <name>AudioRecording</name>
@@ -494,10 +498,6 @@
             <translation>წაშალეთ დისტანციური push-to-talk კლავიატურის მალსახმობი</translation>
         </message>
         <message>
-            <source>Playback volume</source>
-            <translation>დაკვრის მოცულობა</translation>
-        </message>
-        <message>
             <source>Not assigned</source>
             <translation>არ არის დანიშნული</translation>
         </message>
@@ -508,6 +508,18 @@
         <message>
             <source>Level audio automatically</source>
             <translation>აუდიოს დონე ავტომატურად</translation>
+        </message>
+        <message>
+            <source>Voice volume</source>
+            <translation>ხმოვანი ჩატის ხმის დონე</translation>
+        </message>
+        <message>
+            <source>App sounds</source>
+            <translation>აპის ხმები</translation>
+        </message>
+        <message>
+            <source>Read bot messages aloud</source>
+            <translation>ბოტის შეტყობინებების ხმამაღლა წაკითხვა</translation>
         </message>
     </context>
     <context>
@@ -1188,6 +1200,10 @@
             <source>This device</source>
             <translation>ეს მოწყობილობა</translation>
         </message>
+        <message>
+            <source>Use default music volume</source>
+            <translation>მუსიკის ნაგულისხმევი ხმის დონის გამოყენება</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1299,6 +1315,22 @@
             <source>The sanitized image could not be written completely.</source>
             <translation>გასუფთავებული სურათის სრულად ჩაწერა ვერ მოხერხდა.</translation>
         </message>
+        <message>
+            <source>%1 joined.</source>
+            <translation>%1 შეუერთდა.</translation>
+        </message>
+        <message>
+            <source>%1 left.</source>
+            <translation>%1 წავიდა.</translation>
+        </message>
+        <message>
+            <source>%1 was kicked.</source>
+            <translation>%1 გაძევებულია.</translation>
+        </message>
+        <message>
+            <source>%1 was banned from the channel.</source>
+            <translation>%1 აიკრძალა არხიდან.</translation>
+        </message>
     </context>
     <context>
         <name>ChatPanel</name>
@@ -1361,22 +1393,6 @@
         <message>
             <source>Loading...</source>
             <translation>იტვირთება...</translation>
-        </message>
-        <message>
-            <source>%1 joined.</source>
-            <translation>%1 შეუერთდა.</translation>
-        </message>
-        <message>
-            <source>%1 left.</source>
-            <translation>%1 წავიდა.</translation>
-        </message>
-        <message>
-            <source>%1 was kicked.</source>
-            <translation>%1 გაძევებულია.</translation>
-        </message>
-        <message>
-            <source>%1 was banned from the channel.</source>
-            <translation>%1 აიკრძალა არხიდან.</translation>
         </message>
         <message>
             <source>Message could not be sent. Check the connection and text length.</source>
@@ -2877,7 +2893,6 @@
             <translation>პაროლის შემოწმება ვერ მოხერხდა.</translation>
         </message>
     </context>
-
     <context>
         <name>Headless</name>
         <message>
@@ -3230,6 +3245,53 @@
         <message>
             <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
             <translation>სისტემური უჯრა მიუწვდომელია; აპი ფანჯარაში ღია რჩება.</translation>
+        </message>
+    </context>
+    <context>
+        <name>LocalLanguage</name>
+        <message>
+            <source>Translation (experimental)</source>
+            <translation>თარგმნა (ექსპერიმენტული)</translation>
+        </message>
+        <message>
+            <source>Spoken language</source>
+            <translation>საუბრის ენა</translation>
+        </message>
+        <message>
+            <source>Translate to</source>
+            <translation>თარგმნა ენაზე</translation>
+        </message>
+        <message>
+            <source>Translate messages</source>
+            <translation>შეტყობინებების თარგმნა</translation>
+        </message>
+        <message>
+            <source>Translated voice</source>
+            <translation>თარგმნილი ხმა</translation>
+        </message>
+        <message>
+            <source>Original audio</source>
+            <translation>ორიგინალი აუდიო</translation>
+        </message>
+        <message>
+            <source>Original text</source>
+            <translation>ორიგინალი ტექსტი</translation>
+        </message>
+        <message>
+            <source>Prepare languages</source>
+            <translation>ენების მომზადება</translation>
+        </message>
+        <message>
+            <source>Local language processing is unavailable.</source>
+            <translation>ენის ლოკალური დამუშავება მიუწვდომელია.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be read.</source>
+            <translation>ენის პარამეტრების წაკითხვა ვერ მოხერხდა.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be saved.</source>
+            <translation>ენის პარამეტრების შენახვა ვერ მოხერხდა.</translation>
         </message>
     </context>
 </TS>

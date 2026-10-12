@@ -259,6 +259,10 @@
             <source>App audio only</source>
             <translation>Μόνο ήχος εφαρμογής</translation>
         </message>
+        <message>
+            <source>Speech output is unavailable.</source>
+            <translation>Η έξοδος ομιλίας δεν είναι διαθέσιμη.</translation>
+        </message>
     </context>
     <context>
         <name>AudioRecording</name>
@@ -494,10 +498,6 @@
             <translation>Εκκαθάριση απομακρυσμένης συντόμευσης πληκτρολογίου push-to-talk</translation>
         </message>
         <message>
-            <source>Playback volume</source>
-            <translation>Ένταση αναπαραγωγής</translation>
-        </message>
-        <message>
             <source>Not assigned</source>
             <translation>Δεν έχει ανατεθεί</translation>
         </message>
@@ -508,6 +508,18 @@
         <message>
             <source>Level audio automatically</source>
             <translation>Αυτόματη στάθμη ήχου</translation>
+        </message>
+        <message>
+            <source>Voice volume</source>
+            <translation>Ένταση φωνητικής συνομιλίας</translation>
+        </message>
+        <message>
+            <source>App sounds</source>
+            <translation>Ήχοι εφαρμογής</translation>
+        </message>
+        <message>
+            <source>Read bot messages aloud</source>
+            <translation>Εκφώνηση μηνυμάτων του bot</translation>
         </message>
     </context>
     <context>
@@ -1188,6 +1200,10 @@
             <source>This device</source>
             <translation>Αυτή η συσκευή</translation>
         </message>
+        <message>
+            <source>Use default music volume</source>
+            <translation>Χρήση προεπιλεγμένης έντασης μουσικής</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1299,6 +1315,22 @@
             <source>The sanitized image could not be written completely.</source>
             <translation>Δεν ήταν δυνατή η πλήρης εγγραφή της καθαρισμένης εικόνας.</translation>
         </message>
+        <message>
+            <source>%1 joined.</source>
+            <translation>Ο %1 εντάχθηκε.</translation>
+        </message>
+        <message>
+            <source>%1 left.</source>
+            <translation>Ο %1 αποχώρησε.</translation>
+        </message>
+        <message>
+            <source>%1 was kicked.</source>
+            <translation>Ο %1 αποβλήθηκε.</translation>
+        </message>
+        <message>
+            <source>%1 was banned from the channel.</source>
+            <translation>Το %1 αποκλείστηκε από το κανάλι.</translation>
+        </message>
     </context>
     <context>
         <name>ChatPanel</name>
@@ -1361,22 +1393,6 @@
         <message>
             <source>Loading...</source>
             <translation>Φόρτωση...</translation>
-        </message>
-        <message>
-            <source>%1 joined.</source>
-            <translation>Ο %1 εντάχθηκε.</translation>
-        </message>
-        <message>
-            <source>%1 left.</source>
-            <translation>Ο %1 αποχώρησε.</translation>
-        </message>
-        <message>
-            <source>%1 was kicked.</source>
-            <translation>Ο %1 αποβλήθηκε.</translation>
-        </message>
-        <message>
-            <source>%1 was banned from the channel.</source>
-            <translation>Το %1 αποκλείστηκε από το κανάλι.</translation>
         </message>
         <message>
             <source>Message could not be sent. Check the connection and text length.</source>
@@ -2877,7 +2893,6 @@
             <translation>Δεν ήταν δυνατή η επαλήθευση του κωδικού πρόσβασης.</translation>
         </message>
     </context>
-
     <context>
         <name>Headless</name>
         <message>
@@ -3230,6 +3245,53 @@
         <message>
             <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
             <translation>Η περιοχή ειδοποιήσεων δεν είναι διαθέσιμη; η εφαρμογή παραμένει ανοιχτή σε παράθυρο.</translation>
+        </message>
+    </context>
+    <context>
+        <name>LocalLanguage</name>
+        <message>
+            <source>Translation (experimental)</source>
+            <translation>Μετάφραση (πειραματική)</translation>
+        </message>
+        <message>
+            <source>Spoken language</source>
+            <translation>Γλώσσα ομιλίας</translation>
+        </message>
+        <message>
+            <source>Translate to</source>
+            <translation>Μετάφραση σε</translation>
+        </message>
+        <message>
+            <source>Translate messages</source>
+            <translation>Μετάφραση μηνυμάτων</translation>
+        </message>
+        <message>
+            <source>Translated voice</source>
+            <translation>Μεταφρασμένη φωνή</translation>
+        </message>
+        <message>
+            <source>Original audio</source>
+            <translation>Αρχικός ήχος</translation>
+        </message>
+        <message>
+            <source>Original text</source>
+            <translation>Αρχικό κείμενο</translation>
+        </message>
+        <message>
+            <source>Prepare languages</source>
+            <translation>Προετοιμασία γλωσσών</translation>
+        </message>
+        <message>
+            <source>Local language processing is unavailable.</source>
+            <translation>Η τοπική επεξεργασία γλώσσας δεν είναι διαθέσιμη.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be read.</source>
+            <translation>Δεν ήταν δυνατή η ανάγνωση των ρυθμίσεων γλώσσας.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be saved.</source>
+            <translation>Δεν ήταν δυνατή η αποθήκευση των ρυθμίσεων γλώσσας.</translation>
         </message>
     </context>
 </TS>

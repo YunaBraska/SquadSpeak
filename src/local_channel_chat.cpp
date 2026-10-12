@@ -283,9 +283,11 @@ bool LocalChannel::clientChat(Client& c, const QJsonObject& message) {
         }
         const auto event = record.value("event").toObject();
         if (fresh && !hostOnly_ && !remoteMode() && c.accepted && c.voice && c.id == joinedHostId_
-            && record.value("sender") != ownId() && record.value("expires").toInteger() > c.serverTime
-            && (event.isEmpty() || event.value("kind") == "announcement"))
-            emit chatNotification(c.id, record.toVariantMap());
+            && record.value("sender") != ownId() && record.value("expires").toInteger() > c.serverTime) {
+            if (!event.isEmpty()) emit botNotification(record.toVariantMap());
+            if (event.isEmpty() || event.value("kind") == "announcement")
+                emit chatNotification(c.id, record.toVariantMap());
+        }
         emit chatChanged();
         return true;
     } catch (const std::exception& error) {

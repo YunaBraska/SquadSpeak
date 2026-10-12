@@ -49,6 +49,7 @@ Item {
             verify(editor !== null)
         }
         function test_eventCuesRespectOutputAndDeafen() {
+            compare(typeof audio.notificationVolume, "number")
             for (const kind of ["join", "memberJoin", "leave", "memberLeave", "kick", "ban", "message", "announcement"]) {
                 compare(fixtures.playEvent(kind, false), audio.outputAvailable, kind)
                 verify(!fixtures.playEvent(kind, true), kind + " is silent while deafened")
@@ -56,11 +57,15 @@ Item {
             verify(!fixtures.playEvent("future-event", false))
             verify(!fixtures.playEvent("", false))
             if (audio.outputAvailable) {
+                const notificationVolume = audio.notificationVolume
+                verify(audio.setNotificationVolume(0))
+                verify(!fixtures.playEvent("message", false), "Zero notification volume suppresses every app cue")
+                verify(audio.setNotificationVolume(notificationVolume))
                 const volume = audio.outputVolume
                 verify(audio.setOutputVolume(0))
-                const muted = !fixtures.playEvent("announcement", false)
+                const independent = fixtures.playEvent("announcement", false)
                 verify(audio.setOutputVolume(volume))
-                verify(muted, "Zero app volume suppresses the cue")
+                verify(independent, "Zero voice volume leaves app cues audible")
             }
         }
         function test_accessibleValueUpdatesSettings() {

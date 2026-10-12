@@ -259,6 +259,10 @@
             <source>App audio only</source>
             <translation>Hanya audio aplikasi</translation>
         </message>
+        <message>
+            <source>Speech output is unavailable.</source>
+            <translation>Keluaran ucapan tidak tersedia.</translation>
+        </message>
     </context>
     <context>
         <name>AudioRecording</name>
@@ -494,10 +498,6 @@
             <translation>Hapus tombol jarak jauh</translation>
         </message>
         <message>
-            <source>Playback volume</source>
-            <translation>Volume pemutaran</translation>
-        </message>
-        <message>
             <source>Not assigned</source>
             <translation>Belum ditetapkan</translation>
         </message>
@@ -508,6 +508,18 @@
         <message>
             <source>Level audio automatically</source>
             <translation>Atur level audio secara otomatis</translation>
+        </message>
+        <message>
+            <source>Voice volume</source>
+            <translation>Volume obrolan suara</translation>
+        </message>
+        <message>
+            <source>App sounds</source>
+            <translation>Suara aplikasi</translation>
+        </message>
+        <message>
+            <source>Read bot messages aloud</source>
+            <translation>Bacakan pesan bot</translation>
         </message>
     </context>
     <context>
@@ -1188,6 +1200,10 @@
             <source>This device</source>
             <translation>Perangkat ini</translation>
         </message>
+        <message>
+            <source>Use default music volume</source>
+            <translation>Gunakan volume musik bawaan</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1299,6 +1315,22 @@
             <source>The sanitized image could not be written completely.</source>
             <translation>Gambar yang dibersihkan tidak dapat ditulis sepenuhnya.</translation>
         </message>
+        <message>
+            <source>%1 joined.</source>
+            <translation>%1 bergabung.</translation>
+        </message>
+        <message>
+            <source>%1 left.</source>
+            <translation>%1 keluar.</translation>
+        </message>
+        <message>
+            <source>%1 was kicked.</source>
+            <translation>%1 dikeluarkan.</translation>
+        </message>
+        <message>
+            <source>%1 was banned from the channel.</source>
+            <translation>%1 diblokir dari kanal.</translation>
+        </message>
     </context>
     <context>
         <name>ChatPanel</name>
@@ -1361,22 +1393,6 @@
         <message>
             <source>Loading...</source>
             <translation>Memuat...</translation>
-        </message>
-        <message>
-            <source>%1 joined.</source>
-            <translation>%1 bergabung.</translation>
-        </message>
-        <message>
-            <source>%1 left.</source>
-            <translation>%1 keluar.</translation>
-        </message>
-        <message>
-            <source>%1 was kicked.</source>
-            <translation>%1 dikeluarkan.</translation>
-        </message>
-        <message>
-            <source>%1 was banned from the channel.</source>
-            <translation>%1 diblokir dari kanal.</translation>
         </message>
         <message>
             <source>Message could not be sent. Check the connection and text length.</source>
@@ -2877,7 +2893,6 @@
             <translation>Kata sandi tidak dapat diverifikasi.</translation>
         </message>
     </context>
-
     <context>
         <name>Headless</name>
         <message>
@@ -3230,6 +3245,53 @@
         <message>
             <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
             <translation>Baki sistem tidak tersedia; aplikasi tetap terbuka dalam jendela.</translation>
+        </message>
+    </context>
+    <context>
+        <name>LocalLanguage</name>
+        <message>
+            <source>Translation (experimental)</source>
+            <translation>Terjemahan (eksperimental)</translation>
+        </message>
+        <message>
+            <source>Spoken language</source>
+            <translation>Bahasa lisan</translation>
+        </message>
+        <message>
+            <source>Translate to</source>
+            <translation>Terjemahkan ke</translation>
+        </message>
+        <message>
+            <source>Translate messages</source>
+            <translation>Terjemahkan pesan</translation>
+        </message>
+        <message>
+            <source>Translated voice</source>
+            <translation>Suara terjemahan</translation>
+        </message>
+        <message>
+            <source>Original audio</source>
+            <translation>Audio asli</translation>
+        </message>
+        <message>
+            <source>Original text</source>
+            <translation>Teks asli</translation>
+        </message>
+        <message>
+            <source>Prepare languages</source>
+            <translation>Siapkan bahasa</translation>
+        </message>
+        <message>
+            <source>Local language processing is unavailable.</source>
+            <translation>Pemrosesan bahasa lokal tidak tersedia.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be read.</source>
+            <translation>Pengaturan bahasa tidak dapat dibaca.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be saved.</source>
+            <translation>Pengaturan bahasa tidak dapat disimpan.</translation>
         </message>
     </context>
 </TS>

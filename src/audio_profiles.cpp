@@ -10,6 +10,26 @@ AudioProfiles::AudioProfiles(const QString& filename) : settings_(filename, QSet
     settings_.setFallbacksEnabled(false);
     if (settings_.status() != QSettings::NoError)
         throw std::runtime_error(QT_TRANSLATE_NOOP("AudioModel", "Audio settings could not be read"));
+    if (settings_.contains("output/independentVolumes") && settings_.value("output/independentVolumes").toString() != "true")
+        throw std::runtime_error(QT_TRANSLATE_NOOP("AudioModel", "Stored output profile is invalid"));
+    if (!settings_.contains("output/independentVolumes")) {
+        settings_.beginGroup("output");
+        const auto devices = settings_.childGroups();
+        settings_.endGroup();
+        QVariantMap migrated;
+        for (const auto& device : devices) {
+            const auto id = QByteArray::fromHex(device.toLatin1());
+            const auto prefix = key(id, false);
+            const auto master = output(id);
+            bool valid;
+            const auto music = settings_.value(prefix + "musicVolume", 0.35).toDouble(&valid);
+            if (!valid || !std::isfinite(music) || music < 0 || music > 1)
+                throw std::runtime_error(QT_TRANSLATE_NOOP("AudioModel", "Stored music volume is invalid"));
+            migrated.insert(prefix + "musicVolume", music * master);
+            migrated.insert(prefix + "notificationVolume", master);
+        }
+        if (!migrated.isEmpty()) write(migrated);
+    }
 }
 
 QString AudioProfiles::key(const QByteArray& deviceId, bool input) {
@@ -38,9 +58,12 @@ InputProfile AudioProfiles::input(const QByteArray& deviceId) const {
     return profile;
 }
 
-double AudioProfiles::musicVolume(const QByteArray& deviceId) const {
+double AudioProfiles::musicVolume(const QByteArray& deviceId, const QString& source) const {
+    const auto prefix = key(deviceId, false);
+    const auto entry = source.isEmpty() ? prefix + "musicVolume" : prefix + "music/" + source.toUtf8().toHex();
+    if (!source.isEmpty() && !settings_.contains(entry)) return musicVolume(deviceId);
     bool valid;
-    const auto volume = settings_.value(key(deviceId, false) + "musicVolume", 0.35).toDouble(&valid);
+    const auto volume = settings_.value(entry, 0.175).toDouble(&valid);
     if (!valid || !std::isfinite(volume) || volume < 0 || volume > 1)
         throw std::runtime_error(QT_TRANSLATE_NOOP("AudioModel", "Stored music volume is invalid"));
     return volume;
@@ -50,6 +73,13 @@ AudioProfiles& AudioProfiles::saveMusicVolume(const QByteArray& deviceId, double
     if (!std::isfinite(volume) || volume < 0 || volume > 1)
         throw std::invalid_argument(QT_TRANSLATE_NOOP("AudioModel", "Music volume must be between 0 and 1"));
     return write({{key(deviceId, false) + "musicVolume", volume}});
+}
+
+AudioProfiles& AudioProfiles::saveChannelMusicVolume(const QByteArray& deviceId, const QString& source, std::optional<double> volume) {
+    if (source.isEmpty()) throw std::invalid_argument("A channel music profile requires a source ID");
+    if (volume && (!std::isfinite(*volume) || *volume < 0 || *volume > 1))
+        throw std::invalid_argument(QT_TRANSLATE_NOOP("AudioModel", "Music volume must be between 0 and 1"));
+    return write({{key(deviceId, false) + "music/" + source.toUtf8().toHex(), volume ? QVariant(*volume) : QVariant{}}});
 }
 
 double AudioProfiles::output(const QByteArray& deviceId) const {
@@ -66,6 +96,31 @@ double AudioProfiles::participant(const QByteArray& deviceId, const QString& pee
     if (!valid || !std::isfinite(value) || value < 0 || value > 2)
         throw std::runtime_error(QT_TRANSLATE_NOOP("AudioModel", "Stored participant volume is invalid"));
     return value;
+}
+
+double AudioProfiles::notificationVolume(const QByteArray& deviceId) const {
+    bool valid;
+    const auto volume = settings_.value(key(deviceId, false) + "notificationVolume", 0.5).toDouble(&valid);
+    if (!valid || !std::isfinite(volume) || volume < 0 || volume > 1)
+        throw std::runtime_error(QT_TRANSLATE_NOOP("AudioModel", "Stored output profile is invalid"));
+    return volume;
+}
+
+AudioProfiles& AudioProfiles::saveNotificationVolume(const QByteArray& deviceId, double volume) {
+    if (!std::isfinite(volume) || volume < 0 || volume > 1)
+        throw std::invalid_argument(QT_TRANSLATE_NOOP("AudioModel", "Output volume must be between 0 and 1"));
+    return write({{key(deviceId, false) + "notificationVolume", volume}});
+}
+
+bool AudioProfiles::readBotMessages(const QByteArray& deviceId) const {
+    const auto value = settings_.value(key(deviceId, false) + "readBotMessages", false);
+    if (value.toString() != "true" && value.toString() != "false")
+        throw std::runtime_error(QT_TRANSLATE_NOOP("AudioModel", "Stored output profile is invalid"));
+    return value.toBool();
+}
+
+AudioProfiles& AudioProfiles::saveReadBotMessages(const QByteArray& deviceId, bool enabled) {
+    return write({{key(deviceId, false) + "readBotMessages", enabled}});
 }
 
 bool AudioProfiles::automaticVolume(const QByteArray& deviceId) const {
@@ -154,13 +209,15 @@ AudioProfiles& AudioProfiles::select(bool input, const QByteArray& deviceId) {
     return write({{input ? "selection/input" : "selection/output", deviceId}});
 }
 
-AudioProfiles& AudioProfiles::write(const QVariantMap& values) {
+AudioProfiles& AudioProfiles::write(QVariantMap values) {
     if (settings_.status() != QSettings::NoError)
         throw std::runtime_error(QT_TRANSLATE_NOOP("AudioModel", "Audio settings are unavailable; fix file access and restart the app"));
     QVariantMap previous;
+    values.insert("output/independentVolumes", true);
     for (auto entry = values.cbegin(); entry != values.cend(); ++entry) {
         previous.insert(entry.key(), settings_.value(entry.key()));
-        settings_.setValue(entry.key(), entry.value());
+        if (entry.value().isValid()) settings_.setValue(entry.key(), entry.value());
+        else settings_.remove(entry.key());
     }
     settings_.sync();
     if (settings_.status() != QSettings::NoError) {

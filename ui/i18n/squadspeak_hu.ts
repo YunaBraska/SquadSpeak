@@ -259,6 +259,10 @@
             <source>App audio only</source>
             <translation>Csak az alkalmazás hangja</translation>
         </message>
+        <message>
+            <source>Speech output is unavailable.</source>
+            <translation>A beszédkimenet nem érhető el.</translation>
+        </message>
     </context>
     <context>
         <name>AudioRecording</name>
@@ -494,10 +498,6 @@
             <translation>Távoli push-to-talk billentyűparancs törlése</translation>
         </message>
         <message>
-            <source>Playback volume</source>
-            <translation>Lejátszás hangereje</translation>
-        </message>
-        <message>
             <source>Not assigned</source>
             <translation>Nincs hozzárendelve</translation>
         </message>
@@ -508,6 +508,18 @@
         <message>
             <source>Level audio automatically</source>
             <translation>A hang automatikus szintbe állítása</translation>
+        </message>
+        <message>
+            <source>Voice volume</source>
+            <translation>Hangcsevegés hangereje</translation>
+        </message>
+        <message>
+            <source>App sounds</source>
+            <translation>Alkalmazáshangok</translation>
+        </message>
+        <message>
+            <source>Read bot messages aloud</source>
+            <translation>Botüzenetek felolvasása</translation>
         </message>
     </context>
     <context>
@@ -1188,6 +1200,10 @@
             <source>This device</source>
             <translation>Ez az eszköz</translation>
         </message>
+        <message>
+            <source>Use default music volume</source>
+            <translation>Alapértelmezett zenei hangerő használata</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1299,6 +1315,22 @@
             <source>The sanitized image could not be written completely.</source>
             <translation>A megtisztított képet nem sikerült teljesen kiírni.</translation>
         </message>
+        <message>
+            <source>%1 joined.</source>
+            <translation>%1 csatlakozott.</translation>
+        </message>
+        <message>
+            <source>%1 left.</source>
+            <translation>%1 kilépett.</translation>
+        </message>
+        <message>
+            <source>%1 was kicked.</source>
+            <translation>%1-et kirúgták.</translation>
+        </message>
+        <message>
+            <source>%1 was banned from the channel.</source>
+            <translation>%1-et kitiltották a csatornáról.</translation>
+        </message>
     </context>
     <context>
         <name>ChatPanel</name>
@@ -1361,22 +1393,6 @@
         <message>
             <source>Loading...</source>
             <translation>Betöltés...</translation>
-        </message>
-        <message>
-            <source>%1 joined.</source>
-            <translation>%1 csatlakozott.</translation>
-        </message>
-        <message>
-            <source>%1 left.</source>
-            <translation>%1 kilépett.</translation>
-        </message>
-        <message>
-            <source>%1 was kicked.</source>
-            <translation>%1-et kirúgták.</translation>
-        </message>
-        <message>
-            <source>%1 was banned from the channel.</source>
-            <translation>%1-et kitiltották a csatornáról.</translation>
         </message>
         <message>
             <source>Message could not be sent. Check the connection and text length.</source>
@@ -2877,7 +2893,6 @@
             <translation>A jelszó nem ellenőrizhető.</translation>
         </message>
     </context>
-
     <context>
         <name>Headless</name>
         <message>
@@ -3230,6 +3245,53 @@
         <message>
             <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
             <translation>A rendszertálca nem érhető el; az alkalmazás ablakban marad nyitva.</translation>
+        </message>
+    </context>
+    <context>
+        <name>LocalLanguage</name>
+        <message>
+            <source>Translation (experimental)</source>
+            <translation>Fordítás (kísérleti)</translation>
+        </message>
+        <message>
+            <source>Spoken language</source>
+            <translation>Beszélt nyelv</translation>
+        </message>
+        <message>
+            <source>Translate to</source>
+            <translation>Fordítás nyelve</translation>
+        </message>
+        <message>
+            <source>Translate messages</source>
+            <translation>Üzenetek fordítása</translation>
+        </message>
+        <message>
+            <source>Translated voice</source>
+            <translation>Lefordított hang</translation>
+        </message>
+        <message>
+            <source>Original audio</source>
+            <translation>Eredeti hang</translation>
+        </message>
+        <message>
+            <source>Original text</source>
+            <translation>Eredeti szöveg</translation>
+        </message>
+        <message>
+            <source>Prepare languages</source>
+            <translation>Nyelvek előkészítése</translation>
+        </message>
+        <message>
+            <source>Local language processing is unavailable.</source>
+            <translation>A helyi nyelvi feldolgozás nem érhető el.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be read.</source>
+            <translation>A nyelvi beállítások nem olvashatók.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be saved.</source>
+            <translation>A nyelvi beállítások nem menthetők.</translation>
         </message>
     </context>
 </TS>

@@ -39,6 +39,19 @@
 class ChatContentTests final : public QObject {
     Q_OBJECT
 private slots:
+    void plainBotTextMatchesDisplayedEventsAndStripsMarkdown() {
+        ChatContent content;
+        for (const auto& entry : std::array<std::pair<QString, QString>, 4>{{
+                {"joined", "Ari joined."}, {"left", "Ari left."},
+                {"kicked", "Ari was kicked."}, {"banned", "Ari was banned from the channel."}}}) {
+            QCOMPARE(content.plainText({{"text", "old host wording"},
+                {"event", QVariantMap{{"kind", entry.first}, {"name", "Ari"}}}}), entry.second);
+        }
+        QCOMPARE(content.plainText({{"text", "**Hello** [world](https://example.org) `today`"},
+            {"event", QVariantMap{{"kind", "announcement"}}}}), "Hello world today");
+        QCOMPARE(content.plainText({{"text", "Future event"}, {"event", QVariantMap{{"kind", "future"}}}}), "Future event");
+        QCOMPARE(content.plainText({}), QString{});
+    }
     void decoderTimeoutWaitsForProcessExit() {
 #ifdef Q_OS_IOS
         QSKIP("The isolated image-worker subprocess is unavailable on iOS.");

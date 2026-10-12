@@ -1,6 +1,7 @@
 set_source_files_properties(../src/main.cpp ../src/headless.cpp PROPERTIES
     COMPILE_DEFINITIONS "SQUADSPEAK_VERSION=\"${SQUADSPEAK_VERSION}\"")
 qt_add_executable(squadspeak MACOSX_BUNDLE ../src/main.cpp ../src/headless.cpp ../src/headless.hpp ../src/audio_model.cpp ../src/audio_model.hpp ../src/audio_recording.cpp ../src/audio_recording.hpp ../src/ptt_key.cpp ../src/ptt_key.hpp)
+set_target_properties(squadspeak PROPERTIES LINKER_LANGUAGE CXX)
 set(squad_qml_files Theme.qml PanelWindow.qml PanelDialog.qml TextToolTip.qml ActionButton.qml EntryField.qml ChoiceBox.qml OptionCheck.qml Glyph.qml AudioSettings.qml RecordingPanel.qml Channels.qml ChatPanel.qml VoiceAvatar.qml AvatarAtlas.js SettingSlider.qml SpectrumView.qml ScreenPanel.qml)
 set(squad_resource_files icons/app.png avatars/mossling.png avatars/courier.png avatars/mechanic.png avatars/system.png avatars/system-animated.png
     avatars/ember-dragon.png
@@ -28,7 +29,7 @@ qt_add_qml_module(squadspeak URI SquadSpeak VERSION 1.0
     QML_FILES ${squad_qml_files})
 qt_add_resources(squadspeak portraits BIG_RESOURCES
     PREFIX "/qt/qml/SquadSpeak" FILES ${squad_resource_files})
-target_link_libraries(squadspeak PRIVATE squad_video squad_radio squad_audio squad_session squad_content Qt6::Widgets Qt6::Quick Qt6::QuickControls2 Qt6::Multimedia ${squad_ptt_platform_libraries})
+target_link_libraries(squadspeak PRIVATE squad_video squad_radio squad_audio squad_session squad_content squad_language Qt6::Widgets Qt6::Quick Qt6::QuickControls2 Qt6::Multimedia ${squad_ptt_platform_libraries})
 if(NOT IOS)
     add_dependencies(squadspeak squad_image_worker)
 endif()
@@ -53,8 +54,8 @@ if(APPLE)
     else()
         set(squad_bundle_icon icons/app.icns)
     endif()
-    set_source_files_properties(${squad_bundle_icon} sounds/announcement.wav PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
-    target_sources(squadspeak PRIVATE ${squad_bundle_icon} sounds/announcement.wav)
+    set_source_files_properties(${squad_bundle_icon} PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
+    target_sources(squadspeak PRIVATE ${squad_bundle_icon})
     if(NOT IOS)
         # macdeployqt rewrites codec paths when creating the desktop package.
         set_property(TARGET squadspeak PROPERTY INSTALL_RPATH

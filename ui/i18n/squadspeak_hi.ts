@@ -259,6 +259,10 @@
             <source>App audio only</source>
             <translation>केवल ऐप का ऑडियो</translation>
         </message>
+        <message>
+            <source>Speech output is unavailable.</source>
+            <translation>वाक् आउटपुट उपलब्ध नहीं है।</translation>
+        </message>
     </context>
     <context>
         <name>AudioRecording</name>
@@ -494,10 +498,6 @@
             <translation>रिमोट कुंजी साफ करें</translation>
         </message>
         <message>
-            <source>Playback volume</source>
-            <translation>प्लेबैक वॉल्यूम</translation>
-        </message>
-        <message>
             <source>Not assigned</source>
             <translation>निर्धारित नहीं</translation>
         </message>
@@ -508,6 +508,18 @@
         <message>
             <source>Level audio automatically</source>
             <translation>ऑडियो स्तर को स्वचालित रूप से समायोजित करें</translation>
+        </message>
+        <message>
+            <source>Voice volume</source>
+            <translation>वॉइस चैट की आवाज़</translation>
+        </message>
+        <message>
+            <source>App sounds</source>
+            <translation>ऐप की ध्वनियाँ</translation>
+        </message>
+        <message>
+            <source>Read bot messages aloud</source>
+            <translation>बॉट के संदेश पढ़कर सुनाएँ</translation>
         </message>
     </context>
     <context>
@@ -1188,6 +1200,10 @@
             <source>This device</source>
             <translation>यह डिवाइस</translation>
         </message>
+        <message>
+            <source>Use default music volume</source>
+            <translation>संगीत का डिफ़ॉल्ट वॉल्यूम इस्तेमाल करो</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1299,6 +1315,22 @@
             <source>The sanitized image could not be written completely.</source>
             <translation>साफ की गई छवि पूरी तरह लिखी नहीं जा सकी.</translation>
         </message>
+        <message>
+            <source>%1 joined.</source>
+            <translation>%1 शामिल हुआ.</translation>
+        </message>
+        <message>
+            <source>%1 left.</source>
+            <translation>%1 चला गया.</translation>
+        </message>
+        <message>
+            <source>%1 was kicked.</source>
+            <translation>%1 को हटा दिया गया.</translation>
+        </message>
+        <message>
+            <source>%1 was banned from the channel.</source>
+            <translation>%1 को चैनल से बैन किया गया.</translation>
+        </message>
     </context>
     <context>
         <name>ChatPanel</name>
@@ -1361,22 +1393,6 @@
         <message>
             <source>Loading...</source>
             <translation>लोड हो रहा है...</translation>
-        </message>
-        <message>
-            <source>%1 joined.</source>
-            <translation>%1 शामिल हुआ.</translation>
-        </message>
-        <message>
-            <source>%1 left.</source>
-            <translation>%1 चला गया.</translation>
-        </message>
-        <message>
-            <source>%1 was kicked.</source>
-            <translation>%1 को हटा दिया गया.</translation>
-        </message>
-        <message>
-            <source>%1 was banned from the channel.</source>
-            <translation>%1 को चैनल से बैन किया गया.</translation>
         </message>
         <message>
             <source>Message could not be sent. Check the connection and text length.</source>
@@ -2877,7 +2893,6 @@
             <translation>पासवर्ड सत्यापित नहीं किया जा सका।</translation>
         </message>
     </context>
-
     <context>
         <name>Headless</name>
         <message>
@@ -3230,6 +3245,53 @@
         <message>
             <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
             <translation>सिस्टम ट्रे उपलब्ध नहीं है; ऐप विंडो में खुला रहेगा.</translation>
+        </message>
+    </context>
+    <context>
+        <name>LocalLanguage</name>
+        <message>
+            <source>Translation (experimental)</source>
+            <translation>अनुवाद (प्रायोगिक)</translation>
+        </message>
+        <message>
+            <source>Spoken language</source>
+            <translation>बोली जाने वाली भाषा</translation>
+        </message>
+        <message>
+            <source>Translate to</source>
+            <translation>इसमें अनुवाद करें</translation>
+        </message>
+        <message>
+            <source>Translate messages</source>
+            <translation>संदेशों का अनुवाद करें</translation>
+        </message>
+        <message>
+            <source>Translated voice</source>
+            <translation>अनुवादित आवाज़</translation>
+        </message>
+        <message>
+            <source>Original audio</source>
+            <translation>मूल ऑडियो</translation>
+        </message>
+        <message>
+            <source>Original text</source>
+            <translation>मूल पाठ</translation>
+        </message>
+        <message>
+            <source>Prepare languages</source>
+            <translation>भाषाएँ तैयार करें</translation>
+        </message>
+        <message>
+            <source>Local language processing is unavailable.</source>
+            <translation>स्थानीय भाषा प्रसंस्करण उपलब्ध नहीं है।</translation>
+        </message>
+        <message>
+            <source>Language settings could not be read.</source>
+            <translation>भाषा सेटिंग पढ़ी नहीं जा सकीं।</translation>
+        </message>
+        <message>
+            <source>Language settings could not be saved.</source>
+            <translation>भाषा सेटिंग सहेजी नहीं जा सकीं।</translation>
         </message>
     </context>
 </TS>

@@ -259,6 +259,10 @@
             <source>App audio only</source>
             <translation>Alleen appgeluid</translation>
         </message>
+        <message>
+            <source>Speech output is unavailable.</source>
+            <translation>Spraakuitvoer is niet beschikbaar.</translation>
+        </message>
     </context>
     <context>
         <name>AudioRecording</name>
@@ -494,10 +498,6 @@
             <translation>Externe toets wissen</translation>
         </message>
         <message>
-            <source>Playback volume</source>
-            <translation>Afspeelvolume</translation>
-        </message>
-        <message>
             <source>Not assigned</source>
             <translation>Niet toegewezen</translation>
         </message>
@@ -508,6 +508,18 @@
         <message>
             <source>Level audio automatically</source>
             <translation>Audioniveau automatisch aanpassen</translation>
+        </message>
+        <message>
+            <source>Voice volume</source>
+            <translation>Volume van spraakchat</translation>
+        </message>
+        <message>
+            <source>App sounds</source>
+            <translation>Appgeluiden</translation>
+        </message>
+        <message>
+            <source>Read bot messages aloud</source>
+            <translation>Botberichten voorlezen</translation>
         </message>
     </context>
     <context>
@@ -1188,6 +1200,10 @@
             <source>This device</source>
             <translation>Dit apparaat</translation>
         </message>
+        <message>
+            <source>Use default music volume</source>
+            <translation>Standaardvolume voor muziek gebruiken</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1299,6 +1315,22 @@
             <source>The sanitized image could not be written completely.</source>
             <translation>De opgeschoonde afbeelding kon niet volledig worden geschreven.</translation>
         </message>
+        <message>
+            <source>%1 joined.</source>
+            <translation>%1 is toegetreden.</translation>
+        </message>
+        <message>
+            <source>%1 left.</source>
+            <translation>%1 is vertrokken.</translation>
+        </message>
+        <message>
+            <source>%1 was kicked.</source>
+            <translation>%1 is verwijderd.</translation>
+        </message>
+        <message>
+            <source>%1 was banned from the channel.</source>
+            <translation>%1 is uit het kanaal verbannen.</translation>
+        </message>
     </context>
     <context>
         <name>ChatPanel</name>
@@ -1361,22 +1393,6 @@
         <message>
             <source>Loading...</source>
             <translation>Laden...</translation>
-        </message>
-        <message>
-            <source>%1 joined.</source>
-            <translation>%1 is toegetreden.</translation>
-        </message>
-        <message>
-            <source>%1 left.</source>
-            <translation>%1 is vertrokken.</translation>
-        </message>
-        <message>
-            <source>%1 was kicked.</source>
-            <translation>%1 is verwijderd.</translation>
-        </message>
-        <message>
-            <source>%1 was banned from the channel.</source>
-            <translation>%1 is uit het kanaal verbannen.</translation>
         </message>
         <message>
             <source>Message could not be sent. Check the connection and text length.</source>
@@ -2877,7 +2893,6 @@
             <translation>Het wachtwoord kon niet worden geverifieerd.</translation>
         </message>
     </context>
-
     <context>
         <name>Headless</name>
         <message>
@@ -3230,6 +3245,53 @@
         <message>
             <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
             <translation>Systeemvak niet beschikbaar; de app blijft als venster geopend.</translation>
+        </message>
+    </context>
+    <context>
+        <name>LocalLanguage</name>
+        <message>
+            <source>Translation (experimental)</source>
+            <translation>Vertaling (experimenteel)</translation>
+        </message>
+        <message>
+            <source>Spoken language</source>
+            <translation>Gesproken taal</translation>
+        </message>
+        <message>
+            <source>Translate to</source>
+            <translation>Vertalen naar</translation>
+        </message>
+        <message>
+            <source>Translate messages</source>
+            <translation>Berichten vertalen</translation>
+        </message>
+        <message>
+            <source>Translated voice</source>
+            <translation>Vertaalde stem</translation>
+        </message>
+        <message>
+            <source>Original audio</source>
+            <translation>Originele audio</translation>
+        </message>
+        <message>
+            <source>Original text</source>
+            <translation>Originele tekst</translation>
+        </message>
+        <message>
+            <source>Prepare languages</source>
+            <translation>Talen voorbereiden</translation>
+        </message>
+        <message>
+            <source>Local language processing is unavailable.</source>
+            <translation>Lokale taalverwerking is niet beschikbaar.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be read.</source>
+            <translation>Taalinstellingen konden niet worden gelezen.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be saved.</source>
+            <translation>Taalinstellingen konden niet worden opgeslagen.</translation>
         </message>
     </context>
 </TS>

@@ -259,6 +259,10 @@
             <source>App audio only</source>
             <translation>Само звук от приложението</translation>
         </message>
+        <message>
+            <source>Speech output is unavailable.</source>
+            <translation>Гласовият изход е недостъпен.</translation>
+        </message>
     </context>
     <context>
         <name>AudioRecording</name>
@@ -494,10 +498,6 @@
             <translation>Изчистване на дистанционния бутон</translation>
         </message>
         <message>
-            <source>Playback volume</source>
-            <translation>Сила на звука при възпроизвеждане</translation>
-        </message>
-        <message>
             <source>Not assigned</source>
             <translation>Не е присвоен</translation>
         </message>
@@ -508,6 +508,18 @@
         <message>
             <source>Level audio automatically</source>
             <translation>Автоматично регулиране на звука</translation>
+        </message>
+        <message>
+            <source>Voice volume</source>
+            <translation>Сила на гласовия чат</translation>
+        </message>
+        <message>
+            <source>App sounds</source>
+            <translation>Звуци на приложението</translation>
+        </message>
+        <message>
+            <source>Read bot messages aloud</source>
+            <translation>Прочитане на съобщенията на бота</translation>
         </message>
     </context>
     <context>
@@ -1188,6 +1200,10 @@
             <source>This device</source>
             <translation>Това устройство</translation>
         </message>
+        <message>
+            <source>Use default music volume</source>
+            <translation>Използвай стандартната сила на музиката</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1299,6 +1315,22 @@
             <source>The sanitized image could not be written completely.</source>
             <translation>Почистеното изображение не можа да бъде записано напълно.</translation>
         </message>
+        <message>
+            <source>%1 joined.</source>
+            <translation>%1 се присъедини.</translation>
+        </message>
+        <message>
+            <source>%1 left.</source>
+            <translation>%1 напусна.</translation>
+        </message>
+        <message>
+            <source>%1 was kicked.</source>
+            <translation>%1 беше изритан.</translation>
+        </message>
+        <message>
+            <source>%1 was banned from the channel.</source>
+            <translation>%1 беше блокиран от канала.</translation>
+        </message>
     </context>
     <context>
         <name>ChatPanel</name>
@@ -1361,22 +1393,6 @@
         <message>
             <source>Loading...</source>
             <translation>Зареждане...</translation>
-        </message>
-        <message>
-            <source>%1 joined.</source>
-            <translation>%1 се присъедини.</translation>
-        </message>
-        <message>
-            <source>%1 left.</source>
-            <translation>%1 напусна.</translation>
-        </message>
-        <message>
-            <source>%1 was kicked.</source>
-            <translation>%1 беше изритан.</translation>
-        </message>
-        <message>
-            <source>%1 was banned from the channel.</source>
-            <translation>%1 беше блокиран от канала.</translation>
         </message>
         <message>
             <source>Message could not be sent. Check the connection and text length.</source>
@@ -2877,7 +2893,6 @@
             <translation>Паролата не можа да бъде проверена.</translation>
         </message>
     </context>
-
     <context>
         <name>Headless</name>
         <message>
@@ -3230,6 +3245,53 @@
         <message>
             <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
             <translation>Системната област за уведомяване не е достъпна; приложението остава отворено в прозорец.</translation>
+        </message>
+    </context>
+    <context>
+        <name>LocalLanguage</name>
+        <message>
+            <source>Translation (experimental)</source>
+            <translation>Превод (експериментален)</translation>
+        </message>
+        <message>
+            <source>Spoken language</source>
+            <translation>Говорим език</translation>
+        </message>
+        <message>
+            <source>Translate to</source>
+            <translation>Преведи на</translation>
+        </message>
+        <message>
+            <source>Translate messages</source>
+            <translation>Превеждай съобщения</translation>
+        </message>
+        <message>
+            <source>Translated voice</source>
+            <translation>Преведен глас</translation>
+        </message>
+        <message>
+            <source>Original audio</source>
+            <translation>Оригинален звук</translation>
+        </message>
+        <message>
+            <source>Original text</source>
+            <translation>Оригинален текст</translation>
+        </message>
+        <message>
+            <source>Prepare languages</source>
+            <translation>Подготви езици</translation>
+        </message>
+        <message>
+            <source>Local language processing is unavailable.</source>
+            <translation>Локалната обработка на езика не е налична.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be read.</source>
+            <translation>Настройките за език не могат да бъдат прочетени.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be saved.</source>
+            <translation>Настройките за език не могат да бъдат запазени.</translation>
         </message>
     </context>
 </TS>

@@ -259,6 +259,10 @@
             <source>App audio only</source>
             <translation>Միայն հավելվածի ձայնը</translation>
         </message>
+        <message>
+            <source>Speech output is unavailable.</source>
+            <translation>Խոսքային ելքը հասանելի չէ։</translation>
+        </message>
     </context>
     <context>
         <name>AudioRecording</name>
@@ -494,10 +498,6 @@
             <translation>Մաքրել հեռակառավարման "Push-to-Talk" ստեղնաշարի դյուրանցումը</translation>
         </message>
         <message>
-            <source>Playback volume</source>
-            <translation>Նվագարկման ծավալը</translation>
-        </message>
-        <message>
             <source>Not assigned</source>
             <translation>նշանակված չէ</translation>
         </message>
@@ -508,6 +508,18 @@
         <message>
             <source>Level audio automatically</source>
             <translation>Ձայնի մակարդակը ավտոմատ կերպով</translation>
+        </message>
+        <message>
+            <source>Voice volume</source>
+            <translation>Ձայնային զրույցի ձայնաչափը</translation>
+        </message>
+        <message>
+            <source>App sounds</source>
+            <translation>Հավելվածի ձայները</translation>
+        </message>
+        <message>
+            <source>Read bot messages aloud</source>
+            <translation>Բարձրաձայն կարդալ բոտի հաղորդագրությունները</translation>
         </message>
     </context>
     <context>
@@ -1188,6 +1200,10 @@
             <source>This device</source>
             <translation>Այս սարքը</translation>
         </message>
+        <message>
+            <source>Use default music volume</source>
+            <translation>Օգտագործել երաժշտության լռելյայն ձայնի ուժգնությունը</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1299,6 +1315,22 @@
             <source>The sanitized image could not be written completely.</source>
             <translation>Մաքրված պատկերը չհաջողվեց ամբողջությամբ գրել.</translation>
         </message>
+        <message>
+            <source>%1 joined.</source>
+            <translation>%1 միացավ:</translation>
+        </message>
+        <message>
+            <source>%1 left.</source>
+            <translation>%1-ը հեռացավ:</translation>
+        </message>
+        <message>
+            <source>%1 was kicked.</source>
+            <translation>%1-ը դուրս է հանվել:</translation>
+        </message>
+        <message>
+            <source>%1 was banned from the channel.</source>
+            <translation>%1-ը արգելափակվել է ալիքից:</translation>
+        </message>
     </context>
     <context>
         <name>ChatPanel</name>
@@ -1361,22 +1393,6 @@
         <message>
             <source>Loading...</source>
             <translation>Բեռնվում է...</translation>
-        </message>
-        <message>
-            <source>%1 joined.</source>
-            <translation>%1 միացավ:</translation>
-        </message>
-        <message>
-            <source>%1 left.</source>
-            <translation>%1-ը հեռացավ:</translation>
-        </message>
-        <message>
-            <source>%1 was kicked.</source>
-            <translation>%1-ը դուրս է հանվել:</translation>
-        </message>
-        <message>
-            <source>%1 was banned from the channel.</source>
-            <translation>%1-ը արգելափակվել է ալիքից:</translation>
         </message>
         <message>
             <source>Message could not be sent. Check the connection and text length.</source>
@@ -2877,7 +2893,6 @@
             <translation>Չհաջողվեց ստուգել գաղտնաբառը։</translation>
         </message>
     </context>
-
     <context>
         <name>Headless</name>
         <message>
@@ -3230,6 +3245,53 @@
         <message>
             <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
             <translation>Համակարգային սկուտեղն անհասանելի է. հավելվածը բաց է մնում պատուհանում.</translation>
+        </message>
+    </context>
+    <context>
+        <name>LocalLanguage</name>
+        <message>
+            <source>Translation (experimental)</source>
+            <translation>Թարգմանություն (փորձնական)</translation>
+        </message>
+        <message>
+            <source>Spoken language</source>
+            <translation>Խոսքի լեզու</translation>
+        </message>
+        <message>
+            <source>Translate to</source>
+            <translation>Թարգմանել դեպի</translation>
+        </message>
+        <message>
+            <source>Translate messages</source>
+            <translation>Թարգմանել հաղորդագրությունները</translation>
+        </message>
+        <message>
+            <source>Translated voice</source>
+            <translation>Թարգմանված ձայն</translation>
+        </message>
+        <message>
+            <source>Original audio</source>
+            <translation>Բնօրինակ ձայն</translation>
+        </message>
+        <message>
+            <source>Original text</source>
+            <translation>Բնօրինակ տեքստ</translation>
+        </message>
+        <message>
+            <source>Prepare languages</source>
+            <translation>Պատրաստել լեզուները</translation>
+        </message>
+        <message>
+            <source>Local language processing is unavailable.</source>
+            <translation>Լեզվի տեղային մշակումը հասանելի չէ։</translation>
+        </message>
+        <message>
+            <source>Language settings could not be read.</source>
+            <translation>Չհաջողվեց կարդալ լեզվի կարգավորումները։</translation>
+        </message>
+        <message>
+            <source>Language settings could not be saved.</source>
+            <translation>Չհաջողվեց պահպանել լեզվի կարգավորումները։</translation>
         </message>
     </context>
 </TS>

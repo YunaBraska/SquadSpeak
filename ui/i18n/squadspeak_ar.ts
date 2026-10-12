@@ -259,6 +259,10 @@
             <source>App audio only</source>
             <translation>صوت التطبيق فقط</translation>
         </message>
+        <message>
+            <source>Speech output is unavailable.</source>
+            <translation>الإخراج الصوتي غير متاح.</translation>
+        </message>
     </context>
     <context>
         <name>AudioRecording</name>
@@ -494,10 +498,6 @@
             <translation>مسح المفتاح البعيد</translation>
         </message>
         <message>
-            <source>Playback volume</source>
-            <translation>مستوى صوت التشغيل</translation>
-        </message>
-        <message>
             <source>Not assigned</source>
             <translation>غير معين</translation>
         </message>
@@ -508,6 +508,18 @@
         <message>
             <source>Level audio automatically</source>
             <translation>ضبط مستوى الصوت تلقائيا</translation>
+        </message>
+        <message>
+            <source>Voice volume</source>
+            <translation>مستوى صوت المحادثة</translation>
+        </message>
+        <message>
+            <source>App sounds</source>
+            <translation>أصوات التطبيق</translation>
+        </message>
+        <message>
+            <source>Read bot messages aloud</source>
+            <translation>قراءة رسائل البوت بصوت عال</translation>
         </message>
     </context>
     <context>
@@ -1188,6 +1200,10 @@
             <source>This device</source>
             <translation>هذا الجهاز</translation>
         </message>
+        <message>
+            <source>Use default music volume</source>
+            <translation>استخدام مستوى صوت الموسيقى الافتراضي</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1299,6 +1315,22 @@
             <source>The sanitized image could not be written completely.</source>
             <translation>تعذر كتابة الصورة المنقاة بالكامل.</translation>
         </message>
+        <message>
+            <source>%1 joined.</source>
+            <translation>%1 انضم.</translation>
+        </message>
+        <message>
+            <source>%1 left.</source>
+            <translation>%1 غادر.</translation>
+        </message>
+        <message>
+            <source>%1 was kicked.</source>
+            <translation>%1 طُرد.</translation>
+        </message>
+        <message>
+            <source>%1 was banned from the channel.</source>
+            <translation>تم حظر %1 من القناة.</translation>
+        </message>
     </context>
     <context>
         <name>ChatPanel</name>
@@ -1361,22 +1393,6 @@
         <message>
             <source>Loading...</source>
             <translation>جار التحميل...</translation>
-        </message>
-        <message>
-            <source>%1 joined.</source>
-            <translation>%1 انضم.</translation>
-        </message>
-        <message>
-            <source>%1 left.</source>
-            <translation>%1 غادر.</translation>
-        </message>
-        <message>
-            <source>%1 was kicked.</source>
-            <translation>%1 طُرد.</translation>
-        </message>
-        <message>
-            <source>%1 was banned from the channel.</source>
-            <translation>تم حظر %1 من القناة.</translation>
         </message>
         <message>
             <source>Message could not be sent. Check the connection and text length.</source>
@@ -2877,7 +2893,6 @@
             <translation>تعذر التحقق من كلمة المرور.</translation>
         </message>
     </context>
-
     <context>
         <name>Headless</name>
         <message>
@@ -3230,6 +3245,53 @@
         <message>
             <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
             <translation>علبة النظام غير متاحة; يظل التطبيق مفتوحا في نافذة.</translation>
+        </message>
+    </context>
+    <context>
+        <name>LocalLanguage</name>
+        <message>
+            <source>Translation (experimental)</source>
+            <translation>الترجمة (تجريبية)</translation>
+        </message>
+        <message>
+            <source>Spoken language</source>
+            <translation>اللغة المنطوقة</translation>
+        </message>
+        <message>
+            <source>Translate to</source>
+            <translation>ترجمة إلى</translation>
+        </message>
+        <message>
+            <source>Translate messages</source>
+            <translation>ترجمة الرسائل</translation>
+        </message>
+        <message>
+            <source>Translated voice</source>
+            <translation>الصوت المترجم</translation>
+        </message>
+        <message>
+            <source>Original audio</source>
+            <translation>الصوت الأصلي</translation>
+        </message>
+        <message>
+            <source>Original text</source>
+            <translation>النص الأصلي</translation>
+        </message>
+        <message>
+            <source>Prepare languages</source>
+            <translation>تجهيز اللغات</translation>
+        </message>
+        <message>
+            <source>Local language processing is unavailable.</source>
+            <translation>معالجة اللغة محليا غير متاحة.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be read.</source>
+            <translation>تعذرت قراءة إعدادات اللغة.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be saved.</source>
+            <translation>تعذر حفظ إعدادات اللغة.</translation>
         </message>
     </context>
 </TS>

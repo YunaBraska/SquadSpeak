@@ -5,6 +5,8 @@
 #include "voice_mixer.hpp"
 #include "echo_canceller.hpp"
 #include "output_monitor.hpp"
+#include "speech_output.hpp"
+#include "local_language.hpp"
 #include <QElapsedTimer>
 #include <QAudioDevice>
 #include <QAudioFormat>
@@ -21,6 +23,7 @@
 
 class AudioModel final : public QObject {
     Q_OBJECT
+    Q_PROPERTY(QObject* language READ language CONSTANT)
     Q_PROPERTY(QVariantList inputs READ inputs NOTIFY devicesChanged)
     Q_PROPERTY(QVariantList outputs READ outputs NOTIFY devicesChanged)
     Q_PROPERTY(int inputIndex READ inputIndex NOTIFY devicesChanged)
@@ -50,6 +53,9 @@ class AudioModel final : public QObject {
     Q_PROPERTY(double transmitLevel READ transmitLevel NOTIFY activityChanged)
     Q_PROPERTY(double musicVolume READ musicVolume NOTIFY profileChanged)
     Q_PROPERTY(double outputVolume READ outputVolume NOTIFY profileChanged)
+    Q_PROPERTY(double notificationVolume READ notificationVolume NOTIFY profileChanged)
+    Q_PROPERTY(bool readBotMessages READ readBotMessages NOTIFY profileChanged)
+    Q_PROPERTY(bool speechAvailable READ speechAvailable CONSTANT)
     Q_PROPERTY(bool deafened READ deafened NOTIFY profileChanged)
     Q_PROPERTY(bool automaticVolume READ automaticVolume NOTIFY profileChanged)
     Q_PROPERTY(double maximumFrequency READ maximumFrequency NOTIFY devicesChanged)
@@ -70,6 +76,7 @@ public:
 public slots:
     bool setPreviewActive(bool enabled) { return enabled ? start() : stop(); }
 public:
+    [[nodiscard]] QObject* language() { return &language_; }
     [[nodiscard]] QVariantList inputs() const;
     [[nodiscard]] QVariantList outputs() const;
     [[nodiscard]] int inputIndex() const;
@@ -103,10 +110,21 @@ public:
     [[nodiscard]] double transmitLevel() const;
     [[nodiscard]] double musicVolume() const { return musicVolume_; }
     Q_INVOKABLE bool setMusicVolume(double value);
+    Q_INVOKABLE double channelMusicVolume(const QString& source);
+    Q_INVOKABLE bool setChannelMusicVolume(const QString& source, double value);
+    Q_INVOKABLE bool resetChannelMusicVolume(const QString& source);
     [[nodiscard]] double outputVolume() const { return outputVolume_; }
     [[nodiscard]] bool deafened() const { return deafened_; }
     bool setDeafened(bool deafened);
-    [[nodiscard]] bool eventAudioEnabled() const { return !deafened_ && outputReady() && outputVolume_ > 0; }
+    [[nodiscard]] bool eventAudioEnabled() const { return !deafened_ && outputReady() && notificationVolume_ > 0; }
+    [[nodiscard]] double notificationVolume() const { return notificationVolume_; }
+    [[nodiscard]] bool readBotMessages() const { return SpeechOutput::supported && readBotMessages_; }
+    [[nodiscard]] bool speechAvailable() const { return SpeechOutput::supported; }
+    Q_INVOKABLE bool setNotificationVolume(double value);
+    Q_INVOKABLE bool setReadBotMessages(bool enabled);
+    bool readBotMessage(const QString& text);
+    void cancelBotMessages();
+    void cancelNotifications();
     bool playEvent(const QString& kind);
     [[nodiscard]] double maximumFrequency() const;
     [[nodiscard]] bool running() const { return source_ != nullptr && wantsCapture_; }
@@ -138,7 +156,7 @@ public:
     Q_INVOKABLE double participantVolume(const QString& peer) const;
     Q_INVOKABLE bool setParticipantVolume(const QString& peer, double value);
     bool setVoiceState(bool joined, bool transmit, bool pushToTalk = false);
-    bool setParticipants(const QVariantList& participants);
+    bool setParticipants(const QVariantList& participants, const QString& channel = {});
     bool receiveAudio(const QString& peer, const QByteArray& packet, int missing = 0);
     Q_INVOKABLE bool start();
     Q_INVOKABLE bool stop();
@@ -171,6 +189,8 @@ private:
     bool updateProfile(squad::InputProfile profile);
     bool updateActivation(squad::VoiceActivation activation);
     void applyActivation();
+    void applyOutputVolumes();
+    bool saveChannelMusicVolume(const QString& source, std::optional<double> value);
     bool select(bool input, const QString& deviceId);
     void setStatus(QString status);
     static QAudioDevice resolve(const QList<QAudioDevice>& devices, const QByteArray& selected, bool input);
@@ -191,7 +211,12 @@ private:
     bool deviceReference_ = false;
     squad::VoiceActivation activation_;
     double outputVolume_ = 0.5;
-    double musicVolume_ = 0.35;
+    double musicVolume_ = 0.175;
+    double notificationVolume_ = 0.5;
+    bool readBotMessages_ = false;
+    SpeechOutput speech_;
+    LocalLanguage language_;
+    std::deque<std::pair<QString, qint64>> announcements_;
     bool deafened_ = false;
     QSoundEffect eventSound_;
     std::unique_ptr<QAudioSource> source_;

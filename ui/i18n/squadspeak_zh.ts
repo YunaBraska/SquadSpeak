@@ -259,6 +259,10 @@
             <source>App audio only</source>
             <translation>仅应用音频</translation>
         </message>
+        <message>
+            <source>Speech output is unavailable.</source>
+            <translation>语音输出不可用。</translation>
+        </message>
     </context>
     <context>
         <name>AudioRecording</name>
@@ -494,10 +498,6 @@
             <translation>清除远程按键</translation>
         </message>
         <message>
-            <source>Playback volume</source>
-            <translation>播放音量</translation>
-        </message>
-        <message>
             <source>Not assigned</source>
             <translation>未分配</translation>
         </message>
@@ -508,6 +508,18 @@
         <message>
             <source>Level audio automatically</source>
             <translation>自动调节音频电平</translation>
+        </message>
+        <message>
+            <source>Voice volume</source>
+            <translation>语音聊天音量</translation>
+        </message>
+        <message>
+            <source>App sounds</source>
+            <translation>应用音效</translation>
+        </message>
+        <message>
+            <source>Read bot messages aloud</source>
+            <translation>朗读机器人的消息</translation>
         </message>
     </context>
     <context>
@@ -1188,6 +1200,10 @@
             <source>This device</source>
             <translation>此设备</translation>
         </message>
+        <message>
+            <source>Use default music volume</source>
+            <translation>使用默认音乐音量</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1299,6 +1315,22 @@
             <source>The sanitized image could not be written completely.</source>
             <translation>无法完整写入清理后的图像.</translation>
         </message>
+        <message>
+            <source>%1 joined.</source>
+            <translation>%1 加入了.</translation>
+        </message>
+        <message>
+            <source>%1 left.</source>
+            <translation>%1 离开了.</translation>
+        </message>
+        <message>
+            <source>%1 was kicked.</source>
+            <translation>%1 被踢出.</translation>
+        </message>
+        <message>
+            <source>%1 was banned from the channel.</source>
+            <translation>%1 被封禁出频道.</translation>
+        </message>
     </context>
     <context>
         <name>ChatPanel</name>
@@ -1361,22 +1393,6 @@
         <message>
             <source>Loading...</source>
             <translation>正在加载...</translation>
-        </message>
-        <message>
-            <source>%1 joined.</source>
-            <translation>%1 加入了.</translation>
-        </message>
-        <message>
-            <source>%1 left.</source>
-            <translation>%1 离开了.</translation>
-        </message>
-        <message>
-            <source>%1 was kicked.</source>
-            <translation>%1 被踢出.</translation>
-        </message>
-        <message>
-            <source>%1 was banned from the channel.</source>
-            <translation>%1 被封禁出频道.</translation>
         </message>
         <message>
             <source>Message could not be sent. Check the connection and text length.</source>
@@ -2877,7 +2893,6 @@
             <translation>无法验证密码.</translation>
         </message>
     </context>
-
     <context>
         <name>Headless</name>
         <message>
@@ -3230,6 +3245,53 @@
         <message>
             <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
             <translation>系统托盘不可用; 应用将以窗口形式保持打开.</translation>
+        </message>
+    </context>
+    <context>
+        <name>LocalLanguage</name>
+        <message>
+            <source>Translation (experimental)</source>
+            <translation>翻译（实验性）</translation>
+        </message>
+        <message>
+            <source>Spoken language</source>
+            <translation>口语语言</translation>
+        </message>
+        <message>
+            <source>Translate to</source>
+            <translation>翻译为</translation>
+        </message>
+        <message>
+            <source>Translate messages</source>
+            <translation>翻译消息</translation>
+        </message>
+        <message>
+            <source>Translated voice</source>
+            <translation>翻译后的语音</translation>
+        </message>
+        <message>
+            <source>Original audio</source>
+            <translation>原始音频</translation>
+        </message>
+        <message>
+            <source>Original text</source>
+            <translation>原文</translation>
+        </message>
+        <message>
+            <source>Prepare languages</source>
+            <translation>准备语言</translation>
+        </message>
+        <message>
+            <source>Local language processing is unavailable.</source>
+            <translation>本地语言处理不可用。</translation>
+        </message>
+        <message>
+            <source>Language settings could not be read.</source>
+            <translation>无法读取语言设置。</translation>
+        </message>
+        <message>
+            <source>Language settings could not be saved.</source>
+            <translation>无法保存语言设置。</translation>
         </message>
     </context>
 </TS>

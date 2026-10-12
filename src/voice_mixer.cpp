@@ -155,7 +155,7 @@ bool VoiceMixer::receive(const QString& peer, const QByteArray& packet, qint64 n
     return true;
 }
 
-std::vector<float> VoiceMixer::render(int sampleRate, qint64 now) {
+std::vector<float> VoiceMixer::render(int sampleRate, qint64 now, const PlaybackFilter& filter) {
     validRate(sampleRate);
     if (now < 0) throw std::invalid_argument(QT_TRANSLATE_NOOP("AudioModel", "Playback clock must be nonnegative"));
     if (lastRender_ >= 0 && (now < lastRender_ || now - lastRender_ > 120))
@@ -164,8 +164,10 @@ std::vector<float> VoiceMixer::render(int sampleRate, qint64 now) {
     std::array<float, 960> mixed{};
     for (auto& [id, stream] : streams_) {
         while (!stream.frames.empty() && now - stream.frames.front().received > 120) stream.frames.pop_front();
-        if (stream.frames.empty()) continue;
-        const auto frame = stream.frames.front(); stream.frames.pop_front();
+        if (stream.frames.empty() && !filter) continue;
+        Frame frame{};
+        if (!stream.frames.empty()) { frame = stream.frames.front(); stream.frames.pop_front(); }
+        if (filter) filter(id, frame.samples, now);
         double energy = 0;
         for (const auto sample : frame.samples) energy += double(sample) * sample;
         const auto rms = std::sqrt(energy / frame.samples.size());

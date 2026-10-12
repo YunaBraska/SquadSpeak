@@ -259,6 +259,10 @@
             <source>App audio only</source>
             <translation>صرف ایپ کی آڈیو</translation>
         </message>
+        <message>
+            <source>Speech output is unavailable.</source>
+            <translation>تقریری آؤٹ پٹ دستیاب نہیں ہے۔</translation>
+        </message>
     </context>
     <context>
         <name>AudioRecording</name>
@@ -494,10 +498,6 @@
             <translation>ریموٹ پش ٹو ٹاک کی بورڈ شارٹ کٹ صاف کریں۔</translation>
         </message>
         <message>
-            <source>Playback volume</source>
-            <translation>پلے بیک والیوم</translation>
-        </message>
-        <message>
             <source>Not assigned</source>
             <translation>تفویض نہیں کیا گیا۔</translation>
         </message>
@@ -508,6 +508,18 @@
         <message>
             <source>Level audio automatically</source>
             <translation>خود بخود آڈیو لیول کریں۔</translation>
+        </message>
+        <message>
+            <source>Voice volume</source>
+            <translation>وائس چیٹ کی آواز</translation>
+        </message>
+        <message>
+            <source>App sounds</source>
+            <translation>ایپ کی آوازیں</translation>
+        </message>
+        <message>
+            <source>Read bot messages aloud</source>
+            <translation>بوٹ کے پیغامات پڑھ کر سنائیں</translation>
         </message>
     </context>
     <context>
@@ -1188,6 +1200,10 @@
             <source>This device</source>
             <translation>یہ آلہ</translation>
         </message>
+        <message>
+            <source>Use default music volume</source>
+            <translation>موسیقی کا طے شدہ والیوم استعمال کرو</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1299,6 +1315,22 @@
             <source>The sanitized image could not be written completely.</source>
             <translation>صاف کی گئی تصویر مکمل طور پر نہیں لکھی جا سکی.</translation>
         </message>
+        <message>
+            <source>%1 joined.</source>
+            <translation>%1 شامل ہوا۔</translation>
+        </message>
+        <message>
+            <source>%1 left.</source>
+            <translation>%1 چلا گیا۔</translation>
+        </message>
+        <message>
+            <source>%1 was kicked.</source>
+            <translation>%1 کو چینل سے نکال دیا گیا۔</translation>
+        </message>
+        <message>
+            <source>%1 was banned from the channel.</source>
+            <translation>%1 چینل پر پابندی لگا دی گئی۔</translation>
+        </message>
     </context>
     <context>
         <name>ChatPanel</name>
@@ -1361,22 +1393,6 @@
         <message>
             <source>Loading...</source>
             <translation>لوڈ ہو رہا ہے...</translation>
-        </message>
-        <message>
-            <source>%1 joined.</source>
-            <translation>%1 شامل ہوا۔</translation>
-        </message>
-        <message>
-            <source>%1 left.</source>
-            <translation>%1 چلا گیا۔</translation>
-        </message>
-        <message>
-            <source>%1 was kicked.</source>
-            <translation>%1 کو چینل سے نکال دیا گیا۔</translation>
-        </message>
-        <message>
-            <source>%1 was banned from the channel.</source>
-            <translation>%1 چینل پر پابندی لگا دی گئی۔</translation>
         </message>
         <message>
             <source>Message could not be sent. Check the connection and text length.</source>
@@ -2877,7 +2893,6 @@
             <translation>پاس ورڈ کی تصدیق نہیں کی جا سکی۔</translation>
         </message>
     </context>
-
     <context>
         <name>Headless</name>
         <message>
@@ -3230,6 +3245,53 @@
         <message>
             <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
             <translation>سسٹم ٹرے دستیاب نہیں; ایپ ونڈو میں کھلی رہے گی.</translation>
+        </message>
+    </context>
+    <context>
+        <name>LocalLanguage</name>
+        <message>
+            <source>Translation (experimental)</source>
+            <translation>ترجمہ (تجرباتی)</translation>
+        </message>
+        <message>
+            <source>Spoken language</source>
+            <translation>بولی جانے والی زبان</translation>
+        </message>
+        <message>
+            <source>Translate to</source>
+            <translation>اس زبان میں ترجمہ</translation>
+        </message>
+        <message>
+            <source>Translate messages</source>
+            <translation>پیغامات کا ترجمہ کریں</translation>
+        </message>
+        <message>
+            <source>Translated voice</source>
+            <translation>ترجمہ شدہ آواز</translation>
+        </message>
+        <message>
+            <source>Original audio</source>
+            <translation>اصل آڈیو</translation>
+        </message>
+        <message>
+            <source>Original text</source>
+            <translation>اصل متن</translation>
+        </message>
+        <message>
+            <source>Prepare languages</source>
+            <translation>زبانیں تیار کریں</translation>
+        </message>
+        <message>
+            <source>Local language processing is unavailable.</source>
+            <translation>مقامی زبان کی پروسیسنگ دستیاب نہیں ہے۔</translation>
+        </message>
+        <message>
+            <source>Language settings could not be read.</source>
+            <translation>زبان کی ترتیبات پڑھی نہیں جا سکیں۔</translation>
+        </message>
+        <message>
+            <source>Language settings could not be saved.</source>
+            <translation>زبان کی ترتیبات محفوظ نہیں کی جا سکیں۔</translation>
         </message>
     </context>
 </TS>

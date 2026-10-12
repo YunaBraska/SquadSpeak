@@ -1220,6 +1220,7 @@ QVariantList LocalChannel::savedChannels() const {
         if (!owner && c && c->accepted) for (const auto& member : c->members)
             if (member.toMap().value("music").toBool()) { bot = member.toMap(); break; }
         entry.insert("music", bot.value("musicActive").toBool() && bot.value("musicState") == "playing");
+        entry.insert("musicId", bot.value("id"));
         result.append(entry);
     }
     std::sort(result.begin(), result.end(), [](const QVariant& a, const QVariant& b) {

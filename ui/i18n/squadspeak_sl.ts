@@ -259,6 +259,10 @@
             <source>App audio only</source>
             <translation>Samo zvok aplikacije</translation>
         </message>
+        <message>
+            <source>Speech output is unavailable.</source>
+            <translation>Govorni izhod ni na voljo.</translation>
+        </message>
     </context>
     <context>
         <name>AudioRecording</name>
@@ -494,10 +498,6 @@
             <translation>Počisti oddaljeno bližnjico za govor</translation>
         </message>
         <message>
-            <source>Playback volume</source>
-            <translation>Glasnost predvajanja</translation>
-        </message>
-        <message>
             <source>Not assigned</source>
             <translation>Ni dodeljeno</translation>
         </message>
@@ -508,6 +508,18 @@
         <message>
             <source>Level audio automatically</source>
             <translation>Samodejna raven zvoka</translation>
+        </message>
+        <message>
+            <source>Voice volume</source>
+            <translation>Glasnost glasovnega klepeta</translation>
+        </message>
+        <message>
+            <source>App sounds</source>
+            <translation>Zvoki aplikacije</translation>
+        </message>
+        <message>
+            <source>Read bot messages aloud</source>
+            <translation>Beri sporočila bota na glas</translation>
         </message>
     </context>
     <context>
@@ -1188,6 +1200,10 @@
             <source>This device</source>
             <translation>Ta naprava</translation>
         </message>
+        <message>
+            <source>Use default music volume</source>
+            <translation>Uporabi privzeto glasnost glasbe</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1299,6 +1315,22 @@
             <source>The sanitized image could not be written completely.</source>
             <translation>Očiščene slike ni bilo mogoče zapisati v celoti.</translation>
         </message>
+        <message>
+            <source>%1 joined.</source>
+            <translation>%1 se je pridružil.</translation>
+        </message>
+        <message>
+            <source>%1 left.</source>
+            <translation>%1 je odšel.</translation>
+        </message>
+        <message>
+            <source>%1 was kicked.</source>
+            <translation>%1 je bil izgnan.</translation>
+        </message>
+        <message>
+            <source>%1 was banned from the channel.</source>
+            <translation>%1 je bil izključen iz kanala.</translation>
+        </message>
     </context>
     <context>
         <name>ChatPanel</name>
@@ -1361,22 +1393,6 @@
         <message>
             <source>Loading...</source>
             <translation>Nalaganje ...</translation>
-        </message>
-        <message>
-            <source>%1 joined.</source>
-            <translation>%1 se je pridružil.</translation>
-        </message>
-        <message>
-            <source>%1 left.</source>
-            <translation>%1 je odšel.</translation>
-        </message>
-        <message>
-            <source>%1 was kicked.</source>
-            <translation>%1 je bil izgnan.</translation>
-        </message>
-        <message>
-            <source>%1 was banned from the channel.</source>
-            <translation>%1 je bil izključen iz kanala.</translation>
         </message>
         <message>
             <source>Message could not be sent. Check the connection and text length.</source>
@@ -2877,7 +2893,6 @@
             <translation>Gesla ni bilo mogoče preveriti.</translation>
         </message>
     </context>
-
     <context>
         <name>Headless</name>
         <message>
@@ -3230,6 +3245,53 @@
         <message>
             <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
             <translation>Sistemska vrstica ni na voljo; aplikacija ostane odprta v oknu.</translation>
+        </message>
+    </context>
+    <context>
+        <name>LocalLanguage</name>
+        <message>
+            <source>Translation (experimental)</source>
+            <translation>Prevajanje (poskusno)</translation>
+        </message>
+        <message>
+            <source>Spoken language</source>
+            <translation>Govorjeni jezik</translation>
+        </message>
+        <message>
+            <source>Translate to</source>
+            <translation>Prevedi v</translation>
+        </message>
+        <message>
+            <source>Translate messages</source>
+            <translation>Prevajaj sporočila</translation>
+        </message>
+        <message>
+            <source>Translated voice</source>
+            <translation>Prevedeni glas</translation>
+        </message>
+        <message>
+            <source>Original audio</source>
+            <translation>Izvirni zvok</translation>
+        </message>
+        <message>
+            <source>Original text</source>
+            <translation>Izvirno besedilo</translation>
+        </message>
+        <message>
+            <source>Prepare languages</source>
+            <translation>Pripravi jezike</translation>
+        </message>
+        <message>
+            <source>Local language processing is unavailable.</source>
+            <translation>Lokalna obdelava jezika ni na voljo.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be read.</source>
+            <translation>Jezikovnih nastavitev ni bilo mogoče prebrati.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be saved.</source>
+            <translation>Jezikovnih nastavitev ni bilo mogoče shraniti.</translation>
         </message>
     </context>
 </TS>

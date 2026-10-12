@@ -259,6 +259,10 @@
             <source>App audio only</source>
             <translation>Només l'àudio de l'aplicació</translation>
         </message>
+        <message>
+            <source>Speech output is unavailable.</source>
+            <translation>La sortida de veu no està disponible.</translation>
+        </message>
     </context>
     <context>
         <name>AudioRecording</name>
@@ -494,10 +498,6 @@
             <translation>Esborra la drecera remota per parlar</translation>
         </message>
         <message>
-            <source>Playback volume</source>
-            <translation>volum de reproducció</translation>
-        </message>
-        <message>
             <source>Not assigned</source>
             <translation>No assignat</translation>
         </message>
@@ -508,6 +508,18 @@
         <message>
             <source>Level audio automatically</source>
             <translation>Nivell d'àudio automàticament</translation>
+        </message>
+        <message>
+            <source>Voice volume</source>
+            <translation>Volum del xat de veu</translation>
+        </message>
+        <message>
+            <source>App sounds</source>
+            <translation>Sons de l'aplicació</translation>
+        </message>
+        <message>
+            <source>Read bot messages aloud</source>
+            <translation>Llegeix els missatges del bot en veu alta</translation>
         </message>
     </context>
     <context>
@@ -1188,6 +1200,10 @@
             <source>This device</source>
             <translation>Aquest dispositiu</translation>
         </message>
+        <message>
+            <source>Use default music volume</source>
+            <translation>Utilitza el volum de música predeterminat</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1299,6 +1315,22 @@
             <source>The sanitized image could not be written completely.</source>
             <translation>No s'ha pogut escriure completament la imatge sanejada.</translation>
         </message>
+        <message>
+            <source>%1 joined.</source>
+            <translation>%1 s'ha unit.</translation>
+        </message>
+        <message>
+            <source>%1 left.</source>
+            <translation>%1 ha marxat.</translation>
+        </message>
+        <message>
+            <source>%1 was kicked.</source>
+            <translation>%1 ha estat expulsat.</translation>
+        </message>
+        <message>
+            <source>%1 was banned from the channel.</source>
+            <translation>%1 ha estat expulsat del canal.</translation>
+        </message>
     </context>
     <context>
         <name>ChatPanel</name>
@@ -1361,22 +1393,6 @@
         <message>
             <source>Loading...</source>
             <translation>Carregant...</translation>
-        </message>
-        <message>
-            <source>%1 joined.</source>
-            <translation>%1 s'ha unit.</translation>
-        </message>
-        <message>
-            <source>%1 left.</source>
-            <translation>%1 ha marxat.</translation>
-        </message>
-        <message>
-            <source>%1 was kicked.</source>
-            <translation>%1 ha estat expulsat.</translation>
-        </message>
-        <message>
-            <source>%1 was banned from the channel.</source>
-            <translation>%1 ha estat expulsat del canal.</translation>
         </message>
         <message>
             <source>Message could not be sent. Check the connection and text length.</source>
@@ -2877,7 +2893,6 @@
             <translation>No s'ha pogut verificar la contrasenya.</translation>
         </message>
     </context>
-
     <context>
         <name>Headless</name>
         <message>
@@ -3230,6 +3245,53 @@
         <message>
             <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
             <translation>La safata del sistema no està disponible; l'aplicació continua oberta en una finestra.</translation>
+        </message>
+    </context>
+    <context>
+        <name>LocalLanguage</name>
+        <message>
+            <source>Translation (experimental)</source>
+            <translation>Traducció (experimental)</translation>
+        </message>
+        <message>
+            <source>Spoken language</source>
+            <translation>Llengua parlada</translation>
+        </message>
+        <message>
+            <source>Translate to</source>
+            <translation>Tradueix a</translation>
+        </message>
+        <message>
+            <source>Translate messages</source>
+            <translation>Tradueix els missatges</translation>
+        </message>
+        <message>
+            <source>Translated voice</source>
+            <translation>Veu traduïda</translation>
+        </message>
+        <message>
+            <source>Original audio</source>
+            <translation>Àudio original</translation>
+        </message>
+        <message>
+            <source>Original text</source>
+            <translation>Text original</translation>
+        </message>
+        <message>
+            <source>Prepare languages</source>
+            <translation>Prepara les llengües</translation>
+        </message>
+        <message>
+            <source>Local language processing is unavailable.</source>
+            <translation>El processament local de llengües no està disponible.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be read.</source>
+            <translation>No s'han pogut llegir els ajustos de llengua.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be saved.</source>
+            <translation>No s'han pogut desar els ajustos de llengua.</translation>
         </message>
     </context>
 </TS>

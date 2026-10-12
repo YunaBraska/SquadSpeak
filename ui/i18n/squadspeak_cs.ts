@@ -259,6 +259,10 @@
             <source>App audio only</source>
             <translation>Pouze zvuk aplikace</translation>
         </message>
+        <message>
+            <source>Speech output is unavailable.</source>
+            <translation>Hlasový výstup není dostupný.</translation>
+        </message>
     </context>
     <context>
         <name>AudioRecording</name>
@@ -494,10 +498,6 @@
             <translation>Vymazat vzdálenou klávesu</translation>
         </message>
         <message>
-            <source>Playback volume</source>
-            <translation>Hlasitost přehrávání</translation>
-        </message>
-        <message>
             <source>Not assigned</source>
             <translation>Neuvedeno</translation>
         </message>
@@ -508,6 +508,18 @@
         <message>
             <source>Level audio automatically</source>
             <translation>Automaticky upravit hlasitost</translation>
+        </message>
+        <message>
+            <source>Voice volume</source>
+            <translation>Hlasitost hlasového chatu</translation>
+        </message>
+        <message>
+            <source>App sounds</source>
+            <translation>Zvuky aplikace</translation>
+        </message>
+        <message>
+            <source>Read bot messages aloud</source>
+            <translation>Číst zprávy bota nahlas</translation>
         </message>
     </context>
     <context>
@@ -1188,6 +1200,10 @@
             <source>This device</source>
             <translation>Toto zařízení</translation>
         </message>
+        <message>
+            <source>Use default music volume</source>
+            <translation>Použít výchozí hlasitost hudby</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1299,6 +1315,22 @@
             <source>The sanitized image could not be written completely.</source>
             <translation>Vyčištěný obrázek se nepodařilo zapsat celý.</translation>
         </message>
+        <message>
+            <source>%1 joined.</source>
+            <translation>%1 se připojil.</translation>
+        </message>
+        <message>
+            <source>%1 left.</source>
+            <translation>%1 odešel.</translation>
+        </message>
+        <message>
+            <source>%1 was kicked.</source>
+            <translation>%1 byl vykopnut.</translation>
+        </message>
+        <message>
+            <source>%1 was banned from the channel.</source>
+            <translation>%1 byl z kanálu zablokován.</translation>
+        </message>
     </context>
     <context>
         <name>ChatPanel</name>
@@ -1361,22 +1393,6 @@
         <message>
             <source>Loading...</source>
             <translation>Načítání...</translation>
-        </message>
-        <message>
-            <source>%1 joined.</source>
-            <translation>%1 se připojil.</translation>
-        </message>
-        <message>
-            <source>%1 left.</source>
-            <translation>%1 odešel.</translation>
-        </message>
-        <message>
-            <source>%1 was kicked.</source>
-            <translation>%1 byl vykopnut.</translation>
-        </message>
-        <message>
-            <source>%1 was banned from the channel.</source>
-            <translation>%1 byl z kanálu zablokován.</translation>
         </message>
         <message>
             <source>Message could not be sent. Check the connection and text length.</source>
@@ -2877,7 +2893,6 @@
             <translation>Heslo se nepodařilo ověřit.</translation>
         </message>
     </context>
-
     <context>
         <name>Headless</name>
         <message>
@@ -3230,6 +3245,53 @@
         <message>
             <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
             <translation>Systémová lišta není dostupná; aplikace zůstává otevřená v okně.</translation>
+        </message>
+    </context>
+    <context>
+        <name>LocalLanguage</name>
+        <message>
+            <source>Translation (experimental)</source>
+            <translation>Překlad (experimentální)</translation>
+        </message>
+        <message>
+            <source>Spoken language</source>
+            <translation>Mluvený jazyk</translation>
+        </message>
+        <message>
+            <source>Translate to</source>
+            <translation>Přeložit do</translation>
+        </message>
+        <message>
+            <source>Translate messages</source>
+            <translation>Překládat zprávy</translation>
+        </message>
+        <message>
+            <source>Translated voice</source>
+            <translation>Přeložený hlas</translation>
+        </message>
+        <message>
+            <source>Original audio</source>
+            <translation>Původní zvuk</translation>
+        </message>
+        <message>
+            <source>Original text</source>
+            <translation>Původní text</translation>
+        </message>
+        <message>
+            <source>Prepare languages</source>
+            <translation>Připravit jazyky</translation>
+        </message>
+        <message>
+            <source>Local language processing is unavailable.</source>
+            <translation>Místní zpracování jazyků není dostupné.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be read.</source>
+            <translation>Nastavení jazyka se nepodařilo přečíst.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be saved.</source>
+            <translation>Nastavení jazyka se nepodařilo uložit.</translation>
         </message>
     </context>
 </TS>

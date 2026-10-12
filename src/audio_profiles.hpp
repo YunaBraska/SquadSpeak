@@ -4,6 +4,7 @@
 #include "voice_mixer.hpp"
 #include <QSettings>
 #include <QString>
+#include <optional>
 
 namespace squad {
 
@@ -13,8 +14,13 @@ class AudioProfiles final {
 public:
     explicit AudioProfiles(const QString& filename);
     [[nodiscard]] InputProfile input(const QByteArray& deviceId) const;
-    [[nodiscard]] double musicVolume(const QByteArray& deviceId) const;
+    [[nodiscard]] double musicVolume(const QByteArray& deviceId, const QString& source = {}) const;
     AudioProfiles& saveMusicVolume(const QByteArray& deviceId, double volume);
+    AudioProfiles& saveChannelMusicVolume(const QByteArray& deviceId, const QString& source, std::optional<double> volume);
+    [[nodiscard]] double notificationVolume(const QByteArray& deviceId) const;
+    AudioProfiles& saveNotificationVolume(const QByteArray& deviceId, double volume);
+    [[nodiscard]] bool readBotMessages(const QByteArray& deviceId) const;
+    AudioProfiles& saveReadBotMessages(const QByteArray& deviceId, bool enabled);
     [[nodiscard]] double output(const QByteArray& deviceId) const;
     [[nodiscard]] double participant(const QByteArray& deviceId, const QString& peer) const;
     [[nodiscard]] bool automaticVolume(const QByteArray& deviceId) const;
@@ -33,7 +39,7 @@ public:
 
 private:
     [[nodiscard]] static QString key(const QByteArray& deviceId, bool input);
-    AudioProfiles& write(const QVariantMap& values);
+    AudioProfiles& write(QVariantMap values);
     mutable QSettings settings_;
 };
 

@@ -259,6 +259,10 @@
             <source>App audio only</source>
             <translation>Tikai lietotnes skaņa</translation>
         </message>
+        <message>
+            <source>Speech output is unavailable.</source>
+            <translation>Runas izvade nav pieejama.</translation>
+        </message>
     </context>
     <context>
         <name>AudioRecording</name>
@@ -494,10 +498,6 @@
             <translation>notīrīt attālās rācijsaziņas īsinājumtaustiņus</translation>
         </message>
         <message>
-            <source>Playback volume</source>
-            <translation>atskaņošanas skaļums</translation>
-        </message>
-        <message>
             <source>Not assigned</source>
             <translation>nav piešķirts</translation>
         </message>
@@ -508,6 +508,18 @@
         <message>
             <source>Level audio automatically</source>
             <translation>automātiski noregulējiet audio līmeni</translation>
+        </message>
+        <message>
+            <source>Voice volume</source>
+            <translation>Balss tērzēšanas skaļums</translation>
+        </message>
+        <message>
+            <source>App sounds</source>
+            <translation>Lietotnes skaņas</translation>
+        </message>
+        <message>
+            <source>Read bot messages aloud</source>
+            <translation>Lasīt bota ziņojumus skaļi</translation>
         </message>
     </context>
     <context>
@@ -1188,6 +1200,10 @@
             <source>This device</source>
             <translation>Šī ierīce</translation>
         </message>
+        <message>
+            <source>Use default music volume</source>
+            <translation>Izmantot noklusēto mūzikas skaļumu</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1299,6 +1315,22 @@
             <source>The sanitized image could not be written completely.</source>
             <translation>Attīrīto attēlu nevarēja ierakstīt pilnībā.</translation>
         </message>
+        <message>
+            <source>%1 joined.</source>
+            <translation>%1 pievienojās.</translation>
+        </message>
+        <message>
+            <source>%1 left.</source>
+            <translation>%1 aizgāja.</translation>
+        </message>
+        <message>
+            <source>%1 was kicked.</source>
+            <translation>%1 tika izraidīts.</translation>
+        </message>
+        <message>
+            <source>%1 was banned from the channel.</source>
+            <translation>%1 tika bloķēts kanālā.</translation>
+        </message>
     </context>
     <context>
         <name>ChatPanel</name>
@@ -1361,22 +1393,6 @@
         <message>
             <source>Loading...</source>
             <translation>Notiek ielāde...</translation>
-        </message>
-        <message>
-            <source>%1 joined.</source>
-            <translation>%1 pievienojās.</translation>
-        </message>
-        <message>
-            <source>%1 left.</source>
-            <translation>%1 aizgāja.</translation>
-        </message>
-        <message>
-            <source>%1 was kicked.</source>
-            <translation>%1 tika izraidīts.</translation>
-        </message>
-        <message>
-            <source>%1 was banned from the channel.</source>
-            <translation>%1 tika bloķēts kanālā.</translation>
         </message>
         <message>
             <source>Message could not be sent. Check the connection and text length.</source>
@@ -2877,7 +2893,6 @@
             <translation>Neizdevās pārbaudīt paroli.</translation>
         </message>
     </context>
-
     <context>
         <name>Headless</name>
         <message>
@@ -3230,6 +3245,53 @@
         <message>
             <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
             <translation>Sistēmas tekne nav pieejama; lietotne paliek atvērta logā.</translation>
+        </message>
+    </context>
+    <context>
+        <name>LocalLanguage</name>
+        <message>
+            <source>Translation (experimental)</source>
+            <translation>Tulkošana (eksperimentāla)</translation>
+        </message>
+        <message>
+            <source>Spoken language</source>
+            <translation>Runātā valoda</translation>
+        </message>
+        <message>
+            <source>Translate to</source>
+            <translation>Tulkot uz</translation>
+        </message>
+        <message>
+            <source>Translate messages</source>
+            <translation>Tulkot ziņas</translation>
+        </message>
+        <message>
+            <source>Translated voice</source>
+            <translation>Tulkotā balss</translation>
+        </message>
+        <message>
+            <source>Original audio</source>
+            <translation>Oriģinālais audio</translation>
+        </message>
+        <message>
+            <source>Original text</source>
+            <translation>Oriģinālais teksts</translation>
+        </message>
+        <message>
+            <source>Prepare languages</source>
+            <translation>Sagatavot valodas</translation>
+        </message>
+        <message>
+            <source>Local language processing is unavailable.</source>
+            <translation>Lokāla valodas apstrāde nav pieejama.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be read.</source>
+            <translation>Valodas iestatījumus neizdevās nolasīt.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be saved.</source>
+            <translation>Valodas iestatījumus neizdevās saglabāt.</translation>
         </message>
     </context>
 </TS>

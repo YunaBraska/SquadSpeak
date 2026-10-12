@@ -259,6 +259,10 @@
             <source>App audio only</source>
             <translation>Sautin manhaja kawai</translation>
         </message>
+        <message>
+            <source>Speech output is unavailable.</source>
+            <translation>Ba a samun fitar da magana.</translation>
+        </message>
     </context>
     <context>
         <name>AudioRecording</name>
@@ -494,10 +498,6 @@
             <translation>Cire kunna ta waje</translation>
         </message>
         <message>
-            <source>Playback volume</source>
-            <translation>Iyakokin kunna muryar</translation>
-        </message>
-        <message>
             <source>Not assigned</source>
             <translation>Ba'a yi ainihi ba</translation>
         </message>
@@ -508,6 +508,18 @@
         <message>
             <source>Level audio automatically</source>
             <translation>Daidaita sauti ta atomatik</translation>
+        </message>
+        <message>
+            <source>Voice volume</source>
+            <translation>Ƙarar hirar murya</translation>
+        </message>
+        <message>
+            <source>App sounds</source>
+            <translation>Sautunan manhaja</translation>
+        </message>
+        <message>
+            <source>Read bot messages aloud</source>
+            <translation>Karanta saƙonnin bot da murya</translation>
         </message>
     </context>
     <context>
@@ -1188,6 +1200,10 @@
             <source>This device</source>
             <translation>Wannan na'ura</translation>
         </message>
+        <message>
+            <source>Use default music volume</source>
+            <translation>Yi amfani da ƙarar kiɗa ta asali</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1299,6 +1315,22 @@
             <source>The sanitized image could not be written completely.</source>
             <translation>Ba a iya rubuta hoton da aka tsabtace gaba ɗaya ba.</translation>
         </message>
+        <message>
+            <source>%1 joined.</source>
+            <translation>%1 ya shiga.</translation>
+        </message>
+        <message>
+            <source>%1 left.</source>
+            <translation>%1 ya fita.</translation>
+        </message>
+        <message>
+            <source>%1 was kicked.</source>
+            <translation>An fitar da %1.</translation>
+        </message>
+        <message>
+            <source>%1 was banned from the channel.</source>
+            <translation>An hana %1 shiga tashar.</translation>
+        </message>
     </context>
     <context>
         <name>ChatPanel</name>
@@ -1361,22 +1393,6 @@
         <message>
             <source>Loading...</source>
             <translation>A shirye...</translation>
-        </message>
-        <message>
-            <source>%1 joined.</source>
-            <translation>%1 ya shiga.</translation>
-        </message>
-        <message>
-            <source>%1 left.</source>
-            <translation>%1 ya fita.</translation>
-        </message>
-        <message>
-            <source>%1 was kicked.</source>
-            <translation>An fitar da %1.</translation>
-        </message>
-        <message>
-            <source>%1 was banned from the channel.</source>
-            <translation>An hana %1 shiga tashar.</translation>
         </message>
         <message>
             <source>Message could not be sent. Check the connection and text length.</source>
@@ -2877,7 +2893,6 @@
             <translation>Ba a iya tantance kalmar sirri ba.</translation>
         </message>
     </context>
-
     <context>
         <name>Headless</name>
         <message>
@@ -3230,6 +3245,53 @@
         <message>
             <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
             <translation>Ba a samun tiren tsarin; manhajar za ta ci gaba da kasancewa a buɗe a taga.</translation>
+        </message>
+    </context>
+    <context>
+        <name>LocalLanguage</name>
+        <message>
+            <source>Translation (experimental)</source>
+            <translation>Fassara (na gwaji)</translation>
+        </message>
+        <message>
+            <source>Spoken language</source>
+            <translation>Harshen magana</translation>
+        </message>
+        <message>
+            <source>Translate to</source>
+            <translation>Fassara zuwa</translation>
+        </message>
+        <message>
+            <source>Translate messages</source>
+            <translation>Fassara saƙonni</translation>
+        </message>
+        <message>
+            <source>Translated voice</source>
+            <translation>Muryar da aka fassara</translation>
+        </message>
+        <message>
+            <source>Original audio</source>
+            <translation>Sauti na asali</translation>
+        </message>
+        <message>
+            <source>Original text</source>
+            <translation>Rubutu na asali</translation>
+        </message>
+        <message>
+            <source>Prepare languages</source>
+            <translation>Shirya harsuna</translation>
+        </message>
+        <message>
+            <source>Local language processing is unavailable.</source>
+            <translation>Ba a samun sarrafa harshe a kan na'urar.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be read.</source>
+            <translation>An kasa karanta saitunan harshe.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be saved.</source>
+            <translation>An kasa adana saitunan harshe.</translation>
         </message>
     </context>
 </TS>

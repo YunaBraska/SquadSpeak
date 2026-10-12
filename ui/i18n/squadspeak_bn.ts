@@ -259,6 +259,10 @@
             <source>App audio only</source>
             <translation>শুধু অ্যাপের অডিও</translation>
         </message>
+        <message>
+            <source>Speech output is unavailable.</source>
+            <translation>কথ্য আউটপুট উপলব্ধ নেই।</translation>
+        </message>
     </context>
     <context>
         <name>AudioRecording</name>
@@ -494,10 +498,6 @@
             <translation>রিমোট পুশ-টু-টক কীবোর্ড শর্টকাট পরিষ্কার করুন</translation>
         </message>
         <message>
-            <source>Playback volume</source>
-            <translation>প্লেব্যাক ভলিউম</translation>
-        </message>
-        <message>
             <source>Not assigned</source>
             <translation>বরাদ্দ করা হয়নি</translation>
         </message>
@@ -508,6 +508,18 @@
         <message>
             <source>Level audio automatically</source>
             <translation>স্বয়ংক্রিয়ভাবে লেভেল অডিও</translation>
+        </message>
+        <message>
+            <source>Voice volume</source>
+            <translation>ভয়েস চ্যাটের শব্দমাত্রা</translation>
+        </message>
+        <message>
+            <source>App sounds</source>
+            <translation>অ্যাপের শব্দ</translation>
+        </message>
+        <message>
+            <source>Read bot messages aloud</source>
+            <translation>বটের বার্তা পড়ে শোনান</translation>
         </message>
     </context>
     <context>
@@ -1188,6 +1200,10 @@
             <source>This device</source>
             <translation>এই ডিভাইস</translation>
         </message>
+        <message>
+            <source>Use default music volume</source>
+            <translation>সংগীতের ডিফল্ট ভলিউম ব্যবহার করো</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1299,6 +1315,22 @@
             <source>The sanitized image could not be written completely.</source>
             <translation>পরিষ্কার করা ছবি সম্পূর্ণ লেখা যায়নি.</translation>
         </message>
+        <message>
+            <source>%1 joined.</source>
+            <translation>%1 যোগ দিয়েছে।</translation>
+        </message>
+        <message>
+            <source>%1 left.</source>
+            <translation>%1 চলে গেছে।</translation>
+        </message>
+        <message>
+            <source>%1 was kicked.</source>
+            <translation>%1-কে চ্যানেল থেকে বহিষ্কার করা হয়েছে।</translation>
+        </message>
+        <message>
+            <source>%1 was banned from the channel.</source>
+            <translation>%1 চ্যানেল থেকে নিষিদ্ধ করা হয়েছে।</translation>
+        </message>
     </context>
     <context>
         <name>ChatPanel</name>
@@ -1361,22 +1393,6 @@
         <message>
             <source>Loading...</source>
             <translation>লোড হচ্ছে...</translation>
-        </message>
-        <message>
-            <source>%1 joined.</source>
-            <translation>%1 যোগ দিয়েছে।</translation>
-        </message>
-        <message>
-            <source>%1 left.</source>
-            <translation>%1 চলে গেছে।</translation>
-        </message>
-        <message>
-            <source>%1 was kicked.</source>
-            <translation>%1-কে চ্যানেল থেকে বহিষ্কার করা হয়েছে।</translation>
-        </message>
-        <message>
-            <source>%1 was banned from the channel.</source>
-            <translation>%1 চ্যানেল থেকে নিষিদ্ধ করা হয়েছে।</translation>
         </message>
         <message>
             <source>Message could not be sent. Check the connection and text length.</source>
@@ -2877,7 +2893,6 @@
             <translation>পাসওয়ার্ড যাচাই করা যায়নি।</translation>
         </message>
     </context>
-
     <context>
         <name>Headless</name>
         <message>
@@ -3230,6 +3245,53 @@
         <message>
             <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
             <translation>সিস্টেম ট্রে উপলব্ধ নেই; অ্যাপটি একটি উইন্ডোতে খোলা থাকবে.</translation>
+        </message>
+    </context>
+    <context>
+        <name>LocalLanguage</name>
+        <message>
+            <source>Translation (experimental)</source>
+            <translation>অনুবাদ (পরীক্ষামূলক)</translation>
+        </message>
+        <message>
+            <source>Spoken language</source>
+            <translation>কথ্য ভাষা</translation>
+        </message>
+        <message>
+            <source>Translate to</source>
+            <translation>এই ভাষায় অনুবাদ</translation>
+        </message>
+        <message>
+            <source>Translate messages</source>
+            <translation>বার্তা অনুবাদ করুন</translation>
+        </message>
+        <message>
+            <source>Translated voice</source>
+            <translation>অনুবাদ করা কণ্ঠ</translation>
+        </message>
+        <message>
+            <source>Original audio</source>
+            <translation>মূল অডিও</translation>
+        </message>
+        <message>
+            <source>Original text</source>
+            <translation>মূল লেখা</translation>
+        </message>
+        <message>
+            <source>Prepare languages</source>
+            <translation>ভাষা প্রস্তুত করুন</translation>
+        </message>
+        <message>
+            <source>Local language processing is unavailable.</source>
+            <translation>স্থানীয় ভাষা প্রক্রিয়াকরণ উপলব্ধ নয়।</translation>
+        </message>
+        <message>
+            <source>Language settings could not be read.</source>
+            <translation>ভাষার সেটিং পড়া যায়নি।</translation>
+        </message>
+        <message>
+            <source>Language settings could not be saved.</source>
+            <translation>ভাষার সেটিং সংরক্ষণ করা যায়নি।</translation>
         </message>
     </context>
 </TS>

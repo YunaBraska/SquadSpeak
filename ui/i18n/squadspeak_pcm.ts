@@ -259,6 +259,10 @@
             <source>App audio only</source>
             <translation>App sound only</translation>
         </message>
+        <message>
+            <source>Speech output is unavailable.</source>
+            <translation>Voice output no dey available.</translation>
+        </message>
     </context>
     <context>
         <name>AudioRecording</name>
@@ -494,10 +498,6 @@
             <translation>Clear di remote key</translation>
         </message>
         <message>
-            <source>Playback volume</source>
-            <translation>Playback volume</translation>
-        </message>
-        <message>
             <source>Not assigned</source>
             <translation>No assign</translation>
         </message>
@@ -508,6 +508,18 @@
         <message>
             <source>Level audio automatically</source>
             <translation>Level audio automatically</translation>
+        </message>
+        <message>
+            <source>Voice volume</source>
+            <translation>Voice chat volume</translation>
+        </message>
+        <message>
+            <source>App sounds</source>
+            <translation>App sounds</translation>
+        </message>
+        <message>
+            <source>Read bot messages aloud</source>
+            <translation>Read bot messages loud</translation>
         </message>
     </context>
     <context>
@@ -1188,6 +1200,10 @@
             <source>This device</source>
             <translation>This device</translation>
         </message>
+        <message>
+            <source>Use default music volume</source>
+            <translation>Use default music volume</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1299,6 +1315,22 @@
             <source>The sanitized image could not be written completely.</source>
             <translation>We no fit write the cleaned picture finish.</translation>
         </message>
+        <message>
+            <source>%1 joined.</source>
+            <translation>%1 don join.</translation>
+        </message>
+        <message>
+            <source>%1 left.</source>
+            <translation>%1 don comot.</translation>
+        </message>
+        <message>
+            <source>%1 was kicked.</source>
+            <translation>Dem kick %1.</translation>
+        </message>
+        <message>
+            <source>%1 was banned from the channel.</source>
+            <translation>Dem ban %1 from di channel.</translation>
+        </message>
     </context>
     <context>
         <name>ChatPanel</name>
@@ -1361,22 +1393,6 @@
         <message>
             <source>Loading...</source>
             <translation>Loading...</translation>
-        </message>
-        <message>
-            <source>%1 joined.</source>
-            <translation>%1 don join.</translation>
-        </message>
-        <message>
-            <source>%1 left.</source>
-            <translation>%1 don comot.</translation>
-        </message>
-        <message>
-            <source>%1 was kicked.</source>
-            <translation>Dem kick %1.</translation>
-        </message>
-        <message>
-            <source>%1 was banned from the channel.</source>
-            <translation>Dem ban %1 from di channel.</translation>
         </message>
         <message>
             <source>Message could not be sent. Check the connection and text length.</source>
@@ -2877,7 +2893,6 @@
             <translation>We no fit verify di password.</translation>
         </message>
     </context>
-
     <context>
         <name>Headless</name>
         <message>
@@ -3230,6 +3245,53 @@
         <message>
             <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
             <translation>System tray no dey available; app go remain open for window.</translation>
+        </message>
+    </context>
+    <context>
+        <name>LocalLanguage</name>
+        <message>
+            <source>Translation (experimental)</source>
+            <translation>Translation (for test)</translation>
+        </message>
+        <message>
+            <source>Spoken language</source>
+            <translation>Language wey person dey speak</translation>
+        </message>
+        <message>
+            <source>Translate to</source>
+            <translation>Translate go</translation>
+        </message>
+        <message>
+            <source>Translate messages</source>
+            <translation>Translate messages</translation>
+        </message>
+        <message>
+            <source>Translated voice</source>
+            <translation>Voice wey dem translate</translation>
+        </message>
+        <message>
+            <source>Original audio</source>
+            <translation>Original sound</translation>
+        </message>
+        <message>
+            <source>Original text</source>
+            <translation>Original text</translation>
+        </message>
+        <message>
+            <source>Prepare languages</source>
+            <translation>Prepare languages</translation>
+        </message>
+        <message>
+            <source>Local language processing is unavailable.</source>
+            <translation>Language processing for this device no dey available.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be read.</source>
+            <translation>App no fit read language settings.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be saved.</source>
+            <translation>App no fit save language settings.</translation>
         </message>
     </context>
 </TS>

@@ -769,6 +769,57 @@ TestCase {
         session.setAvatar(selected)
     }
 
+    function test_memberLanguageOptionsAreExplicitAndLocal() {
+        view.memberOptions({id: "language-test-member", name: "Robin", available: true, muted: false}, channel.ownId)
+        const action = findChild(view, "memberLanguageOptions")
+        tryCompare(action.menu, "opened", true)
+        compare(action.visible, audio.language.supported)
+        if (!action.visible) { action.menu.close(); return }
+        waitForRendering(action); mouseClick(action)
+        const dialog = findChild(view, "memberLanguageDialog")
+        tryCompare(dialog, "opened", true)
+        const voice = findChild(dialog, "memberTranslatedVoice")
+        compare(voice.currentValue, "")
+        compare(findChild(dialog, "memberTranslateText").checked, false)
+        compare(audio.language.member("language-test-member").voice || "", "")
+        if (imageDirectory.length > 0) {
+            waitForRendering(dialog.contentItem)
+            verify(fixtures.saveWindow(view, imageDirectory + "/member-language.png"))
+        }
+        dialog.close()
+        view.memberOptions({id: channel.ownId, name: session.userName}, channel.ownId)
+        tryCompare(action.menu, "opened", true)
+        verify(!action.visible)
+        action.menu.close()
+    }
+
+    function test_outgoingTranslationPreviewCannotSendAnOlderDraft() {
+        if (!audio.language.supported || !audio.language.available) return
+        verify(fixtures.startHost())
+        verify(channel.join(channel.ownId, "127.0.0.1", channel.servicePort))
+        tryCompare(channel, "chatReady", true)
+        view.chatExpanded = true
+        const panel = findChild(view, "chatPanel")
+        const draft = findChild(panel, "chatDraft")
+        const send = findChild(panel, "sendChat")
+        const target = audio.language.channelTarget(channel.ownId)
+        verify(audio.language.setChannelTarget(channel.ownId, "en"))
+        draft.text = "This is a complete English sentence."
+        tryCompare(send, "enabled", true, 15000)
+        draft.text = "This is the newer English sentence."
+        compare(send.enabled, false)
+        tryCompare(send, "enabled", true, 15000)
+        verify(panel.translatedDraft.text.includes("newer English sentence"))
+        if (imageDirectory.length > 0) {
+            waitForRendering(panel)
+            verify(fixtures.saveWindow(view, imageDirectory + "/translation-preview.png"))
+        }
+        mouseClick(send)
+        tryCompare(draft, "text", "")
+        verify(channel.messages.some(function(message) { return message.text.includes("newer English sentence") }))
+        verify(audio.language.setChannelTarget(channel.ownId, target))
+    }
+
     function test_memberInspectionReusesCopyableDetailsWithoutAdmissionActions() {
         verify(fixtures.startHost())
         verify(channel.joinAddress("127.0.0.1:" + channel.servicePort))
@@ -1052,6 +1103,40 @@ TestCase {
         }
     }
 
+    function test_outputControlsRemainIndependentAndReachable() {
+        view.width = 480; view.height = 640
+        view.openSettings(2)
+        const settings = findChild(view, "settingsDialog")
+        tryCompare(settings, "opened", true)
+        const names = ["playbackVolume", "musicVolume", "notificationVolume"]
+        const original = [audio.outputVolume, audio.musicVolume, audio.notificationVolume]
+        if (audio.outputAvailable) {
+            try {
+                for (let i = 0; i < names.length; ++i) {
+                    const slider = findChild(settings, names[i])
+                    findChild(slider, "valueControl").value = 0
+                    const levels = [audio.outputVolume, audio.musicVolume, audio.notificationVolume]
+                    for (let j = 0; j < names.length; ++j) compare(levels[j], j <= i ? 0 : original[j])
+                }
+            } finally {
+                audio.setOutputVolume(original[0]); audio.setMusicVolume(original[1]); audio.setNotificationVolume(original[2])
+            }
+        }
+        if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/output-settings.png"))
+        view.width = 360; view.height = 360
+        const scroll = findChild(settings, "audioSettingsScroll")
+        const flick = scroll.contentItem
+        const target = findChild(settings, audio.speechAvailable ? "readBotMessages" : "notificationVolume")
+        tryVerify(function() {
+            waitForRendering(flick)
+            const position = target.mapToItem(flick, 0, 0)
+            flick.contentY = Math.max(0, Math.min(flick.contentHeight - flick.height,
+                flick.contentY + position.y - (flick.height - target.height) / 2))
+            const visible = target.mapToItem(flick, 0, 0)
+            return visible.y >= 0 && visible.y + target.height <= flick.height
+        }, 5000, "The last output control remains reachable after resizing")
+    }
+
     function test_settingsContainProfileAndAudioInTheChannelWindow() {
         verify(findChild(view, "editDisplayName") === null, "Profile belongs in settings")
         verify(findChild(view, "hostSettings") === null, "One settings entry is sufficient")
@@ -1069,6 +1154,10 @@ TestCase {
         view.settingsPage = 2
         compare(view.recordingMode, false)
         verify(!session.available)
+        for (const name of ["playbackVolume", "musicVolume", "notificationVolume"])
+            verify(findChild(settings, name) !== null, "Output slider: " + name)
+        const speech = findChild(settings, "readBotMessages")
+        compare(speech.visible, audio.speechAvailable)
         view.settingsPage = 0
         tryCompare(session, "available", true)
         verify(!audio.running)
@@ -1080,7 +1169,8 @@ TestCase {
                 verify(settings.width <= view.width && settings.height <= view.height)
                 const choice = findChild(settings, "settingsSection")
                 verify(choice.width > 0 && choice.width <= view.width)
-                if (imageDirectory.length > 0 && page === 1) verify(fixtures.saveWindow(view, imageDirectory + "/input-settings-" + size[0] + ".png"))
+                if (imageDirectory.length > 0 && (page === 1 || page === 2))
+                    verify(fixtures.saveWindow(view, imageDirectory + (page === 1 ? "/input-settings-" : "/output-settings-") + size[0] + ".png"))
             }
         }
         settings.close()
@@ -1401,6 +1491,7 @@ TestCase {
         verify(channel.chatMembers.every(function(member) { return !member.music }))
         const own = channel.savedChannels.find(function(entry) { return entry.id === channel.ownId })
         verify(own)
+        compare(own.musicId, fixtures.botId())
         verify((own.members || []).every(function(member) { return !member.music }))
         view.selectedHost = channel.ownId
         const menu = findChild(view, "autoJoinMenuItem").menu
@@ -1411,6 +1502,33 @@ TestCase {
             verify(slider.enabled)
             verify(audio.setMusicVolume(0.4))
             tryCompare(slider, "value", 0.4)
+            verify(slider.applyValue(0))
+            compare(audio.musicVolume, 0.4, "A channel adjustment must not change the device default")
+            tryCompare(slider, "value", 0)
+            compare(audio.channelMusicVolume(own.musicId), 0)
+            compare(audio.channelMusicVolume("another-channel"), 0.4)
+            verify(audio.setChannelMusicVolume("another-channel", 0.8))
+            verify(audio.setMusicVolume(0.6))
+            tryCompare(slider, "value", 0)
+            compare(audio.channelMusicVolume("another-channel"), 0.8)
+            compare(audio.channelMusicVolume("new-channel"), 0.6)
+            verify(!audio.setChannelMusicVolume(own.musicId, -0.1))
+            verify(!audio.setChannelMusicVolume(own.musicId, 1.1))
+            verify(!audio.resetChannelMusicVolume(""))
+            tryCompare(slider, "value", 0)
+            const reset = findChild(view, "resetChannelMusicVolume")
+            verify(reset.visible)
+            verify(waitForRendering(reset))
+            tryVerify(function() { return reset.mapToItem(menu.contentItem, 0, 0).y > slider.height })
+            const glyph = reset.contentItem.children.find(function(c) { return c.symbol === "reset" })
+            tryVerify(function() {
+                const color = fixtures.renderedColor(glyph, 5, 9)
+                return color.r > color.g + 0.1
+            }, 1000, "The reset icon must actually be painted")
+            mouseClick(reset)
+            tryCompare(slider, "value", 0.6)
+            verify(audio.resetChannelMusicVolume("another-channel"))
+            if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/channel-music-volume.png"))
         } else {
             verify(!slider.enabled)
             verify(!audio.setMusicVolume(0.4))
@@ -2385,6 +2503,11 @@ TestCase {
         compare(findChild(systemRow, "messageText_" + systemRow.message.sequence).textFormat, TextEdit.PlainText)
         const joinedText = data.language === "ar" ? "%1 انضم." : "%1 joined."
         compare(findChild(systemRow, "messageText_" + systemRow.message.sequence).text, joinedText.arg(systemRow.message.event.name))
+        verify(session.setLanguage("de"))
+        compare(chatContent.plainText(systemRow.message), "%1 ist beigetreten.".arg(systemRow.message.event.name))
+        tryCompare(findChild(systemRow, "messageText_" + systemRow.message.sequence), "text", "%1 ist beigetreten.".arg(systemRow.message.event.name))
+        verify(session.setLanguage(data.language))
+        tryCompare(findChild(systemRow, "messageText_" + systemRow.message.sequence), "text", joinedText.arg(systemRow.message.event.name))
         const originalEvent = systemRow.message
         const futureText = "<b>Future notice</b> **literal fallback**"
         systemRow.message = Object.assign({}, originalEvent, {event: {kind: "future.notice.v2"}, text: futureText})

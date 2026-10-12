@@ -259,6 +259,10 @@
             <source>App audio only</source>
             <translation>Толькі гук праграмы</translation>
         </message>
+        <message>
+            <source>Speech output is unavailable.</source>
+            <translation>Агучванне недаступнае.</translation>
+        </message>
     </context>
     <context>
         <name>AudioRecording</name>
@@ -494,10 +498,6 @@
             <translation>Ачысціць дыстанцыйнае спалучэнне клавіш "Націсні і размаўляй"</translation>
         </message>
         <message>
-            <source>Playback volume</source>
-            <translation>Гучнасць прайгравання</translation>
-        </message>
-        <message>
             <source>Not assigned</source>
             <translation>Не прызначаны</translation>
         </message>
@@ -508,6 +508,18 @@
         <message>
             <source>Level audio automatically</source>
             <translation>Аўтаматычны ўзровень гуку</translation>
+        </message>
+        <message>
+            <source>Voice volume</source>
+            <translation>Гучнасць размовы</translation>
+        </message>
+        <message>
+            <source>App sounds</source>
+            <translation>Гукі праграмы</translation>
+        </message>
+        <message>
+            <source>Read bot messages aloud</source>
+            <translation>Чытаць паведамленні бота ўголас</translation>
         </message>
     </context>
     <context>
@@ -1188,6 +1200,10 @@
             <source>This device</source>
             <translation>Гэта прылада</translation>
         </message>
+        <message>
+            <source>Use default music volume</source>
+            <translation>Выкарыстоўваць стандартную гучнасць музыкі</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1299,6 +1315,22 @@
             <source>The sanitized image could not be written completely.</source>
             <translation>Не ўдалося цалкам запісаць ачышчаную выяву.</translation>
         </message>
+        <message>
+            <source>%1 joined.</source>
+            <translation>%1 далучыўся.</translation>
+        </message>
+        <message>
+            <source>%1 left.</source>
+            <translation>%1 сышоў.</translation>
+        </message>
+        <message>
+            <source>%1 was kicked.</source>
+            <translation>%1 быў выкінуты.</translation>
+        </message>
+        <message>
+            <source>%1 was banned from the channel.</source>
+            <translation>%1 быў забаронены на канале.</translation>
+        </message>
     </context>
     <context>
         <name>ChatPanel</name>
@@ -1361,22 +1393,6 @@
         <message>
             <source>Loading...</source>
             <translation>Загрузка...</translation>
-        </message>
-        <message>
-            <source>%1 joined.</source>
-            <translation>%1 далучыўся.</translation>
-        </message>
-        <message>
-            <source>%1 left.</source>
-            <translation>%1 сышоў.</translation>
-        </message>
-        <message>
-            <source>%1 was kicked.</source>
-            <translation>%1 быў выкінуты.</translation>
-        </message>
-        <message>
-            <source>%1 was banned from the channel.</source>
-            <translation>%1 быў забаронены на канале.</translation>
         </message>
         <message>
             <source>Message could not be sent. Check the connection and text length.</source>
@@ -2877,7 +2893,6 @@
             <translation>Не ўдалося праверыць пароль.</translation>
         </message>
     </context>
-
     <context>
         <name>Headless</name>
         <message>
@@ -3230,6 +3245,53 @@
         <message>
             <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
             <translation>Сістэмны трэй недаступны; праграма застаецца адкрытай у акне.</translation>
+        </message>
+    </context>
+    <context>
+        <name>LocalLanguage</name>
+        <message>
+            <source>Translation (experimental)</source>
+            <translation>Пераклад (эксперыментальны)</translation>
+        </message>
+        <message>
+            <source>Spoken language</source>
+            <translation>Мова маўлення</translation>
+        </message>
+        <message>
+            <source>Translate to</source>
+            <translation>Перакласці на</translation>
+        </message>
+        <message>
+            <source>Translate messages</source>
+            <translation>Перакладаць паведамленні</translation>
+        </message>
+        <message>
+            <source>Translated voice</source>
+            <translation>Перакладзены голас</translation>
+        </message>
+        <message>
+            <source>Original audio</source>
+            <translation>Зыходны гук</translation>
+        </message>
+        <message>
+            <source>Original text</source>
+            <translation>Зыходны тэкст</translation>
+        </message>
+        <message>
+            <source>Prepare languages</source>
+            <translation>Падрыхтаваць мовы</translation>
+        </message>
+        <message>
+            <source>Local language processing is unavailable.</source>
+            <translation>Лакальная апрацоўка мовы недаступная.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be read.</source>
+            <translation>Не ўдалося прачытаць моўныя налады.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be saved.</source>
+            <translation>Не ўдалося захаваць моўныя налады.</translation>
         </message>
     </context>
 </TS>

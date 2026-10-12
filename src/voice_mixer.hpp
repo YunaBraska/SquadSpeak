@@ -5,6 +5,7 @@
 #include <QList>
 #include <QString>
 #include <array>
+#include <functional>
 #include <deque>
 #include <memory>
 #include <map>
@@ -34,7 +35,10 @@ public:
     // permission transition discards buffered audio before examining new input.
     [[nodiscard]] QList<QByteArray> encode(std::span<const float> samples, int sampleRate, bool transmissionAllowed = true);
     [[nodiscard]] bool receive(const QString& peer, const QByteArray& packet, qint64 now, int missing = 0);
-    [[nodiscard]] std::vector<float> render(int sampleRate, qint64 now);
+    using PlaybackFilter = std::function<void(const QString&, std::span<float>, qint64)>;
+    // Processes each decoded 48 kHz peer frame before normalization and mixing.
+    // The borrowed frame cannot escape the callback. Empty queues provide silence.
+    [[nodiscard]] std::vector<float> render(int sampleRate, qint64 now, const PlaybackFilter& filter = {});
     VoiceMixer& setGain(const QString& peer, double gain);
     VoiceMixer& setAutomatic(bool enabled);
     // Zero bypasses suppression. Positive values blend aligned original and

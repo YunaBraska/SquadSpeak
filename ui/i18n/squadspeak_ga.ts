@@ -259,6 +259,10 @@
             <source>App audio only</source>
             <translation>Fuaim na haipe amháin</translation>
         </message>
+        <message>
+            <source>Speech output is unavailable.</source>
+            <translation>Níl aschur cainte ar fáil.</translation>
+        </message>
     </context>
     <context>
         <name>AudioRecording</name>
@@ -494,10 +498,6 @@
             <translation>Glan aicearra méarchláir cianbhrúite chun cainte</translation>
         </message>
         <message>
-            <source>Playback volume</source>
-            <translation>Toirt athsheinm</translation>
-        </message>
-        <message>
             <source>Not assigned</source>
             <translation>Gan sannadh</translation>
         </message>
@@ -508,6 +508,18 @@
         <message>
             <source>Level audio automatically</source>
             <translation>Leibhéal fuaime go huathoibríoch</translation>
+        </message>
+        <message>
+            <source>Voice volume</source>
+            <translation>Airde na comhráite gutha</translation>
+        </message>
+        <message>
+            <source>App sounds</source>
+            <translation>Fuaimeanna na haipe</translation>
+        </message>
+        <message>
+            <source>Read bot messages aloud</source>
+            <translation>Léigh teachtaireachtaí an róbait os ard</translation>
         </message>
     </context>
     <context>
@@ -1188,6 +1200,10 @@
             <source>This device</source>
             <translation>An gléas seo</translation>
         </message>
+        <message>
+            <source>Use default music volume</source>
+            <translation>Úsáid toirt réamhshocraithe an cheoil</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1299,6 +1315,22 @@
             <source>The sanitized image could not be written completely.</source>
             <translation>Níorbh fhéidir an íomhá glanta a scríobh go hiomlán.</translation>
         </message>
+        <message>
+            <source>%1 joined.</source>
+            <translation>Chuaigh %1 isteach.</translation>
+        </message>
+        <message>
+            <source>%1 left.</source>
+            <translation>%1 d'fhág sé.</translation>
+        </message>
+        <message>
+            <source>%1 was kicked.</source>
+            <translation>Díbríodh %1.</translation>
+        </message>
+        <message>
+            <source>%1 was banned from the channel.</source>
+            <translation>Cuireadh cosc ar %1 ón gcainéal.</translation>
+        </message>
     </context>
     <context>
         <name>ChatPanel</name>
@@ -1361,22 +1393,6 @@
         <message>
             <source>Loading...</source>
             <translation>Ag lódáil...</translation>
-        </message>
-        <message>
-            <source>%1 joined.</source>
-            <translation>Chuaigh %1 isteach.</translation>
-        </message>
-        <message>
-            <source>%1 left.</source>
-            <translation>%1 d'fhág sé.</translation>
-        </message>
-        <message>
-            <source>%1 was kicked.</source>
-            <translation>Díbríodh %1.</translation>
-        </message>
-        <message>
-            <source>%1 was banned from the channel.</source>
-            <translation>Cuireadh cosc ar %1 ón gcainéal.</translation>
         </message>
         <message>
             <source>Message could not be sent. Check the connection and text length.</source>
@@ -2877,7 +2893,6 @@
             <translation>Níorbh fhéidir an pasfhocal a fhíorú.</translation>
         </message>
     </context>
-
     <context>
         <name>Headless</name>
         <message>
@@ -3230,6 +3245,53 @@
         <message>
             <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
             <translation>Níl tráidire an chórais ar fáil; fanann an aip ar oscailt i bhfuinneog.</translation>
+        </message>
+    </context>
+    <context>
+        <name>LocalLanguage</name>
+        <message>
+            <source>Translation (experimental)</source>
+            <translation>Aistriúchán (turgnamhach)</translation>
+        </message>
+        <message>
+            <source>Spoken language</source>
+            <translation>Teanga labhartha</translation>
+        </message>
+        <message>
+            <source>Translate to</source>
+            <translation>Aistrigh go</translation>
+        </message>
+        <message>
+            <source>Translate messages</source>
+            <translation>Aistrigh teachtaireachtaí</translation>
+        </message>
+        <message>
+            <source>Translated voice</source>
+            <translation>Guth aistrithe</translation>
+        </message>
+        <message>
+            <source>Original audio</source>
+            <translation>Fuaim bhunaidh</translation>
+        </message>
+        <message>
+            <source>Original text</source>
+            <translation>Téacs bunaidh</translation>
+        </message>
+        <message>
+            <source>Prepare languages</source>
+            <translation>Ullmhaigh teangacha</translation>
+        </message>
+        <message>
+            <source>Local language processing is unavailable.</source>
+            <translation>Níl próiseáil áitiúil teanga ar fáil.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be read.</source>
+            <translation>Níorbh fhéidir na socruithe teanga a léamh.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be saved.</source>
+            <translation>Níorbh fhéidir na socruithe teanga a shábháil.</translation>
         </message>
     </context>
 </TS>

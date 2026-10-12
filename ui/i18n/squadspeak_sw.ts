@@ -259,6 +259,10 @@
             <source>App audio only</source>
             <translation>Sauti ya programu pekee</translation>
         </message>
+        <message>
+            <source>Speech output is unavailable.</source>
+            <translation>Matamshi ya sauti hayapatikani.</translation>
+        </message>
     </context>
     <context>
         <name>AudioRecording</name>
@@ -494,10 +498,6 @@
             <translation>Futa kitufe cha mbali</translation>
         </message>
         <message>
-            <source>Playback volume</source>
-            <translation>Kiasi cha sauti ya pato</translation>
-        </message>
-        <message>
             <source>Not assigned</source>
             <translation>Hujuma</translation>
         </message>
@@ -508,6 +508,18 @@
         <message>
             <source>Level audio automatically</source>
             <translation>Rekebisha sauti moja kwa moja</translation>
+        </message>
+        <message>
+            <source>Voice volume</source>
+            <translation>Sauti ya mazungumzo</translation>
+        </message>
+        <message>
+            <source>App sounds</source>
+            <translation>Sauti za programu</translation>
+        </message>
+        <message>
+            <source>Read bot messages aloud</source>
+            <translation>Soma ujumbe wa boti kwa sauti</translation>
         </message>
     </context>
     <context>
@@ -1188,6 +1200,10 @@
             <source>This device</source>
             <translation>Kifaa hiki</translation>
         </message>
+        <message>
+            <source>Use default music volume</source>
+            <translation>Tumia sauti chaguomsingi ya muziki</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1299,6 +1315,22 @@
             <source>The sanitized image could not be written completely.</source>
             <translation>Picha iliyosafishwa haikuweza kuandikwa kikamilifu.</translation>
         </message>
+        <message>
+            <source>%1 joined.</source>
+            <translation>%1 amejiunga.</translation>
+        </message>
+        <message>
+            <source>%1 left.</source>
+            <translation>%1 ameondoka.</translation>
+        </message>
+        <message>
+            <source>%1 was kicked.</source>
+            <translation>%1 amefukuzwa.</translation>
+        </message>
+        <message>
+            <source>%1 was banned from the channel.</source>
+            <translation>%1 amepigwa marufuku kwenye chaneli.</translation>
+        </message>
     </context>
     <context>
         <name>ChatPanel</name>
@@ -1361,22 +1393,6 @@
         <message>
             <source>Loading...</source>
             <translation>Inapakuliwa...</translation>
-        </message>
-        <message>
-            <source>%1 joined.</source>
-            <translation>%1 amejiunga.</translation>
-        </message>
-        <message>
-            <source>%1 left.</source>
-            <translation>%1 ameondoka.</translation>
-        </message>
-        <message>
-            <source>%1 was kicked.</source>
-            <translation>%1 amefukuzwa.</translation>
-        </message>
-        <message>
-            <source>%1 was banned from the channel.</source>
-            <translation>%1 amepigwa marufuku kwenye chaneli.</translation>
         </message>
         <message>
             <source>Message could not be sent. Check the connection and text length.</source>
@@ -2877,7 +2893,6 @@
             <translation>Nenosiri halikuweza kuthibitishwa.</translation>
         </message>
     </context>
-
     <context>
         <name>Headless</name>
         <message>
@@ -3230,6 +3245,53 @@
         <message>
             <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
             <translation>Trei ya mfumo haipatikani; programu inabaki wazi kwenye dirisha.</translation>
+        </message>
+    </context>
+    <context>
+        <name>LocalLanguage</name>
+        <message>
+            <source>Translation (experimental)</source>
+            <translation>Tafsiri (ya majaribio)</translation>
+        </message>
+        <message>
+            <source>Spoken language</source>
+            <translation>Lugha inayozungumzwa</translation>
+        </message>
+        <message>
+            <source>Translate to</source>
+            <translation>Tafsiri kwa</translation>
+        </message>
+        <message>
+            <source>Translate messages</source>
+            <translation>Tafsiri ujumbe</translation>
+        </message>
+        <message>
+            <source>Translated voice</source>
+            <translation>Sauti iliyotafsiriwa</translation>
+        </message>
+        <message>
+            <source>Original audio</source>
+            <translation>Sauti asili</translation>
+        </message>
+        <message>
+            <source>Original text</source>
+            <translation>Maandishi asili</translation>
+        </message>
+        <message>
+            <source>Prepare languages</source>
+            <translation>Andaa lugha</translation>
+        </message>
+        <message>
+            <source>Local language processing is unavailable.</source>
+            <translation>Uchakataji wa lugha kwenye kifaa haupatikani.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be read.</source>
+            <translation>Mipangilio ya lugha haikuweza kusomwa.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be saved.</source>
+            <translation>Mipangilio ya lugha haikuweza kuhifadhiwa.</translation>
         </message>
     </context>
 </TS>

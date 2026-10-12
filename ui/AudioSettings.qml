@@ -306,9 +306,10 @@ Item {
                         }
                         Label { textFormat: Text.PlainText; text: audio.outputName; wrapMode: Text.Wrap; Layout.fillWidth: true; color: Theme.muted }
                         SettingSlider {
+                            objectName: "playbackVolume"
                             Layout.fillWidth: true
                             enabled: audio.outputAvailable
-                            caption: qsTr("Playback volume")
+                            caption: qsTr("Voice volume")
                             from: 0; to: 1; stepSize: 0.01
                             value: audio.outputVolume
                             valueText: qsTr("%1 %").arg(Math.round(audio.outputVolume * 100))
@@ -323,6 +324,24 @@ Item {
                             value: audio.musicVolume
                             valueText: qsTr("%1 %").arg(Math.round(audio.musicVolume * 100))
                             applyValue: function(value) { return audio.setMusicVolume(value) }
+                        }
+                        SettingSlider {
+                            objectName: "notificationVolume"
+                            Layout.fillWidth: true
+                            enabled: audio.outputAvailable
+                            caption: qsTr("App sounds")
+                            from: 0; to: 1; stepSize: 0.01
+                            value: audio.notificationVolume
+                            valueText: qsTr("%1 %").arg(Math.round(audio.notificationVolume * 100))
+                            applyValue: function(value) { return audio.setNotificationVolume(value) }
+                        }
+                        OptionCheck {
+                            objectName: "readBotMessages"
+                            visible: audio.speechAvailable
+                            enabled: audio.outputAvailable
+                            text: qsTr("Read bot messages aloud")
+                            checked: audio.readBotMessages
+                            onClicked: { audio.setReadBotMessages(checked); checked = Qt.binding(function() { return audio.readBotMessages }) }
                         }
                         OptionCheck { text: qsTr("Level audio automatically"); checked: audio.automaticVolume; onClicked: { audio.setAutomaticVolume(checked); checked = Qt.binding(function() { return audio.automaticVolume }) } }
                         ActionButton { text: qsTr("Test output"); enabled: audio.outputAvailable; onClicked: audio.testOutput() }

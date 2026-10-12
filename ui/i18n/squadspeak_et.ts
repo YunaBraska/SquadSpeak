@@ -259,6 +259,10 @@
             <source>App audio only</source>
             <translation>Ainult rakenduse heli</translation>
         </message>
+        <message>
+            <source>Speech output is unavailable.</source>
+            <translation>Kõneväljund pole saadaval.</translation>
+        </message>
     </context>
     <context>
         <name>AudioRecording</name>
@@ -494,10 +498,6 @@
             <translation>Eemalda kaugjuhtimise kiirklahv</translation>
         </message>
         <message>
-            <source>Playback volume</source>
-            <translation>Helitugevus</translation>
-        </message>
-        <message>
             <source>Not assigned</source>
             <translation>Mitte määratud</translation>
         </message>
@@ -508,6 +508,18 @@
         <message>
             <source>Level audio automatically</source>
             <translation>Reguleeri helitugevust automaatselt</translation>
+        </message>
+        <message>
+            <source>Voice volume</source>
+            <translation>Häälvestluse helitugevus</translation>
+        </message>
+        <message>
+            <source>App sounds</source>
+            <translation>Rakenduse helid</translation>
+        </message>
+        <message>
+            <source>Read bot messages aloud</source>
+            <translation>Loe boti sõnumid ette</translation>
         </message>
     </context>
     <context>
@@ -1188,6 +1200,10 @@
             <source>This device</source>
             <translation>See seade</translation>
         </message>
+        <message>
+            <source>Use default music volume</source>
+            <translation>Kasuta muusika vaikehelitugevust</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1299,6 +1315,22 @@
             <source>The sanitized image could not be written completely.</source>
             <translation>Puhastatud pilti ei saanud täielikult kirjutada.</translation>
         </message>
+        <message>
+            <source>%1 joined.</source>
+            <translation>%1 liitus.</translation>
+        </message>
+        <message>
+            <source>%1 left.</source>
+            <translation>%1 lahkus.</translation>
+        </message>
+        <message>
+            <source>%1 was kicked.</source>
+            <translation>%1 visati välja.</translation>
+        </message>
+        <message>
+            <source>%1 was banned from the channel.</source>
+            <translation>%1 blokeeriti kanalist.</translation>
+        </message>
     </context>
     <context>
         <name>ChatPanel</name>
@@ -1361,22 +1393,6 @@
         <message>
             <source>Loading...</source>
             <translation>Laadimine...</translation>
-        </message>
-        <message>
-            <source>%1 joined.</source>
-            <translation>%1 liitus.</translation>
-        </message>
-        <message>
-            <source>%1 left.</source>
-            <translation>%1 lahkus.</translation>
-        </message>
-        <message>
-            <source>%1 was kicked.</source>
-            <translation>%1 visati välja.</translation>
-        </message>
-        <message>
-            <source>%1 was banned from the channel.</source>
-            <translation>%1 blokeeriti kanalist.</translation>
         </message>
         <message>
             <source>Message could not be sent. Check the connection and text length.</source>
@@ -2877,7 +2893,6 @@
             <translation>Parooli ei saanud kontrollida.</translation>
         </message>
     </context>
-
     <context>
         <name>Headless</name>
         <message>
@@ -3230,6 +3245,53 @@
         <message>
             <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
             <translation>Süsteemisalv pole saadaval; rakendus jääb aknana avatuks.</translation>
+        </message>
+    </context>
+    <context>
+        <name>LocalLanguage</name>
+        <message>
+            <source>Translation (experimental)</source>
+            <translation>Tõlge (katseline)</translation>
+        </message>
+        <message>
+            <source>Spoken language</source>
+            <translation>Kõnekeel</translation>
+        </message>
+        <message>
+            <source>Translate to</source>
+            <translation>Tõlgi keelde</translation>
+        </message>
+        <message>
+            <source>Translate messages</source>
+            <translation>Tõlgi sõnumid</translation>
+        </message>
+        <message>
+            <source>Translated voice</source>
+            <translation>Tõlgitud hääl</translation>
+        </message>
+        <message>
+            <source>Original audio</source>
+            <translation>Algne heli</translation>
+        </message>
+        <message>
+            <source>Original text</source>
+            <translation>Algne tekst</translation>
+        </message>
+        <message>
+            <source>Prepare languages</source>
+            <translation>Valmista keeled ette</translation>
+        </message>
+        <message>
+            <source>Local language processing is unavailable.</source>
+            <translation>Kohalik keeletöötlus pole saadaval.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be read.</source>
+            <translation>Keelesätteid ei saanud lugeda.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be saved.</source>
+            <translation>Keelesätteid ei saanud salvestada.</translation>
         </message>
     </context>
 </TS>

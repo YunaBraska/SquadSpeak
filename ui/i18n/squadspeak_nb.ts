@@ -259,6 +259,10 @@
             <source>App audio only</source>
             <translation>Bare appens lyd</translation>
         </message>
+        <message>
+            <source>Speech output is unavailable.</source>
+            <translation>Taleutgang er ikke tilgjengelig.</translation>
+        </message>
     </context>
     <context>
         <name>AudioRecording</name>
@@ -494,10 +498,6 @@
             <translation>Slett ekstern trykk-og-snakk-tastatursnarvei</translation>
         </message>
         <message>
-            <source>Playback volume</source>
-            <translation>Avspillingsvolum</translation>
-        </message>
-        <message>
             <source>Not assigned</source>
             <translation>Ikke tildelt</translation>
         </message>
@@ -508,6 +508,18 @@
         <message>
             <source>Level audio automatically</source>
             <translation>Nivå lyd automatisk</translation>
+        </message>
+        <message>
+            <source>Voice volume</source>
+            <translation>Volum for talechat</translation>
+        </message>
+        <message>
+            <source>App sounds</source>
+            <translation>Applyder</translation>
+        </message>
+        <message>
+            <source>Read bot messages aloud</source>
+            <translation>Les botmeldinger høyt</translation>
         </message>
     </context>
     <context>
@@ -1188,6 +1200,10 @@
             <source>This device</source>
             <translation>Denne enheten</translation>
         </message>
+        <message>
+            <source>Use default music volume</source>
+            <translation>Bruk standardvolum for musikk</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1299,6 +1315,22 @@
             <source>The sanitized image could not be written completely.</source>
             <translation>Det rensede bildet kunne ikke skrives fullstendig.</translation>
         </message>
+        <message>
+            <source>%1 joined.</source>
+            <translation>%1 ble med.</translation>
+        </message>
+        <message>
+            <source>%1 left.</source>
+            <translation>%1 dro.</translation>
+        </message>
+        <message>
+            <source>%1 was kicked.</source>
+            <translation>%1 ble kastet ut.</translation>
+        </message>
+        <message>
+            <source>%1 was banned from the channel.</source>
+            <translation>%1 ble utestengt fra kanalen.</translation>
+        </message>
     </context>
     <context>
         <name>ChatPanel</name>
@@ -1361,22 +1393,6 @@
         <message>
             <source>Loading...</source>
             <translation>Laster...</translation>
-        </message>
-        <message>
-            <source>%1 joined.</source>
-            <translation>%1 ble med.</translation>
-        </message>
-        <message>
-            <source>%1 left.</source>
-            <translation>%1 dro.</translation>
-        </message>
-        <message>
-            <source>%1 was kicked.</source>
-            <translation>%1 ble kastet ut.</translation>
-        </message>
-        <message>
-            <source>%1 was banned from the channel.</source>
-            <translation>%1 ble utestengt fra kanalen.</translation>
         </message>
         <message>
             <source>Message could not be sent. Check the connection and text length.</source>
@@ -2877,7 +2893,6 @@
             <translation>Passordet kunne ikke verifiseres.</translation>
         </message>
     </context>
-
     <context>
         <name>Headless</name>
         <message>
@@ -3230,6 +3245,53 @@
         <message>
             <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
             <translation>Systemstatusfeltet er utilgjengelig; appen forblir åpen som et vindu.</translation>
+        </message>
+    </context>
+    <context>
+        <name>LocalLanguage</name>
+        <message>
+            <source>Translation (experimental)</source>
+            <translation>Oversettelse (eksperimentell)</translation>
+        </message>
+        <message>
+            <source>Spoken language</source>
+            <translation>Talt språk</translation>
+        </message>
+        <message>
+            <source>Translate to</source>
+            <translation>Oversett til</translation>
+        </message>
+        <message>
+            <source>Translate messages</source>
+            <translation>Oversett meldinger</translation>
+        </message>
+        <message>
+            <source>Translated voice</source>
+            <translation>Oversatt stemme</translation>
+        </message>
+        <message>
+            <source>Original audio</source>
+            <translation>Originallyd</translation>
+        </message>
+        <message>
+            <source>Original text</source>
+            <translation>Originaltekst</translation>
+        </message>
+        <message>
+            <source>Prepare languages</source>
+            <translation>Klargjør språk</translation>
+        </message>
+        <message>
+            <source>Local language processing is unavailable.</source>
+            <translation>Lokal språkbehandling er ikke tilgjengelig.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be read.</source>
+            <translation>Språkinnstillingene kunne ikke leses.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be saved.</source>
+            <translation>Språkinnstillingene kunne ikke lagres.</translation>
         </message>
     </context>
 </TS>

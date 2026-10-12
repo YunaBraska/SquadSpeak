@@ -77,6 +77,12 @@ PanelWindow {
                 Label { text: modelData.name; textFormat: Text.PlainText; Layout.fillWidth: true; elide: Text.ElideRight; font.pixelSize: 12 }
             }
             MouseArea { anchors.fill: parent; acceptedButtons: Qt.LeftButton | Qt.RightButton; onClicked: root.memberOptions(modelData, grid.hostId) }
+            ActionButton {
+                anchors.right: parent.right; anchors.verticalCenter: parent.verticalCenter
+                text: qsTranslate("LocalLanguage", "Original text"); glyph: "chat"; iconOnly: true; flat: true
+                visible: { audio.language.revision; const info = audio.language.member(modelData.id); return !!info.transcript || !!info.status }
+                onClicked: { root.selectedMember = modelData; originalTranscript.open() }
+            }
             TextToolTip { parent: memberEntry; text: modelData.name; visible: memberHover.hovered }
             HoverHandler { id: memberHover }
         }
@@ -1098,17 +1104,33 @@ PanelWindow {
         MenuAction { objectName: "browseStations"; text: qsTr("Browse stations"); enabled: !!root.hostRadio; visible: !root.remote && !!root.selectedOwner; onTriggered: radioBrowser.open() }
         MenuAction { text: qsTr("Join"); onTriggered: root.joinHost(root.selectedHost) }
         Item {
+            id: channelMusic
             implicitWidth: 240; implicitHeight: visible ? 64 : 0
-            visible: !root.remote && root.selectedHost === root.activeHost
-            SettingSlider {
-                objectName: "channelMusicVolume"
+            readonly property string musicId: {
+                const entry = root.channelList.find(function(h) { return h.id === root.selectedHost })
+                return entry && entry.musicId ? entry.musicId : ""
+            }
+            property int revision: 0
+            visible: !root.remote && musicId.length > 0
+            Connections { target: audio; function onProfileChanged() { ++channelMusic.revision } }
+            RowLayout {
                 anchors.fill: parent; anchors.margins: 12
-                caption: qsTranslate("AudioSettings", "Music volume")
                 enabled: audio.outputAvailable
-                from: 0; to: 1; stepSize: 0.01
-                value: audio.musicVolume
-                valueText: qsTranslate("AudioSettings", "%1 %").arg(Math.round(audio.musicVolume * 100))
-                applyValue: function(value) { return audio.setMusicVolume(value) }
+                SettingSlider {
+                    objectName: "channelMusicVolume"
+                    Layout.fillWidth: true
+                    caption: qsTranslate("AudioSettings", "Music volume")
+                    from: 0; to: 1; stepSize: 0.01
+                    value: { const revision = channelMusic.revision; return audio.channelMusicVolume(channelMusic.musicId) }
+                    valueText: qsTranslate("AudioSettings", "%1 %").arg(Math.round(value * 100))
+                    applyValue: function(value) { return audio.setChannelMusicVolume(channelMusic.musicId, value) }
+                }
+                ActionButton {
+                    objectName: "resetChannelMusicVolume"
+                    iconOnly: true; flat: true; destructive: true; glyph: "reset"
+                    text: qsTr("Use default music volume")
+                    onClicked: audio.resetChannelMusicVolume(channelMusic.musicId)
+                }
             }
         }
         MenuAction {
@@ -1129,6 +1151,12 @@ PanelWindow {
         popupType: Popup.Item
         background: Rectangle { implicitWidth: 240; implicitHeight: 40; radius: Theme.controlRadius; color: Theme.surface; border.color: Theme.border }
         id: memberMenu
+        MenuAction {
+            objectName: "memberLanguageOptions"
+            text: qsTranslate("LocalLanguage", "Translation (experimental)")
+            visible: audio.language.supported && !root.remote && !root.selectedMember.music && root.selectedMember.id !== root.network.ownId
+            onTriggered: memberLanguage.open()
+        }
         MenuAction { objectName: "inspectMember"; text: qsTr("Inspect"); onTriggered: { root.inspectedRequestId = ""; requestInfo.open() } }
         MenuAction {
             objectName: "allowRemoteControl"
@@ -1163,6 +1191,87 @@ PanelWindow {
             valueText: Math.round(value * 100) + " %"
             applyValue: function(value) { return audio.setParticipantVolume(root.selectedMember.id, value) }
             Connections { target: audio; function onProfileChanged() { memberGain.revision++ } }
+        }
+    }
+    PanelDialog {
+        id: memberLanguage
+        objectName: "memberLanguageDialog"
+        parent: Overlay.overlay; anchors.centerIn: parent; width: Math.min(380, parent.width - 24)
+        title: qsTranslate("LocalLanguage", "Translation (experimental)")
+        buttons: Dialog.Close
+        property var preference: ({})
+        property var voiceOptions: [{id: "", name: qsTranslate("LocalLanguage", "Original audio")}].concat(audio.language.voices)
+        function choose(box, value) {
+            const exact = box.model.findIndex(function(item) { return item.id === value })
+            box.currentIndex = Math.max(0, exact >= 0 ? exact : box.model.findIndex(function(item) { return item.id.split("-")[0] === value.split("-")[0] }))
+        }
+        function save() {
+            const source = spokenLanguage.currentValue || "en"
+            const target = targetLanguage.currentValue || Qt.locale().name.replace("_", "-")
+            audio.language.configure(root.selectedMember.id, source, target, outputVoice.currentValue || "", incomingTranslation.checked)
+        }
+        onOpened: {
+            preference = audio.language.member(root.selectedMember.id)
+            choose(spokenLanguage, preference.source || "en-US")
+            choose(targetLanguage, preference.target || Qt.locale().name.replace("_", "-"))
+            choose(outputVoice, preference.voice || "")
+            incomingTranslation.checked = !!preference.incoming
+        }
+        contentItem: ColumnLayout {
+            spacing: 8
+            Label { text: root.selectedMember.name || ""; textFormat: Text.PlainText; font.bold: true }
+            Label { text: qsTranslate("LocalLanguage", "Spoken language"); color: Theme.muted }
+            ChoiceBox {
+                id: spokenLanguage; objectName: "memberSourceLanguage"
+                Layout.fillWidth: true; model: audio.language.speechLanguages; textRole: "name"; valueRole: "id"
+                enabled: audio.language.available
+                onActivated: memberLanguage.save()
+            }
+            Label { text: qsTranslate("LocalLanguage", "Translate to"); color: Theme.muted }
+            ChoiceBox {
+                id: targetLanguage; objectName: "memberTargetLanguage"
+                Layout.fillWidth: true; model: audio.language.languages; textRole: "name"; valueRole: "id"
+                enabled: audio.language.available && !(outputVoice.currentValue || "").length
+                onActivated: memberLanguage.save()
+            }
+            OptionCheck {
+                id: incomingTranslation; objectName: "memberTranslateText"
+                Layout.fillWidth: true; text: qsTranslate("LocalLanguage", "Translate messages")
+                enabled: audio.language.available
+                onClicked: memberLanguage.save()
+            }
+            Label { text: qsTranslate("LocalLanguage", "Translated voice"); color: Theme.muted }
+            ChoiceBox {
+                id: outputVoice; objectName: "memberTranslatedVoice"
+                Layout.fillWidth: true; model: memberLanguage.voiceOptions; textRole: "name"; valueRole: "id"
+                enabled: audio.language.available
+                onActivated: {
+                    memberLanguage.save()
+                    memberLanguage.choose(targetLanguage, audio.language.member(root.selectedMember.id).target)
+                }
+            }
+            ActionButton {
+                objectName: "prepareMemberLanguages"
+                text: audio.language.preparing ? qsTr("Cancel") : qsTranslate("LocalLanguage", "Prepare languages"); glyph: audio.language.preparing ? "close" : "down"
+                enabled: audio.language.available
+                onClicked: { if (audio.language.preparing) audio.language.cancelPreparation(); else { memberLanguage.save(); audio.language.prepare(root.selectedMember.id) } }
+            }
+            Label {
+                Layout.fillWidth: true; wrapMode: Text.Wrap; color: Theme.muted
+                text: !audio.language.available ? qsTranslate("LocalLanguage", "Local language processing is unavailable.") : audio.language.error
+                visible: text.length > 0
+            }
+        }
+    }
+    PanelDialog {
+        id: originalTranscript
+        parent: Overlay.overlay; anchors.centerIn: parent; width: Math.min(380, parent.width - 24)
+        title: root.selectedMember.name || ""
+        buttons: Dialog.Close
+        contentItem: TextEdit {
+            text: { audio.language.revision; const info = audio.language.member(root.selectedMember.id); return [info.status, info.transcript].filter(Boolean).join("\n\n") }
+            textFormat: TextEdit.PlainText; readOnly: true; selectByMouse: true; wrapMode: TextEdit.Wrap
+            color: Theme.text; font.pixelSize: 12
         }
     }
     ColumnLayout {

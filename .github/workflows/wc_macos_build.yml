@@ -13,6 +13,10 @@ on:
         description: JSON list of native macOS runner labels.
         type: string
         default: '["macos-15", "macos-15-intel"]'
+      xcode_version:
+        description: Installed Xcode version used for native compilation.
+        type: string
+        default: '26.3'
       prepare_command:
         type: string
         required: true
@@ -71,6 +75,7 @@ jobs:
       matrix:
         runner: ${{ fromJSON(inputs.runners) }}
     env:
+      DEVELOPER_DIR: /Applications/Xcode_${{ inputs.xcode_version }}.app/Contents/Developer
       VERSION: ${{ inputs.version }}
       UPDATE_PUBLIC_KEY: ${{ inputs.update_public_key }}
       CCACHE_DIR: ${{ github.workspace }}/build/compiler-cache

@@ -259,6 +259,10 @@
             <source>App audio only</source>
             <translation>Само звук од апликацијата</translation>
         </message>
+        <message>
+            <source>Speech output is unavailable.</source>
+            <translation>Говорниот излез не е достапен.</translation>
+        </message>
     </context>
     <context>
         <name>AudioRecording</name>
@@ -494,10 +498,6 @@
             <translation>Исчисти ја далечинската кратенка за говор</translation>
         </message>
         <message>
-            <source>Playback volume</source>
-            <translation>Јачина на репродукција</translation>
-        </message>
-        <message>
             <source>Not assigned</source>
             <translation>Не е доделен</translation>
         </message>
@@ -508,6 +508,18 @@
         <message>
             <source>Level audio automatically</source>
             <translation>Автоматско ниво на аудио</translation>
+        </message>
+        <message>
+            <source>Voice volume</source>
+            <translation>Јачина на гласовниот разговор</translation>
+        </message>
+        <message>
+            <source>App sounds</source>
+            <translation>Звуци на апликацијата</translation>
+        </message>
+        <message>
+            <source>Read bot messages aloud</source>
+            <translation>Читај ги пораките на ботот наглас</translation>
         </message>
     </context>
     <context>
@@ -1188,6 +1200,10 @@
             <source>This device</source>
             <translation>Овој уред</translation>
         </message>
+        <message>
+            <source>Use default music volume</source>
+            <translation>Користи ја стандардната јачина на музиката</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1299,6 +1315,22 @@
             <source>The sanitized image could not be written completely.</source>
             <translation>Исчистената слика не можеше целосно да се запише.</translation>
         </message>
+        <message>
+            <source>%1 joined.</source>
+            <translation>%1 се придружи.</translation>
+        </message>
+        <message>
+            <source>%1 left.</source>
+            <translation>%1 си замина.</translation>
+        </message>
+        <message>
+            <source>%1 was kicked.</source>
+            <translation>%1 беше избркан.</translation>
+        </message>
+        <message>
+            <source>%1 was banned from the channel.</source>
+            <translation>%1 беше забранет од каналот.</translation>
+        </message>
     </context>
     <context>
         <name>ChatPanel</name>
@@ -1361,22 +1393,6 @@
         <message>
             <source>Loading...</source>
             <translation>Се вчитува...</translation>
-        </message>
-        <message>
-            <source>%1 joined.</source>
-            <translation>%1 се придружи.</translation>
-        </message>
-        <message>
-            <source>%1 left.</source>
-            <translation>%1 си замина.</translation>
-        </message>
-        <message>
-            <source>%1 was kicked.</source>
-            <translation>%1 беше избркан.</translation>
-        </message>
-        <message>
-            <source>%1 was banned from the channel.</source>
-            <translation>%1 беше забранет од каналот.</translation>
         </message>
         <message>
             <source>Message could not be sent. Check the connection and text length.</source>
@@ -2877,7 +2893,6 @@
             <translation>Не може да се потврди лозинката.</translation>
         </message>
     </context>
-
     <context>
         <name>Headless</name>
         <message>
@@ -3230,6 +3245,53 @@
         <message>
             <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
             <translation>Системската лента не е достапна; апликацијата останува отворена во прозорец.</translation>
+        </message>
+    </context>
+    <context>
+        <name>LocalLanguage</name>
+        <message>
+            <source>Translation (experimental)</source>
+            <translation>Превод (експериментално)</translation>
+        </message>
+        <message>
+            <source>Spoken language</source>
+            <translation>Говорен јазик</translation>
+        </message>
+        <message>
+            <source>Translate to</source>
+            <translation>Преведи на</translation>
+        </message>
+        <message>
+            <source>Translate messages</source>
+            <translation>Преведи пораки</translation>
+        </message>
+        <message>
+            <source>Translated voice</source>
+            <translation>Преведен глас</translation>
+        </message>
+        <message>
+            <source>Original audio</source>
+            <translation>Оригинален звук</translation>
+        </message>
+        <message>
+            <source>Original text</source>
+            <translation>Оригинален текст</translation>
+        </message>
+        <message>
+            <source>Prepare languages</source>
+            <translation>Подготви јазици</translation>
+        </message>
+        <message>
+            <source>Local language processing is unavailable.</source>
+            <translation>Локалната обработка на јазици не е достапна.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be read.</source>
+            <translation>Поставките за јазик не може да се прочитаат.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be saved.</source>
+            <translation>Поставките за јазик не може да се зачуваат.</translation>
         </message>
     </context>
 </TS>

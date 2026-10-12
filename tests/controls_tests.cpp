@@ -361,6 +361,7 @@ public slots:
             }
             QLocale::setDefault(QLocale(appliedLanguage_ == "en" ? "en_GB" : appliedLanguage_));
             QGuiApplication::setLayoutDirection(QLocale(appliedLanguage_).textDirection());
+            engine->setUiLanguage(appliedLanguage_);
             engine->retranslate();
             if (audio_) { audio_->devicesChanged(); QMetaObject::invokeMethod(audio_->recording(), "changed"); }
         });

@@ -161,8 +161,10 @@ int main(int argc, char** argv) {
         AppUpdates updates(!arguments.isSet("smoke-test") && !arguments.isSet("recording-test"));
 #endif
         QQmlApplicationEngine engine;
+        engine.setUiLanguage(session.language());
         QObject::connect(&session, &VoiceSession::preferencesChanged, &engine, [&] {
             if (applyLanguage()) {
+                engine.setUiLanguage(session.language());
                 audio.devicesChanged();
                 QMetaObject::invokeMethod(audio.recording(), "changed");
                 engine.retranslate();
@@ -203,15 +205,31 @@ int main(int argc, char** argv) {
         QObject::connect(&channel, &LocalChannel::stateChanged, &audio, updateVoice);
         QObject::connect(&session, &VoiceSession::presenceChanged, &audio, updateVoice);
         QObject::connect(&channel, &LocalChannel::participantsChanged, &audio, [&audio, &channel, updateVoice] {
-            updateVoice(); audio.setParticipants(channel.audioSources());
+            updateVoice(); audio.setParticipants(channel.audioSources(), channel.joinedHostId());
         });
         QObject::connect(&channel, &LocalChannel::audioReceived, &audio, &AudioModel::receiveAudio);
         QObject::connect(&audio, &AudioModel::audioPacket, &channel, &LocalChannel::sendAudio);
         QObject::connect(&channel, &LocalChannel::channelEvent, &audio, [&](const QString& kind) {
-            if (session.eventSounds()) audio.playEvent(kind);
+            const bool spoken = audio.readBotMessages() && channel.joined() && kind != "leave";
+            if (session.eventSounds() && !spoken) audio.playEvent(kind);
+        });
+        QObject::connect(&session, &VoiceSession::preferencesChanged, &audio, [&] {
+            if (!session.eventSounds()) audio.cancelNotifications();
+        });
+        QObject::connect(&channel, &LocalChannel::stateChanged, &audio,
+            [&, host = QString{}]() mutable {
+                const auto next = channel.joinedHostId();
+                if (host != next || channel.remoteMode()) audio.cancelBotMessages();
+                host = next;
+            });
+        QObject::connect(&channel, &LocalChannel::botNotification, &audio, [&](const QVariantMap& message) {
+            if (!session.eventSounds()) return;
+            audio.readBotMessage(chatContent.plainText(message));
         });
         QObject::connect(&channel, &LocalChannel::chatNotification, &app, [&](const QString& hostId, const QVariantMap& message) {
             const bool announcement = message.value("event").toMap().value("kind") == "announcement";
+            if (session.eventSounds() && !(announcement && audio.readBotMessages()))
+                audio.playEvent(announcement ? "announcement" : "message");
 #if defined(Q_OS_MACOS) || defined(Q_OS_IOS)
             QString name;
             for (const auto& entry : channel.savedChannels())
@@ -219,12 +237,9 @@ int main(int argc, char** argv) {
             const auto title = name + " - " + message.value("name").toString();
             const auto text = message.value("text").toString().simplified();
             const auto body = text.isEmpty() ? QCoreApplication::translate("Tray", "New image") : text.left(160);
-            AppleNotifications::show(hostId + '/' + message.value("sequence").toString(), title, body,
-                session.eventSounds() && audio.eventAudioEnabled()
-                    ? (announcement ? QStringLiteral("announcement.wav") : QStringLiteral("default")) : QString{});
+            AppleNotifications::show(hostId + '/' + message.value("sequence").toString(), title, body);
 #else
             Q_UNUSED(hostId);
-            if (session.eventSounds()) audio.playEvent(announcement ? "announcement" : "message");
 #endif
         });
 #if defined(Q_OS_MACOS) || defined(Q_OS_IOS)

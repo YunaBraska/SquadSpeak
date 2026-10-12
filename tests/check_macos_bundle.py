@@ -39,10 +39,6 @@ def main():
     license_file = app / "Contents/Resources/LICENSE"
     if not license_file.is_file() or license_file.read_bytes() != (Path(__file__).resolve().parents[1] / "LICENSE").read_bytes():
         errors.append({"check": "project_license"})
-    announcement = app / "Contents/Resources/announcement.wav"
-    source_sound = Path(__file__).resolve().parents[1] / "ui/sounds/announcement.wav"
-    if not announcement.is_file() or announcement.read_bytes() != source_sound.read_bytes():
-        errors.append({"check": "announcement_sound"})
     for relative in ("Contents/Frameworks/QtTest.framework", "Contents/Frameworks/QtQuickTest.framework",
                      "Contents/Resources/qml/QtTest"):
         if (app / relative).exists():

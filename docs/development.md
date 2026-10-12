@@ -626,6 +626,18 @@ credentials additionally submit and staple it before the final archive is tested
 An isolated runner keychain and imported credentials are removed after the job.
 Without those secrets, packages use ad-hoc signatures. Quit running copies before replacing their bundles. An ad-hoc code identity changes with the build, so privacy permissions can require renewed approval even when System Settings still shows an enabled entry. Stable permissions across builds require a consistent signing identity. For the local A/B copies, `tests/prepare_two_apps.py` defaults to the existing `SquadSpeak Local Development` identity. Use `--sign-identity` to select another existing development identity. Reuse its private key and keep the bundle identifiers, install paths and data profiles stable across builds. Do not provision a new certificate for each build or test copy. Never commit private keys. Developer ID signing, notarization and store accounts are separate distribution work. Store builds exclude external Supporter purchasing and activation. No signing credentials belong in this repository.
 
+Local language experiments require Xcode 26 or newer to build. The reusable
+macOS workflow selects its installed toolchain through `xcode_version` (26.3 by default). Their Apple APIs
+are weak-linked, so the basic app still targets macOS 13. The experimental path
+runs only where Apple reports local speech support on macOS 26 or newer.
+`local_language_contract` tests bounded processing, cancellation, Markdown and
+persistence without OS downloads. `native_language_contract` checks the real
+framework boundary without installing models. To exercise recognition through
+translated speech, run
+`build/native-release-sdk/native_language_tests.app/Contents/MacOS/native_language_tests prepareAndTranslateInstalledModels`.
+The first run offers Apple's model downloads. Later runs reuse those shared
+models and need neither microphone capture nor audible playback.
+
 Direct macOS packages use pinned Sparkle 2.10.0 for updates. Set the repository
 variable `SQUADSPEAK_UPDATE_PUBLIC_KEY` to its base64 Ed25519 public key and the
 Actions secret `SQUADSPEAK_UPDATE_PRIVATE_KEY` to the matching base64 32-byte seed.

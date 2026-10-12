@@ -259,6 +259,10 @@
             <source>App audio only</source>
             <translation>Mo audio da l'applicaziun</translation>
         </message>
+        <message>
+            <source>Speech output is unavailable.</source>
+            <translation>La sortida vocala n'è betg disponibla.</translation>
+        </message>
     </context>
     <context>
         <name>AudioRecording</name>
@@ -494,10 +498,6 @@
             <translation>Stizzar la cumbinaziun da tastas per discurrer a distanza</translation>
         </message>
         <message>
-            <source>Playback volume</source>
-            <translation>intensitad da la reabilitaziun</translation>
-        </message>
-        <message>
             <source>Not assigned</source>
             <translation>Betg attribuì</translation>
         </message>
@@ -508,6 +508,18 @@
         <message>
             <source>Level audio automatically</source>
             <translation>Adattar automaticamain l'audio</translation>
+        </message>
+        <message>
+            <source>Voice volume</source>
+            <translation>Volumen dal chat vocal</translation>
+        </message>
+        <message>
+            <source>App sounds</source>
+            <translation>Tuns da l'app</translation>
+        </message>
+        <message>
+            <source>Read bot messages aloud</source>
+            <translation>Leger ad auta vusch ils messadis dal bot</translation>
         </message>
     </context>
     <context>
@@ -1188,6 +1200,10 @@
             <source>This device</source>
             <translation>Quest apparat</translation>
         </message>
+        <message>
+            <source>Use default music volume</source>
+            <translation>Utilisar il volumen da musica standard</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1299,6 +1315,22 @@
             <source>The sanitized image could not be written completely.</source>
             <translation>Igl n è betg stà pussaivel da scriver dal tuttafatg il maletg nettegià.</translation>
         </message>
+        <message>
+            <source>%1 joined.</source>
+            <translation>%1 s'audan.</translation>
+        </message>
+        <message>
+            <source>%1 left.</source>
+            <translation>%1 è partì.</translation>
+        </message>
+        <message>
+            <source>%1 was kicked.</source>
+            <translation>%1 è vegnì bittà or.</translation>
+        </message>
+        <message>
+            <source>%1 was banned from the channel.</source>
+            <translation>%1 è vegnì bloccà dal chanal.</translation>
+        </message>
     </context>
     <context>
         <name>ChatPanel</name>
@@ -1361,22 +1393,6 @@
         <message>
             <source>Loading...</source>
             <translation>Butia...</translation>
-        </message>
-        <message>
-            <source>%1 joined.</source>
-            <translation>%1 s'audan.</translation>
-        </message>
-        <message>
-            <source>%1 left.</source>
-            <translation>%1 è partì.</translation>
-        </message>
-        <message>
-            <source>%1 was kicked.</source>
-            <translation>%1 è vegnì bittà or.</translation>
-        </message>
-        <message>
-            <source>%1 was banned from the channel.</source>
-            <translation>%1 è vegnì bloccà dal chanal.</translation>
         </message>
         <message>
             <source>Message could not be sent. Check the connection and text length.</source>
@@ -2877,7 +2893,6 @@
             <translation>Il pled-clav n'ha betg pudì vegnir verifitgà.</translation>
         </message>
     </context>
-
     <context>
         <name>Headless</name>
         <message>
@@ -3230,6 +3245,53 @@
         <message>
             <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
             <translation>La zona da notificaziun n'è betg disponibla; l'app resta averta en ina fanestra.</translation>
+        </message>
+    </context>
+    <context>
+        <name>LocalLanguage</name>
+        <message>
+            <source>Translation (experimental)</source>
+            <translation>Translaziun (experimentala)</translation>
+        </message>
+        <message>
+            <source>Spoken language</source>
+            <translation>Lingua discurrida</translation>
+        </message>
+        <message>
+            <source>Translate to</source>
+            <translation>Translatar en</translation>
+        </message>
+        <message>
+            <source>Translate messages</source>
+            <translation>Translatar messadis</translation>
+        </message>
+        <message>
+            <source>Translated voice</source>
+            <translation>Vusch translatada</translation>
+        </message>
+        <message>
+            <source>Original audio</source>
+            <translation>Audio original</translation>
+        </message>
+        <message>
+            <source>Original text</source>
+            <translation>Text original</translation>
+        </message>
+        <message>
+            <source>Prepare languages</source>
+            <translation>Preparar linguas</translation>
+        </message>
+        <message>
+            <source>Local language processing is unavailable.</source>
+            <translation>L'elavuraziun locala da linguas n'è betg disponibla.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be read.</source>
+            <translation>Las configuraziuns da lingua na pon betg vegnir legidas.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be saved.</source>
+            <translation>Las configuraziuns da lingua na pon betg vegnir memorisadas.</translation>
         </message>
     </context>
 </TS>

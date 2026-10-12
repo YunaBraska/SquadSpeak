@@ -3846,6 +3846,50 @@ private slots:
         }());
         QCOMPARE(notifications.size(), 3);
     }
+    void botNotificationsContainOnlyFreshSystemMessagesInTheVoiceChannel() {
+        QTemporaryDir dir;
+        Device host(dir.filePath("host"), "Host"), reader(dir.filePath("reader"), "Reader"), member(dir.filePath("member"), "Member");
+        QVERIFY(host.channel.listen(QHostAddress::LocalHost));
+        QVERIFY(host.channel.decide(reader.channel.ownId(), true));
+        QVERIFY(host.channel.decide(member.channel.ownId(), true));
+        QVERIFY(host.channel.sendSystemMessage("Historical announcement"));
+        QSignalSpy messages(&reader.channel, &LocalChannel::botNotification);
+        QVERIFY(reader.join(host.channel));
+        QTRY_VERIFY(reader.channel.chatReady() && !reader.channel.historyLoading() && !reader.channel.messages().isEmpty());
+        QVERIFY(reader.channel.refreshChat()); QTRY_VERIFY(!reader.channel.historyLoading());
+        // Our own join can arrive live or with the initial page. Neither page
+        // may replay the earlier announcement. The refresh is a server fence.
+        for (const auto& delivery : messages) {
+            const auto event = delivery.at(0).toMap().value("event").toMap();
+            QCOMPARE(event.value("kind").toString(), QString("joined"));
+            QCOMPARE(event.value("member").toString(), reader.channel.ownId());
+        }
+        int count = int(messages.size());
+        const auto check = [&](const QString& kind) {
+            ++count;
+            QTRY_COMPARE(messages.size(), count);
+            QCOMPARE(messages.last().at(0).toMap().value("event").toMap().value("kind").toString(), kind);
+        };
+        QVERIFY(member.join(host.channel)); check("joined");
+        QTRY_VERIFY(member.channel.chatReady() && !member.channel.historyLoading());
+        QVERIFY(member.channel.sendChat("A human message")); QTRY_VERIFY(!member.channel.chatPending());
+        QCOMPARE(messages.size(), count);
+        QVERIFY(member.channel.leave()); check("left");
+        QVERIFY(member.join(host.channel)); check("joined");
+        QTRY_VERIFY(member.channel.chatReady() && !member.channel.historyLoading());
+        QVERIFY(host.channel.kick(member.channel.ownId())); check("kicked");
+        QTRY_VERIFY(!member.channel.joined());
+        QVERIFY(member.join(host.channel)); check("joined");
+        QTRY_VERIFY(member.channel.chatReady() && !member.channel.historyLoading());
+        QVERIFY(host.channel.setBlocked(member.channel.ownId(), true)); check("banned");
+        QVERIFY(host.channel.sendSystemMessage("A new announcement")); check("announcement");
+        QVERIFY(reader.channel.refreshChat()); QTRY_VERIFY(!reader.channel.historyLoading());
+        QCOMPARE(messages.size(), count);
+        QVERIFY(reader.channel.leave());
+        QVERIFY(host.channel.sendSystemMessage("After leaving"));
+        QVERIFY(reader.channel.refreshChat()); QTRY_VERIFY(!reader.channel.historyLoading());
+        QCOMPARE(messages.size(), count);
+    }
 
     void chatSurvivesHostRestartAndReplaysToNewApprovedParticipants() {
         QTemporaryDir dir;

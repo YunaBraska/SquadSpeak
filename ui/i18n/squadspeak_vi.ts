@@ -259,6 +259,10 @@
             <source>App audio only</source>
             <translation>Chỉ âm thanh ứng dụng</translation>
         </message>
+        <message>
+            <source>Speech output is unavailable.</source>
+            <translation>Đầu ra giọng nói không khả dụng.</translation>
+        </message>
     </context>
     <context>
         <name>AudioRecording</name>
@@ -494,10 +498,6 @@
             <translation>Xóa phím từ xa</translation>
         </message>
         <message>
-            <source>Playback volume</source>
-            <translation>Âm lượng phát</translation>
-        </message>
-        <message>
             <source>Not assigned</source>
             <translation>Chưa gán</translation>
         </message>
@@ -508,6 +508,18 @@
         <message>
             <source>Level audio automatically</source>
             <translation>Tự động cân bằng mức âm thanh</translation>
+        </message>
+        <message>
+            <source>Voice volume</source>
+            <translation>Âm lượng trò chuyện thoại</translation>
+        </message>
+        <message>
+            <source>App sounds</source>
+            <translation>Âm thanh ứng dụng</translation>
+        </message>
+        <message>
+            <source>Read bot messages aloud</source>
+            <translation>Đọc to tin nhắn của bot</translation>
         </message>
     </context>
     <context>
@@ -1188,6 +1200,10 @@
             <source>This device</source>
             <translation>Thiết bị này</translation>
         </message>
+        <message>
+            <source>Use default music volume</source>
+            <translation>Dùng âm lượng nhạc mặc định</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1299,6 +1315,22 @@
             <source>The sanitized image could not be written completely.</source>
             <translation>Không thể ghi đầy đủ ảnh đã làm sạch.</translation>
         </message>
+        <message>
+            <source>%1 joined.</source>
+            <translation>%1 đã tham gia.</translation>
+        </message>
+        <message>
+            <source>%1 left.</source>
+            <translation>%1 đã rời đi.</translation>
+        </message>
+        <message>
+            <source>%1 was kicked.</source>
+            <translation>%1 đã bị đuổi.</translation>
+        </message>
+        <message>
+            <source>%1 was banned from the channel.</source>
+            <translation>%1 đã bị cấm khỏi kênh.</translation>
+        </message>
     </context>
     <context>
         <name>ChatPanel</name>
@@ -1361,22 +1393,6 @@
         <message>
             <source>Loading...</source>
             <translation>Đang tải...</translation>
-        </message>
-        <message>
-            <source>%1 joined.</source>
-            <translation>%1 đã tham gia.</translation>
-        </message>
-        <message>
-            <source>%1 left.</source>
-            <translation>%1 đã rời đi.</translation>
-        </message>
-        <message>
-            <source>%1 was kicked.</source>
-            <translation>%1 đã bị đuổi.</translation>
-        </message>
-        <message>
-            <source>%1 was banned from the channel.</source>
-            <translation>%1 đã bị cấm khỏi kênh.</translation>
         </message>
         <message>
             <source>Message could not be sent. Check the connection and text length.</source>
@@ -2877,7 +2893,6 @@
             <translation>Không thể xác minh mật khẩu.</translation>
         </message>
     </context>
-
     <context>
         <name>Headless</name>
         <message>
@@ -3230,6 +3245,53 @@
         <message>
             <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
             <translation>Khay hệ thống không khả dụng; ứng dụng vẫn mở trong một cửa sổ.</translation>
+        </message>
+    </context>
+    <context>
+        <name>LocalLanguage</name>
+        <message>
+            <source>Translation (experimental)</source>
+            <translation>Dịch (thử nghiệm)</translation>
+        </message>
+        <message>
+            <source>Spoken language</source>
+            <translation>Ngôn ngữ nói</translation>
+        </message>
+        <message>
+            <source>Translate to</source>
+            <translation>Dịch sang</translation>
+        </message>
+        <message>
+            <source>Translate messages</source>
+            <translation>Dịch tin nhắn</translation>
+        </message>
+        <message>
+            <source>Translated voice</source>
+            <translation>Giọng nói đã dịch</translation>
+        </message>
+        <message>
+            <source>Original audio</source>
+            <translation>Âm thanh gốc</translation>
+        </message>
+        <message>
+            <source>Original text</source>
+            <translation>Văn bản gốc</translation>
+        </message>
+        <message>
+            <source>Prepare languages</source>
+            <translation>Chuẩn bị ngôn ngữ</translation>
+        </message>
+        <message>
+            <source>Local language processing is unavailable.</source>
+            <translation>Không thể xử lý ngôn ngữ cục bộ.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be read.</source>
+            <translation>Không thể đọc cài đặt ngôn ngữ.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be saved.</source>
+            <translation>Không thể lưu cài đặt ngôn ngữ.</translation>
         </message>
     </context>
 </TS>

@@ -259,6 +259,10 @@
             <source>App audio only</source>
             <translation>Solo audio dell'applicazione</translation>
         </message>
+        <message>
+            <source>Speech output is unavailable.</source>
+            <translation>L'uscita vocale non è disponibile.</translation>
+        </message>
     </context>
     <context>
         <name>AudioRecording</name>
@@ -494,10 +498,6 @@
             <translation>Cancella il tasto remoto</translation>
         </message>
         <message>
-            <source>Playback volume</source>
-            <translation>Volume di riproduzione</translation>
-        </message>
-        <message>
             <source>Not assigned</source>
             <translation>Non assegnato</translation>
         </message>
@@ -508,6 +508,18 @@
         <message>
             <source>Level audio automatically</source>
             <translation>Regola automaticamente il livello audio</translation>
+        </message>
+        <message>
+            <source>Voice volume</source>
+            <translation>Volume della chat vocale</translation>
+        </message>
+        <message>
+            <source>App sounds</source>
+            <translation>Suoni dell'app</translation>
+        </message>
+        <message>
+            <source>Read bot messages aloud</source>
+            <translation>Leggi i messaggi del bot ad alta voce</translation>
         </message>
     </context>
     <context>
@@ -1188,6 +1200,10 @@
             <source>This device</source>
             <translation>Questo dispositivo</translation>
         </message>
+        <message>
+            <source>Use default music volume</source>
+            <translation>Usa il volume predefinito della musica</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1299,6 +1315,22 @@
             <source>The sanitized image could not be written completely.</source>
             <translation>Non è stato possibile scrivere completamente l'immagine sanificata.</translation>
         </message>
+        <message>
+            <source>%1 joined.</source>
+            <translation>%1 è entrato.</translation>
+        </message>
+        <message>
+            <source>%1 left.</source>
+            <translation>%1 è uscito.</translation>
+        </message>
+        <message>
+            <source>%1 was kicked.</source>
+            <translation>%1 è stato espulso.</translation>
+        </message>
+        <message>
+            <source>%1 was banned from the channel.</source>
+            <translation>%1 è stato bandito dal canale.</translation>
+        </message>
     </context>
     <context>
         <name>ChatPanel</name>
@@ -1361,22 +1393,6 @@
         <message>
             <source>Loading...</source>
             <translation>Caricamento...</translation>
-        </message>
-        <message>
-            <source>%1 joined.</source>
-            <translation>%1 è entrato.</translation>
-        </message>
-        <message>
-            <source>%1 left.</source>
-            <translation>%1 è uscito.</translation>
-        </message>
-        <message>
-            <source>%1 was kicked.</source>
-            <translation>%1 è stato espulso.</translation>
-        </message>
-        <message>
-            <source>%1 was banned from the channel.</source>
-            <translation>%1 è stato bandito dal canale.</translation>
         </message>
         <message>
             <source>Message could not be sent. Check the connection and text length.</source>
@@ -2877,7 +2893,6 @@
             <translation>Impossibile verificare la password.</translation>
         </message>
     </context>
-
     <context>
         <name>Headless</name>
         <message>
@@ -3230,6 +3245,53 @@
         <message>
             <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
             <translation>Area di notifica non disponibile; l'applicazione rimane aperta in una finestra.</translation>
+        </message>
+    </context>
+    <context>
+        <name>LocalLanguage</name>
+        <message>
+            <source>Translation (experimental)</source>
+            <translation>Traduzione (sperimentale)</translation>
+        </message>
+        <message>
+            <source>Spoken language</source>
+            <translation>Lingua parlata</translation>
+        </message>
+        <message>
+            <source>Translate to</source>
+            <translation>Traduci in</translation>
+        </message>
+        <message>
+            <source>Translate messages</source>
+            <translation>Traduci messaggi</translation>
+        </message>
+        <message>
+            <source>Translated voice</source>
+            <translation>Voce tradotta</translation>
+        </message>
+        <message>
+            <source>Original audio</source>
+            <translation>Audio originale</translation>
+        </message>
+        <message>
+            <source>Original text</source>
+            <translation>Testo originale</translation>
+        </message>
+        <message>
+            <source>Prepare languages</source>
+            <translation>Prepara le lingue</translation>
+        </message>
+        <message>
+            <source>Local language processing is unavailable.</source>
+            <translation>L'elaborazione locale delle lingue non è disponibile.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be read.</source>
+            <translation>Impossibile leggere le impostazioni della lingua.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be saved.</source>
+            <translation>Impossibile salvare le impostazioni della lingua.</translation>
         </message>
     </context>
 </TS>

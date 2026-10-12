@@ -259,6 +259,10 @@
             <source>App audio only</source>
             <translation>Тек қолданба дыбысы</translation>
         </message>
+        <message>
+            <source>Speech output is unavailable.</source>
+            <translation>Сөйлеу шығысы қолжетімсіз.</translation>
+        </message>
     </context>
     <context>
         <name>AudioRecording</name>
@@ -494,10 +498,6 @@
             <translation>қашықтан басу-сөйлесу пернелер тіркесімін өшіріңіз</translation>
         </message>
         <message>
-            <source>Playback volume</source>
-            <translation>Ойнату дыбыс деңгейі</translation>
-        </message>
-        <message>
             <source>Not assigned</source>
             <translation>тағайындалмаған</translation>
         </message>
@@ -508,6 +508,18 @@
         <message>
             <source>Level audio automatically</source>
             <translation>дыбыс деңгейін автоматты түрде</translation>
+        </message>
+        <message>
+            <source>Voice volume</source>
+            <translation>Дауыстық чат дыбыс деңгейі</translation>
+        </message>
+        <message>
+            <source>App sounds</source>
+            <translation>Қолданба дыбыстары</translation>
+        </message>
+        <message>
+            <source>Read bot messages aloud</source>
+            <translation>Бот хабарларын дауыстап оқу</translation>
         </message>
     </context>
     <context>
@@ -1188,6 +1200,10 @@
             <source>This device</source>
             <translation>Бұл құрылғы</translation>
         </message>
+        <message>
+            <source>Use default music volume</source>
+            <translation>Музыканың әдепкі дыбыс деңгейін қолдану</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1299,6 +1315,22 @@
             <source>The sanitized image could not be written completely.</source>
             <translation>Тазартылған суретті толық жазу мүмкін болмады.</translation>
         </message>
+        <message>
+            <source>%1 joined.</source>
+            <translation>%1 қосылды.</translation>
+        </message>
+        <message>
+            <source>%1 left.</source>
+            <translation>%1 кетті.</translation>
+        </message>
+        <message>
+            <source>%1 was kicked.</source>
+            <translation>%1 қуылды.</translation>
+        </message>
+        <message>
+            <source>%1 was banned from the channel.</source>
+            <translation>%1 арнадан бұғатталды.</translation>
+        </message>
     </context>
     <context>
         <name>ChatPanel</name>
@@ -1361,22 +1393,6 @@
         <message>
             <source>Loading...</source>
             <translation>Жүктелуде...</translation>
-        </message>
-        <message>
-            <source>%1 joined.</source>
-            <translation>%1 қосылды.</translation>
-        </message>
-        <message>
-            <source>%1 left.</source>
-            <translation>%1 кетті.</translation>
-        </message>
-        <message>
-            <source>%1 was kicked.</source>
-            <translation>%1 қуылды.</translation>
-        </message>
-        <message>
-            <source>%1 was banned from the channel.</source>
-            <translation>%1 арнадан бұғатталды.</translation>
         </message>
         <message>
             <source>Message could not be sent. Check the connection and text length.</source>
@@ -2877,7 +2893,6 @@
             <translation>Құпиясөзді тексеру мүмкін болмады.</translation>
         </message>
     </context>
-
     <context>
         <name>Headless</name>
         <message>
@@ -3230,6 +3245,53 @@
         <message>
             <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
             <translation>Жүйелік науа қолжетімсіз; қолданба терезеде ашық қалады.</translation>
+        </message>
+    </context>
+    <context>
+        <name>LocalLanguage</name>
+        <message>
+            <source>Translation (experimental)</source>
+            <translation>Аударма (тәжірибелік)</translation>
+        </message>
+        <message>
+            <source>Spoken language</source>
+            <translation>Сөйлеу тілі</translation>
+        </message>
+        <message>
+            <source>Translate to</source>
+            <translation>Мына тілге аудару</translation>
+        </message>
+        <message>
+            <source>Translate messages</source>
+            <translation>Хабарларды аудару</translation>
+        </message>
+        <message>
+            <source>Translated voice</source>
+            <translation>Аударылған дауыс</translation>
+        </message>
+        <message>
+            <source>Original audio</source>
+            <translation>Бастапқы дыбыс</translation>
+        </message>
+        <message>
+            <source>Original text</source>
+            <translation>Бастапқы мәтін</translation>
+        </message>
+        <message>
+            <source>Prepare languages</source>
+            <translation>Тілдерді дайындау</translation>
+        </message>
+        <message>
+            <source>Local language processing is unavailable.</source>
+            <translation>Жергілікті тіл өңдеуі қолжетімсіз.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be read.</source>
+            <translation>Тіл параметрлерін оқу мүмкін болмады.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be saved.</source>
+            <translation>Тіл параметрлерін сақтау мүмкін болмады.</translation>
         </message>
     </context>
 </TS>
