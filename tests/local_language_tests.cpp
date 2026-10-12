@@ -37,10 +37,11 @@ void squad_language_cancel(void*, int64_t req) { current->requests.erase(req); }
 class LanguageTests final : public QObject {
     Q_OBJECT
 private slots:
+#if defined(Q_OS_MACOS)
     void channelSwitchDiscardsSpeechAndRejectsOldCallbacks() {
         LocalLanguage language;
         const auto voices = language.voices();
-        if (voices.isEmpty()) QSKIP("Native speech synthesis is not available on this platform.");
+        QVERIFY(!voices.isEmpty());
         QVERIFY(language.configure("alice", "en", "de", voices.first().toMap().value("id").toString(), false));
         language.setMembers({"alice"}, "first");
         const auto first = current->requests.begin()->first;
@@ -61,7 +62,7 @@ private slots:
     void assignedVoiceReplacesOnlyItsOwnAudioAndFailsBackImmediately() {
         LocalLanguage language;
         const auto voices = language.voices();
-        if (voices.isEmpty()) QSKIP("Native speech synthesis is not available on this platform.");
+        QVERIFY(!voices.isEmpty());
         const auto selected = voices.first().toMap();
         QVERIFY(language.configure("alice", "en", "de", selected.value("id").toString(), false));
         QCOMPARE(language.member("alice").value("target"), selected.value("language"));
@@ -96,6 +97,7 @@ private slots:
         QCOMPARE(current->requests.size(), size_t(1));
         language.suspend(true); QVERIFY(current->requests.empty());
     }
+#endif
     void preferencesAreLocalValidatedAndPersistent() {
         QTemporaryDir dir;
         const auto file = dir.filePath("languages.json");
