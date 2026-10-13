@@ -132,6 +132,9 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Darwin" AND NOT SQUADSPEAK_IOS)
     target_sources(squad_language PRIVATE src/local_language_native.h src/local_language_mac.swift)
     target_compile_options(squad_language PRIVATE "$<$<COMPILE_LANGUAGE:Swift>:-target;${squad_swift_arch}-apple-macos${CMAKE_OSX_DEPLOYMENT_TARGET}>")
     target_compile_definitions(squad_language PRIVATE $<$<COMPILE_LANGUAGE:CXX>:SQUAD_LOCAL_LANGUAGE_NATIVE>)
+    if(squad_macos_sdk VERSION_GREATER_EQUAL 26.4)
+        target_compile_options(squad_language PRIVATE $<$<COMPILE_LANGUAGE:Swift>:-DSQUAD_TRANSLATION_STRATEGY>)
+    endif()
     target_link_options(squad_language INTERFACE "LINKER:-weak_framework,Translation" "LINKER:-weak_framework,Speech")
     target_link_libraries(squad_language PRIVATE
         "-framework NaturalLanguage"

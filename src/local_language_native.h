@@ -13,6 +13,7 @@ typedef void (*SquadLanguageCallback)(void* context, int64_t request, const char
 void* squad_language_create(SquadLanguageCallback callback, void* context);
 void squad_language_destroy(void* handle);
 const char* squad_language_capabilities(void* handle);
+void squad_language_refresh(void* handle);
 void squad_language_prepare(void* handle, int64_t request, const char* source, const char* target, int32_t speech);
 void squad_language_translate(void* handle, int64_t request, const char* source, const char* target, const char* text);
 void squad_language_listen(void* handle, int64_t request, const char* source);

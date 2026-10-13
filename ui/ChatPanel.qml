@@ -222,7 +222,7 @@ Item {
                             id: incomingTranslation; interval: 50
                             running: messageRow.inViewport && messageRow.wantsTranslation && !messageRow.translated.original && !root.language.busy
                             onTriggered: root.language.request(messageRow.translationKey, messageRow.message.text,
-                                messageRow.translationPreference.source, messageRow.translationPreference.target)
+                                "", messageRow.translationPreference.target)
                         }
                         readonly property bool own: !systemMessage && message.sender === root.current.ownId
                         objectName: "messageRow_" + message.sequence
@@ -283,9 +283,13 @@ Item {
                                 ActionButton {
                                     Layout.alignment: Qt.AlignRight
                                     visible: messageRow.hasTranslation || (messageRow.wantsTranslation && !!messageRow.translated.error)
-                                    text: messageRow.hasTranslation ? qsTranslate("LocalLanguage", "Original text") : messageRow.translated.error
-                                    glyph: "translate"; iconOnly: true; flat: true; implicitHeight: 26
-                                    onClicked: messageRow.showOriginal = !messageRow.showOriginal
+                                    text: messageRow.hasTranslation ? qsTranslate("LocalLanguage", "Original text") : messageRow.translated.needsPreparation ? qsTranslate("LocalLanguage", "Prepare languages") : messageRow.translated.error
+                                    glyph: messageRow.hasTranslation ? "translate" : "down"; iconOnly: true; flat: true; implicitHeight: 26
+                                    onClicked: {
+                                        if (messageRow.hasTranslation) messageRow.showOriginal = !messageRow.showOriginal
+                                        else if (messageRow.translated.needsPreparation) root.language.prepareTranslation(messageRow.translationKey)
+                                        else root.language.openSettings()
+                                    }
                                 }
                                 TextEdit {
                                     id: messageText
@@ -374,7 +378,7 @@ Item {
                 }
                 ActionButton {
                     text: root.language.preparing ? qsTranslate("Channels", "Cancel") : qsTranslate("LocalLanguage", "Prepare languages"); glyph: root.language.preparing ? "close" : "down"; iconOnly: true; flat: true
-                    visible: !!root.translatedDraft.error && !!root.translatedDraft.detectedSource
+                    visible: !!root.translatedDraft.needsPreparation
                     onClicked: root.language.preparing ? root.language.cancelPreparation() : root.language.prepareTranslation(root.translationKey)
                 }
             }

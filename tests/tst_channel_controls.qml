@@ -850,12 +850,21 @@ TestCase {
         compare(controls.visible, audio.language.supported)
         verify(findChild(dialog, "memberVolume").visible)
         const voice = findChild(dialog, "memberTranslatedVoice")
-        if (controls.visible) compare(voice.currentValue, "")
+        if (controls.visible) {
+            compare(voice.currentValue, "")
+            verify(voice.model.some(function(entry) { return entry.id === "system" }))
+            compare(findChild(dialog, "memberTargetLanguage").currentValue, "system")
+            verify(!findChild(dialog, "memberSourceLanguage").visible)
+            verify(findChild(dialog, "languageSystemSettings").enabled)
+        }
         compare(findChild(dialog, "memberTranslateText").checked, false)
         compare(audio.language.member("language-test-member").voice || "", "")
         if (controls.visible && audio.language.available) {
             mouseClick(findChild(dialog, "memberTranslateText"))
             compare(audio.language.member("language-test-member").incoming, true)
+            const target = findChild(dialog, "memberTargetLanguage")
+            compare(target.currentValue, "system")
+            compare(voice.currentValue, "")
             dialog.close(); tryCompare(dialog, "visible", false)
             view.memberOptions({id: "language-test-member", name: "Robin"}, channel.ownId)
             tryCompare(dialog, "opened", true)

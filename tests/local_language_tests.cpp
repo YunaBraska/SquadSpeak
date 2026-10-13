@@ -7,6 +7,7 @@
 #include <QTextBlock>
 #include <QTextFragment>
 #include <QTimer>
+#include <QSignalSpy>
 #include <set>
 #include <array>
 
@@ -26,8 +27,9 @@ void reply(int64_t request, QJsonObject event) {
 }
 extern "C" {
 void* squad_language_create(SquadLanguageCallback callback, void* context) { current = new Native{callback, context, {}}; return current; }
+void squad_language_refresh(void*) {}
 void squad_language_destroy(void* handle) { delete static_cast<Native*>(handle); current = nullptr; }
-const char* squad_language_capabilities(void*) { return R"({"available":true,"languages":[{"id":"en","name":"English"},{"id":"de","name":"Deutsch"}],"speechLanguages":[{"id":"en-US","name":"English"}]})"; }
+const char* squad_language_capabilities(void*) { return R"({"available":true,"speechAvailable":true,"languages":[{"id":"en","name":"English"},{"id":"de","name":"Deutsch"}],"speechLanguages":[{"id":"en-US","name":"English"}]})"; }
 void squad_language_prepare(void*, int64_t req, const char*, const char*, int) { current->requests[req] = "prepare"; }
 void squad_language_translate(void*, int64_t req, const char*, const char*, const char* text) { current->requests[req] = QString::fromUtf8(text); }
 void squad_language_listen(void*, int64_t req, const char*) { current->requests[req] = "listen"; }
@@ -98,6 +100,55 @@ private slots:
         language.suspend(true); QVERIFY(current->requests.empty());
     }
 #endif
+    void textTranslationDoesNotRequireSpeechRecognition() {
+        LocalLanguage language;
+        reply(0, {{"kind", "capabilities"}, {"available", true}, {"speechAvailable", false}});
+        QVERIFY(language.configure("alice", "fr", "de", {}, true));
+        QVERIFY(language.prepare("alice"));
+        const auto preparation = current->requests.begin()->first;
+        reply(preparation, {{"kind", "ready"}});
+        current->requests.clear();
+        QVERIFY(language.request("french", "Bonjour tout le monde", "", "de"));
+        reply(current->requests.begin()->first, {{"kind", "text"}, {"text", "Hallo zusammen"}});
+        QVERIFY(language.result("french").value("text").toString().contains("Hallo zusammen"));
+        QVERIFY(language.configure("alice", "fr", "system", "system", true));
+        language.setMembers({"alice"});
+        QVERIFY(!language.voiceProcessing());
+    }
+    void systemSelectionFollowsChangesWithoutOverwritingExplicitChoices() {
+        QTemporaryDir dir;
+        const auto path = dir.filePath("preferences.json");
+        {
+            LocalLanguage language(path);
+            reply(0, {{"kind", "capabilities"}, {"available", true}, {"speechAvailable", false},
+                {"systemVoice", QJsonObject{{"id", "voice-de"}, {"language", "de-DE"}, {"name", "Anna"}}}});
+            QVERIFY(language.configure("following", "en", "system", "system", true));
+            QVERIFY(language.configure("fixed", "en", "fr", {}, true));
+            QCOMPARE(language.member("following").value("target"), "de-DE");
+            QCOMPARE(language.member("following").value("targetSelection"), "system");
+            reply(0, {{"kind", "capabilities"}, {"available", true}, {"speechAvailable", false},
+                {"systemVoice", QJsonObject{{"id", "voice-es"}, {"language", "es-ES"}, {"name", "Monica"}}}});
+            QCOMPARE(language.member("following").value("target"), "es-ES");
+            QCOMPARE(language.member("fixed").value("target"), "fr");
+        }
+        LocalLanguage restored(path);
+        QCOMPARE(restored.member("following").value("voice"), "system");
+        QCOMPARE(restored.member("following").value("targetSelection"), "system");
+    }
+    void missingModelsExposeAnActionAndPreserveTheOriginal() {
+        LocalLanguage language;
+        QVERIFY(language.request("french", "Bonjour tout le monde", "", "de"));
+        reply(current->requests.begin()->first, {{"kind", "error"}, {"code", "modelsRequired"}, {"source", "fr"}});
+        const auto result = language.result("french");
+        QCOMPARE(result.value("original"), "Bonjour tout le monde");
+        QVERIFY(result.value("needsPreparation").toBool());
+        QVERIFY(language.prepareTranslation("french"));
+        language.cancelPreparation();
+        QVERIFY(!language.preparing());
+        QVERIFY(language.request("failure", "Hello", "en", "de"));
+        reply(current->requests.rbegin()->first, {{"kind", "error"}, {"error", "A specific native failure"}});
+        QCOMPARE(language.result("failure").value("error"), "A specific native failure");
+    }
     void preferencesAreLocalValidatedAndPersistent() {
         QTemporaryDir dir;
         const auto file = dir.filePath("languages.json");
@@ -232,6 +283,33 @@ private slots:
         QVERIFY(language.request("cancelled", "This is another sentence.", "en", "de"));
         language.cancel("cancelled");
         QVERIFY(language.result("cancelled").isEmpty());
+    }
+    // Explicit local acceptance. Missing Apple models can require a download prompt.
+    void prepareAndTranslateText_data() {
+        QTest::addColumn<QString>("source"); QTest::addColumn<QString>("target");
+        QTest::addColumn<QString>("input"); QTest::addColumn<QString>("expected");
+        QTest::newRow("regional-german") << "de-AT" << "en-US" << "Guten Morgen, wie geht es dir?" << "morning";
+        QTest::newRow("english") << "en-US" << "de-DE" << "Hello, how are you today?" << "Hallo";
+        QTest::newRow("french") << "fr-FR" << "de-DE" << "Bonjour, comment allez-vous?" << "wie";
+        QTest::newRow("spanish") << "es-ES" << "en-US" << "Hola, como estas hoy?" << "Hello";
+    }
+    void prepareAndTranslateText() {
+        QFETCH(QString, source); QFETCH(QString, target); QFETCH(QString, input); QFETCH(QString, expected);
+        LocalLanguage language;
+        QTRY_VERIFY_WITH_TIMEOUT(language.available(), 20000);
+        QVERIFY(language.configure("text-test", source, target, {}, true));
+        QSignalSpy ready(&language, &LocalLanguage::prepared);
+        QVERIFY(language.prepare("text-test"));
+        QTRY_VERIFY_WITH_TIMEOUT(!language.preparing(), 180000);
+        QVERIFY2(language.error().isEmpty(), qPrintable(language.error()));
+        QCOMPARE(ready.count(), 1);
+        QCOMPARE(ready.first().first().toString(), "text-test");
+        QVERIFY(language.request("message", input, "", target));
+        QTRY_VERIFY_WITH_TIMEOUT(!language.result("message").value("pending").toBool(), 15000);
+        const auto result = language.result("message");
+        QVERIFY2(result.value("error").toString().isEmpty(), qPrintable(result.value("error").toString()));
+        QVERIFY2(result.value("text").toString().contains(expected, Qt::CaseInsensitive), qPrintable(result.value("text").toString()));
+        qInfo() << source << "to" << target << result.value("text");
     }
     // Explicit invocation only. Installs OS assets after Apple's local consent UI.
     void prepareAndTranslateInstalledModels() {

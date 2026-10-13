@@ -981,6 +981,7 @@ PanelWindow {
         readonly property bool personalControls: !root.inspectedRequestId && !root.remote && !!entry.id && !entry.music && entry.id !== root.network.ownId
         onOpened: {
             requestScroll.contentItem.contentY = 0
+            audio.language.refresh()
             if (memberLanguage.visible) memberLanguage.load()
         }
         onClosed: memberMenu.close()
@@ -1023,35 +1024,38 @@ PanelWindow {
                     id: memberLanguage; objectName: "memberLanguageControls"
                     Layout.fillWidth: true; spacing: 8
                     visible: requestInfo.personalControls && audio.language.supported
-                    readonly property var voiceOptions: [{id: "", name: qsTranslate("LocalLanguage", "Original audio")}].concat(audio.language.voices)
+                    property bool preparationDone: false
+                    readonly property string systemLabel: qsTranslate("AudioModel", "System default") + (audio.language.systemVoice.name ? " (" + audio.language.systemVoice.name + ")" : "")
+                    readonly property var voiceOptions: [{id: "", name: qsTranslate("LocalLanguage", "Original audio")}, {id: "system", name: systemLabel}].concat(audio.language.voices)
+                    readonly property var targetOptions: [{id: "system", name: qsTranslate("AudioModel", "System default") + (audio.language.systemVoice.language ? " (" + Qt.locale(audio.language.systemVoice.language).nativeLanguageName + ")" : "")}].concat(audio.language.languages)
+                    Connections {
+                        target: audio.language
+                        function onCapabilitiesChanged() { if (requestInfo.opened) Qt.callLater(memberLanguage.load) }
+                        function onPrepared(id) { if (id === requestInfo.entry.id) memberLanguage.preparationDone = true }
+                    }
                     function choose(box, value) {
                         const exact = box.model.findIndex(function(item) { return item.id === value })
                         box.currentIndex = Math.max(0, exact >= 0 ? exact : box.model.findIndex(function(item) { return item.id.split("-")[0] === value.split("-")[0] }))
                     }
                     function save() {
+                        preparationDone = false
                         const source = spokenLanguage.currentValue || "en"
-                        const target = targetLanguage.currentValue || Qt.locale().name.replace("_", "-")
+                        const target = targetLanguage.currentValue || "system"
                         audio.language.configure(requestInfo.entry.id, source, target, outputVoice.currentValue || "", incomingTranslation.checked)
                     }
                     function load() {
+                        preparationDone = false
                         const preference = audio.language.member(requestInfo.entry.id)
-                        choose(spokenLanguage, preference.source || "en-US")
-                        choose(targetLanguage, preference.target || Qt.locale().name.replace("_", "-"))
+                        choose(spokenLanguage, preference.source || audio.language.systemVoice.language || "en-US")
+                        choose(targetLanguage, preference.targetSelection || "system")
                         choose(outputVoice, preference.voice || "")
                         incomingTranslation.checked = !!preference.incoming
                     }
                     Label { text: qsTranslate("LocalLanguage", "Translation (experimental)"); font.weight: Font.DemiBold; Layout.fillWidth: true; wrapMode: Text.Wrap }
-                    Label { text: qsTranslate("LocalLanguage", "Spoken language"); color: Theme.muted }
-                    ChoiceBox {
-                        id: spokenLanguage; objectName: "memberSourceLanguage"
-                        Layout.fillWidth: true; model: audio.language.speechLanguages; textRole: "name"; valueRole: "id"
-                        enabled: audio.language.available
-                        onActivated: memberLanguage.save()
-                    }
                     Label { text: qsTranslate("LocalLanguage", "Translate to"); color: Theme.muted }
                     ChoiceBox {
                         id: targetLanguage; objectName: "memberTargetLanguage"
-                        Layout.fillWidth: true; model: audio.language.languages; textRole: "name"; valueRole: "id"
+                        Layout.fillWidth: true; model: memberLanguage.targetOptions; textRole: "name"; valueRole: "id"
                         enabled: audio.language.available && !(outputVoice.currentValue || "").length
                         onActivated: memberLanguage.save()
                     }
@@ -1065,20 +1069,33 @@ PanelWindow {
                     ChoiceBox {
                         id: outputVoice; objectName: "memberTranslatedVoice"
                         Layout.fillWidth: true; model: memberLanguage.voiceOptions; textRole: "name"; valueRole: "id"
-                        enabled: audio.language.available
+                        enabled: audio.language.speechAvailable
                         onActivated: {
                             memberLanguage.save()
-                            memberLanguage.choose(targetLanguage, audio.language.member(requestInfo.entry.id).target)
+                            memberLanguage.choose(targetLanguage, audio.language.member(requestInfo.entry.id).targetSelection)
                         }
+                    }
+                    Label { visible: !!outputVoice.currentValue; text: qsTranslate("LocalLanguage", "Spoken language"); color: Theme.muted }
+                    ChoiceBox {
+                        id: spokenLanguage; objectName: "memberSourceLanguage"
+                        visible: !!outputVoice.currentValue
+                        Layout.fillWidth: true; model: audio.language.speechLanguages; textRole: "name"; valueRole: "id"
+                        enabled: audio.language.speechAvailable
+                        onActivated: memberLanguage.save()
                     }
                     ActionButton {
                         objectName: "prepareMemberLanguages"
-                        text: audio.language.preparing ? qsTr("Cancel") : qsTranslate("LocalLanguage", "Prepare languages"); glyph: audio.language.preparing ? "close" : "down"
+                        text: audio.language.preparing ? qsTr("Cancel") : memberLanguage.preparationDone ? qsTr("Done") : qsTranslate("LocalLanguage", "Prepare languages"); glyph: audio.language.preparing ? "close" : memberLanguage.preparationDone ? "check" : "down"
                         enabled: audio.language.available
                         onClicked: { if (audio.language.preparing) audio.language.cancelPreparation(); else { memberLanguage.save(); audio.language.prepare(requestInfo.entry.id) } }
                     }
+                    ActionButton {
+                        objectName: "languageSystemSettings"
+                        text: qsTranslate("AudioSettings", "Open system settings"); glyph: "settings"; flat: true
+                        onClicked: audio.language.openSettings(!!outputVoice.currentValue)
+                    }
                     Label {
-                        Layout.fillWidth: true; wrapMode: Text.Wrap; color: Theme.muted
+                        Layout.fillWidth: true; wrapMode: Text.Wrap; color: Theme.muted; textFormat: Text.PlainText
                         text: !audio.language.available ? qsTranslate("LocalLanguage", "Local language processing is unavailable.") : audio.language.error
                         visible: text.length > 0
                     }
@@ -1299,17 +1316,13 @@ PanelWindow {
                         required property string groupId
                         readonly property real headingHeight: hostHeading.visible ? hostHeading.implicitHeight + hostHeading.Layout.topMargin + hostHeading.Layout.bottomMargin : 0
                         Layout.fillWidth: true; spacing: 2
-                        RowLayout {
+                        DetailText {
                             id: hostHeading
+                            objectName: "hostGroup_" + channelEntry.groupId
                             visible: channelEntry.groupLabel.length > 0
                             Layout.fillWidth: true; Layout.topMargin: 4; Layout.bottomMargin: 2
-                            DetailText {
-                                objectName: "hostGroup_" + channelEntry.groupId
-                                text: channelEntry.groupLabel; color: Theme.muted; font.pixelSize: 11
-                                selectByMouse: true; Layout.maximumWidth: scroll.availableWidth * 0.75
-                                wrapMode: TextEdit.WrapAnywhere
-                            }
-                            Rectangle { Layout.fillWidth: true; height: 1; color: Theme.border }
+                            text: channelEntry.groupLabel; color: Theme.muted; font.pixelSize: 11
+                            selectByMouse: true; wrapMode: TextEdit.WrapAnywhere
                         }
                         Rectangle {
                             id: channelRow

@@ -21,13 +21,30 @@ private func languageID(_ value: String) -> String {
 }
 
 private func localeName(_ language: Locale.Language) -> [String: String] {
-  let id = language.languageCode?.identifier ?? language.minimalIdentifier
+  let id = language.minimalIdentifier
   return ["id": id, "name": Locale.current.localizedString(forIdentifier: id) ?? id]
 }
 
 private func localeName(_ language: Locale) -> [String: String] {
   let id = languageID(language.identifier)
   return ["id": id, "name": Locale.current.localizedString(forIdentifier: id) ?? id]
+}
+
+@available(macOS 15.0, *)
+private func translationAvailability() -> LanguageAvailability {
+#if SQUAD_TRANSLATION_STRATEGY
+  if #available(macOS 26.4, *) { return LanguageAvailability(preferredStrategy: .lowLatency) }
+#endif
+  return LanguageAvailability()
+}
+
+@available(macOS 15.0, *)
+private func translationLanguage(_ identifier: String, supported: [Locale.Language]) -> Locale.Language {
+  let requested = Locale.Language(identifier: identifier)
+  return supported.first { $0.minimalIdentifier == requested.minimalIdentifier }
+    ?? supported.first { $0.languageCode == requested.languageCode && $0.maximalIdentifier == requested.maximalIdentifier }
+    ?? supported.first { $0.languageCode == requested.languageCode && $0.script == requested.script }
+    ?? requested
 }
 
 @available(macOS 15.0, *)
@@ -78,11 +95,24 @@ private final class LanguageBridge {
   private var preparationRequest: Int64?
   private var preparationCompletion: ((String?) -> Void)?
   private var preparationTask: Task<Void, Never>?
+  private var capabilityState: [String: Any] = ["kind": "capabilities", "available": false, "speechAvailable": false]
+  private var voiceObserver: NSObjectProtocol?
 
   init(callback: LanguageCallback?, context: UnsafeMutableRawPointer?) {
     self.callback = callback
     self.context = context
     refreshCapabilities()
+    if #available(macOS 14.0, *) {
+      voiceObserver = NotificationCenter.default.addObserver(forName: AVSpeechSynthesizer.availableVoicesDidChangeNotification,
+          object: nil, queue: nil) { [weak self] _ in
+        // Apple's inventory may post while holding its own synthesis lock.
+        // Query it only after the notification has returned to its sender.
+        DispatchQueue.main.async { [weak self] in
+          self?.refresh()
+          self?.emit(0, ["kind": "voicesChanged"])
+        }
+      }
+    }
   }
 
   deinit {
@@ -93,6 +123,8 @@ private final class LanguageBridge {
   func invalidate() {
     guard alive else { return }
     alive = false
+    if let voiceObserver { NotificationCenter.default.removeObserver(voiceObserver) }
+    voiceObserver = nil
     callback = nil
     context = nil
     for task in translationTasks.values { task.cancel() }
@@ -130,25 +162,41 @@ private final class LanguageBridge {
     return UnsafePointer(capabilitiesCString!)
   }
 
+  func refresh() {
+    guard alive else { return }
+    let voice = AVSpeechSynthesisVoice(language: nil)
+    let current = ["id": voice?.identifier ?? "", "name": voice?.name ?? "",
+                   "language": voice?.language ?? AVSpeechSynthesisVoice.currentLanguageCode()]
+    guard current != capabilityState["systemVoice"] as? [String: String] else { return }
+    capabilityState["systemVoice"] = current
+    lastCapabilities = json(capabilityState)
+    emit(0, capabilityState)
+  }
+
   private func refreshCapabilities() {
     guard #available(macOS 15.0, *) else { return }
     Task { @MainActor [weak self] in
       guard let self else { return }
       var seen = Set<String>()
-      let languages = await LanguageAvailability().supportedLanguages.map(localeName)
+      let languages = await translationAvailability().supportedLanguages.map(localeName)
         .filter { seen.insert($0["id"] ?? "").inserted }
         .sorted { ($0["name"] ?? "") < ($1["name"] ?? "") }
       var speechLanguages: [[String: String]] = []
+      var speechAvailable = false
       var available = false
       var error = "Text and speech translation requires macOS 26"
       if #available(macOS 26.0, *) {
         speechLanguages = await SpeechTranscriber.supportedLocales.map(localeName)
-        available = SpeechTranscriber.isAvailable
-        error = available ? "" : "Speech transcription is unavailable"
+        available = true
+        speechAvailable = SpeechTranscriber.isAvailable
+        error = ""
       }
-      let event: [String: Any] = ["kind": "capabilities", "available": available,
+      let voice = AVSpeechSynthesisVoice(language: nil)
+      let event: [String: Any] = ["kind": "capabilities", "available": available, "speechAvailable": speechAvailable,
+                                   "systemVoice": ["id": voice?.identifier ?? "", "name": voice?.name ?? "", "language": voice?.language ?? AVSpeechSynthesisVoice.currentLanguageCode()],
                                    "languages": languages, "speechLanguages": speechLanguages,
                                    "error": error]
+      self.capabilityState = event
       self.lastCapabilities = json(event)
       self.emit(0, event)
     }
@@ -176,8 +224,11 @@ private final class LanguageBridge {
     preparationPanel?.orderOut(nil)
     preparationRequest = request
     preparationCompletion = completion
-    let configuration = TranslationSession.Configuration(
+    var configuration = TranslationSession.Configuration(
       source: Locale.Language(identifier: source), target: Locale.Language(identifier: target))
+#if SQUAD_TRANSLATION_STRATEGY
+    if #available(macOS 26.4, *) { configuration.preferredStrategy = .lowLatency }
+#endif
     let view = PreparationView(configuration: configuration) { [weak self] error in
       guard let self, self.preparationRequest == request else { return }
       let finish = self.preparationCompletion
@@ -202,8 +253,10 @@ private final class LanguageBridge {
     }
     preparationDelegate = delegate
     panel.delegate = delegate
+    panel.level = .modalPanel
     panel.center()
     preparationPanel = panel
+    NSApp.activate(ignoringOtherApps: true)
     panel.makeKeyAndOrderFront(nil)
   }
 
@@ -235,13 +288,19 @@ private final class LanguageBridge {
         }
         try Task.checkCancellation()
         guard self.alive, self.preparationRequest == request else { return }
-        if Locale.Language(identifier: source).languageCode == Locale.Language(identifier: target).languageCode {
+        let availability = translationAvailability()
+        let supported = await availability.supportedLanguages
+        let input = translationLanguage(source, supported: supported)
+        let output = translationLanguage(target, supported: supported)
+        let status = await availability.status(from: input, to: output)
+        try Task.checkCancellation()
+        if input.languageCode == output.languageCode || status == .installed {
           self.preparationTask = nil
           self.preparationRequest = nil
           self.emit(request, ["kind": "ready", "text": "", "final": true, "error": ""])
           return
         }
-        self.showTranslationPreparation(request, source: source, target: target) { [weak self] error in
+        self.showTranslationPreparation(request, source: input.minimalIdentifier, target: output.minimalIdentifier) { [weak self] error in
           guard let self else { return }
           self.preparationTask = nil
           if let error { self.emit(request, ["kind": "error", "error": error]) }
@@ -280,13 +339,29 @@ private final class LanguageBridge {
           }
           detected = languageID(language.rawValue)
         }
-        let sourceLanguage = Locale.Language(identifier: detected)
-        let targetLanguage = Locale.Language(identifier: target)
+        let availability = translationAvailability()
+        let supported = await availability.supportedLanguages
+        let sourceLanguage = translationLanguage(detected, supported: supported)
+        let targetLanguage = translationLanguage(target, supported: supported)
         let output: String
         if sourceLanguage.languageCode == targetLanguage.languageCode {
           output = text
         } else {
-          let session = TranslationSession(installedSource: sourceLanguage, target: targetLanguage)
+          if await availability.status(from: sourceLanguage, to: targetLanguage) == .supported {
+            guard let self, self.isCurrent(request, token) else { return }
+            self.translationTasks.removeValue(forKey: request)
+            self.clear(request, token)
+            self.emit(request, ["kind": "error", "code": "modelsRequired", "source": sourceLanguage.minimalIdentifier])
+            return
+          }
+          let session: TranslationSession
+#if SQUAD_TRANSLATION_STRATEGY
+          if #available(macOS 26.4, *) {
+            session = TranslationSession(installedSource: sourceLanguage, target: targetLanguage, preferredStrategy: .lowLatency)
+          } else { session = TranslationSession(installedSource: sourceLanguage, target: targetLanguage) }
+#else
+          session = TranslationSession(installedSource: sourceLanguage, target: targetLanguage)
+#endif
           output = try await session.translate(text).targetText
         }
         guard let self, self.isCurrent(request, token) else { return }
@@ -441,6 +516,12 @@ public func squad_language_destroy(_ handle: UnsafeMutableRawPointer?) {
 public func squad_language_capabilities(_ handle: UnsafeMutableRawPointer?) -> UnsafePointer<CChar>? {
   guard let handle else { return nil }
   return Unmanaged<LanguageBridge>.fromOpaque(handle).takeUnretainedValue().capabilities()
+}
+
+@_cdecl("squad_language_refresh")
+public func squad_language_refresh(_ handle: UnsafeMutableRawPointer?) {
+  guard let handle else { return }
+  Unmanaged<LanguageBridge>.fromOpaque(handle).takeUnretainedValue().refresh()
 }
 
 @_cdecl("squad_language_prepare")
