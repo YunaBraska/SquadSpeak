@@ -1,4 +1,4 @@
-name: "Measure Intel host scheduling"
+name: "Isolate Intel indexing contention"
 on:
   push:
     branches: [feature/snapshot-release]
@@ -21,33 +21,22 @@ jobs:
       build_command: sh tests/macos-ci.sh auto build/macos-ci build
       test_command: |
         set -eu
-        sudo -n build/macos-ci/app/media_transport_tests delayedOwnerUsesNetworkArrivalTime \
-          > build/macos-ci/artifacts/reorder.log 2>&1
-        top -l 0 -s 1 -n 12 -o cpu -stats pid,command,cpu,time,threads,state \
-          > build/macos-ci/artifacts/system-load.log 2>&1 &
-        monitor=$!
-        trap 'kill "$monitor" 2>/dev/null || :; git restore -- tests/channel_tests.cpp' EXIT
+        test "$RUNNER_ENVIRONMENT" = github-hosted
         result=0
         sudo -n build/macos-ci/app/channel_tests sixtyFourClientsHaveOneConsistentRosterAndAudioFanout \
-          > build/macos-ci/artifacts/capacity.log 2>&1 || result=$?
-        grep -E 'FAIL|PASS|Totals|64 clients|CPU ms' build/macos-ci/artifacts/capacity.log
-        python3 - <<'PYCOMPARE'
-        from pathlib import Path
-        path = Path('tests/channel_tests.cpp')
-        source = path.read_text()
-        before = '        Device host(arguments[2], "Host");'
-        assert source.count(before) == 1
-        path.write_text(source.replace(before,
-            '        QThread::currentThread()->setServiceLevel(QThread::QualityOfService::High);\n' + before))
-        PYCOMPARE
-        cmake --build build/macos-ci/app --target channel_tests --parallel 3
+          > build/macos-ci/artifacts/indexing-on.log 2>&1 || result=$?
+        grep -E 'FAIL|PASS|Totals|64 clients|CPU ms' build/macos-ci/artifacts/indexing-on.log
+        sudo -n mdutil -a -i off > build/macos-ci/artifacts/indexing.log 2>&1
+        cat build/macos-ci/artifacts/indexing.log
         comparison=0
-        sudo -n build/macos-ci/app/channel_tests sixtyFourClientsHaveOneConsistentRosterAndAudioFanout \
-          > build/macos-ci/artifacts/host-priority.log 2>&1 || comparison=$?
-        grep -E 'FAIL|PASS|Totals|64 clients|CPU ms' build/macos-ci/artifacts/host-priority.log
-        printf 'Baseline exit: %s. Host-priority comparison exit: %s.\n' "$result" "$comparison"
-        exit "$result"
-      package_command: test -s build/macos-ci/artifacts/capacity.log
+        for attempt in 1 2 3; do
+          sudo -n build/macos-ci/app/channel_tests sixtyFourClientsHaveOneConsistentRosterAndAudioFanout \
+            > "build/macos-ci/artifacts/indexing-off-$attempt.log" 2>&1 || comparison=$?
+          grep -E 'FAIL|PASS|Totals|64 clients|CPU ms' "build/macos-ci/artifacts/indexing-off-$attempt.log"
+        done
+        printf 'Baseline exit: %s. Indexing-off comparison exit: %s.\n' "$result" "$comparison"
+        exit "$comparison"
+      package_command: test -s build/macos-ci/artifacts/indexing-off-3.log
       cache_inputs: '["tests/macos-ci.sh", "cmake/Dependencies.cmake", "cmake/AudioProcessing.cmake", "cmake/Media.cmake", "cmake/Updates.cmake", "cmake/*.patch", "cmake/source_archives.json", "src/teamspeak_bridge/Cargo.lock", "rust-toolchain.toml", "cmake/TeamSpeak.cmake"]'
       cache_paths: |
         build/macos-ci/toolchain/Qt
