@@ -318,6 +318,31 @@ private slots:
         QCOMPARE(received.first().first().toByteArray(), QByteArray("ready"));
     }
 
+    void sharedSocketServesIpv4AndIpv6Peers() {
+        using Transport = squad::MediaTransport;
+        const auto port = availableUdpPort(); QVERIFY(port);
+        Transport ipv4Host(true, port, QHostAddress::LocalHost, 0, Transport::Medium::Data);
+        Transport ipv6Host(true, port, QHostAddress::LocalHostIPv6, 0, Transport::Medium::Data);
+        Transport ipv4Client(false, 0, QHostAddress::LocalHost, port, Transport::Medium::Data);
+        Transport ipv6Client(false, 0, QHostAddress::LocalHostIPv6, port, Transport::Medium::Data);
+        const auto connectPair = [&](Transport& host, Transport& client) {
+            connect(&host, &Transport::signaling, &client, [&client](const auto& message) { QVERIFY(client.receive(message)); });
+            connect(&client, &Transport::signaling, &host, [&host](const auto& message) { QVERIFY(host.receive(message)); });
+        };
+        connectPair(ipv4Host, ipv4Client); connectPair(ipv6Host, ipv6Client);
+        QVERIFY(waitForEvents([&] { return ipv4Host.udpActive() && ipv6Host.udpActive()
+            && ipv4Client.udpActive() && ipv6Client.udpActive(); }, 10000));
+        QSignalSpy ipv4AtClient(&ipv4Client, &Transport::datagramReceived), ipv6AtClient(&ipv6Client, &Transport::datagramReceived);
+        QSignalSpy ipv4AtHost(&ipv4Host, &Transport::datagramReceived), ipv6AtHost(&ipv6Host, &Transport::datagramReceived);
+        QVERIFY(ipv4Host.sendDatagram("four")); QVERIFY(ipv6Host.sendDatagram("six"));
+        QVERIFY(ipv4Client.sendDatagram("four back")); QVERIFY(ipv6Client.sendDatagram("six back"));
+        QVERIFY(waitForEvents([&] { return ipv4AtClient.size() == 1 && ipv6AtClient.size() == 1
+            && ipv4AtHost.size() == 1 && ipv6AtHost.size() == 1; }));
+        QCOMPARE(ipv4AtClient.first().first().toByteArray(), QByteArray("four"));
+        QCOMPARE(ipv6AtClient.first().first().toByteArray(), QByteArray("six"));
+        QCOMPARE(ipv4AtHost.first().first().toByteArray(), QByteArray("four back"));
+        QCOMPARE(ipv6AtHost.first().first().toByteArray(), QByteArray("six back"));
+    }
     void encryptedDatagramsCarryIndependentSources_data() {
         QTest::addColumn<QHostAddress>("address");
         QTest::newRow("ipv4") << QHostAddress(QHostAddress::LocalHost);

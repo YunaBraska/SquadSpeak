@@ -1742,7 +1742,8 @@ private slots:
     void screenDatagramValidationAndReassembly_data() {
         QTest::addColumn<QString>("scenario");
         for (const auto* value : {"reorder-duplicate", "replace-incomplete", "unknown", "short-header", "oversize",
-            "unaligned", "invalid-json", "invalid-format", "oversize-payload", "changing-size", "invalid-serial"})
+            "unaligned", "invalid-json", "invalid-format", "empty-metadata", "oversize-metadata", "missing-payload",
+            "oversize-payload", "changing-size", "invalid-serial"})
             QTest::newRow(value) << QString(value);
     }
     void screenDatagramValidationAndReassembly() {
@@ -1810,6 +1811,9 @@ private slots:
         if (scenario == "oversize") qToBigEndian<quint32>(3000000, first.data() + 12);
         if (scenario == "unaligned") qToBigEndian<quint32>(1, first.data() + 16);
         if (scenario == "invalid-serial") qToBigEndian<quint64>(0, first.data() + 4);
+        if (scenario == "empty-metadata") qToBigEndian<quint32>(0, first.data() + 20);
+        if (scenario == "oversize-metadata") qToBigEndian<quint32>(32769, first.data() + 20);
+        if (scenario == "missing-payload") qToBigEndian<quint32>(quint32(envelope.size() - 4), first.data() + 20);
         if (scenario == "unknown") QVERIFY(sendDatagram("camera.future"));
         if (scenario == "reorder-duplicate") {
             QVERIFY(sendDatagram(fragment(1, 16364))); QVERIFY(sendDatagram(fragment(1, 16364)));
@@ -1818,14 +1822,11 @@ private slots:
         if (scenario == "changing-size") {
             auto changed = fragment(1, 16364); qToBigEndian<quint32>(quint32(envelope.size() + 1), changed.data() + 12); changed += 'x';
             QVERIFY(sendDatagram(changed));
-        } else if (scenario == "oversize-payload") {
-            for (int offset = 16364; offset < envelope.size(); offset += 16364) {
-                QVERIFY(sendDatagram(fragment(1, quint32(offset))));
-            }
         } else if (scenario == "replace-incomplete") {
             QVERIFY(sendDatagram(fragment(2, 0))); QVERIFY(sendDatagram(fragment(1, 16364)));
             QVERIFY(sendDatagram(fragment(2, 16364)));
-        } else if (!QStringList{"short-header", "oversize", "unaligned", "invalid-serial"}.contains(scenario)) {
+        } else if (!QStringList{"short-header", "oversize", "oversize-payload", "unaligned", "invalid-serial",
+            "empty-metadata", "oversize-metadata", "missing-payload"}.contains(scenario)) {
             QVERIFY(sendDatagram(fragment(1, 16364)));
         }
         if (accepted) {
@@ -1839,7 +1840,9 @@ private slots:
             QCOMPARE(frames.last().at(3).toByteArray(), payload);
             QCOMPARE(socket->state(), QAbstractSocket::ConnectedState);
         } else {
-            QTRY_COMPARE(socket->state(), QAbstractSocket::UnconnectedState); QCOMPARE(frames.size(), 0);
+            QVERIFY(waitForEvents(socket, &QSslSocket::disconnected,
+                [&] { return socket->state() == QAbstractSocket::UnconnectedState; }));
+            QCOMPARE(frames.size(), 0);
         }
         QCOMPARE(control->state(), QAbstractSocket::ConnectedState);
     }
@@ -6086,18 +6089,6 @@ private slots:
         });
         qInfo() << "Starting audio soak; simultaneous speakers" << speakers
                 << "requested seconds" << soakSeconds << "setup ms" << connectedMs;
-#ifdef Q_OS_MACOS
-        QProcess profile;
-        QDir().mkpath("smoke");
-        profile.setStandardOutputFile(QProcess::nullDevice());
-        profile.setStandardErrorFile(QProcess::nullDevice());
-        profile.start("/usr/bin/sample", {QString::number(host.processId()),
-            QString::number(std::min(soakSeconds, 10)), "10", "-file",
-            QDir::current().absoluteFilePath(QString("smoke/audio-host-%1.sample").arg(QTest::currentDataTag()))});
-        const auto stopProfile = qScopeGuard([&] {
-            if (!profile.waitForFinished(2000)) { profile.kill(); profile.waitForFinished(2000); }
-        });
-#endif
 #ifndef Q_OS_WIN
         // Microsoft clock() measures wall time, unlike the POSIX CPU clock.
         const auto cpuStarted = std::clock();

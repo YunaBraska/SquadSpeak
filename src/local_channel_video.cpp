@@ -431,6 +431,12 @@ void LocalChannel::receiveScreenDatagram(Client& c, const QByteArray& bytes) {
         c.screenSocket->abort(); return;
     }
     if (serial < quint64(c.screenLastSerial) || (serial == quint64(c.screenLastSerial) && (!c.screenDatagram || !c.screenSize))) return;
+    if (!offset) {
+        const auto metadataSize = qFromBigEndian<quint32>(bytes.constData() + datagramHeader);
+        if (!metadataSize || metadataSize > maximumMetadata || metadataSize + 4 >= total || total - metadataSize - 4 > maximumPacket) {
+            c.screenSocket->abort(); return;
+        }
+    }
     if (serial > quint64(c.screenLastSerial)) {
         c.screenLastSerial = c.screenSerial = qint64(serial); c.screenSize = total; c.screenDatagram = true;
         c.screenPacket = QByteArray(total, '\0'); c.screenChunks = QBitArray((total + datagramChunk - 1) / datagramChunk);
@@ -442,7 +448,6 @@ void LocalChannel::receiveScreenDatagram(Client& c, const QByteArray& bytes) {
     c.screenChunks.setBit(index);
     if (c.screenChunks.count(true) != c.screenChunks.size()) return;
     const auto metadataSize = qFromBigEndian<quint32>(c.screenPacket.constData());
-    if (!metadataSize || metadataSize > maximumMetadata || metadataSize + 4 >= total || total - metadataSize - 4 > maximumPacket) { c.screenSocket->abort(); return; }
     QJsonParseError error;
     const auto metadata = QJsonDocument::fromJson(c.screenPacket.mid(4, metadataSize), &error);
     if (error.error != QJsonParseError::NoError || !metadata.isObject() || !validFormat(metadata.object())) { c.screenSocket->abort(); return; }
