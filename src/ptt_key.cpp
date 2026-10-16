@@ -230,8 +230,7 @@ bool PushToTalkKey::observe(bool requestPermission) {
                 if (!(raw->flags & XIKeyRepeat) && (!capturing_ || !down)) {
                     auto codes = down ? QList<int>{} : nativeHeldKeys_.take(raw->detail);
                     if (codes.isEmpty()) {
-                        auto bindings = observedKeys_ + observedRemoteKeys_;
-                        for (const auto code : bindings)
+                        for (const auto code : observedKeys_)
                             if (!codes.contains(code) && XKeysymToKeycode(display, KeySym(code)) == raw->detail) codes.append(code);
                     }
                     if (down && !codes.isEmpty()) nativeHeldKeys_.insert(raw->detail, codes);
