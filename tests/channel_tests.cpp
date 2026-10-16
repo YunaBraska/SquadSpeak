@@ -6086,6 +6086,18 @@ private slots:
         });
         qInfo() << "Starting audio soak; simultaneous speakers" << speakers
                 << "requested seconds" << soakSeconds << "setup ms" << connectedMs;
+#ifdef Q_OS_MACOS
+        QProcess profile;
+        QDir().mkpath("smoke");
+        profile.setStandardOutputFile(QProcess::nullDevice());
+        profile.setStandardErrorFile(QProcess::nullDevice());
+        profile.start("/usr/bin/sample", {QString::number(host.processId()),
+            QString::number(std::min(soakSeconds, 10)), "10", "-file",
+            QDir::current().absoluteFilePath(QString("smoke/audio-host-%1.sample").arg(QTest::currentDataTag()))});
+        const auto stopProfile = qScopeGuard([&] {
+            if (!profile.waitForFinished(2000)) { profile.kill(); profile.waitForFinished(2000); }
+        });
+#endif
 #ifndef Q_OS_WIN
         // Microsoft clock() measures wall time, unlike the POSIX CPU clock.
         const auto cpuStarted = std::clock();
