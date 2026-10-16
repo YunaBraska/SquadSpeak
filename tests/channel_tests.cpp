@@ -456,13 +456,16 @@ private slots:
             a(dir.filePath("a"), "Alice"), b(dir.filePath("b"), "Bea"), controller(dir.filePath("controller"), "Control");
         QVERIFY(host.channel.listen(QHostAddress::LocalHost));
         QVERIFY(otherHost.channel.listen(QHostAddress::LocalHost));
+        QString extra;
+#if !SQUADSPEAK_STORE_BUILD
         QVERIFY(host.session.setSupporterEnabled(true));
-        const auto extra = host.channel.addOwnedChannel("Second");
+        extra = host.channel.addOwnedChannel("Second");
         QVERIFY(!extra.isEmpty());
+#endif
         for (auto* client : {&a, &b}) {
             QVERIFY(host.channel.decide(client->channel.ownId(), true));
             QVERIFY(otherHost.channel.decide(client->channel.ownId(), true));
-            QVERIFY(host.channel.ownChannel(extra)->decide(client->channel.ownId(), true));
+            if (!extra.isEmpty()) QVERIFY(host.channel.ownChannel(extra)->decide(client->channel.ownId(), true));
             QVERIFY(client->join(host.channel));
             QTRY_VERIFY(client->channel.chatReady());
         }
@@ -471,15 +474,17 @@ private slots:
         const auto conversation = a.channel.chatHostId();
         QVERIFY(a.channel.sendChat("Shared host conversation"));
         QTRY_VERIFY(!a.channel.chatPending());
-        QVERIFY(a.channel.joinAddress("127.0.0.1:" + QString::number(host.channel.port())));
-        QTRY_VERIFY(a.channel.availableHosts().size() >= 1);
-        QVERIFY(a.channel.join(extra, "127.0.0.1", host.channel.port()));
-        QTRY_VERIFY(a.channel.joined());
-        QCOMPARE(a.channel.joinedHostId(), extra);
-        QTRY_VERIFY(a.channel.canPrivateChat(extra, b.channel.ownId()));
-        QVERIFY(a.channel.openPrivateChat(extra, b.channel.ownId()));
-        QCOMPARE(a.channel.chatHostId(), conversation);
-        QTRY_COMPARE(a.channel.messages().size(), 1);
+        if (!extra.isEmpty()) {
+            QVERIFY(a.channel.joinAddress("127.0.0.1:" + QString::number(host.channel.port())));
+            QTRY_VERIFY(a.channel.availableHosts().size() >= 1);
+            QVERIFY(a.channel.join(extra, "127.0.0.1", host.channel.port()));
+            QTRY_VERIFY(a.channel.joined());
+            QCOMPARE(a.channel.joinedHostId(), extra);
+            QTRY_VERIFY(a.channel.canPrivateChat(extra, b.channel.ownId()));
+            QVERIFY(a.channel.openPrivateChat(extra, b.channel.ownId()));
+            QCOMPARE(a.channel.chatHostId(), conversation);
+            QTRY_COMPARE(a.channel.messages().size(), 1);
+        }
         for (auto* client : {&a, &b}) {
             QVERIFY(client->join(otherHost.channel));
             QTRY_VERIFY(client->channel.chatReady());
@@ -528,7 +533,7 @@ private slots:
         };
         QVERIFY(aliceOnline());
         QVERIFY(host.channel.kick(a.channel.ownId()));
-        QVERIFY(host.channel.ownChannel(extra)->kick(a.channel.ownId()));
+        if (!extra.isEmpty()) QVERIFY(host.channel.ownChannel(extra)->kick(a.channel.ownId()));
         QTRY_VERIFY(!aliceOnline());
     }
 
@@ -620,11 +625,13 @@ private slots:
         QTRY_VERIFY(!alice.channel.privateBlocked());
         bea.reset();
         QVERIFY(!relay->channel.setPrivateLifetimeDays(90));
+#if !SQUADSPEAK_STORE_BUILD
         QVERIFY(relay->session.setSupporterEnabled(true));
         QVERIFY(relay->channel.setPrivateLifetimeDays(90));
         QTRY_COMPARE(alice.channel.chatLifetimeDays(), 90);
         QVERIFY(relay->session.setSupporterEnabled(false));
         QTRY_COMPARE(alice.channel.chatLifetimeDays(), 30);
+#endif
         QVERIFY(relay->channel.setPrivateLifetimeDays(1));
         QTRY_COMPARE(alice.channel.chatLifetimeDays(), 1);
         QVERIFY(alice.channel.sendChat("Queued while offline"));
@@ -1086,11 +1093,14 @@ private slots:
     }
     void screenOnlyViewerReceivesUdpAudioWithoutPersonalParticipation_data() {
         QTest::addColumn<bool>("reducedQuality");
-        QTest::newRow("normal") << false;
-        QTest::newRow("reduced-quality") << true;
+        QTest::addColumn<bool>("lostFirstFrame");
+        QTest::newRow("normal") << false << false;
+        QTest::newRow("reduced-quality") << true << false;
+        QTest::newRow("lost-first-frame") << false << true;
     }
     void screenOnlyViewerReceivesUdpAudioWithoutPersonalParticipation() {
         QFETCH(bool, reducedQuality);
+        QFETCH(bool, lostFirstFrame);
         QTemporaryDir dir;
         Device host(dir.filePath("host"), "Owner"), viewer(dir.filePath("viewer"), "Viewer");
         QVERIFY(host.listenWithUdp());
@@ -1145,16 +1155,29 @@ private slots:
         for (size_t i = 0; i < samples.size(); ++i)
             samples[i] = float(0.2 * std::sin(2 * std::numbers::pi * 880 * i / 48000));
         const auto marker = encode();
+        const auto beforeMarker = link.audioDatagrams;
+        if (lostFirstFrame) link.audioDropEvery = 1;
         QVERIFY(host.channel.sendScreenAudio(marker));
-        QVERIFY(waitForEvents(&viewer.channel, &LocalChannel::audioReceived, [&] { return received == 1; }));
+        if (lostFirstFrame) {
+            QTRY_VERIFY(link.audioDatagrams > beforeMarker);
+            link.audioDropEvery = 0;
+        }
+        // Audio is a stream over a lossy transport. A missing first frame must
+        // not make the routing contract depend on one guaranteed datagram.
+        producer.start();
+        QVERIFY(waitForEvents(&viewer.channel, &LocalChannel::audioReceived, [&] { return received >= 3; }));
+        producer.stop();
         QVERIFY(!viewer.channel.joined()); QVERIFY(!viewer.channel.sendAudio(marker));
         QVERIFY(viewer.channel.chatReady());
         link.holdReliable = false;
         QVERIFY(viewer.channel.watchScreen(host.channel.ownId(), false));
-        QVERIFY(host.channel.sendScreenAudio(marker)); QTest::qWait(100); QCOMPARE(received, 1);
+        const auto beforeClosed = received;
+        QVERIFY(host.channel.sendScreenAudio(marker)); QTest::qWait(100); QCOMPARE(received, beforeClosed);
         QVERIFY(viewer.channel.watchScreen(host.channel.ownId(), true, 0, true));
         QTRY_COMPARE(viewer.channel.screenInfo(host.channel.ownId()).value("tier").toInt(), 1);
-        QVERIFY(host.channel.sendScreenAudio(marker)); QTRY_COMPARE(received, 2);
+        producer.start();
+        QVERIFY(waitForEvents(&viewer.channel, &LocalChannel::audioReceived, [&] { return received >= beforeClosed + 3; }));
+        producer.stop();
         QVERIFY(!viewer.channel.joined());
     }
     void screenAudioRequiresNegotiatedAndValidViewerRequests_data() {
@@ -3248,12 +3271,20 @@ private slots:
         QFile beforeHostStore(hostStore);
         const auto hostExisted = beforeHostStore.exists();
         QByteArray beforeHost;
-        if (hostExisted) { QVERIFY(beforeHostStore.open(QIODevice::ReadOnly)); beforeHost = beforeHostStore.readAll(); }
+        if (hostExisted) {
+            QVERIFY(beforeHostStore.open(QIODevice::ReadOnly));
+            beforeHost = beforeHostStore.readAll();
+            beforeHostStore.close();
+        }
         const auto scannerStore = dir.filePath("scan-client.channel");
         QFile beforeStore(scannerStore);
         const auto existed = beforeStore.exists();
         QByteArray before;
-        if (existed) { QVERIFY(beforeStore.open(QIODevice::ReadOnly)); before = beforeStore.readAll(); }
+        if (existed) {
+            QVERIFY(beforeStore.open(QIODevice::ReadOnly));
+            before = beforeStore.readAll();
+            beforeStore.close();
+        }
         QVERIFY(scanner.channel.setDiscoverySearch(true));
         QTRY_VERIFY_WITH_TIMEOUT([&] {
             for (const auto& value : scanner.channel.hosts())

@@ -555,9 +555,11 @@ membership churn from accumulating SRTP stream state. Sequence fences reject old
 speakers' packets after reuse. A bounded 20 ms reorder window drops stale packets;
 the existing Opus decoder conceals at most six missing frames. TLS fallback uses
 the same sequence space. Unknown valid media kinds/fields preserve baseline audio.
-The library callback mailbox and shared audio sender are bounded. UDP audio
-encryption and socket writes run on the sender, while source bindings and Qt timers stay on their
-owner thread. Teardown drains the active write before closing native resources.
+The library callback mailbox and shared audio sender are bounded. Two sender
+workers share the existing queue and serialize writes per connection. UDP audio
+encryption and socket writes stay off the Qt owner thread. Source bindings and
+Qt timers stay on that thread. Teardown drains the connection's active write
+before closing native resources.
 Run the transport and mixer contracts for latency, lifecycle and load checks.
 
 Screen video negotiates `udp-screen` on its separate, admitted TLS connection.
@@ -572,8 +574,9 @@ and application buffering stops above 32 KiB. Each viewer retains at most one
 2 MiB encoded frame plus 32 KiB metadata. One envelope is shared across receivers
 of the same tier. Missing frames expire and require a keyframe; old fragments and
 late acknowledgments cannot revive them. UDP blockage and legacy peers use the
-previous bounded TLS path. Sustained shared-uplink/device evidence remains a
-release gate.
+previous bounded TLS path. Automated impairment checks precede publication.
+Sustained shared-uplink and physical-device observations follow the first regular
+desktop download under U139 and remain explicitly unverified until measured.
 WebRTC Audio Processing is a separate dependency supplying echo cancellation.
 The pinned build applies `cmake/audio-processing-echo.patch` to expose AEC3's
 residual suppression sensitivity. Auto preserves upstream thresholds. Manual

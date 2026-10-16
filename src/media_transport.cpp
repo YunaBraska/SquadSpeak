@@ -9,6 +9,7 @@
 #include <QTimer>
 #include <QtEndian>
 #include <rtc/rtc.hpp>
+#include <array>
 #include <condition_variable>
 #include <deque>
 #include <map>
@@ -98,9 +99,9 @@ struct MediaTransport::State final {
     bool write(const std::shared_ptr<State>& self, const QByteArray& bytes);
 };
 
-// Track::send encrypts and writes synchronously. Share one bounded sender across
-// connections, serving each ready connection in turn. Keep source bindings
-// and all QObject state on the owner thread.
+// Track::send encrypts and writes synchronously. Two workers share one bounded
+// queue, serving connections in turn with at most one send per connection in
+// flight. Keep source bindings and all QObject state on the owner thread.
 struct MediaTransport::State::Sender final {
     using Clock = std::chrono::steady_clock;
     struct Packet {
@@ -119,22 +120,45 @@ struct MediaTransport::State::Sender final {
     Clock::time_point reportAt = Clock::now();
     long long sendMicros = 0, maximumSendMicros = 0;
     std::map<std::pair<quintptr, quint32>, int> counts;
-    rtc::Channel* active = nullptr;
+    std::array<rtc::Channel*, 2> active{};
     bool stopping = false;
-    std::thread worker{[this] {
+    std::array<std::thread, 2> workers;
+    Sender() {
+        try {
+            for (size_t i = 0; i < workers.size(); ++i)
+                workers[i] = std::thread([this, i] { run(i); });
+        } catch (...) {
+            stop();
+            throw;
+        }
+    }
+    bool busy(rtc::Channel* channel) const {
+        return std::find(active.begin(), active.end(), channel) != active.end();
+    }
+    auto ready() {
+        if (queues.empty()) return queues.end();
+        auto current = turn;
+        do {
+            if (!busy(current->first)) return current;
+            if (++current == queues.end()) current = queues.begin();
+        } while (current != turn);
+        return queues.end();
+    }
+    void run(size_t worker) {
         // Speech expires after 120 ms. Mark this worker as latency-sensitive
         // even when the hosting app has no foreground window.
         QThread::currentThread()->setServiceLevel(QThread::QualityOfService::High);
         std::unique_lock lock(mutex);
         for (;;) {
-            changed.wait(lock, [this] { return stopping || queued; });
+            changed.wait(lock, [this] { return stopping || ready() != queues.end(); });
             if (stopping) return;
-            auto current = turn++;
+            auto current = ready();
+            turn = std::next(current);
             auto& queue = current->second;
             uncount(queue.front());
             auto packet = std::move(queue.front()); queue.pop_front(); --queued;
             removeEmpty(current);
-            active = packet.channel.get();
+            active[worker] = packet.channel.get();
             lock.unlock();
             const auto sendStarted = Clock::now();
             const bool expired = sendStarted >= packet.expires;
@@ -147,7 +171,7 @@ struct MediaTransport::State::Sender final {
                 if (!sent) { failure = true; packet.failed(fatal); }
             }
             lock.lock();
-            active = nullptr;
+            active[worker] = nullptr;
             if (mediaSenderLog().isDebugEnabled()) {
                 ++processedCount;
                 expiredCount += expired;
@@ -165,7 +189,7 @@ struct MediaTransport::State::Sender final {
             }
             changed.notify_all();
         }
-    }};
+    }
 
     ~Sender() { stop(); }
     void removeEmpty(decltype(queues)::iterator current) {
@@ -182,7 +206,7 @@ struct MediaTransport::State::Sender final {
     void stop() {
         { std::lock_guard lock(mutex); stopping = true; queues.clear(); turn = queues.end(); queued = 0; counts.clear(); }
         changed.notify_all();
-        if (worker.joinable()) worker.join();
+        for (auto& worker : workers) if (worker.joinable()) worker.join();
     }
     void cancel(const std::shared_ptr<rtc::Channel>& channel, std::optional<quint32> ssrc = {}) {
         std::unique_lock lock(mutex);
@@ -194,9 +218,9 @@ struct MediaTransport::State::Sender final {
             });
             removeEmpty(current);
         }
-        // At most one nonblocking datagram is in flight. Never close its native
+        // At most one datagram per connection is in flight. Never close its native
         // track/connection concurrently with encryption or socket access.
-        if (!ssrc) changed.wait(lock, [&] { return active != channel.get(); });
+        if (!ssrc) changed.wait(lock, [&] { return !busy(channel.get()); });
     }
     bool enqueue(const std::shared_ptr<rtc::Channel>& channel, QByteArray bytes, std::function<void(bool)> failed) {
         const auto ssrc = quint8(bytes[1]) == 111 ? qFromBigEndian<quint32>(bytes.constData() + 8) : 0;

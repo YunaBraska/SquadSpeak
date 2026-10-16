@@ -2306,7 +2306,8 @@ TestCase {
         verify(channel.join(channel.ownId, "127.0.0.1", channel.servicePort))
         tryCompare(channel, "chatReady", true)
         let owner = channel
-        if (data.extra) {
+        const useExtraChannel = data.extra && supporterLicense.directDistribution
+        if (useExtraChannel) {
             verify(fixtures.setSupporter(true))
             owner = channel.ownChannel(channel.addOwnedChannel("Remote setup room"))
             verify(owner !== null)
@@ -2338,7 +2339,7 @@ TestCase {
         tryVerify(function() { return remoteChannel.remoteOffers.length === 1 })
         compare(channel.controllers.length, 1)
         compare(channel.controlRequests.length, 0)
-        if (data.extra) {
+        if (useExtraChannel) {
             verify(channel.decide(remoteChannel.ownId, true))
             verify(remoteChannel.openChat(channel.ownId, "127.0.0.1", channel.servicePort))
             tryCompare(remoteChannel, "chatReady", true)
@@ -3320,8 +3321,14 @@ TestCase {
             const avatarName = "channelAvatar_" + channel.ownId + "_" + remoteChannel.ownId
             tryVerify(function() { return visualChild(view.contentItem, avatarName) !== null })
             const avatar = visualChild(view.contentItem, avatarName)
-            mouseMove(avatar, avatar.width / 2, avatar.height / 2)
+            view.raise(); view.requestActivate()
+            tryCompare(view, "active", true)
+            verify(waitForRendering(avatar))
             const tip = findChild(avatar, "memberTooltip")
+            mouseMove(view.contentItem, 0, 0)
+            tryCompare(tip, "visible", false)
+            const hoverPoint = avatar.mapToItem(view.contentItem, avatar.width / 2, avatar.height / 2)
+            mouseMove(view.contentItem, hoverPoint.x, hoverPoint.y)
             tryCompare(tip, "visible", true)
             compare(tip.text, data.name)
             const reference = createTemporaryObject(literalName, test, {text: data.name, font: tip.font})

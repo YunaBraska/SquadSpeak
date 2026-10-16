@@ -77,3 +77,10 @@ RUST-NOTICES.txt contains dependency declarations and upstream notices for the
 locked Cargo dependency graph, plus Rust standard-library attribution.
 Cargo.lock owns registry checksums. build_sources.py includes their source
 archives and the pinned ReSpeak archive in the release source package.
+
+RustSec RUSTSEC-2026-0150 marks audiopus_sys 0.2.2 as unmaintained and identifies
+a CMake 4 incompatibility in its bundled Opus build. TeamSpeak.cmake always
+supplies OPUS_LIB_DIR, linking the same external Opus as the application instead
+of building that bundled copy. The advisory is informational, not a reported
+security vulnerability. The unmaintained binding remains a dependency risk.
+Reference: https://rustsec.org/advisories/RUSTSEC-2026-0150.html
