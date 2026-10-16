@@ -551,11 +551,14 @@ private slots:
     }
     void delayedOwnerUsesNetworkArrivalTime_data() {
         QTest::addColumn<bool>("deadlinePassed");
-        QTest::newRow("due-frames") << true;
-        QTest::newRow("contiguous-burst") << false;
+        QTest::addColumn<bool>("gap");
+        QTest::newRow("due-frames") << true << false;
+        QTest::newRow("contiguous-burst") << false << false;
+        QTest::newRow("gap-before-burst") << false << true;
     }
     void delayedOwnerUsesNetworkArrivalTime() {
         QFETCH(bool, deadlinePassed);
+        QFETCH(bool, gap);
         const auto port = availableUdpPort(); QVERIFY(port);
         squad::MediaTransport host(true, port, QHostAddress::LocalHost, 0);
         QThread thread;
@@ -592,14 +595,14 @@ private slots:
         // accidentally exercise reliable delivery instead of the reorder queue.
         SendGate gate; gate.release();
         for (size_t i = 0; i < 8; ++i) {
-            QVERIFY(host.send(first, packet));
+            QVERIFY(host.send(first, packet, gap && i == 0 ? 1 : 0));
             QVERIFY(gate.waitForReceived(i + 1));
         }
         // Let the received packets' actual reorder interval expire.
         if (deadlinePassed) QTest::qWait(25);
         resume.release(); blocked = false;
         QVERIFY(waitForEvents([&] { return heard == 9; }));
-        QCOMPARE(missing, 0);
+        QCOMPARE(missing, gap ? 1 : 0);
         QCOMPARE(fallback, setupFallback);
     }
     void audioSendsStayOffTheOwnerThreadAndBoundBacklog() {

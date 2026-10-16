@@ -10,7 +10,7 @@ jobs:
     uses: ./.github/workflows/wc_macos_build.yml
     with:
       ref: ${{ github.sha }}
-      version: '2026.10.16'
+      version: '2026.10.17'
       runners: '["macos-15-intel"]'
       prepare_command: |
         set -eu
@@ -18,100 +18,38 @@ jobs:
         printf '%s\n' "$HOME/.cargo/bin" >> "$GITHUB_PATH"
         export PATH="$HOME/.cargo/bin:$PATH"
         sh tests/macos-ci.sh auto build/macos-ci prepare
-      build_command: |
-        set -eu
-        cat > tests/capacity_activity.mm <<'ACTIVITY'
-        #import <Foundation/Foundation.h>
-        #include <cstdlib>
-        #include <cstring>
-        static id activity;
-        __attribute__((constructor)) static void begin_activity() {
-            const char* enabled = std::getenv("SQUAD_TEST_LATENCY");
-            if (enabled && std::strcmp(enabled, "1") == 0) {
-                @autoreleasepool {
-                    activity = [[[NSProcessInfo processInfo] beginActivityWithOptions:
-                        NSActivityUserInitiatedAllowingIdleSystemSleep | NSActivityLatencyCritical
-                        reason:@"Realtime media capacity measurement"] retain];
-                }
-            }
-        }
-        __attribute__((destructor)) static void end_activity() {
-            if (activity) { [[NSProcessInfo processInfo] endActivity:activity]; [activity release]; }
-        }
-        ACTIVITY
-        cat >> CMakeLists.txt <<'CMAKE'
-        target_sources(channel_tests PRIVATE tests/capacity_activity.mm)
-        target_link_libraries(channel_tests PRIVATE "-framework Foundation")
-        CMAKE
-        sh tests/macos-ci.sh auto build/macos-ci build
-        python3 - <<'PYPROFILE'
-        from pathlib import Path
-        p = Path('build/macos-ci/app/_deps/media-src/deps/libjuice/src/conn_mux.c')
-        s = p.read_text()
-        s = s.replace('#include <string.h>', """#include <string.h>
-        #include <time.h>
-        #include <stdio.h>
-        static long long profile_cpu(void) {
-            struct timespec t;
-            clock_gettime(CLOCK_THREAD_CPUTIME_ID, &t);
-            return (long long)t.tv_sec * 1000000 + t.tv_nsec / 1000;
-        }
-        static long long profile_now(void) {
-            struct timespec t;
-            clock_gettime(CLOCK_MONOTONIC, &t);
-            return (long long)t.tv_sec * 1000000 + t.tv_nsec / 1000;
-        }
-        """)
-        s = s.replace('int send_ds;', 'int send_ds;\n        long long pc, pw, pd, ps, cpu, pdn, pwm, pdm, psm, pat;')
-        start = s.index('int conn_mux_send(')
-        end = s.index('int conn_mux_get_addrs(', start)
-        part = s[start:end]
-        part = part.replace('mutex_lock(&registry_impl->send_mutex);', """long long before = profile_now();
-            mutex_lock(&registry_impl->send_mutex);
-            long long locked = profile_now(), waited = locked - before;
-            registry_impl->pw += waited;
-            if (waited > registry_impl->pwm) registry_impl->pwm = waited;
-            ++registry_impl->pc;
-        """)
-        part = part.replace('JLOG_VERBOSE("Setting Differentiated Services field to 0x%X", ds);',
-            '++registry_impl->pdn;')
-        part = part.replace('JLOG_VERBOSE("Sending datagram, size=%d", size);', """long long prepared = profile_now(), preparation = prepared - locked;
-            long long cpu_before = profile_cpu();
-            registry_impl->pd += preparation;
-            if (preparation > registry_impl->pdm) registry_impl->pdm = preparation;
-        """)
-        part = part.replace('mutex_unlock(&registry_impl->send_mutex);', """long long finished = profile_now(), sending = finished - prepared;
-            registry_impl->ps += sending;
-            registry_impl->cpu += profile_cpu() - cpu_before;
-            if (sending > registry_impl->psm) registry_impl->psm = sending;
-            if (finished - registry_impl->pat >= 1000000) {
-                fprintf(stderr, "MUX port=%u calls=%lld changes=%lld wait/prep/send_us=%lld/%lld/%lld max=%lld/%lld/%lld send_cpu_us=%lld\\n",
-                    registry_impl->port, registry_impl->pc, registry_impl->pdn,
-                    registry_impl->pw, registry_impl->pd, registry_impl->ps,
-                    registry_impl->pwm, registry_impl->pdm, registry_impl->psm, registry_impl->cpu);
-                registry_impl->pc = registry_impl->pdn = registry_impl->pw = registry_impl->pd = registry_impl->ps = 0;
-                registry_impl->pwm = registry_impl->pdm = registry_impl->psm = registry_impl->cpu = 0;
-                registry_impl->pat = finished;
-            }
-            mutex_unlock(&registry_impl->send_mutex);
-        """)
-        s = s[:start] + part + s[end:]
-        p.write_text(s)
-        PYPROFILE
-        cmake --build build/macos-ci/app --parallel 3 --target channel_tests
+      build_command: sh tests/macos-ci.sh auto build/macos-ci build
       test_command: |
         set -eu
-        sysctl hw.ncpu hw.memsize
-        for activity in 0 1; do
-          result=0
-          sudo -n env SQUAD_TEST_LATENCY="$activity" /usr/bin/time -lp \
-            build/macos-ci/app/channel_tests sixtyFourClientsHaveOneConsistentRosterAndAudioFanout \
-            > "build/macos-ci/artifacts/activity-$activity.log" 2>&1 || result=$?
-          printf 'Activity %s test exit: %s\n' "$activity" "$result" >> build/macos-ci/artifacts/profile.log
-          tail -15 "build/macos-ci/artifacts/activity-$activity.log"
-        done
-        cat build/macos-ci/artifacts/profile.log
-      package_command: test -s build/macos-ci/artifacts/profile.log
+        sudo -n build/macos-ci/app/media_transport_tests delayedOwnerUsesNetworkArrivalTime \
+          > build/macos-ci/artifacts/reorder.log 2>&1
+        result=0
+        sudo -n build/macos-ci/app/channel_tests sixtyFourClientsHaveOneConsistentRosterAndAudioFanout \
+          > build/macos-ci/artifacts/capacity.log 2>&1 || result=$?
+        grep -E 'FAIL|PASS|Totals|64 clients|CPU ms' build/macos-ci/artifacts/capacity.log
+        if [ "$result" -ne 0 ]; then
+          sudo -n python3 - <<'PYPROFILE'
+        import pathlib, subprocess
+        root = pathlib.Path('build/macos-ci/artifacts')
+        samples = []
+        with (root / 'profile.log').open('w') as log:
+            test = subprocess.Popen(['build/macos-ci/app/channel_tests',
+                'sixtyFourClientsHaveOneConsistentRosterAndAudioFanout:continuous'],
+                stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+            for line in test.stdout:
+                log.write(line)
+                if 'Starting audio soak' in line:
+                    children = subprocess.check_output(['pgrep', '-P', str(test.pid)], text=True).split()
+                    for role, pid in [('clients', str(test.pid))] + [('host', p) for p in children]:
+                        samples.append(subprocess.Popen(['sample', pid, '5', '10', '-file', str(root / (role + '.sample'))],
+                            stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT))
+            test.wait()
+        for sample in samples:
+            sample.wait()
+        PYPROFILE
+        fi
+        exit "$result"
+      package_command: test -s build/macos-ci/artifacts/capacity.log
       cache_inputs: '["tests/macos-ci.sh", "cmake/Dependencies.cmake", "cmake/AudioProcessing.cmake", "cmake/Media.cmake", "cmake/Updates.cmake", "cmake/*.patch", "cmake/source_archives.json", "src/teamspeak_bridge/Cargo.lock", "rust-toolchain.toml", "cmake/TeamSpeak.cmake"]'
       cache_paths: |
         build/macos-ci/toolchain/Qt
@@ -127,4 +65,6 @@ jobs:
         build/macos-ci/app/squad_apm_build-prefix
         build/macos-ci/app/audio-processing
       package_paths: build/macos-ci/artifacts/*.log
-      report_paths: build/macos-ci/artifacts/*.log
+      report_paths: |
+        build/macos-ci/artifacts/*.log
+        build/macos-ci/artifacts/*.sample
