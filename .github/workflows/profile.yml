@@ -6,115 +6,85 @@ on:
 permissions:
   contents: read
 jobs:
-  sockets:
-    runs-on: macos-15-intel
-    timeout-minutes: 5
-    steps:
-      - name: Compare native UDP fanout
-        shell: sh
-        run: |
-          set -eu
-          cat > "$RUNNER_TEMP/udp-capacity.cpp" <<'CPP'
-          #include <arpa/inet.h>
-          #include <sys/socket.h>
-          #include <fcntl.h>
-          #include <unistd.h>
-          #include <poll.h>
-          #include <array>
-          #include <atomic>
-          #include <chrono>
-          #include <cstdio>
-          #include <cstdlib>
-          #include <thread>
-          #include <algorithm>
-          #include <cerrno>
-
-          using Clock = std::chrono::steady_clock;
-          static void require(bool ok, const char* what) { if (!ok) { std::perror(what); std::exit(1); } }
-          static int socketFor(int family) {
-              int s = socket(family, SOCK_DGRAM, 0); require(s >= 0, "socket");
-              int one = 1, zero = 0, buffer = 1024 * 1024, tos = 46 << 2;
-              require(setsockopt(s, SOL_SOCKET, SO_REUSEPORT, &one, sizeof(one)) == 0, "reuse");
-              if (family == AF_INET6) require(setsockopt(s, IPPROTO_IPV6, IPV6_V6ONLY, &zero, sizeof(zero)) == 0, "dual stack");
-              setsockopt(s, SOL_SOCKET, SO_RCVBUF, &buffer, sizeof(buffer));
-              setsockopt(s, SOL_SOCKET, SO_SNDBUF, &buffer, sizeof(buffer));
-              setsockopt(s, IPPROTO_IP, IP_TOS, &tos, sizeof(tos));
-              if (family == AF_INET6) setsockopt(s, IPPROTO_IPV6, IPV6_TCLASS, &tos, sizeof(tos));
-          #ifdef IP_DONTFRAG
-              setsockopt(s, IPPROTO_IP, IP_DONTFRAG, &one, sizeof(one));
-          #endif
-          #ifdef IPV6_DONTFRAG
-              if (family == AF_INET6) setsockopt(s, IPPROTO_IPV6, IPV6_DONTFRAG, &one, sizeof(one));
-          #endif
-              require(fcntl(s, F_SETFL, O_NONBLOCK) == 0, "nonblocking");
-              return s;
-          }
-          int main() {
-              for (const bool connected : {false, true}) {
-                  std::array<pollfd, 64> receivers{};
-                  std::array<sockaddr_in6, 64> destinations{};
-                  std::array<int, 64> senders{};
-                  sockaddr_in6 local{}; local.sin6_family = AF_INET6;
-                  for (int i = 0; i < 64; ++i) {
-                      receivers[i] = {socketFor(AF_INET), POLLIN, 0};
-                      sockaddr_in address{}; address.sin_family = AF_INET; address.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
-                      require(bind(receivers[i].fd, reinterpret_cast<sockaddr*>(&address), sizeof(address)) == 0, "receiver bind");
-                      socklen_t size = sizeof(address);
-                      require(getsockname(receivers[i].fd, reinterpret_cast<sockaddr*>(&address), &size) == 0, "receiver port");
-                      destinations[i].sin6_family = AF_INET6; destinations[i].sin6_port = address.sin_port;
-                      require(inet_pton(AF_INET6, "::ffff:127.0.0.1", &destinations[i].sin6_addr) == 1, "destination");
-                      if (!i || connected) {
-                          senders[i] = socketFor(AF_INET6);
-                          require(bind(senders[i], reinterpret_cast<sockaddr*>(&local), sizeof(local)) == 0, "sender bind");
-                          size = sizeof(local); require(getsockname(senders[i], reinterpret_cast<sockaddr*>(&local), &size) == 0, "sender port");
-                          if (connected) require(connect(senders[i], reinterpret_cast<sockaddr*>(&destinations[i]), sizeof(destinations[i])) == 0, "connect");
-                      } else senders[i] = senders[0];
-                  }
-                  std::atomic<bool> stop{};
-                  std::array<std::atomic<unsigned long>, 64> received{};
-                  std::thread reader([&] {
-                      std::array<char, 1500> buffer{};
-                      while (!stop) {
-                          poll(receivers.data(), receivers.size(), 10);
-                          for (int i = 0; i < 64; ++i)
-                              while (recv(receivers[i].fd, buffer.data(), buffer.size(), 0) > 0) ++received[i];
-                      }
-                  });
-                  const auto started = Clock::now();
-                  std::array<char, 400> data{};
-                  unsigned long sent = 0, errors = 0, slow = 0;
-                  long long totalNs = 0, maximumNs = 0;
-                  int frames = 0;
-                  while (frames < 500) {
-                      const auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(Clock::now() - started).count();
-                      if (elapsed % 200 < 45 || frames >= elapsed / 20) { std::this_thread::sleep_for(std::chrono::milliseconds(1)); continue; }
-                      for (int source = 0; source < 4; ++source) for (int i = 0; i < 64; ++i) {
-                          if (i == source) continue;
-                          const auto before = Clock::now();
-                          auto n = connected ? send(senders[i], data.data(), data.size(), 0)
-                              : sendto(senders[i], data.data(), data.size(), 0, reinterpret_cast<sockaddr*>(&destinations[i]), sizeof(destinations[i]));
-                          const auto ns = std::chrono::duration_cast<std::chrono::nanoseconds>(Clock::now() - before).count();
-                          totalNs += ns; maximumNs = std::max<long long>(maximumNs, ns); slow += ns > 5000000;
-                          if (n == long(data.size())) ++sent; else ++errors;
-                      }
-                      ++frames;
-                  }
-                  const auto elapsed = std::chrono::duration<double>(Clock::now() - started).count();
-                  std::this_thread::sleep_for(std::chrono::milliseconds(100)); stop = true; reader.join();
-                  unsigned long total = 0, minimum = 2000;
-                  for (int i = 0; i < 64; ++i) { total += received[i]; if (i >= 4) minimum = std::min(minimum, received[i].load()); close(receivers[i].fd); if (!i || connected) close(senders[i]); }
-                  std::printf("connected=%d peers=64 source_port=%u sent=%lu received=%lu min_listener=%lu/2000 errors=%lu elapsed=%.3f send_mean_us=%.2f send_max_ms=%.2f over_5ms=%lu\n", connected, ntohs(local.sin6_port), sent, total, minimum, errors, elapsed, double(totalNs)/(sent+errors)/1000, double(maximumNs)/1000000, slow);
-                  std::fflush(stdout);
-              }
-          }
-          CPP
-          c++ -std=c++17 -O2 -pthread "$RUNNER_TEMP/udp-capacity.cpp" -o "$RUNNER_TEMP/udp-capacity"
-          "$RUNNER_TEMP/udp-capacity" > "$RUNNER_TEMP/udp-capacity.log"
-          cat "$RUNNER_TEMP/udp-capacity.log"
-      - name: Retain measurements
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
-        with:
-          name: intel-udp-capacity
-          path: ${{ runner.temp }}/udp-capacity.log
-          retention-days: 1
-          if-no-files-found: error
+  audio:
+    uses: ./.github/workflows/wc_macos_build.yml
+    with:
+      ref: ${{ github.sha }}
+      version: '2026.10.16'
+      runners: '["macos-15-intel"]'
+      prepare_command: |
+        set -eu
+        rustup toolchain install 1.96.0 --profile minimal
+        printf '%s\n' "$HOME/.cargo/bin" >> "$GITHUB_PATH"
+        export PATH="$HOME/.cargo/bin:$PATH"
+        sh tests/macos-ci.sh auto build/macos-ci prepare
+      build_command: |
+        set -eu
+        sh tests/macos-ci.sh auto build/macos-ci build
+        python3 - <<'PYPROFILE'
+        from pathlib import Path
+        p = Path('build/macos-ci/app/_deps/media-src/deps/libjuice/src/conn_mux.c')
+        s = p.read_text()
+        s = s.replace('#include <string.h>', """#include <string.h>
+        #include <time.h>
+        #include <stdio.h>
+        static long long profile_now(void) {
+            struct timespec t;
+            clock_gettime(CLOCK_MONOTONIC, &t);
+            return (long long)t.tv_sec * 1000000 + t.tv_nsec / 1000;
+        }
+        """)
+        s = s.replace('int send_ds;', 'int send_ds;\n        long long pc, pw, pd, ps, pdn, pwm, pdm, psm, pat;')
+        start = s.index('int conn_mux_send(')
+        end = s.index('int conn_mux_get_addrs(', start)
+        part = s[start:end]
+        part = part.replace('mutex_lock(&registry_impl->send_mutex);', """long long before = profile_now();
+            mutex_lock(&registry_impl->send_mutex);
+            long long locked = profile_now(), waited = locked - before;
+            registry_impl->pw += waited;
+            if (waited > registry_impl->pwm) registry_impl->pwm = waited;
+            ++registry_impl->pc;
+        """)
+        part = part.replace('JLOG_VERBOSE("Setting Differentiated Services field to 0x%X", ds);',
+            '++registry_impl->pdn;')
+        part = part.replace('JLOG_VERBOSE("Sending datagram, size=%d", size);', """long long prepared = profile_now(), preparation = prepared - locked;
+            registry_impl->pd += preparation;
+            if (preparation > registry_impl->pdm) registry_impl->pdm = preparation;
+        """)
+        part = part.replace('mutex_unlock(&registry_impl->send_mutex);', """long long finished = profile_now(), sending = finished - prepared;
+            registry_impl->ps += sending;
+            if (sending > registry_impl->psm) registry_impl->psm = sending;
+            if (finished - registry_impl->pat >= 1000000) {
+                fprintf(stderr, "MUX port=%u calls=%lld changes=%lld wait/prep/send_us=%lld/%lld/%lld max=%lld/%lld/%lld\\n",
+                    registry_impl->port, registry_impl->pc, registry_impl->pdn,
+                    registry_impl->pw, registry_impl->pd, registry_impl->ps,
+                    registry_impl->pwm, registry_impl->pdm, registry_impl->psm);
+                registry_impl->pc = registry_impl->pdn = registry_impl->pw = registry_impl->pd = registry_impl->ps = 0;
+                registry_impl->pwm = registry_impl->pdm = registry_impl->psm = 0;
+                registry_impl->pat = finished;
+            }
+            mutex_unlock(&registry_impl->send_mutex);
+        """)
+        s = s[:start] + part + s[end:]
+        p.write_text(s)
+        PYPROFILE
+        cmake --build build/macos-ci/app --parallel 3 --target channel_tests
+      test_command: |
+        ctest -V --test-dir build/macos-ci/app -R '^channel_contract_sixtyFourClientsHaveOneConsistentRosterAndAudioFanout$' --output-on-failure --no-tests=error --output-log build/macos-ci/artifacts/profile.log
+      package_command: test -s build/macos-ci/artifacts/profile.log
+      cache_inputs: '["tests/macos-ci.sh", "cmake/Dependencies.cmake", "cmake/AudioProcessing.cmake", "cmake/Media.cmake", "cmake/Updates.cmake", "cmake/*.patch", "cmake/source_archives.json", "src/teamspeak_bridge/Cargo.lock", "rust-toolchain.toml", "cmake/TeamSpeak.cmake"]'
+      cache_paths: |
+        build/macos-ci/toolchain/Qt
+        build/macos-ci/dependencies
+        build/macos-ci/app/teamspeak
+        ~/.cargo/registry
+        ~/.cargo/git
+        build/macos-ci/app/_deps
+        build/macos-ci/app/qt-qml
+        build/macos-ci/app/squad_qt_qml_build-prefix
+        build/macos-ci/app/squad_ffmpeg_build-prefix
+        build/macos-ci/app/ffmpeg
+        build/macos-ci/app/squad_apm_build-prefix
+        build/macos-ci/app/audio-processing
+      package_paths: build/macos-ci/artifacts/profile.log
+      report_paths: build/macos-ci/artifacts/profile.log
