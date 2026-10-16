@@ -1,4 +1,4 @@
-name: "Profile Intel audio delivery"
+name: "Compare Intel sender contention"
 on:
   push:
     branches: [feature/snapshot-release]
@@ -27,27 +27,21 @@ jobs:
         sudo -n build/macos-ci/app/channel_tests sixtyFourClientsHaveOneConsistentRosterAndAudioFanout \
           > build/macos-ci/artifacts/capacity.log 2>&1 || result=$?
         grep -E 'FAIL|PASS|Totals|64 clients|CPU ms' build/macos-ci/artifacts/capacity.log
-        if [ "$result" -ne 0 ]; then
-          sudo -n python3 - <<'PYPROFILE'
-        import pathlib, subprocess
-        root = pathlib.Path('build/macos-ci/artifacts')
-        samples = []
-        with (root / 'profile.log').open('w') as log:
-            test = subprocess.Popen(['build/macos-ci/app/channel_tests',
-                'sixtyFourClientsHaveOneConsistentRosterAndAudioFanout:continuous'],
-                stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
-            for line in test.stdout:
-                log.write(line)
-                if 'Starting audio soak' in line:
-                    children = subprocess.check_output(['pgrep', '-P', str(test.pid)], text=True).split()
-                    for role, pid in [('clients', str(test.pid))] + [('host', p) for p in children]:
-                        samples.append(subprocess.Popen(['sample', pid, '5', '10', '-file', str(root / (role + '.sample'))],
-                            stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT))
-            test.wait()
-        for sample in samples:
-            sample.wait()
-        PYPROFILE
-        fi
+        python3 - <<'PYCOMPARE'
+        from pathlib import Path
+        path = Path('src/media_transport.cpp')
+        source = path.read_text()
+        before = 'for (size_t i = 0; i < workers.size(); ++i)'
+        assert source.count(before) == 1
+        path.write_text(source.replace(before, 'for (size_t i = 0; i < 1; ++i)'))
+        PYCOMPARE
+        trap 'git restore -- src/media_transport.cpp' EXIT
+        cmake --build build/macos-ci/app --target channel_tests --parallel 3
+        comparison=0
+        sudo -n build/macos-ci/app/channel_tests sixtyFourClientsHaveOneConsistentRosterAndAudioFanout \
+          > build/macos-ci/artifacts/single-worker.log 2>&1 || comparison=$?
+        grep -E 'FAIL|PASS|Totals|64 clients|CPU ms' build/macos-ci/artifacts/single-worker.log
+        printf 'Baseline exit: %s. Single-worker comparison exit: %s.\n' "$result" "$comparison"
         exit "$result"
       package_command: test -s build/macos-ci/artifacts/capacity.log
       cache_inputs: '["tests/macos-ci.sh", "cmake/Dependencies.cmake", "cmake/AudioProcessing.cmake", "cmake/Media.cmake", "cmake/Updates.cmake", "cmake/*.patch", "cmake/source_archives.json", "src/teamspeak_bridge/Cargo.lock", "rust-toolchain.toml", "cmake/TeamSpeak.cmake"]'
@@ -67,4 +61,3 @@ jobs:
       package_paths: build/macos-ci/artifacts/*.log
       report_paths: |
         build/macos-ci/artifacts/*.log
-        build/macos-ci/artifacts/*.sample
