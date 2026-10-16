@@ -1,4 +1,4 @@
-name: "Measure simulated client scheduling"
+name: "Measure independent receiver processes"
 on:
   push:
     branches: [feature/snapshot-release]
@@ -23,12 +23,13 @@ jobs:
         set -eu
         result=0
         for attempt in 1 2 3; do
-          sudo -n build/macos-ci/app/channel_tests sixtyFourClientsHaveOneConsistentRosterAndAudioFanout \
-            > "build/macos-ci/artifacts/client-scheduling-$attempt.log" 2>&1 || result=$?
-          grep -E 'FAIL|PASS|Totals|64 clients|CPU ms' "build/macos-ci/artifacts/client-scheduling-$attempt.log"
+          ctest --test-dir build/macos-ci/app --no-tests=error --verbose \
+            -R '^channel_contract_sixtyFourClientsHaveOneConsistentRosterAndAudioFanout$' \
+            > "build/macos-ci/artifacts/receiver-processes-$attempt.log" 2>&1 || result=$?
+          grep -E 'FAIL|PASS|Totals|64 clients|CPU ms|Timeout' "build/macos-ci/artifacts/receiver-processes-$attempt.log"
         done
         exit "$result"
-      package_command: test -s build/macos-ci/artifacts/client-scheduling-3.log
+      package_command: test -s build/macos-ci/artifacts/receiver-processes-3.log
       cache_inputs: '["tests/macos-ci.sh", "cmake/Dependencies.cmake", "cmake/AudioProcessing.cmake", "cmake/Media.cmake", "cmake/Updates.cmake", "cmake/*.patch", "cmake/source_archives.json", "src/teamspeak_bridge/Cargo.lock", "rust-toolchain.toml", "cmake/TeamSpeak.cmake"]'
       cache_paths: |
         build/macos-ci/toolchain/Qt
