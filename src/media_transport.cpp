@@ -114,7 +114,7 @@ struct MediaTransport::State::Sender final {
         std::function<void(bool)> failed;
     };
     std::mutex mutex;
-    std::condition_variable changed;
+    std::condition_variable changed, backupChanged;
     std::map<rtc::Channel*, std::deque<Packet>> queues;
     decltype(queues)::iterator turn = queues.end();
     size_t queued = 0;
@@ -124,6 +124,7 @@ struct MediaTransport::State::Sender final {
     std::map<std::pair<quintptr, quint32>, int> counts;
     std::array<rtc::Channel*, 2> active{};
     Clock::time_point primaryStarted{};
+    bool backupWaiting = false;
     bool stopping = false;
     std::array<std::thread, 2> workers;
     Sender() {
@@ -153,13 +154,21 @@ struct MediaTransport::State::Sender final {
         QThread::currentThread()->setServiceLevel(QThread::QualityOfService::High);
         std::unique_lock lock(mutex);
         for (;;) {
-            changed.wait(lock, [this, worker] {
+            if (worker != 0) backupWaiting = true;
+            auto& available = worker == 0 ? changed : backupChanged;
+            available.wait(lock, [this, worker] {
                 return stopping || (ready() != queues.end() && (worker == 0 || active[0]));
             });
+            if (worker != 0) backupWaiting = false;
             if (stopping) return;
-            if (worker != 0 && Clock::now() < primaryStarted + backupDelay) {
-                changed.wait_until(lock, primaryStarted + backupDelay);
-                continue;
+            if (worker != 0) {
+                while (active[0] && ready() != queues.end() && Clock::now() < primaryStarted + backupDelay) {
+                    // A healthy primary may finish thousands of sends while
+                    // this deadline is pending. Only shutdown needs to wake it.
+                    backupChanged.wait_until(lock, primaryStarted + backupDelay, [this] { return stopping; });
+                    if (stopping) return;
+                }
+                if (!active[0] || ready() == queues.end()) continue;
             }
             auto current = ready();
             turn = std::next(current);
@@ -168,7 +177,10 @@ struct MediaTransport::State::Sender final {
             auto packet = std::move(queue.front()); queue.pop_front(); --queued;
             removeEmpty(current);
             active[worker] = packet.channel.get();
-            if (worker == 0) { primaryStarted = Clock::now(); changed.notify_all(); }
+            if (worker == 0) {
+                primaryStarted = Clock::now();
+                if (backupWaiting) backupChanged.notify_one();
+            }
             lock.unlock();
             const auto sendStarted = Clock::now();
             const bool expired = sendStarted >= packet.expires;
@@ -198,6 +210,7 @@ struct MediaTransport::State::Sender final {
                 }
             }
             changed.notify_all();
+            if (backupWaiting) backupChanged.notify_one();
         }
     }
 
@@ -216,6 +229,7 @@ struct MediaTransport::State::Sender final {
     void stop() {
         { std::lock_guard lock(mutex); stopping = true; queues.clear(); turn = queues.end(); queued = 0; counts.clear(); }
         changed.notify_all();
+        backupChanged.notify_one();
         for (auto& worker : workers) if (worker.joinable()) worker.join();
     }
     void cancel(const std::shared_ptr<rtc::Channel>& channel, std::optional<quint32> ssrc = {}) {
@@ -255,11 +269,14 @@ struct MediaTransport::State::Sender final {
             uncount(queue.front()); queue.pop_front(); --queued; ++shedCount;
             removeEmpty(oldest);
         }
-        const auto current = queues.try_emplace(channel.get()).first;
+        const auto [current, added] = queues.try_emplace(channel.get());
         if (turn == queues.end()) turn = current;
         ++counts[key]; ++queued; maximumQueued = std::max(maximumQueued, queued);
         current->second.push_back({channel, std::move(bytes), ssrc, Clock::now() + std::chrono::milliseconds(120), std::move(failed)});
-        changed.notify_all();
+        if (added) {
+            changed.notify_all();
+            if (backupWaiting) backupChanged.notify_one();
+        }
         return true;
     }
 };
