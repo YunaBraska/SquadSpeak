@@ -85,6 +85,7 @@ class SendGate final {
         std::condition_variable changed;
         bool entered = false, released = false, onOwner = false;
         std::vector<int> packetSizes;
+        size_t received = 0;
         const std::thread::id owner = std::this_thread::get_id();
     };
     struct Observer final : plog::IAppender {
@@ -93,6 +94,10 @@ class SendGate final {
             const auto s = std::atomic_load(&state);
             if (!s) return;
             const auto message = plog::UTF8Converter::convert(record.getMessage());
+            if (message.find("Unprotected SRTP packet, size=") != std::string::npos) {
+                std::lock_guard lock(s->mutex);
+                ++s->received; s->changed.notify_all(); return;
+            }
             if (message.find("Protected SRTP packet, size=") == std::string::npos) return;
             std::unique_lock lock(s->mutex);
             s->packetSizes.push_back(std::stoi(message.substr(message.find("size=") + 5)));
@@ -126,6 +131,10 @@ public:
     bool waitForPackets(size_t count) {
         std::unique_lock lock(state_->mutex);
         return state_->changed.wait_for(lock, std::chrono::seconds(1), [&] { return state_->packetSizes.size() >= count; });
+    }
+    bool waitForReceived(size_t count) {
+        std::unique_lock lock(state_->mutex);
+        return state_->changed.wait_for(lock, std::chrono::seconds(1), [&] { return state_->received >= count; });
     }
     bool onOwner() const { std::lock_guard lock(state_->mutex); return state_->onOwner; }
     void release() {
@@ -477,9 +486,15 @@ private slots:
         blocked = true;
         QMetaObject::invokeMethod(client.get(), [&] { entered.release(); resume.acquire(); }, Qt::QueuedConnection);
         QVERIFY(entered.tryAcquire(1, 1000));
-        // Eight real 20 ms packets arrive on the network workers while the
-        // receiver's owner loop is suspended. Include the reorder interval.
-        for (int i = 0; i < 8; ++i) { QVERIFY(host.send(first, packet)); QTest::qWait(20); }
+        // Observe each authenticated UDP receipt while the owner is suspended.
+        // Pacing with sleeps can expire the path probe on a busy runner and
+        // accidentally exercise reliable delivery instead of the reorder queue.
+        SendGate gate; gate.release();
+        for (size_t i = 0; i < 8; ++i) {
+            QVERIFY(host.send(first, packet));
+            QVERIFY(gate.waitForReceived(i + 1));
+        }
+        // Let the received packets' actual reorder interval expire.
         QTest::qWait(25);
         resume.release(); blocked = false;
         QVERIFY(waitForEvents([&] { return heard == 9; }));
