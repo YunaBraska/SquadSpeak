@@ -6,6 +6,9 @@
 #include <QNetworkDatagram>
 #include <QTest>
 #include <QTimer>
+#include <QSemaphore>
+#include <QThread>
+#include <QScopeGuard>
 #include <rtc/global.hpp>
 #include <plog/Converters/UTF8Converter.h>
 #include <plog/Logger.h>
@@ -187,12 +190,25 @@ private slots:
         QVERIFY(valid);
     }
 
+    void dataDatagramsReleaseQueuedMessagesWhenPeerCloses_data() {
+        QTest::addColumn<bool>("reuseClientPort");
+        QTest::newRow("ephemeral-client") << false;
+        QTest::newRow("reused-client") << true;
+    }
     void dataDatagramsReleaseQueuedMessagesWhenPeerCloses() {
+        QFETCH(bool, reuseClientPort);
         const QByteArray payload(16384, 'x');
         const auto port = availableUdpPort(); QVERIFY(port);
+        quint16 clientPort = 0;
+        if (reuseClientPort) {
+            do { clientPort = availableUdpPort(); QVERIFY(clientPort); } while (clientPort == port);
+        }
+        rtc::InitLogger(rtc::LogLevel::Debug);
+        const auto restoreLogging = qScopeGuard([] { rtc::InitLogger(rtc::LogLevel::Info); });
         for (int repeat = 0; repeat < 20; ++repeat) {
+            qInfo() << "Reconnect iteration" << repeat << "host/client ports" << port << clientPort;
             squad::MediaTransport host(true, port, QHostAddress::LocalHost, 0, squad::MediaTransport::Medium::Data);
-            auto client = std::make_unique<squad::MediaTransport>(false, 0, QHostAddress::LocalHost, port,
+            auto client = std::make_unique<squad::MediaTransport>(false, clientPort, QHostAddress::LocalHost, port,
                 squad::MediaTransport::Medium::Data);
             connect(&host, &squad::MediaTransport::signaling, client.get(), [&](const auto& message) { QVERIFY(client->receive(message)); });
             connect(client.get(), &squad::MediaTransport::signaling, &host, [&](const auto& message) { QVERIFY(host.receive(message)); });
@@ -428,6 +444,47 @@ private slots:
             QCOMPARE(heard.last().at(0).toString(), source); QCOMPARE(heard.last().at(2).toInt(), 0);
         }
         QCOMPARE(streams.size(), 1); QCOMPARE(fallback, 0);
+    }
+    void delayedOwnerUsesNetworkArrivalTime() {
+        const auto port = availableUdpPort(); QVERIFY(port);
+        squad::MediaTransport host(true, port, QHostAddress::LocalHost, 0);
+        QThread thread;
+        QObject context;
+        context.moveToThread(&thread); thread.start();
+        std::unique_ptr<squad::MediaTransport> client;
+        QSemaphore entered, resume;
+        bool blocked = false;
+        const auto cleanup = qScopeGuard([&] {
+            if (blocked) resume.release();
+            QMetaObject::invokeMethod(&context, [&] {
+                client.reset(); context.moveToThread(QCoreApplication::instance()->thread());
+            }, Qt::BlockingQueuedConnection);
+            thread.quit(); thread.wait();
+        });
+        QMetaObject::invokeMethod(&context, [&] {
+            client = std::make_unique<squad::MediaTransport>(false, 0, QHostAddress::LocalHost, port);
+        }, Qt::BlockingQueuedConnection);
+        int fallback = 0;
+        connect(&host, &squad::MediaTransport::signaling, &host, [&](const auto& message) { fallback += message.value("kind") == "frame"; });
+        connect(&host, &squad::MediaTransport::signaling, client.get(), [&](const auto& message) { QVERIFY(client->receive(message)); });
+        connect(client.get(), &squad::MediaTransport::signaling, &host, [&](const auto& message) { QVERIFY(host.receive(message)); });
+        int heard = 0, missing = 0;
+        connect(client.get(), &squad::MediaTransport::audio, &host, [&](const auto&, const auto&, int gaps) { ++heard; missing += gaps; });
+        QVERIFY(waitForEvents([&] { return host.udpActive(); }, 10000));
+        const auto packet = speech(); QVERIFY(host.send(first, packet));
+        QVERIFY(waitForEvents([&] { return heard == 1; }));
+        const auto setupFallback = fallback;
+        blocked = true;
+        QMetaObject::invokeMethod(client.get(), [&] { entered.release(); resume.acquire(); }, Qt::QueuedConnection);
+        QVERIFY(entered.tryAcquire(1, 1000));
+        // Eight real 20 ms packets arrive on the network workers while the
+        // receiver's owner loop is suspended. Include the reorder interval.
+        for (int i = 0; i < 8; ++i) { QVERIFY(host.send(first, packet)); QTest::qWait(20); }
+        QTest::qWait(25);
+        resume.release(); blocked = false;
+        QVERIFY(waitForEvents([&] { return heard == 9; }));
+        QCOMPARE(missing, 0);
+        QCOMPARE(fallback, setupFallback);
     }
     void audioSendsStayOffTheOwnerThreadAndBoundBacklog() {
         const auto port = availableUdpPort(); QVERIFY(port);

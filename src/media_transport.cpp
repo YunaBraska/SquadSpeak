@@ -369,9 +369,12 @@ void MediaTransport::start() {
         s.channel->onMessage([weak, generation](rtc::message_variant value) {
             const auto* bytes = std::get_if<rtc::binary>(&value);
             if (!bytes || bytes->size() > 16384) return;
+            const auto state = weak.lock();
+            if (!state) return;
+            const auto arrived = state->clock.elapsed();
             QByteArray packet(reinterpret_cast<const char*>(bytes->data()), qsizetype(bytes->size()));
             const auto size = packet.size();
-            State::post(weak, generation, size, [packet = std::move(packet)](State& s) { s.owner->packet(packet); });
+            State::post(weak, generation, size, [packet = std::move(packet), arrived](State& s) { s.owner->packet(packet, arrived); });
         });
         if (s.offerer) s.connection->setLocalDescription(rtc::Description::Type::Offer);
         timer_.start();
@@ -464,7 +467,7 @@ bool MediaTransport::receive(const QJsonObject& message) {
     const auto seq = message.value("sequence").toInt(-1);
     const auto data = QByteArray::fromBase64Encoding(message.value("data").toString().toLatin1(), QByteArray::AbortOnBase64DecodingErrors);
     if (seq < 0 || seq > UINT16_MAX || message.value("sequence").toDouble() != seq || !data || !validOpus(data.decoded)) return false;
-    accept(ssrc, quint16(seq), data.decoded, false);
+    accept(ssrc, quint16(seq), data.decoded, false, s.clock.elapsed());
     return true;
 }
 
@@ -520,7 +523,7 @@ void MediaTransport::retainSources(const QStringList& sources) {
         }
 }
 
-void MediaTransport::accept(quint32 ssrc, quint16 sequence, const QByteArray& opus, bool datagram) {
+void MediaTransport::accept(quint32 ssrc, quint16 sequence, const QByteArray& opus, bool datagram, qint64 arrived) {
     auto& s = *state_;
     auto it = s.incoming.find(ssrc);
     if (it == s.incoming.end() || it->source.isEmpty()) return;
@@ -541,11 +544,12 @@ void MediaTransport::accept(quint32 ssrc, quint16 sequence, const QByteArray& op
     if (datagram) { ++s.received; s.expected += quint32(stream.highest < 0 ? 1 : std::max<qint64>(0, serial - stream.highest)); }
     stream.highest = std::max(stream.highest, serial);
     if (stream.pending.size() == 6) { stream.pending.erase(stream.pending.begin()); ++s.pendingDrops; }
-    stream.pending.emplace(serial, State::Stream::Frame{opus, s.clock.elapsed() + (datagram ? 20 : 0)});
+    // Owner-thread stalls must not restart the network reorder interval.
+    stream.pending.emplace(serial, State::Stream::Frame{opus, arrived + (datagram ? 20 : 0)});
     if (!timer_.isActive() || timer_.interval() != 5) timer_.start(5);
 }
 
-void MediaTransport::packet(const QByteArray& bytes) {
+void MediaTransport::packet(const QByteArray& bytes, qint64 arrived) {
     const auto keepAlive = state_;
     auto& s = *keepAlive;
     if (bytes.size() == 24 && quint8(bytes[0]) == 0x80 && quint8(bytes[1]) == 204
@@ -574,7 +578,7 @@ void MediaTransport::packet(const QByteArray& bytes) {
     if (s.medium == Medium::Data) { emit datagramReceived(bytes); return; }
     if (bytes.size() < 13 || quint8(bytes[0]) != 0x80 || (quint8(bytes[1]) & 0x7f) != 111) return;
     const auto opus = bytes.mid(12); if (!validOpus(opus)) return;
-    accept(qFromBigEndian<quint32>(bytes.constData() + 8), qFromBigEndian<quint16>(bytes.constData() + 2), opus, true);
+    accept(qFromBigEndian<quint32>(bytes.constData() + 8), qFromBigEndian<quint16>(bytes.constData() + 2), opus, true, arrived);
 }
 
 void MediaTransport::tick() {

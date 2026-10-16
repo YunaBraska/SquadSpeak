@@ -33,8 +33,8 @@ private:
     QTimer timer_;
     void start();
     void tick();
-    void packet(const QByteArray& bytes);
-    void accept(quint32 ssrc, quint16 sequence, const QByteArray& opus, bool datagram);
+    void packet(const QByteArray& bytes, qint64 arrived);
+    void accept(quint32 ssrc, quint16 sequence, const QByteArray& opus, bool datagram, qint64 arrived);
     void stopUdp();
     void restartUdp();
 };
