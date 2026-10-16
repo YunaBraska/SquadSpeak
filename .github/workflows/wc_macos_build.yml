@@ -69,7 +69,8 @@ jobs:
   build:
     name: "🍎 ${{ matrix.runner }}"
     runs-on: ${{ matrix.runner }}
-    timeout-minutes: 60
+    # Reserve time for native tests after a cold dependency build.
+    timeout-minutes: 90
     strategy:
       fail-fast: false
       matrix:
