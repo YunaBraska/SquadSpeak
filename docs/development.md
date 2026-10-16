@@ -556,8 +556,10 @@ speakers' packets after reuse. Contiguous frames are ready immediately. A bounde
 20 ms reorder window waits for missing sequences and drops stale packets.
 The existing Opus decoder conceals at most six missing frames. TLS fallback uses
 the same sequence space. Unknown valid media kinds/fields preserve baseline audio.
-The library callback mailbox and shared audio sender are bounded. Two sender
-workers share the existing queue and serialize writes per connection. UDP audio
+The library callback mailbox and shared audio sender are bounded. One worker
+drains the shared audio socket. A second serves other connections when a send
+stalls beyond 5 ms, a quarter of an audio frame. Both share the existing queue
+and serialize writes per connection. UDP audio
 encryption and socket writes stay off the Qt owner thread. Source bindings and
 Qt timers stay on that thread. Teardown drains the connection's active write
 before closing native resources.

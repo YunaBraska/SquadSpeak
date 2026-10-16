@@ -99,11 +99,13 @@ struct MediaTransport::State final {
     bool write(const std::shared_ptr<State>& self, const QByteArray& bytes);
 };
 
-// Track::send encrypts and writes synchronously. Two workers share one bounded
-// queue, serving connections in turn with at most one send per connection in
-// flight. Keep source bindings and all QObject state on the owner thread.
+// Track::send encrypts and writes synchronously. Normally one worker drains the
+// shared socket. A second can serve other connections if a send stalls, without
+// making every short datagram contend on the socket. QObject state stays owned
+// by its original thread, with at most one send per connection in flight.
 struct MediaTransport::State::Sender final {
     using Clock = std::chrono::steady_clock;
+    static constexpr auto backupDelay = std::chrono::milliseconds(5);
     struct Packet {
         std::shared_ptr<rtc::Channel> channel;
         QByteArray bytes;
@@ -121,6 +123,7 @@ struct MediaTransport::State::Sender final {
     long long sendMicros = 0, maximumSendMicros = 0;
     std::map<std::pair<quintptr, quint32>, int> counts;
     std::array<rtc::Channel*, 2> active{};
+    Clock::time_point primaryStarted{};
     bool stopping = false;
     std::array<std::thread, 2> workers;
     Sender() {
@@ -150,8 +153,14 @@ struct MediaTransport::State::Sender final {
         QThread::currentThread()->setServiceLevel(QThread::QualityOfService::High);
         std::unique_lock lock(mutex);
         for (;;) {
-            changed.wait(lock, [this] { return stopping || ready() != queues.end(); });
+            changed.wait(lock, [this, worker] {
+                return stopping || (ready() != queues.end() && (worker == 0 || active[0]));
+            });
             if (stopping) return;
+            if (worker != 0 && Clock::now() < primaryStarted + backupDelay) {
+                changed.wait_until(lock, primaryStarted + backupDelay);
+                continue;
+            }
             auto current = ready();
             turn = std::next(current);
             auto& queue = current->second;
@@ -159,6 +168,7 @@ struct MediaTransport::State::Sender final {
             auto packet = std::move(queue.front()); queue.pop_front(); --queued;
             removeEmpty(current);
             active[worker] = packet.channel.get();
+            if (worker == 0) { primaryStarted = Clock::now(); changed.notify_all(); }
             lock.unlock();
             const auto sendStarted = Clock::now();
             const bool expired = sendStarted >= packet.expires;
@@ -249,7 +259,7 @@ struct MediaTransport::State::Sender final {
         if (turn == queues.end()) turn = current;
         ++counts[key]; ++queued; maximumQueued = std::max(maximumQueued, queued);
         current->second.push_back({channel, std::move(bytes), ssrc, Clock::now() + std::chrono::milliseconds(120), std::move(failed)});
-        changed.notify_one();
+        changed.notify_all();
         return true;
     }
 };

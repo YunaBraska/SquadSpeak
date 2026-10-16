@@ -642,6 +642,10 @@ private slots:
         QVERIFY2(progressedWhileBlocked, "A blocked connection prevented another connection from sending");
         QVERIFY(waitForEvents([&] { return !atHost.isEmpty(); }, 3000));
         QCOMPARE(atHost.first().at(1).toByteArray(), marker);
+        QVERIFY(host.send(first, marker));
+        QVERIFY(waitForEvents([&] {
+            return std::any_of(atClient.begin(), atClient.end(), [&](const auto& event) { return event.at(1).toByteArray() == marker; });
+        }, 3000));
         const auto sizes = gate.packetSizes();
         const auto position = std::find(sizes.begin(), sizes.end(), sizes.front() + 100);
         QVERIFY(position != sizes.end());
