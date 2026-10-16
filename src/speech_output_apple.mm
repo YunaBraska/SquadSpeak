@@ -55,7 +55,16 @@ QVariantList SpeechOutput::voices() {
 
 bool SpeechOutput::start(const QString& text, int sampleRate, const QString& voice) {
     if (text.trimmed().isEmpty() || text.size() > 400 || sampleRate < 8000 || sampleRate > 192000) return false;
-    auto* selected = voice.isEmpty() ? nil : [AVSpeechSynthesisVoice voiceWithIdentifier:voice.toNSString()];
+    AVSpeechSynthesisVoice* selected = nil;
+    if (!voice.isEmpty()) {
+        auto* identifier = voice.toNSString();
+        for (AVSpeechSynthesisVoice* installed in AVSpeechSynthesisVoice.speechVoices) {
+            if ([installed.identifier isEqualToString:identifier]) {
+                selected = installed;
+                break;
+            }
+        }
+    }
     if (!voice.isEmpty() && !selected) return false;
     stop();
     auto state = std::make_shared<Impl::State>();
