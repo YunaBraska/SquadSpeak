@@ -1,4 +1,5 @@
 #include "local_channel.hpp"
+#include "teamspeak_bridge/teamspeak_bridge.h"
 #include "chat_content.hpp"
 
 #include <QCryptographicHash>
@@ -27,13 +28,16 @@ Q_LOGGING_CATEGORY(mediaLog, "squadspeak.media", QtWarningMsg)
 Q_LOGGING_CATEGORY(connectionLog, "squadspeak.connection", QtWarningMsg)
 constexpr int maximumPendingPeers = 32;
 constexpr int maximumMediaParticipants = 64;
-constexpr std::array<int, 4> audioBitrates{32, 20, 12, 8};
+constexpr std::array<int, 6> audioBitrates{128, 64, 32, 20, 12, 8};
+// Allow a simultaneous frame from all 64 sources while RTP bindings are
+// established. Keep reliable audio bounded below the general write limit.
+constexpr qint64 maximumQueuedAudio = 128 * 1024;
 const QSet<QString> protocolCapabilities{
-    QStringLiteral("udp-audio"), QStringLiteral("udp-screen"), QStringLiteral("adaptive-audio"), QStringLiteral("screen-share"), QStringLiteral("screen-audio"),
-    QStringLiteral("remote-control"), QStringLiteral("extended-retention")};
+    QStringLiteral("udp-audio"), QStringLiteral("udp-screen"), QStringLiteral("adaptive-audio"), QStringLiteral("audio-64"), QStringLiteral("audio-stereo"), QStringLiteral("screen-share"), QStringLiteral("screen-audio"),
+    QStringLiteral("remote-control"), QStringLiteral("extended-retention"), QStringLiteral("private-chat")};
 const QSet<QString> knownMessageTypes{
     QStringLiteral("media"), QStringLiteral("audio"), QStringLiteral("audioAck"), QStringLiteral("audioProbe"), QStringLiteral("audioQuality"),
-    QStringLiteral("chat"), QStringLiteral("chatKey"), QStringLiteral("control"), QStringLiteral("controlAck"),
+    QStringLiteral("privateChat"), QStringLiteral("chat"), QStringLiteral("chatKey"), QStringLiteral("control"), QStringLiteral("controlAck"),
     QStringLiteral("controlHello"), QStringLiteral("controlPing"), QStringLiteral("controlWait"), QStringLiteral("discover"),
     QStringLiteral("hello"), QStringLiteral("identify"), QStringLiteral("join"), QStringLiteral("password"),
     QStringLiteral("ping"), QStringLiteral("pong"), QStringLiteral("presence"), QStringLiteral("pttState"),
@@ -59,15 +63,15 @@ bool targetAddress(const QHostAddress& address) {
 
 struct LocalChannel::Relay final {
     std::unique_ptr<OpusDecoder, decltype(&opus_decoder_destroy)> decoder{nullptr, opus_decoder_destroy};
-    std::array<std::shared_ptr<OpusEncoder>, 4> encoders;
+    std::array<std::shared_ptr<OpusEncoder>, audioBitrates.size()> encoders;
     Relay() {
         int error;
-        decoder.reset(opus_decoder_create(48000, 1, &error));
+        decoder.reset(opus_decoder_create(48000, 2, &error));
         if (!decoder) throw std::runtime_error(opus_strerror(error));
     }
-    std::array<QByteArray, 4> packets(const QByteArray& source, const std::array<bool, 4>& needed, int missing) {
-        std::array<QByteArray, 4> result; result[0] = source;
-        std::array<float, 960> samples;
+    std::array<QByteArray, audioBitrates.size()> packets(const QByteArray& source, const std::array<bool, audioBitrates.size()>& needed, int missing) {
+        std::array<QByteArray, audioBitrates.size()> result; result[0] = source;
+        std::array<float, 1920> samples;
         for (int gap = 0; gap < missing; ++gap) {
             const int restored = opus_decode_float(decoder.get(), nullptr, 0, samples.data(), 960, 0);
             if (restored < 0) throw std::runtime_error(opus_strerror(restored));
@@ -79,8 +83,9 @@ struct LocalChannel::Relay final {
             auto& encoder = encoders[tier];
             if (!encoder) {
                 int error;
-                encoder = {opus_encoder_create(48000, 1, OPUS_APPLICATION_VOIP, &error), opus_encoder_destroy};
+                encoder = {opus_encoder_create(48000, 2, OPUS_APPLICATION_AUDIO, &error), opus_encoder_destroy};
                 if (!encoder || opus_encoder_ctl(encoder.get(), OPUS_SET_BITRATE(audioBitrates[tier] * 1000)) != OPUS_OK
+                    || opus_encoder_ctl(encoder.get(), OPUS_SET_FORCE_CHANNELS(audioBitrates[tier] >= 64 ? 2 : 1)) != OPUS_OK
                     || opus_encoder_ctl(encoder.get(), OPUS_SET_VBR(0)) != OPUS_OK
                     || opus_encoder_ctl(encoder.get(), OPUS_SET_COMPLEXITY(5)) != OPUS_OK)
                     throw std::runtime_error(QT_TRANSLATE_NOOP("LocalChannel", "Voice relay codec could not be configured."));
@@ -179,7 +184,10 @@ QString LocalChannel::endpointKey(const QString& host, quint16 port) {
 }
 
 bool LocalChannel::validPresenceDetails(const QJsonObject& message) {
-    return (!message.contains("deafened") || message.value("deafened").isBool())
+    static const QRegularExpression locale("^[a-z]{2,3}(-[A-Za-z0-9]{2,8}){0,3}$");
+    return (!message.contains("language") || (message.value("language").isString()
+        && (message.value("language").toString().isEmpty() || locale.match(message.value("language").toString()).hasMatch())))
+        && (!message.contains("deafened") || message.value("deafened").isBool())
         && (!message.contains("avatar") || VoiceSession::validAvatar(message.value("avatar").toString()))
         && (!message.contains("avatarId") || VoiceSession::validAvatar(message.value("avatarId").toString()));
 }
@@ -194,9 +202,11 @@ LocalChannel::LocalChannel(VoiceSession& session, QString storageFile, std::opti
                            std::function<qint64()> clock, QObject* parent, LocalChannel* service, QString channelId)
     : QObject(parent), service_(service), channelId_(std::move(channelId)), session_(session), storageFile_(std::move(storageFile)),
       identity_(std::move(identity)), clock_(std::move(clock)) {
+    if (!ready()) status_ = tr("Device identity is not ready yet.");
     bool migrateName = !service_ && !session_.legacyChannelName().isEmpty();
     if (migrateName) channelName_ = session_.legacyChannelName();
     QFile file(storageFile_);
+    const bool newChannel = !service_ && !storageFile_.isEmpty() && !file.exists();
     if (file.exists()) {
         if (!file.open(QIODevice::ReadOnly) || file.size() > 1024 * 1024)
             throw std::runtime_error(tr("Channel permissions could not be read.").toStdString());
@@ -238,6 +248,7 @@ LocalChannel::LocalChannel(VoiceSession& session, QString storageFile, std::opti
             channelName_ = VoiceSession::validatedName(object.value("channelName").toString());
             migrateName = false;
         }
+        if (object.contains("hostName")) hostName_ = VoiceSession::validatedName(object.value("hostName").toString());
         configuredPort_ = object.value("servicePort").toInt(defaultPort);
         if (object.contains("botName")) botName_ = VoiceSession::validatedName(object.value("botName").toString());
         messageLifetimeDays_ = object.value("messageLifetimeDays").toInt(1);
@@ -255,6 +266,7 @@ LocalChannel::LocalChannel(VoiceSession& session, QString storageFile, std::opti
             const auto joined = entry.value("lastJoined").toInteger(-1);
             if (!validId(it.key()) || (entry.contains("deviceId") && !validId(entry.value("deviceId").toString()))
                 || !displayName(entry.value("name"))
+                || (entry.contains("ownerName") && entry.value("ownerName") != QJsonValue("") && !displayName(entry.value("ownerName")))
                 || !validEndpointHost(entry.value("address").toString())
                 || port < 1 || port > 65535 || !entry.value("autoJoin").isBool()
                 || (entry.contains("remoteControl") && !entry.value("remoteControl").isBool())
@@ -281,6 +293,7 @@ LocalChannel::LocalChannel(VoiceSession& session, QString storageFile, std::opti
                 if (!validId(it.key()) || !it.value().isString() || !value || value.decoded.size() < 29 || value.decoded.size() > 1052)
                     throw std::runtime_error(tr("Saved channel password is invalid.").toStdString());
             }
+            if (!validPrivateState(security)) throw std::runtime_error(tr("Invalid chat history.").toStdString());
             security_ = security;
             if (security.contains("blocked") && !security.value("blocked").isObject())
                 throw std::runtime_error(tr("Invalid stored channel blocks.").toStdString());
@@ -325,7 +338,10 @@ LocalChannel::LocalChannel(VoiceSession& session, QString storageFile, std::opti
     maintenanceTimer_.setInterval(1000);
     connect(&maintenanceTimer_, &QTimer::timeout, this, [this] {
         const auto elapsed = controlClock_.elapsed();
-        if (passwordRequired() && passwordRetrySeconds() > 0) emit stateChanged();
+        if (auto* c = chatClient(); c && c->passwordRequired && c->passwordRetryAt > 0) {
+            if (c->passwordRetryAt <= elapsed) c->passwordRetryAt = 0;
+            emit stateChanged();
+        }
         for (auto* socket : peers_.keys()) {
             auto& peer = peers_[socket];
             if (elapsed - peer.lastActivity > (peer.closing ? 5000 : 8000)) { socket->abort(); continue; }
@@ -354,6 +370,17 @@ LocalChannel::LocalChannel(VoiceSession& session, QString storageFile, std::opti
         }
         for (const auto& connection : clients_) {
             auto& c = *connection;
+            if (c.teamSpeak) continue;
+            if (!c.privatePeer.isEmpty()) {
+                const auto* link = privateTransport(c.deviceId);
+                const bool connected = link != nullptr;
+                if (c.accepted != connected) {
+                    c.accepted = connected;
+                    if (!connected) { c.historyRequest.clear(); c.privateImages.clear(); c.messages = {}; }
+                    emit chatChanged(); emit hostsChanged();
+                }
+                continue;
+            }
             if (!c.socket) {
                 if (c.reconnectWanted && elapsed >= c.reconnectAt && !remoteMode()) connectClient(c);
                 continue;
@@ -371,6 +398,7 @@ LocalChannel::LocalChannel(VoiceSession& session, QString storageFile, std::opti
         if (hosting_ && history_) {
             if (!botSleeping_ && clock_() - botLastActive_ >= 3600000) { botSleeping_ = true; broadcastRoster(); }
             try {
+                if (!service_) maintainPrivate();
                 if (history_->expire(clock_())) {
                     for (auto* socket : peers_.keys())
                         if (peers_.value(socket).joined && !peers_.value(socket).controller)
@@ -382,12 +410,15 @@ LocalChannel::LocalChannel(VoiceSession& session, QString storageFile, std::opti
         }
         for (const auto& connection : clients_) {
             auto& c = *connection;
-            if (!c.chatClock.isValid()) continue;
-            const auto now = c.serverTime + c.chatClock.elapsed();
+            if (!c.teamSpeak && !c.chatClock.isValid()) continue;
+            const auto now = c.teamSpeak ? clock_() : c.serverTime + c.chatClock.elapsed();
             QJsonArray retained;
             for (const auto value : c.messages) if (value.toObject().value("expires").toInteger() > now) retained.append(value);
-            if (retained.size() != c.messages.size()) { c.messages = retained; emit chatChanged(); }
-            if (!c.pending.isEmpty() && now >= c.pendingUntil) {
+            if (retained.size() != c.messages.size()) { c.messages = retained; trimHistory(c, false); emit chatChanged(); }
+            if (!c.privatePeer.isEmpty() && c.privateExpires > 0 && c.privateExpires <= now) {
+                c.privateExpires = 0; emit hostsChanged();
+            }
+            if (!c.teamSpeak && !c.pending.isEmpty() && c.pending.value("kind") != "preparing" && now >= c.pendingUntil) {
                 c.pending = {}; c.pendingImage.clear(); c.chatError = tr("Delivery was not confirmed. The 24-hour period has expired."); emit chatChanged();
             }
         }
@@ -399,6 +430,7 @@ LocalChannel::LocalChannel(VoiceSession& session, QString storageFile, std::opti
         if (removedImage) { ++imageRevision_; emit imagesChanged(); }
     });
     maintenanceTimer_.start();
+    connect(&teamSpeakTimer_, &QTimer::timeout, this, &LocalChannel::pollTeamSpeak);
     controlClock_.start();
     controlTimer_.setInterval(2000);
     connect(&controlTimer_, &QTimer::timeout, this, [this] {
@@ -443,6 +475,7 @@ LocalChannel::LocalChannel(VoiceSession& session, QString storageFile, std::opti
         if (previousSupporter != session_.supporterEnabled()) {
             previousSupporter = session_.supporterEnabled();
             for (auto* socket : peers_.keys()) sendChatKey(socket);
+            if (!service_) publishPrivateContacts();
             emit stateChanged();
         }
         if (!service_ && ready() && hosting()) syncOwnedChannels();
@@ -464,9 +497,11 @@ LocalChannel::LocalChannel(VoiceSession& session, QString storageFile, std::opti
     if (ready()) status_ = tr("Ready for local channels.");
     if (migrateName && !persist(approved_, attempts_, requestsAllowed_, endpointPins_, control_, security_))
         throw std::runtime_error(status_.toStdString());
+    if (newChannel && !migrateName) channelName_ = VoiceSession::suggestedName(true);
 }
 
 LocalChannel::~LocalChannel() {
+    disconnectTeamSpeak();
     // Destruction emits signals. Observers must not retrieve a child whose
     // final shared reference is already being released.
     auto children = std::exchange(owned_, {});
@@ -509,7 +544,7 @@ QVariantList LocalChannel::audioSources() const {
 
 QVariantList LocalChannel::chatMembers() const {
     const auto* c = chatClient();
-    return c && c->accepted ? humanMembers(c->members) : QVariantList{};
+    return c && c->accepted && (!c->teamSpeak || chatReady()) ? humanMembers(c->members) : QVariantList{};
 }
 
 QVariantMap LocalChannel::chatBot() const {
@@ -520,10 +555,10 @@ QVariantMap LocalChannel::chatBot() const {
 }
 
 QStringList LocalChannel::chatOnlineIds() const {
-    const auto* c = chatClient(); return c && c->accepted ? c->onlineIds : QStringList{};
+    const auto* c = chatClient(); return c && c->accepted && (!c->teamSpeak || chatReady()) ? c->onlineIds : QStringList{};
 }
 bool LocalChannel::chatPresenceKnown() const {
-    const auto* c = chatClient(); return c && c->accepted && c->presenceKnown;
+    const auto* c = chatClient(); return c && c->accepted && (!c->teamSpeak || chatReady()) && c->presenceKnown;
 }
 
 bool LocalChannel::passwordRequired() const { const auto* c = chatClient(); return c && c->passwordRequired; }
@@ -541,30 +576,41 @@ bool LocalChannel::setClientStatus(Client& c, QString text, bool result) {
 
 void LocalChannel::selectChat(const QString& id) {
     if (chatHostId_ == id) return;
-    if (auto* previous = chatClient()) {
+    if (auto* previous = chatClient(); previous && !previous->teamSpeak) {
         previous->messages = {}; previous->historyRequest.clear(); previous->hasOlder = false; previous->hasNewer = false;
+        previous->privateImages.clear();
     }
     chatHostId_ = id;
     imageQueue_.clear(); downloadingImage_.clear(); downloadedImage_.clear(); imageCache_.clear();
     ++imageRevision_; emit imagesChanged();
     if (auto* c = chatClient()) {
         status_ = c->status;
-        if (c->accepted && c->chatKey.size() == 32) requestHistory(*c, "latest");
+        if (!c->teamSpeak && c->accepted && (!c->privatePeer.isEmpty() || c->chatKey.size() == 32)) requestHistory(*c, "latest");
     }
     emit chatChanged(); emit screenChanged(); emit participantsChanged(); emit stateChanged();
 }
 
 bool LocalChannel::openConnection(const QString& id, const QString& address, int port, bool voice, bool automatic) {
+    if (!ready()) return false;
     if (hostOnly_ || service_) return setStatus(tr("Headless mode has no personal channel participation."), false);
     if (remoteMode()) return setStatus(tr("Leave remote mode before opening a channel."), false);
     const auto canonicalAddress = canonicalEndpointHost(address);
-    if (!ready() || !validId(id) || canonicalAddress.isEmpty() || port < 1 || port > 65535)
+    if (!validId(id) || canonicalAddress.isEmpty() || port < 1 || port > 65535)
         return setStatus(tr("The channel address or device identity is invalid."), false);
     if (!voice) {
         if (auto c = clients_.value(id); c && c->socket && (c->accepted || c->access == "pending" || c->passwordRequired)) {
             selectChat(id); return true;
         }
     } else {
+        if (id == joinedHostId_) {
+            const auto current = clients_.value(id);
+            if (current && current->voice && current->port == port && current->address == canonicalAddress && (current->accepted
+                    || (current->access == "connecting" && current->socket
+                        && current->socket->state() != QAbstractSocket::UnconnectedState))) {
+                selectChat(id);
+                return true;
+            }
+        }
         leaveChannel(!automatic);
         automaticAttempt_ = automatic;
         joinedHostId_ = id;
@@ -601,6 +647,12 @@ bool LocalChannel::openChat(const QString& id, const QString& address, int port)
 }
 
 bool LocalChannel::openSavedChat(const QString& id) {
+    if (auto c = clients_.value(id); c && c->teamSpeak) { selectChat(id); return true; }
+    if (savedChannels_.value(id).toObject().value("protocol") == "teamspeak") return joinTeamSpeak(id);
+    if (auto c = clients_.value(id); c && !c->privatePeer.isEmpty()) {
+        if (remoteMode() || !privateTransport(c->deviceId)) return false;
+        c->accepted = true; selectChat(id); return true;
+    }
     if (auto c = clients_.value(id)) return openChat(id, c->address, c->port);
     const auto entry = savedChannels_.value(id).toObject();
     const auto host = discovery_.hosts.constFind(id);
@@ -621,6 +673,10 @@ QPair<QString, int> LocalChannel::channelEndpoint(const QString& id) const {
 bool LocalChannel::closeChat(const QString& id) {
     auto c = clients_.value(id);
     if (!c) return false;
+    if (!c->privatePeer.isEmpty()) {
+        if (chatHostId_ == id) selectChat({});
+        emit hostsChanged(); return true;
+    }
     if (id == joinedHostId_) leave();
     c->reconnectWanted = false; closeClient(*c);
     if (chatHostId_ == id) selectChat({});
@@ -661,6 +717,7 @@ bool LocalChannel::syncOwnedChannels() {
             owned_.insert(id, child);
             connect(child.get(), &LocalChannel::stateChanged, this, [this] { emit ownedChannelsChanged(); emit hostsChanged(); });
             connect(child.get(), &LocalChannel::requestsChanged, this, &LocalChannel::requestsChanged);
+            connect(child.get(), &LocalChannel::channelEvent, this, &LocalChannel::channelEvent);
             connect(child.get(), &LocalChannel::screenChanged, this, &LocalChannel::screenChanged);
         }
         child->hostOnly_ = hostOnly_;
@@ -806,6 +863,7 @@ bool LocalChannel::setStatus(QString text, bool result) {
 bool LocalChannel::initialize(bool hostOnly) {
     hostOnly_ = hostOnly_ || hostOnly;
     if (hostOnly_) {
+        if (hostName_.isEmpty() && !configureHost({{"hostName", VoiceSession::suggestedName(true)}})) return false;
         autoJoinTimer_.stop();
         controlTimer_.stop();
         closeControl();
@@ -846,6 +904,7 @@ bool LocalChannel::persist(const QSet<QString>& approved, const QHash<QString, A
     QJsonObject object{{"version", 1}, {"channelName", channelName_}, {"botName", botName_}, {"servicePort", configuredPort_}, {"messageLifetimeDays", messageLifetimeDays_}, {"approved", approvals},
         {"attempts", retries}, {"requestsAllowed", allowed}, {"endpointPins", addresses}, {"control", control}, {"security", security}, {"channels", saved}};
     if (!service_) object.insert("ownedChannels", QJsonArray::fromStringList(ownedIds_));
+    if (!hostName_.isEmpty()) object.insert("hostName", hostName_);
     const auto data = QJsonDocument(object).toJson(QJsonDocument::Compact);
     if (data.size() > 1024 * 1024)
         return setStatus(tr("The local permission store is full."), false);
@@ -992,6 +1051,7 @@ void LocalChannel::checkPassword(QSslSocket* socket, const QJsonObject& message)
 }
 
 bool LocalChannel::submitPassword(Client& c, const QString& password, bool remember) {
+    if (c.teamSpeak) return c.passwordRequired && joinTeamSpeak(c.id, password, remember);
     if (!c.passwordRequired || c.passwordRetryAt > controlClock_.elapsed() || !c.socket || !c.socket->isEncrypted()) return false;
     if (password.isEmpty() || password.toUtf8().size() > 1024 || QString::fromUtf8(password.toUtf8()) != password)
         return setClientStatus(c, tr("Enter a password with at most 1024 UTF-8 bytes."), false);
@@ -1028,15 +1088,21 @@ bool LocalChannel::forgetPassword() {
 QJsonObject LocalChannel::hostConfiguration() const {
     auto approvals = approved_.values(); std::sort(approvals.begin(), approvals.end());
     auto blocked = security_.value("blocked").toObject().keys(); std::sort(blocked.begin(), blocked.end());
-    return {{"channelName", channelName_}, {"botName", botName_}, {"port", configuredPort()},
-        {"messageLifetimeDays", messageLifetimeDays()}, {"requestsAllowed", requestsAllowed()},
+    return {{"hostName", service_ ? service_->hostName_ : hostName_}, {"channelName", channelName_}, {"botName", botName_}, {"port", configuredPort()},
+        {"privateLifetimeDays", privateLifetimeDays()}, {"messageLifetimeDays", messageLifetimeDays()}, {"requestsAllowed", requestsAllowed()},
         {"approvedClients", QJsonArray::fromStringList(approvals)}, {"blockedClients", QJsonArray::fromStringList(blocked)}};
 }
 
 bool LocalChannel::configureHost(const QJsonObject& configuration) {
-    static const QSet<QString> fields{"channelName", "botName", "port", "messageLifetimeDays", "requestsAllowed", "approvedClients", "blockedClients"};
+    static const QSet<QString> fields{"hostName", "channelName", "botName", "port", "messageLifetimeDays", "privateLifetimeDays", "requestsAllowed", "approvedClients", "blockedClients"};
     for (auto it = configuration.begin(); it != configuration.end(); ++it)
-        if (!fields.contains(it.key())) return setStatus(tr("Unknown host setting: %1").arg(it.key()), false);
+        if (!fields.contains(it.key()) || (service_ && (it.key() == "hostName" || it.key() == "privateLifetimeDays")))
+            return setStatus(tr("Unknown host setting: %1").arg(it.key()), false);
+    auto hostName = hostName_;
+    if (configuration.contains("hostName")) {
+        try { hostName = VoiceSession::validatedName(configuration.value("hostName").toString()); }
+        catch (const std::invalid_argument& error) { return setStatus(tr(error.what()), false); }
+    }
     auto name = channelName_;
     auto botName = botName_;
     if (configuration.contains("botName")) {
@@ -1062,6 +1128,13 @@ bool LocalChannel::configureHost(const QJsonObject& configuration) {
         return setStatus(tr("requestsAllowed must be true or false."), false);
     auto approvals = approved_;
     auto security = security_;
+    if (configuration.contains("privateLifetimeDays")) {
+        const auto privateDays = configuration.value("privateLifetimeDays").toInt(-1);
+        if (configuration.value("privateLifetimeDays").toDouble(-1) != privateDays
+            || !ChatHistory::validLifetime(qint64(privateDays) * ChatHistory::lifetime)) return setStatus(tr("Invalid message lifetime."), false);
+        if (privateDays > 30 && !session_.supporterEnabled()) return setStatus(tr("Choose 24 hours, 7 days or 30 days."), false);
+        security.insert("privateLifetimeDays", privateDays);
+    }
     auto blocked = security.value("blocked").toObject();
     for (const auto* field : {"approvedClients", "blockedClients"}) {
         if (!configuration.contains(field)) continue;
@@ -1077,20 +1150,26 @@ bool LocalChannel::configureHost(const QJsonObject& configuration) {
     }
     security.insert("blocked", blocked);
     if (service_ && configuration.contains("port")) return setStatus(tr("All own channels use the device's shared port."), false);
+    const auto previousHostName = hostName_;
     const auto previousName = channelName_;
     const auto previousBotName = botName_;
     const auto previousPort = configuredPort_;
     const auto previousDays = messageLifetimeDays_;
-    channelName_ = name; botName_ = botName; configuredPort_ = port; messageLifetimeDays_ = days;
+    hostName_ = hostName; channelName_ = name; botName_ = botName; configuredPort_ = port; messageLifetimeDays_ = days;
     if (!persist(approvals, attempts_, configuration.value("requestsAllowed").toBool(requestsAllowed_), endpointPins_, control_, security)) {
-        channelName_ = previousName; botName_ = previousBotName; configuredPort_ = previousPort; messageLifetimeDays_ = previousDays;
+        hostName_ = previousHostName; channelName_ = previousName; botName_ = previousBotName; configuredPort_ = previousPort; messageLifetimeDays_ = previousDays;
         emit stateChanged(); return false;
     }
+    if (configuration.contains("privateLifetimeDays")) publishPrivateContacts();
     for (const auto& entry : configuration.value("blockedClients").toArray()) disconnectMember(entry.toString(), "blocked");
     for (const auto& entry : configuration.value("approvedClients").toArray())
         if (!blocked.contains(entry.toString())) applyDecision(entry.toString(), true);
     if (days != previousDays) for (auto* socket : peers_.keys()) sendChatKey(socket);
     if (hosting()) { discovery_.announce(); broadcastRoster(); }
+    if (hostName_ != previousHostName) {
+        for (const auto& child : owned_) if (child->hosting()) child->broadcastRoster();
+        emit hostsChanged();
+    }
     return true;
 }
 
@@ -1112,7 +1191,7 @@ bool LocalChannel::startHost() { return listen(QHostAddress::Any, quint16(config
 
 bool LocalChannel::startService(const QHostAddress& address, quint16 port) {
     if (service_) return service_->startService(address, port);
-    if (!ready()) return setStatus(tr("Device identity is not ready yet."), false);
+    if (!ready()) return false;
     if (server_.isListening()) return true;
     server_.setSslConfiguration(identity_->configuration());
     server_.setHandshakeTimeout(5000);
@@ -1124,6 +1203,8 @@ bool LocalChannel::startService(const QHostAddress& address, quint16 port) {
 
 bool LocalChannel::listen(const QHostAddress& address, quint16 port) {
     if (hosting()) return true;
+    if (!QFile::exists(storageFile_) && !persist(approved_, attempts_, requestsAllowed_, endpointPins_, control_, security_))
+        return false;
     if (!startService(address, port)) return false;
     try {
         history_ = std::make_unique<ChatHistory>(storageFile_ + ".chat", *identity_, clock_());
@@ -1187,12 +1268,55 @@ QVariantList LocalChannel::availableHosts() const {
     return result;
 }
 
+QStringList LocalChannel::channelAddresses(const QString& hostId) const {
+    QStringList result;
+    const auto append = [&](const QString& address, quint16 port) {
+        if (address.isEmpty() || !port) return;
+        const auto endpoint = (address.contains(':') ? '[' + address + ']' : address)
+            + ':' + QString::number(port);
+        if (!result.contains(endpoint)) result.append(endpoint);
+    };
+    if (!remoteMode()) {
+        if (const auto* owner = ownChannel(hostId)) {
+            const auto* service = owner->service_ ? owner->service_ : owner;
+            if (!service->server_.isListening()) return result;
+            const auto bound = service->server_.serverAddress();
+            if (targetAddress(bound)) append(bound.toString(), service->port());
+            else for (const auto& interface : QNetworkInterface::allInterfaces()) {
+                if (!interface.flags().testFlag(QNetworkInterface::IsUp)
+                    || !interface.flags().testFlag(QNetworkInterface::IsRunning)
+                    || interface.flags().testFlag(QNetworkInterface::IsLoopBack)) continue;
+                for (const auto& entry : interface.addressEntries()) {
+                    const auto ip = entry.ip();
+                    if (!targetAddress(ip) || ip.isLoopback() || ip.isLinkLocal()
+                        || (bound == QHostAddress::AnyIPv4 && ip.protocol() != QAbstractSocket::IPv4Protocol)
+                        || (bound == QHostAddress::AnyIPv6 && ip.protocol() != QAbstractSocket::IPv6Protocol)) continue;
+                    append(ip.toString(), service->port());
+                }
+            }
+            result.sort();
+            return result;
+        }
+    }
+    const auto entries = remoteMode() ? remoteView_.value("channels").toList() : savedChannels();
+    for (const auto& value : entries) {
+        const auto entry = value.toMap();
+        if (entry.value("id").toString() != hostId) continue;
+        const auto endpoint = remoteMode() && entry.value("owned").toBool()
+            ? control_.value("target").toObject().toVariantMap() : entry;
+        append(endpoint.value("address").toString(), quint16(endpoint.value("port").toUInt()));
+        break;
+    }
+    return result;
+}
+
 QVariantList LocalChannel::savedChannels() const {
     auto entries = savedChannels_;
     const auto addOwn = [&entries](const LocalChannel& channel) {
         auto own = entries.value(channel.channelId()).toObject();
         own.insert("name", channel.channelName_); own.insert("address", "127.0.0.1"); own.insert("port", channel.port());
         own.insert("deviceId", channel.ownId()); own.insert("owned", true); own.insert("hosting", channel.hosting());
+        own.insert("ownerName", channel.hostDisplayName());
         if (!own.contains("autoJoin")) own.insert("autoJoin", false);
         if (!own.contains("lastJoined")) own.insert("lastJoined", 0);
         entries.insert(channel.channelId(), own);
@@ -1200,7 +1324,7 @@ QVariantList LocalChannel::savedChannels() const {
     if (hosting()) addOwn(*this);
     for (const auto& child : owned_) addOwn(*child);
     for (const auto& c : clients_) {
-        if (entries.contains(c->id) || c->access == "blocked") continue;
+        if (!c->privatePeer.isEmpty() || entries.contains(c->id) || c->access == "blocked") continue;
         const auto name = discovery_.hosts.contains(c->id) ? discovery_.hosts.value(c->id).name : c->name;
         entries.insert(c->id, QJsonObject{{"name", name.isEmpty() ? tr("Channel") : name},
             {"address", c->address}, {"port", c->port}, {"deviceId", c->deviceId}, {"autoJoin", false}, {"lastJoined", 0}});
@@ -1229,18 +1353,30 @@ QVariantList LocalChannel::savedChannels() const {
             return left.value("lastJoined").toLongLong() > right.value("lastJoined").toLongLong();
         return left.value("id").toString() < right.value("id").toString();
     });
+    for (const auto& value : privateChats()) {
+        const auto entry = value.toMap();
+        if (entry.value("hasMessages").toBool()) result.append(entry);
+    }
     return result;
 }
 
-bool LocalChannel::rememberChannel(Client& c, const QString& name) {
-    if (!c.accepted || !displayName(name)) return false;
+bool LocalChannel::rememberChannel(Client& c, const QJsonObject& roster) {
     auto next = savedChannels_;
     auto entry = next.value(c.id).toObject();
-    entry.insert("name", name); entry.insert("address", c.address); entry.insert("port", c.port); entry.insert("deviceId", c.deviceId);
+    entry.insert("name", roster.value("name")); entry.insert("address", c.address); entry.insert("port", c.port); entry.insert("deviceId", c.deviceId);
     if (!entry.contains("autoJoin")) entry.insert("autoJoin", false);
     if (!entry.contains("lastJoined")) entry.insert("lastJoined", clock_());
-    if (next.value(c.id).toObject() == entry) return true;
+    const bool ownerChanged = roster.contains("ownerName") && entry.value("ownerName") != roster.value("ownerName");
+    if (next.value(c.id).toObject() == entry && !ownerChanged) return true;
     next.insert(c.id, entry);
+    if (ownerChanged) {
+        for (auto it = next.begin(); it != next.end(); ++it) {
+            auto saved = it.value().toObject();
+            if (saved.value("deviceId").toString(it.key()) != c.deviceId) continue;
+            saved.insert("ownerName", roster.value("ownerName"));
+            it.value() = saved;
+        }
+    }
     return persist(approved_, attempts_, requestsAllowed_, endpointPins_, control_, security_, &next);
 }
 
@@ -1253,6 +1389,20 @@ bool LocalChannel::setAutoJoin(const QString& id, bool enabled) {
 }
 
 bool LocalChannel::removeChannel(const QString& id) {
+    if (savedChannels_.value(id).toObject().value("protocol") == "teamspeak") {
+        const auto device = savedChannels_.value(id).toObject().value("deviceId").toString();
+        auto next = savedChannels_;
+        for (auto it = next.begin(); it != next.end();)
+            if (it.value().toObject().value("deviceId") == device) it = next.erase(it);
+            else ++it;
+        if (!persist(approved_, attempts_, requestsAllowed_, endpointPins_, control_, security_, &next)) return false;
+        if (teamSpeak_ && teamSpeak_->id == device) leave();
+        for (const auto& key : clients_.keys()) if (clients_.value(key)->deviceId == device) {
+            if (chatHostId_ == key) selectChat({});
+            clients_.remove(key);
+        }
+        emit hostsChanged(); return true;
+    }
     if (!savedChannels_.contains(id) && !clients_.contains(id)) return false;
     auto next = savedChannels_; next.remove(id);
     if (!persist(approved_, attempts_, requestsAllowed_, endpointPins_, control_, security_, &next)) return false;
@@ -1263,6 +1413,8 @@ bool LocalChannel::removeChannel(const QString& id) {
 }
 
 bool LocalChannel::joinSaved(const QString& id) {
+    if (savedChannels_.value(id).toObject().value("protocol") == "teamspeak") return joinTeamSpeak(id);
+    if (auto c = clients_.value(id); c && !c->privatePeer.isEmpty()) return openSavedChat(id);
     if (const auto* owner = ownChannel(id))
         return owner->hosting() ? join(id, "127.0.0.1", port()) : setStatus(tr("Channel unavailable"), false);
     if (!savedChannels_.contains(id)) {
@@ -1274,15 +1426,16 @@ bool LocalChannel::joinSaved(const QString& id) {
 }
 
 void LocalChannel::tryAutoJoin() {
-    if (service_) return;
+    if (service_ || teamSpeak_) return;
     if (hostOnly_ || !ready() || (clients_.contains(joinedHostId_) && clients_.value(joinedHostId_)->socket) || joined() || (!automaticAttempt_ && !joinedHostId_.isEmpty()) || remoteMode()) return;
     for (const auto& value : savedChannels()) {
         const auto entry = value.toMap(); const auto id = entry.value("id").toString();
         if (!entry.value("autoJoin").toBool() || pausedAutoJoin_.contains(id) || triedAutoJoin_.contains(id)) continue;
         triedAutoJoin_.insert(id);
         const auto [address, port] = channelEndpoint(id);
-        if (!beginJoin(id, address, port, true))
-            QTimer::singleShot(0, this, &LocalChannel::tryAutoJoin);
+        const bool started = entry.value("protocol") == "teamspeak" ? joinTeamSpeak(id) : beginJoin(id, address, port, true);
+        if (entry.value("protocol") == "teamspeak") automaticAttempt_ = started;
+        if (!started) QTimer::singleShot(0, this, &LocalChannel::tryAutoJoin);
         return;
     }
     if (automaticAttempt_) leaveChannel(false);
@@ -1459,6 +1612,7 @@ void LocalChannel::acceptPeer(QSslSocket* socket) {
     } else writeMessage(socket, {{"type", "join"}, {"result", "accepted"}, {"adaptiveAudio", peers_[socket].adaptiveAudio}, {"capabilities", capabilityAdvertisement()}});
     if (wasPending) emit requestsChanged();
     if (!controller) {
+        rememberPrivatePeer(socket, true);
         sendChatKey(socket); broadcastRoster(); startMedia(socket);
         if (!peers_.value(socket).observer && !wasInVoice) publishMembership("joined", id, peers_.value(socket).name);
         else if (peers_.value(socket).observer && wasInVoice) publishMembership("left", id, peers_.value(socket).name);
@@ -1548,7 +1702,8 @@ void LocalChannel::hostMessage(QSslSocket* socket, const QJsonObject& message) {
         if (!peers_.contains(socket)) return;
         peers_[socket].pending = true;
         writeMessage(socket, {{"type", "control"}, {"result", "pending"}});
-        emit requestsChanged(); return;
+        emit requestsChanged();
+        emit channelEvent("request"); return;
     }
     if (peers_[socket].controller) {
         if (type == "controlPing" && peers_[socket].pending) { writeMessage(socket, {{"type", "controlWait"}}); return; }
@@ -1599,6 +1754,7 @@ void LocalChannel::hostMessage(QSslSocket* socket, const QJsonObject& message) {
             || (message.contains("remoteOffers") && !message.value("remoteOffers").isBool())
             || !parseCapabilities(message, &peers_[socket].capabilities)) { socket->abort(); return; }
         peers_[socket].capabilitiesAdvertised = message.contains("capabilities");
+        peers_[socket].audioTier = peers_[socket].bestAudioTier();
         peers_[socket].adaptiveAudio = message.value("adaptiveAudio").toBool()
             && (!peers_[socket].capabilitiesAdvertised || peers_[socket].capabilities.contains("adaptive-audio"));
         const auto advertisedChannel = message.value("channel");
@@ -1614,6 +1770,7 @@ void LocalChannel::hostMessage(QSslSocket* socket, const QJsonObject& message) {
         peers_[socket].available = message.value("available").toBool();
         peers_[socket].muted = message.value("muted").toBool();
         peers_[socket].deafened = message.value("deafened").toBool();
+        peers_[socket].language = message.value("language").toString();
         peers_[socket].avatar = message.value("avatarId").toString(message.value("avatar").toString("mossling"));
         peers_[socket].address = socket->peerAddress().toString();
         peers_[socket].channel = advertisedChannel.toString();
@@ -1657,8 +1814,12 @@ void LocalChannel::hostMessage(QSslSocket* socket, const QJsonObject& message) {
         peers_[socket].available = message.value("available").toBool();
         peers_[socket].muted = message.value("muted").toBool();
         peers_[socket].deafened = message.value("deafened").toBool();
+        peers_[socket].language = message.value("language").toString();
         peers_[socket].avatar = message.value("avatarId").toString(message.value("avatar").toString("mossling"));
+        rememberPrivatePeer(socket);
         broadcastRoster();
+    } else if (type == "privateChat" && peers_[socket].capabilities.contains("private-chat")) {
+        hostPrivate(socket, message.value("payload").toObject());
     } else if (type == "chat") {
         hostChat(socket, message);
     } else if (type == "audio") {
@@ -1677,7 +1838,7 @@ void LocalChannel::startMedia(QSslSocket* socket) {
     const auto guard = QPointer<QSslSocket>(socket);
     connect(media.get(), &squad::MediaTransport::signaling, this, [this, guard](QJsonObject message) {
         if (!guard || !peers_.value(guard).joined) return;
-        if (message.value("kind") == "frame" && queuedBytes(guard) > 32768) return;
+        if (message.value("kind") == "frame" && queuedBytes(guard) > maximumQueuedAudio) return;
         message.insert("type", "media"); writeMessage(guard, message);
     });
     connect(media.get(), &squad::MediaTransport::audio, this, [this, guard](const QString& source, const QByteArray& packet, int missing) {
@@ -1699,7 +1860,7 @@ void LocalChannel::startMedia(Client& client) {
     connect(media.get(), &squad::MediaTransport::signaling, this, [this, id, guard](QJsonObject message) {
         const auto c = clients_.value(id);
         if (!guard || !c || c->socket != guard || !c->accepted) return;
-        if (message.value("kind") == "frame" && queuedBytes(guard) > 32768) return;
+        if (message.value("kind") == "frame" && queuedBytes(guard) > maximumQueuedAudio) return;
         message.insert("type", "media"); writeMessage(guard, message);
     });
     connect(media.get(), &squad::MediaTransport::audio, this, [this, id, guard](const QString& source, const QByteArray& packet, int missing) {
@@ -1736,8 +1897,8 @@ void LocalChannel::sampleAudioLink(QSslSocket* socket, int condition) {
     peer.badAudioSamples = condition < 0 ? peer.badAudioSamples + 1 : 0;
     peer.goodAudioSamples = condition > 0 ? peer.goodAudioSamples + 1 : 0;
     const auto previous = peer.audioTier;
-    if (peer.badAudioSamples >= 2) { peer.audioTier = std::min(3, peer.audioTier + 1); peer.badAudioSamples = 0; }
-    if (peer.goodAudioSamples >= 10) { peer.audioTier = std::max(0, peer.audioTier - 1); peer.goodAudioSamples = 0; }
+    if (peer.badAudioSamples >= 2) { peer.audioTier = std::min(int(audioBitrates.size()) - 1, peer.audioTier + 1); peer.badAudioSamples = 0; }
+    if (peer.goodAudioSamples >= 10) { peer.audioTier = std::max(peer.bestAudioTier(), peer.audioTier - 1); peer.goodAudioSamples = 0; }
     qCDebug(mediaLog) << "audio quality condition" << condition << "good" << peer.goodAudioSamples
                      << "bad" << peer.badAudioSamples << "tier" << peer.audioTier;
     if (peer.audioTier != previous)
@@ -1748,16 +1909,16 @@ void LocalChannel::relayAudio(QSslSocket* socket, const QByteArray& packet, bool
     const auto eligible = [this, screenAudio](const Peer& peer) {
         return peer.joined && !peer.controller && (screenAudio ? receivesScreenAudio(peer) : !peer.observer);
     };
-    std::array<bool, 4> needed{};
+    std::array<bool, audioBitrates.size()> needed{};
     const auto receivers = peers_.keys();
     for (auto* other : receivers) {
         const auto& peer = peers_[other];
         if (other != socket && eligible(peer)) needed[size_t(peer.audioTier)] = true;
     }
-    std::array<QByteArray, 4> packets; packets[0] = packet;
+    std::array<QByteArray, audioBitrates.size()> packets; packets[0] = packet;
     auto& relay = socket ? peers_[socket].relay : musicRelay_;
     const auto senderId = socket ? peers_[socket].id : musicId();
-    if (needed[1] || needed[2] || needed[3]) {
+    if (std::any_of(needed.begin() + 1, needed.end(), [](bool lower) { return lower; })) {
         try {
             if (!relay) relay = std::make_shared<Relay>();
             packets = relay->packets(packet, needed, missing);
@@ -1765,7 +1926,7 @@ void LocalChannel::relayAudio(QSslSocket* socket, const QByteArray& packet, bool
             setStatus(tr(error.what()), false); if (socket) socket->abort(); return;
         }
     } else relay.reset();
-    std::array<QJsonObject, 4> payloads;
+    std::array<QJsonObject, audioBitrates.size()> payloads;
     for (auto* other : receivers) {
         if (!peers_.contains(other)) continue;
         const auto& peer = peers_[other];
@@ -1778,7 +1939,7 @@ void LocalChannel::relayAudio(QSslSocket* socket, const QByteArray& packet, bool
         }
         // Bound new audio behind a congested TCP connection. Text still uses the
         // reliable stream; old voice must not grow an unbounded playback queue.
-        if (peer.adaptiveAudio && queuedBytes(other) > 32768) { sampleAudioLink(other, -1); continue; }
+        if (peer.adaptiveAudio && queuedBytes(other) > maximumQueuedAudio) { sampleAudioLink(other, -1); continue; }
         auto& payload = payloads[size_t(peer.audioTier)];
         if (payload.isEmpty()) payload = {{"type", screenAudio ? "screenAudio" : "audio"}, {"sender", senderId},
             {"data", QString::fromLatin1(packets[size_t(peer.audioTier)].toBase64())}, {"bitrate", audioBitrates[size_t(peer.audioTier)]}};
@@ -1829,6 +1990,7 @@ void LocalChannel::admitPeer(QSslSocket* socket) {
     if (!peers_.contains(socket)) return;
     peers_[socket].pending = true;
     emit requestsChanged();
+    emit channelEvent("request");
 }
 
 bool LocalChannel::decide(const QString& id, bool allow) {
@@ -1855,6 +2017,7 @@ void LocalChannel::endMembership(const Peer& peer) {
     if (peer.pending) emit requestsChanged();
     if (peer.joined && !peer.controller) {
         closeViewers(peer.id);
+        publishPrivateContacts(peer.id);
         rotateChatKey(); broadcastRoster();
         if (!peer.observer) publishMembership("left", peer.id, peer.name);
     }
@@ -1890,7 +2053,7 @@ bool LocalChannel::disconnectMember(const QString& id, const QString& reason) {
             {"retryMs", std::max<qint64>(0, attempts_.value(id).next - clock_())}});
         finishPeer(socket);
     }
-    if (member) rotateChatKey();
+    if (member) { rotateChatKey(); publishPrivateContacts(id); }
     if (member && !voiceName.isEmpty() && (reason == "kicked" || reason == "blocked"))
         pendingDepartureReasons_.insert(id, reason == "kicked" ? QStringLiteral("kicked") : QStringLiteral("banned"));
     broadcastRoster(); emit requestsChanged();
@@ -1934,7 +2097,7 @@ QVariantList LocalChannel::hostParticipants() const {
 QVariantList LocalChannel::hostClients() const {
     QVariantList result;
     for (const auto& peer : peers_) if (peer.joined && !peer.controller)
-        result.append(QVariantMap{{"id", peer.id}, {"name", peer.name}, {"available", peer.available}, {"muted", peer.muted},
+        result.append(QVariantMap{{"id", peer.id}, {"name", peer.name}, {"language", peer.language}, {"available", peer.available}, {"muted", peer.muted},
             {"deafened", peer.deafened}, {"avatar", VoiceSession::avatarFallback(peer.avatar)}, {"avatarId", peer.avatar}, {"sleeping", peer.sleeping}, {"voice", !peer.observer}});
     std::sort(result.begin(), result.end(), [](const QVariant& a, const QVariant& b) {
         return a.toMap().value("id").toString() < b.toMap().value("id").toString();
@@ -1968,6 +2131,7 @@ void LocalChannel::broadcastRoster() {
                 {"avatar", member.value("avatar").toString()}, {"avatarId", member.value("avatarId").toString()}});
         }
         QJsonObject roster{{"type", "roster"}, {"host", channelId()}, {"name", channelName_}, {"members", members}, {"online", online}, {"profiles", profiles}, {"screen", screenSharing_}, {"screenAudio", screenAudio_}};
+        roster.insert("ownerName", hostDisplayName());
         if (!departures.isEmpty()) roster.insert("departures", departures);
         QStringList sources;
         for (const auto& member : members) sources.append(member.toObject().value("id").toString());
@@ -2009,6 +2173,9 @@ void LocalChannel::finishDirect() {
 bool LocalChannel::accessAddress(const QString& endpoint, AddressAction action) {
     if (!ready() || directBusy()) return setStatus(tr("Device access is busy or not ready."), false);
     auto text = endpoint.trimmed();
+    const bool mayConnectTeamSpeak = (action == AddressAction::Browse || action == AddressAction::Join)
+        && !hostOnly_ && !remoteMode();
+    if (mayConnectTeamSpeak && text.startsWith("ts3://")) return addTeamSpeak(text);
     QString addressText = text, portText;
     bool explicitPort = false, bracketed = false;
     if (text.startsWith('[')) {
@@ -2039,6 +2206,15 @@ bool LocalChannel::accessAddress(const QString& endpoint, AddressAction action) 
     directBuffer_.clear();
     socket->setReadBufferSize(2 * maximumFrame);
     socket->setSslConfiguration(identity_->configuration());
+    const auto tryTeamSpeak = [this, socket, mayConnectTeamSpeak, expected, addressText, port, explicitPort] {
+        // Never turn a rejected or previously pinned native identity into another protocol.
+        if (!mayConnectTeamSpeak || !expected.isEmpty() || socket->property("squadTlsSeen").toBool()) return false;
+        const auto endpoint = (addressText.contains(':') ? '[' + addressText + ']' : addressText)
+            + ':' + QString::number(explicitPort ? port : 9987);
+        finishDirect();
+        addTeamSpeak(endpoint);
+        return true;
+    };
     const auto identityMatches = [socket, expected] {
         const auto id = TlsIdentity::peerId(socket->peerCertificate());
         return validId(id) && (expected.isEmpty() || id == expected);
@@ -2098,7 +2274,7 @@ bool LocalChannel::accessAddress(const QString& endpoint, AddressAction action) 
         if (direct_ == socket) directBuffer_ = std::move(buffer);
     });
     const bool preferIpv4 = QHostAddress(addressText).isNull();
-    connect(socket, &QSslSocket::errorOccurred, this, [this, socket, addressText, port, ipv4Attempt = preferIpv4](QAbstractSocket::SocketError error) mutable {
+    connect(socket, &QSslSocket::errorOccurred, this, [this, socket, addressText, port, tryTeamSpeak, ipv4Attempt = preferIpv4](QAbstractSocket::SocketError error) mutable {
         if (direct_ != socket) return;
         if (ipv4Attempt && addressConnectionFailure(error, socket)) {
             ipv4Attempt = false;
@@ -2110,16 +2286,19 @@ bool LocalChannel::accessAddress(const QString& endpoint, AddressAction action) 
             });
             return;
         }
+        if (tryTeamSpeak()) return;
         const auto reason = socket->errorString();
         finishDirect(); setStatus(tr("Device access failed: %1").arg(reason), false);
     });
-    connect(socket, &QSslSocket::disconnected, this, [this, socket] {
+    connect(socket, &QSslSocket::disconnected, this, [this, socket, tryTeamSpeak] {
         if (direct_ != socket) return;
         if (socket->property("squadIpv6Retry").toBool()) return;
+        if (tryTeamSpeak()) return;
         finishDirect(); setStatus(tr("Device access closed without a valid response."), false);
     });
-    QTimer::singleShot(5000, socket, [this, socket] {
+    QTimer::singleShot(5000, socket, [this, socket, tryTeamSpeak] {
         if (direct_ != socket) return;
+        if (tryTeamSpeak()) return;
         finishDirect(); setStatus(tr("Device was not reachable in time. Check the address, port, and firewall."), false);
     });
     setStatus(tr("Checking device identity at %1.").arg(key));
@@ -2159,9 +2338,9 @@ void LocalChannel::connectClient(Client& c) {
             c.reconnectWanted = false; socket->abort(); setClientStatus(c, tr("The channel identity does not match."), false); return;
         }
         QJsonObject hello{{"type", "hello"}, {"version", 1}, {"targetChannel", c.id}, {"name", session_.userName()},
-            {"available", session_.available()}, {"muted", !session_.transmissionAllowed() || !session_.inputReady()},
+            {"available", session_.available()}, {"muted", session_.muted() || !session_.available() || !session_.inputReady()},
             {"deafened", session_.deafened() || !session_.outputReady()}, {"avatar", VoiceSession::avatarFallback(session_.avatar())},
-            {"avatarId", session_.avatar()}, {"observer", !c.voice}, {"adaptiveAudio", true}, {"remoteOffers", true}, {"capabilities", capabilityAdvertisement()}};
+            {"avatarId", session_.avatar()}, {"language", session_.language()}, {"observer", !c.voice}, {"adaptiveAudio", true}, {"remoteOffers", true}, {"capabilities", capabilityAdvertisement()}};
         if (hosting()) { hello.insert("channel", channelName_); hello.insert("port", int(server_.serverPort())); }
         writeMessage(socket, hello);
     });
@@ -2211,6 +2390,11 @@ void LocalChannel::connectClient(Client& c) {
 }
 
 void LocalChannel::closeClient(Client& c) {
+    if (c.teamSpeak) { c.accepted = false; c.voice = false; c.reconnectWanted = false; return; }
+    if (!c.privatePeer.isEmpty()) {
+        c.accepted = false; c.socket = nullptr; c.messages = {}; c.privateImages.clear(); c.historyRequest.clear();
+        emit chatChanged(); return;
+    }
     c.passwordAutoRetry = false; c.media.reset();
     closeScreen(c); c.screenAvailable = false;
     if (c.socket) {
@@ -2235,6 +2419,7 @@ bool LocalChannel::leaveChannel(bool pauseAutoJoin) {
     if (pauseAutoJoin && !joinedHostId_.isEmpty()) pausedAutoJoin_.insert(joinedHostId_);
     automaticAttempt_ = false;
     finishDirect();
+    disconnectTeamSpeak();
     const auto id = std::exchange(joinedHostId_, {});
     if (auto c = clients_.value(id)) {
         c->voice = false;
@@ -2246,6 +2431,12 @@ bool LocalChannel::leaveChannel(bool pauseAutoJoin) {
 }
 
 void LocalChannel::clientMessage(Client& c, const QJsonObject& message) {
+    if (message.value("type") == "privateChat") {
+        if (!c.accepted || !c.capabilities.contains("private-chat") || !clientPrivate(c, message)) {
+            if (c.socket) c.socket->abort();
+        }
+        return;
+    }
     c.reply = controlClock_.elapsed();
     const auto type = message.value("type").toString();
     if (c.accepted && unknownMessageType(type)) return;
@@ -2306,8 +2497,11 @@ void LocalChannel::clientMessage(Client& c, const QJsonObject& message) {
             c.pending = {}; c.pendingImage.clear(); emit chatChanged();
         }
         if (c.accepted) {
+            if (c.capabilities.contains("private-chat")) writeMessage(c.socket, {{"type", "privateChat"}, {"payload", QJsonObject{{"kind", "list"}}}});
             c.adaptiveAudio = message.value("adaptiveAudio").toBool()
-                && (!c.capabilitiesAdvertised || c.capabilities.contains("adaptive-audio")); c.audioBitrate = 32;
+                && (!c.capabilitiesAdvertised || c.capabilities.contains("adaptive-audio"));
+            c.audioBitrate = c.capabilities.contains("audio-stereo") ? audioBitrates[0]
+                : c.capabilities.contains("audio-64") ? audioBitrates[1] : audioBitrates[2];
             if (c.voice) startMedia(c);
             if (c.voice) automaticAttempt_ = false;
             auto next = savedChannels_;
@@ -2350,7 +2544,8 @@ void LocalChannel::clientMessage(Client& c, const QJsonObject& message) {
     } else if ((type == "chatKey" || type == "chat") && c.accepted) {
         clientChat(c, message);
     } else if (type == "roster" && c.accepted) {
-        if (message.value("host").toString() != c.id || !message.value("members").isArray()) {
+        if (message.value("host").toString() != c.id || !message.value("members").isArray()
+            || (message.contains("ownerName") && message.value("ownerName") != QJsonValue("") && !displayName(message.value("ownerName")))) {
             if (c.socket) c.socket->abort();
             return;
         }
@@ -2421,7 +2616,7 @@ void LocalChannel::clientMessage(Client& c, const QJsonObject& message) {
             c.media->retainSources(sources);
         }
         emit hostsChanged();
-        if (displayName(message.value("name"))) rememberChannel(c, message.value("name").toString());
+        if (displayName(message.value("name"))) rememberChannel(c, message);
         if (discovery_.hosts.contains(c.id) && displayName(message.value("name"))) {
             discovery_.hosts[c.id].name = message.value("name").toString(); emit hostsChanged();
         }
@@ -2454,17 +2649,20 @@ void LocalChannel::clientMessage(Client& c, const QJsonObject& message) {
 }
 
 void LocalChannel::sendPresence() {
+    if (teamSpeak_ && teamSpeak_->connected) teamSpeakCommand({{"action", "presence"}, {"name", session_.userName()},
+        {"inputMuted", session_.muted() || !session_.available() || !session_.inputReady()}, {"outputMuted", session_.deafened() || !session_.outputReady()}});
     for (const auto& c : clients_) {
-        if (!c->accepted) continue;
+        if (!c->accepted || c->teamSpeak) continue;
         writeMessage(c->socket, {{"type", "presence"}, {"name", session_.userName()},
-            {"available", session_.available()}, {"muted", !c->voice || !session_.transmissionAllowed() || !session_.inputReady()},
-            {"deafened", session_.deafened() || !session_.outputReady()}, {"avatar", VoiceSession::avatarFallback(session_.avatar())}, {"avatarId", session_.avatar()}});
+            {"available", session_.available()}, {"muted", !c->voice || session_.muted() || !session_.available() || !session_.inputReady()},
+            {"deafened", session_.deafened() || !session_.outputReady()}, {"avatar", VoiceSession::avatarFallback(session_.avatar())}, {"avatarId", session_.avatar()}, {"language", session_.language()}});
     }
 }
 
 bool LocalChannel::sendAudio(const QByteArray& packet) {
     const auto c = clients_.value(joinedHostId_);
     if (remoteMode() || !c || !c->accepted || !c->voice || !session_.transmissionAllowed() || packet.isEmpty() || packet.size() > 8192) return false;
+    if (c->teamSpeak) return teamSpeak_ && teamSpeak_->connected && c->teamSpeakCanSend && ss_ts_audio(teamSpeak_->handle, reinterpret_cast<const uint8_t*>(packet.constData()), size_t(packet.size()));
     if (c->media) return c->media->send(ownId(), packet);
     return writeMessage(c->socket, {{"type", "audio"}, {"data", QString::fromLatin1(packet.toBase64())}});
 }

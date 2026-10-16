@@ -1,6 +1,6 @@
 # Release readiness
 
-Review date: 2026-10-09. Behavior: [specification](specs/voice-chat.md).
+Review date: 2026-10-16. Behavior: [specification](specs/voice-chat.md).
 
 Under U139, the first regular desktop release follows successful automated
 platform and package checks; physical device observations follow the public
@@ -43,9 +43,29 @@ configuration, not certification of every platform or physical setup.
 | Resource and security review | In progress | Complete sustained device/video soak and CPU/RSS/handle measurements, dependency/license review and decoder-hardening review. The release workflow requires a pinned dependency-source asset; local failure-path tests and an independent check of the real CI archive pass. The green `fc4651a` release workflow attached the checked dependency-source archive to its private draft. Image decoding has process isolation and limits, not an OS sandbox. Repeated viewer replacement now retains one active decode and one newest pending frame; the real-TLS slow-codec regression and sanitizer suites pass. Encoding now also waits for receiver demand instead of wasting codec work while all viewers await their previous frame. Preserve encrypted atomic persistence and speech priority; no universal leak-free claim |
 | Supporter sponsorship | In progress | GitHub sign-in, exact-tier yearly eligibility, encrypted cross-product cache, seven-day offline limit, token rotation, contributor exemption and desktop/headless integration are implemented and tested through local HTTPS. The old license-key/device-slot path is removed. The shared OAuth app is registered. The selected tier is still unpublished, with live sign-in and checkout checks remaining before paid publication. See [O-21](specs/voice-chat.md). Free desktop publication is independent |
 | Direct desktop distribution | In progress | The private `2026.10.6` preview at `08abcf3` contains all five desktop packages, verified production-key macOS archive/appcast signatures, checksums, matching dependency sources and the generated Homebrew cask. All seven verification jobs and the complete release workflow pass. Remaining: stable publication and its Homebrew tap entry; physical acceptance above and native Windows 10 execution. macOS packages remain ad-hoc signed; Developer ID/notarization and Windows publisher signing require the corresponding accounts. UTC date version is shared and SemVer-shaped. U125 selects GPL-3.0-only with dependency/media notices retained |
-| Mobile and Store delivery | In progress | Native iPhone/iPad Simulator and Android emulator builds run the shared UI and core contracts. Phone portrait/landscape chat input and rotation pass on iOS and Android. iPad portrait passes, but the current Simulator window mode rejects the native landscape request. Image sanitation uses the approved bounded in-process path on iOS; Android's decoder boundary and minimum version remain undecided. Android's five contract groups and packaged restart pass with independent process-crash checks. The Chinese glyph check fails in the available iOS 26 runtime, also reproduced without Qt on native arm64. Native background hosting, screen capture, permissions and physical input/output still need implementation or device proof. Store setup follows direct distribution and Store builds remain free-only. These results do not establish mobile parity |
+| Mobile and Store delivery | In progress | Native iPhone/iPad Simulator and Android emulator builds run the shared UI and core contracts. The installed iPhone and iPad apps were inspected in native portrait and landscape layouts. iPhone-to-Mac chat, approval, history and iPad identity persistence work. The Simulator keychain identity now has a native creation/reload regression. Microphone capture still fails after permission is granted. The running iPad session reports SoloAmbient with no input route, and Qt reports AudioUnit initialization failure. This blocks mobile voice acceptance. Earlier shared keyboard and Android contracts remain separate from this manual check. Image sanitation uses the approved bounded in-process path on iOS; Android's decoder boundary and minimum version remain undecided. Android's five contract groups and packaged restart pass with independent process-crash checks. The Chinese glyph check fails in the available iOS 26 runtime, also reproduced without Qt on native arm64. Native background hosting, screen capture, permissions and physical input/output still need implementation or device proof. Store setup follows direct distribution and Store builds remain free-only. These results do not establish mobile parity |
 
 Bluetooth audio devices are distinct from Bluetooth-only app networking, which is not implemented. See O-06/O-11 for platform scope. A feature cannot move to the completed table until its stated exit evidence exists; marking more rows `Done` is not a substitute for finishing them.
+
+## TeamSpeak interoperability
+
+Direct TS3 is integrated through the pinned ReSpeak Rust library. The macOS
+public-entrypoint test connected two separate identities to the owner's servers,
+verified private text, decoded Opus audio at the receiver, blocked released
+PTT and observed no sender loopback. Channel text and password handling pass the
+local contracts. Live channel text, private messages and recovery after a test-only
+UDP interruption pass, including preserved mute state and private history.
+The installed macOS UI connects through the address field and renders TS3
+channels. The macOS package passes its dependency check.
+Windows, Linux and mobile TS3 checks remain part of platform qualification.
+
+Not supported: TS3 file transfer, whisper lists, permission administration,
+Speex/CELT channels, identity-file import, server avatars, pokes and server
+management. The current library rejects servers requiring an identity security
+level above 20. Only one TS3 server can be connected at a time. TS3 history is a
+bounded in-session cache, without server history or offline delivery. SquadSpeak
+images, radio hosting, screen sharing and receiver-specific quality negotiation
+do not become TS3 protocol features.
 
 ## Explicitly after the first release
 
@@ -56,6 +76,7 @@ Bluetooth audio devices are distinct from Bluetooth-only app networking, which i
 | User-supplied avatars | Planned | U121; format, transfer, storage and import contract remain deferred |
 | Voice changer and optional speech clarity processing | Planned | U126, SS-167/168, O-24; local, simple controls, audible bypass; no guaranteed studio-quality or voice-identity conversion |
 | Small multiplayer Channel games | Planned | U129, SS-169, O-26; choose the first game after release. Multiplayer Snake and ICQ-era games are inspiration; no game engine or exact catalog is selected |
+| Host-created chat polls | Planned | U170, SS-182, O-29; chat "+", single/multiple choice, editable options, aggregate results and closing. Reuse chat infrastructure. Resolve the remaining lifecycle rules before implementation |
 
 ## Next implementation order
 

@@ -36,14 +36,6 @@
             <translation>atveriet sistēmas konfidencialitātes iestatījumus un atļaujiet SquadSpeak piekļuvi mikrofonam.</translation>
         </message>
         <message>
-            <source>Microphone analysis active. Test audio stays on this computer.</source>
-            <translation>aktivizēta mikrofona analīze. Pārbaudes audio paliek šajā datorā.</translation>
-        </message>
-        <message>
-            <source>Finish the test recording before changing devices.</source>
-            <translation>pabeidziet testa ierakstīšanu pirms ierīču maiņas.</translation>
-        </message>
-        <message>
             <source>The output format is not supported.</source>
             <translation>izvades formāts netiek atbalstīts.</translation>
         </message>
@@ -68,32 +60,12 @@
             <translation>testa signālu nevarēja atskaņot.</translation>
         </message>
         <message>
-            <source>The microphone has provided no data for five seconds. Recording discarded.</source>
-            <translation>mikrofons nav sniedzis datus piecas sekundes. Ieraksts ir atmests.</translation>
-        </message>
-        <message>
-            <source>The microphone was interrupted or changed. Recording discarded.</source>
-            <translation>mikrofons tika pārtraukts vai mainīts. Ieraksts ir atmests.</translation>
-        </message>
-        <message>
-            <source>Cancelled. The incomplete recording was discarded.</source>
-            <translation>atcelts. Nepilnīgais ieraksts tika atmests.</translation>
-        </message>
-        <message>
             <source>No selected microphone is available</source>
             <translation>Nav pieejams neviens atlasītais mikrofons</translation>
         </message>
         <message>
             <source>Allow microphone access in the system dialog.</source>
             <translation>Sistēmas dialoglodziņā atļaujiet piekļuvi mikrofonam.</translation>
-        </message>
-        <message>
-            <source>Microphone capture active for the voice channel.</source>
-            <translation>balss kanālam ir aktivizēta mikrofona uztveršana.</translation>
-        </message>
-        <message>
-            <source>Microphone access was denied. Nothing was saved.</source>
-            <translation>Mikrofona piekļuve tika liegta. Nekas netika saglabāts.</translation>
         </message>
         <message>
             <source>Microphone access is missing. Allow it in System Settings.</source>
@@ -265,97 +237,6 @@
         </message>
     </context>
     <context>
-        <name>AudioRecording</name>
-        <message>
-            <source>Incomplete audio block. Recording discarded.</source>
-            <translation>nepilnīgs audio bloks. Ieraksts ir atmests.</translation>
-        </message>
-        <message>
-            <source>Move about one meter from the microphone. Keep the background sound playing and read the sentence.</source>
-            <translation>pārvietojieties apmēram vienu metru no mikrofona. Turpiniet atskaņot fona skaņu un izlasiet teikumu.</translation>
-        </message>
-        <message>
-            <source>Voice with background sound</source>
-            <translation>Balss ar fona skaņu</translation>
-        </message>
-        <message>
-            <source>The recordings folder could not be created.</source>
-            <translation>ierakstu mapi nevarēja izveidot.</translation>
-        </message>
-        <message>
-            <source>You can stop the background sound now.</source>
-            <translation>Tagad varat apturēt fona skaņu.</translation>
-        </message>
-        <message>
-            <source>Recordings saved</source>
-            <translation>Ieraksti saglabāti</translation>
-        </message>
-        <message>
-            <source>The test recording could not be saved completely.</source>
-            <translation>testa ierakstu nevarēja pilnībā saglabāt.</translation>
-        </message>
-        <message>
-            <source>Keep music off and stay quiet. Start when ready.</source>
-            <translation>Izslēdziet mūziku un klusējiet. Sāciet, kad esat gatavs.</translation>
-        </message>
-        <message>
-            <source>Your voice</source>
-            <translation>Tava balss</translation>
-        </message>
-        <message>
-            <source>Play music or another background sound at a normal volume. Stay quiet while recording.</source>
-            <translation>atskaņojiet mūziku vai citu fona skaņu normālā skaļumā. Ierakstīšanas laikā esiet kluss.</translation>
-        </message>
-        <message>
-            <source>The test recording could not be created.</source>
-            <translation>testa ierakstu nevarēja izveidot.</translation>
-        </message>
-        <message>
-            <source>Background sound</source>
-            <translation>Fona skaņa</translation>
-        </message>
-        <message>
-            <source>The window is open. I can hear the rain outside. One, two, three, four, five.</source>
-            <translation>Logs ir atvērts. Es dzirdu lietus ārā. Viens, divi, trīs, četri, pieci.</translation>
-        </message>
-        <message>
-            <source>This microphone format is not supported for test recordings.</source>
-            <translation>šis mikrofona formāts netiek atbalstīts testa ierakstiem.</translation>
-        </message>
-        <message>
-            <source>Keep the background volume unchanged. Read the sentence, then stop recording.</source>
-            <translation>nemainīt fona skaļumu. Izlasiet teikumu, pēc tam pārtrauciet ierakstīšanu.</translation>
-        </message>
-        <message>
-            <source>Record at least half a second, then try again.</source>
-            <translation>ierakstiet vismaz pussekundi, pēc tam mēģiniet vēlreiz.</translation>
-        </message>
-        <message>
-            <source>Sit at your usual distance. Read the sentence, then stop recording.</source>
-            <translation>Sēdieties savā parastajā attālumā. Izlasiet teikumu, pēc tam pārtrauciet ierakstīšanu.</translation>
-        </message>
-        <message>
-            <source>The recording description could not be saved.</source>
-            <translation>ieraksta aprakstu nevarēja saglabāt.</translation>
-        </message>
-        <message>
-            <source>The WAV file could not be finalized.</source>
-            <translation>WAV failu nevarēja pabeigt.</translation>
-        </message>
-        <message>
-            <source>The WAV header could not be written.</source>
-            <translation>WAV galveni nevarēja ierakstīt.</translation>
-        </message>
-        <message>
-            <source>Voice farther away</source>
-            <translation>balss tālāk</translation>
-        </message>
-        <message>
-            <source>Room sound</source>
-            <translation>Telpas skaņa</translation>
-        </message>
-    </context>
-    <context>
         <name>AudioSettings</name>
         <message>
             <source>Echo cancellation</source>
@@ -406,8 +287,8 @@
             <translation>jūsu atskaņošana</translation>
         </message>
         <message>
-            <source>Clear local key</source>
-            <translation>notīrīt vietējo rācijsaziņas īsinājumtaustiņu</translation>
+            <source>Clear key</source>
+            <translation>Notīrīt taustiņu</translation>
         </message>
         <message>
             <source>Low cut</source>
@@ -428,10 +309,6 @@
         <message>
             <source>Cancel</source>
             <translation>Atcelt</translation>
-        </message>
-        <message>
-            <source>Guided recording</source>
-            <translation>Ieraksts ar vadību</translation>
         </message>
         <message>
             <source>Clipping. Reduce microphone gain.</source>
@@ -466,16 +343,12 @@
             <translation>ierīce ir atvienota</translation>
         </message>
         <message>
-            <source>Local key</source>
-            <translation>lokālais rācijsaziņas īsinājumtaustiņš</translation>
+            <source>PTT key</source>
+            <translation>Runāšanas taustiņš</translation>
         </message>
         <message>
             <source>Voice activation</source>
             <translation>ar balsi aktivizēts mikrofons</translation>
-        </message>
-        <message>
-            <source>Remote PTT key</source>
-            <translation>tālvadības rācijsaziņas īsinājumtaustiņš</translation>
         </message>
         <message>
             <source>Noise reduction</source>
@@ -492,10 +365,6 @@
         <message>
             <source>Microphone gain</source>
             <translation>mikrofona pastiprinājums</translation>
-        </message>
-        <message>
-            <source>Clear remote key</source>
-            <translation>notīrīt attālās rācijsaziņas īsinājumtaustiņus</translation>
         </message>
         <message>
             <source>Not assigned</source>
@@ -521,9 +390,81 @@
             <source>Read bot messages aloud</source>
             <translation>Lasīt bota ziņojumus skaļi</translation>
         </message>
+        <message>
+            <source>Download a high-quality voice for this language in macOS settings.</source>
+            <translation>Lejupielādē augstas kvalitātes balsi šai valodai macOS iestatījumos.</translation>
+        </message>
+        <message>
+            <source>Bot voice</source>
+            <translation>Bota balss</translation>
+        </message>
+        <message>
+            <source>Automatic</source>
+            <translation>Automātiski</translation>
+        </message>
+        <message>
+            <source>Unavailable</source>
+            <translation>nav pieejams</translation>
+        </message>
+        <message>
+            <source>Download voices in your device's Accessibility speech settings.</source>
+            <translation>Lejupielādē balsis ierīces pieejamības runas iestatījumos.</translation>
+        </message>
+        <message>
+            <source>Voice download help</source>
+            <translation>Palīdzība balsu lejupielādei</translation>
+        </message>
+        <message>
+            <source>Strength, not the percentage of echo removed.</source>
+            <translation>Stiprums, nevis noņemtās atbalss procentuālā daļa.</translation>
+        </message>
+        <message>
+            <source>Auto also checks for speech, not just volume.</source>
+            <translation>Automātiskais režīms pārbauda arī runu, ne tikai skaļumu.</translation>
+        </message>
     </context>
     <context>
         <name>Channels</name>
+        <message>
+            <source>Copy address</source>
+            <translation>Kopēt adresi</translation>
+        </message>
+        <message>
+            <source>Messages</source>
+            <translation>Ziņas</translation>
+        </message>
+        <message>
+            <source>Message</source>
+            <translation>Ziņa</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Atvērt</translation>
+        </message>
+        <message>
+            <source>Online</source>
+            <translation>Tiešsaistē</translation>
+        </message>
+        <message>
+            <source>Offline</source>
+            <translation>bezsaistē</translation>
+        </message>
+        <message>
+            <source>No private messages</source>
+            <translation>Nav privātu ziņu</translation>
+        </message>
+        <message>
+            <source>Private messages are unavailable for this contact.</source>
+            <translation>Privātās ziņas šai kontaktpersonai nav pieejamas.</translation>
+        </message>
+        <message>
+            <source>If asked, allow local network access. You can change this in system settings.</source>
+            <translation>Ja tiek prasīts, atļauj piekļuvi vietējam tīklam. To vari mainīt sistēmas iestatījumos.</translation>
+        </message>
+        <message>
+            <source>Retry</source>
+            <translation>Mēģināt vēlreiz</translation>
+        </message>
         <message>
             <source>Updates</source>
             <translation>Atjauninājumi</translation>
@@ -543,6 +484,10 @@
         <message>
             <source>DDNS cannot bypass CGNAT. If your provider shares the public IP, use a private VPN on all participating devices or a publicly reachable server.</source>
             <translation>DDNS nevar apiet CGNAT. Ja jūsu pakalpojumu sniedzējs koplieto publisko IP, izmantojiet privāto VPN visās iesaistītajās ierīcēs vai publiski sasniedzamā serverī.</translation>
+        </message>
+        <message>
+            <source>Remove server</source>
+            <translation>Noņemt serveri</translation>
         </message>
         <message>
             <source>Low</source>
@@ -665,10 +610,6 @@
             <translation>Atskan paziņojuma skaņas</translation>
         </message>
         <message>
-            <source>Lifetime for new messages. Earlier messages keep their expiry.</source>
-            <translation>visu mūžu jauniem ziņojumiem. Iepriekšējiem ziņojumiem tiek saglabāts derīguma termiņš.</translation>
-        </message>
-        <message>
             <source>Enable speakers</source>
             <translation>iespējot skaļruņus</translation>
         </message>
@@ -703,10 +644,6 @@
         <message>
             <source>Allow device</source>
             <translation>Atļaut ierīci</translation>
-        </message>
-        <message>
-            <source>Receive quality: %1 kb/s per voice. Adjusts automatically for this device.</source>
-            <translation>Saņemšanas kvalitāte: %1 kb/s par balsi. Automātiski pielāgojas šai ierīcei.</translation>
         </message>
         <message>
             <source>Stop radio</source>
@@ -1204,6 +1141,42 @@
             <source>Use default music volume</source>
             <translation>Izmantot noklusēto mūzikas skaļumu</translation>
         </message>
+        <message>
+            <source>Show in Dock</source>
+            <translation>Rādīt Dock joslā</translation>
+        </message>
+        <message>
+            <source>App language</source>
+            <translation>Lietotnes valoda</translation>
+        </message>
+        <message>
+            <source>Send in</source>
+            <translation>Sūtīšanas valoda</translation>
+        </message>
+        <message>
+            <source>Hear in</source>
+            <translation>Klausīšanās valoda</translation>
+        </message>
+        <message>
+            <source>Download language models for %1 and %2?</source>
+            <translation>Lejupielādēt %1 un %2 valodu modeļus?</translation>
+        </message>
+        <message>
+            <source>Download</source>
+            <translation>Lejupielādēt</translation>
+        </message>
+        <message>
+            <source>PTT, chat and channel controls. Uses the controlled device's microphone.</source>
+            <translation>PTT, tērzēšanas un kanālu vadīklas. Tiek izmantots vadāmās ierīces mikrofons.</translation>
+        </message>
+        <message>
+            <source>Connect the other device to one of your channels, then allow it here.</source>
+            <translation>Pievieno otru ierīci vienam no saviem kanāliem un pēc tam atļauj to šeit.</translation>
+        </message>
+        <message>
+            <source>On the other device, open Settings &gt; Input &gt; Remote control and allow this device.</source>
+            <translation>Otrā ierīcē atver Iestatījumi &gt; ievade &gt; Tālvadības pults un atļauj šo ierīci.</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1420,7 +1393,396 @@
         </message>
     </context>
     <context>
+        <name>Desktop</name>
+        <message>
+            <source>Open settings at startup.</source>
+            <translation>Atvērt iestatījumus palaišanas laikā.</translation>
+        </message>
+        <message>
+            <source>Alternative file for audio profiles.</source>
+            <translation>Alternatīvs audio profilu fails.</translation>
+        </message>
+        <message>
+            <source>Load the interface without microphone capture and exit after one second.</source>
+            <translation>Ielādēt saskarni bez mikrofona ierakstīšanas un aizvērt pēc vienas sekundes.</translation>
+        </message>
+        <message>
+            <source>Save an image of the app window during the UI test.</source>
+            <translation>Saglabāt lietotnes loga attēlu saskarnes testa laikā.</translation>
+        </message>
+        <message>
+            <source>The window image could not be saved.</source>
+            <translation>Neizdevās saglabāt loga attēlu.</translation>
+        </message>
+        <message>
+            <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
+            <translation>Sistēmas tekne nav pieejama; lietotne paliek atvērta logā.</translation>
+        </message>
+    </context>
+    <context>
+        <name>Headless</name>
+        <message>
+            <source>Host display name.</source>
+            <translation>Resursdatora parādāmais nosaukums.</translation>
+        </message>
+        <message>
+            <source>Command failed.</source>
+            <translation>Komanda neizdevās.</translation>
+        </message>
+        <message>
+            <source>%1 must be an integer.</source>
+            <translation>%1 jābūt veselam skaitlim.</translation>
+        </message>
+        <message>
+            <source>Requests must be on/off or true/false.</source>
+            <translation>Pieprasījumiem jābūt on/off vai true/false.</translation>
+        </message>
+        <message>
+            <source>Unknown host property: %1</source>
+            <translation>Nezināms resursdatora rekvizīts: %1</translation>
+        </message>
+        <message>
+            <source>Run without GUI, microphone capture, or local audio output.</source>
+            <translation>Palaist bez grafiskās saskarnes, mikrofona tveršanas un vietējās audio izvades.</translation>
+        </message>
+        <message>
+            <source>Server storage prefix. Personal/audio/GUI profiles are not loaded.</source>
+            <translation>Servera krātuves prefikss. Personiskie, audio un grafikas profili netiek ielādēti.</translation>
+        </message>
+        <message>
+            <source>Optional private identity file instead of the OS credential store (Linux/macOS). Parent directory must exist and belong to this account.</source>
+            <translation>Neobligāts privātās identitātes fails operētājsistēmas akreditācijas datu krātuves vietā (Linux/macOS). Vecākdirektorijai jāpastāv un tai jāpieder šim kontam.</translation>
+        </message>
+        <message>
+            <source>UTF-8 key=value properties or JSON host preset. Default: application.properties, then config/application.properties beside the app.</source>
+            <translation>UTF-8 key=value rekvizīti vai JSON resursdatora iestatījums. Noklusējums: application.properties, pēc tam config/application.properties blakus lietotnei.</translation>
+        </message>
+        <message>
+            <source>Channel display name.</source>
+            <translation>Kanāla parādāmais nosaukums.</translation>
+        </message>
+        <message>
+            <source>System and radio bot display name.</source>
+            <translation>Sistēmas un radio bota parādāmais nosaukums.</translation>
+        </message>
+        <message>
+            <source>TCP service port (1-65535).</source>
+            <translation>TCP pakalpojuma ports (1-65535).</translation>
+        </message>
+        <message>
+            <source>Headless admission is always on; only 'on' or 'true' is accepted.</source>
+            <translation>Piekļuve režīmā bez grafiskās saskarnes vienmēr ir ieslēgta; atļauts tikai 'on' vai 'true'.</translation>
+        </message>
+        <message>
+            <source>Preapprove a device ID; repeat for several devices. Existing bans remain.</source>
+            <translation>Iepriekš apstiprināt ierīces ID; vairākām ierīcēm atkārtot. Esošie aizliegumi paliek.</translation>
+        </message>
+        <message>
+            <source>Block a device ID; repeat for several devices.</source>
+            <translation>Bloķēt ierīces ID; vairākām ierīcēm atkārtot.</translation>
+        </message>
+        <message>
+            <source>Read a UTF-8 channel password from a file before listening. An empty file removes it.</source>
+            <translation>Pirms klausīšanās nolasīt kanāla paroli no UTF-8 faila. Tukšs fails to noņem.</translation>
+        </message>
+        <message>
+            <source>Channel password. Empty removes it; environment or config avoids process-list exposure.</source>
+            <translation>Kanāla parole. Tukša vērtība to noņem; vide vai konfigurācija neļauj tai parādīties procesu sarakstā.</translation>
+        </message>
+        <message>
+            <source>SquadSpeak headless local channel host</source>
+            <translation>SquadSpeak lokālais kanāla resursdators bez grafiskās saskarnes</translation>
+        </message>
+        <message>
+            <source>Environment variables (SQUADSPEAK_ prefix):</source>
+            <translation>Vides mainīgie (SQUADSPEAK_ prefikss):</translation>
+        </message>
+        <message>
+            <source>Host configuration could not be read or exceeds 1 MiB.</source>
+            <translation>Resursdatora konfigurāciju nevarēja nolasīt vai tā pārsniedz 1 MiB.</translation>
+        </message>
+        <message>
+            <source>Host configuration must be UTF-8.</source>
+            <translation>Resursdatora konfigurācijai jābūt UTF-8.</translation>
+        </message>
+        <message>
+            <source>Host preset must be a JSON object.</source>
+            <translation>Resursdatora iestatījumam jābūt JSON objektam.</translation>
+        </message>
+        <message>
+            <source>Property line %1 must use key=value.</source>
+            <translation>Rekvizītu rindā %1 jāizmanto key=value.</translation>
+        </message>
+        <message>
+            <source>Property line %1: %2</source>
+            <translation>Rekvizītu rinda %1: %2</translation>
+        </message>
+        <message>
+            <source>Standard input has no file descriptor.</source>
+            <translation>Standarta ievadei nav faila deskriptora.</translation>
+        </message>
+        <message>
+            <source>Standard input could not be inspected.</source>
+            <translation>Standarta ievadi nevarēja pārbaudīt.</translation>
+        </message>
+        <message>
+            <source>Could not write the command response: %1</source>
+            <translation>Komandas atbildi nevarēja ierakstīt: %1</translation>
+        </message>
+        <message>
+            <source>Standard input could not be read: %1</source>
+            <translation>Standarta ievadi nevarēja nolasīt: %1</translation>
+        </message>
+        <message>
+            <source>Input line exceeds 65536 bytes.</source>
+            <translation>Ievades rinda pārsniedz 65536 baitus.</translation>
+        </message>
+        <message>
+            <source>Each input line must be a JSON object.</source>
+            <translation>Katrai ievades rindai jābūt JSON objektam.</translation>
+        </message>
+        <message>
+            <source>Input ended before a complete JSON line.</source>
+            <translation>Ievade beidzās pirms pilnas JSON rindas.</translation>
+        </message>
+        <message>
+            <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
+            <translation>Neobligāts sava kanāla ID status, configure, password, admission, history, chat un radio komandām; pēc noklusējuma primārais kanāls.</translation>
+        </message>
+        <message>
+            <source>Channel action must be list, add or remove.</source>
+            <translation>Kanāla darbībai jābūt list, add vai remove.</translation>
+        </message>
+        <message>
+            <source>Removing an own channel deletes its history, images, permissions and radio settings. Set confirmed=true to proceed.</source>
+            <translation>Noņemot savu kanālu, tiek dzēsta tā vēsture, attēli, atļaujas un radio iestatījumi. Lai turpinātu, iestatiet confirmed=true.</translation>
+        </message>
+        <message>
+            <source>id must identify an additional own channel.</source>
+            <translation>id jāidentificē papildu savs kanāls.</translation>
+        </message>
+        <message>
+            <source>The additional own channel could not be removed: %1</source>
+            <translation>Papildu savu kanālu nevarēja noņemt: %1</translation>
+        </message>
+        <message>
+            <source>channelId must identify an own channel.</source>
+            <translation>channelId jāidentificē savs kanāls.</translation>
+        </message>
+        <message>
+            <source>values must be a host settings object.</source>
+            <translation>values jābūt resursdatora iestatījumu objektam.</translation>
+        </message>
+        <message>
+            <source>Headless admission is always enabled for non-banned devices; requests off is not supported.</source>
+            <translation>Piekļuve režīmā bez grafiskās saskarnes vienmēr ir ieslēgta nebloķētām ierīcēm; requests off netiek atbalstīts.</translation>
+        </message>
+        <message>
+            <source>value must be a password of at most 1024 UTF-8 bytes without control characters; an empty string removes it.</source>
+            <translation>value jābūt parolei ar ne vairāk kā 1024 UTF-8 baitiem bez vadības rakstzīmēm; tukša virkne to noņem.</translation>
+        </message>
+        <message>
+            <source>The channel is not ready or a password change is in progress.</source>
+            <translation>Kanāls nav gatavs vai notiek paroles maiņa.</translation>
+        </message>
+        <message>
+            <source>The channel was removed while saving the password.</source>
+            <translation>Kanāls tika noņemts paroles saglabāšanas laikā.</translation>
+        </message>
+        <message>
+            <source>id is required.</source>
+            <translation>Nepieciešams id.</translation>
+        </message>
+        <message>
+            <source>text must be a valid non-empty chat message.</source>
+            <translation>text jābūt derīgam, netukšam tērzēšanas ziņojumam.</translation>
+        </message>
+        <message>
+            <source>The local channel is not ready.</source>
+            <translation>Lokālais kanāls nav gatavs.</translation>
+        </message>
+        <message>
+            <source>The channel's radio is unavailable.</source>
+            <translation>Kanāla radio nav pieejams.</translation>
+        </message>
+        <message>
+            <source>Unknown command. Use help.</source>
+            <translation>Nezināma komanda. Izmantojiet help.</translation>
+        </message>
+        <message>
+            <source>search requires a query, non-negative offset and limit from 1 to 128.</source>
+            <translation>search nepieciešams query, nenegatīvs offset un limit no 1 līdz 128.</translation>
+        </message>
+        <message>
+            <source>add creates an id; update requires an existing id.</source>
+            <translation>add izveido id; update nepieciešams esošs id.</translation>
+        </message>
+        <message>
+            <source>A station is already being checked.</source>
+            <translation>Stacija jau tiek pārbaudīta.</translation>
+        </message>
+        <message>
+            <source>The channel was removed while checking the station.</source>
+            <translation>Kanāls tika noņemts stacijas pārbaudes laikā.</translation>
+        </message>
+        <message>
+            <source>Unknown radio action.</source>
+            <translation>Nezināma radio darbība.</translation>
+        </message>
+        <message>
+            <source>Could not load language: %1</source>
+            <translation>Valodu nevarēja ielādēt: %1</translation>
+        </message>
+        <message>
+            <source>The %1 option is incompatible with --headless.</source>
+            <translation>Opcija %1 nav saderīga ar --headless.</translation>
+        </message>
+        <message>
+            <source>Unexpected positional arguments. Use --help.</source>
+            <translation>Negaidīti pozicionālie argumenti. Izmantojiet --help.</translation>
+        </message>
+        <message>
+            <source>--config / -f requires a non-empty path.</source>
+            <translation>--config / -f nepieciešams netukšs ceļš.</translation>
+        </message>
+        <message>
+            <source>Choose --password or --password-file, not both.</source>
+            <translation>Izvēlieties --password vai --password-file, nevis abus.</translation>
+        </message>
+        <message>
+            <source>Choose SQUADSPEAK_PASSWORD or SQUADSPEAK_PASSWORD_FILE, not both.</source>
+            <translation>Izvēlieties SQUADSPEAK_PASSWORD vai SQUADSPEAK_PASSWORD_FILE, nevis abus.</translation>
+        </message>
+        <message>
+            <source>Choose password or passwordFile in one configuration layer, not both.</source>
+            <translation>Vienā konfigurācijas slānī izvēlieties password vai passwordFile, nevis abus.</translation>
+        </message>
+        <message>
+            <source>passwordFile must be a non-empty path.</source>
+            <translation>passwordFile jābūt netukšam ceļam.</translation>
+        </message>
+        <message>
+            <source>Password file could not be read or is too large.</source>
+            <translation>Paroles failu nevarēja nolasīt vai tas ir pārāk liels.</translation>
+        </message>
+        <message>
+            <source>Password file must contain at most 1024 UTF-8 bytes without control characters.</source>
+            <translation>Paroles failā drīkst būt ne vairāk kā 1024 UTF-8 baiti bez vadības rakstzīmēm.</translation>
+        </message>
+        <message>
+            <source>Password must be a string of at most 1024 UTF-8 bytes without control characters.</source>
+            <translation>Parolei jābūt virknei ar ne vairāk kā 1024 UTF-8 baitiem bez vadības rakstzīmēm.</translation>
+        </message>
+        <message>
+            <source>settingsFile must be a non-empty path.</source>
+            <translation>settingsFile jābūt netukšam ceļam.</translation>
+        </message>
+        <message>
+            <source>identityFile must be a non-empty path.</source>
+            <translation>identityFile jābūt netukšam ceļam.</translation>
+        </message>
+        <message>
+            <source>The settings directory could not be created.</source>
+            <translation>Iestatījumu direktoriju nevarēja izveidot.</translation>
+        </message>
+        <message>
+            <source>This SquadSpeak profile is already running or cannot be locked.</source>
+            <translation>Šis SquadSpeak profils jau darbojas vai to nevar bloķēt.</translation>
+        </message>
+        <message>
+            <source>Standard input could not be opened.</source>
+            <translation>Standarta ievadi nevarēja atvērt.</translation>
+        </message>
+        <message>
+            <source>Standard output could not be opened.</source>
+            <translation>Standarta izvadi nevarēja atvērt.</translation>
+        </message>
+        <message>
+            <source>This identity file is already in use or cannot be locked.</source>
+            <translation>Šis identitātes fails jau tiek izmantots vai to nevar bloķēt.</translation>
+        </message>
+        <message>
+            <source>Invalid host configuration: %1</source>
+            <translation>Nederīga resursdatora konfigurācija: %1</translation>
+        </message>
+        <message>
+            <source>Radio channels could not be initialized.</source>
+            <translation>Radio kanālus nevarēja inicializēt.</translation>
+        </message>
+        <message>
+            <source>Headless host could not start: %1</source>
+            <translation>Neizdevās palaist resursdatoru bez grafiskās saskarnes: %1</translation>
+        </message>
+        <message>
+            <source>Channel password could not be saved.</source>
+            <translation>Kanāla paroli nevarēja saglabāt.</translation>
+        </message>
+        <message>
+            <source>Invalid channel password: %1</source>
+            <translation>Nederīga kanāla parole: %1</translation>
+        </message>
+        <message>
+            <source>Headless host could not initialize: %1</source>
+            <translation>Neizdevās inicializēt resursdatoru bez grafiskās saskarnes: %1</translation>
+        </message>
+        <message>
+            <source>SquadSpeak headless could not start: %1</source>
+            <translation>Neizdevās palaist SquadSpeak bez grafiskās saskarnes: %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>Atbalstītāja darbībai ir jābūt statusam, pierakstīšanās, atsvaidzināšanas, izrakstīšanās vai atcelšanai. status sign-in refresh sign-out cancel</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>Notiek atbalstītāja operācija.</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>Šajā būvniecībā atbalstītāja piekļuve nav pieejama.</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>Iestatījumu prioritāte: argumenti &gt; vide &gt; rekvizīti &gt; saglabātās servera vērtības.</translation>
+        </message>
+    </context>
+    <context>
+        <name>License</name>
+        <message>
+            <source>License storage is busy or unavailable.</source>
+            <translation>Licenču krātuve ir aizņemta vai nav pieejama.</translation>
+        </message>
+        <message>
+            <source>License storage is unavailable.</source>
+            <translation>Licenču krātuve nav pieejama.</translation>
+        </message>
+        <message>
+            <source>Sign-in expired. Try again.</source>
+            <translation>Pierakstīšanās termiņš beidzies. Mēģiniet vēlreiz.</translation>
+        </message>
+        <message>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>GitHub pierakstīšanās nav pieejama. Mēģiniet vēlreiz.</translation>
+        </message>
+        <message>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>GitHub pierakstīšanās netika pabeigta. Mēģiniet vēlreiz.</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>GitHub nevarēja pārbaudīt. Bezsaistes piekļuve ilgst ne vairāk kā septiņas dienas.</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>Pierakstieties vēlreiz, izmantojot GitHub.</translation>
+        </message>
+    </context>
+    <context>
         <name>LocalChannel</name>
+        <message>
+            <source>Blocked</source>
+            <translation>bloķēts</translation>
+        </message>
         <message>
             <source>Host is not responding. Reconnecting.</source>
             <translation>Saimnieks nereaģē. Notiek savienojuma atjaunošana.</translation>
@@ -2205,6 +2567,53 @@
             <source>Voice relay codec could not be configured.</source>
             <translation>Neizdevās konfigurēt balss pārsūtīšanas kodeku.</translation>
         </message>
+        <message>
+            <source>Unsupported audio codec</source>
+            <translation>Neatbalstīts audio kodeks</translation>
+        </message>
+        <message>
+            <source>Speaking is not allowed in this channel.</source>
+            <translation>Šajā kanālā runāt nav atļauts.</translation>
+        </message>
+    </context>
+    <context>
+        <name>LocalLanguage</name>
+        <message>
+            <source>Translation (experimental)</source>
+            <translation>Tulkošana (eksperimentāla)</translation>
+        </message>
+        <message>
+            <source>Translate messages</source>
+            <translation>Tulkot ziņas</translation>
+        </message>
+        <message>
+            <source>Translated voice</source>
+            <translation>Tulkotā balss</translation>
+        </message>
+        <message>
+            <source>Original audio</source>
+            <translation>Oriģinālais audio</translation>
+        </message>
+        <message>
+            <source>Original text</source>
+            <translation>Oriģinālais teksts</translation>
+        </message>
+        <message>
+            <source>Prepare languages</source>
+            <translation>Sagatavot valodas</translation>
+        </message>
+        <message>
+            <source>Local language processing is unavailable.</source>
+            <translation>Lokāla valodas apstrāde nav pieejama.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be read.</source>
+            <translation>Valodas iestatījumus neizdevās nolasīt.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be saved.</source>
+            <translation>Valodas iestatījumus neizdevās saglabāt.</translation>
+        </message>
     </context>
     <context>
         <name>PushToTalkKey</name>
@@ -2345,50 +2754,65 @@
         </message>
     </context>
     <context>
-        <name>RecordingPanel</name>
+        <name>ScreenPanel</name>
         <message>
-            <source>Stop</source>
-            <translation>Apstāties</translation>
+            <source>Media capacity reached</source>
+            <translation>sasniegta multivides ietilpība</translation>
         </message>
         <message>
-            <source>Start</source>
-            <translation>Sākt</translation>
+            <source>Video paused</source>
+            <translation>video ir apturēts</translation>
         </message>
         <message>
-            <source>Saved on this device only. Nothing is uploaded.</source>
-            <translation>saglabāts tikai šajā ierīcē. Nekas nav augšupielādēts.</translation>
+            <source>Stream ended</source>
+            <translation>straume beigusies</translation>
         </message>
         <message>
-            <source>Keep this take or record it again.</source>
-            <translation>Saglabājiet šo attēlu vai ierakstiet to vēlreiz.</translation>
+            <source>Connecting</source>
+            <translation>Savienošana</translation>
         </message>
         <message>
-            <source>Record again</source>
-            <translation>Ierakstīt vēlreiz</translation>
+            <source>Open screen stream</source>
+            <translation>atveriet ekrāna straumi</translation>
         </message>
         <message>
-            <source>Use recording</source>
-            <translation>izmantojiet ierakstīšanu</translation>
+            <source>Screen stream</source>
+            <translation>ekrāna straume</translation>
         </message>
         <message>
-            <source>Recording progress</source>
-            <translation>ierakstīšanas norise</translation>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
+        </message>
+    </context>
+    <context>
+        <name>ScreenShare</name>
+        <message>
+            <source>Allow screen recording in system settings.</source>
+            <translation>Atļauj ekrāna ierakstīšanu sistēmas iestatījumos.</translation>
         </message>
         <message>
-            <source>Step %1 of %2</source>
-            <translation>solis %1 no %2</translation>
+            <source>The shared screen was removed. Select a source to start again.</source>
+            <translation>koplietotais ekrāns tika noņemts. Atlasiet avotu, lai sāktu no jauna.</translation>
         </message>
         <message>
-            <source>Open recordings</source>
-            <translation>Atveriet ierakstus</translation>
+            <source>The shared window was closed. Select a source to start again.</source>
+            <translation>koplietotais logs tika aizvērts. Atlasiet avotu, lai sāktu no jauna.</translation>
         </message>
         <message>
-            <source>Reset test</source>
-            <translation>Atiestatīt testu</translation>
+            <source>The selected screen is no longer available.</source>
+            <translation>atlasītais ekrāns vairs nav pieejams.</translation>
         </message>
         <message>
-            <source>%1 s remaining / %2 dBFS</source>
-            <translation>atlikušas %1 s / %2 dBFS</translation>
+            <source>The selected window is no longer available.</source>
+            <translation>atlasītais logs vairs nav pieejams.</translation>
+        </message>
+        <message>
+            <source>The selected source exceeds the capture size limit.</source>
+            <translation>atlasītais avots pārsniedz uzņemšanas lieluma ierobežojumu.</translation>
+        </message>
+        <message>
+            <source>Close a video view before opening another stream.</source>
+            <translation>aizveriet video skatu pirms citas straumes atvēršanas.</translation>
         </message>
     </context>
     <context>
@@ -2465,10 +2889,6 @@
             <translation>tiek savākts signāls...</translation>
         </message>
         <message>
-            <source>Dashed curve: configured gain and frequency cuts, using the right dB scale. Noise reduction and voice activation are not part of this curve.</source>
-            <translation>Pārtraukta līkne: konfigurēts pastiprinājums un frekvenču griezumi labajā dB skalā. Trokšņu samazināšana un balss aktivizēšana nav šīs līknes daļa.</translation>
-        </message>
-        <message>
             <source>Microphone preview is not running</source>
             <translation>mikrofona priekšskatījums nedarbojas</translation>
         </message>
@@ -2479,303 +2899,6 @@
         <message>
             <source>Peak: %1</source>
             <translation>maksimums: %1</translation>
-        </message>
-    </context>
-    <context>
-        <name>Tray</name>
-        <message>
-            <source>Quit</source>
-            <translation>Beidz</translation>
-        </message>
-        <message>
-            <source>SquadSpeak - speaking</source>
-            <translation>SquadSpeak - runā</translation>
-        </message>
-        <message>
-            <source>Settings</source>
-            <translation>Iestatījumi</translation>
-        </message>
-        <message>
-            <source>Channels</source>
-            <translation>kanāli</translation>
-        </message>
-        <message>
-            <source>New image</source>
-            <translation>jauns attēls</translation>
-        </message>
-    </context>
-    <context>
-        <name>VoiceAvatar</name>
-        <message>
-            <source>Muted</source>
-            <translation>mikrofons ir izslēgts</translation>
-        </message>
-        <message>
-            <source>Sleeping</source>
-            <translation>Guļ</translation>
-        </message>
-        <message>
-            <source>Offline</source>
-            <translation>bezsaistē</translation>
-        </message>
-        <message>
-            <source>Speaking</source>
-            <translation>Runā</translation>
-        </message>
-        <message>
-            <source>Unavailable</source>
-            <translation>nav pieejams</translation>
-        </message>
-        <message>
-            <source>Listening</source>
-            <translation>Klausīšanās</translation>
-        </message>
-        <message>
-            <source>Deafened</source>
-            <translation>skaļruņi ir izslēgti</translation>
-        </message>
-    </context>
-    <context>
-        <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>nav pieejams - audio iestatījumi vai toņa pārbaude</translation>
-        </message>
-        <message>
-            <source>Microphone muted</source>
-            <translation>mikrofons ir izslēgts</translation>
-        </message>
-        <message>
-            <source>Push-to-talk held</source>
-            <translation>Rācijsaziņas poga ir nospiesta</translation>
-        </message>
-        <message>
-            <source>Ready - push-to-talk released</source>
-            <translation>Gatavs - rācijsaziņas poga ir atlaista</translation>
-        </message>
-        <message>
-            <source>Microphone unmuted</source>
-            <translation>mikrofons ir ieslēgts</translation>
-        </message>
-        <message>
-            <source>Settings could not be saved: %1</source>
-            <translation>Iestatījumus nevarēja saglabāt: %1</translation>
-        </message>
-        <message>
-            <source>The push-to-talk sequence cannot be incremented further.</source>
-            <translation>Rācijsaziņas secību nevar palielināt.</translation>
-        </message>
-        <message>
-            <source>Choose System, Light or Dark.</source>
-            <translation>izvēlieties System, Light vai Dark.</translation>
-        </message>
-        <message>
-            <source>Choose a colour palette from the list.</source>
-            <translation>sarakstā izvēlieties krāsu paleti.</translation>
-        </message>
-        <message>
-            <source>Choose an available avatar.</source>
-            <translation>izvēlieties pieejamo iemiesojumu.</translation>
-        </message>
-        <message>
-            <source>Invalid push-to-talk binding.</source>
-            <translation>nederīga rācijsaziņas iesiešana.</translation>
-        </message>
-        <message>
-            <source>Release the held push-to-talk key first.</source>
-            <translation>Vispirms atlaidiet turēto rācijsaziņas taustiņu.</translation>
-        </message>
-        <message>
-            <source>Choose a language from the list.</source>
-            <translation>izvēlieties valodu no saraksta.</translation>
-        </message>
-        <message>
-            <source>This avatar requires Supporter.</source>
-            <translation>Šim iemiesojumam nepieciešams Supporter.</translation>
-        </message>
-        <message>
-            <source>The name must contain 1 to 64 characters.</source>
-            <translation>Nosaukumā ir jābūt no 1 līdz 64 rakstzīmēm.</translation>
-        </message>
-        <message>
-            <source>The name may not contain control characters or line breaks.</source>
-            <translation>nosaukumā nedrīkst būt vadības rakstzīmes vai rindiņu pārtraukumi.</translation>
-        </message>
-        <message>
-            <source>Session settings could not be read.</source>
-            <translation>Neizdevās nolasīt sesijas iestatījumus.</translation>
-        </message>
-        <message>
-            <source>Saved setting is invalid: %1</source>
-            <translation>Nederīgs saglabātais iestatījums: %1</translation>
-        </message>
-    </context>
-    <context>
-        <name>License</name>
-        <message>
-            <source>License storage is busy or unavailable.</source>
-            <translation>Licenču krātuve ir aizņemta vai nav pieejama.</translation>
-        </message>
-        <message>
-            <source>License storage is unavailable.</source>
-            <translation>Licenču krātuve nav pieejama.</translation>
-        </message>
-        <message>
-            <source>Sign-in expired. Try again.</source>
-            <translation>Pierakstīšanās termiņš beidzies. Mēģiniet vēlreiz.</translation>
-        </message>
-        <message>
-            <source>GitHub sign-in is unavailable. Try again.</source>
-            <translation>GitHub pierakstīšanās nav pieejama. Mēģiniet vēlreiz.</translation>
-        </message>
-        <message>
-            <source>GitHub sign-in was not completed. Try again.</source>
-            <translation>GitHub pierakstīšanās netika pabeigta. Mēģiniet vēlreiz.</translation>
-        </message>
-        <message>
-            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
-            <translation>GitHub nevarēja pārbaudīt. Bezsaistes piekļuve ilgst ne vairāk kā septiņas dienas.</translation>
-        </message>
-        <message>
-            <source>Sign in with GitHub again.</source>
-            <translation>Pierakstieties vēlreiz, izmantojot GitHub.</translation>
-        </message>
-    </context>
-    <context>
-        <name>ScreenShare</name>
-        <message>
-            <source>The shared screen was removed. Select a source to start again.</source>
-            <translation>koplietotais ekrāns tika noņemts. Atlasiet avotu, lai sāktu no jauna.</translation>
-        </message>
-        <message>
-            <source>The shared window was closed. Select a source to start again.</source>
-            <translation>koplietotais logs tika aizvērts. Atlasiet avotu, lai sāktu no jauna.</translation>
-        </message>
-        <message>
-            <source>The selected screen is no longer available.</source>
-            <translation>atlasītais ekrāns vairs nav pieejams.</translation>
-        </message>
-        <message>
-            <source>The selected window is no longer available.</source>
-            <translation>atlasītais logs vairs nav pieejams.</translation>
-        </message>
-        <message>
-            <source>The selected source exceeds the capture size limit.</source>
-            <translation>atlasītais avots pārsniedz uzņemšanas lieluma ierobežojumu.</translation>
-        </message>
-        <message>
-            <source>Close a video view before opening another stream.</source>
-            <translation>aizveriet video skatu pirms citas straumes atvēršanas.</translation>
-        </message>
-    </context>
-    <context>
-        <name>ScreenPanel</name>
-        <message>
-            <source>Media capacity reached</source>
-            <translation>sasniegta multivides ietilpība</translation>
-        </message>
-        <message>
-            <source>Video paused</source>
-            <translation>video ir apturēts</translation>
-        </message>
-        <message>
-            <source>Stream ended</source>
-            <translation>straume beigusies</translation>
-        </message>
-        <message>
-            <source>Connecting</source>
-            <translation>Savienošana</translation>
-        </message>
-        <message>
-            <source>Open screen stream</source>
-            <translation>atveriet ekrāna straumi</translation>
-        </message>
-        <message>
-            <source>Screen stream</source>
-            <translation>ekrāna straume</translation>
-        </message>
-        <message>
-            <source>%1 kbit/s</source>
-            <translation>%1 kbit/s</translation>
-        </message>
-    </context>
-    <context>
-        <name>VideoCodec</name>
-        <message>
-            <source>Video codec: %1</source>
-            <translation>Video kodeks: %1</translation>
-        </message>
-        <message>
-            <source>Video codec ABI does not match its headers.</source>
-            <translation>Video kodeka ABI neatbilst tā galvenes failiem.</translation>
-        </message>
-        <message>
-            <source>Video buffers could not be allocated.</source>
-            <translation>Neizdevās piešķirt atmiņu video buferiem.</translation>
-        </message>
-        <message>
-            <source>Invalid video quality tier.</source>
-            <translation>Nederīgs video kvalitātes līmenis.</translation>
-        </message>
-        <message>
-            <source>The screen source exceeds the supported capture size.</source>
-            <translation>Ekrāna avots pārsniedz atbalstīto tveršanas izmēru.</translation>
-        </message>
-        <message>
-            <source>The screen source is too narrow.</source>
-            <translation>Ekrāna avots ir pārāk šaurs.</translation>
-        </message>
-        <message>
-            <source>The video encoder could not be allocated.</source>
-            <translation>Neizdevās piešķirt atmiņu video kodētājam.</translation>
-        </message>
-        <message>
-            <source>No supported video encoder is available.</source>
-            <translation>Nav pieejams neviens atbalstīts video kodētājs.</translation>
-        </message>
-        <message>
-            <source>Video encoder configuration is too large.</source>
-            <translation>Video kodētāja konfigurācija ir pārāk liela.</translation>
-        </message>
-        <message>
-            <source>Video scaling could not be initialized.</source>
-            <translation>Neizdevās inicializēt video mērogošanu.</translation>
-        </message>
-        <message>
-            <source>The encoder returned an empty video packet.</source>
-            <translation>Kodētājs atgrieza tukšu video paketi.</translation>
-        </message>
-        <message>
-            <source>Invalid video frame format.</source>
-            <translation>Nederīgs video kadra formāts.</translation>
-        </message>
-        <message>
-            <source>Invalid video decoder configuration.</source>
-            <translation>Nederīga video dekodētāja konfigurācija.</translation>
-        </message>
-        <message>
-            <source>This video codec cannot be decoded.</source>
-            <translation>Šo video kodeku nevar dekodēt.</translation>
-        </message>
-        <message>
-            <source>Video decoder could not be allocated.</source>
-            <translation>Neizdevās piešķirt atmiņu video dekodētājam.</translation>
-        </message>
-        <message>
-            <source>Video decoder configuration could not be allocated.</source>
-            <translation>Neizdevās piešķirt atmiņu video dekodētāja konfigurācijai.</translation>
-        </message>
-        <message>
-            <source>Decoded dimensions do not match the screen stream.</source>
-            <translation>Dekodētie izmēri neatbilst ekrāna straumei.</translation>
-        </message>
-        <message>
-            <source>Decoded image could not be allocated.</source>
-            <translation>Neizdevās piešķirt atmiņu dekodētajam attēlam.</translation>
-        </message>
-        <message>
-            <source>Video color conversion could not be initialized.</source>
-            <translation>Neizdevās inicializēt video krāsu pārveidošanu.</translation>
         </message>
     </context>
     <context>
@@ -2894,404 +3017,211 @@
         </message>
     </context>
     <context>
-        <name>Headless</name>
+        <name>Tray</name>
         <message>
-            <source>Command failed.</source>
-            <translation>Komanda neizdevās.</translation>
+            <source>Quit</source>
+            <translation>Beidz</translation>
         </message>
         <message>
-            <source>%1 must be an integer.</source>
-            <translation>%1 jābūt veselam skaitlim.</translation>
+            <source>SquadSpeak - speaking</source>
+            <translation>SquadSpeak - runā</translation>
         </message>
         <message>
-            <source>Requests must be on/off or true/false.</source>
-            <translation>Pieprasījumiem jābūt on/off vai true/false.</translation>
+            <source>Settings</source>
+            <translation>Iestatījumi</translation>
         </message>
         <message>
-            <source>Unknown host property: %1</source>
-            <translation>Nezināms resursdatora rekvizīts: %1</translation>
+            <source>Channels</source>
+            <translation>kanāli</translation>
         </message>
         <message>
-            <source>Run without GUI, microphone capture, or local audio output.</source>
-            <translation>Palaist bez grafiskās saskarnes, mikrofona tveršanas un vietējās audio izvades.</translation>
-        </message>
-        <message>
-            <source>Server storage prefix. Personal/audio/GUI profiles are not loaded.</source>
-            <translation>Servera krātuves prefikss. Personiskie, audio un grafikas profili netiek ielādēti.</translation>
-        </message>
-        <message>
-            <source>Optional private identity file instead of the OS credential store (Linux/macOS). Parent directory must exist and belong to this account.</source>
-            <translation>Neobligāts privātās identitātes fails operētājsistēmas akreditācijas datu krātuves vietā (Linux/macOS). Vecākdirektorijai jāpastāv un tai jāpieder šim kontam.</translation>
-        </message>
-        <message>
-            <source>UTF-8 key=value properties or JSON host preset. Default: application.properties, then config/application.properties beside the app.</source>
-            <translation>UTF-8 key=value rekvizīti vai JSON resursdatora iestatījums. Noklusējums: application.properties, pēc tam config/application.properties blakus lietotnei.</translation>
-        </message>
-        <message>
-            <source>Channel display name.</source>
-            <translation>Kanāla parādāmais nosaukums.</translation>
-        </message>
-        <message>
-            <source>System and radio bot display name.</source>
-            <translation>Sistēmas un radio bota parādāmais nosaukums.</translation>
-        </message>
-        <message>
-            <source>TCP service port (1-65535).</source>
-            <translation>TCP pakalpojuma ports (1-65535).</translation>
-        </message>
-        <message>
-            <source>Headless admission is always on; only 'on' or 'true' is accepted.</source>
-            <translation>Piekļuve režīmā bez grafiskās saskarnes vienmēr ir ieslēgta; atļauts tikai 'on' vai 'true'.</translation>
-        </message>
-        <message>
-            <source>Preapprove a device ID; repeat for several devices. Existing bans remain.</source>
-            <translation>Iepriekš apstiprināt ierīces ID; vairākām ierīcēm atkārtot. Esošie aizliegumi paliek.</translation>
-        </message>
-        <message>
-            <source>Block a device ID; repeat for several devices.</source>
-            <translation>Bloķēt ierīces ID; vairākām ierīcēm atkārtot.</translation>
-        </message>
-        <message>
-            <source>Read a UTF-8 channel password from a file before listening. An empty file removes it.</source>
-            <translation>Pirms klausīšanās nolasīt kanāla paroli no UTF-8 faila. Tukšs fails to noņem.</translation>
-        </message>
-        <message>
-            <source>Channel password. Empty removes it; environment or config avoids process-list exposure.</source>
-            <translation>Kanāla parole. Tukša vērtība to noņem; vide vai konfigurācija neļauj tai parādīties procesu sarakstā.</translation>
-        </message>
-        <message>
-            <source>SquadSpeak headless local channel host</source>
-            <translation>SquadSpeak lokālais kanāla resursdators bez grafiskās saskarnes</translation>
-        </message>
-        <message>
-            <source>Environment variables (SQUADSPEAK_ prefix):</source>
-            <translation>Vides mainīgie (SQUADSPEAK_ prefikss):</translation>
-        </message>
-        <message>
-            <source>Host configuration could not be read or exceeds 1 MiB.</source>
-            <translation>Resursdatora konfigurāciju nevarēja nolasīt vai tā pārsniedz 1 MiB.</translation>
-        </message>
-        <message>
-            <source>Host configuration must be UTF-8.</source>
-            <translation>Resursdatora konfigurācijai jābūt UTF-8.</translation>
-        </message>
-        <message>
-            <source>Host preset must be a JSON object.</source>
-            <translation>Resursdatora iestatījumam jābūt JSON objektam.</translation>
-        </message>
-        <message>
-            <source>Property line %1 must use key=value.</source>
-            <translation>Rekvizītu rindā %1 jāizmanto key=value.</translation>
-        </message>
-        <message>
-            <source>Property line %1: %2</source>
-            <translation>Rekvizītu rinda %1: %2</translation>
-        </message>
-        <message>
-            <source>Standard input has no file descriptor.</source>
-            <translation>Standarta ievadei nav faila deskriptora.</translation>
-        </message>
-        <message>
-            <source>Standard input could not be inspected.</source>
-            <translation>Standarta ievadi nevarēja pārbaudīt.</translation>
-        </message>
-        <message>
-            <source>Could not write the command response: %1</source>
-            <translation>Komandas atbildi nevarēja ierakstīt: %1</translation>
-        </message>
-        <message>
-            <source>Standard input could not be read: %1</source>
-            <translation>Standarta ievadi nevarēja nolasīt: %1</translation>
-        </message>
-        <message>
-            <source>Input line exceeds 65536 bytes.</source>
-            <translation>Ievades rinda pārsniedz 65536 baitus.</translation>
-        </message>
-        <message>
-            <source>Each input line must be a JSON object.</source>
-            <translation>Katrai ievades rindai jābūt JSON objektam.</translation>
-        </message>
-        <message>
-            <source>Input ended before a complete JSON line.</source>
-            <translation>Ievade beidzās pirms pilnas JSON rindas.</translation>
-        </message>
-        <message>
-            <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
-            <translation>Neobligāts sava kanāla ID status, configure, password, admission, history, chat un radio komandām; pēc noklusējuma primārais kanāls.</translation>
-        </message>
-        <message>
-            <source>Channel action must be list, add or remove.</source>
-            <translation>Kanāla darbībai jābūt list, add vai remove.</translation>
-        </message>
-        <message>
-            <source>Removing an own channel deletes its history, images, permissions and radio settings. Set confirmed=true to proceed.</source>
-            <translation>Noņemot savu kanālu, tiek dzēsta tā vēsture, attēli, atļaujas un radio iestatījumi. Lai turpinātu, iestatiet confirmed=true.</translation>
-        </message>
-        <message>
-            <source>id must identify an additional own channel.</source>
-            <translation>id jāidentificē papildu savs kanāls.</translation>
-        </message>
-        <message>
-            <source>The additional own channel could not be removed: %1</source>
-            <translation>Papildu savu kanālu nevarēja noņemt: %1</translation>
-        </message>
-        <message>
-            <source>channelId must identify an own channel.</source>
-            <translation>channelId jāidentificē savs kanāls.</translation>
-        </message>
-        <message>
-            <source>values must be a host settings object.</source>
-            <translation>values jābūt resursdatora iestatījumu objektam.</translation>
-        </message>
-        <message>
-            <source>Headless admission is always enabled for non-banned devices; requests off is not supported.</source>
-            <translation>Piekļuve režīmā bez grafiskās saskarnes vienmēr ir ieslēgta nebloķētām ierīcēm; requests off netiek atbalstīts.</translation>
-        </message>
-        <message>
-            <source>value must be a password of at most 1024 UTF-8 bytes without control characters; an empty string removes it.</source>
-            <translation>value jābūt parolei ar ne vairāk kā 1024 UTF-8 baitiem bez vadības rakstzīmēm; tukša virkne to noņem.</translation>
-        </message>
-        <message>
-            <source>The channel is not ready or a password change is in progress.</source>
-            <translation>Kanāls nav gatavs vai notiek paroles maiņa.</translation>
-        </message>
-        <message>
-            <source>The channel was removed while saving the password.</source>
-            <translation>Kanāls tika noņemts paroles saglabāšanas laikā.</translation>
-        </message>
-        <message>
-            <source>id is required.</source>
-            <translation>Nepieciešams id.</translation>
-        </message>
-        <message>
-            <source>text must be a valid non-empty chat message.</source>
-            <translation>text jābūt derīgam, netukšam tērzēšanas ziņojumam.</translation>
-        </message>
-        <message>
-            <source>The local channel is not ready.</source>
-            <translation>Lokālais kanāls nav gatavs.</translation>
-        </message>
-        <message>
-            <source>The channel's radio is unavailable.</source>
-            <translation>Kanāla radio nav pieejams.</translation>
-        </message>
-        <message>
-            <source>Unknown command. Use help.</source>
-            <translation>Nezināma komanda. Izmantojiet help.</translation>
-        </message>
-        <message>
-            <source>search requires a query, non-negative offset and limit from 1 to 128.</source>
-            <translation>search nepieciešams query, nenegatīvs offset un limit no 1 līdz 128.</translation>
-        </message>
-        <message>
-            <source>add creates an id; update requires an existing id.</source>
-            <translation>add izveido id; update nepieciešams esošs id.</translation>
-        </message>
-        <message>
-            <source>A station is already being checked.</source>
-            <translation>Stacija jau tiek pārbaudīta.</translation>
-        </message>
-        <message>
-            <source>The channel was removed while checking the station.</source>
-            <translation>Kanāls tika noņemts stacijas pārbaudes laikā.</translation>
-        </message>
-        <message>
-            <source>Unknown radio action.</source>
-            <translation>Nezināma radio darbība.</translation>
-        </message>
-        <message>
-            <source>Could not load language: %1</source>
-            <translation>Valodu nevarēja ielādēt: %1</translation>
-        </message>
-        <message>
-            <source>The %1 option is incompatible with --headless.</source>
-            <translation>Opcija %1 nav saderīga ar --headless.</translation>
-        </message>
-        <message>
-            <source>Unexpected positional arguments. Use --help.</source>
-            <translation>Negaidīti pozicionālie argumenti. Izmantojiet --help.</translation>
-        </message>
-        <message>
-            <source>--config / -f requires a non-empty path.</source>
-            <translation>--config / -f nepieciešams netukšs ceļš.</translation>
-        </message>
-        <message>
-            <source>Choose --password or --password-file, not both.</source>
-            <translation>Izvēlieties --password vai --password-file, nevis abus.</translation>
-        </message>
-        <message>
-            <source>Choose SQUADSPEAK_PASSWORD or SQUADSPEAK_PASSWORD_FILE, not both.</source>
-            <translation>Izvēlieties SQUADSPEAK_PASSWORD vai SQUADSPEAK_PASSWORD_FILE, nevis abus.</translation>
-        </message>
-        <message>
-            <source>Choose password or passwordFile in one configuration layer, not both.</source>
-            <translation>Vienā konfigurācijas slānī izvēlieties password vai passwordFile, nevis abus.</translation>
-        </message>
-        <message>
-            <source>passwordFile must be a non-empty path.</source>
-            <translation>passwordFile jābūt netukšam ceļam.</translation>
-        </message>
-        <message>
-            <source>Password file could not be read or is too large.</source>
-            <translation>Paroles failu nevarēja nolasīt vai tas ir pārāk liels.</translation>
-        </message>
-        <message>
-            <source>Password file must contain at most 1024 UTF-8 bytes without control characters.</source>
-            <translation>Paroles failā drīkst būt ne vairāk kā 1024 UTF-8 baiti bez vadības rakstzīmēm.</translation>
-        </message>
-        <message>
-            <source>Password must be a string of at most 1024 UTF-8 bytes without control characters.</source>
-            <translation>Parolei jābūt virknei ar ne vairāk kā 1024 UTF-8 baitiem bez vadības rakstzīmēm.</translation>
-        </message>
-        <message>
-            <source>settingsFile must be a non-empty path.</source>
-            <translation>settingsFile jābūt netukšam ceļam.</translation>
-        </message>
-        <message>
-            <source>identityFile must be a non-empty path.</source>
-            <translation>identityFile jābūt netukšam ceļam.</translation>
-        </message>
-        <message>
-            <source>The settings directory could not be created.</source>
-            <translation>Iestatījumu direktoriju nevarēja izveidot.</translation>
-        </message>
-        <message>
-            <source>This SquadSpeak profile is already running or cannot be locked.</source>
-            <translation>Šis SquadSpeak profils jau darbojas vai to nevar bloķēt.</translation>
-        </message>
-        <message>
-            <source>Standard input could not be opened.</source>
-            <translation>Standarta ievadi nevarēja atvērt.</translation>
-        </message>
-        <message>
-            <source>Standard output could not be opened.</source>
-            <translation>Standarta izvadi nevarēja atvērt.</translation>
-        </message>
-        <message>
-            <source>This identity file is already in use or cannot be locked.</source>
-            <translation>Šis identitātes fails jau tiek izmantots vai to nevar bloķēt.</translation>
-        </message>
-        <message>
-            <source>Invalid host configuration: %1</source>
-            <translation>Nederīga resursdatora konfigurācija: %1</translation>
-        </message>
-        <message>
-            <source>Radio channels could not be initialized.</source>
-            <translation>Radio kanālus nevarēja inicializēt.</translation>
-        </message>
-        <message>
-            <source>Headless host could not start: %1</source>
-            <translation>Neizdevās palaist resursdatoru bez grafiskās saskarnes: %1</translation>
-        </message>
-        <message>
-            <source>Channel password could not be saved.</source>
-            <translation>Kanāla paroli nevarēja saglabāt.</translation>
-        </message>
-        <message>
-            <source>Invalid channel password: %1</source>
-            <translation>Nederīga kanāla parole: %1</translation>
-        </message>
-        <message>
-            <source>Headless host could not initialize: %1</source>
-            <translation>Neizdevās inicializēt resursdatoru bez grafiskās saskarnes: %1</translation>
-        </message>
-        <message>
-            <source>SquadSpeak headless could not start: %1</source>
-            <translation>Neizdevās palaist SquadSpeak bez grafiskās saskarnes: %1</translation>
-        </message>
-        <message>
-            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
-            <translation>Atbalstītāja darbībai ir jābūt statusam, pierakstīšanās, atsvaidzināšanas, izrakstīšanās vai atcelšanai. status sign-in refresh sign-out cancel</translation>
-        </message>
-        <message>
-            <source>A Supporter operation is in progress.</source>
-            <translation>Notiek atbalstītāja operācija.</translation>
-        </message>
-        <message>
-            <source>Supporter access is unavailable in this build.</source>
-            <translation>Šajā būvniecībā atbalstītāja piekļuve nav pieejama.</translation>
-        </message>
-        <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>Iestatījumu prioritāte: argumenti &gt; vide &gt; rekvizīti &gt; saglabātās servera vērtības.</translation>
+            <source>New image</source>
+            <translation>jauns attēls</translation>
         </message>
     </context>
     <context>
-        <name>Desktop</name>
+        <name>VideoCodec</name>
         <message>
-            <source>Open settings at startup.</source>
-            <translation>Atvērt iestatījumus palaišanas laikā.</translation>
+            <source>Video codec: %1</source>
+            <translation>Video kodeks: %1</translation>
         </message>
         <message>
-            <source>Open guided local test recording without starting network services.</source>
-            <translation>Atvērt vadītu vietējo testa ierakstīšanu, nepalaižot tīkla pakalpojumus.</translation>
+            <source>Video codec ABI does not match its headers.</source>
+            <translation>Video kodeka ABI neatbilst tā galvenes failiem.</translation>
         </message>
         <message>
-            <source>Alternative file for audio profiles.</source>
-            <translation>Alternatīvs audio profilu fails.</translation>
+            <source>Video buffers could not be allocated.</source>
+            <translation>Neizdevās piešķirt atmiņu video buferiem.</translation>
         </message>
         <message>
-            <source>Load the interface without microphone capture and exit after one second.</source>
-            <translation>Ielādēt saskarni bez mikrofona ierakstīšanas un aizvērt pēc vienas sekundes.</translation>
+            <source>Invalid video quality tier.</source>
+            <translation>Nederīgs video kvalitātes līmenis.</translation>
         </message>
         <message>
-            <source>Save an image of the app window during the UI test.</source>
-            <translation>Saglabāt lietotnes loga attēlu saskarnes testa laikā.</translation>
+            <source>The screen source exceeds the supported capture size.</source>
+            <translation>Ekrāna avots pārsniedz atbalstīto tveršanas izmēru.</translation>
         </message>
         <message>
-            <source>The window image could not be saved.</source>
-            <translation>Neizdevās saglabāt loga attēlu.</translation>
+            <source>The screen source is too narrow.</source>
+            <translation>Ekrāna avots ir pārāk šaurs.</translation>
         </message>
         <message>
-            <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
-            <translation>Sistēmas tekne nav pieejama; lietotne paliek atvērta logā.</translation>
+            <source>The video encoder could not be allocated.</source>
+            <translation>Neizdevās piešķirt atmiņu video kodētājam.</translation>
+        </message>
+        <message>
+            <source>No supported video encoder is available.</source>
+            <translation>Nav pieejams neviens atbalstīts video kodētājs.</translation>
+        </message>
+        <message>
+            <source>Video encoder configuration is too large.</source>
+            <translation>Video kodētāja konfigurācija ir pārāk liela.</translation>
+        </message>
+        <message>
+            <source>Video scaling could not be initialized.</source>
+            <translation>Neizdevās inicializēt video mērogošanu.</translation>
+        </message>
+        <message>
+            <source>The encoder returned an empty video packet.</source>
+            <translation>Kodētājs atgrieza tukšu video paketi.</translation>
+        </message>
+        <message>
+            <source>Invalid video frame format.</source>
+            <translation>Nederīgs video kadra formāts.</translation>
+        </message>
+        <message>
+            <source>Invalid video decoder configuration.</source>
+            <translation>Nederīga video dekodētāja konfigurācija.</translation>
+        </message>
+        <message>
+            <source>This video codec cannot be decoded.</source>
+            <translation>Šo video kodeku nevar dekodēt.</translation>
+        </message>
+        <message>
+            <source>Video decoder could not be allocated.</source>
+            <translation>Neizdevās piešķirt atmiņu video dekodētājam.</translation>
+        </message>
+        <message>
+            <source>Video decoder configuration could not be allocated.</source>
+            <translation>Neizdevās piešķirt atmiņu video dekodētāja konfigurācijai.</translation>
+        </message>
+        <message>
+            <source>Decoded dimensions do not match the screen stream.</source>
+            <translation>Dekodētie izmēri neatbilst ekrāna straumei.</translation>
+        </message>
+        <message>
+            <source>Decoded image could not be allocated.</source>
+            <translation>Neizdevās piešķirt atmiņu dekodētajam attēlam.</translation>
+        </message>
+        <message>
+            <source>Video color conversion could not be initialized.</source>
+            <translation>Neizdevās inicializēt video krāsu pārveidošanu.</translation>
         </message>
     </context>
     <context>
-        <name>LocalLanguage</name>
+        <name>VoiceAvatar</name>
         <message>
-            <source>Translation (experimental)</source>
-            <translation>Tulkošana (eksperimentāla)</translation>
+            <source>Muted</source>
+            <translation>mikrofons ir izslēgts</translation>
         </message>
         <message>
-            <source>Spoken language</source>
-            <translation>Runātā valoda</translation>
+            <source>Sleeping</source>
+            <translation>Guļ</translation>
         </message>
         <message>
-            <source>Translate to</source>
-            <translation>Tulkot uz</translation>
+            <source>Offline</source>
+            <translation>bezsaistē</translation>
         </message>
         <message>
-            <source>Translate messages</source>
-            <translation>Tulkot ziņas</translation>
+            <source>Speaking</source>
+            <translation>Runā</translation>
         </message>
         <message>
-            <source>Translated voice</source>
-            <translation>Tulkotā balss</translation>
+            <source>Unavailable</source>
+            <translation>nav pieejams</translation>
         </message>
         <message>
-            <source>Original audio</source>
-            <translation>Oriģinālais audio</translation>
+            <source>Listening</source>
+            <translation>Klausīšanās</translation>
         </message>
         <message>
-            <source>Original text</source>
-            <translation>Oriģinālais teksts</translation>
+            <source>Deafened</source>
+            <translation>skaļruņi ir izslēgti</translation>
+        </message>
+    </context>
+    <context>
+        <name>VoiceSession</name>
+        <message>
+            <source>Unavailable - audio settings or tone test</source>
+            <translation>nav pieejams - audio iestatījumi vai toņa pārbaude</translation>
         </message>
         <message>
-            <source>Prepare languages</source>
-            <translation>Sagatavot valodas</translation>
+            <source>Microphone muted</source>
+            <translation>mikrofons ir izslēgts</translation>
         </message>
         <message>
-            <source>Local language processing is unavailable.</source>
-            <translation>Lokāla valodas apstrāde nav pieejama.</translation>
+            <source>Push-to-talk held</source>
+            <translation>Rācijsaziņas poga ir nospiesta</translation>
         </message>
         <message>
-            <source>Language settings could not be read.</source>
-            <translation>Valodas iestatījumus neizdevās nolasīt.</translation>
+            <source>Ready - push-to-talk released</source>
+            <translation>Gatavs - rācijsaziņas poga ir atlaista</translation>
         </message>
         <message>
-            <source>Language settings could not be saved.</source>
-            <translation>Valodas iestatījumus neizdevās saglabāt.</translation>
+            <source>Microphone unmuted</source>
+            <translation>mikrofons ir ieslēgts</translation>
+        </message>
+        <message>
+            <source>Settings could not be saved: %1</source>
+            <translation>Iestatījumus nevarēja saglabāt: %1</translation>
+        </message>
+        <message>
+            <source>The push-to-talk sequence cannot be incremented further.</source>
+            <translation>Rācijsaziņas secību nevar palielināt.</translation>
+        </message>
+        <message>
+            <source>Choose System, Light or Dark.</source>
+            <translation>izvēlieties System, Light vai Dark.</translation>
+        </message>
+        <message>
+            <source>Choose a colour palette from the list.</source>
+            <translation>sarakstā izvēlieties krāsu paleti.</translation>
+        </message>
+        <message>
+            <source>Choose an available avatar.</source>
+            <translation>izvēlieties pieejamo iemiesojumu.</translation>
+        </message>
+        <message>
+            <source>Invalid push-to-talk binding.</source>
+            <translation>nederīga rācijsaziņas iesiešana.</translation>
+        </message>
+        <message>
+            <source>Release the held push-to-talk key first.</source>
+            <translation>Vispirms atlaidiet turēto rācijsaziņas taustiņu.</translation>
+        </message>
+        <message>
+            <source>Choose a language from the list.</source>
+            <translation>izvēlieties valodu no saraksta.</translation>
+        </message>
+        <message>
+            <source>This avatar requires Supporter.</source>
+            <translation>Šim iemiesojumam nepieciešams Supporter.</translation>
+        </message>
+        <message>
+            <source>The name must contain 1 to 64 characters.</source>
+            <translation>Nosaukumā ir jābūt no 1 līdz 64 rakstzīmēm.</translation>
+        </message>
+        <message>
+            <source>The name may not contain control characters or line breaks.</source>
+            <translation>nosaukumā nedrīkst būt vadības rakstzīmes vai rindiņu pārtraukumi.</translation>
+        </message>
+        <message>
+            <source>Session settings could not be read.</source>
+            <translation>Neizdevās nolasīt sesijas iestatījumus.</translation>
+        </message>
+        <message>
+            <source>Saved setting is invalid: %1</source>
+            <translation>Nederīgs saglabātais iestatījums: %1</translation>
         </message>
     </context>
 </TS>

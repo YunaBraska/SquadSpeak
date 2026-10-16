@@ -223,7 +223,8 @@ bool LocalChannel::remoteAction(const QString& action, const QVariantMap& data) 
     if (!remoteMode() || !remoteAllowed_ || !controlConnected_ || action.isEmpty() || action.size() > 32) return false;
     auto payload = QJsonObject::fromVariantMap(data);
     if (QJsonDocument(payload).toJson(QJsonDocument::Compact).size() > maximumFrame - 512) return false;
-    if (action != "join" && action != "leave" && action != "mute" && action != "deafen" && action != "chat" && action != "older" && action != "newer" && action != "latest" && action != "openChat") return false;
+    if (action != "join" && action != "leave" && action != "mute" && action != "deafen" && action != "chat" && action != "older" && action != "newer" && action != "latest" && action != "openChat"
+        && action != "openPrivate" && action != "blockPrivate") return false;
     if (action == "chat" && (!payload.value("text").isString() || !ChatHistory::validText(payload.value("text").toString()))) return false;
     if (action == "chat" || action == "older" || action == "newer" || action == "latest")
         payload.insert("hostId", remoteView_.value("chatHostId").toString());
@@ -362,6 +363,8 @@ void LocalChannel::sendRemoteView(QSslSocket* socket) {
         if (peers_.value(peerSocket).remoteSnapshotWaiting) { peers_[peerSocket].remoteSnapshotDirty = true; continue; }
         if (encoded.isEmpty()) {
             const QVariantMap view{{"channels", savedChannels()}, {"participants", participants()},
+                {"privateChats", privateChats()}, {"privateChat", privateChat()}, {"teamSpeakChat", teamSpeakChat()},
+                {"privateBlocked", privateBlocked()}, {"privateBlockedByMe", privateBlockedByMe()},
                 {"messages", messages()}, {"chatBot", chatBot()}, {"chatLifetimeDays", chatLifetimeDays()}, {"chatHostId", chatHostId_}, {"chatMembers", chatMembers()}, {"joinedHostId", joinedHostId_}, {"joined", joined()},
                 {"chatReady", chatReady()}, {"chatPending", chatPending()},
                 {"chatOnlineIds", chatOnlineIds()}, {"chatPresenceKnown", chatPresenceKnown()}, {"receiveAudioBitrate", receiveAudioBitrate()},
@@ -414,14 +417,28 @@ bool LocalChannel::applyRemoteView(const QByteArray& bytes) {
     if (view.contains("chatLifetimeDays")) {
         const auto days = view.value("chatLifetimeDays").toInteger(-1);
         if (view.value("chatLifetimeDays").toDouble(-1) != double(days)
-            || (days != 0 && days != 1 && days != 7 && days != 30)) return false;
+            || days < 0
+            || (days != 0 && (days > ChatHistory::maximumLifetime / ChatHistory::lifetime
+                || !ChatHistory::validLifetime(days * ChatHistory::lifetime)))) return false;
     }
     const auto host = view.value("joinedHostId").toString();
     if (!view.value("joinedHostId").isString() || (!host.isEmpty() && !validId(host)) || (view.value("joined").toBool() && host.isEmpty())) return false;
+    for (const auto* key : {"privateChat", "privateBlocked", "privateBlockedByMe"})
+        if (view.contains(key) && !view.value(key).isBool()) return false;
+    if (view.contains("privateChats") && !view.value("privateChats").isArray()) return false;
+    auto entries = view.value("channels").toArray();
+    for (const auto value : view.value("privateChats").toArray()) {
+        const auto entry = value.toObject();
+        if (entry.value("private") != true || !validId(entry.value("peerId").toString())
+            || !validId(entry.value("deviceId").toString()) || !entry.value("blocked").isBool()
+            || !entry.value("blockedByMe").isBool()) return false;
+        if (!entries.contains(value)) entries.append(value);
+    }
     QSet<QString> ids;
-    for (const auto value : view.value("channels").toArray()) {
+    for (const auto value : entries) {
         const auto entry = value.toObject(); const auto id = entry.value("id").toString();
         if (!validId(id) || ids.contains(id) || !displayName(entry.value("name")) || !entry.value("online").isBool()
+            || (entry.contains("ownerName") && entry.value("ownerName") != QJsonValue("") && !displayName(entry.value("ownerName")))
             || !entry.value("autoJoin").isBool() || !validEndpointHost(entry.value("address").toString())
             || entry.value("port").toInt() < 1 || entry.value("port").toInt() > 65535
             || !validMembers(entry.value("members")) || (!entry.value("online").toBool() && !entry.value("members").toArray().isEmpty())
@@ -451,7 +468,7 @@ bool LocalChannel::applyRemoteView(const QByteArray& bytes) {
     qint64 sequence = 0;
     for (const auto value : messages) {
         const auto entry = value.toObject();
-        if (!ChatHistory::validMessage(entry) || entry.value("sequence").toInteger() <= sequence) return false;
+        if (entry.contains("sealed") || !ChatHistory::validMessage(entry) || entry.value("sequence").toInteger() <= sequence) return false;
         sequence = entry.value("sequence").toInteger();
     }
     if (remoteView_.value("chatHostId").toString() != view.value("chatHostId").toString()) {
@@ -481,7 +498,11 @@ bool LocalChannel::handleRemoteAction(QSslSocket* socket, const QJsonObject& mes
         okay = validId(id) && (savedChannels_.contains(id) || ownChannel(id)) && joinSaved(id);
     } else if (action == "openChat") {
         const auto id = data.value("hostId").toString();
-        okay = validId(id) && (savedChannels_.contains(id) || ownChannel(id)) && openSavedChat(id);
+        okay = validId(id) && openSavedChat(id);
+    } else if (action == "openPrivate") {
+        okay = openPrivateChat(data.value("hostId").toString(), data.value("peerId").toString());
+    } else if (action == "blockPrivate" && data.value("value").isBool()) {
+        okay = setPrivateBlocked(data.value("conversation").toString(), data.value("value").toBool());
     } else if (action == "older") {
         okay = loadOlderMessages();
     } else if (action == "newer") {

@@ -36,14 +36,6 @@
             <translation>Opnaðu persónuverndarstillingar kerfisins þíns og leyfðu aðgang að hljóðnema fyrir SquadSpeak.</translation>
         </message>
         <message>
-            <source>Microphone analysis active. Test audio stays on this computer.</source>
-            <translation>Hljóðnemagreining virk. Prófunarhljóð helst á þessari tölvu.</translation>
-        </message>
-        <message>
-            <source>Finish the test recording before changing devices.</source>
-            <translation>Ljúktu við prófupptökuna áður en þú skiptir um tæki.</translation>
-        </message>
-        <message>
             <source>The output format is not supported.</source>
             <translation>Úttakssniðið er ekki stutt.</translation>
         </message>
@@ -68,32 +60,12 @@
             <translation>Ekki tókst að spila prófunartóninn.</translation>
         </message>
         <message>
-            <source>The microphone has provided no data for five seconds. Recording discarded.</source>
-            <translation>Hljóðneminn hefur ekki veitt nein gögn í fimm sekúndur. Upptöku hent.</translation>
-        </message>
-        <message>
-            <source>The microphone was interrupted or changed. Recording discarded.</source>
-            <translation>Hljóðneminn var rofinn eða honum breytt. Upptöku hent.</translation>
-        </message>
-        <message>
-            <source>Cancelled. The incomplete recording was discarded.</source>
-            <translation>Aflýst. Ófullkominni upptöku var hent.</translation>
-        </message>
-        <message>
             <source>No selected microphone is available</source>
             <translation>Enginn valinn hljóðnemi er tiltækur</translation>
         </message>
         <message>
             <source>Allow microphone access in the system dialog.</source>
             <translation>Leyfðu aðgang að hljóðnema í kerfisglugganum.</translation>
-        </message>
-        <message>
-            <source>Microphone capture active for the voice channel.</source>
-            <translation>Hljóðnemi virk fyrir raddrásina.</translation>
-        </message>
-        <message>
-            <source>Microphone access was denied. Nothing was saved.</source>
-            <translation>Aðgangur að hljóðnema var meinaður. Ekkert var til sparað.</translation>
         </message>
         <message>
             <source>Microphone access is missing. Allow it in System Settings.</source>
@@ -265,97 +237,6 @@
         </message>
     </context>
     <context>
-        <name>AudioRecording</name>
-        <message>
-            <source>Incomplete audio block. Recording discarded.</source>
-            <translation>Ófullnægjandi hljóðblokk. Upptöku hent.</translation>
-        </message>
-        <message>
-            <source>Move about one meter from the microphone. Keep the background sound playing and read the sentence.</source>
-            <translation>Færðu þig um einn metra frá hljóðnemanum. Haltu bakgrunnshljóðinu í spilun og lestu setninguna.</translation>
-        </message>
-        <message>
-            <source>Voice with background sound</source>
-            <translation>Rödd með bakgrunnshljóði</translation>
-        </message>
-        <message>
-            <source>The recordings folder could not be created.</source>
-            <translation>Ekki var hægt að búa til upptökumöppuna.</translation>
-        </message>
-        <message>
-            <source>You can stop the background sound now.</source>
-            <translation>Þú getur stöðvað bakgrunnshljóðið núna.</translation>
-        </message>
-        <message>
-            <source>Recordings saved</source>
-            <translation>Upptökur vistaðar</translation>
-        </message>
-        <message>
-            <source>The test recording could not be saved completely.</source>
-            <translation>Ekki tókst að vista prófunarupptökuna alveg.</translation>
-        </message>
-        <message>
-            <source>Keep music off and stay quiet. Start when ready.</source>
-            <translation>Haltu tónlist slökkt og vertu rólegur. Byrjaðu þegar tilbúið.</translation>
-        </message>
-        <message>
-            <source>Your voice</source>
-            <translation>Rödd þín</translation>
-        </message>
-        <message>
-            <source>Play music or another background sound at a normal volume. Stay quiet while recording.</source>
-            <translation>Spilaðu tónlist eða annað bakgrunnshljóð við venjulegt hljóðstyrk. Vertu rólegur meðan þú tekur upp.</translation>
-        </message>
-        <message>
-            <source>The test recording could not be created.</source>
-            <translation>Ekki tókst að búa til prufuupptökuna.</translation>
-        </message>
-        <message>
-            <source>Background sound</source>
-            <translation>Bakgrunnshljóð</translation>
-        </message>
-        <message>
-            <source>The window is open. I can hear the rain outside. One, two, three, four, five.</source>
-            <translation>Glugginn er opinn. Ég heyri rigninguna úti. Einn, tveir, þrír, fjórir, fimm.</translation>
-        </message>
-        <message>
-            <source>This microphone format is not supported for test recordings.</source>
-            <translation>Þetta hljóðnemasnið er ekki stutt fyrir prufuupptökur.</translation>
-        </message>
-        <message>
-            <source>Keep the background volume unchanged. Read the sentence, then stop recording.</source>
-            <translation>Haltu bakgrunnsstyrk óbreyttu. Lestu setninguna og hættu síðan að taka upp.</translation>
-        </message>
-        <message>
-            <source>Record at least half a second, then try again.</source>
-            <translation>Taktu upp að minnsta kosti hálfa sekúndu, reyndu svo aftur.</translation>
-        </message>
-        <message>
-            <source>Sit at your usual distance. Read the sentence, then stop recording.</source>
-            <translation>Sittu í venjulegri fjarlægð. Lestu setninguna og hættu síðan að taka upp.</translation>
-        </message>
-        <message>
-            <source>The recording description could not be saved.</source>
-            <translation>Ekki tókst að vista upptökulýsinguna.</translation>
-        </message>
-        <message>
-            <source>The WAV file could not be finalized.</source>
-            <translation>Ekki tókst að ganga frá WAV skránni.</translation>
-        </message>
-        <message>
-            <source>The WAV header could not be written.</source>
-            <translation>Ekki var hægt að skrifa WAV hausinn.</translation>
-        </message>
-        <message>
-            <source>Voice farther away</source>
-            <translation>Rödd lengra í burtu</translation>
-        </message>
-        <message>
-            <source>Room sound</source>
-            <translation>Herbergishljóð</translation>
-        </message>
-    </context>
-    <context>
         <name>AudioSettings</name>
         <message>
             <source>Echo cancellation</source>
@@ -406,8 +287,8 @@
             <translation>Spilun þín</translation>
         </message>
         <message>
-            <source>Clear local key</source>
-            <translation>Hreinsa staðbundinn taltakka</translation>
+            <source>Clear key</source>
+            <translation>Hreinsa takka</translation>
         </message>
         <message>
             <source>Low cut</source>
@@ -428,10 +309,6 @@
         <message>
             <source>Cancel</source>
             <translation>Hætta við</translation>
-        </message>
-        <message>
-            <source>Guided recording</source>
-            <translation>Upptaka með leiðsögn</translation>
         </message>
         <message>
             <source>Clipping. Reduce microphone gain.</source>
@@ -466,16 +343,12 @@
             <translation>Tæki aftengt</translation>
         </message>
         <message>
-            <source>Local key</source>
-            <translation>Staðbundinn taltakki</translation>
+            <source>PTT key</source>
+            <translation>Taltakki</translation>
         </message>
         <message>
             <source>Voice activation</source>
             <translation>Raddstýrður hljóðnemi</translation>
-        </message>
-        <message>
-            <source>Remote PTT key</source>
-            <translation>Fjarstýrður taltakki</translation>
         </message>
         <message>
             <source>Noise reduction</source>
@@ -492,10 +365,6 @@
         <message>
             <source>Microphone gain</source>
             <translation>Hljóðnema mögnun</translation>
-        </message>
-        <message>
-            <source>Clear remote key</source>
-            <translation>Hreinsa fjarstýrðan taltakka</translation>
         </message>
         <message>
             <source>Not assigned</source>
@@ -521,9 +390,81 @@
             <source>Read bot messages aloud</source>
             <translation>Lesa skilaboð vélmennis upphátt</translation>
         </message>
+        <message>
+            <source>Download a high-quality voice for this language in macOS settings.</source>
+            <translation>Sæktu hágæðarödd fyrir þetta tungumál í stillingum macOS.</translation>
+        </message>
+        <message>
+            <source>Bot voice</source>
+            <translation>Rödd vélmennis</translation>
+        </message>
+        <message>
+            <source>Automatic</source>
+            <translation>Sjálfskiptur</translation>
+        </message>
+        <message>
+            <source>Unavailable</source>
+            <translation>Ekki tiltækt</translation>
+        </message>
+        <message>
+            <source>Download voices in your device's Accessibility speech settings.</source>
+            <translation>Sæktu raddir í talstillingum undir Aðgengi á tækinu þínu.</translation>
+        </message>
+        <message>
+            <source>Voice download help</source>
+            <translation>Hjálp við að sækja raddir</translation>
+        </message>
+        <message>
+            <source>Strength, not the percentage of echo removed.</source>
+            <translation>Styrkur, ekki hlutfall bergmáls sem var fjarlægt.</translation>
+        </message>
+        <message>
+            <source>Auto also checks for speech, not just volume.</source>
+            <translation>Sjálfvirk stilling greinir líka tal, ekki aðeins hljóðstyrk.</translation>
+        </message>
     </context>
     <context>
         <name>Channels</name>
+        <message>
+            <source>Copy address</source>
+            <translation>Afrita heimilisfang</translation>
+        </message>
+        <message>
+            <source>Messages</source>
+            <translation>Skilaboð</translation>
+        </message>
+        <message>
+            <source>Message</source>
+            <translation>Skilaboð</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Opna</translation>
+        </message>
+        <message>
+            <source>Online</source>
+            <translation>Á netinu</translation>
+        </message>
+        <message>
+            <source>Offline</source>
+            <translation>Ótengdur</translation>
+        </message>
+        <message>
+            <source>No private messages</source>
+            <translation>Engin einkaskilaboð</translation>
+        </message>
+        <message>
+            <source>Private messages are unavailable for this contact.</source>
+            <translation>Einkaskilaboð eru ekki í boði fyrir þennan tengilið.</translation>
+        </message>
+        <message>
+            <source>If asked, allow local network access. You can change this in system settings.</source>
+            <translation>Ef þú ert spurð(ur), skaltu leyfa aðgang að staðarnetinu. Þú getur breytt þessu í kerfisstillingum.</translation>
+        </message>
+        <message>
+            <source>Retry</source>
+            <translation>Reyna aftur</translation>
+        </message>
         <message>
             <source>Updates</source>
             <translation>Uppfærslur</translation>
@@ -543,6 +484,10 @@
         <message>
             <source>DDNS cannot bypass CGNAT. If your provider shares the public IP, use a private VPN on all participating devices or a publicly reachable server.</source>
             <translation>DDNS getur ekki framhjá CGNAT. Ef þjónustuveitan þín deilir opinberu IP-talinu skaltu nota einka VPN á öllum tækjum sem taka þátt eða miðlara sem hægt er að ná til almennings.</translation>
+        </message>
+        <message>
+            <source>Remove server</source>
+            <translation>Fjarlægja netþjón</translation>
         </message>
         <message>
             <source>Low</source>
@@ -665,10 +610,6 @@
             <translation>Tilkynningahljóð</translation>
         </message>
         <message>
-            <source>Lifetime for new messages. Earlier messages keep their expiry.</source>
-            <translation>Ævi fyrir ný skilaboð. Fyrri skilaboð halda gildistíma sínum.</translation>
-        </message>
-        <message>
             <source>Enable speakers</source>
             <translation>Virkja hátalara</translation>
         </message>
@@ -703,10 +644,6 @@
         <message>
             <source>Allow device</source>
             <translation>Leyfa tæki</translation>
-        </message>
-        <message>
-            <source>Receive quality: %1 kb/s per voice. Adjusts automatically for this device.</source>
-            <translation>Móttökugæði: %1 kb/s á rödd. Stillir sjálfkrafa fyrir þetta tæki.</translation>
         </message>
         <message>
             <source>Stop radio</source>
@@ -1204,6 +1141,42 @@
             <source>Use default music volume</source>
             <translation>Nota sjálfgefinn hljóðstyrk tónlistar</translation>
         </message>
+        <message>
+            <source>Show in Dock</source>
+            <translation>Sýna í Dock</translation>
+        </message>
+        <message>
+            <source>App language</source>
+            <translation>Tungumál apps</translation>
+        </message>
+        <message>
+            <source>Send in</source>
+            <translation>Senda á</translation>
+        </message>
+        <message>
+            <source>Hear in</source>
+            <translation>Hlusta á</translation>
+        </message>
+        <message>
+            <source>Download language models for %1 and %2?</source>
+            <translation>Sækja tungumálalíkön fyrir %1 og %2?</translation>
+        </message>
+        <message>
+            <source>Download</source>
+            <translation>Sækja</translation>
+        </message>
+        <message>
+            <source>PTT, chat and channel controls. Uses the controlled device's microphone.</source>
+            <translation>PTT-, spjall- og rásastýringar. Hljóðnemi stýrða tækisins er notaður.</translation>
+        </message>
+        <message>
+            <source>Connect the other device to one of your channels, then allow it here.</source>
+            <translation>Tengdu hitt tækið við eina af rásunum þínum og leyfðu því síðan hér.</translation>
+        </message>
+        <message>
+            <source>On the other device, open Settings &gt; Input &gt; Remote control and allow this device.</source>
+            <translation>Opnaðu Stillingar &gt; Inntak &gt; Fjarstýring á hinu tækinu og leyfðu þessu tæki.</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1420,7 +1393,396 @@
         </message>
     </context>
     <context>
+        <name>Desktop</name>
+        <message>
+            <source>Open settings at startup.</source>
+            <translation>Opna stillingar við ræsingu.</translation>
+        </message>
+        <message>
+            <source>Alternative file for audio profiles.</source>
+            <translation>Önnur skrá fyrir hljóðsnið.</translation>
+        </message>
+        <message>
+            <source>Load the interface without microphone capture and exit after one second.</source>
+            <translation>Hlaða viðmótinu án hljóðnemaupptöku og hætta eftir eina sekúndu.</translation>
+        </message>
+        <message>
+            <source>Save an image of the app window during the UI test.</source>
+            <translation>Vista mynd af forritsglugganum meðan á viðmótsprófi stendur.</translation>
+        </message>
+        <message>
+            <source>The window image could not be saved.</source>
+            <translation>Ekki tókst að vista myndina af glugganum.</translation>
+        </message>
+        <message>
+            <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
+            <translation>Kerfisbakki er ekki tiltækur; forritið helst opið í glugga.</translation>
+        </message>
+    </context>
+    <context>
+        <name>Headless</name>
+        <message>
+            <source>Host display name.</source>
+            <translation>Birtingarheiti hýsils.</translation>
+        </message>
+        <message>
+            <source>Command failed.</source>
+            <translation>Skipun mistókst.</translation>
+        </message>
+        <message>
+            <source>%1 must be an integer.</source>
+            <translation>%1 verður að vera heiltala.</translation>
+        </message>
+        <message>
+            <source>Requests must be on/off or true/false.</source>
+            <translation>Beiðnir verða að vera on/off eða true/false.</translation>
+        </message>
+        <message>
+            <source>Unknown host property: %1</source>
+            <translation>Óþekkt eigindi þjóns: %1</translation>
+        </message>
+        <message>
+            <source>Run without GUI, microphone capture, or local audio output.</source>
+            <translation>Keyra án myndræns viðmóts, hljóðnemaupptöku eða staðbundins hljóðúttaks.</translation>
+        </message>
+        <message>
+            <source>Server storage prefix. Personal/audio/GUI profiles are not loaded.</source>
+            <translation>Forskeyti geymslu þjóns. Persónuleg snið, hljóðsnið og viðmótssnið eru ekki hlaðin.</translation>
+        </message>
+        <message>
+            <source>Optional private identity file instead of the OS credential store (Linux/macOS). Parent directory must exist and belong to this account.</source>
+            <translation>Valfrjáls einkaskrá auðkennis í stað skilríkjageymslu stýrikerfisins (Linux/macOS). Yfirmappan verður að vera til og tilheyra þessum reikningi.</translation>
+        </message>
+        <message>
+            <source>UTF-8 key=value properties or JSON host preset. Default: application.properties, then config/application.properties beside the app.</source>
+            <translation>UTF-8 eigindi key=value eða JSON forstilling þjóns. Sjálfgefið: application.properties, síðan config/application.properties við hlið forritsins.</translation>
+        </message>
+        <message>
+            <source>Channel display name.</source>
+            <translation>Birtingarnafn rásar.</translation>
+        </message>
+        <message>
+            <source>System and radio bot display name.</source>
+            <translation>Birtingarnafn kerfis- og útvarpsþjarks.</translation>
+        </message>
+        <message>
+            <source>TCP service port (1-65535).</source>
+            <translation>TCP þjónustugátt (1-65535).</translation>
+        </message>
+        <message>
+            <source>Headless admission is always on; only 'on' or 'true' is accepted.</source>
+            <translation>Aðgangur án myndræns viðmóts er alltaf virkur; aðeins 'on' eða 'true' er samþykkt.</translation>
+        </message>
+        <message>
+            <source>Preapprove a device ID; repeat for several devices. Existing bans remain.</source>
+            <translation>Samþykkja auðkenni tækis fyrirfram; endurtaktu fyrir fleiri tæki. Núverandi bönn haldast.</translation>
+        </message>
+        <message>
+            <source>Block a device ID; repeat for several devices.</source>
+            <translation>Loka á auðkenni tækis; endurtaktu fyrir fleiri tæki.</translation>
+        </message>
+        <message>
+            <source>Read a UTF-8 channel password from a file before listening. An empty file removes it.</source>
+            <translation>Lesa UTF-8 lykilorð rásar úr skrá áður en hlustun hefst. Tóm skrá fjarlægir það.</translation>
+        </message>
+        <message>
+            <source>Channel password. Empty removes it; environment or config avoids process-list exposure.</source>
+            <translation>Lykilorð rásar. Tómt gildi fjarlægir það; umhverfi eða stillingar koma í veg fyrir birtingu í ferlalista.</translation>
+        </message>
+        <message>
+            <source>SquadSpeak headless local channel host</source>
+            <translation>SquadSpeak staðbundinn rásarþjónn án myndræns viðmóts</translation>
+        </message>
+        <message>
+            <source>Environment variables (SQUADSPEAK_ prefix):</source>
+            <translation>Umhverfisbreytur (forskeyti SQUADSPEAK_):</translation>
+        </message>
+        <message>
+            <source>Host configuration could not be read or exceeds 1 MiB.</source>
+            <translation>Ekki tókst að lesa stillingar þjóns eða þær eru stærri en 1 MiB.</translation>
+        </message>
+        <message>
+            <source>Host configuration must be UTF-8.</source>
+            <translation>Stillingar þjóns verða að vera UTF-8.</translation>
+        </message>
+        <message>
+            <source>Host preset must be a JSON object.</source>
+            <translation>Forstilling þjóns verður að vera JSON hlutur.</translation>
+        </message>
+        <message>
+            <source>Property line %1 must use key=value.</source>
+            <translation>Lína eiginda %1 verður að nota key=value.</translation>
+        </message>
+        <message>
+            <source>Property line %1: %2</source>
+            <translation>Lína eiginda %1: %2</translation>
+        </message>
+        <message>
+            <source>Standard input has no file descriptor.</source>
+            <translation>Staðalinntak hefur engan skráarlýsi.</translation>
+        </message>
+        <message>
+            <source>Standard input could not be inspected.</source>
+            <translation>Ekki tókst að kanna staðalinntak.</translation>
+        </message>
+        <message>
+            <source>Could not write the command response: %1</source>
+            <translation>Ekki tókst að skrifa svar við skipun: %1</translation>
+        </message>
+        <message>
+            <source>Standard input could not be read: %1</source>
+            <translation>Ekki tókst að lesa staðalinntak: %1</translation>
+        </message>
+        <message>
+            <source>Input line exceeds 65536 bytes.</source>
+            <translation>Inntakslína fer yfir 65536 bæti.</translation>
+        </message>
+        <message>
+            <source>Each input line must be a JSON object.</source>
+            <translation>Hver inntakslína verður að vera JSON hlutur.</translation>
+        </message>
+        <message>
+            <source>Input ended before a complete JSON line.</source>
+            <translation>Inntaki lauk áður en heil JSON lína barst.</translation>
+        </message>
+        <message>
+            <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
+            <translation>Valfrjálst auðkenni eigin rásar fyrir skipanirnar status, configure, password, admission, history, chat og radio; sjálfgefið er aðalrásin.</translation>
+        </message>
+        <message>
+            <source>Channel action must be list, add or remove.</source>
+            <translation>Rásaraðgerð verður að vera list, add eða remove.</translation>
+        </message>
+        <message>
+            <source>Removing an own channel deletes its history, images, permissions and radio settings. Set confirmed=true to proceed.</source>
+            <translation>Þegar eigin rás er fjarlægð eyðist ferill hennar, myndir, heimildir og útvarpsstillingar. Stilltu confirmed=true til að halda áfram.</translation>
+        </message>
+        <message>
+            <source>id must identify an additional own channel.</source>
+            <translation>id verður að auðkenna eigin viðbótarrás.</translation>
+        </message>
+        <message>
+            <source>The additional own channel could not be removed: %1</source>
+            <translation>Ekki tókst að fjarlægja eigin viðbótarrás: %1</translation>
+        </message>
+        <message>
+            <source>channelId must identify an own channel.</source>
+            <translation>channelId verður að auðkenna eigin rás.</translation>
+        </message>
+        <message>
+            <source>values must be a host settings object.</source>
+            <translation>values verður að vera hlutur með stillingum þjóns.</translation>
+        </message>
+        <message>
+            <source>Headless admission is always enabled for non-banned devices; requests off is not supported.</source>
+            <translation>Aðgangur án myndræns viðmóts er alltaf virkur fyrir óbönnuð tæki; requests off er ekki stutt.</translation>
+        </message>
+        <message>
+            <source>value must be a password of at most 1024 UTF-8 bytes without control characters; an empty string removes it.</source>
+            <translation>value verður að vera lykilorð með mest 1024 UTF-8 bætum án stýristafa; tómur strengur fjarlægir það.</translation>
+        </message>
+        <message>
+            <source>The channel is not ready or a password change is in progress.</source>
+            <translation>Rásin er ekki tilbúin eða breyting á lykilorði er í gangi.</translation>
+        </message>
+        <message>
+            <source>The channel was removed while saving the password.</source>
+            <translation>Rásin var fjarlægð á meðan lykilorðið var vistað.</translation>
+        </message>
+        <message>
+            <source>id is required.</source>
+            <translation>id er nauðsynlegt.</translation>
+        </message>
+        <message>
+            <source>text must be a valid non-empty chat message.</source>
+            <translation>text verður að vera gild, ótóm spjallskilaboð.</translation>
+        </message>
+        <message>
+            <source>The local channel is not ready.</source>
+            <translation>Staðbundna rásin er ekki tilbúin.</translation>
+        </message>
+        <message>
+            <source>The channel's radio is unavailable.</source>
+            <translation>Útvarp rásarinnar er ekki tiltækt.</translation>
+        </message>
+        <message>
+            <source>Unknown command. Use help.</source>
+            <translation>Óþekkt skipun. Notaðu help.</translation>
+        </message>
+        <message>
+            <source>search requires a query, non-negative offset and limit from 1 to 128.</source>
+            <translation>search krefst query, offset sem er ekki neikvætt og limit frá 1 til 128.</translation>
+        </message>
+        <message>
+            <source>add creates an id; update requires an existing id.</source>
+            <translation>add býr til id; update krefst fyrirliggjandi id.</translation>
+        </message>
+        <message>
+            <source>A station is already being checked.</source>
+            <translation>Athugun á stöð er þegar í gangi.</translation>
+        </message>
+        <message>
+            <source>The channel was removed while checking the station.</source>
+            <translation>Rásin var fjarlægð á meðan stöðin var athuguð.</translation>
+        </message>
+        <message>
+            <source>Unknown radio action.</source>
+            <translation>Óþekkt útvarpsaðgerð.</translation>
+        </message>
+        <message>
+            <source>Could not load language: %1</source>
+            <translation>Ekki tókst að hlaða tungumáli: %1</translation>
+        </message>
+        <message>
+            <source>The %1 option is incompatible with --headless.</source>
+            <translation>Valkosturinn %1 er ósamhæfur við --headless.</translation>
+        </message>
+        <message>
+            <source>Unexpected positional arguments. Use --help.</source>
+            <translation>Óvænt staðbundin viðföng. Notaðu --help.</translation>
+        </message>
+        <message>
+            <source>--config / -f requires a non-empty path.</source>
+            <translation>--config / -f krefst ótómrar slóðar.</translation>
+        </message>
+        <message>
+            <source>Choose --password or --password-file, not both.</source>
+            <translation>Veldu --password eða --password-file, ekki bæði.</translation>
+        </message>
+        <message>
+            <source>Choose SQUADSPEAK_PASSWORD or SQUADSPEAK_PASSWORD_FILE, not both.</source>
+            <translation>Veldu SQUADSPEAK_PASSWORD eða SQUADSPEAK_PASSWORD_FILE, ekki bæði.</translation>
+        </message>
+        <message>
+            <source>Choose password or passwordFile in one configuration layer, not both.</source>
+            <translation>Veldu password eða passwordFile í einu stillingalagi, ekki bæði.</translation>
+        </message>
+        <message>
+            <source>passwordFile must be a non-empty path.</source>
+            <translation>passwordFile verður að vera ótóm slóð.</translation>
+        </message>
+        <message>
+            <source>Password file could not be read or is too large.</source>
+            <translation>Ekki tókst að lesa lykilorðsskrána eða hún er of stór.</translation>
+        </message>
+        <message>
+            <source>Password file must contain at most 1024 UTF-8 bytes without control characters.</source>
+            <translation>Lykilorðsskráin má innihalda mest 1024 UTF-8 bæti án stýristafa.</translation>
+        </message>
+        <message>
+            <source>Password must be a string of at most 1024 UTF-8 bytes without control characters.</source>
+            <translation>Lykilorðið verður að vera strengur með mest 1024 UTF-8 bætum án stýristafa.</translation>
+        </message>
+        <message>
+            <source>settingsFile must be a non-empty path.</source>
+            <translation>settingsFile verður að vera ótóm slóð.</translation>
+        </message>
+        <message>
+            <source>identityFile must be a non-empty path.</source>
+            <translation>identityFile verður að vera ótóm slóð.</translation>
+        </message>
+        <message>
+            <source>The settings directory could not be created.</source>
+            <translation>Ekki tókst að búa til stillingamöppuna.</translation>
+        </message>
+        <message>
+            <source>This SquadSpeak profile is already running or cannot be locked.</source>
+            <translation>Þetta SquadSpeak snið er þegar í gangi eða ekki er hægt að læsa því.</translation>
+        </message>
+        <message>
+            <source>Standard input could not be opened.</source>
+            <translation>Ekki tókst að opna staðalinntak.</translation>
+        </message>
+        <message>
+            <source>Standard output could not be opened.</source>
+            <translation>Ekki tókst að opna staðalúttak.</translation>
+        </message>
+        <message>
+            <source>This identity file is already in use or cannot be locked.</source>
+            <translation>Þessi auðkennisskrá er þegar í notkun eða ekki er hægt að læsa henni.</translation>
+        </message>
+        <message>
+            <source>Invalid host configuration: %1</source>
+            <translation>Ógildar stillingar þjóns: %1</translation>
+        </message>
+        <message>
+            <source>Radio channels could not be initialized.</source>
+            <translation>Ekki tókst að frumstilla útvarpsrásir.</translation>
+        </message>
+        <message>
+            <source>Headless host could not start: %1</source>
+            <translation>Ekki tókst að ræsa þjón án myndræns viðmóts: %1</translation>
+        </message>
+        <message>
+            <source>Channel password could not be saved.</source>
+            <translation>Ekki tókst að vista lykilorð rásar.</translation>
+        </message>
+        <message>
+            <source>Invalid channel password: %1</source>
+            <translation>Ógilt lykilorð rásar: %1</translation>
+        </message>
+        <message>
+            <source>Headless host could not initialize: %1</source>
+            <translation>Ekki tókst að frumstilla þjón án myndræns viðmóts: %1</translation>
+        </message>
+        <message>
+            <source>SquadSpeak headless could not start: %1</source>
+            <translation>Ekki tókst að ræsa SquadSpeak án myndræns viðmóts: %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>Aðgerð stuðningsmanna verður að vera staða, innskráning, endurnýjun, útskráning eða hætta við. status sign-in refresh sign-out cancel</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>Stuðningsmannaaðgerð er í gangi.</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>Aðgangur stuðningsmanna er ekki tiltækur í þessari byggingu.</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>Forgangur stillinga: rök &gt; umhverfi &gt; eiginleikar &gt; vistuð miðlaragildi.</translation>
+        </message>
+    </context>
+    <context>
+        <name>License</name>
+        <message>
+            <source>License storage is busy or unavailable.</source>
+            <translation>Leyfisgeymsla er upptekin eða ekki tiltæk.</translation>
+        </message>
+        <message>
+            <source>License storage is unavailable.</source>
+            <translation>Leyfisgeymsla er ekki tiltæk.</translation>
+        </message>
+        <message>
+            <source>Sign-in expired. Try again.</source>
+            <translation>Innskráning rann út. Reyndu aftur.</translation>
+        </message>
+        <message>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>GitHub innskráning er ekki tiltæk. Reyndu aftur.</translation>
+        </message>
+        <message>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>GitHub innskráningu var ekki lokið. Reyndu aftur.</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>Ekki var hægt að athuga GitHub. Aðgangur án nettengingar varir í mesta lagi sjö daga.</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>Skráðu þig inn með GitHub aftur.</translation>
+        </message>
+    </context>
+    <context>
         <name>LocalChannel</name>
+        <message>
+            <source>Blocked</source>
+            <translation>Lokað</translation>
+        </message>
         <message>
             <source>Host is not responding. Reconnecting.</source>
             <translation>Gestgjafi svarar ekki. Tengist aftur.</translation>
@@ -2205,6 +2567,53 @@
             <source>Voice relay codec could not be configured.</source>
             <translation>Ekki tókst að stilla merkjamál fyrir raddmiðlun.</translation>
         </message>
+        <message>
+            <source>Unsupported audio codec</source>
+            <translation>Óstuddur hljóðkóðari</translation>
+        </message>
+        <message>
+            <source>Speaking is not allowed in this channel.</source>
+            <translation>Ekki er leyfilegt að tala á þessari rás.</translation>
+        </message>
+    </context>
+    <context>
+        <name>LocalLanguage</name>
+        <message>
+            <source>Translation (experimental)</source>
+            <translation>Þýðing (tilraunaeiginleiki)</translation>
+        </message>
+        <message>
+            <source>Translate messages</source>
+            <translation>Þýða skilaboð</translation>
+        </message>
+        <message>
+            <source>Translated voice</source>
+            <translation>Þýdd rödd</translation>
+        </message>
+        <message>
+            <source>Original audio</source>
+            <translation>Upprunalegt hljóð</translation>
+        </message>
+        <message>
+            <source>Original text</source>
+            <translation>Upprunalegur texti</translation>
+        </message>
+        <message>
+            <source>Prepare languages</source>
+            <translation>Undirbúa tungumál</translation>
+        </message>
+        <message>
+            <source>Local language processing is unavailable.</source>
+            <translation>Staðbundin málvinnsla er ekki tiltæk.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be read.</source>
+            <translation>Ekki tókst að lesa tungumálastillingar.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be saved.</source>
+            <translation>Ekki tókst að vista tungumálastillingar.</translation>
+        </message>
     </context>
     <context>
         <name>PushToTalkKey</name>
@@ -2345,50 +2754,65 @@
         </message>
     </context>
     <context>
-        <name>RecordingPanel</name>
+        <name>ScreenPanel</name>
         <message>
-            <source>Stop</source>
-            <translation>Hættu</translation>
+            <source>Media capacity reached</source>
+            <translation>Fjölmiðlum náð</translation>
         </message>
         <message>
-            <source>Start</source>
-            <translation>Byrja</translation>
+            <source>Video paused</source>
+            <translation>Hlé gert á myndbandinu</translation>
         </message>
         <message>
-            <source>Saved on this device only. Nothing is uploaded.</source>
-            <translation>Aðeins vistað á þessu tæki. Ekkert er hlaðið upp.</translation>
+            <source>Stream ended</source>
+            <translation>Straumi lokið</translation>
         </message>
         <message>
-            <source>Keep this take or record it again.</source>
-            <translation>Haltu þessari töku eða skráðu hana aftur.</translation>
+            <source>Connecting</source>
+            <translation>Tengist</translation>
         </message>
         <message>
-            <source>Record again</source>
-            <translation>Taka aftur upp</translation>
+            <source>Open screen stream</source>
+            <translation>Opinn skjástraumur</translation>
         </message>
         <message>
-            <source>Use recording</source>
-            <translation>Notaðu upptöku</translation>
+            <source>Screen stream</source>
+            <translation>Skjástraumur</translation>
         </message>
         <message>
-            <source>Recording progress</source>
-            <translation>Upptaka framfara</translation>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
+        </message>
+    </context>
+    <context>
+        <name>ScreenShare</name>
+        <message>
+            <source>Allow screen recording in system settings.</source>
+            <translation>Leyfðu skjáupptöku í kerfisstillingum.</translation>
         </message>
         <message>
-            <source>Step %1 of %2</source>
-            <translation>Skref %1 af %2</translation>
+            <source>The shared screen was removed. Select a source to start again.</source>
+            <translation>Samnýtti skjárinn var fjarlægður. Veldu heimild til að byrja aftur.</translation>
         </message>
         <message>
-            <source>Open recordings</source>
-            <translation>Opnar upptökur</translation>
+            <source>The shared window was closed. Select a source to start again.</source>
+            <translation>Sameiginlegur gluggi var lokaður. Veldu heimild til að byrja aftur.</translation>
         </message>
         <message>
-            <source>Reset test</source>
-            <translation>Endurstilla próf</translation>
+            <source>The selected screen is no longer available.</source>
+            <translation>Valdi skjárinn er ekki lengur tiltækur.</translation>
         </message>
         <message>
-            <source>%1 s remaining / %2 dBFS</source>
-            <translation>%1 s eftir / %2 dBFS</translation>
+            <source>The selected window is no longer available.</source>
+            <translation>Valinn gluggi er ekki lengur tiltækur.</translation>
+        </message>
+        <message>
+            <source>The selected source exceeds the capture size limit.</source>
+            <translation>Valin uppspretta fer yfir tökustærðarmörkin.</translation>
+        </message>
+        <message>
+            <source>Close a video view before opening another stream.</source>
+            <translation>Lokaðu myndskeiði áður en þú opnar annan straum.</translation>
         </message>
     </context>
     <context>
@@ -2465,10 +2889,6 @@
             <translation>Safnar merki...</translation>
         </message>
         <message>
-            <source>Dashed curve: configured gain and frequency cuts, using the right dB scale. Noise reduction and voice activation are not part of this curve.</source>
-            <translation>Strikuð ferill: stillt aukning og tíðniskerðing, með því að nota réttan dB kvarða. Hávaðaminnkun og raddvirkjun eru ekki hluti af þessum ferli.</translation>
-        </message>
-        <message>
             <source>Microphone preview is not running</source>
             <translation>Forskoðun hljóðnema er ekki í gangi</translation>
         </message>
@@ -2479,303 +2899,6 @@
         <message>
             <source>Peak: %1</source>
             <translation>Hámark: %1</translation>
-        </message>
-    </context>
-    <context>
-        <name>Tray</name>
-        <message>
-            <source>Quit</source>
-            <translation>Hætta</translation>
-        </message>
-        <message>
-            <source>SquadSpeak - speaking</source>
-            <translation>SquadSpeak - tala</translation>
-        </message>
-        <message>
-            <source>Settings</source>
-            <translation>Stillingar</translation>
-        </message>
-        <message>
-            <source>Channels</source>
-            <translation>Rásir</translation>
-        </message>
-        <message>
-            <source>New image</source>
-            <translation>Ný mynd</translation>
-        </message>
-    </context>
-    <context>
-        <name>VoiceAvatar</name>
-        <message>
-            <source>Muted</source>
-            <translation>Hljóðnemi slökktur</translation>
-        </message>
-        <message>
-            <source>Sleeping</source>
-            <translation>Sofandi</translation>
-        </message>
-        <message>
-            <source>Offline</source>
-            <translation>Ótengdur</translation>
-        </message>
-        <message>
-            <source>Speaking</source>
-            <translation>Talandi</translation>
-        </message>
-        <message>
-            <source>Unavailable</source>
-            <translation>Ekki tiltækt</translation>
-        </message>
-        <message>
-            <source>Listening</source>
-            <translation>Að hlusta</translation>
-        </message>
-        <message>
-            <source>Deafened</source>
-            <translation>Hátalarar þaggaðir</translation>
-        </message>
-    </context>
-    <context>
-        <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>Ekki tiltækt - hljóðstillingar eða tónprófun</translation>
-        </message>
-        <message>
-            <source>Microphone muted</source>
-            <translation>Hljóðnemi slökktur</translation>
-        </message>
-        <message>
-            <source>Push-to-talk held</source>
-            <translation>Kallkerfishnappnum er haldið niðri</translation>
-        </message>
-        <message>
-            <source>Ready - push-to-talk released</source>
-            <translation>Tilbúið - kallkerfishnappnum hefur verið sleppt</translation>
-        </message>
-        <message>
-            <source>Microphone unmuted</source>
-            <translation>Kveikt á hljóðnema</translation>
-        </message>
-        <message>
-            <source>Settings could not be saved: %1</source>
-            <translation>Ekki tókst að vista stillingar: %1</translation>
-        </message>
-        <message>
-            <source>The push-to-talk sequence cannot be incremented further.</source>
-            <translation>Ekki er hægt að auka kallkerfisröðina frekar.</translation>
-        </message>
-        <message>
-            <source>Choose System, Light or Dark.</source>
-            <translation>Veldu System, Light eða Dark.</translation>
-        </message>
-        <message>
-            <source>Choose a colour palette from the list.</source>
-            <translation>Veldu litavali af listanum.</translation>
-        </message>
-        <message>
-            <source>Choose an available avatar.</source>
-            <translation>Veldu tiltækan avatar.</translation>
-        </message>
-        <message>
-            <source>Invalid push-to-talk binding.</source>
-            <translation>Ógild kallkerfisbinding.</translation>
-        </message>
-        <message>
-            <source>Release the held push-to-talk key first.</source>
-            <translation>Slepptu þrýsti-til-tal takkanum fyrst.</translation>
-        </message>
-        <message>
-            <source>Choose a language from the list.</source>
-            <translation>Veldu tungumál af listanum.</translation>
-        </message>
-        <message>
-            <source>This avatar requires Supporter.</source>
-            <translation>Þessi avatar krefst Supporter.</translation>
-        </message>
-        <message>
-            <source>The name must contain 1 to 64 characters.</source>
-            <translation>Nafnið verður að innihalda 1 til 64 stafi.</translation>
-        </message>
-        <message>
-            <source>The name may not contain control characters or line breaks.</source>
-            <translation>Nafnið má ekki innihalda stýristafi eða línuskil.</translation>
-        </message>
-        <message>
-            <source>Session settings could not be read.</source>
-            <translation>Ekki tókst að lesa lotustillingar.</translation>
-        </message>
-        <message>
-            <source>Saved setting is invalid: %1</source>
-            <translation>Ógild vistuð stilling: %1</translation>
-        </message>
-    </context>
-    <context>
-        <name>License</name>
-        <message>
-            <source>License storage is busy or unavailable.</source>
-            <translation>Leyfisgeymsla er upptekin eða ekki tiltæk.</translation>
-        </message>
-        <message>
-            <source>License storage is unavailable.</source>
-            <translation>Leyfisgeymsla er ekki tiltæk.</translation>
-        </message>
-        <message>
-            <source>Sign-in expired. Try again.</source>
-            <translation>Innskráning rann út. Reyndu aftur.</translation>
-        </message>
-        <message>
-            <source>GitHub sign-in is unavailable. Try again.</source>
-            <translation>GitHub innskráning er ekki tiltæk. Reyndu aftur.</translation>
-        </message>
-        <message>
-            <source>GitHub sign-in was not completed. Try again.</source>
-            <translation>GitHub innskráningu var ekki lokið. Reyndu aftur.</translation>
-        </message>
-        <message>
-            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
-            <translation>Ekki var hægt að athuga GitHub. Aðgangur án nettengingar varir í mesta lagi sjö daga.</translation>
-        </message>
-        <message>
-            <source>Sign in with GitHub again.</source>
-            <translation>Skráðu þig inn með GitHub aftur.</translation>
-        </message>
-    </context>
-    <context>
-        <name>ScreenShare</name>
-        <message>
-            <source>The shared screen was removed. Select a source to start again.</source>
-            <translation>Samnýtti skjárinn var fjarlægður. Veldu heimild til að byrja aftur.</translation>
-        </message>
-        <message>
-            <source>The shared window was closed. Select a source to start again.</source>
-            <translation>Sameiginlegur gluggi var lokaður. Veldu heimild til að byrja aftur.</translation>
-        </message>
-        <message>
-            <source>The selected screen is no longer available.</source>
-            <translation>Valdi skjárinn er ekki lengur tiltækur.</translation>
-        </message>
-        <message>
-            <source>The selected window is no longer available.</source>
-            <translation>Valinn gluggi er ekki lengur tiltækur.</translation>
-        </message>
-        <message>
-            <source>The selected source exceeds the capture size limit.</source>
-            <translation>Valin uppspretta fer yfir tökustærðarmörkin.</translation>
-        </message>
-        <message>
-            <source>Close a video view before opening another stream.</source>
-            <translation>Lokaðu myndskeiði áður en þú opnar annan straum.</translation>
-        </message>
-    </context>
-    <context>
-        <name>ScreenPanel</name>
-        <message>
-            <source>Media capacity reached</source>
-            <translation>Fjölmiðlum náð</translation>
-        </message>
-        <message>
-            <source>Video paused</source>
-            <translation>Hlé gert á myndbandinu</translation>
-        </message>
-        <message>
-            <source>Stream ended</source>
-            <translation>Straumi lokið</translation>
-        </message>
-        <message>
-            <source>Connecting</source>
-            <translation>Tengist</translation>
-        </message>
-        <message>
-            <source>Open screen stream</source>
-            <translation>Opinn skjástraumur</translation>
-        </message>
-        <message>
-            <source>Screen stream</source>
-            <translation>Skjástraumur</translation>
-        </message>
-        <message>
-            <source>%1 kbit/s</source>
-            <translation>%1 kbit/s</translation>
-        </message>
-    </context>
-    <context>
-        <name>VideoCodec</name>
-        <message>
-            <source>Video codec: %1</source>
-            <translation>Myndkóðun: %1</translation>
-        </message>
-        <message>
-            <source>Video codec ABI does not match its headers.</source>
-            <translation>ABI myndkóðunarinnar passar ekki við hausskrárnar.</translation>
-        </message>
-        <message>
-            <source>Video buffers could not be allocated.</source>
-            <translation>Ekki tókst að úthluta minni fyrir myndbiðminni.</translation>
-        </message>
-        <message>
-            <source>Invalid video quality tier.</source>
-            <translation>Ógilt gæðastig myndskeiðs.</translation>
-        </message>
-        <message>
-            <source>The screen source exceeds the supported capture size.</source>
-            <translation>Skjáuppsprettan fer yfir studda stærð skjáupptöku.</translation>
-        </message>
-        <message>
-            <source>The screen source is too narrow.</source>
-            <translation>Skjáuppsprettan er of mjó.</translation>
-        </message>
-        <message>
-            <source>The video encoder could not be allocated.</source>
-            <translation>Ekki tókst að úthluta minni fyrir myndkóðarann.</translation>
-        </message>
-        <message>
-            <source>No supported video encoder is available.</source>
-            <translation>Enginn studdur myndkóðari er tiltækur.</translation>
-        </message>
-        <message>
-            <source>Video encoder configuration is too large.</source>
-            <translation>Stilling myndkóðarans er of stór.</translation>
-        </message>
-        <message>
-            <source>Video scaling could not be initialized.</source>
-            <translation>Ekki tókst að frumstilla stærðarbreytingu myndskeiðs.</translation>
-        </message>
-        <message>
-            <source>The encoder returned an empty video packet.</source>
-            <translation>Kóðarinn skilaði tómum myndpakka.</translation>
-        </message>
-        <message>
-            <source>Invalid video frame format.</source>
-            <translation>Ógilt snið myndramma.</translation>
-        </message>
-        <message>
-            <source>Invalid video decoder configuration.</source>
-            <translation>Ógild stilling myndafkóðarans.</translation>
-        </message>
-        <message>
-            <source>This video codec cannot be decoded.</source>
-            <translation>Ekki er hægt að afkóða þetta myndmerkjasnið.</translation>
-        </message>
-        <message>
-            <source>Video decoder could not be allocated.</source>
-            <translation>Ekki tókst að úthluta minni fyrir myndafkóðarann.</translation>
-        </message>
-        <message>
-            <source>Video decoder configuration could not be allocated.</source>
-            <translation>Ekki tókst að úthluta minni fyrir stillingu myndafkóðarans.</translation>
-        </message>
-        <message>
-            <source>Decoded dimensions do not match the screen stream.</source>
-            <translation>Afkóðaðar stærðir samsvara ekki skjástraumnum.</translation>
-        </message>
-        <message>
-            <source>Decoded image could not be allocated.</source>
-            <translation>Ekki tókst að úthluta minni fyrir afkóðuðu myndina.</translation>
-        </message>
-        <message>
-            <source>Video color conversion could not be initialized.</source>
-            <translation>Ekki tókst að frumstilla litabreytingu myndskeiðs.</translation>
         </message>
     </context>
     <context>
@@ -2894,404 +3017,211 @@
         </message>
     </context>
     <context>
-        <name>Headless</name>
+        <name>Tray</name>
         <message>
-            <source>Command failed.</source>
-            <translation>Skipun mistókst.</translation>
+            <source>Quit</source>
+            <translation>Hætta</translation>
         </message>
         <message>
-            <source>%1 must be an integer.</source>
-            <translation>%1 verður að vera heiltala.</translation>
+            <source>SquadSpeak - speaking</source>
+            <translation>SquadSpeak - tala</translation>
         </message>
         <message>
-            <source>Requests must be on/off or true/false.</source>
-            <translation>Beiðnir verða að vera on/off eða true/false.</translation>
+            <source>Settings</source>
+            <translation>Stillingar</translation>
         </message>
         <message>
-            <source>Unknown host property: %1</source>
-            <translation>Óþekkt eigindi þjóns: %1</translation>
+            <source>Channels</source>
+            <translation>Rásir</translation>
         </message>
         <message>
-            <source>Run without GUI, microphone capture, or local audio output.</source>
-            <translation>Keyra án myndræns viðmóts, hljóðnemaupptöku eða staðbundins hljóðúttaks.</translation>
-        </message>
-        <message>
-            <source>Server storage prefix. Personal/audio/GUI profiles are not loaded.</source>
-            <translation>Forskeyti geymslu þjóns. Persónuleg snið, hljóðsnið og viðmótssnið eru ekki hlaðin.</translation>
-        </message>
-        <message>
-            <source>Optional private identity file instead of the OS credential store (Linux/macOS). Parent directory must exist and belong to this account.</source>
-            <translation>Valfrjáls einkaskrá auðkennis í stað skilríkjageymslu stýrikerfisins (Linux/macOS). Yfirmappan verður að vera til og tilheyra þessum reikningi.</translation>
-        </message>
-        <message>
-            <source>UTF-8 key=value properties or JSON host preset. Default: application.properties, then config/application.properties beside the app.</source>
-            <translation>UTF-8 eigindi key=value eða JSON forstilling þjóns. Sjálfgefið: application.properties, síðan config/application.properties við hlið forritsins.</translation>
-        </message>
-        <message>
-            <source>Channel display name.</source>
-            <translation>Birtingarnafn rásar.</translation>
-        </message>
-        <message>
-            <source>System and radio bot display name.</source>
-            <translation>Birtingarnafn kerfis- og útvarpsþjarks.</translation>
-        </message>
-        <message>
-            <source>TCP service port (1-65535).</source>
-            <translation>TCP þjónustugátt (1-65535).</translation>
-        </message>
-        <message>
-            <source>Headless admission is always on; only 'on' or 'true' is accepted.</source>
-            <translation>Aðgangur án myndræns viðmóts er alltaf virkur; aðeins 'on' eða 'true' er samþykkt.</translation>
-        </message>
-        <message>
-            <source>Preapprove a device ID; repeat for several devices. Existing bans remain.</source>
-            <translation>Samþykkja auðkenni tækis fyrirfram; endurtaktu fyrir fleiri tæki. Núverandi bönn haldast.</translation>
-        </message>
-        <message>
-            <source>Block a device ID; repeat for several devices.</source>
-            <translation>Loka á auðkenni tækis; endurtaktu fyrir fleiri tæki.</translation>
-        </message>
-        <message>
-            <source>Read a UTF-8 channel password from a file before listening. An empty file removes it.</source>
-            <translation>Lesa UTF-8 lykilorð rásar úr skrá áður en hlustun hefst. Tóm skrá fjarlægir það.</translation>
-        </message>
-        <message>
-            <source>Channel password. Empty removes it; environment or config avoids process-list exposure.</source>
-            <translation>Lykilorð rásar. Tómt gildi fjarlægir það; umhverfi eða stillingar koma í veg fyrir birtingu í ferlalista.</translation>
-        </message>
-        <message>
-            <source>SquadSpeak headless local channel host</source>
-            <translation>SquadSpeak staðbundinn rásarþjónn án myndræns viðmóts</translation>
-        </message>
-        <message>
-            <source>Environment variables (SQUADSPEAK_ prefix):</source>
-            <translation>Umhverfisbreytur (forskeyti SQUADSPEAK_):</translation>
-        </message>
-        <message>
-            <source>Host configuration could not be read or exceeds 1 MiB.</source>
-            <translation>Ekki tókst að lesa stillingar þjóns eða þær eru stærri en 1 MiB.</translation>
-        </message>
-        <message>
-            <source>Host configuration must be UTF-8.</source>
-            <translation>Stillingar þjóns verða að vera UTF-8.</translation>
-        </message>
-        <message>
-            <source>Host preset must be a JSON object.</source>
-            <translation>Forstilling þjóns verður að vera JSON hlutur.</translation>
-        </message>
-        <message>
-            <source>Property line %1 must use key=value.</source>
-            <translation>Lína eiginda %1 verður að nota key=value.</translation>
-        </message>
-        <message>
-            <source>Property line %1: %2</source>
-            <translation>Lína eiginda %1: %2</translation>
-        </message>
-        <message>
-            <source>Standard input has no file descriptor.</source>
-            <translation>Staðalinntak hefur engan skráarlýsi.</translation>
-        </message>
-        <message>
-            <source>Standard input could not be inspected.</source>
-            <translation>Ekki tókst að kanna staðalinntak.</translation>
-        </message>
-        <message>
-            <source>Could not write the command response: %1</source>
-            <translation>Ekki tókst að skrifa svar við skipun: %1</translation>
-        </message>
-        <message>
-            <source>Standard input could not be read: %1</source>
-            <translation>Ekki tókst að lesa staðalinntak: %1</translation>
-        </message>
-        <message>
-            <source>Input line exceeds 65536 bytes.</source>
-            <translation>Inntakslína fer yfir 65536 bæti.</translation>
-        </message>
-        <message>
-            <source>Each input line must be a JSON object.</source>
-            <translation>Hver inntakslína verður að vera JSON hlutur.</translation>
-        </message>
-        <message>
-            <source>Input ended before a complete JSON line.</source>
-            <translation>Inntaki lauk áður en heil JSON lína barst.</translation>
-        </message>
-        <message>
-            <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
-            <translation>Valfrjálst auðkenni eigin rásar fyrir skipanirnar status, configure, password, admission, history, chat og radio; sjálfgefið er aðalrásin.</translation>
-        </message>
-        <message>
-            <source>Channel action must be list, add or remove.</source>
-            <translation>Rásaraðgerð verður að vera list, add eða remove.</translation>
-        </message>
-        <message>
-            <source>Removing an own channel deletes its history, images, permissions and radio settings. Set confirmed=true to proceed.</source>
-            <translation>Þegar eigin rás er fjarlægð eyðist ferill hennar, myndir, heimildir og útvarpsstillingar. Stilltu confirmed=true til að halda áfram.</translation>
-        </message>
-        <message>
-            <source>id must identify an additional own channel.</source>
-            <translation>id verður að auðkenna eigin viðbótarrás.</translation>
-        </message>
-        <message>
-            <source>The additional own channel could not be removed: %1</source>
-            <translation>Ekki tókst að fjarlægja eigin viðbótarrás: %1</translation>
-        </message>
-        <message>
-            <source>channelId must identify an own channel.</source>
-            <translation>channelId verður að auðkenna eigin rás.</translation>
-        </message>
-        <message>
-            <source>values must be a host settings object.</source>
-            <translation>values verður að vera hlutur með stillingum þjóns.</translation>
-        </message>
-        <message>
-            <source>Headless admission is always enabled for non-banned devices; requests off is not supported.</source>
-            <translation>Aðgangur án myndræns viðmóts er alltaf virkur fyrir óbönnuð tæki; requests off er ekki stutt.</translation>
-        </message>
-        <message>
-            <source>value must be a password of at most 1024 UTF-8 bytes without control characters; an empty string removes it.</source>
-            <translation>value verður að vera lykilorð með mest 1024 UTF-8 bætum án stýristafa; tómur strengur fjarlægir það.</translation>
-        </message>
-        <message>
-            <source>The channel is not ready or a password change is in progress.</source>
-            <translation>Rásin er ekki tilbúin eða breyting á lykilorði er í gangi.</translation>
-        </message>
-        <message>
-            <source>The channel was removed while saving the password.</source>
-            <translation>Rásin var fjarlægð á meðan lykilorðið var vistað.</translation>
-        </message>
-        <message>
-            <source>id is required.</source>
-            <translation>id er nauðsynlegt.</translation>
-        </message>
-        <message>
-            <source>text must be a valid non-empty chat message.</source>
-            <translation>text verður að vera gild, ótóm spjallskilaboð.</translation>
-        </message>
-        <message>
-            <source>The local channel is not ready.</source>
-            <translation>Staðbundna rásin er ekki tilbúin.</translation>
-        </message>
-        <message>
-            <source>The channel's radio is unavailable.</source>
-            <translation>Útvarp rásarinnar er ekki tiltækt.</translation>
-        </message>
-        <message>
-            <source>Unknown command. Use help.</source>
-            <translation>Óþekkt skipun. Notaðu help.</translation>
-        </message>
-        <message>
-            <source>search requires a query, non-negative offset and limit from 1 to 128.</source>
-            <translation>search krefst query, offset sem er ekki neikvætt og limit frá 1 til 128.</translation>
-        </message>
-        <message>
-            <source>add creates an id; update requires an existing id.</source>
-            <translation>add býr til id; update krefst fyrirliggjandi id.</translation>
-        </message>
-        <message>
-            <source>A station is already being checked.</source>
-            <translation>Athugun á stöð er þegar í gangi.</translation>
-        </message>
-        <message>
-            <source>The channel was removed while checking the station.</source>
-            <translation>Rásin var fjarlægð á meðan stöðin var athuguð.</translation>
-        </message>
-        <message>
-            <source>Unknown radio action.</source>
-            <translation>Óþekkt útvarpsaðgerð.</translation>
-        </message>
-        <message>
-            <source>Could not load language: %1</source>
-            <translation>Ekki tókst að hlaða tungumáli: %1</translation>
-        </message>
-        <message>
-            <source>The %1 option is incompatible with --headless.</source>
-            <translation>Valkosturinn %1 er ósamhæfur við --headless.</translation>
-        </message>
-        <message>
-            <source>Unexpected positional arguments. Use --help.</source>
-            <translation>Óvænt staðbundin viðföng. Notaðu --help.</translation>
-        </message>
-        <message>
-            <source>--config / -f requires a non-empty path.</source>
-            <translation>--config / -f krefst ótómrar slóðar.</translation>
-        </message>
-        <message>
-            <source>Choose --password or --password-file, not both.</source>
-            <translation>Veldu --password eða --password-file, ekki bæði.</translation>
-        </message>
-        <message>
-            <source>Choose SQUADSPEAK_PASSWORD or SQUADSPEAK_PASSWORD_FILE, not both.</source>
-            <translation>Veldu SQUADSPEAK_PASSWORD eða SQUADSPEAK_PASSWORD_FILE, ekki bæði.</translation>
-        </message>
-        <message>
-            <source>Choose password or passwordFile in one configuration layer, not both.</source>
-            <translation>Veldu password eða passwordFile í einu stillingalagi, ekki bæði.</translation>
-        </message>
-        <message>
-            <source>passwordFile must be a non-empty path.</source>
-            <translation>passwordFile verður að vera ótóm slóð.</translation>
-        </message>
-        <message>
-            <source>Password file could not be read or is too large.</source>
-            <translation>Ekki tókst að lesa lykilorðsskrána eða hún er of stór.</translation>
-        </message>
-        <message>
-            <source>Password file must contain at most 1024 UTF-8 bytes without control characters.</source>
-            <translation>Lykilorðsskráin má innihalda mest 1024 UTF-8 bæti án stýristafa.</translation>
-        </message>
-        <message>
-            <source>Password must be a string of at most 1024 UTF-8 bytes without control characters.</source>
-            <translation>Lykilorðið verður að vera strengur með mest 1024 UTF-8 bætum án stýristafa.</translation>
-        </message>
-        <message>
-            <source>settingsFile must be a non-empty path.</source>
-            <translation>settingsFile verður að vera ótóm slóð.</translation>
-        </message>
-        <message>
-            <source>identityFile must be a non-empty path.</source>
-            <translation>identityFile verður að vera ótóm slóð.</translation>
-        </message>
-        <message>
-            <source>The settings directory could not be created.</source>
-            <translation>Ekki tókst að búa til stillingamöppuna.</translation>
-        </message>
-        <message>
-            <source>This SquadSpeak profile is already running or cannot be locked.</source>
-            <translation>Þetta SquadSpeak snið er þegar í gangi eða ekki er hægt að læsa því.</translation>
-        </message>
-        <message>
-            <source>Standard input could not be opened.</source>
-            <translation>Ekki tókst að opna staðalinntak.</translation>
-        </message>
-        <message>
-            <source>Standard output could not be opened.</source>
-            <translation>Ekki tókst að opna staðalúttak.</translation>
-        </message>
-        <message>
-            <source>This identity file is already in use or cannot be locked.</source>
-            <translation>Þessi auðkennisskrá er þegar í notkun eða ekki er hægt að læsa henni.</translation>
-        </message>
-        <message>
-            <source>Invalid host configuration: %1</source>
-            <translation>Ógildar stillingar þjóns: %1</translation>
-        </message>
-        <message>
-            <source>Radio channels could not be initialized.</source>
-            <translation>Ekki tókst að frumstilla útvarpsrásir.</translation>
-        </message>
-        <message>
-            <source>Headless host could not start: %1</source>
-            <translation>Ekki tókst að ræsa þjón án myndræns viðmóts: %1</translation>
-        </message>
-        <message>
-            <source>Channel password could not be saved.</source>
-            <translation>Ekki tókst að vista lykilorð rásar.</translation>
-        </message>
-        <message>
-            <source>Invalid channel password: %1</source>
-            <translation>Ógilt lykilorð rásar: %1</translation>
-        </message>
-        <message>
-            <source>Headless host could not initialize: %1</source>
-            <translation>Ekki tókst að frumstilla þjón án myndræns viðmóts: %1</translation>
-        </message>
-        <message>
-            <source>SquadSpeak headless could not start: %1</source>
-            <translation>Ekki tókst að ræsa SquadSpeak án myndræns viðmóts: %1</translation>
-        </message>
-        <message>
-            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
-            <translation>Aðgerð stuðningsmanna verður að vera staða, innskráning, endurnýjun, útskráning eða hætta við. status sign-in refresh sign-out cancel</translation>
-        </message>
-        <message>
-            <source>A Supporter operation is in progress.</source>
-            <translation>Stuðningsmannaaðgerð er í gangi.</translation>
-        </message>
-        <message>
-            <source>Supporter access is unavailable in this build.</source>
-            <translation>Aðgangur stuðningsmanna er ekki tiltækur í þessari byggingu.</translation>
-        </message>
-        <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>Forgangur stillinga: rök &gt; umhverfi &gt; eiginleikar &gt; vistuð miðlaragildi.</translation>
+            <source>New image</source>
+            <translation>Ný mynd</translation>
         </message>
     </context>
     <context>
-        <name>Desktop</name>
+        <name>VideoCodec</name>
         <message>
-            <source>Open settings at startup.</source>
-            <translation>Opna stillingar við ræsingu.</translation>
+            <source>Video codec: %1</source>
+            <translation>Myndkóðun: %1</translation>
         </message>
         <message>
-            <source>Open guided local test recording without starting network services.</source>
-            <translation>Opna leiðsögn fyrir staðbundna prufuupptöku án þess að ræsa netþjónustur.</translation>
+            <source>Video codec ABI does not match its headers.</source>
+            <translation>ABI myndkóðunarinnar passar ekki við hausskrárnar.</translation>
         </message>
         <message>
-            <source>Alternative file for audio profiles.</source>
-            <translation>Önnur skrá fyrir hljóðsnið.</translation>
+            <source>Video buffers could not be allocated.</source>
+            <translation>Ekki tókst að úthluta minni fyrir myndbiðminni.</translation>
         </message>
         <message>
-            <source>Load the interface without microphone capture and exit after one second.</source>
-            <translation>Hlaða viðmótinu án hljóðnemaupptöku og hætta eftir eina sekúndu.</translation>
+            <source>Invalid video quality tier.</source>
+            <translation>Ógilt gæðastig myndskeiðs.</translation>
         </message>
         <message>
-            <source>Save an image of the app window during the UI test.</source>
-            <translation>Vista mynd af forritsglugganum meðan á viðmótsprófi stendur.</translation>
+            <source>The screen source exceeds the supported capture size.</source>
+            <translation>Skjáuppsprettan fer yfir studda stærð skjáupptöku.</translation>
         </message>
         <message>
-            <source>The window image could not be saved.</source>
-            <translation>Ekki tókst að vista myndina af glugganum.</translation>
+            <source>The screen source is too narrow.</source>
+            <translation>Skjáuppsprettan er of mjó.</translation>
         </message>
         <message>
-            <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
-            <translation>Kerfisbakki er ekki tiltækur; forritið helst opið í glugga.</translation>
+            <source>The video encoder could not be allocated.</source>
+            <translation>Ekki tókst að úthluta minni fyrir myndkóðarann.</translation>
+        </message>
+        <message>
+            <source>No supported video encoder is available.</source>
+            <translation>Enginn studdur myndkóðari er tiltækur.</translation>
+        </message>
+        <message>
+            <source>Video encoder configuration is too large.</source>
+            <translation>Stilling myndkóðarans er of stór.</translation>
+        </message>
+        <message>
+            <source>Video scaling could not be initialized.</source>
+            <translation>Ekki tókst að frumstilla stærðarbreytingu myndskeiðs.</translation>
+        </message>
+        <message>
+            <source>The encoder returned an empty video packet.</source>
+            <translation>Kóðarinn skilaði tómum myndpakka.</translation>
+        </message>
+        <message>
+            <source>Invalid video frame format.</source>
+            <translation>Ógilt snið myndramma.</translation>
+        </message>
+        <message>
+            <source>Invalid video decoder configuration.</source>
+            <translation>Ógild stilling myndafkóðarans.</translation>
+        </message>
+        <message>
+            <source>This video codec cannot be decoded.</source>
+            <translation>Ekki er hægt að afkóða þetta myndmerkjasnið.</translation>
+        </message>
+        <message>
+            <source>Video decoder could not be allocated.</source>
+            <translation>Ekki tókst að úthluta minni fyrir myndafkóðarann.</translation>
+        </message>
+        <message>
+            <source>Video decoder configuration could not be allocated.</source>
+            <translation>Ekki tókst að úthluta minni fyrir stillingu myndafkóðarans.</translation>
+        </message>
+        <message>
+            <source>Decoded dimensions do not match the screen stream.</source>
+            <translation>Afkóðaðar stærðir samsvara ekki skjástraumnum.</translation>
+        </message>
+        <message>
+            <source>Decoded image could not be allocated.</source>
+            <translation>Ekki tókst að úthluta minni fyrir afkóðuðu myndina.</translation>
+        </message>
+        <message>
+            <source>Video color conversion could not be initialized.</source>
+            <translation>Ekki tókst að frumstilla litabreytingu myndskeiðs.</translation>
         </message>
     </context>
     <context>
-        <name>LocalLanguage</name>
+        <name>VoiceAvatar</name>
         <message>
-            <source>Translation (experimental)</source>
-            <translation>Þýðing (tilraunaeiginleiki)</translation>
+            <source>Muted</source>
+            <translation>Hljóðnemi slökktur</translation>
         </message>
         <message>
-            <source>Spoken language</source>
-            <translation>Talað tungumál</translation>
+            <source>Sleeping</source>
+            <translation>Sofandi</translation>
         </message>
         <message>
-            <source>Translate to</source>
-            <translation>Þýða yfir á</translation>
+            <source>Offline</source>
+            <translation>Ótengdur</translation>
         </message>
         <message>
-            <source>Translate messages</source>
-            <translation>Þýða skilaboð</translation>
+            <source>Speaking</source>
+            <translation>Talandi</translation>
         </message>
         <message>
-            <source>Translated voice</source>
-            <translation>Þýdd rödd</translation>
+            <source>Unavailable</source>
+            <translation>Ekki tiltækt</translation>
         </message>
         <message>
-            <source>Original audio</source>
-            <translation>Upprunalegt hljóð</translation>
+            <source>Listening</source>
+            <translation>Að hlusta</translation>
         </message>
         <message>
-            <source>Original text</source>
-            <translation>Upprunalegur texti</translation>
+            <source>Deafened</source>
+            <translation>Hátalarar þaggaðir</translation>
+        </message>
+    </context>
+    <context>
+        <name>VoiceSession</name>
+        <message>
+            <source>Unavailable - audio settings or tone test</source>
+            <translation>Ekki tiltækt - hljóðstillingar eða tónprófun</translation>
         </message>
         <message>
-            <source>Prepare languages</source>
-            <translation>Undirbúa tungumál</translation>
+            <source>Microphone muted</source>
+            <translation>Hljóðnemi slökktur</translation>
         </message>
         <message>
-            <source>Local language processing is unavailable.</source>
-            <translation>Staðbundin málvinnsla er ekki tiltæk.</translation>
+            <source>Push-to-talk held</source>
+            <translation>Kallkerfishnappnum er haldið niðri</translation>
         </message>
         <message>
-            <source>Language settings could not be read.</source>
-            <translation>Ekki tókst að lesa tungumálastillingar.</translation>
+            <source>Ready - push-to-talk released</source>
+            <translation>Tilbúið - kallkerfishnappnum hefur verið sleppt</translation>
         </message>
         <message>
-            <source>Language settings could not be saved.</source>
-            <translation>Ekki tókst að vista tungumálastillingar.</translation>
+            <source>Microphone unmuted</source>
+            <translation>Kveikt á hljóðnema</translation>
+        </message>
+        <message>
+            <source>Settings could not be saved: %1</source>
+            <translation>Ekki tókst að vista stillingar: %1</translation>
+        </message>
+        <message>
+            <source>The push-to-talk sequence cannot be incremented further.</source>
+            <translation>Ekki er hægt að auka kallkerfisröðina frekar.</translation>
+        </message>
+        <message>
+            <source>Choose System, Light or Dark.</source>
+            <translation>Veldu System, Light eða Dark.</translation>
+        </message>
+        <message>
+            <source>Choose a colour palette from the list.</source>
+            <translation>Veldu litavali af listanum.</translation>
+        </message>
+        <message>
+            <source>Choose an available avatar.</source>
+            <translation>Veldu tiltækan avatar.</translation>
+        </message>
+        <message>
+            <source>Invalid push-to-talk binding.</source>
+            <translation>Ógild kallkerfisbinding.</translation>
+        </message>
+        <message>
+            <source>Release the held push-to-talk key first.</source>
+            <translation>Slepptu þrýsti-til-tal takkanum fyrst.</translation>
+        </message>
+        <message>
+            <source>Choose a language from the list.</source>
+            <translation>Veldu tungumál af listanum.</translation>
+        </message>
+        <message>
+            <source>This avatar requires Supporter.</source>
+            <translation>Þessi avatar krefst Supporter.</translation>
+        </message>
+        <message>
+            <source>The name must contain 1 to 64 characters.</source>
+            <translation>Nafnið verður að innihalda 1 til 64 stafi.</translation>
+        </message>
+        <message>
+            <source>The name may not contain control characters or line breaks.</source>
+            <translation>Nafnið má ekki innihalda stýristafi eða línuskil.</translation>
+        </message>
+        <message>
+            <source>Session settings could not be read.</source>
+            <translation>Ekki tókst að lesa lotustillingar.</translation>
+        </message>
+        <message>
+            <source>Saved setting is invalid: %1</source>
+            <translation>Ógild vistuð stilling: %1</translation>
         </message>
     </context>
 </TS>

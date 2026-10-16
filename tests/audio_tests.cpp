@@ -15,44 +15,164 @@
 class AudioTests final : public QObject {
     Q_OBJECT
 private slots:
+    void stereoFiltersKeepChannelsSeparateAndUseLinkedGain() {
+        squad::AudioProcessor processor(48000, {.gainDb = 6, .highPassHz = 100, .lowPassHz = 12000});
+        squad::AudioProcessor left(48000, {.gainDb = 6, .highPassHz = 100, .lowPassHz = 12000});
+        squad::AudioProcessor right(48000, {.gainDb = 6, .highPassHz = 100, .lowPassHz = 12000});
+        for (int i = 0; i < 4800; ++i) {
+            const float l = .2f * std::sin(2 * std::numbers::pi * 440 * i / 48000);
+            const float r = .1f * std::sin(2 * std::numbers::pi * 1100 * i / 48000);
+            const auto output = processor.filter({l, r});
+            QCOMPARE(output[0], left.filter(l)); QCOMPARE(output[1], right.filter(r));
+        }
+        squad::AudioProcessor automatic(48000, {.gainAutomatic = true});
+        for (int i = 0; i < 960; ++i) {
+            const auto output = automatic.filter({1.f, -.25f});
+            QVERIFY(output[0] <= .891f);
+            QVERIFY(std::abs(output[0] + output[1] * 4) < .00001);
+        }
+    }
+    void stereoEchoUsesBothChannelsWithoutChangingFrameDuration() {
+        squad::EchoCanceller echo(2);
+        std::vector<float> input(960), reference(960);
+        for (int i = 0; i < 480; ++i) { input[i * 2] = .1f; input[i * 2 + 1] = -.2f; }
+        QCOMPARE(echo.capture(input, 48000, 0, 0), input);
+        echo.render(reference, 48000, 0, 0, 2);
+        const auto result = echo.capture(input, 48000, 0, 0);
+        QCOMPARE(result.size(), input.size());
+        QVERIFY(std::all_of(result.begin(), result.end(), [](auto sample) { return std::isfinite(sample); }));
+        echo.setSuppression(0);
+        QCOMPARE(echo.capture(input, 48000, 20, 0), input);
+        QVERIFY_THROWS_EXCEPTION(std::invalid_argument, echo.capture(std::span(input).first(959), 48000, 0, 0));
+        QVERIFY_THROWS_EXCEPTION(std::invalid_argument, echo.render(reference, 48000, 0, 0, 3));
+        QVERIFY_THROWS_EXCEPTION(std::invalid_argument, squad::EchoCanceller(3));
+    }
+
+    void stereoEchoReducesBothMicrophoneChannels_data() {
+        QTest::addColumn<int>("renderChannels");
+        QTest::newRow("mono-reference") << 1; QTest::newRow("stereo-reference") << 2;
+    }
+    void stereoEchoReducesBothMicrophoneChannels() {
+        QFETCH(int, renderChannels);
+        squad::EchoCanceller echo(2);
+        std::mt19937 random(17);
+        std::uniform_real_distribution<float> noise(-.3f, .3f);
+        std::vector<float> reference(480 * 600 * renderChannels);
+        std::array<float, 2> previous{};
+        for (size_t i = 0; i < reference.size(); ++i) {
+            auto& last = previous[i % renderChannels];
+            last = .7f * last + .3f * noise(random); reference[i] = last;
+        }
+        std::array<double, 2> before{}, after{};
+        for (int frame = 0; frame < 600; ++frame) {
+            std::array<float, 960> capture{};
+            for (int f = 0; f < 480; ++f) for (int c = 0; c < 2; ++c) {
+                const int source = frame * 480 + f - 1440;
+                if (source >= 0) capture[f * 2 + c] = reference[source * renderChannels + c % renderChannels] * (c == 0 ? .4f : .2f);
+            }
+            echo.render(std::span(reference).subspan(frame * 480 * renderChannels, 480 * renderChannels), 48000, frame * 10, 30, renderChannels);
+            const auto output = echo.capture(capture, 48000, frame * 10, 0);
+            QCOMPARE(output.size(), capture.size());
+            if (frame >= 300) for (size_t i = 0; i < output.size(); ++i) {
+                before[i % 2] += double(capture[i]) * capture[i];
+                after[i % 2] += double(output[i]) * output[i];
+            }
+        }
+        for (int c = 0; c < 2; ++c) {
+            QVERIFY(before[c] > .01);
+            QVERIFY2(after[c] < before[c] * .1, qPrintable(QString::number(after[c] / before[c])));
+        }
+    }
+
+    void speechVoiceSelectionUsesLanguageQualityAndStableTies() {
+        const auto voice = [](const char* id, const char* language, int quality) {
+            return QVariantMap{{"id", id}, {"name", id}, {"language", language}, {"quality", quality}};
+        };
+        const auto basic = voice("gb-basic", "en-GB", 1);
+        const auto enhanced = voice("us-enhanced", "en-US", 2);
+        const auto premium = voice("gb-premium", "en-GB", 3);
+        auto novelty = voice("novelty", "en-GB", 3); novelty.insert("novelty", true);
+        auto personal = voice("personal", "en-GB", 3); personal.insert("personal", true);
+        QVariantList voices{basic, enhanced, voice("de-premium", "de-DE", 3), novelty, personal};
+        QCOMPARE(SpeechOutput::preferredVoice(voices, "en-GB"), enhanced);
+        voices.append(premium);
+        QCOMPARE(SpeechOutput::preferredVoice(voices, "en_GB"), premium);
+        QCOMPARE(SpeechOutput::preferredVoice(voices, "de").value("id").toString(), "de-premium");
+        QVERIFY(SpeechOutput::preferredVoice(voices, "fr").isEmpty());
+        QVERIFY(SpeechOutput::preferredVoice({}, "en").isEmpty());
+        QVERIFY(SpeechOutput::preferredVoice(voices, "").isEmpty());
+        QVERIFY(SpeechOutput::preferredVoice({novelty, personal}, "en").isEmpty());
+        const auto tie = voice("gb-premium-a", "en-GB", 3);
+        QCOMPARE(SpeechOutput::preferredVoice({tie, premium}, "en-GB"), premium);
+        QCOMPARE(SpeechOutput::preferredVoice({premium, tie}, "en-GB"), premium);
+        // Removing a downloaded voice returns to a usable voice of the same language.
+        QCOMPARE(SpeechOutput::preferredVoice({basic}, "en-GB"), basic);
+        const auto simplified = voice("simplified", "zh-CN", 1);
+        const auto traditional = voice("traditional", "zh-TW", 3);
+        QCOMPARE(SpeechOutput::preferredVoice({traditional, simplified}, "zh-Hans"), simplified);
+        QCOMPARE(SpeechOutput::preferredVoice(voices, "de", "gb-basic"), basic);
+        QCOMPARE(SpeechOutput::preferredVoice(voices, "en", "novelty"), novelty);
+        QVERIFY(SpeechOutput::preferredVoice(voices, "en", "personal").isEmpty());
+        QVERIFY(SpeechOutput::preferredVoice(voices, "en", "not-installed").isEmpty());
+        QVERIFY(SpeechOutput::preferredVoice({enhanced}, "en", "gb-basic").isEmpty());
+        QCOMPARE(SpeechOutput::preferredVoice({enhanced, basic}, "en", "gb-basic"), basic);
+    }
+
     void speechProducesLocalPcmAndStopsWithoutLatePlayback_data() {
         QTest::addColumn<int>("rate");
-        QTest::newRow("48k") << 48000;
-        QTest::newRow("44k") << 44100;
+        QTest::addColumn<QString>("language");
+        QTest::addColumn<int>("channels");
+        QTest::newRow("48k") << 48000 << QString{} << 1;
+        QTest::newRow("44k") << 44100 << QString{} << 1;
+        QTest::newRow("automatic-english") << 48000 << QString("en-GB") << 1;
+        QTest::newRow("stereo") << 48000 << QString{} << 2;
     }
     void speechProducesLocalPcmAndStopsWithoutLatePlayback() {
         QFETCH(int, rate);
+        QFETCH(QString, language);
+        QFETCH(int, channels);
         SpeechOutput speech;
         QVERIFY(!speech.active());
         QVERIFY(!speech.start("", 48000));
         QVERIFY(!speech.start(QString(401, 'a'), 48000));
         QVERIFY(!speech.start("Hello", 0));
-        std::array<float, 960> samples{};
-        QVERIFY(!speech.mix(samples, 1));
+        std::vector<float> samples(size_t(960 * channels));
+        QVERIFY(!speech.mix(samples, 1, channels));
         if (!SpeechOutput::supported) {
             QVERIFY(!speech.start("Hello", 48000));
             return;
         }
-        QVERIFY(speech.start("Hello", rate));
+        QString voice;
+        if (!language.isEmpty()) {
+            const auto selected = SpeechOutput::preferredVoice(SpeechOutput::voices(), language);
+            voice = selected.value("id").toString();
+            QVERIFY2(!voice.isEmpty(), "Install an English voice for the native synthesis contract");
+            qInfo() << "Selected speech voice:" << selected.value("name").toString()
+                    << selected.value("language").toString() << selected.value("quality").toInt();
+        }
+        QVERIFY(!speech.start("Hello", rate, "missing-voice-identifier"));
+        QVERIFY(speech.start("Hello", rate, voice));
         double energy = 0;
         QTRY_VERIFY_WITH_TIMEOUT(([&] {
-            samples.fill(0);
-            speech.mix(samples, 0.5);
+            std::fill(samples.begin(), samples.end(), 0);
+            speech.mix(samples, 0.5, channels);
             for (const auto value : samples) { if (!std::isfinite(value)) return false; energy += value * value; }
+            if (channels == 2) for (size_t i = 0; i < samples.size(); i += 2)
+                if (samples[i] != samples[i + 1]) return false;
             return energy > 0.001;
         })(), 15000);
         QTRY_VERIFY_WITH_TIMEOUT(([&] {
-            samples.fill(0); speech.mix(samples, 0.5);
+            std::fill(samples.begin(), samples.end(), 0); speech.mix(samples, 0.5, channels);
             return !speech.active();
         })(), 15000);
         QVERIFY(!speech.failed());
-        QVERIFY(!speech.mix(samples, std::numeric_limits<double>::quiet_NaN()));
+        QVERIFY(!speech.mix(samples, std::numeric_limits<double>::quiet_NaN(), channels));
         QVERIFY(speech.start("New message", 44100));
         speech.stop();
         speech.stop();
         QVERIFY(!speech.active());
-        samples.fill(0);
-        QVERIFY(!speech.mix(samples, 1));
+        std::fill(samples.begin(), samples.end(), 0);
+        QVERIFY(!speech.mix(samples, 1, channels));
         for (float value : samples) QCOMPARE(value, 0);
         // A callback may outlive cancellation and the owner. Destruction must
         // invalidate it without requiring a Qt event loop or a playback device.
@@ -153,18 +273,34 @@ private slots:
         const auto path = directory.filePath("audio.ini");
         {
             squad::AudioProfiles profiles(path);
-            QVERIFY(profiles.echoCancellation("a"));
-            profiles.saveEchoCancellation("a", false).saveEchoCancellation("b", true);
+            QVERIFY(!profiles.echoSuppression("a"));
+            profiles.saveEchoSuppression("a", 0.8).saveEchoSuppression("b", 0.0);
         }
         squad::AudioProfiles loaded(path);
-        QVERIFY(!loaded.echoCancellation("a"));
-        QVERIFY(loaded.echoCancellation("b"));
-        QVERIFY(loaded.echoCancellation("new-device"));
-        QVERIFY_THROWS_EXCEPTION(std::invalid_argument, loaded.echoCancellation({}));
+        QCOMPARE(loaded.echoSuppression("a"), std::optional(0.8));
+        QCOMPARE(loaded.echoSuppression("b"), std::optional(0.0));
+        QVERIFY(!loaded.echoSuppression("new-device"));
+        QVERIFY_THROWS_EXCEPTION(std::invalid_argument, loaded.echoSuppression({}));
+        for (double invalid : {-0.01, 1.01, std::numeric_limits<double>::infinity(), std::nan("")}) {
+            QVERIFY_THROWS_EXCEPTION(std::invalid_argument, loaded.saveEchoSuppression("a", invalid));
+            QCOMPARE(loaded.echoSuppression("a"), std::optional(0.8));
+        }
+        loaded.saveEchoSuppression("a", std::nullopt);
+        QVERIFY(!squad::AudioProfiles(path).echoSuppression("a"));
+        QCOMPARE(squad::AudioProfiles(path).echoSuppression("b"), std::optional(0.0));
         QSettings raw(path, QSettings::IniFormat);
+        raw.setValue("input/61/echoCancellation", false); raw.sync();
+        QCOMPARE(squad::AudioProfiles(path).echoSuppression("a"), std::optional(0.0));
+        raw.setValue("input/61/echoCancellation", true); raw.sync();
+        QVERIFY(!squad::AudioProfiles(path).echoSuppression("a"));
         raw.setValue("input/61/echoCancellation", "invalid"); raw.sync();
-        squad::AudioProfiles corrupt(path);
-        QVERIFY_THROWS_EXCEPTION(std::runtime_error, corrupt.echoCancellation("a"));
+        QVERIFY_THROWS_EXCEPTION(std::runtime_error, squad::AudioProfiles(path).echoSuppression("a"));
+        for (const QVariant& invalid : {QVariant("invalid"), QVariant(-0.01), QVariant(1.01)}) {
+            raw.setValue("input/61/echoSuppression", invalid); raw.sync();
+            QVERIFY_THROWS_EXCEPTION(std::runtime_error, squad::AudioProfiles(path).echoSuppression("a"));
+        }
+        loaded.saveEchoSuppression("a", std::nullopt);
+        QVERIFY(!squad::AudioProfiles(path).echoSuppression("a"));
     }
 
     void echoBypassReferenceLossAndResetPreserveInput() {
@@ -173,9 +309,9 @@ private slots:
         QCOMPARE(echo.capture(samples, 48000, 0, 0), samples);
         echo.render(std::span(samples).first(1), 48000, 0, 20);
         QCOMPARE(echo.capture(samples, 48000, 0, 0), samples);
-        echo.setEnabled(false).render(samples, 48000, 0, 20);
+        echo.setSuppression(0.0).render(samples, 48000, 0, 20);
         QCOMPARE(echo.capture(samples, 48000, 0, 0), samples);
-        echo.setEnabled(true).render(samples, 48000, 10, 20);
+        echo.setSuppression(std::nullopt).render(samples, 48000, 10, 20);
         QCOMPARE(echo.capture(samples, 48000, 300, 0), samples);
         for (int i = 0; i < 10; ++i) {
             echo.render(samples, 48000, 400 + i, 20).reset();
@@ -183,6 +319,55 @@ private slots:
         }
         echo.render(samples, 48000, 600, 20);
         QCOMPARE(echo.capture(samples, 48000, 500, 0), samples);
+    }
+
+    void echoManualSuppressionControlsResidualEcho() {
+        constexpr int rate = 48000, frames = 800, delay = 1440;
+        std::mt19937 random(17);
+        std::uniform_real_distribution<float> noise(-0.3f, 0.3f);
+        std::vector<float> reference(frames * 480);
+        float previous = 0;
+        for (auto& sample : reference) { previous = 0.7f * previous + 0.3f * noise(random); sample = previous; }
+        std::array<squad::EchoCanceller, 4> filters;
+        filters[1].setSuppression(0.05);
+        filters[2].setSuppression(0.5);
+        filters[3].setSuppression(1.0);
+        std::array<double, 4> energy{};
+        for (int frame = 0; frame < frames; ++frame) {
+            const auto offset = frame * 480;
+            std::array<float, 480> capture{};
+            for (int i = 0; i < 480; ++i)
+                if (offset + i >= delay)
+                    capture[i] = std::clamp(reference[size_t(offset + i - delay)] * 0.8f, -0.035f, 0.035f);
+            for (size_t n = 0; n < filters.size(); ++n) {
+                if (n == 2) filters[n].setSuppression(0.5);
+                filters[n].render(std::span(reference).subspan(offset, 480), rate, frame * 10, 30);
+                const auto output = filters[n].capture(capture, rate, frame * 10, 0);
+                QCOMPARE(output.size(), capture.size());
+                for (const auto value : output) {
+                    QVERIFY(std::isfinite(value));
+                    if (frame >= 400) energy[n] += value * value;
+                }
+            }
+        }
+        qInfo() << "residual energy: auto, low, medium, high" << energy;
+        QVERIFY(energy[1] > 0);
+        QVERIFY(energy[3] < energy[1] * 0.85);
+        QVERIFY(energy[2] < energy[1]);
+        QCOMPARE(energy[0], energy[2]);
+
+        const std::vector<float> signal(480, 0.1f);
+        squad::EchoCanceller filter;
+        for (const double invalid : {-0.01, 1.01, std::nan(""), std::numeric_limits<double>::infinity()})
+            QVERIFY_THROWS_EXCEPTION(std::invalid_argument, filter.setSuppression(invalid));
+        for (int cycle = 0; cycle < 20; ++cycle) {
+            filter.setSuppression(1.0).render(signal, rate, cycle * 10, 0);
+            QCOMPARE(filter.capture(signal, rate, cycle * 10, 0).size(), signal.size());
+            filter.setSuppression(0.0);
+            QCOMPARE(filter.capture(signal, rate, cycle * 10, 0), signal);
+            filter.setSuppression(std::nullopt);
+            QCOMPARE(filter.capture(signal, rate, cycle * 10, 0), signal);
+        }
     }
 
     void echoHandlesFragmentedNativeRates_data() {
@@ -246,16 +431,55 @@ private slots:
         QVERIFY2(outputEnergy / inputEnergy < 0.04,
             qPrintable(QString::number(10 * std::log10(outputEnergy / inputEnergy))));
         QVERIFY(analysis.levels().inputDb - analysis.levels().outputDb > 10);
+        const auto levels = analysis.levels();
+        QVERIFY(*std::max_element(levels.inputSpectrum.begin(), levels.inputSpectrum.end())
+            - *std::max_element(levels.outputSpectrum.begin(), levels.outputSpectrum.end()) > 10);
+        for (auto gain : analysis.filterResponse()) QCOMPARE(gain, 0.0);
+    }
+
+    void echoPreservesFullbandWithoutPlayback() {
+        constexpr int rate = 48000, frames = 200;
+        constexpr std::array frequencies{173, 397, 911, 2039, 4093, 7013, 11003, 17011};
+        std::array<double, frequencies.size()> sine{}, cosine{};
+        const std::array<float, 480> silence{};
+        squad::EchoCanceller echo;
+        for (int frame = 0; frame < frames; ++frame) {
+            std::array<float, 480> capture{};
+            for (int i = 0; i < 480; ++i)
+                for (const auto frequency : frequencies)
+                    capture[i] += float(0.03 * std::sin(2 * std::numbers::pi * frequency * (frame * 480 + i) / rate));
+            echo.render(silence, rate, frame * 10, 20);
+            const auto output = echo.capture(capture, rate, frame * 10, 0);
+            QCOMPARE(output.size(), capture.size());
+            if (frame < 100) continue;
+            for (int i = 0; i < 480; ++i) {
+                QVERIFY(std::isfinite(output[i]));
+                for (size_t band = 0; band < frequencies.size(); ++band) {
+                    const double phase = 2 * std::numbers::pi * frequencies[band] * (frame * 480 + i) / rate;
+                    sine[band] += output[i] * std::sin(phase);
+                    cosine[band] += output[i] * std::cos(phase);
+                }
+            }
+        }
+        // Independent of filter delay. A fixed low-pass cannot satisfy this.
+        for (size_t band = 0; band < frequencies.size(); ++band) {
+            const double gain = 2 * std::hypot(sine[band], cosine[band]) / (rate * 0.03);
+            QVERIFY2(gain > 0.85 && gain < 1.15, qPrintable(QString("%1 Hz: %2").arg(frequencies[band]).arg(gain)));
+        }
     }
 
     void echoPreservesNearSignalWithClockDrift_data() {
         QTest::addColumn<int>("driftPpm");
-        QTest::newRow("slower-capture-clock") << -200;
-        QTest::newRow("same-clock") << 0;
-        QTest::newRow("faster-capture-clock") << 200;
+        QTest::addColumn<double>("strength");
+        QTest::newRow("slower-capture-clock") << -200 << -1.0;
+        QTest::newRow("same-clock") << 0 << -1.0;
+        QTest::newRow("faster-capture-clock") << 200 << -1.0;
+        QTest::newRow("manual-low") << 0 << 0.05;
+        QTest::newRow("manual-medium") << 0 << 0.5;
+        QTest::newRow("manual-high") << 0 << 1.0;
     }
     void echoPreservesNearSignalWithClockDrift() {
-        QFETCH(int, driftPpm);
+        QFETCH(int, driftPpm); QFETCH(double, strength);
         constexpr int rate = 48000, frames = 1200, delay = 1440;
         constexpr double nearAmplitude = 0.05, frequency = 700;
         std::mt19937 random(42);
@@ -264,6 +488,7 @@ private slots:
         float previous = 0;
         for (auto& sample : reference) { previous = 0.7f * previous + 0.3f * noise(random); sample = previous; }
         squad::EchoCanceller echo;
+        echo.setSuppression(strength < 0 ? std::nullopt : std::optional(strength));
         double nearSin = 0, nearCos = 0, nearEnergy = 0;
         double farInput = 0, farOutput = 0;
         int nearSamples = 0;
@@ -693,6 +918,7 @@ private slots:
             profiles.saveOutput("speakers", 0.8);
             profiles.saveNotificationVolume("airpods", 0.2).saveReadBotMessages("airpods", true);
             profiles.saveNotificationVolume("speakers", 0);
+            profiles.saveBotVoice("airpods", "com.apple.voice.english").saveBotVoice("speakers", "");
             profiles.select(true, {}).select(false, "airpods");
         }
         squad::AudioProfiles restored(filename);
@@ -708,6 +934,11 @@ private slots:
         QVERIFY(restored.readBotMessages("airpods"));
         QCOMPARE(restored.notificationVolume("speakers"), 0.0);
         QVERIFY(!restored.readBotMessages("speakers"));
+        QCOMPARE(restored.botVoice("unknown"), QString{});
+        QCOMPARE(restored.botVoice("airpods"), "com.apple.voice.english");
+        QCOMPARE(restored.botVoice("speakers"), QString{});
+        restored.saveBotVoice("airpods", "");
+        QCOMPARE(squad::AudioProfiles(filename).botVoice("airpods"), QString{});
         QCOMPARE(restored.selection(true), QByteArray{});
         QCOMPARE(restored.selection(false), QByteArray("airpods"));
         restored.saveOutput("airpods", 0.1);
@@ -723,6 +954,7 @@ private slots:
         for (double value : {-0.1, 1.1, std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::infinity()})
             QVERIFY_THROWS_EXCEPTION(std::invalid_argument, profiles.saveNotificationVolume("a", value));
         QVERIFY_THROWS_EXCEPTION(std::invalid_argument, profiles.saveReadBotMessages({}, true));
+        QVERIFY_THROWS_EXCEPTION(std::invalid_argument, profiles.saveBotVoice({}, "voice"));
         QVERIFY_THROWS_EXCEPTION(std::invalid_argument, profiles.saveNoiseSuppression("a", -0.1));
         QVERIFY_THROWS_EXCEPTION(std::invalid_argument, profiles.saveNoiseSuppression("a", 1.1));
         QVERIFY_THROWS_EXCEPTION(std::invalid_argument, profiles.saveNoiseSuppression("a", std::numeric_limits<double>::infinity()));
@@ -794,7 +1026,7 @@ private slots:
         const auto filename = directory.filePath("profiles.ini");
         {
             squad::AudioProfiles profiles(filename);
-            QCOMPARE(profiles.noiseSuppression("microphone"), 0.0);
+            QCOMPARE(profiles.noiseSuppression("microphone"), 1.0);
             profiles.saveNoiseSuppression("microphone", 0.65).saveNoiseSuppression("headset", 0.3);
             profiles.saveInput("microphone", {6, 80, 9000}).saveOutput("microphone", 0.2);
             profiles.select(true, "headset");
@@ -802,11 +1034,14 @@ private slots:
         squad::AudioProfiles restored(filename);
         QCOMPARE(restored.noiseSuppression("microphone"), 0.65);
         QCOMPARE(restored.noiseSuppression("headset"), 0.3);
-        QCOMPARE(restored.noiseSuppression("new-device"), 0.0);
+        QCOMPARE(restored.noiseSuppression("new-device"), 1.0);
         QCOMPARE(restored.output("microphone"), 0.2);
         restored.saveNoiseSuppression("headset", 0);
         QCOMPARE(restored.noiseSuppression("headset"), 0.0);
         QCOMPARE(restored.noiseSuppression("microphone"), 0.65);
+        squad::AudioProfiles reopened(filename);
+        QCOMPARE(reopened.noiseSuppression("headset"), 0.0);
+        QCOMPARE(reopened.noiseSuppression("microphone"), 0.65);
     }
 
     void malformedStoredValuesAreNotSilentlyUsed() {
@@ -845,14 +1080,16 @@ private slots:
         QVERIFY((profiles.input("a") == squad::InputProfile{0, 0, 0, true, true}));
         QVERIFY_THROWS_EXCEPTION(std::runtime_error, profiles.saveOutput("a", 0.9));
         QCOMPARE(profiles.output("a"), 0.5);
-        QVERIFY_THROWS_EXCEPTION(std::runtime_error, profiles.saveNoiseSuppression("a", 1));
-        QCOMPARE(profiles.noiseSuppression("a"), 0.0);
+        QVERIFY_THROWS_EXCEPTION(std::runtime_error, profiles.saveBotVoice("a", "voice"));
+        QCOMPARE(profiles.botVoice("a"), QString{});
+        QVERIFY_THROWS_EXCEPTION(std::runtime_error, profiles.saveNoiseSuppression("a", 0));
+        QCOMPARE(profiles.noiseSuppression("a"), 1.0);
         QVERIFY_THROWS_EXCEPTION(std::runtime_error, profiles.select(true, "a"));
         QCOMPARE(profiles.selection(true), QByteArray{});
     }
 };
 
-#ifdef Q_OS_MACOS
+#if defined(Q_OS_MACOS) || defined(Q_OS_IOS)
 QTEST_MAIN(AudioTests)
 #else
 QTEST_GUILESS_MAIN(AudioTests)

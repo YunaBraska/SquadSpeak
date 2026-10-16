@@ -33,7 +33,8 @@ Item {
     property real layoutHeight: 0
     readonly property var language: audio.language
     readonly property string translationKey: "draft:" + hostId
-    readonly property string translationTarget: { language.revision; return remote ? "" : language.channelTarget(hostId) }
+    readonly property var translationPreference: { language.revision; return language.channelPreferences(hostId) }
+    readonly property string translationTarget: remote || !translationPreference.messages ? "" : (translationPreference.outgoing || "")
     readonly property var translatedDraft: { language.revision; return language.result(translationKey) }
     readonly property bool translationReady: !draft.text.trim().length || !translationTarget.length || (translatedDraft.original === draft.text
         && translatedDraft.target === translationTarget && !!translatedDraft.text && !translatedDraft.pending)
@@ -212,17 +213,16 @@ Item {
                         readonly property bool systemMessage: !!message.event
                         readonly property var member: systemMessage ? (root.current.chatBot || {}) : (root.current.chatMembers || []).find(function(m) { return m.id === message.sender })
                             || ({id: message.sender, name: message.name, avatarId: message.avatarId || message.avatar})
-                        readonly property var translationPreference: { root.language.revision; return root.language.member(message.sender) }
                         readonly property string translationKey: root.hostId + ":" + message.sequence
                         readonly property var translated: { root.language.revision; return root.language.result(translationKey) }
-                        readonly property bool wantsTranslation: !root.remote && !systemMessage && !own && !!translationPreference.incoming
-                        readonly property bool hasTranslation: wantsTranslation && translated.original === message.text && !!translated.text && !translated.pending
+                        readonly property bool wantsTranslation: !root.remote && !systemMessage && !own && !!root.translationPreference.messages
+                        readonly property bool hasTranslation: wantsTranslation && translated.original === message.text && translated.target === root.translationPreference.incomingTarget && !!translated.text && !translated.pending
                         property bool showOriginal: false
                         Timer {
                             id: incomingTranslation; interval: 50
                             running: messageRow.inViewport && messageRow.wantsTranslation && !messageRow.translated.original && !root.language.busy
                             onTriggered: root.language.request(messageRow.translationKey, messageRow.message.text,
-                                "", messageRow.translationPreference.target)
+                                "", root.translationPreference.incomingTarget)
                         }
                         readonly property bool own: !systemMessage && message.sender === root.current.ownId
                         objectName: "messageRow_" + message.sequence
@@ -281,6 +281,7 @@ Item {
                                     Label { text: Qt.formatDateTime(new Date(messageRow.message.created), "hh:mm"); color: Theme.muted; font.pixelSize: 11 }
                                 }
                                 ActionButton {
+                                    objectName: "translationOriginal_" + messageRow.message.sequence
                                     Layout.alignment: Qt.AlignRight
                                     visible: messageRow.hasTranslation || (messageRow.wantsTranslation && !!messageRow.translated.error)
                                     text: messageRow.hasTranslation ? qsTranslate("LocalLanguage", "Original text") : messageRow.translated.needsPreparation ? qsTranslate("LocalLanguage", "Prepare languages") : messageRow.translated.error
@@ -325,6 +326,7 @@ Item {
                                     onLinkActivated: function(link) { chatContent.openLink(link) }
                                 }
                                 TextEdit {
+                                    objectName: "originalText_" + messageRow.message.sequence
                                     Layout.fillWidth: true
                                     visible: messageRow.showOriginal && messageRow.hasTranslation
                                     text: chatContent.plainText(messageRow.message); textFormat: TextEdit.PlainText
@@ -391,7 +393,7 @@ Item {
                 id: composer
                 anchors.fill: parent; anchors.margins: 4; spacing: 2
                 ActionButton {
-                    text: qsTr("Attach image"); glyph: "plus"; iconOnly: true; flat: true; visible: !root.remote
+                    text: qsTr("Attach image"); glyph: "plus"; iconOnly: true; flat: true; visible: !root.remote && !root.current.teamSpeakChat
                     enabled: !chatContent.busy && !root.current.chatPending && !!root.current.chatReady
                     Layout.alignment: Qt.AlignBottom
                     onClicked: attachmentMenu.popup()
@@ -401,35 +403,6 @@ Item {
                         id: attachmentMenu
                         MenuItem { text: qsTr("Choose image..."); onTriggered: chooseImage.open() }
                         MenuItem { text: qsTr("Paste image"); onTriggered: { root.attachmentHost = root.hostId; chatContent.pasteImage() } }
-                    }
-                }
-                ActionButton {
-                    objectName: "translateDraft"
-                    text: qsTranslate("LocalLanguage", "Translation (experimental)"); glyph: "translate"; iconOnly: true; flat: true
-                    visible: root.language.supported && !root.remote
-                    checked: root.translationTarget.length > 0
-                    Layout.alignment: Qt.AlignBottom
-                    onClicked: outgoingLanguage.open()
-                    Popup {
-                        id: outgoingLanguage
-                        popupType: Popup.Item
-                        width: Math.min(320, root.width - 16); padding: 10
-                        background: Rectangle { color: Theme.surface; radius: Theme.controlRadius; border.color: Theme.border }
-                        contentItem: ColumnLayout {
-                            Label { text: qsTranslate("LocalLanguage", "Translate to"); color: Theme.text }
-                            ChoiceBox {
-                                Layout.fillWidth: true
-                                model: [{id: "", name: qsTranslate("AudioSettings", "Off")}].concat(root.language.languages)
-                                textRole: "name"; valueRole: "id"
-                                currentIndex: Math.max(0, model.findIndex(function(item) { return item.id === root.translationTarget }))
-                                enabled: root.language.available
-                                onActivated: { root.language.setChannelTarget(root.hostId, currentValue); outgoingLanguage.close() }
-                            }
-                            Label {
-                                visible: !root.language.available; Layout.fillWidth: true; wrapMode: Text.Wrap; color: Theme.muted
-                                text: qsTranslate("LocalLanguage", "Local language processing is unavailable.")
-                            }
-                        }
                     }
                 }
                 ScrollView {
@@ -459,7 +432,7 @@ Item {
                     text: root.current.chatPending ? qsTr("Waiting for delivery") : qsTr("Send")
                     glyph: "send"; iconOnly: true; primary: true
                     Layout.alignment: Qt.AlignBottom
-                    enabled: !!root.current.chatReady && !root.current.chatPending && !chatContent.busy && !root.awaitingRemoteReceipt
+                    enabled: !!root.current.chatReady && !root.current.privateBlocked && !root.current.chatPending && !chatContent.busy && !root.awaitingRemoteReceipt
                         && (draft.text.trim().length > 0 || (chatContent.hasImage && root.attachmentHost === root.hostId))
                         && (!chatContent.hasImage || root.attachmentHost === root.hostId || root.remote) && root.translationReady
                     onClicked: {
@@ -469,7 +442,8 @@ Item {
                         if (root.remote) {
                             root.awaitingRemoteReceipt = root.network.remoteAction("chat", {text: draft.text})
                             if (!root.awaitingRemoteReceipt) root.sendError = qsTr("Message could not be sent. Check the connection and text length.")
-                        } else chatContent.prepareMessage(root.translationTarget.length && draft.text.trim().length ? root.translatedDraft.text : draft.text)
+                        } else if (root.current.teamSpeakChat) root.network.sendChat(root.translationTarget.length && draft.text.trim().length ? root.translatedDraft.text : draft.text)
+                        else chatContent.prepareMessage(root.translationTarget.length && draft.text.trim().length ? root.translatedDraft.text : draft.text)
                     }
                 }
             }

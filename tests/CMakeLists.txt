@@ -4,8 +4,7 @@ set_source_files_properties(controls_tests.cpp PROPERTIES
 # repository root also reads unrelated QML from local dependency builds.
 qt_add_executable(controls_tests controls_tests.cpp
     ../src/ptt_key.cpp ../src/ptt_key.hpp
-    ../src/audio_model.cpp ../src/audio_model.hpp
-    ../src/audio_recording.cpp ../src/audio_recording.hpp)
+    ../src/audio_model.cpp ../src/audio_model.hpp)
 if(IOS)
     set_source_files_properties(controls_tests.cpp PROPERTIES LANGUAGE OBJCXX)
 elseif(ANDROID)

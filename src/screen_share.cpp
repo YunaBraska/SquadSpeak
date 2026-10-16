@@ -1,5 +1,7 @@
 #include "screen_share.hpp"
 #include <QGuiApplication>
+#include <QDesktopServices>
+#include <QUrl>
 #include <QFutureWatcher>
 #include <QPromise>
 #include <QScopeGuard>
@@ -16,23 +18,29 @@ ScreenShare::ScreenShare(LocalChannel& channel, QObject* parent) : QObject(paren
     captureTick_.setInterval(20); captureTick_.setTimerType(Qt::PreciseTimer);
     connect(&captureTick_, &QTimer::timeout, this, &ScreenShare::pollNative);
 #endif
+#ifndef Q_OS_MACOS
     capture_.setVideoSink(&input_);
+#endif
     connect(&input_, &QVideoSink::videoFrameChanged, this, [this](const QVideoFrame& frame) {
+#ifndef Q_OS_MACOS
         if (capturing() && selectedScreen_ && screen_.screen() != selectedScreen_) {
             fail(tr("The shared screen was removed. Select a source to start again.")); return;
         }
+#endif
         if (capturing()) {
             latest_ = frame;
             for (auto* sink : localSinks_.values()) if (localSinks_.contains(sink)) sink->setVideoFrame(frame);
         }
     });
+#ifndef Q_OS_MACOS
     connect(&screen_, &QScreenCapture::errorOccurred, this, [this](QScreenCapture::Error, const QString& text) { fail(text); });
     connect(&window_, &QWindowCapture::errorOccurred, this, [this](QWindowCapture::Error, const QString& text) { fail(text); });
     connect(qGuiApp, &QGuiApplication::screenRemoved, this, [this](QScreen* removed) {
         if (capturing() && capture_.screenCapture() && selectedScreen_ == removed) fail(tr("The shared screen was removed. Select a source to start again."));
     });
+#endif
     connect(&channel_, &LocalChannel::screenChanged, this, [this] {
-        if (!previewing_ && !active() && (tick_.isActive() || screen_.isActive() || window_.isActive())) stop();
+        if (!previewing_ && !active() && tick_.isActive()) stop();
         for (const auto& id : decoders_.keys()) if (channel_.screenInfo(id).value("tier", -1).toInt() < 0) {
             images_.remove(id); decoders_.remove(id);
             for (auto* sink : sinks_.keys()) if (sinks_.value(sink) == id) static_cast<QVideoSink*>(sink)->setVideoFrame({});
@@ -58,12 +66,26 @@ ScreenShare::ScreenShare(LocalChannel& channel, QObject* parent) : QObject(paren
 }
 ScreenShare::~ScreenShare() {
     stop(); encoderWorker_.waitForDone(); workers_.waitForDone();
+#ifndef Q_OS_MACOS
     capture_.setVideoSink(nullptr);
+#endif
 #if defined(Q_OS_MACOS) || defined(Q_OS_WIN) || (defined(Q_OS_LINUX) && !defined(Q_OS_ANDROID))
     disposeNative();
 #endif
 }
-bool ScreenShare::fail(const QString& message) { stop(); error_ = message; emit changed(); return false; }
+bool ScreenShare::fail(const QString& message, bool permissionRequired) {
+    stop(); permissionRequired_ = permissionRequired;
+    error_ = permissionRequired ? tr("Allow screen recording in system settings.") : message;
+    emit changed(); return false;
+}
+bool ScreenShare::openPermissionSettings() {
+#ifdef Q_OS_MACOS
+    return permissionRequired_ && QDesktopServices::openUrl(
+        QUrl(QStringLiteral("x-apple.systempreferences:com.apple.preference.security?Privacy_ScreenCapture")));
+#else
+    return false;
+#endif
+}
 bool ScreenShare::audioAvailable() const {
 #ifdef Q_OS_MACOS
     return true;
@@ -164,8 +186,11 @@ bool ScreenShare::stop() {
 #endif
     audioEnabled_ = false;
     computerAudio_ = true;
-    screen_.stop(); window_.stop(); latest_ = {}; selectedScreen_ = nullptr;
+    latest_ = {}; selectedScreen_ = nullptr;
+#ifndef Q_OS_MACOS
+    screen_.stop(); window_.stop();
     capture_.setScreenCapture(nullptr); capture_.setWindowCapture(nullptr);
+#endif
     if (auto encoders = std::exchange(encoders_, {}))
         encoderWorker_.start([encoders = std::move(encoders)]() mutable { encoders.reset(); });
     if (captureHost_) captureHost_->setScreenSharing(false); emit changed(); return true;

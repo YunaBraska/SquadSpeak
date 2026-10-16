@@ -36,14 +36,6 @@
             <translation>Otevřete nastavení ochrany soukromí systému a povolte přístup k mikrofonu pro SquadSpeak.</translation>
         </message>
         <message>
-            <source>Microphone analysis active. Test audio stays on this computer.</source>
-            <translation>Analýza mikrofonu probíhá. Testovaný zvuk zůstává na tomto počítači.</translation>
-        </message>
-        <message>
-            <source>Finish the test recording before changing devices.</source>
-            <translation>Dokončete testovací nahrávku, než budete měnit zařízení.</translation>
-        </message>
-        <message>
             <source>The output format is not supported.</source>
             <translation>Tento formát výstupu není podporován.</translation>
         </message>
@@ -68,32 +60,12 @@
             <translation>Nepodařilo se přehrát testovací tón.</translation>
         </message>
         <message>
-            <source>The microphone has provided no data for five seconds. Recording discarded.</source>
-            <translation>Mikrofon neposkytoval žádná data po dobu pěti sekund. Záznam byl zahozen.</translation>
-        </message>
-        <message>
-            <source>The microphone was interrupted or changed. Recording discarded.</source>
-            <translation>Mikrofon byl přerušen nebo změněn. Záznam byl zahozen.</translation>
-        </message>
-        <message>
-            <source>Cancelled. The incomplete recording was discarded.</source>
-            <translation>Zrušeno. Neúplný záznam byl zahozen.</translation>
-        </message>
-        <message>
             <source>No selected microphone is available</source>
             <translation>Žádný vybraný mikrofon není dostupný</translation>
         </message>
         <message>
             <source>Allow microphone access in the system dialog.</source>
             <translation>Povolte přístup k mikrofonu v systémovém dialogovém okně.</translation>
-        </message>
-        <message>
-            <source>Microphone capture active for the voice channel.</source>
-            <translation>Záznam zvuku pro hlasový kanál je aktivní.</translation>
-        </message>
-        <message>
-            <source>Microphone access was denied. Nothing was saved.</source>
-            <translation>Přístup k mikrofonu byl odepřen. Nic nebylo uloženo.</translation>
         </message>
         <message>
             <source>Microphone access is missing. Allow it in System Settings.</source>
@@ -265,97 +237,6 @@
         </message>
     </context>
     <context>
-        <name>AudioRecording</name>
-        <message>
-            <source>Incomplete audio block. Recording discarded.</source>
-            <translation>Neúplný audio segment. Záznam byl zahozen.</translation>
-        </message>
-        <message>
-            <source>Move about one meter from the microphone. Keep the background sound playing and read the sentence.</source>
-            <translation>Přesuňte se přibližně jeden metr od mikrofonu. Nechte zvuk na pozadí a přečtěte větu.</translation>
-        </message>
-        <message>
-            <source>Voice with background sound</source>
-            <translation>Hlas s pozadím</translation>
-        </message>
-        <message>
-            <source>The recordings folder could not be created.</source>
-            <translation>Nepodařilo se vytvořit složku pro záznamy.</translation>
-        </message>
-        <message>
-            <source>You can stop the background sound now.</source>
-            <translation>Nyní můžete vypnout zvuk na pozadí.</translation>
-        </message>
-        <message>
-            <source>Recordings saved</source>
-            <translation>Záznamy byly uloženy</translation>
-        </message>
-        <message>
-            <source>The test recording could not be saved completely.</source>
-            <translation>Nepodařilo se uložit celý testovací záznam.</translation>
-        </message>
-        <message>
-            <source>Keep music off and stay quiet. Start when ready.</source>
-            <translation>Vypněte hudbu a buďte tiše. Začněte, když budete připraveni.</translation>
-        </message>
-        <message>
-            <source>Your voice</source>
-            <translation>Váš hlas</translation>
-        </message>
-        <message>
-            <source>Play music or another background sound at a normal volume. Stay quiet while recording.</source>
-            <translation>Přehrávejte hudbu nebo jiný zvuk na pozadí v běžné hlasitosti. Během nahrávání buďte ztišeni.</translation>
-        </message>
-        <message>
-            <source>The test recording could not be created.</source>
-            <translation>Nepodařilo se vytvořit testovací nahrávku.</translation>
-        </message>
-        <message>
-            <source>Background sound</source>
-            <translation>Zvuk na pozadí</translation>
-        </message>
-        <message>
-            <source>The window is open. I can hear the rain outside. One, two, three, four, five.</source>
-            <translation>Okno je otevřené. Slyším déšť venku. Jedna, dvě, tři, čtyři, pět.</translation>
-        </message>
-        <message>
-            <source>This microphone format is not supported for test recordings.</source>
-            <translation>Tento formát mikrofonu není podporován pro testovací nahrávky.</translation>
-        </message>
-        <message>
-            <source>Keep the background volume unchanged. Read the sentence, then stop recording.</source>
-            <translation>Udržujte hlasitost zvuku na pozadí nezměněnou. Přečtěte větu, poté zastavte nahrávání.</translation>
-        </message>
-        <message>
-            <source>Record at least half a second, then try again.</source>
-            <translation>Nahrávejte alespoň půl sekundy, poté zkuste to znovu.</translation>
-        </message>
-        <message>
-            <source>Sit at your usual distance. Read the sentence, then stop recording.</source>
-            <translation>Posaďte se do obvyklé vzdálenosti. Přečtěte větu, poté zastavte nahrávání.</translation>
-        </message>
-        <message>
-            <source>The recording description could not be saved.</source>
-            <translation>Nepodařilo se uložit popis nahrávky.</translation>
-        </message>
-        <message>
-            <source>The WAV file could not be finalized.</source>
-            <translation>Nepodařilo se dokončit soubor WAV.</translation>
-        </message>
-        <message>
-            <source>The WAV header could not be written.</source>
-            <translation>Nepodařilo se zapsat hlavičku souboru WAV.</translation>
-        </message>
-        <message>
-            <source>Voice farther away</source>
-            <translation>Hlas je dál</translation>
-        </message>
-        <message>
-            <source>Room sound</source>
-            <translation>Zvuk kanálu</translation>
-        </message>
-    </context>
-    <context>
         <name>AudioSettings</name>
         <message>
             <source>Echo cancellation</source>
@@ -406,8 +287,8 @@
             <translation>Přehrávání zvuku</translation>
         </message>
         <message>
-            <source>Clear local key</source>
-            <translation>Vymazat místní klávesovou zkratku</translation>
+            <source>Clear key</source>
+            <translation>Vymazat klávesu</translation>
         </message>
         <message>
             <source>Low cut</source>
@@ -428,10 +309,6 @@
         <message>
             <source>Cancel</source>
             <translation>Zrušit</translation>
-        </message>
-        <message>
-            <source>Guided recording</source>
-            <translation>Nahrávání s průvodcem</translation>
         </message>
         <message>
             <source>Clipping. Reduce microphone gain.</source>
@@ -466,16 +343,12 @@
             <translation>Zařízení odpojeno</translation>
         </message>
         <message>
-            <source>Local key</source>
-            <translation>Místní klávesová zkratka</translation>
+            <source>PTT key</source>
+            <translation>Klávesa pro mluvení</translation>
         </message>
         <message>
             <source>Voice activation</source>
             <translation>Aktivace hlasem</translation>
-        </message>
-        <message>
-            <source>Remote PTT key</source>
-            <translation>Vzdálená klávesa PTT</translation>
         </message>
         <message>
             <source>Noise reduction</source>
@@ -492,10 +365,6 @@
         <message>
             <source>Microphone gain</source>
             <translation>Zesílení mikrofonu</translation>
-        </message>
-        <message>
-            <source>Clear remote key</source>
-            <translation>Vymazat vzdálenou klávesu</translation>
         </message>
         <message>
             <source>Not assigned</source>
@@ -521,9 +390,81 @@
             <source>Read bot messages aloud</source>
             <translation>Číst zprávy bota nahlas</translation>
         </message>
+        <message>
+            <source>Download a high-quality voice for this language in macOS settings.</source>
+            <translation>Stáhni si kvalitní hlas pro tento jazyk v nastavení macOS.</translation>
+        </message>
+        <message>
+            <source>Bot voice</source>
+            <translation>Hlas bota</translation>
+        </message>
+        <message>
+            <source>Automatic</source>
+            <translation>Automatické</translation>
+        </message>
+        <message>
+            <source>Unavailable</source>
+            <translation>Nedostupný</translation>
+        </message>
+        <message>
+            <source>Download voices in your device's Accessibility speech settings.</source>
+            <translation>Stáhni si hlasy v nastavení řeči v části Zpřístupnění svého zařízení.</translation>
+        </message>
+        <message>
+            <source>Voice download help</source>
+            <translation>Nápověda ke stahování hlasů</translation>
+        </message>
+        <message>
+            <source>Strength, not the percentage of echo removed.</source>
+            <translation>Síla, nikoli procento odstraněné ozvěny.</translation>
+        </message>
+        <message>
+            <source>Auto also checks for speech, not just volume.</source>
+            <translation>Automatický režim kontroluje také řeč, nejen hlasitost.</translation>
+        </message>
     </context>
     <context>
         <name>Channels</name>
+        <message>
+            <source>Copy address</source>
+            <translation>Kopírovat adresu</translation>
+        </message>
+        <message>
+            <source>Messages</source>
+            <translation>Zprávy</translation>
+        </message>
+        <message>
+            <source>Message</source>
+            <translation>Zpráva</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Otevřít</translation>
+        </message>
+        <message>
+            <source>Online</source>
+            <translation>Online</translation>
+        </message>
+        <message>
+            <source>Offline</source>
+            <translation>Offline</translation>
+        </message>
+        <message>
+            <source>No private messages</source>
+            <translation>Žádné soukromé zprávy</translation>
+        </message>
+        <message>
+            <source>Private messages are unavailable for this contact.</source>
+            <translation>Soukromé zprávy pro tento kontakt nejsou dostupné.</translation>
+        </message>
+        <message>
+            <source>If asked, allow local network access. You can change this in system settings.</source>
+            <translation>Pokud se zobrazí výzva, povol přístup k místní síti. Můžeš to změnit v nastavení systému.</translation>
+        </message>
+        <message>
+            <source>Retry</source>
+            <translation>Zkusit znovu</translation>
+        </message>
         <message>
             <source>Updates</source>
             <translation>Aktualizace</translation>
@@ -543,6 +484,10 @@
         <message>
             <source>DDNS cannot bypass CGNAT. If your provider shares the public IP, use a private VPN on all participating devices or a publicly reachable server.</source>
             <translation>DDNS nemůže obejít CGNAT. Pokud váš poskytovatel sdílí veřejnou IP adresu, použijte privátní VPN na všech zařízeních nebo veřejně dostupný server.</translation>
+        </message>
+        <message>
+            <source>Remove server</source>
+            <translation>Odebrat server</translation>
         </message>
         <message>
             <source>Low</source>
@@ -665,10 +610,6 @@
             <translation>Zvuky upozornění</translation>
         </message>
         <message>
-            <source>Lifetime for new messages. Earlier messages keep their expiry.</source>
-            <translation>Doba platnosti nových zpráv. Starší zprávy si ponechávají svou dobu platnosti.</translation>
-        </message>
-        <message>
             <source>Enable speakers</source>
             <translation>Zapnout reproduktory</translation>
         </message>
@@ -703,10 +644,6 @@
         <message>
             <source>Allow device</source>
             <translation>Povolit zařízení</translation>
-        </message>
-        <message>
-            <source>Receive quality: %1 kb/s per voice. Adjusts automatically for this device.</source>
-            <translation>Kvalita přenosu: %1 kb/s pro hlas. Automaticky se upravuje pro toto zařízení.</translation>
         </message>
         <message>
             <source>Stop radio</source>
@@ -1204,6 +1141,42 @@
             <source>Use default music volume</source>
             <translation>Použít výchozí hlasitost hudby</translation>
         </message>
+        <message>
+            <source>Show in Dock</source>
+            <translation>Zobrazit v Docku</translation>
+        </message>
+        <message>
+            <source>App language</source>
+            <translation>Jazyk aplikace</translation>
+        </message>
+        <message>
+            <source>Send in</source>
+            <translation>Odesílat v</translation>
+        </message>
+        <message>
+            <source>Hear in</source>
+            <translation>Poslouchat v</translation>
+        </message>
+        <message>
+            <source>Download language models for %1 and %2?</source>
+            <translation>Stáhnout jazykové modely pro %1 a %2?</translation>
+        </message>
+        <message>
+            <source>Download</source>
+            <translation>Stáhnout</translation>
+        </message>
+        <message>
+            <source>PTT, chat and channel controls. Uses the controlled device's microphone.</source>
+            <translation>Ovládání PTT, chatu a kanálů. Používá se mikrofon ovládaného zařízení.</translation>
+        </message>
+        <message>
+            <source>Connect the other device to one of your channels, then allow it here.</source>
+            <translation>Připoj druhé zařízení k jednomu ze svých kanálů a potom mu zde povol přístup.</translation>
+        </message>
+        <message>
+            <source>On the other device, open Settings &gt; Input &gt; Remote control and allow this device.</source>
+            <translation>Na druhém zařízení otevři Nastavení &gt; Vstup &gt; Vzdálené ovládání a povol toto zařízení.</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1420,7 +1393,396 @@
         </message>
     </context>
     <context>
+        <name>Desktop</name>
+        <message>
+            <source>Open settings at startup.</source>
+            <translation>Otevřít nastavení při spuštění.</translation>
+        </message>
+        <message>
+            <source>Alternative file for audio profiles.</source>
+            <translation>Alternativní soubor zvukových profilů.</translation>
+        </message>
+        <message>
+            <source>Load the interface without microphone capture and exit after one second.</source>
+            <translation>Načíst rozhraní bez záznamu z mikrofonu a po sekundě skončit.</translation>
+        </message>
+        <message>
+            <source>Save an image of the app window during the UI test.</source>
+            <translation>Uložit obrázek okna aplikace během testu rozhraní.</translation>
+        </message>
+        <message>
+            <source>The window image could not be saved.</source>
+            <translation>Obrázek okna se nepodařilo uložit.</translation>
+        </message>
+        <message>
+            <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
+            <translation>Systémová lišta není dostupná; aplikace zůstává otevřená v okně.</translation>
+        </message>
+    </context>
+    <context>
+        <name>Headless</name>
+        <message>
+            <source>Host display name.</source>
+            <translation>Zobrazované jméno hostitele.</translation>
+        </message>
+        <message>
+            <source>Command failed.</source>
+            <translation>Příkaz selhal.</translation>
+        </message>
+        <message>
+            <source>%1 must be an integer.</source>
+            <translation>%1 musí být celé číslo.</translation>
+        </message>
+        <message>
+            <source>Requests must be on/off or true/false.</source>
+            <translation>Žádosti musí mít hodnotu on/off nebo true/false.</translation>
+        </message>
+        <message>
+            <source>Unknown host property: %1</source>
+            <translation>Neznámá vlastnost hostitele: %1</translation>
+        </message>
+        <message>
+            <source>Run without GUI, microphone capture, or local audio output.</source>
+            <translation>Spustit bez grafického rozhraní, záznamu mikrofonu a místního zvukového výstupu.</translation>
+        </message>
+        <message>
+            <source>Server storage prefix. Personal/audio/GUI profiles are not loaded.</source>
+            <translation>Předpona úložiště serveru. Osobní, zvukové ani grafické profily se nenačítají.</translation>
+        </message>
+        <message>
+            <source>Optional private identity file instead of the OS credential store (Linux/macOS). Parent directory must exist and belong to this account.</source>
+            <translation>Volitelný soukromý soubor identity místo úložiště přihlašovacích údajů OS (Linux/macOS). Nadřazený adresář musí existovat a patřit tomuto účtu.</translation>
+        </message>
+        <message>
+            <source>UTF-8 key=value properties or JSON host preset. Default: application.properties, then config/application.properties beside the app.</source>
+            <translation>Vlastnosti key=value v UTF-8 nebo předvolba hostitele v JSON. Výchozí pořadí: application.properties, potom config/application.properties vedle aplikace.</translation>
+        </message>
+        <message>
+            <source>Channel display name.</source>
+            <translation>Zobrazovaný název kanálu.</translation>
+        </message>
+        <message>
+            <source>System and radio bot display name.</source>
+            <translation>Zobrazované jméno společného systémového a rádiového bota.</translation>
+        </message>
+        <message>
+            <source>TCP service port (1-65535).</source>
+            <translation>Port služby TCP (1-65535).</translation>
+        </message>
+        <message>
+            <source>Headless admission is always on; only 'on' or 'true' is accepted.</source>
+            <translation>V bezobslužném režimu je přijímání vždy zapnuté; povoleno je pouze 'on' nebo 'true'.</translation>
+        </message>
+        <message>
+            <source>Preapprove a device ID; repeat for several devices. Existing bans remain.</source>
+            <translation>Předem schválit ID zařízení; pro více zařízení opakujte. Stávající blokace zůstávají.</translation>
+        </message>
+        <message>
+            <source>Block a device ID; repeat for several devices.</source>
+            <translation>Zablokovat ID zařízení; pro více zařízení opakujte.</translation>
+        </message>
+        <message>
+            <source>Read a UTF-8 channel password from a file before listening. An empty file removes it.</source>
+            <translation>Před zahájením naslouchání přečíst heslo kanálu ze souboru UTF-8. Prázdný soubor heslo odstraní.</translation>
+        </message>
+        <message>
+            <source>Channel password. Empty removes it; environment or config avoids process-list exposure.</source>
+            <translation>Heslo kanálu. Prázdná hodnota jej odstraní; prostředí nebo konfigurace zabrání zobrazení v seznamu procesů.</translation>
+        </message>
+        <message>
+            <source>SquadSpeak headless local channel host</source>
+            <translation>Místní hostitel kanálů SquadSpeak bez grafického rozhraní</translation>
+        </message>
+        <message>
+            <source>Environment variables (SQUADSPEAK_ prefix):</source>
+            <translation>Proměnné prostředí (předpona SQUADSPEAK_):</translation>
+        </message>
+        <message>
+            <source>Host configuration could not be read or exceeds 1 MiB.</source>
+            <translation>Konfiguraci hostitele nelze přečíst nebo přesahuje 1 MiB.</translation>
+        </message>
+        <message>
+            <source>Host configuration must be UTF-8.</source>
+            <translation>Konfigurace hostitele musí být v UTF-8.</translation>
+        </message>
+        <message>
+            <source>Host preset must be a JSON object.</source>
+            <translation>Předvolba hostitele musí být objekt JSON.</translation>
+        </message>
+        <message>
+            <source>Property line %1 must use key=value.</source>
+            <translation>Řádek vlastností %1 musí používat key=value.</translation>
+        </message>
+        <message>
+            <source>Property line %1: %2</source>
+            <translation>Řádek vlastností %1: %2</translation>
+        </message>
+        <message>
+            <source>Standard input has no file descriptor.</source>
+            <translation>Standardní vstup nemá popisovač souboru.</translation>
+        </message>
+        <message>
+            <source>Standard input could not be inspected.</source>
+            <translation>Standardní vstup nelze zkontrolovat.</translation>
+        </message>
+        <message>
+            <source>Could not write the command response: %1</source>
+            <translation>Odpověď na příkaz nelze zapsat: %1</translation>
+        </message>
+        <message>
+            <source>Standard input could not be read: %1</source>
+            <translation>Standardní vstup nelze přečíst: %1</translation>
+        </message>
+        <message>
+            <source>Input line exceeds 65536 bytes.</source>
+            <translation>Vstupní řádek přesahuje 65536 bajtů.</translation>
+        </message>
+        <message>
+            <source>Each input line must be a JSON object.</source>
+            <translation>Každý vstupní řádek musí být objekt JSON.</translation>
+        </message>
+        <message>
+            <source>Input ended before a complete JSON line.</source>
+            <translation>Vstup skončil před dokončením řádku JSON.</translation>
+        </message>
+        <message>
+            <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
+            <translation>Volitelné ID vlastního kanálu pro příkazy status, configure, password, admission, history, chat a radio; výchozí je hlavní kanál.</translation>
+        </message>
+        <message>
+            <source>Channel action must be list, add or remove.</source>
+            <translation>Akce kanálu musí být list, add nebo remove.</translation>
+        </message>
+        <message>
+            <source>Removing an own channel deletes its history, images, permissions and radio settings. Set confirmed=true to proceed.</source>
+            <translation>Odstranění vlastního kanálu smaže jeho historii, obrázky, oprávnění a nastavení rádia. Pro pokračování nastavte confirmed=true.</translation>
+        </message>
+        <message>
+            <source>id must identify an additional own channel.</source>
+            <translation>id musí označovat další vlastní kanál.</translation>
+        </message>
+        <message>
+            <source>The additional own channel could not be removed: %1</source>
+            <translation>Další vlastní kanál nelze odstranit: %1</translation>
+        </message>
+        <message>
+            <source>channelId must identify an own channel.</source>
+            <translation>channelId musí označovat vlastní kanál.</translation>
+        </message>
+        <message>
+            <source>values must be a host settings object.</source>
+            <translation>values musí být objekt nastavení hostitele.</translation>
+        </message>
+        <message>
+            <source>Headless admission is always enabled for non-banned devices; requests off is not supported.</source>
+            <translation>V bezobslužném režimu je přijímání neblokovaných zařízení vždy povoleno; requests off není podporováno.</translation>
+        </message>
+        <message>
+            <source>value must be a password of at most 1024 UTF-8 bytes without control characters; an empty string removes it.</source>
+            <translation>value musí být heslo o nejvýše 1024 bajtech UTF-8 bez řídicích znaků; prázdný řetězec heslo odstraní.</translation>
+        </message>
+        <message>
+            <source>The channel is not ready or a password change is in progress.</source>
+            <translation>Kanál není připraven nebo probíhá změna hesla.</translation>
+        </message>
+        <message>
+            <source>The channel was removed while saving the password.</source>
+            <translation>Kanál byl během ukládání hesla odstraněn.</translation>
+        </message>
+        <message>
+            <source>id is required.</source>
+            <translation>id je vyžadováno.</translation>
+        </message>
+        <message>
+            <source>text must be a valid non-empty chat message.</source>
+            <translation>text musí být platná neprázdná zpráva chatu.</translation>
+        </message>
+        <message>
+            <source>The local channel is not ready.</source>
+            <translation>Místní kanál není připraven.</translation>
+        </message>
+        <message>
+            <source>The channel's radio is unavailable.</source>
+            <translation>Rádio kanálu není dostupné.</translation>
+        </message>
+        <message>
+            <source>Unknown command. Use help.</source>
+            <translation>Neznámý příkaz. Použijte help.</translation>
+        </message>
+        <message>
+            <source>search requires a query, non-negative offset and limit from 1 to 128.</source>
+            <translation>search vyžaduje query, nezáporný offset a limit od 1 do 128.</translation>
+        </message>
+        <message>
+            <source>add creates an id; update requires an existing id.</source>
+            <translation>add vytvoří id; update vyžaduje existující id.</translation>
+        </message>
+        <message>
+            <source>A station is already being checked.</source>
+            <translation>Již probíhá kontrola stanice.</translation>
+        </message>
+        <message>
+            <source>The channel was removed while checking the station.</source>
+            <translation>Kanál byl během kontroly stanice odstraněn.</translation>
+        </message>
+        <message>
+            <source>Unknown radio action.</source>
+            <translation>Neznámá akce rádia.</translation>
+        </message>
+        <message>
+            <source>Could not load language: %1</source>
+            <translation>Jazyk nelze načíst: %1</translation>
+        </message>
+        <message>
+            <source>The %1 option is incompatible with --headless.</source>
+            <translation>Volba %1 není slučitelná s --headless.</translation>
+        </message>
+        <message>
+            <source>Unexpected positional arguments. Use --help.</source>
+            <translation>Neočekávané poziční argumenty. Použijte --help.</translation>
+        </message>
+        <message>
+            <source>--config / -f requires a non-empty path.</source>
+            <translation>--config / -f vyžaduje neprázdnou cestu.</translation>
+        </message>
+        <message>
+            <source>Choose --password or --password-file, not both.</source>
+            <translation>Zvolte --password nebo --password-file, ne obojí.</translation>
+        </message>
+        <message>
+            <source>Choose SQUADSPEAK_PASSWORD or SQUADSPEAK_PASSWORD_FILE, not both.</source>
+            <translation>Zvolte SQUADSPEAK_PASSWORD nebo SQUADSPEAK_PASSWORD_FILE, ne obojí.</translation>
+        </message>
+        <message>
+            <source>Choose password or passwordFile in one configuration layer, not both.</source>
+            <translation>V jedné vrstvě konfigurace zvolte password nebo passwordFile, ne obojí.</translation>
+        </message>
+        <message>
+            <source>passwordFile must be a non-empty path.</source>
+            <translation>passwordFile musí být neprázdná cesta.</translation>
+        </message>
+        <message>
+            <source>Password file could not be read or is too large.</source>
+            <translation>Soubor s heslem nelze přečíst nebo je příliš velký.</translation>
+        </message>
+        <message>
+            <source>Password file must contain at most 1024 UTF-8 bytes without control characters.</source>
+            <translation>Soubor s heslem smí obsahovat nejvýše 1024 bajtů UTF-8 bez řídicích znaků.</translation>
+        </message>
+        <message>
+            <source>Password must be a string of at most 1024 UTF-8 bytes without control characters.</source>
+            <translation>Heslo musí být řetězec o nejvýše 1024 bajtech UTF-8 bez řídicích znaků.</translation>
+        </message>
+        <message>
+            <source>settingsFile must be a non-empty path.</source>
+            <translation>settingsFile musí být neprázdná cesta.</translation>
+        </message>
+        <message>
+            <source>identityFile must be a non-empty path.</source>
+            <translation>identityFile musí být neprázdná cesta.</translation>
+        </message>
+        <message>
+            <source>The settings directory could not be created.</source>
+            <translation>Adresář nastavení nelze vytvořit.</translation>
+        </message>
+        <message>
+            <source>This SquadSpeak profile is already running or cannot be locked.</source>
+            <translation>Tento profil SquadSpeak již běží nebo jej nelze uzamknout.</translation>
+        </message>
+        <message>
+            <source>Standard input could not be opened.</source>
+            <translation>Standardní vstup nelze otevřít.</translation>
+        </message>
+        <message>
+            <source>Standard output could not be opened.</source>
+            <translation>Standardní výstup nelze otevřít.</translation>
+        </message>
+        <message>
+            <source>This identity file is already in use or cannot be locked.</source>
+            <translation>Tento soubor identity se již používá nebo jej nelze uzamknout.</translation>
+        </message>
+        <message>
+            <source>Invalid host configuration: %1</source>
+            <translation>Neplatná konfigurace hostitele: %1</translation>
+        </message>
+        <message>
+            <source>Radio channels could not be initialized.</source>
+            <translation>Rádiové kanály nelze inicializovat.</translation>
+        </message>
+        <message>
+            <source>Headless host could not start: %1</source>
+            <translation>Hostitele bez rozhraní nelze spustit: %1</translation>
+        </message>
+        <message>
+            <source>Channel password could not be saved.</source>
+            <translation>Heslo kanálu nelze uložit.</translation>
+        </message>
+        <message>
+            <source>Invalid channel password: %1</source>
+            <translation>Neplatné heslo kanálu: %1</translation>
+        </message>
+        <message>
+            <source>Headless host could not initialize: %1</source>
+            <translation>Hostitele bez rozhraní nelze inicializovat: %1</translation>
+        </message>
+        <message>
+            <source>SquadSpeak headless could not start: %1</source>
+            <translation>SquadSpeak bez rozhraní nelze spustit: %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>Akce podporovatele musí být stav, přihlášení, obnovení, odhlášení nebo zrušení. status sign-in refresh sign-out cancel</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>Probíhá operace Supporter.</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>V tomto sestavení není přístup pro podporovatele k dispozici.</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>Priorita nastavení: argumenty &gt; prostředí &gt; vlastnosti &gt; uložené hodnoty serveru.</translation>
+        </message>
+    </context>
+    <context>
+        <name>License</name>
+        <message>
+            <source>License storage is busy or unavailable.</source>
+            <translation>Úložiště licencí je zaneprázdněné nebo nedostupné.</translation>
+        </message>
+        <message>
+            <source>License storage is unavailable.</source>
+            <translation>Licenční úložiště není k dispozici.</translation>
+        </message>
+        <message>
+            <source>Sign-in expired. Try again.</source>
+            <translation>Platnost přihlášení vypršela. Zkuste to znovu.</translation>
+        </message>
+        <message>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>Přihlášení na GitHub není k dispozici. Zkuste to znovu.</translation>
+        </message>
+        <message>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>Přihlášení na GitHub nebylo dokončeno. Zkuste to znovu.</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>GitHub se nepodařilo zkontrolovat. Offline přístup trvá maximálně sedm dní.</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>Znovu se přihlaste pomocí GitHubu.</translation>
+        </message>
+    </context>
+    <context>
         <name>LocalChannel</name>
+        <message>
+            <source>Blocked</source>
+            <translation>Zablokováno</translation>
+        </message>
         <message>
             <source>Host is not responding. Reconnecting.</source>
             <translation>Server nereaguje. Obnovuji připojení.</translation>
@@ -2205,6 +2567,53 @@
             <source>Voice relay codec could not be configured.</source>
             <translation>Kodek hlasového přenosu se nepodařilo nastavit.</translation>
         </message>
+        <message>
+            <source>Unsupported audio codec</source>
+            <translation>Nepodporovaný zvukový kodek</translation>
+        </message>
+        <message>
+            <source>Speaking is not allowed in this channel.</source>
+            <translation>V tomto kanálu není dovoleno mluvit.</translation>
+        </message>
+    </context>
+    <context>
+        <name>LocalLanguage</name>
+        <message>
+            <source>Translation (experimental)</source>
+            <translation>Překlad (experimentální)</translation>
+        </message>
+        <message>
+            <source>Translate messages</source>
+            <translation>Překládat zprávy</translation>
+        </message>
+        <message>
+            <source>Translated voice</source>
+            <translation>Přeložený hlas</translation>
+        </message>
+        <message>
+            <source>Original audio</source>
+            <translation>Původní zvuk</translation>
+        </message>
+        <message>
+            <source>Original text</source>
+            <translation>Původní text</translation>
+        </message>
+        <message>
+            <source>Prepare languages</source>
+            <translation>Připravit jazyky</translation>
+        </message>
+        <message>
+            <source>Local language processing is unavailable.</source>
+            <translation>Místní zpracování jazyků není dostupné.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be read.</source>
+            <translation>Nastavení jazyka se nepodařilo přečíst.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be saved.</source>
+            <translation>Nastavení jazyka se nepodařilo uložit.</translation>
+        </message>
     </context>
     <context>
         <name>PushToTalkKey</name>
@@ -2345,50 +2754,65 @@
         </message>
     </context>
     <context>
-        <name>RecordingPanel</name>
+        <name>ScreenPanel</name>
         <message>
-            <source>Stop</source>
-            <translation>Zastavit</translation>
+            <source>Media capacity reached</source>
+            <translation>Dosaženo maximální kapacity médií</translation>
         </message>
         <message>
-            <source>Start</source>
-            <translation>Spustit</translation>
+            <source>Video paused</source>
+            <translation>Video je pozastaveno</translation>
         </message>
         <message>
-            <source>Saved on this device only. Nothing is uploaded.</source>
-            <translation>Uloženo pouze na tomto zařízení. Nic není nahráno.</translation>
+            <source>Stream ended</source>
+            <translation>Stream byl ukončen</translation>
         </message>
         <message>
-            <source>Keep this take or record it again.</source>
-            <translation>Uložit tento záznam nebo jej nahrát znovu.</translation>
+            <source>Connecting</source>
+            <translation>Připojování</translation>
         </message>
         <message>
-            <source>Record again</source>
-            <translation>Nahrát znovu</translation>
+            <source>Open screen stream</source>
+            <translation>Spustit přenos obrazovky</translation>
         </message>
         <message>
-            <source>Use recording</source>
-            <translation>Použít nahrávku</translation>
+            <source>Screen stream</source>
+            <translation>Přenos obrazovky</translation>
         </message>
         <message>
-            <source>Recording progress</source>
-            <translation>Průběh nahrávání</translation>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
+        </message>
+    </context>
+    <context>
+        <name>ScreenShare</name>
+        <message>
+            <source>Allow screen recording in system settings.</source>
+            <translation>Povol záznam obrazovky v nastavení systému.</translation>
         </message>
         <message>
-            <source>Step %1 of %2</source>
-            <translation>Krok %1 z %2</translation>
+            <source>The shared screen was removed. Select a source to start again.</source>
+            <translation>Sdílená obrazovka byla odstraněna. Vyberte zdroj a začněte znovu.</translation>
         </message>
         <message>
-            <source>Open recordings</source>
-            <translation>Otevřít nahrávky</translation>
+            <source>The shared window was closed. Select a source to start again.</source>
+            <translation>Sdílené okno bylo zavřeno. Vyberte zdroj a začněte znovu.</translation>
         </message>
         <message>
-            <source>Reset test</source>
-            <translation>Reset testu</translation>
+            <source>The selected screen is no longer available.</source>
+            <translation>Vybraná obrazovka není k dispozici.</translation>
         </message>
         <message>
-            <source>%1 s remaining / %2 dBFS</source>
-            <translation>%1 zbývá / %2 dBFS</translation>
+            <source>The selected window is no longer available.</source>
+            <translation>Vybrané okno není k dispozici.</translation>
+        </message>
+        <message>
+            <source>The selected source exceeds the capture size limit.</source>
+            <translation>Vybraný zdroj překračuje maximální povolenou velikost.</translation>
+        </message>
+        <message>
+            <source>Close a video view before opening another stream.</source>
+            <translation>Před přehráváním dalšího streamu, zavřete aktuální video.</translation>
         </message>
     </context>
     <context>
@@ -2465,10 +2889,6 @@
             <translation>Sbírání signálu...</translation>
         </message>
         <message>
-            <source>Dashed curve: configured gain and frequency cuts, using the right dB scale. Noise reduction and voice activation are not part of this curve.</source>
-            <translation>Přerušovaná křivka: nastavené zesílení a úpravy frekvencí, zobrazené na pravé stupnici v decibelech. Potlačení šumu a aktivace hlasu nejsou součástí této křivky.</translation>
-        </message>
-        <message>
             <source>Microphone preview is not running</source>
             <translation>Náhled mikrofonu neběží</translation>
         </message>
@@ -2479,303 +2899,6 @@
         <message>
             <source>Peak: %1</source>
             <translation>Vrchol: %1</translation>
-        </message>
-    </context>
-    <context>
-        <name>Tray</name>
-        <message>
-            <source>Quit</source>
-            <translation>Ukončit</translation>
-        </message>
-        <message>
-            <source>SquadSpeak - speaking</source>
-            <translation>SquadSpeak - mluví</translation>
-        </message>
-        <message>
-            <source>Settings</source>
-            <translation>Nastavení</translation>
-        </message>
-        <message>
-            <source>Channels</source>
-            <translation>Kanály</translation>
-        </message>
-        <message>
-            <source>New image</source>
-            <translation>Nová fotka</translation>
-        </message>
-    </context>
-    <context>
-        <name>VoiceAvatar</name>
-        <message>
-            <source>Muted</source>
-            <translation>Mikrofon je ztlumen</translation>
-        </message>
-        <message>
-            <source>Sleeping</source>
-            <translation>Spí</translation>
-        </message>
-        <message>
-            <source>Offline</source>
-            <translation>Offline</translation>
-        </message>
-        <message>
-            <source>Speaking</source>
-            <translation>Mluví</translation>
-        </message>
-        <message>
-            <source>Unavailable</source>
-            <translation>Nedostupný</translation>
-        </message>
-        <message>
-            <source>Listening</source>
-            <translation>Poslouchá</translation>
-        </message>
-        <message>
-            <source>Deafened</source>
-            <translation>Reproduktory jsou ztlumené</translation>
-        </message>
-    </context>
-    <context>
-        <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>Nedostupný - nastavení zvuku nebo test zvuku</translation>
-        </message>
-        <message>
-            <source>Microphone muted</source>
-            <translation>Mikrofon ztlumený</translation>
-        </message>
-        <message>
-            <source>Push-to-talk held</source>
-            <translation>Drženo tlačítko pro vysílání</translation>
-        </message>
-        <message>
-            <source>Ready - push-to-talk released</source>
-            <translation>Uvolněno tlačítko pro vysílání</translation>
-        </message>
-        <message>
-            <source>Microphone unmuted</source>
-            <translation>Mikrofon odtlumený</translation>
-        </message>
-        <message>
-            <source>Settings could not be saved: %1</source>
-            <translation>Nelze uložit nastavení: %1</translation>
-        </message>
-        <message>
-            <source>The push-to-talk sequence cannot be incremented further.</source>
-            <translation>Pořadové číslo push-to-talk již nelze dále zvýšit.</translation>
-        </message>
-        <message>
-            <source>Choose System, Light or Dark.</source>
-            <translation>Vyberte systémový, světlý nebo tmavý režim.</translation>
-        </message>
-        <message>
-            <source>Choose a colour palette from the list.</source>
-            <translation>Vyberte barevnou paletu z dostupného seznamu.</translation>
-        </message>
-        <message>
-            <source>Choose an available avatar.</source>
-            <translation>Vyberte dostupnou avatar.</translation>
-        </message>
-        <message>
-            <source>Invalid push-to-talk binding.</source>
-            <translation>Neplatné nastavení pro funkci Push-to-Talk.</translation>
-        </message>
-        <message>
-            <source>Release the held push-to-talk key first.</source>
-            <translation>Nejprve uvolněte klávesu pro funkci Push-to-Talk.</translation>
-        </message>
-        <message>
-            <source>Choose a language from the list.</source>
-            <translation>Vyberte jazyk z dostupného seznamu.</translation>
-        </message>
-        <message>
-            <source>This avatar requires Supporter.</source>
-            <translation>Tento avatar vyžaduje Supporter.</translation>
-        </message>
-        <message>
-            <source>The name must contain 1 to 64 characters.</source>
-            <translation>Jméno musí obsahovat od 1 do 64 znaků.</translation>
-        </message>
-        <message>
-            <source>The name may not contain control characters or line breaks.</source>
-            <translation>Jméno nesmí obsahovat řídicí znaky nebo zlomky řádků.</translation>
-        </message>
-        <message>
-            <source>Session settings could not be read.</source>
-            <translation>Nastavení relace se nepodařilo přečíst.</translation>
-        </message>
-        <message>
-            <source>Saved setting is invalid: %1</source>
-            <translation>Neplatné uložené nastavení: %1</translation>
-        </message>
-    </context>
-    <context>
-        <name>License</name>
-        <message>
-            <source>License storage is busy or unavailable.</source>
-            <translation>Úložiště licencí je zaneprázdněné nebo nedostupné.</translation>
-        </message>
-        <message>
-            <source>License storage is unavailable.</source>
-            <translation>Licenční úložiště není k dispozici.</translation>
-        </message>
-        <message>
-            <source>Sign-in expired. Try again.</source>
-            <translation>Platnost přihlášení vypršela. Zkuste to znovu.</translation>
-        </message>
-        <message>
-            <source>GitHub sign-in is unavailable. Try again.</source>
-            <translation>Přihlášení na GitHub není k dispozici. Zkuste to znovu.</translation>
-        </message>
-        <message>
-            <source>GitHub sign-in was not completed. Try again.</source>
-            <translation>Přihlášení na GitHub nebylo dokončeno. Zkuste to znovu.</translation>
-        </message>
-        <message>
-            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
-            <translation>GitHub se nepodařilo zkontrolovat. Offline přístup trvá maximálně sedm dní.</translation>
-        </message>
-        <message>
-            <source>Sign in with GitHub again.</source>
-            <translation>Znovu se přihlaste pomocí GitHubu.</translation>
-        </message>
-    </context>
-    <context>
-        <name>ScreenShare</name>
-        <message>
-            <source>The shared screen was removed. Select a source to start again.</source>
-            <translation>Sdílená obrazovka byla odstraněna. Vyberte zdroj a začněte znovu.</translation>
-        </message>
-        <message>
-            <source>The shared window was closed. Select a source to start again.</source>
-            <translation>Sdílené okno bylo zavřeno. Vyberte zdroj a začněte znovu.</translation>
-        </message>
-        <message>
-            <source>The selected screen is no longer available.</source>
-            <translation>Vybraná obrazovka není k dispozici.</translation>
-        </message>
-        <message>
-            <source>The selected window is no longer available.</source>
-            <translation>Vybrané okno není k dispozici.</translation>
-        </message>
-        <message>
-            <source>The selected source exceeds the capture size limit.</source>
-            <translation>Vybraný zdroj překračuje maximální povolenou velikost.</translation>
-        </message>
-        <message>
-            <source>Close a video view before opening another stream.</source>
-            <translation>Před přehráváním dalšího streamu, zavřete aktuální video.</translation>
-        </message>
-    </context>
-    <context>
-        <name>ScreenPanel</name>
-        <message>
-            <source>Media capacity reached</source>
-            <translation>Dosaženo maximální kapacity médií</translation>
-        </message>
-        <message>
-            <source>Video paused</source>
-            <translation>Video je pozastaveno</translation>
-        </message>
-        <message>
-            <source>Stream ended</source>
-            <translation>Stream byl ukončen</translation>
-        </message>
-        <message>
-            <source>Connecting</source>
-            <translation>Připojování</translation>
-        </message>
-        <message>
-            <source>Open screen stream</source>
-            <translation>Spustit přenos obrazovky</translation>
-        </message>
-        <message>
-            <source>Screen stream</source>
-            <translation>Přenos obrazovky</translation>
-        </message>
-        <message>
-            <source>%1 kbit/s</source>
-            <translation>%1 kbit/s</translation>
-        </message>
-    </context>
-    <context>
-        <name>VideoCodec</name>
-        <message>
-            <source>Video codec: %1</source>
-            <translation>Videokodek: %1</translation>
-        </message>
-        <message>
-            <source>Video codec ABI does not match its headers.</source>
-            <translation>ABI videokodeku neodpovídá jeho hlavičkovým souborům.</translation>
-        </message>
-        <message>
-            <source>Video buffers could not be allocated.</source>
-            <translation>Nelze přidělit paměť pro vyrovnávací paměti videa.</translation>
-        </message>
-        <message>
-            <source>Invalid video quality tier.</source>
-            <translation>Neplatná úroveň kvality videa.</translation>
-        </message>
-        <message>
-            <source>The screen source exceeds the supported capture size.</source>
-            <translation>Zdroj obrazovky překračuje podporovanou velikost snímání.</translation>
-        </message>
-        <message>
-            <source>The screen source is too narrow.</source>
-            <translation>Zdroj obrazovky je příliš úzký.</translation>
-        </message>
-        <message>
-            <source>The video encoder could not be allocated.</source>
-            <translation>Nelze přidělit paměť pro kodér videa.</translation>
-        </message>
-        <message>
-            <source>No supported video encoder is available.</source>
-            <translation>Není dostupný žádný podporovaný kodér videa.</translation>
-        </message>
-        <message>
-            <source>Video encoder configuration is too large.</source>
-            <translation>Konfigurace kodéru videa je příliš velká.</translation>
-        </message>
-        <message>
-            <source>Video scaling could not be initialized.</source>
-            <translation>Nelze inicializovat změnu velikosti videa.</translation>
-        </message>
-        <message>
-            <source>The encoder returned an empty video packet.</source>
-            <translation>Kodér vrátil prázdný paket videa.</translation>
-        </message>
-        <message>
-            <source>Invalid video frame format.</source>
-            <translation>Neplatný formát snímku videa.</translation>
-        </message>
-        <message>
-            <source>Invalid video decoder configuration.</source>
-            <translation>Neplatná konfigurace dekodéru videa.</translation>
-        </message>
-        <message>
-            <source>This video codec cannot be decoded.</source>
-            <translation>Tento videokodek nelze dekódovat.</translation>
-        </message>
-        <message>
-            <source>Video decoder could not be allocated.</source>
-            <translation>Nelze přidělit paměť pro dekodér videa.</translation>
-        </message>
-        <message>
-            <source>Video decoder configuration could not be allocated.</source>
-            <translation>Nelze přidělit paměť pro konfiguraci dekodéru videa.</translation>
-        </message>
-        <message>
-            <source>Decoded dimensions do not match the screen stream.</source>
-            <translation>Dekódované rozměry neodpovídají proudu obrazovky.</translation>
-        </message>
-        <message>
-            <source>Decoded image could not be allocated.</source>
-            <translation>Nelze přidělit paměť pro dekódovaný obrázek.</translation>
-        </message>
-        <message>
-            <source>Video color conversion could not be initialized.</source>
-            <translation>Nelze inicializovat převod barev videa.</translation>
         </message>
     </context>
     <context>
@@ -2894,404 +3017,211 @@
         </message>
     </context>
     <context>
-        <name>Headless</name>
+        <name>Tray</name>
         <message>
-            <source>Command failed.</source>
-            <translation>Příkaz selhal.</translation>
+            <source>Quit</source>
+            <translation>Ukončit</translation>
         </message>
         <message>
-            <source>%1 must be an integer.</source>
-            <translation>%1 musí být celé číslo.</translation>
+            <source>SquadSpeak - speaking</source>
+            <translation>SquadSpeak - mluví</translation>
         </message>
         <message>
-            <source>Requests must be on/off or true/false.</source>
-            <translation>Žádosti musí mít hodnotu on/off nebo true/false.</translation>
+            <source>Settings</source>
+            <translation>Nastavení</translation>
         </message>
         <message>
-            <source>Unknown host property: %1</source>
-            <translation>Neznámá vlastnost hostitele: %1</translation>
+            <source>Channels</source>
+            <translation>Kanály</translation>
         </message>
         <message>
-            <source>Run without GUI, microphone capture, or local audio output.</source>
-            <translation>Spustit bez grafického rozhraní, záznamu mikrofonu a místního zvukového výstupu.</translation>
-        </message>
-        <message>
-            <source>Server storage prefix. Personal/audio/GUI profiles are not loaded.</source>
-            <translation>Předpona úložiště serveru. Osobní, zvukové ani grafické profily se nenačítají.</translation>
-        </message>
-        <message>
-            <source>Optional private identity file instead of the OS credential store (Linux/macOS). Parent directory must exist and belong to this account.</source>
-            <translation>Volitelný soukromý soubor identity místo úložiště přihlašovacích údajů OS (Linux/macOS). Nadřazený adresář musí existovat a patřit tomuto účtu.</translation>
-        </message>
-        <message>
-            <source>UTF-8 key=value properties or JSON host preset. Default: application.properties, then config/application.properties beside the app.</source>
-            <translation>Vlastnosti key=value v UTF-8 nebo předvolba hostitele v JSON. Výchozí pořadí: application.properties, potom config/application.properties vedle aplikace.</translation>
-        </message>
-        <message>
-            <source>Channel display name.</source>
-            <translation>Zobrazovaný název kanálu.</translation>
-        </message>
-        <message>
-            <source>System and radio bot display name.</source>
-            <translation>Zobrazované jméno společného systémového a rádiového bota.</translation>
-        </message>
-        <message>
-            <source>TCP service port (1-65535).</source>
-            <translation>Port služby TCP (1-65535).</translation>
-        </message>
-        <message>
-            <source>Headless admission is always on; only 'on' or 'true' is accepted.</source>
-            <translation>V bezobslužném režimu je přijímání vždy zapnuté; povoleno je pouze 'on' nebo 'true'.</translation>
-        </message>
-        <message>
-            <source>Preapprove a device ID; repeat for several devices. Existing bans remain.</source>
-            <translation>Předem schválit ID zařízení; pro více zařízení opakujte. Stávající blokace zůstávají.</translation>
-        </message>
-        <message>
-            <source>Block a device ID; repeat for several devices.</source>
-            <translation>Zablokovat ID zařízení; pro více zařízení opakujte.</translation>
-        </message>
-        <message>
-            <source>Read a UTF-8 channel password from a file before listening. An empty file removes it.</source>
-            <translation>Před zahájením naslouchání přečíst heslo kanálu ze souboru UTF-8. Prázdný soubor heslo odstraní.</translation>
-        </message>
-        <message>
-            <source>Channel password. Empty removes it; environment or config avoids process-list exposure.</source>
-            <translation>Heslo kanálu. Prázdná hodnota jej odstraní; prostředí nebo konfigurace zabrání zobrazení v seznamu procesů.</translation>
-        </message>
-        <message>
-            <source>SquadSpeak headless local channel host</source>
-            <translation>Místní hostitel kanálů SquadSpeak bez grafického rozhraní</translation>
-        </message>
-        <message>
-            <source>Environment variables (SQUADSPEAK_ prefix):</source>
-            <translation>Proměnné prostředí (předpona SQUADSPEAK_):</translation>
-        </message>
-        <message>
-            <source>Host configuration could not be read or exceeds 1 MiB.</source>
-            <translation>Konfiguraci hostitele nelze přečíst nebo přesahuje 1 MiB.</translation>
-        </message>
-        <message>
-            <source>Host configuration must be UTF-8.</source>
-            <translation>Konfigurace hostitele musí být v UTF-8.</translation>
-        </message>
-        <message>
-            <source>Host preset must be a JSON object.</source>
-            <translation>Předvolba hostitele musí být objekt JSON.</translation>
-        </message>
-        <message>
-            <source>Property line %1 must use key=value.</source>
-            <translation>Řádek vlastností %1 musí používat key=value.</translation>
-        </message>
-        <message>
-            <source>Property line %1: %2</source>
-            <translation>Řádek vlastností %1: %2</translation>
-        </message>
-        <message>
-            <source>Standard input has no file descriptor.</source>
-            <translation>Standardní vstup nemá popisovač souboru.</translation>
-        </message>
-        <message>
-            <source>Standard input could not be inspected.</source>
-            <translation>Standardní vstup nelze zkontrolovat.</translation>
-        </message>
-        <message>
-            <source>Could not write the command response: %1</source>
-            <translation>Odpověď na příkaz nelze zapsat: %1</translation>
-        </message>
-        <message>
-            <source>Standard input could not be read: %1</source>
-            <translation>Standardní vstup nelze přečíst: %1</translation>
-        </message>
-        <message>
-            <source>Input line exceeds 65536 bytes.</source>
-            <translation>Vstupní řádek přesahuje 65536 bajtů.</translation>
-        </message>
-        <message>
-            <source>Each input line must be a JSON object.</source>
-            <translation>Každý vstupní řádek musí být objekt JSON.</translation>
-        </message>
-        <message>
-            <source>Input ended before a complete JSON line.</source>
-            <translation>Vstup skončil před dokončením řádku JSON.</translation>
-        </message>
-        <message>
-            <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
-            <translation>Volitelné ID vlastního kanálu pro příkazy status, configure, password, admission, history, chat a radio; výchozí je hlavní kanál.</translation>
-        </message>
-        <message>
-            <source>Channel action must be list, add or remove.</source>
-            <translation>Akce kanálu musí být list, add nebo remove.</translation>
-        </message>
-        <message>
-            <source>Removing an own channel deletes its history, images, permissions and radio settings. Set confirmed=true to proceed.</source>
-            <translation>Odstranění vlastního kanálu smaže jeho historii, obrázky, oprávnění a nastavení rádia. Pro pokračování nastavte confirmed=true.</translation>
-        </message>
-        <message>
-            <source>id must identify an additional own channel.</source>
-            <translation>id musí označovat další vlastní kanál.</translation>
-        </message>
-        <message>
-            <source>The additional own channel could not be removed: %1</source>
-            <translation>Další vlastní kanál nelze odstranit: %1</translation>
-        </message>
-        <message>
-            <source>channelId must identify an own channel.</source>
-            <translation>channelId musí označovat vlastní kanál.</translation>
-        </message>
-        <message>
-            <source>values must be a host settings object.</source>
-            <translation>values musí být objekt nastavení hostitele.</translation>
-        </message>
-        <message>
-            <source>Headless admission is always enabled for non-banned devices; requests off is not supported.</source>
-            <translation>V bezobslužném režimu je přijímání neblokovaných zařízení vždy povoleno; requests off není podporováno.</translation>
-        </message>
-        <message>
-            <source>value must be a password of at most 1024 UTF-8 bytes without control characters; an empty string removes it.</source>
-            <translation>value musí být heslo o nejvýše 1024 bajtech UTF-8 bez řídicích znaků; prázdný řetězec heslo odstraní.</translation>
-        </message>
-        <message>
-            <source>The channel is not ready or a password change is in progress.</source>
-            <translation>Kanál není připraven nebo probíhá změna hesla.</translation>
-        </message>
-        <message>
-            <source>The channel was removed while saving the password.</source>
-            <translation>Kanál byl během ukládání hesla odstraněn.</translation>
-        </message>
-        <message>
-            <source>id is required.</source>
-            <translation>id je vyžadováno.</translation>
-        </message>
-        <message>
-            <source>text must be a valid non-empty chat message.</source>
-            <translation>text musí být platná neprázdná zpráva chatu.</translation>
-        </message>
-        <message>
-            <source>The local channel is not ready.</source>
-            <translation>Místní kanál není připraven.</translation>
-        </message>
-        <message>
-            <source>The channel's radio is unavailable.</source>
-            <translation>Rádio kanálu není dostupné.</translation>
-        </message>
-        <message>
-            <source>Unknown command. Use help.</source>
-            <translation>Neznámý příkaz. Použijte help.</translation>
-        </message>
-        <message>
-            <source>search requires a query, non-negative offset and limit from 1 to 128.</source>
-            <translation>search vyžaduje query, nezáporný offset a limit od 1 do 128.</translation>
-        </message>
-        <message>
-            <source>add creates an id; update requires an existing id.</source>
-            <translation>add vytvoří id; update vyžaduje existující id.</translation>
-        </message>
-        <message>
-            <source>A station is already being checked.</source>
-            <translation>Již probíhá kontrola stanice.</translation>
-        </message>
-        <message>
-            <source>The channel was removed while checking the station.</source>
-            <translation>Kanál byl během kontroly stanice odstraněn.</translation>
-        </message>
-        <message>
-            <source>Unknown radio action.</source>
-            <translation>Neznámá akce rádia.</translation>
-        </message>
-        <message>
-            <source>Could not load language: %1</source>
-            <translation>Jazyk nelze načíst: %1</translation>
-        </message>
-        <message>
-            <source>The %1 option is incompatible with --headless.</source>
-            <translation>Volba %1 není slučitelná s --headless.</translation>
-        </message>
-        <message>
-            <source>Unexpected positional arguments. Use --help.</source>
-            <translation>Neočekávané poziční argumenty. Použijte --help.</translation>
-        </message>
-        <message>
-            <source>--config / -f requires a non-empty path.</source>
-            <translation>--config / -f vyžaduje neprázdnou cestu.</translation>
-        </message>
-        <message>
-            <source>Choose --password or --password-file, not both.</source>
-            <translation>Zvolte --password nebo --password-file, ne obojí.</translation>
-        </message>
-        <message>
-            <source>Choose SQUADSPEAK_PASSWORD or SQUADSPEAK_PASSWORD_FILE, not both.</source>
-            <translation>Zvolte SQUADSPEAK_PASSWORD nebo SQUADSPEAK_PASSWORD_FILE, ne obojí.</translation>
-        </message>
-        <message>
-            <source>Choose password or passwordFile in one configuration layer, not both.</source>
-            <translation>V jedné vrstvě konfigurace zvolte password nebo passwordFile, ne obojí.</translation>
-        </message>
-        <message>
-            <source>passwordFile must be a non-empty path.</source>
-            <translation>passwordFile musí být neprázdná cesta.</translation>
-        </message>
-        <message>
-            <source>Password file could not be read or is too large.</source>
-            <translation>Soubor s heslem nelze přečíst nebo je příliš velký.</translation>
-        </message>
-        <message>
-            <source>Password file must contain at most 1024 UTF-8 bytes without control characters.</source>
-            <translation>Soubor s heslem smí obsahovat nejvýše 1024 bajtů UTF-8 bez řídicích znaků.</translation>
-        </message>
-        <message>
-            <source>Password must be a string of at most 1024 UTF-8 bytes without control characters.</source>
-            <translation>Heslo musí být řetězec o nejvýše 1024 bajtech UTF-8 bez řídicích znaků.</translation>
-        </message>
-        <message>
-            <source>settingsFile must be a non-empty path.</source>
-            <translation>settingsFile musí být neprázdná cesta.</translation>
-        </message>
-        <message>
-            <source>identityFile must be a non-empty path.</source>
-            <translation>identityFile musí být neprázdná cesta.</translation>
-        </message>
-        <message>
-            <source>The settings directory could not be created.</source>
-            <translation>Adresář nastavení nelze vytvořit.</translation>
-        </message>
-        <message>
-            <source>This SquadSpeak profile is already running or cannot be locked.</source>
-            <translation>Tento profil SquadSpeak již běží nebo jej nelze uzamknout.</translation>
-        </message>
-        <message>
-            <source>Standard input could not be opened.</source>
-            <translation>Standardní vstup nelze otevřít.</translation>
-        </message>
-        <message>
-            <source>Standard output could not be opened.</source>
-            <translation>Standardní výstup nelze otevřít.</translation>
-        </message>
-        <message>
-            <source>This identity file is already in use or cannot be locked.</source>
-            <translation>Tento soubor identity se již používá nebo jej nelze uzamknout.</translation>
-        </message>
-        <message>
-            <source>Invalid host configuration: %1</source>
-            <translation>Neplatná konfigurace hostitele: %1</translation>
-        </message>
-        <message>
-            <source>Radio channels could not be initialized.</source>
-            <translation>Rádiové kanály nelze inicializovat.</translation>
-        </message>
-        <message>
-            <source>Headless host could not start: %1</source>
-            <translation>Hostitele bez rozhraní nelze spustit: %1</translation>
-        </message>
-        <message>
-            <source>Channel password could not be saved.</source>
-            <translation>Heslo kanálu nelze uložit.</translation>
-        </message>
-        <message>
-            <source>Invalid channel password: %1</source>
-            <translation>Neplatné heslo kanálu: %1</translation>
-        </message>
-        <message>
-            <source>Headless host could not initialize: %1</source>
-            <translation>Hostitele bez rozhraní nelze inicializovat: %1</translation>
-        </message>
-        <message>
-            <source>SquadSpeak headless could not start: %1</source>
-            <translation>SquadSpeak bez rozhraní nelze spustit: %1</translation>
-        </message>
-        <message>
-            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
-            <translation>Akce podporovatele musí být stav, přihlášení, obnovení, odhlášení nebo zrušení. status sign-in refresh sign-out cancel</translation>
-        </message>
-        <message>
-            <source>A Supporter operation is in progress.</source>
-            <translation>Probíhá operace Supporter.</translation>
-        </message>
-        <message>
-            <source>Supporter access is unavailable in this build.</source>
-            <translation>V tomto sestavení není přístup pro podporovatele k dispozici.</translation>
-        </message>
-        <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>Priorita nastavení: argumenty &gt; prostředí &gt; vlastnosti &gt; uložené hodnoty serveru.</translation>
+            <source>New image</source>
+            <translation>Nová fotka</translation>
         </message>
     </context>
     <context>
-        <name>Desktop</name>
+        <name>VideoCodec</name>
         <message>
-            <source>Open settings at startup.</source>
-            <translation>Otevřít nastavení při spuštění.</translation>
+            <source>Video codec: %1</source>
+            <translation>Videokodek: %1</translation>
         </message>
         <message>
-            <source>Open guided local test recording without starting network services.</source>
-            <translation>Otevřít průvodce místním testovacím záznamem bez spuštění síťových služeb.</translation>
+            <source>Video codec ABI does not match its headers.</source>
+            <translation>ABI videokodeku neodpovídá jeho hlavičkovým souborům.</translation>
         </message>
         <message>
-            <source>Alternative file for audio profiles.</source>
-            <translation>Alternativní soubor zvukových profilů.</translation>
+            <source>Video buffers could not be allocated.</source>
+            <translation>Nelze přidělit paměť pro vyrovnávací paměti videa.</translation>
         </message>
         <message>
-            <source>Load the interface without microphone capture and exit after one second.</source>
-            <translation>Načíst rozhraní bez záznamu z mikrofonu a po sekundě skončit.</translation>
+            <source>Invalid video quality tier.</source>
+            <translation>Neplatná úroveň kvality videa.</translation>
         </message>
         <message>
-            <source>Save an image of the app window during the UI test.</source>
-            <translation>Uložit obrázek okna aplikace během testu rozhraní.</translation>
+            <source>The screen source exceeds the supported capture size.</source>
+            <translation>Zdroj obrazovky překračuje podporovanou velikost snímání.</translation>
         </message>
         <message>
-            <source>The window image could not be saved.</source>
-            <translation>Obrázek okna se nepodařilo uložit.</translation>
+            <source>The screen source is too narrow.</source>
+            <translation>Zdroj obrazovky je příliš úzký.</translation>
         </message>
         <message>
-            <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
-            <translation>Systémová lišta není dostupná; aplikace zůstává otevřená v okně.</translation>
+            <source>The video encoder could not be allocated.</source>
+            <translation>Nelze přidělit paměť pro kodér videa.</translation>
+        </message>
+        <message>
+            <source>No supported video encoder is available.</source>
+            <translation>Není dostupný žádný podporovaný kodér videa.</translation>
+        </message>
+        <message>
+            <source>Video encoder configuration is too large.</source>
+            <translation>Konfigurace kodéru videa je příliš velká.</translation>
+        </message>
+        <message>
+            <source>Video scaling could not be initialized.</source>
+            <translation>Nelze inicializovat změnu velikosti videa.</translation>
+        </message>
+        <message>
+            <source>The encoder returned an empty video packet.</source>
+            <translation>Kodér vrátil prázdný paket videa.</translation>
+        </message>
+        <message>
+            <source>Invalid video frame format.</source>
+            <translation>Neplatný formát snímku videa.</translation>
+        </message>
+        <message>
+            <source>Invalid video decoder configuration.</source>
+            <translation>Neplatná konfigurace dekodéru videa.</translation>
+        </message>
+        <message>
+            <source>This video codec cannot be decoded.</source>
+            <translation>Tento videokodek nelze dekódovat.</translation>
+        </message>
+        <message>
+            <source>Video decoder could not be allocated.</source>
+            <translation>Nelze přidělit paměť pro dekodér videa.</translation>
+        </message>
+        <message>
+            <source>Video decoder configuration could not be allocated.</source>
+            <translation>Nelze přidělit paměť pro konfiguraci dekodéru videa.</translation>
+        </message>
+        <message>
+            <source>Decoded dimensions do not match the screen stream.</source>
+            <translation>Dekódované rozměry neodpovídají proudu obrazovky.</translation>
+        </message>
+        <message>
+            <source>Decoded image could not be allocated.</source>
+            <translation>Nelze přidělit paměť pro dekódovaný obrázek.</translation>
+        </message>
+        <message>
+            <source>Video color conversion could not be initialized.</source>
+            <translation>Nelze inicializovat převod barev videa.</translation>
         </message>
     </context>
     <context>
-        <name>LocalLanguage</name>
+        <name>VoiceAvatar</name>
         <message>
-            <source>Translation (experimental)</source>
-            <translation>Překlad (experimentální)</translation>
+            <source>Muted</source>
+            <translation>Mikrofon je ztlumen</translation>
         </message>
         <message>
-            <source>Spoken language</source>
-            <translation>Mluvený jazyk</translation>
+            <source>Sleeping</source>
+            <translation>Spí</translation>
         </message>
         <message>
-            <source>Translate to</source>
-            <translation>Přeložit do</translation>
+            <source>Offline</source>
+            <translation>Offline</translation>
         </message>
         <message>
-            <source>Translate messages</source>
-            <translation>Překládat zprávy</translation>
+            <source>Speaking</source>
+            <translation>Mluví</translation>
         </message>
         <message>
-            <source>Translated voice</source>
-            <translation>Přeložený hlas</translation>
+            <source>Unavailable</source>
+            <translation>Nedostupný</translation>
         </message>
         <message>
-            <source>Original audio</source>
-            <translation>Původní zvuk</translation>
+            <source>Listening</source>
+            <translation>Poslouchá</translation>
         </message>
         <message>
-            <source>Original text</source>
-            <translation>Původní text</translation>
+            <source>Deafened</source>
+            <translation>Reproduktory jsou ztlumené</translation>
+        </message>
+    </context>
+    <context>
+        <name>VoiceSession</name>
+        <message>
+            <source>Unavailable - audio settings or tone test</source>
+            <translation>Nedostupný - nastavení zvuku nebo test zvuku</translation>
         </message>
         <message>
-            <source>Prepare languages</source>
-            <translation>Připravit jazyky</translation>
+            <source>Microphone muted</source>
+            <translation>Mikrofon ztlumený</translation>
         </message>
         <message>
-            <source>Local language processing is unavailable.</source>
-            <translation>Místní zpracování jazyků není dostupné.</translation>
+            <source>Push-to-talk held</source>
+            <translation>Drženo tlačítko pro vysílání</translation>
         </message>
         <message>
-            <source>Language settings could not be read.</source>
-            <translation>Nastavení jazyka se nepodařilo přečíst.</translation>
+            <source>Ready - push-to-talk released</source>
+            <translation>Uvolněno tlačítko pro vysílání</translation>
         </message>
         <message>
-            <source>Language settings could not be saved.</source>
-            <translation>Nastavení jazyka se nepodařilo uložit.</translation>
+            <source>Microphone unmuted</source>
+            <translation>Mikrofon odtlumený</translation>
+        </message>
+        <message>
+            <source>Settings could not be saved: %1</source>
+            <translation>Nelze uložit nastavení: %1</translation>
+        </message>
+        <message>
+            <source>The push-to-talk sequence cannot be incremented further.</source>
+            <translation>Pořadové číslo push-to-talk již nelze dále zvýšit.</translation>
+        </message>
+        <message>
+            <source>Choose System, Light or Dark.</source>
+            <translation>Vyberte systémový, světlý nebo tmavý režim.</translation>
+        </message>
+        <message>
+            <source>Choose a colour palette from the list.</source>
+            <translation>Vyberte barevnou paletu z dostupného seznamu.</translation>
+        </message>
+        <message>
+            <source>Choose an available avatar.</source>
+            <translation>Vyberte dostupnou avatar.</translation>
+        </message>
+        <message>
+            <source>Invalid push-to-talk binding.</source>
+            <translation>Neplatné nastavení pro funkci Push-to-Talk.</translation>
+        </message>
+        <message>
+            <source>Release the held push-to-talk key first.</source>
+            <translation>Nejprve uvolněte klávesu pro funkci Push-to-Talk.</translation>
+        </message>
+        <message>
+            <source>Choose a language from the list.</source>
+            <translation>Vyberte jazyk z dostupného seznamu.</translation>
+        </message>
+        <message>
+            <source>This avatar requires Supporter.</source>
+            <translation>Tento avatar vyžaduje Supporter.</translation>
+        </message>
+        <message>
+            <source>The name must contain 1 to 64 characters.</source>
+            <translation>Jméno musí obsahovat od 1 do 64 znaků.</translation>
+        </message>
+        <message>
+            <source>The name may not contain control characters or line breaks.</source>
+            <translation>Jméno nesmí obsahovat řídicí znaky nebo zlomky řádků.</translation>
+        </message>
+        <message>
+            <source>Session settings could not be read.</source>
+            <translation>Nastavení relace se nepodařilo přečíst.</translation>
+        </message>
+        <message>
+            <source>Saved setting is invalid: %1</source>
+            <translation>Neplatné uložené nastavení: %1</translation>
         </message>
     </context>
 </TS>

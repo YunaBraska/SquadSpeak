@@ -79,6 +79,28 @@ class SourceArchiveTests(unittest.TestCase):
             self.assertIn(head, readme)
             self.assertIn("tests/macos-ci.sh", readme)
 
+    def test_cargo_lock_sources_are_included_and_git_must_be_pinned(self) -> None:
+        directory = self.root / "src/teamspeak_bridge"
+        directory.mkdir(parents=True)
+        lock = directory / "Cargo.lock"
+        lock.write_text('[ [package] ]'.replace(' ', '') + '\nname = "example"\nversion = "1.2.3"\n'
+                        'source = "registry+https://github.com/rust-lang/crates.io-index"\n'
+                        'checksum = "' + hashlib.sha256(self.payload).hexdigest() + '"\n')
+        cache = self.root / "cache"
+        cache.mkdir()
+        for name in ("source.tar.xz", "example-1.2.3.crate"):
+            (cache / name).write_bytes(self.payload)
+        output = self.root / "cargo.tar.gz"
+        result = self.run_tool("--cache", str(cache), "--output", str(output))
+        self.assertEqual(result.returncode, 0, result.stderr)
+        with tarfile.open(output) as archive:
+            self.assertIn("sources/example-1.2.3.crate", archive.getnames())
+        lock.write_text(lock.read_text().replace("registry+https://github.com/rust-lang/crates.io-index",
+                         "git+https://github.com/example/dependency?rev=abc#abc"))
+        result = self.run_tool("--check")
+        self.assertEqual(result.returncode, 2)
+        self.assertIn("does not cover Cargo git source", result.stderr)
+
     def test_source_version_matches_bundled_qt(self) -> None:
         matching = self.run_tool("--check", "--qt-version", "6.10.2")
         self.assertEqual(matching.returncode, 0, matching.stderr)

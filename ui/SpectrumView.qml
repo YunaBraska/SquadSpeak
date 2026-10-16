@@ -16,12 +16,7 @@ ColumnLayout {
         spacing: 12
         Label { text: qsTr("Input"); color: Theme.muted; font.pixelSize: 12 }
         Label { text: qsTr("After gain / cuts"); color: Theme.accent; font.pixelSize: 12 }
-        Label {
-            text: qsTr("Filter curve"); color: Theme.warning; font.pixelSize: 12
-            ToolTip.visible: curveHover.hovered
-            ToolTip.text: qsTr("Dashed curve: configured gain and frequency cuts, using the right dB scale. Noise reduction and voice activation are not part of this curve.")
-            HoverHandler { id: curveHover }
-        }
+        Label { text: qsTr("Filter curve"); color: Theme.warning; font.pixelSize: 12 }
     }
     Canvas {
         id: chart
@@ -39,7 +34,8 @@ ColumnLayout {
         onMaximumChanged: requestPaint()
         onActiveChanged: requestPaint()
         onWidthChanged: requestPaint()
-        Connections { target: Theme; function onDarkChanged() { chart.requestPaint() } }
+        onHeightChanged: requestPaint()
+        Connections { target: Theme; function onTonesChanged() { chart.requestPaint() } }
         Accessible.name: qsTr("Frequency spectrum in hertz and dBFS")
         onPaint: {
             const ctx = getContext("2d")
@@ -54,12 +50,13 @@ ColumnLayout {
             ctx.font = "11px sans-serif"
             ctx.fillStyle = Theme.muted
             ctx.fillText(qsTr("dBFS"), 0, 12)
-            for (let db = 0; db >= -90; db -= 30) {
-                const y = top + (-db / 90) * plotHeight
+            for (const db of [0, -30, -60, -90]) {
+                const y = top - db / 90 * plotHeight
                 ctx.strokeStyle = Theme.border
                 ctx.beginPath(); ctx.moveTo(left, y); ctx.lineTo(left + plotWidth, y); ctx.stroke()
                 ctx.fillText(String(db), 6, y + 4)
             }
+            ctx.textAlign = "left"
             const ticks = width < 450 ? [20, 100, 1000, 10000] : [20, 50, 100, 200, 500, 1000, 2000, 5000, 10000]
             for (const hz of ticks) {
                 if (hz >= maximum * 0.85) continue
@@ -96,8 +93,6 @@ ColumnLayout {
             }
             ctx.setLineDash([4, 4])
             draw(response, Theme.warning, -48, 24)
-            ctx.setLineDash([])
-
         }
         Label {
             anchors.centerIn: parent
@@ -124,24 +119,26 @@ ColumnLayout {
                 const t = (mouse.x - 42) / w
                 if (t < 0 || t > 1 || mouse.y < 20 || mouse.y > 20 + h) { showing = false; return }
                 const candidates = [
-                    {values: chart.active ? chart.raw : [], min: -90, max: 0,
+                    {values: chart.response, min: -48, max: 24, unit: qsTr("dB"),
+                        text: qsTr("Filter curve: the configured change in level at each frequency, read on the right dB scale. It excludes noise reduction and voice activation.")},
+                    {values: chart.active ? chart.raw : [], min: -90, max: 0, unit: qsTr("dBFS"),
                         text: qsTr("Input: sound picked up by the microphone before gain and frequency cuts. Left is bass, right is treble; higher is louder.")},
-                    {values: chart.active ? chart.processed : [], min: -90, max: 0,
-                        text: qsTr("After gain / cuts: the measured spectrum after microphone gain and frequency filters. It does not identify a speaker.")},
-                    {values: chart.response, min: -48, max: 24,
-                        text: qsTr("Filter curve: the configured change in level at each frequency, read on the right dB scale. It excludes noise reduction and voice activation.")}
+                    {values: chart.active ? chart.processed : [], min: -90, max: 0, unit: qsTr("dBFS"),
+                        text: qsTr("After gain / cuts: the measured spectrum after microphone gain and frequency filters. It does not identify a speaker.")}
                 ]
-                let nearest = 13, text = ""
+                const matches = []
                 for (const line of candidates) {
                     if (line.values.length < 2) continue
                     const at = t * (line.values.length - 1), lo = Math.floor(at), hi = Math.min(lo + 1, line.values.length - 1)
                     const value = line.values[lo] + (line.values[hi] - line.values[lo]) * (at - lo)
                     const y = 20 + h * (1 - Math.max(0, Math.min(1, (value - line.min) / (line.max - line.min))))
                     const distance = Math.abs(mouse.y - y)
-                    if (distance < nearest) { nearest = distance; text = line.text }
+                    if (distance < 13) matches.push({distance: distance, text: value.toFixed(1) + " " + line.unit + "\n" + line.text})
                 }
-                frequencyTip.text = text
-                showing = text.length > 0
+                matches.sort(function(a, b) { return a.distance - b.distance })
+                frequencyTip.text = qsTr("%1 Hz").arg(Math.round(20 * Math.pow(chart.maximum / 20, t)))
+                    + "\n" + matches.map(function(line) { return line.text }).join("\n\n")
+                showing = matches.length > 0
             }
             ToolTip {
                 id: frequencyTip

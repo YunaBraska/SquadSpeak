@@ -32,8 +32,10 @@ Rectangle {
             compare(findChild(spectrum, "frequencyPeak").text, "Peak: 440 Hz")
             compare(findChild(spectrum, "fundamentalEstimate").text, "Pitch estimate: 220 Hz")
             verify(waitForRendering(spectrum))
+            const chart = findChild(spectrum, "frequencyChart")
+            tryVerify(function() { return fixtures.renderedColor(chart, 70, 20).toString() !== fixture.color.toString() })
             if (imageDirectory.length > 0)
-                grabImage(fixture).save(imageDirectory + "/spectrum-active.png")
+                verify(fixtures.saveWindow(fixture.Window.window, imageDirectory + "/spectrum-active.png"))
         }
         function test_inactiveCaptureNeverDisplaysOldDetection() {
             fixture.signal = Object.assign({}, referenceTone, {running: false})
@@ -49,9 +51,36 @@ Rectangle {
         function test_narrowWindowRetainsReadableAnalysis() {
             fixture.width = 380
             verify(waitForRendering(spectrum))
+            const chart = findChild(spectrum, "frequencyChart")
+            tryVerify(function() { return fixtures.renderedColor(chart, 70, 20).toString() !== fixture.color.toString() })
             if (imageDirectory.length > 0)
-                grabImage(fixture).save(imageDirectory + "/spectrum-narrow.png")
+                verify(fixtures.saveWindow(fixture.Window.window, imageDirectory + "/spectrum-narrow.png"))
             verify(spectrum.height <= fixture.height)
+        }
+        function test_combinedPlotKeepsFilterUnitsInHover() {
+            const chart = findChild(spectrum, "frequencyChart")
+            verify(findChild(spectrum, "filterChart") === null, "All curves belong in one plot")
+            verify(waitForRendering(spectrum))
+            const tip = findChild(chart, "frequencyTooltip")
+            fixture.signal = Object.assign({}, referenceTone, {running: false, filterResponse: [0, 0]})
+            mouseMove(chart, chart.width / 2, 20 + (chart.height - 48) / 3)
+            tryCompare(tip, "visible", true)
+            verify(tip.text.indexOf("Filter curve") >= 0)
+            verify(tip.text.indexOf("0.0 dB") >= 0)
+            verify(tip.text.indexOf("dBFS") < 0)
+        }
+        function test_overlappingCurvesShowBothUnits() {
+            const chart = findChild(spectrum, "frequencyChart")
+            const tip = findChild(chart, "frequencyTooltip")
+            fixture.signal = Object.assign({}, referenceTone, {
+                inputSpectrum: [-30, -30], outputSpectrum: [-60, -60], filterResponse: [0, 0]
+            })
+            verify(waitForRendering(spectrum))
+            mouseMove(chart, chart.width / 2, 20 + (chart.height - 48) / 3)
+            tryCompare(tip, "visible", true)
+            verify(tip.text.indexOf("-30.0 dBFS") >= 0)
+            verify(tip.text.indexOf("0.0 dB") >= 0)
+            verify(tip.text.indexOf("Filter curve") >= 0)
         }
         function test_hoverExplanationStaysWhileTheSignalMoves() {
             const chart = findChild(spectrum, "frequencyChart")
@@ -64,6 +93,7 @@ Rectangle {
             tryCompare(tip, "visible", true)
             const explanation = tip.text
             verify(explanation.indexOf("Input") >= 0)
+            verify(explanation.indexOf("-30.0 dBFS") >= 0)
             fixture.signal = Object.assign({}, fixture.signal, {inputSpectrum: [-90, -90]})
             wait(600)
             compare(tip.visible, true)

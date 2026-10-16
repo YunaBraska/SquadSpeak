@@ -36,14 +36,6 @@
             <translation>Отворете ги поставките за приватност на вашиот систем и овозможете пристап до микрофонот за SquadSpeak.</translation>
         </message>
         <message>
-            <source>Microphone analysis active. Test audio stays on this computer.</source>
-            <translation>Активна е анализата на микрофонот. Тест аудио останува на овој компјутер.</translation>
-        </message>
-        <message>
-            <source>Finish the test recording before changing devices.</source>
-            <translation>Завршете го снимањето на тестот пред да ги промените уредите.</translation>
-        </message>
-        <message>
             <source>The output format is not supported.</source>
             <translation>Излезниот формат не е поддржан.</translation>
         </message>
@@ -68,32 +60,12 @@
             <translation>Тест тонот не можеше да се репродуцира.</translation>
         </message>
         <message>
-            <source>The microphone has provided no data for five seconds. Recording discarded.</source>
-            <translation>Микрофонот не дава податоци веќе пет секунди. Снимањето е отфрлено.</translation>
-        </message>
-        <message>
-            <source>The microphone was interrupted or changed. Recording discarded.</source>
-            <translation>Микрофонот е прекинат или сменет. Снимањето е отфрлено.</translation>
-        </message>
-        <message>
-            <source>Cancelled. The incomplete recording was discarded.</source>
-            <translation>Откажано. Нецелосната снимка беше отфрлена.</translation>
-        </message>
-        <message>
             <source>No selected microphone is available</source>
             <translation>Не е достапен избраниот микрофон</translation>
         </message>
         <message>
             <source>Allow microphone access in the system dialog.</source>
             <translation>Дозволете пристап до микрофонот во системскиот дијалог.</translation>
-        </message>
-        <message>
-            <source>Microphone capture active for the voice channel.</source>
-            <translation>Активно снимање на микрофон за гласовниот канал.</translation>
-        </message>
-        <message>
-            <source>Microphone access was denied. Nothing was saved.</source>
-            <translation>Пристапот до микрофонот беше одбиен. Ништо не беше спасено.</translation>
         </message>
         <message>
             <source>Microphone access is missing. Allow it in System Settings.</source>
@@ -265,97 +237,6 @@
         </message>
     </context>
     <context>
-        <name>AudioRecording</name>
-        <message>
-            <source>Incomplete audio block. Recording discarded.</source>
-            <translation>Нецелосен аудио блок. Снимањето е отфрлено.</translation>
-        </message>
-        <message>
-            <source>Move about one meter from the microphone. Keep the background sound playing and read the sentence.</source>
-            <translation>Движете се околу еден метар од микрофонот. Продолжете да се репродуцира звукот во позадина и прочитајте ја реченицата.</translation>
-        </message>
-        <message>
-            <source>Voice with background sound</source>
-            <translation>Глас со позадински звук</translation>
-        </message>
-        <message>
-            <source>The recordings folder could not be created.</source>
-            <translation>Папката за снимки не може да се креира.</translation>
-        </message>
-        <message>
-            <source>You can stop the background sound now.</source>
-            <translation>Сега можете да го запрете звукот во позадина.</translation>
-        </message>
-        <message>
-            <source>Recordings saved</source>
-            <translation>Снимките се зачувани</translation>
-        </message>
-        <message>
-            <source>The test recording could not be saved completely.</source>
-            <translation>Тест-снимката не може да се зачува целосно.</translation>
-        </message>
-        <message>
-            <source>Keep music off and stay quiet. Start when ready.</source>
-            <translation>Исклучете ја музиката и останете тивки. Започнете кога сте подготвени.</translation>
-        </message>
-        <message>
-            <source>Your voice</source>
-            <translation>Твојот глас</translation>
-        </message>
-        <message>
-            <source>Play music or another background sound at a normal volume. Stay quiet while recording.</source>
-            <translation>Репродуцирајте музика или друг звук во заднина со нормална јачина. Останете тивки додека снимате.</translation>
-        </message>
-        <message>
-            <source>The test recording could not be created.</source>
-            <translation>Не можеше да се креира тест снимката.</translation>
-        </message>
-        <message>
-            <source>Background sound</source>
-            <translation>Звук во заднина</translation>
-        </message>
-        <message>
-            <source>The window is open. I can hear the rain outside. One, two, three, four, five.</source>
-            <translation>Прозорецот е отворен. Го слушам дождот надвор. Еден, два, три, четири, пет.</translation>
-        </message>
-        <message>
-            <source>This microphone format is not supported for test recordings.</source>
-            <translation>Овој формат на микрофон не е поддржан за тест снимки.</translation>
-        </message>
-        <message>
-            <source>Keep the background volume unchanged. Read the sentence, then stop recording.</source>
-            <translation>Чувајте ја јачината на звукот во заднина непроменета. Прочитајте ја реченицата, а потоа престанете да снимате.</translation>
-        </message>
-        <message>
-            <source>Record at least half a second, then try again.</source>
-            <translation>Снимајте најмалку половина секунда, а потоа обидете се повторно.</translation>
-        </message>
-        <message>
-            <source>Sit at your usual distance. Read the sentence, then stop recording.</source>
-            <translation>Седнете на вообичаеното растојание. Прочитајте ја реченицата, а потоа престанете да снимате.</translation>
-        </message>
-        <message>
-            <source>The recording description could not be saved.</source>
-            <translation>Описот на снимката не може да се зачува.</translation>
-        </message>
-        <message>
-            <source>The WAV file could not be finalized.</source>
-            <translation>WAV-датотеката не може да се финализира.</translation>
-        </message>
-        <message>
-            <source>The WAV header could not be written.</source>
-            <translation>Заглавјето на WAV не може да се запише.</translation>
-        </message>
-        <message>
-            <source>Voice farther away</source>
-            <translation>Глас подалеку</translation>
-        </message>
-        <message>
-            <source>Room sound</source>
-            <translation>Звук од собата</translation>
-        </message>
-    </context>
-    <context>
         <name>AudioSettings</name>
         <message>
             <source>Echo cancellation</source>
@@ -406,8 +287,8 @@
             <translation>Вашата репродукција</translation>
         </message>
         <message>
-            <source>Clear local key</source>
-            <translation>Исчисти ја локалната кратенка за говор</translation>
+            <source>Clear key</source>
+            <translation>Исчисти копче</translation>
         </message>
         <message>
             <source>Low cut</source>
@@ -428,10 +309,6 @@
         <message>
             <source>Cancel</source>
             <translation>Откажи</translation>
-        </message>
-        <message>
-            <source>Guided recording</source>
-            <translation>Водено снимање</translation>
         </message>
         <message>
             <source>Clipping. Reduce microphone gain.</source>
@@ -466,16 +343,12 @@
             <translation>Уредот е исклучен</translation>
         </message>
         <message>
-            <source>Local key</source>
-            <translation>Локална кратенка за говор</translation>
+            <source>PTT key</source>
+            <translation>Копче за говор</translation>
         </message>
         <message>
             <source>Voice activation</source>
             <translation>Микрофон кој се активира со глас</translation>
-        </message>
-        <message>
-            <source>Remote PTT key</source>
-            <translation>Далечинска кратенка за говор</translation>
         </message>
         <message>
             <source>Noise reduction</source>
@@ -492,10 +365,6 @@
         <message>
             <source>Microphone gain</source>
             <translation>Засилување на микрофонот</translation>
-        </message>
-        <message>
-            <source>Clear remote key</source>
-            <translation>Исчисти ја далечинската кратенка за говор</translation>
         </message>
         <message>
             <source>Not assigned</source>
@@ -521,9 +390,81 @@
             <source>Read bot messages aloud</source>
             <translation>Читај ги пораките на ботот наглас</translation>
         </message>
+        <message>
+            <source>Download a high-quality voice for this language in macOS settings.</source>
+            <translation>Преземи висококвалитетен глас за овој јазик во поставките на macOS.</translation>
+        </message>
+        <message>
+            <source>Bot voice</source>
+            <translation>Глас на ботот</translation>
+        </message>
+        <message>
+            <source>Automatic</source>
+            <translation>Автоматски</translation>
+        </message>
+        <message>
+            <source>Unavailable</source>
+            <translation>Недостапно</translation>
+        </message>
+        <message>
+            <source>Download voices in your device's Accessibility speech settings.</source>
+            <translation>Преземи гласови од поставките за говор во делот за пристапност на уредот.</translation>
+        </message>
+        <message>
+            <source>Voice download help</source>
+            <translation>Помош за преземање гласови</translation>
+        </message>
+        <message>
+            <source>Strength, not the percentage of echo removed.</source>
+            <translation>Јачина, а не процент на отстранетото ехо.</translation>
+        </message>
+        <message>
+            <source>Auto also checks for speech, not just volume.</source>
+            <translation>Автоматскиот режим проверува и говор, не само јачина на звукот.</translation>
+        </message>
     </context>
     <context>
         <name>Channels</name>
+        <message>
+            <source>Copy address</source>
+            <translation>Копирај адреса</translation>
+        </message>
+        <message>
+            <source>Messages</source>
+            <translation>Пораки</translation>
+        </message>
+        <message>
+            <source>Message</source>
+            <translation>Порака</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Отвори</translation>
+        </message>
+        <message>
+            <source>Online</source>
+            <translation>На мрежа</translation>
+        </message>
+        <message>
+            <source>Offline</source>
+            <translation>Офлајн</translation>
+        </message>
+        <message>
+            <source>No private messages</source>
+            <translation>Нема приватни пораки</translation>
+        </message>
+        <message>
+            <source>Private messages are unavailable for this contact.</source>
+            <translation>Приватните пораки не се достапни за овој контакт.</translation>
+        </message>
+        <message>
+            <source>If asked, allow local network access. You can change this in system settings.</source>
+            <translation>Ако биде побарано, дозволи пристап до локалната мрежа. Ова можеш да го промениш во системските поставки.</translation>
+        </message>
+        <message>
+            <source>Retry</source>
+            <translation>Обиди се повторно</translation>
+        </message>
         <message>
             <source>Updates</source>
             <translation>Ажурирања</translation>
@@ -543,6 +484,10 @@
         <message>
             <source>DDNS cannot bypass CGNAT. If your provider shares the public IP, use a private VPN on all participating devices or a publicly reachable server.</source>
             <translation>DDNS не може да го заобиколи CGNAT. Ако вашиот провајдер ја споделува јавната IP адреса, користете приватна VPN на сите уреди што учествуваат или јавно достапен сервер.</translation>
+        </message>
+        <message>
+            <source>Remove server</source>
+            <translation>Отстрани сервер</translation>
         </message>
         <message>
             <source>Low</source>
@@ -665,10 +610,6 @@
             <translation>Звуци за известување</translation>
         </message>
         <message>
-            <source>Lifetime for new messages. Earlier messages keep their expiry.</source>
-            <translation>Доживотно за нови пораки. Претходните пораки го задржуваат рокот на траење.</translation>
-        </message>
-        <message>
             <source>Enable speakers</source>
             <translation>Овозможи звучници</translation>
         </message>
@@ -703,10 +644,6 @@
         <message>
             <source>Allow device</source>
             <translation>Дозволи уредот</translation>
-        </message>
-        <message>
-            <source>Receive quality: %1 kb/s per voice. Adjusts automatically for this device.</source>
-            <translation>Квалитет на примање: %1 kb/s по глас. Се прилагодува автоматски за овој уред.</translation>
         </message>
         <message>
             <source>Stop radio</source>
@@ -1204,6 +1141,42 @@
             <source>Use default music volume</source>
             <translation>Користи ја стандардната јачина на музиката</translation>
         </message>
+        <message>
+            <source>Show in Dock</source>
+            <translation>Прикажи во Dock</translation>
+        </message>
+        <message>
+            <source>App language</source>
+            <translation>Јазик на апликацијата</translation>
+        </message>
+        <message>
+            <source>Send in</source>
+            <translation>Испраќај на</translation>
+        </message>
+        <message>
+            <source>Hear in</source>
+            <translation>Слушај на</translation>
+        </message>
+        <message>
+            <source>Download language models for %1 and %2?</source>
+            <translation>Да се преземат јазични модели за %1 и %2?</translation>
+        </message>
+        <message>
+            <source>Download</source>
+            <translation>Преземи</translation>
+        </message>
+        <message>
+            <source>PTT, chat and channel controls. Uses the controlled device's microphone.</source>
+            <translation>Контроли за PTT, разговор и канали. Се користи микрофонот на управуваниот уред.</translation>
+        </message>
+        <message>
+            <source>Connect the other device to one of your channels, then allow it here.</source>
+            <translation>Поврзи го другиот уред со еден од твоите канали, па дозволи му пристап овде.</translation>
+        </message>
+        <message>
+            <source>On the other device, open Settings &gt; Input &gt; Remote control and allow this device.</source>
+            <translation>На другиот уред отвори Поставки &gt; Влез &gt; Далечински управувач и дозволи го овој уред.</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1420,7 +1393,396 @@
         </message>
     </context>
     <context>
+        <name>Desktop</name>
+        <message>
+            <source>Open settings at startup.</source>
+            <translation>Отвори ги поставките при стартување.</translation>
+        </message>
+        <message>
+            <source>Alternative file for audio profiles.</source>
+            <translation>Алтернативна датотека за аудиопрофили.</translation>
+        </message>
+        <message>
+            <source>Load the interface without microphone capture and exit after one second.</source>
+            <translation>Вчитај го интерфејсот без снимање од микрофон и излези по една секунда.</translation>
+        </message>
+        <message>
+            <source>Save an image of the app window during the UI test.</source>
+            <translation>Зачувај слика од прозорецот на апликацијата за време на тестот на интерфејсот.</translation>
+        </message>
+        <message>
+            <source>The window image could not be saved.</source>
+            <translation>Сликата од прозорецот не може да се зачува.</translation>
+        </message>
+        <message>
+            <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
+            <translation>Системската лента не е достапна; апликацијата останува отворена во прозорец.</translation>
+        </message>
+    </context>
+    <context>
+        <name>Headless</name>
+        <message>
+            <source>Host display name.</source>
+            <translation>Прикажано име на домаќинот.</translation>
+        </message>
+        <message>
+            <source>Command failed.</source>
+            <translation>Наредбата не успеа.</translation>
+        </message>
+        <message>
+            <source>%1 must be an integer.</source>
+            <translation>%1 мора да биде цел број.</translation>
+        </message>
+        <message>
+            <source>Requests must be on/off or true/false.</source>
+            <translation>Барањата мора да бидат on/off или true/false.</translation>
+        </message>
+        <message>
+            <source>Unknown host property: %1</source>
+            <translation>Непознато својство на хостот: %1</translation>
+        </message>
+        <message>
+            <source>Run without GUI, microphone capture, or local audio output.</source>
+            <translation>Стартувај без графички интерфејс, снимање од микрофон или локален аудиоизлез.</translation>
+        </message>
+        <message>
+            <source>Server storage prefix. Personal/audio/GUI profiles are not loaded.</source>
+            <translation>Префикс за складирање на серверот. Личните, аудио и графичките профили не се вчитуваат.</translation>
+        </message>
+        <message>
+            <source>Optional private identity file instead of the OS credential store (Linux/macOS). Parent directory must exist and belong to this account.</source>
+            <translation>Изборна приватна датотека за идентитет наместо системското складиште за акредитиви (Linux/macOS). Матичниот директориум мора да постои и да припаѓа на оваа сметка.</translation>
+        </message>
+        <message>
+            <source>UTF-8 key=value properties or JSON host preset. Default: application.properties, then config/application.properties beside the app.</source>
+            <translation>UTF-8 својства key=value или JSON поставки за хостот. Стандардно: application.properties, потоа config/application.properties покрај апликацијата.</translation>
+        </message>
+        <message>
+            <source>Channel display name.</source>
+            <translation>Прикажано име на каналот.</translation>
+        </message>
+        <message>
+            <source>System and radio bot display name.</source>
+            <translation>Прикажано име на системскиот и радио ботот.</translation>
+        </message>
+        <message>
+            <source>TCP service port (1-65535).</source>
+            <translation>TCP порта на услугата (1-65535).</translation>
+        </message>
+        <message>
+            <source>Headless admission is always on; only 'on' or 'true' is accepted.</source>
+            <translation>Пристапот без графички интерфејс е секогаш вклучен; се прифаќа само 'on' или 'true'.</translation>
+        </message>
+        <message>
+            <source>Preapprove a device ID; repeat for several devices. Existing bans remain.</source>
+            <translation>Однапред одобри ID на уред; повтори за повеќе уреди. Постојните забрани остануваат.</translation>
+        </message>
+        <message>
+            <source>Block a device ID; repeat for several devices.</source>
+            <translation>Блокирај ID на уред; повтори за повеќе уреди.</translation>
+        </message>
+        <message>
+            <source>Read a UTF-8 channel password from a file before listening. An empty file removes it.</source>
+            <translation>Прочитај UTF-8 лозинка за каналот од датотека пред почетокот на слушањето. Празна датотека ја отстранува.</translation>
+        </message>
+        <message>
+            <source>Channel password. Empty removes it; environment or config avoids process-list exposure.</source>
+            <translation>Лозинка за каналот. Празна вредност ја отстранува; околината или конфигурацијата избегнуваат откривање во списокот со процеси.</translation>
+        </message>
+        <message>
+            <source>SquadSpeak headless local channel host</source>
+            <translation>SquadSpeak хост на локален канал без графички интерфејс</translation>
+        </message>
+        <message>
+            <source>Environment variables (SQUADSPEAK_ prefix):</source>
+            <translation>Променливи на околината (префикс SQUADSPEAK_):</translation>
+        </message>
+        <message>
+            <source>Host configuration could not be read or exceeds 1 MiB.</source>
+            <translation>Конфигурацијата на хостот не може да се прочита или надминува 1 MiB.</translation>
+        </message>
+        <message>
+            <source>Host configuration must be UTF-8.</source>
+            <translation>Конфигурацијата на хостот мора да биде во UTF-8.</translation>
+        </message>
+        <message>
+            <source>Host preset must be a JSON object.</source>
+            <translation>Поставките за хостот мора да бидат JSON објект.</translation>
+        </message>
+        <message>
+            <source>Property line %1 must use key=value.</source>
+            <translation>Редот со својства %1 мора да користи key=value.</translation>
+        </message>
+        <message>
+            <source>Property line %1: %2</source>
+            <translation>Ред со својства %1: %2</translation>
+        </message>
+        <message>
+            <source>Standard input has no file descriptor.</source>
+            <translation>Стандардниот влез нема дескриптор на датотека.</translation>
+        </message>
+        <message>
+            <source>Standard input could not be inspected.</source>
+            <translation>Стандардниот влез не може да се провери.</translation>
+        </message>
+        <message>
+            <source>Could not write the command response: %1</source>
+            <translation>Одговорот на наредбата не може да се запише: %1</translation>
+        </message>
+        <message>
+            <source>Standard input could not be read: %1</source>
+            <translation>Стандардниот влез не може да се прочита: %1</translation>
+        </message>
+        <message>
+            <source>Input line exceeds 65536 bytes.</source>
+            <translation>Влезниот ред надминува 65536 бајти.</translation>
+        </message>
+        <message>
+            <source>Each input line must be a JSON object.</source>
+            <translation>Секој влезен ред мора да биде JSON објект.</translation>
+        </message>
+        <message>
+            <source>Input ended before a complete JSON line.</source>
+            <translation>Влезот заврши пред целосен JSON ред.</translation>
+        </message>
+        <message>
+            <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
+            <translation>Изборен ID на сопствен канал за наредбите status, configure, password, admission, history, chat и radio; стандардно е главниот канал.</translation>
+        </message>
+        <message>
+            <source>Channel action must be list, add or remove.</source>
+            <translation>Дејството за каналот мора да биде list, add или remove.</translation>
+        </message>
+        <message>
+            <source>Removing an own channel deletes its history, images, permissions and radio settings. Set confirmed=true to proceed.</source>
+            <translation>Отстранувањето сопствен канал ги брише неговата историја, слики, дозволи и радио поставки. За продолжување постави confirmed=true.</translation>
+        </message>
+        <message>
+            <source>id must identify an additional own channel.</source>
+            <translation>id мора да означува дополнителен сопствен канал.</translation>
+        </message>
+        <message>
+            <source>The additional own channel could not be removed: %1</source>
+            <translation>Дополнителниот сопствен канал не може да се отстрани: %1</translation>
+        </message>
+        <message>
+            <source>channelId must identify an own channel.</source>
+            <translation>channelId мора да означува сопствен канал.</translation>
+        </message>
+        <message>
+            <source>values must be a host settings object.</source>
+            <translation>values мора да биде објект со поставки за хостот.</translation>
+        </message>
+        <message>
+            <source>Headless admission is always enabled for non-banned devices; requests off is not supported.</source>
+            <translation>Пристапот без графички интерфејс е секогаш овозможен за неблокирани уреди; requests off не е поддржано.</translation>
+        </message>
+        <message>
+            <source>value must be a password of at most 1024 UTF-8 bytes without control characters; an empty string removes it.</source>
+            <translation>value мора да биде лозинка од најмногу 1024 UTF-8 бајти без контролни знаци; празна низа ја отстранува.</translation>
+        </message>
+        <message>
+            <source>The channel is not ready or a password change is in progress.</source>
+            <translation>Каналот не е подготвен или во тек е промена на лозинката.</translation>
+        </message>
+        <message>
+            <source>The channel was removed while saving the password.</source>
+            <translation>Каналот беше отстранет при зачувувањето на лозинката.</translation>
+        </message>
+        <message>
+            <source>id is required.</source>
+            <translation>id е задолжителен.</translation>
+        </message>
+        <message>
+            <source>text must be a valid non-empty chat message.</source>
+            <translation>text мора да биде важечка непразна порака за разговор.</translation>
+        </message>
+        <message>
+            <source>The local channel is not ready.</source>
+            <translation>Локалниот канал не е подготвен.</translation>
+        </message>
+        <message>
+            <source>The channel's radio is unavailable.</source>
+            <translation>Радиото на каналот не е достапно.</translation>
+        </message>
+        <message>
+            <source>Unknown command. Use help.</source>
+            <translation>Непозната наредба. Користи help.</translation>
+        </message>
+        <message>
+            <source>search requires a query, non-negative offset and limit from 1 to 128.</source>
+            <translation>search бара query, ненегативен offset и limit од 1 до 128.</translation>
+        </message>
+        <message>
+            <source>add creates an id; update requires an existing id.</source>
+            <translation>add создава id; update бара постоечки id.</translation>
+        </message>
+        <message>
+            <source>A station is already being checked.</source>
+            <translation>Веќе се проверува станица.</translation>
+        </message>
+        <message>
+            <source>The channel was removed while checking the station.</source>
+            <translation>Каналот беше отстранет при проверката на станицата.</translation>
+        </message>
+        <message>
+            <source>Unknown radio action.</source>
+            <translation>Непознато радио дејство.</translation>
+        </message>
+        <message>
+            <source>Could not load language: %1</source>
+            <translation>Јазикот не може да се вчита: %1</translation>
+        </message>
+        <message>
+            <source>The %1 option is incompatible with --headless.</source>
+            <translation>Опцијата %1 не е компатибилна со --headless.</translation>
+        </message>
+        <message>
+            <source>Unexpected positional arguments. Use --help.</source>
+            <translation>Неочекувани позициони аргументи. Користи --help.</translation>
+        </message>
+        <message>
+            <source>--config / -f requires a non-empty path.</source>
+            <translation>--config / -f бара непразна патека.</translation>
+        </message>
+        <message>
+            <source>Choose --password or --password-file, not both.</source>
+            <translation>Избери --password или --password-file, не двете.</translation>
+        </message>
+        <message>
+            <source>Choose SQUADSPEAK_PASSWORD or SQUADSPEAK_PASSWORD_FILE, not both.</source>
+            <translation>Избери SQUADSPEAK_PASSWORD или SQUADSPEAK_PASSWORD_FILE, не двете.</translation>
+        </message>
+        <message>
+            <source>Choose password or passwordFile in one configuration layer, not both.</source>
+            <translation>Избери password или passwordFile во еден слој на конфигурацијата, не двете.</translation>
+        </message>
+        <message>
+            <source>passwordFile must be a non-empty path.</source>
+            <translation>passwordFile мора да биде непразна патека.</translation>
+        </message>
+        <message>
+            <source>Password file could not be read or is too large.</source>
+            <translation>Датотеката со лозинката не може да се прочита или е преголема.</translation>
+        </message>
+        <message>
+            <source>Password file must contain at most 1024 UTF-8 bytes without control characters.</source>
+            <translation>Датотеката со лозинката смее да содржи најмногу 1024 UTF-8 бајти без контролни знаци.</translation>
+        </message>
+        <message>
+            <source>Password must be a string of at most 1024 UTF-8 bytes without control characters.</source>
+            <translation>Лозинката мора да биде низа од најмногу 1024 UTF-8 бајти без контролни знаци.</translation>
+        </message>
+        <message>
+            <source>settingsFile must be a non-empty path.</source>
+            <translation>settingsFile мора да биде непразна патека.</translation>
+        </message>
+        <message>
+            <source>identityFile must be a non-empty path.</source>
+            <translation>identityFile мора да биде непразна патека.</translation>
+        </message>
+        <message>
+            <source>The settings directory could not be created.</source>
+            <translation>Директориумот со поставки не може да се создаде.</translation>
+        </message>
+        <message>
+            <source>This SquadSpeak profile is already running or cannot be locked.</source>
+            <translation>Овој SquadSpeak профил е веќе стартуван или не може да се заклучи.</translation>
+        </message>
+        <message>
+            <source>Standard input could not be opened.</source>
+            <translation>Стандардниот влез не може да се отвори.</translation>
+        </message>
+        <message>
+            <source>Standard output could not be opened.</source>
+            <translation>Стандардниот излез не може да се отвори.</translation>
+        </message>
+        <message>
+            <source>This identity file is already in use or cannot be locked.</source>
+            <translation>Оваа датотека за идентитет веќе се користи или не може да се заклучи.</translation>
+        </message>
+        <message>
+            <source>Invalid host configuration: %1</source>
+            <translation>Неважечка конфигурација на хостот: %1</translation>
+        </message>
+        <message>
+            <source>Radio channels could not be initialized.</source>
+            <translation>Радио каналите не може да се иницијализираат.</translation>
+        </message>
+        <message>
+            <source>Headless host could not start: %1</source>
+            <translation>Хостот без графички интерфејс не може да се стартува: %1</translation>
+        </message>
+        <message>
+            <source>Channel password could not be saved.</source>
+            <translation>Лозинката за каналот не може да се зачува.</translation>
+        </message>
+        <message>
+            <source>Invalid channel password: %1</source>
+            <translation>Неважечка лозинка за каналот: %1</translation>
+        </message>
+        <message>
+            <source>Headless host could not initialize: %1</source>
+            <translation>Хостот без графички интерфејс не може да се иницијализира: %1</translation>
+        </message>
+        <message>
+            <source>SquadSpeak headless could not start: %1</source>
+            <translation>SquadSpeak без графички интерфејс не може да се стартува: %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>Дејството на поддржувачот мора да биде статус, најавување, освежување, одјавување или откажување. status sign-in refresh sign-out cancel</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>Во тек е операција за поддржувач.</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>Пристапот за поддржувач е недостапен во оваа верзија.</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>Предност на поставките: аргументи &gt; околина &gt; својства &gt; зачувани вредности на серверот.</translation>
+        </message>
+    </context>
+    <context>
+        <name>License</name>
+        <message>
+            <source>License storage is busy or unavailable.</source>
+            <translation>Складирањето на лиценцата е зафатено или недостапно.</translation>
+        </message>
+        <message>
+            <source>License storage is unavailable.</source>
+            <translation>Складирањето на лиценцата е недостапно.</translation>
+        </message>
+        <message>
+            <source>Sign-in expired. Try again.</source>
+            <translation>Пријавувањето истече. Обидете се повторно.</translation>
+        </message>
+        <message>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>Најавувањето на GitHub е недостапно. Обидете се повторно.</translation>
+        </message>
+        <message>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>Најавувањето на GitHub не беше завршено. Обидете се повторно.</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>GitHub не може да се провери. Офлајн пристапот трае најмногу седум дена.</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>Пријавете се повторно со GitHub.</translation>
+        </message>
+    </context>
+    <context>
         <name>LocalChannel</name>
+        <message>
+            <source>Blocked</source>
+            <translation>Блокиран</translation>
+        </message>
         <message>
             <source>Host is not responding. Reconnecting.</source>
             <translation>Домаќинот не реагира. Повторно поврзување.</translation>
@@ -2205,6 +2567,53 @@
             <source>Voice relay codec could not be configured.</source>
             <translation>Кодекот за гласовен пренос не може да се конфигурира.</translation>
         </message>
+        <message>
+            <source>Unsupported audio codec</source>
+            <translation>Неподдржан аудиокодек</translation>
+        </message>
+        <message>
+            <source>Speaking is not allowed in this channel.</source>
+            <translation>Зборувањето во овој канал не е дозволено.</translation>
+        </message>
+    </context>
+    <context>
+        <name>LocalLanguage</name>
+        <message>
+            <source>Translation (experimental)</source>
+            <translation>Превод (експериментално)</translation>
+        </message>
+        <message>
+            <source>Translate messages</source>
+            <translation>Преведи пораки</translation>
+        </message>
+        <message>
+            <source>Translated voice</source>
+            <translation>Преведен глас</translation>
+        </message>
+        <message>
+            <source>Original audio</source>
+            <translation>Оригинален звук</translation>
+        </message>
+        <message>
+            <source>Original text</source>
+            <translation>Оригинален текст</translation>
+        </message>
+        <message>
+            <source>Prepare languages</source>
+            <translation>Подготви јазици</translation>
+        </message>
+        <message>
+            <source>Local language processing is unavailable.</source>
+            <translation>Локалната обработка на јазици не е достапна.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be read.</source>
+            <translation>Поставките за јазик не може да се прочитаат.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be saved.</source>
+            <translation>Поставките за јазик не може да се зачуваат.</translation>
+        </message>
     </context>
     <context>
         <name>PushToTalkKey</name>
@@ -2345,50 +2754,65 @@
         </message>
     </context>
     <context>
-        <name>RecordingPanel</name>
+        <name>ScreenPanel</name>
         <message>
-            <source>Stop</source>
-            <translation>Стоп</translation>
+            <source>Media capacity reached</source>
+            <translation>Капацитетот на медиумите е достигнат</translation>
         </message>
         <message>
-            <source>Start</source>
-            <translation>Почеток</translation>
+            <source>Video paused</source>
+            <translation>Видеото е паузирано</translation>
         </message>
         <message>
-            <source>Saved on this device only. Nothing is uploaded.</source>
-            <translation>Зачувано само на овој уред. Ништо не е поставено.</translation>
+            <source>Stream ended</source>
+            <translation>Потокот заврши</translation>
         </message>
         <message>
-            <source>Keep this take or record it again.</source>
-            <translation>Задржете го ова преземање или снимајте го повторно.</translation>
+            <source>Connecting</source>
+            <translation>Поврзување</translation>
         </message>
         <message>
-            <source>Record again</source>
-            <translation>Снимај повторно</translation>
+            <source>Open screen stream</source>
+            <translation>Отворете го преносот на екранот</translation>
         </message>
         <message>
-            <source>Use recording</source>
-            <translation>Користете снимање</translation>
+            <source>Screen stream</source>
+            <translation>Пренос на екранот</translation>
         </message>
         <message>
-            <source>Recording progress</source>
-            <translation>Снимање напредок</translation>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
+        </message>
+    </context>
+    <context>
+        <name>ScreenShare</name>
+        <message>
+            <source>Allow screen recording in system settings.</source>
+            <translation>Дозволи снимање на екранот во системските поставки.</translation>
         </message>
         <message>
-            <source>Step %1 of %2</source>
-            <translation>Чекор %1 од %2</translation>
+            <source>The shared screen was removed. Select a source to start again.</source>
+            <translation>Споделениот екран е отстранет. Изберете извор за да започнете повторно.</translation>
         </message>
         <message>
-            <source>Open recordings</source>
-            <translation>Отворете ги снимките</translation>
+            <source>The shared window was closed. Select a source to start again.</source>
+            <translation>Заедничкиот прозорец беше затворен. Изберете извор за да започнете повторно.</translation>
         </message>
         <message>
-            <source>Reset test</source>
-            <translation>Ресетирај тест</translation>
+            <source>The selected screen is no longer available.</source>
+            <translation>Избраниот екран повеќе не е достапен.</translation>
         </message>
         <message>
-            <source>%1 s remaining / %2 dBFS</source>
-            <translation>%1 s преостанати / %2 dBFS</translation>
+            <source>The selected window is no longer available.</source>
+            <translation>Избраниот прозорец повеќе не е достапен.</translation>
+        </message>
+        <message>
+            <source>The selected source exceeds the capture size limit.</source>
+            <translation>Избраниот извор го надминува ограничувањето на големината на снимањето.</translation>
+        </message>
+        <message>
+            <source>Close a video view before opening another stream.</source>
+            <translation>Затворете го видеото пред да отворите друг пренос.</translation>
         </message>
     </context>
     <context>
@@ -2465,10 +2889,6 @@
             <translation>Се собира сигнал...</translation>
         </message>
         <message>
-            <source>Dashed curve: configured gain and frequency cuts, using the right dB scale. Noise reduction and voice activation are not part of this curve.</source>
-            <translation>Испрекината крива: конфигурирано засилување и намалување на фреквенцијата, користејќи ја десната скала dB. Намалувањето на шумот и гласовното активирање не се дел од оваа крива.</translation>
-        </message>
-        <message>
             <source>Microphone preview is not running</source>
             <translation>Прегледот на микрофонот не работи</translation>
         </message>
@@ -2479,303 +2899,6 @@
         <message>
             <source>Peak: %1</source>
             <translation>Врв: %1</translation>
-        </message>
-    </context>
-    <context>
-        <name>Tray</name>
-        <message>
-            <source>Quit</source>
-            <translation>Откажи</translation>
-        </message>
-        <message>
-            <source>SquadSpeak - speaking</source>
-            <translation>SquadSpeak - зборување</translation>
-        </message>
-        <message>
-            <source>Settings</source>
-            <translation>Поставки</translation>
-        </message>
-        <message>
-            <source>Channels</source>
-            <translation>Канали</translation>
-        </message>
-        <message>
-            <source>New image</source>
-            <translation>Нова слика</translation>
-        </message>
-    </context>
-    <context>
-        <name>VoiceAvatar</name>
-        <message>
-            <source>Muted</source>
-            <translation>Микрофонот е исклучен</translation>
-        </message>
-        <message>
-            <source>Sleeping</source>
-            <translation>Спиење</translation>
-        </message>
-        <message>
-            <source>Offline</source>
-            <translation>Офлајн</translation>
-        </message>
-        <message>
-            <source>Speaking</source>
-            <translation>Зборување</translation>
-        </message>
-        <message>
-            <source>Unavailable</source>
-            <translation>Недостапно</translation>
-        </message>
-        <message>
-            <source>Listening</source>
-            <translation>Слушање</translation>
-        </message>
-        <message>
-            <source>Deafened</source>
-            <translation>Звучниците се исклучени</translation>
-        </message>
-    </context>
-    <context>
-        <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>Недостапно - аудио поставки или тест за тон</translation>
-        </message>
-        <message>
-            <source>Microphone muted</source>
-            <translation>Микрофонот е исклучен</translation>
-        </message>
-        <message>
-            <source>Push-to-talk held</source>
-            <translation>Копчето за притискање за разговор е задржано</translation>
-        </message>
-        <message>
-            <source>Ready - push-to-talk released</source>
-            <translation>Подготвено - копчето за притискање за разговор е отпуштено</translation>
-        </message>
-        <message>
-            <source>Microphone unmuted</source>
-            <translation>Микрофонот е вклучен</translation>
-        </message>
-        <message>
-            <source>Settings could not be saved: %1</source>
-            <translation>Поставките не можеа да се зачуваат: %1</translation>
-        </message>
-        <message>
-            <source>The push-to-talk sequence cannot be incremented further.</source>
-            <translation>Низата за притискање за разговор не може дополнително да се зголеми.</translation>
-        </message>
-        <message>
-            <source>Choose System, Light or Dark.</source>
-            <translation>Изберете Систем, Светло или Темно.</translation>
-        </message>
-        <message>
-            <source>Choose a colour palette from the list.</source>
-            <translation>Изберете палета на бои од списокот.</translation>
-        </message>
-        <message>
-            <source>Choose an available avatar.</source>
-            <translation>Изберете достапен аватар.</translation>
-        </message>
-        <message>
-            <source>Invalid push-to-talk binding.</source>
-            <translation>Неважечко врзување за притискање за разговор.</translation>
-        </message>
-        <message>
-            <source>Release the held push-to-talk key first.</source>
-            <translation>Прво отпуштете го држеното копче за притискање за разговор.</translation>
-        </message>
-        <message>
-            <source>Choose a language from the list.</source>
-            <translation>Изберете јазик од списокот.</translation>
-        </message>
-        <message>
-            <source>This avatar requires Supporter.</source>
-            <translation>Овој аватар бара Supporter.</translation>
-        </message>
-        <message>
-            <source>The name must contain 1 to 64 characters.</source>
-            <translation>Името мора да содржи од 1 до 64 знаци.</translation>
-        </message>
-        <message>
-            <source>The name may not contain control characters or line breaks.</source>
-            <translation>Името може да не содржи контролни знаци или прекини на линии.</translation>
-        </message>
-        <message>
-            <source>Session settings could not be read.</source>
-            <translation>Поставките на сесијата не може да се прочитаат.</translation>
-        </message>
-        <message>
-            <source>Saved setting is invalid: %1</source>
-            <translation>Невалидна зачувана поставка: %1</translation>
-        </message>
-    </context>
-    <context>
-        <name>License</name>
-        <message>
-            <source>License storage is busy or unavailable.</source>
-            <translation>Складирањето на лиценцата е зафатено или недостапно.</translation>
-        </message>
-        <message>
-            <source>License storage is unavailable.</source>
-            <translation>Складирањето на лиценцата е недостапно.</translation>
-        </message>
-        <message>
-            <source>Sign-in expired. Try again.</source>
-            <translation>Пријавувањето истече. Обидете се повторно.</translation>
-        </message>
-        <message>
-            <source>GitHub sign-in is unavailable. Try again.</source>
-            <translation>Најавувањето на GitHub е недостапно. Обидете се повторно.</translation>
-        </message>
-        <message>
-            <source>GitHub sign-in was not completed. Try again.</source>
-            <translation>Најавувањето на GitHub не беше завршено. Обидете се повторно.</translation>
-        </message>
-        <message>
-            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
-            <translation>GitHub не може да се провери. Офлајн пристапот трае најмногу седум дена.</translation>
-        </message>
-        <message>
-            <source>Sign in with GitHub again.</source>
-            <translation>Пријавете се повторно со GitHub.</translation>
-        </message>
-    </context>
-    <context>
-        <name>ScreenShare</name>
-        <message>
-            <source>The shared screen was removed. Select a source to start again.</source>
-            <translation>Споделениот екран е отстранет. Изберете извор за да започнете повторно.</translation>
-        </message>
-        <message>
-            <source>The shared window was closed. Select a source to start again.</source>
-            <translation>Заедничкиот прозорец беше затворен. Изберете извор за да започнете повторно.</translation>
-        </message>
-        <message>
-            <source>The selected screen is no longer available.</source>
-            <translation>Избраниот екран повеќе не е достапен.</translation>
-        </message>
-        <message>
-            <source>The selected window is no longer available.</source>
-            <translation>Избраниот прозорец повеќе не е достапен.</translation>
-        </message>
-        <message>
-            <source>The selected source exceeds the capture size limit.</source>
-            <translation>Избраниот извор го надминува ограничувањето на големината на снимањето.</translation>
-        </message>
-        <message>
-            <source>Close a video view before opening another stream.</source>
-            <translation>Затворете го видеото пред да отворите друг пренос.</translation>
-        </message>
-    </context>
-    <context>
-        <name>ScreenPanel</name>
-        <message>
-            <source>Media capacity reached</source>
-            <translation>Капацитетот на медиумите е достигнат</translation>
-        </message>
-        <message>
-            <source>Video paused</source>
-            <translation>Видеото е паузирано</translation>
-        </message>
-        <message>
-            <source>Stream ended</source>
-            <translation>Потокот заврши</translation>
-        </message>
-        <message>
-            <source>Connecting</source>
-            <translation>Поврзување</translation>
-        </message>
-        <message>
-            <source>Open screen stream</source>
-            <translation>Отворете го преносот на екранот</translation>
-        </message>
-        <message>
-            <source>Screen stream</source>
-            <translation>Пренос на екранот</translation>
-        </message>
-        <message>
-            <source>%1 kbit/s</source>
-            <translation>%1 kbit/s</translation>
-        </message>
-    </context>
-    <context>
-        <name>VideoCodec</name>
-        <message>
-            <source>Video codec: %1</source>
-            <translation>Видеокодек: %1</translation>
-        </message>
-        <message>
-            <source>Video codec ABI does not match its headers.</source>
-            <translation>ABI на видеокодекот не се совпаѓа со неговите заглавни датотеки.</translation>
-        </message>
-        <message>
-            <source>Video buffers could not be allocated.</source>
-            <translation>Не може да се додели меморија за видеобаферите.</translation>
-        </message>
-        <message>
-            <source>Invalid video quality tier.</source>
-            <translation>Невалидно ниво на квалитет на видеото.</translation>
-        </message>
-        <message>
-            <source>The screen source exceeds the supported capture size.</source>
-            <translation>Изворот на екранот ја надминува поддржаната големина за снимање.</translation>
-        </message>
-        <message>
-            <source>The screen source is too narrow.</source>
-            <translation>Изворот на екранот е премногу тесен.</translation>
-        </message>
-        <message>
-            <source>The video encoder could not be allocated.</source>
-            <translation>Не може да се додели меморија за видеокодерот.</translation>
-        </message>
-        <message>
-            <source>No supported video encoder is available.</source>
-            <translation>Нема достапен поддржан видеокодер.</translation>
-        </message>
-        <message>
-            <source>Video encoder configuration is too large.</source>
-            <translation>Конфигурацијата на видеокодерот е премногу голема.</translation>
-        </message>
-        <message>
-            <source>Video scaling could not be initialized.</source>
-            <translation>Не може да се иницијализира скалирањето на видеото.</translation>
-        </message>
-        <message>
-            <source>The encoder returned an empty video packet.</source>
-            <translation>Кодерот врати празен видеопакет.</translation>
-        </message>
-        <message>
-            <source>Invalid video frame format.</source>
-            <translation>Невалиден формат на видеокадарот.</translation>
-        </message>
-        <message>
-            <source>Invalid video decoder configuration.</source>
-            <translation>Невалидна конфигурација на видеодекодерот.</translation>
-        </message>
-        <message>
-            <source>This video codec cannot be decoded.</source>
-            <translation>Овој видеокодек не може да се декодира.</translation>
-        </message>
-        <message>
-            <source>Video decoder could not be allocated.</source>
-            <translation>Не може да се додели меморија за видеодекодерот.</translation>
-        </message>
-        <message>
-            <source>Video decoder configuration could not be allocated.</source>
-            <translation>Не може да се додели меморија за конфигурацијата на видеодекодерот.</translation>
-        </message>
-        <message>
-            <source>Decoded dimensions do not match the screen stream.</source>
-            <translation>Декодираните димензии не се совпаѓаат со преносот на екранот.</translation>
-        </message>
-        <message>
-            <source>Decoded image could not be allocated.</source>
-            <translation>Не може да се додели меморија за декодираната слика.</translation>
-        </message>
-        <message>
-            <source>Video color conversion could not be initialized.</source>
-            <translation>Не може да се иницијализира конверзијата на боите на видеото.</translation>
         </message>
     </context>
     <context>
@@ -2894,404 +3017,211 @@
         </message>
     </context>
     <context>
-        <name>Headless</name>
+        <name>Tray</name>
         <message>
-            <source>Command failed.</source>
-            <translation>Наредбата не успеа.</translation>
+            <source>Quit</source>
+            <translation>Откажи</translation>
         </message>
         <message>
-            <source>%1 must be an integer.</source>
-            <translation>%1 мора да биде цел број.</translation>
+            <source>SquadSpeak - speaking</source>
+            <translation>SquadSpeak - зборување</translation>
         </message>
         <message>
-            <source>Requests must be on/off or true/false.</source>
-            <translation>Барањата мора да бидат on/off или true/false.</translation>
+            <source>Settings</source>
+            <translation>Поставки</translation>
         </message>
         <message>
-            <source>Unknown host property: %1</source>
-            <translation>Непознато својство на хостот: %1</translation>
+            <source>Channels</source>
+            <translation>Канали</translation>
         </message>
         <message>
-            <source>Run without GUI, microphone capture, or local audio output.</source>
-            <translation>Стартувај без графички интерфејс, снимање од микрофон или локален аудиоизлез.</translation>
-        </message>
-        <message>
-            <source>Server storage prefix. Personal/audio/GUI profiles are not loaded.</source>
-            <translation>Префикс за складирање на серверот. Личните, аудио и графичките профили не се вчитуваат.</translation>
-        </message>
-        <message>
-            <source>Optional private identity file instead of the OS credential store (Linux/macOS). Parent directory must exist and belong to this account.</source>
-            <translation>Изборна приватна датотека за идентитет наместо системското складиште за акредитиви (Linux/macOS). Матичниот директориум мора да постои и да припаѓа на оваа сметка.</translation>
-        </message>
-        <message>
-            <source>UTF-8 key=value properties or JSON host preset. Default: application.properties, then config/application.properties beside the app.</source>
-            <translation>UTF-8 својства key=value или JSON поставки за хостот. Стандардно: application.properties, потоа config/application.properties покрај апликацијата.</translation>
-        </message>
-        <message>
-            <source>Channel display name.</source>
-            <translation>Прикажано име на каналот.</translation>
-        </message>
-        <message>
-            <source>System and radio bot display name.</source>
-            <translation>Прикажано име на системскиот и радио ботот.</translation>
-        </message>
-        <message>
-            <source>TCP service port (1-65535).</source>
-            <translation>TCP порта на услугата (1-65535).</translation>
-        </message>
-        <message>
-            <source>Headless admission is always on; only 'on' or 'true' is accepted.</source>
-            <translation>Пристапот без графички интерфејс е секогаш вклучен; се прифаќа само 'on' или 'true'.</translation>
-        </message>
-        <message>
-            <source>Preapprove a device ID; repeat for several devices. Existing bans remain.</source>
-            <translation>Однапред одобри ID на уред; повтори за повеќе уреди. Постојните забрани остануваат.</translation>
-        </message>
-        <message>
-            <source>Block a device ID; repeat for several devices.</source>
-            <translation>Блокирај ID на уред; повтори за повеќе уреди.</translation>
-        </message>
-        <message>
-            <source>Read a UTF-8 channel password from a file before listening. An empty file removes it.</source>
-            <translation>Прочитај UTF-8 лозинка за каналот од датотека пред почетокот на слушањето. Празна датотека ја отстранува.</translation>
-        </message>
-        <message>
-            <source>Channel password. Empty removes it; environment or config avoids process-list exposure.</source>
-            <translation>Лозинка за каналот. Празна вредност ја отстранува; околината или конфигурацијата избегнуваат откривање во списокот со процеси.</translation>
-        </message>
-        <message>
-            <source>SquadSpeak headless local channel host</source>
-            <translation>SquadSpeak хост на локален канал без графички интерфејс</translation>
-        </message>
-        <message>
-            <source>Environment variables (SQUADSPEAK_ prefix):</source>
-            <translation>Променливи на околината (префикс SQUADSPEAK_):</translation>
-        </message>
-        <message>
-            <source>Host configuration could not be read or exceeds 1 MiB.</source>
-            <translation>Конфигурацијата на хостот не може да се прочита или надминува 1 MiB.</translation>
-        </message>
-        <message>
-            <source>Host configuration must be UTF-8.</source>
-            <translation>Конфигурацијата на хостот мора да биде во UTF-8.</translation>
-        </message>
-        <message>
-            <source>Host preset must be a JSON object.</source>
-            <translation>Поставките за хостот мора да бидат JSON објект.</translation>
-        </message>
-        <message>
-            <source>Property line %1 must use key=value.</source>
-            <translation>Редот со својства %1 мора да користи key=value.</translation>
-        </message>
-        <message>
-            <source>Property line %1: %2</source>
-            <translation>Ред со својства %1: %2</translation>
-        </message>
-        <message>
-            <source>Standard input has no file descriptor.</source>
-            <translation>Стандардниот влез нема дескриптор на датотека.</translation>
-        </message>
-        <message>
-            <source>Standard input could not be inspected.</source>
-            <translation>Стандардниот влез не може да се провери.</translation>
-        </message>
-        <message>
-            <source>Could not write the command response: %1</source>
-            <translation>Одговорот на наредбата не може да се запише: %1</translation>
-        </message>
-        <message>
-            <source>Standard input could not be read: %1</source>
-            <translation>Стандардниот влез не може да се прочита: %1</translation>
-        </message>
-        <message>
-            <source>Input line exceeds 65536 bytes.</source>
-            <translation>Влезниот ред надминува 65536 бајти.</translation>
-        </message>
-        <message>
-            <source>Each input line must be a JSON object.</source>
-            <translation>Секој влезен ред мора да биде JSON објект.</translation>
-        </message>
-        <message>
-            <source>Input ended before a complete JSON line.</source>
-            <translation>Влезот заврши пред целосен JSON ред.</translation>
-        </message>
-        <message>
-            <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
-            <translation>Изборен ID на сопствен канал за наредбите status, configure, password, admission, history, chat и radio; стандардно е главниот канал.</translation>
-        </message>
-        <message>
-            <source>Channel action must be list, add or remove.</source>
-            <translation>Дејството за каналот мора да биде list, add или remove.</translation>
-        </message>
-        <message>
-            <source>Removing an own channel deletes its history, images, permissions and radio settings. Set confirmed=true to proceed.</source>
-            <translation>Отстранувањето сопствен канал ги брише неговата историја, слики, дозволи и радио поставки. За продолжување постави confirmed=true.</translation>
-        </message>
-        <message>
-            <source>id must identify an additional own channel.</source>
-            <translation>id мора да означува дополнителен сопствен канал.</translation>
-        </message>
-        <message>
-            <source>The additional own channel could not be removed: %1</source>
-            <translation>Дополнителниот сопствен канал не може да се отстрани: %1</translation>
-        </message>
-        <message>
-            <source>channelId must identify an own channel.</source>
-            <translation>channelId мора да означува сопствен канал.</translation>
-        </message>
-        <message>
-            <source>values must be a host settings object.</source>
-            <translation>values мора да биде објект со поставки за хостот.</translation>
-        </message>
-        <message>
-            <source>Headless admission is always enabled for non-banned devices; requests off is not supported.</source>
-            <translation>Пристапот без графички интерфејс е секогаш овозможен за неблокирани уреди; requests off не е поддржано.</translation>
-        </message>
-        <message>
-            <source>value must be a password of at most 1024 UTF-8 bytes without control characters; an empty string removes it.</source>
-            <translation>value мора да биде лозинка од најмногу 1024 UTF-8 бајти без контролни знаци; празна низа ја отстранува.</translation>
-        </message>
-        <message>
-            <source>The channel is not ready or a password change is in progress.</source>
-            <translation>Каналот не е подготвен или во тек е промена на лозинката.</translation>
-        </message>
-        <message>
-            <source>The channel was removed while saving the password.</source>
-            <translation>Каналот беше отстранет при зачувувањето на лозинката.</translation>
-        </message>
-        <message>
-            <source>id is required.</source>
-            <translation>id е задолжителен.</translation>
-        </message>
-        <message>
-            <source>text must be a valid non-empty chat message.</source>
-            <translation>text мора да биде важечка непразна порака за разговор.</translation>
-        </message>
-        <message>
-            <source>The local channel is not ready.</source>
-            <translation>Локалниот канал не е подготвен.</translation>
-        </message>
-        <message>
-            <source>The channel's radio is unavailable.</source>
-            <translation>Радиото на каналот не е достапно.</translation>
-        </message>
-        <message>
-            <source>Unknown command. Use help.</source>
-            <translation>Непозната наредба. Користи help.</translation>
-        </message>
-        <message>
-            <source>search requires a query, non-negative offset and limit from 1 to 128.</source>
-            <translation>search бара query, ненегативен offset и limit од 1 до 128.</translation>
-        </message>
-        <message>
-            <source>add creates an id; update requires an existing id.</source>
-            <translation>add создава id; update бара постоечки id.</translation>
-        </message>
-        <message>
-            <source>A station is already being checked.</source>
-            <translation>Веќе се проверува станица.</translation>
-        </message>
-        <message>
-            <source>The channel was removed while checking the station.</source>
-            <translation>Каналот беше отстранет при проверката на станицата.</translation>
-        </message>
-        <message>
-            <source>Unknown radio action.</source>
-            <translation>Непознато радио дејство.</translation>
-        </message>
-        <message>
-            <source>Could not load language: %1</source>
-            <translation>Јазикот не може да се вчита: %1</translation>
-        </message>
-        <message>
-            <source>The %1 option is incompatible with --headless.</source>
-            <translation>Опцијата %1 не е компатибилна со --headless.</translation>
-        </message>
-        <message>
-            <source>Unexpected positional arguments. Use --help.</source>
-            <translation>Неочекувани позициони аргументи. Користи --help.</translation>
-        </message>
-        <message>
-            <source>--config / -f requires a non-empty path.</source>
-            <translation>--config / -f бара непразна патека.</translation>
-        </message>
-        <message>
-            <source>Choose --password or --password-file, not both.</source>
-            <translation>Избери --password или --password-file, не двете.</translation>
-        </message>
-        <message>
-            <source>Choose SQUADSPEAK_PASSWORD or SQUADSPEAK_PASSWORD_FILE, not both.</source>
-            <translation>Избери SQUADSPEAK_PASSWORD или SQUADSPEAK_PASSWORD_FILE, не двете.</translation>
-        </message>
-        <message>
-            <source>Choose password or passwordFile in one configuration layer, not both.</source>
-            <translation>Избери password или passwordFile во еден слој на конфигурацијата, не двете.</translation>
-        </message>
-        <message>
-            <source>passwordFile must be a non-empty path.</source>
-            <translation>passwordFile мора да биде непразна патека.</translation>
-        </message>
-        <message>
-            <source>Password file could not be read or is too large.</source>
-            <translation>Датотеката со лозинката не може да се прочита или е преголема.</translation>
-        </message>
-        <message>
-            <source>Password file must contain at most 1024 UTF-8 bytes without control characters.</source>
-            <translation>Датотеката со лозинката смее да содржи најмногу 1024 UTF-8 бајти без контролни знаци.</translation>
-        </message>
-        <message>
-            <source>Password must be a string of at most 1024 UTF-8 bytes without control characters.</source>
-            <translation>Лозинката мора да биде низа од најмногу 1024 UTF-8 бајти без контролни знаци.</translation>
-        </message>
-        <message>
-            <source>settingsFile must be a non-empty path.</source>
-            <translation>settingsFile мора да биде непразна патека.</translation>
-        </message>
-        <message>
-            <source>identityFile must be a non-empty path.</source>
-            <translation>identityFile мора да биде непразна патека.</translation>
-        </message>
-        <message>
-            <source>The settings directory could not be created.</source>
-            <translation>Директориумот со поставки не може да се создаде.</translation>
-        </message>
-        <message>
-            <source>This SquadSpeak profile is already running or cannot be locked.</source>
-            <translation>Овој SquadSpeak профил е веќе стартуван или не може да се заклучи.</translation>
-        </message>
-        <message>
-            <source>Standard input could not be opened.</source>
-            <translation>Стандардниот влез не може да се отвори.</translation>
-        </message>
-        <message>
-            <source>Standard output could not be opened.</source>
-            <translation>Стандардниот излез не може да се отвори.</translation>
-        </message>
-        <message>
-            <source>This identity file is already in use or cannot be locked.</source>
-            <translation>Оваа датотека за идентитет веќе се користи или не може да се заклучи.</translation>
-        </message>
-        <message>
-            <source>Invalid host configuration: %1</source>
-            <translation>Неважечка конфигурација на хостот: %1</translation>
-        </message>
-        <message>
-            <source>Radio channels could not be initialized.</source>
-            <translation>Радио каналите не може да се иницијализираат.</translation>
-        </message>
-        <message>
-            <source>Headless host could not start: %1</source>
-            <translation>Хостот без графички интерфејс не може да се стартува: %1</translation>
-        </message>
-        <message>
-            <source>Channel password could not be saved.</source>
-            <translation>Лозинката за каналот не може да се зачува.</translation>
-        </message>
-        <message>
-            <source>Invalid channel password: %1</source>
-            <translation>Неважечка лозинка за каналот: %1</translation>
-        </message>
-        <message>
-            <source>Headless host could not initialize: %1</source>
-            <translation>Хостот без графички интерфејс не може да се иницијализира: %1</translation>
-        </message>
-        <message>
-            <source>SquadSpeak headless could not start: %1</source>
-            <translation>SquadSpeak без графички интерфејс не може да се стартува: %1</translation>
-        </message>
-        <message>
-            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
-            <translation>Дејството на поддржувачот мора да биде статус, најавување, освежување, одјавување или откажување. status sign-in refresh sign-out cancel</translation>
-        </message>
-        <message>
-            <source>A Supporter operation is in progress.</source>
-            <translation>Во тек е операција за поддржувач.</translation>
-        </message>
-        <message>
-            <source>Supporter access is unavailable in this build.</source>
-            <translation>Пристапот за поддржувач е недостапен во оваа верзија.</translation>
-        </message>
-        <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>Предност на поставките: аргументи &gt; околина &gt; својства &gt; зачувани вредности на серверот.</translation>
+            <source>New image</source>
+            <translation>Нова слика</translation>
         </message>
     </context>
     <context>
-        <name>Desktop</name>
+        <name>VideoCodec</name>
         <message>
-            <source>Open settings at startup.</source>
-            <translation>Отвори ги поставките при стартување.</translation>
+            <source>Video codec: %1</source>
+            <translation>Видеокодек: %1</translation>
         </message>
         <message>
-            <source>Open guided local test recording without starting network services.</source>
-            <translation>Отвори локално пробно снимање со упатства без стартување мрежни услуги.</translation>
+            <source>Video codec ABI does not match its headers.</source>
+            <translation>ABI на видеокодекот не се совпаѓа со неговите заглавни датотеки.</translation>
         </message>
         <message>
-            <source>Alternative file for audio profiles.</source>
-            <translation>Алтернативна датотека за аудиопрофили.</translation>
+            <source>Video buffers could not be allocated.</source>
+            <translation>Не може да се додели меморија за видеобаферите.</translation>
         </message>
         <message>
-            <source>Load the interface without microphone capture and exit after one second.</source>
-            <translation>Вчитај го интерфејсот без снимање од микрофон и излези по една секунда.</translation>
+            <source>Invalid video quality tier.</source>
+            <translation>Невалидно ниво на квалитет на видеото.</translation>
         </message>
         <message>
-            <source>Save an image of the app window during the UI test.</source>
-            <translation>Зачувај слика од прозорецот на апликацијата за време на тестот на интерфејсот.</translation>
+            <source>The screen source exceeds the supported capture size.</source>
+            <translation>Изворот на екранот ја надминува поддржаната големина за снимање.</translation>
         </message>
         <message>
-            <source>The window image could not be saved.</source>
-            <translation>Сликата од прозорецот не може да се зачува.</translation>
+            <source>The screen source is too narrow.</source>
+            <translation>Изворот на екранот е премногу тесен.</translation>
         </message>
         <message>
-            <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
-            <translation>Системската лента не е достапна; апликацијата останува отворена во прозорец.</translation>
+            <source>The video encoder could not be allocated.</source>
+            <translation>Не може да се додели меморија за видеокодерот.</translation>
+        </message>
+        <message>
+            <source>No supported video encoder is available.</source>
+            <translation>Нема достапен поддржан видеокодер.</translation>
+        </message>
+        <message>
+            <source>Video encoder configuration is too large.</source>
+            <translation>Конфигурацијата на видеокодерот е премногу голема.</translation>
+        </message>
+        <message>
+            <source>Video scaling could not be initialized.</source>
+            <translation>Не може да се иницијализира скалирањето на видеото.</translation>
+        </message>
+        <message>
+            <source>The encoder returned an empty video packet.</source>
+            <translation>Кодерот врати празен видеопакет.</translation>
+        </message>
+        <message>
+            <source>Invalid video frame format.</source>
+            <translation>Невалиден формат на видеокадарот.</translation>
+        </message>
+        <message>
+            <source>Invalid video decoder configuration.</source>
+            <translation>Невалидна конфигурација на видеодекодерот.</translation>
+        </message>
+        <message>
+            <source>This video codec cannot be decoded.</source>
+            <translation>Овој видеокодек не може да се декодира.</translation>
+        </message>
+        <message>
+            <source>Video decoder could not be allocated.</source>
+            <translation>Не може да се додели меморија за видеодекодерот.</translation>
+        </message>
+        <message>
+            <source>Video decoder configuration could not be allocated.</source>
+            <translation>Не може да се додели меморија за конфигурацијата на видеодекодерот.</translation>
+        </message>
+        <message>
+            <source>Decoded dimensions do not match the screen stream.</source>
+            <translation>Декодираните димензии не се совпаѓаат со преносот на екранот.</translation>
+        </message>
+        <message>
+            <source>Decoded image could not be allocated.</source>
+            <translation>Не може да се додели меморија за декодираната слика.</translation>
+        </message>
+        <message>
+            <source>Video color conversion could not be initialized.</source>
+            <translation>Не може да се иницијализира конверзијата на боите на видеото.</translation>
         </message>
     </context>
     <context>
-        <name>LocalLanguage</name>
+        <name>VoiceAvatar</name>
         <message>
-            <source>Translation (experimental)</source>
-            <translation>Превод (експериментално)</translation>
+            <source>Muted</source>
+            <translation>Микрофонот е исклучен</translation>
         </message>
         <message>
-            <source>Spoken language</source>
-            <translation>Говорен јазик</translation>
+            <source>Sleeping</source>
+            <translation>Спиење</translation>
         </message>
         <message>
-            <source>Translate to</source>
-            <translation>Преведи на</translation>
+            <source>Offline</source>
+            <translation>Офлајн</translation>
         </message>
         <message>
-            <source>Translate messages</source>
-            <translation>Преведи пораки</translation>
+            <source>Speaking</source>
+            <translation>Зборување</translation>
         </message>
         <message>
-            <source>Translated voice</source>
-            <translation>Преведен глас</translation>
+            <source>Unavailable</source>
+            <translation>Недостапно</translation>
         </message>
         <message>
-            <source>Original audio</source>
-            <translation>Оригинален звук</translation>
+            <source>Listening</source>
+            <translation>Слушање</translation>
         </message>
         <message>
-            <source>Original text</source>
-            <translation>Оригинален текст</translation>
+            <source>Deafened</source>
+            <translation>Звучниците се исклучени</translation>
+        </message>
+    </context>
+    <context>
+        <name>VoiceSession</name>
+        <message>
+            <source>Unavailable - audio settings or tone test</source>
+            <translation>Недостапно - аудио поставки или тест за тон</translation>
         </message>
         <message>
-            <source>Prepare languages</source>
-            <translation>Подготви јазици</translation>
+            <source>Microphone muted</source>
+            <translation>Микрофонот е исклучен</translation>
         </message>
         <message>
-            <source>Local language processing is unavailable.</source>
-            <translation>Локалната обработка на јазици не е достапна.</translation>
+            <source>Push-to-talk held</source>
+            <translation>Копчето за притискање за разговор е задржано</translation>
         </message>
         <message>
-            <source>Language settings could not be read.</source>
-            <translation>Поставките за јазик не може да се прочитаат.</translation>
+            <source>Ready - push-to-talk released</source>
+            <translation>Подготвено - копчето за притискање за разговор е отпуштено</translation>
         </message>
         <message>
-            <source>Language settings could not be saved.</source>
-            <translation>Поставките за јазик не може да се зачуваат.</translation>
+            <source>Microphone unmuted</source>
+            <translation>Микрофонот е вклучен</translation>
+        </message>
+        <message>
+            <source>Settings could not be saved: %1</source>
+            <translation>Поставките не можеа да се зачуваат: %1</translation>
+        </message>
+        <message>
+            <source>The push-to-talk sequence cannot be incremented further.</source>
+            <translation>Низата за притискање за разговор не може дополнително да се зголеми.</translation>
+        </message>
+        <message>
+            <source>Choose System, Light or Dark.</source>
+            <translation>Изберете Систем, Светло или Темно.</translation>
+        </message>
+        <message>
+            <source>Choose a colour palette from the list.</source>
+            <translation>Изберете палета на бои од списокот.</translation>
+        </message>
+        <message>
+            <source>Choose an available avatar.</source>
+            <translation>Изберете достапен аватар.</translation>
+        </message>
+        <message>
+            <source>Invalid push-to-talk binding.</source>
+            <translation>Неважечко врзување за притискање за разговор.</translation>
+        </message>
+        <message>
+            <source>Release the held push-to-talk key first.</source>
+            <translation>Прво отпуштете го држеното копче за притискање за разговор.</translation>
+        </message>
+        <message>
+            <source>Choose a language from the list.</source>
+            <translation>Изберете јазик од списокот.</translation>
+        </message>
+        <message>
+            <source>This avatar requires Supporter.</source>
+            <translation>Овој аватар бара Supporter.</translation>
+        </message>
+        <message>
+            <source>The name must contain 1 to 64 characters.</source>
+            <translation>Името мора да содржи од 1 до 64 знаци.</translation>
+        </message>
+        <message>
+            <source>The name may not contain control characters or line breaks.</source>
+            <translation>Името може да не содржи контролни знаци или прекини на линии.</translation>
+        </message>
+        <message>
+            <source>Session settings could not be read.</source>
+            <translation>Поставките на сесијата не може да се прочитаат.</translation>
+        </message>
+        <message>
+            <source>Saved setting is invalid: %1</source>
+            <translation>Невалидна зачувана поставка: %1</translation>
         </message>
     </context>
 </TS>

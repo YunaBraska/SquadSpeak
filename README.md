@@ -76,6 +76,24 @@ You can stay connected to several chats while speaking in one channel. The chann
 
 Approvals belong to the device's saved cryptographic identity. Changing Wi-Fi or IP address does not create a new device. Keep the app's identity when moving or backing up a profile; deleting it requires a new approval.
 
+## Connect to TeamSpeak 3
+
+In **+**, enter the server address and select **Add**. SquadSpeak detects the
+protocol. Without an explicit port, it checks SquadSpeak on `48763`, then TS3 on
+`9987`. For another port, enter `example.org:12345`, `192.168.1.20:12345`
+or `[2001:db8::20]:12345`. Both protocols use the port you entered.
+Enter a password only if the server asks. **Save password** remembers it
+securely for the next connection. Channels stay in their server's
+hierarchy, with a TS3 marker on the host. Double-click to join. Use the same
+microphone, push-to-talk and volume settings. Click a member to open **Message**.
+
+SquadSpeak generates and keeps a separate TS3 identity. Remote control uses the
+controlled computer's identity and connection. Server permissions still apply.
+The current integration supports Opus voice and text, without requiring the
+TeamSpeak client. It does not yet import an existing TS3 identity, manage server
+permissions, transfer files or send whispers. TS3 chats have no offline delivery
+or server-side history. See [the support limits](docs/roadmap.md#teamspeak-interoperability).
+
 ## Make yourself heard
 
 Open **Settings > Input** to select a microphone, see its spectrum and adjust voice activation, echo cancellation, gain, noise reduction and frequency cuts. Each audio device keeps its own profile. Opening audio settings pauses transmission to the conversation; closing them restores your previous state.

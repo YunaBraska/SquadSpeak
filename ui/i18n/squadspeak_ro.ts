@@ -36,14 +36,6 @@
             <translation>Deschideți setările de confidențialitate ale sistemului și permiteți accesul la microfon pentru SquadSpeak.</translation>
         </message>
         <message>
-            <source>Microphone analysis active. Test audio stays on this computer.</source>
-            <translation>Analiza microfon activă. Testați conținutul audio pe acest computer.</translation>
-        </message>
-        <message>
-            <source>Finish the test recording before changing devices.</source>
-            <translation>Terminați înregistrarea de test înainte de a schimba dispozitivele.</translation>
-        </message>
-        <message>
             <source>The output format is not supported.</source>
             <translation>Formatul de ieșire nu este acceptat.</translation>
         </message>
@@ -68,32 +60,12 @@
             <translation>Tonul de testare nu a putut fi redat.</translation>
         </message>
         <message>
-            <source>The microphone has provided no data for five seconds. Recording discarded.</source>
-            <translation>Microfonul nu a furnizat date timp de cinci secunde. Înregistrare eliminată.</translation>
-        </message>
-        <message>
-            <source>The microphone was interrupted or changed. Recording discarded.</source>
-            <translation>Microfonul a fost întrerupt sau schimbat. Înregistrare eliminată.</translation>
-        </message>
-        <message>
-            <source>Cancelled. The incomplete recording was discarded.</source>
-            <translation>Anulat. Înregistrarea incompletă a fost eliminată.</translation>
-        </message>
-        <message>
             <source>No selected microphone is available</source>
             <translation>Niciun microfon selectat nu este disponibil</translation>
         </message>
         <message>
             <source>Allow microphone access in the system dialog.</source>
             <translation>Permiteți accesul la microfon în dialogul de sistem.</translation>
-        </message>
-        <message>
-            <source>Microphone capture active for the voice channel.</source>
-            <translation>Captură microfon activă pentru canalul vocal.</translation>
-        </message>
-        <message>
-            <source>Microphone access was denied. Nothing was saved.</source>
-            <translation>Accesul la microfon a fost refuzat. Nu s-a salvat nimic.</translation>
         </message>
         <message>
             <source>Microphone access is missing. Allow it in System Settings.</source>
@@ -265,97 +237,6 @@
         </message>
     </context>
     <context>
-        <name>AudioRecording</name>
-        <message>
-            <source>Incomplete audio block. Recording discarded.</source>
-            <translation>Bloc audio incomplet. Înregistrare eliminată.</translation>
-        </message>
-        <message>
-            <source>Move about one meter from the microphone. Keep the background sound playing and read the sentence.</source>
-            <translation>Deplasați-vă la aproximativ un metru de microfon. Păstrați sunetul de fundal redat și citiți propoziția.</translation>
-        </message>
-        <message>
-            <source>Voice with background sound</source>
-            <translation>Voce cu sunet de fundal</translation>
-        </message>
-        <message>
-            <source>The recordings folder could not be created.</source>
-            <translation>folderul înregistrări nu a putut fi creat.</translation>
-        </message>
-        <message>
-            <source>You can stop the background sound now.</source>
-            <translation>Puteți opri sunetul de fundal acum.</translation>
-        </message>
-        <message>
-            <source>Recordings saved</source>
-            <translation>Înregistrări salvate</translation>
-        </message>
-        <message>
-            <source>The test recording could not be saved completely.</source>
-            <translation>Înregistrarea de test nu a putut fi salvată complet.</translation>
-        </message>
-        <message>
-            <source>Keep music off and stay quiet. Start when ready.</source>
-            <translation>Ține muzica oprită și stai liniștit. Începeți când este gata.</translation>
-        </message>
-        <message>
-            <source>Your voice</source>
-            <translation>Vocea ta</translation>
-        </message>
-        <message>
-            <source>Play music or another background sound at a normal volume. Stay quiet while recording.</source>
-            <translation>Redați muzică sau alt sunet de fundal la un volum normal. Stai liniștit în timp ce înregistrezi.</translation>
-        </message>
-        <message>
-            <source>The test recording could not be created.</source>
-            <translation>Înregistrarea de test nu a putut fi creată.</translation>
-        </message>
-        <message>
-            <source>Background sound</source>
-            <translation>Sunete de fundal</translation>
-        </message>
-        <message>
-            <source>The window is open. I can hear the rain outside. One, two, three, four, five.</source>
-            <translation>Fereastra este deschisă. Aud ploaia afară. Unu, doi, trei, patru, cinci.</translation>
-        </message>
-        <message>
-            <source>This microphone format is not supported for test recordings.</source>
-            <translation>Acest format de microfon nu este acceptat pentru înregistrările de test.</translation>
-        </message>
-        <message>
-            <source>Keep the background volume unchanged. Read the sentence, then stop recording.</source>
-            <translation>Păstrați neschimbat volumul de fundal. Citiți propoziția, apoi opriți înregistrarea.</translation>
-        </message>
-        <message>
-            <source>Record at least half a second, then try again.</source>
-            <translation>Înregistrați cel puțin o jumătate de secundă, apoi încercați din nou.</translation>
-        </message>
-        <message>
-            <source>Sit at your usual distance. Read the sentence, then stop recording.</source>
-            <translation>Stai la distanța ta obișnuită. Citiți propoziția, apoi opriți înregistrarea.</translation>
-        </message>
-        <message>
-            <source>The recording description could not be saved.</source>
-            <translation>Descrierea înregistrării nu a putut fi salvată.</translation>
-        </message>
-        <message>
-            <source>The WAV file could not be finalized.</source>
-            <translation>Fișierul WAV nu a putut fi finalizat.</translation>
-        </message>
-        <message>
-            <source>The WAV header could not be written.</source>
-            <translation>Antetul WAV nu a putut fi scris.</translation>
-        </message>
-        <message>
-            <source>Voice farther away</source>
-            <translation>Voce mai departe</translation>
-        </message>
-        <message>
-            <source>Room sound</source>
-            <translation>Sunetul camerei</translation>
-        </message>
-    </context>
-    <context>
         <name>AudioSettings</name>
         <message>
             <source>Echo cancellation</source>
@@ -406,8 +287,8 @@
             <translation>Redarea dvs</translation>
         </message>
         <message>
-            <source>Clear local key</source>
-            <translation>Ștergeți comanda rapidă locală de la tastatură</translation>
+            <source>Clear key</source>
+            <translation>Șterge tasta</translation>
         </message>
         <message>
             <source>Low cut</source>
@@ -428,10 +309,6 @@
         <message>
             <source>Cancel</source>
             <translation>Anulează</translation>
-        </message>
-        <message>
-            <source>Guided recording</source>
-            <translation>Înregistrare ghidată</translation>
         </message>
         <message>
             <source>Clipping. Reduce microphone gain.</source>
@@ -466,16 +343,12 @@
             <translation>Dispozitivul deconectat</translation>
         </message>
         <message>
-            <source>Local key</source>
-            <translation>Comandă rapidă locală PTT</translation>
+            <source>PTT key</source>
+            <translation>Tastă pentru vorbire</translation>
         </message>
         <message>
             <source>Voice activation</source>
             <translation>Microfon activat prin voce</translation>
-        </message>
-        <message>
-            <source>Remote PTT key</source>
-            <translation>Comandă rapidă PTT la distanță</translation>
         </message>
         <message>
             <source>Noise reduction</source>
@@ -492,10 +365,6 @@
         <message>
             <source>Microphone gain</source>
             <translation>Câștigul microfonului</translation>
-        </message>
-        <message>
-            <source>Clear remote key</source>
-            <translation>Ștergeți comanda rapidă PTT la distanță</translation>
         </message>
         <message>
             <source>Not assigned</source>
@@ -521,9 +390,81 @@
             <source>Read bot messages aloud</source>
             <translation>Citește mesajele botului cu voce tare</translation>
         </message>
+        <message>
+            <source>Download a high-quality voice for this language in macOS settings.</source>
+            <translation>Descarcă o voce de înaltă calitate pentru această limbă din configurările macOS.</translation>
+        </message>
+        <message>
+            <source>Bot voice</source>
+            <translation>Vocea botului</translation>
+        </message>
+        <message>
+            <source>Automatic</source>
+            <translation>automat</translation>
+        </message>
+        <message>
+            <source>Unavailable</source>
+            <translation>Indisponibil</translation>
+        </message>
+        <message>
+            <source>Download voices in your device's Accessibility speech settings.</source>
+            <translation>Descarcă voci din configurările de vorbire din secțiunea Accesibilitate a dispozitivului.</translation>
+        </message>
+        <message>
+            <source>Voice download help</source>
+            <translation>Ajutor pentru descărcarea vocilor</translation>
+        </message>
+        <message>
+            <source>Strength, not the percentage of echo removed.</source>
+            <translation>Intensitate, nu procentul de ecou eliminat.</translation>
+        </message>
+        <message>
+            <source>Auto also checks for speech, not just volume.</source>
+            <translation>Modul automat verifică și vorbirea, nu doar volumul.</translation>
+        </message>
     </context>
     <context>
         <name>Channels</name>
+        <message>
+            <source>Copy address</source>
+            <translation>Copiază adresa</translation>
+        </message>
+        <message>
+            <source>Messages</source>
+            <translation>Mesaje</translation>
+        </message>
+        <message>
+            <source>Message</source>
+            <translation>Mesaj</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Deschide</translation>
+        </message>
+        <message>
+            <source>Online</source>
+            <translation>Online</translation>
+        </message>
+        <message>
+            <source>Offline</source>
+            <translation>Offline</translation>
+        </message>
+        <message>
+            <source>No private messages</source>
+            <translation>Nu există mesaje private</translation>
+        </message>
+        <message>
+            <source>Private messages are unavailable for this contact.</source>
+            <translation>Mesajele private nu sunt disponibile pentru acest contact.</translation>
+        </message>
+        <message>
+            <source>If asked, allow local network access. You can change this in system settings.</source>
+            <translation>Dacă ți se cere, permite accesul la rețeaua locală. Poți schimba acest lucru în setările sistemului.</translation>
+        </message>
+        <message>
+            <source>Retry</source>
+            <translation>Încearcă din nou</translation>
+        </message>
         <message>
             <source>Updates</source>
             <translation>Actualizări</translation>
@@ -543,6 +484,10 @@
         <message>
             <source>DDNS cannot bypass CGNAT. If your provider shares the public IP, use a private VPN on all participating devices or a publicly reachable server.</source>
             <translation>DDNS nu poate ocoli CGNAT. Dacă furnizorul dvs. partajează IP-ul public, utilizați un VPN privat pe toate dispozitivele participante sau un server accesibil public.</translation>
+        </message>
+        <message>
+            <source>Remove server</source>
+            <translation>Elimină serverul</translation>
         </message>
         <message>
             <source>Low</source>
@@ -665,10 +610,6 @@
             <translation>Sunete de notificare</translation>
         </message>
         <message>
-            <source>Lifetime for new messages. Earlier messages keep their expiry.</source>
-            <translation>Viață pentru mesaje noi. Mesajele anterioare își păstrează expirarea.</translation>
-        </message>
-        <message>
             <source>Enable speakers</source>
             <translation>Activați difuzoarele</translation>
         </message>
@@ -703,10 +644,6 @@
         <message>
             <source>Allow device</source>
             <translation>Permite dispozitiv</translation>
-        </message>
-        <message>
-            <source>Receive quality: %1 kb/s per voice. Adjusts automatically for this device.</source>
-            <translation>calitatea recepției: %1 kb/s per voce. Se reglează automat pentru acest dispozitiv.</translation>
         </message>
         <message>
             <source>Stop radio</source>
@@ -1204,6 +1141,42 @@
             <source>Use default music volume</source>
             <translation>Folosește volumul implicit al muzicii</translation>
         </message>
+        <message>
+            <source>Show in Dock</source>
+            <translation>Afișează în Dock</translation>
+        </message>
+        <message>
+            <source>App language</source>
+            <translation>Limba aplicației</translation>
+        </message>
+        <message>
+            <source>Send in</source>
+            <translation>Trimite în</translation>
+        </message>
+        <message>
+            <source>Hear in</source>
+            <translation>Ascultă în</translation>
+        </message>
+        <message>
+            <source>Download language models for %1 and %2?</source>
+            <translation>Descarci modelele lingvistice pentru %1 și %2?</translation>
+        </message>
+        <message>
+            <source>Download</source>
+            <translation>Descarcă</translation>
+        </message>
+        <message>
+            <source>PTT, chat and channel controls. Uses the controlled device's microphone.</source>
+            <translation>Comenzi PTT, chat și canale. Se folosește microfonul dispozitivului controlat.</translation>
+        </message>
+        <message>
+            <source>Connect the other device to one of your channels, then allow it here.</source>
+            <translation>Conectează celălalt dispozitiv la unul dintre canalele tale, apoi permite-l aici.</translation>
+        </message>
+        <message>
+            <source>On the other device, open Settings &gt; Input &gt; Remote control and allow this device.</source>
+            <translation>Pe celălalt dispozitiv, deschide Setări &gt; Intrare &gt; Telecomanda și permite acest dispozitiv.</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1420,7 +1393,396 @@
         </message>
     </context>
     <context>
+        <name>Desktop</name>
+        <message>
+            <source>Open settings at startup.</source>
+            <translation>Deschide setările la pornire.</translation>
+        </message>
+        <message>
+            <source>Alternative file for audio profiles.</source>
+            <translation>Fișier alternativ pentru profilurile audio.</translation>
+        </message>
+        <message>
+            <source>Load the interface without microphone capture and exit after one second.</source>
+            <translation>Încarcă interfața fără captură de la microfon și închide după o secundă.</translation>
+        </message>
+        <message>
+            <source>Save an image of the app window during the UI test.</source>
+            <translation>Salvează o imagine a ferestrei aplicației în timpul testului interfeței.</translation>
+        </message>
+        <message>
+            <source>The window image could not be saved.</source>
+            <translation>Imaginea ferestrei nu a putut fi salvată.</translation>
+        </message>
+        <message>
+            <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
+            <translation>Zona de notificare nu este disponibilă; aplicația rămâne deschisă într-o fereastră.</translation>
+        </message>
+    </context>
+    <context>
+        <name>Headless</name>
+        <message>
+            <source>Host display name.</source>
+            <translation>Numele afișat al gazdei.</translation>
+        </message>
+        <message>
+            <source>Command failed.</source>
+            <translation>Comanda a eșuat.</translation>
+        </message>
+        <message>
+            <source>%1 must be an integer.</source>
+            <translation>%1 trebuie să fie un număr întreg.</translation>
+        </message>
+        <message>
+            <source>Requests must be on/off or true/false.</source>
+            <translation>Solicitările trebuie să fie on/off sau true/false.</translation>
+        </message>
+        <message>
+            <source>Unknown host property: %1</source>
+            <translation>Proprietate necunoscută a gazdei: %1</translation>
+        </message>
+        <message>
+            <source>Run without GUI, microphone capture, or local audio output.</source>
+            <translation>Pornește fără interfață grafică, captură de microfon sau ieșire audio locală.</translation>
+        </message>
+        <message>
+            <source>Server storage prefix. Personal/audio/GUI profiles are not loaded.</source>
+            <translation>Prefix de stocare al serverului. Profilurile personale, audio și grafice nu sunt încărcate.</translation>
+        </message>
+        <message>
+            <source>Optional private identity file instead of the OS credential store (Linux/macOS). Parent directory must exist and belong to this account.</source>
+            <translation>Fișier privat de identitate opțional în locul depozitului de acreditări al sistemului (Linux/macOS). Directorul părinte trebuie să existe și să aparțină acestui cont.</translation>
+        </message>
+        <message>
+            <source>UTF-8 key=value properties or JSON host preset. Default: application.properties, then config/application.properties beside the app.</source>
+            <translation>Proprietăți key=value în UTF-8 sau configurație de gazdă JSON. Implicit: application.properties, apoi config/application.properties lângă aplicație.</translation>
+        </message>
+        <message>
+            <source>Channel display name.</source>
+            <translation>Numele afișat al canalului.</translation>
+        </message>
+        <message>
+            <source>System and radio bot display name.</source>
+            <translation>Numele afișat al botului comun pentru sistem și radio.</translation>
+        </message>
+        <message>
+            <source>TCP service port (1-65535).</source>
+            <translation>Portul serviciului TCP (1-65535).</translation>
+        </message>
+        <message>
+            <source>Headless admission is always on; only 'on' or 'true' is accepted.</source>
+            <translation>Admiterea fără interfață este mereu activă; se acceptă doar 'on' sau 'true'.</translation>
+        </message>
+        <message>
+            <source>Preapprove a device ID; repeat for several devices. Existing bans remain.</source>
+            <translation>Aprobă în avans un ID de dispozitiv; repetă pentru mai multe dispozitive. Blocările existente rămân.</translation>
+        </message>
+        <message>
+            <source>Block a device ID; repeat for several devices.</source>
+            <translation>Blochează un ID de dispozitiv; repetă pentru mai multe dispozitive.</translation>
+        </message>
+        <message>
+            <source>Read a UTF-8 channel password from a file before listening. An empty file removes it.</source>
+            <translation>Citește parola canalului dintr-un fișier UTF-8 înainte de a accepta conexiuni. Un fișier gol elimină parola.</translation>
+        </message>
+        <message>
+            <source>Channel password. Empty removes it; environment or config avoids process-list exposure.</source>
+            <translation>Parola canalului. O valoare goală o elimină; mediul sau configurația evită expunerea în lista proceselor.</translation>
+        </message>
+        <message>
+            <source>SquadSpeak headless local channel host</source>
+            <translation>Gazdă locală de canale SquadSpeak fără interfață</translation>
+        </message>
+        <message>
+            <source>Environment variables (SQUADSPEAK_ prefix):</source>
+            <translation>Variabile de mediu (prefix SQUADSPEAK_):</translation>
+        </message>
+        <message>
+            <source>Host configuration could not be read or exceeds 1 MiB.</source>
+            <translation>Configurația gazdei nu poate fi citită sau depășește 1 MiB.</translation>
+        </message>
+        <message>
+            <source>Host configuration must be UTF-8.</source>
+            <translation>Configurația gazdei trebuie să fie UTF-8.</translation>
+        </message>
+        <message>
+            <source>Host preset must be a JSON object.</source>
+            <translation>Configurația prestabilită a gazdei trebuie să fie un obiect JSON.</translation>
+        </message>
+        <message>
+            <source>Property line %1 must use key=value.</source>
+            <translation>Linia de proprietăți %1 trebuie să folosească key=value.</translation>
+        </message>
+        <message>
+            <source>Property line %1: %2</source>
+            <translation>Linia de proprietăți %1: %2</translation>
+        </message>
+        <message>
+            <source>Standard input has no file descriptor.</source>
+            <translation>Intrarea standard nu are descriptor de fișier.</translation>
+        </message>
+        <message>
+            <source>Standard input could not be inspected.</source>
+            <translation>Intrarea standard nu a putut fi inspectată.</translation>
+        </message>
+        <message>
+            <source>Could not write the command response: %1</source>
+            <translation>Răspunsul comenzii nu a putut fi scris: %1</translation>
+        </message>
+        <message>
+            <source>Standard input could not be read: %1</source>
+            <translation>Intrarea standard nu a putut fi citită: %1</translation>
+        </message>
+        <message>
+            <source>Input line exceeds 65536 bytes.</source>
+            <translation>Linia de intrare depășește 65536 de octeți.</translation>
+        </message>
+        <message>
+            <source>Each input line must be a JSON object.</source>
+            <translation>Fiecare linie de intrare trebuie să fie un obiect JSON.</translation>
+        </message>
+        <message>
+            <source>Input ended before a complete JSON line.</source>
+            <translation>Intrarea s-a încheiat înainte de completarea liniei JSON.</translation>
+        </message>
+        <message>
+            <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
+            <translation>ID opțional al unui canal propriu pentru comenzile status, configure, password, admission, history, chat și radio; implicit se folosește canalul principal.</translation>
+        </message>
+        <message>
+            <source>Channel action must be list, add or remove.</source>
+            <translation>Acțiunea canalului trebuie să fie list, add sau remove.</translation>
+        </message>
+        <message>
+            <source>Removing an own channel deletes its history, images, permissions and radio settings. Set confirmed=true to proceed.</source>
+            <translation>Eliminarea unui canal propriu șterge istoricul, imaginile, permisiunile și setările radio. Setează confirmed=true pentru a continua.</translation>
+        </message>
+        <message>
+            <source>id must identify an additional own channel.</source>
+            <translation>id trebuie să identifice un canal propriu suplimentar.</translation>
+        </message>
+        <message>
+            <source>The additional own channel could not be removed: %1</source>
+            <translation>Canalul propriu suplimentar nu a putut fi eliminat: %1</translation>
+        </message>
+        <message>
+            <source>channelId must identify an own channel.</source>
+            <translation>channelId trebuie să identifice un canal propriu.</translation>
+        </message>
+        <message>
+            <source>values must be a host settings object.</source>
+            <translation>values trebuie să fie un obiect de setări ale gazdei.</translation>
+        </message>
+        <message>
+            <source>Headless admission is always enabled for non-banned devices; requests off is not supported.</source>
+            <translation>Admiterea fără interfață este mereu activă pentru dispozitivele neblocate; requests off nu este acceptat.</translation>
+        </message>
+        <message>
+            <source>value must be a password of at most 1024 UTF-8 bytes without control characters; an empty string removes it.</source>
+            <translation>value trebuie să fie o parolă de cel mult 1024 de octeți UTF-8 fără caractere de control; un șir gol elimină parola.</translation>
+        </message>
+        <message>
+            <source>The channel is not ready or a password change is in progress.</source>
+            <translation>Canalul nu este pregătit sau se schimbă parola.</translation>
+        </message>
+        <message>
+            <source>The channel was removed while saving the password.</source>
+            <translation>Canalul a fost eliminat în timpul salvării parolei.</translation>
+        </message>
+        <message>
+            <source>id is required.</source>
+            <translation>id este necesar.</translation>
+        </message>
+        <message>
+            <source>text must be a valid non-empty chat message.</source>
+            <translation>text trebuie să fie un mesaj de chat valid și nevid.</translation>
+        </message>
+        <message>
+            <source>The local channel is not ready.</source>
+            <translation>Canalul local nu este pregătit.</translation>
+        </message>
+        <message>
+            <source>The channel's radio is unavailable.</source>
+            <translation>Radioul canalului nu este disponibil.</translation>
+        </message>
+        <message>
+            <source>Unknown command. Use help.</source>
+            <translation>Comandă necunoscută. Folosește help.</translation>
+        </message>
+        <message>
+            <source>search requires a query, non-negative offset and limit from 1 to 128.</source>
+            <translation>search necesită query, un offset nenegativ și un limit între 1 și 128.</translation>
+        </message>
+        <message>
+            <source>add creates an id; update requires an existing id.</source>
+            <translation>add creează un id; update necesită un id existent.</translation>
+        </message>
+        <message>
+            <source>A station is already being checked.</source>
+            <translation>Un post este deja în curs de verificare.</translation>
+        </message>
+        <message>
+            <source>The channel was removed while checking the station.</source>
+            <translation>Canalul a fost eliminat în timpul verificării postului.</translation>
+        </message>
+        <message>
+            <source>Unknown radio action.</source>
+            <translation>Acțiune radio necunoscută.</translation>
+        </message>
+        <message>
+            <source>Could not load language: %1</source>
+            <translation>Limba nu a putut fi încărcată: %1</translation>
+        </message>
+        <message>
+            <source>The %1 option is incompatible with --headless.</source>
+            <translation>Opțiunea %1 este incompatibilă cu --headless.</translation>
+        </message>
+        <message>
+            <source>Unexpected positional arguments. Use --help.</source>
+            <translation>Argumente poziționale neașteptate. Folosește --help.</translation>
+        </message>
+        <message>
+            <source>--config / -f requires a non-empty path.</source>
+            <translation>--config / -f necesită o cale nevidă.</translation>
+        </message>
+        <message>
+            <source>Choose --password or --password-file, not both.</source>
+            <translation>Alege --password sau --password-file, nu ambele.</translation>
+        </message>
+        <message>
+            <source>Choose SQUADSPEAK_PASSWORD or SQUADSPEAK_PASSWORD_FILE, not both.</source>
+            <translation>Alege SQUADSPEAK_PASSWORD sau SQUADSPEAK_PASSWORD_FILE, nu ambele.</translation>
+        </message>
+        <message>
+            <source>Choose password or passwordFile in one configuration layer, not both.</source>
+            <translation>Alege password sau passwordFile într-un singur nivel de configurare, nu ambele.</translation>
+        </message>
+        <message>
+            <source>passwordFile must be a non-empty path.</source>
+            <translation>passwordFile trebuie să fie o cale nevidă.</translation>
+        </message>
+        <message>
+            <source>Password file could not be read or is too large.</source>
+            <translation>Fișierul parolei nu a putut fi citit sau este prea mare.</translation>
+        </message>
+        <message>
+            <source>Password file must contain at most 1024 UTF-8 bytes without control characters.</source>
+            <translation>Fișierul parolei trebuie să conțină cel mult 1024 de octeți UTF-8 fără caractere de control.</translation>
+        </message>
+        <message>
+            <source>Password must be a string of at most 1024 UTF-8 bytes without control characters.</source>
+            <translation>Parola trebuie să fie un șir de cel mult 1024 de octeți UTF-8 fără caractere de control.</translation>
+        </message>
+        <message>
+            <source>settingsFile must be a non-empty path.</source>
+            <translation>settingsFile trebuie să fie o cale nevidă.</translation>
+        </message>
+        <message>
+            <source>identityFile must be a non-empty path.</source>
+            <translation>identityFile trebuie să fie o cale nevidă.</translation>
+        </message>
+        <message>
+            <source>The settings directory could not be created.</source>
+            <translation>Directorul setărilor nu a putut fi creat.</translation>
+        </message>
+        <message>
+            <source>This SquadSpeak profile is already running or cannot be locked.</source>
+            <translation>Acest profil SquadSpeak rulează deja sau nu poate fi blocat.</translation>
+        </message>
+        <message>
+            <source>Standard input could not be opened.</source>
+            <translation>Intrarea standard nu a putut fi deschisă.</translation>
+        </message>
+        <message>
+            <source>Standard output could not be opened.</source>
+            <translation>Ieșirea standard nu a putut fi deschisă.</translation>
+        </message>
+        <message>
+            <source>This identity file is already in use or cannot be locked.</source>
+            <translation>Acest fișier de identitate este deja folosit sau nu poate fi blocat.</translation>
+        </message>
+        <message>
+            <source>Invalid host configuration: %1</source>
+            <translation>Configurație nevalidă a gazdei: %1</translation>
+        </message>
+        <message>
+            <source>Radio channels could not be initialized.</source>
+            <translation>Canalele radio nu au putut fi inițializate.</translation>
+        </message>
+        <message>
+            <source>Headless host could not start: %1</source>
+            <translation>Gazda fără interfață nu a putut porni: %1</translation>
+        </message>
+        <message>
+            <source>Channel password could not be saved.</source>
+            <translation>Parola canalului nu a putut fi salvată.</translation>
+        </message>
+        <message>
+            <source>Invalid channel password: %1</source>
+            <translation>Parolă de canal nevalidă: %1</translation>
+        </message>
+        <message>
+            <source>Headless host could not initialize: %1</source>
+            <translation>Gazda fără interfață nu a putut fi inițializată: %1</translation>
+        </message>
+        <message>
+            <source>SquadSpeak headless could not start: %1</source>
+            <translation>SquadSpeak fără interfață nu a putut porni: %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>Acțiunea suporterului trebuie să fie stare, conectare, reîmprospătare, deconectare sau anulare. status sign-in refresh sign-out cancel</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>O operațiune de suporter este în desfășurare.</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>Accesul suporterului nu este disponibil în această versiune.</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>Prioritatea setărilor: argumente &gt; mediu &gt; proprietăți &gt; valori salvate de server.</translation>
+        </message>
+    </context>
+    <context>
+        <name>License</name>
+        <message>
+            <source>License storage is busy or unavailable.</source>
+            <translation>Stocarea licenței este ocupată sau indisponibilă.</translation>
+        </message>
+        <message>
+            <source>License storage is unavailable.</source>
+            <translation>Stocarea licenței nu este disponibilă.</translation>
+        </message>
+        <message>
+            <source>Sign-in expired. Try again.</source>
+            <translation>Conectarea a expirat. Încearcă din nou.</translation>
+        </message>
+        <message>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>Conectarea la GitHub nu este disponibilă. Încearcă din nou.</translation>
+        </message>
+        <message>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>Conectarea la GitHub nu a fost finalizată. Încearcă din nou.</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>GitHub nu a putut fi verificat. Accesul offline durează cel mult șapte zile.</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>Conectați-vă din nou cu GitHub.</translation>
+        </message>
+    </context>
+    <context>
         <name>LocalChannel</name>
+        <message>
+            <source>Blocked</source>
+            <translation>Blocat</translation>
+        </message>
         <message>
             <source>Host is not responding. Reconnecting.</source>
             <translation>Gazda nu răspunde. Reconectare.</translation>
@@ -2205,6 +2567,53 @@
             <source>Voice relay codec could not be configured.</source>
             <translation>Codecul de retransmitere a vocii nu a putut fi configurat.</translation>
         </message>
+        <message>
+            <source>Unsupported audio codec</source>
+            <translation>Codec audio neacceptat</translation>
+        </message>
+        <message>
+            <source>Speaking is not allowed in this channel.</source>
+            <translation>Nu poți vorbi pe acest canal.</translation>
+        </message>
+    </context>
+    <context>
+        <name>LocalLanguage</name>
+        <message>
+            <source>Translation (experimental)</source>
+            <translation>Traducere (experimentală)</translation>
+        </message>
+        <message>
+            <source>Translate messages</source>
+            <translation>Tradu mesajele</translation>
+        </message>
+        <message>
+            <source>Translated voice</source>
+            <translation>Voce tradusă</translation>
+        </message>
+        <message>
+            <source>Original audio</source>
+            <translation>Audio original</translation>
+        </message>
+        <message>
+            <source>Original text</source>
+            <translation>Text original</translation>
+        </message>
+        <message>
+            <source>Prepare languages</source>
+            <translation>Pregătește limbile</translation>
+        </message>
+        <message>
+            <source>Local language processing is unavailable.</source>
+            <translation>Procesarea locală a limbii nu este disponibilă.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be read.</source>
+            <translation>Setările de limbă nu au putut fi citite.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be saved.</source>
+            <translation>Setările de limbă nu au putut fi salvate.</translation>
+        </message>
     </context>
     <context>
         <name>PushToTalkKey</name>
@@ -2345,50 +2754,65 @@
         </message>
     </context>
     <context>
-        <name>RecordingPanel</name>
+        <name>ScreenPanel</name>
         <message>
-            <source>Stop</source>
-            <translation>Oprește-te</translation>
+            <source>Media capacity reached</source>
+            <translation>Capacitate media atinsă</translation>
         </message>
         <message>
-            <source>Start</source>
-            <translation>Începe</translation>
+            <source>Video paused</source>
+            <translation>Videoclipul a fost întrerupt</translation>
         </message>
         <message>
-            <source>Saved on this device only. Nothing is uploaded.</source>
-            <translation>Salvat numai pe acest dispozitiv. Nu este încărcat nimic.</translation>
+            <source>Stream ended</source>
+            <translation>Fluxul s-a încheiat</translation>
         </message>
         <message>
-            <source>Keep this take or record it again.</source>
-            <translation>Păstrați această luare sau înregistrați-o din nou.</translation>
+            <source>Connecting</source>
+            <translation>Conectare</translation>
         </message>
         <message>
-            <source>Record again</source>
-            <translation>Înregistrați din nou</translation>
+            <source>Open screen stream</source>
+            <translation>Deschide fluxul de ecran</translation>
         </message>
         <message>
-            <source>Use recording</source>
-            <translation>Utilizați înregistrarea</translation>
+            <source>Screen stream</source>
+            <translation>Flux de ecran</translation>
         </message>
         <message>
-            <source>Recording progress</source>
-            <translation>Progresul înregistrării</translation>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
+        </message>
+    </context>
+    <context>
+        <name>ScreenShare</name>
+        <message>
+            <source>Allow screen recording in system settings.</source>
+            <translation>Permite înregistrarea ecranului în setările sistemului.</translation>
         </message>
         <message>
-            <source>Step %1 of %2</source>
-            <translation>Pasul %1 din %2</translation>
+            <source>The shared screen was removed. Select a source to start again.</source>
+            <translation>Ecranul partajat a fost eliminat. Selectați o sursă pentru a începe din nou.</translation>
         </message>
         <message>
-            <source>Open recordings</source>
-            <translation>Înregistrări deschise</translation>
+            <source>The shared window was closed. Select a source to start again.</source>
+            <translation>Fereastra partajată a fost închisă. Selectați o sursă pentru a începe din nou.</translation>
         </message>
         <message>
-            <source>Reset test</source>
-            <translation>Resetare test</translation>
+            <source>The selected screen is no longer available.</source>
+            <translation>Ecranul selectat nu mai este disponibil.</translation>
         </message>
         <message>
-            <source>%1 s remaining / %2 dBFS</source>
-            <translation>%1 s rămas / %2 dBFS</translation>
+            <source>The selected window is no longer available.</source>
+            <translation>Fereastra selectată nu mai este disponibilă.</translation>
+        </message>
+        <message>
+            <source>The selected source exceeds the capture size limit.</source>
+            <translation>Sursa selectată depășește limita de dimensiune a capturii.</translation>
+        </message>
+        <message>
+            <source>Close a video view before opening another stream.</source>
+            <translation>Închideți o vizualizare video înainte de a deschide un alt flux.</translation>
         </message>
     </context>
     <context>
@@ -2465,10 +2889,6 @@
             <translation>Se colectează semnal...</translation>
         </message>
         <message>
-            <source>Dashed curve: configured gain and frequency cuts, using the right dB scale. Noise reduction and voice activation are not part of this curve.</source>
-            <translation>Curbă întreruptă: amplificare configurată și reduceri de frecvență, folosind scala dB din dreapta. Reducerea zgomotului și activarea vocală nu fac parte din această curbă.</translation>
-        </message>
-        <message>
             <source>Microphone preview is not running</source>
             <translation>Previzualizarea microfonului nu rulează</translation>
         </message>
@@ -2479,303 +2899,6 @@
         <message>
             <source>Peak: %1</source>
             <translation>Vârf: %1</translation>
-        </message>
-    </context>
-    <context>
-        <name>Tray</name>
-        <message>
-            <source>Quit</source>
-            <translation>Renunță</translation>
-        </message>
-        <message>
-            <source>SquadSpeak - speaking</source>
-            <translation>SquadSpeak - vorbind</translation>
-        </message>
-        <message>
-            <source>Settings</source>
-            <translation>Setări</translation>
-        </message>
-        <message>
-            <source>Channels</source>
-            <translation>Canale</translation>
-        </message>
-        <message>
-            <source>New image</source>
-            <translation>Imagine nouă</translation>
-        </message>
-    </context>
-    <context>
-        <name>VoiceAvatar</name>
-        <message>
-            <source>Muted</source>
-            <translation>Microfon dezactivat</translation>
-        </message>
-        <message>
-            <source>Sleeping</source>
-            <translation>Dormit</translation>
-        </message>
-        <message>
-            <source>Offline</source>
-            <translation>Offline</translation>
-        </message>
-        <message>
-            <source>Speaking</source>
-            <translation>Vorbind</translation>
-        </message>
-        <message>
-            <source>Unavailable</source>
-            <translation>Indisponibil</translation>
-        </message>
-        <message>
-            <source>Listening</source>
-            <translation>Ascultarea</translation>
-        </message>
-        <message>
-            <source>Deafened</source>
-            <translation>Difuzoarele sunt dezactivate</translation>
-        </message>
-    </context>
-    <context>
-        <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>Indisponibil - setări audio sau test de ton</translation>
-        </message>
-        <message>
-            <source>Microphone muted</source>
-            <translation>Microfon dezactivat</translation>
-        </message>
-        <message>
-            <source>Push-to-talk held</source>
-            <translation>Apăsați pentru a vorbi menținut</translation>
-        </message>
-        <message>
-            <source>Ready - push-to-talk released</source>
-            <translation>Gata - apăsați și vorbiți eliberat</translation>
-        </message>
-        <message>
-            <source>Microphone unmuted</source>
-            <translation>Microfon activat</translation>
-        </message>
-        <message>
-            <source>Settings could not be saved: %1</source>
-            <translation>Setările nu au putut fi salvate: %1</translation>
-        </message>
-        <message>
-            <source>The push-to-talk sequence cannot be incremented further.</source>
-            <translation>Secvența push-to-talk nu mai poate fi mărită.</translation>
-        </message>
-        <message>
-            <source>Choose System, Light or Dark.</source>
-            <translation>Alegeți System, Light sau Dark.</translation>
-        </message>
-        <message>
-            <source>Choose a colour palette from the list.</source>
-            <translation>Alegeți o paletă de culori din listă.</translation>
-        </message>
-        <message>
-            <source>Choose an available avatar.</source>
-            <translation>Alegeți un avatar disponibil.</translation>
-        </message>
-        <message>
-            <source>Invalid push-to-talk binding.</source>
-            <translation>Legare apăsare și vorbire nevalidă.</translation>
-        </message>
-        <message>
-            <source>Release the held push-to-talk key first.</source>
-            <translation>Eliberați mai întâi tasta apăsare și vorbire.</translation>
-        </message>
-        <message>
-            <source>Choose a language from the list.</source>
-            <translation>Alegeți o limbă din listă.</translation>
-        </message>
-        <message>
-            <source>This avatar requires Supporter.</source>
-            <translation>Acest avatar necesită Supporter.</translation>
-        </message>
-        <message>
-            <source>The name must contain 1 to 64 characters.</source>
-            <translation>Numele trebuie să conțină între 1 și 64 de caractere.</translation>
-        </message>
-        <message>
-            <source>The name may not contain control characters or line breaks.</source>
-            <translation>Numele nu poate conține caractere de control sau întreruperi de linie.</translation>
-        </message>
-        <message>
-            <source>Session settings could not be read.</source>
-            <translation>Setările sesiunii nu au putut fi citite.</translation>
-        </message>
-        <message>
-            <source>Saved setting is invalid: %1</source>
-            <translation>Setare salvată nevalidă: %1</translation>
-        </message>
-    </context>
-    <context>
-        <name>License</name>
-        <message>
-            <source>License storage is busy or unavailable.</source>
-            <translation>Stocarea licenței este ocupată sau indisponibilă.</translation>
-        </message>
-        <message>
-            <source>License storage is unavailable.</source>
-            <translation>Stocarea licenței nu este disponibilă.</translation>
-        </message>
-        <message>
-            <source>Sign-in expired. Try again.</source>
-            <translation>Conectarea a expirat. Încearcă din nou.</translation>
-        </message>
-        <message>
-            <source>GitHub sign-in is unavailable. Try again.</source>
-            <translation>Conectarea la GitHub nu este disponibilă. Încearcă din nou.</translation>
-        </message>
-        <message>
-            <source>GitHub sign-in was not completed. Try again.</source>
-            <translation>Conectarea la GitHub nu a fost finalizată. Încearcă din nou.</translation>
-        </message>
-        <message>
-            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
-            <translation>GitHub nu a putut fi verificat. Accesul offline durează cel mult șapte zile.</translation>
-        </message>
-        <message>
-            <source>Sign in with GitHub again.</source>
-            <translation>Conectați-vă din nou cu GitHub.</translation>
-        </message>
-    </context>
-    <context>
-        <name>ScreenShare</name>
-        <message>
-            <source>The shared screen was removed. Select a source to start again.</source>
-            <translation>Ecranul partajat a fost eliminat. Selectați o sursă pentru a începe din nou.</translation>
-        </message>
-        <message>
-            <source>The shared window was closed. Select a source to start again.</source>
-            <translation>Fereastra partajată a fost închisă. Selectați o sursă pentru a începe din nou.</translation>
-        </message>
-        <message>
-            <source>The selected screen is no longer available.</source>
-            <translation>Ecranul selectat nu mai este disponibil.</translation>
-        </message>
-        <message>
-            <source>The selected window is no longer available.</source>
-            <translation>Fereastra selectată nu mai este disponibilă.</translation>
-        </message>
-        <message>
-            <source>The selected source exceeds the capture size limit.</source>
-            <translation>Sursa selectată depășește limita de dimensiune a capturii.</translation>
-        </message>
-        <message>
-            <source>Close a video view before opening another stream.</source>
-            <translation>Închideți o vizualizare video înainte de a deschide un alt flux.</translation>
-        </message>
-    </context>
-    <context>
-        <name>ScreenPanel</name>
-        <message>
-            <source>Media capacity reached</source>
-            <translation>Capacitate media atinsă</translation>
-        </message>
-        <message>
-            <source>Video paused</source>
-            <translation>Videoclipul a fost întrerupt</translation>
-        </message>
-        <message>
-            <source>Stream ended</source>
-            <translation>Fluxul s-a încheiat</translation>
-        </message>
-        <message>
-            <source>Connecting</source>
-            <translation>Conectare</translation>
-        </message>
-        <message>
-            <source>Open screen stream</source>
-            <translation>Deschide fluxul de ecran</translation>
-        </message>
-        <message>
-            <source>Screen stream</source>
-            <translation>Flux de ecran</translation>
-        </message>
-        <message>
-            <source>%1 kbit/s</source>
-            <translation>%1 kbit/s</translation>
-        </message>
-    </context>
-    <context>
-        <name>VideoCodec</name>
-        <message>
-            <source>Video codec: %1</source>
-            <translation>Codec video: %1</translation>
-        </message>
-        <message>
-            <source>Video codec ABI does not match its headers.</source>
-            <translation>ABI-ul codecului video nu corespunde fișierelor sale antet.</translation>
-        </message>
-        <message>
-            <source>Video buffers could not be allocated.</source>
-            <translation>Nu s-a putut aloca memorie pentru bufferele video.</translation>
-        </message>
-        <message>
-            <source>Invalid video quality tier.</source>
-            <translation>Nivel de calitate video nevalid.</translation>
-        </message>
-        <message>
-            <source>The screen source exceeds the supported capture size.</source>
-            <translation>Sursa ecranului depășește dimensiunea de captură acceptată.</translation>
-        </message>
-        <message>
-            <source>The screen source is too narrow.</source>
-            <translation>Sursa ecranului este prea îngustă.</translation>
-        </message>
-        <message>
-            <source>The video encoder could not be allocated.</source>
-            <translation>Nu s-a putut aloca memorie pentru codificatorul video.</translation>
-        </message>
-        <message>
-            <source>No supported video encoder is available.</source>
-            <translation>Nu este disponibil niciun codificator video acceptat.</translation>
-        </message>
-        <message>
-            <source>Video encoder configuration is too large.</source>
-            <translation>Configurația codificatorului video este prea mare.</translation>
-        </message>
-        <message>
-            <source>Video scaling could not be initialized.</source>
-            <translation>Nu s-a putut inițializa scalarea video.</translation>
-        </message>
-        <message>
-            <source>The encoder returned an empty video packet.</source>
-            <translation>Codificatorul a returnat un pachet video gol.</translation>
-        </message>
-        <message>
-            <source>Invalid video frame format.</source>
-            <translation>Format de cadru video nevalid.</translation>
-        </message>
-        <message>
-            <source>Invalid video decoder configuration.</source>
-            <translation>Configurație a decodificatorului video nevalidă.</translation>
-        </message>
-        <message>
-            <source>This video codec cannot be decoded.</source>
-            <translation>Acest codec video nu poate fi decodificat.</translation>
-        </message>
-        <message>
-            <source>Video decoder could not be allocated.</source>
-            <translation>Nu s-a putut aloca memorie pentru decodificatorul video.</translation>
-        </message>
-        <message>
-            <source>Video decoder configuration could not be allocated.</source>
-            <translation>Nu s-a putut aloca memorie pentru configurația decodificatorului video.</translation>
-        </message>
-        <message>
-            <source>Decoded dimensions do not match the screen stream.</source>
-            <translation>Dimensiunile decodificate nu corespund fluxului ecranului.</translation>
-        </message>
-        <message>
-            <source>Decoded image could not be allocated.</source>
-            <translation>Nu s-a putut aloca memorie pentru imaginea decodificată.</translation>
-        </message>
-        <message>
-            <source>Video color conversion could not be initialized.</source>
-            <translation>Nu s-a putut inițializa conversia culorilor video.</translation>
         </message>
     </context>
     <context>
@@ -2894,404 +3017,211 @@
         </message>
     </context>
     <context>
-        <name>Headless</name>
+        <name>Tray</name>
         <message>
-            <source>Command failed.</source>
-            <translation>Comanda a eșuat.</translation>
+            <source>Quit</source>
+            <translation>Renunță</translation>
         </message>
         <message>
-            <source>%1 must be an integer.</source>
-            <translation>%1 trebuie să fie un număr întreg.</translation>
+            <source>SquadSpeak - speaking</source>
+            <translation>SquadSpeak - vorbind</translation>
         </message>
         <message>
-            <source>Requests must be on/off or true/false.</source>
-            <translation>Solicitările trebuie să fie on/off sau true/false.</translation>
+            <source>Settings</source>
+            <translation>Setări</translation>
         </message>
         <message>
-            <source>Unknown host property: %1</source>
-            <translation>Proprietate necunoscută a gazdei: %1</translation>
+            <source>Channels</source>
+            <translation>Canale</translation>
         </message>
         <message>
-            <source>Run without GUI, microphone capture, or local audio output.</source>
-            <translation>Pornește fără interfață grafică, captură de microfon sau ieșire audio locală.</translation>
-        </message>
-        <message>
-            <source>Server storage prefix. Personal/audio/GUI profiles are not loaded.</source>
-            <translation>Prefix de stocare al serverului. Profilurile personale, audio și grafice nu sunt încărcate.</translation>
-        </message>
-        <message>
-            <source>Optional private identity file instead of the OS credential store (Linux/macOS). Parent directory must exist and belong to this account.</source>
-            <translation>Fișier privat de identitate opțional în locul depozitului de acreditări al sistemului (Linux/macOS). Directorul părinte trebuie să existe și să aparțină acestui cont.</translation>
-        </message>
-        <message>
-            <source>UTF-8 key=value properties or JSON host preset. Default: application.properties, then config/application.properties beside the app.</source>
-            <translation>Proprietăți key=value în UTF-8 sau configurație de gazdă JSON. Implicit: application.properties, apoi config/application.properties lângă aplicație.</translation>
-        </message>
-        <message>
-            <source>Channel display name.</source>
-            <translation>Numele afișat al canalului.</translation>
-        </message>
-        <message>
-            <source>System and radio bot display name.</source>
-            <translation>Numele afișat al botului comun pentru sistem și radio.</translation>
-        </message>
-        <message>
-            <source>TCP service port (1-65535).</source>
-            <translation>Portul serviciului TCP (1-65535).</translation>
-        </message>
-        <message>
-            <source>Headless admission is always on; only 'on' or 'true' is accepted.</source>
-            <translation>Admiterea fără interfață este mereu activă; se acceptă doar 'on' sau 'true'.</translation>
-        </message>
-        <message>
-            <source>Preapprove a device ID; repeat for several devices. Existing bans remain.</source>
-            <translation>Aprobă în avans un ID de dispozitiv; repetă pentru mai multe dispozitive. Blocările existente rămân.</translation>
-        </message>
-        <message>
-            <source>Block a device ID; repeat for several devices.</source>
-            <translation>Blochează un ID de dispozitiv; repetă pentru mai multe dispozitive.</translation>
-        </message>
-        <message>
-            <source>Read a UTF-8 channel password from a file before listening. An empty file removes it.</source>
-            <translation>Citește parola canalului dintr-un fișier UTF-8 înainte de a accepta conexiuni. Un fișier gol elimină parola.</translation>
-        </message>
-        <message>
-            <source>Channel password. Empty removes it; environment or config avoids process-list exposure.</source>
-            <translation>Parola canalului. O valoare goală o elimină; mediul sau configurația evită expunerea în lista proceselor.</translation>
-        </message>
-        <message>
-            <source>SquadSpeak headless local channel host</source>
-            <translation>Gazdă locală de canale SquadSpeak fără interfață</translation>
-        </message>
-        <message>
-            <source>Environment variables (SQUADSPEAK_ prefix):</source>
-            <translation>Variabile de mediu (prefix SQUADSPEAK_):</translation>
-        </message>
-        <message>
-            <source>Host configuration could not be read or exceeds 1 MiB.</source>
-            <translation>Configurația gazdei nu poate fi citită sau depășește 1 MiB.</translation>
-        </message>
-        <message>
-            <source>Host configuration must be UTF-8.</source>
-            <translation>Configurația gazdei trebuie să fie UTF-8.</translation>
-        </message>
-        <message>
-            <source>Host preset must be a JSON object.</source>
-            <translation>Configurația prestabilită a gazdei trebuie să fie un obiect JSON.</translation>
-        </message>
-        <message>
-            <source>Property line %1 must use key=value.</source>
-            <translation>Linia de proprietăți %1 trebuie să folosească key=value.</translation>
-        </message>
-        <message>
-            <source>Property line %1: %2</source>
-            <translation>Linia de proprietăți %1: %2</translation>
-        </message>
-        <message>
-            <source>Standard input has no file descriptor.</source>
-            <translation>Intrarea standard nu are descriptor de fișier.</translation>
-        </message>
-        <message>
-            <source>Standard input could not be inspected.</source>
-            <translation>Intrarea standard nu a putut fi inspectată.</translation>
-        </message>
-        <message>
-            <source>Could not write the command response: %1</source>
-            <translation>Răspunsul comenzii nu a putut fi scris: %1</translation>
-        </message>
-        <message>
-            <source>Standard input could not be read: %1</source>
-            <translation>Intrarea standard nu a putut fi citită: %1</translation>
-        </message>
-        <message>
-            <source>Input line exceeds 65536 bytes.</source>
-            <translation>Linia de intrare depășește 65536 de octeți.</translation>
-        </message>
-        <message>
-            <source>Each input line must be a JSON object.</source>
-            <translation>Fiecare linie de intrare trebuie să fie un obiect JSON.</translation>
-        </message>
-        <message>
-            <source>Input ended before a complete JSON line.</source>
-            <translation>Intrarea s-a încheiat înainte de completarea liniei JSON.</translation>
-        </message>
-        <message>
-            <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
-            <translation>ID opțional al unui canal propriu pentru comenzile status, configure, password, admission, history, chat și radio; implicit se folosește canalul principal.</translation>
-        </message>
-        <message>
-            <source>Channel action must be list, add or remove.</source>
-            <translation>Acțiunea canalului trebuie să fie list, add sau remove.</translation>
-        </message>
-        <message>
-            <source>Removing an own channel deletes its history, images, permissions and radio settings. Set confirmed=true to proceed.</source>
-            <translation>Eliminarea unui canal propriu șterge istoricul, imaginile, permisiunile și setările radio. Setează confirmed=true pentru a continua.</translation>
-        </message>
-        <message>
-            <source>id must identify an additional own channel.</source>
-            <translation>id trebuie să identifice un canal propriu suplimentar.</translation>
-        </message>
-        <message>
-            <source>The additional own channel could not be removed: %1</source>
-            <translation>Canalul propriu suplimentar nu a putut fi eliminat: %1</translation>
-        </message>
-        <message>
-            <source>channelId must identify an own channel.</source>
-            <translation>channelId trebuie să identifice un canal propriu.</translation>
-        </message>
-        <message>
-            <source>values must be a host settings object.</source>
-            <translation>values trebuie să fie un obiect de setări ale gazdei.</translation>
-        </message>
-        <message>
-            <source>Headless admission is always enabled for non-banned devices; requests off is not supported.</source>
-            <translation>Admiterea fără interfață este mereu activă pentru dispozitivele neblocate; requests off nu este acceptat.</translation>
-        </message>
-        <message>
-            <source>value must be a password of at most 1024 UTF-8 bytes without control characters; an empty string removes it.</source>
-            <translation>value trebuie să fie o parolă de cel mult 1024 de octeți UTF-8 fără caractere de control; un șir gol elimină parola.</translation>
-        </message>
-        <message>
-            <source>The channel is not ready or a password change is in progress.</source>
-            <translation>Canalul nu este pregătit sau se schimbă parola.</translation>
-        </message>
-        <message>
-            <source>The channel was removed while saving the password.</source>
-            <translation>Canalul a fost eliminat în timpul salvării parolei.</translation>
-        </message>
-        <message>
-            <source>id is required.</source>
-            <translation>id este necesar.</translation>
-        </message>
-        <message>
-            <source>text must be a valid non-empty chat message.</source>
-            <translation>text trebuie să fie un mesaj de chat valid și nevid.</translation>
-        </message>
-        <message>
-            <source>The local channel is not ready.</source>
-            <translation>Canalul local nu este pregătit.</translation>
-        </message>
-        <message>
-            <source>The channel's radio is unavailable.</source>
-            <translation>Radioul canalului nu este disponibil.</translation>
-        </message>
-        <message>
-            <source>Unknown command. Use help.</source>
-            <translation>Comandă necunoscută. Folosește help.</translation>
-        </message>
-        <message>
-            <source>search requires a query, non-negative offset and limit from 1 to 128.</source>
-            <translation>search necesită query, un offset nenegativ și un limit între 1 și 128.</translation>
-        </message>
-        <message>
-            <source>add creates an id; update requires an existing id.</source>
-            <translation>add creează un id; update necesită un id existent.</translation>
-        </message>
-        <message>
-            <source>A station is already being checked.</source>
-            <translation>Un post este deja în curs de verificare.</translation>
-        </message>
-        <message>
-            <source>The channel was removed while checking the station.</source>
-            <translation>Canalul a fost eliminat în timpul verificării postului.</translation>
-        </message>
-        <message>
-            <source>Unknown radio action.</source>
-            <translation>Acțiune radio necunoscută.</translation>
-        </message>
-        <message>
-            <source>Could not load language: %1</source>
-            <translation>Limba nu a putut fi încărcată: %1</translation>
-        </message>
-        <message>
-            <source>The %1 option is incompatible with --headless.</source>
-            <translation>Opțiunea %1 este incompatibilă cu --headless.</translation>
-        </message>
-        <message>
-            <source>Unexpected positional arguments. Use --help.</source>
-            <translation>Argumente poziționale neașteptate. Folosește --help.</translation>
-        </message>
-        <message>
-            <source>--config / -f requires a non-empty path.</source>
-            <translation>--config / -f necesită o cale nevidă.</translation>
-        </message>
-        <message>
-            <source>Choose --password or --password-file, not both.</source>
-            <translation>Alege --password sau --password-file, nu ambele.</translation>
-        </message>
-        <message>
-            <source>Choose SQUADSPEAK_PASSWORD or SQUADSPEAK_PASSWORD_FILE, not both.</source>
-            <translation>Alege SQUADSPEAK_PASSWORD sau SQUADSPEAK_PASSWORD_FILE, nu ambele.</translation>
-        </message>
-        <message>
-            <source>Choose password or passwordFile in one configuration layer, not both.</source>
-            <translation>Alege password sau passwordFile într-un singur nivel de configurare, nu ambele.</translation>
-        </message>
-        <message>
-            <source>passwordFile must be a non-empty path.</source>
-            <translation>passwordFile trebuie să fie o cale nevidă.</translation>
-        </message>
-        <message>
-            <source>Password file could not be read or is too large.</source>
-            <translation>Fișierul parolei nu a putut fi citit sau este prea mare.</translation>
-        </message>
-        <message>
-            <source>Password file must contain at most 1024 UTF-8 bytes without control characters.</source>
-            <translation>Fișierul parolei trebuie să conțină cel mult 1024 de octeți UTF-8 fără caractere de control.</translation>
-        </message>
-        <message>
-            <source>Password must be a string of at most 1024 UTF-8 bytes without control characters.</source>
-            <translation>Parola trebuie să fie un șir de cel mult 1024 de octeți UTF-8 fără caractere de control.</translation>
-        </message>
-        <message>
-            <source>settingsFile must be a non-empty path.</source>
-            <translation>settingsFile trebuie să fie o cale nevidă.</translation>
-        </message>
-        <message>
-            <source>identityFile must be a non-empty path.</source>
-            <translation>identityFile trebuie să fie o cale nevidă.</translation>
-        </message>
-        <message>
-            <source>The settings directory could not be created.</source>
-            <translation>Directorul setărilor nu a putut fi creat.</translation>
-        </message>
-        <message>
-            <source>This SquadSpeak profile is already running or cannot be locked.</source>
-            <translation>Acest profil SquadSpeak rulează deja sau nu poate fi blocat.</translation>
-        </message>
-        <message>
-            <source>Standard input could not be opened.</source>
-            <translation>Intrarea standard nu a putut fi deschisă.</translation>
-        </message>
-        <message>
-            <source>Standard output could not be opened.</source>
-            <translation>Ieșirea standard nu a putut fi deschisă.</translation>
-        </message>
-        <message>
-            <source>This identity file is already in use or cannot be locked.</source>
-            <translation>Acest fișier de identitate este deja folosit sau nu poate fi blocat.</translation>
-        </message>
-        <message>
-            <source>Invalid host configuration: %1</source>
-            <translation>Configurație nevalidă a gazdei: %1</translation>
-        </message>
-        <message>
-            <source>Radio channels could not be initialized.</source>
-            <translation>Canalele radio nu au putut fi inițializate.</translation>
-        </message>
-        <message>
-            <source>Headless host could not start: %1</source>
-            <translation>Gazda fără interfață nu a putut porni: %1</translation>
-        </message>
-        <message>
-            <source>Channel password could not be saved.</source>
-            <translation>Parola canalului nu a putut fi salvată.</translation>
-        </message>
-        <message>
-            <source>Invalid channel password: %1</source>
-            <translation>Parolă de canal nevalidă: %1</translation>
-        </message>
-        <message>
-            <source>Headless host could not initialize: %1</source>
-            <translation>Gazda fără interfață nu a putut fi inițializată: %1</translation>
-        </message>
-        <message>
-            <source>SquadSpeak headless could not start: %1</source>
-            <translation>SquadSpeak fără interfață nu a putut porni: %1</translation>
-        </message>
-        <message>
-            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
-            <translation>Acțiunea suporterului trebuie să fie stare, conectare, reîmprospătare, deconectare sau anulare. status sign-in refresh sign-out cancel</translation>
-        </message>
-        <message>
-            <source>A Supporter operation is in progress.</source>
-            <translation>O operațiune de suporter este în desfășurare.</translation>
-        </message>
-        <message>
-            <source>Supporter access is unavailable in this build.</source>
-            <translation>Accesul suporterului nu este disponibil în această versiune.</translation>
-        </message>
-        <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>Prioritatea setărilor: argumente &gt; mediu &gt; proprietăți &gt; valori salvate de server.</translation>
+            <source>New image</source>
+            <translation>Imagine nouă</translation>
         </message>
     </context>
     <context>
-        <name>Desktop</name>
+        <name>VideoCodec</name>
         <message>
-            <source>Open settings at startup.</source>
-            <translation>Deschide setările la pornire.</translation>
+            <source>Video codec: %1</source>
+            <translation>Codec video: %1</translation>
         </message>
         <message>
-            <source>Open guided local test recording without starting network services.</source>
-            <translation>Deschide înregistrarea locală de test ghidată fără a porni serviciile de rețea.</translation>
+            <source>Video codec ABI does not match its headers.</source>
+            <translation>ABI-ul codecului video nu corespunde fișierelor sale antet.</translation>
         </message>
         <message>
-            <source>Alternative file for audio profiles.</source>
-            <translation>Fișier alternativ pentru profilurile audio.</translation>
+            <source>Video buffers could not be allocated.</source>
+            <translation>Nu s-a putut aloca memorie pentru bufferele video.</translation>
         </message>
         <message>
-            <source>Load the interface without microphone capture and exit after one second.</source>
-            <translation>Încarcă interfața fără captură de la microfon și închide după o secundă.</translation>
+            <source>Invalid video quality tier.</source>
+            <translation>Nivel de calitate video nevalid.</translation>
         </message>
         <message>
-            <source>Save an image of the app window during the UI test.</source>
-            <translation>Salvează o imagine a ferestrei aplicației în timpul testului interfeței.</translation>
+            <source>The screen source exceeds the supported capture size.</source>
+            <translation>Sursa ecranului depășește dimensiunea de captură acceptată.</translation>
         </message>
         <message>
-            <source>The window image could not be saved.</source>
-            <translation>Imaginea ferestrei nu a putut fi salvată.</translation>
+            <source>The screen source is too narrow.</source>
+            <translation>Sursa ecranului este prea îngustă.</translation>
         </message>
         <message>
-            <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
-            <translation>Zona de notificare nu este disponibilă; aplicația rămâne deschisă într-o fereastră.</translation>
+            <source>The video encoder could not be allocated.</source>
+            <translation>Nu s-a putut aloca memorie pentru codificatorul video.</translation>
+        </message>
+        <message>
+            <source>No supported video encoder is available.</source>
+            <translation>Nu este disponibil niciun codificator video acceptat.</translation>
+        </message>
+        <message>
+            <source>Video encoder configuration is too large.</source>
+            <translation>Configurația codificatorului video este prea mare.</translation>
+        </message>
+        <message>
+            <source>Video scaling could not be initialized.</source>
+            <translation>Nu s-a putut inițializa scalarea video.</translation>
+        </message>
+        <message>
+            <source>The encoder returned an empty video packet.</source>
+            <translation>Codificatorul a returnat un pachet video gol.</translation>
+        </message>
+        <message>
+            <source>Invalid video frame format.</source>
+            <translation>Format de cadru video nevalid.</translation>
+        </message>
+        <message>
+            <source>Invalid video decoder configuration.</source>
+            <translation>Configurație a decodificatorului video nevalidă.</translation>
+        </message>
+        <message>
+            <source>This video codec cannot be decoded.</source>
+            <translation>Acest codec video nu poate fi decodificat.</translation>
+        </message>
+        <message>
+            <source>Video decoder could not be allocated.</source>
+            <translation>Nu s-a putut aloca memorie pentru decodificatorul video.</translation>
+        </message>
+        <message>
+            <source>Video decoder configuration could not be allocated.</source>
+            <translation>Nu s-a putut aloca memorie pentru configurația decodificatorului video.</translation>
+        </message>
+        <message>
+            <source>Decoded dimensions do not match the screen stream.</source>
+            <translation>Dimensiunile decodificate nu corespund fluxului ecranului.</translation>
+        </message>
+        <message>
+            <source>Decoded image could not be allocated.</source>
+            <translation>Nu s-a putut aloca memorie pentru imaginea decodificată.</translation>
+        </message>
+        <message>
+            <source>Video color conversion could not be initialized.</source>
+            <translation>Nu s-a putut inițializa conversia culorilor video.</translation>
         </message>
     </context>
     <context>
-        <name>LocalLanguage</name>
+        <name>VoiceAvatar</name>
         <message>
-            <source>Translation (experimental)</source>
-            <translation>Traducere (experimentală)</translation>
+            <source>Muted</source>
+            <translation>Microfon dezactivat</translation>
         </message>
         <message>
-            <source>Spoken language</source>
-            <translation>Limba vorbită</translation>
+            <source>Sleeping</source>
+            <translation>Dormit</translation>
         </message>
         <message>
-            <source>Translate to</source>
-            <translation>Tradu în</translation>
+            <source>Offline</source>
+            <translation>Offline</translation>
         </message>
         <message>
-            <source>Translate messages</source>
-            <translation>Tradu mesajele</translation>
+            <source>Speaking</source>
+            <translation>Vorbind</translation>
         </message>
         <message>
-            <source>Translated voice</source>
-            <translation>Voce tradusă</translation>
+            <source>Unavailable</source>
+            <translation>Indisponibil</translation>
         </message>
         <message>
-            <source>Original audio</source>
-            <translation>Audio original</translation>
+            <source>Listening</source>
+            <translation>Ascultarea</translation>
         </message>
         <message>
-            <source>Original text</source>
-            <translation>Text original</translation>
+            <source>Deafened</source>
+            <translation>Difuzoarele sunt dezactivate</translation>
+        </message>
+    </context>
+    <context>
+        <name>VoiceSession</name>
+        <message>
+            <source>Unavailable - audio settings or tone test</source>
+            <translation>Indisponibil - setări audio sau test de ton</translation>
         </message>
         <message>
-            <source>Prepare languages</source>
-            <translation>Pregătește limbile</translation>
+            <source>Microphone muted</source>
+            <translation>Microfon dezactivat</translation>
         </message>
         <message>
-            <source>Local language processing is unavailable.</source>
-            <translation>Procesarea locală a limbii nu este disponibilă.</translation>
+            <source>Push-to-talk held</source>
+            <translation>Apăsați pentru a vorbi menținut</translation>
         </message>
         <message>
-            <source>Language settings could not be read.</source>
-            <translation>Setările de limbă nu au putut fi citite.</translation>
+            <source>Ready - push-to-talk released</source>
+            <translation>Gata - apăsați și vorbiți eliberat</translation>
         </message>
         <message>
-            <source>Language settings could not be saved.</source>
-            <translation>Setările de limbă nu au putut fi salvate.</translation>
+            <source>Microphone unmuted</source>
+            <translation>Microfon activat</translation>
+        </message>
+        <message>
+            <source>Settings could not be saved: %1</source>
+            <translation>Setările nu au putut fi salvate: %1</translation>
+        </message>
+        <message>
+            <source>The push-to-talk sequence cannot be incremented further.</source>
+            <translation>Secvența push-to-talk nu mai poate fi mărită.</translation>
+        </message>
+        <message>
+            <source>Choose System, Light or Dark.</source>
+            <translation>Alegeți System, Light sau Dark.</translation>
+        </message>
+        <message>
+            <source>Choose a colour palette from the list.</source>
+            <translation>Alegeți o paletă de culori din listă.</translation>
+        </message>
+        <message>
+            <source>Choose an available avatar.</source>
+            <translation>Alegeți un avatar disponibil.</translation>
+        </message>
+        <message>
+            <source>Invalid push-to-talk binding.</source>
+            <translation>Legare apăsare și vorbire nevalidă.</translation>
+        </message>
+        <message>
+            <source>Release the held push-to-talk key first.</source>
+            <translation>Eliberați mai întâi tasta apăsare și vorbire.</translation>
+        </message>
+        <message>
+            <source>Choose a language from the list.</source>
+            <translation>Alegeți o limbă din listă.</translation>
+        </message>
+        <message>
+            <source>This avatar requires Supporter.</source>
+            <translation>Acest avatar necesită Supporter.</translation>
+        </message>
+        <message>
+            <source>The name must contain 1 to 64 characters.</source>
+            <translation>Numele trebuie să conțină între 1 și 64 de caractere.</translation>
+        </message>
+        <message>
+            <source>The name may not contain control characters or line breaks.</source>
+            <translation>Numele nu poate conține caractere de control sau întreruperi de linie.</translation>
+        </message>
+        <message>
+            <source>Session settings could not be read.</source>
+            <translation>Setările sesiunii nu au putut fi citite.</translation>
+        </message>
+        <message>
+            <source>Saved setting is invalid: %1</source>
+            <translation>Setare salvată nevalidă: %1</translation>
         </message>
     </context>
 </TS>

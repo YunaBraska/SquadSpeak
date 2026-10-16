@@ -36,14 +36,6 @@
             <translation>Avri ils parameters da la protecziun da datas da Voss sistem e concedis access al microfon a SquadSpeak.</translation>
         </message>
         <message>
-            <source>Microphone analysis active. Test audio stays on this computer.</source>
-            <translation>In'analisa activa per ils microfons. Il studio d'emprova resta sin quest computer.</translation>
-        </message>
-        <message>
-            <source>Finish the test recording before changing devices.</source>
-            <translation>Finescha la registraziun dals tests avant che midar l'apparat.</translation>
-        </message>
-        <message>
             <source>The output format is not supported.</source>
             <translation>Il quadrel d'emissiun na vegn betg sustegnì.</translation>
         </message>
@@ -68,32 +60,12 @@
             <translation>Il tun da test n'ha betg pudì vegnir reproducì.</translation>
         </message>
         <message>
-            <source>The microphone has provided no data for five seconds. Recording discarded.</source>
-            <translation>Il microfon n'ha furnì naginas datas durant tschintg secundas. La registraziun è vegnida sbittada.</translation>
-        </message>
-        <message>
-            <source>The microphone was interrupted or changed. Recording discarded.</source>
-            <translation>Il microfon è vegnì interrut u midà. Recepziun è vegnida sbittada.</translation>
-        </message>
-        <message>
-            <source>Cancelled. The incomplete recording was discarded.</source>
-            <translation>Interrutta. La registraziun incumpletta è vegnida sbittada.</translation>
-        </message>
-        <message>
             <source>No selected microphone is available</source>
             <translation>Nagin microfon tschernì n'è disponibel</translation>
         </message>
         <message>
             <source>Allow microphone access in the system dialog.</source>
             <translation>Permettai l'access da microfon en il dialog dal sistem.</translation>
-        </message>
-        <message>
-            <source>Microphone capture active for the voice channel.</source>
-            <translation>La registraziun da microfons activa per il chanal linguistic.</translation>
-        </message>
-        <message>
-            <source>Microphone access was denied. Nothing was saved.</source>
-            <translation>L'access da microfons è vegnì refusà. I n'è vegnì memorisà nagut.</translation>
         </message>
         <message>
             <source>Microphone access is missing. Allow it in System Settings.</source>
@@ -265,97 +237,6 @@
         </message>
     </context>
     <context>
-        <name>AudioRecording</name>
-        <message>
-            <source>Incomplete audio block. Recording discarded.</source>
-            <translation>Bloc da l' audio incumplet. Recepziun sbittada.</translation>
-        </message>
-        <message>
-            <source>Move about one meter from the microphone. Keep the background sound playing and read the sentence.</source>
-            <translation>As muventai circa in meter davent dal microfon. Laschai ir vinavant il sound davos e prelegi la frasa.</translation>
-        </message>
-        <message>
-            <source>Voice with background sound</source>
-            <translation>Vusch cun ramurs zuppadas</translation>
-        </message>
-        <message>
-            <source>The recordings folder could not be created.</source>
-            <translation>L'ordinatur per las registraziuns n'ha betg pudì vegnir fatg.</translation>
-        </message>
-        <message>
-            <source>You can stop the background sound now.</source>
-            <translation>Vus pudais ussa franar il sound davos.</translation>
-        </message>
-        <message>
-            <source>Recordings saved</source>
-            <translation>Registraziuns memorisadas</translation>
-        </message>
-        <message>
-            <source>The test recording could not be saved completely.</source>
-            <translation>La registraziun da las emprovas n'ha betg pudì vegnir memorisada cumplettamain.</translation>
-        </message>
-        <message>
-            <source>Keep music off and stay quiet. Start when ready.</source>
-            <translation>Stizzar la musica e restar calm. Cur che Vus essas pronts, cumenzais Vus.</translation>
-        </message>
-        <message>
-            <source>Your voice</source>
-            <translation>Vossa vusch</translation>
-        </message>
-        <message>
-            <source>Play music or another background sound at a normal volume. Stay quiet while recording.</source>
-            <translation>Sunai musica u in auter sound davos cun in volumen normal. Stai ruassaivel durant la registraziun.</translation>
-        </message>
-        <message>
-            <source>The test recording could not be created.</source>
-            <translation>La registraziun da las emprovas n'ha betg pudì vegnir fatga.</translation>
-        </message>
-        <message>
-            <source>Background sound</source>
-            <translation>Suns da fund</translation>
-        </message>
-        <message>
-            <source>The window is open. I can hear the rain outside. One, two, three, four, five.</source>
-            <translation>La fanestra è averta. Jau poss udir la plievgia dadora. In, dus, trais, quatter, tschintg.</translation>
-        </message>
-        <message>
-            <source>This microphone format is not supported for test recordings.</source>
-            <translation>Quest format da microfon na vegn betg sustegnì per registraziuns da tests.</translation>
-        </message>
-        <message>
-            <source>Keep the background volume unchanged. Read the sentence, then stop recording.</source>
-            <translation>Mantegnai la fermezza dal tun davos. Prelegi la frasa e finescha alura la registraziun.</translation>
-        </message>
-        <message>
-            <source>Record at least half a second, then try again.</source>
-            <translation>Prendai si almain ina mesa secunda ed empruvai alura anc ina giada.</translation>
-        </message>
-        <message>
-            <source>Sit at your usual distance. Read the sentence, then stop recording.</source>
-            <translation>As mettai en Vossa posiziun usitada. Prelegi la frasa e finescha alura la registraziun.</translation>
-        </message>
-        <message>
-            <source>The recording description could not be saved.</source>
-            <translation>Las datas d'admissiun n'han betg pudì vegnir arcunadas.</translation>
-        </message>
-        <message>
-            <source>The WAV file could not be finalized.</source>
-            <translation>La datoteca WAV n'ha betg pudì vegnir terminada.</translation>
-        </message>
-        <message>
-            <source>The WAV header could not be written.</source>
-            <translation>Il cader da WAV n'ha betg pudì vegnir scrit.</translation>
-        </message>
-        <message>
-            <source>Voice farther away</source>
-            <translation>Plinengiu la vusch</translation>
-        </message>
-        <message>
-            <source>Room sound</source>
-            <translation>Suns en il spazi</translation>
-        </message>
-    </context>
-    <context>
         <name>AudioSettings</name>
         <message>
             <source>Echo cancellation</source>
@@ -406,8 +287,8 @@
             <translation>Vossa reproducziun</translation>
         </message>
         <message>
-            <source>Clear local key</source>
-            <translation>Stizzar la cumbinaziun da tastas locala per push-to-talk</translation>
+            <source>Clear key</source>
+            <translation>Stizzar la tasta</translation>
         </message>
         <message>
             <source>Low cut</source>
@@ -428,10 +309,6 @@
         <message>
             <source>Cancel</source>
             <translation>Interrumper</translation>
-        </message>
-        <message>
-            <source>Guided recording</source>
-            <translation>Gestiun registrada</translation>
         </message>
         <message>
             <source>Clipping. Reduce microphone gain.</source>
@@ -466,16 +343,12 @@
             <translation>Separà l'apparat</translation>
         </message>
         <message>
-            <source>Local key</source>
-            <translation>Cumbinaziun da tastas locala per activar il modus da push-to-talk</translation>
+            <source>PTT key</source>
+            <translation>Tasta per discurrer</translation>
         </message>
         <message>
             <source>Voice activation</source>
             <translation>Activaziun cun la vusch</translation>
-        </message>
-        <message>
-            <source>Remote PTT key</source>
-            <translation>Cumbinaziun da tastas per utilisar a distanza il modus push-to-talk</translation>
         </message>
         <message>
             <source>Noise reduction</source>
@@ -492,10 +365,6 @@
         <message>
             <source>Microphone gain</source>
             <translation>Rinforzament dal microfon</translation>
-        </message>
-        <message>
-            <source>Clear remote key</source>
-            <translation>Stizzar la cumbinaziun da tastas per discurrer a distanza</translation>
         </message>
         <message>
             <source>Not assigned</source>
@@ -521,9 +390,81 @@
             <source>Read bot messages aloud</source>
             <translation>Leger ad auta vusch ils messadis dal bot</translation>
         </message>
+        <message>
+            <source>Download a high-quality voice for this language in macOS settings.</source>
+            <translation>Telechargia ina vusch d'auta qualitad per questa lingua en ils parameters da macOS.</translation>
+        </message>
+        <message>
+            <source>Bot voice</source>
+            <translation>Vusch dal bot</translation>
+        </message>
+        <message>
+            <source>Automatic</source>
+            <translation>Automaticamain</translation>
+        </message>
+        <message>
+            <source>Unavailable</source>
+            <translation>Betg disponibel</translation>
+        </message>
+        <message>
+            <source>Download voices in your device's Accessibility speech settings.</source>
+            <translation>Telechargia vuschs en ils parameters da discurrer sut Accessibilitad da tes apparat.</translation>
+        </message>
+        <message>
+            <source>Voice download help</source>
+            <translation>Agid per telechargiar vuschs</translation>
+        </message>
+        <message>
+            <source>Strength, not the percentage of echo removed.</source>
+            <translation>Intensitad, betg la procentuala da l'eco allontanà.</translation>
+        </message>
+        <message>
+            <source>Auto also checks for speech, not just volume.</source>
+            <translation>Il modus automatic examinescha er la lingua discurrida, betg mo il volumen.</translation>
+        </message>
     </context>
     <context>
         <name>Channels</name>
+        <message>
+            <source>Copy address</source>
+            <translation>Copiar l'adressa</translation>
+        </message>
+        <message>
+            <source>Messages</source>
+            <translation>Messadis</translation>
+        </message>
+        <message>
+            <source>Message</source>
+            <translation>Messadi</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Avrir</translation>
+        </message>
+        <message>
+            <source>Online</source>
+            <translation>Online</translation>
+        </message>
+        <message>
+            <source>Offline</source>
+            <translation>Offline</translation>
+        </message>
+        <message>
+            <source>No private messages</source>
+            <translation>Nagina messadis privats</translation>
+        </message>
+        <message>
+            <source>Private messages are unavailable for this contact.</source>
+            <translation>Messadis privats na stattan disponiblas per quest contact.</translation>
+        </message>
+        <message>
+            <source>If asked, allow local network access. You can change this in system settings.</source>
+            <translation>Sche ti vegn dumandà, permetta l'access a la rait locala. Ti pos midar quai en las configuraziuns dal sistem.</translation>
+        </message>
+        <message>
+            <source>Retry</source>
+            <translation>Empruvar anc ina giada</translation>
+        </message>
         <message>
             <source>Updates</source>
             <translation>Actualisaziuns</translation>
@@ -543,6 +484,10 @@
         <message>
             <source>DDNS cannot bypass CGNAT. If your provider shares the public IP, use a private VPN on all participating devices or a publicly reachable server.</source>
             <translation>Ils DNS na pon betg guntgir il CGNAT. Sche Voss provider parta l'adressa publica dad IP, utilisai in VPN privat sin tut ils apparats participads u sin in server accessibel publicamain.</translation>
+        </message>
+        <message>
+            <source>Remove server</source>
+            <translation>Allontanar il server</translation>
         </message>
         <message>
             <source>Low</source>
@@ -665,10 +610,6 @@
             <translation>Tuns d'infurmaziun</translation>
         </message>
         <message>
-            <source>Lifetime for new messages. Earlier messages keep their expiry.</source>
-            <translation>Durada da vita per novas novitads. Messadis pli vegls mantegnan lur vigur.</translation>
-        </message>
-        <message>
             <source>Enable speakers</source>
             <translation>Activar ils altpledaders</translation>
         </message>
@@ -703,10 +644,6 @@
         <message>
             <source>Allow device</source>
             <translation>Admetter l'apparat</translation>
-        </message>
-        <message>
-            <source>Receive quality: %1 kb/s per voice. Adjusts automatically for this device.</source>
-            <translation>qualitad da recepziun: %1 kb per vusch. Vegn el adattà automaticamain per quest apparat.</translation>
         </message>
         <message>
             <source>Stop radio</source>
@@ -1204,6 +1141,42 @@
             <source>Use default music volume</source>
             <translation>Utilisar il volumen da musica standard</translation>
         </message>
+        <message>
+            <source>Show in Dock</source>
+            <translation>Mussar en il Dock</translation>
+        </message>
+        <message>
+            <source>App language</source>
+            <translation>Lingua da l'app</translation>
+        </message>
+        <message>
+            <source>Send in</source>
+            <translation>Trametter en</translation>
+        </message>
+        <message>
+            <source>Hear in</source>
+            <translation>Tadlar en</translation>
+        </message>
+        <message>
+            <source>Download language models for %1 and %2?</source>
+            <translation>Telechargiar models da lingua per %1 e %2?</translation>
+        </message>
+        <message>
+            <source>Download</source>
+            <translation>Telechargiar</translation>
+        </message>
+        <message>
+            <source>PTT, chat and channel controls. Uses the controlled device's microphone.</source>
+            <translation>Controlls PTT, chat e chanals. Il microfon dal dispositiv controllà vegn utilisà.</translation>
+        </message>
+        <message>
+            <source>Connect the other device to one of your channels, then allow it here.</source>
+            <translation>Connecta l'auter dispositiv cun in da tes chanals e permetta el qua.</translation>
+        </message>
+        <message>
+            <source>On the other device, open Settings &gt; Input &gt; Remote control and allow this device.</source>
+            <translation>Sin l'auter dispositiv, avra Parameters &gt; Inoltraziun &gt; telecumond e permetta quest dispositiv.</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1420,7 +1393,396 @@
         </message>
     </context>
     <context>
+        <name>Desktop</name>
+        <message>
+            <source>Open settings at startup.</source>
+            <translation>Avrir las configuraziuns al cumenzament.</translation>
+        </message>
+        <message>
+            <source>Alternative file for audio profiles.</source>
+            <translation>Datoteca alternativa per profils audio.</translation>
+        </message>
+        <message>
+            <source>Load the interface without microphone capture and exit after one second.</source>
+            <translation>Chargiar l'interfatscha senza registrar il microfon e terminar suenter ina secunda.</translation>
+        </message>
+        <message>
+            <source>Save an image of the app window during the UI test.</source>
+            <translation>Memorisar in maletg da la fanestra da l'app durant il test da l'interfatscha.</translation>
+        </message>
+        <message>
+            <source>The window image could not be saved.</source>
+            <translation>Il maletg da la fanestra na pudeva betg vegnir memorisà.</translation>
+        </message>
+        <message>
+            <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
+            <translation>La zona da notificaziun n'è betg disponibla; l'app resta averta en ina fanestra.</translation>
+        </message>
+    </context>
+    <context>
+        <name>Headless</name>
+        <message>
+            <source>Host display name.</source>
+            <translation>Num visualisà dal host.</translation>
+        </message>
+        <message>
+            <source>Command failed.</source>
+            <translation>Il cumond n'è betg reussì.</translation>
+        </message>
+        <message>
+            <source>%1 must be an integer.</source>
+            <translation>%1 sto esser in dumber entir.</translation>
+        </message>
+        <message>
+            <source>Requests must be on/off or true/false.</source>
+            <translation>Las dumondas ston esser on/off u true/false.</translation>
+        </message>
+        <message>
+            <source>Unknown host property: %1</source>
+            <translation>Caracteristica nunenconuschenta dal host: %1</translation>
+        </message>
+        <message>
+            <source>Run without GUI, microphone capture, or local audio output.</source>
+            <translation>Aviar senza interfatscha grafica, registraziun dal microfon u sortida locala d'audio.</translation>
+        </message>
+        <message>
+            <source>Server storage prefix. Personal/audio/GUI profiles are not loaded.</source>
+            <translation>Prefix da memorisar dal server. Profils persunals, d'audio e da l'interfatscha na vegnan betg chargiads.</translation>
+        </message>
+        <message>
+            <source>Optional private identity file instead of the OS credential store (Linux/macOS). Parent directory must exist and belong to this account.</source>
+            <translation>Datoteca privata d'identitad opziunala enstagl dal deposit da datas d'access dal sistem (Linux/macOS). L'ordinatur surordinà sto existir ed appartegnair a quest conto.</translation>
+        </message>
+        <message>
+            <source>UTF-8 key=value properties or JSON host preset. Default: application.properties, then config/application.properties beside the app.</source>
+            <translation>Caracteristicas UTF-8 key=value u preconfiguraziun dal host en JSON. Standard: application.properties, lura config/application.properties sper l'app.</translation>
+        </message>
+        <message>
+            <source>Channel display name.</source>
+            <translation>Num mussà dal chanal.</translation>
+        </message>
+        <message>
+            <source>System and radio bot display name.</source>
+            <translation>Num mussà dal bot dal sistem e dal radio.</translation>
+        </message>
+        <message>
+            <source>TCP service port (1-65535).</source>
+            <translation>Port TCP dal servetsch (1-65535).</translation>
+        </message>
+        <message>
+            <source>Headless admission is always on; only 'on' or 'true' is accepted.</source>
+            <translation>L'admissiun senza interfatscha grafica è adina activa; mo 'on' u 'true' vegn acceptà.</translation>
+        </message>
+        <message>
+            <source>Preapprove a device ID; repeat for several devices. Existing bans remain.</source>
+            <translation>Approvar ordavant ina ID d'apparat; repeter per plirs apparats. Bloccadas existentas restan.</translation>
+        </message>
+        <message>
+            <source>Block a device ID; repeat for several devices.</source>
+            <translation>Bloccar ina ID d'apparat; repeter per plirs apparats.</translation>
+        </message>
+        <message>
+            <source>Read a UTF-8 channel password from a file before listening. An empty file removes it.</source>
+            <translation>Leger in pled-clav UTF-8 dal chanal or d'ina datoteca avant da cumenzar a tadlar. Ina datoteca vida al allontanescha.</translation>
+        </message>
+        <message>
+            <source>Channel password. Empty removes it; environment or config avoids process-list exposure.</source>
+            <translation>Pled-clav dal chanal. Ina valur vida al allontanescha; l'ambient u la configuraziun eviteschan ch'el cumpara en la glista da process.</translation>
+        </message>
+        <message>
+            <source>SquadSpeak headless local channel host</source>
+            <translation>Host local da chanals SquadSpeak senza interfatscha grafica</translation>
+        </message>
+        <message>
+            <source>Environment variables (SQUADSPEAK_ prefix):</source>
+            <translation>Variablas d'ambient (prefix SQUADSPEAK_):</translation>
+        </message>
+        <message>
+            <source>Host configuration could not be read or exceeds 1 MiB.</source>
+            <translation>Impussibel da leger la configuraziun dal host, u ella surpassa 1 MiB.</translation>
+        </message>
+        <message>
+            <source>Host configuration must be UTF-8.</source>
+            <translation>La configuraziun dal host sto esser UTF-8.</translation>
+        </message>
+        <message>
+            <source>Host preset must be a JSON object.</source>
+            <translation>La preconfiguraziun dal host sto esser in object JSON.</translation>
+        </message>
+        <message>
+            <source>Property line %1 must use key=value.</source>
+            <translation>La lingia da caracteristicas %1 sto duvrar key=value.</translation>
+        </message>
+        <message>
+            <source>Property line %1: %2</source>
+            <translation>Lingia da caracteristicas %1: %2</translation>
+        </message>
+        <message>
+            <source>Standard input has no file descriptor.</source>
+            <translation>L'entrada standard n'ha nagin descriptur da datoteca.</translation>
+        </message>
+        <message>
+            <source>Standard input could not be inspected.</source>
+            <translation>Impussibel d'examinar l'entrada standard.</translation>
+        </message>
+        <message>
+            <source>Could not write the command response: %1</source>
+            <translation>Impussibel da scriver la resposta dal cumond: %1</translation>
+        </message>
+        <message>
+            <source>Standard input could not be read: %1</source>
+            <translation>Impussibel da leger l'entrada standard: %1</translation>
+        </message>
+        <message>
+            <source>Input line exceeds 65536 bytes.</source>
+            <translation>La lingia d'entrada surpassa 65536 bytes.</translation>
+        </message>
+        <message>
+            <source>Each input line must be a JSON object.</source>
+            <translation>Mintga lingia d'entrada sto esser in object JSON.</translation>
+        </message>
+        <message>
+            <source>Input ended before a complete JSON line.</source>
+            <translation>L'entrada è terminada avant ina lingia JSON cumpletta.</translation>
+        </message>
+        <message>
+            <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
+            <translation>ID opziunala d'in agen chanal per ils cumonds status, configure, password, admission, history, chat e radio; il standard è il chanal principal.</translation>
+        </message>
+        <message>
+            <source>Channel action must be list, add or remove.</source>
+            <translation>L'acziun dal chanal sto esser list, add u remove.</translation>
+        </message>
+        <message>
+            <source>Removing an own channel deletes its history, images, permissions and radio settings. Set confirmed=true to proceed.</source>
+            <translation>Allontanar in agen chanal stizza sia cronologia, maletgs, permissiuns e configuraziuns dal radio. Metta confirmed=true per cuntinuar.</translation>
+        </message>
+        <message>
+            <source>id must identify an additional own channel.</source>
+            <translation>id sto identifitgar in agen chanal supplementar.</translation>
+        </message>
+        <message>
+            <source>The additional own channel could not be removed: %1</source>
+            <translation>Impussibel d'allontanar l'agen chanal supplementar: %1</translation>
+        </message>
+        <message>
+            <source>channelId must identify an own channel.</source>
+            <translation>channelId sto identifitgar in agen chanal.</translation>
+        </message>
+        <message>
+            <source>values must be a host settings object.</source>
+            <translation>values sto esser in object cun configuraziuns dal host.</translation>
+        </message>
+        <message>
+            <source>Headless admission is always enabled for non-banned devices; requests off is not supported.</source>
+            <translation>L'admissiun senza interfatscha grafica è adina activa per apparats betg bloccads; requests off n'è betg sustegnì.</translation>
+        </message>
+        <message>
+            <source>value must be a password of at most 1024 UTF-8 bytes without control characters; an empty string removes it.</source>
+            <translation>value sto esser in pled-clav da maximalmain 1024 bytes UTF-8 senza caracters da controlla; ina chadaina vida al allontanescha.</translation>
+        </message>
+        <message>
+            <source>The channel is not ready or a password change is in progress.</source>
+            <translation>Il chanal n'è betg pront u ina midada dal pled-clav è en curs.</translation>
+        </message>
+        <message>
+            <source>The channel was removed while saving the password.</source>
+            <translation>Il chanal è vegnì allontanà durant memorisar il pled-clav.</translation>
+        </message>
+        <message>
+            <source>id is required.</source>
+            <translation>id è necessari.</translation>
+        </message>
+        <message>
+            <source>text must be a valid non-empty chat message.</source>
+            <translation>text sto esser in messadi da chat valid e betg vid.</translation>
+        </message>
+        <message>
+            <source>The local channel is not ready.</source>
+            <translation>Il chanal local n'è betg pront.</translation>
+        </message>
+        <message>
+            <source>The channel's radio is unavailable.</source>
+            <translation>Il radio dal chanal n'è betg disponibel.</translation>
+        </message>
+        <message>
+            <source>Unknown command. Use help.</source>
+            <translation>Cumond nunenconuschent. Dovra help.</translation>
+        </message>
+        <message>
+            <source>search requires a query, non-negative offset and limit from 1 to 128.</source>
+            <translation>search dovra query, in offset betg negativ ed in limit da 1 fin 128.</translation>
+        </message>
+        <message>
+            <source>add creates an id; update requires an existing id.</source>
+            <translation>add creescha in id; update dovra in id existent.</translation>
+        </message>
+        <message>
+            <source>A station is already being checked.</source>
+            <translation>Ina staziun vegn gia controllada.</translation>
+        </message>
+        <message>
+            <source>The channel was removed while checking the station.</source>
+            <translation>Il chanal è vegnì allontanà durant controllar la staziun.</translation>
+        </message>
+        <message>
+            <source>Unknown radio action.</source>
+            <translation>Acziun da radio nunenconuschenta.</translation>
+        </message>
+        <message>
+            <source>Could not load language: %1</source>
+            <translation>Impussibel da chargiar la lingua: %1</translation>
+        </message>
+        <message>
+            <source>The %1 option is incompatible with --headless.</source>
+            <translation>L'opziun %1 n'è betg cumpatibla cun --headless.</translation>
+        </message>
+        <message>
+            <source>Unexpected positional arguments. Use --help.</source>
+            <translation>Arguments posiziunals nunspetgads. Dovra --help.</translation>
+        </message>
+        <message>
+            <source>--config / -f requires a non-empty path.</source>
+            <translation>--config / -f dovra ina senda betg vida.</translation>
+        </message>
+        <message>
+            <source>Choose --password or --password-file, not both.</source>
+            <translation>Tscherna --password u --password-file, betg omadus.</translation>
+        </message>
+        <message>
+            <source>Choose SQUADSPEAK_PASSWORD or SQUADSPEAK_PASSWORD_FILE, not both.</source>
+            <translation>Tscherna SQUADSPEAK_PASSWORD u SQUADSPEAK_PASSWORD_FILE, betg omadus.</translation>
+        </message>
+        <message>
+            <source>Choose password or passwordFile in one configuration layer, not both.</source>
+            <translation>Tscherna password u passwordFile en ina stresa da configuraziun, betg omadus.</translation>
+        </message>
+        <message>
+            <source>passwordFile must be a non-empty path.</source>
+            <translation>passwordFile sto esser ina senda betg vida.</translation>
+        </message>
+        <message>
+            <source>Password file could not be read or is too large.</source>
+            <translation>Impussibel da leger la datoteca dal pled-clav, u ella è memia gronda.</translation>
+        </message>
+        <message>
+            <source>Password file must contain at most 1024 UTF-8 bytes without control characters.</source>
+            <translation>La datoteca dal pled-clav dastga cuntegnair maximalmain 1024 bytes UTF-8 senza caracters da controlla.</translation>
+        </message>
+        <message>
+            <source>Password must be a string of at most 1024 UTF-8 bytes without control characters.</source>
+            <translation>Il pled-clav sto esser ina chadaina da maximalmain 1024 bytes UTF-8 senza caracters da controlla.</translation>
+        </message>
+        <message>
+            <source>settingsFile must be a non-empty path.</source>
+            <translation>settingsFile sto esser ina senda betg vida.</translation>
+        </message>
+        <message>
+            <source>identityFile must be a non-empty path.</source>
+            <translation>identityFile sto esser ina senda betg vida.</translation>
+        </message>
+        <message>
+            <source>The settings directory could not be created.</source>
+            <translation>Impussibel da crear l'ordinatur da configuraziuns.</translation>
+        </message>
+        <message>
+            <source>This SquadSpeak profile is already running or cannot be locked.</source>
+            <translation>Quest profil SquadSpeak è gia en funcziun u na po betg vegnir serrà.</translation>
+        </message>
+        <message>
+            <source>Standard input could not be opened.</source>
+            <translation>Impussibel d'avrir l'entrada standard.</translation>
+        </message>
+        <message>
+            <source>Standard output could not be opened.</source>
+            <translation>Impussibel d'avrir la sortida standard.</translation>
+        </message>
+        <message>
+            <source>This identity file is already in use or cannot be locked.</source>
+            <translation>Questa datoteca d'identitad è gia en diever u na po betg vegnir serrada.</translation>
+        </message>
+        <message>
+            <source>Invalid host configuration: %1</source>
+            <translation>Configuraziun dal host nunvalida: %1</translation>
+        </message>
+        <message>
+            <source>Radio channels could not be initialized.</source>
+            <translation>Impussibel d'inizialisar ils chanals da radio.</translation>
+        </message>
+        <message>
+            <source>Headless host could not start: %1</source>
+            <translation>Impussibel d'aviar il host senza interfatscha grafica: %1</translation>
+        </message>
+        <message>
+            <source>Channel password could not be saved.</source>
+            <translation>Impussibel da memorisar il pled-clav dal chanal.</translation>
+        </message>
+        <message>
+            <source>Invalid channel password: %1</source>
+            <translation>Pled-clav dal chanal nunvalid: %1</translation>
+        </message>
+        <message>
+            <source>Headless host could not initialize: %1</source>
+            <translation>Impussibel d'inizialisar il host senza interfatscha grafica: %1</translation>
+        </message>
+        <message>
+            <source>SquadSpeak headless could not start: %1</source>
+            <translation>Impussibel d'aviar SquadSpeak senza interfatscha grafica: %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>L'acziun Supporter sto esser status, sign-in, refresh, sign-out u cancel.</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>Ina operaziun Supporter è en curs.</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>L'access Supporter n'è betg disponibel en questa versiun.</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</translation>
+        </message>
+    </context>
+    <context>
+        <name>License</name>
+        <message>
+            <source>License storage is busy or unavailable.</source>
+            <translation>La memoria Supporter è occupada u indisponibla.</translation>
+        </message>
+        <message>
+            <source>License storage is unavailable.</source>
+            <translation>La memoria Supporter è indisponibla.</translation>
+        </message>
+        <message>
+            <source>Sign-in expired. Try again.</source>
+            <translation>La sessiun d'annunziar è scadida. Emprova anc ina giada.</translation>
+        </message>
+        <message>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>L'annunziaziun cun GitHub è indisponibla. Emprova anc ina giada.</translation>
+        </message>
+        <message>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>L'annunziaziun cun GitHub n'è betg vegnida terminada. Emprova anc ina giada.</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>GitHub n'ha betg pudì vegnir controllà. L'access offline dura maximalmain set dis.</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>Annunzia-ti anc ina giada cun GitHub.</translation>
+        </message>
+    </context>
+    <context>
         <name>LocalChannel</name>
+        <message>
+            <source>Blocked</source>
+            <translation>Bloccà</translation>
+        </message>
         <message>
             <source>Host is not responding. Reconnecting.</source>
             <translation>Il giast na respunda betg. I vegn empruvà da recolliar.</translation>
@@ -2205,6 +2567,53 @@
             <source>Voice relay codec could not be configured.</source>
             <translation>Il codec per transmetter la vusch na po betg vegnir configurà.</translation>
         </message>
+        <message>
+            <source>Unsupported audio codec</source>
+            <translation>Codec audio betg sustegnì</translation>
+        </message>
+        <message>
+            <source>Speaking is not allowed in this channel.</source>
+            <translation>En quest chanal na dastgas ti betg discurrer.</translation>
+        </message>
+    </context>
+    <context>
+        <name>LocalLanguage</name>
+        <message>
+            <source>Translation (experimental)</source>
+            <translation>Translaziun (experimentala)</translation>
+        </message>
+        <message>
+            <source>Translate messages</source>
+            <translation>Translatar messadis</translation>
+        </message>
+        <message>
+            <source>Translated voice</source>
+            <translation>Vusch translatada</translation>
+        </message>
+        <message>
+            <source>Original audio</source>
+            <translation>Audio original</translation>
+        </message>
+        <message>
+            <source>Original text</source>
+            <translation>Text original</translation>
+        </message>
+        <message>
+            <source>Prepare languages</source>
+            <translation>Preparar linguas</translation>
+        </message>
+        <message>
+            <source>Local language processing is unavailable.</source>
+            <translation>L'elavuraziun locala da linguas n'è betg disponibla.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be read.</source>
+            <translation>Las configuraziuns da lingua na pon betg vegnir legidas.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be saved.</source>
+            <translation>Las configuraziuns da lingua na pon betg vegnir memorisadas.</translation>
+        </message>
     </context>
     <context>
         <name>PushToTalkKey</name>
@@ -2345,50 +2754,65 @@
         </message>
     </context>
     <context>
-        <name>RecordingPanel</name>
+        <name>ScreenPanel</name>
         <message>
-            <source>Stop</source>
-            <translation>Stop</translation>
+            <source>Media capacity reached</source>
+            <translation>L'arcun da medias è plain</translation>
         </message>
         <message>
-            <source>Start</source>
-            <translation>Cumenzament</translation>
+            <source>Video paused</source>
+            <translation>Video Pausa</translation>
         </message>
         <message>
-            <source>Saved on this device only. Nothing is uploaded.</source>
-            <translation>Arcunà mo sin quest apparat. I na vegn chargià si nagut.</translation>
+            <source>Stream ended</source>
+            <translation>Terminà il Stream</translation>
         </message>
         <message>
-            <source>Keep this take or record it again.</source>
-            <translation>Mantegnai questa registraziun u reprendai ella anc ina giada.</translation>
+            <source>Connecting</source>
+            <translation>Colliaziun</translation>
         </message>
         <message>
-            <source>Record again</source>
-            <translation>Recepziun</translation>
+            <source>Open screen stream</source>
+            <translation>Avrir il stream dal monitur</translation>
         </message>
         <message>
-            <source>Use recording</source>
-            <translation>Utilisar l'inscripziun</translation>
+            <source>Screen stream</source>
+            <translation>Screenstream</translation>
         </message>
         <message>
-            <source>Recording progress</source>
-            <translation>Registrar il progress</translation>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
+        </message>
+    </context>
+    <context>
+        <name>ScreenShare</name>
+        <message>
+            <source>Allow screen recording in system settings.</source>
+            <translation>Permetta la registraziun dal visur en las configuraziuns dal sistem.</translation>
         </message>
         <message>
-            <source>Step %1 of %2</source>
-            <translation>pass %1 da %2</translation>
+            <source>The shared screen was removed. Select a source to start again.</source>
+            <translation>Il visur dividì è vegnì allontanà. Tscherni ina funtauna per cumenzar da nov.</translation>
         </message>
         <message>
-            <source>Open recordings</source>
-            <translation>Recepziuns avertas</translation>
+            <source>The shared window was closed. Select a source to start again.</source>
+            <translation>La fanestra cuminaivla è vegnida serrada. Tscherni ina funtauna per cumenzar da nov.</translation>
         </message>
         <message>
-            <source>Reset test</source>
-            <translation>Reiniziar il test</translation>
+            <source>The selected screen is no longer available.</source>
+            <translation>Il monitur tschernì na stat betg pli a disposiziun.</translation>
         </message>
         <message>
-            <source>%1 s remaining / %2 dBFS</source>
-            <translation>%1 s restant / %2 dBFS</translation>
+            <source>The selected window is no longer available.</source>
+            <translation>La fanestra tschernida na stat betg pli a disposiziun.</translation>
+        </message>
+        <message>
+            <source>The selected source exceeds the capture size limit.</source>
+            <translation>La funtauna tschernida surpassa la grondezza maximala per l'admissiun.</translation>
+        </message>
+        <message>
+            <source>Close a video view before opening another stream.</source>
+            <translation>Serra ina vista da video avant che avrir in auter stream.</translation>
         </message>
     </context>
     <context>
@@ -2465,10 +2889,6 @@
             <translation>Recepì il signal...</translation>
         </message>
         <message>
-            <source>Dashed curve: configured gain and frequency cuts, using the right dB scale. Noise reduction and voice activation are not part of this curve.</source>
-            <translation>Curva stritgada: rinforzament configurà e tagls da frequenza, cun la scala dB a dretga. La suppressiun da ramurs e l'activaziun cun la vusch na fan betg part da questa curva.</translation>
-        </message>
-        <message>
             <source>Microphone preview is not running</source>
             <translation>La prevista davart il microfon na va betg</translation>
         </message>
@@ -2479,303 +2899,6 @@
         <message>
             <source>Peak: %1</source>
             <translation>piz: %1</translation>
-        </message>
-    </context>
-    <context>
-        <name>Tray</name>
-        <message>
-            <source>Quit</source>
-            <translation>Chalar</translation>
-        </message>
-        <message>
-            <source>SquadSpeak - speaking</source>
-            <translation>SquadSpeak - Discurrer</translation>
-        </message>
-        <message>
-            <source>Settings</source>
-            <translation>Parameters</translation>
-        </message>
-        <message>
-            <source>Channels</source>
-            <translation>Canals</translation>
-        </message>
-        <message>
-            <source>New image</source>
-            <translation>Nov maletg</translation>
-        </message>
-    </context>
-    <context>
-        <name>VoiceAvatar</name>
-        <message>
-            <source>Muted</source>
-            <translation>il microfon è serrà</translation>
-        </message>
-        <message>
-            <source>Sleeping</source>
-            <translation>Durmir</translation>
-        </message>
-        <message>
-            <source>Offline</source>
-            <translation>Offline</translation>
-        </message>
-        <message>
-            <source>Speaking</source>
-            <translation>Discurrer</translation>
-        </message>
-        <message>
-            <source>Unavailable</source>
-            <translation>Betg disponibel</translation>
-        </message>
-        <message>
-            <source>Listening</source>
-            <translation>Tadlar</translation>
-        </message>
-        <message>
-            <source>Deafened</source>
-            <translation>Ils altpledaders èn stizzads</translation>
-        </message>
-    </context>
-    <context>
-        <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>Betg disponibel - parameters d'audio u prova da tun</translation>
-        </message>
-        <message>
-            <source>Microphone muted</source>
-            <translation>Il microfon è stizzà</translation>
-        </message>
-        <message>
-            <source>Push-to-talk held</source>
-            <translation>La tasta push-to-talk è tegnida premida</translation>
-        </message>
-        <message>
-            <source>Ready - push-to-talk released</source>
-            <translation>Pront - la tasta push-to-talk è vegnida laschada libra</translation>
-        </message>
-        <message>
-            <source>Microphone unmuted</source>
-            <translation>Il microfon è activà</translation>
-        </message>
-        <message>
-            <source>Settings could not be saved: %1</source>
-            <translation>Las parameters n'han betg pudì vegnir memorisadas: %1</translation>
-        </message>
-        <message>
-            <source>The push-to-talk sequence cannot be incremented further.</source>
-            <translation>La sequenza da push-to-talk na po betg vegnir cementada vinavant.</translation>
-        </message>
-        <message>
-            <source>Choose System, Light or Dark.</source>
-            <translation>Tscherna sistem, cler u stgir.</translation>
-        </message>
-        <message>
-            <source>Choose a colour palette from the list.</source>
-            <translation>Tscherna ina paletta da colur or da la glista.</translation>
-        </message>
-        <message>
-            <source>Choose an available avatar.</source>
-            <translation>Tscherna in maletg d' Avatar disponibel.</translation>
-        </message>
-        <message>
-            <source>Invalid push-to-talk binding.</source>
-            <translation>liadira da push-toalk nunvalaivla.</translation>
-        </message>
-        <message>
-            <source>Release the held push-to-talk key first.</source>
-            <translation>Laschai liber sco emprim la tasta da discurrer stampada.</translation>
-        </message>
-        <message>
-            <source>Choose a language from the list.</source>
-            <translation>Tscherna ina lingua or da la glista.</translation>
-        </message>
-        <message>
-            <source>This avatar requires Supporter.</source>
-            <translation>Quest avatar dovra Supporter.</translation>
-        </message>
-        <message>
-            <source>The name must contain 1 to 64 characters.</source>
-            <translation>Il num sto cuntegnair 1 fin 64 segns.</translation>
-        </message>
-        <message>
-            <source>The name may not contain control characters or line breaks.</source>
-            <translation>Il num na dastga cuntegnair nagins segns da taglia u naginas interrupziuns da lingias.</translation>
-        </message>
-        <message>
-            <source>Session settings could not be read.</source>
-            <translation>Las configuraziuns da la sessiun na pudevan betg vegnir legidas.</translation>
-        </message>
-        <message>
-            <source>Saved setting is invalid: %1</source>
-            <translation>Configuraziun memorisada nunvalida: %1</translation>
-        </message>
-    </context>
-    <context>
-        <name>License</name>
-        <message>
-            <source>License storage is busy or unavailable.</source>
-            <translation>La memoria Supporter è occupada u indisponibla.</translation>
-        </message>
-        <message>
-            <source>License storage is unavailable.</source>
-            <translation>La memoria Supporter è indisponibla.</translation>
-        </message>
-        <message>
-            <source>Sign-in expired. Try again.</source>
-            <translation>La sessiun d'annunziar è scadida. Emprova anc ina giada.</translation>
-        </message>
-        <message>
-            <source>GitHub sign-in is unavailable. Try again.</source>
-            <translation>L'annunziaziun cun GitHub è indisponibla. Emprova anc ina giada.</translation>
-        </message>
-        <message>
-            <source>GitHub sign-in was not completed. Try again.</source>
-            <translation>L'annunziaziun cun GitHub n'è betg vegnida terminada. Emprova anc ina giada.</translation>
-        </message>
-        <message>
-            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
-            <translation>GitHub n'ha betg pudì vegnir controllà. L'access offline dura maximalmain set dis.</translation>
-        </message>
-        <message>
-            <source>Sign in with GitHub again.</source>
-            <translation>Annunzia-ti anc ina giada cun GitHub.</translation>
-        </message>
-    </context>
-    <context>
-        <name>ScreenShare</name>
-        <message>
-            <source>The shared screen was removed. Select a source to start again.</source>
-            <translation>Il visur dividì è vegnì allontanà. Tscherni ina funtauna per cumenzar da nov.</translation>
-        </message>
-        <message>
-            <source>The shared window was closed. Select a source to start again.</source>
-            <translation>La fanestra cuminaivla è vegnida serrada. Tscherni ina funtauna per cumenzar da nov.</translation>
-        </message>
-        <message>
-            <source>The selected screen is no longer available.</source>
-            <translation>Il monitur tschernì na stat betg pli a disposiziun.</translation>
-        </message>
-        <message>
-            <source>The selected window is no longer available.</source>
-            <translation>La fanestra tschernida na stat betg pli a disposiziun.</translation>
-        </message>
-        <message>
-            <source>The selected source exceeds the capture size limit.</source>
-            <translation>La funtauna tschernida surpassa la grondezza maximala per l'admissiun.</translation>
-        </message>
-        <message>
-            <source>Close a video view before opening another stream.</source>
-            <translation>Serra ina vista da video avant che avrir in auter stream.</translation>
-        </message>
-    </context>
-    <context>
-        <name>ScreenPanel</name>
-        <message>
-            <source>Media capacity reached</source>
-            <translation>L'arcun da medias è plain</translation>
-        </message>
-        <message>
-            <source>Video paused</source>
-            <translation>Video Pausa</translation>
-        </message>
-        <message>
-            <source>Stream ended</source>
-            <translation>Terminà il Stream</translation>
-        </message>
-        <message>
-            <source>Connecting</source>
-            <translation>Colliaziun</translation>
-        </message>
-        <message>
-            <source>Open screen stream</source>
-            <translation>Avrir il stream dal monitur</translation>
-        </message>
-        <message>
-            <source>Screen stream</source>
-            <translation>Screenstream</translation>
-        </message>
-        <message>
-            <source>%1 kbit/s</source>
-            <translation>%1 kbit/s</translation>
-        </message>
-    </context>
-    <context>
-        <name>VideoCodec</name>
-        <message>
-            <source>Video codec: %1</source>
-            <translation>Codec da video: %1</translation>
-        </message>
-        <message>
-            <source>Video codec ABI does not match its headers.</source>
-            <translation>L'ABI dal codec da video na correspunda betg a sias datotecas da chau.</translation>
-        </message>
-        <message>
-            <source>Video buffers could not be allocated.</source>
-            <translation>Impussibel da reservar memoria per ils buffers da video.</translation>
-        </message>
-        <message>
-            <source>Invalid video quality tier.</source>
-            <translation>Nivel da qualitad da video nunvalid.</translation>
-        </message>
-        <message>
-            <source>The screen source exceeds the supported capture size.</source>
-            <translation>La funtauna dal visur surpassa la grondezza da registraziun sustegnida.</translation>
-        </message>
-        <message>
-            <source>The screen source is too narrow.</source>
-            <translation>La funtauna dal visur è memia stretga.</translation>
-        </message>
-        <message>
-            <source>The video encoder could not be allocated.</source>
-            <translation>Impussibel da reservar memoria per il codader da video.</translation>
-        </message>
-        <message>
-            <source>No supported video encoder is available.</source>
-            <translation>Nagin codader da video sustegnì è disponibel.</translation>
-        </message>
-        <message>
-            <source>Video encoder configuration is too large.</source>
-            <translation>La configuraziun dal codader da video è memia gronda.</translation>
-        </message>
-        <message>
-            <source>Video scaling could not be initialized.</source>
-            <translation>Impussibel d'inizialisar la scalaziun dal video.</translation>
-        </message>
-        <message>
-            <source>The encoder returned an empty video packet.</source>
-            <translation>Il codader ha returnà in pachet da video vid.</translation>
-        </message>
-        <message>
-            <source>Invalid video frame format.</source>
-            <translation>Format dal maletg da video nunvalid.</translation>
-        </message>
-        <message>
-            <source>Invalid video decoder configuration.</source>
-            <translation>Configuraziun dal decodader da video nunvalida.</translation>
-        </message>
-        <message>
-            <source>This video codec cannot be decoded.</source>
-            <translation>Quest codec da video na po betg vegnir decodà.</translation>
-        </message>
-        <message>
-            <source>Video decoder could not be allocated.</source>
-            <translation>Impussibel da reservar memoria per il decodader da video.</translation>
-        </message>
-        <message>
-            <source>Video decoder configuration could not be allocated.</source>
-            <translation>Impussibel da reservar memoria per la configuraziun dal decodader da video.</translation>
-        </message>
-        <message>
-            <source>Decoded dimensions do not match the screen stream.</source>
-            <translation>Las dimensiuns decodadas na correspundan betg al stream dal visur.</translation>
-        </message>
-        <message>
-            <source>Decoded image could not be allocated.</source>
-            <translation>Impussibel da reservar memoria per il maletg decodà.</translation>
-        </message>
-        <message>
-            <source>Video color conversion could not be initialized.</source>
-            <translation>Impussibel d'inizialisar la conversiun da las colurs dal video.</translation>
         </message>
     </context>
     <context>
@@ -2894,404 +3017,211 @@
         </message>
     </context>
     <context>
-        <name>Headless</name>
+        <name>Tray</name>
         <message>
-            <source>Command failed.</source>
-            <translation>Il cumond n'è betg reussì.</translation>
+            <source>Quit</source>
+            <translation>Chalar</translation>
         </message>
         <message>
-            <source>%1 must be an integer.</source>
-            <translation>%1 sto esser in dumber entir.</translation>
+            <source>SquadSpeak - speaking</source>
+            <translation>SquadSpeak - Discurrer</translation>
         </message>
         <message>
-            <source>Requests must be on/off or true/false.</source>
-            <translation>Las dumondas ston esser on/off u true/false.</translation>
+            <source>Settings</source>
+            <translation>Parameters</translation>
         </message>
         <message>
-            <source>Unknown host property: %1</source>
-            <translation>Caracteristica nunenconuschenta dal host: %1</translation>
+            <source>Channels</source>
+            <translation>Canals</translation>
         </message>
         <message>
-            <source>Run without GUI, microphone capture, or local audio output.</source>
-            <translation>Aviar senza interfatscha grafica, registraziun dal microfon u sortida locala d'audio.</translation>
-        </message>
-        <message>
-            <source>Server storage prefix. Personal/audio/GUI profiles are not loaded.</source>
-            <translation>Prefix da memorisar dal server. Profils persunals, d'audio e da l'interfatscha na vegnan betg chargiads.</translation>
-        </message>
-        <message>
-            <source>Optional private identity file instead of the OS credential store (Linux/macOS). Parent directory must exist and belong to this account.</source>
-            <translation>Datoteca privata d'identitad opziunala enstagl dal deposit da datas d'access dal sistem (Linux/macOS). L'ordinatur surordinà sto existir ed appartegnair a quest conto.</translation>
-        </message>
-        <message>
-            <source>UTF-8 key=value properties or JSON host preset. Default: application.properties, then config/application.properties beside the app.</source>
-            <translation>Caracteristicas UTF-8 key=value u preconfiguraziun dal host en JSON. Standard: application.properties, lura config/application.properties sper l'app.</translation>
-        </message>
-        <message>
-            <source>Channel display name.</source>
-            <translation>Num mussà dal chanal.</translation>
-        </message>
-        <message>
-            <source>System and radio bot display name.</source>
-            <translation>Num mussà dal bot dal sistem e dal radio.</translation>
-        </message>
-        <message>
-            <source>TCP service port (1-65535).</source>
-            <translation>Port TCP dal servetsch (1-65535).</translation>
-        </message>
-        <message>
-            <source>Headless admission is always on; only 'on' or 'true' is accepted.</source>
-            <translation>L'admissiun senza interfatscha grafica è adina activa; mo 'on' u 'true' vegn acceptà.</translation>
-        </message>
-        <message>
-            <source>Preapprove a device ID; repeat for several devices. Existing bans remain.</source>
-            <translation>Approvar ordavant ina ID d'apparat; repeter per plirs apparats. Bloccadas existentas restan.</translation>
-        </message>
-        <message>
-            <source>Block a device ID; repeat for several devices.</source>
-            <translation>Bloccar ina ID d'apparat; repeter per plirs apparats.</translation>
-        </message>
-        <message>
-            <source>Read a UTF-8 channel password from a file before listening. An empty file removes it.</source>
-            <translation>Leger in pled-clav UTF-8 dal chanal or d'ina datoteca avant da cumenzar a tadlar. Ina datoteca vida al allontanescha.</translation>
-        </message>
-        <message>
-            <source>Channel password. Empty removes it; environment or config avoids process-list exposure.</source>
-            <translation>Pled-clav dal chanal. Ina valur vida al allontanescha; l'ambient u la configuraziun eviteschan ch'el cumpara en la glista da process.</translation>
-        </message>
-        <message>
-            <source>SquadSpeak headless local channel host</source>
-            <translation>Host local da chanals SquadSpeak senza interfatscha grafica</translation>
-        </message>
-        <message>
-            <source>Environment variables (SQUADSPEAK_ prefix):</source>
-            <translation>Variablas d'ambient (prefix SQUADSPEAK_):</translation>
-        </message>
-        <message>
-            <source>Host configuration could not be read or exceeds 1 MiB.</source>
-            <translation>Impussibel da leger la configuraziun dal host, u ella surpassa 1 MiB.</translation>
-        </message>
-        <message>
-            <source>Host configuration must be UTF-8.</source>
-            <translation>La configuraziun dal host sto esser UTF-8.</translation>
-        </message>
-        <message>
-            <source>Host preset must be a JSON object.</source>
-            <translation>La preconfiguraziun dal host sto esser in object JSON.</translation>
-        </message>
-        <message>
-            <source>Property line %1 must use key=value.</source>
-            <translation>La lingia da caracteristicas %1 sto duvrar key=value.</translation>
-        </message>
-        <message>
-            <source>Property line %1: %2</source>
-            <translation>Lingia da caracteristicas %1: %2</translation>
-        </message>
-        <message>
-            <source>Standard input has no file descriptor.</source>
-            <translation>L'entrada standard n'ha nagin descriptur da datoteca.</translation>
-        </message>
-        <message>
-            <source>Standard input could not be inspected.</source>
-            <translation>Impussibel d'examinar l'entrada standard.</translation>
-        </message>
-        <message>
-            <source>Could not write the command response: %1</source>
-            <translation>Impussibel da scriver la resposta dal cumond: %1</translation>
-        </message>
-        <message>
-            <source>Standard input could not be read: %1</source>
-            <translation>Impussibel da leger l'entrada standard: %1</translation>
-        </message>
-        <message>
-            <source>Input line exceeds 65536 bytes.</source>
-            <translation>La lingia d'entrada surpassa 65536 bytes.</translation>
-        </message>
-        <message>
-            <source>Each input line must be a JSON object.</source>
-            <translation>Mintga lingia d'entrada sto esser in object JSON.</translation>
-        </message>
-        <message>
-            <source>Input ended before a complete JSON line.</source>
-            <translation>L'entrada è terminada avant ina lingia JSON cumpletta.</translation>
-        </message>
-        <message>
-            <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
-            <translation>ID opziunala d'in agen chanal per ils cumonds status, configure, password, admission, history, chat e radio; il standard è il chanal principal.</translation>
-        </message>
-        <message>
-            <source>Channel action must be list, add or remove.</source>
-            <translation>L'acziun dal chanal sto esser list, add u remove.</translation>
-        </message>
-        <message>
-            <source>Removing an own channel deletes its history, images, permissions and radio settings. Set confirmed=true to proceed.</source>
-            <translation>Allontanar in agen chanal stizza sia cronologia, maletgs, permissiuns e configuraziuns dal radio. Metta confirmed=true per cuntinuar.</translation>
-        </message>
-        <message>
-            <source>id must identify an additional own channel.</source>
-            <translation>id sto identifitgar in agen chanal supplementar.</translation>
-        </message>
-        <message>
-            <source>The additional own channel could not be removed: %1</source>
-            <translation>Impussibel d'allontanar l'agen chanal supplementar: %1</translation>
-        </message>
-        <message>
-            <source>channelId must identify an own channel.</source>
-            <translation>channelId sto identifitgar in agen chanal.</translation>
-        </message>
-        <message>
-            <source>values must be a host settings object.</source>
-            <translation>values sto esser in object cun configuraziuns dal host.</translation>
-        </message>
-        <message>
-            <source>Headless admission is always enabled for non-banned devices; requests off is not supported.</source>
-            <translation>L'admissiun senza interfatscha grafica è adina activa per apparats betg bloccads; requests off n'è betg sustegnì.</translation>
-        </message>
-        <message>
-            <source>value must be a password of at most 1024 UTF-8 bytes without control characters; an empty string removes it.</source>
-            <translation>value sto esser in pled-clav da maximalmain 1024 bytes UTF-8 senza caracters da controlla; ina chadaina vida al allontanescha.</translation>
-        </message>
-        <message>
-            <source>The channel is not ready or a password change is in progress.</source>
-            <translation>Il chanal n'è betg pront u ina midada dal pled-clav è en curs.</translation>
-        </message>
-        <message>
-            <source>The channel was removed while saving the password.</source>
-            <translation>Il chanal è vegnì allontanà durant memorisar il pled-clav.</translation>
-        </message>
-        <message>
-            <source>id is required.</source>
-            <translation>id è necessari.</translation>
-        </message>
-        <message>
-            <source>text must be a valid non-empty chat message.</source>
-            <translation>text sto esser in messadi da chat valid e betg vid.</translation>
-        </message>
-        <message>
-            <source>The local channel is not ready.</source>
-            <translation>Il chanal local n'è betg pront.</translation>
-        </message>
-        <message>
-            <source>The channel's radio is unavailable.</source>
-            <translation>Il radio dal chanal n'è betg disponibel.</translation>
-        </message>
-        <message>
-            <source>Unknown command. Use help.</source>
-            <translation>Cumond nunenconuschent. Dovra help.</translation>
-        </message>
-        <message>
-            <source>search requires a query, non-negative offset and limit from 1 to 128.</source>
-            <translation>search dovra query, in offset betg negativ ed in limit da 1 fin 128.</translation>
-        </message>
-        <message>
-            <source>add creates an id; update requires an existing id.</source>
-            <translation>add creescha in id; update dovra in id existent.</translation>
-        </message>
-        <message>
-            <source>A station is already being checked.</source>
-            <translation>Ina staziun vegn gia controllada.</translation>
-        </message>
-        <message>
-            <source>The channel was removed while checking the station.</source>
-            <translation>Il chanal è vegnì allontanà durant controllar la staziun.</translation>
-        </message>
-        <message>
-            <source>Unknown radio action.</source>
-            <translation>Acziun da radio nunenconuschenta.</translation>
-        </message>
-        <message>
-            <source>Could not load language: %1</source>
-            <translation>Impussibel da chargiar la lingua: %1</translation>
-        </message>
-        <message>
-            <source>The %1 option is incompatible with --headless.</source>
-            <translation>L'opziun %1 n'è betg cumpatibla cun --headless.</translation>
-        </message>
-        <message>
-            <source>Unexpected positional arguments. Use --help.</source>
-            <translation>Arguments posiziunals nunspetgads. Dovra --help.</translation>
-        </message>
-        <message>
-            <source>--config / -f requires a non-empty path.</source>
-            <translation>--config / -f dovra ina senda betg vida.</translation>
-        </message>
-        <message>
-            <source>Choose --password or --password-file, not both.</source>
-            <translation>Tscherna --password u --password-file, betg omadus.</translation>
-        </message>
-        <message>
-            <source>Choose SQUADSPEAK_PASSWORD or SQUADSPEAK_PASSWORD_FILE, not both.</source>
-            <translation>Tscherna SQUADSPEAK_PASSWORD u SQUADSPEAK_PASSWORD_FILE, betg omadus.</translation>
-        </message>
-        <message>
-            <source>Choose password or passwordFile in one configuration layer, not both.</source>
-            <translation>Tscherna password u passwordFile en ina stresa da configuraziun, betg omadus.</translation>
-        </message>
-        <message>
-            <source>passwordFile must be a non-empty path.</source>
-            <translation>passwordFile sto esser ina senda betg vida.</translation>
-        </message>
-        <message>
-            <source>Password file could not be read or is too large.</source>
-            <translation>Impussibel da leger la datoteca dal pled-clav, u ella è memia gronda.</translation>
-        </message>
-        <message>
-            <source>Password file must contain at most 1024 UTF-8 bytes without control characters.</source>
-            <translation>La datoteca dal pled-clav dastga cuntegnair maximalmain 1024 bytes UTF-8 senza caracters da controlla.</translation>
-        </message>
-        <message>
-            <source>Password must be a string of at most 1024 UTF-8 bytes without control characters.</source>
-            <translation>Il pled-clav sto esser ina chadaina da maximalmain 1024 bytes UTF-8 senza caracters da controlla.</translation>
-        </message>
-        <message>
-            <source>settingsFile must be a non-empty path.</source>
-            <translation>settingsFile sto esser ina senda betg vida.</translation>
-        </message>
-        <message>
-            <source>identityFile must be a non-empty path.</source>
-            <translation>identityFile sto esser ina senda betg vida.</translation>
-        </message>
-        <message>
-            <source>The settings directory could not be created.</source>
-            <translation>Impussibel da crear l'ordinatur da configuraziuns.</translation>
-        </message>
-        <message>
-            <source>This SquadSpeak profile is already running or cannot be locked.</source>
-            <translation>Quest profil SquadSpeak è gia en funcziun u na po betg vegnir serrà.</translation>
-        </message>
-        <message>
-            <source>Standard input could not be opened.</source>
-            <translation>Impussibel d'avrir l'entrada standard.</translation>
-        </message>
-        <message>
-            <source>Standard output could not be opened.</source>
-            <translation>Impussibel d'avrir la sortida standard.</translation>
-        </message>
-        <message>
-            <source>This identity file is already in use or cannot be locked.</source>
-            <translation>Questa datoteca d'identitad è gia en diever u na po betg vegnir serrada.</translation>
-        </message>
-        <message>
-            <source>Invalid host configuration: %1</source>
-            <translation>Configuraziun dal host nunvalida: %1</translation>
-        </message>
-        <message>
-            <source>Radio channels could not be initialized.</source>
-            <translation>Impussibel d'inizialisar ils chanals da radio.</translation>
-        </message>
-        <message>
-            <source>Headless host could not start: %1</source>
-            <translation>Impussibel d'aviar il host senza interfatscha grafica: %1</translation>
-        </message>
-        <message>
-            <source>Channel password could not be saved.</source>
-            <translation>Impussibel da memorisar il pled-clav dal chanal.</translation>
-        </message>
-        <message>
-            <source>Invalid channel password: %1</source>
-            <translation>Pled-clav dal chanal nunvalid: %1</translation>
-        </message>
-        <message>
-            <source>Headless host could not initialize: %1</source>
-            <translation>Impussibel d'inizialisar il host senza interfatscha grafica: %1</translation>
-        </message>
-        <message>
-            <source>SquadSpeak headless could not start: %1</source>
-            <translation>Impussibel d'aviar SquadSpeak senza interfatscha grafica: %1</translation>
-        </message>
-        <message>
-            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
-            <translation>L'acziun Supporter sto esser status, sign-in, refresh, sign-out u cancel.</translation>
-        </message>
-        <message>
-            <source>A Supporter operation is in progress.</source>
-            <translation>Ina operaziun Supporter è en curs.</translation>
-        </message>
-        <message>
-            <source>Supporter access is unavailable in this build.</source>
-            <translation>L'access Supporter n'è betg disponibel en questa versiun.</translation>
-        </message>
-        <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</translation>
+            <source>New image</source>
+            <translation>Nov maletg</translation>
         </message>
     </context>
     <context>
-        <name>Desktop</name>
+        <name>VideoCodec</name>
         <message>
-            <source>Open settings at startup.</source>
-            <translation>Avrir las configuraziuns al cumenzament.</translation>
+            <source>Video codec: %1</source>
+            <translation>Codec da video: %1</translation>
         </message>
         <message>
-            <source>Open guided local test recording without starting network services.</source>
-            <translation>Avrir la registraziun da test locala cun instrucziuns senza aviar servetschs da rait.</translation>
+            <source>Video codec ABI does not match its headers.</source>
+            <translation>L'ABI dal codec da video na correspunda betg a sias datotecas da chau.</translation>
         </message>
         <message>
-            <source>Alternative file for audio profiles.</source>
-            <translation>Datoteca alternativa per profils audio.</translation>
+            <source>Video buffers could not be allocated.</source>
+            <translation>Impussibel da reservar memoria per ils buffers da video.</translation>
         </message>
         <message>
-            <source>Load the interface without microphone capture and exit after one second.</source>
-            <translation>Chargiar l'interfatscha senza registrar il microfon e terminar suenter ina secunda.</translation>
+            <source>Invalid video quality tier.</source>
+            <translation>Nivel da qualitad da video nunvalid.</translation>
         </message>
         <message>
-            <source>Save an image of the app window during the UI test.</source>
-            <translation>Memorisar in maletg da la fanestra da l'app durant il test da l'interfatscha.</translation>
+            <source>The screen source exceeds the supported capture size.</source>
+            <translation>La funtauna dal visur surpassa la grondezza da registraziun sustegnida.</translation>
         </message>
         <message>
-            <source>The window image could not be saved.</source>
-            <translation>Il maletg da la fanestra na pudeva betg vegnir memorisà.</translation>
+            <source>The screen source is too narrow.</source>
+            <translation>La funtauna dal visur è memia stretga.</translation>
         </message>
         <message>
-            <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
-            <translation>La zona da notificaziun n'è betg disponibla; l'app resta averta en ina fanestra.</translation>
+            <source>The video encoder could not be allocated.</source>
+            <translation>Impussibel da reservar memoria per il codader da video.</translation>
+        </message>
+        <message>
+            <source>No supported video encoder is available.</source>
+            <translation>Nagin codader da video sustegnì è disponibel.</translation>
+        </message>
+        <message>
+            <source>Video encoder configuration is too large.</source>
+            <translation>La configuraziun dal codader da video è memia gronda.</translation>
+        </message>
+        <message>
+            <source>Video scaling could not be initialized.</source>
+            <translation>Impussibel d'inizialisar la scalaziun dal video.</translation>
+        </message>
+        <message>
+            <source>The encoder returned an empty video packet.</source>
+            <translation>Il codader ha returnà in pachet da video vid.</translation>
+        </message>
+        <message>
+            <source>Invalid video frame format.</source>
+            <translation>Format dal maletg da video nunvalid.</translation>
+        </message>
+        <message>
+            <source>Invalid video decoder configuration.</source>
+            <translation>Configuraziun dal decodader da video nunvalida.</translation>
+        </message>
+        <message>
+            <source>This video codec cannot be decoded.</source>
+            <translation>Quest codec da video na po betg vegnir decodà.</translation>
+        </message>
+        <message>
+            <source>Video decoder could not be allocated.</source>
+            <translation>Impussibel da reservar memoria per il decodader da video.</translation>
+        </message>
+        <message>
+            <source>Video decoder configuration could not be allocated.</source>
+            <translation>Impussibel da reservar memoria per la configuraziun dal decodader da video.</translation>
+        </message>
+        <message>
+            <source>Decoded dimensions do not match the screen stream.</source>
+            <translation>Las dimensiuns decodadas na correspundan betg al stream dal visur.</translation>
+        </message>
+        <message>
+            <source>Decoded image could not be allocated.</source>
+            <translation>Impussibel da reservar memoria per il maletg decodà.</translation>
+        </message>
+        <message>
+            <source>Video color conversion could not be initialized.</source>
+            <translation>Impussibel d'inizialisar la conversiun da las colurs dal video.</translation>
         </message>
     </context>
     <context>
-        <name>LocalLanguage</name>
+        <name>VoiceAvatar</name>
         <message>
-            <source>Translation (experimental)</source>
-            <translation>Translaziun (experimentala)</translation>
+            <source>Muted</source>
+            <translation>il microfon è serrà</translation>
         </message>
         <message>
-            <source>Spoken language</source>
-            <translation>Lingua discurrida</translation>
+            <source>Sleeping</source>
+            <translation>Durmir</translation>
         </message>
         <message>
-            <source>Translate to</source>
-            <translation>Translatar en</translation>
+            <source>Offline</source>
+            <translation>Offline</translation>
         </message>
         <message>
-            <source>Translate messages</source>
-            <translation>Translatar messadis</translation>
+            <source>Speaking</source>
+            <translation>Discurrer</translation>
         </message>
         <message>
-            <source>Translated voice</source>
-            <translation>Vusch translatada</translation>
+            <source>Unavailable</source>
+            <translation>Betg disponibel</translation>
         </message>
         <message>
-            <source>Original audio</source>
-            <translation>Audio original</translation>
+            <source>Listening</source>
+            <translation>Tadlar</translation>
         </message>
         <message>
-            <source>Original text</source>
-            <translation>Text original</translation>
+            <source>Deafened</source>
+            <translation>Ils altpledaders èn stizzads</translation>
+        </message>
+    </context>
+    <context>
+        <name>VoiceSession</name>
+        <message>
+            <source>Unavailable - audio settings or tone test</source>
+            <translation>Betg disponibel - parameters d'audio u prova da tun</translation>
         </message>
         <message>
-            <source>Prepare languages</source>
-            <translation>Preparar linguas</translation>
+            <source>Microphone muted</source>
+            <translation>Il microfon è stizzà</translation>
         </message>
         <message>
-            <source>Local language processing is unavailable.</source>
-            <translation>L'elavuraziun locala da linguas n'è betg disponibla.</translation>
+            <source>Push-to-talk held</source>
+            <translation>La tasta push-to-talk è tegnida premida</translation>
         </message>
         <message>
-            <source>Language settings could not be read.</source>
-            <translation>Las configuraziuns da lingua na pon betg vegnir legidas.</translation>
+            <source>Ready - push-to-talk released</source>
+            <translation>Pront - la tasta push-to-talk è vegnida laschada libra</translation>
         </message>
         <message>
-            <source>Language settings could not be saved.</source>
-            <translation>Las configuraziuns da lingua na pon betg vegnir memorisadas.</translation>
+            <source>Microphone unmuted</source>
+            <translation>Il microfon è activà</translation>
+        </message>
+        <message>
+            <source>Settings could not be saved: %1</source>
+            <translation>Las parameters n'han betg pudì vegnir memorisadas: %1</translation>
+        </message>
+        <message>
+            <source>The push-to-talk sequence cannot be incremented further.</source>
+            <translation>La sequenza da push-to-talk na po betg vegnir cementada vinavant.</translation>
+        </message>
+        <message>
+            <source>Choose System, Light or Dark.</source>
+            <translation>Tscherna sistem, cler u stgir.</translation>
+        </message>
+        <message>
+            <source>Choose a colour palette from the list.</source>
+            <translation>Tscherna ina paletta da colur or da la glista.</translation>
+        </message>
+        <message>
+            <source>Choose an available avatar.</source>
+            <translation>Tscherna in maletg d' Avatar disponibel.</translation>
+        </message>
+        <message>
+            <source>Invalid push-to-talk binding.</source>
+            <translation>liadira da push-toalk nunvalaivla.</translation>
+        </message>
+        <message>
+            <source>Release the held push-to-talk key first.</source>
+            <translation>Laschai liber sco emprim la tasta da discurrer stampada.</translation>
+        </message>
+        <message>
+            <source>Choose a language from the list.</source>
+            <translation>Tscherna ina lingua or da la glista.</translation>
+        </message>
+        <message>
+            <source>This avatar requires Supporter.</source>
+            <translation>Quest avatar dovra Supporter.</translation>
+        </message>
+        <message>
+            <source>The name must contain 1 to 64 characters.</source>
+            <translation>Il num sto cuntegnair 1 fin 64 segns.</translation>
+        </message>
+        <message>
+            <source>The name may not contain control characters or line breaks.</source>
+            <translation>Il num na dastga cuntegnair nagins segns da taglia u naginas interrupziuns da lingias.</translation>
+        </message>
+        <message>
+            <source>Session settings could not be read.</source>
+            <translation>Las configuraziuns da la sessiun na pudevan betg vegnir legidas.</translation>
+        </message>
+        <message>
+            <source>Saved setting is invalid: %1</source>
+            <translation>Configuraziun memorisada nunvalida: %1</translation>
         </message>
     </context>
 </TS>

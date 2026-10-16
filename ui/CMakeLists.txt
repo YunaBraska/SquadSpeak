@@ -1,8 +1,12 @@
 set_source_files_properties(../src/main.cpp ../src/headless.cpp PROPERTIES
     COMPILE_DEFINITIONS "SQUADSPEAK_VERSION=\"${SQUADSPEAK_VERSION}\"")
-qt_add_executable(squadspeak MACOSX_BUNDLE ../src/main.cpp ../src/headless.cpp ../src/headless.hpp ../src/audio_model.cpp ../src/audio_model.hpp ../src/audio_recording.cpp ../src/audio_recording.hpp ../src/ptt_key.cpp ../src/ptt_key.hpp)
+qt_add_executable(squadspeak MACOSX_BUNDLE ../src/main.cpp ../src/headless.cpp ../src/headless.hpp ../src/audio_model.cpp ../src/audio_model.hpp ../src/ptt_key.cpp ../src/ptt_key.hpp)
+if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    set_source_files_properties(../src/main.cpp PROPERTIES LANGUAGE OBJCXX)
+    target_link_libraries(squadspeak PRIVATE "-framework AppKit")
+endif()
 set_target_properties(squadspeak PROPERTIES LINKER_LANGUAGE CXX)
-set(squad_qml_files Theme.qml PanelWindow.qml PanelDialog.qml TextToolTip.qml ActionButton.qml EntryField.qml ChoiceBox.qml OptionCheck.qml Glyph.qml AudioSettings.qml RecordingPanel.qml Channels.qml ChatPanel.qml VoiceAvatar.qml AvatarAtlas.js SettingSlider.qml SpectrumView.qml ScreenPanel.qml)
+set(squad_qml_files Theme.qml PanelWindow.qml PanelDialog.qml TextToolTip.qml ActionButton.qml EntryField.qml ChoiceBox.qml OptionCheck.qml Glyph.qml AudioSettings.qml Channels.qml ChatPanel.qml VoiceAvatar.qml AvatarAtlas.js SettingSlider.qml SpectrumView.qml ScreenPanel.qml)
 set(squad_resource_files icons/app.png avatars/mossling.png avatars/courier.png avatars/mechanic.png avatars/system.png avatars/system-animated.png
     avatars/ember-dragon.png
     avatars/moon-owl.png
@@ -102,3 +106,6 @@ set_target_properties(squadspeak PROPERTIES
     MACOSX_BUNDLE_GUI_IDENTIFIER "app.squadspeak.desktop"
     MACOSX_BUNDLE_BUNDLE_NAME "SquadSpeak"
     MACOSX_BUNDLE_INFO_PLIST "${CMAKE_CURRENT_BINARY_DIR}/Info.plist.in")
+if(IOS)
+    squad_ios_simulator_identity(squadspeak)
+endif()

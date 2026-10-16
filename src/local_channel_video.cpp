@@ -264,7 +264,7 @@ void LocalChannel::finishScreen(QSslSocket* socket, qint64 serial, int decode, b
     const auto* device = service_ ? service_ : this;
     const auto delayedVoice = [&it](const LocalChannel& channel) {
         return std::any_of(channel.peers_.cbegin(), channel.peers_.cend(), [&it](const auto& peer) {
-            return peer.id == it->id && peer.joined && !peer.observer && peer.audioTier > 0;
+            return peer.id == it->id && peer.joined && !peer.observer && peer.audioTier > peer.bestAudioTier();
         });
     };
     const bool voicePressure = delayedVoice(*device) || std::any_of(device->owned_.cbegin(), device->owned_.cend(),

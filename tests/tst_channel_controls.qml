@@ -23,6 +23,22 @@ TestCase {
     Component { id: atlasImage; Image { visible: false } }
     Component { id: literalName; Text { textFormat: Text.PlainText } }
     QtObject {
+        id: languageDisplay
+        property var preparation: ({})
+        property int downloads: 0
+        readonly property bool supported: true
+        readonly property bool available: true
+        readonly property bool speechAvailable: true
+        readonly property var languages: []
+        readonly property int revision: 0
+        signal changed()
+        onPreparationChanged: changed()
+        function channelPreferences(id) { return {} }
+        function member(id) { return {} }
+        function cancelPreparation() { preparation = ({}) }
+        function acceptPreparation() { ++downloads; preparation = ({}); return true }
+    }
+    QtObject {
         id: updateDisplay
         property bool available: false
         property int checks: 0
@@ -39,6 +55,9 @@ TestCase {
         property string error: ""
         property var sources: []
         property int selectedSource: -1
+        property bool permissionRequired: false
+        property int settingsCalls: 0
+        function openPermissionSettings() { ++settingsCalls; return true }
         property int refreshCalls: 0
         property int startCalls: 0
         property int previewCalls: 0
@@ -121,8 +140,11 @@ TestCase {
     }
 
     function init() {
+        view.touchControls = Qt.platform.os === "ios" || Qt.platform.os === "android"
+        controllerView.touchControls = view.touchControls
         licenseDisplay.reset()
         captureDisplay.error = ""
+        captureDisplay.permissionRequired = false; captureDisplay.settingsCalls = 0
         captureDisplay.refreshCalls = 0; captureDisplay.startCalls = 0
         captureDisplay.startSucceeds = true
         verify(fixtures.setSupporter(false))
@@ -141,9 +163,15 @@ TestCase {
 
     }
     function cleanup() {
+        view.language = audio.language
+        languageDisplay.preparation = ({})
+        languageDisplay.downloads = 0
+        view.network = channel
         Qt.inputMethod.hide()
         tryCompare(Qt.inputMethod, "visible", false)
         for (const window of [view, controllerView]) {
+            findChild(window, "remoteTargetsDialog").close()
+            window.closeSettings()
             for (const action of ["autoJoinMenuItem", "inspectMember"]) {
                 const menu = findChild(window, action).menu
                 menu.close()
@@ -151,6 +179,7 @@ TestCase {
             }
         }
         findChild(view, "membersDialog").close()
+        findChild(view, "privateMessagesDialog").close()
         verify(fixtures.populateMembers(0))
         findChild(view, "screenPicker").close()
         view.screen = screenShare
@@ -195,6 +224,38 @@ TestCase {
         view.width = Qt.platform.os === "android" ? view.Screen.desktopAvailableWidth : 520
         view.height = Qt.platform.os === "android" ? view.Screen.desktopAvailableHeight : 700
     }
+    function test_joinedChannelCannotBeJoinedAgain() {
+        verify(fixtures.startHost())
+        verify(channel.joinSaved(channel.ownId))
+        tryCompare(channel, "joined", true)
+        view.selectedHost = channel.ownId
+        tryCompare(findChild(view, "joinChannel"), "enabled", false)
+        for (let i = 0; i < 3; ++i) {
+            verify(view.joinHost(channel.ownId))
+            verify(channel.joined, "Double-clicking the current channel preserves its connection")
+        }
+    }
+
+    function test_identityUnavailableKeepsDiagnosticVisibleAndBlocksJoin() {
+        view.network = unreadyChannel
+        tryCompare(view, "remote", false)
+        compare(view.network.ready, false)
+        const status = findChild(view, "channelStatus")
+        verify(status !== null)
+        tryCompare(status, "visible", true)
+        compare(status.text, unreadyChannel.status)
+        const retry = findChild(view, "retryIdentity")
+        verify(retry !== null)
+        verify(retry.visible && retry.enabled)
+        verify(!findChild(view, "joinChannel").enabled)
+        verify(!view.joinHost(channel.ownId))
+        verify(!view.openHostChat(channel.ownId))
+        view.notice = ""
+        compare(status.text, unreadyChannel.status)
+        view.network = channel
+        tryCompare(retry, "visible", false)
+        tryCompare(findChild(view, "joinChannel"), "enabled", true)
+    }
 
     function test_screenPickerShowsFailureWithoutRetrying_data() {
         return [{tag: "enumeration", start: false}, {tag: "start", start: true}]
@@ -230,6 +291,24 @@ TestCase {
         mouseClick(findChild(picker, "dialogCancelButton"))
         tryCompare(picker, "visible", false)
         compare(captureDisplay.refreshCalls, 1)
+    }
+
+    function test_screenPermissionHelpDoesNotRetryCapture() {
+        verify(fixtures.startHost())
+        view.closeSettings(); view.screen = captureDisplay; view.selectedHost = channel.ownId
+        captureDisplay.permissionRequired = true
+        captureDisplay.error = "Allow screen recording in system settings."
+        const picker = findChild(view, "screenPicker")
+        picker.open(); tryCompare(picker, "opened", true)
+        const settings = findChild(picker, "screenPermissionSettings")
+        verify(settings !== null && settings.visible)
+        view.requestActivate(); tryCompare(view, "active", true)
+        view.update(); verify(waitForRendering(settings))
+        mouseClick(settings)
+        compare(captureDisplay.settingsCalls, 1)
+        compare(captureDisplay.refreshCalls, 0)
+        compare(captureDisplay.startCalls, 0)
+        picker.close()
     }
 
     function test_screenSourceTitleDisplaysLiterally() {
@@ -327,18 +406,19 @@ TestCase {
         return info
     }
 
-    function reveal(item) {
+    function reveal(item, window) {
+        const target = window || view
         let scrollName = "settingsScroll"
         let ancestor = item
         while (ancestor) {
-            if (ancestor.objectName === "audioSettings") { view.openSettings(1); scrollName = "audioSettingsScroll"; break }
+            if (ancestor.objectName === "audioSettings") { target.openSettings(1); scrollName = "audioSettingsScroll"; break }
             if (ancestor.objectName === "hostPage") { openOwnChannelInfo(); scrollName = "channelInfoScroll"; break }
             if (ancestor.objectName === "generalSettings") { view.openSettings(0); break }
             if (ancestor.objectName === "discoverDialog") { ancestor.open(); break }
             ancestor = ancestor.parent
         }
-        waitForRendering(view.contentItem)
-        const scroll = findChild(view, scrollName)
+        waitForRendering(target.contentItem)
+        const scroll = findChild(target, scrollName)
         const flick = scroll.contentItem
         flick.contentY = Math.max(0, Math.min(flick.contentHeight - flick.height, item.mapToItem(flick.contentItem, 0, 0).y - 20))
         waitForRendering(item)
@@ -353,8 +433,12 @@ TestCase {
         return null
     }
 
-    function test_channelsStayGroupedAndRadioStateReachesOtherClients() {
+    function test_channelsStayGroupedAndRadioStateReachesOtherClients_data() {
+        return [{tag: "desktop", width: 520, height: 700}, {tag: "compact", width: 320, height: 568}]
+    }
+    function test_channelsStayGroupedAndRadioStateReachesOtherClients(data) {
         if (!supporterLicense.directDistribution) return
+        view.width = data.width; view.height = data.height
         verify(fixtures.startHost()); verify(fixtures.startRemoteHost()); verify(fixtures.setSupporter(true))
         verify(channel.setChannelName("Zulu"))
         const extra = channel.addOwnedChannel("Alpha")
@@ -376,9 +460,26 @@ TestCase {
         const ownedGroup = visualChild(view.contentItem, "hostGroup_" + channel.ownId)
         const foreignGroup = visualChild(view.contentItem, "hostGroup_" + remoteChannel.ownId)
         verify(ownedGroup !== null && foreignGroup !== null)
-        compare(ownedGroup.text, "This device")
-        verify(foreignGroup.text.startsWith("127.0.0.1"))
+        compare(ownedGroup.text, session.userName)
+        tryCompare(foreignGroup, "text", remoteSession.userName)
         verify(ownedGroup.selectByMouse)
+        verify(session.setUserName("Willow Otter"))
+        tryCompare(ownedGroup, "text", "Willow Otter")
+        verify(remoteSession.setUserName("Moonlit Fox"))
+        tryCompare(foreignGroup, "text", "Moonlit Fox")
+        tryVerify(function() { return position(channel.ownId) < position(remoteChannel.ownId) }, 1000, "Own host remains above alphabetically earlier foreign hosts")
+        view.update()
+        verify(waitForRendering(view.contentItem))
+        if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/host-owner-groups-" + data.tag + ".png"))
+        verify(remoteSession.setUserName(session.userName))
+        tryCompare(foreignGroup, "text", ownedGroup.text)
+        verify(foreignGroup !== ownedGroup, "Identical profile names never merge different hosts")
+        verify(remoteSession.setUserName("Moonlit Fox with a surprisingly long but valid profile name"))
+        tryCompare(foreignGroup, "text", remoteSession.userName)
+        view.update()
+        verify(waitForRendering(foreignGroup))
+        verify(foreignGroup.width <= view.width)
+        verify(foreignGroup.contentHeight <= foreignGroup.height)
         verify(channel.joinSaved(channel.ownId)); tryCompare(channel, "joined", true)
         tryVerify(function() { return position(extra) < position(channel.ownId) })
         verify(channel.joinSaved(extra)); tryCompare(channel, "joinedHostId", extra)
@@ -387,6 +488,41 @@ TestCase {
         verify(icon !== null); verify(!icon.visible)
         verify(fixtures.setTestMusic(true)); tryCompare(icon, "visible", true)
         verify(fixtures.setTestMusic(false)); tryCompare(icon, "visible", false)
+    }
+
+    function test_discoveryExplainsNetworkAccessAndOpensPrivacySettings_data() {
+        return [{tag: "desktop", width: 520, height: 700, language: "en"},
+                {tag: "compact", width: 320, height: 568, language: "de"}]
+    }
+    function test_discoveryExplainsNetworkAccessAndOpensPrivacySettings(data) {
+        view.width = data.width; view.height = data.height
+        verify(session.setLanguage(data.language))
+        mouseClick(findChild(view, "addChannel"))
+        const dialog = findChild(view, "discoverDialog")
+        tryCompare(dialog, "opened", true)
+        tryVerify(function() { return dialog.x >= 0 && dialog.y >= 0
+            && dialog.x + dialog.width <= view.width && dialog.y + dialog.height <= view.height })
+        verify(waitForRendering(dialog.contentItem))
+        const hint = findChild(dialog, "networkPermissionHint")
+        const settings = findChild(dialog, "networkPermissionSettings")
+        verify(hint !== null && settings !== null)
+        const apple = Qt.platform.os === "osx" || Qt.platform.os === "ios"
+        compare(hint.visible, apple)
+        compare(settings.visible, apple)
+        if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/channel-network-access-" + data.tag + ".png"))
+        if (apple) {
+            verify(hint.text.length > 0)
+            verify(hint.contentHeight <= hint.height)
+            verify(settings.width <= dialog.availableWidth)
+            verify(waitForRendering(settings))
+            openedLinks.clear()
+            mouseClick(settings)
+            tryCompare(openedLinks, "count", 1)
+            compare(String(openedLinks.signalArguments[0][0]), Qt.platform.os === "osx"
+                ? "x-apple.systempreferences:com.apple.preference.security?Privacy_LocalNetwork" : "app-settings:")
+            verify(findChild(dialog, "directAddress").visible)
+        }
+        dialog.close()
     }
 
     function test_addManageAndConfirmRemovalOfOwnedChannel() {
@@ -400,15 +536,19 @@ TestCase {
             return
         }
         verify(fixtures.setSupporter(true))
+        compare(channel.ownedChannels.length, 1, "Supporter does not create placeholder channels")
         mouseClick(findChild(view, "addChannel"))
         const discovery = findChild(view, "discoverDialog")
         tryCompare(discovery, "opened", true)
         const createButton = findChild(view, "createOwnChannel")
-        waitForRendering(createButton)
+        verify(waitForRendering(createButton))
+        if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/owned-channel-add.png"))
         mouseClick(createButton)
         const create = findChild(view, "newOwnChannelDialog")
         tryCompare(create, "opened", true)
         findChild(create, "newOwnChannelName").text = "Quiet room"
+        verify(waitForRendering(create.contentItem))
+        if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/owned-channel-create.png"))
         mouseClick(findChild(create, "saveOwnChannel"))
         tryVerify(function() { return channel.ownedChannels.length === 2 })
         const id = channel.ownedChannels.find(function(c) { return c.id !== channel.ownId }).id
@@ -437,9 +577,13 @@ TestCase {
         info.close(); tryCompare(info, "visible", false)
         const remove = findChild(view, "removeChannelMenuItem")
         remove.menu.popup(); tryCompare(remove.menu, "opened", true)
-        waitForRendering(remove); mouseClick(remove)
+        verify(waitForRendering(remove))
+        if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/owned-channel-remove-menu.png"))
+        mouseClick(remove)
         const confirm = findChild(view, "removeOwnChannelDialog")
         tryCompare(confirm, "opened", true)
+        verify(waitForRendering(confirm.contentItem))
+        if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/owned-channel-remove-confirm.png"))
         compare(channel.ownedChannels.length, 2)
         confirm.reject(); tryCompare(confirm, "visible", false)
         compare(channel.ownedChannels.length, 2)
@@ -497,7 +641,7 @@ TestCase {
         verify(findChild(dialog, "requestAddress").text.includes("127.0.0.1"))
         compare(findChild(dialog, "requestChannel").text, remoteChannel.channelName)
         verify(!findChild(dialog, "memberVolume").visible)
-        verify(!findChild(dialog, "memberLanguageControls").visible)
+        verify(findChild(dialog, "memberLanguageControls") === null)
         verify(!findChild(dialog, "memberActions").visible)
         verify(!remoteChannel.chatReady)
         for (const size of [[520, 700], [360, 420]]) {
@@ -619,6 +763,7 @@ TestCase {
         view.width = 640; view.height = 720
         portraitGallery.visible = true
         tryCompare(galleryPortraits, "count", session.avatars.length)
+        verify(waitForRendering(portraitGallery))
         for (let i = 0; i < session.avatars.length; ++i) {
             tryVerify(function() { return galleryPortraits.itemAt(i) !== null })
             const avatar = findChild(galleryPortraits.itemAt(i), "avatarCanvas").parent
@@ -804,7 +949,7 @@ TestCase {
         keyClick(Qt.Key_Right)
         compare(audio.participantVolume(remoteChannel.ownId), 1.05)
         verify(audio.setParticipantVolume(remoteChannel.ownId, previous))
-        compare(findChild(dialog, "memberLanguageControls").visible, audio.language.supported)
+        verify(findChild(dialog, "memberLanguageControls") === null)
         verify(!findChild(dialog, "approveInspectedRequest").visible)
         verify(!findChild(dialog, "denyInspectedRequest").visible)
         verify(dialog.height <= view.height - 24)
@@ -842,50 +987,133 @@ TestCase {
         compare(findChild(dialog, "requestIdentity").text, remoteChannel.ownId)
     }
 
-    function test_memberLanguageOptionsAreExplicitAndLocal() {
-        view.memberOptions({id: "language-test-member", name: "Robin", available: true, muted: false}, channel.ownId)
-        const dialog = findChild(view, "requestInfoDialog")
+    function test_missingLanguagesAskInAppAndWaitForDownload() {
+        view.language = languageDisplay
+        const dialog = findChild(view, "languageDownloadDialog")
+        view.hide()
+        languageDisplay.preparation = {source: "fr", target: "de"}
+        verify(!dialog.visible)
+        compare(languageDisplay.downloads, 0)
+        view.show(); view.requestActivate()
+        tryCompare(view, "active", true)
         tryCompare(dialog, "opened", true)
-        const controls = findChild(dialog, "memberLanguageControls")
+        verify(waitForRendering(dialog.contentItem))
+        if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/language-download.png"))
+        mouseClick(findChild(dialog, "cancelLanguageDownload"))
+        tryCompare(dialog, "visible", false)
+        compare(languageDisplay.downloads, 0)
+        languageDisplay.preparation = {source: "en", target: "de", speech: true}
+        tryCompare(dialog, "opened", true)
+        verify(waitForRendering(dialog.contentItem))
+        mouseClick(findChild(dialog, "confirmLanguageDownload"))
+        tryCompare(dialog, "visible", false)
+        tryCompare(languageDisplay, "downloads", 1)
+    }
+
+    function test_channelLanguageOptionsAreExplicitAndLocal_data() {
+        return [{tag: "desktop", width: 560, height: 760}, {tag: "phone", width: 360, height: 640}]
+    }
+
+    function test_channelLanguageOptionsAreExplicitAndLocal(data) {
+        view.width = data.width; view.height = data.height
+        if (nativeTranslationExpected) tryCompare(audio.language, "available", true, 15000)
+        view.requestActivate(); tryCompare(view, "active", true)
+        verify(fixtures.startHost())
+        view.selectedHost = channel.ownId
+        const menu = findChild(view, "channelMenu")
+        menu.popup()
+        tryCompare(menu, "opened", true)
+        const controls = findChild(view, "channelTranslationControls")
+        verify(findChild(view, "memberLanguageControls") === null)
+        verify(findChild(view, "translateDraft") === null)
         compare(controls.visible, audio.language.supported)
-        verify(findChild(dialog, "memberVolume").visible)
-        const voice = findChild(dialog, "memberTranslatedVoice")
-        if (controls.visible) {
-            compare(voice.currentValue, "")
-            verify(voice.model.some(function(entry) { return entry.id === "system" }))
-            compare(findChild(dialog, "memberTargetLanguage").currentValue, "system")
-            verify(!findChild(dialog, "memberSourceLanguage").visible)
-            verify(findChild(dialog, "languageSystemSettings").enabled)
+        if (!controls.visible) return
+        const messages = findChild(controls, "channelTranslateMessages")
+        const speech = findChild(controls, "channelTranslateVoice")
+        const outgoing = findChild(controls, "channelOutgoingLanguage")
+        const listening = findChild(controls, "channelVoiceLanguage")
+        compare(messages.checked, false)
+        compare(speech.checked, false)
+        compare(outgoing.currentValue, "")
+        compare(listening.currentValue, "")
+        compare(messages.enabled, audio.language.available)
+        compare(speech.enabled, audio.language.speechAvailable && audio.language.available)
+        verify(!outgoing.enabled && !listening.enabled)
+        if (messages.enabled) {
+            verify(waitForRendering(messages))
+            mouseClick(messages)
+            compare(audio.language.channelPreferences(channel.ownId).messages, true)
+            compare(outgoing.enabled, true)
+            outgoing.forceActiveFocus()
+            keyClick(Qt.Key_Down); keyClick(Qt.Key_Return)
+            tryVerify(function() { return outgoing.currentValue !== "" })
+            compare(audio.language.channelPreferences(channel.ownId).outgoing, outgoing.currentValue)
+            verify(!speech.checked)
         }
-        compare(findChild(dialog, "memberTranslateText").checked, false)
-        compare(audio.language.member("language-test-member").voice || "", "")
-        if (controls.visible && audio.language.available) {
-            mouseClick(findChild(dialog, "memberTranslateText"))
-            compare(audio.language.member("language-test-member").incoming, true)
-            const target = findChild(dialog, "memberTargetLanguage")
-            compare(target.currentValue, "system")
-            compare(voice.currentValue, "")
-            dialog.close(); tryCompare(dialog, "visible", false)
-            view.memberOptions({id: "language-test-member", name: "Robin"}, channel.ownId)
-            tryCompare(dialog, "opened", true)
-            compare(findChild(dialog, "memberTranslateText").checked, true)
-            mouseClick(findChild(dialog, "memberTranslateText"))
-            compare(audio.language.member("language-test-member").incoming, false)
+        if (speech.enabled) {
+            mouseClick(speech)
+            compare(audio.language.channelPreferences(channel.ownId).voice, true)
+            compare(listening.enabled, true)
+        }
+        verify(waitForRendering(menu.contentItem))
+        for (const control of [messages, speech, outgoing, listening]) {
+            const position = control.mapToItem(menu.contentItem, 0, 0)
+            verify(position.x >= 0 && position.x + control.width <= menu.contentItem.width + 1)
+            verify(position.y >= 0 && position.y + control.height <= menu.contentItem.height + 1, control.objectName + " y=" + position.y + " height=" + control.height + " menu=" + menu.contentItem.height)
         }
         if (imageDirectory.length > 0) {
-            waitForRendering(dialog.contentItem)
-            verify(fixtures.saveWindow(view, imageDirectory + "/member-language.png"))
+            waitForRendering(menu.contentItem)
+            verify(fixtures.saveWindow(view, imageDirectory + "/channel-language-" + data.tag + ".png"))
         }
-        for (const member of [{id: channel.ownId, name: session.userName}, {id: "system", name: "System", music: true}]) {
-            dialog.close(); tryCompare(dialog, "visible", false)
-            view.memberOptions(member, channel.ownId)
-            tryCompare(dialog, "opened", true)
-            verify(!controls.visible)
-            verify(!findChild(dialog, "memberVolume").visible)
-        }
+        menu.close(); tryCompare(menu, "visible", false)
+        view.selectedHost = "different-channel"
+        menu.popup(); tryCompare(menu, "opened", true)
+        compare(messages.checked, false); compare(speech.checked, false)
+        compare(outgoing.currentValue, ""); compare(listening.currentValue, "")
+        menu.close(); tryCompare(menu, "visible", false)
+        view.selectedHost = channel.ownId
+        menu.popup(); tryCompare(menu, "opened", true)
+        compare(messages.checked, audio.language.available)
+        compare(speech.checked, audio.language.speechAvailable && audio.language.available)
+        verify(audio.language.configureChannel(channel.ownId, false, "", false, ""))
+    }
+
+    function test_incomingChannelTranslationKeepsOriginalAndHostHistory() {
+        if (nativeTranslationExpected) tryCompare(audio.language, "available", true, 15000)
+        if (!audio.language.available) return
+        view.requestActivate(); tryCompare(view, "active", true)
+        verify(fixtures.startHost())
+        verify(channel.decide(remoteChannel.ownId, true))
+        verify(channel.join(channel.ownId, "127.0.0.1", channel.servicePort))
+        verify(remoteChannel.openChat(channel.ownId, "127.0.0.1", channel.servicePort))
+        tryCompare(channel, "chatReady", true)
+        tryCompare(remoteChannel, "chatReady", true)
+        view.chatExpanded = true
+        verify(audio.language.configureChannel(channel.ownId, false, "", false, ""))
+        // Same-language translation exercises native detection without installing models in CI.
+        const message = "**Hello**, this sentence belongs to the other member."
+        verify(remoteChannel.sendChat(message))
+        tryVerify(function() { return channel.messages.some(m => m.text === message) })
+        const record = channel.messages.find(m => m.text === message)
+        const row = visualChild(view.contentItem, "messageRow_" + record.sequence)
+        verify(row !== null)
+        const original = findChild(row, "originalText_" + record.sequence)
+        const toggle = findChild(row, "translationOriginal_" + record.sequence)
+        verify(!toggle.visible && !original.visible)
+        verify(audio.language.configureChannel(channel.ownId, true, "", false, ""))
+        tryCompare(row, "hasTranslation", true, 15000)
+        verify(toggle.visible && !original.visible)
+        verify(waitForRendering(toggle)); mouseClick(toggle)
+        tryCompare(original, "visible", true)
+        verify(original.text.includes("Hello, this sentence"))
+        compare(channel.messages.find(m => m.sequence === record.sequence).text, message)
+        verify(audio.language.configureChannel(channel.ownId, false, "", false, ""))
+        tryCompare(row, "hasTranslation", false)
+        verify(!original.visible && !toggle.visible)
     }
 
     function test_outgoingTranslationPreviewCannotSendAnOlderDraft() {
+        if (nativeTranslationExpected) tryCompare(audio.language, "available", true, 15000)
         if (!audio.language.supported || !audio.language.available) return
         verify(fixtures.startHost())
         verify(channel.join(channel.ownId, "127.0.0.1", channel.servicePort))
@@ -894,8 +1122,8 @@ TestCase {
         const panel = findChild(view, "chatPanel")
         const draft = findChild(panel, "chatDraft")
         const send = findChild(panel, "sendChat")
-        const target = audio.language.channelTarget(channel.ownId)
-        verify(audio.language.setChannelTarget(channel.ownId, "en"))
+        const previous = audio.language.channelPreferences(channel.ownId)
+        verify(audio.language.configureChannel(channel.ownId, true, "en", false, ""))
         draft.text = "This is a complete English sentence."
         tryCompare(send, "enabled", true, 15000)
         draft.text = "This is the newer English sentence."
@@ -906,10 +1134,10 @@ TestCase {
             waitForRendering(panel)
             verify(fixtures.saveWindow(view, imageDirectory + "/translation-preview.png"))
         }
-        mouseClick(send)
+        verify(fixtures.pressAccessible(send))
         tryCompare(draft, "text", "")
         verify(channel.messages.some(function(message) { return message.text.includes("newer English sentence") }))
-        verify(audio.language.setChannelTarget(channel.ownId, target))
+        verify(audio.language.configureChannel(channel.ownId, !!previous.messages, previous.outgoing || "", !!previous.voice, previous.voiceTarget || ""))
     }
 
     function test_memberInspectionReusesCopyableDetailsWithoutAdmissionActions() {
@@ -928,6 +1156,180 @@ TestCase {
         verify(!findChild(dialog, "denyInspectedRequest").visible)
     }
 
+    function test_privateMessagesUseMessagesFolderAndNoVoiceJoin() {
+        verify(fixtures.startHost())
+        verify(channel.decide(remoteChannel.ownId, true))
+        verify(channel.join(channel.ownId, "127.0.0.1", channel.servicePort))
+        verify(remoteChannel.join(channel.ownId, "127.0.0.1", channel.servicePort))
+        tryCompare(channel, "chatReady", true)
+        tryCompare(remoteChannel, "chatReady", true)
+        tryVerify(function() {
+            return channel.privateChats.some(function(item) {
+                return item.peerId === remoteChannel.ownId && item.online
+            })
+        }, 10000)
+        const contact = channel.privateChats.find(function(item) {
+            return item.peerId === remoteChannel.ownId && item.online
+        })
+        const hostId = view.privateHostId(contact)
+        const groupId = contact.deviceId
+        verify(hostId === channel.ownId,
+            "hostId=" + hostId + " ownId=" + channel.ownId + " contact=" + JSON.stringify(contact))
+        view.updateChannelRows()
+        verify(view.privateChatsForHost(hostId).some(function(item) { return item.id === contact.id }))
+        verify(view.privateFolderIsExpanded(groupId))
+        view.togglePrivateFolder(groupId)
+        verify(!view.privateFolderIsExpanded(groupId))
+        view.togglePrivateFolder(groupId)
+        verify(view.privateFolderIsExpanded(groupId))
+        view.chatExpanded = false
+        verify(view.joinHost(contact.id))
+        tryCompare(channel, "privateChat", true)
+        const panel = findChild(view, "chatPanel")
+        const send = findChild(panel, "sendChat")
+        const draft = findChild(panel, "chatDraft")
+        tryCompare(panel, "visible", true)
+        tryCompare(send, "visible", true)
+        draft.text = "Private hello"
+        verify(send.enabled)
+        verify(fixtures.pressAccessible(send))
+        tryCompare(draft, "text", "", 5000)
+        tryCompare(channel, "chatPending", false, 10000)
+        tryVerify(function() {
+            return remoteChannel.privateChats.some(function(item) {
+                return item.peerId === channel.ownId && item.online && item.hasMessages
+            })
+        }, 10000)
+        verify(waitForRendering(panel))
+        if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/private-chat.png"))
+        draft.text = "Unsent draft"
+        verify(fixtures.expireChat())
+        tryVerify(function() {
+            const item = channel.privateChats.find(function(entry) { return entry.id === contact.id })
+            return item && !item.hasMessages
+        }, 5000)
+        channel.closeChat(contact.id)
+        view.updateChannelRows()
+        verify(view.privateChatsForHost(hostId).some(function(item) { return item.id === contact.id }))
+        tryVerify(function() {
+            return findChild(view, "channelName_private-folder:" + groupId) === null
+                && findChild(view, "channelName_" + contact.id) === null
+        }, 5000)
+        verify(!panel.visible)
+        view.chatExpanded = false
+        verify(view.joinHost(contact.id))
+        tryCompare(channel, "privateChat", true)
+        tryCompare(panel, "visible", true)
+        compare(draft.text, "Unsent draft")
+    }
+
+    function test_blockedPrivateContactIsReachableFromHostMessagesMenu() {
+        verify(fixtures.startHost())
+        verify(channel.decide(remoteChannel.ownId, true))
+        verify(channel.join(channel.ownId, "127.0.0.1", channel.servicePort))
+        verify(remoteChannel.join(channel.ownId, "127.0.0.1", channel.servicePort))
+        tryCompare(channel, "chatReady", true)
+        tryVerify(function() {
+            return channel.privateChats.some(function(item) {
+                return item.peerId === remoteChannel.ownId && item.online
+            })
+        }, 10000)
+        const contact = channel.privateChats.find(function(item) {
+            return item.peerId === remoteChannel.ownId && item.online
+        })
+        view.selectedHost = channel.ownId
+        const menu = findChild(view, "channelMenu")
+        menu.popup()
+        const manage = findChild(view, "managePrivateMessages")
+        tryCompare(manage, "visible", true)
+        const dialog = findChild(view, "privateMessagesDialog")
+        verify(fixtures.pressAccessible(manage))
+        tryCompare(dialog, "visible", true)
+        verify(dialog.entries.some(function(item) { return item.id === contact.id }))
+        var toggle = null
+        tryVerify(function() {
+            toggle = findChild(dialog.contentItem, "togglePrivateBlock_" + contact.id)
+            return toggle !== null && toggle.visible
+        }, 5000)
+        verify(fixtures.pressAccessible(toggle))
+        tryVerify(function() {
+            const item = channel.privateChats.find(function(entry) { return entry.id === contact.id })
+            return item && item.blockedByMe
+        }, 10000)
+        tryVerify(function() {
+            const item = remoteChannel.privateChats.find(function(entry) { return entry.peerId === channel.ownId && entry.online })
+            return item && item.blocked
+        }, 10000)
+        verify(dialog.entries.find(function(item) { return item.id === contact.id }).blockedByMe)
+        verify(waitForRendering(dialog.contentItem))
+        if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/private-blocks.png"))
+        dialog.close(); menu.close()
+        verify(view.openPrivate(contact))
+        const panel = findChild(view, "chatPanel")
+        const send = findChild(panel, "sendChat")
+        const draft = findChild(panel, "chatDraft")
+        tryCompare(panel, "visible", true)
+        draft.text = "Blocked draft"
+        tryCompare(send, "enabled", false)
+        channel.closeChat(contact.id)
+        view.updateChannelRows()
+        view.selectedHost = channel.ownId
+        menu.popup()
+        dialog.hostId = channel.ownId
+        dialog.open()
+        tryCompare(dialog, "visible", true)
+        var unblock = null
+        tryVerify(function() {
+            unblock = findChild(dialog.contentItem, "togglePrivateBlock_" + contact.id)
+            return unblock !== null && unblock.visible
+        }, 5000)
+        verify(fixtures.pressAccessible(unblock))
+        tryVerify(function() {
+            const item = channel.privateChats.find(function(entry) { return entry.id === contact.id })
+            return item && !item.blockedByMe
+        }, 10000)
+        tryVerify(function() {
+            const item = remoteChannel.privateChats.find(function(entry) { return entry.peerId === channel.ownId && entry.online })
+            return item && !item.blocked
+        }, 10000)
+        dialog.close(); menu.close()
+    }
+
+    function test_channelMenuShowsBlockedDevicesAndAllowsUnblocking_data() {
+        return [{tag: "desktop", width: 520, height: 700}, {tag: "compact", width: 360, height: 580}]
+    }
+    function test_channelMenuShowsBlockedDevicesAndAllowsUnblocking(data) {
+        view.closeSettings()
+        view.width = data.width; view.height = data.height
+        verify(fixtures.startHost()); verify(fixtures.startRemoteHost())
+        verify(channel.setBlocked(remoteChannel.ownId, true))
+        view.selectedHost = channel.ownId
+        const menu = findChild(view, "channelMenu")
+        menu.popup(); tryCompare(menu, "opened", true)
+        const blocked = findChild(menu, "blockedDevices")
+        verify(blocked !== null && blocked.visible, "Blocked devices must be reachable from the channel menu")
+        view.requestActivate(); tryCompare(view, "active", true)
+        view.update(); verify(waitForRendering(blocked))
+        mouseClick(blocked)
+        const info = findChild(view, "channelInfoDialog")
+        tryCompare(info, "opened", true)
+        info.addresses = ["100.80.0.186:48764", "192.168.64.1:48764", "[fd6d:e9ed:ff65:3e44:104d:1e05:1885:d90d]:48764"]
+        view.update(); verify(waitForRendering(info.contentItem))
+        const unblock = visualChild(info.contentItem, "unblock_" + remoteChannel.ownId)
+        verify(unblock !== null)
+        tryVerify(function() {
+            const scroll = findChild(info, "channelInfoScroll")
+            const position = unblock.mapToItem(scroll, 0, 0)
+            return position.y >= 0 && position.y + unblock.height <= scroll.height
+        })
+        if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/blocked-devices-" + data.tag + ".png"))
+        mouseClick(unblock)
+        compare(channel.blockedClients.length, 0)
+        info.close(); menu.popup(); tryCompare(menu, "opened", true)
+        verify(!blocked.visible)
+        menu.close()
+    }
+
     function test_channelAndRequestDetailsCanBeCopied() {
         verify(fixtures.startHost())
         const info = openOwnChannelInfo()
@@ -942,7 +1344,13 @@ TestCase {
             compare(fixtures.clipboardText(), item.text)
             verify(item.readOnly)
         }
-        copy(findChild(info, "channelAddress"))
+        let addressCopy
+        tryVerify(function() { addressCopy = visualChild(info.contentItem, "copyChannelAddress"); return addressCopy !== null }, 1000, "The address has a direct copy action")
+        view.requestActivate(); tryCompare(view, "active", true)
+        view.update(); verify(waitForRendering(addressCopy))
+        mouseClick(addressCopy)
+        compare(fixtures.clipboardText(), visualChild(info.contentItem, "channelAddress").text)
+        copy(visualChild(info.contentItem, "channelAddress"))
         copy(findChild(info, "channelIdentity"))
         info.close()
         verify(fixtures.startRemoteHost())
@@ -1006,11 +1414,28 @@ TestCase {
         verify(!audio.setGainDb(100))
         compare(audio.gainDb, gain)
         if (!audio.inputAvailable) return
-        compare(audio.status, "Ungültige Verstärkung oder ungültiger Frequenzbereich")
+        compare(audio.inputStatus, "Ungültige Verstärkung oder ungültiger Frequenzbereich")
         verify(session.setLanguage("en"))
         verify(!audio.setGainDb(100))
-        compare(audio.status, "Invalid gain or frequency range")
+        compare(audio.inputStatus, "Invalid gain or frequency range")
         compare(audio.gainDb, gain)
+    }
+
+    function test_iosAudioSessionCapturesAndCanRestart() {
+        if (!nativeCaptureAcceptance) return
+        verify(audio.inputAvailable)
+        verify(audio.start())
+        tryCompare(audio, "running", true, 5000)
+        tryCompare(audio, "spectrumReady", true, 5000)
+        verify(audio.inputDb <= 0)
+        verify(audio.stop())
+        tryCompare(audio, "running", false, 5000)
+        compare(audio.spectrumReady, false)
+        verify(audio.start())
+        tryCompare(audio, "running", true, 5000)
+        tryCompare(audio, "spectrumReady", true, 5000)
+        verify(audio.stop())
+        tryCompare(audio, "running", false, 5000)
     }
 
     function test_languageChangeKeepsSettingsKeyboardFocus() {
@@ -1035,9 +1460,8 @@ TestCase {
         view.selectedHost = channel.ownId
         for (const scenario of [["channelInfoDialog", Dialog.Close, "Close"],
                                 ["newOwnChannelDialog", Dialog.Cancel, "Cancel"],
-                                ["recordingDialog", Dialog.Close, "Close"],
                                 ["microphonePermissionDialog", Dialog.Cancel, "Cancel"]]) {
-            if (scenario[0] === "recordingDialog") {
+            if (scenario[0] === "microphonePermissionDialog") {
                 view.openSettings(1)
                 tryCompare(findChild(view, "settingsDialog"), "opened", true)
             }
@@ -1178,16 +1602,266 @@ TestCase {
                 compare(anchor.y - list.contentY, positionBefore, "A new channel must not move the currently visible entry")
             }
             list.positionViewAtEnd()
-            waitForRendering(list)
-            const last = findChild(list, "discovered_" + "702f".padStart(64, "0"))
+            tryVerify(function() { return list.atYEnd })
+            const lastId = list.model[list.count - 1].id
+            tryVerify(function() { return findChild(list, "discovered_" + lastId) !== null })
+            const last = findChild(list, "discovered_" + lastId)
             verify(last !== null)
-            compare(findChild(last, "addDiscovered_" + "702f".padStart(64, "0")).text, "Add")
-            const position = last.mapToItem(list, 0, 0)
-            verify(position.y >= -1 && position.y + last.height <= list.height + 1)
+            compare(findChild(last, "addDiscovered_" + lastId).text, "Add")
+            waitForRendering(last)
+            const lastItem = list.itemAtIndex(list.count - 1)
+            verify(lastItem !== null)
+            const positionY = lastItem.y - list.contentY
+            verify(positionY >= -1 && positionY + lastItem.height <= list.height + 1)
             const address = findChild(view, "directAddress")
             const point = address.mapToItem(dialog.contentItem, 0, 0)
             verify(point.y >= 0 && point.y + address.height <= dialog.contentItem.height)
             if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/add-channel-scroll-" + size[0] + ".png"))
+        }
+    }
+
+    function test_platformSpecificLanguageControls() {
+        const apple = Qt.platform.os === "osx" || Qt.platform.os === "ios"
+        compare(audio.speechAvailable, apple)
+        compare(audio.language.supported, apple)
+        if (!apple) {
+            compare(audio.language.voices.length, 0)
+            verify(!audio.readBotMessages)
+            verify(!audio.setReadBotMessages(true))
+            verify(!audio.setBotVoice("system"))
+        }
+        view.openSettings(2)
+        const settings = findChild(view, "settingsDialog")
+        tryCompare(settings, "opened", true)
+        compare(findChild(settings, "readBotMessages").visible, apple)
+        if (!apple) {
+            for (const name of ["botVoiceChoice", "botVoiceName", "botVoiceDownloadHint", "botVoiceSettings"])
+                verify(!findChild(settings, name).visible, name + " must be hidden without native speech")
+        }
+        for (const name of ["playbackVolume", "musicVolume", "notificationVolume"])
+            verify(findChild(settings, name).visible)
+        settings.close()
+
+        view.memberOptions({id: "platform-test-member", name: "Robin"}, channel.ownId)
+        const member = findChild(view, "requestInfoDialog")
+        tryCompare(member, "opened", true)
+        verify(findChild(member, "memberLanguageControls") === null)
+        verify(findChild(member, "languageSystemSettings") === null)
+        verify(findChild(member, "memberVolume").visible)
+        member.close()
+
+        verify(fixtures.startHost())
+        verify(channel.join(channel.ownId, "127.0.0.1", channel.servicePort))
+        tryCompare(channel, "chatReady", true)
+        view.chatExpanded = true
+        verify(findChild(view, "translateDraft") === null)
+        view.selectedHost = channel.ownId
+        const menu = findChild(view, "channelMenu")
+        menu.popup(); tryCompare(menu, "opened", true)
+        compare(findChild(view, "channelTranslationControls").visible, apple)
+    }
+
+    function test_dockPreferenceIsMacOnlyAndKeepsVoiceState() {
+        view.openSettings(0)
+        const settings = findChild(view, "settingsDialog")
+        tryCompare(settings, "opened", true)
+        const choice = findChild(settings, "showInDock")
+        verify(choice !== null)
+        compare(choice.visible, Qt.platform.os === "osx")
+        if (!choice.visible) return
+        const original = session.showInDock
+        const muted = session.muted
+        try {
+            choice.checked = !original; choice.clicked()
+            compare(session.showInDock, !original)
+            compare(session.muted, muted)
+            settings.close(); view.openSettings(0)
+            tryCompare(settings, "opened", true)
+            compare(choice.checked, !original)
+        } finally { session.setShowInDock(original) }
+    }
+
+    function test_botVoiceCanBeSelectedAndReturnedToAutomatic() {
+        if (!audio.speechAvailable || !audio.outputAvailable) return
+        const enabled = audio.readBotMessages
+        const previousLanguage = session.language
+        const previousVoice = audio.botVoiceId
+        try {
+            verify(audio.setReadBotMessages(true))
+            view.openSettings(2)
+            const settings = findChild(view, "settingsDialog")
+            tryCompare(settings, "opened", true)
+            const choice = findChild(settings, "botVoiceChoice")
+            verify(choice !== null, "Bot narration needs an installed-voice selector")
+            verify(audio.setBotVoice(""))
+            compare(choice.currentIndex, 0)
+            verify(choice.count > 1, "Native speech test requires an installed voice")
+            const selected = choice.model[1].id
+            choice.currentIndex = 1; choice.activated(1)
+            compare(audio.botVoiceId, selected)
+            compare(audio.botVoice.id, selected)
+            verify(!findChild(settings, "botVoiceDownloadHint").visible, "An explicit installed voice must not prompt another download")
+            compare(fixtures.reloadedBotVoice(), selected)
+            verify(session.setLanguage("de"))
+            compare(audio.botVoice.id, selected)
+            verify(!audio.setBotVoice("not-an-installed-voice"))
+            compare(audio.botVoiceId, selected)
+            settings.close(); view.openSettings(2)
+            tryCompare(settings, "opened", true)
+            compare(choice.model[choice.currentIndex].id, selected)
+            choice.currentIndex = 0; choice.activated(0)
+            compare(audio.botVoiceId, "")
+            compare(fixtures.reloadedBotVoice(), "")
+            const available = audio.language.voices.filter(v => v.language.split("-")[0] === "de" && !v.novelty && !v.personal)
+            if (available.length) compare(audio.botVoice.language.split("-")[0], "de")
+            else compare(audio.botVoice.id, undefined)
+            verify(audio.setReadBotMessages(false))
+            verify(!choice.visible)
+            settings.close()
+        } finally {
+            if (previousVoice !== undefined) audio.setBotVoice(previousVoice)
+            session.setLanguage(previousLanguage)
+            audio.setReadBotMessages(enabled)
+        }
+    }
+
+    function test_botVoiceFollowsAppLanguage() {
+        if (!audio.speechAvailable) return
+        verify(audio.botVoice !== undefined, "Bot voice must expose the voice selected for the app language")
+        const previousLanguage = session.language
+        try {
+            for (const language of ["en", "de", "en"]) {
+                verify(session.setLanguage(language))
+                const available = audio.language.voices.filter(v => v.language.split("-")[0] === language && !v.novelty && !v.personal)
+                if (available.length) {
+                    tryVerify(() => audio.botVoice.language && audio.botVoice.language.split("-")[0] === language)
+                    compare(audio.botVoice.quality, Math.max(...available.map(v => v.quality)))
+                } else compare(audio.botVoice.id, undefined)
+            }
+        } finally { session.setLanguage(previousLanguage) }
+    }
+
+    function test_botVoiceDownloadSettingsAndOptIn() {
+        if (!audio.speechAvailable || !audio.outputAvailable) return
+        const enabled = audio.readBotMessages
+        const previousLanguage = session.language
+        try {
+            verify(audio.setReadBotMessages(true))
+            view.openSettings(2)
+            const settings = findChild(view, "settingsDialog")
+            tryCompare(settings, "opened", true)
+            const name = findChild(settings, "botVoiceName")
+            const hint = findChild(settings, "botVoiceDownloadHint")
+            const button = findChild(settings, "botVoiceSettings")
+            for (const language of ["en", "pcm"]) {
+                verify(session.setLanguage(language))
+                compare(hint.visible, !(audio.botVoice.quality >= 2))
+                compare(name.visible, !!audio.botVoice.name)
+                if (name.visible) verify(name.text.indexOf(audio.botVoice.name) !== -1)
+                if (!audio.botVoice.id) verify(!fixtures.acceptsBotMessage("Ari joined.", true, false))
+            }
+            openedLinks.clear()
+            const scroll = findChild(settings, "audioSettingsScroll").contentItem
+            tryVerify(function() {
+                waitForRendering(scroll)
+                const point = button.mapToItem(scroll, 0, 0)
+                scroll.contentY = Math.max(0, Math.min(scroll.contentHeight - scroll.height,
+                    scroll.contentY + point.y - (scroll.height - button.height) / 2))
+                const visible = button.mapToItem(scroll, 0, 0)
+                return visible.y >= 0 && visible.y + button.height <= scroll.height
+            }, 5000, "Voice settings must be inside the scroll viewport before clicking")
+            mouseClick(button)
+            tryCompare(openedLinks, "count", 1)
+            compare(openedLinks.signalArguments[0][0], Qt.platform.os === "ios"
+                ? "https://support.apple.com/111798"
+                : "x-apple.systempreferences:com.apple.preference.universalaccess?SpokenContent")
+            verify(audio.setReadBotMessages(false))
+            verify(!hint.visible && !name.visible && !button.visible)
+            settings.close()
+        } finally {
+            session.setLanguage(previousLanguage)
+            audio.setReadBotMessages(enabled)
+        }
+    }
+
+    function test_botSpeechRespectsOutputMuteVolumeAndOptIn() {
+        if (!audio.outputAvailable || !audio.speechAvailable) {
+            verify(!audio.setReadBotMessages(true))
+            verify(!fixtures.acceptsBotMessage("Ari joined.", true, false))
+            return
+        }
+        const enabled = audio.readBotMessages
+        const volume = audio.notificationVolume
+        try {
+            verify(audio.setNotificationVolume(0.5))
+            verify(audio.setReadBotMessages(false))
+            verify(!fixtures.acceptsBotMessage("Ari joined.", true, false))
+            verify(audio.setReadBotMessages(true))
+            verify(!fixtures.acceptsBotMessage("Ari joined.", false, false))
+            verify(!fixtures.acceptsBotMessage("Ari joined.", true, true))
+            verify(fixtures.acceptsBotMessage("Ari joined.", true, false))
+            verify(!fixtures.acceptsBotMessage("   ", true, false))
+            verify(audio.setNotificationVolume(0))
+            verify(!fixtures.acceptsBotMessage("Ari joined.", true, false))
+            verify(audio.setNotificationVolume(0.5))
+            verify(fixtures.acceptsBotMessage("Ari joined.", true, false))
+        } finally {
+            audio.setReadBotMessages(enabled)
+            audio.setNotificationVolume(volume)
+        }
+    }
+
+    function test_audioSettingsKeepInputAndOutputDiagnosticsSeparate() {
+        view.openSettings(2)
+        const settings = findChild(view, "settingsDialog")
+        tryCompare(settings, "opened", true)
+        const panel = findChild(settings, "audioSettings")
+        function showsText(item, text) {
+            if (!item.visible) return false
+            if (item.text === text) return true
+            for (const child of item.children || []) if (showsText(child, text)) return true
+            return false
+        }
+        verify(audio.stop())
+        verify(!showsText(panel, "Microphone preview is off."), "Output must not show the microphone status")
+        verify(!audio.selectOutput("missing-output-device"))
+        verify(showsText(panel, "The selected audio device is no longer available."))
+        verify(audio.stop())
+        verify(showsText(panel, "The selected audio device is no longer available."), "Stopping input must not hide an output error")
+        view.settingsPage = 1
+        verify(audio.stop())
+        verify(showsText(panel, "Microphone preview is off."))
+        verify(!showsText(panel, "The selected audio device is no longer available."))
+        view.settingsPage = 2
+        const muted = session.deafened
+        try {
+            verify(session.setDeafened(true))
+            const enable = findChild(settings, "enableOutput")
+            tryCompare(enable, "visible", true)
+            compare(enable.text, "Enable speakers")
+            findChild(settings, "audioSettingsScroll").contentItem.contentY = 0
+            waitForRendering(enable)
+            mouseClick(enable)
+            tryCompare(session, "deafened", false)
+            verify(!enable.visible)
+        } finally { session.setDeafened(muted) }
+        verify(audio.selectOutput(""))
+        compare(audio.outputStatus, "")
+    }
+
+    function test_audioTabSwitchStartsAtDeviceSelection() {
+        view.width = 460; view.height = 360
+        view.openSettings(1)
+        const settings = findChild(view, "settingsDialog")
+        tryCompare(settings, "opened", true)
+        const scroll = findChild(settings, "audioSettingsScroll").contentItem
+        for (const page of [2, 1, 2]) {
+            tryVerify(function() { return scroll.contentHeight > scroll.height + 40 })
+            scroll.contentY = scroll.contentHeight - scroll.height
+            verify(scroll.contentY > 40)
+            mouseClick(findChild(settings, "settingsSection").itemAt(page))
+            tryCompare(view, "settingsPage", page)
+            tryCompare(scroll, "contentY", 0)
         }
     }
 
@@ -1236,11 +1910,9 @@ TestCase {
         view.settingsPage = 1
         tryCompare(session, "available", false)
         verify(findChild(settings, "previewMicrophone") === null, "Input tab owns preview")
-        const guided = findChild(settings, "guidedTest")
-        reveal(guided); mouseClick(guided)
-        tryCompare(view, "recordingMode", true)
+        verify(findChild(settings, "guidedTest") === null, "Input settings need no recording wizard")
+        verify(findChild(view, "recordingDialog") === null)
         view.settingsPage = 2
-        compare(view.recordingMode, false)
         verify(!session.available)
         for (const name of ["playbackVolume", "musicVolume", "notificationVolume"])
             verify(findChild(settings, name) !== null, "Output slider: " + name)
@@ -1428,9 +2100,61 @@ TestCase {
         audio.setGainAutomatic(gainAuto); audio.setHighPassAutomatic(cutAuto)
     }
 
+    function test_inputWheelScrollsWithFeedback_data() {
+        return [
+            {tag: "spectrum", target: "frequencyChart"},
+            {tag: "meter", target: "voiceMeter"},
+            {tag: "slider", target: "voiceThreshold"}
+        ]
+    }
+    function test_inputWheelScrollsWithFeedback(data) {
+        view.width = 460; view.height = 560
+        view.openSettings(1)
+        const scroll = findChild(view, "audioSettingsScroll").contentItem
+        const item = findChild(view, data.target)
+        verify(item !== null)
+        verify(waitForRendering(item))
+        tryVerify(function() { return scroll.contentHeight > scroll.height + 100 })
+        scroll.contentY = 0
+        const before = audio.activationThresholdDb, automatic = audio.activationAutomatic
+        const chart = findChild(view, "frequencyChart")
+        const originalY = chart.mapToItem(view.contentItem, 0, 0).y
+        mouseWheel(item, item.width / 2, item.height / 2, 0, -120)
+        tryVerify(function() { return scroll.contentY > 1 }, 1000, "Wheel must scroll over " + data.tag)
+        tryCompare(scroll, "moving", false)
+        const after = scroll.contentY
+        verify(chart.mapToItem(view.contentItem, 0, 0).y < originalY - 1, "The diagram must scroll away to make room for settings")
+        mouseWheel(scroll, scroll.width / 2, scroll.height / 2, 0, 120)
+        tryVerify(function() { return scroll.contentY < after - 1 }, 1000)
+        tryCompare(scroll, "moving", false)
+        compare(audio.activationThresholdDb, before)
+        compare(audio.activationAutomatic, automatic)
+        verify(Math.abs(chart.mapToItem(view.contentItem, 0, 0).y - originalY + scroll.contentY) < 1)
+    }
+    function test_inputTouchpadScrollsAndStaysWithinBounds() {
+        view.width = 360; view.height = 560
+        view.openSettings(1)
+        tryCompare(findChild(view, "settingsDialog"), "opened", true)
+        const chart = findChild(view, "frequencyChart")
+        const scroll = findChild(view, "audioSettingsScroll").contentItem
+        verify(waitForRendering(chart))
+        tryVerify(function() { return scroll.contentHeight > scroll.height + 100 })
+        scroll.cancelFlick()
+        scroll.contentY = 0
+        verify(fixtures.scrollPixels(chart, 0, -40))
+        tryCompare(scroll, "contentY", 40)
+        verify(fixtures.scrollPixels(chart, 20, 0))
+        compare(scroll.contentY, 40, "Horizontal gestures must not scroll vertically")
+        verify(fixtures.scrollPixels(chart, 0, 10000))
+        tryCompare(scroll, "contentY", 0)
+        verify(fixtures.scrollPixels(chart, 0, -10000))
+        tryVerify(function() { return Math.abs(scroll.contentY - (scroll.contentHeight - scroll.height)) < 1 })
+    }
+
     function test_inputCurveTracksGainWhilePreviewIsStopped() {
         view.openSettings(1)
         const chart = findChild(view, "frequencyChart")
+        verify(chart !== null)
         const gain = findChild(view, "microphoneGain")
         const original = audio.gainDb
         const wasAutomatic = audio.gainAutomatic
@@ -1438,7 +2162,7 @@ TestCase {
             verify(!findChild(gain, "valueControl").enabled)
             verify(!audio.setGainDb(original + 3))
             compare(audio.gainDb, original)
-            compare(chart.active, false)
+            compare(chart.response.length, 256)
             return
         }
         audio.setGainDb(original)
@@ -1447,15 +2171,19 @@ TestCase {
         findChild(gain, "valueControl").value = next
         compare(audio.gainDb, next)
         verify(Math.abs(chart.response[128] - response[128] - (next - original)) < 0.01)
-        compare(chart.active, false)
+        compare(chart.response.length, 256)
         compare(findChild(gain, "automaticControl").visible, true)
         compare(audio.gainAutomatic, false)
         audio.setGainDb(original)
         audio.setGainAutomatic(wasAutomatic)
         waitForRendering(chart)
         const chartY = chart.mapToItem(view.contentItem, 0, 0).y
-        reveal(findChild(view, "chooseRemoteKey"))
-        compare(chart.mapToItem(view.contentItem, 0, 0).y, chartY, "Spectrum stays visible while controls scroll")
+        const meter = findChild(view, "voiceMeter")
+        verify(meter !== null)
+        const meterY = meter.mapToItem(view.contentItem, 0, 0).y
+        reveal(findChild(view, "choosePttKey"))
+        verify(chart.mapToItem(view.contentItem, 0, 0).y < chartY, "Spectrum scrolls with controls")
+        verify(meter.mapToItem(view.contentItem, 0, 0).y < meterY, "Voice admission scrolls with controls")
         for (const size of [[520, 740], [360, 560]]) {
             view.width = size[0]; view.height = size[1]
             findChild(view, "audioSettingsScroll").contentItem.contentY = 0
@@ -1469,42 +2197,79 @@ TestCase {
         view.openSettings(1)
         const control = findChild(view, "echoCancellation")
         verify(control !== null)
-        const original = audio.echoCancellation
-        compare(control.checked, original)
+        const automatic = findChild(control, "automaticControl")
+        const slider = findChild(control, "valueControl")
+        verify(automatic !== null && slider !== null)
+        const original = audio.echoStrength
+        const wasAutomatic = audio.echoAutomatic
+        const filterCurve = audio.filterResponse.slice()
+        compare(automatic.checked, wasAutomatic)
+        compare(slider.value, original)
         const reference = findChild(view, "echoReference")
-        verify(reference !== null)
         compare(reference.text, audio.echoReference)
-        compare(reference.visible, audio.echoReference.length > 0)
         if (!audio.inputAvailable) {
             verify(!control.enabled)
-            verify(!audio.setEchoCancellation(!original))
-            compare(audio.echoCancellation, original)
+            verify(!audio.setEchoStrength(0.8))
+            verify(!audio.setEchoAutomatic(false))
+            compare(audio.echoStrength, original)
+            compare(audio.echoAutomatic, wasAutomatic)
             return
         }
-        reveal(control)
-        mouseClick(control)
-        compare(audio.echoCancellation, !original)
-        compare(control.checked, !original)
-        if (!audio.echoCancellation) compare(audio.echoReference, "")
-        // Accessibility and keyboard changes use the same persisted setter.
-        control.checked = original
-        compare(audio.echoCancellation, original)
+        try {
+            reveal(slider)
+            slider.forceActiveFocus()
+            keyClick(Qt.Key_Right)
+            verify(audio.echoStrength > original)
+            compare(audio.echoAutomatic, false)
+            compare(automatic.checked, false)
+            verify(audio.echoCancellation)
+            reveal(slider)
+            mouseClick(slider, slider.width / 4, slider.height / 2)
+            verify(audio.echoStrength > 0 && audio.echoStrength < 0.5, "Pointer changes the echo strength")
+            slider.value = 1
+            compare(audio.echoStrength, 1)
+            compare(audio.filterResponse, filterCurve, "Echo suppression has no static frequency response")
+            slider.value = 0
+            compare(audio.echoStrength, 0)
+            verify(!audio.echoCancellation)
+            compare(audio.echoReference, "")
+            reveal(automatic)
+            mouseClick(automatic)
+            compare(audio.echoAutomatic, true)
+            compare(control.valueText, "50 %", "Auto still shows the relative strength setting")
+            compare(audio.echoStrength, 0.5)
+            compare(slider.value, 0.5)
+            verify(audio.echoCancellation)
+            verify(!audio.setEchoStrength(NaN))
+            verify(!audio.setEchoStrength(1.1))
+            compare(audio.echoAutomatic, true)
+            compare(slider.value, 0.5)
+            view.width = 360; view.height = 560
+            reveal(control)
+            waitForRendering(control)
+            verify(slider.width > 200 && slider.width < view.width)
+            if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/echo-settings.png"))
+        } finally {
+            audio.setEchoStrength(original)
+            audio.setEchoAutomatic(wasAutomatic)
+        }
         verify(!session.available)
         verify(!audio.running)
     }
 
-    function test_remoteKeyIsAlwaysInInputWithoutARemoteSettingsTab() {
+    function test_onePttKeyInInputWithoutARemoteBinding() {
         view.openSettings(1)
         const settings = findChild(view, "settingsDialog")
         tryCompare(settings, "opened", true)
         compare(findChild(settings, "settingsSection").count, 4)
         verify(findChild(view, "remotePage") === null)
-        const remoteKey = findChild(view, "chooseRemoteKey")
-        verify(remoteKey !== null)
-        reveal(remoteKey)
-        verify(remoteKey.visible && remoteKey.enabled)
-        mouseClick(remoteKey)
-        tryCompare(pttKey, "capturingRemote", true)
+        verify(findChild(view, "chooseRemoteKey") === null)
+        const keyButton = findChild(view, "choosePttKey")
+        verify(keyButton !== null)
+        reveal(keyButton)
+        verify(keyButton.visible && keyButton.enabled)
+        mouseClick(keyButton)
+        tryCompare(pttKey, "capturing", true)
         keyClick(Qt.Key_Escape)
         tryCompare(pttKey, "capturing", false)
         verify(findChild(view, "enableGlobalKeys") === null)
@@ -1515,7 +2280,109 @@ TestCase {
         compare(session.pushToTalk, false)
     }
 
-    function test_settingsTabsHostOptionsAndRecordingPopup() {
+    function test_remoteSetupExplainsBothDirectionsWithoutGrantingAccess() {
+        view.openSettings(1)
+        const setup = findChild(view, "configureRemoteControl")
+        verify(setup !== null, "Input must expose remote setup beside the PTT keys")
+        reveal(setup); mouseClick(setup)
+        const dialog = findChild(view, "remoteTargetsDialog")
+        tryCompare(dialog, "opened", true)
+        verify(findChild(dialog, "remoteClientsEmpty").visible)
+        verify(findChild(dialog, "remoteTargetsEmpty").visible)
+        compare(channel.controllers.length, 0)
+        compare(channel.controlRequests.length, 0)
+        verify(!channel.remoteMode)
+        dialog.close()
+        verify(findChild(view, "settingsDialog").visible)
+    }
+
+    function test_remoteSetupGrantsConnectedDeviceAndControlsPtt_data() {
+        return [{tag: "main", extra: false, width: 520, language: "en"},
+                {tag: "extra-narrow", extra: true, width: 360, language: "de"},
+                {tag: "rtl-narrow", extra: false, width: 320, language: "ar"}]
+    }
+    function test_remoteSetupGrantsConnectedDeviceAndControlsPtt(data) {
+        verify(fixtures.startHost())
+        verify(channel.join(channel.ownId, "127.0.0.1", channel.servicePort))
+        tryCompare(channel, "chatReady", true)
+        let owner = channel
+        if (data.extra) {
+            verify(fixtures.setSupporter(true))
+            owner = channel.ownChannel(channel.addOwnedChannel("Remote setup room"))
+            verify(owner !== null)
+            verify(remoteChannel.openAddress("127.0.0.1:" + channel.servicePort))
+            tryCompare(remoteChannel, "directBusy", false)
+        }
+        view.width = data.width
+        session.setLanguage(data.language)
+        view.openSettings(1)
+        const setup = findChild(view, "configureRemoteControl")
+        verify(setup !== null, "Input must expose remote setup beside the PTT keys")
+        reveal(setup)
+        const inputScroll = findChild(view, "audioSettingsScroll")
+        const position = setup.mapToItem(inputScroll, 0, 0)
+        verify(position.x >= 0 && position.x + setup.width <= inputScroll.width + 1, "Setup stays inside narrow input settings")
+        mouseClick(setup)
+        const dialog = findChild(view, "remoteTargetsDialog")
+        tryCompare(dialog, "opened", true)
+        verify(owner.decide(remoteChannel.ownId, true))
+        verify(remoteChannel.openChat(owner.channelId, "127.0.0.1", channel.servicePort))
+        tryCompare(remoteChannel, "chatReady", true)
+        const grantName = "remotePermission_" + remoteChannel.ownId
+        tryVerify(function() { return visualChild(dialog.contentItem, grantName) !== null }, 5000, JSON.stringify(dialog.members))
+        let grant = visualChild(dialog.contentItem, grantName)
+        verify(!grant.checked)
+        verify(!findChild(dialog, "remoteClientsEmpty").visible)
+        verify(findChild(dialog, "remotePermission_" + channel.ownId) === null)
+        mouseClick(grant)
+        tryVerify(function() { return remoteChannel.remoteOffers.length === 1 })
+        compare(channel.controllers.length, 1)
+        compare(channel.controlRequests.length, 0)
+        if (data.extra) {
+            verify(channel.decide(remoteChannel.ownId, true))
+            verify(remoteChannel.openChat(channel.ownId, "127.0.0.1", channel.servicePort))
+            tryCompare(remoteChannel, "chatReady", true)
+            compare(dialog.members.length, 1, "One permission per device, even across multiple channels")
+        }
+        if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/remote-setup-" + data.tag + ".png"))
+        dialog.close(); view.closeSettings()
+        controllerView.show(); controllerView.openSettings(1)
+        tryCompare(findChild(controllerView, "settingsDialog"), "opened", true)
+        const remoteSetup = findChild(controllerView, "configureRemoteControl")
+        reveal(remoteSetup, controllerView)
+        mouseClick(remoteSetup)
+        const choices = findChild(controllerView, "remoteTargetsDialog")
+        tryCompare(choices, "opened", true)
+        const target = visualChild(choices.contentItem, "remoteTarget_" + remoteChannel.remoteOffers[0].id)
+        verify(target !== null)
+        mouseClick(target)
+        tryCompare(remoteChannel, "remoteAllowed", true)
+        tryCompare(choices, "opened", false)
+        tryCompare(findChild(controllerView, "settingsDialog"), "opened", false)
+        verify(remoteSession.available)
+        verify(!remoteChannel.joined)
+        session.setMuted(false); session.setPushToTalk(true)
+        tryVerify(function() { return findChild(controllerView, "remoteToggle").text.includes(session.userName) })
+        controllerView.touchControls = true
+        const ptt = findChild(controllerView, "pttButton")
+        tryCompare(ptt, "visible", true)
+        mousePress(ptt)
+        tryCompare(session, "pttHeld", true)
+        verify(!remoteSession.transmissionAllowed)
+        mouseRelease(ptt)
+        tryCompare(session, "pttHeld", false)
+        tryVerify(function() { return remoteChannel.setRemoteMode(false) }, 5000, "Wait for the target's release acknowledgement before leaving remote mode")
+        controllerView.close()
+        view.openSettings(1); reveal(setup); mouseClick(setup)
+        tryCompare(dialog, "opened", true)
+        grant = visualChild(dialog.contentItem, grantName)
+        verify(grant !== null && grant.checked, "Disconnected controllers remain revocable")
+        mouseClick(grant)
+        tryCompare(channel, "controllers", [])
+        dialog.close(); view.closeSettings()
+    }
+
+    function test_settingsTabsAndHostOptions() {
         verify(fixtures.startHost())
         const info = openOwnChannelInfo()
         const ttl = findChild(view, "messageLifetime")
@@ -1535,18 +2402,6 @@ TestCase {
         tryCompare(settings, "opened", true)
         mouseClick(visualChild(settings.contentItem, "settingsTab_1"))
         tryCompare(view, "settingsPage", 1)
-        const guided = findChild(settings, "guidedTest")
-        reveal(guided); mouseClick(guided)
-        const wizard = findChild(view, "recordingDialog")
-        tryCompare(wizard, "opened", true)
-        compare(audio.recording.step, 0)
-        verify(!audio.recording.active)
-        verify(!audio.recording.reviewing)
-        verify(!session.available)
-        verify(findChild(wizard, "startRecordingStep").visible)
-        if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/guided-recording-step.png"))
-        wizard.close()
-        tryCompare(view, "recordingMode", false)
         settings.close()
         tryCompare(session, "available", true)
     }
@@ -2245,6 +3100,32 @@ TestCase {
         view.closeSettings()
     }
 
+    function test_radioValidationStaysWithRadioControls() {
+        verify(fixtures.startHost())
+        view.selectedHost = channel.ownId
+        const browser = findChild(view, "radioBrowser")
+        browser.open()
+        tryCompare(browser, "opened", true)
+        verify(fixtures.pressAccessible(findChild(view, "addStation")))
+        const editor = findChild(view, "stationEditor")
+        tryCompare(editor, "opened", true)
+        findChild(view, "stationName").text = "Invalid test station"
+        findChild(view, "stationUrl").text = "not-a-stream"
+        verify(fixtures.pressAccessible(findChild(view, "saveStation")))
+        tryVerify(function() { return radio.error.length > 0 })
+        function showsError(item) {
+            if (!item.visible) return false
+            if (item.text === radio.error) return true
+            return (item.children || []).some(showsError)
+        }
+        verify(showsError(editor.contentItem))
+        editor.close()
+        verify(showsError(browser.contentItem))
+        browser.close()
+        const info = openOwnChannelInfo()
+        verify(!showsError(info.contentItem), "A rejected stream URL must not appear as a channel configuration error")
+    }
+
     function test_profileCanBeEditedWithoutMutingVoice() {
         session.setMuted(false)
         const previous = session.userName
@@ -2343,9 +3224,13 @@ TestCase {
         verify(remoteChannel.decide(channel.ownId, true))
         verify(remoteChannel.setHostPassword("remote secret"))
         tryCompare(remoteChannel, "passwordBusy", false)
+        const discovery = findChild(view, "discoverDialog")
+        discovery.open()
+        tryCompare(discovery, "opened", true)
         verify(channel.join(remoteChannel.ownId, "127.0.0.1", remoteChannel.servicePort))
         const dialog = findChild(view, "joinPasswordDialog")
         tryCompare(dialog, "opened", true)
+        tryCompare(discovery, "opened", false)
         const value = findChild(dialog, "joinPasswordValue")
         compare(value.echoMode, TextInput.Password)
         value.text = "remote secret"
@@ -2483,7 +3368,7 @@ TestCase {
         const remoteInfo = findChild(controllerView, "requestInfoDialog")
         tryCompare(remoteInfo, "opened", true)
         verify(!findChild(remoteInfo, "memberVolume").visible)
-        verify(!findChild(remoteInfo, "memberLanguageControls").visible)
+        verify(findChild(remoteInfo, "memberLanguageControls") === null)
         verify(!findChild(remoteInfo, "memberActions").visible)
         remoteInfo.close(); tryCompare(remoteInfo, "visible", false)
         tryVerify(function() {
@@ -2494,9 +3379,13 @@ TestCase {
         verify(!controllerView.header)
         const targetName = findChild(controllerView, "remoteTargetName")
         verify(targetName && targetName.visible)
-        compare(targetName.text, remoteChannel.controlTargetName)
-        const targetPosition = targetName.mapToItem(controllerView.footer, 0, 0)
-        verify(targetPosition.y >= 0 && targetPosition.y + targetName.height <= controllerView.footer.height)
+        const context = findChild(controllerView, "remoteContext")
+        verify(context && context.visible)
+        compare(findChild(context, "remoteContextTitle").text, "Remote control")
+        compare(targetName.text, remoteChannel.remoteView.name)
+        verify(session.setUserName("Willow Remote"))
+        tryCompare(targetName, "text", "Willow Remote")
+        compare(findChild(context, "remoteContextAvatar").name, "Willow Remote")
         verify(!findChild(controllerView, "addChannel").visible)
         verify(!findChild(controllerView, "openSettings").visible)
         mouseClick(findChild(controllerView, "mute"))
@@ -2545,10 +3434,19 @@ TestCase {
             const updated = visualChild(controllerView.contentItem, "channelAvatar_" + channel.ownId + "_" + channel.ownId)
             return updated !== null && updated.stateRow === 2 && updated.activity === 0
         })
-        if (imageDirectory.length > 0) fixtures.saveWindow(controllerView, imageDirectory + "/remote-chat.png")
+        for (const size of [[560, 780], [320, 568]]) {
+            controllerView.width = size[0]; controllerView.height = size[1]
+            controllerView.update()
+            verify(waitForRendering(context))
+            verify(context.width <= controllerView.width)
+            verify(targetName.width > 0)
+            if (imageDirectory.length > 0) verify(fixtures.saveWindow(controllerView,
+                imageDirectory + "/remote-context-" + size[0] + ".png"))
+        }
         controllerView.chatExpanded = false
         mouseClick(findChild(controllerView, "remoteToggle"))
         tryCompare(remoteChannel, "remoteMode", false)
+        verify(!context.visible)
         verify(channel.decideControl(remoteChannel.ownId, false))
         session.setDeafened(false)
     }
@@ -2653,7 +3551,15 @@ TestCase {
         tryVerify(function() { return other.message.avatarId === "mechanic" })
         verify(remoteSession.setUserName(previousRemoteName)); verify(remoteSession.setAvatar("courier"))
         tryVerify(function() { return other.message.name === previousRemoteName })
-        compare(findChild(view, "audioQuality").bitrate, channel.receiveAudioBitrate)
+        const quality = findChild(view, "audioQuality")
+        compare(quality.bitrate, channel.receiveAudioBitrate)
+        verify([8, 12, 20, 32, 64, 128].includes(quality.bitrate))
+        if (data.language === "en") {
+            const expectedQuality = quality.bitrate >= 32 ? "High"
+                : quality.bitrate === 20 ? "Balanced"
+                : quality.bitrate === 12 ? "Low" : "Minimum"
+            compare(quality.text, expectedQuality)
+        }
         history.scrollTo(own.y)
         tryVerify(function() { return fixtures.portraitHasDetail(findChild(own, "messageAvatar_" + channel.ownId), false) }, 5000, "Own portrait is rendered")
         history.scrollTo(other.y)
@@ -3163,6 +4069,7 @@ TestCase {
         }
         session.setPushToTalk(true)
         session.setMuted(false)
+        view.touchControls = true
         const button = findChild(view, "pttButton")
         tryCompare(button, "visible", true)
         const press = touchEvent(button)
@@ -3304,7 +4211,14 @@ TestCase {
         compare(channel.messages[0].text, "Scroll fixture 0")
     }
 
+    function test_desktopHasNoTouchPttButton() {
+        if (Qt.platform.os === "ios" || Qt.platform.os === "android") return
+        session.setPushToTalk(true)
+        verify(!findChild(view, "pttButton").visible, "Desktop PTT uses the configured shortcut")
+    }
+
     function test_pushToTalkPreservesMuteAndReleasesOnKeyUp() {
+        view.touchControls = true
         view.width = 400
         const mode = findChild(view, "pushToTalkMode")
         const button = findChild(view, "pttButton")
@@ -3379,6 +4293,34 @@ TestCase {
         channel.stopHost()
         view.width = 520
         view.height = 700
+    }
+
+    function test_teamSpeakAddressUsesTheSameAddDialog() {
+        const dialog = findChild(view, "discoverDialog")
+        dialog.open()
+        tryCompare(dialog, "opened", true)
+        const address = findChild(view, "directAddress")
+        const add = findChild(view, "joinAddress")
+        verify(address && add)
+        verify(!findChild(view, "serverProtocol"))
+        verify(!findChild(view, "teamSpeakPassword"))
+        address.text = "localhost:65536"
+        tryCompare(add, "enabled", true)
+        for (const size of [[360, 420], [520, 700]]) {
+            view.width = size[0]; view.height = size[1]
+            verify(waitForRendering(dialog.contentItem))
+            for (const control of [address, add]) {
+                const position = control.mapToItem(dialog.contentItem, 0, 0)
+                verify(position.x >= 0 && position.x + control.width <= dialog.contentItem.width + 1)
+                verify(position.y >= 0 && position.y + control.height <= dialog.contentItem.height + 1)
+            }
+            mouseClick(add)
+            tryVerify(function() { return channel.status.includes("valid host or IP address") })
+            if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/add-teamspeak-" + size[0] + ".png"))
+        }
+        verify(!channel.joined)
+        verify(dialog.opened)
+        dialog.close()
     }
 
     function test_directAddressControlsAndErrors() {

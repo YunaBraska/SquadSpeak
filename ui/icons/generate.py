@@ -1,17 +1,27 @@
 #!/usr/bin/env python3
-"""Render the canonical SVG into the checked-in desktop icon formats."""
+"""Render the canonical artwork into the checked-in application icon formats."""
 from pathlib import Path
+import base64
 import struct
 import subprocess
 
 
 root = Path(__file__).resolve().parent
+source = (root / "app-source.png").read_bytes()
+if source[:8] != b"\x89PNG\r\n\x1a\n":
+    raise ValueError("The source artwork must be a PNG.")
+width, height = struct.unpack(">II", source[16:24])
+if width != height or width < 1024:
+    raise ValueError("The source artwork must be square and at least 1024 pixels.")
+svg = (f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}">'
+       f'<image width="{width}" height="{height}" href="data:image/png;base64,'
+       + base64.b64encode(source).decode("ascii") + '"/></svg>').encode("utf-8")
 sizes = (16, 32, 48, 64, 128, 256, 512, 1024)
 images = {}
 for size in sizes:
     images[size] = subprocess.run(
-        ["rsvg-convert", "--width", str(size), "--height", str(size), str(root / "app.svg")],
-        stdout=subprocess.PIPE, check=True).stdout
+        ["rsvg-convert", "--width", str(size), "--height", str(size)],
+        input=svg, stdout=subprocess.PIPE, check=True).stdout
     if images[size][:8] != b"\x89PNG\r\n\x1a\n":
         raise ValueError("The SVG renderer did not produce a PNG.")
 (root / "app.png").write_bytes(images[256])

@@ -36,14 +36,6 @@
             <translation>మీ సిస్టమ్ యొక్క గోప్యతా సెట్టింగ్‌లను తెరిచి, స్క్వాడ్‌స్పీక్‌కు మైక్రోఫోన్ అనుమతిని ఇవ్వండి.</translation>
         </message>
         <message>
-            <source>Microphone analysis active. Test audio stays on this computer.</source>
-            <translation>మైక్రోఫోన్ విశ్లేషణ జరుగుతోంది. పరీక్ష ఆడియో ఈ కంప్యూటర్‌లోనే ఉంటుంది.</translation>
-        </message>
-        <message>
-            <source>Finish the test recording before changing devices.</source>
-            <translation>పరికరాలను మార్చే ముందు పరీక్ష రికార్డింగ్‌ను పూర్తి చేయండి.</translation>
-        </message>
-        <message>
             <source>The output format is not supported.</source>
             <translation>ఈ అవుట్‌పుట్ ఫార్మాట్ మద్దతు లేదు.</translation>
         </message>
@@ -68,32 +60,12 @@
             <translation>పరీక్ష ధ్వనిని ప్లే చేయలేకపోయింది.</translation>
         </message>
         <message>
-            <source>The microphone has provided no data for five seconds. Recording discarded.</source>
-            <translation>మైక్రోఫోన్ ఐదు సెకన్ల పాటు ఎటువంటి డేటాను అందించలేదు. రికార్డింగ్ తొలగించబడింది.</translation>
-        </message>
-        <message>
-            <source>The microphone was interrupted or changed. Recording discarded.</source>
-            <translation>మైక్రోఫోన్ అంతరాయం కలిగింది లేదా మార్చబడింది. రికార్డింగ్ తొలగించబడింది.</translation>
-        </message>
-        <message>
-            <source>Cancelled. The incomplete recording was discarded.</source>
-            <translation>రద్దు చేయబడింది. అసంపూర్ణమైన రికార్డింగ్ తొలగించబడింది.</translation>
-        </message>
-        <message>
             <source>No selected microphone is available</source>
             <translation>ఎంచుకున్న మైక్రోఫోన్ అందుబాటులో లేదు</translation>
         </message>
         <message>
             <source>Allow microphone access in the system dialog.</source>
             <translation>సిస్టమ్ డైలాగ్‌లో మైక్రోఫోన్ యాక్సెస్‌ను అనుమతించండి.</translation>
-        </message>
-        <message>
-            <source>Microphone capture active for the voice channel.</source>
-            <translation>వాయిస్ ఛానెల్ కోసం మైక్రోఫోన్ క్యాప్చర్ సక్రియంగా ఉంది.</translation>
-        </message>
-        <message>
-            <source>Microphone access was denied. Nothing was saved.</source>
-            <translation>మైక్రోఫోన్ యాక్సెస్ తిరస్కరించబడింది. ఏదీ సేవ్ చేయలేదు.</translation>
         </message>
         <message>
             <source>Microphone access is missing. Allow it in System Settings.</source>
@@ -265,97 +237,6 @@
         </message>
     </context>
     <context>
-        <name>AudioRecording</name>
-        <message>
-            <source>Incomplete audio block. Recording discarded.</source>
-            <translation>అసంపూర్ణ ఆడియో బ్లాక్. రికార్డింగ్ తొలగించబడింది.</translation>
-        </message>
-        <message>
-            <source>Move about one meter from the microphone. Keep the background sound playing and read the sentence.</source>
-            <translation>మైక్రోఫోన్ నుండి సుమారు ఒక మీటరు దూరంగా ఉండండి. నేపథ్య శబ్దాన్ని కొనసాగిస్తూ వాక్యాన్ని చదవండి.</translation>
-        </message>
-        <message>
-            <source>Voice with background sound</source>
-            <translation>నేపథ్య శబ్దంతో వాయిస్</translation>
-        </message>
-        <message>
-            <source>The recordings folder could not be created.</source>
-            <translation>రికార్డింగ్ ఫోల్డర్‌ను సృష్టించలేకపోయాము.</translation>
-        </message>
-        <message>
-            <source>You can stop the background sound now.</source>
-            <translation>ఇప్పుడు మీరు నేపథ్య శబ్దాన్ని ఆపవచ్చు.</translation>
-        </message>
-        <message>
-            <source>Recordings saved</source>
-            <translation>రికార్డింగ్‌లు భద్రపరచబడ్డాయి</translation>
-        </message>
-        <message>
-            <source>The test recording could not be saved completely.</source>
-            <translation>టెస్ట్ రికార్డింగ్‌ను పూర్తిగా సేవ్ చేయలేకపోయాము.</translation>
-        </message>
-        <message>
-            <source>Keep music off and stay quiet. Start when ready.</source>
-            <translation>సంగీతాన్ని ఆఫ్ చేసి, నిశ్శబ్దంగా ఉండండి. సిద్ధంగా ఉన్నప్పుడు ప్రారంభించండి.</translation>
-        </message>
-        <message>
-            <source>Your voice</source>
-            <translation>మీ వాయిస్</translation>
-        </message>
-        <message>
-            <source>Play music or another background sound at a normal volume. Stay quiet while recording.</source>
-            <translation>సాధారణ స్థాయిలో సంగీతం లేదా ఇతర నేపథ్య ధ్వనిని ప్లే చేయండి. రికార్డింగ్ చేస్తున్నప్పుడు నిశ్శబ్దంగా ఉండండి.</translation>
-        </message>
-        <message>
-            <source>The test recording could not be created.</source>
-            <translation>పరీక్ష రికార్డింగ్‌ను సృష్టించలేకపోయింది.</translation>
-        </message>
-        <message>
-            <source>Background sound</source>
-            <translation>నేపథ్య ధ్వని</translation>
-        </message>
-        <message>
-            <source>The window is open. I can hear the rain outside. One, two, three, four, five.</source>
-            <translation>ఈ విండో తెరిచి ఉంది. నేను బయట వర్షం పడుతున్న శబ్దం వినగలుగుతున్నాను. ఒకటి, రెండు, మూడు, నాలుగు, ఐదు.</translation>
-        </message>
-        <message>
-            <source>This microphone format is not supported for test recordings.</source>
-            <translation>పరీక్ష రికార్డింగ్‌ల కోసం ఈ మైక్రోఫోన్ ఫార్మాట్ మద్దతు లేదు.</translation>
-        </message>
-        <message>
-            <source>Keep the background volume unchanged. Read the sentence, then stop recording.</source>
-            <translation>నేపథ్య ధ్వని స్థాయిని మార్చకుండా ఉంచండి. వాక్యాన్ని చదివి, ఆపై రికార్డింగ్ ఆపివేయండి.</translation>
-        </message>
-        <message>
-            <source>Record at least half a second, then try again.</source>
-            <translation>కనీసం అర సెకను పాటు రికార్డ్ చేసి, ఆపై మళ్లీ ప్రయత్నించండి.</translation>
-        </message>
-        <message>
-            <source>Sit at your usual distance. Read the sentence, then stop recording.</source>
-            <translation>మీ సాధారణ దూరంలో కూర్చోండి. వాక్యాన్ని చదివి, ఆపై రికార్డింగ్ ఆపివేయండి.</translation>
-        </message>
-        <message>
-            <source>The recording description could not be saved.</source>
-            <translation>రికార్డింగ్ వివరణాన్ని సేవ్ చేయలేకపోయింది.</translation>
-        </message>
-        <message>
-            <source>The WAV file could not be finalized.</source>
-            <translation>WAV ఫైల్‌ను పూర్తి చేయలేకపోయింది.</translation>
-        </message>
-        <message>
-            <source>The WAV header could not be written.</source>
-            <translation>WAV హెడర్‌ను రాయలేకపోయింది.</translation>
-        </message>
-        <message>
-            <source>Voice farther away</source>
-            <translation>ధ్వని మరింత దూరంగా ఉంది</translation>
-        </message>
-        <message>
-            <source>Room sound</source>
-            <translation>గది ధ్వని</translation>
-        </message>
-    </context>
-    <context>
         <name>AudioSettings</name>
         <message>
             <source>Echo cancellation</source>
@@ -406,8 +287,8 @@
             <translation>మీ ప్లేబ్యాక్</translation>
         </message>
         <message>
-            <source>Clear local key</source>
-            <translation>స్థానిక షార్ట్‌కట్‌ను క్లియర్ చేయండి</translation>
+            <source>Clear key</source>
+            <translation>కీని తొలగించండి</translation>
         </message>
         <message>
             <source>Low cut</source>
@@ -428,10 +309,6 @@
         <message>
             <source>Cancel</source>
             <translation>రద్దు చేయండి</translation>
-        </message>
-        <message>
-            <source>Guided recording</source>
-            <translation>మార్గదర్శక రికార్డింగ్</translation>
         </message>
         <message>
             <source>Clipping. Reduce microphone gain.</source>
@@ -466,16 +343,12 @@
             <translation>పరికరము నిలిపివేయబడింది</translation>
         </message>
         <message>
-            <source>Local key</source>
-            <translation>స్థానిక పుష్-టు-టాక్ షార్ట్‌కట్</translation>
+            <source>PTT key</source>
+            <translation>మాట్లాడే కీ</translation>
         </message>
         <message>
             <source>Voice activation</source>
             <translation>వాయిస్ యాక్టివేషన్</translation>
-        </message>
-        <message>
-            <source>Remote PTT key</source>
-            <translation>రిమోట్ PTT షార్ట్‌కట్</translation>
         </message>
         <message>
             <source>Noise reduction</source>
@@ -492,10 +365,6 @@
         <message>
             <source>Microphone gain</source>
             <translation>మైక్రోఫోన్ గెయిన్</translation>
-        </message>
-        <message>
-            <source>Clear remote key</source>
-            <translation>రిమోట్ షార్ట్‌కట్‌ను క్లియర్ చేయండి</translation>
         </message>
         <message>
             <source>Not assigned</source>
@@ -521,9 +390,81 @@
             <source>Read bot messages aloud</source>
             <translation>బాట్ సందేశాలను చదివి వినిపించు</translation>
         </message>
+        <message>
+            <source>Download a high-quality voice for this language in macOS settings.</source>
+            <translation>macOS సెట్టింగ్‌లలో ఈ భాష కోసం అధిక నాణ్యత గల వాయిస్‌ను డౌన్‌లోడ్ చేసుకో.</translation>
+        </message>
+        <message>
+            <source>Bot voice</source>
+            <translation>బాట్ స్వరం</translation>
+        </message>
+        <message>
+            <source>Automatic</source>
+            <translation>స్వయంచాలక</translation>
+        </message>
+        <message>
+            <source>Unavailable</source>
+            <translation>అందుబాటులో లేదు</translation>
+        </message>
+        <message>
+            <source>Download voices in your device's Accessibility speech settings.</source>
+            <translation>నీ పరికరంలోని యాక్సెసిబిలిటీ స్పీచ్ సెట్టింగ్‌ల నుండి స్వరాలను డౌన్‌లోడ్ చేయి.</translation>
+        </message>
+        <message>
+            <source>Voice download help</source>
+            <translation>స్వరాల డౌన్‌లోడ్ సహాయం</translation>
+        </message>
+        <message>
+            <source>Strength, not the percentage of echo removed.</source>
+            <translation>తీవ్రత, తొలగించిన ప్రతిధ్వని శాతం కాదు.</translation>
+        </message>
+        <message>
+            <source>Auto also checks for speech, not just volume.</source>
+            <translation>ఆటో శబ్ద స్థాయిని మాత్రమే కాకుండా, మాటలను కూడా గుర్తిస్తుంది.</translation>
+        </message>
     </context>
     <context>
         <name>Channels</name>
+        <message>
+            <source>Copy address</source>
+            <translation>చిరునామాను కాపీ చేయి</translation>
+        </message>
+        <message>
+            <source>Messages</source>
+            <translation>సందేశాలు</translation>
+        </message>
+        <message>
+            <source>Message</source>
+            <translation>సందేశం</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>తెరవండి</translation>
+        </message>
+        <message>
+            <source>Online</source>
+            <translation>ఆన్‌లైన్</translation>
+        </message>
+        <message>
+            <source>Offline</source>
+            <translation>ఆఫ్‌లైన్‌లో ఉన్నారు</translation>
+        </message>
+        <message>
+            <source>No private messages</source>
+            <translation>ప్రైవేట్ సందేశాలు లేవు</translation>
+        </message>
+        <message>
+            <source>Private messages are unavailable for this contact.</source>
+            <translation>ఈ పరిచయానికి ప్రైవేట్ సందేశాలు అందుబాటులో లేవు.</translation>
+        </message>
+        <message>
+            <source>If asked, allow local network access. You can change this in system settings.</source>
+            <translation>అడిగితే, స్థానిక నెట్‌వర్క్‌కు ప్రాప్యతను అనుమతించండి. దీన్ని సిస్టమ్ సెట్టింగ్‌లలో మార్చవచ్చు.</translation>
+        </message>
+        <message>
+            <source>Retry</source>
+            <translation>మళ్లీ ప్రయత్నించు</translation>
+        </message>
         <message>
             <source>Updates</source>
             <translation>నవీకరణలు</translation>
@@ -543,6 +484,10 @@
         <message>
             <source>DDNS cannot bypass CGNAT. If your provider shares the public IP, use a private VPN on all participating devices or a publicly reachable server.</source>
             <translation>DDNS CGNATని దాటవేయలేదు. మీ ప్రొవైడర్ పబ్లిక్ IPని షేర్ చేస్తే, అన్ని పాల్గొనే పరికరాల్లో ఒక ప్రైవేట్ VPNని ఉపయోగించండి లేదా బహిరంగంగా అందుబాటులో ఉండే సర్వర్‌ను ఉపయోగించండి.</translation>
+        </message>
+        <message>
+            <source>Remove server</source>
+            <translation>సర్వర్‌ను తొలగించు</translation>
         </message>
         <message>
             <source>Low</source>
@@ -665,10 +610,6 @@
             <translation>నోటిఫికేషన్ శబ్దాలు</translation>
         </message>
         <message>
-            <source>Lifetime for new messages. Earlier messages keep their expiry.</source>
-            <translation>కొత్త సందేశాల నిల్వ కాలం. పాత సందేశాలు వాటి గడువును కలిగి ఉంటాయి.</translation>
-        </message>
-        <message>
             <source>Enable speakers</source>
             <translation>స్పీకర్లను ఆన్ చేయండి</translation>
         </message>
@@ -703,10 +644,6 @@
         <message>
             <source>Allow device</source>
             <translation>పరికరానికి అనుమతి ఇవ్వండి</translation>
-        </message>
-        <message>
-            <source>Receive quality: %1 kb/s per voice. Adjusts automatically for this device.</source>
-            <translation>%1 kb/s వేగంతో వాయిస్ నాణ్యతను స్వీకరించండి. ఈ పరికరం కోసం ఇది స్వయంచాలకంగా సర్దుబాటు చేయబడుతుంది.</translation>
         </message>
         <message>
             <source>Stop radio</source>
@@ -1204,6 +1141,42 @@
             <source>Use default music volume</source>
             <translation>సంగీతం కోసం డిఫాల్ట్ వాల్యూమ్ వాడు</translation>
         </message>
+        <message>
+            <source>Show in Dock</source>
+            <translation>Dockలో చూపించు</translation>
+        </message>
+        <message>
+            <source>App language</source>
+            <translation>యాప్ భాష</translation>
+        </message>
+        <message>
+            <source>Send in</source>
+            <translation>పంపే భాష</translation>
+        </message>
+        <message>
+            <source>Hear in</source>
+            <translation>వినే భాష</translation>
+        </message>
+        <message>
+            <source>Download language models for %1 and %2?</source>
+            <translation>%1 మరియు %2 కోసం భాషా మోడళ్లను డౌన్‌లోడ్ చేయాలా?</translation>
+        </message>
+        <message>
+            <source>Download</source>
+            <translation>డౌన్‌లోడ్</translation>
+        </message>
+        <message>
+            <source>PTT, chat and channel controls. Uses the controlled device's microphone.</source>
+            <translation>PTT, చాట్ మరియు ఛానెల్ నియంత్రణలు. నియంత్రిత పరికరం యొక్క మైక్రోఫోన్ ఉపయోగించబడుతుంది.</translation>
+        </message>
+        <message>
+            <source>Connect the other device to one of your channels, then allow it here.</source>
+            <translation>ఇతర పరికరాన్ని మీ ఛానెల్‌లలో ఒకదానికి కనెక్ట్ చేసి, ఆపై ఇక్కడ అనుమతించండి.</translation>
+        </message>
+        <message>
+            <source>On the other device, open Settings &gt; Input &gt; Remote control and allow this device.</source>
+            <translation>ఇతర పరికరంలో సెట్టింగ్‌లు &gt; సమర్పించు &gt; దూర నియంత్రణ తెరిచి, ఈ పరికరాన్ని అనుమతించండి.</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1420,7 +1393,396 @@
         </message>
     </context>
     <context>
+        <name>Desktop</name>
+        <message>
+            <source>Open settings at startup.</source>
+            <translation>ప్రారంభంలో సెట్టింగ్లను తెరవండి.</translation>
+        </message>
+        <message>
+            <source>Alternative file for audio profiles.</source>
+            <translation>ఆడియో ప్రొఫైల్ల కోసం ప్రత్యామ్నాయ ఫైల్.</translation>
+        </message>
+        <message>
+            <source>Load the interface without microphone capture and exit after one second.</source>
+            <translation>మైక్రోఫోన్ రికార్డింగ్ లేకుండా ఇంటర్ఫేస్ను లోడ్ చేసి ఒక సెకను తర్వాత మూసివేయండి.</translation>
+        </message>
+        <message>
+            <source>Save an image of the app window during the UI test.</source>
+            <translation>ఇంటర్ఫేస్ పరీక్ష సమయంలో యాప్ విండో చిత్రాన్ని సేవ్ చేయండి.</translation>
+        </message>
+        <message>
+            <source>The window image could not be saved.</source>
+            <translation>విండో చిత్రాన్ని సేవ్ చేయలేకపోయాము.</translation>
+        </message>
+        <message>
+            <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
+            <translation>సిస్టమ్ ట్రే అందుబాటులో లేదు; యాప్ విండోలో తెరిచి ఉంటుంది.</translation>
+        </message>
+    </context>
+    <context>
+        <name>Headless</name>
+        <message>
+            <source>Host display name.</source>
+            <translation>హోస్ట్ ప్రదర్శన పేరు.</translation>
+        </message>
+        <message>
+            <source>Command failed.</source>
+            <translation>కమాండ్ విఫలమైంది.</translation>
+        </message>
+        <message>
+            <source>%1 must be an integer.</source>
+            <translation>%1 పూర్ణాంకం కావాలి.</translation>
+        </message>
+        <message>
+            <source>Requests must be on/off or true/false.</source>
+            <translation>అభ్యర్థనలు on/off లేదా true/false కావాలి.</translation>
+        </message>
+        <message>
+            <source>Unknown host property: %1</source>
+            <translation>తెలియని హోస్ట్ లక్షణం: %1</translation>
+        </message>
+        <message>
+            <source>Run without GUI, microphone capture, or local audio output.</source>
+            <translation>గ్రాఫికల్ ఇంటర్ఫేస్, మైక్రోఫోన్ క్యాప్చర్ లేదా స్థానిక ఆడియో అవుట్పుట్ లేకుండా అమలు చేయండి.</translation>
+        </message>
+        <message>
+            <source>Server storage prefix. Personal/audio/GUI profiles are not loaded.</source>
+            <translation>సర్వర్ నిల్వ ఉపసర్గ. వ్యక్తిగత, ఆడియో మరియు గ్రాఫికల్ ప్రొఫైళ్లు లోడ్ కావు.</translation>
+        </message>
+        <message>
+            <source>Optional private identity file instead of the OS credential store (Linux/macOS). Parent directory must exist and belong to this account.</source>
+            <translation>ఆపరేటింగ్ సిస్టమ్ ఆధారాల నిల్వకు బదులుగా ఐచ్ఛిక ప్రైవేట్ గుర్తింపు ఫైల్ (Linux/macOS). పేరెంట్ డైరెక్టరీ ఉండాలి మరియు ఈ ఖాతాకు చెందినదై ఉండాలి.</translation>
+        </message>
+        <message>
+            <source>UTF-8 key=value properties or JSON host preset. Default: application.properties, then config/application.properties beside the app.</source>
+            <translation>UTF-8 key=value లక్షణాలు లేదా JSON హోస్ట్ ప్రీసెట్. డిఫాల్ట్: application.properties, తర్వాత యాప్ పక్కన config/application.properties.</translation>
+        </message>
+        <message>
+            <source>Channel display name.</source>
+            <translation>ఛానల్ ప్రదర్శిత పేరు.</translation>
+        </message>
+        <message>
+            <source>System and radio bot display name.</source>
+            <translation>సిస్టమ్ మరియు రేడియో బాట్ ప్రదర్శిత పేరు.</translation>
+        </message>
+        <message>
+            <source>TCP service port (1-65535).</source>
+            <translation>TCP సేవా పోర్ట్ (1-65535).</translation>
+        </message>
+        <message>
+            <source>Headless admission is always on; only 'on' or 'true' is accepted.</source>
+            <translation>హెడ్లెస్ స్వీకరణ ఎల్లప్పుడూ ఆన్లో ఉంటుంది; 'on' లేదా 'true' మాత్రమే అంగీకరించబడతాయి.</translation>
+        </message>
+        <message>
+            <source>Preapprove a device ID; repeat for several devices. Existing bans remain.</source>
+            <translation>పరికర IDని ముందుగా అనుమతించండి; అనేక పరికరాల కోసం పునరావృతం చేయండి. ఉన్న నిషేధాలు అలాగే ఉంటాయి.</translation>
+        </message>
+        <message>
+            <source>Block a device ID; repeat for several devices.</source>
+            <translation>పరికర IDని బ్లాక్ చేయండి; అనేక పరికరాల కోసం పునరావృతం చేయండి.</translation>
+        </message>
+        <message>
+            <source>Read a UTF-8 channel password from a file before listening. An empty file removes it.</source>
+            <translation>వినడం ప్రారంభించే ముందు UTF-8 ఛానల్ పాస్వర్డ్ను ఫైల్ నుండి చదవండి. ఖాళీ ఫైల్ దాన్ని తొలగిస్తుంది.</translation>
+        </message>
+        <message>
+            <source>Channel password. Empty removes it; environment or config avoids process-list exposure.</source>
+            <translation>ఛానల్ పాస్వర్డ్. ఖాళీ విలువ దాన్ని తొలగిస్తుంది; పర్యావరణం లేదా కాన్ఫిగరేషన్ అది ప్రాసెస్ జాబితాలో కనిపించకుండా చేస్తాయి.</translation>
+        </message>
+        <message>
+            <source>SquadSpeak headless local channel host</source>
+            <translation>SquadSpeak హెడ్లెస్ స్థానిక ఛానల్ హోస్ట్</translation>
+        </message>
+        <message>
+            <source>Environment variables (SQUADSPEAK_ prefix):</source>
+            <translation>పర్యావరణ వేరియబుల్స్ (SQUADSPEAK_ ఉపసర్గ):</translation>
+        </message>
+        <message>
+            <source>Host configuration could not be read or exceeds 1 MiB.</source>
+            <translation>హోస్ట్ కాన్ఫిగరేషన్ చదవలేకపోయాము లేదా అది 1 MiB మించిపోయింది.</translation>
+        </message>
+        <message>
+            <source>Host configuration must be UTF-8.</source>
+            <translation>హోస్ట్ కాన్ఫిగరేషన్ UTF-8 కావాలి.</translation>
+        </message>
+        <message>
+            <source>Host preset must be a JSON object.</source>
+            <translation>హోస్ట్ ప్రీసెట్ JSON ఆబ్జెక్ట్ కావాలి.</translation>
+        </message>
+        <message>
+            <source>Property line %1 must use key=value.</source>
+            <translation>లక్షణం లైన్ %1 key=value ఉపయోగించాలి.</translation>
+        </message>
+        <message>
+            <source>Property line %1: %2</source>
+            <translation>లక్షణం లైన్ %1: %2</translation>
+        </message>
+        <message>
+            <source>Standard input has no file descriptor.</source>
+            <translation>ప్రామాణిక ఇన్పుట్కు ఫైల్ డిస్క్రిప్టర్ లేదు.</translation>
+        </message>
+        <message>
+            <source>Standard input could not be inspected.</source>
+            <translation>ప్రామాణిక ఇన్పుట్ను పరిశీలించలేకపోయాము.</translation>
+        </message>
+        <message>
+            <source>Could not write the command response: %1</source>
+            <translation>కమాండ్ ప్రతిస్పందన రాయలేకపోయాము: %1</translation>
+        </message>
+        <message>
+            <source>Standard input could not be read: %1</source>
+            <translation>ప్రామాణిక ఇన్పుట్ చదవలేకపోయాము: %1</translation>
+        </message>
+        <message>
+            <source>Input line exceeds 65536 bytes.</source>
+            <translation>ఇన్పుట్ లైన్ 65536 బైట్లను మించిపోయింది.</translation>
+        </message>
+        <message>
+            <source>Each input line must be a JSON object.</source>
+            <translation>ప్రతి ఇన్పుట్ లైన్ JSON ఆబ్జెక్ట్ కావాలి.</translation>
+        </message>
+        <message>
+            <source>Input ended before a complete JSON line.</source>
+            <translation>పూర్తి JSON లైన్కు ముందు ఇన్పుట్ ముగిసింది.</translation>
+        </message>
+        <message>
+            <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
+            <translation>status, configure, password, admission, history, chat మరియు radio కమాండ్లకు ఐచ్ఛిక స్వంత ఛానల్ ID; డిఫాల్ట్గా ప్రాథమిక ఛానల్.</translation>
+        </message>
+        <message>
+            <source>Channel action must be list, add or remove.</source>
+            <translation>ఛానల్ చర్య list, add లేదా remove కావాలి.</translation>
+        </message>
+        <message>
+            <source>Removing an own channel deletes its history, images, permissions and radio settings. Set confirmed=true to proceed.</source>
+            <translation>స్వంత ఛానల్ను తొలగిస్తే దాని చరిత్ర, చిత్రాలు, అనుమతులు మరియు రేడియో సెట్టింగ్లు తొలగుతాయి. కొనసాగేందుకు confirmed=true సెట్ చేయండి.</translation>
+        </message>
+        <message>
+            <source>id must identify an additional own channel.</source>
+            <translation>id అదనపు స్వంత ఛానల్ను గుర్తించాలి.</translation>
+        </message>
+        <message>
+            <source>The additional own channel could not be removed: %1</source>
+            <translation>అదనపు స్వంత ఛానల్ను తొలగించలేకపోయాము: %1</translation>
+        </message>
+        <message>
+            <source>channelId must identify an own channel.</source>
+            <translation>channelId స్వంత ఛానల్ను గుర్తించాలి.</translation>
+        </message>
+        <message>
+            <source>values must be a host settings object.</source>
+            <translation>values హోస్ట్ సెట్టింగ్ల ఆబ్జెక్ట్ కావాలి.</translation>
+        </message>
+        <message>
+            <source>Headless admission is always enabled for non-banned devices; requests off is not supported.</source>
+            <translation>బ్లాక్ చేయని పరికరాలకు హెడ్లెస్ స్వీకరణ ఎల్లప్పుడూ ప్రారంభించబడి ఉంటుంది; requests off మద్దతు లేదు.</translation>
+        </message>
+        <message>
+            <source>value must be a password of at most 1024 UTF-8 bytes without control characters; an empty string removes it.</source>
+            <translation>value నియంత్రణ అక్షరాలు లేని గరిష్ఠం 1024 UTF-8 బైట్ల పాస్వర్డ్ కావాలి; ఖాళీ స్ట్రింగ్ దాన్ని తొలగిస్తుంది.</translation>
+        </message>
+        <message>
+            <source>The channel is not ready or a password change is in progress.</source>
+            <translation>ఛానల్ సిద్ధంగా లేదు లేదా పాస్వర్డ్ మార్పు జరుగుతోంది.</translation>
+        </message>
+        <message>
+            <source>The channel was removed while saving the password.</source>
+            <translation>పాస్వర్డ్ సేవ్ చేస్తున్నప్పుడు ఛానల్ తొలగించబడింది.</translation>
+        </message>
+        <message>
+            <source>id is required.</source>
+            <translation>id అవసరం.</translation>
+        </message>
+        <message>
+            <source>text must be a valid non-empty chat message.</source>
+            <translation>text చెల్లుబాటు అయ్యే ఖాళీ కాని చాట్ సందేశం కావాలి.</translation>
+        </message>
+        <message>
+            <source>The local channel is not ready.</source>
+            <translation>స్థానిక ఛానల్ సిద్ధంగా లేదు.</translation>
+        </message>
+        <message>
+            <source>The channel's radio is unavailable.</source>
+            <translation>ఛానల్ రేడియో అందుబాటులో లేదు.</translation>
+        </message>
+        <message>
+            <source>Unknown command. Use help.</source>
+            <translation>తెలియని కమాండ్. help ఉపయోగించండి.</translation>
+        </message>
+        <message>
+            <source>search requires a query, non-negative offset and limit from 1 to 128.</source>
+            <translation>searchకు query, ప్రతికూలం కాని offset మరియు 1 నుండి 128 వరకు limit అవసరం.</translation>
+        </message>
+        <message>
+            <source>add creates an id; update requires an existing id.</source>
+            <translation>add ఒక id సృష్టిస్తుంది; updateకు ఉన్న id అవసరం.</translation>
+        </message>
+        <message>
+            <source>A station is already being checked.</source>
+            <translation>స్టేషన్ ఇప్పటికే తనిఖీ చేయబడుతోంది.</translation>
+        </message>
+        <message>
+            <source>The channel was removed while checking the station.</source>
+            <translation>స్టేషన్ను తనిఖీ చేస్తున్నప్పుడు ఛానల్ తొలగించబడింది.</translation>
+        </message>
+        <message>
+            <source>Unknown radio action.</source>
+            <translation>తెలియని రేడియో చర్య.</translation>
+        </message>
+        <message>
+            <source>Could not load language: %1</source>
+            <translation>భాషను లోడ్ చేయలేకపోయాము: %1</translation>
+        </message>
+        <message>
+            <source>The %1 option is incompatible with --headless.</source>
+            <translation>%1 ఎంపిక --headlessతో అనుకూలంగా లేదు.</translation>
+        </message>
+        <message>
+            <source>Unexpected positional arguments. Use --help.</source>
+            <translation>అనుకోని స్థానిక ఆర్గ్యుమెంట్లు. --help ఉపయోగించండి.</translation>
+        </message>
+        <message>
+            <source>--config / -f requires a non-empty path.</source>
+            <translation>--config / -fకు ఖాళీ కాని మార్గం అవసరం.</translation>
+        </message>
+        <message>
+            <source>Choose --password or --password-file, not both.</source>
+            <translation>--password లేదా --password-fileలో ఒకదాన్ని ఎంచుకోండి, రెండింటినీ కాదు.</translation>
+        </message>
+        <message>
+            <source>Choose SQUADSPEAK_PASSWORD or SQUADSPEAK_PASSWORD_FILE, not both.</source>
+            <translation>SQUADSPEAK_PASSWORD లేదా SQUADSPEAK_PASSWORD_FILEలో ఒకదాన్ని ఎంచుకోండి, రెండింటినీ కాదు.</translation>
+        </message>
+        <message>
+            <source>Choose password or passwordFile in one configuration layer, not both.</source>
+            <translation>ఒక కాన్ఫిగరేషన్ స్థాయిలో password లేదా passwordFileలో ఒకదాన్ని ఎంచుకోండి, రెండింటినీ కాదు.</translation>
+        </message>
+        <message>
+            <source>passwordFile must be a non-empty path.</source>
+            <translation>passwordFile ఖాళీ కాని మార్గం కావాలి.</translation>
+        </message>
+        <message>
+            <source>Password file could not be read or is too large.</source>
+            <translation>పాస్వర్డ్ ఫైల్ చదవలేకపోయాము లేదా అది చాలా పెద్దది.</translation>
+        </message>
+        <message>
+            <source>Password file must contain at most 1024 UTF-8 bytes without control characters.</source>
+            <translation>పాస్వర్డ్ ఫైల్ నియంత్రణ అక్షరాలు లేకుండా గరిష్ఠం 1024 UTF-8 బైట్లు కలిగి ఉండాలి.</translation>
+        </message>
+        <message>
+            <source>Password must be a string of at most 1024 UTF-8 bytes without control characters.</source>
+            <translation>పాస్వర్డ్ నియంత్రణ అక్షరాలు లేని గరిష్ఠం 1024 UTF-8 బైట్ల స్ట్రింగ్ కావాలి.</translation>
+        </message>
+        <message>
+            <source>settingsFile must be a non-empty path.</source>
+            <translation>settingsFile ఖాళీ కాని మార్గం కావాలి.</translation>
+        </message>
+        <message>
+            <source>identityFile must be a non-empty path.</source>
+            <translation>identityFile ఖాళీ కాని మార్గం కావాలి.</translation>
+        </message>
+        <message>
+            <source>The settings directory could not be created.</source>
+            <translation>సెట్టింగ్ల డైరెక్టరీని సృష్టించలేకపోయాము.</translation>
+        </message>
+        <message>
+            <source>This SquadSpeak profile is already running or cannot be locked.</source>
+            <translation>ఈ SquadSpeak ప్రొఫైల్ ఇప్పటికే నడుస్తోంది లేదా లాక్ చేయలేకపోయాము.</translation>
+        </message>
+        <message>
+            <source>Standard input could not be opened.</source>
+            <translation>ప్రామాణిక ఇన్పుట్ను తెరవలేకపోయాము.</translation>
+        </message>
+        <message>
+            <source>Standard output could not be opened.</source>
+            <translation>ప్రామాణిక అవుట్పుట్ను తెరవలేకపోయాము.</translation>
+        </message>
+        <message>
+            <source>This identity file is already in use or cannot be locked.</source>
+            <translation>ఈ గుర్తింపు ఫైల్ ఇప్పటికే ఉపయోగంలో ఉంది లేదా లాక్ చేయలేకపోయాము.</translation>
+        </message>
+        <message>
+            <source>Invalid host configuration: %1</source>
+            <translation>చెల్లని హోస్ట్ కాన్ఫిగరేషన్: %1</translation>
+        </message>
+        <message>
+            <source>Radio channels could not be initialized.</source>
+            <translation>రేడియో ఛానళ్లను ప్రారంభించలేకపోయాము.</translation>
+        </message>
+        <message>
+            <source>Headless host could not start: %1</source>
+            <translation>హెడ్లెస్ హోస్ట్ను ప్రారంభించలేకపోయాము: %1</translation>
+        </message>
+        <message>
+            <source>Channel password could not be saved.</source>
+            <translation>ఛానల్ పాస్వర్డ్ను సేవ్ చేయలేకపోయాము.</translation>
+        </message>
+        <message>
+            <source>Invalid channel password: %1</source>
+            <translation>చెల్లని ఛానల్ పాస్వర్డ్: %1</translation>
+        </message>
+        <message>
+            <source>Headless host could not initialize: %1</source>
+            <translation>హెడ్లెస్ హోస్ట్ను ప్రారంభించలేకపోయాము: %1</translation>
+        </message>
+        <message>
+            <source>SquadSpeak headless could not start: %1</source>
+            <translation>SquadSpeak హెడ్లెస్ హోస్ట్ను ప్రారంభించలేకపోయాము: %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>మద్దతుదారు చర్య తప్పనిసరిగా స్థితి, సైన్-ఇన్, రిఫ్రెష్, సైన్ అవుట్ లేదా రద్దు చేయాలి. status sign-in refresh sign-out cancel</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>సపోర్టర్ ఆపరేషన్ ప్రోగ్రెస్‌లో ఉంది.</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>ఈ బిల్డ్‌లో సపోర్టర్ యాక్సెస్ అందుబాటులో లేదు.</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>సెట్టింగ్‌ల ప్రాధాన్యత: వాదనలు &gt; పర్యావరణం &gt; లక్షణాలు &gt; సేవ్ చేయబడిన సర్వర్ విలువలు.</translation>
+        </message>
+    </context>
+    <context>
+        <name>License</name>
+        <message>
+            <source>License storage is busy or unavailable.</source>
+            <translation>లైసెన్స్ నిల్వ బిజీగా ఉంది లేదా అందుబాటులో లేదు.</translation>
+        </message>
+        <message>
+            <source>License storage is unavailable.</source>
+            <translation>లైసెన్స్ నిల్వ అందుబాటులో లేదు.</translation>
+        </message>
+        <message>
+            <source>Sign-in expired. Try again.</source>
+            <translation>సైన్-ఇన్ గడువు ముగిసింది. మళ్లీ ప్రయత్నించండి.</translation>
+        </message>
+        <message>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>GitHub సైన్-ఇన్ అందుబాటులో లేదు. మళ్లీ ప్రయత్నించండి.</translation>
+        </message>
+        <message>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>GitHub సైన్-ఇన్ పూర్తి కాలేదు. మళ్లీ ప్రయత్నించండి.</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>GitHubని తనిఖీ చేయడం సాధ్యపడలేదు. ఆఫ్‌లైన్ యాక్సెస్ గరిష్టంగా ఏడు రోజులు ఉంటుంది.</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>GitHubతో మళ్లీ సైన్ ఇన్ చేయండి.</translation>
+        </message>
+    </context>
+    <context>
         <name>LocalChannel</name>
+        <message>
+            <source>Blocked</source>
+            <translation>నిరోధించబడింది</translation>
+        </message>
         <message>
             <source>Host is not responding. Reconnecting.</source>
             <translation>హోస్ట్ ప్రతిస్పందించడం లేదు. తిరిగి కనెక్ట్ చేస్తున్నారు.</translation>
@@ -2205,6 +2567,53 @@
             <source>Voice relay codec could not be configured.</source>
             <translation>వాయిస్ రిలే కోడెక్ను కాన్ఫిగర్ చేయడం సాధ్యపడలేదు.</translation>
         </message>
+        <message>
+            <source>Unsupported audio codec</source>
+            <translation>మద్దతు లేని ఆడియో కోడెక్</translation>
+        </message>
+        <message>
+            <source>Speaking is not allowed in this channel.</source>
+            <translation>ఈ ఛానెల్‌లో మాట్లాడటానికి అనుమతి లేదు.</translation>
+        </message>
+    </context>
+    <context>
+        <name>LocalLanguage</name>
+        <message>
+            <source>Translation (experimental)</source>
+            <translation>అనువాదం (ప్రయోగాత్మకం)</translation>
+        </message>
+        <message>
+            <source>Translate messages</source>
+            <translation>సందేశాలను అనువదించు</translation>
+        </message>
+        <message>
+            <source>Translated voice</source>
+            <translation>అనువదించిన స్వరం</translation>
+        </message>
+        <message>
+            <source>Original audio</source>
+            <translation>అసలు ఆడియో</translation>
+        </message>
+        <message>
+            <source>Original text</source>
+            <translation>అసలు వచనం</translation>
+        </message>
+        <message>
+            <source>Prepare languages</source>
+            <translation>భాషలను సిద్ధం చేయి</translation>
+        </message>
+        <message>
+            <source>Local language processing is unavailable.</source>
+            <translation>స్థానిక భాషా ప్రాసెసింగ్ అందుబాటులో లేదు.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be read.</source>
+            <translation>భాష సెట్టింగ్‌లను చదవలేకపోయింది.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be saved.</source>
+            <translation>భాష సెట్టింగ్‌లను సేవ్ చేయలేకపోయింది.</translation>
+        </message>
     </context>
     <context>
         <name>PushToTalkKey</name>
@@ -2345,50 +2754,65 @@
         </message>
     </context>
     <context>
-        <name>RecordingPanel</name>
+        <name>ScreenPanel</name>
         <message>
-            <source>Stop</source>
-            <translation>ఆపు</translation>
+            <source>Media capacity reached</source>
+            <translation>మీడియా సామర్థ్యం పరిమితం చేయబడింది</translation>
         </message>
         <message>
-            <source>Start</source>
-            <translation>ప్రారంభించండి</translation>
+            <source>Video paused</source>
+            <translation>వీడియో నిలిపివేయబడింది</translation>
         </message>
         <message>
-            <source>Saved on this device only. Nothing is uploaded.</source>
-            <translation>ఇది ఈ పరికరంలో మాత్రమే భద్రపరచబడింది. ఏమీ అప్‌లోడ్ చేయబడలేదు.</translation>
+            <source>Stream ended</source>
+            <translation>స్ట్రీమ్ ముగిసింది</translation>
         </message>
         <message>
-            <source>Keep this take or record it again.</source>
-            <translation>ఈ రికార్డింగ్‌ను ఉంచాలా లేదా మళ్లీ రికార్డ్ చేయాలా?</translation>
+            <source>Connecting</source>
+            <translation>కనెక్ట్ అవుతోంది</translation>
         </message>
         <message>
-            <source>Record again</source>
-            <translation>మళ్లీ రికార్డ్ చేయండి</translation>
+            <source>Open screen stream</source>
+            <translation>స్క్రీన్ స్ట్రీమ్‌ను తెరవండి</translation>
         </message>
         <message>
-            <source>Use recording</source>
-            <translation>రికార్డింగ్‌ను ఉపయోగించండి</translation>
+            <source>Screen stream</source>
+            <translation>స్క్రీన్ స్ట్రీమ్</translation>
         </message>
         <message>
-            <source>Recording progress</source>
-            <translation>రికార్డింగ్ జరుగుతోంది</translation>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
+        </message>
+    </context>
+    <context>
+        <name>ScreenShare</name>
+        <message>
+            <source>Allow screen recording in system settings.</source>
+            <translation>సిస్టమ్ సెట్టింగ్‌లలో స్క్రీన్ రికార్డింగ్‌ను అనుమతించు.</translation>
         </message>
         <message>
-            <source>Step %1 of %2</source>
-            <translation>%2లోని %1వ దశ</translation>
+            <source>The shared screen was removed. Select a source to start again.</source>
+            <translation>షేర్ చేసిన స్క్రీన్ తొలగించబడింది. మళ్లీ ప్రారంభించడానికి ఒక మూలాన్ని ఎంచుకోండి.</translation>
         </message>
         <message>
-            <source>Open recordings</source>
-            <translation>రికార్డింగ్‌లను తెరవండి</translation>
+            <source>The shared window was closed. Select a source to start again.</source>
+            <translation>షేర్ చేసిన విండో మూసివేయబడింది. మళ్లీ ప్రారంభించడానికి ఒక మూలాన్ని ఎంచుకోండి.</translation>
         </message>
         <message>
-            <source>Reset test</source>
-            <translation>పునఃప్రారంభించు పరీక్ష</translation>
+            <source>The selected screen is no longer available.</source>
+            <translation>ఎంపిక చేసిన స్క్రీన్ ఇప్పుడు అందుబాటులో లేదు.</translation>
         </message>
         <message>
-            <source>%1 s remaining / %2 dBFS</source>
-            <translation>%1 మిగిలి ఉంది / %2 dBFS</translation>
+            <source>The selected window is no longer available.</source>
+            <translation>ఎంపిక చేసిన విండో ఇప్పుడు అందుబాటులో లేదు.</translation>
+        </message>
+        <message>
+            <source>The selected source exceeds the capture size limit.</source>
+            <translation>ఎంపిక చేసిన మూలం యొక్క పరిమాణం గరిష్ట పరిమితిని మించిపోయింది.</translation>
+        </message>
+        <message>
+            <source>Close a video view before opening another stream.</source>
+            <translation>ఒక వీడియోను మూసివేసి, మరొక స్ట్రీమ్‌ను తెరవడానికి ముందు ఇది జరుగుతుంది.</translation>
         </message>
     </context>
     <context>
@@ -2465,10 +2889,6 @@
             <translation>సిగ్నల్‌ను సేకరిస్తోంది...</translation>
         </message>
         <message>
-            <source>Dashed curve: configured gain and frequency cuts, using the right dB scale. Noise reduction and voice activation are not part of this curve.</source>
-            <translation>చుక్కల గీత: కుడివైపున ఉన్న dB స్కేల్‌లో కాన్ఫిగర్ చేయబడిన లాభం మరియు ఫ్రీక్వెన్సీ తగ్గింపులు. శబ్దం తగ్గింపు మరియు వాయిస్ యాక్టివేషన్ ఈ వక్రరేఖలో భాగం కాదు.</translation>
-        </message>
-        <message>
             <source>Microphone preview is not running</source>
             <translation>మైక్రోఫోన్ ప్రివ్యూ ప్రస్తుతం పనిచేయడం లేదు</translation>
         </message>
@@ -2479,303 +2899,6 @@
         <message>
             <source>Peak: %1</source>
             <translation>గరిష్టం: %1</translation>
-        </message>
-    </context>
-    <context>
-        <name>Tray</name>
-        <message>
-            <source>Quit</source>
-            <translation>నిష్క్రమించు</translation>
-        </message>
-        <message>
-            <source>SquadSpeak - speaking</source>
-            <translation>స్క్వాడ్‌స్పీక్ - మాట్లాడుతోంది</translation>
-        </message>
-        <message>
-            <source>Settings</source>
-            <translation>సెట్టింగ్‌లు</translation>
-        </message>
-        <message>
-            <source>Channels</source>
-            <translation>ఛానెల్‌లు</translation>
-        </message>
-        <message>
-            <source>New image</source>
-            <translation>కొత్త చిత్రం</translation>
-        </message>
-    </context>
-    <context>
-        <name>VoiceAvatar</name>
-        <message>
-            <source>Muted</source>
-            <translation>మైక్రోఫోన్ మ్యూట్ చేయబడింది</translation>
-        </message>
-        <message>
-            <source>Sleeping</source>
-            <translation>నిద్రలో ఉన్నారు</translation>
-        </message>
-        <message>
-            <source>Offline</source>
-            <translation>ఆఫ్‌లైన్‌లో ఉన్నారు</translation>
-        </message>
-        <message>
-            <source>Speaking</source>
-            <translation>మాట్లాడుతున్నారు</translation>
-        </message>
-        <message>
-            <source>Unavailable</source>
-            <translation>అందుబాటులో లేదు</translation>
-        </message>
-        <message>
-            <source>Listening</source>
-            <translation>వింటున్నార</translation>
-        </message>
-        <message>
-            <source>Deafened</source>
-            <translation>స్పీకర్లు మ్యూట్ చేయబడ్డాయి</translation>
-        </message>
-    </context>
-    <context>
-        <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>అందుబాటులో లేరు - ఆడియో సెట్టింగ్‌లు లేదా ధ్వని పరీక్ష</translation>
-        </message>
-        <message>
-            <source>Microphone muted</source>
-            <translation>మైక్రోఫోన్ నిశ్శబ్దంగా ఉంది</translation>
-        </message>
-        <message>
-            <source>Push-to-talk held</source>
-            <translation>పుష్-టు-టాక్ నొక్కి పట్టుకున్నారు</translation>
-        </message>
-        <message>
-            <source>Ready - push-to-talk released</source>
-            <translation>సిద్ధంగా ఉన్నారు - పుష్-టు-టాక్ విడుదల చేశారు</translation>
-        </message>
-        <message>
-            <source>Microphone unmuted</source>
-            <translation>మైక్రోఫోన్ తిరిగి ప్రారంభించబడింది</translation>
-        </message>
-        <message>
-            <source>Settings could not be saved: %1</source>
-            <translation>సెట్టింగ్‌లు సేవ్ చేయలేకపోయింది: %1</translation>
-        </message>
-        <message>
-            <source>The push-to-talk sequence cannot be incremented further.</source>
-            <translation>పుష్-టు-టాక్ క్రమాన్ని ఇక పెంచలేము.</translation>
-        </message>
-        <message>
-            <source>Choose System, Light or Dark.</source>
-            <translation>సిస్టమ్, లైట్ లేదా డార్క్ మోడ్‌ను ఎంచుకోండి.</translation>
-        </message>
-        <message>
-            <source>Choose a colour palette from the list.</source>
-            <translation>జాబితా నుండి ఒక రంగుల థీమ్‌ను ఎంచుకోండి.</translation>
-        </message>
-        <message>
-            <source>Choose an available avatar.</source>
-            <translation>అందుబాటులో ఉన్న అవతార్‌లలో ఒకదాన్ని ఎంచుకోండి.</translation>
-        </message>
-        <message>
-            <source>Invalid push-to-talk binding.</source>
-            <translation>చెల్లుబాటు అయ్యే పుష్-టు-టాక్ (push-to-talk) సెట్టింగ్ లేదు.</translation>
-        </message>
-        <message>
-            <source>Release the held push-to-talk key first.</source>
-            <translation>ముందుగా మీరు పట్టుకున్న పుష్-టు-టాక్ కీని విడుదల చేయండి.</translation>
-        </message>
-        <message>
-            <source>Choose a language from the list.</source>
-            <translation>జాబితా నుండి ఒక భాషను ఎంచుకోండి.</translation>
-        </message>
-        <message>
-            <source>This avatar requires Supporter.</source>
-            <translation>ఈ అవతార్‌కు Supporter అవసరం.</translation>
-        </message>
-        <message>
-            <source>The name must contain 1 to 64 characters.</source>
-            <translation>పేరు 1 నుండి 64 అక్షరాల మధ్య ఉండాలి.</translation>
-        </message>
-        <message>
-            <source>The name may not contain control characters or line breaks.</source>
-            <translation>పేరులో ప్రత్యేక క్యారెక్టర్లు లేదా లైన్ బ్రేక్‌లు ఉండకూడదు.</translation>
-        </message>
-        <message>
-            <source>Session settings could not be read.</source>
-            <translation>సెషన్ సెట్టింగ్లను చదవలేకపోయాము.</translation>
-        </message>
-        <message>
-            <source>Saved setting is invalid: %1</source>
-            <translation>సేవ్ చేసిన సెట్టింగ్ చెల్లదు: %1</translation>
-        </message>
-    </context>
-    <context>
-        <name>License</name>
-        <message>
-            <source>License storage is busy or unavailable.</source>
-            <translation>లైసెన్స్ నిల్వ బిజీగా ఉంది లేదా అందుబాటులో లేదు.</translation>
-        </message>
-        <message>
-            <source>License storage is unavailable.</source>
-            <translation>లైసెన్స్ నిల్వ అందుబాటులో లేదు.</translation>
-        </message>
-        <message>
-            <source>Sign-in expired. Try again.</source>
-            <translation>సైన్-ఇన్ గడువు ముగిసింది. మళ్లీ ప్రయత్నించండి.</translation>
-        </message>
-        <message>
-            <source>GitHub sign-in is unavailable. Try again.</source>
-            <translation>GitHub సైన్-ఇన్ అందుబాటులో లేదు. మళ్లీ ప్రయత్నించండి.</translation>
-        </message>
-        <message>
-            <source>GitHub sign-in was not completed. Try again.</source>
-            <translation>GitHub సైన్-ఇన్ పూర్తి కాలేదు. మళ్లీ ప్రయత్నించండి.</translation>
-        </message>
-        <message>
-            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
-            <translation>GitHubని తనిఖీ చేయడం సాధ్యపడలేదు. ఆఫ్‌లైన్ యాక్సెస్ గరిష్టంగా ఏడు రోజులు ఉంటుంది.</translation>
-        </message>
-        <message>
-            <source>Sign in with GitHub again.</source>
-            <translation>GitHubతో మళ్లీ సైన్ ఇన్ చేయండి.</translation>
-        </message>
-    </context>
-    <context>
-        <name>ScreenShare</name>
-        <message>
-            <source>The shared screen was removed. Select a source to start again.</source>
-            <translation>షేర్ చేసిన స్క్రీన్ తొలగించబడింది. మళ్లీ ప్రారంభించడానికి ఒక మూలాన్ని ఎంచుకోండి.</translation>
-        </message>
-        <message>
-            <source>The shared window was closed. Select a source to start again.</source>
-            <translation>షేర్ చేసిన విండో మూసివేయబడింది. మళ్లీ ప్రారంభించడానికి ఒక మూలాన్ని ఎంచుకోండి.</translation>
-        </message>
-        <message>
-            <source>The selected screen is no longer available.</source>
-            <translation>ఎంపిక చేసిన స్క్రీన్ ఇప్పుడు అందుబాటులో లేదు.</translation>
-        </message>
-        <message>
-            <source>The selected window is no longer available.</source>
-            <translation>ఎంపిక చేసిన విండో ఇప్పుడు అందుబాటులో లేదు.</translation>
-        </message>
-        <message>
-            <source>The selected source exceeds the capture size limit.</source>
-            <translation>ఎంపిక చేసిన మూలం యొక్క పరిమాణం గరిష్ట పరిమితిని మించిపోయింది.</translation>
-        </message>
-        <message>
-            <source>Close a video view before opening another stream.</source>
-            <translation>ఒక వీడియోను మూసివేసి, మరొక స్ట్రీమ్‌ను తెరవడానికి ముందు ఇది జరుగుతుంది.</translation>
-        </message>
-    </context>
-    <context>
-        <name>ScreenPanel</name>
-        <message>
-            <source>Media capacity reached</source>
-            <translation>మీడియా సామర్థ్యం పరిమితం చేయబడింది</translation>
-        </message>
-        <message>
-            <source>Video paused</source>
-            <translation>వీడియో నిలిపివేయబడింది</translation>
-        </message>
-        <message>
-            <source>Stream ended</source>
-            <translation>స్ట్రీమ్ ముగిసింది</translation>
-        </message>
-        <message>
-            <source>Connecting</source>
-            <translation>కనెక్ట్ అవుతోంది</translation>
-        </message>
-        <message>
-            <source>Open screen stream</source>
-            <translation>స్క్రీన్ స్ట్రీమ్‌ను తెరవండి</translation>
-        </message>
-        <message>
-            <source>Screen stream</source>
-            <translation>స్క్రీన్ స్ట్రీమ్</translation>
-        </message>
-        <message>
-            <source>%1 kbit/s</source>
-            <translation>%1 kbit/s</translation>
-        </message>
-    </context>
-    <context>
-        <name>VideoCodec</name>
-        <message>
-            <source>Video codec: %1</source>
-            <translation>వీడియో కోడెక్: %1</translation>
-        </message>
-        <message>
-            <source>Video codec ABI does not match its headers.</source>
-            <translation>వీడియో కోడెక్ ABI దాని హెడర్లతో సరిపోలడం లేదు.</translation>
-        </message>
-        <message>
-            <source>Video buffers could not be allocated.</source>
-            <translation>వీడియో బఫర్లకు మెమరీ కేటాయించలేకపోయింది.</translation>
-        </message>
-        <message>
-            <source>Invalid video quality tier.</source>
-            <translation>వీడియో నాణ్యత స్థాయి చెల్లదు.</translation>
-        </message>
-        <message>
-            <source>The screen source exceeds the supported capture size.</source>
-            <translation>స్క్రీన్ మూలం మద్దతు ఉన్న క్యాప్చర్ పరిమాణాన్ని మించిపోయింది.</translation>
-        </message>
-        <message>
-            <source>The screen source is too narrow.</source>
-            <translation>స్క్రీన్ మూలం చాలా ఇరుకుగా ఉంది.</translation>
-        </message>
-        <message>
-            <source>The video encoder could not be allocated.</source>
-            <translation>వీడియో ఎన్కోడర్కు మెమరీ కేటాయించలేకపోయింది.</translation>
-        </message>
-        <message>
-            <source>No supported video encoder is available.</source>
-            <translation>మద్దతు ఉన్న వీడియో ఎన్కోడర్ అందుబాటులో లేదు.</translation>
-        </message>
-        <message>
-            <source>Video encoder configuration is too large.</source>
-            <translation>వీడియో ఎన్కోడర్ కాన్ఫిగరేషన్ చాలా పెద్దది.</translation>
-        </message>
-        <message>
-            <source>Video scaling could not be initialized.</source>
-            <translation>వీడియో స్కేలింగ్ను ప్రారంభించలేకపోయింది.</translation>
-        </message>
-        <message>
-            <source>The encoder returned an empty video packet.</source>
-            <translation>ఎన్కోడర్ ఖాళీ వీడియో ప్యాకెట్ను తిరిగి ఇచ్చింది.</translation>
-        </message>
-        <message>
-            <source>Invalid video frame format.</source>
-            <translation>వీడియో ఫ్రేమ్ ఫార్మాట్ చెల్లదు.</translation>
-        </message>
-        <message>
-            <source>Invalid video decoder configuration.</source>
-            <translation>వీడియో డికోడర్ కాన్ఫిగరేషన్ చెల్లదు.</translation>
-        </message>
-        <message>
-            <source>This video codec cannot be decoded.</source>
-            <translation>ఈ వీడియో కోడెక్ను డికోడ్ చేయలేము.</translation>
-        </message>
-        <message>
-            <source>Video decoder could not be allocated.</source>
-            <translation>వీడియో డికోడర్కు మెమరీ కేటాయించలేకపోయింది.</translation>
-        </message>
-        <message>
-            <source>Video decoder configuration could not be allocated.</source>
-            <translation>వీడియో డికోడర్ కాన్ఫిగరేషన్కు మెమరీ కేటాయించలేకపోయింది.</translation>
-        </message>
-        <message>
-            <source>Decoded dimensions do not match the screen stream.</source>
-            <translation>డికోడ్ చేసిన కొలతలు స్క్రీన్ స్ట్రీమ్తో సరిపోలడం లేదు.</translation>
-        </message>
-        <message>
-            <source>Decoded image could not be allocated.</source>
-            <translation>డికోడ్ చేసిన చిత్రానికి మెమరీ కేటాయించలేకపోయింది.</translation>
-        </message>
-        <message>
-            <source>Video color conversion could not be initialized.</source>
-            <translation>వీడియో రంగు మార్పిడిని ప్రారంభించలేకపోయింది.</translation>
         </message>
     </context>
     <context>
@@ -2894,404 +3017,211 @@
         </message>
     </context>
     <context>
-        <name>Headless</name>
+        <name>Tray</name>
         <message>
-            <source>Command failed.</source>
-            <translation>కమాండ్ విఫలమైంది.</translation>
+            <source>Quit</source>
+            <translation>నిష్క్రమించు</translation>
         </message>
         <message>
-            <source>%1 must be an integer.</source>
-            <translation>%1 పూర్ణాంకం కావాలి.</translation>
+            <source>SquadSpeak - speaking</source>
+            <translation>స్క్వాడ్‌స్పీక్ - మాట్లాడుతోంది</translation>
         </message>
         <message>
-            <source>Requests must be on/off or true/false.</source>
-            <translation>అభ్యర్థనలు on/off లేదా true/false కావాలి.</translation>
+            <source>Settings</source>
+            <translation>సెట్టింగ్‌లు</translation>
         </message>
         <message>
-            <source>Unknown host property: %1</source>
-            <translation>తెలియని హోస్ట్ లక్షణం: %1</translation>
+            <source>Channels</source>
+            <translation>ఛానెల్‌లు</translation>
         </message>
         <message>
-            <source>Run without GUI, microphone capture, or local audio output.</source>
-            <translation>గ్రాఫికల్ ఇంటర్ఫేస్, మైక్రోఫోన్ క్యాప్చర్ లేదా స్థానిక ఆడియో అవుట్పుట్ లేకుండా అమలు చేయండి.</translation>
-        </message>
-        <message>
-            <source>Server storage prefix. Personal/audio/GUI profiles are not loaded.</source>
-            <translation>సర్వర్ నిల్వ ఉపసర్గ. వ్యక్తిగత, ఆడియో మరియు గ్రాఫికల్ ప్రొఫైళ్లు లోడ్ కావు.</translation>
-        </message>
-        <message>
-            <source>Optional private identity file instead of the OS credential store (Linux/macOS). Parent directory must exist and belong to this account.</source>
-            <translation>ఆపరేటింగ్ సిస్టమ్ ఆధారాల నిల్వకు బదులుగా ఐచ్ఛిక ప్రైవేట్ గుర్తింపు ఫైల్ (Linux/macOS). పేరెంట్ డైరెక్టరీ ఉండాలి మరియు ఈ ఖాతాకు చెందినదై ఉండాలి.</translation>
-        </message>
-        <message>
-            <source>UTF-8 key=value properties or JSON host preset. Default: application.properties, then config/application.properties beside the app.</source>
-            <translation>UTF-8 key=value లక్షణాలు లేదా JSON హోస్ట్ ప్రీసెట్. డిఫాల్ట్: application.properties, తర్వాత యాప్ పక్కన config/application.properties.</translation>
-        </message>
-        <message>
-            <source>Channel display name.</source>
-            <translation>ఛానల్ ప్రదర్శిత పేరు.</translation>
-        </message>
-        <message>
-            <source>System and radio bot display name.</source>
-            <translation>సిస్టమ్ మరియు రేడియో బాట్ ప్రదర్శిత పేరు.</translation>
-        </message>
-        <message>
-            <source>TCP service port (1-65535).</source>
-            <translation>TCP సేవా పోర్ట్ (1-65535).</translation>
-        </message>
-        <message>
-            <source>Headless admission is always on; only 'on' or 'true' is accepted.</source>
-            <translation>హెడ్లెస్ స్వీకరణ ఎల్లప్పుడూ ఆన్లో ఉంటుంది; 'on' లేదా 'true' మాత్రమే అంగీకరించబడతాయి.</translation>
-        </message>
-        <message>
-            <source>Preapprove a device ID; repeat for several devices. Existing bans remain.</source>
-            <translation>పరికర IDని ముందుగా అనుమతించండి; అనేక పరికరాల కోసం పునరావృతం చేయండి. ఉన్న నిషేధాలు అలాగే ఉంటాయి.</translation>
-        </message>
-        <message>
-            <source>Block a device ID; repeat for several devices.</source>
-            <translation>పరికర IDని బ్లాక్ చేయండి; అనేక పరికరాల కోసం పునరావృతం చేయండి.</translation>
-        </message>
-        <message>
-            <source>Read a UTF-8 channel password from a file before listening. An empty file removes it.</source>
-            <translation>వినడం ప్రారంభించే ముందు UTF-8 ఛానల్ పాస్వర్డ్ను ఫైల్ నుండి చదవండి. ఖాళీ ఫైల్ దాన్ని తొలగిస్తుంది.</translation>
-        </message>
-        <message>
-            <source>Channel password. Empty removes it; environment or config avoids process-list exposure.</source>
-            <translation>ఛానల్ పాస్వర్డ్. ఖాళీ విలువ దాన్ని తొలగిస్తుంది; పర్యావరణం లేదా కాన్ఫిగరేషన్ అది ప్రాసెస్ జాబితాలో కనిపించకుండా చేస్తాయి.</translation>
-        </message>
-        <message>
-            <source>SquadSpeak headless local channel host</source>
-            <translation>SquadSpeak హెడ్లెస్ స్థానిక ఛానల్ హోస్ట్</translation>
-        </message>
-        <message>
-            <source>Environment variables (SQUADSPEAK_ prefix):</source>
-            <translation>పర్యావరణ వేరియబుల్స్ (SQUADSPEAK_ ఉపసర్గ):</translation>
-        </message>
-        <message>
-            <source>Host configuration could not be read or exceeds 1 MiB.</source>
-            <translation>హోస్ట్ కాన్ఫిగరేషన్ చదవలేకపోయాము లేదా అది 1 MiB మించిపోయింది.</translation>
-        </message>
-        <message>
-            <source>Host configuration must be UTF-8.</source>
-            <translation>హోస్ట్ కాన్ఫిగరేషన్ UTF-8 కావాలి.</translation>
-        </message>
-        <message>
-            <source>Host preset must be a JSON object.</source>
-            <translation>హోస్ట్ ప్రీసెట్ JSON ఆబ్జెక్ట్ కావాలి.</translation>
-        </message>
-        <message>
-            <source>Property line %1 must use key=value.</source>
-            <translation>లక్షణం లైన్ %1 key=value ఉపయోగించాలి.</translation>
-        </message>
-        <message>
-            <source>Property line %1: %2</source>
-            <translation>లక్షణం లైన్ %1: %2</translation>
-        </message>
-        <message>
-            <source>Standard input has no file descriptor.</source>
-            <translation>ప్రామాణిక ఇన్పుట్కు ఫైల్ డిస్క్రిప్టర్ లేదు.</translation>
-        </message>
-        <message>
-            <source>Standard input could not be inspected.</source>
-            <translation>ప్రామాణిక ఇన్పుట్ను పరిశీలించలేకపోయాము.</translation>
-        </message>
-        <message>
-            <source>Could not write the command response: %1</source>
-            <translation>కమాండ్ ప్రతిస్పందన రాయలేకపోయాము: %1</translation>
-        </message>
-        <message>
-            <source>Standard input could not be read: %1</source>
-            <translation>ప్రామాణిక ఇన్పుట్ చదవలేకపోయాము: %1</translation>
-        </message>
-        <message>
-            <source>Input line exceeds 65536 bytes.</source>
-            <translation>ఇన్పుట్ లైన్ 65536 బైట్లను మించిపోయింది.</translation>
-        </message>
-        <message>
-            <source>Each input line must be a JSON object.</source>
-            <translation>ప్రతి ఇన్పుట్ లైన్ JSON ఆబ్జెక్ట్ కావాలి.</translation>
-        </message>
-        <message>
-            <source>Input ended before a complete JSON line.</source>
-            <translation>పూర్తి JSON లైన్కు ముందు ఇన్పుట్ ముగిసింది.</translation>
-        </message>
-        <message>
-            <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
-            <translation>status, configure, password, admission, history, chat మరియు radio కమాండ్లకు ఐచ్ఛిక స్వంత ఛానల్ ID; డిఫాల్ట్గా ప్రాథమిక ఛానల్.</translation>
-        </message>
-        <message>
-            <source>Channel action must be list, add or remove.</source>
-            <translation>ఛానల్ చర్య list, add లేదా remove కావాలి.</translation>
-        </message>
-        <message>
-            <source>Removing an own channel deletes its history, images, permissions and radio settings. Set confirmed=true to proceed.</source>
-            <translation>స్వంత ఛానల్ను తొలగిస్తే దాని చరిత్ర, చిత్రాలు, అనుమతులు మరియు రేడియో సెట్టింగ్లు తొలగుతాయి. కొనసాగేందుకు confirmed=true సెట్ చేయండి.</translation>
-        </message>
-        <message>
-            <source>id must identify an additional own channel.</source>
-            <translation>id అదనపు స్వంత ఛానల్ను గుర్తించాలి.</translation>
-        </message>
-        <message>
-            <source>The additional own channel could not be removed: %1</source>
-            <translation>అదనపు స్వంత ఛానల్ను తొలగించలేకపోయాము: %1</translation>
-        </message>
-        <message>
-            <source>channelId must identify an own channel.</source>
-            <translation>channelId స్వంత ఛానల్ను గుర్తించాలి.</translation>
-        </message>
-        <message>
-            <source>values must be a host settings object.</source>
-            <translation>values హోస్ట్ సెట్టింగ్ల ఆబ్జెక్ట్ కావాలి.</translation>
-        </message>
-        <message>
-            <source>Headless admission is always enabled for non-banned devices; requests off is not supported.</source>
-            <translation>బ్లాక్ చేయని పరికరాలకు హెడ్లెస్ స్వీకరణ ఎల్లప్పుడూ ప్రారంభించబడి ఉంటుంది; requests off మద్దతు లేదు.</translation>
-        </message>
-        <message>
-            <source>value must be a password of at most 1024 UTF-8 bytes without control characters; an empty string removes it.</source>
-            <translation>value నియంత్రణ అక్షరాలు లేని గరిష్ఠం 1024 UTF-8 బైట్ల పాస్వర్డ్ కావాలి; ఖాళీ స్ట్రింగ్ దాన్ని తొలగిస్తుంది.</translation>
-        </message>
-        <message>
-            <source>The channel is not ready or a password change is in progress.</source>
-            <translation>ఛానల్ సిద్ధంగా లేదు లేదా పాస్వర్డ్ మార్పు జరుగుతోంది.</translation>
-        </message>
-        <message>
-            <source>The channel was removed while saving the password.</source>
-            <translation>పాస్వర్డ్ సేవ్ చేస్తున్నప్పుడు ఛానల్ తొలగించబడింది.</translation>
-        </message>
-        <message>
-            <source>id is required.</source>
-            <translation>id అవసరం.</translation>
-        </message>
-        <message>
-            <source>text must be a valid non-empty chat message.</source>
-            <translation>text చెల్లుబాటు అయ్యే ఖాళీ కాని చాట్ సందేశం కావాలి.</translation>
-        </message>
-        <message>
-            <source>The local channel is not ready.</source>
-            <translation>స్థానిక ఛానల్ సిద్ధంగా లేదు.</translation>
-        </message>
-        <message>
-            <source>The channel's radio is unavailable.</source>
-            <translation>ఛానల్ రేడియో అందుబాటులో లేదు.</translation>
-        </message>
-        <message>
-            <source>Unknown command. Use help.</source>
-            <translation>తెలియని కమాండ్. help ఉపయోగించండి.</translation>
-        </message>
-        <message>
-            <source>search requires a query, non-negative offset and limit from 1 to 128.</source>
-            <translation>searchకు query, ప్రతికూలం కాని offset మరియు 1 నుండి 128 వరకు limit అవసరం.</translation>
-        </message>
-        <message>
-            <source>add creates an id; update requires an existing id.</source>
-            <translation>add ఒక id సృష్టిస్తుంది; updateకు ఉన్న id అవసరం.</translation>
-        </message>
-        <message>
-            <source>A station is already being checked.</source>
-            <translation>స్టేషన్ ఇప్పటికే తనిఖీ చేయబడుతోంది.</translation>
-        </message>
-        <message>
-            <source>The channel was removed while checking the station.</source>
-            <translation>స్టేషన్ను తనిఖీ చేస్తున్నప్పుడు ఛానల్ తొలగించబడింది.</translation>
-        </message>
-        <message>
-            <source>Unknown radio action.</source>
-            <translation>తెలియని రేడియో చర్య.</translation>
-        </message>
-        <message>
-            <source>Could not load language: %1</source>
-            <translation>భాషను లోడ్ చేయలేకపోయాము: %1</translation>
-        </message>
-        <message>
-            <source>The %1 option is incompatible with --headless.</source>
-            <translation>%1 ఎంపిక --headlessతో అనుకూలంగా లేదు.</translation>
-        </message>
-        <message>
-            <source>Unexpected positional arguments. Use --help.</source>
-            <translation>అనుకోని స్థానిక ఆర్గ్యుమెంట్లు. --help ఉపయోగించండి.</translation>
-        </message>
-        <message>
-            <source>--config / -f requires a non-empty path.</source>
-            <translation>--config / -fకు ఖాళీ కాని మార్గం అవసరం.</translation>
-        </message>
-        <message>
-            <source>Choose --password or --password-file, not both.</source>
-            <translation>--password లేదా --password-fileలో ఒకదాన్ని ఎంచుకోండి, రెండింటినీ కాదు.</translation>
-        </message>
-        <message>
-            <source>Choose SQUADSPEAK_PASSWORD or SQUADSPEAK_PASSWORD_FILE, not both.</source>
-            <translation>SQUADSPEAK_PASSWORD లేదా SQUADSPEAK_PASSWORD_FILEలో ఒకదాన్ని ఎంచుకోండి, రెండింటినీ కాదు.</translation>
-        </message>
-        <message>
-            <source>Choose password or passwordFile in one configuration layer, not both.</source>
-            <translation>ఒక కాన్ఫిగరేషన్ స్థాయిలో password లేదా passwordFileలో ఒకదాన్ని ఎంచుకోండి, రెండింటినీ కాదు.</translation>
-        </message>
-        <message>
-            <source>passwordFile must be a non-empty path.</source>
-            <translation>passwordFile ఖాళీ కాని మార్గం కావాలి.</translation>
-        </message>
-        <message>
-            <source>Password file could not be read or is too large.</source>
-            <translation>పాస్వర్డ్ ఫైల్ చదవలేకపోయాము లేదా అది చాలా పెద్దది.</translation>
-        </message>
-        <message>
-            <source>Password file must contain at most 1024 UTF-8 bytes without control characters.</source>
-            <translation>పాస్వర్డ్ ఫైల్ నియంత్రణ అక్షరాలు లేకుండా గరిష్ఠం 1024 UTF-8 బైట్లు కలిగి ఉండాలి.</translation>
-        </message>
-        <message>
-            <source>Password must be a string of at most 1024 UTF-8 bytes without control characters.</source>
-            <translation>పాస్వర్డ్ నియంత్రణ అక్షరాలు లేని గరిష్ఠం 1024 UTF-8 బైట్ల స్ట్రింగ్ కావాలి.</translation>
-        </message>
-        <message>
-            <source>settingsFile must be a non-empty path.</source>
-            <translation>settingsFile ఖాళీ కాని మార్గం కావాలి.</translation>
-        </message>
-        <message>
-            <source>identityFile must be a non-empty path.</source>
-            <translation>identityFile ఖాళీ కాని మార్గం కావాలి.</translation>
-        </message>
-        <message>
-            <source>The settings directory could not be created.</source>
-            <translation>సెట్టింగ్ల డైరెక్టరీని సృష్టించలేకపోయాము.</translation>
-        </message>
-        <message>
-            <source>This SquadSpeak profile is already running or cannot be locked.</source>
-            <translation>ఈ SquadSpeak ప్రొఫైల్ ఇప్పటికే నడుస్తోంది లేదా లాక్ చేయలేకపోయాము.</translation>
-        </message>
-        <message>
-            <source>Standard input could not be opened.</source>
-            <translation>ప్రామాణిక ఇన్పుట్ను తెరవలేకపోయాము.</translation>
-        </message>
-        <message>
-            <source>Standard output could not be opened.</source>
-            <translation>ప్రామాణిక అవుట్పుట్ను తెరవలేకపోయాము.</translation>
-        </message>
-        <message>
-            <source>This identity file is already in use or cannot be locked.</source>
-            <translation>ఈ గుర్తింపు ఫైల్ ఇప్పటికే ఉపయోగంలో ఉంది లేదా లాక్ చేయలేకపోయాము.</translation>
-        </message>
-        <message>
-            <source>Invalid host configuration: %1</source>
-            <translation>చెల్లని హోస్ట్ కాన్ఫిగరేషన్: %1</translation>
-        </message>
-        <message>
-            <source>Radio channels could not be initialized.</source>
-            <translation>రేడియో ఛానళ్లను ప్రారంభించలేకపోయాము.</translation>
-        </message>
-        <message>
-            <source>Headless host could not start: %1</source>
-            <translation>హెడ్లెస్ హోస్ట్ను ప్రారంభించలేకపోయాము: %1</translation>
-        </message>
-        <message>
-            <source>Channel password could not be saved.</source>
-            <translation>ఛానల్ పాస్వర్డ్ను సేవ్ చేయలేకపోయాము.</translation>
-        </message>
-        <message>
-            <source>Invalid channel password: %1</source>
-            <translation>చెల్లని ఛానల్ పాస్వర్డ్: %1</translation>
-        </message>
-        <message>
-            <source>Headless host could not initialize: %1</source>
-            <translation>హెడ్లెస్ హోస్ట్ను ప్రారంభించలేకపోయాము: %1</translation>
-        </message>
-        <message>
-            <source>SquadSpeak headless could not start: %1</source>
-            <translation>SquadSpeak హెడ్లెస్ హోస్ట్ను ప్రారంభించలేకపోయాము: %1</translation>
-        </message>
-        <message>
-            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
-            <translation>మద్దతుదారు చర్య తప్పనిసరిగా స్థితి, సైన్-ఇన్, రిఫ్రెష్, సైన్ అవుట్ లేదా రద్దు చేయాలి. status sign-in refresh sign-out cancel</translation>
-        </message>
-        <message>
-            <source>A Supporter operation is in progress.</source>
-            <translation>సపోర్టర్ ఆపరేషన్ ప్రోగ్రెస్‌లో ఉంది.</translation>
-        </message>
-        <message>
-            <source>Supporter access is unavailable in this build.</source>
-            <translation>ఈ బిల్డ్‌లో సపోర్టర్ యాక్సెస్ అందుబాటులో లేదు.</translation>
-        </message>
-        <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>సెట్టింగ్‌ల ప్రాధాన్యత: వాదనలు &gt; పర్యావరణం &gt; లక్షణాలు &gt; సేవ్ చేయబడిన సర్వర్ విలువలు.</translation>
+            <source>New image</source>
+            <translation>కొత్త చిత్రం</translation>
         </message>
     </context>
     <context>
-        <name>Desktop</name>
+        <name>VideoCodec</name>
         <message>
-            <source>Open settings at startup.</source>
-            <translation>ప్రారంభంలో సెట్టింగ్లను తెరవండి.</translation>
+            <source>Video codec: %1</source>
+            <translation>వీడియో కోడెక్: %1</translation>
         </message>
         <message>
-            <source>Open guided local test recording without starting network services.</source>
-            <translation>నెట్వర్క్ సేవలను ప్రారంభించకుండా సూచనలతో స్థానిక పరీక్ష రికార్డింగ్ను తెరవండి.</translation>
+            <source>Video codec ABI does not match its headers.</source>
+            <translation>వీడియో కోడెక్ ABI దాని హెడర్లతో సరిపోలడం లేదు.</translation>
         </message>
         <message>
-            <source>Alternative file for audio profiles.</source>
-            <translation>ఆడియో ప్రొఫైల్ల కోసం ప్రత్యామ్నాయ ఫైల్.</translation>
+            <source>Video buffers could not be allocated.</source>
+            <translation>వీడియో బఫర్లకు మెమరీ కేటాయించలేకపోయింది.</translation>
         </message>
         <message>
-            <source>Load the interface without microphone capture and exit after one second.</source>
-            <translation>మైక్రోఫోన్ రికార్డింగ్ లేకుండా ఇంటర్ఫేస్ను లోడ్ చేసి ఒక సెకను తర్వాత మూసివేయండి.</translation>
+            <source>Invalid video quality tier.</source>
+            <translation>వీడియో నాణ్యత స్థాయి చెల్లదు.</translation>
         </message>
         <message>
-            <source>Save an image of the app window during the UI test.</source>
-            <translation>ఇంటర్ఫేస్ పరీక్ష సమయంలో యాప్ విండో చిత్రాన్ని సేవ్ చేయండి.</translation>
+            <source>The screen source exceeds the supported capture size.</source>
+            <translation>స్క్రీన్ మూలం మద్దతు ఉన్న క్యాప్చర్ పరిమాణాన్ని మించిపోయింది.</translation>
         </message>
         <message>
-            <source>The window image could not be saved.</source>
-            <translation>విండో చిత్రాన్ని సేవ్ చేయలేకపోయాము.</translation>
+            <source>The screen source is too narrow.</source>
+            <translation>స్క్రీన్ మూలం చాలా ఇరుకుగా ఉంది.</translation>
         </message>
         <message>
-            <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
-            <translation>సిస్టమ్ ట్రే అందుబాటులో లేదు; యాప్ విండోలో తెరిచి ఉంటుంది.</translation>
+            <source>The video encoder could not be allocated.</source>
+            <translation>వీడియో ఎన్కోడర్కు మెమరీ కేటాయించలేకపోయింది.</translation>
+        </message>
+        <message>
+            <source>No supported video encoder is available.</source>
+            <translation>మద్దతు ఉన్న వీడియో ఎన్కోడర్ అందుబాటులో లేదు.</translation>
+        </message>
+        <message>
+            <source>Video encoder configuration is too large.</source>
+            <translation>వీడియో ఎన్కోడర్ కాన్ఫిగరేషన్ చాలా పెద్దది.</translation>
+        </message>
+        <message>
+            <source>Video scaling could not be initialized.</source>
+            <translation>వీడియో స్కేలింగ్ను ప్రారంభించలేకపోయింది.</translation>
+        </message>
+        <message>
+            <source>The encoder returned an empty video packet.</source>
+            <translation>ఎన్కోడర్ ఖాళీ వీడియో ప్యాకెట్ను తిరిగి ఇచ్చింది.</translation>
+        </message>
+        <message>
+            <source>Invalid video frame format.</source>
+            <translation>వీడియో ఫ్రేమ్ ఫార్మాట్ చెల్లదు.</translation>
+        </message>
+        <message>
+            <source>Invalid video decoder configuration.</source>
+            <translation>వీడియో డికోడర్ కాన్ఫిగరేషన్ చెల్లదు.</translation>
+        </message>
+        <message>
+            <source>This video codec cannot be decoded.</source>
+            <translation>ఈ వీడియో కోడెక్ను డికోడ్ చేయలేము.</translation>
+        </message>
+        <message>
+            <source>Video decoder could not be allocated.</source>
+            <translation>వీడియో డికోడర్కు మెమరీ కేటాయించలేకపోయింది.</translation>
+        </message>
+        <message>
+            <source>Video decoder configuration could not be allocated.</source>
+            <translation>వీడియో డికోడర్ కాన్ఫిగరేషన్కు మెమరీ కేటాయించలేకపోయింది.</translation>
+        </message>
+        <message>
+            <source>Decoded dimensions do not match the screen stream.</source>
+            <translation>డికోడ్ చేసిన కొలతలు స్క్రీన్ స్ట్రీమ్తో సరిపోలడం లేదు.</translation>
+        </message>
+        <message>
+            <source>Decoded image could not be allocated.</source>
+            <translation>డికోడ్ చేసిన చిత్రానికి మెమరీ కేటాయించలేకపోయింది.</translation>
+        </message>
+        <message>
+            <source>Video color conversion could not be initialized.</source>
+            <translation>వీడియో రంగు మార్పిడిని ప్రారంభించలేకపోయింది.</translation>
         </message>
     </context>
     <context>
-        <name>LocalLanguage</name>
+        <name>VoiceAvatar</name>
         <message>
-            <source>Translation (experimental)</source>
-            <translation>అనువాదం (ప్రయోగాత్మకం)</translation>
+            <source>Muted</source>
+            <translation>మైక్రోఫోన్ మ్యూట్ చేయబడింది</translation>
         </message>
         <message>
-            <source>Spoken language</source>
-            <translation>మాట్లాడే భాష</translation>
+            <source>Sleeping</source>
+            <translation>నిద్రలో ఉన్నారు</translation>
         </message>
         <message>
-            <source>Translate to</source>
-            <translation>ఈ భాషలోకి అనువదించు</translation>
+            <source>Offline</source>
+            <translation>ఆఫ్‌లైన్‌లో ఉన్నారు</translation>
         </message>
         <message>
-            <source>Translate messages</source>
-            <translation>సందేశాలను అనువదించు</translation>
+            <source>Speaking</source>
+            <translation>మాట్లాడుతున్నారు</translation>
         </message>
         <message>
-            <source>Translated voice</source>
-            <translation>అనువదించిన స్వరం</translation>
+            <source>Unavailable</source>
+            <translation>అందుబాటులో లేదు</translation>
         </message>
         <message>
-            <source>Original audio</source>
-            <translation>అసలు ఆడియో</translation>
+            <source>Listening</source>
+            <translation>వింటున్నార</translation>
         </message>
         <message>
-            <source>Original text</source>
-            <translation>అసలు వచనం</translation>
+            <source>Deafened</source>
+            <translation>స్పీకర్లు మ్యూట్ చేయబడ్డాయి</translation>
+        </message>
+    </context>
+    <context>
+        <name>VoiceSession</name>
+        <message>
+            <source>Unavailable - audio settings or tone test</source>
+            <translation>అందుబాటులో లేరు - ఆడియో సెట్టింగ్‌లు లేదా ధ్వని పరీక్ష</translation>
         </message>
         <message>
-            <source>Prepare languages</source>
-            <translation>భాషలను సిద్ధం చేయి</translation>
+            <source>Microphone muted</source>
+            <translation>మైక్రోఫోన్ నిశ్శబ్దంగా ఉంది</translation>
         </message>
         <message>
-            <source>Local language processing is unavailable.</source>
-            <translation>స్థానిక భాషా ప్రాసెసింగ్ అందుబాటులో లేదు.</translation>
+            <source>Push-to-talk held</source>
+            <translation>పుష్-టు-టాక్ నొక్కి పట్టుకున్నారు</translation>
         </message>
         <message>
-            <source>Language settings could not be read.</source>
-            <translation>భాష సెట్టింగ్‌లను చదవలేకపోయింది.</translation>
+            <source>Ready - push-to-talk released</source>
+            <translation>సిద్ధంగా ఉన్నారు - పుష్-టు-టాక్ విడుదల చేశారు</translation>
         </message>
         <message>
-            <source>Language settings could not be saved.</source>
-            <translation>భాష సెట్టింగ్‌లను సేవ్ చేయలేకపోయింది.</translation>
+            <source>Microphone unmuted</source>
+            <translation>మైక్రోఫోన్ తిరిగి ప్రారంభించబడింది</translation>
+        </message>
+        <message>
+            <source>Settings could not be saved: %1</source>
+            <translation>సెట్టింగ్‌లు సేవ్ చేయలేకపోయింది: %1</translation>
+        </message>
+        <message>
+            <source>The push-to-talk sequence cannot be incremented further.</source>
+            <translation>పుష్-టు-టాక్ క్రమాన్ని ఇక పెంచలేము.</translation>
+        </message>
+        <message>
+            <source>Choose System, Light or Dark.</source>
+            <translation>సిస్టమ్, లైట్ లేదా డార్క్ మోడ్‌ను ఎంచుకోండి.</translation>
+        </message>
+        <message>
+            <source>Choose a colour palette from the list.</source>
+            <translation>జాబితా నుండి ఒక రంగుల థీమ్‌ను ఎంచుకోండి.</translation>
+        </message>
+        <message>
+            <source>Choose an available avatar.</source>
+            <translation>అందుబాటులో ఉన్న అవతార్‌లలో ఒకదాన్ని ఎంచుకోండి.</translation>
+        </message>
+        <message>
+            <source>Invalid push-to-talk binding.</source>
+            <translation>చెల్లుబాటు అయ్యే పుష్-టు-టాక్ (push-to-talk) సెట్టింగ్ లేదు.</translation>
+        </message>
+        <message>
+            <source>Release the held push-to-talk key first.</source>
+            <translation>ముందుగా మీరు పట్టుకున్న పుష్-టు-టాక్ కీని విడుదల చేయండి.</translation>
+        </message>
+        <message>
+            <source>Choose a language from the list.</source>
+            <translation>జాబితా నుండి ఒక భాషను ఎంచుకోండి.</translation>
+        </message>
+        <message>
+            <source>This avatar requires Supporter.</source>
+            <translation>ఈ అవతార్‌కు Supporter అవసరం.</translation>
+        </message>
+        <message>
+            <source>The name must contain 1 to 64 characters.</source>
+            <translation>పేరు 1 నుండి 64 అక్షరాల మధ్య ఉండాలి.</translation>
+        </message>
+        <message>
+            <source>The name may not contain control characters or line breaks.</source>
+            <translation>పేరులో ప్రత్యేక క్యారెక్టర్లు లేదా లైన్ బ్రేక్‌లు ఉండకూడదు.</translation>
+        </message>
+        <message>
+            <source>Session settings could not be read.</source>
+            <translation>సెషన్ సెట్టింగ్లను చదవలేకపోయాము.</translation>
+        </message>
+        <message>
+            <source>Saved setting is invalid: %1</source>
+            <translation>సేవ్ చేసిన సెట్టింగ్ చెల్లదు: %1</translation>
         </message>
     </context>
 </TS>

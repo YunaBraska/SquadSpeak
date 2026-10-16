@@ -15,7 +15,8 @@ void squad_language_destroy(void* handle);
 const char* squad_language_capabilities(void* handle);
 void squad_language_refresh(void* handle);
 void squad_language_prepare(void* handle, int64_t request, const char* source, const char* target, int32_t speech);
-void squad_language_translate(void* handle, int64_t request, const char* source, const char* target, const char* text);
+// Detection uses the whole translatable message, not an isolated formatting run.
+void squad_language_translate(void* handle, int64_t request, const char* source, const char* target, const char* text, const char* detectionText);
 void squad_language_listen(void* handle, int64_t request, const char* source);
 void squad_language_audio(void* handle, int64_t request, const float* mono48000, int count);
 void squad_language_cancel(void* handle, int64_t request);

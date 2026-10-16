@@ -21,8 +21,11 @@ public:
     };
     OutputMonitor() = default;
     ~OutputMonitor();
-    bool start(const QByteArray& deviceId);
+    // Failed or interrupted startup is not retried for the same device by
+    // microphone/PTT lifecycle changes. Only an explicit user retry clears it.
+    bool start(const QByteArray& deviceId, bool retry = false);
     void stop();
+    [[nodiscard]] bool retryNeeded() const;
     [[nodiscard]] Block take();
     [[nodiscard]] QString error() const;
 private:
@@ -35,6 +38,8 @@ private:
     int rate_ = 0;
     bool discontinuity_ = false;
     QString error_;
+    QByteArray deviceId_;
+    bool awaitingAudio_ = false;
     std::atomic<bool> stopping_{true};
     std::condition_variable wake_;
     std::thread worker_;

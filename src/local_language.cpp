@@ -23,7 +23,7 @@ bool locale(const QString& value) {
     static const QRegularExpression pattern("^[a-z]{2,3}(-[A-Za-z0-9]{2,8}){0,3}$");
     return pattern.match(value).hasMatch();
 }
-bool targetLocale(const QString& value) { return value == "system" || locale(value); }
+bool optionalLocale(const QString& value) { return value.isEmpty() || locale(value); }
 QString nativeError(const QJsonObject& event) {
     const auto detail = event.value("error").toString().trimmed().left(512);
     return detail.isEmpty() ? QCoreApplication::translate("LocalLanguage", "Local language processing is unavailable.") : detail;
@@ -46,18 +46,22 @@ LocalLanguage::LocalLanguage(QString settingsFile, QObject* parent)
         if (file.exists()) {
             if (file.open(QIODevice::ReadOnly) && file.size() <= 512 * 1024) {
                 const auto object = QJsonDocument::fromJson(file.readAll()).object();
-                const auto members = object.value("members").toObject();
-                const auto channels = object.value("channels").toObject();
-                bool valid = members.size() <= 512 && channels.size() <= 512;
-                for (auto it = members.begin(); it != members.end(); ++it) {
+                auto channels = object.value("channels").toObject();
+                const auto version = object.value("version").toInt();
+                bool valid = (object.value("channels").isObject() || (version == 1 && !object.contains("channels")))
+                    && channels.size() <= 512 && (version == 1 || version == 2);
+                for (auto it = channels.begin(); it != channels.end(); ++it) {
+                    valid &= identity(it.key());
+                    if (version == 1) {
+                        valid &= it.value().isString() && locale(it.value().toString());
+                        it.value() = QJsonObject{{"messages", false}, {"outgoing", it.value().toString()}, {"voice", false}, {"voiceTarget", ""}};
+                    }
                     const auto value = it.value().toObject();
-                    valid &= identity(it.key()) && locale(value.value("source").toString())
-                        && targetLocale(value.value("target").toString()) && value.value("voice").isString()
-                        && value.value("voice").toString().size() <= 256 && value.value("incoming").isBool();
+                    valid &= value.value("messages").isBool() && value.value("voice").isBool()
+                        && value.value("outgoing").isString() && optionalLocale(value.value("outgoing").toString())
+                        && value.value("voiceTarget").isString() && optionalLocale(value.value("voiceTarget").toString());
                 }
-                for (auto it = channels.begin(); it != channels.end(); ++it)
-                    valid &= identity(it.key()) && locale(it.value().toString());
-                if (valid && object.value("version").toInt() == 1) preferences_ = object;
+                if (valid) preferences_ = {{"version", 2}, {"channels", channels}};
                 else error_ = tr("Language settings could not be read.");
             } else error_ = tr("Language settings could not be read.");
         }
@@ -68,15 +72,10 @@ LocalLanguage::LocalLanguage(QString settingsFile, QObject* parent)
     }, this);
     capabilities_ = QJsonDocument::fromJson(QByteArray(squad_language_capabilities(native_))).object();
 #endif
-    systemRefresh_.setInterval(5000);
-    connect(&systemRefresh_, &QTimer::timeout, this, &LocalLanguage::refresh);
     if (auto* app = qobject_cast<QGuiApplication*>(QCoreApplication::instance()))
         connect(app, &QGuiApplication::applicationStateChanged, this, [this](Qt::ApplicationState state) {
-            if (state == Qt::ApplicationActive) refresh();
+            if (state == Qt::ApplicationActive) { refresh(); refreshVoices(); }
         });
-    const auto storedMembers = preferences_.value("members").toObject();
-    for (const auto& value : storedMembers)
-        if (value.toObject().value("target") == "system" || value.toObject().value("voice") == "system") { systemRefresh_.start(); break; }
     deadline_.setInterval(250);
     connect(&deadline_, &QTimer::timeout, this, [this] {
         QList<qint64> expired;
@@ -97,7 +96,7 @@ LocalLanguage::~LocalLanguage() {
 }
 void LocalLanguage::notify() { ++revision_; emit changed(); }
 bool LocalLanguage::save(QJsonObject preferences) {
-    preferences.insert("version", 1);
+    preferences.insert("version", 2);
     if (!settingsFile_.isEmpty()) {
         QSaveFile file(settingsFile_);
         const auto bytes = QJsonDocument(preferences).toJson(QJsonDocument::Compact);
@@ -106,18 +105,23 @@ bool LocalLanguage::save(QJsonObject preferences) {
         }
     }
     preferences_ = std::move(preferences);
-    systemRefresh_.stop();
-    const auto storedMembers = preferences_.value("members").toObject();
-    for (const auto& value : storedMembers)
-        if (value.toObject().value("target") == "system" || value.toObject().value("voice") == "system") { systemRefresh_.start(); break; }
     error_.clear(); notify(); return true;
 }
+QVariantMap LocalLanguage::channelPreferences(const QString& id) const {
+    auto value = preferences_.value("channels").toObject().value(id).toObject().toVariantMap();
+    value.insert("incomingTarget", appLanguage_);
+    value.insert("listenTarget", value.value("voiceTarget").toString().isEmpty() ? appLanguage_ : value.value("voiceTarget"));
+    return value;
+}
 QVariantMap LocalLanguage::member(const QString& id) const {
-    auto result = preferences_.value("members").toObject().value(id).toObject().toVariantMap();
-    if (!result.isEmpty()) {
-        result.insert("targetSelection", result.value("target"));
-        if (result.value("target") == "system" || result.value("voice") == "system")
-            result.insert("target", systemVoice().value("language"));
+    const auto settings = channelPreferences(channel_);
+    const auto target = settings.value("listenTarget").toString();
+    const auto source = members_.value(id);
+    QVariantMap result{{"source", source}, {"target", target}};
+    if (settings.value("voice").toBool() && (source.isEmpty() || QLocale(source).language() != QLocale(target).language())) {
+        if (!source.isEmpty()) result.insert("voice", SpeechOutput::preferredVoice(voices_, target).value("id"));
+        if (result.value("voice").toString().isEmpty())
+            result.insert("status", tr("Original audio") + ". " + tr("Local language processing is unavailable."));
     }
     if (const auto it = active_.find(id); it != active_.end()) {
         result.insert("transcript", it->second->transcript);
@@ -125,68 +129,73 @@ QVariantMap LocalLanguage::member(const QString& id) const {
     }
     return result;
 }
-bool LocalLanguage::configure(const QString& id, const QString& source, const QString& target,
-                              const QString& voice, bool incoming) {
-    if (!identity(id) || !locale(source) || !targetLocale(target) || voice.size() > 256) return false;
-    QString actualTarget = target;
-    if (voice == "system") actualTarget = "system";
-    else if (!voice.isEmpty()) {
-        const auto options = voices();
-        const auto found = std::find_if(options.begin(), options.end(), [&](const auto& value) { return value.toMap().value("id") == voice; });
-        if (found == options.end()) return false;
-        actualTarget = found->toMap().value("language").toString();
-    }
-    auto preferences = preferences_;
-    auto members = preferences.value("members").toObject();
-    if (!members.contains(id) && members.size() >= 512) return false;
-    members.insert(id, QJsonObject{{"source", source}, {"target", actualTarget}, {"voice", voice}, {"incoming", incoming}});
-    preferences.insert("members", members);
-    if (!save(preferences)) return false;
-    stopMember(id); clearResults();
-    if (members_.contains(id) && !suspended_) startMember(id);
-    return true;
-}
-QString LocalLanguage::channelTarget(const QString& id) const { return preferences_.value("channels").toObject().value(id).toString(); }
-bool LocalLanguage::setChannelTarget(const QString& id, const QString& target) {
-    if (!identity(id) || (!target.isEmpty() && !locale(target))) return false;
+bool LocalLanguage::configureChannel(const QString& id, bool messages, const QString& outgoing,
+                                     bool voice, const QString& voiceTarget) {
+    if (!identity(id) || !optionalLocale(outgoing) || !optionalLocale(voiceTarget)) return false;
     auto preferences = preferences_;
     auto channels = preferences.value("channels").toObject();
     if (!channels.contains(id) && channels.size() >= 512) return false;
-    if (target.isEmpty()) channels.remove(id); else channels.insert(id, target);
+    channels.insert(id, QJsonObject{{"messages", messages}, {"outgoing", outgoing}, {"voice", voice}, {"voiceTarget", voiceTarget}});
     preferences.insert("channels", channels);
-    return save(preferences);
+    if (!save(preferences)) return false;
+    cancelPreparation(); offeredPreparations_.clear(); clearResults();
+    if (id == channel_) restartMembers();
+    return true;
+}
+void LocalLanguage::setAppLanguage(const QString& language) {
+    if (!locale(language) || appLanguage_ == language) return;
+    appLanguage_ = language;
+    cancelPreparation(); offeredPreparations_.clear(); clearResults(); restartMembers();
 }
 void LocalLanguage::refresh() {
 #if defined(SQUAD_LOCAL_LANGUAGE_NATIVE)
     squad_language_refresh(native_);
 #endif
 }
+void LocalLanguage::refreshVoices() {
+    const auto voices = SpeechOutput::voices();
+    if (voices == voices_) return;
+    voices_ = voices;
+    restartMembers();
+    emit capabilitiesChanged();
+    notify();
+}
 bool LocalLanguage::openSettings(bool speech) {
 #if defined(Q_OS_MACOS)
     return QDesktopServices::openUrl(QUrl(speech
         ? "x-apple.systempreferences:com.apple.preference.universalaccess?SpokenContent"
         : "x-apple.systempreferences:com.apple.Localization-Settings.extension?translation"));
+#elif defined(Q_OS_IOS)
+    return speech && QDesktopServices::openUrl(QUrl("https://support.apple.com/111798"));
 #else
     Q_UNUSED(speech)
     return false;
 #endif
 }
-bool LocalLanguage::prepare(const QString& id) {
-    refresh();
-    const auto preference = member(id);
-    if (!available() || preference.isEmpty() || preparing_.size() >= 1
-        || (!preference.value("voice").toString().isEmpty() && !speechAvailable())) return false;
+void LocalLanguage::offerPreparation(const QString& source, const QString& target, bool speech, const QString& peer) {
+    const auto key = source + ":" + target + (speech ? ":speech" : ":text");
+    if (!locale(source) || !locale(target) || preparing() || !preparation_.isEmpty() || offeredPreparations_.contains(key)) return;
+    offeredPreparations_.insert(key);
+    preparation_ = {{"source", source}, {"target", target}, {"speech", speech}, {"peer", peer}};
+    notify();
+}
+bool LocalLanguage::prepare(const QString& source, const QString& target, bool speech, const QString& peer) {
+    if (!available() || !locale(source) || !locale(target) || preparing() || (speech && !speechAvailable())) return false;
     const auto request = ++nextRequest_;
-    preparing_.insert(request, id); notify();
+    preparing_.insert(request, peer); notify();
 #if defined(SQUAD_LOCAL_LANGUAGE_NATIVE)
-    squad_language_prepare(native_, request, qUtf8Printable(preference.value("source").toString()),
-        qUtf8Printable(preference.value("target").toString()), !preference.value("voice").toString().isEmpty());
+    squad_language_prepare(native_, request, qUtf8Printable(source), qUtf8Printable(target), speech);
 #endif
     return true;
 }
+bool LocalLanguage::acceptPreparation() {
+    const auto choice = preparation_;
+    preparation_.clear(); notify();
+    return prepare(choice.value("source").toString(), choice.value("target").toString(), choice.value("speech").toBool(), choice.value("peer").toString());
+}
 void LocalLanguage::cancelPreparation() {
     const auto requests = preparing_.keys();
-    preparing_.clear();
+    preparing_.clear(); preparation_.clear();
 #if defined(SQUAD_LOCAL_LANGUAGE_NATIVE)
     for (const auto request : requests) squad_language_cancel(native_, request);
 #endif
@@ -194,15 +203,7 @@ void LocalLanguage::cancelPreparation() {
 }
 bool LocalLanguage::prepareTranslation(const QString& key) {
     const auto state = result(key);
-    const auto source = state.value("detectedSource", state.value("source")).toString();
-    const auto target = state.value("target").toString();
-    if (!available() || !locale(source) || !locale(target) || !preparing_.isEmpty()) return false;
-    const auto request = ++nextRequest_;
-    preparing_.insert(request, QString{}); notify();
-#if defined(SQUAD_LOCAL_LANGUAGE_NATIVE)
-    squad_language_prepare(native_, request, qUtf8Printable(source), qUtf8Printable(target), false);
-#endif
-    return true;
+    return prepare(state.value("detectedSource", state.value("source")).toString(), state.value("target").toString(), false);
 }
 void LocalLanguage::cancel(const QString& key) {
     for (auto it = translations_.begin(); it != translations_.end();) {
@@ -250,6 +251,7 @@ bool LocalLanguage::request(const QString& key, const QString& markdown, const Q
             if (style.isImageFormat() || style.fontFixedPitch() || style.fontFamilies().toStringList().contains("monospace")
                 || text.trimmed().isEmpty() || (style.isAnchor() && text == style.anchorHref())) continue;
             job.parts.append({fragment.position(), fragment.length(), text});
+            job.detectionText += text + " ";
         }
     }
     if (job.parts.size() > 128) {
@@ -276,28 +278,22 @@ void LocalLanguage::next(qint64 request) {
     }
 #if defined(SQUAD_LOCAL_LANGUAGE_NATIVE)
     squad_language_translate(native_, request, qUtf8Printable(job.source), qUtf8Printable(job.target),
-        qUtf8Printable(job.parts[job.replacements.size()].text));
+        qUtf8Printable(job.parts[job.replacements.size()].text), qUtf8Printable(job.detectionText));
 #endif
 }
 void LocalLanguage::event(qint64 request, const QJsonObject& event) {
     const auto kind = event.value("kind").toString();
-    if (kind == "voicesChanged") { voices_ = SpeechOutput::voices(); emit capabilitiesChanged(); notify(); return; }
+    if (kind == "voicesChanged") { refreshVoices(); return; }
     if (kind == "capabilities") {
-        const bool systemChanged = capabilities_.value("systemVoice") != event.value("systemVoice");
+        const bool changed = available() != event.value("available").toBool() || speechAvailable() != event.value("speechAvailable").toBool();
         capabilities_ = event;
         emit capabilitiesChanged();
-        if (systemChanged) {
-            clearResults();
-            for (const auto& id : members_) if (member(id).value("voice") == "system") {
-                stopMember(id);
-                if (!suspended_) startMember(id);
-            }
-        }
+        if (changed) restartMembers();
         notify(); return;
     }
     if (preparing_.contains(request)) {
-        const auto id = preparing_.take(request);
-        if (kind == "ready") { error_.clear(); clearResults(); stopMember(id); if (members_.contains(id) && !suspended_) startMember(id); emit prepared(id); }
+        preparing_.remove(request);
+        if (kind == "ready") { error_.clear(); clearResults(); restartMembers(); }
         else error_ = nativeError(event);
         notify(); return;
     }
@@ -309,14 +305,20 @@ void LocalLanguage::event(qint64 request, const QJsonObject& event) {
                 const auto peer = job.peer;
                 auto voice = active_.find(peer);
                 if (voice != active_.end()) {
-                    if (!voice->second->output.start(text, 48000, member(peer).value("voice") == "system" ? QString{} : member(peer).value("voice").toString())) {
+                    if (!voice->second->output.start(text, 48000, member(peer).value("voice").toString())) {
                         translations_.erase(it); failMember(peer); return;
                     }
                     voice->second->status.clear();
                 }
                 translations_.erase(it); notify(); return;
             }
-            job.replacements.append(text); next(request); return;
+            if (job.source.isEmpty()) job.source = event.value("source").toString();
+            const auto& original = job.parts[job.replacements.size()].text;
+            qsizetype begin = 0, end = original.size();
+            while (begin < end && original[begin].isSpace()) ++begin;
+            while (end > begin && original[end - 1].isSpace()) --end;
+            job.replacements.append(original.first(begin) + text.trimmed() + original.mid(end));
+            next(request); return;
         }
         const auto peer = job.peer;
         if (peer.isEmpty()) {
@@ -326,17 +328,30 @@ void LocalLanguage::event(qint64 request, const QJsonObject& event) {
             state.insert("needsPreparation", event.value("code") == "modelsRequired");
             state.insert("error", event.value("code") == "modelsRequired" ? tr("Prepare languages") : nativeError(event));
             results_.insert(job.key, state);
+            if (state.value("needsPreparation").toBool()) offerPreparation(state.value("detectedSource").toString(), job.target, false);
         }
 #if defined(SQUAD_LOCAL_LANGUAGE_NATIVE)
         squad_language_cancel(native_, request);
 #endif
         translations_.erase(it);
-        if (!peer.isEmpty()) failMember(peer);
+        if (!peer.isEmpty()) {
+            const auto preference = member(peer);
+            failMember(peer);
+            if (event.value("code") == "modelsRequired")
+                offerPreparation(preference.value("source").toString(), preference.value("target").toString(), true, peer);
+        }
         notify(); return;
     }
     for (auto& [id, voice] : active_) if (voice->request == request) {
         if (kind == "ready") { voice->ready = true; voice->waitingSince = -1; voice->status.clear(); notify(); return; }
-        if (kind != "text") { failMember(id); return; }
+        if (kind != "text") {
+            const auto preference = member(id);
+            const auto peer = id;
+            failMember(peer);
+            if (event.value("code") == "modelsRequired")
+                offerPreparation(preference.value("source").toString(), preference.value("target").toString(), true, peer);
+            return;
+        }
         if (!event.value("final").toBool()) return;
         const auto text = event.value("text").toString().trimmed();
         if (text.isEmpty()) return;
@@ -353,7 +368,7 @@ void LocalLanguage::event(qint64 request, const QJsonObject& event) {
         translations_.emplace(translation, std::move(job));
 #if defined(SQUAD_LOCAL_LANGUAGE_NATIVE)
         squad_language_translate(native_, translation, qUtf8Printable(preference.value("source").toString()),
-            qUtf8Printable(preference.value("target").toString()), qUtf8Printable(text));
+            qUtf8Printable(preference.value("target").toString()), qUtf8Printable(text), qUtf8Printable(text));
 #endif
         notify(); return;
     }
@@ -396,35 +411,55 @@ void LocalLanguage::failMember(QString id) {
     voice->transcript = transcript; voice->status = tr("Original audio") + ". " + tr("Local language processing is unavailable.");
     active_.emplace(id, std::move(voice)); notify();
 }
-void LocalLanguage::setMembers(const QStringList& members, const QString& channel) {
+void LocalLanguage::restartMembers() {
+    QStringList active;
+    for (const auto& [id, voice] : active_) active.append(id);
+    for (const auto& id : active) stopMember(id);
+    if (!suspended_) for (auto it = members_.begin(); it != members_.end(); ++it) startMember(it.key());
+    notify();
+}
+void LocalLanguage::setMembers(const QVariantList& members, const QString& channel) {
+    QMap<QString, QString> next;
+    for (const auto& entry : members) {
+        const auto member = entry.toMap();
+        const auto id = member.value("id").toString(), language = member.value("language").toString();
+        if (identity(id)) next.insert(id, locale(language) ? language : QString{});
+    }
     const bool switched = channel_ != channel;
-    channel_ = channel;
-    members_ = members;
+    if (!switched && members_ == next) return;
+    if (switched) { cancelPreparation(); offeredPreparations_.clear(); }
     QStringList removed;
-    for (const auto& [id, voice] : active_) if (switched || !members.contains(id)) removed.append(id);
+    for (const auto& [id, voice] : active_)
+        if (switched || !next.contains(id) || next.value(id) != members_.value(id)) removed.append(id);
     for (const auto& id : removed) stopMember(id);
-    if (!suspended_) for (const auto& id : members) startMember(id);
+    if (removed.contains(preparation_.value("peer").toString())
+        || std::any_of(preparing_.cbegin(), preparing_.cend(), [&](const auto& peer) { return removed.contains(peer); }))
+        cancelPreparation();
+    channel_ = channel; members_ = std::move(next);
+    if (!suspended_) for (auto it = members_.begin(); it != members_.end(); ++it) startMember(it.key());
     notify();
 }
 void LocalLanguage::suspend(bool suspended) {
     if (suspended_ == suspended) return;
     suspended_ = suspended;
-    if (suspended) {
-        QStringList ids;
-        for (const auto& [id, voice] : active_) ids.append(id);
-        for (const auto& id : ids) stopMember(id);
-    } else for (const auto& id : members_) startMember(id);
-    notify();
+    if (suspended) cancelPreparation();
+    restartMembers();
 }
 bool LocalLanguage::voiceProcessing() const {
     return !suspended_ && std::any_of(active_.begin(), active_.end(), [](const auto& item) { return item.second->ready; });
 }
-void LocalLanguage::processVoice(const QString& id, std::span<float> samples, qint64) {
+void LocalLanguage::processVoice(const QString& id, std::span<float> samples, qint64, int channels) {
+    if ((channels != 1 && channels != 2) || samples.size() % size_t(channels)) return;
     const auto it = active_.find(id);
     if (it == active_.end() || !it->second->ready || suspended_) return;
     const auto request = it->second->request;
 #if defined(SQUAD_LOCAL_LANGUAGE_NATIVE)
-    squad_language_audio(native_, request, samples.data(), int(samples.size()));
+    if (channels == 1) squad_language_audio(native_, request, samples.data(), int(samples.size()));
+    else {
+        std::vector<float> mono(samples.size() / 2);
+        for (size_t i = 0; i < mono.size(); ++i) mono[i] = (samples[i * 2] + samples[i * 2 + 1]) * .5f;
+        squad_language_audio(native_, request, mono.data(), int(mono.size()));
+    }
 #endif
     // Native ingress may synchronously cancel and replace the stream on failure.
     const auto current = active_.find(id);
@@ -434,5 +469,5 @@ void LocalLanguage::processVoice(const QString& id, std::span<float> samples, qi
     for (auto sample : samples) energy += double(sample) * sample;
     if (energy > 0.00001 * samples.size() && voice.waitingSince < 0 && !voice.output.active()) voice.waitingSince = clock_.elapsed();
     std::fill(samples.begin(), samples.end(), 0);
-    if (voice.output.mix(samples, 1)) voice.waitingSince = -1;
+    if (voice.output.mix(samples, 1, channels)) voice.waitingSince = -1;
 }

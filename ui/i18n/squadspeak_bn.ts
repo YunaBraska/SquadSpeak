@@ -36,14 +36,6 @@
             <translation>আপনার সিস্টেমের গোপনীয়তা সেটিংস খুলুন এবং SquadSpeak-এর জন্য মাইক্রোফোন অ্যাক্সেসের অনুমতি দিন।</translation>
         </message>
         <message>
-            <source>Microphone analysis active. Test audio stays on this computer.</source>
-            <translation>মাইক্রোফোন বিশ্লেষণ সক্রিয়। পরীক্ষা অডিও এই কম্পিউটারে থাকে।</translation>
-        </message>
-        <message>
-            <source>Finish the test recording before changing devices.</source>
-            <translation>ডিভাইস পরিবর্তন করার আগে পরীক্ষার রেকর্ডিং শেষ করুন।</translation>
-        </message>
-        <message>
             <source>The output format is not supported.</source>
             <translation>আউটপুট বিন্যাস সমর্থিত নয়।</translation>
         </message>
@@ -68,32 +60,12 @@
             <translation>টেস্ট টোন বাজানো যায়নি।</translation>
         </message>
         <message>
-            <source>The microphone has provided no data for five seconds. Recording discarded.</source>
-            <translation>মাইক্রোফোন পাঁচ সেকেন্ডের জন্য কোন তথ্য প্রদান করেনি। রেকর্ডিং বাতিল করা হয়েছে।</translation>
-        </message>
-        <message>
-            <source>The microphone was interrupted or changed. Recording discarded.</source>
-            <translation>মাইক্রোফোন বিঘ্নিত হয়েছে বা পরিবর্তন হয়েছে। রেকর্ডিং বাতিল করা হয়েছে।</translation>
-        </message>
-        <message>
-            <source>Cancelled. The incomplete recording was discarded.</source>
-            <translation>বাতিল। অসম্পূর্ণ রেকর্ডিং বাতিল করা হয়েছে.</translation>
-        </message>
-        <message>
             <source>No selected microphone is available</source>
             <translation>কোনো নির্বাচিত মাইক্রোফোন উপলব্ধ নেই৷</translation>
         </message>
         <message>
             <source>Allow microphone access in the system dialog.</source>
             <translation>সিস্টেম ডায়ালগে মাইক্রোফোন অ্যাক্সেসের অনুমতি দিন।</translation>
-        </message>
-        <message>
-            <source>Microphone capture active for the voice channel.</source>
-            <translation>ভয়েস চ্যানেলের জন্য মাইক্রোফোন ক্যাপচার সক্রিয়।</translation>
-        </message>
-        <message>
-            <source>Microphone access was denied. Nothing was saved.</source>
-            <translation>মাইক্রোফোন অ্যাক্সেস অস্বীকার করা হয়েছে। কিছুই রক্ষা হয়নি।</translation>
         </message>
         <message>
             <source>Microphone access is missing. Allow it in System Settings.</source>
@@ -265,97 +237,6 @@
         </message>
     </context>
     <context>
-        <name>AudioRecording</name>
-        <message>
-            <source>Incomplete audio block. Recording discarded.</source>
-            <translation>অসম্পূর্ণ অডিও ব্লক। রেকর্ডিং বাতিল করা হয়েছে।</translation>
-        </message>
-        <message>
-            <source>Move about one meter from the microphone. Keep the background sound playing and read the sentence.</source>
-            <translation>মাইক্রোফোন থেকে প্রায় এক মিটার সরান। ব্যাকগ্রাউন্ড সাউন্ড বাজিয়ে রাখুন এবং বাক্যটি পড়ুন।</translation>
-        </message>
-        <message>
-            <source>Voice with background sound</source>
-            <translation>ব্যাকগ্রাউন্ড সাউন্ড সহ ভয়েস</translation>
-        </message>
-        <message>
-            <source>The recordings folder could not be created.</source>
-            <translation>রেকর্ডিং ফোল্ডার তৈরি করা যায়নি।</translation>
-        </message>
-        <message>
-            <source>You can stop the background sound now.</source>
-            <translation>আপনি এখন ব্যাকগ্রাউন্ড সাউন্ড বন্ধ করতে পারেন।</translation>
-        </message>
-        <message>
-            <source>Recordings saved</source>
-            <translation>রেকর্ডিং সংরক্ষিত</translation>
-        </message>
-        <message>
-            <source>The test recording could not be saved completely.</source>
-            <translation>পরীক্ষার রেকর্ডিং সম্পূর্ণরূপে সংরক্ষণ করা যায়নি।</translation>
-        </message>
-        <message>
-            <source>Keep music off and stay quiet. Start when ready.</source>
-            <translation>সঙ্গীত বন্ধ রাখুন এবং শান্ত থাকুন। প্রস্তুত হলে শুরু করুন।</translation>
-        </message>
-        <message>
-            <source>Your voice</source>
-            <translation>আপনার ভয়েস</translation>
-        </message>
-        <message>
-            <source>Play music or another background sound at a normal volume. Stay quiet while recording.</source>
-            <translation>একটি সাধারণ ভলিউমে সঙ্গীত বা অন্য ব্যাকগ্রাউন্ড সাউন্ড চালান। রেকর্ড করার সময় চুপচাপ থাকুন।</translation>
-        </message>
-        <message>
-            <source>The test recording could not be created.</source>
-            <translation>পরীক্ষার রেকর্ডিং তৈরি করা যায়নি।</translation>
-        </message>
-        <message>
-            <source>Background sound</source>
-            <translation>ব্যাকগ্রাউন্ড সাউন্ড</translation>
-        </message>
-        <message>
-            <source>The window is open. I can hear the rain outside. One, two, three, four, five.</source>
-            <translation>জানালা খোলা। বাইরে বৃষ্টির শব্দ শুনতে পাচ্ছি। এক, দুই, তিন, চার, পাঁচ।</translation>
-        </message>
-        <message>
-            <source>This microphone format is not supported for test recordings.</source>
-            <translation>এই মাইক্রোফোন বিন্যাস পরীক্ষার রেকর্ডিংয়ের জন্য সমর্থিত নয়।</translation>
-        </message>
-        <message>
-            <source>Keep the background volume unchanged. Read the sentence, then stop recording.</source>
-            <translation>ব্যাকগ্রাউন্ড ভলিউম অপরিবর্তিত রাখুন। বাক্যটি পড়ুন, তারপর রেকর্ডিং বন্ধ করুন।</translation>
-        </message>
-        <message>
-            <source>Record at least half a second, then try again.</source>
-            <translation>অন্তত অর্ধেক সেকেন্ড রেকর্ড করুন, তারপর আবার চেষ্টা করুন।</translation>
-        </message>
-        <message>
-            <source>Sit at your usual distance. Read the sentence, then stop recording.</source>
-            <translation>আপনার স্বাভাবিক দূরত্বে বসুন। বাক্যটি পড়ুন, তারপর রেকর্ডিং বন্ধ করুন।</translation>
-        </message>
-        <message>
-            <source>The recording description could not be saved.</source>
-            <translation>রেকর্ডিং বিবরণ সংরক্ষণ করা যায়নি.</translation>
-        </message>
-        <message>
-            <source>The WAV file could not be finalized.</source>
-            <translation>WAV ফাইল চূড়ান্ত করা যায়নি।</translation>
-        </message>
-        <message>
-            <source>The WAV header could not be written.</source>
-            <translation>WAV হেডার লেখা যাবে না।</translation>
-        </message>
-        <message>
-            <source>Voice farther away</source>
-            <translation>ভয়েস আরও দূরে</translation>
-        </message>
-        <message>
-            <source>Room sound</source>
-            <translation>ঘরের শব্দ</translation>
-        </message>
-    </context>
-    <context>
         <name>AudioSettings</name>
         <message>
             <source>Echo cancellation</source>
@@ -406,8 +287,8 @@
             <translation>আপনার প্লেব্যাক</translation>
         </message>
         <message>
-            <source>Clear local key</source>
-            <translation>স্থানীয় পুশ-টু-টক কীবোর্ড শর্টকাট পরিষ্কার করুন</translation>
+            <source>Clear key</source>
+            <translation>কী মুছুন</translation>
         </message>
         <message>
             <source>Low cut</source>
@@ -428,10 +309,6 @@
         <message>
             <source>Cancel</source>
             <translation>বাতিল করুন</translation>
-        </message>
-        <message>
-            <source>Guided recording</source>
-            <translation>গাইডেড রেকর্ডিং</translation>
         </message>
         <message>
             <source>Clipping. Reduce microphone gain.</source>
@@ -466,16 +343,12 @@
             <translation>ডিভাইস সংযোগ বিচ্ছিন্ন</translation>
         </message>
         <message>
-            <source>Local key</source>
-            <translation>স্থানীয় পুশ-টু-টক কীবোর্ড শর্টকাট</translation>
+            <source>PTT key</source>
+            <translation>কথা বলার কী</translation>
         </message>
         <message>
             <source>Voice activation</source>
             <translation>ভয়েস-অ্যাক্টিভেটেড মাইক্রোফোন</translation>
-        </message>
-        <message>
-            <source>Remote PTT key</source>
-            <translation>রিমোট পুশ-টু-টক কীবোর্ড শর্টকাট</translation>
         </message>
         <message>
             <source>Noise reduction</source>
@@ -492,10 +365,6 @@
         <message>
             <source>Microphone gain</source>
             <translation>মাইক্রোফোন পরিবর্ধন</translation>
-        </message>
-        <message>
-            <source>Clear remote key</source>
-            <translation>রিমোট পুশ-টু-টক কীবোর্ড শর্টকাট পরিষ্কার করুন</translation>
         </message>
         <message>
             <source>Not assigned</source>
@@ -521,9 +390,81 @@
             <source>Read bot messages aloud</source>
             <translation>বটের বার্তা পড়ে শোনান</translation>
         </message>
+        <message>
+            <source>Download a high-quality voice for this language in macOS settings.</source>
+            <translation>macOS সেটিংস থেকে এই ভাষার জন্য উচ্চমানের একটি কণ্ঠ ডাউনলোড করো।</translation>
+        </message>
+        <message>
+            <source>Bot voice</source>
+            <translation>বটের কণ্ঠস্বর</translation>
+        </message>
+        <message>
+            <source>Automatic</source>
+            <translation>স্বয়ংক্রিয়</translation>
+        </message>
+        <message>
+            <source>Unavailable</source>
+            <translation>অনুপলব্ধ</translation>
+        </message>
+        <message>
+            <source>Download voices in your device's Accessibility speech settings.</source>
+            <translation>ডিভাইসের অ্যাক্সেসিবিলিটি স্পিচ সেটিংস থেকে কণ্ঠ ডাউনলোড করো।</translation>
+        </message>
+        <message>
+            <source>Voice download help</source>
+            <translation>কণ্ঠ ডাউনলোডের সহায়তা</translation>
+        </message>
+        <message>
+            <source>Strength, not the percentage of echo removed.</source>
+            <translation>তীব্রতা, কত শতাংশ প্রতিধ্বনি সরানো হয়েছে তা নয়।</translation>
+        </message>
+        <message>
+            <source>Auto also checks for speech, not just volume.</source>
+            <translation>স্বয়ংক্রিয় মোড শুধু আওয়াজের মাত্রা নয়, কথাও শনাক্ত করে।</translation>
+        </message>
     </context>
     <context>
         <name>Channels</name>
+        <message>
+            <source>Copy address</source>
+            <translation>ঠিকানা কপি করো</translation>
+        </message>
+        <message>
+            <source>Messages</source>
+            <translation>বার্তা</translation>
+        </message>
+        <message>
+            <source>Message</source>
+            <translation>বার্তা</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>খুলুন</translation>
+        </message>
+        <message>
+            <source>Online</source>
+            <translation>অনলাইনে</translation>
+        </message>
+        <message>
+            <source>Offline</source>
+            <translation>অফলাইন</translation>
+        </message>
+        <message>
+            <source>No private messages</source>
+            <translation>কোনো ব্যক্তিগত বার্তা নেই</translation>
+        </message>
+        <message>
+            <source>Private messages are unavailable for this contact.</source>
+            <translation>এই পরিচিতির জন্য ব্যক্তিগত বার্তা উপলভ্য নয়।</translation>
+        </message>
+        <message>
+            <source>If asked, allow local network access. You can change this in system settings.</source>
+            <translation>জিজ্ঞেস করা হলে, স্থানীয় নেটওয়ার্কে প্রবেশের অনুমতি দাও। সিস্টেম সেটিংসে এটি পরিবর্তন করতে পারো।</translation>
+        </message>
+        <message>
+            <source>Retry</source>
+            <translation>আবার চেষ্টা করো</translation>
+        </message>
         <message>
             <source>Updates</source>
             <translation>আপডেট</translation>
@@ -543,6 +484,10 @@
         <message>
             <source>DDNS cannot bypass CGNAT. If your provider shares the public IP, use a private VPN on all participating devices or a publicly reachable server.</source>
             <translation>DDNS CGNAT বাইপাস করতে পারে না। যদি আপনার প্রদানকারী সর্বজনীন আইপি শেয়ার করে, তবে সমস্ত অংশগ্রহণকারী ডিভাইসে বা সর্বজনীনভাবে পৌঁছানো যায় এমন সার্ভারে একটি ব্যক্তিগত VPN ব্যবহার করুন।</translation>
+        </message>
+        <message>
+            <source>Remove server</source>
+            <translation>সার্ভার সরান</translation>
         </message>
         <message>
             <source>Low</source>
@@ -665,10 +610,6 @@
             <translation>বিজ্ঞপ্তির শব্দ</translation>
         </message>
         <message>
-            <source>Lifetime for new messages. Earlier messages keep their expiry.</source>
-            <translation>নতুন বার্তার জন্য আজীবন। আগের বার্তাগুলো তাদের মেয়াদ শেষ করে রাখে।</translation>
-        </message>
-        <message>
             <source>Enable speakers</source>
             <translation>স্পিকার সক্রিয় করুন</translation>
         </message>
@@ -703,10 +644,6 @@
         <message>
             <source>Allow device</source>
             <translation>ডিভাইসের অনুমতি দিন</translation>
-        </message>
-        <message>
-            <source>Receive quality: %1 kb/s per voice. Adjusts automatically for this device.</source>
-            <translation>গুণমান গ্রহণ করুন: %1 kb/s প্রতি ভয়েস। এই ডিভাইসের জন্য স্বয়ংক্রিয়ভাবে সামঞ্জস্য করে।</translation>
         </message>
         <message>
             <source>Stop radio</source>
@@ -1204,6 +1141,42 @@
             <source>Use default music volume</source>
             <translation>সংগীতের ডিফল্ট ভলিউম ব্যবহার করো</translation>
         </message>
+        <message>
+            <source>Show in Dock</source>
+            <translation>Dock-এ দেখাও</translation>
+        </message>
+        <message>
+            <source>App language</source>
+            <translation>অ্যাপের ভাষা</translation>
+        </message>
+        <message>
+            <source>Send in</source>
+            <translation>পাঠানোর ভাষা</translation>
+        </message>
+        <message>
+            <source>Hear in</source>
+            <translation>শোনার ভাষা</translation>
+        </message>
+        <message>
+            <source>Download language models for %1 and %2?</source>
+            <translation>%1 ও %2 ভাষার মডেল ডাউনলোড করবে?</translation>
+        </message>
+        <message>
+            <source>Download</source>
+            <translation>ডাউনলোড</translation>
+        </message>
+        <message>
+            <source>PTT, chat and channel controls. Uses the controlled device's microphone.</source>
+            <translation>PTT, চ্যাট এবং চ্যানেল নিয়ন্ত্রণ। নিয়ন্ত্রিত ডিভাইসের মাইক্রোফোন ব্যবহার করা হয়।</translation>
+        </message>
+        <message>
+            <source>Connect the other device to one of your channels, then allow it here.</source>
+            <translation>অন্য ডিভাইসটিকে আপনার একটি চ্যানেলে সংযুক্ত করুন, তারপর এখানে সেটিকে অনুমতি দিন।</translation>
+        </message>
+        <message>
+            <source>On the other device, open Settings &gt; Input &gt; Remote control and allow this device.</source>
+            <translation>অন্য ডিভাইসে সেটিংস &gt; ইনপুট &gt; রিমোট কন্ট্রোল খুলে এই ডিভাইসটিকে অনুমতি দিন।</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1420,7 +1393,396 @@
         </message>
     </context>
     <context>
+        <name>Desktop</name>
+        <message>
+            <source>Open settings at startup.</source>
+            <translation>শুরুতে সেটিংস খুলুন.</translation>
+        </message>
+        <message>
+            <source>Alternative file for audio profiles.</source>
+            <translation>অডিও প্রোফাইলের বিকল্প ফাইল.</translation>
+        </message>
+        <message>
+            <source>Load the interface without microphone capture and exit after one second.</source>
+            <translation>মাইক্রোফোন রেকর্ডিং ছাড়াই ইন্টারফেস লোড করুন এবং এক সেকেন্ড পরে বন্ধ করুন.</translation>
+        </message>
+        <message>
+            <source>Save an image of the app window during the UI test.</source>
+            <translation>ইন্টারফেস পরীক্ষার সময় অ্যাপের উইন্ডোর ছবি সংরক্ষণ করুন.</translation>
+        </message>
+        <message>
+            <source>The window image could not be saved.</source>
+            <translation>উইন্ডোর ছবি সংরক্ষণ করা যায়নি.</translation>
+        </message>
+        <message>
+            <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
+            <translation>সিস্টেম ট্রে উপলব্ধ নেই; অ্যাপটি একটি উইন্ডোতে খোলা থাকবে.</translation>
+        </message>
+    </context>
+    <context>
+        <name>Headless</name>
+        <message>
+            <source>Host display name.</source>
+            <translation>হোস্টের প্রদর্শিত নাম।</translation>
+        </message>
+        <message>
+            <source>Command failed.</source>
+            <translation>কমান্ড ব্যর্থ হয়েছে.</translation>
+        </message>
+        <message>
+            <source>%1 must be an integer.</source>
+            <translation>%1 একটি পূর্ণসংখ্যা হতে হবে.</translation>
+        </message>
+        <message>
+            <source>Requests must be on/off or true/false.</source>
+            <translation>অনুরোধের মান on/off অথবা true/false হতে হবে.</translation>
+        </message>
+        <message>
+            <source>Unknown host property: %1</source>
+            <translation>অজানা হোস্ট বৈশিষ্ট্য: %1</translation>
+        </message>
+        <message>
+            <source>Run without GUI, microphone capture, or local audio output.</source>
+            <translation>গ্রাফিক্যাল ইন্টারফেস, মাইক্রোফোন ক্যাপচার বা স্থানীয় অডিও আউটপুট ছাড়া চালান.</translation>
+        </message>
+        <message>
+            <source>Server storage prefix. Personal/audio/GUI profiles are not loaded.</source>
+            <translation>সার্ভার স্টোরেজ প্রিফিক্স. ব্যক্তিগত, অডিও এবং গ্রাফিক্যাল প্রোফাইল লোড করা হয় না.</translation>
+        </message>
+        <message>
+            <source>Optional private identity file instead of the OS credential store (Linux/macOS). Parent directory must exist and belong to this account.</source>
+            <translation>অপারেটিং সিস্টেমের ক্রেডেনশিয়াল স্টোরের বদলে ঐচ্ছিক ব্যক্তিগত পরিচয় ফাইল (Linux/macOS). প্যারেন্ট ডিরেক্টরি থাকতে হবে এবং এই অ্যাকাউন্টের মালিকানাধীন হতে হবে.</translation>
+        </message>
+        <message>
+            <source>UTF-8 key=value properties or JSON host preset. Default: application.properties, then config/application.properties beside the app.</source>
+            <translation>UTF-8 key=value বৈশিষ্ট্য বা JSON হোস্ট প্রিসেট. ডিফল্ট: application.properties, তারপর অ্যাপের পাশে config/application.properties.</translation>
+        </message>
+        <message>
+            <source>Channel display name.</source>
+            <translation>চ্যানেলের প্রদর্শিত নাম.</translation>
+        </message>
+        <message>
+            <source>System and radio bot display name.</source>
+            <translation>সিস্টেম ও রেডিও বটের প্রদর্শিত নাম.</translation>
+        </message>
+        <message>
+            <source>TCP service port (1-65535).</source>
+            <translation>TCP পরিষেবা পোর্ট (1-65535).</translation>
+        </message>
+        <message>
+            <source>Headless admission is always on; only 'on' or 'true' is accepted.</source>
+            <translation>হেডলেস গ্রহণ সবসময় চালু থাকে; শুধু 'on' অথবা 'true' গ্রহণ করা হয়.</translation>
+        </message>
+        <message>
+            <source>Preapprove a device ID; repeat for several devices. Existing bans remain.</source>
+            <translation>ডিভাইস ID আগে থেকে অনুমোদন করুন; একাধিক ডিভাইসের জন্য পুনরাবৃত্তি করুন. বিদ্যমান নিষেধাজ্ঞা বজায় থাকবে.</translation>
+        </message>
+        <message>
+            <source>Block a device ID; repeat for several devices.</source>
+            <translation>ডিভাইস ID ব্লক করুন; একাধিক ডিভাইসের জন্য পুনরাবৃত্তি করুন.</translation>
+        </message>
+        <message>
+            <source>Read a UTF-8 channel password from a file before listening. An empty file removes it.</source>
+            <translation>শোনার আগে UTF-8 চ্যানেল পাসওয়ার্ড একটি ফাইল থেকে পড়ুন. খালি ফাইল এটি সরিয়ে দেয়.</translation>
+        </message>
+        <message>
+            <source>Channel password. Empty removes it; environment or config avoids process-list exposure.</source>
+            <translation>চ্যানেল পাসওয়ার্ড. খালি মান এটি সরিয়ে দেয়; পরিবেশ বা কনফিগারেশন এটি প্রসেস তালিকায় প্রকাশ হওয়া রোধ করে.</translation>
+        </message>
+        <message>
+            <source>SquadSpeak headless local channel host</source>
+            <translation>SquadSpeak হেডলেস স্থানীয় চ্যানেল হোস্ট</translation>
+        </message>
+        <message>
+            <source>Environment variables (SQUADSPEAK_ prefix):</source>
+            <translation>পরিবেশ ভেরিয়েবল (SQUADSPEAK_ প্রিফিক্স):</translation>
+        </message>
+        <message>
+            <source>Host configuration could not be read or exceeds 1 MiB.</source>
+            <translation>হোস্ট কনফিগারেশন পড়া যায়নি অথবা 1 MiB ছাড়িয়ে গেছে.</translation>
+        </message>
+        <message>
+            <source>Host configuration must be UTF-8.</source>
+            <translation>হোস্ট কনফিগারেশন UTF-8 হতে হবে.</translation>
+        </message>
+        <message>
+            <source>Host preset must be a JSON object.</source>
+            <translation>হোস্ট প্রিসেট একটি JSON অবজেক্ট হতে হবে.</translation>
+        </message>
+        <message>
+            <source>Property line %1 must use key=value.</source>
+            <translation>বৈশিষ্ট্য লাইন %1-এ key=value ব্যবহার করতে হবে.</translation>
+        </message>
+        <message>
+            <source>Property line %1: %2</source>
+            <translation>বৈশিষ্ট্য লাইন %1: %2</translation>
+        </message>
+        <message>
+            <source>Standard input has no file descriptor.</source>
+            <translation>স্ট্যান্ডার্ড ইনপুটে কোনো ফাইল ডেসক্রিপ্টর নেই.</translation>
+        </message>
+        <message>
+            <source>Standard input could not be inspected.</source>
+            <translation>স্ট্যান্ডার্ড ইনপুট পরীক্ষা করা যায়নি.</translation>
+        </message>
+        <message>
+            <source>Could not write the command response: %1</source>
+            <translation>কমান্ডের উত্তর লেখা যায়নি: %1</translation>
+        </message>
+        <message>
+            <source>Standard input could not be read: %1</source>
+            <translation>স্ট্যান্ডার্ড ইনপুট পড়া যায়নি: %1</translation>
+        </message>
+        <message>
+            <source>Input line exceeds 65536 bytes.</source>
+            <translation>ইনপুট লাইন 65536 বাইট ছাড়িয়ে গেছে.</translation>
+        </message>
+        <message>
+            <source>Each input line must be a JSON object.</source>
+            <translation>প্রতিটি ইনপুট লাইন একটি JSON অবজেক্ট হতে হবে.</translation>
+        </message>
+        <message>
+            <source>Input ended before a complete JSON line.</source>
+            <translation>সম্পূর্ণ JSON লাইন শেষ হওয়ার আগে ইনপুট শেষ হয়েছে.</translation>
+        </message>
+        <message>
+            <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
+            <translation>status, configure, password, admission, history, chat এবং radio কমান্ডের জন্য ঐচ্ছিক নিজস্ব চ্যানেল ID; ডিফল্ট প্রাথমিক চ্যানেল.</translation>
+        </message>
+        <message>
+            <source>Channel action must be list, add or remove.</source>
+            <translation>চ্যানেলের কাজ list, add অথবা remove হতে হবে.</translation>
+        </message>
+        <message>
+            <source>Removing an own channel deletes its history, images, permissions and radio settings. Set confirmed=true to proceed.</source>
+            <translation>নিজস্ব চ্যানেল সরালে তার ইতিহাস, ছবি, অনুমতি এবং রেডিও সেটিংস মুছে যায়. চালিয়ে যেতে confirmed=true সেট করুন.</translation>
+        </message>
+        <message>
+            <source>id must identify an additional own channel.</source>
+            <translation>id একটি অতিরিক্ত নিজস্ব চ্যানেল শনাক্ত করতে হবে.</translation>
+        </message>
+        <message>
+            <source>The additional own channel could not be removed: %1</source>
+            <translation>অতিরিক্ত নিজস্ব চ্যানেল সরানো যায়নি: %1</translation>
+        </message>
+        <message>
+            <source>channelId must identify an own channel.</source>
+            <translation>channelId একটি নিজস্ব চ্যানেল শনাক্ত করতে হবে.</translation>
+        </message>
+        <message>
+            <source>values must be a host settings object.</source>
+            <translation>values একটি হোস্ট সেটিংস অবজেক্ট হতে হবে.</translation>
+        </message>
+        <message>
+            <source>Headless admission is always enabled for non-banned devices; requests off is not supported.</source>
+            <translation>ব্লক না করা ডিভাইসের জন্য হেডলেস গ্রহণ সবসময় সক্রিয়; requests off সমর্থিত নয়.</translation>
+        </message>
+        <message>
+            <source>value must be a password of at most 1024 UTF-8 bytes without control characters; an empty string removes it.</source>
+            <translation>value নিয়ন্ত্রণ অক্ষর ছাড়া সর্বাধিক 1024 UTF-8 বাইটের পাসওয়ার্ড হতে হবে; খালি স্ট্রিং এটি সরিয়ে দেয়.</translation>
+        </message>
+        <message>
+            <source>The channel is not ready or a password change is in progress.</source>
+            <translation>চ্যানেল প্রস্তুত নয় অথবা পাসওয়ার্ড পরিবর্তন চলছে.</translation>
+        </message>
+        <message>
+            <source>The channel was removed while saving the password.</source>
+            <translation>পাসওয়ার্ড সংরক্ষণের সময় চ্যানেল সরানো হয়েছে.</translation>
+        </message>
+        <message>
+            <source>id is required.</source>
+            <translation>id প্রয়োজন.</translation>
+        </message>
+        <message>
+            <source>text must be a valid non-empty chat message.</source>
+            <translation>text একটি বৈধ, খালি নয় এমন চ্যাট বার্তা হতে হবে.</translation>
+        </message>
+        <message>
+            <source>The local channel is not ready.</source>
+            <translation>স্থানীয় চ্যানেল প্রস্তুত নয়.</translation>
+        </message>
+        <message>
+            <source>The channel's radio is unavailable.</source>
+            <translation>চ্যানেলের রেডিও উপলব্ধ নয়.</translation>
+        </message>
+        <message>
+            <source>Unknown command. Use help.</source>
+            <translation>অজানা কমান্ড. help ব্যবহার করুন.</translation>
+        </message>
+        <message>
+            <source>search requires a query, non-negative offset and limit from 1 to 128.</source>
+            <translation>search-এর জন্য query, অঋণাত্মক offset এবং 1 থেকে 128-এর মধ্যে limit প্রয়োজন.</translation>
+        </message>
+        <message>
+            <source>add creates an id; update requires an existing id.</source>
+            <translation>add একটি id তৈরি করে; update-এর জন্য বিদ্যমান id প্রয়োজন.</translation>
+        </message>
+        <message>
+            <source>A station is already being checked.</source>
+            <translation>স্টেশনটি ইতিমধ্যে পরীক্ষা করা হচ্ছে.</translation>
+        </message>
+        <message>
+            <source>The channel was removed while checking the station.</source>
+            <translation>স্টেশন পরীক্ষা করার সময় চ্যানেল সরানো হয়েছে.</translation>
+        </message>
+        <message>
+            <source>Unknown radio action.</source>
+            <translation>অজানা রেডিও কাজ.</translation>
+        </message>
+        <message>
+            <source>Could not load language: %1</source>
+            <translation>ভাষা লোড করা যায়নি: %1</translation>
+        </message>
+        <message>
+            <source>The %1 option is incompatible with --headless.</source>
+            <translation>%1 বিকল্পটি --headless-এর সঙ্গে সামঞ্জস্যপূর্ণ নয়.</translation>
+        </message>
+        <message>
+            <source>Unexpected positional arguments. Use --help.</source>
+            <translation>অপ্রত্যাশিত অবস্থানগত আর্গুমেন্ট. --help ব্যবহার করুন.</translation>
+        </message>
+        <message>
+            <source>--config / -f requires a non-empty path.</source>
+            <translation>--config / -f-এর জন্য খালি নয় এমন পথ প্রয়োজন.</translation>
+        </message>
+        <message>
+            <source>Choose --password or --password-file, not both.</source>
+            <translation>--password অথবা --password-file বেছে নিন, দুটো নয়.</translation>
+        </message>
+        <message>
+            <source>Choose SQUADSPEAK_PASSWORD or SQUADSPEAK_PASSWORD_FILE, not both.</source>
+            <translation>SQUADSPEAK_PASSWORD অথবা SQUADSPEAK_PASSWORD_FILE বেছে নিন, দুটো নয়.</translation>
+        </message>
+        <message>
+            <source>Choose password or passwordFile in one configuration layer, not both.</source>
+            <translation>একটি কনফিগারেশন স্তরে password অথবা passwordFile বেছে নিন, দুটো নয়.</translation>
+        </message>
+        <message>
+            <source>passwordFile must be a non-empty path.</source>
+            <translation>passwordFile খালি নয় এমন পথ হতে হবে.</translation>
+        </message>
+        <message>
+            <source>Password file could not be read or is too large.</source>
+            <translation>পাসওয়ার্ড ফাইল পড়া যায়নি অথবা এটি খুব বড়.</translation>
+        </message>
+        <message>
+            <source>Password file must contain at most 1024 UTF-8 bytes without control characters.</source>
+            <translation>পাসওয়ার্ড ফাইলে নিয়ন্ত্রণ অক্ষর ছাড়া সর্বাধিক 1024 UTF-8 বাইট থাকতে পারে.</translation>
+        </message>
+        <message>
+            <source>Password must be a string of at most 1024 UTF-8 bytes without control characters.</source>
+            <translation>পাসওয়ার্ড নিয়ন্ত্রণ অক্ষর ছাড়া সর্বাধিক 1024 UTF-8 বাইটের একটি স্ট্রিং হতে হবে.</translation>
+        </message>
+        <message>
+            <source>settingsFile must be a non-empty path.</source>
+            <translation>settingsFile খালি নয় এমন পথ হতে হবে.</translation>
+        </message>
+        <message>
+            <source>identityFile must be a non-empty path.</source>
+            <translation>identityFile খালি নয় এমন পথ হতে হবে.</translation>
+        </message>
+        <message>
+            <source>The settings directory could not be created.</source>
+            <translation>সেটিংস ডিরেক্টরি তৈরি করা যায়নি.</translation>
+        </message>
+        <message>
+            <source>This SquadSpeak profile is already running or cannot be locked.</source>
+            <translation>এই SquadSpeak প্রোফাইলটি ইতিমধ্যে চলছে অথবা লক করা যায়নি.</translation>
+        </message>
+        <message>
+            <source>Standard input could not be opened.</source>
+            <translation>স্ট্যান্ডার্ড ইনপুট খোলা যায়নি.</translation>
+        </message>
+        <message>
+            <source>Standard output could not be opened.</source>
+            <translation>স্ট্যান্ডার্ড আউটপুট খোলা যায়নি.</translation>
+        </message>
+        <message>
+            <source>This identity file is already in use or cannot be locked.</source>
+            <translation>এই পরিচয় ফাইলটি ইতিমধ্যে ব্যবহৃত হচ্ছে অথবা লক করা যায়নি.</translation>
+        </message>
+        <message>
+            <source>Invalid host configuration: %1</source>
+            <translation>অবৈধ হোস্ট কনফিগারেশন: %1</translation>
+        </message>
+        <message>
+            <source>Radio channels could not be initialized.</source>
+            <translation>রেডিও চ্যানেল শুরু করা যায়নি.</translation>
+        </message>
+        <message>
+            <source>Headless host could not start: %1</source>
+            <translation>হেডলেস হোস্ট শুরু করা যায়নি: %1</translation>
+        </message>
+        <message>
+            <source>Channel password could not be saved.</source>
+            <translation>চ্যানেল পাসওয়ার্ড সংরক্ষণ করা যায়নি.</translation>
+        </message>
+        <message>
+            <source>Invalid channel password: %1</source>
+            <translation>অবৈধ চ্যানেল পাসওয়ার্ড: %1</translation>
+        </message>
+        <message>
+            <source>Headless host could not initialize: %1</source>
+            <translation>হেডলেস হোস্ট চালু করা যায়নি: %1</translation>
+        </message>
+        <message>
+            <source>SquadSpeak headless could not start: %1</source>
+            <translation>SquadSpeak হেডলেস হোস্ট শুরু করা যায়নি: %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>সাপোর্টার অ্যাকশন অবশ্যই স্ট্যাটাস, সাইন-ইন, রিফ্রেশ, সাইন-আউট বা বাতিল হতে হবে। status sign-in refresh sign-out cancel</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>একটি সাপোর্টার অপারেশন চলছে।</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>এই বিল্ডে সমর্থক অ্যাক্সেস অনুপলব্ধ৷</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>সেটিংস অগ্রাধিকার: আর্গুমেন্ট &gt; পরিবেশ &gt; বৈশিষ্ট্য &gt; সংরক্ষিত সার্ভার মান।</translation>
+        </message>
+    </context>
+    <context>
+        <name>License</name>
+        <message>
+            <source>License storage is busy or unavailable.</source>
+            <translation>লাইসেন্স সঞ্চয়স্থান ব্যস্ত বা অনুপলব্ধ.</translation>
+        </message>
+        <message>
+            <source>License storage is unavailable.</source>
+            <translation>লাইসেন্স সঞ্চয়স্থান অনুপলব্ধ.</translation>
+        </message>
+        <message>
+            <source>Sign-in expired. Try again.</source>
+            <translation>সাইন-ইন মেয়াদ শেষ। আবার চেষ্টা করুন</translation>
+        </message>
+        <message>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>GitHub সাইন-ইন অনুপলব্ধ. আবার চেষ্টা করুন</translation>
+        </message>
+        <message>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>GitHub সাইন-ইন সম্পূর্ণ হয়নি। আবার চেষ্টা করুন</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>GitHub চেক করা যায়নি. অফলাইন অ্যাক্সেস সর্বাধিক সাত দিন স্থায়ী হয়।</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>GitHub দিয়ে আবার সাইন ইন করুন।</translation>
+        </message>
+    </context>
+    <context>
         <name>LocalChannel</name>
+        <message>
+            <source>Blocked</source>
+            <translation>অবরুদ্ধ</translation>
+        </message>
         <message>
             <source>Host is not responding. Reconnecting.</source>
             <translation>হোস্ট সাড়া দিচ্ছে না। পুনরায় সংযোগ করা হচ্ছে।</translation>
@@ -2205,6 +2567,53 @@
             <source>Voice relay codec could not be configured.</source>
             <translation>ভয়েস রিলে কোডেক কনফিগার করা যায়নি।</translation>
         </message>
+        <message>
+            <source>Unsupported audio codec</source>
+            <translation>অসমর্থিত অডিও কোডেক</translation>
+        </message>
+        <message>
+            <source>Speaking is not allowed in this channel.</source>
+            <translation>এই চ্যানেলে কথা বলার অনুমতি নেই।</translation>
+        </message>
+    </context>
+    <context>
+        <name>LocalLanguage</name>
+        <message>
+            <source>Translation (experimental)</source>
+            <translation>অনুবাদ (পরীক্ষামূলক)</translation>
+        </message>
+        <message>
+            <source>Translate messages</source>
+            <translation>বার্তা অনুবাদ করুন</translation>
+        </message>
+        <message>
+            <source>Translated voice</source>
+            <translation>অনুবাদ করা কণ্ঠ</translation>
+        </message>
+        <message>
+            <source>Original audio</source>
+            <translation>মূল অডিও</translation>
+        </message>
+        <message>
+            <source>Original text</source>
+            <translation>মূল লেখা</translation>
+        </message>
+        <message>
+            <source>Prepare languages</source>
+            <translation>ভাষা প্রস্তুত করুন</translation>
+        </message>
+        <message>
+            <source>Local language processing is unavailable.</source>
+            <translation>স্থানীয় ভাষা প্রক্রিয়াকরণ উপলব্ধ নয়।</translation>
+        </message>
+        <message>
+            <source>Language settings could not be read.</source>
+            <translation>ভাষার সেটিং পড়া যায়নি।</translation>
+        </message>
+        <message>
+            <source>Language settings could not be saved.</source>
+            <translation>ভাষার সেটিং সংরক্ষণ করা যায়নি।</translation>
+        </message>
     </context>
     <context>
         <name>PushToTalkKey</name>
@@ -2345,50 +2754,65 @@
         </message>
     </context>
     <context>
-        <name>RecordingPanel</name>
+        <name>ScreenPanel</name>
         <message>
-            <source>Stop</source>
-            <translation>থামুন</translation>
+            <source>Media capacity reached</source>
+            <translation>মিডিয়া ক্ষমতা পৌঁছেছে</translation>
         </message>
         <message>
-            <source>Start</source>
-            <translation>শুরু করুন</translation>
+            <source>Video paused</source>
+            <translation>ভিডিও পজ করা হয়েছে</translation>
         </message>
         <message>
-            <source>Saved on this device only. Nothing is uploaded.</source>
-            <translation>শুধুমাত্র এই ডিভাইসে সংরক্ষিত। কিছুই আপলোড করা হয় না.</translation>
+            <source>Stream ended</source>
+            <translation>স্ট্রিম শেষ হয়েছে</translation>
         </message>
         <message>
-            <source>Keep this take or record it again.</source>
-            <translation>এটি রাখুন বা এটি আবার রেকর্ড করুন।</translation>
+            <source>Connecting</source>
+            <translation>সংযোগ করা</translation>
         </message>
         <message>
-            <source>Record again</source>
-            <translation>আবার রেকর্ড করুন</translation>
+            <source>Open screen stream</source>
+            <translation>স্ক্রিন স্ট্রিম খুলুন</translation>
         </message>
         <message>
-            <source>Use recording</source>
-            <translation>রেকর্ডিং ব্যবহার করুন</translation>
+            <source>Screen stream</source>
+            <translation>স্ক্রিন স্ট্রিম</translation>
         </message>
         <message>
-            <source>Recording progress</source>
-            <translation>রেকর্ডিং অগ্রগতি</translation>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
+        </message>
+    </context>
+    <context>
+        <name>ScreenShare</name>
+        <message>
+            <source>Allow screen recording in system settings.</source>
+            <translation>সিস্টেম সেটিংসে স্ক্রিন রেকর্ডিংয়ের অনুমতি দাও।</translation>
         </message>
         <message>
-            <source>Step %1 of %2</source>
-            <translation>ধাপ %1, মোট %2টির মধ্যে</translation>
+            <source>The shared screen was removed. Select a source to start again.</source>
+            <translation>ভাগ করা স্ক্রীন সরানো হয়েছে। আবার শুরু করার জন্য একটি উৎস নির্বাচন করুন।</translation>
         </message>
         <message>
-            <source>Open recordings</source>
-            <translation>রেকর্ডিং খুলুন</translation>
+            <source>The shared window was closed. Select a source to start again.</source>
+            <translation>ভাগ করা উইন্ডোটি বন্ধ ছিল। আবার শুরু করার জন্য একটি উৎস নির্বাচন করুন।</translation>
         </message>
         <message>
-            <source>Reset test</source>
-            <translation>পরীক্ষা রিসেট করুন</translation>
+            <source>The selected screen is no longer available.</source>
+            <translation>নির্বাচিত পর্দা আর উপলব্ধ নেই।</translation>
         </message>
         <message>
-            <source>%1 s remaining / %2 dBFS</source>
-            <translation>%1 বাকি / %2 dBFS</translation>
+            <source>The selected window is no longer available.</source>
+            <translation>নির্বাচিত উইন্ডোটি আর উপলব্ধ নেই।</translation>
+        </message>
+        <message>
+            <source>The selected source exceeds the capture size limit.</source>
+            <translation>নির্বাচিত উত্স ক্যাপচার আকারের সীমা অতিক্রম করেছে৷</translation>
+        </message>
+        <message>
+            <source>Close a video view before opening another stream.</source>
+            <translation>অন্য স্ট্রীম খোলার আগে একটি ভিডিও ভিউ বন্ধ করুন।</translation>
         </message>
     </context>
     <context>
@@ -2465,10 +2889,6 @@
             <translation>সংকেত সংগ্রহ করা হচ্ছে...</translation>
         </message>
         <message>
-            <source>Dashed curve: configured gain and frequency cuts, using the right dB scale. Noise reduction and voice activation are not part of this curve.</source>
-            <translation>ড্যাশড কার্ভ: ডান dB স্কেল ব্যবহার করে কনফিগার করা পরিবর্ধন ও ফ্রিকোয়েন্সি কাট। শব্দ কমানো ও ভয়েস অ্যাক্টিভেশন এই কার্ভের অংশ নয়।</translation>
-        </message>
-        <message>
             <source>Microphone preview is not running</source>
             <translation>মাইক্রোফোন প্রিভিউ চলছে না</translation>
         </message>
@@ -2479,303 +2899,6 @@
         <message>
             <source>Peak: %1</source>
             <translation>পিক: %1</translation>
-        </message>
-    </context>
-    <context>
-        <name>Tray</name>
-        <message>
-            <source>Quit</source>
-            <translation>প্রস্থান করুন</translation>
-        </message>
-        <message>
-            <source>SquadSpeak - speaking</source>
-            <translation>SquadSpeak - কথা বলা</translation>
-        </message>
-        <message>
-            <source>Settings</source>
-            <translation>সেটিংস</translation>
-        </message>
-        <message>
-            <source>Channels</source>
-            <translation>চ্যানেল</translation>
-        </message>
-        <message>
-            <source>New image</source>
-            <translation>নতুন ছবি</translation>
-        </message>
-    </context>
-    <context>
-        <name>VoiceAvatar</name>
-        <message>
-            <source>Muted</source>
-            <translation>মাইক্রোফোন নিঃশব্দ</translation>
-        </message>
-        <message>
-            <source>Sleeping</source>
-            <translation>ঘুমাচ্ছে</translation>
-        </message>
-        <message>
-            <source>Offline</source>
-            <translation>অফলাইন</translation>
-        </message>
-        <message>
-            <source>Speaking</source>
-            <translation>কথা বলা</translation>
-        </message>
-        <message>
-            <source>Unavailable</source>
-            <translation>অনুপলব্ধ</translation>
-        </message>
-        <message>
-            <source>Listening</source>
-            <translation>শোনা</translation>
-        </message>
-        <message>
-            <source>Deafened</source>
-            <translation>স্পিকাররা নিঃশব্দ</translation>
-        </message>
-    </context>
-    <context>
-        <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>অনুপলব্ধ - অডিও সেটিংস বা টোন পরীক্ষা</translation>
-        </message>
-        <message>
-            <source>Microphone muted</source>
-            <translation>মাইক্রোফোন নিঃশব্দ</translation>
-        </message>
-        <message>
-            <source>Push-to-talk held</source>
-            <translation>পুশ-টু-টক বোতামটি চেপে ধরা আছে।</translation>
-        </message>
-        <message>
-            <source>Ready - push-to-talk released</source>
-            <translation>প্রস্তুত - পুশ-টু-টক বোতামটি ছেড়ে দেওয়া হয়েছে।</translation>
-        </message>
-        <message>
-            <source>Microphone unmuted</source>
-            <translation>মাইক্রোফোন আনমিউট করা হয়েছে</translation>
-        </message>
-        <message>
-            <source>Settings could not be saved: %1</source>
-            <translation>সেটিংস সংরক্ষণ করা যায়নি: %1</translation>
-        </message>
-        <message>
-            <source>The push-to-talk sequence cannot be incremented further.</source>
-            <translation>পুশ-টু-টক সিকোয়েন্স আর বাড়ানো যাবে না।</translation>
-        </message>
-        <message>
-            <source>Choose System, Light or Dark.</source>
-            <translation>সিস্টেম, হালকা বা অন্ধকার চয়ন করুন।</translation>
-        </message>
-        <message>
-            <source>Choose a colour palette from the list.</source>
-            <translation>তালিকা থেকে একটি রঙ প্যালেট চয়ন করুন।</translation>
-        </message>
-        <message>
-            <source>Choose an available avatar.</source>
-            <translation>একটি উপলব্ধ অবতার চয়ন করুন৷</translation>
-        </message>
-        <message>
-            <source>Invalid push-to-talk binding.</source>
-            <translation>অবৈধ পুশ-টু-টক বাঁধাই।</translation>
-        </message>
-        <message>
-            <source>Release the held push-to-talk key first.</source>
-            <translation>প্রথমে রাখা পুশ-টু-টক কীটি ছেড়ে দিন।</translation>
-        </message>
-        <message>
-            <source>Choose a language from the list.</source>
-            <translation>তালিকা থেকে একটি ভাষা চয়ন করুন।</translation>
-        </message>
-        <message>
-            <source>This avatar requires Supporter.</source>
-            <translation>এই অবতারের জন্য Supporter প্রয়োজন।</translation>
-        </message>
-        <message>
-            <source>The name must contain 1 to 64 characters.</source>
-            <translation>নামটিতে 1 থেকে 64টি অক্ষর থাকতে হবে।</translation>
-        </message>
-        <message>
-            <source>The name may not contain control characters or line breaks.</source>
-            <translation>নামটিতে নিয়ন্ত্রণ অক্ষর বা লাইন বিরতি থাকতে পারে না।</translation>
-        </message>
-        <message>
-            <source>Session settings could not be read.</source>
-            <translation>সেশনের সেটিংস পড়া যায়নি.</translation>
-        </message>
-        <message>
-            <source>Saved setting is invalid: %1</source>
-            <translation>সংরক্ষিত সেটিংস অবৈধ: %1</translation>
-        </message>
-    </context>
-    <context>
-        <name>License</name>
-        <message>
-            <source>License storage is busy or unavailable.</source>
-            <translation>লাইসেন্স সঞ্চয়স্থান ব্যস্ত বা অনুপলব্ধ.</translation>
-        </message>
-        <message>
-            <source>License storage is unavailable.</source>
-            <translation>লাইসেন্স সঞ্চয়স্থান অনুপলব্ধ.</translation>
-        </message>
-        <message>
-            <source>Sign-in expired. Try again.</source>
-            <translation>সাইন-ইন মেয়াদ শেষ। আবার চেষ্টা করুন</translation>
-        </message>
-        <message>
-            <source>GitHub sign-in is unavailable. Try again.</source>
-            <translation>GitHub সাইন-ইন অনুপলব্ধ. আবার চেষ্টা করুন</translation>
-        </message>
-        <message>
-            <source>GitHub sign-in was not completed. Try again.</source>
-            <translation>GitHub সাইন-ইন সম্পূর্ণ হয়নি। আবার চেষ্টা করুন</translation>
-        </message>
-        <message>
-            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
-            <translation>GitHub চেক করা যায়নি. অফলাইন অ্যাক্সেস সর্বাধিক সাত দিন স্থায়ী হয়।</translation>
-        </message>
-        <message>
-            <source>Sign in with GitHub again.</source>
-            <translation>GitHub দিয়ে আবার সাইন ইন করুন।</translation>
-        </message>
-    </context>
-    <context>
-        <name>ScreenShare</name>
-        <message>
-            <source>The shared screen was removed. Select a source to start again.</source>
-            <translation>ভাগ করা স্ক্রীন সরানো হয়েছে। আবার শুরু করার জন্য একটি উৎস নির্বাচন করুন।</translation>
-        </message>
-        <message>
-            <source>The shared window was closed. Select a source to start again.</source>
-            <translation>ভাগ করা উইন্ডোটি বন্ধ ছিল। আবার শুরু করার জন্য একটি উৎস নির্বাচন করুন।</translation>
-        </message>
-        <message>
-            <source>The selected screen is no longer available.</source>
-            <translation>নির্বাচিত পর্দা আর উপলব্ধ নেই।</translation>
-        </message>
-        <message>
-            <source>The selected window is no longer available.</source>
-            <translation>নির্বাচিত উইন্ডোটি আর উপলব্ধ নেই।</translation>
-        </message>
-        <message>
-            <source>The selected source exceeds the capture size limit.</source>
-            <translation>নির্বাচিত উত্স ক্যাপচার আকারের সীমা অতিক্রম করেছে৷</translation>
-        </message>
-        <message>
-            <source>Close a video view before opening another stream.</source>
-            <translation>অন্য স্ট্রীম খোলার আগে একটি ভিডিও ভিউ বন্ধ করুন।</translation>
-        </message>
-    </context>
-    <context>
-        <name>ScreenPanel</name>
-        <message>
-            <source>Media capacity reached</source>
-            <translation>মিডিয়া ক্ষমতা পৌঁছেছে</translation>
-        </message>
-        <message>
-            <source>Video paused</source>
-            <translation>ভিডিও পজ করা হয়েছে</translation>
-        </message>
-        <message>
-            <source>Stream ended</source>
-            <translation>স্ট্রিম শেষ হয়েছে</translation>
-        </message>
-        <message>
-            <source>Connecting</source>
-            <translation>সংযোগ করা</translation>
-        </message>
-        <message>
-            <source>Open screen stream</source>
-            <translation>স্ক্রিন স্ট্রিম খুলুন</translation>
-        </message>
-        <message>
-            <source>Screen stream</source>
-            <translation>স্ক্রিন স্ট্রিম</translation>
-        </message>
-        <message>
-            <source>%1 kbit/s</source>
-            <translation>%1 kbit/s</translation>
-        </message>
-    </context>
-    <context>
-        <name>VideoCodec</name>
-        <message>
-            <source>Video codec: %1</source>
-            <translation>ভিডিও কোডেক: %1</translation>
-        </message>
-        <message>
-            <source>Video codec ABI does not match its headers.</source>
-            <translation>ভিডিও কোডেকের ABI তার হেডারের সঙ্গে মেলে না.</translation>
-        </message>
-        <message>
-            <source>Video buffers could not be allocated.</source>
-            <translation>ভিডিও বাফার বরাদ্দ করা যায়নি.</translation>
-        </message>
-        <message>
-            <source>Invalid video quality tier.</source>
-            <translation>ভিডিওর মানের স্তরটি অবৈধ.</translation>
-        </message>
-        <message>
-            <source>The screen source exceeds the supported capture size.</source>
-            <translation>স্ক্রিন উৎস সমর্থিত ক্যাপচার আকার ছাড়িয়ে গেছে.</translation>
-        </message>
-        <message>
-            <source>The screen source is too narrow.</source>
-            <translation>স্ক্রিন উৎসটি অতিরিক্ত সরু.</translation>
-        </message>
-        <message>
-            <source>The video encoder could not be allocated.</source>
-            <translation>ভিডিও এনকোডার বরাদ্দ করা যায়নি.</translation>
-        </message>
-        <message>
-            <source>No supported video encoder is available.</source>
-            <translation>কোনো সমর্থিত ভিডিও এনকোডার উপলব্ধ নেই.</translation>
-        </message>
-        <message>
-            <source>Video encoder configuration is too large.</source>
-            <translation>ভিডিও এনকোডারের কনফিগারেশন অতিরিক্ত বড়.</translation>
-        </message>
-        <message>
-            <source>Video scaling could not be initialized.</source>
-            <translation>ভিডিও স্কেলিং আরম্ভ করা যায়নি.</translation>
-        </message>
-        <message>
-            <source>The encoder returned an empty video packet.</source>
-            <translation>এনকোডার একটি খালি ভিডিও প্যাকেট ফেরত দিয়েছে.</translation>
-        </message>
-        <message>
-            <source>Invalid video frame format.</source>
-            <translation>ভিডিও ফ্রেমের বিন্যাস অবৈধ.</translation>
-        </message>
-        <message>
-            <source>Invalid video decoder configuration.</source>
-            <translation>ভিডিও ডিকোডারের কনফিগারেশন অবৈধ.</translation>
-        </message>
-        <message>
-            <source>This video codec cannot be decoded.</source>
-            <translation>এই ভিডিও কোডেক ডিকোড করা যায় না.</translation>
-        </message>
-        <message>
-            <source>Video decoder could not be allocated.</source>
-            <translation>ভিডিও ডিকোডার বরাদ্দ করা যায়নি.</translation>
-        </message>
-        <message>
-            <source>Video decoder configuration could not be allocated.</source>
-            <translation>ভিডিও ডিকোডারের কনফিগারেশন বরাদ্দ করা যায়নি.</translation>
-        </message>
-        <message>
-            <source>Decoded dimensions do not match the screen stream.</source>
-            <translation>ডিকোড করা মাত্রা স্ক্রিন স্ট্রিমের সঙ্গে মেলে না.</translation>
-        </message>
-        <message>
-            <source>Decoded image could not be allocated.</source>
-            <translation>ডিকোড করা ছবি বরাদ্দ করা যায়নি.</translation>
-        </message>
-        <message>
-            <source>Video color conversion could not be initialized.</source>
-            <translation>ভিডিওর রঙ রূপান্তর আরম্ভ করা যায়নি.</translation>
         </message>
     </context>
     <context>
@@ -2894,404 +3017,211 @@
         </message>
     </context>
     <context>
-        <name>Headless</name>
+        <name>Tray</name>
         <message>
-            <source>Command failed.</source>
-            <translation>কমান্ড ব্যর্থ হয়েছে.</translation>
+            <source>Quit</source>
+            <translation>প্রস্থান করুন</translation>
         </message>
         <message>
-            <source>%1 must be an integer.</source>
-            <translation>%1 একটি পূর্ণসংখ্যা হতে হবে.</translation>
+            <source>SquadSpeak - speaking</source>
+            <translation>SquadSpeak - কথা বলা</translation>
         </message>
         <message>
-            <source>Requests must be on/off or true/false.</source>
-            <translation>অনুরোধের মান on/off অথবা true/false হতে হবে.</translation>
+            <source>Settings</source>
+            <translation>সেটিংস</translation>
         </message>
         <message>
-            <source>Unknown host property: %1</source>
-            <translation>অজানা হোস্ট বৈশিষ্ট্য: %1</translation>
+            <source>Channels</source>
+            <translation>চ্যানেল</translation>
         </message>
         <message>
-            <source>Run without GUI, microphone capture, or local audio output.</source>
-            <translation>গ্রাফিক্যাল ইন্টারফেস, মাইক্রোফোন ক্যাপচার বা স্থানীয় অডিও আউটপুট ছাড়া চালান.</translation>
-        </message>
-        <message>
-            <source>Server storage prefix. Personal/audio/GUI profiles are not loaded.</source>
-            <translation>সার্ভার স্টোরেজ প্রিফিক্স. ব্যক্তিগত, অডিও এবং গ্রাফিক্যাল প্রোফাইল লোড করা হয় না.</translation>
-        </message>
-        <message>
-            <source>Optional private identity file instead of the OS credential store (Linux/macOS). Parent directory must exist and belong to this account.</source>
-            <translation>অপারেটিং সিস্টেমের ক্রেডেনশিয়াল স্টোরের বদলে ঐচ্ছিক ব্যক্তিগত পরিচয় ফাইল (Linux/macOS). প্যারেন্ট ডিরেক্টরি থাকতে হবে এবং এই অ্যাকাউন্টের মালিকানাধীন হতে হবে.</translation>
-        </message>
-        <message>
-            <source>UTF-8 key=value properties or JSON host preset. Default: application.properties, then config/application.properties beside the app.</source>
-            <translation>UTF-8 key=value বৈশিষ্ট্য বা JSON হোস্ট প্রিসেট. ডিফল্ট: application.properties, তারপর অ্যাপের পাশে config/application.properties.</translation>
-        </message>
-        <message>
-            <source>Channel display name.</source>
-            <translation>চ্যানেলের প্রদর্শিত নাম.</translation>
-        </message>
-        <message>
-            <source>System and radio bot display name.</source>
-            <translation>সিস্টেম ও রেডিও বটের প্রদর্শিত নাম.</translation>
-        </message>
-        <message>
-            <source>TCP service port (1-65535).</source>
-            <translation>TCP পরিষেবা পোর্ট (1-65535).</translation>
-        </message>
-        <message>
-            <source>Headless admission is always on; only 'on' or 'true' is accepted.</source>
-            <translation>হেডলেস গ্রহণ সবসময় চালু থাকে; শুধু 'on' অথবা 'true' গ্রহণ করা হয়.</translation>
-        </message>
-        <message>
-            <source>Preapprove a device ID; repeat for several devices. Existing bans remain.</source>
-            <translation>ডিভাইস ID আগে থেকে অনুমোদন করুন; একাধিক ডিভাইসের জন্য পুনরাবৃত্তি করুন. বিদ্যমান নিষেধাজ্ঞা বজায় থাকবে.</translation>
-        </message>
-        <message>
-            <source>Block a device ID; repeat for several devices.</source>
-            <translation>ডিভাইস ID ব্লক করুন; একাধিক ডিভাইসের জন্য পুনরাবৃত্তি করুন.</translation>
-        </message>
-        <message>
-            <source>Read a UTF-8 channel password from a file before listening. An empty file removes it.</source>
-            <translation>শোনার আগে UTF-8 চ্যানেল পাসওয়ার্ড একটি ফাইল থেকে পড়ুন. খালি ফাইল এটি সরিয়ে দেয়.</translation>
-        </message>
-        <message>
-            <source>Channel password. Empty removes it; environment or config avoids process-list exposure.</source>
-            <translation>চ্যানেল পাসওয়ার্ড. খালি মান এটি সরিয়ে দেয়; পরিবেশ বা কনফিগারেশন এটি প্রসেস তালিকায় প্রকাশ হওয়া রোধ করে.</translation>
-        </message>
-        <message>
-            <source>SquadSpeak headless local channel host</source>
-            <translation>SquadSpeak হেডলেস স্থানীয় চ্যানেল হোস্ট</translation>
-        </message>
-        <message>
-            <source>Environment variables (SQUADSPEAK_ prefix):</source>
-            <translation>পরিবেশ ভেরিয়েবল (SQUADSPEAK_ প্রিফিক্স):</translation>
-        </message>
-        <message>
-            <source>Host configuration could not be read or exceeds 1 MiB.</source>
-            <translation>হোস্ট কনফিগারেশন পড়া যায়নি অথবা 1 MiB ছাড়িয়ে গেছে.</translation>
-        </message>
-        <message>
-            <source>Host configuration must be UTF-8.</source>
-            <translation>হোস্ট কনফিগারেশন UTF-8 হতে হবে.</translation>
-        </message>
-        <message>
-            <source>Host preset must be a JSON object.</source>
-            <translation>হোস্ট প্রিসেট একটি JSON অবজেক্ট হতে হবে.</translation>
-        </message>
-        <message>
-            <source>Property line %1 must use key=value.</source>
-            <translation>বৈশিষ্ট্য লাইন %1-এ key=value ব্যবহার করতে হবে.</translation>
-        </message>
-        <message>
-            <source>Property line %1: %2</source>
-            <translation>বৈশিষ্ট্য লাইন %1: %2</translation>
-        </message>
-        <message>
-            <source>Standard input has no file descriptor.</source>
-            <translation>স্ট্যান্ডার্ড ইনপুটে কোনো ফাইল ডেসক্রিপ্টর নেই.</translation>
-        </message>
-        <message>
-            <source>Standard input could not be inspected.</source>
-            <translation>স্ট্যান্ডার্ড ইনপুট পরীক্ষা করা যায়নি.</translation>
-        </message>
-        <message>
-            <source>Could not write the command response: %1</source>
-            <translation>কমান্ডের উত্তর লেখা যায়নি: %1</translation>
-        </message>
-        <message>
-            <source>Standard input could not be read: %1</source>
-            <translation>স্ট্যান্ডার্ড ইনপুট পড়া যায়নি: %1</translation>
-        </message>
-        <message>
-            <source>Input line exceeds 65536 bytes.</source>
-            <translation>ইনপুট লাইন 65536 বাইট ছাড়িয়ে গেছে.</translation>
-        </message>
-        <message>
-            <source>Each input line must be a JSON object.</source>
-            <translation>প্রতিটি ইনপুট লাইন একটি JSON অবজেক্ট হতে হবে.</translation>
-        </message>
-        <message>
-            <source>Input ended before a complete JSON line.</source>
-            <translation>সম্পূর্ণ JSON লাইন শেষ হওয়ার আগে ইনপুট শেষ হয়েছে.</translation>
-        </message>
-        <message>
-            <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
-            <translation>status, configure, password, admission, history, chat এবং radio কমান্ডের জন্য ঐচ্ছিক নিজস্ব চ্যানেল ID; ডিফল্ট প্রাথমিক চ্যানেল.</translation>
-        </message>
-        <message>
-            <source>Channel action must be list, add or remove.</source>
-            <translation>চ্যানেলের কাজ list, add অথবা remove হতে হবে.</translation>
-        </message>
-        <message>
-            <source>Removing an own channel deletes its history, images, permissions and radio settings. Set confirmed=true to proceed.</source>
-            <translation>নিজস্ব চ্যানেল সরালে তার ইতিহাস, ছবি, অনুমতি এবং রেডিও সেটিংস মুছে যায়. চালিয়ে যেতে confirmed=true সেট করুন.</translation>
-        </message>
-        <message>
-            <source>id must identify an additional own channel.</source>
-            <translation>id একটি অতিরিক্ত নিজস্ব চ্যানেল শনাক্ত করতে হবে.</translation>
-        </message>
-        <message>
-            <source>The additional own channel could not be removed: %1</source>
-            <translation>অতিরিক্ত নিজস্ব চ্যানেল সরানো যায়নি: %1</translation>
-        </message>
-        <message>
-            <source>channelId must identify an own channel.</source>
-            <translation>channelId একটি নিজস্ব চ্যানেল শনাক্ত করতে হবে.</translation>
-        </message>
-        <message>
-            <source>values must be a host settings object.</source>
-            <translation>values একটি হোস্ট সেটিংস অবজেক্ট হতে হবে.</translation>
-        </message>
-        <message>
-            <source>Headless admission is always enabled for non-banned devices; requests off is not supported.</source>
-            <translation>ব্লক না করা ডিভাইসের জন্য হেডলেস গ্রহণ সবসময় সক্রিয়; requests off সমর্থিত নয়.</translation>
-        </message>
-        <message>
-            <source>value must be a password of at most 1024 UTF-8 bytes without control characters; an empty string removes it.</source>
-            <translation>value নিয়ন্ত্রণ অক্ষর ছাড়া সর্বাধিক 1024 UTF-8 বাইটের পাসওয়ার্ড হতে হবে; খালি স্ট্রিং এটি সরিয়ে দেয়.</translation>
-        </message>
-        <message>
-            <source>The channel is not ready or a password change is in progress.</source>
-            <translation>চ্যানেল প্রস্তুত নয় অথবা পাসওয়ার্ড পরিবর্তন চলছে.</translation>
-        </message>
-        <message>
-            <source>The channel was removed while saving the password.</source>
-            <translation>পাসওয়ার্ড সংরক্ষণের সময় চ্যানেল সরানো হয়েছে.</translation>
-        </message>
-        <message>
-            <source>id is required.</source>
-            <translation>id প্রয়োজন.</translation>
-        </message>
-        <message>
-            <source>text must be a valid non-empty chat message.</source>
-            <translation>text একটি বৈধ, খালি নয় এমন চ্যাট বার্তা হতে হবে.</translation>
-        </message>
-        <message>
-            <source>The local channel is not ready.</source>
-            <translation>স্থানীয় চ্যানেল প্রস্তুত নয়.</translation>
-        </message>
-        <message>
-            <source>The channel's radio is unavailable.</source>
-            <translation>চ্যানেলের রেডিও উপলব্ধ নয়.</translation>
-        </message>
-        <message>
-            <source>Unknown command. Use help.</source>
-            <translation>অজানা কমান্ড. help ব্যবহার করুন.</translation>
-        </message>
-        <message>
-            <source>search requires a query, non-negative offset and limit from 1 to 128.</source>
-            <translation>search-এর জন্য query, অঋণাত্মক offset এবং 1 থেকে 128-এর মধ্যে limit প্রয়োজন.</translation>
-        </message>
-        <message>
-            <source>add creates an id; update requires an existing id.</source>
-            <translation>add একটি id তৈরি করে; update-এর জন্য বিদ্যমান id প্রয়োজন.</translation>
-        </message>
-        <message>
-            <source>A station is already being checked.</source>
-            <translation>স্টেশনটি ইতিমধ্যে পরীক্ষা করা হচ্ছে.</translation>
-        </message>
-        <message>
-            <source>The channel was removed while checking the station.</source>
-            <translation>স্টেশন পরীক্ষা করার সময় চ্যানেল সরানো হয়েছে.</translation>
-        </message>
-        <message>
-            <source>Unknown radio action.</source>
-            <translation>অজানা রেডিও কাজ.</translation>
-        </message>
-        <message>
-            <source>Could not load language: %1</source>
-            <translation>ভাষা লোড করা যায়নি: %1</translation>
-        </message>
-        <message>
-            <source>The %1 option is incompatible with --headless.</source>
-            <translation>%1 বিকল্পটি --headless-এর সঙ্গে সামঞ্জস্যপূর্ণ নয়.</translation>
-        </message>
-        <message>
-            <source>Unexpected positional arguments. Use --help.</source>
-            <translation>অপ্রত্যাশিত অবস্থানগত আর্গুমেন্ট. --help ব্যবহার করুন.</translation>
-        </message>
-        <message>
-            <source>--config / -f requires a non-empty path.</source>
-            <translation>--config / -f-এর জন্য খালি নয় এমন পথ প্রয়োজন.</translation>
-        </message>
-        <message>
-            <source>Choose --password or --password-file, not both.</source>
-            <translation>--password অথবা --password-file বেছে নিন, দুটো নয়.</translation>
-        </message>
-        <message>
-            <source>Choose SQUADSPEAK_PASSWORD or SQUADSPEAK_PASSWORD_FILE, not both.</source>
-            <translation>SQUADSPEAK_PASSWORD অথবা SQUADSPEAK_PASSWORD_FILE বেছে নিন, দুটো নয়.</translation>
-        </message>
-        <message>
-            <source>Choose password or passwordFile in one configuration layer, not both.</source>
-            <translation>একটি কনফিগারেশন স্তরে password অথবা passwordFile বেছে নিন, দুটো নয়.</translation>
-        </message>
-        <message>
-            <source>passwordFile must be a non-empty path.</source>
-            <translation>passwordFile খালি নয় এমন পথ হতে হবে.</translation>
-        </message>
-        <message>
-            <source>Password file could not be read or is too large.</source>
-            <translation>পাসওয়ার্ড ফাইল পড়া যায়নি অথবা এটি খুব বড়.</translation>
-        </message>
-        <message>
-            <source>Password file must contain at most 1024 UTF-8 bytes without control characters.</source>
-            <translation>পাসওয়ার্ড ফাইলে নিয়ন্ত্রণ অক্ষর ছাড়া সর্বাধিক 1024 UTF-8 বাইট থাকতে পারে.</translation>
-        </message>
-        <message>
-            <source>Password must be a string of at most 1024 UTF-8 bytes without control characters.</source>
-            <translation>পাসওয়ার্ড নিয়ন্ত্রণ অক্ষর ছাড়া সর্বাধিক 1024 UTF-8 বাইটের একটি স্ট্রিং হতে হবে.</translation>
-        </message>
-        <message>
-            <source>settingsFile must be a non-empty path.</source>
-            <translation>settingsFile খালি নয় এমন পথ হতে হবে.</translation>
-        </message>
-        <message>
-            <source>identityFile must be a non-empty path.</source>
-            <translation>identityFile খালি নয় এমন পথ হতে হবে.</translation>
-        </message>
-        <message>
-            <source>The settings directory could not be created.</source>
-            <translation>সেটিংস ডিরেক্টরি তৈরি করা যায়নি.</translation>
-        </message>
-        <message>
-            <source>This SquadSpeak profile is already running or cannot be locked.</source>
-            <translation>এই SquadSpeak প্রোফাইলটি ইতিমধ্যে চলছে অথবা লক করা যায়নি.</translation>
-        </message>
-        <message>
-            <source>Standard input could not be opened.</source>
-            <translation>স্ট্যান্ডার্ড ইনপুট খোলা যায়নি.</translation>
-        </message>
-        <message>
-            <source>Standard output could not be opened.</source>
-            <translation>স্ট্যান্ডার্ড আউটপুট খোলা যায়নি.</translation>
-        </message>
-        <message>
-            <source>This identity file is already in use or cannot be locked.</source>
-            <translation>এই পরিচয় ফাইলটি ইতিমধ্যে ব্যবহৃত হচ্ছে অথবা লক করা যায়নি.</translation>
-        </message>
-        <message>
-            <source>Invalid host configuration: %1</source>
-            <translation>অবৈধ হোস্ট কনফিগারেশন: %1</translation>
-        </message>
-        <message>
-            <source>Radio channels could not be initialized.</source>
-            <translation>রেডিও চ্যানেল শুরু করা যায়নি.</translation>
-        </message>
-        <message>
-            <source>Headless host could not start: %1</source>
-            <translation>হেডলেস হোস্ট শুরু করা যায়নি: %1</translation>
-        </message>
-        <message>
-            <source>Channel password could not be saved.</source>
-            <translation>চ্যানেল পাসওয়ার্ড সংরক্ষণ করা যায়নি.</translation>
-        </message>
-        <message>
-            <source>Invalid channel password: %1</source>
-            <translation>অবৈধ চ্যানেল পাসওয়ার্ড: %1</translation>
-        </message>
-        <message>
-            <source>Headless host could not initialize: %1</source>
-            <translation>হেডলেস হোস্ট চালু করা যায়নি: %1</translation>
-        </message>
-        <message>
-            <source>SquadSpeak headless could not start: %1</source>
-            <translation>SquadSpeak হেডলেস হোস্ট শুরু করা যায়নি: %1</translation>
-        </message>
-        <message>
-            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
-            <translation>সাপোর্টার অ্যাকশন অবশ্যই স্ট্যাটাস, সাইন-ইন, রিফ্রেশ, সাইন-আউট বা বাতিল হতে হবে। status sign-in refresh sign-out cancel</translation>
-        </message>
-        <message>
-            <source>A Supporter operation is in progress.</source>
-            <translation>একটি সাপোর্টার অপারেশন চলছে।</translation>
-        </message>
-        <message>
-            <source>Supporter access is unavailable in this build.</source>
-            <translation>এই বিল্ডে সমর্থক অ্যাক্সেস অনুপলব্ধ৷</translation>
-        </message>
-        <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>সেটিংস অগ্রাধিকার: আর্গুমেন্ট &gt; পরিবেশ &gt; বৈশিষ্ট্য &gt; সংরক্ষিত সার্ভার মান।</translation>
+            <source>New image</source>
+            <translation>নতুন ছবি</translation>
         </message>
     </context>
     <context>
-        <name>Desktop</name>
+        <name>VideoCodec</name>
         <message>
-            <source>Open settings at startup.</source>
-            <translation>শুরুতে সেটিংস খুলুন.</translation>
+            <source>Video codec: %1</source>
+            <translation>ভিডিও কোডেক: %1</translation>
         </message>
         <message>
-            <source>Open guided local test recording without starting network services.</source>
-            <translation>নেটওয়ার্ক পরিষেবা চালু না করে নির্দেশনাসহ স্থানীয় পরীক্ষামূলক রেকর্ডিং খুলুন.</translation>
+            <source>Video codec ABI does not match its headers.</source>
+            <translation>ভিডিও কোডেকের ABI তার হেডারের সঙ্গে মেলে না.</translation>
         </message>
         <message>
-            <source>Alternative file for audio profiles.</source>
-            <translation>অডিও প্রোফাইলের বিকল্প ফাইল.</translation>
+            <source>Video buffers could not be allocated.</source>
+            <translation>ভিডিও বাফার বরাদ্দ করা যায়নি.</translation>
         </message>
         <message>
-            <source>Load the interface without microphone capture and exit after one second.</source>
-            <translation>মাইক্রোফোন রেকর্ডিং ছাড়াই ইন্টারফেস লোড করুন এবং এক সেকেন্ড পরে বন্ধ করুন.</translation>
+            <source>Invalid video quality tier.</source>
+            <translation>ভিডিওর মানের স্তরটি অবৈধ.</translation>
         </message>
         <message>
-            <source>Save an image of the app window during the UI test.</source>
-            <translation>ইন্টারফেস পরীক্ষার সময় অ্যাপের উইন্ডোর ছবি সংরক্ষণ করুন.</translation>
+            <source>The screen source exceeds the supported capture size.</source>
+            <translation>স্ক্রিন উৎস সমর্থিত ক্যাপচার আকার ছাড়িয়ে গেছে.</translation>
         </message>
         <message>
-            <source>The window image could not be saved.</source>
-            <translation>উইন্ডোর ছবি সংরক্ষণ করা যায়নি.</translation>
+            <source>The screen source is too narrow.</source>
+            <translation>স্ক্রিন উৎসটি অতিরিক্ত সরু.</translation>
         </message>
         <message>
-            <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
-            <translation>সিস্টেম ট্রে উপলব্ধ নেই; অ্যাপটি একটি উইন্ডোতে খোলা থাকবে.</translation>
+            <source>The video encoder could not be allocated.</source>
+            <translation>ভিডিও এনকোডার বরাদ্দ করা যায়নি.</translation>
+        </message>
+        <message>
+            <source>No supported video encoder is available.</source>
+            <translation>কোনো সমর্থিত ভিডিও এনকোডার উপলব্ধ নেই.</translation>
+        </message>
+        <message>
+            <source>Video encoder configuration is too large.</source>
+            <translation>ভিডিও এনকোডারের কনফিগারেশন অতিরিক্ত বড়.</translation>
+        </message>
+        <message>
+            <source>Video scaling could not be initialized.</source>
+            <translation>ভিডিও স্কেলিং আরম্ভ করা যায়নি.</translation>
+        </message>
+        <message>
+            <source>The encoder returned an empty video packet.</source>
+            <translation>এনকোডার একটি খালি ভিডিও প্যাকেট ফেরত দিয়েছে.</translation>
+        </message>
+        <message>
+            <source>Invalid video frame format.</source>
+            <translation>ভিডিও ফ্রেমের বিন্যাস অবৈধ.</translation>
+        </message>
+        <message>
+            <source>Invalid video decoder configuration.</source>
+            <translation>ভিডিও ডিকোডারের কনফিগারেশন অবৈধ.</translation>
+        </message>
+        <message>
+            <source>This video codec cannot be decoded.</source>
+            <translation>এই ভিডিও কোডেক ডিকোড করা যায় না.</translation>
+        </message>
+        <message>
+            <source>Video decoder could not be allocated.</source>
+            <translation>ভিডিও ডিকোডার বরাদ্দ করা যায়নি.</translation>
+        </message>
+        <message>
+            <source>Video decoder configuration could not be allocated.</source>
+            <translation>ভিডিও ডিকোডারের কনফিগারেশন বরাদ্দ করা যায়নি.</translation>
+        </message>
+        <message>
+            <source>Decoded dimensions do not match the screen stream.</source>
+            <translation>ডিকোড করা মাত্রা স্ক্রিন স্ট্রিমের সঙ্গে মেলে না.</translation>
+        </message>
+        <message>
+            <source>Decoded image could not be allocated.</source>
+            <translation>ডিকোড করা ছবি বরাদ্দ করা যায়নি.</translation>
+        </message>
+        <message>
+            <source>Video color conversion could not be initialized.</source>
+            <translation>ভিডিওর রঙ রূপান্তর আরম্ভ করা যায়নি.</translation>
         </message>
     </context>
     <context>
-        <name>LocalLanguage</name>
+        <name>VoiceAvatar</name>
         <message>
-            <source>Translation (experimental)</source>
-            <translation>অনুবাদ (পরীক্ষামূলক)</translation>
+            <source>Muted</source>
+            <translation>মাইক্রোফোন নিঃশব্দ</translation>
         </message>
         <message>
-            <source>Spoken language</source>
-            <translation>কথ্য ভাষা</translation>
+            <source>Sleeping</source>
+            <translation>ঘুমাচ্ছে</translation>
         </message>
         <message>
-            <source>Translate to</source>
-            <translation>এই ভাষায় অনুবাদ</translation>
+            <source>Offline</source>
+            <translation>অফলাইন</translation>
         </message>
         <message>
-            <source>Translate messages</source>
-            <translation>বার্তা অনুবাদ করুন</translation>
+            <source>Speaking</source>
+            <translation>কথা বলা</translation>
         </message>
         <message>
-            <source>Translated voice</source>
-            <translation>অনুবাদ করা কণ্ঠ</translation>
+            <source>Unavailable</source>
+            <translation>অনুপলব্ধ</translation>
         </message>
         <message>
-            <source>Original audio</source>
-            <translation>মূল অডিও</translation>
+            <source>Listening</source>
+            <translation>শোনা</translation>
         </message>
         <message>
-            <source>Original text</source>
-            <translation>মূল লেখা</translation>
+            <source>Deafened</source>
+            <translation>স্পিকাররা নিঃশব্দ</translation>
+        </message>
+    </context>
+    <context>
+        <name>VoiceSession</name>
+        <message>
+            <source>Unavailable - audio settings or tone test</source>
+            <translation>অনুপলব্ধ - অডিও সেটিংস বা টোন পরীক্ষা</translation>
         </message>
         <message>
-            <source>Prepare languages</source>
-            <translation>ভাষা প্রস্তুত করুন</translation>
+            <source>Microphone muted</source>
+            <translation>মাইক্রোফোন নিঃশব্দ</translation>
         </message>
         <message>
-            <source>Local language processing is unavailable.</source>
-            <translation>স্থানীয় ভাষা প্রক্রিয়াকরণ উপলব্ধ নয়।</translation>
+            <source>Push-to-talk held</source>
+            <translation>পুশ-টু-টক বোতামটি চেপে ধরা আছে।</translation>
         </message>
         <message>
-            <source>Language settings could not be read.</source>
-            <translation>ভাষার সেটিং পড়া যায়নি।</translation>
+            <source>Ready - push-to-talk released</source>
+            <translation>প্রস্তুত - পুশ-টু-টক বোতামটি ছেড়ে দেওয়া হয়েছে।</translation>
         </message>
         <message>
-            <source>Language settings could not be saved.</source>
-            <translation>ভাষার সেটিং সংরক্ষণ করা যায়নি।</translation>
+            <source>Microphone unmuted</source>
+            <translation>মাইক্রোফোন আনমিউট করা হয়েছে</translation>
+        </message>
+        <message>
+            <source>Settings could not be saved: %1</source>
+            <translation>সেটিংস সংরক্ষণ করা যায়নি: %1</translation>
+        </message>
+        <message>
+            <source>The push-to-talk sequence cannot be incremented further.</source>
+            <translation>পুশ-টু-টক সিকোয়েন্স আর বাড়ানো যাবে না।</translation>
+        </message>
+        <message>
+            <source>Choose System, Light or Dark.</source>
+            <translation>সিস্টেম, হালকা বা অন্ধকার চয়ন করুন।</translation>
+        </message>
+        <message>
+            <source>Choose a colour palette from the list.</source>
+            <translation>তালিকা থেকে একটি রঙ প্যালেট চয়ন করুন।</translation>
+        </message>
+        <message>
+            <source>Choose an available avatar.</source>
+            <translation>একটি উপলব্ধ অবতার চয়ন করুন৷</translation>
+        </message>
+        <message>
+            <source>Invalid push-to-talk binding.</source>
+            <translation>অবৈধ পুশ-টু-টক বাঁধাই।</translation>
+        </message>
+        <message>
+            <source>Release the held push-to-talk key first.</source>
+            <translation>প্রথমে রাখা পুশ-টু-টক কীটি ছেড়ে দিন।</translation>
+        </message>
+        <message>
+            <source>Choose a language from the list.</source>
+            <translation>তালিকা থেকে একটি ভাষা চয়ন করুন।</translation>
+        </message>
+        <message>
+            <source>This avatar requires Supporter.</source>
+            <translation>এই অবতারের জন্য Supporter প্রয়োজন।</translation>
+        </message>
+        <message>
+            <source>The name must contain 1 to 64 characters.</source>
+            <translation>নামটিতে 1 থেকে 64টি অক্ষর থাকতে হবে।</translation>
+        </message>
+        <message>
+            <source>The name may not contain control characters or line breaks.</source>
+            <translation>নামটিতে নিয়ন্ত্রণ অক্ষর বা লাইন বিরতি থাকতে পারে না।</translation>
+        </message>
+        <message>
+            <source>Session settings could not be read.</source>
+            <translation>সেশনের সেটিংস পড়া যায়নি.</translation>
+        </message>
+        <message>
+            <source>Saved setting is invalid: %1</source>
+            <translation>সংরক্ষিত সেটিংস অবৈধ: %1</translation>
         </message>
     </context>
 </TS>

@@ -10,10 +10,13 @@
 #include <QSslKey>
 #include <qtkeychain/keychain.h>
 #include <openssl/evp.h>
+#include <openssl/cms.h>
 #include <openssl/pem.h>
 #include <openssl/rand.h>
 #include <openssl/kdf.h>
+#include <openssl/rsa.h>
 #include <openssl/x509.h>
+#include <cstring>
 #include <memory>
 #include <stdexcept>
 #include <utility>
@@ -32,6 +35,82 @@ template<class T, auto Free> using Owned = std::unique_ptr<T, decltype(Free)>;
 void require(bool okay) {
     if (!okay) throw std::runtime_error(QCoreApplication::translate("TlsIdentity", "The encrypted device identity could not be created.").toStdString());
 }
+
+constexpr qsizetype cmsPlainLimit = 24 * 1024;
+constexpr qsizetype cmsEnvelopeLimit = 32 * 1024;
+constexpr qsizetype cmsContextLimit = 4096;
+constexpr char cmsMagic[] = "SquadSpeak/CMS/1";
+void cryptRequire(bool okay, const char* message = QT_TRANSLATE_NOOP("TlsIdentity", "Encryption failed.")) {
+    if (!okay) throw std::runtime_error(QCoreApplication::translate("TlsIdentity", message).toStdString());
+}
+
+Owned<X509, X509_free> certificateFromQt(const QSslCertificate& certificate) {
+    const auto der = certificate.toDer();
+    const unsigned char* data = reinterpret_cast<const unsigned char*>(der.constData());
+    return Owned<X509, X509_free>(d2i_X509(nullptr, &data, der.size()), X509_free);
+}
+
+Owned<EVP_PKEY, EVP_PKEY_free> keyFromQt(const QSslKey& key) {
+    const auto der = key.toDer();
+    const unsigned char* data = reinterpret_cast<const unsigned char*>(der.constData());
+    return Owned<EVP_PKEY, EVP_PKEY_free>(d2i_AutoPrivateKey(nullptr, &data, der.size()), EVP_PKEY_free);
+}
+
+QByteArray encodeCms(CMS_ContentInfo* cms) {
+    int size = i2d_CMS_ContentInfo(cms, nullptr);
+    cryptRequire(size > 0 && size <= cmsEnvelopeLimit, QT_TRANSLATE_NOOP("TlsIdentity", "Invalid encrypted data."));
+    QByteArray result(size, Qt::Uninitialized);
+    unsigned char* output = reinterpret_cast<unsigned char*>(result.data());
+    cryptRequire(i2d_CMS_ContentInfo(cms, &output) == size);
+    return result;
+}
+
+void setOaep(CMS_ContentInfo* cms) {
+    auto* recipients = CMS_get0_RecipientInfos(cms);
+    cryptRequire(recipients && sk_CMS_RecipientInfo_num(recipients) > 0,
+        QT_TRANSLATE_NOOP("TlsIdentity", "Encryption failed."));
+    for (int i = 0; i < sk_CMS_RecipientInfo_num(recipients); ++i) {
+        auto* recipient = sk_CMS_RecipientInfo_value(recipients, i);
+        auto* context = CMS_RecipientInfo_get0_pkey_ctx(recipient);
+        cryptRequire(context != nullptr, QT_TRANSLATE_NOOP("TlsIdentity", "Encryption failed."));
+        cryptRequire(EVP_PKEY_CTX_set_rsa_padding(context, RSA_PKCS1_OAEP_PADDING) > 0,
+            QT_TRANSLATE_NOOP("TlsIdentity", "Encryption failed."));
+        cryptRequire(EVP_PKEY_CTX_set_rsa_oaep_md(context, EVP_sha256()) > 0,
+            QT_TRANSLATE_NOOP("TlsIdentity", "Encryption failed."));
+        cryptRequire(EVP_PKEY_CTX_set_rsa_mgf1_md(context, EVP_sha256()) > 0,
+            QT_TRANSLATE_NOOP("TlsIdentity", "Encryption failed."));
+    }
+}
+
+void requireOaepRecipient(CMS_ContentInfo* cms, X509* certificate) {
+    auto* recipients = CMS_get0_RecipientInfos(cms);
+    cryptRequire(recipients != nullptr, QT_TRANSLATE_NOOP("TlsIdentity", "Invalid encrypted data."));
+    for (int i = 0; i < sk_CMS_RecipientInfo_num(recipients); ++i) {
+        auto* recipient = sk_CMS_RecipientInfo_value(recipients, i);
+        if (CMS_RecipientInfo_type(recipient) != CMS_RECIPINFO_TRANS
+            || CMS_RecipientInfo_ktri_cert_cmp(recipient, certificate) != 0)
+            continue;
+        EVP_PKEY* key = nullptr;
+        X509* recipientCertificate = nullptr;
+        X509_ALGOR* algorithm = nullptr;
+        cryptRequire(CMS_RecipientInfo_ktri_get0_algs(recipient, &key, &recipientCertificate, &algorithm) == 1
+            && algorithm != nullptr && OBJ_obj2nid(algorithm->algorithm) == NID_rsaesOaep,
+            QT_TRANSLATE_NOOP("TlsIdentity", "Invalid encrypted data."));
+        return;
+    }
+    cryptRequire(false, QT_TRANSLATE_NOOP("TlsIdentity", "Invalid encrypted data."));
+}
+
+Owned<CMS_ContentInfo, CMS_ContentInfo_free> decodeCms(const QByteArray& der) {
+    cryptRequire(der.size() > 0 && der.size() <= cmsEnvelopeLimit,
+        QT_TRANSLATE_NOOP("TlsIdentity", "Invalid encrypted data."));
+    const unsigned char* input = reinterpret_cast<const unsigned char*>(der.constData());
+    const unsigned char* end = input + der.size();
+    auto cms = Owned<CMS_ContentInfo, CMS_ContentInfo_free>(d2i_CMS_ContentInfo(nullptr, &input, der.size()), CMS_ContentInfo_free);
+    cryptRequire(cms && input == end, QT_TRANSLATE_NOOP("TlsIdentity", "Invalid encrypted data."));
+    return cms;
+}
+
 }
 
 TlsIdentity::TlsIdentity(QSslConfiguration configuration) : configuration_(std::move(configuration)) {}
@@ -211,11 +290,7 @@ bool TlsIdentity::load(const QString& slot, QObject* context,
     return true;
 }
 
-namespace {
-void cryptRequire(bool okay, const char* message = QT_TRANSLATE_NOOP("TlsIdentity", "Encryption failed.")) {
-    if (!okay) throw std::runtime_error(QCoreApplication::translate("TlsIdentity", message).toStdString());
-}
-}
+
 
 QByteArray TlsIdentity::newKey() {
     QByteArray key(32, Qt::Uninitialized);
@@ -263,6 +338,102 @@ QByteArray TlsIdentity::open(const QByteArray& sealed, const QByteArray& key, co
         QT_TRANSLATE_NOOP("TlsIdentity", "Data was modified or belongs to another device identity."));
     cryptRequire(written + tail == plain.size());
     return plain;
+}
+
+QByteArray TlsIdentity::sealFor(const QByteArray& plain, const QSslCertificate& peer,
+                                const QByteArray& context) const {
+    cryptRequire(!configuration_.localCertificate().isNull() && !configuration_.privateKey().isNull());
+    cryptRequire(!peer.isNull() && !peer.publicKey().isNull());
+    cryptRequire(plain.size() <= cmsPlainLimit && context.size() <= cmsContextLimit,
+        QT_TRANSLATE_NOOP("TlsIdentity", "Invalid encrypted data."));
+
+    auto signer = certificateFromQt(configuration_.localCertificate());
+    auto privateKey = keyFromQt(configuration_.privateKey());
+    auto recipient = certificateFromQt(peer);
+    auto selfRecipient = certificateFromQt(configuration_.localCertificate());
+    cryptRequire(signer && privateKey && recipient && selfRecipient);
+
+    QByteArray content(cmsMagic, int(sizeof(cmsMagic) - 1));
+    const auto contextSize = quint32(context.size());
+    content.append(char((contextSize >> 24) & 0xff));
+    content.append(char((contextSize >> 16) & 0xff));
+    content.append(char((contextSize >> 8) & 0xff));
+    content.append(char(contextSize & 0xff));
+    content.append(context);
+    content.append(plain);
+
+    Owned<BIO, BIO_free> input(BIO_new_mem_buf(content.constData(), content.size()), BIO_free);
+    cryptRequire(input != nullptr);
+    Owned<CMS_ContentInfo, CMS_ContentInfo_free> signedCms(
+        CMS_sign(signer.get(), privateKey.get(), nullptr, input.get(), CMS_BINARY), CMS_ContentInfo_free);
+    cryptRequire(signedCms != nullptr);
+    const auto signedDer = encodeCms(signedCms.get());
+    Owned<BIO, BIO_free> signedInput(BIO_new_mem_buf(signedDer.constData(), signedDer.size()), BIO_free);
+    cryptRequire(signedInput != nullptr);
+
+    Owned<CMS_ContentInfo, CMS_ContentInfo_free> encryptedCms(
+        CMS_encrypt(nullptr, nullptr, EVP_aes_256_gcm(), CMS_BINARY | CMS_PARTIAL), CMS_ContentInfo_free);
+    cryptRequire(encryptedCms != nullptr);
+    cryptRequire(CMS_add1_recipient_cert(encryptedCms.get(), recipient.get(), CMS_KEY_PARAM) != nullptr);
+    cryptRequire(CMS_add1_recipient_cert(encryptedCms.get(), selfRecipient.get(), CMS_KEY_PARAM) != nullptr);
+    setOaep(encryptedCms.get());
+    cryptRequire(CMS_final(encryptedCms.get(), signedInput.get(), nullptr, CMS_BINARY) == 1);
+    return encodeCms(encryptedCms.get());
+}
+
+QByteArray TlsIdentity::openFrom(const QByteArray& envelope, const QSslCertificate& sender,
+                                 const QByteArray& context) const {
+    cryptRequire(!configuration_.localCertificate().isNull() && !configuration_.privateKey().isNull());
+    cryptRequire(!sender.isNull() && !sender.publicKey().isNull() && context.size() <= cmsContextLimit,
+        QT_TRANSLATE_NOOP("TlsIdentity", "Invalid encrypted data."));
+    auto recipient = certificateFromQt(configuration_.localCertificate());
+    auto privateKey = keyFromQt(configuration_.privateKey());
+    auto senderCertificate = certificateFromQt(sender);
+    cryptRequire(recipient && privateKey && senderCertificate);
+    auto encryptedCms = decodeCms(envelope);
+    requireOaepRecipient(encryptedCms.get(), recipient.get());
+
+    QByteArray signedDer;
+    Owned<BIO, BIO_free> decrypted(BIO_new(BIO_s_mem()), BIO_free);
+    cryptRequire(decrypted != nullptr && CMS_decrypt(encryptedCms.get(), privateKey.get(), recipient.get(),
+        nullptr, decrypted.get(), CMS_BINARY) == 1,
+        QT_TRANSLATE_NOOP("TlsIdentity", "Invalid encrypted data."));
+    char* bytes = nullptr;
+    const auto size = BIO_get_mem_data(decrypted.get(), &bytes);
+    cryptRequire(size > 0 && size <= cmsEnvelopeLimit);
+    signedDer = QByteArray(bytes, int(size));
+    auto signedCms = decodeCms(signedDer);
+    auto* signers = CMS_get0_SignerInfos(signedCms.get());
+    cryptRequire(signers && sk_CMS_SignerInfo_num(signers) == 1,
+        QT_TRANSLATE_NOOP("TlsIdentity", "Invalid encrypted data."));
+    auto* signer = sk_CMS_SignerInfo_value(signers, 0);
+    cryptRequire(CMS_SignerInfo_cert_cmp(signer, senderCertificate.get()) == 0,
+        QT_TRANSLATE_NOOP("TlsIdentity", "Invalid encrypted data."));
+    auto* certificates = sk_X509_new_null();
+    cryptRequire(certificates != nullptr);
+    const auto cleanupCertificates = qScopeGuard([&] { sk_X509_free(certificates); });
+    cryptRequire(sk_X509_push(certificates, senderCertificate.get()) == 1);
+    Owned<BIO, BIO_free> verified(BIO_new(BIO_s_mem()), BIO_free);
+    cryptRequire(verified != nullptr && CMS_verify(signedCms.get(), certificates, nullptr, nullptr,
+        verified.get(), CMS_BINARY | CMS_NOVERIFY | CMS_NOINTERN) == 1,
+        QT_TRANSLATE_NOOP("TlsIdentity", "Invalid encrypted data."));
+    char* verifiedBytes = nullptr;
+    const auto verifiedSize = BIO_get_mem_data(verified.get(), &verifiedBytes);
+    cryptRequire(verifiedSize >= qsizetype(sizeof(cmsMagic) - 1) + 4);
+    const auto* data = reinterpret_cast<const unsigned char*>(verifiedBytes);
+    cryptRequire(std::memcmp(data, cmsMagic, sizeof(cmsMagic) - 1) == 0);
+    qsizetype offset = sizeof(cmsMagic) - 1;
+    const quint32 contextSize = (quint32(data[offset]) << 24) | (quint32(data[offset + 1]) << 16)
+        | (quint32(data[offset + 2]) << 8) | quint32(data[offset + 3]);
+    offset += 4;
+    cryptRequire(contextSize <= cmsContextLimit && offset + contextSize <= verifiedSize);
+    cryptRequire(QByteArray(reinterpret_cast<const char*>(data + offset), int(contextSize)) == context,
+        QT_TRANSLATE_NOOP("TlsIdentity", "Invalid encrypted data."));
+    offset += contextSize;
+    const auto plainSize = verifiedSize - offset;
+    cryptRequire(plainSize >= 0 && plainSize <= cmsPlainLimit,
+        QT_TRANSLATE_NOOP("TlsIdentity", "Invalid encrypted data."));
+    return QByteArray(reinterpret_cast<const char*>(data + offset), int(plainSize));
 }
 
 QByteArray TlsIdentity::deriveKey(const QByteArray& context, const QByteArray& purpose) const {

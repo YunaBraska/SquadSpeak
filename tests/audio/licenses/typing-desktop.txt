@@ -1,0 +1,10 @@
+Mechanical Keyboard Typing by Nmb910
+Original: https://freesound.org/people/Nmb910/sounds/234923/
+License: CC0 1.0 Universal
+https://creativecommons.org/publicdomain/zero/1.0/
+
+Five-second excerpt distributed by ESC-50. Only this individually CC0 sound
+is used, not the dataset under its aggregate CC BY-NC license.
+Attribution source: https://github.com/karolpiczak/ESC-50/blob/33c8ce9eb2cf0b1c2f8bcf322eb349b6be34dbb6/LICENSE
+Converted to mono PCM16 at 48 kHz. No normalization or denoising.
+No endorsement is implied.

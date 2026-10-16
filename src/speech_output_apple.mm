@@ -40,9 +40,16 @@ void SpeechOutput::stop() {
 
 QVariantList SpeechOutput::voices() {
     QVariantList result;
-    for (AVSpeechSynthesisVoice* voice in AVSpeechSynthesisVoice.speechVoices)
+    for (AVSpeechSynthesisVoice* voice in AVSpeechSynthesisVoice.speechVoices) {
+        bool novelty = false, personal = false;
+        if (@available(macOS 14.0, iOS 17.0, *)) {
+            novelty = (voice.voiceTraits & AVSpeechSynthesisVoiceTraitIsNoveltyVoice) != 0;
+            personal = (voice.voiceTraits & AVSpeechSynthesisVoiceTraitIsPersonalVoice) != 0;
+        }
         result.append(QVariantMap{{"id", QString::fromNSString(voice.identifier)},
-            {"name", QString::fromNSString(voice.name)}, {"language", QString::fromNSString(voice.language)}});
+            {"name", QString::fromNSString(voice.name)}, {"language", QString::fromNSString(voice.language)},
+            {"quality", int(voice.quality)}, {"novelty", novelty}, {"personal", personal}});
+    }
     return result;
 }
 
@@ -115,12 +122,15 @@ bool SpeechOutput::failed() const {
     return impl_->state->failed || (!impl_->state->done && impl_->state->deadline.elapsed() >= 35000);
 }
 
-bool SpeechOutput::mix(std::span<float> output, double gain) {
-    if (!std::isfinite(gain) || gain <= 0 || gain > 1 || !active()) return false;
+bool SpeechOutput::mix(std::span<float> output, double gain, int channels) {
+    if ((channels != 1 && channels != 2) || output.size() % size_t(channels)
+        || !std::isfinite(gain) || gain <= 0 || gain > 1 || !active()) return false;
     std::lock_guard lock(impl_->state->mutex);
     auto& state = *impl_->state;
-    const auto count = std::min(output.size(), state.samples.size() - state.offset);
-    for (size_t i = 0; i < count; ++i)
-        output[i] += float(state.samples[state.offset++] * gain);
+    const auto count = std::min(output.size() / channels, state.samples.size() - state.offset);
+    for (size_t i = 0; i < count; ++i) {
+        const auto sample = float(state.samples[state.offset++] * gain);
+        for (int channel = 0; channel < channels; ++channel) output[i * channels + channel] += sample;
+    }
     return count > 0;
 }

@@ -29,7 +29,7 @@ public:
     QJsonObject append(const QString& sender, const QString& name,
                        const QString& request, const QString& text, qint64 now, const QByteArray& image = {},
                        const QString& avatar = QStringLiteral("mossling"), qint64 duration = lifetime,
-                       const QJsonObject& event = {});
+                       const QJsonObject& event = {}, const QByteArray& sealed = {});
     [[nodiscard]] QByteArray image(const QString& hash, qint64 now);
     bool expire(qint64 now);
     // Authenticated profile changes keep receipt time, content and identity intact.

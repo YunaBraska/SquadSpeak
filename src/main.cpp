@@ -28,6 +28,7 @@
 #include <QImageReader>
 #endif
 #include <QPainter>
+#include <QPainterPath>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include <QQuickStyle>
@@ -39,6 +40,9 @@
 #include <QLocale>
 
 #include <cstdio>
+#ifdef Q_OS_MACOS
+#import <AppKit/AppKit.h>
+#endif
 
 int main(int argc, char** argv) {
 #ifdef Q_OS_ANDROID
@@ -71,7 +75,6 @@ int main(int argc, char** argv) {
         parser.addVersionOption();
         parser.addOption({"headless", QCoreApplication::translate("Headless", "Run without GUI, microphone capture, or local audio output.") + " (--headless --help)"});
         parser.addOption({"settings", QCoreApplication::translate("Desktop", "Open settings at startup.")});
-        parser.addOption({"recording-test", QCoreApplication::translate("Desktop", "Open guided local test recording without starting network services.")});
         parser.addOption({"settings-file", QCoreApplication::translate("Desktop", "Alternative file for audio profiles."), "path"});
         parser.addOption({"smoke-test", QCoreApplication::translate("Desktop", "Load the interface without microphone capture and exit after one second.")});
         parser.addOption({"screenshot", QCoreApplication::translate("Desktop", "Save an image of the app window during the UI test."), "path"});
@@ -131,12 +134,13 @@ int main(int argc, char** argv) {
         };
         startupPhase("initializing audio");
         AudioModel audio(settingsFile);
+        audio.setAppLanguage(session.language());
         startupPhase("initializing supporter access");
         License license(License::storageDirectory(),
             License::distributionProduct(), QUrl("https://api.github.com/graphql"));
         QObject::connect(&license, &License::changed, &session, [&] { session.setSupporterEnabled(license.active()); });
         QObject::connect(&app, &QGuiApplication::applicationStateChanged, &license, [&](Qt::ApplicationState state) {
-            if (state == Qt::ApplicationActive && !arguments.isSet("smoke-test") && !arguments.isSet("recording-test")) license.refreshIfDue();
+            if (state == Qt::ApplicationActive && !arguments.isSet("smoke-test")) license.refreshIfDue();
         });
         const auto applyAppearance = [&session] {
             QGuiApplication::styleHints()->setColorScheme(session.theme() == "dark" ? Qt::ColorScheme::Dark
@@ -155,18 +159,20 @@ int main(int argc, char** argv) {
         QQmlEngine::setObjectOwnership(&channel, QQmlEngine::CppOwnership);
         QQmlEngine::setObjectOwnership(&radio, QQmlEngine::CppOwnership);
         if (!radio.bind(channel)) throw std::runtime_error(qUtf8Printable(QCoreApplication::translate("Headless", "Radio channels could not be initialized.")));
+        // Persist the first suggested name only after startup settings validate.
+        if (!session.setUserName(session.userName())) throw std::runtime_error(qUtf8Printable(session.error()));
         startupPhase("initializing shortcuts and updates");
-        PushToTalkKey pttKey(session, !arguments.isSet("smoke-test") && !arguments.isSet("recording-test"));
+        PushToTalkKey pttKey(session, !arguments.isSet("smoke-test"));
 #ifdef SQUADSPEAK_UPDATES
-        AppUpdates updates(!arguments.isSet("smoke-test") && !arguments.isSet("recording-test"));
+        AppUpdates updates(!arguments.isSet("smoke-test"));
 #endif
         QQmlApplicationEngine engine;
         engine.setUiLanguage(session.language());
         QObject::connect(&session, &VoiceSession::preferencesChanged, &engine, [&] {
             if (applyLanguage()) {
                 engine.setUiLanguage(session.language());
+                audio.setAppLanguage(session.language());
                 audio.devicesChanged();
-                QMetaObject::invokeMethod(audio.recording(), "changed");
                 engine.retranslate();
             }
         });
@@ -187,7 +193,7 @@ int main(int argc, char** argv) {
         if (engine.rootObjects().size() != 1) return 1;
         auto* channels = qobject_cast<QQuickWindow*>(engine.rootObjects().first());
         if (!channels) return 1;
-        if (license.configured() && !arguments.isSet("smoke-test") && !arguments.isSet("recording-test")) license.refresh();
+        if (license.configured() && !arguments.isSet("smoke-test")) license.refresh();
         if (!arguments.isSet("smoke-test") && !QObject::connect(channels, SIGNAL(previewRequested(bool)),
                 &audio, SLOT(setPreviewActive(bool)))) return 1;
         QObject::connect(&audio, &AudioModel::runningChanged, &session, [&session, &audio] {
@@ -210,7 +216,7 @@ int main(int argc, char** argv) {
         QObject::connect(&channel, &LocalChannel::audioReceived, &audio, &AudioModel::receiveAudio);
         QObject::connect(&audio, &AudioModel::audioPacket, &channel, &LocalChannel::sendAudio);
         QObject::connect(&channel, &LocalChannel::channelEvent, &audio, [&](const QString& kind) {
-            const bool spoken = audio.readBotMessages() && channel.joined() && kind != "leave";
+            const bool spoken = audio.botSpeechReady() && channel.joined() && kind != "leave" && kind != "request";
             if (session.eventSounds() && !spoken) audio.playEvent(kind);
         });
         QObject::connect(&session, &VoiceSession::preferencesChanged, &audio, [&] {
@@ -228,7 +234,7 @@ int main(int argc, char** argv) {
         });
         QObject::connect(&channel, &LocalChannel::chatNotification, &app, [&](const QString& hostId, const QVariantMap& message) {
             const bool announcement = message.value("event").toMap().value("kind") == "announcement";
-            if (session.eventSounds() && !(announcement && audio.readBotMessages()))
+            if (session.eventSounds() && !(announcement && audio.botSpeechReady()))
                 audio.playEvent(announcement ? "announcement" : "message");
 #if defined(Q_OS_MACOS) || defined(Q_OS_IOS)
             QString name;
@@ -264,19 +270,46 @@ int main(int argc, char** argv) {
             showChannels();
             QMetaObject::invokeMethod(channels, "openSettings", Q_ARG(QVariant, 0));
         };
+#ifdef Q_OS_MACOS
+        const auto applyDock = [&session] {
+            const auto policy = session.showInDock() ? NSApplicationActivationPolicyRegular : NSApplicationActivationPolicyAccessory;
+            if (NSApp.activationPolicy != policy && ![NSApp setActivationPolicy:policy])
+                qWarning("Could not change the application activation policy");
+        };
+        applyDock();
+        QObject::connect(&session, &VoiceSession::preferencesChanged, &app, applyDock);
+        QObject::connect(&app, &QGuiApplication::applicationStateChanged, channels, [&, showChannels](Qt::ApplicationState state) {
+            if (state == Qt::ApplicationActive && session.showInDock() && !channels->isVisible()) showChannels();
+        });
+        if (session.showInDock() && !arguments.isSet("smoke-test")) showChannels();
+#endif
 
 #if !defined(Q_OS_IOS) && !defined(Q_OS_ANDROID)
-        QPixmap mark(32, 32);
-        mark.fill(Qt::transparent);
-        {
-            QPainter painter(&mark);
-            painter.setRenderHint(QPainter::Antialiasing);
-            painter.setPen(QPen(app.palette().color(QPalette::WindowText), 3, Qt::SolidLine, Qt::RoundCap));
-            painter.drawLine(6, 12, 6, 20);
-            painter.drawLine(12, 7, 12, 25);
-            painter.drawLine(18, 11, 18, 21);
-            painter.drawLine(24, 4, 24, 28);
-        }
+        const auto speechIcon = [&app](bool active) {
+            QPixmap mark(64, 64);
+            mark.fill(Qt::transparent);
+            {
+                QPainter painter(&mark);
+                painter.setRenderHint(QPainter::Antialiasing);
+                painter.scale(64.0 / 18, 64.0 / 18);
+                const auto color = app.palette().color(QPalette::WindowText);
+                painter.setPen(QPen(color, 1.5, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+                painter.setBrush(active ? QBrush(color) : QBrush(Qt::NoBrush));
+                QPainterPath bubble;
+                bubble.moveTo(5, 3); bubble.lineTo(13, 3); bubble.quadTo(16, 3, 16, 6);
+                bubble.lineTo(16, 10); bubble.quadTo(16, 13, 13, 13);
+                bubble.lineTo(8, 13); bubble.lineTo(4, 16); bubble.lineTo(4, 12.8);
+                bubble.quadTo(2, 12, 2, 10); bubble.lineTo(2, 6); bubble.quadTo(2, 3, 5, 3);
+                bubble.closeSubpath();
+                painter.drawPath(bubble);
+            }
+            QIcon icon(mark);
+#ifdef Q_OS_MACOS
+            icon.setIsMask(true);
+#endif
+            return icon;
+        };
+        const auto idleIcon = speechIcon(false), speakingIcon = speechIcon(true);
         QMenu menu;
         auto* channelsAction = menu.addAction(QCoreApplication::translate("Tray", "Channels"), &app, showChannels);
         auto* settingsAction = menu.addAction(QCoreApplication::translate("Tray", "Settings"), &app, showSettings);
@@ -287,27 +320,13 @@ int main(int argc, char** argv) {
             settingsAction->setText(QCoreApplication::translate("Tray", "Settings"));
             quitAction->setText(QCoreApplication::translate("Tray", "Quit"));
         });
-        QIcon trayIcon(mark);
-#ifdef Q_OS_MACOS
-        trayIcon.setIsMask(true);
-#endif
-        QSystemTrayIcon tray(trayIcon, &app);
+        QSystemTrayIcon tray(idleIcon, &app);
         bool speaking = false;
         QObject::connect(&audio, &AudioModel::activityChanged, &tray, [&] {
             const bool active = audio.transmitLevel() > 0.001;
             if (active == speaking) return;
             speaking = active;
-            QPixmap state = mark;
-            if (active) {
-                QPainter painter(&state);
-                painter.setPen(QPen(QColor("#7857b2"), 3));
-                painter.drawEllipse(QRectF(2, 2, 28, 28));
-            }
-            QIcon icon(state);
-#ifdef Q_OS_MACOS
-            icon.setIsMask(true);
-#endif
-            tray.setIcon(icon);
+            tray.setIcon(active ? speakingIcon : idleIcon);
             tray.setToolTip(active ? QCoreApplication::translate("Tray", "SquadSpeak - speaking") : "SquadSpeak");
         });
         tray.setToolTip("SquadSpeak");
@@ -332,15 +351,8 @@ int main(int argc, char** argv) {
 #else
         channels->showMaximized();
 #endif
-        if (arguments.isSet("recording-test")) {
-            channels->setProperty("recordingMode", true);
-            if (!arguments.isSet("smoke-test")) {
-                showChannels();
-                QMetaObject::invokeMethod(channels, "openSettings", Q_ARG(QVariant, 1));
-            }
-        }
         if (!arguments.isSet("smoke-test") && arguments.isSet("settings")) showSettings();
-        if (!arguments.isSet("smoke-test") && !arguments.isSet("recording-test")) channel.initialize();
+        if (!arguments.isSet("smoke-test")) channel.initialize();
         if (arguments.isSet("smoke-test")) {
             qInfo("UI smoke: checking profile and settings");
             if (app.windowIcon().isNull() || app.windowIcon().pixmap(32, 32).isNull()) return 1;

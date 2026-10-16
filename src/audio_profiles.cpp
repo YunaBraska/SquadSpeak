@@ -123,6 +123,14 @@ AudioProfiles& AudioProfiles::saveReadBotMessages(const QByteArray& deviceId, bo
     return write({{key(deviceId, false) + "readBotMessages", enabled}});
 }
 
+QString AudioProfiles::botVoice(const QByteArray& deviceId) const {
+    return settings_.value(key(deviceId, false) + "botVoice").toString();
+}
+
+AudioProfiles& AudioProfiles::saveBotVoice(const QByteArray& deviceId, const QString& voiceId) {
+    return write({{key(deviceId, false) + "botVoice", voiceId}});
+}
+
 bool AudioProfiles::automaticVolume(const QByteArray& deviceId) const {
     const auto value = settings_.value(key(deviceId, false) + "automaticVolume", true);
     if (value.toString() != "true" && value.toString() != "false")
@@ -132,21 +140,33 @@ bool AudioProfiles::automaticVolume(const QByteArray& deviceId) const {
 
 double AudioProfiles::noiseSuppression(const QByteArray& deviceId) const {
     bool valid;
-    const auto value = settings_.value(key(deviceId, true) + "noiseSuppression", 0.0).toDouble(&valid);
+    const auto value = settings_.value(key(deviceId, true) + "noiseSuppression", 1.0).toDouble(&valid);
     if (!valid || !std::isfinite(value) || value < 0 || value > 1)
         throw std::runtime_error(QT_TRANSLATE_NOOP("AudioModel", "Stored noise suppression strength is invalid"));
     return value;
 }
 
-bool AudioProfiles::echoCancellation(const QByteArray& deviceId) const {
-    const auto value = settings_.value(key(deviceId, true) + "echoCancellation", true);
-    if (value.toString() != "true" && value.toString() != "false")
+std::optional<double> AudioProfiles::echoSuppression(const QByteArray& deviceId) const {
+    const auto prefix = key(deviceId, true);
+    if (settings_.contains(prefix + "echoSuppression")) {
+        bool valid;
+        const auto strength = settings_.value(prefix + "echoSuppression").toDouble(&valid);
+        if (!valid || !std::isfinite(strength) || strength < 0 || strength > 1)
+            throw std::runtime_error(QT_TRANSLATE_NOOP("AudioModel", "Stored microphone profile is invalid"));
+        return strength;
+    }
+    const auto legacy = settings_.value(prefix + "echoCancellation", true).toString();
+    if (legacy != "true" && legacy != "false")
         throw std::runtime_error(QT_TRANSLATE_NOOP("AudioModel", "Stored microphone profile is invalid"));
-    return value.toBool();
+    return legacy == "false" ? std::optional(0.0) : std::nullopt;
 }
 
-AudioProfiles& AudioProfiles::saveEchoCancellation(const QByteArray& deviceId, bool enabled) {
-    return write({{key(deviceId, true) + "echoCancellation", enabled}});
+AudioProfiles& AudioProfiles::saveEchoSuppression(const QByteArray& deviceId, std::optional<double> strength) {
+    if (strength && (!std::isfinite(*strength) || *strength < 0 || *strength > 1))
+        throw std::invalid_argument(QT_TRANSLATE_NOOP("AudioModel", "Invalid microphone profile"));
+    const auto prefix = key(deviceId, true);
+    return write({{prefix + "echoSuppression", strength ? QVariant(*strength) : QVariant{}},
+                  {prefix + "echoCancellation", QVariant{}}});
 }
 
 AudioProfiles& AudioProfiles::saveNoiseSuppression(const QByteArray& deviceId, double strength) {

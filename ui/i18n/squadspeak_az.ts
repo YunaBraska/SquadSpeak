@@ -36,14 +36,6 @@
             <translation>Sisteminizin məxfilik parametrlərini açın və SquadSpeak üçün mikrofon girişinə icazə verin.</translation>
         </message>
         <message>
-            <source>Microphone analysis active. Test audio stays on this computer.</source>
-            <translation>Mikrofon analizi aktivdir. Test səsi bu kompüterdə qalır.</translation>
-        </message>
-        <message>
-            <source>Finish the test recording before changing devices.</source>
-            <translation>Cihazları dəyişdirməzdən əvvəl sınaq qeydini tamamlayın.</translation>
-        </message>
-        <message>
             <source>The output format is not supported.</source>
             <translation>Çıxış formatı dəstəklənmir.</translation>
         </message>
@@ -68,32 +60,12 @@
             <translation>Test tonu səsləndirilə bilmədi.</translation>
         </message>
         <message>
-            <source>The microphone has provided no data for five seconds. Recording discarded.</source>
-            <translation>Mikrofon beş saniyə ərzində heç bir məlumat vermir. Səsyazma ləğv edildi.</translation>
-        </message>
-        <message>
-            <source>The microphone was interrupted or changed. Recording discarded.</source>
-            <translation>Mikrofon kəsildi və ya dəyişdirildi. Səsyazma ləğv edildi.</translation>
-        </message>
-        <message>
-            <source>Cancelled. The incomplete recording was discarded.</source>
-            <translation>Ləğv edildi. Natamam qeyd silindi.</translation>
-        </message>
-        <message>
             <source>No selected microphone is available</source>
             <translation>Seçilmiş mikrofon mövcud deyil</translation>
         </message>
         <message>
             <source>Allow microphone access in the system dialog.</source>
             <translation>Sistem dialoqunda mikrofona girişə icazə verin.</translation>
-        </message>
-        <message>
-            <source>Microphone capture active for the voice channel.</source>
-            <translation>Səs kanalı üçün mikrofon çəkilişi aktivdir.</translation>
-        </message>
-        <message>
-            <source>Microphone access was denied. Nothing was saved.</source>
-            <translation>Mikrofona giriş rədd edildi. Heç nə xilas edilmədi.</translation>
         </message>
         <message>
             <source>Microphone access is missing. Allow it in System Settings.</source>
@@ -265,97 +237,6 @@
         </message>
     </context>
     <context>
-        <name>AudioRecording</name>
-        <message>
-            <source>Incomplete audio block. Recording discarded.</source>
-            <translation>Natamam audio blok. Səsyazma ləğv edildi.</translation>
-        </message>
-        <message>
-            <source>Move about one meter from the microphone. Keep the background sound playing and read the sentence.</source>
-            <translation>Mikrofondan təxminən bir metr uzaqlaşın. Fon səsini çalın və cümləni oxuyun.</translation>
-        </message>
-        <message>
-            <source>Voice with background sound</source>
-            <translation>Fon səsi olan səs</translation>
-        </message>
-        <message>
-            <source>The recordings folder could not be created.</source>
-            <translation>Qeydlər qovluğunu yaratmaq mümkün olmadı.</translation>
-        </message>
-        <message>
-            <source>You can stop the background sound now.</source>
-            <translation>İndi fon səsini dayandıra bilərsiniz.</translation>
-        </message>
-        <message>
-            <source>Recordings saved</source>
-            <translation>Qeydlər saxlandı</translation>
-        </message>
-        <message>
-            <source>The test recording could not be saved completely.</source>
-            <translation>Test qeydini tam saxlamaq mümkün olmadı.</translation>
-        </message>
-        <message>
-            <source>Keep music off and stay quiet. Start when ready.</source>
-            <translation>Musiqini söndürün və səssiz qalın. Hazır olduqda başlayın.</translation>
-        </message>
-        <message>
-            <source>Your voice</source>
-            <translation>Səsiniz</translation>
-        </message>
-        <message>
-            <source>Play music or another background sound at a normal volume. Stay quiet while recording.</source>
-            <translation>Normal səs səviyyəsində musiqi və ya başqa fon səsi çalın. Yazarkən səssiz qalın.</translation>
-        </message>
-        <message>
-            <source>The test recording could not be created.</source>
-            <translation>Test qeydini yaratmaq mümkün olmadı.</translation>
-        </message>
-        <message>
-            <source>Background sound</source>
-            <translation>Fon səsi</translation>
-        </message>
-        <message>
-            <source>The window is open. I can hear the rain outside. One, two, three, four, five.</source>
-            <translation>Pəncərə açıqdır. Çöldə yağışı eşidirəm. Bir, iki, üç, dörd, beş.</translation>
-        </message>
-        <message>
-            <source>This microphone format is not supported for test recordings.</source>
-            <translation>Bu mikrofon formatı sınaq qeydləri üçün dəstəklənmir.</translation>
-        </message>
-        <message>
-            <source>Keep the background volume unchanged. Read the sentence, then stop recording.</source>
-            <translation>Fon səsini dəyişmədən saxlayın. Cümləni oxuyun, sonra yazmağı dayandırın.</translation>
-        </message>
-        <message>
-            <source>Record at least half a second, then try again.</source>
-            <translation>Ən azı yarım saniyə qeyd edin, sonra yenidən cəhd edin.</translation>
-        </message>
-        <message>
-            <source>Sit at your usual distance. Read the sentence, then stop recording.</source>
-            <translation>Adi məsafədə oturun. Cümləni oxuyun, sonra yazmağı dayandırın.</translation>
-        </message>
-        <message>
-            <source>The recording description could not be saved.</source>
-            <translation>Qeydin təsvirini saxlamaq mümkün olmadı.</translation>
-        </message>
-        <message>
-            <source>The WAV file could not be finalized.</source>
-            <translation>WAV faylı yekunlaşdırıla bilmədi.</translation>
-        </message>
-        <message>
-            <source>The WAV header could not be written.</source>
-            <translation>WAV başlığı yazıla bilməz.</translation>
-        </message>
-        <message>
-            <source>Voice farther away</source>
-            <translation>Daha uzaqda səs</translation>
-        </message>
-        <message>
-            <source>Room sound</source>
-            <translation>Otaq səsi</translation>
-        </message>
-    </context>
-    <context>
         <name>AudioSettings</name>
         <message>
             <source>Echo cancellation</source>
@@ -406,8 +287,8 @@
             <translation>Sizin səsləndirməniz</translation>
         </message>
         <message>
-            <source>Clear local key</source>
-            <translation>Yerli təkanla danışıq klaviatura qısayolunu silin</translation>
+            <source>Clear key</source>
+            <translation>Düyməni sil</translation>
         </message>
         <message>
             <source>Low cut</source>
@@ -428,10 +309,6 @@
         <message>
             <source>Cancel</source>
             <translation>Ləğv et</translation>
-        </message>
-        <message>
-            <source>Guided recording</source>
-            <translation>Bələdçili qeyd</translation>
         </message>
         <message>
             <source>Clipping. Reduce microphone gain.</source>
@@ -466,16 +343,12 @@
             <translation>Cihaz ayrıldı</translation>
         </message>
         <message>
-            <source>Local key</source>
-            <translation>Yerli bas-danış klaviatura qısayolu</translation>
+            <source>PTT key</source>
+            <translation>Danışıq düyməsi</translation>
         </message>
         <message>
             <source>Voice activation</source>
             <translation>Səslə aktivləşdirmə</translation>
-        </message>
-        <message>
-            <source>Remote PTT key</source>
-            <translation>Uzaqdan bas-danış klaviatura qısayolu</translation>
         </message>
         <message>
             <source>Noise reduction</source>
@@ -492,10 +365,6 @@
         <message>
             <source>Microphone gain</source>
             <translation>Mikrofonun gücləndirilməsi</translation>
-        </message>
-        <message>
-            <source>Clear remote key</source>
-            <translation>Uzaqdan bas-danış klaviatura qısayolunu silin</translation>
         </message>
         <message>
             <source>Not assigned</source>
@@ -521,9 +390,81 @@
             <source>Read bot messages aloud</source>
             <translation>Bot mesajlarını səsləndir</translation>
         </message>
+        <message>
+            <source>Download a high-quality voice for this language in macOS settings.</source>
+            <translation>macOS parametrlərində bu dil üçün yüksək keyfiyyətli səs endir.</translation>
+        </message>
+        <message>
+            <source>Bot voice</source>
+            <translation>Bot səsi</translation>
+        </message>
+        <message>
+            <source>Automatic</source>
+            <translation>Avtomatik</translation>
+        </message>
+        <message>
+            <source>Unavailable</source>
+            <translation>Əlçatan deyil</translation>
+        </message>
+        <message>
+            <source>Download voices in your device's Accessibility speech settings.</source>
+            <translation>Səsləri cihazının əlçatanlıq üzrə nitq ayarlarından endir.</translation>
+        </message>
+        <message>
+            <source>Voice download help</source>
+            <translation>Səs endirmə köməyi</translation>
+        </message>
+        <message>
+            <source>Strength, not the percentage of echo removed.</source>
+            <translation>Güc, silinən əks-sədanın faizi deyil.</translation>
+        </message>
+        <message>
+            <source>Auto also checks for speech, not just volume.</source>
+            <translation>Avtomatik rejim yalnız səs səviyyəsini deyil, nitqi də yoxlayır.</translation>
+        </message>
     </context>
     <context>
         <name>Channels</name>
+        <message>
+            <source>Copy address</source>
+            <translation>Ünvanı kopyala</translation>
+        </message>
+        <message>
+            <source>Messages</source>
+            <translation>Mesajlar</translation>
+        </message>
+        <message>
+            <source>Message</source>
+            <translation>Mesaj</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Aç</translation>
+        </message>
+        <message>
+            <source>Online</source>
+            <translation>Onlayn</translation>
+        </message>
+        <message>
+            <source>Offline</source>
+            <translation>Oflayn</translation>
+        </message>
+        <message>
+            <source>No private messages</source>
+            <translation>Şəxsi mesaj yoxdur</translation>
+        </message>
+        <message>
+            <source>Private messages are unavailable for this contact.</source>
+            <translation>Bu kontakt üçün şəxsi mesajlar əlçatan deyil.</translation>
+        </message>
+        <message>
+            <source>If asked, allow local network access. You can change this in system settings.</source>
+            <translation>Soruşularsa, yerli şəbəkəyə girişə icazə ver. Bunu sistem ayarlarında dəyişə bilərsən.</translation>
+        </message>
+        <message>
+            <source>Retry</source>
+            <translation>Yenidən cəhd et</translation>
+        </message>
         <message>
             <source>Updates</source>
             <translation>Yeniləmələr</translation>
@@ -543,6 +484,10 @@
         <message>
             <source>DDNS cannot bypass CGNAT. If your provider shares the public IP, use a private VPN on all participating devices or a publicly reachable server.</source>
             <translation>DDNS CGNAT-ı keçə bilməz. Provayderiniz ictimai IP-ni paylaşırsa, bütün iştirakçı cihazlarda şəxsi VPN və ya ictimaiyyət üçün əlçatan olan serverdən istifadə edin.</translation>
+        </message>
+        <message>
+            <source>Remove server</source>
+            <translation>Serveri sil</translation>
         </message>
         <message>
             <source>Low</source>
@@ -665,10 +610,6 @@
             <translation>Bildiriş səslənir</translation>
         </message>
         <message>
-            <source>Lifetime for new messages. Earlier messages keep their expiry.</source>
-            <translation>Yeni mesajlar üçün ömür boyu. Əvvəlki mesajlar öz müddətini saxlayır.</translation>
-        </message>
-        <message>
             <source>Enable speakers</source>
             <translation>Dinamikləri aktivləşdirin</translation>
         </message>
@@ -703,10 +644,6 @@
         <message>
             <source>Allow device</source>
             <translation>Cihaza icazə verin</translation>
-        </message>
-        <message>
-            <source>Receive quality: %1 kb/s per voice. Adjusts automatically for this device.</source>
-            <translation>Qəbul keyfiyyəti: hər səsə %1 kb/s. Bu cihaz üçün avtomatik tənzimləyir.</translation>
         </message>
         <message>
             <source>Stop radio</source>
@@ -1204,6 +1141,42 @@
             <source>Use default music volume</source>
             <translation>Standart musiqi səs səviyyəsini istifadə et</translation>
         </message>
+        <message>
+            <source>Show in Dock</source>
+            <translation>Dock-da göstər</translation>
+        </message>
+        <message>
+            <source>App language</source>
+            <translation>Tətbiqin dili</translation>
+        </message>
+        <message>
+            <source>Send in</source>
+            <translation>Göndərmə dili</translation>
+        </message>
+        <message>
+            <source>Hear in</source>
+            <translation>Dinləmə dili</translation>
+        </message>
+        <message>
+            <source>Download language models for %1 and %2?</source>
+            <translation>%1 və %2 üçün dil modelləri endirilsin?</translation>
+        </message>
+        <message>
+            <source>Download</source>
+            <translation>Endir</translation>
+        </message>
+        <message>
+            <source>PTT, chat and channel controls. Uses the controlled device's microphone.</source>
+            <translation>PTT, söhbət və kanal idarəetmələri. İdarə olunan cihazın mikrofonundan istifadə olunur.</translation>
+        </message>
+        <message>
+            <source>Connect the other device to one of your channels, then allow it here.</source>
+            <translation>Digər cihazı kanallarından birinə qoş, sonra burada ona icazə ver.</translation>
+        </message>
+        <message>
+            <source>On the other device, open Settings &gt; Input &gt; Remote control and allow this device.</source>
+            <translation>Digər cihazda Parametrlər &gt; Giriş &gt; Uzaqdan idarəetmə bölməsini aç və bu cihaza icazə ver.</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1420,7 +1393,396 @@
         </message>
     </context>
     <context>
+        <name>Desktop</name>
+        <message>
+            <source>Open settings at startup.</source>
+            <translation>Başlanğıcda parametrləri aç.</translation>
+        </message>
+        <message>
+            <source>Alternative file for audio profiles.</source>
+            <translation>Səs profilləri üçün alternativ fayl.</translation>
+        </message>
+        <message>
+            <source>Load the interface without microphone capture and exit after one second.</source>
+            <translation>İnterfeysi mikrofon yazısı olmadan yüklə və bir saniyədən sonra çıx.</translation>
+        </message>
+        <message>
+            <source>Save an image of the app window during the UI test.</source>
+            <translation>İnterfeys sınağı zamanı tətbiq pəncərəsinin şəklini saxla.</translation>
+        </message>
+        <message>
+            <source>The window image could not be saved.</source>
+            <translation>Pəncərənin şəklini saxlamaq mümkün olmadı.</translation>
+        </message>
+        <message>
+            <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
+            <translation>Sistem paneli əlçatan deyil; tətbiq pəncərədə açıq qalır.</translation>
+        </message>
+    </context>
+    <context>
+        <name>Headless</name>
+        <message>
+            <source>Host display name.</source>
+            <translation>Hostun görünən adı.</translation>
+        </message>
+        <message>
+            <source>Command failed.</source>
+            <translation>Əmr yerinə yetirilmədi.</translation>
+        </message>
+        <message>
+            <source>%1 must be an integer.</source>
+            <translation>%1 tam ədəd olmalıdır.</translation>
+        </message>
+        <message>
+            <source>Requests must be on/off or true/false.</source>
+            <translation>Sorğular on/off və ya true/false olmalıdır.</translation>
+        </message>
+        <message>
+            <source>Unknown host property: %1</source>
+            <translation>Hostun naməlum xüsusiyyəti: %1</translation>
+        </message>
+        <message>
+            <source>Run without GUI, microphone capture, or local audio output.</source>
+            <translation>Qrafik interfeys, mikrofondan səs yazısı və yerli səs çıxışı olmadan işə sal.</translation>
+        </message>
+        <message>
+            <source>Server storage prefix. Personal/audio/GUI profiles are not loaded.</source>
+            <translation>Server yaddaşının prefiksi. Şəxsi, səs və interfeys profilləri yüklənmir.</translation>
+        </message>
+        <message>
+            <source>Optional private identity file instead of the OS credential store (Linux/macOS). Parent directory must exist and belong to this account.</source>
+            <translation>Əməliyyat sisteminin giriş məlumatları anbarı əvəzinə əlavə şəxsi identifikasiya faylı (Linux/macOS). Ana qovluq mövcud olmalı və bu hesaba məxsus olmalıdır.</translation>
+        </message>
+        <message>
+            <source>UTF-8 key=value properties or JSON host preset. Default: application.properties, then config/application.properties beside the app.</source>
+            <translation>UTF-8 key=value xüsusiyyətləri və ya hostun əvvəlcədən təyin edilmiş JSON parametrləri. Standart: application.properties, sonra tətbiqin yanında config/application.properties.</translation>
+        </message>
+        <message>
+            <source>Channel display name.</source>
+            <translation>Kanalın göstərilən adı.</translation>
+        </message>
+        <message>
+            <source>System and radio bot display name.</source>
+            <translation>Sistem və radio botunun göstərilən adı.</translation>
+        </message>
+        <message>
+            <source>TCP service port (1-65535).</source>
+            <translation>TCP xidmət portu (1-65535).</translation>
+        </message>
+        <message>
+            <source>Headless admission is always on; only 'on' or 'true' is accepted.</source>
+            <translation>Qrafik interfeyssiz rejimdə qəbul həmişə aktivdir; yalnız 'on' və ya 'true' qəbul edilir.</translation>
+        </message>
+        <message>
+            <source>Preapprove a device ID; repeat for several devices. Existing bans remain.</source>
+            <translation>Cihaz ID-sini əvvəlcədən təsdiqlə; bir neçə cihaz üçün təkrarla. Mövcud qadağalar qalır.</translation>
+        </message>
+        <message>
+            <source>Block a device ID; repeat for several devices.</source>
+            <translation>Cihaz ID-sini blokla; bir neçə cihaz üçün təkrarla.</translation>
+        </message>
+        <message>
+            <source>Read a UTF-8 channel password from a file before listening. An empty file removes it.</source>
+            <translation>Dinləməyə başlamazdan əvvəl kanalın UTF-8 parolunu fayldan oxu. Boş fayl parolu silir.</translation>
+        </message>
+        <message>
+            <source>Channel password. Empty removes it; environment or config avoids process-list exposure.</source>
+            <translation>Kanal parolu. Boş dəyər parolu silir; mühit və ya konfiqurasiya onun proseslər siyahısında görünməsinin qarşısını alır.</translation>
+        </message>
+        <message>
+            <source>SquadSpeak headless local channel host</source>
+            <translation>Qrafik interfeyssiz SquadSpeak yerli kanal hostu</translation>
+        </message>
+        <message>
+            <source>Environment variables (SQUADSPEAK_ prefix):</source>
+            <translation>Mühit dəyişənləri (SQUADSPEAK_ prefiksi):</translation>
+        </message>
+        <message>
+            <source>Host configuration could not be read or exceeds 1 MiB.</source>
+            <translation>Host konfiqurasiyası oxuna bilmədi və ya ölçüsü 1 MiB-dan çoxdur.</translation>
+        </message>
+        <message>
+            <source>Host configuration must be UTF-8.</source>
+            <translation>Host konfiqurasiyası UTF-8 olmalıdır.</translation>
+        </message>
+        <message>
+            <source>Host preset must be a JSON object.</source>
+            <translation>Hostun əvvəlcədən təyin edilmiş parametrləri JSON obyekti olmalıdır.</translation>
+        </message>
+        <message>
+            <source>Property line %1 must use key=value.</source>
+            <translation>%1 xüsusiyyət sətri key=value formatından istifadə etməlidir.</translation>
+        </message>
+        <message>
+            <source>Property line %1: %2</source>
+            <translation>Xüsusiyyət sətri %1: %2</translation>
+        </message>
+        <message>
+            <source>Standard input has no file descriptor.</source>
+            <translation>Standart girişin fayl deskriptoru yoxdur.</translation>
+        </message>
+        <message>
+            <source>Standard input could not be inspected.</source>
+            <translation>Standart giriş yoxlanıla bilmədi.</translation>
+        </message>
+        <message>
+            <source>Could not write the command response: %1</source>
+            <translation>Əmrin cavabı yazıla bilmədi: %1</translation>
+        </message>
+        <message>
+            <source>Standard input could not be read: %1</source>
+            <translation>Standart giriş oxuna bilmədi: %1</translation>
+        </message>
+        <message>
+            <source>Input line exceeds 65536 bytes.</source>
+            <translation>Giriş sətri 65536 baytdan çoxdur.</translation>
+        </message>
+        <message>
+            <source>Each input line must be a JSON object.</source>
+            <translation>Hər giriş sətri JSON obyekti olmalıdır.</translation>
+        </message>
+        <message>
+            <source>Input ended before a complete JSON line.</source>
+            <translation>Giriş tam JSON sətri alınmadan bitdi.</translation>
+        </message>
+        <message>
+            <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
+            <translation>status, configure, password, admission, history, chat və radio əmrləri üçün öz kanalının əlavə ID-si; standart olaraq əsas kanal istifadə edilir.</translation>
+        </message>
+        <message>
+            <source>Channel action must be list, add or remove.</source>
+            <translation>Kanal əməliyyatı list, add və ya remove olmalıdır.</translation>
+        </message>
+        <message>
+            <source>Removing an own channel deletes its history, images, permissions and radio settings. Set confirmed=true to proceed.</source>
+            <translation>Öz kanalınızı silmək onun tarixçəsini, şəkillərini, icazələrini və radio parametrlərini silir. Davam etmək üçün confirmed=true təyin edin.</translation>
+        </message>
+        <message>
+            <source>id must identify an additional own channel.</source>
+            <translation>id sizə məxsus əlavə kanalı göstərməlidir.</translation>
+        </message>
+        <message>
+            <source>The additional own channel could not be removed: %1</source>
+            <translation>Sizə məxsus əlavə kanal silinə bilmədi: %1</translation>
+        </message>
+        <message>
+            <source>channelId must identify an own channel.</source>
+            <translation>channelId sizə məxsus kanalı göstərməlidir.</translation>
+        </message>
+        <message>
+            <source>values must be a host settings object.</source>
+            <translation>values host parametrləri obyekti olmalıdır.</translation>
+        </message>
+        <message>
+            <source>Headless admission is always enabled for non-banned devices; requests off is not supported.</source>
+            <translation>Qrafik interfeyssiz rejimdə bloklanmamış cihazların qəbulu həmişə aktivdir; requests off dəstəklənmir.</translation>
+        </message>
+        <message>
+            <source>value must be a password of at most 1024 UTF-8 bytes without control characters; an empty string removes it.</source>
+            <translation>value idarəetmə simvolları olmayan, ən çox 1024 UTF-8 baytdan ibarət parol olmalıdır; boş sətir parolu silir.</translation>
+        </message>
+        <message>
+            <source>The channel is not ready or a password change is in progress.</source>
+            <translation>Kanal hazır deyil və ya parol dəyişikliyi davam edir.</translation>
+        </message>
+        <message>
+            <source>The channel was removed while saving the password.</source>
+            <translation>Parol saxlanarkən kanal silindi.</translation>
+        </message>
+        <message>
+            <source>id is required.</source>
+            <translation>id tələb olunur.</translation>
+        </message>
+        <message>
+            <source>text must be a valid non-empty chat message.</source>
+            <translation>text düzgün və boş olmayan söhbət mesajı olmalıdır.</translation>
+        </message>
+        <message>
+            <source>The local channel is not ready.</source>
+            <translation>Yerli kanal hazır deyil.</translation>
+        </message>
+        <message>
+            <source>The channel's radio is unavailable.</source>
+            <translation>Kanalın radiosu mövcud deyil.</translation>
+        </message>
+        <message>
+            <source>Unknown command. Use help.</source>
+            <translation>Naməlum əmr. help istifadə edin.</translation>
+        </message>
+        <message>
+            <source>search requires a query, non-negative offset and limit from 1 to 128.</source>
+            <translation>search üçün query, mənfi olmayan offset və 1-dən 128-ə qədər limit tələb olunur.</translation>
+        </message>
+        <message>
+            <source>add creates an id; update requires an existing id.</source>
+            <translation>add yeni id yaradır; update mövcud id tələb edir.</translation>
+        </message>
+        <message>
+            <source>A station is already being checked.</source>
+            <translation>Stansiya artıq yoxlanılır.</translation>
+        </message>
+        <message>
+            <source>The channel was removed while checking the station.</source>
+            <translation>Stansiya yoxlanarkən kanal silindi.</translation>
+        </message>
+        <message>
+            <source>Unknown radio action.</source>
+            <translation>Naməlum radio əməliyyatı.</translation>
+        </message>
+        <message>
+            <source>Could not load language: %1</source>
+            <translation>Dil yüklənə bilmədi: %1</translation>
+        </message>
+        <message>
+            <source>The %1 option is incompatible with --headless.</source>
+            <translation>%1 seçimi --headless ilə uyğun deyil.</translation>
+        </message>
+        <message>
+            <source>Unexpected positional arguments. Use --help.</source>
+            <translation>Gözlənilməyən mövqe arqumentləri. --help istifadə edin.</translation>
+        </message>
+        <message>
+            <source>--config / -f requires a non-empty path.</source>
+            <translation>--config / -f boş olmayan yol tələb edir.</translation>
+        </message>
+        <message>
+            <source>Choose --password or --password-file, not both.</source>
+            <translation>--password və ya --password-file seçin, hər ikisini deyil.</translation>
+        </message>
+        <message>
+            <source>Choose SQUADSPEAK_PASSWORD or SQUADSPEAK_PASSWORD_FILE, not both.</source>
+            <translation>SQUADSPEAK_PASSWORD və ya SQUADSPEAK_PASSWORD_FILE seçin, hər ikisini deyil.</translation>
+        </message>
+        <message>
+            <source>Choose password or passwordFile in one configuration layer, not both.</source>
+            <translation>Bir konfiqurasiya qatında password və ya passwordFile seçin, hər ikisini deyil.</translation>
+        </message>
+        <message>
+            <source>passwordFile must be a non-empty path.</source>
+            <translation>passwordFile boş olmayan yol olmalıdır.</translation>
+        </message>
+        <message>
+            <source>Password file could not be read or is too large.</source>
+            <translation>Parol faylı oxuna bilmədi və ya çox böyükdür.</translation>
+        </message>
+        <message>
+            <source>Password file must contain at most 1024 UTF-8 bytes without control characters.</source>
+            <translation>Parol faylında idarəetmə simvolları olmadan ən çox 1024 UTF-8 bayt olmalıdır.</translation>
+        </message>
+        <message>
+            <source>Password must be a string of at most 1024 UTF-8 bytes without control characters.</source>
+            <translation>Parol idarəetmə simvolları olmayan, ən çox 1024 UTF-8 baytdan ibarət sətir olmalıdır.</translation>
+        </message>
+        <message>
+            <source>settingsFile must be a non-empty path.</source>
+            <translation>settingsFile boş olmayan yol olmalıdır.</translation>
+        </message>
+        <message>
+            <source>identityFile must be a non-empty path.</source>
+            <translation>identityFile boş olmayan yol olmalıdır.</translation>
+        </message>
+        <message>
+            <source>The settings directory could not be created.</source>
+            <translation>Parametrlər qovluğu yaradıla bilmədi.</translation>
+        </message>
+        <message>
+            <source>This SquadSpeak profile is already running or cannot be locked.</source>
+            <translation>Bu SquadSpeak profili artıq işləyir və ya kilidlənə bilmir.</translation>
+        </message>
+        <message>
+            <source>Standard input could not be opened.</source>
+            <translation>Standart giriş açıla bilmədi.</translation>
+        </message>
+        <message>
+            <source>Standard output could not be opened.</source>
+            <translation>Standart çıxış açıla bilmədi.</translation>
+        </message>
+        <message>
+            <source>This identity file is already in use or cannot be locked.</source>
+            <translation>Bu identifikasiya faylı artıq istifadə olunur və ya kilidlənə bilmir.</translation>
+        </message>
+        <message>
+            <source>Invalid host configuration: %1</source>
+            <translation>Yanlış host konfiqurasiyası: %1</translation>
+        </message>
+        <message>
+            <source>Radio channels could not be initialized.</source>
+            <translation>Radio kanalları hazırlana bilmədi.</translation>
+        </message>
+        <message>
+            <source>Headless host could not start: %1</source>
+            <translation>Qrafik interfeyssiz host işə salına bilmədi: %1</translation>
+        </message>
+        <message>
+            <source>Channel password could not be saved.</source>
+            <translation>Kanal parolu saxlanıla bilmədi.</translation>
+        </message>
+        <message>
+            <source>Invalid channel password: %1</source>
+            <translation>Yanlış kanal parolu: %1</translation>
+        </message>
+        <message>
+            <source>Headless host could not initialize: %1</source>
+            <translation>Qrafik interfeyssiz host hazırlana bilmədi: %1</translation>
+        </message>
+        <message>
+            <source>SquadSpeak headless could not start: %1</source>
+            <translation>Qrafik interfeyssiz SquadSpeak işə salına bilmədi: %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>Dəstəkçi hərəkəti status, giriş, yeniləmə, çıxış və ya ləğv olmalıdır. sign-in refresh sign-out cancel</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>Dəstəkçi əməliyyatı davam edir.</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>Bu quruluşda dəstəkçi girişi mümkün deyil.</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>Parametrlərin üstünlüyü: arqumentlər &gt; mühit &gt; xassələr &gt; saxlanılan server dəyərləri.</translation>
+        </message>
+    </context>
+    <context>
+        <name>License</name>
+        <message>
+            <source>License storage is busy or unavailable.</source>
+            <translation>Lisenziya yaddaşı məşğuldur və ya əlçatan deyil.</translation>
+        </message>
+        <message>
+            <source>License storage is unavailable.</source>
+            <translation>Lisenziya yaddaşı əlçatan deyil.</translation>
+        </message>
+        <message>
+            <source>Sign-in expired. Try again.</source>
+            <translation>Daxil olma müddəti bitdi. Yenidən cəhd edin.</translation>
+        </message>
+        <message>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>GitHub-a daxil olmaq mümkün deyil. Yenidən cəhd edin.</translation>
+        </message>
+        <message>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>GitHub-a giriş tamamlanmadı. Yenidən cəhd edin.</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>GitHub yoxlanıla bilmədi. Oflayn giriş ən çox yeddi gün davam edir.</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>GitHub ilə yenidən daxil olun.</translation>
+        </message>
+    </context>
+    <context>
         <name>LocalChannel</name>
+        <message>
+            <source>Blocked</source>
+            <translation>Bloklandı</translation>
+        </message>
         <message>
             <source>Host is not responding. Reconnecting.</source>
             <translation>Ev sahibi cavab vermir. Yenidən qoşulur.</translation>
@@ -2205,6 +2567,53 @@
             <source>Voice relay codec could not be configured.</source>
             <translation>Səs retranslyator kodeki konfiqurasiya edilə bilmədi.</translation>
         </message>
+        <message>
+            <source>Unsupported audio codec</source>
+            <translation>Dəstəklənməyən səs kodeki</translation>
+        </message>
+        <message>
+            <source>Speaking is not allowed in this channel.</source>
+            <translation>Bu kanalda danışmağa icazə verilmir.</translation>
+        </message>
+    </context>
+    <context>
+        <name>LocalLanguage</name>
+        <message>
+            <source>Translation (experimental)</source>
+            <translation>Tərcümə (sınaq)</translation>
+        </message>
+        <message>
+            <source>Translate messages</source>
+            <translation>Mesajları tərcümə et</translation>
+        </message>
+        <message>
+            <source>Translated voice</source>
+            <translation>Tərcümə edilmiş səs</translation>
+        </message>
+        <message>
+            <source>Original audio</source>
+            <translation>Orijinal səs</translation>
+        </message>
+        <message>
+            <source>Original text</source>
+            <translation>Orijinal mətn</translation>
+        </message>
+        <message>
+            <source>Prepare languages</source>
+            <translation>Dilləri hazırla</translation>
+        </message>
+        <message>
+            <source>Local language processing is unavailable.</source>
+            <translation>Yerli dil emalı əlçatan deyil.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be read.</source>
+            <translation>Dil parametrlərini oxumaq mümkün olmadı.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be saved.</source>
+            <translation>Dil parametrlərini saxlamaq mümkün olmadı.</translation>
+        </message>
     </context>
     <context>
         <name>PushToTalkKey</name>
@@ -2345,50 +2754,65 @@
         </message>
     </context>
     <context>
-        <name>RecordingPanel</name>
+        <name>ScreenPanel</name>
         <message>
-            <source>Stop</source>
-            <translation>Dayan</translation>
+            <source>Media capacity reached</source>
+            <translation>Media tutumu çatdı</translation>
         </message>
         <message>
-            <source>Start</source>
-            <translation>Başlayın</translation>
+            <source>Video paused</source>
+            <translation>Video dayandırıldı</translation>
         </message>
         <message>
-            <source>Saved on this device only. Nothing is uploaded.</source>
-            <translation>Yalnız bu cihazda saxlandı. Heç nə yüklənmir.</translation>
+            <source>Stream ended</source>
+            <translation>Yayım bitdi</translation>
         </message>
         <message>
-            <source>Keep this take or record it again.</source>
-            <translation>Bu çəkilişi saxlayın və ya yenidən qeyd edin.</translation>
+            <source>Connecting</source>
+            <translation>Qoşulur</translation>
         </message>
         <message>
-            <source>Record again</source>
-            <translation>Yenidən qeyd edin</translation>
+            <source>Open screen stream</source>
+            <translation>Açıq ekran axını</translation>
         </message>
         <message>
-            <source>Use recording</source>
-            <translation>Qeyddən istifadə edin</translation>
+            <source>Screen stream</source>
+            <translation>Ekran axını</translation>
         </message>
         <message>
-            <source>Recording progress</source>
-            <translation>Qeydin gedişi</translation>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
+        </message>
+    </context>
+    <context>
+        <name>ScreenShare</name>
+        <message>
+            <source>Allow screen recording in system settings.</source>
+            <translation>Sistem parametrlərində ekran yazısına icazə ver.</translation>
         </message>
         <message>
-            <source>Step %1 of %2</source>
-            <translation>Addım %1-dən %2</translation>
+            <source>The shared screen was removed. Select a source to start again.</source>
+            <translation>Paylaşılan ekran silindi. Yenidən başlamaq üçün mənbə seçin.</translation>
         </message>
         <message>
-            <source>Open recordings</source>
-            <translation>Yazıları açın</translation>
+            <source>The shared window was closed. Select a source to start again.</source>
+            <translation>Paylaşılan pəncərə bağlandı. Yenidən başlamaq üçün mənbə seçin.</translation>
         </message>
         <message>
-            <source>Reset test</source>
-            <translation>Testi sıfırlayın</translation>
+            <source>The selected screen is no longer available.</source>
+            <translation>Seçilmiş ekran artıq mövcud deyil.</translation>
         </message>
         <message>
-            <source>%1 s remaining / %2 dBFS</source>
-            <translation>%1 s qalan / %2 dBFS</translation>
+            <source>The selected window is no longer available.</source>
+            <translation>Seçilmiş pəncərə artıq mövcud deyil.</translation>
+        </message>
+        <message>
+            <source>The selected source exceeds the capture size limit.</source>
+            <translation>Seçilmiş mənbə çəkmə ölçüsü limitini keçir.</translation>
+        </message>
+        <message>
+            <source>Close a video view before opening another stream.</source>
+            <translation>Başqa bir yayımı açmadan əvvəl video görünüşünü bağlayın.</translation>
         </message>
     </context>
     <context>
@@ -2465,10 +2889,6 @@
             <translation>Siqnal toplanır...</translation>
         </message>
         <message>
-            <source>Dashed curve: configured gain and frequency cuts, using the right dB scale. Noise reduction and voice activation are not part of this curve.</source>
-            <translation>Kəsik əyri: sağ dB miqyasından istifadə edən konfiqurasiya edilmiş gücləndirmə və tezlik kəsimləri. Səs-küyün azaldılması və səs aktivləşdirməsi bu əyrinin hissəsi deyil.</translation>
-        </message>
-        <message>
             <source>Microphone preview is not running</source>
             <translation>Mikrofonun önizləməsi işləmir</translation>
         </message>
@@ -2479,303 +2899,6 @@
         <message>
             <source>Peak: %1</source>
             <translation>Pik: %1</translation>
-        </message>
-    </context>
-    <context>
-        <name>Tray</name>
-        <message>
-            <source>Quit</source>
-            <translation>Çıxın</translation>
-        </message>
-        <message>
-            <source>SquadSpeak - speaking</source>
-            <translation>SquadSpeak - danışan</translation>
-        </message>
-        <message>
-            <source>Settings</source>
-            <translation>Parametrlər</translation>
-        </message>
-        <message>
-            <source>Channels</source>
-            <translation>Kanallar</translation>
-        </message>
-        <message>
-            <source>New image</source>
-            <translation>Yeni şəkil</translation>
-        </message>
-    </context>
-    <context>
-        <name>VoiceAvatar</name>
-        <message>
-            <source>Muted</source>
-            <translation>Mikrofon səsi söndürüldü</translation>
-        </message>
-        <message>
-            <source>Sleeping</source>
-            <translation>yatmaq</translation>
-        </message>
-        <message>
-            <source>Offline</source>
-            <translation>Oflayn</translation>
-        </message>
-        <message>
-            <source>Speaking</source>
-            <translation>Danışan</translation>
-        </message>
-        <message>
-            <source>Unavailable</source>
-            <translation>Əlçatan deyil</translation>
-        </message>
-        <message>
-            <source>Listening</source>
-            <translation>Dinləyirəm</translation>
-        </message>
-        <message>
-            <source>Deafened</source>
-            <translation>Dinamiklərin səsi kəsildi</translation>
-        </message>
-    </context>
-    <context>
-        <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>Əlçatan deyil - audio parametrləri və ya ton testi</translation>
-        </message>
-        <message>
-            <source>Microphone muted</source>
-            <translation>Mikrofon səsi kəsildi</translation>
-        </message>
-        <message>
-            <source>Push-to-talk held</source>
-            <translation>Bas-danış düyməsi basılı saxlanılır</translation>
-        </message>
-        <message>
-            <source>Ready - push-to-talk released</source>
-            <translation>Hazır - bas-danış düyməsi buraxılıb</translation>
-        </message>
-        <message>
-            <source>Microphone unmuted</source>
-            <translation>Mikrofon səsi açıldı</translation>
-        </message>
-        <message>
-            <source>Settings could not be saved: %1</source>
-            <translation>Parametrləri saxlamaq mümkün olmadı: %1</translation>
-        </message>
-        <message>
-            <source>The push-to-talk sequence cannot be incremented further.</source>
-            <translation>Push-to-talk ardıcıllığı daha da artırıla bilməz.</translation>
-        </message>
-        <message>
-            <source>Choose System, Light or Dark.</source>
-            <translation>Sistem, İşıq və ya Qaranlıq seçin.</translation>
-        </message>
-        <message>
-            <source>Choose a colour palette from the list.</source>
-            <translation>Siyahıdan rəng palitrası seçin.</translation>
-        </message>
-        <message>
-            <source>Choose an available avatar.</source>
-            <translation>Mövcud avatar seçin.</translation>
-        </message>
-        <message>
-            <source>Invalid push-to-talk binding.</source>
-            <translation>Yanlış təkanla danışıq bağlaması.</translation>
-        </message>
-        <message>
-            <source>Release the held push-to-talk key first.</source>
-            <translation>Əvvəlcə bas-danış düyməsini buraxın.</translation>
-        </message>
-        <message>
-            <source>Choose a language from the list.</source>
-            <translation>Siyahıdan dil seçin.</translation>
-        </message>
-        <message>
-            <source>This avatar requires Supporter.</source>
-            <translation>Bu avatar Supporter tələb edir.</translation>
-        </message>
-        <message>
-            <source>The name must contain 1 to 64 characters.</source>
-            <translation>Ad 1-dən 64-ə qədər simvoldan ibarət olmalıdır.</translation>
-        </message>
-        <message>
-            <source>The name may not contain control characters or line breaks.</source>
-            <translation>Adda nəzarət simvolları və ya sətir fasilələri ola bilməz.</translation>
-        </message>
-        <message>
-            <source>Session settings could not be read.</source>
-            <translation>Sessiya parametrlərini oxumaq mümkün olmadı.</translation>
-        </message>
-        <message>
-            <source>Saved setting is invalid: %1</source>
-            <translation>Yanlış saxlanılmış parametr: %1</translation>
-        </message>
-    </context>
-    <context>
-        <name>License</name>
-        <message>
-            <source>License storage is busy or unavailable.</source>
-            <translation>Lisenziya yaddaşı məşğuldur və ya əlçatan deyil.</translation>
-        </message>
-        <message>
-            <source>License storage is unavailable.</source>
-            <translation>Lisenziya yaddaşı əlçatan deyil.</translation>
-        </message>
-        <message>
-            <source>Sign-in expired. Try again.</source>
-            <translation>Daxil olma müddəti bitdi. Yenidən cəhd edin.</translation>
-        </message>
-        <message>
-            <source>GitHub sign-in is unavailable. Try again.</source>
-            <translation>GitHub-a daxil olmaq mümkün deyil. Yenidən cəhd edin.</translation>
-        </message>
-        <message>
-            <source>GitHub sign-in was not completed. Try again.</source>
-            <translation>GitHub-a giriş tamamlanmadı. Yenidən cəhd edin.</translation>
-        </message>
-        <message>
-            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
-            <translation>GitHub yoxlanıla bilmədi. Oflayn giriş ən çox yeddi gün davam edir.</translation>
-        </message>
-        <message>
-            <source>Sign in with GitHub again.</source>
-            <translation>GitHub ilə yenidən daxil olun.</translation>
-        </message>
-    </context>
-    <context>
-        <name>ScreenShare</name>
-        <message>
-            <source>The shared screen was removed. Select a source to start again.</source>
-            <translation>Paylaşılan ekran silindi. Yenidən başlamaq üçün mənbə seçin.</translation>
-        </message>
-        <message>
-            <source>The shared window was closed. Select a source to start again.</source>
-            <translation>Paylaşılan pəncərə bağlandı. Yenidən başlamaq üçün mənbə seçin.</translation>
-        </message>
-        <message>
-            <source>The selected screen is no longer available.</source>
-            <translation>Seçilmiş ekran artıq mövcud deyil.</translation>
-        </message>
-        <message>
-            <source>The selected window is no longer available.</source>
-            <translation>Seçilmiş pəncərə artıq mövcud deyil.</translation>
-        </message>
-        <message>
-            <source>The selected source exceeds the capture size limit.</source>
-            <translation>Seçilmiş mənbə çəkmə ölçüsü limitini keçir.</translation>
-        </message>
-        <message>
-            <source>Close a video view before opening another stream.</source>
-            <translation>Başqa bir yayımı açmadan əvvəl video görünüşünü bağlayın.</translation>
-        </message>
-    </context>
-    <context>
-        <name>ScreenPanel</name>
-        <message>
-            <source>Media capacity reached</source>
-            <translation>Media tutumu çatdı</translation>
-        </message>
-        <message>
-            <source>Video paused</source>
-            <translation>Video dayandırıldı</translation>
-        </message>
-        <message>
-            <source>Stream ended</source>
-            <translation>Yayım bitdi</translation>
-        </message>
-        <message>
-            <source>Connecting</source>
-            <translation>Qoşulur</translation>
-        </message>
-        <message>
-            <source>Open screen stream</source>
-            <translation>Açıq ekran axını</translation>
-        </message>
-        <message>
-            <source>Screen stream</source>
-            <translation>Ekran axını</translation>
-        </message>
-        <message>
-            <source>%1 kbit/s</source>
-            <translation>%1 kbit/s</translation>
-        </message>
-    </context>
-    <context>
-        <name>VideoCodec</name>
-        <message>
-            <source>Video codec: %1</source>
-            <translation>Video kodeki: %1</translation>
-        </message>
-        <message>
-            <source>Video codec ABI does not match its headers.</source>
-            <translation>Video kodekinin ABI-si onun başlıq fayllarına uyğun gəlmir.</translation>
-        </message>
-        <message>
-            <source>Video buffers could not be allocated.</source>
-            <translation>Video buferləri üçün yaddaş ayırmaq mümkün olmadı.</translation>
-        </message>
-        <message>
-            <source>Invalid video quality tier.</source>
-            <translation>Video keyfiyyət səviyyəsi etibarsızdır.</translation>
-        </message>
-        <message>
-            <source>The screen source exceeds the supported capture size.</source>
-            <translation>Ekran mənbəyi dəstəklənən çəkiliş ölçüsünü aşır.</translation>
-        </message>
-        <message>
-            <source>The screen source is too narrow.</source>
-            <translation>Ekran mənbəyi çox dardır.</translation>
-        </message>
-        <message>
-            <source>The video encoder could not be allocated.</source>
-            <translation>Video kodlayıcısı üçün yaddaş ayırmaq mümkün olmadı.</translation>
-        </message>
-        <message>
-            <source>No supported video encoder is available.</source>
-            <translation>Dəstəklənən video kodlayıcısı mövcud deyil.</translation>
-        </message>
-        <message>
-            <source>Video encoder configuration is too large.</source>
-            <translation>Video kodlayıcısının konfiqurasiyası çox böyükdür.</translation>
-        </message>
-        <message>
-            <source>Video scaling could not be initialized.</source>
-            <translation>Videonun miqyaslandırılmasını başlatmaq mümkün olmadı.</translation>
-        </message>
-        <message>
-            <source>The encoder returned an empty video packet.</source>
-            <translation>Kodlayıcı boş video paketi qaytardı.</translation>
-        </message>
-        <message>
-            <source>Invalid video frame format.</source>
-            <translation>Video kadrının formatı etibarsızdır.</translation>
-        </message>
-        <message>
-            <source>Invalid video decoder configuration.</source>
-            <translation>Video dekoderinin konfiqurasiyası etibarsızdır.</translation>
-        </message>
-        <message>
-            <source>This video codec cannot be decoded.</source>
-            <translation>Bu video kodekini dekodlaşdırmaq mümkün deyil.</translation>
-        </message>
-        <message>
-            <source>Video decoder could not be allocated.</source>
-            <translation>Video dekoderi üçün yaddaş ayırmaq mümkün olmadı.</translation>
-        </message>
-        <message>
-            <source>Video decoder configuration could not be allocated.</source>
-            <translation>Video dekoderinin konfiqurasiyası üçün yaddaş ayırmaq mümkün olmadı.</translation>
-        </message>
-        <message>
-            <source>Decoded dimensions do not match the screen stream.</source>
-            <translation>Dekodlaşdırılmış ölçülər ekran axınına uyğun gəlmir.</translation>
-        </message>
-        <message>
-            <source>Decoded image could not be allocated.</source>
-            <translation>Dekodlaşdırılmış şəkil üçün yaddaş ayırmaq mümkün olmadı.</translation>
-        </message>
-        <message>
-            <source>Video color conversion could not be initialized.</source>
-            <translation>Video rəng çevrilməsini başlatmaq mümkün olmadı.</translation>
         </message>
     </context>
     <context>
@@ -2894,404 +3017,211 @@
         </message>
     </context>
     <context>
-        <name>Headless</name>
+        <name>Tray</name>
         <message>
-            <source>Command failed.</source>
-            <translation>Əmr yerinə yetirilmədi.</translation>
+            <source>Quit</source>
+            <translation>Çıxın</translation>
         </message>
         <message>
-            <source>%1 must be an integer.</source>
-            <translation>%1 tam ədəd olmalıdır.</translation>
+            <source>SquadSpeak - speaking</source>
+            <translation>SquadSpeak - danışan</translation>
         </message>
         <message>
-            <source>Requests must be on/off or true/false.</source>
-            <translation>Sorğular on/off və ya true/false olmalıdır.</translation>
+            <source>Settings</source>
+            <translation>Parametrlər</translation>
         </message>
         <message>
-            <source>Unknown host property: %1</source>
-            <translation>Hostun naməlum xüsusiyyəti: %1</translation>
+            <source>Channels</source>
+            <translation>Kanallar</translation>
         </message>
         <message>
-            <source>Run without GUI, microphone capture, or local audio output.</source>
-            <translation>Qrafik interfeys, mikrofondan səs yazısı və yerli səs çıxışı olmadan işə sal.</translation>
-        </message>
-        <message>
-            <source>Server storage prefix. Personal/audio/GUI profiles are not loaded.</source>
-            <translation>Server yaddaşının prefiksi. Şəxsi, səs və interfeys profilləri yüklənmir.</translation>
-        </message>
-        <message>
-            <source>Optional private identity file instead of the OS credential store (Linux/macOS). Parent directory must exist and belong to this account.</source>
-            <translation>Əməliyyat sisteminin giriş məlumatları anbarı əvəzinə əlavə şəxsi identifikasiya faylı (Linux/macOS). Ana qovluq mövcud olmalı və bu hesaba məxsus olmalıdır.</translation>
-        </message>
-        <message>
-            <source>UTF-8 key=value properties or JSON host preset. Default: application.properties, then config/application.properties beside the app.</source>
-            <translation>UTF-8 key=value xüsusiyyətləri və ya hostun əvvəlcədən təyin edilmiş JSON parametrləri. Standart: application.properties, sonra tətbiqin yanında config/application.properties.</translation>
-        </message>
-        <message>
-            <source>Channel display name.</source>
-            <translation>Kanalın göstərilən adı.</translation>
-        </message>
-        <message>
-            <source>System and radio bot display name.</source>
-            <translation>Sistem və radio botunun göstərilən adı.</translation>
-        </message>
-        <message>
-            <source>TCP service port (1-65535).</source>
-            <translation>TCP xidmət portu (1-65535).</translation>
-        </message>
-        <message>
-            <source>Headless admission is always on; only 'on' or 'true' is accepted.</source>
-            <translation>Qrafik interfeyssiz rejimdə qəbul həmişə aktivdir; yalnız 'on' və ya 'true' qəbul edilir.</translation>
-        </message>
-        <message>
-            <source>Preapprove a device ID; repeat for several devices. Existing bans remain.</source>
-            <translation>Cihaz ID-sini əvvəlcədən təsdiqlə; bir neçə cihaz üçün təkrarla. Mövcud qadağalar qalır.</translation>
-        </message>
-        <message>
-            <source>Block a device ID; repeat for several devices.</source>
-            <translation>Cihaz ID-sini blokla; bir neçə cihaz üçün təkrarla.</translation>
-        </message>
-        <message>
-            <source>Read a UTF-8 channel password from a file before listening. An empty file removes it.</source>
-            <translation>Dinləməyə başlamazdan əvvəl kanalın UTF-8 parolunu fayldan oxu. Boş fayl parolu silir.</translation>
-        </message>
-        <message>
-            <source>Channel password. Empty removes it; environment or config avoids process-list exposure.</source>
-            <translation>Kanal parolu. Boş dəyər parolu silir; mühit və ya konfiqurasiya onun proseslər siyahısında görünməsinin qarşısını alır.</translation>
-        </message>
-        <message>
-            <source>SquadSpeak headless local channel host</source>
-            <translation>Qrafik interfeyssiz SquadSpeak yerli kanal hostu</translation>
-        </message>
-        <message>
-            <source>Environment variables (SQUADSPEAK_ prefix):</source>
-            <translation>Mühit dəyişənləri (SQUADSPEAK_ prefiksi):</translation>
-        </message>
-        <message>
-            <source>Host configuration could not be read or exceeds 1 MiB.</source>
-            <translation>Host konfiqurasiyası oxuna bilmədi və ya ölçüsü 1 MiB-dan çoxdur.</translation>
-        </message>
-        <message>
-            <source>Host configuration must be UTF-8.</source>
-            <translation>Host konfiqurasiyası UTF-8 olmalıdır.</translation>
-        </message>
-        <message>
-            <source>Host preset must be a JSON object.</source>
-            <translation>Hostun əvvəlcədən təyin edilmiş parametrləri JSON obyekti olmalıdır.</translation>
-        </message>
-        <message>
-            <source>Property line %1 must use key=value.</source>
-            <translation>%1 xüsusiyyət sətri key=value formatından istifadə etməlidir.</translation>
-        </message>
-        <message>
-            <source>Property line %1: %2</source>
-            <translation>Xüsusiyyət sətri %1: %2</translation>
-        </message>
-        <message>
-            <source>Standard input has no file descriptor.</source>
-            <translation>Standart girişin fayl deskriptoru yoxdur.</translation>
-        </message>
-        <message>
-            <source>Standard input could not be inspected.</source>
-            <translation>Standart giriş yoxlanıla bilmədi.</translation>
-        </message>
-        <message>
-            <source>Could not write the command response: %1</source>
-            <translation>Əmrin cavabı yazıla bilmədi: %1</translation>
-        </message>
-        <message>
-            <source>Standard input could not be read: %1</source>
-            <translation>Standart giriş oxuna bilmədi: %1</translation>
-        </message>
-        <message>
-            <source>Input line exceeds 65536 bytes.</source>
-            <translation>Giriş sətri 65536 baytdan çoxdur.</translation>
-        </message>
-        <message>
-            <source>Each input line must be a JSON object.</source>
-            <translation>Hər giriş sətri JSON obyekti olmalıdır.</translation>
-        </message>
-        <message>
-            <source>Input ended before a complete JSON line.</source>
-            <translation>Giriş tam JSON sətri alınmadan bitdi.</translation>
-        </message>
-        <message>
-            <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
-            <translation>status, configure, password, admission, history, chat və radio əmrləri üçün öz kanalının əlavə ID-si; standart olaraq əsas kanal istifadə edilir.</translation>
-        </message>
-        <message>
-            <source>Channel action must be list, add or remove.</source>
-            <translation>Kanal əməliyyatı list, add və ya remove olmalıdır.</translation>
-        </message>
-        <message>
-            <source>Removing an own channel deletes its history, images, permissions and radio settings. Set confirmed=true to proceed.</source>
-            <translation>Öz kanalınızı silmək onun tarixçəsini, şəkillərini, icazələrini və radio parametrlərini silir. Davam etmək üçün confirmed=true təyin edin.</translation>
-        </message>
-        <message>
-            <source>id must identify an additional own channel.</source>
-            <translation>id sizə məxsus əlavə kanalı göstərməlidir.</translation>
-        </message>
-        <message>
-            <source>The additional own channel could not be removed: %1</source>
-            <translation>Sizə məxsus əlavə kanal silinə bilmədi: %1</translation>
-        </message>
-        <message>
-            <source>channelId must identify an own channel.</source>
-            <translation>channelId sizə məxsus kanalı göstərməlidir.</translation>
-        </message>
-        <message>
-            <source>values must be a host settings object.</source>
-            <translation>values host parametrləri obyekti olmalıdır.</translation>
-        </message>
-        <message>
-            <source>Headless admission is always enabled for non-banned devices; requests off is not supported.</source>
-            <translation>Qrafik interfeyssiz rejimdə bloklanmamış cihazların qəbulu həmişə aktivdir; requests off dəstəklənmir.</translation>
-        </message>
-        <message>
-            <source>value must be a password of at most 1024 UTF-8 bytes without control characters; an empty string removes it.</source>
-            <translation>value idarəetmə simvolları olmayan, ən çox 1024 UTF-8 baytdan ibarət parol olmalıdır; boş sətir parolu silir.</translation>
-        </message>
-        <message>
-            <source>The channel is not ready or a password change is in progress.</source>
-            <translation>Kanal hazır deyil və ya parol dəyişikliyi davam edir.</translation>
-        </message>
-        <message>
-            <source>The channel was removed while saving the password.</source>
-            <translation>Parol saxlanarkən kanal silindi.</translation>
-        </message>
-        <message>
-            <source>id is required.</source>
-            <translation>id tələb olunur.</translation>
-        </message>
-        <message>
-            <source>text must be a valid non-empty chat message.</source>
-            <translation>text düzgün və boş olmayan söhbət mesajı olmalıdır.</translation>
-        </message>
-        <message>
-            <source>The local channel is not ready.</source>
-            <translation>Yerli kanal hazır deyil.</translation>
-        </message>
-        <message>
-            <source>The channel's radio is unavailable.</source>
-            <translation>Kanalın radiosu mövcud deyil.</translation>
-        </message>
-        <message>
-            <source>Unknown command. Use help.</source>
-            <translation>Naməlum əmr. help istifadə edin.</translation>
-        </message>
-        <message>
-            <source>search requires a query, non-negative offset and limit from 1 to 128.</source>
-            <translation>search üçün query, mənfi olmayan offset və 1-dən 128-ə qədər limit tələb olunur.</translation>
-        </message>
-        <message>
-            <source>add creates an id; update requires an existing id.</source>
-            <translation>add yeni id yaradır; update mövcud id tələb edir.</translation>
-        </message>
-        <message>
-            <source>A station is already being checked.</source>
-            <translation>Stansiya artıq yoxlanılır.</translation>
-        </message>
-        <message>
-            <source>The channel was removed while checking the station.</source>
-            <translation>Stansiya yoxlanarkən kanal silindi.</translation>
-        </message>
-        <message>
-            <source>Unknown radio action.</source>
-            <translation>Naməlum radio əməliyyatı.</translation>
-        </message>
-        <message>
-            <source>Could not load language: %1</source>
-            <translation>Dil yüklənə bilmədi: %1</translation>
-        </message>
-        <message>
-            <source>The %1 option is incompatible with --headless.</source>
-            <translation>%1 seçimi --headless ilə uyğun deyil.</translation>
-        </message>
-        <message>
-            <source>Unexpected positional arguments. Use --help.</source>
-            <translation>Gözlənilməyən mövqe arqumentləri. --help istifadə edin.</translation>
-        </message>
-        <message>
-            <source>--config / -f requires a non-empty path.</source>
-            <translation>--config / -f boş olmayan yol tələb edir.</translation>
-        </message>
-        <message>
-            <source>Choose --password or --password-file, not both.</source>
-            <translation>--password və ya --password-file seçin, hər ikisini deyil.</translation>
-        </message>
-        <message>
-            <source>Choose SQUADSPEAK_PASSWORD or SQUADSPEAK_PASSWORD_FILE, not both.</source>
-            <translation>SQUADSPEAK_PASSWORD və ya SQUADSPEAK_PASSWORD_FILE seçin, hər ikisini deyil.</translation>
-        </message>
-        <message>
-            <source>Choose password or passwordFile in one configuration layer, not both.</source>
-            <translation>Bir konfiqurasiya qatında password və ya passwordFile seçin, hər ikisini deyil.</translation>
-        </message>
-        <message>
-            <source>passwordFile must be a non-empty path.</source>
-            <translation>passwordFile boş olmayan yol olmalıdır.</translation>
-        </message>
-        <message>
-            <source>Password file could not be read or is too large.</source>
-            <translation>Parol faylı oxuna bilmədi və ya çox böyükdür.</translation>
-        </message>
-        <message>
-            <source>Password file must contain at most 1024 UTF-8 bytes without control characters.</source>
-            <translation>Parol faylında idarəetmə simvolları olmadan ən çox 1024 UTF-8 bayt olmalıdır.</translation>
-        </message>
-        <message>
-            <source>Password must be a string of at most 1024 UTF-8 bytes without control characters.</source>
-            <translation>Parol idarəetmə simvolları olmayan, ən çox 1024 UTF-8 baytdan ibarət sətir olmalıdır.</translation>
-        </message>
-        <message>
-            <source>settingsFile must be a non-empty path.</source>
-            <translation>settingsFile boş olmayan yol olmalıdır.</translation>
-        </message>
-        <message>
-            <source>identityFile must be a non-empty path.</source>
-            <translation>identityFile boş olmayan yol olmalıdır.</translation>
-        </message>
-        <message>
-            <source>The settings directory could not be created.</source>
-            <translation>Parametrlər qovluğu yaradıla bilmədi.</translation>
-        </message>
-        <message>
-            <source>This SquadSpeak profile is already running or cannot be locked.</source>
-            <translation>Bu SquadSpeak profili artıq işləyir və ya kilidlənə bilmir.</translation>
-        </message>
-        <message>
-            <source>Standard input could not be opened.</source>
-            <translation>Standart giriş açıla bilmədi.</translation>
-        </message>
-        <message>
-            <source>Standard output could not be opened.</source>
-            <translation>Standart çıxış açıla bilmədi.</translation>
-        </message>
-        <message>
-            <source>This identity file is already in use or cannot be locked.</source>
-            <translation>Bu identifikasiya faylı artıq istifadə olunur və ya kilidlənə bilmir.</translation>
-        </message>
-        <message>
-            <source>Invalid host configuration: %1</source>
-            <translation>Yanlış host konfiqurasiyası: %1</translation>
-        </message>
-        <message>
-            <source>Radio channels could not be initialized.</source>
-            <translation>Radio kanalları hazırlana bilmədi.</translation>
-        </message>
-        <message>
-            <source>Headless host could not start: %1</source>
-            <translation>Qrafik interfeyssiz host işə salına bilmədi: %1</translation>
-        </message>
-        <message>
-            <source>Channel password could not be saved.</source>
-            <translation>Kanal parolu saxlanıla bilmədi.</translation>
-        </message>
-        <message>
-            <source>Invalid channel password: %1</source>
-            <translation>Yanlış kanal parolu: %1</translation>
-        </message>
-        <message>
-            <source>Headless host could not initialize: %1</source>
-            <translation>Qrafik interfeyssiz host hazırlana bilmədi: %1</translation>
-        </message>
-        <message>
-            <source>SquadSpeak headless could not start: %1</source>
-            <translation>Qrafik interfeyssiz SquadSpeak işə salına bilmədi: %1</translation>
-        </message>
-        <message>
-            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
-            <translation>Dəstəkçi hərəkəti status, giriş, yeniləmə, çıxış və ya ləğv olmalıdır. sign-in refresh sign-out cancel</translation>
-        </message>
-        <message>
-            <source>A Supporter operation is in progress.</source>
-            <translation>Dəstəkçi əməliyyatı davam edir.</translation>
-        </message>
-        <message>
-            <source>Supporter access is unavailable in this build.</source>
-            <translation>Bu quruluşda dəstəkçi girişi mümkün deyil.</translation>
-        </message>
-        <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>Parametrlərin üstünlüyü: arqumentlər &gt; mühit &gt; xassələr &gt; saxlanılan server dəyərləri.</translation>
+            <source>New image</source>
+            <translation>Yeni şəkil</translation>
         </message>
     </context>
     <context>
-        <name>Desktop</name>
+        <name>VideoCodec</name>
         <message>
-            <source>Open settings at startup.</source>
-            <translation>Başlanğıcda parametrləri aç.</translation>
+            <source>Video codec: %1</source>
+            <translation>Video kodeki: %1</translation>
         </message>
         <message>
-            <source>Open guided local test recording without starting network services.</source>
-            <translation>Şəbəkə xidmətlərini başlatmadan təlimatlı yerli sınaq yazısını aç.</translation>
+            <source>Video codec ABI does not match its headers.</source>
+            <translation>Video kodekinin ABI-si onun başlıq fayllarına uyğun gəlmir.</translation>
         </message>
         <message>
-            <source>Alternative file for audio profiles.</source>
-            <translation>Səs profilləri üçün alternativ fayl.</translation>
+            <source>Video buffers could not be allocated.</source>
+            <translation>Video buferləri üçün yaddaş ayırmaq mümkün olmadı.</translation>
         </message>
         <message>
-            <source>Load the interface without microphone capture and exit after one second.</source>
-            <translation>İnterfeysi mikrofon yazısı olmadan yüklə və bir saniyədən sonra çıx.</translation>
+            <source>Invalid video quality tier.</source>
+            <translation>Video keyfiyyət səviyyəsi etibarsızdır.</translation>
         </message>
         <message>
-            <source>Save an image of the app window during the UI test.</source>
-            <translation>İnterfeys sınağı zamanı tətbiq pəncərəsinin şəklini saxla.</translation>
+            <source>The screen source exceeds the supported capture size.</source>
+            <translation>Ekran mənbəyi dəstəklənən çəkiliş ölçüsünü aşır.</translation>
         </message>
         <message>
-            <source>The window image could not be saved.</source>
-            <translation>Pəncərənin şəklini saxlamaq mümkün olmadı.</translation>
+            <source>The screen source is too narrow.</source>
+            <translation>Ekran mənbəyi çox dardır.</translation>
         </message>
         <message>
-            <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
-            <translation>Sistem paneli əlçatan deyil; tətbiq pəncərədə açıq qalır.</translation>
+            <source>The video encoder could not be allocated.</source>
+            <translation>Video kodlayıcısı üçün yaddaş ayırmaq mümkün olmadı.</translation>
+        </message>
+        <message>
+            <source>No supported video encoder is available.</source>
+            <translation>Dəstəklənən video kodlayıcısı mövcud deyil.</translation>
+        </message>
+        <message>
+            <source>Video encoder configuration is too large.</source>
+            <translation>Video kodlayıcısının konfiqurasiyası çox böyükdür.</translation>
+        </message>
+        <message>
+            <source>Video scaling could not be initialized.</source>
+            <translation>Videonun miqyaslandırılmasını başlatmaq mümkün olmadı.</translation>
+        </message>
+        <message>
+            <source>The encoder returned an empty video packet.</source>
+            <translation>Kodlayıcı boş video paketi qaytardı.</translation>
+        </message>
+        <message>
+            <source>Invalid video frame format.</source>
+            <translation>Video kadrının formatı etibarsızdır.</translation>
+        </message>
+        <message>
+            <source>Invalid video decoder configuration.</source>
+            <translation>Video dekoderinin konfiqurasiyası etibarsızdır.</translation>
+        </message>
+        <message>
+            <source>This video codec cannot be decoded.</source>
+            <translation>Bu video kodekini dekodlaşdırmaq mümkün deyil.</translation>
+        </message>
+        <message>
+            <source>Video decoder could not be allocated.</source>
+            <translation>Video dekoderi üçün yaddaş ayırmaq mümkün olmadı.</translation>
+        </message>
+        <message>
+            <source>Video decoder configuration could not be allocated.</source>
+            <translation>Video dekoderinin konfiqurasiyası üçün yaddaş ayırmaq mümkün olmadı.</translation>
+        </message>
+        <message>
+            <source>Decoded dimensions do not match the screen stream.</source>
+            <translation>Dekodlaşdırılmış ölçülər ekran axınına uyğun gəlmir.</translation>
+        </message>
+        <message>
+            <source>Decoded image could not be allocated.</source>
+            <translation>Dekodlaşdırılmış şəkil üçün yaddaş ayırmaq mümkün olmadı.</translation>
+        </message>
+        <message>
+            <source>Video color conversion could not be initialized.</source>
+            <translation>Video rəng çevrilməsini başlatmaq mümkün olmadı.</translation>
         </message>
     </context>
     <context>
-        <name>LocalLanguage</name>
+        <name>VoiceAvatar</name>
         <message>
-            <source>Translation (experimental)</source>
-            <translation>Tərcümə (sınaq)</translation>
+            <source>Muted</source>
+            <translation>Mikrofon səsi söndürüldü</translation>
         </message>
         <message>
-            <source>Spoken language</source>
-            <translation>Danışılan dil</translation>
+            <source>Sleeping</source>
+            <translation>yatmaq</translation>
         </message>
         <message>
-            <source>Translate to</source>
-            <translation>Bu dilə tərcümə et</translation>
+            <source>Offline</source>
+            <translation>Oflayn</translation>
         </message>
         <message>
-            <source>Translate messages</source>
-            <translation>Mesajları tərcümə et</translation>
+            <source>Speaking</source>
+            <translation>Danışan</translation>
         </message>
         <message>
-            <source>Translated voice</source>
-            <translation>Tərcümə edilmiş səs</translation>
+            <source>Unavailable</source>
+            <translation>Əlçatan deyil</translation>
         </message>
         <message>
-            <source>Original audio</source>
-            <translation>Orijinal səs</translation>
+            <source>Listening</source>
+            <translation>Dinləyirəm</translation>
         </message>
         <message>
-            <source>Original text</source>
-            <translation>Orijinal mətn</translation>
+            <source>Deafened</source>
+            <translation>Dinamiklərin səsi kəsildi</translation>
+        </message>
+    </context>
+    <context>
+        <name>VoiceSession</name>
+        <message>
+            <source>Unavailable - audio settings or tone test</source>
+            <translation>Əlçatan deyil - audio parametrləri və ya ton testi</translation>
         </message>
         <message>
-            <source>Prepare languages</source>
-            <translation>Dilləri hazırla</translation>
+            <source>Microphone muted</source>
+            <translation>Mikrofon səsi kəsildi</translation>
         </message>
         <message>
-            <source>Local language processing is unavailable.</source>
-            <translation>Yerli dil emalı əlçatan deyil.</translation>
+            <source>Push-to-talk held</source>
+            <translation>Bas-danış düyməsi basılı saxlanılır</translation>
         </message>
         <message>
-            <source>Language settings could not be read.</source>
-            <translation>Dil parametrlərini oxumaq mümkün olmadı.</translation>
+            <source>Ready - push-to-talk released</source>
+            <translation>Hazır - bas-danış düyməsi buraxılıb</translation>
         </message>
         <message>
-            <source>Language settings could not be saved.</source>
-            <translation>Dil parametrlərini saxlamaq mümkün olmadı.</translation>
+            <source>Microphone unmuted</source>
+            <translation>Mikrofon səsi açıldı</translation>
+        </message>
+        <message>
+            <source>Settings could not be saved: %1</source>
+            <translation>Parametrləri saxlamaq mümkün olmadı: %1</translation>
+        </message>
+        <message>
+            <source>The push-to-talk sequence cannot be incremented further.</source>
+            <translation>Push-to-talk ardıcıllığı daha da artırıla bilməz.</translation>
+        </message>
+        <message>
+            <source>Choose System, Light or Dark.</source>
+            <translation>Sistem, İşıq və ya Qaranlıq seçin.</translation>
+        </message>
+        <message>
+            <source>Choose a colour palette from the list.</source>
+            <translation>Siyahıdan rəng palitrası seçin.</translation>
+        </message>
+        <message>
+            <source>Choose an available avatar.</source>
+            <translation>Mövcud avatar seçin.</translation>
+        </message>
+        <message>
+            <source>Invalid push-to-talk binding.</source>
+            <translation>Yanlış təkanla danışıq bağlaması.</translation>
+        </message>
+        <message>
+            <source>Release the held push-to-talk key first.</source>
+            <translation>Əvvəlcə bas-danış düyməsini buraxın.</translation>
+        </message>
+        <message>
+            <source>Choose a language from the list.</source>
+            <translation>Siyahıdan dil seçin.</translation>
+        </message>
+        <message>
+            <source>This avatar requires Supporter.</source>
+            <translation>Bu avatar Supporter tələb edir.</translation>
+        </message>
+        <message>
+            <source>The name must contain 1 to 64 characters.</source>
+            <translation>Ad 1-dən 64-ə qədər simvoldan ibarət olmalıdır.</translation>
+        </message>
+        <message>
+            <source>The name may not contain control characters or line breaks.</source>
+            <translation>Adda nəzarət simvolları və ya sətir fasilələri ola bilməz.</translation>
+        </message>
+        <message>
+            <source>Session settings could not be read.</source>
+            <translation>Sessiya parametrlərini oxumaq mümkün olmadı.</translation>
+        </message>
+        <message>
+            <source>Saved setting is invalid: %1</source>
+            <translation>Yanlış saxlanılmış parametr: %1</translation>
         </message>
     </context>
 </TS>

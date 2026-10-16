@@ -48,7 +48,7 @@ QJsonObject response(const QString& command, bool ok, const QJsonValue& data = {
 }
 
 bool setTextOption(QJsonObject& values, const QString& key, const QString& text, QString& error) {
-    if (key == "channelName" || key == "botName" || key == "password" || key == "passwordFile" || key == "settingsFile" || key == "identityFile" || key == "language") {
+    if (key == "hostName" || key == "channelName" || key == "botName" || key == "password" || key == "passwordFile" || key == "settingsFile" || key == "identityFile" || key == "language") {
         values.insert(key, text); return true;
     }
     if (key == "approvedClients" || key == "blockedClients") {
@@ -56,16 +56,16 @@ bool setTextOption(QJsonObject& values, const QString& key, const QString& text,
         if (!text.trimmed().isEmpty()) for (const auto& id : text.split(',')) ids.append(id.trimmed());
         values.insert(key, ids); return true;
     }
-    if (key == "port" || key == "messageLifetimeDays") {
+    if (key == "port" || key == "messageLifetimeDays" || key == "privateLifetimeDays") {
         bool valid = false;
         const auto number = text.toInt(&valid);
         if (!valid) { error = QCoreApplication::translate("Headless", "%1 must be an integer.").arg(key); return false; }
         values.insert(key, number); return true;
     }
-    if (key == "messageTtl") {
+    if (key == "messageTtl" || key == "privateMessageTtl") {
         const int days = text == "24h" ? 1 : text == "7d" ? 7 : text == "30d" ? 30 : text == "90d" ? 90 : text == "180d" ? 180 : text == "360d" ? 360 : 0;
         if (!days) { error = QCoreApplication::translate("LocalChannel", "Invalid message lifetime.") + QStringLiteral(" (24h, 7d, 30d, 90d, 180d, 360d)"); return false; }
-        values.insert("messageLifetimeDays", days); return true;
+        values.insert(key == "messageTtl" ? "messageLifetimeDays" : "privateLifetimeDays", days); return true;
     }
     if (key == "requestsAllowed") {
         if (text != "on" && text != "off" && text != "true" && text != "false") {
@@ -82,7 +82,7 @@ QString executableConfigurationDirectory();
 void addHeadlessOptions(QCommandLineParser& parser) {
     parser.addHelpOption();
     parser.addVersionOption();
-    for (const auto* name : {"settings", "recording-test", "smoke-test", "screenshot"}) {
+    for (const auto* name : {"settings", "smoke-test", "screenshot"}) {
         QCommandLineOption option(name);
         if (QString::fromLatin1(name) == "screenshot") option.setValueName("path");
         option.setFlags(QCommandLineOption::HiddenFromHelp);
@@ -93,9 +93,11 @@ void addHeadlessOptions(QCommandLineParser& parser) {
     parser.addOption({"settings-file", QCoreApplication::translate("Headless", "Server storage prefix. Personal/audio/GUI profiles are not loaded."), "path"});
     parser.addOption({"identity-file", QCoreApplication::translate("Headless", "Optional private identity file instead of the OS credential store (Linux/macOS). Parent directory must exist and belong to this account."), "path"});
     parser.addOption({QStringList{"f", "config"}, QCoreApplication::translate("Headless", "UTF-8 key=value properties or JSON host preset. Default: application.properties, then config/application.properties beside the app."), "path"});
+    parser.addOption({"host-name", QCoreApplication::translate("Headless", "Host display name."), "name"});
     parser.addOption({"channel-name", QCoreApplication::translate("Headless", "Channel display name."), "name"});
     parser.addOption({"bot-name", QCoreApplication::translate("Headless", "System and radio bot display name."), "name"});
     parser.addOption({"port", QCoreApplication::translate("Headless", "TCP service port (1-65535)."), "number"});
+    parser.addOption({"private-message-ttl", QCoreApplication::translate("Channels", "Messages") + QStringLiteral(" (24h, 7d, 30d; Supporter: 90d, 180d, 360d)"), "duration"});
     parser.addOption({"message-ttl", QCoreApplication::translate("Channels", "New message lifetime") + QStringLiteral(" (24h, 7d, 30d; Supporter: 90d, 180d, 360d)"), "duration"});
     parser.addOption({"requests", QCoreApplication::translate("Headless", "Headless admission is always on; only 'on' or 'true' is accepted."), "mode"});
     parser.addOption({"approve", QCoreApplication::translate("Headless", "Preapprove a device ID; repeat for several devices. Existing bans remain."), "id"});
@@ -105,7 +107,7 @@ void addHeadlessOptions(QCommandLineParser& parser) {
     parser.setApplicationDescription(QCoreApplication::translate("Headless", "SquadSpeak headless local channel host") + '\n'
         + QCoreApplication::translate("Headless", "Settings precedence: arguments > environment > properties > saved server values.") + '\n'
         + QCoreApplication::translate("Headless", "Environment variables (SQUADSPEAK_ prefix):")
-        + " CONFIG, CHANNEL_NAME, BOT_NAME, PORT, MESSAGE_TTL, REQUESTS, APPROVED_CLIENTS, BLOCKED_CLIENTS, PASSWORD, PASSWORD_FILE, SETTINGS_FILE, IDENTITY_FILE, LANGUAGE.");
+        + " CONFIG, HOST_NAME, CHANNEL_NAME, BOT_NAME, PORT, MESSAGE_TTL, PRIVATE_MESSAGE_TTL, REQUESTS, APPROVED_CLIENTS, BLOCKED_CLIENTS, PASSWORD, PASSWORD_FILE, SETTINGS_FILE, IDENTITY_FILE, LANGUAGE.");
 }
 
 bool loadDefaultConfiguration(QJsonObject& configuration, QString& error) {
@@ -735,7 +737,7 @@ int Headless::run(int argc, char** argv) {
     }
     QCommandLineParser parser;
     addHeadlessOptions(parser);
-    for (const auto* forbidden : {"settings", "recording-test", "smoke-test", "screenshot"}) {
+    for (const auto* forbidden : {"settings", "smoke-test", "screenshot"}) {
         if (bootstrapParser.isSet(forbidden)) {
             qCritical("%s", qUtf8Printable(QCoreApplication::translate("Headless", "The %1 option is incompatible with --headless.").arg("--" + QString::fromLatin1(forbidden))));
             return 2;
@@ -751,8 +753,8 @@ int Headless::run(int argc, char** argv) {
         if (!readConfig()) { qCritical("%s", qUtf8Printable(error)); return 2; }
     }
     configuration.remove("language");
-    for (const auto& setting : {std::pair{"CHANNEL_NAME", "channelName"}, {"BOT_NAME", "botName"}, {"PORT", "port"},
-             {"MESSAGE_TTL", "messageTtl"}, {"REQUESTS", "requestsAllowed"}, {"APPROVED_CLIENTS", "approvedClients"},
+    for (const auto& setting : {std::pair{"HOST_NAME", "hostName"}, {"CHANNEL_NAME", "channelName"}, {"BOT_NAME", "botName"}, {"PORT", "port"},
+             {"MESSAGE_TTL", "messageTtl"}, {"PRIVATE_MESSAGE_TTL", "privateMessageTtl"}, {"REQUESTS", "requestsAllowed"}, {"APPROVED_CLIENTS", "approvedClients"},
              {"BLOCKED_CLIENTS", "blockedClients"}, {"SETTINGS_FILE", "settingsFile"}, {"IDENTITY_FILE", "identityFile"}}) {
         const auto variable = QByteArray("SQUADSPEAK_") + setting.first;
         if (qEnvironmentVariableIsSet(variable.constData())
@@ -760,8 +762,8 @@ int Headless::run(int argc, char** argv) {
             qCritical("%s: %s", variable.constData(), qUtf8Printable(error)); return 2;
         }
     }
-    for (const auto& setting : {std::pair{"channel-name", "channelName"}, {"bot-name", "botName"}, {"port", "port"},
-             {"message-ttl", "messageTtl"}, {"requests", "requestsAllowed"}, {"settings-file", "settingsFile"}, {"identity-file", "identityFile"}})
+    for (const auto& setting : {std::pair{"host-name", "hostName"}, {"channel-name", "channelName"}, {"bot-name", "botName"}, {"port", "port"},
+             {"message-ttl", "messageTtl"}, {"private-message-ttl", "privateMessageTtl"}, {"requests", "requestsAllowed"}, {"settings-file", "settingsFile"}, {"identity-file", "identityFile"}})
         if (parser.isSet(setting.first) && !setTextOption(configuration, setting.second, parser.value(setting.first), error)) {
             qCritical("%s", qUtf8Printable(error)); return 2;
         }
@@ -854,7 +856,7 @@ int Headless::run(int argc, char** argv) {
         bool startupReady = false, startupAttempted = false;
         const auto startHost = [&] {
             if (!startupReady || startupAttempted) return;
-            if (configuration.value("messageLifetimeDays").toInt() > 30 && license.busy() && !license.active()) return;
+            if (std::max(configuration.value("messageLifetimeDays").toInt(), configuration.value("privateLifetimeDays").toInt()) > 30 && license.busy() && !license.active()) return;
             startupAttempted = true;
             if (!configuration.isEmpty() && !channel.configureHost(configuration)) {
                 qCritical("%s", qUtf8Printable(QCoreApplication::translate("Headless", "Invalid host configuration: %1").arg(channel.status())));

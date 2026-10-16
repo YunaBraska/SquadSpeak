@@ -36,14 +36,6 @@
             <translation>Öffnen d'Privatsphär Astellunge vun Ärem System an erlaabt de Mikrofon Zougang fir SquadSpeak.</translation>
         </message>
         <message>
-            <source>Microphone analysis active. Test audio stays on this computer.</source>
-            <translation>Mikrofonanalyse aktiv. Test Audio bleift op dësem Computer.</translation>
-        </message>
-        <message>
-            <source>Finish the test recording before changing devices.</source>
-            <translation>Fäerdeg den Testopnam ier Dir Apparater ännert.</translation>
-        </message>
-        <message>
             <source>The output format is not supported.</source>
             <translation>D'Ausgabformat gëtt net ënnerstëtzt.</translation>
         </message>
@@ -68,32 +60,12 @@
             <translation>Den Testton konnt net gespillt ginn.</translation>
         </message>
         <message>
-            <source>The microphone has provided no data for five seconds. Recording discarded.</source>
-            <translation>De Mikro huet keng Daten fir fënnef Sekonnen geliwwert. Opnam verworf.</translation>
-        </message>
-        <message>
-            <source>The microphone was interrupted or changed. Recording discarded.</source>
-            <translation>De Mikro gouf ënnerbrach oder geännert. Opnam verworf.</translation>
-        </message>
-        <message>
-            <source>Cancelled. The incomplete recording was discarded.</source>
-            <translation>Annuléiert. Déi onkomplett Opnam gouf verworf.</translation>
-        </message>
-        <message>
             <source>No selected microphone is available</source>
             <translation>Kee gewielte Mikrofon ass verfügbar</translation>
         </message>
         <message>
             <source>Allow microphone access in the system dialog.</source>
             <translation>Erlaabt Mikrofon Zougang am System Dialog.</translation>
-        </message>
-        <message>
-            <source>Microphone capture active for the voice channel.</source>
-            <translation>Mikrofon Capture aktiv fir de Stëmmkanal.</translation>
-        </message>
-        <message>
-            <source>Microphone access was denied. Nothing was saved.</source>
-            <translation>Mikrofon Zougang gouf refuséiert. Näischt gouf gerett.</translation>
         </message>
         <message>
             <source>Microphone access is missing. Allow it in System Settings.</source>
@@ -265,97 +237,6 @@
         </message>
     </context>
     <context>
-        <name>AudioRecording</name>
-        <message>
-            <source>Incomplete audio block. Recording discarded.</source>
-            <translation>Onkomplett Audio Block. Opnam verworf.</translation>
-        </message>
-        <message>
-            <source>Move about one meter from the microphone. Keep the background sound playing and read the sentence.</source>
-            <translation>Beweegt ongeféier ee Meter vum Mikro. Halt den Hannergrond Toun spillt a liest de Saz.</translation>
-        </message>
-        <message>
-            <source>Voice with background sound</source>
-            <translation>Stëmm mat Hannergrond Toun</translation>
-        </message>
-        <message>
-            <source>The recordings folder could not be created.</source>
-            <translation>Den Opnahmen Dossier konnt net erstallt ginn.</translation>
-        </message>
-        <message>
-            <source>You can stop the background sound now.</source>
-            <translation>Dir kënnt den Hannergrond Sound elo stoppen.</translation>
-        </message>
-        <message>
-            <source>Recordings saved</source>
-            <translation>Opzeechnunge gespäichert</translation>
-        </message>
-        <message>
-            <source>The test recording could not be saved completely.</source>
-            <translation>D'Testopnam konnt net komplett gespäichert ginn.</translation>
-        </message>
-        <message>
-            <source>Keep music off and stay quiet. Start when ready.</source>
-            <translation>Halt Musek aus a bleift roueg. Start wann prett.</translation>
-        </message>
-        <message>
-            <source>Your voice</source>
-            <translation>Är Stëmm</translation>
-        </message>
-        <message>
-            <source>Play music or another background sound at a normal volume. Stay quiet while recording.</source>
-            <translation>Spillt Musek oder en aneren Hannergrond Sound op engem normale Volumen. Bleift roueg beim Opnam.</translation>
-        </message>
-        <message>
-            <source>The test recording could not be created.</source>
-            <translation>D'Testopnam konnt net erstallt ginn.</translation>
-        </message>
-        <message>
-            <source>Background sound</source>
-            <translation>Hannergrond Toun</translation>
-        </message>
-        <message>
-            <source>The window is open. I can hear the rain outside. One, two, three, four, five.</source>
-            <translation>D'Fënster ass op. Ech héieren de Reen dobaussen. Een, zwee, dräi, véier, fënnef.</translation>
-        </message>
-        <message>
-            <source>This microphone format is not supported for test recordings.</source>
-            <translation>Dëst Mikrofonformat gëtt net fir Testopnamen ënnerstëtzt.</translation>
-        </message>
-        <message>
-            <source>Keep the background volume unchanged. Read the sentence, then stop recording.</source>
-            <translation>Halt den Hannergrondvolumen onverännert. Liest de Saz, stoppt dann opzehuelen.</translation>
-        </message>
-        <message>
-            <source>Record at least half a second, then try again.</source>
-            <translation>Notéiert op d'mannst eng hallef Sekonn, probéiert dann nach eng Kéier.</translation>
-        </message>
-        <message>
-            <source>Sit at your usual distance. Read the sentence, then stop recording.</source>
-            <translation>Sëtzt op Är üblech Distanz. Liest de Saz, stoppt dann opzehuelen.</translation>
-        </message>
-        <message>
-            <source>The recording description could not be saved.</source>
-            <translation>D'Opnahm Beschreiwung konnt net gespäichert ginn.</translation>
-        </message>
-        <message>
-            <source>The WAV file could not be finalized.</source>
-            <translation>D'WAV-Datei konnt net finaliséiert ginn.</translation>
-        </message>
-        <message>
-            <source>The WAV header could not be written.</source>
-            <translation>De WAV Header konnt net geschriwwe ginn.</translation>
-        </message>
-        <message>
-            <source>Voice farther away</source>
-            <translation>Stëmm méi wäit ewech</translation>
-        </message>
-        <message>
-            <source>Room sound</source>
-            <translation>Sall Toun</translation>
-        </message>
-    </context>
-    <context>
         <name>AudioSettings</name>
         <message>
             <source>Echo cancellation</source>
@@ -406,8 +287,8 @@
             <translation>Är playback</translation>
         </message>
         <message>
-            <source>Clear local key</source>
-            <translation>Kloer lokal Push-to-Talk Tastatur Ofkiirzung</translation>
+            <source>Clear key</source>
+            <translation>Tast läschen</translation>
         </message>
         <message>
             <source>Low cut</source>
@@ -428,10 +309,6 @@
         <message>
             <source>Cancel</source>
             <translation>Ofbriechen</translation>
-        </message>
-        <message>
-            <source>Guided recording</source>
-            <translation>Guided Opnam</translation>
         </message>
         <message>
             <source>Clipping. Reduce microphone gain.</source>
@@ -466,16 +343,12 @@
             <translation>Apparat deconnectéiert</translation>
         </message>
         <message>
-            <source>Local key</source>
-            <translation>Lokal Push-to-Talk Tastatur Ofkiirzung</translation>
+            <source>PTT key</source>
+            <translation>Schwätztast</translation>
         </message>
         <message>
             <source>Voice activation</source>
             <translation>Stëmm-aktivéiert Mikro</translation>
-        </message>
-        <message>
-            <source>Remote PTT key</source>
-            <translation>Remote Push-to-Talk Tastatur Ofkiirzung</translation>
         </message>
         <message>
             <source>Noise reduction</source>
@@ -492,10 +365,6 @@
         <message>
             <source>Microphone gain</source>
             <translation>Mikrofonverstäerkung</translation>
-        </message>
-        <message>
-            <source>Clear remote key</source>
-            <translation>Kloer Remote Push-to-Talk Tastatur Ofkiirzung</translation>
         </message>
         <message>
             <source>Not assigned</source>
@@ -521,9 +390,81 @@
             <source>Read bot messages aloud</source>
             <translation>Bot-Noriichte virliesen</translation>
         </message>
+        <message>
+            <source>Download a high-quality voice for this language in macOS settings.</source>
+            <translation>Luet eng héichwäerteg Stëmm fir dës Sprooch an de macOS-Astellungen erof.</translation>
+        </message>
+        <message>
+            <source>Bot voice</source>
+            <translation>Bot-Stëmm</translation>
+        </message>
+        <message>
+            <source>Automatic</source>
+            <translation>automatesch</translation>
+        </message>
+        <message>
+            <source>Unavailable</source>
+            <translation>Net verfügbar</translation>
+        </message>
+        <message>
+            <source>Download voices in your device's Accessibility speech settings.</source>
+            <translation>Luet Stëmmen an de Sproochastellungen ënner Accessibilitéit vun dengem Apparat erof.</translation>
+        </message>
+        <message>
+            <source>Voice download help</source>
+            <translation>Hëllef beim Erofluede vu Stëmmen</translation>
+        </message>
+        <message>
+            <source>Strength, not the percentage of echo removed.</source>
+            <translation>Stäerkt, net de Prozentsaz vum ewechgehollenen Echo.</translation>
+        </message>
+        <message>
+            <source>Auto also checks for speech, not just volume.</source>
+            <translation>Den automatesche Modus erkennt och Sprooch, net nëmmen d'Lautstäerkt.</translation>
+        </message>
     </context>
     <context>
         <name>Channels</name>
+        <message>
+            <source>Copy address</source>
+            <translation>Adress kopéieren</translation>
+        </message>
+        <message>
+            <source>Messages</source>
+            <translation>Messagen</translation>
+        </message>
+        <message>
+            <source>Message</source>
+            <translation>Message</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Opmaachen</translation>
+        </message>
+        <message>
+            <source>Online</source>
+            <translation>Online</translation>
+        </message>
+        <message>
+            <source>Offline</source>
+            <translation>Offline</translation>
+        </message>
+        <message>
+            <source>No private messages</source>
+            <translation>Keng privat Messagen</translation>
+        </message>
+        <message>
+            <source>Private messages are unavailable for this contact.</source>
+            <translation>Privat Messagen si fir dëse Kontakt net disponibel.</translation>
+        </message>
+        <message>
+            <source>If asked, allow local network access. You can change this in system settings.</source>
+            <translation>Wann s du gefrot gëss, erlaab den Zougrëff op dat lokalt Netzwierk. Du kanns dat an de Systemastellungen änneren.</translation>
+        </message>
+        <message>
+            <source>Retry</source>
+            <translation>Nach eng Kéier probéieren</translation>
+        </message>
         <message>
             <source>Updates</source>
             <translation>Aktualiséierungen</translation>
@@ -543,6 +484,10 @@
         <message>
             <source>DDNS cannot bypass CGNAT. If your provider shares the public IP, use a private VPN on all participating devices or a publicly reachable server.</source>
             <translation>DDNS kann CGNAT net ëmgoen. Wann Äre Provider déi ëffentlech IP deelt, benotzt e private VPN op all deelhuelende Geräter oder en ëffentlech erreechbare Server.</translation>
+        </message>
+        <message>
+            <source>Remove server</source>
+            <translation>Server ewechhuelen</translation>
         </message>
         <message>
             <source>Low</source>
@@ -665,10 +610,6 @@
             <translation>Notifikatioun Kläng</translation>
         </message>
         <message>
-            <source>Lifetime for new messages. Earlier messages keep their expiry.</source>
-            <translation>Liewensdauer fir nei Messagen. Fréier Messagen halen hir Verfall.</translation>
-        </message>
-        <message>
             <source>Enable speakers</source>
             <translation>Aktivéiert Spriecher</translation>
         </message>
@@ -703,10 +644,6 @@
         <message>
             <source>Allow device</source>
             <translation>Erlaabt Apparat</translation>
-        </message>
-        <message>
-            <source>Receive quality: %1 kb/s per voice. Adjusts automatically for this device.</source>
-            <translation>Empfangsqualitéit: %1 kb/s pro Stëmm. Passt automatesch fir dësen Apparat un.</translation>
         </message>
         <message>
             <source>Stop radio</source>
@@ -1204,6 +1141,42 @@
             <source>Use default music volume</source>
             <translation>Standardlautstäerkt fir Musek benotzen</translation>
         </message>
+        <message>
+            <source>Show in Dock</source>
+            <translation>Am Dock weisen</translation>
+        </message>
+        <message>
+            <source>App language</source>
+            <translation>Sprooch vun der App</translation>
+        </message>
+        <message>
+            <source>Send in</source>
+            <translation>Schécken op</translation>
+        </message>
+        <message>
+            <source>Hear in</source>
+            <translation>Lauschteren op</translation>
+        </message>
+        <message>
+            <source>Download language models for %1 and %2?</source>
+            <translation>Sproochmodeller fir %1 a %2 eroflueden?</translation>
+        </message>
+        <message>
+            <source>Download</source>
+            <translation>Eroflueden</translation>
+        </message>
+        <message>
+            <source>PTT, chat and channel controls. Uses the controlled device's microphone.</source>
+            <translation>PTT-, Chat- a Kanalsteierung. De Mikro vum gesteierten Apparat gëtt benotzt.</translation>
+        </message>
+        <message>
+            <source>Connect the other device to one of your channels, then allow it here.</source>
+            <translation>Verban den aneren Apparat mat engem vun dengen Kanäl a gëff him dann hei d'Erlaabnes.</translation>
+        </message>
+        <message>
+            <source>On the other device, open Settings &gt; Input &gt; Remote control and allow this device.</source>
+            <translation>Maach um aneren Apparat Astellungen &gt; Input &gt; Fernsteierung op a gëff dësem Apparat d'Erlaabnes.</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1420,7 +1393,396 @@
         </message>
     </context>
     <context>
+        <name>Desktop</name>
+        <message>
+            <source>Open settings at startup.</source>
+            <translation>D'Astellunge beim Start opmaachen.</translation>
+        </message>
+        <message>
+            <source>Alternative file for audio profiles.</source>
+            <translation>Alternativ Datei fir Audioprofiller.</translation>
+        </message>
+        <message>
+            <source>Load the interface without microphone capture and exit after one second.</source>
+            <translation>D'Uewerfläch ouni Mikrofonopnam lueden an no enger Sekonn zoumaachen.</translation>
+        </message>
+        <message>
+            <source>Save an image of the app window during the UI test.</source>
+            <translation>E Bild vun der App-Fënster wärend dem Uewerflächentest späicheren.</translation>
+        </message>
+        <message>
+            <source>The window image could not be saved.</source>
+            <translation>D'Bild vun der Fënster konnt net gespäichert ginn.</translation>
+        </message>
+        <message>
+            <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
+            <translation>D'Systemberäich ass net disponibel; d'App bleift als Fënster op.</translation>
+        </message>
+    </context>
+    <context>
+        <name>Headless</name>
+        <message>
+            <source>Host display name.</source>
+            <translation>Ugewise Numm vum Host.</translation>
+        </message>
+        <message>
+            <source>Command failed.</source>
+            <translation>De Befeel ass feelgeschloen.</translation>
+        </message>
+        <message>
+            <source>%1 must be an integer.</source>
+            <translation>%1 muss eng ganz Zuel sinn.</translation>
+        </message>
+        <message>
+            <source>Requests must be on/off or true/false.</source>
+            <translation>Ufroe mussen on/off oder true/false sinn.</translation>
+        </message>
+        <message>
+            <source>Unknown host property: %1</source>
+            <translation>Onbekannt Host-Eegenschaft: %1</translation>
+        </message>
+        <message>
+            <source>Run without GUI, microphone capture, or local audio output.</source>
+            <translation>Ouni grafesch Uewerfläch, Mikrofonopnam oder lokal Audioausgab starten.</translation>
+        </message>
+        <message>
+            <source>Server storage prefix. Personal/audio/GUI profiles are not loaded.</source>
+            <translation>Späicherpräfix vum Server. Perséinlech, Audio- a GUI-Profiler ginn net gelueden.</translation>
+        </message>
+        <message>
+            <source>Optional private identity file instead of the OS credential store (Linux/macOS). Parent directory must exist and belong to this account.</source>
+            <translation>Optional privat Identitéitsdatei amplaz vum Umeldedatespäicher vum Betribssystem (Linux/macOS). Den iwweruerdneten Dossier muss existéieren an dësem Kont gehéieren.</translation>
+        </message>
+        <message>
+            <source>UTF-8 key=value properties or JSON host preset. Default: application.properties, then config/application.properties beside the app.</source>
+            <translation>UTF-8 Eegenschaften key=value oder JSON-Virstellunge vum Host. Standard: application.properties, duerno config/application.properties nieft der App.</translation>
+        </message>
+        <message>
+            <source>Channel display name.</source>
+            <translation>Ugewisenen Numm vum Kanal.</translation>
+        </message>
+        <message>
+            <source>System and radio bot display name.</source>
+            <translation>Ugewisenen Numm vum System- a Radio-Bot.</translation>
+        </message>
+        <message>
+            <source>TCP service port (1-65535).</source>
+            <translation>TCP-Serviceport (1-65535).</translation>
+        </message>
+        <message>
+            <source>Headless admission is always on; only 'on' or 'true' is accepted.</source>
+            <translation>Den Zougang am Headless-Modus ass ëmmer un; nëmmen 'on' oder 'true' gëtt akzeptéiert.</translation>
+        </message>
+        <message>
+            <source>Preapprove a device ID; repeat for several devices. Existing bans remain.</source>
+            <translation>Eng Apparat-ID am Viraus erlaben; fir méi Apparater widderhuelen. Bestoend Späre bleiwen.</translation>
+        </message>
+        <message>
+            <source>Block a device ID; repeat for several devices.</source>
+            <translation>Eng Apparat-ID spären; fir méi Apparater widderhuelen.</translation>
+        </message>
+        <message>
+            <source>Read a UTF-8 channel password from a file before listening. An empty file removes it.</source>
+            <translation>Virum Lauschteren en UTF-8 Kanalpasswuert aus enger Datei liesen. Eng eidel Datei läscht et.</translation>
+        </message>
+        <message>
+            <source>Channel password. Empty removes it; environment or config avoids process-list exposure.</source>
+            <translation>Kanalpasswuert. En eidele Wäert läscht et; Ëmfeld oder Konfiguratioun verhënneren d'Uweisung an der Prozesslëscht.</translation>
+        </message>
+        <message>
+            <source>SquadSpeak headless local channel host</source>
+            <translation>SquadSpeak lokalen Kanalhost ouni grafesch Uewerfläch</translation>
+        </message>
+        <message>
+            <source>Environment variables (SQUADSPEAK_ prefix):</source>
+            <translation>Ëmfeldvariabelen (Präfix SQUADSPEAK_):</translation>
+        </message>
+        <message>
+            <source>Host configuration could not be read or exceeds 1 MiB.</source>
+            <translation>D'Hostkonfiguratioun konnt net gelies ginn oder ass méi grouss wéi 1 MiB.</translation>
+        </message>
+        <message>
+            <source>Host configuration must be UTF-8.</source>
+            <translation>D'Hostkonfiguratioun muss UTF-8 sinn.</translation>
+        </message>
+        <message>
+            <source>Host preset must be a JSON object.</source>
+            <translation>D'Hostvirstellung muss e JSON-Objet sinn.</translation>
+        </message>
+        <message>
+            <source>Property line %1 must use key=value.</source>
+            <translation>D'Eegenschaftszeil %1 muss key=value benotzen.</translation>
+        </message>
+        <message>
+            <source>Property line %1: %2</source>
+            <translation>Eegenschaftszeil %1: %2</translation>
+        </message>
+        <message>
+            <source>Standard input has no file descriptor.</source>
+            <translation>D'Standardagab huet kee Dateideskriptor.</translation>
+        </message>
+        <message>
+            <source>Standard input could not be inspected.</source>
+            <translation>D'Standardagab konnt net iwwerpréift ginn.</translation>
+        </message>
+        <message>
+            <source>Could not write the command response: %1</source>
+            <translation>D'Äntwert op de Befeel konnt net geschriwwe ginn: %1</translation>
+        </message>
+        <message>
+            <source>Standard input could not be read: %1</source>
+            <translation>D'Standardagab konnt net gelies ginn: %1</translation>
+        </message>
+        <message>
+            <source>Input line exceeds 65536 bytes.</source>
+            <translation>D'Agabzeil ass méi grouss wéi 65536 Bytes.</translation>
+        </message>
+        <message>
+            <source>Each input line must be a JSON object.</source>
+            <translation>All Agabzeil muss e JSON-Objet sinn.</translation>
+        </message>
+        <message>
+            <source>Input ended before a complete JSON line.</source>
+            <translation>D'Agab ass virun enger kompletter JSON-Zeil eriwwer.</translation>
+        </message>
+        <message>
+            <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
+            <translation>Optional ID vun engem eegene Kanal fir d'Befeele status, configure, password, admission, history, chat a radio; standardméisseg gëtt den Haaptkanal benotzt.</translation>
+        </message>
+        <message>
+            <source>Channel action must be list, add or remove.</source>
+            <translation>D'Kanalaktioun muss list, add oder remove sinn.</translation>
+        </message>
+        <message>
+            <source>Removing an own channel deletes its history, images, permissions and radio settings. Set confirmed=true to proceed.</source>
+            <translation>D'Ewechhuele vun engem eegene Kanal läscht säi Verlaf, seng Biller, Berechtegungen a Radioastellungen. Fir weiderzefueren, confirmed=true setzen.</translation>
+        </message>
+        <message>
+            <source>id must identify an additional own channel.</source>
+            <translation>id muss en zousätzlechen eegene Kanal identifizéieren.</translation>
+        </message>
+        <message>
+            <source>The additional own channel could not be removed: %1</source>
+            <translation>Den zousätzlechen eegene Kanal konnt net ewechgeholl ginn: %1</translation>
+        </message>
+        <message>
+            <source>channelId must identify an own channel.</source>
+            <translation>channelId muss en eegene Kanal identifizéieren.</translation>
+        </message>
+        <message>
+            <source>values must be a host settings object.</source>
+            <translation>values muss en Objet mat Hostastellunge sinn.</translation>
+        </message>
+        <message>
+            <source>Headless admission is always enabled for non-banned devices; requests off is not supported.</source>
+            <translation>Den Zougang am Headless-Modus ass fir net gespaarten Apparater ëmmer un; requests off gëtt net ënnerstëtzt.</translation>
+        </message>
+        <message>
+            <source>value must be a password of at most 1024 UTF-8 bytes without control characters; an empty string removes it.</source>
+            <translation>value muss e Passwuert mat héchstens 1024 UTF-8 Bytes ouni Kontrollzeeche sinn; eng eidel Zeecheketten läscht et.</translation>
+        </message>
+        <message>
+            <source>The channel is not ready or a password change is in progress.</source>
+            <translation>De Kanal ass net prett oder eng Passwuertännerung leeft.</translation>
+        </message>
+        <message>
+            <source>The channel was removed while saving the password.</source>
+            <translation>De Kanal gouf beim Späichere vum Passwuert ewechgeholl.</translation>
+        </message>
+        <message>
+            <source>id is required.</source>
+            <translation>id ass néideg.</translation>
+        </message>
+        <message>
+            <source>text must be a valid non-empty chat message.</source>
+            <translation>text muss eng gëlteg, net eidel Chatnoriicht sinn.</translation>
+        </message>
+        <message>
+            <source>The local channel is not ready.</source>
+            <translation>De lokale Kanal ass net prett.</translation>
+        </message>
+        <message>
+            <source>The channel's radio is unavailable.</source>
+            <translation>De Radio vum Kanal ass net disponibel.</translation>
+        </message>
+        <message>
+            <source>Unknown command. Use help.</source>
+            <translation>Onbekannte Befeel. Benotzt help.</translation>
+        </message>
+        <message>
+            <source>search requires a query, non-negative offset and limit from 1 to 128.</source>
+            <translation>search brauch query, en net negativen offset an e limit vun 1 bis 128.</translation>
+        </message>
+        <message>
+            <source>add creates an id; update requires an existing id.</source>
+            <translation>add erstellt eng id; update brauch eng bestoend id.</translation>
+        </message>
+        <message>
+            <source>A station is already being checked.</source>
+            <translation>Eng Statioun gëtt schonn iwwerpréift.</translation>
+        </message>
+        <message>
+            <source>The channel was removed while checking the station.</source>
+            <translation>De Kanal gouf beim Iwwerpréiwe vun der Statioun ewechgeholl.</translation>
+        </message>
+        <message>
+            <source>Unknown radio action.</source>
+            <translation>Onbekannt Radioaktioun.</translation>
+        </message>
+        <message>
+            <source>Could not load language: %1</source>
+            <translation>D'Sprooch konnt net geluede ginn: %1</translation>
+        </message>
+        <message>
+            <source>The %1 option is incompatible with --headless.</source>
+            <translation>D'Optioun %1 ass net kompatibel mat --headless.</translation>
+        </message>
+        <message>
+            <source>Unexpected positional arguments. Use --help.</source>
+            <translation>Onerwaart Positiounsargumenter. Benotzt --help.</translation>
+        </message>
+        <message>
+            <source>--config / -f requires a non-empty path.</source>
+            <translation>--config / -f brauch en net eidele Wee.</translation>
+        </message>
+        <message>
+            <source>Choose --password or --password-file, not both.</source>
+            <translation>Wielt --password oder --password-file, net béid.</translation>
+        </message>
+        <message>
+            <source>Choose SQUADSPEAK_PASSWORD or SQUADSPEAK_PASSWORD_FILE, not both.</source>
+            <translation>Wielt SQUADSPEAK_PASSWORD oder SQUADSPEAK_PASSWORD_FILE, net béid.</translation>
+        </message>
+        <message>
+            <source>Choose password or passwordFile in one configuration layer, not both.</source>
+            <translation>Wielt password oder passwordFile an enger Konfiguratiounsschicht, net béid.</translation>
+        </message>
+        <message>
+            <source>passwordFile must be a non-empty path.</source>
+            <translation>passwordFile muss en net eidele Wee sinn.</translation>
+        </message>
+        <message>
+            <source>Password file could not be read or is too large.</source>
+            <translation>D'Passwuertdatei konnt net gelies ginn oder ass ze grouss.</translation>
+        </message>
+        <message>
+            <source>Password file must contain at most 1024 UTF-8 bytes without control characters.</source>
+            <translation>D'Passwuertdatei däerf héchstens 1024 UTF-8 Bytes ouni Kontrollzeechen enthalen.</translation>
+        </message>
+        <message>
+            <source>Password must be a string of at most 1024 UTF-8 bytes without control characters.</source>
+            <translation>D'Passwuert muss eng Zeecheketten mat héchstens 1024 UTF-8 Bytes ouni Kontrollzeeche sinn.</translation>
+        </message>
+        <message>
+            <source>settingsFile must be a non-empty path.</source>
+            <translation>settingsFile muss en net eidele Wee sinn.</translation>
+        </message>
+        <message>
+            <source>identityFile must be a non-empty path.</source>
+            <translation>identityFile muss en net eidele Wee sinn.</translation>
+        </message>
+        <message>
+            <source>The settings directory could not be created.</source>
+            <translation>Den Astellungsdossier konnt net erstallt ginn.</translation>
+        </message>
+        <message>
+            <source>This SquadSpeak profile is already running or cannot be locked.</source>
+            <translation>Dëse SquadSpeak-Profil leeft schonn oder kann net gespaart ginn.</translation>
+        </message>
+        <message>
+            <source>Standard input could not be opened.</source>
+            <translation>D'Standardagab konnt net opgemaach ginn.</translation>
+        </message>
+        <message>
+            <source>Standard output could not be opened.</source>
+            <translation>D'Standardausgab konnt net opgemaach ginn.</translation>
+        </message>
+        <message>
+            <source>This identity file is already in use or cannot be locked.</source>
+            <translation>Dës Identitéitsdatei gëtt scho benotzt oder kann net gespaart ginn.</translation>
+        </message>
+        <message>
+            <source>Invalid host configuration: %1</source>
+            <translation>Ongëlteg Hostkonfiguratioun: %1</translation>
+        </message>
+        <message>
+            <source>Radio channels could not be initialized.</source>
+            <translation>D'Radiokanäl konnten net initialiséiert ginn.</translation>
+        </message>
+        <message>
+            <source>Headless host could not start: %1</source>
+            <translation>Den Host ouni grafesch Uewerfläch konnt net starten: %1</translation>
+        </message>
+        <message>
+            <source>Channel password could not be saved.</source>
+            <translation>D'Kanalpasswuert konnt net gespäichert ginn.</translation>
+        </message>
+        <message>
+            <source>Invalid channel password: %1</source>
+            <translation>Ongëltegt Kanalpasswuert: %1</translation>
+        </message>
+        <message>
+            <source>Headless host could not initialize: %1</source>
+            <translation>Den Host ouni grafesch Uewerfläch konnt net initialiséiert ginn: %1</translation>
+        </message>
+        <message>
+            <source>SquadSpeak headless could not start: %1</source>
+            <translation>SquadSpeak ouni grafesch Uewerfläch konnt net starten: %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>D'Supporteraktioun muss de Status sinn, umellen, erfrëschen, ausloggen oder annuléieren. status sign-in refresh sign-out cancel</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>Eng Supporter Operatioun ass amgaang.</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>Supporter Zougang ass an dësem Build net verfügbar.</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>Astellunge Virrang: Argumenter&gt; Ëmfeld&gt; Eegeschafte&gt; gespäichert Serverwäerter.</translation>
+        </message>
+    </context>
+    <context>
+        <name>License</name>
+        <message>
+            <source>License storage is busy or unavailable.</source>
+            <translation>Lizenzlagerung ass beschäftegt oder net verfügbar.</translation>
+        </message>
+        <message>
+            <source>License storage is unavailable.</source>
+            <translation>Lizenzlagerung ass net verfügbar.</translation>
+        </message>
+        <message>
+            <source>Sign-in expired. Try again.</source>
+            <translation>Umellen ass ofgelaaf. Probéiert nach eng Kéier.</translation>
+        </message>
+        <message>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>GitHub Umeldung ass net verfügbar. Probéiert nach eng Kéier.</translation>
+        </message>
+        <message>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>GitHub Umeldung war net ofgeschloss. Probéiert nach eng Kéier.</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>GitHub konnt net iwwerpréift ginn. Offline Zougang dauert maximal siwen Deeg.</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>Mellt Iech erëm mat GitHub un.</translation>
+        </message>
+    </context>
+    <context>
         <name>LocalChannel</name>
+        <message>
+            <source>Blocked</source>
+            <translation>Blockéiert</translation>
+        </message>
         <message>
             <source>Host is not responding. Reconnecting.</source>
             <translation>Host reagéiert net. Reconnecting.</translation>
@@ -2205,6 +2567,53 @@
             <source>Voice relay codec could not be configured.</source>
             <translation>De Codec fir d'Sproochweiderleedung konnt net konfiguréiert ginn.</translation>
         </message>
+        <message>
+            <source>Unsupported audio codec</source>
+            <translation>Net ënnerstëtzten Audiocodec</translation>
+        </message>
+        <message>
+            <source>Speaking is not allowed in this channel.</source>
+            <translation>An dësem Channel däerfs du net schwätzen.</translation>
+        </message>
+    </context>
+    <context>
+        <name>LocalLanguage</name>
+        <message>
+            <source>Translation (experimental)</source>
+            <translation>Iwwersetzung (experimentell)</translation>
+        </message>
+        <message>
+            <source>Translate messages</source>
+            <translation>Noriichten iwwersetzen</translation>
+        </message>
+        <message>
+            <source>Translated voice</source>
+            <translation>Iwwersate Stëmm</translation>
+        </message>
+        <message>
+            <source>Original audio</source>
+            <translation>Originaltoun</translation>
+        </message>
+        <message>
+            <source>Original text</source>
+            <translation>Originaltext</translation>
+        </message>
+        <message>
+            <source>Prepare languages</source>
+            <translation>Sprooche virbereeden</translation>
+        </message>
+        <message>
+            <source>Local language processing is unavailable.</source>
+            <translation>Lokal Sproochveraarbechtung ass net verfügbar.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be read.</source>
+            <translation>Sproochastellunge konnten net gelies ginn.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be saved.</source>
+            <translation>Sproochastellunge konnten net gespäichert ginn.</translation>
+        </message>
     </context>
     <context>
         <name>PushToTalkKey</name>
@@ -2345,50 +2754,65 @@
         </message>
     </context>
     <context>
-        <name>RecordingPanel</name>
+        <name>ScreenPanel</name>
         <message>
-            <source>Stop</source>
-            <translation>Stopp</translation>
+            <source>Media capacity reached</source>
+            <translation>Medien Muecht erreecht</translation>
         </message>
         <message>
-            <source>Start</source>
-            <translation>Start</translation>
+            <source>Video paused</source>
+            <translation>Video gestoppt</translation>
         </message>
         <message>
-            <source>Saved on this device only. Nothing is uploaded.</source>
-            <translation>Nëmmen op dësem Apparat gespäichert. Näischt gëtt eropgelueden.</translation>
+            <source>Stream ended</source>
+            <translation>Stream eriwwer</translation>
         </message>
         <message>
-            <source>Keep this take or record it again.</source>
-            <translation>Halen dës huelen oder Rekord et erëm.</translation>
+            <source>Connecting</source>
+            <translation>Verbindung</translation>
         </message>
         <message>
-            <source>Record again</source>
-            <translation>Rekord erëm</translation>
+            <source>Open screen stream</source>
+            <translation>Open Écran Baach</translation>
         </message>
         <message>
-            <source>Use recording</source>
-            <translation>Benotzen Opnahmen</translation>
+            <source>Screen stream</source>
+            <translation>Écran Baach</translation>
         </message>
         <message>
-            <source>Recording progress</source>
-            <translation>Enregistréiere Fortschrëtter</translation>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
+        </message>
+    </context>
+    <context>
+        <name>ScreenShare</name>
+        <message>
+            <source>Allow screen recording in system settings.</source>
+            <translation>Erlaab d'Opnam vum Bildschierm an de Systemastellungen.</translation>
         </message>
         <message>
-            <source>Step %1 of %2</source>
-            <translation>Schrëtt %1 vun %2</translation>
+            <source>The shared screen was removed. Select a source to start again.</source>
+            <translation>De gedeelt Écran gouf geläscht. Wielt eng Quell fir erëm ze starten.</translation>
         </message>
         <message>
-            <source>Open recordings</source>
-            <translation>Open Opzeechnunge</translation>
+            <source>The shared window was closed. Select a source to start again.</source>
+            <translation>Déi gemeinsam Fënster war zou. Wielt eng Quell fir erëm ze starten.</translation>
         </message>
         <message>
-            <source>Reset test</source>
-            <translation>Reset Test</translation>
+            <source>The selected screen is no longer available.</source>
+            <translation>De gewielte Bildschierm ass net méi verfügbar.</translation>
         </message>
         <message>
-            <source>%1 s remaining / %2 dBFS</source>
-            <translation>%1 s bleiwen / %2 dBFS</translation>
+            <source>The selected window is no longer available.</source>
+            <translation>Déi gewielte Fënster ass net méi verfügbar.</translation>
+        </message>
+        <message>
+            <source>The selected source exceeds the capture size limit.</source>
+            <translation>Déi gewielte Quell iwwerschreift d'Grenzgréisstlimit.</translation>
+        </message>
+        <message>
+            <source>Close a video view before opening another stream.</source>
+            <translation>Zoumaachen eng Video Vue ier Dir en anere Stream opmaacht.</translation>
         </message>
     </context>
     <context>
@@ -2465,10 +2889,6 @@
             <translation>Sammelsignal...</translation>
         </message>
         <message>
-            <source>Dashed curve: configured gain and frequency cuts, using the right dB scale. Noise reduction and voice activation are not part of this curve.</source>
-            <translation>Gestrichelt Curve: agestallt Verstäerkung a Frequenzschnëtt op der rietser dB-Skala. Kaméidireduktioun a Stëmmaktivéierung sinn net Deel vun dëser Curve.</translation>
-        </message>
-        <message>
             <source>Microphone preview is not running</source>
             <translation>Mikrofon Virschau leeft net</translation>
         </message>
@@ -2479,303 +2899,6 @@
         <message>
             <source>Peak: %1</source>
             <translation>Héichpunkt: %1</translation>
-        </message>
-    </context>
-    <context>
-        <name>Tray</name>
-        <message>
-            <source>Quit</source>
-            <translation>op</translation>
-        </message>
-        <message>
-            <source>SquadSpeak - speaking</source>
-            <translation>SquadSpeak - schwätzen</translation>
-        </message>
-        <message>
-            <source>Settings</source>
-            <translation>Astellungen</translation>
-        </message>
-        <message>
-            <source>Channels</source>
-            <translation>Channels</translation>
-        </message>
-        <message>
-            <source>New image</source>
-            <translation>Neit Bild</translation>
-        </message>
-    </context>
-    <context>
-        <name>VoiceAvatar</name>
-        <message>
-            <source>Muted</source>
-            <translation>Mikro gedämpft</translation>
-        </message>
-        <message>
-            <source>Sleeping</source>
-            <translation>Schlof</translation>
-        </message>
-        <message>
-            <source>Offline</source>
-            <translation>Offline</translation>
-        </message>
-        <message>
-            <source>Speaking</source>
-            <translation>Schwätzen</translation>
-        </message>
-        <message>
-            <source>Unavailable</source>
-            <translation>Net verfügbar</translation>
-        </message>
-        <message>
-            <source>Listening</source>
-            <translation>Nolauschteren</translation>
-        </message>
-        <message>
-            <source>Deafened</source>
-            <translation>Lautsprecher stommgeschalt</translation>
-        </message>
-    </context>
-    <context>
-        <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>Net verfügbar - Audio Astellungen oder Toun Test</translation>
-        </message>
-        <message>
-            <source>Microphone muted</source>
-            <translation>Mikro gedämpft</translation>
-        </message>
-        <message>
-            <source>Push-to-talk held</source>
-            <translation>De Push-to-Talk-Knäppchen gëtt gedréckt gehalen</translation>
-        </message>
-        <message>
-            <source>Ready - push-to-talk released</source>
-            <translation>Ready - Push-to-Talk verëffentlecht</translation>
-        </message>
-        <message>
-            <source>Microphone unmuted</source>
-            <translation>De Mikrofon ass ageschalt</translation>
-        </message>
-        <message>
-            <source>Settings could not be saved: %1</source>
-            <translation>Astellunge konnten net gespäichert ginn: %1</translation>
-        </message>
-        <message>
-            <source>The push-to-talk sequence cannot be incremented further.</source>
-            <translation>D'Push-to-Talk Sequenz kann net weider eropgebaut ginn.</translation>
-        </message>
-        <message>
-            <source>Choose System, Light or Dark.</source>
-            <translation>Wielt System, Liicht oder Däischter.</translation>
-        </message>
-        <message>
-            <source>Choose a colour palette from the list.</source>
-            <translation>Wielt eng Faarfpalette aus der Lëscht.</translation>
-        </message>
-        <message>
-            <source>Choose an available avatar.</source>
-            <translation>Wielt e verfügbaren Avatar.</translation>
-        </message>
-        <message>
-            <source>Invalid push-to-talk binding.</source>
-            <translation>Invalid Push-to-Talk Bindung.</translation>
-        </message>
-        <message>
-            <source>Release the held push-to-talk key first.</source>
-            <translation>Fräisetzung der ofgehalen Push-to-Talk Schlëssel éischt.</translation>
-        </message>
-        <message>
-            <source>Choose a language from the list.</source>
-            <translation>Wielt eng Sprooch aus der Lëscht.</translation>
-        </message>
-        <message>
-            <source>This avatar requires Supporter.</source>
-            <translation>Dësen Avatar erfuerdert Supporter.</translation>
-        </message>
-        <message>
-            <source>The name must contain 1 to 64 characters.</source>
-            <translation>Den Numm muss 1 bis 64 Zeechen enthalen.</translation>
-        </message>
-        <message>
-            <source>The name may not contain control characters or line breaks.</source>
-            <translation>Den Numm kann keng Kontroll Zeechen oder Linn Paus enthalen.</translation>
-        </message>
-        <message>
-            <source>Session settings could not be read.</source>
-            <translation>D'Sessiounsastellunge konnten net gelies ginn.</translation>
-        </message>
-        <message>
-            <source>Saved setting is invalid: %1</source>
-            <translation>Ongëlteg gespäichert Astellung: %1</translation>
-        </message>
-    </context>
-    <context>
-        <name>License</name>
-        <message>
-            <source>License storage is busy or unavailable.</source>
-            <translation>Lizenzlagerung ass beschäftegt oder net verfügbar.</translation>
-        </message>
-        <message>
-            <source>License storage is unavailable.</source>
-            <translation>Lizenzlagerung ass net verfügbar.</translation>
-        </message>
-        <message>
-            <source>Sign-in expired. Try again.</source>
-            <translation>Umellen ass ofgelaaf. Probéiert nach eng Kéier.</translation>
-        </message>
-        <message>
-            <source>GitHub sign-in is unavailable. Try again.</source>
-            <translation>GitHub Umeldung ass net verfügbar. Probéiert nach eng Kéier.</translation>
-        </message>
-        <message>
-            <source>GitHub sign-in was not completed. Try again.</source>
-            <translation>GitHub Umeldung war net ofgeschloss. Probéiert nach eng Kéier.</translation>
-        </message>
-        <message>
-            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
-            <translation>GitHub konnt net iwwerpréift ginn. Offline Zougang dauert maximal siwen Deeg.</translation>
-        </message>
-        <message>
-            <source>Sign in with GitHub again.</source>
-            <translation>Mellt Iech erëm mat GitHub un.</translation>
-        </message>
-    </context>
-    <context>
-        <name>ScreenShare</name>
-        <message>
-            <source>The shared screen was removed. Select a source to start again.</source>
-            <translation>De gedeelt Écran gouf geläscht. Wielt eng Quell fir erëm ze starten.</translation>
-        </message>
-        <message>
-            <source>The shared window was closed. Select a source to start again.</source>
-            <translation>Déi gemeinsam Fënster war zou. Wielt eng Quell fir erëm ze starten.</translation>
-        </message>
-        <message>
-            <source>The selected screen is no longer available.</source>
-            <translation>De gewielte Bildschierm ass net méi verfügbar.</translation>
-        </message>
-        <message>
-            <source>The selected window is no longer available.</source>
-            <translation>Déi gewielte Fënster ass net méi verfügbar.</translation>
-        </message>
-        <message>
-            <source>The selected source exceeds the capture size limit.</source>
-            <translation>Déi gewielte Quell iwwerschreift d'Grenzgréisstlimit.</translation>
-        </message>
-        <message>
-            <source>Close a video view before opening another stream.</source>
-            <translation>Zoumaachen eng Video Vue ier Dir en anere Stream opmaacht.</translation>
-        </message>
-    </context>
-    <context>
-        <name>ScreenPanel</name>
-        <message>
-            <source>Media capacity reached</source>
-            <translation>Medien Muecht erreecht</translation>
-        </message>
-        <message>
-            <source>Video paused</source>
-            <translation>Video gestoppt</translation>
-        </message>
-        <message>
-            <source>Stream ended</source>
-            <translation>Stream eriwwer</translation>
-        </message>
-        <message>
-            <source>Connecting</source>
-            <translation>Verbindung</translation>
-        </message>
-        <message>
-            <source>Open screen stream</source>
-            <translation>Open Écran Baach</translation>
-        </message>
-        <message>
-            <source>Screen stream</source>
-            <translation>Écran Baach</translation>
-        </message>
-        <message>
-            <source>%1 kbit/s</source>
-            <translation>%1 kbit/s</translation>
-        </message>
-    </context>
-    <context>
-        <name>VideoCodec</name>
-        <message>
-            <source>Video codec: %1</source>
-            <translation>Videocodec: %1</translation>
-        </message>
-        <message>
-            <source>Video codec ABI does not match its headers.</source>
-            <translation>D'ABI vum Videocodec stëmmt net mat sengen Headerdateien iwwereneen.</translation>
-        </message>
-        <message>
-            <source>Video buffers could not be allocated.</source>
-            <translation>Fir d'Videopuffere konnt kee Späicher reservéiert ginn.</translation>
-        </message>
-        <message>
-            <source>Invalid video quality tier.</source>
-            <translation>Ongülteg Videoqualitéitsstuf.</translation>
-        </message>
-        <message>
-            <source>The screen source exceeds the supported capture size.</source>
-            <translation>D'Bildschiermquell iwwerschreit déi ënnerstëtzten Opnamgréisst.</translation>
-        </message>
-        <message>
-            <source>The screen source is too narrow.</source>
-            <translation>D'Bildschiermquell ass ze schmuel.</translation>
-        </message>
-        <message>
-            <source>The video encoder could not be allocated.</source>
-            <translation>Fir de Videoencoder konnt kee Späicher reservéiert ginn.</translation>
-        </message>
-        <message>
-            <source>No supported video encoder is available.</source>
-            <translation>Et ass keen ënnerstëtzte Videoencoder verfügbar.</translation>
-        </message>
-        <message>
-            <source>Video encoder configuration is too large.</source>
-            <translation>D'Konfiguratioun vum Videoencoder ass ze grouss.</translation>
-        </message>
-        <message>
-            <source>Video scaling could not be initialized.</source>
-            <translation>D'Videoskaléierung konnt net initialiséiert ginn.</translation>
-        </message>
-        <message>
-            <source>The encoder returned an empty video packet.</source>
-            <translation>Den Encoder huet en eidelt Videopaket zeréckginn.</translation>
-        </message>
-        <message>
-            <source>Invalid video frame format.</source>
-            <translation>Ongültegt Videobildformat.</translation>
-        </message>
-        <message>
-            <source>Invalid video decoder configuration.</source>
-            <translation>Ongülteg Konfiguratioun vum Videodecoder.</translation>
-        </message>
-        <message>
-            <source>This video codec cannot be decoded.</source>
-            <translation>Dëse Videocodec kann net decodéiert ginn.</translation>
-        </message>
-        <message>
-            <source>Video decoder could not be allocated.</source>
-            <translation>Fir de Videodecoder konnt kee Späicher reservéiert ginn.</translation>
-        </message>
-        <message>
-            <source>Video decoder configuration could not be allocated.</source>
-            <translation>Fir d'Konfiguratioun vum Videodecoder konnt kee Späicher reservéiert ginn.</translation>
-        </message>
-        <message>
-            <source>Decoded dimensions do not match the screen stream.</source>
-            <translation>Déi decodéiert Dimensioune stëmmen net mam Bildschiermstream iwwereneen.</translation>
-        </message>
-        <message>
-            <source>Decoded image could not be allocated.</source>
-            <translation>Fir dat decodéiert Bild konnt kee Späicher reservéiert ginn.</translation>
-        </message>
-        <message>
-            <source>Video color conversion could not be initialized.</source>
-            <translation>D'Ëmwandlung vun de Videofaarwe konnt net initialiséiert ginn.</translation>
         </message>
     </context>
     <context>
@@ -2894,404 +3017,211 @@
         </message>
     </context>
     <context>
-        <name>Headless</name>
+        <name>Tray</name>
         <message>
-            <source>Command failed.</source>
-            <translation>De Befeel ass feelgeschloen.</translation>
+            <source>Quit</source>
+            <translation>op</translation>
         </message>
         <message>
-            <source>%1 must be an integer.</source>
-            <translation>%1 muss eng ganz Zuel sinn.</translation>
+            <source>SquadSpeak - speaking</source>
+            <translation>SquadSpeak - schwätzen</translation>
         </message>
         <message>
-            <source>Requests must be on/off or true/false.</source>
-            <translation>Ufroe mussen on/off oder true/false sinn.</translation>
+            <source>Settings</source>
+            <translation>Astellungen</translation>
         </message>
         <message>
-            <source>Unknown host property: %1</source>
-            <translation>Onbekannt Host-Eegenschaft: %1</translation>
+            <source>Channels</source>
+            <translation>Channels</translation>
         </message>
         <message>
-            <source>Run without GUI, microphone capture, or local audio output.</source>
-            <translation>Ouni grafesch Uewerfläch, Mikrofonopnam oder lokal Audioausgab starten.</translation>
-        </message>
-        <message>
-            <source>Server storage prefix. Personal/audio/GUI profiles are not loaded.</source>
-            <translation>Späicherpräfix vum Server. Perséinlech, Audio- a GUI-Profiler ginn net gelueden.</translation>
-        </message>
-        <message>
-            <source>Optional private identity file instead of the OS credential store (Linux/macOS). Parent directory must exist and belong to this account.</source>
-            <translation>Optional privat Identitéitsdatei amplaz vum Umeldedatespäicher vum Betribssystem (Linux/macOS). Den iwweruerdneten Dossier muss existéieren an dësem Kont gehéieren.</translation>
-        </message>
-        <message>
-            <source>UTF-8 key=value properties or JSON host preset. Default: application.properties, then config/application.properties beside the app.</source>
-            <translation>UTF-8 Eegenschaften key=value oder JSON-Virstellunge vum Host. Standard: application.properties, duerno config/application.properties nieft der App.</translation>
-        </message>
-        <message>
-            <source>Channel display name.</source>
-            <translation>Ugewisenen Numm vum Kanal.</translation>
-        </message>
-        <message>
-            <source>System and radio bot display name.</source>
-            <translation>Ugewisenen Numm vum System- a Radio-Bot.</translation>
-        </message>
-        <message>
-            <source>TCP service port (1-65535).</source>
-            <translation>TCP-Serviceport (1-65535).</translation>
-        </message>
-        <message>
-            <source>Headless admission is always on; only 'on' or 'true' is accepted.</source>
-            <translation>Den Zougang am Headless-Modus ass ëmmer un; nëmmen 'on' oder 'true' gëtt akzeptéiert.</translation>
-        </message>
-        <message>
-            <source>Preapprove a device ID; repeat for several devices. Existing bans remain.</source>
-            <translation>Eng Apparat-ID am Viraus erlaben; fir méi Apparater widderhuelen. Bestoend Späre bleiwen.</translation>
-        </message>
-        <message>
-            <source>Block a device ID; repeat for several devices.</source>
-            <translation>Eng Apparat-ID spären; fir méi Apparater widderhuelen.</translation>
-        </message>
-        <message>
-            <source>Read a UTF-8 channel password from a file before listening. An empty file removes it.</source>
-            <translation>Virum Lauschteren en UTF-8 Kanalpasswuert aus enger Datei liesen. Eng eidel Datei läscht et.</translation>
-        </message>
-        <message>
-            <source>Channel password. Empty removes it; environment or config avoids process-list exposure.</source>
-            <translation>Kanalpasswuert. En eidele Wäert läscht et; Ëmfeld oder Konfiguratioun verhënneren d'Uweisung an der Prozesslëscht.</translation>
-        </message>
-        <message>
-            <source>SquadSpeak headless local channel host</source>
-            <translation>SquadSpeak lokalen Kanalhost ouni grafesch Uewerfläch</translation>
-        </message>
-        <message>
-            <source>Environment variables (SQUADSPEAK_ prefix):</source>
-            <translation>Ëmfeldvariabelen (Präfix SQUADSPEAK_):</translation>
-        </message>
-        <message>
-            <source>Host configuration could not be read or exceeds 1 MiB.</source>
-            <translation>D'Hostkonfiguratioun konnt net gelies ginn oder ass méi grouss wéi 1 MiB.</translation>
-        </message>
-        <message>
-            <source>Host configuration must be UTF-8.</source>
-            <translation>D'Hostkonfiguratioun muss UTF-8 sinn.</translation>
-        </message>
-        <message>
-            <source>Host preset must be a JSON object.</source>
-            <translation>D'Hostvirstellung muss e JSON-Objet sinn.</translation>
-        </message>
-        <message>
-            <source>Property line %1 must use key=value.</source>
-            <translation>D'Eegenschaftszeil %1 muss key=value benotzen.</translation>
-        </message>
-        <message>
-            <source>Property line %1: %2</source>
-            <translation>Eegenschaftszeil %1: %2</translation>
-        </message>
-        <message>
-            <source>Standard input has no file descriptor.</source>
-            <translation>D'Standardagab huet kee Dateideskriptor.</translation>
-        </message>
-        <message>
-            <source>Standard input could not be inspected.</source>
-            <translation>D'Standardagab konnt net iwwerpréift ginn.</translation>
-        </message>
-        <message>
-            <source>Could not write the command response: %1</source>
-            <translation>D'Äntwert op de Befeel konnt net geschriwwe ginn: %1</translation>
-        </message>
-        <message>
-            <source>Standard input could not be read: %1</source>
-            <translation>D'Standardagab konnt net gelies ginn: %1</translation>
-        </message>
-        <message>
-            <source>Input line exceeds 65536 bytes.</source>
-            <translation>D'Agabzeil ass méi grouss wéi 65536 Bytes.</translation>
-        </message>
-        <message>
-            <source>Each input line must be a JSON object.</source>
-            <translation>All Agabzeil muss e JSON-Objet sinn.</translation>
-        </message>
-        <message>
-            <source>Input ended before a complete JSON line.</source>
-            <translation>D'Agab ass virun enger kompletter JSON-Zeil eriwwer.</translation>
-        </message>
-        <message>
-            <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
-            <translation>Optional ID vun engem eegene Kanal fir d'Befeele status, configure, password, admission, history, chat a radio; standardméisseg gëtt den Haaptkanal benotzt.</translation>
-        </message>
-        <message>
-            <source>Channel action must be list, add or remove.</source>
-            <translation>D'Kanalaktioun muss list, add oder remove sinn.</translation>
-        </message>
-        <message>
-            <source>Removing an own channel deletes its history, images, permissions and radio settings. Set confirmed=true to proceed.</source>
-            <translation>D'Ewechhuele vun engem eegene Kanal läscht säi Verlaf, seng Biller, Berechtegungen a Radioastellungen. Fir weiderzefueren, confirmed=true setzen.</translation>
-        </message>
-        <message>
-            <source>id must identify an additional own channel.</source>
-            <translation>id muss en zousätzlechen eegene Kanal identifizéieren.</translation>
-        </message>
-        <message>
-            <source>The additional own channel could not be removed: %1</source>
-            <translation>Den zousätzlechen eegene Kanal konnt net ewechgeholl ginn: %1</translation>
-        </message>
-        <message>
-            <source>channelId must identify an own channel.</source>
-            <translation>channelId muss en eegene Kanal identifizéieren.</translation>
-        </message>
-        <message>
-            <source>values must be a host settings object.</source>
-            <translation>values muss en Objet mat Hostastellunge sinn.</translation>
-        </message>
-        <message>
-            <source>Headless admission is always enabled for non-banned devices; requests off is not supported.</source>
-            <translation>Den Zougang am Headless-Modus ass fir net gespaarten Apparater ëmmer un; requests off gëtt net ënnerstëtzt.</translation>
-        </message>
-        <message>
-            <source>value must be a password of at most 1024 UTF-8 bytes without control characters; an empty string removes it.</source>
-            <translation>value muss e Passwuert mat héchstens 1024 UTF-8 Bytes ouni Kontrollzeeche sinn; eng eidel Zeecheketten läscht et.</translation>
-        </message>
-        <message>
-            <source>The channel is not ready or a password change is in progress.</source>
-            <translation>De Kanal ass net prett oder eng Passwuertännerung leeft.</translation>
-        </message>
-        <message>
-            <source>The channel was removed while saving the password.</source>
-            <translation>De Kanal gouf beim Späichere vum Passwuert ewechgeholl.</translation>
-        </message>
-        <message>
-            <source>id is required.</source>
-            <translation>id ass néideg.</translation>
-        </message>
-        <message>
-            <source>text must be a valid non-empty chat message.</source>
-            <translation>text muss eng gëlteg, net eidel Chatnoriicht sinn.</translation>
-        </message>
-        <message>
-            <source>The local channel is not ready.</source>
-            <translation>De lokale Kanal ass net prett.</translation>
-        </message>
-        <message>
-            <source>The channel's radio is unavailable.</source>
-            <translation>De Radio vum Kanal ass net disponibel.</translation>
-        </message>
-        <message>
-            <source>Unknown command. Use help.</source>
-            <translation>Onbekannte Befeel. Benotzt help.</translation>
-        </message>
-        <message>
-            <source>search requires a query, non-negative offset and limit from 1 to 128.</source>
-            <translation>search brauch query, en net negativen offset an e limit vun 1 bis 128.</translation>
-        </message>
-        <message>
-            <source>add creates an id; update requires an existing id.</source>
-            <translation>add erstellt eng id; update brauch eng bestoend id.</translation>
-        </message>
-        <message>
-            <source>A station is already being checked.</source>
-            <translation>Eng Statioun gëtt schonn iwwerpréift.</translation>
-        </message>
-        <message>
-            <source>The channel was removed while checking the station.</source>
-            <translation>De Kanal gouf beim Iwwerpréiwe vun der Statioun ewechgeholl.</translation>
-        </message>
-        <message>
-            <source>Unknown radio action.</source>
-            <translation>Onbekannt Radioaktioun.</translation>
-        </message>
-        <message>
-            <source>Could not load language: %1</source>
-            <translation>D'Sprooch konnt net geluede ginn: %1</translation>
-        </message>
-        <message>
-            <source>The %1 option is incompatible with --headless.</source>
-            <translation>D'Optioun %1 ass net kompatibel mat --headless.</translation>
-        </message>
-        <message>
-            <source>Unexpected positional arguments. Use --help.</source>
-            <translation>Onerwaart Positiounsargumenter. Benotzt --help.</translation>
-        </message>
-        <message>
-            <source>--config / -f requires a non-empty path.</source>
-            <translation>--config / -f brauch en net eidele Wee.</translation>
-        </message>
-        <message>
-            <source>Choose --password or --password-file, not both.</source>
-            <translation>Wielt --password oder --password-file, net béid.</translation>
-        </message>
-        <message>
-            <source>Choose SQUADSPEAK_PASSWORD or SQUADSPEAK_PASSWORD_FILE, not both.</source>
-            <translation>Wielt SQUADSPEAK_PASSWORD oder SQUADSPEAK_PASSWORD_FILE, net béid.</translation>
-        </message>
-        <message>
-            <source>Choose password or passwordFile in one configuration layer, not both.</source>
-            <translation>Wielt password oder passwordFile an enger Konfiguratiounsschicht, net béid.</translation>
-        </message>
-        <message>
-            <source>passwordFile must be a non-empty path.</source>
-            <translation>passwordFile muss en net eidele Wee sinn.</translation>
-        </message>
-        <message>
-            <source>Password file could not be read or is too large.</source>
-            <translation>D'Passwuertdatei konnt net gelies ginn oder ass ze grouss.</translation>
-        </message>
-        <message>
-            <source>Password file must contain at most 1024 UTF-8 bytes without control characters.</source>
-            <translation>D'Passwuertdatei däerf héchstens 1024 UTF-8 Bytes ouni Kontrollzeechen enthalen.</translation>
-        </message>
-        <message>
-            <source>Password must be a string of at most 1024 UTF-8 bytes without control characters.</source>
-            <translation>D'Passwuert muss eng Zeecheketten mat héchstens 1024 UTF-8 Bytes ouni Kontrollzeeche sinn.</translation>
-        </message>
-        <message>
-            <source>settingsFile must be a non-empty path.</source>
-            <translation>settingsFile muss en net eidele Wee sinn.</translation>
-        </message>
-        <message>
-            <source>identityFile must be a non-empty path.</source>
-            <translation>identityFile muss en net eidele Wee sinn.</translation>
-        </message>
-        <message>
-            <source>The settings directory could not be created.</source>
-            <translation>Den Astellungsdossier konnt net erstallt ginn.</translation>
-        </message>
-        <message>
-            <source>This SquadSpeak profile is already running or cannot be locked.</source>
-            <translation>Dëse SquadSpeak-Profil leeft schonn oder kann net gespaart ginn.</translation>
-        </message>
-        <message>
-            <source>Standard input could not be opened.</source>
-            <translation>D'Standardagab konnt net opgemaach ginn.</translation>
-        </message>
-        <message>
-            <source>Standard output could not be opened.</source>
-            <translation>D'Standardausgab konnt net opgemaach ginn.</translation>
-        </message>
-        <message>
-            <source>This identity file is already in use or cannot be locked.</source>
-            <translation>Dës Identitéitsdatei gëtt scho benotzt oder kann net gespaart ginn.</translation>
-        </message>
-        <message>
-            <source>Invalid host configuration: %1</source>
-            <translation>Ongëlteg Hostkonfiguratioun: %1</translation>
-        </message>
-        <message>
-            <source>Radio channels could not be initialized.</source>
-            <translation>D'Radiokanäl konnten net initialiséiert ginn.</translation>
-        </message>
-        <message>
-            <source>Headless host could not start: %1</source>
-            <translation>Den Host ouni grafesch Uewerfläch konnt net starten: %1</translation>
-        </message>
-        <message>
-            <source>Channel password could not be saved.</source>
-            <translation>D'Kanalpasswuert konnt net gespäichert ginn.</translation>
-        </message>
-        <message>
-            <source>Invalid channel password: %1</source>
-            <translation>Ongëltegt Kanalpasswuert: %1</translation>
-        </message>
-        <message>
-            <source>Headless host could not initialize: %1</source>
-            <translation>Den Host ouni grafesch Uewerfläch konnt net initialiséiert ginn: %1</translation>
-        </message>
-        <message>
-            <source>SquadSpeak headless could not start: %1</source>
-            <translation>SquadSpeak ouni grafesch Uewerfläch konnt net starten: %1</translation>
-        </message>
-        <message>
-            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
-            <translation>D'Supporteraktioun muss de Status sinn, umellen, erfrëschen, ausloggen oder annuléieren. status sign-in refresh sign-out cancel</translation>
-        </message>
-        <message>
-            <source>A Supporter operation is in progress.</source>
-            <translation>Eng Supporter Operatioun ass amgaang.</translation>
-        </message>
-        <message>
-            <source>Supporter access is unavailable in this build.</source>
-            <translation>Supporter Zougang ass an dësem Build net verfügbar.</translation>
-        </message>
-        <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>Astellunge Virrang: Argumenter&gt; Ëmfeld&gt; Eegeschafte&gt; gespäichert Serverwäerter.</translation>
+            <source>New image</source>
+            <translation>Neit Bild</translation>
         </message>
     </context>
     <context>
-        <name>Desktop</name>
+        <name>VideoCodec</name>
         <message>
-            <source>Open settings at startup.</source>
-            <translation>D'Astellunge beim Start opmaachen.</translation>
+            <source>Video codec: %1</source>
+            <translation>Videocodec: %1</translation>
         </message>
         <message>
-            <source>Open guided local test recording without starting network services.</source>
-            <translation>Déi guidéiert lokal Testopnam opmaachen, ouni Netzwierkservicer ze starten.</translation>
+            <source>Video codec ABI does not match its headers.</source>
+            <translation>D'ABI vum Videocodec stëmmt net mat sengen Headerdateien iwwereneen.</translation>
         </message>
         <message>
-            <source>Alternative file for audio profiles.</source>
-            <translation>Alternativ Datei fir Audioprofiller.</translation>
+            <source>Video buffers could not be allocated.</source>
+            <translation>Fir d'Videopuffere konnt kee Späicher reservéiert ginn.</translation>
         </message>
         <message>
-            <source>Load the interface without microphone capture and exit after one second.</source>
-            <translation>D'Uewerfläch ouni Mikrofonopnam lueden an no enger Sekonn zoumaachen.</translation>
+            <source>Invalid video quality tier.</source>
+            <translation>Ongülteg Videoqualitéitsstuf.</translation>
         </message>
         <message>
-            <source>Save an image of the app window during the UI test.</source>
-            <translation>E Bild vun der App-Fënster wärend dem Uewerflächentest späicheren.</translation>
+            <source>The screen source exceeds the supported capture size.</source>
+            <translation>D'Bildschiermquell iwwerschreit déi ënnerstëtzten Opnamgréisst.</translation>
         </message>
         <message>
-            <source>The window image could not be saved.</source>
-            <translation>D'Bild vun der Fënster konnt net gespäichert ginn.</translation>
+            <source>The screen source is too narrow.</source>
+            <translation>D'Bildschiermquell ass ze schmuel.</translation>
         </message>
         <message>
-            <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
-            <translation>D'Systemberäich ass net disponibel; d'App bleift als Fënster op.</translation>
+            <source>The video encoder could not be allocated.</source>
+            <translation>Fir de Videoencoder konnt kee Späicher reservéiert ginn.</translation>
+        </message>
+        <message>
+            <source>No supported video encoder is available.</source>
+            <translation>Et ass keen ënnerstëtzte Videoencoder verfügbar.</translation>
+        </message>
+        <message>
+            <source>Video encoder configuration is too large.</source>
+            <translation>D'Konfiguratioun vum Videoencoder ass ze grouss.</translation>
+        </message>
+        <message>
+            <source>Video scaling could not be initialized.</source>
+            <translation>D'Videoskaléierung konnt net initialiséiert ginn.</translation>
+        </message>
+        <message>
+            <source>The encoder returned an empty video packet.</source>
+            <translation>Den Encoder huet en eidelt Videopaket zeréckginn.</translation>
+        </message>
+        <message>
+            <source>Invalid video frame format.</source>
+            <translation>Ongültegt Videobildformat.</translation>
+        </message>
+        <message>
+            <source>Invalid video decoder configuration.</source>
+            <translation>Ongülteg Konfiguratioun vum Videodecoder.</translation>
+        </message>
+        <message>
+            <source>This video codec cannot be decoded.</source>
+            <translation>Dëse Videocodec kann net decodéiert ginn.</translation>
+        </message>
+        <message>
+            <source>Video decoder could not be allocated.</source>
+            <translation>Fir de Videodecoder konnt kee Späicher reservéiert ginn.</translation>
+        </message>
+        <message>
+            <source>Video decoder configuration could not be allocated.</source>
+            <translation>Fir d'Konfiguratioun vum Videodecoder konnt kee Späicher reservéiert ginn.</translation>
+        </message>
+        <message>
+            <source>Decoded dimensions do not match the screen stream.</source>
+            <translation>Déi decodéiert Dimensioune stëmmen net mam Bildschiermstream iwwereneen.</translation>
+        </message>
+        <message>
+            <source>Decoded image could not be allocated.</source>
+            <translation>Fir dat decodéiert Bild konnt kee Späicher reservéiert ginn.</translation>
+        </message>
+        <message>
+            <source>Video color conversion could not be initialized.</source>
+            <translation>D'Ëmwandlung vun de Videofaarwe konnt net initialiséiert ginn.</translation>
         </message>
     </context>
     <context>
-        <name>LocalLanguage</name>
+        <name>VoiceAvatar</name>
         <message>
-            <source>Translation (experimental)</source>
-            <translation>Iwwersetzung (experimentell)</translation>
+            <source>Muted</source>
+            <translation>Mikro gedämpft</translation>
         </message>
         <message>
-            <source>Spoken language</source>
-            <translation>Geschwate Sprooch</translation>
+            <source>Sleeping</source>
+            <translation>Schlof</translation>
         </message>
         <message>
-            <source>Translate to</source>
-            <translation>Iwwersetzen op</translation>
+            <source>Offline</source>
+            <translation>Offline</translation>
         </message>
         <message>
-            <source>Translate messages</source>
-            <translation>Noriichten iwwersetzen</translation>
+            <source>Speaking</source>
+            <translation>Schwätzen</translation>
         </message>
         <message>
-            <source>Translated voice</source>
-            <translation>Iwwersate Stëmm</translation>
+            <source>Unavailable</source>
+            <translation>Net verfügbar</translation>
         </message>
         <message>
-            <source>Original audio</source>
-            <translation>Originaltoun</translation>
+            <source>Listening</source>
+            <translation>Nolauschteren</translation>
         </message>
         <message>
-            <source>Original text</source>
-            <translation>Originaltext</translation>
+            <source>Deafened</source>
+            <translation>Lautsprecher stommgeschalt</translation>
+        </message>
+    </context>
+    <context>
+        <name>VoiceSession</name>
+        <message>
+            <source>Unavailable - audio settings or tone test</source>
+            <translation>Net verfügbar - Audio Astellungen oder Toun Test</translation>
         </message>
         <message>
-            <source>Prepare languages</source>
-            <translation>Sprooche virbereeden</translation>
+            <source>Microphone muted</source>
+            <translation>Mikro gedämpft</translation>
         </message>
         <message>
-            <source>Local language processing is unavailable.</source>
-            <translation>Lokal Sproochveraarbechtung ass net verfügbar.</translation>
+            <source>Push-to-talk held</source>
+            <translation>De Push-to-Talk-Knäppchen gëtt gedréckt gehalen</translation>
         </message>
         <message>
-            <source>Language settings could not be read.</source>
-            <translation>Sproochastellunge konnten net gelies ginn.</translation>
+            <source>Ready - push-to-talk released</source>
+            <translation>Ready - Push-to-Talk verëffentlecht</translation>
         </message>
         <message>
-            <source>Language settings could not be saved.</source>
-            <translation>Sproochastellunge konnten net gespäichert ginn.</translation>
+            <source>Microphone unmuted</source>
+            <translation>De Mikrofon ass ageschalt</translation>
+        </message>
+        <message>
+            <source>Settings could not be saved: %1</source>
+            <translation>Astellunge konnten net gespäichert ginn: %1</translation>
+        </message>
+        <message>
+            <source>The push-to-talk sequence cannot be incremented further.</source>
+            <translation>D'Push-to-Talk Sequenz kann net weider eropgebaut ginn.</translation>
+        </message>
+        <message>
+            <source>Choose System, Light or Dark.</source>
+            <translation>Wielt System, Liicht oder Däischter.</translation>
+        </message>
+        <message>
+            <source>Choose a colour palette from the list.</source>
+            <translation>Wielt eng Faarfpalette aus der Lëscht.</translation>
+        </message>
+        <message>
+            <source>Choose an available avatar.</source>
+            <translation>Wielt e verfügbaren Avatar.</translation>
+        </message>
+        <message>
+            <source>Invalid push-to-talk binding.</source>
+            <translation>Invalid Push-to-Talk Bindung.</translation>
+        </message>
+        <message>
+            <source>Release the held push-to-talk key first.</source>
+            <translation>Fräisetzung der ofgehalen Push-to-Talk Schlëssel éischt.</translation>
+        </message>
+        <message>
+            <source>Choose a language from the list.</source>
+            <translation>Wielt eng Sprooch aus der Lëscht.</translation>
+        </message>
+        <message>
+            <source>This avatar requires Supporter.</source>
+            <translation>Dësen Avatar erfuerdert Supporter.</translation>
+        </message>
+        <message>
+            <source>The name must contain 1 to 64 characters.</source>
+            <translation>Den Numm muss 1 bis 64 Zeechen enthalen.</translation>
+        </message>
+        <message>
+            <source>The name may not contain control characters or line breaks.</source>
+            <translation>Den Numm kann keng Kontroll Zeechen oder Linn Paus enthalen.</translation>
+        </message>
+        <message>
+            <source>Session settings could not be read.</source>
+            <translation>D'Sessiounsastellunge konnten net gelies ginn.</translation>
+        </message>
+        <message>
+            <source>Saved setting is invalid: %1</source>
+            <translation>Ongëlteg gespäichert Astellung: %1</translation>
         </message>
     </context>
 </TS>

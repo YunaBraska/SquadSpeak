@@ -36,14 +36,6 @@
             <translation>Otvorite postavke privatnosti vašeg sistema i dozvolite pristup mikrofonu za SquadSpeak.</translation>
         </message>
         <message>
-            <source>Microphone analysis active. Test audio stays on this computer.</source>
-            <translation>Analiza mikrofona aktivna. Testni zvuk ostaje na ovom računaru.</translation>
-        </message>
-        <message>
-            <source>Finish the test recording before changing devices.</source>
-            <translation>Završite probno snimanje prije promjene uređaja.</translation>
-        </message>
-        <message>
             <source>The output format is not supported.</source>
             <translation>Izlazni format nije podržan.</translation>
         </message>
@@ -68,32 +60,12 @@
             <translation>Probni ton nije mogao da se reprodukuje.</translation>
         </message>
         <message>
-            <source>The microphone has provided no data for five seconds. Recording discarded.</source>
-            <translation>Mikrofon ne daje podatke pet sekundi. Snimak je odbačen.</translation>
-        </message>
-        <message>
-            <source>The microphone was interrupted or changed. Recording discarded.</source>
-            <translation>Mikrofon je prekinut ili promijenjen. Snimak je odbačen.</translation>
-        </message>
-        <message>
-            <source>Cancelled. The incomplete recording was discarded.</source>
-            <translation>Otkazano. Nepotpuni snimak je odbačen.</translation>
-        </message>
-        <message>
             <source>No selected microphone is available</source>
             <translation>Nije dostupan nijedan odabrani mikrofon</translation>
         </message>
         <message>
             <source>Allow microphone access in the system dialog.</source>
             <translation>Dozvolite pristup mikrofonu u sistemskom dijalogu.</translation>
-        </message>
-        <message>
-            <source>Microphone capture active for the voice channel.</source>
-            <translation>Snimanje mikrofona aktivno za glasovni kanal.</translation>
-        </message>
-        <message>
-            <source>Microphone access was denied. Nothing was saved.</source>
-            <translation>Pristup mikrofonu je odbijen. Ništa nije sačuvano.</translation>
         </message>
         <message>
             <source>Microphone access is missing. Allow it in System Settings.</source>
@@ -265,97 +237,6 @@
         </message>
     </context>
     <context>
-        <name>AudioRecording</name>
-        <message>
-            <source>Incomplete audio block. Recording discarded.</source>
-            <translation>Nepotpun audio blok. Snimak je odbačen.</translation>
-        </message>
-        <message>
-            <source>Move about one meter from the microphone. Keep the background sound playing and read the sentence.</source>
-            <translation>Odmaknite se oko jedan metar od mikrofona. Nastavite da svira pozadinski zvuk i pročitajte rečenicu.</translation>
-        </message>
-        <message>
-            <source>Voice with background sound</source>
-            <translation>Glas sa pozadinskim zvukom</translation>
-        </message>
-        <message>
-            <source>The recordings folder could not be created.</source>
-            <translation>Nije moguće kreirati folder sa snimcima.</translation>
-        </message>
-        <message>
-            <source>You can stop the background sound now.</source>
-            <translation>Sada možete zaustaviti pozadinski zvuk.</translation>
-        </message>
-        <message>
-            <source>Recordings saved</source>
-            <translation>Snimci sačuvani</translation>
-        </message>
-        <message>
-            <source>The test recording could not be saved completely.</source>
-            <translation>Probni snimak nije mogao biti sačuvan u potpunosti.</translation>
-        </message>
-        <message>
-            <source>Keep music off and stay quiet. Start when ready.</source>
-            <translation>Ugasite muziku i budite tihi. Počnite kada budete spremni.</translation>
-        </message>
-        <message>
-            <source>Your voice</source>
-            <translation>Tvoj glas</translation>
-        </message>
-        <message>
-            <source>Play music or another background sound at a normal volume. Stay quiet while recording.</source>
-            <translation>Pustite muziku ili neki drugi zvuk u pozadini pri normalnoj jačini zvuka. Budite tihi tokom snimanja.</translation>
-        </message>
-        <message>
-            <source>The test recording could not be created.</source>
-            <translation>Probni snimak nije mogao biti kreiran.</translation>
-        </message>
-        <message>
-            <source>Background sound</source>
-            <translation>Pozadinski zvuk</translation>
-        </message>
-        <message>
-            <source>The window is open. I can hear the rain outside. One, two, three, four, five.</source>
-            <translation>Prozor je otvoren. Čujem kišu napolju. Jedan, dva, tri, četiri, pet.</translation>
-        </message>
-        <message>
-            <source>This microphone format is not supported for test recordings.</source>
-            <translation>Ovaj format mikrofona nije podržan za probne snimke.</translation>
-        </message>
-        <message>
-            <source>Keep the background volume unchanged. Read the sentence, then stop recording.</source>
-            <translation>Zadržite jačinu zvuka u pozadini nepromijenjenom. Pročitajte rečenicu, a zatim zaustavite snimanje.</translation>
-        </message>
-        <message>
-            <source>Record at least half a second, then try again.</source>
-            <translation>Snimite najmanje pola sekunde, a zatim pokušajte ponovo.</translation>
-        </message>
-        <message>
-            <source>Sit at your usual distance. Read the sentence, then stop recording.</source>
-            <translation>Sedite na uobičajenom rastojanju. Pročitajte rečenicu, a zatim zaustavite snimanje.</translation>
-        </message>
-        <message>
-            <source>The recording description could not be saved.</source>
-            <translation>Opis snimka nije mogao biti sačuvan.</translation>
-        </message>
-        <message>
-            <source>The WAV file could not be finalized.</source>
-            <translation>WAV datoteka nije mogla biti finalizirana.</translation>
-        </message>
-        <message>
-            <source>The WAV header could not be written.</source>
-            <translation>WAV zaglavlje se ne može napisati.</translation>
-        </message>
-        <message>
-            <source>Voice farther away</source>
-            <translation>Glas dalje</translation>
-        </message>
-        <message>
-            <source>Room sound</source>
-            <translation>Zvuk sobe</translation>
-        </message>
-    </context>
-    <context>
         <name>AudioSettings</name>
         <message>
             <source>Echo cancellation</source>
@@ -406,8 +287,8 @@
             <translation>Vaša reprodukcija</translation>
         </message>
         <message>
-            <source>Clear local key</source>
-            <translation>Obrišite lokalnu tastatursku prečicu za pritisni za govor</translation>
+            <source>Clear key</source>
+            <translation>Obriši taster</translation>
         </message>
         <message>
             <source>Low cut</source>
@@ -428,10 +309,6 @@
         <message>
             <source>Cancel</source>
             <translation>Otkaži</translation>
-        </message>
-        <message>
-            <source>Guided recording</source>
-            <translation>Vođeno snimanje</translation>
         </message>
         <message>
             <source>Clipping. Reduce microphone gain.</source>
@@ -466,16 +343,12 @@
             <translation>Uređaj je isključen</translation>
         </message>
         <message>
-            <source>Local key</source>
-            <translation>Lokalna tastaturska prečica za pritisni za govor</translation>
+            <source>PTT key</source>
+            <translation>Taster za govor</translation>
         </message>
         <message>
             <source>Voice activation</source>
             <translation>Mikrofon koji se aktivira glasom</translation>
-        </message>
-        <message>
-            <source>Remote PTT key</source>
-            <translation>Daljinska tastaturska prečica za pritisni za govor</translation>
         </message>
         <message>
             <source>Noise reduction</source>
@@ -492,10 +365,6 @@
         <message>
             <source>Microphone gain</source>
             <translation>Pojačanje mikrofona</translation>
-        </message>
-        <message>
-            <source>Clear remote key</source>
-            <translation>Obriši daljinsku prečicu za govor</translation>
         </message>
         <message>
             <source>Not assigned</source>
@@ -521,9 +390,81 @@
             <source>Read bot messages aloud</source>
             <translation>Čitaj poruke bota naglas</translation>
         </message>
+        <message>
+            <source>Download a high-quality voice for this language in macOS settings.</source>
+            <translation>Preuzmi kvalitetan glas za ovaj jezik u podešavanjima macOS-a.</translation>
+        </message>
+        <message>
+            <source>Bot voice</source>
+            <translation>Glas bota</translation>
+        </message>
+        <message>
+            <source>Automatic</source>
+            <translation>Automatski</translation>
+        </message>
+        <message>
+            <source>Unavailable</source>
+            <translation>Nedostupno</translation>
+        </message>
+        <message>
+            <source>Download voices in your device's Accessibility speech settings.</source>
+            <translation>Preuzmi glasove u podešavanjima govora u odjeljku pristupačnosti uređaja.</translation>
+        </message>
+        <message>
+            <source>Voice download help</source>
+            <translation>Pomoć za preuzimanje glasova</translation>
+        </message>
+        <message>
+            <source>Strength, not the percentage of echo removed.</source>
+            <translation>Jačina, a ne procenat uklonjenog odjeka.</translation>
+        </message>
+        <message>
+            <source>Auto also checks for speech, not just volume.</source>
+            <translation>Automatski režim provjerava i govor, ne samo glasnoću.</translation>
+        </message>
     </context>
     <context>
         <name>Channels</name>
+        <message>
+            <source>Copy address</source>
+            <translation>Kopiraj adresu</translation>
+        </message>
+        <message>
+            <source>Messages</source>
+            <translation>Poruke</translation>
+        </message>
+        <message>
+            <source>Message</source>
+            <translation>Poruka</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Otvori</translation>
+        </message>
+        <message>
+            <source>Online</source>
+            <translation>Na mreži</translation>
+        </message>
+        <message>
+            <source>Offline</source>
+            <translation>Van mreže</translation>
+        </message>
+        <message>
+            <source>No private messages</source>
+            <translation>Nema privatnih poruka</translation>
+        </message>
+        <message>
+            <source>Private messages are unavailable for this contact.</source>
+            <translation>Privatne poruke nijesu dostupne za ovaj kontakt.</translation>
+        </message>
+        <message>
+            <source>If asked, allow local network access. You can change this in system settings.</source>
+            <translation>Ako se zatraži, dozvoli pristup lokalnoj mreži. To možeš promijeniti u sistemskim podešavanjima.</translation>
+        </message>
+        <message>
+            <source>Retry</source>
+            <translation>Pokušaj ponovo</translation>
+        </message>
         <message>
             <source>Updates</source>
             <translation>Ažuriranja</translation>
@@ -665,10 +606,6 @@
             <translation>Zvukovi obavještenja</translation>
         </message>
         <message>
-            <source>Lifetime for new messages. Earlier messages keep their expiry.</source>
-            <translation>Životni vijek za nove poruke. Ranije poruke zadržavaju svoj rok važenja.</translation>
-        </message>
-        <message>
             <source>Enable speakers</source>
             <translation>Omogućite zvučnike</translation>
         </message>
@@ -703,10 +640,6 @@
         <message>
             <source>Allow device</source>
             <translation>Dozvoli uređaj</translation>
-        </message>
-        <message>
-            <source>Receive quality: %1 kb/s per voice. Adjusts automatically for this device.</source>
-            <translation>Kvalitet prijema: %1 kb/s po glasu. Automatski se prilagođava za ovaj uređaj.</translation>
         </message>
         <message>
             <source>Stop radio</source>
@@ -1204,6 +1137,46 @@
             <source>Use default music volume</source>
             <translation>Koristi podrazumijevanu jačinu muzike</translation>
         </message>
+        <message>
+            <source>Show in Dock</source>
+            <translation>Prikaži u Docku</translation>
+        </message>
+        <message>
+            <source>App language</source>
+            <translation>Jezik aplikacije</translation>
+        </message>
+        <message>
+            <source>Send in</source>
+            <translation>Šalji na</translation>
+        </message>
+        <message>
+            <source>Hear in</source>
+            <translation>Slušaj na</translation>
+        </message>
+        <message>
+            <source>Download language models for %1 and %2?</source>
+            <translation>Preuzeti jezičke modele za %1 i %2?</translation>
+        </message>
+        <message>
+            <source>Download</source>
+            <translation>Preuzmi</translation>
+        </message>
+        <message>
+            <source>PTT, chat and channel controls. Uses the controlled device's microphone.</source>
+            <translation>PTT, čet i kontrole kanala. Koristi se mikrofon kontrolisanog uređaja.</translation>
+        </message>
+        <message>
+            <source>Connect the other device to one of your channels, then allow it here.</source>
+            <translation>Poveži drugi uređaj sa jednim od svojih kanala, pa mu ovdje dozvoli pristup.</translation>
+        </message>
+        <message>
+            <source>On the other device, open Settings &gt; Input &gt; Remote control and allow this device.</source>
+            <translation>Na drugom uređaju otvori Postavke &gt; Unos &gt; Daljinski upravljač i dozvoli ovaj uređaj.</translation>
+        </message>
+        <message>
+            <source>Remove server</source>
+            <translation>Ukloni server</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1421,6 +1394,10 @@
     </context>
     <context>
         <name>LocalChannel</name>
+        <message>
+            <source>Blocked</source>
+            <translation>Blokirano</translation>
+        </message>
         <message>
             <source>Host is not responding. Reconnecting.</source>
             <translation>Host ne odgovara. Ponovno povezivanje.</translation>
@@ -2205,6 +2182,14 @@
             <source>Voice relay codec could not be configured.</source>
             <translation>Nije moguće konfigurirati kodek za prosljeđivanje glasa.</translation>
         </message>
+        <message>
+            <source>Unsupported audio codec</source>
+            <translation>Nepodržan audio kodek</translation>
+        </message>
+        <message>
+            <source>Speaking is not allowed in this channel.</source>
+            <translation>Govor u ovom kanalu nije dozvoljen.</translation>
+        </message>
     </context>
     <context>
         <name>PushToTalkKey</name>
@@ -2345,53 +2330,6 @@
         </message>
     </context>
     <context>
-        <name>RecordingPanel</name>
-        <message>
-            <source>Stop</source>
-            <translation>Stani</translation>
-        </message>
-        <message>
-            <source>Start</source>
-            <translation>Početak</translation>
-        </message>
-        <message>
-            <source>Saved on this device only. Nothing is uploaded.</source>
-            <translation>Sačuvano samo na ovom uređaju. Ništa nije učitano.</translation>
-        </message>
-        <message>
-            <source>Keep this take or record it again.</source>
-            <translation>Sačuvajte ovaj snimak ili ga ponovo snimite.</translation>
-        </message>
-        <message>
-            <source>Record again</source>
-            <translation>Snimi ponovo</translation>
-        </message>
-        <message>
-            <source>Use recording</source>
-            <translation>Koristi snimanje</translation>
-        </message>
-        <message>
-            <source>Recording progress</source>
-            <translation>Napredak snimanja</translation>
-        </message>
-        <message>
-            <source>Step %1 of %2</source>
-            <translation>Korak %1 od %2</translation>
-        </message>
-        <message>
-            <source>Open recordings</source>
-            <translation>Otvoreni snimci</translation>
-        </message>
-        <message>
-            <source>Reset test</source>
-            <translation>Reset test</translation>
-        </message>
-        <message>
-            <source>%1 s remaining / %2 dBFS</source>
-            <translation>Preostalo %1 s / %2 dBFS</translation>
-        </message>
-    </context>
-    <context>
         <name>SettingSlider</name>
         <message>
             <source>Auto</source>
@@ -2463,10 +2401,6 @@
         <message>
             <source>Collecting signal...</source>
             <translation>Prikupljanje signala...</translation>
-        </message>
-        <message>
-            <source>Dashed curve: configured gain and frequency cuts, using the right dB scale. Noise reduction and voice activation are not part of this curve.</source>
-            <translation>Isprekidana kriva: podešeno pojačanje i sječenje frekvencija prema desnoj dB skali. Smanjenje šuma i glasovna aktivacija nijesu dio ove krive.</translation>
         </message>
         <message>
             <source>Microphone preview is not running</source>
@@ -2643,6 +2577,10 @@
     </context>
     <context>
         <name>ScreenShare</name>
+        <message>
+            <source>Allow screen recording in system settings.</source>
+            <translation>Dozvoli snimanje ekrana u sistemskim postavkama.</translation>
+        </message>
         <message>
             <source>The shared screen was removed. Select a source to start again.</source>
             <translation>dijeljeni ekran je uklonjen. Odaberite izvor da počnete ponovo.</translation>
@@ -2895,6 +2833,10 @@
     </context>
     <context>
         <name>Headless</name>
+        <message>
+            <source>Host display name.</source>
+            <translation>Prikazano ime hosta.</translation>
+        </message>
         <message>
             <source>Command failed.</source>
             <translation>Naredba nije uspjela.</translation>
@@ -3223,10 +3165,6 @@
             <translation>Otvori podešavanja pri pokretanju.</translation>
         </message>
         <message>
-            <source>Open guided local test recording without starting network services.</source>
-            <translation>Otvori vođeno lokalno probno snimanje bez pokretanja mrežnih usluga.</translation>
-        </message>
-        <message>
             <source>Alternative file for audio profiles.</source>
             <translation>Alternativna datoteka za audioprofile.</translation>
         </message>
@@ -3252,14 +3190,6 @@
         <message>
             <source>Translation (experimental)</source>
             <translation>Prevod (eksperimentalno)</translation>
-        </message>
-        <message>
-            <source>Spoken language</source>
-            <translation>Govorni jezik</translation>
-        </message>
-        <message>
-            <source>Translate to</source>
-            <translation>Prevedi na</translation>
         </message>
         <message>
             <source>Translate messages</source>

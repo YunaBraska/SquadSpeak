@@ -1,4 +1,8 @@
+#if os(macOS)
 import AppKit
+#else
+import UIKit
+#endif
 import AVFAudio
 import Foundation
 import NaturalLanguage
@@ -21,8 +25,8 @@ private func languageID(_ value: String) -> String {
 }
 
 private func localeName(_ language: Locale.Language) -> [String: String] {
-  let id = language.minimalIdentifier
-  return ["id": id, "name": Locale.current.localizedString(forIdentifier: id) ?? id]
+  let id = language.languageCode?.identifier ?? language.minimalIdentifier
+  return ["id": id, "name": Locale.current.localizedString(forLanguageCode: id) ?? id]
 }
 
 private func localeName(_ language: Locale) -> [String: String] {
@@ -30,15 +34,15 @@ private func localeName(_ language: Locale) -> [String: String] {
   return ["id": id, "name": Locale.current.localizedString(forIdentifier: id) ?? id]
 }
 
-@available(macOS 15.0, *)
+@available(macOS 15.0, iOS 18.0, *)
 private func translationAvailability() -> LanguageAvailability {
 #if SQUAD_TRANSLATION_STRATEGY
-  if #available(macOS 26.4, *) { return LanguageAvailability(preferredStrategy: .lowLatency) }
+  if #available(macOS 26.4, iOS 26.4, *) { return LanguageAvailability(preferredStrategy: .lowLatency) }
 #endif
   return LanguageAvailability()
 }
 
-@available(macOS 15.0, *)
+@available(macOS 15.0, iOS 18.0, *)
 private func translationLanguage(_ identifier: String, supported: [Locale.Language]) -> Locale.Language {
   let requested = Locale.Language(identifier: identifier)
   return supported.first { $0.minimalIdentifier == requested.minimalIdentifier }
@@ -47,7 +51,7 @@ private func translationLanguage(_ identifier: String, supported: [Locale.Langua
     ?? requested
 }
 
-@available(macOS 15.0, *)
+@available(macOS 15.0, iOS 18.0, *)
 private struct PreparationView: View {
   let configuration: TranslationSession.Configuration
   let finished: (String?) -> Void
@@ -71,11 +75,19 @@ private struct PreparationView: View {
   }
 }
 
+#if os(macOS)
 private final class PreparationWindowDelegate: NSObject, NSWindowDelegate {
   let closed: () -> Void
   init(closed: @escaping () -> Void) { self.closed = closed }
   func windowWillClose(_ notification: Notification) { closed() }
 }
+#else
+private final class PreparationWindowDelegate: NSObject, UIAdaptivePresentationControllerDelegate {
+  let closed: () -> Void
+  init(closed: @escaping () -> Void) { self.closed = closed }
+  func presentationControllerDidDismiss(_ presentationController: UIPresentationController) { closed() }
+}
+#endif
 
 private final class LanguageBridge {
   private var callback: LanguageCallback?
@@ -90,7 +102,11 @@ private final class LanguageBridge {
   private var speechConverters: [Int64: AVAudioConverter] = [:]
   private var speechFormats: [Int64: AVAudioFormat] = [:]
   private var capabilitiesCString: UnsafeMutablePointer<CChar>?
+#if os(macOS)
   private var preparationPanel: NSPanel?
+#else
+  private var preparationPanel: UIViewController?
+#endif
   private var preparationDelegate: PreparationWindowDelegate?
   private var preparationRequest: Int64?
   private var preparationCompletion: ((String?) -> Void)?
@@ -102,7 +118,7 @@ private final class LanguageBridge {
     self.callback = callback
     self.context = context
     refreshCapabilities()
-    if #available(macOS 14.0, *) {
+    if #available(macOS 14.0, iOS 17.0, *) {
       voiceObserver = NotificationCenter.default.addObserver(forName: AVSpeechSynthesizer.availableVoicesDidChangeNotification,
           object: nil, queue: nil) { [weak self] _ in
         // Apple's inventory may post while holding its own synthesis lock.
@@ -129,7 +145,7 @@ private final class LanguageBridge {
     context = nil
     for task in translationTasks.values { task.cancel() }
     for task in speechTasks.values { task.cancel() }
-    if #available(macOS 26.0, *) {
+    if #available(macOS 26.0, iOS 26.0, *) {
       for value in speechContinuations.values {
         (value as? AsyncStream<AnalyzerInput>.Continuation)?.finish()
       }
@@ -145,9 +161,18 @@ private final class LanguageBridge {
     preparationRequest = nil
     preparationTask?.cancel()
     preparationTask = nil
-    preparationPanel?.orderOut(nil)
+    dismissPreparation()
     preparationPanel = nil
     preparationDelegate = nil
+  }
+
+  private func dismissPreparation() {
+#if os(macOS)
+    preparationPanel?.orderOut(nil)
+#else
+    let controller = preparationPanel
+    DispatchQueue.main.async { controller?.dismiss(animated: true) }
+#endif
   }
 
   private func emit(_ request: Int64, _ event: [String: Any]) {
@@ -174,7 +199,7 @@ private final class LanguageBridge {
   }
 
   private func refreshCapabilities() {
-    guard #available(macOS 15.0, *) else { return }
+    guard #available(macOS 15.0, iOS 18.0, *) else { return }
     Task { @MainActor [weak self] in
       guard let self else { return }
       var seen = Set<String>()
@@ -184,8 +209,8 @@ private final class LanguageBridge {
       var speechLanguages: [[String: String]] = []
       var speechAvailable = false
       var available = false
-      var error = "Text and speech translation requires macOS 26"
-      if #available(macOS 26.0, *) {
+      var error = "Text and speech translation requires macOS or iOS 26"
+      if #available(macOS 26.0, iOS 26.0, *) {
         speechLanguages = await SpeechTranscriber.supportedLocales.map(localeName)
         available = true
         speechAvailable = SpeechTranscriber.isAvailable
@@ -216,33 +241,38 @@ private final class LanguageBridge {
     if activeTokens[request] == token { activeTokens.removeValue(forKey: request) }
   }
 
-  private func showTranslationPreparation(_ request: Int64, source: String, target: String, completion: @escaping (String?) -> Void) {
-    guard #available(macOS 15.0, *) else {
-      completion("Translation model preparation requires macOS 15")
+  @MainActor private func showTranslationPreparation(_ request: Int64, source: String, target: String, completion: @escaping (String?) -> Void) {
+    guard #available(macOS 15.0, iOS 18.0, *) else {
+      completion("Translation model preparation requires macOS 15 or iOS 18")
       return
     }
-    preparationPanel?.orderOut(nil)
+    dismissPreparation()
     preparationRequest = request
     preparationCompletion = completion
     var configuration = TranslationSession.Configuration(
       source: Locale.Language(identifier: source), target: Locale.Language(identifier: target))
 #if SQUAD_TRANSLATION_STRATEGY
-    if #available(macOS 26.4, *) { configuration.preferredStrategy = .lowLatency }
+    if #available(macOS 26.4, iOS 26.4, *) { configuration.preferredStrategy = .lowLatency }
 #endif
     let view = PreparationView(configuration: configuration) { [weak self] error in
       guard let self, self.preparationRequest == request else { return }
       let finish = self.preparationCompletion
       self.preparationCompletion = nil
       self.preparationRequest = nil
-      self.preparationPanel?.orderOut(nil)
+      self.dismissPreparation()
       self.preparationPanel = nil
       self.preparationDelegate = nil
       finish?(error)
     }
+#if os(macOS)
     let controller = NSHostingController(rootView: view)
     let panel = NSPanel(contentViewController: controller)
     panel.styleMask = [.titled, .closable]
     panel.title = Locale.current.localizedString(forIdentifier: target) ?? target
+#else
+    let panel = UIHostingController(rootView: view)
+    panel.modalPresentationStyle = .pageSheet
+#endif
     let delegate = PreparationWindowDelegate { [weak self] in
       guard let self, let finish = self.preparationCompletion else { return }
       self.preparationCompletion = nil
@@ -252,12 +282,27 @@ private final class LanguageBridge {
       finish("Language model preparation was cancelled")
     }
     preparationDelegate = delegate
+#if os(macOS)
     panel.delegate = delegate
     panel.level = .modalPanel
     panel.center()
     preparationPanel = panel
     NSApp.activate(ignoringOtherApps: true)
     panel.makeKeyAndOrderFront(nil)
+#else
+    guard let scene = UIApplication.shared.connectedScenes.first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene,
+          var presenter = scene.windows.first(where: \.isKeyWindow)?.rootViewController else {
+      preparationCompletion = nil
+      preparationRequest = nil
+      preparationDelegate = nil
+      completion("Open the app to prepare language models")
+      return
+    }
+    while let presented = presenter.presentedViewController { presenter = presented }
+    preparationPanel = panel
+    presenter.present(panel, animated: true)
+    panel.presentationController?.delegate = delegate
+#endif
   }
 
   func prepare(_ request: Int64, source: String, target: String, speech: Bool) {
@@ -265,8 +310,8 @@ private final class LanguageBridge {
       emit(request, ["kind": "error", "error": "Model preparation requires explicit language identifiers"])
       return
     }
-    guard #available(macOS 26.0, *) else {
-      emit(request, ["kind": "error", "error": "Language model preparation requires macOS 26"])
+    guard #available(macOS 26.0, iOS 26.0, *) else {
+      emit(request, ["kind": "error", "error": "Language model preparation requires macOS or iOS 26"])
       return
     }
     if preparationTask != nil || preparationCompletion != nil {
@@ -315,9 +360,9 @@ private final class LanguageBridge {
     }
   }
 
-  func translate(_ request: Int64, source: String, target: String, text: String) {
-    guard #available(macOS 26.0, *) else {
-      emit(request, ["kind": "error", "error": "Text translation requires macOS 26 in this experimental bridge"])
+  func translate(_ request: Int64, source: String, target: String, text: String, detectionText: String) {
+    guard #available(macOS 26.0, iOS 26.0, *) else {
+      emit(request, ["kind": "error", "error": "Text translation requires macOS or iOS 26 in this experimental bridge"])
       return
     }
     guard !target.isEmpty else {
@@ -334,7 +379,7 @@ private final class LanguageBridge {
       var detected = source
       do {
         if detected.isEmpty {
-          guard let language = NLLanguageRecognizer.dominantLanguage(for: text), language.rawValue != "und" else {
+          guard let language = NLLanguageRecognizer.dominantLanguage(for: detectionText), language.rawValue != "und" else {
             throw NSError(domain: "SquadLanguage", code: 5, userInfo: [NSLocalizedDescriptionKey: "The source language could not be detected"])
           }
           detected = languageID(language.rawValue)
@@ -356,7 +401,7 @@ private final class LanguageBridge {
           }
           let session: TranslationSession
 #if SQUAD_TRANSLATION_STRATEGY
-          if #available(macOS 26.4, *) {
+          if #available(macOS 26.4, iOS 26.4, *) {
             session = TranslationSession(installedSource: sourceLanguage, target: targetLanguage, preferredStrategy: .lowLatency)
           } else { session = TranslationSession(installedSource: sourceLanguage, target: targetLanguage) }
 #else
@@ -379,8 +424,8 @@ private final class LanguageBridge {
 
   func listen(_ request: Int64, source: String) {
     cancel(request)
-    guard #available(macOS 26.0, *) else {
-      emit(request, ["kind": "error", "error": "Live speech translation requires macOS 26"])
+    guard #available(macOS 26.0, iOS 26.0, *) else {
+      emit(request, ["kind": "error", "error": "Live speech translation requires macOS or iOS 26"])
       return
     }
     guard SpeechTranscriber.isAvailable else {
@@ -439,13 +484,15 @@ private final class LanguageBridge {
         self.speechConverters.removeValue(forKey: request)
         self.speechFormats.removeValue(forKey: request)
         self.clear(request, token)
-        self.emit(request, ["kind": "error", "error": error.localizedDescription])
+        let missingModels = (error as NSError).domain == "SquadLanguage" && (error as NSError).code == 6
+        self.emit(request, ["kind": "error", "error": error.localizedDescription,
+                            "code": missingModels ? "modelsRequired" : "", "source": source])
       }
     }
   }
 
   func audio(_ request: Int64, samples: UnsafePointer<Float>?, count: Int) {
-    guard #available(macOS 26.0, *), count > 0, count <= 48_000, let samples,
+    guard #available(macOS 26.0, iOS 26.0, *), count > 0, count <= 48_000, let samples,
           let continuation = speechContinuations[request] as? AsyncStream<AnalyzerInput>.Continuation else { return }
     guard let format = AVAudioFormat(standardFormatWithSampleRate: 48_000, channels: 1),
           let buffer = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: AVAudioFrameCount(count)),
@@ -480,7 +527,7 @@ private final class LanguageBridge {
   func cancel(_ request: Int64) {
     activeTokens.removeValue(forKey: request)
     translationTasks.removeValue(forKey: request)?.cancel()
-    if #available(macOS 26.0, *) {
+    if #available(macOS 26.0, iOS 26.0, *) {
       (speechContinuations.removeValue(forKey: request) as? AsyncStream<AnalyzerInput>.Continuation)?.finish()
     }
     speechTasks.removeValue(forKey: request)?.cancel()
@@ -492,7 +539,7 @@ private final class LanguageBridge {
       preparationCompletion?("Language model preparation was cancelled")
       preparationCompletion = nil
       preparationRequest = nil
-      preparationPanel?.orderOut(nil)
+      dismissPreparation()
       preparationPanel = nil
       preparationDelegate = nil
     }
@@ -532,10 +579,10 @@ public func squad_language_prepare(_ handle: UnsafeMutableRawPointer?, _ request
 }
 
 @_cdecl("squad_language_translate")
-public func squad_language_translate(_ handle: UnsafeMutableRawPointer?, _ request: Int64, _ source: UnsafePointer<CChar>?, _ target: UnsafePointer<CChar>?, _ text: UnsafePointer<CChar>?) {
+public func squad_language_translate(_ handle: UnsafeMutableRawPointer?, _ request: Int64, _ source: UnsafePointer<CChar>?, _ target: UnsafePointer<CChar>?, _ text: UnsafePointer<CChar>?, _ detectionText: UnsafePointer<CChar>?) {
   guard let handle else { return }
   let bridge = Unmanaged<LanguageBridge>.fromOpaque(handle).takeUnretainedValue()
-  bridge.translate(request, source: source.map(String.init) ?? "", target: target.map(String.init) ?? "", text: text.map(String.init) ?? "")
+  bridge.translate(request, source: source.map(String.init) ?? "", target: target.map(String.init) ?? "", text: text.map(String.init) ?? "", detectionText: detectionText.map(String.init) ?? "")
 }
 
 @_cdecl("squad_language_listen")

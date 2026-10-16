@@ -18,6 +18,7 @@ class VoiceSession final : public QObject {
     Q_PROPERTY(QString language READ language NOTIFY preferencesChanged)
     Q_PROPERTY(QVariantList languages READ languages CONSTANT)
     Q_PROPERTY(QString theme READ theme NOTIFY preferencesChanged)
+    Q_PROPERTY(bool showInDock READ showInDock NOTIFY preferencesChanged)
     Q_PROPERTY(QString palette READ palette NOTIFY preferencesChanged)
     Q_PROPERTY(bool deafened READ deafened NOTIFY preferencesChanged)
     Q_PROPERTY(bool eventSounds READ eventSounds NOTIFY preferencesChanged)
@@ -29,7 +30,6 @@ class VoiceSession final : public QObject {
     Q_PROPERTY(bool pttInputHeld READ pttInputHeld NOTIFY presenceChanged)
     Q_PROPERTY(int pttKeyCode READ pttKeyCode NOTIFY preferencesChanged)
     Q_PROPERTY(QString pttKeyName READ pttKeyName NOTIFY preferencesChanged)
-    Q_PROPERTY(QString remotePttKeyName READ remotePttKeyName NOTIFY preferencesChanged)
     Q_PROPERTY(bool available READ available NOTIFY presenceChanged)
     Q_PROPERTY(bool transmissionAllowed READ transmissionAllowed NOTIFY presenceChanged)
     Q_PROPERTY(QString presenceText READ presenceText NOTIFY presenceChanged)
@@ -49,6 +49,8 @@ public:
     Q_INVOKABLE bool setLanguage(const QString& language);
     [[nodiscard]] QString theme() const { return preferences_.value("theme").toString(); }
     Q_INVOKABLE bool setTheme(const QString& theme);
+    [[nodiscard]] bool showInDock() const { return preferences_.value("showInDock").toBool(true); }
+    Q_INVOKABLE bool setShowInDock(bool enabled);
     [[nodiscard]] QString palette() const { return preferences_.value("palette").toString(); }
     Q_INVOKABLE bool setPalette(const QString& palette);
     [[nodiscard]] bool deafened() const { return preferences_.value("deafened").toBool(); }
@@ -59,25 +61,23 @@ public:
     Q_INVOKABLE bool setDeafened(bool deafened);
     Q_INVOKABLE bool setEventSounds(bool enabled);
     [[nodiscard]] QString userName() const { return preferences_.value("userName").toString(); }
+    [[nodiscard]] static QString suggestedName(bool channel);
     [[nodiscard]] QString legacyChannelName() const { return legacyChannelName_; }
     [[nodiscard]] bool muted() const { return preferences_.value("muted").toBool(); }
     [[nodiscard]] bool pushToTalk() const { return preferences_.value("pushToTalk").toBool(); }
     [[nodiscard]] bool pttButtonHeld() const { return preferences_.value("pttButtonHeld").toBool(); }
     [[nodiscard]] bool pttKeyHeld() const { return preferences_.value("pttKeyHeld").toBool(); }
-    [[nodiscard]] bool pttInputHeld() const { return pttButtonHeld() || (pttLocal_ ? pttKeyHeld() : remotePttKeyHeld()); }
-    [[nodiscard]] bool remotePttKeyHeld() const { return preferences_.value("remotePttKeyHeld").toBool(); }
+    [[nodiscard]] bool pttInputHeld() const { return pttButtonHeld() || pttKeyHeld(); }
     [[nodiscard]] qint64 pttInputRevision() const { return preferences_.value("pttRevision").toInteger(); }
     [[nodiscard]] bool pttHeld() const { return (pttLocal_ && pttInputHeld()) || remotePttHeld_; }
     [[nodiscard]] int pttKeyCode() const { return preferences_.value("pttKeyCode").toInt(); }
     [[nodiscard]] QString pttKeyName() const;
-    [[nodiscard]] int remotePttKeyCode() const { return preferences_.value("remotePttKeyCode").toInt(); }
-    [[nodiscard]] QString remotePttKeyName() const;
-    [[nodiscard]] QList<int> pttKeyCodes(bool remote = false) const;
+    [[nodiscard]] QList<int> pttKeyCodes() const;
     [[nodiscard]] bool available() const { return !settingsOpen_ && !testActive_; }
     [[nodiscard]] bool inputReady() const { return inputReady_; }
     [[nodiscard]] bool outputReady() const { return outputReady_; }
     bool setAudioReadiness(bool inputReady, bool outputReady);
-    [[nodiscard]] bool transmissionAllowed() const { return available() && !muted() && (!pushToTalk() || pttHeld()); }
+    [[nodiscard]] bool transmissionAllowed() const { return pttLocal_ && available() && !muted() && (!pushToTalk() || pttHeld()); }
     [[nodiscard]] QString presenceText() const;
     [[nodiscard]] QString error() const { return error_; }
     // Trims surrounding whitespace; rejects empty, oversized or control-bearing names.
@@ -86,10 +86,10 @@ public:
     Q_INVOKABLE bool setMuted(bool muted);
     Q_INVOKABLE bool setPushToTalk(bool enabled);
     Q_INVOKABLE bool setPttButtonHeld(bool held);
-    bool setPttKeyHeld(bool held, bool remote = false);
-    bool setPttShortcut(int nativeKey, const QString& name, bool remote = false);
-    bool setPttShortcut(const QList<int>& nativeKeys, const QStringList& names, bool remote = false);
-    bool releasePttKey(bool remote = false);
+    bool setPttKeyHeld(bool held);
+    bool setPttShortcut(int nativeKey, const QString& name);
+    bool setPttShortcut(const QList<int>& nativeKeys, const QStringList& names);
+    bool releasePttKey();
     // Derived from the channel's authenticated, persisted controller states.
     bool setRemotePttHeld(bool held);
     bool setPttLocal(bool local);
@@ -110,9 +110,7 @@ private:
         {"avatar", "mossling"}, {"theme", "system"}, {"palette", "plum"}, {"language", "en"}, {"deafened", false}, {"eventSounds", true},
         {"muted", true}, {"animatedAvatars", true}, {"pushToTalk", false}, {"pttButtonHeld", false}, {"pttKeyHeld", false},
         {"pttKeyCode", -1}, {"pttKeyName", ""}, {"pttRevision", 0},
-        {"remotePttKeyHeld", false}, {"remotePttKeyCode", -1}, {"remotePttKeyName", ""},
-        {"pttKeyCodes", QJsonArray{}}, {"pttKeyNames", QJsonArray{}},
-        {"remotePttKeyCodes", QJsonArray{}}, {"remotePttKeyNames", QJsonArray{}}};
+        {"pttKeyCodes", QJsonArray{}}, {"pttKeyNames", QJsonArray{}}};
     QString error_;
     bool remotePttHeld_ = false;
     bool pttLocal_ = true;

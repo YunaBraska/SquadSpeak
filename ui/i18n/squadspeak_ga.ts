@@ -36,14 +36,6 @@
             <translation>Oscail socruithe príobháideachais do chórais agus ceadaigh rochtain micreafón do SquadSpeak.</translation>
         </message>
         <message>
-            <source>Microphone analysis active. Test audio stays on this computer.</source>
-            <translation>Anailís micreafón gníomhach. Tástáil tréimhsí fuaime ar an ríomhaire seo.</translation>
-        </message>
-        <message>
-            <source>Finish the test recording before changing devices.</source>
-            <translation>Críochnaigh an taifeadadh tástála roimh fheistí a athrú.</translation>
-        </message>
-        <message>
             <source>The output format is not supported.</source>
             <translation>Ní thacaítear leis an bhformáid aschuir.</translation>
         </message>
@@ -68,32 +60,12 @@
             <translation>Níorbh fhéidir an ton tástála a imirt.</translation>
         </message>
         <message>
-            <source>The microphone has provided no data for five seconds. Recording discarded.</source>
-            <translation>Níl aon sonraí curtha ar fáil ag an micreafón ar feadh cúig soicind. Taifeadadh caite.</translation>
-        </message>
-        <message>
-            <source>The microphone was interrupted or changed. Recording discarded.</source>
-            <translation>Cuireadh isteach ar an micreafón nó athraíodh é. Taifeadadh caite.</translation>
-        </message>
-        <message>
-            <source>Cancelled. The incomplete recording was discarded.</source>
-            <translation>Ar ceal. Caitheadh an taifeadadh neamhiomlán.</translation>
-        </message>
-        <message>
             <source>No selected microphone is available</source>
             <translation>Níl aon mhicreafón roghnaithe ar fáil</translation>
         </message>
         <message>
             <source>Allow microphone access in the system dialog.</source>
             <translation>Ceadaigh rochtain micreafón sa dialóg chórais.</translation>
-        </message>
-        <message>
-            <source>Microphone capture active for the voice channel.</source>
-            <translation>Gabháil micreafón gníomhach don chainéal gutha.</translation>
-        </message>
-        <message>
-            <source>Microphone access was denied. Nothing was saved.</source>
-            <translation>Diúltaíodh rochtain ar mhicreafón. Ní dhéanfaidh aon ní a shábháil.</translation>
         </message>
         <message>
             <source>Microphone access is missing. Allow it in System Settings.</source>
@@ -265,97 +237,6 @@
         </message>
     </context>
     <context>
-        <name>AudioRecording</name>
-        <message>
-            <source>Incomplete audio block. Recording discarded.</source>
-            <translation>Bloc fuaime neamhiomlán. Taifeadadh caite.</translation>
-        </message>
-        <message>
-            <source>Move about one meter from the microphone. Keep the background sound playing and read the sentence.</source>
-            <translation>Bog thart ar aon mhéadar ón micreafón. Coinnigh an fhuaim chúlra ag imirt agus léigh an abairt.</translation>
-        </message>
-        <message>
-            <source>Voice with background sound</source>
-            <translation>Guth le fuaim chúlra</translation>
-        </message>
-        <message>
-            <source>The recordings folder could not be created.</source>
-            <translation>Níorbh fhéidir an fillteán taifeadtaí a chruthú.</translation>
-        </message>
-        <message>
-            <source>You can stop the background sound now.</source>
-            <translation>Is féidir leat an fhuaim chúlra a stopadh anois.</translation>
-        </message>
-        <message>
-            <source>Recordings saved</source>
-            <translation>Taifeadtaí a shábháil</translation>
-        </message>
-        <message>
-            <source>The test recording could not be saved completely.</source>
-            <translation>Níorbh fhéidir an taifeadadh tástála a shábháil go hiomlán.</translation>
-        </message>
-        <message>
-            <source>Keep music off and stay quiet. Start when ready.</source>
-            <translation>Coinnigh ceol as agus fan ciúin. Tosaigh nuair a bheidh tú réidh.</translation>
-        </message>
-        <message>
-            <source>Your voice</source>
-            <translation>Do ghuth</translation>
-        </message>
-        <message>
-            <source>Play music or another background sound at a normal volume. Stay quiet while recording.</source>
-            <translation>Seinn ceol nó fuaim chúlra eile ag gnáthtoirt. Fan ciúin agus tú ag taifeadadh.</translation>
-        </message>
-        <message>
-            <source>The test recording could not be created.</source>
-            <translation>Níorbh fhéidir an taifeadadh tástála a chruthú.</translation>
-        </message>
-        <message>
-            <source>Background sound</source>
-            <translation>Fuaim chúlra</translation>
-        </message>
-        <message>
-            <source>The window is open. I can hear the rain outside. One, two, three, four, five.</source>
-            <translation>Tá an fhuinneog ar oscailt. Is féidir liom an bháisteach a chloisteáil taobh amuigh. A haon, a dó, a trí, a ceathair, a cúig.</translation>
-        </message>
-        <message>
-            <source>This microphone format is not supported for test recordings.</source>
-            <translation>Ní thacaítear leis an bhformáid micreafón seo le haghaidh taifeadtaí tástála.</translation>
-        </message>
-        <message>
-            <source>Keep the background volume unchanged. Read the sentence, then stop recording.</source>
-            <translation>Coinnigh an méid cúlra gan athrú. Léigh an abairt, ansin stop a thaifeadadh.</translation>
-        </message>
-        <message>
-            <source>Record at least half a second, then try again.</source>
-            <translation>Taifead leath soicind ar a laghad, ansin bain triail eile as.</translation>
-        </message>
-        <message>
-            <source>Sit at your usual distance. Read the sentence, then stop recording.</source>
-            <translation>Suigh ar do ghnáthfhad. Léigh an abairt, ansin stop a thaifeadadh.</translation>
-        </message>
-        <message>
-            <source>The recording description could not be saved.</source>
-            <translation>Níorbh fhéidir an tuairisc taifeadta a shábháil.</translation>
-        </message>
-        <message>
-            <source>The WAV file could not be finalized.</source>
-            <translation>Níorbh fhéidir an comhad WAV a thabhairt chun críche.</translation>
-        </message>
-        <message>
-            <source>The WAV header could not be written.</source>
-            <translation>Níorbh fhéidir ceanntásc WAV a scríobh.</translation>
-        </message>
-        <message>
-            <source>Voice farther away</source>
-            <translation>Guth níos faide ar shiúl</translation>
-        </message>
-        <message>
-            <source>Room sound</source>
-            <translation>Fuaim an tseomra</translation>
-        </message>
-    </context>
-    <context>
         <name>AudioSettings</name>
         <message>
             <source>Echo cancellation</source>
@@ -406,8 +287,8 @@
             <translation>Do athsheinm</translation>
         </message>
         <message>
-            <source>Clear local key</source>
-            <translation>Glan aicearra méarchláir áitiúil bhrú chun cainte</translation>
+            <source>Clear key</source>
+            <translation>Glan an eochair</translation>
         </message>
         <message>
             <source>Low cut</source>
@@ -428,10 +309,6 @@
         <message>
             <source>Cancel</source>
             <translation>Cealaigh</translation>
-        </message>
-        <message>
-            <source>Guided recording</source>
-            <translation>Taifeadadh treoraithe</translation>
         </message>
         <message>
             <source>Clipping. Reduce microphone gain.</source>
@@ -466,16 +343,12 @@
             <translation>Gléas dícheangailte</translation>
         </message>
         <message>
-            <source>Local key</source>
-            <translation>aicearra méarchláir bhrú-chun-caint áitiúil</translation>
+            <source>PTT key</source>
+            <translation>Eochair chainte</translation>
         </message>
         <message>
             <source>Voice activation</source>
             <translation>Micreafón gníomhachtaithe gutha</translation>
-        </message>
-        <message>
-            <source>Remote PTT key</source>
-            <translation>Aicearra méarchláir cianda bhrú chun cainte</translation>
         </message>
         <message>
             <source>Noise reduction</source>
@@ -492,10 +365,6 @@
         <message>
             <source>Microphone gain</source>
             <translation>Aimpliú micreafón</translation>
-        </message>
-        <message>
-            <source>Clear remote key</source>
-            <translation>Glan aicearra méarchláir cianbhrúite chun cainte</translation>
         </message>
         <message>
             <source>Not assigned</source>
@@ -521,9 +390,81 @@
             <source>Read bot messages aloud</source>
             <translation>Léigh teachtaireachtaí an róbait os ard</translation>
         </message>
+        <message>
+            <source>Download a high-quality voice for this language in macOS settings.</source>
+            <translation>Íoslódáil guth ardchaighdeáin don teanga seo i socruithe macOS.</translation>
+        </message>
+        <message>
+            <source>Bot voice</source>
+            <translation>Guth an róbait</translation>
+        </message>
+        <message>
+            <source>Automatic</source>
+            <translation>Uathoibríoch</translation>
+        </message>
+        <message>
+            <source>Unavailable</source>
+            <translation>Níl fáil air</translation>
+        </message>
+        <message>
+            <source>Download voices in your device's Accessibility speech settings.</source>
+            <translation>Íoslódáil guthanna ó shocruithe cainte Inrochtaineachta ar do ghléas.</translation>
+        </message>
+        <message>
+            <source>Voice download help</source>
+            <translation>Cabhair le guthanna a íoslódáil</translation>
+        </message>
+        <message>
+            <source>Strength, not the percentage of echo removed.</source>
+            <translation>Neart, ní céatadán na macalla a baineadh.</translation>
+        </message>
+        <message>
+            <source>Auto also checks for speech, not just volume.</source>
+            <translation>Seiceálann an mód uathoibríoch caint freisin, ní hamháin airde na fuaime.</translation>
+        </message>
     </context>
     <context>
         <name>Channels</name>
+        <message>
+            <source>Copy address</source>
+            <translation>Cóipeáil an seoladh</translation>
+        </message>
+        <message>
+            <source>Messages</source>
+            <translation>Teachtaireachtaí</translation>
+        </message>
+        <message>
+            <source>Message</source>
+            <translation>Teachtaireacht</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Oscail</translation>
+        </message>
+        <message>
+            <source>Online</source>
+            <translation>Ar líne</translation>
+        </message>
+        <message>
+            <source>Offline</source>
+            <translation>As líne</translation>
+        </message>
+        <message>
+            <source>No private messages</source>
+            <translation>Gan teachtaireachtaí príobháideacha</translation>
+        </message>
+        <message>
+            <source>Private messages are unavailable for this contact.</source>
+            <translation>Níl teachtaireachtaí príobháideacha ar fáil don teagmhálaí seo.</translation>
+        </message>
+        <message>
+            <source>If asked, allow local network access. You can change this in system settings.</source>
+            <translation>Má iarrtar ort é, ceadaigh rochtain ar an líonra áitiúil. Is féidir leat é seo a athrú i socruithe an chórais.</translation>
+        </message>
+        <message>
+            <source>Retry</source>
+            <translation>Bain triail eile as</translation>
+        </message>
         <message>
             <source>Updates</source>
             <translation>Nuashonruithe</translation>
@@ -543,6 +484,10 @@
         <message>
             <source>DDNS cannot bypass CGNAT. If your provider shares the public IP, use a private VPN on all participating devices or a publicly reachable server.</source>
             <translation>Ní féidir le DDNS CGNAT a sheachbhóthar. Má roinneann do sholáthraí an IP poiblí, bain úsáid as VPN príobháideach ar gach feiste rannpháirteach nó ar fhreastalaí atá insroichte go poiblí.</translation>
+        </message>
+        <message>
+            <source>Remove server</source>
+            <translation>Bain an freastalaí</translation>
         </message>
         <message>
             <source>Low</source>
@@ -665,10 +610,6 @@
             <translation>Fuaimeanna fógra</translation>
         </message>
         <message>
-            <source>Lifetime for new messages. Earlier messages keep their expiry.</source>
-            <translation>Saolré le haghaidh teachtaireachtaí nua. Coinníonn teachtaireachtaí níos luaithe a n-éag.</translation>
-        </message>
-        <message>
             <source>Enable speakers</source>
             <translation>Cumasaigh cainteoirí</translation>
         </message>
@@ -703,10 +644,6 @@
         <message>
             <source>Allow device</source>
             <translation>Ceadaigh gléas</translation>
-        </message>
-        <message>
-            <source>Receive quality: %1 kb/s per voice. Adjusts automatically for this device.</source>
-            <translation>Faigh cáilíocht: %1 kb/s in aghaidh an ghutha. Coigeartaítear go huathoibríoch don ghléas seo.</translation>
         </message>
         <message>
             <source>Stop radio</source>
@@ -1204,6 +1141,42 @@
             <source>Use default music volume</source>
             <translation>Úsáid toirt réamhshocraithe an cheoil</translation>
         </message>
+        <message>
+            <source>Show in Dock</source>
+            <translation>Taispeáin sa Dock</translation>
+        </message>
+        <message>
+            <source>App language</source>
+            <translation>Teanga na haipe</translation>
+        </message>
+        <message>
+            <source>Send in</source>
+            <translation>Seol i</translation>
+        </message>
+        <message>
+            <source>Hear in</source>
+            <translation>Éist i</translation>
+        </message>
+        <message>
+            <source>Download language models for %1 and %2?</source>
+            <translation>Íoslódáil samhlacha teanga do %1 agus %2?</translation>
+        </message>
+        <message>
+            <source>Download</source>
+            <translation>Íoslódáil</translation>
+        </message>
+        <message>
+            <source>PTT, chat and channel controls. Uses the controlled device's microphone.</source>
+            <translation>Rialuithe PTT, comhrá agus cainéal. Úsáidtear micreafón an ghléis rialaithe.</translation>
+        </message>
+        <message>
+            <source>Connect the other device to one of your channels, then allow it here.</source>
+            <translation>Ceangail an gléas eile le ceann de do chainéil, ansin ceadaigh é anseo.</translation>
+        </message>
+        <message>
+            <source>On the other device, open Settings &gt; Input &gt; Remote control and allow this device.</source>
+            <translation>Ar an ngléas eile, oscail Socruithe &gt; Ionchur &gt; Cianrialú agus ceadaigh an gléas seo.</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1420,7 +1393,396 @@
         </message>
     </context>
     <context>
+        <name>Desktop</name>
+        <message>
+            <source>Open settings at startup.</source>
+            <translation>Oscail na socruithe ag am tosaithe.</translation>
+        </message>
+        <message>
+            <source>Alternative file for audio profiles.</source>
+            <translation>Comhad eile do phróifílí fuaime.</translation>
+        </message>
+        <message>
+            <source>Load the interface without microphone capture and exit after one second.</source>
+            <translation>Lódáil an comhéadan gan taifeadadh micreafóin agus scoir tar éis soicind amháin.</translation>
+        </message>
+        <message>
+            <source>Save an image of the app window during the UI test.</source>
+            <translation>Sábháil íomhá d'fhuinneog na haipe le linn na tástála comhéadain.</translation>
+        </message>
+        <message>
+            <source>The window image could not be saved.</source>
+            <translation>Níorbh fhéidir íomhá na fuinneoige a shábháil.</translation>
+        </message>
+        <message>
+            <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
+            <translation>Níl tráidire an chórais ar fáil; fanann an aip ar oscailt i bhfuinneog.</translation>
+        </message>
+    </context>
+    <context>
+        <name>Headless</name>
+        <message>
+            <source>Host display name.</source>
+            <translation>Ainm taispeána an óstaigh.</translation>
+        </message>
+        <message>
+            <source>Command failed.</source>
+            <translation>Theip ar an ordú.</translation>
+        </message>
+        <message>
+            <source>%1 must be an integer.</source>
+            <translation>Caithfidh %1 a bheith ina shlánuimhir.</translation>
+        </message>
+        <message>
+            <source>Requests must be on/off or true/false.</source>
+            <translation>Caithfidh iarratais a bheith on/off nó true/false.</translation>
+        </message>
+        <message>
+            <source>Unknown host property: %1</source>
+            <translation>Airí anaithnid óstaigh: %1</translation>
+        </message>
+        <message>
+            <source>Run without GUI, microphone capture, or local audio output.</source>
+            <translation>Rith gan comhéadan grafach, gabháil micreafóin ná aschur fuaime áitiúil.</translation>
+        </message>
+        <message>
+            <source>Server storage prefix. Personal/audio/GUI profiles are not loaded.</source>
+            <translation>Réimír stórála an fhreastalaí. Ní lódáiltear próifílí pearsanta, fuaime ná comhéadain.</translation>
+        </message>
+        <message>
+            <source>Optional private identity file instead of the OS credential store (Linux/macOS). Parent directory must exist and belong to this account.</source>
+            <translation>Comhad príobháideach aitheantais roghnach in ionad stór dintiúr an chórais (Linux/macOS). Caithfidh an mháthaireolaire a bheith ann agus a bheith faoi úinéireacht an chuntais seo.</translation>
+        </message>
+        <message>
+            <source>UTF-8 key=value properties or JSON host preset. Default: application.properties, then config/application.properties beside the app.</source>
+            <translation>Airíonna UTF-8 key=value nó réamhshocrú óstaigh JSON. Réamhshocrú: application.properties, ansin config/application.properties in aice leis an aip.</translation>
+        </message>
+        <message>
+            <source>Channel display name.</source>
+            <translation>Ainm taispeána an chainéil.</translation>
+        </message>
+        <message>
+            <source>System and radio bot display name.</source>
+            <translation>Ainm taispeána an róbait córais agus raidió.</translation>
+        </message>
+        <message>
+            <source>TCP service port (1-65535).</source>
+            <translation>Port seirbhíse TCP (1-65535).</translation>
+        </message>
+        <message>
+            <source>Headless admission is always on; only 'on' or 'true' is accepted.</source>
+            <translation>Bíonn cead isteach gan comhéadan grafach ar siúl i gcónaí; ní ghlactar ach le 'on' nó 'true'.</translation>
+        </message>
+        <message>
+            <source>Preapprove a device ID; repeat for several devices. Existing bans remain.</source>
+            <translation>Ceadaigh aitheantas gléis roimh ré; athdhéan do ghléasanna eile. Fanann na toirmisc atá ann.</translation>
+        </message>
+        <message>
+            <source>Block a device ID; repeat for several devices.</source>
+            <translation>Cuir bac ar aitheantas gléis; athdhéan do ghléasanna eile.</translation>
+        </message>
+        <message>
+            <source>Read a UTF-8 channel password from a file before listening. An empty file removes it.</source>
+            <translation>Léigh pasfhocal UTF-8 an chainéil ó chomhad sula dtosaítear ag éisteacht. Baineann comhad folamh é.</translation>
+        </message>
+        <message>
+            <source>Channel password. Empty removes it; environment or config avoids process-list exposure.</source>
+            <translation>Pasfhocal an chainéil. Baineann luach folamh é; seachnaíonn an timpeallacht nó an chumraíocht é a nochtadh sa liosta próiseas.</translation>
+        </message>
+        <message>
+            <source>SquadSpeak headless local channel host</source>
+            <translation>Óstach áitiúil cainéil SquadSpeak gan comhéadan grafach</translation>
+        </message>
+        <message>
+            <source>Environment variables (SQUADSPEAK_ prefix):</source>
+            <translation>Athróga timpeallachta (réimír SQUADSPEAK_):</translation>
+        </message>
+        <message>
+            <source>Host configuration could not be read or exceeds 1 MiB.</source>
+            <translation>Níorbh fhéidir cumraíocht an óstaigh a léamh nó tá sí os cionn 1 MiB.</translation>
+        </message>
+        <message>
+            <source>Host configuration must be UTF-8.</source>
+            <translation>Caithfidh cumraíocht an óstaigh a bheith in UTF-8.</translation>
+        </message>
+        <message>
+            <source>Host preset must be a JSON object.</source>
+            <translation>Caithfidh réamhshocrú an óstaigh a bheith ina réad JSON.</translation>
+        </message>
+        <message>
+            <source>Property line %1 must use key=value.</source>
+            <translation>Caithfidh líne airíonna %1 key=value a úsáid.</translation>
+        </message>
+        <message>
+            <source>Property line %1: %2</source>
+            <translation>Líne airíonna %1: %2</translation>
+        </message>
+        <message>
+            <source>Standard input has no file descriptor.</source>
+            <translation>Níl tuairisceoir comhaid ag an ionchur caighdeánach.</translation>
+        </message>
+        <message>
+            <source>Standard input could not be inspected.</source>
+            <translation>Níorbh fhéidir an t-ionchur caighdeánach a scrúdú.</translation>
+        </message>
+        <message>
+            <source>Could not write the command response: %1</source>
+            <translation>Níorbh fhéidir freagra an ordaithe a scríobh: %1</translation>
+        </message>
+        <message>
+            <source>Standard input could not be read: %1</source>
+            <translation>Níorbh fhéidir an t-ionchur caighdeánach a léamh: %1</translation>
+        </message>
+        <message>
+            <source>Input line exceeds 65536 bytes.</source>
+            <translation>Tá líne an ionchuir os cionn 65536 beart.</translation>
+        </message>
+        <message>
+            <source>Each input line must be a JSON object.</source>
+            <translation>Caithfidh gach líne ionchuir a bheith ina réad JSON.</translation>
+        </message>
+        <message>
+            <source>Input ended before a complete JSON line.</source>
+            <translation>Tháinig deireadh leis an ionchur roimh líne iomlán JSON.</translation>
+        </message>
+        <message>
+            <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
+            <translation>Aitheantas roghnach do chainéil féin do na horduithe status, configure, password, admission, history, chat agus radio; úsáidtear an príomhchainéal de réir réamhshocraithe.</translation>
+        </message>
+        <message>
+            <source>Channel action must be list, add or remove.</source>
+            <translation>Caithfidh gníomh an chainéil a bheith list, add nó remove.</translation>
+        </message>
+        <message>
+            <source>Removing an own channel deletes its history, images, permissions and radio settings. Set confirmed=true to proceed.</source>
+            <translation>Má bhaintear do chainéal féin, scriostar a stair, íomhánna, ceadanna agus socruithe raidió. Socraigh confirmed=true chun leanúint ar aghaidh.</translation>
+        </message>
+        <message>
+            <source>id must identify an additional own channel.</source>
+            <translation>Caithfidh id ceann de do chainéil bhreise féin a aithint.</translation>
+        </message>
+        <message>
+            <source>The additional own channel could not be removed: %1</source>
+            <translation>Níorbh fhéidir do chainéal breise féin a bhaint: %1</translation>
+        </message>
+        <message>
+            <source>channelId must identify an own channel.</source>
+            <translation>Caithfidh channelId ceann de do chainéil féin a aithint.</translation>
+        </message>
+        <message>
+            <source>values must be a host settings object.</source>
+            <translation>Caithfidh values a bheith ina réad socruithe óstaigh.</translation>
+        </message>
+        <message>
+            <source>Headless admission is always enabled for non-banned devices; requests off is not supported.</source>
+            <translation>Bíonn cead isteach gan comhéadan grafach ar siúl do ghléasanna nach bhfuil toirmiscthe; ní thacaítear le requests off.</translation>
+        </message>
+        <message>
+            <source>value must be a password of at most 1024 UTF-8 bytes without control characters; an empty string removes it.</source>
+            <translation>Caithfidh value a bheith ina phasfhocal nach mó ná 1024 beart UTF-8 gan charachtair rialaithe; baineann teaghrán folamh é.</translation>
+        </message>
+        <message>
+            <source>The channel is not ready or a password change is in progress.</source>
+            <translation>Níl an cainéal réidh nó tá athrú pasfhocail ar siúl.</translation>
+        </message>
+        <message>
+            <source>The channel was removed while saving the password.</source>
+            <translation>Baineadh an cainéal agus an pasfhocal á shábháil.</translation>
+        </message>
+        <message>
+            <source>id is required.</source>
+            <translation>Tá id riachtanach.</translation>
+        </message>
+        <message>
+            <source>text must be a valid non-empty chat message.</source>
+            <translation>Caithfidh text a bheith ina theachtaireacht bhailí chomhrá nach bhfuil folamh.</translation>
+        </message>
+        <message>
+            <source>The local channel is not ready.</source>
+            <translation>Níl an cainéal áitiúil réidh.</translation>
+        </message>
+        <message>
+            <source>The channel's radio is unavailable.</source>
+            <translation>Níl raidió an chainéil ar fáil.</translation>
+        </message>
+        <message>
+            <source>Unknown command. Use help.</source>
+            <translation>Ordú anaithnid. Úsáid help.</translation>
+        </message>
+        <message>
+            <source>search requires a query, non-negative offset and limit from 1 to 128.</source>
+            <translation>Teastaíonn query, offset neamh-dhiúltach agus limit ó 1 go 128 ó search.</translation>
+        </message>
+        <message>
+            <source>add creates an id; update requires an existing id.</source>
+            <translation>Cruthaíonn add id; teastaíonn id atá ann cheana ó update.</translation>
+        </message>
+        <message>
+            <source>A station is already being checked.</source>
+            <translation>Tá stáisiún á sheiceáil cheana féin.</translation>
+        </message>
+        <message>
+            <source>The channel was removed while checking the station.</source>
+            <translation>Baineadh an cainéal agus an stáisiún á sheiceáil.</translation>
+        </message>
+        <message>
+            <source>Unknown radio action.</source>
+            <translation>Gníomh raidió anaithnid.</translation>
+        </message>
+        <message>
+            <source>Could not load language: %1</source>
+            <translation>Níorbh fhéidir an teanga a lódáil: %1</translation>
+        </message>
+        <message>
+            <source>The %1 option is incompatible with --headless.</source>
+            <translation>Níl an rogha %1 comhoiriúnach le --headless.</translation>
+        </message>
+        <message>
+            <source>Unexpected positional arguments. Use --help.</source>
+            <translation>Argóintí suímh gan choinne. Úsáid --help.</translation>
+        </message>
+        <message>
+            <source>--config / -f requires a non-empty path.</source>
+            <translation>Teastaíonn cosán nach bhfuil folamh ó --config / -f.</translation>
+        </message>
+        <message>
+            <source>Choose --password or --password-file, not both.</source>
+            <translation>Roghnaigh --password nó --password-file, ní an dá cheann.</translation>
+        </message>
+        <message>
+            <source>Choose SQUADSPEAK_PASSWORD or SQUADSPEAK_PASSWORD_FILE, not both.</source>
+            <translation>Roghnaigh SQUADSPEAK_PASSWORD nó SQUADSPEAK_PASSWORD_FILE, ní an dá cheann.</translation>
+        </message>
+        <message>
+            <source>Choose password or passwordFile in one configuration layer, not both.</source>
+            <translation>Roghnaigh password nó passwordFile i sraith chumraíochta amháin, ní an dá cheann.</translation>
+        </message>
+        <message>
+            <source>passwordFile must be a non-empty path.</source>
+            <translation>Caithfidh passwordFile a bheith ina chosán nach bhfuil folamh.</translation>
+        </message>
+        <message>
+            <source>Password file could not be read or is too large.</source>
+            <translation>Níorbh fhéidir comhad an phasfhocail a léamh nó tá sé rómhór.</translation>
+        </message>
+        <message>
+            <source>Password file must contain at most 1024 UTF-8 bytes without control characters.</source>
+            <translation>Ní fhéadfaidh comhad an phasfhocail níos mó ná 1024 beart UTF-8 gan charachtair rialaithe a bheith ann.</translation>
+        </message>
+        <message>
+            <source>Password must be a string of at most 1024 UTF-8 bytes without control characters.</source>
+            <translation>Caithfidh an pasfhocal a bheith ina theaghrán nach mó ná 1024 beart UTF-8 gan charachtair rialaithe.</translation>
+        </message>
+        <message>
+            <source>settingsFile must be a non-empty path.</source>
+            <translation>Caithfidh settingsFile a bheith ina chosán nach bhfuil folamh.</translation>
+        </message>
+        <message>
+            <source>identityFile must be a non-empty path.</source>
+            <translation>Caithfidh identityFile a bheith ina chosán nach bhfuil folamh.</translation>
+        </message>
+        <message>
+            <source>The settings directory could not be created.</source>
+            <translation>Níorbh fhéidir eolaire na socruithe a chruthú.</translation>
+        </message>
+        <message>
+            <source>This SquadSpeak profile is already running or cannot be locked.</source>
+            <translation>Tá an phróifíl SquadSpeak seo ag rith cheana féin nó ní féidir í a ghlasáil.</translation>
+        </message>
+        <message>
+            <source>Standard input could not be opened.</source>
+            <translation>Níorbh fhéidir an t-ionchur caighdeánach a oscailt.</translation>
+        </message>
+        <message>
+            <source>Standard output could not be opened.</source>
+            <translation>Níorbh fhéidir an t-aschur caighdeánach a oscailt.</translation>
+        </message>
+        <message>
+            <source>This identity file is already in use or cannot be locked.</source>
+            <translation>Tá an comhad aitheantais seo in úsáid cheana féin nó ní féidir é a ghlasáil.</translation>
+        </message>
+        <message>
+            <source>Invalid host configuration: %1</source>
+            <translation>Cumraíocht óstaigh neamhbhailí: %1</translation>
+        </message>
+        <message>
+            <source>Radio channels could not be initialized.</source>
+            <translation>Níorbh fhéidir na cainéil raidió a thúsú.</translation>
+        </message>
+        <message>
+            <source>Headless host could not start: %1</source>
+            <translation>Níorbh fhéidir an t-óstach gan comhéadan grafach a thosú: %1</translation>
+        </message>
+        <message>
+            <source>Channel password could not be saved.</source>
+            <translation>Níorbh fhéidir pasfhocal an chainéil a shábháil.</translation>
+        </message>
+        <message>
+            <source>Invalid channel password: %1</source>
+            <translation>Pasfhocal cainéil neamhbhailí: %1</translation>
+        </message>
+        <message>
+            <source>Headless host could not initialize: %1</source>
+            <translation>Níorbh fhéidir an t-óstach gan comhéadan grafach a thúsú: %1</translation>
+        </message>
+        <message>
+            <source>SquadSpeak headless could not start: %1</source>
+            <translation>Níorbh fhéidir SquadSpeak gan comhéadan grafach a thosú: %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>Ní mór stádas, síniú isteach, athnuachan, síniú amach nó cealú a bheith i ngníomh tacaitheora. status sign-in refresh sign-out cancel</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>Tá oibríocht Tacaíochta ar siúl.</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>Níl rochtain ar thacadóir ar fáil sa leagan seo.</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>Tosaíocht socruithe: argóintí &gt; timpeallacht &gt; airíonna &gt; luachanna freastalaí sábháilte.</translation>
+        </message>
+    </context>
+    <context>
+        <name>License</name>
+        <message>
+            <source>License storage is busy or unavailable.</source>
+            <translation>Tá stóráil ceadúnais gnóthach nó níl sé ar fáil.</translation>
+        </message>
+        <message>
+            <source>License storage is unavailable.</source>
+            <translation>Níl stóras ceadúnais ar fáil.</translation>
+        </message>
+        <message>
+            <source>Sign-in expired. Try again.</source>
+            <translation>Chuaigh an síniú isteach in éag. Bain triail eile as.</translation>
+        </message>
+        <message>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>Níl síniú isteach GitHub ar fáil. Bain triail eile as.</translation>
+        </message>
+        <message>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>Níor críochnaíodh síniú isteach GitHub. Bain triail eile as.</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>Níorbh fhéidir GitHub a sheiceáil. Maireann rochtain as líne ar a mhéad seacht lá.</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>Sínigh isteach le GitHub arís.</translation>
+        </message>
+    </context>
+    <context>
         <name>LocalChannel</name>
+        <message>
+            <source>Blocked</source>
+            <translation>Coiscthe</translation>
+        </message>
         <message>
             <source>Host is not responding. Reconnecting.</source>
             <translation>Níl an t-óstach ag freagairt. Ag athcheangal.</translation>
@@ -2205,6 +2567,53 @@
             <source>Voice relay codec could not be configured.</source>
             <translation>Níorbh fhéidir an CODEC athsheachadta gutha a chumrú.</translation>
         </message>
+        <message>
+            <source>Unsupported audio codec</source>
+            <translation>Codec fuaime gan tacaíocht</translation>
+        </message>
+        <message>
+            <source>Speaking is not allowed in this channel.</source>
+            <translation>Ní cheadaítear labhairt sa chainéal seo.</translation>
+        </message>
+    </context>
+    <context>
+        <name>LocalLanguage</name>
+        <message>
+            <source>Translation (experimental)</source>
+            <translation>Aistriúchán (turgnamhach)</translation>
+        </message>
+        <message>
+            <source>Translate messages</source>
+            <translation>Aistrigh teachtaireachtaí</translation>
+        </message>
+        <message>
+            <source>Translated voice</source>
+            <translation>Guth aistrithe</translation>
+        </message>
+        <message>
+            <source>Original audio</source>
+            <translation>Fuaim bhunaidh</translation>
+        </message>
+        <message>
+            <source>Original text</source>
+            <translation>Téacs bunaidh</translation>
+        </message>
+        <message>
+            <source>Prepare languages</source>
+            <translation>Ullmhaigh teangacha</translation>
+        </message>
+        <message>
+            <source>Local language processing is unavailable.</source>
+            <translation>Níl próiseáil áitiúil teanga ar fáil.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be read.</source>
+            <translation>Níorbh fhéidir na socruithe teanga a léamh.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be saved.</source>
+            <translation>Níorbh fhéidir na socruithe teanga a shábháil.</translation>
+        </message>
     </context>
     <context>
         <name>PushToTalkKey</name>
@@ -2345,50 +2754,65 @@
         </message>
     </context>
     <context>
-        <name>RecordingPanel</name>
+        <name>ScreenPanel</name>
         <message>
-            <source>Stop</source>
-            <translation>Stop</translation>
+            <source>Media capacity reached</source>
+            <translation>Acmhainn meán sroichte</translation>
         </message>
         <message>
-            <source>Start</source>
-            <translation>Tosaigh</translation>
+            <source>Video paused</source>
+            <translation>Físeán ar sos</translation>
         </message>
         <message>
-            <source>Saved on this device only. Nothing is uploaded.</source>
-            <translation>Sábháilte ar an ngléas seo amháin. Níl aon rud uaslódáilte.</translation>
+            <source>Stream ended</source>
+            <translation>Sruth dar críoch</translation>
         </message>
         <message>
-            <source>Keep this take or record it again.</source>
-            <translation>Coinnigh seo a ghlacadh nó a thaifeadadh arís.</translation>
+            <source>Connecting</source>
+            <translation>Ceangal</translation>
         </message>
         <message>
-            <source>Record again</source>
-            <translation>Taifead arís</translation>
+            <source>Open screen stream</source>
+            <translation>Sruth scáileáin oscailte</translation>
         </message>
         <message>
-            <source>Use recording</source>
-            <translation>Bain úsáid as taifeadadh</translation>
+            <source>Screen stream</source>
+            <translation>Sruth scáileáin</translation>
         </message>
         <message>
-            <source>Recording progress</source>
-            <translation>Dul chun cinn a thaifeadadh</translation>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
+        </message>
+    </context>
+    <context>
+        <name>ScreenShare</name>
+        <message>
+            <source>Allow screen recording in system settings.</source>
+            <translation>Ceadaigh taifeadadh scáileáin i socruithe an chórais.</translation>
         </message>
         <message>
-            <source>Step %1 of %2</source>
-            <translation>Céim %1 de %2</translation>
+            <source>The shared screen was removed. Select a source to start again.</source>
+            <translation>Baineadh an scáileán roinnte. Roghnaigh foinse le tosú arís.</translation>
         </message>
         <message>
-            <source>Open recordings</source>
-            <translation>Taifeadtaí oscailte</translation>
+            <source>The shared window was closed. Select a source to start again.</source>
+            <translation>Dúnadh an fhuinneog roinnte. Roghnaigh foinse le tosú arís.</translation>
         </message>
         <message>
-            <source>Reset test</source>
-            <translation>Tástáil athshocraigh</translation>
+            <source>The selected screen is no longer available.</source>
+            <translation>Níl an scáileán roghnaithe ar fáil a thuilleadh.</translation>
         </message>
         <message>
-            <source>%1 s remaining / %2 dBFS</source>
-            <translation>%1 s fágtha / %2 dBFS</translation>
+            <source>The selected window is no longer available.</source>
+            <translation>Níl an fhuinneog roghnaithe ar fáil a thuilleadh.</translation>
+        </message>
+        <message>
+            <source>The selected source exceeds the capture size limit.</source>
+            <translation>Sáraíonn an fhoinse roghnaithe an teorainn mhéid gabhála.</translation>
+        </message>
+        <message>
+            <source>Close a video view before opening another stream.</source>
+            <translation>Dún radharc físe sula n-osclaítear sruth eile.</translation>
         </message>
     </context>
     <context>
@@ -2465,10 +2889,6 @@
             <translation>Comhartha á mbailiú...</translation>
         </message>
         <message>
-            <source>Dashed curve: configured gain and frequency cuts, using the right dB scale. Noise reduction and voice activation are not part of this curve.</source>
-            <translation>Cuar briste: aimpliú cumraithe agus gearrtha minicíochta ar an scála ceart dB. Ní cuid den chuar seo iad laghdú torainn ná gníomhachtú gutha.</translation>
-        </message>
-        <message>
             <source>Microphone preview is not running</source>
             <translation>Níl réamhamharc micreafón ar siúl</translation>
         </message>
@@ -2479,303 +2899,6 @@
         <message>
             <source>Peak: %1</source>
             <translation>Buaic: %1</translation>
-        </message>
-    </context>
-    <context>
-        <name>Tray</name>
-        <message>
-            <source>Quit</source>
-            <translation>Scoir</translation>
-        </message>
-        <message>
-            <source>SquadSpeak - speaking</source>
-            <translation>SquadSpeak - ag labhairt</translation>
-        </message>
-        <message>
-            <source>Settings</source>
-            <translation>Socruithe</translation>
-        </message>
-        <message>
-            <source>Channels</source>
-            <translation>Cainéil</translation>
-        </message>
-        <message>
-            <source>New image</source>
-            <translation>Íomhá nua</translation>
-        </message>
-    </context>
-    <context>
-        <name>VoiceAvatar</name>
-        <message>
-            <source>Muted</source>
-            <translation>Micreafón balbhaithe</translation>
-        </message>
-        <message>
-            <source>Sleeping</source>
-            <translation>Codladh</translation>
-        </message>
-        <message>
-            <source>Offline</source>
-            <translation>As líne</translation>
-        </message>
-        <message>
-            <source>Speaking</source>
-            <translation>Ag labhairt di</translation>
-        </message>
-        <message>
-            <source>Unavailable</source>
-            <translation>Níl fáil air</translation>
-        </message>
-        <message>
-            <source>Listening</source>
-            <translation>Éisteacht</translation>
-        </message>
-        <message>
-            <source>Deafened</source>
-            <translation>Cainteoirí balbhaithe</translation>
-        </message>
-    </context>
-    <context>
-        <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>Níl fáil air - socruithe fuaime nó tástáil toin</translation>
-        </message>
-        <message>
-            <source>Microphone muted</source>
-            <translation>Micreafón balbhaithe</translation>
-        </message>
-        <message>
-            <source>Push-to-talk held</source>
-            <translation>Coinnítear an cnaipe bhrú-chun-cainte síos</translation>
-        </message>
-        <message>
-            <source>Ready - push-to-talk released</source>
-            <translation>Réidh - scaoileadh an cnaipe bhrú-chun-cainte</translation>
-        </message>
-        <message>
-            <source>Microphone unmuted</source>
-            <translation>Micreafón neamhbhalbhaithe</translation>
-        </message>
-        <message>
-            <source>Settings could not be saved: %1</source>
-            <translation>Níorbh fhéidir na socruithe a shábháil: %1</translation>
-        </message>
-        <message>
-            <source>The push-to-talk sequence cannot be incremented further.</source>
-            <translation>Ní féidir an seicheamh brú chun cainte a mhéadú tuilleadh.</translation>
-        </message>
-        <message>
-            <source>Choose System, Light or Dark.</source>
-            <translation>Roghnaigh Córas, Solas nó Dorcha.</translation>
-        </message>
-        <message>
-            <source>Choose a colour palette from the list.</source>
-            <translation>Roghnaigh pailéad dathanna ón liosta.</translation>
-        </message>
-        <message>
-            <source>Choose an available avatar.</source>
-            <translation>Roghnaigh avatar atá ar fáil.</translation>
-        </message>
-        <message>
-            <source>Invalid push-to-talk binding.</source>
-            <translation>Ceangal brú-go-caint neamhbhailí.</translation>
-        </message>
-        <message>
-            <source>Release the held push-to-talk key first.</source>
-            <translation>Scaoileadh an eochair bhrú-chun-caint ar siúl ar dtús.</translation>
-        </message>
-        <message>
-            <source>Choose a language from the list.</source>
-            <translation>Roghnaigh teanga ón liosta.</translation>
-        </message>
-        <message>
-            <source>This avatar requires Supporter.</source>
-            <translation>Tá Supporter ag teastáil don avatar seo.</translation>
-        </message>
-        <message>
-            <source>The name must contain 1 to 64 characters.</source>
-            <translation>Caithfidh idir 1 agus 64 carachtar a bheith san ainm.</translation>
-        </message>
-        <message>
-            <source>The name may not contain control characters or line breaks.</source>
-            <translation>Ní fhéadfaidh carachtair rialaithe nó sosanna líne a bheith san ainm.</translation>
-        </message>
-        <message>
-            <source>Session settings could not be read.</source>
-            <translation>Níorbh fhéidir socruithe an tseisiúin a léamh.</translation>
-        </message>
-        <message>
-            <source>Saved setting is invalid: %1</source>
-            <translation>Socrú sábháilte neamhbhailí: %1</translation>
-        </message>
-    </context>
-    <context>
-        <name>License</name>
-        <message>
-            <source>License storage is busy or unavailable.</source>
-            <translation>Tá stóráil ceadúnais gnóthach nó níl sé ar fáil.</translation>
-        </message>
-        <message>
-            <source>License storage is unavailable.</source>
-            <translation>Níl stóras ceadúnais ar fáil.</translation>
-        </message>
-        <message>
-            <source>Sign-in expired. Try again.</source>
-            <translation>Chuaigh an síniú isteach in éag. Bain triail eile as.</translation>
-        </message>
-        <message>
-            <source>GitHub sign-in is unavailable. Try again.</source>
-            <translation>Níl síniú isteach GitHub ar fáil. Bain triail eile as.</translation>
-        </message>
-        <message>
-            <source>GitHub sign-in was not completed. Try again.</source>
-            <translation>Níor críochnaíodh síniú isteach GitHub. Bain triail eile as.</translation>
-        </message>
-        <message>
-            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
-            <translation>Níorbh fhéidir GitHub a sheiceáil. Maireann rochtain as líne ar a mhéad seacht lá.</translation>
-        </message>
-        <message>
-            <source>Sign in with GitHub again.</source>
-            <translation>Sínigh isteach le GitHub arís.</translation>
-        </message>
-    </context>
-    <context>
-        <name>ScreenShare</name>
-        <message>
-            <source>The shared screen was removed. Select a source to start again.</source>
-            <translation>Baineadh an scáileán roinnte. Roghnaigh foinse le tosú arís.</translation>
-        </message>
-        <message>
-            <source>The shared window was closed. Select a source to start again.</source>
-            <translation>Dúnadh an fhuinneog roinnte. Roghnaigh foinse le tosú arís.</translation>
-        </message>
-        <message>
-            <source>The selected screen is no longer available.</source>
-            <translation>Níl an scáileán roghnaithe ar fáil a thuilleadh.</translation>
-        </message>
-        <message>
-            <source>The selected window is no longer available.</source>
-            <translation>Níl an fhuinneog roghnaithe ar fáil a thuilleadh.</translation>
-        </message>
-        <message>
-            <source>The selected source exceeds the capture size limit.</source>
-            <translation>Sáraíonn an fhoinse roghnaithe an teorainn mhéid gabhála.</translation>
-        </message>
-        <message>
-            <source>Close a video view before opening another stream.</source>
-            <translation>Dún radharc físe sula n-osclaítear sruth eile.</translation>
-        </message>
-    </context>
-    <context>
-        <name>ScreenPanel</name>
-        <message>
-            <source>Media capacity reached</source>
-            <translation>Acmhainn meán sroichte</translation>
-        </message>
-        <message>
-            <source>Video paused</source>
-            <translation>Físeán ar sos</translation>
-        </message>
-        <message>
-            <source>Stream ended</source>
-            <translation>Sruth dar críoch</translation>
-        </message>
-        <message>
-            <source>Connecting</source>
-            <translation>Ceangal</translation>
-        </message>
-        <message>
-            <source>Open screen stream</source>
-            <translation>Sruth scáileáin oscailte</translation>
-        </message>
-        <message>
-            <source>Screen stream</source>
-            <translation>Sruth scáileáin</translation>
-        </message>
-        <message>
-            <source>%1 kbit/s</source>
-            <translation>%1 kbit/s</translation>
-        </message>
-    </context>
-    <context>
-        <name>VideoCodec</name>
-        <message>
-            <source>Video codec: %1</source>
-            <translation>Codec físe: %1</translation>
-        </message>
-        <message>
-            <source>Video codec ABI does not match its headers.</source>
-            <translation>Ní mheaitseálann ABI an codec físe a chomhaid cheanntásca.</translation>
-        </message>
-        <message>
-            <source>Video buffers could not be allocated.</source>
-            <translation>Níorbh fhéidir cuimhne a leithdháileadh do na maoláin físe.</translation>
-        </message>
-        <message>
-            <source>Invalid video quality tier.</source>
-            <translation>Leibhéal cáilíochta físe neamhbhailí.</translation>
-        </message>
-        <message>
-            <source>The screen source exceeds the supported capture size.</source>
-            <translation>Sáraíonn foinse an scáileáin an méid gabhála a dtacaítear leis.</translation>
-        </message>
-        <message>
-            <source>The screen source is too narrow.</source>
-            <translation>Tá foinse an scáileáin róchúng.</translation>
-        </message>
-        <message>
-            <source>The video encoder could not be allocated.</source>
-            <translation>Níorbh fhéidir cuimhne a leithdháileadh don ionchódóir físe.</translation>
-        </message>
-        <message>
-            <source>No supported video encoder is available.</source>
-            <translation>Níl aon ionchódóir físe a dtacaítear leis ar fáil.</translation>
-        </message>
-        <message>
-            <source>Video encoder configuration is too large.</source>
-            <translation>Tá cumraíocht an ionchódóra físe rómhór.</translation>
-        </message>
-        <message>
-            <source>Video scaling could not be initialized.</source>
-            <translation>Níorbh fhéidir scálú físe a thúsú.</translation>
-        </message>
-        <message>
-            <source>The encoder returned an empty video packet.</source>
-            <translation>D'fhill an t-ionchódóir paicéad físe folamh.</translation>
-        </message>
-        <message>
-            <source>Invalid video frame format.</source>
-            <translation>Formáid fráma físe neamhbhailí.</translation>
-        </message>
-        <message>
-            <source>Invalid video decoder configuration.</source>
-            <translation>Cumraíocht díchódóra físe neamhbhailí.</translation>
-        </message>
-        <message>
-            <source>This video codec cannot be decoded.</source>
-            <translation>Ní féidir an codec físe seo a dhíchódú.</translation>
-        </message>
-        <message>
-            <source>Video decoder could not be allocated.</source>
-            <translation>Níorbh fhéidir cuimhne a leithdháileadh don díchódóir físe.</translation>
-        </message>
-        <message>
-            <source>Video decoder configuration could not be allocated.</source>
-            <translation>Níorbh fhéidir cuimhne a leithdháileadh do chumraíocht an díchódóra físe.</translation>
-        </message>
-        <message>
-            <source>Decoded dimensions do not match the screen stream.</source>
-            <translation>Ní mheaitseálann na toisí díchódaithe sruth an scáileáin.</translation>
-        </message>
-        <message>
-            <source>Decoded image could not be allocated.</source>
-            <translation>Níorbh fhéidir cuimhne a leithdháileadh don íomhá dhíchódaithe.</translation>
-        </message>
-        <message>
-            <source>Video color conversion could not be initialized.</source>
-            <translation>Níorbh fhéidir tiontú dathanna físe a thúsú.</translation>
         </message>
     </context>
     <context>
@@ -2894,404 +3017,211 @@
         </message>
     </context>
     <context>
-        <name>Headless</name>
+        <name>Tray</name>
         <message>
-            <source>Command failed.</source>
-            <translation>Theip ar an ordú.</translation>
+            <source>Quit</source>
+            <translation>Scoir</translation>
         </message>
         <message>
-            <source>%1 must be an integer.</source>
-            <translation>Caithfidh %1 a bheith ina shlánuimhir.</translation>
+            <source>SquadSpeak - speaking</source>
+            <translation>SquadSpeak - ag labhairt</translation>
         </message>
         <message>
-            <source>Requests must be on/off or true/false.</source>
-            <translation>Caithfidh iarratais a bheith on/off nó true/false.</translation>
+            <source>Settings</source>
+            <translation>Socruithe</translation>
         </message>
         <message>
-            <source>Unknown host property: %1</source>
-            <translation>Airí anaithnid óstaigh: %1</translation>
+            <source>Channels</source>
+            <translation>Cainéil</translation>
         </message>
         <message>
-            <source>Run without GUI, microphone capture, or local audio output.</source>
-            <translation>Rith gan comhéadan grafach, gabháil micreafóin ná aschur fuaime áitiúil.</translation>
-        </message>
-        <message>
-            <source>Server storage prefix. Personal/audio/GUI profiles are not loaded.</source>
-            <translation>Réimír stórála an fhreastalaí. Ní lódáiltear próifílí pearsanta, fuaime ná comhéadain.</translation>
-        </message>
-        <message>
-            <source>Optional private identity file instead of the OS credential store (Linux/macOS). Parent directory must exist and belong to this account.</source>
-            <translation>Comhad príobháideach aitheantais roghnach in ionad stór dintiúr an chórais (Linux/macOS). Caithfidh an mháthaireolaire a bheith ann agus a bheith faoi úinéireacht an chuntais seo.</translation>
-        </message>
-        <message>
-            <source>UTF-8 key=value properties or JSON host preset. Default: application.properties, then config/application.properties beside the app.</source>
-            <translation>Airíonna UTF-8 key=value nó réamhshocrú óstaigh JSON. Réamhshocrú: application.properties, ansin config/application.properties in aice leis an aip.</translation>
-        </message>
-        <message>
-            <source>Channel display name.</source>
-            <translation>Ainm taispeána an chainéil.</translation>
-        </message>
-        <message>
-            <source>System and radio bot display name.</source>
-            <translation>Ainm taispeána an róbait córais agus raidió.</translation>
-        </message>
-        <message>
-            <source>TCP service port (1-65535).</source>
-            <translation>Port seirbhíse TCP (1-65535).</translation>
-        </message>
-        <message>
-            <source>Headless admission is always on; only 'on' or 'true' is accepted.</source>
-            <translation>Bíonn cead isteach gan comhéadan grafach ar siúl i gcónaí; ní ghlactar ach le 'on' nó 'true'.</translation>
-        </message>
-        <message>
-            <source>Preapprove a device ID; repeat for several devices. Existing bans remain.</source>
-            <translation>Ceadaigh aitheantas gléis roimh ré; athdhéan do ghléasanna eile. Fanann na toirmisc atá ann.</translation>
-        </message>
-        <message>
-            <source>Block a device ID; repeat for several devices.</source>
-            <translation>Cuir bac ar aitheantas gléis; athdhéan do ghléasanna eile.</translation>
-        </message>
-        <message>
-            <source>Read a UTF-8 channel password from a file before listening. An empty file removes it.</source>
-            <translation>Léigh pasfhocal UTF-8 an chainéil ó chomhad sula dtosaítear ag éisteacht. Baineann comhad folamh é.</translation>
-        </message>
-        <message>
-            <source>Channel password. Empty removes it; environment or config avoids process-list exposure.</source>
-            <translation>Pasfhocal an chainéil. Baineann luach folamh é; seachnaíonn an timpeallacht nó an chumraíocht é a nochtadh sa liosta próiseas.</translation>
-        </message>
-        <message>
-            <source>SquadSpeak headless local channel host</source>
-            <translation>Óstach áitiúil cainéil SquadSpeak gan comhéadan grafach</translation>
-        </message>
-        <message>
-            <source>Environment variables (SQUADSPEAK_ prefix):</source>
-            <translation>Athróga timpeallachta (réimír SQUADSPEAK_):</translation>
-        </message>
-        <message>
-            <source>Host configuration could not be read or exceeds 1 MiB.</source>
-            <translation>Níorbh fhéidir cumraíocht an óstaigh a léamh nó tá sí os cionn 1 MiB.</translation>
-        </message>
-        <message>
-            <source>Host configuration must be UTF-8.</source>
-            <translation>Caithfidh cumraíocht an óstaigh a bheith in UTF-8.</translation>
-        </message>
-        <message>
-            <source>Host preset must be a JSON object.</source>
-            <translation>Caithfidh réamhshocrú an óstaigh a bheith ina réad JSON.</translation>
-        </message>
-        <message>
-            <source>Property line %1 must use key=value.</source>
-            <translation>Caithfidh líne airíonna %1 key=value a úsáid.</translation>
-        </message>
-        <message>
-            <source>Property line %1: %2</source>
-            <translation>Líne airíonna %1: %2</translation>
-        </message>
-        <message>
-            <source>Standard input has no file descriptor.</source>
-            <translation>Níl tuairisceoir comhaid ag an ionchur caighdeánach.</translation>
-        </message>
-        <message>
-            <source>Standard input could not be inspected.</source>
-            <translation>Níorbh fhéidir an t-ionchur caighdeánach a scrúdú.</translation>
-        </message>
-        <message>
-            <source>Could not write the command response: %1</source>
-            <translation>Níorbh fhéidir freagra an ordaithe a scríobh: %1</translation>
-        </message>
-        <message>
-            <source>Standard input could not be read: %1</source>
-            <translation>Níorbh fhéidir an t-ionchur caighdeánach a léamh: %1</translation>
-        </message>
-        <message>
-            <source>Input line exceeds 65536 bytes.</source>
-            <translation>Tá líne an ionchuir os cionn 65536 beart.</translation>
-        </message>
-        <message>
-            <source>Each input line must be a JSON object.</source>
-            <translation>Caithfidh gach líne ionchuir a bheith ina réad JSON.</translation>
-        </message>
-        <message>
-            <source>Input ended before a complete JSON line.</source>
-            <translation>Tháinig deireadh leis an ionchur roimh líne iomlán JSON.</translation>
-        </message>
-        <message>
-            <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
-            <translation>Aitheantas roghnach do chainéil féin do na horduithe status, configure, password, admission, history, chat agus radio; úsáidtear an príomhchainéal de réir réamhshocraithe.</translation>
-        </message>
-        <message>
-            <source>Channel action must be list, add or remove.</source>
-            <translation>Caithfidh gníomh an chainéil a bheith list, add nó remove.</translation>
-        </message>
-        <message>
-            <source>Removing an own channel deletes its history, images, permissions and radio settings. Set confirmed=true to proceed.</source>
-            <translation>Má bhaintear do chainéal féin, scriostar a stair, íomhánna, ceadanna agus socruithe raidió. Socraigh confirmed=true chun leanúint ar aghaidh.</translation>
-        </message>
-        <message>
-            <source>id must identify an additional own channel.</source>
-            <translation>Caithfidh id ceann de do chainéil bhreise féin a aithint.</translation>
-        </message>
-        <message>
-            <source>The additional own channel could not be removed: %1</source>
-            <translation>Níorbh fhéidir do chainéal breise féin a bhaint: %1</translation>
-        </message>
-        <message>
-            <source>channelId must identify an own channel.</source>
-            <translation>Caithfidh channelId ceann de do chainéil féin a aithint.</translation>
-        </message>
-        <message>
-            <source>values must be a host settings object.</source>
-            <translation>Caithfidh values a bheith ina réad socruithe óstaigh.</translation>
-        </message>
-        <message>
-            <source>Headless admission is always enabled for non-banned devices; requests off is not supported.</source>
-            <translation>Bíonn cead isteach gan comhéadan grafach ar siúl do ghléasanna nach bhfuil toirmiscthe; ní thacaítear le requests off.</translation>
-        </message>
-        <message>
-            <source>value must be a password of at most 1024 UTF-8 bytes without control characters; an empty string removes it.</source>
-            <translation>Caithfidh value a bheith ina phasfhocal nach mó ná 1024 beart UTF-8 gan charachtair rialaithe; baineann teaghrán folamh é.</translation>
-        </message>
-        <message>
-            <source>The channel is not ready or a password change is in progress.</source>
-            <translation>Níl an cainéal réidh nó tá athrú pasfhocail ar siúl.</translation>
-        </message>
-        <message>
-            <source>The channel was removed while saving the password.</source>
-            <translation>Baineadh an cainéal agus an pasfhocal á shábháil.</translation>
-        </message>
-        <message>
-            <source>id is required.</source>
-            <translation>Tá id riachtanach.</translation>
-        </message>
-        <message>
-            <source>text must be a valid non-empty chat message.</source>
-            <translation>Caithfidh text a bheith ina theachtaireacht bhailí chomhrá nach bhfuil folamh.</translation>
-        </message>
-        <message>
-            <source>The local channel is not ready.</source>
-            <translation>Níl an cainéal áitiúil réidh.</translation>
-        </message>
-        <message>
-            <source>The channel's radio is unavailable.</source>
-            <translation>Níl raidió an chainéil ar fáil.</translation>
-        </message>
-        <message>
-            <source>Unknown command. Use help.</source>
-            <translation>Ordú anaithnid. Úsáid help.</translation>
-        </message>
-        <message>
-            <source>search requires a query, non-negative offset and limit from 1 to 128.</source>
-            <translation>Teastaíonn query, offset neamh-dhiúltach agus limit ó 1 go 128 ó search.</translation>
-        </message>
-        <message>
-            <source>add creates an id; update requires an existing id.</source>
-            <translation>Cruthaíonn add id; teastaíonn id atá ann cheana ó update.</translation>
-        </message>
-        <message>
-            <source>A station is already being checked.</source>
-            <translation>Tá stáisiún á sheiceáil cheana féin.</translation>
-        </message>
-        <message>
-            <source>The channel was removed while checking the station.</source>
-            <translation>Baineadh an cainéal agus an stáisiún á sheiceáil.</translation>
-        </message>
-        <message>
-            <source>Unknown radio action.</source>
-            <translation>Gníomh raidió anaithnid.</translation>
-        </message>
-        <message>
-            <source>Could not load language: %1</source>
-            <translation>Níorbh fhéidir an teanga a lódáil: %1</translation>
-        </message>
-        <message>
-            <source>The %1 option is incompatible with --headless.</source>
-            <translation>Níl an rogha %1 comhoiriúnach le --headless.</translation>
-        </message>
-        <message>
-            <source>Unexpected positional arguments. Use --help.</source>
-            <translation>Argóintí suímh gan choinne. Úsáid --help.</translation>
-        </message>
-        <message>
-            <source>--config / -f requires a non-empty path.</source>
-            <translation>Teastaíonn cosán nach bhfuil folamh ó --config / -f.</translation>
-        </message>
-        <message>
-            <source>Choose --password or --password-file, not both.</source>
-            <translation>Roghnaigh --password nó --password-file, ní an dá cheann.</translation>
-        </message>
-        <message>
-            <source>Choose SQUADSPEAK_PASSWORD or SQUADSPEAK_PASSWORD_FILE, not both.</source>
-            <translation>Roghnaigh SQUADSPEAK_PASSWORD nó SQUADSPEAK_PASSWORD_FILE, ní an dá cheann.</translation>
-        </message>
-        <message>
-            <source>Choose password or passwordFile in one configuration layer, not both.</source>
-            <translation>Roghnaigh password nó passwordFile i sraith chumraíochta amháin, ní an dá cheann.</translation>
-        </message>
-        <message>
-            <source>passwordFile must be a non-empty path.</source>
-            <translation>Caithfidh passwordFile a bheith ina chosán nach bhfuil folamh.</translation>
-        </message>
-        <message>
-            <source>Password file could not be read or is too large.</source>
-            <translation>Níorbh fhéidir comhad an phasfhocail a léamh nó tá sé rómhór.</translation>
-        </message>
-        <message>
-            <source>Password file must contain at most 1024 UTF-8 bytes without control characters.</source>
-            <translation>Ní fhéadfaidh comhad an phasfhocail níos mó ná 1024 beart UTF-8 gan charachtair rialaithe a bheith ann.</translation>
-        </message>
-        <message>
-            <source>Password must be a string of at most 1024 UTF-8 bytes without control characters.</source>
-            <translation>Caithfidh an pasfhocal a bheith ina theaghrán nach mó ná 1024 beart UTF-8 gan charachtair rialaithe.</translation>
-        </message>
-        <message>
-            <source>settingsFile must be a non-empty path.</source>
-            <translation>Caithfidh settingsFile a bheith ina chosán nach bhfuil folamh.</translation>
-        </message>
-        <message>
-            <source>identityFile must be a non-empty path.</source>
-            <translation>Caithfidh identityFile a bheith ina chosán nach bhfuil folamh.</translation>
-        </message>
-        <message>
-            <source>The settings directory could not be created.</source>
-            <translation>Níorbh fhéidir eolaire na socruithe a chruthú.</translation>
-        </message>
-        <message>
-            <source>This SquadSpeak profile is already running or cannot be locked.</source>
-            <translation>Tá an phróifíl SquadSpeak seo ag rith cheana féin nó ní féidir í a ghlasáil.</translation>
-        </message>
-        <message>
-            <source>Standard input could not be opened.</source>
-            <translation>Níorbh fhéidir an t-ionchur caighdeánach a oscailt.</translation>
-        </message>
-        <message>
-            <source>Standard output could not be opened.</source>
-            <translation>Níorbh fhéidir an t-aschur caighdeánach a oscailt.</translation>
-        </message>
-        <message>
-            <source>This identity file is already in use or cannot be locked.</source>
-            <translation>Tá an comhad aitheantais seo in úsáid cheana féin nó ní féidir é a ghlasáil.</translation>
-        </message>
-        <message>
-            <source>Invalid host configuration: %1</source>
-            <translation>Cumraíocht óstaigh neamhbhailí: %1</translation>
-        </message>
-        <message>
-            <source>Radio channels could not be initialized.</source>
-            <translation>Níorbh fhéidir na cainéil raidió a thúsú.</translation>
-        </message>
-        <message>
-            <source>Headless host could not start: %1</source>
-            <translation>Níorbh fhéidir an t-óstach gan comhéadan grafach a thosú: %1</translation>
-        </message>
-        <message>
-            <source>Channel password could not be saved.</source>
-            <translation>Níorbh fhéidir pasfhocal an chainéil a shábháil.</translation>
-        </message>
-        <message>
-            <source>Invalid channel password: %1</source>
-            <translation>Pasfhocal cainéil neamhbhailí: %1</translation>
-        </message>
-        <message>
-            <source>Headless host could not initialize: %1</source>
-            <translation>Níorbh fhéidir an t-óstach gan comhéadan grafach a thúsú: %1</translation>
-        </message>
-        <message>
-            <source>SquadSpeak headless could not start: %1</source>
-            <translation>Níorbh fhéidir SquadSpeak gan comhéadan grafach a thosú: %1</translation>
-        </message>
-        <message>
-            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
-            <translation>Ní mór stádas, síniú isteach, athnuachan, síniú amach nó cealú a bheith i ngníomh tacaitheora. status sign-in refresh sign-out cancel</translation>
-        </message>
-        <message>
-            <source>A Supporter operation is in progress.</source>
-            <translation>Tá oibríocht Tacaíochta ar siúl.</translation>
-        </message>
-        <message>
-            <source>Supporter access is unavailable in this build.</source>
-            <translation>Níl rochtain ar thacadóir ar fáil sa leagan seo.</translation>
-        </message>
-        <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>Tosaíocht socruithe: argóintí &gt; timpeallacht &gt; airíonna &gt; luachanna freastalaí sábháilte.</translation>
+            <source>New image</source>
+            <translation>Íomhá nua</translation>
         </message>
     </context>
     <context>
-        <name>Desktop</name>
+        <name>VideoCodec</name>
         <message>
-            <source>Open settings at startup.</source>
-            <translation>Oscail na socruithe ag am tosaithe.</translation>
+            <source>Video codec: %1</source>
+            <translation>Codec físe: %1</translation>
         </message>
         <message>
-            <source>Open guided local test recording without starting network services.</source>
-            <translation>Oscail an taifeadadh tástála áitiúil treoraithe gan seirbhísí líonra a thosú.</translation>
+            <source>Video codec ABI does not match its headers.</source>
+            <translation>Ní mheaitseálann ABI an codec físe a chomhaid cheanntásca.</translation>
         </message>
         <message>
-            <source>Alternative file for audio profiles.</source>
-            <translation>Comhad eile do phróifílí fuaime.</translation>
+            <source>Video buffers could not be allocated.</source>
+            <translation>Níorbh fhéidir cuimhne a leithdháileadh do na maoláin físe.</translation>
         </message>
         <message>
-            <source>Load the interface without microphone capture and exit after one second.</source>
-            <translation>Lódáil an comhéadan gan taifeadadh micreafóin agus scoir tar éis soicind amháin.</translation>
+            <source>Invalid video quality tier.</source>
+            <translation>Leibhéal cáilíochta físe neamhbhailí.</translation>
         </message>
         <message>
-            <source>Save an image of the app window during the UI test.</source>
-            <translation>Sábháil íomhá d'fhuinneog na haipe le linn na tástála comhéadain.</translation>
+            <source>The screen source exceeds the supported capture size.</source>
+            <translation>Sáraíonn foinse an scáileáin an méid gabhála a dtacaítear leis.</translation>
         </message>
         <message>
-            <source>The window image could not be saved.</source>
-            <translation>Níorbh fhéidir íomhá na fuinneoige a shábháil.</translation>
+            <source>The screen source is too narrow.</source>
+            <translation>Tá foinse an scáileáin róchúng.</translation>
         </message>
         <message>
-            <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
-            <translation>Níl tráidire an chórais ar fáil; fanann an aip ar oscailt i bhfuinneog.</translation>
+            <source>The video encoder could not be allocated.</source>
+            <translation>Níorbh fhéidir cuimhne a leithdháileadh don ionchódóir físe.</translation>
+        </message>
+        <message>
+            <source>No supported video encoder is available.</source>
+            <translation>Níl aon ionchódóir físe a dtacaítear leis ar fáil.</translation>
+        </message>
+        <message>
+            <source>Video encoder configuration is too large.</source>
+            <translation>Tá cumraíocht an ionchódóra físe rómhór.</translation>
+        </message>
+        <message>
+            <source>Video scaling could not be initialized.</source>
+            <translation>Níorbh fhéidir scálú físe a thúsú.</translation>
+        </message>
+        <message>
+            <source>The encoder returned an empty video packet.</source>
+            <translation>D'fhill an t-ionchódóir paicéad físe folamh.</translation>
+        </message>
+        <message>
+            <source>Invalid video frame format.</source>
+            <translation>Formáid fráma físe neamhbhailí.</translation>
+        </message>
+        <message>
+            <source>Invalid video decoder configuration.</source>
+            <translation>Cumraíocht díchódóra físe neamhbhailí.</translation>
+        </message>
+        <message>
+            <source>This video codec cannot be decoded.</source>
+            <translation>Ní féidir an codec físe seo a dhíchódú.</translation>
+        </message>
+        <message>
+            <source>Video decoder could not be allocated.</source>
+            <translation>Níorbh fhéidir cuimhne a leithdháileadh don díchódóir físe.</translation>
+        </message>
+        <message>
+            <source>Video decoder configuration could not be allocated.</source>
+            <translation>Níorbh fhéidir cuimhne a leithdháileadh do chumraíocht an díchódóra físe.</translation>
+        </message>
+        <message>
+            <source>Decoded dimensions do not match the screen stream.</source>
+            <translation>Ní mheaitseálann na toisí díchódaithe sruth an scáileáin.</translation>
+        </message>
+        <message>
+            <source>Decoded image could not be allocated.</source>
+            <translation>Níorbh fhéidir cuimhne a leithdháileadh don íomhá dhíchódaithe.</translation>
+        </message>
+        <message>
+            <source>Video color conversion could not be initialized.</source>
+            <translation>Níorbh fhéidir tiontú dathanna físe a thúsú.</translation>
         </message>
     </context>
     <context>
-        <name>LocalLanguage</name>
+        <name>VoiceAvatar</name>
         <message>
-            <source>Translation (experimental)</source>
-            <translation>Aistriúchán (turgnamhach)</translation>
+            <source>Muted</source>
+            <translation>Micreafón balbhaithe</translation>
         </message>
         <message>
-            <source>Spoken language</source>
-            <translation>Teanga labhartha</translation>
+            <source>Sleeping</source>
+            <translation>Codladh</translation>
         </message>
         <message>
-            <source>Translate to</source>
-            <translation>Aistrigh go</translation>
+            <source>Offline</source>
+            <translation>As líne</translation>
         </message>
         <message>
-            <source>Translate messages</source>
-            <translation>Aistrigh teachtaireachtaí</translation>
+            <source>Speaking</source>
+            <translation>Ag labhairt di</translation>
         </message>
         <message>
-            <source>Translated voice</source>
-            <translation>Guth aistrithe</translation>
+            <source>Unavailable</source>
+            <translation>Níl fáil air</translation>
         </message>
         <message>
-            <source>Original audio</source>
-            <translation>Fuaim bhunaidh</translation>
+            <source>Listening</source>
+            <translation>Éisteacht</translation>
         </message>
         <message>
-            <source>Original text</source>
-            <translation>Téacs bunaidh</translation>
+            <source>Deafened</source>
+            <translation>Cainteoirí balbhaithe</translation>
+        </message>
+    </context>
+    <context>
+        <name>VoiceSession</name>
+        <message>
+            <source>Unavailable - audio settings or tone test</source>
+            <translation>Níl fáil air - socruithe fuaime nó tástáil toin</translation>
         </message>
         <message>
-            <source>Prepare languages</source>
-            <translation>Ullmhaigh teangacha</translation>
+            <source>Microphone muted</source>
+            <translation>Micreafón balbhaithe</translation>
         </message>
         <message>
-            <source>Local language processing is unavailable.</source>
-            <translation>Níl próiseáil áitiúil teanga ar fáil.</translation>
+            <source>Push-to-talk held</source>
+            <translation>Coinnítear an cnaipe bhrú-chun-cainte síos</translation>
         </message>
         <message>
-            <source>Language settings could not be read.</source>
-            <translation>Níorbh fhéidir na socruithe teanga a léamh.</translation>
+            <source>Ready - push-to-talk released</source>
+            <translation>Réidh - scaoileadh an cnaipe bhrú-chun-cainte</translation>
         </message>
         <message>
-            <source>Language settings could not be saved.</source>
-            <translation>Níorbh fhéidir na socruithe teanga a shábháil.</translation>
+            <source>Microphone unmuted</source>
+            <translation>Micreafón neamhbhalbhaithe</translation>
+        </message>
+        <message>
+            <source>Settings could not be saved: %1</source>
+            <translation>Níorbh fhéidir na socruithe a shábháil: %1</translation>
+        </message>
+        <message>
+            <source>The push-to-talk sequence cannot be incremented further.</source>
+            <translation>Ní féidir an seicheamh brú chun cainte a mhéadú tuilleadh.</translation>
+        </message>
+        <message>
+            <source>Choose System, Light or Dark.</source>
+            <translation>Roghnaigh Córas, Solas nó Dorcha.</translation>
+        </message>
+        <message>
+            <source>Choose a colour palette from the list.</source>
+            <translation>Roghnaigh pailéad dathanna ón liosta.</translation>
+        </message>
+        <message>
+            <source>Choose an available avatar.</source>
+            <translation>Roghnaigh avatar atá ar fáil.</translation>
+        </message>
+        <message>
+            <source>Invalid push-to-talk binding.</source>
+            <translation>Ceangal brú-go-caint neamhbhailí.</translation>
+        </message>
+        <message>
+            <source>Release the held push-to-talk key first.</source>
+            <translation>Scaoileadh an eochair bhrú-chun-caint ar siúl ar dtús.</translation>
+        </message>
+        <message>
+            <source>Choose a language from the list.</source>
+            <translation>Roghnaigh teanga ón liosta.</translation>
+        </message>
+        <message>
+            <source>This avatar requires Supporter.</source>
+            <translation>Tá Supporter ag teastáil don avatar seo.</translation>
+        </message>
+        <message>
+            <source>The name must contain 1 to 64 characters.</source>
+            <translation>Caithfidh idir 1 agus 64 carachtar a bheith san ainm.</translation>
+        </message>
+        <message>
+            <source>The name may not contain control characters or line breaks.</source>
+            <translation>Ní fhéadfaidh carachtair rialaithe nó sosanna líne a bheith san ainm.</translation>
+        </message>
+        <message>
+            <source>Session settings could not be read.</source>
+            <translation>Níorbh fhéidir socruithe an tseisiúin a léamh.</translation>
+        </message>
+        <message>
+            <source>Saved setting is invalid: %1</source>
+            <translation>Socrú sábháilte neamhbhailí: %1</translation>
         </message>
     </context>
 </TS>

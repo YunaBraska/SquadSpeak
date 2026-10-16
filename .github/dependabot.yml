@@ -28,3 +28,16 @@ updates:
     groups:
       docker-all:
         patterns: ["*"]
+
+  - package-ecosystem: cargo
+    directory: /src/teamspeak_bridge
+    target-branch: main
+    schedule:
+      interval: weekly
+      day: sunday
+      time: "00:00"
+      timezone: Etc/UTC
+    open-pull-requests-limit: 1
+    groups:
+      cargo-all:
+        patterns: ["*"]

@@ -27,6 +27,8 @@ Help does not start services or acquire a profile lock. Invalid saved fields nam
 their stable JSON key; unreadable JSON or an invalid language uses English at
 startup because no usable language preference is available. Profile files are
 never repaired or overwritten after a failed load.
+An unavailable device identity keeps its diagnostic visible. Retry loads the
+same credential-store entry without replacing identities or approvals.
 
 ## Chat persistence
 
@@ -52,6 +54,58 @@ Free hosts select 24h/7d/30d; Supporter adds 90d/180d/360d through Channel Info,
 command. Readers need no pass. An inactive pass limits new messages to 30 days
 without shortening old receipts. Times use UTC epoch milliseconds; only the
 chat timestamp display follows the user's system timezone.
+
+Private conversations use the same history store and paging under
+`<profile>.channel.json.private/<conversation>.sqlite`. Their physical host and
+sorted peer identities determine the conversation ID. Signed CMS envelopes
+bind content to that host, conversation, sender and request. OpenSSL uses
+RSA-OAEP/SHA-256 and AES-256-GCM. Only the two peer identities receive content
+keys. The relay retains routing and expiry metadata. This is not a forward
+secrecy protocol. Losing a peer identity loses its ability to read old content.
+
+Private attachments use the existing image decoder before encryption and again
+for validation at the recipient. Remote control reads the target's validated
+cache. No private key is exported. The independent host-wide TTL is configured
+through the Messages menu, `--private-message-ttl`,
+`SQUADSPEAK_PRIVATE_MESSAGE_TTL`, `privateMessageTtl` or `privateLifetimeDays`.
+Headless relays private messages without becoming a participant.
+
+## TeamSpeak build and tests
+
+The C++ app links a pinned Rust static library. Install Rust using rustup, with
+the version in `rust-toolchain.toml`. CMake uses the existing Opus dependency.
+For cross-compilation, first install the matching Rust target with `rustup target add`
+(`aarch64-apple-ios-sim`, `aarch64-apple-ios`, `aarch64-linux-android` or
+`x86_64-linux-android`). Keep the selected C++ and Rust architectures identical.
+Python source packaging requires Python 3.11 or newer.
+
+`teamspeak_contract` covers the public C++ boundary without external servers.
+`teamspeak_bridge` tests the real Rust ABI and bounded queues. Live verification
+is deliberately opt-in and reuses two identities:
+
+```sh
+cmake --build build/native-release-sdk --target teamspeak_live
+build/native-release-sdk/teamspeak_live SERVER --state-dir build/ts3-test --channel CHANNEL_ID
+```
+
+Use a server you control and an empty channel. The test sends private/channel text
+and a short synthetic tone, never opens the microphone or speaker, and stops if
+unexpected listeners appear. `--observer NAME` permits one explicitly consenting
+listener and suppresses the channel text. Test identities stay in `--state-dir`
+for reuse. Do not run this against arbitrary public servers or use a personal
+identity export. Ordinary CI never connects to a public TS3 server.
+Add `--reconnect` to interrupt only the test clients' UDP traffic and verify
+automatic recovery, preserved mute state and message delivery after reconnect.
+Add `--text-only` when testing a channel without speaking permission. Recovery
+waits for both authenticated connections and their complete participant lists.
+
+Cargo.lock pins registry sources and the ReSpeak revision. The dependency source
+archive includes their exact source tarballs and checksums. Refresh bundled notices
+after a dependency change:
+
+```sh
+python3 cmake/build_sources.py --rust-notices --output docs/third-party/RUST-NOTICES.txt
+```
 
 ## Build and test
 
@@ -189,8 +243,18 @@ Use the existing suites, not another manual chat/kick/ban checklist:
 | Packaged startup, native backends and leaks | Native CI, runtime-only package checks, sanitizers and leak probes | Windows 10 startup on an available PC; Server 2022 is not Windows 10 |
 | Chat sound routing and notifications | Channel/UI/PCM contracts | Actual Apple notification and Focus behavior |
 
-On macOS, prepare two isolated copies with `tests/prepare_two_apps.py` and join
-them to one test channel before handing over. For a Windows visit without a
+On macOS, prepare two isolated copies with `tests/prepare_two_apps.py`. Launch
+each installed `.app` through Finder or `/usr/bin/open`, as the generated launcher
+does. Running `Contents/MacOS/squadspeak` directly from a development process can
+attribute microphone access to that parent, even when SquadSpeak's own permission
+is enabled. Check the TCC attribution and real input levels before resetting any
+permission. Local-network checks also need the installed LaunchServices app:
+Terminal-launched processes can bypass macOS local-network privacy. Verify actual
+discovery traffic even when the permission switch is on. Keep any permission
+renewal limited to the approved test copies. Apple recommends Apple-issued signing
+for reliable local-network identity in [TN3179](https://developer.apple.com/documentation/technotes/tn3179-understanding-local-network-privacy).
+Run native UI tests separately from manual interaction so window activation is not
+stolen by another app. Join the copies to one test channel before handing over. For a Windows visit without a
 maintainer present, use the standalone kit below. A captures the microphone,
 B plays through headphones; both start muted and deafened. Do not reset working
 OS permissions or touch the person's normal profile. The maintainer handles
@@ -376,6 +440,11 @@ Screenshots are retained in each platform's CI artifacts.
 
 For fresh UI screenshots, set `SQUAD_TEST_ARTIFACTS` to an output directory when running `controls_tests -input tests/tst_channel_controls.qml`. Add a test function name to select one scenario. The README images come from the English chat and settings scenarios.
 
+The application icon source is `ui/icons/app-source.png`. Run `python3 ui/icons/generate.py`
+with `rsvg-convert` installed to regenerate the PNG, macOS ICNS and Windows ICO.
+The generator only resizes the approved artwork. The menu icon is drawn separately
+in `src/main.cpp` as an outline speech bubble, filled while transmitting speech.
+
 ## Headless server
 
 Normal startup opens the desktop app. `--headless` selects the server entrypoint, without loading personal GUI/audio profiles or joining a channel as a user.
@@ -387,6 +456,7 @@ squadspeak --headless -f /path/to/application.properties
 Example properties:
 
 ```properties
+hostName=Willow Station
 channelName=Evening lounge
 botName=System
 port=48763
@@ -399,6 +469,8 @@ settingsFile=/private/path/server
 Values resolve in this order: command-line arguments, `SQUADSPEAK_*` environment variables, properties, saved server values. Without `-f`, the app reads `application.properties` beside its executable/app, then `config/application.properties` there. The second file overrides the first. Relative file values resolve beside their configuration file.
 
 Headless uses English by default. Select a catalog with `--language de`, `SQUADSPEAK_LANGUAGE=de`, or `language=de` in the preset; the same precedence applies. This selection is independent of desktop preferences. Help and diagnostics are translated; JSON field names, command names and enum values stay unchanged. Invalid or empty language codes are rejected.
+
+Set the host group name with `--host-name`, `SQUADSPEAK_HOST_NAME`, or `hostName` in the configuration. Without a saved name or override, the server generates a name once and keeps it across restarts. This label is separate from `channelName` and never creates a personal user. Runtime `configure` accepts `hostName` on the primary channel and updates connected clients of all owned channels.
 
 Use `--headless --help` for all parameters and environment names. `--ban DEVICE_ID` can be repeated. Explicit bans always apply, and a password is checked before automatic admission. Headless does not offer a deny-everyone mode.
 
@@ -503,6 +575,11 @@ late acknowledgments cannot revive them. UDP blockage and legacy peers use the
 previous bounded TLS path. Sustained shared-uplink/device evidence remains a
 release gate.
 WebRTC Audio Processing is a separate dependency supplying echo cancellation.
+The pinned build applies `cmake/audio-processing-echo.patch` to expose AEC3's
+residual suppression sensitivity. Auto preserves upstream thresholds. Manual
+strength scales their echo-to-speech and echo-to-noise ratios without mixing
+uncancelled microphone audio back in. The library and consumers must use the same
+patched headers. The dependency cache already includes `cmake/*.patch`.
 
 The optional `screen-audio` capability carries Opus packets independently of video backlog.
 Voice peers and capable text-only viewers use the negotiated audio transport.
@@ -512,7 +589,7 @@ rights. The host sends only to capable
 voice members or explicit audio-enabled viewers. Preview subscriptions alone
 stay silent outside that voice channel. Legacy peers retain video and basic
 voice/chat. Native macOS capture uses one latest image and at most 100 ms of
-pending mono samples; it excludes this process's playback from captured audio.
+pending stereo samples; it excludes this process's playback from captured audio.
 The host does not relay its captured system audio back to its own device, which
 already hears the original output.
 
@@ -626,7 +703,7 @@ The macOS build workflow owns signing and notarization. Optional secrets are
 Developer ID identity signs the deployed bundle before package checks. Notary
 credentials additionally submit and staple it before the final archive is tested.
 An isolated runner keychain and imported credentials are removed after the job.
-Without those secrets, packages use ad-hoc signatures. Quit running copies before replacing their bundles. An ad-hoc code identity changes with the build, so privacy permissions can require renewed approval even when System Settings still shows an enabled entry. Stable permissions across builds require a consistent signing identity. For the local A/B copies, `tests/prepare_two_apps.py` defaults to the existing `SquadSpeak Local Development` identity. Use `--sign-identity` to select another existing development identity. Reuse its private key and keep the bundle identifiers, install paths and data profiles stable across builds. Do not provision a new certificate for each build or test copy. Never commit private keys. Developer ID signing, notarization and store accounts are separate distribution work. Store builds exclude external Supporter purchasing and activation. No signing credentials belong in this repository.
+Without those secrets, packages use ad-hoc signatures. Quit running copies before replacing their bundles. An ad-hoc code identity changes with the build, so privacy permissions can require renewed approval even when System Settings still shows an enabled entry. Reuse a consistent signing identity. Apple specifically requires an Apple-issued identity for reliable Local Network tracking. A local self-signed identity alone does not guarantee that macOS will avoid duplicate Local Network rows across builds. For the local A/B copies, `tests/prepare_two_apps.py` defaults to the existing `SquadSpeak Local Development` identity. Use `--sign-identity` to select another existing development identity. Reuse its private key and keep the bundle identifiers, install paths and data profiles stable across builds. Do not provision a new certificate for each build or test copy. Never commit private keys. Developer ID signing, notarization and store accounts are separate distribution work. Store builds exclude external Supporter purchasing and activation. No signing credentials belong in this repository.
 
 Local language experiments require Xcode 26 or newer to build. The reusable
 macOS workflow selects its installed toolchain through `xcode_version` (26.3 by default). Their Apple APIs
@@ -662,6 +739,8 @@ Before Store publication, review the selected distribution terms against the pro
 Keep the channel/chat layout, themes, portraits and shared QML controls. Adapt the containing window to safe areas, touch targets, the software keyboard and iPad resizing. The mobile entrypoint opens a normal window without a tray. Double-click and hover affordances still need a complete tap/long-press review.
 
 The iOS build now has a reproducible Simulator path. The pinned Qt 6.11.3 kit provides an arm64 device slice and an x86_64 Simulator slice. On Apple Silicon, the x86_64 Simulator build requires Rosetta and the installed universal iOS 26 Simulator runtime. The dependency script currently builds the Simulator only. It does not certify an arm64 device package or device/runtime parity. The [Qt platform table](https://doc.qt.io/qt-6.11/supported-platforms.html) describes the supported SDK and device configurations.
+
+Ninja embeds a stable application identifier in each Simulator executable for keychain access. This uses the Simulator's entitlement section, not a development certificate. `native_identity_contract` verifies creation, reload and cleanup in the real simulated keychain. Simulators share the Mac's network, so concurrent app instances need distinct host ports.
 
 Build the target dependencies into a clean prefix. The prefix must match the SDK, architecture and deployment target. Do not point an iOS build at host macOS libraries:
 

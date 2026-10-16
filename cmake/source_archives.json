@@ -132,6 +132,11 @@
       "name": "qtdeclarative-everywhere-src-6.10.2.tar.xz",
       "url": "https://download.qt.io/archive/qt/6.10/6.10.2/submodules/qtdeclarative-everywhere-src-6.10.2.tar.xz",
       "sha256": "a249914ff66cdcdbf0df8b5ffad997a2ee6dce01cc17d43c6cc56fdc1d0f4b0f"
+    },
+    {
+      "name": "tsclientlib-ee3bc6f.tar.gz",
+      "url": "https://github.com/ReSpeak/tsclientlib/archive/ee3bc6f45a7137db7793ba5593a321df400d53e5.tar.gz",
+      "sha256": "d81ea21d741537f2cb222985a7f6c4102347495803939000749ad0b1e019b61d"
     }
   ]
 }

@@ -27,6 +27,9 @@
 #include <future>
 #include <barrier>
 #include <cstdio>
+#ifdef Q_OS_MACOS
+#include <QGuiApplication>
+#endif
 #ifndef Q_OS_WIN
 #include <sys/stat.h>
 #include <unistd.h>
@@ -115,10 +118,56 @@ private slots:
         QVERIFY(process.waitForFinished(5000));
         QCOMPARE(process.exitCode(), 0);
         const auto help = process.readAllStandardOutput();
-        for (const auto* option : {"--config", "--channel-name", "--bot-name", "--port", "--message-ttl", "--requests", "--approve", "--ban", "--password-file", "--identity-file"})
+        for (const auto* option : {"--config", "--host-name", "--channel-name", "--bot-name", "--port", "--message-ttl", "--private-message-ttl", "--requests", "--approve", "--ban", "--password-file", "--identity-file"})
             QVERIFY2(help.contains(option), option);
         QVERIFY(!QFile::exists(profile + ".channel.json"));
         QVERIFY(!QFile::exists(profile + ".instance.lock"));
+    }
+    void identityLoadFailurePreservesDiagnosticAndRetriesWithoutLosingApprovals() {
+        QTemporaryDir directory;
+        const auto profile = directory.filePath("retry");
+        const auto slot = registerProfile(profile);
+        const auto storedIdentity = TlsIdentity::create();
+        VoiceSession session(profile + ".session"), peerSession(directory.filePath("peer.session"));
+        LocalChannel host(session, profile + ".channel.json");
+        LocalChannel peer(peerSession, directory.filePath("peer.channel"), TlsIdentity::create());
+        const auto writeIdentity = [&](const QByteArray& bytes) {
+            QKeychain::WritePasswordJob job("SquadSpeak");
+            job.setAutoDelete(false); job.setKey(slot); job.setInsecureFallback(false); job.setBinaryData(bytes);
+            QSignalSpy finished(&job, &QKeychain::Job::finished);
+            job.start();
+            return (finished.count() > 0 || finished.wait(5000)) && job.error() == QKeychain::NoError;
+        };
+        QVERIFY(writeIdentity("invalid test identity"));
+        temporaryIdentitySlots_[slot] = true;
+        QTcpServer reservation;
+        QVERIFY(reservation.listen(QHostAddress::LocalHost, 0));
+        const auto port = reservation.serverPort(); reservation.close();
+        QVERIFY(host.configureHost({{"port", port}, {"approvedClients", QJsonArray{peer.ownId()}}}));
+        const auto configuration = host.hostConfiguration();
+        QVERIFY(host.initialize());
+        const auto loading = host.status();
+        QCOMPARE(loading, LocalChannel::tr("Loading protected device identity."));
+        QVERIFY(!host.join(peer.ownId(), "127.0.0.1", 48763));
+        QCOMPARE(host.status(), loading);
+        QTRY_COMPARE_WITH_TIMEOUT(host.status(), QCoreApplication::translate("TlsIdentity", "The stored device identity is invalid or expired."), 5000);
+        const auto failure = host.status();
+        QVERIFY(!host.ready()); QVERIFY(!host.hosting());
+        QVERIFY(!host.openChat(peer.ownId(), "127.0.0.1", 48763));
+        QVERIFY(!host.startDiscovery()); QVERIFY(!host.setDiscoverySearch(true));
+        QVERIFY(!host.startHost());
+        QCOMPARE(host.status(), failure);
+        QCOMPARE(host.hostConfiguration(), configuration);
+        QVERIFY(writeIdentity(storedIdentity.pem()));
+        QVERIFY(host.initialize());
+        QVERIFY(host.initialize());
+        QTRY_VERIFY_WITH_TIMEOUT(host.chatReady(), 5000);
+        QCOMPARE(host.ownId(), storedIdentity.id());
+        QVERIFY(host.hosting());
+        QCOMPARE(host.hostConfiguration(), configuration);
+        QVERIFY(peer.join(host.ownId(), "127.0.0.1", host.port()));
+        QTRY_VERIFY_WITH_TIMEOUT(peer.joined(), 5000);
+        QVERIFY(host.requests().isEmpty());
     }
     void commandLineVersionKeepsTheBuildLabel_data() {
         QTest::addColumn<QStringList>("arguments");
@@ -282,8 +331,8 @@ private slots:
         QTest::addColumn<QString>("key"); QTest::addColumn<QJsonValue>("value");
         QTest::addColumn<QString>("expectedKey");
         for (const auto* key : {"version", "userName", "muted", "theme", "palette", "avatar", "animatedAvatars",
-                "deafened", "eventSounds", "remotePttKeyHeld", "remotePttKeyCode", "pushToTalk", "pttButtonHeld",
-                "pttKeyHeld", "pttKeyCode", "pttKeyCodes", "remotePttKeyCodes", "pttRevision"})
+                "deafened", "eventSounds", "pushToTalk", "pttButtonHeld",
+                "pttKeyHeld", "pttKeyCode", "pttKeyCodes", "pttRevision"})
             QTest::newRow(key) << QString(key) << QJsonValue(QJsonValue::Null) << QString(key);
         QTest::newRow("empty-name") << QString("userName") << QJsonValue("") << QString("userName");
         QTest::newRow("unknown-language") << QString("language") << QJsonValue("../../de") << QString("language");
@@ -362,8 +411,9 @@ private slots:
         QVERIFY(process.waitForFinished(5000)); QCOMPARE(process.exitCode(), 0);
         const auto text = QString::fromUtf8(process.readAllStandardOutput());
         QVERIFY2(text.contains(QString::fromUtf8("Einstellungen beim Start öffnen.")), qPrintable(text));
-        for (const auto* option : {"--settings", "--recording-test", "--settings-file", "--smoke-test", "--screenshot"})
+        for (const auto* option : {"--settings", "--settings-file", "--smoke-test", "--screenshot"})
             QVERIFY2(text.contains(option), option);
+        QVERIFY(!text.contains("--recording-test"));
         process.start(executable_, {"--settings-file", profile, "--smoke-test"});
         QVERIFY(process.waitForFinished(5000)); QCOMPARE(process.exitCode(), 1);
         const auto error = QString::fromUtf8(process.readAllStandardError());
@@ -817,10 +867,10 @@ with (root / 'replies').open('wb') as replies:
         };
         QTcpServer reservation; QVERIFY(reservation.listen(QHostAddress::LocalHost));
         const auto port = QByteArray::number(reservation.serverPort()); reservation.close();
-        QVERIFY(writeFile("bin/application.properties", "# executable defaults\nchannelName=Base\nport=" + port + "\nrequestsAllowed=true\nmessageLifetimeDays=30\nsettingsFile=../server0\n"));
-        QVERIFY(writeFile("bin/config/application.properties", "channelName=Subfolder\nmessageLifetimeDays=7\n"));
+        QVERIFY(writeFile("bin/application.properties", "# executable defaults\nchannelName=Base\nhostName=Base host\nport=" + port + "\nrequestsAllowed=true\nmessageLifetimeDays=30\nprivateLifetimeDays=7\nsettingsFile=../server0\n"));
+        QVERIFY(writeFile("bin/config/application.properties", "channelName=Subfolder\nhostName=Subfolder host\nmessageLifetimeDays=7\nprivateMessageTtl=30d\n"));
         QVERIFY(writeFile("working/application.properties", "this file must never be read"));
-        QVERIFY(writeFile("explicit.properties", "channelName=Explicit\nport=" + port + "\n"));
+        QVERIFY(writeFile("explicit.properties", "channelName=Explicit\nhostName=Explicit host\nport=" + port + "\n"));
         for (int level = 0; level < 4; ++level) {
             const auto profile = directory.filePath("server" + QString::number(level));
             registerProfile(profile);
@@ -830,7 +880,9 @@ with (root / 'replies').open('wb') as replies:
             environment.insert("QT_QPA_PLATFORM", "__headless_platform_must_not_load__");
             if (level == 1 || level == 2) {
                 environment.insert("SQUADSPEAK_CHANNEL_NAME", "Environment");
+                environment.insert("SQUADSPEAK_HOST_NAME", "Environment host");
                 environment.insert("SQUADSPEAK_MESSAGE_TTL", "24h");
+                environment.insert("SQUADSPEAK_PRIVATE_MESSAGE_TTL", "7d");
                 environment.insert("SQUADSPEAK_REQUESTS", "on");
                 environment.insert("SQUADSPEAK_SETTINGS_FILE", profile);
             }
@@ -838,7 +890,7 @@ with (root / 'replies').open('wb') as replies:
             process.setProcessEnvironment(environment);
             QStringList arguments{"--headless"};
             if (level >= 2) arguments << "--settings-file" << profile;
-            if (level == 2) arguments << "--channel-name" << "Argument" << "--message-ttl" << "30d" << "--requests" << "on";
+            if (level == 2) arguments << "--host-name" << "Argument host" << "--channel-name" << "Argument" << "--message-ttl" << "30d" << "--private-message-ttl" << "24h" << "--requests" << "on";
             if (level == 3) arguments << "-f" << directory.filePath("explicit.properties");
             process.start(executable, arguments);
             QVERIFY(process.waitForStarted(5000));
@@ -858,7 +910,9 @@ with (root / 'replies').open('wb') as replies:
             const auto config = state.value("configuration").toObject();
             const QStringList expectedNames{"Subfolder", "Environment", "Argument", "Explicit"};
             QCOMPARE(config.value("channelName").toString(), expectedNames.at(level));
+            QCOMPARE(config.value("hostName").toString(), expectedNames.at(level) + " host");
             QCOMPARE(config.value("messageLifetimeDays").toInt(), level == 0 ? 7 : level == 2 ? 30 : 1);
+            QCOMPARE(config.value("privateLifetimeDays").toInt(), level == 0 ? 30 : level == 1 ? 7 : 1);
             QCOMPARE(config.value("requestsAllowed").toBool(), true);
             QCOMPARE(config.value("port").toInt(), port.toInt());
             QVERIFY(state.value("hostClients").toArray().isEmpty());
@@ -876,7 +930,10 @@ with (root / 'replies').open('wb') as replies:
         QTest::newRow("port-range") << QJsonObject{{"port", 65536}};
         QTest::newRow("port-fraction") << QJsonObject{{"port", 5000.5}};
         QTest::newRow("lifetime") << QJsonObject{{"messageLifetimeDays", 8}};
+        QTest::newRow("private-lifetime") << QJsonObject{{"privateLifetimeDays", 8}};
+        QTest::newRow("private-lifetime-fraction") << QJsonObject{{"privateLifetimeDays", 1.5}};
         QTest::newRow("requests-type") << QJsonObject{{"requestsAllowed", "false"}};
+        QTest::newRow("host-name") << QJsonObject{{"hostName", "\n"}};
         QTest::newRow("name") << QJsonObject{{"channelName", "\n"}};
         QTest::newRow("approve-type") << QJsonObject{{"approvedClients", "id"}};
         QTest::newRow("ban-id") << QJsonObject{{"blockedClients", QJsonArray{"invalid"}}};
@@ -909,6 +966,7 @@ with (root / 'replies').open('wb') as replies:
         QTest::newRow("port-text") << QStringList{"--port", "abc"} << QByteArray{};
         QTest::newRow("port-zero") << QStringList{"--port", "0"} << QByteArray{};
         QTest::newRow("ttl") << QStringList{"--message-ttl", "2d"} << QByteArray{};
+        QTest::newRow("private-ttl") << QStringList{"--private-message-ttl", "2d"} << QByteArray{};
         QTest::newRow("requests") << QStringList{"--requests", "maybe"} << QByteArray{};
         QTest::newRow("requests-off") << QStringList{"--requests", "off"} << QByteArray{};
         QTest::newRow("requests-off-properties") << QStringList{"-f", "%file%"} << QByteArray("requestsAllowed=false\n");
@@ -1370,7 +1428,13 @@ with (root / 'replies').open('wb') as replies:
 };
 
 int main(int argc, char** argv) {
+#ifdef Q_OS_MACOS
+    // Dispatch native Keychain callbacks in the test process. Production
+    // --headless children still run their own windowless event loop.
+    QGuiApplication app(argc, argv);
+#else
     QCoreApplication app(argc, argv);
+#endif
     if (app.arguments().contains("--test-config-directory")) {
         std::puts(qUtf8Printable(License::storageDirectory()));
         return 0;

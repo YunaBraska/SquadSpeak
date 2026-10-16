@@ -19,6 +19,7 @@ struct Native {
     SquadLanguageCallback callback;
     void* context;
     std::map<int64_t, QString> requests;
+    QString source, detectionText;
 };
 Native* current = nullptr;
 void reply(int64_t request, QJsonObject event) {
@@ -31,7 +32,10 @@ void squad_language_refresh(void*) {}
 void squad_language_destroy(void* handle) { delete static_cast<Native*>(handle); current = nullptr; }
 const char* squad_language_capabilities(void*) { return R"({"available":true,"speechAvailable":true,"languages":[{"id":"en","name":"English"},{"id":"de","name":"Deutsch"}],"speechLanguages":[{"id":"en-US","name":"English"}]})"; }
 void squad_language_prepare(void*, int64_t req, const char*, const char*, int) { current->requests[req] = "prepare"; }
-void squad_language_translate(void*, int64_t req, const char*, const char*, const char* text) { current->requests[req] = QString::fromUtf8(text); }
+void squad_language_translate(void*, int64_t req, const char* source, const char*, const char* text, const char* detectionText) {
+    current->requests[req] = QString::fromUtf8(text);
+    current->source = QString::fromUtf8(source); current->detectionText = QString::fromUtf8(detectionText);
+}
 void squad_language_listen(void*, int64_t req, const char*) { current->requests[req] = "listen"; }
 void squad_language_audio(void*, int64_t, const float*, int) {}
 void squad_language_cancel(void*, int64_t req) { current->requests.erase(req); }
@@ -39,153 +43,159 @@ void squad_language_cancel(void*, int64_t req) { current->requests.erase(req); }
 class LanguageTests final : public QObject {
     Q_OBJECT
 private slots:
-#if defined(Q_OS_MACOS)
-    void channelSwitchDiscardsSpeechAndRejectsOldCallbacks() {
-        LocalLanguage language;
-        const auto voices = language.voices();
-        QVERIFY(!voices.isEmpty());
-        QVERIFY(language.configure("alice", "en", "de", voices.first().toMap().value("id").toString(), false));
-        language.setMembers({"alice"}, "first");
-        const auto first = current->requests.begin()->first;
-        reply(first, {{"kind", "ready"}});
-        reply(first, {{"kind", "text"}, {"text", "Previous conversation"}, {"final", true}});
-        const auto pending = current->requests.rbegin()->first;
-        QCOMPARE(language.member("alice").value("transcript"), "Previous conversation");
-        language.setMembers({"alice"}, "second");
-        QVERIFY(language.member("alice").value("transcript").toString().isEmpty());
-        QCOMPARE(current->requests.size(), size_t(1));
-        QVERIFY(current->requests.begin()->first != first);
-        reply(first, {{"kind", "ready"}});
-        reply(pending, {{"kind", "text"}, {"text", "Too late"}});
-        QVERIFY(!language.voiceProcessing());
-        language.setMembers({}, "second");
-        QVERIFY(current->requests.empty());
+    void channelPreferencesFollowAppLanguageAndStayLocal() {
+        QTemporaryDir dir;
+        const auto path = dir.filePath("languages.json");
+        {
+            LocalLanguage language(path);
+            QVERIFY(!language.channelPreferences("a").value("messages").toBool());
+            QVERIFY(language.configureChannel("a", true, "fr", true, ""));
+            QVERIFY(language.configureChannel("b", false, "", true, "es"));
+            language.setAppLanguage("de");
+            QCOMPARE(language.channelPreferences("a").value("incomingTarget"), "de");
+            QCOMPARE(language.channelPreferences("a").value("listenTarget"), "de");
+            QCOMPARE(language.channelPreferences("a").value("outgoing"), "fr");
+            QCOMPARE(language.channelPreferences("b").value("listenTarget"), "es");
+            language.setAppLanguage("en");
+            QCOMPARE(language.channelPreferences("a").value("listenTarget"), "en");
+            QCOMPARE(language.channelPreferences("b").value("listenTarget"), "es");
+            QVERIFY(!language.configureChannel("", true, "en", false, ""));
+            QVERIFY(!language.configureChannel("a", true, "../../en", false, ""));
+            QVERIFY(!language.configureChannel("a", true, "en", false, QString(500, 'x')));
+        }
+        LocalLanguage restored(path);
+        QVERIFY(restored.channelPreferences("a").value("messages").toBool());
+        QCOMPARE(restored.channelPreferences("a").value("outgoing"), "fr");
+        QVERIFY(restored.configureChannel("a", false, "fr", false, ""));
+        QVERIFY(!restored.channelPreferences("a").value("messages").toBool());
+        QCOMPARE(restored.channelPreferences("a").value("outgoing"), "fr");
     }
-    void assignedVoiceReplacesOnlyItsOwnAudioAndFailsBackImmediately() {
-        LocalLanguage language;
-        const auto voices = language.voices();
-        QVERIFY(!voices.isEmpty());
-        const auto selected = voices.first().toMap();
-        QVERIFY(language.configure("alice", "en", "de", selected.value("id").toString(), false));
-        QCOMPARE(language.member("alice").value("target"), selected.value("language"));
-        language.setMembers({"alice", "bob"});
-        QCOMPARE(current->requests.size(), size_t(1));
-        const auto listening = current->requests.begin()->first;
-        std::array<float, 960> frame; frame.fill(0.2f);
-        language.processVoice("alice", frame, 0);
-        QCOMPARE(frame.front(), 0.2f);
-        reply(listening, {{"kind", "ready"}});
-        QVERIFY(language.voiceProcessing());
-        language.processVoice("bob", frame, 0);
-        QCOMPARE(frame.front(), 0.2f);
-        language.processVoice("alice", frame, 0);
-        QCOMPARE(frame.front(), 0.0f);
-        reply(listening, {{"kind", "text"}, {"text", "Hello"}, {"final", false}});
-        QVERIFY(language.member("alice").value("transcript").toString().isEmpty());
-        reply(listening, {{"kind", "text"}, {"text", "Hello"}, {"final", true}});
-        QCOMPARE(language.member("alice").value("transcript"), "Hello");
-        auto translation = current->requests.rbegin()->first;
-        QVERIFY(translation != listening);
-        reply(translation, {{"kind", "error"}});
-        QVERIFY(!language.voiceProcessing());
-        frame.fill(0.2f); language.processVoice("alice", frame, 0); QCOMPARE(frame.front(), 0.2f);
-        QVERIFY(!language.member("alice").value("status").toString().isEmpty());
-        reply(listening, {{"kind", "ready"}});
-        QVERIFY(!language.voiceProcessing());
-        language.setMembers({});
-        QVERIFY(language.member("alice").value("transcript").toString().isEmpty());
-        QVERIFY(current->requests.empty());
-        language.setMembers({"alice"});
-        QCOMPARE(current->requests.size(), size_t(1));
-        language.suspend(true); QVERIFY(current->requests.empty());
+    void legacyPreferencesKeepTheTargetWithoutEnablingNewProcessing() {
+        QTemporaryDir dir;
+        QFile file(dir.filePath("language.json")); QVERIFY(file.open(QIODevice::WriteOnly));
+        file.write(R"({"version":1,"members":{"alice":{"source":"en","target":"de","voice":"old","incoming":true}},"channels":{"a":"fr"}})"); file.close();
+        LocalLanguage language(file.fileName());
+        QVERIFY(language.error().isEmpty());
+        QCOMPARE(language.channelPreferences("a").value("outgoing"), "fr");
+        QVERIFY(!language.channelPreferences("a").value("messages").toBool());
+        QVERIFY(!language.channelPreferences("a").value("voice").toBool());
+        QVERIFY(language.member("alice").value("voice").toString().isEmpty());
     }
-#endif
     void textTranslationDoesNotRequireSpeechRecognition() {
         LocalLanguage language;
         reply(0, {{"kind", "capabilities"}, {"available", true}, {"speechAvailable", false}});
-        QVERIFY(language.configure("alice", "fr", "de", {}, true));
-        QVERIFY(language.prepare("alice"));
-        const auto preparation = current->requests.begin()->first;
-        reply(preparation, {{"kind", "ready"}});
-        current->requests.clear();
+        QVERIFY(language.configureChannel("a", true, "fr", true, "de"));
         QVERIFY(language.request("french", "Bonjour tout le monde", "", "de"));
         reply(current->requests.begin()->first, {{"kind", "text"}, {"text", "Hallo zusammen"}});
         QVERIFY(language.result("french").value("text").toString().contains("Hallo zusammen"));
-        QVERIFY(language.configure("alice", "fr", "system", "system", true));
-        language.setMembers({"alice"});
+        language.setMembers({QVariantMap{{"id", "alice"}, {"language", "fr"}}}, "a");
         QVERIFY(!language.voiceProcessing());
     }
-    void systemSelectionFollowsChangesWithoutOverwritingExplicitChoices() {
-        QTemporaryDir dir;
-        const auto path = dir.filePath("preferences.json");
-        {
-            LocalLanguage language(path);
-            reply(0, {{"kind", "capabilities"}, {"available", true}, {"speechAvailable", false},
-                {"systemVoice", QJsonObject{{"id", "voice-de"}, {"language", "de-DE"}, {"name", "Anna"}}}});
-            QVERIFY(language.configure("following", "en", "system", "system", true));
-            QVERIFY(language.configure("fixed", "en", "fr", {}, true));
-            QCOMPARE(language.member("following").value("target"), "de-DE");
-            QCOMPARE(language.member("following").value("targetSelection"), "system");
-            reply(0, {{"kind", "capabilities"}, {"available", true}, {"speechAvailable", false},
-                {"systemVoice", QJsonObject{{"id", "voice-es"}, {"language", "es-ES"}, {"name", "Monica"}}}});
-            QCOMPARE(language.member("following").value("target"), "es-ES");
-            QCOMPARE(language.member("fixed").value("target"), "fr");
-        }
-        LocalLanguage restored(path);
-        QCOMPARE(restored.member("following").value("voice"), "system");
-        QCOMPARE(restored.member("following").value("targetSelection"), "system");
-    }
-    void missingModelsExposeAnActionAndPreserveTheOriginal() {
+    void missingModelsAskOnceAndWaitForConsent() {
         LocalLanguage language;
         QVERIFY(language.request("french", "Bonjour tout le monde", "", "de"));
         reply(current->requests.begin()->first, {{"kind", "error"}, {"code", "modelsRequired"}, {"source", "fr"}});
-        const auto result = language.result("french");
-        QCOMPARE(result.value("original"), "Bonjour tout le monde");
-        QVERIFY(result.value("needsPreparation").toBool());
-        QVERIFY(language.prepareTranslation("french"));
+        QCOMPARE(language.result("french").value("original"), "Bonjour tout le monde");
+        QVERIFY(language.result("french").value("needsPreparation").toBool());
+        QCOMPARE(language.preparation().value("source"), "fr");
+        QVERIFY(current->requests.empty());
+        QVERIFY(!language.preparing());
         language.cancelPreparation();
+        QVERIFY(language.preparation().isEmpty());
+        QVERIFY(!language.acceptPreparation());
+        QVERIFY(language.request("again", "Bonjour encore", "", "de"));
+        reply(current->requests.begin()->first, {{"kind", "error"}, {"code", "modelsRequired"}, {"source", "fr"}});
+        QVERIFY(language.preparation().isEmpty());
+        QVERIFY(language.prepareTranslation("again"));
+        QVERIFY(!language.prepareTranslation("again"));
+        const auto preparation = current->requests.begin()->first;
+        reply(preparation, {{"kind", "ready"}}); current->requests.erase(preparation);
+        QVERIFY(!language.preparing());
+        QVERIFY(language.result("again").isEmpty());
+        QVERIFY(language.configureChannel("a", true, "", false, ""));
+        QVERIFY(language.request("new", "Hola a todos", "", "de"));
+        reply(current->requests.begin()->first, {{"kind", "error"}, {"code", "modelsRequired"}, {"source", "es"}});
+        QVERIFY(language.acceptPreparation());
+        QVERIFY(language.preparing());
+        const auto cancelled = current->requests.begin()->first;
+        language.cancelPreparation();
+        reply(cancelled, {{"kind", "ready"}});
         QVERIFY(!language.preparing());
         QVERIFY(language.request("failure", "Hello", "en", "de"));
         reply(current->requests.rbegin()->first, {{"kind", "error"}, {"error", "A specific native failure"}});
         QCOMPARE(language.result("failure").value("error"), "A specific native failure");
     }
-    void preferencesAreLocalValidatedAndPersistent() {
-        QTemporaryDir dir;
-        const auto file = dir.filePath("languages.json");
-        {
-            LocalLanguage language(file);
-            QVERIFY(language.available());
-            QVERIFY(language.member("alice").isEmpty());
-            QVERIFY(language.configure("alice", "en-US", "de", {}, true));
-            QVERIFY(language.setChannelTarget("channel", "fr"));
-            QVERIFY(!language.configure("", "en", "de", {}, true));
-            QVERIFY(!language.configure("alice", "../../en", "de", {}, true));
-            QVERIFY(!language.configure("alice", "en", "de", "missing-voice", true));
-            QVERIFY(!language.setChannelTarget("channel", "" + QString(500, 'x')));
-        }
-        LocalLanguage restored(file);
-        QCOMPARE(restored.member("alice").value("source"), "en-US");
-        QVERIFY(restored.member("alice").value("incoming").toBool());
-        QCOMPARE(restored.channelTarget("channel"), "fr");
-        QVERIFY(restored.setChannelTarget("channel", {}));
-        QCOMPARE(restored.channelTarget("channel"), QString{});
-        QVERIFY(restored.member("alice").value("transcript").toString().isEmpty());
+#if defined(Q_OS_MACOS) || defined(Q_OS_IOS)
+    void channelVoiceUsesSenderHintsAndLeavesUnknownOrSameLanguageAudible() {
+        LocalLanguage language;
+        QVERIFY(language.configureChannel("a", false, "", true, "de"));
+        language.setMembers({QVariantMap{{"id", "alice"}, {"language", "en"}}, QVariantMap{{"id", "bob"}},
+                            QVariantMap{{"id", "carol"}, {"language", "de"}}}, "a");
+        QCOMPARE(current->requests.size(), size_t(1));
+        const auto listening = current->requests.begin()->first;
+        std::array<float, 960> frame; frame.fill(0.2f);
+        language.processVoice("alice", frame, 0); QCOMPARE(frame.front(), 0.2f);
+        reply(listening, {{"kind", "ready"}});
+        QVERIFY(language.voiceProcessing());
+        for (const auto* id : {"bob", "carol"}) { language.processVoice(id, frame, 0); QCOMPARE(frame.front(), 0.2f); }
+        language.processVoice("alice", frame, 0); QCOMPARE(frame.front(), 0.0f);
+        reply(listening, {{"kind", "text"}, {"text", "Hello"}, {"final", true}});
+        QCOMPARE(language.member("alice").value("transcript"), "Hello");
+        const auto pending = current->requests.rbegin()->first;
+        reply(pending, {{"kind", "error"}});
+        QVERIFY(!language.voiceProcessing());
+        frame.fill(0.2f); language.processVoice("alice", frame, 0); QCOMPARE(frame.front(), 0.2f);
+        QVERIFY(!language.member("alice").value("status").toString().isEmpty());
+        QVERIFY(language.configureChannel("a", false, "", false, "de"));
+        reply(listening, {{"kind", "ready"}});
+        QVERIFY(!language.voiceProcessing());
+        QVERIFY(current->requests.empty());
     }
+    void channelAndLanguageChangesCancelOldSpeech() {
+        LocalLanguage language;
+        QVERIFY(language.configureChannel("a", false, "", true, "de"));
+        QVERIFY(language.configureChannel("b", false, "", true, "de"));
+        const QVariantList members{QVariantMap{{"id", "alice"}, {"language", "en"}}};
+        language.setMembers(members, "a");
+        const auto first = current->requests.begin()->first;
+        reply(first, {{"kind", "ready"}});
+        reply(first, {{"kind", "text"}, {"text", "Previous conversation"}, {"final", true}});
+        const auto pending = current->requests.rbegin()->first;
+        language.setMembers(members, "b");
+        QVERIFY(language.member("alice").value("transcript").toString().isEmpty());
+        QCOMPARE(current->requests.size(), size_t(1));
+        QVERIFY(current->requests.begin()->first != first);
+        reply(first, {{"kind", "ready"}}); reply(pending, {{"kind", "text"}, {"text", "Too late"}});
+        QVERIFY(!language.voiceProcessing());
+        language.setMembers({QVariantMap{{"id", "alice"}, {"language", "de"}}}, "b");
+        QVERIFY(current->requests.empty());
+        language.suspend(true); language.setMembers(members, "b");
+        QVERIFY(current->requests.empty());
+        language.suspend(false); QCOMPARE(current->requests.size(), size_t(1));
+        const auto missing = current->requests.begin()->first;
+        reply(missing, {{"kind", "error"}, {"code", "modelsRequired"}});
+        QVERIFY(language.preparation().value("speech").toBool());
+        QVERIFY(!language.voiceProcessing());
+        language.setMembers({}, "b");
+        QVERIFY(current->requests.empty());
+        QVERIFY(language.preparation().isEmpty());
+    }
+#endif
     void corruptAndUnwritableSettingsDoNotEnableAnything() {
         QTemporaryDir dir;
-        QFile file(dir.filePath("broken")); QVERIFY(file.open(QIODevice::WriteOnly)); file.write("{}"); file.close();
-        {
+        for (const auto* json : {"{}", R"({"version":2,"channels":{"a":{"messages":"yes"}}})"}) {
+            QFile file(dir.filePath("broken")); QVERIFY(file.open(QIODevice::WriteOnly)); file.write(json); file.close();
             LocalLanguage broken(file.fileName());
-            QVERIFY(!broken.error().isEmpty()); QVERIFY(broken.member("alice").isEmpty());
+            QVERIFY(!broken.error().isEmpty()); QVERIFY(!broken.channelPreferences("a").value("messages").toBool());
         }
         LocalLanguage unwritable(dir.filePath("missing/file"));
-        QVERIFY(!unwritable.configure("alice", "en", "de", {}, true));
-        QVERIFY(!unwritable.error().isEmpty()); QVERIFY(unwritable.member("alice").isEmpty());
+        QVERIFY(!unwritable.configureChannel("a", true, "en", false, ""));
+        QVERIFY(!unwritable.error().isEmpty()); QVERIFY(!unwritable.channelPreferences("a").value("messages").toBool());
     }
     void markdownCodeImagesAndLinkAddressesSurviveTranslation() {
         LocalLanguage language;
         const QString input = "# Hello\n\n**World** and `code()` [label](https://example.org/path?q=1)\n\n```cpp\nkeep();\n```\n\n![image](attachment:abc)\n\n> Quote\n\n| Table | Value |\n| --- | --- |\n| One | Two |\n";
-        QVERIFY(language.request("draft", input, "en", "de"));
+        QVERIFY(language.request("draft", input, "", "de"));
         int requests = 0;
         while (language.result("draft").value("pending").toBool()) {
             QVERIFY(++requests < 30);
@@ -193,8 +203,13 @@ private slots:
             const auto text = current->requests.begin()->second;
             QVERIFY(!text.contains("code()")); QVERIFY(!text.contains("keep();"));
             QVERIFY(!text.contains("https://")); QVERIFY(!text.contains("attachment:"));
+            QCOMPARE(current->source, requests == 1 ? "" : "en");
+            QVERIFY(current->detectionText.contains("Hello World"));
+            QVERIFY(current->detectionText.contains("Quote"));
+            QVERIFY(!current->detectionText.contains("code()"));
+            QVERIFY(!current->detectionText.contains("https://"));
             current->requests.erase(id);
-            reply(id, {{"kind", "text"}, {"text", "Translated " + text}, {"final", true}});
+            reply(id, {{"kind", "text"}, {"text", "Translated " + text.trimmed()}, {"source", "en"}, {"final", true}});
         }
         const auto result = language.result("draft");
         QVERIFY(result.value("error").toString().isEmpty());
@@ -203,6 +218,7 @@ private slots:
         QVERIFY(text.contains("keep();")); QVERIFY(text.contains("https://example.org/path?q=1"));
         QVERIFY(text.contains("attachment:abc"));
         QTextDocument document; document.setMarkdown(text);
+        QVERIFY(document.toPlainText().contains("Translated World Translated and code() Translated label"));
         bool bold = false;
         for (auto block = document.begin(); block.isValid(); block = block.next())
             for (auto it = block.begin(); !it.atEnd(); ++it)
@@ -244,13 +260,8 @@ private slots:
     }
     void preparesOnlyOnExplicitActionAndDoesNotRetainResultsForever() {
         LocalLanguage language;
-        QVERIFY(language.configure("alice", "en", "de", {}, true));
+        QVERIFY(language.configureChannel("a", true, "", false, ""));
         QVERIFY(current->requests.empty());
-        QVERIFY(language.prepare("alice"));
-        QVERIFY(!language.prepare("alice"));
-        reply(current->requests.begin()->first, {{"kind", "error"}});
-        QVERIFY(!language.error().isEmpty());
-        current->requests.clear();
         for (int i = 0; i < 200; ++i) {
             QVERIFY(language.request(QString::number(i), "Hello", "en", "de"));
             const auto id = current->requests.begin()->first; current->requests.erase(id);
@@ -270,6 +281,12 @@ private slots:
         LocalLanguage language;
         QVERIFY(language.supported());
         QTRY_VERIFY_WITH_TIMEOUT(!language.languages().isEmpty(), 20000);
+        QSet<QString> choices;
+        for (const auto& entry : language.languages()) {
+            const auto code = entry.toMap().value("id").toString().section('-', 0, 0);
+            QVERIFY2(!choices.contains(code), qPrintable("Duplicate language choice: " + code));
+            choices.insert(code);
+        }
         if (!language.available()) { QVERIFY(!language.request("unavailable", "Hello", "en", "de")); return; }
         QVERIFY(language.request("same", "**Hello world** with `code()`.", "en", "en"));
         QTRY_VERIFY_WITH_TIMEOUT(!language.result("same").value("pending").toBool(), 10000);
@@ -289,6 +306,9 @@ private slots:
         QTest::addColumn<QString>("source"); QTest::addColumn<QString>("target");
         QTest::addColumn<QString>("input"); QTest::addColumn<QString>("expected");
         QTest::newRow("regional-german") << "de-AT" << "en-US" << "Guten Morgen, wie geht es dir?" << "morning";
+        QTest::newRow("german-markdown") << "de" << "en"
+            << "Bedienprüfung: Hallo, wie geht es dir heute?\n\n**Fett**, `Code` und ein Link: https://example.com\n\n> Eine kurze Nachricht."
+            << "today";
         QTest::newRow("english") << "en-US" << "de-DE" << "Hello, how are you today?" << "Hallo";
         QTest::newRow("french") << "fr-FR" << "de-DE" << "Bonjour, comment allez-vous?" << "wie";
         QTest::newRow("spanish") << "es-ES" << "en-US" << "Hola, como estas hoy?" << "Hello";
@@ -297,13 +317,13 @@ private slots:
         QFETCH(QString, source); QFETCH(QString, target); QFETCH(QString, input); QFETCH(QString, expected);
         LocalLanguage language;
         QTRY_VERIFY_WITH_TIMEOUT(language.available(), 20000);
-        QVERIFY(language.configure("text-test", source, target, {}, true));
-        QSignalSpy ready(&language, &LocalLanguage::prepared);
-        QVERIFY(language.prepare("text-test"));
-        QTRY_VERIFY_WITH_TIMEOUT(!language.preparing(), 180000);
-        QVERIFY2(language.error().isEmpty(), qPrintable(language.error()));
-        QCOMPARE(ready.count(), 1);
-        QCOMPARE(ready.first().first().toString(), "text-test");
+        QVERIFY(language.request("preparation", input, source, target));
+        QTRY_VERIFY_WITH_TIMEOUT(!language.result("preparation").value("pending").toBool(), 15000);
+        if (!language.preparation().isEmpty()) {
+            QVERIFY(language.acceptPreparation());
+            QTRY_VERIFY_WITH_TIMEOUT(!language.preparing(), 180000);
+            QVERIFY2(language.error().isEmpty(), qPrintable(language.error()));
+        }
         QVERIFY(language.request("message", input, "", target));
         QTRY_VERIFY_WITH_TIMEOUT(!language.result("message").value("pending").toBool(), 15000);
         const auto result = language.result("message");
@@ -320,17 +340,20 @@ private slots:
             return entry.toMap().value("language").toString().startsWith("de");
         });
         QVERIFY(german != voices.end());
-        QVERIFY(language.configure("native-acceptance", "en-US", "de-DE", german->toMap().value("id").toString(), true));
-        QVERIFY(language.prepare("native-acceptance"));
-        QTRY_VERIFY_WITH_TIMEOUT(!language.preparing(), 180000);
-        QVERIFY2(language.error().isEmpty(), qPrintable(language.error()));
+        QVERIFY(language.configureChannel("native", false, "", true, "de-DE"));
+        language.setMembers({QVariantMap{{"id", "native-acceptance"}, {"language", "en-US"}}}, "native");
+        QTRY_VERIFY_WITH_TIMEOUT(language.voiceProcessing() || !language.preparation().isEmpty(), 15000);
+        if (!language.preparation().isEmpty()) {
+            QVERIFY(language.acceptPreparation());
+            QTRY_VERIFY_WITH_TIMEOUT(!language.preparing(), 180000);
+            QVERIFY2(language.error().isEmpty(), qPrintable(language.error()));
+        }
         QVERIFY(language.request("native-translation", "Hello, how are you today?", "en", "de"));
         QTRY_VERIFY_WITH_TIMEOUT(!language.result("native-translation").value("pending").toBool(), 15000);
         QVERIFY2(language.result("native-translation").value("error").toString().isEmpty(), qPrintable(language.result("native-translation").value("error").toString()));
         const auto text = language.result("native-translation").value("text").toString();
         QVERIFY(!text.isEmpty() && !text.contains("how are you today"));
         qInfo() << "Native translated text:" << text;
-        language.setMembers({"native-acceptance"});
         QTRY_VERIFY_WITH_TIMEOUT(language.voiceProcessing(), 15000);
         SpeechOutput source;
         const auto english = std::find_if(voices.begin(), voices.end(), [](const auto& entry) {

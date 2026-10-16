@@ -1,0 +1,8 @@
+Keyboard.wav by bsumusictech
+Source: https://freesound.org/people/bsumusictech/sounds/62594/
+License: CC0 1.0 Universal
+https://creativecommons.org/publicdomain/zero/1.0/
+
+12-second excerpt from the public high-quality MP3 preview, converted to mono
+PCM16 at 48 kHz. The source is a lossy preview, not the original WAV.
+No normalization or denoising. No endorsement is implied.

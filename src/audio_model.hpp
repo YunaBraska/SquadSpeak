@@ -1,7 +1,6 @@
 #pragma once
 
 #include "audio_profiles.hpp"
-#include "audio_recording.hpp"
 #include "voice_mixer.hpp"
 #include "echo_canceller.hpp"
 #include "output_monitor.hpp"
@@ -42,7 +41,10 @@ class AudioModel final : public QObject {
     Q_PROPERTY(QVariantList filterResponse READ filterResponse NOTIFY levelsChanged)
     Q_PROPERTY(double noiseSuppression READ noiseSuppression NOTIFY profileChanged)
     Q_PROPERTY(bool echoCancellation READ echoCancellation NOTIFY profileChanged)
+    Q_PROPERTY(bool echoAutomatic READ echoAutomatic NOTIFY profileChanged)
+    Q_PROPERTY(double echoStrength READ echoStrength NOTIFY profileChanged)
     Q_PROPERTY(QString echoReference READ echoReference NOTIFY activityChanged)
+    Q_PROPERTY(bool echoRetryAvailable READ echoRetryAvailable NOTIFY activityChanged)
     Q_PROPERTY(bool activationEnabled READ activationEnabled NOTIFY profileChanged)
     Q_PROPERTY(bool activationAutomatic READ activationAutomatic NOTIFY profileChanged)
     Q_PROPERTY(double activationThresholdDb READ activationThresholdDb NOTIFY activityChanged)
@@ -56,11 +58,14 @@ class AudioModel final : public QObject {
     Q_PROPERTY(double notificationVolume READ notificationVolume NOTIFY profileChanged)
     Q_PROPERTY(bool readBotMessages READ readBotMessages NOTIFY profileChanged)
     Q_PROPERTY(bool speechAvailable READ speechAvailable CONSTANT)
+    Q_PROPERTY(QVariantMap botVoice READ botVoice NOTIFY profileChanged)
+    Q_PROPERTY(QString botVoiceId READ botVoiceId NOTIFY profileChanged)
     Q_PROPERTY(bool deafened READ deafened NOTIFY profileChanged)
     Q_PROPERTY(bool automaticVolume READ automaticVolume NOTIFY profileChanged)
     Q_PROPERTY(double maximumFrequency READ maximumFrequency NOTIFY devicesChanged)
     Q_PROPERTY(bool running READ running NOTIFY runningChanged)
-    Q_PROPERTY(QString status READ status NOTIFY statusChanged)
+    Q_PROPERTY(QString inputStatus READ inputStatus NOTIFY statusChanged)
+    Q_PROPERTY(QString outputStatus READ outputStatus NOTIFY statusChanged)
     Q_PROPERTY(bool microphonePermissionDenied READ microphonePermissionDenied NOTIFY statusChanged)
     Q_PROPERTY(double inputDb READ inputDb NOTIFY levelsChanged)
     Q_PROPERTY(double outputDb READ outputDb NOTIFY levelsChanged)
@@ -70,7 +75,6 @@ class AudioModel final : public QObject {
     Q_PROPERTY(bool spectrumReady READ spectrumReady NOTIFY levelsChanged)
     Q_PROPERTY(QVariantList inputSpectrum READ inputSpectrum NOTIFY levelsChanged)
     Q_PROPERTY(QVariantList outputSpectrum READ outputSpectrum NOTIFY levelsChanged)
-    Q_PROPERTY(QObject* recording READ recording CONSTANT)
 public:
     explicit AudioModel(const QString& settingsFile, QObject* parent = nullptr);
 public slots:
@@ -98,8 +102,12 @@ public:
     Q_INVOKABLE bool setHighPassAutomatic(bool automatic);
     [[nodiscard]] QVariantList filterResponse() const;
     [[nodiscard]] double noiseSuppression() const { return noiseSuppression_; }
-    [[nodiscard]] bool echoCancellation() const { return echoCancellation_; }
+    [[nodiscard]] bool echoCancellation() const { return echoStrength() > 0; }
+    [[nodiscard]] bool echoAutomatic() const { return !echoSuppression_; }
+    [[nodiscard]] double echoStrength() const { return echoSuppression_.value_or(0.5); }
     [[nodiscard]] QString echoReference() const;
+    [[nodiscard]] bool echoRetryAvailable() const { return source_ && echoCancellation() && outputMonitor_.retryNeeded(); }
+    Q_INVOKABLE bool retryEchoReference();
     [[nodiscard]] bool activationEnabled() const { return activation_.enabled; }
     [[nodiscard]] bool activationAutomatic() const { return activation_.automatic; }
     [[nodiscard]] double activationThresholdDb() const { return mixer_.activationThresholdDb(); }
@@ -120,17 +128,24 @@ public:
     [[nodiscard]] double notificationVolume() const { return notificationVolume_; }
     [[nodiscard]] bool readBotMessages() const { return SpeechOutput::supported && readBotMessages_; }
     [[nodiscard]] bool speechAvailable() const { return SpeechOutput::supported; }
+    [[nodiscard]] QVariantMap botVoice() const { return botVoice_; }
+    [[nodiscard]] QString botVoiceId() const { return botVoiceId_; }
+    Q_INVOKABLE bool setBotVoice(const QString& id);
+    [[nodiscard]] bool botSpeechReady() const { return readBotMessages() && !botVoice_.isEmpty(); }
+    void setAppLanguage(const QString& language);
     Q_INVOKABLE bool setNotificationVolume(double value);
     Q_INVOKABLE bool setReadBotMessages(bool enabled);
     bool readBotMessage(const QString& text);
     void cancelBotMessages();
     void cancelNotifications();
     bool playEvent(const QString& kind);
+    Q_INVOKABLE bool previewOutput(double volume);
     [[nodiscard]] double maximumFrequency() const;
     [[nodiscard]] bool running() const { return source_ != nullptr && wantsCapture_; }
     [[nodiscard]] bool testActive() const { return wantsCapture_ || testingOutput_; }
     [[nodiscard]] bool automaticVolume() const { return automaticVolume_; }
-    [[nodiscard]] QString status() const { return status_; }
+    [[nodiscard]] QString inputStatus() const { return inputStatus_; }
+    [[nodiscard]] QString outputStatus() const { return outputStatus_; }
     [[nodiscard]] bool microphonePermissionDenied() const;
     Q_INVOKABLE bool openMicrophoneSettings();
     [[nodiscard]] double inputDb() const { return levels_.inputDb; }
@@ -147,7 +162,8 @@ public:
     Q_INVOKABLE bool setHighPassHz(double value);
     Q_INVOKABLE bool setLowPassHz(double value);
     Q_INVOKABLE bool setNoiseSuppression(double value);
-    Q_INVOKABLE bool setEchoCancellation(bool enabled);
+    Q_INVOKABLE bool setEchoAutomatic(bool automatic);
+    Q_INVOKABLE bool setEchoStrength(double strength);
     Q_INVOKABLE bool setActivationEnabled(bool enabled);
     Q_INVOKABLE bool setActivationAutomatic(bool automatic);
     Q_INVOKABLE bool setActivationThresholdDb(double value);
@@ -161,10 +177,6 @@ public:
     Q_INVOKABLE bool start();
     Q_INVOKABLE bool stop();
     Q_INVOKABLE bool testOutput();
-    [[nodiscard]] AudioRecording* recording() { return &recording_; }
-    Q_INVOKABLE bool startRecording();
-    Q_INVOKABLE bool cancelRecording();
-    Q_INVOKABLE bool openRecordings();
 
 signals:
     void readinessChanged();
@@ -178,6 +190,7 @@ signals:
     void activityChanged();
 
 private:
+    bool playSound(const QString& sound, double volume);
     void refreshDevices();
     void beginCapture();
     bool ensureCapture();
@@ -185,27 +198,26 @@ private:
     void beginPlayback();
     void playVoice();
     void consume();
-    void monitorOutput();
+    void monitorOutput(bool retry = false);
     bool updateProfile(squad::InputProfile profile);
     bool updateActivation(squad::VoiceActivation activation);
+    bool updateEcho(std::optional<double> strength);
     void applyActivation();
     void applyOutputVolumes();
     bool saveChannelMusicVolume(const QString& source, std::optional<double> value);
     bool select(bool input, const QString& deviceId);
-    void setStatus(QString status);
+    void setStatus(QString status, bool input = true);
     static QAudioDevice resolve(const QList<QAudioDevice>& devices, const QByteArray& selected, bool input);
     static QAudioFormat captureFormat(const QAudioDevice& device);
     squad::AudioProfiles profiles_;
-    AudioRecording recording_;
-    QTimer recordingWatchdog_;
     QMediaDevices devices_;
     QAudioDevice input_;
     QAudioDevice output_;
     squad::InputProfile profile_;
     std::array<double, squad::AudioLevels::spectrumSize> filterResponse_{};
     double noiseSuppression_ = 0;
-    bool echoCancellation_ = true;
-    squad::EchoCanceller echo_;
+    std::optional<double> echoSuppression_;
+    squad::EchoCanceller echo_{2};
     OutputMonitor outputMonitor_;
     qint64 outputReferenceAt_ = -1;
     bool deviceReference_ = false;
@@ -214,6 +226,9 @@ private:
     double musicVolume_ = 0.175;
     double notificationVolume_ = 0.5;
     bool readBotMessages_ = false;
+    QString botLanguage_;
+    QString botVoiceId_;
+    QVariantMap botVoice_;
     SpeechOutput speech_;
     LocalLanguage language_;
     std::deque<std::pair<QString, qint64>> announcements_;
@@ -226,7 +241,8 @@ private:
     std::unique_ptr<squad::AudioProcessor> processor_;
     QTimer meter_;
     squad::AudioLevels levels_;
-    QString status_ = tr("Microphone display is off.");
+    QString inputStatus_ = tr("Microphone display is off.");
+    QString outputStatus_;
     bool wantsCapture_ = false;
     QBuffer tone_;
     std::unique_ptr<QAudioSink> sink_;
@@ -237,7 +253,7 @@ private:
     QElapsedTimer clock_;
     qint64 lastPacketAt_ = -1;
     qint64 activityPublishedAt_ = -50;
-    squad::VoiceMixer mixer_;
+    squad::VoiceMixer mixer_{2};
     QVariantList participants_;
     QHash<QString, double> participantVolumes_;
     bool voiceActive_ = false;
@@ -248,5 +264,4 @@ private:
     bool permissionPending_ = false;
     bool inputFailed_ = false;
     bool outputFailed_ = false;
-    bool recordingRequested_ = false;
 };

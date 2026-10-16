@@ -40,7 +40,7 @@ LocalChannel::Discovery::~Discovery() { clearSearch(); }
 
 bool LocalChannel::Discovery::start() {
     if (owner_.service_) return false;
-    if (!owner_.ready()) return owner_.setStatus(LocalChannel::tr("Device identity is not ready yet."), false);
+    if (!owner_.ready()) return false;
     if (socket_.state() == QAbstractSocket::BoundState) return true;
     heartbeat_.start();
     if (!socket_.bind(QHostAddress::AnyIPv4, discoveryPort,
@@ -109,7 +109,7 @@ bool LocalChannel::Discovery::search(bool enabled) {
         return true;
     }
     if (searching) return true;
-    if (!owner_.ready()) return owner_.setStatus(LocalChannel::tr("Device identity is not ready yet."), false);
+    if (!owner_.ready()) return false;
     queue_ = targets();
     searching = true;
     emit owner_.discoverySearchChanged();

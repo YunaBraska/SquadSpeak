@@ -75,7 +75,7 @@ private:
     QMediaPlayer* probe_ = nullptr;
     QJsonObject pendingStation_;
     bool pendingUpdate_ = false;
-    squad::VoiceMixer encoder_;
+    squad::VoiceMixer encoder_{2};
     std::deque<QByteArray> packets_;
     QTimer retry_, tick_;
     QElapsedTimer received_, delivered_, stable_;

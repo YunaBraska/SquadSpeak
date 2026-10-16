@@ -47,7 +47,7 @@ struct LinuxCapture final {
     std::map<uint32_t, QByteArray> monitors;
     std::map<uint32_t, qint64> clients;
     std::map<uint32_t, std::pair<uint32_t, qint64>> desired;
-    squad::VoiceMixer encoder;
+    squad::VoiceMixer encoder{2};
 
     ~LinuxCapture() { stop(); if (display) XCloseDisplay(display); }
     void stop() {
@@ -100,9 +100,9 @@ struct LinuxCapture final {
             if (tracks.size() == 32) { report(PA_ERR_TOOLARGE); break; }
             auto track = std::make_unique<Track>();
             track->sink = target.first; track->pid = target.second;
-            const pa_sample_spec format{PA_SAMPLE_FLOAT32NE, 48000, 1};
+            const pa_sample_spec format{PA_SAMPLE_FLOAT32NE, 48000, 2};
             track->stream = pa_stream_new(context, "SquadSpeak", &format, nullptr);
-            const pa_buffer_attr buffers{4800 * sizeof(float), uint32_t(-1), uint32_t(-1), uint32_t(-1), 960 * sizeof(float)};
+            const pa_buffer_attr buffers{9600 * sizeof(float), uint32_t(-1), uint32_t(-1), uint32_t(-1), 1920 * sizeof(float)};
             if (!track->stream || pa_stream_set_monitor_stream(track->stream, id) < 0
                 || pa_stream_connect_record(track->stream, monitor->second.constData(), &buffers,
                     pa_stream_flags_t(PA_STREAM_ADJUST_LATENCY | PA_STREAM_DONT_MOVE)) < 0) {
@@ -166,7 +166,7 @@ struct LinuxCapture final {
         if (pa_context_connect(context, nullptr, PA_CONTEXT_NOAUTOSPAWN, nullptr) < 0) report(pa_context_errno(context));
         return error.isEmpty();
     }
-    bool read(std::array<float, 960>& mixed) {
+    bool read(std::array<float, 1920>& mixed) {
         if (!ready && startup.elapsed() >= 5000) { report(PA_ERR_TIMEOUT); return false; }
         // All Pulse callbacks run on this bounded, nonblocking mainloop pump.
         // No capture thread or queued Qt callback survives audio disable.
@@ -194,13 +194,13 @@ struct LinuxCapture final {
                 const void* bytes = nullptr; size_t size = 0;
                 if (pa_stream_peek(track.stream, &bytes, &size) < 0) { report(pa_context_errno(context)); break; }
                 if (size == 0) break;
-                const auto count = size / sizeof(float), keep = std::min<size_t>(count, 4800);
+                const auto count = size / sizeof(float), keep = std::min<size_t>(count, 9600);
                 if (bytes) {
                     const auto* values = static_cast<const float*>(bytes);
                     track.samples.insert(track.samples.end(), values + count - keep, values + count);
                 } else track.samples.insert(track.samples.end(), keep, 0);
                 if (pa_stream_drop(track.stream) < 0) { report(pa_context_errno(context)); break; }
-                if (track.samples.size() > 4800) track.samples.erase(track.samples.begin(), track.samples.end() - 4800);
+                if (track.samples.size() > 9600) track.samples.erase(track.samples.begin(), track.samples.end() - 9600);
             }
             if (track.samples.size() >= mixed.size()) {
                 for (auto& sample : mixed) { sample += track.samples.front(); track.samples.pop_front(); }
@@ -278,7 +278,7 @@ bool ScreenShare::updateNativeAudio() {
 void ScreenShare::pollNative() {
     if (!capturing()) { stop(); return; }
     auto& state = *static_cast<LinuxCapture*>(native_);
-    std::array<float, 960> samples{};
+    std::array<float, 1920> samples{};
     const auto hasAudio = state.read(samples);
     if (!state.error.isEmpty()) { const auto error = state.error; fail(error); return; }
     if (state.ready) captureHost_->setScreenAudio(true);

@@ -14,6 +14,7 @@ ColumnLayout {
     property bool automatic: false
     property var applyAutomatic: null
     required property var applyValue
+    signal editingFinished()
     property bool ready: false
     property bool restoring: false
     Component.onCompleted: ready = true
@@ -54,6 +55,13 @@ ColumnLayout {
         stepSize: parent.stepSize
         Accessible.name: parent.caption
         implicitHeight: 28
+        property bool editedWhilePressed: false
+        onPressedChanged: {
+            if (!pressed && editedWhilePressed) {
+                editedWhilePressed = false
+                setting.editingFinished()
+            }
+        }
         background: Rectangle {
             x: control.leftPadding
             y: control.topPadding + control.availableHeight / 2 - height / 2
@@ -75,9 +83,13 @@ ColumnLayout {
             if (!setting.ready || setting.restoring || value === setting.value)
                 return
             setting.restoring = true
-            setting.applyValue(value)
+            const accepted = setting.applyValue(value)
             value = Qt.binding(function() { return setting.value })
             setting.restoring = false
+            if (accepted) {
+                if (pressed) editedWhilePressed = true
+                else setting.editingFinished()
+            }
         }
     }
 }

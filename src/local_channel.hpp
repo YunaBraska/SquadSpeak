@@ -33,6 +33,7 @@ class LocalChannel final : public QObject {
     Q_PROPERTY(bool passwordSaved READ passwordSaved NOTIFY stateChanged)
     Q_PROPERTY(int passwordRetrySeconds READ passwordRetrySeconds NOTIFY stateChanged)
     Q_PROPERTY(bool ready READ ready NOTIFY stateChanged)
+    Q_PROPERTY(bool initializing READ initializing NOTIFY stateChanged)
     Q_PROPERTY(bool hosting READ hosting NOTIFY stateChanged)
     Q_PROPERTY(bool joined READ joined NOTIFY stateChanged)
     Q_PROPERTY(int receiveAudioBitrate READ receiveAudioBitrate NOTIFY stateChanged)
@@ -73,10 +74,16 @@ class LocalChannel final : public QObject {
     Q_PROPERTY(QVariantMap chatBot READ chatBot NOTIFY participantsChanged)
     Q_PROPERTY(QVariantList hostParticipants READ hostParticipants NOTIFY hostParticipantsChanged)
     Q_PROPERTY(QVariantList hostClients READ hostClients NOTIFY hostParticipantsChanged)
+    Q_PROPERTY(QVariantList privateChats READ privateChats NOTIFY hostsChanged)
+    Q_PROPERTY(bool privateBlocked READ privateBlocked NOTIFY chatChanged)
+    Q_PROPERTY(bool privateBlockedByMe READ privateBlockedByMe NOTIFY chatChanged)
+    Q_PROPERTY(bool privateChat READ privateChat NOTIFY chatChanged)
+    Q_PROPERTY(int privateLifetimeDays READ privateLifetimeDays NOTIFY stateChanged)
     Q_PROPERTY(QVariantList blockedClients READ blockedClients NOTIFY stateChanged)
     Q_PROPERTY(QVariantList requests READ requests NOTIFY requestsChanged)
     Q_PROPERTY(QVariantList messages READ messages NOTIFY chatChanged)
     Q_PROPERTY(bool chatReady READ chatReady NOTIFY chatChanged)
+    Q_PROPERTY(bool teamSpeakChat READ teamSpeakChat NOTIFY chatChanged)
     Q_PROPERTY(bool chatPending READ chatPending NOTIFY chatChanged)
     Q_PROPERTY(bool historyLoading READ historyLoading NOTIFY chatChanged)
     Q_PROPERTY(bool hasOlderMessages READ hasOlderMessages NOTIFY chatChanged)
@@ -99,6 +106,7 @@ public:
     Q_INVOKABLE bool submitPassword(const QString& password, bool remember);
     Q_INVOKABLE bool forgetPassword();
     [[nodiscard]] bool ready() const { return identity_.has_value(); }
+    [[nodiscard]] bool initializing() const { return initializing_; }
     [[nodiscard]] bool hosting() const { return hosting_; }
     [[nodiscard]] bool directBusy() const { return !direct_.isNull(); }
     [[nodiscard]] bool joined() const;
@@ -116,6 +124,7 @@ public:
     [[nodiscard]] quint16 port() const { return service_ ? service_->port() : server_.serverPort(); }
     [[nodiscard]] int configuredPort() const { return service_ ? service_->configuredPort() : configuredPort_; }
     [[nodiscard]] QString channelName() const { return channelName_; }
+    [[nodiscard]] QString hostDisplayName() const { return service_ ? service_->hostDisplayName() : hostOnly_ ? hostName_ : session_.userName(); }
     [[nodiscard]] QString botName() const { return botName_; }
     Q_INVOKABLE bool setBotName(const QString& name);
     [[nodiscard]] QVariantList audioSources() const;
@@ -148,6 +157,8 @@ public:
     [[nodiscard]] QVariantList controlRequests() const;
     [[nodiscard]] QVariantList messages() const;
     [[nodiscard]] bool chatReady() const;
+    [[nodiscard]] bool teamSpeakChat() const;
+    Q_INVOKABLE bool addTeamSpeak(const QString& endpoint, const QString& password = {});
     [[nodiscard]] bool chatPending() const;
     [[nodiscard]] bool historyLoading() const;
     [[nodiscard]] bool hasOlderMessages() const;
@@ -156,6 +167,15 @@ public:
     Q_INVOKABLE bool loadNewerMessages();
     Q_INVOKABLE bool refreshChat();
     [[nodiscard]] QString chatError() const;
+    [[nodiscard]] QVariantList privateChats() const;
+    [[nodiscard]] bool privateChat() const;
+    [[nodiscard]] bool privateBlocked() const;
+    [[nodiscard]] bool privateBlockedByMe() const;
+    [[nodiscard]] int privateLifetimeDays() const;
+    Q_INVOKABLE bool setPrivateLifetimeDays(int days);
+    Q_INVOKABLE bool canPrivateChat(const QString& hostId, const QString& peerId) const;
+    Q_INVOKABLE bool openPrivateChat(const QString& hostId, const QString& peerId);
+    Q_INVOKABLE bool setPrivateBlocked(const QString& conversation, bool blocked);
     Q_INVOKABLE bool sendChat(const QString& text, const QByteArray& image = {});
     bool sendSystemMessage(const QString& text);
     // Reads one bounded page from this owned channel, without joining as a user.
@@ -185,6 +205,7 @@ public:
     Q_INVOKABLE bool join(const QString& hostId, const QString& address, int port);
     Q_INVOKABLE bool joinAddress(const QString& endpoint);
     Q_INVOKABLE bool openAddress(const QString& endpoint);
+    Q_INVOKABLE QStringList channelAddresses(const QString& hostId) const;
     Q_INVOKABLE bool openChat(const QString& hostId, const QString& address, int port);
     Q_INVOKABLE bool openSavedChat(const QString& hostId);
     Q_INVOKABLE bool closeChat(const QString& hostId);
@@ -262,9 +283,42 @@ private:
                           quint16 port, bool direct, bool scanned);
     void acceptSocket(QSslSocket* socket);
     void dispatchMessage(QSslSocket* socket, const QJsonObject& message);
+    struct Client;
+    struct TeamSpeak final {
+        void* handle = nullptr;
+        QString id, address, name, active, requested;
+        quint16 port = 9987;
+        QJsonObject state;
+        QHash<QString, QPair<quint16, qint64>> audioSequences;
+        QByteArray buffer = QByteArray(512 * 1024, Qt::Uninitialized);
+        bool connected = false;
+        qint64 sequence = 0;
+        ~TeamSpeak();
+    };
+    std::shared_ptr<TeamSpeak> teamSpeak_;
+    QTimer teamSpeakTimer_;
+    bool joinTeamSpeak(const QString& id, const QString& password = {}, bool remember = false);
+    void pollTeamSpeak();
+    void teamSpeakEvent(const QJsonObject& event);
+    bool teamSpeakCommand(const QJsonObject& command);
+    void disconnectTeamSpeak();
+    void teamSpeakState(const QJsonObject& state);
+    bool sendTeamSpeakChat(Client& client, const QString& text);
+    bool openTeamSpeakPrivate(const QString& host, const QString& peer);
+    bool saveTeamSpeakIdentity(const QJsonObject& identity);
     struct Client final {
         QString id;
         QString deviceId;
+        QString teamSpeakChannel;
+        QString teamSpeakPeer;
+        bool teamSpeak = false;
+        bool teamSpeakCanSend = false;
+        QString privatePeer;
+        QSslCertificate privateCertificate;
+        bool blockedByMe = false, blockedByPeer = false, privatePeerOnline = false;
+        qint64 privateExpires = 0;
+        QHash<QString, QJsonObject> privateImages;
+        QString pendingText;
         QString name;
         QString address;
         quint16 port = 0;
@@ -330,11 +384,27 @@ private:
     void selectChat(const QString& id);
     bool setClientStatus(Client& client, QString text, bool result = true);
     void closeClients();
+    Client* privateTransport(const QString& device) const;
+    void rememberPrivatePeer(QSslSocket* socket, bool joining = false);
+    void maintainPrivate();
+    static bool validPrivateState(const QJsonObject& security);
+    void hostPrivate(QSslSocket* socket, const QJsonObject& payload);
+    bool clientPrivate(Client& transport, const QJsonObject& message);
+    QJsonObject privateContact(const QString& viewer, const QString& other) const;
+    void publishPrivate(const QString& conversation, const QJsonObject& payload = {});
+    void publishPrivateContacts(const QString& peer = {});
+    void publishPrivateReceipt(const QString& conversation, const QJsonObject& record, qint64 now);
+    ChatHistory* privateHistory(const QString& conversation);
+    bool sendPrivate(Client& client, const QString& text, const QByteArray& image);
+    QJsonObject openPrivateRecord(Client& client, QJsonObject record);
+    bool applyChat(Client& client, QJsonObject payload, bool keyMessage = false);
+    QCache<QString, ChatHistory> privateHistories_{8};
     bool sendChatCommand(Client& client, const QJsonObject& payload);
     bool sendChatCommand(const QJsonObject& payload);
     bool submitPassword(Client& client, const QString& password, bool remember);
     struct Relay;
     struct Peer final {
+        QString language;
         QString id;
         QString name;
         QString address;
@@ -349,7 +419,9 @@ private:
         bool remoteOffers = false;
         QSet<QString> capabilities;
         bool capabilitiesAdvertised = false;
-        int audioTier = 0;
+        int bestAudioTier() const { return capabilities.contains(QStringLiteral("audio-stereo")) ? 0
+            : capabilities.contains(QStringLiteral("audio-64")) ? 1 : 2; }
+        int audioTier = 2;
         int badAudioSamples = 0;
         int goodAudioSamples = 0;
         qint64 audioProbe = 0;
@@ -424,7 +496,7 @@ private:
     bool leaveChannel(bool pauseAutoJoin);
     void tryAutoJoin();
     void advanceAutoJoin(bool pause);
-    bool rememberChannel(Client& client, const QString& name);
+    bool rememberChannel(Client& client, const QJsonObject& roster);
     enum class AddressAction { Join, Browse, Approve, Pair };
     bool accessAddress(const QString& endpoint, AddressAction action);
     void finishDirect();
@@ -476,7 +548,7 @@ private:
     void trimHistory(Client& client, bool older);
     void rotateChatKey();
     void sendChatKey(QSslSocket* socket);
-    bool writeChat(QSslSocket* socket, const QJsonObject& payload);
+    bool writeChat(QSslSocket* socket, const QJsonObject& payload, const QString& conversation = {});
     void retryChat(Client& client);
     void publishChat(const QJsonObject& record);
     void publishMembership(const QString& kind, const QString& member, const QString& name);
@@ -484,7 +556,7 @@ private:
     [[nodiscard]] QVariantMap hostBot() const;
     bool visibleImage(const QString& hash) const;
     void downloadImage();
-    bool hostImage(QSslSocket* socket, const QJsonObject& payload, qint64 now);
+    bool hostImage(QSslSocket* socket, const QJsonObject& payload, qint64 now, ChatHistory* store = nullptr, const QString& conversation = {});
     static constexpr qsizetype maximumRemoteView = 2 * 1024 * 1024;
     static constexpr int maximumWindowMessages = 160;
     static constexpr qsizetype maximumWindowBytes = 512 * 1024;
@@ -510,6 +582,7 @@ private:
     static bool localAddress(const QHostAddress& address);
     VoiceSession& session_;
     QString storageFile_;
+    QString hostName_;
     QString channelName_ = "My channel";
     QString botName_ = "System";
     int configuredPort_ = defaultPort;

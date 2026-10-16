@@ -36,14 +36,6 @@
             <translation>გახსენით თქვენი სისტემის კონფიდენციალურობის პარამეტრები და მიეცით მიკროფონის წვდომა SquadSpeak-ისთვის.</translation>
         </message>
         <message>
-            <source>Microphone analysis active. Test audio stays on this computer.</source>
-            <translation>მიკროფონის ანალიზი აქტიურია. ტესტის აუდიო რჩება ამ კომპიუტერზე.</translation>
-        </message>
-        <message>
-            <source>Finish the test recording before changing devices.</source>
-            <translation>დაასრულეთ ტესტის ჩაწერა მოწყობილობის შეცვლამდე.</translation>
-        </message>
-        <message>
             <source>The output format is not supported.</source>
             <translation>გამომავალი ფორმატი არ არის მხარდაჭერილი.</translation>
         </message>
@@ -68,32 +60,12 @@
             <translation>სატესტო ტონის დაკვრა ვერ მოხერხდა.</translation>
         </message>
         <message>
-            <source>The microphone has provided no data for five seconds. Recording discarded.</source>
-            <translation>მიკროფონს არ აქვს მონაცემები ხუთი წამის განმავლობაში. ჩანაწერი გაუქმებულია.</translation>
-        </message>
-        <message>
-            <source>The microphone was interrupted or changed. Recording discarded.</source>
-            <translation>მიკროფონი გაწყდა ან შეიცვალა. ჩანაწერი გაუქმებულია.</translation>
-        </message>
-        <message>
-            <source>Cancelled. The incomplete recording was discarded.</source>
-            <translation>გაუქმდა. არასრული ჩანაწერი გაუქმდა.</translation>
-        </message>
-        <message>
             <source>No selected microphone is available</source>
             <translation>არჩეული მიკროფონი არ არის ხელმისაწვდომი</translation>
         </message>
         <message>
             <source>Allow microphone access in the system dialog.</source>
             <translation>მიკროფონის წვდომის დაშვება სისტემის დიალოგში.</translation>
-        </message>
-        <message>
-            <source>Microphone capture active for the voice channel.</source>
-            <translation>მიკროფონის გადაღება აქტიურია ხმოვანი არხისთვის.</translation>
-        </message>
-        <message>
-            <source>Microphone access was denied. Nothing was saved.</source>
-            <translation>მიკროფონზე წვდომა აკრძალული იყო. არაფერი შენახულა.</translation>
         </message>
         <message>
             <source>Microphone access is missing. Allow it in System Settings.</source>
@@ -265,97 +237,6 @@
         </message>
     </context>
     <context>
-        <name>AudioRecording</name>
-        <message>
-            <source>Incomplete audio block. Recording discarded.</source>
-            <translation>არასრული აუდიო ბლოკი. ჩანაწერი გაუქმებულია.</translation>
-        </message>
-        <message>
-            <source>Move about one meter from the microphone. Keep the background sound playing and read the sentence.</source>
-            <translation>გადაიტანეთ მიკროფონიდან დაახლოებით ერთი მეტრი. გააგრძელეთ ფონის ხმა და წაიკითხეთ წინადადება.</translation>
-        </message>
-        <message>
-            <source>Voice with background sound</source>
-            <translation>ხმა ფონის ხმით</translation>
-        </message>
-        <message>
-            <source>The recordings folder could not be created.</source>
-            <translation>ჩანაწერების საქაღალდის შექმნა ვერ მოხერხდა.</translation>
-        </message>
-        <message>
-            <source>You can stop the background sound now.</source>
-            <translation>ახლა შეგიძლიათ შეაჩეროთ ფონის ხმა.</translation>
-        </message>
-        <message>
-            <source>Recordings saved</source>
-            <translation>ჩანაწერები შენახულია</translation>
-        </message>
-        <message>
-            <source>The test recording could not be saved completely.</source>
-            <translation>ტესტის ჩანაწერის სრულად შენახვა ვერ მოხერხდა.</translation>
-        </message>
-        <message>
-            <source>Keep music off and stay quiet. Start when ready.</source>
-            <translation>გამორთეთ მუსიკა და იყავით ჩუმად. დაიწყეთ როცა მზად ხართ.</translation>
-        </message>
-        <message>
-            <source>Your voice</source>
-            <translation>შენი ხმა</translation>
-        </message>
-        <message>
-            <source>Play music or another background sound at a normal volume. Stay quiet while recording.</source>
-            <translation>დაუკარით მუსიკა ან სხვა ფონის ხმა ნორმალურ ხმაზე. ჩუმად იყავით ჩაწერის დროს.</translation>
-        </message>
-        <message>
-            <source>The test recording could not be created.</source>
-            <translation>ტესტის ჩანაწერის შექმნა ვერ მოხერხდა.</translation>
-        </message>
-        <message>
-            <source>Background sound</source>
-            <translation>ფონის ხმა</translation>
-        </message>
-        <message>
-            <source>The window is open. I can hear the rain outside. One, two, three, four, five.</source>
-            <translation>ფანჯარა ღიაა. გარეთ წვიმა მესმის. ერთი, ორი, სამი, ოთხი, ხუთი.</translation>
-        </message>
-        <message>
-            <source>This microphone format is not supported for test recordings.</source>
-            <translation>მიკროფონის ეს ფორმატი არ არის მხარდაჭერილი სატესტო ჩანაწერებისთვის.</translation>
-        </message>
-        <message>
-            <source>Keep the background volume unchanged. Read the sentence, then stop recording.</source>
-            <translation>შეინახეთ ფონის ხმა უცვლელი. წაიკითხეთ წინადადება, შემდეგ შეწყვიტე ჩაწერა.</translation>
-        </message>
-        <message>
-            <source>Record at least half a second, then try again.</source>
-            <translation>ჩაწერეთ მინიმუმ ნახევარი წამი, შემდეგ ისევ სცადეთ.</translation>
-        </message>
-        <message>
-            <source>Sit at your usual distance. Read the sentence, then stop recording.</source>
-            <translation>დაჯექი შენს ჩვეულ მანძილზე. წაიკითხეთ წინადადება, შემდეგ შეწყვიტე ჩაწერა.</translation>
-        </message>
-        <message>
-            <source>The recording description could not be saved.</source>
-            <translation>ჩანაწერის აღწერილობის შენახვა ვერ მოხერხდა.</translation>
-        </message>
-        <message>
-            <source>The WAV file could not be finalized.</source>
-            <translation>WAV ფაილის დასრულება ვერ მოხერხდა.</translation>
-        </message>
-        <message>
-            <source>The WAV header could not be written.</source>
-            <translation>WAV სათაური ვერ დაიწერა.</translation>
-        </message>
-        <message>
-            <source>Voice farther away</source>
-            <translation>ხმა უფრო შორს</translation>
-        </message>
-        <message>
-            <source>Room sound</source>
-            <translation>ოთახის ხმა</translation>
-        </message>
-    </context>
-    <context>
         <name>AudioSettings</name>
         <message>
             <source>Echo cancellation</source>
@@ -406,8 +287,8 @@
             <translation>თქვენი დაკვრა</translation>
         </message>
         <message>
-            <source>Clear local key</source>
-            <translation>წაშალეთ ადგილობრივი კლავიატურის მალსახმობი</translation>
+            <source>Clear key</source>
+            <translation>ღილაკის გასუფთავება</translation>
         </message>
         <message>
             <source>Low cut</source>
@@ -428,10 +309,6 @@
         <message>
             <source>Cancel</source>
             <translation>გაუქმება</translation>
-        </message>
-        <message>
-            <source>Guided recording</source>
-            <translation>მართვადი ჩაწერა</translation>
         </message>
         <message>
             <source>Clipping. Reduce microphone gain.</source>
@@ -466,16 +343,12 @@
             <translation>მოწყობილობა გათიშულია</translation>
         </message>
         <message>
-            <source>Local key</source>
-            <translation>ადგილობრივი კლავიატურის მალსახმობი</translation>
+            <source>PTT key</source>
+            <translation>საუბრის ღილაკი</translation>
         </message>
         <message>
             <source>Voice activation</source>
             <translation>ხმით გააქტიურებული მიკროფონი</translation>
-        </message>
-        <message>
-            <source>Remote PTT key</source>
-            <translation>დისტანციური push-to-talk კლავიატურის მალსახმობი</translation>
         </message>
         <message>
             <source>Noise reduction</source>
@@ -492,10 +365,6 @@
         <message>
             <source>Microphone gain</source>
             <translation>მიკროფონის გაძლიერება</translation>
-        </message>
-        <message>
-            <source>Clear remote key</source>
-            <translation>წაშალეთ დისტანციური push-to-talk კლავიატურის მალსახმობი</translation>
         </message>
         <message>
             <source>Not assigned</source>
@@ -521,9 +390,81 @@
             <source>Read bot messages aloud</source>
             <translation>ბოტის შეტყობინებების ხმამაღლა წაკითხვა</translation>
         </message>
+        <message>
+            <source>Download a high-quality voice for this language in macOS settings.</source>
+            <translation>macOS-ის პარამეტრებიდან ჩამოტვირთე მაღალი ხარისხის ხმა ამ ენისთვის.</translation>
+        </message>
+        <message>
+            <source>Bot voice</source>
+            <translation>ბოტის ხმა</translation>
+        </message>
+        <message>
+            <source>Automatic</source>
+            <translation>ავტომატური</translation>
+        </message>
+        <message>
+            <source>Unavailable</source>
+            <translation>მიუწვდომელია</translation>
+        </message>
+        <message>
+            <source>Download voices in your device's Accessibility speech settings.</source>
+            <translation>ჩამოტვირთე ხმები შენი მოწყობილობის ხელმისაწვდომობის მეტყველების პარამეტრებიდან.</translation>
+        </message>
+        <message>
+            <source>Voice download help</source>
+            <translation>ხმების ჩამოტვირთვის დახმარება</translation>
+        </message>
+        <message>
+            <source>Strength, not the percentage of echo removed.</source>
+            <translation>ინტენსივობა და არა მოცილებული ექოს პროცენტი.</translation>
+        </message>
+        <message>
+            <source>Auto also checks for speech, not just volume.</source>
+            <translation>ავტომატური რეჟიმი ამოწმებს მეტყველებასაც და არა მხოლოდ ხმის სიმაღლეს.</translation>
+        </message>
     </context>
     <context>
         <name>Channels</name>
+        <message>
+            <source>Copy address</source>
+            <translation>მისამართის კოპირება</translation>
+        </message>
+        <message>
+            <source>Messages</source>
+            <translation>შეტყობინებები</translation>
+        </message>
+        <message>
+            <source>Message</source>
+            <translation>შეტყობინება</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>გახსნა</translation>
+        </message>
+        <message>
+            <source>Online</source>
+            <translation>ონლაინ</translation>
+        </message>
+        <message>
+            <source>Offline</source>
+            <translation>ხაზგარეშე</translation>
+        </message>
+        <message>
+            <source>No private messages</source>
+            <translation>პირადი შეტყობინებები არ არის</translation>
+        </message>
+        <message>
+            <source>Private messages are unavailable for this contact.</source>
+            <translation>ამ კონტაქტისთვის პირადი შეტყობინებები მიუწვდომელია.</translation>
+        </message>
+        <message>
+            <source>If asked, allow local network access. You can change this in system settings.</source>
+            <translation>თუ მოგეთხოვება, დაუშვი ადგილობრივ ქსელზე წვდომა. ამის შეცვლა სისტემის პარამეტრებში შეგიძლია.</translation>
+        </message>
+        <message>
+            <source>Retry</source>
+            <translation>ხელახლა ცდა</translation>
+        </message>
         <message>
             <source>Updates</source>
             <translation>განახლებები</translation>
@@ -543,6 +484,10 @@
         <message>
             <source>DDNS cannot bypass CGNAT. If your provider shares the public IP, use a private VPN on all participating devices or a publicly reachable server.</source>
             <translation>DDNS არ შეუძლია გვერდის ავლით CGNAT. თუ თქვენი პროვაიდერი იზიარებს საჯარო IP-ს, გამოიყენეთ პირადი VPN ყველა მონაწილე მოწყობილობაზე ან საჯაროდ ხელმისაწვდომ სერვერზე.</translation>
+        </message>
+        <message>
+            <source>Remove server</source>
+            <translation>სერვერის წაშლა</translation>
         </message>
         <message>
             <source>Low</source>
@@ -665,10 +610,6 @@
             <translation>შეტყობინების ხმები</translation>
         </message>
         <message>
-            <source>Lifetime for new messages. Earlier messages keep their expiry.</source>
-            <translation>სიცოცხლე ახალი შეტყობინებებისთვის. ადრეული შეტყობინებები ინარჩუნებს ვადის გასვლას.</translation>
-        </message>
-        <message>
             <source>Enable speakers</source>
             <translation>დინამიკების ჩართვა</translation>
         </message>
@@ -703,10 +644,6 @@
         <message>
             <source>Allow device</source>
             <translation>მოწყობილობის დაშვება</translation>
-        </message>
-        <message>
-            <source>Receive quality: %1 kb/s per voice. Adjusts automatically for this device.</source>
-            <translation>მიღების ხარისხი: %1 კბ/წმ თითო ხმაზე. ავტომატურად რეგულირდება ამ მოწყობილობისთვის.</translation>
         </message>
         <message>
             <source>Stop radio</source>
@@ -1204,6 +1141,42 @@
             <source>Use default music volume</source>
             <translation>მუსიკის ნაგულისხმევი ხმის დონის გამოყენება</translation>
         </message>
+        <message>
+            <source>Show in Dock</source>
+            <translation>Dock-ში ჩვენება</translation>
+        </message>
+        <message>
+            <source>App language</source>
+            <translation>აპის ენა</translation>
+        </message>
+        <message>
+            <source>Send in</source>
+            <translation>გაგზავნის ენა</translation>
+        </message>
+        <message>
+            <source>Hear in</source>
+            <translation>მოსმენის ენა</translation>
+        </message>
+        <message>
+            <source>Download language models for %1 and %2?</source>
+            <translation>ჩამოიტვირთოს ენის მოდელები %1 და %2 ენებისთვის?</translation>
+        </message>
+        <message>
+            <source>Download</source>
+            <translation>ჩამოტვირთვა</translation>
+        </message>
+        <message>
+            <source>PTT, chat and channel controls. Uses the controlled device's microphone.</source>
+            <translation>PTT-ის, ჩატისა და არხების მართვა. გამოიყენება მართვადი მოწყობილობის მიკროფონი.</translation>
+        </message>
+        <message>
+            <source>Connect the other device to one of your channels, then allow it here.</source>
+            <translation>დააკავშირე სხვა მოწყობილობა შენს ერთ-ერთ არხთან და შემდეგ აქ მიეცი ნებართვა.</translation>
+        </message>
+        <message>
+            <source>On the other device, open Settings &gt; Input &gt; Remote control and allow this device.</source>
+            <translation>სხვა მოწყობილობაზე გახსენი პარამეტრები &gt; შეყვანა &gt; დისტანციური მართვა და მიეცი ამ მოწყობილობას ნებართვა.</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1420,7 +1393,396 @@
         </message>
     </context>
     <context>
+        <name>Desktop</name>
+        <message>
+            <source>Open settings at startup.</source>
+            <translation>პარამეტრების გახსნა გაშვებისას.</translation>
+        </message>
+        <message>
+            <source>Alternative file for audio profiles.</source>
+            <translation>ალტერნატიული ფაილი აუდიოპროფილებისთვის.</translation>
+        </message>
+        <message>
+            <source>Load the interface without microphone capture and exit after one second.</source>
+            <translation>ინტერფეისის ჩატვირთვა მიკროფონის ჩაწერის გარეშე და გამოსვლა ერთი წამის შემდეგ.</translation>
+        </message>
+        <message>
+            <source>Save an image of the app window during the UI test.</source>
+            <translation>აპის ფანჯრის სურათის შენახვა ინტერფეისის ტესტის დროს.</translation>
+        </message>
+        <message>
+            <source>The window image could not be saved.</source>
+            <translation>ფანჯრის სურათის შენახვა ვერ მოხერხდა.</translation>
+        </message>
+        <message>
+            <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
+            <translation>სისტემური უჯრა მიუწვდომელია; აპი ფანჯარაში ღია რჩება.</translation>
+        </message>
+    </context>
+    <context>
+        <name>Headless</name>
+        <message>
+            <source>Host display name.</source>
+            <translation>ჰოსტის საჩვენებელი სახელი.</translation>
+        </message>
+        <message>
+            <source>Command failed.</source>
+            <translation>ბრძანება ვერ შესრულდა.</translation>
+        </message>
+        <message>
+            <source>%1 must be an integer.</source>
+            <translation>%1 მთელი რიცხვი უნდა იყოს.</translation>
+        </message>
+        <message>
+            <source>Requests must be on/off or true/false.</source>
+            <translation>მოთხოვნები უნდა იყოს on/off ან true/false.</translation>
+        </message>
+        <message>
+            <source>Unknown host property: %1</source>
+            <translation>ჰოსტის უცნობი თვისება: %1</translation>
+        </message>
+        <message>
+            <source>Run without GUI, microphone capture, or local audio output.</source>
+            <translation>გაშვება გრაფიკული ინტერფეისის, მიკროფონის ჩაწერისა და ადგილობრივი აუდიოგამოტანის გარეშე.</translation>
+        </message>
+        <message>
+            <source>Server storage prefix. Personal/audio/GUI profiles are not loaded.</source>
+            <translation>სერვერის საცავის პრეფიქსი. პირადი, აუდიოსა და ინტერფეისის პროფილები არ იტვირთება.</translation>
+        </message>
+        <message>
+            <source>Optional private identity file instead of the OS credential store (Linux/macOS). Parent directory must exist and belong to this account.</source>
+            <translation>არასავალდებულო პირადი იდენტობის ფაილი სისტემის ავტორიზაციის მონაცემების საცავის ნაცვლად (Linux/macOS). მშობელი საქაღალდე უნდა არსებობდეს და ამ ანგარიშს ეკუთვნოდეს.</translation>
+        </message>
+        <message>
+            <source>UTF-8 key=value properties or JSON host preset. Default: application.properties, then config/application.properties beside the app.</source>
+            <translation>UTF-8 key=value თვისებები ან ჰოსტის JSON წინასწარი პარამეტრები. ნაგულისხმევია application.properties, შემდეგ config/application.properties აპის გვერდით.</translation>
+        </message>
+        <message>
+            <source>Channel display name.</source>
+            <translation>არხის საჩვენებელი სახელი.</translation>
+        </message>
+        <message>
+            <source>System and radio bot display name.</source>
+            <translation>სისტემისა და რადიოს ბოტის საჩვენებელი სახელი.</translation>
+        </message>
+        <message>
+            <source>TCP service port (1-65535).</source>
+            <translation>სერვისის TCP პორტი (1-65535).</translation>
+        </message>
+        <message>
+            <source>Headless admission is always on; only 'on' or 'true' is accepted.</source>
+            <translation>გრაფიკული ინტერფეისის გარეშე რეჟიმში დაშვება ყოველთვის ჩართულია; მიიღება მხოლოდ 'on' ან 'true'.</translation>
+        </message>
+        <message>
+            <source>Preapprove a device ID; repeat for several devices. Existing bans remain.</source>
+            <translation>მოწყობილობის ID-ის წინასწარ დამტკიცება; გაიმეორეთ რამდენიმე მოწყობილობისთვის. არსებული აკრძალვები რჩება.</translation>
+        </message>
+        <message>
+            <source>Block a device ID; repeat for several devices.</source>
+            <translation>მოწყობილობის ID-ის დაბლოკვა; გაიმეორეთ რამდენიმე მოწყობილობისთვის.</translation>
+        </message>
+        <message>
+            <source>Read a UTF-8 channel password from a file before listening. An empty file removes it.</source>
+            <translation>არხის UTF-8 პაროლის ფაილიდან წაკითხვა მოსმენის დაწყებამდე. ცარიელი ფაილი მას შლის.</translation>
+        </message>
+        <message>
+            <source>Channel password. Empty removes it; environment or config avoids process-list exposure.</source>
+            <translation>არხის პაროლი. ცარიელი მნიშვნელობა მას შლის; გარემოს ან კონფიგურაციის გამოყენება ხელს უშლის მის გამოჩენას პროცესების სიაში.</translation>
+        </message>
+        <message>
+            <source>SquadSpeak headless local channel host</source>
+            <translation>SquadSpeak-ის ადგილობრივი არხის ჰოსტი გრაფიკული ინტერფეისის გარეშე</translation>
+        </message>
+        <message>
+            <source>Environment variables (SQUADSPEAK_ prefix):</source>
+            <translation>გარემოს ცვლადები (SQUADSPEAK_ პრეფიქსით):</translation>
+        </message>
+        <message>
+            <source>Host configuration could not be read or exceeds 1 MiB.</source>
+            <translation>ჰოსტის კონფიგურაცია ვერ წაიკითხა ან 1 MiB-ს აჭარბებს.</translation>
+        </message>
+        <message>
+            <source>Host configuration must be UTF-8.</source>
+            <translation>ჰოსტის კონფიგურაცია UTF-8 უნდა იყოს.</translation>
+        </message>
+        <message>
+            <source>Host preset must be a JSON object.</source>
+            <translation>ჰოსტის წინასწარი პარამეტრები JSON ობიექტი უნდა იყოს.</translation>
+        </message>
+        <message>
+            <source>Property line %1 must use key=value.</source>
+            <translation>თვისებების %1 სტრიქონი key=value ფორმატს უნდა იყენებდეს.</translation>
+        </message>
+        <message>
+            <source>Property line %1: %2</source>
+            <translation>თვისებების სტრიქონი %1: %2</translation>
+        </message>
+        <message>
+            <source>Standard input has no file descriptor.</source>
+            <translation>სტანდარტულ შეყვანას ფაილის დესკრიპტორი არ აქვს.</translation>
+        </message>
+        <message>
+            <source>Standard input could not be inspected.</source>
+            <translation>სტანდარტული შეყვანის შემოწმება ვერ მოხერხდა.</translation>
+        </message>
+        <message>
+            <source>Could not write the command response: %1</source>
+            <translation>ბრძანების პასუხის ჩაწერა ვერ მოხერხდა: %1</translation>
+        </message>
+        <message>
+            <source>Standard input could not be read: %1</source>
+            <translation>სტანდარტული შეყვანის წაკითხვა ვერ მოხერხდა: %1</translation>
+        </message>
+        <message>
+            <source>Input line exceeds 65536 bytes.</source>
+            <translation>შეყვანის სტრიქონი 65536 ბაიტს აჭარბებს.</translation>
+        </message>
+        <message>
+            <source>Each input line must be a JSON object.</source>
+            <translation>შეყვანის ყოველი სტრიქონი JSON ობიექტი უნდა იყოს.</translation>
+        </message>
+        <message>
+            <source>Input ended before a complete JSON line.</source>
+            <translation>შეყვანა სრული JSON სტრიქონის მიღებამდე დასრულდა.</translation>
+        </message>
+        <message>
+            <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
+            <translation>საკუთარი არხის არასავალდებულო ID ბრძანებებისთვის status, configure, password, admission, history, chat და radio; ნაგულისხმევად გამოიყენება ძირითადი არხი.</translation>
+        </message>
+        <message>
+            <source>Channel action must be list, add or remove.</source>
+            <translation>არხის მოქმედება უნდა იყოს list, add ან remove.</translation>
+        </message>
+        <message>
+            <source>Removing an own channel deletes its history, images, permissions and radio settings. Set confirmed=true to proceed.</source>
+            <translation>საკუთარი არხის წაშლა შლის მის ისტორიას, სურათებს, ნებართვებსა და რადიოს პარამეტრებს. გასაგრძელებლად მიუთითეთ confirmed=true.</translation>
+        </message>
+        <message>
+            <source>id must identify an additional own channel.</source>
+            <translation>id დამატებით საკუთარ არხს უნდა მიუთითებდეს.</translation>
+        </message>
+        <message>
+            <source>The additional own channel could not be removed: %1</source>
+            <translation>დამატებითი საკუთარი არხის წაშლა ვერ მოხერხდა: %1</translation>
+        </message>
+        <message>
+            <source>channelId must identify an own channel.</source>
+            <translation>channelId საკუთარ არხს უნდა მიუთითებდეს.</translation>
+        </message>
+        <message>
+            <source>values must be a host settings object.</source>
+            <translation>values ჰოსტის პარამეტრების ობიექტი უნდა იყოს.</translation>
+        </message>
+        <message>
+            <source>Headless admission is always enabled for non-banned devices; requests off is not supported.</source>
+            <translation>გრაფიკული ინტერფეისის გარეშე რეჟიმში დაუბლოკავი მოწყობილობების დაშვება ყოველთვის ჩართულია; requests off მხარდაჭერილი არ არის.</translation>
+        </message>
+        <message>
+            <source>value must be a password of at most 1024 UTF-8 bytes without control characters; an empty string removes it.</source>
+            <translation>value უნდა იყოს მაქსიმუმ 1024 UTF-8 ბაიტიანი პაროლი საკონტროლო სიმბოლოების გარეშე; ცარიელი სტრიქონი მას შლის.</translation>
+        </message>
+        <message>
+            <source>The channel is not ready or a password change is in progress.</source>
+            <translation>არხი მზად არ არის ან პაროლის შეცვლა მიმდინარეობს.</translation>
+        </message>
+        <message>
+            <source>The channel was removed while saving the password.</source>
+            <translation>პაროლის შენახვისას არხი წაიშალა.</translation>
+        </message>
+        <message>
+            <source>id is required.</source>
+            <translation>id აუცილებელია.</translation>
+        </message>
+        <message>
+            <source>text must be a valid non-empty chat message.</source>
+            <translation>text უნდა იყოს ჩატის სწორი, არაცარიელი შეტყობინება.</translation>
+        </message>
+        <message>
+            <source>The local channel is not ready.</source>
+            <translation>ადგილობრივი არხი მზად არ არის.</translation>
+        </message>
+        <message>
+            <source>The channel's radio is unavailable.</source>
+            <translation>არხის რადიო მიუწვდომელია.</translation>
+        </message>
+        <message>
+            <source>Unknown command. Use help.</source>
+            <translation>უცნობი ბრძანება. გამოიყენეთ help.</translation>
+        </message>
+        <message>
+            <source>search requires a query, non-negative offset and limit from 1 to 128.</source>
+            <translation>search მოითხოვს query-ს, არაუარყოფით offset-ს და limit-ს 1-დან 128-მდე.</translation>
+        </message>
+        <message>
+            <source>add creates an id; update requires an existing id.</source>
+            <translation>add ქმნის id-ს; update მოითხოვს არსებულ id-ს.</translation>
+        </message>
+        <message>
+            <source>A station is already being checked.</source>
+            <translation>სადგური უკვე მოწმდება.</translation>
+        </message>
+        <message>
+            <source>The channel was removed while checking the station.</source>
+            <translation>სადგურის შემოწმებისას არხი წაიშალა.</translation>
+        </message>
+        <message>
+            <source>Unknown radio action.</source>
+            <translation>რადიოს უცნობი მოქმედება.</translation>
+        </message>
+        <message>
+            <source>Could not load language: %1</source>
+            <translation>ენის ჩატვირთვა ვერ მოხერხდა: %1</translation>
+        </message>
+        <message>
+            <source>The %1 option is incompatible with --headless.</source>
+            <translation>პარამეტრი %1 შეუთავსებელია --headless-თან.</translation>
+        </message>
+        <message>
+            <source>Unexpected positional arguments. Use --help.</source>
+            <translation>მოულოდნელი პოზიციური არგუმენტები. გამოიყენეთ --help.</translation>
+        </message>
+        <message>
+            <source>--config / -f requires a non-empty path.</source>
+            <translation>--config / -f მოითხოვს არაცარიელ ბილიკს.</translation>
+        </message>
+        <message>
+            <source>Choose --password or --password-file, not both.</source>
+            <translation>აირჩიეთ --password ან --password-file, არა ორივე.</translation>
+        </message>
+        <message>
+            <source>Choose SQUADSPEAK_PASSWORD or SQUADSPEAK_PASSWORD_FILE, not both.</source>
+            <translation>აირჩიეთ SQUADSPEAK_PASSWORD ან SQUADSPEAK_PASSWORD_FILE, არა ორივე.</translation>
+        </message>
+        <message>
+            <source>Choose password or passwordFile in one configuration layer, not both.</source>
+            <translation>კონფიგურაციის ერთ ფენაში აირჩიეთ password ან passwordFile, არა ორივე.</translation>
+        </message>
+        <message>
+            <source>passwordFile must be a non-empty path.</source>
+            <translation>passwordFile არაცარიელი ბილიკი უნდა იყოს.</translation>
+        </message>
+        <message>
+            <source>Password file could not be read or is too large.</source>
+            <translation>პაროლის ფაილი ვერ წაიკითხა ან მეტისმეტად დიდია.</translation>
+        </message>
+        <message>
+            <source>Password file must contain at most 1024 UTF-8 bytes without control characters.</source>
+            <translation>პაროლის ფაილი უნდა შეიცავდეს მაქსიმუმ 1024 UTF-8 ბაიტს საკონტროლო სიმბოლოების გარეშე.</translation>
+        </message>
+        <message>
+            <source>Password must be a string of at most 1024 UTF-8 bytes without control characters.</source>
+            <translation>პაროლი უნდა იყოს მაქსიმუმ 1024 UTF-8 ბაიტიანი სტრიქონი საკონტროლო სიმბოლოების გარეშე.</translation>
+        </message>
+        <message>
+            <source>settingsFile must be a non-empty path.</source>
+            <translation>settingsFile არაცარიელი ბილიკი უნდა იყოს.</translation>
+        </message>
+        <message>
+            <source>identityFile must be a non-empty path.</source>
+            <translation>identityFile არაცარიელი ბილიკი უნდა იყოს.</translation>
+        </message>
+        <message>
+            <source>The settings directory could not be created.</source>
+            <translation>პარამეტრების საქაღალდის შექმნა ვერ მოხერხდა.</translation>
+        </message>
+        <message>
+            <source>This SquadSpeak profile is already running or cannot be locked.</source>
+            <translation>SquadSpeak-ის ეს პროფილი უკვე გაშვებულია ან მისი ჩაკეტვა შეუძლებელია.</translation>
+        </message>
+        <message>
+            <source>Standard input could not be opened.</source>
+            <translation>სტანდარტული შეყვანის გახსნა ვერ მოხერხდა.</translation>
+        </message>
+        <message>
+            <source>Standard output could not be opened.</source>
+            <translation>სტანდარტული გამოტანის გახსნა ვერ მოხერხდა.</translation>
+        </message>
+        <message>
+            <source>This identity file is already in use or cannot be locked.</source>
+            <translation>იდენტობის ეს ფაილი უკვე გამოიყენება ან მისი ჩაკეტვა შეუძლებელია.</translation>
+        </message>
+        <message>
+            <source>Invalid host configuration: %1</source>
+            <translation>ჰოსტის არასწორი კონფიგურაცია: %1</translation>
+        </message>
+        <message>
+            <source>Radio channels could not be initialized.</source>
+            <translation>რადიოს არხების ინიციალიზაცია ვერ მოხერხდა.</translation>
+        </message>
+        <message>
+            <source>Headless host could not start: %1</source>
+            <translation>გრაფიკული ინტერფეისის გარეშე ჰოსტის გაშვება ვერ მოხერხდა: %1</translation>
+        </message>
+        <message>
+            <source>Channel password could not be saved.</source>
+            <translation>არხის პაროლის შენახვა ვერ მოხერხდა.</translation>
+        </message>
+        <message>
+            <source>Invalid channel password: %1</source>
+            <translation>არხის არასწორი პაროლი: %1</translation>
+        </message>
+        <message>
+            <source>Headless host could not initialize: %1</source>
+            <translation>გრაფიკული ინტერფეისის გარეშე ჰოსტის ინიციალიზაცია ვერ მოხერხდა: %1</translation>
+        </message>
+        <message>
+            <source>SquadSpeak headless could not start: %1</source>
+            <translation>გრაფიკული ინტერფეისის გარეშე SquadSpeak-ის გაშვება ვერ მოხერხდა: %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>მხარდამჭერის მოქმედება უნდა იყოს სტატუსი, შესვლა, განახლება, გასვლა ან გაუქმება. status sign-in refresh sign-out cancel</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>მხარდამჭერი ოპერაცია მიმდინარეობს.</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>მხარდამჭერის წვდომა მიუწვდომელია ამ build-ში.</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>პარამეტრების უპირატესობა: არგუმენტები &gt; გარემო &gt; თვისებები &gt; სერვერის შენახული მნიშვნელობები.</translation>
+        </message>
+    </context>
+    <context>
+        <name>License</name>
+        <message>
+            <source>License storage is busy or unavailable.</source>
+            <translation>ლიცენზიის საცავი დაკავებულია ან მიუწვდომელია.</translation>
+        </message>
+        <message>
+            <source>License storage is unavailable.</source>
+            <translation>ლიცენზიის საცავი მიუწვდომელია.</translation>
+        </message>
+        <message>
+            <source>Sign-in expired. Try again.</source>
+            <translation>შესვლას ვადა გაუვიდა. სცადეთ ხელახლა.</translation>
+        </message>
+        <message>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>GitHub შესვლა მიუწვდომელია. სცადეთ ხელახლა.</translation>
+        </message>
+        <message>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>GitHub-ში შესვლა არ დასრულებულა. სცადეთ ხელახლა.</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>GitHub ვერ შემოწმდა. ხაზგარეშე წვდომა გრძელდება მაქსიმუმ შვიდი დღის განმავლობაში.</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>ხელახლა შედით GitHub-ით.</translation>
+        </message>
+    </context>
+    <context>
         <name>LocalChannel</name>
+        <message>
+            <source>Blocked</source>
+            <translation>დაბლოკილია</translation>
+        </message>
         <message>
             <source>Host is not responding. Reconnecting.</source>
             <translation>მასპინძელი არ პასუხობს. ხელახლა დაკავშირება.</translation>
@@ -2205,6 +2567,53 @@
             <source>Voice relay codec could not be configured.</source>
             <translation>ხმოვანი რელეს კოდეკის კონფიგურაცია ვერ მოხერხდა.</translation>
         </message>
+        <message>
+            <source>Unsupported audio codec</source>
+            <translation>მხარდაუჭერელი აუდიოკოდეკი</translation>
+        </message>
+        <message>
+            <source>Speaking is not allowed in this channel.</source>
+            <translation>ამ არხში საუბარი დაუშვებელია.</translation>
+        </message>
+    </context>
+    <context>
+        <name>LocalLanguage</name>
+        <message>
+            <source>Translation (experimental)</source>
+            <translation>თარგმნა (ექსპერიმენტული)</translation>
+        </message>
+        <message>
+            <source>Translate messages</source>
+            <translation>შეტყობინებების თარგმნა</translation>
+        </message>
+        <message>
+            <source>Translated voice</source>
+            <translation>თარგმნილი ხმა</translation>
+        </message>
+        <message>
+            <source>Original audio</source>
+            <translation>ორიგინალი აუდიო</translation>
+        </message>
+        <message>
+            <source>Original text</source>
+            <translation>ორიგინალი ტექსტი</translation>
+        </message>
+        <message>
+            <source>Prepare languages</source>
+            <translation>ენების მომზადება</translation>
+        </message>
+        <message>
+            <source>Local language processing is unavailable.</source>
+            <translation>ენის ლოკალური დამუშავება მიუწვდომელია.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be read.</source>
+            <translation>ენის პარამეტრების წაკითხვა ვერ მოხერხდა.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be saved.</source>
+            <translation>ენის პარამეტრების შენახვა ვერ მოხერხდა.</translation>
+        </message>
     </context>
     <context>
         <name>PushToTalkKey</name>
@@ -2345,50 +2754,65 @@
         </message>
     </context>
     <context>
-        <name>RecordingPanel</name>
+        <name>ScreenPanel</name>
         <message>
-            <source>Stop</source>
-            <translation>გაჩერდი</translation>
+            <source>Media capacity reached</source>
+            <translation>მედიის შესაძლებლობები მიღწეულია</translation>
         </message>
         <message>
-            <source>Start</source>
-            <translation>დაწყება</translation>
+            <source>Video paused</source>
+            <translation>ვიდეო შეჩერებულია</translation>
         </message>
         <message>
-            <source>Saved on this device only. Nothing is uploaded.</source>
-            <translation>შენახულია მხოლოდ ამ მოწყობილობაზე. არაფერი არ არის ატვირთული.</translation>
+            <source>Stream ended</source>
+            <translation>ნაკადი დასრულდა</translation>
         </message>
         <message>
-            <source>Keep this take or record it again.</source>
-            <translation>შეინახეთ ეს გადაღება ან ხელახლა ჩაწერეთ.</translation>
+            <source>Connecting</source>
+            <translation>დაკავშირება</translation>
         </message>
         <message>
-            <source>Record again</source>
-            <translation>ისევ ჩაწერეთ</translation>
+            <source>Open screen stream</source>
+            <translation>გახსენით ეკრანის ნაკადი</translation>
         </message>
         <message>
-            <source>Use recording</source>
-            <translation>გამოიყენეთ ჩანაწერი</translation>
+            <source>Screen stream</source>
+            <translation>ეკრანის ნაკადი</translation>
         </message>
         <message>
-            <source>Recording progress</source>
-            <translation>პროგრესის ჩაწერა</translation>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
+        </message>
+    </context>
+    <context>
+        <name>ScreenShare</name>
+        <message>
+            <source>Allow screen recording in system settings.</source>
+            <translation>სისტემის პარამეტრებში ეკრანის ჩაწერა დაუშვი.</translation>
         </message>
         <message>
-            <source>Step %1 of %2</source>
-            <translation>ნაბიჯი %1 %2-დან</translation>
+            <source>The shared screen was removed. Select a source to start again.</source>
+            <translation>გაზიარებული ეკრანი წაიშალა. აირჩიეთ წყარო ხელახლა დასაწყებად.</translation>
         </message>
         <message>
-            <source>Open recordings</source>
-            <translation>ღია ჩანაწერები</translation>
+            <source>The shared window was closed. Select a source to start again.</source>
+            <translation>საერთო ფანჯარა დაიხურა. აირჩიეთ წყარო ხელახლა დასაწყებად.</translation>
         </message>
         <message>
-            <source>Reset test</source>
-            <translation>ტესტის გადატვირთვა</translation>
+            <source>The selected screen is no longer available.</source>
+            <translation>არჩეული ეკრანი აღარ არის ხელმისაწვდომი.</translation>
         </message>
         <message>
-            <source>%1 s remaining / %2 dBFS</source>
-            <translation>დარჩენილია %1 s / %2 dBFS</translation>
+            <source>The selected window is no longer available.</source>
+            <translation>არჩეული ფანჯარა აღარ არის ხელმისაწვდომი.</translation>
+        </message>
+        <message>
+            <source>The selected source exceeds the capture size limit.</source>
+            <translation>არჩეული წყარო აღემატება გადაღების ზომის ლიმიტს.</translation>
+        </message>
+        <message>
+            <source>Close a video view before opening another stream.</source>
+            <translation>დახურეთ ვიდეოს ნახვა სხვა ნაკადის გახსნამდე.</translation>
         </message>
     </context>
     <context>
@@ -2465,10 +2889,6 @@
             <translation>სიგნალის შეგროვება...</translation>
         </message>
         <message>
-            <source>Dashed curve: configured gain and frequency cuts, using the right dB scale. Noise reduction and voice activation are not part of this curve.</source>
-            <translation>წყვეტილი მრუდი: მარჯვენა dB სკალით კონფიგურირებული გაძლიერება და სიხშირის ჭრები. ხმაურის შემცირება და ხმით გააქტიურება ამ მრუდის ნაწილი არ არის.</translation>
-        </message>
-        <message>
             <source>Microphone preview is not running</source>
             <translation>მიკროფონის გადახედვა არ მუშაობს</translation>
         </message>
@@ -2479,303 +2899,6 @@
         <message>
             <source>Peak: %1</source>
             <translation>პიკი: %1</translation>
-        </message>
-    </context>
-    <context>
-        <name>Tray</name>
-        <message>
-            <source>Quit</source>
-            <translation>დაანებე თავი</translation>
-        </message>
-        <message>
-            <source>SquadSpeak - speaking</source>
-            <translation>SquadSpeak - საუბარი</translation>
-        </message>
-        <message>
-            <source>Settings</source>
-            <translation>პარამეტრები</translation>
-        </message>
-        <message>
-            <source>Channels</source>
-            <translation>არხები</translation>
-        </message>
-        <message>
-            <source>New image</source>
-            <translation>ახალი სურათი</translation>
-        </message>
-    </context>
-    <context>
-        <name>VoiceAvatar</name>
-        <message>
-            <source>Muted</source>
-            <translation>მიკროფონი დადუმებულია</translation>
-        </message>
-        <message>
-            <source>Sleeping</source>
-            <translation>ძილი</translation>
-        </message>
-        <message>
-            <source>Offline</source>
-            <translation>ხაზგარეშე</translation>
-        </message>
-        <message>
-            <source>Speaking</source>
-            <translation>ლაპარაკი</translation>
-        </message>
-        <message>
-            <source>Unavailable</source>
-            <translation>მიუწვდომელია</translation>
-        </message>
-        <message>
-            <source>Listening</source>
-            <translation>მოსმენა</translation>
-        </message>
-        <message>
-            <source>Deafened</source>
-            <translation>დინამიკები დადუმდა</translation>
-        </message>
-    </context>
-    <context>
-        <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>მიუწვდომელია - აუდიო პარამეტრები ან ტონის ტესტი</translation>
-        </message>
-        <message>
-            <source>Microphone muted</source>
-            <translation>მიკროფონი დადუმებულია</translation>
-        </message>
-        <message>
-            <source>Push-to-talk held</source>
-            <translation>"საუბრისთვის დაჭერის" ღილაკი დაჭერილია</translation>
-        </message>
-        <message>
-            <source>Ready - push-to-talk released</source>
-            <translation>მზადაა - "საუბრისთვის დაჭერის" ღილაკი გაშვებულია</translation>
-        </message>
-        <message>
-            <source>Microphone unmuted</source>
-            <translation>მიკროფონი ჩართულია</translation>
-        </message>
-        <message>
-            <source>Settings could not be saved: %1</source>
-            <translation>პარამეტრების შენახვა ვერ მოხერხდა: %1</translation>
-        </message>
-        <message>
-            <source>The push-to-talk sequence cannot be incremented further.</source>
-            <translation>ბიძგი-საუბრის თანმიმდევრობა არ შეიძლება გაიზარდოს.</translation>
-        </message>
-        <message>
-            <source>Choose System, Light or Dark.</source>
-            <translation>აირჩიეთ სისტემა, მსუბუქი ან მუქი.</translation>
-        </message>
-        <message>
-            <source>Choose a colour palette from the list.</source>
-            <translation>აირჩიეთ ფერების პალიტრა სიიდან.</translation>
-        </message>
-        <message>
-            <source>Choose an available avatar.</source>
-            <translation>აირჩიეთ ხელმისაწვდომი ავატარი.</translation>
-        </message>
-        <message>
-            <source>Invalid push-to-talk binding.</source>
-            <translation>არასწორი საუბრის შეკვრა.</translation>
-        </message>
-        <message>
-            <source>Release the held push-to-talk key first.</source>
-            <translation>ჯერ გაათავისუფლეთ დაჭერილი საუბრის გასაღები.</translation>
-        </message>
-        <message>
-            <source>Choose a language from the list.</source>
-            <translation>აირჩიეთ ენა სიიდან.</translation>
-        </message>
-        <message>
-            <source>This avatar requires Supporter.</source>
-            <translation>ამ ავატარს სჭირდება Supporter.</translation>
-        </message>
-        <message>
-            <source>The name must contain 1 to 64 characters.</source>
-            <translation>სახელი უნდა შეიცავდეს 1-დან 64 სიმბოლოს.</translation>
-        </message>
-        <message>
-            <source>The name may not contain control characters or line breaks.</source>
-            <translation>სახელი არ შეიძლება შეიცავდეს საკონტროლო სიმბოლოებს ან ხაზებს.</translation>
-        </message>
-        <message>
-            <source>Session settings could not be read.</source>
-            <translation>სესიის პარამეტრების წაკითხვა ვერ მოხერხდა.</translation>
-        </message>
-        <message>
-            <source>Saved setting is invalid: %1</source>
-            <translation>შენახული პარამეტრი არასწორია: %1</translation>
-        </message>
-    </context>
-    <context>
-        <name>License</name>
-        <message>
-            <source>License storage is busy or unavailable.</source>
-            <translation>ლიცენზიის საცავი დაკავებულია ან მიუწვდომელია.</translation>
-        </message>
-        <message>
-            <source>License storage is unavailable.</source>
-            <translation>ლიცენზიის საცავი მიუწვდომელია.</translation>
-        </message>
-        <message>
-            <source>Sign-in expired. Try again.</source>
-            <translation>შესვლას ვადა გაუვიდა. სცადეთ ხელახლა.</translation>
-        </message>
-        <message>
-            <source>GitHub sign-in is unavailable. Try again.</source>
-            <translation>GitHub შესვლა მიუწვდომელია. სცადეთ ხელახლა.</translation>
-        </message>
-        <message>
-            <source>GitHub sign-in was not completed. Try again.</source>
-            <translation>GitHub-ში შესვლა არ დასრულებულა. სცადეთ ხელახლა.</translation>
-        </message>
-        <message>
-            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
-            <translation>GitHub ვერ შემოწმდა. ხაზგარეშე წვდომა გრძელდება მაქსიმუმ შვიდი დღის განმავლობაში.</translation>
-        </message>
-        <message>
-            <source>Sign in with GitHub again.</source>
-            <translation>ხელახლა შედით GitHub-ით.</translation>
-        </message>
-    </context>
-    <context>
-        <name>ScreenShare</name>
-        <message>
-            <source>The shared screen was removed. Select a source to start again.</source>
-            <translation>გაზიარებული ეკრანი წაიშალა. აირჩიეთ წყარო ხელახლა დასაწყებად.</translation>
-        </message>
-        <message>
-            <source>The shared window was closed. Select a source to start again.</source>
-            <translation>საერთო ფანჯარა დაიხურა. აირჩიეთ წყარო ხელახლა დასაწყებად.</translation>
-        </message>
-        <message>
-            <source>The selected screen is no longer available.</source>
-            <translation>არჩეული ეკრანი აღარ არის ხელმისაწვდომი.</translation>
-        </message>
-        <message>
-            <source>The selected window is no longer available.</source>
-            <translation>არჩეული ფანჯარა აღარ არის ხელმისაწვდომი.</translation>
-        </message>
-        <message>
-            <source>The selected source exceeds the capture size limit.</source>
-            <translation>არჩეული წყარო აღემატება გადაღების ზომის ლიმიტს.</translation>
-        </message>
-        <message>
-            <source>Close a video view before opening another stream.</source>
-            <translation>დახურეთ ვიდეოს ნახვა სხვა ნაკადის გახსნამდე.</translation>
-        </message>
-    </context>
-    <context>
-        <name>ScreenPanel</name>
-        <message>
-            <source>Media capacity reached</source>
-            <translation>მედიის შესაძლებლობები მიღწეულია</translation>
-        </message>
-        <message>
-            <source>Video paused</source>
-            <translation>ვიდეო შეჩერებულია</translation>
-        </message>
-        <message>
-            <source>Stream ended</source>
-            <translation>ნაკადი დასრულდა</translation>
-        </message>
-        <message>
-            <source>Connecting</source>
-            <translation>დაკავშირება</translation>
-        </message>
-        <message>
-            <source>Open screen stream</source>
-            <translation>გახსენით ეკრანის ნაკადი</translation>
-        </message>
-        <message>
-            <source>Screen stream</source>
-            <translation>ეკრანის ნაკადი</translation>
-        </message>
-        <message>
-            <source>%1 kbit/s</source>
-            <translation>%1 kbit/s</translation>
-        </message>
-    </context>
-    <context>
-        <name>VideoCodec</name>
-        <message>
-            <source>Video codec: %1</source>
-            <translation>ვიდეოკოდეკი: %1</translation>
-        </message>
-        <message>
-            <source>Video codec ABI does not match its headers.</source>
-            <translation>ვიდეოკოდეკის ABI არ ემთხვევა მის სათაურის ფაილებს.</translation>
-        </message>
-        <message>
-            <source>Video buffers could not be allocated.</source>
-            <translation>ვიდეობუფერების გამოყოფა ვერ მოხერხდა.</translation>
-        </message>
-        <message>
-            <source>Invalid video quality tier.</source>
-            <translation>ვიდეოს ხარისხის დონე არასწორია.</translation>
-        </message>
-        <message>
-            <source>The screen source exceeds the supported capture size.</source>
-            <translation>ეკრანის წყარო აღემატება ჩაწერის მხარდაჭერილ ზომას.</translation>
-        </message>
-        <message>
-            <source>The screen source is too narrow.</source>
-            <translation>ეკრანის წყარო ზედმეტად ვიწროა.</translation>
-        </message>
-        <message>
-            <source>The video encoder could not be allocated.</source>
-            <translation>ვიდეოკოდერის გამოყოფა ვერ მოხერხდა.</translation>
-        </message>
-        <message>
-            <source>No supported video encoder is available.</source>
-            <translation>მხარდაჭერილი ვიდეოკოდერი ხელმისაწვდომი არ არის.</translation>
-        </message>
-        <message>
-            <source>Video encoder configuration is too large.</source>
-            <translation>ვიდეოკოდერის კონფიგურაცია ზედმეტად დიდია.</translation>
-        </message>
-        <message>
-            <source>Video scaling could not be initialized.</source>
-            <translation>ვიდეოს მასშტაბირების ინიციალიზაცია ვერ მოხერხდა.</translation>
-        </message>
-        <message>
-            <source>The encoder returned an empty video packet.</source>
-            <translation>კოდერმა ვიდეოს ცარიელი პაკეტი დააბრუნა.</translation>
-        </message>
-        <message>
-            <source>Invalid video frame format.</source>
-            <translation>ვიდეოკადრის ფორმატი არასწორია.</translation>
-        </message>
-        <message>
-            <source>Invalid video decoder configuration.</source>
-            <translation>ვიდეოდეკოდერის კონფიგურაცია არასწორია.</translation>
-        </message>
-        <message>
-            <source>This video codec cannot be decoded.</source>
-            <translation>ამ ვიდეოკოდეკის დეკოდირება შეუძლებელია.</translation>
-        </message>
-        <message>
-            <source>Video decoder could not be allocated.</source>
-            <translation>ვიდეოდეკოდერის გამოყოფა ვერ მოხერხდა.</translation>
-        </message>
-        <message>
-            <source>Video decoder configuration could not be allocated.</source>
-            <translation>ვიდეოდეკოდერის კონფიგურაციის გამოყოფა ვერ მოხერხდა.</translation>
-        </message>
-        <message>
-            <source>Decoded dimensions do not match the screen stream.</source>
-            <translation>დეკოდირებული ზომები არ ემთხვევა ეკრანის ნაკადს.</translation>
-        </message>
-        <message>
-            <source>Decoded image could not be allocated.</source>
-            <translation>დეკოდირებული გამოსახულების გამოყოფა ვერ მოხერხდა.</translation>
-        </message>
-        <message>
-            <source>Video color conversion could not be initialized.</source>
-            <translation>ვიდეოს ფერთა გარდაქმნის ინიციალიზაცია ვერ მოხერხდა.</translation>
         </message>
     </context>
     <context>
@@ -2894,404 +3017,211 @@
         </message>
     </context>
     <context>
-        <name>Headless</name>
+        <name>Tray</name>
         <message>
-            <source>Command failed.</source>
-            <translation>ბრძანება ვერ შესრულდა.</translation>
+            <source>Quit</source>
+            <translation>დაანებე თავი</translation>
         </message>
         <message>
-            <source>%1 must be an integer.</source>
-            <translation>%1 მთელი რიცხვი უნდა იყოს.</translation>
+            <source>SquadSpeak - speaking</source>
+            <translation>SquadSpeak - საუბარი</translation>
         </message>
         <message>
-            <source>Requests must be on/off or true/false.</source>
-            <translation>მოთხოვნები უნდა იყოს on/off ან true/false.</translation>
+            <source>Settings</source>
+            <translation>პარამეტრები</translation>
         </message>
         <message>
-            <source>Unknown host property: %1</source>
-            <translation>ჰოსტის უცნობი თვისება: %1</translation>
+            <source>Channels</source>
+            <translation>არხები</translation>
         </message>
         <message>
-            <source>Run without GUI, microphone capture, or local audio output.</source>
-            <translation>გაშვება გრაფიკული ინტერფეისის, მიკროფონის ჩაწერისა და ადგილობრივი აუდიოგამოტანის გარეშე.</translation>
-        </message>
-        <message>
-            <source>Server storage prefix. Personal/audio/GUI profiles are not loaded.</source>
-            <translation>სერვერის საცავის პრეფიქსი. პირადი, აუდიოსა და ინტერფეისის პროფილები არ იტვირთება.</translation>
-        </message>
-        <message>
-            <source>Optional private identity file instead of the OS credential store (Linux/macOS). Parent directory must exist and belong to this account.</source>
-            <translation>არასავალდებულო პირადი იდენტობის ფაილი სისტემის ავტორიზაციის მონაცემების საცავის ნაცვლად (Linux/macOS). მშობელი საქაღალდე უნდა არსებობდეს და ამ ანგარიშს ეკუთვნოდეს.</translation>
-        </message>
-        <message>
-            <source>UTF-8 key=value properties or JSON host preset. Default: application.properties, then config/application.properties beside the app.</source>
-            <translation>UTF-8 key=value თვისებები ან ჰოსტის JSON წინასწარი პარამეტრები. ნაგულისხმევია application.properties, შემდეგ config/application.properties აპის გვერდით.</translation>
-        </message>
-        <message>
-            <source>Channel display name.</source>
-            <translation>არხის საჩვენებელი სახელი.</translation>
-        </message>
-        <message>
-            <source>System and radio bot display name.</source>
-            <translation>სისტემისა და რადიოს ბოტის საჩვენებელი სახელი.</translation>
-        </message>
-        <message>
-            <source>TCP service port (1-65535).</source>
-            <translation>სერვისის TCP პორტი (1-65535).</translation>
-        </message>
-        <message>
-            <source>Headless admission is always on; only 'on' or 'true' is accepted.</source>
-            <translation>გრაფიკული ინტერფეისის გარეშე რეჟიმში დაშვება ყოველთვის ჩართულია; მიიღება მხოლოდ 'on' ან 'true'.</translation>
-        </message>
-        <message>
-            <source>Preapprove a device ID; repeat for several devices. Existing bans remain.</source>
-            <translation>მოწყობილობის ID-ის წინასწარ დამტკიცება; გაიმეორეთ რამდენიმე მოწყობილობისთვის. არსებული აკრძალვები რჩება.</translation>
-        </message>
-        <message>
-            <source>Block a device ID; repeat for several devices.</source>
-            <translation>მოწყობილობის ID-ის დაბლოკვა; გაიმეორეთ რამდენიმე მოწყობილობისთვის.</translation>
-        </message>
-        <message>
-            <source>Read a UTF-8 channel password from a file before listening. An empty file removes it.</source>
-            <translation>არხის UTF-8 პაროლის ფაილიდან წაკითხვა მოსმენის დაწყებამდე. ცარიელი ფაილი მას შლის.</translation>
-        </message>
-        <message>
-            <source>Channel password. Empty removes it; environment or config avoids process-list exposure.</source>
-            <translation>არხის პაროლი. ცარიელი მნიშვნელობა მას შლის; გარემოს ან კონფიგურაციის გამოყენება ხელს უშლის მის გამოჩენას პროცესების სიაში.</translation>
-        </message>
-        <message>
-            <source>SquadSpeak headless local channel host</source>
-            <translation>SquadSpeak-ის ადგილობრივი არხის ჰოსტი გრაფიკული ინტერფეისის გარეშე</translation>
-        </message>
-        <message>
-            <source>Environment variables (SQUADSPEAK_ prefix):</source>
-            <translation>გარემოს ცვლადები (SQUADSPEAK_ პრეფიქსით):</translation>
-        </message>
-        <message>
-            <source>Host configuration could not be read or exceeds 1 MiB.</source>
-            <translation>ჰოსტის კონფიგურაცია ვერ წაიკითხა ან 1 MiB-ს აჭარბებს.</translation>
-        </message>
-        <message>
-            <source>Host configuration must be UTF-8.</source>
-            <translation>ჰოსტის კონფიგურაცია UTF-8 უნდა იყოს.</translation>
-        </message>
-        <message>
-            <source>Host preset must be a JSON object.</source>
-            <translation>ჰოსტის წინასწარი პარამეტრები JSON ობიექტი უნდა იყოს.</translation>
-        </message>
-        <message>
-            <source>Property line %1 must use key=value.</source>
-            <translation>თვისებების %1 სტრიქონი key=value ფორმატს უნდა იყენებდეს.</translation>
-        </message>
-        <message>
-            <source>Property line %1: %2</source>
-            <translation>თვისებების სტრიქონი %1: %2</translation>
-        </message>
-        <message>
-            <source>Standard input has no file descriptor.</source>
-            <translation>სტანდარტულ შეყვანას ფაილის დესკრიპტორი არ აქვს.</translation>
-        </message>
-        <message>
-            <source>Standard input could not be inspected.</source>
-            <translation>სტანდარტული შეყვანის შემოწმება ვერ მოხერხდა.</translation>
-        </message>
-        <message>
-            <source>Could not write the command response: %1</source>
-            <translation>ბრძანების პასუხის ჩაწერა ვერ მოხერხდა: %1</translation>
-        </message>
-        <message>
-            <source>Standard input could not be read: %1</source>
-            <translation>სტანდარტული შეყვანის წაკითხვა ვერ მოხერხდა: %1</translation>
-        </message>
-        <message>
-            <source>Input line exceeds 65536 bytes.</source>
-            <translation>შეყვანის სტრიქონი 65536 ბაიტს აჭარბებს.</translation>
-        </message>
-        <message>
-            <source>Each input line must be a JSON object.</source>
-            <translation>შეყვანის ყოველი სტრიქონი JSON ობიექტი უნდა იყოს.</translation>
-        </message>
-        <message>
-            <source>Input ended before a complete JSON line.</source>
-            <translation>შეყვანა სრული JSON სტრიქონის მიღებამდე დასრულდა.</translation>
-        </message>
-        <message>
-            <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
-            <translation>საკუთარი არხის არასავალდებულო ID ბრძანებებისთვის status, configure, password, admission, history, chat და radio; ნაგულისხმევად გამოიყენება ძირითადი არხი.</translation>
-        </message>
-        <message>
-            <source>Channel action must be list, add or remove.</source>
-            <translation>არხის მოქმედება უნდა იყოს list, add ან remove.</translation>
-        </message>
-        <message>
-            <source>Removing an own channel deletes its history, images, permissions and radio settings. Set confirmed=true to proceed.</source>
-            <translation>საკუთარი არხის წაშლა შლის მის ისტორიას, სურათებს, ნებართვებსა და რადიოს პარამეტრებს. გასაგრძელებლად მიუთითეთ confirmed=true.</translation>
-        </message>
-        <message>
-            <source>id must identify an additional own channel.</source>
-            <translation>id დამატებით საკუთარ არხს უნდა მიუთითებდეს.</translation>
-        </message>
-        <message>
-            <source>The additional own channel could not be removed: %1</source>
-            <translation>დამატებითი საკუთარი არხის წაშლა ვერ მოხერხდა: %1</translation>
-        </message>
-        <message>
-            <source>channelId must identify an own channel.</source>
-            <translation>channelId საკუთარ არხს უნდა მიუთითებდეს.</translation>
-        </message>
-        <message>
-            <source>values must be a host settings object.</source>
-            <translation>values ჰოსტის პარამეტრების ობიექტი უნდა იყოს.</translation>
-        </message>
-        <message>
-            <source>Headless admission is always enabled for non-banned devices; requests off is not supported.</source>
-            <translation>გრაფიკული ინტერფეისის გარეშე რეჟიმში დაუბლოკავი მოწყობილობების დაშვება ყოველთვის ჩართულია; requests off მხარდაჭერილი არ არის.</translation>
-        </message>
-        <message>
-            <source>value must be a password of at most 1024 UTF-8 bytes without control characters; an empty string removes it.</source>
-            <translation>value უნდა იყოს მაქსიმუმ 1024 UTF-8 ბაიტიანი პაროლი საკონტროლო სიმბოლოების გარეშე; ცარიელი სტრიქონი მას შლის.</translation>
-        </message>
-        <message>
-            <source>The channel is not ready or a password change is in progress.</source>
-            <translation>არხი მზად არ არის ან პაროლის შეცვლა მიმდინარეობს.</translation>
-        </message>
-        <message>
-            <source>The channel was removed while saving the password.</source>
-            <translation>პაროლის შენახვისას არხი წაიშალა.</translation>
-        </message>
-        <message>
-            <source>id is required.</source>
-            <translation>id აუცილებელია.</translation>
-        </message>
-        <message>
-            <source>text must be a valid non-empty chat message.</source>
-            <translation>text უნდა იყოს ჩატის სწორი, არაცარიელი შეტყობინება.</translation>
-        </message>
-        <message>
-            <source>The local channel is not ready.</source>
-            <translation>ადგილობრივი არხი მზად არ არის.</translation>
-        </message>
-        <message>
-            <source>The channel's radio is unavailable.</source>
-            <translation>არხის რადიო მიუწვდომელია.</translation>
-        </message>
-        <message>
-            <source>Unknown command. Use help.</source>
-            <translation>უცნობი ბრძანება. გამოიყენეთ help.</translation>
-        </message>
-        <message>
-            <source>search requires a query, non-negative offset and limit from 1 to 128.</source>
-            <translation>search მოითხოვს query-ს, არაუარყოფით offset-ს და limit-ს 1-დან 128-მდე.</translation>
-        </message>
-        <message>
-            <source>add creates an id; update requires an existing id.</source>
-            <translation>add ქმნის id-ს; update მოითხოვს არსებულ id-ს.</translation>
-        </message>
-        <message>
-            <source>A station is already being checked.</source>
-            <translation>სადგური უკვე მოწმდება.</translation>
-        </message>
-        <message>
-            <source>The channel was removed while checking the station.</source>
-            <translation>სადგურის შემოწმებისას არხი წაიშალა.</translation>
-        </message>
-        <message>
-            <source>Unknown radio action.</source>
-            <translation>რადიოს უცნობი მოქმედება.</translation>
-        </message>
-        <message>
-            <source>Could not load language: %1</source>
-            <translation>ენის ჩატვირთვა ვერ მოხერხდა: %1</translation>
-        </message>
-        <message>
-            <source>The %1 option is incompatible with --headless.</source>
-            <translation>პარამეტრი %1 შეუთავსებელია --headless-თან.</translation>
-        </message>
-        <message>
-            <source>Unexpected positional arguments. Use --help.</source>
-            <translation>მოულოდნელი პოზიციური არგუმენტები. გამოიყენეთ --help.</translation>
-        </message>
-        <message>
-            <source>--config / -f requires a non-empty path.</source>
-            <translation>--config / -f მოითხოვს არაცარიელ ბილიკს.</translation>
-        </message>
-        <message>
-            <source>Choose --password or --password-file, not both.</source>
-            <translation>აირჩიეთ --password ან --password-file, არა ორივე.</translation>
-        </message>
-        <message>
-            <source>Choose SQUADSPEAK_PASSWORD or SQUADSPEAK_PASSWORD_FILE, not both.</source>
-            <translation>აირჩიეთ SQUADSPEAK_PASSWORD ან SQUADSPEAK_PASSWORD_FILE, არა ორივე.</translation>
-        </message>
-        <message>
-            <source>Choose password or passwordFile in one configuration layer, not both.</source>
-            <translation>კონფიგურაციის ერთ ფენაში აირჩიეთ password ან passwordFile, არა ორივე.</translation>
-        </message>
-        <message>
-            <source>passwordFile must be a non-empty path.</source>
-            <translation>passwordFile არაცარიელი ბილიკი უნდა იყოს.</translation>
-        </message>
-        <message>
-            <source>Password file could not be read or is too large.</source>
-            <translation>პაროლის ფაილი ვერ წაიკითხა ან მეტისმეტად დიდია.</translation>
-        </message>
-        <message>
-            <source>Password file must contain at most 1024 UTF-8 bytes without control characters.</source>
-            <translation>პაროლის ფაილი უნდა შეიცავდეს მაქსიმუმ 1024 UTF-8 ბაიტს საკონტროლო სიმბოლოების გარეშე.</translation>
-        </message>
-        <message>
-            <source>Password must be a string of at most 1024 UTF-8 bytes without control characters.</source>
-            <translation>პაროლი უნდა იყოს მაქსიმუმ 1024 UTF-8 ბაიტიანი სტრიქონი საკონტროლო სიმბოლოების გარეშე.</translation>
-        </message>
-        <message>
-            <source>settingsFile must be a non-empty path.</source>
-            <translation>settingsFile არაცარიელი ბილიკი უნდა იყოს.</translation>
-        </message>
-        <message>
-            <source>identityFile must be a non-empty path.</source>
-            <translation>identityFile არაცარიელი ბილიკი უნდა იყოს.</translation>
-        </message>
-        <message>
-            <source>The settings directory could not be created.</source>
-            <translation>პარამეტრების საქაღალდის შექმნა ვერ მოხერხდა.</translation>
-        </message>
-        <message>
-            <source>This SquadSpeak profile is already running or cannot be locked.</source>
-            <translation>SquadSpeak-ის ეს პროფილი უკვე გაშვებულია ან მისი ჩაკეტვა შეუძლებელია.</translation>
-        </message>
-        <message>
-            <source>Standard input could not be opened.</source>
-            <translation>სტანდარტული შეყვანის გახსნა ვერ მოხერხდა.</translation>
-        </message>
-        <message>
-            <source>Standard output could not be opened.</source>
-            <translation>სტანდარტული გამოტანის გახსნა ვერ მოხერხდა.</translation>
-        </message>
-        <message>
-            <source>This identity file is already in use or cannot be locked.</source>
-            <translation>იდენტობის ეს ფაილი უკვე გამოიყენება ან მისი ჩაკეტვა შეუძლებელია.</translation>
-        </message>
-        <message>
-            <source>Invalid host configuration: %1</source>
-            <translation>ჰოსტის არასწორი კონფიგურაცია: %1</translation>
-        </message>
-        <message>
-            <source>Radio channels could not be initialized.</source>
-            <translation>რადიოს არხების ინიციალიზაცია ვერ მოხერხდა.</translation>
-        </message>
-        <message>
-            <source>Headless host could not start: %1</source>
-            <translation>გრაფიკული ინტერფეისის გარეშე ჰოსტის გაშვება ვერ მოხერხდა: %1</translation>
-        </message>
-        <message>
-            <source>Channel password could not be saved.</source>
-            <translation>არხის პაროლის შენახვა ვერ მოხერხდა.</translation>
-        </message>
-        <message>
-            <source>Invalid channel password: %1</source>
-            <translation>არხის არასწორი პაროლი: %1</translation>
-        </message>
-        <message>
-            <source>Headless host could not initialize: %1</source>
-            <translation>გრაფიკული ინტერფეისის გარეშე ჰოსტის ინიციალიზაცია ვერ მოხერხდა: %1</translation>
-        </message>
-        <message>
-            <source>SquadSpeak headless could not start: %1</source>
-            <translation>გრაფიკული ინტერფეისის გარეშე SquadSpeak-ის გაშვება ვერ მოხერხდა: %1</translation>
-        </message>
-        <message>
-            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
-            <translation>მხარდამჭერის მოქმედება უნდა იყოს სტატუსი, შესვლა, განახლება, გასვლა ან გაუქმება. status sign-in refresh sign-out cancel</translation>
-        </message>
-        <message>
-            <source>A Supporter operation is in progress.</source>
-            <translation>მხარდამჭერი ოპერაცია მიმდინარეობს.</translation>
-        </message>
-        <message>
-            <source>Supporter access is unavailable in this build.</source>
-            <translation>მხარდამჭერის წვდომა მიუწვდომელია ამ build-ში.</translation>
-        </message>
-        <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>პარამეტრების უპირატესობა: არგუმენტები &gt; გარემო &gt; თვისებები &gt; სერვერის შენახული მნიშვნელობები.</translation>
+            <source>New image</source>
+            <translation>ახალი სურათი</translation>
         </message>
     </context>
     <context>
-        <name>Desktop</name>
+        <name>VideoCodec</name>
         <message>
-            <source>Open settings at startup.</source>
-            <translation>პარამეტრების გახსნა გაშვებისას.</translation>
+            <source>Video codec: %1</source>
+            <translation>ვიდეოკოდეკი: %1</translation>
         </message>
         <message>
-            <source>Open guided local test recording without starting network services.</source>
-            <translation>ადგილობრივი საცდელი ჩაწერის გახსნა ინსტრუქციებით, ქსელური სერვისების გაშვების გარეშე.</translation>
+            <source>Video codec ABI does not match its headers.</source>
+            <translation>ვიდეოკოდეკის ABI არ ემთხვევა მის სათაურის ფაილებს.</translation>
         </message>
         <message>
-            <source>Alternative file for audio profiles.</source>
-            <translation>ალტერნატიული ფაილი აუდიოპროფილებისთვის.</translation>
+            <source>Video buffers could not be allocated.</source>
+            <translation>ვიდეობუფერების გამოყოფა ვერ მოხერხდა.</translation>
         </message>
         <message>
-            <source>Load the interface without microphone capture and exit after one second.</source>
-            <translation>ინტერფეისის ჩატვირთვა მიკროფონის ჩაწერის გარეშე და გამოსვლა ერთი წამის შემდეგ.</translation>
+            <source>Invalid video quality tier.</source>
+            <translation>ვიდეოს ხარისხის დონე არასწორია.</translation>
         </message>
         <message>
-            <source>Save an image of the app window during the UI test.</source>
-            <translation>აპის ფანჯრის სურათის შენახვა ინტერფეისის ტესტის დროს.</translation>
+            <source>The screen source exceeds the supported capture size.</source>
+            <translation>ეკრანის წყარო აღემატება ჩაწერის მხარდაჭერილ ზომას.</translation>
         </message>
         <message>
-            <source>The window image could not be saved.</source>
-            <translation>ფანჯრის სურათის შენახვა ვერ მოხერხდა.</translation>
+            <source>The screen source is too narrow.</source>
+            <translation>ეკრანის წყარო ზედმეტად ვიწროა.</translation>
         </message>
         <message>
-            <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
-            <translation>სისტემური უჯრა მიუწვდომელია; აპი ფანჯარაში ღია რჩება.</translation>
+            <source>The video encoder could not be allocated.</source>
+            <translation>ვიდეოკოდერის გამოყოფა ვერ მოხერხდა.</translation>
+        </message>
+        <message>
+            <source>No supported video encoder is available.</source>
+            <translation>მხარდაჭერილი ვიდეოკოდერი ხელმისაწვდომი არ არის.</translation>
+        </message>
+        <message>
+            <source>Video encoder configuration is too large.</source>
+            <translation>ვიდეოკოდერის კონფიგურაცია ზედმეტად დიდია.</translation>
+        </message>
+        <message>
+            <source>Video scaling could not be initialized.</source>
+            <translation>ვიდეოს მასშტაბირების ინიციალიზაცია ვერ მოხერხდა.</translation>
+        </message>
+        <message>
+            <source>The encoder returned an empty video packet.</source>
+            <translation>კოდერმა ვიდეოს ცარიელი პაკეტი დააბრუნა.</translation>
+        </message>
+        <message>
+            <source>Invalid video frame format.</source>
+            <translation>ვიდეოკადრის ფორმატი არასწორია.</translation>
+        </message>
+        <message>
+            <source>Invalid video decoder configuration.</source>
+            <translation>ვიდეოდეკოდერის კონფიგურაცია არასწორია.</translation>
+        </message>
+        <message>
+            <source>This video codec cannot be decoded.</source>
+            <translation>ამ ვიდეოკოდეკის დეკოდირება შეუძლებელია.</translation>
+        </message>
+        <message>
+            <source>Video decoder could not be allocated.</source>
+            <translation>ვიდეოდეკოდერის გამოყოფა ვერ მოხერხდა.</translation>
+        </message>
+        <message>
+            <source>Video decoder configuration could not be allocated.</source>
+            <translation>ვიდეოდეკოდერის კონფიგურაციის გამოყოფა ვერ მოხერხდა.</translation>
+        </message>
+        <message>
+            <source>Decoded dimensions do not match the screen stream.</source>
+            <translation>დეკოდირებული ზომები არ ემთხვევა ეკრანის ნაკადს.</translation>
+        </message>
+        <message>
+            <source>Decoded image could not be allocated.</source>
+            <translation>დეკოდირებული გამოსახულების გამოყოფა ვერ მოხერხდა.</translation>
+        </message>
+        <message>
+            <source>Video color conversion could not be initialized.</source>
+            <translation>ვიდეოს ფერთა გარდაქმნის ინიციალიზაცია ვერ მოხერხდა.</translation>
         </message>
     </context>
     <context>
-        <name>LocalLanguage</name>
+        <name>VoiceAvatar</name>
         <message>
-            <source>Translation (experimental)</source>
-            <translation>თარგმნა (ექსპერიმენტული)</translation>
+            <source>Muted</source>
+            <translation>მიკროფონი დადუმებულია</translation>
         </message>
         <message>
-            <source>Spoken language</source>
-            <translation>საუბრის ენა</translation>
+            <source>Sleeping</source>
+            <translation>ძილი</translation>
         </message>
         <message>
-            <source>Translate to</source>
-            <translation>თარგმნა ენაზე</translation>
+            <source>Offline</source>
+            <translation>ხაზგარეშე</translation>
         </message>
         <message>
-            <source>Translate messages</source>
-            <translation>შეტყობინებების თარგმნა</translation>
+            <source>Speaking</source>
+            <translation>ლაპარაკი</translation>
         </message>
         <message>
-            <source>Translated voice</source>
-            <translation>თარგმნილი ხმა</translation>
+            <source>Unavailable</source>
+            <translation>მიუწვდომელია</translation>
         </message>
         <message>
-            <source>Original audio</source>
-            <translation>ორიგინალი აუდიო</translation>
+            <source>Listening</source>
+            <translation>მოსმენა</translation>
         </message>
         <message>
-            <source>Original text</source>
-            <translation>ორიგინალი ტექსტი</translation>
+            <source>Deafened</source>
+            <translation>დინამიკები დადუმდა</translation>
+        </message>
+    </context>
+    <context>
+        <name>VoiceSession</name>
+        <message>
+            <source>Unavailable - audio settings or tone test</source>
+            <translation>მიუწვდომელია - აუდიო პარამეტრები ან ტონის ტესტი</translation>
         </message>
         <message>
-            <source>Prepare languages</source>
-            <translation>ენების მომზადება</translation>
+            <source>Microphone muted</source>
+            <translation>მიკროფონი დადუმებულია</translation>
         </message>
         <message>
-            <source>Local language processing is unavailable.</source>
-            <translation>ენის ლოკალური დამუშავება მიუწვდომელია.</translation>
+            <source>Push-to-talk held</source>
+            <translation>"საუბრისთვის დაჭერის" ღილაკი დაჭერილია</translation>
         </message>
         <message>
-            <source>Language settings could not be read.</source>
-            <translation>ენის პარამეტრების წაკითხვა ვერ მოხერხდა.</translation>
+            <source>Ready - push-to-talk released</source>
+            <translation>მზადაა - "საუბრისთვის დაჭერის" ღილაკი გაშვებულია</translation>
         </message>
         <message>
-            <source>Language settings could not be saved.</source>
-            <translation>ენის პარამეტრების შენახვა ვერ მოხერხდა.</translation>
+            <source>Microphone unmuted</source>
+            <translation>მიკროფონი ჩართულია</translation>
+        </message>
+        <message>
+            <source>Settings could not be saved: %1</source>
+            <translation>პარამეტრების შენახვა ვერ მოხერხდა: %1</translation>
+        </message>
+        <message>
+            <source>The push-to-talk sequence cannot be incremented further.</source>
+            <translation>ბიძგი-საუბრის თანმიმდევრობა არ შეიძლება გაიზარდოს.</translation>
+        </message>
+        <message>
+            <source>Choose System, Light or Dark.</source>
+            <translation>აირჩიეთ სისტემა, მსუბუქი ან მუქი.</translation>
+        </message>
+        <message>
+            <source>Choose a colour palette from the list.</source>
+            <translation>აირჩიეთ ფერების პალიტრა სიიდან.</translation>
+        </message>
+        <message>
+            <source>Choose an available avatar.</source>
+            <translation>აირჩიეთ ხელმისაწვდომი ავატარი.</translation>
+        </message>
+        <message>
+            <source>Invalid push-to-talk binding.</source>
+            <translation>არასწორი საუბრის შეკვრა.</translation>
+        </message>
+        <message>
+            <source>Release the held push-to-talk key first.</source>
+            <translation>ჯერ გაათავისუფლეთ დაჭერილი საუბრის გასაღები.</translation>
+        </message>
+        <message>
+            <source>Choose a language from the list.</source>
+            <translation>აირჩიეთ ენა სიიდან.</translation>
+        </message>
+        <message>
+            <source>This avatar requires Supporter.</source>
+            <translation>ამ ავატარს სჭირდება Supporter.</translation>
+        </message>
+        <message>
+            <source>The name must contain 1 to 64 characters.</source>
+            <translation>სახელი უნდა შეიცავდეს 1-დან 64 სიმბოლოს.</translation>
+        </message>
+        <message>
+            <source>The name may not contain control characters or line breaks.</source>
+            <translation>სახელი არ შეიძლება შეიცავდეს საკონტროლო სიმბოლოებს ან ხაზებს.</translation>
+        </message>
+        <message>
+            <source>Session settings could not be read.</source>
+            <translation>სესიის პარამეტრების წაკითხვა ვერ მოხერხდა.</translation>
+        </message>
+        <message>
+            <source>Saved setting is invalid: %1</source>
+            <translation>შენახული პარამეტრი არასწორია: %1</translation>
         </message>
     </context>
 </TS>

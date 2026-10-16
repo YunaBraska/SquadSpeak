@@ -36,14 +36,6 @@
             <translation>Abre los ajustes de privacidad del sistema y permite el acceso al micrófono para SquadSpeak.</translation>
         </message>
         <message>
-            <source>Microphone analysis active. Test audio stays on this computer.</source>
-            <translation>El análisis del micrófono está activo. El audio de prueba permanece en este ordenador.</translation>
-        </message>
-        <message>
-            <source>Finish the test recording before changing devices.</source>
-            <translation>Termina la grabación de prueba antes de cambiar de dispositivo.</translation>
-        </message>
-        <message>
             <source>The output format is not supported.</source>
             <translation>El formato de salida no es compatible.</translation>
         </message>
@@ -68,32 +60,12 @@
             <translation>No se pudo reproducir el tono de prueba.</translation>
         </message>
         <message>
-            <source>The microphone has provided no data for five seconds. Recording discarded.</source>
-            <translation>El micrófono no proporcionó datos durante cinco segundos. Se descartó la grabación.</translation>
-        </message>
-        <message>
-            <source>The microphone was interrupted or changed. Recording discarded.</source>
-            <translation>El micrófono se interrumpió o cambió. Se descartó la grabación.</translation>
-        </message>
-        <message>
-            <source>Cancelled. The incomplete recording was discarded.</source>
-            <translation>Cancelado. Se descartó la grabación incompleta.</translation>
-        </message>
-        <message>
             <source>No selected microphone is available</source>
             <translation>No hay ningún micrófono seleccionado disponible.</translation>
         </message>
         <message>
             <source>Allow microphone access in the system dialog.</source>
             <translation>Permite el acceso al micrófono en el diálogo del sistema.</translation>
-        </message>
-        <message>
-            <source>Microphone capture active for the voice channel.</source>
-            <translation>La captura del micrófono está activa para el canal de voz.</translation>
-        </message>
-        <message>
-            <source>Microphone access was denied. Nothing was saved.</source>
-            <translation>Se denegó el acceso al micrófono. No se guardó nada.</translation>
         </message>
         <message>
             <source>Microphone access is missing. Allow it in System Settings.</source>
@@ -265,97 +237,6 @@
         </message>
     </context>
     <context>
-        <name>AudioRecording</name>
-        <message>
-            <source>Incomplete audio block. Recording discarded.</source>
-            <translation>Bloque de audio incompleto. Se descartó la grabación.</translation>
-        </message>
-        <message>
-            <source>Move about one meter from the microphone. Keep the background sound playing and read the sentence.</source>
-            <translation>Aléjate aproximadamente un metro del micrófono. Mantén el sonido de fondo y lee la frase.</translation>
-        </message>
-        <message>
-            <source>Voice with background sound</source>
-            <translation>Voz con sonido de fondo</translation>
-        </message>
-        <message>
-            <source>The recordings folder could not be created.</source>
-            <translation>No se pudo crear la carpeta de grabaciones.</translation>
-        </message>
-        <message>
-            <source>You can stop the background sound now.</source>
-            <translation>Ya puedes detener el sonido de fondo.</translation>
-        </message>
-        <message>
-            <source>Recordings saved</source>
-            <translation>Grabaciones guardadas</translation>
-        </message>
-        <message>
-            <source>The test recording could not be saved completely.</source>
-            <translation>La grabación de prueba no se pudo guardar por completo.</translation>
-        </message>
-        <message>
-            <source>Keep music off and stay quiet. Start when ready.</source>
-            <translation>Mantén la música apagada y guarda silencio. Empieza cuando estés preparado.</translation>
-        </message>
-        <message>
-            <source>Your voice</source>
-            <translation>Tu voz</translation>
-        </message>
-        <message>
-            <source>Play music or another background sound at a normal volume. Stay quiet while recording.</source>
-            <translation>Reproduce música u otro sonido de fondo a volumen normal. Guarda silencio durante la grabación.</translation>
-        </message>
-        <message>
-            <source>The test recording could not be created.</source>
-            <translation>No se pudo crear la grabación de prueba.</translation>
-        </message>
-        <message>
-            <source>Background sound</source>
-            <translation>Sonido de fondo</translation>
-        </message>
-        <message>
-            <source>The window is open. I can hear the rain outside. One, two, three, four, five.</source>
-            <translation>La ventana está abierta. Puedo oír la lluvia fuera. Uno, dos, tres, cuatro, cinco.</translation>
-        </message>
-        <message>
-            <source>This microphone format is not supported for test recordings.</source>
-            <translation>Este formato de micrófono no es compatible con las grabaciones de prueba.</translation>
-        </message>
-        <message>
-            <source>Keep the background volume unchanged. Read the sentence, then stop recording.</source>
-            <translation>No cambies el volumen de fondo. Lee la frase y detén la grabación.</translation>
-        </message>
-        <message>
-            <source>Record at least half a second, then try again.</source>
-            <translation>Graba al menos medio segundo y vuelve a intentarlo.</translation>
-        </message>
-        <message>
-            <source>Sit at your usual distance. Read the sentence, then stop recording.</source>
-            <translation>Siéntate a tu distancia habitual. Lee la frase y detén la grabación.</translation>
-        </message>
-        <message>
-            <source>The recording description could not be saved.</source>
-            <translation>No se pudo guardar la descripción de la grabación.</translation>
-        </message>
-        <message>
-            <source>The WAV file could not be finalized.</source>
-            <translation>No se pudo finalizar el archivo WAV.</translation>
-        </message>
-        <message>
-            <source>The WAV header could not be written.</source>
-            <translation>No se pudo escribir la cabecera WAV.</translation>
-        </message>
-        <message>
-            <source>Voice farther away</source>
-            <translation>Voz lejana</translation>
-        </message>
-        <message>
-            <source>Room sound</source>
-            <translation>Sonido de la habitación</translation>
-        </message>
-    </context>
-    <context>
         <name>AudioSettings</name>
         <message>
             <source>Echo cancellation</source>
@@ -406,8 +287,8 @@
             <translation>Tu reproducción</translation>
         </message>
         <message>
-            <source>Clear local key</source>
-            <translation>Borrar la tecla local</translation>
+            <source>Clear key</source>
+            <translation>Borrar tecla</translation>
         </message>
         <message>
             <source>Low cut</source>
@@ -428,10 +309,6 @@
         <message>
             <source>Cancel</source>
             <translation>Cancelar</translation>
-        </message>
-        <message>
-            <source>Guided recording</source>
-            <translation>Grabación guiada</translation>
         </message>
         <message>
             <source>Clipping. Reduce microphone gain.</source>
@@ -466,16 +343,12 @@
             <translation>Dispositivo desconectado</translation>
         </message>
         <message>
-            <source>Local key</source>
-            <translation>Tecla local</translation>
+            <source>PTT key</source>
+            <translation>Tecla para hablar</translation>
         </message>
         <message>
             <source>Voice activation</source>
             <translation>Activación por voz</translation>
-        </message>
-        <message>
-            <source>Remote PTT key</source>
-            <translation>Tecla PTT remota</translation>
         </message>
         <message>
             <source>Noise reduction</source>
@@ -492,10 +365,6 @@
         <message>
             <source>Microphone gain</source>
             <translation>Ganancia del micrófono</translation>
-        </message>
-        <message>
-            <source>Clear remote key</source>
-            <translation>Borrar la tecla remota</translation>
         </message>
         <message>
             <source>Not assigned</source>
@@ -521,9 +390,81 @@
             <source>Read bot messages aloud</source>
             <translation>Leer los mensajes del bot en voz alta</translation>
         </message>
+        <message>
+            <source>Download a high-quality voice for this language in macOS settings.</source>
+            <translation>Descarga una voz de alta calidad para este idioma en los ajustes de macOS.</translation>
+        </message>
+        <message>
+            <source>Bot voice</source>
+            <translation>Voz del bot</translation>
+        </message>
+        <message>
+            <source>Automatic</source>
+            <translation>Automático</translation>
+        </message>
+        <message>
+            <source>Unavailable</source>
+            <translation>No disponible</translation>
+        </message>
+        <message>
+            <source>Download voices in your device's Accessibility speech settings.</source>
+            <translation>Descarga voces en los ajustes de voz de Accesibilidad de tu dispositivo.</translation>
+        </message>
+        <message>
+            <source>Voice download help</source>
+            <translation>Ayuda para descargar voces</translation>
+        </message>
+        <message>
+            <source>Strength, not the percentage of echo removed.</source>
+            <translation>Intensidad, no el porcentaje de eco eliminado.</translation>
+        </message>
+        <message>
+            <source>Auto also checks for speech, not just volume.</source>
+            <translation>El modo automático también detecta el habla, no solo el volumen.</translation>
+        </message>
     </context>
     <context>
         <name>Channels</name>
+        <message>
+            <source>Copy address</source>
+            <translation>Copiar dirección</translation>
+        </message>
+        <message>
+            <source>Messages</source>
+            <translation>Mensajes</translation>
+        </message>
+        <message>
+            <source>Message</source>
+            <translation>Mensaje</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Abrir</translation>
+        </message>
+        <message>
+            <source>Online</source>
+            <translation>En línea</translation>
+        </message>
+        <message>
+            <source>Offline</source>
+            <translation>Sin conexión</translation>
+        </message>
+        <message>
+            <source>No private messages</source>
+            <translation>No hay mensajes privados</translation>
+        </message>
+        <message>
+            <source>Private messages are unavailable for this contact.</source>
+            <translation>Los mensajes privados no están disponibles para este contacto.</translation>
+        </message>
+        <message>
+            <source>If asked, allow local network access. You can change this in system settings.</source>
+            <translation>Si se te solicita, permite el acceso a la red local. Puedes cambiarlo en los ajustes del sistema.</translation>
+        </message>
+        <message>
+            <source>Retry</source>
+            <translation>Reintentar</translation>
+        </message>
         <message>
             <source>Updates</source>
             <translation>Actualizaciones</translation>
@@ -543,6 +484,10 @@
         <message>
             <source>DDNS cannot bypass CGNAT. If your provider shares the public IP, use a private VPN on all participating devices or a publicly reachable server.</source>
             <translation>DDNS no evita CGNAT. Si tu proveedor comparte la IP pública, usa una VPN privada en todos los dispositivos participantes o un servidor accesible públicamente.</translation>
+        </message>
+        <message>
+            <source>Remove server</source>
+            <translation>Eliminar servidor</translation>
         </message>
         <message>
             <source>Low</source>
@@ -665,10 +610,6 @@
             <translation>Sonidos de notificación</translation>
         </message>
         <message>
-            <source>Lifetime for new messages. Earlier messages keep their expiry.</source>
-            <translation>Duración de los mensajes nuevos. Los mensajes anteriores conservan su caducidad.</translation>
-        </message>
-        <message>
             <source>Enable speakers</source>
             <translation>Activar altavoces</translation>
         </message>
@@ -703,10 +644,6 @@
         <message>
             <source>Allow device</source>
             <translation>Permitir dispositivo</translation>
-        </message>
-        <message>
-            <source>Receive quality: %1 kb/s per voice. Adjusts automatically for this device.</source>
-            <translation>Calidad de recepción: %1 kb/s por voz. Se ajusta automáticamente para este dispositivo.</translation>
         </message>
         <message>
             <source>Stop radio</source>
@@ -1204,6 +1141,42 @@
             <source>Use default music volume</source>
             <translation>Usar el volumen de música predeterminado</translation>
         </message>
+        <message>
+            <source>Show in Dock</source>
+            <translation>Mostrar en el Dock</translation>
+        </message>
+        <message>
+            <source>App language</source>
+            <translation>Idioma de la app</translation>
+        </message>
+        <message>
+            <source>Send in</source>
+            <translation>Enviar en</translation>
+        </message>
+        <message>
+            <source>Hear in</source>
+            <translation>Escuchar en</translation>
+        </message>
+        <message>
+            <source>Download language models for %1 and %2?</source>
+            <translation>¿Descargar modelos de idioma para %1 y %2?</translation>
+        </message>
+        <message>
+            <source>Download</source>
+            <translation>Descargar</translation>
+        </message>
+        <message>
+            <source>PTT, chat and channel controls. Uses the controlled device's microphone.</source>
+            <translation>Controles de PTT, chat y canales. Se usa el micrófono del dispositivo controlado.</translation>
+        </message>
+        <message>
+            <source>Connect the other device to one of your channels, then allow it here.</source>
+            <translation>Conecta el otro dispositivo a uno de tus canales y luego permítelo aquí.</translation>
+        </message>
+        <message>
+            <source>On the other device, open Settings &gt; Input &gt; Remote control and allow this device.</source>
+            <translation>En el otro dispositivo, abre Ajustes &gt; Entrada &gt; Control remoto y permite este dispositivo.</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1420,7 +1393,396 @@
         </message>
     </context>
     <context>
+        <name>Desktop</name>
+        <message>
+            <source>Open settings at startup.</source>
+            <translation>Abrir los ajustes al iniciar.</translation>
+        </message>
+        <message>
+            <source>Alternative file for audio profiles.</source>
+            <translation>Archivo alternativo de perfiles de audio.</translation>
+        </message>
+        <message>
+            <source>Load the interface without microphone capture and exit after one second.</source>
+            <translation>Cargar la interfaz sin capturar el micrófono y salir tras un segundo.</translation>
+        </message>
+        <message>
+            <source>Save an image of the app window during the UI test.</source>
+            <translation>Guardar una imagen de la ventana durante la prueba de interfaz.</translation>
+        </message>
+        <message>
+            <source>The window image could not be saved.</source>
+            <translation>No se pudo guardar la imagen de la ventana.</translation>
+        </message>
+        <message>
+            <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
+            <translation>La bandeja del sistema no está disponible; la aplicación permanece abierta en una ventana.</translation>
+        </message>
+    </context>
+    <context>
+        <name>Headless</name>
+        <message>
+            <source>Host display name.</source>
+            <translation>Nombre visible del anfitrión.</translation>
+        </message>
+        <message>
+            <source>Command failed.</source>
+            <translation>Comando fallido.</translation>
+        </message>
+        <message>
+            <source>%1 must be an integer.</source>
+            <translation>%1 debe ser un entero.</translation>
+        </message>
+        <message>
+            <source>Requests must be on/off or true/false.</source>
+            <translation>Las solicitudes deben ser on/off o true/false.</translation>
+        </message>
+        <message>
+            <source>Unknown host property: %1</source>
+            <translation>Propiedad de host desconocida: %1</translation>
+        </message>
+        <message>
+            <source>Run without GUI, microphone capture, or local audio output.</source>
+            <translation>Ejecutar sin GUI, captura de micrófono ni salida de audio local.</translation>
+        </message>
+        <message>
+            <source>Server storage prefix. Personal/audio/GUI profiles are not loaded.</source>
+            <translation>Prefijo de almacenamiento del servidor. No se cargan perfiles personales, de audio ni de GUI.</translation>
+        </message>
+        <message>
+            <source>Optional private identity file instead of the OS credential store (Linux/macOS). Parent directory must exist and belong to this account.</source>
+            <translation>Archivo de identidad privado opcional en lugar del almacén de credenciales del sistema (Linux/macOS). El directorio superior debe existir y pertenecer a esta cuenta.</translation>
+        </message>
+        <message>
+            <source>UTF-8 key=value properties or JSON host preset. Default: application.properties, then config/application.properties beside the app.</source>
+            <translation>Propiedades UTF-8 key=value o ajustes predefinidos del host en JSON. Predeterminado: application.properties y después config/application.properties junto a la aplicación.</translation>
+        </message>
+        <message>
+            <source>Channel display name.</source>
+            <translation>Nombre mostrado del canal.</translation>
+        </message>
+        <message>
+            <source>System and radio bot display name.</source>
+            <translation>Nombre mostrado del bot del sistema y de radio.</translation>
+        </message>
+        <message>
+            <source>TCP service port (1-65535).</source>
+            <translation>Puerto del servicio TCP (1-65535).</translation>
+        </message>
+        <message>
+            <source>Headless admission is always on; only 'on' or 'true' is accepted.</source>
+            <translation>La admisión headless siempre está activa; solo se acepta 'on' o 'true'.</translation>
+        </message>
+        <message>
+            <source>Preapprove a device ID; repeat for several devices. Existing bans remain.</source>
+            <translation>Autorizar previamente un ID de dispositivo; repetir para varios dispositivos. Las prohibiciones existentes permanecen.</translation>
+        </message>
+        <message>
+            <source>Block a device ID; repeat for several devices.</source>
+            <translation>Bloquear un ID de dispositivo; repetir para varios dispositivos.</translation>
+        </message>
+        <message>
+            <source>Read a UTF-8 channel password from a file before listening. An empty file removes it.</source>
+            <translation>Leer la contraseña UTF-8 del canal desde un archivo antes de empezar a escuchar. Un archivo vacío la elimina.</translation>
+        </message>
+        <message>
+            <source>Channel password. Empty removes it; environment or config avoids process-list exposure.</source>
+            <translation>Contraseña del canal. Un valor vacío la elimina; el entorno o la configuración evitan exponerla en la lista de procesos.</translation>
+        </message>
+        <message>
+            <source>SquadSpeak headless local channel host</source>
+            <translation>Host de canal local headless de SquadSpeak</translation>
+        </message>
+        <message>
+            <source>Environment variables (SQUADSPEAK_ prefix):</source>
+            <translation>Variables de entorno (prefijo SQUADSPEAK_):</translation>
+        </message>
+        <message>
+            <source>Host configuration could not be read or exceeds 1 MiB.</source>
+            <translation>No se pudo leer la configuración del host o supera 1 MiB.</translation>
+        </message>
+        <message>
+            <source>Host configuration must be UTF-8.</source>
+            <translation>La configuración del host debe estar en UTF-8.</translation>
+        </message>
+        <message>
+            <source>Host preset must be a JSON object.</source>
+            <translation>El ajuste predefinido del host debe ser un objeto JSON.</translation>
+        </message>
+        <message>
+            <source>Property line %1 must use key=value.</source>
+            <translation>La línea de propiedad %1 debe usar key=value.</translation>
+        </message>
+        <message>
+            <source>Property line %1: %2</source>
+            <translation>Línea de propiedad %1: %2</translation>
+        </message>
+        <message>
+            <source>Standard input has no file descriptor.</source>
+            <translation>La entrada estándar no tiene descriptor de archivo.</translation>
+        </message>
+        <message>
+            <source>Standard input could not be inspected.</source>
+            <translation>No se pudo inspeccionar la entrada estándar.</translation>
+        </message>
+        <message>
+            <source>Could not write the command response: %1</source>
+            <translation>No se pudo escribir la respuesta del comando: %1</translation>
+        </message>
+        <message>
+            <source>Standard input could not be read: %1</source>
+            <translation>No se pudo leer la entrada estándar: %1</translation>
+        </message>
+        <message>
+            <source>Input line exceeds 65536 bytes.</source>
+            <translation>La línea de entrada supera 65536 bytes.</translation>
+        </message>
+        <message>
+            <source>Each input line must be a JSON object.</source>
+            <translation>Cada línea de entrada debe ser un objeto JSON.</translation>
+        </message>
+        <message>
+            <source>Input ended before a complete JSON line.</source>
+            <translation>La entrada terminó antes de una línea JSON completa.</translation>
+        </message>
+        <message>
+            <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
+            <translation>ID opcional de un canal propio para los comandos status, configure, password, admission, history, chat y radio; por defecto se usa el canal principal.</translation>
+        </message>
+        <message>
+            <source>Channel action must be list, add or remove.</source>
+            <translation>La acción de canal debe ser list, add o remove.</translation>
+        </message>
+        <message>
+            <source>Removing an own channel deletes its history, images, permissions and radio settings. Set confirmed=true to proceed.</source>
+            <translation>Eliminar un canal propio borra su historial, imágenes, permisos y ajustes de radio. Establezca confirmed=true para continuar.</translation>
+        </message>
+        <message>
+            <source>id must identify an additional own channel.</source>
+            <translation>id debe identificar un canal propio adicional.</translation>
+        </message>
+        <message>
+            <source>The additional own channel could not be removed: %1</source>
+            <translation>No se pudo eliminar el canal propio adicional: %1</translation>
+        </message>
+        <message>
+            <source>channelId must identify an own channel.</source>
+            <translation>channelId debe identificar un canal propio.</translation>
+        </message>
+        <message>
+            <source>values must be a host settings object.</source>
+            <translation>values debe ser un objeto de ajustes del host.</translation>
+        </message>
+        <message>
+            <source>Headless admission is always enabled for non-banned devices; requests off is not supported.</source>
+            <translation>La admisión headless siempre está activa para dispositivos no bloqueados; requests off no es compatible.</translation>
+        </message>
+        <message>
+            <source>value must be a password of at most 1024 UTF-8 bytes without control characters; an empty string removes it.</source>
+            <translation>value debe ser una contraseña de como máximo 1024 bytes UTF-8 sin caracteres de control; una cadena vacía la elimina.</translation>
+        </message>
+        <message>
+            <source>The channel is not ready or a password change is in progress.</source>
+            <translation>El canal no está listo o hay un cambio de contraseña en curso.</translation>
+        </message>
+        <message>
+            <source>The channel was removed while saving the password.</source>
+            <translation>El canal se eliminó mientras se guardaba la contraseña.</translation>
+        </message>
+        <message>
+            <source>id is required.</source>
+            <translation>id es obligatorio.</translation>
+        </message>
+        <message>
+            <source>text must be a valid non-empty chat message.</source>
+            <translation>text debe ser un mensaje de chat válido y no vacío.</translation>
+        </message>
+        <message>
+            <source>The local channel is not ready.</source>
+            <translation>El canal local no está listo.</translation>
+        </message>
+        <message>
+            <source>The channel's radio is unavailable.</source>
+            <translation>La radio del canal no está disponible.</translation>
+        </message>
+        <message>
+            <source>Unknown command. Use help.</source>
+            <translation>Comando desconocido. Use help.</translation>
+        </message>
+        <message>
+            <source>search requires a query, non-negative offset and limit from 1 to 128.</source>
+            <translation>search requiere query, un offset no negativo y un limit de 1 a 128.</translation>
+        </message>
+        <message>
+            <source>add creates an id; update requires an existing id.</source>
+            <translation>add crea un id; update requiere un id existente.</translation>
+        </message>
+        <message>
+            <source>A station is already being checked.</source>
+            <translation>Ya se está comprobando una emisora.</translation>
+        </message>
+        <message>
+            <source>The channel was removed while checking the station.</source>
+            <translation>El canal se eliminó mientras se comprobaba la emisora.</translation>
+        </message>
+        <message>
+            <source>Unknown radio action.</source>
+            <translation>Acción de radio desconocida.</translation>
+        </message>
+        <message>
+            <source>Could not load language: %1</source>
+            <translation>No se pudo cargar el idioma: %1</translation>
+        </message>
+        <message>
+            <source>The %1 option is incompatible with --headless.</source>
+            <translation>La opción %1 no es compatible con --headless.</translation>
+        </message>
+        <message>
+            <source>Unexpected positional arguments. Use --help.</source>
+            <translation>Argumentos posicionales inesperados. Use --help.</translation>
+        </message>
+        <message>
+            <source>--config / -f requires a non-empty path.</source>
+            <translation>--config / -f requiere una ruta no vacía.</translation>
+        </message>
+        <message>
+            <source>Choose --password or --password-file, not both.</source>
+            <translation>Elija --password o --password-file, no ambos.</translation>
+        </message>
+        <message>
+            <source>Choose SQUADSPEAK_PASSWORD or SQUADSPEAK_PASSWORD_FILE, not both.</source>
+            <translation>Elija SQUADSPEAK_PASSWORD o SQUADSPEAK_PASSWORD_FILE, no ambos.</translation>
+        </message>
+        <message>
+            <source>Choose password or passwordFile in one configuration layer, not both.</source>
+            <translation>Elija password o passwordFile en una sola capa de configuración, no ambos.</translation>
+        </message>
+        <message>
+            <source>passwordFile must be a non-empty path.</source>
+            <translation>passwordFile debe ser una ruta no vacía.</translation>
+        </message>
+        <message>
+            <source>Password file could not be read or is too large.</source>
+            <translation>No se pudo leer el archivo de contraseña o es demasiado grande.</translation>
+        </message>
+        <message>
+            <source>Password file must contain at most 1024 UTF-8 bytes without control characters.</source>
+            <translation>El archivo de contraseña debe contener como máximo 1024 bytes UTF-8 sin caracteres de control.</translation>
+        </message>
+        <message>
+            <source>Password must be a string of at most 1024 UTF-8 bytes without control characters.</source>
+            <translation>La contraseña debe ser una cadena de como máximo 1024 bytes UTF-8 sin caracteres de control.</translation>
+        </message>
+        <message>
+            <source>settingsFile must be a non-empty path.</source>
+            <translation>settingsFile debe ser una ruta no vacía.</translation>
+        </message>
+        <message>
+            <source>identityFile must be a non-empty path.</source>
+            <translation>identityFile debe ser una ruta no vacía.</translation>
+        </message>
+        <message>
+            <source>The settings directory could not be created.</source>
+            <translation>No se pudo crear el directorio de configuración.</translation>
+        </message>
+        <message>
+            <source>This SquadSpeak profile is already running or cannot be locked.</source>
+            <translation>Este perfil de SquadSpeak ya está en ejecución o no se puede bloquear.</translation>
+        </message>
+        <message>
+            <source>Standard input could not be opened.</source>
+            <translation>No se pudo abrir la entrada estándar.</translation>
+        </message>
+        <message>
+            <source>Standard output could not be opened.</source>
+            <translation>No se pudo abrir la salida estándar.</translation>
+        </message>
+        <message>
+            <source>This identity file is already in use or cannot be locked.</source>
+            <translation>Este archivo de identidad ya está en uso o no se puede bloquear.</translation>
+        </message>
+        <message>
+            <source>Invalid host configuration: %1</source>
+            <translation>Configuración de host no válida: %1</translation>
+        </message>
+        <message>
+            <source>Radio channels could not be initialized.</source>
+            <translation>No se pudieron inicializar los canales de radio.</translation>
+        </message>
+        <message>
+            <source>Headless host could not start: %1</source>
+            <translation>No se pudo iniciar el host headless: %1</translation>
+        </message>
+        <message>
+            <source>Channel password could not be saved.</source>
+            <translation>No se pudo guardar la contraseña del canal.</translation>
+        </message>
+        <message>
+            <source>Invalid channel password: %1</source>
+            <translation>Contraseña de canal no válida: %1</translation>
+        </message>
+        <message>
+            <source>Headless host could not initialize: %1</source>
+            <translation>No se pudo inicializar el host sin interfaz: %1</translation>
+        </message>
+        <message>
+            <source>SquadSpeak headless could not start: %1</source>
+            <translation>SquadSpeak headless no se pudo iniciar: %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>La acción del colaborador debe ser estado, iniciar sesión, actualizar, cerrar sesión o cancelar. status sign-in refresh sign-out cancel</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>Una operación de apoyo está en curso.</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>El acceso de soporte no está disponible en esta compilación.</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>Prioridad de configuración: argumentos &gt; entorno &gt; propiedades &gt; valores guardados del servidor.</translation>
+        </message>
+    </context>
+    <context>
+        <name>License</name>
+        <message>
+            <source>License storage is busy or unavailable.</source>
+            <translation>El almacenamiento de licencias está ocupado o no está disponible.</translation>
+        </message>
+        <message>
+            <source>License storage is unavailable.</source>
+            <translation>El almacenamiento de licencias no está disponible.</translation>
+        </message>
+        <message>
+            <source>Sign-in expired. Try again.</source>
+            <translation>El inicio de sesión expiró. Intentar otra vez.</translation>
+        </message>
+        <message>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>El inicio de sesión en GitHub no está disponible. Intentar otra vez.</translation>
+        </message>
+        <message>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>El inicio de sesión en GitHub no se completó. Intentar otra vez.</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>No se pudo comprobar GitHub. El acceso sin conexión dura como máximo siete días.</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>Inicie sesión con GitHub nuevamente.</translation>
+        </message>
+    </context>
+    <context>
         <name>LocalChannel</name>
+        <message>
+            <source>Blocked</source>
+            <translation>Bloqueado</translation>
+        </message>
         <message>
             <source>Host is not responding. Reconnecting.</source>
             <translation>El host no responde. Reconectando.</translation>
@@ -2205,6 +2567,53 @@
             <source>Voice relay codec could not be configured.</source>
             <translation>No se pudo configurar el códec del relé de voz.</translation>
         </message>
+        <message>
+            <source>Unsupported audio codec</source>
+            <translation>Códec de audio no compatible</translation>
+        </message>
+        <message>
+            <source>Speaking is not allowed in this channel.</source>
+            <translation>No se permite hablar en este canal.</translation>
+        </message>
+    </context>
+    <context>
+        <name>LocalLanguage</name>
+        <message>
+            <source>Translation (experimental)</source>
+            <translation>Traducción (experimental)</translation>
+        </message>
+        <message>
+            <source>Translate messages</source>
+            <translation>Traducir mensajes</translation>
+        </message>
+        <message>
+            <source>Translated voice</source>
+            <translation>Voz traducida</translation>
+        </message>
+        <message>
+            <source>Original audio</source>
+            <translation>Audio original</translation>
+        </message>
+        <message>
+            <source>Original text</source>
+            <translation>Texto original</translation>
+        </message>
+        <message>
+            <source>Prepare languages</source>
+            <translation>Preparar idiomas</translation>
+        </message>
+        <message>
+            <source>Local language processing is unavailable.</source>
+            <translation>El procesamiento local de idiomas no está disponible.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be read.</source>
+            <translation>No se pudieron leer los ajustes de idioma.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be saved.</source>
+            <translation>No se pudieron guardar los ajustes de idioma.</translation>
+        </message>
     </context>
     <context>
         <name>PushToTalkKey</name>
@@ -2345,50 +2754,65 @@
         </message>
     </context>
     <context>
-        <name>RecordingPanel</name>
+        <name>ScreenPanel</name>
         <message>
-            <source>Stop</source>
-            <translation>Detener</translation>
+            <source>Media capacity reached</source>
+            <translation>Se alcanzó la capacidad multimedia</translation>
         </message>
         <message>
-            <source>Start</source>
-            <translation>Iniciar</translation>
+            <source>Video paused</source>
+            <translation>Vídeo pausado</translation>
         </message>
         <message>
-            <source>Saved on this device only. Nothing is uploaded.</source>
-            <translation>Guardado solo en este dispositivo. No se sube nada.</translation>
+            <source>Stream ended</source>
+            <translation>Transmisión finalizada</translation>
         </message>
         <message>
-            <source>Keep this take or record it again.</source>
-            <translation>Conserva esta toma o vuelve a grabarla.</translation>
+            <source>Connecting</source>
+            <translation>Conectando</translation>
         </message>
         <message>
-            <source>Record again</source>
-            <translation>Grabar de nuevo</translation>
+            <source>Open screen stream</source>
+            <translation>Abrir transmisión de pantalla</translation>
         </message>
         <message>
-            <source>Use recording</source>
-            <translation>Usar grabación</translation>
+            <source>Screen stream</source>
+            <translation>Transmisión de pantalla</translation>
         </message>
         <message>
-            <source>Recording progress</source>
-            <translation>Progreso de la grabación</translation>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
+        </message>
+    </context>
+    <context>
+        <name>ScreenShare</name>
+        <message>
+            <source>Allow screen recording in system settings.</source>
+            <translation>Permite la grabación de pantalla en los ajustes del sistema.</translation>
         </message>
         <message>
-            <source>Step %1 of %2</source>
-            <translation>Paso %1 de %2</translation>
+            <source>The shared screen was removed. Select a source to start again.</source>
+            <translation>La pantalla compartida se eliminó. Selecciona una fuente para volver a empezar.</translation>
         </message>
         <message>
-            <source>Open recordings</source>
-            <translation>Abrir grabaciones</translation>
+            <source>The shared window was closed. Select a source to start again.</source>
+            <translation>La ventana compartida se cerró. Selecciona una fuente para volver a empezar.</translation>
         </message>
         <message>
-            <source>Reset test</source>
-            <translation>Restablecer prueba</translation>
+            <source>The selected screen is no longer available.</source>
+            <translation>La pantalla seleccionada ya no está disponible.</translation>
         </message>
         <message>
-            <source>%1 s remaining / %2 dBFS</source>
-            <translation>Quedan %1 s / %2 dBFS</translation>
+            <source>The selected window is no longer available.</source>
+            <translation>La ventana seleccionada ya no está disponible.</translation>
+        </message>
+        <message>
+            <source>The selected source exceeds the capture size limit.</source>
+            <translation>La fuente seleccionada supera el límite de tamaño de captura.</translation>
+        </message>
+        <message>
+            <source>Close a video view before opening another stream.</source>
+            <translation>Cierra una vista de vídeo antes de abrir otra transmisión.</translation>
         </message>
     </context>
     <context>
@@ -2465,10 +2889,6 @@
             <translation>Recopilando señal...</translation>
         </message>
         <message>
-            <source>Dashed curve: configured gain and frequency cuts, using the right dB scale. Noise reduction and voice activation are not part of this curve.</source>
-            <translation>Curva discontinua: ganancia y cortes de frecuencia configurados, usando la escala de dB de la derecha. La reducción de ruido y la activación por voz no forman parte de esta curva.</translation>
-        </message>
-        <message>
             <source>Microphone preview is not running</source>
             <translation>La vista previa del micrófono no está activa</translation>
         </message>
@@ -2479,303 +2899,6 @@
         <message>
             <source>Peak: %1</source>
             <translation>Pico: %1</translation>
-        </message>
-    </context>
-    <context>
-        <name>Tray</name>
-        <message>
-            <source>Quit</source>
-            <translation>Salir</translation>
-        </message>
-        <message>
-            <source>SquadSpeak - speaking</source>
-            <translation>SquadSpeak - hablando</translation>
-        </message>
-        <message>
-            <source>Settings</source>
-            <translation>Ajustes</translation>
-        </message>
-        <message>
-            <source>Channels</source>
-            <translation>Canales</translation>
-        </message>
-        <message>
-            <source>New image</source>
-            <translation>Imagen nueva</translation>
-        </message>
-    </context>
-    <context>
-        <name>VoiceAvatar</name>
-        <message>
-            <source>Muted</source>
-            <translation>Silenciado</translation>
-        </message>
-        <message>
-            <source>Sleeping</source>
-            <translation>En reposo</translation>
-        </message>
-        <message>
-            <source>Offline</source>
-            <translation>Sin conexión</translation>
-        </message>
-        <message>
-            <source>Speaking</source>
-            <translation>Hablando</translation>
-        </message>
-        <message>
-            <source>Unavailable</source>
-            <translation>No disponible</translation>
-        </message>
-        <message>
-            <source>Listening</source>
-            <translation>Escuchando</translation>
-        </message>
-        <message>
-            <source>Deafened</source>
-            <translation>Sin sonido</translation>
-        </message>
-    </context>
-    <context>
-        <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>No disponible - ajustes de audio o prueba de tono</translation>
-        </message>
-        <message>
-            <source>Microphone muted</source>
-            <translation>Micrófono silenciado</translation>
-        </message>
-        <message>
-            <source>Push-to-talk held</source>
-            <translation>Pulsar para hablar mantenido</translation>
-        </message>
-        <message>
-            <source>Ready - push-to-talk released</source>
-            <translation>Listo - pulsar para hablar liberado</translation>
-        </message>
-        <message>
-            <source>Microphone unmuted</source>
-            <translation>Micrófono activado</translation>
-        </message>
-        <message>
-            <source>Settings could not be saved: %1</source>
-            <translation>No se pudieron guardar los ajustes: %1</translation>
-        </message>
-        <message>
-            <source>The push-to-talk sequence cannot be incremented further.</source>
-            <translation>La secuencia de pulsar para hablar ya no se puede incrementar.</translation>
-        </message>
-        <message>
-            <source>Choose System, Light or Dark.</source>
-            <translation>Elige Sistema, Claro u Oscuro.</translation>
-        </message>
-        <message>
-            <source>Choose a colour palette from the list.</source>
-            <translation>Elige una paleta de colores de la lista.</translation>
-        </message>
-        <message>
-            <source>Choose an available avatar.</source>
-            <translation>Elige un avatar disponible.</translation>
-        </message>
-        <message>
-            <source>Invalid push-to-talk binding.</source>
-            <translation>Vinculación de pulsar para hablar no válida.</translation>
-        </message>
-        <message>
-            <source>Release the held push-to-talk key first.</source>
-            <translation>Suelta primero la tecla de pulsar para hablar mantenida.</translation>
-        </message>
-        <message>
-            <source>Choose a language from the list.</source>
-            <translation>Elige un idioma de la lista.</translation>
-        </message>
-        <message>
-            <source>This avatar requires Supporter.</source>
-            <translation>Este avatar requiere Supporter.</translation>
-        </message>
-        <message>
-            <source>The name must contain 1 to 64 characters.</source>
-            <translation>El nombre debe tener entre 1 y 64 caracteres.</translation>
-        </message>
-        <message>
-            <source>The name may not contain control characters or line breaks.</source>
-            <translation>El nombre no puede contener caracteres de control ni saltos de línea.</translation>
-        </message>
-        <message>
-            <source>Session settings could not be read.</source>
-            <translation>No se pudieron leer los ajustes de sesión.</translation>
-        </message>
-        <message>
-            <source>Saved setting is invalid: %1</source>
-            <translation>Ajuste guardado no válido: %1</translation>
-        </message>
-    </context>
-    <context>
-        <name>License</name>
-        <message>
-            <source>License storage is busy or unavailable.</source>
-            <translation>El almacenamiento de licencias está ocupado o no está disponible.</translation>
-        </message>
-        <message>
-            <source>License storage is unavailable.</source>
-            <translation>El almacenamiento de licencias no está disponible.</translation>
-        </message>
-        <message>
-            <source>Sign-in expired. Try again.</source>
-            <translation>El inicio de sesión expiró. Intentar otra vez.</translation>
-        </message>
-        <message>
-            <source>GitHub sign-in is unavailable. Try again.</source>
-            <translation>El inicio de sesión en GitHub no está disponible. Intentar otra vez.</translation>
-        </message>
-        <message>
-            <source>GitHub sign-in was not completed. Try again.</source>
-            <translation>El inicio de sesión en GitHub no se completó. Intentar otra vez.</translation>
-        </message>
-        <message>
-            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
-            <translation>No se pudo comprobar GitHub. El acceso sin conexión dura como máximo siete días.</translation>
-        </message>
-        <message>
-            <source>Sign in with GitHub again.</source>
-            <translation>Inicie sesión con GitHub nuevamente.</translation>
-        </message>
-    </context>
-    <context>
-        <name>ScreenShare</name>
-        <message>
-            <source>The shared screen was removed. Select a source to start again.</source>
-            <translation>La pantalla compartida se eliminó. Selecciona una fuente para volver a empezar.</translation>
-        </message>
-        <message>
-            <source>The shared window was closed. Select a source to start again.</source>
-            <translation>La ventana compartida se cerró. Selecciona una fuente para volver a empezar.</translation>
-        </message>
-        <message>
-            <source>The selected screen is no longer available.</source>
-            <translation>La pantalla seleccionada ya no está disponible.</translation>
-        </message>
-        <message>
-            <source>The selected window is no longer available.</source>
-            <translation>La ventana seleccionada ya no está disponible.</translation>
-        </message>
-        <message>
-            <source>The selected source exceeds the capture size limit.</source>
-            <translation>La fuente seleccionada supera el límite de tamaño de captura.</translation>
-        </message>
-        <message>
-            <source>Close a video view before opening another stream.</source>
-            <translation>Cierra una vista de vídeo antes de abrir otra transmisión.</translation>
-        </message>
-    </context>
-    <context>
-        <name>ScreenPanel</name>
-        <message>
-            <source>Media capacity reached</source>
-            <translation>Se alcanzó la capacidad multimedia</translation>
-        </message>
-        <message>
-            <source>Video paused</source>
-            <translation>Vídeo pausado</translation>
-        </message>
-        <message>
-            <source>Stream ended</source>
-            <translation>Transmisión finalizada</translation>
-        </message>
-        <message>
-            <source>Connecting</source>
-            <translation>Conectando</translation>
-        </message>
-        <message>
-            <source>Open screen stream</source>
-            <translation>Abrir transmisión de pantalla</translation>
-        </message>
-        <message>
-            <source>Screen stream</source>
-            <translation>Transmisión de pantalla</translation>
-        </message>
-        <message>
-            <source>%1 kbit/s</source>
-            <translation>%1 kbit/s</translation>
-        </message>
-    </context>
-    <context>
-        <name>VideoCodec</name>
-        <message>
-            <source>Video codec: %1</source>
-            <translation>Códec de vídeo: %1</translation>
-        </message>
-        <message>
-            <source>Video codec ABI does not match its headers.</source>
-            <translation>La ABI del códec de vídeo no coincide con sus archivos de cabecera.</translation>
-        </message>
-        <message>
-            <source>Video buffers could not be allocated.</source>
-            <translation>No se pudieron asignar los búferes de vídeo.</translation>
-        </message>
-        <message>
-            <source>Invalid video quality tier.</source>
-            <translation>Nivel de calidad de vídeo no válido.</translation>
-        </message>
-        <message>
-            <source>The screen source exceeds the supported capture size.</source>
-            <translation>La fuente de pantalla supera el tamaño de captura admitido.</translation>
-        </message>
-        <message>
-            <source>The screen source is too narrow.</source>
-            <translation>La fuente de pantalla es demasiado estrecha.</translation>
-        </message>
-        <message>
-            <source>The video encoder could not be allocated.</source>
-            <translation>No se pudo asignar el codificador de vídeo.</translation>
-        </message>
-        <message>
-            <source>No supported video encoder is available.</source>
-            <translation>No hay ningún codificador de vídeo compatible disponible.</translation>
-        </message>
-        <message>
-            <source>Video encoder configuration is too large.</source>
-            <translation>La configuración del codificador de vídeo es demasiado grande.</translation>
-        </message>
-        <message>
-            <source>Video scaling could not be initialized.</source>
-            <translation>No se pudo inicializar el escalado de vídeo.</translation>
-        </message>
-        <message>
-            <source>The encoder returned an empty video packet.</source>
-            <translation>El codificador devolvió un paquete de vídeo vacío.</translation>
-        </message>
-        <message>
-            <source>Invalid video frame format.</source>
-            <translation>Formato de fotograma de vídeo no válido.</translation>
-        </message>
-        <message>
-            <source>Invalid video decoder configuration.</source>
-            <translation>Configuración del decodificador de vídeo no válida.</translation>
-        </message>
-        <message>
-            <source>This video codec cannot be decoded.</source>
-            <translation>No se puede decodificar este códec de vídeo.</translation>
-        </message>
-        <message>
-            <source>Video decoder could not be allocated.</source>
-            <translation>No se pudo asignar el decodificador de vídeo.</translation>
-        </message>
-        <message>
-            <source>Video decoder configuration could not be allocated.</source>
-            <translation>No se pudo asignar la configuración del decodificador de vídeo.</translation>
-        </message>
-        <message>
-            <source>Decoded dimensions do not match the screen stream.</source>
-            <translation>Las dimensiones decodificadas no coinciden con la transmisión de pantalla.</translation>
-        </message>
-        <message>
-            <source>Decoded image could not be allocated.</source>
-            <translation>No se pudo asignar la imagen decodificada.</translation>
-        </message>
-        <message>
-            <source>Video color conversion could not be initialized.</source>
-            <translation>No se pudo inicializar la conversión de color del vídeo.</translation>
         </message>
     </context>
     <context>
@@ -2894,404 +3017,211 @@
         </message>
     </context>
     <context>
-        <name>Headless</name>
+        <name>Tray</name>
         <message>
-            <source>Command failed.</source>
-            <translation>Comando fallido.</translation>
+            <source>Quit</source>
+            <translation>Salir</translation>
         </message>
         <message>
-            <source>%1 must be an integer.</source>
-            <translation>%1 debe ser un entero.</translation>
+            <source>SquadSpeak - speaking</source>
+            <translation>SquadSpeak - hablando</translation>
         </message>
         <message>
-            <source>Requests must be on/off or true/false.</source>
-            <translation>Las solicitudes deben ser on/off o true/false.</translation>
+            <source>Settings</source>
+            <translation>Ajustes</translation>
         </message>
         <message>
-            <source>Unknown host property: %1</source>
-            <translation>Propiedad de host desconocida: %1</translation>
+            <source>Channels</source>
+            <translation>Canales</translation>
         </message>
         <message>
-            <source>Run without GUI, microphone capture, or local audio output.</source>
-            <translation>Ejecutar sin GUI, captura de micrófono ni salida de audio local.</translation>
-        </message>
-        <message>
-            <source>Server storage prefix. Personal/audio/GUI profiles are not loaded.</source>
-            <translation>Prefijo de almacenamiento del servidor. No se cargan perfiles personales, de audio ni de GUI.</translation>
-        </message>
-        <message>
-            <source>Optional private identity file instead of the OS credential store (Linux/macOS). Parent directory must exist and belong to this account.</source>
-            <translation>Archivo de identidad privado opcional en lugar del almacén de credenciales del sistema (Linux/macOS). El directorio superior debe existir y pertenecer a esta cuenta.</translation>
-        </message>
-        <message>
-            <source>UTF-8 key=value properties or JSON host preset. Default: application.properties, then config/application.properties beside the app.</source>
-            <translation>Propiedades UTF-8 key=value o ajustes predefinidos del host en JSON. Predeterminado: application.properties y después config/application.properties junto a la aplicación.</translation>
-        </message>
-        <message>
-            <source>Channel display name.</source>
-            <translation>Nombre mostrado del canal.</translation>
-        </message>
-        <message>
-            <source>System and radio bot display name.</source>
-            <translation>Nombre mostrado del bot del sistema y de radio.</translation>
-        </message>
-        <message>
-            <source>TCP service port (1-65535).</source>
-            <translation>Puerto del servicio TCP (1-65535).</translation>
-        </message>
-        <message>
-            <source>Headless admission is always on; only 'on' or 'true' is accepted.</source>
-            <translation>La admisión headless siempre está activa; solo se acepta 'on' o 'true'.</translation>
-        </message>
-        <message>
-            <source>Preapprove a device ID; repeat for several devices. Existing bans remain.</source>
-            <translation>Autorizar previamente un ID de dispositivo; repetir para varios dispositivos. Las prohibiciones existentes permanecen.</translation>
-        </message>
-        <message>
-            <source>Block a device ID; repeat for several devices.</source>
-            <translation>Bloquear un ID de dispositivo; repetir para varios dispositivos.</translation>
-        </message>
-        <message>
-            <source>Read a UTF-8 channel password from a file before listening. An empty file removes it.</source>
-            <translation>Leer la contraseña UTF-8 del canal desde un archivo antes de empezar a escuchar. Un archivo vacío la elimina.</translation>
-        </message>
-        <message>
-            <source>Channel password. Empty removes it; environment or config avoids process-list exposure.</source>
-            <translation>Contraseña del canal. Un valor vacío la elimina; el entorno o la configuración evitan exponerla en la lista de procesos.</translation>
-        </message>
-        <message>
-            <source>SquadSpeak headless local channel host</source>
-            <translation>Host de canal local headless de SquadSpeak</translation>
-        </message>
-        <message>
-            <source>Environment variables (SQUADSPEAK_ prefix):</source>
-            <translation>Variables de entorno (prefijo SQUADSPEAK_):</translation>
-        </message>
-        <message>
-            <source>Host configuration could not be read or exceeds 1 MiB.</source>
-            <translation>No se pudo leer la configuración del host o supera 1 MiB.</translation>
-        </message>
-        <message>
-            <source>Host configuration must be UTF-8.</source>
-            <translation>La configuración del host debe estar en UTF-8.</translation>
-        </message>
-        <message>
-            <source>Host preset must be a JSON object.</source>
-            <translation>El ajuste predefinido del host debe ser un objeto JSON.</translation>
-        </message>
-        <message>
-            <source>Property line %1 must use key=value.</source>
-            <translation>La línea de propiedad %1 debe usar key=value.</translation>
-        </message>
-        <message>
-            <source>Property line %1: %2</source>
-            <translation>Línea de propiedad %1: %2</translation>
-        </message>
-        <message>
-            <source>Standard input has no file descriptor.</source>
-            <translation>La entrada estándar no tiene descriptor de archivo.</translation>
-        </message>
-        <message>
-            <source>Standard input could not be inspected.</source>
-            <translation>No se pudo inspeccionar la entrada estándar.</translation>
-        </message>
-        <message>
-            <source>Could not write the command response: %1</source>
-            <translation>No se pudo escribir la respuesta del comando: %1</translation>
-        </message>
-        <message>
-            <source>Standard input could not be read: %1</source>
-            <translation>No se pudo leer la entrada estándar: %1</translation>
-        </message>
-        <message>
-            <source>Input line exceeds 65536 bytes.</source>
-            <translation>La línea de entrada supera 65536 bytes.</translation>
-        </message>
-        <message>
-            <source>Each input line must be a JSON object.</source>
-            <translation>Cada línea de entrada debe ser un objeto JSON.</translation>
-        </message>
-        <message>
-            <source>Input ended before a complete JSON line.</source>
-            <translation>La entrada terminó antes de una línea JSON completa.</translation>
-        </message>
-        <message>
-            <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
-            <translation>ID opcional de un canal propio para los comandos status, configure, password, admission, history, chat y radio; por defecto se usa el canal principal.</translation>
-        </message>
-        <message>
-            <source>Channel action must be list, add or remove.</source>
-            <translation>La acción de canal debe ser list, add o remove.</translation>
-        </message>
-        <message>
-            <source>Removing an own channel deletes its history, images, permissions and radio settings. Set confirmed=true to proceed.</source>
-            <translation>Eliminar un canal propio borra su historial, imágenes, permisos y ajustes de radio. Establezca confirmed=true para continuar.</translation>
-        </message>
-        <message>
-            <source>id must identify an additional own channel.</source>
-            <translation>id debe identificar un canal propio adicional.</translation>
-        </message>
-        <message>
-            <source>The additional own channel could not be removed: %1</source>
-            <translation>No se pudo eliminar el canal propio adicional: %1</translation>
-        </message>
-        <message>
-            <source>channelId must identify an own channel.</source>
-            <translation>channelId debe identificar un canal propio.</translation>
-        </message>
-        <message>
-            <source>values must be a host settings object.</source>
-            <translation>values debe ser un objeto de ajustes del host.</translation>
-        </message>
-        <message>
-            <source>Headless admission is always enabled for non-banned devices; requests off is not supported.</source>
-            <translation>La admisión headless siempre está activa para dispositivos no bloqueados; requests off no es compatible.</translation>
-        </message>
-        <message>
-            <source>value must be a password of at most 1024 UTF-8 bytes without control characters; an empty string removes it.</source>
-            <translation>value debe ser una contraseña de como máximo 1024 bytes UTF-8 sin caracteres de control; una cadena vacía la elimina.</translation>
-        </message>
-        <message>
-            <source>The channel is not ready or a password change is in progress.</source>
-            <translation>El canal no está listo o hay un cambio de contraseña en curso.</translation>
-        </message>
-        <message>
-            <source>The channel was removed while saving the password.</source>
-            <translation>El canal se eliminó mientras se guardaba la contraseña.</translation>
-        </message>
-        <message>
-            <source>id is required.</source>
-            <translation>id es obligatorio.</translation>
-        </message>
-        <message>
-            <source>text must be a valid non-empty chat message.</source>
-            <translation>text debe ser un mensaje de chat válido y no vacío.</translation>
-        </message>
-        <message>
-            <source>The local channel is not ready.</source>
-            <translation>El canal local no está listo.</translation>
-        </message>
-        <message>
-            <source>The channel's radio is unavailable.</source>
-            <translation>La radio del canal no está disponible.</translation>
-        </message>
-        <message>
-            <source>Unknown command. Use help.</source>
-            <translation>Comando desconocido. Use help.</translation>
-        </message>
-        <message>
-            <source>search requires a query, non-negative offset and limit from 1 to 128.</source>
-            <translation>search requiere query, un offset no negativo y un limit de 1 a 128.</translation>
-        </message>
-        <message>
-            <source>add creates an id; update requires an existing id.</source>
-            <translation>add crea un id; update requiere un id existente.</translation>
-        </message>
-        <message>
-            <source>A station is already being checked.</source>
-            <translation>Ya se está comprobando una emisora.</translation>
-        </message>
-        <message>
-            <source>The channel was removed while checking the station.</source>
-            <translation>El canal se eliminó mientras se comprobaba la emisora.</translation>
-        </message>
-        <message>
-            <source>Unknown radio action.</source>
-            <translation>Acción de radio desconocida.</translation>
-        </message>
-        <message>
-            <source>Could not load language: %1</source>
-            <translation>No se pudo cargar el idioma: %1</translation>
-        </message>
-        <message>
-            <source>The %1 option is incompatible with --headless.</source>
-            <translation>La opción %1 no es compatible con --headless.</translation>
-        </message>
-        <message>
-            <source>Unexpected positional arguments. Use --help.</source>
-            <translation>Argumentos posicionales inesperados. Use --help.</translation>
-        </message>
-        <message>
-            <source>--config / -f requires a non-empty path.</source>
-            <translation>--config / -f requiere una ruta no vacía.</translation>
-        </message>
-        <message>
-            <source>Choose --password or --password-file, not both.</source>
-            <translation>Elija --password o --password-file, no ambos.</translation>
-        </message>
-        <message>
-            <source>Choose SQUADSPEAK_PASSWORD or SQUADSPEAK_PASSWORD_FILE, not both.</source>
-            <translation>Elija SQUADSPEAK_PASSWORD o SQUADSPEAK_PASSWORD_FILE, no ambos.</translation>
-        </message>
-        <message>
-            <source>Choose password or passwordFile in one configuration layer, not both.</source>
-            <translation>Elija password o passwordFile en una sola capa de configuración, no ambos.</translation>
-        </message>
-        <message>
-            <source>passwordFile must be a non-empty path.</source>
-            <translation>passwordFile debe ser una ruta no vacía.</translation>
-        </message>
-        <message>
-            <source>Password file could not be read or is too large.</source>
-            <translation>No se pudo leer el archivo de contraseña o es demasiado grande.</translation>
-        </message>
-        <message>
-            <source>Password file must contain at most 1024 UTF-8 bytes without control characters.</source>
-            <translation>El archivo de contraseña debe contener como máximo 1024 bytes UTF-8 sin caracteres de control.</translation>
-        </message>
-        <message>
-            <source>Password must be a string of at most 1024 UTF-8 bytes without control characters.</source>
-            <translation>La contraseña debe ser una cadena de como máximo 1024 bytes UTF-8 sin caracteres de control.</translation>
-        </message>
-        <message>
-            <source>settingsFile must be a non-empty path.</source>
-            <translation>settingsFile debe ser una ruta no vacía.</translation>
-        </message>
-        <message>
-            <source>identityFile must be a non-empty path.</source>
-            <translation>identityFile debe ser una ruta no vacía.</translation>
-        </message>
-        <message>
-            <source>The settings directory could not be created.</source>
-            <translation>No se pudo crear el directorio de configuración.</translation>
-        </message>
-        <message>
-            <source>This SquadSpeak profile is already running or cannot be locked.</source>
-            <translation>Este perfil de SquadSpeak ya está en ejecución o no se puede bloquear.</translation>
-        </message>
-        <message>
-            <source>Standard input could not be opened.</source>
-            <translation>No se pudo abrir la entrada estándar.</translation>
-        </message>
-        <message>
-            <source>Standard output could not be opened.</source>
-            <translation>No se pudo abrir la salida estándar.</translation>
-        </message>
-        <message>
-            <source>This identity file is already in use or cannot be locked.</source>
-            <translation>Este archivo de identidad ya está en uso o no se puede bloquear.</translation>
-        </message>
-        <message>
-            <source>Invalid host configuration: %1</source>
-            <translation>Configuración de host no válida: %1</translation>
-        </message>
-        <message>
-            <source>Radio channels could not be initialized.</source>
-            <translation>No se pudieron inicializar los canales de radio.</translation>
-        </message>
-        <message>
-            <source>Headless host could not start: %1</source>
-            <translation>No se pudo iniciar el host headless: %1</translation>
-        </message>
-        <message>
-            <source>Channel password could not be saved.</source>
-            <translation>No se pudo guardar la contraseña del canal.</translation>
-        </message>
-        <message>
-            <source>Invalid channel password: %1</source>
-            <translation>Contraseña de canal no válida: %1</translation>
-        </message>
-        <message>
-            <source>Headless host could not initialize: %1</source>
-            <translation>No se pudo inicializar el host sin interfaz: %1</translation>
-        </message>
-        <message>
-            <source>SquadSpeak headless could not start: %1</source>
-            <translation>SquadSpeak headless no se pudo iniciar: %1</translation>
-        </message>
-        <message>
-            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
-            <translation>La acción del colaborador debe ser estado, iniciar sesión, actualizar, cerrar sesión o cancelar. status sign-in refresh sign-out cancel</translation>
-        </message>
-        <message>
-            <source>A Supporter operation is in progress.</source>
-            <translation>Una operación de apoyo está en curso.</translation>
-        </message>
-        <message>
-            <source>Supporter access is unavailable in this build.</source>
-            <translation>El acceso de soporte no está disponible en esta compilación.</translation>
-        </message>
-        <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>Prioridad de configuración: argumentos &gt; entorno &gt; propiedades &gt; valores guardados del servidor.</translation>
+            <source>New image</source>
+            <translation>Imagen nueva</translation>
         </message>
     </context>
     <context>
-        <name>Desktop</name>
+        <name>VideoCodec</name>
         <message>
-            <source>Open settings at startup.</source>
-            <translation>Abrir los ajustes al iniciar.</translation>
+            <source>Video codec: %1</source>
+            <translation>Códec de vídeo: %1</translation>
         </message>
         <message>
-            <source>Open guided local test recording without starting network services.</source>
-            <translation>Abrir la grabación de prueba local guiada sin iniciar servicios de red.</translation>
+            <source>Video codec ABI does not match its headers.</source>
+            <translation>La ABI del códec de vídeo no coincide con sus archivos de cabecera.</translation>
         </message>
         <message>
-            <source>Alternative file for audio profiles.</source>
-            <translation>Archivo alternativo de perfiles de audio.</translation>
+            <source>Video buffers could not be allocated.</source>
+            <translation>No se pudieron asignar los búferes de vídeo.</translation>
         </message>
         <message>
-            <source>Load the interface without microphone capture and exit after one second.</source>
-            <translation>Cargar la interfaz sin capturar el micrófono y salir tras un segundo.</translation>
+            <source>Invalid video quality tier.</source>
+            <translation>Nivel de calidad de vídeo no válido.</translation>
         </message>
         <message>
-            <source>Save an image of the app window during the UI test.</source>
-            <translation>Guardar una imagen de la ventana durante la prueba de interfaz.</translation>
+            <source>The screen source exceeds the supported capture size.</source>
+            <translation>La fuente de pantalla supera el tamaño de captura admitido.</translation>
         </message>
         <message>
-            <source>The window image could not be saved.</source>
-            <translation>No se pudo guardar la imagen de la ventana.</translation>
+            <source>The screen source is too narrow.</source>
+            <translation>La fuente de pantalla es demasiado estrecha.</translation>
         </message>
         <message>
-            <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
-            <translation>La bandeja del sistema no está disponible; la aplicación permanece abierta en una ventana.</translation>
+            <source>The video encoder could not be allocated.</source>
+            <translation>No se pudo asignar el codificador de vídeo.</translation>
+        </message>
+        <message>
+            <source>No supported video encoder is available.</source>
+            <translation>No hay ningún codificador de vídeo compatible disponible.</translation>
+        </message>
+        <message>
+            <source>Video encoder configuration is too large.</source>
+            <translation>La configuración del codificador de vídeo es demasiado grande.</translation>
+        </message>
+        <message>
+            <source>Video scaling could not be initialized.</source>
+            <translation>No se pudo inicializar el escalado de vídeo.</translation>
+        </message>
+        <message>
+            <source>The encoder returned an empty video packet.</source>
+            <translation>El codificador devolvió un paquete de vídeo vacío.</translation>
+        </message>
+        <message>
+            <source>Invalid video frame format.</source>
+            <translation>Formato de fotograma de vídeo no válido.</translation>
+        </message>
+        <message>
+            <source>Invalid video decoder configuration.</source>
+            <translation>Configuración del decodificador de vídeo no válida.</translation>
+        </message>
+        <message>
+            <source>This video codec cannot be decoded.</source>
+            <translation>No se puede decodificar este códec de vídeo.</translation>
+        </message>
+        <message>
+            <source>Video decoder could not be allocated.</source>
+            <translation>No se pudo asignar el decodificador de vídeo.</translation>
+        </message>
+        <message>
+            <source>Video decoder configuration could not be allocated.</source>
+            <translation>No se pudo asignar la configuración del decodificador de vídeo.</translation>
+        </message>
+        <message>
+            <source>Decoded dimensions do not match the screen stream.</source>
+            <translation>Las dimensiones decodificadas no coinciden con la transmisión de pantalla.</translation>
+        </message>
+        <message>
+            <source>Decoded image could not be allocated.</source>
+            <translation>No se pudo asignar la imagen decodificada.</translation>
+        </message>
+        <message>
+            <source>Video color conversion could not be initialized.</source>
+            <translation>No se pudo inicializar la conversión de color del vídeo.</translation>
         </message>
     </context>
     <context>
-        <name>LocalLanguage</name>
+        <name>VoiceAvatar</name>
         <message>
-            <source>Translation (experimental)</source>
-            <translation>Traducción (experimental)</translation>
+            <source>Muted</source>
+            <translation>Silenciado</translation>
         </message>
         <message>
-            <source>Spoken language</source>
-            <translation>Idioma hablado</translation>
+            <source>Sleeping</source>
+            <translation>En reposo</translation>
         </message>
         <message>
-            <source>Translate to</source>
-            <translation>Traducir a</translation>
+            <source>Offline</source>
+            <translation>Sin conexión</translation>
         </message>
         <message>
-            <source>Translate messages</source>
-            <translation>Traducir mensajes</translation>
+            <source>Speaking</source>
+            <translation>Hablando</translation>
         </message>
         <message>
-            <source>Translated voice</source>
-            <translation>Voz traducida</translation>
+            <source>Unavailable</source>
+            <translation>No disponible</translation>
         </message>
         <message>
-            <source>Original audio</source>
-            <translation>Audio original</translation>
+            <source>Listening</source>
+            <translation>Escuchando</translation>
         </message>
         <message>
-            <source>Original text</source>
-            <translation>Texto original</translation>
+            <source>Deafened</source>
+            <translation>Sin sonido</translation>
+        </message>
+    </context>
+    <context>
+        <name>VoiceSession</name>
+        <message>
+            <source>Unavailable - audio settings or tone test</source>
+            <translation>No disponible - ajustes de audio o prueba de tono</translation>
         </message>
         <message>
-            <source>Prepare languages</source>
-            <translation>Preparar idiomas</translation>
+            <source>Microphone muted</source>
+            <translation>Micrófono silenciado</translation>
         </message>
         <message>
-            <source>Local language processing is unavailable.</source>
-            <translation>El procesamiento local de idiomas no está disponible.</translation>
+            <source>Push-to-talk held</source>
+            <translation>Pulsar para hablar mantenido</translation>
         </message>
         <message>
-            <source>Language settings could not be read.</source>
-            <translation>No se pudieron leer los ajustes de idioma.</translation>
+            <source>Ready - push-to-talk released</source>
+            <translation>Listo - pulsar para hablar liberado</translation>
         </message>
         <message>
-            <source>Language settings could not be saved.</source>
-            <translation>No se pudieron guardar los ajustes de idioma.</translation>
+            <source>Microphone unmuted</source>
+            <translation>Micrófono activado</translation>
+        </message>
+        <message>
+            <source>Settings could not be saved: %1</source>
+            <translation>No se pudieron guardar los ajustes: %1</translation>
+        </message>
+        <message>
+            <source>The push-to-talk sequence cannot be incremented further.</source>
+            <translation>La secuencia de pulsar para hablar ya no se puede incrementar.</translation>
+        </message>
+        <message>
+            <source>Choose System, Light or Dark.</source>
+            <translation>Elige Sistema, Claro u Oscuro.</translation>
+        </message>
+        <message>
+            <source>Choose a colour palette from the list.</source>
+            <translation>Elige una paleta de colores de la lista.</translation>
+        </message>
+        <message>
+            <source>Choose an available avatar.</source>
+            <translation>Elige un avatar disponible.</translation>
+        </message>
+        <message>
+            <source>Invalid push-to-talk binding.</source>
+            <translation>Vinculación de pulsar para hablar no válida.</translation>
+        </message>
+        <message>
+            <source>Release the held push-to-talk key first.</source>
+            <translation>Suelta primero la tecla de pulsar para hablar mantenida.</translation>
+        </message>
+        <message>
+            <source>Choose a language from the list.</source>
+            <translation>Elige un idioma de la lista.</translation>
+        </message>
+        <message>
+            <source>This avatar requires Supporter.</source>
+            <translation>Este avatar requiere Supporter.</translation>
+        </message>
+        <message>
+            <source>The name must contain 1 to 64 characters.</source>
+            <translation>El nombre debe tener entre 1 y 64 caracteres.</translation>
+        </message>
+        <message>
+            <source>The name may not contain control characters or line breaks.</source>
+            <translation>El nombre no puede contener caracteres de control ni saltos de línea.</translation>
+        </message>
+        <message>
+            <source>Session settings could not be read.</source>
+            <translation>No se pudieron leer los ajustes de sesión.</translation>
+        </message>
+        <message>
+            <source>Saved setting is invalid: %1</source>
+            <translation>Ajuste guardado no válido: %1</translation>
         </message>
     </context>
 </TS>

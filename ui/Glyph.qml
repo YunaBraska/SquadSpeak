@@ -28,7 +28,9 @@ Canvas {
             for (let i = 2; i < points.length; i += 2) c.lineTo(points[i], points[i + 1])
             c.stroke()
         }
-        if (symbol === "translate") {
+        if (symbol === "copy") {
+            c.strokeRect(8, 8, 13, 13); line([4, 16, 3, 16, 3, 3, 16, 3, 16, 4])
+        } else if (symbol === "translate") {
             line([3, 6, 14, 6]); line([8, 3, 8, 6]); line([5, 8, 12, 15]); line([12, 6, 10, 11, 3, 16])
             line([13, 21, 18, 10, 23, 21]); line([15, 17, 21, 17])
         } else if (symbol === "mic" || symbol === "mute") {
@@ -54,9 +56,6 @@ Canvas {
             line([7, 4, 20, 12, 7, 20, 7, 4])
         } else if (symbol === "stop") {
             c.fillRect(6, 6, 12, 12)
-        } else if (symbol === "record") {
-            c.beginPath(); c.arc(12, 12, 9, 0, Math.PI * 2); c.stroke()
-            c.beginPath(); c.arc(12, 12, 4, 0, Math.PI * 2); c.fill()
         } else if (symbol === "settings") {
             c.beginPath(); c.arc(12, 12, 6, 0, Math.PI * 2); c.stroke()
             c.beginPath(); c.arc(12, 12, 2, 0, Math.PI * 2); c.stroke()
