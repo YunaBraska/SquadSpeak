@@ -1592,7 +1592,9 @@ TestCase {
                 const anchorId = list.model[anchorIndex].id
                 const positionBefore = list.itemAtIndex(anchorIndex).y - list.contentY
                 verify(fixtures.advertiseNearbyChannels(49))
-                tryVerify(function() { return list.count > 48 })
+                tryVerify(function() {
+                    return list.model.some(function(host) { return host.id === "7030".padStart(64, "0") && host.port === 40048 })
+                }, 3000, "Wait for the new endpoint, not announcements from unrelated local apps")
                 waitForRendering(list)
                 const nextIndex = list.model.findIndex(function(host) { return host.id === anchorId })
                 verify(nextIndex >= 0)
@@ -1611,7 +1613,11 @@ TestCase {
             const lastItem = list.itemAtIndex(list.count - 1)
             verify(lastItem !== null)
             const positionY = lastItem.y - list.contentY
-            verify(positionY >= -1 && positionY + lastItem.height <= list.height + 1)
+            verify(positionY >= -1 && positionY + lastItem.height <= list.height + 1,
+                JSON.stringify({view: size, positionY: positionY, rowHeight: lastItem.height,
+                    listHeight: list.height, contentY: list.contentY, contentHeight: list.contentHeight,
+                    atEnd: list.atYEnd, lastId: lastId, currentLast: list.model[list.count - 1].id,
+                    searching: channel.discoverySearching, error: channel.discoveryError}))
             const address = findChild(view, "directAddress")
             const point = address.mapToItem(dialog.contentItem, 0, 0)
             verify(point.y >= 0 && point.y + address.height <= dialog.contentItem.height)
