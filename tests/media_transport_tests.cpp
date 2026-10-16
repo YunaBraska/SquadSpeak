@@ -9,6 +9,7 @@
 #include <QSemaphore>
 #include <QThread>
 #include <QScopeGuard>
+#include <QtEndian>
 #include <rtc/global.hpp>
 #include <plog/Converters/UTF8Converter.h>
 #include <plog/Logger.h>
@@ -39,7 +40,7 @@ class DatagramLink final : public QObject {
 public:
     bool blocked = false, corrupt = false;
     int audioPackets = 0, dropEvery = 0;
-    QByteArray lastAudio;
+    QByteArray lastAudio, lastBinding;
     explicit DatagramLink(quint16 target) : target_(target) {
         if (!socket_.bind(QHostAddress::LocalHost)) throw std::runtime_error("UDP fixture cannot bind");
         connect(&socket_, &QUdpSocket::readyRead, this, [this] {
@@ -49,6 +50,8 @@ public:
                 if (!downstream) client_ = quint16(datagram.senderPort());
                 if (blocked) continue;
                 auto bytes = datagram.data();
+                if (!downstream && bytes.size() >= 20 && bytes.first(2) == QByteArray::fromHex("0001"))
+                    lastBinding = bytes;
                 const bool audio = bytes.size() > 12 && (quint8(bytes[0]) >> 6) == 2 && (quint8(bytes[1]) & 127) == 111;
                 if (audio && downstream) {
                     ++audioPackets; lastAudio = bytes;
@@ -62,6 +65,7 @@ public:
     quint16 port() const { return socket_.localPort(); }
     bool receivedClientData() const { return client_ != 0; }
     void setTarget(quint16 target) { target_ = target; }
+    qint64 sendToHost(const QByteArray& bytes) { return socket_.writeDatagram(bytes, QHostAddress::LocalHost, target_); }
     void replay() { socket_.writeDatagram(lastAudio, QHostAddress::LocalHost, client_); }
 };
 const QString first(64, 'a'), second(64, 'b');
@@ -78,7 +82,7 @@ QByteArray speech() {
     return count > 0 ? packet.first(count) : QByteArray{};
 }
 
-// Observe and stall the real SRTP boundary without replacing the transport.
+// Observe and stall native transport boundaries without replacing the transport.
 class SendGate final {
     struct State {
         std::mutex mutex;
@@ -86,6 +90,7 @@ class SendGate final {
         bool entered = false, released = false, onOwner = false;
         std::vector<int> packetSizes;
         size_t received = 0;
+        std::string boundary = "Protected SRTP packet, size=";
         const std::thread::id owner = std::this_thread::get_id();
     };
     struct Observer final : plog::IAppender {
@@ -98,9 +103,10 @@ class SendGate final {
                 std::lock_guard lock(s->mutex);
                 ++s->received; s->changed.notify_all(); return;
             }
-            if (message.find("Protected SRTP packet, size=") == std::string::npos) return;
+            if (message.find(s->boundary) == std::string::npos) return;
             std::unique_lock lock(s->mutex);
-            s->packetSizes.push_back(std::stoi(message.substr(message.find("size=") + 5)));
+            const auto size = message.find("size=");
+            s->packetSizes.push_back(size == std::string::npos ? 0 : std::stoi(message.substr(size + 5)));
             s->changed.notify_all();
             if (s->entered) return;
             s->entered = true;
@@ -121,7 +127,8 @@ class SendGate final {
     const std::shared_ptr<State> state_ = std::make_shared<State>();
 public:
     static void initialize() { rtc::InitLogger(rtc::LogLevel::Info); observer(); }
-    SendGate() {
+    explicit SendGate(std::string boundary = "Protected SRTP packet, size=") {
+        state_->boundary = std::move(boundary);
         std::atomic_store(&observer().state, state_);
         rtc::InitLogger(rtc::LogLevel::Verbose);
     }
@@ -197,6 +204,69 @@ private slots:
         QTRY_COMPARE(atClient.size(), 1);
         QCOMPARE(atClient.first().first().toByteArray(), QByteArray("recovered", 9));
         QVERIFY(valid);
+    }
+
+    void reconnectReusesPortsBeforeOldNativeConnectionIsDestroyed() {
+        using Transport = squad::MediaTransport;
+        const auto port = availableUdpPort(); QVERIFY(port);
+        quint16 clientPort;
+        do { clientPort = availableUdpPort(); QVERIFY(clientPort); } while (clientPort == port);
+        auto host = std::make_unique<Transport>(true, port, QHostAddress::LocalHost, 0, Transport::Medium::Data);
+        auto client = std::make_unique<Transport>(false, clientPort, QHostAddress::LocalHost, port, Transport::Medium::Data);
+        const auto connectPeers = [&] {
+            connect(host.get(), &Transport::signaling, client.get(), [peer = client.get()](const auto& message) { QVERIFY(peer->receive(message)); });
+            connect(client.get(), &Transport::signaling, host.get(), [peer = host.get()](const auto& message) { QVERIFY(peer->receive(message)); });
+        };
+        connectPeers();
+        QTRY_VERIFY_WITH_TIMEOUT(host->udpActive() && client->udpActive(), 10000);
+        SendGate teardown("Destroying ICE transport");
+        host.reset();
+        QVERIFY(teardown.waitForPackets(1));
+        QVERIFY(!teardown.onOwner());
+        client.reset();
+        host = std::make_unique<Transport>(true, port, QHostAddress::LocalHost, 0, Transport::Medium::Data);
+        client = std::make_unique<Transport>(false, clientPort, QHostAddress::LocalHost, port, Transport::Medium::Data);
+        connectPeers();
+        QTRY_VERIFY_WITH_TIMEOUT(host->udpActive() && client->udpActive(), 3000);
+        QSignalSpy received(client.get(), &Transport::datagramReceived);
+        QVERIFY(host->sendDatagram("reconnected"));
+        QTRY_COMPARE(received.size(), 1);
+        QCOMPARE(received.first().first().toByteArray(), QByteArray("reconnected"));
+    }
+
+    void forgedBindingCannotRedirectExistingEndpoint() {
+        using Transport = squad::MediaTransport;
+        const auto port = availableUdpPort(); QVERIFY(port);
+        DatagramLink firstLink(port), secondLink(port);
+        Transport firstHost(true, port, QHostAddress::LocalHost, 0, Transport::Medium::Data);
+        Transport firstClient(false, 0, QHostAddress::LocalHost, firstLink.port(), Transport::Medium::Data);
+        Transport secondHost(true, port, QHostAddress::LocalHost, 0, Transport::Medium::Data);
+        Transport secondClient(false, 0, QHostAddress::LocalHost, secondLink.port(), Transport::Medium::Data);
+        for (auto pair : {std::pair{&firstHost, &firstClient}, std::pair{&secondHost, &secondClient}}) {
+            connect(pair.first, &Transport::signaling, pair.second, [peer = pair.second](const auto& message) { QVERIFY(peer->receive(message)); });
+            connect(pair.second, &Transport::signaling, pair.first, [peer = pair.first](const auto& message) { QVERIFY(peer->receive(message)); });
+        }
+        QTRY_VERIFY_WITH_TIMEOUT(firstHost.udpActive() && firstClient.udpActive()
+            && secondHost.udpActive() && secondClient.udpActive(), 10000);
+        auto forged = secondLink.lastBinding;
+        QVERIFY(forged.size() > 52);
+        QCOMPARE(forged.sliced(forged.size() - 8, 4), QByteArray::fromHex("80280004"));
+        forged.chop(8); // Fingerprints are optional. Leave invalid message integrity.
+        QCOMPARE(forged.sliced(forged.size() - 24, 4), QByteArray::fromHex("00080014"));
+        forged[forged.size() - 1] = char(quint8(forged.back()) ^ 1);
+        qToBigEndian<quint16>(quint16(forged.size() - 20), forged.data() + 2);
+        SendGate rejected("STUN integrity check failed"); rejected.release();
+        QCOMPARE(firstLink.sendToHost(forged), forged.size());
+        QTRY_VERIFY_WITH_TIMEOUT(rejected.entered(), 1000);
+        QSignalSpy firstReceived(&firstHost, &Transport::datagramReceived);
+        QSignalSpy secondReceived(&secondHost, &Transport::datagramReceived);
+        QVERIFY(firstClient.sendDatagram("original peer"));
+        QTRY_COMPARE_WITH_TIMEOUT(firstReceived.size(), 1, 1000);
+        QCOMPARE(firstReceived.first().first().toByteArray(), QByteArray("original peer"));
+        QCOMPARE(secondReceived.size(), 0);
+        QVERIFY(secondClient.sendDatagram("other peer"));
+        QTRY_COMPARE_WITH_TIMEOUT(secondReceived.size(), 1, 1000);
+        QCOMPARE(secondReceived.first().first().toByteArray(), QByteArray("other peer"));
     }
 
     void dataDatagramsReleaseQueuedMessagesWhenPeerCloses_data() {
@@ -454,7 +524,13 @@ private slots:
         }
         QCOMPARE(streams.size(), 1); QCOMPARE(fallback, 0);
     }
+    void delayedOwnerUsesNetworkArrivalTime_data() {
+        QTest::addColumn<bool>("deadlinePassed");
+        QTest::newRow("due-frames") << true;
+        QTest::newRow("contiguous-burst") << false;
+    }
     void delayedOwnerUsesNetworkArrivalTime() {
+        QFETCH(bool, deadlinePassed);
         const auto port = availableUdpPort(); QVERIFY(port);
         squad::MediaTransport host(true, port, QHostAddress::LocalHost, 0);
         QThread thread;
@@ -495,7 +571,7 @@ private slots:
             QVERIFY(gate.waitForReceived(i + 1));
         }
         // Let the received packets' actual reorder interval expire.
-        QTest::qWait(25);
+        if (deadlinePassed) QTest::qWait(25);
         resume.release(); blocked = false;
         QVERIFY(waitForEvents([&] { return heard == 9; }));
         QCOMPARE(missing, 0);

@@ -527,9 +527,9 @@ void MediaTransport::accept(quint32 ssrc, quint16 sequence, const QByteArray& op
     auto& s = *state_;
     auto it = s.incoming.find(ssrc);
     if (it == s.incoming.end() || it->source.isEmpty()) return;
-    // Network callbacks can run before an already due playout timer. Deliver
-    // ready audio before bounding the reorder window, rather than losing it.
-    if (it->pending.size() == 6 && it->pending.begin()->second.due <= s.clock.elapsed()) {
+    // A full window may already contain contiguous speech. Drain it before
+    // bounding a new burst. Only a missing sequence needs the reorder delay.
+    if (it->pending.size() == 6) {
         const auto source = it->source;
         tick();
         if (!s.owner) return;
@@ -598,7 +598,8 @@ void MediaTransport::tick() {
     bool pending = false;
     for (auto it = s.incoming.begin(); it != s.incoming.end(); ++it) {
         auto& stream = *it;
-        while (!stream.pending.empty() && stream.pending.begin()->second.due <= now) {
+        while (!stream.pending.empty() && (stream.pending.begin()->first == stream.delivered + 1
+                || stream.pending.begin()->second.due <= now)) {
             auto node = stream.pending.extract(stream.pending.begin());
             const auto missing = stream.delivered < 0 ? 0 : int(std::min<qint64>(6, node.key() - stream.delivered - 1));
             stream.delivered = node.key();

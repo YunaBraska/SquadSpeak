@@ -552,8 +552,9 @@ continue using the original TLS frames. Chat and administration remain on TLS.
 Each receiver has independent loss/RTT feedback and Opus quality. Source bindings
 are acknowledged before sending datagrams; at most 65 reusable SSRC slots prevent
 membership churn from accumulating SRTP stream state. Sequence fences reject old
-speakers' packets after reuse. A bounded 20 ms reorder window drops stale packets;
-the existing Opus decoder conceals at most six missing frames. TLS fallback uses
+speakers' packets after reuse. Contiguous frames are ready immediately. A bounded
+20 ms reorder window waits for missing sequences and drops stale packets.
+The existing Opus decoder conceals at most six missing frames. TLS fallback uses
 the same sequence space. Unknown valid media kinds/fields preserve baseline audio.
 The library callback mailbox and shared audio sender are bounded. Two sender
 workers share the existing queue and serialize writes per connection. UDP audio

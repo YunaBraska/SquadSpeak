@@ -101,6 +101,62 @@ function(squad_add_media)
             message(FATAL_ERROR "Unexpected pinned DTLS receive registration")
         endif()
     endif()
+    # A reconnect can reuse an endpoint before the previous ICE agent is
+    # destroyed. STUN credentials select the new agent, not the address cache.
+    set(path "${CMAKE_BINARY_DIR}/_deps/media-src/deps/libjuice/src/conn_mux.c")
+    file(READ "${path}" original)
+    set(code "${original}")
+    set(before [=[	if (agent) {
+		JLOG_DEBUG("Found agent from address");
+		return agent;
+	}
+
+	if (!is_stun_datagram(buf, len)) {
+		JLOG_INFO("Got non-STUN message from unknown source address");
+		return NULL;
+	}
+]=])
+    set(after [=[	if (!is_stun_datagram(buf, len)) {
+		if (agent)
+			JLOG_DEBUG("Found agent from address");
+		else
+			JLOG_INFO("Got non-STUN message from unknown source address");
+		return agent;
+	}
+]=])
+    string(FIND "${code}" "${before}" position)
+    if(position GREATER -1)
+        string(REPLACE "${before}" "${after}" code "${code}")
+    else()
+        string(FIND "${code}" "${after}" position)
+        if(position EQUAL -1)
+            message(FATAL_ERROR "Unexpected pinned ICE address lookup")
+        endif()
+    endif()
+    set(before [=[					JLOG_DEBUG("Found agent from ICE ufrag");
+					insert_map_entry(registry_impl, src, agent);
+]=])
+    set(after [=[					JLOG_DEBUG("Found agent from ICE ufrag");
+					if (agent_verify_stun_binding(agent, buf, len, &msg) != 0)
+						return NULL;
+					insert_map_entry(registry_impl, src, agent);
+]=])
+    string(FIND "${code}" "${after}" position)
+    if(position EQUAL -1)
+        string(FIND "${code}" "${before}" position)
+        if(position EQUAL -1)
+            message(FATAL_ERROR "Unexpected pinned ICE binding lookup")
+        endif()
+        string(REPLACE "${before}" "${after}" code "${code}")
+    endif()
+    # Indications have no transaction to look up and retain their existing route.
+    string(REPLACE [=[			JLOG_INFO("Got unexpected STUN message from unknown source address");
+			return NULL;]=] [=[			if (!agent)
+				JLOG_INFO("Got unexpected STUN message from unknown source address");
+			return agent;]=] code "${code}")
+    if(NOT code STREQUAL original)
+        file(WRITE "${path}" "${code}")
+    endif()
     # SCTP copies a send outside the association lock. If the peer aborts
     # meanwhile, the new message is not queued and must be freed by the sender.
     set(path "${CMAKE_BINARY_DIR}/_deps/media-src/deps/usrsctp/usrsctplib/netinet/sctp_output.c")
