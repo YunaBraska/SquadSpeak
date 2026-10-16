@@ -994,7 +994,7 @@ TestCase {
         languageDisplay.preparation = {source: "fr", target: "de"}
         verify(!dialog.visible)
         compare(languageDisplay.downloads, 0)
-        view.show(); view.requestActivate()
+        view.show(); view.raise(); view.requestActivate()
         tryCompare(view, "active", true)
         tryCompare(dialog, "opened", true)
         verify(waitForRendering(dialog.contentItem))
@@ -1017,7 +1017,7 @@ TestCase {
     function test_channelLanguageOptionsAreExplicitAndLocal(data) {
         view.width = data.width; view.height = data.height
         if (nativeTranslationExpected) tryCompare(audio.language, "available", true, 15000)
-        view.requestActivate(); tryCompare(view, "active", true)
+        view.raise(); view.requestActivate(); tryCompare(view, "active", true)
         verify(fixtures.startHost())
         view.selectedHost = channel.ownId
         const menu = findChild(view, "channelMenu")

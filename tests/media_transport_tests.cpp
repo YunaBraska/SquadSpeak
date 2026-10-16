@@ -570,6 +570,35 @@ private slots:
         QVERIFY(!client.receive({{"kind", "source"}, {"ssrc", 43}, {"id", second}, {"sequence", 4}}));
         QVERIFY(!client.receive({{"kind", "sourceAck"}, {"ssrc", 42}, {"sequence", 1.5}}));
     }
+    void dueAudioSurvivesDelayedTimerDelivery_data() {
+        QTest::addColumn<int>("duringDelivery");
+        QTest::newRow("continue") << 0;
+        QTest::newRow("remove-source") << 1;
+        QTest::newRow("destroy-receiver") << 2;
+    }
+    void dueAudioSurvivesDelayedTimerDelivery() {
+        QFETCH(int, duringDelivery);
+        auto client = std::make_unique<squad::MediaTransport>(false, 0, QHostAddress::LocalHost, 0);
+        const auto packet = speech(); QVERIFY(!packet.isEmpty());
+        QVERIFY(client->receive({{"kind", "source"}, {"ssrc", 42}, {"id", first}, {"sequence", 1}}));
+        int heard = 0, missing = 0;
+        connect(client.get(), &squad::MediaTransport::audio, this, [&](const auto& source, const auto& bytes, int gaps) {
+            QCOMPARE(source, first); QCOMPARE(bytes, packet);
+            ++heard; missing += gaps;
+            if (duringDelivery == 1) client->retainSources({});
+            if (duringDelivery == 2) client.reset();
+        });
+        // Reliable frames are due immediately. Deliver another network batch
+        // before Qt dispatches the pending playout timer, without sleeping.
+        QJsonObject frame{{"kind", "frame"}, {"ssrc", 42}, {"data", QString::fromLatin1(packet.toBase64())}};
+        for (int sequence = 1; sequence <= 7; ++sequence) {
+            frame.insert("sequence", sequence);
+            QVERIFY(client->receive(frame));
+        }
+        QCOMPARE(heard, duringDelivery ? 1 : 6);
+        if (!duringDelivery) QTRY_COMPARE(heard, 7);
+        QCOMPARE(missing, 0);
+    }
     void continuousIncomingAudioDoesNotPostponePlayout() {
         squad::MediaTransport client(false, 0, QHostAddress::LocalHost, 0);
         const auto packet = speech(); QVERIFY(!packet.isEmpty());

@@ -36,4 +36,5 @@ public:
 private:
     explicit TlsIdentity(QSslConfiguration configuration);
     QSslConfiguration configuration_;
+    QString id_;
 };

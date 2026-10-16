@@ -5706,6 +5706,12 @@ private slots:
         const auto second = TlsIdentity::create();
         QCOMPARE(first.id().size(), 64);
         QVERIFY(first.id() != second.id());
+        QCOMPARE(first.id(), TlsIdentity::peerId(first.configuration().localCertificate()));
+        auto copied = first;
+        QCOMPARE(copied.id(), first.id());
+        copied = second;
+        QCOMPARE(copied.id(), second.id());
+        QCOMPARE(first.id(), TlsIdentity::peerId(first.configuration().localCertificate()));
         QCOMPARE(TlsIdentity::fromPem(first.pem()).id(), first.id());
         QVERIFY_THROWS_EXCEPTION(std::runtime_error, (void)TlsIdentity::fromPem("invalid"));
         QVERIFY_THROWS_EXCEPTION(std::runtime_error, (void)TlsIdentity::fromPem(first.configuration().localCertificate().toPem()
@@ -6080,19 +6086,6 @@ private slots:
         });
         qInfo() << "Starting audio soak; simultaneous speakers" << speakers
                 << "requested seconds" << soakSeconds << "setup ms" << connectedMs;
-#ifdef Q_OS_MACOS
-        QProcess profile;
-        const auto profileDirectory = QDir(QCoreApplication::applicationDirPath()).filePath("smoke");
-        QVERIFY(QDir().mkpath(profileDirectory));
-        profile.start("/usr/bin/sample", {QString::number(host.processId()), "5", "10", "-file",
-            QDir(profileDirectory).filePath(QString("audio-host-%1.txt").arg(callbackDelayMs))});
-        const auto stopProfile = qScopeGuard([&] {
-            if (profile.state() != QProcess::NotRunning && !profile.waitForFinished(1000)) {
-                profile.kill(); profile.waitForFinished(1000);
-            }
-            qInfo().noquote() << profile.readAllStandardOutput() << profile.readAllStandardError();
-        });
-#endif
 #ifndef Q_OS_WIN
         // Microsoft clock() measures wall time, unlike the POSIX CPU clock.
         const auto cpuStarted = std::clock();

@@ -33,6 +33,7 @@ VoiceSession::VoiceSession(QString settingsFile, QObject* parent)
         throw std::runtime_error(tr("Session settings could not be read.").toUtf8().constData());
     QJsonParseError error;
     const auto document = QJsonDocument::fromJson(file.readAll(), &error);
+    file.close();
     const auto object = document.object();
     // A corrupt field must not hide a valid saved language. This catalog is
     // local to validation; constructing a session never changes the app locale.

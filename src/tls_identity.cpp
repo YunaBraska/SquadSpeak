@@ -113,14 +113,15 @@ Owned<CMS_ContentInfo, CMS_ContentInfo_free> decodeCms(const QByteArray& der) {
 
 }
 
-TlsIdentity::TlsIdentity(QSslConfiguration configuration) : configuration_(std::move(configuration)) {}
+TlsIdentity::TlsIdentity(QSslConfiguration configuration)
+    : configuration_(std::move(configuration)), id_(peerId(configuration_.localCertificate())) {}
 
 QString TlsIdentity::peerId(const QSslCertificate& certificate) {
     if (certificate.isNull() || certificate.publicKey().isNull()) return {};
     return QString::fromLatin1(QCryptographicHash::hash(certificate.publicKey().toDer(), QCryptographicHash::Sha256).toHex());
 }
 
-QString TlsIdentity::id() const { return peerId(configuration_.localCertificate()); }
+QString TlsIdentity::id() const { return id_; }
 
 QByteArray TlsIdentity::pem() const {
     return configuration_.localCertificate().toPem() + configuration_.privateKey().toPem();

@@ -524,6 +524,15 @@ void MediaTransport::accept(quint32 ssrc, quint16 sequence, const QByteArray& op
     auto& s = *state_;
     auto it = s.incoming.find(ssrc);
     if (it == s.incoming.end() || it->source.isEmpty()) return;
+    // Network callbacks can run before an already due playout timer. Deliver
+    // ready audio before bounding the reorder window, rather than losing it.
+    if (it->pending.size() == 6 && it->pending.begin()->second.due <= s.clock.elapsed()) {
+        const auto source = it->source;
+        tick();
+        if (!s.owner) return;
+        it = s.incoming.find(ssrc);
+        if (it == s.incoming.end() || it->source != source) return;
+    }
     auto& stream = *it;
     const qint64 serial = stream.highest < 0 ? sequence : stream.highest + qint16(sequence - quint16(stream.highest));
     if (serial <= stream.delivered || stream.pending.contains(serial) || (stream.highest >= 0 && serial < stream.highest - 6)) {
