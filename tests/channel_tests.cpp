@@ -3298,10 +3298,10 @@ private slots:
         QVERIFY(host.channel.requests().isEmpty());
         QFile afterStore(scannerStore);
         QCOMPARE(afterStore.exists(), existed);
-        if (existed) { QVERIFY(afterStore.open(QIODevice::ReadOnly)); QCOMPARE(afterStore.readAll(), before); }
+        if (existed) { QVERIFY(afterStore.open(QIODevice::ReadOnly)); QCOMPARE(afterStore.readAll(), before); afterStore.close(); }
         QFile afterHostStore(hostStore);
         QCOMPARE(afterHostStore.exists(), hostExisted);
-        if (hostExisted) { QVERIFY(afterHostStore.open(QIODevice::ReadOnly)); QCOMPARE(afterHostStore.readAll(), beforeHost); }
+        if (hostExisted) { QVERIFY(afterHostStore.open(QIODevice::ReadOnly)); QCOMPARE(afterHostStore.readAll(), beforeHost); afterHostStore.close(); }
         int foundCount = 0;
         for (const auto& value : scanner.channel.hosts())
             if (value.toMap().value("id").toString() == host.channel.ownId()) ++foundCount;
@@ -3402,12 +3402,18 @@ private slots:
         for (int cycle = 0; cycle < 3; ++cycle) {
             auto scanner = std::make_unique<Device>(dir.filePath(QString::number(cycle)), "Scanner");
             QVERIFY(scanner->channel.startService(QHostAddress::LocalHost, 0));
+            QTcpSocket* connection = nullptr;
+            bool connectedBeforeDestruction = false;
+            const auto accepted = connect(&stalled, &QTcpServer::newConnection, &stalled, [&] {
+                connection = stalled.nextPendingConnection();
+                connectedBeforeDestruction = connection && connection->state() == QAbstractSocket::ConnectedState;
+                scanner.reset();
+            });
             QVERIFY(scanner->channel.setDiscoverySearch(true));
-            QTRY_VERIFY(stalled.hasPendingConnections());
-            auto* connection = stalled.nextPendingConnection();
-            QVERIFY(connection);
-            QCOMPARE(connection->state(), QAbstractSocket::ConnectedState);
-            scanner.reset();
+            QTRY_VERIFY(connection);
+            disconnect(accepted);
+            QVERIFY(connectedBeforeDestruction);
+            QVERIFY(!scanner);
             QTRY_COMPARE(connection->state(), QAbstractSocket::UnconnectedState);
             connection->deleteLater();
         }
@@ -4168,26 +4174,31 @@ private slots:
     }
 
     void hostOwnerNamesUpdateAcrossChannelsAndSurviveRestart() {
-#ifdef SQUAD_STORE_DISTRIBUTION
-        return;
-#else
         QTemporaryDir dir;
         const auto identity = TlsIdentity::create();
         Device host(dir.filePath("host"), "Willow Otter");
         QVERIFY(host.channel.listen(QHostAddress::LocalHost));
-        QVERIFY(host.session.setSupporterEnabled(true));
-        const auto extra = host.channel.addOwnedChannel("Quiet room");
-        auto* child = host.channel.ownChannel(extra); QVERIFY(child);
+        const bool extraChannel = License::directDistribution();
+        QString extra;
+        LocalChannel* child = nullptr;
+        if (extraChannel) {
+            QVERIFY(host.session.setSupporterEnabled(true));
+            extra = host.channel.addOwnedChannel("Quiet room");
+            child = host.channel.ownChannel(extra); QVERIFY(child);
+        }
+        const auto expectedNames = [extraChannel](const QString& name) {
+            return extraChannel ? QStringList{name, name} : QStringList{name};
+        };
         const auto ownerNames = [](const LocalChannel& channel) {
             QStringList result;
             for (const auto& entry : channel.savedChannels()) result.append(entry.toMap().value("ownerName").toString());
             return result;
         };
-        QCOMPARE(ownerNames(host.channel), QStringList({"Willow Otter", "Willow Otter"}));
+        QCOMPARE(ownerNames(host.channel), expectedNames("Willow Otter"));
         auto client = std::make_unique<Device>(dir.filePath("client"), "Reader", identity);
         QVERIFY(client->channel.openAddress(QString("localhost:%1").arg(host.channel.port())));
         QTRY_VERIFY(!client->channel.directBusy());
-        QCOMPARE(client->channel.hosts().size(), 2);
+        QCOMPARE(client->channel.hosts().size(), extraChannel ? 2 : 1);
         for (const auto& entry : client->channel.hosts()) QVERIFY(!entry.toMap().contains("ownerName"));
         QVERIFY(client->channel.openSavedChat(host.channel.ownId()));
         QTRY_COMPARE(host.channel.requests().size(), 1);
@@ -4195,17 +4206,19 @@ private slots:
         QVERIFY(host.channel.decide(identity.id(), true));
         QTRY_VERIFY(client->channel.chatReady());
         QTRY_COMPARE(ownerNames(client->channel), QStringList({"Willow Otter"}));
-        QVERIFY(child->decide(identity.id(), true));
-        QVERIFY(client->channel.openSavedChat(extra));
-        QTRY_VERIFY(client->channel.chatReady());
-        QTRY_COMPARE(ownerNames(client->channel), QStringList({"Willow Otter", "Willow Otter"}));
-        QVERIFY(client->channel.closeChat(extra));
+        if (extraChannel) {
+            QVERIFY(child->decide(identity.id(), true));
+            QVERIFY(client->channel.openSavedChat(extra));
+            QTRY_VERIFY(client->channel.chatReady());
+            QTRY_COMPARE(ownerNames(client->channel), expectedNames("Willow Otter"));
+            QVERIFY(client->channel.closeChat(extra));
+        }
         QVERIFY(host.session.setUserName("Moonlit Fox"));
-        QTRY_COMPARE(ownerNames(client->channel), QStringList({"Moonlit Fox", "Moonlit Fox"}));
-        QCOMPARE(ownerNames(host.channel), QStringList({"Moonlit Fox", "Moonlit Fox"}));
+        QTRY_COMPARE(ownerNames(client->channel), expectedNames("Moonlit Fox"));
+        QCOMPARE(ownerNames(host.channel), expectedNames("Moonlit Fox"));
         client.reset();
         client = std::make_unique<Device>(dir.filePath("client"), "Reader", identity);
-        QCOMPARE(ownerNames(client->channel), QStringList({"Moonlit Fox", "Moonlit Fox"}));
+        QCOMPARE(ownerNames(client->channel), expectedNames("Moonlit Fox"));
         QVERIFY(!client->channel.chatReady());
         // A headless restart keeps the same identity but publishes no personal profile.
         QVERIFY(host.channel.initialize(true));
@@ -4213,16 +4226,19 @@ private slots:
         QTRY_VERIFY(client->channel.chatReady());
         const auto headlessName = host.channel.hostConfiguration().value("hostName").toString();
         QVERIFY(!headlessName.isEmpty());
-        QTRY_COMPARE(ownerNames(client->channel), QStringList({headlessName, headlessName}));
-        QVERIFY(client->channel.openSavedChat(extra));
-        QTRY_VERIFY(client->channel.chatReady());
+        QTRY_COMPARE(ownerNames(client->channel), expectedNames(headlessName));
+        if (extraChannel) {
+            QVERIFY(client->channel.openSavedChat(extra));
+            QTRY_VERIFY(client->channel.chatReady());
+        }
         QVERIFY(host.channel.configureHost({{"hostName", "Night Owl Station"}}));
-        QTRY_COMPARE(ownerNames(client->channel), QStringList({"Night Owl Station", "Night Owl Station"}));
+        QTRY_COMPARE(ownerNames(client->channel), expectedNames("Night Owl Station"));
         QVERIFY(host.session.setUserName("Unused personal name"));
-        QCOMPARE(ownerNames(host.channel), QStringList({"Night Owl Station", "Night Owl Station"}));
-        QVERIFY(!child->configureHost({{"hostName", "Different host"}}));
-        QCOMPARE(child->hostConfiguration().value("hostName").toString(), QString("Night Owl Station"));
-#endif
+        QCOMPARE(ownerNames(host.channel), expectedNames("Night Owl Station"));
+        if (extraChannel) {
+            QVERIFY(!child->configureHost({{"hostName", "Different host"}}));
+            QCOMPARE(child->hostConfiguration().value("hostName").toString(), QString("Night Owl Station"));
+        }
     }
 
     void savedChannelsSurviveRestartAndAutoJoinFallsBack() {
@@ -6064,6 +6080,19 @@ private slots:
         });
         qInfo() << "Starting audio soak; simultaneous speakers" << speakers
                 << "requested seconds" << soakSeconds << "setup ms" << connectedMs;
+#ifdef Q_OS_MACOS
+        QProcess profile;
+        const auto profileDirectory = QDir(QCoreApplication::applicationDirPath()).filePath("smoke");
+        QVERIFY(QDir().mkpath(profileDirectory));
+        profile.start("/usr/bin/sample", {QString::number(host.processId()), "5", "10", "-file",
+            QDir(profileDirectory).filePath(QString("audio-host-%1.txt").arg(callbackDelayMs))});
+        const auto stopProfile = qScopeGuard([&] {
+            if (profile.state() != QProcess::NotRunning && !profile.waitForFinished(1000)) {
+                profile.kill(); profile.waitForFinished(1000);
+            }
+            qInfo().noquote() << profile.readAllStandardOutput() << profile.readAllStandardError();
+        });
+#endif
 #ifndef Q_OS_WIN
         // Microsoft clock() measures wall time, unlike the POSIX CPU clock.
         const auto cpuStarted = std::clock();

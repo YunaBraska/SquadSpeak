@@ -806,7 +806,7 @@ if(BUILD_TESTING)
     add_test(NAME channel_controls COMMAND ${controls_test_command} -input "${CMAKE_CURRENT_SOURCE_DIR}/tests/tst_channel_controls.qml"
         -o "${CMAKE_BINARY_DIR}/smoke/channel-controls.xml,junitxml" -o -,txt)
     set_tests_properties(channel_controls PROPERTIES
-        TIMEOUT 600
+        TIMEOUT 600 PROCESSORS 2
         ENVIRONMENT "QT_QPA_PLATFORM=${ui_test_platform};QT_QUICK_BACKEND=software;QT_QUICK_CONTROLS_STYLE=Basic;SQUAD_TEST_ARTIFACTS=${CMAKE_BINARY_DIR}/smoke;QV4_JIT_CALL_THRESHOLD=1;QV4_GC_TIMELIMIT=1")
     foreach(scale 1.5 2)
         add_test(NAME avatar_scale_${scale} COMMAND controls_tests

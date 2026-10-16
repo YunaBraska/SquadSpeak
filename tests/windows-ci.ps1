@@ -144,7 +144,7 @@ if ($Phase -in @("all", "test")) {
 Start-Service Audiosrv
 Get-CimInstance Win32_SoundDevice | Select-Object Name, Status | Format-Table
 $testLog = "$BuildRoot/windows-tests.log"
-ctest --test-dir $appBuild --output-on-failure --no-tests=error --stop-on-failure --parallel 4 --output-junit "$BuildRoot/ctest.xml" 2>&1 | Tee-Object $testLog
+ctest --test-dir $appBuild --output-on-failure --no-tests=error --parallel 4 --output-junit "$BuildRoot/ctest.xml" 2>&1 | Tee-Object $testLog
 $testExit = $LASTEXITCODE
 $details = "$appBuild/Testing/Temporary/LastTest.log"
 if (Test-Path $details) { Copy-Item $details "$BuildRoot/test-details.log" }

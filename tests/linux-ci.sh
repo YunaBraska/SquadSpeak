@@ -225,7 +225,7 @@ if grep -q '^SKIP *:' "$reports"/capture-*.log; then exit 1; fi
 PIPEWIRE
 fi
 result=0
-ctest --parallel "${CTEST_PARALLEL_LEVEL:-4}" --test-dir /tmp/squadspeak-ci-build --output-on-failure --no-tests=error --stop-on-failure \
+ctest --parallel "${CTEST_PARALLEL_LEVEL:-4}" --test-dir /tmp/squadspeak-ci-build --output-on-failure --no-tests=error \
     --output-junit /output/ctest.xml --output-log /output/ctest.log || result=$?
 cp /tmp/squadspeak-ci-build/Testing/Temporary/LastTest.log /output/test-details.log
 if test -f /tmp/squadspeak-ci-build/audio-corpus/report.json; then

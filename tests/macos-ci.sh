@@ -106,7 +106,7 @@ if command -v ccache >/dev/null 2>&1; then ccache --show-stats; fi
 fi
 if test "$phase" = test || test "$phase" = all; then
 result=0
-QT_LOGGING_RULES='squadspeak.discovery.debug=true' ctest --parallel "${CTEST_PARALLEL_LEVEL:-4}" --test-dir "$build_root/app" --output-on-failure --no-tests=error --stop-on-failure \
+QT_LOGGING_RULES='squadspeak.discovery.debug=true' ctest --parallel "${CTEST_PARALLEL_LEVEL:-4}" --test-dir "$build_root/app" --output-on-failure --no-tests=error \
     --output-junit "$build_root/artifacts/ctest.xml" --output-log "$build_root/artifacts/ctest.log" || result=$?
 cp "$build_root/app/Testing/Temporary/LastTest.log" "$build_root/artifacts/test-details.log"
 if test -d "$build_root/app/smoke"; then cp -R "$build_root/app/smoke" "$build_root/artifacts/"; fi
