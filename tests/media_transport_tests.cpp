@@ -7,6 +7,8 @@
 #include <QTest>
 #include <QTimer>
 #include <rtc/global.hpp>
+#include <plog/Converters/UTF8Converter.h>
+#include <plog/Logger.h>
 #include <opus.h>
 #include <array>
 #include <cmath>
@@ -82,22 +84,46 @@ class SendGate final {
         std::vector<int> packetSizes;
         const std::thread::id owner = std::this_thread::get_id();
     };
-    const std::shared_ptr<State> state_ = std::make_shared<State>();
-public:
-    SendGate() {
-        rtc::InitLogger(rtc::LogLevel::Verbose, [s = state_](rtc::LogLevel, const std::string& message) {
+    struct Observer final : plog::IAppender {
+        std::shared_ptr<State> state;
+        void write(const plog::Record& record) override {
+            const auto s = std::atomic_load(&state);
+            if (!s) return;
+            const auto message = plog::UTF8Converter::convert(record.getMessage());
             if (message.find("Protected SRTP packet, size=") == std::string::npos) return;
             std::unique_lock lock(s->mutex);
             s->packetSizes.push_back(std::stoi(message.substr(message.find("size=") + 5)));
+            s->changed.notify_all();
             if (s->entered) return;
             s->entered = true;
             s->onOwner = std::this_thread::get_id() == s->owner;
             if (!s->onOwner) s->changed.wait(lock, [&] { return s->released; });
-        });
+        }
+    };
+    static Observer& observer() {
+        // plog retains appenders for the process lifetime. Install before any
+        // transports start. Its callback must not serialize unrelated senders.
+        static auto* value = [] {
+            auto* result = new Observer;
+            plog::get()->addAppender(result);
+            return result;
+        }();
+        return *value;
     }
-    ~SendGate() { release(); rtc::InitLogger(rtc::LogLevel::Info); }
+    const std::shared_ptr<State> state_ = std::make_shared<State>();
+public:
+    static void initialize() { rtc::InitLogger(rtc::LogLevel::Info); observer(); }
+    SendGate() {
+        std::atomic_store(&observer().state, state_);
+        rtc::InitLogger(rtc::LogLevel::Verbose);
+    }
+    ~SendGate() { release(); std::atomic_store(&observer().state, std::shared_ptr<State>{}); rtc::InitLogger(rtc::LogLevel::Info); }
     bool entered() const { std::lock_guard lock(state_->mutex); return state_->entered; }
     std::vector<int> packetSizes() const { std::lock_guard lock(state_->mutex); return state_->packetSizes; }
+    bool waitForPackets(size_t count) {
+        std::unique_lock lock(state_->mutex);
+        return state_->changed.wait_for(lock, std::chrono::seconds(1), [&] { return state_->packetSizes.size() >= count; });
+    }
     bool onOwner() const { std::lock_guard lock(state_->mutex); return state_->onOwner; }
     void release() {
         { std::lock_guard lock(state_->mutex); state_->released = true; }
@@ -109,7 +135,7 @@ class MediaTransportTests final : public QObject {
     Q_OBJECT
 private slots:
     void initTestCase() {
-        rtc::InitLogger(rtc::LogLevel::Info);
+        SendGate::initialize();
     }
     void dataDatagramsCarryBinaryPayloads_data() {
         QTest::addColumn<QHostAddress>("address");
@@ -463,15 +489,15 @@ private slots:
         QVERIFY(!gate.onOwner());
         for (int index = 0; index < 6; ++index) QVERIFY(host.send(first, packet));
         QVERIFY(client.send(second, marker));
+        const bool progressedWhileBlocked = gate.waitForPackets(2);
         gate.release();
+        QVERIFY2(progressedWhileBlocked, "A blocked connection prevented another connection from sending");
         QVERIFY(waitForEvents([&] { return !atHost.isEmpty(); }, 3000));
         QCOMPARE(atHost.first().at(1).toByteArray(), marker);
         const auto sizes = gate.packetSizes();
         const auto position = std::find(sizes.begin(), sizes.end(), sizes.front() + 100);
         QVERIFY(position != sizes.end());
-        // After the in-flight packet, each ready connection gets one turn.
-        // A full six-frame backlog must not delay the other connection.
-        QVERIFY2(position - sizes.begin() <= 2, "Microphone traffic waited behind another connection's complete backlog");
+        QCOMPARE(position - sizes.begin(), 1);
     }
     void queuedAudioCannotOutliveItsSourceOrDeadline_data() {
         QTest::addColumn<bool>("removeSource");

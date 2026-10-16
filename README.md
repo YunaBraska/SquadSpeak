@@ -108,11 +108,11 @@ Two copies on one computer can feed sound from one copy's speakers back into the
 
 Screen sharing starts with audio off. Its channel menu shows **App audio** or **Computer audio** before you enable sound. Computer audio may include other applications.
 
-Received voices are levelled locally. **Settings > Output** controls the app volume; the channel menu controls music volume. Microphone and speaker badges on portraits show when either direction is unavailable or muted.
+Received voices are levelled locally. **Settings > Output** has separate controls for voices, music and app sounds. The channel menu also lets you lower that channel's music. Microphone and speaker badges on portraits show when either direction is unavailable or muted.
 
 Choose your language in **Settings > Profile**. The interface offers 55 languages, including English, with one written standard per language. Language changes apply immediately.
 
-Push-to-talk and remote push-to-talk accept key combinations. Remote control must first be allowed by the target device. It controls that device's conversation; it does not send the controller's microphone audio.
+Push-to-talk accepts a key or key combination. Remote control must first be allowed by the target device. While controlling it, the same shortcut operates its microphone. Your own microphone is not sent.
 
 ## Chat and hosting
 
