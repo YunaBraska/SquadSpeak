@@ -5894,12 +5894,20 @@ private slots:
             if (error) std::rethrow_exception(error);
             return result;
         };
+        // Client objects normally run on GUI threads. Give the simulated
+        // clients the same interactive scheduling class, including passive
+        // receivers. The separate headless host keeps its normal scheduling.
+        auto* callerThread = QThread::currentThread();
+        const auto previousService = callerThread->serviceLevel();
+        callerThread->setServiceLevel(QThread::QualityOfService::High);
+        const auto restoreService = qScopeGuard([&] { callerThread->setServiceLevel(previousService); });
         // Remote apps do not share the host's sender, TLS runtime or CPU budget.
         // Run the host in a separate process and bound passive client loops.
         std::array<QThread, 2> threads;
         std::array<QObject, 2> contexts;
         for (size_t i = 0; i < threads.size(); ++i) {
             contexts[i].moveToThread(&threads[i]);
+            threads[i].setServiceLevel(QThread::QualityOfService::High);
             threads[i].start();
         }
         std::vector<std::unique_ptr<Device>> clients;

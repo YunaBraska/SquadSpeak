@@ -1,4 +1,4 @@
-name: "Measure native media scheduling"
+name: "Measure simulated client scheduling"
 on:
   push:
     branches: [feature/snapshot-release]
@@ -21,36 +21,14 @@ jobs:
       build_command: sh tests/macos-ci.sh auto build/macos-ci build
       test_command: |
         set -eu
-        media=build/macos-ci/app/_deps/media-src
-        cp "$media/deps/libjuice/src/thread.h" "$RUNNER_TEMP/juice-thread.h"
-        cp "$media/src/impl/utils.cpp" "$RUNNER_TEMP/rtc-utils.cpp"
-        trap 'cp "$RUNNER_TEMP/juice-thread.h" "$media/deps/libjuice/src/thread.h"; cp "$RUNNER_TEMP/rtc-utils.cpp" "$media/src/impl/utils.cpp"; git restore -- tests/channel_tests.cpp' EXIT
-        python3 - <<'PYCOMPARE'
-        from pathlib import Path
-        root = Path('build/macos-ci/app/_deps/media-src')
-        for path in (root / 'deps/libjuice/src/thread.h', root / 'src/impl/utils.cpp'):
-            source = path.read_text()
-            before = '#elif defined(__APPLE__)\n\tpthread_setname_np(name);'
-            assert source.count(before) == 1
-            path.write_text('#ifdef __APPLE__\n#include <pthread/qos.h>\n#endif\n' + source.replace(before,
-                before + '\n\tpthread_set_qos_class_self_np(QOS_CLASS_USER_INTERACTIVE, 0);'))
-        path = Path('tests/channel_tests.cpp')
-        source = path.read_text()
-        before = '        Device host(arguments[2], "Host");'
-        assert source.count(before) == 1
-        path.write_text(source.replace(before,
-            '        QThread::currentThread()->setServiceLevel(QThread::QualityOfService::High);\n' + before))
-        PYCOMPARE
-        cmake --build build/macos-ci/app --target channel_tests media_transport_tests --parallel 3
-        sudo -n build/macos-ci/app/media_transport_tests > build/macos-ci/artifacts/media.log 2>&1
         result=0
         for attempt in 1 2 3; do
           sudo -n build/macos-ci/app/channel_tests sixtyFourClientsHaveOneConsistentRosterAndAudioFanout \
-            > "build/macos-ci/artifacts/scheduling-$attempt.log" 2>&1 || result=$?
-          grep -E 'FAIL|PASS|Totals|64 clients|CPU ms' "build/macos-ci/artifacts/scheduling-$attempt.log"
+            > "build/macos-ci/artifacts/client-scheduling-$attempt.log" 2>&1 || result=$?
+          grep -E 'FAIL|PASS|Totals|64 clients|CPU ms' "build/macos-ci/artifacts/client-scheduling-$attempt.log"
         done
         exit "$result"
-      package_command: test -s build/macos-ci/artifacts/scheduling-3.log
+      package_command: test -s build/macos-ci/artifacts/client-scheduling-3.log
       cache_inputs: '["tests/macos-ci.sh", "cmake/Dependencies.cmake", "cmake/AudioProcessing.cmake", "cmake/Media.cmake", "cmake/Updates.cmake", "cmake/*.patch", "cmake/source_archives.json", "src/teamspeak_bridge/Cargo.lock", "rust-toolchain.toml", "cmake/TeamSpeak.cmake"]'
       cache_paths: |
         build/macos-ci/toolchain/Qt
