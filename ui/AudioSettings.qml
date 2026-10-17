@@ -174,7 +174,7 @@ Item {
                     }
                     GridLayout {
                         Layout.fillWidth: true
-                        columns: width >= 560 ? 2 : 1
+                        columns: width >= 800 ? 2 : 1
                         columnSpacing: 20; rowSpacing: 8
                         SettingSlider {
                             objectName: "microphoneGain"

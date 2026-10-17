@@ -2127,25 +2127,57 @@ TestCase {
     }
 
     function test_filterSwitchesPreserveTuningAndBypassIndependently_data() {
-        return [{tag: "narrow", width: 400}, {tag: "regular", width: 560}]
+        return [{tag: "narrow", width: 360, language: "en"},
+                {tag: "german", width: 400, language: "de"},
+                {tag: "regular", width: 560, language: "en"},
+                {tag: "wide", width: 900, language: "en"},
+                {tag: "arabic", width: 400, language: "ar"}]
     }
     function test_filterSwitchesPreserveTuningAndBypassIndependently(data) {
         view.width = data.width
+        verify(session.setLanguage(data.language))
         view.openSettings(1)
-        if (!audio.inputAvailable) return
         const controls = {echo: "echoCancellation", gain: "microphoneGain", noise: "noiseReduction", highPass: "microphoneLowCut", lowPass: "microphoneHighCut"}
         const original = audio.filtersEnabled
         const tuning = [audio.gainDb, audio.highPassHz, audio.lowPassHz, audio.noiseSuppression, audio.echoStrength,
                         audio.gainAutomatic, audio.highPassAutomatic, audio.echoAutomatic]
         try {
             for (const filter of Object.keys(controls)) {
-                verify(audio.setFilterEnabled(filter, true))
+                if (audio.inputAvailable) verify(audio.setFilterEnabled(filter, true))
                 const setting = findChild(view, controls[filter])
                 const toggle = findChild(setting, "filterEnabledControl")
-                verify(toggle && toggle.checked)
+                verify(toggle !== null)
                 reveal(toggle)
                 const label = findChild(setting, "filterCaption")
-                verify(toggle.x + toggle.width <= label.x, "Switch and label must not overlap")
+                const slider = findChild(setting, "valueControl")
+                const togglePosition = toggle.mapToItem(setting, 0, 0)
+                const sliderPosition = slider.mapToItem(setting, 0, 0)
+                verify(Math.abs(togglePosition.y + toggle.height / 2 - sliderPosition.y - slider.height / 2) < 1,
+                       "Switch and slider must share a compact row")
+                verify(slider.width >= 80, "The slider must remain usable in a narrow window")
+                const items = [label, toggle, slider]
+                for (let index = 0; index < items.length; ++index) {
+                    const item = items[index], position = item.mapToItem(setting, 0, 0)
+                    verify(position.x >= 0 && position.x + item.width <= setting.width + 1, "Control must fit the filter row")
+                    for (let other = index + 1; other < items.length; ++other) {
+                        const next = items[other], nextPosition = next.mapToItem(setting, 0, 0)
+                        verify(position.x + item.width <= nextPosition.x || nextPosition.x + next.width <= position.x,
+                               "Label, switch and slider must not overlap")
+                    }
+                }
+                verify(label.paintedWidth <= label.width + 1, "Translated labels must wrap without clipping")
+                verify(setting.height <= Math.max(44, label.implicitHeight), "Filters must not reserve a second slider row")
+                const automatic = findChild(setting, "automaticControl")
+                if (automatic.visible) {
+                    const indicator = automatic.indicator
+                    verify(Math.abs(indicator.x - (automatic.mirrored ? automatic.width - indicator.width : 0)) < 1,
+                           "The Auto checkbox must stay beside its label in both text directions")
+                }
+                if (!audio.inputAvailable) {
+                    verify(!toggle.enabled && !slider.enabled)
+                    continue
+                }
+                verify(toggle.checked)
                 mouseClick(toggle)
                 compare(audio.filtersEnabled[filter], false)
                 compare(findChild(setting, "valueControl").enabled, false)
@@ -2164,7 +2196,8 @@ TestCase {
                 verify(fixtures.saveWindow(view, imageDirectory + "/input-filter-switches-" + data.tag + ".png"))
             }
         } finally {
-            for (const filter of Object.keys(controls)) audio.setFilterEnabled(filter, original[filter])
+            if (audio.inputAvailable)
+                for (const filter of Object.keys(controls)) audio.setFilterEnabled(filter, original[filter])
         }
     }
 
@@ -2345,7 +2378,7 @@ TestCase {
             view.width = 360; view.height = 560
             reveal(control)
             waitForRendering(control)
-            verify(slider.width > 200 && slider.width < view.width)
+            verify(slider.width >= 80 && slider.width < view.width)
             if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/echo-settings.png"))
         } finally {
             audio.setEchoStrength(original)

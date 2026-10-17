@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Controls.Basic
 import QtQuick.Layouts
 
-ColumnLayout {
+GridLayout {
     id: setting
     property string caption
     property string valueText
@@ -23,55 +23,81 @@ ColumnLayout {
     property bool ready: false
     property bool restoring: false
     Component.onCompleted: ready = true
-    spacing: 0
-    RowLayout {
+    columns: toggleAvailable ? 4 : 3
+    columnSpacing: 6
+    rowSpacing: 0
+    Label {
+        objectName: "filterCaption"
+        text: caption; textFormat: Text.PlainText
+        Layout.row: 0; Layout.column: 0
+        Layout.rowSpan: setting.toggleAvailable ? 2 : 1
         Layout.fillWidth: true
-        SettingToggle {
-            objectName: "filterEnabledControl"
-            visible: setting.toggleAvailable
-            checked: setting.filterEnabled
-            Accessible.name: setting.caption
-            onToggled: {
-                setting.applyEnabled(checked)
-                checked = Qt.binding(function() { return setting.filterEnabled })
-            }
+        Layout.preferredWidth: setting.toggleAvailable ? 160 : -1
+        Layout.maximumWidth: setting.toggleAvailable ? 160 : Infinity
+        wrapMode: Text.Wrap
+    }
+    SettingToggle {
+        objectName: "filterEnabledControl"
+        Layout.row: 0; Layout.column: 1; Layout.rowSpan: 2
+        visible: setting.toggleAvailable
+        checked: setting.filterEnabled
+        Accessible.name: setting.caption
+        onToggled: {
+            setting.applyEnabled(checked)
+            checked = Qt.binding(function() { return setting.filterEnabled })
         }
-        Label { objectName: "filterCaption"; text: caption; textFormat: Text.PlainText; Layout.fillWidth: true; wrapMode: Text.WordWrap }
-        CheckBox {
-            id: automaticCheck
-            objectName: "automaticControl"
-            visible: setting.autoAvailable
-            enabled: setting.filterEnabled
-            text: qsTr("Auto")
-            padding: 0; spacing: 4; font.pixelSize: 12
-            checked: setting.automatic
-            indicator: Rectangle {
-                implicitWidth: 14; implicitHeight: 14
-                y: (automaticCheck.height - height) / 2
-                color: "transparent"; radius: Theme.smallRadius
-                border.color: automaticCheck.checked ? Theme.accent : Theme.muted
-                Glyph { anchors.fill: parent; anchors.margins: 1; symbol: "check"; visible: automaticCheck.checked; color: Theme.accent }
-            }
-            Accessible.name: setting.caption + ", " + qsTr("Automatic")
-            onCheckedChanged: {
-                if (!setting.ready || checked === setting.automatic) return
-                setting.applyAutomatic(checked)
-                checked = Qt.binding(function() { return setting.automatic })
-            }
+    }
+    CheckBox {
+        id: automaticCheck
+        objectName: "automaticControl"
+        Layout.row: setting.toggleAvailable ? 1 : 0
+        Layout.column: setting.toggleAvailable ? 3 : 1
+        Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
+        visible: setting.autoAvailable
+        enabled: setting.filterEnabled
+        text: qsTr("Auto")
+        padding: 0; spacing: 4; font.pixelSize: 12
+        checked: setting.automatic
+        indicator: Rectangle {
+            implicitWidth: 14; implicitHeight: 14
+            x: automaticCheck.mirrored ? automaticCheck.width - width : 0
+            y: (automaticCheck.height - height) / 2
+            color: "transparent"; radius: Theme.smallRadius
+            border.color: automaticCheck.checked ? Theme.accent : Theme.muted
+            Glyph { anchors.fill: parent; anchors.margins: 1; symbol: "check"; visible: automaticCheck.checked; color: Theme.accent }
         }
-        Label { text: setting.filterEnabled ? valueText : qsTranslate("AudioSettings", "Off"); textFormat: Text.PlainText; font.family: "monospace" }
+        Accessible.name: setting.caption + ", " + qsTr("Automatic")
+        onCheckedChanged: {
+            if (!setting.ready || checked === setting.automatic) return
+            setting.applyAutomatic(checked)
+            checked = Qt.binding(function() { return setting.automatic })
+        }
+    }
+    Label {
+        text: setting.filterEnabled ? valueText : qsTranslate("AudioSettings", "Off")
+        textFormat: Text.PlainText; font.family: "monospace"
+        Layout.row: 0; Layout.column: setting.toggleAvailable ? 3 : 2
+        Layout.rowSpan: setting.toggleAvailable && !setting.autoAvailable ? 2 : 1
+        Layout.minimumWidth: setting.toggleAvailable ? 64 : 0
+        horizontalAlignment: Text.AlignRight
+        Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
     }
     Slider {
         id: control
         enabled: setting.filterEnabled
         objectName: "valueControl"
+        Layout.row: setting.toggleAvailable ? 0 : 1
+        Layout.column: setting.toggleAvailable ? 2 : 0
+        Layout.columnSpan: setting.toggleAvailable ? 1 : 3
+        Layout.rowSpan: setting.toggleAvailable ? 2 : 1
+        Layout.minimumWidth: setting.toggleAvailable ? 80 : 0
         Layout.fillWidth: true
         from: parent.from
         to: parent.to
         value: parent.value
         stepSize: parent.stepSize
         Accessible.name: parent.caption
-        implicitHeight: 28
+        implicitHeight: setting.toggleAvailable ? 36 : 28
         property bool editedWhilePressed: false
         onPressedChanged: {
             if (!pressed && editedWhilePressed) {
