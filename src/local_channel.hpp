@@ -584,7 +584,7 @@ private:
     static bool displayName(const QJsonValue& value);
     static bool acceptableCertificateErrors(const QList<QSslError>& errors);
     static bool writeMessage(QSslSocket* socket, const QJsonObject& message);
-    static bool writeMessage(QSslSocket* socket, const QByteArray& encoded);
+    static bool writeEncodedMessage(QSslSocket* socket, const QByteArray& encoded);
     static bool readMessages(QSslSocket* socket, QByteArray& buffer,
                              const std::function<void(const QJsonObject&)>& receive);
     static bool unknownMessageType(const QString& type);

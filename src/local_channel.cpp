@@ -1476,10 +1476,10 @@ bool LocalChannel::acceptableCertificateErrors(const QList<QSslError>& errors) {
 }
 
 bool LocalChannel::writeMessage(QSslSocket* socket, const QJsonObject& object) {
-    return writeMessage(socket, QJsonDocument(object).toJson(QJsonDocument::Compact));
+    return writeEncodedMessage(socket, QJsonDocument(object).toJson(QJsonDocument::Compact));
 }
 
-bool LocalChannel::writeMessage(QSslSocket* socket, const QByteArray& data) {
+bool LocalChannel::writeEncodedMessage(QSslSocket* socket, const QByteArray& data) {
     if (!socket || !socket->isEncrypted()) return false;
     if (data.size() > maximumFrame || queuedBytes(socket) > 4 * maximumFrame) { socket->abort(); return false; }
     QByteArray frame(4, '\0');
@@ -2175,7 +2175,7 @@ void LocalChannel::sendRoster(QSslSocket* socket, const QJsonObject& roster, QBy
     if (peer.lastRoster == roster) return;
     if (bytes.isEmpty()) bytes = QJsonDocument(roster).toJson(QJsonDocument::Compact);
     if (bytes.size() > maximumFrame) { peer.snapshotRoster = roster; sendSnapshot(socket, bytes); return; }
-    if (!writeMessage(socket, bytes)) return;
+    if (!writeEncodedMessage(socket, bytes)) return;
     peer.lastRoster = roster;
     QStringList sources;
     for (const auto value : roster.value("members").toArray()) sources.append(value.toObject().value("id").toString());
