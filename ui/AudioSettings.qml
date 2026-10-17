@@ -153,11 +153,12 @@ Item {
                         applyValue: function(value) { return audio.setEchoStrength(value) }
                         ToolTip.visible: echoHelp.hovered
                         ToolTip.text: qsTr("Strength, not the percentage of echo removed.")
+                            + (audio.echoReference.length > 0 ? "\n" + audio.echoReference : "")
                         HoverHandler { id: echoHelp }
                     }
                     RowLayout {
                         Layout.fillWidth: true
-                        visible: audio.echoReference.length > 0
+                        visible: audio.echoRetryAvailable
                         Label {
                             objectName: "echoReference"
                             text: audio.echoReference

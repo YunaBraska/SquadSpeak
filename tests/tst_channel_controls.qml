@@ -2338,6 +2338,10 @@ TestCase {
         compare(slider.value, original)
         const reference = findChild(view, "echoReference")
         compare(reference.text, audio.echoReference)
+        compare(reference.visible, audio.echoRetryAvailable, "Only an actionable echo warning takes up a row")
+        verify(control.ToolTip.text.indexOf("Strength") >= 0)
+        if (audio.echoReference.length > 0)
+            verify(control.ToolTip.text.indexOf(audio.echoReference) >= 0)
         if (!audio.inputAvailable) {
             verify(!control.enabled)
             verify(!audio.setEchoStrength(0.8))
