@@ -202,21 +202,26 @@ private slots:
         QTest::addColumn<QString>("speaker"); QTest::addColumn<QString>("keyboard");
         QTest::addColumn<int>("levelDb"); QTest::addColumn<int>("snrDb");
         QTest::addColumn<bool>("shortSpeech");
-        for (const auto& keyboard : {QString("typing-laptop"), QString("typing-desktop")})
-            for (const int level : {-40, -25, -12})
-                QTest::newRow(qPrintable(keyboard + QString::number(level))) << QString{} << keyboard << level << 0 << false;
-        for (const auto& speaker : speech_) for (const int level : {-30, -42}) {
-            QTest::newRow(qPrintable(speaker + "-clean" + QString::number(level))) << speaker << QString{} << level << 0 << false;
-            QTest::newRow(qPrintable(speaker + "-short" + QString::number(level))) << speaker << QString{} << level << 0 << true;
+        QTest::addColumn<int>("channels");
+        for (const int channels : {1, 2}) {
+            const auto format = channels == 1 ? "-mono" : "-stereo";
             for (const auto& keyboard : {QString("typing-laptop"), QString("typing-desktop")})
-                for (const int snr : {0, 10})
-                    QTest::newRow(qPrintable(speaker + "-" + keyboard + QString::number(level) + "-snr" + QString::number(snr)))
-                        << speaker << keyboard << level << snr << false;
+                for (const int level : {-40, -25, -12})
+                    QTest::newRow(qPrintable(keyboard + QString::number(level) + format)) << QString{} << keyboard << level << 0 << false << channels;
+            for (const auto& speaker : speech_) for (const int level : {-30, -42}) {
+                QTest::newRow(qPrintable(speaker + "-clean" + QString::number(level) + format)) << speaker << QString{} << level << 0 << false << channels;
+                QTest::newRow(qPrintable(speaker + "-short" + QString::number(level) + format)) << speaker << QString{} << level << 0 << true << channels;
+                for (const auto& keyboard : {QString("typing-laptop"), QString("typing-desktop")})
+                    for (const int snr : {0, 10})
+                        QTest::newRow(qPrintable(speaker + "-" + keyboard + QString::number(level) + "-snr" + QString::number(snr) + format))
+                            << speaker << keyboard << level << snr << false << channels;
+            }
         }
     }
     void speechActivation() {
         QFETCH(QString, speaker); QFETCH(QString, keyboard); QFETCH(int, levelDb); QFETCH(int, snrDb);
         QFETCH(bool, shortSpeech);
+        QFETCH(int, channels);
         Samples clean(length, 0), input(length, 0);
         const double level = std::pow(10, levelDb / 20.0);
         if (!speaker.isEmpty()) {
@@ -247,7 +252,7 @@ private slots:
         for (size_t i = 0; i < input.size(); ++i) { input[i] /= headroom; clean[i] /= headroom; }
         squad::AudioProcessor processor(rate, {0, 0, 0, true, true});
         for (auto& sample : input) sample = processor.process(sample);
-        squad::VoiceMixer sender, receiver, levelGate;
+        squad::VoiceMixer sender(channels), receiver(channels), levelGate(channels);
         sender.setVoiceActivation({true, true, -45}).setNoiseSuppression(1);
         levelGate.setVoiceActivation({true, false, -45});
         receiver.setAutomatic(false);
@@ -255,7 +260,10 @@ private slots:
         std::vector<bool> admitted(length / 960, false);
         qsizetype levelGateFrames = 0;
         for (size_t offset = 0; offset < input.size(); offset += 960) {
-            const auto capture = std::span(input).subspan(offset, 960);
+            Samples capture(size_t(960 * channels));
+            for (size_t frame = 0; frame < 960; ++frame)
+                for (int channel = 0; channel < channels; ++channel)
+                    capture[frame * size_t(channels) + size_t(channel)] = input[offset + frame];
             const auto packets = sender.encode(capture, rate);
             levelGateFrames += levelGate.encode(capture, rate).size();
             QVERIFY(packets.size() <= 3);
@@ -265,7 +273,9 @@ private slots:
                 const auto now = qint64(position / 48);
                 QVERIFY(receiver.receive("speaker", packets[p], now));
                 const auto frame = receiver.render(rate, now);
-                std::copy(frame.begin(), frame.end(), output.begin() + position);
+                for (size_t sample = 0; sample < 960; ++sample)
+                    output[position + sample] = std::accumulate(frame.begin() + sample * size_t(channels),
+                        frame.begin() + (sample + 1) * size_t(channels), 0.0f) / channels;
                 admitted[position / 960] = true;
             }
         }

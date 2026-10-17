@@ -1,4 +1,5 @@
 #include "local_channel.hpp"
+#include "voice_mixer.hpp"
 #include <QCoreApplication>
 #include <QCryptographicHash>
 #include <QJsonDocument>
@@ -15,6 +16,9 @@
 #include <QSignalSpy>
 #include <QVariant>
 #include <cstring>
+#include <cmath>
+#include <numbers>
+#include <numeric>
 
 namespace {
 QMutex fakeMutex;
@@ -23,6 +27,7 @@ QByteArray lastOptions;
 QByteArray lastCommand;
 QByteArray lastChatCommand;
 QByteArray pendingRequest;
+QByteArray lastAudio;
 int openCount = 0;
 int closeCount = 0;
 int audioCount = 0;
@@ -45,7 +50,7 @@ QByteArray stateEvent(bool includePeer = false) {
 
 void resetFake() {
     const QMutexLocker lock(&fakeMutex);
-    fakeEvents.clear(); lastOptions.clear(); lastCommand.clear(); lastChatCommand.clear(); pendingRequest.clear(); openCount = 0; closeCount = 0; audioCount = 0; presenceCount = 0;
+    fakeEvents.clear(); lastOptions.clear(); lastCommand.clear(); lastChatCommand.clear(); pendingRequest.clear(); lastAudio.clear(); openCount = 0; closeCount = 0; audioCount = 0; presenceCount = 0;
 }
 }
 
@@ -73,7 +78,11 @@ extern "C" int ss_ts_command(void*, const uint8_t* data, size_t size) {
     }
     return 1;
 }
-extern "C" int ss_ts_audio(void*, const uint8_t*, size_t) { ++audioCount; return 1; }
+extern "C" int ss_ts_audio(void*, const uint8_t* data, size_t size) {
+    ++audioCount;
+    lastAudio = QByteArray(reinterpret_cast<const char*>(data), qsizetype(size));
+    return 1;
+}
 extern "C" int ss_ts_next(void*, uint8_t* out, size_t capacity) {
     const QMutexLocker lock(&fakeMutex);
     if (fakeEvents.isEmpty()) return 0;
@@ -479,6 +488,65 @@ private slots:
         }
         acknowledgePendingChat();
         QTRY_COMPARE_WITH_TIMEOUT(channel.messages().size(), 2, 1000);
+    }
+
+    void encodedVoiceReachesBridgeUnchanged_data() {
+        QTest::addColumn<int>("codec");
+        QTest::newRow("opus-voice") << 4;
+        QTest::newRow("opus-music") << 5;
+    }
+
+    void encodedVoiceReachesBridgeUnchanged() {
+        QFETCH(int, codec);
+        resetFake();
+        auto state = QJsonDocument::fromJson(stateEvent()).object();
+        auto channels = state.value("channels").toArray();
+        auto current = channels[0].toObject(); current.insert("codec", codec); channels[0] = current;
+        state.insert("channels", channels);
+        fakeEvents.enqueue(QJsonDocument(state).toJson(QJsonDocument::Compact));
+        QTemporaryDir dir;
+        VoiceSession session(dir.filePath("session"));
+        session.setMuted(false); session.setPushToTalk(true); session.setAudioReadiness(true, true);
+        LocalChannel channel(session, dir.filePath("channel"), TlsIdentity::create());
+        QVERIFY(channel.addTeamSpeak("127.0.0.1"));
+        QTRY_VERIFY(channel.joined());
+        QVERIFY(session.setPttKeyHeld(true));
+        squad::VoiceMixer capture(2);
+        int error = 0;
+        const int outputChannels = codec == 4 ? 1 : 2;
+        const std::unique_ptr<OpusDecoder, decltype(&opus_decoder_destroy)> decoder(
+            opus_decoder_create(48000, outputChannels, &error), opus_decoder_destroy);
+        QVERIFY(decoder && error == OPUS_OK);
+        qint64 bytes = 0;
+        double outputEnergy = 0;
+        std::array<float, 1920> input{}, output{};
+        for (int frame = 0; frame < 100; ++frame) {
+            for (int sample = 0; sample < 960; ++sample) {
+                const auto time = double(frame * 960 + sample) / 48000;
+                float value = 0;
+                for (const int frequency : {173, 439, 997, 2039, 4001, 7907, 12101, 17011})
+                    value += float(0.06 * std::sin(2 * std::numbers::pi * frequency * time));
+                input[size_t(sample) * 2] = input[size_t(sample) * 2 + 1] = value;
+            }
+            const auto packets = capture.encode(input, 48000);
+            QCOMPARE(packets.size(), 1);
+            QVERIFY(channel.sendAudio(packets.first()));
+            QCOMPARE(lastAudio, packets.first());
+            const auto* data = reinterpret_cast<const unsigned char*>(lastAudio.constData());
+            QCOMPARE(opus_packet_get_nb_samples(data, int(lastAudio.size()), 48000), 960);
+            QCOMPARE(opus_packet_get_bandwidth(data), OPUS_BANDWIDTH_FULLBAND);
+            QCOMPARE(opus_decode_float(decoder.get(), data, int(lastAudio.size()), output.data(), 960, 0), 960);
+            outputEnergy += std::inner_product(output.begin(), output.begin() + 960 * outputChannels, output.begin(), 0.0);
+            bytes += lastAudio.size();
+        }
+        QCOMPARE(audioCount, 100);
+        const auto bitrate = bytes * 4;
+        QVERIFY2(bitrate > 96000 && bitrate < 180000, qPrintable(QString::number(bitrate)));
+        const auto rms = std::sqrt(outputEnergy / (96000 * outputChannels));
+        QVERIFY2(rms > 0.10 && rms < 0.14, qPrintable(QString::number(rms)));
+        QVERIFY(session.setPttKeyHeld(false));
+        QVERIFY(!channel.sendAudio(lastAudio));
+        QCOMPARE(audioCount, 100);
     }
 
     void pttAndReceiveGatesUseExistingSession() {

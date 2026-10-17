@@ -50,6 +50,10 @@ Bluetooth audio devices are distinct from Bluetooth-only app networking, which i
 ## TeamSpeak interoperability
 
 U173 capture quality and keyboard suppression remain under investigation. The
+licensed speech/typing activation cases pass in mono and stereo. The TS bridge
+boundary retains encoded packets unchanged, with fullband decoding and the
+expected level in both Opus channel modes. This does not establish hearing quality
+in an official client or reproduce the reported microphone problem. The
 missing-UID private-message case resolves the known roster identity and preserves
 the conversation and reply target. The installed macOS app and native TeamSpeak
 3 client exchange channel and private messages in both directions. Normal app

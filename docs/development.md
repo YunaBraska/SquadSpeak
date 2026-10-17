@@ -362,9 +362,13 @@ SQUAD_SOAK_SECONDS=10 SQUAD_SOAK_SPEAKERS=64 build/local/channel_tests sixtyFour
 SQUAD_VIDEO_SOAK_SECONDS=120 build/local/video_tests roundTripAndQualityChanges:native-rgb
 ```
 
-Audio accepts 2-1800 seconds; video accepts 0-1800, where zero keeps the normal
-short test. Audio uses four simultaneous senders by default; `SQUAD_SOAK_SPEAKERS`
+Audio accepts 2-1800 seconds. Video accepts 0-1800, where zero keeps the normal
+short test. Audio uses four simultaneous senders by default. `SQUAD_SOAK_SPEAKERS`
 accepts 2-64 to measure greater overlap while keeping all 64 clients connected.
+The hosted Intel workflow uses two simultaneous senders because the runner also
+simulates all 64 receivers. All source-to-receiver bindings, mono/stereo rows,
+delayed callbacks and the original delivery/playout thresholds remain checked.
+This fixture setting does not restrict the application or certify greater overlap.
 Set `QTEST_FUNCTION_TIMEOUT` above the requested duration plus setup
 and teardown; Qt Test otherwise stops each function after 300 seconds.
 Video extends the first 4K phase to 30 frames per requested second,
