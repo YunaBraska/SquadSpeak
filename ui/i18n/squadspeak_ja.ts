@@ -414,6 +414,10 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Audio received</source>
+            <translation>受信音声</translation>
+        </message>
+        <message>
             <source>Search channels</source>
             <translation>チャンネルを検索</translation>
         </message>
@@ -1779,6 +1783,10 @@
     </context>
     <context>
         <name>LocalChannel</name>
+        <message>
+            <source>Insufficient permissions.</source>
+            <translation>権限が不足しています。</translation>
+        </message>
         <message>
             <source>Blocked</source>
             <translation>ブロック済み</translation>

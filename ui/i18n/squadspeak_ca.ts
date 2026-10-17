@@ -414,6 +414,10 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Audio received</source>
+            <translation>Àudio rebut</translation>
+        </message>
+        <message>
             <source>Search channels</source>
             <translation>Cerca canals</translation>
         </message>
@@ -1779,6 +1783,10 @@
     </context>
     <context>
         <name>LocalChannel</name>
+        <message>
+            <source>Insufficient permissions.</source>
+            <translation>Permisos insuficients.</translation>
+        </message>
         <message>
             <source>Blocked</source>
             <translation>Bloquejat</translation>

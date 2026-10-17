@@ -1,6 +1,7 @@
 #include "local_channel.hpp"
 #include "teamspeak_bridge/teamspeak_bridge.h"
 #include <QCryptographicHash>
+#include <QCoreApplication>
 #include <QJsonDocument>
 #include <QUrl>
 #include <QUuid>
@@ -8,6 +9,10 @@
 #include <algorithm>
 
 namespace {
+QString tsError(const QString& message) {
+    return message == "PermissionsClientInsufficient"
+        ? QCoreApplication::translate("LocalChannel", "Insufficient permissions.") : message;
+}
 QString tsId(const QString& server, const QString& kind, const QString& value) {
     return QString::fromLatin1(QCryptographicHash::hash((server + '/' + kind + '/' + value).toUtf8(), QCryptographicHash::Sha256).toHex());
 }
@@ -304,7 +309,7 @@ void LocalChannel::teamSpeakEvent(const QJsonObject& event) {
         emit stateChanged(); emit hostsChanged(); emit participantsChanged(); return;
     }
     if (type == "error" || type == "closed") {
-        const auto text = event.value("message").toString();
+        const auto text = tsError(event.value("message").toString());
         const auto selected = clients_.value(chatHostId_);
         if (type == "closed") {
             const bool advance = automaticAttempt_;
@@ -317,12 +322,12 @@ void LocalChannel::teamSpeakEvent(const QJsonObject& event) {
     if (type == "result") {
         const auto request = event.value("request").toString();
         const bool okay = event.value("ok").toBool();
-        if (request.isEmpty()) { if (!okay) setStatus(event.value("error").toString(), false); return; }
+        if (request.isEmpty()) { if (!okay) setStatus(tsError(event.value("error").toString()), false); return; }
         if (request.startsWith("join:")) {
             const auto c = clients_.value(request.mid(5));
             if (okay && c && c->rememberPassword) savePassword(*c, c->password, true);
             if (!okay) {
-                if (c) { c->chatError = event.value("error").toString(); c->passwordRequired = event.value("passwordRequired").toBool(); }
+                if (c) { c->chatError = tsError(event.value("error").toString()); c->passwordRequired = event.value("passwordRequired").toBool(); }
             }
             teamSpeak_->requested.clear(); emit chatChanged(); emit stateChanged(); return;
         }
@@ -337,7 +342,7 @@ void LocalChannel::teamSpeakEvent(const QJsonObject& event) {
                 c->lastChatSequence = std::max(c->lastChatSequence, record.value("sequence").toInteger());
                 while (c->messages.size() > maximumWindowMessages) c->messages.removeFirst();
                 emit chatSent(c->pending.value("text").toString(), c->id);
-            } else c->chatError = event.value("error").toString();
+            } else c->chatError = tsError(event.value("error").toString());
             c->pending = {}; emit chatChanged(); emit hostsChanged(); break;
         }
         return;

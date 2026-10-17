@@ -31,6 +31,7 @@ class AudioModel final : public QObject {
     Q_PROPERTY(QString outputName READ outputName NOTIFY devicesChanged)
     Q_PROPERTY(bool inputAvailable READ inputAvailable NOTIFY devicesChanged)
     Q_PROPERTY(bool outputAvailable READ outputAvailable NOTIFY devicesChanged)
+    Q_PROPERTY(QVariantMap filtersEnabled READ filtersEnabled NOTIFY profileChanged)
     Q_PROPERTY(double gainDb READ gainDb NOTIFY profileChanged)
     Q_PROPERTY(double highPassHz READ highPassHz NOTIFY profileChanged)
     Q_PROPERTY(double lowPassHz READ lowPassHz NOTIFY profileChanged)
@@ -90,18 +91,20 @@ public:
     [[nodiscard]] bool outputAvailable() const { return !output_.isNull(); }
     [[nodiscard]] bool inputReady() const;
     [[nodiscard]] bool outputReady() const { return outputAvailable() && !outputFailed_; }
+    [[nodiscard]] QVariantMap filtersEnabled() const;
+    Q_INVOKABLE bool setFilterEnabled(const QString& filter, bool enabled);
     [[nodiscard]] double gainDb() const { return profile_.gainDb; }
     [[nodiscard]] double highPassHz() const { return profile_.highPassHz; }
     [[nodiscard]] double lowPassHz() const { return profile_.lowPassHz; }
     [[nodiscard]] bool gainAutomatic() const { return profile_.gainAutomatic; }
     [[nodiscard]] bool highPassAutomatic() const { return profile_.highPassAutomatic; }
-    [[nodiscard]] double effectiveGainDb() const { return processor_ ? processor_->gainDb() : gainAutomatic() ? 0 : gainDb(); }
+    [[nodiscard]] double effectiveGainDb() const { return processor_ ? processor_->gainDb() : !profile_.gainEnabled || gainAutomatic() ? 0 : gainDb(); }
     [[nodiscard]] double effectiveHighPassHz() const { return processor_ ? processor_->highPassHz() : profile_.initialHighPassHz(); }
     Q_INVOKABLE bool setGainAutomatic(bool automatic);
     Q_INVOKABLE bool setHighPassAutomatic(bool automatic);
     [[nodiscard]] QVariantList filterResponse() const;
     [[nodiscard]] double noiseSuppression() const { return noiseSuppression_; }
-    [[nodiscard]] bool echoCancellation() const { return echoStrength() > 0; }
+    [[nodiscard]] bool echoCancellation() const { return profile_.echoEnabled && echoStrength() > 0; }
     [[nodiscard]] bool echoAutomatic() const { return !echoSuppression_; }
     [[nodiscard]] double echoStrength() const { return echoSuppression_.value_or(0.5); }
     [[nodiscard]] QString echoReference() const;

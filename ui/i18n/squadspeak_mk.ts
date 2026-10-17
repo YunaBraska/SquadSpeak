@@ -414,6 +414,10 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Audio received</source>
+            <translation>Примен звук</translation>
+        </message>
+        <message>
             <source>Search channels</source>
             <translation>Пребарај канали</translation>
         </message>
@@ -1779,6 +1783,10 @@
     </context>
     <context>
         <name>LocalChannel</name>
+        <message>
+            <source>Insufficient permissions.</source>
+            <translation>Недоволни дозволи.</translation>
+        </message>
         <message>
             <source>Blocked</source>
             <translation>Блокиран</translation>

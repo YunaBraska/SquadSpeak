@@ -414,6 +414,10 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Audio received</source>
+            <translation>Audio retschavì</translation>
+        </message>
+        <message>
             <source>Search channels</source>
             <translation>Tschertgar chanals</translation>
         </message>
@@ -1779,6 +1783,10 @@
     </context>
     <context>
         <name>LocalChannel</name>
+        <message>
+            <source>Insufficient permissions.</source>
+            <translation>Autorisaziuns insuffizientas.</translation>
+        </message>
         <message>
             <source>Blocked</source>
             <translation>Bloccà</translation>

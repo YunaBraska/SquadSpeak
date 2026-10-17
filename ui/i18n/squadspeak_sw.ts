@@ -414,6 +414,10 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Audio received</source>
+            <translation>Sauti iliyopokelewa</translation>
+        </message>
+        <message>
             <source>Search channels</source>
             <translation>Tafuta chaneli</translation>
         </message>
@@ -1779,6 +1783,10 @@
     </context>
     <context>
         <name>LocalChannel</name>
+        <message>
+            <source>Insufficient permissions.</source>
+            <translation>Ruhusa hazitoshi.</translation>
+        </message>
         <message>
             <source>Blocked</source>
             <translation>Imezuiliwa</translation>

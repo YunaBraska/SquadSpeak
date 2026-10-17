@@ -414,6 +414,10 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Audio received</source>
+            <translation>الصوت المستلَم</translation>
+        </message>
+        <message>
             <source>Search channels</source>
             <translation>البحث عن القنوات</translation>
         </message>
@@ -1779,6 +1783,10 @@
     </context>
     <context>
         <name>LocalChannel</name>
+        <message>
+            <source>Insufficient permissions.</source>
+            <translation>الأذونات غير كافية.</translation>
+        </message>
         <message>
             <source>Blocked</source>
             <translation>محظور</translation>

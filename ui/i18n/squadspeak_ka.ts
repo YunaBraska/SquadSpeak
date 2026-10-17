@@ -414,6 +414,10 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Audio received</source>
+            <translation>მიღებული ხმა</translation>
+        </message>
+        <message>
             <source>Search channels</source>
             <translation>არხების ძებნა</translation>
         </message>
@@ -1779,6 +1783,10 @@
     </context>
     <context>
         <name>LocalChannel</name>
+        <message>
+            <source>Insufficient permissions.</source>
+            <translation>არასაკმარისი უფლებები.</translation>
+        </message>
         <message>
             <source>Blocked</source>
             <translation>დაბლოკილია</translation>

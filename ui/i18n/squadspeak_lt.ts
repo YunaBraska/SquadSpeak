@@ -414,6 +414,10 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Audio received</source>
+            <translation>Gaunamas garsas</translation>
+        </message>
+        <message>
             <source>Search channels</source>
             <translation>Ieškoti kanalų</translation>
         </message>
@@ -1779,6 +1783,10 @@
     </context>
     <context>
         <name>LocalChannel</name>
+        <message>
+            <source>Insufficient permissions.</source>
+            <translation>Nepakanka leidimų.</translation>
+        </message>
         <message>
             <source>Blocked</source>
             <translation>Užblokuotas</translation>

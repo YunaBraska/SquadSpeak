@@ -414,6 +414,10 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Audio received</source>
+            <translation>Sound wey you receive</translation>
+        </message>
+        <message>
             <source>Search channels</source>
             <translation>Find channels</translation>
         </message>
@@ -1394,6 +1398,10 @@
     </context>
     <context>
         <name>LocalChannel</name>
+        <message>
+            <source>Insufficient permissions.</source>
+            <translation>You no get enough permission.</translation>
+        </message>
         <message>
             <source>Blocked</source>
             <translation>Dem block am</translation>

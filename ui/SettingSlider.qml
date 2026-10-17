@@ -12,6 +12,9 @@ ColumnLayout {
     property real stepSize: 1
     property real levelValue: NaN
     property color levelColor: Theme.accent
+    property bool toggleAvailable: false
+    property bool filterEnabled: true
+    property var applyEnabled: null
     property bool autoAvailable: false
     property bool automatic: false
     property var applyAutomatic: null
@@ -23,11 +26,22 @@ ColumnLayout {
     spacing: 0
     RowLayout {
         Layout.fillWidth: true
-        Label { text: caption; textFormat: Text.PlainText; Layout.fillWidth: true; wrapMode: Text.WordWrap }
+        SettingToggle {
+            objectName: "filterEnabledControl"
+            visible: setting.toggleAvailable
+            checked: setting.filterEnabled
+            Accessible.name: setting.caption
+            onToggled: {
+                setting.applyEnabled(checked)
+                checked = Qt.binding(function() { return setting.filterEnabled })
+            }
+        }
+        Label { objectName: "filterCaption"; text: caption; textFormat: Text.PlainText; Layout.fillWidth: true; wrapMode: Text.WordWrap }
         CheckBox {
             id: automaticCheck
             objectName: "automaticControl"
             visible: setting.autoAvailable
+            enabled: setting.filterEnabled
             text: qsTr("Auto")
             padding: 0; spacing: 4; font.pixelSize: 12
             checked: setting.automatic
@@ -45,10 +59,11 @@ ColumnLayout {
                 checked = Qt.binding(function() { return setting.automatic })
             }
         }
-        Label { text: valueText; textFormat: Text.PlainText; font.family: "monospace" }
+        Label { text: setting.filterEnabled ? valueText : qsTranslate("AudioSettings", "Off"); textFormat: Text.PlainText; font.family: "monospace" }
     }
     Slider {
         id: control
+        enabled: setting.filterEnabled
         objectName: "valueControl"
         Layout.fillWidth: true
         from: parent.from

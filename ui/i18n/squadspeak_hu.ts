@@ -414,6 +414,10 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Audio received</source>
+            <translation>Fogadott hang</translation>
+        </message>
+        <message>
             <source>Search channels</source>
             <translation>Csatornák keresése</translation>
         </message>
@@ -1779,6 +1783,10 @@
     </context>
     <context>
         <name>LocalChannel</name>
+        <message>
+            <source>Insufficient permissions.</source>
+            <translation>Nincs elegendő jogosultság.</translation>
+        </message>
         <message>
             <source>Blocked</source>
             <translation>blokkolva</translation>

@@ -677,6 +677,7 @@ TestCase {
         waitForRendering(requestCanvas)
         compare(findChild(dialog, "requestName").text, remoteSession.userName)
         compare(findChild(dialog, "requestIdentity").text, remoteChannel.ownId)
+        verify(!findChild(dialog, "audioQuality").visible, "Our receive quality must not be attributed to another member")
         verify(findChild(dialog, "requestAddress").text.includes("127.0.0.1"))
         compare(findChild(dialog, "requestChannel").text, remoteChannel.channelName)
         verify(!findChild(dialog, "memberVolume").visible)
@@ -979,6 +980,7 @@ TestCase {
         compare(findChild(dialog, "requestIdentity").text, remoteChannel.ownId)
         const volume = findChild(dialog, "memberVolume")
         verify(volume && volume.visible && volume.enabled)
+        verify(!findChild(dialog, "audioQuality").visible, "Our receive quality must not be attributed to another member")
         const gain = findChild(volume, "valueControl")
         const previous = audio.participantVolume(remoteChannel.ownId)
         verify(audio.setParticipantVolume(remoteChannel.ownId, 1))
@@ -2091,16 +2093,17 @@ TestCase {
 
     function test_voiceActivationAndPttAreExclusiveAndThresholdEditsDisableAuto() {
         view.openSettings(1)
-        const activation = findChild(view, "voiceActivation")
         const ptt = findChild(view, "pushToTalkMode")
-        verify(activation && ptt)
-        verify(activation.checked && !ptt.checked)
+        verify(ptt && ptt.indicator.width > ptt.indicator.height, "A switch, not a radio button")
+        verify(!session.pushToTalk && !ptt.checked)
         reveal(ptt); mouseClick(ptt)
-        verify(session.pushToTalk && ptt.checked && !activation.checked)
+        verify(session.pushToTalk && ptt.checked)
         mouseClick(ptt)
-        verify(session.pushToTalk, "Clicking the selected mode cannot create an always-open third mode")
-        reveal(activation); mouseClick(activation)
-        verify(!session.pushToTalk && activation.checked && !ptt.checked)
+        verify(!session.pushToTalk && !ptt.checked, "Off returns to voice activation")
+        ptt.forceActiveFocus(); keyClick(Qt.Key_Space)
+        verify(session.pushToTalk && ptt.checked)
+        keyClick(Qt.Key_Space)
+        verify(!session.pushToTalk && !ptt.checked)
         const threshold = findChild(view, "voiceThreshold")
         verify(threshold)
         verify(findChild(view, "voiceMeter") === null, "One editable meter replaces duplicated level and threshold controls")
@@ -2121,6 +2124,48 @@ TestCase {
             audio.setActivationAutomatic(wasAuto)
         }
         verify(session.available)
+    }
+
+    function test_filterSwitchesPreserveTuningAndBypassIndependently_data() {
+        return [{tag: "narrow", width: 400}, {tag: "regular", width: 560}]
+    }
+    function test_filterSwitchesPreserveTuningAndBypassIndependently(data) {
+        view.width = data.width
+        view.openSettings(1)
+        if (!audio.inputAvailable) return
+        const controls = {echo: "echoCancellation", gain: "microphoneGain", noise: "noiseReduction", highPass: "microphoneLowCut", lowPass: "microphoneHighCut"}
+        const original = audio.filtersEnabled
+        const tuning = [audio.gainDb, audio.highPassHz, audio.lowPassHz, audio.noiseSuppression, audio.echoStrength,
+                        audio.gainAutomatic, audio.highPassAutomatic, audio.echoAutomatic]
+        try {
+            for (const filter of Object.keys(controls)) {
+                verify(audio.setFilterEnabled(filter, true))
+                const setting = findChild(view, controls[filter])
+                const toggle = findChild(setting, "filterEnabledControl")
+                verify(toggle && toggle.checked)
+                reveal(toggle)
+                const label = findChild(setting, "filterCaption")
+                verify(toggle.x + toggle.width <= label.x, "Switch and label must not overlap")
+                mouseClick(toggle)
+                compare(audio.filtersEnabled[filter], false)
+                compare(findChild(setting, "valueControl").enabled, false)
+                compare(findChild(setting, "automaticControl").enabled, false)
+                compare([audio.gainDb, audio.highPassHz, audio.lowPassHz, audio.noiseSuppression, audio.echoStrength,
+                         audio.gainAutomatic, audio.highPassAutomatic, audio.echoAutomatic], tuning)
+                if (filter === "echo") compare(audio.echoCancellation, false)
+                mouseClick(toggle)
+                compare(audio.filtersEnabled[filter], true)
+                compare(findChild(setting, "valueControl").enabled, true)
+            }
+            verify(!audio.setFilterEnabled("invalid", false))
+            if (imageDirectory.length) {
+                reveal(findChild(view, "echoCancellation"))
+                waitForRendering(view.contentItem)
+                verify(fixtures.saveWindow(view, imageDirectory + "/input-filter-switches-" + data.tag + ".png"))
+            }
+        } finally {
+            for (const filter of Object.keys(controls)) audio.setFilterEnabled(filter, original[filter])
+        }
     }
 
     function test_inputAutomationCanBeOverriddenIndependently() {
@@ -2329,8 +2374,7 @@ TestCase {
         const ptt = findChild(view, "pushToTalkMode")
         reveal(ptt); mouseClick(ptt)
         compare(session.pushToTalk, true)
-        const activation = findChild(view, "voiceActivation")
-        reveal(activation); mouseClick(activation)
+        reveal(ptt); mouseClick(ptt)
         compare(session.pushToTalk, false)
     }
 
@@ -3627,15 +3671,21 @@ TestCase {
         tryVerify(function() { return other.message.avatarId === "mechanic" })
         verify(remoteSession.setUserName(previousRemoteName)); verify(remoteSession.setAvatar("courier"))
         tryVerify(function() { return other.message.name === previousRemoteName })
-        const quality = findChild(view, "audioQuality")
+        view.memberOptions({id: channel.ownId, name: session.userName}, channel.joinedHostId, false)
+        const inspect = findChild(view, "requestInfoDialog")
+        tryCompare(inspect, "visible", true)
+        const quality = findChild(inspect, "audioQuality")
+        verify(quality.visible)
         compare(quality.bitrate, channel.receiveAudioBitrate)
         verify([8, 12, 20, 32, 64, 128].includes(quality.bitrate))
         if (data.language === "en") {
             const expectedQuality = quality.bitrate >= 32 ? "High"
                 : quality.bitrate === 20 ? "Balanced"
                 : quality.bitrate === 12 ? "Low" : "Minimum"
-            compare(quality.text, expectedQuality)
+            compare(quality.text, expectedQuality + " (" + quality.bitrate + " kb/s)")
         }
+        inspect.close()
+        tryCompare(inspect, "visible", false)
         history.scrollTo(own.y)
         tryVerify(function() { return fixtures.portraitHasDetail(findChild(own, "messageAvatar_" + channel.ownId), false) }, 5000, "Own portrait is rendered")
         history.scrollTo(other.y)
@@ -4355,9 +4405,8 @@ TestCase {
         compare(session.pttHeld, false)
         session.setAudioTestActive(false)
         compare(session.transmissionAllowed, false)
-        const activation = findChild(view, "voiceActivation")
-        reveal(activation)
-        mouseClick(activation)
+        reveal(mode)
+        mouseClick(mode)
         tryCompare(session, "pushToTalk", false)
         compare(session.transmissionAllowed, true)
         findChild(view, "settingsDialog").close()

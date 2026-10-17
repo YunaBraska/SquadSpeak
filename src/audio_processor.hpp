@@ -11,6 +11,11 @@ struct InputProfile final {
     double lowPassHz = 0.0;
     bool gainAutomatic = false;
     bool highPassAutomatic = false;
+    bool gainEnabled = true;
+    bool highPassEnabled = true;
+    bool lowPassEnabled = true;
+    bool noiseEnabled = true;
+    bool echoEnabled = true;
     bool operator==(const InputProfile&) const = default;
     [[nodiscard]] bool valid() const noexcept;
     [[nodiscard]] double initialHighPassHz() const noexcept;

@@ -414,6 +414,10 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Audio received</source>
+            <translation>Ստացված ձայն</translation>
+        </message>
+        <message>
             <source>Search channels</source>
             <translation>Որոնել ալիքներ</translation>
         </message>
@@ -1779,6 +1783,10 @@
     </context>
     <context>
         <name>LocalChannel</name>
+        <message>
+            <source>Insufficient permissions.</source>
+            <translation>Անբավարար թույլտվություններ։</translation>
+        </message>
         <message>
             <source>Blocked</source>
             <translation>Արգելափակված</translation>

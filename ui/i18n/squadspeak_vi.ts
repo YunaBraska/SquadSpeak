@@ -414,6 +414,10 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Audio received</source>
+            <translation>Âm thanh nhận được</translation>
+        </message>
+        <message>
             <source>Search channels</source>
             <translation>Tìm kênh</translation>
         </message>
@@ -1779,6 +1783,10 @@
     </context>
     <context>
         <name>LocalChannel</name>
+        <message>
+            <source>Insufficient permissions.</source>
+            <translation>Không đủ quyền.</translation>
+        </message>
         <message>
             <source>Blocked</source>
             <translation>Đã bị chặn</translation>

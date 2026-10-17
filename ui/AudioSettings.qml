@@ -93,18 +93,17 @@ Item {
                 }
                 RowLayout {
                     Layout.fillWidth: true
-                    RadioButton {
-                        objectName: "voiceActivation"
-                        text: qsTr("Voice activation")
-                        checked: !root.sessionSource.pushToTalk
-                        onClicked: root.sessionSource.setPushToTalk(false)
-                    }
-                    RadioButton {
+                    SettingToggle {
                         objectName: "pushToTalkMode"
                         text: qsTr("Push to talk")
                         checked: root.sessionSource.pushToTalk
-                        onClicked: root.sessionSource.setPushToTalk(true)
+                        onToggled: {
+                            root.sessionSource.setPushToTalk(checked)
+                            checked = Qt.binding(function() { return root.sessionSource.pushToTalk })
+                        }
                     }
+                    Item { Layout.fillWidth: true }
+                    Label { text: qsTr("Voice activation"); visible: !root.sessionSource.pushToTalk; color: Theme.muted }
                 }
                 SettingSlider {
                     objectName: "voiceThreshold"
@@ -143,6 +142,8 @@ Item {
                         objectName: "echoCancellation"
                         Layout.fillWidth: true
                         caption: qsTr("Echo cancellation")
+                        toggleAvailable: true; filterEnabled: audio.filtersEnabled.echo
+                        applyEnabled: function(value) { return audio.setFilterEnabled("echo", value) }
                         enabled: audio.inputAvailable
                         from: 0; to: 1; stepSize: 0.05
                         value: audio.echoStrength
@@ -173,13 +174,15 @@ Item {
                     }
                     GridLayout {
                         Layout.fillWidth: true
-                        columns: width >= 420 ? 2 : 1
+                        columns: width >= 560 ? 2 : 1
                         columnSpacing: 20; rowSpacing: 8
                         SettingSlider {
                             objectName: "microphoneGain"
                             Layout.fillWidth: true; Layout.preferredWidth: 1
                             enabled: audio.inputAvailable
                             caption: qsTr("Microphone gain")
+                            toggleAvailable: true; filterEnabled: audio.filtersEnabled.gain
+                            applyEnabled: function(value) { return audio.setFilterEnabled("gain", value) }
                             from: -24; to: 24; stepSize: 0.5
                             autoAvailable: true; automatic: audio.gainAutomatic
                             applyAutomatic: function(value) { return audio.setGainAutomatic(value) }
@@ -190,7 +193,10 @@ Item {
                         SettingSlider {
                             Layout.fillWidth: true; Layout.preferredWidth: 1
                             enabled: audio.inputAvailable
+                            objectName: "noiseReduction"
                             caption: qsTr("Noise reduction")
+                            toggleAvailable: true; filterEnabled: audio.filtersEnabled.noise
+                            applyEnabled: function(value) { return audio.setFilterEnabled("noise", value) }
                             from: 0; to: 1; stepSize: 0.05
                             value: audio.noiseSuppression
                             valueText: value === 0 ? qsTr("Off") : qsTr("%1 %").arg(Math.round(value * 100))
@@ -200,6 +206,8 @@ Item {
                             Layout.fillWidth: true; Layout.preferredWidth: 1
                             enabled: audio.inputAvailable
                             caption: qsTr("Low cut")
+                            toggleAvailable: true; filterEnabled: audio.filtersEnabled.highPass
+                            applyEnabled: function(value) { return audio.setFilterEnabled("highPass", value) }
                             objectName: "microphoneLowCut"
                             autoAvailable: true; automatic: audio.highPassAutomatic
                             applyAutomatic: function(value) { return audio.setHighPassAutomatic(value) }
@@ -211,7 +219,10 @@ Item {
                         SettingSlider {
                             Layout.fillWidth: true; Layout.preferredWidth: 1
                             enabled: audio.inputAvailable
+                            objectName: "microphoneHighCut"
                             caption: qsTr("High cut")
+                            toggleAvailable: true; filterEnabled: audio.filtersEnabled.lowPass
+                            applyEnabled: function(value) { return audio.setFilterEnabled("lowPass", value) }
                             from: 0; to: audio.maximumFrequency; stepSize: 100
                             value: audio.lowPassHz
                             valueText: value === 0 ? qsTr("Off") : qsTr("%1 Hz").arg(Math.round(value))

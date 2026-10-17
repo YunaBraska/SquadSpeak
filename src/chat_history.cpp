@@ -182,7 +182,7 @@ QByteArray ChatHistory::index(const QString& value) const {
 
 void ChatHistory::saveClock(qint64 now, qint64 sequence) {
     const auto data = QJsonDocument(QJsonObject{{"version", 2}, {"time", now}, {"sequence", sequence}}).toJson(QJsonDocument::Compact);
-    query("INSERT OR REPLACE INTO metadata VALUES(1,?)", {TlsIdentity::seal(data, key_, context_ + "/metadata")});
+    query("INSERT INTO metadata(id,body) VALUES(1,?) ON CONFLICT(id) DO UPDATE SET body=excluded.body", {TlsIdentity::seal(data, key_, context_ + "/metadata")});
 }
 
 void ChatHistory::readClock() {
@@ -198,7 +198,7 @@ void ChatHistory::readClock() {
 void ChatHistory::insert(const QJsonObject& message) {
     const auto sequence = message.value("sequence").toInteger();
     const auto sender = message.value("sender").toString();
-    query("INSERT INTO messages VALUES(?,?,?,?,?,?,?)", {sequence, message.value("created").toInteger(), message.value("expires").toInteger(),
+    query("INSERT INTO messages(sequence,created,expires,sender,request,image,body) VALUES(?,?,?,?,?,?,?)", {sequence, message.value("created").toInteger(), message.value("expires").toInteger(),
         index(sender), index(sender + '/' + message.value("request").toString()), message.value("image").toObject().value("hash").toString(QLatin1String("")),
         TlsIdentity::seal(QJsonDocument(message).toJson(QJsonDocument::Compact), key_, context_ + "/record/" + QByteArray::number(sequence))});
 }
@@ -291,7 +291,7 @@ bool ChatHistory::updateProfile(const QString& sender, const QString& name, cons
     if (!existing.next()) return false;
     existing.finish();
     const auto body = QJsonDocument(QJsonObject{{"name", name}, {"avatar", avatar}}).toJson(QJsonDocument::Compact);
-    query("INSERT OR REPLACE INTO profiles VALUES(?,?)", {index(sender), TlsIdentity::seal(body, key_, context_ + "/profile/" + index(sender).toHex())});
+    query("INSERT INTO profiles(sender,body) VALUES(?,?) ON CONFLICT(sender) DO UPDATE SET body=excluded.body", {index(sender), TlsIdentity::seal(body, key_, context_ + "/profile/" + index(sender).toHex())});
     return true;
 }
 

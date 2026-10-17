@@ -414,6 +414,10 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Audio received</source>
+            <translation>接收的音频</translation>
+        </message>
+        <message>
             <source>Search channels</source>
             <translation>搜索频道</translation>
         </message>
@@ -1779,6 +1783,10 @@
     </context>
     <context>
         <name>LocalChannel</name>
+        <message>
+            <source>Insufficient permissions.</source>
+            <translation>权限不足。</translation>
+        </message>
         <message>
             <source>Blocked</source>
             <translation>已阻止</translation>

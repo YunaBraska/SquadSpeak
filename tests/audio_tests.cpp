@@ -15,6 +15,60 @@
 class AudioTests final : public QObject {
     Q_OBJECT
 private slots:
+    void filterBypassPreservesSettingsAndPcm() {
+        QTemporaryDir directory;
+        const auto file = directory.filePath("profiles");
+        squad::InputProfile profile{6, 120, 8000, true, true};
+        profile.gainEnabled = profile.highPassEnabled = profile.lowPassEnabled = profile.noiseEnabled = profile.echoEnabled = false;
+        squad::AudioProfiles(file).saveInput("a", profile);
+        const auto restored = squad::AudioProfiles(file).input("a");
+        QCOMPARE(restored, profile);
+        QVERIFY(squad::AudioProfiles(file).input("b").echoEnabled);
+        squad::AudioProcessor bypass(48000, restored);
+        for (int i = 0; i < 48000; ++i) {
+            const std::array<float, 2> sample{float(.7 * std::sin(i * .07)), float(.3 * std::cos(i * .13))};
+            QCOMPARE(bypass.filter(sample), sample);
+        }
+        QCOMPARE(bypass.gainDb(), 0.0);
+        QCOMPARE(bypass.highPassHz(), 0.0);
+        for (auto db : bypass.filterResponse()) QCOMPARE(db, 0.0);
+        profile.gainEnabled = profile.highPassEnabled = profile.lowPassEnabled = profile.noiseEnabled = profile.echoEnabled = true;
+        squad::AudioProfiles(file).saveInput("a", profile);
+        QCOMPARE(squad::AudioProfiles(file).input("a"), profile);
+        bypass.configure(profile);
+        QVERIFY(bypass.highPassHz() > 0);
+        QVERIFY(bypass.filterResponse() != squad::AudioProcessor(48000).filterResponse());
+    }
+
+    void individualFilterBypass_data() {
+        QTest::addColumn<QString>("filter");
+        QTest::addColumn<bool>("automatic");
+        for (const auto* filter : {"gain", "highPass", "lowPass"})
+            for (bool automatic : {false, true})
+                QTest::newRow(qPrintable(QString(filter) + (automatic ? "-auto" : "-manual"))) << QString(filter) << automatic;
+    }
+    void individualFilterBypass() {
+        QFETCH(QString, filter); QFETCH(bool, automatic);
+        squad::InputProfile selected{6, 120, 8000, automatic, automatic};
+        auto neutral = selected;
+        if (filter == "gain") {
+            selected.gainEnabled = false;
+            neutral.gainDb = 0; neutral.gainAutomatic = false;
+        } else if (filter == "highPass") {
+            selected.highPassEnabled = false;
+            neutral.highPassHz = 0; neutral.highPassAutomatic = false;
+        } else {
+            selected.lowPassEnabled = false;
+            neutral.lowPassHz = 0;
+        }
+        squad::AudioProcessor bypass(48000, selected), expected(48000, neutral);
+        for (int i = 0; i < 48000; ++i) {
+            const std::array<float, 2> sample{float(.7 * std::sin(i * .007)), float(.3 * std::cos(i * 1.3))};
+            QCOMPARE(bypass.filter(sample), expected.filter(sample));
+        }
+        QCOMPARE(bypass.filterResponse(), expected.filterResponse());
+    }
+
     void stereoFiltersKeepChannelsSeparateAndUseLinkedGain() {
         squad::AudioProcessor processor(48000, {.gainDb = 6, .highPassHz = 100, .lowPassHz = 12000});
         squad::AudioProcessor left(48000, {.gainDb = 6, .highPassHz = 100, .lowPassHz = 12000});

@@ -642,7 +642,14 @@ private slots:
         for (const auto level : levels) QVERIFY2(level > 0.001, qPrintable(QString::number(level)));
     }
 
+    void rejectedChannelMoveKeepsCurrentVoiceAndCanRetryPassword_data() {
+        QTest::addColumn<QString>("error");
+        QTest::addColumn<bool>("password");
+        QTest::newRow("password") << QString("ChannelInvalidPassword") << true;
+        QTest::newRow("permissions") << QString("PermissionsClientInsufficient") << false;
+    }
     void rejectedChannelMoveKeepsCurrentVoiceAndCanRetryPassword() {
+        QFETCH(QString, error); QFETCH(bool, password);
         resetFake(); fakeEvents.enqueue(stateEvent());
         QTemporaryDir dir;
         VoiceSession session(dir.filePath("session"));
@@ -658,9 +665,11 @@ private slots:
         QVERIFY(channel.submitPassword("wrong", true));
         const auto request = QJsonDocument::fromJson(lastCommand).object().value("request");
         fakeEvents.enqueue(QJsonDocument(QJsonObject{{"type", "result"}, {"request", request},
-            {"ok", false}, {"passwordRequired", true}, {"error", "ChannelInvalidPassword"}}).toJson());
-        QTRY_VERIFY(channel.passwordRequired());
+            {"ok", false}, {"passwordRequired", password}, {"error", error}}).toJson());
+        QTRY_COMPARE(channel.chatError(), password ? error : QString("Insufficient permissions."));
+        QCOMPARE(channel.passwordRequired(), password);
         QCOMPARE(channel.joinedHostId(), active);
+        if (!password) return;
         QVERIFY(channel.submitPassword("correct", true));
         QCOMPARE(QJsonDocument::fromJson(lastCommand).object().value("password").toString(), QString("correct"));
         QCOMPARE(openCount, 1);

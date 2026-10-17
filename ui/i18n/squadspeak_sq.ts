@@ -414,6 +414,10 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Audio received</source>
+            <translation>Audio e marrë</translation>
+        </message>
+        <message>
             <source>Search channels</source>
             <translation>Kërko kanale</translation>
         </message>
@@ -1779,6 +1783,10 @@
     </context>
     <context>
         <name>LocalChannel</name>
+        <message>
+            <source>Insufficient permissions.</source>
+            <translation>Leje të pamjaftueshme.</translation>
+        </message>
         <message>
             <source>Blocked</source>
             <translation>Bllokuar</translation>

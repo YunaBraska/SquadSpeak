@@ -146,9 +146,9 @@ void AudioModel::refreshDevices() {
             profile_ = profiles_.input(input_.id());
             filterResponse_ = squad::AudioProcessor(captureFormat(input_).sampleRate(), profile_).filterResponse();
             noiseSuppression_ = profiles_.noiseSuppression(input_.id());
-            mixer_.setNoiseSuppression(noiseSuppression_);
+            mixer_.setNoiseSuppression(profile_.noiseEnabled ? noiseSuppression_ : 0);
             echoSuppression_ = profiles_.echoSuppression(input_.id());
-            echo_.setSuppression(echoSuppression_);
+            echo_.setSuppression(profile_.echoEnabled ? echoSuppression_ : std::optional(0.0));
             activation_ = profiles_.voiceActivation(input_.id());
             applyActivation();
         }
@@ -206,6 +206,22 @@ bool AudioModel::select(bool input, const QString& deviceId) {
 
 bool AudioModel::selectInput(const QString& deviceId) { return select(true, deviceId); }
 bool AudioModel::selectOutput(const QString& deviceId) { return select(false, deviceId); }
+QVariantMap AudioModel::filtersEnabled() const {
+    return {{"gain", profile_.gainEnabled}, {"highPass", profile_.highPassEnabled}, {"lowPass", profile_.lowPassEnabled}, {"noise", profile_.noiseEnabled}, {"echo", profile_.echoEnabled}};
+}
+
+bool AudioModel::setFilterEnabled(const QString& filter, bool enabled) {
+    auto next = profile_;
+    if (filter == "gain") next.gainEnabled = enabled;
+    else if (filter == "highPass") next.highPassEnabled = enabled;
+    else if (filter == "lowPass") next.lowPassEnabled = enabled;
+    else if (filter == "noise") next.noiseEnabled = enabled;
+    else if (filter == "echo") next.echoEnabled = enabled;
+    else return false;
+    if (next == profile_) return true;
+    return updateProfile(next);
+}
+
 bool AudioModel::setGainDb(double value) { auto next = profile_; next.gainDb = value; next.gainAutomatic = false; return updateProfile(next); }
 bool AudioModel::setHighPassHz(double value) { auto next = profile_; next.highPassHz = value; next.highPassAutomatic = false; return updateProfile(next); }
 bool AudioModel::setLowPassHz(double value) { auto next = profile_; next.lowPassHz = value; return updateProfile(next); }
@@ -216,7 +232,7 @@ bool AudioModel::setNoiseSuppression(double value) {
     if (input_.isNull()) return false;
     try {
         profiles_.saveNoiseSuppression(input_.id(), value);
-        mixer_.setNoiseSuppression(value);
+        mixer_.setNoiseSuppression(profile_.noiseEnabled ? value : 0);
         noiseSuppression_ = value;
         emit profileChanged();
         emit activityChanged();
@@ -265,7 +281,14 @@ bool AudioModel::updateProfile(squad::InputProfile profile) {
         // Validate at the boundary before persistence or changing the live path.
         const squad::AudioProcessor validated(captureFormat(input_).sampleRate(), profile);
         profiles_.saveInput(input_.id(), profile);
+        const bool echoChanged = profile_.echoEnabled != profile.echoEnabled;
         profile_ = profile;
+        mixer_.setNoiseSuppression(profile_.noiseEnabled ? noiseSuppression_ : 0);
+        if (echoChanged) {
+            echo_.setSuppression(profile_.echoEnabled ? echoSuppression_ : std::optional(0.0));
+            mixer_.resetCapture();
+            monitorOutput();
+        }
         filterResponse_ = validated.filterResponse();
         if (processor_) processor_->configure(profile);
         emit profileChanged();
@@ -302,7 +325,7 @@ bool AudioModel::updateEcho(std::optional<double> strength) {
         profiles_.saveEchoSuppression(input_.id(), strength);
         const bool wasEnabled = echoCancellation();
         echoSuppression_ = strength;
-        echo_.setSuppression(strength);
+        echo_.setSuppression(profile_.echoEnabled ? strength : std::optional(0.0));
         if (wasEnabled != echoCancellation()) monitorOutput();
         mixer_.resetCapture();
         emit profileChanged();

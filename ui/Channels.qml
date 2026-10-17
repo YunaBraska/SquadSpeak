@@ -698,19 +698,22 @@ PanelWindow {
         Timer { id: discoveryRefresh; interval: 50; onTriggered: discoveryList.refresh() }
         contentItem: ColumnLayout {
             spacing: 12
-            Label {
-                objectName: "networkPermissionHint"
+            RowLayout {
+                Layout.fillWidth: true
                 visible: (Qt.platform.os === "osx" || Qt.platform.os === "ios")
-                text: qsTr("If asked, allow local network access. You can change this in system settings.")
-                color: Theme.muted; font.pixelSize: 12
-                wrapMode: Text.Wrap; Layout.fillWidth: true
-            }
-            ActionButton {
-                objectName: "networkPermissionSettings"
-                visible: (Qt.platform.os === "osx" || Qt.platform.os === "ios")
-                text: qsTranslate("AudioSettings", "Open system settings")
-                onClicked: Qt.openUrlExternally(Qt.platform.os === "osx"
-                    ? "x-apple.systempreferences:com.apple.preference.security?Privacy_LocalNetwork" : "app-settings:")
+                Label {
+                    objectName: "networkPermissionHint"
+                    text: qsTr("If asked, allow local network access. You can change this in system settings.")
+                    color: Theme.muted; font.pixelSize: 12
+                    wrapMode: Text.Wrap; Layout.fillWidth: true
+                }
+                ActionButton {
+                    objectName: "networkPermissionSettings"
+                    text: qsTranslate("AudioSettings", "Open system settings")
+                    glyph: "settings"; iconOnly: true; flat: true
+                    onClicked: Qt.openUrlExternally(Qt.platform.os === "osx"
+                        ? "x-apple.systempreferences:com.apple.preference.security?Privacy_LocalNetwork" : "app-settings:")
+                }
             }
             Label {
                 objectName: "discoveryStatus"
@@ -1361,6 +1364,17 @@ PanelWindow {
                         onClicked: memberMenu.popup()
                     }
                 }
+                ActionButton {
+                    objectName: "audioQuality"
+                    readonly property int bitrate: root.current.receiveAudioBitrate || 0
+                    visible: !root.inspectedRequestId && requestInfo.entry.id === root.current.ownId && bitrate > 0
+                    text: (bitrate >= 32 ? qsTr("High") : bitrate === 20 ? qsTr("Balanced") : bitrate === 12 ? qsTr("Low") : qsTr("Minimum")) + " (" + bitrate + " kb/s)"
+                    glyph: "signal"; flat: true; font.pixelSize: 12
+                    Layout.fillWidth: true
+                    ToolTip.visible: hovered || activeFocus
+                    ToolTip.text: qsTr("Audio received")
+                    onClicked: ToolTip.show(ToolTip.text, 5000)
+                }
                 SettingSlider {
                     id: memberGain; objectName: "memberVolume"
                     Layout.fillWidth: true; visible: requestInfo.personalControls
@@ -1834,7 +1848,7 @@ PanelWindow {
                                     if (channelRow.selected) {
                                         root.conversationSlot = chatSlot
                                         Qt.callLater(function() {
-                                            if (!channelRow.selected) return
+                                            if (!channelRow || !channelRow.selected || !scroll) return
                                             const flick = scroll.contentItem
                                             const top = channelRow.mapToItem(flick.contentItem, 0, 0).y
                                             const bottom = top + channelRow.height
@@ -1927,16 +1941,6 @@ PanelWindow {
                 ActionButton { objectName: "addChannel"; visible: !root.remote; text: qsTr("Add channel"); glyph: "plus"; iconOnly: true; flat: true; onClicked: discover.open() }
                 ActionButton { objectName: "openSettings"; visible: !root.remote; text: qsTr("Settings"); glyph: "settings"; iconOnly: true; flat: true; onClicked: root.openSettings(0) }
                 ActionButton { objectName: "searchChannels"; text: qsTr("Search channels"); glyph: "search"; iconOnly: true; flat: true; checked: root.searchOpen; onClicked: root.searchOpen = !root.searchOpen }
-                ActionButton {
-                    objectName: "audioQuality"
-                    readonly property int bitrate: root.current.receiveAudioBitrate || 0
-                    visible: bitrate > 0
-                    text: bitrate >= 32 ? qsTr("High") : bitrate === 20 ? qsTr("Balanced") : bitrate === 12 ? qsTr("Low") : qsTr("Minimum")
-                    glyph: "signal"; flat: true; font.pixelSize: 11
-                    ToolTip.visible: hovered || activeFocus
-                    ToolTip.text: bitrate + " kb/s"
-                    onClicked: ToolTip.show(ToolTip.text, 5000)
-                }
                 Item { Layout.fillWidth: true }
                 ActionButton { objectName: "mute"; text: root.micMuted ? qsTr("Unmute microphone") : qsTr("Mute microphone"); glyph: root.micMuted || (!root.remote && !root.voice.available) ? "mute" : "mic"; iconOnly: true; flat: true; checked: root.micMuted; enabled: !root.remote || root.network.remoteAllowed; onClicked: root.remote ? root.network.remoteAction("mute", {value: !root.micMuted}) : root.voice.setMuted(!root.micMuted) }
                 ActionButton { objectName: "deafen"; text: root.outputMuted ? qsTr("Enable speakers") : qsTr("Mute speakers"); glyph: root.outputMuted ? "deafen" : "speaker"; iconOnly: true; flat: true; checked: root.outputMuted; enabled: !root.remote || root.network.remoteAllowed; onClicked: root.remote ? root.network.remoteAction("deafen", {value: !root.outputMuted}) : root.voice.setDeafened(!root.outputMuted) }

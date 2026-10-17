@@ -414,6 +414,10 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Audio received</source>
+            <translation>అందుకున్న ఆడియో</translation>
+        </message>
+        <message>
             <source>Search channels</source>
             <translation>ఛానెళ్లను వెతకండి</translation>
         </message>
@@ -1779,6 +1783,10 @@
     </context>
     <context>
         <name>LocalChannel</name>
+        <message>
+            <source>Insufficient permissions.</source>
+            <translation>తగిన అనుమతులు లేవు.</translation>
+        </message>
         <message>
             <source>Blocked</source>
             <translation>నిరోధించబడింది</translation>

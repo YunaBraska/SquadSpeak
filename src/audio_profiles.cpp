@@ -45,14 +45,19 @@ InputProfile AudioProfiles::input(const QByteArray& deviceId) const {
     profile.gainDb = settings_.value(prefix + "gainDb", 0.0).toDouble(&gainOk);
     profile.highPassHz = settings_.value(prefix + "highPassHz", 0.0).toDouble(&highOk);
     profile.lowPassHz = settings_.value(prefix + "lowPassHz", 0.0).toDouble(&lowOk);
-    const auto automatic = [&](const QString& name, const QString& manual) {
-        const auto value = settings_.value(prefix + name, !settings_.contains(prefix + manual));
+    const auto boolean = [&](const QString& name, bool fallback) {
+        const auto value = settings_.value(prefix + name, fallback);
         if (value.toString() != "true" && value.toString() != "false")
             throw std::runtime_error(QT_TRANSLATE_NOOP("AudioModel", "Stored microphone profile is invalid"));
         return value.toBool();
     };
-    profile.gainAutomatic = automatic("gainAutomatic", "gainDb");
-    profile.highPassAutomatic = automatic("highPassAutomatic", "highPassHz");
+    profile.gainAutomatic = boolean("gainAutomatic", !settings_.contains(prefix + "gainDb"));
+    profile.highPassAutomatic = boolean("highPassAutomatic", !settings_.contains(prefix + "highPassHz"));
+    profile.gainEnabled = boolean("gainEnabled", true);
+    profile.highPassEnabled = boolean("highPassEnabled", true);
+    profile.lowPassEnabled = boolean("lowPassEnabled", true);
+    profile.noiseEnabled = boolean("noiseEnabled", true);
+    profile.echoEnabled = boolean("echoEnabled", true);
     if (!gainOk || !highOk || !lowOk || !profile.valid())
         throw std::runtime_error(QT_TRANSLATE_NOOP("AudioModel", "Stored microphone profile is invalid"));
     return profile;
@@ -212,7 +217,12 @@ AudioProfiles& AudioProfiles::saveInput(const QByteArray& deviceId, InputProfile
                   {prefix + "highPassHz", profile.highPassHz},
                   {prefix + "lowPassHz", profile.lowPassHz},
                   {prefix + "gainAutomatic", profile.gainAutomatic},
-                  {prefix + "highPassAutomatic", profile.highPassAutomatic}});
+                  {prefix + "highPassAutomatic", profile.highPassAutomatic},
+                  {prefix + "gainEnabled", profile.gainEnabled},
+                  {prefix + "highPassEnabled", profile.highPassEnabled},
+                  {prefix + "lowPassEnabled", profile.lowPassEnabled},
+                  {prefix + "noiseEnabled", profile.noiseEnabled},
+                  {prefix + "echoEnabled", profile.echoEnabled}});
 }
 
 AudioProfiles& AudioProfiles::saveOutput(const QByteArray& deviceId, double volume) {

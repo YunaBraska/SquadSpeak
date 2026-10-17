@@ -414,6 +414,10 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Audio received</source>
+            <translation>Fuaim faighte</translation>
+        </message>
+        <message>
             <source>Search channels</source>
             <translation>Cuardaigh cainéil</translation>
         </message>
@@ -1779,6 +1783,10 @@
     </context>
     <context>
         <name>LocalChannel</name>
+        <message>
+            <source>Insufficient permissions.</source>
+            <translation>Níl dóthain ceadanna agat.</translation>
+        </message>
         <message>
             <source>Blocked</source>
             <translation>Coiscthe</translation>

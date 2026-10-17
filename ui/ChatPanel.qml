@@ -366,7 +366,7 @@ Item {
             Label {
                 anchors.centerIn: parent
                 width: parent.width - 24; horizontalAlignment: Text.AlignHCenter; wrapMode: Text.Wrap
-                visible: messageRows.count === 0
+                visible: messageRows.count === 0 && !root.current.chatError
                 text: root.current.historyLoading ? qsTr("Loading...") : root.current.chatReady ? qsTr("Start the conversation.") : qsTr("Chat opens after access is approved.")
                 color: Theme.muted
             }

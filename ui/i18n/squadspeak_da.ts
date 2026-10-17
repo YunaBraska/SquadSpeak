@@ -414,6 +414,10 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Audio received</source>
+            <translation>Modtaget lyd</translation>
+        </message>
+        <message>
             <source>Search channels</source>
             <translation>Søg efter kanaler</translation>
         </message>
@@ -1779,6 +1783,10 @@
     </context>
     <context>
         <name>LocalChannel</name>
+        <message>
+            <source>Insufficient permissions.</source>
+            <translation>Utilstrækkelige tilladelser.</translation>
+        </message>
         <message>
             <source>Blocked</source>
             <translation>Blokeret</translation>
