@@ -414,6 +414,14 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Search channels</source>
+            <translation>搜索频道</translation>
+        </message>
+        <message>
+            <source>No matches</source>
+            <translation>无匹配结果</translation>
+        </message>
+        <message>
             <source>Copy address</source>
             <translation>复制地址</translation>
         </message>

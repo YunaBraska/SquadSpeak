@@ -414,6 +414,14 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Search channels</source>
+            <translation>ఛానెళ్లను వెతకండి</translation>
+        </message>
+        <message>
+            <source>No matches</source>
+            <translation>ఫలితాలు లేవు</translation>
+        </message>
+        <message>
             <source>Copy address</source>
             <translation>చిరునామాను కాపీ చేయి</translation>
         </message>

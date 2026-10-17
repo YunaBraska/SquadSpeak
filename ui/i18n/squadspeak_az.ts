@@ -414,6 +414,14 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Search channels</source>
+            <translation>Kanalları axtar</translation>
+        </message>
+        <message>
+            <source>No matches</source>
+            <translation>Nəticə yoxdur</translation>
+        </message>
+        <message>
             <source>Copy address</source>
             <translation>Ünvanı kopyala</translation>
         </message>

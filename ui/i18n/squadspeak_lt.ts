@@ -414,6 +414,14 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Search channels</source>
+            <translation>Ieškoti kanalų</translation>
+        </message>
+        <message>
+            <source>No matches</source>
+            <translation>Rezultatų nėra</translation>
+        </message>
+        <message>
             <source>Copy address</source>
             <translation>Kopijuoti adresą</translation>
         </message>

@@ -414,6 +414,14 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Search channels</source>
+            <translation>チャンネルを検索</translation>
+        </message>
+        <message>
+            <source>No matches</source>
+            <translation>一致する結果がありません</translation>
+        </message>
+        <message>
             <source>Copy address</source>
             <translation>アドレスをコピー</translation>
         </message>

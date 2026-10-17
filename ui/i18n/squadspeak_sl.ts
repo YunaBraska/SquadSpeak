@@ -414,6 +414,14 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Search channels</source>
+            <translation>Poišči kanale</translation>
+        </message>
+        <message>
+            <source>No matches</source>
+            <translation>Ni zadetkov</translation>
+        </message>
+        <message>
             <source>Copy address</source>
             <translation>Kopiraj naslov</translation>
         </message>

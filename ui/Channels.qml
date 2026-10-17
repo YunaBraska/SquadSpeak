@@ -201,6 +201,12 @@ PanelWindow {
             : (aboutIndex + 1 + Math.floor(Math.random() * (aboutLines.length - 1))) % aboutLines.length
     }
     property string selectedHost: ""
+    property bool searchOpen: false
+    onSearchOpenChanged: {
+        if (searchOpen) Qt.callLater(channelSearch.forceActiveFocus)
+        else channelSearch.text = ""
+    }
+    Shortcut { sequences: [StandardKey.Find]; enabled: root.active && !settings.visible; onActivated: root.searchOpen = true }
     property var privateFolderExpanded: ({})
     readonly property var selectedOwner: { const revision = network.ownedChannels; return remote ? null : network.ownChannel(selectedHost) }
     readonly property var managedHost: selectedOwner || network
@@ -289,6 +295,7 @@ PanelWindow {
     }
     function updateChannelRows() {
         const groups = new Map()
+        const query = channelSearch.text.trim().toLowerCase()
         const livePrivateChats = []
         for (const entry of channelList) {
             if (entry.private) {
@@ -331,13 +338,26 @@ PanelWindow {
         for (const group of sortedGroups) {
             const privateUnread = group.privateChats.some(function(entry) { return !!entry.unread })
             const groupUnread = privateUnread || group.channels.some(function(entry) { return !!entry.unread })
+            if (query && !group.label.toLowerCase().includes(query)) {
+                const matches = new Set()
+                for (const entry of group.channels) {
+                    if (!entry.name.toLowerCase().includes(query) && !endpoint(entry).toLowerCase().includes(query)) continue
+                    let ancestor = entry
+                    while (ancestor && !matches.has(ancestor.id)) {
+                        matches.add(ancestor.id)
+                        ancestor = group.channels.find(function(item) { return item.id === ancestor.parent })
+                    }
+                }
+                group.channels = group.channels.filter(function(entry) { return matches.has(entry.id) })
+                group.privateChats = group.privateChats.filter(function(entry) { return (entry.name || "").toLowerCase().includes(query) })
+            }
             orderedChannels(group.channels).forEach(function(entry, index) { ordered.push({channelData: entry, groupLabel: index === 0 ? group.label : "", groupId: group.key, groupUnread: groupUnread}) })
             group.privateChats.sort(function(a, b) {
                 return (a.name || "").localeCompare(b.name || "") || a.id.localeCompare(b.id)
             })
             if (group.privateChats.length > 0) {
                 ordered.push({channelData: {id: "private-folder:" + group.key, name: qsTr("Messages"), privateFolder: true, hostId: group.key, unread: privateUnread}, groupLabel: ordered.length === 0 || ordered[ordered.length - 1].groupId !== group.key ? group.label : "", groupId: group.key, groupUnread: groupUnread})
-                if (privateFolderIsExpanded(group.key)) for (const entry of group.privateChats)
+                if (query || privateFolderIsExpanded(group.key)) for (const entry of group.privateChats)
                     ordered.push({channelData: Object.assign({}, entry, {id: entry.id, private: true, hostId: privateHostId(entry)}), groupLabel: "", groupId: group.key, groupUnread: groupUnread})
             }
         }
@@ -374,7 +394,7 @@ PanelWindow {
         if (settings.visible && settingsPage === 3) pickAboutSentence()
         syncAudioSettings()
     }
-    onClosing: settings.close()
+    onClosing: { settings.close(); searchOpen = false }
     width: 460
     height: 560
     minimumWidth: 360
@@ -1618,6 +1638,23 @@ PanelWindow {
     }
     ColumnLayout {
         anchors.fill: parent; anchors.margins: root.height < 460 ? 8 : 12; spacing: root.height < 460 ? 4 : 8
+        RowLayout {
+            visible: root.searchOpen
+            Layout.fillWidth: true; spacing: 4
+            EntryField {
+                id: channelSearch; objectName: "channelSearch"
+                Layout.fillWidth: true
+                placeholderText: qsTr("Search channels")
+                Accessible.name: placeholderText
+                selectByMouse: true
+                onTextChanged: root.updateChannelRows()
+                Keys.onEscapePressed: root.searchOpen = false
+            }
+            ActionButton {
+                text: qsTr("Close"); glyph: "close"; iconOnly: true; flat: true
+                onClicked: root.searchOpen = false
+            }
+        }
         Rectangle {
             objectName: "remoteContext"
             visible: root.remote
@@ -1822,6 +1859,7 @@ PanelWindow {
                     }
                 }
                 Label { visible: root.channelList.length === 0; text: root.remote ? root.network.controlStatus : qsTr("No channels yet"); Layout.fillWidth: true; color: Theme.muted; wrapMode: Text.Wrap }
+                Label { objectName: "emptyChannelSearch"; visible: channelSearch.text.trim().length > 0 && channelRows.count === 0; text: qsTr("No matches"); Layout.fillWidth: true; color: Theme.muted; wrapMode: Text.Wrap }
             }
         }
     }
@@ -1888,6 +1926,7 @@ PanelWindow {
                 Layout.fillWidth: true; spacing: 4
                 ActionButton { objectName: "addChannel"; visible: !root.remote; text: qsTr("Add channel"); glyph: "plus"; iconOnly: true; flat: true; onClicked: discover.open() }
                 ActionButton { objectName: "openSettings"; visible: !root.remote; text: qsTr("Settings"); glyph: "settings"; iconOnly: true; flat: true; onClicked: root.openSettings(0) }
+                ActionButton { objectName: "searchChannels"; text: qsTr("Search channels"); glyph: "search"; iconOnly: true; flat: true; checked: root.searchOpen; onClicked: root.searchOpen = !root.searchOpen }
                 ActionButton {
                     objectName: "audioQuality"
                     readonly property int bitrate: root.current.receiveAudioBitrate || 0

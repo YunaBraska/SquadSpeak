@@ -28,7 +28,10 @@ Canvas {
             for (let i = 2; i < points.length; i += 2) c.lineTo(points[i], points[i + 1])
             c.stroke()
         }
-        if (symbol === "copy") {
+        if (symbol === "search") {
+            c.beginPath(); c.arc(10, 10, 6, 0, Math.PI * 2); c.stroke()
+            line([15, 15, 21, 21])
+        } else if (symbol === "copy") {
             c.strokeRect(8, 8, 13, 13); line([4, 16, 3, 16, 3, 3, 16, 3, 16, 4])
         } else if (symbol === "translate") {
             line([3, 6, 14, 6]); line([8, 3, 8, 6]); line([5, 8, 12, 15]); line([12, 6, 10, 11, 3, 16])

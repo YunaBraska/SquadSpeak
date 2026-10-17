@@ -414,6 +414,14 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Search channels</source>
+            <translation>Арналарды іздеу</translation>
+        </message>
+        <message>
+            <source>No matches</source>
+            <translation>Нәтиже жоқ</translation>
+        </message>
+        <message>
             <source>Copy address</source>
             <translation>Мекенжайды көшіру</translation>
         </message>

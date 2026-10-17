@@ -414,6 +414,14 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Search channels</source>
+            <translation>Sök kanaler</translation>
+        </message>
+        <message>
+            <source>No matches</source>
+            <translation>Inga träffar</translation>
+        </message>
+        <message>
             <source>Copy address</source>
             <translation>Kopiera adress</translation>
         </message>

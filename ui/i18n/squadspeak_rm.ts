@@ -414,6 +414,14 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Search channels</source>
+            <translation>Tschertgar chanals</translation>
+        </message>
+        <message>
+            <source>No matches</source>
+            <translation>Nagins resultats</translation>
+        </message>
+        <message>
             <source>Copy address</source>
             <translation>Copiar l'adressa</translation>
         </message>

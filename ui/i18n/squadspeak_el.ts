@@ -414,6 +414,14 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Search channels</source>
+            <translation>Αναζήτηση καναλιών</translation>
+        </message>
+        <message>
+            <source>No matches</source>
+            <translation>Δεν βρέθηκαν αποτελέσματα</translation>
+        </message>
+        <message>
             <source>Copy address</source>
             <translation>Αντιγραφή διεύθυνσης</translation>
         </message>

@@ -414,6 +414,14 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Search channels</source>
+            <translation>Cuardaigh cainéil</translation>
+        </message>
+        <message>
+            <source>No matches</source>
+            <translation>Gan torthaí</translation>
+        </message>
+        <message>
             <source>Copy address</source>
             <translation>Cóipeáil an seoladh</translation>
         </message>

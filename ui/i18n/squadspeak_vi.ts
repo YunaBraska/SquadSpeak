@@ -414,6 +414,14 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Search channels</source>
+            <translation>Tìm kênh</translation>
+        </message>
+        <message>
+            <source>No matches</source>
+            <translation>Không có kết quả</translation>
+        </message>
+        <message>
             <source>Copy address</source>
             <translation>Sao chép địa chỉ</translation>
         </message>

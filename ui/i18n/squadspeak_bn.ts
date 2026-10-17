@@ -414,6 +414,14 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Search channels</source>
+            <translation>চ্যানেল খুঁজুন</translation>
+        </message>
+        <message>
+            <source>No matches</source>
+            <translation>কোনো মিল নেই</translation>
+        </message>
+        <message>
             <source>Copy address</source>
             <translation>ঠিকানা কপি করো</translation>
         </message>

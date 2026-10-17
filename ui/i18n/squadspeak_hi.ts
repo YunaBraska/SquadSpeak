@@ -414,6 +414,14 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Search channels</source>
+            <translation>चैनल खोजें</translation>
+        </message>
+        <message>
+            <source>No matches</source>
+            <translation>कोई परिणाम नहीं</translation>
+        </message>
+        <message>
             <source>Copy address</source>
             <translation>पता कॉपी करो</translation>
         </message>

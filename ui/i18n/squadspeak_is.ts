@@ -414,6 +414,14 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Search channels</source>
+            <translation>Leita að rásum</translation>
+        </message>
+        <message>
+            <source>No matches</source>
+            <translation>Engar niðurstöður</translation>
+        </message>
+        <message>
             <source>Copy address</source>
             <translation>Afrita heimilisfang</translation>
         </message>

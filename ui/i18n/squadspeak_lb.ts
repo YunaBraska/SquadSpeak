@@ -414,6 +414,14 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Search channels</source>
+            <translation>Kanäl sichen</translation>
+        </message>
+        <message>
+            <source>No matches</source>
+            <translation>Keng Resultater</translation>
+        </message>
+        <message>
             <source>Copy address</source>
             <translation>Adress kopéieren</translation>
         </message>

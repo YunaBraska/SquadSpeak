@@ -414,6 +414,14 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Search channels</source>
+            <translation>Etsi kanavia</translation>
+        </message>
+        <message>
+            <source>No matches</source>
+            <translation>Ei tuloksia</translation>
+        </message>
+        <message>
             <source>Copy address</source>
             <translation>Kopioi osoite</translation>
         </message>

@@ -414,6 +414,14 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Search channels</source>
+            <translation>Tafuta chaneli</translation>
+        </message>
+        <message>
+            <source>No matches</source>
+            <translation>Hakuna matokeo</translation>
+        </message>
+        <message>
             <source>Copy address</source>
             <translation>Nakili anwani</translation>
         </message>

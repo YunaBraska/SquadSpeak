@@ -414,6 +414,14 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Search channels</source>
+            <translation>Kërko kanale</translation>
+        </message>
+        <message>
+            <source>No matches</source>
+            <translation>Nuk ka rezultate</translation>
+        </message>
+        <message>
             <source>Copy address</source>
             <translation>Kopjo adresën</translation>
         </message>

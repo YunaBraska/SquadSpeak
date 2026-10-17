@@ -414,6 +414,14 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Search channels</source>
+            <translation>Nemo tashoshi</translation>
+        </message>
+        <message>
+            <source>No matches</source>
+            <translation>Babu sakamako</translation>
+        </message>
+        <message>
             <source>Copy address</source>
             <translation>Kwafi adireshi</translation>
         </message>

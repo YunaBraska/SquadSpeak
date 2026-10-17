@@ -414,6 +414,14 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Search channels</source>
+            <translation>არხების ძებნა</translation>
+        </message>
+        <message>
+            <source>No matches</source>
+            <translation>შედეგები ვერ მოიძებნა</translation>
+        </message>
+        <message>
             <source>Copy address</source>
             <translation>მისამართის კოპირება</translation>
         </message>

@@ -414,6 +414,14 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Search channels</source>
+            <translation>Meklēt kanālus</translation>
+        </message>
+        <message>
+            <source>No matches</source>
+            <translation>Nav rezultātu</translation>
+        </message>
+        <message>
             <source>Copy address</source>
             <translation>Kopēt adresi</translation>
         </message>

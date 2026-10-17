@@ -170,6 +170,7 @@ TestCase {
         Qt.inputMethod.hide()
         tryCompare(Qt.inputMethod, "visible", false)
         for (const window of [view, controllerView]) {
+            window.searchOpen = false
             findChild(window, "remoteTargetsDialog").close()
             window.closeSettings()
             for (const action of ["autoJoinMenuItem", "inspectMember"]) {
@@ -487,6 +488,45 @@ TestCase {
         verify(icon !== null); verify(!icon.visible)
         verify(fixtures.setTestMusic(true)); tryCompare(icon, "visible", true)
         verify(fixtures.setTestMusic(false)); tryCompare(icon, "visible", false)
+    }
+
+    function test_channelSearchKeepsVoiceAndDraft_data() {
+        return [{tag: "desktop", width: 520, height: 700}, {tag: "compact", width: 360, height: 568}]
+    }
+    function test_channelSearchKeepsVoiceAndDraft(data) {
+        view.width = data.width; view.height = data.height
+        verify(fixtures.startHost()); verify(fixtures.startRemoteHost())
+        verify(channel.setChannelName("Workshop"))
+        verify(remoteChannel.setChannelName("Moonlight"))
+        verify(remoteSession.setUserName("River Otter"))
+        verify(remoteChannel.decide(channel.ownId, true))
+        verify(channel.openChat(remoteChannel.ownId, "127.0.0.1", remoteChannel.servicePort))
+        tryCompare(channel, "chatReady", true)
+        verify(channel.joinSaved(channel.ownId)); tryCompare(channel, "joined", true)
+        const draft = findChild(view, "chatDraft")
+        draft.text = "Keep this draft"
+        const toggle = findChild(view, "searchChannels")
+        verify(toggle !== null, "Channel search has a compact accessible entry point")
+        const search = findChild(view, "channelSearch")
+        verify(search !== null && !search.visible)
+        verify(fixtures.pressAccessible(toggle)); tryCompare(search, "visible", true)
+        search.text = "mOoNlIgHt"
+        tryVerify(function() { return visualChild(view.contentItem, "channelRow_" + channel.ownId) === null })
+        verify(visualChild(view.contentItem, "channelRow_" + remoteChannel.ownId) !== null)
+        compare(channel.joinedHostId, channel.ownId)
+        search.text = "River Otter"
+        verify(visualChild(view.contentItem, "channelRow_" + remoteChannel.ownId) !== null)
+        search.text = "no such channel"
+        tryCompare(findChild(view, "emptyChannelSearch"), "visible", true)
+        search.text = "moon"
+        verify(waitForRendering(view.contentItem))
+        if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/channel-search-" + data.tag + ".png"))
+        search.forceActiveFocus(); keyClick(Qt.Key_Escape)
+        tryCompare(search, "visible", false)
+        compare(search.text, "")
+        tryVerify(function() { return visualChild(view.contentItem, "channelRow_" + channel.ownId) !== null })
+        compare(channel.joinedHostId, channel.ownId)
+        compare(draft.text, "Keep this draft")
     }
 
     function test_discoveryExplainsNetworkAccessAndOpensPrivacySettings_data() {
@@ -1199,6 +1239,16 @@ TestCase {
                 return item.peerId === channel.ownId && item.online && item.hasMessages
             })
         }, 10000)
+        view.togglePrivateFolder(groupId)
+        verify(!view.privateFolderIsExpanded(groupId))
+        view.searchOpen = true
+        const search = findChild(view, "channelSearch")
+        search.text = remoteSession.userName
+        tryVerify(function() { return visualChild(view.contentItem, "channelRow_" + contact.id) !== null })
+        compare(channel.joinedHostId, channel.ownId)
+        view.searchOpen = false
+        verify(!view.privateFolderIsExpanded(groupId))
+        view.togglePrivateFolder(groupId)
         verify(waitForRendering(panel))
         if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/private-chat.png"))
         const folder = findChild(view.contentItem, "channelName_private-folder:" + groupId)

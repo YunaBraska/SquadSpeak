@@ -414,6 +414,14 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Search channels</source>
+            <translation>Cari kanal</translation>
+        </message>
+        <message>
+            <source>No matches</source>
+            <translation>Tidak ada hasil</translation>
+        </message>
+        <message>
             <source>Copy address</source>
             <translation>Salin alamat</translation>
         </message>
