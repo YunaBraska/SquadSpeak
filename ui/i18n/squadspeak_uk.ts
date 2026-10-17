@@ -2304,8 +2304,8 @@
             <translation>передача зображення тривала занадто довго.</translation>
         </message>
         <message>
-            <source>The channel is full. Text chat is still available.</source>
-            <translation>Канал переповнений. Текстовий чат все ще доступний.</translation>
+            <source>The host is busy. Try again shortly.</source>
+            <translation>Хост зайнятий. Спробуй ще раз трохи пізніше.</translation>
         </message>
         <message>
             <source>All own channels use the device's shared port.</source>
@@ -2755,10 +2755,6 @@
     </context>
     <context>
         <name>ScreenPanel</name>
-        <message>
-            <source>Media capacity reached</source>
-            <translation>обсяг носія досягнуто</translation>
-        </message>
         <message>
             <source>Video paused</source>
             <translation>відео призупинено</translation>

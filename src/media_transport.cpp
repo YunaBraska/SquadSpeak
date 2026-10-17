@@ -22,7 +22,10 @@ namespace squad {
 namespace {
 Q_LOGGING_CATEGORY(mediaTransportLog, "squadspeak.media.transport", QtWarningMsg)
 Q_LOGGING_CATEGORY(mediaSenderLog, "squadspeak.media.sender", QtWarningMsg)
-constexpr int maximumSources = 65;
+// Bound authenticated source metadata separately from queued audio bytes.
+// A 2 MiB roster cannot contain more distinct 64-byte device IDs.
+constexpr int maximumSources = 2 * 1024 * 1024 / 64;
+constexpr qsizetype maximumPendingAudio = 512 * 1024;
 constexpr int maximumOpus = 4000;
 constexpr int maximumDatagram = 1200;
 bool sourceId(const QString& id) {
@@ -66,7 +69,7 @@ struct MediaTransport::State final {
     qint64 attempted = 0;
     std::mutex mutex;
     std::deque<std::function<void()>> mailbox;
-    qsizetype queuedBytes = 0;
+    qsizetype queuedBytes = 0, pendingBytes = 0;
     size_t mailboxDrops = 0, lateFrames = 0, pendingDrops = 0;
 
     State(MediaTransport* value, bool offer, quint16 port, QHostAddress address, quint16 remote, Medium mode)
@@ -119,7 +122,7 @@ struct MediaTransport::State::Sender final {
     decltype(queues)::iterator turn = queues.end();
     size_t queued = 0;
     size_t processedCount = 0, expiredCount = 0, shedCount = 0, failureCount = 0, maximumQueued = 0;
-    Clock::time_point reportAt = Clock::now();
+    Clock::time_point reportAt = Clock::now(), overloadedUntil{};
     long long sendMicros = 0, maximumSendMicros = 0;
     std::map<std::pair<quintptr, quint32>, int> counts;
     std::array<rtc::Channel*, 2> active{};
@@ -148,6 +151,21 @@ struct MediaTransport::State::Sender final {
         } while (current != turn);
         return queues.end();
     }
+    bool samplePressure() {
+        const auto now = Clock::now();
+        int delayed = 0;
+        for (const auto& [channel, queue] : queues) {
+            if (!queue.empty() && queue.front().expires <= now && ++delayed == 2) break;
+        }
+        // One stalled destination is isolated by the second sender. Admission
+        // pauses only when work for multiple destinations misses its deadline.
+        if (delayed >= 2) overloadedUntil = now + std::chrono::seconds(5);
+        return now < overloadedUntil;
+    }
+    bool overloaded() {
+        std::lock_guard lock(mutex);
+        return samplePressure();
+    }
     void run(size_t worker) {
         // Speech expires after 120 ms. Mark this worker as latency-sensitive
         // even when the hosting app has no foreground window.
@@ -173,6 +191,7 @@ struct MediaTransport::State::Sender final {
             auto current = ready();
             turn = std::next(current);
             auto& queue = current->second;
+            if (queue.front().expires <= Clock::now()) samplePressure();
             uncount(queue.front());
             auto packet = std::move(queue.front()); queue.pop_front(); --queued;
             removeEmpty(current);
@@ -253,6 +272,7 @@ struct MediaTransport::State::Sender final {
         const auto key = std::pair{quintptr(channel.get()), ssrc};
         const auto count = counts.find(key);
         if (count != counts.end() && count->second == 6) {
+            samplePressure();
             auto& queue = queues.at(channel.get());
             const auto oldest = std::find_if(queue.begin(), queue.end(), [&](const Packet& packet) {
                 return packet.ssrc == ssrc;
@@ -486,6 +506,7 @@ bool MediaTransport::receive(const QJsonObject& message) {
         auto& stream = s.incoming[ssrc]; stream.source = id;
         stream.highest = (stream.highest < 0 ? start : stream.highest + qint16(start - quint16(stream.highest))) - 1;
         stream.delivered = stream.highest;
+        for (const auto& [serial, frame] : stream.pending) s.pendingBytes -= frame.bytes.size();
         stream.pending.clear();
         emit signaling({{"kind", "sourceAck"}, {"ssrc", double(ssrc)}, {"sequence", start}});
         return true;
@@ -534,6 +555,8 @@ bool MediaTransport::send(const QString& source, const QByteArray& opus, int mis
     return true;
 }
 
+bool MediaTransport::overloaded() { return State::sender().overloaded(); }
+
 bool MediaTransport::sendDatagram(const QByteArray& bytes) {
     return state_->medium == Medium::Data && !bytes.isEmpty() && bytes.size() <= 16384
         && udpActive() && state_->write(state_, bytes);
@@ -546,6 +569,7 @@ void MediaTransport::retainSources(const QStringList& sources) {
             if (!sources.contains(it->source)) State::sender().cancel(s.channel, it.key());
     for (auto* streams : {&s.incoming, &s.outgoing})
         for (auto& stream : *streams) if (!sources.contains(stream.source)) {
+            for (const auto& [serial, frame] : stream.pending) s.pendingBytes -= frame.bytes.size();
             stream.source.clear(); stream.confirmed = false; stream.pending.clear();
         }
 }
@@ -570,7 +594,12 @@ void MediaTransport::accept(quint32 ssrc, quint16 sequence, const QByteArray& op
     }
     if (datagram) { ++s.received; s.expected += quint32(stream.highest < 0 ? 1 : std::max<qint64>(0, serial - stream.highest)); }
     stream.highest = std::max(stream.highest, serial);
-    if (stream.pending.size() == 6) { stream.pending.erase(stream.pending.begin()); ++s.pendingDrops; }
+    if (stream.pending.size() == 6) {
+        s.pendingBytes -= stream.pending.begin()->second.bytes.size();
+        stream.pending.erase(stream.pending.begin()); ++s.pendingDrops;
+    }
+    if (s.pendingBytes + opus.size() > maximumPendingAudio) { ++s.pendingDrops; return; }
+    s.pendingBytes += opus.size();
     // Owner-thread stalls must not restart the network reorder interval.
     stream.pending.emplace(serial, State::Stream::Frame{opus, arrived + (datagram ? 20 : 0)});
     if (!timer_.isActive() || timer_.interval() != 5) timer_.start(5);
@@ -629,6 +658,7 @@ void MediaTransport::tick() {
                 || stream.pending.begin()->first == stream.delivered + 1
                 || stream.pending.begin()->second.due <= now)) {
             auto node = stream.pending.extract(stream.pending.begin());
+            s.pendingBytes -= node.mapped().bytes.size();
             const auto missing = stream.delivered < 0 ? 0 : int(std::min<qint64>(6, node.key() - stream.delivered - 1));
             stream.delivered = node.key();
             ready.append({it.key(), stream.source, std::move(node.mapped().bytes), missing});

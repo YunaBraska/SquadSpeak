@@ -2304,8 +2304,8 @@
             <translation>A képátvitel túl sokáig tartott.</translation>
         </message>
         <message>
-            <source>The channel is full. Text chat is still available.</source>
-            <translation>A csatorna megtelt. A szöveges csevegés továbbra is elérhető.</translation>
+            <source>The host is busy. Try again shortly.</source>
+            <translation>A gazdagép foglalt. Próbáld újra hamarosan.</translation>
         </message>
         <message>
             <source>All own channels use the device's shared port.</source>
@@ -2755,10 +2755,6 @@
     </context>
     <context>
         <name>ScreenPanel</name>
-        <message>
-            <source>Media capacity reached</source>
-            <translation>A médiakapacitás elérve</translation>
-        </message>
         <message>
             <source>Video paused</source>
             <translation>Videó szünetel</translation>

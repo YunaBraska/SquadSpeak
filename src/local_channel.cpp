@@ -27,10 +27,9 @@ namespace {
 Q_LOGGING_CATEGORY(mediaLog, "squadspeak.media", QtWarningMsg)
 Q_LOGGING_CATEGORY(connectionLog, "squadspeak.connection", QtWarningMsg)
 constexpr int maximumPendingPeers = 32;
-constexpr int maximumMediaParticipants = 64;
 constexpr std::array<int, 6> audioBitrates{128, 64, 32, 20, 12, 8};
-// Allow a simultaneous frame from all 64 sources while RTP bindings are
-// established. Keep reliable audio bounded below the general write limit.
+// Keep reliable audio bounded below the general write limit while RTP
+// bindings are established.
 constexpr qint64 maximumQueuedAudio = 128 * 1024;
 const QSet<QString> protocolCapabilities{
     QStringLiteral("udp-audio"), QStringLiteral("udp-screen"), QStringLiteral("adaptive-audio"), QStringLiteral("audio-64"), QStringLiteral("audio-stereo"), QStringLiteral("screen-share"), QStringLiteral("screen-audio"),
@@ -44,7 +43,8 @@ const QSet<QString> knownMessageTypes{
     QStringLiteral("remoteAction"), QStringLiteral("remoteActionResult"), QStringLiteral("remoteImage"),
     QStringLiteral("remoteImageGet"), QStringLiteral("remoteLevels"), QStringLiteral("remoteOffer"),
     QStringLiteral("remoteViewAck"), QStringLiteral("remoteViewChunk"), QStringLiteral("remoteViewEnd"),
-    QStringLiteral("remoteViewStart"), QStringLiteral("roster"), QStringLiteral("screenChunk"),
+    QStringLiteral("remoteViewStart"), QStringLiteral("roster"), QStringLiteral("rosterStart"),
+    QStringLiteral("rosterChunk"), QStringLiteral("rosterAck"), QStringLiteral("rosterEnd"), QStringLiteral("screenChunk"),
     QStringLiteral("screenMedia"), QStringLiteral("screenFrame"), QStringLiteral("screenHello"), QStringLiteral("screenLimit"), QStringLiteral("screenAck"),
     QStringLiteral("screenQuality"), QStringLiteral("screenAudio"), QStringLiteral("voiceLeave")};
 qint64 queuedBytes(const QSslSocket* socket) {
@@ -1476,8 +1476,11 @@ bool LocalChannel::acceptableCertificateErrors(const QList<QSslError>& errors) {
 }
 
 bool LocalChannel::writeMessage(QSslSocket* socket, const QJsonObject& object) {
+    return writeMessage(socket, QJsonDocument(object).toJson(QJsonDocument::Compact));
+}
+
+bool LocalChannel::writeMessage(QSslSocket* socket, const QByteArray& data) {
     if (!socket || !socket->isEncrypted()) return false;
-    const auto data = QJsonDocument(object).toJson(QJsonDocument::Compact);
     if (data.size() > maximumFrame || queuedBytes(socket) > 4 * maximumFrame) { socket->abort(); return false; }
     QByteArray frame(4, '\0');
     qToBigEndian<quint32>(quint32(data.size()), frame.data());
@@ -1581,10 +1584,18 @@ void LocalChannel::acceptPeer(QSslSocket* socket) {
         && peers_[socket].passwordVerified != QByteArray::fromBase64(security_.value("verifier").toString().toLatin1())) {
         requirePassword(socket); return;
     }
-    auto occupied = mediaParticipants(); occupied.remove(id);
-    if (!controller && !peers_[socket].observer && occupied.size() >= maximumMediaParticipants) {
+    // Reserve bounded snapshot memory, including maximum-length future profile
+    // edits. Replacing a device does not allocate another roster entry.
+    const auto rosterPeers = std::count_if(peers_.cbegin(), peers_.cend(), [&id](const auto& peer) {
+        return peer.joined && !peer.controller && peer.id != id;
+    });
+    const bool replacingVoice = std::any_of(peers_.cbegin(), peers_.cend(), [&id](const auto& peer) {
+        return peer.id == id && peer.joined && !peer.controller && !peer.observer;
+    });
+    if (!controller && ((rosterPeers + 2) * 2048 + maximumFrame > maximumSnapshot
+            || (!peers_[socket].observer && !replacingVoice && mediaOverloaded()))) {
         const bool wasPending = std::exchange(peers_[socket].pending, false);
-        writeMessage(socket, {{"type", "join"}, {"result", "full"}});
+        writeMessage(socket, {{"type", "join"}, {"result", "busy"}});
         finishPeer(socket);
         if (wasPending) emit requestsChanged();
         return;
@@ -1712,20 +1723,9 @@ void LocalChannel::hostMessage(QSslSocket* socket, const QJsonObject& message) {
     if (peers_[socket].controller) {
         if (type == "controlPing" && peers_[socket].pending) { writeMessage(socket, {{"type", "controlWait"}}); return; }
         if (type == "remoteViewAck") {
-            auto& peer = peers_[socket];
-            const auto offset = message.value("offset").toInteger(-1);
-            if (!peer.joined) { socket->abort(); return; }
-            if (!control_.value("controllers").toObject().value(id).toObject().value("remote").toBool()
-                || !peer.remoteSnapshotWaiting || message.value("id").toString() != peer.remoteSnapshotId) return;
-            if (offset != peer.remoteSnapshotOffset || message.value("offset").toDouble(-1) != double(offset)) { socket->abort(); return; }
-            peer.remoteSnapshotOffset += std::min<qint64>(remoteChunkSize, peer.remoteSnapshot.size() - peer.remoteSnapshotOffset);
-            if (peer.remoteSnapshotOffset >= peer.remoteSnapshot.size()) {
-                const auto snapshotId = peer.remoteSnapshotId;
-                const bool dirty = peer.remoteSnapshotDirty;
-                peer.remoteSnapshot.clear(); peer.remoteSnapshotWaiting = false; peer.remoteSnapshotDirty = false;
-                writeMessage(socket, {{"type", "remoteViewEnd"}, {"id", snapshotId}});
-                if (dirty) QTimer::singleShot(0, this, [this, guard = QPointer<QSslSocket>(socket)] { if (guard) sendRemoteView(guard); });
-            } else sendRemoteViewChunk(socket);
+            if (!peers_[socket].joined) { socket->abort(); return; }
+            if (control_.value("controllers").toObject().value(id).toObject().value("remote").toBool())
+                acknowledgeSnapshot(socket, message);
             return;
         }
         if (type == "remoteImageGet") {
@@ -1746,6 +1746,10 @@ void LocalChannel::hostMessage(QSslSocket* socket, const QJsonObject& message) {
         return;
     }
     if (!hosting()) { socket->abort(); return; }
+    if (type == "rosterAck") {
+        if (!peers_[socket].joined) { socket->abort(); return; }
+        acknowledgeSnapshot(socket, message); return;
+    }
     if (type == "ping" && !peers_[socket].name.isEmpty()) {
         writeMessage(socket, {{"type", "pong"}}); return;
     }
@@ -2038,7 +2042,7 @@ void LocalChannel::finishPeer(QSslSocket* socket) {
     it->closing = true; it->joined = false; it->pending = false;
     it->lastActivity = controlClock_.elapsed();
     it->buffer.clear(); it->imageRequest = {}; it->imageUpload.clear();
-    it->remoteSnapshot.clear(); it->remoteImageRequest = {}; it->relay.reset(); it->media.reset();
+    it->snapshot.clear(); it->snapshotRoster = {}; it->pendingRoster = {}; it->lastRoster = {}; it->remoteImageRequest = {}; it->relay.reset(); it->media.reset();
     endMembership(previous);
 }
 
@@ -2118,6 +2122,66 @@ QVariantMap LocalChannel::hostBot() const {
 
 bool LocalChannel::setRequestsAllowed(bool allowed) { return configureHost({{"requestsAllowed", allowed}}); }
 
+void LocalChannel::sendSnapshot(QSslSocket* socket, const QByteArray& bytes) {
+    auto& peer = peers_[socket];
+    peer.snapshot = bytes; peer.snapshotId = QUuid::createUuid().toString(QUuid::WithoutBraces);
+    peer.snapshotOffset = 0; peer.snapshotWaiting = true; peer.snapshotDirty = false;
+    const auto prefix = peer.controller ? QStringLiteral("remoteView") : QStringLiteral("roster");
+    if (writeMessage(socket, {{"type", prefix + "Start"}, {"id", peer.snapshotId}, {"size", bytes.size()}}))
+        sendSnapshotChunk(socket);
+}
+
+void LocalChannel::sendSnapshotChunk(QSslSocket* socket) {
+    const auto peer = peers_.constFind(socket);
+    if (peer == peers_.cend() || !peer->snapshotWaiting) return;
+    const auto prefix = peer->controller ? QStringLiteral("remoteView") : QStringLiteral("roster");
+    const auto chunk = peer->snapshot.mid(peer->snapshotOffset, snapshotChunkSize);
+    writeMessage(socket, {{"type", prefix + "Chunk"}, {"id", peer->snapshotId},
+        {"offset", peer->snapshotOffset}, {"data", QString::fromLatin1(chunk.toBase64())}});
+}
+
+void LocalChannel::acknowledgeSnapshot(QSslSocket* socket, const QJsonObject& message) {
+    auto& peer = peers_[socket];
+    if (!peer.snapshotWaiting || message.value("id").toString() != peer.snapshotId) { socket->abort(); return; }
+    const auto offset = message.value("offset").toInteger(-1);
+    if (offset != peer.snapshotOffset || message.value("offset").toDouble(-1) != double(offset)) { socket->abort(); return; }
+    peer.snapshotOffset += std::min<qint64>(snapshotChunkSize, peer.snapshot.size() - peer.snapshotOffset);
+    if (peer.snapshotOffset < peer.snapshot.size()) { sendSnapshotChunk(socket); return; }
+    const auto id = peer.snapshotId;
+    const bool controller = peer.controller, dirty = peer.snapshotDirty;
+    if (!controller) {
+        peer.lastRoster = std::exchange(peer.snapshotRoster, {});
+        QStringList sources;
+        for (const auto value : peer.lastRoster.value("members").toArray()) sources.append(value.toObject().value("id").toString());
+        if (peer.media) peer.media->retainSources(sources);
+    }
+    auto pending = std::exchange(peer.pendingRoster, {});
+    peer.snapshot.clear(); peer.snapshotWaiting = false; peer.snapshotDirty = false;
+    if (!writeMessage(socket, {{"type", controller ? "remoteViewEnd" : "rosterEnd"}, {"id", id}})) return;
+    if (controller && dirty) sendRemoteView(socket);
+    else if (!pending.isEmpty()) sendRoster(socket, pending);
+}
+
+void LocalChannel::sendRoster(QSslSocket* socket, const QJsonObject& roster, QByteArray bytes) {
+    auto& peer = peers_[socket];
+    if (peer.snapshotWaiting) {
+        auto departures = peer.pendingRoster.value("departures").toObject();
+        const auto latest = roster.value("departures").toObject();
+        for (auto it = latest.begin(); it != latest.end(); ++it) departures.insert(it.key(), it.value());
+        peer.pendingRoster = roster;
+        if (!departures.isEmpty()) peer.pendingRoster.insert("departures", departures);
+        return;
+    }
+    if (peer.lastRoster == roster) return;
+    if (bytes.isEmpty()) bytes = QJsonDocument(roster).toJson(QJsonDocument::Compact);
+    if (bytes.size() > maximumFrame) { peer.snapshotRoster = roster; sendSnapshot(socket, bytes); return; }
+    if (!writeMessage(socket, bytes)) return;
+    peer.lastRoster = roster;
+    QStringList sources;
+    for (const auto value : roster.value("members").toArray()) sources.append(value.toObject().value("id").toString());
+    if (peer.media) peer.media->retainSources(sources);
+}
+
 void LocalChannel::broadcastRoster() {
     if (rosterPending_) return;
     rosterPending_ = true;
@@ -2137,14 +2201,9 @@ void LocalChannel::broadcastRoster() {
         QJsonObject roster{{"type", "roster"}, {"host", channelId()}, {"name", channelName_}, {"members", members}, {"online", online}, {"profiles", profiles}, {"screen", screenSharing_}, {"screenAudio", screenAudio_}};
         roster.insert("ownerName", hostDisplayName());
         if (!departures.isEmpty()) roster.insert("departures", departures);
-        QStringList sources;
-        for (const auto& member : members) sources.append(member.toObject().value("id").toString());
-        for (auto* socket : peers_.keys()) if (peers_.value(socket).joined && !peers_.value(socket).controller) {
-            auto& peer = peers_[socket];
-            if (peer.lastRoster == roster) continue;
-            if (const auto media = peer.media) media->retainSources(sources);
-            if (writeMessage(socket, roster)) peer.lastRoster = roster;
-        }
+        const auto encoded = QJsonDocument(roster).toJson(QJsonDocument::Compact);
+        for (auto* socket : peers_.keys()) if (peers_.value(socket).joined && !peers_.value(socket).controller)
+            sendRoster(socket, roster, encoded);
         emit hostParticipantsChanged();
     });
 }
@@ -2396,7 +2455,7 @@ void LocalChannel::connectClient(Client& c) {
 }
 
 void LocalChannel::closeClient(Client& c) {
-    c.lastPresence = {};
+    c.lastPresence = {}; c.rosterBuffer.clear(); c.rosterId.clear(); c.rosterExpected = 0;
     if (c.teamSpeak) { c.accepted = false; c.voice = false; c.reconnectWanted = false; return; }
     if (!c.privatePeer.isEmpty()) {
         c.accepted = false; c.socket = nullptr; c.messages = {}; c.privateImages.clear(); c.historyRequest.clear();
@@ -2448,6 +2507,34 @@ void LocalChannel::clientMessage(Client& c, const QJsonObject& message) {
     const auto type = message.value("type").toString();
     if (c.accepted && unknownMessageType(type)) return;
     if (type == "pong") return;
+    if (type == "rosterStart" || type == "rosterChunk" || type == "rosterEnd") {
+        auto* socket = c.socket.data();
+        if (!socket) return;
+        if (!c.accepted) { socket->abort(); return; }
+        if (type == "rosterStart") {
+            const auto id = message.value("id").toString();
+            const auto size = message.value("size").toInteger(-1);
+            if (!c.rosterId.isEmpty() || QUuid(id).isNull() || size < 2 || size > maximumSnapshot
+                || message.value("size").toDouble(-1) != double(size)) { socket->abort(); return; }
+            c.rosterId = id; c.rosterExpected = size; c.rosterBuffer.clear(); return;
+        }
+        if (message.value("id").toString() != c.rosterId || c.rosterId.isEmpty()) { socket->abort(); return; }
+        if (type == "rosterChunk") {
+            const auto offset = message.value("offset").toInteger(-1);
+            const auto bytes = QByteArray::fromBase64Encoding(message.value("data").toString().toLatin1(), QByteArray::AbortOnBase64DecodingErrors);
+            if (offset != c.rosterBuffer.size() || message.value("offset").toDouble(-1) != double(offset)
+                || !bytes || bytes.decoded.isEmpty() || bytes.decoded.size() > snapshotChunkSize
+                || c.rosterBuffer.size() + bytes.decoded.size() > c.rosterExpected) { socket->abort(); return; }
+            c.rosterBuffer.append(bytes.decoded);
+            writeMessage(socket, {{"type", "rosterAck"}, {"id", c.rosterId}, {"offset", offset}}); return;
+        }
+        const auto document = QJsonDocument::fromJson(c.rosterBuffer);
+        if (c.rosterBuffer.size() != c.rosterExpected || !document.isObject() || document.object().value("type") != "roster") {
+            socket->abort(); return;
+        }
+        c.rosterBuffer.clear(); c.rosterId.clear(); c.rosterExpected = 0;
+        clientMessage(c, document.object()); return;
+    }
     if (type == "remoteOffer") {
         if (!c.accepted || !message.value("allowed").isBool()
             || (message.contains("available") && !message.value("available").isBool())
@@ -2526,7 +2613,7 @@ void LocalChannel::clientMessage(Client& c, const QJsonObject& message) {
             setClientStatus(c, {}); sendPresence();
         }
         else if (result == "pending") setClientStatus(c, tr("Waiting for host approval."));
-        else if (result == "full") setClientStatus(c, tr("The channel is full. Text chat is still available."), false);
+        else if (result == "busy") setClientStatus(c, tr("The host is busy. Try again shortly."), false);
         else if (result == "kicked" || result == "blocked") {
             if (c.voice && wasJoined) emit channelEvent(result == "kicked" ? "kick" : "ban");
             pausedAutoJoin_.insert(c.id);
@@ -2551,19 +2638,20 @@ void LocalChannel::clientMessage(Client& c, const QJsonObject& message) {
     } else if ((type == "chatKey" || type == "chat") && c.accepted) {
         clientChat(c, message);
     } else if (type == "roster" && c.accepted) {
-        if (message.value("host").toString() != c.id || !message.value("members").isArray()
+        if (!c.rosterId.isEmpty() || message.value("host").toString() != c.id || !message.value("members").isArray()
             || (message.contains("ownerName") && message.value("ownerName") != QJsonValue("") && !displayName(message.value("ownerName")))) {
             if (c.socket) c.socket->abort();
             return;
         }
         if (!validMembers(message.value("members"))) { if (c.socket) c.socket->abort(); return; }
         QStringList onlineIds;
+        QSet<QString> onlineSet;
         if (message.contains("online")) {
             if (!message.value("online").isArray()) { if (c.socket) c.socket->abort(); return; }
             for (const auto value : message.value("online").toArray()) {
                 const auto id = value.toString();
-                if (!validId(id) || onlineIds.contains(id)) { if (c.socket) c.socket->abort(); return; }
-                onlineIds.append(id);
+                if (!validId(id) || onlineSet.contains(id)) { if (c.socket) c.socket->abort(); return; }
+                onlineIds.append(id); onlineSet.insert(id);
             }
         }
         c.screenAvailable = message.value("screen").toBool()
@@ -2578,7 +2666,7 @@ void LocalChannel::clientMessage(Client& c, const QJsonObject& message) {
             QHash<QString, QJsonObject> profiles;
             for (const auto value : message.value("profiles").toArray()) {
                 const auto profile = value.toObject(); const auto id = profile.value("id").toString();
-                if (!onlineIds.contains(id) || profiles.contains(id) || !displayName(profile.value("name"))
+                if (!onlineSet.contains(id) || profiles.contains(id) || !displayName(profile.value("name"))
                     || !VoiceSession::validAvatar(profile.value("avatar").toString())
                     || !VoiceSession::validAvatar(profile.value("avatarId").toString())) {
                     if (c.socket) c.socket->abort();

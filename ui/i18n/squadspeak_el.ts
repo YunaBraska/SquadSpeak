@@ -2304,8 +2304,8 @@
             <translation>Η μεταφορά εικόνας κράτησε πολύ.</translation>
         </message>
         <message>
-            <source>The channel is full. Text chat is still available.</source>
-            <translation>Το κανάλι είναι γεμάτο. Η συνομιλία με κείμενο είναι ακόμα διαθέσιμη.</translation>
+            <source>The host is busy. Try again shortly.</source>
+            <translation>Ο κεντρικός υπολογιστής είναι απασχολημένος. Δοκίμασε ξανά σε λίγο.</translation>
         </message>
         <message>
             <source>All own channels use the device's shared port.</source>
@@ -2755,10 +2755,6 @@
     </context>
     <context>
         <name>ScreenPanel</name>
-        <message>
-            <source>Media capacity reached</source>
-            <translation>Συμπληρώθηκε η χωρητικότητα των μέσων</translation>
-        </message>
         <message>
             <source>Video paused</source>
             <translation>Το βίντεο διακόπηκε</translation>

@@ -2304,8 +2304,8 @@
             <translation>Aikin canja hoton ya ɗauki lokaci mai yawa.</translation>
         </message>
         <message>
-            <source>The channel is full. Text chat is still available.</source>
-            <translation>Tashar ta cika. Har yanzu ana iya amfani da tattaunawar rubutu.</translation>
+            <source>The host is busy. Try again shortly.</source>
+            <translation>Mai masauki yana aiki. Sake gwadawa nan da ɗan lokaci.</translation>
         </message>
         <message>
             <source>All own channels use the device's shared port.</source>
@@ -2755,10 +2755,6 @@
     </context>
     <context>
         <name>ScreenPanel</name>
-        <message>
-            <source>Media capacity reached</source>
-            <translation>An cika aikin kunna abubuwa</translation>
-        </message>
         <message>
             <source>Video paused</source>
             <translation>Bidiyon ya dade</translation>

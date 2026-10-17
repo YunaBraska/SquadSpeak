@@ -2304,8 +2304,8 @@
             <translation>Кескінді тасымалдау тым ұзаққа созылды.</translation>
         </message>
         <message>
-            <source>The channel is full. Text chat is still available.</source>
-            <translation>Арна толы. Мәтіндік чат әлі де қолжетімді.</translation>
+            <source>The host is busy. Try again shortly.</source>
+            <translation>Хост бос емес. Біраздан кейін қайталап көр.</translation>
         </message>
         <message>
             <source>All own channels use the device's shared port.</source>
@@ -2755,10 +2755,6 @@
     </context>
     <context>
         <name>ScreenPanel</name>
-        <message>
-            <source>Media capacity reached</source>
-            <translation>медиа сыйымдылығына жетті</translation>
-        </message>
         <message>
             <source>Video paused</source>
             <translation>Бейне кідіртілді</translation>

@@ -2304,8 +2304,8 @@
             <translation>छवि ट्रांसफर में बहुत समय लगा.</translation>
         </message>
         <message>
-            <source>The channel is full. Text chat is still available.</source>
-            <translation>चैनल भरा हुआ है. टेक्स्ट चैट अभी भी उपलब्ध है.</translation>
+            <source>The host is busy. Try again shortly.</source>
+            <translation>होस्ट व्यस्त है। थोड़ी देर में फिर कोशिश करें।</translation>
         </message>
         <message>
             <source>All own channels use the device's shared port.</source>
@@ -2755,10 +2755,6 @@
     </context>
     <context>
         <name>ScreenPanel</name>
-        <message>
-            <source>Media capacity reached</source>
-            <translation>मीडिया क्षमता पूरी हो गई</translation>
-        </message>
         <message>
             <source>Video paused</source>
             <translation>वीडियो रुका हुआ है</translation>

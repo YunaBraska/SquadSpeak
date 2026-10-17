@@ -364,7 +364,7 @@ void LocalChannel::sendRemoteView(QSslSocket* socket) {
         if (!peers_.value(peerSocket).controller || !peers_.value(peerSocket).joined
             || !controllers.value(peers_.value(peerSocket).id).toObject().value("remote").toBool()
             || (peers_.value(peerSocket).capabilitiesAdvertised && !peers_.value(peerSocket).capabilities.contains("remote-control"))) continue;
-        if (peers_.value(peerSocket).remoteSnapshotWaiting) { peers_[peerSocket].remoteSnapshotDirty = true; continue; }
+        if (peers_.value(peerSocket).snapshotWaiting) { peers_[peerSocket].snapshotDirty = true; continue; }
         if (encoded.isEmpty()) {
             const QVariantMap view{{"channels", savedChannels()}, {"participants", participants()},
                 {"privateChats", privateChats()}, {"privateChat", privateChat()}, {"teamSpeakChat", teamSpeakChat()},
@@ -391,22 +391,9 @@ void LocalChannel::sendRemoteView(QSslSocket* socket) {
             view.insert("chatLifetimeDays", std::min(view.value("chatLifetimeDays").toInt(), 30));
             snapshot = QJsonDocument(view).toJson(QJsonDocument::Compact);
         }
-        if (snapshot.size() > maximumRemoteView) { peerSocket->abort(); continue; }
-        auto& peer = peers_[peerSocket];
-        peer.remoteSnapshot = snapshot; peer.remoteSnapshotId = QUuid::createUuid().toString(QUuid::WithoutBraces);
-        peer.remoteSnapshotOffset = 0; peer.remoteSnapshotWaiting = true; peer.remoteSnapshotDirty = false;
-        const auto snapshotId = peer.remoteSnapshotId;
-        if (writeMessage(peerSocket, {{"type", "remoteViewStart"}, {"id", snapshotId}, {"size", snapshot.size()}}))
-            sendRemoteViewChunk(peerSocket);
+        if (snapshot.size() > maximumSnapshot) { peerSocket->abort(); continue; }
+        sendSnapshot(peerSocket, snapshot);
     }
-}
-
-void LocalChannel::sendRemoteViewChunk(QSslSocket* socket) {
-    const auto peer = peers_.constFind(socket);
-    if (peer == peers_.cend() || !peer->remoteSnapshotWaiting) return;
-    const auto chunk = peer->remoteSnapshot.mid(peer->remoteSnapshotOffset, remoteChunkSize);
-    writeMessage(socket, {{"type", "remoteViewChunk"}, {"id", peer->remoteSnapshotId},
-        {"offset", peer->remoteSnapshotOffset}, {"data", QString::fromLatin1(chunk.toBase64())}});
 }
 
 bool LocalChannel::applyRemoteView(const QByteArray& bytes) {
@@ -574,7 +561,7 @@ void LocalChannel::controlMessage(const QJsonObject& message) {
         if (!remoteMode() || !remoteAllowed_ || !controlConnected_) { blockControl(tr("Remote view is not authorized.")); return; }
         if (type == "remoteViewStart") {
             const auto id = message.value("id").toString(); const auto size = message.value("size").toInteger(-1);
-            if (!remoteSnapshotId_.isEmpty() || QUuid(id).isNull() || size < 2 || size > maximumRemoteView
+            if (!remoteSnapshotId_.isEmpty() || QUuid(id).isNull() || size < 2 || size > maximumSnapshot
                 || message.value("size").toDouble(-1) != double(size)) { blockControl(tr("Invalid remote view.")); return; }
             remoteSnapshotId_ = id; remoteSnapshotExpected_ = size; remoteSnapshotBuffer_.clear(); return;
         }
@@ -582,7 +569,7 @@ void LocalChannel::controlMessage(const QJsonObject& message) {
             const auto id = message.value("id").toString(); const auto offset = message.value("offset").toInteger(-1);
             const auto bytes = QByteArray::fromBase64Encoding(message.value("data").toString().toLatin1(), QByteArray::AbortOnBase64DecodingErrors);
             if (id != remoteSnapshotId_ || id.isEmpty() || offset != remoteSnapshotBuffer_.size() || message.value("offset").toDouble(-1) != double(offset)
-                || !bytes || bytes.decoded.isEmpty() || bytes.decoded.size() > remoteChunkSize || remoteSnapshotExpected_ < 0
+                || !bytes || bytes.decoded.isEmpty() || bytes.decoded.size() > snapshotChunkSize || remoteSnapshotExpected_ < 0
                 || remoteSnapshotBuffer_.size() + bytes.decoded.size() > remoteSnapshotExpected_) { blockControl(tr("Invalid remote view chunk.")); return; }
             remoteSnapshotBuffer_.append(bytes.decoded);
             writeMessage(controller_, {{"type", "remoteViewAck"}, {"id", id}, {"offset", offset}}); return;

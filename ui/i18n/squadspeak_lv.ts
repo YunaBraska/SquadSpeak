@@ -2304,8 +2304,8 @@
             <translation>attēla pārsūtīšana aizņēma pārāk ilgu laiku.</translation>
         </message>
         <message>
-            <source>The channel is full. Text chat is still available.</source>
-            <translation>kanāls ir pilns. Teksta tērzēšana joprojām ir pieejama.</translation>
+            <source>The host is busy. Try again shortly.</source>
+            <translation>Resursdators ir aizņemts. Pēc brīža mēģini vēlreiz.</translation>
         </message>
         <message>
             <source>All own channels use the device's shared port.</source>
@@ -2755,10 +2755,6 @@
     </context>
     <context>
         <name>ScreenPanel</name>
-        <message>
-            <source>Media capacity reached</source>
-            <translation>sasniegta multivides ietilpība</translation>
-        </message>
         <message>
             <source>Video paused</source>
             <translation>video ir apturēts</translation>

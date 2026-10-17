@@ -2304,8 +2304,8 @@
             <translation>Il transferiment dals maletgs ha durà memia ditg.</translation>
         </message>
         <message>
-            <source>The channel is full. Text chat is still available.</source>
-            <translation>Il chanal è emplenì. Il chat è vinavant disponibel.</translation>
+            <source>The host is busy. Try again shortly.</source>
+            <translation>Il host è occupà. Emprova anc ina giada prest.</translation>
         </message>
         <message>
             <source>All own channels use the device's shared port.</source>
@@ -2755,10 +2755,6 @@
     </context>
     <context>
         <name>ScreenPanel</name>
-        <message>
-            <source>Media capacity reached</source>
-            <translation>L'arcun da medias è plain</translation>
-        </message>
         <message>
             <source>Video paused</source>
             <translation>Video Pausa</translation>

@@ -2304,8 +2304,8 @@
             <translation>Kuvan siirto kesti liian kauan.</translation>
         </message>
         <message>
-            <source>The channel is full. Text chat is still available.</source>
-            <translation>Kanava on täynnä. Tekstichat on edelleen käytettävissä.</translation>
+            <source>The host is busy. Try again shortly.</source>
+            <translation>Isäntä on varattu. Yritä hetken kuluttua uudelleen.</translation>
         </message>
         <message>
             <source>All own channels use the device's shared port.</source>
@@ -2755,10 +2755,6 @@
     </context>
     <context>
         <name>ScreenPanel</name>
-        <message>
-            <source>Media capacity reached</source>
-            <translation>Mediatila täynnä</translation>
-        </message>
         <message>
             <source>Video paused</source>
             <translation>Video pysäytetty</translation>

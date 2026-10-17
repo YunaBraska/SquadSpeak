@@ -2304,8 +2304,8 @@
             <translation>Ghlac aistriú íomhá ró-fhada.</translation>
         </message>
         <message>
-            <source>The channel is full. Text chat is still available.</source>
-            <translation>Tá an cainéal lán. Tá comhrá téacs ar fáil fós.</translation>
+            <source>The host is busy. Try again shortly.</source>
+            <translation>Tá an t-óstach gnóthach. Bain triail eile as go luath.</translation>
         </message>
         <message>
             <source>All own channels use the device's shared port.</source>
@@ -2755,10 +2755,6 @@
     </context>
     <context>
         <name>ScreenPanel</name>
-        <message>
-            <source>Media capacity reached</source>
-            <translation>Acmhainn meán sroichte</translation>
-        </message>
         <message>
             <source>Video paused</source>
             <translation>Físeán ar sos</translation>

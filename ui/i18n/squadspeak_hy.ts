@@ -2304,8 +2304,8 @@
             <translation>Պատկերի փոխանցումը չափազանց երկար տևեց:</translation>
         </message>
         <message>
-            <source>The channel is full. Text chat is still available.</source>
-            <translation>Ալիքը լիքն է։ Տեքստային զրույցը դեռ հասանելի է:</translation>
+            <source>The host is busy. Try again shortly.</source>
+            <translation>Հոսթը զբաղված է։ Մի փոքր անց նորից փորձիր։</translation>
         </message>
         <message>
             <source>All own channels use the device's shared port.</source>
@@ -2755,10 +2755,6 @@
     </context>
     <context>
         <name>ScreenPanel</name>
-        <message>
-            <source>Media capacity reached</source>
-            <translation>ԶԼՄ-ների հզորությունը հասել է</translation>
-        </message>
         <message>
             <source>Video paused</source>
             <translation>Տեսանյութը դադարեցված է</translation>

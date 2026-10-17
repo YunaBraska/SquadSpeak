@@ -24,17 +24,6 @@ bool validFormat(const QJsonObject& format) {
 }
 }
 
-QSet<QString> LocalChannel::mediaParticipants() const {
-    if (service_) return service_->mediaParticipants();
-    QSet<QString> ids;
-    const auto collect = [&ids](const LocalChannel& channel) {
-        for (const auto& peer : channel.peers_) if (peer.joined && !peer.controller && !peer.observer) ids.insert(peer.id);
-        for (const auto& viewer : channel.viewers_) ids.insert(viewer.id);
-    };
-    collect(*this); for (const auto& child : owned_) collect(*child);
-    return ids;
-}
-
 bool LocalChannel::screenBusy(const Client* receiver, const LocalChannel* sender) const {
     const auto* root = service_ ? service_ : this;
     const auto occupied = [receiver, sender](const LocalChannel& channel) {
@@ -83,15 +72,20 @@ void LocalChannel::closeViewers(const QString& id) {
     for (auto* socket : viewers_.keys()) if (id.isEmpty() || viewers_.value(socket).id == id) socket->abort();
 }
 
+bool LocalChannel::mediaOverloaded() const {
+    const auto* host = service_ ? service_ : this;
+    return host->controlClock_.elapsed() < host->mediaBusyUntil_ || squad::MediaTransport::overloaded();
+}
+
 void LocalChannel::acceptViewer(QSslSocket* socket, int minimumTier, bool audioAllowed, bool audio, bool udp) {
     if (minimumTier < 0 || minimumTier > 3) { socket->abort(); return; }
     const auto id = peers_.value(socket).id;
     const auto admitted = std::any_of(peers_.cbegin(), peers_.cend(), [&id](const auto& peer) {
         return peer.id == id && peer.joined && !peer.controller;
     });
-    auto occupied = mediaParticipants(); occupied.remove(id);
-    if (!screenSharing_ || !admitted || occupied.size() >= 64) {
-        writeMessage(socket, {{"type", "screenQuality"}, {"tier", -1}, {"result", admitted && screenSharing_ ? "full" : "unavailable"}});
+    const bool replacingViewer = std::any_of(viewers_.cbegin(), viewers_.cend(), [&id](const auto& viewer) { return viewer.id == id; });
+    if (!screenSharing_ || !admitted || (!replacingViewer && mediaOverloaded())) {
+        writeMessage(socket, {{"type", "screenQuality"}, {"tier", -1}, {"result", admitted && screenSharing_ ? "busy" : "unavailable"}});
         finishPeer(socket); return;
     }
     closeViewers(id);
@@ -143,6 +137,8 @@ bool LocalChannel::reportScreenEncodeTime(int milliseconds) {
     if (milliseconds >= 1000) slowScreenEncodes_ = 2;
     if (++slowScreenEncodes_ < 3) return true;
     slowScreenEncodes_ = 0;
+    auto* host = service_ ? service_ : this;
+    host->mediaBusyUntil_ = host->controlClock_.elapsed() + 5000;
     for (auto* socket : viewers_.keys()) {
         auto& v = viewers_[socket];
         if (v.tier == 4 || v.waiting) continue;

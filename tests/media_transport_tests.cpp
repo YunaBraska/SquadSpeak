@@ -1,4 +1,6 @@
 #include "media_transport.hpp"
+#include "local_channel.hpp"
+#include <QTemporaryDir>
 #include "event_wait.hpp"
 #include <QSignalSpy>
 #include <QElapsedTimer>
@@ -88,6 +90,7 @@ class SendGate final {
         std::mutex mutex;
         std::condition_variable changed;
         bool entered = false, released = false, onOwner = false;
+        int remaining = 1;
         std::vector<int> packetSizes;
         size_t received = 0;
         std::string boundary = "Protected SRTP packet, size=";
@@ -108,7 +111,8 @@ class SendGate final {
             const auto size = message.find("size=");
             s->packetSizes.push_back(size == std::string::npos ? 0 : std::stoi(message.substr(size + 5)));
             s->changed.notify_all();
-            if (s->entered) return;
+            if (s->remaining == 0) return;
+            --s->remaining;
             s->entered = true;
             s->onOwner = std::this_thread::get_id() == s->owner;
             if (!s->onOwner) s->changed.wait(lock, [&] { return s->released; });
@@ -127,7 +131,8 @@ class SendGate final {
     const std::shared_ptr<State> state_ = std::make_shared<State>();
 public:
     static void initialize() { rtc::InitLogger(rtc::LogLevel::Info); observer(); }
-    explicit SendGate(std::string boundary = "Protected SRTP packet, size=") {
+    explicit SendGate(std::string boundary = "Protected SRTP packet, size=", int blockedSenders = 1) {
+        state_->remaining = blockedSenders;
         state_->boundary = std::move(boundary);
         std::atomic_store(&observer().state, state_);
         rtc::InitLogger(rtc::LogLevel::Verbose);
@@ -363,11 +368,17 @@ private slots:
         QSignalSpy atHost(&host, &squad::MediaTransport::audio), atClient(&client, &squad::MediaTransport::audio);
         QTRY_VERIFY_WITH_TIMEOUT(host.udpActive() && client.udpActive(), 10000);
         const auto packet = speech(); QVERIFY(!packet.isEmpty());
-        QVERIFY(host.send(first, packet)); QVERIFY(host.send(second, packet)); QVERIFY(client.send(first, packet));
-        QTRY_COMPARE(atClient.size(), 2); QTRY_COMPARE(atHost.size(), 1);
-        QCOMPARE(atClient.at(0).at(1).toByteArray(), packet); QCOMPARE(atClient.at(1).at(1).toByteArray(), packet);
-        QSet<QString> sources{atClient.at(0).at(0).toString(), atClient.at(1).at(0).toString()};
-        QCOMPARE(sources, (QSet<QString>{first, second})); QCOMPARE(fallback, 0); QVERIFY(valid);
+        QSet<QString> sources;
+        for (int index = 0; index < 70; ++index) {
+            const auto source = QString("%1").arg(index, 64, 16, QLatin1Char('0'));
+            QVERIFY(host.send(source, packet));
+            QTRY_COMPARE(atClient.size(), index + 1);
+            QCOMPARE(atClient.last().at(0).toString(), source);
+            QCOMPARE(atClient.last().at(1).toByteArray(), packet);
+            sources.insert(source);
+        }
+        QVERIFY(client.send(first, packet)); QTRY_COMPARE(atHost.size(), 1);
+        QCOMPARE(sources.size(), 70); QCOMPARE(fallback, 0); QVERIFY(valid);
     }
     void datagramLossTamperingReplayAndRecovery() {
         DatagramLink link(0);
@@ -528,6 +539,26 @@ private slots:
         QCOMPARE(heard.last().at(1).toByteArray(), packet);
         QCOMPARE(heard.last().at(2).toInt(), 0);
     }
+    void audioPlayoutMemoryStaysBoundedAcrossSources() {
+        squad::MediaTransport client(false, 0, QHostAddress::LocalHost, 0);
+        auto packet = speech(); const auto size = packet.size(); packet.resize(4000);
+        QCOMPARE(opus_packet_pad(reinterpret_cast<unsigned char*>(packet.data()), int(size), int(packet.size())), OPUS_OK);
+        const auto encoded = QString::fromLatin1(packet.toBase64());
+        QSignalSpy heard(&client, &squad::MediaTransport::audio);
+        for (int index = 1; index <= 200; ++index) {
+            const auto id = QString::number(index, 16).rightJustified(64, '0');
+            QVERIFY(client.receive({{"kind", "source"}, {"ssrc", index}, {"id", id}, {"sequence", 1}}));
+            QVERIFY(client.receive({{"kind", "frame"}, {"ssrc", index}, {"sequence", 1}, {"data", encoded}}));
+        }
+        // No event-loop turn was allowed above, so all input competes for the
+        // same bounded playout window. Excess work is shed, not accumulated.
+        QTRY_COMPARE(heard.size(), (512 * 1024) / 4000);
+        client.retainSources({}); heard.clear();
+        QVERIFY(client.receive({{"kind", "source"}, {"ssrc", 1}, {"id", first}, {"sequence", 2}}));
+        QVERIFY(client.receive({{"kind", "frame"}, {"ssrc", 1}, {"sequence", 2}, {"data", encoded}}));
+        QTRY_COMPARE(heard.size(), 1);
+    }
+
     void sourceChurnReusesBoundedEncryptedStreams() {
         const auto port = availableUdpPort(); QVERIFY(port);
         squad::MediaTransport host(true, port, QHostAddress::LocalHost, 0), client(false, 0, QHostAddress::LocalHost, port);
@@ -678,6 +709,67 @@ private slots:
         const auto position = std::find(sizes.begin(), sizes.end(), sizes.front() + 100);
         QVERIFY(position != sizes.end());
         QCOMPARE(position - sizes.begin(), 1);
+    }
+    void hostProtectsExistingMediaDuringSharedSenderOverload_data() {
+        QTest::addColumn<int>("blockedSenders");
+        QTest::newRow("one-slow-connection") << 1;
+        QTest::newRow("shared-sender-stalled") << 2;
+    }
+    void hostProtectsExistingMediaDuringSharedSenderOverload() {
+        QFETCH(int, blockedSenders);
+        QTemporaryDir dir;
+        VoiceSession hostSession(dir.filePath("host")), guestSession(dir.filePath("guest"));
+        LocalChannel owner(hostSession, dir.filePath("host.channel"), TlsIdentity::create());
+        LocalChannel guest(guestSession, dir.filePath("guest.channel"), TlsIdentity::create());
+        QVERIFY(owner.listen(QHostAddress::LocalHost));
+        QVERIFY(owner.decide(guest.ownId(), true));
+        QVERIFY(owner.join(owner.ownId(), "127.0.0.1", owner.port())); QTRY_VERIFY(owner.joined());
+        QVERIFY(owner.setScreenSharing(true));
+        QVERIFY(guest.openChat(owner.ownId(), "127.0.0.1", owner.port())); QTRY_VERIFY(guest.chatReady());
+        QTRY_VERIFY(guest.screenInfo(owner.ownId()).value("available").toBool());
+        const auto port = availableUdpPort(); QVERIFY(port);
+        squad::MediaTransport sender(true, port, QHostAddress::LocalHost, 0);
+        squad::MediaTransport receiver(false, 0, QHostAddress::LocalHost, port);
+        connect(&sender, &squad::MediaTransport::signaling, &receiver, [&](const auto& m) { QVERIFY(receiver.receive(m)); });
+        connect(&receiver, &squad::MediaTransport::signaling, &sender, [&](const auto& m) { QVERIFY(sender.receive(m)); });
+        QTRY_VERIFY(sender.udpActive() && receiver.udpActive());
+        const auto packet = speech();
+        QSignalSpy delivered(&receiver, &squad::MediaTransport::audio);
+        QVERIFY(sender.send(first, packet)); QTRY_COMPARE(delivered.size(), 1);
+        SendGate gate("Protected SRTP packet, size=", blockedSenders);
+        QVERIFY(sender.send(first, packet));
+        QVERIFY(waitForEvents([&] { return gate.entered(); }, 1000));
+        for (int i = 0; i < 6; ++i) QVERIFY(sender.send(first, packet));
+        QVERIFY(receiver.send(second, packet));
+        QVERIFY(gate.waitForPackets(2));
+        for (int i = 0; i < 6; ++i) QVERIFY(receiver.send(second, packet));
+        QElapsedTimer deadline; deadline.start();
+        // Expire actual queued RTP packets while keeping the UI/network thread running.
+        QVERIFY(waitForEvents([&] { return deadline.elapsed() >= 200; }, 2000));
+        QVERIFY(guest.watchScreen(owner.ownId(), true));
+        if (blockedSenders == 2) {
+            QTRY_COMPARE(guest.screenInfo(owner.ownId()).value("status").toString(), QString("busy"));
+            QVERIFY(guest.chatReady());
+            QVERIFY(guest.sendChat("Chat remains available during overload")); QTRY_VERIFY(!guest.chatPending());
+        } else QTRY_COMPARE(guest.screenInfo(owner.ownId()).value("tier").toInt(), 1);
+        QVERIFY(guest.join(owner.ownId(), "127.0.0.1", owner.port()));
+        if (blockedSenders == 2) {
+            QTRY_VERIFY(guest.status().contains("busy"));
+            QVERIFY(!guest.joined());
+        } else QTRY_VERIFY(guest.joined());
+        QVERIFY(owner.joined());
+        gate.release();
+        if (blockedSenders == 2) {
+            QTimer retry;
+            connect(&retry, &QTimer::timeout, &guest, [&] {
+                if (!guest.joined()) guest.join(owner.ownId(), "127.0.0.1", owner.port());
+            });
+            retry.start(250);
+            QTRY_VERIFY_WITH_TIMEOUT(guest.joined(), 10000);
+            QVERIFY(guest.watchScreen(owner.ownId(), true));
+            QTRY_COMPARE(guest.screenInfo(owner.ownId()).value("tier").toInt(), 1);
+        }
+        QVERIFY(owner.joined());
     }
     void queuedAudioCannotOutliveItsSourceOrDeadline_data() {
         QTest::addColumn<bool>("removeSource");

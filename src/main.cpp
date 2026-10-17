@@ -361,8 +361,10 @@ int main(int argc, char** argv) {
             if (!audio.selectInput("")) return 1;
             showChannels();
             if (!session.available()) return 1;
-            QMetaObject::invokeMethod(channels, "openSettings", Q_ARG(QVariant, 1));
-            if (session.available()) return 1;
+            if (!QMetaObject::invokeMethod(channels, "openSettings", Q_ARG(QVariant, 1)) || !session.available()) {
+                qCritical("UI smoke: audio settings must preserve voice availability");
+                return 1;
+            }
             QTimer::singleShot(1000, &app, [&app, &arguments, &session, channels] {
                 qInfo("UI smoke: capturing settings");
                 const auto output = arguments.value("screenshot");

@@ -2304,8 +2304,8 @@
             <translation>图片传输耗时过长.</translation>
         </message>
         <message>
-            <source>The channel is full. Text chat is still available.</source>
-            <translation>频道已满. 文字聊天仍可使用.</translation>
+            <source>The host is busy. Try again shortly.</source>
+            <translation>主机繁忙，请稍后重试。</translation>
         </message>
         <message>
             <source>All own channels use the device's shared port.</source>
@@ -2755,10 +2755,6 @@
     </context>
     <context>
         <name>ScreenPanel</name>
-        <message>
-            <source>Media capacity reached</source>
-            <translation>已达到媒体容量</translation>
-        </message>
         <message>
             <source>Video paused</source>
             <translation>视频已暂停</translation>

@@ -2304,8 +2304,8 @@
             <translation>استغرق نقل الصورة وقتًا طويلًا.</translation>
         </message>
         <message>
-            <source>The channel is full. Text chat is still available.</source>
-            <translation>القناة ممتلئة. لا تزال الدردشة النصية متاحة.</translation>
+            <source>The host is busy. Try again shortly.</source>
+            <translation>المضيف مشغول. حاول مجددا بعد قليل.</translation>
         </message>
         <message>
             <source>All own channels use the device's shared port.</source>
@@ -2755,10 +2755,6 @@
     </context>
     <context>
         <name>ScreenPanel</name>
-        <message>
-            <source>Media capacity reached</source>
-            <translation>تم بلوغ سعة الوسائط</translation>
-        </message>
         <message>
             <source>Video paused</source>
             <translation>تم إيقاف الفيديو مؤقتا</translation>

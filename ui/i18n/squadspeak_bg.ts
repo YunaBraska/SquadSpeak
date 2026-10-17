@@ -2304,8 +2304,8 @@
             <translation>Прехвърлянето на изображението отне прекалено много време.</translation>
         </message>
         <message>
-            <source>The channel is full. Text chat is still available.</source>
-            <translation>Каналът е пълен. Текстовият чат все още е наличен.</translation>
+            <source>The host is busy. Try again shortly.</source>
+            <translation>Хостът е зает. Опитай отново след малко.</translation>
         </message>
         <message>
             <source>All own channels use the device's shared port.</source>
@@ -2755,10 +2755,6 @@
     </context>
     <context>
         <name>ScreenPanel</name>
-        <message>
-            <source>Media capacity reached</source>
-            <translation>Достигнат лимит на медиите</translation>
-        </message>
         <message>
             <source>Video paused</source>
             <translation>Видеоклипът е спрян</translation>

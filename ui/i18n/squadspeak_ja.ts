@@ -2304,8 +2304,8 @@
             <translation>画像転送に時間がかかりすぎました.</translation>
         </message>
         <message>
-            <source>The channel is full. Text chat is still available.</source>
-            <translation>チャンネルは満員です. テキストチャットは引き続き利用できます.</translation>
+            <source>The host is busy. Try again shortly.</source>
+            <translation>ホストが混雑しています。少し待ってから再試行してください。</translation>
         </message>
         <message>
             <source>All own channels use the device's shared port.</source>
@@ -2755,10 +2755,6 @@
     </context>
     <context>
         <name>ScreenPanel</name>
-        <message>
-            <source>Media capacity reached</source>
-            <translation>メディア容量に達しました</translation>
-        </message>
         <message>
             <source>Video paused</source>
             <translation>動画を一時停止しました</translation>

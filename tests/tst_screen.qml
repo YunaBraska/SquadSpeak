@@ -7,6 +7,20 @@ TestCase {
     when: windowShown
     readonly property var view: scene.item
     Loader { id: scene; sourceComponent: Channels { visible: true } }
+    QtObject {
+        id: screenStatus
+        property var screenView: ({available: true, watching: false, status: "busy", tier: -1})
+        function screenInfo(id) { return screenView }
+    }
+    Component { id: statusPreview; ScreenPanel { width: 180; share: null; network: screenStatus } }
+    function test_busyScreenExplainsTemporaryOverload() {
+        const preview = createTemporaryObject(statusPreview, view.contentItem)
+        verify(preview)
+        const label = findChild(preview, "screenStatus")
+        compare(label.text, qsTranslate("LocalChannel", "The host is busy. Try again shortly."))
+        verify(label.width <= preview.width - 12)
+        verify(label.implicitHeight > label.font.pixelSize * 2)
+    }
     SignalSpy { id: screenChanges; target: channel; signalName: "screenChanged" }
     function initTestCase() {
         session.setMuted(true)

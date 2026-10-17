@@ -621,7 +621,7 @@ void LocalChannel::sendRemoteImage(QSslSocket* socket) {
         const auto* png = imageCache_.object(hash);
         if (!png) return;
         if (offset < png->size()) payload = {{"kind", "imageData"}, {"hash", hash}, {"size", png->size()},
-            {"offset", offset}, {"data", QString::fromLatin1(png->mid(offset, remoteChunkSize).toBase64())}};
+            {"offset", offset}, {"data", QString::fromLatin1(png->mid(offset, snapshotChunkSize).toBase64())}};
     }
     peers_[socket].remoteImageRequest = {};
     writeMessage(socket, {{"type", "remoteImage"}, {"hostId", request.value("hostId")}, {"payload", payload}});

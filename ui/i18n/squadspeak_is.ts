@@ -2304,8 +2304,8 @@
             <translation>Myndflutningur tók of langan tíma.</translation>
         </message>
         <message>
-            <source>The channel is full. Text chat is still available.</source>
-            <translation>Rásin er full. Textaspjall er enn í boði.</translation>
+            <source>The host is busy. Try again shortly.</source>
+            <translation>Hýsillinn er upptekinn. Reyndu aftur eftir smástund.</translation>
         </message>
         <message>
             <source>All own channels use the device's shared port.</source>
@@ -2755,10 +2755,6 @@
     </context>
     <context>
         <name>ScreenPanel</name>
-        <message>
-            <source>Media capacity reached</source>
-            <translation>Fjölmiðlum náð</translation>
-        </message>
         <message>
             <source>Video paused</source>
             <translation>Hlé gert á myndbandinu</translation>

@@ -2304,8 +2304,8 @@
             <translation>Le transfert de l'image a pris trop de temps.</translation>
         </message>
         <message>
-            <source>The channel is full. Text chat is still available.</source>
-            <translation>Le canal est complet. Le chat textuel reste disponible.</translation>
+            <source>The host is busy. Try again shortly.</source>
+            <translation>L'hôte est occupé. Réessaie dans un instant.</translation>
         </message>
         <message>
             <source>All own channels use the device's shared port.</source>
@@ -2755,10 +2755,6 @@
     </context>
     <context>
         <name>ScreenPanel</name>
-        <message>
-            <source>Media capacity reached</source>
-            <translation>Capacité multimédia atteinte</translation>
-        </message>
         <message>
             <source>Video paused</source>
             <translation>Vidéo en pause</translation>

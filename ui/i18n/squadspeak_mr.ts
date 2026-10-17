@@ -2304,8 +2304,8 @@
             <translation>प्रतिमा हस्तांतरण खूप वेळ लागला.</translation>
         </message>
         <message>
-            <source>The channel is full. Text chat is still available.</source>
-            <translation>चॅनेल भरले आहे. मजकूर चॅट अजूनही उपलब्ध आहे.</translation>
+            <source>The host is busy. Try again shortly.</source>
+            <translation>होस्ट व्यस्त आहे. थोड्या वेळाने पुन्हा प्रयत्न करा.</translation>
         </message>
         <message>
             <source>All own channels use the device's shared port.</source>
@@ -2755,10 +2755,6 @@
     </context>
     <context>
         <name>ScreenPanel</name>
-        <message>
-            <source>Media capacity reached</source>
-            <translation>मीडिया क्षमता गाठली</translation>
-        </message>
         <message>
             <source>Video paused</source>
             <translation>व्हिडिओ विराम दिला</translation>

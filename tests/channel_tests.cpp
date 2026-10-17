@@ -1281,7 +1281,7 @@ private slots:
             QVERIFY(!incoming.contains("\"type\":\"screenAudio\""));
         }
     }
-    void mediaCapacityAndScreenSourceAreSharedAcrossOwnedChannels() {
+    void mediaAdmissionExceeds64AcrossOwnedChannels() {
 #if SQUADSPEAK_STORE_BUILD
         return;
 #else
@@ -1325,19 +1325,33 @@ private slots:
         QTRY_VERIFY(overflow.chatReady());
         QTRY_VERIFY(overflow.screenInfo(secondId).value("available").toBool());
         QVERIFY(overflow.watchScreen(secondId, true));
-        QTRY_COMPARE(overflow.screenInfo(secondId).value("status").toString(), QString("full"));
-        QVERIFY(overflow.chatReady());
-        QVERIFY(clients.front()->channel.leave());
-        QTRY_COMPARE(host.channel.hostParticipants().size(), 31);
-        QVERIFY(overflow.watchScreen(secondId, true));
         QTRY_COMPARE(overflow.screenInfo(secondId).value("tier").toInt(), 1);
+        QVERIFY(overflow.chatReady());
         QVERIFY(overflow.join(host.channel.ownId(), "localhost", host.channel.port()));
         QTRY_VERIFY(overflow.joined());
-        QCOMPARE(host.channel.hostParticipants().size(), 32);
+        QCOMPARE(host.channel.hostParticipants().size(), 33);
         QCOMPARE(second->hostParticipants().size(), 32);
-        QVERIFY(clients.front()->channel.join(host.channel.ownId(), "localhost", host.channel.port()));
-        QTRY_VERIFY(clients.front()->channel.status().contains("full", Qt::CaseInsensitive));
-        QVERIFY(!clients.front()->channel.joined());
+        const auto longName = QString::fromUcs4(U"🌊").repeated(64);
+        for (const auto& client : clients) {
+            QVERIFY(client->session.setUserName(longName));
+            if (client->channel.joinedHostId() != host.channel.ownId()) {
+                QVERIFY(client->channel.join(host.channel.ownId(), "localhost", host.channel.port()));
+                QTRY_VERIFY(client->channel.joined());
+            }
+        }
+        for (int n = 65; n < 72; ++n) {
+            auto client = std::make_unique<Device>(dir.filePath(QString::number(n)), longName);
+            QVERIFY(host.channel.decide(client->channel.ownId(), true));
+            QVERIFY(client->join(host.channel)); QTRY_VERIFY(client->channel.joined());
+            clients.push_back(std::move(client));
+        }
+        QTRY_COMPARE_WITH_TIMEOUT(clients.back()->channel.participants().size(), 72, 15000);
+        QVERIFY(clients.front()->channel.joined());
+        QVERIFY(clients.back()->channel.sendChat("Large roster still has working chat"));
+        QTRY_VERIFY(!clients.back()->channel.chatPending());
+        // Move one listener back to verify isolation between owned channels.
+        QVERIFY(clients[1]->channel.join(secondId, "localhost", host.channel.port()));
+        QTRY_VERIFY(clients[1]->channel.joined());
         QSignalSpy same(&clients[4]->channel, &LocalChannel::audioReceived), other(&clients[1]->channel, &LocalChannel::audioReceived);
         QVERIFY(clients[2]->session.setMuted(false));
         QTRY_VERIFY(!participant(clients[4]->channel, clients[2]->channel.ownId()).value("muted", true).toBool());
@@ -1352,6 +1366,40 @@ private slots:
         QVERIFY(host.channel.hosting()); QVERIFY(clients[2]->channel.joined());
 #endif
     }
+    void encoderOverloadProtectsMediaAcrossOwnedChannels() {
+#if SQUADSPEAK_STORE_BUILD
+        return;
+#else
+        QTemporaryDir dir;
+        Device host(dir.filePath("host"), "Host"), guest(dir.filePath("guest"), "Guest");
+        QVERIFY(host.channel.listen(QHostAddress::LocalHost));
+        QVERIFY(host.session.setSupporterEnabled(true));
+        const auto secondId = host.channel.addOwnedChannel("Second");
+        auto* second = host.channel.ownChannel(secondId); QVERIFY(second);
+        QVERIFY(host.channel.joinSaved(host.channel.ownId())); QTRY_VERIFY(host.channel.joined());
+        QVERIFY(second->setScreenSharing(true));
+        QVERIFY(host.channel.decide(guest.channel.ownId(), true));
+        QVERIFY(second->decide(guest.channel.ownId(), true));
+        QVERIFY(guest.channel.openAddress(QString("localhost:%1").arg(host.channel.port())));
+        QTRY_VERIFY(!guest.channel.directBusy());
+        QVERIFY(guest.channel.openChat(secondId, "localhost", host.channel.port())); QTRY_VERIFY(guest.channel.chatReady());
+        QTRY_VERIFY(guest.channel.screenInfo(secondId).value("available").toBool());
+        QVERIFY(second->reportScreenEncodeTime(1200));
+        QVERIFY(guest.channel.watchScreen(secondId, true));
+        QTRY_COMPARE(guest.channel.screenInfo(secondId).value("status").toString(), QString("busy"));
+        QVERIFY(guest.channel.sendChat("Text remains available")); QTRY_VERIFY(!guest.channel.chatPending());
+        QVERIFY(guest.join(host.channel));
+        QTRY_VERIFY(guest.channel.status().contains("busy"));
+        QVERIFY(!guest.channel.joined()); QVERIFY(host.channel.joined());
+        QTimer retry;
+        connect(&retry, &QTimer::timeout, &guest.channel, [&] { if (!guest.channel.joined()) guest.join(host.channel); });
+        retry.start(250); QTRY_VERIFY_WITH_TIMEOUT(guest.channel.joined(), 10000); retry.stop();
+        QVERIFY(guest.channel.watchScreen(secondId, true));
+        QTRY_COMPARE(guest.channel.screenInfo(secondId).value("tier").toInt(), 1);
+        QVERIFY(host.channel.joined());
+#endif
+    }
+
     void ownedChannelsCanJoinWithoutPreviouslyOpeningChat() {
 #if SQUADSPEAK_STORE_BUILD
         return;
@@ -2990,6 +3038,110 @@ private slots:
         QCOMPARE(events.count(), 1); QVERIFY(client.channel.joined());
     }
 
+    void rosterSnapshotsAreAtomicAndBounded_data() {
+        QTest::addColumn<QString>("failure");
+        for (const auto* value : {"", "unaccepted", "oversize", "fractional-size", "invalid-id", "nested-start",
+            "wrong-id", "wrong-offset", "fractional-offset", "bad-base64", "empty-chunk", "large-chunk", "overrun",
+            "early-end", "wrong-end", "invalid-json", "wrong-type", "interleaved-roster", "repeat-chunk"})
+            QTest::newRow(*value ? value : "complete-and-repeat") << QString::fromLatin1(value);
+    }
+    void rosterSnapshotsAreAtomicAndBounded() {
+        QFETCH(QString, failure);
+        QTemporaryDir dir;
+        static const auto identity = TlsIdentity::create();
+        static const auto clientIdentity = TlsIdentity::create();
+        Device client(dir.filePath("client"), "Reader", clientIdentity);
+        auto configuration = identity.configuration(); configuration.setPeerVerifyMode(QSslSocket::VerifyNone);
+        QSslServer server; server.setSslConfiguration(configuration);
+        QVERIFY(server.listen(QHostAddress::LocalHost));
+        QVERIFY(client.channel.join(identity.id(), "127.0.0.1", server.serverPort()));
+        QVERIFY(waitForEvents(&server, &QTcpServer::pendingConnectionAvailable, [&] { return server.hasPendingConnections(); }));
+        auto* socket = qobject_cast<QSslSocket*>(server.nextPendingConnection()); QVERIFY(socket);
+        QVERIFY(waitForEvents(socket, &QSslSocket::readyRead, [&] { return socket->bytesAvailable() > 4; })); socket->readAll();
+        QByteArray incoming;
+        const auto receivedAck = [&](qint64 offset) {
+            bool received = false;
+            return waitForEvents(socket, &QSslSocket::readyRead, [&] {
+                if (received) return true;
+                incoming.append(socket->readAll());
+                while (incoming.size() >= 4) {
+                    const auto size = qFromBigEndian<quint32>(incoming.constData());
+                    if (incoming.size() < size + 4) break;
+                    const auto message = QJsonDocument::fromJson(incoming.mid(4, size)).object();
+                    incoming.remove(0, size + 4);
+                    if (message.value("type") == "rosterAck" && message.value("offset").toInteger(-1) == offset) return received = true;
+                }
+                return false;
+            });
+        };
+        QJsonObject roster{{"type", "roster"}, {"host", identity.id()}, {"members", QJsonArray{
+            QJsonObject{{"id", client.channel.ownId()}, {"name", "Before"}, {"available", true}, {"muted", true}},
+            QJsonObject{{"id", identity.id()}, {"name", "Speaker"}, {"available", true}, {"muted", false}}}}};
+        if (failure != "unaccepted") {
+            socket->write(wireFrame({{"type", "join"}, {"result", "accepted"}}) + wireFrame(roster));
+            QTRY_COMPARE(participant(client.channel, client.channel.ownId()).value("name").toString(), QString("Before"));
+        }
+        auto members = roster.value("members").toArray(); auto member = members.first().toObject();
+        member.insert("name", "After"); members[0] = member; roster.insert("members", members);
+        auto bytes = QJsonDocument(roster).toJson(QJsonDocument::Compact);
+        if (failure == "invalid-json") bytes = "not JSON";
+        if (failure == "wrong-type") bytes = "{\"type\":\"rosterStart\"}";
+        const auto id = QUuid::createUuid().toString(QUuid::WithoutBraces);
+        QJsonObject start{{"type", "rosterStart"}, {"id", id}, {"size", bytes.size()}};
+        if (failure == "oversize") start.insert("size", 2 * 1024 * 1024 + 1);
+        if (failure == "fractional-size") start.insert("size", 2.5);
+        if (failure == "invalid-id") start.insert("id", "invalid");
+        socket->write(wireFrame(start));
+        if (failure == "nested-start") socket->write(wireFrame(start));
+        if (failure == "interleaved-roster") socket->write(wireFrame(roster));
+        QJsonObject chunk{{"type", "rosterChunk"}, {"id", id}, {"offset", 0}, {"data", QString::fromLatin1(bytes.first(1).toBase64())}};
+        if (failure == "wrong-id") chunk.insert("id", QUuid::createUuid().toString(QUuid::WithoutBraces));
+        if (failure == "wrong-offset") chunk.insert("offset", 1);
+        if (failure == "fractional-offset") chunk.insert("offset", 0.5);
+        if (failure == "bad-base64") chunk.insert("data", "%%%%");
+        if (failure == "empty-chunk") chunk.insert("data", "");
+        if (failure == "large-chunk") chunk.insert("data", QString::fromLatin1(QByteArray(16385, 'x').toBase64()));
+        if (failure == "overrun") chunk.insert("data", QString::fromLatin1((bytes + 'x').toBase64()));
+        socket->write(wireFrame(chunk));
+        const bool validChunk = failure.isEmpty() || failure == "early-end" || failure == "wrong-end"
+            || failure == "invalid-json" || failure == "wrong-type" || failure == "repeat-chunk";
+        if (validChunk) {
+            QVERIFY(receivedAck(0));
+            QCOMPARE(participant(client.channel, client.channel.ownId()).value("name").toString(), QString("Before"));
+            if (failure.isEmpty()) {
+                squad::VoiceMixer encoder;
+                const std::array<float, 960> samples{};
+                const auto audio = encoder.encode(samples, 48000).first();
+                QSignalSpy heard(&client.channel, &LocalChannel::audioReceived);
+                socket->write(wireFrame({{"type", "audio"}, {"sender", identity.id()}, {"data", QString::fromLatin1(audio.toBase64())}}));
+                QVERIFY(waitForEvents(&client.channel, &LocalChannel::audioReceived, [&] { return heard.size() == 1; }));
+                QCOMPARE(heard.first().at(1).toByteArray(), audio);
+                QCOMPARE(participant(client.channel, client.channel.ownId()).value("name").toString(), QString("Before"));
+            }
+            if (failure == "repeat-chunk") socket->write(wireFrame(chunk));
+            else if (failure != "early-end") {
+                chunk.insert("offset", 1); chunk.insert("data", QString::fromLatin1(bytes.mid(1).toBase64()));
+                socket->write(wireFrame(chunk));
+                QVERIFY(receivedAck(1));
+            }
+            socket->write(wireFrame({{"type", "rosterEnd"}, {"id", failure == "wrong-end" ? "wrong" : id}}));
+        }
+        if (!failure.isEmpty()) {
+            QVERIFY(waitForEvents(socket, &QSslSocket::disconnected, [&] { return socket->state() == QAbstractSocket::UnconnectedState; }));
+            QVERIFY(!client.channel.joined()); return;
+        }
+        QTRY_COMPARE(participant(client.channel, client.channel.ownId()).value("name").toString(), QString("After"));
+        // A completed snapshot releases its buffer and allows the next update.
+        member.insert("name", "Again"); members[0] = member; roster.insert("members", members);
+        bytes = QJsonDocument(roster).toJson(QJsonDocument::Compact); start.insert("size", bytes.size());
+        socket->write(wireFrame(start) + wireFrame({{"type", "rosterChunk"}, {"id", id}, {"offset", 0},
+            {"data", QString::fromLatin1(bytes.toBase64())}}));
+        QVERIFY(receivedAck(0));
+        socket->write(wireFrame({{"type", "rosterEnd"}, {"id", id}}));
+        QTRY_COMPARE(participant(client.channel, client.channel.ownId()).value("name").toString(), QString("Again"));
+        QVERIFY(client.channel.joined());
+    }
+
     void rosterOwnerNameValidation_data() {
         QTest::addColumn<QJsonValue>("ownerName");
         QTest::addColumn<bool>("accepted");
@@ -4094,7 +4246,7 @@ private slots:
             QTest::newRow(("kick" + suffix).constData()) << QString("kicked") << QString("removed") << count;
             QTest::newRow(("ban" + suffix).constData()) << QString("blocked") << QString("blocked") << count;
             QTest::newRow(("replacement" + suffix).constData()) << QString("replaced") << QString("newer connection") << count;
-            QTest::newRow(("capacity" + suffix).constData()) << QString("full") << QString("full") << count;
+            QTest::newRow(("capacity" + suffix).constData()) << QString("busy") << QString("busy") << count;
         }
     }
     void finalHostDecisionClosesClientWithoutReconnect() {
@@ -6398,48 +6550,20 @@ private slots:
         QVERIFY(allReceivers([](const QJsonObject& member) { return member.value("joined").toBool(); }));
         sustained.invalidate();
         QVERIFY(joinHost(overflow));
-        QTRY_VERIFY(overflow.channel.joined() || overflow.channel.status().contains("full"));
-        QVERIFY(!overflow.channel.joined());
-        QVERIFY(overflow.channel.status().contains("full"));
-        QCOMPARE(clients.back()->channel.participants().size(), 64);
-        // A full voice channel still permits an authenticated text session.
-        QVERIFY(overflow.channel.openChat(hostId, "127.0.0.1", hostPort));
-        QTRY_VERIFY(overflow.channel.chatReady());
-        QVERIFY(overflow.channel.sendChat("Text still works at voice capacity."));
+        QTRY_VERIFY(overflow.channel.joined());
+        QTRY_COMPARE(clients.back()->channel.participants().size(), 65);
+        QVERIFY(overflow.channel.sendChat("Text and media work beyond 64 participants."));
         QTRY_VERIFY(!memberMessages(clients.back()->channel).isEmpty());
-        QCOMPARE(clients.back()->channel.participants().size(), 64);
         QTRY_VERIFY(overflow.channel.screenView().value("available").toBool());
         QVERIFY(overflow.channel.watchScreen(hostId, true));
-        QTRY_COMPARE(overflow.channel.screenView().value("status").toString(), QString("full"));
-        QTRY_VERIFY(clients.front()->channel.screenInfo(hostId).value("available").toBool());
-        QVERIFY(clients.front()->channel.watchScreen(hostId, true));
-        QTRY_COMPARE(clients.front()->channel.screenInfo(hostId).value("tier").toInt(), 1);
-        // The same device may speak and watch, but leaving voice does not free
-        // its shared media slot until it also stops watching.
-        QVERIFY(clients.front()->channel.leave());
-        QTRY_COMPARE(clients.back()->channel.participants().size(), 63);
-        QVERIFY(joinHost(overflow));
-        QTRY_VERIFY(overflow.channel.status().contains("full"));
-        QVERIFY(!overflow.channel.joined());
-        QVERIFY(clients.front()->channel.watchScreen(hostId, false));
-        QVERIFY(joinHost(*clients.front()));
-        QTRY_VERIFY(clients.front()->channel.joined());
-        // Replacing an existing connection reuses its slot, even when full.
+        QTRY_COMPARE(overflow.channel.screenView().value("tier").toInt(), 1);
+        // Replacing a connection keeps one logical participant.
         QVERIFY(joinHost(*replacement));
         QTRY_VERIFY(replacement->channel.joined());
         QTRY_VERIFY(!clients.front()->channel.joined());
         clients.front() = std::move(replacement);
-        QTRY_COMPARE(clients.back()->channel.participants().size(), 64);
+        QTRY_COMPARE(clients.back()->channel.participants().size(), 65);
         QVERIFY(!participant(clients.back()->channel, firstIdentity.id()).isEmpty());
-        // A text-to-voice attempt cannot bypass the same capacity boundary.
-        QVERIFY(joinHost(overflow));
-        QTRY_VERIFY(overflow.channel.joined() || overflow.channel.status().contains("full"));
-        QVERIFY(!overflow.channel.joined());
-        QVERIFY(clients.front()->channel.leave());
-        QTRY_COMPARE(clients.back()->channel.participants().size(), 63);
-        QVERIFY(joinHost(overflow));
-        QTRY_VERIFY(overflow.channel.joined());
-        QTRY_COMPARE(clients.back()->channel.participants().size(), 64);
         QVERIFY(overflow.channel.leave());
         for (int i = 0; i < std::min(speakers, 32); ++i) QVERIFY(clients[size_t(i)]->channel.leave());
         QVERIFY(commandReceivers({{"operation", "leave"}, {"before", 32}}));

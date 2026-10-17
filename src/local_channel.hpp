@@ -325,7 +325,9 @@ private:
         quint16 port = 0;
         QPointer<QSslSocket> socket;
         QJsonObject lastPresence;
-        QByteArray buffer;
+        QByteArray buffer, rosterBuffer;
+        QString rosterId;
+        qint64 rosterExpected = 0;
         QPointer<QSslSocket> screenSocket;
         QByteArray screenBuffer, screenPacket;
         QJsonObject screenFormat;
@@ -445,14 +447,14 @@ private:
         qint64 revision = 0;
         qint64 lastActivity = 0;
         QJsonObject imageRequest;
-        QJsonObject lastRoster;
+        QJsonObject lastRoster, pendingRoster, snapshotRoster;
         QByteArray imageUpload;
         bool imageProcessing = false;
-        QByteArray remoteSnapshot;
-        QString remoteSnapshotId;
-        qint64 remoteSnapshotOffset = 0;
-        bool remoteSnapshotWaiting = false;
-        bool remoteSnapshotDirty = false;
+        QByteArray snapshot;
+        QString snapshotId;
+        qint64 snapshotOffset = 0;
+        bool snapshotWaiting = false;
+        bool snapshotDirty = false;
         QJsonObject remoteImageRequest;
     };
     struct Viewer final {
@@ -471,7 +473,8 @@ private:
     qint64 screenSequence_ = 0;
     qint64 screenBytesSent_ = 0;
     int slowScreenEncodes_ = 0;
-    QSet<QString> mediaParticipants() const;
+    qint64 mediaBusyUntil_ = 0;
+    bool mediaOverloaded() const;
     void acceptViewer(QSslSocket* socket, int minimumTier, bool audioAllowed, bool audio, bool udp);
     bool receivesScreenAudio(const Peer& peer) const;
     void readViewer(QSslSocket* socket);
@@ -519,7 +522,10 @@ private:
     void controlMessage(const QJsonObject& message);
     void sendControlState();
     void sendRemoteView(QSslSocket* socket = nullptr);
-    void sendRemoteViewChunk(QSslSocket* socket);
+    void sendSnapshot(QSslSocket* socket, const QByteArray& bytes);
+    void sendSnapshotChunk(QSslSocket* socket);
+    void acknowledgeSnapshot(QSslSocket* socket, const QJsonObject& message);
+    void sendRoster(QSslSocket* socket, const QJsonObject& roster, QByteArray bytes = {});
     bool applyRemoteView(const QByteArray& bytes);
     bool receiveImage(const QJsonObject& payload);
     bool sendImageRequest(const QString& hash, qint64 offset);
@@ -561,10 +567,10 @@ private:
     bool visibleImage(const QString& hash) const;
     void downloadImage();
     bool hostImage(QSslSocket* socket, const QJsonObject& payload, qint64 now, ChatHistory* store = nullptr, const QString& conversation = {});
-    static constexpr qsizetype maximumRemoteView = 2 * 1024 * 1024;
+    static constexpr qsizetype maximumSnapshot = 2 * 1024 * 1024;
     static constexpr int maximumWindowMessages = 160;
     static constexpr qsizetype maximumWindowBytes = 512 * 1024;
-    static constexpr qsizetype remoteChunkSize = 16384;
+    static constexpr qsizetype snapshotChunkSize = 16384;
     static constexpr qsizetype maximumFrame = 65536;
     static bool parseCapabilities(const QJsonObject& message, QSet<QString>* negotiated = nullptr);
     static bool validMessageType(const QString& type);
@@ -578,6 +584,7 @@ private:
     static bool displayName(const QJsonValue& value);
     static bool acceptableCertificateErrors(const QList<QSslError>& errors);
     static bool writeMessage(QSslSocket* socket, const QJsonObject& message);
+    static bool writeMessage(QSslSocket* socket, const QByteArray& encoded);
     static bool readMessages(QSslSocket* socket, QByteArray& buffer,
                              const std::function<void(const QJsonObject&)>& receive);
     static bool unknownMessageType(const QString& type);

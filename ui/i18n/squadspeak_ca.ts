@@ -2304,8 +2304,8 @@
             <translation>la transferència d'imatges ha trigat massa.</translation>
         </message>
         <message>
-            <source>The channel is full. Text chat is still available.</source>
-            <translation>El canal és ple. El xat de text continua disponible.</translation>
+            <source>The host is busy. Try again shortly.</source>
+            <translation>L'amfitrió està ocupat. Torna-ho a provar d'aquí a poc.</translation>
         </message>
         <message>
             <source>All own channels use the device's shared port.</source>
@@ -2755,10 +2755,6 @@
     </context>
     <context>
         <name>ScreenPanel</name>
-        <message>
-            <source>Media capacity reached</source>
-            <translation>S'ha assolit la capacitat dels mitjans</translation>
-        </message>
         <message>
             <source>Video paused</source>
             <translation>vídeo en pausa</translation>

@@ -2304,8 +2304,8 @@
             <translation>Пренос слике је трајао предуго.</translation>
         </message>
         <message>
-            <source>The channel is full. Text chat is still available.</source>
-            <translation>Канал је пун. Текстуално ћаскање је и даље доступно.</translation>
+            <source>The host is busy. Try again shortly.</source>
+            <translation>Хост је заузет. Покушај поново ускоро.</translation>
         </message>
         <message>
             <source>All own channels use the device's shared port.</source>
@@ -2755,10 +2755,6 @@
     </context>
     <context>
         <name>ScreenPanel</name>
-        <message>
-            <source>Media capacity reached</source>
-            <translation>Достигнут је капацитет медија</translation>
-        </message>
         <message>
             <source>Video paused</source>
             <translation>Видео је паузиран</translation>

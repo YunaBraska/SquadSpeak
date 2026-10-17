@@ -21,6 +21,7 @@ public:
     bool sendDatagram(const QByteArray& bytes);
     void retainSources(const QStringList& sources);
     [[nodiscard]] bool udpActive() const;
+    [[nodiscard]] static bool overloaded();
 signals:
     void signaling(const QJsonObject& message);
     void audio(const QString& source, const QByteArray& opus, int missing);

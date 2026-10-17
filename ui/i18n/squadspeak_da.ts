@@ -2304,8 +2304,8 @@
             <translation>Billedoverførslen tog for lang tid.</translation>
         </message>
         <message>
-            <source>The channel is full. Text chat is still available.</source>
-            <translation>Kanalen er fuld. Tekstchat er stadig tilgængelig.</translation>
+            <source>The host is busy. Try again shortly.</source>
+            <translation>Værten er optaget. Prøv igen om lidt.</translation>
         </message>
         <message>
             <source>All own channels use the device's shared port.</source>
@@ -2755,10 +2755,6 @@
     </context>
     <context>
         <name>ScreenPanel</name>
-        <message>
-            <source>Media capacity reached</source>
-            <translation>Mediekapacitet nået</translation>
-        </message>
         <message>
             <source>Video paused</source>
             <translation>Video sat på pause</translation>

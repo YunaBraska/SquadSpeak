@@ -2304,8 +2304,8 @@
             <translation>Truyền hình ảnh mất quá nhiều thời gian.</translation>
         </message>
         <message>
-            <source>The channel is full. Text chat is still available.</source>
-            <translation>Kênh đã đầy. Trò chuyện văn bản vẫn khả dụng.</translation>
+            <source>The host is busy. Try again shortly.</source>
+            <translation>Máy chủ đang bận. Hãy thử lại sau một lát.</translation>
         </message>
         <message>
             <source>All own channels use the device's shared port.</source>
@@ -2755,10 +2755,6 @@
     </context>
     <context>
         <name>ScreenPanel</name>
-        <message>
-            <source>Media capacity reached</source>
-            <translation>Đã đạt giới hạn phương tiện</translation>
-        </message>
         <message>
             <source>Video paused</source>
             <translation>Video đã tạm dừng</translation>

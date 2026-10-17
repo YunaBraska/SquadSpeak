@@ -2304,8 +2304,8 @@
             <translation>სურათის გადაცემას ძალიან დიდი დრო დასჭირდა.</translation>
         </message>
         <message>
-            <source>The channel is full. Text chat is still available.</source>
-            <translation>არხი სავსეა. ტექსტური ჩატი კვლავ ხელმისაწვდომია.</translation>
+            <source>The host is busy. Try again shortly.</source>
+            <translation>ჰოსტი დაკავებულია. ცოტა ხანში ხელახლა სცადე.</translation>
         </message>
         <message>
             <source>All own channels use the device's shared port.</source>
@@ -2755,10 +2755,6 @@
     </context>
     <context>
         <name>ScreenPanel</name>
-        <message>
-            <source>Media capacity reached</source>
-            <translation>მედიის შესაძლებლობები მიღწეულია</translation>
-        </message>
         <message>
             <source>Video paused</source>
             <translation>ვიდეო შეჩერებულია</translation>
