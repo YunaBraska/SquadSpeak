@@ -289,7 +289,7 @@ private:
         void* handle = nullptr;
         QString id, address, name, active, requested;
         quint16 port = 9987;
-        QJsonObject state;
+        QJsonObject state, lastPresence;
         QHash<QString, QPair<quint16, qint64>> audioSequences;
         QByteArray buffer = QByteArray(512 * 1024, Qt::Uninitialized);
         bool connected = false;
@@ -324,6 +324,7 @@ private:
         QString address;
         quint16 port = 0;
         QPointer<QSslSocket> socket;
+        QJsonObject lastPresence;
         QByteArray buffer;
         QPointer<QSslSocket> screenSocket;
         QByteArray screenBuffer, screenPacket;
@@ -444,6 +445,7 @@ private:
         qint64 revision = 0;
         qint64 lastActivity = 0;
         QJsonObject imageRequest;
+        QJsonObject lastRoster;
         QByteArray imageUpload;
         bool imageProcessing = false;
         QByteArray remoteSnapshot;

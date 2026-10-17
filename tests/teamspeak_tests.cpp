@@ -26,6 +26,7 @@ QByteArray pendingRequest;
 int openCount = 0;
 int closeCount = 0;
 int audioCount = 0;
+int presenceCount = 0;
 
 QByteArray stateEvent(bool includePeer = false) {
     QJsonArray members{QJsonObject{{"id", "1"}, {"uid", "member-uid"}, {"name", "Me"}, {"channel", "1"}, {"inputMuted", false}, {"outputMuted", false}}};
@@ -44,7 +45,7 @@ QByteArray stateEvent(bool includePeer = false) {
 
 void resetFake() {
     const QMutexLocker lock(&fakeMutex);
-    fakeEvents.clear(); lastOptions.clear(); lastCommand.clear(); lastChatCommand.clear(); pendingRequest.clear(); openCount = 0; closeCount = 0; audioCount = 0;
+    fakeEvents.clear(); lastOptions.clear(); lastCommand.clear(); lastChatCommand.clear(); pendingRequest.clear(); openCount = 0; closeCount = 0; audioCount = 0; presenceCount = 0;
 }
 }
 
@@ -65,6 +66,7 @@ extern "C" int ss_ts_command(void*, const uint8_t* data, size_t size) {
     const QMutexLocker lock(&fakeMutex);
     lastCommand = command;
     const auto object = QJsonDocument::fromJson(command).object();
+    if (object.value("action") == "presence") ++presenceCount;
     if (object.value("action").toString() == "chat") {
         lastChatCommand = command;
         pendingRequest = object.value("request").toString().toUtf8();
@@ -239,6 +241,33 @@ private slots:
         QVERIFY(nested);
         QMutexLocker lock(&fakeMutex);
         QVERIFY(lastOptions.contains("inputMuted"));
+    }
+
+    void presenceSkipsLocalPreferencesAndRestoresAfterReconnect() {
+        resetFake(); fakeEvents.enqueue(stateEvent());
+        QTemporaryDir dir;
+        VoiceSession session(dir.filePath("session"));
+        LocalChannel channel(session, dir.filePath("channel"), TlsIdentity::create());
+        QVERIFY(channel.addTeamSpeak("127.0.0.1"));
+        QTRY_VERIFY(channel.joined());
+        QVERIFY(session.setMuted(false));
+        const auto before = presenceCount;
+        QVERIFY(session.setTheme("dark"));
+        QVERIFY(session.setPushToTalk(true));
+        QVERIFY(session.setPttKeyHeld(true));
+        QCOMPARE(presenceCount, before);
+        QVERIFY(session.setDeafened(true));
+        QCOMPARE(presenceCount, before + 1);
+        fakeEvents.enqueue("{\"type\":\"reconnecting\"}");
+        QTRY_VERIFY(!channel.joined());
+        QVERIFY(session.setMuted(true));
+        QCOMPARE(presenceCount, before + 1);
+        fakeEvents.enqueue(stateEvent());
+        QTRY_VERIFY(channel.joined());
+        QCOMPARE(presenceCount, before + 2);
+        const auto current = QJsonDocument::fromJson(lastCommand).object();
+        QVERIFY(current.value("inputMuted").toBool());
+        QVERIFY(current.value("outputMuted").toBool());
     }
 
     void portraitsFollowIdentityAcrossNicknameAndClientIdChanges() {

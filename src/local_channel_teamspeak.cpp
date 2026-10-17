@@ -285,7 +285,7 @@ void LocalChannel::teamSpeakState(const QJsonObject& state) {
         c->privatePeerOnline = !c->teamSpeakPeer.isEmpty();
     }
     if (const auto selected = clients_.value(chatHostId_)) status_ = selected->status;
-    if (first) { automaticAttempt_ = false; emit channelEvent("join"); }
+    if (first) { automaticAttempt_ = false; sendPresence(); emit channelEvent("join"); }
     if (connection->requested == joinedHostId_) connection->requested.clear();
     emit hostsChanged(); emit participantsChanged(); emit stateChanged(); emit chatChanged();
     if (first && requested != joinedHostId_ && savedChannels_.contains(requested)) {
@@ -299,7 +299,7 @@ void LocalChannel::teamSpeakEvent(const QJsonObject& event) {
     if (type == "state") { teamSpeakState(event); return; }
     if (type == "identity") { if (event.value("value").isObject()) saveTeamSpeakIdentity(event.value("value").toObject()); return; }
     if (type == "reconnecting") {
-        teamSpeak_->connected = false; teamSpeak_->audioSequences.clear();
+        teamSpeak_->connected = false; teamSpeak_->audioSequences.clear(); teamSpeak_->lastPresence = {};
         for (const auto& c : clients_) if (c->teamSpeak) { c->accepted = false; c->access = "connecting"; c->members.clear(); }
         emit stateChanged(); emit hostsChanged(); emit participantsChanged(); return;
     }

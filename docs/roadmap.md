@@ -89,8 +89,9 @@ do not become TS3 protocol features.
 
 ## Next implementation order
 
-Continue U173 with capture-stage and codec comparisons, unchanged presence/roster
-traffic reduction, compact search and resource-based admission. Native TS text
+Continue U173 with capture-stage and codec comparisons, compact search and
+resource-based admission. Unchanged native/TS presence and roster payloads are
+suppressed per connection. Reconnect sends the current state again. Native TS text
 interoperability and normal shutdown are checked. Audio settings preserve live
 conversation, with exclusive Voice activation/PTT controls and a combined
 threshold meter. Unread marks follow the foreground chat position, and opening

@@ -3744,6 +3744,81 @@ private slots:
         QVERIFY(slow.channel.join(host.channel.ownId(), "127.0.0.1", host.channel.port()));
         QVERIFY(waitForEvents([&] { return slow.channel.joined(); })); QCOMPARE(slow.channel.receiveAudioBitrate(), 128);
     }
+    void localPreferencesDoNotRepublishUnchangedPresence() {
+        QTemporaryDir dir;
+        Device host(dir.filePath("host"), "Host"), speaker(dir.filePath("speaker"), "Speaker"), listener(dir.filePath("listener"), "Listener");
+        QVERIFY(host.channel.listen(QHostAddress::LocalHost));
+        QVERIFY(host.channel.decide(speaker.channel.ownId(), true));
+        QVERIFY(host.channel.decide(listener.channel.ownId(), true));
+        QVERIFY(host.join(host.channel)); QVERIFY(speaker.join(host.channel)); QVERIFY(listener.join(host.channel));
+        QTRY_COMPARE(listener.channel.participants().size(), 3);
+        QVERIFY(speaker.session.setMuted(false));
+        QTRY_COMPARE(participant(listener.channel, speaker.channel.ownId()).value("muted").toBool(), false);
+        QSignalSpy changed(&listener.channel, &LocalChannel::participantsChanged);
+        QVERIFY(host.session.setTheme("dark"));
+        QVERIFY(speaker.session.setTheme("light"));
+        QVERIFY(speaker.session.setPushToTalk(true));
+        QVERIFY(speaker.session.setPttKeyHeld(true));
+        QVERIFY(!changed.wait(150));
+        QCOMPARE(changed.size(), 0);
+        QVERIFY(speaker.session.transmissionAllowed());
+        QVERIFY(speaker.session.setMuted(true));
+        QTRY_COMPARE(participant(listener.channel, speaker.channel.ownId()).value("muted").toBool(), true);
+        QVERIFY(speaker.session.setUserName("Renamed"));
+        QTRY_COMPARE(participant(listener.channel, speaker.channel.ownId()).value("name").toString(), "Renamed");
+        QVERIFY(speaker.session.setAvatar("mechanic"));
+        QTRY_COMPARE(participant(listener.channel, speaker.channel.ownId()).value("avatarId").toString(), "mechanic");
+        const auto port = host.channel.port();
+        QVERIFY(host.channel.stopHost());
+        QTRY_VERIFY(!listener.channel.joined());
+        QVERIFY(host.channel.listen(QHostAddress::LocalHost, port));
+        QTRY_COMPARE(listener.channel.participants().size(), 3);
+        QCOMPARE(participant(listener.channel, speaker.channel.ownId()).value("name").toString(), "Renamed");
+        QCOMPARE(participant(listener.channel, speaker.channel.ownId()).value("avatarId").toString(), "mechanic");
+        QVERIFY(participant(listener.channel, speaker.channel.ownId()).value("muted").toBool());
+    }
+
+    void presenceWireSendsOnlyChangedStateAndResendsAfterReconnect() {
+        QTemporaryDir dir;
+        const auto identity = TlsIdentity::create();
+        QSslServer server; server.setSslConfiguration(identity.configuration());
+        connect(&server, &QSslServer::sslErrors, &server,
+            [](QSslSocket* socket, const QList<QSslError>& errors) { socket->ignoreSslErrors(errors); });
+        QList<QJsonObject> presence;
+        connect(&server, &QSslServer::pendingConnectionAvailable, &server, [&] {
+            auto* socket = qobject_cast<QSslSocket*>(server.nextPendingConnection());
+            const auto buffer = std::make_shared<QByteArray>();
+            const auto read = [socket, &presence, buffer] {
+                *buffer += socket->readAll();
+                while (buffer->size() >= 4) {
+                    const auto size = qFromBigEndian<quint32>(buffer->constData());
+                    if (buffer->size() < size + 4) return;
+                    const auto message = QJsonDocument::fromJson(buffer->mid(4, size)).object();
+                    buffer->remove(0, size + 4);
+                    if (message.value("type") == "hello") socket->write(wireFrame({{"type", "join"}, {"result", "accepted"}}));
+                    else if (message.value("type") == "presence") presence.append(message);
+                }
+            };
+            connect(socket, &QSslSocket::readyRead, socket, read);
+            read();
+        });
+        QVERIFY(server.listen(QHostAddress::LocalHost));
+        Device client(dir.filePath("client"), "Speaker");
+        QVERIFY(client.channel.join(identity.id(), "127.0.0.1", server.serverPort()));
+        QTRY_COMPARE(presence.size(), 1);
+        QVERIFY(client.session.setTheme("dark"));
+        QVERIFY(client.session.setPushToTalk(true));
+        QVERIFY(client.session.setPttKeyHeld(true));
+        QVERIFY(client.session.setUserName("Renamed"));
+        QTRY_VERIFY(!presence.isEmpty() && presence.last().value("name") == "Renamed");
+        QCOMPARE(presence.size(), 2);
+        QVERIFY(client.channel.leave());
+        QVERIFY(client.channel.closeChat(identity.id()));
+        QVERIFY(client.channel.join(identity.id(), "127.0.0.1", server.serverPort()));
+        QTRY_COMPARE(presence.size(), 3);
+        QCOMPARE(presence.last().value("name").toString(), "Renamed");
+    }
+
     void profileLanguageReachesListenersAndSurvivesReconnect() {
         QTemporaryDir dir;
         Device host(dir.filePath("host"), "Host"), speaker(dir.filePath("speaker"), "Speaker"), listener(dir.filePath("listener"), "Listener");

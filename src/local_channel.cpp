@@ -443,7 +443,7 @@ LocalChannel::LocalChannel(VoiceSession& session, QString storageFile, std::opti
     });
     connect(&session_, &VoiceSession::presenceChanged, this, &LocalChannel::sendPresence);
     connect(&session_, &VoiceSession::preferencesChanged, this, [this] {
-        if (hosting()) { discovery_.announce(); broadcastRoster(); }
+        if (hosting()) broadcastRoster();
         if (controlConnected_) sendControlState();
     });
     connect(this, &LocalChannel::chatSent, this, [this](const QString& text, const QString& hostId) {
@@ -2140,8 +2140,10 @@ void LocalChannel::broadcastRoster() {
         QStringList sources;
         for (const auto& member : members) sources.append(member.toObject().value("id").toString());
         for (auto* socket : peers_.keys()) if (peers_.value(socket).joined && !peers_.value(socket).controller) {
-            if (const auto media = peers_.value(socket).media) media->retainSources(sources);
-            writeMessage(socket, roster);
+            auto& peer = peers_[socket];
+            if (peer.lastRoster == roster) continue;
+            if (const auto media = peer.media) media->retainSources(sources);
+            if (writeMessage(socket, roster)) peer.lastRoster = roster;
         }
         emit hostParticipantsChanged();
     });
@@ -2394,6 +2396,7 @@ void LocalChannel::connectClient(Client& c) {
 }
 
 void LocalChannel::closeClient(Client& c) {
+    c.lastPresence = {};
     if (c.teamSpeak) { c.accepted = false; c.voice = false; c.reconnectWanted = false; return; }
     if (!c.privatePeer.isEmpty()) {
         c.accepted = false; c.socket = nullptr; c.messages = {}; c.privateImages.clear(); c.historyRequest.clear();
@@ -2653,13 +2656,17 @@ void LocalChannel::clientMessage(Client& c, const QJsonObject& message) {
 }
 
 void LocalChannel::sendPresence() {
-    if (teamSpeak_ && teamSpeak_->connected) teamSpeakCommand({{"action", "presence"}, {"name", session_.userName()},
-        {"inputMuted", session_.muted() || !session_.available() || !session_.inputReady()}, {"outputMuted", session_.deafened() || !session_.outputReady()}});
+    if (teamSpeak_ && teamSpeak_->connected) {
+        const QJsonObject presence{{"action", "presence"}, {"name", session_.userName()},
+            {"inputMuted", session_.muted() || !session_.available() || !session_.inputReady()}, {"outputMuted", session_.deafened() || !session_.outputReady()}};
+        if (teamSpeak_->lastPresence != presence && teamSpeakCommand(presence)) teamSpeak_->lastPresence = presence;
+    }
     for (const auto& c : clients_) {
         if (!c->accepted || c->teamSpeak) continue;
-        writeMessage(c->socket, {{"type", "presence"}, {"name", session_.userName()},
+        const QJsonObject presence{{"type", "presence"}, {"name", session_.userName()},
             {"available", session_.available()}, {"muted", !c->voice || session_.muted() || !session_.available() || !session_.inputReady()},
-            {"deafened", session_.deafened() || !session_.outputReady()}, {"avatar", VoiceSession::avatarFallback(session_.avatar())}, {"avatarId", session_.avatar()}, {"language", session_.language()}});
+            {"deafened", session_.deafened() || !session_.outputReady()}, {"avatar", VoiceSession::avatarFallback(session_.avatar())}, {"avatarId", session_.avatar()}, {"language", session_.language()}};
+        if (c->lastPresence != presence && writeMessage(c->socket, presence)) c->lastPresence = presence;
     }
 }
 
