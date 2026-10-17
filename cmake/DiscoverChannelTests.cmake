@@ -43,7 +43,7 @@ foreach(line IN LISTS lines)
     endforeach()
     string(APPEND contents " [=[${CHANNEL_TEST_EXECUTABLE}]=] [=[${function}]=])\n")
     string(APPEND contents "set_tests_properties([=[${name}]=] PROPERTIES TIMEOUT 300)\n")
-    if(function MATCHES "^(sixtyFourClientsHaveOneConsistentRosterAndAudioFanout|sixtyFourVideoViewersKeepIndependentQualityAndVoice)$"
+    if(function MATCHES "^(sixtyFourClientsHaveOneConsistentRosterAndAudioFanout|sixtyFourVideoViewersKeepIndependentQualityAndVoice|mediaAdmissionExceeds64AcrossOwnedChannels)$"
        OR function MATCHES "(screenQualityAdaptsForOnlyTheSlowReceiver|screenUsesUdpWhileReliableTrafficIsDelayed|voiceUsesUdpWhileReliableTrafficIsDelayedThenFallsBackAndRecovers)")
         string(APPEND contents "set_tests_properties([=[${name}]=] PROPERTIES RUN_SERIAL TRUE COST 1000)\n")
     endif()

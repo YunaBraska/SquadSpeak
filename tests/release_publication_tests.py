@@ -302,6 +302,20 @@ else:
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
             self.assertEqual(result.stdout.count("EXECUTED "), 2)
 
+    def test_ci_qml_selectors_exist_before_native_builds(self):
+        available = set()
+        for path in (self.repo / "tests").glob("tst_*.qml"):
+            source = path.read_text()
+            suite = re.search(r'^\s*name:\s*"(\w+)"', source, re.MULTILINE)
+            if suite:
+                available.update(suite[1] + "::" + name for name in
+                                 re.findall(r"\bfunction\s+(test_\w+)\s*\(", source))
+        scripts = list((self.repo / "tests").glob("*-ci.*")) + list((self.repo / ".github/workflows").glob("*.yml"))
+        selected = {(path.name, name) for path in scripts for name in
+                    re.findall(r"\b\w+::test_\w+", path.read_text())}
+        self.assertTrue(selected, "No explicit QML test selections found")
+        self.assertEqual(sorted((path, name) for path, name in selected if name not in available), [])
+
     def test_dependency_cache_ignores_test_and_release_changes(self):
         (self.root / "cmake").unlink()
         shutil.copytree(self.repo / "cmake", self.root / "cmake")

@@ -372,7 +372,7 @@ private slots:
         for (int index = 0; index < 70; ++index) {
             const auto source = QString("%1").arg(index, 64, 16, QLatin1Char('0'));
             QVERIFY(host.send(source, packet));
-            QTRY_COMPARE(atClient.size(), index + 1);
+            QVERIFY(waitForEvents(&client, &squad::MediaTransport::audio, [&] { return atClient.size() == index + 1; }));
             QCOMPARE(atClient.last().at(0).toString(), source);
             QCOMPARE(atClient.last().at(1).toByteArray(), packet);
             sources.insert(source);
@@ -575,7 +575,8 @@ private slots:
             const auto source = QString("%1").arg(index, 64, 16, QLatin1Char('0'));
             host.retainSources({source}); client.retainSources({source});
             QTRY_VERIFY_WITH_TIMEOUT(host.udpActive() && client.udpActive(), 5000);
-            QVERIFY(host.send(source, packet)); QTRY_COMPARE(heard.size(), index + 1);
+            QVERIFY(host.send(source, packet));
+            QVERIFY(waitForEvents(&client, &squad::MediaTransport::audio, [&] { return heard.size() == index + 1; }));
             QCOMPARE(heard.last().at(0).toString(), source); QCOMPARE(heard.last().at(2).toInt(), 0);
         }
         QCOMPARE(streams.size(), 1); QCOMPARE(fallback, 0);
@@ -766,6 +767,7 @@ private slots:
             });
             retry.start(250);
             QTRY_VERIFY_WITH_TIMEOUT(guest.joined(), 10000);
+            QTRY_VERIFY(guest.screenInfo(owner.ownId()).value("available").toBool());
             QVERIFY(guest.watchScreen(owner.ownId(), true));
             QTRY_COMPARE(guest.screenInfo(owner.ownId()).value("tier").toInt(), 1);
         }

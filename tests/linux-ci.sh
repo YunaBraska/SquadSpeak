@@ -256,7 +256,7 @@ done
 # still see the virtual microphone; losing it cannot silently reduce coverage.
 SQUADSPEAK_TEST_INPUT=absent PULSE_SERVER=unix:/tmp/nonexistent-squadspeak-ci \
     /tmp/squadspeak-ci-build/controls_tests -input /source/tests/tst_channel_controls.qml \
-    DirectChannelControls::test_voiceActivationCanBeToggledAndAdjustedInInput \
+    DirectChannelControls::test_voiceActivationAndPttAreExclusiveAndThresholdEditsDisableAuto \
     DirectChannelControls::test_inputCurveTracksGainWhilePreviewIsStopped \
     > /output/no-input-device.log 2>&1 || result=$?
 cat /output/no-input-device.log
