@@ -6232,19 +6232,35 @@ private slots:
         std::vector<int> audioCounts(participantCount), missingCounts(participantCount);
         bool receiverOutputValid = true;
         QObject receiverEvents;
-        const auto stopReceivers = qScopeGuard([&] {
-            bool allExited = true;
+        QProcess host;
+        QByteArray readiness;
+        QTimer receiverPoll;
+        std::vector<std::unique_ptr<Device>> clients;
+        const auto stopProcesses = qScopeGuard([&] {
+            receiverPoll.stop();
+            // Keep Qt servicing sockets while native media workers stop. Close
+            // receivers before the relay, including when setup fails early.
+            for (auto& process : receivers)
+                if (process.state() != QProcess::NotRunning) process.closeWriteChannel();
+            bool allExited = waitForEvents([&] {
+                return std::all_of(receivers.begin(), receivers.end(), [](const auto& process) {
+                    return process.state() == QProcess::NotRunning;
+                });
+            }, 5000);
             for (size_t group = 0; group < receivers.size(); ++group) {
                 if (!receiverCount[group]) continue;
                 auto& process = receivers[group];
-                const bool wasRunning = process.state() != QProcess::NotRunning;
-                if (wasRunning) process.closeWriteChannel();
-                const bool stopped = wasRunning && process.waitForFinished(5000);
                 if (process.state() != QProcess::NotRunning) { process.kill(); process.waitForFinished(5000); }
                 qInfo().noquote() << "Receiver process" << group << "diagnostics:\n" << process.readAllStandardError();
-                allExited &= stopped && process.exitStatus() == QProcess::NormalExit && process.exitCode() == 0;
+                allExited &= process.exitStatus() == QProcess::NormalExit && process.exitCode() == 0;
             }
-            QVERIFY2(allExited, "Receiver processes must remain alive until shutdown and exit successfully");
+            host.closeWriteChannel();
+            const bool hostStopped = waitForEvents(&host, &QProcess::stateChanged,
+                [&] { return host.state() == QProcess::NotRunning; }, 5000);
+            if (!hostStopped) { host.kill(); host.waitForFinished(5000); }
+            qInfo().noquote() << "Host process diagnostics:\n" << host.readAllStandardError();
+            QVERIFY2(allExited, "Receiver processes must exit successfully");
+            QVERIFY(hostStopped); QCOMPARE(host.exitStatus(), QProcess::NormalExit); QCOMPARE(host.exitCode(), 0);
         });
         for (size_t group = 0; group < receivers.size(); ++group) {
             receiverFirst[group] = speakers + (participantCount - speakers) * int(group) / 2;
@@ -6303,12 +6319,10 @@ private slots:
                     if (!matches(member.toObject())) return false;
             return receiverOutputValid;
         };
-        QTimer receiverPoll;
         connect(&receiverPoll, &QTimer::timeout, &receiverEvents, [&] {
             receiverOutputValid &= writeReceivers({{"operation", "stats"}}) >= 0;
         });
         receiverPoll.start(instrumentedTiming ? 10 : 100);
-        std::vector<std::unique_ptr<Device>> clients;
         QJsonArray approved;
         const auto firstIdentity = TlsIdentity::create();
         for (int i = 0; i < speakers; ++i) {
@@ -6326,17 +6340,8 @@ private slots:
         const auto settings = QJsonDocument(QJsonObject{{"version", 1}, {"approved", approved},
             {"attempts", QJsonObject{}}, {"requestsAllowed", true}}).toJson(QJsonDocument::Compact);
         QCOMPARE(configuration.write(settings), settings.size()); configuration.close();
-        QProcess host;
-        QByteArray readiness;
         connect(&host, &QProcess::readyReadStandardOutput, &host, [&] { readiness += host.readAllStandardOutput(); });
         host.start(QCoreApplication::applicationFilePath(), {"--capacity-host", dir.filePath("host")});
-        const auto stopHost = qScopeGuard([&] {
-            host.closeWriteChannel();
-            const bool stopped = host.waitForFinished(5000);
-            if (!stopped) { host.kill(); host.waitForFinished(5000); }
-            qInfo().noquote() << "Host process diagnostics:\n" << host.readAllStandardError();
-            QVERIFY(stopped); QCOMPARE(host.exitStatus(), QProcess::NormalExit); QCOMPARE(host.exitCode(), 0);
-        });
         QVERIFY(host.waitForStarted(5000));
         QVERIFY(waitForEvents(&host, &QProcess::readyReadStandardOutput, [&] { return readiness.contains('\n'); }, 10000));
         const auto endpoint = QJsonDocument::fromJson(readiness.trimmed()).object();
@@ -6389,11 +6394,16 @@ private slots:
             QVERIFY(clients[i]->session.setMuted(false));
         }
         QVERIFY(commandReceivers({{"operation", "unmute"}}));
-        for (const auto& client : clients) QTRY_VERIFY([&] {
-            const auto members = client->channel.participants();
-            return members.size() == participantCount && std::all_of(members.begin(), members.end(), [](const auto& entry) { return !entry.toMap().value("muted").toBool(); });
-        }());
-        QTRY_VERIFY(allReceivers([](const QJsonObject& member) { return member.value("unmuted").toBool(); }));
+        // The command acknowledgement precedes roster delivery. Service all
+        // peers continuously until every view reflects the unmute operation.
+        QVERIFY(waitForEvents([&] {
+            for (const auto& client : clients) {
+                const auto members = client->channel.participants();
+                if (members.size() != participantCount || !std::all_of(members.begin(), members.end(),
+                    [](const auto& entry) { return !entry.toMap().value("muted").toBool(); })) return false;
+            }
+            return allReceivers([](const QJsonObject& member) { return member.value("unmuted").toBool(); });
+        }, 5000));
         const auto packet = capacityVoicePacket(sourceChannels);
         QCOMPARE(opus_packet_get_nb_channels(reinterpret_cast<const unsigned char*>(packet.constData())), sourceChannels);
         QCOMPARE(opus_packet_get_nb_samples(reinterpret_cast<const unsigned char*>(packet.constData()), int(packet.size()), 48000), 960);
