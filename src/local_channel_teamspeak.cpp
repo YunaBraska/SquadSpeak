@@ -338,7 +338,16 @@ void LocalChannel::teamSpeakEvent(const QJsonObject& event) {
     if (type != "message" || event.value("fromId") == teamSpeak_->state.value("self")) return;
     const auto mode = event.value("mode").toString();
     auto id = tsId(teamSpeak_->id, "channel", event.value("channel").toString());
-    const auto uid = event.value("fromUid").toString();
+    auto uid = event.value("fromUid").toString();
+    if (uid.isEmpty()) {
+        for (const auto& value : teamSpeak_->state.value("members").toArray()) {
+            const auto member = value.toObject();
+            if (member.value("id") == event.value("fromId")) {
+                uid = member.value("uid").toString();
+                break;
+            }
+        }
+    }
     const auto peer = tsId(teamSpeak_->id, "member", uid.isEmpty() ? event.value("fromId").toString() : uid);
     if (mode == "private") {
         id = tsId(teamSpeak_->id, "private", peer);

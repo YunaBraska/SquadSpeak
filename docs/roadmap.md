@@ -1,6 +1,6 @@
 # Release readiness
 
-Review date: 2026-10-16. Behavior: [specification](specs/voice-chat.md).
+Review date: 2026-10-17. Behavior: [specification](specs/voice-chat.md).
 
 Under U139, the first regular desktop release follows successful automated
 platform and package checks; physical device observations follow the public
@@ -49,6 +49,12 @@ Bluetooth audio devices are distinct from Bluetooth-only app networking, which i
 
 ## TeamSpeak interoperability
 
+New owner feedback under U173 challenges native TS private messages, capture
+quality, keyboard suppression and normal-quit behavior. These require targeted
+regressions before release. The missing-UID private-message case now resolves
+the known roster identity and preserves the existing conversation and reply
+target. It passes the bridge-boundary contract, not a new native-client check.
+
 Direct TS3 is integrated through the pinned ReSpeak Rust library. The macOS
 public-entrypoint test connected two separate identities to the owner's servers,
 verified private text, decoded Opus audio at the receiver, blocked released
@@ -81,6 +87,12 @@ do not become TS3 protocol features.
 | Host-created chat polls | Planned | U170, SS-182, O-29; chat "+", single/multiple choice, editable options, aggregate results and closing. Reuse chat infrastructure. Resolve the remaining lifecycle rules before implementation |
 
 ## Next implementation order
+
+The U173 review comes first: reproduce native TS messaging and shutdown, compare
+recorded capture stages and codec modes, and eliminate unchanged presence/roster
+traffic. Implement live audio settings and the agreed channel-state corrections
+in the existing components. Resolve O-30 before dependent interaction changes.
+The previous automatic settings mute is still implemented and must be removed.
 
 1. Finish automated sustained load, shared-uplink impairment and measured A/V timing/resource checks. Physical hearing, device and Apple notification observations use the [short prepared handoff](development.md#device-checks-with-limited-human-time), retaining scoped prior results under U138. Do not wait for user availability to run technical tests. Measure conversation output, not only packet delivery.
 2. Close direct distribution gates, then mobile/Store delivery; merchant approval, signing accounts and device access remain separate from implementation work.

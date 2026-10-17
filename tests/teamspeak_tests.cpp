@@ -305,7 +305,14 @@ private slots:
         QVERIFY(lastChatCommand.contains("\"action\":\"chat\""));
     }
 
+    void privateMessageUsesStableRemoteIdentity_data() {
+        QTest::addColumn<QString>("messageUid");
+        QTest::newRow("message-identity") << QString("remote-uid");
+        QTest::newRow("roster-identity") << QString{};
+    }
+
     void privateMessageUsesStableRemoteIdentity() {
+        QFETCH(QString, messageUid);
         resetFake();
         {
             const QMutexLocker lock(&fakeMutex);
@@ -324,11 +331,21 @@ private slots:
         QTRY_VERIFY_WITH_TIMEOUT(channel.chatReady(), 1000);
         {
             const QMutexLocker lock(&fakeMutex);
-            fakeEvents.enqueue(QJsonDocument(QJsonObject{{"type", "message"}, {"mode", "private"}, {"fromId", "7"}, {"fromUid", "remote-uid"}, {"fromName", "Remote"}, {"text", "hello privately"}}).toJson(QJsonDocument::Compact));
+            fakeEvents.enqueue(QJsonDocument(QJsonObject{{"type", "message"}, {"mode", "private"}, {"fromId", "7"}, {"fromUid", messageUid}, {"fromName", "Remote"}, {"text", "hello privately"}}).toJson(QJsonDocument::Compact));
         }
         QTRY_VERIFY_WITH_TIMEOUT(channel.messages().size() == 1, 1000);
         QCOMPARE(channel.messages().first().toMap().value("sender").toString(), peer);
         QCOMPARE(channel.messages().first().toMap().value("text").toString(), QString("hello privately"));
+        QCOMPARE(channel.privateChats().size(), 1);
+        QVERIFY(channel.sendChat("reply"));
+        {
+            const QMutexLocker lock(&fakeMutex);
+            const auto command = QJsonDocument::fromJson(lastChatCommand).object();
+            QCOMPARE(command.value("target").toString(), QString("private"));
+            QCOMPARE(command.value("client").toInt(), 7);
+        }
+        acknowledgePendingChat();
+        QTRY_COMPARE_WITH_TIMEOUT(channel.messages().size(), 2, 1000);
     }
 
     void pttAndReceiveGatesUseExistingSession() {
