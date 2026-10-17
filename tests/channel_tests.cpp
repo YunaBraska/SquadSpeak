@@ -47,6 +47,7 @@
 #include <memory>
 #include <numeric>
 #include <utility>
+#include <opus.h>
 
 namespace {
 // Sanitizers change scheduling for the host and simulated clients.
@@ -120,6 +121,27 @@ QByteArray voicePacket(double frequency = 440) {
         samples[i * 2 + 1] = float(0.1 * std::sin(2 * std::numbers::pi * frequency * 2 * i / 48000));
     }
     return encoder.encode(samples, 48000).first();
+}
+QByteArray capacityVoicePacket(int channels) {
+    const auto application = channels == 1 ? OPUS_APPLICATION_VOIP : OPUS_APPLICATION_AUDIO;
+    int error = OPUS_OK;
+    std::unique_ptr<OpusEncoder, decltype(&opus_encoder_destroy)> encoder(
+        opus_encoder_create(48000, channels, application, &error), opus_encoder_destroy);
+    if (!encoder) throw std::runtime_error(opus_strerror(error));
+    if (opus_encoder_ctl(encoder.get(), OPUS_SET_BITRATE(channels == 1 ? 32000 : 128000)) != OPUS_OK)
+        throw std::runtime_error("Capacity fixture Opus encoder could not be configured");
+    std::array<float, 1920> samples{};
+    for (size_t frame = 0; frame < 960; ++frame) {
+        samples[frame * size_t(channels)] = float(0.1 * std::sin(2 * std::numbers::pi * 440 * frame / 48000));
+        if (channels == 2)
+            samples[frame * 2 + 1] = float(0.1 * std::sin(2 * std::numbers::pi * 660 * frame / 48000));
+    }
+    QByteArray packet(4000, '\0');
+    const auto bytes = opus_encode_float(encoder.get(), samples.data(), 960,
+        reinterpret_cast<unsigned char*>(packet.data()), int(packet.size()));
+    if (bytes < 0) throw std::runtime_error(opus_strerror(bytes));
+    packet.resize(bytes);
+    return packet;
 }
 QByteArray wireFrame(const QJsonObject& object) {
     const auto data = QJsonDocument(object).toJson(QJsonDocument::Compact);
@@ -5881,14 +5903,19 @@ private slots:
 #if QT_CONFIG(process)
     void sixtyFourClientsHaveOneConsistentRosterAndAudioFanout_data() {
         QTest::addColumn<int>("callbackDelayMs");
-        QTest::newRow("continuous") << 0;
-        QTest::newRow("delayed-audio-callbacks") << 45;
+        QTest::addColumn<int>("sourceChannels");
+        QTest::newRow("continuous-mono") << 0 << 1;
+        QTest::newRow("continuous-stereo") << 0 << 2;
+        QTest::newRow("delayed-audio-callbacks-mono") << 45 << 1;
+        QTest::newRow("delayed-audio-callbacks-stereo") << 45 << 2;
     }
     void sixtyFourClientsHaveOneConsistentRosterAndAudioFanout() {
         // The hosted macOS network launcher intentionally resets environment
         // logging rules. Enable bounded diagnostics inside this test process.
         QLoggingCategory::setFilterRules(QStringLiteral("squadspeak.media.sender.debug=true"));
         QFETCH(int, callbackDelayMs);
+        QFETCH(int, sourceChannels);
+        QVERIFY(sourceChannels == 1 || sourceChannels == 2);
         bool speakersOk = false;
         const int speakers = qEnvironmentVariableIsSet("SQUAD_SOAK_SPEAKERS")
             ? qEnvironmentVariable("SQUAD_SOAK_SPEAKERS").toInt(&speakersOk) : 4;
@@ -6054,13 +6081,11 @@ private slots:
             return members.size() == 64 && std::all_of(members.begin(), members.end(), [](const auto& entry) { return !entry.toMap().value("muted").toBool(); });
         }());
         QTRY_VERIFY(allReceivers([](const QJsonObject& member) { return member.value("unmuted").toBool(); }));
-        squad::VoiceMixer encoder(2);
-        std::array<float, 1920> samples;
-        for (size_t frame = 0; frame < 960; ++frame) {
-            samples[frame * 2] = float(0.1 * std::sin(2 * std::numbers::pi * 440 * frame / 48000));
-            samples[frame * 2 + 1] = float(0.1 * std::sin(2 * std::numbers::pi * 660 * frame / 48000));
-        }
-        const auto packet = encoder.encode(samples, 48000).first();
+        const auto packet = capacityVoicePacket(sourceChannels);
+        QCOMPARE(opus_packet_get_nb_channels(reinterpret_cast<const unsigned char*>(packet.constData())), sourceChannels);
+        QCOMPARE(opus_packet_get_nb_samples(reinterpret_cast<const unsigned char*>(packet.constData()), int(packet.size()), 48000), 960);
+        qInfo() << "Capacity source packet" << (sourceChannels == 1 ? "mono-32" : "stereo-128")
+                << "bytes" << packet.size();
         for (const auto& client : clients) QVERIFY(client->channel.sendAudio(packet));
         QVERIFY(commandReceivers({{"operation", "burst"}}));
         for (size_t i = 0; i < audioCounts.size(); ++i) QTRY_COMPARE(audioCounts[i], 63);
