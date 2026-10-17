@@ -1,6 +1,10 @@
 {
   "version": 2,
-  "synthetic_transients_ms": [1, 5, 20],
+  "synthetic_transients_ms": [
+    1,
+    5,
+    20
+  ],
   "sample_rate": 48000,
   "speech_interval_seconds": [
     2,
@@ -975,6 +979,46 @@
         "notice": "In Tune\nKellee Maize\nSource: https://freemusicarchive.org/music/Kellee_Maize/Owl_Time/01__Kellee_Maize__In_Tune__Owl_Time__FROSTWIRECOM_FROSTCLICKCOM__CREATIVE_COMMONS_1179\nLicense evidence: https://www.kelleemaize.com/exclusive-music\nLicense: CC-BY-4.0 (https://creativecommons.org/licenses/by/4.0/)\nChanges: excerpt from 40 to 52 seconds; downmixed/resampled to mono 48000 Hz PCM16.\nThe artist currently grants CC BY 4.0 for her music on the linked official page; older embedded file tags may name a previous license.\nNo endorsement is implied.\n",
         "sha256": "4ed33fa64bd1edb7dcb185179d4fe5346445d78bdde76b03c4d682c51ac4fe75"
       },
+      "source_sample_rate": 44100
+    },
+    {
+      "id": "typing-laptop",
+      "kind": "interference",
+      "author": "bsumusictech",
+      "license_id": "CC0-1.0",
+      "audio": {
+        "url": "https://cdn.freesound.org/previews/62/62594_791247-hq.mp3",
+        "sha256": "ce12de104211b95c4159056d211df5fa3effe2ab0a2ae1272544b19491720015"
+      },
+      "license": {
+        "url": "https://freesound.org/people/bsumusictech/sounds/62594/",
+        "notice": "Keyboard.wav by bsumusictech\nSource: https://freesound.org/people/bsumusictech/sounds/62594/\nLicense: CC0 1.0 Universal\nhttps://creativecommons.org/publicdomain/zero/1.0/\n\n12-second excerpt from the public high-quality MP3 preview, converted to mono\nPCM16 at 48 kHz. The source is a lossy preview, not the original WAV.\nNo normalization or denoising. No endorsement is implied.\n",
+        "sha256": "ea43c1dce52f3284c5d55ebbd2f8a946b63e64a1a7210258e1be369f9a80ffe7"
+      },
+      "start_sample": 0,
+      "frames": 576000,
+      "sha256": "313e74b5d586a489276eb40055d748a44ef4c672f9b4263ea42e9df7ef0d6750",
+      "category": "keyboard",
+      "source_sample_rate": 44100
+    },
+    {
+      "id": "typing-desktop",
+      "kind": "interference",
+      "author": "Nmb910",
+      "license_id": "CC0-1.0",
+      "audio": {
+        "url": "https://raw.githubusercontent.com/karolpiczak/ESC-50/33c8ce9eb2cf0b1c2f8bcf322eb349b6be34dbb6/audio/5-234923-A-32.wav",
+        "sha256": "074d29a97388008bb7ca266b786f1b22552fc7bcac5d901625640b925aa8a101"
+      },
+      "license": {
+        "url": "https://freesound.org/people/Nmb910/sounds/234923/",
+        "notice": "Mechanical Keyboard Typing by Nmb910\nOriginal: https://freesound.org/people/Nmb910/sounds/234923/\nLicense: CC0 1.0 Universal\nhttps://creativecommons.org/publicdomain/zero/1.0/\n\nFive-second excerpt distributed by ESC-50. Only this individually CC0 sound\nis used, not the dataset under its aggregate CC BY-NC license.\nAttribution source: https://github.com/karolpiczak/ESC-50/blob/33c8ce9eb2cf0b1c2f8bcf322eb349b6be34dbb6/LICENSE\nConverted to mono PCM16 at 48 kHz. No normalization or denoising.\nNo endorsement is implied.\n",
+        "sha256": "f4b06288e3de1ab5d091a7e54e5a4800ec9f87dee5d6ca51c6a8bae3c6348e1d"
+      },
+      "start_sample": 0,
+      "frames": 240000,
+      "sha256": "e10d4494dd5066db8758d2e81e6b6246476539ab59cd5593c8530b28ea8aec85",
+      "category": "keyboard",
       "source_sample_rate": 44100
     }
   ],

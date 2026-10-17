@@ -36,14 +36,6 @@
             <translation>Nyissa meg a rendszer adatvédelmi beállításait, és engedélyezze a mikrofonhoz való hozzáférést a SquadSpeak számára.</translation>
         </message>
         <message>
-            <source>Microphone analysis active. Test audio stays on this computer.</source>
-            <translation>Mikrofonelemzés aktív. A teszthang ezen a számítógépen marad.</translation>
-        </message>
-        <message>
-            <source>Finish the test recording before changing devices.</source>
-            <translation>Készülékcsere előtt fejezze be a tesztfelvételt.</translation>
-        </message>
-        <message>
             <source>The output format is not supported.</source>
             <translation>A kimeneti formátum nem támogatott.</translation>
         </message>
@@ -68,32 +60,12 @@
             <translation>A teszthangot nem lehetett lejátszani.</translation>
         </message>
         <message>
-            <source>The microphone has provided no data for five seconds. Recording discarded.</source>
-            <translation>A mikrofon öt másodpercig nem szolgáltat adatot. A felvétel elvetve.</translation>
-        </message>
-        <message>
-            <source>The microphone was interrupted or changed. Recording discarded.</source>
-            <translation>A mikrofon megszakadt vagy megváltozott. A felvétel elvetve.</translation>
-        </message>
-        <message>
-            <source>Cancelled. The incomplete recording was discarded.</source>
-            <translation>Törölve. A hiányos felvételt elvetették.</translation>
-        </message>
-        <message>
             <source>No selected microphone is available</source>
             <translation>Nem áll rendelkezésre kiválasztott mikrofon</translation>
         </message>
         <message>
             <source>Allow microphone access in the system dialog.</source>
             <translation>Mikrofon hozzáférés engedélyezése a rendszer párbeszédablakban.</translation>
-        </message>
-        <message>
-            <source>Microphone capture active for the voice channel.</source>
-            <translation>Mikrofonrögzítés aktív a hangcsatornához.</translation>
-        </message>
-        <message>
-            <source>Microphone access was denied. Nothing was saved.</source>
-            <translation>A mikrofonhoz való hozzáférés megtagadva. Semmit sem sikerült megmenteni.</translation>
         </message>
         <message>
             <source>Microphone access is missing. Allow it in System Settings.</source>
@@ -259,103 +231,16 @@
             <source>App audio only</source>
             <translation>Csak az alkalmazás hangja</translation>
         </message>
-    </context>
-    <context>
-        <name>AudioRecording</name>
         <message>
-            <source>Incomplete audio block. Recording discarded.</source>
-            <translation>Hiányos hangblokk. A felvétel elvetve.</translation>
-        </message>
-        <message>
-            <source>Move about one meter from the microphone. Keep the background sound playing and read the sentence.</source>
-            <translation>Mozduljon körülbelül egy méterre a mikrofontól. Tartsa a háttérhang lejátszását, és olvassa el a mondatot.</translation>
-        </message>
-        <message>
-            <source>Voice with background sound</source>
-            <translation>Hang háttérhanggal</translation>
-        </message>
-        <message>
-            <source>The recordings folder could not be created.</source>
-            <translation>A felvételek mappát nem sikerült létrehozni.</translation>
-        </message>
-        <message>
-            <source>You can stop the background sound now.</source>
-            <translation>Most leállíthatja a háttérhangot.</translation>
-        </message>
-        <message>
-            <source>Recordings saved</source>
-            <translation>A felvételek elmentve</translation>
-        </message>
-        <message>
-            <source>The test recording could not be saved completely.</source>
-            <translation>A tesztfelvételt nem sikerült teljesen elmenteni.</translation>
-        </message>
-        <message>
-            <source>Keep music off and stay quiet. Start when ready.</source>
-            <translation>Tartsa kikapcsolva a zenét és maradjon csendben. Kezdje el, ha készen áll.</translation>
-        </message>
-        <message>
-            <source>Your voice</source>
-            <translation>A hangod</translation>
-        </message>
-        <message>
-            <source>Play music or another background sound at a normal volume. Stay quiet while recording.</source>
-            <translation>Zene vagy más háttérhang lejátszása normál hangerőn. Maradjon csendben felvétel közben.</translation>
-        </message>
-        <message>
-            <source>The test recording could not be created.</source>
-            <translation>A tesztfelvétel nem hozható létre.</translation>
-        </message>
-        <message>
-            <source>Background sound</source>
-            <translation>Háttérhang</translation>
-        </message>
-        <message>
-            <source>The window is open. I can hear the rain outside. One, two, three, four, five.</source>
-            <translation>Az ablak nyitva van. Hallom kint az esőt. Egy, kettő, három, négy, öt.</translation>
-        </message>
-        <message>
-            <source>This microphone format is not supported for test recordings.</source>
-            <translation>Ez a mikrofonformátum nem támogatott tesztfelvételeknél.</translation>
-        </message>
-        <message>
-            <source>Keep the background volume unchanged. Read the sentence, then stop recording.</source>
-            <translation>A háttér hangerejét változatlanul hagyja. Olvassa el a mondatot, majd állítsa le a felvételt.</translation>
-        </message>
-        <message>
-            <source>Record at least half a second, then try again.</source>
-            <translation>Rögzítsen legalább fél másodpercet, majd próbálja újra.</translation>
-        </message>
-        <message>
-            <source>Sit at your usual distance. Read the sentence, then stop recording.</source>
-            <translation>Üljön a szokásos távolságra. Olvassa el a mondatot, majd állítsa le a felvételt.</translation>
-        </message>
-        <message>
-            <source>The recording description could not be saved.</source>
-            <translation>A felvétel leírását nem sikerült elmenteni.</translation>
-        </message>
-        <message>
-            <source>The WAV file could not be finalized.</source>
-            <translation>A WAV-fájlt nem sikerült véglegesíteni.</translation>
-        </message>
-        <message>
-            <source>The WAV header could not be written.</source>
-            <translation>A WAV fejlécet nem lehetett írni.</translation>
-        </message>
-        <message>
-            <source>Voice farther away</source>
-            <translation>A hang távolabb</translation>
-        </message>
-        <message>
-            <source>Room sound</source>
-            <translation>Szobahang</translation>
+            <source>Speech output is unavailable.</source>
+            <translation>A beszédkimenet nem érhető el.</translation>
         </message>
     </context>
     <context>
         <name>AudioSettings</name>
         <message>
-            <source>Echo cancellation</source>
-            <translation>Visszhangszűrés</translation>
+            <source>Echo</source>
+            <translation>Visszhang</translation>
         </message>
         <message>
             <source>Off</source>
@@ -402,12 +287,12 @@
             <translation>Az Ön lejátszása</translation>
         </message>
         <message>
-            <source>Clear local key</source>
-            <translation>Helyi PTT-billentyűparancs törlése</translation>
+            <source>Clear key</source>
+            <translation>Billentyű törlése</translation>
         </message>
         <message>
-            <source>Low cut</source>
-            <translation>Alacsony frekvenciájú vágás</translation>
+            <source>Highpass</source>
+            <translation>Felüláteresztő</translation>
         </message>
         <message>
             <source>Microphone access is off</source>
@@ -418,32 +303,16 @@
             <translation>Beviteli eszköz</translation>
         </message>
         <message>
-            <source>Microphone paused for others</source>
-            <translation>A mikrofon szünetel mások számára</translation>
-        </message>
-        <message>
             <source>Cancel</source>
             <translation>Mégsem</translation>
-        </message>
-        <message>
-            <source>Guided recording</source>
-            <translation>Irányított felvétel</translation>
         </message>
         <message>
             <source>Clipping. Reduce microphone gain.</source>
             <translation>Vágás. Csökkentse a mikrofon erősítését.</translation>
         </message>
         <message>
-            <source>Silent</source>
-            <translation>Néma</translation>
-        </message>
-        <message>
             <source>Test output</source>
             <translation>Teszt kimenet</translation>
-        </message>
-        <message>
-            <source>Voice level</source>
-            <translation>Hangszint</translation>
         </message>
         <message>
             <source>Voice threshold</source>
@@ -462,20 +331,16 @@
             <translation>Az eszköz le van választva</translation>
         </message>
         <message>
-            <source>Local key</source>
-            <translation>Helyi push-to-talk billentyűparancs</translation>
+            <source>PTT key</source>
+            <translation>Beszédgomb</translation>
         </message>
         <message>
             <source>Voice activation</source>
             <translation>Hangvezérelt mikrofon</translation>
         </message>
         <message>
-            <source>Remote PTT key</source>
-            <translation>Távoli push-to-talk billentyűparancs</translation>
-        </message>
-        <message>
-            <source>Noise reduction</source>
-            <translation>Zajcsökkentés</translation>
+            <source>Denoise</source>
+            <translation>Zajszűrés</translation>
         </message>
         <message>
             <source>Selected device is not connected</source>
@@ -486,32 +351,120 @@
             <translation>Átküldené</translation>
         </message>
         <message>
-            <source>Microphone gain</source>
-            <translation>Mikrofon erősítés</translation>
-        </message>
-        <message>
-            <source>Clear remote key</source>
-            <translation>Távoli push-to-talk billentyűparancs törlése</translation>
-        </message>
-        <message>
-            <source>Playback volume</source>
-            <translation>Lejátszás hangereje</translation>
+            <source>Gain</source>
+            <translation>Erősítés</translation>
         </message>
         <message>
             <source>Not assigned</source>
             <translation>Nincs hozzárendelve</translation>
         </message>
         <message>
-            <source>High cut</source>
-            <translation>Nagyfrekvenciás vágás</translation>
+            <source>Lowpass</source>
+            <translation>Aluláteresztő</translation>
         </message>
         <message>
             <source>Level audio automatically</source>
             <translation>A hang automatikus szintbe állítása</translation>
         </message>
+        <message>
+            <source>Voice volume</source>
+            <translation>Hangcsevegés hangereje</translation>
+        </message>
+        <message>
+            <source>App sounds</source>
+            <translation>Alkalmazáshangok</translation>
+        </message>
+        <message>
+            <source>Read bot messages aloud</source>
+            <translation>Botüzenetek felolvasása</translation>
+        </message>
+        <message>
+            <source>Download a high-quality voice for this language in macOS settings.</source>
+            <translation>Tölts le jó minőségű hangot ehhez a nyelvhez a macOS beállításaiban.</translation>
+        </message>
+        <message>
+            <source>Bot voice</source>
+            <translation>Bot hangja</translation>
+        </message>
+        <message>
+            <source>Automatic</source>
+            <translation>Automata</translation>
+        </message>
+        <message>
+            <source>Unavailable</source>
+            <translation>Nem elérhető</translation>
+        </message>
+        <message>
+            <source>Download voices in your device's Accessibility speech settings.</source>
+            <translation>Tölts le hangokat az eszközöd Kisegítő lehetőségek alatti beszédbeállításaiból.</translation>
+        </message>
+        <message>
+            <source>Voice download help</source>
+            <translation>Súgó a hangok letöltéséhez</translation>
+        </message>
+        <message>
+            <source>Strength, not the percentage of echo removed.</source>
+            <translation>Erősség, nem az eltávolított visszhang százaléka.</translation>
+        </message>
+        <message>
+            <source>Auto also checks for speech, not just volume.</source>
+            <translation>Az automatikus mód a beszédet is figyeli, nem csak a hangerőt.</translation>
+        </message>
     </context>
     <context>
         <name>Channels</name>
+        <message>
+            <source>Audio received</source>
+            <translation>Fogadott hang</translation>
+        </message>
+        <message>
+            <source>Search channels</source>
+            <translation>Csatornák keresése</translation>
+        </message>
+        <message>
+            <source>No matches</source>
+            <translation>Nincs találat</translation>
+        </message>
+        <message>
+            <source>Copy address</source>
+            <translation>Cím másolása</translation>
+        </message>
+        <message>
+            <source>Messages</source>
+            <translation>Üzenetek</translation>
+        </message>
+        <message>
+            <source>Message</source>
+            <translation>Üzenet</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Megnyitás</translation>
+        </message>
+        <message>
+            <source>Online</source>
+            <translation>Online</translation>
+        </message>
+        <message>
+            <source>Offline</source>
+            <translation>Offline</translation>
+        </message>
+        <message>
+            <source>No private messages</source>
+            <translation>Nincsenek privát üzenetek</translation>
+        </message>
+        <message>
+            <source>Private messages are unavailable for this contact.</source>
+            <translation>A privát üzenetek nem érhetők el ehhez a kapcsolathoz.</translation>
+        </message>
+        <message>
+            <source>If asked, allow local network access. You can change this in system settings.</source>
+            <translation>Ha a rendszer megkérdezi, engedélyezd a helyi hálózathoz való hozzáférést. Ezt a rendszerbeállításokban módosíthatod.</translation>
+        </message>
+        <message>
+            <source>Retry</source>
+            <translation>Újrapróbálkozás</translation>
+        </message>
         <message>
             <source>Updates</source>
             <translation>Frissítések</translation>
@@ -531,6 +484,10 @@
         <message>
             <source>DDNS cannot bypass CGNAT. If your provider shares the public IP, use a private VPN on all participating devices or a publicly reachable server.</source>
             <translation>A DDNS nem tudja megkerülni a CGNAT-ot. Ha a szolgáltató megosztja a nyilvános IP-címet, használjon privát VPN-t az összes résztvevő eszközön vagy egy nyilvánosan elérhető szerveren.</translation>
+        </message>
+        <message>
+            <source>Remove server</source>
+            <translation>Szerver eltávolítása</translation>
         </message>
         <message>
             <source>Low</source>
@@ -653,10 +610,6 @@
             <translation>Értesítési hangok</translation>
         </message>
         <message>
-            <source>Lifetime for new messages. Earlier messages keep their expiry.</source>
-            <translation>Élettartam az új üzenetekhez. A korábbi üzenetek megtartják a lejáratukat.</translation>
-        </message>
-        <message>
             <source>Enable speakers</source>
             <translation>Hangszórók engedélyezése</translation>
         </message>
@@ -691,10 +644,6 @@
         <message>
             <source>Allow device</source>
             <translation>Eszköz engedélyezése</translation>
-        </message>
-        <message>
-            <source>Receive quality: %1 kb/s per voice. Adjusts automatically for this device.</source>
-            <translation>Fogadási minőség: %1 kb/s hangonként. Automatikusan igazodik ehhez az eszközhöz.</translation>
         </message>
         <message>
             <source>Stop radio</source>
@@ -1188,6 +1137,50 @@
             <source>This device</source>
             <translation>Ez az eszköz</translation>
         </message>
+        <message>
+            <source>Use default music volume</source>
+            <translation>Alapértelmezett zenei hangerő használata</translation>
+        </message>
+        <message>
+            <source>Show in Dock</source>
+            <translation>Megjelenítés a Dockban</translation>
+        </message>
+        <message>
+            <source>App language</source>
+            <translation>Alkalmazás nyelve</translation>
+        </message>
+        <message>
+            <source>Send in</source>
+            <translation>Küldés nyelve</translation>
+        </message>
+        <message>
+            <source>Hear in</source>
+            <translation>Hallgatás nyelve</translation>
+        </message>
+        <message>
+            <source>Download language models for %1 and %2?</source>
+            <translation>Letöltöd a nyelvi modelleket ehhez: %1 és %2?</translation>
+        </message>
+        <message>
+            <source>Download</source>
+            <translation>Letöltés</translation>
+        </message>
+        <message>
+            <source>PTT, chat and channel controls. Uses the controlled device's microphone.</source>
+            <translation>PTT-, csevegés- és csatornakezelés. A vezérelt eszköz mikrofonját használja.</translation>
+        </message>
+        <message>
+            <source>Connect the other device to one of your channels, then allow it here.</source>
+            <translation>Csatlakoztasd a másik eszközt valamelyik csatornádhoz, majd engedélyezd itt.</translation>
+        </message>
+        <message>
+            <source>On the other device, open Settings &gt; Input &gt; Remote control and allow this device.</source>
+            <translation>A másik eszközön nyisd meg a(z) Beállítások &gt; Bemenet &gt; Távirányító menüt, és engedélyezd ezt az eszközt.</translation>
+        </message>
+        <message>
+            <source>Unread messages</source>
+            <translation>Olvasatlan üzenetek</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1299,6 +1292,22 @@
             <source>The sanitized image could not be written completely.</source>
             <translation>A megtisztított képet nem sikerült teljesen kiírni.</translation>
         </message>
+        <message>
+            <source>%1 joined.</source>
+            <translation>%1 csatlakozott.</translation>
+        </message>
+        <message>
+            <source>%1 left.</source>
+            <translation>%1 kilépett.</translation>
+        </message>
+        <message>
+            <source>%1 was kicked.</source>
+            <translation>%1-et kirúgták.</translation>
+        </message>
+        <message>
+            <source>%1 was banned from the channel.</source>
+            <translation>%1-et kitiltották a csatornáról.</translation>
+        </message>
     </context>
     <context>
         <name>ChatPanel</name>
@@ -1363,22 +1372,6 @@
             <translation>Betöltés...</translation>
         </message>
         <message>
-            <source>%1 joined.</source>
-            <translation>%1 csatlakozott.</translation>
-        </message>
-        <message>
-            <source>%1 left.</source>
-            <translation>%1 kilépett.</translation>
-        </message>
-        <message>
-            <source>%1 was kicked.</source>
-            <translation>%1-et kirúgták.</translation>
-        </message>
-        <message>
-            <source>%1 was banned from the channel.</source>
-            <translation>%1-et kitiltották a csatornáról.</translation>
-        </message>
-        <message>
             <source>Message could not be sent. Check the connection and text length.</source>
             <translation>Az üzenetet nem sikerült elküldeni. Ellenőrizze a kapcsolatot és a szöveg hosszát.</translation>
         </message>
@@ -1404,7 +1397,400 @@
         </message>
     </context>
     <context>
+        <name>Desktop</name>
+        <message>
+            <source>Open settings at startup.</source>
+            <translation>A beállítások megnyitása indításkor.</translation>
+        </message>
+        <message>
+            <source>Alternative file for audio profiles.</source>
+            <translation>Másik fájl a hangprofilokhoz.</translation>
+        </message>
+        <message>
+            <source>Load the interface without microphone capture and exit after one second.</source>
+            <translation>A felület betöltése mikrofonfelvétel nélkül és kilépés egy másodperc után.</translation>
+        </message>
+        <message>
+            <source>Save an image of the app window during the UI test.</source>
+            <translation>Az alkalmazásablak képének mentése a felület tesztelése közben.</translation>
+        </message>
+        <message>
+            <source>The window image could not be saved.</source>
+            <translation>Az ablak képét nem sikerült menteni.</translation>
+        </message>
+        <message>
+            <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
+            <translation>A rendszertálca nem érhető el; az alkalmazás ablakban marad nyitva.</translation>
+        </message>
+    </context>
+    <context>
+        <name>Headless</name>
+        <message>
+            <source>Host display name.</source>
+            <translation>A gazdagép megjelenített neve.</translation>
+        </message>
+        <message>
+            <source>Command failed.</source>
+            <translation>A parancs sikertelen.</translation>
+        </message>
+        <message>
+            <source>%1 must be an integer.</source>
+            <translation>A(z) %1 egész szám kell legyen.</translation>
+        </message>
+        <message>
+            <source>Requests must be on/off or true/false.</source>
+            <translation>A kérések értéke on/off vagy true/false lehet.</translation>
+        </message>
+        <message>
+            <source>Unknown host property: %1</source>
+            <translation>Ismeretlen gazdagéptulajdonság: %1</translation>
+        </message>
+        <message>
+            <source>Run without GUI, microphone capture, or local audio output.</source>
+            <translation>Futtatás grafikus felület, mikrofonrögzítés és helyi hangkimenet nélkül.</translation>
+        </message>
+        <message>
+            <source>Server storage prefix. Personal/audio/GUI profiles are not loaded.</source>
+            <translation>A szerver tárhelyének előtagja. Személyes, hang- és grafikus profilok nem töltődnek be.</translation>
+        </message>
+        <message>
+            <source>Optional private identity file instead of the OS credential store (Linux/macOS). Parent directory must exist and belong to this account.</source>
+            <translation>Választható privát identitásfájl az operációs rendszer hitelesítőadat-tárolója helyett (Linux/macOS). A szülőkönyvtárnak léteznie kell és ehhez a fiókhoz kell tartoznia.</translation>
+        </message>
+        <message>
+            <source>UTF-8 key=value properties or JSON host preset. Default: application.properties, then config/application.properties beside the app.</source>
+            <translation>UTF-8 key=value tulajdonságok vagy JSON gazdagépes előbeállítás. Alapértelmezett: application.properties, majd az alkalmazás melletti config/application.properties.</translation>
+        </message>
+        <message>
+            <source>Channel display name.</source>
+            <translation>A csatorna megjelenített neve.</translation>
+        </message>
+        <message>
+            <source>System and radio bot display name.</source>
+            <translation>A rendszer- és rádióbot megjelenített neve.</translation>
+        </message>
+        <message>
+            <source>TCP service port (1-65535).</source>
+            <translation>TCP szolgáltatási port (1-65535).</translation>
+        </message>
+        <message>
+            <source>Headless admission is always on; only 'on' or 'true' is accepted.</source>
+            <translation>A fej nélküli hozzáférés mindig be van kapcsolva; csak az 'on' vagy 'true' fogadható el.</translation>
+        </message>
+        <message>
+            <source>Preapprove a device ID; repeat for several devices. Existing bans remain.</source>
+            <translation>Eszközazonosító előzetes engedélyezése; több eszközhöz ismételd. A meglévő tiltások megmaradnak.</translation>
+        </message>
+        <message>
+            <source>Block a device ID; repeat for several devices.</source>
+            <translation>Eszközazonosító blokkolása; több eszközhöz ismételd.</translation>
+        </message>
+        <message>
+            <source>Read a UTF-8 channel password from a file before listening. An empty file removes it.</source>
+            <translation>UTF-8 csatornajelszó beolvasása fájlból figyelés előtt. Az üres fájl eltávolítja.</translation>
+        </message>
+        <message>
+            <source>Channel password. Empty removes it; environment or config avoids process-list exposure.</source>
+            <translation>Csatornajelszó. Az üres érték eltávolítja; a környezeti változó vagy konfiguráció elkerüli a folyamatlistában való megjelenést.</translation>
+        </message>
+        <message>
+            <source>SquadSpeak headless local channel host</source>
+            <translation>SquadSpeak fej nélküli helyi csatornagazdagép</translation>
+        </message>
+        <message>
+            <source>Environment variables (SQUADSPEAK_ prefix):</source>
+            <translation>Környezeti változók (SQUADSPEAK_ előtag):</translation>
+        </message>
+        <message>
+            <source>Host configuration could not be read or exceeds 1 MiB.</source>
+            <translation>A gazdagép konfigurációja nem olvasható, vagy meghaladja az 1 MiB-ot.</translation>
+        </message>
+        <message>
+            <source>Host configuration must be UTF-8.</source>
+            <translation>A gazdagép konfigurációjának UTF-8 formátumúnak kell lennie.</translation>
+        </message>
+        <message>
+            <source>Host preset must be a JSON object.</source>
+            <translation>A gazdagép-előbeállításnak JSON-objektumnak kell lennie.</translation>
+        </message>
+        <message>
+            <source>Property line %1 must use key=value.</source>
+            <translation>A tulajdonságsornak (%1) key=value formátumot kell használnia.</translation>
+        </message>
+        <message>
+            <source>Property line %1: %2</source>
+            <translation>Tömegsor %1: %2</translation>
+        </message>
+        <message>
+            <source>Standard input has no file descriptor.</source>
+            <translation>A szabványos bemenetnek nincs fájlleírója.</translation>
+        </message>
+        <message>
+            <source>Standard input could not be inspected.</source>
+            <translation>A szabványos bemenet nem vizsgálható.</translation>
+        </message>
+        <message>
+            <source>Could not write the command response: %1</source>
+            <translation>A parancsválasz nem írható ki: %1</translation>
+        </message>
+        <message>
+            <source>Standard input could not be read: %1</source>
+            <translation>A szabványos bemenet nem olvasható: %1</translation>
+        </message>
+        <message>
+            <source>Input line exceeds 65536 bytes.</source>
+            <translation>A bemeneti sor hossza meghaladja a 65536 bájtot.</translation>
+        </message>
+        <message>
+            <source>Each input line must be a JSON object.</source>
+            <translation>Minden bemeneti sornak JSON-objektumnak kell lennie.</translation>
+        </message>
+        <message>
+            <source>Input ended before a complete JSON line.</source>
+            <translation>A bemenet teljes JSON-sor nélkül ért véget.</translation>
+        </message>
+        <message>
+            <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
+            <translation>Választható saját csatornaazonosító a status, configure, password, admission, history, chat és radio parancsokhoz; alapértelmezésben az elsődleges csatorna.</translation>
+        </message>
+        <message>
+            <source>Channel action must be list, add or remove.</source>
+            <translation>A csatornaművelet list, add vagy remove lehet.</translation>
+        </message>
+        <message>
+            <source>Removing an own channel deletes its history, images, permissions and radio settings. Set confirmed=true to proceed.</source>
+            <translation>A saját csatorna eltávolítása törli annak előzményeit, képeit, engedélyeit és rádióbeállításait. A folytatáshoz állítsd be: confirmed=true.</translation>
+        </message>
+        <message>
+            <source>id must identify an additional own channel.</source>
+            <translation>az id további saját csatornát kell azonosítson.</translation>
+        </message>
+        <message>
+            <source>The additional own channel could not be removed: %1</source>
+            <translation>A további saját csatorna nem távolítható el: %1</translation>
+        </message>
+        <message>
+            <source>channelId must identify an own channel.</source>
+            <translation>A channelId saját csatornát kell azonosítson.</translation>
+        </message>
+        <message>
+            <source>values must be a host settings object.</source>
+            <translation>A values gazdagép-beállítási objektum kell legyen.</translation>
+        </message>
+        <message>
+            <source>Headless admission is always enabled for non-banned devices; requests off is not supported.</source>
+            <translation>A fej nélküli hozzáférés a nem tiltott eszközöknél mindig engedélyezett; a requests off nem támogatott.</translation>
+        </message>
+        <message>
+            <source>value must be a password of at most 1024 UTF-8 bytes without control characters; an empty string removes it.</source>
+            <translation>a value legfeljebb 1024 UTF-8 bájtos, vezérlőkarakterek nélküli jelszó kell legyen; az üres karakterlánc eltávolítja.</translation>
+        </message>
+        <message>
+            <source>The channel is not ready or a password change is in progress.</source>
+            <translation>A csatorna nem kész, vagy jelszómódosítás van folyamatban.</translation>
+        </message>
+        <message>
+            <source>The channel was removed while saving the password.</source>
+            <translation>A csatornát eltávolították a jelszó mentése közben.</translation>
+        </message>
+        <message>
+            <source>id is required.</source>
+            <translation>Az id kötelező.</translation>
+        </message>
+        <message>
+            <source>text must be a valid non-empty chat message.</source>
+            <translation>a text érvényes, nem üres csevegőüzenet kell legyen.</translation>
+        </message>
+        <message>
+            <source>The local channel is not ready.</source>
+            <translation>A helyi csatorna nem áll készen.</translation>
+        </message>
+        <message>
+            <source>The channel's radio is unavailable.</source>
+            <translation>A csatorna rádiója nem érhető el.</translation>
+        </message>
+        <message>
+            <source>Unknown command. Use help.</source>
+            <translation>Ismeretlen parancs. Használd a help parancsot.</translation>
+        </message>
+        <message>
+            <source>search requires a query, non-negative offset and limit from 1 to 128.</source>
+            <translation>A search parancshoz query, nemnegatív offset és 1 és 128 közötti limit szükséges.</translation>
+        </message>
+        <message>
+            <source>add creates an id; update requires an existing id.</source>
+            <translation>az add létrehoz egy id-t; az update meglévő id-t igényel.</translation>
+        </message>
+        <message>
+            <source>A station is already being checked.</source>
+            <translation>Az állomás ellenőrzése már folyamatban van.</translation>
+        </message>
+        <message>
+            <source>The channel was removed while checking the station.</source>
+            <translation>A csatornát eltávolították az állomás ellenőrzése közben.</translation>
+        </message>
+        <message>
+            <source>Unknown radio action.</source>
+            <translation>Ismeretlen rádióművelet.</translation>
+        </message>
+        <message>
+            <source>Could not load language: %1</source>
+            <translation>A nyelv nem tölthető be: %1</translation>
+        </message>
+        <message>
+            <source>The %1 option is incompatible with --headless.</source>
+            <translation>A(z) %1 opció nem kompatibilis a --headless kapcsolóval.</translation>
+        </message>
+        <message>
+            <source>Unexpected positional arguments. Use --help.</source>
+            <translation>Váratlan pozicionális argumentumok. Használd a --help parancsot.</translation>
+        </message>
+        <message>
+            <source>--config / -f requires a non-empty path.</source>
+            <translation>A --config / -f nem üres elérési utat igényel.</translation>
+        </message>
+        <message>
+            <source>Choose --password or --password-file, not both.</source>
+            <translation>Válaszd a --password vagy a --password-file lehetőséget, ne mindkettőt.</translation>
+        </message>
+        <message>
+            <source>Choose SQUADSPEAK_PASSWORD or SQUADSPEAK_PASSWORD_FILE, not both.</source>
+            <translation>Válaszd a SQUADSPEAK_PASSWORD vagy a SQUADSPEAK_PASSWORD_FILE változót, ne mindkettőt.</translation>
+        </message>
+        <message>
+            <source>Choose password or passwordFile in one configuration layer, not both.</source>
+            <translation>Egy konfigurációs rétegben válaszd a password vagy passwordFile lehetőséget, ne mindkettőt.</translation>
+        </message>
+        <message>
+            <source>passwordFile must be a non-empty path.</source>
+            <translation>a passwordFile nem üres elérési út kell legyen.</translation>
+        </message>
+        <message>
+            <source>Password file could not be read or is too large.</source>
+            <translation>A jelszófájl nem olvasható, vagy túl nagy.</translation>
+        </message>
+        <message>
+            <source>Password file must contain at most 1024 UTF-8 bytes without control characters.</source>
+            <translation>A jelszófájl legfeljebb 1024 UTF-8 bájtot tartalmazhat vezérlőkarakterek nélkül.</translation>
+        </message>
+        <message>
+            <source>Password must be a string of at most 1024 UTF-8 bytes without control characters.</source>
+            <translation>A jelszó legfeljebb 1024 UTF-8 bájtos, vezérlőkarakterek nélküli karakterlánc lehet.</translation>
+        </message>
+        <message>
+            <source>settingsFile must be a non-empty path.</source>
+            <translation>a settingsFile nem üres elérési út kell legyen.</translation>
+        </message>
+        <message>
+            <source>identityFile must be a non-empty path.</source>
+            <translation>az identityFile nem üres elérési út kell legyen.</translation>
+        </message>
+        <message>
+            <source>The settings directory could not be created.</source>
+            <translation>A beállítások könyvtára nem hozható létre.</translation>
+        </message>
+        <message>
+            <source>This SquadSpeak profile is already running or cannot be locked.</source>
+            <translation>Ez a SquadSpeak-profil már fut, vagy nem zárolható.</translation>
+        </message>
+        <message>
+            <source>Standard input could not be opened.</source>
+            <translation>A szabványos bemenet nem nyitható meg.</translation>
+        </message>
+        <message>
+            <source>Standard output could not be opened.</source>
+            <translation>A szabványos kimenet nem nyitható meg.</translation>
+        </message>
+        <message>
+            <source>This identity file is already in use or cannot be locked.</source>
+            <translation>Ez az identitásfájl már használatban van, vagy nem zárolható.</translation>
+        </message>
+        <message>
+            <source>Invalid host configuration: %1</source>
+            <translation>Érvénytelen gazdagép-konfiguráció: %1</translation>
+        </message>
+        <message>
+            <source>Radio channels could not be initialized.</source>
+            <translation>A rádiócsatornák nem inicializálhatók.</translation>
+        </message>
+        <message>
+            <source>Headless host could not start: %1</source>
+            <translation>A fej nélküli gazdagép nem indítható el: %1</translation>
+        </message>
+        <message>
+            <source>Channel password could not be saved.</source>
+            <translation>A csatornajelszó nem menthető.</translation>
+        </message>
+        <message>
+            <source>Invalid channel password: %1</source>
+            <translation>Érvénytelen csatornajelszó: %1</translation>
+        </message>
+        <message>
+            <source>Headless host could not initialize: %1</source>
+            <translation>A fej nélküli gazdagép nem inicializálható: %1</translation>
+        </message>
+        <message>
+            <source>SquadSpeak headless could not start: %1</source>
+            <translation>A SquadSpeak fej nélküli gazdagépe nem indítható el: %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>A támogatói tevékenységnek állapotnak, bejelentkezésnek, frissítésnek, kijelentkezésnek vagy lemondásnak kell lennie. status sign-in refresh sign-out cancel</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>A támogatói művelet folyamatban van.</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>Ebben a buildben a támogatói hozzáférés nem érhető el.</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>A beállítások elsőbbsége: argumentumok &gt; környezet &gt; tulajdonságok &gt; mentett szerverértékek.</translation>
+        </message>
+    </context>
+    <context>
+        <name>License</name>
+        <message>
+            <source>License storage is busy or unavailable.</source>
+            <translation>A licenctár foglalt vagy nem érhető el.</translation>
+        </message>
+        <message>
+            <source>License storage is unavailable.</source>
+            <translation>A licenctár nem érhető el.</translation>
+        </message>
+        <message>
+            <source>Sign-in expired. Try again.</source>
+            <translation>A bejelentkezés lejárt. Próbáld újra.</translation>
+        </message>
+        <message>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>A GitHub bejelentkezés nem érhető el. Próbáld újra.</translation>
+        </message>
+        <message>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>A GitHub bejelentkezés nem fejeződött be. Próbáld újra.</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>A GitHub ellenőrzése nem sikerült. Az offline hozzáférés legfeljebb hét napig tart.</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>Jelentkezzen be újra a GitHub használatával.</translation>
+        </message>
+    </context>
+    <context>
         <name>LocalChannel</name>
+        <message>
+            <source>Insufficient permissions.</source>
+            <translation>Nincs elegendő jogosultság.</translation>
+        </message>
+        <message>
+            <source>Blocked</source>
+            <translation>blokkolva</translation>
+        </message>
         <message>
             <source>Host is not responding. Reconnecting.</source>
             <translation>A gazdagép nem válaszol. Újracsatlakozás.</translation>
@@ -1926,8 +2312,8 @@
             <translation>A képátvitel túl sokáig tartott.</translation>
         </message>
         <message>
-            <source>The channel is full. Text chat is still available.</source>
-            <translation>A csatorna megtelt. A szöveges csevegés továbbra is elérhető.</translation>
+            <source>The host is busy. Try again shortly.</source>
+            <translation>A gazdagép foglalt. Próbáld újra hamarosan.</translation>
         </message>
         <message>
             <source>All own channels use the device's shared port.</source>
@@ -2189,6 +2575,53 @@
             <source>Voice relay codec could not be configured.</source>
             <translation>A hangtovábbító kodek nem állítható be.</translation>
         </message>
+        <message>
+            <source>Unsupported audio codec</source>
+            <translation>Nem támogatott hangkodek</translation>
+        </message>
+        <message>
+            <source>Speaking is not allowed in this channel.</source>
+            <translation>Ebben a csatornában nem beszélhetsz.</translation>
+        </message>
+    </context>
+    <context>
+        <name>LocalLanguage</name>
+        <message>
+            <source>Translation (experimental)</source>
+            <translation>Fordítás (kísérleti)</translation>
+        </message>
+        <message>
+            <source>Translate messages</source>
+            <translation>Üzenetek fordítása</translation>
+        </message>
+        <message>
+            <source>Translated voice</source>
+            <translation>Lefordított hang</translation>
+        </message>
+        <message>
+            <source>Original audio</source>
+            <translation>Eredeti hang</translation>
+        </message>
+        <message>
+            <source>Original text</source>
+            <translation>Eredeti szöveg</translation>
+        </message>
+        <message>
+            <source>Prepare languages</source>
+            <translation>Nyelvek előkészítése</translation>
+        </message>
+        <message>
+            <source>Local language processing is unavailable.</source>
+            <translation>A helyi nyelvi feldolgozás nem érhető el.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be read.</source>
+            <translation>A nyelvi beállítások nem olvashatók.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be saved.</source>
+            <translation>A nyelvi beállítások nem menthetők.</translation>
+        </message>
     </context>
     <context>
         <name>PushToTalkKey</name>
@@ -2329,50 +2762,61 @@
         </message>
     </context>
     <context>
-        <name>RecordingPanel</name>
+        <name>ScreenPanel</name>
         <message>
-            <source>Stop</source>
-            <translation>Állj</translation>
+            <source>Video paused</source>
+            <translation>Videó szünetel</translation>
         </message>
         <message>
-            <source>Start</source>
-            <translation>Kezdés</translation>
+            <source>Stream ended</source>
+            <translation>Az adatfolyam véget ért</translation>
         </message>
         <message>
-            <source>Saved on this device only. Nothing is uploaded.</source>
-            <translation>Csak ezen az eszközön mentve. Semmi sincs feltöltve.</translation>
+            <source>Connecting</source>
+            <translation>Csatlakozás</translation>
         </message>
         <message>
-            <source>Keep this take or record it again.</source>
-            <translation>Tartsa meg ezt a felvételt, vagy rögzítse újra.</translation>
+            <source>Open screen stream</source>
+            <translation>Képernyőfolyam megnyitása</translation>
         </message>
         <message>
-            <source>Record again</source>
-            <translation>Felvétel újra</translation>
+            <source>Screen stream</source>
+            <translation>Képernyő adatfolyam</translation>
         </message>
         <message>
-            <source>Use recording</source>
-            <translation>Felvétel használata</translation>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
+        </message>
+    </context>
+    <context>
+        <name>ScreenShare</name>
+        <message>
+            <source>Allow screen recording in system settings.</source>
+            <translation>Engedélyezd a képernyőfelvételt a rendszerbeállításokban.</translation>
         </message>
         <message>
-            <source>Recording progress</source>
-            <translation>A rögzítés folyamata</translation>
+            <source>The shared screen was removed. Select a source to start again.</source>
+            <translation>A megosztott képernyőt eltávolították. Válassza ki a forrást az újrakezdéshez.</translation>
         </message>
         <message>
-            <source>Step %1 of %2</source>
-            <translation>%2/%1. lépés</translation>
+            <source>The shared window was closed. Select a source to start again.</source>
+            <translation>A megosztott ablak bezárult. Válassza ki a forrást az újrakezdéshez.</translation>
         </message>
         <message>
-            <source>Open recordings</source>
-            <translation>Felvételek megnyitása</translation>
+            <source>The selected screen is no longer available.</source>
+            <translation>A kiválasztott képernyő már nem érhető el.</translation>
         </message>
         <message>
-            <source>Reset test</source>
-            <translation>Reset teszt</translation>
+            <source>The selected window is no longer available.</source>
+            <translation>A kiválasztott ablak már nem elérhető.</translation>
         </message>
         <message>
-            <source>%1 s remaining / %2 dBFS</source>
-            <translation>%1 s van hátra / %2 dBFS</translation>
+            <source>The selected source exceeds the capture size limit.</source>
+            <translation>A kiválasztott forrás meghaladja a rögzítési méretkorlátot.</translation>
+        </message>
+        <message>
+            <source>Close a video view before opening another stream.</source>
+            <translation>Zárja be a videó nézetet, mielőtt megnyit egy másik adatfolyamot.</translation>
         </message>
     </context>
     <context>
@@ -2449,10 +2893,6 @@
             <translation>Jel gyűjtése...</translation>
         </message>
         <message>
-            <source>Dashed curve: configured gain and frequency cuts, using the right dB scale. Noise reduction and voice activation are not part of this curve.</source>
-            <translation>Szaggatott görbe: konfigurált erősítés- és frekvenciacsökkentés, a megfelelő dB-skála használatával. A zajcsökkentés és a hangaktiválás nem része ennek a görbének.</translation>
-        </message>
-        <message>
             <source>Microphone preview is not running</source>
             <translation>A mikrofon előnézete nem fut</translation>
         </message>
@@ -2463,303 +2903,6 @@
         <message>
             <source>Peak: %1</source>
             <translation>Csúcs: %1</translation>
-        </message>
-    </context>
-    <context>
-        <name>Tray</name>
-        <message>
-            <source>Quit</source>
-            <translation>Hagyd abba</translation>
-        </message>
-        <message>
-            <source>SquadSpeak - speaking</source>
-            <translation>SquadSpeak - beszél</translation>
-        </message>
-        <message>
-            <source>Settings</source>
-            <translation>Beállítások</translation>
-        </message>
-        <message>
-            <source>Channels</source>
-            <translation>Csatornák</translation>
-        </message>
-        <message>
-            <source>New image</source>
-            <translation>Új kép</translation>
-        </message>
-    </context>
-    <context>
-        <name>VoiceAvatar</name>
-        <message>
-            <source>Muted</source>
-            <translation>Mikrofon elnémítva</translation>
-        </message>
-        <message>
-            <source>Sleeping</source>
-            <translation>Alvás</translation>
-        </message>
-        <message>
-            <source>Offline</source>
-            <translation>Offline</translation>
-        </message>
-        <message>
-            <source>Speaking</source>
-            <translation>Beszéd</translation>
-        </message>
-        <message>
-            <source>Unavailable</source>
-            <translation>Nem elérhető</translation>
-        </message>
-        <message>
-            <source>Listening</source>
-            <translation>Hallgat</translation>
-        </message>
-        <message>
-            <source>Deafened</source>
-            <translation>A hangszórók némítva</translation>
-        </message>
-    </context>
-    <context>
-        <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>Nem érhető el - hangbeállítások vagy hangszínteszt</translation>
-        </message>
-        <message>
-            <source>Microphone muted</source>
-            <translation>Mikrofon elnémítva</translation>
-        </message>
-        <message>
-            <source>Push-to-talk held</source>
-            <translation>Push-to-talk megtartva</translation>
-        </message>
-        <message>
-            <source>Ready - push-to-talk released</source>
-            <translation>Kész - push-to-talk feloldva</translation>
-        </message>
-        <message>
-            <source>Microphone unmuted</source>
-            <translation>Mikrofon némítva</translation>
-        </message>
-        <message>
-            <source>Settings could not be saved: %1</source>
-            <translation>A beállításokat nem sikerült elmenteni: %1</translation>
-        </message>
-        <message>
-            <source>The push-to-talk sequence cannot be incremented further.</source>
-            <translation>A push-to-talk sorozat már nem növelhető tovább.</translation>
-        </message>
-        <message>
-            <source>Choose System, Light or Dark.</source>
-            <translation>Válassza a Rendszer, Világos vagy Sötét lehetőséget.</translation>
-        </message>
-        <message>
-            <source>Choose a colour palette from the list.</source>
-            <translation>Válasszon ki egy színpalettát a listából.</translation>
-        </message>
-        <message>
-            <source>Choose an available avatar.</source>
-            <translation>Válasszon ki egy elérhető avatart.</translation>
-        </message>
-        <message>
-            <source>Invalid push-to-talk binding.</source>
-            <translation>Érvénytelen push-to-talk kötés.</translation>
-        </message>
-        <message>
-            <source>Release the held push-to-talk key first.</source>
-            <translation>Először engedje fel a tartott adó-vevő gombot.</translation>
-        </message>
-        <message>
-            <source>Choose a language from the list.</source>
-            <translation>Válasszon nyelvet a listából.</translation>
-        </message>
-        <message>
-            <source>This avatar requires Supporter.</source>
-            <translation>Ehhez az avatarhoz Supporter szükséges.</translation>
-        </message>
-        <message>
-            <source>The name must contain 1 to 64 characters.</source>
-            <translation>A névnek 1-64 karakterből kell állnia.</translation>
-        </message>
-        <message>
-            <source>The name may not contain control characters or line breaks.</source>
-            <translation>A név nem tartalmazhat vezérlőkaraktereket vagy sortöréseket.</translation>
-        </message>
-        <message>
-            <source>Session settings could not be read.</source>
-            <translation>A munkamenet beállításai nem olvashatók.</translation>
-        </message>
-        <message>
-            <source>Saved setting is invalid: %1</source>
-            <translation>Érvénytelen mentett beállítás: %1</translation>
-        </message>
-    </context>
-    <context>
-        <name>License</name>
-        <message>
-            <source>License storage is busy or unavailable.</source>
-            <translation>A licenctár foglalt vagy nem érhető el.</translation>
-        </message>
-        <message>
-            <source>License storage is unavailable.</source>
-            <translation>A licenctár nem érhető el.</translation>
-        </message>
-        <message>
-            <source>Sign-in expired. Try again.</source>
-            <translation>A bejelentkezés lejárt. Próbáld újra.</translation>
-        </message>
-        <message>
-            <source>GitHub sign-in is unavailable. Try again.</source>
-            <translation>A GitHub bejelentkezés nem érhető el. Próbáld újra.</translation>
-        </message>
-        <message>
-            <source>GitHub sign-in was not completed. Try again.</source>
-            <translation>A GitHub bejelentkezés nem fejeződött be. Próbáld újra.</translation>
-        </message>
-        <message>
-            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
-            <translation>A GitHub ellenőrzése nem sikerült. Az offline hozzáférés legfeljebb hét napig tart.</translation>
-        </message>
-        <message>
-            <source>Sign in with GitHub again.</source>
-            <translation>Jelentkezzen be újra a GitHub használatával.</translation>
-        </message>
-    </context>
-    <context>
-        <name>ScreenShare</name>
-        <message>
-            <source>The shared screen was removed. Select a source to start again.</source>
-            <translation>A megosztott képernyőt eltávolították. Válassza ki a forrást az újrakezdéshez.</translation>
-        </message>
-        <message>
-            <source>The shared window was closed. Select a source to start again.</source>
-            <translation>A megosztott ablak bezárult. Válassza ki a forrást az újrakezdéshez.</translation>
-        </message>
-        <message>
-            <source>The selected screen is no longer available.</source>
-            <translation>A kiválasztott képernyő már nem érhető el.</translation>
-        </message>
-        <message>
-            <source>The selected window is no longer available.</source>
-            <translation>A kiválasztott ablak már nem elérhető.</translation>
-        </message>
-        <message>
-            <source>The selected source exceeds the capture size limit.</source>
-            <translation>A kiválasztott forrás meghaladja a rögzítési méretkorlátot.</translation>
-        </message>
-        <message>
-            <source>Close a video view before opening another stream.</source>
-            <translation>Zárja be a videó nézetet, mielőtt megnyit egy másik adatfolyamot.</translation>
-        </message>
-    </context>
-    <context>
-        <name>ScreenPanel</name>
-        <message>
-            <source>Media capacity reached</source>
-            <translation>A médiakapacitás elérve</translation>
-        </message>
-        <message>
-            <source>Video paused</source>
-            <translation>Videó szünetel</translation>
-        </message>
-        <message>
-            <source>Stream ended</source>
-            <translation>Az adatfolyam véget ért</translation>
-        </message>
-        <message>
-            <source>Connecting</source>
-            <translation>Csatlakozás</translation>
-        </message>
-        <message>
-            <source>Open screen stream</source>
-            <translation>Képernyőfolyam megnyitása</translation>
-        </message>
-        <message>
-            <source>Screen stream</source>
-            <translation>Képernyő adatfolyam</translation>
-        </message>
-        <message>
-            <source>%1 kbit/s</source>
-            <translation>%1 kbit/s</translation>
-        </message>
-    </context>
-    <context>
-        <name>VideoCodec</name>
-        <message>
-            <source>Video codec: %1</source>
-            <translation>Videokodek: %1</translation>
-        </message>
-        <message>
-            <source>Video codec ABI does not match its headers.</source>
-            <translation>A videokodek ABI-ja nem egyezik a fejlécfájljaival.</translation>
-        </message>
-        <message>
-            <source>Video buffers could not be allocated.</source>
-            <translation>Nem sikerült memóriát foglalni a videopuffereknek.</translation>
-        </message>
-        <message>
-            <source>Invalid video quality tier.</source>
-            <translation>Érvénytelen videominőségi szint.</translation>
-        </message>
-        <message>
-            <source>The screen source exceeds the supported capture size.</source>
-            <translation>A képernyőforrás meghaladja a támogatott rögzítési méretet.</translation>
-        </message>
-        <message>
-            <source>The screen source is too narrow.</source>
-            <translation>A képernyőforrás túl keskeny.</translation>
-        </message>
-        <message>
-            <source>The video encoder could not be allocated.</source>
-            <translation>Nem sikerült memóriát foglalni a videokódolónak.</translation>
-        </message>
-        <message>
-            <source>No supported video encoder is available.</source>
-            <translation>Nem érhető el támogatott videokódoló.</translation>
-        </message>
-        <message>
-            <source>Video encoder configuration is too large.</source>
-            <translation>A videokódoló konfigurációja túl nagy.</translation>
-        </message>
-        <message>
-            <source>Video scaling could not be initialized.</source>
-            <translation>Nem sikerült inicializálni a videó átméretezését.</translation>
-        </message>
-        <message>
-            <source>The encoder returned an empty video packet.</source>
-            <translation>A kódoló üres videocsomagot adott vissza.</translation>
-        </message>
-        <message>
-            <source>Invalid video frame format.</source>
-            <translation>Érvénytelen videoképkocka-formátum.</translation>
-        </message>
-        <message>
-            <source>Invalid video decoder configuration.</source>
-            <translation>Érvénytelen videodekódoló-konfiguráció.</translation>
-        </message>
-        <message>
-            <source>This video codec cannot be decoded.</source>
-            <translation>Ez a videokodek nem dekódolható.</translation>
-        </message>
-        <message>
-            <source>Video decoder could not be allocated.</source>
-            <translation>Nem sikerült memóriát foglalni a videodekódolónak.</translation>
-        </message>
-        <message>
-            <source>Video decoder configuration could not be allocated.</source>
-            <translation>Nem sikerült memóriát foglalni a videodekódoló konfigurációjának.</translation>
-        </message>
-        <message>
-            <source>Decoded dimensions do not match the screen stream.</source>
-            <translation>A dekódolt méretek nem egyeznek a képernyőközvetítés méreteivel.</translation>
-        </message>
-        <message>
-            <source>Decoded image could not be allocated.</source>
-            <translation>Nem sikerült memóriát foglalni a dekódolt képnek.</translation>
-        </message>
-        <message>
-            <source>Video color conversion could not be initialized.</source>
-            <translation>Nem sikerült inicializálni a videó színkonverzióját.</translation>
         </message>
     </context>
     <context>
@@ -2877,359 +3020,208 @@
             <translation>A jelszó nem ellenőrizhető.</translation>
         </message>
     </context>
-
     <context>
-        <name>Headless</name>
+        <name>Tray</name>
         <message>
-            <source>Command failed.</source>
-            <translation>A parancs sikertelen.</translation>
+            <source>Quit</source>
+            <translation>Hagyd abba</translation>
         </message>
         <message>
-            <source>%1 must be an integer.</source>
-            <translation>A(z) %1 egész szám kell legyen.</translation>
+            <source>SquadSpeak - speaking</source>
+            <translation>SquadSpeak - beszél</translation>
         </message>
         <message>
-            <source>Requests must be on/off or true/false.</source>
-            <translation>A kérések értéke on/off vagy true/false lehet.</translation>
+            <source>Settings</source>
+            <translation>Beállítások</translation>
         </message>
         <message>
-            <source>Unknown host property: %1</source>
-            <translation>Ismeretlen gazdagéptulajdonság: %1</translation>
+            <source>Channels</source>
+            <translation>Csatornák</translation>
         </message>
         <message>
-            <source>Run without GUI, microphone capture, or local audio output.</source>
-            <translation>Futtatás grafikus felület, mikrofonrögzítés és helyi hangkimenet nélkül.</translation>
-        </message>
-        <message>
-            <source>Server storage prefix. Personal/audio/GUI profiles are not loaded.</source>
-            <translation>A szerver tárhelyének előtagja. Személyes, hang- és grafikus profilok nem töltődnek be.</translation>
-        </message>
-        <message>
-            <source>Optional private identity file instead of the OS credential store (Linux/macOS). Parent directory must exist and belong to this account.</source>
-            <translation>Választható privát identitásfájl az operációs rendszer hitelesítőadat-tárolója helyett (Linux/macOS). A szülőkönyvtárnak léteznie kell és ehhez a fiókhoz kell tartoznia.</translation>
-        </message>
-        <message>
-            <source>UTF-8 key=value properties or JSON host preset. Default: application.properties, then config/application.properties beside the app.</source>
-            <translation>UTF-8 key=value tulajdonságok vagy JSON gazdagépes előbeállítás. Alapértelmezett: application.properties, majd az alkalmazás melletti config/application.properties.</translation>
-        </message>
-        <message>
-            <source>Channel display name.</source>
-            <translation>A csatorna megjelenített neve.</translation>
-        </message>
-        <message>
-            <source>System and radio bot display name.</source>
-            <translation>A rendszer- és rádióbot megjelenített neve.</translation>
-        </message>
-        <message>
-            <source>TCP service port (1-65535).</source>
-            <translation>TCP szolgáltatási port (1-65535).</translation>
-        </message>
-        <message>
-            <source>Headless admission is always on; only 'on' or 'true' is accepted.</source>
-            <translation>A fej nélküli hozzáférés mindig be van kapcsolva; csak az 'on' vagy 'true' fogadható el.</translation>
-        </message>
-        <message>
-            <source>Preapprove a device ID; repeat for several devices. Existing bans remain.</source>
-            <translation>Eszközazonosító előzetes engedélyezése; több eszközhöz ismételd. A meglévő tiltások megmaradnak.</translation>
-        </message>
-        <message>
-            <source>Block a device ID; repeat for several devices.</source>
-            <translation>Eszközazonosító blokkolása; több eszközhöz ismételd.</translation>
-        </message>
-        <message>
-            <source>Read a UTF-8 channel password from a file before listening. An empty file removes it.</source>
-            <translation>UTF-8 csatornajelszó beolvasása fájlból figyelés előtt. Az üres fájl eltávolítja.</translation>
-        </message>
-        <message>
-            <source>Channel password. Empty removes it; environment or config avoids process-list exposure.</source>
-            <translation>Csatornajelszó. Az üres érték eltávolítja; a környezeti változó vagy konfiguráció elkerüli a folyamatlistában való megjelenést.</translation>
-        </message>
-        <message>
-            <source>SquadSpeak headless local channel host</source>
-            <translation>SquadSpeak fej nélküli helyi csatornagazdagép</translation>
-        </message>
-        <message>
-            <source>Environment variables (SQUADSPEAK_ prefix):</source>
-            <translation>Környezeti változók (SQUADSPEAK_ előtag):</translation>
-        </message>
-        <message>
-            <source>Host configuration could not be read or exceeds 1 MiB.</source>
-            <translation>A gazdagép konfigurációja nem olvasható, vagy meghaladja az 1 MiB-ot.</translation>
-        </message>
-        <message>
-            <source>Host configuration must be UTF-8.</source>
-            <translation>A gazdagép konfigurációjának UTF-8 formátumúnak kell lennie.</translation>
-        </message>
-        <message>
-            <source>Host preset must be a JSON object.</source>
-            <translation>A gazdagép-előbeállításnak JSON-objektumnak kell lennie.</translation>
-        </message>
-        <message>
-            <source>Property line %1 must use key=value.</source>
-            <translation>A tulajdonságsornak (%1) key=value formátumot kell használnia.</translation>
-        </message>
-        <message>
-            <source>Property line %1: %2</source>
-            <translation>Tömegsor %1: %2</translation>
-        </message>
-        <message>
-            <source>Standard input has no file descriptor.</source>
-            <translation>A szabványos bemenetnek nincs fájlleírója.</translation>
-        </message>
-        <message>
-            <source>Standard input could not be inspected.</source>
-            <translation>A szabványos bemenet nem vizsgálható.</translation>
-        </message>
-        <message>
-            <source>Could not write the command response: %1</source>
-            <translation>A parancsválasz nem írható ki: %1</translation>
-        </message>
-        <message>
-            <source>Standard input could not be read: %1</source>
-            <translation>A szabványos bemenet nem olvasható: %1</translation>
-        </message>
-        <message>
-            <source>Input line exceeds 65536 bytes.</source>
-            <translation>A bemeneti sor hossza meghaladja a 65536 bájtot.</translation>
-        </message>
-        <message>
-            <source>Each input line must be a JSON object.</source>
-            <translation>Minden bemeneti sornak JSON-objektumnak kell lennie.</translation>
-        </message>
-        <message>
-            <source>Input ended before a complete JSON line.</source>
-            <translation>A bemenet teljes JSON-sor nélkül ért véget.</translation>
-        </message>
-        <message>
-            <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
-            <translation>Választható saját csatornaazonosító a status, configure, password, admission, history, chat és radio parancsokhoz; alapértelmezésben az elsődleges csatorna.</translation>
-        </message>
-        <message>
-            <source>Channel action must be list, add or remove.</source>
-            <translation>A csatornaművelet list, add vagy remove lehet.</translation>
-        </message>
-        <message>
-            <source>Removing an own channel deletes its history, images, permissions and radio settings. Set confirmed=true to proceed.</source>
-            <translation>A saját csatorna eltávolítása törli annak előzményeit, képeit, engedélyeit és rádióbeállításait. A folytatáshoz állítsd be: confirmed=true.</translation>
-        </message>
-        <message>
-            <source>id must identify an additional own channel.</source>
-            <translation>az id további saját csatornát kell azonosítson.</translation>
-        </message>
-        <message>
-            <source>The additional own channel could not be removed: %1</source>
-            <translation>A további saját csatorna nem távolítható el: %1</translation>
-        </message>
-        <message>
-            <source>channelId must identify an own channel.</source>
-            <translation>A channelId saját csatornát kell azonosítson.</translation>
-        </message>
-        <message>
-            <source>values must be a host settings object.</source>
-            <translation>A values gazdagép-beállítási objektum kell legyen.</translation>
-        </message>
-        <message>
-            <source>Headless admission is always enabled for non-banned devices; requests off is not supported.</source>
-            <translation>A fej nélküli hozzáférés a nem tiltott eszközöknél mindig engedélyezett; a requests off nem támogatott.</translation>
-        </message>
-        <message>
-            <source>value must be a password of at most 1024 UTF-8 bytes without control characters; an empty string removes it.</source>
-            <translation>a value legfeljebb 1024 UTF-8 bájtos, vezérlőkarakterek nélküli jelszó kell legyen; az üres karakterlánc eltávolítja.</translation>
-        </message>
-        <message>
-            <source>The channel is not ready or a password change is in progress.</source>
-            <translation>A csatorna nem kész, vagy jelszómódosítás van folyamatban.</translation>
-        </message>
-        <message>
-            <source>The channel was removed while saving the password.</source>
-            <translation>A csatornát eltávolították a jelszó mentése közben.</translation>
-        </message>
-        <message>
-            <source>id is required.</source>
-            <translation>Az id kötelező.</translation>
-        </message>
-        <message>
-            <source>text must be a valid non-empty chat message.</source>
-            <translation>a text érvényes, nem üres csevegőüzenet kell legyen.</translation>
-        </message>
-        <message>
-            <source>The local channel is not ready.</source>
-            <translation>A helyi csatorna nem áll készen.</translation>
-        </message>
-        <message>
-            <source>The channel's radio is unavailable.</source>
-            <translation>A csatorna rádiója nem érhető el.</translation>
-        </message>
-        <message>
-            <source>Unknown command. Use help.</source>
-            <translation>Ismeretlen parancs. Használd a help parancsot.</translation>
-        </message>
-        <message>
-            <source>search requires a query, non-negative offset and limit from 1 to 128.</source>
-            <translation>A search parancshoz query, nemnegatív offset és 1 és 128 közötti limit szükséges.</translation>
-        </message>
-        <message>
-            <source>add creates an id; update requires an existing id.</source>
-            <translation>az add létrehoz egy id-t; az update meglévő id-t igényel.</translation>
-        </message>
-        <message>
-            <source>A station is already being checked.</source>
-            <translation>Az állomás ellenőrzése már folyamatban van.</translation>
-        </message>
-        <message>
-            <source>The channel was removed while checking the station.</source>
-            <translation>A csatornát eltávolították az állomás ellenőrzése közben.</translation>
-        </message>
-        <message>
-            <source>Unknown radio action.</source>
-            <translation>Ismeretlen rádióművelet.</translation>
-        </message>
-        <message>
-            <source>Could not load language: %1</source>
-            <translation>A nyelv nem tölthető be: %1</translation>
-        </message>
-        <message>
-            <source>The %1 option is incompatible with --headless.</source>
-            <translation>A(z) %1 opció nem kompatibilis a --headless kapcsolóval.</translation>
-        </message>
-        <message>
-            <source>Unexpected positional arguments. Use --help.</source>
-            <translation>Váratlan pozicionális argumentumok. Használd a --help parancsot.</translation>
-        </message>
-        <message>
-            <source>--config / -f requires a non-empty path.</source>
-            <translation>A --config / -f nem üres elérési utat igényel.</translation>
-        </message>
-        <message>
-            <source>Choose --password or --password-file, not both.</source>
-            <translation>Válaszd a --password vagy a --password-file lehetőséget, ne mindkettőt.</translation>
-        </message>
-        <message>
-            <source>Choose SQUADSPEAK_PASSWORD or SQUADSPEAK_PASSWORD_FILE, not both.</source>
-            <translation>Válaszd a SQUADSPEAK_PASSWORD vagy a SQUADSPEAK_PASSWORD_FILE változót, ne mindkettőt.</translation>
-        </message>
-        <message>
-            <source>Choose password or passwordFile in one configuration layer, not both.</source>
-            <translation>Egy konfigurációs rétegben válaszd a password vagy passwordFile lehetőséget, ne mindkettőt.</translation>
-        </message>
-        <message>
-            <source>passwordFile must be a non-empty path.</source>
-            <translation>a passwordFile nem üres elérési út kell legyen.</translation>
-        </message>
-        <message>
-            <source>Password file could not be read or is too large.</source>
-            <translation>A jelszófájl nem olvasható, vagy túl nagy.</translation>
-        </message>
-        <message>
-            <source>Password file must contain at most 1024 UTF-8 bytes without control characters.</source>
-            <translation>A jelszófájl legfeljebb 1024 UTF-8 bájtot tartalmazhat vezérlőkarakterek nélkül.</translation>
-        </message>
-        <message>
-            <source>Password must be a string of at most 1024 UTF-8 bytes without control characters.</source>
-            <translation>A jelszó legfeljebb 1024 UTF-8 bájtos, vezérlőkarakterek nélküli karakterlánc lehet.</translation>
-        </message>
-        <message>
-            <source>settingsFile must be a non-empty path.</source>
-            <translation>a settingsFile nem üres elérési út kell legyen.</translation>
-        </message>
-        <message>
-            <source>identityFile must be a non-empty path.</source>
-            <translation>az identityFile nem üres elérési út kell legyen.</translation>
-        </message>
-        <message>
-            <source>The settings directory could not be created.</source>
-            <translation>A beállítások könyvtára nem hozható létre.</translation>
-        </message>
-        <message>
-            <source>This SquadSpeak profile is already running or cannot be locked.</source>
-            <translation>Ez a SquadSpeak-profil már fut, vagy nem zárolható.</translation>
-        </message>
-        <message>
-            <source>Standard input could not be opened.</source>
-            <translation>A szabványos bemenet nem nyitható meg.</translation>
-        </message>
-        <message>
-            <source>Standard output could not be opened.</source>
-            <translation>A szabványos kimenet nem nyitható meg.</translation>
-        </message>
-        <message>
-            <source>This identity file is already in use or cannot be locked.</source>
-            <translation>Ez az identitásfájl már használatban van, vagy nem zárolható.</translation>
-        </message>
-        <message>
-            <source>Invalid host configuration: %1</source>
-            <translation>Érvénytelen gazdagép-konfiguráció: %1</translation>
-        </message>
-        <message>
-            <source>Radio channels could not be initialized.</source>
-            <translation>A rádiócsatornák nem inicializálhatók.</translation>
-        </message>
-        <message>
-            <source>Headless host could not start: %1</source>
-            <translation>A fej nélküli gazdagép nem indítható el: %1</translation>
-        </message>
-        <message>
-            <source>Channel password could not be saved.</source>
-            <translation>A csatornajelszó nem menthető.</translation>
-        </message>
-        <message>
-            <source>Invalid channel password: %1</source>
-            <translation>Érvénytelen csatornajelszó: %1</translation>
-        </message>
-        <message>
-            <source>Headless host could not initialize: %1</source>
-            <translation>A fej nélküli gazdagép nem inicializálható: %1</translation>
-        </message>
-        <message>
-            <source>SquadSpeak headless could not start: %1</source>
-            <translation>A SquadSpeak fej nélküli gazdagépe nem indítható el: %1</translation>
-        </message>
-        <message>
-            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
-            <translation>A támogatói tevékenységnek állapotnak, bejelentkezésnek, frissítésnek, kijelentkezésnek vagy lemondásnak kell lennie. status sign-in refresh sign-out cancel</translation>
-        </message>
-        <message>
-            <source>A Supporter operation is in progress.</source>
-            <translation>A támogatói művelet folyamatban van.</translation>
-        </message>
-        <message>
-            <source>Supporter access is unavailable in this build.</source>
-            <translation>Ebben a buildben a támogatói hozzáférés nem érhető el.</translation>
-        </message>
-        <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>A beállítások elsőbbsége: argumentumok &gt; környezet &gt; tulajdonságok &gt; mentett szerverértékek.</translation>
+            <source>New image</source>
+            <translation>Új kép</translation>
         </message>
     </context>
     <context>
-        <name>Desktop</name>
+        <name>VideoCodec</name>
         <message>
-            <source>Open settings at startup.</source>
-            <translation>A beállítások megnyitása indításkor.</translation>
+            <source>Video codec: %1</source>
+            <translation>Videokodek: %1</translation>
         </message>
         <message>
-            <source>Open guided local test recording without starting network services.</source>
-            <translation>Az irányított helyi tesztfelvétel megnyitása hálózati szolgáltatások indítása nélkül.</translation>
+            <source>Video codec ABI does not match its headers.</source>
+            <translation>A videokodek ABI-ja nem egyezik a fejlécfájljaival.</translation>
         </message>
         <message>
-            <source>Alternative file for audio profiles.</source>
-            <translation>Másik fájl a hangprofilokhoz.</translation>
+            <source>Video buffers could not be allocated.</source>
+            <translation>Nem sikerült memóriát foglalni a videopuffereknek.</translation>
         </message>
         <message>
-            <source>Load the interface without microphone capture and exit after one second.</source>
-            <translation>A felület betöltése mikrofonfelvétel nélkül és kilépés egy másodperc után.</translation>
+            <source>Invalid video quality tier.</source>
+            <translation>Érvénytelen videominőségi szint.</translation>
         </message>
         <message>
-            <source>Save an image of the app window during the UI test.</source>
-            <translation>Az alkalmazásablak képének mentése a felület tesztelése közben.</translation>
+            <source>The screen source exceeds the supported capture size.</source>
+            <translation>A képernyőforrás meghaladja a támogatott rögzítési méretet.</translation>
         </message>
         <message>
-            <source>The window image could not be saved.</source>
-            <translation>Az ablak képét nem sikerült menteni.</translation>
+            <source>The screen source is too narrow.</source>
+            <translation>A képernyőforrás túl keskeny.</translation>
         </message>
         <message>
-            <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
-            <translation>A rendszertálca nem érhető el; az alkalmazás ablakban marad nyitva.</translation>
+            <source>The video encoder could not be allocated.</source>
+            <translation>Nem sikerült memóriát foglalni a videokódolónak.</translation>
+        </message>
+        <message>
+            <source>No supported video encoder is available.</source>
+            <translation>Nem érhető el támogatott videokódoló.</translation>
+        </message>
+        <message>
+            <source>Video encoder configuration is too large.</source>
+            <translation>A videokódoló konfigurációja túl nagy.</translation>
+        </message>
+        <message>
+            <source>Video scaling could not be initialized.</source>
+            <translation>Nem sikerült inicializálni a videó átméretezését.</translation>
+        </message>
+        <message>
+            <source>The encoder returned an empty video packet.</source>
+            <translation>A kódoló üres videocsomagot adott vissza.</translation>
+        </message>
+        <message>
+            <source>Invalid video frame format.</source>
+            <translation>Érvénytelen videoképkocka-formátum.</translation>
+        </message>
+        <message>
+            <source>Invalid video decoder configuration.</source>
+            <translation>Érvénytelen videodekódoló-konfiguráció.</translation>
+        </message>
+        <message>
+            <source>This video codec cannot be decoded.</source>
+            <translation>Ez a videokodek nem dekódolható.</translation>
+        </message>
+        <message>
+            <source>Video decoder could not be allocated.</source>
+            <translation>Nem sikerült memóriát foglalni a videodekódolónak.</translation>
+        </message>
+        <message>
+            <source>Video decoder configuration could not be allocated.</source>
+            <translation>Nem sikerült memóriát foglalni a videodekódoló konfigurációjának.</translation>
+        </message>
+        <message>
+            <source>Decoded dimensions do not match the screen stream.</source>
+            <translation>A dekódolt méretek nem egyeznek a képernyőközvetítés méreteivel.</translation>
+        </message>
+        <message>
+            <source>Decoded image could not be allocated.</source>
+            <translation>Nem sikerült memóriát foglalni a dekódolt képnek.</translation>
+        </message>
+        <message>
+            <source>Video color conversion could not be initialized.</source>
+            <translation>Nem sikerült inicializálni a videó színkonverzióját.</translation>
+        </message>
+    </context>
+    <context>
+        <name>VoiceAvatar</name>
+        <message>
+            <source>Muted</source>
+            <translation>Mikrofon elnémítva</translation>
+        </message>
+        <message>
+            <source>Sleeping</source>
+            <translation>Alvás</translation>
+        </message>
+        <message>
+            <source>Offline</source>
+            <translation>Offline</translation>
+        </message>
+        <message>
+            <source>Speaking</source>
+            <translation>Beszéd</translation>
+        </message>
+        <message>
+            <source>Unavailable</source>
+            <translation>Nem elérhető</translation>
+        </message>
+        <message>
+            <source>Listening</source>
+            <translation>Hallgat</translation>
+        </message>
+        <message>
+            <source>Deafened</source>
+            <translation>A hangszórók némítva</translation>
+        </message>
+    </context>
+    <context>
+        <name>VoiceSession</name>
+        <message>
+            <source>Microphone muted</source>
+            <translation>Mikrofon elnémítva</translation>
+        </message>
+        <message>
+            <source>Push-to-talk held</source>
+            <translation>Push-to-talk megtartva</translation>
+        </message>
+        <message>
+            <source>Ready - push-to-talk released</source>
+            <translation>Kész - push-to-talk feloldva</translation>
+        </message>
+        <message>
+            <source>Microphone unmuted</source>
+            <translation>Mikrofon némítva</translation>
+        </message>
+        <message>
+            <source>Settings could not be saved: %1</source>
+            <translation>A beállításokat nem sikerült elmenteni: %1</translation>
+        </message>
+        <message>
+            <source>The push-to-talk sequence cannot be incremented further.</source>
+            <translation>A push-to-talk sorozat már nem növelhető tovább.</translation>
+        </message>
+        <message>
+            <source>Choose System, Light or Dark.</source>
+            <translation>Válassza a Rendszer, Világos vagy Sötét lehetőséget.</translation>
+        </message>
+        <message>
+            <source>Choose a colour palette from the list.</source>
+            <translation>Válasszon ki egy színpalettát a listából.</translation>
+        </message>
+        <message>
+            <source>Choose an available avatar.</source>
+            <translation>Válasszon ki egy elérhető avatart.</translation>
+        </message>
+        <message>
+            <source>Invalid push-to-talk binding.</source>
+            <translation>Érvénytelen push-to-talk kötés.</translation>
+        </message>
+        <message>
+            <source>Release the held push-to-talk key first.</source>
+            <translation>Először engedje fel a tartott adó-vevő gombot.</translation>
+        </message>
+        <message>
+            <source>Choose a language from the list.</source>
+            <translation>Válasszon nyelvet a listából.</translation>
+        </message>
+        <message>
+            <source>This avatar requires Supporter.</source>
+            <translation>Ehhez az avatarhoz Supporter szükséges.</translation>
+        </message>
+        <message>
+            <source>The name must contain 1 to 64 characters.</source>
+            <translation>A névnek 1-64 karakterből kell állnia.</translation>
+        </message>
+        <message>
+            <source>The name may not contain control characters or line breaks.</source>
+            <translation>A név nem tartalmazhat vezérlőkaraktereket vagy sortöréseket.</translation>
+        </message>
+        <message>
+            <source>Session settings could not be read.</source>
+            <translation>A munkamenet beállításai nem olvashatók.</translation>
+        </message>
+        <message>
+            <source>Saved setting is invalid: %1</source>
+            <translation>Érvénytelen mentett beállítás: %1</translation>
         </message>
     </context>
 </TS>

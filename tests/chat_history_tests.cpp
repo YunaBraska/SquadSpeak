@@ -18,6 +18,48 @@ class ChatHistoryTests final : public QObject {
         return history.append(identity.id(), "Alice", id.isEmpty() ? request() : id, "private message", now, {}, "mossling", days * ChatHistory::lifetime);
     }
 private slots:
+    void additiveSchemaChangesPreserveUnknownDataAcrossRestartAndWrites() {
+        QTemporaryDir directory;
+        const auto identity = TlsIdentity::create();
+        const auto path = directory.filePath("chat"), connection = request();
+        const qint64 now = 1700000000000;
+        {
+            ChatHistory history(path, identity, now);
+            append(history, identity, now);
+            QVERIFY(history.updateProfile(identity.id(), "Alice", "courier"));
+        }
+        {
+            auto disk = QSqlDatabase::addDatabase("QSQLITE", connection);
+            disk.setDatabaseName(path + ".sqlite"); QVERIFY(disk.open());
+            QSqlQuery query(disk);
+            for (const auto* table : {"metadata", "messages", "profiles"}) {
+                QVERIFY(query.exec(QString("ALTER TABLE %1 ADD COLUMN future TEXT NOT NULL DEFAULT 'default'").arg(table)));
+                QVERIFY(query.exec(QString("UPDATE %1 SET future='preserved'").arg(table)));
+            }
+            QVERIFY(query.exec("CREATE TABLE extension (payload TEXT)"));
+            QVERIFY(query.exec("INSERT INTO extension VALUES('untouched')"));
+            {
+                ChatHistory reopened(path, identity, now);
+                QCOMPARE(records(reopened).size(), 1);
+                append(reopened, identity, now + 1);
+                QVERIFY(reopened.updateProfile(identity.id(), "Renamed", "mechanic"));
+                reopened.expire(now + 2);
+            }
+            ChatHistory restarted(path, identity, now + 2);
+            QCOMPARE(records(restarted).size(), 2);
+            QCOMPARE(records(restarted).first().toObject().value("name").toString(), QString("Renamed"));
+            for (const auto* table : {"metadata", "messages", "profiles"}) {
+                QVERIFY(query.exec(QString("SELECT future FROM %1 ORDER BY rowid").arg(table)));
+                QVERIFY(query.next()); QCOMPARE(query.value(0).toString(), QString("preserved"));
+            }
+            QVERIFY(query.exec("SELECT future FROM messages WHERE sequence=2"));
+            QVERIFY(query.next()); QCOMPARE(query.value(0).toString(), QString("default"));
+            QVERIFY(query.exec("SELECT payload FROM extension"));
+            QVERIFY(query.next()); QCOMPARE(query.value(0).toString(), QString("untouched"));
+            disk.close();
+        }
+        QSqlDatabase::removeDatabase(connection);
+    }
     void expiredRetryReclaimsItsImageBeyondTheMaintenanceBatch_data() {
         QTest::addColumn<QString>("mode");
         for (const auto* mode : {"removed", "reused", "replaced", "shared"}) QTest::newRow(mode) << QString::fromLatin1(mode);
@@ -203,6 +245,31 @@ private slots:
         QCOMPARE(first.get(), second.get());
         ChatHistory restored(path, identity, now);
         QCOMPARE(records(restored).size(), 1);
+    }
+    void lockedWriterFailsWithoutLosingReceiptAndCanBeRetried() {
+        QTemporaryDir directory;
+        const auto identity = TlsIdentity::create();
+        const auto path = directory.filePath("chat"), id = request();
+        const qint64 now = 1700000000000;
+        ChatHistory history(path, identity, now);
+        const auto connection = request();
+        {
+            auto writer = QSqlDatabase::addDatabase("QSQLITE", connection);
+            writer.setDatabaseName(path + ".sqlite");
+            QVERIFY(writer.open());
+            QSqlQuery lock(writer);
+            QVERIFY(lock.exec("BEGIN IMMEDIATE"));
+            QTest::ignoreMessage(QtWarningMsg, QRegularExpression(
+                "^Chat history SQL operation failed: BEGIN IMMEDIATE SQLite 5 database is locked$"));
+            QVERIFY_THROWS_EXCEPTION(std::runtime_error, append(history, identity, now, 1, id));
+            QVERIFY(writer.rollback());
+            writer.close();
+        }
+        QSqlDatabase::removeDatabase(connection);
+        const auto receipt = append(history, identity, now, 1, id);
+        QCOMPARE(append(history, identity, now, 1, id), receipt);
+        ChatHistory reopened(path, identity, now);
+        QCOMPARE(records(reopened), QJsonArray{receipt});
     }
     void concurrentExpiryPreservesAnImageReusedByANewReceipt() {
         QImage pixels(8, 8, QImage::Format_RGB32); pixels.fill(Qt::blue);

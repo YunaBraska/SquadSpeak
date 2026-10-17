@@ -36,14 +36,6 @@
             <translation>打开系统隐私设置,允许 SquadSpeak 访问麦克风.</translation>
         </message>
         <message>
-            <source>Microphone analysis active. Test audio stays on this computer.</source>
-            <translation>麦克风分析已启用.测试音频保留在此电脑上.</translation>
-        </message>
-        <message>
-            <source>Finish the test recording before changing devices.</source>
-            <translation>更换设备前请完成测试录音.</translation>
-        </message>
-        <message>
             <source>The output format is not supported.</source>
             <translation>不支持该输出格式.</translation>
         </message>
@@ -68,32 +60,12 @@
             <translation>无法播放测试音.</translation>
         </message>
         <message>
-            <source>The microphone has provided no data for five seconds. Recording discarded.</source>
-            <translation>麦克风五秒内没有提供数据.录音已丢弃.</translation>
-        </message>
-        <message>
-            <source>The microphone was interrupted or changed. Recording discarded.</source>
-            <translation>麦克风被中断或已更换.录音已丢弃.</translation>
-        </message>
-        <message>
-            <source>Cancelled. The incomplete recording was discarded.</source>
-            <translation>已取消.未完成的录音已丢弃.</translation>
-        </message>
-        <message>
             <source>No selected microphone is available</source>
             <translation>没有可用的选定麦克风</translation>
         </message>
         <message>
             <source>Allow microphone access in the system dialog.</source>
             <translation>请在系统对话框中允许访问麦克风.</translation>
-        </message>
-        <message>
-            <source>Microphone capture active for the voice channel.</source>
-            <translation>语音频道的麦克风采集已启用.</translation>
-        </message>
-        <message>
-            <source>Microphone access was denied. Nothing was saved.</source>
-            <translation>麦克风访问被拒绝.未保存任何内容.</translation>
         </message>
         <message>
             <source>Microphone access is missing. Allow it in System Settings.</source>
@@ -259,103 +231,16 @@
             <source>App audio only</source>
             <translation>仅应用音频</translation>
         </message>
-    </context>
-    <context>
-        <name>AudioRecording</name>
         <message>
-            <source>Incomplete audio block. Recording discarded.</source>
-            <translation>音频块不完整.录音已丢弃.</translation>
-        </message>
-        <message>
-            <source>Move about one meter from the microphone. Keep the background sound playing and read the sentence.</source>
-            <translation>请离麦克风约一米远.保持背景声音播放并朗读句子.</translation>
-        </message>
-        <message>
-            <source>Voice with background sound</source>
-            <translation>带背景声音的语音</translation>
-        </message>
-        <message>
-            <source>The recordings folder could not be created.</source>
-            <translation>无法创建录音文件夹.</translation>
-        </message>
-        <message>
-            <source>You can stop the background sound now.</source>
-            <translation>现在可以停止背景声音了.</translation>
-        </message>
-        <message>
-            <source>Recordings saved</source>
-            <translation>录音已保存</translation>
-        </message>
-        <message>
-            <source>The test recording could not be saved completely.</source>
-            <translation>无法完整保存测试录音.</translation>
-        </message>
-        <message>
-            <source>Keep music off and stay quiet. Start when ready.</source>
-            <translation>关闭音乐并保持安静.准备好后开始.</translation>
-        </message>
-        <message>
-            <source>Your voice</source>
-            <translation>你的声音</translation>
-        </message>
-        <message>
-            <source>Play music or another background sound at a normal volume. Stay quiet while recording.</source>
-            <translation>以正常音量播放音乐或其他背景声音.录音时保持安静.</translation>
-        </message>
-        <message>
-            <source>The test recording could not be created.</source>
-            <translation>无法创建测试录音.</translation>
-        </message>
-        <message>
-            <source>Background sound</source>
-            <translation>背景声音</translation>
-        </message>
-        <message>
-            <source>The window is open. I can hear the rain outside. One, two, three, four, five.</source>
-            <translation>窗户开着.我能听到外面的雨声.一,二,三,四,五.</translation>
-        </message>
-        <message>
-            <source>This microphone format is not supported for test recordings.</source>
-            <translation>此麦克风格式不支持测试录音.</translation>
-        </message>
-        <message>
-            <source>Keep the background volume unchanged. Read the sentence, then stop recording.</source>
-            <translation>保持背景音量不变.朗读句子,然后停止录音.</translation>
-        </message>
-        <message>
-            <source>Record at least half a second, then try again.</source>
-            <translation>至少录音半秒,然后重试.</translation>
-        </message>
-        <message>
-            <source>Sit at your usual distance. Read the sentence, then stop recording.</source>
-            <translation>坐在平时的距离处.朗读句子,然后停止录音.</translation>
-        </message>
-        <message>
-            <source>The recording description could not be saved.</source>
-            <translation>无法保存录音描述.</translation>
-        </message>
-        <message>
-            <source>The WAV file could not be finalized.</source>
-            <translation>无法完成 WAV 文件.</translation>
-        </message>
-        <message>
-            <source>The WAV header could not be written.</source>
-            <translation>无法写入 WAV 头部.</translation>
-        </message>
-        <message>
-            <source>Voice farther away</source>
-            <translation>较远处的语音</translation>
-        </message>
-        <message>
-            <source>Room sound</source>
-            <translation>房间声音</translation>
+            <source>Speech output is unavailable.</source>
+            <translation>语音输出不可用。</translation>
         </message>
     </context>
     <context>
         <name>AudioSettings</name>
         <message>
-            <source>Echo cancellation</source>
-            <translation>回声消除</translation>
+            <source>Echo</source>
+            <translation>回声</translation>
         </message>
         <message>
             <source>Off</source>
@@ -402,12 +287,12 @@
             <translation>你的播放声音</translation>
         </message>
         <message>
-            <source>Clear local key</source>
-            <translation>清除本地按键</translation>
+            <source>Clear key</source>
+            <translation>清除按键</translation>
         </message>
         <message>
-            <source>Low cut</source>
-            <translation>低频切除</translation>
+            <source>Highpass</source>
+            <translation>高通</translation>
         </message>
         <message>
             <source>Microphone access is off</source>
@@ -418,32 +303,16 @@
             <translation>输入设备</translation>
         </message>
         <message>
-            <source>Microphone paused for others</source>
-            <translation>已为其他人暂停麦克风</translation>
-        </message>
-        <message>
             <source>Cancel</source>
             <translation>取消</translation>
-        </message>
-        <message>
-            <source>Guided recording</source>
-            <translation>引导式录音</translation>
         </message>
         <message>
             <source>Clipping. Reduce microphone gain.</source>
             <translation>削波.请降低麦克风增益.</translation>
         </message>
         <message>
-            <source>Silent</source>
-            <translation>静音</translation>
-        </message>
-        <message>
             <source>Test output</source>
             <translation>测试输出</translation>
-        </message>
-        <message>
-            <source>Voice level</source>
-            <translation>语音音量</translation>
         </message>
         <message>
             <source>Voice threshold</source>
@@ -462,19 +331,15 @@
             <translation>设备已断开</translation>
         </message>
         <message>
-            <source>Local key</source>
-            <translation>本地按键</translation>
+            <source>PTT key</source>
+            <translation>通话键</translation>
         </message>
         <message>
             <source>Voice activation</source>
             <translation>语音激活</translation>
         </message>
         <message>
-            <source>Remote PTT key</source>
-            <translation>远程 PTT 按键</translation>
-        </message>
-        <message>
-            <source>Noise reduction</source>
+            <source>Denoise</source>
             <translation>降噪</translation>
         </message>
         <message>
@@ -486,32 +351,120 @@
             <translation>将发送</translation>
         </message>
         <message>
-            <source>Microphone gain</source>
-            <translation>麦克风增益</translation>
-        </message>
-        <message>
-            <source>Clear remote key</source>
-            <translation>清除远程按键</translation>
-        </message>
-        <message>
-            <source>Playback volume</source>
-            <translation>播放音量</translation>
+            <source>Gain</source>
+            <translation>增益</translation>
         </message>
         <message>
             <source>Not assigned</source>
             <translation>未分配</translation>
         </message>
         <message>
-            <source>High cut</source>
-            <translation>高频切除</translation>
+            <source>Lowpass</source>
+            <translation>低通</translation>
         </message>
         <message>
             <source>Level audio automatically</source>
             <translation>自动调节音频电平</translation>
         </message>
+        <message>
+            <source>Voice volume</source>
+            <translation>语音聊天音量</translation>
+        </message>
+        <message>
+            <source>App sounds</source>
+            <translation>应用音效</translation>
+        </message>
+        <message>
+            <source>Read bot messages aloud</source>
+            <translation>朗读机器人的消息</translation>
+        </message>
+        <message>
+            <source>Download a high-quality voice for this language in macOS settings.</source>
+            <translation>在 macOS 设置中下载此语言的高品质语音。</translation>
+        </message>
+        <message>
+            <source>Bot voice</source>
+            <translation>机器人语音</translation>
+        </message>
+        <message>
+            <source>Automatic</source>
+            <translation>自动</translation>
+        </message>
+        <message>
+            <source>Unavailable</source>
+            <translation>不可用</translation>
+        </message>
+        <message>
+            <source>Download voices in your device's Accessibility speech settings.</source>
+            <translation>在设备的辅助功能语音设置中下载声音。</translation>
+        </message>
+        <message>
+            <source>Voice download help</source>
+            <translation>声音下载帮助</translation>
+        </message>
+        <message>
+            <source>Strength, not the percentage of echo removed.</source>
+            <translation>这是强度，不是已消除回声的百分比。</translation>
+        </message>
+        <message>
+            <source>Auto also checks for speech, not just volume.</source>
+            <translation>自动模式还会检测语音，而不只是音量。</translation>
+        </message>
     </context>
     <context>
         <name>Channels</name>
+        <message>
+            <source>Audio received</source>
+            <translation>接收的音频</translation>
+        </message>
+        <message>
+            <source>Search channels</source>
+            <translation>搜索频道</translation>
+        </message>
+        <message>
+            <source>No matches</source>
+            <translation>无匹配结果</translation>
+        </message>
+        <message>
+            <source>Copy address</source>
+            <translation>复制地址</translation>
+        </message>
+        <message>
+            <source>Messages</source>
+            <translation>消息</translation>
+        </message>
+        <message>
+            <source>Message</source>
+            <translation>消息</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>打开</translation>
+        </message>
+        <message>
+            <source>Online</source>
+            <translation>在线</translation>
+        </message>
+        <message>
+            <source>Offline</source>
+            <translation>离线</translation>
+        </message>
+        <message>
+            <source>No private messages</source>
+            <translation>没有私人消息</translation>
+        </message>
+        <message>
+            <source>Private messages are unavailable for this contact.</source>
+            <translation>此联系人无法使用私人消息。</translation>
+        </message>
+        <message>
+            <source>If asked, allow local network access. You can change this in system settings.</source>
+            <translation>如果系统询问，请允许访问本地网络。你可以在系统设置中更改此项。</translation>
+        </message>
+        <message>
+            <source>Retry</source>
+            <translation>重试</translation>
+        </message>
         <message>
             <source>Updates</source>
             <translation>更新</translation>
@@ -531,6 +484,10 @@
         <message>
             <source>DDNS cannot bypass CGNAT. If your provider shares the public IP, use a private VPN on all participating devices or a publicly reachable server.</source>
             <translation>DDNS 无法绕过 CGNAT. 如果服务商共享公网 IP, 请在所有参与设备上使用私有 VPN, 或使用可从公网访问的服务器.</translation>
+        </message>
+        <message>
+            <source>Remove server</source>
+            <translation>移除服务器</translation>
         </message>
         <message>
             <source>Low</source>
@@ -653,10 +610,6 @@
             <translation>通知音</translation>
         </message>
         <message>
-            <source>Lifetime for new messages. Earlier messages keep their expiry.</source>
-            <translation>新消息的保留时间.较早的消息保持原有过期时间.</translation>
-        </message>
-        <message>
             <source>Enable speakers</source>
             <translation>启用扬声器</translation>
         </message>
@@ -691,10 +644,6 @@
         <message>
             <source>Allow device</source>
             <translation>允许设备</translation>
-        </message>
-        <message>
-            <source>Receive quality: %1 kb/s per voice. Adjusts automatically for this device.</source>
-            <translation>接收质量: 每路语音 %1 kb/s.会自动针对该设备调整.</translation>
         </message>
         <message>
             <source>Stop radio</source>
@@ -1188,6 +1137,50 @@
             <source>This device</source>
             <translation>此设备</translation>
         </message>
+        <message>
+            <source>Use default music volume</source>
+            <translation>使用默认音乐音量</translation>
+        </message>
+        <message>
+            <source>Show in Dock</source>
+            <translation>在Dock中显示</translation>
+        </message>
+        <message>
+            <source>App language</source>
+            <translation>应用语言</translation>
+        </message>
+        <message>
+            <source>Send in</source>
+            <translation>发送语言</translation>
+        </message>
+        <message>
+            <source>Hear in</source>
+            <translation>收听语言</translation>
+        </message>
+        <message>
+            <source>Download language models for %1 and %2?</source>
+            <translation>下载 %1 和 %2 的语言模型吗？</translation>
+        </message>
+        <message>
+            <source>Download</source>
+            <translation>下载</translation>
+        </message>
+        <message>
+            <source>PTT, chat and channel controls. Uses the controlled device's microphone.</source>
+            <translation>PTT、聊天和频道控制。使用受控设备的麦克风。</translation>
+        </message>
+        <message>
+            <source>Connect the other device to one of your channels, then allow it here.</source>
+            <translation>将另一台设备连接到你的某个频道，然后在这里允许它。</translation>
+        </message>
+        <message>
+            <source>On the other device, open Settings &gt; Input &gt; Remote control and allow this device.</source>
+            <translation>在另一台设备上打开设置 &gt; 输入 &gt; 远程控制，然后允许此设备。</translation>
+        </message>
+        <message>
+            <source>Unread messages</source>
+            <translation>未读消息</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1299,6 +1292,22 @@
             <source>The sanitized image could not be written completely.</source>
             <translation>无法完整写入清理后的图像.</translation>
         </message>
+        <message>
+            <source>%1 joined.</source>
+            <translation>%1 加入了.</translation>
+        </message>
+        <message>
+            <source>%1 left.</source>
+            <translation>%1 离开了.</translation>
+        </message>
+        <message>
+            <source>%1 was kicked.</source>
+            <translation>%1 被踢出.</translation>
+        </message>
+        <message>
+            <source>%1 was banned from the channel.</source>
+            <translation>%1 被封禁出频道.</translation>
+        </message>
     </context>
     <context>
         <name>ChatPanel</name>
@@ -1363,22 +1372,6 @@
             <translation>正在加载...</translation>
         </message>
         <message>
-            <source>%1 joined.</source>
-            <translation>%1 加入了.</translation>
-        </message>
-        <message>
-            <source>%1 left.</source>
-            <translation>%1 离开了.</translation>
-        </message>
-        <message>
-            <source>%1 was kicked.</source>
-            <translation>%1 被踢出.</translation>
-        </message>
-        <message>
-            <source>%1 was banned from the channel.</source>
-            <translation>%1 被封禁出频道.</translation>
-        </message>
-        <message>
             <source>Message could not be sent. Check the connection and text length.</source>
             <translation>无法发送消息.请检查连接和文本长度.</translation>
         </message>
@@ -1404,7 +1397,400 @@
         </message>
     </context>
     <context>
+        <name>Desktop</name>
+        <message>
+            <source>Open settings at startup.</source>
+            <translation>启动时打开设置.</translation>
+        </message>
+        <message>
+            <source>Alternative file for audio profiles.</source>
+            <translation>音频配置的替代文件.</translation>
+        </message>
+        <message>
+            <source>Load the interface without microphone capture and exit after one second.</source>
+            <translation>加载界面而不采集麦克风, 并在一秒后退出.</translation>
+        </message>
+        <message>
+            <source>Save an image of the app window during the UI test.</source>
+            <translation>在界面测试期间保存应用窗口的图像.</translation>
+        </message>
+        <message>
+            <source>The window image could not be saved.</source>
+            <translation>无法保存窗口图像.</translation>
+        </message>
+        <message>
+            <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
+            <translation>系统托盘不可用; 应用将以窗口形式保持打开.</translation>
+        </message>
+    </context>
+    <context>
+        <name>Headless</name>
+        <message>
+            <source>Host display name.</source>
+            <translation>主机显示名称。</translation>
+        </message>
+        <message>
+            <source>Command failed.</source>
+            <translation>命令失败.</translation>
+        </message>
+        <message>
+            <source>%1 must be an integer.</source>
+            <translation>%1 必须是整数.</translation>
+        </message>
+        <message>
+            <source>Requests must be on/off or true/false.</source>
+            <translation>请求设置必须为 on/off 或 true/false.</translation>
+        </message>
+        <message>
+            <source>Unknown host property: %1</source>
+            <translation>未知的主机属性: %1</translation>
+        </message>
+        <message>
+            <source>Run without GUI, microphone capture, or local audio output.</source>
+            <translation>运行时不使用图形界面, 麦克风录音或本地音频输出.</translation>
+        </message>
+        <message>
+            <source>Server storage prefix. Personal/audio/GUI profiles are not loaded.</source>
+            <translation>服务器存储路径前缀. 不加载个人, 音频或界面配置.</translation>
+        </message>
+        <message>
+            <source>Optional private identity file instead of the OS credential store (Linux/macOS). Parent directory must exist and belong to this account.</source>
+            <translation>可选的私有身份文件, 用于替代操作系统凭据存储 (Linux/macOS). 父目录必须存在且属于此账户.</translation>
+        </message>
+        <message>
+            <source>UTF-8 key=value properties or JSON host preset. Default: application.properties, then config/application.properties beside the app.</source>
+            <translation>UTF-8 key=value 属性文件或 JSON 主机预设. 默认依次读取应用旁的 application.properties 和 config/application.properties.</translation>
+        </message>
+        <message>
+            <source>Channel display name.</source>
+            <translation>频道显示名称.</translation>
+        </message>
+        <message>
+            <source>System and radio bot display name.</source>
+            <translation>系统和电台机器人的显示名称.</translation>
+        </message>
+        <message>
+            <source>TCP service port (1-65535).</source>
+            <translation>TCP 服务端口 (1-65535).</translation>
+        </message>
+        <message>
+            <source>Headless admission is always on; only 'on' or 'true' is accepted.</source>
+            <translation>无界面模式始终允许加入; 仅接受 'on' 或 'true'.</translation>
+        </message>
+        <message>
+            <source>Preapprove a device ID; repeat for several devices. Existing bans remain.</source>
+            <translation>预先批准设备 ID; 可重复指定多个设备. 现有封禁保持有效.</translation>
+        </message>
+        <message>
+            <source>Block a device ID; repeat for several devices.</source>
+            <translation>封禁设备 ID; 可重复指定多个设备.</translation>
+        </message>
+        <message>
+            <source>Read a UTF-8 channel password from a file before listening. An empty file removes it.</source>
+            <translation>开始监听前从文件读取 UTF-8 频道密码. 空文件会移除密码.</translation>
+        </message>
+        <message>
+            <source>Channel password. Empty removes it; environment or config avoids process-list exposure.</source>
+            <translation>频道密码. 留空会移除密码; 使用环境变量或配置文件可避免密码出现在进程列表中.</translation>
+        </message>
+        <message>
+            <source>SquadSpeak headless local channel host</source>
+            <translation>SquadSpeak 无界面本地频道主机</translation>
+        </message>
+        <message>
+            <source>Environment variables (SQUADSPEAK_ prefix):</source>
+            <translation>环境变量 (前缀为 SQUADSPEAK_):</translation>
+        </message>
+        <message>
+            <source>Host configuration could not be read or exceeds 1 MiB.</source>
+            <translation>无法读取主机配置, 或配置超过 1 MiB.</translation>
+        </message>
+        <message>
+            <source>Host configuration must be UTF-8.</source>
+            <translation>主机配置必须使用 UTF-8 编码.</translation>
+        </message>
+        <message>
+            <source>Host preset must be a JSON object.</source>
+            <translation>主机预设必须是 JSON 对象.</translation>
+        </message>
+        <message>
+            <source>Property line %1 must use key=value.</source>
+            <translation>属性文件第 %1 行必须使用 key=value 格式.</translation>
+        </message>
+        <message>
+            <source>Property line %1: %2</source>
+            <translation>属性文件第 %1 行: %2</translation>
+        </message>
+        <message>
+            <source>Standard input has no file descriptor.</source>
+            <translation>标准输入没有文件描述符.</translation>
+        </message>
+        <message>
+            <source>Standard input could not be inspected.</source>
+            <translation>无法检查标准输入.</translation>
+        </message>
+        <message>
+            <source>Could not write the command response: %1</source>
+            <translation>无法写入命令响应: %1</translation>
+        </message>
+        <message>
+            <source>Standard input could not be read: %1</source>
+            <translation>无法读取标准输入: %1</translation>
+        </message>
+        <message>
+            <source>Input line exceeds 65536 bytes.</source>
+            <translation>输入行超过 65536 字节.</translation>
+        </message>
+        <message>
+            <source>Each input line must be a JSON object.</source>
+            <translation>每个输入行必须是 JSON 对象.</translation>
+        </message>
+        <message>
+            <source>Input ended before a complete JSON line.</source>
+            <translation>输入在完整的 JSON 行结束前终止.</translation>
+        </message>
+        <message>
+            <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
+            <translation>可选的自有频道 ID, 用于 status, configure, password, admission, history, chat 和 radio 命令; 默认使用主频道.</translation>
+        </message>
+        <message>
+            <source>Channel action must be list, add or remove.</source>
+            <translation>频道操作必须为 list, add 或 remove.</translation>
+        </message>
+        <message>
+            <source>Removing an own channel deletes its history, images, permissions and radio settings. Set confirmed=true to proceed.</source>
+            <translation>移除自有频道会删除其历史记录, 图片, 权限和电台设置. 设置 confirmed=true 以继续.</translation>
+        </message>
+        <message>
+            <source>id must identify an additional own channel.</source>
+            <translation>id 必须指向一个额外的自有频道.</translation>
+        </message>
+        <message>
+            <source>The additional own channel could not be removed: %1</source>
+            <translation>无法移除额外的自有频道: %1</translation>
+        </message>
+        <message>
+            <source>channelId must identify an own channel.</source>
+            <translation>channelId 必须指向一个自有频道.</translation>
+        </message>
+        <message>
+            <source>values must be a host settings object.</source>
+            <translation>values 必须是主机设置对象.</translation>
+        </message>
+        <message>
+            <source>Headless admission is always enabled for non-banned devices; requests off is not supported.</source>
+            <translation>无界面模式始终允许未封禁的设备加入; 不支持 requests off.</translation>
+        </message>
+        <message>
+            <source>value must be a password of at most 1024 UTF-8 bytes without control characters; an empty string removes it.</source>
+            <translation>value 必须是最多 1024 个 UTF-8 字节且不含控制字符的密码; 空字符串会移除密码.</translation>
+        </message>
+        <message>
+            <source>The channel is not ready or a password change is in progress.</source>
+            <translation>频道尚未就绪, 或正在更改密码.</translation>
+        </message>
+        <message>
+            <source>The channel was removed while saving the password.</source>
+            <translation>保存密码时频道已被移除.</translation>
+        </message>
+        <message>
+            <source>id is required.</source>
+            <translation>必须提供 id.</translation>
+        </message>
+        <message>
+            <source>text must be a valid non-empty chat message.</source>
+            <translation>text 必须是有效且非空的聊天消息.</translation>
+        </message>
+        <message>
+            <source>The local channel is not ready.</source>
+            <translation>本地频道尚未就绪.</translation>
+        </message>
+        <message>
+            <source>The channel's radio is unavailable.</source>
+            <translation>频道电台不可用.</translation>
+        </message>
+        <message>
+            <source>Unknown command. Use help.</source>
+            <translation>未知命令. 请使用 help.</translation>
+        </message>
+        <message>
+            <source>search requires a query, non-negative offset and limit from 1 to 128.</source>
+            <translation>search 需要 query,非负的 offset 和 1 至 128 的 limit.</translation>
+        </message>
+        <message>
+            <source>add creates an id; update requires an existing id.</source>
+            <translation>add 会创建 id; update 需要现有的 id.</translation>
+        </message>
+        <message>
+            <source>A station is already being checked.</source>
+            <translation>已在检查一个电台.</translation>
+        </message>
+        <message>
+            <source>The channel was removed while checking the station.</source>
+            <translation>检查电台时频道已被移除.</translation>
+        </message>
+        <message>
+            <source>Unknown radio action.</source>
+            <translation>未知的电台操作.</translation>
+        </message>
+        <message>
+            <source>Could not load language: %1</source>
+            <translation>无法加载语言: %1</translation>
+        </message>
+        <message>
+            <source>The %1 option is incompatible with --headless.</source>
+            <translation>%1 选项与 --headless 不兼容.</translation>
+        </message>
+        <message>
+            <source>Unexpected positional arguments. Use --help.</source>
+            <translation>存在意外的位置参数. 请使用 --help.</translation>
+        </message>
+        <message>
+            <source>--config / -f requires a non-empty path.</source>
+            <translation>--config / -f 需要非空路径.</translation>
+        </message>
+        <message>
+            <source>Choose --password or --password-file, not both.</source>
+            <translation>选择 --password 或 --password-file, 不可同时使用.</translation>
+        </message>
+        <message>
+            <source>Choose SQUADSPEAK_PASSWORD or SQUADSPEAK_PASSWORD_FILE, not both.</source>
+            <translation>选择 SQUADSPEAK_PASSWORD 或 SQUADSPEAK_PASSWORD_FILE, 不可同时使用.</translation>
+        </message>
+        <message>
+            <source>Choose password or passwordFile in one configuration layer, not both.</source>
+            <translation>在同一配置层中选择 password 或 passwordFile, 不可同时使用.</translation>
+        </message>
+        <message>
+            <source>passwordFile must be a non-empty path.</source>
+            <translation>passwordFile 必须是非空路径.</translation>
+        </message>
+        <message>
+            <source>Password file could not be read or is too large.</source>
+            <translation>无法读取密码文件, 或文件过大.</translation>
+        </message>
+        <message>
+            <source>Password file must contain at most 1024 UTF-8 bytes without control characters.</source>
+            <translation>密码文件最多可包含 1024 个 UTF-8 字节, 且不得包含控制字符.</translation>
+        </message>
+        <message>
+            <source>Password must be a string of at most 1024 UTF-8 bytes without control characters.</source>
+            <translation>密码必须是最多 1024 个 UTF-8 字节且不含控制字符的字符串.</translation>
+        </message>
+        <message>
+            <source>settingsFile must be a non-empty path.</source>
+            <translation>settingsFile 必须是非空路径.</translation>
+        </message>
+        <message>
+            <source>identityFile must be a non-empty path.</source>
+            <translation>identityFile 必须是非空路径.</translation>
+        </message>
+        <message>
+            <source>The settings directory could not be created.</source>
+            <translation>无法创建设置目录.</translation>
+        </message>
+        <message>
+            <source>This SquadSpeak profile is already running or cannot be locked.</source>
+            <translation>此 SquadSpeak 配置已在运行, 或无法锁定.</translation>
+        </message>
+        <message>
+            <source>Standard input could not be opened.</source>
+            <translation>无法打开标准输入.</translation>
+        </message>
+        <message>
+            <source>Standard output could not be opened.</source>
+            <translation>无法打开标准输出.</translation>
+        </message>
+        <message>
+            <source>This identity file is already in use or cannot be locked.</source>
+            <translation>此身份文件已被使用, 或无法锁定.</translation>
+        </message>
+        <message>
+            <source>Invalid host configuration: %1</source>
+            <translation>主机配置无效: %1</translation>
+        </message>
+        <message>
+            <source>Radio channels could not be initialized.</source>
+            <translation>无法初始化电台频道.</translation>
+        </message>
+        <message>
+            <source>Headless host could not start: %1</source>
+            <translation>无界面主机无法启动: %1</translation>
+        </message>
+        <message>
+            <source>Channel password could not be saved.</source>
+            <translation>无法保存频道密码.</translation>
+        </message>
+        <message>
+            <source>Invalid channel password: %1</source>
+            <translation>频道密码无效: %1</translation>
+        </message>
+        <message>
+            <source>Headless host could not initialize: %1</source>
+            <translation>无界面主机无法初始化: %1</translation>
+        </message>
+        <message>
+            <source>SquadSpeak headless could not start: %1</source>
+            <translation>SquadSpeak 无界面模式无法启动: %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>支持者操作必须是状态、登录、刷新、注销或取消。 status sign-in refresh sign-out cancel</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>支持者操作正在进行中。</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>此版本中支持者访问不可用。</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>设置优先级：参数 &gt; 环境 &gt; 属性 &gt; 保存的服务器值。</translation>
+        </message>
+    </context>
+    <context>
+        <name>License</name>
+        <message>
+            <source>License storage is busy or unavailable.</source>
+            <translation>许可证存储繁忙或不可用。</translation>
+        </message>
+        <message>
+            <source>License storage is unavailable.</source>
+            <translation>许可证存储不可用。</translation>
+        </message>
+        <message>
+            <source>Sign-in expired. Try again.</source>
+            <translation>登录已过期。再试一次。</translation>
+        </message>
+        <message>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>GitHub 登录不可用。再试一次。</translation>
+        </message>
+        <message>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>GitHub 登录未完成。再试一次。</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>无法检查 GitHub。离线访问最多持续 7 天。</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>再次使用 GitHub 登录。</translation>
+        </message>
+    </context>
+    <context>
         <name>LocalChannel</name>
+        <message>
+            <source>Insufficient permissions.</source>
+            <translation>权限不足。</translation>
+        </message>
+        <message>
+            <source>Blocked</source>
+            <translation>已阻止</translation>
+        </message>
         <message>
             <source>Host is not responding. Reconnecting.</source>
             <translation>主机无响应.正在重新连接.</translation>
@@ -1926,8 +2312,8 @@
             <translation>图片传输耗时过长.</translation>
         </message>
         <message>
-            <source>The channel is full. Text chat is still available.</source>
-            <translation>频道已满. 文字聊天仍可使用.</translation>
+            <source>The host is busy. Try again shortly.</source>
+            <translation>主机繁忙，请稍后重试。</translation>
         </message>
         <message>
             <source>All own channels use the device's shared port.</source>
@@ -2189,6 +2575,53 @@
             <source>Voice relay codec could not be configured.</source>
             <translation>无法配置语音中继编解码器。</translation>
         </message>
+        <message>
+            <source>Unsupported audio codec</source>
+            <translation>不支持的音频编解码器</translation>
+        </message>
+        <message>
+            <source>Speaking is not allowed in this channel.</source>
+            <translation>此频道不允许发言。</translation>
+        </message>
+    </context>
+    <context>
+        <name>LocalLanguage</name>
+        <message>
+            <source>Translation (experimental)</source>
+            <translation>翻译（实验性）</translation>
+        </message>
+        <message>
+            <source>Translate messages</source>
+            <translation>翻译消息</translation>
+        </message>
+        <message>
+            <source>Translated voice</source>
+            <translation>翻译后的语音</translation>
+        </message>
+        <message>
+            <source>Original audio</source>
+            <translation>原始音频</translation>
+        </message>
+        <message>
+            <source>Original text</source>
+            <translation>原文</translation>
+        </message>
+        <message>
+            <source>Prepare languages</source>
+            <translation>准备语言</translation>
+        </message>
+        <message>
+            <source>Local language processing is unavailable.</source>
+            <translation>本地语言处理不可用。</translation>
+        </message>
+        <message>
+            <source>Language settings could not be read.</source>
+            <translation>无法读取语言设置。</translation>
+        </message>
+        <message>
+            <source>Language settings could not be saved.</source>
+            <translation>无法保存语言设置。</translation>
+        </message>
     </context>
     <context>
         <name>PushToTalkKey</name>
@@ -2329,50 +2762,61 @@
         </message>
     </context>
     <context>
-        <name>RecordingPanel</name>
+        <name>ScreenPanel</name>
         <message>
-            <source>Stop</source>
-            <translation>停止</translation>
+            <source>Video paused</source>
+            <translation>视频已暂停</translation>
         </message>
         <message>
-            <source>Start</source>
-            <translation>开始</translation>
+            <source>Stream ended</source>
+            <translation>流已结束</translation>
         </message>
         <message>
-            <source>Saved on this device only. Nothing is uploaded.</source>
-            <translation>仅保存在此设备上.不会上传任何内容.</translation>
+            <source>Connecting</source>
+            <translation>正在连接</translation>
         </message>
         <message>
-            <source>Keep this take or record it again.</source>
-            <translation>保留这段录音或重新录制.</translation>
+            <source>Open screen stream</source>
+            <translation>打开屏幕流</translation>
         </message>
         <message>
-            <source>Record again</source>
-            <translation>重新录制</translation>
+            <source>Screen stream</source>
+            <translation>屏幕流</translation>
         </message>
         <message>
-            <source>Use recording</source>
-            <translation>使用录音</translation>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
+        </message>
+    </context>
+    <context>
+        <name>ScreenShare</name>
+        <message>
+            <source>Allow screen recording in system settings.</source>
+            <translation>请在系统设置中允许屏幕录制。</translation>
         </message>
         <message>
-            <source>Recording progress</source>
-            <translation>录音进度</translation>
+            <source>The shared screen was removed. Select a source to start again.</source>
+            <translation>共享屏幕已被移除.请选择来源重新开始.</translation>
         </message>
         <message>
-            <source>Step %1 of %2</source>
-            <translation>第 %1 步, 共 %2 步</translation>
+            <source>The shared window was closed. Select a source to start again.</source>
+            <translation>共享窗口已关闭.请选择来源重新开始.</translation>
         </message>
         <message>
-            <source>Open recordings</source>
-            <translation>打开录音</translation>
+            <source>The selected screen is no longer available.</source>
+            <translation>所选屏幕已不可用.</translation>
         </message>
         <message>
-            <source>Reset test</source>
-            <translation>重置测试</translation>
+            <source>The selected window is no longer available.</source>
+            <translation>所选窗口已不可用.</translation>
         </message>
         <message>
-            <source>%1 s remaining / %2 dBFS</source>
-            <translation>剩余 %1 秒 / %2 dBFS</translation>
+            <source>The selected source exceeds the capture size limit.</source>
+            <translation>所选来源超过捕获大小限制.</translation>
+        </message>
+        <message>
+            <source>Close a video view before opening another stream.</source>
+            <translation>请先关闭一个视频视图再打开其他直播.</translation>
         </message>
     </context>
     <context>
@@ -2449,10 +2893,6 @@
             <translation>正在收集信号...</translation>
         </message>
         <message>
-            <source>Dashed curve: configured gain and frequency cuts, using the right dB scale. Noise reduction and voice activation are not part of this curve.</source>
-            <translation>虚线曲线: 按右侧 dB 刻度显示配置的增益和频率切除.降噪和语音激活不属于此曲线.</translation>
-        </message>
-        <message>
             <source>Microphone preview is not running</source>
             <translation>麦克风预览未运行</translation>
         </message>
@@ -2463,303 +2903,6 @@
         <message>
             <source>Peak: %1</source>
             <translation>峰值: %1</translation>
-        </message>
-    </context>
-    <context>
-        <name>Tray</name>
-        <message>
-            <source>Quit</source>
-            <translation>退出</translation>
-        </message>
-        <message>
-            <source>SquadSpeak - speaking</source>
-            <translation>SquadSpeak - 正在说话</translation>
-        </message>
-        <message>
-            <source>Settings</source>
-            <translation>设置</translation>
-        </message>
-        <message>
-            <source>Channels</source>
-            <translation>频道</translation>
-        </message>
-        <message>
-            <source>New image</source>
-            <translation>新图片</translation>
-        </message>
-    </context>
-    <context>
-        <name>VoiceAvatar</name>
-        <message>
-            <source>Muted</source>
-            <translation>已静音</translation>
-        </message>
-        <message>
-            <source>Sleeping</source>
-            <translation>休眠</translation>
-        </message>
-        <message>
-            <source>Offline</source>
-            <translation>离线</translation>
-        </message>
-        <message>
-            <source>Speaking</source>
-            <translation>正在说话</translation>
-        </message>
-        <message>
-            <source>Unavailable</source>
-            <translation>不可用</translation>
-        </message>
-        <message>
-            <source>Listening</source>
-            <translation>正在聆听</translation>
-        </message>
-        <message>
-            <source>Deafened</source>
-            <translation>扬声器已静音</translation>
-        </message>
-    </context>
-    <context>
-        <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>不可用 - 音频设置或音调测试</translation>
-        </message>
-        <message>
-            <source>Microphone muted</source>
-            <translation>麦克风已静音</translation>
-        </message>
-        <message>
-            <source>Push-to-talk held</source>
-            <translation>按住说话已按下</translation>
-        </message>
-        <message>
-            <source>Ready - push-to-talk released</source>
-            <translation>就绪 - 按住说话已释放</translation>
-        </message>
-        <message>
-            <source>Microphone unmuted</source>
-            <translation>麦克风已取消静音</translation>
-        </message>
-        <message>
-            <source>Settings could not be saved: %1</source>
-            <translation>无法保存设置: %1</translation>
-        </message>
-        <message>
-            <source>The push-to-talk sequence cannot be incremented further.</source>
-            <translation>按住说话序列无法继续递增.</translation>
-        </message>
-        <message>
-            <source>Choose System, Light or Dark.</source>
-            <translation>请选择系统,浅色或深色.</translation>
-        </message>
-        <message>
-            <source>Choose a colour palette from the list.</source>
-            <translation>请从列表中选择配色方案.</translation>
-        </message>
-        <message>
-            <source>Choose an available avatar.</source>
-            <translation>请选择可用的头像.</translation>
-        </message>
-        <message>
-            <source>Invalid push-to-talk binding.</source>
-            <translation>按住说话绑定无效.</translation>
-        </message>
-        <message>
-            <source>Release the held push-to-talk key first.</source>
-            <translation>请先释放按住的按住说话按键.</translation>
-        </message>
-        <message>
-            <source>Choose a language from the list.</source>
-            <translation>请从列表中选择语言.</translation>
-        </message>
-        <message>
-            <source>This avatar requires Supporter.</source>
-            <translation>此头像需要 Supporter.</translation>
-        </message>
-        <message>
-            <source>The name must contain 1 to 64 characters.</source>
-            <translation>名称必须包含1至64个字符.</translation>
-        </message>
-        <message>
-            <source>The name may not contain control characters or line breaks.</source>
-            <translation>名称不能包含控制字符或换行符.</translation>
-        </message>
-        <message>
-            <source>Session settings could not be read.</source>
-            <translation>无法读取会话设置.</translation>
-        </message>
-        <message>
-            <source>Saved setting is invalid: %1</source>
-            <translation>已保存的设置无效: %1</translation>
-        </message>
-    </context>
-    <context>
-        <name>License</name>
-        <message>
-            <source>License storage is busy or unavailable.</source>
-            <translation>许可证存储繁忙或不可用。</translation>
-        </message>
-        <message>
-            <source>License storage is unavailable.</source>
-            <translation>许可证存储不可用。</translation>
-        </message>
-        <message>
-            <source>Sign-in expired. Try again.</source>
-            <translation>登录已过期。再试一次。</translation>
-        </message>
-        <message>
-            <source>GitHub sign-in is unavailable. Try again.</source>
-            <translation>GitHub 登录不可用。再试一次。</translation>
-        </message>
-        <message>
-            <source>GitHub sign-in was not completed. Try again.</source>
-            <translation>GitHub 登录未完成。再试一次。</translation>
-        </message>
-        <message>
-            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
-            <translation>无法检查 GitHub。离线访问最多持续 7 天。</translation>
-        </message>
-        <message>
-            <source>Sign in with GitHub again.</source>
-            <translation>再次使用 GitHub 登录。</translation>
-        </message>
-    </context>
-    <context>
-        <name>ScreenShare</name>
-        <message>
-            <source>The shared screen was removed. Select a source to start again.</source>
-            <translation>共享屏幕已被移除.请选择来源重新开始.</translation>
-        </message>
-        <message>
-            <source>The shared window was closed. Select a source to start again.</source>
-            <translation>共享窗口已关闭.请选择来源重新开始.</translation>
-        </message>
-        <message>
-            <source>The selected screen is no longer available.</source>
-            <translation>所选屏幕已不可用.</translation>
-        </message>
-        <message>
-            <source>The selected window is no longer available.</source>
-            <translation>所选窗口已不可用.</translation>
-        </message>
-        <message>
-            <source>The selected source exceeds the capture size limit.</source>
-            <translation>所选来源超过捕获大小限制.</translation>
-        </message>
-        <message>
-            <source>Close a video view before opening another stream.</source>
-            <translation>请先关闭一个视频视图再打开其他直播.</translation>
-        </message>
-    </context>
-    <context>
-        <name>ScreenPanel</name>
-        <message>
-            <source>Media capacity reached</source>
-            <translation>已达到媒体容量</translation>
-        </message>
-        <message>
-            <source>Video paused</source>
-            <translation>视频已暂停</translation>
-        </message>
-        <message>
-            <source>Stream ended</source>
-            <translation>流已结束</translation>
-        </message>
-        <message>
-            <source>Connecting</source>
-            <translation>正在连接</translation>
-        </message>
-        <message>
-            <source>Open screen stream</source>
-            <translation>打开屏幕流</translation>
-        </message>
-        <message>
-            <source>Screen stream</source>
-            <translation>屏幕流</translation>
-        </message>
-        <message>
-            <source>%1 kbit/s</source>
-            <translation>%1 kbit/s</translation>
-        </message>
-    </context>
-    <context>
-        <name>VideoCodec</name>
-        <message>
-            <source>Video codec: %1</source>
-            <translation>视频编解码器: %1</translation>
-        </message>
-        <message>
-            <source>Video codec ABI does not match its headers.</source>
-            <translation>视频编解码器的 ABI 与其头文件不匹配.</translation>
-        </message>
-        <message>
-            <source>Video buffers could not be allocated.</source>
-            <translation>无法分配视频缓冲区.</translation>
-        </message>
-        <message>
-            <source>Invalid video quality tier.</source>
-            <translation>视频质量等级无效.</translation>
-        </message>
-        <message>
-            <source>The screen source exceeds the supported capture size.</source>
-            <translation>屏幕源超出了支持的捕获尺寸.</translation>
-        </message>
-        <message>
-            <source>The screen source is too narrow.</source>
-            <translation>屏幕源过窄.</translation>
-        </message>
-        <message>
-            <source>The video encoder could not be allocated.</source>
-            <translation>无法分配视频编码器.</translation>
-        </message>
-        <message>
-            <source>No supported video encoder is available.</source>
-            <translation>没有可用的受支持视频编码器.</translation>
-        </message>
-        <message>
-            <source>Video encoder configuration is too large.</source>
-            <translation>视频编码器配置过大.</translation>
-        </message>
-        <message>
-            <source>Video scaling could not be initialized.</source>
-            <translation>无法初始化视频缩放.</translation>
-        </message>
-        <message>
-            <source>The encoder returned an empty video packet.</source>
-            <translation>编码器返回了空的视频数据包.</translation>
-        </message>
-        <message>
-            <source>Invalid video frame format.</source>
-            <translation>视频帧格式无效.</translation>
-        </message>
-        <message>
-            <source>Invalid video decoder configuration.</source>
-            <translation>视频解码器配置无效.</translation>
-        </message>
-        <message>
-            <source>This video codec cannot be decoded.</source>
-            <translation>无法解码此视频编解码器.</translation>
-        </message>
-        <message>
-            <source>Video decoder could not be allocated.</source>
-            <translation>无法分配视频解码器.</translation>
-        </message>
-        <message>
-            <source>Video decoder configuration could not be allocated.</source>
-            <translation>无法分配视频解码器配置.</translation>
-        </message>
-        <message>
-            <source>Decoded dimensions do not match the screen stream.</source>
-            <translation>解码后的尺寸与屏幕流不匹配.</translation>
-        </message>
-        <message>
-            <source>Decoded image could not be allocated.</source>
-            <translation>无法分配解码后的图像.</translation>
-        </message>
-        <message>
-            <source>Video color conversion could not be initialized.</source>
-            <translation>无法初始化视频颜色转换.</translation>
         </message>
     </context>
     <context>
@@ -2877,359 +3020,208 @@
             <translation>无法验证密码.</translation>
         </message>
     </context>
-
     <context>
-        <name>Headless</name>
+        <name>Tray</name>
         <message>
-            <source>Command failed.</source>
-            <translation>命令失败.</translation>
+            <source>Quit</source>
+            <translation>退出</translation>
         </message>
         <message>
-            <source>%1 must be an integer.</source>
-            <translation>%1 必须是整数.</translation>
+            <source>SquadSpeak - speaking</source>
+            <translation>SquadSpeak - 正在说话</translation>
         </message>
         <message>
-            <source>Requests must be on/off or true/false.</source>
-            <translation>请求设置必须为 on/off 或 true/false.</translation>
+            <source>Settings</source>
+            <translation>设置</translation>
         </message>
         <message>
-            <source>Unknown host property: %1</source>
-            <translation>未知的主机属性: %1</translation>
+            <source>Channels</source>
+            <translation>频道</translation>
         </message>
         <message>
-            <source>Run without GUI, microphone capture, or local audio output.</source>
-            <translation>运行时不使用图形界面, 麦克风录音或本地音频输出.</translation>
-        </message>
-        <message>
-            <source>Server storage prefix. Personal/audio/GUI profiles are not loaded.</source>
-            <translation>服务器存储路径前缀. 不加载个人, 音频或界面配置.</translation>
-        </message>
-        <message>
-            <source>Optional private identity file instead of the OS credential store (Linux/macOS). Parent directory must exist and belong to this account.</source>
-            <translation>可选的私有身份文件, 用于替代操作系统凭据存储 (Linux/macOS). 父目录必须存在且属于此账户.</translation>
-        </message>
-        <message>
-            <source>UTF-8 key=value properties or JSON host preset. Default: application.properties, then config/application.properties beside the app.</source>
-            <translation>UTF-8 key=value 属性文件或 JSON 主机预设. 默认依次读取应用旁的 application.properties 和 config/application.properties.</translation>
-        </message>
-        <message>
-            <source>Channel display name.</source>
-            <translation>频道显示名称.</translation>
-        </message>
-        <message>
-            <source>System and radio bot display name.</source>
-            <translation>系统和电台机器人的显示名称.</translation>
-        </message>
-        <message>
-            <source>TCP service port (1-65535).</source>
-            <translation>TCP 服务端口 (1-65535).</translation>
-        </message>
-        <message>
-            <source>Headless admission is always on; only 'on' or 'true' is accepted.</source>
-            <translation>无界面模式始终允许加入; 仅接受 'on' 或 'true'.</translation>
-        </message>
-        <message>
-            <source>Preapprove a device ID; repeat for several devices. Existing bans remain.</source>
-            <translation>预先批准设备 ID; 可重复指定多个设备. 现有封禁保持有效.</translation>
-        </message>
-        <message>
-            <source>Block a device ID; repeat for several devices.</source>
-            <translation>封禁设备 ID; 可重复指定多个设备.</translation>
-        </message>
-        <message>
-            <source>Read a UTF-8 channel password from a file before listening. An empty file removes it.</source>
-            <translation>开始监听前从文件读取 UTF-8 频道密码. 空文件会移除密码.</translation>
-        </message>
-        <message>
-            <source>Channel password. Empty removes it; environment or config avoids process-list exposure.</source>
-            <translation>频道密码. 留空会移除密码; 使用环境变量或配置文件可避免密码出现在进程列表中.</translation>
-        </message>
-        <message>
-            <source>SquadSpeak headless local channel host</source>
-            <translation>SquadSpeak 无界面本地频道主机</translation>
-        </message>
-        <message>
-            <source>Environment variables (SQUADSPEAK_ prefix):</source>
-            <translation>环境变量 (前缀为 SQUADSPEAK_):</translation>
-        </message>
-        <message>
-            <source>Host configuration could not be read or exceeds 1 MiB.</source>
-            <translation>无法读取主机配置, 或配置超过 1 MiB.</translation>
-        </message>
-        <message>
-            <source>Host configuration must be UTF-8.</source>
-            <translation>主机配置必须使用 UTF-8 编码.</translation>
-        </message>
-        <message>
-            <source>Host preset must be a JSON object.</source>
-            <translation>主机预设必须是 JSON 对象.</translation>
-        </message>
-        <message>
-            <source>Property line %1 must use key=value.</source>
-            <translation>属性文件第 %1 行必须使用 key=value 格式.</translation>
-        </message>
-        <message>
-            <source>Property line %1: %2</source>
-            <translation>属性文件第 %1 行: %2</translation>
-        </message>
-        <message>
-            <source>Standard input has no file descriptor.</source>
-            <translation>标准输入没有文件描述符.</translation>
-        </message>
-        <message>
-            <source>Standard input could not be inspected.</source>
-            <translation>无法检查标准输入.</translation>
-        </message>
-        <message>
-            <source>Could not write the command response: %1</source>
-            <translation>无法写入命令响应: %1</translation>
-        </message>
-        <message>
-            <source>Standard input could not be read: %1</source>
-            <translation>无法读取标准输入: %1</translation>
-        </message>
-        <message>
-            <source>Input line exceeds 65536 bytes.</source>
-            <translation>输入行超过 65536 字节.</translation>
-        </message>
-        <message>
-            <source>Each input line must be a JSON object.</source>
-            <translation>每个输入行必须是 JSON 对象.</translation>
-        </message>
-        <message>
-            <source>Input ended before a complete JSON line.</source>
-            <translation>输入在完整的 JSON 行结束前终止.</translation>
-        </message>
-        <message>
-            <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
-            <translation>可选的自有频道 ID, 用于 status, configure, password, admission, history, chat 和 radio 命令; 默认使用主频道.</translation>
-        </message>
-        <message>
-            <source>Channel action must be list, add or remove.</source>
-            <translation>频道操作必须为 list, add 或 remove.</translation>
-        </message>
-        <message>
-            <source>Removing an own channel deletes its history, images, permissions and radio settings. Set confirmed=true to proceed.</source>
-            <translation>移除自有频道会删除其历史记录, 图片, 权限和电台设置. 设置 confirmed=true 以继续.</translation>
-        </message>
-        <message>
-            <source>id must identify an additional own channel.</source>
-            <translation>id 必须指向一个额外的自有频道.</translation>
-        </message>
-        <message>
-            <source>The additional own channel could not be removed: %1</source>
-            <translation>无法移除额外的自有频道: %1</translation>
-        </message>
-        <message>
-            <source>channelId must identify an own channel.</source>
-            <translation>channelId 必须指向一个自有频道.</translation>
-        </message>
-        <message>
-            <source>values must be a host settings object.</source>
-            <translation>values 必须是主机设置对象.</translation>
-        </message>
-        <message>
-            <source>Headless admission is always enabled for non-banned devices; requests off is not supported.</source>
-            <translation>无界面模式始终允许未封禁的设备加入; 不支持 requests off.</translation>
-        </message>
-        <message>
-            <source>value must be a password of at most 1024 UTF-8 bytes without control characters; an empty string removes it.</source>
-            <translation>value 必须是最多 1024 个 UTF-8 字节且不含控制字符的密码; 空字符串会移除密码.</translation>
-        </message>
-        <message>
-            <source>The channel is not ready or a password change is in progress.</source>
-            <translation>频道尚未就绪, 或正在更改密码.</translation>
-        </message>
-        <message>
-            <source>The channel was removed while saving the password.</source>
-            <translation>保存密码时频道已被移除.</translation>
-        </message>
-        <message>
-            <source>id is required.</source>
-            <translation>必须提供 id.</translation>
-        </message>
-        <message>
-            <source>text must be a valid non-empty chat message.</source>
-            <translation>text 必须是有效且非空的聊天消息.</translation>
-        </message>
-        <message>
-            <source>The local channel is not ready.</source>
-            <translation>本地频道尚未就绪.</translation>
-        </message>
-        <message>
-            <source>The channel's radio is unavailable.</source>
-            <translation>频道电台不可用.</translation>
-        </message>
-        <message>
-            <source>Unknown command. Use help.</source>
-            <translation>未知命令. 请使用 help.</translation>
-        </message>
-        <message>
-            <source>search requires a query, non-negative offset and limit from 1 to 128.</source>
-            <translation>search 需要 query,非负的 offset 和 1 至 128 的 limit.</translation>
-        </message>
-        <message>
-            <source>add creates an id; update requires an existing id.</source>
-            <translation>add 会创建 id; update 需要现有的 id.</translation>
-        </message>
-        <message>
-            <source>A station is already being checked.</source>
-            <translation>已在检查一个电台.</translation>
-        </message>
-        <message>
-            <source>The channel was removed while checking the station.</source>
-            <translation>检查电台时频道已被移除.</translation>
-        </message>
-        <message>
-            <source>Unknown radio action.</source>
-            <translation>未知的电台操作.</translation>
-        </message>
-        <message>
-            <source>Could not load language: %1</source>
-            <translation>无法加载语言: %1</translation>
-        </message>
-        <message>
-            <source>The %1 option is incompatible with --headless.</source>
-            <translation>%1 选项与 --headless 不兼容.</translation>
-        </message>
-        <message>
-            <source>Unexpected positional arguments. Use --help.</source>
-            <translation>存在意外的位置参数. 请使用 --help.</translation>
-        </message>
-        <message>
-            <source>--config / -f requires a non-empty path.</source>
-            <translation>--config / -f 需要非空路径.</translation>
-        </message>
-        <message>
-            <source>Choose --password or --password-file, not both.</source>
-            <translation>选择 --password 或 --password-file, 不可同时使用.</translation>
-        </message>
-        <message>
-            <source>Choose SQUADSPEAK_PASSWORD or SQUADSPEAK_PASSWORD_FILE, not both.</source>
-            <translation>选择 SQUADSPEAK_PASSWORD 或 SQUADSPEAK_PASSWORD_FILE, 不可同时使用.</translation>
-        </message>
-        <message>
-            <source>Choose password or passwordFile in one configuration layer, not both.</source>
-            <translation>在同一配置层中选择 password 或 passwordFile, 不可同时使用.</translation>
-        </message>
-        <message>
-            <source>passwordFile must be a non-empty path.</source>
-            <translation>passwordFile 必须是非空路径.</translation>
-        </message>
-        <message>
-            <source>Password file could not be read or is too large.</source>
-            <translation>无法读取密码文件, 或文件过大.</translation>
-        </message>
-        <message>
-            <source>Password file must contain at most 1024 UTF-8 bytes without control characters.</source>
-            <translation>密码文件最多可包含 1024 个 UTF-8 字节, 且不得包含控制字符.</translation>
-        </message>
-        <message>
-            <source>Password must be a string of at most 1024 UTF-8 bytes without control characters.</source>
-            <translation>密码必须是最多 1024 个 UTF-8 字节且不含控制字符的字符串.</translation>
-        </message>
-        <message>
-            <source>settingsFile must be a non-empty path.</source>
-            <translation>settingsFile 必须是非空路径.</translation>
-        </message>
-        <message>
-            <source>identityFile must be a non-empty path.</source>
-            <translation>identityFile 必须是非空路径.</translation>
-        </message>
-        <message>
-            <source>The settings directory could not be created.</source>
-            <translation>无法创建设置目录.</translation>
-        </message>
-        <message>
-            <source>This SquadSpeak profile is already running or cannot be locked.</source>
-            <translation>此 SquadSpeak 配置已在运行, 或无法锁定.</translation>
-        </message>
-        <message>
-            <source>Standard input could not be opened.</source>
-            <translation>无法打开标准输入.</translation>
-        </message>
-        <message>
-            <source>Standard output could not be opened.</source>
-            <translation>无法打开标准输出.</translation>
-        </message>
-        <message>
-            <source>This identity file is already in use or cannot be locked.</source>
-            <translation>此身份文件已被使用, 或无法锁定.</translation>
-        </message>
-        <message>
-            <source>Invalid host configuration: %1</source>
-            <translation>主机配置无效: %1</translation>
-        </message>
-        <message>
-            <source>Radio channels could not be initialized.</source>
-            <translation>无法初始化电台频道.</translation>
-        </message>
-        <message>
-            <source>Headless host could not start: %1</source>
-            <translation>无界面主机无法启动: %1</translation>
-        </message>
-        <message>
-            <source>Channel password could not be saved.</source>
-            <translation>无法保存频道密码.</translation>
-        </message>
-        <message>
-            <source>Invalid channel password: %1</source>
-            <translation>频道密码无效: %1</translation>
-        </message>
-        <message>
-            <source>Headless host could not initialize: %1</source>
-            <translation>无界面主机无法初始化: %1</translation>
-        </message>
-        <message>
-            <source>SquadSpeak headless could not start: %1</source>
-            <translation>SquadSpeak 无界面模式无法启动: %1</translation>
-        </message>
-        <message>
-            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
-            <translation>支持者操作必须是状态、登录、刷新、注销或取消。 status sign-in refresh sign-out cancel</translation>
-        </message>
-        <message>
-            <source>A Supporter operation is in progress.</source>
-            <translation>支持者操作正在进行中。</translation>
-        </message>
-        <message>
-            <source>Supporter access is unavailable in this build.</source>
-            <translation>此版本中支持者访问不可用。</translation>
-        </message>
-        <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>设置优先级：参数 &gt; 环境 &gt; 属性 &gt; 保存的服务器值。</translation>
+            <source>New image</source>
+            <translation>新图片</translation>
         </message>
     </context>
     <context>
-        <name>Desktop</name>
+        <name>VideoCodec</name>
         <message>
-            <source>Open settings at startup.</source>
-            <translation>启动时打开设置.</translation>
+            <source>Video codec: %1</source>
+            <translation>视频编解码器: %1</translation>
         </message>
         <message>
-            <source>Open guided local test recording without starting network services.</source>
-            <translation>打开引导式本地测试录音, 不启动网络服务.</translation>
+            <source>Video codec ABI does not match its headers.</source>
+            <translation>视频编解码器的 ABI 与其头文件不匹配.</translation>
         </message>
         <message>
-            <source>Alternative file for audio profiles.</source>
-            <translation>音频配置的替代文件.</translation>
+            <source>Video buffers could not be allocated.</source>
+            <translation>无法分配视频缓冲区.</translation>
         </message>
         <message>
-            <source>Load the interface without microphone capture and exit after one second.</source>
-            <translation>加载界面而不采集麦克风, 并在一秒后退出.</translation>
+            <source>Invalid video quality tier.</source>
+            <translation>视频质量等级无效.</translation>
         </message>
         <message>
-            <source>Save an image of the app window during the UI test.</source>
-            <translation>在界面测试期间保存应用窗口的图像.</translation>
+            <source>The screen source exceeds the supported capture size.</source>
+            <translation>屏幕源超出了支持的捕获尺寸.</translation>
         </message>
         <message>
-            <source>The window image could not be saved.</source>
-            <translation>无法保存窗口图像.</translation>
+            <source>The screen source is too narrow.</source>
+            <translation>屏幕源过窄.</translation>
         </message>
         <message>
-            <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
-            <translation>系统托盘不可用; 应用将以窗口形式保持打开.</translation>
+            <source>The video encoder could not be allocated.</source>
+            <translation>无法分配视频编码器.</translation>
+        </message>
+        <message>
+            <source>No supported video encoder is available.</source>
+            <translation>没有可用的受支持视频编码器.</translation>
+        </message>
+        <message>
+            <source>Video encoder configuration is too large.</source>
+            <translation>视频编码器配置过大.</translation>
+        </message>
+        <message>
+            <source>Video scaling could not be initialized.</source>
+            <translation>无法初始化视频缩放.</translation>
+        </message>
+        <message>
+            <source>The encoder returned an empty video packet.</source>
+            <translation>编码器返回了空的视频数据包.</translation>
+        </message>
+        <message>
+            <source>Invalid video frame format.</source>
+            <translation>视频帧格式无效.</translation>
+        </message>
+        <message>
+            <source>Invalid video decoder configuration.</source>
+            <translation>视频解码器配置无效.</translation>
+        </message>
+        <message>
+            <source>This video codec cannot be decoded.</source>
+            <translation>无法解码此视频编解码器.</translation>
+        </message>
+        <message>
+            <source>Video decoder could not be allocated.</source>
+            <translation>无法分配视频解码器.</translation>
+        </message>
+        <message>
+            <source>Video decoder configuration could not be allocated.</source>
+            <translation>无法分配视频解码器配置.</translation>
+        </message>
+        <message>
+            <source>Decoded dimensions do not match the screen stream.</source>
+            <translation>解码后的尺寸与屏幕流不匹配.</translation>
+        </message>
+        <message>
+            <source>Decoded image could not be allocated.</source>
+            <translation>无法分配解码后的图像.</translation>
+        </message>
+        <message>
+            <source>Video color conversion could not be initialized.</source>
+            <translation>无法初始化视频颜色转换.</translation>
+        </message>
+    </context>
+    <context>
+        <name>VoiceAvatar</name>
+        <message>
+            <source>Muted</source>
+            <translation>已静音</translation>
+        </message>
+        <message>
+            <source>Sleeping</source>
+            <translation>休眠</translation>
+        </message>
+        <message>
+            <source>Offline</source>
+            <translation>离线</translation>
+        </message>
+        <message>
+            <source>Speaking</source>
+            <translation>正在说话</translation>
+        </message>
+        <message>
+            <source>Unavailable</source>
+            <translation>不可用</translation>
+        </message>
+        <message>
+            <source>Listening</source>
+            <translation>正在聆听</translation>
+        </message>
+        <message>
+            <source>Deafened</source>
+            <translation>扬声器已静音</translation>
+        </message>
+    </context>
+    <context>
+        <name>VoiceSession</name>
+        <message>
+            <source>Microphone muted</source>
+            <translation>麦克风已静音</translation>
+        </message>
+        <message>
+            <source>Push-to-talk held</source>
+            <translation>按住说话已按下</translation>
+        </message>
+        <message>
+            <source>Ready - push-to-talk released</source>
+            <translation>就绪 - 按住说话已释放</translation>
+        </message>
+        <message>
+            <source>Microphone unmuted</source>
+            <translation>麦克风已取消静音</translation>
+        </message>
+        <message>
+            <source>Settings could not be saved: %1</source>
+            <translation>无法保存设置: %1</translation>
+        </message>
+        <message>
+            <source>The push-to-talk sequence cannot be incremented further.</source>
+            <translation>按住说话序列无法继续递增.</translation>
+        </message>
+        <message>
+            <source>Choose System, Light or Dark.</source>
+            <translation>请选择系统,浅色或深色.</translation>
+        </message>
+        <message>
+            <source>Choose a colour palette from the list.</source>
+            <translation>请从列表中选择配色方案.</translation>
+        </message>
+        <message>
+            <source>Choose an available avatar.</source>
+            <translation>请选择可用的头像.</translation>
+        </message>
+        <message>
+            <source>Invalid push-to-talk binding.</source>
+            <translation>按住说话绑定无效.</translation>
+        </message>
+        <message>
+            <source>Release the held push-to-talk key first.</source>
+            <translation>请先释放按住的按住说话按键.</translation>
+        </message>
+        <message>
+            <source>Choose a language from the list.</source>
+            <translation>请从列表中选择语言.</translation>
+        </message>
+        <message>
+            <source>This avatar requires Supporter.</source>
+            <translation>此头像需要 Supporter.</translation>
+        </message>
+        <message>
+            <source>The name must contain 1 to 64 characters.</source>
+            <translation>名称必须包含1至64个字符.</translation>
+        </message>
+        <message>
+            <source>The name may not contain control characters or line breaks.</source>
+            <translation>名称不能包含控制字符或换行符.</translation>
+        </message>
+        <message>
+            <source>Session settings could not be read.</source>
+            <translation>无法读取会话设置.</translation>
+        </message>
+        <message>
+            <source>Saved setting is invalid: %1</source>
+            <translation>已保存的设置无效: %1</translation>
         </message>
     </context>
 </TS>

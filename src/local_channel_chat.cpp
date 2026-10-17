@@ -1,5 +1,6 @@
 #include "local_channel.hpp"
 #include "chat_content.hpp"
+#include <utility>
 #include <QCryptographicHash>
 #include <QJsonArray>
 #include <QJsonDocument>
@@ -18,8 +19,8 @@ const QSet<QString> knownChatKinds{
 QVariantList LocalChannel::messages() const {
     const auto* c = chatClient();
     QVariantList result;
-    if (!c || !c->accepted) return result;
-    const auto now = c->chatClock.isValid() ? c->serverTime + c->chatClock.elapsed() : c->serverTime;
+    if (!c || !c->accepted || (c->teamSpeak && !chatReady())) return result;
+    const auto now = c->teamSpeak ? clock_() : c->chatClock.isValid() ? c->serverTime + c->chatClock.elapsed() : c->serverTime;
     const auto bot = chatBot();
     for (const auto value : c->messages) {
         auto record = value.toObject().toVariantMap();
@@ -47,7 +48,9 @@ void LocalChannel::rotateChatKey() {
     }
 }
 
-bool LocalChannel::writeChat(QSslSocket* socket, const QJsonObject& payload) {
+bool LocalChannel::writeChat(QSslSocket* socket, const QJsonObject& payload, const QString& conversation) {
+    if (!conversation.isEmpty())
+        return writeMessage(socket, {{"type", "privateChat"}, {"conversation", conversation}, {"payload", payload}});
     const auto context = "SquadSpeak/chat/v1/" + channelId().toUtf8() + '/' + hostChatEpoch_.toUtf8() + "/host";
     auto compatible = payload;
     if (compatible.value("kind") == "message" && !peers_.value(socket).capabilities.contains("extended-retention")) {
@@ -64,6 +67,13 @@ bool LocalChannel::sendChatCommand(const QJsonObject& payload) {
 }
 
 bool LocalChannel::sendChatCommand(Client& c, const QJsonObject& payload) {
+    if (!c.privatePeer.isEmpty()) {
+        const auto* link = privateTransport(c.deviceId);
+        if (!c.accepted || !link) return false;
+        auto command = payload;
+        command.insert("conversation", c.id); command.insert("peer", c.privatePeer);
+        return writeMessage(link->socket, {{"type", "privateChat"}, {"payload", command}});
+    }
     if (!(c.accepted && c.chatKey.size() == 32)) return false;
     const auto context = "SquadSpeak/chat/v1/" + c.id.toUtf8() + '/' + c.chatEpoch.toUtf8() + '/' + ownId().toUtf8();
     const auto sealed = TlsIdentity::seal(QJsonDocument(payload).toJson(QJsonDocument::Compact), c.chatKey, context);
@@ -166,15 +176,27 @@ bool LocalChannel::clientChat(Client& c, const QJsonObject& message) {
             if (!validMessageType(kind)) throw std::runtime_error(QT_TRANSLATE_NOOP("LocalChannel", "Invalid chat response."));
             if (!knownChatKinds.contains(kind)) return true;
         }
+        return applyChat(c, payload, keyMessage);
+    } catch (const std::exception& error) {
+        c.chatError = QString::fromUtf8(error.what());
+        if (c.socket) c.socket->abort();
+        emit chatChanged(); return false;
+    }
+}
+
+bool LocalChannel::applyChat(Client& c, QJsonObject payload, bool keyMessage) {
+    try {
+        if (!keyMessage && !knownChatKinds.contains(payload.value("kind").toString()))
+            return validMessageType(payload.value("kind").toString());
         const auto now = payload.value("now").toInteger(-1);
         if (now < 0 || now > 9007199254740991LL - ChatHistory::lifetime || payload.value("now").toDouble(-1) != double(now))
             throw std::runtime_error(QT_TRANSLATE_NOOP("LocalChannel", "Invalid chat timestamp."));
         c.serverTime = std::max(now, c.chatClock.isValid() ? c.serverTime + c.chatClock.elapsed() : now);
         c.chatClock.restart();
         if (keyMessage) {
-            const auto days = message.value("lifetimeDays").toInt(1);
+            const auto days = payload.value("lifetimeDays").toInt(1);
             if (!ChatHistory::validLifetime(qint64(days) * ChatHistory::lifetime)
-                || (message.contains("lifetimeDays") && message.value("lifetimeDays").toDouble() != days))
+                || (payload.contains("lifetimeDays") && payload.value("lifetimeDays").toDouble() != days))
                 throw std::runtime_error(QT_TRANSLATE_NOOP("LocalChannel", "Invalid channel message lifetime."));
             c.messageLifetimeDays = days;
             emit hostsChanged();
@@ -220,12 +242,24 @@ bool LocalChannel::clientChat(Client& c, const QJsonObject& message) {
         if (kind == "time") { emit chatChanged(); return true; }
         if (kind == "history") {
             if (c.historyRequest.isEmpty() || payload.value("request").toString() != c.historyRequest) return true;
-            const auto records = payload.value("records").toArray();
+            auto records = payload.value("records").toArray();
             if (!payload.value("records").isArray() || records.size() > ChatHistory::maximumPageMessages
                 || QJsonDocument(payload).toJson(QJsonDocument::Compact).size() > ChatHistory::maximumPageBytes
                 || !payload.value("older").isBool() || !payload.value("newer").isBool()
                 || payload.value("direction").toString() != c.historyDirection)
                 throw std::runtime_error(QT_TRANSLATE_NOOP("LocalChannel", "Invalid history page."));
+            if (!c.privatePeer.isEmpty()) for (qsizetype i = 0; i < records.size(); ++i) {
+                auto record = records.at(i).toObject();
+                if (!ChatHistory::validMessage(record)) throw std::runtime_error(QT_TRANSLATE_NOOP("LocalChannel", "Invalid message from host."));
+                try { records[i] = openPrivateRecord(c, record); }
+                catch (const std::exception& error) {
+                    // Retain the receipt position so one invalid peer message cannot
+                    // prevent paging through the rest of the conversation.
+                    record.remove("sealed"); record.remove("image");
+                    c.chatError = QString::fromUtf8(error.what());
+                    record.insert("text", tr("Invalid chat data.")); records[i] = record;
+                }
+            }
             const auto direction = c.historyDirection;
             const auto first = c.historyCursor;
             const auto last = c.historyCursor;
@@ -233,7 +267,7 @@ bool LocalChannel::clientChat(Client& c, const QJsonObject& message) {
             for (const auto value : records) {
                 const auto record = value.toObject();
                 const auto sequence = record.value("sequence").toInteger();
-                if (!ChatHistory::validMessage(record) || record.value("created").toInteger() > now || sequence <= previous
+                if ((c.privatePeer.isEmpty() && record.contains("sealed")) || !ChatHistory::validMessage(record) || record.value("created").toInteger() > now || sequence <= previous
                     || (direction == "older" && sequence >= first) || (direction == "newer" && sequence <= last))
                     throw std::runtime_error(QT_TRANSLATE_NOOP("LocalChannel", "Invalid history order."));
                 previous = sequence;
@@ -255,11 +289,13 @@ bool LocalChannel::clientChat(Client& c, const QJsonObject& message) {
             emit chatChanged(); downloadImage(); return true;
         }
         if (kind != "message") throw std::runtime_error(QT_TRANSLATE_NOOP("LocalChannel", "Unknown chat response."));
-        const auto record = payload.value("record").toObject();
-        if (!ChatHistory::validMessage(record) || record.value("created").toInteger() > now)
+        const auto record = c.privatePeer.isEmpty() ? payload.value("record").toObject()
+            : openPrivateRecord(c, payload.value("record").toObject());
+        if ((c.privatePeer.isEmpty() && record.contains("sealed")) || !ChatHistory::validMessage(record) || record.value("created").toInteger() > now)
             throw std::runtime_error(QT_TRANSLATE_NOOP("LocalChannel", "Invalid message from host."));
         const auto sequence = record.value("sequence").toInteger();
         const bool fresh = sequence > c.lastChatSequence;
+        const bool unreadBefore = c.unreadExpires > now;
         c.lastChatSequence = std::max(c.lastChatSequence, sequence);
         bool known = false;
         for (qsizetype i = 0; i < c.messages.size(); ++i) {
@@ -279,24 +315,35 @@ bool LocalChannel::clientChat(Client& c, const QJsonObject& message) {
             trimHistory(c, false);
         }
         if (record.value("sender") == ownId() && record.value("request") == c.pending.value("request")) {
-            const auto text = c.pending.value("text").toString(); c.pending = {}; c.pendingImage.clear(); c.chatError.clear(); emit chatSent(text, c.id);
+            const auto text = c.privatePeer.isEmpty() ? c.pending.value("text").toString() : c.pendingText; c.pendingText.clear(); c.pending = {}; c.pendingImage.clear(); c.chatError.clear(); emit chatSent(text, c.id);
         }
         const auto event = record.value("event").toObject();
+        if (fresh && event.isEmpty() && record.value("sender").toString() != ownId()
+            && record.value("expires").toInteger() > now) {
+            c.unreadExpires = std::max(c.unreadExpires, record.value("expires").toInteger());
+        }
         if (fresh && !hostOnly_ && !remoteMode() && c.accepted && c.voice && c.id == joinedHostId_
-            && record.value("sender") != ownId() && record.value("expires").toInteger() > c.serverTime
-            && (event.isEmpty() || event.value("kind") == "announcement"))
-            emit chatNotification(c.id, record.toVariantMap());
+            && record.value("sender") != ownId() && record.value("expires").toInteger() > c.serverTime) {
+            if (!event.isEmpty()) emit botNotification(record.toVariantMap());
+            if (event.isEmpty() || event.value("kind") == "announcement")
+                emit chatNotification(c.id, record.toVariantMap());
+        }
         emit chatChanged();
+        const bool unreadAfter = c.unreadExpires > now;
+        if (!unreadBefore && unreadAfter) emit hostsChanged();
         return true;
     } catch (const std::exception& error) {
-        c.chatError = QString::fromUtf8(error.what());
+        if (!c.privatePeer.isEmpty() && c.id == chatHostId_ && payload.value("kind") == "imageData")
+            return applyChat(c, {{"kind", "imageError"}, {"now", c.serverTime}, {"error", QString::fromUtf8(error.what())}});
+        c.chatError = QString::fromUtf8(error.what()); c.historyRequest.clear();
         if (c.socket) c.socket->abort();
         emit chatChanged(); return false;
     }
 }
 
 bool LocalChannel::requestHistory(Client& c, const QString& direction) {
-    if (!(c.accepted && c.chatKey.size() == 32) || !c.historyRequest.isEmpty()) return false;
+    if (c.teamSpeak) { emit chatChanged(); return c.accepted; }
+    if (!(c.accepted && (!c.privatePeer.isEmpty() || c.chatKey.size() == 32)) || !c.historyRequest.isEmpty()) return false;
     c.historyDirection = direction;
     c.historyRequest = QUuid::createUuid().toString(QUuid::WithoutBraces);
     const auto cursor = c.messages.isEmpty() || direction == "latest" ? 0
@@ -314,7 +361,8 @@ bool LocalChannel::loadOlderMessages() {
 }
 
 void LocalChannel::retryChat(Client& c) {
-    if (c.pending.isEmpty() || !(c.accepted && c.chatKey.size() == 32)) return;
+    if (c.pending.isEmpty() || c.pending.value("kind") == "preparing"
+        || !(c.accepted && (!c.privatePeer.isEmpty() || c.chatKey.size() == 32))) return;
     if (c.serverTime + c.chatClock.elapsed() >= c.pendingUntil) {
         c.pending = {}; c.pendingImage.clear(); c.chatError = tr("Delivery was not confirmed. Check the draft again."); emit chatChanged(); return;
     }
@@ -325,6 +373,8 @@ bool LocalChannel::sendChat(const QString& text, const QByteArray& image) {
     auto* current = chatClient();
     if (!current) return false;
     auto& c = *current;
+    if (c.teamSpeak) return !remoteMode() && image.isEmpty() && sendTeamSpeakChat(c, text);
+    if (!remoteMode() && !c.privatePeer.isEmpty()) return sendPrivate(c, text, image);
     if (remoteMode() || !(c.accepted && c.chatKey.size() == 32) || !c.pending.isEmpty() || (!ChatHistory::validText(text) && !(text.isEmpty() && !image.isEmpty()))
         || image.size() > ChatContent::maximumSourceBytes) {
         c.chatError = tr("Chat is not ready, delivery is in progress, or the text is empty or too long (maximum 16 KiB).");
@@ -382,26 +432,28 @@ bool LocalChannel::publishSystem(const QString& text, const QJsonObject& event) 
     }
 }
 
-bool LocalChannel::hostImage(QSslSocket* socket, const QJsonObject& payload, qint64 now) {
+bool LocalChannel::hostImage(QSslSocket* socket, const QJsonObject& payload, qint64 now, ChatHistory* store, const QString& conversation) {
+    if (!store) store = history_.get();
+    const auto reply = [this, socket, &conversation](const QJsonObject& value) { return writeChat(socket, value, conversation); };
     const auto kind = payload.value("kind").toString();
     if (kind == "imageGet") {
         try {
             const auto hash = payload.value("hash").toString();
-            const auto png = history_->image(hash, now);
+            const auto png = store->image(hash, now);
             const auto offset = payload.value("offset").toInteger(-1);
             if (offset < 0 || offset >= png.size() || payload.value("offset").toDouble(-1) != double(offset))
                 throw std::runtime_error(QT_TRANSLATE_NOOP("LocalChannel", "Invalid image section."));
-            return writeChat(socket, {{"kind", "imageData"}, {"now", now}, {"hash", hash}, {"size", png.size()},
+            return reply({{"kind", "imageData"}, {"now", now}, {"hash", hash}, {"size", png.size()},
                 {"offset", offset}, {"data", QString::fromLatin1(png.mid(offset, 16384).toBase64())}});
         } catch (const std::exception& error) {
-            return writeChat(socket, {{"kind", "imageError"}, {"now", now}, {"error", QString::fromUtf8(error.what())}});
+            return reply({{"kind", "imageError"}, {"now", now}, {"error", QString::fromUtf8(error.what())}});
         }
     }
     auto& peer = peers_[socket];
     if (kind == "imageStart") {
         const auto size = payload.value("size").toInteger(-1);
         const auto request = payload.value("request").toString();
-        if (size < 1 || size > ChatContent::maximumSourceBytes || payload.value("size").toDouble(-1) != double(size)
+        if (size < 1 || size > (conversation.isEmpty() ? ChatContent::maximumSourceBytes : ChatContent::maximumImageBytes + 28) || payload.value("size").toDouble(-1) != double(size)
             || !validId(payload.value("hash").toString()) || QUuid(request).isNull()
             || QUuid(request).toString(QUuid::WithoutBraces) != request
             || (!payload.value("text").toString().isEmpty() && !ChatHistory::validText(payload.value("text").toString()))) {
@@ -416,26 +468,36 @@ bool LocalChannel::hostImage(QSslSocket* socket, const QJsonObject& payload, qin
         };
         count(*root); for (const auto& child : root->owned_) count(*child);
         if (active >= 4 && peer.imageRequest.isEmpty())
-            return writeChat(socket, {{"kind", "error"}, {"now", now}, {"error", tr("Four images are currently being transferred. Please wait briefly.")}});
-        peer.imageRequest = payload; peer.imageUpload.clear();
-        QTimer::singleShot(120000, socket, [this, socket, request] {
+            return reply({{"kind", "error"}, {"now", now}, {"error", tr("Four images are currently being transferred. Please wait briefly.")}});
+        peer.imageRequest = payload; peer.imageRequest.insert("conversation", conversation); peer.imageUpload.clear();
+        QTimer::singleShot(120000, socket, [this, socket, request, conversation] {
             if (!peers_.contains(socket) || peers_.value(socket).imageRequest.value("request") != request) return;
             peers_[socket].imageRequest = {}; peers_[socket].imageUpload.clear();
-            try { writeChat(socket, {{"kind", "error"}, {"now", history_ ? history_->time() : clock_()}, {"error", tr("Image transfer took too long.")}}); }
+            try { writeChat(socket, {{"kind", "error"}, {"now", history_ ? history_->time() : clock_()}, {"error", tr("Image transfer took too long.")}}, conversation); }
             catch (const std::exception&) { socket->abort(); }
         });
-        return writeChat(socket, {{"kind", "imageOffset"}, {"now", now}, {"request", request}, {"offset", 0}});
+        return reply({{"kind", "imageOffset"}, {"now", now}, {"request", request}, {"offset", 0}});
     }
     const auto request = peer.imageRequest;
     const auto bytes = QByteArray::fromBase64Encoding(payload.value("data").toString().toLatin1(), QByteArray::AbortOnBase64DecodingErrors);
-    if (request.isEmpty() || peer.imageProcessing || payload.value("request") != request.value("request") || !bytes || bytes.decoded.isEmpty()
+    if (request.value("conversation").toString() != conversation || request.isEmpty() || peer.imageProcessing || payload.value("request") != request.value("request") || !bytes || bytes.decoded.isEmpty()
         || bytes.decoded.size() > 16384 || payload.value("offset").toInteger(-1) != peer.imageUpload.size()
         || peer.imageUpload.size() + bytes.decoded.size() > request.value("size").toInteger()) { socket->abort(); return false; }
     peer.imageUpload.append(bytes.decoded);
     if (peer.imageUpload.size() < request.value("size").toInteger())
-        return writeChat(socket, {{"kind", "imageOffset"}, {"now", now}, {"request", request.value("request")}, {"offset", peer.imageUpload.size()}});
+        return reply({{"kind", "imageOffset"}, {"now", now}, {"request", request.value("request")}, {"offset", peer.imageUpload.size()}});
     if (QString::fromLatin1(QCryptographicHash::hash(peer.imageUpload, QCryptographicHash::Sha256).toHex()) != request.value("hash")) {
         socket->abort(); return false;
+    }
+    if (!conversation.isEmpty()) {
+        const auto ciphertext = std::move(peer.imageUpload);
+        peer.imageRequest = {}; peer.imageUpload.clear();
+        const auto envelope = QByteArray::fromBase64(request.value("sealed").toString().toLatin1());
+        auto* root = service_ ? service_ : this;
+        const auto receipt = store->append(peer.id, peer.name, request.value("request").toString(), {}, now,
+            ciphertext, peer.avatar, qint64(root->privateLifetimeDays()) * ChatHistory::lifetime, {}, envelope);
+        root->publishPrivateReceipt(conversation, receipt, store->time());
+        return true;
     }
     peer.imageProcessing = true;
     return ChatContent::prepare(peer.imageUpload, socket, [this, socket, request](QByteArray png, QString error) {
@@ -483,36 +545,65 @@ QString LocalChannel::imageSource(const QString& hash) const {
 }
 
 bool LocalChannel::receiveImage(const QJsonObject& payload) {
-    if (payload.value("hash") != downloadingImage_ || downloadingImage_.isEmpty()) return true;
+    const auto* client = remoteMode() ? nullptr : chatClient();
+    const auto secret = client ? client->privateImages.value(downloadingImage_) : QJsonObject{};
+    const auto wireHash = secret.isEmpty() ? downloadingImage_ : secret.value("wireHash").toString();
+    if (payload.value("hash") != wireHash || downloadingImage_.isEmpty()) return true;
     const auto bytes = QByteArray::fromBase64Encoding(payload.value("data").toString().toLatin1(), QByteArray::AbortOnBase64DecodingErrors);
     const auto size = payload.value("size").toInteger(-1);
-    if (!bytes || bytes.decoded.isEmpty() || bytes.decoded.size() > 16384 || size < 1 || size > ChatContent::maximumImageBytes
+    if (!bytes || bytes.decoded.isEmpty() || bytes.decoded.size() > 16384 || size < 1 || size > ChatContent::maximumImageBytes + (secret.isEmpty() ? 0 : 28)
+        || (!secret.isEmpty() && size != secret.value("wireSize").toInteger())
         || payload.value("offset").toInteger(-1) != downloadedImage_.size() || downloadedImage_.size() + bytes.decoded.size() > size)
         throw std::runtime_error(QT_TRANSLATE_NOOP("LocalChannel", "Invalid image block."));
     downloadedImage_.append(bytes.decoded);
     if (downloadedImage_.size() < size)
         return sendImageRequest(downloadingImage_, downloadedImage_.size());
     const auto hash = downloadingImage_;
-    if (QString::fromLatin1(QCryptographicHash::hash(downloadedImage_, QCryptographicHash::Sha256).toHex()) != hash)
+    if (QString::fromLatin1(QCryptographicHash::hash(downloadedImage_, QCryptographicHash::Sha256).toHex()) != wireHash)
         throw std::runtime_error(QT_TRANSLATE_NOOP("LocalChannel", "Image verification failed."));
+    if (!secret.isEmpty()) {
+        downloadedImage_ = TlsIdentity::open(downloadedImage_, QByteArray::fromBase64(secret.value("key").toString().toLatin1()),
+            QByteArray::fromBase64(secret.value("context").toString().toLatin1()) + "/image");
+        if (QString::fromLatin1(QCryptographicHash::hash(downloadedImage_, QCryptographicHash::Sha256).toHex()) != downloadingImage_)
+            throw std::runtime_error(QT_TRANSLATE_NOOP("LocalChannel", "Image verification failed."));
+    }
     const auto dimensions = ChatContent::sanitizedImageSize(downloadedImage_);
     bool matches = false;
     for (const auto& record : (remoteMode() ? remoteView_.value("messages").toList() : messages())) {
         const auto attachment = record.toMap().value("image").toMap();
         if (attachment.value("hash").toString() == hash)
-            matches = attachment.value("size").toLongLong() == size
+            matches = attachment.value("size").toLongLong() == downloadedImage_.size()
                 && QSize(attachment.value("width").toInt(), attachment.value("height").toInt()) == dimensions;
     }
     if (!matches) throw std::runtime_error(QT_TRANSLATE_NOOP("LocalChannel", "Image does not match its host receipt."));
-    imageCache_.insert(hash, new QByteArray(std::move(downloadedImage_)), int(size));
-    downloadingImage_.clear(); downloadedImage_.clear();
-    ++imageRevision_; emit imagesChanged(); downloadImage(); return true;
+    const auto complete = [this, hash, host = chatHostId_, revision = imageRevision_](QByteArray png, const QString& error) {
+        if (chatHostId_ != host || imageRevision_ != revision || downloadingImage_ != hash) return;
+        if (!error.isEmpty()) {
+            if (auto* c = chatClient()) applyChat(*c, {{"kind", "imageError"}, {"now", c->serverTime}, {"error", error}});
+            return;
+        }
+        const int cost = png.size();
+        imageCache_.insert(hash, new QByteArray(std::move(png)), cost);
+        downloadingImage_.clear(); downloadedImage_.clear();
+        ++imageRevision_; emit imagesChanged(); downloadImage();
+    };
+    if (!secret.isEmpty()) {
+        const auto png = std::exchange(downloadedImage_, {});
+        return ChatContent::prepare(png, this, [complete, png](QByteArray, const QString& error) {
+            // The strict PNG structure and receipt hash were checked above.
+            // Preserve those bytes after isolated decoding, including for controllers.
+            complete(error.isEmpty() ? png : QByteArray{}, error);
+        });
+    }
+    complete(std::move(downloadedImage_), {}); return true;
 }
 
 bool LocalChannel::sendImageRequest(const QString& hash, qint64 offset) {
     if (remoteMode()) return writeMessage(controller_, {{"type", "remoteImageGet"}, {"hash", hash}, {"offset", offset},
         {"hostId", remoteView_.value("chatHostId").toString()}});
-    return sendChatCommand({{"kind", "imageGet"}, {"hash", hash}, {"offset", offset}});
+    const auto* c = chatClient();
+    const auto secret = c ? c->privateImages.value(hash) : QJsonObject{};
+    return sendChatCommand({{"kind", "imageGet"}, {"hash", secret.isEmpty() ? hash : secret.value("wireHash").toString()}, {"offset", offset}});
 }
 
 void LocalChannel::sendRemoteImage(QSslSocket* socket) {
@@ -530,7 +621,7 @@ void LocalChannel::sendRemoteImage(QSslSocket* socket) {
         const auto* png = imageCache_.object(hash);
         if (!png) return;
         if (offset < png->size()) payload = {{"kind", "imageData"}, {"hash", hash}, {"size", png->size()},
-            {"offset", offset}, {"data", QString::fromLatin1(png->mid(offset, remoteChunkSize).toBase64())}};
+            {"offset", offset}, {"data", QString::fromLatin1(png->mid(offset, snapshotChunkSize).toBase64())}};
     }
     peers_[socket].remoteImageRequest = {};
     writeMessage(socket, {{"type", "remoteImage"}, {"hostId", request.value("hostId")}, {"payload", payload}});
@@ -552,9 +643,13 @@ void LocalChannel::trimHistory(Client& c, bool older) {
         if (older) { c.messages.removeLast(); c.hasNewer = true; }
         else { c.messages.removeFirst(); c.hasOlder = true; }
     }
+    QSet<QString> images;
+    for (const auto value : c.messages) images.insert(value.toObject().value("image").toObject().value("hash").toString());
+    for (auto it = c.privateImages.begin(); it != c.privateImages.end();)
+        if (!images.contains(it.key())) it = c.privateImages.erase(it); else ++it;
 }
 
-bool LocalChannel::chatReady() const { const auto* c = chatClient(); return c && c->accepted && c->chatKey.size() == 32; }
+bool LocalChannel::chatReady() const { const auto* c = chatClient(); return c && c->accepted && (c->teamSpeak ? (teamSpeak_ && teamSpeak_->connected && (!c->privatePeer.isEmpty() || c->id == joinedHostId_)) : !c->privatePeer.isEmpty() ? privateTransport(c->deviceId) != nullptr : c->chatKey.size() == 32); }
 
 bool LocalChannel::chatPending() const { const auto* c = chatClient(); return c && !c->pending.isEmpty(); }
 
@@ -563,6 +658,30 @@ bool LocalChannel::historyLoading() const { const auto* c = chatClient(); return
 bool LocalChannel::hasOlderMessages() const { const auto* c = chatClient(); return c && c->hasOlder; }
 
 bool LocalChannel::hasNewerMessages() const { const auto* c = chatClient(); return c && c->hasNewer; }
+
+bool LocalChannel::markChatRead(const QString& hostId, qint64 lastVisibleSequence) {
+    if (remoteMode()) {
+        if (lastVisibleSequence < 0 || hostId != remoteView_.value("chatHostId").toString()) return false;
+        const auto entries = remoteView_.value("channels").toList() + remoteView_.value("privateChats").toList();
+        for (const auto& value : entries) {
+            const auto entry = value.toMap();
+            if (entry.value("id").toString() == hostId)
+                return !entry.value("unread").toBool() || remoteAction("markChatRead", {{"lastVisibleSequence", lastVisibleSequence}});
+        }
+        return false;
+    }
+    if (lastVisibleSequence < 0 || hostId != chatHostId_) return false;
+    auto* c = chatClient();
+    if (!c || !c->accepted || !chatReady() || !c->historyRequest.isEmpty() || c->hasNewer) return false;
+    const auto visible = messages();
+    const auto latest = visible.isEmpty() ? 0 : visible.last().toMap().value("sequence").toLongLong();
+    if (lastVisibleSequence != latest) return false;
+    if (!c->unreadExpires) return true;
+    c->unreadExpires = 0;
+    emit chatChanged();
+    emit hostsChanged();
+    return true;
+}
 
 QString LocalChannel::chatError() const {
     const auto* c = chatClient();

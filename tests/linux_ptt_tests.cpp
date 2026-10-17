@@ -26,7 +26,6 @@ private slots:
         QTemporaryDir folder;
         VoiceSession session(folder.filePath("session.json"));
         QVERIFY(session.setPttShortcut({XK_Control_L, XK_F8}, {"Ctrl", "F8"}));
-        QVERIFY(session.setPttShortcut({XK_F9}, {"F9"}, true));
         QVERIFY(session.setPushToTalk(true));
         QVERIFY(session.setMuted(false));
         PushToTalkKey input(session, true);
@@ -44,11 +43,14 @@ private slots:
         key(XK_Control_L, false);
         QTRY_VERIFY(!session.transmissionAllowed());
         key(XK_F8, false);
-        key(XK_F9, true);
-        QTRY_VERIFY(session.remotePttKeyHeld());
+        QVERIFY(session.setPttLocal(false));
+        key(XK_Control_L, true);
+        key(XK_F8, true);
+        QTRY_VERIFY(session.pttInputHeld());
         QVERIFY(!session.transmissionAllowed());
-        key(XK_F9, false);
-        QTRY_VERIFY(!session.remotePttKeyHeld());
+        key(XK_F8, false);
+        QTRY_VERIFY(!session.pttInputHeld());
+        key(XK_Control_L, false);
 
         int presses = 0, releases = 0;
         XSync(display.get(), false);
@@ -61,7 +63,6 @@ private slots:
         QVERIFY(presses >= 3);
         QVERIFY(releases >= 3);
         QVERIFY(input.clear());
-        QVERIFY(input.clear(true));
         QVERIFY(session.setPushToTalk(false));
         QVERIFY(!input.globalAvailable());
         QVERIFY(session.setPttShortcut({XK_F10}, {"F10"}));
@@ -114,7 +115,7 @@ private slots:
         QTRY_VERIFY(input->globalAvailable());
         key(true);
         QTRY_VERIFY(session.pttInputHeld());
-        QVERIFY(input->capture(true));
+        QVERIFY(input->capture());
         key(false);
         QTRY_VERIFY(!session.pttInputHeld());
         key(true);
@@ -122,7 +123,7 @@ private slots:
         QVERIFY(!session.pttInputHeld());
         key(false);
         QTest::qWait(20);
-        QVERIFY(input->capture(true));
+        QVERIFY(input->capture());
         key(true);
         QTRY_VERIFY(session.pttInputHeld());
         input.reset();
@@ -132,32 +133,6 @@ private slots:
         QVERIFY(session.pttInputHeld());
         key(false);
         QTRY_VERIFY(!session.pttInputHeld());
-    }
-
-    void clearingAChordKeepsTheSharedModifierAvailableToTheOtherChord() {
-        std::unique_ptr<Display, decltype(&XCloseDisplay)> display(XOpenDisplay(nullptr), XCloseDisplay);
-        QVERIFY(display);
-        const auto key = [&](KeySym symbol, bool down) {
-            XTestFakeKeyEvent(display.get(), XKeysymToKeycode(display.get(), symbol), down, CurrentTime);
-            XFlush(display.get());
-        };
-        VoiceSession session;
-        QVERIFY(session.setPttShortcut({XK_Control_L, XK_F8}, {"Ctrl", "F8"}));
-        QVERIFY(session.setPttShortcut({XK_Control_L, XK_F9}, {"Ctrl", "F9"}, true));
-        PushToTalkKey input(session, true);
-        QTRY_VERIFY(input.globalAvailable());
-        key(XK_Control_L, true);
-        key(XK_F9, true);
-        QTRY_VERIFY(session.remotePttKeyHeld());
-        QVERIFY(input.clear(false));
-        key(XK_F9, false);
-        QTRY_VERIFY(!session.remotePttKeyHeld());
-        key(XK_F9, true);
-        QTRY_VERIFY(session.remotePttKeyHeld());
-        key(XK_Control_L, false);
-        QTRY_VERIFY(!session.remotePttKeyHeld());
-        key(XK_F9, false);
-        QTest::qWait(20);
     }
 
     void xwaylandDoesNotClaimDesktopWideAccess() {

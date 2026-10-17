@@ -36,14 +36,6 @@
             <translation>افتح إعدادات الخصوصية في النظام واسمح ل SquadSpeak بالوصول إلى الميكروفون.</translation>
         </message>
         <message>
-            <source>Microphone analysis active. Test audio stays on this computer.</source>
-            <translation>تحليل الميكروفون نشط. يبقى صوت الاختبار على هذا الكمبيوتر.</translation>
-        </message>
-        <message>
-            <source>Finish the test recording before changing devices.</source>
-            <translation>أكمل تسجيل الاختبار قبل تغيير الأجهزة.</translation>
-        </message>
-        <message>
             <source>The output format is not supported.</source>
             <translation>تنسيق الخرج غير مدعوم.</translation>
         </message>
@@ -68,32 +60,12 @@
             <translation>تعذر تشغيل نغمة الاختبار.</translation>
         </message>
         <message>
-            <source>The microphone has provided no data for five seconds. Recording discarded.</source>
-            <translation>لم يقدم الميكروفون أي بيانات لمدة خمس ثوان. تم تجاهل التسجيل.</translation>
-        </message>
-        <message>
-            <source>The microphone was interrupted or changed. Recording discarded.</source>
-            <translation>توقف الميكروفون أو تغير. تم تجاهل التسجيل.</translation>
-        </message>
-        <message>
-            <source>Cancelled. The incomplete recording was discarded.</source>
-            <translation>أُلغي الأمر. تم تجاهل التسجيل غير المكتمل.</translation>
-        </message>
-        <message>
             <source>No selected microphone is available</source>
             <translation>لا يوجد ميكروفون محدد متاح.</translation>
         </message>
         <message>
             <source>Allow microphone access in the system dialog.</source>
             <translation>اسمح بالوصول إلى الميكروفون في مربع حوار النظام.</translation>
-        </message>
-        <message>
-            <source>Microphone capture active for the voice channel.</source>
-            <translation>التقاط الميكروفون نشط لقناة الصوت.</translation>
-        </message>
-        <message>
-            <source>Microphone access was denied. Nothing was saved.</source>
-            <translation>رُفض الوصول إلى الميكروفون. لم يتم حفظ أي شيء.</translation>
         </message>
         <message>
             <source>Microphone access is missing. Allow it in System Settings.</source>
@@ -259,103 +231,16 @@
             <source>App audio only</source>
             <translation>صوت التطبيق فقط</translation>
         </message>
-    </context>
-    <context>
-        <name>AudioRecording</name>
         <message>
-            <source>Incomplete audio block. Recording discarded.</source>
-            <translation>كتلة صوت غير مكتملة. تم تجاهل التسجيل.</translation>
-        </message>
-        <message>
-            <source>Move about one meter from the microphone. Keep the background sound playing and read the sentence.</source>
-            <translation>ابتعد نحو متر واحد عن الميكروفون. أبق صوت الخلفية قيد التشغيل واقرأ الجملة.</translation>
-        </message>
-        <message>
-            <source>Voice with background sound</source>
-            <translation>صوت مع صوت خلفية</translation>
-        </message>
-        <message>
-            <source>The recordings folder could not be created.</source>
-            <translation>تعذر إنشاء مجلد التسجيلات.</translation>
-        </message>
-        <message>
-            <source>You can stop the background sound now.</source>
-            <translation>يمكنك إيقاف صوت الخلفية الآن.</translation>
-        </message>
-        <message>
-            <source>Recordings saved</source>
-            <translation>تم حفظ التسجيلات</translation>
-        </message>
-        <message>
-            <source>The test recording could not be saved completely.</source>
-            <translation>تعذر حفظ تسجيل الاختبار كاملًا.</translation>
-        </message>
-        <message>
-            <source>Keep music off and stay quiet. Start when ready.</source>
-            <translation>أوقف الموسيقى والتزم الصمت. ابدأ عندما تكون مستعدًا.</translation>
-        </message>
-        <message>
-            <source>Your voice</source>
-            <translation>صوتك</translation>
-        </message>
-        <message>
-            <source>Play music or another background sound at a normal volume. Stay quiet while recording.</source>
-            <translation>شغل الموسيقى أو صوت خلفية آخر بمستوى عادي. التزم الصمت أثناء التسجيل.</translation>
-        </message>
-        <message>
-            <source>The test recording could not be created.</source>
-            <translation>تعذر إنشاء تسجيل الاختبار.</translation>
-        </message>
-        <message>
-            <source>Background sound</source>
-            <translation>صوت الخلفية</translation>
-        </message>
-        <message>
-            <source>The window is open. I can hear the rain outside. One, two, three, four, five.</source>
-            <translation>النافذة مفتوحة. أسمع المطر في الخارج. واحد, اثنان, ثلاثة, أربعة, خمسة.</translation>
-        </message>
-        <message>
-            <source>This microphone format is not supported for test recordings.</source>
-            <translation>تنسيق الميكروفون هذا غير مدعوم لتسجيلات الاختبار.</translation>
-        </message>
-        <message>
-            <source>Keep the background volume unchanged. Read the sentence, then stop recording.</source>
-            <translation>أبق مستوى صوت الخلفية دون تغيير. اقرأ الجملة ثم أوقف التسجيل.</translation>
-        </message>
-        <message>
-            <source>Record at least half a second, then try again.</source>
-            <translation>سجل لمدة نصف ثانية على الأقل ثم حاول مجددًا.</translation>
-        </message>
-        <message>
-            <source>Sit at your usual distance. Read the sentence, then stop recording.</source>
-            <translation>اجلس على المسافة المعتادة. اقرأ الجملة ثم أوقف التسجيل.</translation>
-        </message>
-        <message>
-            <source>The recording description could not be saved.</source>
-            <translation>تعذر حفظ وصف التسجيل.</translation>
-        </message>
-        <message>
-            <source>The WAV file could not be finalized.</source>
-            <translation>تعذر إنهاء ملف WAV.</translation>
-        </message>
-        <message>
-            <source>The WAV header could not be written.</source>
-            <translation>تعذر كتابة ترويسة WAV.</translation>
-        </message>
-        <message>
-            <source>Voice farther away</source>
-            <translation>صوت من مسافة أبعد</translation>
-        </message>
-        <message>
-            <source>Room sound</source>
-            <translation>صوت الغرفة</translation>
+            <source>Speech output is unavailable.</source>
+            <translation>الإخراج الصوتي غير متاح.</translation>
         </message>
     </context>
     <context>
         <name>AudioSettings</name>
         <message>
-            <source>Echo cancellation</source>
-            <translation>إلغاء الصدى</translation>
+            <source>Echo</source>
+            <translation>صدى</translation>
         </message>
         <message>
             <source>Off</source>
@@ -402,12 +287,12 @@
             <translation>تشغيلك</translation>
         </message>
         <message>
-            <source>Clear local key</source>
-            <translation>مسح المفتاح المحلي</translation>
+            <source>Clear key</source>
+            <translation>مسح المفتاح</translation>
         </message>
         <message>
-            <source>Low cut</source>
-            <translation>خفض الترددات المنخفضة</translation>
+            <source>Highpass</source>
+            <translation>تمرير عالٍ</translation>
         </message>
         <message>
             <source>Microphone access is off</source>
@@ -418,32 +303,16 @@
             <translation>جهاز الإدخال</translation>
         </message>
         <message>
-            <source>Microphone paused for others</source>
-            <translation>الميكروفون متوقف مؤقتًا للآخرين</translation>
-        </message>
-        <message>
             <source>Cancel</source>
             <translation>إلغاء</translation>
-        </message>
-        <message>
-            <source>Guided recording</source>
-            <translation>تسجيل إرشادي</translation>
         </message>
         <message>
             <source>Clipping. Reduce microphone gain.</source>
             <translation>تشبع. خفّض كسب الميكروفون.</translation>
         </message>
         <message>
-            <source>Silent</source>
-            <translation>صامت</translation>
-        </message>
-        <message>
             <source>Test output</source>
             <translation>اختبار الخرج</translation>
-        </message>
-        <message>
-            <source>Voice level</source>
-            <translation>مستوى الصوت</translation>
         </message>
         <message>
             <source>Voice threshold</source>
@@ -462,20 +331,16 @@
             <translation>الجهاز غير متصل</translation>
         </message>
         <message>
-            <source>Local key</source>
-            <translation>المفتاح المحلي</translation>
+            <source>PTT key</source>
+            <translation>مفتاح التحدث</translation>
         </message>
         <message>
             <source>Voice activation</source>
             <translation>التنشيط بالصوت</translation>
         </message>
         <message>
-            <source>Remote PTT key</source>
-            <translation>مفتاح الضغط للتحدث عن بعد</translation>
-        </message>
-        <message>
-            <source>Noise reduction</source>
-            <translation>تقليل الضوضاء</translation>
+            <source>Denoise</source>
+            <translation>تنقية</translation>
         </message>
         <message>
             <source>Selected device is not connected</source>
@@ -486,32 +351,112 @@
             <translation>سيتم الإرسال</translation>
         </message>
         <message>
-            <source>Microphone gain</source>
-            <translation>كسب الميكروفون</translation>
-        </message>
-        <message>
-            <source>Clear remote key</source>
-            <translation>مسح المفتاح البعيد</translation>
-        </message>
-        <message>
-            <source>Playback volume</source>
-            <translation>مستوى صوت التشغيل</translation>
+            <source>Gain</source>
+            <translation>كسب</translation>
         </message>
         <message>
             <source>Not assigned</source>
             <translation>غير معين</translation>
         </message>
         <message>
-            <source>High cut</source>
-            <translation>خفض الترددات العالية</translation>
+            <source>Lowpass</source>
+            <translation>تمرير منخفض</translation>
         </message>
         <message>
             <source>Level audio automatically</source>
             <translation>ضبط مستوى الصوت تلقائيا</translation>
         </message>
+        <message>
+            <source>Voice volume</source>
+            <translation>مستوى صوت المحادثة</translation>
+        </message>
+        <message>
+            <source>App sounds</source>
+            <translation>أصوات التطبيق</translation>
+        </message>
+        <message>
+            <source>Read bot messages aloud</source>
+            <translation>قراءة رسائل البوت بصوت عال</translation>
+        </message>
+        <message>
+            <source>Auto also checks for speech, not just volume.</source>
+            <translation>يفحص الوضع التلقائي وجود كلام أيضًا، وليس مستوى الصوت فقط.</translation>
+        </message>
+        <message>
+            <source>Automatic</source>
+            <translation>تلقائي</translation>
+        </message>
+        <message>
+            <source>Bot voice</source>
+            <translation>صوت البوت</translation>
+        </message>
+        <message>
+            <source>Download a high-quality voice for this language in macOS settings.</source>
+            <translation>نزّل صوتًا عالي الجودة لهذه اللغة من إعدادات macOS.</translation>
+        </message>
+        <message>
+            <source>Download voices in your device's Accessibility speech settings.</source>
+            <translation>نزّل الأصوات من إعدادات النطق ضمن تسهيلات الاستخدام على جهازك.</translation>
+        </message>
+        <message>
+            <source>Strength, not the percentage of echo removed.</source>
+            <translation>القوة، وليست نسبة الصدى المُزال.</translation>
+        </message>
+        <message>
+            <source>Unavailable</source>
+            <translation>غير متاح</translation>
+        </message>
+        <message>
+            <source>Voice download help</source>
+            <translation>مساعدة تنزيل الأصوات</translation>
+        </message>
     </context>
     <context>
         <name>Channels</name>
+        <message>
+            <source>Audio received</source>
+            <translation>الصوت المستلَم</translation>
+        </message>
+        <message>
+            <source>Search channels</source>
+            <translation>البحث عن القنوات</translation>
+        </message>
+        <message>
+            <source>No matches</source>
+            <translation>لا توجد نتائج</translation>
+        </message>
+        <message>
+            <source>Copy address</source>
+            <translation>نسخ العنوان</translation>
+        </message>
+        <message>
+            <source>Messages</source>
+            <translation>الرسائل</translation>
+        </message>
+        <message>
+            <source>Message</source>
+            <translation>رسالة</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>فتح</translation>
+        </message>
+        <message>
+            <source>Online</source>
+            <translation>متصل</translation>
+        </message>
+        <message>
+            <source>Offline</source>
+            <translation>غير متصل</translation>
+        </message>
+        <message>
+            <source>No private messages</source>
+            <translation>لا توجد رسائل خاصة</translation>
+        </message>
+        <message>
+            <source>Private messages are unavailable for this contact.</source>
+            <translation>الرسائل الخاصة غير متاحة لجهة الاتصال هذه.</translation>
+        </message>
         <message>
             <source>Updates</source>
             <translation>التحديثات</translation>
@@ -531,6 +476,10 @@
         <message>
             <source>DDNS cannot bypass CGNAT. If your provider shares the public IP, use a private VPN on all participating devices or a publicly reachable server.</source>
             <translation>لا يستطيع DDNS تجاوز CGNAT. إذا كان مزودك يشارك عنوان IP العام, فاستخدم شبكة VPN خاصة على جميع الأجهزة المشاركة أو خادما يمكن الوصول إليه عبر الإنترنت.</translation>
+        </message>
+        <message>
+            <source>Remove server</source>
+            <translation>إزالة الخادم</translation>
         </message>
         <message>
             <source>Low</source>
@@ -653,10 +602,6 @@
             <translation>أصوات الإشعارات</translation>
         </message>
         <message>
-            <source>Lifetime for new messages. Earlier messages keep their expiry.</source>
-            <translation>مدة بقاء الرسائل الجديدة. تحتفظ الرسائل السابقة بمدة انتهائها.</translation>
-        </message>
-        <message>
             <source>Enable speakers</source>
             <translation>تفعيل مكبرات الصوت</translation>
         </message>
@@ -691,10 +636,6 @@
         <message>
             <source>Allow device</source>
             <translation>السماح للجهاز</translation>
-        </message>
-        <message>
-            <source>Receive quality: %1 kb/s per voice. Adjusts automatically for this device.</source>
-            <translation>جودة الاستقبال: %1 kb/s لكل صوت. يتم ضبطها تلقائيًا لهذا الجهاز.</translation>
         </message>
         <message>
             <source>Stop radio</source>
@@ -1188,6 +1129,58 @@
             <source>This device</source>
             <translation>هذا الجهاز</translation>
         </message>
+        <message>
+            <source>Use default music volume</source>
+            <translation>استخدام مستوى صوت الموسيقى الافتراضي</translation>
+        </message>
+        <message>
+            <source>App language</source>
+            <translation>لغة التطبيق</translation>
+        </message>
+        <message>
+            <source>Download</source>
+            <translation>تنزيل</translation>
+        </message>
+        <message>
+            <source>Download language models for %1 and %2?</source>
+            <translation>هل تريد تنزيل نماذج اللغة لكل من %1 و%2؟</translation>
+        </message>
+        <message>
+            <source>Hear in</source>
+            <translation>استماع باللغة</translation>
+        </message>
+        <message>
+            <source>If asked, allow local network access. You can change this in system settings.</source>
+            <translation>اسمح بالوصول إلى الشبكة المحلية إذا طُلب منك ذلك. يمكنك تغيير هذا في إعدادات النظام.</translation>
+        </message>
+        <message>
+            <source>Retry</source>
+            <translation>إعادة المحاولة</translation>
+        </message>
+        <message>
+            <source>Send in</source>
+            <translation>إرسال باللغة</translation>
+        </message>
+        <message>
+            <source>Show in Dock</source>
+            <translation>إظهار في Dock</translation>
+        </message>
+        <message>
+            <source>PTT, chat and channel controls. Uses the controlled device's microphone.</source>
+            <translation>عناصر التحكم في الضغط للتحدث والدردشة والقنوات. يُستخدم ميكروفون الجهاز المتحكَّم به.</translation>
+        </message>
+        <message>
+            <source>Connect the other device to one of your channels, then allow it here.</source>
+            <translation>صِل الجهاز الآخر بإحدى قنواتك، ثم اسمح له هنا.</translation>
+        </message>
+        <message>
+            <source>On the other device, open Settings &gt; Input &gt; Remote control and allow this device.</source>
+            <translation>على الجهاز الآخر، افتح الإعدادات &gt; إدخال &gt; التحكم عن بعد واسمح لهذا الجهاز.</translation>
+        </message>
+        <message>
+            <source>Unread messages</source>
+            <translation>رسائل غير مقروءة</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1299,6 +1292,22 @@
             <source>The sanitized image could not be written completely.</source>
             <translation>تعذر كتابة الصورة المنقاة بالكامل.</translation>
         </message>
+        <message>
+            <source>%1 joined.</source>
+            <translation>%1 انضم.</translation>
+        </message>
+        <message>
+            <source>%1 left.</source>
+            <translation>%1 غادر.</translation>
+        </message>
+        <message>
+            <source>%1 was kicked.</source>
+            <translation>%1 طُرد.</translation>
+        </message>
+        <message>
+            <source>%1 was banned from the channel.</source>
+            <translation>تم حظر %1 من القناة.</translation>
+        </message>
     </context>
     <context>
         <name>ChatPanel</name>
@@ -1363,22 +1372,6 @@
             <translation>جار التحميل...</translation>
         </message>
         <message>
-            <source>%1 joined.</source>
-            <translation>%1 انضم.</translation>
-        </message>
-        <message>
-            <source>%1 left.</source>
-            <translation>%1 غادر.</translation>
-        </message>
-        <message>
-            <source>%1 was kicked.</source>
-            <translation>%1 طُرد.</translation>
-        </message>
-        <message>
-            <source>%1 was banned from the channel.</source>
-            <translation>تم حظر %1 من القناة.</translation>
-        </message>
-        <message>
             <source>Message could not be sent. Check the connection and text length.</source>
             <translation>تعذر إرسال الرسالة. تحقق من الاتصال وطول النص.</translation>
         </message>
@@ -1404,7 +1397,400 @@
         </message>
     </context>
     <context>
+        <name>Desktop</name>
+        <message>
+            <source>Open settings at startup.</source>
+            <translation>فتح الإعدادات عند بدء التشغيل.</translation>
+        </message>
+        <message>
+            <source>Alternative file for audio profiles.</source>
+            <translation>ملف بديل لملفات تعريف الصوت.</translation>
+        </message>
+        <message>
+            <source>Load the interface without microphone capture and exit after one second.</source>
+            <translation>تحميل الواجهة دون تسجيل الميكروفون والخروج بعد ثانية واحدة.</translation>
+        </message>
+        <message>
+            <source>Save an image of the app window during the UI test.</source>
+            <translation>حفظ صورة لنافذة التطبيق أثناء اختبار الواجهة.</translation>
+        </message>
+        <message>
+            <source>The window image could not be saved.</source>
+            <translation>تعذر حفظ صورة النافذة.</translation>
+        </message>
+        <message>
+            <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
+            <translation>علبة النظام غير متاحة; يظل التطبيق مفتوحا في نافذة.</translation>
+        </message>
+    </context>
+    <context>
+        <name>Headless</name>
+        <message>
+            <source>Command failed.</source>
+            <translation>فشل الأمر.</translation>
+        </message>
+        <message>
+            <source>%1 must be an integer.</source>
+            <translation>يجب أن يكون %1 عددًا صحيحًا.</translation>
+        </message>
+        <message>
+            <source>Requests must be on/off or true/false.</source>
+            <translation>يجب أن تكون الطلبات on/off أو true/false.</translation>
+        </message>
+        <message>
+            <source>Unknown host property: %1</source>
+            <translation>خاصية المضيف غير معروفة: %1</translation>
+        </message>
+        <message>
+            <source>Run without GUI, microphone capture, or local audio output.</source>
+            <translation>التشغيل دون واجهة رسومية أو التقاط الميكروفون أو خرج صوت محلي.</translation>
+        </message>
+        <message>
+            <source>Server storage prefix. Personal/audio/GUI profiles are not loaded.</source>
+            <translation>بادئة تخزين الخادم. لا تُحمّل الملفات الشخصية أو الصوتية أو الرسومية.</translation>
+        </message>
+        <message>
+            <source>Optional private identity file instead of the OS credential store (Linux/macOS). Parent directory must exist and belong to this account.</source>
+            <translation>ملف هوية خاصة اختياري بدل مخزن بيانات اعتماد نظام التشغيل (Linux/macOS). يجب أن يكون المجلد الأب موجودًا ومملوكًا لهذا الحساب.</translation>
+        </message>
+        <message>
+            <source>UTF-8 key=value properties or JSON host preset. Default: application.properties, then config/application.properties beside the app.</source>
+            <translation>خصائص UTF-8 key=value أو إعداد مضيف بصيغة JSON. الافتراضي: application.properties ثم config/application.properties بجانب التطبيق.</translation>
+        </message>
+        <message>
+            <source>Channel display name.</source>
+            <translation>اسم القناة المعروض.</translation>
+        </message>
+        <message>
+            <source>System and radio bot display name.</source>
+            <translation>اسم روبوت النظام والراديو المعروض.</translation>
+        </message>
+        <message>
+            <source>TCP service port (1-65535).</source>
+            <translation>منفذ خدمة TCP (1-65535).</translation>
+        </message>
+        <message>
+            <source>Headless admission is always on; only 'on' or 'true' is accepted.</source>
+            <translation>القبول دون واجهة رسومية مفعّل دائمًا; لا يُقبل إلا 'on' أو 'true'.</translation>
+        </message>
+        <message>
+            <source>Preapprove a device ID; repeat for several devices. Existing bans remain.</source>
+            <translation>الموافقة المسبقة على معرّف جهاز; كرر ذلك لأجهزة متعددة. تبقى عمليات الحظر الحالية.</translation>
+        </message>
+        <message>
+            <source>Block a device ID; repeat for several devices.</source>
+            <translation>حظر معرّف جهاز; كرر ذلك لأجهزة متعددة.</translation>
+        </message>
+        <message>
+            <source>Read a UTF-8 channel password from a file before listening. An empty file removes it.</source>
+            <translation>قراءة كلمة مرور القناة بترميز UTF-8 من ملف قبل الاستماع. يزيل الملف الفارغ كلمة المرور.</translation>
+        </message>
+        <message>
+            <source>Channel password. Empty removes it; environment or config avoids process-list exposure.</source>
+            <translation>كلمة مرور القناة. تزيل القيمة الفارغة كلمة المرور; وتمنع البيئة أو الإعداد ظهورها في قائمة العمليات.</translation>
+        </message>
+        <message>
+            <source>SquadSpeak headless local channel host</source>
+            <translation>مضيف قناة SquadSpeak محلي دون واجهة رسومية</translation>
+        </message>
+        <message>
+            <source>Environment variables (SQUADSPEAK_ prefix):</source>
+            <translation>متغيرات البيئة (البادئة SQUADSPEAK_):</translation>
+        </message>
+        <message>
+            <source>Host configuration could not be read or exceeds 1 MiB.</source>
+            <translation>تعذرت قراءة إعداد المضيف أو يتجاوز حجمه 1 MiB.</translation>
+        </message>
+        <message>
+            <source>Host configuration must be UTF-8.</source>
+            <translation>يجب أن يكون إعداد المضيف بترميز UTF-8.</translation>
+        </message>
+        <message>
+            <source>Host preset must be a JSON object.</source>
+            <translation>يجب أن يكون إعداد المضيف كائن JSON.</translation>
+        </message>
+        <message>
+            <source>Property line %1 must use key=value.</source>
+            <translation>يجب أن يستخدم سطر الخاصية %1 الصيغة key=value.</translation>
+        </message>
+        <message>
+            <source>Property line %1: %2</source>
+            <translation>سطر الخاصية %1: %2</translation>
+        </message>
+        <message>
+            <source>Standard input has no file descriptor.</source>
+            <translation>لا يملك الإدخال القياسي واصف ملف.</translation>
+        </message>
+        <message>
+            <source>Standard input could not be inspected.</source>
+            <translation>تعذر فحص الإدخال القياسي.</translation>
+        </message>
+        <message>
+            <source>Could not write the command response: %1</source>
+            <translation>تعذرت كتابة استجابة الأمر: %1</translation>
+        </message>
+        <message>
+            <source>Standard input could not be read: %1</source>
+            <translation>تعذرت قراءة الإدخال القياسي: %1</translation>
+        </message>
+        <message>
+            <source>Input line exceeds 65536 bytes.</source>
+            <translation>يتجاوز سطر الإدخال 65536 بايت.</translation>
+        </message>
+        <message>
+            <source>Each input line must be a JSON object.</source>
+            <translation>يجب أن يكون كل سطر إدخال كائن JSON.</translation>
+        </message>
+        <message>
+            <source>Input ended before a complete JSON line.</source>
+            <translation>انتهى الإدخال قبل اكتمال سطر JSON.</translation>
+        </message>
+        <message>
+            <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
+            <translation>معرّف قناة خاصة اختياري لأوامر status وconfigure وpassword وadmission وhistory وchat وradio; القناة الأساسية هي الافتراضية.</translation>
+        </message>
+        <message>
+            <source>Channel action must be list, add or remove.</source>
+            <translation>يجب أن يكون إجراء القنوات list أو add أو remove.</translation>
+        </message>
+        <message>
+            <source>Removing an own channel deletes its history, images, permissions and radio settings. Set confirmed=true to proceed.</source>
+            <translation>يؤدي حذف قناتك إلى حذف سجلها وصورها وأذوناتها وإعدادات الراديو. اضبط confirmed=true للمتابعة.</translation>
+        </message>
+        <message>
+            <source>id must identify an additional own channel.</source>
+            <translation>يجب أن يحدد id قناة خاصة إضافية.</translation>
+        </message>
+        <message>
+            <source>The additional own channel could not be removed: %1</source>
+            <translation>تعذر حذف القناة الخاصة الإضافية: %1</translation>
+        </message>
+        <message>
+            <source>channelId must identify an own channel.</source>
+            <translation>يجب أن يحدد channelId قناة خاصة.</translation>
+        </message>
+        <message>
+            <source>values must be a host settings object.</source>
+            <translation>يجب أن تكون values كائن إعدادات مضيف.</translation>
+        </message>
+        <message>
+            <source>Headless admission is always enabled for non-banned devices; requests off is not supported.</source>
+            <translation>القبول دون واجهة رسومية مفعّل دائمًا للأجهزة غير المحظورة; requests off غير مدعوم.</translation>
+        </message>
+        <message>
+            <source>value must be a password of at most 1024 UTF-8 bytes without control characters; an empty string removes it.</source>
+            <translation>يجب أن تكون value كلمة مرور لا تتجاوز 1024 بايت UTF-8 ولا تحتوي محارف تحكم; تزيل السلسلة الفارغة كلمة المرور.</translation>
+        </message>
+        <message>
+            <source>The channel is not ready or a password change is in progress.</source>
+            <translation>القناة غير جاهزة أو أن تغيير كلمة المرور قيد التنفيذ.</translation>
+        </message>
+        <message>
+            <source>The channel was removed while saving the password.</source>
+            <translation>أزيلت القناة أثناء حفظ كلمة المرور.</translation>
+        </message>
+        <message>
+            <source>id is required.</source>
+            <translation>المعرّف id مطلوب.</translation>
+        </message>
+        <message>
+            <source>text must be a valid non-empty chat message.</source>
+            <translation>يجب أن يكون text رسالة دردشة صالحة وغير فارغة.</translation>
+        </message>
+        <message>
+            <source>The local channel is not ready.</source>
+            <translation>القناة المحلية غير جاهزة.</translation>
+        </message>
+        <message>
+            <source>The channel's radio is unavailable.</source>
+            <translation>راديو القناة غير متاح.</translation>
+        </message>
+        <message>
+            <source>Unknown command. Use help.</source>
+            <translation>أمر غير معروف. استخدم help.</translation>
+        </message>
+        <message>
+            <source>search requires a query, non-negative offset and limit from 1 to 128.</source>
+            <translation>يتطلب search قيمة query وقيمة offset غير سالبة وقيمة limit من 1 إلى 128.</translation>
+        </message>
+        <message>
+            <source>add creates an id; update requires an existing id.</source>
+            <translation>ينشئ add قيمة id; ويتطلب update قيمة id موجودة.</translation>
+        </message>
+        <message>
+            <source>A station is already being checked.</source>
+            <translation>المحطة قيد الفحص بالفعل.</translation>
+        </message>
+        <message>
+            <source>The channel was removed while checking the station.</source>
+            <translation>أزيلت القناة أثناء فحص المحطة.</translation>
+        </message>
+        <message>
+            <source>Unknown radio action.</source>
+            <translation>إجراء راديو غير معروف.</translation>
+        </message>
+        <message>
+            <source>Could not load language: %1</source>
+            <translation>تعذر تحميل اللغة: %1</translation>
+        </message>
+        <message>
+            <source>The %1 option is incompatible with --headless.</source>
+            <translation>الخيار %1 غير متوافق مع --headless.</translation>
+        </message>
+        <message>
+            <source>Unexpected positional arguments. Use --help.</source>
+            <translation>وسائط موضعية غير متوقعة. استخدم --help.</translation>
+        </message>
+        <message>
+            <source>--config / -f requires a non-empty path.</source>
+            <translation>يتطلب --config / -f مسارًا غير فارغ.</translation>
+        </message>
+        <message>
+            <source>Choose --password or --password-file, not both.</source>
+            <translation>اختر --password أو --password-file, وليس كليهما.</translation>
+        </message>
+        <message>
+            <source>Choose SQUADSPEAK_PASSWORD or SQUADSPEAK_PASSWORD_FILE, not both.</source>
+            <translation>اختر SQUADSPEAK_PASSWORD أو SQUADSPEAK_PASSWORD_FILE, وليس كليهما.</translation>
+        </message>
+        <message>
+            <source>Choose password or passwordFile in one configuration layer, not both.</source>
+            <translation>اختر password أو passwordFile في طبقة إعداد واحدة, وليس كليهما.</translation>
+        </message>
+        <message>
+            <source>passwordFile must be a non-empty path.</source>
+            <translation>يجب أن يكون passwordFile مسارًا غير فارغ.</translation>
+        </message>
+        <message>
+            <source>Password file could not be read or is too large.</source>
+            <translation>تعذرت قراءة ملف كلمة المرور أو أن حجمه كبير جدًا.</translation>
+        </message>
+        <message>
+            <source>Password file must contain at most 1024 UTF-8 bytes without control characters.</source>
+            <translation>يجب ألا يحتوي ملف كلمة المرور على أكثر من 1024 بايت UTF-8 أو محارف تحكم.</translation>
+        </message>
+        <message>
+            <source>Password must be a string of at most 1024 UTF-8 bytes without control characters.</source>
+            <translation>يجب أن تكون كلمة المرور سلسلة لا تتجاوز 1024 بايت UTF-8 ولا تحتوي محارف تحكم.</translation>
+        </message>
+        <message>
+            <source>settingsFile must be a non-empty path.</source>
+            <translation>يجب أن يكون settingsFile مسارًا غير فارغ.</translation>
+        </message>
+        <message>
+            <source>identityFile must be a non-empty path.</source>
+            <translation>يجب أن يكون identityFile مسارًا غير فارغ.</translation>
+        </message>
+        <message>
+            <source>The settings directory could not be created.</source>
+            <translation>تعذر إنشاء مجلد الإعدادات.</translation>
+        </message>
+        <message>
+            <source>This SquadSpeak profile is already running or cannot be locked.</source>
+            <translation>ملف تعريف SquadSpeak هذا قيد التشغيل بالفعل أو يتعذر قفله.</translation>
+        </message>
+        <message>
+            <source>Standard input could not be opened.</source>
+            <translation>تعذر فتح الإدخال القياسي.</translation>
+        </message>
+        <message>
+            <source>Standard output could not be opened.</source>
+            <translation>تعذر فتح الإخراج القياسي.</translation>
+        </message>
+        <message>
+            <source>This identity file is already in use or cannot be locked.</source>
+            <translation>ملف الهوية هذا قيد الاستخدام بالفعل أو يتعذر قفله.</translation>
+        </message>
+        <message>
+            <source>Invalid host configuration: %1</source>
+            <translation>إعداد مضيف غير صالح: %1</translation>
+        </message>
+        <message>
+            <source>Radio channels could not be initialized.</source>
+            <translation>تعذر تهيئة قنوات الراديو.</translation>
+        </message>
+        <message>
+            <source>Headless host could not start: %1</source>
+            <translation>تعذر بدء مضيف دون واجهة رسومية: %1</translation>
+        </message>
+        <message>
+            <source>Channel password could not be saved.</source>
+            <translation>تعذر حفظ كلمة مرور القناة.</translation>
+        </message>
+        <message>
+            <source>Invalid channel password: %1</source>
+            <translation>كلمة مرور القناة غير صالحة: %1</translation>
+        </message>
+        <message>
+            <source>Headless host could not initialize: %1</source>
+            <translation>تعذر تهيئة مضيف دون واجهة رسومية: %1</translation>
+        </message>
+        <message>
+            <source>SquadSpeak headless could not start: %1</source>
+            <translation>تعذر بدء مضيف SquadSpeak دون واجهة رسومية: %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>يجب أن يكون إجراء الداعم هو الحالة أو تسجيل الدخول أو التحديث أو تسجيل الخروج أو الإلغاء. status sign-in refresh sign-out cancel</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>عملية الداعم جارية.</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>وصول الداعم غير متوفر في هذا الإصدار.</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>أسبقية الإعدادات: الوسائط &gt; البيئة &gt; الخصائص &gt; قيم الخادم المحفوظة.</translation>
+        </message>
+        <message>
+            <source>Host display name.</source>
+            <translation>اسم عرض المضيف.</translation>
+        </message>
+    </context>
+    <context>
+        <name>License</name>
+        <message>
+            <source>License storage is busy or unavailable.</source>
+            <translation>مساحة تخزين الترخيص مشغولة أو غير متوفرة.</translation>
+        </message>
+        <message>
+            <source>License storage is unavailable.</source>
+            <translation>تخزين الترخيص غير متوفر.</translation>
+        </message>
+        <message>
+            <source>Sign-in expired. Try again.</source>
+            <translation>انتهت صلاحية تسجيل الدخول. حاول ثانية.</translation>
+        </message>
+        <message>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>تسجيل الدخول إلى GitHub غير متاح. حاول ثانية.</translation>
+        </message>
+        <message>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>لم يكتمل تسجيل الدخول إلى GitHub. حاول ثانية.</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>لا يمكن التحقق من GitHub. يستمر الوصول في وضع عدم الاتصال لمدة سبعة أيام على الأكثر.</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>قم بتسجيل الدخول باستخدام GitHub مرة أخرى.</translation>
+        </message>
+    </context>
+    <context>
         <name>LocalChannel</name>
+        <message>
+            <source>Insufficient permissions.</source>
+            <translation>الأذونات غير كافية.</translation>
+        </message>
+        <message>
+            <source>Blocked</source>
+            <translation>محظور</translation>
+        </message>
         <message>
             <source>Host is not responding. Reconnecting.</source>
             <translation>المضيف لا يستجيب. جار إعادة الاتصال.</translation>
@@ -1926,8 +2312,8 @@
             <translation>استغرق نقل الصورة وقتًا طويلًا.</translation>
         </message>
         <message>
-            <source>The channel is full. Text chat is still available.</source>
-            <translation>القناة ممتلئة. لا تزال الدردشة النصية متاحة.</translation>
+            <source>The host is busy. Try again shortly.</source>
+            <translation>المضيف مشغول. حاول مجددا بعد قليل.</translation>
         </message>
         <message>
             <source>All own channels use the device's shared port.</source>
@@ -2189,6 +2575,53 @@
             <source>Voice relay codec could not be configured.</source>
             <translation>تعذر ضبط برنامج ترميز مرحل الصوت.</translation>
         </message>
+        <message>
+            <source>Unsupported audio codec</source>
+            <translation>ترميز الصوت غير مدعوم</translation>
+        </message>
+        <message>
+            <source>Speaking is not allowed in this channel.</source>
+            <translation>التحدث غير مسموح في هذه القناة.</translation>
+        </message>
+    </context>
+    <context>
+        <name>LocalLanguage</name>
+        <message>
+            <source>Translation (experimental)</source>
+            <translation>الترجمة (تجريبية)</translation>
+        </message>
+        <message>
+            <source>Translate messages</source>
+            <translation>ترجمة الرسائل</translation>
+        </message>
+        <message>
+            <source>Translated voice</source>
+            <translation>الصوت المترجم</translation>
+        </message>
+        <message>
+            <source>Original audio</source>
+            <translation>الصوت الأصلي</translation>
+        </message>
+        <message>
+            <source>Original text</source>
+            <translation>النص الأصلي</translation>
+        </message>
+        <message>
+            <source>Prepare languages</source>
+            <translation>تجهيز اللغات</translation>
+        </message>
+        <message>
+            <source>Local language processing is unavailable.</source>
+            <translation>معالجة اللغة محليا غير متاحة.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be read.</source>
+            <translation>تعذرت قراءة إعدادات اللغة.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be saved.</source>
+            <translation>تعذر حفظ إعدادات اللغة.</translation>
+        </message>
     </context>
     <context>
         <name>PushToTalkKey</name>
@@ -2329,50 +2762,61 @@
         </message>
     </context>
     <context>
-        <name>RecordingPanel</name>
+        <name>ScreenPanel</name>
         <message>
-            <source>Stop</source>
-            <translation>إيقاف</translation>
+            <source>Video paused</source>
+            <translation>تم إيقاف الفيديو مؤقتا</translation>
         </message>
         <message>
-            <source>Start</source>
-            <translation>بدء</translation>
+            <source>Stream ended</source>
+            <translation>انتهى البث</translation>
         </message>
         <message>
-            <source>Saved on this device only. Nothing is uploaded.</source>
-            <translation>محفوظ على هذا الجهاز فقط. لا يتم رفع أي شيء.</translation>
+            <source>Connecting</source>
+            <translation>جار الاتصال</translation>
         </message>
         <message>
-            <source>Keep this take or record it again.</source>
-            <translation>احتفظ بهذا التسجيل أو سجله مجددًا.</translation>
+            <source>Open screen stream</source>
+            <translation>فتح بث الشاشة</translation>
         </message>
         <message>
-            <source>Record again</source>
-            <translation>التسجيل مجددًا</translation>
+            <source>Screen stream</source>
+            <translation>بث الشاشة</translation>
         </message>
         <message>
-            <source>Use recording</source>
-            <translation>استخدام التسجيل</translation>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
+        </message>
+    </context>
+    <context>
+        <name>ScreenShare</name>
+        <message>
+            <source>Allow screen recording in system settings.</source>
+            <translation>اسمح بتسجيل الشاشة في إعدادات النظام.</translation>
         </message>
         <message>
-            <source>Recording progress</source>
-            <translation>تقدم التسجيل</translation>
+            <source>The shared screen was removed. Select a source to start again.</source>
+            <translation>أزيلت الشاشة المشتركة. اختر مصدرا لبدء المشاركة مجددا.</translation>
         </message>
         <message>
-            <source>Step %1 of %2</source>
-            <translation>الخطوة %1 من %2</translation>
+            <source>The shared window was closed. Select a source to start again.</source>
+            <translation>أغلقت النافذة المشتركة. اختر مصدرا لبدء المشاركة مجددا.</translation>
         </message>
         <message>
-            <source>Open recordings</source>
-            <translation>فتح التسجيلات</translation>
+            <source>The selected screen is no longer available.</source>
+            <translation>لم تعد الشاشة المحددة متاحة.</translation>
         </message>
         <message>
-            <source>Reset test</source>
-            <translation>إعادة ضبط الاختبار</translation>
+            <source>The selected window is no longer available.</source>
+            <translation>لم تعد النافذة المحددة متاحة.</translation>
         </message>
         <message>
-            <source>%1 s remaining / %2 dBFS</source>
-            <translation>متبق %1 ث / %2 dBFS</translation>
+            <source>The selected source exceeds the capture size limit.</source>
+            <translation>يتجاوز المصدر المحدد حد حجم الالتقاط.</translation>
+        </message>
+        <message>
+            <source>Close a video view before opening another stream.</source>
+            <translation>أغلق عرض فيديو قبل فتح بث آخر.</translation>
         </message>
     </context>
     <context>
@@ -2449,10 +2893,6 @@
             <translation>جار جمع الإشارة...</translation>
         </message>
         <message>
-            <source>Dashed curve: configured gain and frequency cuts, using the right dB scale. Noise reduction and voice activation are not part of this curve.</source>
-            <translation>المنحنى المتقطع: الكسب وقطع الترددات المهيأة باستخدام مقياس dB الأيمن. لا يشمل هذا المنحنى تقليل الضوضاء والتنشيط بالصوت.</translation>
-        </message>
-        <message>
             <source>Microphone preview is not running</source>
             <translation>معاينة الميكروفون لا تعمل</translation>
         </message>
@@ -2463,303 +2903,6 @@
         <message>
             <source>Peak: %1</source>
             <translation>القمة: %1</translation>
-        </message>
-    </context>
-    <context>
-        <name>Tray</name>
-        <message>
-            <source>Quit</source>
-            <translation>خروج</translation>
-        </message>
-        <message>
-            <source>SquadSpeak - speaking</source>
-            <translation>SquadSpeak - يتحدث</translation>
-        </message>
-        <message>
-            <source>Settings</source>
-            <translation>الإعدادات</translation>
-        </message>
-        <message>
-            <source>Channels</source>
-            <translation>القنوات</translation>
-        </message>
-        <message>
-            <source>New image</source>
-            <translation>صورة جديدة</translation>
-        </message>
-    </context>
-    <context>
-        <name>VoiceAvatar</name>
-        <message>
-            <source>Muted</source>
-            <translation>مكتوم</translation>
-        </message>
-        <message>
-            <source>Sleeping</source>
-            <translation>في وضع السكون</translation>
-        </message>
-        <message>
-            <source>Offline</source>
-            <translation>غير متصل</translation>
-        </message>
-        <message>
-            <source>Speaking</source>
-            <translation>يتحدث</translation>
-        </message>
-        <message>
-            <source>Unavailable</source>
-            <translation>غير متاح</translation>
-        </message>
-        <message>
-            <source>Listening</source>
-            <translation>يستمع</translation>
-        </message>
-        <message>
-            <source>Deafened</source>
-            <translation>من دون صوت</translation>
-        </message>
-    </context>
-    <context>
-        <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>غير متاح - إعدادات الصوت أو اختبار النغمة</translation>
-        </message>
-        <message>
-            <source>Microphone muted</source>
-            <translation>الميكروفون مكتوم</translation>
-        </message>
-        <message>
-            <source>Push-to-talk held</source>
-            <translation>الضغط للتحدث مثبت</translation>
-        </message>
-        <message>
-            <source>Ready - push-to-talk released</source>
-            <translation>جاهز - تم تحرير الضغط للتحدث</translation>
-        </message>
-        <message>
-            <source>Microphone unmuted</source>
-            <translation>تم إلغاء كتم الميكروفون</translation>
-        </message>
-        <message>
-            <source>Settings could not be saved: %1</source>
-            <translation>تعذر حفظ الإعدادات: %1</translation>
-        </message>
-        <message>
-            <source>The push-to-talk sequence cannot be incremented further.</source>
-            <translation>لا يمكن زيادة تسلسل الضغط للتحدث أكثر من ذلك.</translation>
-        </message>
-        <message>
-            <source>Choose System, Light or Dark.</source>
-            <translation>اختر النظام أو الفاتح أو الداكن.</translation>
-        </message>
-        <message>
-            <source>Choose a colour palette from the list.</source>
-            <translation>اختر لوحة ألوان من القائمة.</translation>
-        </message>
-        <message>
-            <source>Choose an available avatar.</source>
-            <translation>اختر صورة شخصية متاحة.</translation>
-        </message>
-        <message>
-            <source>Invalid push-to-talk binding.</source>
-            <translation>ارتباط الضغط للتحدث غير صالح.</translation>
-        </message>
-        <message>
-            <source>Release the held push-to-talk key first.</source>
-            <translation>حرر مفتاح الضغط للتحدث المثبت أولًا.</translation>
-        </message>
-        <message>
-            <source>Choose a language from the list.</source>
-            <translation>اختر لغة من القائمة.</translation>
-        </message>
-        <message>
-            <source>This avatar requires Supporter.</source>
-            <translation>تتطلب هذه الصورة الرمزية Supporter.</translation>
-        </message>
-        <message>
-            <source>The name must contain 1 to 64 characters.</source>
-            <translation>يجب أن يتكون الاسم من 1 إلى 64 حرفا.</translation>
-        </message>
-        <message>
-            <source>The name may not contain control characters or line breaks.</source>
-            <translation>يجب ألا يحتوي الاسم على محارف تحكم أو فواصل أسطر.</translation>
-        </message>
-        <message>
-            <source>Session settings could not be read.</source>
-            <translation>تعذرت قراءة إعدادات الجلسة.</translation>
-        </message>
-        <message>
-            <source>Saved setting is invalid: %1</source>
-            <translation>إعداد محفوظ غير صالح: %1</translation>
-        </message>
-    </context>
-    <context>
-        <name>License</name>
-        <message>
-            <source>License storage is busy or unavailable.</source>
-            <translation>مساحة تخزين الترخيص مشغولة أو غير متوفرة.</translation>
-        </message>
-        <message>
-            <source>License storage is unavailable.</source>
-            <translation>تخزين الترخيص غير متوفر.</translation>
-        </message>
-        <message>
-            <source>Sign-in expired. Try again.</source>
-            <translation>انتهت صلاحية تسجيل الدخول. حاول ثانية.</translation>
-        </message>
-        <message>
-            <source>GitHub sign-in is unavailable. Try again.</source>
-            <translation>تسجيل الدخول إلى GitHub غير متاح. حاول ثانية.</translation>
-        </message>
-        <message>
-            <source>GitHub sign-in was not completed. Try again.</source>
-            <translation>لم يكتمل تسجيل الدخول إلى GitHub. حاول ثانية.</translation>
-        </message>
-        <message>
-            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
-            <translation>لا يمكن التحقق من GitHub. يستمر الوصول في وضع عدم الاتصال لمدة سبعة أيام على الأكثر.</translation>
-        </message>
-        <message>
-            <source>Sign in with GitHub again.</source>
-            <translation>قم بتسجيل الدخول باستخدام GitHub مرة أخرى.</translation>
-        </message>
-    </context>
-    <context>
-        <name>ScreenShare</name>
-        <message>
-            <source>The shared screen was removed. Select a source to start again.</source>
-            <translation>أزيلت الشاشة المشتركة. اختر مصدرا لبدء المشاركة مجددا.</translation>
-        </message>
-        <message>
-            <source>The shared window was closed. Select a source to start again.</source>
-            <translation>أغلقت النافذة المشتركة. اختر مصدرا لبدء المشاركة مجددا.</translation>
-        </message>
-        <message>
-            <source>The selected screen is no longer available.</source>
-            <translation>لم تعد الشاشة المحددة متاحة.</translation>
-        </message>
-        <message>
-            <source>The selected window is no longer available.</source>
-            <translation>لم تعد النافذة المحددة متاحة.</translation>
-        </message>
-        <message>
-            <source>The selected source exceeds the capture size limit.</source>
-            <translation>يتجاوز المصدر المحدد حد حجم الالتقاط.</translation>
-        </message>
-        <message>
-            <source>Close a video view before opening another stream.</source>
-            <translation>أغلق عرض فيديو قبل فتح بث آخر.</translation>
-        </message>
-    </context>
-    <context>
-        <name>ScreenPanel</name>
-        <message>
-            <source>Media capacity reached</source>
-            <translation>تم بلوغ سعة الوسائط</translation>
-        </message>
-        <message>
-            <source>Video paused</source>
-            <translation>تم إيقاف الفيديو مؤقتا</translation>
-        </message>
-        <message>
-            <source>Stream ended</source>
-            <translation>انتهى البث</translation>
-        </message>
-        <message>
-            <source>Connecting</source>
-            <translation>جار الاتصال</translation>
-        </message>
-        <message>
-            <source>Open screen stream</source>
-            <translation>فتح بث الشاشة</translation>
-        </message>
-        <message>
-            <source>Screen stream</source>
-            <translation>بث الشاشة</translation>
-        </message>
-        <message>
-            <source>%1 kbit/s</source>
-            <translation>%1 kbit/s</translation>
-        </message>
-    </context>
-    <context>
-        <name>VideoCodec</name>
-        <message>
-            <source>Video codec: %1</source>
-            <translation>برنامج ترميز الفيديو: %1</translation>
-        </message>
-        <message>
-            <source>Video codec ABI does not match its headers.</source>
-            <translation>واجهة ABI لبرنامج ترميز الفيديو لا تتطابق مع ترويساته.</translation>
-        </message>
-        <message>
-            <source>Video buffers could not be allocated.</source>
-            <translation>تعذر تخصيص مخازن الفيديو المؤقتة.</translation>
-        </message>
-        <message>
-            <source>Invalid video quality tier.</source>
-            <translation>مستوى جودة الفيديو غير صالح.</translation>
-        </message>
-        <message>
-            <source>The screen source exceeds the supported capture size.</source>
-            <translation>يتجاوز مصدر الشاشة حجم الالتقاط المدعوم.</translation>
-        </message>
-        <message>
-            <source>The screen source is too narrow.</source>
-            <translation>مصدر الشاشة ضيق جدا.</translation>
-        </message>
-        <message>
-            <source>The video encoder could not be allocated.</source>
-            <translation>تعذر تخصيص برنامج ترميز الفيديو.</translation>
-        </message>
-        <message>
-            <source>No supported video encoder is available.</source>
-            <translation>لا يتوفر برنامج ترميز فيديو مدعوم.</translation>
-        </message>
-        <message>
-            <source>Video encoder configuration is too large.</source>
-            <translation>إعداد برنامج ترميز الفيديو كبير جدا.</translation>
-        </message>
-        <message>
-            <source>Video scaling could not be initialized.</source>
-            <translation>تعذر تهيئة تحجيم الفيديو.</translation>
-        </message>
-        <message>
-            <source>The encoder returned an empty video packet.</source>
-            <translation>أعاد برنامج الترميز حزمة فيديو فارغة.</translation>
-        </message>
-        <message>
-            <source>Invalid video frame format.</source>
-            <translation>تنسيق إطار الفيديو غير صالح.</translation>
-        </message>
-        <message>
-            <source>Invalid video decoder configuration.</source>
-            <translation>إعداد وحدة فك ترميز الفيديو غير صالح.</translation>
-        </message>
-        <message>
-            <source>This video codec cannot be decoded.</source>
-            <translation>يتعذر فك ترميز برنامج الفيديو هذا.</translation>
-        </message>
-        <message>
-            <source>Video decoder could not be allocated.</source>
-            <translation>تعذر تخصيص وحدة فك ترميز الفيديو.</translation>
-        </message>
-        <message>
-            <source>Video decoder configuration could not be allocated.</source>
-            <translation>تعذر تخصيص إعداد وحدة فك ترميز الفيديو.</translation>
-        </message>
-        <message>
-            <source>Decoded dimensions do not match the screen stream.</source>
-            <translation>الأبعاد المفكوكة لا تطابق دفق الشاشة.</translation>
-        </message>
-        <message>
-            <source>Decoded image could not be allocated.</source>
-            <translation>تعذر تخصيص الصورة المفكوكة.</translation>
-        </message>
-        <message>
-            <source>Video color conversion could not be initialized.</source>
-            <translation>تعذر تهيئة تحويل ألوان الفيديو.</translation>
         </message>
     </context>
     <context>
@@ -2877,359 +3020,208 @@
             <translation>تعذر التحقق من كلمة المرور.</translation>
         </message>
     </context>
-
     <context>
-        <name>Headless</name>
+        <name>Tray</name>
         <message>
-            <source>Command failed.</source>
-            <translation>فشل الأمر.</translation>
+            <source>Quit</source>
+            <translation>خروج</translation>
         </message>
         <message>
-            <source>%1 must be an integer.</source>
-            <translation>يجب أن يكون %1 عددًا صحيحًا.</translation>
+            <source>SquadSpeak - speaking</source>
+            <translation>SquadSpeak - يتحدث</translation>
         </message>
         <message>
-            <source>Requests must be on/off or true/false.</source>
-            <translation>يجب أن تكون الطلبات on/off أو true/false.</translation>
+            <source>Settings</source>
+            <translation>الإعدادات</translation>
         </message>
         <message>
-            <source>Unknown host property: %1</source>
-            <translation>خاصية المضيف غير معروفة: %1</translation>
+            <source>Channels</source>
+            <translation>القنوات</translation>
         </message>
         <message>
-            <source>Run without GUI, microphone capture, or local audio output.</source>
-            <translation>التشغيل دون واجهة رسومية أو التقاط الميكروفون أو خرج صوت محلي.</translation>
-        </message>
-        <message>
-            <source>Server storage prefix. Personal/audio/GUI profiles are not loaded.</source>
-            <translation>بادئة تخزين الخادم. لا تُحمّل الملفات الشخصية أو الصوتية أو الرسومية.</translation>
-        </message>
-        <message>
-            <source>Optional private identity file instead of the OS credential store (Linux/macOS). Parent directory must exist and belong to this account.</source>
-            <translation>ملف هوية خاصة اختياري بدل مخزن بيانات اعتماد نظام التشغيل (Linux/macOS). يجب أن يكون المجلد الأب موجودًا ومملوكًا لهذا الحساب.</translation>
-        </message>
-        <message>
-            <source>UTF-8 key=value properties or JSON host preset. Default: application.properties, then config/application.properties beside the app.</source>
-            <translation>خصائص UTF-8 key=value أو إعداد مضيف بصيغة JSON. الافتراضي: application.properties ثم config/application.properties بجانب التطبيق.</translation>
-        </message>
-        <message>
-            <source>Channel display name.</source>
-            <translation>اسم القناة المعروض.</translation>
-        </message>
-        <message>
-            <source>System and radio bot display name.</source>
-            <translation>اسم روبوت النظام والراديو المعروض.</translation>
-        </message>
-        <message>
-            <source>TCP service port (1-65535).</source>
-            <translation>منفذ خدمة TCP (1-65535).</translation>
-        </message>
-        <message>
-            <source>Headless admission is always on; only 'on' or 'true' is accepted.</source>
-            <translation>القبول دون واجهة رسومية مفعّل دائمًا; لا يُقبل إلا 'on' أو 'true'.</translation>
-        </message>
-        <message>
-            <source>Preapprove a device ID; repeat for several devices. Existing bans remain.</source>
-            <translation>الموافقة المسبقة على معرّف جهاز; كرر ذلك لأجهزة متعددة. تبقى عمليات الحظر الحالية.</translation>
-        </message>
-        <message>
-            <source>Block a device ID; repeat for several devices.</source>
-            <translation>حظر معرّف جهاز; كرر ذلك لأجهزة متعددة.</translation>
-        </message>
-        <message>
-            <source>Read a UTF-8 channel password from a file before listening. An empty file removes it.</source>
-            <translation>قراءة كلمة مرور القناة بترميز UTF-8 من ملف قبل الاستماع. يزيل الملف الفارغ كلمة المرور.</translation>
-        </message>
-        <message>
-            <source>Channel password. Empty removes it; environment or config avoids process-list exposure.</source>
-            <translation>كلمة مرور القناة. تزيل القيمة الفارغة كلمة المرور; وتمنع البيئة أو الإعداد ظهورها في قائمة العمليات.</translation>
-        </message>
-        <message>
-            <source>SquadSpeak headless local channel host</source>
-            <translation>مضيف قناة SquadSpeak محلي دون واجهة رسومية</translation>
-        </message>
-        <message>
-            <source>Environment variables (SQUADSPEAK_ prefix):</source>
-            <translation>متغيرات البيئة (البادئة SQUADSPEAK_):</translation>
-        </message>
-        <message>
-            <source>Host configuration could not be read or exceeds 1 MiB.</source>
-            <translation>تعذرت قراءة إعداد المضيف أو يتجاوز حجمه 1 MiB.</translation>
-        </message>
-        <message>
-            <source>Host configuration must be UTF-8.</source>
-            <translation>يجب أن يكون إعداد المضيف بترميز UTF-8.</translation>
-        </message>
-        <message>
-            <source>Host preset must be a JSON object.</source>
-            <translation>يجب أن يكون إعداد المضيف كائن JSON.</translation>
-        </message>
-        <message>
-            <source>Property line %1 must use key=value.</source>
-            <translation>يجب أن يستخدم سطر الخاصية %1 الصيغة key=value.</translation>
-        </message>
-        <message>
-            <source>Property line %1: %2</source>
-            <translation>سطر الخاصية %1: %2</translation>
-        </message>
-        <message>
-            <source>Standard input has no file descriptor.</source>
-            <translation>لا يملك الإدخال القياسي واصف ملف.</translation>
-        </message>
-        <message>
-            <source>Standard input could not be inspected.</source>
-            <translation>تعذر فحص الإدخال القياسي.</translation>
-        </message>
-        <message>
-            <source>Could not write the command response: %1</source>
-            <translation>تعذرت كتابة استجابة الأمر: %1</translation>
-        </message>
-        <message>
-            <source>Standard input could not be read: %1</source>
-            <translation>تعذرت قراءة الإدخال القياسي: %1</translation>
-        </message>
-        <message>
-            <source>Input line exceeds 65536 bytes.</source>
-            <translation>يتجاوز سطر الإدخال 65536 بايت.</translation>
-        </message>
-        <message>
-            <source>Each input line must be a JSON object.</source>
-            <translation>يجب أن يكون كل سطر إدخال كائن JSON.</translation>
-        </message>
-        <message>
-            <source>Input ended before a complete JSON line.</source>
-            <translation>انتهى الإدخال قبل اكتمال سطر JSON.</translation>
-        </message>
-        <message>
-            <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
-            <translation>معرّف قناة خاصة اختياري لأوامر status وconfigure وpassword وadmission وhistory وchat وradio; القناة الأساسية هي الافتراضية.</translation>
-        </message>
-        <message>
-            <source>Channel action must be list, add or remove.</source>
-            <translation>يجب أن يكون إجراء القنوات list أو add أو remove.</translation>
-        </message>
-        <message>
-            <source>Removing an own channel deletes its history, images, permissions and radio settings. Set confirmed=true to proceed.</source>
-            <translation>يؤدي حذف قناتك إلى حذف سجلها وصورها وأذوناتها وإعدادات الراديو. اضبط confirmed=true للمتابعة.</translation>
-        </message>
-        <message>
-            <source>id must identify an additional own channel.</source>
-            <translation>يجب أن يحدد id قناة خاصة إضافية.</translation>
-        </message>
-        <message>
-            <source>The additional own channel could not be removed: %1</source>
-            <translation>تعذر حذف القناة الخاصة الإضافية: %1</translation>
-        </message>
-        <message>
-            <source>channelId must identify an own channel.</source>
-            <translation>يجب أن يحدد channelId قناة خاصة.</translation>
-        </message>
-        <message>
-            <source>values must be a host settings object.</source>
-            <translation>يجب أن تكون values كائن إعدادات مضيف.</translation>
-        </message>
-        <message>
-            <source>Headless admission is always enabled for non-banned devices; requests off is not supported.</source>
-            <translation>القبول دون واجهة رسومية مفعّل دائمًا للأجهزة غير المحظورة; requests off غير مدعوم.</translation>
-        </message>
-        <message>
-            <source>value must be a password of at most 1024 UTF-8 bytes without control characters; an empty string removes it.</source>
-            <translation>يجب أن تكون value كلمة مرور لا تتجاوز 1024 بايت UTF-8 ولا تحتوي محارف تحكم; تزيل السلسلة الفارغة كلمة المرور.</translation>
-        </message>
-        <message>
-            <source>The channel is not ready or a password change is in progress.</source>
-            <translation>القناة غير جاهزة أو أن تغيير كلمة المرور قيد التنفيذ.</translation>
-        </message>
-        <message>
-            <source>The channel was removed while saving the password.</source>
-            <translation>أزيلت القناة أثناء حفظ كلمة المرور.</translation>
-        </message>
-        <message>
-            <source>id is required.</source>
-            <translation>المعرّف id مطلوب.</translation>
-        </message>
-        <message>
-            <source>text must be a valid non-empty chat message.</source>
-            <translation>يجب أن يكون text رسالة دردشة صالحة وغير فارغة.</translation>
-        </message>
-        <message>
-            <source>The local channel is not ready.</source>
-            <translation>القناة المحلية غير جاهزة.</translation>
-        </message>
-        <message>
-            <source>The channel's radio is unavailable.</source>
-            <translation>راديو القناة غير متاح.</translation>
-        </message>
-        <message>
-            <source>Unknown command. Use help.</source>
-            <translation>أمر غير معروف. استخدم help.</translation>
-        </message>
-        <message>
-            <source>search requires a query, non-negative offset and limit from 1 to 128.</source>
-            <translation>يتطلب search قيمة query وقيمة offset غير سالبة وقيمة limit من 1 إلى 128.</translation>
-        </message>
-        <message>
-            <source>add creates an id; update requires an existing id.</source>
-            <translation>ينشئ add قيمة id; ويتطلب update قيمة id موجودة.</translation>
-        </message>
-        <message>
-            <source>A station is already being checked.</source>
-            <translation>المحطة قيد الفحص بالفعل.</translation>
-        </message>
-        <message>
-            <source>The channel was removed while checking the station.</source>
-            <translation>أزيلت القناة أثناء فحص المحطة.</translation>
-        </message>
-        <message>
-            <source>Unknown radio action.</source>
-            <translation>إجراء راديو غير معروف.</translation>
-        </message>
-        <message>
-            <source>Could not load language: %1</source>
-            <translation>تعذر تحميل اللغة: %1</translation>
-        </message>
-        <message>
-            <source>The %1 option is incompatible with --headless.</source>
-            <translation>الخيار %1 غير متوافق مع --headless.</translation>
-        </message>
-        <message>
-            <source>Unexpected positional arguments. Use --help.</source>
-            <translation>وسائط موضعية غير متوقعة. استخدم --help.</translation>
-        </message>
-        <message>
-            <source>--config / -f requires a non-empty path.</source>
-            <translation>يتطلب --config / -f مسارًا غير فارغ.</translation>
-        </message>
-        <message>
-            <source>Choose --password or --password-file, not both.</source>
-            <translation>اختر --password أو --password-file, وليس كليهما.</translation>
-        </message>
-        <message>
-            <source>Choose SQUADSPEAK_PASSWORD or SQUADSPEAK_PASSWORD_FILE, not both.</source>
-            <translation>اختر SQUADSPEAK_PASSWORD أو SQUADSPEAK_PASSWORD_FILE, وليس كليهما.</translation>
-        </message>
-        <message>
-            <source>Choose password or passwordFile in one configuration layer, not both.</source>
-            <translation>اختر password أو passwordFile في طبقة إعداد واحدة, وليس كليهما.</translation>
-        </message>
-        <message>
-            <source>passwordFile must be a non-empty path.</source>
-            <translation>يجب أن يكون passwordFile مسارًا غير فارغ.</translation>
-        </message>
-        <message>
-            <source>Password file could not be read or is too large.</source>
-            <translation>تعذرت قراءة ملف كلمة المرور أو أن حجمه كبير جدًا.</translation>
-        </message>
-        <message>
-            <source>Password file must contain at most 1024 UTF-8 bytes without control characters.</source>
-            <translation>يجب ألا يحتوي ملف كلمة المرور على أكثر من 1024 بايت UTF-8 أو محارف تحكم.</translation>
-        </message>
-        <message>
-            <source>Password must be a string of at most 1024 UTF-8 bytes without control characters.</source>
-            <translation>يجب أن تكون كلمة المرور سلسلة لا تتجاوز 1024 بايت UTF-8 ولا تحتوي محارف تحكم.</translation>
-        </message>
-        <message>
-            <source>settingsFile must be a non-empty path.</source>
-            <translation>يجب أن يكون settingsFile مسارًا غير فارغ.</translation>
-        </message>
-        <message>
-            <source>identityFile must be a non-empty path.</source>
-            <translation>يجب أن يكون identityFile مسارًا غير فارغ.</translation>
-        </message>
-        <message>
-            <source>The settings directory could not be created.</source>
-            <translation>تعذر إنشاء مجلد الإعدادات.</translation>
-        </message>
-        <message>
-            <source>This SquadSpeak profile is already running or cannot be locked.</source>
-            <translation>ملف تعريف SquadSpeak هذا قيد التشغيل بالفعل أو يتعذر قفله.</translation>
-        </message>
-        <message>
-            <source>Standard input could not be opened.</source>
-            <translation>تعذر فتح الإدخال القياسي.</translation>
-        </message>
-        <message>
-            <source>Standard output could not be opened.</source>
-            <translation>تعذر فتح الإخراج القياسي.</translation>
-        </message>
-        <message>
-            <source>This identity file is already in use or cannot be locked.</source>
-            <translation>ملف الهوية هذا قيد الاستخدام بالفعل أو يتعذر قفله.</translation>
-        </message>
-        <message>
-            <source>Invalid host configuration: %1</source>
-            <translation>إعداد مضيف غير صالح: %1</translation>
-        </message>
-        <message>
-            <source>Radio channels could not be initialized.</source>
-            <translation>تعذر تهيئة قنوات الراديو.</translation>
-        </message>
-        <message>
-            <source>Headless host could not start: %1</source>
-            <translation>تعذر بدء مضيف دون واجهة رسومية: %1</translation>
-        </message>
-        <message>
-            <source>Channel password could not be saved.</source>
-            <translation>تعذر حفظ كلمة مرور القناة.</translation>
-        </message>
-        <message>
-            <source>Invalid channel password: %1</source>
-            <translation>كلمة مرور القناة غير صالحة: %1</translation>
-        </message>
-        <message>
-            <source>Headless host could not initialize: %1</source>
-            <translation>تعذر تهيئة مضيف دون واجهة رسومية: %1</translation>
-        </message>
-        <message>
-            <source>SquadSpeak headless could not start: %1</source>
-            <translation>تعذر بدء مضيف SquadSpeak دون واجهة رسومية: %1</translation>
-        </message>
-        <message>
-            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
-            <translation>يجب أن يكون إجراء الداعم هو الحالة أو تسجيل الدخول أو التحديث أو تسجيل الخروج أو الإلغاء. status sign-in refresh sign-out cancel</translation>
-        </message>
-        <message>
-            <source>A Supporter operation is in progress.</source>
-            <translation>عملية الداعم جارية.</translation>
-        </message>
-        <message>
-            <source>Supporter access is unavailable in this build.</source>
-            <translation>وصول الداعم غير متوفر في هذا الإصدار.</translation>
-        </message>
-        <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>أسبقية الإعدادات: الوسائط &gt; البيئة &gt; الخصائص &gt; قيم الخادم المحفوظة.</translation>
+            <source>New image</source>
+            <translation>صورة جديدة</translation>
         </message>
     </context>
     <context>
-        <name>Desktop</name>
+        <name>VideoCodec</name>
         <message>
-            <source>Open settings at startup.</source>
-            <translation>فتح الإعدادات عند بدء التشغيل.</translation>
+            <source>Video codec: %1</source>
+            <translation>برنامج ترميز الفيديو: %1</translation>
         </message>
         <message>
-            <source>Open guided local test recording without starting network services.</source>
-            <translation>فتح تسجيل اختبار محلي مع إرشادات دون بدء خدمات الشبكة.</translation>
+            <source>Video codec ABI does not match its headers.</source>
+            <translation>واجهة ABI لبرنامج ترميز الفيديو لا تتطابق مع ترويساته.</translation>
         </message>
         <message>
-            <source>Alternative file for audio profiles.</source>
-            <translation>ملف بديل لملفات تعريف الصوت.</translation>
+            <source>Video buffers could not be allocated.</source>
+            <translation>تعذر تخصيص مخازن الفيديو المؤقتة.</translation>
         </message>
         <message>
-            <source>Load the interface without microphone capture and exit after one second.</source>
-            <translation>تحميل الواجهة دون تسجيل الميكروفون والخروج بعد ثانية واحدة.</translation>
+            <source>Invalid video quality tier.</source>
+            <translation>مستوى جودة الفيديو غير صالح.</translation>
         </message>
         <message>
-            <source>Save an image of the app window during the UI test.</source>
-            <translation>حفظ صورة لنافذة التطبيق أثناء اختبار الواجهة.</translation>
+            <source>The screen source exceeds the supported capture size.</source>
+            <translation>يتجاوز مصدر الشاشة حجم الالتقاط المدعوم.</translation>
         </message>
         <message>
-            <source>The window image could not be saved.</source>
-            <translation>تعذر حفظ صورة النافذة.</translation>
+            <source>The screen source is too narrow.</source>
+            <translation>مصدر الشاشة ضيق جدا.</translation>
         </message>
         <message>
-            <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
-            <translation>علبة النظام غير متاحة; يظل التطبيق مفتوحا في نافذة.</translation>
+            <source>The video encoder could not be allocated.</source>
+            <translation>تعذر تخصيص برنامج ترميز الفيديو.</translation>
+        </message>
+        <message>
+            <source>No supported video encoder is available.</source>
+            <translation>لا يتوفر برنامج ترميز فيديو مدعوم.</translation>
+        </message>
+        <message>
+            <source>Video encoder configuration is too large.</source>
+            <translation>إعداد برنامج ترميز الفيديو كبير جدا.</translation>
+        </message>
+        <message>
+            <source>Video scaling could not be initialized.</source>
+            <translation>تعذر تهيئة تحجيم الفيديو.</translation>
+        </message>
+        <message>
+            <source>The encoder returned an empty video packet.</source>
+            <translation>أعاد برنامج الترميز حزمة فيديو فارغة.</translation>
+        </message>
+        <message>
+            <source>Invalid video frame format.</source>
+            <translation>تنسيق إطار الفيديو غير صالح.</translation>
+        </message>
+        <message>
+            <source>Invalid video decoder configuration.</source>
+            <translation>إعداد وحدة فك ترميز الفيديو غير صالح.</translation>
+        </message>
+        <message>
+            <source>This video codec cannot be decoded.</source>
+            <translation>يتعذر فك ترميز برنامج الفيديو هذا.</translation>
+        </message>
+        <message>
+            <source>Video decoder could not be allocated.</source>
+            <translation>تعذر تخصيص وحدة فك ترميز الفيديو.</translation>
+        </message>
+        <message>
+            <source>Video decoder configuration could not be allocated.</source>
+            <translation>تعذر تخصيص إعداد وحدة فك ترميز الفيديو.</translation>
+        </message>
+        <message>
+            <source>Decoded dimensions do not match the screen stream.</source>
+            <translation>الأبعاد المفكوكة لا تطابق دفق الشاشة.</translation>
+        </message>
+        <message>
+            <source>Decoded image could not be allocated.</source>
+            <translation>تعذر تخصيص الصورة المفكوكة.</translation>
+        </message>
+        <message>
+            <source>Video color conversion could not be initialized.</source>
+            <translation>تعذر تهيئة تحويل ألوان الفيديو.</translation>
+        </message>
+    </context>
+    <context>
+        <name>VoiceAvatar</name>
+        <message>
+            <source>Muted</source>
+            <translation>مكتوم</translation>
+        </message>
+        <message>
+            <source>Sleeping</source>
+            <translation>في وضع السكون</translation>
+        </message>
+        <message>
+            <source>Offline</source>
+            <translation>غير متصل</translation>
+        </message>
+        <message>
+            <source>Speaking</source>
+            <translation>يتحدث</translation>
+        </message>
+        <message>
+            <source>Unavailable</source>
+            <translation>غير متاح</translation>
+        </message>
+        <message>
+            <source>Listening</source>
+            <translation>يستمع</translation>
+        </message>
+        <message>
+            <source>Deafened</source>
+            <translation>من دون صوت</translation>
+        </message>
+    </context>
+    <context>
+        <name>VoiceSession</name>
+        <message>
+            <source>Microphone muted</source>
+            <translation>الميكروفون مكتوم</translation>
+        </message>
+        <message>
+            <source>Push-to-talk held</source>
+            <translation>الضغط للتحدث مثبت</translation>
+        </message>
+        <message>
+            <source>Ready - push-to-talk released</source>
+            <translation>جاهز - تم تحرير الضغط للتحدث</translation>
+        </message>
+        <message>
+            <source>Microphone unmuted</source>
+            <translation>تم إلغاء كتم الميكروفون</translation>
+        </message>
+        <message>
+            <source>Settings could not be saved: %1</source>
+            <translation>تعذر حفظ الإعدادات: %1</translation>
+        </message>
+        <message>
+            <source>The push-to-talk sequence cannot be incremented further.</source>
+            <translation>لا يمكن زيادة تسلسل الضغط للتحدث أكثر من ذلك.</translation>
+        </message>
+        <message>
+            <source>Choose System, Light or Dark.</source>
+            <translation>اختر النظام أو الفاتح أو الداكن.</translation>
+        </message>
+        <message>
+            <source>Choose a colour palette from the list.</source>
+            <translation>اختر لوحة ألوان من القائمة.</translation>
+        </message>
+        <message>
+            <source>Choose an available avatar.</source>
+            <translation>اختر صورة شخصية متاحة.</translation>
+        </message>
+        <message>
+            <source>Invalid push-to-talk binding.</source>
+            <translation>ارتباط الضغط للتحدث غير صالح.</translation>
+        </message>
+        <message>
+            <source>Release the held push-to-talk key first.</source>
+            <translation>حرر مفتاح الضغط للتحدث المثبت أولًا.</translation>
+        </message>
+        <message>
+            <source>Choose a language from the list.</source>
+            <translation>اختر لغة من القائمة.</translation>
+        </message>
+        <message>
+            <source>This avatar requires Supporter.</source>
+            <translation>تتطلب هذه الصورة الرمزية Supporter.</translation>
+        </message>
+        <message>
+            <source>The name must contain 1 to 64 characters.</source>
+            <translation>يجب أن يتكون الاسم من 1 إلى 64 حرفا.</translation>
+        </message>
+        <message>
+            <source>The name may not contain control characters or line breaks.</source>
+            <translation>يجب ألا يحتوي الاسم على محارف تحكم أو فواصل أسطر.</translation>
+        </message>
+        <message>
+            <source>Session settings could not be read.</source>
+            <translation>تعذرت قراءة إعدادات الجلسة.</translation>
+        </message>
+        <message>
+            <source>Saved setting is invalid: %1</source>
+            <translation>إعداد محفوظ غير صالح: %1</translation>
         </message>
     </context>
 </TS>

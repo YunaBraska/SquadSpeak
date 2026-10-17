@@ -1,0 +1,45 @@
+--- a/webrtc/api/audio/audio_processing.h
++++ b/webrtc/api/audio/audio_processing.h
+@@ -206,6 +206,9 @@
+       bool enabled = false;
+       bool mobile_mode = false;
+       bool export_linear_aec_output = false;
++      // Residual echo suppression sensitivity. 1 preserves upstream defaults.
++      // Values above 1 suppress more, below 1 preserve more residual signal.
++      float suppression_gain = 1.f;
+       // Enforce the highpass filter to be on (has no effect for the mobile
+       // mode).
+       bool enforce_high_pass_filtering = true;
+--- a/webrtc/modules/audio_processing/audio_processing_impl.cc
++++ b/webrtc/modules/audio_processing/audio_processing_impl.cc
+@@ -684,7 +684,8 @@
+ 
+   const bool aec_config_changed =
+       config_.echo_canceller.enabled != config.echo_canceller.enabled ||
+-      config_.echo_canceller.mobile_mode != config.echo_canceller.mobile_mode;
++      config_.echo_canceller.mobile_mode != config.echo_canceller.mobile_mode ||
++      config_.echo_canceller.suppression_gain != config.echo_canceller.suppression_gain;
+ 
+   const bool agc1_config_changed =
+       config_.gain_controller1 != config.gain_controller1;
+@@ -1890,6 +1891,20 @@
+       RTC_DCHECK(submodules_.echo_controller);
+     } else {
+       EchoCanceller3Config config;
++      // Bound high-band feedback with receiver gain up to 8. This cap applies
++      // only to identified echo, not to dominant near-end speech.
++      config.suppressor.high_bands_suppression.max_gain_during_echo = 0.1f;
++      const float sensitivity = config_.echo_canceller.suppression_gain;
++      RTC_CHECK_GE(sensitivity, 0.25f);
++      RTC_CHECK_LE(sensitivity, 4.f);
++      for (auto* tuning : {&config.suppressor.normal_tuning,
++                           &config.suppressor.nearend_tuning}) {
++        for (auto* mask : {&tuning->mask_lf, &tuning->mask_hf}) {
++          mask->enr_transparent /= sensitivity;
++          mask->enr_suppress /= sensitivity;
++          mask->emr_transparent /= sensitivity;
++        }
++      }
+       std::optional<EchoCanceller3Config> multichannel_config;
+       if (use_setup_specific_default_aec3_config_) {
+         multichannel_config = EchoCanceller3::CreateDefaultMultichannelConfig();

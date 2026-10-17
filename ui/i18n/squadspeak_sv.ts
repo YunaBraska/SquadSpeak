@@ -36,14 +36,6 @@
             <translation>Öppna systemets integritetsinställningar och tillåt mikrofonåtkomst för SquadSpeak.</translation>
         </message>
         <message>
-            <source>Microphone analysis active. Test audio stays on this computer.</source>
-            <translation>Mikrofonanalysen är aktiv. Testljudet stannar på den här datorn.</translation>
-        </message>
-        <message>
-            <source>Finish the test recording before changing devices.</source>
-            <translation>Avsluta testinspelningen innan du byter enhet.</translation>
-        </message>
-        <message>
             <source>The output format is not supported.</source>
             <translation>Utgångsformatet stöds inte.</translation>
         </message>
@@ -68,32 +60,12 @@
             <translation>Testljudet kunde inte spelas upp.</translation>
         </message>
         <message>
-            <source>The microphone has provided no data for five seconds. Recording discarded.</source>
-            <translation>Mikrofonen har inte lämnat några data på fem sekunder. Inspelningen har kastats.</translation>
-        </message>
-        <message>
-            <source>The microphone was interrupted or changed. Recording discarded.</source>
-            <translation>Mikrofonen avbröts eller byttes. Inspelningen har kastats.</translation>
-        </message>
-        <message>
-            <source>Cancelled. The incomplete recording was discarded.</source>
-            <translation>Avbrutet. Den ofullständiga inspelningen har kastats.</translation>
-        </message>
-        <message>
             <source>No selected microphone is available</source>
             <translation>Ingen vald mikrofon är tillgänglig</translation>
         </message>
         <message>
             <source>Allow microphone access in the system dialog.</source>
             <translation>Tillåt mikrofonåtkomst i systemdialogen.</translation>
-        </message>
-        <message>
-            <source>Microphone capture active for the voice channel.</source>
-            <translation>Mikrofonen är aktiv för röstkanalen.</translation>
-        </message>
-        <message>
-            <source>Microphone access was denied. Nothing was saved.</source>
-            <translation>Mikrofonåtkomst nekades. Inget sparades.</translation>
         </message>
         <message>
             <source>Microphone access is missing. Allow it in System Settings.</source>
@@ -259,103 +231,16 @@
             <source>App audio only</source>
             <translation>Endast appljud</translation>
         </message>
-    </context>
-    <context>
-        <name>AudioRecording</name>
         <message>
-            <source>Incomplete audio block. Recording discarded.</source>
-            <translation>Ofullständigt ljudblock. Inspelningen har kastats.</translation>
-        </message>
-        <message>
-            <source>Move about one meter from the microphone. Keep the background sound playing and read the sentence.</source>
-            <translation>Flytta dig ungefär en meter från mikrofonen. Låt bakgrundsljudet fortsätta och läs meningen.</translation>
-        </message>
-        <message>
-            <source>Voice with background sound</source>
-            <translation>Röst med bakgrundsljud</translation>
-        </message>
-        <message>
-            <source>The recordings folder could not be created.</source>
-            <translation>Mappen för inspelningar kunde inte skapas.</translation>
-        </message>
-        <message>
-            <source>You can stop the background sound now.</source>
-            <translation>Du kan stänga av bakgrundsljudet nu.</translation>
-        </message>
-        <message>
-            <source>Recordings saved</source>
-            <translation>Inspelningarna har sparats</translation>
-        </message>
-        <message>
-            <source>The test recording could not be saved completely.</source>
-            <translation>Testinspelningen kunde inte sparas helt.</translation>
-        </message>
-        <message>
-            <source>Keep music off and stay quiet. Start when ready.</source>
-            <translation>Stäng av musiken och var tyst. Starta när du är redo.</translation>
-        </message>
-        <message>
-            <source>Your voice</source>
-            <translation>Din röst</translation>
-        </message>
-        <message>
-            <source>Play music or another background sound at a normal volume. Stay quiet while recording.</source>
-            <translation>Spela musik eller annat bakgrundsljud på normal volym. Var tyst under inspelningen.</translation>
-        </message>
-        <message>
-            <source>The test recording could not be created.</source>
-            <translation>Testinspelningen kunde inte skapas.</translation>
-        </message>
-        <message>
-            <source>Background sound</source>
-            <translation>Bakgrundsljud</translation>
-        </message>
-        <message>
-            <source>The window is open. I can hear the rain outside. One, two, three, four, five.</source>
-            <translation>Fönstret är öppet. Jag hör regnet utanför. Ett, två, tre, fyra, fem.</translation>
-        </message>
-        <message>
-            <source>This microphone format is not supported for test recordings.</source>
-            <translation>Det här mikrofonformatet stöds inte för testinspelningar.</translation>
-        </message>
-        <message>
-            <source>Keep the background volume unchanged. Read the sentence, then stop recording.</source>
-            <translation>Ändra inte bakgrundsvolymen. Läs meningen och stoppa sedan inspelningen.</translation>
-        </message>
-        <message>
-            <source>Record at least half a second, then try again.</source>
-            <translation>Spela in minst en halv sekund och försök sedan igen.</translation>
-        </message>
-        <message>
-            <source>Sit at your usual distance. Read the sentence, then stop recording.</source>
-            <translation>Sitt på ditt vanliga avstånd. Läs meningen och stoppa sedan inspelningen.</translation>
-        </message>
-        <message>
-            <source>The recording description could not be saved.</source>
-            <translation>Beskrivningen av inspelningen kunde inte sparas.</translation>
-        </message>
-        <message>
-            <source>The WAV file could not be finalized.</source>
-            <translation>WAV-filen kunde inte slutföras.</translation>
-        </message>
-        <message>
-            <source>The WAV header could not be written.</source>
-            <translation>WAV-filens huvud kunde inte skrivas.</translation>
-        </message>
-        <message>
-            <source>Voice farther away</source>
-            <translation>Röst på längre avstånd</translation>
-        </message>
-        <message>
-            <source>Room sound</source>
-            <translation>Rumsljud</translation>
+            <source>Speech output is unavailable.</source>
+            <translation>Talutmatning är inte tillgänglig.</translation>
         </message>
     </context>
     <context>
         <name>AudioSettings</name>
         <message>
-            <source>Echo cancellation</source>
-            <translation>Ekoreducering</translation>
+            <source>Echo</source>
+            <translation>Eko</translation>
         </message>
         <message>
             <source>Off</source>
@@ -402,12 +287,12 @@
             <translation>Din uppspelning</translation>
         </message>
         <message>
-            <source>Clear local key</source>
-            <translation>Rensa lokal tangent</translation>
+            <source>Clear key</source>
+            <translation>Rensa tangent</translation>
         </message>
         <message>
-            <source>Low cut</source>
-            <translation>Basfilter</translation>
+            <source>Highpass</source>
+            <translation>Högpass</translation>
         </message>
         <message>
             <source>Microphone access is off</source>
@@ -418,32 +303,16 @@
             <translation>Ingångsenhet</translation>
         </message>
         <message>
-            <source>Microphone paused for others</source>
-            <translation>Mikrofonen är pausad för andra</translation>
-        </message>
-        <message>
             <source>Cancel</source>
             <translation>Avbryt</translation>
-        </message>
-        <message>
-            <source>Guided recording</source>
-            <translation>Guidad inspelning</translation>
         </message>
         <message>
             <source>Clipping. Reduce microphone gain.</source>
             <translation>Överstyrning. Sänk mikrofonförstärkningen.</translation>
         </message>
         <message>
-            <source>Silent</source>
-            <translation>Tyst</translation>
-        </message>
-        <message>
             <source>Test output</source>
             <translation>Testa utgång</translation>
-        </message>
-        <message>
-            <source>Voice level</source>
-            <translation>Röstnivå</translation>
         </message>
         <message>
             <source>Voice threshold</source>
@@ -462,20 +331,16 @@
             <translation>Enheten är frånkopplad</translation>
         </message>
         <message>
-            <source>Local key</source>
-            <translation>Lokal tangent</translation>
+            <source>PTT key</source>
+            <translation>Talknapp</translation>
         </message>
         <message>
             <source>Voice activation</source>
             <translation>Röstaktivering</translation>
         </message>
         <message>
-            <source>Remote PTT key</source>
-            <translation>Fjärr-PTT-tangent</translation>
-        </message>
-        <message>
-            <source>Noise reduction</source>
-            <translation>Brusreducering</translation>
+            <source>Denoise</source>
+            <translation>Brusfilter</translation>
         </message>
         <message>
             <source>Selected device is not connected</source>
@@ -486,32 +351,120 @@
             <translation>Skulle sända</translation>
         </message>
         <message>
-            <source>Microphone gain</source>
-            <translation>Mikrofonförstärkning</translation>
-        </message>
-        <message>
-            <source>Clear remote key</source>
-            <translation>Rensa fjärrtangent</translation>
-        </message>
-        <message>
-            <source>Playback volume</source>
-            <translation>Uppspelningsvolym</translation>
+            <source>Gain</source>
+            <translation>Förstärkning</translation>
         </message>
         <message>
             <source>Not assigned</source>
             <translation>Inte tilldelad</translation>
         </message>
         <message>
-            <source>High cut</source>
-            <translation>Diskantfilter</translation>
+            <source>Lowpass</source>
+            <translation>Lågpass</translation>
         </message>
         <message>
             <source>Level audio automatically</source>
             <translation>Jämna ut ljudnivån automatiskt</translation>
         </message>
+        <message>
+            <source>Voice volume</source>
+            <translation>Volym för röstchatt</translation>
+        </message>
+        <message>
+            <source>App sounds</source>
+            <translation>Appljud</translation>
+        </message>
+        <message>
+            <source>Read bot messages aloud</source>
+            <translation>Läs upp botmeddelanden</translation>
+        </message>
+        <message>
+            <source>Download a high-quality voice for this language in macOS settings.</source>
+            <translation>Hämta en röst av hög kvalitet för det här språket i macOS-inställningarna.</translation>
+        </message>
+        <message>
+            <source>Bot voice</source>
+            <translation>Botröst</translation>
+        </message>
+        <message>
+            <source>Automatic</source>
+            <translation>Automatisk</translation>
+        </message>
+        <message>
+            <source>Unavailable</source>
+            <translation>Inte tillgänglig</translation>
+        </message>
+        <message>
+            <source>Download voices in your device's Accessibility speech settings.</source>
+            <translation>Hämta röster i enhetens talinställningar under Hjälpmedel.</translation>
+        </message>
+        <message>
+            <source>Voice download help</source>
+            <translation>Hjälp med att hämta röster</translation>
+        </message>
+        <message>
+            <source>Strength, not the percentage of echo removed.</source>
+            <translation>Styrka, inte andelen borttaget eko.</translation>
+        </message>
+        <message>
+            <source>Auto also checks for speech, not just volume.</source>
+            <translation>Automatiskt läge upptäcker även tal, inte bara volym.</translation>
+        </message>
     </context>
     <context>
         <name>Channels</name>
+        <message>
+            <source>Audio received</source>
+            <translation>Mottaget ljud</translation>
+        </message>
+        <message>
+            <source>Search channels</source>
+            <translation>Sök kanaler</translation>
+        </message>
+        <message>
+            <source>No matches</source>
+            <translation>Inga träffar</translation>
+        </message>
+        <message>
+            <source>Copy address</source>
+            <translation>Kopiera adress</translation>
+        </message>
+        <message>
+            <source>Messages</source>
+            <translation>Meddelanden</translation>
+        </message>
+        <message>
+            <source>Message</source>
+            <translation>Meddelande</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Öppna</translation>
+        </message>
+        <message>
+            <source>Online</source>
+            <translation>Online</translation>
+        </message>
+        <message>
+            <source>Offline</source>
+            <translation>Offline</translation>
+        </message>
+        <message>
+            <source>No private messages</source>
+            <translation>Inga privata meddelanden</translation>
+        </message>
+        <message>
+            <source>Private messages are unavailable for this contact.</source>
+            <translation>Privata meddelanden är inte tillgängliga för den här kontakten.</translation>
+        </message>
+        <message>
+            <source>If asked, allow local network access. You can change this in system settings.</source>
+            <translation>Tillåt åtkomst till det lokala nätverket om du får frågan. Du kan ändra detta i systeminställningarna.</translation>
+        </message>
+        <message>
+            <source>Retry</source>
+            <translation>Försök igen</translation>
+        </message>
         <message>
             <source>Updates</source>
             <translation>Uppdateringar</translation>
@@ -531,6 +484,10 @@
         <message>
             <source>DDNS cannot bypass CGNAT. If your provider shares the public IP, use a private VPN on all participating devices or a publicly reachable server.</source>
             <translation>DDNS kan inte kringgå CGNAT. Om din leverantör delar den publika IP-adressen behöver alla deltagande enheter ett privat VPN, eller så behövs en server som kan nås utifrån.</translation>
+        </message>
+        <message>
+            <source>Remove server</source>
+            <translation>Ta bort server</translation>
         </message>
         <message>
             <source>Low</source>
@@ -653,10 +610,6 @@
             <translation>Aviseringsljud</translation>
         </message>
         <message>
-            <source>Lifetime for new messages. Earlier messages keep their expiry.</source>
-            <translation>Giltighetstid för nya meddelanden. Tidigare meddelanden behåller sin utgångstid.</translation>
-        </message>
-        <message>
             <source>Enable speakers</source>
             <translation>Slå på högtalare</translation>
         </message>
@@ -691,10 +644,6 @@
         <message>
             <source>Allow device</source>
             <translation>Tillåt enhet</translation>
-        </message>
-        <message>
-            <source>Receive quality: %1 kb/s per voice. Adjusts automatically for this device.</source>
-            <translation>Mottagningskvalitet: %1 kb/s per röst. Anpassas automatiskt för den här enheten.</translation>
         </message>
         <message>
             <source>Stop radio</source>
@@ -1188,6 +1137,50 @@
             <source>This device</source>
             <translation>Den här enheten</translation>
         </message>
+        <message>
+            <source>Use default music volume</source>
+            <translation>Använd standardvolymen för musik</translation>
+        </message>
+        <message>
+            <source>Show in Dock</source>
+            <translation>Visa i Dock</translation>
+        </message>
+        <message>
+            <source>App language</source>
+            <translation>Appens språk</translation>
+        </message>
+        <message>
+            <source>Send in</source>
+            <translation>Skicka på</translation>
+        </message>
+        <message>
+            <source>Hear in</source>
+            <translation>Lyssna på</translation>
+        </message>
+        <message>
+            <source>Download language models for %1 and %2?</source>
+            <translation>Ladda ned språkmodeller för %1 och %2?</translation>
+        </message>
+        <message>
+            <source>Download</source>
+            <translation>Ladda ned</translation>
+        </message>
+        <message>
+            <source>PTT, chat and channel controls. Uses the controlled device's microphone.</source>
+            <translation>PTT-, chatt- och kanalstyrning. Mikrofonen på den styrda enheten används.</translation>
+        </message>
+        <message>
+            <source>Connect the other device to one of your channels, then allow it here.</source>
+            <translation>Anslut den andra enheten till en av dina kanaler och tillåt den sedan här.</translation>
+        </message>
+        <message>
+            <source>On the other device, open Settings &gt; Input &gt; Remote control and allow this device.</source>
+            <translation>Öppna Inställningar &gt; Ingång &gt; Fjärrstyrning på den andra enheten och tillåt den här enheten.</translation>
+        </message>
+        <message>
+            <source>Unread messages</source>
+            <translation>Olästa meddelanden</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1299,6 +1292,22 @@
             <source>The sanitized image could not be written completely.</source>
             <translation>Den rensade bilden kunde inte skrivas helt.</translation>
         </message>
+        <message>
+            <source>%1 joined.</source>
+            <translation>%1 anslöt.</translation>
+        </message>
+        <message>
+            <source>%1 left.</source>
+            <translation>%1 lämnade.</translation>
+        </message>
+        <message>
+            <source>%1 was kicked.</source>
+            <translation>%1 kastades ut.</translation>
+        </message>
+        <message>
+            <source>%1 was banned from the channel.</source>
+            <translation>%1 bannlystes från kanalen.</translation>
+        </message>
     </context>
     <context>
         <name>ChatPanel</name>
@@ -1363,22 +1372,6 @@
             <translation>Läser in...</translation>
         </message>
         <message>
-            <source>%1 joined.</source>
-            <translation>%1 anslöt.</translation>
-        </message>
-        <message>
-            <source>%1 left.</source>
-            <translation>%1 lämnade.</translation>
-        </message>
-        <message>
-            <source>%1 was kicked.</source>
-            <translation>%1 kastades ut.</translation>
-        </message>
-        <message>
-            <source>%1 was banned from the channel.</source>
-            <translation>%1 bannlystes från kanalen.</translation>
-        </message>
-        <message>
             <source>Message could not be sent. Check the connection and text length.</source>
             <translation>Meddelandet kunde inte skickas. Kontrollera anslutningen och textlängden.</translation>
         </message>
@@ -1404,7 +1397,400 @@
         </message>
     </context>
     <context>
+        <name>Desktop</name>
+        <message>
+            <source>Open settings at startup.</source>
+            <translation>Öppna inställningarna vid start.</translation>
+        </message>
+        <message>
+            <source>Alternative file for audio profiles.</source>
+            <translation>Alternativ fil för ljudprofiler.</translation>
+        </message>
+        <message>
+            <source>Load the interface without microphone capture and exit after one second.</source>
+            <translation>Ladda gränssnittet utan mikrofoninspelning och avsluta efter en sekund.</translation>
+        </message>
+        <message>
+            <source>Save an image of the app window during the UI test.</source>
+            <translation>Spara en bild av appfönstret under gränssnittstestet.</translation>
+        </message>
+        <message>
+            <source>The window image could not be saved.</source>
+            <translation>Bilden av fönstret kunde inte sparas.</translation>
+        </message>
+        <message>
+            <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
+            <translation>Systemfältet är inte tillgängligt; appen förblir öppen som ett fönster.</translation>
+        </message>
+    </context>
+    <context>
+        <name>Headless</name>
+        <message>
+            <source>Host display name.</source>
+            <translation>Värdens visningsnamn.</translation>
+        </message>
+        <message>
+            <source>Command failed.</source>
+            <translation>Kommandot misslyckades.</translation>
+        </message>
+        <message>
+            <source>%1 must be an integer.</source>
+            <translation>%1 måste vara ett heltal.</translation>
+        </message>
+        <message>
+            <source>Requests must be on/off or true/false.</source>
+            <translation>Förfrågningar måste vara on/off eller true/false.</translation>
+        </message>
+        <message>
+            <source>Unknown host property: %1</source>
+            <translation>Okänd värdegenskap: %1</translation>
+        </message>
+        <message>
+            <source>Run without GUI, microphone capture, or local audio output.</source>
+            <translation>Kör utan grafiskt gränssnitt, mikrofoninspelning eller lokal ljudutmatning.</translation>
+        </message>
+        <message>
+            <source>Server storage prefix. Personal/audio/GUI profiles are not loaded.</source>
+            <translation>Serverns lagringsprefix. Personliga profiler, ljudprofiler och gränssnittsprofiler laddas inte.</translation>
+        </message>
+        <message>
+            <source>Optional private identity file instead of the OS credential store (Linux/macOS). Parent directory must exist and belong to this account.</source>
+            <translation>Valfri privat identitetsfil i stället för operativsystemets lagring av inloggningsuppgifter (Linux/macOS). Den överordnade mappen måste finnas och tillhöra detta konto.</translation>
+        </message>
+        <message>
+            <source>UTF-8 key=value properties or JSON host preset. Default: application.properties, then config/application.properties beside the app.</source>
+            <translation>UTF-8-egenskaper key=value eller värdförinställningar i JSON. Standard: application.properties, sedan config/application.properties bredvid appen.</translation>
+        </message>
+        <message>
+            <source>Channel display name.</source>
+            <translation>Kanalens visningsnamn.</translation>
+        </message>
+        <message>
+            <source>System and radio bot display name.</source>
+            <translation>Visningsnamn för system- och radiobotten.</translation>
+        </message>
+        <message>
+            <source>TCP service port (1-65535).</source>
+            <translation>TCP-tjänsteport (1-65535).</translation>
+        </message>
+        <message>
+            <source>Headless admission is always on; only 'on' or 'true' is accepted.</source>
+            <translation>Tillträde utan grafiskt gränssnitt är alltid aktiverat; endast 'on' eller 'true' accepteras.</translation>
+        </message>
+        <message>
+            <source>Preapprove a device ID; repeat for several devices. Existing bans remain.</source>
+            <translation>Godkänn ett enhets-ID i förväg; upprepa för flera enheter. Befintliga blockeringar behålls.</translation>
+        </message>
+        <message>
+            <source>Block a device ID; repeat for several devices.</source>
+            <translation>Blockera ett enhets-ID; upprepa för flera enheter.</translation>
+        </message>
+        <message>
+            <source>Read a UTF-8 channel password from a file before listening. An empty file removes it.</source>
+            <translation>Läs kanalens UTF-8-lösenord från en fil innan lyssning börjar. En tom fil tar bort det.</translation>
+        </message>
+        <message>
+            <source>Channel password. Empty removes it; environment or config avoids process-list exposure.</source>
+            <translation>Kanalens lösenord. Ett tomt värde tar bort det; miljö eller konfiguration förhindrar att det visas i processlistan.</translation>
+        </message>
+        <message>
+            <source>SquadSpeak headless local channel host</source>
+            <translation>SquadSpeak lokal kanalvärd utan grafiskt gränssnitt</translation>
+        </message>
+        <message>
+            <source>Environment variables (SQUADSPEAK_ prefix):</source>
+            <translation>Miljövariabler (prefix SQUADSPEAK_):</translation>
+        </message>
+        <message>
+            <source>Host configuration could not be read or exceeds 1 MiB.</source>
+            <translation>Värdkonfigurationen kunde inte läsas eller är större än 1 MiB.</translation>
+        </message>
+        <message>
+            <source>Host configuration must be UTF-8.</source>
+            <translation>Värdkonfigurationen måste vara UTF-8.</translation>
+        </message>
+        <message>
+            <source>Host preset must be a JSON object.</source>
+            <translation>Värdförinställningen måste vara ett JSON-objekt.</translation>
+        </message>
+        <message>
+            <source>Property line %1 must use key=value.</source>
+            <translation>Egenskapsrad %1 måste använda key=value.</translation>
+        </message>
+        <message>
+            <source>Property line %1: %2</source>
+            <translation>Egenskapsrad %1: %2</translation>
+        </message>
+        <message>
+            <source>Standard input has no file descriptor.</source>
+            <translation>Standardinmatningen saknar filbeskrivare.</translation>
+        </message>
+        <message>
+            <source>Standard input could not be inspected.</source>
+            <translation>Standardinmatningen kunde inte kontrolleras.</translation>
+        </message>
+        <message>
+            <source>Could not write the command response: %1</source>
+            <translation>Kommandosvaret kunde inte skrivas: %1</translation>
+        </message>
+        <message>
+            <source>Standard input could not be read: %1</source>
+            <translation>Standardinmatningen kunde inte läsas: %1</translation>
+        </message>
+        <message>
+            <source>Input line exceeds 65536 bytes.</source>
+            <translation>Inmatningsraden överstiger 65536 byte.</translation>
+        </message>
+        <message>
+            <source>Each input line must be a JSON object.</source>
+            <translation>Varje inmatningsrad måste vara ett JSON-objekt.</translation>
+        </message>
+        <message>
+            <source>Input ended before a complete JSON line.</source>
+            <translation>Inmatningen avslutades före en fullständig JSON-rad.</translation>
+        </message>
+        <message>
+            <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
+            <translation>Valfritt eget kanal-ID för kommandona status, configure, password, admission, history, chat och radio; huvudkanalen används som standard.</translation>
+        </message>
+        <message>
+            <source>Channel action must be list, add or remove.</source>
+            <translation>Kanalåtgärden måste vara list, add eller remove.</translation>
+        </message>
+        <message>
+            <source>Removing an own channel deletes its history, images, permissions and radio settings. Set confirmed=true to proceed.</source>
+            <translation>Om du tar bort en egen kanal raderas dess historik, bilder, behörigheter och radioinställningar. Ange confirmed=true för att fortsätta.</translation>
+        </message>
+        <message>
+            <source>id must identify an additional own channel.</source>
+            <translation>id måste identifiera en extra egen kanal.</translation>
+        </message>
+        <message>
+            <source>The additional own channel could not be removed: %1</source>
+            <translation>Den extra egna kanalen kunde inte tas bort: %1</translation>
+        </message>
+        <message>
+            <source>channelId must identify an own channel.</source>
+            <translation>channelId måste identifiera en egen kanal.</translation>
+        </message>
+        <message>
+            <source>values must be a host settings object.</source>
+            <translation>values måste vara ett objekt med värdinställningar.</translation>
+        </message>
+        <message>
+            <source>Headless admission is always enabled for non-banned devices; requests off is not supported.</source>
+            <translation>Tillträde utan grafiskt gränssnitt är alltid aktiverat för enheter som inte är blockerade; requests off stöds inte.</translation>
+        </message>
+        <message>
+            <source>value must be a password of at most 1024 UTF-8 bytes without control characters; an empty string removes it.</source>
+            <translation>value måste vara ett lösenord på högst 1024 UTF-8-byte utan kontrolltecken; en tom sträng tar bort det.</translation>
+        </message>
+        <message>
+            <source>The channel is not ready or a password change is in progress.</source>
+            <translation>Kanalen är inte redo eller ett lösenordsbyte pågår.</translation>
+        </message>
+        <message>
+            <source>The channel was removed while saving the password.</source>
+            <translation>Kanalen togs bort medan lösenordet sparades.</translation>
+        </message>
+        <message>
+            <source>id is required.</source>
+            <translation>id krävs.</translation>
+        </message>
+        <message>
+            <source>text must be a valid non-empty chat message.</source>
+            <translation>text måste vara ett giltigt, icke-tomt chattmeddelande.</translation>
+        </message>
+        <message>
+            <source>The local channel is not ready.</source>
+            <translation>Den lokala kanalen är inte redo.</translation>
+        </message>
+        <message>
+            <source>The channel's radio is unavailable.</source>
+            <translation>Kanalens radio är inte tillgänglig.</translation>
+        </message>
+        <message>
+            <source>Unknown command. Use help.</source>
+            <translation>Okänt kommando. Använd help.</translation>
+        </message>
+        <message>
+            <source>search requires a query, non-negative offset and limit from 1 to 128.</source>
+            <translation>search kräver query, en icke-negativ offset och limit från 1 till 128.</translation>
+        </message>
+        <message>
+            <source>add creates an id; update requires an existing id.</source>
+            <translation>add skapar ett id; update kräver ett befintligt id.</translation>
+        </message>
+        <message>
+            <source>A station is already being checked.</source>
+            <translation>En station kontrolleras redan.</translation>
+        </message>
+        <message>
+            <source>The channel was removed while checking the station.</source>
+            <translation>Kanalen togs bort medan stationen kontrollerades.</translation>
+        </message>
+        <message>
+            <source>Unknown radio action.</source>
+            <translation>Okänd radioåtgärd.</translation>
+        </message>
+        <message>
+            <source>Could not load language: %1</source>
+            <translation>Språket kunde inte laddas: %1</translation>
+        </message>
+        <message>
+            <source>The %1 option is incompatible with --headless.</source>
+            <translation>Alternativet %1 är inte kompatibelt med --headless.</translation>
+        </message>
+        <message>
+            <source>Unexpected positional arguments. Use --help.</source>
+            <translation>Oväntade positionsargument. Använd --help.</translation>
+        </message>
+        <message>
+            <source>--config / -f requires a non-empty path.</source>
+            <translation>--config / -f kräver en icke-tom sökväg.</translation>
+        </message>
+        <message>
+            <source>Choose --password or --password-file, not both.</source>
+            <translation>Välj --password eller --password-file, inte båda.</translation>
+        </message>
+        <message>
+            <source>Choose SQUADSPEAK_PASSWORD or SQUADSPEAK_PASSWORD_FILE, not both.</source>
+            <translation>Välj SQUADSPEAK_PASSWORD eller SQUADSPEAK_PASSWORD_FILE, inte båda.</translation>
+        </message>
+        <message>
+            <source>Choose password or passwordFile in one configuration layer, not both.</source>
+            <translation>Välj password eller passwordFile i ett konfigurationslager, inte båda.</translation>
+        </message>
+        <message>
+            <source>passwordFile must be a non-empty path.</source>
+            <translation>passwordFile måste vara en icke-tom sökväg.</translation>
+        </message>
+        <message>
+            <source>Password file could not be read or is too large.</source>
+            <translation>Lösenordsfilen kunde inte läsas eller är för stor.</translation>
+        </message>
+        <message>
+            <source>Password file must contain at most 1024 UTF-8 bytes without control characters.</source>
+            <translation>Lösenordsfilen får innehålla högst 1024 UTF-8-byte utan kontrolltecken.</translation>
+        </message>
+        <message>
+            <source>Password must be a string of at most 1024 UTF-8 bytes without control characters.</source>
+            <translation>Lösenordet måste vara en sträng på högst 1024 UTF-8-byte utan kontrolltecken.</translation>
+        </message>
+        <message>
+            <source>settingsFile must be a non-empty path.</source>
+            <translation>settingsFile måste vara en icke-tom sökväg.</translation>
+        </message>
+        <message>
+            <source>identityFile must be a non-empty path.</source>
+            <translation>identityFile måste vara en icke-tom sökväg.</translation>
+        </message>
+        <message>
+            <source>The settings directory could not be created.</source>
+            <translation>Inställningsmappen kunde inte skapas.</translation>
+        </message>
+        <message>
+            <source>This SquadSpeak profile is already running or cannot be locked.</source>
+            <translation>Den här SquadSpeak-profilen körs redan eller kan inte låsas.</translation>
+        </message>
+        <message>
+            <source>Standard input could not be opened.</source>
+            <translation>Standardinmatningen kunde inte öppnas.</translation>
+        </message>
+        <message>
+            <source>Standard output could not be opened.</source>
+            <translation>Standardutmatningen kunde inte öppnas.</translation>
+        </message>
+        <message>
+            <source>This identity file is already in use or cannot be locked.</source>
+            <translation>Den här identitetsfilen används redan eller kan inte låsas.</translation>
+        </message>
+        <message>
+            <source>Invalid host configuration: %1</source>
+            <translation>Ogiltig värdkonfiguration: %1</translation>
+        </message>
+        <message>
+            <source>Radio channels could not be initialized.</source>
+            <translation>Radiokanalerna kunde inte initieras.</translation>
+        </message>
+        <message>
+            <source>Headless host could not start: %1</source>
+            <translation>Värden utan grafiskt gränssnitt kunde inte startas: %1</translation>
+        </message>
+        <message>
+            <source>Channel password could not be saved.</source>
+            <translation>Kanalens lösenord kunde inte sparas.</translation>
+        </message>
+        <message>
+            <source>Invalid channel password: %1</source>
+            <translation>Ogiltigt kanallösenord: %1</translation>
+        </message>
+        <message>
+            <source>Headless host could not initialize: %1</source>
+            <translation>Värden utan grafiskt gränssnitt kunde inte initieras: %1</translation>
+        </message>
+        <message>
+            <source>SquadSpeak headless could not start: %1</source>
+            <translation>SquadSpeak utan grafiskt gränssnitt kunde inte startas: %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>Supporteråtgärd måste vara status, inloggning, uppdatering, logga ut eller avbryt. sign-in refresh sign-out cancel</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>En supporteroperation pågår.</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>Supporteråtkomst är inte tillgänglig i den här versionen.</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>Inställningsprioritet: argument &gt; miljö &gt; egenskaper &gt; sparade servervärden.</translation>
+        </message>
+    </context>
+    <context>
+        <name>License</name>
+        <message>
+            <source>License storage is busy or unavailable.</source>
+            <translation>Licenslagringen är upptagen eller inte tillgänglig.</translation>
+        </message>
+        <message>
+            <source>License storage is unavailable.</source>
+            <translation>Licenslagring är inte tillgänglig.</translation>
+        </message>
+        <message>
+            <source>Sign-in expired. Try again.</source>
+            <translation>Inloggningen har löpt ut. Försök igen.</translation>
+        </message>
+        <message>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>GitHub-inloggning är inte tillgänglig. Försök igen.</translation>
+        </message>
+        <message>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>GitHub-inloggningen slutfördes inte. Försök igen.</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>GitHub kunde inte kontrolleras. Offlineåtkomst varar högst sju dagar.</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>Logga in med GitHub igen.</translation>
+        </message>
+    </context>
+    <context>
         <name>LocalChannel</name>
+        <message>
+            <source>Insufficient permissions.</source>
+            <translation>Otillräckliga behörigheter.</translation>
+        </message>
+        <message>
+            <source>Blocked</source>
+            <translation>Blockerad</translation>
+        </message>
         <message>
             <source>Host is not responding. Reconnecting.</source>
             <translation>Värden svarar inte. Återansluter.</translation>
@@ -1926,8 +2312,8 @@
             <translation>Bildöverföringen tog för lång tid.</translation>
         </message>
         <message>
-            <source>The channel is full. Text chat is still available.</source>
-            <translation>Kanalen är full. Textchatten är fortfarande tillgänglig.</translation>
+            <source>The host is busy. Try again shortly.</source>
+            <translation>Värden är upptagen. Försök igen om en stund.</translation>
         </message>
         <message>
             <source>All own channels use the device's shared port.</source>
@@ -2189,6 +2575,53 @@
             <source>Voice relay codec could not be configured.</source>
             <translation>Kodeken för röstvidarebefordran kunde inte konfigureras.</translation>
         </message>
+        <message>
+            <source>Unsupported audio codec</source>
+            <translation>Ljudkodeken stöds inte</translation>
+        </message>
+        <message>
+            <source>Speaking is not allowed in this channel.</source>
+            <translation>Du får inte prata i den här kanalen.</translation>
+        </message>
+    </context>
+    <context>
+        <name>LocalLanguage</name>
+        <message>
+            <source>Translation (experimental)</source>
+            <translation>Översättning (experimentell)</translation>
+        </message>
+        <message>
+            <source>Translate messages</source>
+            <translation>Översätt meddelanden</translation>
+        </message>
+        <message>
+            <source>Translated voice</source>
+            <translation>Översatt röst</translation>
+        </message>
+        <message>
+            <source>Original audio</source>
+            <translation>Originalljud</translation>
+        </message>
+        <message>
+            <source>Original text</source>
+            <translation>Originaltext</translation>
+        </message>
+        <message>
+            <source>Prepare languages</source>
+            <translation>Förbered språk</translation>
+        </message>
+        <message>
+            <source>Local language processing is unavailable.</source>
+            <translation>Lokal språkbehandling är inte tillgänglig.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be read.</source>
+            <translation>Språkinställningarna kunde inte läsas.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be saved.</source>
+            <translation>Språkinställningarna kunde inte sparas.</translation>
+        </message>
     </context>
     <context>
         <name>PushToTalkKey</name>
@@ -2329,50 +2762,61 @@
         </message>
     </context>
     <context>
-        <name>RecordingPanel</name>
+        <name>ScreenPanel</name>
         <message>
-            <source>Stop</source>
-            <translation>Stoppa</translation>
+            <source>Video paused</source>
+            <translation>Video pausad</translation>
         </message>
         <message>
-            <source>Start</source>
-            <translation>Starta</translation>
+            <source>Stream ended</source>
+            <translation>Strömmen avslutades</translation>
         </message>
         <message>
-            <source>Saved on this device only. Nothing is uploaded.</source>
-            <translation>Sparas bara på den här enheten. Inget laddas upp.</translation>
+            <source>Connecting</source>
+            <translation>Ansluter</translation>
         </message>
         <message>
-            <source>Keep this take or record it again.</source>
-            <translation>Behåll tagningen eller spela in den igen.</translation>
+            <source>Open screen stream</source>
+            <translation>Öppna skärmström</translation>
         </message>
         <message>
-            <source>Record again</source>
-            <translation>Spela in igen</translation>
+            <source>Screen stream</source>
+            <translation>Skärmström</translation>
         </message>
         <message>
-            <source>Use recording</source>
-            <translation>Använd inspelning</translation>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
+        </message>
+    </context>
+    <context>
+        <name>ScreenShare</name>
+        <message>
+            <source>Allow screen recording in system settings.</source>
+            <translation>Tillåt skärminspelning i systeminställningarna.</translation>
         </message>
         <message>
-            <source>Recording progress</source>
-            <translation>Inspelningsförlopp</translation>
+            <source>The shared screen was removed. Select a source to start again.</source>
+            <translation>Den delade skärmen togs bort. Välj en källa för att starta igen.</translation>
         </message>
         <message>
-            <source>Step %1 of %2</source>
-            <translation>Steg %1 av %2</translation>
+            <source>The shared window was closed. Select a source to start again.</source>
+            <translation>Det delade fönstret stängdes. Välj en källa för att starta igen.</translation>
         </message>
         <message>
-            <source>Open recordings</source>
-            <translation>Öppna inspelningar</translation>
+            <source>The selected screen is no longer available.</source>
+            <translation>Den valda skärmen är inte längre tillgänglig.</translation>
         </message>
         <message>
-            <source>Reset test</source>
-            <translation>Återställ test</translation>
+            <source>The selected window is no longer available.</source>
+            <translation>Det valda fönstret är inte längre tillgängligt.</translation>
         </message>
         <message>
-            <source>%1 s remaining / %2 dBFS</source>
-            <translation>%1 s kvar / %2 dBFS</translation>
+            <source>The selected source exceeds the capture size limit.</source>
+            <translation>Den valda källan överskrider storleksgränsen för inspelning.</translation>
+        </message>
+        <message>
+            <source>Close a video view before opening another stream.</source>
+            <translation>Stäng en videovy innan du öppnar en annan ström.</translation>
         </message>
     </context>
     <context>
@@ -2449,10 +2893,6 @@
             <translation>Samlar in signal...</translation>
         </message>
         <message>
-            <source>Dashed curve: configured gain and frequency cuts, using the right dB scale. Noise reduction and voice activation are not part of this curve.</source>
-            <translation>Streckad kurva: inställd förstärkning och frekvensfilter, avlästa på den högra dB-skalan. Brusreducering och röstaktivering ingår inte i kurvan.</translation>
-        </message>
-        <message>
             <source>Microphone preview is not running</source>
             <translation>Mikrofontestet körs inte</translation>
         </message>
@@ -2463,303 +2903,6 @@
         <message>
             <source>Peak: %1</source>
             <translation>Topp: %1</translation>
-        </message>
-    </context>
-    <context>
-        <name>Tray</name>
-        <message>
-            <source>Quit</source>
-            <translation>Avsluta</translation>
-        </message>
-        <message>
-            <source>SquadSpeak - speaking</source>
-            <translation>SquadSpeak - talar</translation>
-        </message>
-        <message>
-            <source>Settings</source>
-            <translation>Inställningar</translation>
-        </message>
-        <message>
-            <source>Channels</source>
-            <translation>Kanaler</translation>
-        </message>
-        <message>
-            <source>New image</source>
-            <translation>Ny bild</translation>
-        </message>
-    </context>
-    <context>
-        <name>VoiceAvatar</name>
-        <message>
-            <source>Muted</source>
-            <translation>Tystad</translation>
-        </message>
-        <message>
-            <source>Sleeping</source>
-            <translation>Sover</translation>
-        </message>
-        <message>
-            <source>Offline</source>
-            <translation>Offline</translation>
-        </message>
-        <message>
-            <source>Speaking</source>
-            <translation>Talar</translation>
-        </message>
-        <message>
-            <source>Unavailable</source>
-            <translation>Inte tillgänglig</translation>
-        </message>
-        <message>
-            <source>Listening</source>
-            <translation>Lyssnar</translation>
-        </message>
-        <message>
-            <source>Deafened</source>
-            <translation>Ljud av</translation>
-        </message>
-    </context>
-    <context>
-        <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>Inte tillgänglig - ljudinställningar eller ljudtest</translation>
-        </message>
-        <message>
-            <source>Microphone muted</source>
-            <translation>Mikrofon avstängd</translation>
-        </message>
-        <message>
-            <source>Push-to-talk held</source>
-            <translation>Tal-tangenten hålls ned</translation>
-        </message>
-        <message>
-            <source>Ready - push-to-talk released</source>
-            <translation>Redo - tal-tangenten släppt</translation>
-        </message>
-        <message>
-            <source>Microphone unmuted</source>
-            <translation>Mikrofon påslagen</translation>
-        </message>
-        <message>
-            <source>Settings could not be saved: %1</source>
-            <translation>Inställningarna kunde inte sparas: %1</translation>
-        </message>
-        <message>
-            <source>The push-to-talk sequence cannot be incremented further.</source>
-            <translation>PTT-sekvensen kan inte ökas ytterligare.</translation>
-        </message>
-        <message>
-            <source>Choose System, Light or Dark.</source>
-            <translation>Välj System, Ljust eller Mörkt.</translation>
-        </message>
-        <message>
-            <source>Choose a colour palette from the list.</source>
-            <translation>Välj en färgpalett i listan.</translation>
-        </message>
-        <message>
-            <source>Choose an available avatar.</source>
-            <translation>Välj en tillgänglig avatar.</translation>
-        </message>
-        <message>
-            <source>Invalid push-to-talk binding.</source>
-            <translation>Ogiltig PTT-tangentbindning.</translation>
-        </message>
-        <message>
-            <source>Release the held push-to-talk key first.</source>
-            <translation>Släpp den hållna tal-tangenten först.</translation>
-        </message>
-        <message>
-            <source>Choose a language from the list.</source>
-            <translation>Välj ett språk i listan.</translation>
-        </message>
-        <message>
-            <source>This avatar requires Supporter.</source>
-            <translation>Den här avataren kräver Supporter.</translation>
-        </message>
-        <message>
-            <source>The name must contain 1 to 64 characters.</source>
-            <translation>Namnet måste innehålla 1 till 64 tecken.</translation>
-        </message>
-        <message>
-            <source>The name may not contain control characters or line breaks.</source>
-            <translation>Namnet får inte innehålla styrtecken eller radbrytningar.</translation>
-        </message>
-        <message>
-            <source>Session settings could not be read.</source>
-            <translation>Sessionsinställningarna kunde inte läsas.</translation>
-        </message>
-        <message>
-            <source>Saved setting is invalid: %1</source>
-            <translation>Ogiltig sparad inställning: %1</translation>
-        </message>
-    </context>
-    <context>
-        <name>License</name>
-        <message>
-            <source>License storage is busy or unavailable.</source>
-            <translation>Licenslagringen är upptagen eller inte tillgänglig.</translation>
-        </message>
-        <message>
-            <source>License storage is unavailable.</source>
-            <translation>Licenslagring är inte tillgänglig.</translation>
-        </message>
-        <message>
-            <source>Sign-in expired. Try again.</source>
-            <translation>Inloggningen har löpt ut. Försök igen.</translation>
-        </message>
-        <message>
-            <source>GitHub sign-in is unavailable. Try again.</source>
-            <translation>GitHub-inloggning är inte tillgänglig. Försök igen.</translation>
-        </message>
-        <message>
-            <source>GitHub sign-in was not completed. Try again.</source>
-            <translation>GitHub-inloggningen slutfördes inte. Försök igen.</translation>
-        </message>
-        <message>
-            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
-            <translation>GitHub kunde inte kontrolleras. Offlineåtkomst varar högst sju dagar.</translation>
-        </message>
-        <message>
-            <source>Sign in with GitHub again.</source>
-            <translation>Logga in med GitHub igen.</translation>
-        </message>
-    </context>
-    <context>
-        <name>ScreenShare</name>
-        <message>
-            <source>The shared screen was removed. Select a source to start again.</source>
-            <translation>Den delade skärmen togs bort. Välj en källa för att starta igen.</translation>
-        </message>
-        <message>
-            <source>The shared window was closed. Select a source to start again.</source>
-            <translation>Det delade fönstret stängdes. Välj en källa för att starta igen.</translation>
-        </message>
-        <message>
-            <source>The selected screen is no longer available.</source>
-            <translation>Den valda skärmen är inte längre tillgänglig.</translation>
-        </message>
-        <message>
-            <source>The selected window is no longer available.</source>
-            <translation>Det valda fönstret är inte längre tillgängligt.</translation>
-        </message>
-        <message>
-            <source>The selected source exceeds the capture size limit.</source>
-            <translation>Den valda källan överskrider storleksgränsen för inspelning.</translation>
-        </message>
-        <message>
-            <source>Close a video view before opening another stream.</source>
-            <translation>Stäng en videovy innan du öppnar en annan ström.</translation>
-        </message>
-    </context>
-    <context>
-        <name>ScreenPanel</name>
-        <message>
-            <source>Media capacity reached</source>
-            <translation>Mediekapaciteten är nådd</translation>
-        </message>
-        <message>
-            <source>Video paused</source>
-            <translation>Video pausad</translation>
-        </message>
-        <message>
-            <source>Stream ended</source>
-            <translation>Strömmen avslutades</translation>
-        </message>
-        <message>
-            <source>Connecting</source>
-            <translation>Ansluter</translation>
-        </message>
-        <message>
-            <source>Open screen stream</source>
-            <translation>Öppna skärmström</translation>
-        </message>
-        <message>
-            <source>Screen stream</source>
-            <translation>Skärmström</translation>
-        </message>
-        <message>
-            <source>%1 kbit/s</source>
-            <translation>%1 kbit/s</translation>
-        </message>
-    </context>
-    <context>
-        <name>VideoCodec</name>
-        <message>
-            <source>Video codec: %1</source>
-            <translation>Videokodek: %1</translation>
-        </message>
-        <message>
-            <source>Video codec ABI does not match its headers.</source>
-            <translation>Videokodekens ABI stämmer inte överens med dess headerfiler.</translation>
-        </message>
-        <message>
-            <source>Video buffers could not be allocated.</source>
-            <translation>Videobuffertar kunde inte allokeras.</translation>
-        </message>
-        <message>
-            <source>Invalid video quality tier.</source>
-            <translation>Ogiltig videokvalitetsnivå.</translation>
-        </message>
-        <message>
-            <source>The screen source exceeds the supported capture size.</source>
-            <translation>Skärmkällan överskrider den stödda inspelningsstorleken.</translation>
-        </message>
-        <message>
-            <source>The screen source is too narrow.</source>
-            <translation>Skärmkällan är för smal.</translation>
-        </message>
-        <message>
-            <source>The video encoder could not be allocated.</source>
-            <translation>Videokodaren kunde inte allokeras.</translation>
-        </message>
-        <message>
-            <source>No supported video encoder is available.</source>
-            <translation>Ingen videokodare som stöds är tillgänglig.</translation>
-        </message>
-        <message>
-            <source>Video encoder configuration is too large.</source>
-            <translation>Videokodarens konfiguration är för stor.</translation>
-        </message>
-        <message>
-            <source>Video scaling could not be initialized.</source>
-            <translation>Videoskalning kunde inte initieras.</translation>
-        </message>
-        <message>
-            <source>The encoder returned an empty video packet.</source>
-            <translation>Kodaren returnerade ett tomt videopaket.</translation>
-        </message>
-        <message>
-            <source>Invalid video frame format.</source>
-            <translation>Ogiltigt videobildformat.</translation>
-        </message>
-        <message>
-            <source>Invalid video decoder configuration.</source>
-            <translation>Ogiltig konfiguration för videodekodern.</translation>
-        </message>
-        <message>
-            <source>This video codec cannot be decoded.</source>
-            <translation>Denna videokodek kan inte avkodas.</translation>
-        </message>
-        <message>
-            <source>Video decoder could not be allocated.</source>
-            <translation>Videodekodern kunde inte allokeras.</translation>
-        </message>
-        <message>
-            <source>Video decoder configuration could not be allocated.</source>
-            <translation>Videodekoderns konfiguration kunde inte allokeras.</translation>
-        </message>
-        <message>
-            <source>Decoded dimensions do not match the screen stream.</source>
-            <translation>De avkodade dimensionerna stämmer inte överens med skärmströmmen.</translation>
-        </message>
-        <message>
-            <source>Decoded image could not be allocated.</source>
-            <translation>Den avkodade bilden kunde inte allokeras.</translation>
-        </message>
-        <message>
-            <source>Video color conversion could not be initialized.</source>
-            <translation>Konvertering av videofärger kunde inte initieras.</translation>
         </message>
     </context>
     <context>
@@ -2877,359 +3020,208 @@
             <translation>Lösenordet kunde inte verifieras.</translation>
         </message>
     </context>
-
     <context>
-        <name>Headless</name>
+        <name>Tray</name>
         <message>
-            <source>Command failed.</source>
-            <translation>Kommandot misslyckades.</translation>
+            <source>Quit</source>
+            <translation>Avsluta</translation>
         </message>
         <message>
-            <source>%1 must be an integer.</source>
-            <translation>%1 måste vara ett heltal.</translation>
+            <source>SquadSpeak - speaking</source>
+            <translation>SquadSpeak - talar</translation>
         </message>
         <message>
-            <source>Requests must be on/off or true/false.</source>
-            <translation>Förfrågningar måste vara on/off eller true/false.</translation>
+            <source>Settings</source>
+            <translation>Inställningar</translation>
         </message>
         <message>
-            <source>Unknown host property: %1</source>
-            <translation>Okänd värdegenskap: %1</translation>
+            <source>Channels</source>
+            <translation>Kanaler</translation>
         </message>
         <message>
-            <source>Run without GUI, microphone capture, or local audio output.</source>
-            <translation>Kör utan grafiskt gränssnitt, mikrofoninspelning eller lokal ljudutmatning.</translation>
-        </message>
-        <message>
-            <source>Server storage prefix. Personal/audio/GUI profiles are not loaded.</source>
-            <translation>Serverns lagringsprefix. Personliga profiler, ljudprofiler och gränssnittsprofiler laddas inte.</translation>
-        </message>
-        <message>
-            <source>Optional private identity file instead of the OS credential store (Linux/macOS). Parent directory must exist and belong to this account.</source>
-            <translation>Valfri privat identitetsfil i stället för operativsystemets lagring av inloggningsuppgifter (Linux/macOS). Den överordnade mappen måste finnas och tillhöra detta konto.</translation>
-        </message>
-        <message>
-            <source>UTF-8 key=value properties or JSON host preset. Default: application.properties, then config/application.properties beside the app.</source>
-            <translation>UTF-8-egenskaper key=value eller värdförinställningar i JSON. Standard: application.properties, sedan config/application.properties bredvid appen.</translation>
-        </message>
-        <message>
-            <source>Channel display name.</source>
-            <translation>Kanalens visningsnamn.</translation>
-        </message>
-        <message>
-            <source>System and radio bot display name.</source>
-            <translation>Visningsnamn för system- och radiobotten.</translation>
-        </message>
-        <message>
-            <source>TCP service port (1-65535).</source>
-            <translation>TCP-tjänsteport (1-65535).</translation>
-        </message>
-        <message>
-            <source>Headless admission is always on; only 'on' or 'true' is accepted.</source>
-            <translation>Tillträde utan grafiskt gränssnitt är alltid aktiverat; endast 'on' eller 'true' accepteras.</translation>
-        </message>
-        <message>
-            <source>Preapprove a device ID; repeat for several devices. Existing bans remain.</source>
-            <translation>Godkänn ett enhets-ID i förväg; upprepa för flera enheter. Befintliga blockeringar behålls.</translation>
-        </message>
-        <message>
-            <source>Block a device ID; repeat for several devices.</source>
-            <translation>Blockera ett enhets-ID; upprepa för flera enheter.</translation>
-        </message>
-        <message>
-            <source>Read a UTF-8 channel password from a file before listening. An empty file removes it.</source>
-            <translation>Läs kanalens UTF-8-lösenord från en fil innan lyssning börjar. En tom fil tar bort det.</translation>
-        </message>
-        <message>
-            <source>Channel password. Empty removes it; environment or config avoids process-list exposure.</source>
-            <translation>Kanalens lösenord. Ett tomt värde tar bort det; miljö eller konfiguration förhindrar att det visas i processlistan.</translation>
-        </message>
-        <message>
-            <source>SquadSpeak headless local channel host</source>
-            <translation>SquadSpeak lokal kanalvärd utan grafiskt gränssnitt</translation>
-        </message>
-        <message>
-            <source>Environment variables (SQUADSPEAK_ prefix):</source>
-            <translation>Miljövariabler (prefix SQUADSPEAK_):</translation>
-        </message>
-        <message>
-            <source>Host configuration could not be read or exceeds 1 MiB.</source>
-            <translation>Värdkonfigurationen kunde inte läsas eller är större än 1 MiB.</translation>
-        </message>
-        <message>
-            <source>Host configuration must be UTF-8.</source>
-            <translation>Värdkonfigurationen måste vara UTF-8.</translation>
-        </message>
-        <message>
-            <source>Host preset must be a JSON object.</source>
-            <translation>Värdförinställningen måste vara ett JSON-objekt.</translation>
-        </message>
-        <message>
-            <source>Property line %1 must use key=value.</source>
-            <translation>Egenskapsrad %1 måste använda key=value.</translation>
-        </message>
-        <message>
-            <source>Property line %1: %2</source>
-            <translation>Egenskapsrad %1: %2</translation>
-        </message>
-        <message>
-            <source>Standard input has no file descriptor.</source>
-            <translation>Standardinmatningen saknar filbeskrivare.</translation>
-        </message>
-        <message>
-            <source>Standard input could not be inspected.</source>
-            <translation>Standardinmatningen kunde inte kontrolleras.</translation>
-        </message>
-        <message>
-            <source>Could not write the command response: %1</source>
-            <translation>Kommandosvaret kunde inte skrivas: %1</translation>
-        </message>
-        <message>
-            <source>Standard input could not be read: %1</source>
-            <translation>Standardinmatningen kunde inte läsas: %1</translation>
-        </message>
-        <message>
-            <source>Input line exceeds 65536 bytes.</source>
-            <translation>Inmatningsraden överstiger 65536 byte.</translation>
-        </message>
-        <message>
-            <source>Each input line must be a JSON object.</source>
-            <translation>Varje inmatningsrad måste vara ett JSON-objekt.</translation>
-        </message>
-        <message>
-            <source>Input ended before a complete JSON line.</source>
-            <translation>Inmatningen avslutades före en fullständig JSON-rad.</translation>
-        </message>
-        <message>
-            <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
-            <translation>Valfritt eget kanal-ID för kommandona status, configure, password, admission, history, chat och radio; huvudkanalen används som standard.</translation>
-        </message>
-        <message>
-            <source>Channel action must be list, add or remove.</source>
-            <translation>Kanalåtgärden måste vara list, add eller remove.</translation>
-        </message>
-        <message>
-            <source>Removing an own channel deletes its history, images, permissions and radio settings. Set confirmed=true to proceed.</source>
-            <translation>Om du tar bort en egen kanal raderas dess historik, bilder, behörigheter och radioinställningar. Ange confirmed=true för att fortsätta.</translation>
-        </message>
-        <message>
-            <source>id must identify an additional own channel.</source>
-            <translation>id måste identifiera en extra egen kanal.</translation>
-        </message>
-        <message>
-            <source>The additional own channel could not be removed: %1</source>
-            <translation>Den extra egna kanalen kunde inte tas bort: %1</translation>
-        </message>
-        <message>
-            <source>channelId must identify an own channel.</source>
-            <translation>channelId måste identifiera en egen kanal.</translation>
-        </message>
-        <message>
-            <source>values must be a host settings object.</source>
-            <translation>values måste vara ett objekt med värdinställningar.</translation>
-        </message>
-        <message>
-            <source>Headless admission is always enabled for non-banned devices; requests off is not supported.</source>
-            <translation>Tillträde utan grafiskt gränssnitt är alltid aktiverat för enheter som inte är blockerade; requests off stöds inte.</translation>
-        </message>
-        <message>
-            <source>value must be a password of at most 1024 UTF-8 bytes without control characters; an empty string removes it.</source>
-            <translation>value måste vara ett lösenord på högst 1024 UTF-8-byte utan kontrolltecken; en tom sträng tar bort det.</translation>
-        </message>
-        <message>
-            <source>The channel is not ready or a password change is in progress.</source>
-            <translation>Kanalen är inte redo eller ett lösenordsbyte pågår.</translation>
-        </message>
-        <message>
-            <source>The channel was removed while saving the password.</source>
-            <translation>Kanalen togs bort medan lösenordet sparades.</translation>
-        </message>
-        <message>
-            <source>id is required.</source>
-            <translation>id krävs.</translation>
-        </message>
-        <message>
-            <source>text must be a valid non-empty chat message.</source>
-            <translation>text måste vara ett giltigt, icke-tomt chattmeddelande.</translation>
-        </message>
-        <message>
-            <source>The local channel is not ready.</source>
-            <translation>Den lokala kanalen är inte redo.</translation>
-        </message>
-        <message>
-            <source>The channel's radio is unavailable.</source>
-            <translation>Kanalens radio är inte tillgänglig.</translation>
-        </message>
-        <message>
-            <source>Unknown command. Use help.</source>
-            <translation>Okänt kommando. Använd help.</translation>
-        </message>
-        <message>
-            <source>search requires a query, non-negative offset and limit from 1 to 128.</source>
-            <translation>search kräver query, en icke-negativ offset och limit från 1 till 128.</translation>
-        </message>
-        <message>
-            <source>add creates an id; update requires an existing id.</source>
-            <translation>add skapar ett id; update kräver ett befintligt id.</translation>
-        </message>
-        <message>
-            <source>A station is already being checked.</source>
-            <translation>En station kontrolleras redan.</translation>
-        </message>
-        <message>
-            <source>The channel was removed while checking the station.</source>
-            <translation>Kanalen togs bort medan stationen kontrollerades.</translation>
-        </message>
-        <message>
-            <source>Unknown radio action.</source>
-            <translation>Okänd radioåtgärd.</translation>
-        </message>
-        <message>
-            <source>Could not load language: %1</source>
-            <translation>Språket kunde inte laddas: %1</translation>
-        </message>
-        <message>
-            <source>The %1 option is incompatible with --headless.</source>
-            <translation>Alternativet %1 är inte kompatibelt med --headless.</translation>
-        </message>
-        <message>
-            <source>Unexpected positional arguments. Use --help.</source>
-            <translation>Oväntade positionsargument. Använd --help.</translation>
-        </message>
-        <message>
-            <source>--config / -f requires a non-empty path.</source>
-            <translation>--config / -f kräver en icke-tom sökväg.</translation>
-        </message>
-        <message>
-            <source>Choose --password or --password-file, not both.</source>
-            <translation>Välj --password eller --password-file, inte båda.</translation>
-        </message>
-        <message>
-            <source>Choose SQUADSPEAK_PASSWORD or SQUADSPEAK_PASSWORD_FILE, not both.</source>
-            <translation>Välj SQUADSPEAK_PASSWORD eller SQUADSPEAK_PASSWORD_FILE, inte båda.</translation>
-        </message>
-        <message>
-            <source>Choose password or passwordFile in one configuration layer, not both.</source>
-            <translation>Välj password eller passwordFile i ett konfigurationslager, inte båda.</translation>
-        </message>
-        <message>
-            <source>passwordFile must be a non-empty path.</source>
-            <translation>passwordFile måste vara en icke-tom sökväg.</translation>
-        </message>
-        <message>
-            <source>Password file could not be read or is too large.</source>
-            <translation>Lösenordsfilen kunde inte läsas eller är för stor.</translation>
-        </message>
-        <message>
-            <source>Password file must contain at most 1024 UTF-8 bytes without control characters.</source>
-            <translation>Lösenordsfilen får innehålla högst 1024 UTF-8-byte utan kontrolltecken.</translation>
-        </message>
-        <message>
-            <source>Password must be a string of at most 1024 UTF-8 bytes without control characters.</source>
-            <translation>Lösenordet måste vara en sträng på högst 1024 UTF-8-byte utan kontrolltecken.</translation>
-        </message>
-        <message>
-            <source>settingsFile must be a non-empty path.</source>
-            <translation>settingsFile måste vara en icke-tom sökväg.</translation>
-        </message>
-        <message>
-            <source>identityFile must be a non-empty path.</source>
-            <translation>identityFile måste vara en icke-tom sökväg.</translation>
-        </message>
-        <message>
-            <source>The settings directory could not be created.</source>
-            <translation>Inställningsmappen kunde inte skapas.</translation>
-        </message>
-        <message>
-            <source>This SquadSpeak profile is already running or cannot be locked.</source>
-            <translation>Den här SquadSpeak-profilen körs redan eller kan inte låsas.</translation>
-        </message>
-        <message>
-            <source>Standard input could not be opened.</source>
-            <translation>Standardinmatningen kunde inte öppnas.</translation>
-        </message>
-        <message>
-            <source>Standard output could not be opened.</source>
-            <translation>Standardutmatningen kunde inte öppnas.</translation>
-        </message>
-        <message>
-            <source>This identity file is already in use or cannot be locked.</source>
-            <translation>Den här identitetsfilen används redan eller kan inte låsas.</translation>
-        </message>
-        <message>
-            <source>Invalid host configuration: %1</source>
-            <translation>Ogiltig värdkonfiguration: %1</translation>
-        </message>
-        <message>
-            <source>Radio channels could not be initialized.</source>
-            <translation>Radiokanalerna kunde inte initieras.</translation>
-        </message>
-        <message>
-            <source>Headless host could not start: %1</source>
-            <translation>Värden utan grafiskt gränssnitt kunde inte startas: %1</translation>
-        </message>
-        <message>
-            <source>Channel password could not be saved.</source>
-            <translation>Kanalens lösenord kunde inte sparas.</translation>
-        </message>
-        <message>
-            <source>Invalid channel password: %1</source>
-            <translation>Ogiltigt kanallösenord: %1</translation>
-        </message>
-        <message>
-            <source>Headless host could not initialize: %1</source>
-            <translation>Värden utan grafiskt gränssnitt kunde inte initieras: %1</translation>
-        </message>
-        <message>
-            <source>SquadSpeak headless could not start: %1</source>
-            <translation>SquadSpeak utan grafiskt gränssnitt kunde inte startas: %1</translation>
-        </message>
-        <message>
-            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
-            <translation>Supporteråtgärd måste vara status, inloggning, uppdatering, logga ut eller avbryt. sign-in refresh sign-out cancel</translation>
-        </message>
-        <message>
-            <source>A Supporter operation is in progress.</source>
-            <translation>En supporteroperation pågår.</translation>
-        </message>
-        <message>
-            <source>Supporter access is unavailable in this build.</source>
-            <translation>Supporteråtkomst är inte tillgänglig i den här versionen.</translation>
-        </message>
-        <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>Inställningsprioritet: argument &gt; miljö &gt; egenskaper &gt; sparade servervärden.</translation>
+            <source>New image</source>
+            <translation>Ny bild</translation>
         </message>
     </context>
     <context>
-        <name>Desktop</name>
+        <name>VideoCodec</name>
         <message>
-            <source>Open settings at startup.</source>
-            <translation>Öppna inställningarna vid start.</translation>
+            <source>Video codec: %1</source>
+            <translation>Videokodek: %1</translation>
         </message>
         <message>
-            <source>Open guided local test recording without starting network services.</source>
-            <translation>Öppna den guidade lokala testinspelningen utan att starta nätverkstjänster.</translation>
+            <source>Video codec ABI does not match its headers.</source>
+            <translation>Videokodekens ABI stämmer inte överens med dess headerfiler.</translation>
         </message>
         <message>
-            <source>Alternative file for audio profiles.</source>
-            <translation>Alternativ fil för ljudprofiler.</translation>
+            <source>Video buffers could not be allocated.</source>
+            <translation>Videobuffertar kunde inte allokeras.</translation>
         </message>
         <message>
-            <source>Load the interface without microphone capture and exit after one second.</source>
-            <translation>Ladda gränssnittet utan mikrofoninspelning och avsluta efter en sekund.</translation>
+            <source>Invalid video quality tier.</source>
+            <translation>Ogiltig videokvalitetsnivå.</translation>
         </message>
         <message>
-            <source>Save an image of the app window during the UI test.</source>
-            <translation>Spara en bild av appfönstret under gränssnittstestet.</translation>
+            <source>The screen source exceeds the supported capture size.</source>
+            <translation>Skärmkällan överskrider den stödda inspelningsstorleken.</translation>
         </message>
         <message>
-            <source>The window image could not be saved.</source>
-            <translation>Bilden av fönstret kunde inte sparas.</translation>
+            <source>The screen source is too narrow.</source>
+            <translation>Skärmkällan är för smal.</translation>
         </message>
         <message>
-            <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
-            <translation>Systemfältet är inte tillgängligt; appen förblir öppen som ett fönster.</translation>
+            <source>The video encoder could not be allocated.</source>
+            <translation>Videokodaren kunde inte allokeras.</translation>
+        </message>
+        <message>
+            <source>No supported video encoder is available.</source>
+            <translation>Ingen videokodare som stöds är tillgänglig.</translation>
+        </message>
+        <message>
+            <source>Video encoder configuration is too large.</source>
+            <translation>Videokodarens konfiguration är för stor.</translation>
+        </message>
+        <message>
+            <source>Video scaling could not be initialized.</source>
+            <translation>Videoskalning kunde inte initieras.</translation>
+        </message>
+        <message>
+            <source>The encoder returned an empty video packet.</source>
+            <translation>Kodaren returnerade ett tomt videopaket.</translation>
+        </message>
+        <message>
+            <source>Invalid video frame format.</source>
+            <translation>Ogiltigt videobildformat.</translation>
+        </message>
+        <message>
+            <source>Invalid video decoder configuration.</source>
+            <translation>Ogiltig konfiguration för videodekodern.</translation>
+        </message>
+        <message>
+            <source>This video codec cannot be decoded.</source>
+            <translation>Denna videokodek kan inte avkodas.</translation>
+        </message>
+        <message>
+            <source>Video decoder could not be allocated.</source>
+            <translation>Videodekodern kunde inte allokeras.</translation>
+        </message>
+        <message>
+            <source>Video decoder configuration could not be allocated.</source>
+            <translation>Videodekoderns konfiguration kunde inte allokeras.</translation>
+        </message>
+        <message>
+            <source>Decoded dimensions do not match the screen stream.</source>
+            <translation>De avkodade dimensionerna stämmer inte överens med skärmströmmen.</translation>
+        </message>
+        <message>
+            <source>Decoded image could not be allocated.</source>
+            <translation>Den avkodade bilden kunde inte allokeras.</translation>
+        </message>
+        <message>
+            <source>Video color conversion could not be initialized.</source>
+            <translation>Konvertering av videofärger kunde inte initieras.</translation>
+        </message>
+    </context>
+    <context>
+        <name>VoiceAvatar</name>
+        <message>
+            <source>Muted</source>
+            <translation>Tystad</translation>
+        </message>
+        <message>
+            <source>Sleeping</source>
+            <translation>Sover</translation>
+        </message>
+        <message>
+            <source>Offline</source>
+            <translation>Offline</translation>
+        </message>
+        <message>
+            <source>Speaking</source>
+            <translation>Talar</translation>
+        </message>
+        <message>
+            <source>Unavailable</source>
+            <translation>Inte tillgänglig</translation>
+        </message>
+        <message>
+            <source>Listening</source>
+            <translation>Lyssnar</translation>
+        </message>
+        <message>
+            <source>Deafened</source>
+            <translation>Ljud av</translation>
+        </message>
+    </context>
+    <context>
+        <name>VoiceSession</name>
+        <message>
+            <source>Microphone muted</source>
+            <translation>Mikrofon avstängd</translation>
+        </message>
+        <message>
+            <source>Push-to-talk held</source>
+            <translation>Tal-tangenten hålls ned</translation>
+        </message>
+        <message>
+            <source>Ready - push-to-talk released</source>
+            <translation>Redo - tal-tangenten släppt</translation>
+        </message>
+        <message>
+            <source>Microphone unmuted</source>
+            <translation>Mikrofon påslagen</translation>
+        </message>
+        <message>
+            <source>Settings could not be saved: %1</source>
+            <translation>Inställningarna kunde inte sparas: %1</translation>
+        </message>
+        <message>
+            <source>The push-to-talk sequence cannot be incremented further.</source>
+            <translation>PTT-sekvensen kan inte ökas ytterligare.</translation>
+        </message>
+        <message>
+            <source>Choose System, Light or Dark.</source>
+            <translation>Välj System, Ljust eller Mörkt.</translation>
+        </message>
+        <message>
+            <source>Choose a colour palette from the list.</source>
+            <translation>Välj en färgpalett i listan.</translation>
+        </message>
+        <message>
+            <source>Choose an available avatar.</source>
+            <translation>Välj en tillgänglig avatar.</translation>
+        </message>
+        <message>
+            <source>Invalid push-to-talk binding.</source>
+            <translation>Ogiltig PTT-tangentbindning.</translation>
+        </message>
+        <message>
+            <source>Release the held push-to-talk key first.</source>
+            <translation>Släpp den hållna tal-tangenten först.</translation>
+        </message>
+        <message>
+            <source>Choose a language from the list.</source>
+            <translation>Välj ett språk i listan.</translation>
+        </message>
+        <message>
+            <source>This avatar requires Supporter.</source>
+            <translation>Den här avataren kräver Supporter.</translation>
+        </message>
+        <message>
+            <source>The name must contain 1 to 64 characters.</source>
+            <translation>Namnet måste innehålla 1 till 64 tecken.</translation>
+        </message>
+        <message>
+            <source>The name may not contain control characters or line breaks.</source>
+            <translation>Namnet får inte innehålla styrtecken eller radbrytningar.</translation>
+        </message>
+        <message>
+            <source>Session settings could not be read.</source>
+            <translation>Sessionsinställningarna kunde inte läsas.</translation>
+        </message>
+        <message>
+            <source>Saved setting is invalid: %1</source>
+            <translation>Ogiltig sparad inställning: %1</translation>
         </message>
     </context>
 </TS>

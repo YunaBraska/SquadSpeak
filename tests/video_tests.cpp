@@ -7,6 +7,9 @@
 #include <QScopeGuard>
 #include <QVideoFrame>
 #include <QTranslator>
+#ifdef Q_OS_MACOS
+extern "C" int screenPermissionRequests();
+#endif
 #ifdef Q_OS_WIN
 #include <objbase.h>
 #endif
@@ -35,6 +38,21 @@ extern "C" int __wrap_avcodec_receive_frame(AVCodecContext* context, AVFrame* fr
 class VideoTests final : public QObject {
     Q_OBJECT
 private slots:
+#ifdef Q_OS_MACOS
+    void screenComponentDoesNotRequestPermissionBeforeSharing() {
+        QTemporaryDir dir;
+        VoiceSession session(dir.filePath("session"));
+        LocalChannel channel(session, dir.filePath("channel"), TlsIdentity::create());
+        const auto before = screenPermissionRequests();
+        for (int attempt = 0; attempt < 3; ++attempt) {
+            ScreenShare share(channel);
+            QVERIFY(!share.active());
+            QVERIFY(share.sources().isEmpty());
+            QVERIFY(share.stop());
+        }
+        QCOMPARE(screenPermissionRequests(), before);
+    }
+#endif
 #ifdef Q_OS_WIN
     void encodingPreservesWindowsApartment() {
         QVERIFY(SUCCEEDED(CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED)));

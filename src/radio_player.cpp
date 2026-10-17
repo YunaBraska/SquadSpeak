@@ -68,7 +68,7 @@ int searchScore(const QStringList& query, const QString& name, const QString& me
 QAudioFormat streamFormat() {
     QAudioFormat format;
     format.setSampleRate(48000);
-    format.setChannelCount(1);
+    format.setChannelCount(2);
     format.setSampleFormat(QAudioFormat::Float);
     return format;
 }
@@ -365,7 +365,7 @@ bool RadioPlayer::saveStation(const QString& id, const QString& name, const QStr
         });
         connect(output, &QAudioBufferOutput::audioBufferReceived, probe, [this, probe](const QAudioBuffer& buffer) {
             if (probe_ != probe || !buffer.isValid()) return;
-            if (buffer.format() != streamFormat() || buffer.sampleCount() <= 0 || buffer.sampleCount() > 48000
+            if (buffer.format() != streamFormat() || buffer.sampleCount() <= 0 || buffer.sampleCount() > 96000
                 || !std::all_of(buffer.constData<float>(), buffer.constData<float>() + buffer.sampleCount(),
                                 [](float sample) { return std::isfinite(sample); })) {
                 finishStationCheck(false, tr("The stream decoder returned an unsupported audio format.")); return;
@@ -485,7 +485,7 @@ void RadioPlayer::reconnect(const QString& error) {
 }
 void RadioPlayer::receive(const QAudioBuffer& buffer) {
     if (!active() || !available_ || stopping_ || retry_.isActive() || !buffer.isValid()) return;
-    if (buffer.format() != streamFormat() || buffer.sampleCount() > 48000) {
+    if (buffer.format() != streamFormat() || buffer.sampleCount() > 96000) {
         reconnect(tr("The stream decoder returned an unsupported audio format.")); return;
     }
     try {

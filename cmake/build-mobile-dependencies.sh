@@ -214,9 +214,9 @@ toolchain="$build_root/mobile-toolchain.cmake"
 if test "$mode" = ios-simulator; then
 cat > "$toolchain" <<EOF2
 set(CMAKE_SYSTEM_NAME iOS)
-set(CMAKE_OSX_SYSROOT $sdk)
-set(CMAKE_OSX_ARCHITECTURES $architecture)
-set(CMAKE_OSX_DEPLOYMENT_TARGET $deployment_target)
+set(CMAKE_OSX_SYSROOT $sdk CACHE STRING "Apple SDK" FORCE)
+set(CMAKE_OSX_ARCHITECTURES $architecture CACHE STRING "Target architecture" FORCE)
+set(CMAKE_OSX_DEPLOYMENT_TARGET $deployment_target CACHE STRING "Minimum OS version" FORCE)
 set(CMAKE_C_COMPILER "$clang")
 set(CMAKE_CXX_COMPILER "$clangxx")
 EOF2

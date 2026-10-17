@@ -25,7 +25,7 @@
 #endif
 
 static QPair<double, double> amplitudes(const QSignalSpy& packets, const QString& musicId, double wanted, double unrelated) {
-    squad::VoiceMixer decoder;
+    squad::VoiceMixer decoder(2);
     decoder.setAutomatic(false);
     std::vector<float> rendered;
     qint64 received = 0;
@@ -38,14 +38,18 @@ static QPair<double, double> amplitudes(const QSignalSpy& packets, const QString
         received += 20;
     }
     if (std::none_of(rendered.begin(), rendered.end(), [](float value) { return std::abs(value) > 0.00001; })) return {};
-    const auto amplitude = [&](double frequency) {
+    const auto amplitude = [&](double frequency, size_t channel = 0) {
         double sine = 0, cosine = 0;
-        for (size_t i = 0; i < rendered.size(); ++i) {
+        for (size_t i = 0; i < rendered.size() / 2; ++i) {
             const auto phase = 2 * std::numbers::pi * frequency * double(i) / 48000;
-            sine += rendered[i] * std::sin(phase); cosine += rendered[i] * std::cos(phase);
+            sine += rendered[i * 2 + channel] * std::sin(phase); cosine += rendered[i * 2 + channel] * std::cos(phase);
         }
         return std::hypot(sine, cosine);
     };
+    // The fixture emits a different frequency on each channel. A mono
+    // conversion or swapped channels fails before the source-isolation check.
+    if (amplitude(wanted) < amplitude(wanted, 1) * 4
+        || amplitude(wanted * 1.5, 1) < amplitude(wanted * 1.5) * 4) return {};
     return {amplitude(wanted), amplitude(unrelated)};
 }
 
@@ -73,16 +77,33 @@ class CaptureTests final : public QObject {
     void computerScreenReachesAnEncryptedViewer();
 #endif
 private slots:
-    void outputMonitorRejectsMissingDevices() {
+    void outputMonitorDoesNotRetryFailedCaptureAutomatically() {
         OutputMonitor monitor;
         QVERIFY(!monitor.start({}));
+        QVERIFY(monitor.start("squadspeak-missing-output-device"));
+        QTRY_VERIFY_WITH_TIMEOUT(!monitor.error().isEmpty(), 6000);
+        const auto failure = monitor.error();
         for (int repeat = 0; repeat < 3; ++repeat) {
-            QVERIFY(monitor.start("squadspeak-missing-output-device"));
-            QTRY_VERIFY_WITH_TIMEOUT(!monitor.error().isEmpty(), 6000);
-            QVERIFY(monitor.take().samples.empty());
             monitor.stop();
+            QVERIFY(!monitor.start("squadspeak-missing-output-device"));
+            QCOMPARE(monitor.error(), failure);
             QVERIFY(monitor.take().samples.empty());
         }
+        QVERIFY(monitor.retryNeeded());
+        QVERIFY(monitor.start("squadspeak-missing-output-device", true));
+        QTRY_VERIFY_WITH_TIMEOUT(!monitor.error().isEmpty(), 6000);
+        QVERIFY(monitor.start("squadspeak-other-missing-output-device"));
+        QTRY_VERIFY_WITH_TIMEOUT(!monitor.error().isEmpty(), 6000);
+        monitor.stop();
+        QVERIFY(!monitor.start("squadspeak-other-missing-output-device"));
+    }
+    void outputMonitorDoesNotRepeatInterruptedStartup() {
+        OutputMonitor monitor;
+        QVERIFY(monitor.start("squadspeak-missing-output-device"));
+        monitor.stop();
+        QVERIFY(monitor.retryNeeded());
+        QVERIFY(!monitor.start("squadspeak-missing-output-device"));
+        QVERIFY(monitor.take().samples.empty());
     }
     void outputReferenceReducesExternalSpeechEcho() {
         const auto speech = QFINDTESTDATA("audio/speech1.wav");
@@ -557,7 +578,7 @@ int main(int argc, char** argv) {
                 || qFromLittleEndian<quint32>(speech.constData() + 24) != 48000) return 5;
         }
         if (frequency > 0 || !speech.isEmpty()) {
-            QAudioFormat format; format.setSampleRate(48000); format.setChannelCount(1);
+            QAudioFormat format; format.setSampleRate(48000); format.setChannelCount(2);
             format.setSampleFormat(QAudioFormat::Float);
             const auto device = QMediaDevices::defaultAudioOutput();
             if (device.isNull() || !device.isFormatSupported(format)) {
@@ -567,19 +588,20 @@ int main(int argc, char** argv) {
                 return 2;
             }
             output = std::make_unique<QAudioSink>(device, format);
-            output->setBufferSize(4800 * sizeof(float));
+            output->setBufferSize(9600 * sizeof(float));
             audioSink = output->start();
             if (!audioSink) { qCritical() << "Capture fixture audio output could not start"; return 3; }
             QObject::connect(&audioTick, &QTimer::timeout, &app, [&] {
-                const auto count = std::min<qsizetype>(output->bytesFree() / sizeof(float), 960);
-                std::array<float, 960> samples{};
+                const auto count = std::min<qsizetype>(output->bytesFree() / (sizeof(float) * 2), 960);
+                std::array<float, 1920> samples{};
                 for (qsizetype i = 0; i < count; ++i) {
-                    samples[size_t(i)] = speech.isEmpty()
-                        ? float((frequency == 500 ? 0.015 : 0.06) * std::sin(2 * std::numbers::pi * frequency * double(sample) / 48000))
-                        : qFromLittleEndian<qint16>(speech.constData() + 44 + (sample % (8 * 48000)) * 2) / 32768.0f * .2f;
+                    for (size_t c = 0; c < 2; ++c)
+                        samples[size_t(i) * 2 + c] = speech.isEmpty()
+                            ? float((frequency == 500 ? 0.015 : 0.06) * std::sin(2 * std::numbers::pi * frequency * (c == 0 ? 1 : 1.5) * double(sample) / 48000))
+                            : qFromLittleEndian<qint16>(speech.constData() + 44 + (sample % (8 * 48000)) * 2) / 32768.0f * .2f;
                     ++sample;
                 }
-                const auto bytes = count * sizeof(float);
+                const auto bytes = count * 2 * sizeof(float);
                 if (audioSink->write(reinterpret_cast<const char*>(samples.data()), bytes) != qint64(bytes)) app.exit(4);
             });
             audioTick.setTimerType(Qt::PreciseTimer); audioTick.start(10);

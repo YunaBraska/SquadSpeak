@@ -15,16 +15,18 @@ import subprocess
 import sys
 import tarfile
 import tempfile
+import tomllib
 from urllib.parse import urlsplit, urlunsplit
 import urllib.request
 
 
 SHA256 = re.compile(r"^[0-9a-f]{64}$")
-NAME = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]*$")
+NAME = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._+-]*$")
 VERSION = re.compile(r"^[0-9]+\.[0-9]+\.[0-9]+$")
 MAX_ARCHIVE_SIZE = 512 * 1024 * 1024
 PIN_FILES = (
     "CMakeLists.txt",
+    "cmake/Dependencies.cmake",
     "cmake/AudioProcessing.cmake",
     "cmake/Updates.cmake",
     "tests/macos-ci.sh",
@@ -52,6 +54,22 @@ def _read_manifest(root: Path) -> tuple[dict, bytes]:
         raise SourceError(f"cannot read manifest: {path}: {exc}") from exc
     if not isinstance(data, dict) or not isinstance(data.get("archives"), list):
         raise SourceError("manifest must contain an archives array")
+    lock = root / "src/teamspeak_bridge/Cargo.lock"
+    if lock.is_file():
+        for package in tomllib.loads(lock.read_text(encoding="utf-8"))["package"]:
+            source = package.get("source", "")
+            if source.startswith("registry+"):
+                if source != "registry+https://github.com/rust-lang/crates.io-index":
+                    raise SourceError("unsupported Cargo registry")
+                name, version = package["name"], package["version"]
+                data["archives"].append({"name": f"{name}-{version}.crate",
+                    "url": f"https://static.crates.io/crates/{name}/{name}-{version}.crate",
+                    "sha256": package["checksum"]})
+            elif source.startswith("git+"):
+                repository, revision = source[4:].split("#", 1)
+                url = repository.split("?", 1)[0] + "/archive/" + revision + ".tar.gz"
+                if not any(item["url"] == url for item in data["archives"]):
+                    raise SourceError(f"manifest does not cover Cargo git source: {url}")
     return data, (json.dumps(data, sort_keys=True, indent=2, ensure_ascii=False) + "\n").encode()
 
 
@@ -268,16 +286,76 @@ def _write_archive(output: Path, files: list[tuple[str, bytes | Path]], manifest
         temporary_path.unlink(missing_ok=True)
 
 
+def rust_notices(root: Path, cargo: str) -> bytes:
+    manifest = root / "src/teamspeak_bridge/Cargo.toml"
+    metadata = json.loads(subprocess.check_output([cargo, "metadata", "--locked", "--format-version", "1",
+                                                 "--manifest-path", str(manifest)], cwd=root, text=True))
+    lock = manifest.with_name("Cargo.lock")
+    texts = {}
+    records = ["Rust dependency notices", "Cargo.lock SHA256: " + _sha256(lock), ""]
+    for package in sorted(metadata["packages"], key=lambda p: (p["name"], p["version"])):
+        if not package.get("source"):
+            continue
+        directory = Path(package["manifest_path"]).parent
+        roots = [directory]
+        if package["source"].startswith("git+"):
+            roots.extend(parent for parent in directory.parents if parent.name != "checkouts" and "checkouts" in parent.parts)
+        files = set()
+        for base in roots:
+            files.update(path for path in base.iterdir() if path.is_file() and
+                         path.name.lower().startswith(("license", "licence", "copying", "notice", "authors")))
+            for name in ("licenses", "LICENSES"):
+                if (base / name).is_dir():
+                    files.update(path for path in (base / name).rglob("*") if path.is_file())
+        if package.get("license_file"):
+            files.add(directory / package["license_file"])
+        # Some published crates put their attribution in the README or source header.
+        if not files:
+            files.update(path for path in directory.iterdir() if path.is_file() and path.name.lower().startswith("readme"))
+            files.update((directory / "src").glob("lib.rs"))
+        records.extend([f"Package: {package['name']} {package['version']}", "Source: " + package["source"],
+                        "License: " + (package.get("license") or "See accompanying notice")])
+        if not files:
+            raise SourceError("Missing upstream notices for " + package["name"])
+        for path in sorted(files):
+            content = path.read_bytes()
+            digest = hashlib.sha256(content).hexdigest()
+            texts[digest] = content.decode("utf-8")
+            records.append("Notice: " + digest)
+        records.append("")
+    # Rust's statically linked standard library has its own component attribution.
+    sysroot = Path(subprocess.check_output([str(Path(cargo).with_name("rustc")) if Path(cargo).is_absolute() else "rustc",
+                   "--print", "sysroot"], cwd=root, text=True).strip())
+    standard = sysroot / "share/doc/rust"
+    records.extend(["Rust standard library", "Source: https://github.com/rust-lang/rust/tree/1.96.0"])
+    for path in sorted((standard / "licenses").glob("*")) + [standard / "COPYRIGHT-library.html"]:
+        if path.is_file():
+            content = path.read_bytes()
+            digest = hashlib.sha256(content).hexdigest()
+            texts[digest] = content.decode("utf-8")
+            records.append("Notice: " + digest)
+    for digest, text in sorted(texts.items()):
+        records.extend(["", "Notice text: " + digest, text])
+    return ("\n".join(records) + "\n").encode()
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[1])
     parser.add_argument("--check", action="store_true")
+    parser.add_argument("--rust-notices", action="store_true", help="Write pinned Cargo dependency notices to --output")
+    parser.add_argument("--cargo", default="cargo")
     parser.add_argument("--qt-version", help="Version of the bundled Qt SDK")
     parser.add_argument("--cache", type=Path)
     parser.add_argument("--output", type=Path)
     args = parser.parse_args(argv)
     try:
         root = args.root.resolve()
+        if args.rust_notices:
+            if not args.output or args.check or args.cache:
+                raise SourceError("--rust-notices requires --output, without --check or --cache")
+            args.output.write_bytes(rust_notices(root, args.cargo))
+            return 0
         data, manifest = _read_manifest(root)
         archives = _validate_manifest(data)
         if args.qt_version and args.qt_version != data["qt_version"]:

@@ -27,6 +27,8 @@ Help does not start services or acquire a profile lock. Invalid saved fields nam
 their stable JSON key; unreadable JSON or an invalid language uses English at
 startup because no usable language preference is available. Profile files are
 never repaired or overwritten after a failed load.
+An unavailable device identity keeps its diagnostic visible. Retry loads the
+same credential-store entry without replacing identities or approvals.
 
 ## Chat persistence
 
@@ -52,6 +54,58 @@ Free hosts select 24h/7d/30d; Supporter adds 90d/180d/360d through Channel Info,
 command. Readers need no pass. An inactive pass limits new messages to 30 days
 without shortening old receipts. Times use UTC epoch milliseconds; only the
 chat timestamp display follows the user's system timezone.
+
+Private conversations use the same history store and paging under
+`<profile>.channel.json.private/<conversation>.sqlite`. Their physical host and
+sorted peer identities determine the conversation ID. Signed CMS envelopes
+bind content to that host, conversation, sender and request. OpenSSL uses
+RSA-OAEP/SHA-256 and AES-256-GCM. Only the two peer identities receive content
+keys. The relay retains routing and expiry metadata. This is not a forward
+secrecy protocol. Losing a peer identity loses its ability to read old content.
+
+Private attachments use the existing image decoder before encryption and again
+for validation at the recipient. Remote control reads the target's validated
+cache. No private key is exported. The independent host-wide TTL is configured
+through the Messages menu, `--private-message-ttl`,
+`SQUADSPEAK_PRIVATE_MESSAGE_TTL`, `privateMessageTtl` or `privateLifetimeDays`.
+Headless relays private messages without becoming a participant.
+
+## TeamSpeak build and tests
+
+The C++ app links a pinned Rust static library. Install Rust using rustup, with
+the version in `rust-toolchain.toml`. CMake uses the existing Opus dependency.
+For cross-compilation, first install the matching Rust target with `rustup target add`
+(`aarch64-apple-ios-sim`, `aarch64-apple-ios`, `aarch64-linux-android` or
+`x86_64-linux-android`). Keep the selected C++ and Rust architectures identical.
+Python source packaging requires Python 3.11 or newer.
+
+`teamspeak_contract` covers the public C++ boundary without external servers.
+`teamspeak_bridge` tests the real Rust ABI and bounded queues. Live verification
+is deliberately opt-in and reuses two identities:
+
+```sh
+cmake --build build/native-release-sdk --target teamspeak_live
+build/native-release-sdk/teamspeak_live SERVER --state-dir build/ts3-test --channel CHANNEL_ID
+```
+
+Use a server you control and an empty channel. The test sends private/channel text
+and a short synthetic tone, never opens the microphone or speaker, and stops if
+unexpected listeners appear. `--observer NAME` permits one explicitly consenting
+listener and suppresses the channel text. Test identities stay in `--state-dir`
+for reuse. Do not run this against arbitrary public servers or use a personal
+identity export. Ordinary CI never connects to a public TS3 server.
+Add `--reconnect` to interrupt only the test clients' UDP traffic and verify
+automatic recovery, preserved mute state and message delivery after reconnect.
+Add `--text-only` when testing a channel without speaking permission. Recovery
+waits for both authenticated connections and their complete participant lists.
+
+Cargo.lock pins registry sources and the ReSpeak revision. The dependency source
+archive includes their exact source tarballs and checksums. Refresh bundled notices
+after a dependency change:
+
+```sh
+python3 cmake/build_sources.py --rust-notices --output docs/third-party/RUST-NOTICES.txt
+```
 
 ## Build and test
 
@@ -116,9 +170,9 @@ Use `ctest --test-dir build/local -N` to list suites; Qt test executables accept
 affected integration suites before the full release matrix. CLI subprocess,
 malformed-protocol, codec-lifetime and DPI checks prove different behavior;
 a passing end-to-end smoke test does not replace them. CI caches the pinned Qt
-SDK on Windows and macOS; application builds and test results are never cached.
-CTest runs two suites concurrently. Native loopback capture, video timing and
-64-client load checks run alone; desktop/audio fixtures share a resource lock.
+SDK on Windows and macOS, plus compiled dependency and compiler caches. Final
+linking and tests run on every build. CTest runs four suites concurrently. Native
+loopback capture, video timing and 64-client load checks run alone; desktop/audio fixtures share a resource lock.
 Windows also caches its installed OpenSSL/Opus/libsamplerate prefix, keyed by
 compiler, SDK and build-script inputs. CI checks preparation and reuse before
 building the app; incompatible or incomplete prefixes fail explicitly.
@@ -131,8 +185,11 @@ same framing, validation and peer state; there is no second protocol model.
 For macOS, install CMake, Ninja, Meson, pkg-config and NASM. The reproducible
 package path builds deployment-compatible audio, TLS and FFmpeg libraries.
 FFmpeg 7.1.5 includes VideoToolbox dropped-frame and failed-initialization
-cleanup recorded in CMakeLists.txt. Build-tree tests and the installed Qt multimedia plugin use
-the same patched runtime; package checks reject duplicate or unpatched copies.
+cleanup recorded in `cmake/Dependencies.cmake`. Build-tree tests and the installed
+Qt multimedia plugin use the same patched runtime; package checks reject duplicate
+or unpatched copies.
+Keep dependency compiler settings in that file or its dependency modules so CI
+can reuse native libraries when only application code, tests or versions change.
 
 ```sh
 sh tests/macos-ci.sh /path/to/Qt/6.11.3/macos build/macos-ci
@@ -186,8 +243,18 @@ Use the existing suites, not another manual chat/kick/ban checklist:
 | Packaged startup, native backends and leaks | Native CI, runtime-only package checks, sanitizers and leak probes | Windows 10 startup on an available PC; Server 2022 is not Windows 10 |
 | Chat sound routing and notifications | Channel/UI/PCM contracts | Actual Apple notification and Focus behavior |
 
-On macOS, prepare two isolated copies with `tests/prepare_two_apps.py` and join
-them to one test channel before handing over. For a Windows visit without a
+On macOS, prepare two isolated copies with `tests/prepare_two_apps.py`. Launch
+each installed `.app` through Finder or `/usr/bin/open`, as the generated launcher
+does. Running `Contents/MacOS/squadspeak` directly from a development process can
+attribute microphone access to that parent, even when SquadSpeak's own permission
+is enabled. Check the TCC attribution and real input levels before resetting any
+permission. Local-network checks also need the installed LaunchServices app:
+Terminal-launched processes can bypass macOS local-network privacy. Verify actual
+discovery traffic even when the permission switch is on. Keep any permission
+renewal limited to the approved test copies. Apple recommends Apple-issued signing
+for reliable local-network identity in [TN3179](https://developer.apple.com/documentation/technotes/tn3179-understanding-local-network-privacy).
+Run native UI tests separately from manual interaction so window activation is not
+stolen by another app. Join the copies to one test channel before handing over. For a Windows visit without a
 maintainer present, use the standalone kit below. A captures the microphone,
 B plays through headphones; both start muted and deafened. Do not reset working
 OS permissions or touch the person's normal profile. The maintainer handles
@@ -219,8 +286,8 @@ the maintainer investigates it before requesting another attempt.
 1. Freeze the candidate revision and the existing release criteria. Run Windows
    CI before the visit. A green older commit does not certify local edits; the
    hosted runner is Windows Server 2022, not a Windows 10 hardware substitute.
-2. The Windows job prepares `squadspeak-windows-device-test.zip` as the separate
-   `windows-device-test` workflow artifact. It contains the packaged app, its
+2. The Windows job prepares `squadspeak-windows-device-test.zip` in the
+   `release-windows-x86_64` workflow artifact. It contains the packaged app, its
    runtime DLLs, Microsoft's runtime installer, `device-test/Start.cmd`, two
    isolated profiles and `device-test/Check.html`. The regular release ZIP stays
    unchanged. CI runs the same launcher with `--smoke-test`, checking both
@@ -295,16 +362,22 @@ SQUAD_SOAK_SECONDS=10 SQUAD_SOAK_SPEAKERS=64 build/local/channel_tests sixtyFour
 SQUAD_VIDEO_SOAK_SECONDS=120 build/local/video_tests roundTripAndQualityChanges:native-rgb
 ```
 
-Audio accepts 2-1800 seconds; video accepts 0-1800, where zero keeps the normal
-short test. Audio uses four simultaneous senders by default; `SQUAD_SOAK_SPEAKERS`
-accepts 2-64 to measure greater overlap while keeping all 64 clients connected.
+Audio accepts 2-1800 seconds. Video accepts 0-1800, where zero keeps the normal
+short test. Audio uses 64 clients and four simultaneous senders by default.
+`SQUAD_SOAK_SPEAKERS` accepts 2 up to the selected client count to measure greater overlap.
+`SQUAD_SOAK_CLIENTS` accepts 32 or 64. The hosted Intel workflow uses 32 clients
+and two simultaneous senders. All source-to-receiver bindings, mono/stereo rows,
+delayed callbacks and the original delivery/playout thresholds remain checked.
+This fixture setting does not restrict the application or certify greater overlap.
 Set `QTEST_FUNCTION_TIMEOUT` above the requested duration plus setup
 and teardown; Qt Test otherwise stops each function after 300 seconds.
 Video extends the first 4K phase to 30 frames per requested second,
 then checks quality changes and recovery. It reports actual elapsed time,
 encoded bytes, codec and processing time, so a slow encoder is not reported as
-30 fps. Use external process sampling for CPU/RSS; these fixtures combine the
-sender and receivers in one process and do not measure acoustic latency.
+30 fps. Use external process sampling for CPU/RSS. The video fixture combines
+sender and receivers in one process. Audio runs its host in a separate process
+so simulated clients do not share the host's global sender. Neither fixture
+measures acoustic latency.
 
 The 64-client audio test keeps its 90% real-time playout threshold in
 uninstrumented builds, both with normal scheduling and 45 ms delays to capture
@@ -371,6 +444,11 @@ Screenshots are retained in each platform's CI artifacts.
 
 For fresh UI screenshots, set `SQUAD_TEST_ARTIFACTS` to an output directory when running `controls_tests -input tests/tst_channel_controls.qml`. Add a test function name to select one scenario. The README images come from the English chat and settings scenarios.
 
+The application icon source is `ui/icons/app-source.png`. Run `python3 ui/icons/generate.py`
+with `rsvg-convert` installed to regenerate the PNG, macOS ICNS and Windows ICO.
+The generator only resizes the approved artwork. The menu icon is drawn separately
+in `src/main.cpp` as an outline speech bubble, filled while transmitting speech.
+
 ## Headless server
 
 Normal startup opens the desktop app. `--headless` selects the server entrypoint, without loading personal GUI/audio profiles or joining a channel as a user.
@@ -382,6 +460,7 @@ squadspeak --headless -f /path/to/application.properties
 Example properties:
 
 ```properties
+hostName=Willow Station
 channelName=Evening lounge
 botName=System
 port=48763
@@ -394,6 +473,8 @@ settingsFile=/private/path/server
 Values resolve in this order: command-line arguments, `SQUADSPEAK_*` environment variables, properties, saved server values. Without `-f`, the app reads `application.properties` beside its executable/app, then `config/application.properties` there. The second file overrides the first. Relative file values resolve beside their configuration file.
 
 Headless uses English by default. Select a catalog with `--language de`, `SQUADSPEAK_LANGUAGE=de`, or `language=de` in the preset; the same precedence applies. This selection is independent of desktop preferences. Help and diagnostics are translated; JSON field names, command names and enum values stay unchanged. Invalid or empty language codes are rejected.
+
+Set the host group name with `--host-name`, `SQUADSPEAK_HOST_NAME`, or `hostName` in the configuration. Without a saved name or override, the server generates a name once and keeps it across restarts. This label is separate from `channelName` and never creates a personal user. Runtime `configure` accepts `hostName` on the primary channel and updates connected clients of all owned channels.
 
 Use `--headless --help` for all parameters and environment names. `--ban DEVICE_ID` can be repeated. Explicit bans always apply, and a password is checked before automatic admission. Headless does not offer a deny-everyone mode.
 
@@ -475,11 +556,18 @@ continue using the original TLS frames. Chat and administration remain on TLS.
 Each receiver has independent loss/RTT feedback and Opus quality. Source bindings
 are acknowledged before sending datagrams; at most 65 reusable SSRC slots prevent
 membership churn from accumulating SRTP stream state. Sequence fences reject old
-speakers' packets after reuse. A bounded 20 ms reorder window drops stale packets;
-the existing Opus decoder conceals at most six missing frames. TLS fallback uses
+speakers' packets after reuse. Contiguous frames are ready immediately. A bounded
+20 ms reorder window waits for missing sequences and drops stale packets.
+The existing Opus decoder conceals at most six missing frames. TLS fallback uses
 the same sequence space. Unknown valid media kinds/fields preserve baseline audio.
-The library callback mailbox is bounded, Qt timers belong to their Qt owner, and
-process teardown waits for library cleanup. Run the transport and mixer contracts for latency, lifecycle and load checks.
+The library callback mailbox and shared audio sender are bounded. One worker
+drains the shared audio socket. A second serves other connections when a send
+stalls beyond 5 ms, a quarter of an audio frame. Both share the existing queue
+and serialize writes per connection. UDP audio
+encryption and socket writes stay off the Qt owner thread. Source bindings and
+Qt timers stay on that thread. Teardown drains the connection's active write
+before closing native resources.
+Run the transport and mixer contracts for latency, lifecycle and load checks.
 
 Screen video negotiates `udp-screen` on its separate, admitted TLS connection.
 Frames and decode acknowledgments prefer an unordered WebRTC DataChannel using
@@ -493,9 +581,15 @@ and application buffering stops above 32 KiB. Each viewer retains at most one
 2 MiB encoded frame plus 32 KiB metadata. One envelope is shared across receivers
 of the same tier. Missing frames expire and require a keyframe; old fragments and
 late acknowledgments cannot revive them. UDP blockage and legacy peers use the
-previous bounded TLS path. Sustained shared-uplink/device evidence remains a
-release gate.
+previous bounded TLS path. Automated impairment checks precede publication.
+Sustained shared-uplink and physical-device observations follow the first regular
+desktop download under U139 and remain explicitly unverified until measured.
 WebRTC Audio Processing is a separate dependency supplying echo cancellation.
+The pinned build applies `cmake/audio-processing-echo.patch` to expose AEC3's
+residual suppression sensitivity. Auto preserves upstream thresholds. Manual
+strength scales their echo-to-speech and echo-to-noise ratios without mixing
+uncancelled microphone audio back in. The library and consumers must use the same
+patched headers. The dependency cache already includes `cmake/*.patch`.
 
 The optional `screen-audio` capability carries Opus packets independently of video backlog.
 Voice peers and capable text-only viewers use the negotiated audio transport.
@@ -505,7 +599,7 @@ rights. The host sends only to capable
 voice members or explicit audio-enabled viewers. Preview subscriptions alone
 stay silent outside that voice channel. Legacy peers retain video and basic
 voice/chat. Native macOS capture uses one latest image and at most 100 ms of
-pending mono samples; it excludes this process's playback from captured audio.
+pending stereo samples; it excludes this process's playback from captured audio.
 The host does not relay its captured system audio back to its own device, which
 already hears the original output.
 
@@ -514,31 +608,81 @@ already hears the original output.
 Keep branches scoped to one reviewed change and squash-merge them into `main`.
 GitHub permits squash merges only and removes merged branches automatically.
 
-Versions are UTC calendar dates in SemVer form: `YYYY.M.D`, without leading zeroes. `cmake/Version.cmake` is the canonical resolver. CI resolves a release version once and supplies it to every package job.
+The flow follows [PodLord's merge and release entrypoints](https://github.com/YunaBraska/podlord/tree/ffb730401033e5dab363b4923fa14e58abd90f87/.github/workflows)
+and the [shared Swift release contract](https://github.com/YunaBraska/YunaBraska/blob/036626606065b3b64488ef0611d63713abdcf70c/SWIFT_CI_CD.md).
+`verify.yml` resolves one revision and version, runs cheap preflight checks, then
+calls `wc_linux_build.yml`, `wc_macos_build.yml` and `wc_windows_build.yml`.
+These reusable workflows accept project commands, cache inputs and artifact
+paths. Windows supplies the MSVC/Qt toolchain, Linux the container environment.
+macOS also accepts optional signing and notarization credentials. Application
+names and package rules stay in the calling workflow.
 
-`verify.yml` is callable by other workflows and runs desktop builds, protocol/UI
-tests, sanitizer checks and installed-package smoke tests. Run `release.yml` on
-`main` to publish a regular desktop release. It resolves the UTC version once,
-rejects an existing tag or release before starting builds, and reuses the full
-verification matrix. Failed API requests also stop the preflight; they are not
-treated as a free version number.
+| Entry | Version and result |
+| --- | --- |
+| `build-pr.yml` | Tests the PR head. Build artifacts remain available for one day. Also supports manual branch verification. No publication. |
+| `build-merge.yml` | Every main merge verifies and publishes a snapshot prerelease. No Homebrew change or stable update feed. |
+| `release.yml` | Weekly or manual stable release. Changed product sources or `force=true` select a UTC `YYYY.M.D` release. Otherwise it builds without publication. Non-default branches never publish. |
 
-Publication requires matching signed macOS appcasts and all five desktop
-archives, the standalone Windows test kit and corresponding third-party sources.
-Checksums include the appcasts and generated Homebrew cask. Uploads go into a
-draft first; only a complete upload becomes a public latest release. Existing
-published packages are never replaced. If upload/publication fails, inspect the
-private draft before deleting it and retrying; do not silently replace a public
-version. The source revision stays fixed throughout the workflow. Native package
-tests run before publication; physical device observations follow the initial
-release under U139.
+The `yuna-release: true` marker lets the central weekly dispatcher invoke
+`release.yml` when product sources changed. Manual dispatch uses the same path.
+Homebrew and automatic update checks follow stable releases only.
 
-For a focused manual check, use
-`gh workflow run verify.yml --ref <branch> -f platform=windows` (also `linux`,
-`macos`, `sanitizers`, or `all`). Pushes to main, pull requests and the reusable release
-call always run every platform. A focused run does not replace the release gate.
-Feature pushes are checked by their pull request, avoiding a duplicate matrix
-for the same branch update.
+Snapshot distribution differs between the reference projects. The shared Swift
+and .NET workflows retain native build artifacts. The [NATS workflow contract](https://github.com/nats-io/spring-nats/blob/32999e8e2eb0fd3b8c4b59170fed767e1c2a4b14/doc/spec/ci-workflows.md)
+publishes Maven snapshots after a merge. SquadSpeak publishes its desktop
+snapshots as GitHub prereleases through `publish.yml`, also used by stable releases.
+
+Version and commit are resolved once and passed to every job. Snapshots use the
+pinned `YunaBraska/semver-info-action` and its `next_snapshot` output from the
+newest reachable stable tag by creation date, with `0.0.1` as fallback. The run ID
+makes each workflow version unique, for example `2026.10.12-SNAPSHOT.1234`.
+The app displays the full label. Native bundle metadata uses its numeric part.
+Stable versions use `cmake/Version.cmake` and UTC without leading zeroes. Snapshot
+tags never hide product changes since the last stable release.
+
+As in the shared flows, documentation, tests, specs, examples, benchmarks,
+licenses and `.github` changes alone do not request a stable release. Every main
+merge still produces a snapshot. Use `force` when deliberately releasing only
+packaging or pipeline changes, including the
+packaging entrypoints under `tests/`. Force never replaces an existing version.
+Tag/release collisions and API failures stop before native builds. Snapshots
+need no publication secrets. Test reports remain available for seven days.
+
+Publication requires all five desktop archives, the standalone Windows test kit
+and corresponding third-party sources. Stable releases additionally require
+matching signed macOS appcasts and a generated Homebrew cask. Checksums cover all
+assets. Uploads go into a draft first. Only a complete upload becomes public.
+Snapshots are prereleases and never become latest. Published assets are
+immutable. If publication fails, inspect the private draft before explicitly
+removing it and retrying. The source revision stays fixed throughout the workflow.
+Physical device observations follow the initial release under U139.
+
+The application never writes `YunaBraska/homebrew-tap`. After the first stable
+release, add the generated `squadspeak.rb` there. Its release/asset markers let
+the existing tap updater open its normal maintenance PR for later releases.
+
+For manual branch verification, use `gh workflow run verify.yml --ref <branch>`.
+PR, merge, release and manual verification run the same complete matrix. Feature pushes are checked by their PR, avoiding duplicate platform runs.
+New PR checks cancel obsolete runs. Snapshot runs are grouped by commit so
+closely spaced merges do not discard a waiting snapshot. Stable releases run
+one at a time without cancelling an active release. Build jobs keep read-only
+repository permissions. Only publication can write tags/releases. The application
+runtime gains no pipeline dependency.
+
+Native dependencies are cached by source inputs, architecture and compiler/SDK
+identity. Successful dependency builds are saved before tests, so a later test
+failure does not discard that work. Linux caches its container build environment.
+Compiler caches reuse unchanged C++ compilation. Channel tests are discovered
+from the executable's public QtTest function list and run four at a time, keeping
+all data rows. Realtime load checks run first and alone. Capture checks run alone.
+Fixed-port discovery and desktop tests use resource locks. No failed test is automatically retried.
+
+Dependabot checks GitHub Actions and the Linux Docker base every Sunday at 00:00
+UTC, with one grouped PR per ecosystem. Ubuntu stays on 26.04 and receives digest
+updates. Changing the supported distribution is a separate decision. Custom
+dependency pins in CMake and packaging scripts still require coordinated source
+manifest updates. The central maintenance workflow handles eligible green
+Dependabot PRs using the same rules as the other repositories.
 
 The separate `squadspeak-third-party-sources.tar.gz` release asset contains the
 pinned dependency archives, Qt SDK sources and Abseil build patch. Build it with
@@ -562,12 +706,31 @@ and asset markers. The cask installs the app and exposes `squadspeak` for CLI us
 Drafts and prereleases are ignored by the tap updater; Linux packages are not a
 Homebrew formula.
 
-macOS bundles currently use ad-hoc signatures. Quit running copies before replacing their bundles. An ad-hoc code identity changes with the build, so privacy permissions can require renewed approval even when System Settings still shows an enabled entry. Stable permissions across builds require a consistent signing identity. For the local A/B copies, `tests/prepare_two_apps.py` defaults to the existing `SquadSpeak Local Development` identity. Use `--sign-identity` to select another existing development identity. Reuse its private key and keep the bundle identifiers, install paths and data profiles stable across builds. Do not provision a new certificate for each build or test copy. Never commit private keys. Developer ID signing, notarization and store accounts are separate distribution work. Store builds exclude external Supporter purchasing and activation. No signing credentials belong in this repository.
+The macOS build workflow owns signing and notarization. Optional secrets are
+`MACOS_SIGNING_CERTIFICATE` (base64 P12), `MACOS_SIGNING_CERTIFICATE_PASSWORD`,
+`MACOS_NOTARY_KEY` (base64 P8), `MACOS_NOTARY_KEY_ID` and
+`MACOS_NOTARY_ISSUER_ID`. Partial credentials fail before compilation. A
+Developer ID identity signs the deployed bundle before package checks. Notary
+credentials additionally submit and staple it before the final archive is tested.
+An isolated runner keychain and imported credentials are removed after the job.
+Without those secrets, packages use ad-hoc signatures. Quit running copies before replacing their bundles. An ad-hoc code identity changes with the build, so privacy permissions can require renewed approval even when System Settings still shows an enabled entry. Reuse a consistent signing identity. Apple specifically requires an Apple-issued identity for reliable Local Network tracking. A local self-signed identity alone does not guarantee that macOS will avoid duplicate Local Network rows across builds. For the local A/B copies, `tests/prepare_two_apps.py` defaults to the existing `SquadSpeak Local Development` identity. Use `--sign-identity` to select another existing development identity. Reuse its private key and keep the bundle identifiers, install paths and data profiles stable across builds. Do not provision a new certificate for each build or test copy. Never commit private keys. Developer ID signing, notarization and store accounts are separate distribution work. Store builds exclude external Supporter purchasing and activation. No signing credentials belong in this repository.
+
+Local language experiments require Xcode 26 or newer to build. The reusable
+macOS workflow selects its installed toolchain through `xcode_version` (26.3 by default). Their Apple APIs
+are weak-linked, so the basic app still targets macOS 13. The experimental path
+runs only where Apple reports local speech support on macOS 26 or newer.
+`local_language_contract` tests bounded processing, cancellation, Markdown and
+persistence without OS downloads. `native_language_contract` checks the real
+framework boundary without installing models. To exercise recognition through
+translated speech, run
+`build/native-release-sdk/native_language_tests.app/Contents/MacOS/native_language_tests prepareAndTranslateInstalledModels`.
+The first run offers Apple's model downloads. Later runs reuse those shared
+models and need neither microphone capture nor audible playback.
 
 Direct macOS packages use pinned Sparkle 2.10.0 for updates. Set the repository
 variable `SQUADSPEAK_UPDATE_PUBLIC_KEY` to its base64 Ed25519 public key and the
 Actions secret `SQUADSPEAK_UPDATE_PRIVATE_KEY` to the matching base64 32-byte seed.
-The private key is needed only by the release signing job; app binaries receive
+The private key is used by stable-release preflight and macOS packaging. App binaries receive
 the public key. Archive and architecture-specific feed signatures are required
 before installation. An unconfigured preview starts no updater. Store builds
 exclude Sparkle and headless never initializes it. Checks are automatic;
@@ -575,7 +738,7 @@ installation and restart require a click. Draft prereleases are deliberately
 excluded from the stable `releases/latest` feeds.
 
 Update signing is separate from Apple's Developer ID and notarization. The
-release job fails on a mismatched pair or missing keys. Keep a private backup
+preflight fails on a mismatched pair or missing keys before native builds. Keep a private backup
 of the signing seed; losing it prevents ordinary
 updates to already distributed clients. See [Sparkle publishing](https://sparkle-project.org/documentation/publishing/).
 
@@ -586,6 +749,8 @@ Before Store publication, review the selected distribution terms against the pro
 Keep the channel/chat layout, themes, portraits and shared QML controls. Adapt the containing window to safe areas, touch targets, the software keyboard and iPad resizing. The mobile entrypoint opens a normal window without a tray. Double-click and hover affordances still need a complete tap/long-press review.
 
 The iOS build now has a reproducible Simulator path. The pinned Qt 6.11.3 kit provides an arm64 device slice and an x86_64 Simulator slice. On Apple Silicon, the x86_64 Simulator build requires Rosetta and the installed universal iOS 26 Simulator runtime. The dependency script currently builds the Simulator only. It does not certify an arm64 device package or device/runtime parity. The [Qt platform table](https://doc.qt.io/qt-6.11/supported-platforms.html) describes the supported SDK and device configurations.
+
+Ninja embeds a stable application identifier in each Simulator executable for keychain access. This uses the Simulator's entitlement section, not a development certificate. `native_identity_contract` verifies creation, reload and cleanup in the real simulated keychain. Simulators share the Mac's network, so concurrent app instances need distinct host ports.
 
 Build the target dependencies into a clean prefix. The prefix must match the SDK, architecture and deployment target. Do not point an iOS build at host macOS libraries:
 
@@ -600,6 +765,7 @@ Configure and build with the matching Qt iOS kit and the macOS Qt host tools. Ch
 ```sh
 DEVICE_ID='replace-with-simulator-udid'
 IOS_QT="$HOME/Library/Caches/squadspeak-qt/6.11.3/ios"
+rustup target add x86_64-apple-ios
 "$IOS_QT/bin/qt-cmake" -S . -B build/ios-simulator -G Ninja \
   -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=ON \
   -DCMAKE_OSX_SYSROOT=iphonesimulator \
@@ -625,6 +791,11 @@ ctest --test-dir build/ios-simulator --output-on-failure \
 ```
 
 CTest automatically installs each test app before launching it through `simctl`. It runs shared image, mixer and media-transport tests plus selected channel, video and QML interaction cases. Test bundles use the same device-family and launch metadata as the app. It does not register desktop capture or process-worker tests. Simulator tests run serially on the selected device and fail on Qt Test assertions even when `simctl` exits successfully. The app needs the Qt Multimedia and imageformats modules in the iOS kit, plus the target FFmpeg archives built by the dependency script.
+
+The separate `ios_audio_capture` test needs microphone permission for the test
+app on the selected simulator. It checks preview restart, capture with playback,
+encoded output and mute/restart. It neither saves recordings nor connects to a
+server. Run it with `ctest --test-dir build/ios-simulator -R '^ios_audio_capture$'`.
 
 The chat UI selection requests real native portrait and landscape geometry and
 checks that rotation preserves the reading anchor and draft. It also opens the

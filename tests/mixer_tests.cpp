@@ -16,10 +16,138 @@ std::vector<float> tone(double amplitude, int rate = 48000, int frames = 960, do
 double rms(const std::vector<float>& signal) {
     return std::sqrt(std::inner_product(signal.begin(), signal.end(), signal.begin(), 0.0) / signal.size());
 }
+std::vector<float> stereoTone(double left, double right, int frames = 960) {
+    std::vector<float> result(size_t(frames) * 2);
+    for (int i = 0; i < frames; ++i) {
+        result[size_t(i) * 2] = float(left * std::sin(2 * std::numbers::pi * 440 * i / 48000));
+        result[size_t(i) * 2 + 1] = float(right * std::sin(2 * std::numbers::pi * 997 * i / 48000));
+    }
+    return result;
+}
 }
 class MixerTests final : public QObject {
     Q_OBJECT
 private slots:
+    void stereoSourcePreservesIndependentChannels() {
+        squad::VoiceMixer source(2);
+        int error = 0;
+        const std::unique_ptr<OpusDecoder, decltype(&opus_decoder_destroy)> decoder(
+            opus_decoder_create(48000, 2, &error), opus_decoder_destroy);
+        QVERIFY(decoder && error == OPUS_OK);
+        const auto input = stereoTone(0.8, 0.2);
+        const auto packets = source.encode(input, 48000);
+        QCOMPARE(packets.size(), 1);
+        std::vector<float> output(1920);
+        QCOMPARE(opus_decode_float(decoder.get(), reinterpret_cast<const unsigned char*>(packets.first().constData()),
+            packets.first().size(), output.data(), 960, 0), 960);
+        std::vector<float> left(960), right(960);
+        for (int i = 0; i < 960; ++i) { left[size_t(i)] = output[size_t(i) * 2]; right[size_t(i)] = output[size_t(i) * 2 + 1]; }
+        QVERIFY(rms(left) > rms(right) * 1.5);
+        QVERIFY(rms(right) > 0.03);
+        const auto cross = std::inner_product(left.begin(), left.end(), right.begin(), 0.0);
+        QVERIFY(std::abs(cross) < std::sqrt(std::inner_product(left.begin(), left.end(), left.begin(), 0.0)
+            * std::inner_product(right.begin(), right.end(), right.begin(), 0.0)) * 0.4);
+        QVERIFY(!source.encode(stereoTone(-0.8, -0.2), 48000).isEmpty());
+    }
+
+    void stereoResamplingAndResetRemainFrameAligned() {
+        squad::VoiceMixer source(2);
+        const auto packets = source.encode(stereoTone(0.7, 0.15, 960), 24000);
+        QVERIFY(packets.size() >= 1);
+        source.resetCapture();
+        QVERIFY(source.encode(stereoTone(0.4, 0.1, 480), 48000).isEmpty());
+        QVERIFY(source.encode(stereoTone(0.4, 0.1, 480), 48000).size() == 1);
+    }
+
+    void stereoGainLimiterAndMuteAreLinkedAcrossChannels() {
+        squad::VoiceMixer source(2), receiver(2);
+        receiver.setAutomatic(false).setGain("peer", 2.0);
+        const auto packet = source.encode(stereoTone(1.0, 0.4), 48000).first();
+        QVERIFY(receiver.receive("peer", packet, 0));
+        const auto output = receiver.render(48000, 0);
+        QVERIFY(output.size() == 1920);
+        float peak = 0;
+        for (const auto sample : output) peak = std::max(peak, std::abs(sample));
+        QVERIFY(peak <= 0.951f);
+        std::vector<float> left, right;
+        for (size_t i = 0; i < 960; ++i) { left.push_back(output[i * 2]); right.push_back(output[i * 2 + 1]); }
+        QVERIFY(rms(left) > rms(right) * 1.5);
+        receiver.setGain("peer", 0);
+        QVERIFY(receiver.receive("peer", packet, 20));
+        QCOMPARE(rms(receiver.render(48000, 20)), 0.0);
+    }
+
+    void monoAndStereoPacketsDecodeAtEachSupportedBoundary() {
+        squad::VoiceMixer monoSource, stereoSource(2), monoReceiver, stereoReceiver(2);
+        const auto monoPacket = monoSource.encode(tone(0.3), 48000).first();
+        const auto stereoPacket = stereoSource.encode(stereoTone(0.3, 0.2), 48000).first();
+        QVERIFY(stereoReceiver.receive("mono", monoPacket, 0));
+        QVERIFY(monoReceiver.receive("stereo", stereoPacket, 0));
+        const auto stereo = stereoReceiver.render(48000, 0);
+        const auto mono = monoReceiver.render(48000, 0);
+        QCOMPARE(stereo.size(), size_t(1920));
+        QCOMPARE(mono.size(), size_t(960));
+        for (size_t i = 0; i < 960; ++i) QVERIFY(std::abs(stereo[i * 2] - stereo[i * 2 + 1]) < 0.02f);
+        QVERIFY(std::all_of(stereo.begin(), stereo.end(), [](float sample) { return std::isfinite(sample); }));
+        QVERIFY(std::all_of(mono.begin(), mono.end(), [](float sample) { return std::isfinite(sample); }));
+    }
+
+    void sourcePreservesFullbandAudioAt64Kilobits() {
+        squad::VoiceMixer source;
+        int error = 0;
+        const std::unique_ptr<OpusDecoder, decltype(&opus_decoder_destroy)> decoder(
+            opus_decoder_create(48000, 1, &error), opus_decoder_destroy);
+        QVERIFY(decoder && error == OPUS_OK);
+        qint64 bytes = 0;
+        std::array<float, 960> input{}, output{};
+        for (int frame = 0; frame < 100; ++frame) {
+            for (size_t i = 0; i < input.size(); ++i) {
+                const auto time = double(frame * 960 + i) / 48000;
+                input[i] = 0;
+                for (const int frequency : {173, 439, 997, 2039, 4001, 7907, 12101, 17011})
+                    input[i] += float(0.06 * std::sin(2 * std::numbers::pi * frequency * time));
+            }
+            const auto packets = source.encode(input, 48000);
+            QCOMPARE(packets.size(), 1);
+            const auto& packet = packets.first(); bytes += packet.size();
+            QCOMPARE(opus_packet_get_nb_samples(reinterpret_cast<const unsigned char*>(packet.constData()), int(packet.size()), 48000), 960);
+            QCOMPARE(opus_decode_float(decoder.get(), reinterpret_cast<const unsigned char*>(packet.constData()), int(packet.size()), output.data(), 960, 0), 960);
+            QVERIFY(std::all_of(output.begin(), output.end(), [](float sample) { return std::isfinite(sample) && std::abs(sample) <= 1; }));
+            QCOMPARE(opus_packet_get_bandwidth(reinterpret_cast<const unsigned char*>(packet.constData())), OPUS_BANDWIDTH_FULLBAND);
+        }
+        // VBR may spend more on complex frames. Measure two seconds, not one packet.
+        const auto bitrate = bytes * 8 / 2;
+        QVERIFY2(bitrate > 48000 && bitrate < 90000, qPrintable(QString::number(bitrate)));
+    }
+
+    void peerReplacementUsesNormalMixingAndNeverChangesOtherPeers() {
+        squad::VoiceMixer encoder, original, translated;
+        original.setAutomatic(false); translated.setAutomatic(false);
+        const auto packet = encoder.encode(tone(0.1), 48000).first();
+        for (auto* mixer : {&original, &translated}) {
+            QVERIFY(mixer->receive("alice", packet, 0));
+            QVERIFY(mixer->receive("bob", packet, 0));
+            mixer->setGain("alice", 0.5); mixer->setGain("bob", 0.25);
+        }
+        std::vector<float> bob;
+        auto normal = original.render(48000, 0, [&](const QString& id, std::span<float> frame, qint64) {
+            if (id == "bob") bob.assign(frame.begin(), frame.end());
+        });
+        auto replaced = translated.render(48000, 0, [&](const QString& id, std::span<float> frame, qint64) {
+            if (id == "alice") std::fill(frame.begin(), frame.end(), 0.1f);
+        });
+        for (size_t i = 0; i < replaced.size(); ++i) QVERIFY(std::abs(replaced[i] - (0.05f + bob[i] * 0.25f)) < 0.00001);
+        QVERIFY(normal != replaced);
+        auto tail = translated.render(48000, 20, [](const QString& id, std::span<float> frame, qint64) {
+            if (id == "alice") std::fill(frame.begin(), frame.end(), 0.2f);
+        });
+        for (auto sample : tail) QVERIFY(std::abs(sample - 0.1f) < 0.00001);
+        translated.remove("alice");
+        auto departed = translated.render(48000, 40, [](const QString& id, std::span<float> frame, qint64) {
+            if (id == "alice") std::fill(frame.begin(), frame.end(), 0.2f);
+        });
+        QCOMPARE(rms(departed), 0.0);
+    }
     void avatarActivityFollowsAdmittedAndPlayedAudioWithoutChangingPackets() {
         squad::VoiceMixer source, reference, receiver;
         const auto signal = tone(0.2);
@@ -47,28 +175,35 @@ private slots:
         QVERIFY(source.encode(tone(0.005), 48000).isEmpty()); QCOMPARE(source.transmitLevel(), 0.0);
     }
 
+    void missingPacketsUseBoundedConcealmentAndRecover_data() {
+        QTest::addColumn<int>("channels");
+        QTest::newRow("mono") << 1;
+        QTest::newRow("stereo") << 2;
+    }
     void missingPacketsUseBoundedConcealmentAndRecover() {
-        squad::VoiceMixer source, receiver;
+        QFETCH(int, channels);
+        squad::VoiceMixer source(channels), receiver(channels);
         receiver.setAutomatic(false);
-        const auto signal = tone(0.2);
+        const auto signal = channels == 1 ? tone(0.2, 48000, 20 * 960) : stereoTone(0.2, 0.15, 20 * 960);
+        const auto packets = source.encode(signal, 48000);
+        QCOMPARE(packets.size(), 20);
         for (int n = 0; n < 5; ++n) {
-            QVERIFY(receiver.receive("voice", source.encode(signal, 48000).first(), n * 20));
+            QVERIFY(receiver.receive("voice", packets[n], n * 20));
             QVERIFY(rms(receiver.render(48000, n * 20)) > 0.01);
         }
-        const auto packet = source.encode(signal, 48000).first();
-        QVERIFY(!receiver.receive("voice", packet, 100, -1));
-        QVERIFY(!receiver.receive("voice", packet, 100, 7));
-        QVERIFY(receiver.receive("voice", packet, 100, 2));
+        QVERIFY(!receiver.receive("voice", packets[7], 140, -1));
+        QVERIFY(!receiver.receive("voice", packets[7], 140, 7));
+        QVERIFY(receiver.receive("voice", packets[7], 140, 2));
         for (int n = 0; n < 3; ++n) {
-            const auto output = receiver.render(48000, 100 + n * 20);
+            const auto output = receiver.render(48000, 140 + n * 20);
             QVERIFY(std::all_of(output.begin(), output.end(), [](float sample) { return std::isfinite(sample) && std::abs(sample) <= 1; }));
             QVERIFY(rms(output) > 0.001);
         }
-        QVERIFY(receiver.receive("voice", packet, 160, 6));
-        for (int n = 0; n < 6; ++n) (void)receiver.render(48000, 160 + n * 20);
-        QCOMPARE(rms(receiver.render(48000, 280)), 0.0);
-        QVERIFY(receiver.receive("voice", packet, 300));
-        QVERIFY(rms(receiver.render(48000, 300)) > 0.01);
+        QVERIFY(receiver.receive("voice", packets[14], 280, 6));
+        for (int n = 0; n < 6; ++n) (void)receiver.render(48000, 280 + n * 20);
+        QCOMPARE(rms(receiver.render(48000, 400)), 0.0);
+        QVERIFY(receiver.receive("voice", packets[15], 420));
+        QVERIFY(rms(receiver.render(48000, 420)) > 0.01);
     }
 
     void mixingTwentyStreamsBenchmark() {
@@ -168,21 +303,53 @@ private slots:
         for (int i = 0; i < 100; ++i) (void)gated.encode(std::array<float, 960>{}, 48000);
         QVERIFY(gated.activationThresholdDb() < -45);
     }
+    void automaticThresholdDoesNotApplyUnselectedNoiseSuppression_data() {
+        QTest::addColumn<int>("channels");
+        QTest::newRow("mono") << 1;
+        QTest::newRow("stereo") << 2;
+    }
     void automaticThresholdDoesNotApplyUnselectedNoiseSuppression() {
-        squad::VoiceMixer gated, continuous;
+        QFETCH(int, channels);
+        squad::VoiceMixer gated(channels), continuous(channels);
         gated.setVoiceActivation({true, true, -45});
+        std::deque<std::vector<float>> history;
+        int sent = 0;
         for (int frame = 0; frame < 100; ++frame) {
-            const auto speech = tone(0.3, 48000, 960, 120 + frame);
-            QCOMPARE(gated.encode(speech, 48000), continuous.encode(speech, 48000));
+            const auto speech = channels == 1 ? tone(0.3, 48000, 960, 120 + frame)
+                                              : stereoTone(0.3, 0.2, 960);
+            history.push_back(speech);
+            if (history.size() > 3) history.pop_front();
+            const auto packets = gated.encode(speech, 48000);
+            QVERIFY(size_t(packets.size()) <= history.size());
+            for (qsizetype p = 0; p < packets.size(); ++p)
+                QCOMPARE(packets[p], continuous.encode(history[history.size() - packets.size() + p], 48000).first());
+            sent += packets.size();
         }
+        QVERIFY(sent > 0);
         // An unchanged configuration must not discard an unfinished frame.
-        const auto half = tone(0.3, 48000, 480);
+        const auto half = channels == 1 ? tone(0.3, 48000, 480) : stereoTone(0.3, 0.2, 480);
         QVERIFY(gated.encode(half, 48000).isEmpty());
         gated.setVoiceActivation({true, true, -45});
-        QCOMPARE(gated.encode(half, 48000).size(), 1);
+        // Compare a fresh equivalent stream instead of assuming a tone is speech.
+        squad::VoiceMixer unchanged(channels);
+        unchanged.setVoiceActivation({true, true, -45});
+        for (int frame = 0; frame < 100; ++frame) {
+            const auto speech = channels == 1 ? tone(0.3, 48000, 960, 120 + frame)
+                                               : stereoTone(0.3, 0.2, 960);
+            (void)unchanged.encode(speech, 48000);
+        }
+        QVERIFY(unchanged.encode(half, 48000).isEmpty());
+        QCOMPARE(gated.encode(half, 48000), unchanged.encode(half, 48000));
+    }
+    void suppressionBlendKeepsTheSignalAligned_data() {
+        QTest::addColumn<int>("channels");
+        QTest::newRow("mono") << 1;
+        QTest::newRow("stereo") << 2;
     }
     void suppressionBlendKeepsTheSignalAligned() {
-        std::array<squad::VoiceMixer, 3> senders, receivers;
+        QFETCH(int, channels);
+        std::array<squad::VoiceMixer, 3> senders = {squad::VoiceMixer(channels), squad::VoiceMixer(channels), squad::VoiceMixer(channels)};
+        std::array<squad::VoiceMixer, 3> receivers = {squad::VoiceMixer(channels), squad::VoiceMixer(channels), squad::VoiceMixer(channels)};
         std::array<std::vector<float>, 3> decoded;
         for (size_t mode = 0; mode < senders.size(); ++mode) {
             senders[mode].setNoiseSuppression(mode * 0.5);
@@ -190,11 +357,12 @@ private slots:
         }
         // Changing pitch and amplitude avoids an ambiguous lag from a periodic tone.
         for (int frame = 0; frame < 150; ++frame) {
-            std::array<float, 960> input;
-            for (size_t i = 0; i < input.size(); ++i) {
+            std::vector<float> input(size_t(960 * channels));
+            for (int channel = 0; channel < channels; ++channel) for (size_t i = 0; i < 960; ++i) {
                 const double time = (frame * 960 + i) / 48000.0;
                 const auto phase = 2 * std::numbers::pi * (180 * time + 40 * time * time + 8 * std::sin(3 * time));
-                input[i] = float((0.2 * std::sin(phase) + 0.08 * std::sin(2 * phase) + 0.04 * std::sin(3 * phase))
+                const auto channelPhase = phase + channel * 0.37;
+                input[i * size_t(channels) + size_t(channel)] = float((0.2 * std::sin(channelPhase) + 0.08 * std::sin(2 * channelPhase) + 0.04 * std::sin(3 * channelPhase))
                     * (0.6 + 0.4 * std::cos(13 * time)));
             }
             for (size_t mode = 0; mode < senders.size(); ++mode) {
@@ -204,10 +372,11 @@ private slots:
             }
         }
         double dryEnergy = 0, wetEnergy = 0, cross = 0, blendEnergy = 0, errorEnergy = 0;
-        for (size_t i = 48000; i < 120000; ++i) {
-            const double dry = decoded[0][i], wet = decoded[2][i + 960];
+        const auto offset = size_t(960 * channels);
+        for (size_t i = size_t(48000 * channels); i < size_t(120000 * channels); ++i) {
+            const double dry = decoded[0][i], wet = decoded[2][i + offset];
             const auto expectedBlend = (dry + wet) * 0.5;
-            const auto error = decoded[1][i + 960] - expectedBlend;
+            const auto error = decoded[1][i + offset] - expectedBlend;
             dryEnergy += dry * dry; wetEnergy += wet * wet; cross += dry * wet;
             blendEnergy += expectedBlend * expectedBlend; errorEnergy += error * error;
         }

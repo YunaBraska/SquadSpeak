@@ -36,14 +36,6 @@
             <translation>Avaa järjestelmäsi tietosuoja-asetukset ja salli SquadSpeakille mikrofonin käyttö.</translation>
         </message>
         <message>
-            <source>Microphone analysis active. Test audio stays on this computer.</source>
-            <translation>Mikrofonin analyysi käynnissä. Testiääni pysyy tällä tietokoneella.</translation>
-        </message>
-        <message>
-            <source>Finish the test recording before changing devices.</source>
-            <translation>Viimeistele testitallennus ennen laitteen vaihtoa.</translation>
-        </message>
-        <message>
             <source>The output format is not supported.</source>
             <translation>Äänimuotoa ei tueta.</translation>
         </message>
@@ -68,32 +60,12 @@
             <translation>Testiääntä ei voitu toistaa.</translation>
         </message>
         <message>
-            <source>The microphone has provided no data for five seconds. Recording discarded.</source>
-            <translation>Mikrofoni ei ole tuottanut dataa viiteen sekuntiin. Nauhoitus hylättiin.</translation>
-        </message>
-        <message>
-            <source>The microphone was interrupted or changed. Recording discarded.</source>
-            <translation>Mikrofoni keskeytettiin tai vaihdettiin. Nauhoitus hylättiin.</translation>
-        </message>
-        <message>
-            <source>Cancelled. The incomplete recording was discarded.</source>
-            <translation>Peruutettu. Keskeneräinen nauhoitus hylättiin.</translation>
-        </message>
-        <message>
             <source>No selected microphone is available</source>
             <translation>Valittua mikrofonia ei ole saatavilla</translation>
         </message>
         <message>
             <source>Allow microphone access in the system dialog.</source>
             <translation>Salli mikrofonin käyttö järjestelmän asetuksissa.</translation>
-        </message>
-        <message>
-            <source>Microphone capture active for the voice channel.</source>
-            <translation>Mikrofonin kaappaus on aktiivinen äänikanavaa varten.</translation>
-        </message>
-        <message>
-            <source>Microphone access was denied. Nothing was saved.</source>
-            <translation>Mikrofonin käyttö evättiin. Mitään ei tallennettu.</translation>
         </message>
         <message>
             <source>Microphone access is missing. Allow it in System Settings.</source>
@@ -259,103 +231,16 @@
             <source>App audio only</source>
             <translation>Vain sovelluksen ääni</translation>
         </message>
-    </context>
-    <context>
-        <name>AudioRecording</name>
         <message>
-            <source>Incomplete audio block. Recording discarded.</source>
-            <translation>Keskeneräinen äänilohko. Tallenne hylättiin.</translation>
-        </message>
-        <message>
-            <source>Move about one meter from the microphone. Keep the background sound playing and read the sentence.</source>
-            <translation>Siirry noin metrin päähän mikrofonista. Pidä taustamelu päällä ja lue lause.</translation>
-        </message>
-        <message>
-            <source>Voice with background sound</source>
-            <translation>Ääni taustaäänen kanssa</translation>
-        </message>
-        <message>
-            <source>The recordings folder could not be created.</source>
-            <translation>Tallennuskansiota ei voitu luoda.</translation>
-        </message>
-        <message>
-            <source>You can stop the background sound now.</source>
-            <translation>Voit nyt sammuttaa taustamelun.</translation>
-        </message>
-        <message>
-            <source>Recordings saved</source>
-            <translation>Tallennukset tallennettu</translation>
-        </message>
-        <message>
-            <source>The test recording could not be saved completely.</source>
-            <translation>Testitallennusta ei voitu tallentaa kokonaan.</translation>
-        </message>
-        <message>
-            <source>Keep music off and stay quiet. Start when ready.</source>
-            <translation>Pidä musiikki pois päältä ja pysy hiljaa. Aloita, kun olet valmis.</translation>
-        </message>
-        <message>
-            <source>Your voice</source>
-            <translation>Sinun äänesi</translation>
-        </message>
-        <message>
-            <source>Play music or another background sound at a normal volume. Stay quiet while recording.</source>
-            <translation>Toista musiikkia tai muuta taustamelua normaalilla äänenvoimakkuudella. Pysy hiljaa nauhoituksen aikana.</translation>
-        </message>
-        <message>
-            <source>The test recording could not be created.</source>
-            <translation>Testinauhoitusta ei voitu luoda.</translation>
-        </message>
-        <message>
-            <source>Background sound</source>
-            <translation>Taustaääni</translation>
-        </message>
-        <message>
-            <source>The window is open. I can hear the rain outside. One, two, three, four, five.</source>
-            <translation>Ikkuna on auki. Kuulen sateen ulkona. Yksi, kaksi, kolme, neljä, viisi.</translation>
-        </message>
-        <message>
-            <source>This microphone format is not supported for test recordings.</source>
-            <translation>Tätä mikrofonin muotoa ei tueta testinauhoituksissa.</translation>
-        </message>
-        <message>
-            <source>Keep the background volume unchanged. Read the sentence, then stop recording.</source>
-            <translation>Pidä taustamelun äänenvoimakkuus ennallaan. Lue lause, sitten lopeta nauhoitus.</translation>
-        </message>
-        <message>
-            <source>Record at least half a second, then try again.</source>
-            <translation>Nauhoita vähintään puoli sekuntia, sitten yritä uudelleen.</translation>
-        </message>
-        <message>
-            <source>Sit at your usual distance. Read the sentence, then stop recording.</source>
-            <translation>Istu tavalliseen etäisyyteen. Lue lause, sitten lopeta nauhoitus.</translation>
-        </message>
-        <message>
-            <source>The recording description could not be saved.</source>
-            <translation>Nauhoituksen kuvausta ei voitu tallentaa.</translation>
-        </message>
-        <message>
-            <source>The WAV file could not be finalized.</source>
-            <translation>WAV-tiedostoa ei voitu viimeistellä.</translation>
-        </message>
-        <message>
-            <source>The WAV header could not be written.</source>
-            <translation>WAV-otsikkoa ei voitu kirjoittaa.</translation>
-        </message>
-        <message>
-            <source>Voice farther away</source>
-            <translation>Ääni kauempana</translation>
-        </message>
-        <message>
-            <source>Room sound</source>
-            <translation>Kanavan ääni</translation>
+            <source>Speech output is unavailable.</source>
+            <translation>Puhetoisto ei ole käytettävissä.</translation>
         </message>
     </context>
     <context>
         <name>AudioSettings</name>
         <message>
-            <source>Echo cancellation</source>
-            <translation>Kaiunpoisto</translation>
+            <source>Echo</source>
+            <translation>Kaiku</translation>
         </message>
         <message>
             <source>Off</source>
@@ -402,12 +287,12 @@
             <translation>Oma toisto</translation>
         </message>
         <message>
-            <source>Clear local key</source>
-            <translation>Poista paikallinen pikanäppäin</translation>
+            <source>Clear key</source>
+            <translation>Poista näppäin</translation>
         </message>
         <message>
-            <source>Low cut</source>
-            <translation>Alataajuuksien leikkaus</translation>
+            <source>Highpass</source>
+            <translation>Ylipäästö</translation>
         </message>
         <message>
             <source>Microphone access is off</source>
@@ -418,32 +303,16 @@
             <translation>Syöttölaite</translation>
         </message>
         <message>
-            <source>Microphone paused for others</source>
-            <translation>Mikrofoni keskeytetty muille</translation>
-        </message>
-        <message>
             <source>Cancel</source>
             <translation>Peruuta</translation>
-        </message>
-        <message>
-            <source>Guided recording</source>
-            <translation>Ohjattu tallennus</translation>
         </message>
         <message>
             <source>Clipping. Reduce microphone gain.</source>
             <translation>Leikkautumista. Pienennä mikrofonin vahvistusta.</translation>
         </message>
         <message>
-            <source>Silent</source>
-            <translation>Mykistetty</translation>
-        </message>
-        <message>
             <source>Test output</source>
             <translation>Testaa ääntä</translation>
-        </message>
-        <message>
-            <source>Voice level</source>
-            <translation>Äänitaso</translation>
         </message>
         <message>
             <source>Voice threshold</source>
@@ -462,20 +331,16 @@
             <translation>Laite irrotettu</translation>
         </message>
         <message>
-            <source>Local key</source>
-            <translation>Paikallinen pikanäppäin</translation>
+            <source>PTT key</source>
+            <translation>Puhepainike</translation>
         </message>
         <message>
             <source>Voice activation</source>
             <translation>Puheaktivointi</translation>
         </message>
         <message>
-            <source>Remote PTT key</source>
-            <translation>Etäkäytön PTT-pikanäppäin</translation>
-        </message>
-        <message>
-            <source>Noise reduction</source>
-            <translation>Kohinanvaimennus</translation>
+            <source>Denoise</source>
+            <translation>Kohinanpoisto</translation>
         </message>
         <message>
             <source>Selected device is not connected</source>
@@ -486,32 +351,120 @@
             <translation>Lähettäisi</translation>
         </message>
         <message>
-            <source>Microphone gain</source>
-            <translation>Mikrofonin vahvistus</translation>
-        </message>
-        <message>
-            <source>Clear remote key</source>
-            <translation>Poista etäkäytön pikanäppäin</translation>
-        </message>
-        <message>
-            <source>Playback volume</source>
-            <translation>Toistotaso</translation>
+            <source>Gain</source>
+            <translation>Vahvistus</translation>
         </message>
         <message>
             <source>Not assigned</source>
             <translation>Ei määritetty</translation>
         </message>
         <message>
-            <source>High cut</source>
-            <translation>Ylätaajuuksien leikkaus</translation>
+            <source>Lowpass</source>
+            <translation>Alipäästö</translation>
         </message>
         <message>
             <source>Level audio automatically</source>
             <translation>Säädä äänenvoimakkuus automaattisesti</translation>
         </message>
+        <message>
+            <source>Voice volume</source>
+            <translation>Puhechatin äänenvoimakkuus</translation>
+        </message>
+        <message>
+            <source>App sounds</source>
+            <translation>Sovelluksen äänet</translation>
+        </message>
+        <message>
+            <source>Read bot messages aloud</source>
+            <translation>Lue botin viestit ääneen</translation>
+        </message>
+        <message>
+            <source>Download a high-quality voice for this language in macOS settings.</source>
+            <translation>Lataa laadukas ääni tälle kielelle macOS-asetuksista.</translation>
+        </message>
+        <message>
+            <source>Bot voice</source>
+            <translation>Botin ääni</translation>
+        </message>
+        <message>
+            <source>Automatic</source>
+            <translation>Automaattinen</translation>
+        </message>
+        <message>
+            <source>Unavailable</source>
+            <translation>Ei saatavilla</translation>
+        </message>
+        <message>
+            <source>Download voices in your device's Accessibility speech settings.</source>
+            <translation>Lataa ääniä laitteesi käyttöavun puheasetuksista.</translation>
+        </message>
+        <message>
+            <source>Voice download help</source>
+            <translation>Äänien latausohje</translation>
+        </message>
+        <message>
+            <source>Strength, not the percentage of echo removed.</source>
+            <translation>Voimakkuus, ei poistetun kaiun prosenttiosuus.</translation>
+        </message>
+        <message>
+            <source>Auto also checks for speech, not just volume.</source>
+            <translation>Automaattitila tunnistaa myös puheen, ei pelkkää äänenvoimakkuutta.</translation>
+        </message>
     </context>
     <context>
         <name>Channels</name>
+        <message>
+            <source>Audio received</source>
+            <translation>Vastaanotettu ääni</translation>
+        </message>
+        <message>
+            <source>Search channels</source>
+            <translation>Etsi kanavia</translation>
+        </message>
+        <message>
+            <source>No matches</source>
+            <translation>Ei tuloksia</translation>
+        </message>
+        <message>
+            <source>Copy address</source>
+            <translation>Kopioi osoite</translation>
+        </message>
+        <message>
+            <source>Messages</source>
+            <translation>Viestit</translation>
+        </message>
+        <message>
+            <source>Message</source>
+            <translation>Viesti</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Avaa</translation>
+        </message>
+        <message>
+            <source>Online</source>
+            <translation>Online</translation>
+        </message>
+        <message>
+            <source>Offline</source>
+            <translation>Poissa</translation>
+        </message>
+        <message>
+            <source>No private messages</source>
+            <translation>Ei yksityisviestejä</translation>
+        </message>
+        <message>
+            <source>Private messages are unavailable for this contact.</source>
+            <translation>Yksityisviestit eivät ole käytettävissä tälle yhteyshenkilölle.</translation>
+        </message>
+        <message>
+            <source>If asked, allow local network access. You can change this in system settings.</source>
+            <translation>Jos sinulta kysytään, salli pääsy lähiverkkoon. Voit muuttaa tätä järjestelmäasetuksissa.</translation>
+        </message>
+        <message>
+            <source>Retry</source>
+            <translation>Yritä uudelleen</translation>
+        </message>
         <message>
             <source>Updates</source>
             <translation>Päivitykset</translation>
@@ -531,6 +484,10 @@
         <message>
             <source>DDNS cannot bypass CGNAT. If your provider shares the public IP, use a private VPN on all participating devices or a publicly reachable server.</source>
             <translation>DDNS ei ohita CGNAT:ia. Jos palveluntarjoajasi jakaa julkisen IP-osoitteen, käytä yksityistä VPN:ää kaikilla osallistuvilla laitteilla tai julkisesti saavutettavaa palvelinta.</translation>
+        </message>
+        <message>
+            <source>Remove server</source>
+            <translation>Poista palvelin</translation>
         </message>
         <message>
             <source>Low</source>
@@ -653,10 +610,6 @@
             <translation>Ilmoitusäänet</translation>
         </message>
         <message>
-            <source>Lifetime for new messages. Earlier messages keep their expiry.</source>
-            <translation>Uusien viestien säilytysaika. Vanhemmat viestit säilyttävät vanhenemisaikansa.</translation>
-        </message>
-        <message>
             <source>Enable speakers</source>
             <translation>Käytä kaiuttimia</translation>
         </message>
@@ -691,10 +644,6 @@
         <message>
             <source>Allow device</source>
             <translation>Salli laite</translation>
-        </message>
-        <message>
-            <source>Receive quality: %1 kb/s per voice. Adjusts automatically for this device.</source>
-            <translation>Vastaanotettava laatu: %1 kb/s ääntä. Säätää automaattisesti tälle laitteelle.</translation>
         </message>
         <message>
             <source>Stop radio</source>
@@ -1188,6 +1137,50 @@
             <source>This device</source>
             <translation>Tämä laite</translation>
         </message>
+        <message>
+            <source>Use default music volume</source>
+            <translation>Käytä musiikin oletusäänenvoimakkuutta</translation>
+        </message>
+        <message>
+            <source>Show in Dock</source>
+            <translation>Näytä Dockissa</translation>
+        </message>
+        <message>
+            <source>App language</source>
+            <translation>Sovelluksen kieli</translation>
+        </message>
+        <message>
+            <source>Send in</source>
+            <translation>Lähetyskieli</translation>
+        </message>
+        <message>
+            <source>Hear in</source>
+            <translation>Kuuntelukieli</translation>
+        </message>
+        <message>
+            <source>Download language models for %1 and %2?</source>
+            <translation>Ladataanko kielimallit kielille %1 ja %2?</translation>
+        </message>
+        <message>
+            <source>Download</source>
+            <translation>Lataa</translation>
+        </message>
+        <message>
+            <source>PTT, chat and channel controls. Uses the controlled device's microphone.</source>
+            <translation>PTT-, chat- ja kanavaohjaimet. Käytössä on ohjattavan laitteen mikrofoni.</translation>
+        </message>
+        <message>
+            <source>Connect the other device to one of your channels, then allow it here.</source>
+            <translation>Yhdistä toinen laite johonkin kanavaasi ja salli se sitten täällä.</translation>
+        </message>
+        <message>
+            <source>On the other device, open Settings &gt; Input &gt; Remote control and allow this device.</source>
+            <translation>Avaa toisessa laitteessa Asetukset &gt; Syöttö &gt; Etäkäyttö ja salli tämä laite.</translation>
+        </message>
+        <message>
+            <source>Unread messages</source>
+            <translation>Lukemattomat viestit</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1299,6 +1292,22 @@
             <source>The sanitized image could not be written completely.</source>
             <translation>Puhdistettua kuvaa ei voitu kirjoittaa kokonaan.</translation>
         </message>
+        <message>
+            <source>%1 joined.</source>
+            <translation>%1 liittyi.</translation>
+        </message>
+        <message>
+            <source>%1 left.</source>
+            <translation>%1 poistui.</translation>
+        </message>
+        <message>
+            <source>%1 was kicked.</source>
+            <translation>%1 potkittiin ulos.</translation>
+        </message>
+        <message>
+            <source>%1 was banned from the channel.</source>
+            <translation>%1 estettiin kanavalta.</translation>
+        </message>
     </context>
     <context>
         <name>ChatPanel</name>
@@ -1363,22 +1372,6 @@
             <translation>Ladataan...</translation>
         </message>
         <message>
-            <source>%1 joined.</source>
-            <translation>%1 liittyi.</translation>
-        </message>
-        <message>
-            <source>%1 left.</source>
-            <translation>%1 poistui.</translation>
-        </message>
-        <message>
-            <source>%1 was kicked.</source>
-            <translation>%1 potkittiin ulos.</translation>
-        </message>
-        <message>
-            <source>%1 was banned from the channel.</source>
-            <translation>%1 estettiin kanavalta.</translation>
-        </message>
-        <message>
             <source>Message could not be sent. Check the connection and text length.</source>
             <translation>Viestiä ei voitu lähettää. Tarkista yhteys ja viestin pituus.</translation>
         </message>
@@ -1404,7 +1397,400 @@
         </message>
     </context>
     <context>
+        <name>Desktop</name>
+        <message>
+            <source>Open settings at startup.</source>
+            <translation>Avaa asetukset käynnistyksen yhteydessä.</translation>
+        </message>
+        <message>
+            <source>Alternative file for audio profiles.</source>
+            <translation>Vaihtoehtoinen ääniprofiilitiedosto.</translation>
+        </message>
+        <message>
+            <source>Load the interface without microphone capture and exit after one second.</source>
+            <translation>Lataa käyttöliittymä ilman mikrofonitallennusta ja sulje sovellus sekunnin kuluttua.</translation>
+        </message>
+        <message>
+            <source>Save an image of the app window during the UI test.</source>
+            <translation>Tallenna sovellusikkunan kuva käyttöliittymätestin aikana.</translation>
+        </message>
+        <message>
+            <source>The window image could not be saved.</source>
+            <translation>Ikkunan kuvaa ei voitu tallentaa.</translation>
+        </message>
+        <message>
+            <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
+            <translation>Ilmoitusalue ei ole käytettävissä; sovellus pysyy avoinna ikkunassa.</translation>
+        </message>
+    </context>
+    <context>
+        <name>Headless</name>
+        <message>
+            <source>Host display name.</source>
+            <translation>Isännän näyttönimi.</translation>
+        </message>
+        <message>
+            <source>Command failed.</source>
+            <translation>Komento epäonnistui.</translation>
+        </message>
+        <message>
+            <source>%1 must be an integer.</source>
+            <translation>%1 on oltava kokonaisluku.</translation>
+        </message>
+        <message>
+            <source>Requests must be on/off or true/false.</source>
+            <translation>Pyyntöjen on oltava on/off tai true/false.</translation>
+        </message>
+        <message>
+            <source>Unknown host property: %1</source>
+            <translation>Tuntematon palvelimen ominaisuus: %1</translation>
+        </message>
+        <message>
+            <source>Run without GUI, microphone capture, or local audio output.</source>
+            <translation>Suorita ilman käyttöliittymää, mikrofonin tallennusta tai paikallista äänentoistoa.</translation>
+        </message>
+        <message>
+            <source>Server storage prefix. Personal/audio/GUI profiles are not loaded.</source>
+            <translation>Palvelimen tallennuksen etuliite. Henkilökohtaisia, audio- ja käyttöliittymäprofiileja ei ladata.</translation>
+        </message>
+        <message>
+            <source>Optional private identity file instead of the OS credential store (Linux/macOS). Parent directory must exist and belong to this account.</source>
+            <translation>Valinnainen yksityinen identiteettitiedosto käyttöjärjestelmän tunnistetietovaraston sijaan (Linux/macOS). Yläkansion on oltava olemassa ja tämän tilin omistama.</translation>
+        </message>
+        <message>
+            <source>UTF-8 key=value properties or JSON host preset. Default: application.properties, then config/application.properties beside the app.</source>
+            <translation>UTF-8-ominaisuudet key=value tai palvelimen JSON-esiasetus. Oletus: application.properties, sitten sovelluksen vieressä oleva config/application.properties.</translation>
+        </message>
+        <message>
+            <source>Channel display name.</source>
+            <translation>Kanavan näytettävä nimi.</translation>
+        </message>
+        <message>
+            <source>System and radio bot display name.</source>
+            <translation>Järjestelmä- ja radiobotin näytettävä nimi.</translation>
+        </message>
+        <message>
+            <source>TCP service port (1-65535).</source>
+            <translation>TCP-palveluportti (1-65535).</translation>
+        </message>
+        <message>
+            <source>Headless admission is always on; only 'on' or 'true' is accepted.</source>
+            <translation>Headless-hyväksyntä on aina käytössä; vain 'on' tai 'true' hyväksytään.</translation>
+        </message>
+        <message>
+            <source>Preapprove a device ID; repeat for several devices. Existing bans remain.</source>
+            <translation>Hyväksy laitteen tunnus etukäteen; toista useille laitteille. Olemassa olevat estot säilytetään.</translation>
+        </message>
+        <message>
+            <source>Block a device ID; repeat for several devices.</source>
+            <translation>Estä laitteen tunnus; toista useille laitteille.</translation>
+        </message>
+        <message>
+            <source>Read a UTF-8 channel password from a file before listening. An empty file removes it.</source>
+            <translation>Lue kanavan salasana UTF-8-tiedostosta ennen kuuntelua. Tyhjä tiedosto poistaa sen.</translation>
+        </message>
+        <message>
+            <source>Channel password. Empty removes it; environment or config avoids process-list exposure.</source>
+            <translation>Kanavan salasana. Tyhjä poistaa sen; ympäristö tai asetukset estävät sen näkymisen prosessiluettelossa.</translation>
+        </message>
+        <message>
+            <source>SquadSpeak headless local channel host</source>
+            <translation>SquadSpeak-paikallinen headless-kanavapalvelin</translation>
+        </message>
+        <message>
+            <source>Environment variables (SQUADSPEAK_ prefix):</source>
+            <translation>Ympäristömuuttujat (etuliite SQUADSPEAK_):</translation>
+        </message>
+        <message>
+            <source>Host configuration could not be read or exceeds 1 MiB.</source>
+            <translation>Palvelimen asetuksia ei voitu lukea tai ne ylittävät 1 MiB.</translation>
+        </message>
+        <message>
+            <source>Host configuration must be UTF-8.</source>
+            <translation>Palvelimen asetusten on oltava UTF-8.</translation>
+        </message>
+        <message>
+            <source>Host preset must be a JSON object.</source>
+            <translation>Isäntäesiasetuksen on oltava JSON-objekti.</translation>
+        </message>
+        <message>
+            <source>Property line %1 must use key=value.</source>
+            <translation>Ominaisuusrivin %1 on käytettävä key=value-muotoa.</translation>
+        </message>
+        <message>
+            <source>Property line %1: %2</source>
+            <translation>Ominaisuusrivi %1: %2</translation>
+        </message>
+        <message>
+            <source>Standard input has no file descriptor.</source>
+            <translation>Vakiosyötteellä ei ole tiedostokuvaajaa.</translation>
+        </message>
+        <message>
+            <source>Standard input could not be inspected.</source>
+            <translation>Vakiosyötettä ei voitu tutkia.</translation>
+        </message>
+        <message>
+            <source>Could not write the command response: %1</source>
+            <translation>Komennon vastausta ei voitu kirjoittaa: %1</translation>
+        </message>
+        <message>
+            <source>Standard input could not be read: %1</source>
+            <translation>Vakiosyötettä ei voitu lukea: %1</translation>
+        </message>
+        <message>
+            <source>Input line exceeds 65536 bytes.</source>
+            <translation>Syöterivi on pidempi kuin 65536 tavua.</translation>
+        </message>
+        <message>
+            <source>Each input line must be a JSON object.</source>
+            <translation>Jokaisen syöterivin on oltava JSON-objekti.</translation>
+        </message>
+        <message>
+            <source>Input ended before a complete JSON line.</source>
+            <translation>Syöte loppui ennen täydellistä JSON-riviä.</translation>
+        </message>
+        <message>
+            <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
+            <translation>Valinnainen oman kanavan tunnus komennoille status, configure, password, admission, history, chat ja radio; oletuksena pääkanava.</translation>
+        </message>
+        <message>
+            <source>Channel action must be list, add or remove.</source>
+            <translation>Kanavatoiminnon on oltava list, add tai remove.</translation>
+        </message>
+        <message>
+            <source>Removing an own channel deletes its history, images, permissions and radio settings. Set confirmed=true to proceed.</source>
+            <translation>Oman kanavan poistaminen poistaa historian, kuvat, oikeudet ja radioasetukset. Jatka asettamalla confirmed=true.</translation>
+        </message>
+        <message>
+            <source>id must identify an additional own channel.</source>
+            <translation>id:n on tunnistettava ylimääräinen oma kanava.</translation>
+        </message>
+        <message>
+            <source>The additional own channel could not be removed: %1</source>
+            <translation>Ylimääräisen oman kanavan poisto epäonnistui: %1</translation>
+        </message>
+        <message>
+            <source>channelId must identify an own channel.</source>
+            <translation>channelId:n on tunnistettava oma kanava.</translation>
+        </message>
+        <message>
+            <source>values must be a host settings object.</source>
+            <translation>values-arvon on oltava palvelinasetusten objekti.</translation>
+        </message>
+        <message>
+            <source>Headless admission is always enabled for non-banned devices; requests off is not supported.</source>
+            <translation>Headless-hyväksyntä on aina käytössä estämättömille laitteille; requests off ei ole tuettu.</translation>
+        </message>
+        <message>
+            <source>value must be a password of at most 1024 UTF-8 bytes without control characters; an empty string removes it.</source>
+            <translation>value-arvon on oltava salasana, jossa on enintään 1024 UTF-8-tavua ilman ohjausmerkkejä; tyhjä merkkijono poistaa sen.</translation>
+        </message>
+        <message>
+            <source>The channel is not ready or a password change is in progress.</source>
+            <translation>Kanava ei ole valmis tai salasanan vaihto on käynnissä.</translation>
+        </message>
+        <message>
+            <source>The channel was removed while saving the password.</source>
+            <translation>Kanava poistettiin salasanan tallennuksen aikana.</translation>
+        </message>
+        <message>
+            <source>id is required.</source>
+            <translation>id vaaditaan.</translation>
+        </message>
+        <message>
+            <source>text must be a valid non-empty chat message.</source>
+            <translation>text-arvon on oltava kelvollinen, ei-tyhjä chat-viesti.</translation>
+        </message>
+        <message>
+            <source>The local channel is not ready.</source>
+            <translation>Paikallinen kanava ei ole valmis.</translation>
+        </message>
+        <message>
+            <source>The channel's radio is unavailable.</source>
+            <translation>Kanavan radio ei ole käytettävissä.</translation>
+        </message>
+        <message>
+            <source>Unknown command. Use help.</source>
+            <translation>Tuntematon komento. Käytä komentoa help.</translation>
+        </message>
+        <message>
+            <source>search requires a query, non-negative offset and limit from 1 to 128.</source>
+            <translation>search vaatii query-arvon, ei-negatiivisen offset-arvon ja limit-arvon väliltä 1-128.</translation>
+        </message>
+        <message>
+            <source>add creates an id; update requires an existing id.</source>
+            <translation>add luo id:n; update vaatii olemassa olevan id:n.</translation>
+        </message>
+        <message>
+            <source>A station is already being checked.</source>
+            <translation>Asemaa tarkistetaan jo.</translation>
+        </message>
+        <message>
+            <source>The channel was removed while checking the station.</source>
+            <translation>Kanava poistettiin aseman tarkistuksen aikana.</translation>
+        </message>
+        <message>
+            <source>Unknown radio action.</source>
+            <translation>Tuntematon radiotoiminto.</translation>
+        </message>
+        <message>
+            <source>Could not load language: %1</source>
+            <translation>Kielen lataaminen epäonnistui: %1</translation>
+        </message>
+        <message>
+            <source>The %1 option is incompatible with --headless.</source>
+            <translation>Valitsin %1 ei ole yhteensopiva --headless-tilan kanssa.</translation>
+        </message>
+        <message>
+            <source>Unexpected positional arguments. Use --help.</source>
+            <translation>Odottamattomia sijaintiargumentteja. Käytä --help.</translation>
+        </message>
+        <message>
+            <source>--config / -f requires a non-empty path.</source>
+            <translation>--config / -f vaatii ei-tyhjän polun.</translation>
+        </message>
+        <message>
+            <source>Choose --password or --password-file, not both.</source>
+            <translation>Valitse --password tai --password-file, ei molempia.</translation>
+        </message>
+        <message>
+            <source>Choose SQUADSPEAK_PASSWORD or SQUADSPEAK_PASSWORD_FILE, not both.</source>
+            <translation>Valitse SQUADSPEAK_PASSWORD tai SQUADSPEAK_PASSWORD_FILE, ei molempia.</translation>
+        </message>
+        <message>
+            <source>Choose password or passwordFile in one configuration layer, not both.</source>
+            <translation>Valitse password tai passwordFile yhdessä asetustasossa, ei molempia.</translation>
+        </message>
+        <message>
+            <source>passwordFile must be a non-empty path.</source>
+            <translation>passwordFile-arvon on oltava ei-tyhjä polku.</translation>
+        </message>
+        <message>
+            <source>Password file could not be read or is too large.</source>
+            <translation>Salasanatiedostoa ei voitu lukea tai se on liian suuri.</translation>
+        </message>
+        <message>
+            <source>Password file must contain at most 1024 UTF-8 bytes without control characters.</source>
+            <translation>Salasanatiedostossa saa olla enintään 1024 UTF-8-tavua ilman ohjausmerkkejä.</translation>
+        </message>
+        <message>
+            <source>Password must be a string of at most 1024 UTF-8 bytes without control characters.</source>
+            <translation>Salasanan on oltava merkkijono, jossa on enintään 1024 UTF-8-tavua ilman ohjausmerkkejä.</translation>
+        </message>
+        <message>
+            <source>settingsFile must be a non-empty path.</source>
+            <translation>settingsFile-arvon on oltava ei-tyhjä polku.</translation>
+        </message>
+        <message>
+            <source>identityFile must be a non-empty path.</source>
+            <translation>identityFile-arvon on oltava ei-tyhjä polku.</translation>
+        </message>
+        <message>
+            <source>The settings directory could not be created.</source>
+            <translation>Asetuskansiota ei voitu luoda.</translation>
+        </message>
+        <message>
+            <source>This SquadSpeak profile is already running or cannot be locked.</source>
+            <translation>Tämä SquadSpeak-profiili on jo käynnissä tai sitä ei voi lukita.</translation>
+        </message>
+        <message>
+            <source>Standard input could not be opened.</source>
+            <translation>Vakiosyötettä ei voitu avata.</translation>
+        </message>
+        <message>
+            <source>Standard output could not be opened.</source>
+            <translation>Vakiotulostetta ei voitu avata.</translation>
+        </message>
+        <message>
+            <source>This identity file is already in use or cannot be locked.</source>
+            <translation>Tämä identiteettitiedosto on jo käytössä tai sitä ei voi lukita.</translation>
+        </message>
+        <message>
+            <source>Invalid host configuration: %1</source>
+            <translation>Virheelliset palvelimen asetukset: %1</translation>
+        </message>
+        <message>
+            <source>Radio channels could not be initialized.</source>
+            <translation>Radiokanavia ei voitu alustaa.</translation>
+        </message>
+        <message>
+            <source>Headless host could not start: %1</source>
+            <translation>Headless-palvelinta ei voitu käynnistää: %1</translation>
+        </message>
+        <message>
+            <source>Channel password could not be saved.</source>
+            <translation>Kanavan salasanaa ei voitu tallentaa.</translation>
+        </message>
+        <message>
+            <source>Invalid channel password: %1</source>
+            <translation>Virheellinen kanavan salasana: %1</translation>
+        </message>
+        <message>
+            <source>Headless host could not initialize: %1</source>
+            <translation>Headless-palvelinta ei voitu alustaa: %1</translation>
+        </message>
+        <message>
+            <source>SquadSpeak headless could not start: %1</source>
+            <translation>SquadSpeak-headlessia ei voitu käynnistää: %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>Tukitoimien tulee olla tila, sisäänkirjautuminen, päivitys, uloskirjautuminen tai peruutus. status sign-in refresh sign-out cancel</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>Tukioperaatio on meneillään.</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>Tukipalvelun käyttöoikeus ei ole käytettävissä tässä koontiversiossa.</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>Asetusten prioriteetti: argumentit &gt; ympäristö &gt; ominaisuudet &gt; tallennetut palvelinarvot.</translation>
+        </message>
+    </context>
+    <context>
+        <name>License</name>
+        <message>
+            <source>License storage is busy or unavailable.</source>
+            <translation>Lisenssitallennustila on varattu tai ei ole käytettävissä.</translation>
+        </message>
+        <message>
+            <source>License storage is unavailable.</source>
+            <translation>Lisenssitallennustila ei ole käytettävissä.</translation>
+        </message>
+        <message>
+            <source>Sign-in expired. Try again.</source>
+            <translation>Kirjautuminen vanhentunut. Yritä uudelleen.</translation>
+        </message>
+        <message>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>GitHub-sisäänkirjautuminen ei ole käytettävissä. Yritä uudelleen.</translation>
+        </message>
+        <message>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>GitHub-sisäänkirjautumista ei suoritettu loppuun. Yritä uudelleen.</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>GitHubia ei voitu tarkistaa. Offline-käyttö kestää enintään seitsemän päivää.</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>Kirjaudu uudelleen sisään GitHubilla.</translation>
+        </message>
+    </context>
+    <context>
         <name>LocalChannel</name>
+        <message>
+            <source>Insufficient permissions.</source>
+            <translation>Riittämättömät oikeudet.</translation>
+        </message>
+        <message>
+            <source>Blocked</source>
+            <translation>Estetty</translation>
+        </message>
         <message>
             <source>Host is not responding. Reconnecting.</source>
             <translation>Palvelin ei vastaa. Yritetään yhdistää uudelleen.</translation>
@@ -1926,8 +2312,8 @@
             <translation>Kuvan siirto kesti liian kauan.</translation>
         </message>
         <message>
-            <source>The channel is full. Text chat is still available.</source>
-            <translation>Kanava on täynnä. Tekstichat on edelleen käytettävissä.</translation>
+            <source>The host is busy. Try again shortly.</source>
+            <translation>Isäntä on varattu. Yritä hetken kuluttua uudelleen.</translation>
         </message>
         <message>
             <source>All own channels use the device's shared port.</source>
@@ -2189,6 +2575,53 @@
             <source>Voice relay codec could not be configured.</source>
             <translation>Puheen välityskoodekkia ei voitu määrittää.</translation>
         </message>
+        <message>
+            <source>Unsupported audio codec</source>
+            <translation>Äänikoodekkia ei tueta</translation>
+        </message>
+        <message>
+            <source>Speaking is not allowed in this channel.</source>
+            <translation>Tällä kanavalla ei saa puhua.</translation>
+        </message>
+    </context>
+    <context>
+        <name>LocalLanguage</name>
+        <message>
+            <source>Translation (experimental)</source>
+            <translation>Käännös (kokeellinen)</translation>
+        </message>
+        <message>
+            <source>Translate messages</source>
+            <translation>Käännä viestit</translation>
+        </message>
+        <message>
+            <source>Translated voice</source>
+            <translation>Käännetty puhe</translation>
+        </message>
+        <message>
+            <source>Original audio</source>
+            <translation>Alkuperäinen ääni</translation>
+        </message>
+        <message>
+            <source>Original text</source>
+            <translation>Alkuperäinen teksti</translation>
+        </message>
+        <message>
+            <source>Prepare languages</source>
+            <translation>Valmistele kielet</translation>
+        </message>
+        <message>
+            <source>Local language processing is unavailable.</source>
+            <translation>Paikallinen kielten käsittely ei ole käytettävissä.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be read.</source>
+            <translation>Kieliasetuksia ei voitu lukea.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be saved.</source>
+            <translation>Kieliasetuksia ei voitu tallentaa.</translation>
+        </message>
     </context>
     <context>
         <name>PushToTalkKey</name>
@@ -2329,50 +2762,61 @@
         </message>
     </context>
     <context>
-        <name>RecordingPanel</name>
+        <name>ScreenPanel</name>
         <message>
-            <source>Stop</source>
-            <translation>Pysäytä</translation>
+            <source>Video paused</source>
+            <translation>Video pysäytetty</translation>
         </message>
         <message>
-            <source>Start</source>
-            <translation>Aloita</translation>
+            <source>Stream ended</source>
+            <translation>Suoratoisto päättyi</translation>
         </message>
         <message>
-            <source>Saved on this device only. Nothing is uploaded.</source>
-            <translation>Tallennettu vain tälle laitteelle. Mitään ei ole ladattu.</translation>
+            <source>Connecting</source>
+            <translation>Yhdistetään</translation>
         </message>
         <message>
-            <source>Keep this take or record it again.</source>
-            <translation>Pidä tämä tallenne tai tallenna se uudelleen.</translation>
+            <source>Open screen stream</source>
+            <translation>Avaa näyttösuoratoisto</translation>
         </message>
         <message>
-            <source>Record again</source>
-            <translation>Tallenna uudelleen</translation>
+            <source>Screen stream</source>
+            <translation>Näyttösuoratoisto</translation>
         </message>
         <message>
-            <source>Use recording</source>
-            <translation>Käytä tallennetta</translation>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
+        </message>
+    </context>
+    <context>
+        <name>ScreenShare</name>
+        <message>
+            <source>Allow screen recording in system settings.</source>
+            <translation>Salli näytön tallennus järjestelmäasetuksissa.</translation>
         </message>
         <message>
-            <source>Recording progress</source>
-            <translation>Tallennuksen edistyminen</translation>
+            <source>The shared screen was removed. Select a source to start again.</source>
+            <translation>Jaettu näyttö poistettiin. Valitse lähde, jotta voit aloittaa uudelleen.</translation>
         </message>
         <message>
-            <source>Step %1 of %2</source>
-            <translation>Vaihe %1 / %2</translation>
+            <source>The shared window was closed. Select a source to start again.</source>
+            <translation>Jaettu ikkuna suljettiin. Valitse lähde, jotta voit aloittaa uudelleen.</translation>
         </message>
         <message>
-            <source>Open recordings</source>
-            <translation>Avaa tallenteet</translation>
+            <source>The selected screen is no longer available.</source>
+            <translation>Valittu näyttö ei ole enää käytettävissä.</translation>
         </message>
         <message>
-            <source>Reset test</source>
-            <translation>Nollaa testi</translation>
+            <source>The selected window is no longer available.</source>
+            <translation>Valittu ikkuna ei ole enää käytettävissä.</translation>
         </message>
         <message>
-            <source>%1 s remaining / %2 dBFS</source>
-            <translation>%1 jäljellä / %2 dBFS</translation>
+            <source>The selected source exceeds the capture size limit.</source>
+            <translation>Valittu lähde ylittää tallennuskoko rajan.</translation>
+        </message>
+        <message>
+            <source>Close a video view before opening another stream.</source>
+            <translation>Sulje videonäkymä ennen uuden suoratoiston avaamista.</translation>
         </message>
     </context>
     <context>
@@ -2449,10 +2893,6 @@
             <translation>Signaalia kerätään...</translation>
         </message>
         <message>
-            <source>Dashed curve: configured gain and frequency cuts, using the right dB scale. Noise reduction and voice activation are not part of this curve.</source>
-            <translation>Katkoviiva: Konfiguroitu vahvistus ja taajuusrajoitukset, käyttäen oikeaa dB-asteikkoa. Melunvaimennus ja äänen tunnistus eivät kuulu tähän käyrään.</translation>
-        </message>
-        <message>
             <source>Microphone preview is not running</source>
             <translation>Mikrofonin esikatselu ei ole käynnissä</translation>
         </message>
@@ -2463,303 +2903,6 @@
         <message>
             <source>Peak: %1</source>
             <translation>Maksimi: %1</translation>
-        </message>
-    </context>
-    <context>
-        <name>Tray</name>
-        <message>
-            <source>Quit</source>
-            <translation>Lopeta</translation>
-        </message>
-        <message>
-            <source>SquadSpeak - speaking</source>
-            <translation>SquadSpeak - puhuu</translation>
-        </message>
-        <message>
-            <source>Settings</source>
-            <translation>Asetukset</translation>
-        </message>
-        <message>
-            <source>Channels</source>
-            <translation>Kanavat</translation>
-        </message>
-        <message>
-            <source>New image</source>
-            <translation>Uusi kuva</translation>
-        </message>
-    </context>
-    <context>
-        <name>VoiceAvatar</name>
-        <message>
-            <source>Muted</source>
-            <translation>Mikrofoni mykistetty</translation>
-        </message>
-        <message>
-            <source>Sleeping</source>
-            <translation>Hiljaa</translation>
-        </message>
-        <message>
-            <source>Offline</source>
-            <translation>Poissa</translation>
-        </message>
-        <message>
-            <source>Speaking</source>
-            <translation>Puhuu</translation>
-        </message>
-        <message>
-            <source>Unavailable</source>
-            <translation>Ei saatavilla</translation>
-        </message>
-        <message>
-            <source>Listening</source>
-            <translation>Kuuntelee</translation>
-        </message>
-        <message>
-            <source>Deafened</source>
-            <translation>Kaiuttimet mykistetty</translation>
-        </message>
-    </context>
-    <context>
-        <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>Ei saatavilla - ääniasetukset tai testi</translation>
-        </message>
-        <message>
-            <source>Microphone muted</source>
-            <translation>Mikrofoni mykistetty</translation>
-        </message>
-        <message>
-            <source>Push-to-talk held</source>
-            <translation>Puheentunnistus aktiivinen</translation>
-        </message>
-        <message>
-            <source>Ready - push-to-talk released</source>
-            <translation>Valmis - puheentunnistus vapautettu</translation>
-        </message>
-        <message>
-            <source>Microphone unmuted</source>
-            <translation>Mikrofoni päällä</translation>
-        </message>
-        <message>
-            <source>Settings could not be saved: %1</source>
-            <translation>Asetuksia ei voitu tallentaa: %1</translation>
-        </message>
-        <message>
-            <source>The push-to-talk sequence cannot be incremented further.</source>
-            <translation>Push-to-talk-sarjaa ei voi enää kasvattaa.</translation>
-        </message>
-        <message>
-            <source>Choose System, Light or Dark.</source>
-            <translation>Valitse järjestelmä-, vaalean- tai tumman teema.</translation>
-        </message>
-        <message>
-            <source>Choose a colour palette from the list.</source>
-            <translation>Valitse väripaletti listasta.</translation>
-        </message>
-        <message>
-            <source>Choose an available avatar.</source>
-            <translation>Valitse saatavilla oleva avatar.</translation>
-        </message>
-        <message>
-            <source>Invalid push-to-talk binding.</source>
-            <translation>Virheellinen push-to-talk -asetus.</translation>
-        </message>
-        <message>
-            <source>Release the held push-to-talk key first.</source>
-            <translation>Vapauta ensin painettu push-to-talk -näppäin.</translation>
-        </message>
-        <message>
-            <source>Choose a language from the list.</source>
-            <translation>Valitse kieli listasta.</translation>
-        </message>
-        <message>
-            <source>This avatar requires Supporter.</source>
-            <translation>Tämä avatar vaatii Supporter-lisenssin.</translation>
-        </message>
-        <message>
-            <source>The name must contain 1 to 64 characters.</source>
-            <translation>Nimen tulee sisältää 1-64 merkkiä.</translation>
-        </message>
-        <message>
-            <source>The name may not contain control characters or line breaks.</source>
-            <translation>Nimi ei saa sisältää ohjausmerkkejä tai rivinvaihtoja.</translation>
-        </message>
-        <message>
-            <source>Session settings could not be read.</source>
-            <translation>Istunnon asetuksia ei voitu lukea.</translation>
-        </message>
-        <message>
-            <source>Saved setting is invalid: %1</source>
-            <translation>Virheellinen tallennettu asetus: %1</translation>
-        </message>
-    </context>
-    <context>
-        <name>License</name>
-        <message>
-            <source>License storage is busy or unavailable.</source>
-            <translation>Lisenssitallennustila on varattu tai ei ole käytettävissä.</translation>
-        </message>
-        <message>
-            <source>License storage is unavailable.</source>
-            <translation>Lisenssitallennustila ei ole käytettävissä.</translation>
-        </message>
-        <message>
-            <source>Sign-in expired. Try again.</source>
-            <translation>Kirjautuminen vanhentunut. Yritä uudelleen.</translation>
-        </message>
-        <message>
-            <source>GitHub sign-in is unavailable. Try again.</source>
-            <translation>GitHub-sisäänkirjautuminen ei ole käytettävissä. Yritä uudelleen.</translation>
-        </message>
-        <message>
-            <source>GitHub sign-in was not completed. Try again.</source>
-            <translation>GitHub-sisäänkirjautumista ei suoritettu loppuun. Yritä uudelleen.</translation>
-        </message>
-        <message>
-            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
-            <translation>GitHubia ei voitu tarkistaa. Offline-käyttö kestää enintään seitsemän päivää.</translation>
-        </message>
-        <message>
-            <source>Sign in with GitHub again.</source>
-            <translation>Kirjaudu uudelleen sisään GitHubilla.</translation>
-        </message>
-    </context>
-    <context>
-        <name>ScreenShare</name>
-        <message>
-            <source>The shared screen was removed. Select a source to start again.</source>
-            <translation>Jaettu näyttö poistettiin. Valitse lähde, jotta voit aloittaa uudelleen.</translation>
-        </message>
-        <message>
-            <source>The shared window was closed. Select a source to start again.</source>
-            <translation>Jaettu ikkuna suljettiin. Valitse lähde, jotta voit aloittaa uudelleen.</translation>
-        </message>
-        <message>
-            <source>The selected screen is no longer available.</source>
-            <translation>Valittu näyttö ei ole enää käytettävissä.</translation>
-        </message>
-        <message>
-            <source>The selected window is no longer available.</source>
-            <translation>Valittu ikkuna ei ole enää käytettävissä.</translation>
-        </message>
-        <message>
-            <source>The selected source exceeds the capture size limit.</source>
-            <translation>Valittu lähde ylittää tallennuskoko rajan.</translation>
-        </message>
-        <message>
-            <source>Close a video view before opening another stream.</source>
-            <translation>Sulje videonäkymä ennen uuden suoratoiston avaamista.</translation>
-        </message>
-    </context>
-    <context>
-        <name>ScreenPanel</name>
-        <message>
-            <source>Media capacity reached</source>
-            <translation>Mediatila täynnä</translation>
-        </message>
-        <message>
-            <source>Video paused</source>
-            <translation>Video pysäytetty</translation>
-        </message>
-        <message>
-            <source>Stream ended</source>
-            <translation>Suoratoisto päättyi</translation>
-        </message>
-        <message>
-            <source>Connecting</source>
-            <translation>Yhdistetään</translation>
-        </message>
-        <message>
-            <source>Open screen stream</source>
-            <translation>Avaa näyttösuoratoisto</translation>
-        </message>
-        <message>
-            <source>Screen stream</source>
-            <translation>Näyttösuoratoisto</translation>
-        </message>
-        <message>
-            <source>%1 kbit/s</source>
-            <translation>%1 kbit/s</translation>
-        </message>
-    </context>
-    <context>
-        <name>VideoCodec</name>
-        <message>
-            <source>Video codec: %1</source>
-            <translation>Videokoodekki: %1</translation>
-        </message>
-        <message>
-            <source>Video codec ABI does not match its headers.</source>
-            <translation>Videokoodekin ABI ei vastaa sen otsikkotiedostoja.</translation>
-        </message>
-        <message>
-            <source>Video buffers could not be allocated.</source>
-            <translation>Videopuskureille ei voitu varata muistia.</translation>
-        </message>
-        <message>
-            <source>Invalid video quality tier.</source>
-            <translation>Virheellinen videon laatutaso.</translation>
-        </message>
-        <message>
-            <source>The screen source exceeds the supported capture size.</source>
-            <translation>Näyttölähde ylittää tuetun kaappauskoon.</translation>
-        </message>
-        <message>
-            <source>The screen source is too narrow.</source>
-            <translation>Näyttölähde on liian kapea.</translation>
-        </message>
-        <message>
-            <source>The video encoder could not be allocated.</source>
-            <translation>Videokooderille ei voitu varata muistia.</translation>
-        </message>
-        <message>
-            <source>No supported video encoder is available.</source>
-            <translation>Tuettua videokooderia ei ole käytettävissä.</translation>
-        </message>
-        <message>
-            <source>Video encoder configuration is too large.</source>
-            <translation>Videokooderin määritys on liian suuri.</translation>
-        </message>
-        <message>
-            <source>Video scaling could not be initialized.</source>
-            <translation>Videon skaalausta ei voitu alustaa.</translation>
-        </message>
-        <message>
-            <source>The encoder returned an empty video packet.</source>
-            <translation>Kooderi palautti tyhjän videopaketin.</translation>
-        </message>
-        <message>
-            <source>Invalid video frame format.</source>
-            <translation>Virheellinen videokehyksen muoto.</translation>
-        </message>
-        <message>
-            <source>Invalid video decoder configuration.</source>
-            <translation>Virheellinen videodekooderin määritys.</translation>
-        </message>
-        <message>
-            <source>This video codec cannot be decoded.</source>
-            <translation>Tätä videokoodekkia ei voida purkaa.</translation>
-        </message>
-        <message>
-            <source>Video decoder could not be allocated.</source>
-            <translation>Videodekooderille ei voitu varata muistia.</translation>
-        </message>
-        <message>
-            <source>Video decoder configuration could not be allocated.</source>
-            <translation>Videodekooderin määritykselle ei voitu varata muistia.</translation>
-        </message>
-        <message>
-            <source>Decoded dimensions do not match the screen stream.</source>
-            <translation>Puretun kuvan mitat eivät vastaa näyttövirtaa.</translation>
-        </message>
-        <message>
-            <source>Decoded image could not be allocated.</source>
-            <translation>Puretulle kuvalle ei voitu varata muistia.</translation>
-        </message>
-        <message>
-            <source>Video color conversion could not be initialized.</source>
-            <translation>Videon värimuunnosta ei voitu alustaa.</translation>
         </message>
     </context>
     <context>
@@ -2877,359 +3020,208 @@
             <translation>Salasanaa ei voitu vahvistaa.</translation>
         </message>
     </context>
-
     <context>
-        <name>Headless</name>
+        <name>Tray</name>
         <message>
-            <source>Command failed.</source>
-            <translation>Komento epäonnistui.</translation>
+            <source>Quit</source>
+            <translation>Lopeta</translation>
         </message>
         <message>
-            <source>%1 must be an integer.</source>
-            <translation>%1 on oltava kokonaisluku.</translation>
+            <source>SquadSpeak - speaking</source>
+            <translation>SquadSpeak - puhuu</translation>
         </message>
         <message>
-            <source>Requests must be on/off or true/false.</source>
-            <translation>Pyyntöjen on oltava on/off tai true/false.</translation>
+            <source>Settings</source>
+            <translation>Asetukset</translation>
         </message>
         <message>
-            <source>Unknown host property: %1</source>
-            <translation>Tuntematon palvelimen ominaisuus: %1</translation>
+            <source>Channels</source>
+            <translation>Kanavat</translation>
         </message>
         <message>
-            <source>Run without GUI, microphone capture, or local audio output.</source>
-            <translation>Suorita ilman käyttöliittymää, mikrofonin tallennusta tai paikallista äänentoistoa.</translation>
-        </message>
-        <message>
-            <source>Server storage prefix. Personal/audio/GUI profiles are not loaded.</source>
-            <translation>Palvelimen tallennuksen etuliite. Henkilökohtaisia, audio- ja käyttöliittymäprofiileja ei ladata.</translation>
-        </message>
-        <message>
-            <source>Optional private identity file instead of the OS credential store (Linux/macOS). Parent directory must exist and belong to this account.</source>
-            <translation>Valinnainen yksityinen identiteettitiedosto käyttöjärjestelmän tunnistetietovaraston sijaan (Linux/macOS). Yläkansion on oltava olemassa ja tämän tilin omistama.</translation>
-        </message>
-        <message>
-            <source>UTF-8 key=value properties or JSON host preset. Default: application.properties, then config/application.properties beside the app.</source>
-            <translation>UTF-8-ominaisuudet key=value tai palvelimen JSON-esiasetus. Oletus: application.properties, sitten sovelluksen vieressä oleva config/application.properties.</translation>
-        </message>
-        <message>
-            <source>Channel display name.</source>
-            <translation>Kanavan näytettävä nimi.</translation>
-        </message>
-        <message>
-            <source>System and radio bot display name.</source>
-            <translation>Järjestelmä- ja radiobotin näytettävä nimi.</translation>
-        </message>
-        <message>
-            <source>TCP service port (1-65535).</source>
-            <translation>TCP-palveluportti (1-65535).</translation>
-        </message>
-        <message>
-            <source>Headless admission is always on; only 'on' or 'true' is accepted.</source>
-            <translation>Headless-hyväksyntä on aina käytössä; vain 'on' tai 'true' hyväksytään.</translation>
-        </message>
-        <message>
-            <source>Preapprove a device ID; repeat for several devices. Existing bans remain.</source>
-            <translation>Hyväksy laitteen tunnus etukäteen; toista useille laitteille. Olemassa olevat estot säilytetään.</translation>
-        </message>
-        <message>
-            <source>Block a device ID; repeat for several devices.</source>
-            <translation>Estä laitteen tunnus; toista useille laitteille.</translation>
-        </message>
-        <message>
-            <source>Read a UTF-8 channel password from a file before listening. An empty file removes it.</source>
-            <translation>Lue kanavan salasana UTF-8-tiedostosta ennen kuuntelua. Tyhjä tiedosto poistaa sen.</translation>
-        </message>
-        <message>
-            <source>Channel password. Empty removes it; environment or config avoids process-list exposure.</source>
-            <translation>Kanavan salasana. Tyhjä poistaa sen; ympäristö tai asetukset estävät sen näkymisen prosessiluettelossa.</translation>
-        </message>
-        <message>
-            <source>SquadSpeak headless local channel host</source>
-            <translation>SquadSpeak-paikallinen headless-kanavapalvelin</translation>
-        </message>
-        <message>
-            <source>Environment variables (SQUADSPEAK_ prefix):</source>
-            <translation>Ympäristömuuttujat (etuliite SQUADSPEAK_):</translation>
-        </message>
-        <message>
-            <source>Host configuration could not be read or exceeds 1 MiB.</source>
-            <translation>Palvelimen asetuksia ei voitu lukea tai ne ylittävät 1 MiB.</translation>
-        </message>
-        <message>
-            <source>Host configuration must be UTF-8.</source>
-            <translation>Palvelimen asetusten on oltava UTF-8.</translation>
-        </message>
-        <message>
-            <source>Host preset must be a JSON object.</source>
-            <translation>Isäntäesiasetuksen on oltava JSON-objekti.</translation>
-        </message>
-        <message>
-            <source>Property line %1 must use key=value.</source>
-            <translation>Ominaisuusrivin %1 on käytettävä key=value-muotoa.</translation>
-        </message>
-        <message>
-            <source>Property line %1: %2</source>
-            <translation>Ominaisuusrivi %1: %2</translation>
-        </message>
-        <message>
-            <source>Standard input has no file descriptor.</source>
-            <translation>Vakiosyötteellä ei ole tiedostokuvaajaa.</translation>
-        </message>
-        <message>
-            <source>Standard input could not be inspected.</source>
-            <translation>Vakiosyötettä ei voitu tutkia.</translation>
-        </message>
-        <message>
-            <source>Could not write the command response: %1</source>
-            <translation>Komennon vastausta ei voitu kirjoittaa: %1</translation>
-        </message>
-        <message>
-            <source>Standard input could not be read: %1</source>
-            <translation>Vakiosyötettä ei voitu lukea: %1</translation>
-        </message>
-        <message>
-            <source>Input line exceeds 65536 bytes.</source>
-            <translation>Syöterivi on pidempi kuin 65536 tavua.</translation>
-        </message>
-        <message>
-            <source>Each input line must be a JSON object.</source>
-            <translation>Jokaisen syöterivin on oltava JSON-objekti.</translation>
-        </message>
-        <message>
-            <source>Input ended before a complete JSON line.</source>
-            <translation>Syöte loppui ennen täydellistä JSON-riviä.</translation>
-        </message>
-        <message>
-            <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
-            <translation>Valinnainen oman kanavan tunnus komennoille status, configure, password, admission, history, chat ja radio; oletuksena pääkanava.</translation>
-        </message>
-        <message>
-            <source>Channel action must be list, add or remove.</source>
-            <translation>Kanavatoiminnon on oltava list, add tai remove.</translation>
-        </message>
-        <message>
-            <source>Removing an own channel deletes its history, images, permissions and radio settings. Set confirmed=true to proceed.</source>
-            <translation>Oman kanavan poistaminen poistaa historian, kuvat, oikeudet ja radioasetukset. Jatka asettamalla confirmed=true.</translation>
-        </message>
-        <message>
-            <source>id must identify an additional own channel.</source>
-            <translation>id:n on tunnistettava ylimääräinen oma kanava.</translation>
-        </message>
-        <message>
-            <source>The additional own channel could not be removed: %1</source>
-            <translation>Ylimääräisen oman kanavan poisto epäonnistui: %1</translation>
-        </message>
-        <message>
-            <source>channelId must identify an own channel.</source>
-            <translation>channelId:n on tunnistettava oma kanava.</translation>
-        </message>
-        <message>
-            <source>values must be a host settings object.</source>
-            <translation>values-arvon on oltava palvelinasetusten objekti.</translation>
-        </message>
-        <message>
-            <source>Headless admission is always enabled for non-banned devices; requests off is not supported.</source>
-            <translation>Headless-hyväksyntä on aina käytössä estämättömille laitteille; requests off ei ole tuettu.</translation>
-        </message>
-        <message>
-            <source>value must be a password of at most 1024 UTF-8 bytes without control characters; an empty string removes it.</source>
-            <translation>value-arvon on oltava salasana, jossa on enintään 1024 UTF-8-tavua ilman ohjausmerkkejä; tyhjä merkkijono poistaa sen.</translation>
-        </message>
-        <message>
-            <source>The channel is not ready or a password change is in progress.</source>
-            <translation>Kanava ei ole valmis tai salasanan vaihto on käynnissä.</translation>
-        </message>
-        <message>
-            <source>The channel was removed while saving the password.</source>
-            <translation>Kanava poistettiin salasanan tallennuksen aikana.</translation>
-        </message>
-        <message>
-            <source>id is required.</source>
-            <translation>id vaaditaan.</translation>
-        </message>
-        <message>
-            <source>text must be a valid non-empty chat message.</source>
-            <translation>text-arvon on oltava kelvollinen, ei-tyhjä chat-viesti.</translation>
-        </message>
-        <message>
-            <source>The local channel is not ready.</source>
-            <translation>Paikallinen kanava ei ole valmis.</translation>
-        </message>
-        <message>
-            <source>The channel's radio is unavailable.</source>
-            <translation>Kanavan radio ei ole käytettävissä.</translation>
-        </message>
-        <message>
-            <source>Unknown command. Use help.</source>
-            <translation>Tuntematon komento. Käytä komentoa help.</translation>
-        </message>
-        <message>
-            <source>search requires a query, non-negative offset and limit from 1 to 128.</source>
-            <translation>search vaatii query-arvon, ei-negatiivisen offset-arvon ja limit-arvon väliltä 1-128.</translation>
-        </message>
-        <message>
-            <source>add creates an id; update requires an existing id.</source>
-            <translation>add luo id:n; update vaatii olemassa olevan id:n.</translation>
-        </message>
-        <message>
-            <source>A station is already being checked.</source>
-            <translation>Asemaa tarkistetaan jo.</translation>
-        </message>
-        <message>
-            <source>The channel was removed while checking the station.</source>
-            <translation>Kanava poistettiin aseman tarkistuksen aikana.</translation>
-        </message>
-        <message>
-            <source>Unknown radio action.</source>
-            <translation>Tuntematon radiotoiminto.</translation>
-        </message>
-        <message>
-            <source>Could not load language: %1</source>
-            <translation>Kielen lataaminen epäonnistui: %1</translation>
-        </message>
-        <message>
-            <source>The %1 option is incompatible with --headless.</source>
-            <translation>Valitsin %1 ei ole yhteensopiva --headless-tilan kanssa.</translation>
-        </message>
-        <message>
-            <source>Unexpected positional arguments. Use --help.</source>
-            <translation>Odottamattomia sijaintiargumentteja. Käytä --help.</translation>
-        </message>
-        <message>
-            <source>--config / -f requires a non-empty path.</source>
-            <translation>--config / -f vaatii ei-tyhjän polun.</translation>
-        </message>
-        <message>
-            <source>Choose --password or --password-file, not both.</source>
-            <translation>Valitse --password tai --password-file, ei molempia.</translation>
-        </message>
-        <message>
-            <source>Choose SQUADSPEAK_PASSWORD or SQUADSPEAK_PASSWORD_FILE, not both.</source>
-            <translation>Valitse SQUADSPEAK_PASSWORD tai SQUADSPEAK_PASSWORD_FILE, ei molempia.</translation>
-        </message>
-        <message>
-            <source>Choose password or passwordFile in one configuration layer, not both.</source>
-            <translation>Valitse password tai passwordFile yhdessä asetustasossa, ei molempia.</translation>
-        </message>
-        <message>
-            <source>passwordFile must be a non-empty path.</source>
-            <translation>passwordFile-arvon on oltava ei-tyhjä polku.</translation>
-        </message>
-        <message>
-            <source>Password file could not be read or is too large.</source>
-            <translation>Salasanatiedostoa ei voitu lukea tai se on liian suuri.</translation>
-        </message>
-        <message>
-            <source>Password file must contain at most 1024 UTF-8 bytes without control characters.</source>
-            <translation>Salasanatiedostossa saa olla enintään 1024 UTF-8-tavua ilman ohjausmerkkejä.</translation>
-        </message>
-        <message>
-            <source>Password must be a string of at most 1024 UTF-8 bytes without control characters.</source>
-            <translation>Salasanan on oltava merkkijono, jossa on enintään 1024 UTF-8-tavua ilman ohjausmerkkejä.</translation>
-        </message>
-        <message>
-            <source>settingsFile must be a non-empty path.</source>
-            <translation>settingsFile-arvon on oltava ei-tyhjä polku.</translation>
-        </message>
-        <message>
-            <source>identityFile must be a non-empty path.</source>
-            <translation>identityFile-arvon on oltava ei-tyhjä polku.</translation>
-        </message>
-        <message>
-            <source>The settings directory could not be created.</source>
-            <translation>Asetuskansiota ei voitu luoda.</translation>
-        </message>
-        <message>
-            <source>This SquadSpeak profile is already running or cannot be locked.</source>
-            <translation>Tämä SquadSpeak-profiili on jo käynnissä tai sitä ei voi lukita.</translation>
-        </message>
-        <message>
-            <source>Standard input could not be opened.</source>
-            <translation>Vakiosyötettä ei voitu avata.</translation>
-        </message>
-        <message>
-            <source>Standard output could not be opened.</source>
-            <translation>Vakiotulostetta ei voitu avata.</translation>
-        </message>
-        <message>
-            <source>This identity file is already in use or cannot be locked.</source>
-            <translation>Tämä identiteettitiedosto on jo käytössä tai sitä ei voi lukita.</translation>
-        </message>
-        <message>
-            <source>Invalid host configuration: %1</source>
-            <translation>Virheelliset palvelimen asetukset: %1</translation>
-        </message>
-        <message>
-            <source>Radio channels could not be initialized.</source>
-            <translation>Radiokanavia ei voitu alustaa.</translation>
-        </message>
-        <message>
-            <source>Headless host could not start: %1</source>
-            <translation>Headless-palvelinta ei voitu käynnistää: %1</translation>
-        </message>
-        <message>
-            <source>Channel password could not be saved.</source>
-            <translation>Kanavan salasanaa ei voitu tallentaa.</translation>
-        </message>
-        <message>
-            <source>Invalid channel password: %1</source>
-            <translation>Virheellinen kanavan salasana: %1</translation>
-        </message>
-        <message>
-            <source>Headless host could not initialize: %1</source>
-            <translation>Headless-palvelinta ei voitu alustaa: %1</translation>
-        </message>
-        <message>
-            <source>SquadSpeak headless could not start: %1</source>
-            <translation>SquadSpeak-headlessia ei voitu käynnistää: %1</translation>
-        </message>
-        <message>
-            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
-            <translation>Tukitoimien tulee olla tila, sisäänkirjautuminen, päivitys, uloskirjautuminen tai peruutus. status sign-in refresh sign-out cancel</translation>
-        </message>
-        <message>
-            <source>A Supporter operation is in progress.</source>
-            <translation>Tukioperaatio on meneillään.</translation>
-        </message>
-        <message>
-            <source>Supporter access is unavailable in this build.</source>
-            <translation>Tukipalvelun käyttöoikeus ei ole käytettävissä tässä koontiversiossa.</translation>
-        </message>
-        <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>Asetusten prioriteetti: argumentit &gt; ympäristö &gt; ominaisuudet &gt; tallennetut palvelinarvot.</translation>
+            <source>New image</source>
+            <translation>Uusi kuva</translation>
         </message>
     </context>
     <context>
-        <name>Desktop</name>
+        <name>VideoCodec</name>
         <message>
-            <source>Open settings at startup.</source>
-            <translation>Avaa asetukset käynnistyksen yhteydessä.</translation>
+            <source>Video codec: %1</source>
+            <translation>Videokoodekki: %1</translation>
         </message>
         <message>
-            <source>Open guided local test recording without starting network services.</source>
-            <translation>Avaa ohjattu paikallinen testitallennus käynnistämättä verkkopalveluita.</translation>
+            <source>Video codec ABI does not match its headers.</source>
+            <translation>Videokoodekin ABI ei vastaa sen otsikkotiedostoja.</translation>
         </message>
         <message>
-            <source>Alternative file for audio profiles.</source>
-            <translation>Vaihtoehtoinen ääniprofiilitiedosto.</translation>
+            <source>Video buffers could not be allocated.</source>
+            <translation>Videopuskureille ei voitu varata muistia.</translation>
         </message>
         <message>
-            <source>Load the interface without microphone capture and exit after one second.</source>
-            <translation>Lataa käyttöliittymä ilman mikrofonitallennusta ja sulje sovellus sekunnin kuluttua.</translation>
+            <source>Invalid video quality tier.</source>
+            <translation>Virheellinen videon laatutaso.</translation>
         </message>
         <message>
-            <source>Save an image of the app window during the UI test.</source>
-            <translation>Tallenna sovellusikkunan kuva käyttöliittymätestin aikana.</translation>
+            <source>The screen source exceeds the supported capture size.</source>
+            <translation>Näyttölähde ylittää tuetun kaappauskoon.</translation>
         </message>
         <message>
-            <source>The window image could not be saved.</source>
-            <translation>Ikkunan kuvaa ei voitu tallentaa.</translation>
+            <source>The screen source is too narrow.</source>
+            <translation>Näyttölähde on liian kapea.</translation>
         </message>
         <message>
-            <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
-            <translation>Ilmoitusalue ei ole käytettävissä; sovellus pysyy avoinna ikkunassa.</translation>
+            <source>The video encoder could not be allocated.</source>
+            <translation>Videokooderille ei voitu varata muistia.</translation>
+        </message>
+        <message>
+            <source>No supported video encoder is available.</source>
+            <translation>Tuettua videokooderia ei ole käytettävissä.</translation>
+        </message>
+        <message>
+            <source>Video encoder configuration is too large.</source>
+            <translation>Videokooderin määritys on liian suuri.</translation>
+        </message>
+        <message>
+            <source>Video scaling could not be initialized.</source>
+            <translation>Videon skaalausta ei voitu alustaa.</translation>
+        </message>
+        <message>
+            <source>The encoder returned an empty video packet.</source>
+            <translation>Kooderi palautti tyhjän videopaketin.</translation>
+        </message>
+        <message>
+            <source>Invalid video frame format.</source>
+            <translation>Virheellinen videokehyksen muoto.</translation>
+        </message>
+        <message>
+            <source>Invalid video decoder configuration.</source>
+            <translation>Virheellinen videodekooderin määritys.</translation>
+        </message>
+        <message>
+            <source>This video codec cannot be decoded.</source>
+            <translation>Tätä videokoodekkia ei voida purkaa.</translation>
+        </message>
+        <message>
+            <source>Video decoder could not be allocated.</source>
+            <translation>Videodekooderille ei voitu varata muistia.</translation>
+        </message>
+        <message>
+            <source>Video decoder configuration could not be allocated.</source>
+            <translation>Videodekooderin määritykselle ei voitu varata muistia.</translation>
+        </message>
+        <message>
+            <source>Decoded dimensions do not match the screen stream.</source>
+            <translation>Puretun kuvan mitat eivät vastaa näyttövirtaa.</translation>
+        </message>
+        <message>
+            <source>Decoded image could not be allocated.</source>
+            <translation>Puretulle kuvalle ei voitu varata muistia.</translation>
+        </message>
+        <message>
+            <source>Video color conversion could not be initialized.</source>
+            <translation>Videon värimuunnosta ei voitu alustaa.</translation>
+        </message>
+    </context>
+    <context>
+        <name>VoiceAvatar</name>
+        <message>
+            <source>Muted</source>
+            <translation>Mikrofoni mykistetty</translation>
+        </message>
+        <message>
+            <source>Sleeping</source>
+            <translation>Hiljaa</translation>
+        </message>
+        <message>
+            <source>Offline</source>
+            <translation>Poissa</translation>
+        </message>
+        <message>
+            <source>Speaking</source>
+            <translation>Puhuu</translation>
+        </message>
+        <message>
+            <source>Unavailable</source>
+            <translation>Ei saatavilla</translation>
+        </message>
+        <message>
+            <source>Listening</source>
+            <translation>Kuuntelee</translation>
+        </message>
+        <message>
+            <source>Deafened</source>
+            <translation>Kaiuttimet mykistetty</translation>
+        </message>
+    </context>
+    <context>
+        <name>VoiceSession</name>
+        <message>
+            <source>Microphone muted</source>
+            <translation>Mikrofoni mykistetty</translation>
+        </message>
+        <message>
+            <source>Push-to-talk held</source>
+            <translation>Puheentunnistus aktiivinen</translation>
+        </message>
+        <message>
+            <source>Ready - push-to-talk released</source>
+            <translation>Valmis - puheentunnistus vapautettu</translation>
+        </message>
+        <message>
+            <source>Microphone unmuted</source>
+            <translation>Mikrofoni päällä</translation>
+        </message>
+        <message>
+            <source>Settings could not be saved: %1</source>
+            <translation>Asetuksia ei voitu tallentaa: %1</translation>
+        </message>
+        <message>
+            <source>The push-to-talk sequence cannot be incremented further.</source>
+            <translation>Push-to-talk-sarjaa ei voi enää kasvattaa.</translation>
+        </message>
+        <message>
+            <source>Choose System, Light or Dark.</source>
+            <translation>Valitse järjestelmä-, vaalean- tai tumman teema.</translation>
+        </message>
+        <message>
+            <source>Choose a colour palette from the list.</source>
+            <translation>Valitse väripaletti listasta.</translation>
+        </message>
+        <message>
+            <source>Choose an available avatar.</source>
+            <translation>Valitse saatavilla oleva avatar.</translation>
+        </message>
+        <message>
+            <source>Invalid push-to-talk binding.</source>
+            <translation>Virheellinen push-to-talk -asetus.</translation>
+        </message>
+        <message>
+            <source>Release the held push-to-talk key first.</source>
+            <translation>Vapauta ensin painettu push-to-talk -näppäin.</translation>
+        </message>
+        <message>
+            <source>Choose a language from the list.</source>
+            <translation>Valitse kieli listasta.</translation>
+        </message>
+        <message>
+            <source>This avatar requires Supporter.</source>
+            <translation>Tämä avatar vaatii Supporter-lisenssin.</translation>
+        </message>
+        <message>
+            <source>The name must contain 1 to 64 characters.</source>
+            <translation>Nimen tulee sisältää 1-64 merkkiä.</translation>
+        </message>
+        <message>
+            <source>The name may not contain control characters or line breaks.</source>
+            <translation>Nimi ei saa sisältää ohjausmerkkejä tai rivinvaihtoja.</translation>
+        </message>
+        <message>
+            <source>Session settings could not be read.</source>
+            <translation>Istunnon asetuksia ei voitu lukea.</translation>
+        </message>
+        <message>
+            <source>Saved setting is invalid: %1</source>
+            <translation>Virheellinen tallennettu asetus: %1</translation>
         </message>
     </context>
 </TS>

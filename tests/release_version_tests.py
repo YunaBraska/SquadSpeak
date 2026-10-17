@@ -1,8 +1,12 @@
-"""Exercise release metadata through public CMake scripts without configuring Qt."""
+"""Check release metadata and native compilation commands."""
+import argparse
 import hashlib
+import json
 import os
+import plistlib
 from pathlib import Path
 import subprocess
+import sys
 import tempfile
 import unittest
 
@@ -26,8 +30,30 @@ class ReleaseVersionTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stdout)
         self.assertEqual(result.stdout.strip(), "2026.1.9")
 
+    def test_snapshot_retains_label_and_has_numeric_native_metadata(self):
+        for version in ("2026.10.5-SNAPSHOT", "2026.10.5-SNAPSHOT.17"):
+            result = self.resolve(version)
+            self.assertEqual(result.returncode, 0, result.stdout)
+            self.assertEqual(result.stdout.strip(), version)
+        repo = Path(__file__).resolve().parents[1]
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "CMakeLists.txt").write_text(
+                'cmake_minimum_required(VERSION 3.24)\n'
+                f'include("{repo.as_posix()}/cmake/Version.cmake")\n'
+                'project(Snapshot VERSION ${SQUADSPEAK_NUMERIC_VERSION} LANGUAGES NONE)\n'
+                f'configure_file("{repo.as_posix()}/src/Info.plist.in" bundle.plist)\n')
+            configured = subprocess.run(["cmake", "-S", str(root), "-B", str(root / "out"),
+                "-DSQUADSPEAK_VERSION=2026.10.5-SNAPSHOT.17"], capture_output=True, text=True)
+            self.assertEqual(configured.returncode, 0, configured.stdout + configured.stderr)
+            metadata = plistlib.loads((root / "out/bundle.plist").read_bytes())
+            self.assertEqual(metadata["CFBundleVersion"], "2026.10.5")
+            self.assertEqual(metadata["CFBundleShortVersionString"], "2026.10.5")
+
     def test_invalid_versions_fail_before_configuration(self):
-        for version in ("", "2026.01.09", "v2026.1.9", "2026.1", "2026.1.9.1", "1.2.3;bad", "1.2.3\n"):
+        for version in ("", "2026.01.09", "v2026.1.9", "2026.1", "2026.1.9.1", "1.2.3;bad", "1.2.3\n",
+                        "1.2.3-SNAPSHOT\n", "1.2.3-SNAPSHOT;bad", "1.2.3-unknown",
+                        "1.2.3-SNAPSHOT.0", "1.2.3-SNAPSHOT.01", "1.2.3-SNAPSHOT.1.2"):
             with self.subTest(version=version):
                 result = self.resolve(version)
                 self.assertNotEqual(result.returncode, 0)
@@ -41,7 +67,7 @@ class UpdateConfigurationTests(unittest.TestCase):
             script = Path(directory) / "check.cmake"
             script.write_text('set(CMAKE_SYSTEM_NAME Darwin)\n'
                               f'set(SQUADSPEAK_STORE_BUILD {"ON" if store else "OFF"})\n'
-                              f'include("{source}")\n'
+                              f'include("{source.as_posix()}")\n'
                               'if(squad_update_plist OR TARGET squad_updater)\n'
                               '  message(FATAL_ERROR "Store must not configure external updates")\nendif()\n')
             return subprocess.run(["cmake", "-DSQUADSPEAK_UPDATE_PUBLIC_KEY=" + key, "-P", str(script)],
@@ -85,7 +111,7 @@ class HomebrewTests(unittest.TestCase):
             self.assertEqual((root / "squadspeak.rb").read_text(), text)
 
     def test_invalid_input_preserves_existing_cask(self):
-        for invalid in ("missing", "empty", "directory", "version"):
+        for invalid in ("missing", "empty", "directory", "version", "snapshot"):
             with self.subTest(invalid=invalid), tempfile.TemporaryDirectory() as directory:
                 root = Path(directory)
                 (root / "squadspeak.rb").write_text("previous release")
@@ -95,10 +121,35 @@ class HomebrewTests(unittest.TestCase):
                     intel.mkdir()
                 elif invalid != "missing":
                     intel.write_bytes(b"" if invalid == "empty" else b"intel")
-                result = self.generate(root, '1.2.3";invalid' if invalid == "version" else "2026.10.4")
+                version = '1.2.3";invalid' if invalid == "version" else "2026.10.4"
+                if invalid == "snapshot": version += "-SNAPSHOT.17"
+                result = self.generate(root, version)
                 self.assertNotEqual(result.returncode, 0)
                 self.assertEqual((root / "squadspeak.rb").read_text(), "previous release")
 
 
 if __name__ == "__main__":
-    unittest.main()
+    parser = argparse.ArgumentParser(add_help=False)
+    parser.add_argument("--compile-commands", type=Path)
+    options, arguments = parser.parse_known_args()
+    if options.compile_commands:
+        class CompiledBuildTests(unittest.TestCase):
+            def test_large_resources_bypass_cpp_array_compilation(self):
+                entries = json.loads(options.compile_commands.read_text(encoding="utf-8"))
+                resources = {Path(entry["file"]) for entry in entries
+                             if Path(entry["file"]).name.startswith("qrc_")}
+                self.assertTrue(resources)
+                for resource in resources:
+                    # Image atlases must link as objects, not enormous C++ arrays.
+                    self.assertLess(resource.stat().st_size, 64 * 1024 * 1024, str(resource))
+
+            def test_snapshot_version_only_invalidates_its_consumers(self):
+                repo = Path(__file__).resolve().parents[1]
+                consumers = {repo / name for name in ("src/main.cpp", "src/headless.cpp",
+                             "tests/headless_tests.cpp", "tests/controls_tests.cpp")}
+                entries = json.loads(options.compile_commands.read_text(encoding="utf-8"))
+                affected = {Path(entry["file"]).resolve() for entry in entries
+                            if "SQUADSPEAK_VERSION=" in entry["command"]}
+                self.assertEqual(affected, consumers)
+
+    unittest.main(argv=[sys.argv[0], *arguments])

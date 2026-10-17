@@ -1,0 +1,156 @@
+name: "🪟 CI · Windows Build"
+
+on:
+  workflow_call:
+    inputs:
+      ref:
+        type: string
+        required: true
+      version:
+        type: string
+        required: true
+      qt_version:
+        type: string
+        required: true
+      qt_modules:
+        type: string
+        required: true
+      prepare_command:
+        type: string
+        required: true
+      build_command:
+        type: string
+        required: true
+      test_command:
+        type: string
+        required: true
+      package_command:
+        type: string
+        required: true
+      cache_inputs:
+        type: string
+        required: true
+      cache_paths:
+        type: string
+        required: true
+      package_paths:
+        type: string
+        required: true
+      report_paths:
+        type: string
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: "🪟 Windows x64"
+    env:
+      VERSION: ${{ inputs.version }}
+      SCCACHE_GHA_ENABLED: 'true'
+      CMAKE_C_COMPILER_LAUNCHER: sccache
+      CMAKE_CXX_COMPILER_LAUNCHER: sccache
+    runs-on: windows-2022
+    timeout-minutes: 60
+    steps:
+      - name: "🧑‍💻 Checkout"
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ inputs.ref }}
+          persist-credentials: false
+      - name: "🛠️ Select MSVC 2022"
+        uses: ilammy/msvc-dev-cmd@0b201ec74fa43914dc39ae48a89fd1d8cb592756
+        with:
+          arch: x64
+      - name: "🛠️ Setup Compiler Cache"
+        uses: mozilla-actions/sccache-action@fc920bf0ec8de6ee65d409111f7ec508035751ba
+        with:
+          version: v0.16.0
+          disable_annotations: true
+      - name: "🧾 Identify MSVC dependency cache inputs"
+        id: msvc-cache
+        env:
+          CACHE_INPUTS: ${{ inputs.cache_inputs }}
+          CACHE_QT: ${{ inputs.qt_version }}:${{ inputs.qt_modules }}
+        shell: pwsh
+        run: |
+          $compiler = Get-Command cl.exe -ErrorAction Stop
+          $version = (Get-Item $compiler.Source).VersionInfo.FileVersion
+          if (-not $version) { throw "Unable to determine cl.exe version" }
+          $sdk = $env:WindowsSDKVersion
+          if (-not $sdk) { throw "Unable to determine Windows SDK version" }
+          $sdkKey = $sdk -replace '[^A-Za-z0-9._-]', '_'
+          "version=$version" >> $env:GITHUB_OUTPUT
+          "sdk=$sdkKey" >> $env:GITHUB_OUTPUT
+          Write-Host "Using cl.exe $version at $($compiler.Source)"
+          Write-Host "Using Windows SDK $sdk"
+          $files = @($env:CACHE_INPUTS | ConvertFrom-Json | ForEach-Object {
+            Resolve-Path -Path $_ -ErrorAction Stop | ForEach-Object {
+              $item = Get-Item -LiteralPath $_.ProviderPath -ErrorAction Stop
+              if ($item.PSIsContainer) { Get-ChildItem -LiteralPath $item.FullName -File -Recurse }
+              else { $item }
+            }
+          } | Sort-Object FullName -Unique)
+          if (-not $files.Count) { throw 'Dependency cache input files are missing' }
+          $hashes = $files | ForEach-Object { $_.FullName.Substring($env:GITHUB_WORKSPACE.Length) + ':' + (Get-FileHash $_.FullName -Algorithm SHA256).Hash }
+          $hashes += $env:CACHE_QT
+          $hashes += "$env:CMAKE_C_COMPILER_LAUNCHER|$env:CMAKE_CXX_COMPILER_LAUNCHER"
+          $digest = [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes(($hashes -join "`n"))))
+          "inputs=$digest" >> $env:GITHUB_OUTPUT
+      - name: "📥 Restore Dependencies"
+        id: dependencies
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
+        with:
+          path: ${{ inputs.cache_paths }}
+          key: windows-dependencies-${{ runner.os }}-${{ runner.arch }}-msvc-${{ steps.msvc-cache.outputs.version }}-sdk-${{ steps.msvc-cache.outputs.sdk }}-${{ steps.msvc-cache.outputs.inputs }}
+      - name: "🛠️ Install Qt MSVC"
+        uses: jurplel/install-qt-action@a9c63c7c123f3069cff414e7e482d95dfa9d8125
+        with:
+          version: ${{ inputs.qt_version }}
+          cache: true
+          # Upstream #1000 supports Qt 6.11's architecture-specific repositories.
+          aqtsource: 'git+https://github.com/miurahr/aqtinstall.git@8c3695d4a4e1ceabf6a74dc6c79681656dc6b74b'
+          arch: win64_msvc2022_64
+          modules: ${{ inputs.qt_modules }}
+      - name: "🛠️ Prepare Dependencies"
+        shell: pwsh
+        run: ${{ inputs.prepare_command }}
+      - name: "🔨 Build"
+        shell: pwsh
+        run: ${{ inputs.build_command }}
+      - name: "📊 Compiler Cache Statistics"
+        shell: pwsh
+        run: |
+          sccache --show-stats
+          if ($LASTEXITCODE -ne 0) { throw "Unable to read compiler cache statistics" }
+      - name: "📦 Cache Dependencies"
+        if: steps.dependencies.outputs.cache-hit != 'true'
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
+        with:
+          path: ${{ inputs.cache_paths }}
+          key: ${{ steps.dependencies.outputs.cache-primary-key }}
+      - name: "🧪 Test"
+        shell: pwsh
+        run: ${{ inputs.test_command }}
+      - name: "📦 Package"
+        shell: pwsh
+        run: ${{ inputs.package_command }}
+      - name: "🛡️ Check unchanged source"
+        run: git diff --exit-code
+      - name: "📦 Upload Test Reports"
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: windows-x86_64
+          path: ${{ inputs.report_paths }}
+          retention-days: 7
+          if-no-files-found: warn
+      - name: "📦 Upload Build Artifact"
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: release-windows-x86_64
+          path: ${{ inputs.package_paths }}
+          retention-days: 1
+          compression-level: 0
+          if-no-files-found: error

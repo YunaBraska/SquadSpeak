@@ -11,6 +11,11 @@ struct InputProfile final {
     double lowPassHz = 0.0;
     bool gainAutomatic = false;
     bool highPassAutomatic = false;
+    bool gainEnabled = true;
+    bool highPassEnabled = true;
+    bool lowPassEnabled = true;
+    bool noiseEnabled = true;
+    bool echoEnabled = true;
     bool operator==(const InputProfile&) const = default;
     [[nodiscard]] bool valid() const noexcept;
     [[nodiscard]] double initialHighPassHz() const noexcept;
@@ -30,7 +35,7 @@ struct AudioLevels final {
     std::array<double, spectrumSize> outputSpectrum{};
 };
 
-// Stateful mono processing. Call from one owning audio thread; no allocation
+// Stateful mono/stereo processing with linked gain and filter controls. Call from one owning audio thread; no allocation
 // occurs in process(). Zero cut frequencies bypass their respective filters.
 class AudioProcessor final {
 public:
@@ -41,6 +46,7 @@ public:
     // buffers frames or removes echo before this stage's gain and cuts.
     AudioProcessor& observeInput(float sample) noexcept;
     [[nodiscard]] float filter(float sample) noexcept;
+    [[nodiscard]] std::array<float, 2> filter(std::array<float, 2> samples) noexcept;
     [[nodiscard]] AudioLevels levels() const noexcept;
     // Per-bin transfer gain of the configured input path, in dB. The bins
     // use the same logarithmic frequencies as inputSpectrum/outputSpectrum.
@@ -52,8 +58,8 @@ public:
 private:
     struct Filter final {
         double b0 = 1, b1 = 0, b2 = 0, a1 = 0, a2 = 0;
-        double z1 = 0, z2 = 0;
-        [[nodiscard]] double process(double sample) noexcept;
+        std::array<double, 2> z1{}, z2{};
+        [[nodiscard]] double process(double sample, std::size_t channel = 0) noexcept;
     };
     static constexpr std::size_t windowSize = 4096;
     static constexpr std::size_t pitchSize = 1024;

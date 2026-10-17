@@ -36,14 +36,6 @@
             <translation>Bude saitunan sirrin tsarin ka kuma ba SquadSpeak damar amfani da makirufo.</translation>
         </message>
         <message>
-            <source>Microphone analysis active. Test audio stays on this computer.</source>
-            <translation>Binciken makirufo yana aiki. Sautin gwaji zai kasance a wannan kwamfuta.</translation>
-        </message>
-        <message>
-            <source>Finish the test recording before changing devices.</source>
-            <translation>Kammala rikodin gwaji kafin ka canza naura.</translation>
-        </message>
-        <message>
             <source>The output format is not supported.</source>
             <translation>Ba a goyi bayan tsarin fitarwa ba.</translation>
         </message>
@@ -68,32 +60,12 @@
             <translation>Ba za a iya kunna murɗiya gwajawa ba.</translation>
         </message>
         <message>
-            <source>The microphone has provided no data for five seconds. Recording discarded.</source>
-            <translation>Makirufo bai bada bayani ba na dakika biyar. An watsar da rikodin.</translation>
-        </message>
-        <message>
-            <source>The microphone was interrupted or changed. Recording discarded.</source>
-            <translation>An katse ko an canza makirufo. An watsar da rikodin.</translation>
-        </message>
-        <message>
-            <source>Cancelled. The incomplete recording was discarded.</source>
-            <translation>An soke. An watsar da rikodin da bai kammala ba.</translation>
-        </message>
-        <message>
             <source>No selected microphone is available</source>
             <translation>Babu makirufo da aka zaba da yake samuwa</translation>
         </message>
         <message>
             <source>Allow microphone access in the system dialog.</source>
             <translation>Ba da damar makirufo a cikin maganganun tsarin.</translation>
-        </message>
-        <message>
-            <source>Microphone capture active for the voice channel.</source>
-            <translation>Daukar makirufo yana aiki don tashar murya.</translation>
-        </message>
-        <message>
-            <source>Microphone access was denied. Nothing was saved.</source>
-            <translation>An hana damar makirufo. Ba a adana komai ba.</translation>
         </message>
         <message>
             <source>Microphone access is missing. Allow it in System Settings.</source>
@@ -259,103 +231,16 @@
             <source>App audio only</source>
             <translation>Sautin manhaja kawai</translation>
         </message>
-    </context>
-    <context>
-        <name>AudioRecording</name>
         <message>
-            <source>Incomplete audio block. Recording discarded.</source>
-            <translation>Tubalin sauti bai kammala ba. An watsar da rikodin.</translation>
-        </message>
-        <message>
-            <source>Move about one meter from the microphone. Keep the background sound playing and read the sentence.</source>
-            <translation>Matsaka da kusan mita daya daga makirufo. Ci gaba da kunna sautin baya ka karanta jimlar.</translation>
-        </message>
-        <message>
-            <source>Voice with background sound</source>
-            <translation>Murya tare da sautin baya</translation>
-        </message>
-        <message>
-            <source>The recordings folder could not be created.</source>
-            <translation>Ba a iya kirkirar babban fayil din rikodi ba.</translation>
-        </message>
-        <message>
-            <source>You can stop the background sound now.</source>
-            <translation>Yanzu za ka iya dakatar da sautin baya.</translation>
-        </message>
-        <message>
-            <source>Recordings saved</source>
-            <translation>An adana rikodi</translation>
-        </message>
-        <message>
-            <source>The test recording could not be saved completely.</source>
-            <translation>Ba a iya adana rikodin gwaji gaba daya ba.</translation>
-        </message>
-        <message>
-            <source>Keep music off and stay quiet. Start when ready.</source>
-            <translation>Kashe kiɗa ka yi shiru. Fara idan ka shirya.</translation>
-        </message>
-        <message>
-            <source>Your voice</source>
-            <translation>Muryarka</translation>
-        </message>
-        <message>
-            <source>Play music or another background sound at a normal volume. Stay quiet while recording.</source>
-            <translation>Kunna kiɗa ko wani sautin baya da karfi na al'ada. Yi shiru yayin rikodi.</translation>
-        </message>
-        <message>
-            <source>The test recording could not be created.</source>
-            <translation>Ba a iya kirkirar rikodin gwaji ba.</translation>
-        </message>
-        <message>
-            <source>Background sound</source>
-            <translation>Sautin baya</translation>
-        </message>
-        <message>
-            <source>The window is open. I can hear the rain outside. One, two, three, four, five.</source>
-            <translation>Tagar a bude take. Ina jin ruwan sama a waje. Daya, biyu, uku, hudu, biyar.</translation>
-        </message>
-        <message>
-            <source>This microphone format is not supported for test recordings.</source>
-            <translation>Ba a goyi bayan tsarin makirufo don rikodin gwaji ba.</translation>
-        </message>
-        <message>
-            <source>Keep the background volume unchanged. Read the sentence, then stop recording.</source>
-            <translation>Kiyayyar ƙarar sautin gefe ba za ta canzawa ba. Karanta jumla, sannan dace shirin.</translation>
-        </message>
-        <message>
-            <source>Record at least half a second, then try again.</source>
-            <translation>Shirya aƙalla rabin dakika, sannan sake gwadawa.</translation>
-        </message>
-        <message>
-            <source>Sit at your usual distance. Read the sentence, then stop recording.</source>
-            <translation>Zama a nisa da kake saba da shi. Karanta jumla, sannan dace shirin.</translation>
-        </message>
-        <message>
-            <source>The recording description could not be saved.</source>
-            <translation>Ba za a iya adamu bayanin sabarin shiri ba.</translation>
-        </message>
-        <message>
-            <source>The WAV file could not be finalized.</source>
-            <translation>Ba za a iya kammala fayil ɗin WAV ba.</translation>
-        </message>
-        <message>
-            <source>The WAV header could not be written.</source>
-            <translation>Ba za a iya rubuta shafin fayil ɗin WAV ba.</translation>
-        </message>
-        <message>
-            <source>Voice farther away</source>
-            <translation>Muryar ta nesa</translation>
-        </message>
-        <message>
-            <source>Room sound</source>
-            <translation>Sauti ɗakin</translation>
+            <source>Speech output is unavailable.</source>
+            <translation>Ba a samun fitar da magana.</translation>
         </message>
     </context>
     <context>
         <name>AudioSettings</name>
         <message>
-            <source>Echo cancellation</source>
-            <translation>Cire amon murya</translation>
+            <source>Echo</source>
+            <translation>Amo</translation>
         </message>
         <message>
             <source>Off</source>
@@ -402,12 +287,12 @@
             <translation>Abubuwan da ke kunna</translation>
         </message>
         <message>
-            <source>Clear local key</source>
-            <translation>Cire keɓɓan yanumiyar</translation>
+            <source>Clear key</source>
+            <translation>Goge maɓalli</translation>
         </message>
         <message>
-            <source>Low cut</source>
-            <translation>Tacewar mitoci kasa</translation>
+            <source>Highpass</source>
+            <translation>Yanke ƙasa</translation>
         </message>
         <message>
             <source>Microphone access is off</source>
@@ -418,32 +303,16 @@
             <translation>Na'urar shigarwa</translation>
         </message>
         <message>
-            <source>Microphone paused for others</source>
-            <translation>Mai karɓar sauti ya dakata ga sauran</translation>
-        </message>
-        <message>
             <source>Cancel</source>
             <translation>Cece</translation>
-        </message>
-        <message>
-            <source>Guided recording</source>
-            <translation>Kwalliya ta aza</translation>
         </message>
         <message>
             <source>Clipping. Reduce microphone gain.</source>
             <translation>Sauti ya yi ƙarfi har ya gurɓace. Rage ƙarin ƙarfin makirufo.</translation>
         </message>
         <message>
-            <source>Silent</source>
-            <translation>Sauri</translation>
-        </message>
-        <message>
             <source>Test output</source>
             <translation>Jarraba fitarwa</translation>
-        </message>
-        <message>
-            <source>Voice level</source>
-            <translation>Matsayin murya</translation>
         </message>
         <message>
             <source>Voice threshold</source>
@@ -462,20 +331,16 @@
             <translation>Na'urar ta katange</translation>
         </message>
         <message>
-            <source>Local key</source>
-            <translation>Saita hanyar riƙewa don magana a cikin gida</translation>
+            <source>PTT key</source>
+            <translation>Maɓallin magana</translation>
         </message>
         <message>
             <source>Voice activation</source>
             <translation>Masajar muryar ta kunna ta atomatik</translation>
         </message>
         <message>
-            <source>Remote PTT key</source>
-            <translation>Saita hanyar riƙewa don magana ta waje</translation>
-        </message>
-        <message>
-            <source>Noise reduction</source>
-            <translation>Ƙara ɗaunar murya</translation>
+            <source>Denoise</source>
+            <translation>Rage hayaniya</translation>
         </message>
         <message>
             <source>Selected device is not connected</source>
@@ -486,32 +351,120 @@
             <translation>Zai aiko</translation>
         </message>
         <message>
-            <source>Microphone gain</source>
-            <translation>Ƙarfin masajar muryar</translation>
-        </message>
-        <message>
-            <source>Clear remote key</source>
-            <translation>Cire kunna ta waje</translation>
-        </message>
-        <message>
-            <source>Playback volume</source>
-            <translation>Iyakokin kunna muryar</translation>
+            <source>Gain</source>
+            <translation>Ƙarfafawa</translation>
         </message>
         <message>
             <source>Not assigned</source>
             <translation>Ba'a yi ainihi ba</translation>
         </message>
         <message>
-            <source>High cut</source>
-            <translation>Tacewar mitoci sama</translation>
+            <source>Lowpass</source>
+            <translation>Yanke sama</translation>
         </message>
         <message>
             <source>Level audio automatically</source>
             <translation>Daidaita sauti ta atomatik</translation>
         </message>
+        <message>
+            <source>Voice volume</source>
+            <translation>Ƙarar hirar murya</translation>
+        </message>
+        <message>
+            <source>App sounds</source>
+            <translation>Sautunan manhaja</translation>
+        </message>
+        <message>
+            <source>Read bot messages aloud</source>
+            <translation>Karanta saƙonnin bot da murya</translation>
+        </message>
+        <message>
+            <source>Download a high-quality voice for this language in macOS settings.</source>
+            <translation>Sauke murya mai inganci ta wannan harshe a saitunan macOS.</translation>
+        </message>
+        <message>
+            <source>Bot voice</source>
+            <translation>Muryar bot</translation>
+        </message>
+        <message>
+            <source>Automatic</source>
+            <translation>Kauto (ota matsakaici)</translation>
+        </message>
+        <message>
+            <source>Unavailable</source>
+            <translation>Ba bisa gaɓo</translation>
+        </message>
+        <message>
+            <source>Download voices in your device's Accessibility speech settings.</source>
+            <translation>Sauke muryoyi daga saitunan magana na sauƙin amfani a na'urarka.</translation>
+        </message>
+        <message>
+            <source>Voice download help</source>
+            <translation>Taimako wajen sauke muryoyi</translation>
+        </message>
+        <message>
+            <source>Strength, not the percentage of echo removed.</source>
+            <translation>Ƙarfi, ba kaso na amon da aka cire ba.</translation>
+        </message>
+        <message>
+            <source>Auto also checks for speech, not just volume.</source>
+            <translation>Yanayin atomatik yana gano magana ma, ba ƙarar sauti kawai ba.</translation>
+        </message>
     </context>
     <context>
         <name>Channels</name>
+        <message>
+            <source>Audio received</source>
+            <translation>Sautin da aka karɓa</translation>
+        </message>
+        <message>
+            <source>Search channels</source>
+            <translation>Nemo tashoshi</translation>
+        </message>
+        <message>
+            <source>No matches</source>
+            <translation>Babu sakamako</translation>
+        </message>
+        <message>
+            <source>Copy address</source>
+            <translation>Kwafi adireshi</translation>
+        </message>
+        <message>
+            <source>Messages</source>
+            <translation>Saƙonni</translation>
+        </message>
+        <message>
+            <source>Message</source>
+            <translation>Saƙo</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Buɗe</translation>
+        </message>
+        <message>
+            <source>Online</source>
+            <translation>Kan layi</translation>
+        </message>
+        <message>
+            <source>Offline</source>
+            <translation>Ba a kan layi ba</translation>
+        </message>
+        <message>
+            <source>No private messages</source>
+            <translation>Babu saƙonnin sirri</translation>
+        </message>
+        <message>
+            <source>Private messages are unavailable for this contact.</source>
+            <translation>Ba a samun saƙonnin sirri ga wannan lambar sadarwa.</translation>
+        </message>
+        <message>
+            <source>If asked, allow local network access. You can change this in system settings.</source>
+            <translation>Idan an tambaye ka, ba da izinin shiga cibiyar sadarwar gida. Za ka iya canza wannan a saitunan tsarin.</translation>
+        </message>
+        <message>
+            <source>Retry</source>
+            <translation>Sake gwadawa</translation>
+        </message>
         <message>
             <source>Updates</source>
             <translation>Sabuntawa</translation>
@@ -531,6 +484,10 @@
         <message>
             <source>DDNS cannot bypass CGNAT. If your provider shares the public IP, use a private VPN on all participating devices or a publicly reachable server.</source>
             <translation>DDNS baya wucewa da CGNAT. Idan mai ba da sabar ku ke rabawa da adiresi na gaba, yi amfani da VPN ta sirri akan duk na'urori da ke shiga ko kuma turo mai aiki da ke da izinin shiga ta hanyar jama'a.</translation>
+        </message>
+        <message>
+            <source>Remove server</source>
+            <translation>Cire uwar garke</translation>
         </message>
         <message>
             <source>Low</source>
@@ -653,10 +610,6 @@
             <translation>Sawan sanarwa</translation>
         </message>
         <message>
-            <source>Lifetime for new messages. Earlier messages keep their expiry.</source>
-            <translation>Lokaci da za a ajiye sakon sabo. Sakon da ya gabata za su ci gaba da zama.</translation>
-        </message>
-        <message>
             <source>Enable speakers</source>
             <translation>Kunna lasifika</translation>
         </message>
@@ -691,10 +644,6 @@
         <message>
             <source>Allow device</source>
             <translation>Ba da izinin naɗaɗɗa</translation>
-        </message>
-        <message>
-            <source>Receive quality: %1 kb/s per voice. Adjusts automatically for this device.</source>
-            <translation>Sabili: %1 kb/s. Zaɓuɓɓen inganta wa wannan na'urar.</translation>
         </message>
         <message>
             <source>Stop radio</source>
@@ -1188,6 +1137,50 @@
             <source>This device</source>
             <translation>Wannan na'ura</translation>
         </message>
+        <message>
+            <source>Use default music volume</source>
+            <translation>Yi amfani da ƙarar kiɗa ta asali</translation>
+        </message>
+        <message>
+            <source>Show in Dock</source>
+            <translation>Nuna a Dock</translation>
+        </message>
+        <message>
+            <source>App language</source>
+            <translation>Harshen manhaja</translation>
+        </message>
+        <message>
+            <source>Send in</source>
+            <translation>Tura da</translation>
+        </message>
+        <message>
+            <source>Hear in</source>
+            <translation>Saurara da</translation>
+        </message>
+        <message>
+            <source>Download language models for %1 and %2?</source>
+            <translation>A sauke samfuran harshe na %1 da %2?</translation>
+        </message>
+        <message>
+            <source>Download</source>
+            <translation>Sauke</translation>
+        </message>
+        <message>
+            <source>PTT, chat and channel controls. Uses the controlled device's microphone.</source>
+            <translation>Sarrafa PTT, hira da tashoshi. Ana amfani da makirifon na'urar da ake sarrafawa.</translation>
+        </message>
+        <message>
+            <source>Connect the other device to one of your channels, then allow it here.</source>
+            <translation>Haɗa ɗayan na'urar zuwa ɗaya daga cikin tashoshinka, sannan ka ba ta izini a nan.</translation>
+        </message>
+        <message>
+            <source>On the other device, open Settings &gt; Input &gt; Remote control and allow this device.</source>
+            <translation>A ɗayan na'urar, buɗe Saita &gt; Shigar &gt; Kwamfuta ta nesa sannan ka ba wannan na'urar izini.</translation>
+        </message>
+        <message>
+            <source>Unread messages</source>
+            <translation>Saƙonnin da ba a karanta ba</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1299,6 +1292,22 @@
             <source>The sanitized image could not be written completely.</source>
             <translation>Ba a iya rubuta hoton da aka tsabtace gaba ɗaya ba.</translation>
         </message>
+        <message>
+            <source>%1 joined.</source>
+            <translation>%1 ya shiga.</translation>
+        </message>
+        <message>
+            <source>%1 left.</source>
+            <translation>%1 ya fita.</translation>
+        </message>
+        <message>
+            <source>%1 was kicked.</source>
+            <translation>An fitar da %1.</translation>
+        </message>
+        <message>
+            <source>%1 was banned from the channel.</source>
+            <translation>An hana %1 shiga tashar.</translation>
+        </message>
     </context>
     <context>
         <name>ChatPanel</name>
@@ -1363,22 +1372,6 @@
             <translation>A shirye...</translation>
         </message>
         <message>
-            <source>%1 joined.</source>
-            <translation>%1 ya shiga.</translation>
-        </message>
-        <message>
-            <source>%1 left.</source>
-            <translation>%1 ya fita.</translation>
-        </message>
-        <message>
-            <source>%1 was kicked.</source>
-            <translation>An fitar da %1.</translation>
-        </message>
-        <message>
-            <source>%1 was banned from the channel.</source>
-            <translation>An hana %1 shiga tashar.</translation>
-        </message>
-        <message>
             <source>Message could not be sent. Check the connection and text length.</source>
             <translation>Ba za a iya aika sakon ba. Daɗa duba haɗin ku da tsayin rubutun.</translation>
         </message>
@@ -1404,7 +1397,400 @@
         </message>
     </context>
     <context>
+        <name>Desktop</name>
+        <message>
+            <source>Open settings at startup.</source>
+            <translation>Buɗe saituna lokacin farawa.</translation>
+        </message>
+        <message>
+            <source>Alternative file for audio profiles.</source>
+            <translation>Madadin fayil don bayanan sauti.</translation>
+        </message>
+        <message>
+            <source>Load the interface without microphone capture and exit after one second.</source>
+            <translation>Loda fuskar manhaja ba tare da rikodin makirufo ba, sannan rufe bayan daƙiƙa ɗaya.</translation>
+        </message>
+        <message>
+            <source>Save an image of the app window during the UI test.</source>
+            <translation>Adana hoton tagar manhaja yayin gwajin fuskar manhaja.</translation>
+        </message>
+        <message>
+            <source>The window image could not be saved.</source>
+            <translation>Ba a iya adana hoton taga ba.</translation>
+        </message>
+        <message>
+            <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
+            <translation>Ba a samun tiren tsarin; manhajar za ta ci gaba da kasancewa a buɗe a taga.</translation>
+        </message>
+    </context>
+    <context>
+        <name>Headless</name>
+        <message>
+            <source>Host display name.</source>
+            <translation>Sunan mai masaukin da za a nuna.</translation>
+        </message>
+        <message>
+            <source>Command failed.</source>
+            <translation>Umarnin bai yi nasara ba.</translation>
+        </message>
+        <message>
+            <source>%1 must be an integer.</source>
+            <translation>%1 dole ya zama cikakkiyar lamba.</translation>
+        </message>
+        <message>
+            <source>Requests must be on/off or true/false.</source>
+            <translation>Buƙatu dole su zama on/off ko true/false.</translation>
+        </message>
+        <message>
+            <source>Unknown host property: %1</source>
+            <translation>Ba a san wannan saitin uwar garke ba: %1</translation>
+        </message>
+        <message>
+            <source>Run without GUI, microphone capture, or local audio output.</source>
+            <translation>Gudanar ba tare da fuskar zane, ɗaukar sautin makirufo ko fitar sauti a nan ba.</translation>
+        </message>
+        <message>
+            <source>Server storage prefix. Personal/audio/GUI profiles are not loaded.</source>
+            <translation>Gaban sunan ajiyar uwar garke. Ba a lodawa bayanan sirri, na sauti ko na fuskar zane.</translation>
+        </message>
+        <message>
+            <source>Optional private identity file instead of the OS credential store (Linux/macOS). Parent directory must exist and belong to this account.</source>
+            <translation>Za a iya amfani da fayil ɗin shaida na sirri maimakon ma'ajiyar bayanan shiga ta tsarin kwamfuta (Linux/macOS). Babban kundin fayiloli dole ya wanzu kuma ya kasance mallakin wannan asusu.</translation>
+        </message>
+        <message>
+            <source>UTF-8 key=value properties or JSON host preset. Default: application.properties, then config/application.properties beside the app.</source>
+            <translation>Saitunan UTF-8 key=value ko saitin uwar garke na JSON. Na asali: application.properties, sannan config/application.properties kusa da manhajar.</translation>
+        </message>
+        <message>
+            <source>Channel display name.</source>
+            <translation>Sunan tashar da za a nuna.</translation>
+        </message>
+        <message>
+            <source>System and radio bot display name.</source>
+            <translation>Sunan bot na tsarin da rediyo da za a nuna.</translation>
+        </message>
+        <message>
+            <source>TCP service port (1-65535).</source>
+            <translation>Tashar sadarwar TCP (1-65535).</translation>
+        </message>
+        <message>
+            <source>Headless admission is always on; only 'on' or 'true' is accepted.</source>
+            <translation>Karɓar shiga ba tare da fuskar zane ba yana kunne kullum; 'on' ko 'true' kawai ake karɓa.</translation>
+        </message>
+        <message>
+            <source>Preapprove a device ID; repeat for several devices. Existing bans remain.</source>
+            <translation>Amince da ID na na'ura tun farko; maimaita don na'urori da yawa. Haramcin da ake da shi zai ci gaba.</translation>
+        </message>
+        <message>
+            <source>Block a device ID; repeat for several devices.</source>
+            <translation>Toshe ID na na'ura; maimaita don na'urori da yawa.</translation>
+        </message>
+        <message>
+            <source>Read a UTF-8 channel password from a file before listening. An empty file removes it.</source>
+            <translation>Karanta kalmar sirrin tashar ta UTF-8 daga fayil kafin fara sauraro. Fayil marar komai yana cire ta.</translation>
+        </message>
+        <message>
+            <source>Channel password. Empty removes it; environment or config avoids process-list exposure.</source>
+            <translation>Kalmar sirrin tashar. Ƙima marar komai tana cire ta; muhalli ko fayil ɗin saiti suna hana bayyanarta a jerin ayyuka.</translation>
+        </message>
+        <message>
+            <source>SquadSpeak headless local channel host</source>
+            <translation>Uwar garken tashar gida ta SquadSpeak ba tare da fuskar zane ba</translation>
+        </message>
+        <message>
+            <source>Environment variables (SQUADSPEAK_ prefix):</source>
+            <translation>Masu sauyin muhalli (gaban suna SQUADSPEAK_):</translation>
+        </message>
+        <message>
+            <source>Host configuration could not be read or exceeds 1 MiB.</source>
+            <translation>An kasa karanta saitin uwar garke ko ya fi 1 MiB.</translation>
+        </message>
+        <message>
+            <source>Host configuration must be UTF-8.</source>
+            <translation>Saitin uwar garke dole ya zama UTF-8.</translation>
+        </message>
+        <message>
+            <source>Host preset must be a JSON object.</source>
+            <translation>Saitin uwar garke da aka riga aka tsara dole ya zama abin JSON.</translation>
+        </message>
+        <message>
+            <source>Property line %1 must use key=value.</source>
+            <translation>Layin saituna %1 dole ya yi amfani da key=value.</translation>
+        </message>
+        <message>
+            <source>Property line %1: %2</source>
+            <translation>Layin saituna %1: %2</translation>
+        </message>
+        <message>
+            <source>Standard input has no file descriptor.</source>
+            <translation>Shigarwa ta yau da kullum ba ta da mai siffanta fayil.</translation>
+        </message>
+        <message>
+            <source>Standard input could not be inspected.</source>
+            <translation>An kasa bincika shigarwa ta yau da kullum.</translation>
+        </message>
+        <message>
+            <source>Could not write the command response: %1</source>
+            <translation>An kasa rubuta amsar umarnin: %1</translation>
+        </message>
+        <message>
+            <source>Standard input could not be read: %1</source>
+            <translation>An kasa karanta shigarwa ta yau da kullum: %1</translation>
+        </message>
+        <message>
+            <source>Input line exceeds 65536 bytes.</source>
+            <translation>Layin shigarwa ya wuce bait 65536.</translation>
+        </message>
+        <message>
+            <source>Each input line must be a JSON object.</source>
+            <translation>Kowane layin shigarwa dole ya zama abin JSON.</translation>
+        </message>
+        <message>
+            <source>Input ended before a complete JSON line.</source>
+            <translation>Shigarwar ta ƙare kafin cikakken layin JSON.</translation>
+        </message>
+        <message>
+            <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
+            <translation>Zaɓin ID na tasharka don umarnin status, configure, password, admission, history, chat da radio; babbar tasha ce ta asali.</translation>
+        </message>
+        <message>
+            <source>Channel action must be list, add or remove.</source>
+            <translation>Aikin tasha dole ya zama list, add ko remove.</translation>
+        </message>
+        <message>
+            <source>Removing an own channel deletes its history, images, permissions and radio settings. Set confirmed=true to proceed.</source>
+            <translation>Cire tasharka yana goge tarihinta, hotuna, izini da saitunan rediyo. Sanya confirmed=true don ci gaba.</translation>
+        </message>
+        <message>
+            <source>id must identify an additional own channel.</source>
+            <translation>id dole ya nuna ƙarin tasharka.</translation>
+        </message>
+        <message>
+            <source>The additional own channel could not be removed: %1</source>
+            <translation>An kasa cire ƙarin tasharka: %1</translation>
+        </message>
+        <message>
+            <source>channelId must identify an own channel.</source>
+            <translation>channelId dole ya nuna tasharka.</translation>
+        </message>
+        <message>
+            <source>values must be a host settings object.</source>
+            <translation>values dole ya zama abin saitunan uwar garke.</translation>
+        </message>
+        <message>
+            <source>Headless admission is always enabled for non-banned devices; requests off is not supported.</source>
+            <translation>Karɓar shiga ba tare da fuskar zane ba yana kunne kullum ga na'urorin da ba a hana ba; ba a tallafa wa requests off.</translation>
+        </message>
+        <message>
+            <source>value must be a password of at most 1024 UTF-8 bytes without control characters; an empty string removes it.</source>
+            <translation>value dole ya zama kalmar sirri mai bait UTF-8 1024 a iyaka ba tare da haruffan sarrafawa ba; zaren rubutu marar komai yana cire ta.</translation>
+        </message>
+        <message>
+            <source>The channel is not ready or a password change is in progress.</source>
+            <translation>Tashar ba ta shirya ba ko ana canza kalmar sirri.</translation>
+        </message>
+        <message>
+            <source>The channel was removed while saving the password.</source>
+            <translation>An cire tashar yayin adana kalmar sirri.</translation>
+        </message>
+        <message>
+            <source>id is required.</source>
+            <translation>Ana buƙatar id.</translation>
+        </message>
+        <message>
+            <source>text must be a valid non-empty chat message.</source>
+            <translation>text dole ya zama ingantaccen saƙon hira wanda ba marar komai ba ne.</translation>
+        </message>
+        <message>
+            <source>The local channel is not ready.</source>
+            <translation>Tashar gida ba ta shirya ba.</translation>
+        </message>
+        <message>
+            <source>The channel's radio is unavailable.</source>
+            <translation>Rediyon tashar ba ya samuwa.</translation>
+        </message>
+        <message>
+            <source>Unknown command. Use help.</source>
+            <translation>Ba a san umarnin ba. Yi amfani da help.</translation>
+        </message>
+        <message>
+            <source>search requires a query, non-negative offset and limit from 1 to 128.</source>
+            <translation>search yana buƙatar query, offset da bai gaza sifili ba da limit daga 1 zuwa 128.</translation>
+        </message>
+        <message>
+            <source>add creates an id; update requires an existing id.</source>
+            <translation>add yana ƙirƙirar id; update yana buƙatar id da yake akwai.</translation>
+        </message>
+        <message>
+            <source>A station is already being checked.</source>
+            <translation>Ana bincika wata tashar rediyo tuni.</translation>
+        </message>
+        <message>
+            <source>The channel was removed while checking the station.</source>
+            <translation>An cire tashar yayin bincika tashar rediyo.</translation>
+        </message>
+        <message>
+            <source>Unknown radio action.</source>
+            <translation>Ba a san aikin rediyo ba.</translation>
+        </message>
+        <message>
+            <source>Could not load language: %1</source>
+            <translation>An kasa loda harshe: %1</translation>
+        </message>
+        <message>
+            <source>The %1 option is incompatible with --headless.</source>
+            <translation>Zaɓin %1 bai dace da --headless ba.</translation>
+        </message>
+        <message>
+            <source>Unexpected positional arguments. Use --help.</source>
+            <translation>Muhawarar matsayi da ba a zata ba. Yi amfani da --help.</translation>
+        </message>
+        <message>
+            <source>--config / -f requires a non-empty path.</source>
+            <translation>--config / -f yana buƙatar hanya marar fanko.</translation>
+        </message>
+        <message>
+            <source>Choose --password or --password-file, not both.</source>
+            <translation>Zaɓi --password ko --password-file, ba duka ba.</translation>
+        </message>
+        <message>
+            <source>Choose SQUADSPEAK_PASSWORD or SQUADSPEAK_PASSWORD_FILE, not both.</source>
+            <translation>Zaɓi SQUADSPEAK_PASSWORD ko SQUADSPEAK_PASSWORD_FILE, ba duka ba.</translation>
+        </message>
+        <message>
+            <source>Choose password or passwordFile in one configuration layer, not both.</source>
+            <translation>Zaɓi password ko passwordFile a matakin saiti ɗaya, ba duka ba.</translation>
+        </message>
+        <message>
+            <source>passwordFile must be a non-empty path.</source>
+            <translation>passwordFile dole ya zama hanya marar fanko.</translation>
+        </message>
+        <message>
+            <source>Password file could not be read or is too large.</source>
+            <translation>An kasa karanta fayil ɗin kalmar sirri ko ya yi girma sosai.</translation>
+        </message>
+        <message>
+            <source>Password file must contain at most 1024 UTF-8 bytes without control characters.</source>
+            <translation>Fayil ɗin kalmar sirri dole ya ƙunshi bait UTF-8 1024 a iyaka ba tare da haruffan sarrafawa ba.</translation>
+        </message>
+        <message>
+            <source>Password must be a string of at most 1024 UTF-8 bytes without control characters.</source>
+            <translation>Kalmar sirri dole ta zama zaren rubutu mai bait UTF-8 1024 a iyaka ba tare da haruffan sarrafawa ba.</translation>
+        </message>
+        <message>
+            <source>settingsFile must be a non-empty path.</source>
+            <translation>settingsFile dole ya zama hanya marar fanko.</translation>
+        </message>
+        <message>
+            <source>identityFile must be a non-empty path.</source>
+            <translation>identityFile dole ya zama hanya marar fanko.</translation>
+        </message>
+        <message>
+            <source>The settings directory could not be created.</source>
+            <translation>An kasa ƙirƙirar kundin saituna.</translation>
+        </message>
+        <message>
+            <source>This SquadSpeak profile is already running or cannot be locked.</source>
+            <translation>Ana gudanar da wannan bayanin SquadSpeak tuni ko ba a iya kulle shi ba.</translation>
+        </message>
+        <message>
+            <source>Standard input could not be opened.</source>
+            <translation>An kasa buɗe shigarwa ta yau da kullum.</translation>
+        </message>
+        <message>
+            <source>Standard output could not be opened.</source>
+            <translation>An kasa buɗe fitarwa ta yau da kullum.</translation>
+        </message>
+        <message>
+            <source>This identity file is already in use or cannot be locked.</source>
+            <translation>Ana amfani da wannan fayil ɗin shaida tuni ko ba a iya kulle shi ba.</translation>
+        </message>
+        <message>
+            <source>Invalid host configuration: %1</source>
+            <translation>Saitin uwar garke bai inganta ba: %1</translation>
+        </message>
+        <message>
+            <source>Radio channels could not be initialized.</source>
+            <translation>An kasa fara shirya tashoshin rediyo.</translation>
+        </message>
+        <message>
+            <source>Headless host could not start: %1</source>
+            <translation>Uwar garke ba tare da fuskar zane ba ta kasa farawa: %1</translation>
+        </message>
+        <message>
+            <source>Channel password could not be saved.</source>
+            <translation>An kasa adana kalmar sirrin tashar.</translation>
+        </message>
+        <message>
+            <source>Invalid channel password: %1</source>
+            <translation>Kalmar sirrin tashar ba ta inganta ba: %1</translation>
+        </message>
+        <message>
+            <source>Headless host could not initialize: %1</source>
+            <translation>An kasa fara shirya uwar garke ba tare da fuskar zane ba: %1</translation>
+        </message>
+        <message>
+            <source>SquadSpeak headless could not start: %1</source>
+            <translation>SquadSpeak ba tare da fuskar zane ba ya kasa farawa: %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>Dole ne aikin goyan bayan ya zama matsayi, shiga, sabuntawa, fita ko sokewa. status sign-in refresh sign-out cancel</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>Ana ci gaba da aiki mai tallafawa.</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>Babu damar samun tallafi a cikin wannan ginin.</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>Gabatar saituna: mahawara &gt; muhalli &gt; kaddarori &gt; Ajiyayyun ƙimar uwar garken.</translation>
+        </message>
+    </context>
+    <context>
+        <name>License</name>
+        <message>
+            <source>License storage is busy or unavailable.</source>
+            <translation>Adana lasisi yana aiki ko babu.</translation>
+        </message>
+        <message>
+            <source>License storage is unavailable.</source>
+            <translation>Babu ajiyar lasisi.</translation>
+        </message>
+        <message>
+            <source>Sign-in expired. Try again.</source>
+            <translation>Shiga ya ƙare. Gwada kuma.</translation>
+        </message>
+        <message>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>Babu shiga GitHub. Gwada kuma.</translation>
+        </message>
+        <message>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>GitHub ba a gama shiga ba. Gwada kuma.</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>GitHub ba a iya bincika ba. Samun shiga layi yana ɗaukar akalla kwanaki bakwai.</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>Shiga tare da GitHub kuma.</translation>
+        </message>
+    </context>
+    <context>
         <name>LocalChannel</name>
+        <message>
+            <source>Insufficient permissions.</source>
+            <translation>Babu isasshen izini.</translation>
+        </message>
+        <message>
+            <source>Blocked</source>
+            <translation>An hana</translation>
+        </message>
         <message>
             <source>Host is not responding. Reconnecting.</source>
             <translation>Mai karɓa baya amsa. A ƙyale haɗin.</translation>
@@ -1926,8 +2312,8 @@
             <translation>Aikin canja hoton ya ɗauki lokaci mai yawa.</translation>
         </message>
         <message>
-            <source>The channel is full. Text chat is still available.</source>
-            <translation>Tashar ta cika. Har yanzu ana iya amfani da tattaunawar rubutu.</translation>
+            <source>The host is busy. Try again shortly.</source>
+            <translation>Mai masauki yana aiki. Sake gwadawa nan da ɗan lokaci.</translation>
         </message>
         <message>
             <source>All own channels use the device's shared port.</source>
@@ -2189,6 +2575,53 @@
             <source>Voice relay codec could not be configured.</source>
             <translation>Ba a iya saita kodek na isar da murya ba.</translation>
         </message>
+        <message>
+            <source>Unsupported audio codec</source>
+            <translation>Ba a tallafa wa tsarin sauti ba</translation>
+        </message>
+        <message>
+            <source>Speaking is not allowed in this channel.</source>
+            <translation>Ba a yarda da magana a wannan tashar ba.</translation>
+        </message>
+    </context>
+    <context>
+        <name>LocalLanguage</name>
+        <message>
+            <source>Translation (experimental)</source>
+            <translation>Fassara (na gwaji)</translation>
+        </message>
+        <message>
+            <source>Translate messages</source>
+            <translation>Fassara saƙonni</translation>
+        </message>
+        <message>
+            <source>Translated voice</source>
+            <translation>Muryar da aka fassara</translation>
+        </message>
+        <message>
+            <source>Original audio</source>
+            <translation>Sauti na asali</translation>
+        </message>
+        <message>
+            <source>Original text</source>
+            <translation>Rubutu na asali</translation>
+        </message>
+        <message>
+            <source>Prepare languages</source>
+            <translation>Shirya harsuna</translation>
+        </message>
+        <message>
+            <source>Local language processing is unavailable.</source>
+            <translation>Ba a samun sarrafa harshe a kan na'urar.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be read.</source>
+            <translation>An kasa karanta saitunan harshe.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be saved.</source>
+            <translation>An kasa adana saitunan harshe.</translation>
+        </message>
     </context>
     <context>
         <name>PushToTalkKey</name>
@@ -2329,50 +2762,61 @@
         </message>
     </context>
     <context>
-        <name>RecordingPanel</name>
+        <name>ScreenPanel</name>
         <message>
-            <source>Stop</source>
-            <translation>Dakatar</translation>
+            <source>Video paused</source>
+            <translation>Bidiyon ya dade</translation>
         </message>
         <message>
-            <source>Start</source>
-            <translation>Ka'idi</translation>
+            <source>Stream ended</source>
+            <translation>Shirin ya ƙare</translation>
         </message>
         <message>
-            <source>Saved on this device only. Nothing is uploaded.</source>
-            <translation>An adana wannan a kan na'urar kawai. Babu wani abu da aka ƙara zuwa intanet.</translation>
+            <source>Connecting</source>
+            <translation>A haɗawa</translation>
         </message>
         <message>
-            <source>Keep this take or record it again.</source>
-            <translation>Ku riƙe wannan kwantarsa ko kuma ku shirya sabuwar kwantarsa.</translation>
+            <source>Open screen stream</source>
+            <translation>Bude shirin allo</translation>
         </message>
         <message>
-            <source>Record again</source>
-            <translation>Shirya sabuwar kwantarsa</translation>
+            <source>Screen stream</source>
+            <translation>Shirin allo</translation>
         </message>
         <message>
-            <source>Use recording</source>
-            <translation>Yi amfani da sabanin (audio) da aka yi rajista</translation>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
+        </message>
+    </context>
+    <context>
+        <name>ScreenShare</name>
+        <message>
+            <source>Allow screen recording in system settings.</source>
+            <translation>Ba da izinin ɗaukar allon a saitunan tsarin.</translation>
         </message>
         <message>
-            <source>Recording progress</source>
-            <translation>Ayyukan rubutawa rajista</translation>
+            <source>The shared screen was removed. Select a source to start again.</source>
+            <translation>An cire allon kunna allo. Zaɓi tusama don fara sabawa.</translation>
         </message>
         <message>
-            <source>Step %1 of %2</source>
-            <translation>Mataki %1 daga cikin %2</translation>
+            <source>The shared window was closed. Select a source to start again.</source>
+            <translation>An ƙidaya taga da aka kunna. Zaɓi tusama don fara sabawa.</translation>
         </message>
         <message>
-            <source>Open recordings</source>
-            <translation>Bude rajistoci</translation>
+            <source>The selected screen is no longer available.</source>
+            <translation>Taga da aka zaɓa ba ta samu ba yanzu.</translation>
         </message>
         <message>
-            <source>Reset test</source>
-            <translation>Babban gwaji</translation>
+            <source>The selected window is no longer available.</source>
+            <translation>Taga da aka zaɓa ba ta samu ba yanzu.</translation>
         </message>
         <message>
-            <source>%1 s remaining / %2 dBFS</source>
-            <translation>%1 ya rage / %2 dBFS</translation>
+            <source>The selected source exceeds the capture size limit.</source>
+            <translation>Tusama da aka zaɓa ya wuce iyakacin girman kunna.</translation>
+        </message>
+        <message>
+            <source>Close a video view before opening another stream.</source>
+            <translation>Kusanci kallo na bidiyo kafin bude wani shiri.</translation>
         </message>
     </context>
     <context>
@@ -2449,10 +2893,6 @@
             <translation>Ke kan ɗaukar signal...</translation>
         </message>
         <message>
-            <source>Dashed curve: configured gain and frequency cuts, using the right dB scale. Noise reduction and voice activation are not part of this curve.</source>
-            <translation>Zebraƙi mara layi: Canje na ƙarfi da kuma frekuwensi da aka saita, waɗanda za su auku akan mazaunin dB da ke hannun dama. Rage hayayyafa da kuma kunna murãda ba wani ɓangin wannan zebraƙin ba.</translation>
-        </message>
-        <message>
             <source>Microphone preview is not running</source>
             <translation>Preview na mikrofoni bai yi aiki ba</translation>
         </message>
@@ -2463,303 +2903,6 @@
         <message>
             <source>Peak: %1</source>
             <translation>Mafi ƙima: %1</translation>
-        </message>
-    </context>
-    <context>
-        <name>Tray</name>
-        <message>
-            <source>Quit</source>
-            <translation>Ajiye</translation>
-        </message>
-        <message>
-            <source>SquadSpeak - speaking</source>
-            <translation>SquadSpeak - yana magana</translation>
-        </message>
-        <message>
-            <source>Settings</source>
-            <translation>Saita</translation>
-        </message>
-        <message>
-            <source>Channels</source>
-            <translation>Channels</translation>
-        </message>
-        <message>
-            <source>New image</source>
-            <translation>Sabon hoton</translation>
-        </message>
-    </context>
-    <context>
-        <name>VoiceAvatar</name>
-        <message>
-            <source>Muted</source>
-            <translation>An kashe makirufo</translation>
-        </message>
-        <message>
-            <source>Sleeping</source>
-            <translation>Barci</translation>
-        </message>
-        <message>
-            <source>Offline</source>
-            <translation>Ba a kan layi ba</translation>
-        </message>
-        <message>
-            <source>Speaking</source>
-            <translation>Na ke magana</translation>
-        </message>
-        <message>
-            <source>Unavailable</source>
-            <translation>Ba bisa gaɓo</translation>
-        </message>
-        <message>
-            <source>Listening</source>
-            <translation>Na ke ji</translation>
-        </message>
-        <message>
-            <source>Deafened</source>
-            <translation>An kashe masu magana</translation>
-        </message>
-    </context>
-    <context>
-        <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>Babu samani - duba saitunan sauti ko gwajai sauti</translation>
-        </message>
-        <message>
-            <source>Microphone muted</source>
-            <translation>Mai kunna igogi ya rufe</translation>
-        </message>
-        <message>
-            <source>Push-to-talk held</source>
-            <translation>Ana rike da maɓallin magana</translation>
-        </message>
-        <message>
-            <source>Ready - push-to-talk released</source>
-            <translation>An kashe maɓallin magana</translation>
-        </message>
-        <message>
-            <source>Microphone unmuted</source>
-            <translation>An bude mai kunna igogi</translation>
-        </message>
-        <message>
-            <source>Settings could not be saved: %1</source>
-            <translation>Ba za a iya adamu saitunan: %1</translation>
-        </message>
-        <message>
-            <source>The push-to-talk sequence cannot be incremented further.</source>
-            <translation>Ba za a iya kara jerin push-to-talk ba.</translation>
-        </message>
-        <message>
-            <source>Choose System, Light or Dark.</source>
-            <translation>Kwamancen tsarin, haske ko duhu.</translation>
-        </message>
-        <message>
-            <source>Choose a colour palette from the list.</source>
-            <translation>Zabi launi daga jerin launuka da ke nan.</translation>
-        </message>
-        <message>
-            <source>Choose an available avatar.</source>
-            <translation>Zabi hoton mai suna (avatar) da ya dace.</translation>
-        </message>
-        <message>
-            <source>Invalid push-to-talk binding.</source>
-            <translation>Wannan hanyar kunna 'push-to-talk' ba ta da alawa.</translation>
-        </message>
-        <message>
-            <source>Release the held push-to-talk key first.</source>
-            <translation>Daidaita maɓallin da kuka ƙara kafin haka.</translation>
-        </message>
-        <message>
-            <source>Choose a language from the list.</source>
-            <translation>Zabi harshen daga jerin sunayen da ke nan.</translation>
-        </message>
-        <message>
-            <source>This avatar requires Supporter.</source>
-            <translation>Wannan hoton mai suna (avatar) yana buɗatar 'Supporter'.</translation>
-        </message>
-        <message>
-            <source>The name must contain 1 to 64 characters.</source>
-            <translation>Sunan ya kamata ya ƙunshi ƴar kuwa har zuwa 64 ainihi.</translation>
-        </message>
-        <message>
-            <source>The name may not contain control characters or line breaks.</source>
-            <translation>Sunan ba zai iya kunsa alamar sarauta ko layin sabawa ba.</translation>
-        </message>
-        <message>
-            <source>Session settings could not be read.</source>
-            <translation>Ba a iya karanta saitunan zaman ba.</translation>
-        </message>
-        <message>
-            <source>Saved setting is invalid: %1</source>
-            <translation>Saitin da aka adana bai inganta ba: %1</translation>
-        </message>
-    </context>
-    <context>
-        <name>License</name>
-        <message>
-            <source>License storage is busy or unavailable.</source>
-            <translation>Adana lasisi yana aiki ko babu.</translation>
-        </message>
-        <message>
-            <source>License storage is unavailable.</source>
-            <translation>Babu ajiyar lasisi.</translation>
-        </message>
-        <message>
-            <source>Sign-in expired. Try again.</source>
-            <translation>Shiga ya ƙare. Gwada kuma.</translation>
-        </message>
-        <message>
-            <source>GitHub sign-in is unavailable. Try again.</source>
-            <translation>Babu shiga GitHub. Gwada kuma.</translation>
-        </message>
-        <message>
-            <source>GitHub sign-in was not completed. Try again.</source>
-            <translation>GitHub ba a gama shiga ba. Gwada kuma.</translation>
-        </message>
-        <message>
-            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
-            <translation>GitHub ba a iya bincika ba. Samun shiga layi yana ɗaukar akalla kwanaki bakwai.</translation>
-        </message>
-        <message>
-            <source>Sign in with GitHub again.</source>
-            <translation>Shiga tare da GitHub kuma.</translation>
-        </message>
-    </context>
-    <context>
-        <name>ScreenShare</name>
-        <message>
-            <source>The shared screen was removed. Select a source to start again.</source>
-            <translation>An cire allon kunna allo. Zaɓi tusama don fara sabawa.</translation>
-        </message>
-        <message>
-            <source>The shared window was closed. Select a source to start again.</source>
-            <translation>An ƙidaya taga da aka kunna. Zaɓi tusama don fara sabawa.</translation>
-        </message>
-        <message>
-            <source>The selected screen is no longer available.</source>
-            <translation>Taga da aka zaɓa ba ta samu ba yanzu.</translation>
-        </message>
-        <message>
-            <source>The selected window is no longer available.</source>
-            <translation>Taga da aka zaɓa ba ta samu ba yanzu.</translation>
-        </message>
-        <message>
-            <source>The selected source exceeds the capture size limit.</source>
-            <translation>Tusama da aka zaɓa ya wuce iyakacin girman kunna.</translation>
-        </message>
-        <message>
-            <source>Close a video view before opening another stream.</source>
-            <translation>Kusanci kallo na bidiyo kafin bude wani shiri.</translation>
-        </message>
-    </context>
-    <context>
-        <name>ScreenPanel</name>
-        <message>
-            <source>Media capacity reached</source>
-            <translation>An cika aikin kunna abubuwa</translation>
-        </message>
-        <message>
-            <source>Video paused</source>
-            <translation>Bidiyon ya dade</translation>
-        </message>
-        <message>
-            <source>Stream ended</source>
-            <translation>Shirin ya ƙare</translation>
-        </message>
-        <message>
-            <source>Connecting</source>
-            <translation>A haɗawa</translation>
-        </message>
-        <message>
-            <source>Open screen stream</source>
-            <translation>Bude shirin allo</translation>
-        </message>
-        <message>
-            <source>Screen stream</source>
-            <translation>Shirin allo</translation>
-        </message>
-        <message>
-            <source>%1 kbit/s</source>
-            <translation>%1 kbit/s</translation>
-        </message>
-    </context>
-    <context>
-        <name>VideoCodec</name>
-        <message>
-            <source>Video codec: %1</source>
-            <translation>Kodek na bidiyo: %1</translation>
-        </message>
-        <message>
-            <source>Video codec ABI does not match its headers.</source>
-            <translation>ABI na kodek na bidiyo bai dace da fayilolin kan sa ba.</translation>
-        </message>
-        <message>
-            <source>Video buffers could not be allocated.</source>
-            <translation>An kasa ware ƙwaƙwalwa don ma'ajiyar wucin gadi ta bidiyo.</translation>
-        </message>
-        <message>
-            <source>Invalid video quality tier.</source>
-            <translation>Matakin ingancin bidiyo ba daidai ba ne.</translation>
-        </message>
-        <message>
-            <source>The screen source exceeds the supported capture size.</source>
-            <translation>Tushen allo ya wuce girman ɗaukar hoto da ake tallafawa.</translation>
-        </message>
-        <message>
-            <source>The screen source is too narrow.</source>
-            <translation>Tushen allo ya yi ƙunci sosai.</translation>
-        </message>
-        <message>
-            <source>The video encoder could not be allocated.</source>
-            <translation>An kasa ware ƙwaƙwalwa don mai sanya lambar bidiyo.</translation>
-        </message>
-        <message>
-            <source>No supported video encoder is available.</source>
-            <translation>Babu mai sanya lambar bidiyo da ake tallafawa.</translation>
-        </message>
-        <message>
-            <source>Video encoder configuration is too large.</source>
-            <translation>Tsarin mai sanya lambar bidiyo ya yi girma sosai.</translation>
-        </message>
-        <message>
-            <source>Video scaling could not be initialized.</source>
-            <translation>An kasa fara sauya girman bidiyo.</translation>
-        </message>
-        <message>
-            <source>The encoder returned an empty video packet.</source>
-            <translation>Mai sanya lamba ya dawo da fakitin bidiyo marar komai.</translation>
-        </message>
-        <message>
-            <source>Invalid video frame format.</source>
-            <translation>Tsarin firam ɗin bidiyo ba daidai ba ne.</translation>
-        </message>
-        <message>
-            <source>Invalid video decoder configuration.</source>
-            <translation>Saitin mai warware lambar bidiyo ba daidai ba ne.</translation>
-        </message>
-        <message>
-            <source>This video codec cannot be decoded.</source>
-            <translation>Ba za a iya warware bidiyo mai amfani da wannan kodek ba.</translation>
-        </message>
-        <message>
-            <source>Video decoder could not be allocated.</source>
-            <translation>An kasa ware ƙwaƙwalwa don mai warware lambar bidiyo.</translation>
-        </message>
-        <message>
-            <source>Video decoder configuration could not be allocated.</source>
-            <translation>An kasa ware ƙwaƙwalwa don saitin mai warware lambar bidiyo.</translation>
-        </message>
-        <message>
-            <source>Decoded dimensions do not match the screen stream.</source>
-            <translation>Girman da aka warware bai dace da rafin allo ba.</translation>
-        </message>
-        <message>
-            <source>Decoded image could not be allocated.</source>
-            <translation>An kasa ware ƙwaƙwalwa don hoton da aka warware.</translation>
-        </message>
-        <message>
-            <source>Video color conversion could not be initialized.</source>
-            <translation>An kasa fara sauya launukan bidiyo.</translation>
         </message>
     </context>
     <context>
@@ -2877,359 +3020,208 @@
             <translation>Ba a iya tantance kalmar sirri ba.</translation>
         </message>
     </context>
-
     <context>
-        <name>Headless</name>
+        <name>Tray</name>
         <message>
-            <source>Command failed.</source>
-            <translation>Umarnin bai yi nasara ba.</translation>
+            <source>Quit</source>
+            <translation>Ajiye</translation>
         </message>
         <message>
-            <source>%1 must be an integer.</source>
-            <translation>%1 dole ya zama cikakkiyar lamba.</translation>
+            <source>SquadSpeak - speaking</source>
+            <translation>SquadSpeak - yana magana</translation>
         </message>
         <message>
-            <source>Requests must be on/off or true/false.</source>
-            <translation>Buƙatu dole su zama on/off ko true/false.</translation>
+            <source>Settings</source>
+            <translation>Saita</translation>
         </message>
         <message>
-            <source>Unknown host property: %1</source>
-            <translation>Ba a san wannan saitin uwar garke ba: %1</translation>
+            <source>Channels</source>
+            <translation>Channels</translation>
         </message>
         <message>
-            <source>Run without GUI, microphone capture, or local audio output.</source>
-            <translation>Gudanar ba tare da fuskar zane, ɗaukar sautin makirufo ko fitar sauti a nan ba.</translation>
-        </message>
-        <message>
-            <source>Server storage prefix. Personal/audio/GUI profiles are not loaded.</source>
-            <translation>Gaban sunan ajiyar uwar garke. Ba a lodawa bayanan sirri, na sauti ko na fuskar zane.</translation>
-        </message>
-        <message>
-            <source>Optional private identity file instead of the OS credential store (Linux/macOS). Parent directory must exist and belong to this account.</source>
-            <translation>Za a iya amfani da fayil ɗin shaida na sirri maimakon ma'ajiyar bayanan shiga ta tsarin kwamfuta (Linux/macOS). Babban kundin fayiloli dole ya wanzu kuma ya kasance mallakin wannan asusu.</translation>
-        </message>
-        <message>
-            <source>UTF-8 key=value properties or JSON host preset. Default: application.properties, then config/application.properties beside the app.</source>
-            <translation>Saitunan UTF-8 key=value ko saitin uwar garke na JSON. Na asali: application.properties, sannan config/application.properties kusa da manhajar.</translation>
-        </message>
-        <message>
-            <source>Channel display name.</source>
-            <translation>Sunan tashar da za a nuna.</translation>
-        </message>
-        <message>
-            <source>System and radio bot display name.</source>
-            <translation>Sunan bot na tsarin da rediyo da za a nuna.</translation>
-        </message>
-        <message>
-            <source>TCP service port (1-65535).</source>
-            <translation>Tashar sadarwar TCP (1-65535).</translation>
-        </message>
-        <message>
-            <source>Headless admission is always on; only 'on' or 'true' is accepted.</source>
-            <translation>Karɓar shiga ba tare da fuskar zane ba yana kunne kullum; 'on' ko 'true' kawai ake karɓa.</translation>
-        </message>
-        <message>
-            <source>Preapprove a device ID; repeat for several devices. Existing bans remain.</source>
-            <translation>Amince da ID na na'ura tun farko; maimaita don na'urori da yawa. Haramcin da ake da shi zai ci gaba.</translation>
-        </message>
-        <message>
-            <source>Block a device ID; repeat for several devices.</source>
-            <translation>Toshe ID na na'ura; maimaita don na'urori da yawa.</translation>
-        </message>
-        <message>
-            <source>Read a UTF-8 channel password from a file before listening. An empty file removes it.</source>
-            <translation>Karanta kalmar sirrin tashar ta UTF-8 daga fayil kafin fara sauraro. Fayil marar komai yana cire ta.</translation>
-        </message>
-        <message>
-            <source>Channel password. Empty removes it; environment or config avoids process-list exposure.</source>
-            <translation>Kalmar sirrin tashar. Ƙima marar komai tana cire ta; muhalli ko fayil ɗin saiti suna hana bayyanarta a jerin ayyuka.</translation>
-        </message>
-        <message>
-            <source>SquadSpeak headless local channel host</source>
-            <translation>Uwar garken tashar gida ta SquadSpeak ba tare da fuskar zane ba</translation>
-        </message>
-        <message>
-            <source>Environment variables (SQUADSPEAK_ prefix):</source>
-            <translation>Masu sauyin muhalli (gaban suna SQUADSPEAK_):</translation>
-        </message>
-        <message>
-            <source>Host configuration could not be read or exceeds 1 MiB.</source>
-            <translation>An kasa karanta saitin uwar garke ko ya fi 1 MiB.</translation>
-        </message>
-        <message>
-            <source>Host configuration must be UTF-8.</source>
-            <translation>Saitin uwar garke dole ya zama UTF-8.</translation>
-        </message>
-        <message>
-            <source>Host preset must be a JSON object.</source>
-            <translation>Saitin uwar garke da aka riga aka tsara dole ya zama abin JSON.</translation>
-        </message>
-        <message>
-            <source>Property line %1 must use key=value.</source>
-            <translation>Layin saituna %1 dole ya yi amfani da key=value.</translation>
-        </message>
-        <message>
-            <source>Property line %1: %2</source>
-            <translation>Layin saituna %1: %2</translation>
-        </message>
-        <message>
-            <source>Standard input has no file descriptor.</source>
-            <translation>Shigarwa ta yau da kullum ba ta da mai siffanta fayil.</translation>
-        </message>
-        <message>
-            <source>Standard input could not be inspected.</source>
-            <translation>An kasa bincika shigarwa ta yau da kullum.</translation>
-        </message>
-        <message>
-            <source>Could not write the command response: %1</source>
-            <translation>An kasa rubuta amsar umarnin: %1</translation>
-        </message>
-        <message>
-            <source>Standard input could not be read: %1</source>
-            <translation>An kasa karanta shigarwa ta yau da kullum: %1</translation>
-        </message>
-        <message>
-            <source>Input line exceeds 65536 bytes.</source>
-            <translation>Layin shigarwa ya wuce bait 65536.</translation>
-        </message>
-        <message>
-            <source>Each input line must be a JSON object.</source>
-            <translation>Kowane layin shigarwa dole ya zama abin JSON.</translation>
-        </message>
-        <message>
-            <source>Input ended before a complete JSON line.</source>
-            <translation>Shigarwar ta ƙare kafin cikakken layin JSON.</translation>
-        </message>
-        <message>
-            <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
-            <translation>Zaɓin ID na tasharka don umarnin status, configure, password, admission, history, chat da radio; babbar tasha ce ta asali.</translation>
-        </message>
-        <message>
-            <source>Channel action must be list, add or remove.</source>
-            <translation>Aikin tasha dole ya zama list, add ko remove.</translation>
-        </message>
-        <message>
-            <source>Removing an own channel deletes its history, images, permissions and radio settings. Set confirmed=true to proceed.</source>
-            <translation>Cire tasharka yana goge tarihinta, hotuna, izini da saitunan rediyo. Sanya confirmed=true don ci gaba.</translation>
-        </message>
-        <message>
-            <source>id must identify an additional own channel.</source>
-            <translation>id dole ya nuna ƙarin tasharka.</translation>
-        </message>
-        <message>
-            <source>The additional own channel could not be removed: %1</source>
-            <translation>An kasa cire ƙarin tasharka: %1</translation>
-        </message>
-        <message>
-            <source>channelId must identify an own channel.</source>
-            <translation>channelId dole ya nuna tasharka.</translation>
-        </message>
-        <message>
-            <source>values must be a host settings object.</source>
-            <translation>values dole ya zama abin saitunan uwar garke.</translation>
-        </message>
-        <message>
-            <source>Headless admission is always enabled for non-banned devices; requests off is not supported.</source>
-            <translation>Karɓar shiga ba tare da fuskar zane ba yana kunne kullum ga na'urorin da ba a hana ba; ba a tallafa wa requests off.</translation>
-        </message>
-        <message>
-            <source>value must be a password of at most 1024 UTF-8 bytes without control characters; an empty string removes it.</source>
-            <translation>value dole ya zama kalmar sirri mai bait UTF-8 1024 a iyaka ba tare da haruffan sarrafawa ba; zaren rubutu marar komai yana cire ta.</translation>
-        </message>
-        <message>
-            <source>The channel is not ready or a password change is in progress.</source>
-            <translation>Tashar ba ta shirya ba ko ana canza kalmar sirri.</translation>
-        </message>
-        <message>
-            <source>The channel was removed while saving the password.</source>
-            <translation>An cire tashar yayin adana kalmar sirri.</translation>
-        </message>
-        <message>
-            <source>id is required.</source>
-            <translation>Ana buƙatar id.</translation>
-        </message>
-        <message>
-            <source>text must be a valid non-empty chat message.</source>
-            <translation>text dole ya zama ingantaccen saƙon hira wanda ba marar komai ba ne.</translation>
-        </message>
-        <message>
-            <source>The local channel is not ready.</source>
-            <translation>Tashar gida ba ta shirya ba.</translation>
-        </message>
-        <message>
-            <source>The channel's radio is unavailable.</source>
-            <translation>Rediyon tashar ba ya samuwa.</translation>
-        </message>
-        <message>
-            <source>Unknown command. Use help.</source>
-            <translation>Ba a san umarnin ba. Yi amfani da help.</translation>
-        </message>
-        <message>
-            <source>search requires a query, non-negative offset and limit from 1 to 128.</source>
-            <translation>search yana buƙatar query, offset da bai gaza sifili ba da limit daga 1 zuwa 128.</translation>
-        </message>
-        <message>
-            <source>add creates an id; update requires an existing id.</source>
-            <translation>add yana ƙirƙirar id; update yana buƙatar id da yake akwai.</translation>
-        </message>
-        <message>
-            <source>A station is already being checked.</source>
-            <translation>Ana bincika wata tashar rediyo tuni.</translation>
-        </message>
-        <message>
-            <source>The channel was removed while checking the station.</source>
-            <translation>An cire tashar yayin bincika tashar rediyo.</translation>
-        </message>
-        <message>
-            <source>Unknown radio action.</source>
-            <translation>Ba a san aikin rediyo ba.</translation>
-        </message>
-        <message>
-            <source>Could not load language: %1</source>
-            <translation>An kasa loda harshe: %1</translation>
-        </message>
-        <message>
-            <source>The %1 option is incompatible with --headless.</source>
-            <translation>Zaɓin %1 bai dace da --headless ba.</translation>
-        </message>
-        <message>
-            <source>Unexpected positional arguments. Use --help.</source>
-            <translation>Muhawarar matsayi da ba a zata ba. Yi amfani da --help.</translation>
-        </message>
-        <message>
-            <source>--config / -f requires a non-empty path.</source>
-            <translation>--config / -f yana buƙatar hanya marar fanko.</translation>
-        </message>
-        <message>
-            <source>Choose --password or --password-file, not both.</source>
-            <translation>Zaɓi --password ko --password-file, ba duka ba.</translation>
-        </message>
-        <message>
-            <source>Choose SQUADSPEAK_PASSWORD or SQUADSPEAK_PASSWORD_FILE, not both.</source>
-            <translation>Zaɓi SQUADSPEAK_PASSWORD ko SQUADSPEAK_PASSWORD_FILE, ba duka ba.</translation>
-        </message>
-        <message>
-            <source>Choose password or passwordFile in one configuration layer, not both.</source>
-            <translation>Zaɓi password ko passwordFile a matakin saiti ɗaya, ba duka ba.</translation>
-        </message>
-        <message>
-            <source>passwordFile must be a non-empty path.</source>
-            <translation>passwordFile dole ya zama hanya marar fanko.</translation>
-        </message>
-        <message>
-            <source>Password file could not be read or is too large.</source>
-            <translation>An kasa karanta fayil ɗin kalmar sirri ko ya yi girma sosai.</translation>
-        </message>
-        <message>
-            <source>Password file must contain at most 1024 UTF-8 bytes without control characters.</source>
-            <translation>Fayil ɗin kalmar sirri dole ya ƙunshi bait UTF-8 1024 a iyaka ba tare da haruffan sarrafawa ba.</translation>
-        </message>
-        <message>
-            <source>Password must be a string of at most 1024 UTF-8 bytes without control characters.</source>
-            <translation>Kalmar sirri dole ta zama zaren rubutu mai bait UTF-8 1024 a iyaka ba tare da haruffan sarrafawa ba.</translation>
-        </message>
-        <message>
-            <source>settingsFile must be a non-empty path.</source>
-            <translation>settingsFile dole ya zama hanya marar fanko.</translation>
-        </message>
-        <message>
-            <source>identityFile must be a non-empty path.</source>
-            <translation>identityFile dole ya zama hanya marar fanko.</translation>
-        </message>
-        <message>
-            <source>The settings directory could not be created.</source>
-            <translation>An kasa ƙirƙirar kundin saituna.</translation>
-        </message>
-        <message>
-            <source>This SquadSpeak profile is already running or cannot be locked.</source>
-            <translation>Ana gudanar da wannan bayanin SquadSpeak tuni ko ba a iya kulle shi ba.</translation>
-        </message>
-        <message>
-            <source>Standard input could not be opened.</source>
-            <translation>An kasa buɗe shigarwa ta yau da kullum.</translation>
-        </message>
-        <message>
-            <source>Standard output could not be opened.</source>
-            <translation>An kasa buɗe fitarwa ta yau da kullum.</translation>
-        </message>
-        <message>
-            <source>This identity file is already in use or cannot be locked.</source>
-            <translation>Ana amfani da wannan fayil ɗin shaida tuni ko ba a iya kulle shi ba.</translation>
-        </message>
-        <message>
-            <source>Invalid host configuration: %1</source>
-            <translation>Saitin uwar garke bai inganta ba: %1</translation>
-        </message>
-        <message>
-            <source>Radio channels could not be initialized.</source>
-            <translation>An kasa fara shirya tashoshin rediyo.</translation>
-        </message>
-        <message>
-            <source>Headless host could not start: %1</source>
-            <translation>Uwar garke ba tare da fuskar zane ba ta kasa farawa: %1</translation>
-        </message>
-        <message>
-            <source>Channel password could not be saved.</source>
-            <translation>An kasa adana kalmar sirrin tashar.</translation>
-        </message>
-        <message>
-            <source>Invalid channel password: %1</source>
-            <translation>Kalmar sirrin tashar ba ta inganta ba: %1</translation>
-        </message>
-        <message>
-            <source>Headless host could not initialize: %1</source>
-            <translation>An kasa fara shirya uwar garke ba tare da fuskar zane ba: %1</translation>
-        </message>
-        <message>
-            <source>SquadSpeak headless could not start: %1</source>
-            <translation>SquadSpeak ba tare da fuskar zane ba ya kasa farawa: %1</translation>
-        </message>
-        <message>
-            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
-            <translation>Dole ne aikin goyan bayan ya zama matsayi, shiga, sabuntawa, fita ko sokewa. status sign-in refresh sign-out cancel</translation>
-        </message>
-        <message>
-            <source>A Supporter operation is in progress.</source>
-            <translation>Ana ci gaba da aiki mai tallafawa.</translation>
-        </message>
-        <message>
-            <source>Supporter access is unavailable in this build.</source>
-            <translation>Babu damar samun tallafi a cikin wannan ginin.</translation>
-        </message>
-        <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>Gabatar saituna: mahawara &gt; muhalli &gt; kaddarori &gt; Ajiyayyun ƙimar uwar garken.</translation>
+            <source>New image</source>
+            <translation>Sabon hoton</translation>
         </message>
     </context>
     <context>
-        <name>Desktop</name>
+        <name>VideoCodec</name>
         <message>
-            <source>Open settings at startup.</source>
-            <translation>Buɗe saituna lokacin farawa.</translation>
+            <source>Video codec: %1</source>
+            <translation>Kodek na bidiyo: %1</translation>
         </message>
         <message>
-            <source>Open guided local test recording without starting network services.</source>
-            <translation>Buɗe rikodin gwaji na cikin na'ura mai jagora ba tare da fara ayyukan hanyar sadarwa ba.</translation>
+            <source>Video codec ABI does not match its headers.</source>
+            <translation>ABI na kodek na bidiyo bai dace da fayilolin kan sa ba.</translation>
         </message>
         <message>
-            <source>Alternative file for audio profiles.</source>
-            <translation>Madadin fayil don bayanan sauti.</translation>
+            <source>Video buffers could not be allocated.</source>
+            <translation>An kasa ware ƙwaƙwalwa don ma'ajiyar wucin gadi ta bidiyo.</translation>
         </message>
         <message>
-            <source>Load the interface without microphone capture and exit after one second.</source>
-            <translation>Loda fuskar manhaja ba tare da rikodin makirufo ba, sannan rufe bayan daƙiƙa ɗaya.</translation>
+            <source>Invalid video quality tier.</source>
+            <translation>Matakin ingancin bidiyo ba daidai ba ne.</translation>
         </message>
         <message>
-            <source>Save an image of the app window during the UI test.</source>
-            <translation>Adana hoton tagar manhaja yayin gwajin fuskar manhaja.</translation>
+            <source>The screen source exceeds the supported capture size.</source>
+            <translation>Tushen allo ya wuce girman ɗaukar hoto da ake tallafawa.</translation>
         </message>
         <message>
-            <source>The window image could not be saved.</source>
-            <translation>Ba a iya adana hoton taga ba.</translation>
+            <source>The screen source is too narrow.</source>
+            <translation>Tushen allo ya yi ƙunci sosai.</translation>
         </message>
         <message>
-            <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
-            <translation>Ba a samun tiren tsarin; manhajar za ta ci gaba da kasancewa a buɗe a taga.</translation>
+            <source>The video encoder could not be allocated.</source>
+            <translation>An kasa ware ƙwaƙwalwa don mai sanya lambar bidiyo.</translation>
+        </message>
+        <message>
+            <source>No supported video encoder is available.</source>
+            <translation>Babu mai sanya lambar bidiyo da ake tallafawa.</translation>
+        </message>
+        <message>
+            <source>Video encoder configuration is too large.</source>
+            <translation>Tsarin mai sanya lambar bidiyo ya yi girma sosai.</translation>
+        </message>
+        <message>
+            <source>Video scaling could not be initialized.</source>
+            <translation>An kasa fara sauya girman bidiyo.</translation>
+        </message>
+        <message>
+            <source>The encoder returned an empty video packet.</source>
+            <translation>Mai sanya lamba ya dawo da fakitin bidiyo marar komai.</translation>
+        </message>
+        <message>
+            <source>Invalid video frame format.</source>
+            <translation>Tsarin firam ɗin bidiyo ba daidai ba ne.</translation>
+        </message>
+        <message>
+            <source>Invalid video decoder configuration.</source>
+            <translation>Saitin mai warware lambar bidiyo ba daidai ba ne.</translation>
+        </message>
+        <message>
+            <source>This video codec cannot be decoded.</source>
+            <translation>Ba za a iya warware bidiyo mai amfani da wannan kodek ba.</translation>
+        </message>
+        <message>
+            <source>Video decoder could not be allocated.</source>
+            <translation>An kasa ware ƙwaƙwalwa don mai warware lambar bidiyo.</translation>
+        </message>
+        <message>
+            <source>Video decoder configuration could not be allocated.</source>
+            <translation>An kasa ware ƙwaƙwalwa don saitin mai warware lambar bidiyo.</translation>
+        </message>
+        <message>
+            <source>Decoded dimensions do not match the screen stream.</source>
+            <translation>Girman da aka warware bai dace da rafin allo ba.</translation>
+        </message>
+        <message>
+            <source>Decoded image could not be allocated.</source>
+            <translation>An kasa ware ƙwaƙwalwa don hoton da aka warware.</translation>
+        </message>
+        <message>
+            <source>Video color conversion could not be initialized.</source>
+            <translation>An kasa fara sauya launukan bidiyo.</translation>
+        </message>
+    </context>
+    <context>
+        <name>VoiceAvatar</name>
+        <message>
+            <source>Muted</source>
+            <translation>An kashe makirufo</translation>
+        </message>
+        <message>
+            <source>Sleeping</source>
+            <translation>Barci</translation>
+        </message>
+        <message>
+            <source>Offline</source>
+            <translation>Ba a kan layi ba</translation>
+        </message>
+        <message>
+            <source>Speaking</source>
+            <translation>Na ke magana</translation>
+        </message>
+        <message>
+            <source>Unavailable</source>
+            <translation>Ba bisa gaɓo</translation>
+        </message>
+        <message>
+            <source>Listening</source>
+            <translation>Na ke ji</translation>
+        </message>
+        <message>
+            <source>Deafened</source>
+            <translation>An kashe masu magana</translation>
+        </message>
+    </context>
+    <context>
+        <name>VoiceSession</name>
+        <message>
+            <source>Microphone muted</source>
+            <translation>Mai kunna igogi ya rufe</translation>
+        </message>
+        <message>
+            <source>Push-to-talk held</source>
+            <translation>Ana rike da maɓallin magana</translation>
+        </message>
+        <message>
+            <source>Ready - push-to-talk released</source>
+            <translation>An kashe maɓallin magana</translation>
+        </message>
+        <message>
+            <source>Microphone unmuted</source>
+            <translation>An bude mai kunna igogi</translation>
+        </message>
+        <message>
+            <source>Settings could not be saved: %1</source>
+            <translation>Ba za a iya adamu saitunan: %1</translation>
+        </message>
+        <message>
+            <source>The push-to-talk sequence cannot be incremented further.</source>
+            <translation>Ba za a iya kara jerin push-to-talk ba.</translation>
+        </message>
+        <message>
+            <source>Choose System, Light or Dark.</source>
+            <translation>Kwamancen tsarin, haske ko duhu.</translation>
+        </message>
+        <message>
+            <source>Choose a colour palette from the list.</source>
+            <translation>Zabi launi daga jerin launuka da ke nan.</translation>
+        </message>
+        <message>
+            <source>Choose an available avatar.</source>
+            <translation>Zabi hoton mai suna (avatar) da ya dace.</translation>
+        </message>
+        <message>
+            <source>Invalid push-to-talk binding.</source>
+            <translation>Wannan hanyar kunna 'push-to-talk' ba ta da alawa.</translation>
+        </message>
+        <message>
+            <source>Release the held push-to-talk key first.</source>
+            <translation>Daidaita maɓallin da kuka ƙara kafin haka.</translation>
+        </message>
+        <message>
+            <source>Choose a language from the list.</source>
+            <translation>Zabi harshen daga jerin sunayen da ke nan.</translation>
+        </message>
+        <message>
+            <source>This avatar requires Supporter.</source>
+            <translation>Wannan hoton mai suna (avatar) yana buɗatar 'Supporter'.</translation>
+        </message>
+        <message>
+            <source>The name must contain 1 to 64 characters.</source>
+            <translation>Sunan ya kamata ya ƙunshi ƴar kuwa har zuwa 64 ainihi.</translation>
+        </message>
+        <message>
+            <source>The name may not contain control characters or line breaks.</source>
+            <translation>Sunan ba zai iya kunsa alamar sarauta ko layin sabawa ba.</translation>
+        </message>
+        <message>
+            <source>Session settings could not be read.</source>
+            <translation>Ba a iya karanta saitunan zaman ba.</translation>
+        </message>
+        <message>
+            <source>Saved setting is invalid: %1</source>
+            <translation>Saitin da aka adana bai inganta ba: %1</translation>
         </message>
     </context>
 </TS>

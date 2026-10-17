@@ -24,6 +24,7 @@ class ScreenShare final : public QObject {
     Q_PROPERTY(double bitrate READ bitrate NOTIFY statisticsChanged)
     Q_PROPERTY(QString hostId READ hostId NOTIFY changed)
     Q_PROPERTY(QString error READ error NOTIFY changed)
+    Q_PROPERTY(bool permissionRequired READ permissionRequired NOTIFY changed)
     Q_PROPERTY(QVariantList sources READ sources NOTIFY sourcesChanged)
 public:
     explicit ScreenShare(LocalChannel& channel, QObject* parent = nullptr);
@@ -32,6 +33,7 @@ public:
     [[nodiscard]] bool watching() const { return !sinks_.isEmpty(); }
     [[nodiscard]] QString hostId() const { return captureHost_ ? captureHost_->channelId() : QString{}; }
     [[nodiscard]] QString error() const { return error_; }
+    [[nodiscard]] bool permissionRequired() const { return permissionRequired_; }
     [[nodiscard]] QVariantList sources() const { return sources_; }
     [[nodiscard]] bool audioAvailable() const;
     [[nodiscard]] bool audioEnabled() const { return audioEnabled_; }
@@ -41,6 +43,7 @@ public:
     Q_INVOKABLE bool stopPreview();
     Q_INVOKABLE bool setAudioEnabled(bool enabled);
     Q_INVOKABLE bool refreshSources();
+    Q_INVOKABLE bool openPermissionSettings();
     Q_INVOKABLE bool start(int index, const QString& hostId = {});
     Q_INVOKABLE bool stop();
     Q_INVOKABLE bool attach(const QString& hostId, QObject* sink, bool preview = false);
@@ -54,12 +57,14 @@ private:
     [[nodiscard]] bool capturing() const { return active() || previewing_; }
     void encodeFrame();
     void decodeFrame(const QString& host, qint64 serial, const QJsonObject& format, const QByteArray& packet);
-    bool fail(const QString& message);
+    bool fail(const QString& message, bool permissionRequired = false);
     LocalChannel& channel_;
     QPointer<LocalChannel> captureHost_;
+#ifndef Q_OS_MACOS
     QMediaCaptureSession capture_;
     QScreenCapture screen_;
     QWindowCapture window_;
+#endif
     QVideoSink input_;
     QVideoFrame latest_;
     QScreen* selectedScreen_ = nullptr;
@@ -84,6 +89,10 @@ private:
     bool encoding_ = false, decoding_ = false;
     std::function<void()> pendingDecode_;
     QString error_;
+    bool permissionRequired_ = false;
+#ifdef Q_OS_MACOS
+    bool permissionRequested_ = false;
+#endif
     bool audioEnabled_ = false;
     bool computerAudio_ = true;
 #if defined(Q_OS_MACOS) || defined(Q_OS_WIN) || (defined(Q_OS_LINUX) && !defined(Q_OS_ANDROID))

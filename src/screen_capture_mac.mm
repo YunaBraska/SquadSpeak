@@ -7,7 +7,7 @@
 #import <ScreenCaptureKit/ScreenCaptureKit.h>
 #import <CoreVideo/CoreVideo.h>
 
-// Native callbacks retain at most one image and 100 ms of mono audio. The Qt
+// Native callbacks retain at most one image and 100 ms of stereo audio. The Qt
 // owner drains them on its thread; capture never queues a callback per frame.
 @interface SquadScreenCapture : NSObject <SCStreamOutput, SCStreamDelegate> {
 @public
@@ -59,20 +59,30 @@
         { std::lock_guard lock(mutex); if (capture != stream || !wantsAudio) return; }
         const auto format = CMAudioFormatDescriptionGetStreamBasicDescription(CMSampleBufferGetFormatDescription(sample));
         if (!format || format->mFormatID != kAudioFormatLinearPCM || format->mSampleRate != 48000
-            || format->mChannelsPerFrame != 1 || format->mBitsPerChannel != 32
+            || format->mChannelsPerFrame != 2 || format->mBitsPerChannel != 32
             || !(format->mFormatFlags & kAudioFormatFlagIsFloat) || (format->mFormatFlags & kAudioFormatFlagIsBigEndian)) return;
-        AudioBufferList list{};
+        struct { UInt32 count; AudioBuffer buffers[2]; } list{};
         CMBlockBufferRef block = nullptr;
-        const auto status = CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer(sample, nullptr, &list, sizeof(list),
-            nullptr, nullptr, kCMSampleBufferFlag_AudioBufferList_Assure16ByteAlignment, &block);
-        if (status == noErr && list.mNumberBuffers == 1 && list.mBuffers[0].mData) {
-            const auto* values = static_cast<const float*>(list.mBuffers[0].mData);
-            const auto count = list.mBuffers[0].mDataByteSize / sizeof(float);
+        const auto status = CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer(sample, nullptr,
+            reinterpret_cast<AudioBufferList*>(&list), sizeof(list), nullptr, nullptr,
+            kCMSampleBufferFlag_AudioBufferList_Assure16ByteAlignment, &block);
+        const bool interleaved = list.count == 1 && list.buffers[0].mNumberChannels == 2;
+        const bool planar = list.count == 2 && list.buffers[0].mNumberChannels == 1
+            && list.buffers[1].mNumberChannels == 1
+            && list.buffers[0].mDataByteSize == list.buffers[1].mDataByteSize;
+        if (status == noErr && (interleaved || planar) && list.buffers[0].mData
+                && (interleaved || list.buffers[1].mData)) {
+            const auto count = list.buffers[0].mDataByteSize / (sizeof(float) * (interleaved ? 2 : 1));
+            const auto* left = static_cast<const float*>(list.buffers[0].mData);
+            const auto* right = planar ? static_cast<const float*>(list.buffers[1].mData) : left;
             std::lock_guard lock(mutex);
             if (capture == stream && wantsAudio) {
                 const auto keep = std::min<size_t>(count, 4800);
-                audio.insert(audio.end(), values + count - keep, values + count);
-                if (audio.size() > 4800) audio.erase(audio.begin(), audio.end() - 4800);
+                for (size_t frame = count - keep; frame < count; ++frame) {
+                    audio.push_back(left[interleaved ? frame * 2 : frame]);
+                    audio.push_back(right[interleaved ? frame * 2 + 1 : frame]);
+                }
+                if (audio.size() > 9600) audio.erase(audio.begin(), audio.end() - 9600);
             }
         }
         if (block) CFRelease(block);
@@ -83,11 +93,23 @@
 bool ScreenShare::refreshNativeSources() {
     if (!native_) {
         auto* state = [SquadScreenCapture new];
+        state->encoder = squad::VoiceMixer(2);
         state->queue = dispatch_queue_create("app.squadspeak.capture", DISPATCH_QUEUE_SERIAL);
         native_ = (__bridge_retained void*)state;
     }
     auto* state = (__bridge SquadScreenCapture*)native_;
     if (state->loading) return true;
+    if (!CGPreflightScreenCaptureAccess()) {
+        if (!permissionRequested_) {
+            permissionRequested_ = true;
+            CGRequestScreenCaptureAccess();
+        }
+        if (!CGPreflightScreenCaptureAccess()) {
+            sources_.clear(); emit sourcesChanged();
+            return fail({}, true);
+        }
+    }
+    permissionRequired_ = false;
     state->loading = true;
     const auto revision = ++state->sourceRevision;
     const QPointer<ScreenShare> owner(this);
@@ -97,7 +119,7 @@ bool ScreenShare::refreshNativeSources() {
         dispatch_async(dispatch_get_main_queue(), ^{
             state->loading = false;
             if (!owner || state->sourceRevision != revision) return;
-            if (failure) { owner->fail(QString::fromNSString(failure.localizedDescription)); return; }
+            if (failure) { owner->fail(QString::fromNSString(failure.localizedDescription), failure.code == SCStreamErrorUserDeclined); return; }
             auto* entries = [NSMutableArray new];
             for (SCDisplay* display in content.displays) {
                 QString name = QString::number(display.displayID);
@@ -146,7 +168,7 @@ bool ScreenShare::startNative(int index) {
     config.pixelFormat = kCVPixelFormatType_32BGRA;
     config.minimumFrameInterval = CMTimeMake(1, 30); config.queueDepth = 3;
     config.capturesAudio = audioEnabled_; config.excludesCurrentProcessAudio = YES;
-    config.sampleRate = 48000; config.channelCount = 1;
+    config.sampleRate = 48000; config.channelCount = 2;
     state->configuration = config;
     auto* stream = [[SCStream alloc] initWithFilter:filter configuration:config delegate:state];
     state->started = false;
@@ -160,7 +182,7 @@ bool ScreenShare::startNative(int index) {
     [stream startCaptureWithCompletionHandler:^(NSError* failure) {
         dispatch_async(dispatch_get_main_queue(), ^{
             if (!owner || state->stream != stream) { [stream stopCaptureWithCompletionHandler:nil]; return; }
-            if (failure) owner->fail(QString::fromNSString(failure.localizedDescription));
+            if (failure) owner->fail(QString::fromNSString(failure.localizedDescription), failure.code == SCStreamErrorUserDeclined);
             else { state->started = true; owner->updateNativeAudio(); }
         });
     }];
@@ -189,7 +211,7 @@ bool ScreenShare::updateNativeAudio() {
     [stream updateConfiguration:state->configuration completionHandler:^(NSError* failure) {
         dispatch_async(dispatch_get_main_queue(), ^{
             if (!owner || state->stream != stream || owner->audioEnabled_ != enabled) return;
-            if (failure) owner->fail(QString::fromNSString(failure.localizedDescription));
+            if (failure) owner->fail(QString::fromNSString(failure.localizedDescription), failure.code == SCStreamErrorUserDeclined);
             else if (owner->captureHost_) owner->captureHost_->setScreenAudio(enabled);
         });
     }];
@@ -202,7 +224,7 @@ void ScreenShare::pollNative() {
     if (!capturing()) { stop(); return; }
     QImage frame;
     QString error;
-    std::array<float, 960> samples{};
+    std::array<float, 1920> samples{};
     bool hasAudio = false;
     {
         std::lock_guard lock(state->mutex);

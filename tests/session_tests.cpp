@@ -1,6 +1,8 @@
 #include "voice_session.hpp"
+#include "tls_identity.hpp"
 
 #include <QFile>
+#include <QJsonDocument>
 #include <QDir>
 #include <QTemporaryDir>
 #include <QtTest>
@@ -8,10 +10,29 @@
 #include <QXmlStreamReader>
 #include <QRegularExpression>
 #include <QScopeGuard>
+#include <openssl/pem.h>
+#include <QSslKey>
+#include <openssl/x509.h>
 
 class SessionTests final : public QObject {
     Q_OBJECT
 private slots:
+    void firstProfileNameIsGeneratedOnceAndRemainsEditable() {
+        QTemporaryDir dir;
+        const auto path = dir.filePath("session.json");
+        VoiceSession first(path);
+        const auto name = first.userName();
+        QVERIFY(QRegularExpression("^[A-Za-z]+ [A-Za-z]+$").match(name).hasMatch());
+        QVERIFY(!QFile::exists(path));
+        QVERIFY(first.setUserName(name));
+        QVERIFY(first.error().isEmpty());
+        VoiceSession restored(path);
+        QCOMPARE(restored.userName(), name);
+        QVERIFY(restored.setUserName("Member"));
+        VoiceSession existing(path);
+        QCOMPARE(existing.userName(), QString("Member"));
+    }
+
     void unavailableAudioPreservesIntentAndDoesNotPersistHardwareState() {
         QTemporaryDir dir;
         const auto path = dir.filePath("session.json");
@@ -144,6 +165,31 @@ private slots:
         QVERIFY(session.setTheme("system"));
         QVERIFY(session.error().isEmpty());
     }
+    void dockPreferencePersistsWithoutChangingTransmission() {
+        QTemporaryDir dir;
+        const auto path = dir.filePath("session.json");
+        VoiceSession session(path);
+        QVERIFY(session.showInDock());
+        QVERIFY(session.setMuted(false));
+        VoiceSession withoutSavedDockChoice(path);
+        QVERIFY(withoutSavedDockChoice.showInDock());
+        QVERIFY(withoutSavedDockChoice.transmissionAllowed());
+        for (const bool enabled : {true, true, false}) {
+            QVERIFY(session.setShowInDock(enabled));
+            VoiceSession restored(path);
+            QCOMPARE(restored.showInDock(), enabled);
+            QVERIFY(restored.transmissionAllowed());
+        }
+        VoiceSession failure(dir.filePath("missing/session.json"));
+        QVERIFY(!failure.setShowInDock(false));
+        QVERIFY(failure.showInDock());
+        QFile file(path);
+        QVERIFY(file.open(QIODevice::ReadWrite));
+        auto invalid = QJsonDocument::fromJson(file.readAll()).object();
+        invalid.insert("showInDock", "yes");
+        file.resize(0); file.write(QJsonDocument(invalid).toJson()); file.close();
+        QVERIFY_EXCEPTION_THROWN(VoiceSession{path}, std::runtime_error);
+    }
     void palettesPersistIndependentlyOfAppearanceAndTransmission() {
         QTemporaryDir dir;
         const auto path = dir.filePath("session.json");
@@ -169,7 +215,7 @@ private slots:
         QTemporaryDir folder;
         const auto path = folder.filePath("session.json");
         VoiceSession session(path);
-        QCOMPARE(session.userName(), QString("Member"));
+        QVERIFY(session.userName() != "Member");
         QCOMPARE(session.avatar(), QString("mossling"));
         QVERIFY(session.eventSounds()); QVERIFY(!session.deafened());
         QVERIFY(session.setAvatar("courier")); QVERIFY(session.setDeafened(true));
@@ -265,7 +311,7 @@ private slots:
             QVERIFY(session.setPttKeyHeld(true));
             QVERIFY(session.setMuted(true)); QVERIFY(!session.transmissionAllowed());
             QVERIFY(session.setMuted(false));
-            QVERIFY(session.setAudioSettingsOpen(true)); QVERIFY(!session.transmissionAllowed());
+            QVERIFY(session.setAudioTestActive(true)); QVERIFY(!session.transmissionAllowed());
             QVERIFY(!session.setPttShortcut(101, "F9"));
         }
         VoiceSession restored(path);
@@ -294,46 +340,44 @@ private slots:
         QVERIFY(!restored.setPttShortcut(-1, "F8"));
     }
 
-    void legacySingleKeyBindingsSurviveAnUnrelatedSave() {
+    void legacyNormalKeySurvivesAndObsoleteRemoteBindingIsIgnored() {
         QTemporaryDir folder;
         const auto path = folder.filePath("legacy-v2.json");
         QFile file(path); QVERIFY(file.open(QIODevice::WriteOnly));
-        file.write(R"({"version":2,"userName":"Member","channelName":"Channel","muted":true,"pushToTalk":true,"pttButtonHeld":false,"pttKeyHeld":false,"pttKeyCode":100,"pttKeyName":"F8","remotePttKeyHeld":false,"remotePttKeyCode":101,"remotePttKeyName":"F9"})");
+        file.write(R"({"version":2,"userName":"Member","channelName":"Channel","muted":true,"pushToTalk":true,"pttButtonHeld":false,"pttKeyHeld":false,"pttKeyCode":100,"pttKeyName":"F8","remotePttKeyHeld":true,"remotePttKeyCode":101,"remotePttKeyName":"F9"})");
         file.close();
         VoiceSession loaded(path);
         QCOMPARE(loaded.pttKeyCodes(), QList<int>({100}));
-        QCOMPARE(loaded.pttKeyCodes(true), QList<int>({101}));
         QCOMPARE(loaded.pttKeyName(), QString("F8"));
-        QCOMPARE(loaded.remotePttKeyName(), QString("F9"));
+        QVERIFY(!loaded.pttHeld());
+        QCOMPARE(loaded.pttInputRevision(), 1);
         QVERIFY(loaded.setMuted(false));
         VoiceSession restored(path);
         QCOMPARE(restored.pttKeyCodes(), QList<int>({100}));
-        QCOMPARE(restored.pttKeyCodes(true), QList<int>({101}));
         QCOMPARE(restored.pttKeyName(), QString("F8"));
-        QCOMPARE(restored.remotePttKeyName(), QString("F9"));
+        QCOMPARE(restored.pttInputRevision(), 1);
+        QVERIFY(restored.setPttLocal(false));
+        QVERIFY(!restored.pttInputHeld());
+        QVERIFY(file.open(QIODevice::ReadOnly));
+        QVERIFY(!file.readAll().contains("remotePttKey"));
     }
-    void overlappingAudioRestrictionsRestoreTheLatestIntent() {
+    void toneTestRestoresTheLatestMuteIntent() {
         QTemporaryDir folder;
         VoiceSession session(folder.filePath("session.json"));
         QVERIFY(session.setMuted(false));
         QVERIFY(session.transmissionAllowed());
-        QVERIFY(session.setAudioSettingsOpen(true));
-        QVERIFY(session.setAudioSettingsOpen(true));
+        QVERIFY(session.setAudioTestActive(true));
+        QVERIFY(session.setAudioTestActive(true));
         QVERIFY(!session.available());
         QVERIFY(!session.transmissionAllowed());
-        QVERIFY(session.setAudioTestActive(true));
-        QVERIFY(session.setAudioSettingsOpen(false));
-        QVERIFY(!session.available());
         QVERIFY(session.setMuted(true));
         QVERIFY(session.setAudioTestActive(false));
         QVERIFY(session.available());
         QVERIFY(!session.transmissionAllowed());
-        QVERIFY(session.setAudioSettingsOpen(true));
+        QVERIFY(session.setAudioTestActive(true));
         QVERIFY(session.setMuted(false));
         QVERIFY(!session.transmissionAllowed());
-        QVERIFY(session.setAudioSettingsOpen(false));
-        QVERIFY(session.transmissionAllowed());
-        QVERIFY(session.setAudioSettingsOpen(false));
+        QVERIFY(session.setAudioTestActive(false));
         QVERIFY(session.transmissionAllowed());
     }
 
@@ -344,7 +388,6 @@ private slots:
             VoiceSession session(path);
             QVERIFY(session.muted());
             QVERIFY(session.setMuted(false));
-            QVERIFY(session.setAudioSettingsOpen(true));
             QVERIFY(session.setAudioTestActive(true));
         }
         VoiceSession restored(path);
@@ -379,10 +422,11 @@ private slots:
         QCOMPARE(session.userName(), QString("Mira"));
         QVERIFY(!session.error().isEmpty());
         VoiceSession unavailable(folder.filePath("missing/session.json"));
+        const auto initialName = unavailable.userName();
         QVERIFY(!unavailable.setMuted(false));
         QVERIFY(unavailable.muted());
         QVERIFY(!unavailable.setUserName("Mira"));
-        QCOMPARE(unavailable.userName(), QString("Member"));
+        QCOMPARE(unavailable.userName(), initialName);
     }
 
     void malformedPersistedPreferencesFailAtTheBoundary() {
@@ -393,6 +437,97 @@ private slots:
         file.write("{\"version\":1,\"userName\":\"Mira\",\"channelName\":\"LAN\",\"muted\":\"false\"}");
         file.close();
         QVERIFY_THROWS_EXCEPTION(std::runtime_error, VoiceSession{path});
+    }
+
+    void cmsMessageEnvelopeAuthenticatesRecipientsAndContext() {
+        const auto alice = TlsIdentity::create();
+        const auto bob = TlsIdentity::create();
+        const auto relay = TlsIdentity::create();
+        const auto context = QByteArray("SquadSpeak/private/host-a/bob");
+        const auto plain = QByteArray("private message with attachment metadata");
+        const auto envelope = alice.sealFor(plain, bob.configuration().localCertificate(), context);
+        QCOMPARE(bob.openFrom(envelope, alice.configuration().localCertificate(), context), plain);
+        QCOMPARE(alice.openFrom(envelope, alice.configuration().localCertificate(), context), plain);
+        QVERIFY_THROWS_EXCEPTION(std::runtime_error,
+            relay.openFrom(envelope, alice.configuration().localCertificate(), context));
+        QVERIFY_THROWS_EXCEPTION(std::runtime_error,
+            bob.openFrom(envelope, relay.configuration().localCertificate(), context));
+        QVERIFY_THROWS_EXCEPTION(std::runtime_error,
+            bob.openFrom(envelope, alice.configuration().localCertificate(), "wrong-context"));
+
+        auto tampered = envelope;
+        tampered[tampered.size() / 2] = char(tampered.at(tampered.size() / 2) ^ 0x01);
+        QVERIFY_THROWS_EXCEPTION(std::runtime_error,
+            bob.openFrom(tampered, alice.configuration().localCertificate(), context));
+        auto trailing = envelope;
+        trailing.append('\0');
+        QVERIFY_THROWS_EXCEPTION(std::runtime_error,
+            bob.openFrom(trailing, alice.configuration().localCertificate(), context));
+        QVERIFY_THROWS_EXCEPTION(std::runtime_error,
+            alice.sealFor(QByteArray(24 * 1024 + 1, 'x'), bob.configuration().localCertificate(), context));
+        QVERIFY_THROWS_EXCEPTION(std::runtime_error,
+            bob.openFrom(envelope, alice.configuration().localCertificate(), QByteArray(4097, 'x')));
+
+        const auto restored = TlsIdentity::fromPem(bob.pem());
+        QCOMPARE(restored.openFrom(envelope, alice.configuration().localCertificate(), context), plain);
+    }
+
+    void cmsRejectsSignerWithMatchingIssuerAndSerialButDifferentKey() {
+        const auto alice = TlsIdentity::create();
+        const auto bob = TlsIdentity::create();
+        const auto attacker = TlsIdentity::create();
+        const auto readCertificate = [](const QByteArray& pem) {
+            BIO* input = BIO_new_mem_buf(pem.constData(), pem.size());
+            if (!input) return static_cast<X509*>(nullptr);
+            X509* certificate = PEM_read_bio_X509(input, nullptr, nullptr, nullptr);
+            BIO_free(input);
+            return certificate;
+        };
+        const auto readPrivateKey = [](const QByteArray& pem) {
+            BIO* input = BIO_new_mem_buf(pem.constData(), pem.size());
+            if (!input) return static_cast<EVP_PKEY*>(nullptr);
+            EVP_PKEY* key = PEM_read_bio_PrivateKey(input, nullptr, nullptr, nullptr);
+            BIO_free(input);
+            return key;
+        };
+        X509* aliceCertificate = readCertificate(alice.configuration().localCertificate().toPem());
+        X509* attackerCertificate = readCertificate(attacker.configuration().localCertificate().toPem());
+        EVP_PKEY* attackerKey = readPrivateKey(attacker.configuration().privateKey().toPem());
+        QVERIFY(aliceCertificate != nullptr);
+        QVERIFY(attackerCertificate != nullptr);
+        QVERIFY(attackerKey != nullptr);
+        const auto cleanup = qScopeGuard([&] {
+            X509_free(aliceCertificate);
+            X509_free(attackerCertificate);
+            EVP_PKEY_free(attackerKey);
+        });
+
+        X509* forgedCertificate = X509_dup(attackerCertificate);
+        QVERIFY(forgedCertificate != nullptr);
+        const auto forgedCleanup = qScopeGuard([&] { X509_free(forgedCertificate); });
+        QVERIFY(X509_set_issuer_name(forgedCertificate, X509_get_issuer_name(aliceCertificate)) == 1);
+        ASN1_INTEGER* serial = ASN1_INTEGER_dup(X509_get0_serialNumber(aliceCertificate));
+        QVERIFY(serial != nullptr);
+        QVERIFY(X509_set_serialNumber(forgedCertificate, serial) == 1);
+        ASN1_INTEGER_free(serial);
+        QVERIFY(X509_sign(forgedCertificate, attackerKey, EVP_sha256()) > 0);
+
+        BIO* output = BIO_new(BIO_s_mem());
+        QVERIFY(output != nullptr);
+        const auto outputCleanup = qScopeGuard([&] { BIO_free(output); });
+        QVERIFY(PEM_write_bio_X509(output, forgedCertificate) == 1);
+        QVERIFY(PEM_write_bio_PrivateKey(output, attackerKey, nullptr, nullptr, 0, nullptr, nullptr) == 1);
+        char* bytes = nullptr;
+        const auto size = BIO_get_mem_data(output, &bytes);
+        QVERIFY(size > 0);
+        const auto forged = TlsIdentity::fromPem(QByteArray(bytes, int(size)));
+        const auto context = QByteArray("SquadSpeak/private/signer-key");
+        const auto plain = QByteArray("sender key binding");
+        const auto envelope = forged.sealFor(plain, bob.configuration().localCertificate(), context);
+
+        QVERIFY_THROWS_EXCEPTION(std::runtime_error,
+            bob.openFrom(envelope, alice.configuration().localCertificate(), context));
+        QCOMPARE(bob.openFrom(envelope, forged.configuration().localCertificate(), context), plain);
     }
 };
 

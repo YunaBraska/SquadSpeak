@@ -76,25 +76,43 @@ You can stay connected to several chats while speaking in one channel. The chann
 
 Approvals belong to the device's saved cryptographic identity. Changing Wi-Fi or IP address does not create a new device. Keep the app's identity when moving or backing up a profile; deleting it requires a new approval.
 
+## Connect to TeamSpeak 3
+
+In **+**, enter the server address and select **Add**. SquadSpeak detects the
+protocol. Without an explicit port, it checks SquadSpeak on `48763`, then TS3 on
+`9987`. For another port, enter `example.org:12345`, `192.168.1.20:12345`
+or `[2001:db8::20]:12345`. Both protocols use the port you entered.
+Enter a password only if the server asks. **Save password** remembers it
+securely for the next connection. Channels stay in their server's
+hierarchy, with a TS3 marker on the host. Double-click to join. Use the same
+microphone, push-to-talk and volume settings. Click a member to open **Message**.
+
+SquadSpeak generates and keeps a separate TS3 identity. Remote control uses the
+controlled computer's identity and connection. Server permissions still apply.
+The current integration supports Opus voice and text, without requiring the
+TeamSpeak client. It does not yet import an existing TS3 identity, manage server
+permissions, transfer files or send whispers. TS3 chats have no offline delivery
+or server-side history. See [the support limits](docs/roadmap.md#teamspeak-interoperability).
+
 ## Make yourself heard
 
-Open **Settings > Input** to select a microphone, see its spectrum and adjust voice activation, echo cancellation, gain, noise reduction and frequency cuts. Each audio device keeps its own profile. Opening audio settings pauses transmission to the conversation; closing them restores your previous state.
+Open **Settings > Input** to select a microphone, see its spectrum and adjust voice activation, echo cancellation, gain, noise reduction and frequency cuts. Each audio device keeps its own profile. Your conversation continues while you adjust settings. Mute and push-to-talk still apply.
 
 New microphone profiles automatically reduce sustained bass rumble and keep signal peaks below the output limit. Gain and low cut each have an **Auto** switch; moving a slider makes that setting manual. Already distorted microphone recordings cannot always be repaired.
 
 ![Input settings with frequency filters and push-to-talk shortcuts](docs/images/audio-settings.png)
 
-The screenshot shows the real settings interface with microphone capture stopped. Echo cancellation is on by default and can be switched off per microphone. Where supported and permitted, it uses the selected speaker device's digital mix, including other apps. The small reference label shows **Speaker audio** or **App audio only**. This reference stays on your computer and is never saved or shared.
+The screenshot shows the real settings interface with microphone capture stopped. Echo cancellation is on by default and can be switched off per microphone. Where supported and permitted, it uses the selected speaker device's digital mix, including other apps. Hover over **Echo** to see whether it uses **Speaker audio** or **App audio only**. This reference stays on your computer and is never saved or shared.
 
 Two copies on one computer can feed sound from one copy's speakers back into the other's microphone. The speaker reference is intended to cover both copies; without system-audio access, cancellation only knows each copy's own playback. Keep receiving speakers muted for capture tests, or use headphones for listening. Automatic handling of several open microphones and speakers in the same room is not yet verified.
 
 Screen sharing starts with audio off. Its channel menu shows **App audio** or **Computer audio** before you enable sound. Computer audio may include other applications.
 
-Received voices are levelled locally. **Settings > Output** controls the app volume; the channel menu controls music volume. Microphone and speaker badges on portraits show when either direction is unavailable or muted.
+Received voices are levelled locally. **Settings > Output** has separate controls for voices, music and app sounds. The channel menu also lets you lower that channel's music. Microphone and speaker badges on portraits show when either direction is unavailable or muted.
 
 Choose your language in **Settings > Profile**. The interface offers 55 languages, including English, with one written standard per language. Language changes apply immediately.
 
-Push-to-talk and remote push-to-talk accept key combinations. Remote control must first be allowed by the target device. It controls that device's conversation; it does not send the controller's microphone audio.
+Push-to-talk accepts a key or key combination. Remote control must first be allowed by the target device. While controlling it, the same shortcut operates its microphone. Your own microphone is not sent.
 
 ## Chat and hosting
 

@@ -198,6 +198,105 @@ private slots:
         outputDir_ = qEnvironmentVariable("SQUAD_CORPUS_OUTPUT", QStringLiteral(SQUAD_CORPUS_OUTPUT));
         QVERIFY(QDir().mkpath(outputDir_));
     }
+    void speechActivation_data() {
+        QTest::addColumn<QString>("speaker"); QTest::addColumn<QString>("keyboard");
+        QTest::addColumn<int>("levelDb"); QTest::addColumn<int>("snrDb");
+        QTest::addColumn<bool>("shortSpeech");
+        QTest::addColumn<int>("channels");
+        for (const int channels : {1, 2}) {
+            const auto format = channels == 1 ? "-mono" : "-stereo";
+            for (const auto& keyboard : {QString("typing-laptop"), QString("typing-desktop")})
+                for (const int level : {-40, -25, -12})
+                    QTest::newRow(qPrintable(keyboard + QString::number(level) + format)) << QString{} << keyboard << level << 0 << false << channels;
+            for (const auto& speaker : speech_) for (const int level : {-30, -42}) {
+                QTest::newRow(qPrintable(speaker + "-clean" + QString::number(level) + format)) << speaker << QString{} << level << 0 << false << channels;
+                QTest::newRow(qPrintable(speaker + "-short" + QString::number(level) + format)) << speaker << QString{} << level << 0 << true << channels;
+                for (const auto& keyboard : {QString("typing-laptop"), QString("typing-desktop")})
+                    for (const int snr : {0, 10})
+                        QTest::newRow(qPrintable(speaker + "-" + keyboard + QString::number(level) + "-snr" + QString::number(snr) + format))
+                            << speaker << keyboard << level << snr << false << channels;
+            }
+        }
+    }
+    void speechActivation() {
+        QFETCH(QString, speaker); QFETCH(QString, keyboard); QFETCH(int, levelDb); QFETCH(int, snrDb);
+        QFETCH(bool, shortSpeech);
+        QFETCH(int, channels);
+        Samples clean(length, 0), input(length, 0);
+        const double level = std::pow(10, levelDb / 20.0);
+        if (!speaker.isEmpty()) {
+            const auto& speech = sources_[speaker];
+            const auto gain = level / rms(speech);
+            auto excerpt = std::span(speech);
+            if (shortSpeech) {
+                // A voiced 200 ms excerpt also checks that aggregate sentence
+                // energy cannot hide a completely lost brief utterance.
+                size_t start = 0;
+                double strongest = 0;
+                for (size_t i = 0; i + 9600 <= speech.size(); i += 960) {
+                    const auto power = energy(std::span(speech).subspan(i, 9600));
+                    if (power > strongest) { strongest = power; start = i; }
+                }
+                excerpt = excerpt.subspan(start, 9600);
+            }
+            for (size_t i = 0; i < excerpt.size(); ++i) clean[beginSpeech + i] = float(excerpt[i] * gain);
+        }
+        if (!keyboard.isEmpty()) {
+            const auto& noise = sources_[keyboard];
+            QVERIFY(!noise.empty());
+            const auto gain = level * std::pow(10, -snrDb / 20.0) / rms(noise);
+            for (size_t i = 0; i < input.size(); ++i) input[i] = float(noise[i % noise.size()] * gain);
+        }
+        for (size_t i = 0; i < input.size(); ++i) input[i] += clean[i];
+        const double headroom = std::max(1.0, peak(input) / 0.9);
+        for (size_t i = 0; i < input.size(); ++i) { input[i] /= headroom; clean[i] /= headroom; }
+        squad::AudioProcessor processor(rate, {0, 0, 0, true, true});
+        for (auto& sample : input) sample = processor.process(sample);
+        squad::VoiceMixer sender(channels), receiver(channels), levelGate(channels);
+        sender.setVoiceActivation({true, true, -45}).setNoiseSuppression(1);
+        levelGate.setVoiceActivation({true, false, -45});
+        receiver.setAutomatic(false);
+        Samples output(length, 0);
+        std::vector<bool> admitted(length / 960, false);
+        qsizetype levelGateFrames = 0;
+        for (size_t offset = 0; offset < input.size(); offset += 960) {
+            Samples capture(size_t(960 * channels));
+            for (size_t frame = 0; frame < 960; ++frame)
+                for (int channel = 0; channel < channels; ++channel)
+                    capture[frame * size_t(channels) + size_t(channel)] = input[offset + frame];
+            const auto packets = sender.encode(capture, rate);
+            levelGateFrames += levelGate.encode(capture, rate).size();
+            QVERIFY(packets.size() <= 3);
+            for (qsizetype p = 0; p < packets.size(); ++p) {
+                const auto position = offset - size_t(packets.size() - 1 - p) * 960;
+                QVERIFY(position < input.size());
+                const auto now = qint64(position / 48);
+                QVERIFY(receiver.receive("speaker", packets[p], now));
+                const auto frame = receiver.render(rate, now);
+                for (size_t sample = 0; sample < 960; ++sample)
+                    output[position + sample] = std::accumulate(frame.begin() + sample * size_t(channels),
+                        frame.begin() + (sample + 1) * size_t(channels), 0.0f) / channels;
+                admitted[position / 960] = true;
+            }
+        }
+        double retained = 0;
+        for (size_t i = 0; i + 960 < clean.size(); ++i)
+            if (admitted[(i + 960) / 960]) retained += double(clean[i]) * clean[i];
+        const auto openFrames = std::count(admitted.begin(), admitted.end(), true);
+        const auto retention = retained / std::max(energy(clean), 1e-30);
+        qInfo() << "admitted frames" << openFrames << "/" << admitted.size() << "level-only frames" << levelGateFrames << "speech retention" << retention
+                << "output/input dB" << levelChange(output, input);
+        if (speaker.isEmpty()) {
+            // RNNoise is not a perfect keyboard classifier. Pin the measured
+            // improvement over a level gate without claiming complete removal.
+            QVERIFY(levelGateFrames > 0);
+            QVERIFY2(openFrames * 4 <= levelGateFrames, "Speech detection did not reduce typing admissions by at least 75%");
+            QVERIFY(levelChange(output, input) < -10);
+        } else {
+            QVERIFY2(retention > 0.985, "Automatic activation clipped speech frames");
+            QVERIFY(rms(body(output)) > rms(body(clean)) * 0.25);
+        }
+    }
     void automaticInput_data() {
         QTest::addColumn<QString>("speaker"); QTest::addColumn<int>("rumbleHz");
         for (const auto value : manifest_.value("sources").toArray()) {
@@ -357,7 +456,7 @@ private slots:
             std::array<squad::AudioProcessor, 2> processors{
                 squad::AudioProcessor(rate, {0, 0, 0, true, true}), squad::AudioProcessor(rate, {0, 0, 0, true, true})};
             std::array<Samples, 2> playback{Samples(length), Samples(length)};
-            for (auto& echo : echoes) echo.setEnabled(enabled);
+            for (auto& echo : echoes) echo.setSuppression(enabled ? std::nullopt : std::optional<double>(0));
             for (auto& mixer : mixers) mixer.setVoiceActivation({activation, true, -45});
             // Two separate rooms. Each microphone hears its own loudspeaker,
             // including audio previously reflected and returned by the peer.
@@ -397,8 +496,10 @@ private slots:
             QVERIFY(rms(std::span(playback[0]).subspan(4 * rate, 2 * rate)) > 0.01);
         }
         qInfo() << "duplex echo tail energy, disabled/enabled" << tail[false] << tail[true];
-        QVERIFY(tail[false] > 1);
-        QVERIFY(tail[true] < tail[false] * 0.01);
+        // Speech-aware gating can itself break the loop with AEC disabled.
+        // Continuous transmission retains the independent failure control.
+        if (!activation) QVERIFY(tail[false] > 1);
+        QVERIFY(tail[true] < std::max(tail[false], 1.0) * 0.01);
     }
 
     void mixtures_data() {

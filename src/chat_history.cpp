@@ -12,6 +12,7 @@
 #include <QJsonDocument>
 #include <QSaveFile>
 #include <QRegularExpression>
+#include <QSqlError>
 #include <QUuid>
 #include <algorithm>
 #include <memory>
@@ -61,16 +62,20 @@ bool ChatHistory::validMessage(const QJsonObject& message) {
             } catch (const std::invalid_argument&) { return false; }
         }
     }
+    const auto sealed = QByteArray::fromBase64Encoding(message.value("sealed").toString().toLatin1(), QByteArray::AbortOnBase64DecodingErrors);
+    const bool opaque = message.contains("sealed");
+    if (opaque && (!sealed || sealed.decoded.isEmpty() || sealed.decoded.size() > 28 * 1024
+        || !message.value("text").toString().isEmpty() || message.contains("event"))) return false;
     const auto image = message.value("image").toObject();
     const bool hasImage = deviceId(image.value("hash").toString()) && image.value("size").toInteger() > 0
-        && image.value("size").toInteger() <= 8 * 1024 * 1024 && image.value("width").toInt() > 0
+        && image.value("size").toInteger() <= 8 * 1024 * 1024 + (opaque ? 28 : 0) && (opaque || (image.value("width").toInt() > 0
         && image.value("width").toInt() <= 8192 && image.value("height").toInt() > 0 && image.value("height").toInt() <= 8192
-        && qint64(image.value("width").toInt()) * image.value("height").toInt() <= 24 * 1024 * 1024;
+        && qint64(image.value("width").toInt()) * image.value("height").toInt() <= 24 * 1024 * 1024));
     return name && (!message.contains("avatar") || VoiceSession::validAvatar(message.value("avatar").toString()))
         && (!message.contains("avatarId") || VoiceSession::validAvatar(message.value("avatarId").toString()))
         && identifier(message.value("request").toString()) && deviceId(message.value("sender").toString())
         && (!message.contains("image") || hasImage)
-        && (validText(message.value("text").toString()) || (hasImage && message.value("text").toString().isEmpty()))
+        && (opaque || validText(message.value("text").toString()) || (hasImage && message.value("text").toString().isEmpty()))
         && created >= 0 && created <= maximumTime
         && message.value("created").toDouble(-1) == double(created)
         && message.value("expires").toDouble(-1) == double(message.value("expires").toInteger(-1))
@@ -162,7 +167,12 @@ QSqlQuery ChatHistory::query(const QString& sql, const QVariantList& values) con
     result.setForwardOnly(true);
     require(result.prepare(sql), QT_TRANSLATE_NOOP("LocalChannel", "Invalid chat history."));
     for (const auto& value : values) result.addBindValue(value);
-    require(result.exec(), QT_TRANSLATE_NOOP("LocalChannel", "Chat history could not be saved."));
+    if (!result.exec()) {
+        qWarning().noquote() << "Chat history SQL operation failed:" << sql
+                            << "SQLite" << result.lastError().nativeErrorCode()
+                            << result.lastError().databaseText();
+        require(false, QT_TRANSLATE_NOOP("LocalChannel", "Chat history could not be saved."));
+    }
     return result;
 }
 
@@ -172,7 +182,7 @@ QByteArray ChatHistory::index(const QString& value) const {
 
 void ChatHistory::saveClock(qint64 now, qint64 sequence) {
     const auto data = QJsonDocument(QJsonObject{{"version", 2}, {"time", now}, {"sequence", sequence}}).toJson(QJsonDocument::Compact);
-    query("INSERT OR REPLACE INTO metadata VALUES(1,?)", {TlsIdentity::seal(data, key_, context_ + "/metadata")});
+    query("INSERT INTO metadata(id,body) VALUES(1,?) ON CONFLICT(id) DO UPDATE SET body=excluded.body", {TlsIdentity::seal(data, key_, context_ + "/metadata")});
 }
 
 void ChatHistory::readClock() {
@@ -188,7 +198,7 @@ void ChatHistory::readClock() {
 void ChatHistory::insert(const QJsonObject& message) {
     const auto sequence = message.value("sequence").toInteger();
     const auto sender = message.value("sender").toString();
-    query("INSERT INTO messages VALUES(?,?,?,?,?,?,?)", {sequence, message.value("created").toInteger(), message.value("expires").toInteger(),
+    query("INSERT INTO messages(sequence,created,expires,sender,request,image,body) VALUES(?,?,?,?,?,?,?)", {sequence, message.value("created").toInteger(), message.value("expires").toInteger(),
         index(sender), index(sender + '/' + message.value("request").toString()), message.value("image").toObject().value("hash").toString(QLatin1String("")),
         TlsIdentity::seal(QJsonDocument(message).toJson(QJsonDocument::Compact), key_, context_ + "/record/" + QByteArray::number(sequence))});
 }
@@ -281,11 +291,11 @@ bool ChatHistory::updateProfile(const QString& sender, const QString& name, cons
     if (!existing.next()) return false;
     existing.finish();
     const auto body = QJsonDocument(QJsonObject{{"name", name}, {"avatar", avatar}}).toJson(QJsonDocument::Compact);
-    query("INSERT OR REPLACE INTO profiles VALUES(?,?)", {index(sender), TlsIdentity::seal(body, key_, context_ + "/profile/" + index(sender).toHex())});
+    query("INSERT INTO profiles(sender,body) VALUES(?,?) ON CONFLICT(sender) DO UPDATE SET body=excluded.body", {index(sender), TlsIdentity::seal(body, key_, context_ + "/profile/" + index(sender).toHex())});
     return true;
 }
 
-QJsonObject ChatHistory::append(const QString& sender, const QString& name, const QString& request, const QString& text, qint64 now, const QByteArray& image, const QString& avatar, qint64 duration, const QJsonObject& event) {
+QJsonObject ChatHistory::append(const QString& sender, const QString& name, const QString& request, const QString& text, qint64 now, const QByteArray& image, const QString& avatar, qint64 duration, const QJsonObject& event, const QByteArray& sealed) {
     require(validLifetime(duration), QT_TRANSLATE_NOOP("LocalChannel", "Invalid message lifetime."));
     expire(now);
     query("BEGIN IMMEDIATE");
@@ -294,9 +304,10 @@ QJsonObject ChatHistory::append(const QString& sender, const QString& name, cons
     QJsonObject message{{"sender", sender}, {"name", name}, {"request", request}, {"text", text},
         {"created", now}, {"expires", now + duration}, {"sequence", sequence_ + 1}, {"avatar", VoiceSession::avatarFallback(avatar)}, {"avatarId", avatar}};
     if (!event.isEmpty()) message.insert("event", event);
+    if (!sealed.isEmpty()) message.insert("sealed", QString::fromLatin1(sealed.toBase64()));
     QString hash;
     if (!image.isEmpty()) {
-        const auto size = ChatContent::sanitizedImageSize(image);
+        const auto size = sealed.isEmpty() ? ChatContent::sanitizedImageSize(image) : QSize{};
         hash = QString::fromLatin1(QCryptographicHash::hash(image, QCryptographicHash::Sha256).toHex());
         message.insert("image", QJsonObject{{"hash", hash}, {"size", image.size()}, {"width", size.width()}, {"height", size.height()}});
     }
@@ -307,7 +318,7 @@ QJsonObject ChatHistory::append(const QString& sender, const QString& name, cons
         if (existing.next()) {
             const auto previous = record(existing);
             if (previous.value("expires").toInteger() > now) {
-                require(previous.value("text") == text && previous.value("image") == message.value("image") && previous.value("event") == message.value("event"),
+                require(previous.value("text") == text && previous.value("image") == message.value("image") && previous.value("event") == message.value("event") && previous.value("sealed") == message.value("sealed"),
                     QT_TRANSLATE_NOOP("LocalChannel", "Message identifier was reused with different content."));
                 return previous;
             }
@@ -342,7 +353,7 @@ QByteArray ChatHistory::image(const QString& hash, qint64 now) {
     record(active); // Authenticate the reference before returning a cached image.
     if (const auto* cached = images_.object(hash)) return *cached;
     QFile input(file_ + ".images/" + hash + ".enc");
-    require(input.open(QIODevice::ReadOnly) && input.size() <= 8 * 1024 * 1024 + 28, QT_TRANSLATE_NOOP("LocalChannel", "Image could not be read."));
+    require(input.open(QIODevice::ReadOnly) && input.size() <= 8 * 1024 * 1024 + 56, QT_TRANSLATE_NOOP("LocalChannel", "Image could not be read."));
     const auto plain = TlsIdentity::open(input.readAll(), key_, context_ + "/image/" + hash.toLatin1());
     require(QString::fromLatin1(QCryptographicHash::hash(plain, QCryptographicHash::Sha256).toHex()) == hash, QT_TRANSLATE_NOOP("LocalChannel", "Image content does not match the message."));
     images_.insert(hash, new QByteArray(plain), int(plain.size()));

@@ -10,7 +10,10 @@ release build:
 - RNNoise: RNNOISE-COPYING.txt
 - QtKeychain 0.16.0: QTKEYCHAIN-COPYING.txt
 - WebRTC Audio Processing 2.1: WEBRTC-APM-COPYING.txt, WEBRTC-LICENSE.txt,
-  WEBRTC-PATENTS.txt and the WEBRTC third-party component texts
+  WEBRTC-PATENTS.txt and the WEBRTC third-party component texts.
+  Local change: cmake/audio-processing-echo.patch exposes residual echo
+  suppression sensitivity and bounds high-band gain during identified echo
+  to prevent receiver amplification from sustaining acoustic feedback.
 - Abseil 20240722.0 (statically linked into the private audio library):
   ABSEIL-LICENSE.txt
 - libdatachannel 0.24.6: LIBDATACHANNEL-LICENSE.txt; pinned libjuice, libsrtp,
@@ -67,3 +70,17 @@ by the app. The release workflow requires this asset before creating a draft.
 
 The notice files are upstream texts and provenance records, not a statement
 about the project's own license or a legal opinion about the complete SDK.
+
+TeamSpeak interoperability uses ReSpeak tsclientlib at
+ee3bc6f45a7137db7793ba5593a321df400d53e5 (MIT OR Apache-2.0).
+RUST-NOTICES.txt contains dependency declarations and upstream notices for the
+locked Cargo dependency graph, plus Rust standard-library attribution.
+Cargo.lock owns registry checksums. build_sources.py includes their source
+archives and the pinned ReSpeak archive in the release source package.
+
+RustSec RUSTSEC-2026-0150 marks audiopus_sys 0.2.2 as unmaintained and identifies
+a CMake 4 incompatibility in its bundled Opus build. TeamSpeak.cmake always
+supplies OPUS_LIB_DIR, linking the same external Opus as the application instead
+of building that bundled copy. The advisory is informational, not a reported
+security vulnerability. The unmaintained binding remains a dependency risk.
+Reference: https://rustsec.org/advisories/RUSTSEC-2026-0150.html

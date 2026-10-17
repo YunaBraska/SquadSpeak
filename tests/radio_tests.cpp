@@ -328,8 +328,13 @@ private slots:
         QTest::qWait(100); QCOMPARE(station.requests, 1);
     }
 
+    void streamReachesTwoClientsWithoutHostOwnerAndRecoversAfterDisconnect_data() {
+        QTest::addColumn<int>("channels");
+        QTest::newRow("mono") << 1; QTest::newRow("stereo") << 2;
+    }
     void streamReachesTwoClientsWithoutHostOwnerAndRecoversAfterDisconnect() {
-        QTemporaryDir dir; RadioStation station;
+        QFETCH(int, channels);
+        QTemporaryDir dir; RadioStation station(channels);
         VoiceSession owner(dir.filePath("owner.session")), a(dir.filePath("a.session")), b(dir.filePath("b.session"));
         LocalChannel host(owner, dir.filePath("host.channel"), TlsIdentity::create());
         LocalChannel first(a, dir.filePath("a.channel"), TlsIdentity::create());
@@ -351,15 +356,25 @@ private slots:
         QTRY_VERIFY_WITH_TIMEOUT(audioA.size() >= 15 && audioB.size() >= 15, 10000);
         QCOMPARE(first.participants().size(), 2); QCOMPARE(second.participants().size(), 2);
         QCOMPARE(audioA.first().at(0).toString(), host.musicId());
-        squad::VoiceMixer decoder; decoder.setAutomatic(false);
-        double rms = 0;
+        squad::VoiceMixer decoder(2); decoder.setAutomatic(false);
+        double energy = 0, difference = 0, leftEnergy = 0, rightEnergy = 0;
         for (qsizetype i = 0; i < audioA.size(); ++i) {
             QVERIFY(decoder.receive(host.musicId(), audioA.at(i).at(1).toByteArray(), i * 20));
             const auto pcm = decoder.render(48000, i * 20);
-            double energy = 0; for (const auto sample : pcm) energy += sample * sample;
-            rms = std::max(rms, std::sqrt(energy / pcm.size()));
+            QCOMPARE(pcm.size(), size_t(1920));
+            for (size_t f = 0; f < 960; ++f) {
+                const double l = pcm[f * 2], r = pcm[f * 2 + 1];
+                leftEnergy += l * l; rightEnergy += r * r;
+                energy += l * l + r * r; difference += (l - r) * (l - r);
+            }
         }
-        QVERIFY2(rms > 0.05, qPrintable(QString::number(rms)));
+        QVERIFY(energy > 1);
+        if (channels == 1) QVERIFY(difference < energy * .01);
+        else {
+            QVERIFY(leftEnergy > rightEnergy * 2);
+            QVERIFY(rightEnergy > leftEnergy * .1);
+            QVERIFY(difference > energy * .5);
+        }
         const auto requests = station.requests;
         station.drop();
         QTRY_VERIFY_WITH_TIMEOUT(station.requests > requests, 20000);

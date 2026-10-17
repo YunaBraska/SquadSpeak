@@ -36,14 +36,6 @@
             <translation>Open your system privacy settings and allow SquadSpeak to use microphone.</translation>
         </message>
         <message>
-            <source>Microphone analysis active. Test audio stays on this computer.</source>
-            <translation>Microphone analysis dey active. Test audio dey stay for this computer.</translation>
-        </message>
-        <message>
-            <source>Finish the test recording before changing devices.</source>
-            <translation>Finish di test recording before you change device.</translation>
-        </message>
-        <message>
             <source>The output format is not supported.</source>
             <translation>Output format no dey supported.</translation>
         </message>
@@ -68,32 +60,12 @@
             <translation>Test tone no fit play.</translation>
         </message>
         <message>
-            <source>The microphone has provided no data for five seconds. Recording discarded.</source>
-            <translation>Microphone no send data for five seconds. We don throw away di recording.</translation>
-        </message>
-        <message>
-            <source>The microphone was interrupted or changed. Recording discarded.</source>
-            <translation>Microphone stop or change. We don throw away di recording.</translation>
-        </message>
-        <message>
-            <source>Cancelled. The incomplete recording was discarded.</source>
-            <translation>Cancelled. We don discard di incomplete recording.</translation>
-        </message>
-        <message>
             <source>No selected microphone is available</source>
             <translation>Di microphone wey you select no dey available</translation>
         </message>
         <message>
             <source>Allow microphone access in the system dialog.</source>
             <translation>Allow microphone access inside di system dialog.</translation>
-        </message>
-        <message>
-            <source>Microphone capture active for the voice channel.</source>
-            <translation>Microphone capture dey active for di voice channel.</translation>
-        </message>
-        <message>
-            <source>Microphone access was denied. Nothing was saved.</source>
-            <translation>Dem deny microphone access. We no save anything.</translation>
         </message>
         <message>
             <source>Microphone access is missing. Allow it in System Settings.</source>
@@ -259,103 +231,16 @@
             <source>App audio only</source>
             <translation>App sound only</translation>
         </message>
-    </context>
-    <context>
-        <name>AudioRecording</name>
         <message>
-            <source>Incomplete audio block. Recording discarded.</source>
-            <translation>Audio block no complete. We don throw away di recording.</translation>
-        </message>
-        <message>
-            <source>Move about one meter from the microphone. Keep the background sound playing and read the sentence.</source>
-            <translation>Move about one metre from di microphone. Keep background sound playing and read di sentence.</translation>
-        </message>
-        <message>
-            <source>Voice with background sound</source>
-            <translation>Voice plus background sound</translation>
-        </message>
-        <message>
-            <source>The recordings folder could not be created.</source>
-            <translation>Recordings folder no fit create.</translation>
-        </message>
-        <message>
-            <source>You can stop the background sound now.</source>
-            <translation>You fit stop di background sound now.</translation>
-        </message>
-        <message>
-            <source>Recordings saved</source>
-            <translation>Recordings don save</translation>
-        </message>
-        <message>
-            <source>The test recording could not be saved completely.</source>
-            <translation>Test recording no fit save completely.</translation>
-        </message>
-        <message>
-            <source>Keep music off and stay quiet. Start when ready.</source>
-            <translation>Keep music off and quiet. Start when you ready.</translation>
-        </message>
-        <message>
-            <source>Your voice</source>
-            <translation>Di voice wey belong to you</translation>
-        </message>
-        <message>
-            <source>Play music or another background sound at a normal volume. Stay quiet while recording.</source>
-            <translation>Play music or another background sound for normal volume. No talk while you dey record.</translation>
-        </message>
-        <message>
-            <source>The test recording could not be created.</source>
-            <translation>Test recording no fit create.</translation>
-        </message>
-        <message>
-            <source>Background sound</source>
-            <translation>Sound wey dey background</translation>
-        </message>
-        <message>
-            <source>The window is open. I can hear the rain outside. One, two, three, four, five.</source>
-            <translation>Window dey open. I fit hear rain outside. One, two, three, four, five.</translation>
-        </message>
-        <message>
-            <source>This microphone format is not supported for test recordings.</source>
-            <translation>This microphone format no dey supported for test recordings.</translation>
-        </message>
-        <message>
-            <source>Keep the background volume unchanged. Read the sentence, then stop recording.</source>
-            <translation>Keep background volume the same. Read di sentence, then stop recording.</translation>
-        </message>
-        <message>
-            <source>Record at least half a second, then try again.</source>
-            <translation>Record for at least half second, then try again.</translation>
-        </message>
-        <message>
-            <source>Sit at your usual distance. Read the sentence, then stop recording.</source>
-            <translation>Sit for where you normally dey sit. Read di sentence, then stop di recording.</translation>
-        </message>
-        <message>
-            <source>The recording description could not be saved.</source>
-            <translation>Recording description no fit save.</translation>
-        </message>
-        <message>
-            <source>The WAV file could not be finalized.</source>
-            <translation>WAV file no fit finish.</translation>
-        </message>
-        <message>
-            <source>The WAV header could not be written.</source>
-            <translation>WAV header no fit write.</translation>
-        </message>
-        <message>
-            <source>Voice farther away</source>
-            <translation>Voice wey dey farther away</translation>
-        </message>
-        <message>
-            <source>Room sound</source>
-            <translation>Sound for room</translation>
+            <source>Speech output is unavailable.</source>
+            <translation>Voice output no dey available.</translation>
         </message>
     </context>
     <context>
         <name>AudioSettings</name>
         <message>
-            <source>Echo cancellation</source>
-            <translation>Remove echo</translation>
+            <source>Echo</source>
+            <translation>Echo</translation>
         </message>
         <message>
             <source>Off</source>
@@ -402,12 +287,12 @@
             <translation>Di way your playback sound</translation>
         </message>
         <message>
-            <source>Clear local key</source>
-            <translation>Clear di local key</translation>
+            <source>Clear key</source>
+            <translation>Clear di key</translation>
         </message>
         <message>
-            <source>Low cut</source>
-            <translation>Low cut</translation>
+            <source>Highpass</source>
+            <translation>Highpass</translation>
         </message>
         <message>
             <source>Microphone access is off</source>
@@ -418,32 +303,16 @@
             <translation>Device wey dey input sound</translation>
         </message>
         <message>
-            <source>Microphone paused for others</source>
-            <translation>Microphone pause for other people</translation>
-        </message>
-        <message>
             <source>Cancel</source>
             <translation>Cancel</translation>
-        </message>
-        <message>
-            <source>Guided recording</source>
-            <translation>Recording wey guide you</translation>
         </message>
         <message>
             <source>Clipping. Reduce microphone gain.</source>
             <translation>Sound dey clip. Reduce microphone gain.</translation>
         </message>
         <message>
-            <source>Silent</source>
-            <translation>Silent</translation>
-        </message>
-        <message>
             <source>Test output</source>
             <translation>Test di output</translation>
-        </message>
-        <message>
-            <source>Voice level</source>
-            <translation>Voice level</translation>
         </message>
         <message>
             <source>Voice threshold</source>
@@ -462,20 +331,16 @@
             <translation>Device don disconnect</translation>
         </message>
         <message>
-            <source>Local key</source>
-            <translation>Local key</translation>
+            <source>PTT key</source>
+            <translation>Talk key</translation>
         </message>
         <message>
             <source>Voice activation</source>
             <translation>Voice activation</translation>
         </message>
         <message>
-            <source>Remote PTT key</source>
-            <translation>Remote PTT key</translation>
-        </message>
-        <message>
-            <source>Noise reduction</source>
-            <translation>Noise reduction</translation>
+            <source>Denoise</source>
+            <translation>Remove noise</translation>
         </message>
         <message>
             <source>Selected device is not connected</source>
@@ -486,32 +351,120 @@
             <translation>E go transmit</translation>
         </message>
         <message>
-            <source>Microphone gain</source>
-            <translation>Microphone gain</translation>
-        </message>
-        <message>
-            <source>Clear remote key</source>
-            <translation>Clear di remote key</translation>
-        </message>
-        <message>
-            <source>Playback volume</source>
-            <translation>Playback volume</translation>
+            <source>Gain</source>
+            <translation>Gain</translation>
         </message>
         <message>
             <source>Not assigned</source>
             <translation>No assign</translation>
         </message>
         <message>
-            <source>High cut</source>
-            <translation>High cut</translation>
+            <source>Lowpass</source>
+            <translation>Lowpass</translation>
         </message>
         <message>
             <source>Level audio automatically</source>
             <translation>Level audio automatically</translation>
         </message>
+        <message>
+            <source>Voice volume</source>
+            <translation>Voice chat volume</translation>
+        </message>
+        <message>
+            <source>App sounds</source>
+            <translation>App sounds</translation>
+        </message>
+        <message>
+            <source>Read bot messages aloud</source>
+            <translation>Read bot messages loud</translation>
+        </message>
+        <message>
+            <source>Download a high-quality voice for this language in macOS settings.</source>
+            <translation>Download better-quality voice for this language for macOS settings.</translation>
+        </message>
+        <message>
+            <source>Bot voice</source>
+            <translation>Bot voice</translation>
+        </message>
+        <message>
+            <source>Automatic</source>
+            <translation>Automatic</translation>
+        </message>
+        <message>
+            <source>Unavailable</source>
+            <translation>Unavailable</translation>
+        </message>
+        <message>
+            <source>Download voices in your device's Accessibility speech settings.</source>
+            <translation>Download voices from speech settings under Accessibility for your device.</translation>
+        </message>
+        <message>
+            <source>Voice download help</source>
+            <translation>Help to download voices</translation>
+        </message>
+        <message>
+            <source>Strength, not the percentage of echo removed.</source>
+            <translation>Na strength, no be percentage of echo wey dem remove.</translation>
+        </message>
+        <message>
+            <source>Auto also checks for speech, not just volume.</source>
+            <translation>Auto dey check for speech too, no be only volume.</translation>
+        </message>
     </context>
     <context>
         <name>Channels</name>
+        <message>
+            <source>Audio received</source>
+            <translation>Sound wey you receive</translation>
+        </message>
+        <message>
+            <source>Search channels</source>
+            <translation>Find channels</translation>
+        </message>
+        <message>
+            <source>No matches</source>
+            <translation>No result</translation>
+        </message>
+        <message>
+            <source>Copy address</source>
+            <translation>Copy di address</translation>
+        </message>
+        <message>
+            <source>Messages</source>
+            <translation>Messages</translation>
+        </message>
+        <message>
+            <source>Message</source>
+            <translation>Message</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Open</translation>
+        </message>
+        <message>
+            <source>Online</source>
+            <translation>Online</translation>
+        </message>
+        <message>
+            <source>Offline</source>
+            <translation>Offline</translation>
+        </message>
+        <message>
+            <source>No private messages</source>
+            <translation>No private messages dey.</translation>
+        </message>
+        <message>
+            <source>Private messages are unavailable for this contact.</source>
+            <translation>Private messages no dey available for this contact.</translation>
+        </message>
+        <message>
+            <source>If asked, allow local network access. You can change this in system settings.</source>
+            <translation>If dem ask you, allow local network access. You fit change am for system settings.</translation>
+        </message>
+        <message>
+            <source>Retry</source>
+            <translation>Try again</translation>
+        </message>
         <message>
             <source>Updates</source>
             <translation>Updates</translation>
@@ -653,10 +606,6 @@
             <translation>Sounds for notification</translation>
         </message>
         <message>
-            <source>Lifetime for new messages. Earlier messages keep their expiry.</source>
-            <translation>How long new messages go stay. Old messages go still expire for their original time.</translation>
-        </message>
-        <message>
             <source>Enable speakers</source>
             <translation>Turn speakers on</translation>
         </message>
@@ -691,10 +640,6 @@
         <message>
             <source>Allow device</source>
             <translation>Allow dis device</translation>
-        </message>
-        <message>
-            <source>Receive quality: %1 kb/s per voice. Adjusts automatically for this device.</source>
-            <translation>Receive quality: %1 kb/s for each voice. E go adjust by itself for dis device.</translation>
         </message>
         <message>
             <source>Stop radio</source>
@@ -830,7 +775,7 @@
         </message>
         <message>
             <source>Blocked</source>
-            <translation>Blocked</translation>
+            <translation>Dem block am</translation>
         </message>
         <message>
             <source>Try again in %1 s</source>
@@ -1188,6 +1133,54 @@
             <source>This device</source>
             <translation>This device</translation>
         </message>
+        <message>
+            <source>Use default music volume</source>
+            <translation>Use default music volume</translation>
+        </message>
+        <message>
+            <source>Show in Dock</source>
+            <translation>Show for Dock</translation>
+        </message>
+        <message>
+            <source>App language</source>
+            <translation>App language</translation>
+        </message>
+        <message>
+            <source>Send in</source>
+            <translation>Send for</translation>
+        </message>
+        <message>
+            <source>Hear in</source>
+            <translation>Hear for</translation>
+        </message>
+        <message>
+            <source>Download language models for %1 and %2?</source>
+            <translation>Download language models for %1 and %2?</translation>
+        </message>
+        <message>
+            <source>Download</source>
+            <translation>Download</translation>
+        </message>
+        <message>
+            <source>PTT, chat and channel controls. Uses the controlled device's microphone.</source>
+            <translation>PTT, chat and channel controls. Dem dey use di microphone for di device wey dem dey control.</translation>
+        </message>
+        <message>
+            <source>Connect the other device to one of your channels, then allow it here.</source>
+            <translation>Connect di oda device to one of your channels, then allow am here.</translation>
+        </message>
+        <message>
+            <source>On the other device, open Settings &gt; Input &gt; Remote control and allow this device.</source>
+            <translation>For di oda device, open Settings &gt; Input &gt; Remote control and allow dis device.</translation>
+        </message>
+        <message>
+            <source>Remove server</source>
+            <translation>Comot server</translation>
+        </message>
+        <message>
+            <source>Unread messages</source>
+            <translation>Messages wey you never read</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1299,6 +1292,22 @@
             <source>The sanitized image could not be written completely.</source>
             <translation>We no fit write the cleaned picture finish.</translation>
         </message>
+        <message>
+            <source>%1 joined.</source>
+            <translation>%1 don join.</translation>
+        </message>
+        <message>
+            <source>%1 left.</source>
+            <translation>%1 don comot.</translation>
+        </message>
+        <message>
+            <source>%1 was kicked.</source>
+            <translation>Dem kick %1.</translation>
+        </message>
+        <message>
+            <source>%1 was banned from the channel.</source>
+            <translation>Dem ban %1 from di channel.</translation>
+        </message>
     </context>
     <context>
         <name>ChatPanel</name>
@@ -1363,22 +1372,6 @@
             <translation>Loading...</translation>
         </message>
         <message>
-            <source>%1 joined.</source>
-            <translation>%1 don join.</translation>
-        </message>
-        <message>
-            <source>%1 left.</source>
-            <translation>%1 don comot.</translation>
-        </message>
-        <message>
-            <source>%1 was kicked.</source>
-            <translation>Dem kick %1.</translation>
-        </message>
-        <message>
-            <source>%1 was banned from the channel.</source>
-            <translation>Dem ban %1 from di channel.</translation>
-        </message>
-        <message>
             <source>Message could not be sent. Check the connection and text length.</source>
             <translation>Message no fit send. Check di connection and text length.</translation>
         </message>
@@ -1405,6 +1398,14 @@
     </context>
     <context>
         <name>LocalChannel</name>
+        <message>
+            <source>Insufficient permissions.</source>
+            <translation>You no get enough permission.</translation>
+        </message>
+        <message>
+            <source>Blocked</source>
+            <translation>Dem block am</translation>
+        </message>
         <message>
             <source>Host is not responding. Reconnecting.</source>
             <translation>Host no dey respond. Reconnecting.</translation>
@@ -1926,8 +1927,8 @@
             <translation>Image transfer take too long.</translation>
         </message>
         <message>
-            <source>The channel is full. Text chat is still available.</source>
-            <translation>Channel don full. Text chat still dey available.</translation>
+            <source>The host is busy. Try again shortly.</source>
+            <translation>Host dey busy. Try again after small time.</translation>
         </message>
         <message>
             <source>All own channels use the device's shared port.</source>
@@ -2189,6 +2190,14 @@
             <source>Voice relay codec could not be configured.</source>
             <translation>We no fit configure voice relay codec.</translation>
         </message>
+        <message>
+            <source>Unsupported audio codec</source>
+            <translation>This audio codec no dey supported</translation>
+        </message>
+        <message>
+            <source>Speaking is not allowed in this channel.</source>
+            <translation>You no fit talk for this channel.</translation>
+        </message>
     </context>
     <context>
         <name>PushToTalkKey</name>
@@ -2329,53 +2338,6 @@
         </message>
     </context>
     <context>
-        <name>RecordingPanel</name>
-        <message>
-            <source>Stop</source>
-            <translation>Stop</translation>
-        </message>
-        <message>
-            <source>Start</source>
-            <translation>Start</translation>
-        </message>
-        <message>
-            <source>Saved on this device only. Nothing is uploaded.</source>
-            <translation>Na dis device save am only. We no upload anything.</translation>
-        </message>
-        <message>
-            <source>Keep this take or record it again.</source>
-            <translation>Keep dis take or record am again.</translation>
-        </message>
-        <message>
-            <source>Record again</source>
-            <translation>Record again</translation>
-        </message>
-        <message>
-            <source>Use recording</source>
-            <translation>Use recording</translation>
-        </message>
-        <message>
-            <source>Recording progress</source>
-            <translation>Progress for recording</translation>
-        </message>
-        <message>
-            <source>Step %1 of %2</source>
-            <translation>Step %1 of %2</translation>
-        </message>
-        <message>
-            <source>Open recordings</source>
-            <translation>Open recordings</translation>
-        </message>
-        <message>
-            <source>Reset test</source>
-            <translation>Reset di test</translation>
-        </message>
-        <message>
-            <source>%1 s remaining / %2 dBFS</source>
-            <translation>%1 s remain / %2 dBFS</translation>
-        </message>
-    </context>
-    <context>
         <name>SettingSlider</name>
         <message>
             <source>Auto</source>
@@ -2449,10 +2411,6 @@
             <translation>We dey collect signal...</translation>
         </message>
         <message>
-            <source>Dashed curve: configured gain and frequency cuts, using the right dB scale. Noise reduction and voice activation are not part of this curve.</source>
-            <translation>Dashed curve: microphone amplification and frequency filters wey you set, with di dB scale for right. Noise reduction and voice activation no dey inside dis curve.</translation>
-        </message>
-        <message>
             <source>Microphone preview is not running</source>
             <translation>Microphone preview no dey run</translation>
         </message>
@@ -2521,10 +2479,6 @@
     </context>
     <context>
         <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>No dey available - audio settings or tone test</translation>
-        </message>
         <message>
             <source>Microphone muted</source>
             <translation>Microphone muted</translation>
@@ -2628,6 +2582,10 @@
     <context>
         <name>ScreenShare</name>
         <message>
+            <source>Allow screen recording in system settings.</source>
+            <translation>Allow screen recording for system settings.</translation>
+        </message>
+        <message>
             <source>The shared screen was removed. Select a source to start again.</source>
             <translation>Shared screen don remove. Select source to start again.</translation>
         </message>
@@ -2654,10 +2612,6 @@
     </context>
     <context>
         <name>ScreenPanel</name>
-        <message>
-            <source>Media capacity reached</source>
-            <translation>Media capacity don full</translation>
-        </message>
         <message>
             <source>Video paused</source>
             <translation>Video pause</translation>
@@ -2877,9 +2831,12 @@
             <translation>We no fit verify di password.</translation>
         </message>
     </context>
-
     <context>
         <name>Headless</name>
+        <message>
+            <source>Host display name.</source>
+            <translation>Host name wey go show.</translation>
+        </message>
         <message>
             <source>Command failed.</source>
             <translation>Di command fail.</translation>
@@ -3208,10 +3165,6 @@
             <translation>Open settings when app start.</translation>
         </message>
         <message>
-            <source>Open guided local test recording without starting network services.</source>
-            <translation>Open local test recording wey get instructions, without starting network services.</translation>
-        </message>
-        <message>
             <source>Alternative file for audio profiles.</source>
             <translation>Another file for audio profiles.</translation>
         </message>
@@ -3230,6 +3183,45 @@
         <message>
             <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
             <translation>System tray no dey available; app go remain open for window.</translation>
+        </message>
+    </context>
+    <context>
+        <name>LocalLanguage</name>
+        <message>
+            <source>Translation (experimental)</source>
+            <translation>Translation (for test)</translation>
+        </message>
+        <message>
+            <source>Translate messages</source>
+            <translation>Translate messages</translation>
+        </message>
+        <message>
+            <source>Translated voice</source>
+            <translation>Voice wey dem translate</translation>
+        </message>
+        <message>
+            <source>Original audio</source>
+            <translation>Original sound</translation>
+        </message>
+        <message>
+            <source>Original text</source>
+            <translation>Original text</translation>
+        </message>
+        <message>
+            <source>Prepare languages</source>
+            <translation>Prepare languages</translation>
+        </message>
+        <message>
+            <source>Local language processing is unavailable.</source>
+            <translation>Language processing for this device no dey available.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be read.</source>
+            <translation>App no fit read language settings.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be saved.</source>
+            <translation>App no fit save language settings.</translation>
         </message>
     </context>
 </TS>

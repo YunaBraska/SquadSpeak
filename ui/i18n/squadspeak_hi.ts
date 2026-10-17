@@ -36,14 +36,6 @@
             <translation>अपने सिस्टम की गोपनीयता सेटिंग खोलें और SquadSpeak को माइक्रोफोन की अनुमति दें.</translation>
         </message>
         <message>
-            <source>Microphone analysis active. Test audio stays on this computer.</source>
-            <translation>माइक्रोफोन विश्लेषण सक्रिय है. परीक्षण ऑडियो इसी कंप्यूटर पर रहता है.</translation>
-        </message>
-        <message>
-            <source>Finish the test recording before changing devices.</source>
-            <translation>डिवाइस बदलने से पहले परीक्षण रिकॉर्डिंग पूरी करें.</translation>
-        </message>
-        <message>
             <source>The output format is not supported.</source>
             <translation>आउटपुट प्रारूप समर्थित नहीं है.</translation>
         </message>
@@ -68,32 +60,12 @@
             <translation>परीक्षण टोन चलाया नहीं जा सका.</translation>
         </message>
         <message>
-            <source>The microphone has provided no data for five seconds. Recording discarded.</source>
-            <translation>माइक्रोफोन ने पांच सेकंड तक कोई डेटा नहीं दिया. रिकॉर्डिंग हटा दी गई.</translation>
-        </message>
-        <message>
-            <source>The microphone was interrupted or changed. Recording discarded.</source>
-            <translation>माइक्रोफोन बाधित या बदल गया. रिकॉर्डिंग हटा दी गई.</translation>
-        </message>
-        <message>
-            <source>Cancelled. The incomplete recording was discarded.</source>
-            <translation>रद्द किया गया. अधूरी रिकॉर्डिंग हटा दी गई.</translation>
-        </message>
-        <message>
             <source>No selected microphone is available</source>
             <translation>चयनित माइक्रोफोन उपलब्ध नहीं है</translation>
         </message>
         <message>
             <source>Allow microphone access in the system dialog.</source>
             <translation>सिस्टम संवाद में माइक्रोफोन की अनुमति दें.</translation>
-        </message>
-        <message>
-            <source>Microphone capture active for the voice channel.</source>
-            <translation>वॉइस चैनल के लिए माइक्रोफोन कैप्चर सक्रिय है.</translation>
-        </message>
-        <message>
-            <source>Microphone access was denied. Nothing was saved.</source>
-            <translation>माइक्रोफोन की अनुमति अस्वीकार कर दी गई. कुछ भी सहेजा नहीं गया.</translation>
         </message>
         <message>
             <source>Microphone access is missing. Allow it in System Settings.</source>
@@ -259,103 +231,16 @@
             <source>App audio only</source>
             <translation>केवल ऐप का ऑडियो</translation>
         </message>
-    </context>
-    <context>
-        <name>AudioRecording</name>
         <message>
-            <source>Incomplete audio block. Recording discarded.</source>
-            <translation>अधूरा ऑडियो ब्लॉक. रिकॉर्डिंग हटा दी गई.</translation>
-        </message>
-        <message>
-            <source>Move about one meter from the microphone. Keep the background sound playing and read the sentence.</source>
-            <translation>माइक्रोफोन से लगभग एक मीटर दूर जाएं. बैकग्राउंड ध्वनि चलती रहने दें और वाक्य पढ़ें.</translation>
-        </message>
-        <message>
-            <source>Voice with background sound</source>
-            <translation>बैकग्राउंड ध्वनि के साथ आवाज</translation>
-        </message>
-        <message>
-            <source>The recordings folder could not be created.</source>
-            <translation>रिकॉर्डिंग फ़ोल्डर बनाया नहीं जा सका.</translation>
-        </message>
-        <message>
-            <source>You can stop the background sound now.</source>
-            <translation>अब आप बैकग्राउंड ध्वनि रोक सकते हैं.</translation>
-        </message>
-        <message>
-            <source>Recordings saved</source>
-            <translation>रिकॉर्डिंग सहेजी गईं</translation>
-        </message>
-        <message>
-            <source>The test recording could not be saved completely.</source>
-            <translation>परीक्षण रिकॉर्डिंग पूरी तरह सहेजी नहीं जा सकी.</translation>
-        </message>
-        <message>
-            <source>Keep music off and stay quiet. Start when ready.</source>
-            <translation>संगीत बंद रखें और शांत रहें. तैयार होने पर शुरू करें.</translation>
-        </message>
-        <message>
-            <source>Your voice</source>
-            <translation>आपकी आवाज</translation>
-        </message>
-        <message>
-            <source>Play music or another background sound at a normal volume. Stay quiet while recording.</source>
-            <translation>सामान्य वॉल्यूम पर संगीत या कोई अन्य बैकग्राउंड ध्वनि चलाएं. रिकॉर्डिंग के दौरान शांत रहें.</translation>
-        </message>
-        <message>
-            <source>The test recording could not be created.</source>
-            <translation>परीक्षण रिकॉर्डिंग बनाई नहीं जा सकी.</translation>
-        </message>
-        <message>
-            <source>Background sound</source>
-            <translation>बैकग्राउंड ध्वनि</translation>
-        </message>
-        <message>
-            <source>The window is open. I can hear the rain outside. One, two, three, four, five.</source>
-            <translation>खिड़की खुली है. मुझे बाहर बारिश सुनाई दे रही है. एक, दो, तीन, चार, पांच.</translation>
-        </message>
-        <message>
-            <source>This microphone format is not supported for test recordings.</source>
-            <translation>यह माइक्रोफोन प्रारूप परीक्षण रिकॉर्डिंग के लिए समर्थित नहीं है.</translation>
-        </message>
-        <message>
-            <source>Keep the background volume unchanged. Read the sentence, then stop recording.</source>
-            <translation>बैकग्राउंड वॉल्यूम अपरिवर्तित रखें. वाक्य पढ़ें, फिर रिकॉर्डिंग रोकें.</translation>
-        </message>
-        <message>
-            <source>Record at least half a second, then try again.</source>
-            <translation>कम से कम आधा सेकंड रिकॉर्ड करें, फिर दोबारा प्रयास करें.</translation>
-        </message>
-        <message>
-            <source>Sit at your usual distance. Read the sentence, then stop recording.</source>
-            <translation>अपनी सामान्य दूरी पर बैठें. वाक्य पढ़ें, फिर रिकॉर्डिंग रोकें.</translation>
-        </message>
-        <message>
-            <source>The recording description could not be saved.</source>
-            <translation>रिकॉर्डिंग का विवरण सहेजा नहीं जा सका.</translation>
-        </message>
-        <message>
-            <source>The WAV file could not be finalized.</source>
-            <translation>WAV फ़ाइल पूरी नहीं की जा सकी.</translation>
-        </message>
-        <message>
-            <source>The WAV header could not be written.</source>
-            <translation>WAV हेडर लिखा नहीं जा सका.</translation>
-        </message>
-        <message>
-            <source>Voice farther away</source>
-            <translation>दूर से आती आवाज</translation>
-        </message>
-        <message>
-            <source>Room sound</source>
-            <translation>कमरे की ध्वनि</translation>
+            <source>Speech output is unavailable.</source>
+            <translation>वाक् आउटपुट उपलब्ध नहीं है।</translation>
         </message>
     </context>
     <context>
         <name>AudioSettings</name>
         <message>
-            <source>Echo cancellation</source>
-            <translation>प्रतिध्वनि रद्द करना</translation>
+            <source>Echo</source>
+            <translation>प्रतिध्वनि</translation>
         </message>
         <message>
             <source>Off</source>
@@ -402,12 +287,12 @@
             <translation>आपका प्लेबैक</translation>
         </message>
         <message>
-            <source>Clear local key</source>
-            <translation>स्थानीय कुंजी साफ करें</translation>
+            <source>Clear key</source>
+            <translation>कुंजी हटाएँ</translation>
         </message>
         <message>
-            <source>Low cut</source>
-            <translation>लो कट</translation>
+            <source>Highpass</source>
+            <translation>हाईपास</translation>
         </message>
         <message>
             <source>Microphone access is off</source>
@@ -418,32 +303,16 @@
             <translation>इनपुट डिवाइस</translation>
         </message>
         <message>
-            <source>Microphone paused for others</source>
-            <translation>दूसरों के लिए माइक्रोफोन रुका हुआ है</translation>
-        </message>
-        <message>
             <source>Cancel</source>
             <translation>रद्द करें</translation>
-        </message>
-        <message>
-            <source>Guided recording</source>
-            <translation>निर्देशित रिकॉर्डिंग</translation>
         </message>
         <message>
             <source>Clipping. Reduce microphone gain.</source>
             <translation>क्लिपिंग. माइक्रोफोन गेन कम करें.</translation>
         </message>
         <message>
-            <source>Silent</source>
-            <translation>मौन</translation>
-        </message>
-        <message>
             <source>Test output</source>
             <translation>आउटपुट जांचें</translation>
-        </message>
-        <message>
-            <source>Voice level</source>
-            <translation>वॉइस स्तर</translation>
         </message>
         <message>
             <source>Voice threshold</source>
@@ -462,20 +331,16 @@
             <translation>डिवाइस डिस्कनेक्ट है</translation>
         </message>
         <message>
-            <source>Local key</source>
-            <translation>स्थानीय कुंजी</translation>
+            <source>PTT key</source>
+            <translation>बोलने की कुंजी</translation>
         </message>
         <message>
             <source>Voice activation</source>
             <translation>वॉइस सक्रियण</translation>
         </message>
         <message>
-            <source>Remote PTT key</source>
-            <translation>रिमोट PTT कुंजी</translation>
-        </message>
-        <message>
-            <source>Noise reduction</source>
-            <translation>शोर में कमी</translation>
+            <source>Denoise</source>
+            <translation>शोरशमन</translation>
         </message>
         <message>
             <source>Selected device is not connected</source>
@@ -486,32 +351,120 @@
             <translation>ट्रांसमिट होगा</translation>
         </message>
         <message>
-            <source>Microphone gain</source>
-            <translation>माइक्रोफोन गेन</translation>
-        </message>
-        <message>
-            <source>Clear remote key</source>
-            <translation>रिमोट कुंजी साफ करें</translation>
-        </message>
-        <message>
-            <source>Playback volume</source>
-            <translation>प्लेबैक वॉल्यूम</translation>
+            <source>Gain</source>
+            <translation>गेन</translation>
         </message>
         <message>
             <source>Not assigned</source>
             <translation>निर्धारित नहीं</translation>
         </message>
         <message>
-            <source>High cut</source>
-            <translation>हाई कट</translation>
+            <source>Lowpass</source>
+            <translation>लोपास</translation>
         </message>
         <message>
             <source>Level audio automatically</source>
             <translation>ऑडियो स्तर को स्वचालित रूप से समायोजित करें</translation>
         </message>
+        <message>
+            <source>Voice volume</source>
+            <translation>वॉइस चैट की आवाज़</translation>
+        </message>
+        <message>
+            <source>App sounds</source>
+            <translation>ऐप की ध्वनियाँ</translation>
+        </message>
+        <message>
+            <source>Read bot messages aloud</source>
+            <translation>बॉट के संदेश पढ़कर सुनाएँ</translation>
+        </message>
+        <message>
+            <source>Download a high-quality voice for this language in macOS settings.</source>
+            <translation>macOS सेटिंग्स से इस भाषा के लिए उच्च गुणवत्ता वाली आवाज़ डाउनलोड करो।</translation>
+        </message>
+        <message>
+            <source>Bot voice</source>
+            <translation>बॉट की आवाज़</translation>
+        </message>
+        <message>
+            <source>Automatic</source>
+            <translation>स्वचालित</translation>
+        </message>
+        <message>
+            <source>Unavailable</source>
+            <translation>उपलब्ध नहीं</translation>
+        </message>
+        <message>
+            <source>Download voices in your device's Accessibility speech settings.</source>
+            <translation>अपने डिवाइस की ऐक्सेसिबिलिटी स्पीच सेटिंग्स से आवाज़ें डाउनलोड करो।</translation>
+        </message>
+        <message>
+            <source>Voice download help</source>
+            <translation>आवाज़ डाउनलोड करने में मदद</translation>
+        </message>
+        <message>
+            <source>Strength, not the percentage of echo removed.</source>
+            <translation>तीव्रता, हटाई गई गूँज का प्रतिशत नहीं।</translation>
+        </message>
+        <message>
+            <source>Auto also checks for speech, not just volume.</source>
+            <translation>ऑटो केवल आवाज़ का स्तर नहीं, बोली भी पहचानता है।</translation>
+        </message>
     </context>
     <context>
         <name>Channels</name>
+        <message>
+            <source>Audio received</source>
+            <translation>प्राप्त ऑडियो</translation>
+        </message>
+        <message>
+            <source>Search channels</source>
+            <translation>चैनल खोजें</translation>
+        </message>
+        <message>
+            <source>No matches</source>
+            <translation>कोई परिणाम नहीं</translation>
+        </message>
+        <message>
+            <source>Copy address</source>
+            <translation>पता कॉपी करो</translation>
+        </message>
+        <message>
+            <source>Messages</source>
+            <translation>संदेश</translation>
+        </message>
+        <message>
+            <source>Message</source>
+            <translation>संदेश</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>खोलें</translation>
+        </message>
+        <message>
+            <source>Online</source>
+            <translation>ऑनलाइन</translation>
+        </message>
+        <message>
+            <source>Offline</source>
+            <translation>ऑफलाइन</translation>
+        </message>
+        <message>
+            <source>No private messages</source>
+            <translation>कोई निजी संदेश नहीं</translation>
+        </message>
+        <message>
+            <source>Private messages are unavailable for this contact.</source>
+            <translation>इस संपर्क के लिए निजी संदेश उपलब्ध नहीं हैं।</translation>
+        </message>
+        <message>
+            <source>If asked, allow local network access. You can change this in system settings.</source>
+            <translation>अगर पूछा जाए, तो स्थानीय नेटवर्क की अनुमति दें। आप इसे सिस्टम सेटिंग्स में बदल सकते हैं।</translation>
+        </message>
+        <message>
+            <source>Retry</source>
+            <translation>फिर से कोशिश करो</translation>
+        </message>
         <message>
             <source>Updates</source>
             <translation>अपडेट</translation>
@@ -531,6 +484,10 @@
         <message>
             <source>DDNS cannot bypass CGNAT. If your provider shares the public IP, use a private VPN on all participating devices or a publicly reachable server.</source>
             <translation>DDNS, CGNAT को पार नहीं कर सकता. यदि आपका प्रदाता सार्वजनिक IP साझा करता है, तो सभी भाग लेने वाले उपकरणों पर निजी VPN या सार्वजनिक रूप से उपलब्ध सर्वर का उपयोग करें.</translation>
+        </message>
+        <message>
+            <source>Remove server</source>
+            <translation>सर्वर हटाएं</translation>
         </message>
         <message>
             <source>Low</source>
@@ -653,10 +610,6 @@
             <translation>ध्वनियां अधिसूचनाओं की</translation>
         </message>
         <message>
-            <source>Lifetime for new messages. Earlier messages keep their expiry.</source>
-            <translation>नए संदेशों की अवधि. पुराने संदेश अपनी समाप्ति बनाए रखते हैं.</translation>
-        </message>
-        <message>
             <source>Enable speakers</source>
             <translation>स्पीकर सक्षम करें</translation>
         </message>
@@ -691,10 +644,6 @@
         <message>
             <source>Allow device</source>
             <translation>डिवाइस की अनुमति दें</translation>
-        </message>
-        <message>
-            <source>Receive quality: %1 kb/s per voice. Adjusts automatically for this device.</source>
-            <translation>रिसीव गुणवत्ता: प्रति वॉइस %1 kb/s. इस डिवाइस के लिए अपने आप समायोजित होती है.</translation>
         </message>
         <message>
             <source>Stop radio</source>
@@ -1188,6 +1137,50 @@
             <source>This device</source>
             <translation>यह डिवाइस</translation>
         </message>
+        <message>
+            <source>Use default music volume</source>
+            <translation>संगीत का डिफ़ॉल्ट वॉल्यूम इस्तेमाल करो</translation>
+        </message>
+        <message>
+            <source>Show in Dock</source>
+            <translation>Dock में दिखाओ</translation>
+        </message>
+        <message>
+            <source>App language</source>
+            <translation>ऐप की भाषा</translation>
+        </message>
+        <message>
+            <source>Send in</source>
+            <translation>भेजने की भाषा</translation>
+        </message>
+        <message>
+            <source>Hear in</source>
+            <translation>सुनने की भाषा</translation>
+        </message>
+        <message>
+            <source>Download language models for %1 and %2?</source>
+            <translation>%1 और %2 के भाषा मॉडल डाउनलोड करें?</translation>
+        </message>
+        <message>
+            <source>Download</source>
+            <translation>डाउनलोड</translation>
+        </message>
+        <message>
+            <source>PTT, chat and channel controls. Uses the controlled device's microphone.</source>
+            <translation>PTT, चैट और चैनल नियंत्रण। नियंत्रित डिवाइस का माइक्रोफ़ोन इस्तेमाल होता है।</translation>
+        </message>
+        <message>
+            <source>Connect the other device to one of your channels, then allow it here.</source>
+            <translation>दूसरे डिवाइस को अपने किसी चैनल से कनेक्ट करें, फिर उसे यहाँ अनुमति दें।</translation>
+        </message>
+        <message>
+            <source>On the other device, open Settings &gt; Input &gt; Remote control and allow this device.</source>
+            <translation>दूसरे डिवाइस पर सेटिंग &gt; इनपुट &gt; रिमोट कंट्रोल खोलें और इस डिवाइस को अनुमति दें।</translation>
+        </message>
+        <message>
+            <source>Unread messages</source>
+            <translation>अपठित संदेश</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1299,6 +1292,22 @@
             <source>The sanitized image could not be written completely.</source>
             <translation>साफ की गई छवि पूरी तरह लिखी नहीं जा सकी.</translation>
         </message>
+        <message>
+            <source>%1 joined.</source>
+            <translation>%1 शामिल हुआ.</translation>
+        </message>
+        <message>
+            <source>%1 left.</source>
+            <translation>%1 चला गया.</translation>
+        </message>
+        <message>
+            <source>%1 was kicked.</source>
+            <translation>%1 को हटा दिया गया.</translation>
+        </message>
+        <message>
+            <source>%1 was banned from the channel.</source>
+            <translation>%1 को चैनल से बैन किया गया.</translation>
+        </message>
     </context>
     <context>
         <name>ChatPanel</name>
@@ -1363,22 +1372,6 @@
             <translation>लोड हो रहा है...</translation>
         </message>
         <message>
-            <source>%1 joined.</source>
-            <translation>%1 शामिल हुआ.</translation>
-        </message>
-        <message>
-            <source>%1 left.</source>
-            <translation>%1 चला गया.</translation>
-        </message>
-        <message>
-            <source>%1 was kicked.</source>
-            <translation>%1 को हटा दिया गया.</translation>
-        </message>
-        <message>
-            <source>%1 was banned from the channel.</source>
-            <translation>%1 को चैनल से बैन किया गया.</translation>
-        </message>
-        <message>
             <source>Message could not be sent. Check the connection and text length.</source>
             <translation>संदेश भेजा नहीं जा सका. कनेक्शन और टेक्स्ट की लंबाई जांचें.</translation>
         </message>
@@ -1404,7 +1397,400 @@
         </message>
     </context>
     <context>
+        <name>Desktop</name>
+        <message>
+            <source>Open settings at startup.</source>
+            <translation>शुरू होने पर सेटिंग खोलें.</translation>
+        </message>
+        <message>
+            <source>Alternative file for audio profiles.</source>
+            <translation>ऑडियो प्रोफ़ाइल के लिए वैकल्पिक फ़ाइल.</translation>
+        </message>
+        <message>
+            <source>Load the interface without microphone capture and exit after one second.</source>
+            <translation>माइक्रोफ़ोन रिकॉर्डिंग के बिना इंटरफ़ेस लोड करें और एक सेकंड बाद बंद करें.</translation>
+        </message>
+        <message>
+            <source>Save an image of the app window during the UI test.</source>
+            <translation>इंटरफ़ेस परीक्षण के दौरान ऐप की विंडो की तस्वीर सहेजें.</translation>
+        </message>
+        <message>
+            <source>The window image could not be saved.</source>
+            <translation>विंडो की तस्वीर सहेजी नहीं जा सकी.</translation>
+        </message>
+        <message>
+            <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
+            <translation>सिस्टम ट्रे उपलब्ध नहीं है; ऐप विंडो में खुला रहेगा.</translation>
+        </message>
+    </context>
+    <context>
+        <name>Headless</name>
+        <message>
+            <source>Host display name.</source>
+            <translation>होस्ट का प्रदर्शित नाम।</translation>
+        </message>
+        <message>
+            <source>Command failed.</source>
+            <translation>कमांड विफल हुआ.</translation>
+        </message>
+        <message>
+            <source>%1 must be an integer.</source>
+            <translation>%1 पूर्णांक होना चाहिए.</translation>
+        </message>
+        <message>
+            <source>Requests must be on/off or true/false.</source>
+            <translation>अनुरोध on/off या true/false होने चाहिए.</translation>
+        </message>
+        <message>
+            <source>Unknown host property: %1</source>
+            <translation>अज्ञात होस्ट गुण: %1</translation>
+        </message>
+        <message>
+            <source>Run without GUI, microphone capture, or local audio output.</source>
+            <translation>ग्राफिकल इंटरफेस, माइक्रोफोन कैप्चर या स्थानीय ऑडियो आउटपुट के बिना चलाएं.</translation>
+        </message>
+        <message>
+            <source>Server storage prefix. Personal/audio/GUI profiles are not loaded.</source>
+            <translation>सर्वर स्टोरेज प्रीफिक्स. व्यक्तिगत, ऑडियो और ग्राफिकल प्रोफाइल लोड नहीं किए जाते.</translation>
+        </message>
+        <message>
+            <source>Optional private identity file instead of the OS credential store (Linux/macOS). Parent directory must exist and belong to this account.</source>
+            <translation>ऑपरेटिंग सिस्टम क्रेडेंशियल स्टोर के बजाय वैकल्पिक निजी पहचान फ़ाइल (Linux/macOS). पैरेंट निर्देशिका मौजूद होनी चाहिए और इस खाते की होनी चाहिए.</translation>
+        </message>
+        <message>
+            <source>UTF-8 key=value properties or JSON host preset. Default: application.properties, then config/application.properties beside the app.</source>
+            <translation>UTF-8 key=value गुण या JSON होस्ट प्रीसेट. डिफ़ॉल्ट: application.properties, फिर ऐप के पास config/application.properties.</translation>
+        </message>
+        <message>
+            <source>Channel display name.</source>
+            <translation>चैनल का प्रदर्शित नाम.</translation>
+        </message>
+        <message>
+            <source>System and radio bot display name.</source>
+            <translation>सिस्टम और रेडियो बॉट का प्रदर्शित नाम.</translation>
+        </message>
+        <message>
+            <source>TCP service port (1-65535).</source>
+            <translation>TCP सेवा पोर्ट (1-65535).</translation>
+        </message>
+        <message>
+            <source>Headless admission is always on; only 'on' or 'true' is accepted.</source>
+            <translation>हेडलेस प्रवेश हमेशा चालू है; केवल 'on' या 'true' स्वीकार किया जाता है.</translation>
+        </message>
+        <message>
+            <source>Preapprove a device ID; repeat for several devices. Existing bans remain.</source>
+            <translation>डिवाइस ID को पहले से अनुमति दें; कई डिवाइसों के लिए दोहराएं. मौजूदा प्रतिबंध बने रहते हैं.</translation>
+        </message>
+        <message>
+            <source>Block a device ID; repeat for several devices.</source>
+            <translation>डिवाइस ID को ब्लॉक करें; कई डिवाइसों के लिए दोहराएं.</translation>
+        </message>
+        <message>
+            <source>Read a UTF-8 channel password from a file before listening. An empty file removes it.</source>
+            <translation>सुनना शुरू करने से पहले UTF-8 चैनल पासवर्ड फ़ाइल से पढ़ें. खाली फ़ाइल इसे हटा देती है.</translation>
+        </message>
+        <message>
+            <source>Channel password. Empty removes it; environment or config avoids process-list exposure.</source>
+            <translation>चैनल पासवर्ड. खाली मान इसे हटाता है; वातावरण या कॉन्फ़िगरेशन इसे प्रोसेस सूची में दिखने से रोकता है.</translation>
+        </message>
+        <message>
+            <source>SquadSpeak headless local channel host</source>
+            <translation>SquadSpeak हेडलेस स्थानीय चैनल होस्ट</translation>
+        </message>
+        <message>
+            <source>Environment variables (SQUADSPEAK_ prefix):</source>
+            <translation>वातावरण चर (SQUADSPEAK_ प्रीफिक्स):</translation>
+        </message>
+        <message>
+            <source>Host configuration could not be read or exceeds 1 MiB.</source>
+            <translation>होस्ट कॉन्फ़िगरेशन पढ़ा नहीं जा सका या 1 MiB से अधिक है.</translation>
+        </message>
+        <message>
+            <source>Host configuration must be UTF-8.</source>
+            <translation>होस्ट कॉन्फ़िगरेशन UTF-8 होना चाहिए.</translation>
+        </message>
+        <message>
+            <source>Host preset must be a JSON object.</source>
+            <translation>होस्ट प्रीसेट JSON ऑब्जेक्ट होना चाहिए.</translation>
+        </message>
+        <message>
+            <source>Property line %1 must use key=value.</source>
+            <translation>गुण पंक्ति %1 में key=value का उपयोग होना चाहिए.</translation>
+        </message>
+        <message>
+            <source>Property line %1: %2</source>
+            <translation>गुण पंक्ति %1: %2</translation>
+        </message>
+        <message>
+            <source>Standard input has no file descriptor.</source>
+            <translation>मानक इनपुट में फ़ाइल डिस्क्रिप्टर नहीं है.</translation>
+        </message>
+        <message>
+            <source>Standard input could not be inspected.</source>
+            <translation>मानक इनपुट का निरीक्षण नहीं किया जा सका.</translation>
+        </message>
+        <message>
+            <source>Could not write the command response: %1</source>
+            <translation>कमांड प्रतिक्रिया लिखी नहीं जा सकी: %1</translation>
+        </message>
+        <message>
+            <source>Standard input could not be read: %1</source>
+            <translation>मानक इनपुट पढ़ा नहीं जा सका: %1</translation>
+        </message>
+        <message>
+            <source>Input line exceeds 65536 bytes.</source>
+            <translation>इनपुट पंक्ति 65536 बाइट से अधिक है.</translation>
+        </message>
+        <message>
+            <source>Each input line must be a JSON object.</source>
+            <translation>हर इनपुट पंक्ति JSON ऑब्जेक्ट होनी चाहिए.</translation>
+        </message>
+        <message>
+            <source>Input ended before a complete JSON line.</source>
+            <translation>पूर्ण JSON पंक्ति से पहले इनपुट समाप्त हो गया.</translation>
+        </message>
+        <message>
+            <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
+            <translation>status, configure, password, admission, history, chat और radio कमांड के लिए वैकल्पिक अपने चैनल ID; डिफ़ॉल्ट प्राथमिक चैनल है.</translation>
+        </message>
+        <message>
+            <source>Channel action must be list, add or remove.</source>
+            <translation>चैनल क्रिया list, add या remove होनी चाहिए.</translation>
+        </message>
+        <message>
+            <source>Removing an own channel deletes its history, images, permissions and radio settings. Set confirmed=true to proceed.</source>
+            <translation>अपने चैनल को हटाने से उसका इतिहास, चित्र, अनुमतियां और रेडियो सेटिंग हट जाती हैं. जारी रखने के लिए confirmed=true सेट करें.</translation>
+        </message>
+        <message>
+            <source>id must identify an additional own channel.</source>
+            <translation>id को अतिरिक्त अपने चैनल की पहचान करनी चाहिए.</translation>
+        </message>
+        <message>
+            <source>The additional own channel could not be removed: %1</source>
+            <translation>अतिरिक्त अपना चैनल हटाया नहीं जा सका: %1</translation>
+        </message>
+        <message>
+            <source>channelId must identify an own channel.</source>
+            <translation>channelId को अपने चैनल की पहचान करनी चाहिए.</translation>
+        </message>
+        <message>
+            <source>values must be a host settings object.</source>
+            <translation>values होस्ट सेटिंग ऑब्जेक्ट होना चाहिए.</translation>
+        </message>
+        <message>
+            <source>Headless admission is always enabled for non-banned devices; requests off is not supported.</source>
+            <translation>गैर-ब्लॉक डिवाइसों के लिए हेडलेस प्रवेश हमेशा सक्षम है; requests off समर्थित नहीं है.</translation>
+        </message>
+        <message>
+            <source>value must be a password of at most 1024 UTF-8 bytes without control characters; an empty string removes it.</source>
+            <translation>value अधिकतम 1024 UTF-8 बाइट का, नियंत्रण वर्णों से रहित पासवर्ड होना चाहिए; खाली स्ट्रिंग इसे हटा देती है.</translation>
+        </message>
+        <message>
+            <source>The channel is not ready or a password change is in progress.</source>
+            <translation>चैनल तैयार नहीं है या पासवर्ड परिवर्तन चल रहा है.</translation>
+        </message>
+        <message>
+            <source>The channel was removed while saving the password.</source>
+            <translation>पासवर्ड सहेजते समय चैनल हटा दिया गया.</translation>
+        </message>
+        <message>
+            <source>id is required.</source>
+            <translation>id आवश्यक है.</translation>
+        </message>
+        <message>
+            <source>text must be a valid non-empty chat message.</source>
+            <translation>text मान्य गैर-खाली चैट संदेश होना चाहिए.</translation>
+        </message>
+        <message>
+            <source>The local channel is not ready.</source>
+            <translation>स्थानीय चैनल तैयार नहीं है.</translation>
+        </message>
+        <message>
+            <source>The channel's radio is unavailable.</source>
+            <translation>चैनल रेडियो उपलब्ध नहीं है.</translation>
+        </message>
+        <message>
+            <source>Unknown command. Use help.</source>
+            <translation>अज्ञात कमांड. help का उपयोग करें.</translation>
+        </message>
+        <message>
+            <source>search requires a query, non-negative offset and limit from 1 to 128.</source>
+            <translation>search के लिए query, गैर-ऋणात्मक offset और 1 से 128 के बीच limit आवश्यक है.</translation>
+        </message>
+        <message>
+            <source>add creates an id; update requires an existing id.</source>
+            <translation>add एक id बनाता है; update के लिए मौजूदा id आवश्यक है.</translation>
+        </message>
+        <message>
+            <source>A station is already being checked.</source>
+            <translation>स्टेशन की पहले से जांच हो रही है.</translation>
+        </message>
+        <message>
+            <source>The channel was removed while checking the station.</source>
+            <translation>स्टेशन की जांच के दौरान चैनल हटा दिया गया.</translation>
+        </message>
+        <message>
+            <source>Unknown radio action.</source>
+            <translation>अज्ञात रेडियो क्रिया.</translation>
+        </message>
+        <message>
+            <source>Could not load language: %1</source>
+            <translation>भाषा लोड नहीं की जा सकी: %1</translation>
+        </message>
+        <message>
+            <source>The %1 option is incompatible with --headless.</source>
+            <translation>%1 विकल्प --headless के साथ संगत नहीं है.</translation>
+        </message>
+        <message>
+            <source>Unexpected positional arguments. Use --help.</source>
+            <translation>अनपेक्षित स्थितीय तर्क. --help का उपयोग करें.</translation>
+        </message>
+        <message>
+            <source>--config / -f requires a non-empty path.</source>
+            <translation>--config / -f के लिए गैर-खाली पथ आवश्यक है.</translation>
+        </message>
+        <message>
+            <source>Choose --password or --password-file, not both.</source>
+            <translation>--password या --password-file में से एक चुनें, दोनों नहीं.</translation>
+        </message>
+        <message>
+            <source>Choose SQUADSPEAK_PASSWORD or SQUADSPEAK_PASSWORD_FILE, not both.</source>
+            <translation>SQUADSPEAK_PASSWORD या SQUADSPEAK_PASSWORD_FILE में से एक चुनें, दोनों नहीं.</translation>
+        </message>
+        <message>
+            <source>Choose password or passwordFile in one configuration layer, not both.</source>
+            <translation>एक कॉन्फ़िगरेशन स्तर में password या passwordFile में से एक चुनें, दोनों नहीं.</translation>
+        </message>
+        <message>
+            <source>passwordFile must be a non-empty path.</source>
+            <translation>passwordFile गैर-खाली पथ होना चाहिए.</translation>
+        </message>
+        <message>
+            <source>Password file could not be read or is too large.</source>
+            <translation>पासवर्ड फ़ाइल पढ़ी नहीं जा सकी या बहुत बड़ी है.</translation>
+        </message>
+        <message>
+            <source>Password file must contain at most 1024 UTF-8 bytes without control characters.</source>
+            <translation>पासवर्ड फ़ाइल में नियंत्रण वर्णों के बिना अधिकतम 1024 UTF-8 बाइट होनी चाहिए.</translation>
+        </message>
+        <message>
+            <source>Password must be a string of at most 1024 UTF-8 bytes without control characters.</source>
+            <translation>पासवर्ड नियंत्रण वर्णों के बिना अधिकतम 1024 UTF-8 बाइट की स्ट्रिंग होना चाहिए.</translation>
+        </message>
+        <message>
+            <source>settingsFile must be a non-empty path.</source>
+            <translation>settingsFile गैर-खाली पथ होना चाहिए.</translation>
+        </message>
+        <message>
+            <source>identityFile must be a non-empty path.</source>
+            <translation>identityFile गैर-खाली पथ होना चाहिए.</translation>
+        </message>
+        <message>
+            <source>The settings directory could not be created.</source>
+            <translation>सेटिंग निर्देशिका बनाई नहीं जा सकी.</translation>
+        </message>
+        <message>
+            <source>This SquadSpeak profile is already running or cannot be locked.</source>
+            <translation>यह SquadSpeak प्रोफाइल पहले से चल रही है या लॉक नहीं की जा सकती.</translation>
+        </message>
+        <message>
+            <source>Standard input could not be opened.</source>
+            <translation>मानक इनपुट खोला नहीं जा सका.</translation>
+        </message>
+        <message>
+            <source>Standard output could not be opened.</source>
+            <translation>मानक आउटपुट खोला नहीं जा सका.</translation>
+        </message>
+        <message>
+            <source>This identity file is already in use or cannot be locked.</source>
+            <translation>यह पहचान फ़ाइल पहले से उपयोग में है या लॉक नहीं की जा सकती.</translation>
+        </message>
+        <message>
+            <source>Invalid host configuration: %1</source>
+            <translation>अमान्य होस्ट कॉन्फ़िगरेशन: %1</translation>
+        </message>
+        <message>
+            <source>Radio channels could not be initialized.</source>
+            <translation>रेडियो चैनल प्रारंभ नहीं किए जा सके.</translation>
+        </message>
+        <message>
+            <source>Headless host could not start: %1</source>
+            <translation>हेडलेस होस्ट शुरू नहीं किया जा सका: %1</translation>
+        </message>
+        <message>
+            <source>Channel password could not be saved.</source>
+            <translation>चैनल पासवर्ड सहेजा नहीं जा सका.</translation>
+        </message>
+        <message>
+            <source>Invalid channel password: %1</source>
+            <translation>अमान्य चैनल पासवर्ड: %1</translation>
+        </message>
+        <message>
+            <source>Headless host could not initialize: %1</source>
+            <translation>हेडलेस होस्ट प्रारंभ नहीं किया जा सका: %1</translation>
+        </message>
+        <message>
+            <source>SquadSpeak headless could not start: %1</source>
+            <translation>SquadSpeak हेडलेस होस्ट शुरू नहीं किया जा सका: %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>समर्थक की कार्रवाई स्थिति, साइन-इन, रीफ्रेश, साइन-आउट या रद्द होनी चाहिए। status sign-in refresh sign-out cancel</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>एक सपोर्टर ऑपरेशन प्रगति पर है.</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>इस बिल्ड में सपोर्टर एक्सेस उपलब्ध नहीं है.</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>सेटिंग्स प्राथमिकता: तर्क &gt; पर्यावरण &gt; गुण &gt; सहेजे गए सर्वर मान।</translation>
+        </message>
+    </context>
+    <context>
+        <name>License</name>
+        <message>
+            <source>License storage is busy or unavailable.</source>
+            <translation>लाइसेंस संग्रहण व्यस्त या अनुपलब्ध है.</translation>
+        </message>
+        <message>
+            <source>License storage is unavailable.</source>
+            <translation>लाइसेंस भंडारण अनुपलब्ध है.</translation>
+        </message>
+        <message>
+            <source>Sign-in expired. Try again.</source>
+            <translation>साइन-इन समाप्त हो गया. पुनः प्रयास करें।</translation>
+        </message>
+        <message>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>GitHub साइन-इन अनुपलब्ध है. पुनः प्रयास करें।</translation>
+        </message>
+        <message>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>GitHub साइन-इन पूरा नहीं हुआ. पुनः प्रयास करें।</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>GitHub की जाँच नहीं की जा सकी. ऑफ़लाइन पहुंच अधिकतम सात दिनों तक चलती है।</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>GitHub के साथ फिर से साइन इन करें।</translation>
+        </message>
+    </context>
+    <context>
         <name>LocalChannel</name>
+        <message>
+            <source>Insufficient permissions.</source>
+            <translation>पर्याप्त अनुमतियाँ नहीं हैं।</translation>
+        </message>
+        <message>
+            <source>Blocked</source>
+            <translation>ब्लॉक किया गया</translation>
+        </message>
         <message>
             <source>Host is not responding. Reconnecting.</source>
             <translation>होस्ट जवाब नहीं दे रहा. फिर कनेक्ट हो रहा है.</translation>
@@ -1926,8 +2312,8 @@
             <translation>छवि ट्रांसफर में बहुत समय लगा.</translation>
         </message>
         <message>
-            <source>The channel is full. Text chat is still available.</source>
-            <translation>चैनल भरा हुआ है. टेक्स्ट चैट अभी भी उपलब्ध है.</translation>
+            <source>The host is busy. Try again shortly.</source>
+            <translation>होस्ट व्यस्त है। थोड़ी देर में फिर कोशिश करें।</translation>
         </message>
         <message>
             <source>All own channels use the device's shared port.</source>
@@ -2189,6 +2575,53 @@
             <source>Voice relay codec could not be configured.</source>
             <translation>वॉइस रिले कोडेक कॉन्फ़िगर नहीं किया जा सका।</translation>
         </message>
+        <message>
+            <source>Unsupported audio codec</source>
+            <translation>असमर्थित ऑडियो कोडेक</translation>
+        </message>
+        <message>
+            <source>Speaking is not allowed in this channel.</source>
+            <translation>इस चैनल में बोलने की अनुमति नहीं है।</translation>
+        </message>
+    </context>
+    <context>
+        <name>LocalLanguage</name>
+        <message>
+            <source>Translation (experimental)</source>
+            <translation>अनुवाद (प्रायोगिक)</translation>
+        </message>
+        <message>
+            <source>Translate messages</source>
+            <translation>संदेशों का अनुवाद करें</translation>
+        </message>
+        <message>
+            <source>Translated voice</source>
+            <translation>अनुवादित आवाज़</translation>
+        </message>
+        <message>
+            <source>Original audio</source>
+            <translation>मूल ऑडियो</translation>
+        </message>
+        <message>
+            <source>Original text</source>
+            <translation>मूल पाठ</translation>
+        </message>
+        <message>
+            <source>Prepare languages</source>
+            <translation>भाषाएँ तैयार करें</translation>
+        </message>
+        <message>
+            <source>Local language processing is unavailable.</source>
+            <translation>स्थानीय भाषा प्रसंस्करण उपलब्ध नहीं है।</translation>
+        </message>
+        <message>
+            <source>Language settings could not be read.</source>
+            <translation>भाषा सेटिंग पढ़ी नहीं जा सकीं।</translation>
+        </message>
+        <message>
+            <source>Language settings could not be saved.</source>
+            <translation>भाषा सेटिंग सहेजी नहीं जा सकीं।</translation>
+        </message>
     </context>
     <context>
         <name>PushToTalkKey</name>
@@ -2329,50 +2762,61 @@
         </message>
     </context>
     <context>
-        <name>RecordingPanel</name>
+        <name>ScreenPanel</name>
         <message>
-            <source>Stop</source>
-            <translation>रोकें</translation>
+            <source>Video paused</source>
+            <translation>वीडियो रुका हुआ है</translation>
         </message>
         <message>
-            <source>Start</source>
-            <translation>शुरू करें</translation>
+            <source>Stream ended</source>
+            <translation>स्ट्रीम समाप्त</translation>
         </message>
         <message>
-            <source>Saved on this device only. Nothing is uploaded.</source>
-            <translation>केवल इस डिवाइस पर सहेजा गया. कुछ भी अपलोड नहीं होता.</translation>
+            <source>Connecting</source>
+            <translation>कनेक्ट हो रहा है</translation>
         </message>
         <message>
-            <source>Keep this take or record it again.</source>
-            <translation>इस रिकॉर्डिंग को रखें या फिर से रिकॉर्ड करें.</translation>
+            <source>Open screen stream</source>
+            <translation>स्क्रीन स्ट्रीम खोलें</translation>
         </message>
         <message>
-            <source>Record again</source>
-            <translation>फिर से रिकॉर्ड करें</translation>
+            <source>Screen stream</source>
+            <translation>स्क्रीन स्ट्रीम</translation>
         </message>
         <message>
-            <source>Use recording</source>
-            <translation>रिकॉर्डिंग का उपयोग करें</translation>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
+        </message>
+    </context>
+    <context>
+        <name>ScreenShare</name>
+        <message>
+            <source>Allow screen recording in system settings.</source>
+            <translation>सिस्टम सेटिंग में स्क्रीन रिकॉर्डिंग की अनुमति दो।</translation>
         </message>
         <message>
-            <source>Recording progress</source>
-            <translation>रिकॉर्डिंग की प्रगति</translation>
+            <source>The shared screen was removed. Select a source to start again.</source>
+            <translation>साझा की गई स्क्रीन हटाई गई है. फिर से शुरू करने के लिए कोई स्रोत चुनें.</translation>
         </message>
         <message>
-            <source>Step %1 of %2</source>
-            <translation>चरण %1 / %2</translation>
+            <source>The shared window was closed. Select a source to start again.</source>
+            <translation>साझा की गई विंडो बंद हो गई है. फिर से शुरू करने के लिए कोई स्रोत चुनें.</translation>
         </message>
         <message>
-            <source>Open recordings</source>
-            <translation>रिकॉर्डिंग खोलें</translation>
+            <source>The selected screen is no longer available.</source>
+            <translation>चयनित स्क्रीन अब उपलब्ध नहीं है.</translation>
         </message>
         <message>
-            <source>Reset test</source>
-            <translation>परीक्षण रीसेट करें</translation>
+            <source>The selected window is no longer available.</source>
+            <translation>चयनित विंडो अब उपलब्ध नहीं है.</translation>
         </message>
         <message>
-            <source>%1 s remaining / %2 dBFS</source>
-            <translation>%1 सेकंड शेष / %2 dBFS</translation>
+            <source>The selected source exceeds the capture size limit.</source>
+            <translation>चयनित स्रोत कैप्चर आकार सीमा से बड़ा है.</translation>
+        </message>
+        <message>
+            <source>Close a video view before opening another stream.</source>
+            <translation>दूसरी स्ट्रीम खोलने से पहले एक वीडियो दृश्य बंद करें.</translation>
         </message>
     </context>
     <context>
@@ -2449,10 +2893,6 @@
             <translation>सिग्नल एकत्र किया जा रहा है...</translation>
         </message>
         <message>
-            <source>Dashed curve: configured gain and frequency cuts, using the right dB scale. Noise reduction and voice activation are not part of this curve.</source>
-            <translation>डैश वाला वक्र: दाईं ओर के dB पैमाने का उपयोग करते हुए कॉन्फ़िगर किया गया गेन और आवृत्ति कट. शोर में कमी और वॉइस सक्रियण इस वक्र का हिस्सा नहीं हैं.</translation>
-        </message>
-        <message>
             <source>Microphone preview is not running</source>
             <translation>माइक्रोफोन प्रीव्यू नहीं चल रहा है</translation>
         </message>
@@ -2463,303 +2903,6 @@
         <message>
             <source>Peak: %1</source>
             <translation>शिखर: %1</translation>
-        </message>
-    </context>
-    <context>
-        <name>Tray</name>
-        <message>
-            <source>Quit</source>
-            <translation>बाहर निकलें</translation>
-        </message>
-        <message>
-            <source>SquadSpeak - speaking</source>
-            <translation>SquadSpeak - बोल रहा है</translation>
-        </message>
-        <message>
-            <source>Settings</source>
-            <translation>सेटिंग</translation>
-        </message>
-        <message>
-            <source>Channels</source>
-            <translation>चैनल</translation>
-        </message>
-        <message>
-            <source>New image</source>
-            <translation>नई छवि</translation>
-        </message>
-    </context>
-    <context>
-        <name>VoiceAvatar</name>
-        <message>
-            <source>Muted</source>
-            <translation>म्यूट</translation>
-        </message>
-        <message>
-            <source>Sleeping</source>
-            <translation>सो रहा है</translation>
-        </message>
-        <message>
-            <source>Offline</source>
-            <translation>ऑफलाइन</translation>
-        </message>
-        <message>
-            <source>Speaking</source>
-            <translation>बोल रहा है</translation>
-        </message>
-        <message>
-            <source>Unavailable</source>
-            <translation>उपलब्ध नहीं</translation>
-        </message>
-        <message>
-            <source>Listening</source>
-            <translation>सुन रहा है</translation>
-        </message>
-        <message>
-            <source>Deafened</source>
-            <translation>स्पीकर बंद</translation>
-        </message>
-    </context>
-    <context>
-        <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>उपलब्ध नहीं - ऑडियो सेटिंग या टोन टेस्ट</translation>
-        </message>
-        <message>
-            <source>Microphone muted</source>
-            <translation>माइक्रोफोन म्यूट है</translation>
-        </message>
-        <message>
-            <source>Push-to-talk held</source>
-            <translation>पुश-टू-टॉक दबा हुआ है</translation>
-        </message>
-        <message>
-            <source>Ready - push-to-talk released</source>
-            <translation>तैयार - पुश-टू-टॉक छोड़ दिया गया</translation>
-        </message>
-        <message>
-            <source>Microphone unmuted</source>
-            <translation>माइक्रोफोन अनम्यूट है</translation>
-        </message>
-        <message>
-            <source>Settings could not be saved: %1</source>
-            <translation>सेटिंग सहेजी नहीं जा सकी: %1</translation>
-        </message>
-        <message>
-            <source>The push-to-talk sequence cannot be incremented further.</source>
-            <translation>पुश-टू-टॉक अनुक्रम को इससे आगे नहीं बढ़ाया जा सकता.</translation>
-        </message>
-        <message>
-            <source>Choose System, Light or Dark.</source>
-            <translation>सिस्टम, हल्का या गहरा चुनें.</translation>
-        </message>
-        <message>
-            <source>Choose a colour palette from the list.</source>
-            <translation>सूची से कोई रंग पैलेट चुनें.</translation>
-        </message>
-        <message>
-            <source>Choose an available avatar.</source>
-            <translation>उपलब्ध अवतार चुनें.</translation>
-        </message>
-        <message>
-            <source>Invalid push-to-talk binding.</source>
-            <translation>अमान्य पुश-टू-टॉक बाइंडिंग.</translation>
-        </message>
-        <message>
-            <source>Release the held push-to-talk key first.</source>
-            <translation>पहले दबा हुआ पुश-टू-टॉक कुंजी छोड़ें.</translation>
-        </message>
-        <message>
-            <source>Choose a language from the list.</source>
-            <translation>सूची से कोई भाषा चुनें.</translation>
-        </message>
-        <message>
-            <source>This avatar requires Supporter.</source>
-            <translation>इस अवतार के लिए Supporter चाहिए.</translation>
-        </message>
-        <message>
-            <source>The name must contain 1 to 64 characters.</source>
-            <translation>नाम में 1 से 64 अक्षर होने चाहिए.</translation>
-        </message>
-        <message>
-            <source>The name may not contain control characters or line breaks.</source>
-            <translation>नाम में कंट्रोल कैरेक्टर या लाइन ब्रेक नहीं हो सकते.</translation>
-        </message>
-        <message>
-            <source>Session settings could not be read.</source>
-            <translation>सत्र की सेटिंग पढ़ी नहीं जा सकीं.</translation>
-        </message>
-        <message>
-            <source>Saved setting is invalid: %1</source>
-            <translation>सहेजी गई सेटिंग अमान्य है: %1</translation>
-        </message>
-    </context>
-    <context>
-        <name>License</name>
-        <message>
-            <source>License storage is busy or unavailable.</source>
-            <translation>लाइसेंस संग्रहण व्यस्त या अनुपलब्ध है.</translation>
-        </message>
-        <message>
-            <source>License storage is unavailable.</source>
-            <translation>लाइसेंस भंडारण अनुपलब्ध है.</translation>
-        </message>
-        <message>
-            <source>Sign-in expired. Try again.</source>
-            <translation>साइन-इन समाप्त हो गया. पुनः प्रयास करें।</translation>
-        </message>
-        <message>
-            <source>GitHub sign-in is unavailable. Try again.</source>
-            <translation>GitHub साइन-इन अनुपलब्ध है. पुनः प्रयास करें।</translation>
-        </message>
-        <message>
-            <source>GitHub sign-in was not completed. Try again.</source>
-            <translation>GitHub साइन-इन पूरा नहीं हुआ. पुनः प्रयास करें।</translation>
-        </message>
-        <message>
-            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
-            <translation>GitHub की जाँच नहीं की जा सकी. ऑफ़लाइन पहुंच अधिकतम सात दिनों तक चलती है।</translation>
-        </message>
-        <message>
-            <source>Sign in with GitHub again.</source>
-            <translation>GitHub के साथ फिर से साइन इन करें।</translation>
-        </message>
-    </context>
-    <context>
-        <name>ScreenShare</name>
-        <message>
-            <source>The shared screen was removed. Select a source to start again.</source>
-            <translation>साझा की गई स्क्रीन हटाई गई है. फिर से शुरू करने के लिए कोई स्रोत चुनें.</translation>
-        </message>
-        <message>
-            <source>The shared window was closed. Select a source to start again.</source>
-            <translation>साझा की गई विंडो बंद हो गई है. फिर से शुरू करने के लिए कोई स्रोत चुनें.</translation>
-        </message>
-        <message>
-            <source>The selected screen is no longer available.</source>
-            <translation>चयनित स्क्रीन अब उपलब्ध नहीं है.</translation>
-        </message>
-        <message>
-            <source>The selected window is no longer available.</source>
-            <translation>चयनित विंडो अब उपलब्ध नहीं है.</translation>
-        </message>
-        <message>
-            <source>The selected source exceeds the capture size limit.</source>
-            <translation>चयनित स्रोत कैप्चर आकार सीमा से बड़ा है.</translation>
-        </message>
-        <message>
-            <source>Close a video view before opening another stream.</source>
-            <translation>दूसरी स्ट्रीम खोलने से पहले एक वीडियो दृश्य बंद करें.</translation>
-        </message>
-    </context>
-    <context>
-        <name>ScreenPanel</name>
-        <message>
-            <source>Media capacity reached</source>
-            <translation>मीडिया क्षमता पूरी हो गई</translation>
-        </message>
-        <message>
-            <source>Video paused</source>
-            <translation>वीडियो रुका हुआ है</translation>
-        </message>
-        <message>
-            <source>Stream ended</source>
-            <translation>स्ट्रीम समाप्त</translation>
-        </message>
-        <message>
-            <source>Connecting</source>
-            <translation>कनेक्ट हो रहा है</translation>
-        </message>
-        <message>
-            <source>Open screen stream</source>
-            <translation>स्क्रीन स्ट्रीम खोलें</translation>
-        </message>
-        <message>
-            <source>Screen stream</source>
-            <translation>स्क्रीन स्ट्रीम</translation>
-        </message>
-        <message>
-            <source>%1 kbit/s</source>
-            <translation>%1 kbit/s</translation>
-        </message>
-    </context>
-    <context>
-        <name>VideoCodec</name>
-        <message>
-            <source>Video codec: %1</source>
-            <translation>वीडियो कोडेक: %1</translation>
-        </message>
-        <message>
-            <source>Video codec ABI does not match its headers.</source>
-            <translation>वीडियो कोडेक का ABI उसके हेडर से मेल नहीं खाता.</translation>
-        </message>
-        <message>
-            <source>Video buffers could not be allocated.</source>
-            <translation>वीडियो बफ़र आवंटित नहीं किए जा सके.</translation>
-        </message>
-        <message>
-            <source>Invalid video quality tier.</source>
-            <translation>वीडियो गुणवत्ता का स्तर अमान्य है.</translation>
-        </message>
-        <message>
-            <source>The screen source exceeds the supported capture size.</source>
-            <translation>स्क्रीन स्रोत समर्थित कैप्चर आकार से बड़ा है.</translation>
-        </message>
-        <message>
-            <source>The screen source is too narrow.</source>
-            <translation>स्क्रीन स्रोत बहुत संकरा है.</translation>
-        </message>
-        <message>
-            <source>The video encoder could not be allocated.</source>
-            <translation>वीडियो एनकोडर आवंटित नहीं किया जा सका.</translation>
-        </message>
-        <message>
-            <source>No supported video encoder is available.</source>
-            <translation>कोई समर्थित वीडियो एनकोडर उपलब्ध नहीं है.</translation>
-        </message>
-        <message>
-            <source>Video encoder configuration is too large.</source>
-            <translation>वीडियो एनकोडर का कॉन्फ़िगरेशन बहुत बड़ा है.</translation>
-        </message>
-        <message>
-            <source>Video scaling could not be initialized.</source>
-            <translation>वीडियो स्केलिंग शुरू नहीं की जा सकी.</translation>
-        </message>
-        <message>
-            <source>The encoder returned an empty video packet.</source>
-            <translation>एनकोडर ने खाली वीडियो पैकेट लौटाया.</translation>
-        </message>
-        <message>
-            <source>Invalid video frame format.</source>
-            <translation>वीडियो फ़्रेम का प्रारूप अमान्य है.</translation>
-        </message>
-        <message>
-            <source>Invalid video decoder configuration.</source>
-            <translation>वीडियो डिकोडर का कॉन्फ़िगरेशन अमान्य है.</translation>
-        </message>
-        <message>
-            <source>This video codec cannot be decoded.</source>
-            <translation>इस वीडियो कोडेक को डिकोड नहीं किया जा सकता.</translation>
-        </message>
-        <message>
-            <source>Video decoder could not be allocated.</source>
-            <translation>वीडियो डिकोडर आवंटित नहीं किया जा सका.</translation>
-        </message>
-        <message>
-            <source>Video decoder configuration could not be allocated.</source>
-            <translation>वीडियो डिकोडर का कॉन्फ़िगरेशन आवंटित नहीं किया जा सका.</translation>
-        </message>
-        <message>
-            <source>Decoded dimensions do not match the screen stream.</source>
-            <translation>डिकोड किए गए आयाम स्क्रीन स्ट्रीम से मेल नहीं खाते.</translation>
-        </message>
-        <message>
-            <source>Decoded image could not be allocated.</source>
-            <translation>डिकोड की गई छवि आवंटित नहीं की जा सकी.</translation>
-        </message>
-        <message>
-            <source>Video color conversion could not be initialized.</source>
-            <translation>वीडियो का रंग रूपांतरण शुरू नहीं किया जा सका.</translation>
         </message>
     </context>
     <context>
@@ -2877,359 +3020,208 @@
             <translation>पासवर्ड सत्यापित नहीं किया जा सका।</translation>
         </message>
     </context>
-
     <context>
-        <name>Headless</name>
+        <name>Tray</name>
         <message>
-            <source>Command failed.</source>
-            <translation>कमांड विफल हुआ.</translation>
+            <source>Quit</source>
+            <translation>बाहर निकलें</translation>
         </message>
         <message>
-            <source>%1 must be an integer.</source>
-            <translation>%1 पूर्णांक होना चाहिए.</translation>
+            <source>SquadSpeak - speaking</source>
+            <translation>SquadSpeak - बोल रहा है</translation>
         </message>
         <message>
-            <source>Requests must be on/off or true/false.</source>
-            <translation>अनुरोध on/off या true/false होने चाहिए.</translation>
+            <source>Settings</source>
+            <translation>सेटिंग</translation>
         </message>
         <message>
-            <source>Unknown host property: %1</source>
-            <translation>अज्ञात होस्ट गुण: %1</translation>
+            <source>Channels</source>
+            <translation>चैनल</translation>
         </message>
         <message>
-            <source>Run without GUI, microphone capture, or local audio output.</source>
-            <translation>ग्राफिकल इंटरफेस, माइक्रोफोन कैप्चर या स्थानीय ऑडियो आउटपुट के बिना चलाएं.</translation>
-        </message>
-        <message>
-            <source>Server storage prefix. Personal/audio/GUI profiles are not loaded.</source>
-            <translation>सर्वर स्टोरेज प्रीफिक्स. व्यक्तिगत, ऑडियो और ग्राफिकल प्रोफाइल लोड नहीं किए जाते.</translation>
-        </message>
-        <message>
-            <source>Optional private identity file instead of the OS credential store (Linux/macOS). Parent directory must exist and belong to this account.</source>
-            <translation>ऑपरेटिंग सिस्टम क्रेडेंशियल स्टोर के बजाय वैकल्पिक निजी पहचान फ़ाइल (Linux/macOS). पैरेंट निर्देशिका मौजूद होनी चाहिए और इस खाते की होनी चाहिए.</translation>
-        </message>
-        <message>
-            <source>UTF-8 key=value properties or JSON host preset. Default: application.properties, then config/application.properties beside the app.</source>
-            <translation>UTF-8 key=value गुण या JSON होस्ट प्रीसेट. डिफ़ॉल्ट: application.properties, फिर ऐप के पास config/application.properties.</translation>
-        </message>
-        <message>
-            <source>Channel display name.</source>
-            <translation>चैनल का प्रदर्शित नाम.</translation>
-        </message>
-        <message>
-            <source>System and radio bot display name.</source>
-            <translation>सिस्टम और रेडियो बॉट का प्रदर्शित नाम.</translation>
-        </message>
-        <message>
-            <source>TCP service port (1-65535).</source>
-            <translation>TCP सेवा पोर्ट (1-65535).</translation>
-        </message>
-        <message>
-            <source>Headless admission is always on; only 'on' or 'true' is accepted.</source>
-            <translation>हेडलेस प्रवेश हमेशा चालू है; केवल 'on' या 'true' स्वीकार किया जाता है.</translation>
-        </message>
-        <message>
-            <source>Preapprove a device ID; repeat for several devices. Existing bans remain.</source>
-            <translation>डिवाइस ID को पहले से अनुमति दें; कई डिवाइसों के लिए दोहराएं. मौजूदा प्रतिबंध बने रहते हैं.</translation>
-        </message>
-        <message>
-            <source>Block a device ID; repeat for several devices.</source>
-            <translation>डिवाइस ID को ब्लॉक करें; कई डिवाइसों के लिए दोहराएं.</translation>
-        </message>
-        <message>
-            <source>Read a UTF-8 channel password from a file before listening. An empty file removes it.</source>
-            <translation>सुनना शुरू करने से पहले UTF-8 चैनल पासवर्ड फ़ाइल से पढ़ें. खाली फ़ाइल इसे हटा देती है.</translation>
-        </message>
-        <message>
-            <source>Channel password. Empty removes it; environment or config avoids process-list exposure.</source>
-            <translation>चैनल पासवर्ड. खाली मान इसे हटाता है; वातावरण या कॉन्फ़िगरेशन इसे प्रोसेस सूची में दिखने से रोकता है.</translation>
-        </message>
-        <message>
-            <source>SquadSpeak headless local channel host</source>
-            <translation>SquadSpeak हेडलेस स्थानीय चैनल होस्ट</translation>
-        </message>
-        <message>
-            <source>Environment variables (SQUADSPEAK_ prefix):</source>
-            <translation>वातावरण चर (SQUADSPEAK_ प्रीफिक्स):</translation>
-        </message>
-        <message>
-            <source>Host configuration could not be read or exceeds 1 MiB.</source>
-            <translation>होस्ट कॉन्फ़िगरेशन पढ़ा नहीं जा सका या 1 MiB से अधिक है.</translation>
-        </message>
-        <message>
-            <source>Host configuration must be UTF-8.</source>
-            <translation>होस्ट कॉन्फ़िगरेशन UTF-8 होना चाहिए.</translation>
-        </message>
-        <message>
-            <source>Host preset must be a JSON object.</source>
-            <translation>होस्ट प्रीसेट JSON ऑब्जेक्ट होना चाहिए.</translation>
-        </message>
-        <message>
-            <source>Property line %1 must use key=value.</source>
-            <translation>गुण पंक्ति %1 में key=value का उपयोग होना चाहिए.</translation>
-        </message>
-        <message>
-            <source>Property line %1: %2</source>
-            <translation>गुण पंक्ति %1: %2</translation>
-        </message>
-        <message>
-            <source>Standard input has no file descriptor.</source>
-            <translation>मानक इनपुट में फ़ाइल डिस्क्रिप्टर नहीं है.</translation>
-        </message>
-        <message>
-            <source>Standard input could not be inspected.</source>
-            <translation>मानक इनपुट का निरीक्षण नहीं किया जा सका.</translation>
-        </message>
-        <message>
-            <source>Could not write the command response: %1</source>
-            <translation>कमांड प्रतिक्रिया लिखी नहीं जा सकी: %1</translation>
-        </message>
-        <message>
-            <source>Standard input could not be read: %1</source>
-            <translation>मानक इनपुट पढ़ा नहीं जा सका: %1</translation>
-        </message>
-        <message>
-            <source>Input line exceeds 65536 bytes.</source>
-            <translation>इनपुट पंक्ति 65536 बाइट से अधिक है.</translation>
-        </message>
-        <message>
-            <source>Each input line must be a JSON object.</source>
-            <translation>हर इनपुट पंक्ति JSON ऑब्जेक्ट होनी चाहिए.</translation>
-        </message>
-        <message>
-            <source>Input ended before a complete JSON line.</source>
-            <translation>पूर्ण JSON पंक्ति से पहले इनपुट समाप्त हो गया.</translation>
-        </message>
-        <message>
-            <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
-            <translation>status, configure, password, admission, history, chat और radio कमांड के लिए वैकल्पिक अपने चैनल ID; डिफ़ॉल्ट प्राथमिक चैनल है.</translation>
-        </message>
-        <message>
-            <source>Channel action must be list, add or remove.</source>
-            <translation>चैनल क्रिया list, add या remove होनी चाहिए.</translation>
-        </message>
-        <message>
-            <source>Removing an own channel deletes its history, images, permissions and radio settings. Set confirmed=true to proceed.</source>
-            <translation>अपने चैनल को हटाने से उसका इतिहास, चित्र, अनुमतियां और रेडियो सेटिंग हट जाती हैं. जारी रखने के लिए confirmed=true सेट करें.</translation>
-        </message>
-        <message>
-            <source>id must identify an additional own channel.</source>
-            <translation>id को अतिरिक्त अपने चैनल की पहचान करनी चाहिए.</translation>
-        </message>
-        <message>
-            <source>The additional own channel could not be removed: %1</source>
-            <translation>अतिरिक्त अपना चैनल हटाया नहीं जा सका: %1</translation>
-        </message>
-        <message>
-            <source>channelId must identify an own channel.</source>
-            <translation>channelId को अपने चैनल की पहचान करनी चाहिए.</translation>
-        </message>
-        <message>
-            <source>values must be a host settings object.</source>
-            <translation>values होस्ट सेटिंग ऑब्जेक्ट होना चाहिए.</translation>
-        </message>
-        <message>
-            <source>Headless admission is always enabled for non-banned devices; requests off is not supported.</source>
-            <translation>गैर-ब्लॉक डिवाइसों के लिए हेडलेस प्रवेश हमेशा सक्षम है; requests off समर्थित नहीं है.</translation>
-        </message>
-        <message>
-            <source>value must be a password of at most 1024 UTF-8 bytes without control characters; an empty string removes it.</source>
-            <translation>value अधिकतम 1024 UTF-8 बाइट का, नियंत्रण वर्णों से रहित पासवर्ड होना चाहिए; खाली स्ट्रिंग इसे हटा देती है.</translation>
-        </message>
-        <message>
-            <source>The channel is not ready or a password change is in progress.</source>
-            <translation>चैनल तैयार नहीं है या पासवर्ड परिवर्तन चल रहा है.</translation>
-        </message>
-        <message>
-            <source>The channel was removed while saving the password.</source>
-            <translation>पासवर्ड सहेजते समय चैनल हटा दिया गया.</translation>
-        </message>
-        <message>
-            <source>id is required.</source>
-            <translation>id आवश्यक है.</translation>
-        </message>
-        <message>
-            <source>text must be a valid non-empty chat message.</source>
-            <translation>text मान्य गैर-खाली चैट संदेश होना चाहिए.</translation>
-        </message>
-        <message>
-            <source>The local channel is not ready.</source>
-            <translation>स्थानीय चैनल तैयार नहीं है.</translation>
-        </message>
-        <message>
-            <source>The channel's radio is unavailable.</source>
-            <translation>चैनल रेडियो उपलब्ध नहीं है.</translation>
-        </message>
-        <message>
-            <source>Unknown command. Use help.</source>
-            <translation>अज्ञात कमांड. help का उपयोग करें.</translation>
-        </message>
-        <message>
-            <source>search requires a query, non-negative offset and limit from 1 to 128.</source>
-            <translation>search के लिए query, गैर-ऋणात्मक offset और 1 से 128 के बीच limit आवश्यक है.</translation>
-        </message>
-        <message>
-            <source>add creates an id; update requires an existing id.</source>
-            <translation>add एक id बनाता है; update के लिए मौजूदा id आवश्यक है.</translation>
-        </message>
-        <message>
-            <source>A station is already being checked.</source>
-            <translation>स्टेशन की पहले से जांच हो रही है.</translation>
-        </message>
-        <message>
-            <source>The channel was removed while checking the station.</source>
-            <translation>स्टेशन की जांच के दौरान चैनल हटा दिया गया.</translation>
-        </message>
-        <message>
-            <source>Unknown radio action.</source>
-            <translation>अज्ञात रेडियो क्रिया.</translation>
-        </message>
-        <message>
-            <source>Could not load language: %1</source>
-            <translation>भाषा लोड नहीं की जा सकी: %1</translation>
-        </message>
-        <message>
-            <source>The %1 option is incompatible with --headless.</source>
-            <translation>%1 विकल्प --headless के साथ संगत नहीं है.</translation>
-        </message>
-        <message>
-            <source>Unexpected positional arguments. Use --help.</source>
-            <translation>अनपेक्षित स्थितीय तर्क. --help का उपयोग करें.</translation>
-        </message>
-        <message>
-            <source>--config / -f requires a non-empty path.</source>
-            <translation>--config / -f के लिए गैर-खाली पथ आवश्यक है.</translation>
-        </message>
-        <message>
-            <source>Choose --password or --password-file, not both.</source>
-            <translation>--password या --password-file में से एक चुनें, दोनों नहीं.</translation>
-        </message>
-        <message>
-            <source>Choose SQUADSPEAK_PASSWORD or SQUADSPEAK_PASSWORD_FILE, not both.</source>
-            <translation>SQUADSPEAK_PASSWORD या SQUADSPEAK_PASSWORD_FILE में से एक चुनें, दोनों नहीं.</translation>
-        </message>
-        <message>
-            <source>Choose password or passwordFile in one configuration layer, not both.</source>
-            <translation>एक कॉन्फ़िगरेशन स्तर में password या passwordFile में से एक चुनें, दोनों नहीं.</translation>
-        </message>
-        <message>
-            <source>passwordFile must be a non-empty path.</source>
-            <translation>passwordFile गैर-खाली पथ होना चाहिए.</translation>
-        </message>
-        <message>
-            <source>Password file could not be read or is too large.</source>
-            <translation>पासवर्ड फ़ाइल पढ़ी नहीं जा सकी या बहुत बड़ी है.</translation>
-        </message>
-        <message>
-            <source>Password file must contain at most 1024 UTF-8 bytes without control characters.</source>
-            <translation>पासवर्ड फ़ाइल में नियंत्रण वर्णों के बिना अधिकतम 1024 UTF-8 बाइट होनी चाहिए.</translation>
-        </message>
-        <message>
-            <source>Password must be a string of at most 1024 UTF-8 bytes without control characters.</source>
-            <translation>पासवर्ड नियंत्रण वर्णों के बिना अधिकतम 1024 UTF-8 बाइट की स्ट्रिंग होना चाहिए.</translation>
-        </message>
-        <message>
-            <source>settingsFile must be a non-empty path.</source>
-            <translation>settingsFile गैर-खाली पथ होना चाहिए.</translation>
-        </message>
-        <message>
-            <source>identityFile must be a non-empty path.</source>
-            <translation>identityFile गैर-खाली पथ होना चाहिए.</translation>
-        </message>
-        <message>
-            <source>The settings directory could not be created.</source>
-            <translation>सेटिंग निर्देशिका बनाई नहीं जा सकी.</translation>
-        </message>
-        <message>
-            <source>This SquadSpeak profile is already running or cannot be locked.</source>
-            <translation>यह SquadSpeak प्रोफाइल पहले से चल रही है या लॉक नहीं की जा सकती.</translation>
-        </message>
-        <message>
-            <source>Standard input could not be opened.</source>
-            <translation>मानक इनपुट खोला नहीं जा सका.</translation>
-        </message>
-        <message>
-            <source>Standard output could not be opened.</source>
-            <translation>मानक आउटपुट खोला नहीं जा सका.</translation>
-        </message>
-        <message>
-            <source>This identity file is already in use or cannot be locked.</source>
-            <translation>यह पहचान फ़ाइल पहले से उपयोग में है या लॉक नहीं की जा सकती.</translation>
-        </message>
-        <message>
-            <source>Invalid host configuration: %1</source>
-            <translation>अमान्य होस्ट कॉन्फ़िगरेशन: %1</translation>
-        </message>
-        <message>
-            <source>Radio channels could not be initialized.</source>
-            <translation>रेडियो चैनल प्रारंभ नहीं किए जा सके.</translation>
-        </message>
-        <message>
-            <source>Headless host could not start: %1</source>
-            <translation>हेडलेस होस्ट शुरू नहीं किया जा सका: %1</translation>
-        </message>
-        <message>
-            <source>Channel password could not be saved.</source>
-            <translation>चैनल पासवर्ड सहेजा नहीं जा सका.</translation>
-        </message>
-        <message>
-            <source>Invalid channel password: %1</source>
-            <translation>अमान्य चैनल पासवर्ड: %1</translation>
-        </message>
-        <message>
-            <source>Headless host could not initialize: %1</source>
-            <translation>हेडलेस होस्ट प्रारंभ नहीं किया जा सका: %1</translation>
-        </message>
-        <message>
-            <source>SquadSpeak headless could not start: %1</source>
-            <translation>SquadSpeak हेडलेस होस्ट शुरू नहीं किया जा सका: %1</translation>
-        </message>
-        <message>
-            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
-            <translation>समर्थक की कार्रवाई स्थिति, साइन-इन, रीफ्रेश, साइन-आउट या रद्द होनी चाहिए। status sign-in refresh sign-out cancel</translation>
-        </message>
-        <message>
-            <source>A Supporter operation is in progress.</source>
-            <translation>एक सपोर्टर ऑपरेशन प्रगति पर है.</translation>
-        </message>
-        <message>
-            <source>Supporter access is unavailable in this build.</source>
-            <translation>इस बिल्ड में सपोर्टर एक्सेस उपलब्ध नहीं है.</translation>
-        </message>
-        <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>सेटिंग्स प्राथमिकता: तर्क &gt; पर्यावरण &gt; गुण &gt; सहेजे गए सर्वर मान।</translation>
+            <source>New image</source>
+            <translation>नई छवि</translation>
         </message>
     </context>
     <context>
-        <name>Desktop</name>
+        <name>VideoCodec</name>
         <message>
-            <source>Open settings at startup.</source>
-            <translation>शुरू होने पर सेटिंग खोलें.</translation>
+            <source>Video codec: %1</source>
+            <translation>वीडियो कोडेक: %1</translation>
         </message>
         <message>
-            <source>Open guided local test recording without starting network services.</source>
-            <translation>नेटवर्क सेवाएँ शुरू किए बिना निर्देशों वाली स्थानीय परीक्षण रिकॉर्डिंग खोलें.</translation>
+            <source>Video codec ABI does not match its headers.</source>
+            <translation>वीडियो कोडेक का ABI उसके हेडर से मेल नहीं खाता.</translation>
         </message>
         <message>
-            <source>Alternative file for audio profiles.</source>
-            <translation>ऑडियो प्रोफ़ाइल के लिए वैकल्पिक फ़ाइल.</translation>
+            <source>Video buffers could not be allocated.</source>
+            <translation>वीडियो बफ़र आवंटित नहीं किए जा सके.</translation>
         </message>
         <message>
-            <source>Load the interface without microphone capture and exit after one second.</source>
-            <translation>माइक्रोफ़ोन रिकॉर्डिंग के बिना इंटरफ़ेस लोड करें और एक सेकंड बाद बंद करें.</translation>
+            <source>Invalid video quality tier.</source>
+            <translation>वीडियो गुणवत्ता का स्तर अमान्य है.</translation>
         </message>
         <message>
-            <source>Save an image of the app window during the UI test.</source>
-            <translation>इंटरफ़ेस परीक्षण के दौरान ऐप की विंडो की तस्वीर सहेजें.</translation>
+            <source>The screen source exceeds the supported capture size.</source>
+            <translation>स्क्रीन स्रोत समर्थित कैप्चर आकार से बड़ा है.</translation>
         </message>
         <message>
-            <source>The window image could not be saved.</source>
-            <translation>विंडो की तस्वीर सहेजी नहीं जा सकी.</translation>
+            <source>The screen source is too narrow.</source>
+            <translation>स्क्रीन स्रोत बहुत संकरा है.</translation>
         </message>
         <message>
-            <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
-            <translation>सिस्टम ट्रे उपलब्ध नहीं है; ऐप विंडो में खुला रहेगा.</translation>
+            <source>The video encoder could not be allocated.</source>
+            <translation>वीडियो एनकोडर आवंटित नहीं किया जा सका.</translation>
+        </message>
+        <message>
+            <source>No supported video encoder is available.</source>
+            <translation>कोई समर्थित वीडियो एनकोडर उपलब्ध नहीं है.</translation>
+        </message>
+        <message>
+            <source>Video encoder configuration is too large.</source>
+            <translation>वीडियो एनकोडर का कॉन्फ़िगरेशन बहुत बड़ा है.</translation>
+        </message>
+        <message>
+            <source>Video scaling could not be initialized.</source>
+            <translation>वीडियो स्केलिंग शुरू नहीं की जा सकी.</translation>
+        </message>
+        <message>
+            <source>The encoder returned an empty video packet.</source>
+            <translation>एनकोडर ने खाली वीडियो पैकेट लौटाया.</translation>
+        </message>
+        <message>
+            <source>Invalid video frame format.</source>
+            <translation>वीडियो फ़्रेम का प्रारूप अमान्य है.</translation>
+        </message>
+        <message>
+            <source>Invalid video decoder configuration.</source>
+            <translation>वीडियो डिकोडर का कॉन्फ़िगरेशन अमान्य है.</translation>
+        </message>
+        <message>
+            <source>This video codec cannot be decoded.</source>
+            <translation>इस वीडियो कोडेक को डिकोड नहीं किया जा सकता.</translation>
+        </message>
+        <message>
+            <source>Video decoder could not be allocated.</source>
+            <translation>वीडियो डिकोडर आवंटित नहीं किया जा सका.</translation>
+        </message>
+        <message>
+            <source>Video decoder configuration could not be allocated.</source>
+            <translation>वीडियो डिकोडर का कॉन्फ़िगरेशन आवंटित नहीं किया जा सका.</translation>
+        </message>
+        <message>
+            <source>Decoded dimensions do not match the screen stream.</source>
+            <translation>डिकोड किए गए आयाम स्क्रीन स्ट्रीम से मेल नहीं खाते.</translation>
+        </message>
+        <message>
+            <source>Decoded image could not be allocated.</source>
+            <translation>डिकोड की गई छवि आवंटित नहीं की जा सकी.</translation>
+        </message>
+        <message>
+            <source>Video color conversion could not be initialized.</source>
+            <translation>वीडियो का रंग रूपांतरण शुरू नहीं किया जा सका.</translation>
+        </message>
+    </context>
+    <context>
+        <name>VoiceAvatar</name>
+        <message>
+            <source>Muted</source>
+            <translation>म्यूट</translation>
+        </message>
+        <message>
+            <source>Sleeping</source>
+            <translation>सो रहा है</translation>
+        </message>
+        <message>
+            <source>Offline</source>
+            <translation>ऑफलाइन</translation>
+        </message>
+        <message>
+            <source>Speaking</source>
+            <translation>बोल रहा है</translation>
+        </message>
+        <message>
+            <source>Unavailable</source>
+            <translation>उपलब्ध नहीं</translation>
+        </message>
+        <message>
+            <source>Listening</source>
+            <translation>सुन रहा है</translation>
+        </message>
+        <message>
+            <source>Deafened</source>
+            <translation>स्पीकर बंद</translation>
+        </message>
+    </context>
+    <context>
+        <name>VoiceSession</name>
+        <message>
+            <source>Microphone muted</source>
+            <translation>माइक्रोफोन म्यूट है</translation>
+        </message>
+        <message>
+            <source>Push-to-talk held</source>
+            <translation>पुश-टू-टॉक दबा हुआ है</translation>
+        </message>
+        <message>
+            <source>Ready - push-to-talk released</source>
+            <translation>तैयार - पुश-टू-टॉक छोड़ दिया गया</translation>
+        </message>
+        <message>
+            <source>Microphone unmuted</source>
+            <translation>माइक्रोफोन अनम्यूट है</translation>
+        </message>
+        <message>
+            <source>Settings could not be saved: %1</source>
+            <translation>सेटिंग सहेजी नहीं जा सकी: %1</translation>
+        </message>
+        <message>
+            <source>The push-to-talk sequence cannot be incremented further.</source>
+            <translation>पुश-टू-टॉक अनुक्रम को इससे आगे नहीं बढ़ाया जा सकता.</translation>
+        </message>
+        <message>
+            <source>Choose System, Light or Dark.</source>
+            <translation>सिस्टम, हल्का या गहरा चुनें.</translation>
+        </message>
+        <message>
+            <source>Choose a colour palette from the list.</source>
+            <translation>सूची से कोई रंग पैलेट चुनें.</translation>
+        </message>
+        <message>
+            <source>Choose an available avatar.</source>
+            <translation>उपलब्ध अवतार चुनें.</translation>
+        </message>
+        <message>
+            <source>Invalid push-to-talk binding.</source>
+            <translation>अमान्य पुश-टू-टॉक बाइंडिंग.</translation>
+        </message>
+        <message>
+            <source>Release the held push-to-talk key first.</source>
+            <translation>पहले दबा हुआ पुश-टू-टॉक कुंजी छोड़ें.</translation>
+        </message>
+        <message>
+            <source>Choose a language from the list.</source>
+            <translation>सूची से कोई भाषा चुनें.</translation>
+        </message>
+        <message>
+            <source>This avatar requires Supporter.</source>
+            <translation>इस अवतार के लिए Supporter चाहिए.</translation>
+        </message>
+        <message>
+            <source>The name must contain 1 to 64 characters.</source>
+            <translation>नाम में 1 से 64 अक्षर होने चाहिए.</translation>
+        </message>
+        <message>
+            <source>The name may not contain control characters or line breaks.</source>
+            <translation>नाम में कंट्रोल कैरेक्टर या लाइन ब्रेक नहीं हो सकते.</translation>
+        </message>
+        <message>
+            <source>Session settings could not be read.</source>
+            <translation>सत्र की सेटिंग पढ़ी नहीं जा सकीं.</translation>
+        </message>
+        <message>
+            <source>Saved setting is invalid: %1</source>
+            <translation>सहेजी गई सेटिंग अमान्य है: %1</translation>
         </message>
     </context>
 </TS>

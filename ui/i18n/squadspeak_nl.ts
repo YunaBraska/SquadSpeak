@@ -36,14 +36,6 @@
             <translation>Open de privacy-instellingen van je systeem en geef SquadSpeak toegang tot de microfoon.</translation>
         </message>
         <message>
-            <source>Microphone analysis active. Test audio stays on this computer.</source>
-            <translation>Microfoonanalyse actief. Testaudio blijft op deze computer.</translation>
-        </message>
-        <message>
-            <source>Finish the test recording before changing devices.</source>
-            <translation>Voltooi de testopname voordat je van apparaat wisselt.</translation>
-        </message>
-        <message>
             <source>The output format is not supported.</source>
             <translation>Het uitvoerformaat wordt niet ondersteund.</translation>
         </message>
@@ -68,32 +60,12 @@
             <translation>De testtoon kon niet worden afgespeeld.</translation>
         </message>
         <message>
-            <source>The microphone has provided no data for five seconds. Recording discarded.</source>
-            <translation>De microfoon heeft vijf seconden geen gegevens geleverd. Opname verwijderd.</translation>
-        </message>
-        <message>
-            <source>The microphone was interrupted or changed. Recording discarded.</source>
-            <translation>De microfoon werd onderbroken of gewijzigd. Opname verwijderd.</translation>
-        </message>
-        <message>
-            <source>Cancelled. The incomplete recording was discarded.</source>
-            <translation>Geannuleerd. De onvolledige opname is verwijderd.</translation>
-        </message>
-        <message>
             <source>No selected microphone is available</source>
             <translation>Geen geselecteerde microfoon beschikbaar.</translation>
         </message>
         <message>
             <source>Allow microphone access in the system dialog.</source>
             <translation>Geef toegang tot de microfoon in het systeemvenster.</translation>
-        </message>
-        <message>
-            <source>Microphone capture active for the voice channel.</source>
-            <translation>Microfoonopname actief voor het spraakkanaal.</translation>
-        </message>
-        <message>
-            <source>Microphone access was denied. Nothing was saved.</source>
-            <translation>Microfoontoegang geweigerd. Er is niets opgeslagen.</translation>
         </message>
         <message>
             <source>Microphone access is missing. Allow it in System Settings.</source>
@@ -259,103 +231,16 @@
             <source>App audio only</source>
             <translation>Alleen appgeluid</translation>
         </message>
-    </context>
-    <context>
-        <name>AudioRecording</name>
         <message>
-            <source>Incomplete audio block. Recording discarded.</source>
-            <translation>Onvolledig audioblok. Opname verwijderd.</translation>
-        </message>
-        <message>
-            <source>Move about one meter from the microphone. Keep the background sound playing and read the sentence.</source>
-            <translation>Ga ongeveer een meter van de microfoon af. Laat het achtergrondgeluid spelen en lees de zin voor.</translation>
-        </message>
-        <message>
-            <source>Voice with background sound</source>
-            <translation>Stem met achtergrondgeluid</translation>
-        </message>
-        <message>
-            <source>The recordings folder could not be created.</source>
-            <translation>De map voor opnamen kon niet worden gemaakt.</translation>
-        </message>
-        <message>
-            <source>You can stop the background sound now.</source>
-            <translation>Je kunt het achtergrondgeluid nu stoppen.</translation>
-        </message>
-        <message>
-            <source>Recordings saved</source>
-            <translation>Opnamen opgeslagen</translation>
-        </message>
-        <message>
-            <source>The test recording could not be saved completely.</source>
-            <translation>De testopname kon niet volledig worden opgeslagen.</translation>
-        </message>
-        <message>
-            <source>Keep music off and stay quiet. Start when ready.</source>
-            <translation>Houd de muziek uit en blijf stil. Start wanneer je klaar bent.</translation>
-        </message>
-        <message>
-            <source>Your voice</source>
-            <translation>Jouw stem</translation>
-        </message>
-        <message>
-            <source>Play music or another background sound at a normal volume. Stay quiet while recording.</source>
-            <translation>Speel muziek of ander achtergrondgeluid op normaal volume. Blijf stil tijdens de opname.</translation>
-        </message>
-        <message>
-            <source>The test recording could not be created.</source>
-            <translation>De testopname kon niet worden gemaakt.</translation>
-        </message>
-        <message>
-            <source>Background sound</source>
-            <translation>Achtergrondgeluid</translation>
-        </message>
-        <message>
-            <source>The window is open. I can hear the rain outside. One, two, three, four, five.</source>
-            <translation>Het raam staat open. Ik hoor buiten de regen. Een, twee, drie, vier, vijf.</translation>
-        </message>
-        <message>
-            <source>This microphone format is not supported for test recordings.</source>
-            <translation>Dit microfoonformaat wordt niet ondersteund voor testopnamen.</translation>
-        </message>
-        <message>
-            <source>Keep the background volume unchanged. Read the sentence, then stop recording.</source>
-            <translation>Houd het achtergrondvolume ongewijzigd. Lees de zin voor en stop daarna de opname.</translation>
-        </message>
-        <message>
-            <source>Record at least half a second, then try again.</source>
-            <translation>Neem minstens een halve seconde op en probeer het opnieuw.</translation>
-        </message>
-        <message>
-            <source>Sit at your usual distance. Read the sentence, then stop recording.</source>
-            <translation>Ga op je gebruikelijke afstand zitten. Lees de zin voor en stop daarna de opname.</translation>
-        </message>
-        <message>
-            <source>The recording description could not be saved.</source>
-            <translation>De beschrijving van de opname kon niet worden opgeslagen.</translation>
-        </message>
-        <message>
-            <source>The WAV file could not be finalized.</source>
-            <translation>Het WAV-bestand kon niet worden voltooid.</translation>
-        </message>
-        <message>
-            <source>The WAV header could not be written.</source>
-            <translation>De WAV-kop kon niet worden geschreven.</translation>
-        </message>
-        <message>
-            <source>Voice farther away</source>
-            <translation>Stem op afstand</translation>
-        </message>
-        <message>
-            <source>Room sound</source>
-            <translation>Kamergeluid</translation>
+            <source>Speech output is unavailable.</source>
+            <translation>Spraakuitvoer is niet beschikbaar.</translation>
         </message>
     </context>
     <context>
         <name>AudioSettings</name>
         <message>
-            <source>Echo cancellation</source>
-            <translation>Echo-onderdrukking</translation>
+            <source>Echo</source>
+            <translation>Echo</translation>
         </message>
         <message>
             <source>Off</source>
@@ -402,12 +287,12 @@
             <translation>Jouw weergave</translation>
         </message>
         <message>
-            <source>Clear local key</source>
-            <translation>Lokale toets wissen</translation>
+            <source>Clear key</source>
+            <translation>Toets wissen</translation>
         </message>
         <message>
-            <source>Low cut</source>
-            <translation>Lage tonen afsnijden</translation>
+            <source>Highpass</source>
+            <translation>Hoogdoorlaat</translation>
         </message>
         <message>
             <source>Microphone access is off</source>
@@ -418,32 +303,16 @@
             <translation>Invoerapparaat</translation>
         </message>
         <message>
-            <source>Microphone paused for others</source>
-            <translation>Microfoon gepauzeerd voor anderen</translation>
-        </message>
-        <message>
             <source>Cancel</source>
             <translation>Annuleren</translation>
-        </message>
-        <message>
-            <source>Guided recording</source>
-            <translation>Begeleide opname</translation>
         </message>
         <message>
             <source>Clipping. Reduce microphone gain.</source>
             <translation>Clipping. Verlaag de microfoongain.</translation>
         </message>
         <message>
-            <source>Silent</source>
-            <translation>Stil</translation>
-        </message>
-        <message>
             <source>Test output</source>
             <translation>Uitvoer testen</translation>
-        </message>
-        <message>
-            <source>Voice level</source>
-            <translation>Stemniveau</translation>
         </message>
         <message>
             <source>Voice threshold</source>
@@ -462,20 +331,16 @@
             <translation>Apparaat losgekoppeld</translation>
         </message>
         <message>
-            <source>Local key</source>
-            <translation>Lokale toets</translation>
+            <source>PTT key</source>
+            <translation>Spreektoets</translation>
         </message>
         <message>
             <source>Voice activation</source>
             <translation>Spraakactivatie</translation>
         </message>
         <message>
-            <source>Remote PTT key</source>
-            <translation>Externe PTT-toets</translation>
-        </message>
-        <message>
-            <source>Noise reduction</source>
-            <translation>Ruisonderdrukking</translation>
+            <source>Denoise</source>
+            <translation>Ruisfilter</translation>
         </message>
         <message>
             <source>Selected device is not connected</source>
@@ -486,32 +351,120 @@
             <translation>Zou uitzenden</translation>
         </message>
         <message>
-            <source>Microphone gain</source>
-            <translation>Microfoongain</translation>
-        </message>
-        <message>
-            <source>Clear remote key</source>
-            <translation>Externe toets wissen</translation>
-        </message>
-        <message>
-            <source>Playback volume</source>
-            <translation>Afspeelvolume</translation>
+            <source>Gain</source>
+            <translation>Versterking</translation>
         </message>
         <message>
             <source>Not assigned</source>
             <translation>Niet toegewezen</translation>
         </message>
         <message>
-            <source>High cut</source>
-            <translation>Hoge tonen afsnijden</translation>
+            <source>Lowpass</source>
+            <translation>Laagdoorlaat</translation>
         </message>
         <message>
             <source>Level audio automatically</source>
             <translation>Audioniveau automatisch aanpassen</translation>
         </message>
+        <message>
+            <source>Voice volume</source>
+            <translation>Volume van spraakchat</translation>
+        </message>
+        <message>
+            <source>App sounds</source>
+            <translation>Appgeluiden</translation>
+        </message>
+        <message>
+            <source>Read bot messages aloud</source>
+            <translation>Botberichten voorlezen</translation>
+        </message>
+        <message>
+            <source>Download a high-quality voice for this language in macOS settings.</source>
+            <translation>Download een stem van hoge kwaliteit voor deze taal in de macOS-instellingen.</translation>
+        </message>
+        <message>
+            <source>Bot voice</source>
+            <translation>Botstem</translation>
+        </message>
+        <message>
+            <source>Automatic</source>
+            <translation>Automatisch</translation>
+        </message>
+        <message>
+            <source>Unavailable</source>
+            <translation>Niet beschikbaar</translation>
+        </message>
+        <message>
+            <source>Download voices in your device's Accessibility speech settings.</source>
+            <translation>Download stemmen via de spraakinstellingen onder Toegankelijkheid op je apparaat.</translation>
+        </message>
+        <message>
+            <source>Voice download help</source>
+            <translation>Hulp bij het downloaden van stemmen</translation>
+        </message>
+        <message>
+            <source>Strength, not the percentage of echo removed.</source>
+            <translation>Sterkte, niet het percentage verwijderde echo.</translation>
+        </message>
+        <message>
+            <source>Auto also checks for speech, not just volume.</source>
+            <translation>Automatisch controleert ook op spraak, niet alleen op volume.</translation>
+        </message>
     </context>
     <context>
         <name>Channels</name>
+        <message>
+            <source>Audio received</source>
+            <translation>Ontvangen audio</translation>
+        </message>
+        <message>
+            <source>Search channels</source>
+            <translation>Kanalen zoeken</translation>
+        </message>
+        <message>
+            <source>No matches</source>
+            <translation>Geen resultaten</translation>
+        </message>
+        <message>
+            <source>Copy address</source>
+            <translation>Adres kopiëren</translation>
+        </message>
+        <message>
+            <source>Messages</source>
+            <translation>Berichten</translation>
+        </message>
+        <message>
+            <source>Message</source>
+            <translation>Bericht</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Openen</translation>
+        </message>
+        <message>
+            <source>Online</source>
+            <translation>Online</translation>
+        </message>
+        <message>
+            <source>Offline</source>
+            <translation>Offline</translation>
+        </message>
+        <message>
+            <source>No private messages</source>
+            <translation>Geen privéberichten</translation>
+        </message>
+        <message>
+            <source>Private messages are unavailable for this contact.</source>
+            <translation>Privéberichten zijn niet beschikbaar voor dit contact.</translation>
+        </message>
+        <message>
+            <source>If asked, allow local network access. You can change this in system settings.</source>
+            <translation>Sta je dit gevraagd, geef dan toegang tot het lokale netwerk. Je kunt dit wijzigen in de systeeminstellingen.</translation>
+        </message>
+        <message>
+            <source>Retry</source>
+            <translation>Opnieuw proberen</translation>
+        </message>
         <message>
             <source>Updates</source>
             <translation>Updates</translation>
@@ -531,6 +484,10 @@
         <message>
             <source>DDNS cannot bypass CGNAT. If your provider shares the public IP, use a private VPN on all participating devices or a publicly reachable server.</source>
             <translation>DDNS omzeilt CGNAT niet. Als je provider het openbare IP-adres deelt, gebruik dan een privé-VPN op alle deelnemende apparaten of een openbaar bereikbare server.</translation>
+        </message>
+        <message>
+            <source>Remove server</source>
+            <translation>Server verwijderen</translation>
         </message>
         <message>
             <source>Low</source>
@@ -653,10 +610,6 @@
             <translation>Meldingsgeluiden</translation>
         </message>
         <message>
-            <source>Lifetime for new messages. Earlier messages keep their expiry.</source>
-            <translation>Levensduur van nieuwe berichten. Eerdere berichten behouden hun vervaldatum.</translation>
-        </message>
-        <message>
             <source>Enable speakers</source>
             <translation>Luidsprekers inschakelen</translation>
         </message>
@@ -691,10 +644,6 @@
         <message>
             <source>Allow device</source>
             <translation>Apparaat toestaan</translation>
-        </message>
-        <message>
-            <source>Receive quality: %1 kb/s per voice. Adjusts automatically for this device.</source>
-            <translation>Ontvangstkwaliteit: %1 kb/s per stem. Wordt automatisch aangepast voor dit apparaat.</translation>
         </message>
         <message>
             <source>Stop radio</source>
@@ -1188,6 +1137,50 @@
             <source>This device</source>
             <translation>Dit apparaat</translation>
         </message>
+        <message>
+            <source>Use default music volume</source>
+            <translation>Standaardvolume voor muziek gebruiken</translation>
+        </message>
+        <message>
+            <source>Show in Dock</source>
+            <translation>Toon in Dock</translation>
+        </message>
+        <message>
+            <source>App language</source>
+            <translation>App-taal</translation>
+        </message>
+        <message>
+            <source>Send in</source>
+            <translation>Verzenden in</translation>
+        </message>
+        <message>
+            <source>Hear in</source>
+            <translation>Luisteren in</translation>
+        </message>
+        <message>
+            <source>Download language models for %1 and %2?</source>
+            <translation>Taalmodellen voor %1 en %2 downloaden?</translation>
+        </message>
+        <message>
+            <source>Download</source>
+            <translation>Downloaden</translation>
+        </message>
+        <message>
+            <source>PTT, chat and channel controls. Uses the controlled device's microphone.</source>
+            <translation>Bediening voor PTT, chat en kanalen. De microfoon van het bestuurde apparaat wordt gebruikt.</translation>
+        </message>
+        <message>
+            <source>Connect the other device to one of your channels, then allow it here.</source>
+            <translation>Verbind het andere apparaat met een van je kanalen en sta het hier toe.</translation>
+        </message>
+        <message>
+            <source>On the other device, open Settings &gt; Input &gt; Remote control and allow this device.</source>
+            <translation>Open op het andere apparaat Instellingen &gt; Invoer &gt; Externe bediening en sta dit apparaat toe.</translation>
+        </message>
+        <message>
+            <source>Unread messages</source>
+            <translation>Ongelezen berichten</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1299,6 +1292,22 @@
             <source>The sanitized image could not be written completely.</source>
             <translation>De opgeschoonde afbeelding kon niet volledig worden geschreven.</translation>
         </message>
+        <message>
+            <source>%1 joined.</source>
+            <translation>%1 is toegetreden.</translation>
+        </message>
+        <message>
+            <source>%1 left.</source>
+            <translation>%1 is vertrokken.</translation>
+        </message>
+        <message>
+            <source>%1 was kicked.</source>
+            <translation>%1 is verwijderd.</translation>
+        </message>
+        <message>
+            <source>%1 was banned from the channel.</source>
+            <translation>%1 is uit het kanaal verbannen.</translation>
+        </message>
     </context>
     <context>
         <name>ChatPanel</name>
@@ -1363,22 +1372,6 @@
             <translation>Laden...</translation>
         </message>
         <message>
-            <source>%1 joined.</source>
-            <translation>%1 is toegetreden.</translation>
-        </message>
-        <message>
-            <source>%1 left.</source>
-            <translation>%1 is vertrokken.</translation>
-        </message>
-        <message>
-            <source>%1 was kicked.</source>
-            <translation>%1 is verwijderd.</translation>
-        </message>
-        <message>
-            <source>%1 was banned from the channel.</source>
-            <translation>%1 is uit het kanaal verbannen.</translation>
-        </message>
-        <message>
             <source>Message could not be sent. Check the connection and text length.</source>
             <translation>Bericht kon niet worden verzonden. Controleer verbinding en tekstlengte.</translation>
         </message>
@@ -1404,7 +1397,400 @@
         </message>
     </context>
     <context>
+        <name>Desktop</name>
+        <message>
+            <source>Open settings at startup.</source>
+            <translation>Instellingen openen bij het opstarten.</translation>
+        </message>
+        <message>
+            <source>Alternative file for audio profiles.</source>
+            <translation>Alternatief bestand voor audioprofielen.</translation>
+        </message>
+        <message>
+            <source>Load the interface without microphone capture and exit after one second.</source>
+            <translation>De interface laden zonder microfoonopname en na één seconde afsluiten.</translation>
+        </message>
+        <message>
+            <source>Save an image of the app window during the UI test.</source>
+            <translation>Tijdens de interfacetest een afbeelding van het appvenster opslaan.</translation>
+        </message>
+        <message>
+            <source>The window image could not be saved.</source>
+            <translation>De afbeelding van het venster kon niet worden opgeslagen.</translation>
+        </message>
+        <message>
+            <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
+            <translation>Systeemvak niet beschikbaar; de app blijft als venster geopend.</translation>
+        </message>
+    </context>
+    <context>
+        <name>Headless</name>
+        <message>
+            <source>Host display name.</source>
+            <translation>Weergavenaam van de host.</translation>
+        </message>
+        <message>
+            <source>Command failed.</source>
+            <translation>Opdracht mislukt.</translation>
+        </message>
+        <message>
+            <source>%1 must be an integer.</source>
+            <translation>%1 moet een geheel getal zijn.</translation>
+        </message>
+        <message>
+            <source>Requests must be on/off or true/false.</source>
+            <translation>Verzoeken moeten on/off of true/false zijn.</translation>
+        </message>
+        <message>
+            <source>Unknown host property: %1</source>
+            <translation>Onbekende hosteigenschap: %1</translation>
+        </message>
+        <message>
+            <source>Run without GUI, microphone capture, or local audio output.</source>
+            <translation>Uitvoeren zonder GUI, microfoonopname of lokale audio-uitvoer.</translation>
+        </message>
+        <message>
+            <source>Server storage prefix. Personal/audio/GUI profiles are not loaded.</source>
+            <translation>Opslagvoorvoegsel van de server. Persoonlijke, audio- en GUI-profielen worden niet geladen.</translation>
+        </message>
+        <message>
+            <source>Optional private identity file instead of the OS credential store (Linux/macOS). Parent directory must exist and belong to this account.</source>
+            <translation>Optioneel privé-identiteitsbestand in plaats van de aanmeldgegevensopslag van het besturingssysteem (Linux/macOS). De bovenliggende map moet bestaan en aan dit account toebehoren.</translation>
+        </message>
+        <message>
+            <source>UTF-8 key=value properties or JSON host preset. Default: application.properties, then config/application.properties beside the app.</source>
+            <translation>UTF-8-eigenschappen key=value of JSON-hostvoorinstelling. Standaard: application.properties, daarna config/application.properties naast de app.</translation>
+        </message>
+        <message>
+            <source>Channel display name.</source>
+            <translation>Weergavenaam van het kanaal.</translation>
+        </message>
+        <message>
+            <source>System and radio bot display name.</source>
+            <translation>Weergavenaam van systeem- en radiobot.</translation>
+        </message>
+        <message>
+            <source>TCP service port (1-65535).</source>
+            <translation>TCP-servicepoort (1-65535).</translation>
+        </message>
+        <message>
+            <source>Headless admission is always on; only 'on' or 'true' is accepted.</source>
+            <translation>Headless-toelating staat altijd aan; alleen 'on' of 'true' wordt geaccepteerd.</translation>
+        </message>
+        <message>
+            <source>Preapprove a device ID; repeat for several devices. Existing bans remain.</source>
+            <translation>Een apparaat-ID vooraf toelaten; herhaal voor meerdere apparaten. Bestaande blokkeringen blijven.</translation>
+        </message>
+        <message>
+            <source>Block a device ID; repeat for several devices.</source>
+            <translation>Een apparaat-ID blokkeren; herhaal voor meerdere apparaten.</translation>
+        </message>
+        <message>
+            <source>Read a UTF-8 channel password from a file before listening. An empty file removes it.</source>
+            <translation>Lees het kanaalwachtwoord uit een UTF-8-bestand voor het luisteren. Een leeg bestand verwijdert het.</translation>
+        </message>
+        <message>
+            <source>Channel password. Empty removes it; environment or config avoids process-list exposure.</source>
+            <translation>Kanaalwachtwoord. Leeg verwijdert het; omgeving of configuratie voorkomt blootstelling in de proceslijst.</translation>
+        </message>
+        <message>
+            <source>SquadSpeak headless local channel host</source>
+            <translation>Lokale headless-kanaalhost van SquadSpeak</translation>
+        </message>
+        <message>
+            <source>Environment variables (SQUADSPEAK_ prefix):</source>
+            <translation>Omgevingsvariabelen (voorvoegsel SQUADSPEAK_):</translation>
+        </message>
+        <message>
+            <source>Host configuration could not be read or exceeds 1 MiB.</source>
+            <translation>Hostconfiguratie kon niet worden gelezen of is groter dan 1 MiB.</translation>
+        </message>
+        <message>
+            <source>Host configuration must be UTF-8.</source>
+            <translation>Hostconfiguratie moet UTF-8 zijn.</translation>
+        </message>
+        <message>
+            <source>Host preset must be a JSON object.</source>
+            <translation>De hostvoorinstelling moet een JSON-object zijn.</translation>
+        </message>
+        <message>
+            <source>Property line %1 must use key=value.</source>
+            <translation>Eigenschapsregel %1 moet key=value gebruiken.</translation>
+        </message>
+        <message>
+            <source>Property line %1: %2</source>
+            <translation>Eigenschapsregel %1: %2</translation>
+        </message>
+        <message>
+            <source>Standard input has no file descriptor.</source>
+            <translation>Standaardinvoer heeft geen bestandsdescriptor.</translation>
+        </message>
+        <message>
+            <source>Standard input could not be inspected.</source>
+            <translation>Standaardinvoer kon niet worden gecontroleerd.</translation>
+        </message>
+        <message>
+            <source>Could not write the command response: %1</source>
+            <translation>Opdrachtantwoord kon niet worden geschreven: %1</translation>
+        </message>
+        <message>
+            <source>Standard input could not be read: %1</source>
+            <translation>Standaardinvoer kon niet worden gelezen: %1</translation>
+        </message>
+        <message>
+            <source>Input line exceeds 65536 bytes.</source>
+            <translation>Invoerregel is langer dan 65536 bytes.</translation>
+        </message>
+        <message>
+            <source>Each input line must be a JSON object.</source>
+            <translation>Elke invoerregel moet een JSON-object zijn.</translation>
+        </message>
+        <message>
+            <source>Input ended before a complete JSON line.</source>
+            <translation>Invoer eindigde voordat een volledige JSON-regel beschikbaar was.</translation>
+        </message>
+        <message>
+            <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
+            <translation>Optionele eigen kanaal-ID voor de opdrachten status, configure, password, admission, history, chat en radio; standaard het hoofdkanaal.</translation>
+        </message>
+        <message>
+            <source>Channel action must be list, add or remove.</source>
+            <translation>Kanaalactie moet list, add of remove zijn.</translation>
+        </message>
+        <message>
+            <source>Removing an own channel deletes its history, images, permissions and radio settings. Set confirmed=true to proceed.</source>
+            <translation>Een eigen kanaal verwijderen wist geschiedenis, afbeeldingen, machtigingen en radio-instellingen. Stel confirmed=true in om door te gaan.</translation>
+        </message>
+        <message>
+            <source>id must identify an additional own channel.</source>
+            <translation>id moet een extra eigen kanaal aanduiden.</translation>
+        </message>
+        <message>
+            <source>The additional own channel could not be removed: %1</source>
+            <translation>Het extra eigen kanaal kon niet worden verwijderd: %1</translation>
+        </message>
+        <message>
+            <source>channelId must identify an own channel.</source>
+            <translation>channelId moet een eigen kanaal aanduiden.</translation>
+        </message>
+        <message>
+            <source>values must be a host settings object.</source>
+            <translation>values moet een hostinstellingenobject zijn.</translation>
+        </message>
+        <message>
+            <source>Headless admission is always enabled for non-banned devices; requests off is not supported.</source>
+            <translation>Headless-toelating is altijd ingeschakeld voor niet-geblokkeerde apparaten; requests off wordt niet ondersteund.</translation>
+        </message>
+        <message>
+            <source>value must be a password of at most 1024 UTF-8 bytes without control characters; an empty string removes it.</source>
+            <translation>value moet een wachtwoord van maximaal 1024 UTF-8-bytes zonder besturingstekens zijn; een lege tekenreeks verwijdert het.</translation>
+        </message>
+        <message>
+            <source>The channel is not ready or a password change is in progress.</source>
+            <translation>Het kanaal is niet klaar of een wachtwoordwijziging loopt.</translation>
+        </message>
+        <message>
+            <source>The channel was removed while saving the password.</source>
+            <translation>Het kanaal is verwijderd tijdens het opslaan van het wachtwoord.</translation>
+        </message>
+        <message>
+            <source>id is required.</source>
+            <translation>id is vereist.</translation>
+        </message>
+        <message>
+            <source>text must be a valid non-empty chat message.</source>
+            <translation>text moet een geldig niet-leeg chatbericht zijn.</translation>
+        </message>
+        <message>
+            <source>The local channel is not ready.</source>
+            <translation>Het lokale kanaal is niet klaar.</translation>
+        </message>
+        <message>
+            <source>The channel's radio is unavailable.</source>
+            <translation>De radio van het kanaal is niet beschikbaar.</translation>
+        </message>
+        <message>
+            <source>Unknown command. Use help.</source>
+            <translation>Onbekende opdracht. Gebruik help.</translation>
+        </message>
+        <message>
+            <source>search requires a query, non-negative offset and limit from 1 to 128.</source>
+            <translation>search vereist query, een niet-negatieve offset en limit van 1 tot 128.</translation>
+        </message>
+        <message>
+            <source>add creates an id; update requires an existing id.</source>
+            <translation>add maakt een id; update vereist een bestaande id.</translation>
+        </message>
+        <message>
+            <source>A station is already being checked.</source>
+            <translation>Een station wordt al gecontroleerd.</translation>
+        </message>
+        <message>
+            <source>The channel was removed while checking the station.</source>
+            <translation>Het kanaal is verwijderd tijdens het controleren van het station.</translation>
+        </message>
+        <message>
+            <source>Unknown radio action.</source>
+            <translation>Onbekende radioactie.</translation>
+        </message>
+        <message>
+            <source>Could not load language: %1</source>
+            <translation>Taal kon niet worden geladen: %1</translation>
+        </message>
+        <message>
+            <source>The %1 option is incompatible with --headless.</source>
+            <translation>Optie %1 is niet compatibel met --headless.</translation>
+        </message>
+        <message>
+            <source>Unexpected positional arguments. Use --help.</source>
+            <translation>Onverwachte positionele argumenten. Gebruik --help.</translation>
+        </message>
+        <message>
+            <source>--config / -f requires a non-empty path.</source>
+            <translation>--config / -f vereist een niet-leeg pad.</translation>
+        </message>
+        <message>
+            <source>Choose --password or --password-file, not both.</source>
+            <translation>Kies --password of --password-file, niet beide.</translation>
+        </message>
+        <message>
+            <source>Choose SQUADSPEAK_PASSWORD or SQUADSPEAK_PASSWORD_FILE, not both.</source>
+            <translation>Kies SQUADSPEAK_PASSWORD of SQUADSPEAK_PASSWORD_FILE, niet beide.</translation>
+        </message>
+        <message>
+            <source>Choose password or passwordFile in one configuration layer, not both.</source>
+            <translation>Kies password of passwordFile in een enkele configuratielaag, niet beide.</translation>
+        </message>
+        <message>
+            <source>passwordFile must be a non-empty path.</source>
+            <translation>passwordFile moet een niet-leeg pad zijn.</translation>
+        </message>
+        <message>
+            <source>Password file could not be read or is too large.</source>
+            <translation>Wachtwoordbestand kon niet worden gelezen of is te groot.</translation>
+        </message>
+        <message>
+            <source>Password file must contain at most 1024 UTF-8 bytes without control characters.</source>
+            <translation>Het wachtwoordbestand mag maximaal 1024 UTF-8-bytes zonder besturingstekens bevatten.</translation>
+        </message>
+        <message>
+            <source>Password must be a string of at most 1024 UTF-8 bytes without control characters.</source>
+            <translation>Het wachtwoord moet een tekenreeks van maximaal 1024 UTF-8-bytes zonder besturingstekens zijn.</translation>
+        </message>
+        <message>
+            <source>settingsFile must be a non-empty path.</source>
+            <translation>settingsFile moet een niet-leeg pad zijn.</translation>
+        </message>
+        <message>
+            <source>identityFile must be a non-empty path.</source>
+            <translation>identityFile moet een niet-leeg pad zijn.</translation>
+        </message>
+        <message>
+            <source>The settings directory could not be created.</source>
+            <translation>De instellingenmap kon niet worden gemaakt.</translation>
+        </message>
+        <message>
+            <source>This SquadSpeak profile is already running or cannot be locked.</source>
+            <translation>Dit SquadSpeak-profiel draait al of kan niet worden vergrendeld.</translation>
+        </message>
+        <message>
+            <source>Standard input could not be opened.</source>
+            <translation>Standaardinvoer kon niet worden geopend.</translation>
+        </message>
+        <message>
+            <source>Standard output could not be opened.</source>
+            <translation>Standaarduitvoer kon niet worden geopend.</translation>
+        </message>
+        <message>
+            <source>This identity file is already in use or cannot be locked.</source>
+            <translation>Dit identiteitsbestand is al in gebruik of kan niet worden vergrendeld.</translation>
+        </message>
+        <message>
+            <source>Invalid host configuration: %1</source>
+            <translation>Ongeldige hostconfiguratie: %1</translation>
+        </message>
+        <message>
+            <source>Radio channels could not be initialized.</source>
+            <translation>Radiokanalen konden niet worden geïnitialiseerd.</translation>
+        </message>
+        <message>
+            <source>Headless host could not start: %1</source>
+            <translation>Headless-host kon niet worden gestart: %1</translation>
+        </message>
+        <message>
+            <source>Channel password could not be saved.</source>
+            <translation>Kanaalwachtwoord kon niet worden opgeslagen.</translation>
+        </message>
+        <message>
+            <source>Invalid channel password: %1</source>
+            <translation>Ongeldig kanaalwachtwoord: %1</translation>
+        </message>
+        <message>
+            <source>Headless host could not initialize: %1</source>
+            <translation>Headless-host kon niet worden geïnitialiseerd: %1</translation>
+        </message>
+        <message>
+            <source>SquadSpeak headless could not start: %1</source>
+            <translation>SquadSpeak-headless kon niet worden gestart: %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>Supporteractie moet status, aanmelden, vernieuwen, afmelden of annuleren zijn. sign-in refresh sign-out cancel</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>Er is een Supporter-operatie aan de gang.</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>Supportertoegang is niet beschikbaar in deze build.</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>Prioriteit van instellingen: argumenten &gt; omgeving &gt; eigenschappen &gt; opgeslagen serverwaarden.</translation>
+        </message>
+    </context>
+    <context>
+        <name>License</name>
+        <message>
+            <source>License storage is busy or unavailable.</source>
+            <translation>Licentieopslag is bezet of niet beschikbaar.</translation>
+        </message>
+        <message>
+            <source>License storage is unavailable.</source>
+            <translation>Licentieopslag is niet beschikbaar.</translation>
+        </message>
+        <message>
+            <source>Sign-in expired. Try again.</source>
+            <translation>Inloggen verlopen. Probeer het opnieuw.</translation>
+        </message>
+        <message>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>Inloggen op GitHub is niet beschikbaar. Probeer het opnieuw.</translation>
+        </message>
+        <message>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>Het inloggen op GitHub is niet voltooid. Probeer het opnieuw.</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>GitHub kan niet worden gecontroleerd. Offline toegang duurt maximaal zeven dagen.</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>Meld u opnieuw aan bij GitHub.</translation>
+        </message>
+    </context>
+    <context>
         <name>LocalChannel</name>
+        <message>
+            <source>Insufficient permissions.</source>
+            <translation>Onvoldoende rechten.</translation>
+        </message>
+        <message>
+            <source>Blocked</source>
+            <translation>Geblokkeerd</translation>
+        </message>
         <message>
             <source>Host is not responding. Reconnecting.</source>
             <translation>Host reageert niet. Opnieuw verbinden.</translation>
@@ -1926,8 +2312,8 @@
             <translation>De overdracht van de afbeelding duurde te lang.</translation>
         </message>
         <message>
-            <source>The channel is full. Text chat is still available.</source>
-            <translation>Het kanaal is vol. Tekstchat blijft beschikbaar.</translation>
+            <source>The host is busy. Try again shortly.</source>
+            <translation>De host is bezig. Probeer het zo nog eens.</translation>
         </message>
         <message>
             <source>All own channels use the device's shared port.</source>
@@ -2189,6 +2575,53 @@
             <source>Voice relay codec could not be configured.</source>
             <translation>Codec voor spraakdoorgifte kon niet worden geconfigureerd.</translation>
         </message>
+        <message>
+            <source>Unsupported audio codec</source>
+            <translation>Niet-ondersteunde audiocodec</translation>
+        </message>
+        <message>
+            <source>Speaking is not allowed in this channel.</source>
+            <translation>Je mag niet spreken in dit kanaal.</translation>
+        </message>
+    </context>
+    <context>
+        <name>LocalLanguage</name>
+        <message>
+            <source>Translation (experimental)</source>
+            <translation>Vertaling (experimenteel)</translation>
+        </message>
+        <message>
+            <source>Translate messages</source>
+            <translation>Berichten vertalen</translation>
+        </message>
+        <message>
+            <source>Translated voice</source>
+            <translation>Vertaalde stem</translation>
+        </message>
+        <message>
+            <source>Original audio</source>
+            <translation>Originele audio</translation>
+        </message>
+        <message>
+            <source>Original text</source>
+            <translation>Originele tekst</translation>
+        </message>
+        <message>
+            <source>Prepare languages</source>
+            <translation>Talen voorbereiden</translation>
+        </message>
+        <message>
+            <source>Local language processing is unavailable.</source>
+            <translation>Lokale taalverwerking is niet beschikbaar.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be read.</source>
+            <translation>Taalinstellingen konden niet worden gelezen.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be saved.</source>
+            <translation>Taalinstellingen konden niet worden opgeslagen.</translation>
+        </message>
     </context>
     <context>
         <name>PushToTalkKey</name>
@@ -2329,50 +2762,61 @@
         </message>
     </context>
     <context>
-        <name>RecordingPanel</name>
+        <name>ScreenPanel</name>
         <message>
-            <source>Stop</source>
-            <translation>Stoppen</translation>
+            <source>Video paused</source>
+            <translation>Video gepauzeerd</translation>
         </message>
         <message>
-            <source>Start</source>
-            <translation>Starten</translation>
+            <source>Stream ended</source>
+            <translation>Stream beeindigd</translation>
         </message>
         <message>
-            <source>Saved on this device only. Nothing is uploaded.</source>
-            <translation>Alleen op dit apparaat opgeslagen. Er wordt niets geüpload.</translation>
+            <source>Connecting</source>
+            <translation>Verbinden</translation>
         </message>
         <message>
-            <source>Keep this take or record it again.</source>
-            <translation>Bewaar deze opname of neem haar opnieuw op.</translation>
+            <source>Open screen stream</source>
+            <translation>Schermstream openen</translation>
         </message>
         <message>
-            <source>Record again</source>
-            <translation>Opnieuw opnemen</translation>
+            <source>Screen stream</source>
+            <translation>Schermstream</translation>
         </message>
         <message>
-            <source>Use recording</source>
-            <translation>Opname gebruiken</translation>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
+        </message>
+    </context>
+    <context>
+        <name>ScreenShare</name>
+        <message>
+            <source>Allow screen recording in system settings.</source>
+            <translation>Sta schermopname toe in de systeeminstellingen.</translation>
         </message>
         <message>
-            <source>Recording progress</source>
-            <translation>Opnamevoortgang</translation>
+            <source>The shared screen was removed. Select a source to start again.</source>
+            <translation>Het gedeelde scherm is verwijderd. Kies opnieuw een bron om te beginnen.</translation>
         </message>
         <message>
-            <source>Step %1 of %2</source>
-            <translation>Stap %1 van %2</translation>
+            <source>The shared window was closed. Select a source to start again.</source>
+            <translation>Het gedeelde venster is gesloten. Kies opnieuw een bron om te beginnen.</translation>
         </message>
         <message>
-            <source>Open recordings</source>
-            <translation>Opnamen openen</translation>
+            <source>The selected screen is no longer available.</source>
+            <translation>Het geselecteerde scherm is niet meer beschikbaar.</translation>
         </message>
         <message>
-            <source>Reset test</source>
-            <translation>Test resetten</translation>
+            <source>The selected window is no longer available.</source>
+            <translation>Het geselecteerde venster is niet meer beschikbaar.</translation>
         </message>
         <message>
-            <source>%1 s remaining / %2 dBFS</source>
-            <translation>Nog %1 s / %2 dBFS</translation>
+            <source>The selected source exceeds the capture size limit.</source>
+            <translation>De geselecteerde bron overschrijdt de maximale vastleggrootte.</translation>
+        </message>
+        <message>
+            <source>Close a video view before opening another stream.</source>
+            <translation>Sluit een videoweergave voordat je een andere stream opent.</translation>
         </message>
     </context>
     <context>
@@ -2449,10 +2893,6 @@
             <translation>Signaal verzamelen...</translation>
         </message>
         <message>
-            <source>Dashed curve: configured gain and frequency cuts, using the right dB scale. Noise reduction and voice activation are not part of this curve.</source>
-            <translation>Gestippelde curve: ingestelde gain en frequentiefilters op de dB-schaal rechts. Ruisonderdrukking en spraakactivatie maken geen deel uit van deze curve.</translation>
-        </message>
-        <message>
             <source>Microphone preview is not running</source>
             <translation>Microfoonvoorbeeld is niet actief</translation>
         </message>
@@ -2463,303 +2903,6 @@
         <message>
             <source>Peak: %1</source>
             <translation>Piek: %1</translation>
-        </message>
-    </context>
-    <context>
-        <name>Tray</name>
-        <message>
-            <source>Quit</source>
-            <translation>Afsluiten</translation>
-        </message>
-        <message>
-            <source>SquadSpeak - speaking</source>
-            <translation>SquadSpeak - spreekt</translation>
-        </message>
-        <message>
-            <source>Settings</source>
-            <translation>Instellingen</translation>
-        </message>
-        <message>
-            <source>Channels</source>
-            <translation>Kanalen</translation>
-        </message>
-        <message>
-            <source>New image</source>
-            <translation>Nieuwe afbeelding</translation>
-        </message>
-    </context>
-    <context>
-        <name>VoiceAvatar</name>
-        <message>
-            <source>Muted</source>
-            <translation>Gedempt</translation>
-        </message>
-        <message>
-            <source>Sleeping</source>
-            <translation>Slapend</translation>
-        </message>
-        <message>
-            <source>Offline</source>
-            <translation>Offline</translation>
-        </message>
-        <message>
-            <source>Speaking</source>
-            <translation>Spreekt</translation>
-        </message>
-        <message>
-            <source>Unavailable</source>
-            <translation>Niet beschikbaar</translation>
-        </message>
-        <message>
-            <source>Listening</source>
-            <translation>Luistert</translation>
-        </message>
-        <message>
-            <source>Deafened</source>
-            <translation>Geen geluid</translation>
-        </message>
-    </context>
-    <context>
-        <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>Niet beschikbaar - audio-instellingen of testtoon</translation>
-        </message>
-        <message>
-            <source>Microphone muted</source>
-            <translation>Microfoon gedempt</translation>
-        </message>
-        <message>
-            <source>Push-to-talk held</source>
-            <translation>Indrukken om te praten vastgehouden</translation>
-        </message>
-        <message>
-            <source>Ready - push-to-talk released</source>
-            <translation>Gereed - indrukken om te praten losgelaten</translation>
-        </message>
-        <message>
-            <source>Microphone unmuted</source>
-            <translation>Microfoon ingeschakeld</translation>
-        </message>
-        <message>
-            <source>Settings could not be saved: %1</source>
-            <translation>Instellingen konden niet worden opgeslagen: %1</translation>
-        </message>
-        <message>
-            <source>The push-to-talk sequence cannot be incremented further.</source>
-            <translation>De reeks voor indrukken om te praten kan niet verder worden verhoogd.</translation>
-        </message>
-        <message>
-            <source>Choose System, Light or Dark.</source>
-            <translation>Kies Systeem, Licht of Donker.</translation>
-        </message>
-        <message>
-            <source>Choose a colour palette from the list.</source>
-            <translation>Kies een kleurenpalet uit de lijst.</translation>
-        </message>
-        <message>
-            <source>Choose an available avatar.</source>
-            <translation>Kies een beschikbare avatar.</translation>
-        </message>
-        <message>
-            <source>Invalid push-to-talk binding.</source>
-            <translation>Ongeldige koppeling voor indrukken om te praten.</translation>
-        </message>
-        <message>
-            <source>Release the held push-to-talk key first.</source>
-            <translation>Laat eerst de vastgehouden toets voor indrukken om te praten los.</translation>
-        </message>
-        <message>
-            <source>Choose a language from the list.</source>
-            <translation>Kies een taal uit de lijst.</translation>
-        </message>
-        <message>
-            <source>This avatar requires Supporter.</source>
-            <translation>Deze avatar vereist Supporter.</translation>
-        </message>
-        <message>
-            <source>The name must contain 1 to 64 characters.</source>
-            <translation>De naam moet 1 tot 64 tekens bevatten.</translation>
-        </message>
-        <message>
-            <source>The name may not contain control characters or line breaks.</source>
-            <translation>De naam mag geen besturingstekens of regeleinden bevatten.</translation>
-        </message>
-        <message>
-            <source>Session settings could not be read.</source>
-            <translation>Sessie-instellingen konden niet worden gelezen.</translation>
-        </message>
-        <message>
-            <source>Saved setting is invalid: %1</source>
-            <translation>Ongeldige opgeslagen instelling: %1</translation>
-        </message>
-    </context>
-    <context>
-        <name>License</name>
-        <message>
-            <source>License storage is busy or unavailable.</source>
-            <translation>Licentieopslag is bezet of niet beschikbaar.</translation>
-        </message>
-        <message>
-            <source>License storage is unavailable.</source>
-            <translation>Licentieopslag is niet beschikbaar.</translation>
-        </message>
-        <message>
-            <source>Sign-in expired. Try again.</source>
-            <translation>Inloggen verlopen. Probeer het opnieuw.</translation>
-        </message>
-        <message>
-            <source>GitHub sign-in is unavailable. Try again.</source>
-            <translation>Inloggen op GitHub is niet beschikbaar. Probeer het opnieuw.</translation>
-        </message>
-        <message>
-            <source>GitHub sign-in was not completed. Try again.</source>
-            <translation>Het inloggen op GitHub is niet voltooid. Probeer het opnieuw.</translation>
-        </message>
-        <message>
-            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
-            <translation>GitHub kan niet worden gecontroleerd. Offline toegang duurt maximaal zeven dagen.</translation>
-        </message>
-        <message>
-            <source>Sign in with GitHub again.</source>
-            <translation>Meld u opnieuw aan bij GitHub.</translation>
-        </message>
-    </context>
-    <context>
-        <name>ScreenShare</name>
-        <message>
-            <source>The shared screen was removed. Select a source to start again.</source>
-            <translation>Het gedeelde scherm is verwijderd. Kies opnieuw een bron om te beginnen.</translation>
-        </message>
-        <message>
-            <source>The shared window was closed. Select a source to start again.</source>
-            <translation>Het gedeelde venster is gesloten. Kies opnieuw een bron om te beginnen.</translation>
-        </message>
-        <message>
-            <source>The selected screen is no longer available.</source>
-            <translation>Het geselecteerde scherm is niet meer beschikbaar.</translation>
-        </message>
-        <message>
-            <source>The selected window is no longer available.</source>
-            <translation>Het geselecteerde venster is niet meer beschikbaar.</translation>
-        </message>
-        <message>
-            <source>The selected source exceeds the capture size limit.</source>
-            <translation>De geselecteerde bron overschrijdt de maximale vastleggrootte.</translation>
-        </message>
-        <message>
-            <source>Close a video view before opening another stream.</source>
-            <translation>Sluit een videoweergave voordat je een andere stream opent.</translation>
-        </message>
-    </context>
-    <context>
-        <name>ScreenPanel</name>
-        <message>
-            <source>Media capacity reached</source>
-            <translation>Mediacapaciteit bereikt</translation>
-        </message>
-        <message>
-            <source>Video paused</source>
-            <translation>Video gepauzeerd</translation>
-        </message>
-        <message>
-            <source>Stream ended</source>
-            <translation>Stream beeindigd</translation>
-        </message>
-        <message>
-            <source>Connecting</source>
-            <translation>Verbinden</translation>
-        </message>
-        <message>
-            <source>Open screen stream</source>
-            <translation>Schermstream openen</translation>
-        </message>
-        <message>
-            <source>Screen stream</source>
-            <translation>Schermstream</translation>
-        </message>
-        <message>
-            <source>%1 kbit/s</source>
-            <translation>%1 kbit/s</translation>
-        </message>
-    </context>
-    <context>
-        <name>VideoCodec</name>
-        <message>
-            <source>Video codec: %1</source>
-            <translation>Videocodec: %1</translation>
-        </message>
-        <message>
-            <source>Video codec ABI does not match its headers.</source>
-            <translation>De ABI van de videocodec komt niet overeen met de headerbestanden.</translation>
-        </message>
-        <message>
-            <source>Video buffers could not be allocated.</source>
-            <translation>Er kon geen geheugen voor de videobuffers worden toegewezen.</translation>
-        </message>
-        <message>
-            <source>Invalid video quality tier.</source>
-            <translation>Ongeldig videokwaliteitsniveau.</translation>
-        </message>
-        <message>
-            <source>The screen source exceeds the supported capture size.</source>
-            <translation>De schermbron overschrijdt de ondersteunde opnamegrootte.</translation>
-        </message>
-        <message>
-            <source>The screen source is too narrow.</source>
-            <translation>De schermbron is te smal.</translation>
-        </message>
-        <message>
-            <source>The video encoder could not be allocated.</source>
-            <translation>Er kon geen geheugen voor de video-encoder worden toegewezen.</translation>
-        </message>
-        <message>
-            <source>No supported video encoder is available.</source>
-            <translation>Er is geen ondersteunde video-encoder beschikbaar.</translation>
-        </message>
-        <message>
-            <source>Video encoder configuration is too large.</source>
-            <translation>De configuratie van de video-encoder is te groot.</translation>
-        </message>
-        <message>
-            <source>Video scaling could not be initialized.</source>
-            <translation>De videoschaling kon niet worden geïnitialiseerd.</translation>
-        </message>
-        <message>
-            <source>The encoder returned an empty video packet.</source>
-            <translation>De encoder heeft een leeg videopakket teruggegeven.</translation>
-        </message>
-        <message>
-            <source>Invalid video frame format.</source>
-            <translation>Ongeldig videoframeformaat.</translation>
-        </message>
-        <message>
-            <source>Invalid video decoder configuration.</source>
-            <translation>Ongeldige configuratie van de videodecoder.</translation>
-        </message>
-        <message>
-            <source>This video codec cannot be decoded.</source>
-            <translation>Deze videocodec kan niet worden gedecodeerd.</translation>
-        </message>
-        <message>
-            <source>Video decoder could not be allocated.</source>
-            <translation>Er kon geen geheugen voor de videodecoder worden toegewezen.</translation>
-        </message>
-        <message>
-            <source>Video decoder configuration could not be allocated.</source>
-            <translation>Er kon geen geheugen voor de videodecoderconfiguratie worden toegewezen.</translation>
-        </message>
-        <message>
-            <source>Decoded dimensions do not match the screen stream.</source>
-            <translation>De gedecodeerde afmetingen komen niet overeen met de schermstream.</translation>
-        </message>
-        <message>
-            <source>Decoded image could not be allocated.</source>
-            <translation>Er kon geen geheugen voor het gedecodeerde beeld worden toegewezen.</translation>
-        </message>
-        <message>
-            <source>Video color conversion could not be initialized.</source>
-            <translation>De videokleurconversie kon niet worden geïnitialiseerd.</translation>
         </message>
     </context>
     <context>
@@ -2877,359 +3020,208 @@
             <translation>Het wachtwoord kon niet worden geverifieerd.</translation>
         </message>
     </context>
-
     <context>
-        <name>Headless</name>
+        <name>Tray</name>
         <message>
-            <source>Command failed.</source>
-            <translation>Opdracht mislukt.</translation>
+            <source>Quit</source>
+            <translation>Afsluiten</translation>
         </message>
         <message>
-            <source>%1 must be an integer.</source>
-            <translation>%1 moet een geheel getal zijn.</translation>
+            <source>SquadSpeak - speaking</source>
+            <translation>SquadSpeak - spreekt</translation>
         </message>
         <message>
-            <source>Requests must be on/off or true/false.</source>
-            <translation>Verzoeken moeten on/off of true/false zijn.</translation>
+            <source>Settings</source>
+            <translation>Instellingen</translation>
         </message>
         <message>
-            <source>Unknown host property: %1</source>
-            <translation>Onbekende hosteigenschap: %1</translation>
+            <source>Channels</source>
+            <translation>Kanalen</translation>
         </message>
         <message>
-            <source>Run without GUI, microphone capture, or local audio output.</source>
-            <translation>Uitvoeren zonder GUI, microfoonopname of lokale audio-uitvoer.</translation>
-        </message>
-        <message>
-            <source>Server storage prefix. Personal/audio/GUI profiles are not loaded.</source>
-            <translation>Opslagvoorvoegsel van de server. Persoonlijke, audio- en GUI-profielen worden niet geladen.</translation>
-        </message>
-        <message>
-            <source>Optional private identity file instead of the OS credential store (Linux/macOS). Parent directory must exist and belong to this account.</source>
-            <translation>Optioneel privé-identiteitsbestand in plaats van de aanmeldgegevensopslag van het besturingssysteem (Linux/macOS). De bovenliggende map moet bestaan en aan dit account toebehoren.</translation>
-        </message>
-        <message>
-            <source>UTF-8 key=value properties or JSON host preset. Default: application.properties, then config/application.properties beside the app.</source>
-            <translation>UTF-8-eigenschappen key=value of JSON-hostvoorinstelling. Standaard: application.properties, daarna config/application.properties naast de app.</translation>
-        </message>
-        <message>
-            <source>Channel display name.</source>
-            <translation>Weergavenaam van het kanaal.</translation>
-        </message>
-        <message>
-            <source>System and radio bot display name.</source>
-            <translation>Weergavenaam van systeem- en radiobot.</translation>
-        </message>
-        <message>
-            <source>TCP service port (1-65535).</source>
-            <translation>TCP-servicepoort (1-65535).</translation>
-        </message>
-        <message>
-            <source>Headless admission is always on; only 'on' or 'true' is accepted.</source>
-            <translation>Headless-toelating staat altijd aan; alleen 'on' of 'true' wordt geaccepteerd.</translation>
-        </message>
-        <message>
-            <source>Preapprove a device ID; repeat for several devices. Existing bans remain.</source>
-            <translation>Een apparaat-ID vooraf toelaten; herhaal voor meerdere apparaten. Bestaande blokkeringen blijven.</translation>
-        </message>
-        <message>
-            <source>Block a device ID; repeat for several devices.</source>
-            <translation>Een apparaat-ID blokkeren; herhaal voor meerdere apparaten.</translation>
-        </message>
-        <message>
-            <source>Read a UTF-8 channel password from a file before listening. An empty file removes it.</source>
-            <translation>Lees het kanaalwachtwoord uit een UTF-8-bestand voor het luisteren. Een leeg bestand verwijdert het.</translation>
-        </message>
-        <message>
-            <source>Channel password. Empty removes it; environment or config avoids process-list exposure.</source>
-            <translation>Kanaalwachtwoord. Leeg verwijdert het; omgeving of configuratie voorkomt blootstelling in de proceslijst.</translation>
-        </message>
-        <message>
-            <source>SquadSpeak headless local channel host</source>
-            <translation>Lokale headless-kanaalhost van SquadSpeak</translation>
-        </message>
-        <message>
-            <source>Environment variables (SQUADSPEAK_ prefix):</source>
-            <translation>Omgevingsvariabelen (voorvoegsel SQUADSPEAK_):</translation>
-        </message>
-        <message>
-            <source>Host configuration could not be read or exceeds 1 MiB.</source>
-            <translation>Hostconfiguratie kon niet worden gelezen of is groter dan 1 MiB.</translation>
-        </message>
-        <message>
-            <source>Host configuration must be UTF-8.</source>
-            <translation>Hostconfiguratie moet UTF-8 zijn.</translation>
-        </message>
-        <message>
-            <source>Host preset must be a JSON object.</source>
-            <translation>De hostvoorinstelling moet een JSON-object zijn.</translation>
-        </message>
-        <message>
-            <source>Property line %1 must use key=value.</source>
-            <translation>Eigenschapsregel %1 moet key=value gebruiken.</translation>
-        </message>
-        <message>
-            <source>Property line %1: %2</source>
-            <translation>Eigenschapsregel %1: %2</translation>
-        </message>
-        <message>
-            <source>Standard input has no file descriptor.</source>
-            <translation>Standaardinvoer heeft geen bestandsdescriptor.</translation>
-        </message>
-        <message>
-            <source>Standard input could not be inspected.</source>
-            <translation>Standaardinvoer kon niet worden gecontroleerd.</translation>
-        </message>
-        <message>
-            <source>Could not write the command response: %1</source>
-            <translation>Opdrachtantwoord kon niet worden geschreven: %1</translation>
-        </message>
-        <message>
-            <source>Standard input could not be read: %1</source>
-            <translation>Standaardinvoer kon niet worden gelezen: %1</translation>
-        </message>
-        <message>
-            <source>Input line exceeds 65536 bytes.</source>
-            <translation>Invoerregel is langer dan 65536 bytes.</translation>
-        </message>
-        <message>
-            <source>Each input line must be a JSON object.</source>
-            <translation>Elke invoerregel moet een JSON-object zijn.</translation>
-        </message>
-        <message>
-            <source>Input ended before a complete JSON line.</source>
-            <translation>Invoer eindigde voordat een volledige JSON-regel beschikbaar was.</translation>
-        </message>
-        <message>
-            <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
-            <translation>Optionele eigen kanaal-ID voor de opdrachten status, configure, password, admission, history, chat en radio; standaard het hoofdkanaal.</translation>
-        </message>
-        <message>
-            <source>Channel action must be list, add or remove.</source>
-            <translation>Kanaalactie moet list, add of remove zijn.</translation>
-        </message>
-        <message>
-            <source>Removing an own channel deletes its history, images, permissions and radio settings. Set confirmed=true to proceed.</source>
-            <translation>Een eigen kanaal verwijderen wist geschiedenis, afbeeldingen, machtigingen en radio-instellingen. Stel confirmed=true in om door te gaan.</translation>
-        </message>
-        <message>
-            <source>id must identify an additional own channel.</source>
-            <translation>id moet een extra eigen kanaal aanduiden.</translation>
-        </message>
-        <message>
-            <source>The additional own channel could not be removed: %1</source>
-            <translation>Het extra eigen kanaal kon niet worden verwijderd: %1</translation>
-        </message>
-        <message>
-            <source>channelId must identify an own channel.</source>
-            <translation>channelId moet een eigen kanaal aanduiden.</translation>
-        </message>
-        <message>
-            <source>values must be a host settings object.</source>
-            <translation>values moet een hostinstellingenobject zijn.</translation>
-        </message>
-        <message>
-            <source>Headless admission is always enabled for non-banned devices; requests off is not supported.</source>
-            <translation>Headless-toelating is altijd ingeschakeld voor niet-geblokkeerde apparaten; requests off wordt niet ondersteund.</translation>
-        </message>
-        <message>
-            <source>value must be a password of at most 1024 UTF-8 bytes without control characters; an empty string removes it.</source>
-            <translation>value moet een wachtwoord van maximaal 1024 UTF-8-bytes zonder besturingstekens zijn; een lege tekenreeks verwijdert het.</translation>
-        </message>
-        <message>
-            <source>The channel is not ready or a password change is in progress.</source>
-            <translation>Het kanaal is niet klaar of een wachtwoordwijziging loopt.</translation>
-        </message>
-        <message>
-            <source>The channel was removed while saving the password.</source>
-            <translation>Het kanaal is verwijderd tijdens het opslaan van het wachtwoord.</translation>
-        </message>
-        <message>
-            <source>id is required.</source>
-            <translation>id is vereist.</translation>
-        </message>
-        <message>
-            <source>text must be a valid non-empty chat message.</source>
-            <translation>text moet een geldig niet-leeg chatbericht zijn.</translation>
-        </message>
-        <message>
-            <source>The local channel is not ready.</source>
-            <translation>Het lokale kanaal is niet klaar.</translation>
-        </message>
-        <message>
-            <source>The channel's radio is unavailable.</source>
-            <translation>De radio van het kanaal is niet beschikbaar.</translation>
-        </message>
-        <message>
-            <source>Unknown command. Use help.</source>
-            <translation>Onbekende opdracht. Gebruik help.</translation>
-        </message>
-        <message>
-            <source>search requires a query, non-negative offset and limit from 1 to 128.</source>
-            <translation>search vereist query, een niet-negatieve offset en limit van 1 tot 128.</translation>
-        </message>
-        <message>
-            <source>add creates an id; update requires an existing id.</source>
-            <translation>add maakt een id; update vereist een bestaande id.</translation>
-        </message>
-        <message>
-            <source>A station is already being checked.</source>
-            <translation>Een station wordt al gecontroleerd.</translation>
-        </message>
-        <message>
-            <source>The channel was removed while checking the station.</source>
-            <translation>Het kanaal is verwijderd tijdens het controleren van het station.</translation>
-        </message>
-        <message>
-            <source>Unknown radio action.</source>
-            <translation>Onbekende radioactie.</translation>
-        </message>
-        <message>
-            <source>Could not load language: %1</source>
-            <translation>Taal kon niet worden geladen: %1</translation>
-        </message>
-        <message>
-            <source>The %1 option is incompatible with --headless.</source>
-            <translation>Optie %1 is niet compatibel met --headless.</translation>
-        </message>
-        <message>
-            <source>Unexpected positional arguments. Use --help.</source>
-            <translation>Onverwachte positionele argumenten. Gebruik --help.</translation>
-        </message>
-        <message>
-            <source>--config / -f requires a non-empty path.</source>
-            <translation>--config / -f vereist een niet-leeg pad.</translation>
-        </message>
-        <message>
-            <source>Choose --password or --password-file, not both.</source>
-            <translation>Kies --password of --password-file, niet beide.</translation>
-        </message>
-        <message>
-            <source>Choose SQUADSPEAK_PASSWORD or SQUADSPEAK_PASSWORD_FILE, not both.</source>
-            <translation>Kies SQUADSPEAK_PASSWORD of SQUADSPEAK_PASSWORD_FILE, niet beide.</translation>
-        </message>
-        <message>
-            <source>Choose password or passwordFile in one configuration layer, not both.</source>
-            <translation>Kies password of passwordFile in een enkele configuratielaag, niet beide.</translation>
-        </message>
-        <message>
-            <source>passwordFile must be a non-empty path.</source>
-            <translation>passwordFile moet een niet-leeg pad zijn.</translation>
-        </message>
-        <message>
-            <source>Password file could not be read or is too large.</source>
-            <translation>Wachtwoordbestand kon niet worden gelezen of is te groot.</translation>
-        </message>
-        <message>
-            <source>Password file must contain at most 1024 UTF-8 bytes without control characters.</source>
-            <translation>Het wachtwoordbestand mag maximaal 1024 UTF-8-bytes zonder besturingstekens bevatten.</translation>
-        </message>
-        <message>
-            <source>Password must be a string of at most 1024 UTF-8 bytes without control characters.</source>
-            <translation>Het wachtwoord moet een tekenreeks van maximaal 1024 UTF-8-bytes zonder besturingstekens zijn.</translation>
-        </message>
-        <message>
-            <source>settingsFile must be a non-empty path.</source>
-            <translation>settingsFile moet een niet-leeg pad zijn.</translation>
-        </message>
-        <message>
-            <source>identityFile must be a non-empty path.</source>
-            <translation>identityFile moet een niet-leeg pad zijn.</translation>
-        </message>
-        <message>
-            <source>The settings directory could not be created.</source>
-            <translation>De instellingenmap kon niet worden gemaakt.</translation>
-        </message>
-        <message>
-            <source>This SquadSpeak profile is already running or cannot be locked.</source>
-            <translation>Dit SquadSpeak-profiel draait al of kan niet worden vergrendeld.</translation>
-        </message>
-        <message>
-            <source>Standard input could not be opened.</source>
-            <translation>Standaardinvoer kon niet worden geopend.</translation>
-        </message>
-        <message>
-            <source>Standard output could not be opened.</source>
-            <translation>Standaarduitvoer kon niet worden geopend.</translation>
-        </message>
-        <message>
-            <source>This identity file is already in use or cannot be locked.</source>
-            <translation>Dit identiteitsbestand is al in gebruik of kan niet worden vergrendeld.</translation>
-        </message>
-        <message>
-            <source>Invalid host configuration: %1</source>
-            <translation>Ongeldige hostconfiguratie: %1</translation>
-        </message>
-        <message>
-            <source>Radio channels could not be initialized.</source>
-            <translation>Radiokanalen konden niet worden geïnitialiseerd.</translation>
-        </message>
-        <message>
-            <source>Headless host could not start: %1</source>
-            <translation>Headless-host kon niet worden gestart: %1</translation>
-        </message>
-        <message>
-            <source>Channel password could not be saved.</source>
-            <translation>Kanaalwachtwoord kon niet worden opgeslagen.</translation>
-        </message>
-        <message>
-            <source>Invalid channel password: %1</source>
-            <translation>Ongeldig kanaalwachtwoord: %1</translation>
-        </message>
-        <message>
-            <source>Headless host could not initialize: %1</source>
-            <translation>Headless-host kon niet worden geïnitialiseerd: %1</translation>
-        </message>
-        <message>
-            <source>SquadSpeak headless could not start: %1</source>
-            <translation>SquadSpeak-headless kon niet worden gestart: %1</translation>
-        </message>
-        <message>
-            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
-            <translation>Supporteractie moet status, aanmelden, vernieuwen, afmelden of annuleren zijn. sign-in refresh sign-out cancel</translation>
-        </message>
-        <message>
-            <source>A Supporter operation is in progress.</source>
-            <translation>Er is een Supporter-operatie aan de gang.</translation>
-        </message>
-        <message>
-            <source>Supporter access is unavailable in this build.</source>
-            <translation>Supportertoegang is niet beschikbaar in deze build.</translation>
-        </message>
-        <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>Prioriteit van instellingen: argumenten &gt; omgeving &gt; eigenschappen &gt; opgeslagen serverwaarden.</translation>
+            <source>New image</source>
+            <translation>Nieuwe afbeelding</translation>
         </message>
     </context>
     <context>
-        <name>Desktop</name>
+        <name>VideoCodec</name>
         <message>
-            <source>Open settings at startup.</source>
-            <translation>Instellingen openen bij het opstarten.</translation>
+            <source>Video codec: %1</source>
+            <translation>Videocodec: %1</translation>
         </message>
         <message>
-            <source>Open guided local test recording without starting network services.</source>
-            <translation>De begeleide lokale testopname openen zonder netwerkdiensten te starten.</translation>
+            <source>Video codec ABI does not match its headers.</source>
+            <translation>De ABI van de videocodec komt niet overeen met de headerbestanden.</translation>
         </message>
         <message>
-            <source>Alternative file for audio profiles.</source>
-            <translation>Alternatief bestand voor audioprofielen.</translation>
+            <source>Video buffers could not be allocated.</source>
+            <translation>Er kon geen geheugen voor de videobuffers worden toegewezen.</translation>
         </message>
         <message>
-            <source>Load the interface without microphone capture and exit after one second.</source>
-            <translation>De interface laden zonder microfoonopname en na één seconde afsluiten.</translation>
+            <source>Invalid video quality tier.</source>
+            <translation>Ongeldig videokwaliteitsniveau.</translation>
         </message>
         <message>
-            <source>Save an image of the app window during the UI test.</source>
-            <translation>Tijdens de interfacetest een afbeelding van het appvenster opslaan.</translation>
+            <source>The screen source exceeds the supported capture size.</source>
+            <translation>De schermbron overschrijdt de ondersteunde opnamegrootte.</translation>
         </message>
         <message>
-            <source>The window image could not be saved.</source>
-            <translation>De afbeelding van het venster kon niet worden opgeslagen.</translation>
+            <source>The screen source is too narrow.</source>
+            <translation>De schermbron is te smal.</translation>
         </message>
         <message>
-            <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
-            <translation>Systeemvak niet beschikbaar; de app blijft als venster geopend.</translation>
+            <source>The video encoder could not be allocated.</source>
+            <translation>Er kon geen geheugen voor de video-encoder worden toegewezen.</translation>
+        </message>
+        <message>
+            <source>No supported video encoder is available.</source>
+            <translation>Er is geen ondersteunde video-encoder beschikbaar.</translation>
+        </message>
+        <message>
+            <source>Video encoder configuration is too large.</source>
+            <translation>De configuratie van de video-encoder is te groot.</translation>
+        </message>
+        <message>
+            <source>Video scaling could not be initialized.</source>
+            <translation>De videoschaling kon niet worden geïnitialiseerd.</translation>
+        </message>
+        <message>
+            <source>The encoder returned an empty video packet.</source>
+            <translation>De encoder heeft een leeg videopakket teruggegeven.</translation>
+        </message>
+        <message>
+            <source>Invalid video frame format.</source>
+            <translation>Ongeldig videoframeformaat.</translation>
+        </message>
+        <message>
+            <source>Invalid video decoder configuration.</source>
+            <translation>Ongeldige configuratie van de videodecoder.</translation>
+        </message>
+        <message>
+            <source>This video codec cannot be decoded.</source>
+            <translation>Deze videocodec kan niet worden gedecodeerd.</translation>
+        </message>
+        <message>
+            <source>Video decoder could not be allocated.</source>
+            <translation>Er kon geen geheugen voor de videodecoder worden toegewezen.</translation>
+        </message>
+        <message>
+            <source>Video decoder configuration could not be allocated.</source>
+            <translation>Er kon geen geheugen voor de videodecoderconfiguratie worden toegewezen.</translation>
+        </message>
+        <message>
+            <source>Decoded dimensions do not match the screen stream.</source>
+            <translation>De gedecodeerde afmetingen komen niet overeen met de schermstream.</translation>
+        </message>
+        <message>
+            <source>Decoded image could not be allocated.</source>
+            <translation>Er kon geen geheugen voor het gedecodeerde beeld worden toegewezen.</translation>
+        </message>
+        <message>
+            <source>Video color conversion could not be initialized.</source>
+            <translation>De videokleurconversie kon niet worden geïnitialiseerd.</translation>
+        </message>
+    </context>
+    <context>
+        <name>VoiceAvatar</name>
+        <message>
+            <source>Muted</source>
+            <translation>Gedempt</translation>
+        </message>
+        <message>
+            <source>Sleeping</source>
+            <translation>Slapend</translation>
+        </message>
+        <message>
+            <source>Offline</source>
+            <translation>Offline</translation>
+        </message>
+        <message>
+            <source>Speaking</source>
+            <translation>Spreekt</translation>
+        </message>
+        <message>
+            <source>Unavailable</source>
+            <translation>Niet beschikbaar</translation>
+        </message>
+        <message>
+            <source>Listening</source>
+            <translation>Luistert</translation>
+        </message>
+        <message>
+            <source>Deafened</source>
+            <translation>Geen geluid</translation>
+        </message>
+    </context>
+    <context>
+        <name>VoiceSession</name>
+        <message>
+            <source>Microphone muted</source>
+            <translation>Microfoon gedempt</translation>
+        </message>
+        <message>
+            <source>Push-to-talk held</source>
+            <translation>Indrukken om te praten vastgehouden</translation>
+        </message>
+        <message>
+            <source>Ready - push-to-talk released</source>
+            <translation>Gereed - indrukken om te praten losgelaten</translation>
+        </message>
+        <message>
+            <source>Microphone unmuted</source>
+            <translation>Microfoon ingeschakeld</translation>
+        </message>
+        <message>
+            <source>Settings could not be saved: %1</source>
+            <translation>Instellingen konden niet worden opgeslagen: %1</translation>
+        </message>
+        <message>
+            <source>The push-to-talk sequence cannot be incremented further.</source>
+            <translation>De reeks voor indrukken om te praten kan niet verder worden verhoogd.</translation>
+        </message>
+        <message>
+            <source>Choose System, Light or Dark.</source>
+            <translation>Kies Systeem, Licht of Donker.</translation>
+        </message>
+        <message>
+            <source>Choose a colour palette from the list.</source>
+            <translation>Kies een kleurenpalet uit de lijst.</translation>
+        </message>
+        <message>
+            <source>Choose an available avatar.</source>
+            <translation>Kies een beschikbare avatar.</translation>
+        </message>
+        <message>
+            <source>Invalid push-to-talk binding.</source>
+            <translation>Ongeldige koppeling voor indrukken om te praten.</translation>
+        </message>
+        <message>
+            <source>Release the held push-to-talk key first.</source>
+            <translation>Laat eerst de vastgehouden toets voor indrukken om te praten los.</translation>
+        </message>
+        <message>
+            <source>Choose a language from the list.</source>
+            <translation>Kies een taal uit de lijst.</translation>
+        </message>
+        <message>
+            <source>This avatar requires Supporter.</source>
+            <translation>Deze avatar vereist Supporter.</translation>
+        </message>
+        <message>
+            <source>The name must contain 1 to 64 characters.</source>
+            <translation>De naam moet 1 tot 64 tekens bevatten.</translation>
+        </message>
+        <message>
+            <source>The name may not contain control characters or line breaks.</source>
+            <translation>De naam mag geen besturingstekens of regeleinden bevatten.</translation>
+        </message>
+        <message>
+            <source>Session settings could not be read.</source>
+            <translation>Sessie-instellingen konden niet worden gelezen.</translation>
+        </message>
+        <message>
+            <source>Saved setting is invalid: %1</source>
+            <translation>Ongeldige opgeslagen instelling: %1</translation>
         </message>
     </context>
 </TS>

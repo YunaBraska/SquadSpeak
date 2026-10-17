@@ -1,3 +1,4 @@
+#include <QOperatingSystemVersion>
 #include "audio_processor.hpp"
 #include "audio_model.hpp"
 #include "voice_session.hpp"
@@ -15,9 +16,12 @@
 #include <QDir>
 #include <QQuickWindow>
 #include <QQuickItem>
+#include <QWheelEvent>
+#include <QPointingDevice>
 #include <QTemporaryDir>
 #include <QStandardPaths>
 #include <QImage>
+#include <QImageWriter>
 #include <QPainter>
 #include <QUrl>
 #include <QTranslator>
@@ -32,12 +36,33 @@
 #include <vector>
 #include <cmath>
 #include <numbers>
+#include <cstdio>
+#include <cstdlib>
 #if defined(Q_OS_IOS)
 #import <UIKit/UIKit.h>
 #elif defined(Q_OS_ANDROID)
 #include <QJniObject>
 #include <QJniEnvironment>
 #endif
+
+namespace {
+QtMessageHandler previousMessageHandler = nullptr;
+
+void failOnQuickTestStartupWarning(QtMsgType type, const QMessageLogContext& context, const QString& message) {
+    const bool exposureFailure = (type == QtWarningMsg || type == QtCriticalMsg)
+        && message.contains(QStringLiteral("window was never exposed! If the test case was expecting windowShown, it will hang."));
+    if (exposureFailure) {
+        std::fprintf(stderr, "QtQuickTest startup failure: %s\n", qPrintable(message));
+        std::fflush(stderr);
+        std::_Exit(EXIT_FAILURE);
+    }
+    if (previousMessageHandler) {
+        previousMessageHandler(type, context, message);
+    } else {
+        std::fprintf(stderr, "%s\n", qPrintable(qFormatLogMessage(type, context, message)));
+    }
+}
+}
 
 class AudioFixtures final : public QObject {
     Q_OBJECT
@@ -46,6 +71,7 @@ class AudioFixtures final : public QObject {
     std::unique_ptr<VoiceSession> session_;
     std::unique_ptr<License> license_;
     std::unique_ptr<LocalChannel> channel_;
+    std::unique_ptr<LocalChannel> unreadyChannel_;
     std::unique_ptr<ScreenShare> screen_;
     std::unique_ptr<PushToTalkKey> pttKey_;
     std::unique_ptr<VoiceSession> remoteSession_;
@@ -59,6 +85,11 @@ class AudioFixtures final : public QObject {
     QTranslator translation_;
     QString appliedLanguage_ = "en";
 public slots:
+    QString reloadedBotVoice() {
+        AudioModel restored(folder_.filePath("audio.ini"));
+        return restored.botVoiceId();
+    }
+
     bool populateMembers(int count) {
         if (count < 0 || count > 63) return false;
         members_.clear();
@@ -161,6 +192,27 @@ public slots:
         audio_->setDeafened(false);
         return accepted;
     }
+    QVariantMap previewOutput(double volume, bool deafened) {
+        const auto previous = audio_->deafened();
+        audio_->setDeafened(deafened);
+        const bool accepted = audio_->previewOutput(volume);
+        const bool testing = audio_->testActive();
+        audio_->setDeafened(previous);
+        return {{"accepted", accepted}, {"testing", testing}, {"capturing", audio_->running()}};
+    }
+    bool setAudioVoiceState(bool joined, bool transmit) {
+        return audio_->setVoiceState(joined, transmit, true);
+    }
+    bool acceptsBotMessage(const QString& text, bool joined, bool deafened) {
+        const auto previous = audio_->deafened();
+        audio_->setVoiceState(joined, false);
+        audio_->setDeafened(deafened);
+        const bool accepted = audio_->readBotMessage(text);
+        audio_->cancelBotMessages();
+        audio_->setVoiceState(false, false);
+        audio_->setDeafened(previous);
+        return accepted;
+    }
     bool textHasGlyphs(const QString& text, const QFont& font) const {
         QTextLayout layout(text, font);
         layout.beginLayout();
@@ -240,7 +292,31 @@ public slots:
     bool expireChat(int days = 1) { now_ += days * ChatHistory::lifetime + 1; return true; }
     bool saveWindow(QObject* window, const QString& path) {
         auto* view = qobject_cast<QQuickWindow*>(window);
-        return view && view->grabWindow().save(path);
+        if (!view) return false;
+        const auto image = view->grabWindow();
+        QImageWriter writer(path);
+        if (writer.write(image)) return true;
+        qWarning() << "Screenshot failed" << path << writer.errorString()
+                   << "image" << image.size() << "visible" << view->isVisible() << "exposed" << view->isExposed();
+        return false;
+    }
+    bool scrollPixels(QObject* object, int x, int y) {
+        auto* item = qobject_cast<QQuickItem*>(object);
+        if (!item || !item->window()) return false;
+        static const QPointingDevice touchpad("Touchpad", 123, QInputDevice::DeviceType::TouchPad,
+            QPointingDevice::PointerType::Finger, QInputDevice::Capability::Position | QInputDevice::Capability::PixelScroll, 2, 0);
+        const auto position = item->mapToScene(QPointF(item->width() / 2, item->height() / 2));
+        bool accepted = false;
+        // Native Qt gestures include both deltas. An angle-free update can be
+        // discarded as a compatibility duplicate of the previous event.
+        for (const auto phase : {Qt::ScrollBegin, Qt::ScrollUpdate, Qt::ScrollEnd}) {
+            QWheelEvent event(position, item->window()->mapToGlobal(position),
+                phase == Qt::ScrollUpdate ? QPoint(x, y) : QPoint{},
+                phase == Qt::ScrollUpdate ? QPoint(x * 3, y * 3) : QPoint{},
+                Qt::NoButton, Qt::NoModifier, phase, false, Qt::MouseEventSynthesizedBySystem, &touchpad);
+            accepted |= QCoreApplication::sendEvent(item->window(), &event);
+        }
+        return accepted;
     }
     QColor renderedColor(QObject* object, qreal x, qreal y) {
         auto* item = qobject_cast<QQuickItem*>(object);
@@ -323,6 +399,8 @@ public slots:
     Q_INVOKABLE bool startHost() { return channel_->listen(QHostAddress::LocalHost); }
     void qmlEngineAvailable(QQmlEngine* engine) {
         QDesktopServices::setUrlHandler("https", this, "captureOpenedUrl");
+        QDesktopServices::setUrlHandler("x-apple.systempreferences", this, "captureOpenedUrl");
+        QDesktopServices::setUrlHandler("app-settings", this, "captureOpenedUrl");
         QCoreApplication::setApplicationVersion(QStringLiteral(SQUADSPEAK_VERSION));
         station_ = std::make_unique<RadioStation>();
         qputenv("QT_SSL_USE_TEMPORARY_KEYCHAIN", "1");
@@ -340,13 +418,17 @@ public slots:
             }
             QLocale::setDefault(QLocale(appliedLanguage_ == "en" ? "en_GB" : appliedLanguage_));
             QGuiApplication::setLayoutDirection(QLocale(appliedLanguage_).textDirection());
+            engine->setUiLanguage(appliedLanguage_);
             engine->retranslate();
-            if (audio_) { audio_->devicesChanged(); QMetaObject::invokeMethod(audio_->recording(), "changed"); }
+            if (audio_) { audio_->setAppLanguage(session_->language()); audio_->devicesChanged(); }
         });
         engine->rootContext()->setContextProperty("voiceSession", session_.get());
         // Endpoints stay closed until a network UI scenario explicitly starts
         // one. No microphone or native global keyboard observer is started.
         channel_ = std::make_unique<LocalChannel>(*session_, folder_.filePath("channel.json"), TlsIdentity::create(), [this] { return now_; });
+        unreadyChannel_ = std::make_unique<LocalChannel>(*session_, folder_.filePath("unready-channel.json"));
+        QQmlEngine::setObjectOwnership(unreadyChannel_.get(), QQmlEngine::CppOwnership);
+        engine->rootContext()->setContextProperty("unreadyChannel", unreadyChannel_.get());
         screen_ = std::make_unique<ScreenShare>(*channel_);
         engine->rootContext()->setContextProperty("screenShare", screen_.get());
         radio_ = std::make_unique<RadioPlayer>(folder_.filePath("radio.json"));
@@ -373,11 +455,14 @@ public slots:
         // Use the real settings API without starting capture, playback or
         // connecting it to the test channels.
         audio_ = std::make_unique<AudioModel>(folder_.filePath("audio.ini"));
+        audio_->setAppLanguage(session_->language());
         const auto expectedInput = qgetenv("SQUADSPEAK_TEST_INPUT");
         if ((expectedInput == "present" && !audio_->inputAvailable())
                 || (expectedInput == "absent" && audio_->inputAvailable()))
             qFatal("The test input device does not match SQUADSPEAK_TEST_INPUT.");
         engine->rootContext()->setContextProperty("audio", audio_.get());
+        engine->rootContext()->setContextProperty("nativeCaptureAcceptance",
+            qEnvironmentVariable("SQUADSPEAK_TEST_INPUT") == "present");
         squad::AudioProcessor processor(48000, {0, 0, 300});
         for (int i = 0; i < 24000; ++i) {
             const auto phase = 2 * std::numbers::pi * 220 * i / 48000;
@@ -399,6 +484,9 @@ public slots:
 #endif
         if (!imageDirectory.isEmpty()) QDir().mkpath(imageDirectory);
         engine->rootContext()->setContextProperty("imageDirectory", imageDirectory);
+        engine->rootContext()->setContextProperty("nativeTranslationExpected",
+            LocalLanguage::supported() && QGuiApplication::platformName() != "offscreen"
+                && QOperatingSystemVersion::current().majorVersion() >= 26);
     }
 signals:
     void externalUrlOpened(const QString& url);
@@ -407,6 +495,7 @@ signals:
 int main(int argc, char** argv) {
     QTEST_SET_MAIN_SOURCE_PATH
     QGuiApplication app(argc, argv);
+    previousMessageHandler = qInstallMessageHandler(failOnQuickTestStartupWarning);
     // Audio and network fixtures must be destroyed before Qt's application services.
     AudioFixtures setup;
     return quick_test_main_with_setup(argc, argv, "audio_controls", nullptr, &setup);

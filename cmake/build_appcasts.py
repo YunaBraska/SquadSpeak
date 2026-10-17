@@ -94,10 +94,10 @@ def main() -> int:
     parser.add_argument("--version", required=True)
     parser.add_argument("--repository", required=True)
     parser.add_argument("--output-dir", required=True, type=pathlib.Path)
-    parser.add_argument("--arm-archive", required=True, type=pathlib.Path)
-    parser.add_argument("--arm-signature", required=True)
-    parser.add_argument("--x86-archive", required=True, type=pathlib.Path)
-    parser.add_argument("--x86-signature", required=True)
+    parser.add_argument("--arm-archive", type=pathlib.Path)
+    parser.add_argument("--arm-signature")
+    parser.add_argument("--x86-archive", type=pathlib.Path)
+    parser.add_argument("--x86-signature")
     parser.add_argument("--public-key", required=True)
     args = parser.parse_args()
     expected_public_key = public_key(args.public_key)
@@ -106,9 +106,15 @@ def main() -> int:
         ("arm64", args.arm_archive, args.arm_signature),
         ("x86_64", args.x86_archive, args.x86_signature),
     ):
+        if archive is None and archive_signature is None:
+            continue
+        if archive is None or archive_signature is None:
+            raise ValueError(f"{architecture} requires both archive and signature")
         feed = make_feed(args.version, args.repository, architecture, archive, archive_signature,
                           expected_public_key)
         feeds.append((args.output_dir / f"appcast-macos-{architecture}.xml", feed))
+    if not feeds:
+        raise ValueError("at least one archive and signature pair is required")
     args.output_dir.mkdir(parents=True, exist_ok=True)
     for output, feed in feeds:
         feed.write(output, encoding="utf-8", xml_declaration=True)

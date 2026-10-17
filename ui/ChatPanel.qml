@@ -10,7 +10,11 @@ Item {
     property bool animatedAvatars: true
     property double animationTime: 0
     property var memberLevel: function(id) { return 0 }
+    signal memberRequested(var member, bool contextual)
     property bool active: visible
+    property bool readable: active
+    property Item readViewport: null
+    property string readReceipt: ""
     readonly property bool remote: network.remoteMode
     readonly property var current: remote ? network.remoteView : network
     readonly property string hostId: current.chatHostId || ""
@@ -30,10 +34,52 @@ Item {
     property bool followEnd: true
     property real layoutWidth: 0
     property real layoutHeight: 0
+    readonly property var language: audio.language
+    readonly property string translationKey: "draft:" + hostId
+    readonly property var translationPreference: { language.revision; return language.channelPreferences(hostId) }
+    readonly property string translationTarget: remote || !translationPreference.messages ? "" : (translationPreference.outgoing || "")
+    readonly property var translatedDraft: { language.revision; return language.result(translationKey) }
+    readonly property bool translationReady: !draft.text.trim().length || !translationTarget.length || (translatedDraft.original === draft.text
+        && translatedDraft.target === translationTarget && !!translatedDraft.text && !translatedDraft.pending)
+    function translateDraft() {
+        language.cancel(translationKey)
+        draftTranslation.restart()
+    }
+    Timer {
+        id: draftTranslation; interval: 400
+        onTriggered: if (!root.remote && !root.language.busy && root.translationTarget.length && draft.text.trim().length)
+            root.language.request(root.translationKey, draft.text, "", root.translationTarget)
+    }
+    onTranslationTargetChanged: translateDraft()
+    Connections {
+        target: root.language
+        function onChanged() {
+            if (!root.language.busy && root.translationTarget.length && draft.text.trim().length && !root.translatedDraft.original)
+                draftTranslation.restart()
+        }
+    }
 
     function restoreLayout() {
         updating = true
         restorePosition.restart()
+    }
+    function readLatest() {
+        if (!readable || !visible || updating || current.historyLoading || current.hasNewerMessages
+            || !current.chatReady || !history.atYEnd || visibleMessages.count === 0) return
+        const last = messageRows.itemAt(visibleMessages.count - 1)
+        if (!last) return
+        if (readViewport) {
+            const bottom = last.mapToItem(readViewport, 0, last.height).y
+            if (bottom < 0 || bottom > readViewport.height) return
+        }
+        const sequence = last.message.sequence
+        const receipt = hostId + ":" + sequence
+        if (readReceipt !== receipt && network.markChatRead(hostId, sequence)) readReceipt = receipt
+    }
+    onReadableChanged: Qt.callLater(readLatest)
+    Connections {
+        target: root.readViewport ? root.readViewport.contentItem : null
+        function onContentYChanged() { Qt.callLater(root.readLatest) }
     }
 
     function saveAnchor() {
@@ -78,6 +124,7 @@ Item {
             root.layoutWidth = history.width; root.layoutHeight = history.height
             root.updating = false
             root.saveAnchor()
+            root.readLatest()
         }
     }
 
@@ -89,7 +136,9 @@ Item {
         else network.loadNewerMessages()
     }
     function switchDraft() {
+        readReceipt = ""
         if (draftKey.length > 0) drafts[draftKey] = draft.text
+        if (draftKey.length > 0) language.cancel("draft:" + draftKey.substring(draftKey.indexOf(":") + 1))
         draftKey = (remote ? "remote:" : "local:") + hostId
         draft.text = drafts[draftKey] || ""
         sendError = ""
@@ -154,6 +203,7 @@ Item {
             onContentHeightChanged: root.restoreLayout()
             onContentYChanged: {
                 if (width === root.layoutWidth && height === root.layoutHeight) root.saveAnchor()
+                Qt.callLater(root.readLatest)
                 if (!moving || root.updating || root.current.historyLoading) return
                 if (atYBeginning && root.current.hasOlderMessages) root.page(true)
                 else if (atYEnd && root.current.hasNewerMessages) root.page(false)
@@ -185,6 +235,19 @@ Item {
                         LayoutMirroring.childrenInherit: true
                         required property var message
                         readonly property bool systemMessage: !!message.event
+                        readonly property var member: systemMessage ? (root.current.chatBot || {}) : (root.current.chatMembers || []).find(function(m) { return m.id === message.sender })
+                            || ({id: message.sender, name: message.name, avatarId: message.avatarId || message.avatar})
+                        readonly property string translationKey: root.hostId + ":" + message.sequence
+                        readonly property var translated: { root.language.revision; return root.language.result(translationKey) }
+                        readonly property bool wantsTranslation: !root.remote && !systemMessage && !own && !!root.translationPreference.messages
+                        readonly property bool hasTranslation: wantsTranslation && translated.original === message.text && translated.target === root.translationPreference.incomingTarget && !!translated.text && !translated.pending
+                        property bool showOriginal: false
+                        Timer {
+                            id: incomingTranslation; interval: 50
+                            running: messageRow.inViewport && messageRow.wantsTranslation && !messageRow.translated.original && !root.language.busy
+                            onTriggered: root.language.request(messageRow.translationKey, messageRow.message.text,
+                                "", root.translationPreference.incomingTarget)
+                        }
                         readonly property bool own: !systemMessage && message.sender === root.current.ownId
                         objectName: "messageRow_" + message.sequence
                         width: messageColumn.width - 8
@@ -209,13 +272,23 @@ Item {
                                 sourceComponent: VoiceAvatar {
                                     objectName: "messageAvatar_" + messageRow.message.sender
                                     systemMessage: messageRow.systemMessage
+                                    teamSpeak: !!messageRow.message.teamSpeak || !!messageRow.member.teamSpeak
                                     online: systemMessage || !root.current.chatPresenceKnown || (root.current.chatOnlineIds || []).includes(messageRow.message.sender)
                                     avatar: messageRow.message.avatarId || messageRow.message.avatar || "mossling"; name: messageRow.message.name
-                                    readonly property var member: systemMessage ? (root.current.chatBot || {}) : (root.current.chatMembers || []).find(function(m) { return m.id === messageRow.message.sender }) || ({})
+                                    readonly property var member: messageRow.member
                                     identity: messageRow.message.sender; animationTime: root.animationTime
                                     available: member.available !== false; muted: !!member.muted; deafened: !!member.deafened; sleeping: !!member.sleeping
                                     level: root.memberLevel(identity)
                                     circular: true; animated: root.animatedAvatars
+                                    activeFocusOnTab: !systemMessage
+                                    Accessible.role: systemMessage ? Accessible.Graphic : Accessible.Button
+                                    Accessible.onPressAction: if (!systemMessage) root.memberRequested(member, false)
+                                    Keys.onReturnPressed: if (!systemMessage) root.memberRequested(member, false)
+                                    Keys.onSpacePressed: if (!systemMessage) root.memberRequested(member, false)
+                                    MouseArea {
+                                        anchors.fill: parent; enabled: !messageRow.systemMessage; acceptedButtons: Qt.LeftButton | Qt.RightButton
+                                        onClicked: mouse => root.memberRequested(messageRow.member, mouse.button === Qt.RightButton)
+                                    }
                                 }
                             }
                             ColumnLayout {
@@ -223,27 +296,40 @@ Item {
                                 spacing: 3
                                 RowLayout {
                                     Layout.fillWidth: true
-                                    Label { text: messageRow.message.name; textFormat: Text.PlainText; elide: Text.ElideRight; font.weight: Font.DemiBold; Layout.fillWidth: true; horizontalAlignment: messageRow.own ? Text.AlignRight : Text.AlignLeft }
+                                    Label {
+                                        text: messageRow.message.name; textFormat: Text.PlainText; elide: Text.ElideRight; font.weight: Font.DemiBold; Layout.fillWidth: true; horizontalAlignment: messageRow.own ? Text.AlignRight : Text.AlignLeft
+                                        MouseArea {
+                                            anchors.fill: parent; enabled: !messageRow.systemMessage; acceptedButtons: Qt.LeftButton | Qt.RightButton
+                                            onClicked: mouse => root.memberRequested(messageRow.member, mouse.button === Qt.RightButton)
+                                        }
+                                    }
                                     Label { text: Qt.formatDateTime(new Date(messageRow.message.created), "hh:mm"); color: Theme.muted; font.pixelSize: 11 }
+                                }
+                                ActionButton {
+                                    objectName: "translationOriginal_" + messageRow.message.sequence
+                                    Layout.alignment: Qt.AlignRight
+                                    visible: messageRow.hasTranslation || (messageRow.wantsTranslation && !!messageRow.translated.error)
+                                    text: messageRow.hasTranslation ? qsTranslate("LocalLanguage", "Original text") : messageRow.translated.needsPreparation ? qsTranslate("LocalLanguage", "Prepare languages") : messageRow.translated.error
+                                    glyph: messageRow.hasTranslation ? "translate" : "down"; iconOnly: true; flat: true; implicitHeight: 26
+                                    onClicked: {
+                                        if (messageRow.hasTranslation) messageRow.showOriginal = !messageRow.showOriginal
+                                        else if (messageRow.translated.needsPreparation) root.language.prepareTranslation(messageRow.translationKey)
+                                        else root.language.openSettings()
+                                    }
                                 }
                                 TextEdit {
                                     id: messageText
                                     objectName: "messageText_" + messageRow.message.sequence
                                     Layout.fillWidth: true
                                     text: {
+                                        Qt.uiLanguage // Reformat after the translation catalog changes.
                                         if (messageRow.systemMessage) {
                                             const event = messageRow.message.event
-                                            switch (event.kind) {
-                                                case "joined": return qsTr("%1 joined.").arg(event.name)
-                                                case "left": return qsTr("%1 left.").arg(event.name)
-                                                case "kicked": return qsTr("%1 was kicked.").arg(event.name)
-                                                case "banned": return qsTr("%1 was banned from the channel.").arg(event.name)
-                                            }
-                                            if (event.kind !== "announcement") return messageRow.message.text
+                                            if (event.kind !== "announcement") return chatContent.plainText(messageRow.message)
                                         }
                                         root.network.imageRevision
                                         const image = messageRow.message.image
-                                        return chatContent.format(messageRow.message.text, image ? {
+                                        return chatContent.format(messageRow.hasTranslation ? messageRow.translated.text : messageRow.message.text, image ? {
                                             "hash": image.hash,
                                             // Keep image geometry without retaining offscreen decoded images.
                                             "source": (messageRow.inViewport && root.network.imageSource(image.hash))
@@ -264,6 +350,14 @@ Item {
                                     Connections { target: messageRow; function onInViewportChanged() { messageText.requestAttachment() } }
                                     onLinkActivated: function(link) { chatContent.openLink(link) }
                                 }
+                                TextEdit {
+                                    objectName: "originalText_" + messageRow.message.sequence
+                                    Layout.fillWidth: true
+                                    visible: messageRow.showOriginal && messageRow.hasTranslation
+                                    text: chatContent.plainText(messageRow.message); textFormat: TextEdit.PlainText
+                                    readOnly: true; selectByMouse: true; wrapMode: TextEdit.Wrap
+                                    color: Theme.muted; font.pixelSize: 12
+                                }
                             }
                         }
                     }
@@ -272,7 +366,7 @@ Item {
             Label {
                 anchors.centerIn: parent
                 width: parent.width - 24; horizontalAlignment: Text.AlignHCenter; wrapMode: Text.Wrap
-                visible: messageRows.count === 0
+                visible: messageRows.count === 0 && !root.current.chatError
                 text: root.current.historyLoading ? qsTr("Loading...") : root.current.chatReady ? qsTr("Start the conversation.") : qsTr("Chat opens after access is approved.")
                 color: Theme.muted
             }
@@ -298,6 +392,24 @@ Item {
             text: root.sendError || chatContent.error || (root.remote ? root.network.controlStatus : root.network.chatError)
             textFormat: Text.PlainText; wrapMode: Text.Wrap; color: Theme.danger; maximumLineCount: 2
         }
+        ColumnLayout {
+            Layout.fillWidth: true
+            visible: root.translationTarget.length > 0 && draft.text.trim().length > 0
+            RowLayout {
+                Layout.fillWidth: true
+                Label {
+                    Layout.fillWidth: true; wrapMode: Text.Wrap; font.pixelSize: 12; color: Theme.muted
+                    text: root.translatedDraft.text ? chatContent.plainText({text: root.translatedDraft.text})
+                        : root.translatedDraft.error || qsTranslate("ChatPanel", "Loading...")
+                    textFormat: Text.PlainText; maximumLineCount: 3; elide: Text.ElideRight
+                }
+                ActionButton {
+                    text: root.language.preparing ? qsTranslate("Channels", "Cancel") : qsTranslate("LocalLanguage", "Prepare languages"); glyph: root.language.preparing ? "close" : "down"; iconOnly: true; flat: true
+                    visible: !!root.translatedDraft.needsPreparation
+                    onClicked: root.language.preparing ? root.language.cancelPreparation() : root.language.prepareTranslation(root.translationKey)
+                }
+            }
+        }
         Rectangle {
             Layout.fillWidth: true
             implicitHeight: composer.implicitHeight + 8
@@ -306,7 +418,7 @@ Item {
                 id: composer
                 anchors.fill: parent; anchors.margins: 4; spacing: 2
                 ActionButton {
-                    text: qsTr("Attach image"); glyph: "plus"; iconOnly: true; flat: true; visible: !root.remote
+                    text: qsTr("Attach image"); glyph: "plus"; iconOnly: true; flat: true; visible: !root.remote && !root.current.teamSpeakChat
                     enabled: !chatContent.busy && !root.current.chatPending && !!root.current.chatReady
                     Layout.alignment: Qt.AlignBottom
                     onClicked: attachmentMenu.popup()
@@ -324,6 +436,7 @@ Item {
                     TextArea {
                         id: draft
                         objectName: "chatDraft"
+                        onTextChanged: root.translateDraft()
                         placeholderText: qsTr("Message...")
                         Accessible.name: qsTr("Chat message. Markdown supported. Shift+Enter for a new line.")
                         wrapMode: TextEdit.Wrap; selectByMouse: true
@@ -344,9 +457,9 @@ Item {
                     text: root.current.chatPending ? qsTr("Waiting for delivery") : qsTr("Send")
                     glyph: "send"; iconOnly: true; primary: true
                     Layout.alignment: Qt.AlignBottom
-                    enabled: !!root.current.chatReady && !root.current.chatPending && !chatContent.busy && !root.awaitingRemoteReceipt
+                    enabled: !!root.current.chatReady && !root.current.privateBlocked && !root.current.chatPending && !chatContent.busy && !root.awaitingRemoteReceipt
                         && (draft.text.trim().length > 0 || (chatContent.hasImage && root.attachmentHost === root.hostId))
-                        && (!chatContent.hasImage || root.attachmentHost === root.hostId || root.remote)
+                        && (!chatContent.hasImage || root.attachmentHost === root.hostId || root.remote) && root.translationReady
                     onClicked: {
                         root.sentDraft = draft.text; root.sentHost = root.hostId
                         root.sentDrafts[root.draftKey] = draft.text
@@ -354,7 +467,8 @@ Item {
                         if (root.remote) {
                             root.awaitingRemoteReceipt = root.network.remoteAction("chat", {text: draft.text})
                             if (!root.awaitingRemoteReceipt) root.sendError = qsTr("Message could not be sent. Check the connection and text length.")
-                        } else chatContent.prepareMessage(draft.text)
+                        } else if (root.current.teamSpeakChat) root.network.sendChat(root.translationTarget.length && draft.text.trim().length ? root.translatedDraft.text : draft.text)
+                        else chatContent.prepareMessage(root.translationTarget.length && draft.text.trim().length ? root.translatedDraft.text : draft.text)
                     }
                 }
             }

@@ -2,6 +2,7 @@
 # A private shared library contains static Abseil, avoiding an unpinned ABI at
 # runtime. Meson and Ninja are build tools only.
 find_program(SQUAD_MESON meson REQUIRED)
+find_package(Git REQUIRED)
 include(ExternalProject)
 set(squad_apm_prefix "${CMAKE_CURRENT_BINARY_DIR}/audio-processing")
 if(SQUADSPEAK_IOS OR ANDROID)
@@ -19,7 +20,20 @@ file(MAKE_DIRECTORY "${squad_apm_prefix}/include/webrtc-audio-processing-2")
 
 file(TO_CMAKE_PATH "${CMAKE_C_COMPILER}" squad_apm_c_compiler)
 file(TO_CMAKE_PATH "${CMAKE_CXX_COMPILER}" squad_apm_cxx_compiler)
-set(apm_native "[binaries]\nc = '${squad_apm_c_compiler}'\ncpp = '${squad_apm_cxx_compiler}'\n[built-in options]\n")
+set(apm_native "[binaries]\n")
+foreach(language IN ITEMS C CXX)
+    if(language STREQUAL "C")
+        set(binary c)
+    else()
+        set(binary cpp)
+    endif()
+    set(command ${CMAKE_${language}_COMPILER_LAUNCHER} "${CMAKE_${language}_COMPILER}")
+    list(TRANSFORM command REPLACE "\\\\" "/")
+    list(TRANSFORM command REPLACE "'" "\\\\'")
+    string(REPLACE ";" "','" command "${command}")
+    string(APPEND apm_native "${binary} = ['${command}']\n")
+endforeach()
+string(APPEND apm_native "[built-in options]\n")
 if(ANDROID)
     set(apm_native "[binaries]\nc = '${squad_apm_c_compiler}'\ncpp = '${squad_apm_cxx_compiler}'\nar = '${CMAKE_AR}'\nstrip = '${CMAKE_STRIP}'\n[built-in options]\n")
 endif()
@@ -93,10 +107,23 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "Clang" AND CMAKE_CXX_FLAGS MATCHES "-fsanitize
     # Clang supplies the ASan runtime from the executable, not shared objects.
     list(APPEND apm_options -Db_lundef=false)
 endif()
+# Expose AEC3 residual suppression without a second processing path. The private
+# library and its consumers are always built together with the patched headers.
+file(CONFIGURE OUTPUT "${squad_apm_prefix}/apply-patch.cmake" CONTENT [[
+execute_process(COMMAND "@GIT_EXECUTABLE@" apply --reverse --check "${patch}"
+    WORKING_DIRECTORY "${source}" RESULT_VARIABLE applied OUTPUT_QUIET ERROR_QUIET)
+if(NOT applied EQUAL 0)
+    execute_process(COMMAND "@GIT_EXECUTABLE@" apply "${patch}"
+        WORKING_DIRECTORY "${source}" COMMAND_ERROR_IS_FATAL ANY)
+endif()
+]] @ONLY)
 ExternalProject_Add(squad_apm_build
     URL https://gstreamer.freedesktop.org/src/mirror/webrtc-audio-processing/webrtc-audio-processing-2.1.tar.gz
     URL_HASH SHA256=35e86b986d02ea15f3d04741a1a5a735ba399bc0fac0ee089c39480e35fc3253
     DOWNLOAD_EXTRACT_TIMESTAMP TRUE
+    PATCH_COMMAND "${CMAKE_COMMAND}" -Dsource=<SOURCE_DIR>
+        "-Dpatch=${CMAKE_CURRENT_SOURCE_DIR}/cmake/audio-processing-echo.patch"
+        -P "${squad_apm_prefix}/apply-patch.cmake"
     CONFIGURE_COMMAND "${SQUAD_MESON}" setup --wipe <BINARY_DIR> <SOURCE_DIR>
         --prefix "${squad_apm_prefix}" --libdir lib --buildtype release
         ${apm_machine_file} --wrap-mode forcefallback
@@ -114,6 +141,8 @@ else()
 endif()
 ExternalProject_Add_Step(squad_apm_build settings
     DEPENDEES patch DEPENDERS configure DEPENDS "${squad_apm_machine_file_dependency}")
+ExternalProject_Add_StepDependencies(squad_apm_build patch
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/audio-processing-echo.patch")
 if(SQUADSPEAK_IOS OR ANDROID)
     add_library(squad_apm STATIC IMPORTED GLOBAL)
 else()

@@ -18,6 +18,54 @@ bool key(QObject& target, QEvent::Type type, int qtKey, quint32 nativeKey,
 class KeyTests final : public QObject {
     Q_OBJECT
 private slots:
+    void modifierNamesMatchTheKeyboard_data() {
+        QTest::addColumn<int>("qtKey");
+        QTest::addColumn<QString>("name");
+#ifdef Q_OS_MACOS
+        QTest::newRow("command") << int(Qt::Key_Control) << QString("Cmd");
+        QTest::newRow("control") << int(Qt::Key_Meta) << QString("Ctrl");
+        QTest::newRow("option") << int(Qt::Key_Alt) << QString("Option");
+#else
+        QTest::newRow("control") << int(Qt::Key_Control) << QString("Ctrl");
+        QTest::newRow("meta") << int(Qt::Key_Meta) << QString("Meta");
+        QTest::newRow("alt") << int(Qt::Key_Alt) << QString("Alt");
+#endif
+        QTest::newRow("shift") << int(Qt::Key_Shift) << QString("Shift");
+    }
+    void modifierNamesMatchTheKeyboard() {
+        QFETCH(int, qtKey);
+        QFETCH(QString, name);
+        VoiceSession session;
+        PushToTalkKey input(session, false);
+        QObject window;
+        QVERIFY(input.capture());
+        QVERIFY(key(window, QEvent::KeyPress, qtKey, 59));
+        QVERIFY(key(window, QEvent::KeyRelease, qtKey, 59));
+        QCOMPARE(session.pttKeyName(), name);
+    }
+    void oneShortcutFollowsLocalOrRemoteMode() {
+        VoiceSession session;
+        PushToTalkKey input(session, false);
+        QObject window;
+        QVERIFY(session.setPttShortcut({59, 0}, {"Ctrl", "A"}));
+        QVERIFY(session.setPushToTalk(true));
+        QVERIFY(session.setMuted(false));
+        for (const bool local : {true, false, true}) {
+            QVERIFY(session.setPttLocal(local));
+            (void)key(window, QEvent::KeyPress, Qt::Key_Control, 59);
+            QVERIFY(!session.pttInputHeld());
+            (void)key(window, QEvent::KeyPress, Qt::Key_A, 0);
+            QVERIFY(session.pttInputHeld());
+            QCOMPARE(session.transmissionAllowed(), local);
+            QVERIFY(session.setPttButtonHeld(true));
+            (void)key(window, QEvent::KeyRelease, Qt::Key_Control, 59);
+            QVERIFY(session.pttInputHeld());
+            QVERIFY(session.setPttButtonHeld(false));
+            QVERIFY(!session.pttInputHeld());
+            QVERIFY(!session.transmissionAllowed());
+            (void)key(window, QEvent::KeyRelease, Qt::Key_A, 0);
+        }
+    }
     void enablingPttRequestsGlobalInputWithoutASeparateAction() {
         QTemporaryDir folder;
         VoiceSession session(folder.filePath("session.json"));
@@ -30,9 +78,9 @@ private slots:
         QVERIFY(input.status().contains("disabled in this test run"));
         QVERIFY(session.setUserName("Another name"));
         QCOMPARE(changes.count(), 1);
-        QVERIFY(session.setPttShortcut({59, 0}, {"Ctrl", "A"}, true));
+        QVERIFY(session.setPttShortcut({59, 0}, {"Ctrl", "A"}));
         QCOMPARE(changes.count(), 2);
-        QVERIFY(session.setPttShortcut({59, 11}, {"Ctrl", "B"}, true));
+        QVERIFY(session.setPttShortcut({59, 11}, {"Ctrl", "B"}));
         QCOMPARE(changes.count(), 3);
     }
     void restoredPttWithoutAKeyStillChecksPermissionAfterStartup() {
@@ -44,34 +92,6 @@ private slots:
         QTRY_COMPARE(changes.count(), 1);
         QVERIFY(input.status().contains("disabled in this test run"));
     }
-    void localAndRemoteKeysStaySeparateAndCanBeCleared() {
-        QTemporaryDir folder;
-        const auto path = folder.filePath("session.json");
-        VoiceSession session(path);
-        PushToTalkKey input(session, false);
-        QObject window;
-        QVERIFY(session.setPttShortcut(0, "A"));
-        QVERIFY(input.capture(true)); QVERIFY(input.capturingRemote());
-        QVERIFY(key(window, QEvent::KeyPress, Qt::Key_B, 11));
-        QVERIFY(key(window, QEvent::KeyRelease, Qt::Key_B, 11));
-        QCOMPARE(session.remotePttKeyCode(), 11);
-        QVERIFY(session.setMuted(false)); QVERIFY(session.setPushToTalk(true));
-        (void)key(window, QEvent::KeyPress, Qt::Key_B, 11);
-        QVERIFY(!session.pttInputHeld()); QVERIFY(!session.transmissionAllowed());
-        QVERIFY(session.setPttLocal(false)); QVERIFY(session.pttInputHeld());
-        QVERIFY(!session.transmissionAllowed()); QVERIFY(input.clear(true));
-        (void)key(window, QEvent::KeyRelease, Qt::Key_B, 11);
-        QVERIFY(!session.pttInputHeld());
-        (void)key(window, QEvent::KeyPress, Qt::Key_A, 0);
-        QVERIFY(!session.pttInputHeld());
-        QVERIFY(session.setPttLocal(true)); QVERIFY(session.transmissionAllowed());
-        QVERIFY(session.releasePttInput());
-        QVERIFY(input.clear(true)); QCOMPARE(session.remotePttKeyCode(), -1);
-        QCOMPARE(session.pttKeyCode(), 0);
-        VoiceSession restored(path);
-        QCOMPARE(restored.pttKeyCode(), 0); QCOMPARE(restored.remotePttKeyCode(), -1);
-    }
-
     void captureCancelRepeatAndReleaseUseRealApplicationEvents() {
         QTemporaryDir folder;
         VoiceSession session(folder.filePath("session.json"));
@@ -105,9 +125,7 @@ private slots:
         {
             VoiceSession session(path);
             QVERIFY(session.setPttShortcut(100, "F8"));
-            QVERIFY(session.setPttShortcut(101, "F9", true));
             QVERIFY(session.setPttKeyHeld(true));
-            QVERIFY(session.setPttKeyHeld(true, true));
             QVERIFY(session.setPushToTalk(true)); QVERIFY(session.setMuted(false));
             { PushToTalkKey observer(session, false); QVERIFY(session.transmissionAllowed()); }
             QVERIFY(session.transmissionAllowed());
@@ -119,7 +137,6 @@ private slots:
         (void)key(window, QEvent::KeyPress, Qt::Key_B, 11);
         (void)key(window, QEvent::KeyRelease, Qt::Key_B, 11);
         QVERIFY(restored.transmissionAllowed());
-        QVERIFY(restored.remotePttKeyHeld());
         const auto revision = restored.pttInputRevision();
         QVERIFY(restored.releasePttInput());
         QVERIFY(!restored.transmissionAllowed()); QCOMPARE(restored.pttInputRevision(), revision + 1);
@@ -140,13 +157,6 @@ private slots:
         QVERIFY(key(window, QEvent::KeyRelease, Qt::Key_Control, 59, Qt::NoModifier));
         QCOMPARE(session.pttKeyCodes(), QList<int>({59, 0}));
         QVERIFY(!input.capturing());
-        QVERIFY(input.capture(true));
-        (void)key(window, QEvent::KeyPress, Qt::Key_Shift, 56, Qt::ShiftModifier);
-        (void)key(window, QEvent::KeyPress, Qt::Key_B, 11, Qt::ShiftModifier);
-        QVERIFY(key(window, QEvent::KeyRelease, Qt::Key_B, 11, Qt::ShiftModifier));
-        QVERIFY(key(window, QEvent::KeyRelease, Qt::Key_Shift, 56, Qt::NoModifier));
-        QCOMPARE(session.pttKeyCodes(true), QList<int>({56, 11}));
-        QCOMPARE(session.pttKeyCodes(false), QList<int>({59, 0}));
         QVERIFY(session.setMuted(false)); QVERIFY(session.setPushToTalk(true));
         (void)key(window, QEvent::KeyPress, Qt::Key_Control, 59, Qt::ControlModifier);
         QVERIFY(!session.transmissionAllowed());
@@ -157,62 +167,20 @@ private slots:
         (void)key(window, QEvent::KeyRelease, Qt::Key_A, 0, Qt::NoModifier);
     }
 
-    void releasingTheOtherBindingDuringCaptureIsStillObserved() {
-        QTemporaryDir folder;
-        VoiceSession session(folder.filePath("session.json"));
-        PushToTalkKey input(session, false);
-        QObject window;
-        QVERIFY(session.setPttShortcut(11, "B", true));
-        (void)key(window, QEvent::KeyPress, Qt::Key_B, 11);
-        QVERIFY(session.remotePttKeyHeld());
-        QVERIFY(input.capture(false));
-        (void)key(window, QEvent::KeyRelease, Qt::Key_B, 11);
-        QVERIFY(!session.remotePttKeyHeld());
-        QVERIFY(input.capturing());
-        QVERIFY(input.capture(false));
-    }
-
-    void explicitClearCanRecoverAStuckKeyWithoutClearingRemoteInput() {
-        QTemporaryDir folder;
-        VoiceSession session(folder.filePath("session.json"));
-        PushToTalkKey input(session, false);
-        QVERIFY(session.setPttShortcut(10, "A"));
-        QVERIFY(session.setPttShortcut(11, "B", true));
-        QVERIFY(session.setPttKeyHeld(true));
-        QVERIFY(session.setPttKeyHeld(true, true));
-        QVERIFY(input.clear(false));
-        QCOMPARE(session.pttKeyCode(), -1);
-        QCOMPARE(session.remotePttKeyCode(), 11);
-        QVERIFY(session.remotePttKeyHeld());
-        QVERIFY(input.clear(true));
-        QCOMPARE(session.remotePttKeyCode(), -1);
-        QVERIFY(!session.remotePttKeyHeld());
-    }
-
-    void clearingOneChordPreservesTheOtherChordsHeldModifier_data() {
-        QTest::addColumn<bool>("clearRemote");
-        QTest::newRow("clear-local") << false;
-        QTest::newRow("clear-remote") << true;
-    }
-
-    void clearingOneChordPreservesTheOtherChordsHeldModifier() {
-        QFETCH(bool, clearRemote);
+    void explicitClearRecoversAStuckKeyWithoutClearingAnotherControllersHold() {
         VoiceSession session;
         PushToTalkKey input(session, false);
-        QObject window;
-        QVERIFY(session.setPttShortcut({59, 0}, {"Ctrl", "A"}, clearRemote));
-        QVERIFY(session.setPttShortcut({59, 11}, {"Ctrl", "B"}, !clearRemote));
-        (void)key(window, QEvent::KeyPress, Qt::Key_Control, 59);
-        (void)key(window, QEvent::KeyPress, Qt::Key_B, 11);
-        QCOMPARE(clearRemote ? session.pttKeyHeld() : session.remotePttKeyHeld(), true);
-        QVERIFY(input.clear(clearRemote));
-        (void)key(window, QEvent::KeyRelease, Qt::Key_B, 11);
-        QCOMPARE(clearRemote ? session.pttKeyHeld() : session.remotePttKeyHeld(), false);
-        (void)key(window, QEvent::KeyPress, Qt::Key_B, 11);
-        QCOMPARE(clearRemote ? session.pttKeyHeld() : session.remotePttKeyHeld(), true);
-        (void)key(window, QEvent::KeyRelease, Qt::Key_Control, 59);
-        QCOMPARE(clearRemote ? session.pttKeyHeld() : session.remotePttKeyHeld(), false);
-        (void)key(window, QEvent::KeyRelease, Qt::Key_B, 11);
+        QVERIFY(session.setPttShortcut(10, "A"));
+        QVERIFY(session.setPushToTalk(true));
+        QVERIFY(session.setMuted(false));
+        QVERIFY(session.setPttKeyHeld(true));
+        QVERIFY(session.setRemotePttHeld(true));
+        QVERIFY(input.clear());
+        QCOMPARE(session.pttKeyCode(), -1);
+        QVERIFY(!session.pttInputHeld());
+        QVERIFY(session.transmissionAllowed());
+        QVERIFY(session.setRemotePttHeld(false));
+        QVERIFY(!session.transmissionAllowed());
     }
 
     void anUnboundKeyCannotRemainHeldAfterBindingItAgain() {
@@ -234,35 +202,25 @@ private slots:
         (void)key(window, QEvent::KeyRelease, Qt::Key_B, 11);
     }
 
-    void clearingAnotherBindingDoesNotCancelCapture_data() {
-        QTest::addColumn<bool>("captureRemote");
-        QTest::newRow("capture-local") << false;
-        QTest::newRow("capture-remote") << true;
-    }
-
-    void clearingAnotherBindingDoesNotCancelCapture() {
-        QFETCH(bool, captureRemote);
+    void clearingDuringCaptureCancelsAndCannotCommitOnRelease() {
         VoiceSession session;
         PushToTalkKey input(session, false);
         QObject window;
-        QVERIFY(session.setPttShortcut({11}, {"B"}, !captureRemote));
-        QVERIFY(input.capture(captureRemote));
+        QVERIFY(session.setPttShortcut({11}, {"B"}));
+        QVERIFY(input.capture());
         (void)key(window, QEvent::KeyPress, Qt::Key_A, 0);
-        QVERIFY(input.clear(!captureRemote));
-        QVERIFY(input.capturing());
-        QCOMPARE(input.capturingRemote(), captureRemote);
-        (void)key(window, QEvent::KeyRelease, Qt::Key_A, 0);
+        QVERIFY(input.clear());
         QVERIFY(!input.capturing());
-        QCOMPARE(session.pttKeyCodes(captureRemote), QList<int>{0});
-        QVERIFY(session.pttKeyCodes(!captureRemote).isEmpty());
+        (void)key(window, QEvent::KeyRelease, Qt::Key_A, 0);
+        QVERIFY(session.pttKeyCodes().isEmpty());
+        QVERIFY(!session.pttInputHeld());
     }
 
 #ifdef Q_OS_WIN
-    void windowsBackgroundKeysUpdateLocalAndRemoteChords() {
+    void windowsBackgroundKeysUpdateTheSharedChord() {
         QTemporaryDir folder;
         VoiceSession session(folder.filePath("session.json"));
         QVERIFY(session.setPttShortcut({VK_F23, VK_F24}, {"F23", "F24"}));
-        QVERIFY(session.setPttShortcut(VK_F24, "F24", true));
         QVERIFY(session.setPushToTalk(true));
         PushToTalkKey input(session, true);
         QTRY_VERIFY(input.globalAvailable());
@@ -280,16 +238,14 @@ private slots:
         QVERIFY(send(VK_F23, true));
         QVERIFY(send(VK_F24, true));
         QTRY_VERIFY(session.pttKeyHeld());
-        QTRY_VERIFY(session.remotePttKeyHeld());
         const auto revision = session.pttInputRevision();
         QVERIFY(send(VK_F24, true));
         QTest::qWait(50);
         QCOMPARE(session.pttInputRevision(), revision);
         QVERIFY(send(VK_F23, false));
         QTRY_VERIFY(!session.pttKeyHeld());
-        QVERIFY(session.remotePttKeyHeld());
         QVERIFY(send(VK_F24, false));
-        QTRY_VERIFY(!session.remotePttKeyHeld());
+        QTRY_VERIFY(!session.pttKeyHeld());
     }
 
     void windowsRawInputRegistrationIsOwnedAndReleasedWithTheObserver() {

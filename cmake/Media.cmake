@@ -101,6 +101,125 @@ function(squad_add_media)
             message(FATAL_ERROR "Unexpected pinned DTLS receive registration")
         endif()
     endif()
+    # A reconnect can reuse an endpoint before the previous ICE agent is
+    # destroyed. STUN credentials select the new agent, not the address cache.
+    set(path "${CMAKE_BINARY_DIR}/_deps/media-src/deps/libjuice/src/conn_mux.c")
+    file(READ "${path}" original)
+    set(code "${original}")
+    set(before [=[	if (agent) {
+		JLOG_DEBUG("Found agent from address");
+		return agent;
+	}
+
+	if (!is_stun_datagram(buf, len)) {
+		JLOG_INFO("Got non-STUN message from unknown source address");
+		return NULL;
+	}
+]=])
+    set(after [=[	if (!is_stun_datagram(buf, len)) {
+		if (agent)
+			JLOG_DEBUG("Found agent from address");
+		else
+			JLOG_INFO("Got non-STUN message from unknown source address");
+		return agent;
+	}
+]=])
+    string(FIND "${code}" "${before}" position)
+    if(position GREATER -1)
+        string(REPLACE "${before}" "${after}" code "${code}")
+    else()
+        string(FIND "${code}" "${after}" position)
+        if(position EQUAL -1)
+            message(FATAL_ERROR "Unexpected pinned ICE address lookup")
+        endif()
+    endif()
+    set(before [=[					JLOG_DEBUG("Found agent from ICE ufrag");
+					insert_map_entry(registry_impl, src, agent);
+]=])
+    set(after [=[					JLOG_DEBUG("Found agent from ICE ufrag");
+					if (agent_verify_stun_binding(agent, buf, len, &msg) != 0)
+						return NULL;
+					insert_map_entry(registry_impl, src, agent);
+]=])
+    string(FIND "${code}" "${after}" position)
+    if(position EQUAL -1)
+        string(FIND "${code}" "${before}" position)
+        if(position EQUAL -1)
+            message(FATAL_ERROR "Unexpected pinned ICE binding lookup")
+        endif()
+        string(REPLACE "${before}" "${after}" code "${code}")
+    endif()
+    # Indications have no transaction to look up and retain their existing route.
+    string(REPLACE [=[			JLOG_INFO("Got unexpected STUN message from unknown source address");
+			return NULL;]=] [=[			if (!agent)
+				JLOG_INFO("Got unexpected STUN message from unknown source address");
+			return agent;]=] code "${code}")
+    if(NOT code STREQUAL original)
+        file(WRITE "${path}" "${code}")
+    endif()
+    # The shared socket keeps its address family for its entire lifetime. Avoid
+    # querying it again for every packet in a many-listener audio relay.
+    foreach(source udp.h udp.c conn_mux.c conn_poll.c conn_thread.c server.c)
+        set(path "${CMAKE_BINARY_DIR}/_deps/media-src/deps/libjuice/src/${source}")
+        file(READ "${path}" original)
+        set(code "${original}")
+        if(source MATCHES "^udp\\.[ch]$")
+            string(REPLACE
+                "int udp_sendto(socket_t sock, const char *data, size_t size, const addr_record_t *dst)"
+                "int udp_sendto(socket_t sock, const char *data, size_t size, const addr_record_t *dst, int family)"
+                code "${code}")
+            if(source STREQUAL "udp.c")
+                set(before [=[	addr_record_t name;
+	name.len = sizeof(name.addr);
+	name.socktype = SOCK_DGRAM;
+	if (getsockname(sock, (struct sockaddr *)&name.addr, &name.len) == 0) {
+		if (name.addr.ss_family == AF_INET6)
+			addr_map_inet6_v4mapped(&tmp.addr, &tmp.len);
+	} else {
+		JLOG_WARN("getsockname failed, errno=%d", sockerrno);
+	}
+]=])
+                set(after [=[	if (family == AF_UNSPEC) {
+		addr_record_t name;
+		if (udp_get_bound_addr(sock, &name) == 0)
+			family = name.addr.ss_family;
+	}
+	if (family == AF_INET6)
+		addr_map_inet6_v4mapped(&tmp.addr, &tmp.len);
+]=])
+                string(FIND "${code}" "${after}" position)
+                if(position EQUAL -1)
+                    string(FIND "${code}" "${before}" position)
+                    if(position EQUAL -1)
+                        message(FATAL_ERROR "Unexpected pinned UDP address mapping")
+                    endif()
+                    string(REPLACE "${before}" "${after}" code "${code}")
+                endif()
+                string(REPLACE "#else\n\treturn sendto(sock, data, size, 0, (const struct sockaddr *)&dst->addr, dst->len);"
+                    "#else\n\t(void)family;\n\treturn sendto(sock, data, size, 0, (const struct sockaddr *)&dst->addr, dst->len);"
+                    code "${code}")
+            endif()
+        else()
+            string(REGEX REPLACE "udp_sendto\\(([^;\n]+)\\);" "udp_sendto(\\1, AF_UNSPEC);" code "${code}")
+            string(REPLACE ", AF_UNSPEC, AF_UNSPEC);" ", AF_UNSPEC);" code "${code}")
+            if(source STREQUAL "conn_mux.c")
+                string(REPLACE "\tsocket_t sock;\n\tmutex_t send_mutex;"
+                    "\tsocket_t sock;\n\tint family;\n\tmutex_t send_mutex;" code "${code}")
+                set(before "\tregistry_impl->port = udp_get_port(registry_impl->sock);\n")
+                set(after "${before}\taddr_record_t bound;\n\tregistry_impl->family = udp_get_bound_addr(registry_impl->sock, &bound) == 0\n\t    ? bound.addr.ss_family : AF_UNSPEC;\n")
+                string(FIND "${code}" "${after}" position)
+                if(position EQUAL -1)
+                    string(REPLACE "${before}" "${after}" code "${code}")
+                endif()
+                string(REPLACE "udp_sendto(registry_impl->sock, data, size, dst, AF_UNSPEC)"
+                    "udp_sendto(registry_impl->sock, data, size, dst, registry_impl->family)" code "${code}")
+                string(REPLACE ", registry_impl->family, AF_UNSPEC);" ", registry_impl->family);" code "${code}")
+            endif()
+        endif()
+        if(NOT code STREQUAL original)
+            file(WRITE "${path}" "${code}")
+        endif()
+    endforeach()
     # SCTP copies a send outside the association lock. If the peer aborts
     # meanwhile, the new message is not queued and must be freed by the sender.
     set(path "${CMAKE_BINARY_DIR}/_deps/media-src/deps/usrsctp/usrsctplib/netinet/sctp_output.c")

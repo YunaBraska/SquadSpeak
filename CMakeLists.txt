@@ -6,7 +6,7 @@ if(CMAKE_HOST_APPLE AND NOT CMAKE_OSX_DEPLOYMENT_TARGET
     set(CMAKE_OSX_DEPLOYMENT_TARGET "13.0" CACHE STRING "Minimum macOS version" FORCE)
 endif()
 include(cmake/Version.cmake)
-project(SquadSpeak VERSION ${SQUADSPEAK_VERSION} LANGUAGES C CXX)
+project(SquadSpeak VERSION ${SQUADSPEAK_NUMERIC_VERSION} LANGUAGES C CXX)
 if(APPLE)
     enable_language(OBJCXX)
 endif()
@@ -14,6 +14,20 @@ endif()
 set(SQUADSPEAK_IOS OFF)
 if(CMAKE_SYSTEM_NAME STREQUAL "iOS")
     set(SQUADSPEAK_IOS ON)
+    function(squad_ios_simulator_identity target)
+        if(NOT CMAKE_OSX_SYSROOT MATCHES "[iI][pP]hone[sS]imulator" OR CMAKE_GENERATOR STREQUAL "Xcode")
+            return()
+        endif()
+        # Xcode embeds simulator entitlements in the executable. Ninja must do
+        # the same so the simulated keychain can identify each application.
+        set(entitlements "${CMAKE_CURRENT_BINARY_DIR}/${target}-simulator.entitlements")
+        file(GENERATE OUTPUT "${entitlements}"
+            CONTENT "<?xml version=\"1.0\" encoding=\"UTF-8\"?><plist version=\"1.0\"><dict>
+<key>application-identifier</key><string>SIMULATOR.$<TARGET_PROPERTY:${target},MACOSX_BUNDLE_GUI_IDENTIFIER></string>
+</dict></plist>\n")
+        target_link_options(${target} PRIVATE "LINKER:-sectcreate,__TEXT,__entitlements,${entitlements}")
+        set_property(TARGET ${target} APPEND PROPERTY LINK_DEPENDS "${entitlements}")
+    endfunction()
 endif()
 if(SQUADSPEAK_IOS OR ANDROID)
     set(SQUADSPEAK_MOBILE_DEPS_ROOT "" CACHE PATH
@@ -38,428 +52,22 @@ if(SQUADSPEAK_IOS OR ANDROID)
     endif()
 endif()
 
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
-set(CMAKE_OBJCXX_STANDARD 20)
-set(CMAKE_OBJCXX_STANDARD_REQUIRED ON)
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-if(MSVC)
-    add_compile_options(/utf-8)
-    add_compile_definitions(NOMINMAX)
-endif()
-if(ANDROID)
-    add_link_options(-Wl,-z,max-page-size=16384 -Wl,-z,common-page-size=16384)
-endif()
-
-find_package(Qt6 6.10 REQUIRED COMPONENTS Core Gui Widgets Quick QuickControls2 Multimedia Network Sql LinguistTools)
-if(ANDROID AND NOT Qt6_VERSION VERSION_EQUAL "6.11.3")
-    message(FATAL_ERROR "The Android FFmpeg headers require the verified Qt 6.11.3 runtime.")
-endif()
-if(SQUADSPEAK_IOS)
-    find_package(Qt6 6.10 REQUIRED COMPONENTS Concurrent)
-endif()
-find_package(OpenSSL 3 REQUIRED COMPONENTS Crypto)
-if(WIN32)
-    set(SQUADSPEAK_AUDIO_DEPS_ROOT "" CACHE PATH
-        "Staged Opus and libsamplerate headers and libraries")
-    if(NOT SQUADSPEAK_AUDIO_DEPS_ROOT)
-        message(FATAL_ERROR "Windows requires -DSQUADSPEAK_AUDIO_DEPS_ROOT=<staged audio SDK>.")
-    endif()
-    find_path(squad_opus_include_dir opus.h
-        PATHS "${SQUADSPEAK_AUDIO_DEPS_ROOT}/include/opus" NO_DEFAULT_PATH REQUIRED)
-    find_library(squad_opus_library NAMES opus opus-0
-        PATHS "${SQUADSPEAK_AUDIO_DEPS_ROOT}/lib" NO_DEFAULT_PATH REQUIRED)
-    find_path(squad_samplerate_include_dir samplerate.h
-        PATHS "${SQUADSPEAK_AUDIO_DEPS_ROOT}/include" NO_DEFAULT_PATH REQUIRED)
-    find_library(squad_samplerate_library NAMES samplerate samplerate-0
-        PATHS "${SQUADSPEAK_AUDIO_DEPS_ROOT}/lib" NO_DEFAULT_PATH REQUIRED)
-    add_library(PkgConfig::OPUS INTERFACE IMPORTED)
-    set_target_properties(PkgConfig::OPUS PROPERTIES INTERFACE_INCLUDE_DIRECTORIES
-        "${squad_opus_include_dir}" INTERFACE_LINK_LIBRARIES "${squad_opus_library}")
-    add_library(PkgConfig::SAMPLERATE INTERFACE IMPORTED)
-    set_target_properties(PkgConfig::SAMPLERATE PROPERTIES INTERFACE_INCLUDE_DIRECTORIES
-        "${squad_samplerate_include_dir}" INTERFACE_LINK_LIBRARIES "${squad_samplerate_library}")
-elseif(SQUADSPEAK_IOS OR ANDROID)
-    foreach(dependency IN ITEMS OPUS SAMPLERATE)
-        string(TOLOWER "${dependency}" dependency_lower)
-        find_path(squad_${dependency_lower}_include_dir
-            ${dependency_lower}.h PATHS "${SQUADSPEAK_MOBILE_DEPS_ROOT}/include" PATH_SUFFIXES opus NO_DEFAULT_PATH REQUIRED)
-        find_library(squad_${dependency_lower}_library
-            NAMES ${dependency_lower} PATHS "${SQUADSPEAK_MOBILE_DEPS_ROOT}/lib" NO_DEFAULT_PATH REQUIRED)
-        add_library(PkgConfig::${dependency} INTERFACE IMPORTED)
-        set_target_properties(PkgConfig::${dependency} PROPERTIES
-            INTERFACE_INCLUDE_DIRECTORIES "${squad_${dependency_lower}_include_dir}"
-            INTERFACE_LINK_LIBRARIES "${squad_${dependency_lower}_library}")
-    endforeach()
-else()
-    find_package(PkgConfig REQUIRED)
-    pkg_check_modules(OPUS REQUIRED IMPORTED_TARGET opus>=1.3)
-    pkg_check_modules(SAMPLERATE REQUIRED IMPORTED_TARGET samplerate)
-endif()
-if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
-    pkg_check_modules(XINPUT REQUIRED IMPORTED_TARGET x11 xi)
-    set(squad_ptt_platform_libraries PkgConfig::XINPUT)
-elseif(APPLE)
-    set(squad_ptt_platform_libraries "-framework CoreGraphics" "-framework CoreFoundation")
-elseif(WIN32)
-    set(squad_ptt_platform_libraries user32)
-endif()
-qt_standard_project_setup(REQUIRES 6.10)
-
-include(FetchContent)
-include(cmake/AudioProcessing.cmake)
-include(cmake/Media.cmake)
-
-# Rebuild only the affected modules against the exact installed Qt ABI.
-# Shared SDK libraries remain the owners of all other Qt functionality.
-set(qt_runtime_modules)
-if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
-    if(NOT Qt6_VERSION VERSION_EQUAL "6.10.2")
-        message(FATAL_ERROR "The verified Linux runtime requires Qt 6.10.2 with the bundled fixes.")
-    endif()
-    FetchContent_Declare(qt_capture
-        URL https://download.qt.io/archive/qt/6.10/6.10.2/submodules/qtmultimedia-everywhere-src-6.10.2.tar.xz
-        URL_HASH SHA256=93f7ef0106fbd731165a2723f3e436c911fc5e6880f5bc987b55516c20833e2b
-        SOURCE_SUBDIR unused DOWNLOAD_EXTRACT_TIMESTAMP TRUE)
-    list(APPEND qt_runtime_modules capture)
-    set(qt_capture_patches qt-wayland.patch)
-endif()
-if(CMAKE_SYSTEM_NAME MATCHES "^(Darwin|Linux|Windows)$")
-    if(Qt6_VERSION VERSION_EQUAL "6.10.2")
-        FetchContent_Declare(qt_qml
-            URL https://download.qt.io/archive/qt/6.10/6.10.2/submodules/qtdeclarative-everywhere-src-6.10.2.tar.xz
-            URL_HASH SHA256=a249914ff66cdcdbf0df8b5ffad997a2ee6dce01cc17d43c6cc56fdc1d0f4b0f
-            SOURCE_SUBDIR unused DOWNLOAD_EXTRACT_TIMESTAMP TRUE)
-        set(qt_qml_patches qt-qml-gc.patch qt-qml-runtime.patch)
-        list(APPEND qt_runtime_modules qml)
-    elseif(Qt6_VERSION VERSION_EQUAL "6.11.3")
-        FetchContent_Declare(qt_qml
-            URL https://download.qt.io/online/qtsdkrepository/all_os/qt/qt6_6113_unix_line_endings_src/qt.qt6.6113.src/6.11.3-0-202609240252qtdeclarative-everywhere-src-6.11.3.tar.xz
-            URL_HASH SHA256=b3514c650bece885052da99e6e74fe38494f169fcde91129a3f3467ecb842b19
-            SOURCE_SUBDIR unused DOWNLOAD_EXTRACT_TIMESTAMP TRUE)
-        set(qt_qml_patches qt-qml-runtime.patch)
-        list(APPEND qt_runtime_modules qml)
-    else()
-        message(FATAL_ERROR "The verified Qt Qml runtime requires Qt 6.10.2 or 6.11.3.")
-    endif()
-endif()
-if(qt_runtime_modules)
-    find_package(Git REQUIRED)
-    get_target_property(qt_qmake Qt6::qmake LOCATION)
-    execute_process(COMMAND "${qt_qmake}" -query QT_INSTALL_PREFIX
-        OUTPUT_VARIABLE qt_prefix OUTPUT_STRIP_TRAILING_WHITESPACE COMMAND_ERROR_IS_FATAL ANY)
-    execute_process(COMMAND "${qt_qmake}" -query QT_INSTALL_LIBS
-        OUTPUT_VARIABLE qt_libs OUTPUT_STRIP_TRAILING_WHITESPACE COMMAND_ERROR_IS_FATAL ANY)
-    file(RELATIVE_PATH qt_runtime_libdir "${qt_prefix}" "${qt_libs}")
-    foreach(module IN LISTS qt_runtime_modules)
-        FetchContent_MakeAvailable(qt_${module})
-        if(module STREQUAL "capture")
-            set(component Multimedia)
-        else()
-            set(component Qml)
-        endif()
-        set(source "${qt_${module}_SOURCE_DIR}")
-        foreach(patch_name IN LISTS qt_${module}_patches)
-            set(patch "${CMAKE_CURRENT_SOURCE_DIR}/cmake/${patch_name}")
-            execute_process(COMMAND "${GIT_EXECUTABLE}" apply --check "${patch}"
-                WORKING_DIRECTORY "${source}" RESULT_VARIABLE unpatched OUTPUT_QUIET ERROR_QUIET)
-            if(unpatched EQUAL 0)
-                execute_process(COMMAND "${GIT_EXECUTABLE}" apply "${patch}"
-                    WORKING_DIRECTORY "${source}" COMMAND_ERROR_IS_FATAL ANY)
-            else()
-                execute_process(COMMAND "${GIT_EXECUTABLE}" apply --reverse --check "${patch}"
-                    WORKING_DIRECTORY "${source}" COMMAND_ERROR_IS_FATAL ANY)
-            endif()
-        endforeach()
-        set(module_build "${CMAKE_CURRENT_BINARY_DIR}/qt-${module}")
-        set(libdir "${module_build}/${qt_runtime_libdir}")
-        set(module_byproducts)
-        if(APPLE)
-            set(library "${libdir}/Qt${component}.framework/Versions/A/Qt${component}")
-        elseif(WIN32)
-            set(libdir "${module_build}/bin")
-            set(library "${libdir}/Qt6${component}.dll")
-            set(import_library "${module_build}/lib/Qt6${component}.lib")
-            list(APPEND module_byproducts "${import_library}")
-        else()
-            set(library "${libdir}/libQt6${component}.so.${Qt6_VERSION}")
-            list(APPEND qt_runtime_libraries "${library}")
-        endif()
-        if(module STREQUAL "qml")
-            set(qt_qml_library "${library}")
-        endif()
-        set(module_build_options
-            BINARY_DIR "${module_build}"
-            CMAKE_ARGS "-DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}" -DQT_BUILD_TESTS=OFF -DQT_BUILD_EXAMPLES=OFF
-                "-DQt6_DIR=${Qt6_DIR}" -DFEATURE_gstreamer=OFF
-                "-DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}" "-DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}"
-                "-DCMAKE_C_FLAGS=${CMAKE_C_FLAGS}" "-DCMAKE_CXX_FLAGS=${CMAKE_CXX_FLAGS}"
-                "-DCMAKE_SHARED_LINKER_FLAGS=${CMAKE_SHARED_LINKER_FLAGS}"
-                "-DCMAKE_OSX_ARCHITECTURES=${CMAKE_OSX_ARCHITECTURES}"
-                "-DCMAKE_OSX_DEPLOYMENT_TARGET=${CMAKE_OSX_DEPLOYMENT_TARGET}"
-            BUILD_COMMAND "${CMAKE_COMMAND}" --build <BINARY_DIR> --target ${component} --parallel 4
-            USES_TERMINAL_BUILD TRUE
-            BUILD_BYPRODUCTS "${library}" ${module_byproducts})
-        if(module STREQUAL "capture")
-            ExternalProject_Add(squad_qt_capture_build
-                SOURCE_DIR "${qt_capture_SOURCE_DIR}" DOWNLOAD_COMMAND "" UPDATE_COMMAND ""
-                INSTALL_COMMAND "" ${module_build_options})
-        else()
-            ExternalProject_Add(squad_qt_qml_build
-                SOURCE_DIR "${qt_qml_SOURCE_DIR}" DOWNLOAD_COMMAND "" UPDATE_COMMAND ""
-                INSTALL_COMMAND "" ${module_build_options})
-        endif()
-        get_target_property(configurations Qt6::${component} IMPORTED_CONFIGURATIONS)
-        foreach(configuration IN LISTS configurations)
-            set_property(TARGET Qt6::${component} PROPERTY "IMPORTED_LOCATION_${configuration}" "${library}")
-            if(WIN32)
-                set_property(TARGET Qt6::${component} PROPERTY "IMPORTED_IMPLIB_${configuration}" "${import_library}")
-            endif()
-        endforeach()
-        set_property(TARGET Qt6::${component} PROPERTY IMPORTED_LOCATION "${library}")
-        if(WIN32)
-            set_property(TARGET Qt6::${component} PROPERTY IMPORTED_IMPLIB "${import_library}")
-        endif()
-        add_dependencies(Qt6::${component} squad_qt_${module}_build)
-        list(PREPEND CMAKE_BUILD_RPATH "${libdir}")
-    endforeach()
-endif()
-
-# Qt Multimedia and the app must resolve one FFmpeg ABI. macOS builds the
-# matching version with VideoToolbox lifetime fixes; Windows uses its
-# staged Qt SDK and Linux uses the distribution packages.
-add_library(squad_ffmpeg INTERFACE)
-if(APPLE AND NOT SQUADSPEAK_IOS)
-    FetchContent_Declare(ffmpeg
-        URL https://ffmpeg.org/releases/ffmpeg-7.1.5.tar.xz
-        URL_HASH SHA256=de668509caf9e35e3cd162473441fdb29538c6d96ed080292b3cf9e6fc5d558f
-        DOWNLOAD_EXTRACT_TIMESTAMP TRUE)
-    FetchContent_MakeAvailable(ffmpeg)
-    # FFmpeg 04ff86d0355a58c3d02dbf562ccb708942a29435: a dropped
-    # VideoToolbox frame has no sample buffer, but still owns its queue node.
-    set(ffmpeg_encoder "${ffmpeg_SOURCE_DIR}/libavcodec/videotoolboxenc.c")
-    file(READ "${ffmpeg_encoder}" ffmpeg_source)
-    set(ffmpeg_dropped_before "    if (!sample_buffer) {\n        return;\n    }")
-    set(ffmpeg_dropped_after "    if (!sample_buffer) {\n        vtenc_free_buf_node(info);\n        return;\n    }")
-    # Extradata initialization owns its node until EncodeFrame succeeds.
-    # Failed session creation must free it too; transferred nodes are NULL.
-    set(ffmpeg_init_before "    if (!status)\n        vtenc_free_buf_node(node);")
-    set(ffmpeg_init_after "    if (node)\n        vtenc_free_buf_node(node);")
-    foreach(cleanup IN ITEMS dropped init)
-        string(FIND "${ffmpeg_source}" "${ffmpeg_${cleanup}_after}" ffmpeg_patched)
-        if(ffmpeg_patched LESS 0)
-            string(FIND "${ffmpeg_source}" "${ffmpeg_${cleanup}_before}" ffmpeg_match)
-            if(ffmpeg_match LESS 0)
-                message(FATAL_ERROR "Unexpected pinned FFmpeg ${cleanup} cleanup")
-            endif()
-            string(REPLACE "${ffmpeg_${cleanup}_before}" "${ffmpeg_${cleanup}_after}" ffmpeg_source "${ffmpeg_source}")
-            file(WRITE "${ffmpeg_encoder}" "${ffmpeg_source}")
-        endif()
-    endforeach()
-    set(squad_ffmpeg_library_dir "${CMAKE_CURRENT_BINARY_DIR}/ffmpeg/lib")
-    set(ffmpeg_prefix "${CMAKE_CURRENT_BINARY_DIR}/ffmpeg")
-    # Prefer the patched ABI-compatible runtime over the Qt SDK copy in tests
-    # and build-tree apps as well as the installed bundle.
-    list(PREPEND CMAKE_BUILD_RPATH "${squad_ffmpeg_library_dir}")
-    set(ffmpeg_arch "${CMAKE_OSX_ARCHITECTURES}")
-    if(NOT ffmpeg_arch)
-        set(ffmpeg_arch "${CMAKE_SYSTEM_PROCESSOR}")
-    endif()
-    if(NOT ffmpeg_arch MATCHES "^(arm64|x86_64)$")
-        message(FATAL_ERROR "Build one macOS architecture at a time: arm64 or x86_64.")
-    endif()
-    set(ffmpeg_flags "-arch ${ffmpeg_arch} -mmacosx-version-min=${CMAKE_OSX_DEPLOYMENT_TARGET} ${CMAKE_C_FLAGS}")
-    if(CMAKE_OSX_SYSROOT)
-        string(APPEND ffmpeg_flags " -isysroot ${CMAKE_OSX_SYSROOT}")
-    endif()
-    file(MAKE_DIRECTORY "${ffmpeg_prefix}/include")
-    set(ffmpeg_libraries)
-    foreach(library IN ITEMS avcodec.61 avutil.59 swscale.8 avformat.61 swresample.5)
-        string(REPLACE "." "_" library_target "squad_${library}")
-        set(library_path "${squad_ffmpeg_library_dir}/lib${library}.dylib")
-        add_library(${library_target} SHARED IMPORTED)
-        set_target_properties(${library_target} PROPERTIES IMPORTED_LOCATION "${library_path}")
-        list(APPEND ffmpeg_libraries "${library_path}")
-        target_link_libraries(squad_ffmpeg INTERFACE ${library_target})
-    endforeach()
-    find_program(SQUAD_MAKE make REQUIRED)
-    ExternalProject_Add(squad_ffmpeg_build
-        SOURCE_DIR "${ffmpeg_SOURCE_DIR}" DOWNLOAD_COMMAND "" UPDATE_COMMAND ""
-        BUILD_IN_SOURCE TRUE
-        CONFIGURE_COMMAND "${ffmpeg_SOURCE_DIR}/configure" "--prefix=${ffmpeg_prefix}"
-            --install-name-dir=@rpath --extra-version=squadspeak.2
-            --disable-programs --disable-doc --disable-debug --enable-network
-            --disable-lzma --enable-pic --disable-vulkan --disable-v4l2-m2m
-            --disable-decoder=truemotion1 --disable-avdevice --disable-avfilter
-            --enable-shared --disable-static --disable-autodetect
-            --enable-videotoolbox --enable-audiotoolbox --enable-securetransport
-            --enable-zlib --enable-bzlib --enable-iconv --extra-libs=-liconv
-            "--cc=${CMAKE_C_COMPILER}" "--arch=${ffmpeg_arch}"
-            "--extra-cflags=${ffmpeg_flags}" "--extra-ldflags=${ffmpeg_flags}"
-            "--host-cflags=${ffmpeg_flags}" "--host-ldflags=${ffmpeg_flags}"
-        BUILD_COMMAND "${SQUAD_MAKE}" -j3
-        INSTALL_COMMAND "${SQUAD_MAKE}" install
-        BUILD_BYPRODUCTS ${ffmpeg_libraries})
-    add_dependencies(squad_ffmpeg squad_ffmpeg_build)
-    target_include_directories(squad_ffmpeg INTERFACE "${ffmpeg_prefix}/include")
-elseif(SQUADSPEAK_IOS OR ANDROID)
-    find_path(squad_ffmpeg_include_dir libavcodec/avcodec.h
-        PATHS "${SQUADSPEAK_MOBILE_DEPS_ROOT}/include" NO_DEFAULT_PATH REQUIRED)
-    target_include_directories(squad_ffmpeg INTERFACE "${squad_ffmpeg_include_dir}")
-    foreach(library IN ITEMS avcodec avutil swscale avformat swresample)
-        set(squad_codec_library_dir "${SQUADSPEAK_MOBILE_DEPS_ROOT}/lib")
-        if(ANDROID)
-            # Use the same FFmpeg runtime as Qt Multimedia, as on Windows.
-            set(squad_codec_library_dir "${QT6_INSTALL_PREFIX}/lib")
-        endif()
-        find_library(squad_ffmpeg_${library} ${library}
-            PATHS "${squad_codec_library_dir}" NO_DEFAULT_PATH REQUIRED)
-        target_link_libraries(squad_ffmpeg INTERFACE "${squad_ffmpeg_${library}}")
-        if(ANDROID)
-            list(APPEND squad_android_libraries "${squad_ffmpeg_${library}}")
-        endif()
-    endforeach()
-    if(SQUADSPEAK_IOS)
-        target_link_libraries(squad_ffmpeg INTERFACE
-            "-framework AVFoundation"
-            "-framework CoreFoundation"
-            "-framework CoreMedia"
-            "-framework CoreVideo"
-            "-framework Foundation"
-            "-framework Security"
-            "-framework VideoToolbox")
-    else()
-        list(APPEND squad_android_libraries "${OPENSSL_CRYPTO_LIBRARY}" "${OPENSSL_SSL_LIBRARY}")
-    endif()
-elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
-    # Use the same distro development packages that own Qt's FFmpeg plugin.
-    # This keeps headers and ABI libraries in one package-manager namespace.
-    pkg_check_modules(SQUAD_FFMPEG_AVCODEC REQUIRED IMPORTED_TARGET libavcodec)
-    pkg_check_modules(SQUAD_FFMPEG_AVUTIL REQUIRED IMPORTED_TARGET libavutil)
-    pkg_check_modules(SQUAD_FFMPEG_SWSCALE REQUIRED IMPORTED_TARGET libswscale)
-    target_link_libraries(squad_ffmpeg INTERFACE
-        PkgConfig::SQUAD_FFMPEG_AVCODEC
-        PkgConfig::SQUAD_FFMPEG_AVUTIL
-        PkgConfig::SQUAD_FFMPEG_SWSCALE)
-elseif(WIN32)
-    set(SQUADSPEAK_FFMPEG_ROOT "" CACHE PATH
-        "Staged FFmpeg headers and import libraries matching the Qt Multimedia DLLs")
-    if(NOT SQUADSPEAK_FFMPEG_ROOT)
-        message(FATAL_ERROR
-            "Windows requires -DSQUADSPEAK_FFMPEG_ROOT=<staged Qt FFmpeg SDK>. "
-            "Use tests/windows-ci.ps1 to stage official FFmpeg headers and import libraries for Qt's DLLs.")
-    endif()
-    find_path(squad_ffmpeg_include_dir libavcodec/avcodec.h
-        PATHS "${SQUADSPEAK_FFMPEG_ROOT}/include" NO_DEFAULT_PATH REQUIRED)
-    find_library(squad_ffmpeg_avcodec avcodec PATHS "${SQUADSPEAK_FFMPEG_ROOT}/lib" NO_DEFAULT_PATH REQUIRED)
-    find_library(squad_ffmpeg_avutil avutil PATHS "${SQUADSPEAK_FFMPEG_ROOT}/lib" NO_DEFAULT_PATH REQUIRED)
-    find_library(squad_ffmpeg_swscale swscale PATHS "${SQUADSPEAK_FFMPEG_ROOT}/lib" NO_DEFAULT_PATH REQUIRED)
-    target_include_directories(squad_ffmpeg INTERFACE "${squad_ffmpeg_include_dir}")
-    target_link_libraries(squad_ffmpeg INTERFACE
-        "${squad_ffmpeg_avcodec}" "${squad_ffmpeg_avutil}" "${squad_ffmpeg_swscale}")
-endif()
-
-function(squad_add_keychain)
-    set(BUILD_WITH_QT6 ON)
-    set(BUILD_TRANSLATIONS OFF)
-    set(BUILD_TESTING OFF)
-    set(BUILD_SHARED_LIBS OFF)
-    FetchContent_Declare(qtkeychain
-        URL https://github.com/frankosterfeld/qtkeychain/archive/refs/tags/0.16.0.tar.gz
-        URL_HASH SHA256=3be26ec4ae30eecf0c2ff7572ba83799791b157c76e15a05ef35f23dc25e4054
-        DOWNLOAD_EXTRACT_TIMESTAMP TRUE)
-    FetchContent_MakeAvailable(qtkeychain)
-    # Keep narrow corrections in build-local copies of the pinned dependency.
-    # Refuse an unreviewed upstream revision instead of silently misapplying them.
-    set(corrected_sources keychain.cpp)
-    if(APPLE)
-        list(APPEND corrected_sources keychain_apple.mm)
-    endif()
-    get_target_property(keychain_sources qt6keychain SOURCES)
-    foreach(source IN LISTS corrected_sources)
-        if(source STREQUAL "keychain.cpp")
-            # QObject::destroyed runs after Job's destructor. Downcasting the
-            # remaining QObject to Job is undefined even just to disconnect it.
-            set(expected_hash "ba0c2a47d29b21a063a932547c46a11125cf3c3b0b877abadb3c470d9d59311f")
-            set(before "Job *job = static_cast<Job *>(object);")
-            set(after "QObject *job = object;")
-        else()
-            # Identity loading blocks server readiness; background QoS can be
-            # deferred indefinitely on macOS. Change only these short operations.
-            set(expected_hash "e31ba2930705f1e1515fa733a1b8ca2898816f1a24a2d14486c86cccb1142a4e")
-            set(before "DISPATCH_QUEUE_PRIORITY_BACKGROUND")
-            set(after "QOS_CLASS_USER_INITIATED")
-        endif()
-        set(original "${qtkeychain_SOURCE_DIR}/qtkeychain/${source}")
-        file(SHA256 "${original}" source_hash)
-        if(NOT source_hash STREQUAL expected_hash)
-            message(FATAL_ERROR "Review the QtKeychain correction for ${source} at this source version.")
-        endif()
-        file(READ "${original}" code)
-        string(REPLACE "${before}" "${after}" code "${code}")
-        if(source STREQUAL "keychain_apple.mm")
-            # Blocks preserve C++ reference parameters as references. Own the
-            # implicitly shared inputs until a canceled job's native work ends.
-            string(REPLACE "const QString &service, const QString &key" "QString service, QString key" code "${code}")
-            string(REPLACE "const QByteArray &data," "QByteArray data," code "${code}")
-        endif()
-        set(patched "${qtkeychain_BINARY_DIR}/${source}")
-        file(CONFIGURE OUTPUT "${patched}" CONTENT "${code}" @ONLY)
-        list(REMOVE_ITEM keychain_sources "${source}")
-        list(APPEND keychain_sources "${patched}")
-    endforeach()
-    set_property(TARGET qt6keychain PROPERTY SOURCES "${keychain_sources}")
-    target_include_directories(qt6keychain PRIVATE "${qtkeychain_SOURCE_DIR}/qtkeychain")
-    # This is a private static dependency. Installing the app must not install
-    # its development headers, CMake exports or translation tooling.
-    set_property(DIRECTORY "${qtkeychain_SOURCE_DIR}" PROPERTY EXCLUDE_FROM_ALL TRUE)
-endfunction()
-squad_add_keychain()
-
-# v0.2 plus its immediate upstream ARM/SSE build correction. Model and code
-# are pinned separately; the resulting library needs no runtime downloads.
-FetchContent_Declare(rnnoise
-    URL https://github.com/xiph/rnnoise/archive/372f7b4b76cde4ca1ec4605353dd17898a99de38.tar.gz
-    URL_HASH SHA256=40ff1568af151959933699fcbf2db3ee3c62fa9559557dbf61a65e7a12cd335d
-    DOWNLOAD_EXTRACT_TIMESTAMP TRUE)
-FetchContent_Declare(rnnoise_model
-    URL https://media.xiph.org/rnnoise/models/rnnoise_data-0b50c45.tar.gz
-    URL_HASH SHA256=4ac81c5c0884ec4bd5907026aaae16209b7b76cd9d7f71af582094a2f98f4b43
-    DOWNLOAD_EXTRACT_TIMESTAMP TRUE)
-FetchContent_MakeAvailable(rnnoise rnnoise_model)
-add_library(squad_rnnoise STATIC
-    ${rnnoise_SOURCE_DIR}/src/denoise.c ${rnnoise_SOURCE_DIR}/src/rnn.c
-    ${rnnoise_SOURCE_DIR}/src/pitch.c ${rnnoise_SOURCE_DIR}/src/kiss_fft.c
-    ${rnnoise_SOURCE_DIR}/src/celt_lpc.c ${rnnoise_SOURCE_DIR}/src/nnet.c
-    ${rnnoise_SOURCE_DIR}/src/nnet_default.c ${rnnoise_SOURCE_DIR}/src/parse_lpcnet_weights.c
-    ${rnnoise_SOURCE_DIR}/src/rnnoise_tables.c ${rnnoise_model_SOURCE_DIR}/src/rnnoise_data.c)
-set_target_properties(squad_rnnoise PROPERTIES C_STANDARD 99 POSITION_INDEPENDENT_CODE ON AUTOMOC OFF AUTOUIC OFF)
-target_include_directories(squad_rnnoise PUBLIC ${rnnoise_SOURCE_DIR}/include
-    PRIVATE ${rnnoise_SOURCE_DIR}/src ${rnnoise_model_SOURCE_DIR}/src)
-target_compile_definitions(squad_rnnoise PRIVATE RNNOISE_BUILD)
-# Keep inference optimized in debug builds as well; do not enable fast-math.
-target_compile_options(squad_rnnoise PRIVATE $<$<C_COMPILER_ID:AppleClang,Clang,GNU>:-O2> $<$<C_COMPILER_ID:MSVC>:/O2>)
-if(UNIX)
-    target_link_libraries(squad_rnnoise PRIVATE m)
-endif()
-
-# Qt 6.9.0 advertises a direct AGL link even when the active SDK has removed
-# its stub. QtGui itself has no AGL symbol imports. Keep its runtime dependency
-# untouched; only remove the unavailable direct link from the imported target.
-if(APPLE AND Qt6_VERSION VERSION_EQUAL "6.9.0" AND TARGET WrapOpenGL::WrapOpenGL
-        AND IS_ABSOLUTE "${CMAKE_OSX_SYSROOT}"
-        AND NOT EXISTS "${CMAKE_OSX_SYSROOT}/System/Library/Frameworks/AGL.framework")
-    get_target_property(squad_opengl_links WrapOpenGL::WrapOpenGL INTERFACE_LINK_LIBRARIES)
-    list(FILTER squad_opengl_links EXCLUDE REGEX "(^-framework AGL$|/AGL\\.framework$)")
-    set_property(TARGET WrapOpenGL::WrapOpenGL PROPERTY INTERFACE_LINK_LIBRARIES "${squad_opengl_links}")
-endif()
+include(cmake/Dependencies.cmake)
 
 add_library(squad_audio src/audio_processor.cpp src/audio_profiles.cpp src/voice_mixer.cpp src/echo_canceller.cpp src/output_monitor.cpp)
+if(SQUADSPEAK_IOS)
+    target_sources(squad_audio PRIVATE src/ios_audio_session.mm)
+    set_source_files_properties(src/ios_audio_session.mm PROPERTIES COMPILE_FLAGS "-fobjc-arc")
+endif()
+if(APPLE)
+    target_sources(squad_audio PRIVATE src/speech_output_apple.mm)
+    set_source_files_properties(src/speech_output_apple.mm PROPERTIES COMPILE_FLAGS "-fobjc-arc")
+    target_link_libraries(squad_audio PRIVATE "-framework AVFoundation")
+endif()
 if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     target_sources(squad_audio PRIVATE src/output_monitor_mac.mm)
     set_source_files_properties(src/output_monitor_mac.mm PROPERTIES COMPILE_FLAGS "-fobjc-arc")
-    target_link_libraries(squad_audio PRIVATE "-framework CoreAudio" "-framework Foundation")
+    target_link_libraries(squad_audio PRIVATE "-framework CoreAudio" "-framework Foundation" "-framework AVFoundation")
 elseif(WIN32)
     target_sources(squad_audio PRIVATE src/output_monitor_windows.cpp)
     target_link_libraries(squad_audio PRIVATE ole32 mmdevapi)
@@ -475,9 +83,13 @@ target_include_directories(squad_audio PUBLIC src)
 target_link_libraries(squad_audio PUBLIC Qt6::Core PkgConfig::OPUS PkgConfig::SAMPLERATE squad_rnnoise PRIVATE squad_apm)
 target_compile_options(squad_audio PRIVATE $<$<CXX_COMPILER_ID:AppleClang,Clang,GNU>:-Wall;-Wextra;-Wpedantic>)
 
-add_library(squad_session src/voice_session.cpp src/voice_session.hpp src/tls_identity.cpp src/tls_identity.hpp src/local_channel.cpp src/local_channel_chat.cpp src/local_channel_control.cpp src/local_channel_discovery.cpp src/local_channel_video.cpp src/local_channel.hpp src/media_transport.cpp src/media_transport.hpp src/chat_history.cpp src/chat_history.hpp src/license.cpp src/license.hpp)
+include(cmake/TeamSpeak.cmake)
+
+add_library(squad_session src/local_channel_teamspeak.cpp src/voice_session.cpp src/voice_session.hpp src/tls_identity.cpp src/tls_identity.hpp src/local_channel.cpp src/local_channel_chat.cpp src/local_channel_private.cpp src/local_channel_control.cpp src/local_channel_discovery.cpp src/local_channel_video.cpp src/local_channel.hpp src/media_transport.cpp src/media_transport.hpp src/chat_history.cpp src/chat_history.hpp src/license.cpp src/license.hpp)
 target_include_directories(squad_session PUBLIC src)
-target_compile_definitions(squad_session PUBLIC SQUADSPEAK_VERSION="${PROJECT_VERSION}")
+# Version changes only rebuild entrypoints that report the version.
+set_source_files_properties(src/headless.cpp tests/headless_tests.cpp PROPERTIES
+    COMPILE_DEFINITIONS "SQUADSPEAK_VERSION=\"${SQUADSPEAK_VERSION}\"")
 option(SQUADSPEAK_STORE_BUILD "Build a free-only store distribution" OFF)
 set(SQUADSPEAK_GITHUB_CLIENT_ID "Ov23li8PQoxYilNhKyrn" CACHE STRING "Public Yuna Supporter OAuth client ID")
 if(SQUADSPEAK_GITHUB_CLIENT_ID AND NOT SQUADSPEAK_GITHUB_CLIENT_ID MATCHES "^[A-Za-z0-9_]+$")
@@ -485,7 +97,7 @@ if(SQUADSPEAK_GITHUB_CLIENT_ID AND NOT SQUADSPEAK_GITHUB_CLIENT_ID MATCHES "^[A-
 endif()
 target_compile_definitions(squad_session PUBLIC SQUADSPEAK_STORE_BUILD=$<BOOL:${SQUADSPEAK_STORE_BUILD}>
     SQUADSPEAK_GITHUB_CLIENT_ID="${SQUADSPEAK_GITHUB_CLIENT_ID}")
-target_link_libraries(squad_session PUBLIC Qt6::Core Qt6::Network Qt6::Sql PRIVATE OpenSSL::Crypto qt6keychain PkgConfig::OPUS datachannel-static)
+target_link_libraries(squad_session PUBLIC Qt6::Core Qt6::Network Qt6::Sql PRIVATE OpenSSL::Crypto qt6keychain PkgConfig::OPUS datachannel-static squad_teamspeak)
 target_compile_options(squad_session PRIVATE $<$<CXX_COMPILER_ID:AppleClang,Clang,GNU>:-Wall;-Wextra;-Wpedantic>)
 file(GLOB squad_translation_sources CONFIGURE_DEPENDS
     "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp" "${CMAKE_CURRENT_SOURCE_DIR}/src/*.hpp" "${CMAKE_CURRENT_SOURCE_DIR}/ui/*.qml")
@@ -525,6 +137,52 @@ if(squad_standard_catalogs)
     qt_add_resources(squad_session standard_translations PREFIX /i18n
         BASE "${squad_qt_translations}" FILES ${squad_standard_catalogs})
     target_compile_definitions(squad_session PRIVATE SQUAD_STANDARD_TRANSLATIONS)
+endif()
+
+add_library(squad_language src/local_language.cpp src/local_language.hpp)
+target_link_libraries(squad_language PUBLIC squad_audio Qt6::Gui)
+target_include_directories(squad_language PUBLIC src)
+if(APPLE)
+    set(squad_apple_sdk macosx)
+    set(squad_swift_os macos)
+    set(squad_swift_environment "")
+    if(SQUADSPEAK_IOS)
+        set(squad_apple_sdk iphoneos)
+        set(squad_swift_os ios)
+        if(CMAKE_OSX_SYSROOT MATCHES "[Ss]imulator")
+            set(squad_apple_sdk iphonesimulator)
+            set(squad_swift_environment "-simulator")
+        endif()
+    endif()
+    execute_process(COMMAND xcrun --sdk ${squad_apple_sdk} --show-sdk-version
+        OUTPUT_VARIABLE squad_apple_sdk_version OUTPUT_STRIP_TRAILING_WHITESPACE COMMAND_ERROR_IS_FATAL ANY)
+    if(squad_apple_sdk_version VERSION_LESS 26)
+        message(FATAL_ERROR "Local Apple language processing requires Xcode 26 or newer. The app keeps its platform deployment targets.")
+    endif()
+    set(squad_swift_arch "${CMAKE_SYSTEM_PROCESSOR}")
+    if(CMAKE_OSX_ARCHITECTURES)
+        set(squad_swift_arch "${CMAKE_OSX_ARCHITECTURES}")
+    endif()
+    set(CMAKE_Swift_COMPILER_TARGET "${squad_swift_arch}-apple-${squad_swift_os}${CMAKE_OSX_DEPLOYMENT_TARGET}${squad_swift_environment}")
+    enable_language(Swift)
+    execute_process(COMMAND xcrun --sdk ${squad_apple_sdk} --show-sdk-path
+        OUTPUT_VARIABLE squad_apple_sysroot OUTPUT_STRIP_TRAILING_WHITESPACE COMMAND_ERROR_IS_FATAL ANY)
+    target_link_directories(squad_language INTERFACE "${squad_apple_sysroot}/usr/lib/swift")
+    target_sources(squad_language PRIVATE src/local_language_native.h src/local_language_apple.swift)
+    target_compile_definitions(squad_language PRIVATE $<$<COMPILE_LANGUAGE:CXX>:SQUAD_LOCAL_LANGUAGE_NATIVE>)
+    if(squad_apple_sdk_version VERSION_GREATER_EQUAL 26.4)
+        target_compile_options(squad_language PRIVATE $<$<COMPILE_LANGUAGE:Swift>:-DSQUAD_TRANSLATION_STRATEGY>)
+    endif()
+    target_link_options(squad_language INTERFACE "LINKER:-weak_framework,Translation" "LINKER:-weak_framework,Speech")
+    target_link_libraries(squad_language PRIVATE
+        "-framework NaturalLanguage"
+        "-framework AVFAudio"
+        "-framework SwiftUI")
+    if(SQUADSPEAK_IOS)
+        target_link_libraries(squad_language PRIVATE "-framework UIKit")
+    else()
+        target_link_libraries(squad_language PRIVATE "-framework AppKit")
+    endif()
 endif()
 
 add_library(squad_content src/chat_content.cpp src/chat_content.hpp)
@@ -737,16 +395,57 @@ if(BUILD_TESTING)
     find_package(Python3 REQUIRED COMPONENTS Interpreter)
     find_package(Qt6 6.10 REQUIRED COMPONENTS Test QuickTest)
     qt_add_executable(video_tests tests/video_tests.cpp)
+    if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+        add_library(capture_permission_probe SHARED tests/capture_permission_probe.cpp)
+        target_link_libraries(capture_permission_probe PRIVATE "-framework CoreGraphics")
+        target_link_libraries(video_tests PRIVATE capture_permission_probe)
+    endif()
     target_link_libraries(video_tests PRIVATE squad_video Qt6::Test)
+    if(NOT SQUADSPEAK_IOS AND NOT ANDROID)
+        qt_add_executable(local_language_tests tests/local_language_tests.cpp src/local_language.cpp src/local_language.hpp)
+        target_compile_definitions(local_language_tests PRIVATE SQUAD_LOCAL_LANGUAGE_NATIVE)
+        target_link_libraries(local_language_tests PRIVATE squad_audio Qt6::Gui Qt6::Test)
+        add_test(NAME local_language_contract COMMAND local_language_tests -platform ${ui_test_platform})
+        set_tests_properties(local_language_contract PROPERTIES TIMEOUT 30)
+    endif()
+    if(APPLE)
+        qt_add_executable(native_language_tests MACOSX_BUNDLE tests/local_language_tests.cpp)
+        target_compile_definitions(native_language_tests PRIVATE SQUAD_NATIVE_LANGUAGE_ACCEPTANCE)
+        target_link_libraries(native_language_tests PRIVATE squad_language Qt6::Test)
+        set_target_properties(native_language_tests PROPERTIES LINKER_LANGUAGE CXX
+            MACOSX_BUNDLE_GUI_IDENTIFIER "app.squadspeak.language-tests"
+            MACOSX_BUNDLE_BUNDLE_NAME "SquadSpeak Language Tests")
+        if(NOT SQUADSPEAK_IOS)
+            add_test(NAME native_language_contract COMMAND native_language_tests
+                nativeCapabilitiesAndSameLanguageTranslation nativePendingCallbacksDoNotOutliveTheirOwner)
+            set_tests_properties(native_language_contract PROPERTIES TIMEOUT 45 LABELS "native")
+        endif()
+    endif()
+    qt_add_executable(audio_tests tests/audio_tests.cpp)
+    target_link_libraries(audio_tests PRIVATE squad_audio Qt6::Test)
+    if(APPLE)
+        target_link_libraries(audio_tests PRIVATE Qt6::Gui)
+    endif()
     qt_add_executable(mixer_tests tests/mixer_tests.cpp)
     target_link_libraries(mixer_tests PRIVATE squad_audio Qt6::Test)
     qt_add_executable(media_transport_tests tests/media_transport_tests.cpp)
-    target_link_libraries(media_transport_tests PRIVATE squad_session Qt6::Test PkgConfig::OPUS datachannel-static)
+    target_link_libraries(media_transport_tests PRIVATE squad_session Qt6::Test PkgConfig::OPUS datachannel-static plog::plog)
     qt_add_executable(channel_tests tests/channel_tests.cpp)
     target_link_libraries(channel_tests PRIVATE squad_video squad_audio squad_content Qt6::Test)
     add_subdirectory(tests)
+    if(APPLE AND NOT SQUADSPEAK_IOS)
+        add_test(NAME native_language_controls COMMAND controls_tests
+            -input "${CMAKE_CURRENT_SOURCE_DIR}/tests/tst_channel_controls.qml"
+            DirectChannelControls::test_channelLanguageOptionsAreExplicitAndLocal
+            DirectChannelControls::test_missingLanguagesAskInAppAndWaitForDownload
+            DirectChannelControls::test_incomingChannelTranslationKeepsOriginalAndHostHistory
+            DirectChannelControls::test_outgoingTranslationPreviewCannotSendAnOlderDraft)
+        set_tests_properties(native_language_controls PROPERTIES TIMEOUT 90 LABELS "native" RESOURCE_LOCK desktop
+            ENVIRONMENT "QT_QPA_PLATFORM=cocoa;QT_QUICK_BACKEND=software;QT_QUICK_CONTROLS_STYLE=Basic")
+    endif()
     if(SQUADSPEAK_IOS)
         qt_add_executable(chat_content_tests MACOSX_BUNDLE tests/chat_content_tests.cpp)
+        target_link_libraries(channel_tests PRIVATE qt6keychain)
         target_link_libraries(chat_content_tests PRIVATE squad_content squad_session Qt6::Test Qt6::Concurrent)
         set(SQUADSPEAK_IOS_SIMULATOR_DEVICE_ID "booted" CACHE STRING
             "Simulator device used by the iOS contracts")
@@ -759,13 +458,18 @@ if(BUILD_TESTING)
                 MACOSX_BUNDLE_BUNDLE_NAME "SquadSpeak Tests"
                 MACOSX_BUNDLE_INFO_PLIST "${CMAKE_CURRENT_BINARY_DIR}/ui/Info.plist.in"
                 XCODE_ATTRIBUTE_TARGETED_DEVICE_FAMILY "1,2")
+            if(NOT TEST ${fixture}_install)
+                squad_ios_simulator_identity(${target})
+            endif()
             if(NOT target STREQUAL "controls_tests")
                 set_property(TARGET ${target} PROPERTY QT_QML_MODULE_NO_IMPORT_SCAN TRUE)
             endif()
-            add_test(NAME ${fixture}_install COMMAND xcrun simctl install
-                "${SQUADSPEAK_IOS_SIMULATOR_DEVICE_ID}" "$<TARGET_BUNDLE_DIR:${target}>")
-            set_tests_properties(${fixture}_install PROPERTIES
-                TIMEOUT 30 FIXTURES_SETUP ios_${fixture} RESOURCE_LOCK ios_simulator)
+            if(NOT TEST ${fixture}_install)
+                add_test(NAME ${fixture}_install COMMAND xcrun simctl install
+                    "${SQUADSPEAK_IOS_SIMULATOR_DEVICE_ID}" "$<TARGET_BUNDLE_DIR:${target}>")
+                set_tests_properties(${fixture}_install PROPERTIES
+                    TIMEOUT 30 FIXTURES_SETUP ios_${fixture} RESOURCE_LOCK ios_simulator)
+            endif()
             add_test(NAME ${test_name} COMMAND xcrun simctl launch --console-pty
                 "--arch=${CMAKE_OSX_ARCHITECTURES}" "${SQUADSPEAK_IOS_SIMULATOR_DEVICE_ID}"
                 "app.squadspeak.${bundle_name}-tests" ${ARGN})
@@ -775,6 +479,25 @@ if(BUILD_TESTING)
                 FAIL_REGULAR_EXPRESSION "FAIL!|QFATAL")
         endfunction()
         squad_add_ios_test(chat_content_tests chat_content_contract)
+        squad_add_ios_test(native_language_tests native_language_contract
+            nativeCapabilitiesAndSameLanguageTranslation nativePendingCallbacksDoNotOutliveTheirOwner)
+        squad_add_ios_test(audio_tests speech_contract
+            speechVoiceSelectionUsesLanguageQualityAndStableTies speechProducesLocalPcmAndStopsWithoutLatePlayback)
+        squad_add_ios_test(controls_tests apple_controls
+            -input "${CMAKE_CURRENT_SOURCE_DIR}/tests/tst_channel_controls.qml"
+            DirectChannelControls::test_botVoiceCanBeSelectedAndReturnedToAutomatic
+            DirectChannelControls::test_botVoiceDownloadSettingsAndOptIn
+            DirectChannelControls::test_platformSpecificLanguageControls
+            DirectChannelControls::test_channelLanguageOptionsAreExplicitAndLocal
+            DirectChannelControls::test_missingLanguagesAskInAppAndWaitForDownload
+            DirectChannelControls::test_incomingChannelTranslationKeepsOriginalAndHostHistory
+            DirectChannelControls::test_dockPreferenceIsMacOnlyAndKeepsVoiceState)
+        squad_add_ios_test(controls_tests ios_audio_capture
+            -input "${CMAKE_CURRENT_SOURCE_DIR}/tests/tst_channel_controls.qml"
+            DirectChannelControls::test_iosAudioSessionCapturesAndCanRestart
+            DirectChannelControls::test_iosAudioSessionTransmitsWithPlaybackAndMute)
+        set_tests_properties(ios_audio_capture PROPERTIES
+            ENVIRONMENT "SIMCTL_CHILD_SQUADSPEAK_TEST_INPUT=present")
         squad_add_ios_test(controls_tests channel_controls
             -input "${CMAKE_CURRENT_SOURCE_DIR}/tests/tst_channel_controls.qml"
             DirectChannelControls::test_chatSendsOnlyAfterHostReceiptAndKeepsVoiceAvailable:English
@@ -797,6 +520,7 @@ if(BUILD_TESTING)
             passwordsPreserveActiveMembersAndPersistPerHostSecrets
             remotePttNeedsSeparateApprovalAndCombinesControllers
             chatSurvivesHostRestartAndReplaysToNewApprovedParticipants)
+        squad_add_ios_test(channel_tests native_identity_contract simulatorIdentitySurvivesReload)
         squad_add_ios_test(mixer_tests mixer_contract)
         squad_add_ios_test(media_transport_tests media_transport_contract)
         squad_add_ios_test(video_tests video_contract
@@ -841,6 +565,8 @@ if(BUILD_TESTING)
         endfunction()
         squad_add_android_test(controls_tests channel_controls
             -input :/tests/tst_channel_controls.qml
+            DirectChannelControls::test_platformSpecificLanguageControls
+            DirectChannelControls::test_dockPreferenceIsMacOnlyAndKeepsVoiceState
             DirectChannelControls::test_chatSendsOnlyAfterHostReceiptAndKeepsVoiceAvailable:English
             DirectChannelControls::test_all64MembersAreReachableFromChannelSummary
             DirectChannelControls::test_returningToChatPaintsWithoutScrolling
@@ -879,10 +605,13 @@ if(BUILD_TESTING)
         ENVIRONMENT "QT_QPA_PLATFORM=${ui_test_platform};QT_QUICK_BACKEND=software;QT_QUICK_CONTROLS_STYLE=Basic")
     if(WIN32)
         # The child still has 15 seconds. Allow a bounded dump and cleanup on failure.
-        set_tests_properties(desktop_smoke PROPERTIES TIMEOUT 30)
+        # Check cold QML startup before the long suite, without competing workloads.
+        set_tests_properties(desktop_smoke PROPERTIES TIMEOUT 30 RUN_SERIAL TRUE COST 2000)
+        set_property(TEST desktop_smoke APPEND PROPERTY ENVIRONMENT QML_IMPORT_TRACE=1)
     endif()
     add_test(NAME process_deadline COMMAND ${Python3_EXECUTABLE}
-        "${CMAKE_CURRENT_SOURCE_DIR}/tests/process_deadline_tests.py")
+        "${CMAKE_CURRENT_SOURCE_DIR}/tests/process_deadline_tests.py"
+        --controls-tests $<TARGET_FILE:controls_tests>)
     set_tests_properties(process_deadline PROPERTIES TIMEOUT 30)
     add_test(NAME acceptance_handoff COMMAND ${Python3_EXECUTABLE}
         "${CMAKE_CURRENT_SOURCE_DIR}/tests/acceptance_tests.py")
@@ -904,7 +633,8 @@ if(BUILD_TESTING)
         "${CMAKE_CURRENT_SOURCE_DIR}/docs/third-party"
         --qt-modules Core Gui Network Qml Quick Multimedia Svg)
     add_test(NAME release_version COMMAND ${Python3_EXECUTABLE}
-        "${CMAKE_CURRENT_SOURCE_DIR}/tests/release_version_tests.py")
+        "${CMAKE_CURRENT_SOURCE_DIR}/tests/release_version_tests.py"
+        --compile-commands "${CMAKE_CURRENT_BINARY_DIR}/compile_commands.json")
     if(UNIX)
         add_test(NAME release_publication COMMAND ${Python3_EXECUTABLE}
             "${CMAKE_CURRENT_SOURCE_DIR}/tests/release_publication_tests.py")
@@ -959,6 +689,9 @@ if(BUILD_TESTING)
             file(WRITE "${capture_test_plist}" "<?xml version=\"1.0\"?><plist version=\"1.0\"><dict><key>CFBundleExecutable</key><string>capture_tests</string><key>CFBundleIdentifier</key><string>app.squadspeak.capture-tests</string><key>CFBundlePackageType</key><string>APPL</string><key>NSAudioCaptureUsageDescription</key><string>Verify local echo cancellation using two quiet test tones.</string></dict></plist>")
             set_target_properties(capture_tests PROPERTIES MACOSX_BUNDLE_INFO_PLIST "${capture_test_plist}")
         endif()
+        add_test(NAME output_monitor_retry_contract COMMAND capture_tests
+            outputMonitorDoesNotRetryFailedCaptureAutomatically outputMonitorDoesNotRepeatInterruptedStartup)
+        set_tests_properties(output_monitor_retry_contract PROPERTIES ENVIRONMENT "QT_QPA_PLATFORM=offscreen" TIMEOUT 20)
         if(WIN32)
             add_test(NAME capture_contract COMMAND capture_tests -v2)
             set_tests_properties(capture_contract PROPERTIES ENVIRONMENT "QT_QPA_PLATFORM=windows" TIMEOUT 90)
@@ -979,13 +712,7 @@ if(BUILD_TESTING)
     target_link_libraries(chat_content_tests PRIVATE squad_content squad_session Qt6::Test)
     add_test(NAME chat_content_contract COMMAND chat_content_tests)
     set_tests_properties(chat_content_contract PROPERTIES ENVIRONMENT "QT_QPA_PLATFORM=${ui_test_platform}")
-    qt_add_executable(audio_tests tests/audio_tests.cpp)
-    target_link_libraries(audio_tests PRIVATE squad_audio Qt6::Test)
     add_test(NAME audio_contract COMMAND audio_tests)
-    qt_add_executable(recording_tests tests/recording_tests.cpp src/audio_recording.cpp src/audio_recording.hpp)
-    target_include_directories(recording_tests PRIVATE src)
-    target_link_libraries(recording_tests PRIVATE Qt6::Multimedia Qt6::Test)
-    add_test(NAME recording_contract COMMAND recording_tests)
     add_test(NAME mixer_contract COMMAND mixer_tests)
     qt_add_executable(corpus_tests tests/corpus_tests.cpp)
     target_link_libraries(corpus_tests PRIVATE squad_audio Qt6::Test)
@@ -1002,9 +729,15 @@ if(BUILD_TESTING)
     # allow slower runners to complete the same per-operation assertions.
     set_tests_properties(radio_contract PROPERTIES TIMEOUT 240)
     qt_add_executable(session_tests tests/session_tests.cpp)
-    target_link_libraries(session_tests PRIVATE squad_session Qt6::Test)
+    target_link_libraries(session_tests PRIVATE squad_session Qt6::Test OpenSSL::Crypto)
     target_compile_definitions(session_tests PRIVATE SQUAD_TRANSLATION_DIRECTORY="${CMAKE_CURRENT_SOURCE_DIR}/ui/i18n")
     add_test(NAME session_contract COMMAND session_tests)
+    qt_add_executable(teamspeak_tests tests/teamspeak_tests.cpp)
+    target_link_libraries(teamspeak_tests PRIVATE squad_session squad_content squad_audio Qt6::Test)
+    add_executable(teamspeak_live EXCLUDE_FROM_ALL tests/teamspeak_live.cpp)
+    target_link_libraries(teamspeak_live PRIVATE squad_session squad_content Qt6::Test PkgConfig::OPUS)
+    add_test(NAME teamspeak_contract COMMAND teamspeak_tests)
+    set_tests_properties(teamspeak_contract PROPERTIES TIMEOUT 45 RESOURCE_LOCK channel_fixed_ports)
     qt_add_executable(license_tests tests/license_tests.cpp src/headless.cpp src/headless.hpp)
     target_link_libraries(license_tests PRIVATE squad_radio Qt6::Test qt6keychain)
     add_test(NAME license_contract COMMAND license_tests)
@@ -1016,18 +749,41 @@ if(BUILD_TESTING)
     target_link_libraries(chat_history_tests PRIVATE squad_session squad_content Qt6::Test)
     add_test(NAME chat_history_contract COMMAND chat_history_tests)
     add_test(NAME media_transport_contract COMMAND media_transport_tests)
-    set_tests_properties(media_transport_contract PROPERTIES TIMEOUT 120)
-    add_test(NAME channel_contract COMMAND channel_tests)
+    # RTT and packet expiry assertions need an uncontended realtime scheduler.
+    set_tests_properties(media_transport_contract PROPERTIES TIMEOUT 120 RUN_SERIAL TRUE COST 1000)
+    # QtTest exposes the complete function inventory through its public
+    # -functions option. Each function invocation executes all of its data
+    # rows, while CTest can schedule independent functions separately.
+    set(network_test_launcher)
+    if(APPLE AND "$ENV{GITHUB_ACTIONS}" STREQUAL "true")
+        # Hosted runners lack interactive LAN consent (runner-images#10924).
+        # Only network contracts use the root exemption. CTest stays unprivileged.
+        find_program(SQUAD_SUDO sudo REQUIRED)
+        set(network_test_launcher "${SQUAD_SUDO}" -n
+            --preserve-env=QT_QPA_PLATFORM,QT_QUICK_BACKEND,QT_QUICK_CONTROLS_STYLE,SQUAD_TEST_ARTIFACTS,QV4_JIT_CALL_THRESHOLD,QV4_GC_TIMELIMIT,SQUAD_SOAK_CLIENTS,SQUAD_SOAK_SPEAKERS,SQUAD_SOAK_SECONDS
+            env "QT_LOGGING_RULES=")
+    endif()
+    set(channel_discovery_file "${CMAKE_CURRENT_BINARY_DIR}/channel_contract_discovered.cmake")
+    set_property(DIRECTORY APPEND PROPERTY TEST_INCLUDE_FILES "${channel_discovery_file}")
+    set_property(TARGET channel_tests APPEND PROPERTY LINK_DEPENDS
+        "${CMAKE_CURRENT_SOURCE_DIR}/cmake/DiscoverChannelTests.cmake")
+    add_custom_command(TARGET channel_tests POST_BUILD
+        BYPRODUCTS "${channel_discovery_file}"
+        COMMAND "${CMAKE_COMMAND}"
+            -DCHANNEL_TEST_EXECUTABLE=$<TARGET_FILE:channel_tests>
+            -DOUTPUT_FILE=${channel_discovery_file}
+            "-DTEST_LAUNCHER=${network_test_launcher}"
+            -P "${CMAKE_CURRENT_SOURCE_DIR}/cmake/DiscoverChannelTests.cmake"
+        VERBATIM)
     if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
         qt_add_executable(discovery_network_probe tests/discovery_network_probe.cpp)
         target_link_libraries(discovery_network_probe PRIVATE squad_session squad_content)
     endif()
-    # More than 1,000 data rows, reconnect waits and 64-client cases share this
-    # budget. macOS ARM exhausted 600 seconds with no failed assertion. Qt
-    # retains its per-function watchdog; network deadlines remain unchanged.
-    set_tests_properties(channel_contract PROPERTIES TIMEOUT 900)
     qt_add_executable(headless_tests tests/headless_tests.cpp src/headless.cpp src/headless.hpp)
     target_link_libraries(headless_tests PRIVATE squad_radio squad_session Qt6::Core Qt6::Test qt6keychain)
+    if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+        target_link_libraries(headless_tests PRIVATE Qt6::Gui)
+    endif()
     target_compile_definitions(headless_tests PRIVATE SQUAD_HEADLESS_APP="$<TARGET_FILE:squadspeak>"
         SQUAD_TEST_PYTHON="${Python3_EXECUTABLE}")
     add_dependencies(headless_tests squadspeak)
@@ -1035,12 +791,6 @@ if(BUILD_TESTING)
     # The suite launches dozens of real processes; per-operation deadlines stay
     # in the tests, while this outer budget also allows loaded CI runners.
     set_tests_properties(headless_contract PROPERTIES TIMEOUT 240)
-    add_test(NAME recording_smoke COMMAND squadspeak --smoke-test --recording-test
-        --settings-file "${CMAKE_BINARY_DIR}/recording-smoke/audio.ini"
-        --screenshot "${CMAKE_BINARY_DIR}/recording-smoke/recording.png")
-    set_tests_properties(recording_smoke PROPERTIES
-        TIMEOUT 15
-        ENVIRONMENT "QT_QPA_PLATFORM=${ui_test_platform};QT_QUICK_BACKEND=software;QT_QUICK_CONTROLS_STYLE=Basic")
     add_test(NAME audio_controls COMMAND controls_tests -input "${CMAKE_CURRENT_SOURCE_DIR}/tests/tst_controls.qml")
     set_tests_properties(audio_controls PROPERTIES
         ENVIRONMENT "QT_QPA_PLATFORM=${ui_test_platform};QT_QUICK_BACKEND=software;QT_QUICK_CONTROLS_STYLE=Basic")
@@ -1048,10 +798,15 @@ if(BUILD_TESTING)
     set_tests_properties(frequency_display PROPERTIES
         ENVIRONMENT "QT_QPA_PLATFORM=${ui_test_platform};QT_QUICK_BACKEND=software;QT_QUICK_CONTROLS_STYLE=Basic;SQUAD_TEST_ARTIFACTS=${CMAKE_BINARY_DIR}/smoke")
     file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/smoke")
-    add_test(NAME channel_controls COMMAND controls_tests -input "${CMAKE_CURRENT_SOURCE_DIR}/tests/tst_channel_controls.qml"
-        -o "${CMAKE_BINARY_DIR}/smoke/channel-controls.xml,junitxml" -o -,txt)
+    set(controls_test_command $<TARGET_FILE:controls_tests>)
+    if(network_test_launcher)
+        list(PREPEND controls_test_command "${CMAKE_COMMAND}" -E env ${network_test_launcher})
+    endif()
+    add_test(NAME channel_controls COMMAND ${controls_test_command} -input "${CMAKE_CURRENT_SOURCE_DIR}/tests/tst_channel_controls.qml"
+        -o "${CMAKE_BINARY_DIR}/smoke/channel-controls.xml,junitxml"
+        -o "${CMAKE_BINARY_DIR}/smoke/channel-controls-timing.xml,xml" -o -,txt)
     set_tests_properties(channel_controls PROPERTIES
-        TIMEOUT 600
+        TIMEOUT 600 RUN_SERIAL TRUE
         ENVIRONMENT "QT_QPA_PLATFORM=${ui_test_platform};QT_QUICK_BACKEND=software;QT_QUICK_CONTROLS_STYLE=Basic;SQUAD_TEST_ARTIFACTS=${CMAKE_BINARY_DIR}/smoke;QV4_JIT_CALL_THRESHOLD=1;QV4_GC_TIMELIMIT=1")
     foreach(scale 1.5 2)
         add_test(NAME avatar_scale_${scale} COMMAND controls_tests
@@ -1096,16 +851,17 @@ if(BUILD_TESTING)
         --screenshot "${CMAKE_BINARY_DIR}/smoke/graphics-audio.png")
     set_tests_properties(screen_rendering desktop_rendering_smoke PROPERTIES TIMEOUT 60 ENVIRONMENT "${screen_test_environment}")
     if(APPLE)
-        set_tests_properties(desktop_smoke recording_smoke desktop_rendering_smoke PROPERTIES
+        set_tests_properties(desktop_smoke desktop_rendering_smoke PROPERTIES
             FAIL_REGULAR_EXPRESSION "Could not find permission plugin for QMicrophonePermission")
     endif()
     # Keep timing/load measurements and native loopback capture undisturbed.
-    set_tests_properties(channel_contract video_contract PROPERTIES RUN_SERIAL TRUE)
+    set_tests_properties(video_contract PROPERTIES RUN_SERIAL TRUE)
     if(TEST capture_contract)
         set_tests_properties(capture_contract PROPERTIES RUN_SERIAL TRUE)
     endif()
+    set_tests_properties(channel_controls radio_contract audio_corpus PROPERTIES COST 500)
     # GUI, clipboard and audio-device fixtures share the runner's desktop.
-    set_tests_properties(radio_contract headless_contract desktop_smoke recording_smoke
+    set_tests_properties(headless_contract desktop_smoke process_deadline
         audio_controls frequency_display channel_controls avatar_scale_1.5 avatar_scale_2
         screen_rendering desktop_rendering_smoke PROPERTIES RESOURCE_LOCK desktop)
     if(TEST linux_global_ptt)

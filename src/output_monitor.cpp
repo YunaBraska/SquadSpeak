@@ -5,9 +5,16 @@
 
 OutputMonitor::~OutputMonitor() { stop(); }
 
-bool OutputMonitor::start(const QByteArray& deviceId) {
+bool OutputMonitor::start(const QByteArray& deviceId, bool retry) {
     stop();
     if (deviceId.isEmpty()) return false;
+    {
+        std::lock_guard lock(mutex_);
+        if (!retry && deviceId == deviceId_ && awaitingAudio_) return false;
+        deviceId_ = deviceId;
+        awaitingAudio_ = true;
+        error_.clear();
+    }
     stopping_ = false;
     worker_ = std::thread([this, deviceId] { if (!stopping_) capture(deviceId); });
     return true;
@@ -18,13 +25,19 @@ void OutputMonitor::stop() {
     wake_.notify_all();
     if (worker_.joinable()) worker_.join();
     std::lock_guard lock(mutex_);
-    begin_ = size_ = 0; rate_ = 0; discontinuity_ = false; error_.clear();
+    begin_ = size_ = 0; rate_ = 0; discontinuity_ = false;
+}
+
+bool OutputMonitor::retryNeeded() const {
+    std::lock_guard lock(mutex_);
+    return awaitingAudio_ && (stopping_ || !error_.isEmpty());
 }
 
 void OutputMonitor::append(std::span<const float> samples, int rate, bool discontinuity) {
     if (rate < 8000 || rate > 192000 || rate % 100) { fail(QStringLiteral("Unsupported output monitor sample rate")); return; }
     std::lock_guard lock(mutex_);
     if (!error_.isEmpty()) return;
+    if (!samples.empty()) awaitingAudio_ = false;
     if (rate_ != rate || discontinuity) { begin_ = size_ = 0; discontinuity_ = true; }
     rate_ = rate;
     const auto limit = size_t(rate / 10);
@@ -48,7 +61,8 @@ OutputMonitor::Block OutputMonitor::take() {
 QString OutputMonitor::error() const { std::lock_guard lock(mutex_); return error_; }
 void OutputMonitor::fail(QString error) {
     std::lock_guard lock(mutex_);
-    error_ = std::move(error); begin_ = size_ = 0; discontinuity_ = true;
+    error_ = std::move(error); awaitingAudio_ = true;
+    begin_ = size_ = 0; discontinuity_ = true;
 }
 
 #if !defined(Q_OS_MACOS) && !defined(Q_OS_WIN) && (!defined(Q_OS_LINUX) || defined(Q_OS_ANDROID))

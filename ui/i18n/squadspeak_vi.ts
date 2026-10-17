@@ -36,14 +36,6 @@
             <translation>Mở cài đặt quyền riêng tư của hệ thống và cho phép SquadSpeak truy cập mic.</translation>
         </message>
         <message>
-            <source>Microphone analysis active. Test audio stays on this computer.</source>
-            <translation>Phân tích mic đang bật. Âm thanh kiểm tra chỉ được giữ trên máy tính này.</translation>
-        </message>
-        <message>
-            <source>Finish the test recording before changing devices.</source>
-            <translation>Hoàn tất bản ghi kiểm tra trước khi đổi thiết bị.</translation>
-        </message>
-        <message>
             <source>The output format is not supported.</source>
             <translation>Định dạng đầu ra không được hỗ trợ.</translation>
         </message>
@@ -68,32 +60,12 @@
             <translation>Không thể phát âm kiểm tra.</translation>
         </message>
         <message>
-            <source>The microphone has provided no data for five seconds. Recording discarded.</source>
-            <translation>Mic không cung cấp dữ liệu trong năm giây. Đã loại bỏ bản ghi.</translation>
-        </message>
-        <message>
-            <source>The microphone was interrupted or changed. Recording discarded.</source>
-            <translation>Mic bị gián đoạn hoặc đã đổi. Đã loại bỏ bản ghi.</translation>
-        </message>
-        <message>
-            <source>Cancelled. The incomplete recording was discarded.</source>
-            <translation>Đã hủy. Đã loại bỏ bản ghi chưa hoàn tất.</translation>
-        </message>
-        <message>
             <source>No selected microphone is available</source>
             <translation>Mic đã chọn không khả dụng</translation>
         </message>
         <message>
             <source>Allow microphone access in the system dialog.</source>
             <translation>Cho phép truy cập mic trong hộp thoại hệ thống.</translation>
-        </message>
-        <message>
-            <source>Microphone capture active for the voice channel.</source>
-            <translation>Đang thu mic cho kênh thoại.</translation>
-        </message>
-        <message>
-            <source>Microphone access was denied. Nothing was saved.</source>
-            <translation>Quyền truy cập mic bị từ chối. Không có gì được lưu.</translation>
         </message>
         <message>
             <source>Microphone access is missing. Allow it in System Settings.</source>
@@ -259,103 +231,16 @@
             <source>App audio only</source>
             <translation>Chỉ âm thanh ứng dụng</translation>
         </message>
-    </context>
-    <context>
-        <name>AudioRecording</name>
         <message>
-            <source>Incomplete audio block. Recording discarded.</source>
-            <translation>Khối âm thanh chưa hoàn chỉnh. Đã loại bỏ bản ghi.</translation>
-        </message>
-        <message>
-            <source>Move about one meter from the microphone. Keep the background sound playing and read the sentence.</source>
-            <translation>Di chuyển cách mic khoảng một mét. Giữ âm thanh nền đang phát và đọc câu.</translation>
-        </message>
-        <message>
-            <source>Voice with background sound</source>
-            <translation>Giọng nói có âm thanh nền</translation>
-        </message>
-        <message>
-            <source>The recordings folder could not be created.</source>
-            <translation>Không thể tạo thư mục bản ghi.</translation>
-        </message>
-        <message>
-            <source>You can stop the background sound now.</source>
-            <translation>Bây giờ bạn có thể dừng âm thanh nền.</translation>
-        </message>
-        <message>
-            <source>Recordings saved</source>
-            <translation>Đã lưu bản ghi</translation>
-        </message>
-        <message>
-            <source>The test recording could not be saved completely.</source>
-            <translation>Không thể lưu đầy đủ bản ghi kiểm tra.</translation>
-        </message>
-        <message>
-            <source>Keep music off and stay quiet. Start when ready.</source>
-            <translation>Tắt nhạc và giữ yên lặng. Bắt đầu khi sẵn sàng.</translation>
-        </message>
-        <message>
-            <source>Your voice</source>
-            <translation>Giọng của bạn</translation>
-        </message>
-        <message>
-            <source>Play music or another background sound at a normal volume. Stay quiet while recording.</source>
-            <translation>Phát nhạc hoặc âm thanh nền khác ở âm lượng bình thường. Giữ yên lặng khi ghi âm.</translation>
-        </message>
-        <message>
-            <source>The test recording could not be created.</source>
-            <translation>Không thể tạo bản ghi kiểm tra.</translation>
-        </message>
-        <message>
-            <source>Background sound</source>
-            <translation>Âm thanh nền</translation>
-        </message>
-        <message>
-            <source>The window is open. I can hear the rain outside. One, two, three, four, five.</source>
-            <translation>Cửa sổ đang mở. Tôi nghe thấy mưa bên ngoài. Một, hai, ba, bốn, năm.</translation>
-        </message>
-        <message>
-            <source>This microphone format is not supported for test recordings.</source>
-            <translation>Định dạng mic này không được hỗ trợ cho bản ghi kiểm tra.</translation>
-        </message>
-        <message>
-            <source>Keep the background volume unchanged. Read the sentence, then stop recording.</source>
-            <translation>Giữ nguyên âm lượng nền. Đọc câu, rồi dừng ghi âm.</translation>
-        </message>
-        <message>
-            <source>Record at least half a second, then try again.</source>
-            <translation>Ghi ít nhất nửa giây, rồi thử lại.</translation>
-        </message>
-        <message>
-            <source>Sit at your usual distance. Read the sentence, then stop recording.</source>
-            <translation>Ngồi ở khoảng cách thường dùng. Đọc câu, rồi dừng ghi âm.</translation>
-        </message>
-        <message>
-            <source>The recording description could not be saved.</source>
-            <translation>Không thể lưu mô tả bản ghi.</translation>
-        </message>
-        <message>
-            <source>The WAV file could not be finalized.</source>
-            <translation>Không thể hoàn tất tệp WAV.</translation>
-        </message>
-        <message>
-            <source>The WAV header could not be written.</source>
-            <translation>Không thể ghi tiêu đề WAV.</translation>
-        </message>
-        <message>
-            <source>Voice farther away</source>
-            <translation>Giọng nói từ xa hơn</translation>
-        </message>
-        <message>
-            <source>Room sound</source>
-            <translation>Âm thanh trong phòng</translation>
+            <source>Speech output is unavailable.</source>
+            <translation>Đầu ra giọng nói không khả dụng.</translation>
         </message>
     </context>
     <context>
         <name>AudioSettings</name>
         <message>
-            <source>Echo cancellation</source>
-            <translation>Khử tiếng vọng</translation>
+            <source>Echo</source>
+            <translation>Vọng</translation>
         </message>
         <message>
             <source>Off</source>
@@ -402,12 +287,12 @@
             <translation>Âm thanh phát của bạn</translation>
         </message>
         <message>
-            <source>Clear local key</source>
-            <translation>Xóa phím cục bộ</translation>
+            <source>Clear key</source>
+            <translation>Xóa phím</translation>
         </message>
         <message>
-            <source>Low cut</source>
-            <translation>Cắt tần số thấp</translation>
+            <source>Highpass</source>
+            <translation>Thông cao</translation>
         </message>
         <message>
             <source>Microphone access is off</source>
@@ -418,32 +303,16 @@
             <translation>Thiết bị đầu vào</translation>
         </message>
         <message>
-            <source>Microphone paused for others</source>
-            <translation>Mic đã tạm dừng với người khác</translation>
-        </message>
-        <message>
             <source>Cancel</source>
             <translation>Hủy</translation>
-        </message>
-        <message>
-            <source>Guided recording</source>
-            <translation>Ghi âm có hướng dẫn</translation>
         </message>
         <message>
             <source>Clipping. Reduce microphone gain.</source>
             <translation>Clipping. Giảm gain mic.</translation>
         </message>
         <message>
-            <source>Silent</source>
-            <translation>Im lặng</translation>
-        </message>
-        <message>
             <source>Test output</source>
             <translation>Kiểm tra đầu ra</translation>
-        </message>
-        <message>
-            <source>Voice level</source>
-            <translation>Mức giọng nói</translation>
         </message>
         <message>
             <source>Voice threshold</source>
@@ -462,19 +331,15 @@
             <translation>Thiết bị đã ngắt kết nối</translation>
         </message>
         <message>
-            <source>Local key</source>
-            <translation>Phím cục bộ</translation>
+            <source>PTT key</source>
+            <translation>Phím nói</translation>
         </message>
         <message>
             <source>Voice activation</source>
             <translation>Kích hoạt bằng giọng nói</translation>
         </message>
         <message>
-            <source>Remote PTT key</source>
-            <translation>Phím PTT từ xa</translation>
-        </message>
-        <message>
-            <source>Noise reduction</source>
+            <source>Denoise</source>
             <translation>Khử nhiễu</translation>
         </message>
         <message>
@@ -486,32 +351,120 @@
             <translation>Sẽ truyền</translation>
         </message>
         <message>
-            <source>Microphone gain</source>
-            <translation>Gain mic</translation>
-        </message>
-        <message>
-            <source>Clear remote key</source>
-            <translation>Xóa phím từ xa</translation>
-        </message>
-        <message>
-            <source>Playback volume</source>
-            <translation>Âm lượng phát</translation>
+            <source>Gain</source>
+            <translation>Độ lợi</translation>
         </message>
         <message>
             <source>Not assigned</source>
             <translation>Chưa gán</translation>
         </message>
         <message>
-            <source>High cut</source>
-            <translation>Cắt tần số cao</translation>
+            <source>Lowpass</source>
+            <translation>Thông thấp</translation>
         </message>
         <message>
             <source>Level audio automatically</source>
             <translation>Tự động cân bằng mức âm thanh</translation>
         </message>
+        <message>
+            <source>Voice volume</source>
+            <translation>Âm lượng trò chuyện thoại</translation>
+        </message>
+        <message>
+            <source>App sounds</source>
+            <translation>Âm thanh ứng dụng</translation>
+        </message>
+        <message>
+            <source>Read bot messages aloud</source>
+            <translation>Đọc to tin nhắn của bot</translation>
+        </message>
+        <message>
+            <source>Download a high-quality voice for this language in macOS settings.</source>
+            <translation>Tải giọng nói chất lượng cao cho ngôn ngữ này trong cài đặt macOS.</translation>
+        </message>
+        <message>
+            <source>Bot voice</source>
+            <translation>Giọng bot</translation>
+        </message>
+        <message>
+            <source>Automatic</source>
+            <translation>Tự động</translation>
+        </message>
+        <message>
+            <source>Unavailable</source>
+            <translation>Không khả dụng</translation>
+        </message>
+        <message>
+            <source>Download voices in your device's Accessibility speech settings.</source>
+            <translation>Tải giọng nói trong phần cài đặt lời nói thuộc Trợ năng trên thiết bị.</translation>
+        </message>
+        <message>
+            <source>Voice download help</source>
+            <translation>Trợ giúp tải giọng nói</translation>
+        </message>
+        <message>
+            <source>Strength, not the percentage of echo removed.</source>
+            <translation>Cường độ, không phải tỷ lệ tiếng vọng đã loại bỏ.</translation>
+        </message>
+        <message>
+            <source>Auto also checks for speech, not just volume.</source>
+            <translation>Chế độ tự động cũng nhận diện lời nói, không chỉ âm lượng.</translation>
+        </message>
     </context>
     <context>
         <name>Channels</name>
+        <message>
+            <source>Audio received</source>
+            <translation>Âm thanh nhận được</translation>
+        </message>
+        <message>
+            <source>Search channels</source>
+            <translation>Tìm kênh</translation>
+        </message>
+        <message>
+            <source>No matches</source>
+            <translation>Không có kết quả</translation>
+        </message>
+        <message>
+            <source>Copy address</source>
+            <translation>Sao chép địa chỉ</translation>
+        </message>
+        <message>
+            <source>Messages</source>
+            <translation>Tin nhắn</translation>
+        </message>
+        <message>
+            <source>Message</source>
+            <translation>Tin nhắn</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Mở</translation>
+        </message>
+        <message>
+            <source>Online</source>
+            <translation>Trực tuyến</translation>
+        </message>
+        <message>
+            <source>Offline</source>
+            <translation>Ngoại tuyến</translation>
+        </message>
+        <message>
+            <source>No private messages</source>
+            <translation>Không có tin nhắn riêng tư</translation>
+        </message>
+        <message>
+            <source>Private messages are unavailable for this contact.</source>
+            <translation>Tin nhắn riêng tư không khả dụng cho liên hệ này.</translation>
+        </message>
+        <message>
+            <source>If asked, allow local network access. You can change this in system settings.</source>
+            <translation>Nếu được hỏi, hãy cho phép truy cập mạng cục bộ. Bạn có thể thay đổi điều này trong cài đặt hệ thống.</translation>
+        </message>
+        <message>
+            <source>Retry</source>
+            <translation>Thử lại</translation>
+        </message>
         <message>
             <source>Updates</source>
             <translation>Bản cập nhật</translation>
@@ -531,6 +484,10 @@
         <message>
             <source>DDNS cannot bypass CGNAT. If your provider shares the public IP, use a private VPN on all participating devices or a publicly reachable server.</source>
             <translation>DDNS không thể vượt qua CGNAT. Nếu nhà cung cấp dùng chung IP công cộng, hãy dùng VPN riêng trên mọi thiết bị tham gia hoặc máy chủ có thể truy cập công khai.</translation>
+        </message>
+        <message>
+            <source>Remove server</source>
+            <translation>Xóa máy chủ</translation>
         </message>
         <message>
             <source>Low</source>
@@ -653,10 +610,6 @@
             <translation>Âm thanh thông báo</translation>
         </message>
         <message>
-            <source>Lifetime for new messages. Earlier messages keep their expiry.</source>
-            <translation>Thời hạn tin nhắn mới. Tin nhắn cũ giữ nguyên thời hạn hết hạn.</translation>
-        </message>
-        <message>
             <source>Enable speakers</source>
             <translation>Bật loa</translation>
         </message>
@@ -691,10 +644,6 @@
         <message>
             <source>Allow device</source>
             <translation>Cho phép thiết bị</translation>
-        </message>
-        <message>
-            <source>Receive quality: %1 kb/s per voice. Adjusts automatically for this device.</source>
-            <translation>Chất lượng nhận: %1 kb/s cho mỗi giọng nói. Tự động điều chỉnh cho thiết bị này.</translation>
         </message>
         <message>
             <source>Stop radio</source>
@@ -1188,6 +1137,50 @@
             <source>This device</source>
             <translation>Thiết bị này</translation>
         </message>
+        <message>
+            <source>Use default music volume</source>
+            <translation>Dùng âm lượng nhạc mặc định</translation>
+        </message>
+        <message>
+            <source>Show in Dock</source>
+            <translation>Hiện trong Dock</translation>
+        </message>
+        <message>
+            <source>App language</source>
+            <translation>Ngôn ngữ ứng dụng</translation>
+        </message>
+        <message>
+            <source>Send in</source>
+            <translation>Gửi bằng</translation>
+        </message>
+        <message>
+            <source>Hear in</source>
+            <translation>Nghe bằng</translation>
+        </message>
+        <message>
+            <source>Download language models for %1 and %2?</source>
+            <translation>Tải mô hình ngôn ngữ cho %1 và %2?</translation>
+        </message>
+        <message>
+            <source>Download</source>
+            <translation>Tải xuống</translation>
+        </message>
+        <message>
+            <source>PTT, chat and channel controls. Uses the controlled device's microphone.</source>
+            <translation>Điều khiển PTT, trò chuyện và kênh. Micrô của thiết bị được điều khiển sẽ được sử dụng.</translation>
+        </message>
+        <message>
+            <source>Connect the other device to one of your channels, then allow it here.</source>
+            <translation>Kết nối thiết bị kia với một trong các kênh của bạn, rồi cho phép thiết bị đó ở đây.</translation>
+        </message>
+        <message>
+            <source>On the other device, open Settings &gt; Input &gt; Remote control and allow this device.</source>
+            <translation>Trên thiết bị kia, mở Cài đặt &gt; Đầu vào &gt; Điều khiển từ xa và cho phép thiết bị này.</translation>
+        </message>
+        <message>
+            <source>Unread messages</source>
+            <translation>Tin nhắn chưa đọc</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1299,6 +1292,22 @@
             <source>The sanitized image could not be written completely.</source>
             <translation>Không thể ghi đầy đủ ảnh đã làm sạch.</translation>
         </message>
+        <message>
+            <source>%1 joined.</source>
+            <translation>%1 đã tham gia.</translation>
+        </message>
+        <message>
+            <source>%1 left.</source>
+            <translation>%1 đã rời đi.</translation>
+        </message>
+        <message>
+            <source>%1 was kicked.</source>
+            <translation>%1 đã bị đuổi.</translation>
+        </message>
+        <message>
+            <source>%1 was banned from the channel.</source>
+            <translation>%1 đã bị cấm khỏi kênh.</translation>
+        </message>
     </context>
     <context>
         <name>ChatPanel</name>
@@ -1363,22 +1372,6 @@
             <translation>Đang tải...</translation>
         </message>
         <message>
-            <source>%1 joined.</source>
-            <translation>%1 đã tham gia.</translation>
-        </message>
-        <message>
-            <source>%1 left.</source>
-            <translation>%1 đã rời đi.</translation>
-        </message>
-        <message>
-            <source>%1 was kicked.</source>
-            <translation>%1 đã bị đuổi.</translation>
-        </message>
-        <message>
-            <source>%1 was banned from the channel.</source>
-            <translation>%1 đã bị cấm khỏi kênh.</translation>
-        </message>
-        <message>
             <source>Message could not be sent. Check the connection and text length.</source>
             <translation>Không thể gửi tin nhắn. Kiểm tra kết nối và độ dài văn bản.</translation>
         </message>
@@ -1404,7 +1397,400 @@
         </message>
     </context>
     <context>
+        <name>Desktop</name>
+        <message>
+            <source>Open settings at startup.</source>
+            <translation>Mở cài đặt khi khởi động.</translation>
+        </message>
+        <message>
+            <source>Alternative file for audio profiles.</source>
+            <translation>Tệp thay thế cho hồ sơ âm thanh.</translation>
+        </message>
+        <message>
+            <source>Load the interface without microphone capture and exit after one second.</source>
+            <translation>Tải giao diện mà không thu âm micrô và thoát sau một giây.</translation>
+        </message>
+        <message>
+            <source>Save an image of the app window during the UI test.</source>
+            <translation>Lưu ảnh cửa sổ ứng dụng trong khi kiểm thử giao diện.</translation>
+        </message>
+        <message>
+            <source>The window image could not be saved.</source>
+            <translation>Không thể lưu ảnh cửa sổ.</translation>
+        </message>
+        <message>
+            <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
+            <translation>Khay hệ thống không khả dụng; ứng dụng vẫn mở trong một cửa sổ.</translation>
+        </message>
+    </context>
+    <context>
+        <name>Headless</name>
+        <message>
+            <source>Host display name.</source>
+            <translation>Tên hiển thị của máy chủ.</translation>
+        </message>
+        <message>
+            <source>Command failed.</source>
+            <translation>Lệnh đã thất bại.</translation>
+        </message>
+        <message>
+            <source>%1 must be an integer.</source>
+            <translation>%1 phải là số nguyên.</translation>
+        </message>
+        <message>
+            <source>Requests must be on/off or true/false.</source>
+            <translation>Các yêu cầu phải là on/off hoặc true/false.</translation>
+        </message>
+        <message>
+            <source>Unknown host property: %1</source>
+            <translation>Thuộc tính máy chủ không xác định: %1</translation>
+        </message>
+        <message>
+            <source>Run without GUI, microphone capture, or local audio output.</source>
+            <translation>Chạy không có giao diện đồ họa, thu âm từ micrô hoặc đầu ra âm thanh cục bộ.</translation>
+        </message>
+        <message>
+            <source>Server storage prefix. Personal/audio/GUI profiles are not loaded.</source>
+            <translation>Tiền tố lưu trữ máy chủ. Không tải hồ sơ cá nhân, âm thanh hoặc đồ họa.</translation>
+        </message>
+        <message>
+            <source>Optional private identity file instead of the OS credential store (Linux/macOS). Parent directory must exist and belong to this account.</source>
+            <translation>Tệp nhận dạng riêng tư tùy chọn thay cho kho thông tin xác thực của hệ điều hành (Linux/macOS). Thư mục cha phải tồn tại và thuộc tài khoản này.</translation>
+        </message>
+        <message>
+            <source>UTF-8 key=value properties or JSON host preset. Default: application.properties, then config/application.properties beside the app.</source>
+            <translation>Thuộc tính UTF-8 key=value hoặc cấu hình máy chủ JSON. Mặc định: application.properties, rồi config/application.properties bên cạnh ứng dụng.</translation>
+        </message>
+        <message>
+            <source>Channel display name.</source>
+            <translation>Tên hiển thị của kênh.</translation>
+        </message>
+        <message>
+            <source>System and radio bot display name.</source>
+            <translation>Tên hiển thị của bot hệ thống và radio.</translation>
+        </message>
+        <message>
+            <source>TCP service port (1-65535).</source>
+            <translation>Cổng dịch vụ TCP (1-65535).</translation>
+        </message>
+        <message>
+            <source>Headless admission is always on; only 'on' or 'true' is accepted.</source>
+            <translation>Quyền truy cập không giao diện luôn bật; chỉ chấp nhận 'on' hoặc 'true'.</translation>
+        </message>
+        <message>
+            <source>Preapprove a device ID; repeat for several devices. Existing bans remain.</source>
+            <translation>Phê duyệt trước ID thiết bị; lặp lại cho nhiều thiết bị. Các lệnh cấm hiện có vẫn giữ nguyên.</translation>
+        </message>
+        <message>
+            <source>Block a device ID; repeat for several devices.</source>
+            <translation>Chặn ID thiết bị; lặp lại cho nhiều thiết bị.</translation>
+        </message>
+        <message>
+            <source>Read a UTF-8 channel password from a file before listening. An empty file removes it.</source>
+            <translation>Đọc mật khẩu kênh UTF-8 từ tệp trước khi lắng nghe. Tệp rỗng sẽ xóa mật khẩu.</translation>
+        </message>
+        <message>
+            <source>Channel password. Empty removes it; environment or config avoids process-list exposure.</source>
+            <translation>Mật khẩu kênh. Giá trị rỗng sẽ xóa mật khẩu; môi trường hoặc cấu hình ngăn mật khẩu xuất hiện trong danh sách tiến trình.</translation>
+        </message>
+        <message>
+            <source>SquadSpeak headless local channel host</source>
+            <translation>Máy chủ kênh cục bộ không giao diện của SquadSpeak</translation>
+        </message>
+        <message>
+            <source>Environment variables (SQUADSPEAK_ prefix):</source>
+            <translation>Biến môi trường (tiền tố SQUADSPEAK_):</translation>
+        </message>
+        <message>
+            <source>Host configuration could not be read or exceeds 1 MiB.</source>
+            <translation>Không thể đọc cấu hình máy chủ hoặc cấu hình vượt quá 1 MiB.</translation>
+        </message>
+        <message>
+            <source>Host configuration must be UTF-8.</source>
+            <translation>Cấu hình máy chủ phải là UTF-8.</translation>
+        </message>
+        <message>
+            <source>Host preset must be a JSON object.</source>
+            <translation>Cấu hình máy chủ phải là một đối tượng JSON.</translation>
+        </message>
+        <message>
+            <source>Property line %1 must use key=value.</source>
+            <translation>Dòng thuộc tính %1 phải dùng key=value.</translation>
+        </message>
+        <message>
+            <source>Property line %1: %2</source>
+            <translation>Dòng thuộc tính %1: %2</translation>
+        </message>
+        <message>
+            <source>Standard input has no file descriptor.</source>
+            <translation>Đầu vào chuẩn không có bộ mô tả tệp.</translation>
+        </message>
+        <message>
+            <source>Standard input could not be inspected.</source>
+            <translation>Không thể kiểm tra đầu vào chuẩn.</translation>
+        </message>
+        <message>
+            <source>Could not write the command response: %1</source>
+            <translation>Không thể ghi phản hồi lệnh: %1</translation>
+        </message>
+        <message>
+            <source>Standard input could not be read: %1</source>
+            <translation>Không thể đọc đầu vào chuẩn: %1</translation>
+        </message>
+        <message>
+            <source>Input line exceeds 65536 bytes.</source>
+            <translation>Dòng đầu vào vượt quá 65536 byte.</translation>
+        </message>
+        <message>
+            <source>Each input line must be a JSON object.</source>
+            <translation>Mỗi dòng đầu vào phải là một đối tượng JSON.</translation>
+        </message>
+        <message>
+            <source>Input ended before a complete JSON line.</source>
+            <translation>Đầu vào kết thúc trước khi hoàn tất dòng JSON.</translation>
+        </message>
+        <message>
+            <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
+            <translation>ID kênh riêng tùy chọn cho các lệnh status, configure, password, admission, history, chat và radio; mặc định là kênh chính.</translation>
+        </message>
+        <message>
+            <source>Channel action must be list, add or remove.</source>
+            <translation>Hành động kênh phải là list, add hoặc remove.</translation>
+        </message>
+        <message>
+            <source>Removing an own channel deletes its history, images, permissions and radio settings. Set confirmed=true to proceed.</source>
+            <translation>Xóa kênh riêng sẽ xóa lịch sử, hình ảnh, quyền và cài đặt radio của kênh. Đặt confirmed=true để tiếp tục.</translation>
+        </message>
+        <message>
+            <source>id must identify an additional own channel.</source>
+            <translation>id phải xác định một kênh riêng bổ sung.</translation>
+        </message>
+        <message>
+            <source>The additional own channel could not be removed: %1</source>
+            <translation>Không thể xóa kênh riêng bổ sung: %1</translation>
+        </message>
+        <message>
+            <source>channelId must identify an own channel.</source>
+            <translation>channelId phải xác định một kênh riêng.</translation>
+        </message>
+        <message>
+            <source>values must be a host settings object.</source>
+            <translation>values phải là đối tượng cài đặt máy chủ.</translation>
+        </message>
+        <message>
+            <source>Headless admission is always enabled for non-banned devices; requests off is not supported.</source>
+            <translation>Quyền truy cập không giao diện luôn bật cho thiết bị không bị chặn; không hỗ trợ requests off.</translation>
+        </message>
+        <message>
+            <source>value must be a password of at most 1024 UTF-8 bytes without control characters; an empty string removes it.</source>
+            <translation>value phải là mật khẩu tối đa 1024 byte UTF-8 không chứa ký tự điều khiển; chuỗi rỗng sẽ xóa mật khẩu.</translation>
+        </message>
+        <message>
+            <source>The channel is not ready or a password change is in progress.</source>
+            <translation>Kênh chưa sẵn sàng hoặc đang đổi mật khẩu.</translation>
+        </message>
+        <message>
+            <source>The channel was removed while saving the password.</source>
+            <translation>Kênh đã bị xóa khi đang lưu mật khẩu.</translation>
+        </message>
+        <message>
+            <source>id is required.</source>
+            <translation>Cần có id.</translation>
+        </message>
+        <message>
+            <source>text must be a valid non-empty chat message.</source>
+            <translation>text phải là tin nhắn trò chuyện hợp lệ và không rỗng.</translation>
+        </message>
+        <message>
+            <source>The local channel is not ready.</source>
+            <translation>Kênh cục bộ chưa sẵn sàng.</translation>
+        </message>
+        <message>
+            <source>The channel's radio is unavailable.</source>
+            <translation>Radio của kênh không khả dụng.</translation>
+        </message>
+        <message>
+            <source>Unknown command. Use help.</source>
+            <translation>Lệnh không xác định. Hãy dùng help.</translation>
+        </message>
+        <message>
+            <source>search requires a query, non-negative offset and limit from 1 to 128.</source>
+            <translation>search yêu cầu query, offset không âm và limit từ 1 đến 128.</translation>
+        </message>
+        <message>
+            <source>add creates an id; update requires an existing id.</source>
+            <translation>add tạo một id; update cần một id hiện có.</translation>
+        </message>
+        <message>
+            <source>A station is already being checked.</source>
+            <translation>Trạm đang được kiểm tra.</translation>
+        </message>
+        <message>
+            <source>The channel was removed while checking the station.</source>
+            <translation>Kênh đã bị xóa khi đang kiểm tra trạm.</translation>
+        </message>
+        <message>
+            <source>Unknown radio action.</source>
+            <translation>Hành động radio không xác định.</translation>
+        </message>
+        <message>
+            <source>Could not load language: %1</source>
+            <translation>Không thể tải ngôn ngữ: %1</translation>
+        </message>
+        <message>
+            <source>The %1 option is incompatible with --headless.</source>
+            <translation>Tùy chọn %1 không tương thích với --headless.</translation>
+        </message>
+        <message>
+            <source>Unexpected positional arguments. Use --help.</source>
+            <translation>Đối số vị trí không mong đợi. Hãy dùng --help.</translation>
+        </message>
+        <message>
+            <source>--config / -f requires a non-empty path.</source>
+            <translation>--config / -f cần một đường dẫn không rỗng.</translation>
+        </message>
+        <message>
+            <source>Choose --password or --password-file, not both.</source>
+            <translation>Chọn --password hoặc --password-file, không chọn cả hai.</translation>
+        </message>
+        <message>
+            <source>Choose SQUADSPEAK_PASSWORD or SQUADSPEAK_PASSWORD_FILE, not both.</source>
+            <translation>Chọn SQUADSPEAK_PASSWORD hoặc SQUADSPEAK_PASSWORD_FILE, không chọn cả hai.</translation>
+        </message>
+        <message>
+            <source>Choose password or passwordFile in one configuration layer, not both.</source>
+            <translation>Trong một lớp cấu hình, chọn password hoặc passwordFile, không chọn cả hai.</translation>
+        </message>
+        <message>
+            <source>passwordFile must be a non-empty path.</source>
+            <translation>passwordFile phải là đường dẫn không rỗng.</translation>
+        </message>
+        <message>
+            <source>Password file could not be read or is too large.</source>
+            <translation>Không thể đọc tệp mật khẩu hoặc tệp quá lớn.</translation>
+        </message>
+        <message>
+            <source>Password file must contain at most 1024 UTF-8 bytes without control characters.</source>
+            <translation>Tệp mật khẩu phải chứa tối đa 1024 byte UTF-8 và không có ký tự điều khiển.</translation>
+        </message>
+        <message>
+            <source>Password must be a string of at most 1024 UTF-8 bytes without control characters.</source>
+            <translation>Mật khẩu phải là chuỗi tối đa 1024 byte UTF-8 không có ký tự điều khiển.</translation>
+        </message>
+        <message>
+            <source>settingsFile must be a non-empty path.</source>
+            <translation>settingsFile phải là đường dẫn không rỗng.</translation>
+        </message>
+        <message>
+            <source>identityFile must be a non-empty path.</source>
+            <translation>identityFile phải là đường dẫn không rỗng.</translation>
+        </message>
+        <message>
+            <source>The settings directory could not be created.</source>
+            <translation>Không thể tạo thư mục cài đặt.</translation>
+        </message>
+        <message>
+            <source>This SquadSpeak profile is already running or cannot be locked.</source>
+            <translation>Hồ sơ SquadSpeak này đang chạy hoặc không thể khóa.</translation>
+        </message>
+        <message>
+            <source>Standard input could not be opened.</source>
+            <translation>Không thể mở đầu vào chuẩn.</translation>
+        </message>
+        <message>
+            <source>Standard output could not be opened.</source>
+            <translation>Không thể mở đầu ra chuẩn.</translation>
+        </message>
+        <message>
+            <source>This identity file is already in use or cannot be locked.</source>
+            <translation>Tệp nhận dạng này đang được sử dụng hoặc không thể khóa.</translation>
+        </message>
+        <message>
+            <source>Invalid host configuration: %1</source>
+            <translation>Cấu hình máy chủ không hợp lệ: %1</translation>
+        </message>
+        <message>
+            <source>Radio channels could not be initialized.</source>
+            <translation>Không thể khởi tạo các kênh radio.</translation>
+        </message>
+        <message>
+            <source>Headless host could not start: %1</source>
+            <translation>Không thể khởi động máy chủ không giao diện: %1</translation>
+        </message>
+        <message>
+            <source>Channel password could not be saved.</source>
+            <translation>Không thể lưu mật khẩu kênh.</translation>
+        </message>
+        <message>
+            <source>Invalid channel password: %1</source>
+            <translation>Mật khẩu kênh không hợp lệ: %1</translation>
+        </message>
+        <message>
+            <source>Headless host could not initialize: %1</source>
+            <translation>Không thể khởi tạo máy chủ không giao diện: %1</translation>
+        </message>
+        <message>
+            <source>SquadSpeak headless could not start: %1</source>
+            <translation>Không thể khởi động máy chủ SquadSpeak không giao diện: %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>Hành động của người hỗ trợ phải là trạng thái, đăng nhập, làm mới, đăng xuất hoặc hủy. status sign-in refresh sign-out cancel</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>Một hoạt động hỗ trợ đang được tiến hành.</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>Quyền truy cập của người hỗ trợ không có sẵn trong bản dựng này.</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>Ưu tiên cài đặt: đối số&gt; môi trường&gt; thuộc tính&gt; giá trị máy chủ đã lưu.</translation>
+        </message>
+    </context>
+    <context>
+        <name>License</name>
+        <message>
+            <source>License storage is busy or unavailable.</source>
+            <translation>Bộ nhớ giấy phép đang bận hoặc không có sẵn.</translation>
+        </message>
+        <message>
+            <source>License storage is unavailable.</source>
+            <translation>Lưu trữ giấy phép không có sẵn.</translation>
+        </message>
+        <message>
+            <source>Sign-in expired. Try again.</source>
+            <translation>Đăng nhập đã hết hạn. Hãy thử lại.</translation>
+        </message>
+        <message>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>Đăng nhập GitHub không khả dụng. Hãy thử lại.</translation>
+        </message>
+        <message>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>Đăng nhập GitHub chưa hoàn tất. Hãy thử lại.</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>GitHub không thể được kiểm tra. Truy cập ngoại tuyến kéo dài tối đa bảy ngày.</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>Đăng nhập lại bằng GitHub.</translation>
+        </message>
+    </context>
+    <context>
         <name>LocalChannel</name>
+        <message>
+            <source>Insufficient permissions.</source>
+            <translation>Không đủ quyền.</translation>
+        </message>
+        <message>
+            <source>Blocked</source>
+            <translation>Đã bị chặn</translation>
+        </message>
         <message>
             <source>Host is not responding. Reconnecting.</source>
             <translation>Host không phản hồi. Đang kết nối lại.</translation>
@@ -1926,8 +2312,8 @@
             <translation>Truyền hình ảnh mất quá nhiều thời gian.</translation>
         </message>
         <message>
-            <source>The channel is full. Text chat is still available.</source>
-            <translation>Kênh đã đầy. Trò chuyện văn bản vẫn khả dụng.</translation>
+            <source>The host is busy. Try again shortly.</source>
+            <translation>Máy chủ đang bận. Hãy thử lại sau một lát.</translation>
         </message>
         <message>
             <source>All own channels use the device's shared port.</source>
@@ -2189,6 +2575,53 @@
             <source>Voice relay codec could not be configured.</source>
             <translation>Không thể cấu hình codec chuyển tiếp thoại.</translation>
         </message>
+        <message>
+            <source>Unsupported audio codec</source>
+            <translation>Bộ mã hóa âm thanh không được hỗ trợ</translation>
+        </message>
+        <message>
+            <source>Speaking is not allowed in this channel.</source>
+            <translation>Không được phép nói trong kênh này.</translation>
+        </message>
+    </context>
+    <context>
+        <name>LocalLanguage</name>
+        <message>
+            <source>Translation (experimental)</source>
+            <translation>Dịch (thử nghiệm)</translation>
+        </message>
+        <message>
+            <source>Translate messages</source>
+            <translation>Dịch tin nhắn</translation>
+        </message>
+        <message>
+            <source>Translated voice</source>
+            <translation>Giọng nói đã dịch</translation>
+        </message>
+        <message>
+            <source>Original audio</source>
+            <translation>Âm thanh gốc</translation>
+        </message>
+        <message>
+            <source>Original text</source>
+            <translation>Văn bản gốc</translation>
+        </message>
+        <message>
+            <source>Prepare languages</source>
+            <translation>Chuẩn bị ngôn ngữ</translation>
+        </message>
+        <message>
+            <source>Local language processing is unavailable.</source>
+            <translation>Không thể xử lý ngôn ngữ cục bộ.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be read.</source>
+            <translation>Không thể đọc cài đặt ngôn ngữ.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be saved.</source>
+            <translation>Không thể lưu cài đặt ngôn ngữ.</translation>
+        </message>
     </context>
     <context>
         <name>PushToTalkKey</name>
@@ -2329,50 +2762,61 @@
         </message>
     </context>
     <context>
-        <name>RecordingPanel</name>
+        <name>ScreenPanel</name>
         <message>
-            <source>Stop</source>
-            <translation>Dừng</translation>
+            <source>Video paused</source>
+            <translation>Video đã tạm dừng</translation>
         </message>
         <message>
-            <source>Start</source>
-            <translation>Bắt đầu</translation>
+            <source>Stream ended</source>
+            <translation>Luồng đã kết thúc</translation>
         </message>
         <message>
-            <source>Saved on this device only. Nothing is uploaded.</source>
-            <translation>Chỉ lưu trên thiết bị này. Không tải lên gì cả.</translation>
+            <source>Connecting</source>
+            <translation>Đang kết nối</translation>
         </message>
         <message>
-            <source>Keep this take or record it again.</source>
-            <translation>Giữ bản ghi này hoặc ghi lại.</translation>
+            <source>Open screen stream</source>
+            <translation>Mở luồng màn hình</translation>
         </message>
         <message>
-            <source>Record again</source>
-            <translation>Ghi lại</translation>
+            <source>Screen stream</source>
+            <translation>Luồng màn hình</translation>
         </message>
         <message>
-            <source>Use recording</source>
-            <translation>Dùng bản ghi</translation>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
+        </message>
+    </context>
+    <context>
+        <name>ScreenShare</name>
+        <message>
+            <source>Allow screen recording in system settings.</source>
+            <translation>Cho phép ghi màn hình trong cài đặt hệ thống.</translation>
         </message>
         <message>
-            <source>Recording progress</source>
-            <translation>Tiến trình ghi âm</translation>
+            <source>The shared screen was removed. Select a source to start again.</source>
+            <translation>Màn hình được chia sẻ đã bị xóa. Hãy chọn nguồn để bắt đầu lại.</translation>
         </message>
         <message>
-            <source>Step %1 of %2</source>
-            <translation>Bước %1 trên %2</translation>
+            <source>The shared window was closed. Select a source to start again.</source>
+            <translation>Cửa sổ được chia sẻ đã đóng. Hãy chọn nguồn để bắt đầu lại.</translation>
         </message>
         <message>
-            <source>Open recordings</source>
-            <translation>Mở bản ghi</translation>
+            <source>The selected screen is no longer available.</source>
+            <translation>Màn hình đã chọn không còn khả dụng.</translation>
         </message>
         <message>
-            <source>Reset test</source>
-            <translation>Đặt lại kiểm tra</translation>
+            <source>The selected window is no longer available.</source>
+            <translation>Cửa sổ đã chọn không còn khả dụng.</translation>
         </message>
         <message>
-            <source>%1 s remaining / %2 dBFS</source>
-            <translation>Còn %1 giây / %2 dBFS</translation>
+            <source>The selected source exceeds the capture size limit.</source>
+            <translation>Nguồn đã chọn vượt quá giới hạn kích thước chụp.</translation>
+        </message>
+        <message>
+            <source>Close a video view before opening another stream.</source>
+            <translation>Đóng một khung xem video trước khi mở luồng khác.</translation>
         </message>
     </context>
     <context>
@@ -2449,10 +2893,6 @@
             <translation>Đang thu thập tín hiệu...</translation>
         </message>
         <message>
-            <source>Dashed curve: configured gain and frequency cuts, using the right dB scale. Noise reduction and voice activation are not part of this curve.</source>
-            <translation>Đường cong nét đứt: gain và cắt tần số đã cấu hình, dùng thang dB bên phải. Khử nhiễu và kích hoạt bằng giọng nói không thuộc đường cong này.</translation>
-        </message>
-        <message>
             <source>Microphone preview is not running</source>
             <translation>Xem trước mic không chạy</translation>
         </message>
@@ -2463,303 +2903,6 @@
         <message>
             <source>Peak: %1</source>
             <translation>Đỉnh: %1</translation>
-        </message>
-    </context>
-    <context>
-        <name>Tray</name>
-        <message>
-            <source>Quit</source>
-            <translation>Thoát</translation>
-        </message>
-        <message>
-            <source>SquadSpeak - speaking</source>
-            <translation>SquadSpeak - đang nói</translation>
-        </message>
-        <message>
-            <source>Settings</source>
-            <translation>Cài đặt</translation>
-        </message>
-        <message>
-            <source>Channels</source>
-            <translation>Kênh</translation>
-        </message>
-        <message>
-            <source>New image</source>
-            <translation>Ảnh mới</translation>
-        </message>
-    </context>
-    <context>
-        <name>VoiceAvatar</name>
-        <message>
-            <source>Muted</source>
-            <translation>Mic đã tắt tiếng</translation>
-        </message>
-        <message>
-            <source>Sleeping</source>
-            <translation>Đang ngủ</translation>
-        </message>
-        <message>
-            <source>Offline</source>
-            <translation>Ngoại tuyến</translation>
-        </message>
-        <message>
-            <source>Speaking</source>
-            <translation>Đang nói</translation>
-        </message>
-        <message>
-            <source>Unavailable</source>
-            <translation>Không khả dụng</translation>
-        </message>
-        <message>
-            <source>Listening</source>
-            <translation>Đang nghe</translation>
-        </message>
-        <message>
-            <source>Deafened</source>
-            <translation>Loa đã tắt tiếng</translation>
-        </message>
-    </context>
-    <context>
-        <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>Không khả dụng - cài đặt âm thanh hoặc kiểm tra âm</translation>
-        </message>
-        <message>
-            <source>Microphone muted</source>
-            <translation>Mic đã tắt tiếng</translation>
-        </message>
-        <message>
-            <source>Push-to-talk held</source>
-            <translation>Đang giữ nhấn để nói</translation>
-        </message>
-        <message>
-            <source>Ready - push-to-talk released</source>
-            <translation>Sẵn sàng - đã nhả nhấn để nói</translation>
-        </message>
-        <message>
-            <source>Microphone unmuted</source>
-            <translation>Mic đã bật tiếng</translation>
-        </message>
-        <message>
-            <source>Settings could not be saved: %1</source>
-            <translation>Không thể lưu cài đặt: %1</translation>
-        </message>
-        <message>
-            <source>The push-to-talk sequence cannot be incremented further.</source>
-            <translation>Không thể tăng thêm chuỗi nhấn để nói.</translation>
-        </message>
-        <message>
-            <source>Choose System, Light or Dark.</source>
-            <translation>Chọn Hệ thống, Sáng hoặc Tối.</translation>
-        </message>
-        <message>
-            <source>Choose a colour palette from the list.</source>
-            <translation>Chọn bảng màu từ danh sách.</translation>
-        </message>
-        <message>
-            <source>Choose an available avatar.</source>
-            <translation>Chọn avatar khả dụng.</translation>
-        </message>
-        <message>
-            <source>Invalid push-to-talk binding.</source>
-            <translation>Liên kết nhấn để nói không hợp lệ.</translation>
-        </message>
-        <message>
-            <source>Release the held push-to-talk key first.</source>
-            <translation>Trước tiên hãy nhả phím nhấn để nói đang giữ.</translation>
-        </message>
-        <message>
-            <source>Choose a language from the list.</source>
-            <translation>Chọn ngôn ngữ từ danh sách.</translation>
-        </message>
-        <message>
-            <source>This avatar requires Supporter.</source>
-            <translation>Ảnh đại diện này yêu cầu Supporter.</translation>
-        </message>
-        <message>
-            <source>The name must contain 1 to 64 characters.</source>
-            <translation>Tên phải có từ 1 đến 64 ký tự.</translation>
-        </message>
-        <message>
-            <source>The name may not contain control characters or line breaks.</source>
-            <translation>Tên không được chứa ký tự điều khiển hoặc dấu xuống dòng.</translation>
-        </message>
-        <message>
-            <source>Session settings could not be read.</source>
-            <translation>Không thể đọc cài đặt phiên.</translation>
-        </message>
-        <message>
-            <source>Saved setting is invalid: %1</source>
-            <translation>Cài đặt đã lưu không hợp lệ: %1</translation>
-        </message>
-    </context>
-    <context>
-        <name>License</name>
-        <message>
-            <source>License storage is busy or unavailable.</source>
-            <translation>Bộ nhớ giấy phép đang bận hoặc không có sẵn.</translation>
-        </message>
-        <message>
-            <source>License storage is unavailable.</source>
-            <translation>Lưu trữ giấy phép không có sẵn.</translation>
-        </message>
-        <message>
-            <source>Sign-in expired. Try again.</source>
-            <translation>Đăng nhập đã hết hạn. Hãy thử lại.</translation>
-        </message>
-        <message>
-            <source>GitHub sign-in is unavailable. Try again.</source>
-            <translation>Đăng nhập GitHub không khả dụng. Hãy thử lại.</translation>
-        </message>
-        <message>
-            <source>GitHub sign-in was not completed. Try again.</source>
-            <translation>Đăng nhập GitHub chưa hoàn tất. Hãy thử lại.</translation>
-        </message>
-        <message>
-            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
-            <translation>GitHub không thể được kiểm tra. Truy cập ngoại tuyến kéo dài tối đa bảy ngày.</translation>
-        </message>
-        <message>
-            <source>Sign in with GitHub again.</source>
-            <translation>Đăng nhập lại bằng GitHub.</translation>
-        </message>
-    </context>
-    <context>
-        <name>ScreenShare</name>
-        <message>
-            <source>The shared screen was removed. Select a source to start again.</source>
-            <translation>Màn hình được chia sẻ đã bị xóa. Hãy chọn nguồn để bắt đầu lại.</translation>
-        </message>
-        <message>
-            <source>The shared window was closed. Select a source to start again.</source>
-            <translation>Cửa sổ được chia sẻ đã đóng. Hãy chọn nguồn để bắt đầu lại.</translation>
-        </message>
-        <message>
-            <source>The selected screen is no longer available.</source>
-            <translation>Màn hình đã chọn không còn khả dụng.</translation>
-        </message>
-        <message>
-            <source>The selected window is no longer available.</source>
-            <translation>Cửa sổ đã chọn không còn khả dụng.</translation>
-        </message>
-        <message>
-            <source>The selected source exceeds the capture size limit.</source>
-            <translation>Nguồn đã chọn vượt quá giới hạn kích thước chụp.</translation>
-        </message>
-        <message>
-            <source>Close a video view before opening another stream.</source>
-            <translation>Đóng một khung xem video trước khi mở luồng khác.</translation>
-        </message>
-    </context>
-    <context>
-        <name>ScreenPanel</name>
-        <message>
-            <source>Media capacity reached</source>
-            <translation>Đã đạt giới hạn phương tiện</translation>
-        </message>
-        <message>
-            <source>Video paused</source>
-            <translation>Video đã tạm dừng</translation>
-        </message>
-        <message>
-            <source>Stream ended</source>
-            <translation>Luồng đã kết thúc</translation>
-        </message>
-        <message>
-            <source>Connecting</source>
-            <translation>Đang kết nối</translation>
-        </message>
-        <message>
-            <source>Open screen stream</source>
-            <translation>Mở luồng màn hình</translation>
-        </message>
-        <message>
-            <source>Screen stream</source>
-            <translation>Luồng màn hình</translation>
-        </message>
-        <message>
-            <source>%1 kbit/s</source>
-            <translation>%1 kbit/s</translation>
-        </message>
-    </context>
-    <context>
-        <name>VideoCodec</name>
-        <message>
-            <source>Video codec: %1</source>
-            <translation>Bộ mã hóa/giải mã video: %1</translation>
-        </message>
-        <message>
-            <source>Video codec ABI does not match its headers.</source>
-            <translation>ABI của bộ mã hóa/giải mã video không khớp với các tệp tiêu đề của nó.</translation>
-        </message>
-        <message>
-            <source>Video buffers could not be allocated.</source>
-            <translation>Không thể cấp phát bộ nhớ cho các bộ đệm video.</translation>
-        </message>
-        <message>
-            <source>Invalid video quality tier.</source>
-            <translation>Mức chất lượng video không hợp lệ.</translation>
-        </message>
-        <message>
-            <source>The screen source exceeds the supported capture size.</source>
-            <translation>Nguồn màn hình vượt quá kích thước chụp được hỗ trợ.</translation>
-        </message>
-        <message>
-            <source>The screen source is too narrow.</source>
-            <translation>Nguồn màn hình quá hẹp.</translation>
-        </message>
-        <message>
-            <source>The video encoder could not be allocated.</source>
-            <translation>Không thể cấp phát bộ nhớ cho bộ mã hóa video.</translation>
-        </message>
-        <message>
-            <source>No supported video encoder is available.</source>
-            <translation>Không có bộ mã hóa video được hỗ trợ.</translation>
-        </message>
-        <message>
-            <source>Video encoder configuration is too large.</source>
-            <translation>Cấu hình bộ mã hóa video quá lớn.</translation>
-        </message>
-        <message>
-            <source>Video scaling could not be initialized.</source>
-            <translation>Không thể khởi tạo tính năng thay đổi kích thước video.</translation>
-        </message>
-        <message>
-            <source>The encoder returned an empty video packet.</source>
-            <translation>Bộ mã hóa trả về một gói video trống.</translation>
-        </message>
-        <message>
-            <source>Invalid video frame format.</source>
-            <translation>Định dạng khung hình video không hợp lệ.</translation>
-        </message>
-        <message>
-            <source>Invalid video decoder configuration.</source>
-            <translation>Cấu hình bộ giải mã video không hợp lệ.</translation>
-        </message>
-        <message>
-            <source>This video codec cannot be decoded.</source>
-            <translation>Không thể giải mã video dùng bộ mã hóa/giải mã này.</translation>
-        </message>
-        <message>
-            <source>Video decoder could not be allocated.</source>
-            <translation>Không thể cấp phát bộ nhớ cho bộ giải mã video.</translation>
-        </message>
-        <message>
-            <source>Video decoder configuration could not be allocated.</source>
-            <translation>Không thể cấp phát bộ nhớ cho cấu hình bộ giải mã video.</translation>
-        </message>
-        <message>
-            <source>Decoded dimensions do not match the screen stream.</source>
-            <translation>Kích thước đã giải mã không khớp với luồng màn hình.</translation>
-        </message>
-        <message>
-            <source>Decoded image could not be allocated.</source>
-            <translation>Không thể cấp phát bộ nhớ cho hình ảnh đã giải mã.</translation>
-        </message>
-        <message>
-            <source>Video color conversion could not be initialized.</source>
-            <translation>Không thể khởi tạo tính năng chuyển đổi màu video.</translation>
         </message>
     </context>
     <context>
@@ -2877,359 +3020,208 @@
             <translation>Không thể xác minh mật khẩu.</translation>
         </message>
     </context>
-
     <context>
-        <name>Headless</name>
+        <name>Tray</name>
         <message>
-            <source>Command failed.</source>
-            <translation>Lệnh đã thất bại.</translation>
+            <source>Quit</source>
+            <translation>Thoát</translation>
         </message>
         <message>
-            <source>%1 must be an integer.</source>
-            <translation>%1 phải là số nguyên.</translation>
+            <source>SquadSpeak - speaking</source>
+            <translation>SquadSpeak - đang nói</translation>
         </message>
         <message>
-            <source>Requests must be on/off or true/false.</source>
-            <translation>Các yêu cầu phải là on/off hoặc true/false.</translation>
+            <source>Settings</source>
+            <translation>Cài đặt</translation>
         </message>
         <message>
-            <source>Unknown host property: %1</source>
-            <translation>Thuộc tính máy chủ không xác định: %1</translation>
+            <source>Channels</source>
+            <translation>Kênh</translation>
         </message>
         <message>
-            <source>Run without GUI, microphone capture, or local audio output.</source>
-            <translation>Chạy không có giao diện đồ họa, thu âm từ micrô hoặc đầu ra âm thanh cục bộ.</translation>
-        </message>
-        <message>
-            <source>Server storage prefix. Personal/audio/GUI profiles are not loaded.</source>
-            <translation>Tiền tố lưu trữ máy chủ. Không tải hồ sơ cá nhân, âm thanh hoặc đồ họa.</translation>
-        </message>
-        <message>
-            <source>Optional private identity file instead of the OS credential store (Linux/macOS). Parent directory must exist and belong to this account.</source>
-            <translation>Tệp nhận dạng riêng tư tùy chọn thay cho kho thông tin xác thực của hệ điều hành (Linux/macOS). Thư mục cha phải tồn tại và thuộc tài khoản này.</translation>
-        </message>
-        <message>
-            <source>UTF-8 key=value properties or JSON host preset. Default: application.properties, then config/application.properties beside the app.</source>
-            <translation>Thuộc tính UTF-8 key=value hoặc cấu hình máy chủ JSON. Mặc định: application.properties, rồi config/application.properties bên cạnh ứng dụng.</translation>
-        </message>
-        <message>
-            <source>Channel display name.</source>
-            <translation>Tên hiển thị của kênh.</translation>
-        </message>
-        <message>
-            <source>System and radio bot display name.</source>
-            <translation>Tên hiển thị của bot hệ thống và radio.</translation>
-        </message>
-        <message>
-            <source>TCP service port (1-65535).</source>
-            <translation>Cổng dịch vụ TCP (1-65535).</translation>
-        </message>
-        <message>
-            <source>Headless admission is always on; only 'on' or 'true' is accepted.</source>
-            <translation>Quyền truy cập không giao diện luôn bật; chỉ chấp nhận 'on' hoặc 'true'.</translation>
-        </message>
-        <message>
-            <source>Preapprove a device ID; repeat for several devices. Existing bans remain.</source>
-            <translation>Phê duyệt trước ID thiết bị; lặp lại cho nhiều thiết bị. Các lệnh cấm hiện có vẫn giữ nguyên.</translation>
-        </message>
-        <message>
-            <source>Block a device ID; repeat for several devices.</source>
-            <translation>Chặn ID thiết bị; lặp lại cho nhiều thiết bị.</translation>
-        </message>
-        <message>
-            <source>Read a UTF-8 channel password from a file before listening. An empty file removes it.</source>
-            <translation>Đọc mật khẩu kênh UTF-8 từ tệp trước khi lắng nghe. Tệp rỗng sẽ xóa mật khẩu.</translation>
-        </message>
-        <message>
-            <source>Channel password. Empty removes it; environment or config avoids process-list exposure.</source>
-            <translation>Mật khẩu kênh. Giá trị rỗng sẽ xóa mật khẩu; môi trường hoặc cấu hình ngăn mật khẩu xuất hiện trong danh sách tiến trình.</translation>
-        </message>
-        <message>
-            <source>SquadSpeak headless local channel host</source>
-            <translation>Máy chủ kênh cục bộ không giao diện của SquadSpeak</translation>
-        </message>
-        <message>
-            <source>Environment variables (SQUADSPEAK_ prefix):</source>
-            <translation>Biến môi trường (tiền tố SQUADSPEAK_):</translation>
-        </message>
-        <message>
-            <source>Host configuration could not be read or exceeds 1 MiB.</source>
-            <translation>Không thể đọc cấu hình máy chủ hoặc cấu hình vượt quá 1 MiB.</translation>
-        </message>
-        <message>
-            <source>Host configuration must be UTF-8.</source>
-            <translation>Cấu hình máy chủ phải là UTF-8.</translation>
-        </message>
-        <message>
-            <source>Host preset must be a JSON object.</source>
-            <translation>Cấu hình máy chủ phải là một đối tượng JSON.</translation>
-        </message>
-        <message>
-            <source>Property line %1 must use key=value.</source>
-            <translation>Dòng thuộc tính %1 phải dùng key=value.</translation>
-        </message>
-        <message>
-            <source>Property line %1: %2</source>
-            <translation>Dòng thuộc tính %1: %2</translation>
-        </message>
-        <message>
-            <source>Standard input has no file descriptor.</source>
-            <translation>Đầu vào chuẩn không có bộ mô tả tệp.</translation>
-        </message>
-        <message>
-            <source>Standard input could not be inspected.</source>
-            <translation>Không thể kiểm tra đầu vào chuẩn.</translation>
-        </message>
-        <message>
-            <source>Could not write the command response: %1</source>
-            <translation>Không thể ghi phản hồi lệnh: %1</translation>
-        </message>
-        <message>
-            <source>Standard input could not be read: %1</source>
-            <translation>Không thể đọc đầu vào chuẩn: %1</translation>
-        </message>
-        <message>
-            <source>Input line exceeds 65536 bytes.</source>
-            <translation>Dòng đầu vào vượt quá 65536 byte.</translation>
-        </message>
-        <message>
-            <source>Each input line must be a JSON object.</source>
-            <translation>Mỗi dòng đầu vào phải là một đối tượng JSON.</translation>
-        </message>
-        <message>
-            <source>Input ended before a complete JSON line.</source>
-            <translation>Đầu vào kết thúc trước khi hoàn tất dòng JSON.</translation>
-        </message>
-        <message>
-            <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
-            <translation>ID kênh riêng tùy chọn cho các lệnh status, configure, password, admission, history, chat và radio; mặc định là kênh chính.</translation>
-        </message>
-        <message>
-            <source>Channel action must be list, add or remove.</source>
-            <translation>Hành động kênh phải là list, add hoặc remove.</translation>
-        </message>
-        <message>
-            <source>Removing an own channel deletes its history, images, permissions and radio settings. Set confirmed=true to proceed.</source>
-            <translation>Xóa kênh riêng sẽ xóa lịch sử, hình ảnh, quyền và cài đặt radio của kênh. Đặt confirmed=true để tiếp tục.</translation>
-        </message>
-        <message>
-            <source>id must identify an additional own channel.</source>
-            <translation>id phải xác định một kênh riêng bổ sung.</translation>
-        </message>
-        <message>
-            <source>The additional own channel could not be removed: %1</source>
-            <translation>Không thể xóa kênh riêng bổ sung: %1</translation>
-        </message>
-        <message>
-            <source>channelId must identify an own channel.</source>
-            <translation>channelId phải xác định một kênh riêng.</translation>
-        </message>
-        <message>
-            <source>values must be a host settings object.</source>
-            <translation>values phải là đối tượng cài đặt máy chủ.</translation>
-        </message>
-        <message>
-            <source>Headless admission is always enabled for non-banned devices; requests off is not supported.</source>
-            <translation>Quyền truy cập không giao diện luôn bật cho thiết bị không bị chặn; không hỗ trợ requests off.</translation>
-        </message>
-        <message>
-            <source>value must be a password of at most 1024 UTF-8 bytes without control characters; an empty string removes it.</source>
-            <translation>value phải là mật khẩu tối đa 1024 byte UTF-8 không chứa ký tự điều khiển; chuỗi rỗng sẽ xóa mật khẩu.</translation>
-        </message>
-        <message>
-            <source>The channel is not ready or a password change is in progress.</source>
-            <translation>Kênh chưa sẵn sàng hoặc đang đổi mật khẩu.</translation>
-        </message>
-        <message>
-            <source>The channel was removed while saving the password.</source>
-            <translation>Kênh đã bị xóa khi đang lưu mật khẩu.</translation>
-        </message>
-        <message>
-            <source>id is required.</source>
-            <translation>Cần có id.</translation>
-        </message>
-        <message>
-            <source>text must be a valid non-empty chat message.</source>
-            <translation>text phải là tin nhắn trò chuyện hợp lệ và không rỗng.</translation>
-        </message>
-        <message>
-            <source>The local channel is not ready.</source>
-            <translation>Kênh cục bộ chưa sẵn sàng.</translation>
-        </message>
-        <message>
-            <source>The channel's radio is unavailable.</source>
-            <translation>Radio của kênh không khả dụng.</translation>
-        </message>
-        <message>
-            <source>Unknown command. Use help.</source>
-            <translation>Lệnh không xác định. Hãy dùng help.</translation>
-        </message>
-        <message>
-            <source>search requires a query, non-negative offset and limit from 1 to 128.</source>
-            <translation>search yêu cầu query, offset không âm và limit từ 1 đến 128.</translation>
-        </message>
-        <message>
-            <source>add creates an id; update requires an existing id.</source>
-            <translation>add tạo một id; update cần một id hiện có.</translation>
-        </message>
-        <message>
-            <source>A station is already being checked.</source>
-            <translation>Trạm đang được kiểm tra.</translation>
-        </message>
-        <message>
-            <source>The channel was removed while checking the station.</source>
-            <translation>Kênh đã bị xóa khi đang kiểm tra trạm.</translation>
-        </message>
-        <message>
-            <source>Unknown radio action.</source>
-            <translation>Hành động radio không xác định.</translation>
-        </message>
-        <message>
-            <source>Could not load language: %1</source>
-            <translation>Không thể tải ngôn ngữ: %1</translation>
-        </message>
-        <message>
-            <source>The %1 option is incompatible with --headless.</source>
-            <translation>Tùy chọn %1 không tương thích với --headless.</translation>
-        </message>
-        <message>
-            <source>Unexpected positional arguments. Use --help.</source>
-            <translation>Đối số vị trí không mong đợi. Hãy dùng --help.</translation>
-        </message>
-        <message>
-            <source>--config / -f requires a non-empty path.</source>
-            <translation>--config / -f cần một đường dẫn không rỗng.</translation>
-        </message>
-        <message>
-            <source>Choose --password or --password-file, not both.</source>
-            <translation>Chọn --password hoặc --password-file, không chọn cả hai.</translation>
-        </message>
-        <message>
-            <source>Choose SQUADSPEAK_PASSWORD or SQUADSPEAK_PASSWORD_FILE, not both.</source>
-            <translation>Chọn SQUADSPEAK_PASSWORD hoặc SQUADSPEAK_PASSWORD_FILE, không chọn cả hai.</translation>
-        </message>
-        <message>
-            <source>Choose password or passwordFile in one configuration layer, not both.</source>
-            <translation>Trong một lớp cấu hình, chọn password hoặc passwordFile, không chọn cả hai.</translation>
-        </message>
-        <message>
-            <source>passwordFile must be a non-empty path.</source>
-            <translation>passwordFile phải là đường dẫn không rỗng.</translation>
-        </message>
-        <message>
-            <source>Password file could not be read or is too large.</source>
-            <translation>Không thể đọc tệp mật khẩu hoặc tệp quá lớn.</translation>
-        </message>
-        <message>
-            <source>Password file must contain at most 1024 UTF-8 bytes without control characters.</source>
-            <translation>Tệp mật khẩu phải chứa tối đa 1024 byte UTF-8 và không có ký tự điều khiển.</translation>
-        </message>
-        <message>
-            <source>Password must be a string of at most 1024 UTF-8 bytes without control characters.</source>
-            <translation>Mật khẩu phải là chuỗi tối đa 1024 byte UTF-8 không có ký tự điều khiển.</translation>
-        </message>
-        <message>
-            <source>settingsFile must be a non-empty path.</source>
-            <translation>settingsFile phải là đường dẫn không rỗng.</translation>
-        </message>
-        <message>
-            <source>identityFile must be a non-empty path.</source>
-            <translation>identityFile phải là đường dẫn không rỗng.</translation>
-        </message>
-        <message>
-            <source>The settings directory could not be created.</source>
-            <translation>Không thể tạo thư mục cài đặt.</translation>
-        </message>
-        <message>
-            <source>This SquadSpeak profile is already running or cannot be locked.</source>
-            <translation>Hồ sơ SquadSpeak này đang chạy hoặc không thể khóa.</translation>
-        </message>
-        <message>
-            <source>Standard input could not be opened.</source>
-            <translation>Không thể mở đầu vào chuẩn.</translation>
-        </message>
-        <message>
-            <source>Standard output could not be opened.</source>
-            <translation>Không thể mở đầu ra chuẩn.</translation>
-        </message>
-        <message>
-            <source>This identity file is already in use or cannot be locked.</source>
-            <translation>Tệp nhận dạng này đang được sử dụng hoặc không thể khóa.</translation>
-        </message>
-        <message>
-            <source>Invalid host configuration: %1</source>
-            <translation>Cấu hình máy chủ không hợp lệ: %1</translation>
-        </message>
-        <message>
-            <source>Radio channels could not be initialized.</source>
-            <translation>Không thể khởi tạo các kênh radio.</translation>
-        </message>
-        <message>
-            <source>Headless host could not start: %1</source>
-            <translation>Không thể khởi động máy chủ không giao diện: %1</translation>
-        </message>
-        <message>
-            <source>Channel password could not be saved.</source>
-            <translation>Không thể lưu mật khẩu kênh.</translation>
-        </message>
-        <message>
-            <source>Invalid channel password: %1</source>
-            <translation>Mật khẩu kênh không hợp lệ: %1</translation>
-        </message>
-        <message>
-            <source>Headless host could not initialize: %1</source>
-            <translation>Không thể khởi tạo máy chủ không giao diện: %1</translation>
-        </message>
-        <message>
-            <source>SquadSpeak headless could not start: %1</source>
-            <translation>Không thể khởi động máy chủ SquadSpeak không giao diện: %1</translation>
-        </message>
-        <message>
-            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
-            <translation>Hành động của người hỗ trợ phải là trạng thái, đăng nhập, làm mới, đăng xuất hoặc hủy. status sign-in refresh sign-out cancel</translation>
-        </message>
-        <message>
-            <source>A Supporter operation is in progress.</source>
-            <translation>Một hoạt động hỗ trợ đang được tiến hành.</translation>
-        </message>
-        <message>
-            <source>Supporter access is unavailable in this build.</source>
-            <translation>Quyền truy cập của người hỗ trợ không có sẵn trong bản dựng này.</translation>
-        </message>
-        <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>Ưu tiên cài đặt: đối số&gt; môi trường&gt; thuộc tính&gt; giá trị máy chủ đã lưu.</translation>
+            <source>New image</source>
+            <translation>Ảnh mới</translation>
         </message>
     </context>
     <context>
-        <name>Desktop</name>
+        <name>VideoCodec</name>
         <message>
-            <source>Open settings at startup.</source>
-            <translation>Mở cài đặt khi khởi động.</translation>
+            <source>Video codec: %1</source>
+            <translation>Bộ mã hóa/giải mã video: %1</translation>
         </message>
         <message>
-            <source>Open guided local test recording without starting network services.</source>
-            <translation>Mở bản ghi thử cục bộ có hướng dẫn mà không khởi động dịch vụ mạng.</translation>
+            <source>Video codec ABI does not match its headers.</source>
+            <translation>ABI của bộ mã hóa/giải mã video không khớp với các tệp tiêu đề của nó.</translation>
         </message>
         <message>
-            <source>Alternative file for audio profiles.</source>
-            <translation>Tệp thay thế cho hồ sơ âm thanh.</translation>
+            <source>Video buffers could not be allocated.</source>
+            <translation>Không thể cấp phát bộ nhớ cho các bộ đệm video.</translation>
         </message>
         <message>
-            <source>Load the interface without microphone capture and exit after one second.</source>
-            <translation>Tải giao diện mà không thu âm micrô và thoát sau một giây.</translation>
+            <source>Invalid video quality tier.</source>
+            <translation>Mức chất lượng video không hợp lệ.</translation>
         </message>
         <message>
-            <source>Save an image of the app window during the UI test.</source>
-            <translation>Lưu ảnh cửa sổ ứng dụng trong khi kiểm thử giao diện.</translation>
+            <source>The screen source exceeds the supported capture size.</source>
+            <translation>Nguồn màn hình vượt quá kích thước chụp được hỗ trợ.</translation>
         </message>
         <message>
-            <source>The window image could not be saved.</source>
-            <translation>Không thể lưu ảnh cửa sổ.</translation>
+            <source>The screen source is too narrow.</source>
+            <translation>Nguồn màn hình quá hẹp.</translation>
         </message>
         <message>
-            <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
-            <translation>Khay hệ thống không khả dụng; ứng dụng vẫn mở trong một cửa sổ.</translation>
+            <source>The video encoder could not be allocated.</source>
+            <translation>Không thể cấp phát bộ nhớ cho bộ mã hóa video.</translation>
+        </message>
+        <message>
+            <source>No supported video encoder is available.</source>
+            <translation>Không có bộ mã hóa video được hỗ trợ.</translation>
+        </message>
+        <message>
+            <source>Video encoder configuration is too large.</source>
+            <translation>Cấu hình bộ mã hóa video quá lớn.</translation>
+        </message>
+        <message>
+            <source>Video scaling could not be initialized.</source>
+            <translation>Không thể khởi tạo tính năng thay đổi kích thước video.</translation>
+        </message>
+        <message>
+            <source>The encoder returned an empty video packet.</source>
+            <translation>Bộ mã hóa trả về một gói video trống.</translation>
+        </message>
+        <message>
+            <source>Invalid video frame format.</source>
+            <translation>Định dạng khung hình video không hợp lệ.</translation>
+        </message>
+        <message>
+            <source>Invalid video decoder configuration.</source>
+            <translation>Cấu hình bộ giải mã video không hợp lệ.</translation>
+        </message>
+        <message>
+            <source>This video codec cannot be decoded.</source>
+            <translation>Không thể giải mã video dùng bộ mã hóa/giải mã này.</translation>
+        </message>
+        <message>
+            <source>Video decoder could not be allocated.</source>
+            <translation>Không thể cấp phát bộ nhớ cho bộ giải mã video.</translation>
+        </message>
+        <message>
+            <source>Video decoder configuration could not be allocated.</source>
+            <translation>Không thể cấp phát bộ nhớ cho cấu hình bộ giải mã video.</translation>
+        </message>
+        <message>
+            <source>Decoded dimensions do not match the screen stream.</source>
+            <translation>Kích thước đã giải mã không khớp với luồng màn hình.</translation>
+        </message>
+        <message>
+            <source>Decoded image could not be allocated.</source>
+            <translation>Không thể cấp phát bộ nhớ cho hình ảnh đã giải mã.</translation>
+        </message>
+        <message>
+            <source>Video color conversion could not be initialized.</source>
+            <translation>Không thể khởi tạo tính năng chuyển đổi màu video.</translation>
+        </message>
+    </context>
+    <context>
+        <name>VoiceAvatar</name>
+        <message>
+            <source>Muted</source>
+            <translation>Mic đã tắt tiếng</translation>
+        </message>
+        <message>
+            <source>Sleeping</source>
+            <translation>Đang ngủ</translation>
+        </message>
+        <message>
+            <source>Offline</source>
+            <translation>Ngoại tuyến</translation>
+        </message>
+        <message>
+            <source>Speaking</source>
+            <translation>Đang nói</translation>
+        </message>
+        <message>
+            <source>Unavailable</source>
+            <translation>Không khả dụng</translation>
+        </message>
+        <message>
+            <source>Listening</source>
+            <translation>Đang nghe</translation>
+        </message>
+        <message>
+            <source>Deafened</source>
+            <translation>Loa đã tắt tiếng</translation>
+        </message>
+    </context>
+    <context>
+        <name>VoiceSession</name>
+        <message>
+            <source>Microphone muted</source>
+            <translation>Mic đã tắt tiếng</translation>
+        </message>
+        <message>
+            <source>Push-to-talk held</source>
+            <translation>Đang giữ nhấn để nói</translation>
+        </message>
+        <message>
+            <source>Ready - push-to-talk released</source>
+            <translation>Sẵn sàng - đã nhả nhấn để nói</translation>
+        </message>
+        <message>
+            <source>Microphone unmuted</source>
+            <translation>Mic đã bật tiếng</translation>
+        </message>
+        <message>
+            <source>Settings could not be saved: %1</source>
+            <translation>Không thể lưu cài đặt: %1</translation>
+        </message>
+        <message>
+            <source>The push-to-talk sequence cannot be incremented further.</source>
+            <translation>Không thể tăng thêm chuỗi nhấn để nói.</translation>
+        </message>
+        <message>
+            <source>Choose System, Light or Dark.</source>
+            <translation>Chọn Hệ thống, Sáng hoặc Tối.</translation>
+        </message>
+        <message>
+            <source>Choose a colour palette from the list.</source>
+            <translation>Chọn bảng màu từ danh sách.</translation>
+        </message>
+        <message>
+            <source>Choose an available avatar.</source>
+            <translation>Chọn avatar khả dụng.</translation>
+        </message>
+        <message>
+            <source>Invalid push-to-talk binding.</source>
+            <translation>Liên kết nhấn để nói không hợp lệ.</translation>
+        </message>
+        <message>
+            <source>Release the held push-to-talk key first.</source>
+            <translation>Trước tiên hãy nhả phím nhấn để nói đang giữ.</translation>
+        </message>
+        <message>
+            <source>Choose a language from the list.</source>
+            <translation>Chọn ngôn ngữ từ danh sách.</translation>
+        </message>
+        <message>
+            <source>This avatar requires Supporter.</source>
+            <translation>Ảnh đại diện này yêu cầu Supporter.</translation>
+        </message>
+        <message>
+            <source>The name must contain 1 to 64 characters.</source>
+            <translation>Tên phải có từ 1 đến 64 ký tự.</translation>
+        </message>
+        <message>
+            <source>The name may not contain control characters or line breaks.</source>
+            <translation>Tên không được chứa ký tự điều khiển hoặc dấu xuống dòng.</translation>
+        </message>
+        <message>
+            <source>Session settings could not be read.</source>
+            <translation>Không thể đọc cài đặt phiên.</translation>
+        </message>
+        <message>
+            <source>Saved setting is invalid: %1</source>
+            <translation>Cài đặt đã lưu không hợp lệ: %1</translation>
         </message>
     </context>
 </TS>

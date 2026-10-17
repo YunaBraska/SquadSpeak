@@ -36,14 +36,6 @@
             <translation>Ανοίξτε τις ρυθμίσεις απορρήτου του συστήματός σας και επιτρέψτε την πρόσβαση στο μικρόφωνο για το SquadSpeak.</translation>
         </message>
         <message>
-            <source>Microphone analysis active. Test audio stays on this computer.</source>
-            <translation>Ενεργή ανάλυση μικροφώνου. Ο ήχος δοκιμής παραμένει σε αυτόν τον υπολογιστή.</translation>
-        </message>
-        <message>
-            <source>Finish the test recording before changing devices.</source>
-            <translation>Ολοκληρώστε τη δοκιμαστική εγγραφή πριν αλλάξετε συσκευή.</translation>
-        </message>
-        <message>
             <source>The output format is not supported.</source>
             <translation>Η μορφή εξόδου δεν υποστηρίζεται.</translation>
         </message>
@@ -68,32 +60,12 @@
             <translation>Δεν ήταν δυνατή η αναπαραγωγή του δοκιμαστικού τόνου.</translation>
         </message>
         <message>
-            <source>The microphone has provided no data for five seconds. Recording discarded.</source>
-            <translation>Το μικρόφωνο δεν παρέχει δεδομένα για πέντε δευτερόλεπτα. Η εγγραφή απορρίφθηκε.</translation>
-        </message>
-        <message>
-            <source>The microphone was interrupted or changed. Recording discarded.</source>
-            <translation>Το μικρόφωνο διακόπηκε ή άλλαξε. Η εγγραφή απορρίφθηκε.</translation>
-        </message>
-        <message>
-            <source>Cancelled. The incomplete recording was discarded.</source>
-            <translation>Ακυρώθηκε. Η ημιτελής ηχογράφηση απορρίφθηκε.</translation>
-        </message>
-        <message>
             <source>No selected microphone is available</source>
             <translation>Δεν υπάρχει διαθέσιμο επιλεγμένο μικρόφωνο</translation>
         </message>
         <message>
             <source>Allow microphone access in the system dialog.</source>
             <translation>Να επιτρέπεται η πρόσβαση μικροφώνου στο παράθυρο διαλόγου συστήματος.</translation>
-        </message>
-        <message>
-            <source>Microphone capture active for the voice channel.</source>
-            <translation>Ενεργή λήψη μικροφώνου για το κανάλι φωνής.</translation>
-        </message>
-        <message>
-            <source>Microphone access was denied. Nothing was saved.</source>
-            <translation>Απαγορεύτηκε η πρόσβαση στο μικρόφωνο. Δεν σώθηκε τίποτα.</translation>
         </message>
         <message>
             <source>Microphone access is missing. Allow it in System Settings.</source>
@@ -259,103 +231,16 @@
             <source>App audio only</source>
             <translation>Μόνο ήχος εφαρμογής</translation>
         </message>
-    </context>
-    <context>
-        <name>AudioRecording</name>
         <message>
-            <source>Incomplete audio block. Recording discarded.</source>
-            <translation>Ημιτελές μπλοκ ήχου. Η εγγραφή απορρίφθηκε.</translation>
-        </message>
-        <message>
-            <source>Move about one meter from the microphone. Keep the background sound playing and read the sentence.</source>
-            <translation>Μετακινηθείτε περίπου ένα μέτρο από το μικρόφωνο. Συνεχίστε να παίζει ο ήχος του φόντου και διαβάστε την πρόταση.</translation>
-        </message>
-        <message>
-            <source>Voice with background sound</source>
-            <translation>Φωνή με ήχο φόντου</translation>
-        </message>
-        <message>
-            <source>The recordings folder could not be created.</source>
-            <translation>Δεν ήταν δυνατή η δημιουργία του φακέλου εγγραφών.</translation>
-        </message>
-        <message>
-            <source>You can stop the background sound now.</source>
-            <translation>Μπορείτε να σταματήσετε τον ήχο φόντου τώρα.</translation>
-        </message>
-        <message>
-            <source>Recordings saved</source>
-            <translation>Οι ηχογραφήσεις αποθηκεύτηκαν</translation>
-        </message>
-        <message>
-            <source>The test recording could not be saved completely.</source>
-            <translation>Δεν ήταν δυνατή η πλήρης αποθήκευση της δοκιμαστικής εγγραφής.</translation>
-        </message>
-        <message>
-            <source>Keep music off and stay quiet. Start when ready.</source>
-            <translation>Διατήρησε τη μουσική και μείνε ήσυχος. Ξεκινήστε όταν είστε έτοιμοι.</translation>
-        </message>
-        <message>
-            <source>Your voice</source>
-            <translation>Η φωνή σου</translation>
-        </message>
-        <message>
-            <source>Play music or another background sound at a normal volume. Stay quiet while recording.</source>
-            <translation>Αναπαραγωγή μουσικής ή άλλου ήχου φόντου σε κανονική ένταση. Μείνετε ήσυχοι κατά την εγγραφή.</translation>
-        </message>
-        <message>
-            <source>The test recording could not be created.</source>
-            <translation>Δεν ήταν δυνατή η δημιουργία της δοκιμαστικής εγγραφής.</translation>
-        </message>
-        <message>
-            <source>Background sound</source>
-            <translation>Ήχος παρασκηνίου</translation>
-        </message>
-        <message>
-            <source>The window is open. I can hear the rain outside. One, two, three, four, five.</source>
-            <translation>Το παράθυρο είναι ανοιχτό. Ακούω τη βροχή έξω. Ένα, δύο, τρία, τέσσερα, πέντε.</translation>
-        </message>
-        <message>
-            <source>This microphone format is not supported for test recordings.</source>
-            <translation>Αυτή η μορφή μικροφώνου δεν υποστηρίζεται για δοκιμαστικές εγγραφές.</translation>
-        </message>
-        <message>
-            <source>Keep the background volume unchanged. Read the sentence, then stop recording.</source>
-            <translation>Διατηρήστε την ένταση του φόντου αμετάβλητη. Διαβάστε την πρόταση και μετά σταματήστε την ηχογράφηση.</translation>
-        </message>
-        <message>
-            <source>Record at least half a second, then try again.</source>
-            <translation>Εγγράψτε τουλάχιστον μισό δευτερόλεπτο και μετά δοκιμάστε ξανά.</translation>
-        </message>
-        <message>
-            <source>Sit at your usual distance. Read the sentence, then stop recording.</source>
-            <translation>Καθίστε στη συνηθισμένη σας απόσταση. Διαβάστε την πρόταση και μετά σταματήστε την ηχογράφηση.</translation>
-        </message>
-        <message>
-            <source>The recording description could not be saved.</source>
-            <translation>Δεν ήταν δυνατή η αποθήκευση της περιγραφής της εγγραφής.</translation>
-        </message>
-        <message>
-            <source>The WAV file could not be finalized.</source>
-            <translation>Δεν ήταν δυνατή η οριστικοποίηση του αρχείου WAV.</translation>
-        </message>
-        <message>
-            <source>The WAV header could not be written.</source>
-            <translation>Δεν ήταν δυνατή η εγγραφή της κεφαλίδας WAV.</translation>
-        </message>
-        <message>
-            <source>Voice farther away</source>
-            <translation>Φωνή πιο μακριά</translation>
-        </message>
-        <message>
-            <source>Room sound</source>
-            <translation>Ήχος δωματίου</translation>
+            <source>Speech output is unavailable.</source>
+            <translation>Η έξοδος ομιλίας δεν είναι διαθέσιμη.</translation>
         </message>
     </context>
     <context>
         <name>AudioSettings</name>
         <message>
-            <source>Echo cancellation</source>
-            <translation>Ακύρωση ηχούς</translation>
+            <source>Echo</source>
+            <translation>Ηχώ</translation>
         </message>
         <message>
             <source>Off</source>
@@ -402,12 +287,12 @@
             <translation>Η αναπαραγωγή σας</translation>
         </message>
         <message>
-            <source>Clear local key</source>
-            <translation>Διαγραφή τοπικής συντόμευσης πληκτρολογίου push-to-talk</translation>
+            <source>Clear key</source>
+            <translation>Εκκαθάριση πλήκτρου</translation>
         </message>
         <message>
-            <source>Low cut</source>
-            <translation>Κοπή χαμηλής συχνότητας</translation>
+            <source>Highpass</source>
+            <translation>Υψιπερατό</translation>
         </message>
         <message>
             <source>Microphone access is off</source>
@@ -418,32 +303,16 @@
             <translation>Συσκευή εισόδου</translation>
         </message>
         <message>
-            <source>Microphone paused for others</source>
-            <translation>Το μικρόφωνο σε παύση για άλλους</translation>
-        </message>
-        <message>
             <source>Cancel</source>
             <translation>Ακύρωση</translation>
-        </message>
-        <message>
-            <source>Guided recording</source>
-            <translation>Καθοδηγούμενη εγγραφή</translation>
         </message>
         <message>
             <source>Clipping. Reduce microphone gain.</source>
             <translation>Κλιπάρισμα. Μειώστε την ενίσχυση του μικροφώνου.</translation>
         </message>
         <message>
-            <source>Silent</source>
-            <translation>Σιωπηλός</translation>
-        </message>
-        <message>
             <source>Test output</source>
             <translation>Έξοδος δοκιμής</translation>
-        </message>
-        <message>
-            <source>Voice level</source>
-            <translation>Επίπεδο φωνής</translation>
         </message>
         <message>
             <source>Voice threshold</source>
@@ -462,20 +331,16 @@
             <translation>Η συσκευή αποσυνδέθηκε</translation>
         </message>
         <message>
-            <source>Local key</source>
-            <translation>Τοπική συντόμευση πληκτρολογίου push-to-talk</translation>
+            <source>PTT key</source>
+            <translation>Πλήκτρο ομιλίας</translation>
         </message>
         <message>
             <source>Voice activation</source>
             <translation>Μικρόφωνο που ενεργοποιείται με φωνή</translation>
         </message>
         <message>
-            <source>Remote PTT key</source>
-            <translation>Απομακρυσμένη συντόμευση πληκτρολογίου push-to-talk</translation>
-        </message>
-        <message>
-            <source>Noise reduction</source>
-            <translation>Μείωση θορύβου</translation>
+            <source>Denoise</source>
+            <translation>Αποθορυβοποίηση</translation>
         </message>
         <message>
             <source>Selected device is not connected</source>
@@ -486,32 +351,120 @@
             <translation>Θα μετέδιδε</translation>
         </message>
         <message>
-            <source>Microphone gain</source>
-            <translation>Ενίσχυση μικροφώνου</translation>
-        </message>
-        <message>
-            <source>Clear remote key</source>
-            <translation>Εκκαθάριση απομακρυσμένης συντόμευσης πληκτρολογίου push-to-talk</translation>
-        </message>
-        <message>
-            <source>Playback volume</source>
-            <translation>Ένταση αναπαραγωγής</translation>
+            <source>Gain</source>
+            <translation>Ενίσχυση</translation>
         </message>
         <message>
             <source>Not assigned</source>
             <translation>Δεν έχει ανατεθεί</translation>
         </message>
         <message>
-            <source>High cut</source>
-            <translation>Κοπή υψηλής συχνότητας</translation>
+            <source>Lowpass</source>
+            <translation>Χαμηλοπερατό</translation>
         </message>
         <message>
             <source>Level audio automatically</source>
             <translation>Αυτόματη στάθμη ήχου</translation>
         </message>
+        <message>
+            <source>Voice volume</source>
+            <translation>Ένταση φωνητικής συνομιλίας</translation>
+        </message>
+        <message>
+            <source>App sounds</source>
+            <translation>Ήχοι εφαρμογής</translation>
+        </message>
+        <message>
+            <source>Read bot messages aloud</source>
+            <translation>Εκφώνηση μηνυμάτων του bot</translation>
+        </message>
+        <message>
+            <source>Download a high-quality voice for this language in macOS settings.</source>
+            <translation>Κατέβασε μια φωνή υψηλής ποιότητας για αυτή τη γλώσσα στις ρυθμίσεις του macOS.</translation>
+        </message>
+        <message>
+            <source>Bot voice</source>
+            <translation>Φωνή bot</translation>
+        </message>
+        <message>
+            <source>Automatic</source>
+            <translation>Αυτόματο</translation>
+        </message>
+        <message>
+            <source>Unavailable</source>
+            <translation>Μη διαθέσιμο</translation>
+        </message>
+        <message>
+            <source>Download voices in your device's Accessibility speech settings.</source>
+            <translation>Κατέβασε φωνές από τις ρυθμίσεις ομιλίας στην Προσβασιμότητα της συσκευής σου.</translation>
+        </message>
+        <message>
+            <source>Voice download help</source>
+            <translation>Βοήθεια λήψης φωνών</translation>
+        </message>
+        <message>
+            <source>Strength, not the percentage of echo removed.</source>
+            <translation>Ένταση, όχι ποσοστό της ηχούς που αφαιρέθηκε.</translation>
+        </message>
+        <message>
+            <source>Auto also checks for speech, not just volume.</source>
+            <translation>Η αυτόματη λειτουργία ελέγχει και για ομιλία, όχι μόνο την ένταση.</translation>
+        </message>
     </context>
     <context>
         <name>Channels</name>
+        <message>
+            <source>Audio received</source>
+            <translation>Λαμβανόμενος ήχος</translation>
+        </message>
+        <message>
+            <source>Search channels</source>
+            <translation>Αναζήτηση καναλιών</translation>
+        </message>
+        <message>
+            <source>No matches</source>
+            <translation>Δεν βρέθηκαν αποτελέσματα</translation>
+        </message>
+        <message>
+            <source>Copy address</source>
+            <translation>Αντιγραφή διεύθυνσης</translation>
+        </message>
+        <message>
+            <source>Messages</source>
+            <translation>Μηνύματα</translation>
+        </message>
+        <message>
+            <source>Message</source>
+            <translation>Μήνυμα</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Άνοιγμα</translation>
+        </message>
+        <message>
+            <source>Online</source>
+            <translation>Σε σύνδεση</translation>
+        </message>
+        <message>
+            <source>Offline</source>
+            <translation>Εκτός σύνδεσης</translation>
+        </message>
+        <message>
+            <source>No private messages</source>
+            <translation>Δεν υπάρχουν ιδιωτικά μηνύματα</translation>
+        </message>
+        <message>
+            <source>Private messages are unavailable for this contact.</source>
+            <translation>Τα ιδιωτικά μηνύματα δεν είναι διαθέσιμα για αυτήν την επαφή.</translation>
+        </message>
+        <message>
+            <source>If asked, allow local network access. You can change this in system settings.</source>
+            <translation>Αν σου ζητηθεί, επίτρεψε την πρόσβαση στο τοπικό δίκτυο. Μπορείς να το αλλάξεις στις ρυθμίσεις συστήματος.</translation>
+        </message>
+        <message>
+            <source>Retry</source>
+            <translation>Δοκίμασε ξανά</translation>
+        </message>
         <message>
             <source>Updates</source>
             <translation>Ενημερώσεις</translation>
@@ -531,6 +484,10 @@
         <message>
             <source>DDNS cannot bypass CGNAT. If your provider shares the public IP, use a private VPN on all participating devices or a publicly reachable server.</source>
             <translation>Το DDNS δεν μπορεί να παρακάμψει το CGNAT. Εάν ο πάροχος σας μοιράζεται τη δημόσια IP, χρησιμοποιήστε ένα ιδιωτικό VPN σε όλες τις συμμετέχουσες συσκευές ή έναν δημόσια προσβάσιμο διακομιστή.</translation>
+        </message>
+        <message>
+            <source>Remove server</source>
+            <translation>Αφαίρεση διακομιστή</translation>
         </message>
         <message>
             <source>Low</source>
@@ -653,10 +610,6 @@
             <translation>Ήχοι ειδοποίησης</translation>
         </message>
         <message>
-            <source>Lifetime for new messages. Earlier messages keep their expiry.</source>
-            <translation>Διάρκεια ζωής για νέα μηνύματα. Τα προηγούμενα μηνύματα διατηρούν τη λήξη τους.</translation>
-        </message>
-        <message>
             <source>Enable speakers</source>
             <translation>Ενεργοποίηση ηχείων</translation>
         </message>
@@ -691,10 +644,6 @@
         <message>
             <source>Allow device</source>
             <translation>Να επιτρέπεται η συσκευή</translation>
-        </message>
-        <message>
-            <source>Receive quality: %1 kb/s per voice. Adjusts automatically for this device.</source>
-            <translation>Ποιότητα λήψης: %1 kb/s ανά φωνή. Προσαρμόζεται αυτόματα για αυτήν τη συσκευή.</translation>
         </message>
         <message>
             <source>Stop radio</source>
@@ -1188,6 +1137,50 @@
             <source>This device</source>
             <translation>Αυτή η συσκευή</translation>
         </message>
+        <message>
+            <source>Use default music volume</source>
+            <translation>Χρήση προεπιλεγμένης έντασης μουσικής</translation>
+        </message>
+        <message>
+            <source>Show in Dock</source>
+            <translation>Εμφάνιση στο Dock</translation>
+        </message>
+        <message>
+            <source>App language</source>
+            <translation>Γλώσσα εφαρμογής</translation>
+        </message>
+        <message>
+            <source>Send in</source>
+            <translation>Αποστολή στα</translation>
+        </message>
+        <message>
+            <source>Hear in</source>
+            <translation>Ακρόαση στα</translation>
+        </message>
+        <message>
+            <source>Download language models for %1 and %2?</source>
+            <translation>Λήψη μοντέλων γλώσσας για %1 και %2;</translation>
+        </message>
+        <message>
+            <source>Download</source>
+            <translation>Λήψη</translation>
+        </message>
+        <message>
+            <source>PTT, chat and channel controls. Uses the controlled device's microphone.</source>
+            <translation>Χειρισμός PTT, συνομιλίας και καναλιών. Χρησιμοποιείται το μικρόφωνο της ελεγχόμενης συσκευής.</translation>
+        </message>
+        <message>
+            <source>Connect the other device to one of your channels, then allow it here.</source>
+            <translation>Σύνδεσε την άλλη συσκευή σε ένα από τα κανάλια σου και μετά επίτρεψέ την εδώ.</translation>
+        </message>
+        <message>
+            <source>On the other device, open Settings &gt; Input &gt; Remote control and allow this device.</source>
+            <translation>Στην άλλη συσκευή, άνοιξε Ρυθμίσεις &gt; Εισαγωγή &gt; Τηλεχειριστήριο και επίτρεψε αυτήν τη συσκευή.</translation>
+        </message>
+        <message>
+            <source>Unread messages</source>
+            <translation>Μη αναγνωσμένα μηνύματα</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1299,6 +1292,22 @@
             <source>The sanitized image could not be written completely.</source>
             <translation>Δεν ήταν δυνατή η πλήρης εγγραφή της καθαρισμένης εικόνας.</translation>
         </message>
+        <message>
+            <source>%1 joined.</source>
+            <translation>Ο %1 εντάχθηκε.</translation>
+        </message>
+        <message>
+            <source>%1 left.</source>
+            <translation>Ο %1 αποχώρησε.</translation>
+        </message>
+        <message>
+            <source>%1 was kicked.</source>
+            <translation>Ο %1 αποβλήθηκε.</translation>
+        </message>
+        <message>
+            <source>%1 was banned from the channel.</source>
+            <translation>Το %1 αποκλείστηκε από το κανάλι.</translation>
+        </message>
     </context>
     <context>
         <name>ChatPanel</name>
@@ -1363,22 +1372,6 @@
             <translation>Φόρτωση...</translation>
         </message>
         <message>
-            <source>%1 joined.</source>
-            <translation>Ο %1 εντάχθηκε.</translation>
-        </message>
-        <message>
-            <source>%1 left.</source>
-            <translation>Ο %1 αποχώρησε.</translation>
-        </message>
-        <message>
-            <source>%1 was kicked.</source>
-            <translation>Ο %1 αποβλήθηκε.</translation>
-        </message>
-        <message>
-            <source>%1 was banned from the channel.</source>
-            <translation>Το %1 αποκλείστηκε από το κανάλι.</translation>
-        </message>
-        <message>
             <source>Message could not be sent. Check the connection and text length.</source>
             <translation>Δεν ήταν δυνατή η αποστολή του μηνύματος. Ελέγξτε τη σύνδεση και το μήκος του κειμένου.</translation>
         </message>
@@ -1404,7 +1397,400 @@
         </message>
     </context>
     <context>
+        <name>Desktop</name>
+        <message>
+            <source>Open settings at startup.</source>
+            <translation>Άνοιγμα ρυθμίσεων κατά την εκκίνηση.</translation>
+        </message>
+        <message>
+            <source>Alternative file for audio profiles.</source>
+            <translation>Εναλλακτικό αρχείο προφίλ ήχου.</translation>
+        </message>
+        <message>
+            <source>Load the interface without microphone capture and exit after one second.</source>
+            <translation>Φόρτωση της διεπαφής χωρίς εγγραφή μικροφώνου και έξοδος μετά από ένα δευτερόλεπτο.</translation>
+        </message>
+        <message>
+            <source>Save an image of the app window during the UI test.</source>
+            <translation>Αποθήκευση εικόνας του παραθύρου κατά τη δοκιμή της διεπαφής.</translation>
+        </message>
+        <message>
+            <source>The window image could not be saved.</source>
+            <translation>Δεν ήταν δυνατή η αποθήκευση της εικόνας του παραθύρου.</translation>
+        </message>
+        <message>
+            <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
+            <translation>Η περιοχή ειδοποιήσεων δεν είναι διαθέσιμη; η εφαρμογή παραμένει ανοιχτή σε παράθυρο.</translation>
+        </message>
+    </context>
+    <context>
+        <name>Headless</name>
+        <message>
+            <source>Host display name.</source>
+            <translation>Εμφανιζόμενο όνομα του κεντρικού υπολογιστή.</translation>
+        </message>
+        <message>
+            <source>Command failed.</source>
+            <translation>Η εντολή απέτυχε.</translation>
+        </message>
+        <message>
+            <source>%1 must be an integer.</source>
+            <translation>Το %1 πρέπει να είναι ακέραιος.</translation>
+        </message>
+        <message>
+            <source>Requests must be on/off or true/false.</source>
+            <translation>Τα αιτήματα πρέπει να είναι on/off ή true/false.</translation>
+        </message>
+        <message>
+            <source>Unknown host property: %1</source>
+            <translation>Άγνωστη ιδιότητα διακομιστή: %1</translation>
+        </message>
+        <message>
+            <source>Run without GUI, microphone capture, or local audio output.</source>
+            <translation>Εκτέλεση χωρίς γραφικό περιβάλλον, λήψη μικροφώνου ή τοπική έξοδο ήχου.</translation>
+        </message>
+        <message>
+            <source>Server storage prefix. Personal/audio/GUI profiles are not loaded.</source>
+            <translation>Πρόθεμα αποθήκευσης διακομιστή. Δεν φορτώνονται προσωπικά προφίλ ή προφίλ ήχου και γραφικού περιβάλλοντος.</translation>
+        </message>
+        <message>
+            <source>Optional private identity file instead of the OS credential store (Linux/macOS). Parent directory must exist and belong to this account.</source>
+            <translation>Προαιρετικό ιδιωτικό αρχείο ταυτότητας αντί για το αποθετήριο διαπιστευτηρίων του συστήματος (Linux/macOS). Ο γονικός κατάλογος πρέπει να υπάρχει και να ανήκει σε αυτόν τον λογαριασμό.</translation>
+        </message>
+        <message>
+            <source>UTF-8 key=value properties or JSON host preset. Default: application.properties, then config/application.properties beside the app.</source>
+            <translation>Ιδιότητες UTF-8 key=value ή προρυθμίσεις διακομιστή JSON. Προεπιλογή: application.properties, έπειτα config/application.properties δίπλα στην εφαρμογή.</translation>
+        </message>
+        <message>
+            <source>Channel display name.</source>
+            <translation>Εμφανιζόμενο όνομα καναλιού.</translation>
+        </message>
+        <message>
+            <source>System and radio bot display name.</source>
+            <translation>Εμφανιζόμενο όνομα του bot συστήματος και ραδιοφώνου.</translation>
+        </message>
+        <message>
+            <source>TCP service port (1-65535).</source>
+            <translation>Θύρα υπηρεσίας TCP (1-65535).</translation>
+        </message>
+        <message>
+            <source>Headless admission is always on; only 'on' or 'true' is accepted.</source>
+            <translation>Η αποδοχή χωρίς γραφικό περιβάλλον είναι πάντα ενεργή. Επιτρέπεται μόνο 'on' ή 'true'.</translation>
+        </message>
+        <message>
+            <source>Preapprove a device ID; repeat for several devices. Existing bans remain.</source>
+            <translation>Προέγκριση ID συσκευής. Επαναλάβετε για πολλές συσκευές. Οι υπάρχοντες αποκλεισμοί παραμένουν.</translation>
+        </message>
+        <message>
+            <source>Block a device ID; repeat for several devices.</source>
+            <translation>Αποκλεισμός ID συσκευής. Επαναλάβετε για πολλές συσκευές.</translation>
+        </message>
+        <message>
+            <source>Read a UTF-8 channel password from a file before listening. An empty file removes it.</source>
+            <translation>Ανάγνωση κωδικού καναλιού UTF-8 από αρχείο πριν από την ακρόαση. Κενό αρχείο τον αφαιρεί.</translation>
+        </message>
+        <message>
+            <source>Channel password. Empty removes it; environment or config avoids process-list exposure.</source>
+            <translation>Κωδικός καναλιού. Κενή τιμή τον αφαιρεί. Το περιβάλλον ή η διαμόρφωση αποτρέπουν την εμφάνισή του στη λίστα διεργασιών.</translation>
+        </message>
+        <message>
+            <source>SquadSpeak headless local channel host</source>
+            <translation>Τοπικός διακομιστής καναλιού SquadSpeak χωρίς γραφικό περιβάλλον</translation>
+        </message>
+        <message>
+            <source>Environment variables (SQUADSPEAK_ prefix):</source>
+            <translation>Μεταβλητές περιβάλλοντος (πρόθεμα SQUADSPEAK_):</translation>
+        </message>
+        <message>
+            <source>Host configuration could not be read or exceeds 1 MiB.</source>
+            <translation>Δεν ήταν δυνατή η ανάγνωση της διαμόρφωσης διακομιστή ή υπερβαίνει το 1 MiB.</translation>
+        </message>
+        <message>
+            <source>Host configuration must be UTF-8.</source>
+            <translation>Η διαμόρφωση διακομιστή πρέπει να είναι UTF-8.</translation>
+        </message>
+        <message>
+            <source>Host preset must be a JSON object.</source>
+            <translation>Οι προρυθμίσεις διακομιστή πρέπει να είναι αντικείμενο JSON.</translation>
+        </message>
+        <message>
+            <source>Property line %1 must use key=value.</source>
+            <translation>Η γραμμή ιδιοτήτων %1 πρέπει να χρησιμοποιεί key=value.</translation>
+        </message>
+        <message>
+            <source>Property line %1: %2</source>
+            <translation>Γραμμή ιδιοτήτων %1: %2</translation>
+        </message>
+        <message>
+            <source>Standard input has no file descriptor.</source>
+            <translation>Η τυπική είσοδος δεν έχει περιγραφέα αρχείου.</translation>
+        </message>
+        <message>
+            <source>Standard input could not be inspected.</source>
+            <translation>Δεν ήταν δυνατός ο έλεγχος της τυπικής εισόδου.</translation>
+        </message>
+        <message>
+            <source>Could not write the command response: %1</source>
+            <translation>Δεν ήταν δυνατή η εγγραφή της απάντησης εντολής: %1</translation>
+        </message>
+        <message>
+            <source>Standard input could not be read: %1</source>
+            <translation>Δεν ήταν δυνατή η ανάγνωση της τυπικής εισόδου: %1</translation>
+        </message>
+        <message>
+            <source>Input line exceeds 65536 bytes.</source>
+            <translation>Η γραμμή εισόδου υπερβαίνει τα 65536 byte.</translation>
+        </message>
+        <message>
+            <source>Each input line must be a JSON object.</source>
+            <translation>Κάθε γραμμή εισόδου πρέπει να είναι αντικείμενο JSON.</translation>
+        </message>
+        <message>
+            <source>Input ended before a complete JSON line.</source>
+            <translation>Η είσοδος τερματίστηκε πριν ολοκληρωθεί μια γραμμή JSON.</translation>
+        </message>
+        <message>
+            <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
+            <translation>Προαιρετικό ID δικού σας καναλιού για τις εντολές status, configure, password, admission, history, chat και radio. Προεπιλογή είναι το κύριο κανάλι.</translation>
+        </message>
+        <message>
+            <source>Channel action must be list, add or remove.</source>
+            <translation>Η ενέργεια καναλιού πρέπει να είναι list, add ή remove.</translation>
+        </message>
+        <message>
+            <source>Removing an own channel deletes its history, images, permissions and radio settings. Set confirmed=true to proceed.</source>
+            <translation>Η αφαίρεση δικού σας καναλιού διαγράφει το ιστορικό, τις εικόνες, τα δικαιώματα και τις ρυθμίσεις ραδιοφώνου του. Ορίστε confirmed=true για συνέχεια.</translation>
+        </message>
+        <message>
+            <source>id must identify an additional own channel.</source>
+            <translation>Το id πρέπει να προσδιορίζει ένα πρόσθετο δικό σας κανάλι.</translation>
+        </message>
+        <message>
+            <source>The additional own channel could not be removed: %1</source>
+            <translation>Δεν ήταν δυνατή η αφαίρεση του πρόσθετου δικού σας καναλιού: %1</translation>
+        </message>
+        <message>
+            <source>channelId must identify an own channel.</source>
+            <translation>Το channelId πρέπει να προσδιορίζει δικό σας κανάλι.</translation>
+        </message>
+        <message>
+            <source>values must be a host settings object.</source>
+            <translation>Το values πρέπει να είναι αντικείμενο ρυθμίσεων διακομιστή.</translation>
+        </message>
+        <message>
+            <source>Headless admission is always enabled for non-banned devices; requests off is not supported.</source>
+            <translation>Η αποδοχή χωρίς γραφικό περιβάλλον είναι πάντα ενεργή για μη αποκλεισμένες συσκευές. Δεν υποστηρίζεται requests off.</translation>
+        </message>
+        <message>
+            <source>value must be a password of at most 1024 UTF-8 bytes without control characters; an empty string removes it.</source>
+            <translation>Το value πρέπει να είναι κωδικός έως 1024 byte UTF-8 χωρίς χαρακτήρες ελέγχου. Κενή συμβολοσειρά τον αφαιρεί.</translation>
+        </message>
+        <message>
+            <source>The channel is not ready or a password change is in progress.</source>
+            <translation>Το κανάλι δεν είναι έτοιμο ή η αλλαγή κωδικού βρίσκεται σε εξέλιξη.</translation>
+        </message>
+        <message>
+            <source>The channel was removed while saving the password.</source>
+            <translation>Το κανάλι αφαιρέθηκε κατά την αποθήκευση του κωδικού.</translation>
+        </message>
+        <message>
+            <source>id is required.</source>
+            <translation>Απαιτείται id.</translation>
+        </message>
+        <message>
+            <source>text must be a valid non-empty chat message.</source>
+            <translation>Το text πρέπει να είναι έγκυρο, μη κενό μήνυμα συνομιλίας.</translation>
+        </message>
+        <message>
+            <source>The local channel is not ready.</source>
+            <translation>Το τοπικό κανάλι δεν είναι έτοιμο.</translation>
+        </message>
+        <message>
+            <source>The channel's radio is unavailable.</source>
+            <translation>Το ραδιόφωνο του καναλιού δεν είναι διαθέσιμο.</translation>
+        </message>
+        <message>
+            <source>Unknown command. Use help.</source>
+            <translation>Άγνωστη εντολή. Χρησιμοποιήστε help.</translation>
+        </message>
+        <message>
+            <source>search requires a query, non-negative offset and limit from 1 to 128.</source>
+            <translation>Το search απαιτεί query, μη αρνητικό offset και limit από 1 έως 128.</translation>
+        </message>
+        <message>
+            <source>add creates an id; update requires an existing id.</source>
+            <translation>Το add δημιουργεί id. Το update απαιτεί υπάρχον id.</translation>
+        </message>
+        <message>
+            <source>A station is already being checked.</source>
+            <translation>Γίνεται ήδη έλεγχος σταθμού.</translation>
+        </message>
+        <message>
+            <source>The channel was removed while checking the station.</source>
+            <translation>Το κανάλι αφαιρέθηκε κατά τον έλεγχο του σταθμού.</translation>
+        </message>
+        <message>
+            <source>Unknown radio action.</source>
+            <translation>Άγνωστη ενέργεια ραδιοφώνου.</translation>
+        </message>
+        <message>
+            <source>Could not load language: %1</source>
+            <translation>Δεν ήταν δυνατή η φόρτωση γλώσσας: %1</translation>
+        </message>
+        <message>
+            <source>The %1 option is incompatible with --headless.</source>
+            <translation>Η επιλογή %1 δεν είναι συμβατή με --headless.</translation>
+        </message>
+        <message>
+            <source>Unexpected positional arguments. Use --help.</source>
+            <translation>Μη αναμενόμενα ορίσματα θέσης. Χρησιμοποιήστε --help.</translation>
+        </message>
+        <message>
+            <source>--config / -f requires a non-empty path.</source>
+            <translation>Το --config / -f απαιτεί μη κενή διαδρομή.</translation>
+        </message>
+        <message>
+            <source>Choose --password or --password-file, not both.</source>
+            <translation>Επιλέξτε --password ή --password-file, όχι και τα δύο.</translation>
+        </message>
+        <message>
+            <source>Choose SQUADSPEAK_PASSWORD or SQUADSPEAK_PASSWORD_FILE, not both.</source>
+            <translation>Επιλέξτε SQUADSPEAK_PASSWORD ή SQUADSPEAK_PASSWORD_FILE, όχι και τα δύο.</translation>
+        </message>
+        <message>
+            <source>Choose password or passwordFile in one configuration layer, not both.</source>
+            <translation>Επιλέξτε password ή passwordFile σε ένα επίπεδο διαμόρφωσης, όχι και τα δύο.</translation>
+        </message>
+        <message>
+            <source>passwordFile must be a non-empty path.</source>
+            <translation>Το passwordFile πρέπει να είναι μη κενή διαδρομή.</translation>
+        </message>
+        <message>
+            <source>Password file could not be read or is too large.</source>
+            <translation>Δεν ήταν δυνατή η ανάγνωση του αρχείου κωδικού ή είναι πολύ μεγάλο.</translation>
+        </message>
+        <message>
+            <source>Password file must contain at most 1024 UTF-8 bytes without control characters.</source>
+            <translation>Το αρχείο κωδικού πρέπει να περιέχει το πολύ 1024 byte UTF-8 χωρίς χαρακτήρες ελέγχου.</translation>
+        </message>
+        <message>
+            <source>Password must be a string of at most 1024 UTF-8 bytes without control characters.</source>
+            <translation>Ο κωδικός πρέπει να είναι συμβολοσειρά έως 1024 byte UTF-8 χωρίς χαρακτήρες ελέγχου.</translation>
+        </message>
+        <message>
+            <source>settingsFile must be a non-empty path.</source>
+            <translation>Το settingsFile πρέπει να είναι μη κενή διαδρομή.</translation>
+        </message>
+        <message>
+            <source>identityFile must be a non-empty path.</source>
+            <translation>Το identityFile πρέπει να είναι μη κενή διαδρομή.</translation>
+        </message>
+        <message>
+            <source>The settings directory could not be created.</source>
+            <translation>Δεν ήταν δυνατή η δημιουργία του καταλόγου ρυθμίσεων.</translation>
+        </message>
+        <message>
+            <source>This SquadSpeak profile is already running or cannot be locked.</source>
+            <translation>Αυτό το προφίλ SquadSpeak εκτελείται ήδη ή δεν μπορεί να κλειδωθεί.</translation>
+        </message>
+        <message>
+            <source>Standard input could not be opened.</source>
+            <translation>Δεν ήταν δυνατό το άνοιγμα της τυπικής εισόδου.</translation>
+        </message>
+        <message>
+            <source>Standard output could not be opened.</source>
+            <translation>Δεν ήταν δυνατό το άνοιγμα της τυπικής εξόδου.</translation>
+        </message>
+        <message>
+            <source>This identity file is already in use or cannot be locked.</source>
+            <translation>Αυτό το αρχείο ταυτότητας χρησιμοποιείται ήδη ή δεν μπορεί να κλειδωθεί.</translation>
+        </message>
+        <message>
+            <source>Invalid host configuration: %1</source>
+            <translation>Μη έγκυρη διαμόρφωση διακομιστή: %1</translation>
+        </message>
+        <message>
+            <source>Radio channels could not be initialized.</source>
+            <translation>Δεν ήταν δυνατή η αρχικοποίηση των ραδιοφωνικών καναλιών.</translation>
+        </message>
+        <message>
+            <source>Headless host could not start: %1</source>
+            <translation>Δεν ήταν δυνατή η εκκίνηση του διακομιστή χωρίς γραφικό περιβάλλον: %1</translation>
+        </message>
+        <message>
+            <source>Channel password could not be saved.</source>
+            <translation>Δεν ήταν δυνατή η αποθήκευση του κωδικού καναλιού.</translation>
+        </message>
+        <message>
+            <source>Invalid channel password: %1</source>
+            <translation>Μη έγκυρος κωδικός καναλιού: %1</translation>
+        </message>
+        <message>
+            <source>Headless host could not initialize: %1</source>
+            <translation>Δεν ήταν δυνατή η αρχικοποίηση του διακομιστή χωρίς γραφικό περιβάλλον: %1</translation>
+        </message>
+        <message>
+            <source>SquadSpeak headless could not start: %1</source>
+            <translation>Δεν ήταν δυνατή η εκκίνηση του SquadSpeak χωρίς γραφικό περιβάλλον: %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>Η ενέργεια του υποστηρικτή πρέπει να είναι η κατάσταση, η είσοδος, η ανανέωση, η αποσύνδεση ή η ακύρωση. status sign-in refresh sign-out cancel</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>Μια λειτουργία Υποστήριξης βρίσκεται σε εξέλιξη.</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>Η πρόσβαση υποστηρικτών δεν είναι διαθέσιμη σε αυτήν την έκδοση.</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>Προτεραιότητα ρυθμίσεων: ορίσματα &gt; περιβάλλον &gt; ιδιότητες &gt; αποθηκευμένες τιμές διακομιστή.</translation>
+        </message>
+    </context>
+    <context>
+        <name>License</name>
+        <message>
+            <source>License storage is busy or unavailable.</source>
+            <translation>Ο χώρος αποθήκευσης άδειας χρήσης είναι απασχολημένος ή δεν είναι διαθέσιμος.</translation>
+        </message>
+        <message>
+            <source>License storage is unavailable.</source>
+            <translation>Ο χώρος αποθήκευσης άδειας δεν είναι διαθέσιμος.</translation>
+        </message>
+        <message>
+            <source>Sign-in expired. Try again.</source>
+            <translation>Η σύνδεση έληξε. Προσπαθήστε ξανά.</translation>
+        </message>
+        <message>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>Η σύνδεση στο GitHub δεν είναι διαθέσιμη. Προσπαθήστε ξανά.</translation>
+        </message>
+        <message>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>Η σύνδεση στο GitHub δεν ολοκληρώθηκε. Προσπαθήστε ξανά.</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>Δεν ήταν δυνατός ο έλεγχος του GitHub. Η πρόσβαση εκτός σύνδεσης διαρκεί το πολύ επτά ημέρες.</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>Συνδεθείτε ξανά με το GitHub.</translation>
+        </message>
+    </context>
+    <context>
         <name>LocalChannel</name>
+        <message>
+            <source>Insufficient permissions.</source>
+            <translation>Ανεπαρκή δικαιώματα.</translation>
+        </message>
+        <message>
+            <source>Blocked</source>
+            <translation>Αποκλείστηκε</translation>
+        </message>
         <message>
             <source>Host is not responding. Reconnecting.</source>
             <translation>Ο οικοδεσπότης δεν ανταποκρίνεται. Επανασύνδεση.</translation>
@@ -1926,8 +2312,8 @@
             <translation>Η μεταφορά εικόνας κράτησε πολύ.</translation>
         </message>
         <message>
-            <source>The channel is full. Text chat is still available.</source>
-            <translation>Το κανάλι είναι γεμάτο. Η συνομιλία με κείμενο είναι ακόμα διαθέσιμη.</translation>
+            <source>The host is busy. Try again shortly.</source>
+            <translation>Ο κεντρικός υπολογιστής είναι απασχολημένος. Δοκίμασε ξανά σε λίγο.</translation>
         </message>
         <message>
             <source>All own channels use the device's shared port.</source>
@@ -2189,6 +2575,53 @@
             <source>Voice relay codec could not be configured.</source>
             <translation>Δεν ήταν δυνατή η ρύθμιση του κωδικοποιητή αναμετάδοσης φωνής.</translation>
         </message>
+        <message>
+            <source>Unsupported audio codec</source>
+            <translation>Μη υποστηριζόμενος κωδικοποιητής ήχου</translation>
+        </message>
+        <message>
+            <source>Speaking is not allowed in this channel.</source>
+            <translation>Δεν επιτρέπεται η ομιλία σε αυτό το κανάλι.</translation>
+        </message>
+    </context>
+    <context>
+        <name>LocalLanguage</name>
+        <message>
+            <source>Translation (experimental)</source>
+            <translation>Μετάφραση (πειραματική)</translation>
+        </message>
+        <message>
+            <source>Translate messages</source>
+            <translation>Μετάφραση μηνυμάτων</translation>
+        </message>
+        <message>
+            <source>Translated voice</source>
+            <translation>Μεταφρασμένη φωνή</translation>
+        </message>
+        <message>
+            <source>Original audio</source>
+            <translation>Αρχικός ήχος</translation>
+        </message>
+        <message>
+            <source>Original text</source>
+            <translation>Αρχικό κείμενο</translation>
+        </message>
+        <message>
+            <source>Prepare languages</source>
+            <translation>Προετοιμασία γλωσσών</translation>
+        </message>
+        <message>
+            <source>Local language processing is unavailable.</source>
+            <translation>Η τοπική επεξεργασία γλώσσας δεν είναι διαθέσιμη.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be read.</source>
+            <translation>Δεν ήταν δυνατή η ανάγνωση των ρυθμίσεων γλώσσας.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be saved.</source>
+            <translation>Δεν ήταν δυνατή η αποθήκευση των ρυθμίσεων γλώσσας.</translation>
+        </message>
     </context>
     <context>
         <name>PushToTalkKey</name>
@@ -2329,50 +2762,61 @@
         </message>
     </context>
     <context>
-        <name>RecordingPanel</name>
+        <name>ScreenPanel</name>
         <message>
-            <source>Stop</source>
-            <translation>Σταμάτα</translation>
+            <source>Video paused</source>
+            <translation>Το βίντεο διακόπηκε</translation>
         </message>
         <message>
-            <source>Start</source>
-            <translation>Έναρξη</translation>
+            <source>Stream ended</source>
+            <translation>Τελείωσε το ρεύμα</translation>
         </message>
         <message>
-            <source>Saved on this device only. Nothing is uploaded.</source>
-            <translation>Αποθηκεύτηκε μόνο σε αυτήν τη συσκευή. Δεν έχει ανέβει τίποτα.</translation>
+            <source>Connecting</source>
+            <translation>Συνδέοντας</translation>
         </message>
         <message>
-            <source>Keep this take or record it again.</source>
-            <translation>Κρατήστε αυτή τη λήψη ή ηχογραφήστε την ξανά.</translation>
+            <source>Open screen stream</source>
+            <translation>Άνοιγμα ροής οθόνης</translation>
         </message>
         <message>
-            <source>Record again</source>
-            <translation>Ηχογραφήστε ξανά</translation>
+            <source>Screen stream</source>
+            <translation>Ροή οθόνης</translation>
         </message>
         <message>
-            <source>Use recording</source>
-            <translation>Χρήση εγγραφής</translation>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
+        </message>
+    </context>
+    <context>
+        <name>ScreenShare</name>
+        <message>
+            <source>Allow screen recording in system settings.</source>
+            <translation>Επίτρεψε την εγγραφή οθόνης στις ρυθμίσεις συστήματος.</translation>
         </message>
         <message>
-            <source>Recording progress</source>
-            <translation>Καταγραφή προόδου</translation>
+            <source>The shared screen was removed. Select a source to start again.</source>
+            <translation>Η κοινόχρηστη οθόνη καταργήθηκε. Επιλέξτε μια πηγή για να ξεκινήσετε ξανά.</translation>
         </message>
         <message>
-            <source>Step %1 of %2</source>
-            <translation>Βήμα %1 από %2</translation>
+            <source>The shared window was closed. Select a source to start again.</source>
+            <translation>Το κοινόχρηστο παράθυρο έκλεισε. Επιλέξτε μια πηγή για να ξεκινήσετε ξανά.</translation>
         </message>
         <message>
-            <source>Open recordings</source>
-            <translation>Ανοίξτε τις εγγραφές</translation>
+            <source>The selected screen is no longer available.</source>
+            <translation>Η επιλεγμένη οθόνη δεν είναι πλέον διαθέσιμη.</translation>
         </message>
         <message>
-            <source>Reset test</source>
-            <translation>Επαναφορά δοκιμής</translation>
+            <source>The selected window is no longer available.</source>
+            <translation>Το επιλεγμένο παράθυρο δεν είναι πλέον διαθέσιμο.</translation>
         </message>
         <message>
-            <source>%1 s remaining / %2 dBFS</source>
-            <translation>Απομένουν %1 s / %2 dBFS</translation>
+            <source>The selected source exceeds the capture size limit.</source>
+            <translation>Η επιλεγμένη πηγή υπερβαίνει το όριο μεγέθους λήψης.</translation>
+        </message>
+        <message>
+            <source>Close a video view before opening another stream.</source>
+            <translation>Κλείστε μια προβολή βίντεο πριν ανοίξετε μια άλλη ροή.</translation>
         </message>
     </context>
     <context>
@@ -2449,10 +2893,6 @@
             <translation>Συλλογή σήματος...</translation>
         </message>
         <message>
-            <source>Dashed curve: configured gain and frequency cuts, using the right dB scale. Noise reduction and voice activation are not part of this curve.</source>
-            <translation>Διακεκομμένη καμπύλη: ρυθμισμένη ενίσχυση και περικοπές συχνότητας, με τη δεξιά κλίμακα dB. Η μείωση θορύβου και η φωνητική ενεργοποίηση δεν αποτελούν μέρος αυτής της καμπύλης.</translation>
-        </message>
-        <message>
             <source>Microphone preview is not running</source>
             <translation>Η προεπισκόπηση μικροφώνου δεν εκτελείται</translation>
         </message>
@@ -2463,303 +2903,6 @@
         <message>
             <source>Peak: %1</source>
             <translation>Κορυφή: %1</translation>
-        </message>
-    </context>
-    <context>
-        <name>Tray</name>
-        <message>
-            <source>Quit</source>
-            <translation>Κλείσε</translation>
-        </message>
-        <message>
-            <source>SquadSpeak - speaking</source>
-            <translation>SquadSpeak - ομιλία</translation>
-        </message>
-        <message>
-            <source>Settings</source>
-            <translation>Ρυθμίσεις</translation>
-        </message>
-        <message>
-            <source>Channels</source>
-            <translation>Κανάλια</translation>
-        </message>
-        <message>
-            <source>New image</source>
-            <translation>Νέα εικόνα</translation>
-        </message>
-    </context>
-    <context>
-        <name>VoiceAvatar</name>
-        <message>
-            <source>Muted</source>
-            <translation>Σίγαση του μικροφώνου</translation>
-        </message>
-        <message>
-            <source>Sleeping</source>
-            <translation>Ύπνος</translation>
-        </message>
-        <message>
-            <source>Offline</source>
-            <translation>Εκτός σύνδεσης</translation>
-        </message>
-        <message>
-            <source>Speaking</source>
-            <translation>Μιλώντας</translation>
-        </message>
-        <message>
-            <source>Unavailable</source>
-            <translation>Μη διαθέσιμο</translation>
-        </message>
-        <message>
-            <source>Listening</source>
-            <translation>Ακούγοντας</translation>
-        </message>
-        <message>
-            <source>Deafened</source>
-            <translation>Τα ηχεία είναι σε σίγαση</translation>
-        </message>
-    </context>
-    <context>
-        <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>Μη διαθέσιμο - ρυθμίσεις ήχου ή δοκιμή τόνου</translation>
-        </message>
-        <message>
-            <source>Microphone muted</source>
-            <translation>Σίγαση του μικροφώνου</translation>
-        </message>
-        <message>
-            <source>Push-to-talk held</source>
-            <translation>Το κουμπί push-to-talk παραμένει πατημένο</translation>
-        </message>
-        <message>
-            <source>Ready - push-to-talk released</source>
-            <translation>Έτοιμο - το κουμπί push-to-talk αφέθηκε</translation>
-        </message>
-        <message>
-            <source>Microphone unmuted</source>
-            <translation>Καταργήθηκε η σίγαση του μικροφώνου</translation>
-        </message>
-        <message>
-            <source>Settings could not be saved: %1</source>
-            <translation>Δεν ήταν δυνατή η αποθήκευση των ρυθμίσεων: %1</translation>
-        </message>
-        <message>
-            <source>The push-to-talk sequence cannot be incremented further.</source>
-            <translation>Η ακολουθία push-to-talk δεν μπορεί να αυξηθεί περαιτέρω.</translation>
-        </message>
-        <message>
-            <source>Choose System, Light or Dark.</source>
-            <translation>Επιλέξτε System, Light ή Dark.</translation>
-        </message>
-        <message>
-            <source>Choose a colour palette from the list.</source>
-            <translation>Επιλέξτε μια παλέτα χρωμάτων από τη λίστα.</translation>
-        </message>
-        <message>
-            <source>Choose an available avatar.</source>
-            <translation>Επιλέξτε ένα διαθέσιμο avatar.</translation>
-        </message>
-        <message>
-            <source>Invalid push-to-talk binding.</source>
-            <translation>Μη έγκυρη δέσμευση push-to-talk.</translation>
-        </message>
-        <message>
-            <source>Release the held push-to-talk key first.</source>
-            <translation>Απελευθερώστε πρώτα το κρατημένο πλήκτρο push-to-talk.</translation>
-        </message>
-        <message>
-            <source>Choose a language from the list.</source>
-            <translation>Επιλέξτε μια γλώσσα από τη λίστα.</translation>
-        </message>
-        <message>
-            <source>This avatar requires Supporter.</source>
-            <translation>Αυτό το avatar απαιτεί Supporter.</translation>
-        </message>
-        <message>
-            <source>The name must contain 1 to 64 characters.</source>
-            <translation>Το όνομα πρέπει να περιέχει 1 έως 64 χαρακτήρες.</translation>
-        </message>
-        <message>
-            <source>The name may not contain control characters or line breaks.</source>
-            <translation>Το όνομα μπορεί να μην περιέχει χαρακτήρες ελέγχου ή αλλαγές γραμμής.</translation>
-        </message>
-        <message>
-            <source>Session settings could not be read.</source>
-            <translation>Δεν ήταν δυνατή η ανάγνωση των ρυθμίσεων συνεδρίας.</translation>
-        </message>
-        <message>
-            <source>Saved setting is invalid: %1</source>
-            <translation>Μη έγκυρη αποθηκευμένη ρύθμιση: %1</translation>
-        </message>
-    </context>
-    <context>
-        <name>License</name>
-        <message>
-            <source>License storage is busy or unavailable.</source>
-            <translation>Ο χώρος αποθήκευσης άδειας χρήσης είναι απασχολημένος ή δεν είναι διαθέσιμος.</translation>
-        </message>
-        <message>
-            <source>License storage is unavailable.</source>
-            <translation>Ο χώρος αποθήκευσης άδειας δεν είναι διαθέσιμος.</translation>
-        </message>
-        <message>
-            <source>Sign-in expired. Try again.</source>
-            <translation>Η σύνδεση έληξε. Προσπαθήστε ξανά.</translation>
-        </message>
-        <message>
-            <source>GitHub sign-in is unavailable. Try again.</source>
-            <translation>Η σύνδεση στο GitHub δεν είναι διαθέσιμη. Προσπαθήστε ξανά.</translation>
-        </message>
-        <message>
-            <source>GitHub sign-in was not completed. Try again.</source>
-            <translation>Η σύνδεση στο GitHub δεν ολοκληρώθηκε. Προσπαθήστε ξανά.</translation>
-        </message>
-        <message>
-            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
-            <translation>Δεν ήταν δυνατός ο έλεγχος του GitHub. Η πρόσβαση εκτός σύνδεσης διαρκεί το πολύ επτά ημέρες.</translation>
-        </message>
-        <message>
-            <source>Sign in with GitHub again.</source>
-            <translation>Συνδεθείτε ξανά με το GitHub.</translation>
-        </message>
-    </context>
-    <context>
-        <name>ScreenShare</name>
-        <message>
-            <source>The shared screen was removed. Select a source to start again.</source>
-            <translation>Η κοινόχρηστη οθόνη καταργήθηκε. Επιλέξτε μια πηγή για να ξεκινήσετε ξανά.</translation>
-        </message>
-        <message>
-            <source>The shared window was closed. Select a source to start again.</source>
-            <translation>Το κοινόχρηστο παράθυρο έκλεισε. Επιλέξτε μια πηγή για να ξεκινήσετε ξανά.</translation>
-        </message>
-        <message>
-            <source>The selected screen is no longer available.</source>
-            <translation>Η επιλεγμένη οθόνη δεν είναι πλέον διαθέσιμη.</translation>
-        </message>
-        <message>
-            <source>The selected window is no longer available.</source>
-            <translation>Το επιλεγμένο παράθυρο δεν είναι πλέον διαθέσιμο.</translation>
-        </message>
-        <message>
-            <source>The selected source exceeds the capture size limit.</source>
-            <translation>Η επιλεγμένη πηγή υπερβαίνει το όριο μεγέθους λήψης.</translation>
-        </message>
-        <message>
-            <source>Close a video view before opening another stream.</source>
-            <translation>Κλείστε μια προβολή βίντεο πριν ανοίξετε μια άλλη ροή.</translation>
-        </message>
-    </context>
-    <context>
-        <name>ScreenPanel</name>
-        <message>
-            <source>Media capacity reached</source>
-            <translation>Συμπληρώθηκε η χωρητικότητα των μέσων</translation>
-        </message>
-        <message>
-            <source>Video paused</source>
-            <translation>Το βίντεο διακόπηκε</translation>
-        </message>
-        <message>
-            <source>Stream ended</source>
-            <translation>Τελείωσε το ρεύμα</translation>
-        </message>
-        <message>
-            <source>Connecting</source>
-            <translation>Συνδέοντας</translation>
-        </message>
-        <message>
-            <source>Open screen stream</source>
-            <translation>Άνοιγμα ροής οθόνης</translation>
-        </message>
-        <message>
-            <source>Screen stream</source>
-            <translation>Ροή οθόνης</translation>
-        </message>
-        <message>
-            <source>%1 kbit/s</source>
-            <translation>%1 kbit/s</translation>
-        </message>
-    </context>
-    <context>
-        <name>VideoCodec</name>
-        <message>
-            <source>Video codec: %1</source>
-            <translation>Κωδικοποιητής βίντεο: %1</translation>
-        </message>
-        <message>
-            <source>Video codec ABI does not match its headers.</source>
-            <translation>Το ABI του κωδικοποιητή βίντεο δεν αντιστοιχεί στα αρχεία κεφαλίδων του.</translation>
-        </message>
-        <message>
-            <source>Video buffers could not be allocated.</source>
-            <translation>Δεν ήταν δυνατή η δέσμευση μνήμης για τις προσωρινές μνήμες βίντεο.</translation>
-        </message>
-        <message>
-            <source>Invalid video quality tier.</source>
-            <translation>Μη έγκυρο επίπεδο ποιότητας βίντεο.</translation>
-        </message>
-        <message>
-            <source>The screen source exceeds the supported capture size.</source>
-            <translation>Η πηγή οθόνης υπερβαίνει το υποστηριζόμενο μέγεθος λήψης.</translation>
-        </message>
-        <message>
-            <source>The screen source is too narrow.</source>
-            <translation>Η πηγή οθόνης είναι πολύ στενή.</translation>
-        </message>
-        <message>
-            <source>The video encoder could not be allocated.</source>
-            <translation>Δεν ήταν δυνατή η δέσμευση μνήμης για τον κωδικοποιητή βίντεο.</translation>
-        </message>
-        <message>
-            <source>No supported video encoder is available.</source>
-            <translation>Δεν υπάρχει διαθέσιμος υποστηριζόμενος κωδικοποιητής βίντεο.</translation>
-        </message>
-        <message>
-            <source>Video encoder configuration is too large.</source>
-            <translation>Η διαμόρφωση του κωδικοποιητή βίντεο είναι πολύ μεγάλη.</translation>
-        </message>
-        <message>
-            <source>Video scaling could not be initialized.</source>
-            <translation>Δεν ήταν δυνατή η αρχικοποίηση της κλιμάκωσης βίντεο.</translation>
-        </message>
-        <message>
-            <source>The encoder returned an empty video packet.</source>
-            <translation>Ο κωδικοποιητής επέστρεψε ένα κενό πακέτο βίντεο.</translation>
-        </message>
-        <message>
-            <source>Invalid video frame format.</source>
-            <translation>Μη έγκυρη μορφή καρέ βίντεο.</translation>
-        </message>
-        <message>
-            <source>Invalid video decoder configuration.</source>
-            <translation>Μη έγκυρη διαμόρφωση αποκωδικοποιητή βίντεο.</translation>
-        </message>
-        <message>
-            <source>This video codec cannot be decoded.</source>
-            <translation>Δεν είναι δυνατή η αποκωδικοποίηση αυτού του κωδικοποιητή βίντεο.</translation>
-        </message>
-        <message>
-            <source>Video decoder could not be allocated.</source>
-            <translation>Δεν ήταν δυνατή η δέσμευση μνήμης για τον αποκωδικοποιητή βίντεο.</translation>
-        </message>
-        <message>
-            <source>Video decoder configuration could not be allocated.</source>
-            <translation>Δεν ήταν δυνατή η δέσμευση μνήμης για τη διαμόρφωση του αποκωδικοποιητή βίντεο.</translation>
-        </message>
-        <message>
-            <source>Decoded dimensions do not match the screen stream.</source>
-            <translation>Οι αποκωδικοποιημένες διαστάσεις δεν αντιστοιχούν στη ροή οθόνης.</translation>
-        </message>
-        <message>
-            <source>Decoded image could not be allocated.</source>
-            <translation>Δεν ήταν δυνατή η δέσμευση μνήμης για την αποκωδικοποιημένη εικόνα.</translation>
-        </message>
-        <message>
-            <source>Video color conversion could not be initialized.</source>
-            <translation>Δεν ήταν δυνατή η αρχικοποίηση της μετατροπής χρωμάτων βίντεο.</translation>
         </message>
     </context>
     <context>
@@ -2877,359 +3020,208 @@
             <translation>Δεν ήταν δυνατή η επαλήθευση του κωδικού πρόσβασης.</translation>
         </message>
     </context>
-
     <context>
-        <name>Headless</name>
+        <name>Tray</name>
         <message>
-            <source>Command failed.</source>
-            <translation>Η εντολή απέτυχε.</translation>
+            <source>Quit</source>
+            <translation>Κλείσε</translation>
         </message>
         <message>
-            <source>%1 must be an integer.</source>
-            <translation>Το %1 πρέπει να είναι ακέραιος.</translation>
+            <source>SquadSpeak - speaking</source>
+            <translation>SquadSpeak - ομιλία</translation>
         </message>
         <message>
-            <source>Requests must be on/off or true/false.</source>
-            <translation>Τα αιτήματα πρέπει να είναι on/off ή true/false.</translation>
+            <source>Settings</source>
+            <translation>Ρυθμίσεις</translation>
         </message>
         <message>
-            <source>Unknown host property: %1</source>
-            <translation>Άγνωστη ιδιότητα διακομιστή: %1</translation>
+            <source>Channels</source>
+            <translation>Κανάλια</translation>
         </message>
         <message>
-            <source>Run without GUI, microphone capture, or local audio output.</source>
-            <translation>Εκτέλεση χωρίς γραφικό περιβάλλον, λήψη μικροφώνου ή τοπική έξοδο ήχου.</translation>
-        </message>
-        <message>
-            <source>Server storage prefix. Personal/audio/GUI profiles are not loaded.</source>
-            <translation>Πρόθεμα αποθήκευσης διακομιστή. Δεν φορτώνονται προσωπικά προφίλ ή προφίλ ήχου και γραφικού περιβάλλοντος.</translation>
-        </message>
-        <message>
-            <source>Optional private identity file instead of the OS credential store (Linux/macOS). Parent directory must exist and belong to this account.</source>
-            <translation>Προαιρετικό ιδιωτικό αρχείο ταυτότητας αντί για το αποθετήριο διαπιστευτηρίων του συστήματος (Linux/macOS). Ο γονικός κατάλογος πρέπει να υπάρχει και να ανήκει σε αυτόν τον λογαριασμό.</translation>
-        </message>
-        <message>
-            <source>UTF-8 key=value properties or JSON host preset. Default: application.properties, then config/application.properties beside the app.</source>
-            <translation>Ιδιότητες UTF-8 key=value ή προρυθμίσεις διακομιστή JSON. Προεπιλογή: application.properties, έπειτα config/application.properties δίπλα στην εφαρμογή.</translation>
-        </message>
-        <message>
-            <source>Channel display name.</source>
-            <translation>Εμφανιζόμενο όνομα καναλιού.</translation>
-        </message>
-        <message>
-            <source>System and radio bot display name.</source>
-            <translation>Εμφανιζόμενο όνομα του bot συστήματος και ραδιοφώνου.</translation>
-        </message>
-        <message>
-            <source>TCP service port (1-65535).</source>
-            <translation>Θύρα υπηρεσίας TCP (1-65535).</translation>
-        </message>
-        <message>
-            <source>Headless admission is always on; only 'on' or 'true' is accepted.</source>
-            <translation>Η αποδοχή χωρίς γραφικό περιβάλλον είναι πάντα ενεργή. Επιτρέπεται μόνο 'on' ή 'true'.</translation>
-        </message>
-        <message>
-            <source>Preapprove a device ID; repeat for several devices. Existing bans remain.</source>
-            <translation>Προέγκριση ID συσκευής. Επαναλάβετε για πολλές συσκευές. Οι υπάρχοντες αποκλεισμοί παραμένουν.</translation>
-        </message>
-        <message>
-            <source>Block a device ID; repeat for several devices.</source>
-            <translation>Αποκλεισμός ID συσκευής. Επαναλάβετε για πολλές συσκευές.</translation>
-        </message>
-        <message>
-            <source>Read a UTF-8 channel password from a file before listening. An empty file removes it.</source>
-            <translation>Ανάγνωση κωδικού καναλιού UTF-8 από αρχείο πριν από την ακρόαση. Κενό αρχείο τον αφαιρεί.</translation>
-        </message>
-        <message>
-            <source>Channel password. Empty removes it; environment or config avoids process-list exposure.</source>
-            <translation>Κωδικός καναλιού. Κενή τιμή τον αφαιρεί. Το περιβάλλον ή η διαμόρφωση αποτρέπουν την εμφάνισή του στη λίστα διεργασιών.</translation>
-        </message>
-        <message>
-            <source>SquadSpeak headless local channel host</source>
-            <translation>Τοπικός διακομιστής καναλιού SquadSpeak χωρίς γραφικό περιβάλλον</translation>
-        </message>
-        <message>
-            <source>Environment variables (SQUADSPEAK_ prefix):</source>
-            <translation>Μεταβλητές περιβάλλοντος (πρόθεμα SQUADSPEAK_):</translation>
-        </message>
-        <message>
-            <source>Host configuration could not be read or exceeds 1 MiB.</source>
-            <translation>Δεν ήταν δυνατή η ανάγνωση της διαμόρφωσης διακομιστή ή υπερβαίνει το 1 MiB.</translation>
-        </message>
-        <message>
-            <source>Host configuration must be UTF-8.</source>
-            <translation>Η διαμόρφωση διακομιστή πρέπει να είναι UTF-8.</translation>
-        </message>
-        <message>
-            <source>Host preset must be a JSON object.</source>
-            <translation>Οι προρυθμίσεις διακομιστή πρέπει να είναι αντικείμενο JSON.</translation>
-        </message>
-        <message>
-            <source>Property line %1 must use key=value.</source>
-            <translation>Η γραμμή ιδιοτήτων %1 πρέπει να χρησιμοποιεί key=value.</translation>
-        </message>
-        <message>
-            <source>Property line %1: %2</source>
-            <translation>Γραμμή ιδιοτήτων %1: %2</translation>
-        </message>
-        <message>
-            <source>Standard input has no file descriptor.</source>
-            <translation>Η τυπική είσοδος δεν έχει περιγραφέα αρχείου.</translation>
-        </message>
-        <message>
-            <source>Standard input could not be inspected.</source>
-            <translation>Δεν ήταν δυνατός ο έλεγχος της τυπικής εισόδου.</translation>
-        </message>
-        <message>
-            <source>Could not write the command response: %1</source>
-            <translation>Δεν ήταν δυνατή η εγγραφή της απάντησης εντολής: %1</translation>
-        </message>
-        <message>
-            <source>Standard input could not be read: %1</source>
-            <translation>Δεν ήταν δυνατή η ανάγνωση της τυπικής εισόδου: %1</translation>
-        </message>
-        <message>
-            <source>Input line exceeds 65536 bytes.</source>
-            <translation>Η γραμμή εισόδου υπερβαίνει τα 65536 byte.</translation>
-        </message>
-        <message>
-            <source>Each input line must be a JSON object.</source>
-            <translation>Κάθε γραμμή εισόδου πρέπει να είναι αντικείμενο JSON.</translation>
-        </message>
-        <message>
-            <source>Input ended before a complete JSON line.</source>
-            <translation>Η είσοδος τερματίστηκε πριν ολοκληρωθεί μια γραμμή JSON.</translation>
-        </message>
-        <message>
-            <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
-            <translation>Προαιρετικό ID δικού σας καναλιού για τις εντολές status, configure, password, admission, history, chat και radio. Προεπιλογή είναι το κύριο κανάλι.</translation>
-        </message>
-        <message>
-            <source>Channel action must be list, add or remove.</source>
-            <translation>Η ενέργεια καναλιού πρέπει να είναι list, add ή remove.</translation>
-        </message>
-        <message>
-            <source>Removing an own channel deletes its history, images, permissions and radio settings. Set confirmed=true to proceed.</source>
-            <translation>Η αφαίρεση δικού σας καναλιού διαγράφει το ιστορικό, τις εικόνες, τα δικαιώματα και τις ρυθμίσεις ραδιοφώνου του. Ορίστε confirmed=true για συνέχεια.</translation>
-        </message>
-        <message>
-            <source>id must identify an additional own channel.</source>
-            <translation>Το id πρέπει να προσδιορίζει ένα πρόσθετο δικό σας κανάλι.</translation>
-        </message>
-        <message>
-            <source>The additional own channel could not be removed: %1</source>
-            <translation>Δεν ήταν δυνατή η αφαίρεση του πρόσθετου δικού σας καναλιού: %1</translation>
-        </message>
-        <message>
-            <source>channelId must identify an own channel.</source>
-            <translation>Το channelId πρέπει να προσδιορίζει δικό σας κανάλι.</translation>
-        </message>
-        <message>
-            <source>values must be a host settings object.</source>
-            <translation>Το values πρέπει να είναι αντικείμενο ρυθμίσεων διακομιστή.</translation>
-        </message>
-        <message>
-            <source>Headless admission is always enabled for non-banned devices; requests off is not supported.</source>
-            <translation>Η αποδοχή χωρίς γραφικό περιβάλλον είναι πάντα ενεργή για μη αποκλεισμένες συσκευές. Δεν υποστηρίζεται requests off.</translation>
-        </message>
-        <message>
-            <source>value must be a password of at most 1024 UTF-8 bytes without control characters; an empty string removes it.</source>
-            <translation>Το value πρέπει να είναι κωδικός έως 1024 byte UTF-8 χωρίς χαρακτήρες ελέγχου. Κενή συμβολοσειρά τον αφαιρεί.</translation>
-        </message>
-        <message>
-            <source>The channel is not ready or a password change is in progress.</source>
-            <translation>Το κανάλι δεν είναι έτοιμο ή η αλλαγή κωδικού βρίσκεται σε εξέλιξη.</translation>
-        </message>
-        <message>
-            <source>The channel was removed while saving the password.</source>
-            <translation>Το κανάλι αφαιρέθηκε κατά την αποθήκευση του κωδικού.</translation>
-        </message>
-        <message>
-            <source>id is required.</source>
-            <translation>Απαιτείται id.</translation>
-        </message>
-        <message>
-            <source>text must be a valid non-empty chat message.</source>
-            <translation>Το text πρέπει να είναι έγκυρο, μη κενό μήνυμα συνομιλίας.</translation>
-        </message>
-        <message>
-            <source>The local channel is not ready.</source>
-            <translation>Το τοπικό κανάλι δεν είναι έτοιμο.</translation>
-        </message>
-        <message>
-            <source>The channel's radio is unavailable.</source>
-            <translation>Το ραδιόφωνο του καναλιού δεν είναι διαθέσιμο.</translation>
-        </message>
-        <message>
-            <source>Unknown command. Use help.</source>
-            <translation>Άγνωστη εντολή. Χρησιμοποιήστε help.</translation>
-        </message>
-        <message>
-            <source>search requires a query, non-negative offset and limit from 1 to 128.</source>
-            <translation>Το search απαιτεί query, μη αρνητικό offset και limit από 1 έως 128.</translation>
-        </message>
-        <message>
-            <source>add creates an id; update requires an existing id.</source>
-            <translation>Το add δημιουργεί id. Το update απαιτεί υπάρχον id.</translation>
-        </message>
-        <message>
-            <source>A station is already being checked.</source>
-            <translation>Γίνεται ήδη έλεγχος σταθμού.</translation>
-        </message>
-        <message>
-            <source>The channel was removed while checking the station.</source>
-            <translation>Το κανάλι αφαιρέθηκε κατά τον έλεγχο του σταθμού.</translation>
-        </message>
-        <message>
-            <source>Unknown radio action.</source>
-            <translation>Άγνωστη ενέργεια ραδιοφώνου.</translation>
-        </message>
-        <message>
-            <source>Could not load language: %1</source>
-            <translation>Δεν ήταν δυνατή η φόρτωση γλώσσας: %1</translation>
-        </message>
-        <message>
-            <source>The %1 option is incompatible with --headless.</source>
-            <translation>Η επιλογή %1 δεν είναι συμβατή με --headless.</translation>
-        </message>
-        <message>
-            <source>Unexpected positional arguments. Use --help.</source>
-            <translation>Μη αναμενόμενα ορίσματα θέσης. Χρησιμοποιήστε --help.</translation>
-        </message>
-        <message>
-            <source>--config / -f requires a non-empty path.</source>
-            <translation>Το --config / -f απαιτεί μη κενή διαδρομή.</translation>
-        </message>
-        <message>
-            <source>Choose --password or --password-file, not both.</source>
-            <translation>Επιλέξτε --password ή --password-file, όχι και τα δύο.</translation>
-        </message>
-        <message>
-            <source>Choose SQUADSPEAK_PASSWORD or SQUADSPEAK_PASSWORD_FILE, not both.</source>
-            <translation>Επιλέξτε SQUADSPEAK_PASSWORD ή SQUADSPEAK_PASSWORD_FILE, όχι και τα δύο.</translation>
-        </message>
-        <message>
-            <source>Choose password or passwordFile in one configuration layer, not both.</source>
-            <translation>Επιλέξτε password ή passwordFile σε ένα επίπεδο διαμόρφωσης, όχι και τα δύο.</translation>
-        </message>
-        <message>
-            <source>passwordFile must be a non-empty path.</source>
-            <translation>Το passwordFile πρέπει να είναι μη κενή διαδρομή.</translation>
-        </message>
-        <message>
-            <source>Password file could not be read or is too large.</source>
-            <translation>Δεν ήταν δυνατή η ανάγνωση του αρχείου κωδικού ή είναι πολύ μεγάλο.</translation>
-        </message>
-        <message>
-            <source>Password file must contain at most 1024 UTF-8 bytes without control characters.</source>
-            <translation>Το αρχείο κωδικού πρέπει να περιέχει το πολύ 1024 byte UTF-8 χωρίς χαρακτήρες ελέγχου.</translation>
-        </message>
-        <message>
-            <source>Password must be a string of at most 1024 UTF-8 bytes without control characters.</source>
-            <translation>Ο κωδικός πρέπει να είναι συμβολοσειρά έως 1024 byte UTF-8 χωρίς χαρακτήρες ελέγχου.</translation>
-        </message>
-        <message>
-            <source>settingsFile must be a non-empty path.</source>
-            <translation>Το settingsFile πρέπει να είναι μη κενή διαδρομή.</translation>
-        </message>
-        <message>
-            <source>identityFile must be a non-empty path.</source>
-            <translation>Το identityFile πρέπει να είναι μη κενή διαδρομή.</translation>
-        </message>
-        <message>
-            <source>The settings directory could not be created.</source>
-            <translation>Δεν ήταν δυνατή η δημιουργία του καταλόγου ρυθμίσεων.</translation>
-        </message>
-        <message>
-            <source>This SquadSpeak profile is already running or cannot be locked.</source>
-            <translation>Αυτό το προφίλ SquadSpeak εκτελείται ήδη ή δεν μπορεί να κλειδωθεί.</translation>
-        </message>
-        <message>
-            <source>Standard input could not be opened.</source>
-            <translation>Δεν ήταν δυνατό το άνοιγμα της τυπικής εισόδου.</translation>
-        </message>
-        <message>
-            <source>Standard output could not be opened.</source>
-            <translation>Δεν ήταν δυνατό το άνοιγμα της τυπικής εξόδου.</translation>
-        </message>
-        <message>
-            <source>This identity file is already in use or cannot be locked.</source>
-            <translation>Αυτό το αρχείο ταυτότητας χρησιμοποιείται ήδη ή δεν μπορεί να κλειδωθεί.</translation>
-        </message>
-        <message>
-            <source>Invalid host configuration: %1</source>
-            <translation>Μη έγκυρη διαμόρφωση διακομιστή: %1</translation>
-        </message>
-        <message>
-            <source>Radio channels could not be initialized.</source>
-            <translation>Δεν ήταν δυνατή η αρχικοποίηση των ραδιοφωνικών καναλιών.</translation>
-        </message>
-        <message>
-            <source>Headless host could not start: %1</source>
-            <translation>Δεν ήταν δυνατή η εκκίνηση του διακομιστή χωρίς γραφικό περιβάλλον: %1</translation>
-        </message>
-        <message>
-            <source>Channel password could not be saved.</source>
-            <translation>Δεν ήταν δυνατή η αποθήκευση του κωδικού καναλιού.</translation>
-        </message>
-        <message>
-            <source>Invalid channel password: %1</source>
-            <translation>Μη έγκυρος κωδικός καναλιού: %1</translation>
-        </message>
-        <message>
-            <source>Headless host could not initialize: %1</source>
-            <translation>Δεν ήταν δυνατή η αρχικοποίηση του διακομιστή χωρίς γραφικό περιβάλλον: %1</translation>
-        </message>
-        <message>
-            <source>SquadSpeak headless could not start: %1</source>
-            <translation>Δεν ήταν δυνατή η εκκίνηση του SquadSpeak χωρίς γραφικό περιβάλλον: %1</translation>
-        </message>
-        <message>
-            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
-            <translation>Η ενέργεια του υποστηρικτή πρέπει να είναι η κατάσταση, η είσοδος, η ανανέωση, η αποσύνδεση ή η ακύρωση. status sign-in refresh sign-out cancel</translation>
-        </message>
-        <message>
-            <source>A Supporter operation is in progress.</source>
-            <translation>Μια λειτουργία Υποστήριξης βρίσκεται σε εξέλιξη.</translation>
-        </message>
-        <message>
-            <source>Supporter access is unavailable in this build.</source>
-            <translation>Η πρόσβαση υποστηρικτών δεν είναι διαθέσιμη σε αυτήν την έκδοση.</translation>
-        </message>
-        <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>Προτεραιότητα ρυθμίσεων: ορίσματα &gt; περιβάλλον &gt; ιδιότητες &gt; αποθηκευμένες τιμές διακομιστή.</translation>
+            <source>New image</source>
+            <translation>Νέα εικόνα</translation>
         </message>
     </context>
     <context>
-        <name>Desktop</name>
+        <name>VideoCodec</name>
         <message>
-            <source>Open settings at startup.</source>
-            <translation>Άνοιγμα ρυθμίσεων κατά την εκκίνηση.</translation>
+            <source>Video codec: %1</source>
+            <translation>Κωδικοποιητής βίντεο: %1</translation>
         </message>
         <message>
-            <source>Open guided local test recording without starting network services.</source>
-            <translation>Άνοιγμα καθοδηγούμενης τοπικής δοκιμαστικής εγγραφής χωρίς εκκίνηση υπηρεσιών δικτύου.</translation>
+            <source>Video codec ABI does not match its headers.</source>
+            <translation>Το ABI του κωδικοποιητή βίντεο δεν αντιστοιχεί στα αρχεία κεφαλίδων του.</translation>
         </message>
         <message>
-            <source>Alternative file for audio profiles.</source>
-            <translation>Εναλλακτικό αρχείο προφίλ ήχου.</translation>
+            <source>Video buffers could not be allocated.</source>
+            <translation>Δεν ήταν δυνατή η δέσμευση μνήμης για τις προσωρινές μνήμες βίντεο.</translation>
         </message>
         <message>
-            <source>Load the interface without microphone capture and exit after one second.</source>
-            <translation>Φόρτωση της διεπαφής χωρίς εγγραφή μικροφώνου και έξοδος μετά από ένα δευτερόλεπτο.</translation>
+            <source>Invalid video quality tier.</source>
+            <translation>Μη έγκυρο επίπεδο ποιότητας βίντεο.</translation>
         </message>
         <message>
-            <source>Save an image of the app window during the UI test.</source>
-            <translation>Αποθήκευση εικόνας του παραθύρου κατά τη δοκιμή της διεπαφής.</translation>
+            <source>The screen source exceeds the supported capture size.</source>
+            <translation>Η πηγή οθόνης υπερβαίνει το υποστηριζόμενο μέγεθος λήψης.</translation>
         </message>
         <message>
-            <source>The window image could not be saved.</source>
-            <translation>Δεν ήταν δυνατή η αποθήκευση της εικόνας του παραθύρου.</translation>
+            <source>The screen source is too narrow.</source>
+            <translation>Η πηγή οθόνης είναι πολύ στενή.</translation>
         </message>
         <message>
-            <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
-            <translation>Η περιοχή ειδοποιήσεων δεν είναι διαθέσιμη; η εφαρμογή παραμένει ανοιχτή σε παράθυρο.</translation>
+            <source>The video encoder could not be allocated.</source>
+            <translation>Δεν ήταν δυνατή η δέσμευση μνήμης για τον κωδικοποιητή βίντεο.</translation>
+        </message>
+        <message>
+            <source>No supported video encoder is available.</source>
+            <translation>Δεν υπάρχει διαθέσιμος υποστηριζόμενος κωδικοποιητής βίντεο.</translation>
+        </message>
+        <message>
+            <source>Video encoder configuration is too large.</source>
+            <translation>Η διαμόρφωση του κωδικοποιητή βίντεο είναι πολύ μεγάλη.</translation>
+        </message>
+        <message>
+            <source>Video scaling could not be initialized.</source>
+            <translation>Δεν ήταν δυνατή η αρχικοποίηση της κλιμάκωσης βίντεο.</translation>
+        </message>
+        <message>
+            <source>The encoder returned an empty video packet.</source>
+            <translation>Ο κωδικοποιητής επέστρεψε ένα κενό πακέτο βίντεο.</translation>
+        </message>
+        <message>
+            <source>Invalid video frame format.</source>
+            <translation>Μη έγκυρη μορφή καρέ βίντεο.</translation>
+        </message>
+        <message>
+            <source>Invalid video decoder configuration.</source>
+            <translation>Μη έγκυρη διαμόρφωση αποκωδικοποιητή βίντεο.</translation>
+        </message>
+        <message>
+            <source>This video codec cannot be decoded.</source>
+            <translation>Δεν είναι δυνατή η αποκωδικοποίηση αυτού του κωδικοποιητή βίντεο.</translation>
+        </message>
+        <message>
+            <source>Video decoder could not be allocated.</source>
+            <translation>Δεν ήταν δυνατή η δέσμευση μνήμης για τον αποκωδικοποιητή βίντεο.</translation>
+        </message>
+        <message>
+            <source>Video decoder configuration could not be allocated.</source>
+            <translation>Δεν ήταν δυνατή η δέσμευση μνήμης για τη διαμόρφωση του αποκωδικοποιητή βίντεο.</translation>
+        </message>
+        <message>
+            <source>Decoded dimensions do not match the screen stream.</source>
+            <translation>Οι αποκωδικοποιημένες διαστάσεις δεν αντιστοιχούν στη ροή οθόνης.</translation>
+        </message>
+        <message>
+            <source>Decoded image could not be allocated.</source>
+            <translation>Δεν ήταν δυνατή η δέσμευση μνήμης για την αποκωδικοποιημένη εικόνα.</translation>
+        </message>
+        <message>
+            <source>Video color conversion could not be initialized.</source>
+            <translation>Δεν ήταν δυνατή η αρχικοποίηση της μετατροπής χρωμάτων βίντεο.</translation>
+        </message>
+    </context>
+    <context>
+        <name>VoiceAvatar</name>
+        <message>
+            <source>Muted</source>
+            <translation>Σίγαση του μικροφώνου</translation>
+        </message>
+        <message>
+            <source>Sleeping</source>
+            <translation>Ύπνος</translation>
+        </message>
+        <message>
+            <source>Offline</source>
+            <translation>Εκτός σύνδεσης</translation>
+        </message>
+        <message>
+            <source>Speaking</source>
+            <translation>Μιλώντας</translation>
+        </message>
+        <message>
+            <source>Unavailable</source>
+            <translation>Μη διαθέσιμο</translation>
+        </message>
+        <message>
+            <source>Listening</source>
+            <translation>Ακούγοντας</translation>
+        </message>
+        <message>
+            <source>Deafened</source>
+            <translation>Τα ηχεία είναι σε σίγαση</translation>
+        </message>
+    </context>
+    <context>
+        <name>VoiceSession</name>
+        <message>
+            <source>Microphone muted</source>
+            <translation>Σίγαση του μικροφώνου</translation>
+        </message>
+        <message>
+            <source>Push-to-talk held</source>
+            <translation>Το κουμπί push-to-talk παραμένει πατημένο</translation>
+        </message>
+        <message>
+            <source>Ready - push-to-talk released</source>
+            <translation>Έτοιμο - το κουμπί push-to-talk αφέθηκε</translation>
+        </message>
+        <message>
+            <source>Microphone unmuted</source>
+            <translation>Καταργήθηκε η σίγαση του μικροφώνου</translation>
+        </message>
+        <message>
+            <source>Settings could not be saved: %1</source>
+            <translation>Δεν ήταν δυνατή η αποθήκευση των ρυθμίσεων: %1</translation>
+        </message>
+        <message>
+            <source>The push-to-talk sequence cannot be incremented further.</source>
+            <translation>Η ακολουθία push-to-talk δεν μπορεί να αυξηθεί περαιτέρω.</translation>
+        </message>
+        <message>
+            <source>Choose System, Light or Dark.</source>
+            <translation>Επιλέξτε System, Light ή Dark.</translation>
+        </message>
+        <message>
+            <source>Choose a colour palette from the list.</source>
+            <translation>Επιλέξτε μια παλέτα χρωμάτων από τη λίστα.</translation>
+        </message>
+        <message>
+            <source>Choose an available avatar.</source>
+            <translation>Επιλέξτε ένα διαθέσιμο avatar.</translation>
+        </message>
+        <message>
+            <source>Invalid push-to-talk binding.</source>
+            <translation>Μη έγκυρη δέσμευση push-to-talk.</translation>
+        </message>
+        <message>
+            <source>Release the held push-to-talk key first.</source>
+            <translation>Απελευθερώστε πρώτα το κρατημένο πλήκτρο push-to-talk.</translation>
+        </message>
+        <message>
+            <source>Choose a language from the list.</source>
+            <translation>Επιλέξτε μια γλώσσα από τη λίστα.</translation>
+        </message>
+        <message>
+            <source>This avatar requires Supporter.</source>
+            <translation>Αυτό το avatar απαιτεί Supporter.</translation>
+        </message>
+        <message>
+            <source>The name must contain 1 to 64 characters.</source>
+            <translation>Το όνομα πρέπει να περιέχει 1 έως 64 χαρακτήρες.</translation>
+        </message>
+        <message>
+            <source>The name may not contain control characters or line breaks.</source>
+            <translation>Το όνομα μπορεί να μην περιέχει χαρακτήρες ελέγχου ή αλλαγές γραμμής.</translation>
+        </message>
+        <message>
+            <source>Session settings could not be read.</source>
+            <translation>Δεν ήταν δυνατή η ανάγνωση των ρυθμίσεων συνεδρίας.</translation>
+        </message>
+        <message>
+            <source>Saved setting is invalid: %1</source>
+            <translation>Μη έγκυρη αποθηκευμένη ρύθμιση: %1</translation>
         </message>
     </context>
 </TS>

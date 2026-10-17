@@ -11,7 +11,7 @@ import xml.etree.ElementTree as ET
 
 # Unclassified runtime/build inputs affect every check. Keep exclusions narrow.
 SOURCE_GROUPS = {
-    "audio": {"audio_model", "audio_processor", "audio_profiles", "audio_recording",
+    "audio": {"audio_model", "audio_processor", "audio_profiles",
               "echo_canceller", "output_monitor", "voice_mixer"},
     "notifications": {"apple_notifications"},
     "video": {"screen_share", "screen_capture", "video_codec"},

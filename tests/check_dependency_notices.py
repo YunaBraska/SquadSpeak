@@ -1,5 +1,6 @@
 """Check bundled Qt module provenance and the accompanying license texts."""
 import argparse
+import hashlib
 from pathlib import Path
 import re
 
@@ -47,6 +48,12 @@ def main():
     parser.add_argument("--qt-modules", nargs="*", default=[])
     args = parser.parse_args()
     errors = check_notices(args.directory, args.qt_modules)
+    lock = args.directory.parent.parent / "src/teamspeak_bridge/Cargo.lock"
+    if lock.is_file():
+        notices = args.directory / "RUST-NOTICES.txt"
+        digest = hashlib.sha256(lock.read_bytes()).hexdigest()
+        if not notices.is_file() or "Cargo.lock SHA256: " + digest not in notices.read_text(encoding="utf-8"):
+            errors.append("Rust dependency notices do not match Cargo.lock.")
     if errors:
         raise SystemExit("\n".join(errors))
     print("Qt module records and license texts are present.")

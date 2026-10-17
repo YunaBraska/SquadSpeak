@@ -1,6 +1,6 @@
 # Release readiness
 
-Review date: 2026-10-09. Behavior: [specification](specs/voice-chat.md).
+Review date: 2026-10-17. Behavior: [specification](specs/voice-chat.md).
 
 Under U139, the first regular desktop release follows successful automated
 platform and package checks; physical device observations follow the public
@@ -30,22 +30,56 @@ configuration, not certification of every platform or physical setup.
 | Headless configuration and bot administration | Done | `headless.cpp`; subprocess contracts, bounded history and persisted password commands; no personal user or local audio |
 | Additive protocol extensions and audio-state badges | Done | SS-165/166; authenticated future-message, malformed-message and portrait contracts |
 | Bundled avatars and variable-frame playback | Done | Twenty member portraits plus System, exactly five physical state rows, three clips per state, shared quiet timing, separate status overlays and static grayscale offline portraits. Four sheets contain 112-128 drawn frames; seventeen retain their two-frame clips. Fresh QML renders verify all 480 dense frames at 48 px, and the catalog/scroll/state/crop contracts pass. Tone-responsive expressions are not provided; they were a feasibility request, not a claim of emotion recognition |
-| Desktop builds, packages and automated contracts | Done | Reproducible workflows, installed-package probes and native contracts exist for macOS ARM/Intel, Windows and Linux ARM/x64. All seven jobs pass at `13bbc99`, including native Windows application capture with a signed virtual audio endpoint and GUI/headless startup from extracted packages. The earlier Windows startup timeout does not recur in this run. Its cause remains unestablished. |
+| Desktop builds, packages and automated contracts | Done | Reproducible workflows, installed-package probes and native contracts cover macOS ARM/Intel, Windows and Linux ARM/x64, including Windows application capture with a signed virtual audio endpoint and GUI/headless startup from extracted packages. CI retains the tested revision, reports and packages together. Publication requires every platform job to pass for the release revision. |
 
 ## Release work with explicit exit conditions
 
 | Gate | Status | Exit condition and current gap |
 | --- | --- | --- |
 | Markdown image rendering | Known limitation | Ordinary formatting, compact tables/lists and lossless image-reference replacement pass content/UI checks. Qt 6.11.3 can split an escaped image alt label into multiple image objects. Plain labels work. Correct that rendering without a second Markdown parser, collapsing intentionally repeated images or changing unrelated text |
-| Network and sustained-load acceptance | In progress | U112's measured comparison is complete and the UDP paths are integrated. A ten-minute 64-client/eight-sender native soak delivers 15,120,000 packets with audible playback, zero reported gaps and no late sampled RSS growth. Intel at `1db25a6` passes the short 64-client realtime target (100 callbacks over 2029 ms); the longer stress configurations below still miss their targets. Longer 16-sender runs and the combined single-process 64-sender stress miss real-time targets. Extend automated impairment and lifecycle evidence to sustained shared-uplink and cross-device runs, measuring actual playout, loss/jitter/bandwidth and CPU/RSS. Preserve independent receiver quality and voice priority; packet arrival is not acoustic latency |
+| Network and sustained-load acceptance | In progress | U112's measured comparison is complete and the UDP paths are integrated. A ten-minute native mono soak with 64 clients and eight simultaneous senders passes the per-listener delivery and audible-playout thresholds. The ten-minute stereo variant misses delivery and audible-playout targets on the development Mac. It is not qualified for eight simultaneous stereo senders. It records packet loss and scheduling underruns, not lossless delivery or acoustic latency. Delayed-owner regressions preserve network arrival times and drain contiguous received audio without discarding a valid burst. Reconnect tests reuse UDP ports while the old native connection is still shutting down. Forged ICE requests cannot take over an authenticated endpoint. Longer 16-sender runs and the combined single-process 64-sender stress still miss real-time targets. Shared-uplink and cross-device qualification remains. The stereo run measured the separate host at 63% of one CPU core on average and 115 MiB peak RSS. Those measurements do not establish sufficient realtime capacity or absence of leaks. The 64-participant admission limit is removed. Large-roster and 70-source checks do not establish 70 simultaneous speakers or unlimited capacity on every host. Hosted Intel realtime checks use 32 clients and two simultaneous speakers, alongside the unchanged 72-participant admission check. Other release runners use 64 clients and four simultaneous speakers |
 | Real audio/video quality | In progress | Prove playback-reference AEC with clock drift/double-talk, device reconnect, Bluetooth headsets, capture loss/recovery, measured A/V synchronization, sustained 4K/30 upper-tier load and overlap listening. Linux X11 application isolation/restart passes five PulseAudio and three PipeWire-Pulse repetitions per architecture on ARM64/x64 at `028a401`. Windows Server 2022 process-loopback isolation and encrypted delivery pass with the signed CI endpoint at `24b3744`; native Windows 10 execution remains unverified. U134 permits labelled computer audio when app-only capture is unavailable; the native Wayland portal/audio fixture passes on Linux ARM/x64 and with sanitizers at `483a0a8`. Selected-output echo monitoring has macOS and Linux ARM/x64 mixed-process/speech proof, including repeated PulseAudio/PipeWire capture and sanitizers. Windows mixed-process monitoring and speech-reference echo reduction pass the same native fixture. Noise/transient filtering must retain wanted speech; known music/vocal weaknesses are not target-speaker isolation |
 | Compact UI and event feedback | In progress | Shared controls, themes, About/logo, copyable info and compact/RTL scrolling have public UI evidence. Fresh avatar galleries also verify all dense frames at display size. U128 routes matching kick/ban events to remaining listeners and provides a separate System-announcement cue. Public TLS, PCM-resource and output/deafen checks pass; both installed Mac test copies have working microphone access and enabled notification permissions; visible notification/Focus delivery remains to be checked |
 | Resource and security review | In progress | Complete sustained device/video soak and CPU/RSS/handle measurements, dependency/license review and decoder-hardening review. The release workflow requires a pinned dependency-source asset; local failure-path tests and an independent check of the real CI archive pass. The green `fc4651a` release workflow attached the checked dependency-source archive to its private draft. Image decoding has process isolation and limits, not an OS sandbox. Repeated viewer replacement now retains one active decode and one newest pending frame; the real-TLS slow-codec regression and sanitizer suites pass. Encoding now also waits for receiver demand instead of wasting codec work while all viewers await their previous frame. Preserve encrypted atomic persistence and speech priority; no universal leak-free claim |
 | Supporter sponsorship | In progress | GitHub sign-in, exact-tier yearly eligibility, encrypted cross-product cache, seven-day offline limit, token rotation, contributor exemption and desktop/headless integration are implemented and tested through local HTTPS. The old license-key/device-slot path is removed. The shared OAuth app is registered. The selected tier is still unpublished, with live sign-in and checkout checks remaining before paid publication. See [O-21](specs/voice-chat.md). Free desktop publication is independent |
 | Direct desktop distribution | In progress | The private `2026.10.6` preview at `08abcf3` contains all five desktop packages, verified production-key macOS archive/appcast signatures, checksums, matching dependency sources and the generated Homebrew cask. All seven verification jobs and the complete release workflow pass. Remaining: stable publication and its Homebrew tap entry; physical acceptance above and native Windows 10 execution. macOS packages remain ad-hoc signed; Developer ID/notarization and Windows publisher signing require the corresponding accounts. UTC date version is shared and SemVer-shaped. U125 selects GPL-3.0-only with dependency/media notices retained |
-| Mobile and Store delivery | In progress | Native iPhone/iPad Simulator and Android emulator builds run the shared UI and core contracts. Phone portrait/landscape chat input and rotation pass on iOS and Android. iPad portrait passes, but the current Simulator window mode rejects the native landscape request. Image sanitation uses the approved bounded in-process path on iOS; Android's decoder boundary and minimum version remain undecided. Android's five contract groups and packaged restart pass with independent process-crash checks. The Chinese glyph check fails in the available iOS 26 runtime, also reproduced without Qt on native arm64. Native background hosting, screen capture, permissions and physical input/output still need implementation or device proof. Store setup follows direct distribution and Store builds remain free-only. These results do not establish mobile parity |
+| Mobile and Store delivery | In progress | Native iPhone/iPad Simulator and Android emulator builds run the shared UI and core contracts. The installed iPhone and iPad apps were inspected in native portrait and landscape layouts. iPhone-to-Mac chat, approval, history and iPad identity persistence work. The Simulator keychain identity now has a native creation/reload regression. Native microphone preview/restart and live capture with playback, encoded output and mute/restart pass on both iPhone and iPad simulators under iOS 26. These checks do not establish acoustic quality or physical-device behavior. Image sanitation uses the approved bounded in-process path on iOS; Android's decoder boundary and minimum version remain undecided. Android's five contract groups and packaged restart pass with independent process-crash checks. The Chinese glyph check fails in the available iOS 26 runtime, also reproduced without Qt on native arm64. Native background hosting, screen capture, permissions and physical input/output still need implementation or device proof. Store setup follows direct distribution and Store builds remain free-only. These results do not establish mobile parity |
 
 Bluetooth audio devices are distinct from Bluetooth-only app networking, which is not implemented. See O-06/O-11 for platform scope. A feature cannot move to the completed table until its stated exit evidence exists; marking more rows `Done` is not a substitute for finishing them.
+
+## TeamSpeak interoperability
+
+U173 capture quality and keyboard suppression remain under investigation. The
+licensed speech/typing activation cases pass in mono and stereo. The TS bridge
+boundary retains encoded packets unchanged, with fullband decoding and the
+expected level in both Opus channel modes. This does not establish hearing quality
+in an official client or reproduce the reported microphone problem. Receive-side
+loss concealment is bounded without rejecting the next valid packet after a long gap. The
+missing-UID private-message case resolves the known roster identity and preserves
+the conversation and reply target. The installed macOS app and native TeamSpeak
+3 client exchange channel and private messages in both directions. Normal app
+quit produces an immediate disconnect in TeamSpeak. Stable UID-derived portraits
+and a separate TS badge share the existing participant and chat presentation.
+
+Direct TS3 is integrated through the pinned ReSpeak Rust library. The macOS
+public-entrypoint test connected two separate identities to the owner's servers,
+verified private text, decoded Opus audio at the receiver, blocked released
+PTT and observed no sender loopback. Channel text and password handling pass the
+local contracts. Live channel text, private messages and recovery after a test-only
+UDP interruption pass, including preserved mute state and private history.
+The installed macOS UI connects through the address field and renders TS3
+channels. The macOS package passes its dependency check.
+The TS3 bridge and protocol contracts also pass on Windows and Linux. Live-server
+voice and reconnect checks above were performed on macOS. Native Windows/Linux
+device observations follow the desktop packages; mobile TS3 remains unqualified.
+
+Not supported: TS3 file transfer, whisper lists, permission administration,
+Speex/CELT channels, identity-file import, server avatars, pokes and server
+management. The current library rejects servers requiring an identity security
+level above 20. Only one TS3 server can be connected at a time. TS3 history is a
+bounded in-session cache, without server history or offline delivery. SquadSpeak
+images, radio hosting, screen sharing and receiver-specific quality negotiation
+do not become TS3 protocol features.
 
 ## Explicitly after the first release
 
@@ -56,8 +90,19 @@ Bluetooth audio devices are distinct from Bluetooth-only app networking, which i
 | User-supplied avatars | Planned | U121; format, transfer, storage and import contract remain deferred |
 | Voice changer and optional speech clarity processing | Planned | U126, SS-167/168, O-24; local, simple controls, audible bypass; no guaranteed studio-quality or voice-identity conversion |
 | Small multiplayer Channel games | Planned | U129, SS-169, O-26; choose the first game after release. Multiplayer Snake and ICQ-era games are inspiration; no game engine or exact catalog is selected |
+| Host-created chat polls | Planned | U170, SS-182, O-29; chat "+", single/multiple choice, editable options, aggregate results and closing. Reuse chat infrastructure. Resolve the remaining lifecycle rules before implementation |
 
 ## Next implementation order
+
+Continue U173 with capture-stage and codec comparisons and sustained resource
+qualification. New media admission pauses during shared audio backlog or slow screen encoding. Large
+member lists use bounded, acknowledged transfers without interrupting chat. On-demand channel search filters host, channel, address and private
+contacts without changing voice participation or drafts. Unchanged native/TS
+presence and roster payloads are suppressed per connection. Reconnect sends the current state again. Native TS text
+interoperability and normal shutdown are checked. Audio settings preserve live
+conversation, with exclusive Voice activation/PTT controls and a combined
+threshold meter. Unread marks follow the foreground chat position, and opening
+a chat does not imply voice participation.
 
 1. Finish automated sustained load, shared-uplink impairment and measured A/V timing/resource checks. Physical hearing, device and Apple notification observations use the [short prepared handoff](development.md#device-checks-with-limited-human-time), retaining scoped prior results under U138. Do not wait for user availability to run technical tests. Measure conversation output, not only packet delivery.
 2. Close direct distribution gates, then mobile/Store delivery; merchant approval, signing accounts and device access remain separate from implementation work.

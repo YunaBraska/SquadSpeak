@@ -48,7 +48,7 @@ struct WindowsCapture final {
     std::deque<float> audio;
     QString error;
     bool ready = false;
-    squad::VoiceMixer encoder;
+    squad::VoiceMixer encoder{2};
     std::jthread worker;
 
     void stop() {
@@ -96,9 +96,9 @@ struct WindowsCapture final {
         // Request one canonical format from WASAPI. No endpoint-wide capture
         // path is used if process-loopback activation fails.
         WAVEFORMATEX format{};
-        format.wFormatTag = WAVE_FORMAT_IEEE_FLOAT; format.nChannels = 1;
+        format.wFormatTag = WAVE_FORMAT_IEEE_FLOAT; format.nChannels = 2;
         format.nSamplesPerSec = 48000; format.wBitsPerSample = 32;
-        format.nBlockAlign = 4; format.nAvgBytesPerSec = 192000;
+        format.nBlockAlign = 8; format.nAvgBytesPerSec = 384000;
         if (!report(client->Initialize(AUDCLNT_SHAREMODE_SHARED,
                 AUDCLNT_STREAMFLAGS_LOOPBACK | AUDCLNT_STREAMFLAGS_AUTOCONVERTPCM,
                 1000000, 0, &format, nullptr))) return;
@@ -118,9 +118,9 @@ struct WindowsCapture final {
                     const auto* values = reinterpret_cast<const float*>(data);
                     std::lock_guard lock(mutex);
                     if (flags & AUDCLNT_BUFFERFLAGS_DATA_DISCONTINUITY) audio.clear();
-                    if (flags & AUDCLNT_BUFFERFLAGS_SILENT) audio.insert(audio.end(), keep, 0);
-                    else if (values) audio.insert(audio.end(), values + frames - keep, values + frames);
-                    if (audio.size() > 4800) audio.erase(audio.begin(), audio.end() - 4800);
+                    if (flags & AUDCLNT_BUFFERFLAGS_SILENT) audio.insert(audio.end(), keep * 2, 0);
+                    else if (values) audio.insert(audio.end(), values + (frames - keep) * 2, values + frames * 2);
+                    if (audio.size() > 9600) audio.erase(audio.begin(), audio.end() - 9600);
                 }
                 if (!report(capture->GetNextPacketSize(&available))) return;
             }
@@ -192,7 +192,7 @@ bool ScreenShare::updateNativeAudio() {
 void ScreenShare::pollNative() {
     auto& state = *static_cast<WindowsCapture*>(native_);
     if (!capturing()) { stop(); return; }
-    std::array<float, 960> samples{};
+    std::array<float, 1920> samples{};
     bool ready = false, hasAudio = false;
     QString error;
     {

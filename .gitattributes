@@ -3,3 +3,5 @@ tests/audio/licenses/*.txt text eol=lf
 tests/audio/manifest.json text eol=lf
 # These patches apply to byte-identical, LF-terminated upstream sources.
 cmake/*.patch text eol=lf
+# Dependency notices record the exact lockfile hash on every platform.
+src/teamspeak_bridge/Cargo.lock text eol=lf

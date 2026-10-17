@@ -111,12 +111,15 @@ export SQUADSPEAK_TEST_INPUT=present SQUADSPEAK_CAPTURE_DIAGNOSTICS=1
 trap 'pulseaudio --kill' EXIT
 
 dpkg-query -W > /output/packages.txt
-cmake -S /source -B /tmp/squadspeak-ci-build -G Ninja -DBUILD_TESTING=ON "$@"
+ccache --zero-stats
+cmake -S /source -B /tmp/squadspeak-ci-build -G Ninja -DBUILD_TESTING=ON \
+    -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache "$@"
 cmake --build /tmp/squadspeak-ci-build --parallel 4
+ccache --show-stats
 cp /tmp/squadspeak-ci-build/discovery_network_probe /output/
 # Each repetition starts a fresh X server, window manager and capture producer.
 if test "$mode" != store; then
-    ctest --parallel 2 --test-dir /tmp/squadspeak-ci-build --output-on-failure --no-tests=error \
+    ctest --parallel "${CTEST_PARALLEL_LEVEL:-4}" --test-dir /tmp/squadspeak-ci-build --output-on-failure --no-tests=error \
         -R '^capture_contract$' --repeat until-fail:5 \
         --output-junit /output/capture-startup.xml --output-log /output/capture-startup.log
     # The same libpulse API must isolate applications when PipeWire supplies
@@ -222,7 +225,7 @@ if grep -q '^SKIP *:' "$reports"/capture-*.log; then exit 1; fi
 PIPEWIRE
 fi
 result=0
-ctest --parallel 2 --test-dir /tmp/squadspeak-ci-build --output-on-failure --no-tests=error --stop-on-failure \
+ctest --parallel "${CTEST_PARALLEL_LEVEL:-4}" --test-dir /tmp/squadspeak-ci-build --output-on-failure --no-tests=error \
     --output-junit /output/ctest.xml --output-log /output/ctest.log || result=$?
 cp /tmp/squadspeak-ci-build/Testing/Temporary/LastTest.log /output/test-details.log
 if test -f /tmp/squadspeak-ci-build/audio-corpus/report.json; then
@@ -253,7 +256,7 @@ done
 # still see the virtual microphone; losing it cannot silently reduce coverage.
 SQUADSPEAK_TEST_INPUT=absent PULSE_SERVER=unix:/tmp/nonexistent-squadspeak-ci \
     /tmp/squadspeak-ci-build/controls_tests -input /source/tests/tst_channel_controls.qml \
-    DirectChannelControls::test_voiceActivationCanBeToggledAndAdjustedInInput \
+    DirectChannelControls::test_voiceActivationAndPttAreExclusiveAndThresholdEditsDisableAuto \
     DirectChannelControls::test_inputCurveTracksGainWhilePreviewIsStopped \
     > /output/no-input-device.log 2>&1 || result=$?
 cat /output/no-input-device.log

@@ -36,14 +36,6 @@
             <translation>atidarykite sistemos privatumo nustatymus ir leiskite "SquadSpeak" pasiekti mikrofoną.</translation>
         </message>
         <message>
-            <source>Microphone analysis active. Test audio stays on this computer.</source>
-            <translation>aktyvi mikrofono analizė. Bandomasis garsas lieka šiame kompiuteryje.</translation>
-        </message>
-        <message>
-            <source>Finish the test recording before changing devices.</source>
-            <translation>užbaikite bandomąjį įrašymą prieš keisdami įrenginius.</translation>
-        </message>
-        <message>
             <source>The output format is not supported.</source>
             <translation>išvesties formatas nepalaikomas.</translation>
         </message>
@@ -68,32 +60,12 @@
             <translation>nepavyko paleisti bandomojo tono.</translation>
         </message>
         <message>
-            <source>The microphone has provided no data for five seconds. Recording discarded.</source>
-            <translation>mikrofonas nepateikė jokių duomenų penkias sekundes. Įrašas atmestas.</translation>
-        </message>
-        <message>
-            <source>The microphone was interrupted or changed. Recording discarded.</source>
-            <translation>mikrofonas buvo pertrauktas arba pakeistas. Įrašas atmestas.</translation>
-        </message>
-        <message>
-            <source>Cancelled. The incomplete recording was discarded.</source>
-            <translation>atšauktas. Neužbaigtas įrašas buvo atmestas.</translation>
-        </message>
-        <message>
             <source>No selected microphone is available</source>
             <translation>Nėra pasirinkto mikrofono</translation>
         </message>
         <message>
             <source>Allow microphone access in the system dialog.</source>
             <translation>Sistemos dialogo lange leiskite prieigą prie mikrofono.</translation>
-        </message>
-        <message>
-            <source>Microphone capture active for the voice channel.</source>
-            <translation>Balso kanalo mikrofono fiksavimas aktyvus.</translation>
-        </message>
-        <message>
-            <source>Microphone access was denied. Nothing was saved.</source>
-            <translation>Prieiga prie mikrofono buvo uždrausta. Nieko nepavyko išsaugoti.</translation>
         </message>
         <message>
             <source>Microphone access is missing. Allow it in System Settings.</source>
@@ -259,103 +231,16 @@
             <source>App audio only</source>
             <translation>Tik programos garsas</translation>
         </message>
-    </context>
-    <context>
-        <name>AudioRecording</name>
         <message>
-            <source>Incomplete audio block. Recording discarded.</source>
-            <translation>Neužbaigtas garso blokas. Įrašas atmestas.</translation>
-        </message>
-        <message>
-            <source>Move about one meter from the microphone. Keep the background sound playing and read the sentence.</source>
-            <translation>pasitraukite apie vieną metrą nuo mikrofono. Leiskite foninį garsą ir perskaitykite sakinį.</translation>
-        </message>
-        <message>
-            <source>Voice with background sound</source>
-            <translation>balsas su foniniu garsu</translation>
-        </message>
-        <message>
-            <source>The recordings folder could not be created.</source>
-            <translation>Nepavyko sukurti įrašų aplanko.</translation>
-        </message>
-        <message>
-            <source>You can stop the background sound now.</source>
-            <translation>Dabar galite sustabdyti foninį garsą.</translation>
-        </message>
-        <message>
-            <source>Recordings saved</source>
-            <translation>Įrašai išsaugoti</translation>
-        </message>
-        <message>
-            <source>The test recording could not be saved completely.</source>
-            <translation>nepavyko visiškai išsaugoti bandomojo įrašo.</translation>
-        </message>
-        <message>
-            <source>Keep music off and stay quiet. Start when ready.</source>
-            <translation>Išjunkite muziką ir tylėkite. Pradėkite, kai būsite pasiruošę.</translation>
-        </message>
-        <message>
-            <source>Your voice</source>
-            <translation>tavo balsas</translation>
-        </message>
-        <message>
-            <source>Play music or another background sound at a normal volume. Stay quiet while recording.</source>
-            <translation>Leiskite muziką ar kitą foninį garsą įprastu garsu. Įrašydami būkite tylūs.</translation>
-        </message>
-        <message>
-            <source>The test recording could not be created.</source>
-            <translation>nepavyko sukurti bandomojo įrašo.</translation>
-        </message>
-        <message>
-            <source>Background sound</source>
-            <translation>foninis garsas</translation>
-        </message>
-        <message>
-            <source>The window is open. I can hear the rain outside. One, two, three, four, five.</source>
-            <translation>Langas atidarytas. Lauke girdžiu lietų. Vienas, du, trys, keturi, penki.</translation>
-        </message>
-        <message>
-            <source>This microphone format is not supported for test recordings.</source>
-            <translation>Šis mikrofono formatas nepalaikomas bandomiesiems įrašams.</translation>
-        </message>
-        <message>
-            <source>Keep the background volume unchanged. Read the sentence, then stop recording.</source>
-            <translation>nepakeiskite fono garsumo. Perskaitykite sakinį, tada nustokite įrašyti.</translation>
-        </message>
-        <message>
-            <source>Record at least half a second, then try again.</source>
-            <translation>Įrašykite bent pusę sekundės, tada bandykite dar kartą.</translation>
-        </message>
-        <message>
-            <source>Sit at your usual distance. Read the sentence, then stop recording.</source>
-            <translation>Sėdėkite įprastu atstumu. Perskaitykite sakinį, tada nustokite įrašyti.</translation>
-        </message>
-        <message>
-            <source>The recording description could not be saved.</source>
-            <translation>nepavyko išsaugoti įrašo aprašymo.</translation>
-        </message>
-        <message>
-            <source>The WAV file could not be finalized.</source>
-            <translation>nepavyko užbaigti WAV failo.</translation>
-        </message>
-        <message>
-            <source>The WAV header could not be written.</source>
-            <translation>nepavyko įrašyti WAV antraštės.</translation>
-        </message>
-        <message>
-            <source>Voice farther away</source>
-            <translation>balsas toliau</translation>
-        </message>
-        <message>
-            <source>Room sound</source>
-            <translation>kambario garsas</translation>
+            <source>Speech output is unavailable.</source>
+            <translation>Kalbos išvestis nepasiekiama.</translation>
         </message>
     </context>
     <context>
         <name>AudioSettings</name>
         <message>
-            <source>Echo cancellation</source>
-            <translation>Aido slopinimas</translation>
+            <source>Echo</source>
+            <translation>Aidas</translation>
         </message>
         <message>
             <source>Off</source>
@@ -402,12 +287,12 @@
             <translation>Jūsų atkūrimas</translation>
         </message>
         <message>
-            <source>Clear local key</source>
-            <translation>Išvalykite vietinį tiesioginio pokalbio spartųjį klavišą</translation>
+            <source>Clear key</source>
+            <translation>Išvalyti klavišą</translation>
         </message>
         <message>
-            <source>Low cut</source>
-            <translation>Žemo dažnio pjovimas</translation>
+            <source>Highpass</source>
+            <translation>Aukštadažnis</translation>
         </message>
         <message>
             <source>Microphone access is off</source>
@@ -418,32 +303,16 @@
             <translation>įvesties įrenginys</translation>
         </message>
         <message>
-            <source>Microphone paused for others</source>
-            <translation>Mikrofonas pristabdytas kitiems</translation>
-        </message>
-        <message>
             <source>Cancel</source>
             <translation>Atšaukti</translation>
-        </message>
-        <message>
-            <source>Guided recording</source>
-            <translation>Valdomas įrašymas</translation>
         </message>
         <message>
             <source>Clipping. Reduce microphone gain.</source>
             <translation>Klipingas. Sumažinkite mikrofono stiprinimą.</translation>
         </message>
         <message>
-            <source>Silent</source>
-            <translation>Tyli</translation>
-        </message>
-        <message>
             <source>Test output</source>
             <translation>Bandymo išvestis</translation>
-        </message>
-        <message>
-            <source>Voice level</source>
-            <translation>balso lygis</translation>
         </message>
         <message>
             <source>Voice threshold</source>
@@ -462,20 +331,16 @@
             <translation>įrenginys atjungtas</translation>
         </message>
         <message>
-            <source>Local key</source>
-            <translation>vietinis tiesioginio pokalbio spartusis klavišas</translation>
+            <source>PTT key</source>
+            <translation>Kalbėjimo klavišas</translation>
         </message>
         <message>
             <source>Voice activation</source>
             <translation>balsu įjungiamas mikrofonas</translation>
         </message>
         <message>
-            <source>Remote PTT key</source>
-            <translation>nuotolinio tiesioginio pokalbio spartusis klavišas</translation>
-        </message>
-        <message>
-            <source>Noise reduction</source>
-            <translation>Triukšmo mažinimas</translation>
+            <source>Denoise</source>
+            <translation>Triukšmo slopinimas</translation>
         </message>
         <message>
             <source>Selected device is not connected</source>
@@ -486,32 +351,120 @@
             <translation>Perduotų</translation>
         </message>
         <message>
-            <source>Microphone gain</source>
-            <translation>mikrofono stiprinimas</translation>
-        </message>
-        <message>
-            <source>Clear remote key</source>
-            <translation>Išvalykite nuotolinio tiesioginio pokalbio spartųjį klavišą</translation>
-        </message>
-        <message>
-            <source>Playback volume</source>
-            <translation>atkūrimo garsumas</translation>
+            <source>Gain</source>
+            <translation>Stiprinimas</translation>
         </message>
         <message>
             <source>Not assigned</source>
             <translation>nepriskirta</translation>
         </message>
         <message>
-            <source>High cut</source>
-            <translation>aukšto dažnio pjovimas</translation>
+            <source>Lowpass</source>
+            <translation>Žemadažnis</translation>
         </message>
         <message>
             <source>Level audio automatically</source>
             <translation>Garso lygis automatiškai</translation>
         </message>
+        <message>
+            <source>Voice volume</source>
+            <translation>Balso pokalbio garsumas</translation>
+        </message>
+        <message>
+            <source>App sounds</source>
+            <translation>Programėlės garsai</translation>
+        </message>
+        <message>
+            <source>Read bot messages aloud</source>
+            <translation>Skaityti roboto žinutes balsu</translation>
+        </message>
+        <message>
+            <source>Download a high-quality voice for this language in macOS settings.</source>
+            <translation>Atsisiųsk aukštos kokybės balsą šiai kalbai macOS nustatymuose.</translation>
+        </message>
+        <message>
+            <source>Bot voice</source>
+            <translation>Boto balsas</translation>
+        </message>
+        <message>
+            <source>Automatic</source>
+            <translation>Automatinis</translation>
+        </message>
+        <message>
+            <source>Unavailable</source>
+            <translation>nepasiekiamas</translation>
+        </message>
+        <message>
+            <source>Download voices in your device's Accessibility speech settings.</source>
+            <translation>Atsisiųsk balsus įrenginio pritaikymo neįgaliesiems kalbėjimo nustatymuose.</translation>
+        </message>
+        <message>
+            <source>Voice download help</source>
+            <translation>Balsų atsisiuntimo pagalba</translation>
+        </message>
+        <message>
+            <source>Strength, not the percentage of echo removed.</source>
+            <translation>Stiprumas, o ne pašalinto aido procentas.</translation>
+        </message>
+        <message>
+            <source>Auto also checks for speech, not just volume.</source>
+            <translation>Automatinis režimas tikrina ir kalbą, ne tik garsumą.</translation>
+        </message>
     </context>
     <context>
         <name>Channels</name>
+        <message>
+            <source>Audio received</source>
+            <translation>Gaunamas garsas</translation>
+        </message>
+        <message>
+            <source>Search channels</source>
+            <translation>Ieškoti kanalų</translation>
+        </message>
+        <message>
+            <source>No matches</source>
+            <translation>Rezultatų nėra</translation>
+        </message>
+        <message>
+            <source>Copy address</source>
+            <translation>Kopijuoti adresą</translation>
+        </message>
+        <message>
+            <source>Messages</source>
+            <translation>Žinutės</translation>
+        </message>
+        <message>
+            <source>Message</source>
+            <translation>Žinutė</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Atidaryti</translation>
+        </message>
+        <message>
+            <source>Online</source>
+            <translation>Prisijungęs</translation>
+        </message>
+        <message>
+            <source>Offline</source>
+            <translation>neprisijungęs</translation>
+        </message>
+        <message>
+            <source>No private messages</source>
+            <translation>Privačių žinučių nėra</translation>
+        </message>
+        <message>
+            <source>Private messages are unavailable for this contact.</source>
+            <translation>Privatūs pranešimai šiam kontaktui nepasiekiami.</translation>
+        </message>
+        <message>
+            <source>If asked, allow local network access. You can change this in system settings.</source>
+            <translation>Jei būsi paprašytas, leisk pasiekti vietinį tinklą. Tai gali pakeisti sistemos nustatymuose.</translation>
+        </message>
+        <message>
+            <source>Retry</source>
+            <translation>Bandyti dar kartą</translation>
+        </message>
         <message>
             <source>Updates</source>
             <translation>Atnaujinimai</translation>
@@ -531,6 +484,10 @@
         <message>
             <source>DDNS cannot bypass CGNAT. If your provider shares the public IP, use a private VPN on all participating devices or a publicly reachable server.</source>
             <translation>DDNS negali apeiti CGNAT. Jei jūsų teikėjas dalijasi viešuoju IP, naudokite privatų VPN visuose dalyvaujančiuose įrenginiuose arba viešai pasiekiamame serveryje.</translation>
+        </message>
+        <message>
+            <source>Remove server</source>
+            <translation>Pašalinti serverį</translation>
         </message>
         <message>
             <source>Low</source>
@@ -653,10 +610,6 @@
             <translation>pasigirsta pranešimo garsai</translation>
         </message>
         <message>
-            <source>Lifetime for new messages. Earlier messages keep their expiry.</source>
-            <translation>Visą gyvenimą naujiems pranešimams. Ankstesnių pranešimų galiojimo laikas išlieka.</translation>
-        </message>
-        <message>
             <source>Enable speakers</source>
             <translation>įjungti garsiakalbius</translation>
         </message>
@@ -691,10 +644,6 @@
         <message>
             <source>Allow device</source>
             <translation>Leisti įrenginį</translation>
-        </message>
-        <message>
-            <source>Receive quality: %1 kb/s per voice. Adjusts automatically for this device.</source>
-            <translation>Priėmimo kokybė: %1 kb/s vienam balsui. Šiam įrenginiui prisitaiko automatiškai.</translation>
         </message>
         <message>
             <source>Stop radio</source>
@@ -1188,6 +1137,50 @@
             <source>This device</source>
             <translation>Šis įrenginys</translation>
         </message>
+        <message>
+            <source>Use default music volume</source>
+            <translation>Naudoti numatytąjį muzikos garsumą</translation>
+        </message>
+        <message>
+            <source>Show in Dock</source>
+            <translation>Rodyti Dock juostoje</translation>
+        </message>
+        <message>
+            <source>App language</source>
+            <translation>Programėlės kalba</translation>
+        </message>
+        <message>
+            <source>Send in</source>
+            <translation>Siuntimo kalba</translation>
+        </message>
+        <message>
+            <source>Hear in</source>
+            <translation>Klausymo kalba</translation>
+        </message>
+        <message>
+            <source>Download language models for %1 and %2?</source>
+            <translation>Atsisiųsti %1 ir %2 kalbų modelius?</translation>
+        </message>
+        <message>
+            <source>Download</source>
+            <translation>Atsisiųsti</translation>
+        </message>
+        <message>
+            <source>PTT, chat and channel controls. Uses the controlled device's microphone.</source>
+            <translation>PTT, pokalbių ir kanalų valdikliai. Naudojamas valdomo įrenginio mikrofonas.</translation>
+        </message>
+        <message>
+            <source>Connect the other device to one of your channels, then allow it here.</source>
+            <translation>Prijunk kitą įrenginį prie vieno iš savo kanalų, tada leisk jam prisijungti čia.</translation>
+        </message>
+        <message>
+            <source>On the other device, open Settings &gt; Input &gt; Remote control and allow this device.</source>
+            <translation>Kitame įrenginyje atverk Nustatymai &gt; įvestis &gt; Nuotolinio valdymo pultas ir leisk šiam įrenginiui.</translation>
+        </message>
+        <message>
+            <source>Unread messages</source>
+            <translation>Neskaitytos žinutės</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1299,6 +1292,22 @@
             <source>The sanitized image could not be written completely.</source>
             <translation>Nepavyko visiškai įrašyti išvalyto vaizdo.</translation>
         </message>
+        <message>
+            <source>%1 joined.</source>
+            <translation>prisijungė %1.</translation>
+        </message>
+        <message>
+            <source>%1 left.</source>
+            <translation>%1 išėjo.</translation>
+        </message>
+        <message>
+            <source>%1 was kicked.</source>
+            <translation>%1 buvo išmestas.</translation>
+        </message>
+        <message>
+            <source>%1 was banned from the channel.</source>
+            <translation>%1 buvo užblokuotas kanale.</translation>
+        </message>
     </context>
     <context>
         <name>ChatPanel</name>
@@ -1363,22 +1372,6 @@
             <translation>įkeliama...</translation>
         </message>
         <message>
-            <source>%1 joined.</source>
-            <translation>prisijungė %1.</translation>
-        </message>
-        <message>
-            <source>%1 left.</source>
-            <translation>%1 išėjo.</translation>
-        </message>
-        <message>
-            <source>%1 was kicked.</source>
-            <translation>%1 buvo išmestas.</translation>
-        </message>
-        <message>
-            <source>%1 was banned from the channel.</source>
-            <translation>%1 buvo užblokuotas kanale.</translation>
-        </message>
-        <message>
             <source>Message could not be sent. Check the connection and text length.</source>
             <translation>Pranešimo išsiųsti nepavyko. Patikrinkite ryšį ir teksto ilgį.</translation>
         </message>
@@ -1404,7 +1397,400 @@
         </message>
     </context>
     <context>
+        <name>Desktop</name>
+        <message>
+            <source>Open settings at startup.</source>
+            <translation>Paleidus atverti nustatymus.</translation>
+        </message>
+        <message>
+            <source>Alternative file for audio profiles.</source>
+            <translation>Alternatyvus garso profilių failas.</translation>
+        </message>
+        <message>
+            <source>Load the interface without microphone capture and exit after one second.</source>
+            <translation>Įkelti sąsają be mikrofono įrašymo ir išeiti po vienos sekundės.</translation>
+        </message>
+        <message>
+            <source>Save an image of the app window during the UI test.</source>
+            <translation>Sąsajos bandymo metu išsaugoti programos lango vaizdą.</translation>
+        </message>
+        <message>
+            <source>The window image could not be saved.</source>
+            <translation>Nepavyko išsaugoti lango vaizdo.</translation>
+        </message>
+        <message>
+            <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
+            <translation>Sistemos dėklas nepasiekiamas; programa lieka atverta lange.</translation>
+        </message>
+    </context>
+    <context>
+        <name>Headless</name>
+        <message>
+            <source>Host display name.</source>
+            <translation>Rodomas pagrindinio kompiuterio vardas.</translation>
+        </message>
+        <message>
+            <source>Command failed.</source>
+            <translation>Komanda nepavyko.</translation>
+        </message>
+        <message>
+            <source>%1 must be an integer.</source>
+            <translation>%1 turi būti sveikasis skaičius.</translation>
+        </message>
+        <message>
+            <source>Requests must be on/off or true/false.</source>
+            <translation>Užklausos turi būti on/off arba true/false.</translation>
+        </message>
+        <message>
+            <source>Unknown host property: %1</source>
+            <translation>Nežinoma pagrindinio kompiuterio savybė: %1</translation>
+        </message>
+        <message>
+            <source>Run without GUI, microphone capture, or local audio output.</source>
+            <translation>Paleisti be grafinės sąsajos, mikrofono fiksavimo ir vietinio garso išvesties.</translation>
+        </message>
+        <message>
+            <source>Server storage prefix. Personal/audio/GUI profiles are not loaded.</source>
+            <translation>Serverio saugyklos priešdėlis. Asmeniniai, garso ir grafiniai profiliai neįkeliami.</translation>
+        </message>
+        <message>
+            <source>Optional private identity file instead of the OS credential store (Linux/macOS). Parent directory must exist and belong to this account.</source>
+            <translation>Pasirenkamas privačios tapatybės failas vietoj operacinės sistemos kredencialų saugyklos (Linux/macOS). Tėvinis katalogas turi egzistuoti ir priklausyti šiai paskyrai.</translation>
+        </message>
+        <message>
+            <source>UTF-8 key=value properties or JSON host preset. Default: application.properties, then config/application.properties beside the app.</source>
+            <translation>UTF-8 key=value savybės arba JSON pagrindinio kompiuterio išankstinė nuostata. Numatyta: application.properties, tada config/application.properties šalia programos.</translation>
+        </message>
+        <message>
+            <source>Channel display name.</source>
+            <translation>Kanalo rodomas pavadinimas.</translation>
+        </message>
+        <message>
+            <source>System and radio bot display name.</source>
+            <translation>Sistemos ir radijo roboto rodomas pavadinimas.</translation>
+        </message>
+        <message>
+            <source>TCP service port (1-65535).</source>
+            <translation>TCP paslaugos prievadas (1-65535).</translation>
+        </message>
+        <message>
+            <source>Headless admission is always on; only 'on' or 'true' is accepted.</source>
+            <translation>Begalvis priėmimas visada įjungtas; priimamos tik 'on' arba 'true' reikšmės.</translation>
+        </message>
+        <message>
+            <source>Preapprove a device ID; repeat for several devices. Existing bans remain.</source>
+            <translation>Iš anksto patvirtinti įrenginio ID; keliems įrenginiams pakartokite. Esami draudimai lieka.</translation>
+        </message>
+        <message>
+            <source>Block a device ID; repeat for several devices.</source>
+            <translation>Blokuoti įrenginio ID; keliems įrenginiams pakartokite.</translation>
+        </message>
+        <message>
+            <source>Read a UTF-8 channel password from a file before listening. An empty file removes it.</source>
+            <translation>Prieš klausantis perskaityti UTF-8 kanalo slaptažodį iš failo. Tuščias failas jį pašalina.</translation>
+        </message>
+        <message>
+            <source>Channel password. Empty removes it; environment or config avoids process-list exposure.</source>
+            <translation>Kanalo slaptažodis. Tuščia reikšmė jį pašalina; aplinka arba konfigūracija neleidžia jo rodyti procesų sąraše.</translation>
+        </message>
+        <message>
+            <source>SquadSpeak headless local channel host</source>
+            <translation>SquadSpeak begalvis vietinio kanalo pagrindinis kompiuteris</translation>
+        </message>
+        <message>
+            <source>Environment variables (SQUADSPEAK_ prefix):</source>
+            <translation>Aplinkos kintamieji (SQUADSPEAK_ priešdėlis):</translation>
+        </message>
+        <message>
+            <source>Host configuration could not be read or exceeds 1 MiB.</source>
+            <translation>Pagrindinio kompiuterio konfigūracijos nepavyko perskaityti arba ji viršija 1 MiB.</translation>
+        </message>
+        <message>
+            <source>Host configuration must be UTF-8.</source>
+            <translation>Pagrindinio kompiuterio konfigūracija turi būti UTF-8.</translation>
+        </message>
+        <message>
+            <source>Host preset must be a JSON object.</source>
+            <translation>Pagrindinio kompiuterio išankstinė nuostata turi būti JSON objektas.</translation>
+        </message>
+        <message>
+            <source>Property line %1 must use key=value.</source>
+            <translation>Savybių eilutėje %1 turi būti naudojamas key=value.</translation>
+        </message>
+        <message>
+            <source>Property line %1: %2</source>
+            <translation>Savybių eilutė %1: %2</translation>
+        </message>
+        <message>
+            <source>Standard input has no file descriptor.</source>
+            <translation>Standartinė įvestis neturi failo deskriptoriaus.</translation>
+        </message>
+        <message>
+            <source>Standard input could not be inspected.</source>
+            <translation>Standartinės įvesties nepavyko patikrinti.</translation>
+        </message>
+        <message>
+            <source>Could not write the command response: %1</source>
+            <translation>Komandos atsakymo nepavyko įrašyti: %1</translation>
+        </message>
+        <message>
+            <source>Standard input could not be read: %1</source>
+            <translation>Standartinės įvesties nepavyko perskaityti: %1</translation>
+        </message>
+        <message>
+            <source>Input line exceeds 65536 bytes.</source>
+            <translation>Įvesties eilutė viršija 65536 baitus.</translation>
+        </message>
+        <message>
+            <source>Each input line must be a JSON object.</source>
+            <translation>Kiekviena įvesties eilutė turi būti JSON objektas.</translation>
+        </message>
+        <message>
+            <source>Input ended before a complete JSON line.</source>
+            <translation>Įvestis baigėsi prieš užbaigtą JSON eilutę.</translation>
+        </message>
+        <message>
+            <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
+            <translation>Pasirenkamas savo kanalo ID status, configure, password, admission, history, chat ir radio komandoms; pagal numatytuosius nustatymus naudojamas pagrindinis kanalas.</translation>
+        </message>
+        <message>
+            <source>Channel action must be list, add or remove.</source>
+            <translation>Kanalo veiksmas turi būti list, add arba remove.</translation>
+        </message>
+        <message>
+            <source>Removing an own channel deletes its history, images, permissions and radio settings. Set confirmed=true to proceed.</source>
+            <translation>Pašalinus savo kanalą ištrinami jo istorija, vaizdai, leidimai ir radijo nustatymai. Norėdami tęsti nustatykite confirmed=true.</translation>
+        </message>
+        <message>
+            <source>id must identify an additional own channel.</source>
+            <translation>id turi nurodyti papildomą savo kanalą.</translation>
+        </message>
+        <message>
+            <source>The additional own channel could not be removed: %1</source>
+            <translation>Papildomo savo kanalo nepavyko pašalinti: %1</translation>
+        </message>
+        <message>
+            <source>channelId must identify an own channel.</source>
+            <translation>channelId turi nurodyti savo kanalą.</translation>
+        </message>
+        <message>
+            <source>values must be a host settings object.</source>
+            <translation>values turi būti pagrindinio kompiuterio nustatymų objektas.</translation>
+        </message>
+        <message>
+            <source>Headless admission is always enabled for non-banned devices; requests off is not supported.</source>
+            <translation>Begalvis priėmimas visada leidžiamas neužblokuotiems įrenginiams; requests off nepalaikomas.</translation>
+        </message>
+        <message>
+            <source>value must be a password of at most 1024 UTF-8 bytes without control characters; an empty string removes it.</source>
+            <translation>value turi būti ne ilgesnis kaip 1024 UTF-8 baitų slaptažodis be valdymo simbolių; tuščia eilutė jį pašalina.</translation>
+        </message>
+        <message>
+            <source>The channel is not ready or a password change is in progress.</source>
+            <translation>Kanalas neparuoštas arba keičiamas slaptažodis.</translation>
+        </message>
+        <message>
+            <source>The channel was removed while saving the password.</source>
+            <translation>Kanalas pašalintas išsaugant slaptažodį.</translation>
+        </message>
+        <message>
+            <source>id is required.</source>
+            <translation>Reikalingas id.</translation>
+        </message>
+        <message>
+            <source>text must be a valid non-empty chat message.</source>
+            <translation>text turi būti galiojanti netuščia pokalbio žinutė.</translation>
+        </message>
+        <message>
+            <source>The local channel is not ready.</source>
+            <translation>Vietinis kanalas neparuoštas.</translation>
+        </message>
+        <message>
+            <source>The channel's radio is unavailable.</source>
+            <translation>Kanalo radijas nepasiekiamas.</translation>
+        </message>
+        <message>
+            <source>Unknown command. Use help.</source>
+            <translation>Nežinoma komanda. Naudokite help.</translation>
+        </message>
+        <message>
+            <source>search requires a query, non-negative offset and limit from 1 to 128.</source>
+            <translation>search reikia query, neneigiamos offset reikšmės ir limit nuo 1 iki 128.</translation>
+        </message>
+        <message>
+            <source>add creates an id; update requires an existing id.</source>
+            <translation>add sukuria id; update reikia esamo id.</translation>
+        </message>
+        <message>
+            <source>A station is already being checked.</source>
+            <translation>Stotis jau tikrinama.</translation>
+        </message>
+        <message>
+            <source>The channel was removed while checking the station.</source>
+            <translation>Kanalas pašalintas tikrinant stotį.</translation>
+        </message>
+        <message>
+            <source>Unknown radio action.</source>
+            <translation>Nežinomas radijo veiksmas.</translation>
+        </message>
+        <message>
+            <source>Could not load language: %1</source>
+            <translation>Nepavyko įkelti kalbos: %1</translation>
+        </message>
+        <message>
+            <source>The %1 option is incompatible with --headless.</source>
+            <translation>Parinktis %1 nesuderinama su --headless.</translation>
+        </message>
+        <message>
+            <source>Unexpected positional arguments. Use --help.</source>
+            <translation>Netikėti poziciniai argumentai. Naudokite --help.</translation>
+        </message>
+        <message>
+            <source>--config / -f requires a non-empty path.</source>
+            <translation>--config / -f reikia netuščio kelio.</translation>
+        </message>
+        <message>
+            <source>Choose --password or --password-file, not both.</source>
+            <translation>Pasirinkite --password arba --password-file, ne abu.</translation>
+        </message>
+        <message>
+            <source>Choose SQUADSPEAK_PASSWORD or SQUADSPEAK_PASSWORD_FILE, not both.</source>
+            <translation>Pasirinkite SQUADSPEAK_PASSWORD arba SQUADSPEAK_PASSWORD_FILE, ne abu.</translation>
+        </message>
+        <message>
+            <source>Choose password or passwordFile in one configuration layer, not both.</source>
+            <translation>Viename konfigūracijos sluoksnyje pasirinkite password arba passwordFile, ne abu.</translation>
+        </message>
+        <message>
+            <source>passwordFile must be a non-empty path.</source>
+            <translation>passwordFile turi būti netuščias kelias.</translation>
+        </message>
+        <message>
+            <source>Password file could not be read or is too large.</source>
+            <translation>Slaptažodžio failo nepavyko perskaityti arba jis per didelis.</translation>
+        </message>
+        <message>
+            <source>Password file must contain at most 1024 UTF-8 bytes without control characters.</source>
+            <translation>Slaptažodžio faile gali būti ne daugiau kaip 1024 UTF-8 baitai be valdymo simbolių.</translation>
+        </message>
+        <message>
+            <source>Password must be a string of at most 1024 UTF-8 bytes without control characters.</source>
+            <translation>Slaptažodis turi būti ne ilgesnė kaip 1024 UTF-8 baitų eilutė be valdymo simbolių.</translation>
+        </message>
+        <message>
+            <source>settingsFile must be a non-empty path.</source>
+            <translation>settingsFile turi būti netuščias kelias.</translation>
+        </message>
+        <message>
+            <source>identityFile must be a non-empty path.</source>
+            <translation>identityFile turi būti netuščias kelias.</translation>
+        </message>
+        <message>
+            <source>The settings directory could not be created.</source>
+            <translation>Nepavyko sukurti nustatymų katalogo.</translation>
+        </message>
+        <message>
+            <source>This SquadSpeak profile is already running or cannot be locked.</source>
+            <translation>Šis SquadSpeak profilis jau naudojamas arba jo nepavyksta užrakinti.</translation>
+        </message>
+        <message>
+            <source>Standard input could not be opened.</source>
+            <translation>Nepavyko atidaryti standartinės įvesties.</translation>
+        </message>
+        <message>
+            <source>Standard output could not be opened.</source>
+            <translation>Nepavyko atidaryti standartinės išvesties.</translation>
+        </message>
+        <message>
+            <source>This identity file is already in use or cannot be locked.</source>
+            <translation>Šis tapatybės failas jau naudojamas arba jo nepavyksta užrakinti.</translation>
+        </message>
+        <message>
+            <source>Invalid host configuration: %1</source>
+            <translation>Negaliojanti pagrindinio kompiuterio konfigūracija: %1</translation>
+        </message>
+        <message>
+            <source>Radio channels could not be initialized.</source>
+            <translation>Nepavyko inicijuoti radijo kanalų.</translation>
+        </message>
+        <message>
+            <source>Headless host could not start: %1</source>
+            <translation>Nepavyko paleisti begalvio pagrindinio kompiuterio: %1</translation>
+        </message>
+        <message>
+            <source>Channel password could not be saved.</source>
+            <translation>Nepavyko išsaugoti kanalo slaptažodžio.</translation>
+        </message>
+        <message>
+            <source>Invalid channel password: %1</source>
+            <translation>Negaliojantis kanalo slaptažodis: %1</translation>
+        </message>
+        <message>
+            <source>Headless host could not initialize: %1</source>
+            <translation>Nepavyko inicijuoti begalvio pagrindinio kompiuterio: %1</translation>
+        </message>
+        <message>
+            <source>SquadSpeak headless could not start: %1</source>
+            <translation>Nepavyko paleisti SquadSpeak begalvio pagrindinio kompiuterio: %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>Rėmėjo veiksmas turi būti būsena, prisijungimas, atnaujinimas, atsijungimas arba atšaukimas. status sign-in refresh sign-out cancel</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>Vykdoma rėmėjo operacija.</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>Šiame versijoje rėmėjo prieiga nepasiekiama.</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>Nustatymų pirmenybė: argumentai &gt; aplinka &gt; ypatybės &gt; išsaugotos serverio reikšmės.</translation>
+        </message>
+    </context>
+    <context>
+        <name>License</name>
+        <message>
+            <source>License storage is busy or unavailable.</source>
+            <translation>Licencijos saugykla užimta arba nepasiekiama.</translation>
+        </message>
+        <message>
+            <source>License storage is unavailable.</source>
+            <translation>Licencijos saugykla nepasiekiama.</translation>
+        </message>
+        <message>
+            <source>Sign-in expired. Try again.</source>
+            <translation>Prisijungimo galiojimo laikas baigėsi. Bandykite dar kartą.</translation>
+        </message>
+        <message>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>Prisijungimas prie „GitHub“ nepasiekiamas. Bandykite dar kartą.</translation>
+        </message>
+        <message>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>„GitHub“ prisijungimas nebuvo baigtas. Bandykite dar kartą.</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>Nepavyko patikrinti „GitHub“. Prieiga neprisijungus trunka daugiausia septynias dienas.</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>Dar kartą prisijunkite naudodami „GitHub“.</translation>
+        </message>
+    </context>
+    <context>
         <name>LocalChannel</name>
+        <message>
+            <source>Insufficient permissions.</source>
+            <translation>Nepakanka leidimų.</translation>
+        </message>
+        <message>
+            <source>Blocked</source>
+            <translation>Užblokuotas</translation>
+        </message>
         <message>
             <source>Host is not responding. Reconnecting.</source>
             <translation>Šeimininkas neatsako. Prisijungiama iš naujo.</translation>
@@ -1926,8 +2312,8 @@
             <translation>Vaizdo perkėlimas užtruko per ilgai.</translation>
         </message>
         <message>
-            <source>The channel is full. Text chat is still available.</source>
-            <translation>kanalas pilnas. Teksto pokalbis vis dar pasiekiamas.</translation>
+            <source>The host is busy. Try again shortly.</source>
+            <translation>Pagrindinis kompiuteris užimtas. Netrukus bandyk dar kartą.</translation>
         </message>
         <message>
             <source>All own channels use the device's shared port.</source>
@@ -2189,6 +2575,53 @@
             <source>Voice relay codec could not be configured.</source>
             <translation>Nepavyko sukonfigūruoti balso perdavimo kodeko.</translation>
         </message>
+        <message>
+            <source>Unsupported audio codec</source>
+            <translation>Nepalaikomas garso kodekas</translation>
+        </message>
+        <message>
+            <source>Speaking is not allowed in this channel.</source>
+            <translation>Šiame kanale kalbėti neleidžiama.</translation>
+        </message>
+    </context>
+    <context>
+        <name>LocalLanguage</name>
+        <message>
+            <source>Translation (experimental)</source>
+            <translation>Vertimas (eksperimentinis)</translation>
+        </message>
+        <message>
+            <source>Translate messages</source>
+            <translation>Versti žinutes</translation>
+        </message>
+        <message>
+            <source>Translated voice</source>
+            <translation>Išverstas balsas</translation>
+        </message>
+        <message>
+            <source>Original audio</source>
+            <translation>Originalus garsas</translation>
+        </message>
+        <message>
+            <source>Original text</source>
+            <translation>Originalus tekstas</translation>
+        </message>
+        <message>
+            <source>Prepare languages</source>
+            <translation>Paruošti kalbas</translation>
+        </message>
+        <message>
+            <source>Local language processing is unavailable.</source>
+            <translation>Vietinis kalbos apdorojimas nepasiekiamas.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be read.</source>
+            <translation>Nepavyko perskaityti kalbos nuostatų.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be saved.</source>
+            <translation>Nepavyko išsaugoti kalbos nuostatų.</translation>
+        </message>
     </context>
     <context>
         <name>PushToTalkKey</name>
@@ -2329,50 +2762,61 @@
         </message>
     </context>
     <context>
-        <name>RecordingPanel</name>
+        <name>ScreenPanel</name>
         <message>
-            <source>Stop</source>
-            <translation>sustokite</translation>
+            <source>Video paused</source>
+            <translation>vaizdo įrašas pristabdytas</translation>
         </message>
         <message>
-            <source>Start</source>
-            <translation>Pradėti</translation>
+            <source>Stream ended</source>
+            <translation>Srautas baigtas</translation>
         </message>
         <message>
-            <source>Saved on this device only. Nothing is uploaded.</source>
-            <translation>Išsaugota tik šiame įrenginyje. Nieko neįkelta.</translation>
+            <source>Connecting</source>
+            <translation>prijungimas</translation>
         </message>
         <message>
-            <source>Keep this take or record it again.</source>
-            <translation>pasilikite šį įrašą arba įrašykite dar kartą.</translation>
+            <source>Open screen stream</source>
+            <translation>Atidarykite ekrano srautą</translation>
         </message>
         <message>
-            <source>Record again</source>
-            <translation>Įrašykite dar kartą</translation>
+            <source>Screen stream</source>
+            <translation>ekrano srautas</translation>
         </message>
         <message>
-            <source>Use recording</source>
-            <translation>Naudokite įrašymą</translation>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
+        </message>
+    </context>
+    <context>
+        <name>ScreenShare</name>
+        <message>
+            <source>Allow screen recording in system settings.</source>
+            <translation>Leisk ekrano įrašymą sistemos nuostatose.</translation>
         </message>
         <message>
-            <source>Recording progress</source>
-            <translation>Įrašymo eiga</translation>
+            <source>The shared screen was removed. Select a source to start again.</source>
+            <translation>Bendrinamas ekranas buvo pašalintas. Norėdami pradėti iš naujo, pasirinkite šaltinį.</translation>
         </message>
         <message>
-            <source>Step %1 of %2</source>
-            <translation>%1 veiksmas iš %2</translation>
+            <source>The shared window was closed. Select a source to start again.</source>
+            <translation>bendras langas buvo uždarytas. Norėdami pradėti iš naujo, pasirinkite šaltinį.</translation>
         </message>
         <message>
-            <source>Open recordings</source>
-            <translation>Atidaryti įrašus</translation>
+            <source>The selected screen is no longer available.</source>
+            <translation>pasirinktas ekranas nebepasiekiamas.</translation>
         </message>
         <message>
-            <source>Reset test</source>
-            <translation>Iš naujo nustatykite testą</translation>
+            <source>The selected window is no longer available.</source>
+            <translation>pasirinktas langas nebepasiekiamas.</translation>
         </message>
         <message>
-            <source>%1 s remaining / %2 dBFS</source>
-            <translation>liko %1 s / %2 dBFS</translation>
+            <source>The selected source exceeds the capture size limit.</source>
+            <translation>pasirinktas šaltinis viršija fiksavimo dydžio apribojimą.</translation>
+        </message>
+        <message>
+            <source>Close a video view before opening another stream.</source>
+            <translation>uždarykite vaizdo įrašo rodinį prieš atidarydami kitą srautą.</translation>
         </message>
     </context>
     <context>
@@ -2449,10 +2893,6 @@
             <translation>renkamas signalas...</translation>
         </message>
         <message>
-            <source>Dashed curve: configured gain and frequency cuts, using the right dB scale. Noise reduction and voice activation are not part of this curve.</source>
-            <translation>Brūkšninė kreivė: sukonfigūruotas stiprinimas ir dažnių pjūviai pagal dešinę dB skalę. Triukšmo mažinimas ir balso aktyvinimas nėra šios kreivės dalis.</translation>
-        </message>
-        <message>
             <source>Microphone preview is not running</source>
             <translation>mikrofono peržiūra neveikia</translation>
         </message>
@@ -2463,303 +2903,6 @@
         <message>
             <source>Peak: %1</source>
             <translation>smailė: %1</translation>
-        </message>
-    </context>
-    <context>
-        <name>Tray</name>
-        <message>
-            <source>Quit</source>
-            <translation>Baik</translation>
-        </message>
-        <message>
-            <source>SquadSpeak - speaking</source>
-            <translation>SquadSpeak - kalbėjimas</translation>
-        </message>
-        <message>
-            <source>Settings</source>
-            <translation>Nustatymai</translation>
-        </message>
-        <message>
-            <source>Channels</source>
-            <translation>kanalai</translation>
-        </message>
-        <message>
-            <source>New image</source>
-            <translation>naujas vaizdas</translation>
-        </message>
-    </context>
-    <context>
-        <name>VoiceAvatar</name>
-        <message>
-            <source>Muted</source>
-            <translation>mikrofonas nutildytas</translation>
-        </message>
-        <message>
-            <source>Sleeping</source>
-            <translation>Miegas</translation>
-        </message>
-        <message>
-            <source>Offline</source>
-            <translation>neprisijungęs</translation>
-        </message>
-        <message>
-            <source>Speaking</source>
-            <translation>Kalbėjimas</translation>
-        </message>
-        <message>
-            <source>Unavailable</source>
-            <translation>nepasiekiamas</translation>
-        </message>
-        <message>
-            <source>Listening</source>
-            <translation>Klausymas</translation>
-        </message>
-        <message>
-            <source>Deafened</source>
-            <translation>garsiakalbiai nutildyti</translation>
-        </message>
-    </context>
-    <context>
-        <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>nepasiekiamas - garso nustatymai arba tono testas</translation>
-        </message>
-        <message>
-            <source>Microphone muted</source>
-            <translation>mikrofonas nutildytas</translation>
-        </message>
-        <message>
-            <source>Push-to-talk held</source>
-            <translation>Tiesioginio pokalbio mygtukas laikomas nuspaustas</translation>
-        </message>
-        <message>
-            <source>Ready - push-to-talk released</source>
-            <translation>Paruošta - tiesioginio pokalbio mygtukas atleistas</translation>
-        </message>
-        <message>
-            <source>Microphone unmuted</source>
-            <translation>Mikrofonas įjungtas</translation>
-        </message>
-        <message>
-            <source>Settings could not be saved: %1</source>
-            <translation>Nepavyko išsaugoti nustatymų: %1</translation>
-        </message>
-        <message>
-            <source>The push-to-talk sequence cannot be incremented further.</source>
-            <translation>tiesioginio pokalbio seka negali būti toliau didinama.</translation>
-        </message>
-        <message>
-            <source>Choose System, Light or Dark.</source>
-            <translation>pasirinkite System, Light arba Dark.</translation>
-        </message>
-        <message>
-            <source>Choose a colour palette from the list.</source>
-            <translation>iš sąrašo pasirinkite spalvų paletę.</translation>
-        </message>
-        <message>
-            <source>Choose an available avatar.</source>
-            <translation>pasirinkite galimą avatarą.</translation>
-        </message>
-        <message>
-            <source>Invalid push-to-talk binding.</source>
-            <translation>Neteisingas tiesioginio ryšio įrišimas.</translation>
-        </message>
-        <message>
-            <source>Release the held push-to-talk key first.</source>
-            <translation>pirmiausia atleiskite palaikytą tiesioginio ryšio klavišą.</translation>
-        </message>
-        <message>
-            <source>Choose a language from the list.</source>
-            <translation>pasirinkite kalbą iš sąrašo.</translation>
-        </message>
-        <message>
-            <source>This avatar requires Supporter.</source>
-            <translation>Šiam avatarui reikalingas Supporter.</translation>
-        </message>
-        <message>
-            <source>The name must contain 1 to 64 characters.</source>
-            <translation>pavadinimą turi sudaryti nuo 1 iki 64 simbolių.</translation>
-        </message>
-        <message>
-            <source>The name may not contain control characters or line breaks.</source>
-            <translation>pavadinime negali būti valdymo simbolių ar eilučių lūžių.</translation>
-        </message>
-        <message>
-            <source>Session settings could not be read.</source>
-            <translation>Nepavyko perskaityti seanso nustatymų.</translation>
-        </message>
-        <message>
-            <source>Saved setting is invalid: %1</source>
-            <translation>Netinkamas išsaugotas nustatymas: %1</translation>
-        </message>
-    </context>
-    <context>
-        <name>License</name>
-        <message>
-            <source>License storage is busy or unavailable.</source>
-            <translation>Licencijos saugykla užimta arba nepasiekiama.</translation>
-        </message>
-        <message>
-            <source>License storage is unavailable.</source>
-            <translation>Licencijos saugykla nepasiekiama.</translation>
-        </message>
-        <message>
-            <source>Sign-in expired. Try again.</source>
-            <translation>Prisijungimo galiojimo laikas baigėsi. Bandykite dar kartą.</translation>
-        </message>
-        <message>
-            <source>GitHub sign-in is unavailable. Try again.</source>
-            <translation>Prisijungimas prie „GitHub“ nepasiekiamas. Bandykite dar kartą.</translation>
-        </message>
-        <message>
-            <source>GitHub sign-in was not completed. Try again.</source>
-            <translation>„GitHub“ prisijungimas nebuvo baigtas. Bandykite dar kartą.</translation>
-        </message>
-        <message>
-            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
-            <translation>Nepavyko patikrinti „GitHub“. Prieiga neprisijungus trunka daugiausia septynias dienas.</translation>
-        </message>
-        <message>
-            <source>Sign in with GitHub again.</source>
-            <translation>Dar kartą prisijunkite naudodami „GitHub“.</translation>
-        </message>
-    </context>
-    <context>
-        <name>ScreenShare</name>
-        <message>
-            <source>The shared screen was removed. Select a source to start again.</source>
-            <translation>Bendrinamas ekranas buvo pašalintas. Norėdami pradėti iš naujo, pasirinkite šaltinį.</translation>
-        </message>
-        <message>
-            <source>The shared window was closed. Select a source to start again.</source>
-            <translation>bendras langas buvo uždarytas. Norėdami pradėti iš naujo, pasirinkite šaltinį.</translation>
-        </message>
-        <message>
-            <source>The selected screen is no longer available.</source>
-            <translation>pasirinktas ekranas nebepasiekiamas.</translation>
-        </message>
-        <message>
-            <source>The selected window is no longer available.</source>
-            <translation>pasirinktas langas nebepasiekiamas.</translation>
-        </message>
-        <message>
-            <source>The selected source exceeds the capture size limit.</source>
-            <translation>pasirinktas šaltinis viršija fiksavimo dydžio apribojimą.</translation>
-        </message>
-        <message>
-            <source>Close a video view before opening another stream.</source>
-            <translation>uždarykite vaizdo įrašo rodinį prieš atidarydami kitą srautą.</translation>
-        </message>
-    </context>
-    <context>
-        <name>ScreenPanel</name>
-        <message>
-            <source>Media capacity reached</source>
-            <translation>pasiektas medijos pajėgumas</translation>
-        </message>
-        <message>
-            <source>Video paused</source>
-            <translation>vaizdo įrašas pristabdytas</translation>
-        </message>
-        <message>
-            <source>Stream ended</source>
-            <translation>Srautas baigtas</translation>
-        </message>
-        <message>
-            <source>Connecting</source>
-            <translation>prijungimas</translation>
-        </message>
-        <message>
-            <source>Open screen stream</source>
-            <translation>Atidarykite ekrano srautą</translation>
-        </message>
-        <message>
-            <source>Screen stream</source>
-            <translation>ekrano srautas</translation>
-        </message>
-        <message>
-            <source>%1 kbit/s</source>
-            <translation>%1 kbit/s</translation>
-        </message>
-    </context>
-    <context>
-        <name>VideoCodec</name>
-        <message>
-            <source>Video codec: %1</source>
-            <translation>Vaizdo kodekas: %1</translation>
-        </message>
-        <message>
-            <source>Video codec ABI does not match its headers.</source>
-            <translation>Vaizdo kodeko ABI neatitinka jo antraštinių failų.</translation>
-        </message>
-        <message>
-            <source>Video buffers could not be allocated.</source>
-            <translation>Nepavyko skirti atminties vaizdo buferiams.</translation>
-        </message>
-        <message>
-            <source>Invalid video quality tier.</source>
-            <translation>Netinkamas vaizdo kokybės lygis.</translation>
-        </message>
-        <message>
-            <source>The screen source exceeds the supported capture size.</source>
-            <translation>Ekrano šaltinis viršija palaikomą fiksavimo dydį.</translation>
-        </message>
-        <message>
-            <source>The screen source is too narrow.</source>
-            <translation>Ekrano šaltinis yra per siauras.</translation>
-        </message>
-        <message>
-            <source>The video encoder could not be allocated.</source>
-            <translation>Nepavyko skirti atminties vaizdo kodavimo įrenginiui.</translation>
-        </message>
-        <message>
-            <source>No supported video encoder is available.</source>
-            <translation>Nėra jokio palaikomo vaizdo kodavimo įrenginio.</translation>
-        </message>
-        <message>
-            <source>Video encoder configuration is too large.</source>
-            <translation>Vaizdo kodavimo įrenginio konfigūracija yra per didelė.</translation>
-        </message>
-        <message>
-            <source>Video scaling could not be initialized.</source>
-            <translation>Nepavyko inicijuoti vaizdo mastelio keitimo.</translation>
-        </message>
-        <message>
-            <source>The encoder returned an empty video packet.</source>
-            <translation>Kodavimo įrenginys grąžino tuščią vaizdo paketą.</translation>
-        </message>
-        <message>
-            <source>Invalid video frame format.</source>
-            <translation>Netinkamas vaizdo kadro formatas.</translation>
-        </message>
-        <message>
-            <source>Invalid video decoder configuration.</source>
-            <translation>Netinkama vaizdo dekoderio konfigūracija.</translation>
-        </message>
-        <message>
-            <source>This video codec cannot be decoded.</source>
-            <translation>Šio vaizdo kodeko neįmanoma dekoduoti.</translation>
-        </message>
-        <message>
-            <source>Video decoder could not be allocated.</source>
-            <translation>Nepavyko skirti atminties vaizdo dekoderiui.</translation>
-        </message>
-        <message>
-            <source>Video decoder configuration could not be allocated.</source>
-            <translation>Nepavyko skirti atminties vaizdo dekoderio konfigūracijai.</translation>
-        </message>
-        <message>
-            <source>Decoded dimensions do not match the screen stream.</source>
-            <translation>Dekoduoti matmenys neatitinka ekrano srauto.</translation>
-        </message>
-        <message>
-            <source>Decoded image could not be allocated.</source>
-            <translation>Nepavyko skirti atminties dekoduotam vaizdui.</translation>
-        </message>
-        <message>
-            <source>Video color conversion could not be initialized.</source>
-            <translation>Nepavyko inicijuoti vaizdo spalvų konvertavimo.</translation>
         </message>
     </context>
     <context>
@@ -2877,359 +3020,208 @@
             <translation>Nepavyko patikrinti slaptažodžio.</translation>
         </message>
     </context>
-
     <context>
-        <name>Headless</name>
+        <name>Tray</name>
         <message>
-            <source>Command failed.</source>
-            <translation>Komanda nepavyko.</translation>
+            <source>Quit</source>
+            <translation>Baik</translation>
         </message>
         <message>
-            <source>%1 must be an integer.</source>
-            <translation>%1 turi būti sveikasis skaičius.</translation>
+            <source>SquadSpeak - speaking</source>
+            <translation>SquadSpeak - kalbėjimas</translation>
         </message>
         <message>
-            <source>Requests must be on/off or true/false.</source>
-            <translation>Užklausos turi būti on/off arba true/false.</translation>
+            <source>Settings</source>
+            <translation>Nustatymai</translation>
         </message>
         <message>
-            <source>Unknown host property: %1</source>
-            <translation>Nežinoma pagrindinio kompiuterio savybė: %1</translation>
+            <source>Channels</source>
+            <translation>kanalai</translation>
         </message>
         <message>
-            <source>Run without GUI, microphone capture, or local audio output.</source>
-            <translation>Paleisti be grafinės sąsajos, mikrofono fiksavimo ir vietinio garso išvesties.</translation>
-        </message>
-        <message>
-            <source>Server storage prefix. Personal/audio/GUI profiles are not loaded.</source>
-            <translation>Serverio saugyklos priešdėlis. Asmeniniai, garso ir grafiniai profiliai neįkeliami.</translation>
-        </message>
-        <message>
-            <source>Optional private identity file instead of the OS credential store (Linux/macOS). Parent directory must exist and belong to this account.</source>
-            <translation>Pasirenkamas privačios tapatybės failas vietoj operacinės sistemos kredencialų saugyklos (Linux/macOS). Tėvinis katalogas turi egzistuoti ir priklausyti šiai paskyrai.</translation>
-        </message>
-        <message>
-            <source>UTF-8 key=value properties or JSON host preset. Default: application.properties, then config/application.properties beside the app.</source>
-            <translation>UTF-8 key=value savybės arba JSON pagrindinio kompiuterio išankstinė nuostata. Numatyta: application.properties, tada config/application.properties šalia programos.</translation>
-        </message>
-        <message>
-            <source>Channel display name.</source>
-            <translation>Kanalo rodomas pavadinimas.</translation>
-        </message>
-        <message>
-            <source>System and radio bot display name.</source>
-            <translation>Sistemos ir radijo roboto rodomas pavadinimas.</translation>
-        </message>
-        <message>
-            <source>TCP service port (1-65535).</source>
-            <translation>TCP paslaugos prievadas (1-65535).</translation>
-        </message>
-        <message>
-            <source>Headless admission is always on; only 'on' or 'true' is accepted.</source>
-            <translation>Begalvis priėmimas visada įjungtas; priimamos tik 'on' arba 'true' reikšmės.</translation>
-        </message>
-        <message>
-            <source>Preapprove a device ID; repeat for several devices. Existing bans remain.</source>
-            <translation>Iš anksto patvirtinti įrenginio ID; keliems įrenginiams pakartokite. Esami draudimai lieka.</translation>
-        </message>
-        <message>
-            <source>Block a device ID; repeat for several devices.</source>
-            <translation>Blokuoti įrenginio ID; keliems įrenginiams pakartokite.</translation>
-        </message>
-        <message>
-            <source>Read a UTF-8 channel password from a file before listening. An empty file removes it.</source>
-            <translation>Prieš klausantis perskaityti UTF-8 kanalo slaptažodį iš failo. Tuščias failas jį pašalina.</translation>
-        </message>
-        <message>
-            <source>Channel password. Empty removes it; environment or config avoids process-list exposure.</source>
-            <translation>Kanalo slaptažodis. Tuščia reikšmė jį pašalina; aplinka arba konfigūracija neleidžia jo rodyti procesų sąraše.</translation>
-        </message>
-        <message>
-            <source>SquadSpeak headless local channel host</source>
-            <translation>SquadSpeak begalvis vietinio kanalo pagrindinis kompiuteris</translation>
-        </message>
-        <message>
-            <source>Environment variables (SQUADSPEAK_ prefix):</source>
-            <translation>Aplinkos kintamieji (SQUADSPEAK_ priešdėlis):</translation>
-        </message>
-        <message>
-            <source>Host configuration could not be read or exceeds 1 MiB.</source>
-            <translation>Pagrindinio kompiuterio konfigūracijos nepavyko perskaityti arba ji viršija 1 MiB.</translation>
-        </message>
-        <message>
-            <source>Host configuration must be UTF-8.</source>
-            <translation>Pagrindinio kompiuterio konfigūracija turi būti UTF-8.</translation>
-        </message>
-        <message>
-            <source>Host preset must be a JSON object.</source>
-            <translation>Pagrindinio kompiuterio išankstinė nuostata turi būti JSON objektas.</translation>
-        </message>
-        <message>
-            <source>Property line %1 must use key=value.</source>
-            <translation>Savybių eilutėje %1 turi būti naudojamas key=value.</translation>
-        </message>
-        <message>
-            <source>Property line %1: %2</source>
-            <translation>Savybių eilutė %1: %2</translation>
-        </message>
-        <message>
-            <source>Standard input has no file descriptor.</source>
-            <translation>Standartinė įvestis neturi failo deskriptoriaus.</translation>
-        </message>
-        <message>
-            <source>Standard input could not be inspected.</source>
-            <translation>Standartinės įvesties nepavyko patikrinti.</translation>
-        </message>
-        <message>
-            <source>Could not write the command response: %1</source>
-            <translation>Komandos atsakymo nepavyko įrašyti: %1</translation>
-        </message>
-        <message>
-            <source>Standard input could not be read: %1</source>
-            <translation>Standartinės įvesties nepavyko perskaityti: %1</translation>
-        </message>
-        <message>
-            <source>Input line exceeds 65536 bytes.</source>
-            <translation>Įvesties eilutė viršija 65536 baitus.</translation>
-        </message>
-        <message>
-            <source>Each input line must be a JSON object.</source>
-            <translation>Kiekviena įvesties eilutė turi būti JSON objektas.</translation>
-        </message>
-        <message>
-            <source>Input ended before a complete JSON line.</source>
-            <translation>Įvestis baigėsi prieš užbaigtą JSON eilutę.</translation>
-        </message>
-        <message>
-            <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
-            <translation>Pasirenkamas savo kanalo ID status, configure, password, admission, history, chat ir radio komandoms; pagal numatytuosius nustatymus naudojamas pagrindinis kanalas.</translation>
-        </message>
-        <message>
-            <source>Channel action must be list, add or remove.</source>
-            <translation>Kanalo veiksmas turi būti list, add arba remove.</translation>
-        </message>
-        <message>
-            <source>Removing an own channel deletes its history, images, permissions and radio settings. Set confirmed=true to proceed.</source>
-            <translation>Pašalinus savo kanalą ištrinami jo istorija, vaizdai, leidimai ir radijo nustatymai. Norėdami tęsti nustatykite confirmed=true.</translation>
-        </message>
-        <message>
-            <source>id must identify an additional own channel.</source>
-            <translation>id turi nurodyti papildomą savo kanalą.</translation>
-        </message>
-        <message>
-            <source>The additional own channel could not be removed: %1</source>
-            <translation>Papildomo savo kanalo nepavyko pašalinti: %1</translation>
-        </message>
-        <message>
-            <source>channelId must identify an own channel.</source>
-            <translation>channelId turi nurodyti savo kanalą.</translation>
-        </message>
-        <message>
-            <source>values must be a host settings object.</source>
-            <translation>values turi būti pagrindinio kompiuterio nustatymų objektas.</translation>
-        </message>
-        <message>
-            <source>Headless admission is always enabled for non-banned devices; requests off is not supported.</source>
-            <translation>Begalvis priėmimas visada leidžiamas neužblokuotiems įrenginiams; requests off nepalaikomas.</translation>
-        </message>
-        <message>
-            <source>value must be a password of at most 1024 UTF-8 bytes without control characters; an empty string removes it.</source>
-            <translation>value turi būti ne ilgesnis kaip 1024 UTF-8 baitų slaptažodis be valdymo simbolių; tuščia eilutė jį pašalina.</translation>
-        </message>
-        <message>
-            <source>The channel is not ready or a password change is in progress.</source>
-            <translation>Kanalas neparuoštas arba keičiamas slaptažodis.</translation>
-        </message>
-        <message>
-            <source>The channel was removed while saving the password.</source>
-            <translation>Kanalas pašalintas išsaugant slaptažodį.</translation>
-        </message>
-        <message>
-            <source>id is required.</source>
-            <translation>Reikalingas id.</translation>
-        </message>
-        <message>
-            <source>text must be a valid non-empty chat message.</source>
-            <translation>text turi būti galiojanti netuščia pokalbio žinutė.</translation>
-        </message>
-        <message>
-            <source>The local channel is not ready.</source>
-            <translation>Vietinis kanalas neparuoštas.</translation>
-        </message>
-        <message>
-            <source>The channel's radio is unavailable.</source>
-            <translation>Kanalo radijas nepasiekiamas.</translation>
-        </message>
-        <message>
-            <source>Unknown command. Use help.</source>
-            <translation>Nežinoma komanda. Naudokite help.</translation>
-        </message>
-        <message>
-            <source>search requires a query, non-negative offset and limit from 1 to 128.</source>
-            <translation>search reikia query, neneigiamos offset reikšmės ir limit nuo 1 iki 128.</translation>
-        </message>
-        <message>
-            <source>add creates an id; update requires an existing id.</source>
-            <translation>add sukuria id; update reikia esamo id.</translation>
-        </message>
-        <message>
-            <source>A station is already being checked.</source>
-            <translation>Stotis jau tikrinama.</translation>
-        </message>
-        <message>
-            <source>The channel was removed while checking the station.</source>
-            <translation>Kanalas pašalintas tikrinant stotį.</translation>
-        </message>
-        <message>
-            <source>Unknown radio action.</source>
-            <translation>Nežinomas radijo veiksmas.</translation>
-        </message>
-        <message>
-            <source>Could not load language: %1</source>
-            <translation>Nepavyko įkelti kalbos: %1</translation>
-        </message>
-        <message>
-            <source>The %1 option is incompatible with --headless.</source>
-            <translation>Parinktis %1 nesuderinama su --headless.</translation>
-        </message>
-        <message>
-            <source>Unexpected positional arguments. Use --help.</source>
-            <translation>Netikėti poziciniai argumentai. Naudokite --help.</translation>
-        </message>
-        <message>
-            <source>--config / -f requires a non-empty path.</source>
-            <translation>--config / -f reikia netuščio kelio.</translation>
-        </message>
-        <message>
-            <source>Choose --password or --password-file, not both.</source>
-            <translation>Pasirinkite --password arba --password-file, ne abu.</translation>
-        </message>
-        <message>
-            <source>Choose SQUADSPEAK_PASSWORD or SQUADSPEAK_PASSWORD_FILE, not both.</source>
-            <translation>Pasirinkite SQUADSPEAK_PASSWORD arba SQUADSPEAK_PASSWORD_FILE, ne abu.</translation>
-        </message>
-        <message>
-            <source>Choose password or passwordFile in one configuration layer, not both.</source>
-            <translation>Viename konfigūracijos sluoksnyje pasirinkite password arba passwordFile, ne abu.</translation>
-        </message>
-        <message>
-            <source>passwordFile must be a non-empty path.</source>
-            <translation>passwordFile turi būti netuščias kelias.</translation>
-        </message>
-        <message>
-            <source>Password file could not be read or is too large.</source>
-            <translation>Slaptažodžio failo nepavyko perskaityti arba jis per didelis.</translation>
-        </message>
-        <message>
-            <source>Password file must contain at most 1024 UTF-8 bytes without control characters.</source>
-            <translation>Slaptažodžio faile gali būti ne daugiau kaip 1024 UTF-8 baitai be valdymo simbolių.</translation>
-        </message>
-        <message>
-            <source>Password must be a string of at most 1024 UTF-8 bytes without control characters.</source>
-            <translation>Slaptažodis turi būti ne ilgesnė kaip 1024 UTF-8 baitų eilutė be valdymo simbolių.</translation>
-        </message>
-        <message>
-            <source>settingsFile must be a non-empty path.</source>
-            <translation>settingsFile turi būti netuščias kelias.</translation>
-        </message>
-        <message>
-            <source>identityFile must be a non-empty path.</source>
-            <translation>identityFile turi būti netuščias kelias.</translation>
-        </message>
-        <message>
-            <source>The settings directory could not be created.</source>
-            <translation>Nepavyko sukurti nustatymų katalogo.</translation>
-        </message>
-        <message>
-            <source>This SquadSpeak profile is already running or cannot be locked.</source>
-            <translation>Šis SquadSpeak profilis jau naudojamas arba jo nepavyksta užrakinti.</translation>
-        </message>
-        <message>
-            <source>Standard input could not be opened.</source>
-            <translation>Nepavyko atidaryti standartinės įvesties.</translation>
-        </message>
-        <message>
-            <source>Standard output could not be opened.</source>
-            <translation>Nepavyko atidaryti standartinės išvesties.</translation>
-        </message>
-        <message>
-            <source>This identity file is already in use or cannot be locked.</source>
-            <translation>Šis tapatybės failas jau naudojamas arba jo nepavyksta užrakinti.</translation>
-        </message>
-        <message>
-            <source>Invalid host configuration: %1</source>
-            <translation>Negaliojanti pagrindinio kompiuterio konfigūracija: %1</translation>
-        </message>
-        <message>
-            <source>Radio channels could not be initialized.</source>
-            <translation>Nepavyko inicijuoti radijo kanalų.</translation>
-        </message>
-        <message>
-            <source>Headless host could not start: %1</source>
-            <translation>Nepavyko paleisti begalvio pagrindinio kompiuterio: %1</translation>
-        </message>
-        <message>
-            <source>Channel password could not be saved.</source>
-            <translation>Nepavyko išsaugoti kanalo slaptažodžio.</translation>
-        </message>
-        <message>
-            <source>Invalid channel password: %1</source>
-            <translation>Negaliojantis kanalo slaptažodis: %1</translation>
-        </message>
-        <message>
-            <source>Headless host could not initialize: %1</source>
-            <translation>Nepavyko inicijuoti begalvio pagrindinio kompiuterio: %1</translation>
-        </message>
-        <message>
-            <source>SquadSpeak headless could not start: %1</source>
-            <translation>Nepavyko paleisti SquadSpeak begalvio pagrindinio kompiuterio: %1</translation>
-        </message>
-        <message>
-            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
-            <translation>Rėmėjo veiksmas turi būti būsena, prisijungimas, atnaujinimas, atsijungimas arba atšaukimas. status sign-in refresh sign-out cancel</translation>
-        </message>
-        <message>
-            <source>A Supporter operation is in progress.</source>
-            <translation>Vykdoma rėmėjo operacija.</translation>
-        </message>
-        <message>
-            <source>Supporter access is unavailable in this build.</source>
-            <translation>Šiame versijoje rėmėjo prieiga nepasiekiama.</translation>
-        </message>
-        <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>Nustatymų pirmenybė: argumentai &gt; aplinka &gt; ypatybės &gt; išsaugotos serverio reikšmės.</translation>
+            <source>New image</source>
+            <translation>naujas vaizdas</translation>
         </message>
     </context>
     <context>
-        <name>Desktop</name>
+        <name>VideoCodec</name>
         <message>
-            <source>Open settings at startup.</source>
-            <translation>Paleidus atverti nustatymus.</translation>
+            <source>Video codec: %1</source>
+            <translation>Vaizdo kodekas: %1</translation>
         </message>
         <message>
-            <source>Open guided local test recording without starting network services.</source>
-            <translation>Atverti vietinį bandomąjį įrašymą su instrukcijomis nepaleidžiant tinklo paslaugų.</translation>
+            <source>Video codec ABI does not match its headers.</source>
+            <translation>Vaizdo kodeko ABI neatitinka jo antraštinių failų.</translation>
         </message>
         <message>
-            <source>Alternative file for audio profiles.</source>
-            <translation>Alternatyvus garso profilių failas.</translation>
+            <source>Video buffers could not be allocated.</source>
+            <translation>Nepavyko skirti atminties vaizdo buferiams.</translation>
         </message>
         <message>
-            <source>Load the interface without microphone capture and exit after one second.</source>
-            <translation>Įkelti sąsają be mikrofono įrašymo ir išeiti po vienos sekundės.</translation>
+            <source>Invalid video quality tier.</source>
+            <translation>Netinkamas vaizdo kokybės lygis.</translation>
         </message>
         <message>
-            <source>Save an image of the app window during the UI test.</source>
-            <translation>Sąsajos bandymo metu išsaugoti programos lango vaizdą.</translation>
+            <source>The screen source exceeds the supported capture size.</source>
+            <translation>Ekrano šaltinis viršija palaikomą fiksavimo dydį.</translation>
         </message>
         <message>
-            <source>The window image could not be saved.</source>
-            <translation>Nepavyko išsaugoti lango vaizdo.</translation>
+            <source>The screen source is too narrow.</source>
+            <translation>Ekrano šaltinis yra per siauras.</translation>
         </message>
         <message>
-            <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
-            <translation>Sistemos dėklas nepasiekiamas; programa lieka atverta lange.</translation>
+            <source>The video encoder could not be allocated.</source>
+            <translation>Nepavyko skirti atminties vaizdo kodavimo įrenginiui.</translation>
+        </message>
+        <message>
+            <source>No supported video encoder is available.</source>
+            <translation>Nėra jokio palaikomo vaizdo kodavimo įrenginio.</translation>
+        </message>
+        <message>
+            <source>Video encoder configuration is too large.</source>
+            <translation>Vaizdo kodavimo įrenginio konfigūracija yra per didelė.</translation>
+        </message>
+        <message>
+            <source>Video scaling could not be initialized.</source>
+            <translation>Nepavyko inicijuoti vaizdo mastelio keitimo.</translation>
+        </message>
+        <message>
+            <source>The encoder returned an empty video packet.</source>
+            <translation>Kodavimo įrenginys grąžino tuščią vaizdo paketą.</translation>
+        </message>
+        <message>
+            <source>Invalid video frame format.</source>
+            <translation>Netinkamas vaizdo kadro formatas.</translation>
+        </message>
+        <message>
+            <source>Invalid video decoder configuration.</source>
+            <translation>Netinkama vaizdo dekoderio konfigūracija.</translation>
+        </message>
+        <message>
+            <source>This video codec cannot be decoded.</source>
+            <translation>Šio vaizdo kodeko neįmanoma dekoduoti.</translation>
+        </message>
+        <message>
+            <source>Video decoder could not be allocated.</source>
+            <translation>Nepavyko skirti atminties vaizdo dekoderiui.</translation>
+        </message>
+        <message>
+            <source>Video decoder configuration could not be allocated.</source>
+            <translation>Nepavyko skirti atminties vaizdo dekoderio konfigūracijai.</translation>
+        </message>
+        <message>
+            <source>Decoded dimensions do not match the screen stream.</source>
+            <translation>Dekoduoti matmenys neatitinka ekrano srauto.</translation>
+        </message>
+        <message>
+            <source>Decoded image could not be allocated.</source>
+            <translation>Nepavyko skirti atminties dekoduotam vaizdui.</translation>
+        </message>
+        <message>
+            <source>Video color conversion could not be initialized.</source>
+            <translation>Nepavyko inicijuoti vaizdo spalvų konvertavimo.</translation>
+        </message>
+    </context>
+    <context>
+        <name>VoiceAvatar</name>
+        <message>
+            <source>Muted</source>
+            <translation>mikrofonas nutildytas</translation>
+        </message>
+        <message>
+            <source>Sleeping</source>
+            <translation>Miegas</translation>
+        </message>
+        <message>
+            <source>Offline</source>
+            <translation>neprisijungęs</translation>
+        </message>
+        <message>
+            <source>Speaking</source>
+            <translation>Kalbėjimas</translation>
+        </message>
+        <message>
+            <source>Unavailable</source>
+            <translation>nepasiekiamas</translation>
+        </message>
+        <message>
+            <source>Listening</source>
+            <translation>Klausymas</translation>
+        </message>
+        <message>
+            <source>Deafened</source>
+            <translation>garsiakalbiai nutildyti</translation>
+        </message>
+    </context>
+    <context>
+        <name>VoiceSession</name>
+        <message>
+            <source>Microphone muted</source>
+            <translation>mikrofonas nutildytas</translation>
+        </message>
+        <message>
+            <source>Push-to-talk held</source>
+            <translation>Tiesioginio pokalbio mygtukas laikomas nuspaustas</translation>
+        </message>
+        <message>
+            <source>Ready - push-to-talk released</source>
+            <translation>Paruošta - tiesioginio pokalbio mygtukas atleistas</translation>
+        </message>
+        <message>
+            <source>Microphone unmuted</source>
+            <translation>Mikrofonas įjungtas</translation>
+        </message>
+        <message>
+            <source>Settings could not be saved: %1</source>
+            <translation>Nepavyko išsaugoti nustatymų: %1</translation>
+        </message>
+        <message>
+            <source>The push-to-talk sequence cannot be incremented further.</source>
+            <translation>tiesioginio pokalbio seka negali būti toliau didinama.</translation>
+        </message>
+        <message>
+            <source>Choose System, Light or Dark.</source>
+            <translation>pasirinkite System, Light arba Dark.</translation>
+        </message>
+        <message>
+            <source>Choose a colour palette from the list.</source>
+            <translation>iš sąrašo pasirinkite spalvų paletę.</translation>
+        </message>
+        <message>
+            <source>Choose an available avatar.</source>
+            <translation>pasirinkite galimą avatarą.</translation>
+        </message>
+        <message>
+            <source>Invalid push-to-talk binding.</source>
+            <translation>Neteisingas tiesioginio ryšio įrišimas.</translation>
+        </message>
+        <message>
+            <source>Release the held push-to-talk key first.</source>
+            <translation>pirmiausia atleiskite palaikytą tiesioginio ryšio klavišą.</translation>
+        </message>
+        <message>
+            <source>Choose a language from the list.</source>
+            <translation>pasirinkite kalbą iš sąrašo.</translation>
+        </message>
+        <message>
+            <source>This avatar requires Supporter.</source>
+            <translation>Šiam avatarui reikalingas Supporter.</translation>
+        </message>
+        <message>
+            <source>The name must contain 1 to 64 characters.</source>
+            <translation>pavadinimą turi sudaryti nuo 1 iki 64 simbolių.</translation>
+        </message>
+        <message>
+            <source>The name may not contain control characters or line breaks.</source>
+            <translation>pavadinime negali būti valdymo simbolių ar eilučių lūžių.</translation>
+        </message>
+        <message>
+            <source>Session settings could not be read.</source>
+            <translation>Nepavyko perskaityti seanso nustatymų.</translation>
+        </message>
+        <message>
+            <source>Saved setting is invalid: %1</source>
+            <translation>Netinkamas išsaugotas nustatymas: %1</translation>
         </message>
     </context>
 </TS>

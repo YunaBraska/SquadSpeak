@@ -36,14 +36,6 @@
             <translation>Buka pengaturan privasi sistem dan izinkan SquadSpeak mengakses mikrofon.</translation>
         </message>
         <message>
-            <source>Microphone analysis active. Test audio stays on this computer.</source>
-            <translation>Analisis mikrofon aktif. Audio uji tetap berada di komputer ini.</translation>
-        </message>
-        <message>
-            <source>Finish the test recording before changing devices.</source>
-            <translation>Selesaikan rekaman uji sebelum mengganti perangkat.</translation>
-        </message>
-        <message>
             <source>The output format is not supported.</source>
             <translation>Format output tidak didukung.</translation>
         </message>
@@ -68,32 +60,12 @@
             <translation>Nada uji tidak dapat diputar.</translation>
         </message>
         <message>
-            <source>The microphone has provided no data for five seconds. Recording discarded.</source>
-            <translation>Mikrofon tidak memberikan data selama lima detik. Rekaman dibuang.</translation>
-        </message>
-        <message>
-            <source>The microphone was interrupted or changed. Recording discarded.</source>
-            <translation>Mikrofon terganggu atau diganti. Rekaman dibuang.</translation>
-        </message>
-        <message>
-            <source>Cancelled. The incomplete recording was discarded.</source>
-            <translation>Dibatalkan. Rekaman yang belum selesai dibuang.</translation>
-        </message>
-        <message>
             <source>No selected microphone is available</source>
             <translation>Mikrofon yang dipilih tidak tersedia</translation>
         </message>
         <message>
             <source>Allow microphone access in the system dialog.</source>
             <translation>Izinkan akses mikrofon dalam dialog sistem.</translation>
-        </message>
-        <message>
-            <source>Microphone capture active for the voice channel.</source>
-            <translation>Pengambilan mikrofon aktif untuk kanal suara.</translation>
-        </message>
-        <message>
-            <source>Microphone access was denied. Nothing was saved.</source>
-            <translation>Akses mikrofon ditolak. Tidak ada yang disimpan.</translation>
         </message>
         <message>
             <source>Microphone access is missing. Allow it in System Settings.</source>
@@ -259,103 +231,16 @@
             <source>App audio only</source>
             <translation>Hanya audio aplikasi</translation>
         </message>
-    </context>
-    <context>
-        <name>AudioRecording</name>
         <message>
-            <source>Incomplete audio block. Recording discarded.</source>
-            <translation>Blok audio tidak lengkap. Rekaman dibuang.</translation>
-        </message>
-        <message>
-            <source>Move about one meter from the microphone. Keep the background sound playing and read the sentence.</source>
-            <translation>Menjauhlah sekitar satu meter dari mikrofon. Biarkan suara latar tetap diputar dan baca kalimatnya.</translation>
-        </message>
-        <message>
-            <source>Voice with background sound</source>
-            <translation>Suara dengan suara latar</translation>
-        </message>
-        <message>
-            <source>The recordings folder could not be created.</source>
-            <translation>Folder rekaman tidak dapat dibuat.</translation>
-        </message>
-        <message>
-            <source>You can stop the background sound now.</source>
-            <translation>Sekarang Anda dapat menghentikan suara latar.</translation>
-        </message>
-        <message>
-            <source>Recordings saved</source>
-            <translation>Rekaman disimpan</translation>
-        </message>
-        <message>
-            <source>The test recording could not be saved completely.</source>
-            <translation>Rekaman uji tidak dapat disimpan sepenuhnya.</translation>
-        </message>
-        <message>
-            <source>Keep music off and stay quiet. Start when ready.</source>
-            <translation>Matikan musik dan tetap diam. Mulai saat siap.</translation>
-        </message>
-        <message>
-            <source>Your voice</source>
-            <translation>Suara Anda</translation>
-        </message>
-        <message>
-            <source>Play music or another background sound at a normal volume. Stay quiet while recording.</source>
-            <translation>Putar musik atau suara latar lain pada volume normal. Tetap diam selama perekaman.</translation>
-        </message>
-        <message>
-            <source>The test recording could not be created.</source>
-            <translation>Rekaman uji tidak dapat dibuat.</translation>
-        </message>
-        <message>
-            <source>Background sound</source>
-            <translation>Suara latar</translation>
-        </message>
-        <message>
-            <source>The window is open. I can hear the rain outside. One, two, three, four, five.</source>
-            <translation>Jendelanya terbuka. Saya dapat mendengar hujan di luar. Satu, dua, tiga, empat, lima.</translation>
-        </message>
-        <message>
-            <source>This microphone format is not supported for test recordings.</source>
-            <translation>Format mikrofon ini tidak didukung untuk rekaman uji.</translation>
-        </message>
-        <message>
-            <source>Keep the background volume unchanged. Read the sentence, then stop recording.</source>
-            <translation>Jangan ubah volume latar. Baca kalimatnya, lalu hentikan perekaman.</translation>
-        </message>
-        <message>
-            <source>Record at least half a second, then try again.</source>
-            <translation>Rekam setidaknya setengah detik, lalu coba lagi.</translation>
-        </message>
-        <message>
-            <source>Sit at your usual distance. Read the sentence, then stop recording.</source>
-            <translation>Duduklah pada jarak biasanya. Baca kalimatnya, lalu hentikan perekaman.</translation>
-        </message>
-        <message>
-            <source>The recording description could not be saved.</source>
-            <translation>Deskripsi rekaman tidak dapat disimpan.</translation>
-        </message>
-        <message>
-            <source>The WAV file could not be finalized.</source>
-            <translation>File WAV tidak dapat diselesaikan.</translation>
-        </message>
-        <message>
-            <source>The WAV header could not be written.</source>
-            <translation>Header WAV tidak dapat ditulis.</translation>
-        </message>
-        <message>
-            <source>Voice farther away</source>
-            <translation>Suara dari jarak lebih jauh</translation>
-        </message>
-        <message>
-            <source>Room sound</source>
-            <translation>Suara ruangan</translation>
+            <source>Speech output is unavailable.</source>
+            <translation>Keluaran ucapan tidak tersedia.</translation>
         </message>
     </context>
     <context>
         <name>AudioSettings</name>
         <message>
-            <source>Echo cancellation</source>
-            <translation>Pembatalan gema</translation>
+            <source>Echo</source>
+            <translation>Gema</translation>
         </message>
         <message>
             <source>Off</source>
@@ -402,12 +287,12 @@
             <translation>Pemutaran Anda</translation>
         </message>
         <message>
-            <source>Clear local key</source>
-            <translation>Hapus tombol lokal</translation>
+            <source>Clear key</source>
+            <translation>Hapus tombol</translation>
         </message>
         <message>
-            <source>Low cut</source>
-            <translation>Potong frekuensi rendah</translation>
+            <source>Highpass</source>
+            <translation>Lolos-tinggi</translation>
         </message>
         <message>
             <source>Microphone access is off</source>
@@ -418,32 +303,16 @@
             <translation>Perangkat input</translation>
         </message>
         <message>
-            <source>Microphone paused for others</source>
-            <translation>Mikrofon dijeda untuk orang lain</translation>
-        </message>
-        <message>
             <source>Cancel</source>
             <translation>Batal</translation>
-        </message>
-        <message>
-            <source>Guided recording</source>
-            <translation>Perekaman terpandu</translation>
         </message>
         <message>
             <source>Clipping. Reduce microphone gain.</source>
             <translation>Clipping. Kurangi gain mikrofon.</translation>
         </message>
         <message>
-            <source>Silent</source>
-            <translation>Hening</translation>
-        </message>
-        <message>
             <source>Test output</source>
             <translation>Uji output</translation>
-        </message>
-        <message>
-            <source>Voice level</source>
-            <translation>Level suara</translation>
         </message>
         <message>
             <source>Voice threshold</source>
@@ -462,20 +331,16 @@
             <translation>Perangkat terputus</translation>
         </message>
         <message>
-            <source>Local key</source>
-            <translation>Tombol lokal</translation>
+            <source>PTT key</source>
+            <translation>Tombol bicara</translation>
         </message>
         <message>
             <source>Voice activation</source>
             <translation>Aktivasi suara</translation>
         </message>
         <message>
-            <source>Remote PTT key</source>
-            <translation>Tombol PTT jarak jauh</translation>
-        </message>
-        <message>
-            <source>Noise reduction</source>
-            <translation>Pengurangan noise</translation>
+            <source>Denoise</source>
+            <translation>Peredam derau</translation>
         </message>
         <message>
             <source>Selected device is not connected</source>
@@ -486,32 +351,120 @@
             <translation>Akan mentransmisikan</translation>
         </message>
         <message>
-            <source>Microphone gain</source>
-            <translation>Gain mikrofon</translation>
-        </message>
-        <message>
-            <source>Clear remote key</source>
-            <translation>Hapus tombol jarak jauh</translation>
-        </message>
-        <message>
-            <source>Playback volume</source>
-            <translation>Volume pemutaran</translation>
+            <source>Gain</source>
+            <translation>Penguatan</translation>
         </message>
         <message>
             <source>Not assigned</source>
             <translation>Belum ditetapkan</translation>
         </message>
         <message>
-            <source>High cut</source>
-            <translation>Potong frekuensi tinggi</translation>
+            <source>Lowpass</source>
+            <translation>Lolos-rendah</translation>
         </message>
         <message>
             <source>Level audio automatically</source>
             <translation>Atur level audio secara otomatis</translation>
         </message>
+        <message>
+            <source>Voice volume</source>
+            <translation>Volume obrolan suara</translation>
+        </message>
+        <message>
+            <source>App sounds</source>
+            <translation>Suara aplikasi</translation>
+        </message>
+        <message>
+            <source>Read bot messages aloud</source>
+            <translation>Bacakan pesan bot</translation>
+        </message>
+        <message>
+            <source>Download a high-quality voice for this language in macOS settings.</source>
+            <translation>Unduh suara berkualitas tinggi untuk bahasa ini di pengaturan macOS.</translation>
+        </message>
+        <message>
+            <source>Bot voice</source>
+            <translation>Suara bot</translation>
+        </message>
+        <message>
+            <source>Automatic</source>
+            <translation>Otomatis</translation>
+        </message>
+        <message>
+            <source>Unavailable</source>
+            <translation>Tidak tersedia</translation>
+        </message>
+        <message>
+            <source>Download voices in your device's Accessibility speech settings.</source>
+            <translation>Unduh suara dari pengaturan ucapan di bagian Aksesibilitas perangkatmu.</translation>
+        </message>
+        <message>
+            <source>Voice download help</source>
+            <translation>Bantuan unduh suara</translation>
+        </message>
+        <message>
+            <source>Strength, not the percentage of echo removed.</source>
+            <translation>Kekuatan, bukan persentase gema yang dihilangkan.</translation>
+        </message>
+        <message>
+            <source>Auto also checks for speech, not just volume.</source>
+            <translation>Mode otomatis juga mendeteksi ucapan, bukan hanya volume.</translation>
+        </message>
     </context>
     <context>
         <name>Channels</name>
+        <message>
+            <source>Audio received</source>
+            <translation>Audio diterima</translation>
+        </message>
+        <message>
+            <source>Search channels</source>
+            <translation>Cari kanal</translation>
+        </message>
+        <message>
+            <source>No matches</source>
+            <translation>Tidak ada hasil</translation>
+        </message>
+        <message>
+            <source>Copy address</source>
+            <translation>Salin alamat</translation>
+        </message>
+        <message>
+            <source>Messages</source>
+            <translation>Pesan</translation>
+        </message>
+        <message>
+            <source>Message</source>
+            <translation>Pesan</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Buka</translation>
+        </message>
+        <message>
+            <source>Online</source>
+            <translation>Online</translation>
+        </message>
+        <message>
+            <source>Offline</source>
+            <translation>Offline</translation>
+        </message>
+        <message>
+            <source>No private messages</source>
+            <translation>Tidak ada pesan pribadi</translation>
+        </message>
+        <message>
+            <source>Private messages are unavailable for this contact.</source>
+            <translation>Pesan pribadi tidak tersedia untuk kontak ini.</translation>
+        </message>
+        <message>
+            <source>If asked, allow local network access. You can change this in system settings.</source>
+            <translation>Jika diminta, izinkan akses ke jaringan lokal. Kamu dapat mengubahnya di pengaturan sistem.</translation>
+        </message>
+        <message>
+            <source>Retry</source>
+            <translation>Coba lagi</translation>
+        </message>
         <message>
             <source>Updates</source>
             <translation>Pembaruan</translation>
@@ -531,6 +484,10 @@
         <message>
             <source>DDNS cannot bypass CGNAT. If your provider shares the public IP, use a private VPN on all participating devices or a publicly reachable server.</source>
             <translation>DDNS tidak dapat melewati CGNAT. Jika penyedia Anda berbagi IP publik, gunakan VPN pribadi di semua perangkat peserta atau server yang dapat dijangkau secara publik.</translation>
+        </message>
+        <message>
+            <source>Remove server</source>
+            <translation>Hapus server</translation>
         </message>
         <message>
             <source>Low</source>
@@ -653,10 +610,6 @@
             <translation>Suara notifikasi</translation>
         </message>
         <message>
-            <source>Lifetime for new messages. Earlier messages keep their expiry.</source>
-            <translation>Masa berlaku pesan baru. Pesan sebelumnya mempertahankan masa berlakunya.</translation>
-        </message>
-        <message>
             <source>Enable speakers</source>
             <translation>Aktifkan speaker</translation>
         </message>
@@ -691,10 +644,6 @@
         <message>
             <source>Allow device</source>
             <translation>Izinkan perangkat</translation>
-        </message>
-        <message>
-            <source>Receive quality: %1 kb/s per voice. Adjusts automatically for this device.</source>
-            <translation>Kualitas penerimaan: %1 kb/s per suara. Disesuaikan otomatis untuk perangkat ini.</translation>
         </message>
         <message>
             <source>Stop radio</source>
@@ -1188,6 +1137,50 @@
             <source>This device</source>
             <translation>Perangkat ini</translation>
         </message>
+        <message>
+            <source>Use default music volume</source>
+            <translation>Gunakan volume musik bawaan</translation>
+        </message>
+        <message>
+            <source>Show in Dock</source>
+            <translation>Tampilkan di Dock</translation>
+        </message>
+        <message>
+            <source>App language</source>
+            <translation>Bahasa aplikasi</translation>
+        </message>
+        <message>
+            <source>Send in</source>
+            <translation>Kirim dalam</translation>
+        </message>
+        <message>
+            <source>Hear in</source>
+            <translation>Dengarkan dalam</translation>
+        </message>
+        <message>
+            <source>Download language models for %1 and %2?</source>
+            <translation>Unduh model bahasa untuk %1 dan %2?</translation>
+        </message>
+        <message>
+            <source>Download</source>
+            <translation>Unduh</translation>
+        </message>
+        <message>
+            <source>PTT, chat and channel controls. Uses the controlled device's microphone.</source>
+            <translation>Kontrol PTT, obrolan, dan kanal. Mikrofon perangkat yang dikendalikan digunakan.</translation>
+        </message>
+        <message>
+            <source>Connect the other device to one of your channels, then allow it here.</source>
+            <translation>Hubungkan perangkat lain ke salah satu kanalmu, lalu izinkan di sini.</translation>
+        </message>
+        <message>
+            <source>On the other device, open Settings &gt; Input &gt; Remote control and allow this device.</source>
+            <translation>Di perangkat lain, buka Pengaturan &gt; Input &gt; Kontrol jarak jauh lalu izinkan perangkat ini.</translation>
+        </message>
+        <message>
+            <source>Unread messages</source>
+            <translation>Pesan belum dibaca</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1299,6 +1292,22 @@
             <source>The sanitized image could not be written completely.</source>
             <translation>Gambar yang dibersihkan tidak dapat ditulis sepenuhnya.</translation>
         </message>
+        <message>
+            <source>%1 joined.</source>
+            <translation>%1 bergabung.</translation>
+        </message>
+        <message>
+            <source>%1 left.</source>
+            <translation>%1 keluar.</translation>
+        </message>
+        <message>
+            <source>%1 was kicked.</source>
+            <translation>%1 dikeluarkan.</translation>
+        </message>
+        <message>
+            <source>%1 was banned from the channel.</source>
+            <translation>%1 diblokir dari kanal.</translation>
+        </message>
     </context>
     <context>
         <name>ChatPanel</name>
@@ -1363,22 +1372,6 @@
             <translation>Memuat...</translation>
         </message>
         <message>
-            <source>%1 joined.</source>
-            <translation>%1 bergabung.</translation>
-        </message>
-        <message>
-            <source>%1 left.</source>
-            <translation>%1 keluar.</translation>
-        </message>
-        <message>
-            <source>%1 was kicked.</source>
-            <translation>%1 dikeluarkan.</translation>
-        </message>
-        <message>
-            <source>%1 was banned from the channel.</source>
-            <translation>%1 diblokir dari kanal.</translation>
-        </message>
-        <message>
             <source>Message could not be sent. Check the connection and text length.</source>
             <translation>Pesan tidak dapat dikirim. Periksa koneksi dan panjang teks.</translation>
         </message>
@@ -1404,7 +1397,400 @@
         </message>
     </context>
     <context>
+        <name>Desktop</name>
+        <message>
+            <source>Open settings at startup.</source>
+            <translation>Buka pengaturan saat aplikasi dimulai.</translation>
+        </message>
+        <message>
+            <source>Alternative file for audio profiles.</source>
+            <translation>Berkas alternatif untuk profil audio.</translation>
+        </message>
+        <message>
+            <source>Load the interface without microphone capture and exit after one second.</source>
+            <translation>Muat antarmuka tanpa merekam mikrofon dan keluar setelah satu detik.</translation>
+        </message>
+        <message>
+            <source>Save an image of the app window during the UI test.</source>
+            <translation>Simpan gambar jendela aplikasi selama pengujian antarmuka.</translation>
+        </message>
+        <message>
+            <source>The window image could not be saved.</source>
+            <translation>Gambar jendela tidak dapat disimpan.</translation>
+        </message>
+        <message>
+            <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
+            <translation>Baki sistem tidak tersedia; aplikasi tetap terbuka dalam jendela.</translation>
+        </message>
+    </context>
+    <context>
+        <name>Headless</name>
+        <message>
+            <source>Host display name.</source>
+            <translation>Nama tampilan host.</translation>
+        </message>
+        <message>
+            <source>Command failed.</source>
+            <translation>Perintah gagal.</translation>
+        </message>
+        <message>
+            <source>%1 must be an integer.</source>
+            <translation>%1 harus berupa bilangan bulat.</translation>
+        </message>
+        <message>
+            <source>Requests must be on/off or true/false.</source>
+            <translation>Permintaan harus bernilai on/off atau true/false.</translation>
+        </message>
+        <message>
+            <source>Unknown host property: %1</source>
+            <translation>Properti host tidak dikenal: %1</translation>
+        </message>
+        <message>
+            <source>Run without GUI, microphone capture, or local audio output.</source>
+            <translation>Jalankan tanpa antarmuka grafis, perekaman mikrofon, atau keluaran audio lokal.</translation>
+        </message>
+        <message>
+            <source>Server storage prefix. Personal/audio/GUI profiles are not loaded.</source>
+            <translation>Awalan penyimpanan server. Profil pribadi, audio, dan antarmuka tidak dimuat.</translation>
+        </message>
+        <message>
+            <source>Optional private identity file instead of the OS credential store (Linux/macOS). Parent directory must exist and belong to this account.</source>
+            <translation>Berkas identitas pribadi opsional sebagai pengganti penyimpanan kredensial OS (Linux/macOS). Direktori induk harus ada dan dimiliki akun ini.</translation>
+        </message>
+        <message>
+            <source>UTF-8 key=value properties or JSON host preset. Default: application.properties, then config/application.properties beside the app.</source>
+            <translation>Properti key=value dalam UTF-8 atau prasetel host JSON. Bawaan: application.properties, lalu config/application.properties di samping aplikasi.</translation>
+        </message>
+        <message>
+            <source>Channel display name.</source>
+            <translation>Nama tampilan channel.</translation>
+        </message>
+        <message>
+            <source>System and radio bot display name.</source>
+            <translation>Nama tampilan bot sistem dan radio bersama.</translation>
+        </message>
+        <message>
+            <source>TCP service port (1-65535).</source>
+            <translation>Port layanan TCP (1-65535).</translation>
+        </message>
+        <message>
+            <source>Headless admission is always on; only 'on' or 'true' is accepted.</source>
+            <translation>Penerimaan tanpa antarmuka selalu aktif; hanya 'on' atau 'true' yang diterima.</translation>
+        </message>
+        <message>
+            <source>Preapprove a device ID; repeat for several devices. Existing bans remain.</source>
+            <translation>Setujui ID perangkat sebelumnya; ulangi untuk beberapa perangkat. Pemblokiran yang ada tetap berlaku.</translation>
+        </message>
+        <message>
+            <source>Block a device ID; repeat for several devices.</source>
+            <translation>Blokir ID perangkat; ulangi untuk beberapa perangkat.</translation>
+        </message>
+        <message>
+            <source>Read a UTF-8 channel password from a file before listening. An empty file removes it.</source>
+            <translation>Baca kata sandi channel dari berkas UTF-8 sebelum menerima koneksi. Berkas kosong menghapus kata sandi.</translation>
+        </message>
+        <message>
+            <source>Channel password. Empty removes it; environment or config avoids process-list exposure.</source>
+            <translation>Kata sandi channel. Nilai kosong menghapusnya; lingkungan atau konfigurasi mencegahnya tampil dalam daftar proses.</translation>
+        </message>
+        <message>
+            <source>SquadSpeak headless local channel host</source>
+            <translation>Host channel lokal SquadSpeak tanpa antarmuka</translation>
+        </message>
+        <message>
+            <source>Environment variables (SQUADSPEAK_ prefix):</source>
+            <translation>Variabel lingkungan (awalan SQUADSPEAK_):</translation>
+        </message>
+        <message>
+            <source>Host configuration could not be read or exceeds 1 MiB.</source>
+            <translation>Konfigurasi host tidak dapat dibaca atau melebihi 1 MiB.</translation>
+        </message>
+        <message>
+            <source>Host configuration must be UTF-8.</source>
+            <translation>Konfigurasi host harus menggunakan UTF-8.</translation>
+        </message>
+        <message>
+            <source>Host preset must be a JSON object.</source>
+            <translation>Prasetel host harus berupa objek JSON.</translation>
+        </message>
+        <message>
+            <source>Property line %1 must use key=value.</source>
+            <translation>Baris properti %1 harus menggunakan key=value.</translation>
+        </message>
+        <message>
+            <source>Property line %1: %2</source>
+            <translation>Baris properti %1: %2</translation>
+        </message>
+        <message>
+            <source>Standard input has no file descriptor.</source>
+            <translation>Masukan standar tidak memiliki deskriptor berkas.</translation>
+        </message>
+        <message>
+            <source>Standard input could not be inspected.</source>
+            <translation>Masukan standar tidak dapat diperiksa.</translation>
+        </message>
+        <message>
+            <source>Could not write the command response: %1</source>
+            <translation>Respons perintah tidak dapat ditulis: %1</translation>
+        </message>
+        <message>
+            <source>Standard input could not be read: %1</source>
+            <translation>Masukan standar tidak dapat dibaca: %1</translation>
+        </message>
+        <message>
+            <source>Input line exceeds 65536 bytes.</source>
+            <translation>Baris masukan melebihi 65536 byte.</translation>
+        </message>
+        <message>
+            <source>Each input line must be a JSON object.</source>
+            <translation>Setiap baris masukan harus berupa objek JSON.</translation>
+        </message>
+        <message>
+            <source>Input ended before a complete JSON line.</source>
+            <translation>Masukan berakhir sebelum baris JSON lengkap.</translation>
+        </message>
+        <message>
+            <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
+            <translation>ID channel milik sendiri opsional untuk perintah status, configure, password, admission, history, chat, dan radio; bawaannya adalah channel utama.</translation>
+        </message>
+        <message>
+            <source>Channel action must be list, add or remove.</source>
+            <translation>Tindakan channel harus berupa list, add, atau remove.</translation>
+        </message>
+        <message>
+            <source>Removing an own channel deletes its history, images, permissions and radio settings. Set confirmed=true to proceed.</source>
+            <translation>Menghapus channel milik sendiri menghapus riwayat, gambar, izin, dan pengaturan radionya. Atur confirmed=true untuk melanjutkan.</translation>
+        </message>
+        <message>
+            <source>id must identify an additional own channel.</source>
+            <translation>id harus mengidentifikasi channel tambahan milik sendiri.</translation>
+        </message>
+        <message>
+            <source>The additional own channel could not be removed: %1</source>
+            <translation>Channel tambahan milik sendiri tidak dapat dihapus: %1</translation>
+        </message>
+        <message>
+            <source>channelId must identify an own channel.</source>
+            <translation>channelId harus mengidentifikasi channel milik sendiri.</translation>
+        </message>
+        <message>
+            <source>values must be a host settings object.</source>
+            <translation>values harus berupa objek pengaturan host.</translation>
+        </message>
+        <message>
+            <source>Headless admission is always enabled for non-banned devices; requests off is not supported.</source>
+            <translation>Penerimaan tanpa antarmuka selalu aktif untuk perangkat yang tidak diblokir; requests off tidak didukung.</translation>
+        </message>
+        <message>
+            <source>value must be a password of at most 1024 UTF-8 bytes without control characters; an empty string removes it.</source>
+            <translation>value harus berupa kata sandi paling banyak 1024 byte UTF-8 tanpa karakter kontrol; string kosong menghapusnya.</translation>
+        </message>
+        <message>
+            <source>The channel is not ready or a password change is in progress.</source>
+            <translation>Channel belum siap atau perubahan kata sandi sedang berlangsung.</translation>
+        </message>
+        <message>
+            <source>The channel was removed while saving the password.</source>
+            <translation>Channel dihapus saat kata sandi sedang disimpan.</translation>
+        </message>
+        <message>
+            <source>id is required.</source>
+            <translation>id diperlukan.</translation>
+        </message>
+        <message>
+            <source>text must be a valid non-empty chat message.</source>
+            <translation>text harus berupa pesan chat yang valid dan tidak kosong.</translation>
+        </message>
+        <message>
+            <source>The local channel is not ready.</source>
+            <translation>Channel lokal belum siap.</translation>
+        </message>
+        <message>
+            <source>The channel's radio is unavailable.</source>
+            <translation>Radio channel tidak tersedia.</translation>
+        </message>
+        <message>
+            <source>Unknown command. Use help.</source>
+            <translation>Perintah tidak dikenal. Gunakan help.</translation>
+        </message>
+        <message>
+            <source>search requires a query, non-negative offset and limit from 1 to 128.</source>
+            <translation>search memerlukan query, offset nonnegatif, dan limit dari 1 hingga 128.</translation>
+        </message>
+        <message>
+            <source>add creates an id; update requires an existing id.</source>
+            <translation>add membuat id; update memerlukan id yang sudah ada.</translation>
+        </message>
+        <message>
+            <source>A station is already being checked.</source>
+            <translation>Sebuah stasiun sedang diperiksa.</translation>
+        </message>
+        <message>
+            <source>The channel was removed while checking the station.</source>
+            <translation>Channel dihapus saat stasiun sedang diperiksa.</translation>
+        </message>
+        <message>
+            <source>Unknown radio action.</source>
+            <translation>Tindakan radio tidak dikenal.</translation>
+        </message>
+        <message>
+            <source>Could not load language: %1</source>
+            <translation>Bahasa tidak dapat dimuat: %1</translation>
+        </message>
+        <message>
+            <source>The %1 option is incompatible with --headless.</source>
+            <translation>Opsi %1 tidak kompatibel dengan --headless.</translation>
+        </message>
+        <message>
+            <source>Unexpected positional arguments. Use --help.</source>
+            <translation>Argumen posisi tidak diharapkan. Gunakan --help.</translation>
+        </message>
+        <message>
+            <source>--config / -f requires a non-empty path.</source>
+            <translation>--config / -f memerlukan jalur yang tidak kosong.</translation>
+        </message>
+        <message>
+            <source>Choose --password or --password-file, not both.</source>
+            <translation>Pilih --password atau --password-file, bukan keduanya.</translation>
+        </message>
+        <message>
+            <source>Choose SQUADSPEAK_PASSWORD or SQUADSPEAK_PASSWORD_FILE, not both.</source>
+            <translation>Pilih SQUADSPEAK_PASSWORD atau SQUADSPEAK_PASSWORD_FILE, bukan keduanya.</translation>
+        </message>
+        <message>
+            <source>Choose password or passwordFile in one configuration layer, not both.</source>
+            <translation>Pilih password atau passwordFile dalam satu lapisan konfigurasi, bukan keduanya.</translation>
+        </message>
+        <message>
+            <source>passwordFile must be a non-empty path.</source>
+            <translation>passwordFile harus berupa jalur yang tidak kosong.</translation>
+        </message>
+        <message>
+            <source>Password file could not be read or is too large.</source>
+            <translation>Berkas kata sandi tidak dapat dibaca atau terlalu besar.</translation>
+        </message>
+        <message>
+            <source>Password file must contain at most 1024 UTF-8 bytes without control characters.</source>
+            <translation>Berkas kata sandi harus berisi paling banyak 1024 byte UTF-8 tanpa karakter kontrol.</translation>
+        </message>
+        <message>
+            <source>Password must be a string of at most 1024 UTF-8 bytes without control characters.</source>
+            <translation>Kata sandi harus berupa string paling banyak 1024 byte UTF-8 tanpa karakter kontrol.</translation>
+        </message>
+        <message>
+            <source>settingsFile must be a non-empty path.</source>
+            <translation>settingsFile harus berupa jalur yang tidak kosong.</translation>
+        </message>
+        <message>
+            <source>identityFile must be a non-empty path.</source>
+            <translation>identityFile harus berupa jalur yang tidak kosong.</translation>
+        </message>
+        <message>
+            <source>The settings directory could not be created.</source>
+            <translation>Direktori pengaturan tidak dapat dibuat.</translation>
+        </message>
+        <message>
+            <source>This SquadSpeak profile is already running or cannot be locked.</source>
+            <translation>Profil SquadSpeak ini sudah berjalan atau tidak dapat dikunci.</translation>
+        </message>
+        <message>
+            <source>Standard input could not be opened.</source>
+            <translation>Masukan standar tidak dapat dibuka.</translation>
+        </message>
+        <message>
+            <source>Standard output could not be opened.</source>
+            <translation>Keluaran standar tidak dapat dibuka.</translation>
+        </message>
+        <message>
+            <source>This identity file is already in use or cannot be locked.</source>
+            <translation>Berkas identitas ini sedang digunakan atau tidak dapat dikunci.</translation>
+        </message>
+        <message>
+            <source>Invalid host configuration: %1</source>
+            <translation>Konfigurasi host tidak valid: %1</translation>
+        </message>
+        <message>
+            <source>Radio channels could not be initialized.</source>
+            <translation>Channel radio tidak dapat diinisialisasi.</translation>
+        </message>
+        <message>
+            <source>Headless host could not start: %1</source>
+            <translation>Host tanpa antarmuka tidak dapat dimulai: %1</translation>
+        </message>
+        <message>
+            <source>Channel password could not be saved.</source>
+            <translation>Kata sandi channel tidak dapat disimpan.</translation>
+        </message>
+        <message>
+            <source>Invalid channel password: %1</source>
+            <translation>Kata sandi channel tidak valid: %1</translation>
+        </message>
+        <message>
+            <source>Headless host could not initialize: %1</source>
+            <translation>Host tanpa antarmuka tidak dapat diinisialisasi: %1</translation>
+        </message>
+        <message>
+            <source>SquadSpeak headless could not start: %1</source>
+            <translation>SquadSpeak tanpa antarmuka tidak dapat dimulai: %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>Tindakan pendukung harus berupa status, masuk, segarkan, keluar, atau batal. sign-in refresh sign-out cancel</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>Operasi Pendukung sedang berlangsung.</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>Akses pendukung tidak tersedia di build ini.</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>Prioritas pengaturan: argumen &gt; lingkungan &gt; properti &gt; nilai server yang disimpan.</translation>
+        </message>
+    </context>
+    <context>
+        <name>License</name>
+        <message>
+            <source>License storage is busy or unavailable.</source>
+            <translation>Penyimpanan lisensi sibuk atau tidak tersedia.</translation>
+        </message>
+        <message>
+            <source>License storage is unavailable.</source>
+            <translation>Penyimpanan lisensi tidak tersedia.</translation>
+        </message>
+        <message>
+            <source>Sign-in expired. Try again.</source>
+            <translation>Masa masuk sudah habis. Coba lagi.</translation>
+        </message>
+        <message>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>Proses masuk GitHub tidak tersedia. Coba lagi.</translation>
+        </message>
+        <message>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>Proses masuk GitHub belum selesai. Coba lagi.</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>GitHub tidak dapat diperiksa. Akses offline berlangsung paling lama tujuh hari.</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>Masuk dengan GitHub lagi.</translation>
+        </message>
+    </context>
+    <context>
         <name>LocalChannel</name>
+        <message>
+            <source>Insufficient permissions.</source>
+            <translation>Izin tidak mencukupi.</translation>
+        </message>
+        <message>
+            <source>Blocked</source>
+            <translation>Diblokir</translation>
+        </message>
         <message>
             <source>Host is not responding. Reconnecting.</source>
             <translation>Host tidak merespons. Menghubungkan kembali.</translation>
@@ -1926,8 +2312,8 @@
             <translation>Transfer gambar terlalu lama.</translation>
         </message>
         <message>
-            <source>The channel is full. Text chat is still available.</source>
-            <translation>Channel penuh. Chat teks tetap tersedia.</translation>
+            <source>The host is busy. Try again shortly.</source>
+            <translation>Host sedang sibuk. Coba lagi sebentar lagi.</translation>
         </message>
         <message>
             <source>All own channels use the device's shared port.</source>
@@ -2189,6 +2575,53 @@
             <source>Voice relay codec could not be configured.</source>
             <translation>Codec relai suara tidak dapat dikonfigurasi.</translation>
         </message>
+        <message>
+            <source>Unsupported audio codec</source>
+            <translation>Kodek audio tidak didukung</translation>
+        </message>
+        <message>
+            <source>Speaking is not allowed in this channel.</source>
+            <translation>Berbicara tidak diizinkan di channel ini.</translation>
+        </message>
+    </context>
+    <context>
+        <name>LocalLanguage</name>
+        <message>
+            <source>Translation (experimental)</source>
+            <translation>Terjemahan (eksperimental)</translation>
+        </message>
+        <message>
+            <source>Translate messages</source>
+            <translation>Terjemahkan pesan</translation>
+        </message>
+        <message>
+            <source>Translated voice</source>
+            <translation>Suara terjemahan</translation>
+        </message>
+        <message>
+            <source>Original audio</source>
+            <translation>Audio asli</translation>
+        </message>
+        <message>
+            <source>Original text</source>
+            <translation>Teks asli</translation>
+        </message>
+        <message>
+            <source>Prepare languages</source>
+            <translation>Siapkan bahasa</translation>
+        </message>
+        <message>
+            <source>Local language processing is unavailable.</source>
+            <translation>Pemrosesan bahasa lokal tidak tersedia.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be read.</source>
+            <translation>Pengaturan bahasa tidak dapat dibaca.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be saved.</source>
+            <translation>Pengaturan bahasa tidak dapat disimpan.</translation>
+        </message>
     </context>
     <context>
         <name>PushToTalkKey</name>
@@ -2329,50 +2762,61 @@
         </message>
     </context>
     <context>
-        <name>RecordingPanel</name>
+        <name>ScreenPanel</name>
         <message>
-            <source>Stop</source>
-            <translation>Berhenti</translation>
+            <source>Video paused</source>
+            <translation>Video dijeda</translation>
         </message>
         <message>
-            <source>Start</source>
-            <translation>Mulai</translation>
+            <source>Stream ended</source>
+            <translation>Stream berakhir</translation>
         </message>
         <message>
-            <source>Saved on this device only. Nothing is uploaded.</source>
-            <translation>Tersimpan hanya di perangkat ini. Tidak ada yang diunggah.</translation>
+            <source>Connecting</source>
+            <translation>Menghubungkan</translation>
         </message>
         <message>
-            <source>Keep this take or record it again.</source>
-            <translation>Pertahankan rekaman ini atau rekam lagi.</translation>
+            <source>Open screen stream</source>
+            <translation>Buka stream layar</translation>
         </message>
         <message>
-            <source>Record again</source>
-            <translation>Rekam lagi</translation>
+            <source>Screen stream</source>
+            <translation>Stream layar</translation>
         </message>
         <message>
-            <source>Use recording</source>
-            <translation>Gunakan rekaman</translation>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
+        </message>
+    </context>
+    <context>
+        <name>ScreenShare</name>
+        <message>
+            <source>Allow screen recording in system settings.</source>
+            <translation>Izinkan perekaman layar di pengaturan sistem.</translation>
         </message>
         <message>
-            <source>Recording progress</source>
-            <translation>Progres perekaman</translation>
+            <source>The shared screen was removed. Select a source to start again.</source>
+            <translation>Layar yang dibagikan telah dihapus. Pilih sumber untuk memulai lagi.</translation>
         </message>
         <message>
-            <source>Step %1 of %2</source>
-            <translation>Langkah %1 dari %2</translation>
+            <source>The shared window was closed. Select a source to start again.</source>
+            <translation>Jendela yang dibagikan telah ditutup. Pilih sumber untuk memulai lagi.</translation>
         </message>
         <message>
-            <source>Open recordings</source>
-            <translation>Buka rekaman</translation>
+            <source>The selected screen is no longer available.</source>
+            <translation>Layar yang dipilih tidak lagi tersedia.</translation>
         </message>
         <message>
-            <source>Reset test</source>
-            <translation>Atur ulang pengujian</translation>
+            <source>The selected window is no longer available.</source>
+            <translation>Jendela yang dipilih tidak lagi tersedia.</translation>
         </message>
         <message>
-            <source>%1 s remaining / %2 dBFS</source>
-            <translation>tersisa %1 dtk / %2 dBFS</translation>
+            <source>The selected source exceeds the capture size limit.</source>
+            <translation>Sumber yang dipilih melebihi batas ukuran tangkapan.</translation>
+        </message>
+        <message>
+            <source>Close a video view before opening another stream.</source>
+            <translation>Tutup tampilan video sebelum membuka siaran lain.</translation>
         </message>
     </context>
     <context>
@@ -2449,10 +2893,6 @@
             <translation>Mengumpulkan sinyal...</translation>
         </message>
         <message>
-            <source>Dashed curve: configured gain and frequency cuts, using the right dB scale. Noise reduction and voice activation are not part of this curve.</source>
-            <translation>Kurva putus-putus: gain dan pemotongan frekuensi yang dikonfigurasi, menggunakan skala dB di kanan. Pengurangan noise dan aktivasi suara bukan bagian dari kurva ini.</translation>
-        </message>
-        <message>
             <source>Microphone preview is not running</source>
             <translation>Pratinjau mikrofon tidak berjalan</translation>
         </message>
@@ -2463,303 +2903,6 @@
         <message>
             <source>Peak: %1</source>
             <translation>Puncak: %1</translation>
-        </message>
-    </context>
-    <context>
-        <name>Tray</name>
-        <message>
-            <source>Quit</source>
-            <translation>Keluar</translation>
-        </message>
-        <message>
-            <source>SquadSpeak - speaking</source>
-            <translation>SquadSpeak - berbicara</translation>
-        </message>
-        <message>
-            <source>Settings</source>
-            <translation>Pengaturan</translation>
-        </message>
-        <message>
-            <source>Channels</source>
-            <translation>Kanal</translation>
-        </message>
-        <message>
-            <source>New image</source>
-            <translation>Gambar baru</translation>
-        </message>
-    </context>
-    <context>
-        <name>VoiceAvatar</name>
-        <message>
-            <source>Muted</source>
-            <translation>Mikrofon dibisukan</translation>
-        </message>
-        <message>
-            <source>Sleeping</source>
-            <translation>Tidur</translation>
-        </message>
-        <message>
-            <source>Offline</source>
-            <translation>Offline</translation>
-        </message>
-        <message>
-            <source>Speaking</source>
-            <translation>Berbicara</translation>
-        </message>
-        <message>
-            <source>Unavailable</source>
-            <translation>Tidak tersedia</translation>
-        </message>
-        <message>
-            <source>Listening</source>
-            <translation>Mendengarkan</translation>
-        </message>
-        <message>
-            <source>Deafened</source>
-            <translation>Speaker dibisukan</translation>
-        </message>
-    </context>
-    <context>
-        <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>Tidak tersedia - pengaturan audio atau uji nada</translation>
-        </message>
-        <message>
-            <source>Microphone muted</source>
-            <translation>Mikrofon dibisukan</translation>
-        </message>
-        <message>
-            <source>Push-to-talk held</source>
-            <translation>Push-to-talk ditahan</translation>
-        </message>
-        <message>
-            <source>Ready - push-to-talk released</source>
-            <translation>Siap - push-to-talk dilepas</translation>
-        </message>
-        <message>
-            <source>Microphone unmuted</source>
-            <translation>Mikrofon tidak dibisukan</translation>
-        </message>
-        <message>
-            <source>Settings could not be saved: %1</source>
-            <translation>Pengaturan tidak dapat disimpan: %1</translation>
-        </message>
-        <message>
-            <source>The push-to-talk sequence cannot be incremented further.</source>
-            <translation>Urutan push-to-talk tidak dapat ditambah lagi.</translation>
-        </message>
-        <message>
-            <source>Choose System, Light or Dark.</source>
-            <translation>Pilih Sistem, Terang, atau Gelap.</translation>
-        </message>
-        <message>
-            <source>Choose a colour palette from the list.</source>
-            <translation>Pilih palet warna dari daftar.</translation>
-        </message>
-        <message>
-            <source>Choose an available avatar.</source>
-            <translation>Pilih avatar yang tersedia.</translation>
-        </message>
-        <message>
-            <source>Invalid push-to-talk binding.</source>
-            <translation>Binding push-to-talk tidak valid.</translation>
-        </message>
-        <message>
-            <source>Release the held push-to-talk key first.</source>
-            <translation>Lepaskan tombol push-to-talk yang ditahan terlebih dahulu.</translation>
-        </message>
-        <message>
-            <source>Choose a language from the list.</source>
-            <translation>Pilih bahasa dari daftar.</translation>
-        </message>
-        <message>
-            <source>This avatar requires Supporter.</source>
-            <translation>Avatar ini memerlukan Supporter.</translation>
-        </message>
-        <message>
-            <source>The name must contain 1 to 64 characters.</source>
-            <translation>Nama harus berisi 1 hingga 64 karakter.</translation>
-        </message>
-        <message>
-            <source>The name may not contain control characters or line breaks.</source>
-            <translation>Nama tidak boleh berisi karakter kontrol atau baris baru.</translation>
-        </message>
-        <message>
-            <source>Session settings could not be read.</source>
-            <translation>Pengaturan sesi tidak dapat dibaca.</translation>
-        </message>
-        <message>
-            <source>Saved setting is invalid: %1</source>
-            <translation>Pengaturan tersimpan tidak valid: %1</translation>
-        </message>
-    </context>
-    <context>
-        <name>License</name>
-        <message>
-            <source>License storage is busy or unavailable.</source>
-            <translation>Penyimpanan lisensi sibuk atau tidak tersedia.</translation>
-        </message>
-        <message>
-            <source>License storage is unavailable.</source>
-            <translation>Penyimpanan lisensi tidak tersedia.</translation>
-        </message>
-        <message>
-            <source>Sign-in expired. Try again.</source>
-            <translation>Masa masuk sudah habis. Coba lagi.</translation>
-        </message>
-        <message>
-            <source>GitHub sign-in is unavailable. Try again.</source>
-            <translation>Proses masuk GitHub tidak tersedia. Coba lagi.</translation>
-        </message>
-        <message>
-            <source>GitHub sign-in was not completed. Try again.</source>
-            <translation>Proses masuk GitHub belum selesai. Coba lagi.</translation>
-        </message>
-        <message>
-            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
-            <translation>GitHub tidak dapat diperiksa. Akses offline berlangsung paling lama tujuh hari.</translation>
-        </message>
-        <message>
-            <source>Sign in with GitHub again.</source>
-            <translation>Masuk dengan GitHub lagi.</translation>
-        </message>
-    </context>
-    <context>
-        <name>ScreenShare</name>
-        <message>
-            <source>The shared screen was removed. Select a source to start again.</source>
-            <translation>Layar yang dibagikan telah dihapus. Pilih sumber untuk memulai lagi.</translation>
-        </message>
-        <message>
-            <source>The shared window was closed. Select a source to start again.</source>
-            <translation>Jendela yang dibagikan telah ditutup. Pilih sumber untuk memulai lagi.</translation>
-        </message>
-        <message>
-            <source>The selected screen is no longer available.</source>
-            <translation>Layar yang dipilih tidak lagi tersedia.</translation>
-        </message>
-        <message>
-            <source>The selected window is no longer available.</source>
-            <translation>Jendela yang dipilih tidak lagi tersedia.</translation>
-        </message>
-        <message>
-            <source>The selected source exceeds the capture size limit.</source>
-            <translation>Sumber yang dipilih melebihi batas ukuran tangkapan.</translation>
-        </message>
-        <message>
-            <source>Close a video view before opening another stream.</source>
-            <translation>Tutup tampilan video sebelum membuka siaran lain.</translation>
-        </message>
-    </context>
-    <context>
-        <name>ScreenPanel</name>
-        <message>
-            <source>Media capacity reached</source>
-            <translation>Kapasitas media tercapai</translation>
-        </message>
-        <message>
-            <source>Video paused</source>
-            <translation>Video dijeda</translation>
-        </message>
-        <message>
-            <source>Stream ended</source>
-            <translation>Stream berakhir</translation>
-        </message>
-        <message>
-            <source>Connecting</source>
-            <translation>Menghubungkan</translation>
-        </message>
-        <message>
-            <source>Open screen stream</source>
-            <translation>Buka stream layar</translation>
-        </message>
-        <message>
-            <source>Screen stream</source>
-            <translation>Stream layar</translation>
-        </message>
-        <message>
-            <source>%1 kbit/s</source>
-            <translation>%1 kbit/s</translation>
-        </message>
-    </context>
-    <context>
-        <name>VideoCodec</name>
-        <message>
-            <source>Video codec: %1</source>
-            <translation>Codec video: %1</translation>
-        </message>
-        <message>
-            <source>Video codec ABI does not match its headers.</source>
-            <translation>ABI codec video tidak cocok dengan berkas header-nya.</translation>
-        </message>
-        <message>
-            <source>Video buffers could not be allocated.</source>
-            <translation>Memori untuk buffer video tidak dapat dialokasikan.</translation>
-        </message>
-        <message>
-            <source>Invalid video quality tier.</source>
-            <translation>Tingkat kualitas video tidak valid.</translation>
-        </message>
-        <message>
-            <source>The screen source exceeds the supported capture size.</source>
-            <translation>Sumber layar melebihi ukuran tangkapan yang didukung.</translation>
-        </message>
-        <message>
-            <source>The screen source is too narrow.</source>
-            <translation>Sumber layar terlalu sempit.</translation>
-        </message>
-        <message>
-            <source>The video encoder could not be allocated.</source>
-            <translation>Memori untuk pengode video tidak dapat dialokasikan.</translation>
-        </message>
-        <message>
-            <source>No supported video encoder is available.</source>
-            <translation>Tidak ada pengode video yang didukung.</translation>
-        </message>
-        <message>
-            <source>Video encoder configuration is too large.</source>
-            <translation>Konfigurasi pengode video terlalu besar.</translation>
-        </message>
-        <message>
-            <source>Video scaling could not be initialized.</source>
-            <translation>Penskalaan video tidak dapat diinisialisasi.</translation>
-        </message>
-        <message>
-            <source>The encoder returned an empty video packet.</source>
-            <translation>Pengode mengembalikan paket video kosong.</translation>
-        </message>
-        <message>
-            <source>Invalid video frame format.</source>
-            <translation>Format bingkai video tidak valid.</translation>
-        </message>
-        <message>
-            <source>Invalid video decoder configuration.</source>
-            <translation>Konfigurasi dekoder video tidak valid.</translation>
-        </message>
-        <message>
-            <source>This video codec cannot be decoded.</source>
-            <translation>Codec video ini tidak dapat didekode.</translation>
-        </message>
-        <message>
-            <source>Video decoder could not be allocated.</source>
-            <translation>Memori untuk dekoder video tidak dapat dialokasikan.</translation>
-        </message>
-        <message>
-            <source>Video decoder configuration could not be allocated.</source>
-            <translation>Memori untuk konfigurasi dekoder video tidak dapat dialokasikan.</translation>
-        </message>
-        <message>
-            <source>Decoded dimensions do not match the screen stream.</source>
-            <translation>Dimensi yang didekode tidak cocok dengan aliran layar.</translation>
-        </message>
-        <message>
-            <source>Decoded image could not be allocated.</source>
-            <translation>Memori untuk gambar yang didekode tidak dapat dialokasikan.</translation>
-        </message>
-        <message>
-            <source>Video color conversion could not be initialized.</source>
-            <translation>Konversi warna video tidak dapat diinisialisasi.</translation>
         </message>
     </context>
     <context>
@@ -2877,359 +3020,208 @@
             <translation>Kata sandi tidak dapat diverifikasi.</translation>
         </message>
     </context>
-
     <context>
-        <name>Headless</name>
+        <name>Tray</name>
         <message>
-            <source>Command failed.</source>
-            <translation>Perintah gagal.</translation>
+            <source>Quit</source>
+            <translation>Keluar</translation>
         </message>
         <message>
-            <source>%1 must be an integer.</source>
-            <translation>%1 harus berupa bilangan bulat.</translation>
+            <source>SquadSpeak - speaking</source>
+            <translation>SquadSpeak - berbicara</translation>
         </message>
         <message>
-            <source>Requests must be on/off or true/false.</source>
-            <translation>Permintaan harus bernilai on/off atau true/false.</translation>
+            <source>Settings</source>
+            <translation>Pengaturan</translation>
         </message>
         <message>
-            <source>Unknown host property: %1</source>
-            <translation>Properti host tidak dikenal: %1</translation>
+            <source>Channels</source>
+            <translation>Kanal</translation>
         </message>
         <message>
-            <source>Run without GUI, microphone capture, or local audio output.</source>
-            <translation>Jalankan tanpa antarmuka grafis, perekaman mikrofon, atau keluaran audio lokal.</translation>
-        </message>
-        <message>
-            <source>Server storage prefix. Personal/audio/GUI profiles are not loaded.</source>
-            <translation>Awalan penyimpanan server. Profil pribadi, audio, dan antarmuka tidak dimuat.</translation>
-        </message>
-        <message>
-            <source>Optional private identity file instead of the OS credential store (Linux/macOS). Parent directory must exist and belong to this account.</source>
-            <translation>Berkas identitas pribadi opsional sebagai pengganti penyimpanan kredensial OS (Linux/macOS). Direktori induk harus ada dan dimiliki akun ini.</translation>
-        </message>
-        <message>
-            <source>UTF-8 key=value properties or JSON host preset. Default: application.properties, then config/application.properties beside the app.</source>
-            <translation>Properti key=value dalam UTF-8 atau prasetel host JSON. Bawaan: application.properties, lalu config/application.properties di samping aplikasi.</translation>
-        </message>
-        <message>
-            <source>Channel display name.</source>
-            <translation>Nama tampilan channel.</translation>
-        </message>
-        <message>
-            <source>System and radio bot display name.</source>
-            <translation>Nama tampilan bot sistem dan radio bersama.</translation>
-        </message>
-        <message>
-            <source>TCP service port (1-65535).</source>
-            <translation>Port layanan TCP (1-65535).</translation>
-        </message>
-        <message>
-            <source>Headless admission is always on; only 'on' or 'true' is accepted.</source>
-            <translation>Penerimaan tanpa antarmuka selalu aktif; hanya 'on' atau 'true' yang diterima.</translation>
-        </message>
-        <message>
-            <source>Preapprove a device ID; repeat for several devices. Existing bans remain.</source>
-            <translation>Setujui ID perangkat sebelumnya; ulangi untuk beberapa perangkat. Pemblokiran yang ada tetap berlaku.</translation>
-        </message>
-        <message>
-            <source>Block a device ID; repeat for several devices.</source>
-            <translation>Blokir ID perangkat; ulangi untuk beberapa perangkat.</translation>
-        </message>
-        <message>
-            <source>Read a UTF-8 channel password from a file before listening. An empty file removes it.</source>
-            <translation>Baca kata sandi channel dari berkas UTF-8 sebelum menerima koneksi. Berkas kosong menghapus kata sandi.</translation>
-        </message>
-        <message>
-            <source>Channel password. Empty removes it; environment or config avoids process-list exposure.</source>
-            <translation>Kata sandi channel. Nilai kosong menghapusnya; lingkungan atau konfigurasi mencegahnya tampil dalam daftar proses.</translation>
-        </message>
-        <message>
-            <source>SquadSpeak headless local channel host</source>
-            <translation>Host channel lokal SquadSpeak tanpa antarmuka</translation>
-        </message>
-        <message>
-            <source>Environment variables (SQUADSPEAK_ prefix):</source>
-            <translation>Variabel lingkungan (awalan SQUADSPEAK_):</translation>
-        </message>
-        <message>
-            <source>Host configuration could not be read or exceeds 1 MiB.</source>
-            <translation>Konfigurasi host tidak dapat dibaca atau melebihi 1 MiB.</translation>
-        </message>
-        <message>
-            <source>Host configuration must be UTF-8.</source>
-            <translation>Konfigurasi host harus menggunakan UTF-8.</translation>
-        </message>
-        <message>
-            <source>Host preset must be a JSON object.</source>
-            <translation>Prasetel host harus berupa objek JSON.</translation>
-        </message>
-        <message>
-            <source>Property line %1 must use key=value.</source>
-            <translation>Baris properti %1 harus menggunakan key=value.</translation>
-        </message>
-        <message>
-            <source>Property line %1: %2</source>
-            <translation>Baris properti %1: %2</translation>
-        </message>
-        <message>
-            <source>Standard input has no file descriptor.</source>
-            <translation>Masukan standar tidak memiliki deskriptor berkas.</translation>
-        </message>
-        <message>
-            <source>Standard input could not be inspected.</source>
-            <translation>Masukan standar tidak dapat diperiksa.</translation>
-        </message>
-        <message>
-            <source>Could not write the command response: %1</source>
-            <translation>Respons perintah tidak dapat ditulis: %1</translation>
-        </message>
-        <message>
-            <source>Standard input could not be read: %1</source>
-            <translation>Masukan standar tidak dapat dibaca: %1</translation>
-        </message>
-        <message>
-            <source>Input line exceeds 65536 bytes.</source>
-            <translation>Baris masukan melebihi 65536 byte.</translation>
-        </message>
-        <message>
-            <source>Each input line must be a JSON object.</source>
-            <translation>Setiap baris masukan harus berupa objek JSON.</translation>
-        </message>
-        <message>
-            <source>Input ended before a complete JSON line.</source>
-            <translation>Masukan berakhir sebelum baris JSON lengkap.</translation>
-        </message>
-        <message>
-            <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
-            <translation>ID channel milik sendiri opsional untuk perintah status, configure, password, admission, history, chat, dan radio; bawaannya adalah channel utama.</translation>
-        </message>
-        <message>
-            <source>Channel action must be list, add or remove.</source>
-            <translation>Tindakan channel harus berupa list, add, atau remove.</translation>
-        </message>
-        <message>
-            <source>Removing an own channel deletes its history, images, permissions and radio settings. Set confirmed=true to proceed.</source>
-            <translation>Menghapus channel milik sendiri menghapus riwayat, gambar, izin, dan pengaturan radionya. Atur confirmed=true untuk melanjutkan.</translation>
-        </message>
-        <message>
-            <source>id must identify an additional own channel.</source>
-            <translation>id harus mengidentifikasi channel tambahan milik sendiri.</translation>
-        </message>
-        <message>
-            <source>The additional own channel could not be removed: %1</source>
-            <translation>Channel tambahan milik sendiri tidak dapat dihapus: %1</translation>
-        </message>
-        <message>
-            <source>channelId must identify an own channel.</source>
-            <translation>channelId harus mengidentifikasi channel milik sendiri.</translation>
-        </message>
-        <message>
-            <source>values must be a host settings object.</source>
-            <translation>values harus berupa objek pengaturan host.</translation>
-        </message>
-        <message>
-            <source>Headless admission is always enabled for non-banned devices; requests off is not supported.</source>
-            <translation>Penerimaan tanpa antarmuka selalu aktif untuk perangkat yang tidak diblokir; requests off tidak didukung.</translation>
-        </message>
-        <message>
-            <source>value must be a password of at most 1024 UTF-8 bytes without control characters; an empty string removes it.</source>
-            <translation>value harus berupa kata sandi paling banyak 1024 byte UTF-8 tanpa karakter kontrol; string kosong menghapusnya.</translation>
-        </message>
-        <message>
-            <source>The channel is not ready or a password change is in progress.</source>
-            <translation>Channel belum siap atau perubahan kata sandi sedang berlangsung.</translation>
-        </message>
-        <message>
-            <source>The channel was removed while saving the password.</source>
-            <translation>Channel dihapus saat kata sandi sedang disimpan.</translation>
-        </message>
-        <message>
-            <source>id is required.</source>
-            <translation>id diperlukan.</translation>
-        </message>
-        <message>
-            <source>text must be a valid non-empty chat message.</source>
-            <translation>text harus berupa pesan chat yang valid dan tidak kosong.</translation>
-        </message>
-        <message>
-            <source>The local channel is not ready.</source>
-            <translation>Channel lokal belum siap.</translation>
-        </message>
-        <message>
-            <source>The channel's radio is unavailable.</source>
-            <translation>Radio channel tidak tersedia.</translation>
-        </message>
-        <message>
-            <source>Unknown command. Use help.</source>
-            <translation>Perintah tidak dikenal. Gunakan help.</translation>
-        </message>
-        <message>
-            <source>search requires a query, non-negative offset and limit from 1 to 128.</source>
-            <translation>search memerlukan query, offset nonnegatif, dan limit dari 1 hingga 128.</translation>
-        </message>
-        <message>
-            <source>add creates an id; update requires an existing id.</source>
-            <translation>add membuat id; update memerlukan id yang sudah ada.</translation>
-        </message>
-        <message>
-            <source>A station is already being checked.</source>
-            <translation>Sebuah stasiun sedang diperiksa.</translation>
-        </message>
-        <message>
-            <source>The channel was removed while checking the station.</source>
-            <translation>Channel dihapus saat stasiun sedang diperiksa.</translation>
-        </message>
-        <message>
-            <source>Unknown radio action.</source>
-            <translation>Tindakan radio tidak dikenal.</translation>
-        </message>
-        <message>
-            <source>Could not load language: %1</source>
-            <translation>Bahasa tidak dapat dimuat: %1</translation>
-        </message>
-        <message>
-            <source>The %1 option is incompatible with --headless.</source>
-            <translation>Opsi %1 tidak kompatibel dengan --headless.</translation>
-        </message>
-        <message>
-            <source>Unexpected positional arguments. Use --help.</source>
-            <translation>Argumen posisi tidak diharapkan. Gunakan --help.</translation>
-        </message>
-        <message>
-            <source>--config / -f requires a non-empty path.</source>
-            <translation>--config / -f memerlukan jalur yang tidak kosong.</translation>
-        </message>
-        <message>
-            <source>Choose --password or --password-file, not both.</source>
-            <translation>Pilih --password atau --password-file, bukan keduanya.</translation>
-        </message>
-        <message>
-            <source>Choose SQUADSPEAK_PASSWORD or SQUADSPEAK_PASSWORD_FILE, not both.</source>
-            <translation>Pilih SQUADSPEAK_PASSWORD atau SQUADSPEAK_PASSWORD_FILE, bukan keduanya.</translation>
-        </message>
-        <message>
-            <source>Choose password or passwordFile in one configuration layer, not both.</source>
-            <translation>Pilih password atau passwordFile dalam satu lapisan konfigurasi, bukan keduanya.</translation>
-        </message>
-        <message>
-            <source>passwordFile must be a non-empty path.</source>
-            <translation>passwordFile harus berupa jalur yang tidak kosong.</translation>
-        </message>
-        <message>
-            <source>Password file could not be read or is too large.</source>
-            <translation>Berkas kata sandi tidak dapat dibaca atau terlalu besar.</translation>
-        </message>
-        <message>
-            <source>Password file must contain at most 1024 UTF-8 bytes without control characters.</source>
-            <translation>Berkas kata sandi harus berisi paling banyak 1024 byte UTF-8 tanpa karakter kontrol.</translation>
-        </message>
-        <message>
-            <source>Password must be a string of at most 1024 UTF-8 bytes without control characters.</source>
-            <translation>Kata sandi harus berupa string paling banyak 1024 byte UTF-8 tanpa karakter kontrol.</translation>
-        </message>
-        <message>
-            <source>settingsFile must be a non-empty path.</source>
-            <translation>settingsFile harus berupa jalur yang tidak kosong.</translation>
-        </message>
-        <message>
-            <source>identityFile must be a non-empty path.</source>
-            <translation>identityFile harus berupa jalur yang tidak kosong.</translation>
-        </message>
-        <message>
-            <source>The settings directory could not be created.</source>
-            <translation>Direktori pengaturan tidak dapat dibuat.</translation>
-        </message>
-        <message>
-            <source>This SquadSpeak profile is already running or cannot be locked.</source>
-            <translation>Profil SquadSpeak ini sudah berjalan atau tidak dapat dikunci.</translation>
-        </message>
-        <message>
-            <source>Standard input could not be opened.</source>
-            <translation>Masukan standar tidak dapat dibuka.</translation>
-        </message>
-        <message>
-            <source>Standard output could not be opened.</source>
-            <translation>Keluaran standar tidak dapat dibuka.</translation>
-        </message>
-        <message>
-            <source>This identity file is already in use or cannot be locked.</source>
-            <translation>Berkas identitas ini sedang digunakan atau tidak dapat dikunci.</translation>
-        </message>
-        <message>
-            <source>Invalid host configuration: %1</source>
-            <translation>Konfigurasi host tidak valid: %1</translation>
-        </message>
-        <message>
-            <source>Radio channels could not be initialized.</source>
-            <translation>Channel radio tidak dapat diinisialisasi.</translation>
-        </message>
-        <message>
-            <source>Headless host could not start: %1</source>
-            <translation>Host tanpa antarmuka tidak dapat dimulai: %1</translation>
-        </message>
-        <message>
-            <source>Channel password could not be saved.</source>
-            <translation>Kata sandi channel tidak dapat disimpan.</translation>
-        </message>
-        <message>
-            <source>Invalid channel password: %1</source>
-            <translation>Kata sandi channel tidak valid: %1</translation>
-        </message>
-        <message>
-            <source>Headless host could not initialize: %1</source>
-            <translation>Host tanpa antarmuka tidak dapat diinisialisasi: %1</translation>
-        </message>
-        <message>
-            <source>SquadSpeak headless could not start: %1</source>
-            <translation>SquadSpeak tanpa antarmuka tidak dapat dimulai: %1</translation>
-        </message>
-        <message>
-            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
-            <translation>Tindakan pendukung harus berupa status, masuk, segarkan, keluar, atau batal. sign-in refresh sign-out cancel</translation>
-        </message>
-        <message>
-            <source>A Supporter operation is in progress.</source>
-            <translation>Operasi Pendukung sedang berlangsung.</translation>
-        </message>
-        <message>
-            <source>Supporter access is unavailable in this build.</source>
-            <translation>Akses pendukung tidak tersedia di build ini.</translation>
-        </message>
-        <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>Prioritas pengaturan: argumen &gt; lingkungan &gt; properti &gt; nilai server yang disimpan.</translation>
+            <source>New image</source>
+            <translation>Gambar baru</translation>
         </message>
     </context>
     <context>
-        <name>Desktop</name>
+        <name>VideoCodec</name>
         <message>
-            <source>Open settings at startup.</source>
-            <translation>Buka pengaturan saat aplikasi dimulai.</translation>
+            <source>Video codec: %1</source>
+            <translation>Codec video: %1</translation>
         </message>
         <message>
-            <source>Open guided local test recording without starting network services.</source>
-            <translation>Buka rekaman uji lokal terpandu tanpa memulai layanan jaringan.</translation>
+            <source>Video codec ABI does not match its headers.</source>
+            <translation>ABI codec video tidak cocok dengan berkas header-nya.</translation>
         </message>
         <message>
-            <source>Alternative file for audio profiles.</source>
-            <translation>Berkas alternatif untuk profil audio.</translation>
+            <source>Video buffers could not be allocated.</source>
+            <translation>Memori untuk buffer video tidak dapat dialokasikan.</translation>
         </message>
         <message>
-            <source>Load the interface without microphone capture and exit after one second.</source>
-            <translation>Muat antarmuka tanpa merekam mikrofon dan keluar setelah satu detik.</translation>
+            <source>Invalid video quality tier.</source>
+            <translation>Tingkat kualitas video tidak valid.</translation>
         </message>
         <message>
-            <source>Save an image of the app window during the UI test.</source>
-            <translation>Simpan gambar jendela aplikasi selama pengujian antarmuka.</translation>
+            <source>The screen source exceeds the supported capture size.</source>
+            <translation>Sumber layar melebihi ukuran tangkapan yang didukung.</translation>
         </message>
         <message>
-            <source>The window image could not be saved.</source>
-            <translation>Gambar jendela tidak dapat disimpan.</translation>
+            <source>The screen source is too narrow.</source>
+            <translation>Sumber layar terlalu sempit.</translation>
         </message>
         <message>
-            <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
-            <translation>Baki sistem tidak tersedia; aplikasi tetap terbuka dalam jendela.</translation>
+            <source>The video encoder could not be allocated.</source>
+            <translation>Memori untuk pengode video tidak dapat dialokasikan.</translation>
+        </message>
+        <message>
+            <source>No supported video encoder is available.</source>
+            <translation>Tidak ada pengode video yang didukung.</translation>
+        </message>
+        <message>
+            <source>Video encoder configuration is too large.</source>
+            <translation>Konfigurasi pengode video terlalu besar.</translation>
+        </message>
+        <message>
+            <source>Video scaling could not be initialized.</source>
+            <translation>Penskalaan video tidak dapat diinisialisasi.</translation>
+        </message>
+        <message>
+            <source>The encoder returned an empty video packet.</source>
+            <translation>Pengode mengembalikan paket video kosong.</translation>
+        </message>
+        <message>
+            <source>Invalid video frame format.</source>
+            <translation>Format bingkai video tidak valid.</translation>
+        </message>
+        <message>
+            <source>Invalid video decoder configuration.</source>
+            <translation>Konfigurasi dekoder video tidak valid.</translation>
+        </message>
+        <message>
+            <source>This video codec cannot be decoded.</source>
+            <translation>Codec video ini tidak dapat didekode.</translation>
+        </message>
+        <message>
+            <source>Video decoder could not be allocated.</source>
+            <translation>Memori untuk dekoder video tidak dapat dialokasikan.</translation>
+        </message>
+        <message>
+            <source>Video decoder configuration could not be allocated.</source>
+            <translation>Memori untuk konfigurasi dekoder video tidak dapat dialokasikan.</translation>
+        </message>
+        <message>
+            <source>Decoded dimensions do not match the screen stream.</source>
+            <translation>Dimensi yang didekode tidak cocok dengan aliran layar.</translation>
+        </message>
+        <message>
+            <source>Decoded image could not be allocated.</source>
+            <translation>Memori untuk gambar yang didekode tidak dapat dialokasikan.</translation>
+        </message>
+        <message>
+            <source>Video color conversion could not be initialized.</source>
+            <translation>Konversi warna video tidak dapat diinisialisasi.</translation>
+        </message>
+    </context>
+    <context>
+        <name>VoiceAvatar</name>
+        <message>
+            <source>Muted</source>
+            <translation>Mikrofon dibisukan</translation>
+        </message>
+        <message>
+            <source>Sleeping</source>
+            <translation>Tidur</translation>
+        </message>
+        <message>
+            <source>Offline</source>
+            <translation>Offline</translation>
+        </message>
+        <message>
+            <source>Speaking</source>
+            <translation>Berbicara</translation>
+        </message>
+        <message>
+            <source>Unavailable</source>
+            <translation>Tidak tersedia</translation>
+        </message>
+        <message>
+            <source>Listening</source>
+            <translation>Mendengarkan</translation>
+        </message>
+        <message>
+            <source>Deafened</source>
+            <translation>Speaker dibisukan</translation>
+        </message>
+    </context>
+    <context>
+        <name>VoiceSession</name>
+        <message>
+            <source>Microphone muted</source>
+            <translation>Mikrofon dibisukan</translation>
+        </message>
+        <message>
+            <source>Push-to-talk held</source>
+            <translation>Push-to-talk ditahan</translation>
+        </message>
+        <message>
+            <source>Ready - push-to-talk released</source>
+            <translation>Siap - push-to-talk dilepas</translation>
+        </message>
+        <message>
+            <source>Microphone unmuted</source>
+            <translation>Mikrofon tidak dibisukan</translation>
+        </message>
+        <message>
+            <source>Settings could not be saved: %1</source>
+            <translation>Pengaturan tidak dapat disimpan: %1</translation>
+        </message>
+        <message>
+            <source>The push-to-talk sequence cannot be incremented further.</source>
+            <translation>Urutan push-to-talk tidak dapat ditambah lagi.</translation>
+        </message>
+        <message>
+            <source>Choose System, Light or Dark.</source>
+            <translation>Pilih Sistem, Terang, atau Gelap.</translation>
+        </message>
+        <message>
+            <source>Choose a colour palette from the list.</source>
+            <translation>Pilih palet warna dari daftar.</translation>
+        </message>
+        <message>
+            <source>Choose an available avatar.</source>
+            <translation>Pilih avatar yang tersedia.</translation>
+        </message>
+        <message>
+            <source>Invalid push-to-talk binding.</source>
+            <translation>Binding push-to-talk tidak valid.</translation>
+        </message>
+        <message>
+            <source>Release the held push-to-talk key first.</source>
+            <translation>Lepaskan tombol push-to-talk yang ditahan terlebih dahulu.</translation>
+        </message>
+        <message>
+            <source>Choose a language from the list.</source>
+            <translation>Pilih bahasa dari daftar.</translation>
+        </message>
+        <message>
+            <source>This avatar requires Supporter.</source>
+            <translation>Avatar ini memerlukan Supporter.</translation>
+        </message>
+        <message>
+            <source>The name must contain 1 to 64 characters.</source>
+            <translation>Nama harus berisi 1 hingga 64 karakter.</translation>
+        </message>
+        <message>
+            <source>The name may not contain control characters or line breaks.</source>
+            <translation>Nama tidak boleh berisi karakter kontrol atau baris baru.</translation>
+        </message>
+        <message>
+            <source>Session settings could not be read.</source>
+            <translation>Pengaturan sesi tidak dapat dibaca.</translation>
+        </message>
+        <message>
+            <source>Saved setting is invalid: %1</source>
+            <translation>Pengaturan tersimpan tidak valid: %1</translation>
         </message>
     </context>
 </TS>

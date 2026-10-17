@@ -36,14 +36,6 @@
             <translation>Жүйенің құпиялылық параметрлерін ашыңыз және SquadSpeak үшін микрофонға кіруге рұқсат беріңіз.</translation>
         </message>
         <message>
-            <source>Microphone analysis active. Test audio stays on this computer.</source>
-            <translation>Микрофонды талдау белсенді. Сынақ дыбысы осы компьютерде қалады.</translation>
-        </message>
-        <message>
-            <source>Finish the test recording before changing devices.</source>
-            <translation>Құрылғыларды ауыстырмас бұрын сынақ жазбасын аяқтаңыз.</translation>
-        </message>
-        <message>
             <source>The output format is not supported.</source>
             <translation>шығыс пішіміне қолдау көрсетілмейді.</translation>
         </message>
@@ -68,32 +60,12 @@
             <translation>Сынақ үнін ойнату мүмкін болмады.</translation>
         </message>
         <message>
-            <source>The microphone has provided no data for five seconds. Recording discarded.</source>
-            <translation>Микрофон бес секунд бойы деректер бермеді. Жазба жойылды.</translation>
-        </message>
-        <message>
-            <source>The microphone was interrupted or changed. Recording discarded.</source>
-            <translation>микрофон үзілді немесе өзгертілді. Жазба жойылды.</translation>
-        </message>
-        <message>
-            <source>Cancelled. The incomplete recording was discarded.</source>
-            <translation>жойылды. Толық емес жазба жойылды.</translation>
-        </message>
-        <message>
             <source>No selected microphone is available</source>
             <translation>Таңдалған микрофон қолжетімді емес</translation>
         </message>
         <message>
             <source>Allow microphone access in the system dialog.</source>
             <translation>Жүйе диалогында микрофонға кіруге рұқсат беріңіз.</translation>
-        </message>
-        <message>
-            <source>Microphone capture active for the voice channel.</source>
-            <translation>Дауыс арнасы үшін микрофонды түсіру белсенді.</translation>
-        </message>
-        <message>
-            <source>Microphone access was denied. Nothing was saved.</source>
-            <translation>Микрофонға кіруге тыйым салынды. Ештеңе сақталмады.</translation>
         </message>
         <message>
             <source>Microphone access is missing. Allow it in System Settings.</source>
@@ -259,103 +231,16 @@
             <source>App audio only</source>
             <translation>Тек қолданба дыбысы</translation>
         </message>
-    </context>
-    <context>
-        <name>AudioRecording</name>
         <message>
-            <source>Incomplete audio block. Recording discarded.</source>
-            <translation>Аяқталмаған аудио блок. Жазба жойылды.</translation>
-        </message>
-        <message>
-            <source>Move about one meter from the microphone. Keep the background sound playing and read the sentence.</source>
-            <translation>Микрофоннан бір метрге жуық жылжытыңыз. Фондық дыбысты ойнатыңыз және сөйлемді оқыңыз.</translation>
-        </message>
-        <message>
-            <source>Voice with background sound</source>
-            <translation>Фондық дыбысы бар дауыс</translation>
-        </message>
-        <message>
-            <source>The recordings folder could not be created.</source>
-            <translation>Жазбалар қалтасын жасау мүмкін емес.</translation>
-        </message>
-        <message>
-            <source>You can stop the background sound now.</source>
-            <translation>Фондық дыбысты қазір тоқтатуға болады.</translation>
-        </message>
-        <message>
-            <source>Recordings saved</source>
-            <translation>Жазбалар сақталды</translation>
-        </message>
-        <message>
-            <source>The test recording could not be saved completely.</source>
-            <translation>Сынақ жазбасын толығымен сақтау мүмкін болмады.</translation>
-        </message>
-        <message>
-            <source>Keep music off and stay quiet. Start when ready.</source>
-            <translation>Музыканы өшіріп, үндемеңіз. Дайын болғанда бастаңыз.</translation>
-        </message>
-        <message>
-            <source>Your voice</source>
-            <translation>Сіздің дауысыңыз</translation>
-        </message>
-        <message>
-            <source>Play music or another background sound at a normal volume. Stay quiet while recording.</source>
-            <translation>Музыканы немесе басқа фондық дыбысты қалыпты дыбыс деңгейінде ойнатыңыз. Жазу кезінде тыныш болыңыз.</translation>
-        </message>
-        <message>
-            <source>The test recording could not be created.</source>
-            <translation>Сынақ жазбасын жасау мүмкін емес.</translation>
-        </message>
-        <message>
-            <source>Background sound</source>
-            <translation>Фондық дыбыс</translation>
-        </message>
-        <message>
-            <source>The window is open. I can hear the rain outside. One, two, three, four, five.</source>
-            <translation>Терезе ашық. Мен сыртта жаңбырды естимін. Бір, екі, үш, төрт, бес.</translation>
-        </message>
-        <message>
-            <source>This microphone format is not supported for test recordings.</source>
-            <translation>Бұл микрофон пішіміне сынақ жазбалары үшін қолдау көрсетілмейді.</translation>
-        </message>
-        <message>
-            <source>Keep the background volume unchanged. Read the sentence, then stop recording.</source>
-            <translation>Фондық дыбыс деңгейін өзгеріссіз сақтаңыз. Сөйлемді оқыңыз, содан кейін жазуды тоқтатыңыз.</translation>
-        </message>
-        <message>
-            <source>Record at least half a second, then try again.</source>
-            <translation>Кем дегенде жарты секунд жазып, қайталап көріңіз.</translation>
-        </message>
-        <message>
-            <source>Sit at your usual distance. Read the sentence, then stop recording.</source>
-            <translation>Әдеттегі қашықтықта отырыңыз. Сөйлемді оқыңыз, содан кейін жазуды тоқтатыңыз.</translation>
-        </message>
-        <message>
-            <source>The recording description could not be saved.</source>
-            <translation>Жазба сипаттамасын сақтау мүмкін емес.</translation>
-        </message>
-        <message>
-            <source>The WAV file could not be finalized.</source>
-            <translation>WAV файлын аяқтау мүмкін емес.</translation>
-        </message>
-        <message>
-            <source>The WAV header could not be written.</source>
-            <translation>WAV тақырыбын жазу мүмкін емес.</translation>
-        </message>
-        <message>
-            <source>Voice farther away</source>
-            <translation>Дауыс алысырақ</translation>
-        </message>
-        <message>
-            <source>Room sound</source>
-            <translation>Бөлме дыбысы</translation>
+            <source>Speech output is unavailable.</source>
+            <translation>Сөйлеу шығысы қолжетімсіз.</translation>
         </message>
     </context>
     <context>
         <name>AudioSettings</name>
         <message>
-            <source>Echo cancellation</source>
-            <translation>Жаңғырықты басу</translation>
+            <source>Echo</source>
+            <translation>Жаңғырық</translation>
         </message>
         <message>
             <source>Off</source>
@@ -402,12 +287,12 @@
             <translation>Сіздің ойнатуыңыз</translation>
         </message>
         <message>
-            <source>Clear local key</source>
-            <translation>Жергілікті push-to talk пернелер тіркесімін өшіріңіз</translation>
+            <source>Clear key</source>
+            <translation>Пернені тазалау</translation>
         </message>
         <message>
-            <source>Low cut</source>
-            <translation>Төмен жиілікті кесу</translation>
+            <source>Highpass</source>
+            <translation>Жоғарыөткізгіш</translation>
         </message>
         <message>
             <source>Microphone access is off</source>
@@ -418,32 +303,16 @@
             <translation>Енгізу құрылғысы</translation>
         </message>
         <message>
-            <source>Microphone paused for others</source>
-            <translation>Басқалар үшін микрофон кідіртілді</translation>
-        </message>
-        <message>
             <source>Cancel</source>
             <translation>Болдырмау</translation>
-        </message>
-        <message>
-            <source>Guided recording</source>
-            <translation>Бағытталған жазу</translation>
         </message>
         <message>
             <source>Clipping. Reduce microphone gain.</source>
             <translation>Клиппинг. Микрофонның күшейтуін азайтыңыз.</translation>
         </message>
         <message>
-            <source>Silent</source>
-            <translation>Үнсіз</translation>
-        </message>
-        <message>
             <source>Test output</source>
             <translation>Сынақ шығысы</translation>
-        </message>
-        <message>
-            <source>Voice level</source>
-            <translation>Дауыс деңгейі</translation>
         </message>
         <message>
             <source>Voice threshold</source>
@@ -462,20 +331,16 @@
             <translation>Құрылғы ажыратылды</translation>
         </message>
         <message>
-            <source>Local key</source>
-            <translation>Жергілікті басу-сөйлеу пернелер тіркесімі</translation>
+            <source>PTT key</source>
+            <translation>Сөйлеу пернесі</translation>
         </message>
         <message>
             <source>Voice activation</source>
             <translation>Дауыспен белсендірілген микрофон</translation>
         </message>
         <message>
-            <source>Remote PTT key</source>
-            <translation>Қашықтан басу-сөйлеу пернетақтасының төте жолы</translation>
-        </message>
-        <message>
-            <source>Noise reduction</source>
-            <translation>Шуды азайту</translation>
+            <source>Denoise</source>
+            <translation>Шусыздандыру</translation>
         </message>
         <message>
             <source>Selected device is not connected</source>
@@ -486,32 +351,120 @@
             <translation>жібереді</translation>
         </message>
         <message>
-            <source>Microphone gain</source>
-            <translation>Микрофонды күшейту</translation>
-        </message>
-        <message>
-            <source>Clear remote key</source>
-            <translation>қашықтан басу-сөйлесу пернелер тіркесімін өшіріңіз</translation>
-        </message>
-        <message>
-            <source>Playback volume</source>
-            <translation>Ойнату дыбыс деңгейі</translation>
+            <source>Gain</source>
+            <translation>Күшейту</translation>
         </message>
         <message>
             <source>Not assigned</source>
             <translation>тағайындалмаған</translation>
         </message>
         <message>
-            <source>High cut</source>
-            <translation>Жоғары жиілікті кесу</translation>
+            <source>Lowpass</source>
+            <translation>Төменөткізгіш</translation>
         </message>
         <message>
             <source>Level audio automatically</source>
             <translation>дыбыс деңгейін автоматты түрде</translation>
         </message>
+        <message>
+            <source>Voice volume</source>
+            <translation>Дауыстық чат дыбыс деңгейі</translation>
+        </message>
+        <message>
+            <source>App sounds</source>
+            <translation>Қолданба дыбыстары</translation>
+        </message>
+        <message>
+            <source>Read bot messages aloud</source>
+            <translation>Бот хабарларын дауыстап оқу</translation>
+        </message>
+        <message>
+            <source>Download a high-quality voice for this language in macOS settings.</source>
+            <translation>macOS параметрлерінен осы тілге арналған жоғары сапалы дауысты жүктеп ал.</translation>
+        </message>
+        <message>
+            <source>Bot voice</source>
+            <translation>Бот дауысы</translation>
+        </message>
+        <message>
+            <source>Automatic</source>
+            <translation>Автоматты</translation>
+        </message>
+        <message>
+            <source>Unavailable</source>
+            <translation>Қолжетімсіз</translation>
+        </message>
+        <message>
+            <source>Download voices in your device's Accessibility speech settings.</source>
+            <translation>Дауыстарды құрылғыңның арнайы мүмкіндіктер бөліміндегі сөйлеу параметрлерінен жүктеп ал.</translation>
+        </message>
+        <message>
+            <source>Voice download help</source>
+            <translation>Дауыстарды жүктеу анықтамасы</translation>
+        </message>
+        <message>
+            <source>Strength, not the percentage of echo removed.</source>
+            <translation>Күші, жойылған жаңғырықтың пайызы емес.</translation>
+        </message>
+        <message>
+            <source>Auto also checks for speech, not just volume.</source>
+            <translation>Автоматты режим дыбыс деңгейін ғана емес, сөйлеуді де тексереді.</translation>
+        </message>
     </context>
     <context>
         <name>Channels</name>
+        <message>
+            <source>Audio received</source>
+            <translation>Қабылданған дыбыс</translation>
+        </message>
+        <message>
+            <source>Search channels</source>
+            <translation>Арналарды іздеу</translation>
+        </message>
+        <message>
+            <source>No matches</source>
+            <translation>Нәтиже жоқ</translation>
+        </message>
+        <message>
+            <source>Copy address</source>
+            <translation>Мекенжайды көшіру</translation>
+        </message>
+        <message>
+            <source>Messages</source>
+            <translation>Хабарламалар</translation>
+        </message>
+        <message>
+            <source>Message</source>
+            <translation>Хабарлама</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Ашу</translation>
+        </message>
+        <message>
+            <source>Online</source>
+            <translation>Желіде</translation>
+        </message>
+        <message>
+            <source>Offline</source>
+            <translation>Офлайн</translation>
+        </message>
+        <message>
+            <source>No private messages</source>
+            <translation>Жеке хабарламалар жоқ</translation>
+        </message>
+        <message>
+            <source>Private messages are unavailable for this contact.</source>
+            <translation>Бұл контакт үшін жеке хабарламалар қолжетімді емес.</translation>
+        </message>
+        <message>
+            <source>If asked, allow local network access. You can change this in system settings.</source>
+            <translation>Сұралса, жергілікті желіге кіруге рұқсат бер. Мұны жүйе параметрлерінен өзгерте аласың.</translation>
+        </message>
+        <message>
+            <source>Retry</source>
+            <translation>Қайталап көру</translation>
+        </message>
         <message>
             <source>Updates</source>
             <translation>Жаңартулар</translation>
@@ -531,6 +484,10 @@
         <message>
             <source>DDNS cannot bypass CGNAT. If your provider shares the public IP, use a private VPN on all participating devices or a publicly reachable server.</source>
             <translation>DDNS CGNAT-ты айналып өте алмайды. Провайдеріңіз жалпыға ортақ IP мекенжайын ортақ пайдаланса, барлық қатысушы құрылғыларда немесе жалпыға қолжетімді серверде жеке VPN пайдаланыңыз.</translation>
+        </message>
+        <message>
+            <source>Remove server</source>
+            <translation>Серверді жою</translation>
         </message>
         <message>
             <source>Low</source>
@@ -653,10 +610,6 @@
             <translation>Хабарландыру дыбыстары</translation>
         </message>
         <message>
-            <source>Lifetime for new messages. Earlier messages keep their expiry.</source>
-            <translation>Жаңа хабарлар үшін қызмет мерзімі. Бұрынғы хабарлардың жарамдылық мерзімі сақталады.</translation>
-        </message>
-        <message>
             <source>Enable speakers</source>
             <translation>динамиктерді қосыңыз</translation>
         </message>
@@ -691,10 +644,6 @@
         <message>
             <source>Allow device</source>
             <translation>Құрылғыға рұқсат беру</translation>
-        </message>
-        <message>
-            <source>Receive quality: %1 kb/s per voice. Adjusts automatically for this device.</source>
-            <translation>Қабылдау сапасы: әр дауысқа %1 кб/с. Бұл құрылғы үшін автоматты түрде реттеледі.</translation>
         </message>
         <message>
             <source>Stop radio</source>
@@ -1188,6 +1137,50 @@
             <source>This device</source>
             <translation>Бұл құрылғы</translation>
         </message>
+        <message>
+            <source>Use default music volume</source>
+            <translation>Музыканың әдепкі дыбыс деңгейін қолдану</translation>
+        </message>
+        <message>
+            <source>Show in Dock</source>
+            <translation>Dock-та көрсету</translation>
+        </message>
+        <message>
+            <source>App language</source>
+            <translation>Қолданба тілі</translation>
+        </message>
+        <message>
+            <source>Send in</source>
+            <translation>Жіберу тілі</translation>
+        </message>
+        <message>
+            <source>Hear in</source>
+            <translation>Тыңдау тілі</translation>
+        </message>
+        <message>
+            <source>Download language models for %1 and %2?</source>
+            <translation>%1 және %2 тіл үлгілерін жүктеп алу керек пе?</translation>
+        </message>
+        <message>
+            <source>Download</source>
+            <translation>Жүктеп алу</translation>
+        </message>
+        <message>
+            <source>PTT, chat and channel controls. Uses the controlled device's microphone.</source>
+            <translation>PTT, чат және арна басқаруы. Басқарылатын құрылғының микрофоны пайдаланылады.</translation>
+        </message>
+        <message>
+            <source>Connect the other device to one of your channels, then allow it here.</source>
+            <translation>Басқа құрылғыны арналарыңның біріне қосып, содан кейін оған осы жерден рұқсат бер.</translation>
+        </message>
+        <message>
+            <source>On the other device, open Settings &gt; Input &gt; Remote control and allow this device.</source>
+            <translation>Басқа құрылғыда Параметрлер &gt; Кіріс &gt; қашықтан басқару пульті тармақтарын ашып, осы құрылғыға рұқсат бер.</translation>
+        </message>
+        <message>
+            <source>Unread messages</source>
+            <translation>Оқылмаған хабарламалар</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1299,6 +1292,22 @@
             <source>The sanitized image could not be written completely.</source>
             <translation>Тазартылған суретті толық жазу мүмкін болмады.</translation>
         </message>
+        <message>
+            <source>%1 joined.</source>
+            <translation>%1 қосылды.</translation>
+        </message>
+        <message>
+            <source>%1 left.</source>
+            <translation>%1 кетті.</translation>
+        </message>
+        <message>
+            <source>%1 was kicked.</source>
+            <translation>%1 қуылды.</translation>
+        </message>
+        <message>
+            <source>%1 was banned from the channel.</source>
+            <translation>%1 арнадан бұғатталды.</translation>
+        </message>
     </context>
     <context>
         <name>ChatPanel</name>
@@ -1363,22 +1372,6 @@
             <translation>Жүктелуде...</translation>
         </message>
         <message>
-            <source>%1 joined.</source>
-            <translation>%1 қосылды.</translation>
-        </message>
-        <message>
-            <source>%1 left.</source>
-            <translation>%1 кетті.</translation>
-        </message>
-        <message>
-            <source>%1 was kicked.</source>
-            <translation>%1 қуылды.</translation>
-        </message>
-        <message>
-            <source>%1 was banned from the channel.</source>
-            <translation>%1 арнадан бұғатталды.</translation>
-        </message>
-        <message>
             <source>Message could not be sent. Check the connection and text length.</source>
             <translation>Хабарды жіберу мүмкін емес. Байланысты және мәтін ұзындығын тексеріңіз.</translation>
         </message>
@@ -1404,7 +1397,400 @@
         </message>
     </context>
     <context>
+        <name>Desktop</name>
+        <message>
+            <source>Open settings at startup.</source>
+            <translation>Іске қосылғанда параметрлерді ашу.</translation>
+        </message>
+        <message>
+            <source>Alternative file for audio profiles.</source>
+            <translation>Дыбыс профильдеріне арналған балама файл.</translation>
+        </message>
+        <message>
+            <source>Load the interface without microphone capture and exit after one second.</source>
+            <translation>Интерфейсті микрофоннан жазбай жүктеу және бір секундтан кейін шығу.</translation>
+        </message>
+        <message>
+            <source>Save an image of the app window during the UI test.</source>
+            <translation>Интерфейс сынағы кезінде қолданба терезесінің суретін сақтау.</translation>
+        </message>
+        <message>
+            <source>The window image could not be saved.</source>
+            <translation>Терезе суретін сақтау мүмкін болмады.</translation>
+        </message>
+        <message>
+            <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
+            <translation>Жүйелік науа қолжетімсіз; қолданба терезеде ашық қалады.</translation>
+        </message>
+    </context>
+    <context>
+        <name>Headless</name>
+        <message>
+            <source>Host display name.</source>
+            <translation>Хосттың көрсетілетін аты.</translation>
+        </message>
+        <message>
+            <source>Command failed.</source>
+            <translation>Пәрмен орындалмады.</translation>
+        </message>
+        <message>
+            <source>%1 must be an integer.</source>
+            <translation>%1 бүтін сан болуы керек.</translation>
+        </message>
+        <message>
+            <source>Requests must be on/off or true/false.</source>
+            <translation>Сұраулар on/off немесе true/false болуы керек.</translation>
+        </message>
+        <message>
+            <source>Unknown host property: %1</source>
+            <translation>Хосттың белгісіз қасиеті: %1</translation>
+        </message>
+        <message>
+            <source>Run without GUI, microphone capture, or local audio output.</source>
+            <translation>Графикалық интерфейссіз, микрофоннан жазусыз және жергілікті дыбыс шығысынсыз іске қосу.</translation>
+        </message>
+        <message>
+            <source>Server storage prefix. Personal/audio/GUI profiles are not loaded.</source>
+            <translation>Сервер қоймасының префиксі. Жеке, дыбыс және интерфейс профильдері жүктелмейді.</translation>
+        </message>
+        <message>
+            <source>Optional private identity file instead of the OS credential store (Linux/macOS). Parent directory must exist and belong to this account.</source>
+            <translation>Операциялық жүйенің тіркелгі деректері қоймасының орнына қосымша жеке сәйкестік файлы (Linux/macOS). Жоғарғы каталог бар болуы және осы тіркелгіге тиесілі болуы керек.</translation>
+        </message>
+        <message>
+            <source>UTF-8 key=value properties or JSON host preset. Default: application.properties, then config/application.properties beside the app.</source>
+            <translation>UTF-8 key=value қасиеттері немесе хосттың JSON алдын ала баптаулары. Әдепкі: application.properties, содан кейін қолданба жанындағы config/application.properties.</translation>
+        </message>
+        <message>
+            <source>Channel display name.</source>
+            <translation>Арнаның көрсетілетін атауы.</translation>
+        </message>
+        <message>
+            <source>System and radio bot display name.</source>
+            <translation>Жүйелік және радио боттың көрсетілетін атауы.</translation>
+        </message>
+        <message>
+            <source>TCP service port (1-65535).</source>
+            <translation>TCP қызмет порты (1-65535).</translation>
+        </message>
+        <message>
+            <source>Headless admission is always on; only 'on' or 'true' is accepted.</source>
+            <translation>Графикалық интерфейссіз режимде қабылдау әрқашан қосулы; тек 'on' немесе 'true' қабылданады.</translation>
+        </message>
+        <message>
+            <source>Preapprove a device ID; repeat for several devices. Existing bans remain.</source>
+            <translation>Құрылғы ID-ін алдын ала мақұлдау; бірнеше құрылғы үшін қайталаңыз. Қолданыстағы тыйымдар сақталады.</translation>
+        </message>
+        <message>
+            <source>Block a device ID; repeat for several devices.</source>
+            <translation>Құрылғы ID-ін бұғаттау; бірнеше құрылғы үшін қайталаңыз.</translation>
+        </message>
+        <message>
+            <source>Read a UTF-8 channel password from a file before listening. An empty file removes it.</source>
+            <translation>Тыңдауды бастамас бұрын арнаның UTF-8 құпиясөзін файлдан оқу. Бос файл оны жояды.</translation>
+        </message>
+        <message>
+            <source>Channel password. Empty removes it; environment or config avoids process-list exposure.</source>
+            <translation>Арна құпиясөзі. Бос мән оны жояды; орта не конфигурация оны процестер тізімінде көрсетпейді.</translation>
+        </message>
+        <message>
+            <source>SquadSpeak headless local channel host</source>
+            <translation>Графикалық интерфейссіз SquadSpeak жергілікті арна хосты</translation>
+        </message>
+        <message>
+            <source>Environment variables (SQUADSPEAK_ prefix):</source>
+            <translation>Орта айнымалылары (SQUADSPEAK_ префиксі):</translation>
+        </message>
+        <message>
+            <source>Host configuration could not be read or exceeds 1 MiB.</source>
+            <translation>Хост конфигурациясы оқылмады немесе көлемі 1 MiB-тан асады.</translation>
+        </message>
+        <message>
+            <source>Host configuration must be UTF-8.</source>
+            <translation>Хост конфигурациясы UTF-8 болуы керек.</translation>
+        </message>
+        <message>
+            <source>Host preset must be a JSON object.</source>
+            <translation>Хосттың алдын ала баптаулары JSON нысаны болуы керек.</translation>
+        </message>
+        <message>
+            <source>Property line %1 must use key=value.</source>
+            <translation>%1 қасиет жолы key=value пішімін қолдануы керек.</translation>
+        </message>
+        <message>
+            <source>Property line %1: %2</source>
+            <translation>%1 қасиет жолы: %2</translation>
+        </message>
+        <message>
+            <source>Standard input has no file descriptor.</source>
+            <translation>Стандартты кірістің файл дескрипторы жоқ.</translation>
+        </message>
+        <message>
+            <source>Standard input could not be inspected.</source>
+            <translation>Стандартты кіріс тексерілмеді.</translation>
+        </message>
+        <message>
+            <source>Could not write the command response: %1</source>
+            <translation>Пәрмен жауабы жазылмады: %1</translation>
+        </message>
+        <message>
+            <source>Standard input could not be read: %1</source>
+            <translation>Стандартты кіріс оқылмады: %1</translation>
+        </message>
+        <message>
+            <source>Input line exceeds 65536 bytes.</source>
+            <translation>Кіріс жолы 65536 байттан асады.</translation>
+        </message>
+        <message>
+            <source>Each input line must be a JSON object.</source>
+            <translation>Әр кіріс жолы JSON нысаны болуы керек.</translation>
+        </message>
+        <message>
+            <source>Input ended before a complete JSON line.</source>
+            <translation>Толық JSON жолына дейін кіріс аяқталды.</translation>
+        </message>
+        <message>
+            <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
+            <translation>status, configure, password, admission, history, chat және radio пәрмендеріне арналған өз арнаңыздың қосымша ID-і; әдепкіде негізгі арна қолданылады.</translation>
+        </message>
+        <message>
+            <source>Channel action must be list, add or remove.</source>
+            <translation>Арна әрекеті list, add немесе remove болуы керек.</translation>
+        </message>
+        <message>
+            <source>Removing an own channel deletes its history, images, permissions and radio settings. Set confirmed=true to proceed.</source>
+            <translation>Өз арнаңызды жою оның тарихын, суреттерін, рұқсаттарын және радио баптауларын жояды. Жалғастыру үшін confirmed=true орнатыңыз.</translation>
+        </message>
+        <message>
+            <source>id must identify an additional own channel.</source>
+            <translation>id өзіңіздің қосымша арнаңызды көрсетуі керек.</translation>
+        </message>
+        <message>
+            <source>The additional own channel could not be removed: %1</source>
+            <translation>Өзіңіздің қосымша арнаңыз жойылмады: %1</translation>
+        </message>
+        <message>
+            <source>channelId must identify an own channel.</source>
+            <translation>channelId өз арнаңызды көрсетуі керек.</translation>
+        </message>
+        <message>
+            <source>values must be a host settings object.</source>
+            <translation>values хост баптауларының нысаны болуы керек.</translation>
+        </message>
+        <message>
+            <source>Headless admission is always enabled for non-banned devices; requests off is not supported.</source>
+            <translation>Графикалық интерфейссіз режимде бұғатталмаған құрылғылар әрқашан қабылданады; requests off қолдау көрсетілмейді.</translation>
+        </message>
+        <message>
+            <source>value must be a password of at most 1024 UTF-8 bytes without control characters; an empty string removes it.</source>
+            <translation>value басқару таңбаларынсыз, ең көбі 1024 UTF-8 байттан тұратын құпиясөз болуы керек; бос жол оны жояды.</translation>
+        </message>
+        <message>
+            <source>The channel is not ready or a password change is in progress.</source>
+            <translation>Арна дайын емес немесе құпиясөз өзгертіліп жатыр.</translation>
+        </message>
+        <message>
+            <source>The channel was removed while saving the password.</source>
+            <translation>Құпиясөз сақталып жатқанда арна жойылды.</translation>
+        </message>
+        <message>
+            <source>id is required.</source>
+            <translation>id қажет.</translation>
+        </message>
+        <message>
+            <source>text must be a valid non-empty chat message.</source>
+            <translation>text жарамды, бос емес чат хабары болуы керек.</translation>
+        </message>
+        <message>
+            <source>The local channel is not ready.</source>
+            <translation>Жергілікті арна дайын емес.</translation>
+        </message>
+        <message>
+            <source>The channel's radio is unavailable.</source>
+            <translation>Арна радиосы қолжетімсіз.</translation>
+        </message>
+        <message>
+            <source>Unknown command. Use help.</source>
+            <translation>Белгісіз пәрмен. help қолданыңыз.</translation>
+        </message>
+        <message>
+            <source>search requires a query, non-negative offset and limit from 1 to 128.</source>
+            <translation>search үшін query, теріс емес offset және 1-ден 128-ге дейінгі limit қажет.</translation>
+        </message>
+        <message>
+            <source>add creates an id; update requires an existing id.</source>
+            <translation>add жаңа id жасайды; update үшін бар id қажет.</translation>
+        </message>
+        <message>
+            <source>A station is already being checked.</source>
+            <translation>Станция қазірдің өзінде тексеріліп жатыр.</translation>
+        </message>
+        <message>
+            <source>The channel was removed while checking the station.</source>
+            <translation>Станция тексеріліп жатқанда арна жойылды.</translation>
+        </message>
+        <message>
+            <source>Unknown radio action.</source>
+            <translation>Белгісіз радио әрекеті.</translation>
+        </message>
+        <message>
+            <source>Could not load language: %1</source>
+            <translation>Тіл жүктелмеді: %1</translation>
+        </message>
+        <message>
+            <source>The %1 option is incompatible with --headless.</source>
+            <translation>%1 параметрі --headless параметрімен үйлеспейді.</translation>
+        </message>
+        <message>
+            <source>Unexpected positional arguments. Use --help.</source>
+            <translation>Күтпеген позициялық аргументтер. --help қолданыңыз.</translation>
+        </message>
+        <message>
+            <source>--config / -f requires a non-empty path.</source>
+            <translation>--config / -f бос емес жолды талап етеді.</translation>
+        </message>
+        <message>
+            <source>Choose --password or --password-file, not both.</source>
+            <translation>--password немесе --password-file таңдаңыз, екеуін бірге емес.</translation>
+        </message>
+        <message>
+            <source>Choose SQUADSPEAK_PASSWORD or SQUADSPEAK_PASSWORD_FILE, not both.</source>
+            <translation>SQUADSPEAK_PASSWORD немесе SQUADSPEAK_PASSWORD_FILE таңдаңыз, екеуін бірге емес.</translation>
+        </message>
+        <message>
+            <source>Choose password or passwordFile in one configuration layer, not both.</source>
+            <translation>Бір конфигурация қабатында password немесе passwordFile таңдаңыз, екеуін бірге емес.</translation>
+        </message>
+        <message>
+            <source>passwordFile must be a non-empty path.</source>
+            <translation>passwordFile бос емес жол болуы керек.</translation>
+        </message>
+        <message>
+            <source>Password file could not be read or is too large.</source>
+            <translation>Құпиясөз файлы оқылмады немесе тым үлкен.</translation>
+        </message>
+        <message>
+            <source>Password file must contain at most 1024 UTF-8 bytes without control characters.</source>
+            <translation>Құпиясөз файлында басқару таңбаларынсыз ең көбі 1024 UTF-8 байт болуы керек.</translation>
+        </message>
+        <message>
+            <source>Password must be a string of at most 1024 UTF-8 bytes without control characters.</source>
+            <translation>Құпиясөз басқару таңбаларынсыз ең көбі 1024 UTF-8 байттан тұратын жол болуы керек.</translation>
+        </message>
+        <message>
+            <source>settingsFile must be a non-empty path.</source>
+            <translation>settingsFile бос емес жол болуы керек.</translation>
+        </message>
+        <message>
+            <source>identityFile must be a non-empty path.</source>
+            <translation>identityFile бос емес жол болуы керек.</translation>
+        </message>
+        <message>
+            <source>The settings directory could not be created.</source>
+            <translation>Баптаулар каталогы жасалмады.</translation>
+        </message>
+        <message>
+            <source>This SquadSpeak profile is already running or cannot be locked.</source>
+            <translation>Бұл SquadSpeak профилі қазірдің өзінде жұмыс істеп тұр немесе оны құлыптау мүмкін емес.</translation>
+        </message>
+        <message>
+            <source>Standard input could not be opened.</source>
+            <translation>Стандартты кіріс ашылмады.</translation>
+        </message>
+        <message>
+            <source>Standard output could not be opened.</source>
+            <translation>Стандартты шығыс ашылмады.</translation>
+        </message>
+        <message>
+            <source>This identity file is already in use or cannot be locked.</source>
+            <translation>Бұл сәйкестік файлы қазірдің өзінде қолданылуда немесе оны құлыптау мүмкін емес.</translation>
+        </message>
+        <message>
+            <source>Invalid host configuration: %1</source>
+            <translation>Жарамсыз хост конфигурациясы: %1</translation>
+        </message>
+        <message>
+            <source>Radio channels could not be initialized.</source>
+            <translation>Радио арналары инициализацияланбады.</translation>
+        </message>
+        <message>
+            <source>Headless host could not start: %1</source>
+            <translation>Графикалық интерфейссіз хост іске қосылмады: %1</translation>
+        </message>
+        <message>
+            <source>Channel password could not be saved.</source>
+            <translation>Арна құпиясөзі сақталмады.</translation>
+        </message>
+        <message>
+            <source>Invalid channel password: %1</source>
+            <translation>Жарамсыз арна құпиясөзі: %1</translation>
+        </message>
+        <message>
+            <source>Headless host could not initialize: %1</source>
+            <translation>Графикалық интерфейссіз хост инициализацияланбады: %1</translation>
+        </message>
+        <message>
+            <source>SquadSpeak headless could not start: %1</source>
+            <translation>Графикалық интерфейссіз SquadSpeak іске қосылмады: %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>Қолдаушының әрекеті күй, жүйеге кіру, жаңарту, шығу немесе бас тарту болуы керек. status sign-in refresh sign-out cancel</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>Қолдау көрсету операциясы орындалуда.</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>Бұл құрылымда қолдаушыларға кіру мүмкін емес.</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>Параметрлердің басымдылығы: аргументтер &gt; орта &gt; сипаттар &gt; сақталған сервер мәндері.</translation>
+        </message>
+    </context>
+    <context>
+        <name>License</name>
+        <message>
+            <source>License storage is busy or unavailable.</source>
+            <translation>Лицензия жады бос емес немесе қолжетімсіз.</translation>
+        </message>
+        <message>
+            <source>License storage is unavailable.</source>
+            <translation>Лицензия сақтау орны қолжетімсіз.</translation>
+        </message>
+        <message>
+            <source>Sign-in expired. Try again.</source>
+            <translation>Жүйеге кіру мерзімі аяқталды. Қайтадан байқап көріңіз.</translation>
+        </message>
+        <message>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>GitHub жүйесіне кіру мүмкін емес. Қайтадан байқап көріңіз.</translation>
+        </message>
+        <message>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>GitHub жүйесіне кіру аяқталмады. Қайтадан байқап көріңіз.</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>GitHub тексерілмеді. Офлайн қолжетімділік ең көбі жеті күнге созылады.</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>GitHub арқылы қайта кіріңіз.</translation>
+        </message>
+    </context>
+    <context>
         <name>LocalChannel</name>
+        <message>
+            <source>Insufficient permissions.</source>
+            <translation>Рұқсаттар жеткіліксіз.</translation>
+        </message>
+        <message>
+            <source>Blocked</source>
+            <translation>Бұғатталған</translation>
+        </message>
         <message>
             <source>Host is not responding. Reconnecting.</source>
             <translation>хост жауап бермейді. Қайта қосылуда.</translation>
@@ -1926,8 +2312,8 @@
             <translation>Кескінді тасымалдау тым ұзаққа созылды.</translation>
         </message>
         <message>
-            <source>The channel is full. Text chat is still available.</source>
-            <translation>Арна толы. Мәтіндік чат әлі де қолжетімді.</translation>
+            <source>The host is busy. Try again shortly.</source>
+            <translation>Хост бос емес. Біраздан кейін қайталап көр.</translation>
         </message>
         <message>
             <source>All own channels use the device's shared port.</source>
@@ -2189,6 +2575,53 @@
             <source>Voice relay codec could not be configured.</source>
             <translation>Дауыс релесі кодегін баптау мүмкін болмады.</translation>
         </message>
+        <message>
+            <source>Unsupported audio codec</source>
+            <translation>Қолдау көрсетілмейтін аудиокодек</translation>
+        </message>
+        <message>
+            <source>Speaking is not allowed in this channel.</source>
+            <translation>Бұл арнада сөйлеуге рұқсат жоқ.</translation>
+        </message>
+    </context>
+    <context>
+        <name>LocalLanguage</name>
+        <message>
+            <source>Translation (experimental)</source>
+            <translation>Аударма (тәжірибелік)</translation>
+        </message>
+        <message>
+            <source>Translate messages</source>
+            <translation>Хабарларды аудару</translation>
+        </message>
+        <message>
+            <source>Translated voice</source>
+            <translation>Аударылған дауыс</translation>
+        </message>
+        <message>
+            <source>Original audio</source>
+            <translation>Бастапқы дыбыс</translation>
+        </message>
+        <message>
+            <source>Original text</source>
+            <translation>Бастапқы мәтін</translation>
+        </message>
+        <message>
+            <source>Prepare languages</source>
+            <translation>Тілдерді дайындау</translation>
+        </message>
+        <message>
+            <source>Local language processing is unavailable.</source>
+            <translation>Жергілікті тіл өңдеуі қолжетімсіз.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be read.</source>
+            <translation>Тіл параметрлерін оқу мүмкін болмады.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be saved.</source>
+            <translation>Тіл параметрлерін сақтау мүмкін болмады.</translation>
+        </message>
     </context>
     <context>
         <name>PushToTalkKey</name>
@@ -2329,50 +2762,61 @@
         </message>
     </context>
     <context>
-        <name>RecordingPanel</name>
+        <name>ScreenPanel</name>
         <message>
-            <source>Stop</source>
-            <translation>Тоқта</translation>
+            <source>Video paused</source>
+            <translation>Бейне кідіртілді</translation>
         </message>
         <message>
-            <source>Start</source>
-            <translation>Бастау</translation>
+            <source>Stream ended</source>
+            <translation>ағын аяқталды</translation>
         </message>
         <message>
-            <source>Saved on this device only. Nothing is uploaded.</source>
-            <translation>тек осы құрылғыда сақталған. Ештеңе жүктеп салынбаған.</translation>
+            <source>Connecting</source>
+            <translation>Қосылуда</translation>
         </message>
         <message>
-            <source>Keep this take or record it again.</source>
-            <translation>Бұл түсіруді сақтаңыз немесе қайта жазыңыз.</translation>
+            <source>Open screen stream</source>
+            <translation>Ашық экран ағыны</translation>
         </message>
         <message>
-            <source>Record again</source>
-            <translation>Қайтадан жазыңыз</translation>
+            <source>Screen stream</source>
+            <translation>Экран ағыны</translation>
         </message>
         <message>
-            <source>Use recording</source>
-            <translation>Жазуды пайдаланыңыз</translation>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
+        </message>
+    </context>
+    <context>
+        <name>ScreenShare</name>
+        <message>
+            <source>Allow screen recording in system settings.</source>
+            <translation>Жүйе баптауларында экранды жазуға рұқсат бер.</translation>
         </message>
         <message>
-            <source>Recording progress</source>
-            <translation>Жазылу барысы</translation>
+            <source>The shared screen was removed. Select a source to start again.</source>
+            <translation>Ортақ экран жойылды. Қайта бастау үшін көзді таңдаңыз.</translation>
         </message>
         <message>
-            <source>Step %1 of %2</source>
-            <translation>%2/%1-қадам</translation>
+            <source>The shared window was closed. Select a source to start again.</source>
+            <translation>Ортақ терезе жабылды. Қайта бастау үшін көзді таңдаңыз.</translation>
         </message>
         <message>
-            <source>Open recordings</source>
-            <translation>Жазбаларды ашу</translation>
+            <source>The selected screen is no longer available.</source>
+            <translation>Таңдалған экран енді қолжетімді емес.</translation>
         </message>
         <message>
-            <source>Reset test</source>
-            <translation>Сынақты қалпына келтіру</translation>
+            <source>The selected window is no longer available.</source>
+            <translation>Таңдалған терезе енді қолжетімді емес.</translation>
         </message>
         <message>
-            <source>%1 s remaining / %2 dBFS</source>
-            <translation>%1 с қалды / %2 dBFS</translation>
+            <source>The selected source exceeds the capture size limit.</source>
+            <translation>Таңдалған көз түсіру өлшемі шегінен асып кетті.</translation>
+        </message>
+        <message>
+            <source>Close a video view before opening another stream.</source>
+            <translation>Басқа ағынды ашпас бұрын бейне көрінісін жабыңыз.</translation>
         </message>
     </context>
     <context>
@@ -2449,10 +2893,6 @@
             <translation>Сигнал жиналуда...</translation>
         </message>
         <message>
-            <source>Dashed curve: configured gain and frequency cuts, using the right dB scale. Noise reduction and voice activation are not part of this curve.</source>
-            <translation>Үзік сызық: оң жақ dB шкаласындағы бапталған күшейту мен жиілік кесулері. Шуды азайту мен дауысты белсендіру бұл қисықтың бөлігі емес.</translation>
-        </message>
-        <message>
             <source>Microphone preview is not running</source>
             <translation>Микрофонды алдын ала қарау іске қосылмайды</translation>
         </message>
@@ -2463,303 +2903,6 @@
         <message>
             <source>Peak: %1</source>
             <translation>Шың: %1</translation>
-        </message>
-    </context>
-    <context>
-        <name>Tray</name>
-        <message>
-            <source>Quit</source>
-            <translation>Тоқта</translation>
-        </message>
-        <message>
-            <source>SquadSpeak - speaking</source>
-            <translation>SquadSpeak - сөйлеу</translation>
-        </message>
-        <message>
-            <source>Settings</source>
-            <translation>Параметрлер</translation>
-        </message>
-        <message>
-            <source>Channels</source>
-            <translation>Арналар</translation>
-        </message>
-        <message>
-            <source>New image</source>
-            <translation>Жаңа сурет</translation>
-        </message>
-    </context>
-    <context>
-        <name>VoiceAvatar</name>
-        <message>
-            <source>Muted</source>
-            <translation>Микрофон дыбысы өшірілді</translation>
-        </message>
-        <message>
-            <source>Sleeping</source>
-            <translation>Ұйықтау</translation>
-        </message>
-        <message>
-            <source>Offline</source>
-            <translation>Офлайн</translation>
-        </message>
-        <message>
-            <source>Speaking</source>
-            <translation>Сөйлеу</translation>
-        </message>
-        <message>
-            <source>Unavailable</source>
-            <translation>Қолжетімсіз</translation>
-        </message>
-        <message>
-            <source>Listening</source>
-            <translation>Тыңдау</translation>
-        </message>
-        <message>
-            <source>Deafened</source>
-            <translation>Динамиктердің дыбысы өшірілді</translation>
-        </message>
-    </context>
-    <context>
-        <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>Қолжетімсіз - аудио параметрлері немесе тон сынағы</translation>
-        </message>
-        <message>
-            <source>Microphone muted</source>
-            <translation>Микрофон дыбысы өшірілді</translation>
-        </message>
-        <message>
-            <source>Push-to-talk held</source>
-            <translation>Басу-сөйлеу түймесі басылып тұр</translation>
-        </message>
-        <message>
-            <source>Ready - push-to-talk released</source>
-            <translation>Дайын - басу-сөйлеу түймесі босатылды</translation>
-        </message>
-        <message>
-            <source>Microphone unmuted</source>
-            <translation>Микрофон дыбысы қосылды</translation>
-        </message>
-        <message>
-            <source>Settings could not be saved: %1</source>
-            <translation>Параметрлерді сақтау мүмкін болмады: %1</translation>
-        </message>
-        <message>
-            <source>The push-to-talk sequence cannot be incremented further.</source>
-            <translation>Басу-сөйлеу ретін одан әрі арттыру мүмкін емес.</translation>
-        </message>
-        <message>
-            <source>Choose System, Light or Dark.</source>
-            <translation>Жүйе, Ашық немесе Қараңғы таңдаңыз.</translation>
-        </message>
-        <message>
-            <source>Choose a colour palette from the list.</source>
-            <translation>Тізімнен түстер палитрасын таңдаңыз.</translation>
-        </message>
-        <message>
-            <source>Choose an available avatar.</source>
-            <translation>қолжетімді аватарды таңдаңыз.</translation>
-        </message>
-        <message>
-            <source>Invalid push-to-talk binding.</source>
-            <translation>Басу-сөйлесу жарамсыз байланыстыру.</translation>
-        </message>
-        <message>
-            <source>Release the held push-to-talk key first.</source>
-            <translation>Алдымен ұстап тұрған "басу-сөйлеу" пернесін босатыңыз.</translation>
-        </message>
-        <message>
-            <source>Choose a language from the list.</source>
-            <translation>Тізімнен тілді таңдаңыз.</translation>
-        </message>
-        <message>
-            <source>This avatar requires Supporter.</source>
-            <translation>Бұл аватарға Supporter қажет.</translation>
-        </message>
-        <message>
-            <source>The name must contain 1 to 64 characters.</source>
-            <translation>Атауда 1-64 таңба болуы керек.</translation>
-        </message>
-        <message>
-            <source>The name may not contain control characters or line breaks.</source>
-            <translation>Атауда басқару таңбалары немесе жол үзілімдері болмауы мүмкін.</translation>
-        </message>
-        <message>
-            <source>Session settings could not be read.</source>
-            <translation>Сеанс параметрлерін оқу мүмкін болмады.</translation>
-        </message>
-        <message>
-            <source>Saved setting is invalid: %1</source>
-            <translation>Сақталған параметр жарамсыз: %1</translation>
-        </message>
-    </context>
-    <context>
-        <name>License</name>
-        <message>
-            <source>License storage is busy or unavailable.</source>
-            <translation>Лицензия жады бос емес немесе қолжетімсіз.</translation>
-        </message>
-        <message>
-            <source>License storage is unavailable.</source>
-            <translation>Лицензия сақтау орны қолжетімсіз.</translation>
-        </message>
-        <message>
-            <source>Sign-in expired. Try again.</source>
-            <translation>Жүйеге кіру мерзімі аяқталды. Қайтадан байқап көріңіз.</translation>
-        </message>
-        <message>
-            <source>GitHub sign-in is unavailable. Try again.</source>
-            <translation>GitHub жүйесіне кіру мүмкін емес. Қайтадан байқап көріңіз.</translation>
-        </message>
-        <message>
-            <source>GitHub sign-in was not completed. Try again.</source>
-            <translation>GitHub жүйесіне кіру аяқталмады. Қайтадан байқап көріңіз.</translation>
-        </message>
-        <message>
-            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
-            <translation>GitHub тексерілмеді. Офлайн қолжетімділік ең көбі жеті күнге созылады.</translation>
-        </message>
-        <message>
-            <source>Sign in with GitHub again.</source>
-            <translation>GitHub арқылы қайта кіріңіз.</translation>
-        </message>
-    </context>
-    <context>
-        <name>ScreenShare</name>
-        <message>
-            <source>The shared screen was removed. Select a source to start again.</source>
-            <translation>Ортақ экран жойылды. Қайта бастау үшін көзді таңдаңыз.</translation>
-        </message>
-        <message>
-            <source>The shared window was closed. Select a source to start again.</source>
-            <translation>Ортақ терезе жабылды. Қайта бастау үшін көзді таңдаңыз.</translation>
-        </message>
-        <message>
-            <source>The selected screen is no longer available.</source>
-            <translation>Таңдалған экран енді қолжетімді емес.</translation>
-        </message>
-        <message>
-            <source>The selected window is no longer available.</source>
-            <translation>Таңдалған терезе енді қолжетімді емес.</translation>
-        </message>
-        <message>
-            <source>The selected source exceeds the capture size limit.</source>
-            <translation>Таңдалған көз түсіру өлшемі шегінен асып кетті.</translation>
-        </message>
-        <message>
-            <source>Close a video view before opening another stream.</source>
-            <translation>Басқа ағынды ашпас бұрын бейне көрінісін жабыңыз.</translation>
-        </message>
-    </context>
-    <context>
-        <name>ScreenPanel</name>
-        <message>
-            <source>Media capacity reached</source>
-            <translation>медиа сыйымдылығына жетті</translation>
-        </message>
-        <message>
-            <source>Video paused</source>
-            <translation>Бейне кідіртілді</translation>
-        </message>
-        <message>
-            <source>Stream ended</source>
-            <translation>ағын аяқталды</translation>
-        </message>
-        <message>
-            <source>Connecting</source>
-            <translation>Қосылуда</translation>
-        </message>
-        <message>
-            <source>Open screen stream</source>
-            <translation>Ашық экран ағыны</translation>
-        </message>
-        <message>
-            <source>Screen stream</source>
-            <translation>Экран ағыны</translation>
-        </message>
-        <message>
-            <source>%1 kbit/s</source>
-            <translation>%1 kbit/s</translation>
-        </message>
-    </context>
-    <context>
-        <name>VideoCodec</name>
-        <message>
-            <source>Video codec: %1</source>
-            <translation>Бейне кодек: %1</translation>
-        </message>
-        <message>
-            <source>Video codec ABI does not match its headers.</source>
-            <translation>Бейне кодектің ABI интерфейсі оның тақырып файлдарына сәйкес келмейді.</translation>
-        </message>
-        <message>
-            <source>Video buffers could not be allocated.</source>
-            <translation>Бейне буферлерін бөлу мүмкін болмады.</translation>
-        </message>
-        <message>
-            <source>Invalid video quality tier.</source>
-            <translation>Бейне сапасының деңгейі жарамсыз.</translation>
-        </message>
-        <message>
-            <source>The screen source exceeds the supported capture size.</source>
-            <translation>Экран көзі түсірудің қолдау көрсетілетін өлшемінен асады.</translation>
-        </message>
-        <message>
-            <source>The screen source is too narrow.</source>
-            <translation>Экран көзі тым тар.</translation>
-        </message>
-        <message>
-            <source>The video encoder could not be allocated.</source>
-            <translation>Бейне кодтағышын бөлу мүмкін болмады.</translation>
-        </message>
-        <message>
-            <source>No supported video encoder is available.</source>
-            <translation>Қолдау көрсетілетін бейне кодтағышы қолжетімсіз.</translation>
-        </message>
-        <message>
-            <source>Video encoder configuration is too large.</source>
-            <translation>Бейне кодтағышының конфигурациясы тым үлкен.</translation>
-        </message>
-        <message>
-            <source>Video scaling could not be initialized.</source>
-            <translation>Бейнені масштабтауды инициализациялау мүмкін болмады.</translation>
-        </message>
-        <message>
-            <source>The encoder returned an empty video packet.</source>
-            <translation>Кодтағыш бос бейне пакетін қайтарды.</translation>
-        </message>
-        <message>
-            <source>Invalid video frame format.</source>
-            <translation>Бейне кадрының пішімі жарамсыз.</translation>
-        </message>
-        <message>
-            <source>Invalid video decoder configuration.</source>
-            <translation>Бейне декодерінің конфигурациясы жарамсыз.</translation>
-        </message>
-        <message>
-            <source>This video codec cannot be decoded.</source>
-            <translation>Бұл бейне кодекті декодтау мүмкін емес.</translation>
-        </message>
-        <message>
-            <source>Video decoder could not be allocated.</source>
-            <translation>Бейне декодерін бөлу мүмкін болмады.</translation>
-        </message>
-        <message>
-            <source>Video decoder configuration could not be allocated.</source>
-            <translation>Бейне декодерінің конфигурациясын бөлу мүмкін болмады.</translation>
-        </message>
-        <message>
-            <source>Decoded dimensions do not match the screen stream.</source>
-            <translation>Декодталған өлшемдер экран ағынына сәйкес келмейді.</translation>
-        </message>
-        <message>
-            <source>Decoded image could not be allocated.</source>
-            <translation>Декодталған кескінді бөлу мүмкін болмады.</translation>
-        </message>
-        <message>
-            <source>Video color conversion could not be initialized.</source>
-            <translation>Бейне түстерін түрлендіруді инициализациялау мүмкін болмады.</translation>
         </message>
     </context>
     <context>
@@ -2877,359 +3020,208 @@
             <translation>Құпиясөзді тексеру мүмкін болмады.</translation>
         </message>
     </context>
-
     <context>
-        <name>Headless</name>
+        <name>Tray</name>
         <message>
-            <source>Command failed.</source>
-            <translation>Пәрмен орындалмады.</translation>
+            <source>Quit</source>
+            <translation>Тоқта</translation>
         </message>
         <message>
-            <source>%1 must be an integer.</source>
-            <translation>%1 бүтін сан болуы керек.</translation>
+            <source>SquadSpeak - speaking</source>
+            <translation>SquadSpeak - сөйлеу</translation>
         </message>
         <message>
-            <source>Requests must be on/off or true/false.</source>
-            <translation>Сұраулар on/off немесе true/false болуы керек.</translation>
+            <source>Settings</source>
+            <translation>Параметрлер</translation>
         </message>
         <message>
-            <source>Unknown host property: %1</source>
-            <translation>Хосттың белгісіз қасиеті: %1</translation>
+            <source>Channels</source>
+            <translation>Арналар</translation>
         </message>
         <message>
-            <source>Run without GUI, microphone capture, or local audio output.</source>
-            <translation>Графикалық интерфейссіз, микрофоннан жазусыз және жергілікті дыбыс шығысынсыз іске қосу.</translation>
-        </message>
-        <message>
-            <source>Server storage prefix. Personal/audio/GUI profiles are not loaded.</source>
-            <translation>Сервер қоймасының префиксі. Жеке, дыбыс және интерфейс профильдері жүктелмейді.</translation>
-        </message>
-        <message>
-            <source>Optional private identity file instead of the OS credential store (Linux/macOS). Parent directory must exist and belong to this account.</source>
-            <translation>Операциялық жүйенің тіркелгі деректері қоймасының орнына қосымша жеке сәйкестік файлы (Linux/macOS). Жоғарғы каталог бар болуы және осы тіркелгіге тиесілі болуы керек.</translation>
-        </message>
-        <message>
-            <source>UTF-8 key=value properties or JSON host preset. Default: application.properties, then config/application.properties beside the app.</source>
-            <translation>UTF-8 key=value қасиеттері немесе хосттың JSON алдын ала баптаулары. Әдепкі: application.properties, содан кейін қолданба жанындағы config/application.properties.</translation>
-        </message>
-        <message>
-            <source>Channel display name.</source>
-            <translation>Арнаның көрсетілетін атауы.</translation>
-        </message>
-        <message>
-            <source>System and radio bot display name.</source>
-            <translation>Жүйелік және радио боттың көрсетілетін атауы.</translation>
-        </message>
-        <message>
-            <source>TCP service port (1-65535).</source>
-            <translation>TCP қызмет порты (1-65535).</translation>
-        </message>
-        <message>
-            <source>Headless admission is always on; only 'on' or 'true' is accepted.</source>
-            <translation>Графикалық интерфейссіз режимде қабылдау әрқашан қосулы; тек 'on' немесе 'true' қабылданады.</translation>
-        </message>
-        <message>
-            <source>Preapprove a device ID; repeat for several devices. Existing bans remain.</source>
-            <translation>Құрылғы ID-ін алдын ала мақұлдау; бірнеше құрылғы үшін қайталаңыз. Қолданыстағы тыйымдар сақталады.</translation>
-        </message>
-        <message>
-            <source>Block a device ID; repeat for several devices.</source>
-            <translation>Құрылғы ID-ін бұғаттау; бірнеше құрылғы үшін қайталаңыз.</translation>
-        </message>
-        <message>
-            <source>Read a UTF-8 channel password from a file before listening. An empty file removes it.</source>
-            <translation>Тыңдауды бастамас бұрын арнаның UTF-8 құпиясөзін файлдан оқу. Бос файл оны жояды.</translation>
-        </message>
-        <message>
-            <source>Channel password. Empty removes it; environment or config avoids process-list exposure.</source>
-            <translation>Арна құпиясөзі. Бос мән оны жояды; орта не конфигурация оны процестер тізімінде көрсетпейді.</translation>
-        </message>
-        <message>
-            <source>SquadSpeak headless local channel host</source>
-            <translation>Графикалық интерфейссіз SquadSpeak жергілікті арна хосты</translation>
-        </message>
-        <message>
-            <source>Environment variables (SQUADSPEAK_ prefix):</source>
-            <translation>Орта айнымалылары (SQUADSPEAK_ префиксі):</translation>
-        </message>
-        <message>
-            <source>Host configuration could not be read or exceeds 1 MiB.</source>
-            <translation>Хост конфигурациясы оқылмады немесе көлемі 1 MiB-тан асады.</translation>
-        </message>
-        <message>
-            <source>Host configuration must be UTF-8.</source>
-            <translation>Хост конфигурациясы UTF-8 болуы керек.</translation>
-        </message>
-        <message>
-            <source>Host preset must be a JSON object.</source>
-            <translation>Хосттың алдын ала баптаулары JSON нысаны болуы керек.</translation>
-        </message>
-        <message>
-            <source>Property line %1 must use key=value.</source>
-            <translation>%1 қасиет жолы key=value пішімін қолдануы керек.</translation>
-        </message>
-        <message>
-            <source>Property line %1: %2</source>
-            <translation>%1 қасиет жолы: %2</translation>
-        </message>
-        <message>
-            <source>Standard input has no file descriptor.</source>
-            <translation>Стандартты кірістің файл дескрипторы жоқ.</translation>
-        </message>
-        <message>
-            <source>Standard input could not be inspected.</source>
-            <translation>Стандартты кіріс тексерілмеді.</translation>
-        </message>
-        <message>
-            <source>Could not write the command response: %1</source>
-            <translation>Пәрмен жауабы жазылмады: %1</translation>
-        </message>
-        <message>
-            <source>Standard input could not be read: %1</source>
-            <translation>Стандартты кіріс оқылмады: %1</translation>
-        </message>
-        <message>
-            <source>Input line exceeds 65536 bytes.</source>
-            <translation>Кіріс жолы 65536 байттан асады.</translation>
-        </message>
-        <message>
-            <source>Each input line must be a JSON object.</source>
-            <translation>Әр кіріс жолы JSON нысаны болуы керек.</translation>
-        </message>
-        <message>
-            <source>Input ended before a complete JSON line.</source>
-            <translation>Толық JSON жолына дейін кіріс аяқталды.</translation>
-        </message>
-        <message>
-            <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
-            <translation>status, configure, password, admission, history, chat және radio пәрмендеріне арналған өз арнаңыздың қосымша ID-і; әдепкіде негізгі арна қолданылады.</translation>
-        </message>
-        <message>
-            <source>Channel action must be list, add or remove.</source>
-            <translation>Арна әрекеті list, add немесе remove болуы керек.</translation>
-        </message>
-        <message>
-            <source>Removing an own channel deletes its history, images, permissions and radio settings. Set confirmed=true to proceed.</source>
-            <translation>Өз арнаңызды жою оның тарихын, суреттерін, рұқсаттарын және радио баптауларын жояды. Жалғастыру үшін confirmed=true орнатыңыз.</translation>
-        </message>
-        <message>
-            <source>id must identify an additional own channel.</source>
-            <translation>id өзіңіздің қосымша арнаңызды көрсетуі керек.</translation>
-        </message>
-        <message>
-            <source>The additional own channel could not be removed: %1</source>
-            <translation>Өзіңіздің қосымша арнаңыз жойылмады: %1</translation>
-        </message>
-        <message>
-            <source>channelId must identify an own channel.</source>
-            <translation>channelId өз арнаңызды көрсетуі керек.</translation>
-        </message>
-        <message>
-            <source>values must be a host settings object.</source>
-            <translation>values хост баптауларының нысаны болуы керек.</translation>
-        </message>
-        <message>
-            <source>Headless admission is always enabled for non-banned devices; requests off is not supported.</source>
-            <translation>Графикалық интерфейссіз режимде бұғатталмаған құрылғылар әрқашан қабылданады; requests off қолдау көрсетілмейді.</translation>
-        </message>
-        <message>
-            <source>value must be a password of at most 1024 UTF-8 bytes without control characters; an empty string removes it.</source>
-            <translation>value басқару таңбаларынсыз, ең көбі 1024 UTF-8 байттан тұратын құпиясөз болуы керек; бос жол оны жояды.</translation>
-        </message>
-        <message>
-            <source>The channel is not ready or a password change is in progress.</source>
-            <translation>Арна дайын емес немесе құпиясөз өзгертіліп жатыр.</translation>
-        </message>
-        <message>
-            <source>The channel was removed while saving the password.</source>
-            <translation>Құпиясөз сақталып жатқанда арна жойылды.</translation>
-        </message>
-        <message>
-            <source>id is required.</source>
-            <translation>id қажет.</translation>
-        </message>
-        <message>
-            <source>text must be a valid non-empty chat message.</source>
-            <translation>text жарамды, бос емес чат хабары болуы керек.</translation>
-        </message>
-        <message>
-            <source>The local channel is not ready.</source>
-            <translation>Жергілікті арна дайын емес.</translation>
-        </message>
-        <message>
-            <source>The channel's radio is unavailable.</source>
-            <translation>Арна радиосы қолжетімсіз.</translation>
-        </message>
-        <message>
-            <source>Unknown command. Use help.</source>
-            <translation>Белгісіз пәрмен. help қолданыңыз.</translation>
-        </message>
-        <message>
-            <source>search requires a query, non-negative offset and limit from 1 to 128.</source>
-            <translation>search үшін query, теріс емес offset және 1-ден 128-ге дейінгі limit қажет.</translation>
-        </message>
-        <message>
-            <source>add creates an id; update requires an existing id.</source>
-            <translation>add жаңа id жасайды; update үшін бар id қажет.</translation>
-        </message>
-        <message>
-            <source>A station is already being checked.</source>
-            <translation>Станция қазірдің өзінде тексеріліп жатыр.</translation>
-        </message>
-        <message>
-            <source>The channel was removed while checking the station.</source>
-            <translation>Станция тексеріліп жатқанда арна жойылды.</translation>
-        </message>
-        <message>
-            <source>Unknown radio action.</source>
-            <translation>Белгісіз радио әрекеті.</translation>
-        </message>
-        <message>
-            <source>Could not load language: %1</source>
-            <translation>Тіл жүктелмеді: %1</translation>
-        </message>
-        <message>
-            <source>The %1 option is incompatible with --headless.</source>
-            <translation>%1 параметрі --headless параметрімен үйлеспейді.</translation>
-        </message>
-        <message>
-            <source>Unexpected positional arguments. Use --help.</source>
-            <translation>Күтпеген позициялық аргументтер. --help қолданыңыз.</translation>
-        </message>
-        <message>
-            <source>--config / -f requires a non-empty path.</source>
-            <translation>--config / -f бос емес жолды талап етеді.</translation>
-        </message>
-        <message>
-            <source>Choose --password or --password-file, not both.</source>
-            <translation>--password немесе --password-file таңдаңыз, екеуін бірге емес.</translation>
-        </message>
-        <message>
-            <source>Choose SQUADSPEAK_PASSWORD or SQUADSPEAK_PASSWORD_FILE, not both.</source>
-            <translation>SQUADSPEAK_PASSWORD немесе SQUADSPEAK_PASSWORD_FILE таңдаңыз, екеуін бірге емес.</translation>
-        </message>
-        <message>
-            <source>Choose password or passwordFile in one configuration layer, not both.</source>
-            <translation>Бір конфигурация қабатында password немесе passwordFile таңдаңыз, екеуін бірге емес.</translation>
-        </message>
-        <message>
-            <source>passwordFile must be a non-empty path.</source>
-            <translation>passwordFile бос емес жол болуы керек.</translation>
-        </message>
-        <message>
-            <source>Password file could not be read or is too large.</source>
-            <translation>Құпиясөз файлы оқылмады немесе тым үлкен.</translation>
-        </message>
-        <message>
-            <source>Password file must contain at most 1024 UTF-8 bytes without control characters.</source>
-            <translation>Құпиясөз файлында басқару таңбаларынсыз ең көбі 1024 UTF-8 байт болуы керек.</translation>
-        </message>
-        <message>
-            <source>Password must be a string of at most 1024 UTF-8 bytes without control characters.</source>
-            <translation>Құпиясөз басқару таңбаларынсыз ең көбі 1024 UTF-8 байттан тұратын жол болуы керек.</translation>
-        </message>
-        <message>
-            <source>settingsFile must be a non-empty path.</source>
-            <translation>settingsFile бос емес жол болуы керек.</translation>
-        </message>
-        <message>
-            <source>identityFile must be a non-empty path.</source>
-            <translation>identityFile бос емес жол болуы керек.</translation>
-        </message>
-        <message>
-            <source>The settings directory could not be created.</source>
-            <translation>Баптаулар каталогы жасалмады.</translation>
-        </message>
-        <message>
-            <source>This SquadSpeak profile is already running or cannot be locked.</source>
-            <translation>Бұл SquadSpeak профилі қазірдің өзінде жұмыс істеп тұр немесе оны құлыптау мүмкін емес.</translation>
-        </message>
-        <message>
-            <source>Standard input could not be opened.</source>
-            <translation>Стандартты кіріс ашылмады.</translation>
-        </message>
-        <message>
-            <source>Standard output could not be opened.</source>
-            <translation>Стандартты шығыс ашылмады.</translation>
-        </message>
-        <message>
-            <source>This identity file is already in use or cannot be locked.</source>
-            <translation>Бұл сәйкестік файлы қазірдің өзінде қолданылуда немесе оны құлыптау мүмкін емес.</translation>
-        </message>
-        <message>
-            <source>Invalid host configuration: %1</source>
-            <translation>Жарамсыз хост конфигурациясы: %1</translation>
-        </message>
-        <message>
-            <source>Radio channels could not be initialized.</source>
-            <translation>Радио арналары инициализацияланбады.</translation>
-        </message>
-        <message>
-            <source>Headless host could not start: %1</source>
-            <translation>Графикалық интерфейссіз хост іске қосылмады: %1</translation>
-        </message>
-        <message>
-            <source>Channel password could not be saved.</source>
-            <translation>Арна құпиясөзі сақталмады.</translation>
-        </message>
-        <message>
-            <source>Invalid channel password: %1</source>
-            <translation>Жарамсыз арна құпиясөзі: %1</translation>
-        </message>
-        <message>
-            <source>Headless host could not initialize: %1</source>
-            <translation>Графикалық интерфейссіз хост инициализацияланбады: %1</translation>
-        </message>
-        <message>
-            <source>SquadSpeak headless could not start: %1</source>
-            <translation>Графикалық интерфейссіз SquadSpeak іске қосылмады: %1</translation>
-        </message>
-        <message>
-            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
-            <translation>Қолдаушының әрекеті күй, жүйеге кіру, жаңарту, шығу немесе бас тарту болуы керек. status sign-in refresh sign-out cancel</translation>
-        </message>
-        <message>
-            <source>A Supporter operation is in progress.</source>
-            <translation>Қолдау көрсету операциясы орындалуда.</translation>
-        </message>
-        <message>
-            <source>Supporter access is unavailable in this build.</source>
-            <translation>Бұл құрылымда қолдаушыларға кіру мүмкін емес.</translation>
-        </message>
-        <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>Параметрлердің басымдылығы: аргументтер &gt; орта &gt; сипаттар &gt; сақталған сервер мәндері.</translation>
+            <source>New image</source>
+            <translation>Жаңа сурет</translation>
         </message>
     </context>
     <context>
-        <name>Desktop</name>
+        <name>VideoCodec</name>
         <message>
-            <source>Open settings at startup.</source>
-            <translation>Іске қосылғанда параметрлерді ашу.</translation>
+            <source>Video codec: %1</source>
+            <translation>Бейне кодек: %1</translation>
         </message>
         <message>
-            <source>Open guided local test recording without starting network services.</source>
-            <translation>Желі қызметтерін қоспай, нұсқаулары бар жергілікті сынақ жазбасын ашу.</translation>
+            <source>Video codec ABI does not match its headers.</source>
+            <translation>Бейне кодектің ABI интерфейсі оның тақырып файлдарына сәйкес келмейді.</translation>
         </message>
         <message>
-            <source>Alternative file for audio profiles.</source>
-            <translation>Дыбыс профильдеріне арналған балама файл.</translation>
+            <source>Video buffers could not be allocated.</source>
+            <translation>Бейне буферлерін бөлу мүмкін болмады.</translation>
         </message>
         <message>
-            <source>Load the interface without microphone capture and exit after one second.</source>
-            <translation>Интерфейсті микрофоннан жазбай жүктеу және бір секундтан кейін шығу.</translation>
+            <source>Invalid video quality tier.</source>
+            <translation>Бейне сапасының деңгейі жарамсыз.</translation>
         </message>
         <message>
-            <source>Save an image of the app window during the UI test.</source>
-            <translation>Интерфейс сынағы кезінде қолданба терезесінің суретін сақтау.</translation>
+            <source>The screen source exceeds the supported capture size.</source>
+            <translation>Экран көзі түсірудің қолдау көрсетілетін өлшемінен асады.</translation>
         </message>
         <message>
-            <source>The window image could not be saved.</source>
-            <translation>Терезе суретін сақтау мүмкін болмады.</translation>
+            <source>The screen source is too narrow.</source>
+            <translation>Экран көзі тым тар.</translation>
         </message>
         <message>
-            <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
-            <translation>Жүйелік науа қолжетімсіз; қолданба терезеде ашық қалады.</translation>
+            <source>The video encoder could not be allocated.</source>
+            <translation>Бейне кодтағышын бөлу мүмкін болмады.</translation>
+        </message>
+        <message>
+            <source>No supported video encoder is available.</source>
+            <translation>Қолдау көрсетілетін бейне кодтағышы қолжетімсіз.</translation>
+        </message>
+        <message>
+            <source>Video encoder configuration is too large.</source>
+            <translation>Бейне кодтағышының конфигурациясы тым үлкен.</translation>
+        </message>
+        <message>
+            <source>Video scaling could not be initialized.</source>
+            <translation>Бейнені масштабтауды инициализациялау мүмкін болмады.</translation>
+        </message>
+        <message>
+            <source>The encoder returned an empty video packet.</source>
+            <translation>Кодтағыш бос бейне пакетін қайтарды.</translation>
+        </message>
+        <message>
+            <source>Invalid video frame format.</source>
+            <translation>Бейне кадрының пішімі жарамсыз.</translation>
+        </message>
+        <message>
+            <source>Invalid video decoder configuration.</source>
+            <translation>Бейне декодерінің конфигурациясы жарамсыз.</translation>
+        </message>
+        <message>
+            <source>This video codec cannot be decoded.</source>
+            <translation>Бұл бейне кодекті декодтау мүмкін емес.</translation>
+        </message>
+        <message>
+            <source>Video decoder could not be allocated.</source>
+            <translation>Бейне декодерін бөлу мүмкін болмады.</translation>
+        </message>
+        <message>
+            <source>Video decoder configuration could not be allocated.</source>
+            <translation>Бейне декодерінің конфигурациясын бөлу мүмкін болмады.</translation>
+        </message>
+        <message>
+            <source>Decoded dimensions do not match the screen stream.</source>
+            <translation>Декодталған өлшемдер экран ағынына сәйкес келмейді.</translation>
+        </message>
+        <message>
+            <source>Decoded image could not be allocated.</source>
+            <translation>Декодталған кескінді бөлу мүмкін болмады.</translation>
+        </message>
+        <message>
+            <source>Video color conversion could not be initialized.</source>
+            <translation>Бейне түстерін түрлендіруді инициализациялау мүмкін болмады.</translation>
+        </message>
+    </context>
+    <context>
+        <name>VoiceAvatar</name>
+        <message>
+            <source>Muted</source>
+            <translation>Микрофон дыбысы өшірілді</translation>
+        </message>
+        <message>
+            <source>Sleeping</source>
+            <translation>Ұйықтау</translation>
+        </message>
+        <message>
+            <source>Offline</source>
+            <translation>Офлайн</translation>
+        </message>
+        <message>
+            <source>Speaking</source>
+            <translation>Сөйлеу</translation>
+        </message>
+        <message>
+            <source>Unavailable</source>
+            <translation>Қолжетімсіз</translation>
+        </message>
+        <message>
+            <source>Listening</source>
+            <translation>Тыңдау</translation>
+        </message>
+        <message>
+            <source>Deafened</source>
+            <translation>Динамиктердің дыбысы өшірілді</translation>
+        </message>
+    </context>
+    <context>
+        <name>VoiceSession</name>
+        <message>
+            <source>Microphone muted</source>
+            <translation>Микрофон дыбысы өшірілді</translation>
+        </message>
+        <message>
+            <source>Push-to-talk held</source>
+            <translation>Басу-сөйлеу түймесі басылып тұр</translation>
+        </message>
+        <message>
+            <source>Ready - push-to-talk released</source>
+            <translation>Дайын - басу-сөйлеу түймесі босатылды</translation>
+        </message>
+        <message>
+            <source>Microphone unmuted</source>
+            <translation>Микрофон дыбысы қосылды</translation>
+        </message>
+        <message>
+            <source>Settings could not be saved: %1</source>
+            <translation>Параметрлерді сақтау мүмкін болмады: %1</translation>
+        </message>
+        <message>
+            <source>The push-to-talk sequence cannot be incremented further.</source>
+            <translation>Басу-сөйлеу ретін одан әрі арттыру мүмкін емес.</translation>
+        </message>
+        <message>
+            <source>Choose System, Light or Dark.</source>
+            <translation>Жүйе, Ашық немесе Қараңғы таңдаңыз.</translation>
+        </message>
+        <message>
+            <source>Choose a colour palette from the list.</source>
+            <translation>Тізімнен түстер палитрасын таңдаңыз.</translation>
+        </message>
+        <message>
+            <source>Choose an available avatar.</source>
+            <translation>қолжетімді аватарды таңдаңыз.</translation>
+        </message>
+        <message>
+            <source>Invalid push-to-talk binding.</source>
+            <translation>Басу-сөйлесу жарамсыз байланыстыру.</translation>
+        </message>
+        <message>
+            <source>Release the held push-to-talk key first.</source>
+            <translation>Алдымен ұстап тұрған "басу-сөйлеу" пернесін босатыңыз.</translation>
+        </message>
+        <message>
+            <source>Choose a language from the list.</source>
+            <translation>Тізімнен тілді таңдаңыз.</translation>
+        </message>
+        <message>
+            <source>This avatar requires Supporter.</source>
+            <translation>Бұл аватарға Supporter қажет.</translation>
+        </message>
+        <message>
+            <source>The name must contain 1 to 64 characters.</source>
+            <translation>Атауда 1-64 таңба болуы керек.</translation>
+        </message>
+        <message>
+            <source>The name may not contain control characters or line breaks.</source>
+            <translation>Атауда басқару таңбалары немесе жол үзілімдері болмауы мүмкін.</translation>
+        </message>
+        <message>
+            <source>Session settings could not be read.</source>
+            <translation>Сеанс параметрлерін оқу мүмкін болмады.</translation>
+        </message>
+        <message>
+            <source>Saved setting is invalid: %1</source>
+            <translation>Сақталған параметр жарамсыз: %1</translation>
         </message>
     </context>
 </TS>

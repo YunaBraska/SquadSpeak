@@ -1,0 +1,604 @@
+#if os(macOS)
+import AppKit
+#else
+import UIKit
+#endif
+import AVFAudio
+import Foundation
+import NaturalLanguage
+import Speech
+import SwiftUI
+import Translation
+
+public typealias LanguageCallback = @convention(c) (UnsafeMutableRawPointer?, Int64, UnsafePointer<CChar>?) -> Void
+
+private func json(_ object: [String: Any]) -> String {
+  guard let data = try? JSONSerialization.data(withJSONObject: object),
+        let string = String(data: data, encoding: .utf8) else {
+    return "{\"kind\":\"error\",\"error\":\"Invalid native language event\"}"
+  }
+  return string
+}
+
+private func languageID(_ value: String) -> String {
+  value.replacingOccurrences(of: "_", with: "-")
+}
+
+private func localeName(_ language: Locale.Language) -> [String: String] {
+  let id = language.languageCode?.identifier ?? language.minimalIdentifier
+  return ["id": id, "name": Locale.current.localizedString(forLanguageCode: id) ?? id]
+}
+
+private func localeName(_ language: Locale) -> [String: String] {
+  let id = languageID(language.identifier)
+  return ["id": id, "name": Locale.current.localizedString(forIdentifier: id) ?? id]
+}
+
+@available(macOS 15.0, iOS 18.0, *)
+private func translationAvailability() -> LanguageAvailability {
+#if SQUAD_TRANSLATION_STRATEGY
+  if #available(macOS 26.4, iOS 26.4, *) { return LanguageAvailability(preferredStrategy: .lowLatency) }
+#endif
+  return LanguageAvailability()
+}
+
+@available(macOS 15.0, iOS 18.0, *)
+private func translationLanguage(_ identifier: String, supported: [Locale.Language]) -> Locale.Language {
+  let requested = Locale.Language(identifier: identifier)
+  return supported.first { $0.minimalIdentifier == requested.minimalIdentifier }
+    ?? supported.first { $0.languageCode == requested.languageCode && $0.maximalIdentifier == requested.maximalIdentifier }
+    ?? supported.first { $0.languageCode == requested.languageCode && $0.script == requested.script }
+    ?? requested
+}
+
+@available(macOS 15.0, iOS 18.0, *)
+private struct PreparationView: View {
+  let configuration: TranslationSession.Configuration
+  let finished: (String?) -> Void
+
+  var body: some View {
+    VStack(spacing: 14) {
+      Text(configuration.source.map { localeName($0)["name"] ?? "" } ?? "")
+      Text(configuration.target.map { localeName($0)["name"] ?? "" } ?? "")
+      ProgressView()
+    }
+    .padding(28)
+    .frame(width: 360)
+    .translationTask(configuration) { session in
+      do {
+        try await session.prepareTranslation()
+        await MainActor.run { finished(nil) }
+      } catch {
+        await MainActor.run { finished(error.localizedDescription) }
+      }
+    }
+  }
+}
+
+#if os(macOS)
+private final class PreparationWindowDelegate: NSObject, NSWindowDelegate {
+  let closed: () -> Void
+  init(closed: @escaping () -> Void) { self.closed = closed }
+  func windowWillClose(_ notification: Notification) { closed() }
+}
+#else
+private final class PreparationWindowDelegate: NSObject, UIAdaptivePresentationControllerDelegate {
+  let closed: () -> Void
+  init(closed: @escaping () -> Void) { self.closed = closed }
+  func presentationControllerDidDismiss(_ presentationController: UIPresentationController) { closed() }
+}
+#endif
+
+private final class LanguageBridge {
+  private var callback: LanguageCallback?
+  private var context: UnsafeMutableRawPointer?
+  private var alive = true
+  private var lastCapabilities = "{\"available\":false,\"languages\":[],\"speechLanguages\":[],\"error\":\"Unavailable\"}"
+  private var nextToken: UInt64 = 0
+  private var activeTokens: [Int64: UInt64] = [:]
+  private var translationTasks: [Int64: Task<Void, Never>] = [:]
+  private var speechTasks: [Int64: Task<Void, Never>] = [:]
+  private var speechContinuations: [Int64: Any] = [:]
+  private var speechConverters: [Int64: AVAudioConverter] = [:]
+  private var speechFormats: [Int64: AVAudioFormat] = [:]
+  private var capabilitiesCString: UnsafeMutablePointer<CChar>?
+#if os(macOS)
+  private var preparationPanel: NSPanel?
+#else
+  private var preparationPanel: UIViewController?
+#endif
+  private var preparationDelegate: PreparationWindowDelegate?
+  private var preparationRequest: Int64?
+  private var preparationCompletion: ((String?) -> Void)?
+  private var preparationTask: Task<Void, Never>?
+  private var capabilityState: [String: Any] = ["kind": "capabilities", "available": false, "speechAvailable": false]
+  private var voiceObserver: NSObjectProtocol?
+
+  init(callback: LanguageCallback?, context: UnsafeMutableRawPointer?) {
+    self.callback = callback
+    self.context = context
+    refreshCapabilities()
+    if #available(macOS 14.0, iOS 17.0, *) {
+      voiceObserver = NotificationCenter.default.addObserver(forName: AVSpeechSynthesizer.availableVoicesDidChangeNotification,
+          object: nil, queue: nil) { [weak self] _ in
+        // Apple's inventory may post while holding its own synthesis lock.
+        // Query it only after the notification has returned to its sender.
+        DispatchQueue.main.async { [weak self] in
+          self?.refresh()
+          self?.emit(0, ["kind": "voicesChanged"])
+        }
+      }
+    }
+  }
+
+  deinit {
+    invalidate()
+    if let capabilitiesCString { free(capabilitiesCString) }
+  }
+
+  func invalidate() {
+    guard alive else { return }
+    alive = false
+    if let voiceObserver { NotificationCenter.default.removeObserver(voiceObserver) }
+    voiceObserver = nil
+    callback = nil
+    context = nil
+    for task in translationTasks.values { task.cancel() }
+    for task in speechTasks.values { task.cancel() }
+    if #available(macOS 26.0, iOS 26.0, *) {
+      for value in speechContinuations.values {
+        (value as? AsyncStream<AnalyzerInput>.Continuation)?.finish()
+      }
+    }
+    translationTasks.removeAll()
+    speechTasks.removeAll()
+    speechContinuations.removeAll()
+    speechConverters.removeAll()
+    speechFormats.removeAll()
+    activeTokens.removeAll()
+    preparationCompletion?("Language model preparation was cancelled")
+    preparationCompletion = nil
+    preparationRequest = nil
+    preparationTask?.cancel()
+    preparationTask = nil
+    dismissPreparation()
+    preparationPanel = nil
+    preparationDelegate = nil
+  }
+
+  private func dismissPreparation() {
+#if os(macOS)
+    preparationPanel?.orderOut(nil)
+#else
+    let controller = preparationPanel
+    DispatchQueue.main.async { controller?.dismiss(animated: true) }
+#endif
+  }
+
+  private func emit(_ request: Int64, _ event: [String: Any]) {
+    guard alive, let callback else { return }
+    let value = json(event)
+    value.withCString { callback(context, request, $0) }
+  }
+
+  func capabilities() -> UnsafePointer<CChar> {
+    if let capabilitiesCString { free(capabilitiesCString) }
+    capabilitiesCString = strdup(lastCapabilities)
+    return UnsafePointer(capabilitiesCString!)
+  }
+
+  func refresh() {
+    guard alive else { return }
+    let voice = AVSpeechSynthesisVoice(language: nil)
+    let current = ["id": voice?.identifier ?? "", "name": voice?.name ?? "",
+                   "language": voice?.language ?? AVSpeechSynthesisVoice.currentLanguageCode()]
+    guard current != capabilityState["systemVoice"] as? [String: String] else { return }
+    capabilityState["systemVoice"] = current
+    lastCapabilities = json(capabilityState)
+    emit(0, capabilityState)
+  }
+
+  private func refreshCapabilities() {
+    guard #available(macOS 15.0, iOS 18.0, *) else { return }
+    Task { @MainActor [weak self] in
+      guard let self else { return }
+      var seen = Set<String>()
+      let languages = await translationAvailability().supportedLanguages.map(localeName)
+        .filter { seen.insert($0["id"] ?? "").inserted }
+        .sorted { ($0["name"] ?? "") < ($1["name"] ?? "") }
+      var speechLanguages: [[String: String]] = []
+      var speechAvailable = false
+      var available = false
+      var error = "Text and speech translation requires macOS or iOS 26"
+      if #available(macOS 26.0, iOS 26.0, *) {
+        speechLanguages = await SpeechTranscriber.supportedLocales.map(localeName)
+        available = true
+        speechAvailable = SpeechTranscriber.isAvailable
+        error = ""
+      }
+      let voice = AVSpeechSynthesisVoice(language: nil)
+      let event: [String: Any] = ["kind": "capabilities", "available": available, "speechAvailable": speechAvailable,
+                                   "systemVoice": ["id": voice?.identifier ?? "", "name": voice?.name ?? "", "language": voice?.language ?? AVSpeechSynthesisVoice.currentLanguageCode()],
+                                   "languages": languages, "speechLanguages": speechLanguages,
+                                   "error": error]
+      self.capabilityState = event
+      self.lastCapabilities = json(event)
+      self.emit(0, event)
+    }
+  }
+
+  private func beginToken(_ request: Int64) -> UInt64 {
+    nextToken &+= 1
+    activeTokens[request] = nextToken
+    return nextToken
+  }
+
+  private func isCurrent(_ request: Int64, _ token: UInt64) -> Bool {
+    activeTokens[request] == token
+  }
+
+  private func clear(_ request: Int64, _ token: UInt64) {
+    if activeTokens[request] == token { activeTokens.removeValue(forKey: request) }
+  }
+
+  @MainActor private func showTranslationPreparation(_ request: Int64, source: String, target: String, completion: @escaping (String?) -> Void) {
+    guard #available(macOS 15.0, iOS 18.0, *) else {
+      completion("Translation model preparation requires macOS 15 or iOS 18")
+      return
+    }
+    dismissPreparation()
+    preparationRequest = request
+    preparationCompletion = completion
+    var configuration = TranslationSession.Configuration(
+      source: Locale.Language(identifier: source), target: Locale.Language(identifier: target))
+#if SQUAD_TRANSLATION_STRATEGY
+    if #available(macOS 26.4, iOS 26.4, *) { configuration.preferredStrategy = .lowLatency }
+#endif
+    let view = PreparationView(configuration: configuration) { [weak self] error in
+      guard let self, self.preparationRequest == request else { return }
+      let finish = self.preparationCompletion
+      self.preparationCompletion = nil
+      self.preparationRequest = nil
+      self.dismissPreparation()
+      self.preparationPanel = nil
+      self.preparationDelegate = nil
+      finish?(error)
+    }
+#if os(macOS)
+    let controller = NSHostingController(rootView: view)
+    let panel = NSPanel(contentViewController: controller)
+    panel.styleMask = [.titled, .closable]
+    panel.title = Locale.current.localizedString(forIdentifier: target) ?? target
+#else
+    let panel = UIHostingController(rootView: view)
+    panel.modalPresentationStyle = .pageSheet
+#endif
+    let delegate = PreparationWindowDelegate { [weak self] in
+      guard let self, let finish = self.preparationCompletion else { return }
+      self.preparationCompletion = nil
+      self.preparationRequest = nil
+      self.preparationPanel = nil
+      self.preparationDelegate = nil
+      finish("Language model preparation was cancelled")
+    }
+    preparationDelegate = delegate
+#if os(macOS)
+    panel.delegate = delegate
+    panel.level = .modalPanel
+    panel.center()
+    preparationPanel = panel
+    NSApp.activate(ignoringOtherApps: true)
+    panel.makeKeyAndOrderFront(nil)
+#else
+    guard let scene = UIApplication.shared.connectedScenes.first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene,
+          var presenter = scene.windows.first(where: \.isKeyWindow)?.rootViewController else {
+      preparationCompletion = nil
+      preparationRequest = nil
+      preparationDelegate = nil
+      completion("Open the app to prepare language models")
+      return
+    }
+    while let presented = presenter.presentedViewController { presenter = presented }
+    preparationPanel = panel
+    presenter.present(panel, animated: true)
+    panel.presentationController?.delegate = delegate
+#endif
+  }
+
+  func prepare(_ request: Int64, source: String, target: String, speech: Bool) {
+    guard !source.isEmpty, !target.isEmpty else {
+      emit(request, ["kind": "error", "error": "Model preparation requires explicit language identifiers"])
+      return
+    }
+    guard #available(macOS 26.0, iOS 26.0, *) else {
+      emit(request, ["kind": "error", "error": "Language model preparation requires macOS or iOS 26"])
+      return
+    }
+    if preparationTask != nil || preparationCompletion != nil {
+      emit(request, ["kind": "error", "error": "Another language model preparation is already running"])
+      return
+    }
+    preparationRequest = request
+    preparationTask = Task { @MainActor [weak self] in
+      guard let self else { return }
+      do {
+        if speech {
+          guard let locale = await SpeechTranscriber.supportedLocale(equivalentTo: Locale(identifier: source)) else {
+            throw NSError(domain: "SquadLanguage", code: 3, userInfo: [NSLocalizedDescriptionKey: "Speech locale is unavailable"])
+          }
+          let transcriber = SpeechTranscriber(locale: locale, preset: .progressiveTranscription)
+          if let installRequest = try await AssetInventory.assetInstallationRequest(supporting: [transcriber]) {
+            try await installRequest.downloadAndInstall()
+          }
+        }
+        try Task.checkCancellation()
+        guard self.alive, self.preparationRequest == request else { return }
+        let availability = translationAvailability()
+        let supported = await availability.supportedLanguages
+        let input = translationLanguage(source, supported: supported)
+        let output = translationLanguage(target, supported: supported)
+        let status = await availability.status(from: input, to: output)
+        try Task.checkCancellation()
+        if input.languageCode == output.languageCode || status == .installed {
+          self.preparationTask = nil
+          self.preparationRequest = nil
+          self.emit(request, ["kind": "ready", "text": "", "final": true, "error": ""])
+          return
+        }
+        self.showTranslationPreparation(request, source: input.minimalIdentifier, target: output.minimalIdentifier) { [weak self] error in
+          guard let self else { return }
+          self.preparationTask = nil
+          if let error { self.emit(request, ["kind": "error", "error": error]) }
+          else { self.emit(request, ["kind": "ready", "text": "", "final": true, "error": ""]) }
+        }
+      } catch {
+        guard self.alive, self.preparationRequest == request else { return }
+        self.preparationRequest = nil
+        self.preparationTask = nil
+        self.emit(request, ["kind": "error", "error": error.localizedDescription])
+      }
+    }
+  }
+
+  func translate(_ request: Int64, source: String, target: String, text: String, detectionText: String) {
+    guard #available(macOS 26.0, iOS 26.0, *) else {
+      emit(request, ["kind": "error", "error": "Text translation requires macOS or iOS 26 in this experimental bridge"])
+      return
+    }
+    guard !target.isEmpty else {
+      emit(request, ["kind": "error", "error": "Text translation requires an explicit target language"])
+      return
+    }
+    if translationTasks.count >= 4 && translationTasks[request] == nil {
+      emit(request, ["kind": "error", "error": "Too many translation requests"])
+      return
+    }
+    cancel(request)
+    let token = beginToken(request)
+    translationTasks[request] = Task { @MainActor [weak self] in
+      var detected = source
+      do {
+        if detected.isEmpty {
+          guard let language = NLLanguageRecognizer.dominantLanguage(for: detectionText), language.rawValue != "und" else {
+            throw NSError(domain: "SquadLanguage", code: 5, userInfo: [NSLocalizedDescriptionKey: "The source language could not be detected"])
+          }
+          detected = languageID(language.rawValue)
+        }
+        let availability = translationAvailability()
+        let supported = await availability.supportedLanguages
+        let sourceLanguage = translationLanguage(detected, supported: supported)
+        let targetLanguage = translationLanguage(target, supported: supported)
+        let output: String
+        if sourceLanguage.languageCode == targetLanguage.languageCode {
+          output = text
+        } else {
+          if await availability.status(from: sourceLanguage, to: targetLanguage) == .supported {
+            guard let self, self.isCurrent(request, token) else { return }
+            self.translationTasks.removeValue(forKey: request)
+            self.clear(request, token)
+            self.emit(request, ["kind": "error", "code": "modelsRequired", "source": sourceLanguage.minimalIdentifier])
+            return
+          }
+          let session: TranslationSession
+#if SQUAD_TRANSLATION_STRATEGY
+          if #available(macOS 26.4, iOS 26.4, *) {
+            session = TranslationSession(installedSource: sourceLanguage, target: targetLanguage, preferredStrategy: .lowLatency)
+          } else { session = TranslationSession(installedSource: sourceLanguage, target: targetLanguage) }
+#else
+          session = TranslationSession(installedSource: sourceLanguage, target: targetLanguage)
+#endif
+          output = try await session.translate(text).targetText
+        }
+        guard let self, self.isCurrent(request, token) else { return }
+        self.translationTasks.removeValue(forKey: request)
+        self.clear(request, token)
+        self.emit(request, ["kind": "text", "text": output, "source": detected, "final": true, "error": ""])
+      } catch {
+        guard let self, self.isCurrent(request, token) else { return }
+        self.translationTasks.removeValue(forKey: request)
+        self.clear(request, token)
+        self.emit(request, ["kind": "error", "source": detected, "error": error.localizedDescription])
+      }
+    }
+  }
+
+  func listen(_ request: Int64, source: String) {
+    cancel(request)
+    guard #available(macOS 26.0, iOS 26.0, *) else {
+      emit(request, ["kind": "error", "error": "Live speech translation requires macOS or iOS 26"])
+      return
+    }
+    guard SpeechTranscriber.isAvailable else {
+      emit(request, ["kind": "error", "error": "Speech transcription is unavailable"])
+      return
+    }
+    guard speechTasks.count < 4 else {
+      emit(request, ["kind": "error", "error": "Too many speech sessions"])
+      return
+    }
+    let (stream, continuation) = AsyncStream.makeStream(of: AnalyzerInput.self, bufferingPolicy: .bufferingNewest(50))
+    speechContinuations[request] = continuation
+    let token = beginToken(request)
+    speechTasks[request] = Task { @MainActor [weak self] in
+      do {
+        guard let locale = await SpeechTranscriber.supportedLocale(equivalentTo: Locale(identifier: source)) else {
+          throw NSError(domain: "SquadLanguage", code: 1, userInfo: [NSLocalizedDescriptionKey: "Speech locale is unavailable"])
+        }
+        let transcriber = SpeechTranscriber(locale: locale, preset: .progressiveTranscription)
+        guard await AssetInventory.status(forModules: [transcriber]) == .installed else {
+          throw NSError(domain: "SquadLanguage", code: 6, userInfo: [NSLocalizedDescriptionKey: "Prepare local speech models first"])
+        }
+        let analyzer = SpeechAnalyzer(modules: [transcriber])
+        guard let format = await SpeechAnalyzer.bestAvailableAudioFormat(compatibleWith: [transcriber]),
+              let inputFormat = AVAudioFormat(standardFormatWithSampleRate: 48_000, channels: 1),
+              let converter = AVAudioConverter(from: inputFormat, to: format) else {
+          throw NSError(domain: "SquadLanguage", code: 2, userInfo: [NSLocalizedDescriptionKey: "Speech audio format is unavailable"])
+        }
+        guard let self, self.isCurrent(request, token) else { return }
+        self.speechConverters[request] = converter
+        self.speechFormats[request] = format
+        try await analyzer.prepareToAnalyze(in: format)
+        guard self.isCurrent(request, token) else { return }
+        self.emit(request, ["kind": "ready", "text": "", "final": true, "error": ""])
+        try await withTaskCancellationHandler(operation: {
+          try await analyzer.start(inputSequence: stream)
+          for try await result in transcriber.results {
+            guard self.isCurrent(request, token) else { break }
+            self.emit(request, ["kind": "text", "text": String(result.text.characters),
+                                "final": result.isFinal, "error": ""])
+          }
+          await analyzer.cancelAndFinishNow()
+        }, onCancel: {
+          Task { await analyzer.cancelAndFinishNow() }
+        })
+        guard self.isCurrent(request, token) else { return }
+        self.speechContinuations.removeValue(forKey: request)
+        self.speechTasks.removeValue(forKey: request)
+        self.speechConverters.removeValue(forKey: request)
+        self.speechFormats.removeValue(forKey: request)
+        self.clear(request, token)
+      } catch {
+        guard let self, self.isCurrent(request, token) else { return }
+        self.speechContinuations.removeValue(forKey: request)
+        self.speechTasks.removeValue(forKey: request)
+        self.speechConverters.removeValue(forKey: request)
+        self.speechFormats.removeValue(forKey: request)
+        self.clear(request, token)
+        let missingModels = (error as NSError).domain == "SquadLanguage" && (error as NSError).code == 6
+        self.emit(request, ["kind": "error", "error": error.localizedDescription,
+                            "code": missingModels ? "modelsRequired" : "", "source": source])
+      }
+    }
+  }
+
+  func audio(_ request: Int64, samples: UnsafePointer<Float>?, count: Int) {
+    guard #available(macOS 26.0, iOS 26.0, *), count > 0, count <= 48_000, let samples,
+          let continuation = speechContinuations[request] as? AsyncStream<AnalyzerInput>.Continuation else { return }
+    guard let format = AVAudioFormat(standardFormatWithSampleRate: 48_000, channels: 1),
+          let buffer = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: AVAudioFrameCount(count)),
+          let channel = buffer.floatChannelData?[0] else { return }
+    buffer.frameLength = AVAudioFrameCount(count)
+    channel.update(from: samples, count: count)
+    if let converter = speechConverters[request], let format = speechFormats[request],
+       let converted = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: AVAudioFrameCount(Double(count) * format.sampleRate / 48_000 + 2)) {
+      var conversionError: NSError?
+      var supplied = false
+      converter.convert(to: converted, error: &conversionError) { _, status in
+        guard !supplied else { status.pointee = .noDataNow; return nil }
+        supplied = true
+        status.pointee = .haveData
+        return buffer
+      }
+      if let conversionError {
+        cancel(request)
+        emit(request, ["kind": "error", "error": conversionError.localizedDescription])
+        return
+      }
+      if converted.frameLength > 0, case .dropped = continuation.yield(AnalyzerInput(buffer: converted)) {
+        cancel(request)
+        emit(request, ["kind": "error", "error": "Speech audio input buffer overflow"])
+      }
+    } else if case .dropped = continuation.yield(AnalyzerInput(buffer: buffer)) {
+      cancel(request)
+      emit(request, ["kind": "error", "error": "Speech audio input buffer overflow"])
+    }
+  }
+
+  func cancel(_ request: Int64) {
+    activeTokens.removeValue(forKey: request)
+    translationTasks.removeValue(forKey: request)?.cancel()
+    if #available(macOS 26.0, iOS 26.0, *) {
+      (speechContinuations.removeValue(forKey: request) as? AsyncStream<AnalyzerInput>.Continuation)?.finish()
+    }
+    speechTasks.removeValue(forKey: request)?.cancel()
+    speechConverters.removeValue(forKey: request)
+    speechFormats.removeValue(forKey: request)
+    if preparationRequest == request {
+      preparationTask?.cancel()
+      preparationTask = nil
+      preparationCompletion?("Language model preparation was cancelled")
+      preparationCompletion = nil
+      preparationRequest = nil
+      dismissPreparation()
+      preparationPanel = nil
+      preparationDelegate = nil
+    }
+  }
+}
+
+@_cdecl("squad_language_create")
+public func squad_language_create(_ callback: LanguageCallback?, _ context: UnsafeMutableRawPointer?) -> UnsafeMutableRawPointer {
+  Unmanaged.passRetained(LanguageBridge(callback: callback, context: context)).toOpaque()
+}
+
+@_cdecl("squad_language_destroy")
+public func squad_language_destroy(_ handle: UnsafeMutableRawPointer?) {
+  guard let handle else { return }
+  let bridge = Unmanaged<LanguageBridge>.fromOpaque(handle).takeUnretainedValue()
+  bridge.invalidate()
+  Unmanaged<LanguageBridge>.fromOpaque(handle).release()
+}
+
+@_cdecl("squad_language_capabilities")
+public func squad_language_capabilities(_ handle: UnsafeMutableRawPointer?) -> UnsafePointer<CChar>? {
+  guard let handle else { return nil }
+  return Unmanaged<LanguageBridge>.fromOpaque(handle).takeUnretainedValue().capabilities()
+}
+
+@_cdecl("squad_language_refresh")
+public func squad_language_refresh(_ handle: UnsafeMutableRawPointer?) {
+  guard let handle else { return }
+  Unmanaged<LanguageBridge>.fromOpaque(handle).takeUnretainedValue().refresh()
+}
+
+@_cdecl("squad_language_prepare")
+public func squad_language_prepare(_ handle: UnsafeMutableRawPointer?, _ request: Int64, _ source: UnsafePointer<CChar>?, _ target: UnsafePointer<CChar>?, _ speech: Int32) {
+  guard let handle else { return }
+  let bridge = Unmanaged<LanguageBridge>.fromOpaque(handle).takeUnretainedValue()
+  bridge.prepare(request, source: source.map(String.init) ?? "", target: target.map(String.init) ?? "", speech: speech != 0)
+}
+
+@_cdecl("squad_language_translate")
+public func squad_language_translate(_ handle: UnsafeMutableRawPointer?, _ request: Int64, _ source: UnsafePointer<CChar>?, _ target: UnsafePointer<CChar>?, _ text: UnsafePointer<CChar>?, _ detectionText: UnsafePointer<CChar>?) {
+  guard let handle else { return }
+  let bridge = Unmanaged<LanguageBridge>.fromOpaque(handle).takeUnretainedValue()
+  bridge.translate(request, source: source.map(String.init) ?? "", target: target.map(String.init) ?? "", text: text.map(String.init) ?? "", detectionText: detectionText.map(String.init) ?? "")
+}
+
+@_cdecl("squad_language_listen")
+public func squad_language_listen(_ handle: UnsafeMutableRawPointer?, _ request: Int64, _ source: UnsafePointer<CChar>?) {
+  guard let handle else { return }
+  Unmanaged<LanguageBridge>.fromOpaque(handle).takeUnretainedValue().listen(request, source: source.map(String.init) ?? "")
+}
+
+@_cdecl("squad_language_audio")
+public func squad_language_audio(_ handle: UnsafeMutableRawPointer?, _ request: Int64, _ samples: UnsafePointer<Float>?, _ count: Int32) {
+  guard let handle else { return }
+  Unmanaged<LanguageBridge>.fromOpaque(handle).takeUnretainedValue().audio(request, samples: samples, count: Int(count))
+}
+
+@_cdecl("squad_language_cancel")
+public func squad_language_cancel(_ handle: UnsafeMutableRawPointer?, _ request: Int64) {
+  guard let handle else { return }
+  Unmanaged<LanguageBridge>.fromOpaque(handle).takeUnretainedValue().cancel(request)
+}

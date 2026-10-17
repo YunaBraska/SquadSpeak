@@ -24,17 +24,6 @@ bool validFormat(const QJsonObject& format) {
 }
 }
 
-QSet<QString> LocalChannel::mediaParticipants() const {
-    if (service_) return service_->mediaParticipants();
-    QSet<QString> ids;
-    const auto collect = [&ids](const LocalChannel& channel) {
-        for (const auto& peer : channel.peers_) if (peer.joined && !peer.controller && !peer.observer) ids.insert(peer.id);
-        for (const auto& viewer : channel.viewers_) ids.insert(viewer.id);
-    };
-    collect(*this); for (const auto& child : owned_) collect(*child);
-    return ids;
-}
-
 bool LocalChannel::screenBusy(const Client* receiver, const LocalChannel* sender) const {
     const auto* root = service_ ? service_ : this;
     const auto occupied = [receiver, sender](const LocalChannel& channel) {
@@ -83,15 +72,20 @@ void LocalChannel::closeViewers(const QString& id) {
     for (auto* socket : viewers_.keys()) if (id.isEmpty() || viewers_.value(socket).id == id) socket->abort();
 }
 
+bool LocalChannel::mediaOverloaded() const {
+    const auto* host = service_ ? service_ : this;
+    return host->controlClock_.elapsed() < host->mediaBusyUntil_ || squad::MediaTransport::overloaded();
+}
+
 void LocalChannel::acceptViewer(QSslSocket* socket, int minimumTier, bool audioAllowed, bool audio, bool udp) {
     if (minimumTier < 0 || minimumTier > 3) { socket->abort(); return; }
     const auto id = peers_.value(socket).id;
     const auto admitted = std::any_of(peers_.cbegin(), peers_.cend(), [&id](const auto& peer) {
         return peer.id == id && peer.joined && !peer.controller;
     });
-    auto occupied = mediaParticipants(); occupied.remove(id);
-    if (!screenSharing_ || !admitted || occupied.size() >= 64) {
-        writeMessage(socket, {{"type", "screenQuality"}, {"tier", -1}, {"result", admitted && screenSharing_ ? "full" : "unavailable"}});
+    const bool replacingViewer = std::any_of(viewers_.cbegin(), viewers_.cend(), [&id](const auto& viewer) { return viewer.id == id; });
+    if (!screenSharing_ || !admitted || (!replacingViewer && mediaOverloaded())) {
+        writeMessage(socket, {{"type", "screenQuality"}, {"tier", -1}, {"result", admitted && screenSharing_ ? "busy" : "unavailable"}});
         finishPeer(socket); return;
     }
     closeViewers(id);
@@ -143,6 +137,8 @@ bool LocalChannel::reportScreenEncodeTime(int milliseconds) {
     if (milliseconds >= 1000) slowScreenEncodes_ = 2;
     if (++slowScreenEncodes_ < 3) return true;
     slowScreenEncodes_ = 0;
+    auto* host = service_ ? service_ : this;
+    host->mediaBusyUntil_ = host->controlClock_.elapsed() + 5000;
     for (auto* socket : viewers_.keys()) {
         auto& v = viewers_[socket];
         if (v.tier == 4 || v.waiting) continue;
@@ -264,7 +260,7 @@ void LocalChannel::finishScreen(QSslSocket* socket, qint64 serial, int decode, b
     const auto* device = service_ ? service_ : this;
     const auto delayedVoice = [&it](const LocalChannel& channel) {
         return std::any_of(channel.peers_.cbegin(), channel.peers_.cend(), [&it](const auto& peer) {
-            return peer.id == it->id && peer.joined && !peer.observer && peer.audioTier > 0;
+            return peer.id == it->id && peer.joined && !peer.observer && peer.audioTier > peer.bestAudioTier();
         });
     };
     const bool voicePressure = delayedVoice(*device) || std::any_of(device->owned_.cbegin(), device->owned_.cend(),
@@ -431,6 +427,12 @@ void LocalChannel::receiveScreenDatagram(Client& c, const QByteArray& bytes) {
         c.screenSocket->abort(); return;
     }
     if (serial < quint64(c.screenLastSerial) || (serial == quint64(c.screenLastSerial) && (!c.screenDatagram || !c.screenSize))) return;
+    if (!offset) {
+        const auto metadataSize = qFromBigEndian<quint32>(bytes.constData() + datagramHeader);
+        if (!metadataSize || metadataSize > maximumMetadata || metadataSize + 4 >= total || total - metadataSize - 4 > maximumPacket) {
+            c.screenSocket->abort(); return;
+        }
+    }
     if (serial > quint64(c.screenLastSerial)) {
         c.screenLastSerial = c.screenSerial = qint64(serial); c.screenSize = total; c.screenDatagram = true;
         c.screenPacket = QByteArray(total, '\0'); c.screenChunks = QBitArray((total + datagramChunk - 1) / datagramChunk);
@@ -442,7 +444,6 @@ void LocalChannel::receiveScreenDatagram(Client& c, const QByteArray& bytes) {
     c.screenChunks.setBit(index);
     if (c.screenChunks.count(true) != c.screenChunks.size()) return;
     const auto metadataSize = qFromBigEndian<quint32>(c.screenPacket.constData());
-    if (!metadataSize || metadataSize > maximumMetadata || metadataSize + 4 >= total || total - metadataSize - 4 > maximumPacket) { c.screenSocket->abort(); return; }
     QJsonParseError error;
     const auto metadata = QJsonDocument::fromJson(c.screenPacket.mid(4, metadataSize), &error);
     if (error.error != QJsonParseError::NoError || !metadata.isObject() || !validFormat(metadata.object())) { c.screenSocket->abort(); return; }

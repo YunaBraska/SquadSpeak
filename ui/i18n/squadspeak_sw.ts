@@ -36,14 +36,6 @@
             <translation>Fungua mipangilio ya faragha ya mfumo wako na uruhusu SquadSpeak kutumia kipaza sauti.</translation>
         </message>
         <message>
-            <source>Microphone analysis active. Test audio stays on this computer.</source>
-            <translation>Uchambuzi wa kipaza sauti unaendelea. Sauti ya jaribio itabaki kwenye kompyuta hii.</translation>
-        </message>
-        <message>
-            <source>Finish the test recording before changing devices.</source>
-            <translation>Maliza kurekodi jaribio kabla ya kubadilisha vifaa.</translation>
-        </message>
-        <message>
             <source>The output format is not supported.</source>
             <translation>Umbizo la towe halitumiki.</translation>
         </message>
@@ -68,32 +60,12 @@
             <translation>Haikuwezekana kucheza toni ya jaribio.</translation>
         </message>
         <message>
-            <source>The microphone has provided no data for five seconds. Recording discarded.</source>
-            <translation>Kipaza sauti hakikutoa data kwa sekunde tano. Rekodi imefutwa.</translation>
-        </message>
-        <message>
-            <source>The microphone was interrupted or changed. Recording discarded.</source>
-            <translation>Kipaza sauti kilikatizwa au kubadilishwa. Rekodi imefutwa.</translation>
-        </message>
-        <message>
-            <source>Cancelled. The incomplete recording was discarded.</source>
-            <translation>Imeghairiwa. Rekodi isiyokamilika imefutwa.</translation>
-        </message>
-        <message>
             <source>No selected microphone is available</source>
             <translation>Kipaza sauti kilichochaguliwa hakipatikani</translation>
         </message>
         <message>
             <source>Allow microphone access in the system dialog.</source>
             <translation>Ruhusu ufikiaji wa kipaza sauti katika kidirisha cha mfumo.</translation>
-        </message>
-        <message>
-            <source>Microphone capture active for the voice channel.</source>
-            <translation>Kunasa sauti kwa kipaza sauti kunaendelea kwa chaneli ya sauti.</translation>
-        </message>
-        <message>
-            <source>Microphone access was denied. Nothing was saved.</source>
-            <translation>Ufikiaji wa kipaza sauti umekataliwa. Hakuna kilichohifadhiwa.</translation>
         </message>
         <message>
             <source>Microphone access is missing. Allow it in System Settings.</source>
@@ -259,103 +231,16 @@
             <source>App audio only</source>
             <translation>Sauti ya programu pekee</translation>
         </message>
-    </context>
-    <context>
-        <name>AudioRecording</name>
         <message>
-            <source>Incomplete audio block. Recording discarded.</source>
-            <translation>Kizuizi cha sauti hakijakamilika. Rekodi imefutwa.</translation>
-        </message>
-        <message>
-            <source>Move about one meter from the microphone. Keep the background sound playing and read the sentence.</source>
-            <translation>Sogea karibu mita moja kutoka kwenye kipaza sauti. Endeleza sauti ya nyuma na usome sentensi.</translation>
-        </message>
-        <message>
-            <source>Voice with background sound</source>
-            <translation>Sauti yenye sauti ya nyuma</translation>
-        </message>
-        <message>
-            <source>The recordings folder could not be created.</source>
-            <translation>Haikuwezekana kuunda folda ya rekodi.</translation>
-        </message>
-        <message>
-            <source>You can stop the background sound now.</source>
-            <translation>Sasa unaweza kusimamisha sauti ya nyuma.</translation>
-        </message>
-        <message>
-            <source>Recordings saved</source>
-            <translation>Rekodi zimehifadhiwa</translation>
-        </message>
-        <message>
-            <source>The test recording could not be saved completely.</source>
-            <translation>Haikuwezekana kuhifadhi rekodi ya jaribio kikamilifu.</translation>
-        </message>
-        <message>
-            <source>Keep music off and stay quiet. Start when ready.</source>
-            <translation>Zima muziki na ukae kimya. Anza ukiwa tayari.</translation>
-        </message>
-        <message>
-            <source>Your voice</source>
-            <translation>Sauti yako</translation>
-        </message>
-        <message>
-            <source>Play music or another background sound at a normal volume. Stay quiet while recording.</source>
-            <translation>Cheza muziki au sauti nyingine ya nyuma kwa kiwango cha kawaida. Kaa kimya wakati wa kurekodi.</translation>
-        </message>
-        <message>
-            <source>The test recording could not be created.</source>
-            <translation>Haikuwezekana kuunda rekodi ya jaribio.</translation>
-        </message>
-        <message>
-            <source>Background sound</source>
-            <translation>Sauti ya nyuma</translation>
-        </message>
-        <message>
-            <source>The window is open. I can hear the rain outside. One, two, three, four, five.</source>
-            <translation>Dirisha limefunguliwa. Ninaweza kusikia mvua nje. Moja, mbili, tatu, nne, tano.</translation>
-        </message>
-        <message>
-            <source>This microphone format is not supported for test recordings.</source>
-            <translation>Muundo huu wa mikrofonu haunga mkono rekodi za majaribio.</translation>
-        </message>
-        <message>
-            <source>Keep the background volume unchanged. Read the sentence, then stop recording.</source>
-            <translation>Endeleza sauti ya asili bila kubadilisha. Soma sentensi, kisha acha kurekodi.</translation>
-        </message>
-        <message>
-            <source>Record at least half a second, then try again.</source>
-            <translation>Rekoda angalau sekunde nusu, kisha jaribu tena.</translation>
-        </message>
-        <message>
-            <source>Sit at your usual distance. Read the sentence, then stop recording.</source>
-            <translation>Kaa umbali wako wa kawaida. Soma sentensi, kisha acha kurekodi.</translation>
-        </message>
-        <message>
-            <source>The recording description could not be saved.</source>
-            <translation>Maelezo ya rekodi haikuweza kuhifadhiwa.</translation>
-        </message>
-        <message>
-            <source>The WAV file could not be finalized.</source>
-            <translation>F faili ya WAV haikuweza kukamilishwa.</translation>
-        </message>
-        <message>
-            <source>The WAV header could not be written.</source>
-            <translation>Mwangaza wa faili ya WAV haikuweza kuandikwa.</translation>
-        </message>
-        <message>
-            <source>Voice farther away</source>
-            <translation>Sauti kutoka mbali</translation>
-        </message>
-        <message>
-            <source>Room sound</source>
-            <translation>Sauti ya chumba</translation>
+            <source>Speech output is unavailable.</source>
+            <translation>Matamshi ya sauti hayapatikani.</translation>
         </message>
     </context>
     <context>
         <name>AudioSettings</name>
         <message>
-            <source>Echo cancellation</source>
-            <translation>Kuondoa mwangwi</translation>
+            <source>Echo</source>
+            <translation>Mwangwi</translation>
         </message>
         <message>
             <source>Off</source>
@@ -402,11 +287,11 @@
             <translation>Uchezaji wako</translation>
         </message>
         <message>
-            <source>Clear local key</source>
-            <translation>Futa kitufe cha ndani</translation>
+            <source>Clear key</source>
+            <translation>Futa kitufe</translation>
         </message>
         <message>
-            <source>Low cut</source>
+            <source>Highpass</source>
             <translation>Kata masafa ya chini</translation>
         </message>
         <message>
@@ -418,32 +303,16 @@
             <translation>Kifaa cha ingizo</translation>
         </message>
         <message>
-            <source>Microphone paused for others</source>
-            <translation>Kipaza sauti kimezimishwa kwa wengine</translation>
-        </message>
-        <message>
             <source>Cancel</source>
             <translation>Ghairi</translation>
-        </message>
-        <message>
-            <source>Guided recording</source>
-            <translation>Urekodi wa mwongozo</translation>
         </message>
         <message>
             <source>Clipping. Reduce microphone gain.</source>
             <translation>Sauti imepanda kupita kiwango. Punguza ongezeko la kipaza sauti.</translation>
         </message>
         <message>
-            <source>Silent</source>
-            <translation>Kimya</translation>
-        </message>
-        <message>
             <source>Test output</source>
             <translation>Jaribu pato la sauti</translation>
-        </message>
-        <message>
-            <source>Voice level</source>
-            <translation>Kiwango cha sauti</translation>
         </message>
         <message>
             <source>Voice threshold</source>
@@ -462,20 +331,16 @@
             <translation>Kifaa kilikatwa</translation>
         </message>
         <message>
-            <source>Local key</source>
-            <translation>Kitufe cha ndani</translation>
+            <source>PTT key</source>
+            <translation>Kitufe cha kuzungumza</translation>
         </message>
         <message>
             <source>Voice activation</source>
             <translation>Uanzishaji wa sauti</translation>
         </message>
         <message>
-            <source>Remote PTT key</source>
-            <translation>Kitufe cha mbali cha PTT</translation>
-        </message>
-        <message>
-            <source>Noise reduction</source>
-            <translation>Kupunguza kelele</translation>
+            <source>Denoise</source>
+            <translation>Punguza kelele</translation>
         </message>
         <message>
             <source>Selected device is not connected</source>
@@ -486,32 +351,120 @@
             <translation>Itatuma mawasilisho</translation>
         </message>
         <message>
-            <source>Microphone gain</source>
-            <translation>Ongezeko la kipaza sauti</translation>
-        </message>
-        <message>
-            <source>Clear remote key</source>
-            <translation>Futa kitufe cha mbali</translation>
-        </message>
-        <message>
-            <source>Playback volume</source>
-            <translation>Kiasi cha sauti ya pato</translation>
+            <source>Gain</source>
+            <translation>Ukuzaji</translation>
         </message>
         <message>
             <source>Not assigned</source>
             <translation>Hujuma</translation>
         </message>
         <message>
-            <source>High cut</source>
+            <source>Lowpass</source>
             <translation>Kata masafa ya juu</translation>
         </message>
         <message>
             <source>Level audio automatically</source>
             <translation>Rekebisha sauti moja kwa moja</translation>
         </message>
+        <message>
+            <source>Voice volume</source>
+            <translation>Sauti ya mazungumzo</translation>
+        </message>
+        <message>
+            <source>App sounds</source>
+            <translation>Sauti za programu</translation>
+        </message>
+        <message>
+            <source>Read bot messages aloud</source>
+            <translation>Soma ujumbe wa boti kwa sauti</translation>
+        </message>
+        <message>
+            <source>Download a high-quality voice for this language in macOS settings.</source>
+            <translation>Pakua sauti ya ubora wa juu ya lugha hii katika mipangilio ya macOS.</translation>
+        </message>
+        <message>
+            <source>Bot voice</source>
+            <translation>Sauti ya boti</translation>
+        </message>
+        <message>
+            <source>Automatic</source>
+            <translation>Kiotomatiki</translation>
+        </message>
+        <message>
+            <source>Unavailable</source>
+            <translation>Hapatikani</translation>
+        </message>
+        <message>
+            <source>Download voices in your device's Accessibility speech settings.</source>
+            <translation>Pakua sauti katika mipangilio ya matamshi chini ya Ufikivu kwenye kifaa chako.</translation>
+        </message>
+        <message>
+            <source>Voice download help</source>
+            <translation>Msaada wa kupakua sauti</translation>
+        </message>
+        <message>
+            <source>Strength, not the percentage of echo removed.</source>
+            <translation>Nguvu, si asilimia ya mwangwi ulioondolewa.</translation>
+        </message>
+        <message>
+            <source>Auto also checks for speech, not just volume.</source>
+            <translation>Hali ya kiotomatiki hutambua pia usemi, si kiwango cha sauti tu.</translation>
+        </message>
     </context>
     <context>
         <name>Channels</name>
+        <message>
+            <source>Audio received</source>
+            <translation>Sauti iliyopokelewa</translation>
+        </message>
+        <message>
+            <source>Search channels</source>
+            <translation>Tafuta chaneli</translation>
+        </message>
+        <message>
+            <source>No matches</source>
+            <translation>Hakuna matokeo</translation>
+        </message>
+        <message>
+            <source>Copy address</source>
+            <translation>Nakili anwani</translation>
+        </message>
+        <message>
+            <source>Messages</source>
+            <translation>Ujumbe</translation>
+        </message>
+        <message>
+            <source>Message</source>
+            <translation>Ujumbe</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Fungua</translation>
+        </message>
+        <message>
+            <source>Online</source>
+            <translation>Mtandaoni</translation>
+        </message>
+        <message>
+            <source>Offline</source>
+            <translation>Nje ya mtandao</translation>
+        </message>
+        <message>
+            <source>No private messages</source>
+            <translation>Hakuna ujumbe wa faragha</translation>
+        </message>
+        <message>
+            <source>Private messages are unavailable for this contact.</source>
+            <translation>Ujumbe wa faragha haupatikani kwa anwani hii.</translation>
+        </message>
+        <message>
+            <source>If asked, allow local network access. You can change this in system settings.</source>
+            <translation>Ukiulizwa, ruhusu ufikiaji wa mtandao wa ndani. Unaweza kubadilisha hili katika mipangilio ya mfumo.</translation>
+        </message>
+        <message>
+            <source>Retry</source>
+            <translation>Jaribu tena</translation>
+        </message>
         <message>
             <source>Updates</source>
             <translation>Masasisho</translation>
@@ -531,6 +484,10 @@
         <message>
             <source>DDNS cannot bypass CGNAT. If your provider shares the public IP, use a private VPN on all participating devices or a publicly reachable server.</source>
             <translation>DDNS hawezi kuzunguka CGNAT. Ikiwa mtoa huduma wako hushiriki anwani ya IP ya umma, tumia VPN binafsi kwenye vifaa vyote vinavyohusika au seva inayoweza kufikiwa kwa umma.</translation>
+        </message>
+        <message>
+            <source>Remove server</source>
+            <translation>Ondoa seva</translation>
         </message>
         <message>
             <source>Low</source>
@@ -653,10 +610,6 @@
             <translation>Sauti za arifa</translation>
         </message>
         <message>
-            <source>Lifetime for new messages. Earlier messages keep their expiry.</source>
-            <translation>Muda wa ujumlisha mpya. Ujumla wa zamani huendelea.</translation>
-        </message>
-        <message>
             <source>Enable speakers</source>
             <translation>Washa spika</translation>
         </message>
@@ -691,10 +644,6 @@
         <message>
             <source>Allow device</source>
             <translation>Ruhusu kifaa</translation>
-        </message>
-        <message>
-            <source>Receive quality: %1 kb/s per voice. Adjusts automatically for this device.</source>
-            <translation>Ubora wa kupokea: %1 kb/s kwa sauti. Huongeza kiotomatiki kwa kifaa hiki.</translation>
         </message>
         <message>
             <source>Stop radio</source>
@@ -1188,6 +1137,50 @@
             <source>This device</source>
             <translation>Kifaa hiki</translation>
         </message>
+        <message>
+            <source>Use default music volume</source>
+            <translation>Tumia sauti chaguomsingi ya muziki</translation>
+        </message>
+        <message>
+            <source>Show in Dock</source>
+            <translation>Onyesha kwenye Dock</translation>
+        </message>
+        <message>
+            <source>App language</source>
+            <translation>Lugha ya programu</translation>
+        </message>
+        <message>
+            <source>Send in</source>
+            <translation>Tuma kwa</translation>
+        </message>
+        <message>
+            <source>Hear in</source>
+            <translation>Sikiliza kwa</translation>
+        </message>
+        <message>
+            <source>Download language models for %1 and %2?</source>
+            <translation>Pakua modeli za lugha za %1 na %2?</translation>
+        </message>
+        <message>
+            <source>Download</source>
+            <translation>Pakua</translation>
+        </message>
+        <message>
+            <source>PTT, chat and channel controls. Uses the controlled device's microphone.</source>
+            <translation>Vidhibiti vya PTT, gumzo na vituo. Maikrofoni ya kifaa kinachodhibitiwa hutumiwa.</translation>
+        </message>
+        <message>
+            <source>Connect the other device to one of your channels, then allow it here.</source>
+            <translation>Unganisha kifaa kingine kwenye mojawapo ya vituo vyako, kisha kiruhusu hapa.</translation>
+        </message>
+        <message>
+            <source>On the other device, open Settings &gt; Input &gt; Remote control and allow this device.</source>
+            <translation>Kwenye kifaa kingine, fungua Mipangilio &gt; Ingiza &gt; Kidhibiti cha mbali na uruhusu kifaa hiki.</translation>
+        </message>
+        <message>
+            <source>Unread messages</source>
+            <translation>Ujumbe ambao haujasomwa</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1299,6 +1292,22 @@
             <source>The sanitized image could not be written completely.</source>
             <translation>Picha iliyosafishwa haikuweza kuandikwa kikamilifu.</translation>
         </message>
+        <message>
+            <source>%1 joined.</source>
+            <translation>%1 amejiunga.</translation>
+        </message>
+        <message>
+            <source>%1 left.</source>
+            <translation>%1 ameondoka.</translation>
+        </message>
+        <message>
+            <source>%1 was kicked.</source>
+            <translation>%1 amefukuzwa.</translation>
+        </message>
+        <message>
+            <source>%1 was banned from the channel.</source>
+            <translation>%1 amepigwa marufuku kwenye chaneli.</translation>
+        </message>
     </context>
     <context>
         <name>ChatPanel</name>
@@ -1363,22 +1372,6 @@
             <translation>Inapakuliwa...</translation>
         </message>
         <message>
-            <source>%1 joined.</source>
-            <translation>%1 amejiunga.</translation>
-        </message>
-        <message>
-            <source>%1 left.</source>
-            <translation>%1 ameondoka.</translation>
-        </message>
-        <message>
-            <source>%1 was kicked.</source>
-            <translation>%1 amefukuzwa.</translation>
-        </message>
-        <message>
-            <source>%1 was banned from the channel.</source>
-            <translation>%1 amepigwa marufuku kwenye chaneli.</translation>
-        </message>
-        <message>
             <source>Message could not be sent. Check the connection and text length.</source>
             <translation>Ujumbe haukuweza kutumwa. Tafadhali angalia muunganisho na urefu wa ujumbe.</translation>
         </message>
@@ -1404,7 +1397,400 @@
         </message>
     </context>
     <context>
+        <name>Desktop</name>
+        <message>
+            <source>Open settings at startup.</source>
+            <translation>Fungua mipangilio wakati wa kuanza.</translation>
+        </message>
+        <message>
+            <source>Alternative file for audio profiles.</source>
+            <translation>Faili mbadala la wasifu wa sauti.</translation>
+        </message>
+        <message>
+            <source>Load the interface without microphone capture and exit after one second.</source>
+            <translation>Pakia kiolesura bila kurekodi maikrofoni na ufunge baada ya sekunde moja.</translation>
+        </message>
+        <message>
+            <source>Save an image of the app window during the UI test.</source>
+            <translation>Hifadhi picha ya dirisha la programu wakati wa jaribio la kiolesura.</translation>
+        </message>
+        <message>
+            <source>The window image could not be saved.</source>
+            <translation>Picha ya dirisha haikuweza kuhifadhiwa.</translation>
+        </message>
+        <message>
+            <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
+            <translation>Trei ya mfumo haipatikani; programu inabaki wazi kwenye dirisha.</translation>
+        </message>
+    </context>
+    <context>
+        <name>Headless</name>
+        <message>
+            <source>Host display name.</source>
+            <translation>Jina la kuonyesha la mwenyeji.</translation>
+        </message>
+        <message>
+            <source>Command failed.</source>
+            <translation>Amri imeshindwa.</translation>
+        </message>
+        <message>
+            <source>%1 must be an integer.</source>
+            <translation>%1 lazima iwe nambari kamili.</translation>
+        </message>
+        <message>
+            <source>Requests must be on/off or true/false.</source>
+            <translation>Maombi lazima yawe on/off au true/false.</translation>
+        </message>
+        <message>
+            <source>Unknown host property: %1</source>
+            <translation>Sifa ya mwenyeji haitambuliki: %1</translation>
+        </message>
+        <message>
+            <source>Run without GUI, microphone capture, or local audio output.</source>
+            <translation>Endesha bila kiolesura cha picha, kurekodi maikrofoni au kutoa sauti kwenye kifaa hiki.</translation>
+        </message>
+        <message>
+            <source>Server storage prefix. Personal/audio/GUI profiles are not loaded.</source>
+            <translation>Kiambishi cha hifadhi ya seva. Wasifu wa binafsi, sauti na kiolesura haupakiwi.</translation>
+        </message>
+        <message>
+            <source>Optional private identity file instead of the OS credential store (Linux/macOS). Parent directory must exist and belong to this account.</source>
+            <translation>Faili ya hiari ya utambulisho binafsi badala ya hifadhi ya vitambulisho ya mfumo (Linux/macOS). Saraka kuu lazima iwepo na imilikiwe na akaunti hii.</translation>
+        </message>
+        <message>
+            <source>UTF-8 key=value properties or JSON host preset. Default: application.properties, then config/application.properties beside the app.</source>
+            <translation>Sifa za key=value katika UTF-8 au mipangilio ya mwenyeji ya JSON. Chaguomsingi: application.properties, kisha config/application.properties kando ya programu.</translation>
+        </message>
+        <message>
+            <source>Channel display name.</source>
+            <translation>Jina la chaneli linaloonyeshwa.</translation>
+        </message>
+        <message>
+            <source>System and radio bot display name.</source>
+            <translation>Jina linaloonyeshwa la boti ya pamoja ya mfumo na redio.</translation>
+        </message>
+        <message>
+            <source>TCP service port (1-65535).</source>
+            <translation>Porti ya huduma ya TCP (1-65535).</translation>
+        </message>
+        <message>
+            <source>Headless admission is always on; only 'on' or 'true' is accepted.</source>
+            <translation>Uandikishaji katika hali isiyo na kiolesura huwashwa kila wakati; 'on' au 'true' pekee hukubaliwa.</translation>
+        </message>
+        <message>
+            <source>Preapprove a device ID; repeat for several devices. Existing bans remain.</source>
+            <translation>Idhinisha ID ya kifaa mapema; rudia kwa vifaa kadhaa. Vizuiwa vilivyopo vinaendelea.</translation>
+        </message>
+        <message>
+            <source>Block a device ID; repeat for several devices.</source>
+            <translation>Zuia ID ya kifaa; rudia kwa vifaa kadhaa.</translation>
+        </message>
+        <message>
+            <source>Read a UTF-8 channel password from a file before listening. An empty file removes it.</source>
+            <translation>Soma nenosiri la chaneli kutoka faili ya UTF-8 kabla ya kusikiliza miunganisho. Faili tupu huondoa nenosiri.</translation>
+        </message>
+        <message>
+            <source>Channel password. Empty removes it; environment or config avoids process-list exposure.</source>
+            <translation>Nenosiri la chaneli. Thamani tupu huliondoa; mazingira au usanidi huzuia kuonekana kwake katika orodha ya michakato.</translation>
+        </message>
+        <message>
+            <source>SquadSpeak headless local channel host</source>
+            <translation>Mwenyeji wa chaneli za ndani wa SquadSpeak bila kiolesura</translation>
+        </message>
+        <message>
+            <source>Environment variables (SQUADSPEAK_ prefix):</source>
+            <translation>Vigeu vya mazingira (kiambishi SQUADSPEAK_):</translation>
+        </message>
+        <message>
+            <source>Host configuration could not be read or exceeds 1 MiB.</source>
+            <translation>Usanidi wa mwenyeji haukuweza kusomwa au unazidi 1 MiB.</translation>
+        </message>
+        <message>
+            <source>Host configuration must be UTF-8.</source>
+            <translation>Usanidi wa mwenyeji lazima uwe UTF-8.</translation>
+        </message>
+        <message>
+            <source>Host preset must be a JSON object.</source>
+            <translation>Mipangilio ya awali ya mwenyeji lazima iwe objekti ya JSON.</translation>
+        </message>
+        <message>
+            <source>Property line %1 must use key=value.</source>
+            <translation>Mstari wa sifa %1 lazima utumie key=value.</translation>
+        </message>
+        <message>
+            <source>Property line %1: %2</source>
+            <translation>Mstari wa sifa %1: %2</translation>
+        </message>
+        <message>
+            <source>Standard input has no file descriptor.</source>
+            <translation>Ingizo la kawaida halina kitambulishi cha faili.</translation>
+        </message>
+        <message>
+            <source>Standard input could not be inspected.</source>
+            <translation>Ingizo la kawaida halikuweza kukaguliwa.</translation>
+        </message>
+        <message>
+            <source>Could not write the command response: %1</source>
+            <translation>Jibu la amri halikuweza kuandikwa: %1</translation>
+        </message>
+        <message>
+            <source>Standard input could not be read: %1</source>
+            <translation>Ingizo la kawaida halikuweza kusomwa: %1</translation>
+        </message>
+        <message>
+            <source>Input line exceeds 65536 bytes.</source>
+            <translation>Mstari wa ingizo unazidi baiti 65536.</translation>
+        </message>
+        <message>
+            <source>Each input line must be a JSON object.</source>
+            <translation>Kila mstari wa ingizo lazima uwe objekti ya JSON.</translation>
+        </message>
+        <message>
+            <source>Input ended before a complete JSON line.</source>
+            <translation>Ingizo liliisha kabla ya mstari kamili wa JSON.</translation>
+        </message>
+        <message>
+            <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
+            <translation>ID ya hiari ya chaneli yako kwa amri za status, configure, password, admission, history, chat na radio; chaguomsingi ni chaneli kuu.</translation>
+        </message>
+        <message>
+            <source>Channel action must be list, add or remove.</source>
+            <translation>Kitendo cha chaneli lazima kiwe list, add au remove.</translation>
+        </message>
+        <message>
+            <source>Removing an own channel deletes its history, images, permissions and radio settings. Set confirmed=true to proceed.</source>
+            <translation>Kuondoa chaneli yako kunafuta historia, picha, ruhusa na mipangilio yake ya redio. Weka confirmed=true ili kuendelea.</translation>
+        </message>
+        <message>
+            <source>id must identify an additional own channel.</source>
+            <translation>id lazima itambulishe chaneli yako ya ziada.</translation>
+        </message>
+        <message>
+            <source>The additional own channel could not be removed: %1</source>
+            <translation>Chaneli yako ya ziada haikuweza kuondolewa: %1</translation>
+        </message>
+        <message>
+            <source>channelId must identify an own channel.</source>
+            <translation>channelId lazima itambulishe chaneli yako.</translation>
+        </message>
+        <message>
+            <source>values must be a host settings object.</source>
+            <translation>values lazima iwe objekti ya mipangilio ya mwenyeji.</translation>
+        </message>
+        <message>
+            <source>Headless admission is always enabled for non-banned devices; requests off is not supported.</source>
+            <translation>Katika hali isiyo na kiolesura, vifaa visivyozuiwa hukubaliwa kila wakati; requests off haitumiki.</translation>
+        </message>
+        <message>
+            <source>value must be a password of at most 1024 UTF-8 bytes without control characters; an empty string removes it.</source>
+            <translation>value lazima iwe nenosiri la hadi baiti 1024 za UTF-8 bila herufi za udhibiti; mfuatano tupu huliondoa.</translation>
+        </message>
+        <message>
+            <source>The channel is not ready or a password change is in progress.</source>
+            <translation>Chaneli haiko tayari au nenosiri linabadilishwa.</translation>
+        </message>
+        <message>
+            <source>The channel was removed while saving the password.</source>
+            <translation>Chaneli iliondolewa wakati nenosiri likihifadhiwa.</translation>
+        </message>
+        <message>
+            <source>id is required.</source>
+            <translation>id inahitajika.</translation>
+        </message>
+        <message>
+            <source>text must be a valid non-empty chat message.</source>
+            <translation>text lazima iwe ujumbe halali wa gumzo usio tupu.</translation>
+        </message>
+        <message>
+            <source>The local channel is not ready.</source>
+            <translation>Chaneli ya ndani haiko tayari.</translation>
+        </message>
+        <message>
+            <source>The channel's radio is unavailable.</source>
+            <translation>Redio ya chaneli haipatikani.</translation>
+        </message>
+        <message>
+            <source>Unknown command. Use help.</source>
+            <translation>Amri haitambuliki. Tumia help.</translation>
+        </message>
+        <message>
+            <source>search requires a query, non-negative offset and limit from 1 to 128.</source>
+            <translation>search inahitaji query, offset isiyo hasi na limit kutoka 1 hadi 128.</translation>
+        </message>
+        <message>
+            <source>add creates an id; update requires an existing id.</source>
+            <translation>add huunda id; update inahitaji id iliyopo.</translation>
+        </message>
+        <message>
+            <source>A station is already being checked.</source>
+            <translation>Kituo tayari kinakaguliwa.</translation>
+        </message>
+        <message>
+            <source>The channel was removed while checking the station.</source>
+            <translation>Chaneli iliondolewa wakati kituo kikikaguliwa.</translation>
+        </message>
+        <message>
+            <source>Unknown radio action.</source>
+            <translation>Kitendo cha redio hakitambuliki.</translation>
+        </message>
+        <message>
+            <source>Could not load language: %1</source>
+            <translation>Lugha haikuweza kupakiwa: %1</translation>
+        </message>
+        <message>
+            <source>The %1 option is incompatible with --headless.</source>
+            <translation>Chaguo %1 halioani na --headless.</translation>
+        </message>
+        <message>
+            <source>Unexpected positional arguments. Use --help.</source>
+            <translation>Hoja za nafasi zisizotarajiwa. Tumia --help.</translation>
+        </message>
+        <message>
+            <source>--config / -f requires a non-empty path.</source>
+            <translation>--config / -f inahitaji njia isiyo tupu.</translation>
+        </message>
+        <message>
+            <source>Choose --password or --password-file, not both.</source>
+            <translation>Chagua --password au --password-file, si zote mbili.</translation>
+        </message>
+        <message>
+            <source>Choose SQUADSPEAK_PASSWORD or SQUADSPEAK_PASSWORD_FILE, not both.</source>
+            <translation>Chagua SQUADSPEAK_PASSWORD au SQUADSPEAK_PASSWORD_FILE, si zote mbili.</translation>
+        </message>
+        <message>
+            <source>Choose password or passwordFile in one configuration layer, not both.</source>
+            <translation>Chagua password au passwordFile katika tabaka moja la usanidi, si zote mbili.</translation>
+        </message>
+        <message>
+            <source>passwordFile must be a non-empty path.</source>
+            <translation>passwordFile lazima iwe njia isiyo tupu.</translation>
+        </message>
+        <message>
+            <source>Password file could not be read or is too large.</source>
+            <translation>Faili ya nenosiri haikuweza kusomwa au ni kubwa mno.</translation>
+        </message>
+        <message>
+            <source>Password file must contain at most 1024 UTF-8 bytes without control characters.</source>
+            <translation>Faili ya nenosiri lazima iwe na hadi baiti 1024 za UTF-8 bila herufi za udhibiti.</translation>
+        </message>
+        <message>
+            <source>Password must be a string of at most 1024 UTF-8 bytes without control characters.</source>
+            <translation>Nenosiri lazima liwe mfuatano wa hadi baiti 1024 za UTF-8 bila herufi za udhibiti.</translation>
+        </message>
+        <message>
+            <source>settingsFile must be a non-empty path.</source>
+            <translation>settingsFile lazima iwe njia isiyo tupu.</translation>
+        </message>
+        <message>
+            <source>identityFile must be a non-empty path.</source>
+            <translation>identityFile lazima iwe njia isiyo tupu.</translation>
+        </message>
+        <message>
+            <source>The settings directory could not be created.</source>
+            <translation>Saraka ya mipangilio haikuweza kuundwa.</translation>
+        </message>
+        <message>
+            <source>This SquadSpeak profile is already running or cannot be locked.</source>
+            <translation>Wasifu huu wa SquadSpeak tayari unaendeshwa au hauwezi kufungwa.</translation>
+        </message>
+        <message>
+            <source>Standard input could not be opened.</source>
+            <translation>Ingizo la kawaida halikuweza kufunguliwa.</translation>
+        </message>
+        <message>
+            <source>Standard output could not be opened.</source>
+            <translation>Tokeo la kawaida halikuweza kufunguliwa.</translation>
+        </message>
+        <message>
+            <source>This identity file is already in use or cannot be locked.</source>
+            <translation>Faili hii ya utambulisho tayari inatumika au haiwezi kufungwa.</translation>
+        </message>
+        <message>
+            <source>Invalid host configuration: %1</source>
+            <translation>Usanidi wa mwenyeji si halali: %1</translation>
+        </message>
+        <message>
+            <source>Radio channels could not be initialized.</source>
+            <translation>Chaneli za redio hazikuweza kuanzishwa.</translation>
+        </message>
+        <message>
+            <source>Headless host could not start: %1</source>
+            <translation>Mwenyeji asiye na kiolesura hakuweza kuanza: %1</translation>
+        </message>
+        <message>
+            <source>Channel password could not be saved.</source>
+            <translation>Nenosiri la chaneli halikuweza kuhifadhiwa.</translation>
+        </message>
+        <message>
+            <source>Invalid channel password: %1</source>
+            <translation>Nenosiri la chaneli si halali: %1</translation>
+        </message>
+        <message>
+            <source>Headless host could not initialize: %1</source>
+            <translation>Mwenyeji asiye na kiolesura hakuweza kuanzishwa: %1</translation>
+        </message>
+        <message>
+            <source>SquadSpeak headless could not start: %1</source>
+            <translation>SquadSpeak isiyo na kiolesura haikuweza kuanza: %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>Kitendo cha mfuasi lazima kiwe hali, kuingia, kuonyesha upya, kuondoka au kughairi. status sign-in refresh sign-out cancel</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>Operesheni ya Msaidizi inaendelea.</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>Ufikiaji wa wasaidizi haupatikani katika muundo huu.</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>Utangulizi wa mipangilio: hoja &gt; mazingira &gt; sifa &gt; thamani za seva zilizohifadhiwa.</translation>
+        </message>
+    </context>
+    <context>
+        <name>License</name>
+        <message>
+            <source>License storage is busy or unavailable.</source>
+            <translation>Hifadhi ya leseni ina shughuli nyingi au haipatikani.</translation>
+        </message>
+        <message>
+            <source>License storage is unavailable.</source>
+            <translation>Hifadhi ya leseni haipatikani.</translation>
+        </message>
+        <message>
+            <source>Sign-in expired. Try again.</source>
+            <translation>Muda wa kuingia umekwisha. Jaribu tena.</translation>
+        </message>
+        <message>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>Kuingia kwa GitHub hakupatikani. Jaribu tena.</translation>
+        </message>
+        <message>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>Kuingia kwa GitHub hakukamilishwa. Jaribu tena.</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>GitHub haikuweza kuangaliwa. Ufikiaji wa nje ya mtandao huchukua angalau siku saba.</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>Ingia kwa GitHub tena.</translation>
+        </message>
+    </context>
+    <context>
         <name>LocalChannel</name>
+        <message>
+            <source>Insufficient permissions.</source>
+            <translation>Ruhusa hazitoshi.</translation>
+        </message>
+        <message>
+            <source>Blocked</source>
+            <translation>Imezuiliwa</translation>
+        </message>
         <message>
             <source>Host is not responding. Reconnecting.</source>
             <translation>Mwenyeji haurudishi jibu. Anarudia muunganisho.</translation>
@@ -1926,8 +2312,8 @@
             <translation>Uhamisho wa taswira ulichukua muda mrefu sana.</translation>
         </message>
         <message>
-            <source>The channel is full. Text chat is still available.</source>
-            <translation>Chaneli imejaa. Mazungumzo ya maandishi bado yanapatikana.</translation>
+            <source>The host is busy. Try again shortly.</source>
+            <translation>Mwenyeji ana shughuli nyingi. Jaribu tena baada ya muda mfupi.</translation>
         </message>
         <message>
             <source>All own channels use the device's shared port.</source>
@@ -2189,6 +2575,53 @@
             <source>Voice relay codec could not be configured.</source>
             <translation>Kodeki ya kupitisha sauti haikuweza kusanidiwa.</translation>
         </message>
+        <message>
+            <source>Unsupported audio codec</source>
+            <translation>Kodeki ya sauti haitumiki</translation>
+        </message>
+        <message>
+            <source>Speaking is not allowed in this channel.</source>
+            <translation>Huruhusiwi kuzungumza kwenye chaneli hii.</translation>
+        </message>
+    </context>
+    <context>
+        <name>LocalLanguage</name>
+        <message>
+            <source>Translation (experimental)</source>
+            <translation>Tafsiri (ya majaribio)</translation>
+        </message>
+        <message>
+            <source>Translate messages</source>
+            <translation>Tafsiri ujumbe</translation>
+        </message>
+        <message>
+            <source>Translated voice</source>
+            <translation>Sauti iliyotafsiriwa</translation>
+        </message>
+        <message>
+            <source>Original audio</source>
+            <translation>Sauti asili</translation>
+        </message>
+        <message>
+            <source>Original text</source>
+            <translation>Maandishi asili</translation>
+        </message>
+        <message>
+            <source>Prepare languages</source>
+            <translation>Andaa lugha</translation>
+        </message>
+        <message>
+            <source>Local language processing is unavailable.</source>
+            <translation>Uchakataji wa lugha kwenye kifaa haupatikani.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be read.</source>
+            <translation>Mipangilio ya lugha haikuweza kusomwa.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be saved.</source>
+            <translation>Mipangilio ya lugha haikuweza kuhifadhiwa.</translation>
+        </message>
     </context>
     <context>
         <name>PushToTalkKey</name>
@@ -2329,50 +2762,61 @@
         </message>
     </context>
     <context>
-        <name>RecordingPanel</name>
+        <name>ScreenPanel</name>
         <message>
-            <source>Stop</source>
-            <translation>Sitisha</translation>
+            <source>Video paused</source>
+            <translation>Video imesimama</translation>
         </message>
         <message>
-            <source>Start</source>
-            <translation>Anzisha</translation>
+            <source>Stream ended</source>
+            <translation>Mkondo umekwisha</translation>
         </message>
         <message>
-            <source>Saved on this device only. Nothing is uploaded.</source>
-            <translation>Imehifadhiwa kwenye kifaa hiki tu. Hakuna chochote kinachopakiwa.</translation>
+            <source>Connecting</source>
+            <translation>Inaunganishwa</translation>
         </message>
         <message>
-            <source>Keep this take or record it again.</source>
-            <translation>Hifadhi rekodi hii au urekode tena.</translation>
+            <source>Open screen stream</source>
+            <translation>Fungua mkondo wa skrini</translation>
         </message>
         <message>
-            <source>Record again</source>
-            <translation>Rekoda tena</translation>
+            <source>Screen stream</source>
+            <translation>Mkondo wa skrini</translation>
         </message>
         <message>
-            <source>Use recording</source>
-            <translation>Tumia rekodi</translation>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
+        </message>
+    </context>
+    <context>
+        <name>ScreenShare</name>
+        <message>
+            <source>Allow screen recording in system settings.</source>
+            <translation>Ruhusu kurekodi skrini katika mipangilio ya mfumo.</translation>
         </message>
         <message>
-            <source>Recording progress</source>
-            <translation>Maendeleo ya rekodi</translation>
+            <source>The shared screen was removed. Select a source to start again.</source>
+            <translation>Skrini iliyoshirikiwa imeondolewa. Tafadhali chagua chanzo ili kuanza upya.</translation>
         </message>
         <message>
-            <source>Step %1 of %2</source>
-            <translation>Hatua %1 kati ya %2</translation>
+            <source>The shared window was closed. Select a source to start again.</source>
+            <translation>Dirisha lililoshirikiwa limefungwa. Tafadhali chagua chanzo ili kuanza upya.</translation>
         </message>
         <message>
-            <source>Open recordings</source>
-            <translation>Fungua rekodi zilizohifadhiwa</translation>
+            <source>The selected screen is no longer available.</source>
+            <translation>Skrini iliyochaguliwa haipatikani tena.</translation>
         </message>
         <message>
-            <source>Reset test</source>
-            <translation>Angalia upya majaribio</translation>
+            <source>The selected window is no longer available.</source>
+            <translation>Dirisha lililochaguliwa haipatikani tena.</translation>
         </message>
         <message>
-            <source>%1 s remaining / %2 dBFS</source>
-            <translation>%1 bado / %2 dBFS</translation>
+            <source>The selected source exceeds the capture size limit.</source>
+            <translation>Chanzo kilichochaguliwa kinazidi kikomo cha ukubwa wa picha.</translation>
+        </message>
+        <message>
+            <source>Close a video view before opening another stream.</source>
+            <translation>Funga dirisha la video kabla ya kufungua mkondo mwingine.</translation>
         </message>
     </context>
     <context>
@@ -2449,10 +2893,6 @@
             <translation>Inakusanya ishara...</translation>
         </message>
         <message>
-            <source>Dashed curve: configured gain and frequency cuts, using the right dB scale. Noise reduction and voice activation are not part of this curve.</source>
-            <translation>Mawimbi yenye mistari: kuongeza na kupunguza sauti, kwa kutumia ukanda wa dB upande wa kulia. Kuondoa kelele na utambuzi wa sauti haviingizi mawimbi haya.</translation>
-        </message>
-        <message>
             <source>Microphone preview is not running</source>
             <translation>Hakuna uoneshaji wa kipaza sauti unaoendeshwa</translation>
         </message>
@@ -2463,303 +2903,6 @@
         <message>
             <source>Peak: %1</source>
             <translation>Kilele: %1</translation>
-        </message>
-    </context>
-    <context>
-        <name>Tray</name>
-        <message>
-            <source>Quit</source>
-            <translation>Toka</translation>
-        </message>
-        <message>
-            <source>SquadSpeak - speaking</source>
-            <translation>SquadSpeak - akizungumza</translation>
-        </message>
-        <message>
-            <source>Settings</source>
-            <translation>Mipangilio</translation>
-        </message>
-        <message>
-            <source>Channels</source>
-            <translation>Vituo</translation>
-        </message>
-        <message>
-            <source>New image</source>
-            <translation>Taswira mpya</translation>
-        </message>
-    </context>
-    <context>
-        <name>VoiceAvatar</name>
-        <message>
-            <source>Muted</source>
-            <translation>Kipaza sauti kimezimwa</translation>
-        </message>
-        <message>
-            <source>Sleeping</source>
-            <translation>Ananyamaza</translation>
-        </message>
-        <message>
-            <source>Offline</source>
-            <translation>Nje ya mtandao</translation>
-        </message>
-        <message>
-            <source>Speaking</source>
-            <translation>Akizungumza</translation>
-        </message>
-        <message>
-            <source>Unavailable</source>
-            <translation>Hapatikani</translation>
-        </message>
-        <message>
-            <source>Listening</source>
-            <translation>Anasikiliza</translation>
-        </message>
-        <message>
-            <source>Deafened</source>
-            <translation>Spika zimezimwa</translation>
-        </message>
-    </context>
-    <context>
-        <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>Hapatu - rekebisha mipangilio ya sauti au jaribu sauti</translation>
-        </message>
-        <message>
-            <source>Microphone muted</source>
-            <translation>Mikrofoni imezimwa</translation>
-        </message>
-        <message>
-            <source>Push-to-talk held</source>
-            <translation>Kitendo cha kuzungumza kinaendelea</translation>
-        </message>
-        <message>
-            <source>Ready - push-to-talk released</source>
-            <translation>Tayari - kitendo cha kuzungumza kimeacha</translation>
-        </message>
-        <message>
-            <source>Microphone unmuted</source>
-            <translation>Mikrofoni imewashwa</translation>
-        </message>
-        <message>
-            <source>Settings could not be saved: %1</source>
-            <translation>Hafaa kuokoa mipangilio: %1</translation>
-        </message>
-        <message>
-            <source>The push-to-talk sequence cannot be incremented further.</source>
-            <translation>Mfuatano wa push-to-talk hauwezi kuongezwa zaidi.</translation>
-        </message>
-        <message>
-            <source>Choose System, Light or Dark.</source>
-            <translation>Chagua Mfumo, Mwanga au Nyeusi.</translation>
-        </message>
-        <message>
-            <source>Choose a colour palette from the list.</source>
-            <translation>Chagua rangi kutoka kwenye orodha.</translation>
-        </message>
-        <message>
-            <source>Choose an available avatar.</source>
-            <translation>Chagua aikoni (avatar) inayopatikana.</translation>
-        </message>
-        <message>
-            <source>Invalid push-to-talk binding.</source>
-            <translation>Kitendaji cha 'push-to-talk' haipatikani vizuri.</translation>
-        </message>
-        <message>
-            <source>Release the held push-to-talk key first.</source>
-            <translation>Kwanza, acha kitufe unachobifua ili kufanya kazi ya 'push-to-talk'.</translation>
-        </message>
-        <message>
-            <source>Choose a language from the list.</source>
-            <translation>Chagua lugha kutoka kwenye orodha.</translation>
-        </message>
-        <message>
-            <source>This avatar requires Supporter.</source>
-            <translation>Avatar hii inahitaji Supporter.</translation>
-        </message>
-        <message>
-            <source>The name must contain 1 to 64 characters.</source>
-            <translation>Jina lazima liwe na herufi 1 hadi 64.</translation>
-        </message>
-        <message>
-            <source>The name may not contain control characters or line breaks.</source>
-            <translation>Jina haipaswi kuwa na alama za kudhibiti au mistari ya maputo.</translation>
-        </message>
-        <message>
-            <source>Session settings could not be read.</source>
-            <translation>Mipangilio ya kipindi haikuweza kusomwa.</translation>
-        </message>
-        <message>
-            <source>Saved setting is invalid: %1</source>
-            <translation>Mpangilio uliohifadhiwa si sahihi: %1</translation>
-        </message>
-    </context>
-    <context>
-        <name>License</name>
-        <message>
-            <source>License storage is busy or unavailable.</source>
-            <translation>Hifadhi ya leseni ina shughuli nyingi au haipatikani.</translation>
-        </message>
-        <message>
-            <source>License storage is unavailable.</source>
-            <translation>Hifadhi ya leseni haipatikani.</translation>
-        </message>
-        <message>
-            <source>Sign-in expired. Try again.</source>
-            <translation>Muda wa kuingia umekwisha. Jaribu tena.</translation>
-        </message>
-        <message>
-            <source>GitHub sign-in is unavailable. Try again.</source>
-            <translation>Kuingia kwa GitHub hakupatikani. Jaribu tena.</translation>
-        </message>
-        <message>
-            <source>GitHub sign-in was not completed. Try again.</source>
-            <translation>Kuingia kwa GitHub hakukamilishwa. Jaribu tena.</translation>
-        </message>
-        <message>
-            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
-            <translation>GitHub haikuweza kuangaliwa. Ufikiaji wa nje ya mtandao huchukua angalau siku saba.</translation>
-        </message>
-        <message>
-            <source>Sign in with GitHub again.</source>
-            <translation>Ingia kwa GitHub tena.</translation>
-        </message>
-    </context>
-    <context>
-        <name>ScreenShare</name>
-        <message>
-            <source>The shared screen was removed. Select a source to start again.</source>
-            <translation>Skrini iliyoshirikiwa imeondolewa. Tafadhali chagua chanzo ili kuanza upya.</translation>
-        </message>
-        <message>
-            <source>The shared window was closed. Select a source to start again.</source>
-            <translation>Dirisha lililoshirikiwa limefungwa. Tafadhali chagua chanzo ili kuanza upya.</translation>
-        </message>
-        <message>
-            <source>The selected screen is no longer available.</source>
-            <translation>Skrini iliyochaguliwa haipatikani tena.</translation>
-        </message>
-        <message>
-            <source>The selected window is no longer available.</source>
-            <translation>Dirisha lililochaguliwa haipatikani tena.</translation>
-        </message>
-        <message>
-            <source>The selected source exceeds the capture size limit.</source>
-            <translation>Chanzo kilichochaguliwa kinazidi kikomo cha ukubwa wa picha.</translation>
-        </message>
-        <message>
-            <source>Close a video view before opening another stream.</source>
-            <translation>Funga dirisha la video kabla ya kufungua mkondo mwingine.</translation>
-        </message>
-    </context>
-    <context>
-        <name>ScreenPanel</name>
-        <message>
-            <source>Media capacity reached</source>
-            <translation>Uwezo wa media umefikiwa</translation>
-        </message>
-        <message>
-            <source>Video paused</source>
-            <translation>Video imesimama</translation>
-        </message>
-        <message>
-            <source>Stream ended</source>
-            <translation>Mkondo umekwisha</translation>
-        </message>
-        <message>
-            <source>Connecting</source>
-            <translation>Inaunganishwa</translation>
-        </message>
-        <message>
-            <source>Open screen stream</source>
-            <translation>Fungua mkondo wa skrini</translation>
-        </message>
-        <message>
-            <source>Screen stream</source>
-            <translation>Mkondo wa skrini</translation>
-        </message>
-        <message>
-            <source>%1 kbit/s</source>
-            <translation>%1 kbit/s</translation>
-        </message>
-    </context>
-    <context>
-        <name>VideoCodec</name>
-        <message>
-            <source>Video codec: %1</source>
-            <translation>Kodeki ya video: %1</translation>
-        </message>
-        <message>
-            <source>Video codec ABI does not match its headers.</source>
-            <translation>ABI ya kodeki ya video hailingani na faili zake za vichwa.</translation>
-        </message>
-        <message>
-            <source>Video buffers could not be allocated.</source>
-            <translation>Haikuwezekana kutenga kumbukumbu kwa vihifadhi vya muda vya video.</translation>
-        </message>
-        <message>
-            <source>Invalid video quality tier.</source>
-            <translation>Kiwango cha ubora wa video si halali.</translation>
-        </message>
-        <message>
-            <source>The screen source exceeds the supported capture size.</source>
-            <translation>Chanzo cha skrini kinazidi ukubwa wa kunasa unaotumika.</translation>
-        </message>
-        <message>
-            <source>The screen source is too narrow.</source>
-            <translation>Chanzo cha skrini ni chembamba sana.</translation>
-        </message>
-        <message>
-            <source>The video encoder could not be allocated.</source>
-            <translation>Haikuwezekana kutenga kumbukumbu kwa kisimbaji cha video.</translation>
-        </message>
-        <message>
-            <source>No supported video encoder is available.</source>
-            <translation>Hakuna kisimbaji cha video kinachotumika kinachopatikana.</translation>
-        </message>
-        <message>
-            <source>Video encoder configuration is too large.</source>
-            <translation>Usanidi wa kisimbaji cha video ni mkubwa sana.</translation>
-        </message>
-        <message>
-            <source>Video scaling could not be initialized.</source>
-            <translation>Haikuwezekana kuanzisha ubadilishaji wa ukubwa wa video.</translation>
-        </message>
-        <message>
-            <source>The encoder returned an empty video packet.</source>
-            <translation>Kisimbaji kilirudisha pakiti tupu ya video.</translation>
-        </message>
-        <message>
-            <source>Invalid video frame format.</source>
-            <translation>Umbizo la fremu ya video si halali.</translation>
-        </message>
-        <message>
-            <source>Invalid video decoder configuration.</source>
-            <translation>Usanidi wa kisimbuzi cha video si halali.</translation>
-        </message>
-        <message>
-            <source>This video codec cannot be decoded.</source>
-            <translation>Video inayotumia kodeki hii haiwezi kusimbuliwa.</translation>
-        </message>
-        <message>
-            <source>Video decoder could not be allocated.</source>
-            <translation>Haikuwezekana kutenga kumbukumbu kwa kisimbuzi cha video.</translation>
-        </message>
-        <message>
-            <source>Video decoder configuration could not be allocated.</source>
-            <translation>Haikuwezekana kutenga kumbukumbu kwa usanidi wa kisimbuzi cha video.</translation>
-        </message>
-        <message>
-            <source>Decoded dimensions do not match the screen stream.</source>
-            <translation>Vipimo vilivyosimbuliwa havilingani na mtiririko wa skrini.</translation>
-        </message>
-        <message>
-            <source>Decoded image could not be allocated.</source>
-            <translation>Haikuwezekana kutenga kumbukumbu kwa picha iliyosimbuliwa.</translation>
-        </message>
-        <message>
-            <source>Video color conversion could not be initialized.</source>
-            <translation>Haikuwezekana kuanzisha ubadilishaji wa rangi za video.</translation>
         </message>
     </context>
     <context>
@@ -2877,359 +3020,208 @@
             <translation>Nenosiri halikuweza kuthibitishwa.</translation>
         </message>
     </context>
-
     <context>
-        <name>Headless</name>
+        <name>Tray</name>
         <message>
-            <source>Command failed.</source>
-            <translation>Amri imeshindwa.</translation>
+            <source>Quit</source>
+            <translation>Toka</translation>
         </message>
         <message>
-            <source>%1 must be an integer.</source>
-            <translation>%1 lazima iwe nambari kamili.</translation>
+            <source>SquadSpeak - speaking</source>
+            <translation>SquadSpeak - akizungumza</translation>
         </message>
         <message>
-            <source>Requests must be on/off or true/false.</source>
-            <translation>Maombi lazima yawe on/off au true/false.</translation>
+            <source>Settings</source>
+            <translation>Mipangilio</translation>
         </message>
         <message>
-            <source>Unknown host property: %1</source>
-            <translation>Sifa ya mwenyeji haitambuliki: %1</translation>
+            <source>Channels</source>
+            <translation>Vituo</translation>
         </message>
         <message>
-            <source>Run without GUI, microphone capture, or local audio output.</source>
-            <translation>Endesha bila kiolesura cha picha, kurekodi maikrofoni au kutoa sauti kwenye kifaa hiki.</translation>
-        </message>
-        <message>
-            <source>Server storage prefix. Personal/audio/GUI profiles are not loaded.</source>
-            <translation>Kiambishi cha hifadhi ya seva. Wasifu wa binafsi, sauti na kiolesura haupakiwi.</translation>
-        </message>
-        <message>
-            <source>Optional private identity file instead of the OS credential store (Linux/macOS). Parent directory must exist and belong to this account.</source>
-            <translation>Faili ya hiari ya utambulisho binafsi badala ya hifadhi ya vitambulisho ya mfumo (Linux/macOS). Saraka kuu lazima iwepo na imilikiwe na akaunti hii.</translation>
-        </message>
-        <message>
-            <source>UTF-8 key=value properties or JSON host preset. Default: application.properties, then config/application.properties beside the app.</source>
-            <translation>Sifa za key=value katika UTF-8 au mipangilio ya mwenyeji ya JSON. Chaguomsingi: application.properties, kisha config/application.properties kando ya programu.</translation>
-        </message>
-        <message>
-            <source>Channel display name.</source>
-            <translation>Jina la chaneli linaloonyeshwa.</translation>
-        </message>
-        <message>
-            <source>System and radio bot display name.</source>
-            <translation>Jina linaloonyeshwa la boti ya pamoja ya mfumo na redio.</translation>
-        </message>
-        <message>
-            <source>TCP service port (1-65535).</source>
-            <translation>Porti ya huduma ya TCP (1-65535).</translation>
-        </message>
-        <message>
-            <source>Headless admission is always on; only 'on' or 'true' is accepted.</source>
-            <translation>Uandikishaji katika hali isiyo na kiolesura huwashwa kila wakati; 'on' au 'true' pekee hukubaliwa.</translation>
-        </message>
-        <message>
-            <source>Preapprove a device ID; repeat for several devices. Existing bans remain.</source>
-            <translation>Idhinisha ID ya kifaa mapema; rudia kwa vifaa kadhaa. Vizuiwa vilivyopo vinaendelea.</translation>
-        </message>
-        <message>
-            <source>Block a device ID; repeat for several devices.</source>
-            <translation>Zuia ID ya kifaa; rudia kwa vifaa kadhaa.</translation>
-        </message>
-        <message>
-            <source>Read a UTF-8 channel password from a file before listening. An empty file removes it.</source>
-            <translation>Soma nenosiri la chaneli kutoka faili ya UTF-8 kabla ya kusikiliza miunganisho. Faili tupu huondoa nenosiri.</translation>
-        </message>
-        <message>
-            <source>Channel password. Empty removes it; environment or config avoids process-list exposure.</source>
-            <translation>Nenosiri la chaneli. Thamani tupu huliondoa; mazingira au usanidi huzuia kuonekana kwake katika orodha ya michakato.</translation>
-        </message>
-        <message>
-            <source>SquadSpeak headless local channel host</source>
-            <translation>Mwenyeji wa chaneli za ndani wa SquadSpeak bila kiolesura</translation>
-        </message>
-        <message>
-            <source>Environment variables (SQUADSPEAK_ prefix):</source>
-            <translation>Vigeu vya mazingira (kiambishi SQUADSPEAK_):</translation>
-        </message>
-        <message>
-            <source>Host configuration could not be read or exceeds 1 MiB.</source>
-            <translation>Usanidi wa mwenyeji haukuweza kusomwa au unazidi 1 MiB.</translation>
-        </message>
-        <message>
-            <source>Host configuration must be UTF-8.</source>
-            <translation>Usanidi wa mwenyeji lazima uwe UTF-8.</translation>
-        </message>
-        <message>
-            <source>Host preset must be a JSON object.</source>
-            <translation>Mipangilio ya awali ya mwenyeji lazima iwe objekti ya JSON.</translation>
-        </message>
-        <message>
-            <source>Property line %1 must use key=value.</source>
-            <translation>Mstari wa sifa %1 lazima utumie key=value.</translation>
-        </message>
-        <message>
-            <source>Property line %1: %2</source>
-            <translation>Mstari wa sifa %1: %2</translation>
-        </message>
-        <message>
-            <source>Standard input has no file descriptor.</source>
-            <translation>Ingizo la kawaida halina kitambulishi cha faili.</translation>
-        </message>
-        <message>
-            <source>Standard input could not be inspected.</source>
-            <translation>Ingizo la kawaida halikuweza kukaguliwa.</translation>
-        </message>
-        <message>
-            <source>Could not write the command response: %1</source>
-            <translation>Jibu la amri halikuweza kuandikwa: %1</translation>
-        </message>
-        <message>
-            <source>Standard input could not be read: %1</source>
-            <translation>Ingizo la kawaida halikuweza kusomwa: %1</translation>
-        </message>
-        <message>
-            <source>Input line exceeds 65536 bytes.</source>
-            <translation>Mstari wa ingizo unazidi baiti 65536.</translation>
-        </message>
-        <message>
-            <source>Each input line must be a JSON object.</source>
-            <translation>Kila mstari wa ingizo lazima uwe objekti ya JSON.</translation>
-        </message>
-        <message>
-            <source>Input ended before a complete JSON line.</source>
-            <translation>Ingizo liliisha kabla ya mstari kamili wa JSON.</translation>
-        </message>
-        <message>
-            <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
-            <translation>ID ya hiari ya chaneli yako kwa amri za status, configure, password, admission, history, chat na radio; chaguomsingi ni chaneli kuu.</translation>
-        </message>
-        <message>
-            <source>Channel action must be list, add or remove.</source>
-            <translation>Kitendo cha chaneli lazima kiwe list, add au remove.</translation>
-        </message>
-        <message>
-            <source>Removing an own channel deletes its history, images, permissions and radio settings. Set confirmed=true to proceed.</source>
-            <translation>Kuondoa chaneli yako kunafuta historia, picha, ruhusa na mipangilio yake ya redio. Weka confirmed=true ili kuendelea.</translation>
-        </message>
-        <message>
-            <source>id must identify an additional own channel.</source>
-            <translation>id lazima itambulishe chaneli yako ya ziada.</translation>
-        </message>
-        <message>
-            <source>The additional own channel could not be removed: %1</source>
-            <translation>Chaneli yako ya ziada haikuweza kuondolewa: %1</translation>
-        </message>
-        <message>
-            <source>channelId must identify an own channel.</source>
-            <translation>channelId lazima itambulishe chaneli yako.</translation>
-        </message>
-        <message>
-            <source>values must be a host settings object.</source>
-            <translation>values lazima iwe objekti ya mipangilio ya mwenyeji.</translation>
-        </message>
-        <message>
-            <source>Headless admission is always enabled for non-banned devices; requests off is not supported.</source>
-            <translation>Katika hali isiyo na kiolesura, vifaa visivyozuiwa hukubaliwa kila wakati; requests off haitumiki.</translation>
-        </message>
-        <message>
-            <source>value must be a password of at most 1024 UTF-8 bytes without control characters; an empty string removes it.</source>
-            <translation>value lazima iwe nenosiri la hadi baiti 1024 za UTF-8 bila herufi za udhibiti; mfuatano tupu huliondoa.</translation>
-        </message>
-        <message>
-            <source>The channel is not ready or a password change is in progress.</source>
-            <translation>Chaneli haiko tayari au nenosiri linabadilishwa.</translation>
-        </message>
-        <message>
-            <source>The channel was removed while saving the password.</source>
-            <translation>Chaneli iliondolewa wakati nenosiri likihifadhiwa.</translation>
-        </message>
-        <message>
-            <source>id is required.</source>
-            <translation>id inahitajika.</translation>
-        </message>
-        <message>
-            <source>text must be a valid non-empty chat message.</source>
-            <translation>text lazima iwe ujumbe halali wa gumzo usio tupu.</translation>
-        </message>
-        <message>
-            <source>The local channel is not ready.</source>
-            <translation>Chaneli ya ndani haiko tayari.</translation>
-        </message>
-        <message>
-            <source>The channel's radio is unavailable.</source>
-            <translation>Redio ya chaneli haipatikani.</translation>
-        </message>
-        <message>
-            <source>Unknown command. Use help.</source>
-            <translation>Amri haitambuliki. Tumia help.</translation>
-        </message>
-        <message>
-            <source>search requires a query, non-negative offset and limit from 1 to 128.</source>
-            <translation>search inahitaji query, offset isiyo hasi na limit kutoka 1 hadi 128.</translation>
-        </message>
-        <message>
-            <source>add creates an id; update requires an existing id.</source>
-            <translation>add huunda id; update inahitaji id iliyopo.</translation>
-        </message>
-        <message>
-            <source>A station is already being checked.</source>
-            <translation>Kituo tayari kinakaguliwa.</translation>
-        </message>
-        <message>
-            <source>The channel was removed while checking the station.</source>
-            <translation>Chaneli iliondolewa wakati kituo kikikaguliwa.</translation>
-        </message>
-        <message>
-            <source>Unknown radio action.</source>
-            <translation>Kitendo cha redio hakitambuliki.</translation>
-        </message>
-        <message>
-            <source>Could not load language: %1</source>
-            <translation>Lugha haikuweza kupakiwa: %1</translation>
-        </message>
-        <message>
-            <source>The %1 option is incompatible with --headless.</source>
-            <translation>Chaguo %1 halioani na --headless.</translation>
-        </message>
-        <message>
-            <source>Unexpected positional arguments. Use --help.</source>
-            <translation>Hoja za nafasi zisizotarajiwa. Tumia --help.</translation>
-        </message>
-        <message>
-            <source>--config / -f requires a non-empty path.</source>
-            <translation>--config / -f inahitaji njia isiyo tupu.</translation>
-        </message>
-        <message>
-            <source>Choose --password or --password-file, not both.</source>
-            <translation>Chagua --password au --password-file, si zote mbili.</translation>
-        </message>
-        <message>
-            <source>Choose SQUADSPEAK_PASSWORD or SQUADSPEAK_PASSWORD_FILE, not both.</source>
-            <translation>Chagua SQUADSPEAK_PASSWORD au SQUADSPEAK_PASSWORD_FILE, si zote mbili.</translation>
-        </message>
-        <message>
-            <source>Choose password or passwordFile in one configuration layer, not both.</source>
-            <translation>Chagua password au passwordFile katika tabaka moja la usanidi, si zote mbili.</translation>
-        </message>
-        <message>
-            <source>passwordFile must be a non-empty path.</source>
-            <translation>passwordFile lazima iwe njia isiyo tupu.</translation>
-        </message>
-        <message>
-            <source>Password file could not be read or is too large.</source>
-            <translation>Faili ya nenosiri haikuweza kusomwa au ni kubwa mno.</translation>
-        </message>
-        <message>
-            <source>Password file must contain at most 1024 UTF-8 bytes without control characters.</source>
-            <translation>Faili ya nenosiri lazima iwe na hadi baiti 1024 za UTF-8 bila herufi za udhibiti.</translation>
-        </message>
-        <message>
-            <source>Password must be a string of at most 1024 UTF-8 bytes without control characters.</source>
-            <translation>Nenosiri lazima liwe mfuatano wa hadi baiti 1024 za UTF-8 bila herufi za udhibiti.</translation>
-        </message>
-        <message>
-            <source>settingsFile must be a non-empty path.</source>
-            <translation>settingsFile lazima iwe njia isiyo tupu.</translation>
-        </message>
-        <message>
-            <source>identityFile must be a non-empty path.</source>
-            <translation>identityFile lazima iwe njia isiyo tupu.</translation>
-        </message>
-        <message>
-            <source>The settings directory could not be created.</source>
-            <translation>Saraka ya mipangilio haikuweza kuundwa.</translation>
-        </message>
-        <message>
-            <source>This SquadSpeak profile is already running or cannot be locked.</source>
-            <translation>Wasifu huu wa SquadSpeak tayari unaendeshwa au hauwezi kufungwa.</translation>
-        </message>
-        <message>
-            <source>Standard input could not be opened.</source>
-            <translation>Ingizo la kawaida halikuweza kufunguliwa.</translation>
-        </message>
-        <message>
-            <source>Standard output could not be opened.</source>
-            <translation>Tokeo la kawaida halikuweza kufunguliwa.</translation>
-        </message>
-        <message>
-            <source>This identity file is already in use or cannot be locked.</source>
-            <translation>Faili hii ya utambulisho tayari inatumika au haiwezi kufungwa.</translation>
-        </message>
-        <message>
-            <source>Invalid host configuration: %1</source>
-            <translation>Usanidi wa mwenyeji si halali: %1</translation>
-        </message>
-        <message>
-            <source>Radio channels could not be initialized.</source>
-            <translation>Chaneli za redio hazikuweza kuanzishwa.</translation>
-        </message>
-        <message>
-            <source>Headless host could not start: %1</source>
-            <translation>Mwenyeji asiye na kiolesura hakuweza kuanza: %1</translation>
-        </message>
-        <message>
-            <source>Channel password could not be saved.</source>
-            <translation>Nenosiri la chaneli halikuweza kuhifadhiwa.</translation>
-        </message>
-        <message>
-            <source>Invalid channel password: %1</source>
-            <translation>Nenosiri la chaneli si halali: %1</translation>
-        </message>
-        <message>
-            <source>Headless host could not initialize: %1</source>
-            <translation>Mwenyeji asiye na kiolesura hakuweza kuanzishwa: %1</translation>
-        </message>
-        <message>
-            <source>SquadSpeak headless could not start: %1</source>
-            <translation>SquadSpeak isiyo na kiolesura haikuweza kuanza: %1</translation>
-        </message>
-        <message>
-            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
-            <translation>Kitendo cha mfuasi lazima kiwe hali, kuingia, kuonyesha upya, kuondoka au kughairi. status sign-in refresh sign-out cancel</translation>
-        </message>
-        <message>
-            <source>A Supporter operation is in progress.</source>
-            <translation>Operesheni ya Msaidizi inaendelea.</translation>
-        </message>
-        <message>
-            <source>Supporter access is unavailable in this build.</source>
-            <translation>Ufikiaji wa wasaidizi haupatikani katika muundo huu.</translation>
-        </message>
-        <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>Utangulizi wa mipangilio: hoja &gt; mazingira &gt; sifa &gt; thamani za seva zilizohifadhiwa.</translation>
+            <source>New image</source>
+            <translation>Taswira mpya</translation>
         </message>
     </context>
     <context>
-        <name>Desktop</name>
+        <name>VideoCodec</name>
         <message>
-            <source>Open settings at startup.</source>
-            <translation>Fungua mipangilio wakati wa kuanza.</translation>
+            <source>Video codec: %1</source>
+            <translation>Kodeki ya video: %1</translation>
         </message>
         <message>
-            <source>Open guided local test recording without starting network services.</source>
-            <translation>Fungua kurekodi jaribio la ndani lenye maelekezo bila kuanzisha huduma za mtandao.</translation>
+            <source>Video codec ABI does not match its headers.</source>
+            <translation>ABI ya kodeki ya video hailingani na faili zake za vichwa.</translation>
         </message>
         <message>
-            <source>Alternative file for audio profiles.</source>
-            <translation>Faili mbadala la wasifu wa sauti.</translation>
+            <source>Video buffers could not be allocated.</source>
+            <translation>Haikuwezekana kutenga kumbukumbu kwa vihifadhi vya muda vya video.</translation>
         </message>
         <message>
-            <source>Load the interface without microphone capture and exit after one second.</source>
-            <translation>Pakia kiolesura bila kurekodi maikrofoni na ufunge baada ya sekunde moja.</translation>
+            <source>Invalid video quality tier.</source>
+            <translation>Kiwango cha ubora wa video si halali.</translation>
         </message>
         <message>
-            <source>Save an image of the app window during the UI test.</source>
-            <translation>Hifadhi picha ya dirisha la programu wakati wa jaribio la kiolesura.</translation>
+            <source>The screen source exceeds the supported capture size.</source>
+            <translation>Chanzo cha skrini kinazidi ukubwa wa kunasa unaotumika.</translation>
         </message>
         <message>
-            <source>The window image could not be saved.</source>
-            <translation>Picha ya dirisha haikuweza kuhifadhiwa.</translation>
+            <source>The screen source is too narrow.</source>
+            <translation>Chanzo cha skrini ni chembamba sana.</translation>
         </message>
         <message>
-            <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
-            <translation>Trei ya mfumo haipatikani; programu inabaki wazi kwenye dirisha.</translation>
+            <source>The video encoder could not be allocated.</source>
+            <translation>Haikuwezekana kutenga kumbukumbu kwa kisimbaji cha video.</translation>
+        </message>
+        <message>
+            <source>No supported video encoder is available.</source>
+            <translation>Hakuna kisimbaji cha video kinachotumika kinachopatikana.</translation>
+        </message>
+        <message>
+            <source>Video encoder configuration is too large.</source>
+            <translation>Usanidi wa kisimbaji cha video ni mkubwa sana.</translation>
+        </message>
+        <message>
+            <source>Video scaling could not be initialized.</source>
+            <translation>Haikuwezekana kuanzisha ubadilishaji wa ukubwa wa video.</translation>
+        </message>
+        <message>
+            <source>The encoder returned an empty video packet.</source>
+            <translation>Kisimbaji kilirudisha pakiti tupu ya video.</translation>
+        </message>
+        <message>
+            <source>Invalid video frame format.</source>
+            <translation>Umbizo la fremu ya video si halali.</translation>
+        </message>
+        <message>
+            <source>Invalid video decoder configuration.</source>
+            <translation>Usanidi wa kisimbuzi cha video si halali.</translation>
+        </message>
+        <message>
+            <source>This video codec cannot be decoded.</source>
+            <translation>Video inayotumia kodeki hii haiwezi kusimbuliwa.</translation>
+        </message>
+        <message>
+            <source>Video decoder could not be allocated.</source>
+            <translation>Haikuwezekana kutenga kumbukumbu kwa kisimbuzi cha video.</translation>
+        </message>
+        <message>
+            <source>Video decoder configuration could not be allocated.</source>
+            <translation>Haikuwezekana kutenga kumbukumbu kwa usanidi wa kisimbuzi cha video.</translation>
+        </message>
+        <message>
+            <source>Decoded dimensions do not match the screen stream.</source>
+            <translation>Vipimo vilivyosimbuliwa havilingani na mtiririko wa skrini.</translation>
+        </message>
+        <message>
+            <source>Decoded image could not be allocated.</source>
+            <translation>Haikuwezekana kutenga kumbukumbu kwa picha iliyosimbuliwa.</translation>
+        </message>
+        <message>
+            <source>Video color conversion could not be initialized.</source>
+            <translation>Haikuwezekana kuanzisha ubadilishaji wa rangi za video.</translation>
+        </message>
+    </context>
+    <context>
+        <name>VoiceAvatar</name>
+        <message>
+            <source>Muted</source>
+            <translation>Kipaza sauti kimezimwa</translation>
+        </message>
+        <message>
+            <source>Sleeping</source>
+            <translation>Ananyamaza</translation>
+        </message>
+        <message>
+            <source>Offline</source>
+            <translation>Nje ya mtandao</translation>
+        </message>
+        <message>
+            <source>Speaking</source>
+            <translation>Akizungumza</translation>
+        </message>
+        <message>
+            <source>Unavailable</source>
+            <translation>Hapatikani</translation>
+        </message>
+        <message>
+            <source>Listening</source>
+            <translation>Anasikiliza</translation>
+        </message>
+        <message>
+            <source>Deafened</source>
+            <translation>Spika zimezimwa</translation>
+        </message>
+    </context>
+    <context>
+        <name>VoiceSession</name>
+        <message>
+            <source>Microphone muted</source>
+            <translation>Mikrofoni imezimwa</translation>
+        </message>
+        <message>
+            <source>Push-to-talk held</source>
+            <translation>Kitendo cha kuzungumza kinaendelea</translation>
+        </message>
+        <message>
+            <source>Ready - push-to-talk released</source>
+            <translation>Tayari - kitendo cha kuzungumza kimeacha</translation>
+        </message>
+        <message>
+            <source>Microphone unmuted</source>
+            <translation>Mikrofoni imewashwa</translation>
+        </message>
+        <message>
+            <source>Settings could not be saved: %1</source>
+            <translation>Hafaa kuokoa mipangilio: %1</translation>
+        </message>
+        <message>
+            <source>The push-to-talk sequence cannot be incremented further.</source>
+            <translation>Mfuatano wa push-to-talk hauwezi kuongezwa zaidi.</translation>
+        </message>
+        <message>
+            <source>Choose System, Light or Dark.</source>
+            <translation>Chagua Mfumo, Mwanga au Nyeusi.</translation>
+        </message>
+        <message>
+            <source>Choose a colour palette from the list.</source>
+            <translation>Chagua rangi kutoka kwenye orodha.</translation>
+        </message>
+        <message>
+            <source>Choose an available avatar.</source>
+            <translation>Chagua aikoni (avatar) inayopatikana.</translation>
+        </message>
+        <message>
+            <source>Invalid push-to-talk binding.</source>
+            <translation>Kitendaji cha 'push-to-talk' haipatikani vizuri.</translation>
+        </message>
+        <message>
+            <source>Release the held push-to-talk key first.</source>
+            <translation>Kwanza, acha kitufe unachobifua ili kufanya kazi ya 'push-to-talk'.</translation>
+        </message>
+        <message>
+            <source>Choose a language from the list.</source>
+            <translation>Chagua lugha kutoka kwenye orodha.</translation>
+        </message>
+        <message>
+            <source>This avatar requires Supporter.</source>
+            <translation>Avatar hii inahitaji Supporter.</translation>
+        </message>
+        <message>
+            <source>The name must contain 1 to 64 characters.</source>
+            <translation>Jina lazima liwe na herufi 1 hadi 64.</translation>
+        </message>
+        <message>
+            <source>The name may not contain control characters or line breaks.</source>
+            <translation>Jina haipaswi kuwa na alama za kudhibiti au mistari ya maputo.</translation>
+        </message>
+        <message>
+            <source>Session settings could not be read.</source>
+            <translation>Mipangilio ya kipindi haikuweza kusomwa.</translation>
+        </message>
+        <message>
+            <source>Saved setting is invalid: %1</source>
+            <translation>Mpangilio uliohifadhiwa si sahihi: %1</translation>
         </message>
     </context>
 </TS>

@@ -36,14 +36,6 @@
             <translation>Բացեք ձեր համակարգի գաղտնիության կարգավորումները և թույլատրեք խոսափողի մուտքը SquadSpeak-ի համար:</translation>
         </message>
         <message>
-            <source>Microphone analysis active. Test audio stays on this computer.</source>
-            <translation>Միկրոֆոնի վերլուծությունը ակտիվ է: Փորձնական ձայնը մնում է այս համակարգչում:</translation>
-        </message>
-        <message>
-            <source>Finish the test recording before changing devices.</source>
-            <translation>Ավարտեք փորձնական ձայնագրությունը նախքան սարքերը փոխելը:</translation>
-        </message>
-        <message>
             <source>The output format is not supported.</source>
             <translation>Ելքային ձևաչափը չի ապահովվում:</translation>
         </message>
@@ -68,32 +60,12 @@
             <translation>Չհաջողվեց հնչեցնել փորձնական տոնը:</translation>
         </message>
         <message>
-            <source>The microphone has provided no data for five seconds. Recording discarded.</source>
-            <translation>խոսափողը հինգ վայրկյանի ընթացքում տվյալներ չի տրամադրել: Ձայնագրությունը մերժվեց:</translation>
-        </message>
-        <message>
-            <source>The microphone was interrupted or changed. Recording discarded.</source>
-            <translation>Խոսափողն ընդհատվեց կամ փոխվեց։ Ձայնագրությունը մերժվեց:</translation>
-        </message>
-        <message>
-            <source>Cancelled. The incomplete recording was discarded.</source>
-            <translation>Չեղյալ է հայտարարվել: Անավարտ ձայնագրությունը մերժվել է:</translation>
-        </message>
-        <message>
             <source>No selected microphone is available</source>
             <translation>Ընտրված խոսափող չկա</translation>
         </message>
         <message>
             <source>Allow microphone access in the system dialog.</source>
             <translation>Թույլատրել խոսափողի մուտքը համակարգի երկխոսության մեջ:</translation>
-        </message>
-        <message>
-            <source>Microphone capture active for the voice channel.</source>
-            <translation>խոսափող ձայնագրումը ակտիվ է ձայնային ալիքի համար:</translation>
-        </message>
-        <message>
-            <source>Microphone access was denied. Nothing was saved.</source>
-            <translation>Խոսափողի մուտքը մերժվել է: Ոչինչ չի փրկվել։</translation>
         </message>
         <message>
             <source>Microphone access is missing. Allow it in System Settings.</source>
@@ -259,103 +231,16 @@
             <source>App audio only</source>
             <translation>Միայն հավելվածի ձայնը</translation>
         </message>
-    </context>
-    <context>
-        <name>AudioRecording</name>
         <message>
-            <source>Incomplete audio block. Recording discarded.</source>
-            <translation>Անավարտ աուդիո բլոկ: Ձայնագրությունը մերժվեց:</translation>
-        </message>
-        <message>
-            <source>Move about one meter from the microphone. Keep the background sound playing and read the sentence.</source>
-            <translation>Շարժվեք խոսափողից մոտ մեկ մետր: Շարունակեք նվագել ֆոնային ձայնը և կարդացեք նախադասությունը:</translation>
-        </message>
-        <message>
-            <source>Voice with background sound</source>
-            <translation>Ձայն ֆոնային ձայնով</translation>
-        </message>
-        <message>
-            <source>The recordings folder could not be created.</source>
-            <translation>Չհաջողվեց ստեղծել ձայնագրությունների թղթապանակը:</translation>
-        </message>
-        <message>
-            <source>You can stop the background sound now.</source>
-            <translation>Այժմ կարող եք դադարեցնել ֆոնային ձայնը:</translation>
-        </message>
-        <message>
-            <source>Recordings saved</source>
-            <translation>Ձայնագրությունները պահպանված են</translation>
-        </message>
-        <message>
-            <source>The test recording could not be saved completely.</source>
-            <translation>Փորձնական ձայնագրությունը չհաջողվեց ամբողջությամբ պահպանել:</translation>
-        </message>
-        <message>
-            <source>Keep music off and stay quiet. Start when ready.</source>
-            <translation>Անջատեք երաժշտությունը և լռեք: Սկսեք, երբ պատրաստ եք:</translation>
-        </message>
-        <message>
-            <source>Your voice</source>
-            <translation>Ձեր ձայնը</translation>
-        </message>
-        <message>
-            <source>Play music or another background sound at a normal volume. Stay quiet while recording.</source>
-            <translation>Նորմալ ձայնով նվագարկեք երաժշտություն կամ այլ ֆոնային ձայն: Ձայնագրելիս լռեք:</translation>
-        </message>
-        <message>
-            <source>The test recording could not be created.</source>
-            <translation>Չհաջողվեց ստեղծել փորձնական ձայնագրությունը:</translation>
-        </message>
-        <message>
-            <source>Background sound</source>
-            <translation>Ֆոնային ձայն</translation>
-        </message>
-        <message>
-            <source>The window is open. I can hear the rain outside. One, two, three, four, five.</source>
-            <translation>Պատուհանը բաց է: Դրսում անձրև է լսվում: Մեկ, երկու, երեք, չորս, հինգ:</translation>
-        </message>
-        <message>
-            <source>This microphone format is not supported for test recordings.</source>
-            <translation>Այս խոսափողի ձևաչափը չի ապահովվում թեստային ձայնագրությունների համար:</translation>
-        </message>
-        <message>
-            <source>Keep the background volume unchanged. Read the sentence, then stop recording.</source>
-            <translation>Պահպանեք ֆոնային ձայնը անփոփոխ: Կարդացեք նախադասությունը, ապա դադարեցրեք ձայնագրությունը:</translation>
-        </message>
-        <message>
-            <source>Record at least half a second, then try again.</source>
-            <translation>Գրանցեք առնվազն կես վայրկյան, ապա նորից փորձեք:</translation>
-        </message>
-        <message>
-            <source>Sit at your usual distance. Read the sentence, then stop recording.</source>
-            <translation>նստեք ձեր սովորական հեռավորության վրա: Կարդացեք նախադասությունը, ապա դադարեցրեք ձայնագրությունը:</translation>
-        </message>
-        <message>
-            <source>The recording description could not be saved.</source>
-            <translation>Ձայնագրության նկարագրությունը չհաջողվեց պահպանել:</translation>
-        </message>
-        <message>
-            <source>The WAV file could not be finalized.</source>
-            <translation>WAV ֆայլը չհաջողվեց վերջնական տեսքի բերել:</translation>
-        </message>
-        <message>
-            <source>The WAV header could not be written.</source>
-            <translation>WAV վերնագիրը չհաջողվեց գրել:</translation>
-        </message>
-        <message>
-            <source>Voice farther away</source>
-            <translation>Ձայն ավելի հեռու</translation>
-        </message>
-        <message>
-            <source>Room sound</source>
-            <translation>Սենյակի ձայն</translation>
+            <source>Speech output is unavailable.</source>
+            <translation>Խոսքային ելքը հասանելի չէ։</translation>
         </message>
     </context>
     <context>
         <name>AudioSettings</name>
         <message>
-            <source>Echo cancellation</source>
-            <translation>Արձագանքի չեղարկում</translation>
+            <source>Echo</source>
+            <translation>Արձագանք</translation>
         </message>
         <message>
             <source>Off</source>
@@ -402,12 +287,12 @@
             <translation>Ձեր նվագարկումը</translation>
         </message>
         <message>
-            <source>Clear local key</source>
-            <translation>Մաքրել տեղական push-to-talk ստեղնաշարի դյուրանցումը</translation>
+            <source>Clear key</source>
+            <translation>Մաքրել ստեղնը</translation>
         </message>
         <message>
-            <source>Low cut</source>
-            <translation>Ցածր հաճախականության կտրում</translation>
+            <source>Highpass</source>
+            <translation>Բարձրանցիկ</translation>
         </message>
         <message>
             <source>Microphone access is off</source>
@@ -418,32 +303,16 @@
             <translation>Մուտքային սարք</translation>
         </message>
         <message>
-            <source>Microphone paused for others</source>
-            <translation>Խոսափողն այլոց համար կանգ է առել</translation>
-        </message>
-        <message>
             <source>Cancel</source>
             <translation>Չեղարկել</translation>
-        </message>
-        <message>
-            <source>Guided recording</source>
-            <translation>ուղեկցվող ձայնագրություն</translation>
         </message>
         <message>
             <source>Clipping. Reduce microphone gain.</source>
             <translation>Կլիպինգ: նվազեցրեք խոսափողի ուժեղացումը:</translation>
         </message>
         <message>
-            <source>Silent</source>
-            <translation>Լուռ</translation>
-        </message>
-        <message>
             <source>Test output</source>
             <translation>Փորձարկման արդյունք</translation>
-        </message>
-        <message>
-            <source>Voice level</source>
-            <translation>Ձայնի մակարդակ</translation>
         </message>
         <message>
             <source>Voice threshold</source>
@@ -462,20 +331,16 @@
             <translation>Սարքն անջատված է</translation>
         </message>
         <message>
-            <source>Local key</source>
-            <translation>Տեղական սեղմել-խոսելու ստեղնաշարի դյուրանցում</translation>
+            <source>PTT key</source>
+            <translation>Խոսելու ստեղն</translation>
         </message>
         <message>
             <source>Voice activation</source>
             <translation>Ձայնով ակտիվացված խոսափող</translation>
         </message>
         <message>
-            <source>Remote PTT key</source>
-            <translation>Հեռակառավարվող ստեղնաշարի դյուրանցում</translation>
-        </message>
-        <message>
-            <source>Noise reduction</source>
-            <translation>Աղմուկի նվազեցում</translation>
+            <source>Denoise</source>
+            <translation>Աղմկազտում</translation>
         </message>
         <message>
             <source>Selected device is not connected</source>
@@ -486,32 +351,120 @@
             <translation>Կփոխանցի</translation>
         </message>
         <message>
-            <source>Microphone gain</source>
-            <translation>Խոսափողի ուժեղացում</translation>
-        </message>
-        <message>
-            <source>Clear remote key</source>
-            <translation>Մաքրել հեռակառավարման "Push-to-Talk" ստեղնաշարի դյուրանցումը</translation>
-        </message>
-        <message>
-            <source>Playback volume</source>
-            <translation>Նվագարկման ծավալը</translation>
+            <source>Gain</source>
+            <translation>Ուժեղացում</translation>
         </message>
         <message>
             <source>Not assigned</source>
             <translation>նշանակված չէ</translation>
         </message>
         <message>
-            <source>High cut</source>
-            <translation>Բարձր հաճախականության կտրում</translation>
+            <source>Lowpass</source>
+            <translation>Ցածրանցիկ</translation>
         </message>
         <message>
             <source>Level audio automatically</source>
             <translation>Ձայնի մակարդակը ավտոմատ կերպով</translation>
         </message>
+        <message>
+            <source>Voice volume</source>
+            <translation>Ձայնային զրույցի ձայնաչափը</translation>
+        </message>
+        <message>
+            <source>App sounds</source>
+            <translation>Հավելվածի ձայները</translation>
+        </message>
+        <message>
+            <source>Read bot messages aloud</source>
+            <translation>Բարձրաձայն կարդալ բոտի հաղորդագրությունները</translation>
+        </message>
+        <message>
+            <source>Download a high-quality voice for this language in macOS settings.</source>
+            <translation>macOS-ի կարգավորումներում ներբեռնիր բարձրորակ ձայն այս լեզվի համար։</translation>
+        </message>
+        <message>
+            <source>Bot voice</source>
+            <translation>Բոտի ձայն</translation>
+        </message>
+        <message>
+            <source>Automatic</source>
+            <translation>ավտոմատ</translation>
+        </message>
+        <message>
+            <source>Unavailable</source>
+            <translation>անհասանելի</translation>
+        </message>
+        <message>
+            <source>Download voices in your device's Accessibility speech settings.</source>
+            <translation>Ներբեռնիր ձայները սարքիդ մատչելիության բաժնի խոսքի կարգավորումներից։</translation>
+        </message>
+        <message>
+            <source>Voice download help</source>
+            <translation>Ձայների ներբեռնման օգնություն</translation>
+        </message>
+        <message>
+            <source>Strength, not the percentage of echo removed.</source>
+            <translation>Ուժգնությունը, ոչ թե հեռացված արձագանքի տոկոսը։</translation>
+        </message>
+        <message>
+            <source>Auto also checks for speech, not just volume.</source>
+            <translation>Ավտոմատ ռեժիմը ստուգում է նաև խոսքի առկայությունը, ոչ միայն ձայնի ուժգնությունը։</translation>
+        </message>
     </context>
     <context>
         <name>Channels</name>
+        <message>
+            <source>Audio received</source>
+            <translation>Ստացված ձայն</translation>
+        </message>
+        <message>
+            <source>Search channels</source>
+            <translation>Որոնել ալիքներ</translation>
+        </message>
+        <message>
+            <source>No matches</source>
+            <translation>Արդյունքներ չկան</translation>
+        </message>
+        <message>
+            <source>Copy address</source>
+            <translation>Պատճենել հասցեն</translation>
+        </message>
+        <message>
+            <source>Messages</source>
+            <translation>Հաղորդագրություններ</translation>
+        </message>
+        <message>
+            <source>Message</source>
+            <translation>Հաղորդագրություն</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Բացել</translation>
+        </message>
+        <message>
+            <source>Online</source>
+            <translation>Առցանց</translation>
+        </message>
+        <message>
+            <source>Offline</source>
+            <translation>Անցանց</translation>
+        </message>
+        <message>
+            <source>No private messages</source>
+            <translation>Անձնական հաղորդագրություններ չկան</translation>
+        </message>
+        <message>
+            <source>Private messages are unavailable for this contact.</source>
+            <translation>Այս կոնտակտի համար անձնական հաղորդագրությունները հասանելի չեն։</translation>
+        </message>
+        <message>
+            <source>If asked, allow local network access. You can change this in system settings.</source>
+            <translation>Եթե հարցվի, թույլ տուր մուտք գործել տեղական ցանց։ Սա կարող ես փոխել համակարգի կարգավորումներում։</translation>
+        </message>
+        <message>
+            <source>Retry</source>
+            <translation>Կրկին փորձել</translation>
+        </message>
         <message>
             <source>Updates</source>
             <translation>Թարմացումներ</translation>
@@ -531,6 +484,10 @@
         <message>
             <source>DDNS cannot bypass CGNAT. If your provider shares the public IP, use a private VPN on all participating devices or a publicly reachable server.</source>
             <translation>DDNS-ը չի կարող շրջանցել CGNAT-ը: Եթե ձեր մատակարարը կիսում է հանրային IP-ն, օգտագործեք մասնավոր VPN բոլոր մասնակից սարքերում կամ հանրությանը հասանելի սերվերում:</translation>
+        </message>
+        <message>
+            <source>Remove server</source>
+            <translation>Հեռացնել սերվերը</translation>
         </message>
         <message>
             <source>Low</source>
@@ -653,10 +610,6 @@
             <translation>Ծանուցման հնչյուններ</translation>
         </message>
         <message>
-            <source>Lifetime for new messages. Earlier messages keep their expiry.</source>
-            <translation>Նոր հաղորդագրությունների ողջ կյանք: Ավելի վաղ հաղորդագրությունները պահպանում են իրենց ժամկետը:</translation>
-        </message>
-        <message>
             <source>Enable speakers</source>
             <translation>Միացնել բարձրախոսները</translation>
         </message>
@@ -691,10 +644,6 @@
         <message>
             <source>Allow device</source>
             <translation>Թույլատրել սարքը</translation>
-        </message>
-        <message>
-            <source>Receive quality: %1 kb/s per voice. Adjusts automatically for this device.</source>
-            <translation>ստացման որակը՝ %1 կբ/վ մեկ ձայնի համար: Ավտոմատ կերպով կարգավորվում է այս սարքի համար:</translation>
         </message>
         <message>
             <source>Stop radio</source>
@@ -1188,6 +1137,50 @@
             <source>This device</source>
             <translation>Այս սարքը</translation>
         </message>
+        <message>
+            <source>Use default music volume</source>
+            <translation>Օգտագործել երաժշտության լռելյայն ձայնի ուժգնությունը</translation>
+        </message>
+        <message>
+            <source>Show in Dock</source>
+            <translation>Ցույց տալ Dock-ում</translation>
+        </message>
+        <message>
+            <source>App language</source>
+            <translation>Հավելվածի լեզու</translation>
+        </message>
+        <message>
+            <source>Send in</source>
+            <translation>Ուղարկման լեզու</translation>
+        </message>
+        <message>
+            <source>Hear in</source>
+            <translation>Լսելու լեզու</translation>
+        </message>
+        <message>
+            <source>Download language models for %1 and %2?</source>
+            <translation>Ներբեռնե՞լ %1 և %2 լեզուների մոդելները։</translation>
+        </message>
+        <message>
+            <source>Download</source>
+            <translation>Ներբեռնել</translation>
+        </message>
+        <message>
+            <source>PTT, chat and channel controls. Uses the controlled device's microphone.</source>
+            <translation>PTT-ի, զրույցի և ալիքների կառավարում։ Օգտագործվում է կառավարվող սարքի խոսափողը։</translation>
+        </message>
+        <message>
+            <source>Connect the other device to one of your channels, then allow it here.</source>
+            <translation>Միացրու մյուս սարքը քո ալիքներից մեկին, ապա թույլատրի՛ր այն այստեղ։</translation>
+        </message>
+        <message>
+            <source>On the other device, open Settings &gt; Input &gt; Remote control and allow this device.</source>
+            <translation>Մյուս սարքում բացիր Կարգավորումներ &gt; Մուտք &gt; Հեռակառավարման վահանակ և թույլատրի՛ր այս սարքը։</translation>
+        </message>
+        <message>
+            <source>Unread messages</source>
+            <translation>Չընթերցված հաղորդագրություններ</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1299,6 +1292,22 @@
             <source>The sanitized image could not be written completely.</source>
             <translation>Մաքրված պատկերը չհաջողվեց ամբողջությամբ գրել.</translation>
         </message>
+        <message>
+            <source>%1 joined.</source>
+            <translation>%1 միացավ:</translation>
+        </message>
+        <message>
+            <source>%1 left.</source>
+            <translation>%1-ը հեռացավ:</translation>
+        </message>
+        <message>
+            <source>%1 was kicked.</source>
+            <translation>%1-ը դուրս է հանվել:</translation>
+        </message>
+        <message>
+            <source>%1 was banned from the channel.</source>
+            <translation>%1-ը արգելափակվել է ալիքից:</translation>
+        </message>
     </context>
     <context>
         <name>ChatPanel</name>
@@ -1363,22 +1372,6 @@
             <translation>Բեռնվում է...</translation>
         </message>
         <message>
-            <source>%1 joined.</source>
-            <translation>%1 միացավ:</translation>
-        </message>
-        <message>
-            <source>%1 left.</source>
-            <translation>%1-ը հեռացավ:</translation>
-        </message>
-        <message>
-            <source>%1 was kicked.</source>
-            <translation>%1-ը դուրս է հանվել:</translation>
-        </message>
-        <message>
-            <source>%1 was banned from the channel.</source>
-            <translation>%1-ը արգելափակվել է ալիքից:</translation>
-        </message>
-        <message>
             <source>Message could not be sent. Check the connection and text length.</source>
             <translation>Հաղորդագրությունը չհաջողվեց ուղարկել: Ստուգեք կապը և տեքստի երկարությունը:</translation>
         </message>
@@ -1404,7 +1397,400 @@
         </message>
     </context>
     <context>
+        <name>Desktop</name>
+        <message>
+            <source>Open settings at startup.</source>
+            <translation>Գործարկման ժամանակ բացել կարգավորումները.</translation>
+        </message>
+        <message>
+            <source>Alternative file for audio profiles.</source>
+            <translation>Ձայնային պրոֆիլների այլընտրանքային ֆայլ.</translation>
+        </message>
+        <message>
+            <source>Load the interface without microphone capture and exit after one second.</source>
+            <translation>Բեռնել միջերեսն առանց խոսափողի ձայնագրման և դուրս գալ մեկ վայրկյանից.</translation>
+        </message>
+        <message>
+            <source>Save an image of the app window during the UI test.</source>
+            <translation>Միջերեսի փորձարկման ընթացքում պահել հավելվածի պատուհանի պատկերը.</translation>
+        </message>
+        <message>
+            <source>The window image could not be saved.</source>
+            <translation>Չհաջողվեց պահել պատուհանի պատկերը.</translation>
+        </message>
+        <message>
+            <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
+            <translation>Համակարգային սկուտեղն անհասանելի է. հավելվածը բաց է մնում պատուհանում.</translation>
+        </message>
+    </context>
+    <context>
+        <name>Headless</name>
+        <message>
+            <source>Host display name.</source>
+            <translation>Հոսթի ցուցադրվող անունը։</translation>
+        </message>
+        <message>
+            <source>Command failed.</source>
+            <translation>Հրամանը ձախողվեց.</translation>
+        </message>
+        <message>
+            <source>%1 must be an integer.</source>
+            <translation>%1-ը պետք է լինի ամբողջ թիվ.</translation>
+        </message>
+        <message>
+            <source>Requests must be on/off or true/false.</source>
+            <translation>Հարցումները պետք է լինեն on/off կամ true/false.</translation>
+        </message>
+        <message>
+            <source>Unknown host property: %1</source>
+            <translation>Հոսթի անհայտ հատկություն. %1</translation>
+        </message>
+        <message>
+            <source>Run without GUI, microphone capture, or local audio output.</source>
+            <translation>Գործարկել առանց գրաֆիկական միջերեսի, խոսափողից ձայնագրման կամ տեղային ձայնային ելքի.</translation>
+        </message>
+        <message>
+            <source>Server storage prefix. Personal/audio/GUI profiles are not loaded.</source>
+            <translation>Սերվերի պահոցի նախածանցը. Անձնական, ձայնային և միջերեսի պրոֆիլները չեն բեռնվում.</translation>
+        </message>
+        <message>
+            <source>Optional private identity file instead of the OS credential store (Linux/macOS). Parent directory must exist and belong to this account.</source>
+            <translation>Համակարգի մուտքային տվյալների պահոցի փոխարեն ընտրովի մասնավոր ինքնության ֆայլ (Linux/macOS). Ծնող պանակը պետք է գոյություն ունենա և պատկանի այս հաշվին.</translation>
+        </message>
+        <message>
+            <source>UTF-8 key=value properties or JSON host preset. Default: application.properties, then config/application.properties beside the app.</source>
+            <translation>UTF-8 key=value հատկություններ կամ հոսթի նախնական կարգավորումներ JSON ձևաչափով. Լռելյայն՝ application.properties, ապա config/application.properties՝ հավելվածի կողքին.</translation>
+        </message>
+        <message>
+            <source>Channel display name.</source>
+            <translation>Ալիքի ցուցադրվող անունը.</translation>
+        </message>
+        <message>
+            <source>System and radio bot display name.</source>
+            <translation>Համակարգային և ռադիոյի բոտի ցուցադրվող անունը.</translation>
+        </message>
+        <message>
+            <source>TCP service port (1-65535).</source>
+            <translation>Ծառայության TCP պորտը (1-65535).</translation>
+        </message>
+        <message>
+            <source>Headless admission is always on; only 'on' or 'true' is accepted.</source>
+            <translation>Առանց գրաֆիկական միջերեսի ռեժիմում մուտքը միշտ միացված է. ընդունվում է միայն 'on' կամ 'true'.</translation>
+        </message>
+        <message>
+            <source>Preapprove a device ID; repeat for several devices. Existing bans remain.</source>
+            <translation>Նախապես հաստատել սարքի ID-ն. կրկնել մի քանի սարքերի համար. գոյություն ունեցող արգելքները մնում են.</translation>
+        </message>
+        <message>
+            <source>Block a device ID; repeat for several devices.</source>
+            <translation>Արգելափակել սարքի ID-ն. կրկնել մի քանի սարքերի համար.</translation>
+        </message>
+        <message>
+            <source>Read a UTF-8 channel password from a file before listening. An empty file removes it.</source>
+            <translation>Նախքան լսելը ֆայլից կարդալ ալիքի UTF-8 գաղտնաբառը. դատարկ ֆայլը հեռացնում է այն.</translation>
+        </message>
+        <message>
+            <source>Channel password. Empty removes it; environment or config avoids process-list exposure.</source>
+            <translation>Ալիքի գաղտնաբառը. Դատարկ արժեքը հեռացնում է այն. միջավայրի կամ կազմաձևի օգտագործումը կանխում է դրա երևալը գործընթացների ցանկում.</translation>
+        </message>
+        <message>
+            <source>SquadSpeak headless local channel host</source>
+            <translation>SquadSpeak տեղային ալիքի հոսթ՝ առանց գրաֆիկական միջերեսի</translation>
+        </message>
+        <message>
+            <source>Environment variables (SQUADSPEAK_ prefix):</source>
+            <translation>Միջավայրի փոփոխականներ (SQUADSPEAK_ նախածանցով).</translation>
+        </message>
+        <message>
+            <source>Host configuration could not be read or exceeds 1 MiB.</source>
+            <translation>Հոսթի կազմաձևը չի հաջողվել կարդալ կամ այն գերազանցում է 1 MiB-ը.</translation>
+        </message>
+        <message>
+            <source>Host configuration must be UTF-8.</source>
+            <translation>Հոսթի կազմաձևը պետք է լինի UTF-8.</translation>
+        </message>
+        <message>
+            <source>Host preset must be a JSON object.</source>
+            <translation>Հոսթի նախնական կարգավորումները պետք է լինեն JSON օբյեկտ.</translation>
+        </message>
+        <message>
+            <source>Property line %1 must use key=value.</source>
+            <translation>Հատկությունների %1 տողը պետք է օգտագործի key=value.</translation>
+        </message>
+        <message>
+            <source>Property line %1: %2</source>
+            <translation>Հատկությունների տող %1. %2</translation>
+        </message>
+        <message>
+            <source>Standard input has no file descriptor.</source>
+            <translation>Ստանդարտ մուտքը չունի ֆայլի նկարագրիչ.</translation>
+        </message>
+        <message>
+            <source>Standard input could not be inspected.</source>
+            <translation>Չհաջողվեց ստուգել ստանդարտ մուտքը.</translation>
+        </message>
+        <message>
+            <source>Could not write the command response: %1</source>
+            <translation>Չհաջողվեց գրել հրամանի պատասխանը. %1</translation>
+        </message>
+        <message>
+            <source>Standard input could not be read: %1</source>
+            <translation>Չհաջողվեց կարդալ ստանդարտ մուտքը. %1</translation>
+        </message>
+        <message>
+            <source>Input line exceeds 65536 bytes.</source>
+            <translation>Մուտքային տողը գերազանցում է 65536 բայթը.</translation>
+        </message>
+        <message>
+            <source>Each input line must be a JSON object.</source>
+            <translation>Յուրաքանչյուր մուտքային տող պետք է լինի JSON օբյեկտ.</translation>
+        </message>
+        <message>
+            <source>Input ended before a complete JSON line.</source>
+            <translation>Մուտքն ավարտվեց մինչև ամբողջական JSON տող ստանալը.</translation>
+        </message>
+        <message>
+            <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
+            <translation>Սեփական ալիքի ընտրովի ID՝ status, configure, password, admission, history, chat և radio հրամանների համար. լռելյայն օգտագործվում է հիմնական ալիքը.</translation>
+        </message>
+        <message>
+            <source>Channel action must be list, add or remove.</source>
+            <translation>Ալիքի գործողությունը պետք է լինի list, add կամ remove.</translation>
+        </message>
+        <message>
+            <source>Removing an own channel deletes its history, images, permissions and radio settings. Set confirmed=true to proceed.</source>
+            <translation>Սեփական ալիքը հեռացնելիս ջնջվում են դրա պատմությունը, պատկերները, թույլտվությունները և ռադիոյի կարգավորումները. շարունակելու համար սահմանել confirmed=true.</translation>
+        </message>
+        <message>
+            <source>id must identify an additional own channel.</source>
+            <translation>id-ն պետք է նշի ձեր լրացուցիչ սեփական ալիքը.</translation>
+        </message>
+        <message>
+            <source>The additional own channel could not be removed: %1</source>
+            <translation>Չհաջողվեց հեռացնել լրացուցիչ սեփական ալիքը. %1</translation>
+        </message>
+        <message>
+            <source>channelId must identify an own channel.</source>
+            <translation>channelId-ն պետք է նշի սեփական ալիք.</translation>
+        </message>
+        <message>
+            <source>values must be a host settings object.</source>
+            <translation>values-ը պետք է լինի հոսթի կարգավորումների օբյեկտ.</translation>
+        </message>
+        <message>
+            <source>Headless admission is always enabled for non-banned devices; requests off is not supported.</source>
+            <translation>Առանց գրաֆիկական միջերեսի ռեժիմում չարգելափակված սարքերի մուտքը միշտ միացված է. requests off-ը չի աջակցվում.</translation>
+        </message>
+        <message>
+            <source>value must be a password of at most 1024 UTF-8 bytes without control characters; an empty string removes it.</source>
+            <translation>value-ն պետք է լինի առավելագույնը 1024 UTF-8 բայթանոց գաղտնաբառ՝ առանց կառավարման նիշերի. դատարկ տողը հեռացնում է այն.</translation>
+        </message>
+        <message>
+            <source>The channel is not ready or a password change is in progress.</source>
+            <translation>Ալիքը պատրաստ չէ կամ գաղտնաբառի փոփոխություն է կատարվում.</translation>
+        </message>
+        <message>
+            <source>The channel was removed while saving the password.</source>
+            <translation>Ալիքը հեռացվեց գաղտնաբառը պահելիս.</translation>
+        </message>
+        <message>
+            <source>id is required.</source>
+            <translation>id-ն պարտադիր է.</translation>
+        </message>
+        <message>
+            <source>text must be a valid non-empty chat message.</source>
+            <translation>text-ը պետք է լինի վավեր, ոչ դատարկ զրույցի հաղորդագրություն.</translation>
+        </message>
+        <message>
+            <source>The local channel is not ready.</source>
+            <translation>Տեղային ալիքը պատրաստ չէ.</translation>
+        </message>
+        <message>
+            <source>The channel's radio is unavailable.</source>
+            <translation>Ալիքի ռադիոն հասանելի չէ.</translation>
+        </message>
+        <message>
+            <source>Unknown command. Use help.</source>
+            <translation>Անհայտ հրաման. օգտագործեք help.</translation>
+        </message>
+        <message>
+            <source>search requires a query, non-negative offset and limit from 1 to 128.</source>
+            <translation>search-ը պահանջում է query, ոչ բացասական offset և 1-ից 128 limit.</translation>
+        </message>
+        <message>
+            <source>add creates an id; update requires an existing id.</source>
+            <translation>add-ը ստեղծում է id. update-ը պահանջում է գոյություն ունեցող id.</translation>
+        </message>
+        <message>
+            <source>A station is already being checked.</source>
+            <translation>Կայանն արդեն ստուգվում է.</translation>
+        </message>
+        <message>
+            <source>The channel was removed while checking the station.</source>
+            <translation>Ալիքը հեռացվեց կայանը ստուգելիս.</translation>
+        </message>
+        <message>
+            <source>Unknown radio action.</source>
+            <translation>Ռադիոյի անհայտ գործողություն.</translation>
+        </message>
+        <message>
+            <source>Could not load language: %1</source>
+            <translation>Չհաջողվեց բեռնել լեզուն. %1</translation>
+        </message>
+        <message>
+            <source>The %1 option is incompatible with --headless.</source>
+            <translation>%1 ընտրանքը համատեղելի չէ --headless-ի հետ.</translation>
+        </message>
+        <message>
+            <source>Unexpected positional arguments. Use --help.</source>
+            <translation>Անսպասելի դիրքային արգումենտներ. օգտագործեք --help.</translation>
+        </message>
+        <message>
+            <source>--config / -f requires a non-empty path.</source>
+            <translation>--config / -f-ը պահանջում է ոչ դատարկ ուղի.</translation>
+        </message>
+        <message>
+            <source>Choose --password or --password-file, not both.</source>
+            <translation>Ընտրեք --password կամ --password-file, ոչ երկուսը միասին.</translation>
+        </message>
+        <message>
+            <source>Choose SQUADSPEAK_PASSWORD or SQUADSPEAK_PASSWORD_FILE, not both.</source>
+            <translation>Ընտրեք SQUADSPEAK_PASSWORD կամ SQUADSPEAK_PASSWORD_FILE, ոչ երկուսը միասին.</translation>
+        </message>
+        <message>
+            <source>Choose password or passwordFile in one configuration layer, not both.</source>
+            <translation>Կազմաձևի մեկ շերտում ընտրեք password կամ passwordFile, ոչ երկուսը միասին.</translation>
+        </message>
+        <message>
+            <source>passwordFile must be a non-empty path.</source>
+            <translation>passwordFile-ը պետք է լինի ոչ դատարկ ուղի.</translation>
+        </message>
+        <message>
+            <source>Password file could not be read or is too large.</source>
+            <translation>Գաղտնաբառի ֆայլը չի հաջողվել կարդալ կամ չափազանց մեծ է.</translation>
+        </message>
+        <message>
+            <source>Password file must contain at most 1024 UTF-8 bytes without control characters.</source>
+            <translation>Գաղտնաբառի ֆայլը պետք է պարունակի առավելագույնը 1024 UTF-8 բայթ՝ առանց կառավարման նիշերի.</translation>
+        </message>
+        <message>
+            <source>Password must be a string of at most 1024 UTF-8 bytes without control characters.</source>
+            <translation>Գաղտնաբառը պետք է լինի առավելագույնը 1024 UTF-8 բայթանոց տող՝ առանց կառավարման նիշերի.</translation>
+        </message>
+        <message>
+            <source>settingsFile must be a non-empty path.</source>
+            <translation>settingsFile-ը պետք է լինի ոչ դատարկ ուղի.</translation>
+        </message>
+        <message>
+            <source>identityFile must be a non-empty path.</source>
+            <translation>identityFile-ը պետք է լինի ոչ դատարկ ուղի.</translation>
+        </message>
+        <message>
+            <source>The settings directory could not be created.</source>
+            <translation>Չհաջողվեց ստեղծել կարգավորումների պանակը.</translation>
+        </message>
+        <message>
+            <source>This SquadSpeak profile is already running or cannot be locked.</source>
+            <translation>Այս SquadSpeak պրոֆիլն արդեն գործարկված է կամ չի կարող կողպվել.</translation>
+        </message>
+        <message>
+            <source>Standard input could not be opened.</source>
+            <translation>Չհաջողվեց բացել ստանդարտ մուտքը.</translation>
+        </message>
+        <message>
+            <source>Standard output could not be opened.</source>
+            <translation>Չհաջողվեց բացել ստանդարտ ելքը.</translation>
+        </message>
+        <message>
+            <source>This identity file is already in use or cannot be locked.</source>
+            <translation>Այս ինքնության ֆայլն արդեն օգտագործվում է կամ չի կարող կողպվել.</translation>
+        </message>
+        <message>
+            <source>Invalid host configuration: %1</source>
+            <translation>Հոսթի անվավեր կազմաձև. %1</translation>
+        </message>
+        <message>
+            <source>Radio channels could not be initialized.</source>
+            <translation>Չհաջողվեց սկզբնավորել ռադիոյի ալիքները.</translation>
+        </message>
+        <message>
+            <source>Headless host could not start: %1</source>
+            <translation>Չհաջողվեց գործարկել հոսթն առանց գրաֆիկական միջերեսի. %1</translation>
+        </message>
+        <message>
+            <source>Channel password could not be saved.</source>
+            <translation>Չհաջողվեց պահել ալիքի գաղտնաբառը.</translation>
+        </message>
+        <message>
+            <source>Invalid channel password: %1</source>
+            <translation>Ալիքի անվավեր գաղտնաբառ. %1</translation>
+        </message>
+        <message>
+            <source>Headless host could not initialize: %1</source>
+            <translation>Չհաջողվեց սկզբնավորել հոսթն առանց գրաֆիկական միջերեսի. %1</translation>
+        </message>
+        <message>
+            <source>SquadSpeak headless could not start: %1</source>
+            <translation>Չհաջողվեց գործարկել SquadSpeak-ն առանց գրաֆիկական միջերեսի. %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>Աջակցողի գործողությունը պետք է լինի կարգավիճակ, մուտք գործել, թարմացնել, դուրս գալ կամ չեղարկել: status sign-in refresh sign-out cancel</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>Աջակցող գործողությունն ընթացքի մեջ է:</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>Աջակցի մուտքն անհասանելի է այս նախագծում:</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>Կարգավորումների գերակայություն. արգումենտներ &gt; միջավայր &gt; հատկություններ &gt; պահպանված սերվերի արժեքներ:</translation>
+        </message>
+    </context>
+    <context>
+        <name>License</name>
+        <message>
+            <source>License storage is busy or unavailable.</source>
+            <translation>Լիցենզիայի պահեստը զբաղված է կամ անհասանելի:</translation>
+        </message>
+        <message>
+            <source>License storage is unavailable.</source>
+            <translation>Լիցենզիայի պահեստավորումն անհասանելի է:</translation>
+        </message>
+        <message>
+            <source>Sign-in expired. Try again.</source>
+            <translation>Մուտքի ժամկետը սպառվել է: Կրկին փորձեք:</translation>
+        </message>
+        <message>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>GitHub-ի մուտքն անհասանելի է: Կրկին փորձեք:</translation>
+        </message>
+        <message>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>GitHub-ի մուտքն ավարտված չէ: Կրկին փորձեք:</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>GitHub-ը չհաջողվեց ստուգել: Անցանց մուտքը տևում է առավելագույնը յոթ օր:</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>Նորից մուտք գործեք GitHub-ով:</translation>
+        </message>
+    </context>
+    <context>
         <name>LocalChannel</name>
+        <message>
+            <source>Insufficient permissions.</source>
+            <translation>Անբավարար թույլտվություններ։</translation>
+        </message>
+        <message>
+            <source>Blocked</source>
+            <translation>Արգելափակված</translation>
+        </message>
         <message>
             <source>Host is not responding. Reconnecting.</source>
             <translation>Հյուրընկալողը չի արձագանքում: Վերամիացում։</translation>
@@ -1926,8 +2312,8 @@
             <translation>Պատկերի փոխանցումը չափազանց երկար տևեց:</translation>
         </message>
         <message>
-            <source>The channel is full. Text chat is still available.</source>
-            <translation>Ալիքը լիքն է։ Տեքստային զրույցը դեռ հասանելի է:</translation>
+            <source>The host is busy. Try again shortly.</source>
+            <translation>Հոսթը զբաղված է։ Մի փոքր անց նորից փորձիր։</translation>
         </message>
         <message>
             <source>All own channels use the device's shared port.</source>
@@ -2189,6 +2575,53 @@
             <source>Voice relay codec could not be configured.</source>
             <translation>Չհաջողվեց կարգավորել ձայնի փոխանցման կոդեկը։</translation>
         </message>
+        <message>
+            <source>Unsupported audio codec</source>
+            <translation>Չաջակցվող ձայնային կոդեկ</translation>
+        </message>
+        <message>
+            <source>Speaking is not allowed in this channel.</source>
+            <translation>Այս ալիքում խոսել չի թույլատրվում։</translation>
+        </message>
+    </context>
+    <context>
+        <name>LocalLanguage</name>
+        <message>
+            <source>Translation (experimental)</source>
+            <translation>Թարգմանություն (փորձնական)</translation>
+        </message>
+        <message>
+            <source>Translate messages</source>
+            <translation>Թարգմանել հաղորդագրությունները</translation>
+        </message>
+        <message>
+            <source>Translated voice</source>
+            <translation>Թարգմանված ձայն</translation>
+        </message>
+        <message>
+            <source>Original audio</source>
+            <translation>Բնօրինակ ձայն</translation>
+        </message>
+        <message>
+            <source>Original text</source>
+            <translation>Բնօրինակ տեքստ</translation>
+        </message>
+        <message>
+            <source>Prepare languages</source>
+            <translation>Պատրաստել լեզուները</translation>
+        </message>
+        <message>
+            <source>Local language processing is unavailable.</source>
+            <translation>Լեզվի տեղային մշակումը հասանելի չէ։</translation>
+        </message>
+        <message>
+            <source>Language settings could not be read.</source>
+            <translation>Չհաջողվեց կարդալ լեզվի կարգավորումները։</translation>
+        </message>
+        <message>
+            <source>Language settings could not be saved.</source>
+            <translation>Չհաջողվեց պահպանել լեզվի կարգավորումները։</translation>
+        </message>
     </context>
     <context>
         <name>PushToTalkKey</name>
@@ -2329,50 +2762,61 @@
         </message>
     </context>
     <context>
-        <name>RecordingPanel</name>
+        <name>ScreenPanel</name>
         <message>
-            <source>Stop</source>
-            <translation>Դադարեցրեք</translation>
+            <source>Video paused</source>
+            <translation>Տեսանյութը դադարեցված է</translation>
         </message>
         <message>
-            <source>Start</source>
-            <translation>Սկիզբ</translation>
+            <source>Stream ended</source>
+            <translation>հոսքն ավարտվեց</translation>
         </message>
         <message>
-            <source>Saved on this device only. Nothing is uploaded.</source>
-            <translation>Պահված է միայն այս սարքում: Ոչինչ վերբեռնված չէ:</translation>
+            <source>Connecting</source>
+            <translation>Միացում</translation>
         </message>
         <message>
-            <source>Keep this take or record it again.</source>
-            <translation>Պահպանեք այս նկարը կամ նորից գրանցեք:</translation>
+            <source>Open screen stream</source>
+            <translation>Բացեք էկրանի հոսքը</translation>
         </message>
         <message>
-            <source>Record again</source>
-            <translation>Կրկին ձայնագրեք</translation>
+            <source>Screen stream</source>
+            <translation>Էկրանի հոսք</translation>
         </message>
         <message>
-            <source>Use recording</source>
-            <translation>Օգտագործեք ձայնագրությունը</translation>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
+        </message>
+    </context>
+    <context>
+        <name>ScreenShare</name>
+        <message>
+            <source>Allow screen recording in system settings.</source>
+            <translation>Թույլատրի՛ր էկրանի ձայնագրումը համակարգի կարգավորումներում։</translation>
         </message>
         <message>
-            <source>Recording progress</source>
-            <translation>Առաջընթացի գրանցում</translation>
+            <source>The shared screen was removed. Select a source to start again.</source>
+            <translation>Համօգտագործվող էկրանը հեռացվեց: Ընտրեք աղբյուր՝ նորից սկսելու համար:</translation>
         </message>
         <message>
-            <source>Step %1 of %2</source>
-            <translation>Քայլ %1 %2-ից</translation>
+            <source>The shared window was closed. Select a source to start again.</source>
+            <translation>ընդհանուր պատուհանը փակվեց։ Ընտրեք աղբյուր՝ նորից սկսելու համար:</translation>
         </message>
         <message>
-            <source>Open recordings</source>
-            <translation>բաց ձայնագրություններ</translation>
+            <source>The selected screen is no longer available.</source>
+            <translation>Ընտրված էկրանն այլևս հասանելի չէ:</translation>
         </message>
         <message>
-            <source>Reset test</source>
-            <translation>Վերականգնել թեստը</translation>
+            <source>The selected window is no longer available.</source>
+            <translation>Ընտրված պատուհանն այլևս հասանելի չէ:</translation>
         </message>
         <message>
-            <source>%1 s remaining / %2 dBFS</source>
-            <translation>Մնացել է %1 s / %2 dBFS</translation>
+            <source>The selected source exceeds the capture size limit.</source>
+            <translation>Ընտրված աղբյուրը գերազանցում է նկարահանման չափի սահմանաչափը:</translation>
+        </message>
+        <message>
+            <source>Close a video view before opening another stream.</source>
+            <translation>փակեք տեսանյութի դիտումը մեկ այլ հոսք բացելուց առաջ:</translation>
         </message>
     </context>
     <context>
@@ -2449,10 +2893,6 @@
             <translation>Ազդանշանի հավաքում...</translation>
         </message>
         <message>
-            <source>Dashed curve: configured gain and frequency cuts, using the right dB scale. Noise reduction and voice activation are not part of this curve.</source>
-            <translation>Կետագիծ: կազմաձևված ուժեղացումն ու հաճախականության կտրումները՝ աջ դԲ սանդղակով: Աղմուկի նվազեցումն ու ձայնային ակտիվացումը այս կորի մաս չեն:</translation>
-        </message>
-        <message>
             <source>Microphone preview is not running</source>
             <translation>Խոսափողի նախադիտումը չի աշխատում</translation>
         </message>
@@ -2463,303 +2903,6 @@
         <message>
             <source>Peak: %1</source>
             <translation>Պիկ՝ %1</translation>
-        </message>
-    </context>
-    <context>
-        <name>Tray</name>
-        <message>
-            <source>Quit</source>
-            <translation>Դուրս գալ</translation>
-        </message>
-        <message>
-            <source>SquadSpeak - speaking</source>
-            <translation>SquadSpeak - խոսող</translation>
-        </message>
-        <message>
-            <source>Settings</source>
-            <translation>Կարգավորումներ</translation>
-        </message>
-        <message>
-            <source>Channels</source>
-            <translation>ալիքներ</translation>
-        </message>
-        <message>
-            <source>New image</source>
-            <translation>Նոր պատկեր</translation>
-        </message>
-    </context>
-    <context>
-        <name>VoiceAvatar</name>
-        <message>
-            <source>Muted</source>
-            <translation>խոսափողն անջատված է</translation>
-        </message>
-        <message>
-            <source>Sleeping</source>
-            <translation>քնած</translation>
-        </message>
-        <message>
-            <source>Offline</source>
-            <translation>Անցանց</translation>
-        </message>
-        <message>
-            <source>Speaking</source>
-            <translation>Խոսելով</translation>
-        </message>
-        <message>
-            <source>Unavailable</source>
-            <translation>անհասանելի</translation>
-        </message>
-        <message>
-            <source>Listening</source>
-            <translation>Լսել</translation>
-        </message>
-        <message>
-            <source>Deafened</source>
-            <translation>Բարձրախոսներն անջատված են</translation>
-        </message>
-    </context>
-    <context>
-        <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>անհասանելի է - աուդիո կարգավորումներ կամ ձայնի թեստ</translation>
-        </message>
-        <message>
-            <source>Microphone muted</source>
-            <translation>խոսափողն անջատված է</translation>
-        </message>
-        <message>
-            <source>Push-to-talk held</source>
-            <translation>"Սեղմել՝ խոսելու համար" կոճակը պահված է:</translation>
-        </message>
-        <message>
-            <source>Ready - push-to-talk released</source>
-            <translation>Պատրաստ է - "Սեղմել՝ խոսելու համար" կոճակը բաց է թողնված:</translation>
-        </message>
-        <message>
-            <source>Microphone unmuted</source>
-            <translation>Խոսափողը միացված է:</translation>
-        </message>
-        <message>
-            <source>Settings could not be saved: %1</source>
-            <translation>Կարգավորումները չհաջողվեց պահպանել՝ %1</translation>
-        </message>
-        <message>
-            <source>The push-to-talk sequence cannot be incremented further.</source>
-            <translation>"Հրում դեպի խոսակցություն" հաջորդականությունը չի կարող ավելացվել:</translation>
-        </message>
-        <message>
-            <source>Choose System, Light or Dark.</source>
-            <translation>Ընտրեք System, Light կամ Dark:</translation>
-        </message>
-        <message>
-            <source>Choose a colour palette from the list.</source>
-            <translation>Ցանկից ընտրեք գունային գունապնակ:</translation>
-        </message>
-        <message>
-            <source>Choose an available avatar.</source>
-            <translation>Ընտրեք մատչելի ավատար:</translation>
-        </message>
-        <message>
-            <source>Invalid push-to-talk binding.</source>
-            <translation>Անվավեր "Push-to-Talk" կապում:</translation>
-        </message>
-        <message>
-            <source>Release the held push-to-talk key first.</source>
-            <translation>Սկզբում բաց թողեք պահված սեղմում-խոսելու ստեղնը:</translation>
-        </message>
-        <message>
-            <source>Choose a language from the list.</source>
-            <translation>Ցանկից ընտրեք լեզու:</translation>
-        </message>
-        <message>
-            <source>This avatar requires Supporter.</source>
-            <translation>Այս ավատարը պահանջում է Supporter:</translation>
-        </message>
-        <message>
-            <source>The name must contain 1 to 64 characters.</source>
-            <translation>Անունը պետք է պարունակի 1-ից 64 նիշ:</translation>
-        </message>
-        <message>
-            <source>The name may not contain control characters or line breaks.</source>
-            <translation>Անունը չի կարող պարունակել կառավարման նշաններ կամ տողերի ընդմիջումներ:</translation>
-        </message>
-        <message>
-            <source>Session settings could not be read.</source>
-            <translation>Չհաջողվեց կարդալ աշխատաշրջանի կարգավորումները.</translation>
-        </message>
-        <message>
-            <source>Saved setting is invalid: %1</source>
-            <translation>Պահված կարգավորումն անվավեր է: %1</translation>
-        </message>
-    </context>
-    <context>
-        <name>License</name>
-        <message>
-            <source>License storage is busy or unavailable.</source>
-            <translation>Լիցենզիայի պահեստը զբաղված է կամ անհասանելի:</translation>
-        </message>
-        <message>
-            <source>License storage is unavailable.</source>
-            <translation>Լիցենզիայի պահեստավորումն անհասանելի է:</translation>
-        </message>
-        <message>
-            <source>Sign-in expired. Try again.</source>
-            <translation>Մուտքի ժամկետը սպառվել է: Կրկին փորձեք:</translation>
-        </message>
-        <message>
-            <source>GitHub sign-in is unavailable. Try again.</source>
-            <translation>GitHub-ի մուտքն անհասանելի է: Կրկին փորձեք:</translation>
-        </message>
-        <message>
-            <source>GitHub sign-in was not completed. Try again.</source>
-            <translation>GitHub-ի մուտքն ավարտված չէ: Կրկին փորձեք:</translation>
-        </message>
-        <message>
-            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
-            <translation>GitHub-ը չհաջողվեց ստուգել: Անցանց մուտքը տևում է առավելագույնը յոթ օր:</translation>
-        </message>
-        <message>
-            <source>Sign in with GitHub again.</source>
-            <translation>Նորից մուտք գործեք GitHub-ով:</translation>
-        </message>
-    </context>
-    <context>
-        <name>ScreenShare</name>
-        <message>
-            <source>The shared screen was removed. Select a source to start again.</source>
-            <translation>Համօգտագործվող էկրանը հեռացվեց: Ընտրեք աղբյուր՝ նորից սկսելու համար:</translation>
-        </message>
-        <message>
-            <source>The shared window was closed. Select a source to start again.</source>
-            <translation>ընդհանուր պատուհանը փակվեց։ Ընտրեք աղբյուր՝ նորից սկսելու համար:</translation>
-        </message>
-        <message>
-            <source>The selected screen is no longer available.</source>
-            <translation>Ընտրված էկրանն այլևս հասանելի չէ:</translation>
-        </message>
-        <message>
-            <source>The selected window is no longer available.</source>
-            <translation>Ընտրված պատուհանն այլևս հասանելի չէ:</translation>
-        </message>
-        <message>
-            <source>The selected source exceeds the capture size limit.</source>
-            <translation>Ընտրված աղբյուրը գերազանցում է նկարահանման չափի սահմանաչափը:</translation>
-        </message>
-        <message>
-            <source>Close a video view before opening another stream.</source>
-            <translation>փակեք տեսանյութի դիտումը մեկ այլ հոսք բացելուց առաջ:</translation>
-        </message>
-    </context>
-    <context>
-        <name>ScreenPanel</name>
-        <message>
-            <source>Media capacity reached</source>
-            <translation>ԶԼՄ-ների հզորությունը հասել է</translation>
-        </message>
-        <message>
-            <source>Video paused</source>
-            <translation>Տեսանյութը դադարեցված է</translation>
-        </message>
-        <message>
-            <source>Stream ended</source>
-            <translation>հոսքն ավարտվեց</translation>
-        </message>
-        <message>
-            <source>Connecting</source>
-            <translation>Միացում</translation>
-        </message>
-        <message>
-            <source>Open screen stream</source>
-            <translation>Բացեք էկրանի հոսքը</translation>
-        </message>
-        <message>
-            <source>Screen stream</source>
-            <translation>Էկրանի հոսք</translation>
-        </message>
-        <message>
-            <source>%1 kbit/s</source>
-            <translation>%1 kbit/s</translation>
-        </message>
-    </context>
-    <context>
-        <name>VideoCodec</name>
-        <message>
-            <source>Video codec: %1</source>
-            <translation>Տեսանյութի կոդեկ: %1</translation>
-        </message>
-        <message>
-            <source>Video codec ABI does not match its headers.</source>
-            <translation>Տեսանյութի կոդեկի ABI-ն չի համապատասխանում դրա վերնագրային ֆայլերին.</translation>
-        </message>
-        <message>
-            <source>Video buffers could not be allocated.</source>
-            <translation>Չհաջողվեց հատկացնել տեսանյութի բուֆերները.</translation>
-        </message>
-        <message>
-            <source>Invalid video quality tier.</source>
-            <translation>Տեսանյութի որակի մակարդակն անվավեր է.</translation>
-        </message>
-        <message>
-            <source>The screen source exceeds the supported capture size.</source>
-            <translation>Էկրանի աղբյուրը գերազանցում է տեսագրման աջակցվող չափը.</translation>
-        </message>
-        <message>
-            <source>The screen source is too narrow.</source>
-            <translation>Էկրանի աղբյուրը չափազանց նեղ է.</translation>
-        </message>
-        <message>
-            <source>The video encoder could not be allocated.</source>
-            <translation>Չհաջողվեց հատկացնել տեսանյութի կոդավորիչը.</translation>
-        </message>
-        <message>
-            <source>No supported video encoder is available.</source>
-            <translation>Աջակցվող տեսանյութի կոդավորիչ հասանելի չէ.</translation>
-        </message>
-        <message>
-            <source>Video encoder configuration is too large.</source>
-            <translation>Տեսանյութի կոդավորիչի կազմաձևը չափազանց մեծ է.</translation>
-        </message>
-        <message>
-            <source>Video scaling could not be initialized.</source>
-            <translation>Չհաջողվեց սկզբնավորել տեսանյութի մասշտաբավորումը.</translation>
-        </message>
-        <message>
-            <source>The encoder returned an empty video packet.</source>
-            <translation>Կոդավորիչը վերադարձրեց տեսանյութի դատարկ փաթեթ.</translation>
-        </message>
-        <message>
-            <source>Invalid video frame format.</source>
-            <translation>Տեսանյութի կադրի ձևաչափն անվավեր է.</translation>
-        </message>
-        <message>
-            <source>Invalid video decoder configuration.</source>
-            <translation>Տեսանյութի ապակոդավորիչի կազմաձևն անվավեր է.</translation>
-        </message>
-        <message>
-            <source>This video codec cannot be decoded.</source>
-            <translation>Այս տեսանյութի կոդեկը հնարավոր չէ ապակոդավորել.</translation>
-        </message>
-        <message>
-            <source>Video decoder could not be allocated.</source>
-            <translation>Չհաջողվեց հատկացնել տեսանյութի ապակոդավորիչը.</translation>
-        </message>
-        <message>
-            <source>Video decoder configuration could not be allocated.</source>
-            <translation>Չհաջողվեց հատկացնել տեսանյութի ապակոդավորիչի կազմաձևը.</translation>
-        </message>
-        <message>
-            <source>Decoded dimensions do not match the screen stream.</source>
-            <translation>Ապակոդավորված չափերը չեն համապատասխանում էկրանի հոսքին.</translation>
-        </message>
-        <message>
-            <source>Decoded image could not be allocated.</source>
-            <translation>Չհաջողվեց հատկացնել ապակոդավորված պատկերը.</translation>
-        </message>
-        <message>
-            <source>Video color conversion could not be initialized.</source>
-            <translation>Չհաջողվեց սկզբնավորել տեսանյութի գույների փոխակերպումը.</translation>
         </message>
     </context>
     <context>
@@ -2877,359 +3020,208 @@
             <translation>Չհաջողվեց ստուգել գաղտնաբառը։</translation>
         </message>
     </context>
-
     <context>
-        <name>Headless</name>
+        <name>Tray</name>
         <message>
-            <source>Command failed.</source>
-            <translation>Հրամանը ձախողվեց.</translation>
+            <source>Quit</source>
+            <translation>Դուրս գալ</translation>
         </message>
         <message>
-            <source>%1 must be an integer.</source>
-            <translation>%1-ը պետք է լինի ամբողջ թիվ.</translation>
+            <source>SquadSpeak - speaking</source>
+            <translation>SquadSpeak - խոսող</translation>
         </message>
         <message>
-            <source>Requests must be on/off or true/false.</source>
-            <translation>Հարցումները պետք է լինեն on/off կամ true/false.</translation>
+            <source>Settings</source>
+            <translation>Կարգավորումներ</translation>
         </message>
         <message>
-            <source>Unknown host property: %1</source>
-            <translation>Հոսթի անհայտ հատկություն. %1</translation>
+            <source>Channels</source>
+            <translation>ալիքներ</translation>
         </message>
         <message>
-            <source>Run without GUI, microphone capture, or local audio output.</source>
-            <translation>Գործարկել առանց գրաֆիկական միջերեսի, խոսափողից ձայնագրման կամ տեղային ձայնային ելքի.</translation>
-        </message>
-        <message>
-            <source>Server storage prefix. Personal/audio/GUI profiles are not loaded.</source>
-            <translation>Սերվերի պահոցի նախածանցը. Անձնական, ձայնային և միջերեսի պրոֆիլները չեն բեռնվում.</translation>
-        </message>
-        <message>
-            <source>Optional private identity file instead of the OS credential store (Linux/macOS). Parent directory must exist and belong to this account.</source>
-            <translation>Համակարգի մուտքային տվյալների պահոցի փոխարեն ընտրովի մասնավոր ինքնության ֆայլ (Linux/macOS). Ծնող պանակը պետք է գոյություն ունենա և պատկանի այս հաշվին.</translation>
-        </message>
-        <message>
-            <source>UTF-8 key=value properties or JSON host preset. Default: application.properties, then config/application.properties beside the app.</source>
-            <translation>UTF-8 key=value հատկություններ կամ հոսթի նախնական կարգավորումներ JSON ձևաչափով. Լռելյայն՝ application.properties, ապա config/application.properties՝ հավելվածի կողքին.</translation>
-        </message>
-        <message>
-            <source>Channel display name.</source>
-            <translation>Ալիքի ցուցադրվող անունը.</translation>
-        </message>
-        <message>
-            <source>System and radio bot display name.</source>
-            <translation>Համակարգային և ռադիոյի բոտի ցուցադրվող անունը.</translation>
-        </message>
-        <message>
-            <source>TCP service port (1-65535).</source>
-            <translation>Ծառայության TCP պորտը (1-65535).</translation>
-        </message>
-        <message>
-            <source>Headless admission is always on; only 'on' or 'true' is accepted.</source>
-            <translation>Առանց գրաֆիկական միջերեսի ռեժիմում մուտքը միշտ միացված է. ընդունվում է միայն 'on' կամ 'true'.</translation>
-        </message>
-        <message>
-            <source>Preapprove a device ID; repeat for several devices. Existing bans remain.</source>
-            <translation>Նախապես հաստատել սարքի ID-ն. կրկնել մի քանի սարքերի համար. գոյություն ունեցող արգելքները մնում են.</translation>
-        </message>
-        <message>
-            <source>Block a device ID; repeat for several devices.</source>
-            <translation>Արգելափակել սարքի ID-ն. կրկնել մի քանի սարքերի համար.</translation>
-        </message>
-        <message>
-            <source>Read a UTF-8 channel password from a file before listening. An empty file removes it.</source>
-            <translation>Նախքան լսելը ֆայլից կարդալ ալիքի UTF-8 գաղտնաբառը. դատարկ ֆայլը հեռացնում է այն.</translation>
-        </message>
-        <message>
-            <source>Channel password. Empty removes it; environment or config avoids process-list exposure.</source>
-            <translation>Ալիքի գաղտնաբառը. Դատարկ արժեքը հեռացնում է այն. միջավայրի կամ կազմաձևի օգտագործումը կանխում է դրա երևալը գործընթացների ցանկում.</translation>
-        </message>
-        <message>
-            <source>SquadSpeak headless local channel host</source>
-            <translation>SquadSpeak տեղային ալիքի հոսթ՝ առանց գրաֆիկական միջերեսի</translation>
-        </message>
-        <message>
-            <source>Environment variables (SQUADSPEAK_ prefix):</source>
-            <translation>Միջավայրի փոփոխականներ (SQUADSPEAK_ նախածանցով).</translation>
-        </message>
-        <message>
-            <source>Host configuration could not be read or exceeds 1 MiB.</source>
-            <translation>Հոսթի կազմաձևը չի հաջողվել կարդալ կամ այն գերազանցում է 1 MiB-ը.</translation>
-        </message>
-        <message>
-            <source>Host configuration must be UTF-8.</source>
-            <translation>Հոսթի կազմաձևը պետք է լինի UTF-8.</translation>
-        </message>
-        <message>
-            <source>Host preset must be a JSON object.</source>
-            <translation>Հոսթի նախնական կարգավորումները պետք է լինեն JSON օբյեկտ.</translation>
-        </message>
-        <message>
-            <source>Property line %1 must use key=value.</source>
-            <translation>Հատկությունների %1 տողը պետք է օգտագործի key=value.</translation>
-        </message>
-        <message>
-            <source>Property line %1: %2</source>
-            <translation>Հատկությունների տող %1. %2</translation>
-        </message>
-        <message>
-            <source>Standard input has no file descriptor.</source>
-            <translation>Ստանդարտ մուտքը չունի ֆայլի նկարագրիչ.</translation>
-        </message>
-        <message>
-            <source>Standard input could not be inspected.</source>
-            <translation>Չհաջողվեց ստուգել ստանդարտ մուտքը.</translation>
-        </message>
-        <message>
-            <source>Could not write the command response: %1</source>
-            <translation>Չհաջողվեց գրել հրամանի պատասխանը. %1</translation>
-        </message>
-        <message>
-            <source>Standard input could not be read: %1</source>
-            <translation>Չհաջողվեց կարդալ ստանդարտ մուտքը. %1</translation>
-        </message>
-        <message>
-            <source>Input line exceeds 65536 bytes.</source>
-            <translation>Մուտքային տողը գերազանցում է 65536 բայթը.</translation>
-        </message>
-        <message>
-            <source>Each input line must be a JSON object.</source>
-            <translation>Յուրաքանչյուր մուտքային տող պետք է լինի JSON օբյեկտ.</translation>
-        </message>
-        <message>
-            <source>Input ended before a complete JSON line.</source>
-            <translation>Մուտքն ավարտվեց մինչև ամբողջական JSON տող ստանալը.</translation>
-        </message>
-        <message>
-            <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
-            <translation>Սեփական ալիքի ընտրովի ID՝ status, configure, password, admission, history, chat և radio հրամանների համար. լռելյայն օգտագործվում է հիմնական ալիքը.</translation>
-        </message>
-        <message>
-            <source>Channel action must be list, add or remove.</source>
-            <translation>Ալիքի գործողությունը պետք է լինի list, add կամ remove.</translation>
-        </message>
-        <message>
-            <source>Removing an own channel deletes its history, images, permissions and radio settings. Set confirmed=true to proceed.</source>
-            <translation>Սեփական ալիքը հեռացնելիս ջնջվում են դրա պատմությունը, պատկերները, թույլտվությունները և ռադիոյի կարգավորումները. շարունակելու համար սահմանել confirmed=true.</translation>
-        </message>
-        <message>
-            <source>id must identify an additional own channel.</source>
-            <translation>id-ն պետք է նշի ձեր լրացուցիչ սեփական ալիքը.</translation>
-        </message>
-        <message>
-            <source>The additional own channel could not be removed: %1</source>
-            <translation>Չհաջողվեց հեռացնել լրացուցիչ սեփական ալիքը. %1</translation>
-        </message>
-        <message>
-            <source>channelId must identify an own channel.</source>
-            <translation>channelId-ն պետք է նշի սեփական ալիք.</translation>
-        </message>
-        <message>
-            <source>values must be a host settings object.</source>
-            <translation>values-ը պետք է լինի հոսթի կարգավորումների օբյեկտ.</translation>
-        </message>
-        <message>
-            <source>Headless admission is always enabled for non-banned devices; requests off is not supported.</source>
-            <translation>Առանց գրաֆիկական միջերեսի ռեժիմում չարգելափակված սարքերի մուտքը միշտ միացված է. requests off-ը չի աջակցվում.</translation>
-        </message>
-        <message>
-            <source>value must be a password of at most 1024 UTF-8 bytes without control characters; an empty string removes it.</source>
-            <translation>value-ն պետք է լինի առավելագույնը 1024 UTF-8 բայթանոց գաղտնաբառ՝ առանց կառավարման նիշերի. դատարկ տողը հեռացնում է այն.</translation>
-        </message>
-        <message>
-            <source>The channel is not ready or a password change is in progress.</source>
-            <translation>Ալիքը պատրաստ չէ կամ գաղտնաբառի փոփոխություն է կատարվում.</translation>
-        </message>
-        <message>
-            <source>The channel was removed while saving the password.</source>
-            <translation>Ալիքը հեռացվեց գաղտնաբառը պահելիս.</translation>
-        </message>
-        <message>
-            <source>id is required.</source>
-            <translation>id-ն պարտադիր է.</translation>
-        </message>
-        <message>
-            <source>text must be a valid non-empty chat message.</source>
-            <translation>text-ը պետք է լինի վավեր, ոչ դատարկ զրույցի հաղորդագրություն.</translation>
-        </message>
-        <message>
-            <source>The local channel is not ready.</source>
-            <translation>Տեղային ալիքը պատրաստ չէ.</translation>
-        </message>
-        <message>
-            <source>The channel's radio is unavailable.</source>
-            <translation>Ալիքի ռադիոն հասանելի չէ.</translation>
-        </message>
-        <message>
-            <source>Unknown command. Use help.</source>
-            <translation>Անհայտ հրաման. օգտագործեք help.</translation>
-        </message>
-        <message>
-            <source>search requires a query, non-negative offset and limit from 1 to 128.</source>
-            <translation>search-ը պահանջում է query, ոչ բացասական offset և 1-ից 128 limit.</translation>
-        </message>
-        <message>
-            <source>add creates an id; update requires an existing id.</source>
-            <translation>add-ը ստեղծում է id. update-ը պահանջում է գոյություն ունեցող id.</translation>
-        </message>
-        <message>
-            <source>A station is already being checked.</source>
-            <translation>Կայանն արդեն ստուգվում է.</translation>
-        </message>
-        <message>
-            <source>The channel was removed while checking the station.</source>
-            <translation>Ալիքը հեռացվեց կայանը ստուգելիս.</translation>
-        </message>
-        <message>
-            <source>Unknown radio action.</source>
-            <translation>Ռադիոյի անհայտ գործողություն.</translation>
-        </message>
-        <message>
-            <source>Could not load language: %1</source>
-            <translation>Չհաջողվեց բեռնել լեզուն. %1</translation>
-        </message>
-        <message>
-            <source>The %1 option is incompatible with --headless.</source>
-            <translation>%1 ընտրանքը համատեղելի չէ --headless-ի հետ.</translation>
-        </message>
-        <message>
-            <source>Unexpected positional arguments. Use --help.</source>
-            <translation>Անսպասելի դիրքային արգումենտներ. օգտագործեք --help.</translation>
-        </message>
-        <message>
-            <source>--config / -f requires a non-empty path.</source>
-            <translation>--config / -f-ը պահանջում է ոչ դատարկ ուղի.</translation>
-        </message>
-        <message>
-            <source>Choose --password or --password-file, not both.</source>
-            <translation>Ընտրեք --password կամ --password-file, ոչ երկուսը միասին.</translation>
-        </message>
-        <message>
-            <source>Choose SQUADSPEAK_PASSWORD or SQUADSPEAK_PASSWORD_FILE, not both.</source>
-            <translation>Ընտրեք SQUADSPEAK_PASSWORD կամ SQUADSPEAK_PASSWORD_FILE, ոչ երկուսը միասին.</translation>
-        </message>
-        <message>
-            <source>Choose password or passwordFile in one configuration layer, not both.</source>
-            <translation>Կազմաձևի մեկ շերտում ընտրեք password կամ passwordFile, ոչ երկուսը միասին.</translation>
-        </message>
-        <message>
-            <source>passwordFile must be a non-empty path.</source>
-            <translation>passwordFile-ը պետք է լինի ոչ դատարկ ուղի.</translation>
-        </message>
-        <message>
-            <source>Password file could not be read or is too large.</source>
-            <translation>Գաղտնաբառի ֆայլը չի հաջողվել կարդալ կամ չափազանց մեծ է.</translation>
-        </message>
-        <message>
-            <source>Password file must contain at most 1024 UTF-8 bytes without control characters.</source>
-            <translation>Գաղտնաբառի ֆայլը պետք է պարունակի առավելագույնը 1024 UTF-8 բայթ՝ առանց կառավարման նիշերի.</translation>
-        </message>
-        <message>
-            <source>Password must be a string of at most 1024 UTF-8 bytes without control characters.</source>
-            <translation>Գաղտնաբառը պետք է լինի առավելագույնը 1024 UTF-8 բայթանոց տող՝ առանց կառավարման նիշերի.</translation>
-        </message>
-        <message>
-            <source>settingsFile must be a non-empty path.</source>
-            <translation>settingsFile-ը պետք է լինի ոչ դատարկ ուղի.</translation>
-        </message>
-        <message>
-            <source>identityFile must be a non-empty path.</source>
-            <translation>identityFile-ը պետք է լինի ոչ դատարկ ուղի.</translation>
-        </message>
-        <message>
-            <source>The settings directory could not be created.</source>
-            <translation>Չհաջողվեց ստեղծել կարգավորումների պանակը.</translation>
-        </message>
-        <message>
-            <source>This SquadSpeak profile is already running or cannot be locked.</source>
-            <translation>Այս SquadSpeak պրոֆիլն արդեն գործարկված է կամ չի կարող կողպվել.</translation>
-        </message>
-        <message>
-            <source>Standard input could not be opened.</source>
-            <translation>Չհաջողվեց բացել ստանդարտ մուտքը.</translation>
-        </message>
-        <message>
-            <source>Standard output could not be opened.</source>
-            <translation>Չհաջողվեց բացել ստանդարտ ելքը.</translation>
-        </message>
-        <message>
-            <source>This identity file is already in use or cannot be locked.</source>
-            <translation>Այս ինքնության ֆայլն արդեն օգտագործվում է կամ չի կարող կողպվել.</translation>
-        </message>
-        <message>
-            <source>Invalid host configuration: %1</source>
-            <translation>Հոսթի անվավեր կազմաձև. %1</translation>
-        </message>
-        <message>
-            <source>Radio channels could not be initialized.</source>
-            <translation>Չհաջողվեց սկզբնավորել ռադիոյի ալիքները.</translation>
-        </message>
-        <message>
-            <source>Headless host could not start: %1</source>
-            <translation>Չհաջողվեց գործարկել հոսթն առանց գրաֆիկական միջերեսի. %1</translation>
-        </message>
-        <message>
-            <source>Channel password could not be saved.</source>
-            <translation>Չհաջողվեց պահել ալիքի գաղտնաբառը.</translation>
-        </message>
-        <message>
-            <source>Invalid channel password: %1</source>
-            <translation>Ալիքի անվավեր գաղտնաբառ. %1</translation>
-        </message>
-        <message>
-            <source>Headless host could not initialize: %1</source>
-            <translation>Չհաջողվեց սկզբնավորել հոսթն առանց գրաֆիկական միջերեսի. %1</translation>
-        </message>
-        <message>
-            <source>SquadSpeak headless could not start: %1</source>
-            <translation>Չհաջողվեց գործարկել SquadSpeak-ն առանց գրաֆիկական միջերեսի. %1</translation>
-        </message>
-        <message>
-            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
-            <translation>Աջակցողի գործողությունը պետք է լինի կարգավիճակ, մուտք գործել, թարմացնել, դուրս գալ կամ չեղարկել: status sign-in refresh sign-out cancel</translation>
-        </message>
-        <message>
-            <source>A Supporter operation is in progress.</source>
-            <translation>Աջակցող գործողությունն ընթացքի մեջ է:</translation>
-        </message>
-        <message>
-            <source>Supporter access is unavailable in this build.</source>
-            <translation>Աջակցի մուտքն անհասանելի է այս նախագծում:</translation>
-        </message>
-        <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>Կարգավորումների գերակայություն. արգումենտներ &gt; միջավայր &gt; հատկություններ &gt; պահպանված սերվերի արժեքներ:</translation>
+            <source>New image</source>
+            <translation>Նոր պատկեր</translation>
         </message>
     </context>
     <context>
-        <name>Desktop</name>
+        <name>VideoCodec</name>
         <message>
-            <source>Open settings at startup.</source>
-            <translation>Գործարկման ժամանակ բացել կարգավորումները.</translation>
+            <source>Video codec: %1</source>
+            <translation>Տեսանյութի կոդեկ: %1</translation>
         </message>
         <message>
-            <source>Open guided local test recording without starting network services.</source>
-            <translation>Բացել տեղային փորձնական ձայնագրումը հրահանգներով, առանց ցանցային ծառայությունները գործարկելու.</translation>
+            <source>Video codec ABI does not match its headers.</source>
+            <translation>Տեսանյութի կոդեկի ABI-ն չի համապատասխանում դրա վերնագրային ֆայլերին.</translation>
         </message>
         <message>
-            <source>Alternative file for audio profiles.</source>
-            <translation>Ձայնային պրոֆիլների այլընտրանքային ֆայլ.</translation>
+            <source>Video buffers could not be allocated.</source>
+            <translation>Չհաջողվեց հատկացնել տեսանյութի բուֆերները.</translation>
         </message>
         <message>
-            <source>Load the interface without microphone capture and exit after one second.</source>
-            <translation>Բեռնել միջերեսն առանց խոսափողի ձայնագրման և դուրս գալ մեկ վայրկյանից.</translation>
+            <source>Invalid video quality tier.</source>
+            <translation>Տեսանյութի որակի մակարդակն անվավեր է.</translation>
         </message>
         <message>
-            <source>Save an image of the app window during the UI test.</source>
-            <translation>Միջերեսի փորձարկման ընթացքում պահել հավելվածի պատուհանի պատկերը.</translation>
+            <source>The screen source exceeds the supported capture size.</source>
+            <translation>Էկրանի աղբյուրը գերազանցում է տեսագրման աջակցվող չափը.</translation>
         </message>
         <message>
-            <source>The window image could not be saved.</source>
-            <translation>Չհաջողվեց պահել պատուհանի պատկերը.</translation>
+            <source>The screen source is too narrow.</source>
+            <translation>Էկրանի աղբյուրը չափազանց նեղ է.</translation>
         </message>
         <message>
-            <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
-            <translation>Համակարգային սկուտեղն անհասանելի է. հավելվածը բաց է մնում պատուհանում.</translation>
+            <source>The video encoder could not be allocated.</source>
+            <translation>Չհաջողվեց հատկացնել տեսանյութի կոդավորիչը.</translation>
+        </message>
+        <message>
+            <source>No supported video encoder is available.</source>
+            <translation>Աջակցվող տեսանյութի կոդավորիչ հասանելի չէ.</translation>
+        </message>
+        <message>
+            <source>Video encoder configuration is too large.</source>
+            <translation>Տեսանյութի կոդավորիչի կազմաձևը չափազանց մեծ է.</translation>
+        </message>
+        <message>
+            <source>Video scaling could not be initialized.</source>
+            <translation>Չհաջողվեց սկզբնավորել տեսանյութի մասշտաբավորումը.</translation>
+        </message>
+        <message>
+            <source>The encoder returned an empty video packet.</source>
+            <translation>Կոդավորիչը վերադարձրեց տեսանյութի դատարկ փաթեթ.</translation>
+        </message>
+        <message>
+            <source>Invalid video frame format.</source>
+            <translation>Տեսանյութի կադրի ձևաչափն անվավեր է.</translation>
+        </message>
+        <message>
+            <source>Invalid video decoder configuration.</source>
+            <translation>Տեսանյութի ապակոդավորիչի կազմաձևն անվավեր է.</translation>
+        </message>
+        <message>
+            <source>This video codec cannot be decoded.</source>
+            <translation>Այս տեսանյութի կոդեկը հնարավոր չէ ապակոդավորել.</translation>
+        </message>
+        <message>
+            <source>Video decoder could not be allocated.</source>
+            <translation>Չհաջողվեց հատկացնել տեսանյութի ապակոդավորիչը.</translation>
+        </message>
+        <message>
+            <source>Video decoder configuration could not be allocated.</source>
+            <translation>Չհաջողվեց հատկացնել տեսանյութի ապակոդավորիչի կազմաձևը.</translation>
+        </message>
+        <message>
+            <source>Decoded dimensions do not match the screen stream.</source>
+            <translation>Ապակոդավորված չափերը չեն համապատասխանում էկրանի հոսքին.</translation>
+        </message>
+        <message>
+            <source>Decoded image could not be allocated.</source>
+            <translation>Չհաջողվեց հատկացնել ապակոդավորված պատկերը.</translation>
+        </message>
+        <message>
+            <source>Video color conversion could not be initialized.</source>
+            <translation>Չհաջողվեց սկզբնավորել տեսանյութի գույների փոխակերպումը.</translation>
+        </message>
+    </context>
+    <context>
+        <name>VoiceAvatar</name>
+        <message>
+            <source>Muted</source>
+            <translation>խոսափողն անջատված է</translation>
+        </message>
+        <message>
+            <source>Sleeping</source>
+            <translation>քնած</translation>
+        </message>
+        <message>
+            <source>Offline</source>
+            <translation>Անցանց</translation>
+        </message>
+        <message>
+            <source>Speaking</source>
+            <translation>Խոսելով</translation>
+        </message>
+        <message>
+            <source>Unavailable</source>
+            <translation>անհասանելի</translation>
+        </message>
+        <message>
+            <source>Listening</source>
+            <translation>Լսել</translation>
+        </message>
+        <message>
+            <source>Deafened</source>
+            <translation>Բարձրախոսներն անջատված են</translation>
+        </message>
+    </context>
+    <context>
+        <name>VoiceSession</name>
+        <message>
+            <source>Microphone muted</source>
+            <translation>խոսափողն անջատված է</translation>
+        </message>
+        <message>
+            <source>Push-to-talk held</source>
+            <translation>"Սեղմել՝ խոսելու համար" կոճակը պահված է:</translation>
+        </message>
+        <message>
+            <source>Ready - push-to-talk released</source>
+            <translation>Պատրաստ է - "Սեղմել՝ խոսելու համար" կոճակը բաց է թողնված:</translation>
+        </message>
+        <message>
+            <source>Microphone unmuted</source>
+            <translation>Խոսափողը միացված է:</translation>
+        </message>
+        <message>
+            <source>Settings could not be saved: %1</source>
+            <translation>Կարգավորումները չհաջողվեց պահպանել՝ %1</translation>
+        </message>
+        <message>
+            <source>The push-to-talk sequence cannot be incremented further.</source>
+            <translation>"Հրում դեպի խոսակցություն" հաջորդականությունը չի կարող ավելացվել:</translation>
+        </message>
+        <message>
+            <source>Choose System, Light or Dark.</source>
+            <translation>Ընտրեք System, Light կամ Dark:</translation>
+        </message>
+        <message>
+            <source>Choose a colour palette from the list.</source>
+            <translation>Ցանկից ընտրեք գունային գունապնակ:</translation>
+        </message>
+        <message>
+            <source>Choose an available avatar.</source>
+            <translation>Ընտրեք մատչելի ավատար:</translation>
+        </message>
+        <message>
+            <source>Invalid push-to-talk binding.</source>
+            <translation>Անվավեր "Push-to-Talk" կապում:</translation>
+        </message>
+        <message>
+            <source>Release the held push-to-talk key first.</source>
+            <translation>Սկզբում բաց թողեք պահված սեղմում-խոսելու ստեղնը:</translation>
+        </message>
+        <message>
+            <source>Choose a language from the list.</source>
+            <translation>Ցանկից ընտրեք լեզու:</translation>
+        </message>
+        <message>
+            <source>This avatar requires Supporter.</source>
+            <translation>Այս ավատարը պահանջում է Supporter:</translation>
+        </message>
+        <message>
+            <source>The name must contain 1 to 64 characters.</source>
+            <translation>Անունը պետք է պարունակի 1-ից 64 նիշ:</translation>
+        </message>
+        <message>
+            <source>The name may not contain control characters or line breaks.</source>
+            <translation>Անունը չի կարող պարունակել կառավարման նշաններ կամ տողերի ընդմիջումներ:</translation>
+        </message>
+        <message>
+            <source>Session settings could not be read.</source>
+            <translation>Չհաջողվեց կարդալ աշխատաշրջանի կարգավորումները.</translation>
+        </message>
+        <message>
+            <source>Saved setting is invalid: %1</source>
+            <translation>Պահված կարգավորումն անվավեր է: %1</translation>
         </message>
     </context>
 </TS>

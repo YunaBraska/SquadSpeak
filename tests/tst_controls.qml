@@ -9,6 +9,7 @@ Item {
     property real storedValue: 0
     property bool acceptEdits: true
     property int writes: 0
+    SignalSpy { id: editFinished; signalName: "editingFinished" }
     Component {
         id: actionComponent
         ActionButton {
@@ -47,20 +48,67 @@ Item {
             writes = 0
             editor = createTemporaryObject(editorComponent, fixture)
             verify(editor !== null)
+            editFinished.target = editor
+            editFinished.clear()
+        }
+        function test_sliderFeedbackFollowsCompletedUserEdits() {
+            verify(editFinished.valid)
+            const control = findChild(editor, "valueControl")
+            storedValue = -4
+            compare(editFinished.count, 0, "Loading a profile is silent")
+            mousePress(control, control.width / 2, control.height / 2)
+            mouseMove(control, control.width * 0.7, control.height / 2)
+            mouseMove(control, control.width * 0.8, control.height / 2)
+            compare(editFinished.count, 0, "Dragging must not queue repeated tones")
+            mouseRelease(control, control.width * 0.8, control.height / 2)
+            compare(editFinished.count, 1)
+            control.forceActiveFocus()
+            keyClick(Qt.Key_Left)
+            compare(editFinished.count, 2, "Keyboard changes also get feedback")
+            control.value = 3
+            compare(editFinished.count, 3, "Accessible value edits also get feedback")
+            acceptEdits = false
+            keyClick(Qt.Key_Right)
+            compare(editFinished.count, 3, "Rejected changes stay silent")
         }
         function test_eventCuesRespectOutputAndDeafen() {
-            for (const kind of ["join", "memberJoin", "leave", "memberLeave", "kick", "ban", "message", "announcement"]) {
+            compare(typeof audio.notificationVolume, "number")
+            for (const kind of ["join", "memberJoin", "leave", "memberLeave", "kick", "ban", "message", "announcement", "request"]) {
                 compare(fixtures.playEvent(kind, false), audio.outputAvailable, kind)
                 verify(!fixtures.playEvent(kind, true), kind + " is silent while deafened")
             }
             verify(!fixtures.playEvent("future-event", false))
             verify(!fixtures.playEvent("", false))
             if (audio.outputAvailable) {
+                const notificationVolume = audio.notificationVolume
+                verify(audio.setNotificationVolume(0))
+                verify(!fixtures.playEvent("message", false), "Zero notification volume suppresses every app cue")
+                verify(audio.setNotificationVolume(notificationVolume))
                 const volume = audio.outputVolume
                 verify(audio.setOutputVolume(0))
-                const muted = !fixtures.playEvent("announcement", false)
+                const independent = fixtures.playEvent("announcement", false)
                 verify(audio.setOutputVolume(volume))
-                verify(muted, "Zero app volume suppresses the cue")
+                verify(independent, "Zero voice volume leaves app cues audible")
+            }
+        }
+        function test_outputFeedbackRespectsVolumeAndMute() {
+            const original = audio.notificationVolume
+            try {
+                if (audio.outputAvailable) verify(audio.setNotificationVolume(0))
+                for (const volume of [0.2, 0.6, 1, 0, -1, 2, NaN, Infinity]) {
+                    for (const muted of [false, true]) {
+                        const result = fixtures.previewOutput(volume, muted)
+                        compare(result.accepted, audio.outputAvailable && !muted && volume > 0 && volume <= 1)
+                        verify(!result.testing, "Slider feedback does not enter microphone test mode")
+                        verify(!result.capturing, "Slider feedback must not start the microphone")
+                    }
+                }
+                if (audio.outputAvailable) {
+                    compare(audio.notificationVolume, 0, "A voice/music preview does not change app sound volume")
+                    verify(!fixtures.playEvent("message", false), "Regular notifications remain silent")
+                }
+            } finally {
+                if (audio.outputAvailable) audio.setNotificationVolume(original)
             }
         }
         function test_accessibleValueUpdatesSettings() {

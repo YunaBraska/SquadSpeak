@@ -46,6 +46,21 @@ bool ChatContent::allowedLink(const QUrl& link) {
         && !link.host().isEmpty() && link.userInfo().isEmpty();
 }
 
+QString ChatContent::plainText(const QVariantMap& message) const {
+    const auto event = message.value("event").toMap();
+    const auto kind = event.value("kind").toString();
+    const auto name = event.value("name").toString();
+    if (kind == "joined") return tr("%1 joined.").arg(name);
+    if (kind == "left") return tr("%1 left.").arg(name);
+    if (kind == "kicked") return tr("%1 was kicked.").arg(name);
+    if (kind == "banned") return tr("%1 was banned from the channel.").arg(name);
+    if (!kind.isEmpty() && kind != "announcement") return message.value("text").toString();
+    DisplayDocument document;
+    document.setMarkdown(message.value("text").toString(),
+        QTextDocument::MarkdownFeatures(QTextDocument::MarkdownDialectGitHub) | QTextDocument::MarkdownNoHTML);
+    return document.toPlainText();
+}
+
 bool ChatContent::openLink(const QString& link) const {
     const QUrl url(link, QUrl::StrictMode);
     return allowedLink(url) && QDesktopServices::openUrl(url);

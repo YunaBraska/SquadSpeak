@@ -28,7 +28,15 @@ Canvas {
             for (let i = 2; i < points.length; i += 2) c.lineTo(points[i], points[i + 1])
             c.stroke()
         }
-        if (symbol === "mic" || symbol === "mute") {
+        if (symbol === "search") {
+            c.beginPath(); c.arc(10, 10, 6, 0, Math.PI * 2); c.stroke()
+            line([15, 15, 21, 21])
+        } else if (symbol === "copy") {
+            c.strokeRect(8, 8, 13, 13); line([4, 16, 3, 16, 3, 3, 16, 3, 16, 4])
+        } else if (symbol === "translate") {
+            line([3, 6, 14, 6]); line([8, 3, 8, 6]); line([5, 8, 12, 15]); line([12, 6, 10, 11, 3, 16])
+            line([13, 21, 18, 10, 23, 21]); line([15, 17, 21, 17])
+        } else if (symbol === "mic" || symbol === "mute") {
             c.beginPath(); c.roundedRect(9, 3, 6, 12, 3, 3); c.stroke()
             c.beginPath(); c.arc(12, 12, 7, 0, Math.PI); c.stroke()
             line([12, 19, 12, 22]); line([8, 22, 16, 22])
@@ -51,9 +59,6 @@ Canvas {
             line([7, 4, 20, 12, 7, 20, 7, 4])
         } else if (symbol === "stop") {
             c.fillRect(6, 6, 12, 12)
-        } else if (symbol === "record") {
-            c.beginPath(); c.arc(12, 12, 9, 0, Math.PI * 2); c.stroke()
-            c.beginPath(); c.arc(12, 12, 4, 0, Math.PI * 2); c.fill()
         } else if (symbol === "settings") {
             c.beginPath(); c.arc(12, 12, 6, 0, Math.PI * 2); c.stroke()
             c.beginPath(); c.arc(12, 12, 2, 0, Math.PI * 2); c.stroke()
@@ -102,6 +107,9 @@ Canvas {
             line([6, 6, 18, 18]); line([18, 6, 6, 18])
         } else if (symbol === "plus") {
             line([12, 4, 12, 20]); line([4, 12, 20, 12])
+        } else if (symbol === "reset") {
+            c.beginPath(); c.arc(12, 12, 8, Math.PI, Math.PI * 2.65); c.stroke()
+            line([4, 5, 4, 12, 10, 12])
         } else {
             line([4, 8, 20, 8]); line([4, 16, 20, 16])
             c.fillRect(8, 5, 3, 6); c.fillRect(15, 13, 3, 6)

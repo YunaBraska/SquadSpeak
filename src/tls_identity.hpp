@@ -14,6 +14,10 @@ public:
     [[nodiscard]] static QByteArray newKey();
     [[nodiscard]] static QByteArray seal(const QByteArray& plain, const QByteArray& key, const QByteArray& context);
     [[nodiscard]] static QByteArray open(const QByteArray& sealed, const QByteArray& key, const QByteArray& context);
+    [[nodiscard]] QByteArray sealFor(const QByteArray& plain, const QSslCertificate& peer,
+                                     const QByteArray& context) const;
+    [[nodiscard]] QByteArray openFrom(const QByteArray& envelope, const QSslCertificate& sender,
+                                      const QByteArray& context) const;
     // CPU-bound; callers run this away from the audio and UI event loop.
     [[nodiscard]] static QByteArray passwordHash(const QByteArray& password, const QByteArray& salt);
     [[nodiscard]] static TlsIdentity fromPem(const QByteArray& pem);
@@ -32,4 +36,5 @@ public:
 private:
     explicit TlsIdentity(QSslConfiguration configuration);
     QSslConfiguration configuration_;
+    QString id_;
 };

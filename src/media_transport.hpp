@@ -21,6 +21,7 @@ public:
     bool sendDatagram(const QByteArray& bytes);
     void retainSources(const QStringList& sources);
     [[nodiscard]] bool udpActive() const;
+    [[nodiscard]] static bool overloaded();
 signals:
     void signaling(const QJsonObject& message);
     void audio(const QString& source, const QByteArray& opus, int missing);
@@ -33,8 +34,8 @@ private:
     QTimer timer_;
     void start();
     void tick();
-    void packet(const QByteArray& bytes);
-    void accept(quint32 ssrc, quint16 sequence, const QByteArray& opus, bool datagram);
+    void packet(const QByteArray& bytes, qint64 arrived);
+    void accept(quint32 ssrc, quint16 sequence, const QByteArray& opus, bool datagram, qint64 arrived);
     void stopUdp();
     void restartUdp();
 };

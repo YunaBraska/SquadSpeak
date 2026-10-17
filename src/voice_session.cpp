@@ -1,5 +1,6 @@
 #include "voice_session.hpp"
 
+#include <QCoreApplication>
 #include <QFile>
 #include <QDir>
 #include <QLocale>
@@ -8,6 +9,8 @@
 #include <QJsonObject>
 #include <QSaveFile>
 #include <QTranslator>
+#include <QRandomGenerator>
+#include <array>
 #include <stdexcept>
 #include <utility>
 
@@ -23,11 +26,15 @@ VoiceSession::VoiceSession(QString settingsFile, QObject* parent)
     (void)initialized;
     if (settingsFile_.isEmpty()) return;
     QFile file(settingsFile_);
-    if (!file.exists()) return;
+    if (!file.exists()) {
+        preferences_.insert("userName", suggestedName(false));
+        return;
+    }
     if (!file.open(QIODevice::ReadOnly) || file.size() > 8192)
         throw std::runtime_error(tr("Session settings could not be read.").toUtf8().constData());
     QJsonParseError error;
     const auto document = QJsonDocument::fromJson(file.readAll(), &error);
+    file.close();
     const auto object = document.object();
     // A corrupt field must not hide a valid saved language. This catalog is
     // local to validation; constructing a session never changes the app locale.
@@ -56,7 +63,7 @@ VoiceSession::VoiceSession(QString settingsFile, QObject* parent)
     preferences_.insert("userName", savedName(object.value("userName").toString(), "userName"));
     if (object.contains("channelName")) legacyChannelName_ = savedName(object.value("channelName").toString(), "channelName");
     preferences_.insert("muted", object.value("muted"));
-    for (const auto* key : {"deafened", "eventSounds", "remotePttKeyHeld"}) {
+    for (const auto* key : {"deafened", "eventSounds", "showInDock"}) {
         if (!object.contains(key)) continue;
         if (!object.value(key).isBool()) throw invalid(key);
         preferences_.insert(key, object.value(key));
@@ -76,15 +83,6 @@ VoiceSession::VoiceSession(QString settingsFile, QObject* parent)
         if (palette != "plum" && palette != "ocean" && palette != "forest" && palette != "graphite")
             throw invalid("palette");
         preferences_.insert("palette", palette);
-    }
-    if (object.contains("remotePttKeyCode")) {
-        const auto code = object.value("remotePttKeyCode").toInt(-2);
-        if (code < -1 || code > 65535 || object.value("remotePttKeyCode").toDouble(-2) != code
-            || !object.value("remotePttKeyName").isString()
-            || (code == -1 && !object.value("remotePttKeyName").toString().isEmpty()))
-            throw invalid("remotePttKeyCode");
-        if (code >= 0) (void)savedName(object.value("remotePttKeyName").toString(), "remotePttKeyName");
-        preferences_.insert("remotePttKeyCode", code); preferences_.insert("remotePttKeyName", object.value("remotePttKeyName"));
     }
     if (object.contains("animatedAvatars")) {
         if (!object.value("animatedAvatars").isBool()) throw invalid("animatedAvatars");
@@ -153,7 +151,6 @@ VoiceSession::VoiceSession(QString settingsFile, QObject* parent)
             preferences_.insert(legacyNameKey, names.first());
         };
         readBinding("pttKeyCodes", "pttKeyNames", "pttKeyCode", "pttKeyName");
-        readBinding("remotePttKeyCodes", "remotePttKeyNames", "remotePttKeyCode", "remotePttKeyName");
         if (object.contains("pttRevision")) {
             const auto revision = object.value("pttRevision").toInteger(-1);
             if (revision < 0 || revision > 9007199254740991LL || object.value("pttRevision").toDouble(-1) != double(revision))
@@ -161,6 +158,38 @@ VoiceSession::VoiceSession(QString settingsFile, QObject* parent)
             preferences_.insert("pttRevision", revision);
         }
     }
+    if (object.contains("remotePttKeyHeld")) {
+        // The shared key can differ from the old remote key's held state.
+        // Persist a newer revision so a target accepts that change on reconnect.
+        if (pttInputRevision() == 9007199254740991LL)
+            throw invalid("pttRevision");
+        auto migrated = preferences_;
+        migrated.insert("pttRevision", pttInputRevision() + 1);
+        if (!save(std::move(migrated))) throw std::runtime_error(error_.toUtf8().constData());
+    }
+}
+
+QString VoiceSession::suggestedName(bool channel) {
+    // Display names only. Device identity and access never depend on these words.
+    static constexpr std::array adjectives{
+        "Cosmic", "Dancing", "Dapper", "Dreamy", "Fluffy", "Gentle", "Glowing", "Jolly",
+        "Lucky", "Lunar", "Mellow", "Mighty", "Mischievous", "Moonlit", "Mossy", "Nebulous",
+        "Nimble", "Plucky", "Pocket", "Polka", "Quiet", "Sleepy", "Sneaky", "Snug",
+        "Solar", "Sparkling", "Starry", "Sunny", "Velvet", "Wandering", "Whimsical", "Wobbly"};
+    static constexpr std::array members{
+        "Axolotl", "Badger", "Bumblebee", "Capybara", "Chameleon", "Dragon", "Duck", "Firefly",
+        "Fox", "Gecko", "Gnome", "Griffin", "Hedgehog", "Jellyfish", "Kiwi", "Kraken",
+        "Lemur", "Lynx", "Moth", "Narwhal", "Otter", "Owl", "Panda", "Penguin",
+        "Puffin", "Quokka", "Raccoon", "Robot", "Salamander", "Turtle", "Walrus", "Wombat"};
+    static constexpr std::array places{
+        "Airship", "Arcade", "Attic", "Bakery", "Cabin", "Cafe", "Campfire", "Castle",
+        "Clubhouse", "Conservatory", "Cove", "Den", "Garden", "Grotto", "Hammock", "Harbor",
+        "Hideout", "Igloo", "Island", "Lighthouse", "Loft", "Meadow", "Observatory", "Orchard",
+        "Outpost", "Parlor", "Planetarium", "Porch", "Station", "Teahouse", "Treehouse", "Workshop"};
+    auto* random = QRandomGenerator::global();
+    const auto& nouns = channel ? places : members;
+    return QString::fromLatin1(adjectives[random->bounded(quint32(adjectives.size()))]) + ' '
+        + QString::fromLatin1(nouns[random->bounded(quint32(nouns.size()))]);
 }
 
 QString VoiceSession::validatedName(const QString& value) {
@@ -178,7 +207,7 @@ QString VoiceSession::validatedName(const QString& value) {
 }
 
 QString VoiceSession::presenceText() const {
-    if (!available()) return tr("Unavailable - audio settings or tone test");
+    if (!available()) return QCoreApplication::translate("Channels", "Unavailable");
     if (muted()) return tr("Microphone muted");
     if (pushToTalk()) return pttHeld() ? tr("Push-to-talk held") : tr("Ready - push-to-talk released");
     return tr("Microphone unmuted");
@@ -191,7 +220,7 @@ bool VoiceSession::fail(QString message) {
 }
 
 bool VoiceSession::save(QJsonObject preferences) {
-    if (preferences == preferences_) {
+    if (preferences == preferences_ && (settingsFile_.isEmpty() || QFile::exists(settingsFile_))) {
         if (!error_.isEmpty()) { error_.clear(); emit errorChanged(); }
         return true;
     }
@@ -211,7 +240,7 @@ bool VoiceSession::save(QJsonObject preferences) {
 
 bool VoiceSession::edit(const QString& key, const QJsonValue& value) {
     auto next = preferences_;
-    if ((key == "pttButtonHeld" || key == "pttKeyHeld" || key == "remotePttKeyHeld") && next.value(key) != value) {
+    if ((key == "pttButtonHeld" || key == "pttKeyHeld") && next.value(key) != value) {
         if (pttInputRevision() == 9007199254740991LL) return fail(tr("The push-to-talk sequence cannot be incremented further."));
         next.insert("pttRevision", pttInputRevision() + 1);
     }
@@ -307,20 +336,21 @@ bool VoiceSession::setAvatar(const QString& avatar) {
 }
 bool VoiceSession::setDeafened(bool deafened) { return edit("deafened", deafened); }
 bool VoiceSession::setEventSounds(bool enabled) { return edit("eventSounds", enabled); }
+bool VoiceSession::setShowInDock(bool enabled) { return edit("showInDock", enabled); }
 
 bool VoiceSession::setPushToTalk(bool enabled) { return edit("pushToTalk", enabled); }
 bool VoiceSession::setPttButtonHeld(bool held) { return edit("pttButtonHeld", held); }
-bool VoiceSession::setPttKeyHeld(bool held, bool remote) { return edit(remote ? "remotePttKeyHeld" : "pttKeyHeld", held); }
+bool VoiceSession::setPttKeyHeld(bool held) { return edit("pttKeyHeld", held); }
 
-QList<int> VoiceSession::pttKeyCodes(bool remote) const {
-    const auto array = preferences_.value(remote ? "remotePttKeyCodes" : "pttKeyCodes").toArray();
+QList<int> VoiceSession::pttKeyCodes() const {
+    const auto array = preferences_.value("pttKeyCodes").toArray();
     if (!array.isEmpty()) {
         QList<int> result;
         result.reserve(array.size());
         for (const auto& value : array) result.append(value.toInt());
         return result;
     }
-    const auto legacy = remote ? remotePttKeyCode() : pttKeyCode();
+    const auto legacy = pttKeyCode();
     return legacy >= 0 ? QList<int>{legacy} : QList<int>{};
 }
 
@@ -334,24 +364,14 @@ QString VoiceSession::pttKeyName() const {
     return preferences_.value("pttKeyName").toString();
 }
 
-QString VoiceSession::remotePttKeyName() const {
-    const auto names = preferences_.value("remotePttKeyNames").toArray();
-    if (!names.isEmpty()) {
-        QStringList result;
-        for (const auto& value : names) result.append(value.toString());
-        return result.join(QStringLiteral(" + "));
-    }
-    return preferences_.value("remotePttKeyName").toString();
-}
-
-bool VoiceSession::setPttShortcut(int nativeKey, const QString& name, bool remote) {
+bool VoiceSession::setPttShortcut(int nativeKey, const QString& name) {
     if (nativeKey < -1 || nativeKey > 65535 || (nativeKey == -1 && !name.isEmpty())) return fail(tr("Invalid push-to-talk binding."));
     return setPttShortcut(nativeKey < 0 ? QList<int>{} : QList<int>{nativeKey},
-        nativeKey < 0 ? QStringList{} : QStringList{name}, remote);
+        nativeKey < 0 ? QStringList{} : QStringList{name});
 }
 
-bool VoiceSession::setPttShortcut(const QList<int>& nativeKeys, const QStringList& names, bool remote) {
-    if (remote ? remotePttKeyHeld() : pttKeyHeld()) return fail(tr("Release the held push-to-talk key first."));
+bool VoiceSession::setPttShortcut(const QList<int>& nativeKeys, const QStringList& names) {
+    if (pttKeyHeld()) return fail(tr("Release the held push-to-talk key first."));
     if (nativeKeys.size() != names.size() || nativeKeys.size() > 16)
         return fail(tr("Invalid push-to-talk binding."));
     int labelLength = 0;
@@ -365,26 +385,20 @@ bool VoiceSession::setPttShortcut(const QList<int>& nativeKeys, const QStringLis
     }
     if (labelLength > 256) return fail(tr("Invalid push-to-talk binding."));
     auto next = preferences_;
-    const auto codesKey = remote ? "remotePttKeyCodes" : "pttKeyCodes";
-    const auto namesKey = remote ? "remotePttKeyNames" : "pttKeyNames";
-    const auto codeKey = remote ? "remotePttKeyCode" : "pttKeyCode";
-    const auto nameKey = remote ? "remotePttKeyName" : "pttKeyName";
     QJsonArray codes;
     QJsonArray savedNames;
     for (int i = 0; i < nativeKeys.size(); ++i) {
         codes.append(nativeKeys.at(i));
         savedNames.append(validatedName(names.at(i)));
     }
-    next.insert(codesKey, codes); next.insert(namesKey, savedNames);
-    next.insert(codeKey, nativeKeys.isEmpty() ? -1 : nativeKeys.first());
-    next.insert(nameKey, nativeKeys.isEmpty() ? QString{} : validatedName(names.first()));
+    next.insert("pttKeyCodes", codes); next.insert("pttKeyNames", savedNames);
+    next.insert("pttKeyCode", nativeKeys.isEmpty() ? -1 : nativeKeys.first());
+    next.insert("pttKeyName", nativeKeys.isEmpty() ? QString{} : validatedName(names.first()));
     return save(std::move(next));
 }
 
-bool VoiceSession::releasePttKey(bool remote) {
-    const auto key = remote ? "remotePttKeyHeld" : "pttKeyHeld";
-    if (!preferences_.value(key).toBool()) return true;
-    return edit(key, false);
+bool VoiceSession::releasePttKey() {
+    return !pttKeyHeld() || edit("pttKeyHeld", false);
 }
 
 bool VoiceSession::setRemotePttHeld(bool held) {
@@ -402,19 +416,12 @@ bool VoiceSession::setPttLocal(bool local) {
 }
 
 bool VoiceSession::releasePttInput() {
-    if (!pttButtonHeld() && !pttKeyHeld() && !remotePttKeyHeld()) return true;
+    if (!pttButtonHeld() && !pttKeyHeld()) return true;
     if (pttInputRevision() == 9007199254740991LL) return fail(tr("The push-to-talk sequence cannot be incremented further."));
     auto next = preferences_;
-    next.insert("pttButtonHeld", false); next.insert("pttKeyHeld", false); next.insert("remotePttKeyHeld", false);
+    next.insert("pttButtonHeld", false); next.insert("pttKeyHeld", false);
     next.insert("pttRevision", pttInputRevision() + 1);
     return save(std::move(next));
-}
-
-bool VoiceSession::setAudioSettingsOpen(bool open) {
-    if (settingsOpen_ == open) return true;
-    settingsOpen_ = open;
-    emit presenceChanged();
-    return true;
 }
 
 bool VoiceSession::setAudioReadiness(bool inputReady, bool outputReady) {

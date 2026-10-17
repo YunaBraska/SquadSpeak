@@ -36,14 +36,6 @@
             <translation>Obriu la configuració de privadesa del vostre sistema i permeteu l'accés al micròfon per a SquadSpeak.</translation>
         </message>
         <message>
-            <source>Microphone analysis active. Test audio stays on this computer.</source>
-            <translation>Anàlisi del micròfon activa. L'àudio de prova es manté en aquest ordinador.</translation>
-        </message>
-        <message>
-            <source>Finish the test recording before changing devices.</source>
-            <translation>Acabeu la gravació de prova abans de canviar de dispositiu.</translation>
-        </message>
-        <message>
             <source>The output format is not supported.</source>
             <translation>El format de sortida no és compatible.</translation>
         </message>
@@ -68,32 +60,12 @@
             <translation>No s'ha pogut reproduir el to de prova.</translation>
         </message>
         <message>
-            <source>The microphone has provided no data for five seconds. Recording discarded.</source>
-            <translation>el micròfon no ha proporcionat dades durant cinc segons. Enregistrament descartat.</translation>
-        </message>
-        <message>
-            <source>The microphone was interrupted or changed. Recording discarded.</source>
-            <translation>S'ha interromput o canviat el micròfon. Enregistrament descartat.</translation>
-        </message>
-        <message>
-            <source>Cancelled. The incomplete recording was discarded.</source>
-            <translation>Cancel·lat. L'enregistrament incomplet es va descartar.</translation>
-        </message>
-        <message>
             <source>No selected microphone is available</source>
             <translation>No hi ha cap micròfon seleccionat disponible</translation>
         </message>
         <message>
             <source>Allow microphone access in the system dialog.</source>
             <translation>Permet l'accés al micròfon al diàleg del sistema.</translation>
-        </message>
-        <message>
-            <source>Microphone capture active for the voice channel.</source>
-            <translation>Captura de micròfon activa per al canal de veu.</translation>
-        </message>
-        <message>
-            <source>Microphone access was denied. Nothing was saved.</source>
-            <translation>S'ha denegat l'accés al micròfon. No s'ha desat res.</translation>
         </message>
         <message>
             <source>Microphone access is missing. Allow it in System Settings.</source>
@@ -259,103 +231,16 @@
             <source>App audio only</source>
             <translation>Només l'àudio de l'aplicació</translation>
         </message>
-    </context>
-    <context>
-        <name>AudioRecording</name>
         <message>
-            <source>Incomplete audio block. Recording discarded.</source>
-            <translation>Bloc d'àudio incomplet. Enregistrament descartat.</translation>
-        </message>
-        <message>
-            <source>Move about one meter from the microphone. Keep the background sound playing and read the sentence.</source>
-            <translation>Desplaça't aproximadament un metre del micròfon. Mantingueu el so de fons reproduint i llegiu la frase.</translation>
-        </message>
-        <message>
-            <source>Voice with background sound</source>
-            <translation>Veu amb so de fons</translation>
-        </message>
-        <message>
-            <source>The recordings folder could not be created.</source>
-            <translation>No s'ha pogut crear la carpeta d'enregistraments.</translation>
-        </message>
-        <message>
-            <source>You can stop the background sound now.</source>
-            <translation>ara podeu aturar el so de fons.</translation>
-        </message>
-        <message>
-            <source>Recordings saved</source>
-            <translation>Enregistraments guardats</translation>
-        </message>
-        <message>
-            <source>The test recording could not be saved completely.</source>
-            <translation>La gravació de prova no s'ha pogut desar completament.</translation>
-        </message>
-        <message>
-            <source>Keep music off and stay quiet. Start when ready.</source>
-            <translation>Mantén la música apagada i calla. Comença quan estigui llest.</translation>
-        </message>
-        <message>
-            <source>Your voice</source>
-            <translation>La teva veu</translation>
-        </message>
-        <message>
-            <source>Play music or another background sound at a normal volume. Stay quiet while recording.</source>
-            <translation>reprodueix música o un altre so de fons a un volum normal. Mantingueu-vos en silenci mentre enregistreu.</translation>
-        </message>
-        <message>
-            <source>The test recording could not be created.</source>
-            <translation>No s'ha pogut crear l'enregistrament de prova.</translation>
-        </message>
-        <message>
-            <source>Background sound</source>
-            <translation>So de fons</translation>
-        </message>
-        <message>
-            <source>The window is open. I can hear the rain outside. One, two, three, four, five.</source>
-            <translation>La finestra està oberta. Sento la pluja fora. Un, dos, tres, quatre, cinc.</translation>
-        </message>
-        <message>
-            <source>This microphone format is not supported for test recordings.</source>
-            <translation>aquest format de micròfon no és compatible amb les gravacions de prova.</translation>
-        </message>
-        <message>
-            <source>Keep the background volume unchanged. Read the sentence, then stop recording.</source>
-            <translation>Manteniu el volum de fons sense canvis. Llegeix la frase i després deixa de gravar.</translation>
-        </message>
-        <message>
-            <source>Record at least half a second, then try again.</source>
-            <translation>enregistra almenys mig segon i torna-ho a provar.</translation>
-        </message>
-        <message>
-            <source>Sit at your usual distance. Read the sentence, then stop recording.</source>
-            <translation>Seieu a la vostra distància habitual. Llegeix la frase i després deixa de gravar.</translation>
-        </message>
-        <message>
-            <source>The recording description could not be saved.</source>
-            <translation>la descripció de la gravació no s'ha pogut desar.</translation>
-        </message>
-        <message>
-            <source>The WAV file could not be finalized.</source>
-            <translation>No s'ha pogut finalitzar el fitxer WAV.</translation>
-        </message>
-        <message>
-            <source>The WAV header could not be written.</source>
-            <translation>No s'ha pogut escriure la capçalera WAV.</translation>
-        </message>
-        <message>
-            <source>Voice farther away</source>
-            <translation>Veu més llunyana</translation>
-        </message>
-        <message>
-            <source>Room sound</source>
-            <translation>so de l'habitació</translation>
+            <source>Speech output is unavailable.</source>
+            <translation>La sortida de veu no està disponible.</translation>
         </message>
     </context>
     <context>
         <name>AudioSettings</name>
         <message>
-            <source>Echo cancellation</source>
-            <translation>Cancel·lació d'eco</translation>
+            <source>Echo</source>
+            <translation>Eco</translation>
         </message>
         <message>
             <source>Off</source>
@@ -402,12 +287,12 @@
             <translation>La teva reproducció</translation>
         </message>
         <message>
-            <source>Clear local key</source>
-            <translation>Esborra la drecera de teclat local per prémer i parlar</translation>
+            <source>Clear key</source>
+            <translation>Esborra la tecla</translation>
         </message>
         <message>
-            <source>Low cut</source>
-            <translation>Retall de freqüències baixes</translation>
+            <source>Highpass</source>
+            <translation>Passaalt</translation>
         </message>
         <message>
             <source>Microphone access is off</source>
@@ -418,32 +303,16 @@
             <translation>Dispositiu d'entrada</translation>
         </message>
         <message>
-            <source>Microphone paused for others</source>
-            <translation>micròfon en pausa per als altres</translation>
-        </message>
-        <message>
             <source>Cancel</source>
             <translation>Cancel·la</translation>
-        </message>
-        <message>
-            <source>Guided recording</source>
-            <translation>Enregistrament guiat</translation>
         </message>
         <message>
             <source>Clipping. Reduce microphone gain.</source>
             <translation>Saturació. Redueix el guany del micròfon.</translation>
         </message>
         <message>
-            <source>Silent</source>
-            <translation>En silenci</translation>
-        </message>
-        <message>
             <source>Test output</source>
             <translation>Sortida de prova</translation>
-        </message>
-        <message>
-            <source>Voice level</source>
-            <translation>Nivell de veu</translation>
         </message>
         <message>
             <source>Voice threshold</source>
@@ -462,20 +331,16 @@
             <translation>Dispositiu desconnectat</translation>
         </message>
         <message>
-            <source>Local key</source>
-            <translation>Drecera de teclat local per prémer i parlar</translation>
+            <source>PTT key</source>
+            <translation>Tecla per parlar</translation>
         </message>
         <message>
             <source>Voice activation</source>
             <translation>Micròfon activat per veu</translation>
         </message>
         <message>
-            <source>Remote PTT key</source>
-            <translation>Drecera de teclat remota per prémer i parlar</translation>
-        </message>
-        <message>
-            <source>Noise reduction</source>
-            <translation>Reducció de soroll</translation>
+            <source>Denoise</source>
+            <translation>Reduir soroll</translation>
         </message>
         <message>
             <source>Selected device is not connected</source>
@@ -486,32 +351,120 @@
             <translation>transmetria</translation>
         </message>
         <message>
-            <source>Microphone gain</source>
-            <translation>Guany del micròfon</translation>
-        </message>
-        <message>
-            <source>Clear remote key</source>
-            <translation>Esborra la drecera remota per parlar</translation>
-        </message>
-        <message>
-            <source>Playback volume</source>
-            <translation>volum de reproducció</translation>
+            <source>Gain</source>
+            <translation>Guany</translation>
         </message>
         <message>
             <source>Not assigned</source>
             <translation>No assignat</translation>
         </message>
         <message>
-            <source>High cut</source>
-            <translation>Retall de freqüències altes</translation>
+            <source>Lowpass</source>
+            <translation>Passabaix</translation>
         </message>
         <message>
             <source>Level audio automatically</source>
             <translation>Nivell d'àudio automàticament</translation>
         </message>
+        <message>
+            <source>Voice volume</source>
+            <translation>Volum del xat de veu</translation>
+        </message>
+        <message>
+            <source>App sounds</source>
+            <translation>Sons de l'aplicació</translation>
+        </message>
+        <message>
+            <source>Read bot messages aloud</source>
+            <translation>Llegeix els missatges del bot en veu alta</translation>
+        </message>
+        <message>
+            <source>Download a high-quality voice for this language in macOS settings.</source>
+            <translation>Baixa una veu d'alta qualitat per a aquest idioma a la configuració del macOS.</translation>
+        </message>
+        <message>
+            <source>Bot voice</source>
+            <translation>Veu del bot</translation>
+        </message>
+        <message>
+            <source>Automatic</source>
+            <translation>Automàtic</translation>
+        </message>
+        <message>
+            <source>Unavailable</source>
+            <translation>No disponible</translation>
+        </message>
+        <message>
+            <source>Download voices in your device's Accessibility speech settings.</source>
+            <translation>Descarrega veus als ajustos de parla de l'apartat d'accessibilitat del dispositiu.</translation>
+        </message>
+        <message>
+            <source>Voice download help</source>
+            <translation>Ajuda per descarregar veus</translation>
+        </message>
+        <message>
+            <source>Strength, not the percentage of echo removed.</source>
+            <translation>Intensitat, no pas el percentatge d'eco eliminat.</translation>
+        </message>
+        <message>
+            <source>Auto also checks for speech, not just volume.</source>
+            <translation>El mode automàtic també detecta la parla, no només el volum.</translation>
+        </message>
     </context>
     <context>
         <name>Channels</name>
+        <message>
+            <source>Audio received</source>
+            <translation>Àudio rebut</translation>
+        </message>
+        <message>
+            <source>Search channels</source>
+            <translation>Cerca canals</translation>
+        </message>
+        <message>
+            <source>No matches</source>
+            <translation>Cap coincidència</translation>
+        </message>
+        <message>
+            <source>Copy address</source>
+            <translation>Copia l'adreça</translation>
+        </message>
+        <message>
+            <source>Messages</source>
+            <translation>Missatges</translation>
+        </message>
+        <message>
+            <source>Message</source>
+            <translation>Missatge</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Obre</translation>
+        </message>
+        <message>
+            <source>Online</source>
+            <translation>En línia</translation>
+        </message>
+        <message>
+            <source>Offline</source>
+            <translation>fora de línia</translation>
+        </message>
+        <message>
+            <source>No private messages</source>
+            <translation>No hi ha missatges privats</translation>
+        </message>
+        <message>
+            <source>Private messages are unavailable for this contact.</source>
+            <translation>Els missatges privats no estan disponibles per a aquest contacte.</translation>
+        </message>
+        <message>
+            <source>If asked, allow local network access. You can change this in system settings.</source>
+            <translation>Si t'ho demanen, permet l'accés a la xarxa local. Pots canviar-ho als ajustos del sistema.</translation>
+        </message>
+        <message>
+            <source>Retry</source>
+            <translation>Torna-ho a provar</translation>
+        </message>
         <message>
             <source>Updates</source>
             <translation>Actualitzacions</translation>
@@ -531,6 +484,10 @@
         <message>
             <source>DDNS cannot bypass CGNAT. If your provider shares the public IP, use a private VPN on all participating devices or a publicly reachable server.</source>
             <translation>DDNS no pot passar per alt CGNAT. Si el vostre proveïdor comparteix la IP pública, utilitzeu una VPN privada a tots els dispositius participants o un servidor accessible públicament.</translation>
+        </message>
+        <message>
+            <source>Remove server</source>
+            <translation>Elimina el servidor</translation>
         </message>
         <message>
             <source>Low</source>
@@ -653,10 +610,6 @@
             <translation>Sona la notificació</translation>
         </message>
         <message>
-            <source>Lifetime for new messages. Earlier messages keep their expiry.</source>
-            <translation>Per a missatges nous. Els missatges anteriors mantenen la seva caducitat.</translation>
-        </message>
-        <message>
             <source>Enable speakers</source>
             <translation>Habilita els altaveus</translation>
         </message>
@@ -691,10 +644,6 @@
         <message>
             <source>Allow device</source>
             <translation>Permetre el dispositiu</translation>
-        </message>
-        <message>
-            <source>Receive quality: %1 kb/s per voice. Adjusts automatically for this device.</source>
-            <translation>Qualitat de recepció: %1 kb/s per veu. S'ajusta automàticament per a aquest dispositiu.</translation>
         </message>
         <message>
             <source>Stop radio</source>
@@ -1188,6 +1137,50 @@
             <source>This device</source>
             <translation>Aquest dispositiu</translation>
         </message>
+        <message>
+            <source>Use default music volume</source>
+            <translation>Utilitza el volum de música predeterminat</translation>
+        </message>
+        <message>
+            <source>Show in Dock</source>
+            <translation>Mostra al Dock</translation>
+        </message>
+        <message>
+            <source>App language</source>
+            <translation>Idioma de l'aplicació</translation>
+        </message>
+        <message>
+            <source>Send in</source>
+            <translation>Envia en</translation>
+        </message>
+        <message>
+            <source>Hear in</source>
+            <translation>Escolta en</translation>
+        </message>
+        <message>
+            <source>Download language models for %1 and %2?</source>
+            <translation>Vols baixar els models d'idioma per a %1 i %2?</translation>
+        </message>
+        <message>
+            <source>Download</source>
+            <translation>Baixa</translation>
+        </message>
+        <message>
+            <source>PTT, chat and channel controls. Uses the controlled device's microphone.</source>
+            <translation>Controls de PTT, xat i canals. S'utilitza el micròfon del dispositiu controlat.</translation>
+        </message>
+        <message>
+            <source>Connect the other device to one of your channels, then allow it here.</source>
+            <translation>Connecta l'altre dispositiu a un dels teus canals i permet-lo aquí.</translation>
+        </message>
+        <message>
+            <source>On the other device, open Settings &gt; Input &gt; Remote control and allow this device.</source>
+            <translation>A l'altre dispositiu, obre Configuració &gt; Entrada &gt; Comandament a distància i permet aquest dispositiu.</translation>
+        </message>
+        <message>
+            <source>Unread messages</source>
+            <translation>Missatges no llegits</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1299,6 +1292,22 @@
             <source>The sanitized image could not be written completely.</source>
             <translation>No s'ha pogut escriure completament la imatge sanejada.</translation>
         </message>
+        <message>
+            <source>%1 joined.</source>
+            <translation>%1 s'ha unit.</translation>
+        </message>
+        <message>
+            <source>%1 left.</source>
+            <translation>%1 ha marxat.</translation>
+        </message>
+        <message>
+            <source>%1 was kicked.</source>
+            <translation>%1 ha estat expulsat.</translation>
+        </message>
+        <message>
+            <source>%1 was banned from the channel.</source>
+            <translation>%1 ha estat expulsat del canal.</translation>
+        </message>
     </context>
     <context>
         <name>ChatPanel</name>
@@ -1363,22 +1372,6 @@
             <translation>Carregant...</translation>
         </message>
         <message>
-            <source>%1 joined.</source>
-            <translation>%1 s'ha unit.</translation>
-        </message>
-        <message>
-            <source>%1 left.</source>
-            <translation>%1 ha marxat.</translation>
-        </message>
-        <message>
-            <source>%1 was kicked.</source>
-            <translation>%1 ha estat expulsat.</translation>
-        </message>
-        <message>
-            <source>%1 was banned from the channel.</source>
-            <translation>%1 ha estat expulsat del canal.</translation>
-        </message>
-        <message>
             <source>Message could not be sent. Check the connection and text length.</source>
             <translation>No s'ha pogut enviar el missatge. Comproveu la connexió i la longitud del text.</translation>
         </message>
@@ -1404,7 +1397,400 @@
         </message>
     </context>
     <context>
+        <name>Desktop</name>
+        <message>
+            <source>Open settings at startup.</source>
+            <translation>Obre la configuració en iniciar.</translation>
+        </message>
+        <message>
+            <source>Alternative file for audio profiles.</source>
+            <translation>Fitxer alternatiu de perfils d'àudio.</translation>
+        </message>
+        <message>
+            <source>Load the interface without microphone capture and exit after one second.</source>
+            <translation>Carrega la interfície sense captar el micròfon i surt al cap d'un segon.</translation>
+        </message>
+        <message>
+            <source>Save an image of the app window during the UI test.</source>
+            <translation>Desa una imatge de la finestra durant la prova de la interfície.</translation>
+        </message>
+        <message>
+            <source>The window image could not be saved.</source>
+            <translation>No s'ha pogut desar la imatge de la finestra.</translation>
+        </message>
+        <message>
+            <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
+            <translation>La safata del sistema no està disponible; l'aplicació continua oberta en una finestra.</translation>
+        </message>
+    </context>
+    <context>
+        <name>Headless</name>
+        <message>
+            <source>Host display name.</source>
+            <translation>Nom visible de l'amfitrió.</translation>
+        </message>
+        <message>
+            <source>Command failed.</source>
+            <translation>L'ordre ha fallat.</translation>
+        </message>
+        <message>
+            <source>%1 must be an integer.</source>
+            <translation>%1 ha de ser un enter.</translation>
+        </message>
+        <message>
+            <source>Requests must be on/off or true/false.</source>
+            <translation>Les sol·licituds han de ser on/off o true/false.</translation>
+        </message>
+        <message>
+            <source>Unknown host property: %1</source>
+            <translation>Propietat de l'amfitrió desconeguda: %1</translation>
+        </message>
+        <message>
+            <source>Run without GUI, microphone capture, or local audio output.</source>
+            <translation>Executa sense interfície gràfica, captura del micròfon ni sortida d'àudio local.</translation>
+        </message>
+        <message>
+            <source>Server storage prefix. Personal/audio/GUI profiles are not loaded.</source>
+            <translation>Prefix d'emmagatzematge del servidor. No es carreguen perfils personals, d'àudio ni d'interfície.</translation>
+        </message>
+        <message>
+            <source>Optional private identity file instead of the OS credential store (Linux/macOS). Parent directory must exist and belong to this account.</source>
+            <translation>Fitxer d'identitat privat opcional en lloc del magatzem de credencials del sistema (Linux/macOS). El directori pare ha d'existir i pertànyer a aquest compte.</translation>
+        </message>
+        <message>
+            <source>UTF-8 key=value properties or JSON host preset. Default: application.properties, then config/application.properties beside the app.</source>
+            <translation>Propietats key=value en UTF-8 o configuració d'amfitrió JSON. Per defecte: application.properties i després config/application.properties al costat de l'aplicació.</translation>
+        </message>
+        <message>
+            <source>Channel display name.</source>
+            <translation>Nom visible del canal.</translation>
+        </message>
+        <message>
+            <source>System and radio bot display name.</source>
+            <translation>Nom visible del bot compartit de sistema i ràdio.</translation>
+        </message>
+        <message>
+            <source>TCP service port (1-65535).</source>
+            <translation>Port del servei TCP (1-65535).</translation>
+        </message>
+        <message>
+            <source>Headless admission is always on; only 'on' or 'true' is accepted.</source>
+            <translation>L'admissió sense interfície sempre està activada; només s'accepta 'on' o 'true'.</translation>
+        </message>
+        <message>
+            <source>Preapprove a device ID; repeat for several devices. Existing bans remain.</source>
+            <translation>Aprova prèviament un ID de dispositiu; repeteix per a diversos dispositius. Es mantenen els bloquejos existents.</translation>
+        </message>
+        <message>
+            <source>Block a device ID; repeat for several devices.</source>
+            <translation>Bloqueja un ID de dispositiu; repeteix per a diversos dispositius.</translation>
+        </message>
+        <message>
+            <source>Read a UTF-8 channel password from a file before listening. An empty file removes it.</source>
+            <translation>Llegeix la contrasenya del canal d'un fitxer UTF-8 abans d'escoltar connexions. Un fitxer buit l'elimina.</translation>
+        </message>
+        <message>
+            <source>Channel password. Empty removes it; environment or config avoids process-list exposure.</source>
+            <translation>Contrasenya del canal. Un valor buit l'elimina; l'entorn o la configuració eviten exposar-la a la llista de processos.</translation>
+        </message>
+        <message>
+            <source>SquadSpeak headless local channel host</source>
+            <translation>Amfitrió local de canals SquadSpeak sense interfície</translation>
+        </message>
+        <message>
+            <source>Environment variables (SQUADSPEAK_ prefix):</source>
+            <translation>Variables d'entorn (prefix SQUADSPEAK_):</translation>
+        </message>
+        <message>
+            <source>Host configuration could not be read or exceeds 1 MiB.</source>
+            <translation>No s'ha pogut llegir la configuració de l'amfitrió o supera 1 MiB.</translation>
+        </message>
+        <message>
+            <source>Host configuration must be UTF-8.</source>
+            <translation>La configuració de l'amfitrió ha de ser UTF-8.</translation>
+        </message>
+        <message>
+            <source>Host preset must be a JSON object.</source>
+            <translation>La configuració predefinida de l'amfitrió ha de ser un objecte JSON.</translation>
+        </message>
+        <message>
+            <source>Property line %1 must use key=value.</source>
+            <translation>La línia de propietats %1 ha d'utilitzar key=value.</translation>
+        </message>
+        <message>
+            <source>Property line %1: %2</source>
+            <translation>Línia de propietats %1: %2</translation>
+        </message>
+        <message>
+            <source>Standard input has no file descriptor.</source>
+            <translation>L'entrada estàndard no té descriptor de fitxer.</translation>
+        </message>
+        <message>
+            <source>Standard input could not be inspected.</source>
+            <translation>No s'ha pogut inspeccionar l'entrada estàndard.</translation>
+        </message>
+        <message>
+            <source>Could not write the command response: %1</source>
+            <translation>No s'ha pogut escriure la resposta de l'ordre: %1</translation>
+        </message>
+        <message>
+            <source>Standard input could not be read: %1</source>
+            <translation>No s'ha pogut llegir l'entrada estàndard: %1</translation>
+        </message>
+        <message>
+            <source>Input line exceeds 65536 bytes.</source>
+            <translation>La línia d'entrada supera 65536 bytes.</translation>
+        </message>
+        <message>
+            <source>Each input line must be a JSON object.</source>
+            <translation>Cada línia d'entrada ha de ser un objecte JSON.</translation>
+        </message>
+        <message>
+            <source>Input ended before a complete JSON line.</source>
+            <translation>L'entrada ha acabat abans de completar una línia JSON.</translation>
+        </message>
+        <message>
+            <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
+            <translation>ID opcional d'un canal propi per a les ordres status, configure, password, admission, history, chat i radio; per defecte s'utilitza el canal principal.</translation>
+        </message>
+        <message>
+            <source>Channel action must be list, add or remove.</source>
+            <translation>L'acció del canal ha de ser list, add o remove.</translation>
+        </message>
+        <message>
+            <source>Removing an own channel deletes its history, images, permissions and radio settings. Set confirmed=true to proceed.</source>
+            <translation>Eliminar un canal propi esborra l'historial, les imatges, els permisos i la configuració de ràdio. Estableix confirmed=true per continuar.</translation>
+        </message>
+        <message>
+            <source>id must identify an additional own channel.</source>
+            <translation>id ha d'identificar un canal propi addicional.</translation>
+        </message>
+        <message>
+            <source>The additional own channel could not be removed: %1</source>
+            <translation>No s'ha pogut eliminar el canal propi addicional: %1</translation>
+        </message>
+        <message>
+            <source>channelId must identify an own channel.</source>
+            <translation>channelId ha d'identificar un canal propi.</translation>
+        </message>
+        <message>
+            <source>values must be a host settings object.</source>
+            <translation>values ha de ser un objecte de configuració de l'amfitrió.</translation>
+        </message>
+        <message>
+            <source>Headless admission is always enabled for non-banned devices; requests off is not supported.</source>
+            <translation>L'admissió sense interfície sempre està activada per als dispositius no bloquejats; requests off no és compatible.</translation>
+        </message>
+        <message>
+            <source>value must be a password of at most 1024 UTF-8 bytes without control characters; an empty string removes it.</source>
+            <translation>value ha de ser una contrasenya de com a màxim 1024 bytes UTF-8 sense caràcters de control; una cadena buida l'elimina.</translation>
+        </message>
+        <message>
+            <source>The channel is not ready or a password change is in progress.</source>
+            <translation>El canal no està preparat o hi ha un canvi de contrasenya en curs.</translation>
+        </message>
+        <message>
+            <source>The channel was removed while saving the password.</source>
+            <translation>S'ha eliminat el canal mentre es desava la contrasenya.</translation>
+        </message>
+        <message>
+            <source>id is required.</source>
+            <translation>Cal id.</translation>
+        </message>
+        <message>
+            <source>text must be a valid non-empty chat message.</source>
+            <translation>text ha de ser un missatge de xat vàlid i no buit.</translation>
+        </message>
+        <message>
+            <source>The local channel is not ready.</source>
+            <translation>El canal local no està preparat.</translation>
+        </message>
+        <message>
+            <source>The channel's radio is unavailable.</source>
+            <translation>La ràdio del canal no està disponible.</translation>
+        </message>
+        <message>
+            <source>Unknown command. Use help.</source>
+            <translation>Ordre desconeguda. Utilitza help.</translation>
+        </message>
+        <message>
+            <source>search requires a query, non-negative offset and limit from 1 to 128.</source>
+            <translation>search requereix query, un offset no negatiu i un limit entre 1 i 128.</translation>
+        </message>
+        <message>
+            <source>add creates an id; update requires an existing id.</source>
+            <translation>add crea un id; update requereix un id existent.</translation>
+        </message>
+        <message>
+            <source>A station is already being checked.</source>
+            <translation>Ja s'està comprovant una emissora.</translation>
+        </message>
+        <message>
+            <source>The channel was removed while checking the station.</source>
+            <translation>S'ha eliminat el canal mentre es comprovava l'emissora.</translation>
+        </message>
+        <message>
+            <source>Unknown radio action.</source>
+            <translation>Acció de ràdio desconeguda.</translation>
+        </message>
+        <message>
+            <source>Could not load language: %1</source>
+            <translation>No s'ha pogut carregar l'idioma: %1</translation>
+        </message>
+        <message>
+            <source>The %1 option is incompatible with --headless.</source>
+            <translation>L'opció %1 és incompatible amb --headless.</translation>
+        </message>
+        <message>
+            <source>Unexpected positional arguments. Use --help.</source>
+            <translation>Arguments posicionals inesperats. Utilitza --help.</translation>
+        </message>
+        <message>
+            <source>--config / -f requires a non-empty path.</source>
+            <translation>--config / -f requereix un camí no buit.</translation>
+        </message>
+        <message>
+            <source>Choose --password or --password-file, not both.</source>
+            <translation>Tria --password o --password-file, no tots dos.</translation>
+        </message>
+        <message>
+            <source>Choose SQUADSPEAK_PASSWORD or SQUADSPEAK_PASSWORD_FILE, not both.</source>
+            <translation>Tria SQUADSPEAK_PASSWORD o SQUADSPEAK_PASSWORD_FILE, no tots dos.</translation>
+        </message>
+        <message>
+            <source>Choose password or passwordFile in one configuration layer, not both.</source>
+            <translation>Tria password o passwordFile en una mateixa capa de configuració, no tots dos.</translation>
+        </message>
+        <message>
+            <source>passwordFile must be a non-empty path.</source>
+            <translation>passwordFile ha de ser un camí no buit.</translation>
+        </message>
+        <message>
+            <source>Password file could not be read or is too large.</source>
+            <translation>No s'ha pogut llegir el fitxer de contrasenya o és massa gran.</translation>
+        </message>
+        <message>
+            <source>Password file must contain at most 1024 UTF-8 bytes without control characters.</source>
+            <translation>El fitxer de contrasenya ha de contenir com a màxim 1024 bytes UTF-8 sense caràcters de control.</translation>
+        </message>
+        <message>
+            <source>Password must be a string of at most 1024 UTF-8 bytes without control characters.</source>
+            <translation>La contrasenya ha de ser una cadena de com a màxim 1024 bytes UTF-8 sense caràcters de control.</translation>
+        </message>
+        <message>
+            <source>settingsFile must be a non-empty path.</source>
+            <translation>settingsFile ha de ser un camí no buit.</translation>
+        </message>
+        <message>
+            <source>identityFile must be a non-empty path.</source>
+            <translation>identityFile ha de ser un camí no buit.</translation>
+        </message>
+        <message>
+            <source>The settings directory could not be created.</source>
+            <translation>No s'ha pogut crear el directori de configuració.</translation>
+        </message>
+        <message>
+            <source>This SquadSpeak profile is already running or cannot be locked.</source>
+            <translation>Aquest perfil de SquadSpeak ja s'està executant o no es pot bloquejar.</translation>
+        </message>
+        <message>
+            <source>Standard input could not be opened.</source>
+            <translation>No s'ha pogut obrir l'entrada estàndard.</translation>
+        </message>
+        <message>
+            <source>Standard output could not be opened.</source>
+            <translation>No s'ha pogut obrir la sortida estàndard.</translation>
+        </message>
+        <message>
+            <source>This identity file is already in use or cannot be locked.</source>
+            <translation>Aquest fitxer d'identitat ja s'utilitza o no es pot bloquejar.</translation>
+        </message>
+        <message>
+            <source>Invalid host configuration: %1</source>
+            <translation>Configuració de l'amfitrió no vàlida: %1</translation>
+        </message>
+        <message>
+            <source>Radio channels could not be initialized.</source>
+            <translation>No s'han pogut inicialitzar els canals de ràdio.</translation>
+        </message>
+        <message>
+            <source>Headless host could not start: %1</source>
+            <translation>No s'ha pogut iniciar l'amfitrió sense interfície: %1</translation>
+        </message>
+        <message>
+            <source>Channel password could not be saved.</source>
+            <translation>No s'ha pogut desar la contrasenya del canal.</translation>
+        </message>
+        <message>
+            <source>Invalid channel password: %1</source>
+            <translation>Contrasenya del canal no vàlida: %1</translation>
+        </message>
+        <message>
+            <source>Headless host could not initialize: %1</source>
+            <translation>No s'ha pogut inicialitzar l'amfitrió sense interfície: %1</translation>
+        </message>
+        <message>
+            <source>SquadSpeak headless could not start: %1</source>
+            <translation>No s'ha pogut iniciar SquadSpeak sense interfície: %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>L'acció del suport ha de ser estat, inici de sessió, actualització, tancament o cancel·lació. status sign-in refresh sign-out</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>Hi ha una operació de suport en curs.</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>L'accés dels seguidors no està disponible en aquesta compilació.</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>Precedència de la configuració: arguments &gt; entorn &gt; propietats &gt; valors del servidor desats.</translation>
+        </message>
+    </context>
+    <context>
+        <name>License</name>
+        <message>
+            <source>License storage is busy or unavailable.</source>
+            <translation>L'emmagatzematge de llicències està ocupat o no disponible.</translation>
+        </message>
+        <message>
+            <source>License storage is unavailable.</source>
+            <translation>L'emmagatzematge de llicències no està disponible.</translation>
+        </message>
+        <message>
+            <source>Sign-in expired. Try again.</source>
+            <translation>L'inici de sessió ha caducat. Torna-ho a provar.</translation>
+        </message>
+        <message>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>L'inici de sessió a GitHub no està disponible. Torna-ho a provar.</translation>
+        </message>
+        <message>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>L'inici de sessió a GitHub no s'ha completat. Torna-ho a provar.</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>No s'ha pogut comprovar GitHub. L'accés fora de línia dura com a màxim set dies.</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>Torna a iniciar la sessió amb GitHub.</translation>
+        </message>
+    </context>
+    <context>
         <name>LocalChannel</name>
+        <message>
+            <source>Insufficient permissions.</source>
+            <translation>Permisos insuficients.</translation>
+        </message>
+        <message>
+            <source>Blocked</source>
+            <translation>Bloquejat</translation>
+        </message>
         <message>
             <source>Host is not responding. Reconnecting.</source>
             <translation>L'amfitrió no respon. Tornant a connectar.</translation>
@@ -1926,8 +2312,8 @@
             <translation>la transferència d'imatges ha trigat massa.</translation>
         </message>
         <message>
-            <source>The channel is full. Text chat is still available.</source>
-            <translation>El canal és ple. El xat de text continua disponible.</translation>
+            <source>The host is busy. Try again shortly.</source>
+            <translation>L'amfitrió està ocupat. Torna-ho a provar d'aquí a poc.</translation>
         </message>
         <message>
             <source>All own channels use the device's shared port.</source>
@@ -2189,6 +2575,53 @@
             <source>Voice relay codec could not be configured.</source>
             <translation>No s'ha pogut configurar el còdec de retransmissió de veu.</translation>
         </message>
+        <message>
+            <source>Unsupported audio codec</source>
+            <translation>Còdec d'àudio no compatible</translation>
+        </message>
+        <message>
+            <source>Speaking is not allowed in this channel.</source>
+            <translation>No es permet parlar en aquest canal.</translation>
+        </message>
+    </context>
+    <context>
+        <name>LocalLanguage</name>
+        <message>
+            <source>Translation (experimental)</source>
+            <translation>Traducció (experimental)</translation>
+        </message>
+        <message>
+            <source>Translate messages</source>
+            <translation>Tradueix els missatges</translation>
+        </message>
+        <message>
+            <source>Translated voice</source>
+            <translation>Veu traduïda</translation>
+        </message>
+        <message>
+            <source>Original audio</source>
+            <translation>Àudio original</translation>
+        </message>
+        <message>
+            <source>Original text</source>
+            <translation>Text original</translation>
+        </message>
+        <message>
+            <source>Prepare languages</source>
+            <translation>Prepara les llengües</translation>
+        </message>
+        <message>
+            <source>Local language processing is unavailable.</source>
+            <translation>El processament local de llengües no està disponible.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be read.</source>
+            <translation>No s'han pogut llegir els ajustos de llengua.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be saved.</source>
+            <translation>No s'han pogut desar els ajustos de llengua.</translation>
+        </message>
     </context>
     <context>
         <name>PushToTalkKey</name>
@@ -2329,50 +2762,61 @@
         </message>
     </context>
     <context>
-        <name>RecordingPanel</name>
+        <name>ScreenPanel</name>
         <message>
-            <source>Stop</source>
-            <translation>Atura</translation>
+            <source>Video paused</source>
+            <translation>vídeo en pausa</translation>
         </message>
         <message>
-            <source>Start</source>
-            <translation>Comença</translation>
+            <source>Stream ended</source>
+            <translation>Stream acabat</translation>
         </message>
         <message>
-            <source>Saved on this device only. Nothing is uploaded.</source>
-            <translation>desat només en aquest dispositiu. No s'ha carregat res.</translation>
+            <source>Connecting</source>
+            <translation>Connexió</translation>
         </message>
         <message>
-            <source>Keep this take or record it again.</source>
-            <translation>Conserveu aquesta presa o torneu-la a gravar.</translation>
+            <source>Open screen stream</source>
+            <translation>Obre el flux de pantalla</translation>
         </message>
         <message>
-            <source>Record again</source>
-            <translation>Tornar a gravar</translation>
+            <source>Screen stream</source>
+            <translation>flux de pantalla</translation>
         </message>
         <message>
-            <source>Use recording</source>
-            <translation>Utilitza la gravació</translation>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
+        </message>
+    </context>
+    <context>
+        <name>ScreenShare</name>
+        <message>
+            <source>Allow screen recording in system settings.</source>
+            <translation>Permet la gravació de pantalla a la configuració del sistema.</translation>
         </message>
         <message>
-            <source>Recording progress</source>
-            <translation>Enregistrament del progrés</translation>
+            <source>The shared screen was removed. Select a source to start again.</source>
+            <translation>S'ha eliminat la pantalla compartida. Seleccioneu una font per començar de nou.</translation>
         </message>
         <message>
-            <source>Step %1 of %2</source>
-            <translation>Pas %1 de %2</translation>
+            <source>The shared window was closed. Select a source to start again.</source>
+            <translation>La finestra compartida es va tancar. Seleccioneu una font per començar de nou.</translation>
         </message>
         <message>
-            <source>Open recordings</source>
-            <translation>Enregistraments oberts</translation>
+            <source>The selected screen is no longer available.</source>
+            <translation>La pantalla seleccionada ja no està disponible.</translation>
         </message>
         <message>
-            <source>Reset test</source>
-            <translation>Reinicialitza la prova</translation>
+            <source>The selected window is no longer available.</source>
+            <translation>La finestra seleccionada ja no està disponible.</translation>
         </message>
         <message>
-            <source>%1 s remaining / %2 dBFS</source>
-            <translation>queda %1 s / %2 dBFS</translation>
+            <source>The selected source exceeds the capture size limit.</source>
+            <translation>La font seleccionada supera el límit de mida de captura.</translation>
+        </message>
+        <message>
+            <source>Close a video view before opening another stream.</source>
+            <translation>tanca una visualització de vídeo abans d'obrir un altre flux.</translation>
         </message>
     </context>
     <context>
@@ -2449,10 +2893,6 @@
             <translation>Recollint senyal...</translation>
         </message>
         <message>
-            <source>Dashed curve: configured gain and frequency cuts, using the right dB scale. Noise reduction and voice activation are not part of this curve.</source>
-            <translation>Corba guionada: guany i talls de freqüència configurats, utilitzant l'escala dB correcta. La reducció de soroll i l'activació de veu no formen part d'aquesta corba.</translation>
-        </message>
-        <message>
             <source>Microphone preview is not running</source>
             <translation>La vista prèvia del micròfon no s'està executant</translation>
         </message>
@@ -2463,303 +2903,6 @@
         <message>
             <source>Peak: %1</source>
             <translation>pic: %1</translation>
-        </message>
-    </context>
-    <context>
-        <name>Tray</name>
-        <message>
-            <source>Quit</source>
-            <translation>Surt</translation>
-        </message>
-        <message>
-            <source>SquadSpeak - speaking</source>
-            <translation>SquadSpeak - parlant</translation>
-        </message>
-        <message>
-            <source>Settings</source>
-            <translation>Configuració</translation>
-        </message>
-        <message>
-            <source>Channels</source>
-            <translation>Canals</translation>
-        </message>
-        <message>
-            <source>New image</source>
-            <translation>Imatge nova</translation>
-        </message>
-    </context>
-    <context>
-        <name>VoiceAvatar</name>
-        <message>
-            <source>Muted</source>
-            <translation>micròfon silenciat</translation>
-        </message>
-        <message>
-            <source>Sleeping</source>
-            <translation>Dormir</translation>
-        </message>
-        <message>
-            <source>Offline</source>
-            <translation>fora de línia</translation>
-        </message>
-        <message>
-            <source>Speaking</source>
-            <translation>Parlant</translation>
-        </message>
-        <message>
-            <source>Unavailable</source>
-            <translation>No disponible</translation>
-        </message>
-        <message>
-            <source>Listening</source>
-            <translation>Escoltant</translation>
-        </message>
-        <message>
-            <source>Deafened</source>
-            <translation>Els altaveus estan silenciats</translation>
-        </message>
-    </context>
-    <context>
-        <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>No disponible: configuració d'àudio o prova de to</translation>
-        </message>
-        <message>
-            <source>Microphone muted</source>
-            <translation>micròfon silenciat</translation>
-        </message>
-        <message>
-            <source>Push-to-talk held</source>
-            <translation>Prem per parlar mantingut</translation>
-        </message>
-        <message>
-            <source>Ready - push-to-talk released</source>
-            <translation>llest: s'ha llançat el botó per parlar</translation>
-        </message>
-        <message>
-            <source>Microphone unmuted</source>
-            <translation>micròfon activat</translation>
-        </message>
-        <message>
-            <source>Settings could not be saved: %1</source>
-            <translation>No s'ha pogut desar la configuració: %1</translation>
-        </message>
-        <message>
-            <source>The push-to-talk sequence cannot be incremented further.</source>
-            <translation>La seqüència de prémer i parlar no es pot incrementar més.</translation>
-        </message>
-        <message>
-            <source>Choose System, Light or Dark.</source>
-            <translation>Trieu Sistema, Clar o Fosc.</translation>
-        </message>
-        <message>
-            <source>Choose a colour palette from the list.</source>
-            <translation>Trieu una paleta de colors de la llista.</translation>
-        </message>
-        <message>
-            <source>Choose an available avatar.</source>
-            <translation>tria un avatar disponible.</translation>
-        </message>
-        <message>
-            <source>Invalid push-to-talk binding.</source>
-            <translation>Vinculació de prémer i parlar no vàlida.</translation>
-        </message>
-        <message>
-            <source>Release the held push-to-talk key first.</source>
-            <translation>deixeu anar primer la tecla de prémer i parlar.</translation>
-        </message>
-        <message>
-            <source>Choose a language from the list.</source>
-            <translation>Trieu un idioma de la llista.</translation>
-        </message>
-        <message>
-            <source>This avatar requires Supporter.</source>
-            <translation>Aquest avatar requereix Supporter.</translation>
-        </message>
-        <message>
-            <source>The name must contain 1 to 64 characters.</source>
-            <translation>el nom ha de contenir d'1 a 64 caràcters.</translation>
-        </message>
-        <message>
-            <source>The name may not contain control characters or line breaks.</source>
-            <translation>El nom pot no contenir caràcters de control ni salts de línia.</translation>
-        </message>
-        <message>
-            <source>Session settings could not be read.</source>
-            <translation>No s'han pogut llegir els paràmetres de la sessió.</translation>
-        </message>
-        <message>
-            <source>Saved setting is invalid: %1</source>
-            <translation>Paràmetre desat no vàlid: %1</translation>
-        </message>
-    </context>
-    <context>
-        <name>License</name>
-        <message>
-            <source>License storage is busy or unavailable.</source>
-            <translation>L'emmagatzematge de llicències està ocupat o no disponible.</translation>
-        </message>
-        <message>
-            <source>License storage is unavailable.</source>
-            <translation>L'emmagatzematge de llicències no està disponible.</translation>
-        </message>
-        <message>
-            <source>Sign-in expired. Try again.</source>
-            <translation>L'inici de sessió ha caducat. Torna-ho a provar.</translation>
-        </message>
-        <message>
-            <source>GitHub sign-in is unavailable. Try again.</source>
-            <translation>L'inici de sessió a GitHub no està disponible. Torna-ho a provar.</translation>
-        </message>
-        <message>
-            <source>GitHub sign-in was not completed. Try again.</source>
-            <translation>L'inici de sessió a GitHub no s'ha completat. Torna-ho a provar.</translation>
-        </message>
-        <message>
-            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
-            <translation>No s'ha pogut comprovar GitHub. L'accés fora de línia dura com a màxim set dies.</translation>
-        </message>
-        <message>
-            <source>Sign in with GitHub again.</source>
-            <translation>Torna a iniciar la sessió amb GitHub.</translation>
-        </message>
-    </context>
-    <context>
-        <name>ScreenShare</name>
-        <message>
-            <source>The shared screen was removed. Select a source to start again.</source>
-            <translation>S'ha eliminat la pantalla compartida. Seleccioneu una font per començar de nou.</translation>
-        </message>
-        <message>
-            <source>The shared window was closed. Select a source to start again.</source>
-            <translation>La finestra compartida es va tancar. Seleccioneu una font per començar de nou.</translation>
-        </message>
-        <message>
-            <source>The selected screen is no longer available.</source>
-            <translation>La pantalla seleccionada ja no està disponible.</translation>
-        </message>
-        <message>
-            <source>The selected window is no longer available.</source>
-            <translation>La finestra seleccionada ja no està disponible.</translation>
-        </message>
-        <message>
-            <source>The selected source exceeds the capture size limit.</source>
-            <translation>La font seleccionada supera el límit de mida de captura.</translation>
-        </message>
-        <message>
-            <source>Close a video view before opening another stream.</source>
-            <translation>tanca una visualització de vídeo abans d'obrir un altre flux.</translation>
-        </message>
-    </context>
-    <context>
-        <name>ScreenPanel</name>
-        <message>
-            <source>Media capacity reached</source>
-            <translation>S'ha assolit la capacitat dels mitjans</translation>
-        </message>
-        <message>
-            <source>Video paused</source>
-            <translation>vídeo en pausa</translation>
-        </message>
-        <message>
-            <source>Stream ended</source>
-            <translation>Stream acabat</translation>
-        </message>
-        <message>
-            <source>Connecting</source>
-            <translation>Connexió</translation>
-        </message>
-        <message>
-            <source>Open screen stream</source>
-            <translation>Obre el flux de pantalla</translation>
-        </message>
-        <message>
-            <source>Screen stream</source>
-            <translation>flux de pantalla</translation>
-        </message>
-        <message>
-            <source>%1 kbit/s</source>
-            <translation>%1 kbit/s</translation>
-        </message>
-    </context>
-    <context>
-        <name>VideoCodec</name>
-        <message>
-            <source>Video codec: %1</source>
-            <translation>Còdec de vídeo: %1</translation>
-        </message>
-        <message>
-            <source>Video codec ABI does not match its headers.</source>
-            <translation>L'ABI del còdec de vídeo no coincideix amb els seus fitxers de capçalera.</translation>
-        </message>
-        <message>
-            <source>Video buffers could not be allocated.</source>
-            <translation>No s'ha pogut assignar memòria als búfers de vídeo.</translation>
-        </message>
-        <message>
-            <source>Invalid video quality tier.</source>
-            <translation>Nivell de qualitat de vídeo no vàlid.</translation>
-        </message>
-        <message>
-            <source>The screen source exceeds the supported capture size.</source>
-            <translation>La font de pantalla supera la mida de captura admesa.</translation>
-        </message>
-        <message>
-            <source>The screen source is too narrow.</source>
-            <translation>La font de pantalla és massa estreta.</translation>
-        </message>
-        <message>
-            <source>The video encoder could not be allocated.</source>
-            <translation>No s'ha pogut assignar memòria al codificador de vídeo.</translation>
-        </message>
-        <message>
-            <source>No supported video encoder is available.</source>
-            <translation>No hi ha cap codificador de vídeo compatible disponible.</translation>
-        </message>
-        <message>
-            <source>Video encoder configuration is too large.</source>
-            <translation>La configuració del codificador de vídeo és massa gran.</translation>
-        </message>
-        <message>
-            <source>Video scaling could not be initialized.</source>
-            <translation>No s'ha pogut inicialitzar l'escalat de vídeo.</translation>
-        </message>
-        <message>
-            <source>The encoder returned an empty video packet.</source>
-            <translation>El codificador ha retornat un paquet de vídeo buit.</translation>
-        </message>
-        <message>
-            <source>Invalid video frame format.</source>
-            <translation>Format de fotograma de vídeo no vàlid.</translation>
-        </message>
-        <message>
-            <source>Invalid video decoder configuration.</source>
-            <translation>Configuració del descodificador de vídeo no vàlida.</translation>
-        </message>
-        <message>
-            <source>This video codec cannot be decoded.</source>
-            <translation>No es pot descodificar aquest còdec de vídeo.</translation>
-        </message>
-        <message>
-            <source>Video decoder could not be allocated.</source>
-            <translation>No s'ha pogut assignar memòria al descodificador de vídeo.</translation>
-        </message>
-        <message>
-            <source>Video decoder configuration could not be allocated.</source>
-            <translation>No s'ha pogut assignar memòria a la configuració del descodificador de vídeo.</translation>
-        </message>
-        <message>
-            <source>Decoded dimensions do not match the screen stream.</source>
-            <translation>Les dimensions descodificades no coincideixen amb la transmissió de pantalla.</translation>
-        </message>
-        <message>
-            <source>Decoded image could not be allocated.</source>
-            <translation>No s'ha pogut assignar memòria a la imatge descodificada.</translation>
-        </message>
-        <message>
-            <source>Video color conversion could not be initialized.</source>
-            <translation>No s'ha pogut inicialitzar la conversió de colors del vídeo.</translation>
         </message>
     </context>
     <context>
@@ -2877,359 +3020,208 @@
             <translation>No s'ha pogut verificar la contrasenya.</translation>
         </message>
     </context>
-
     <context>
-        <name>Headless</name>
+        <name>Tray</name>
         <message>
-            <source>Command failed.</source>
-            <translation>L'ordre ha fallat.</translation>
+            <source>Quit</source>
+            <translation>Surt</translation>
         </message>
         <message>
-            <source>%1 must be an integer.</source>
-            <translation>%1 ha de ser un enter.</translation>
+            <source>SquadSpeak - speaking</source>
+            <translation>SquadSpeak - parlant</translation>
         </message>
         <message>
-            <source>Requests must be on/off or true/false.</source>
-            <translation>Les sol·licituds han de ser on/off o true/false.</translation>
+            <source>Settings</source>
+            <translation>Configuració</translation>
         </message>
         <message>
-            <source>Unknown host property: %1</source>
-            <translation>Propietat de l'amfitrió desconeguda: %1</translation>
+            <source>Channels</source>
+            <translation>Canals</translation>
         </message>
         <message>
-            <source>Run without GUI, microphone capture, or local audio output.</source>
-            <translation>Executa sense interfície gràfica, captura del micròfon ni sortida d'àudio local.</translation>
-        </message>
-        <message>
-            <source>Server storage prefix. Personal/audio/GUI profiles are not loaded.</source>
-            <translation>Prefix d'emmagatzematge del servidor. No es carreguen perfils personals, d'àudio ni d'interfície.</translation>
-        </message>
-        <message>
-            <source>Optional private identity file instead of the OS credential store (Linux/macOS). Parent directory must exist and belong to this account.</source>
-            <translation>Fitxer d'identitat privat opcional en lloc del magatzem de credencials del sistema (Linux/macOS). El directori pare ha d'existir i pertànyer a aquest compte.</translation>
-        </message>
-        <message>
-            <source>UTF-8 key=value properties or JSON host preset. Default: application.properties, then config/application.properties beside the app.</source>
-            <translation>Propietats key=value en UTF-8 o configuració d'amfitrió JSON. Per defecte: application.properties i després config/application.properties al costat de l'aplicació.</translation>
-        </message>
-        <message>
-            <source>Channel display name.</source>
-            <translation>Nom visible del canal.</translation>
-        </message>
-        <message>
-            <source>System and radio bot display name.</source>
-            <translation>Nom visible del bot compartit de sistema i ràdio.</translation>
-        </message>
-        <message>
-            <source>TCP service port (1-65535).</source>
-            <translation>Port del servei TCP (1-65535).</translation>
-        </message>
-        <message>
-            <source>Headless admission is always on; only 'on' or 'true' is accepted.</source>
-            <translation>L'admissió sense interfície sempre està activada; només s'accepta 'on' o 'true'.</translation>
-        </message>
-        <message>
-            <source>Preapprove a device ID; repeat for several devices. Existing bans remain.</source>
-            <translation>Aprova prèviament un ID de dispositiu; repeteix per a diversos dispositius. Es mantenen els bloquejos existents.</translation>
-        </message>
-        <message>
-            <source>Block a device ID; repeat for several devices.</source>
-            <translation>Bloqueja un ID de dispositiu; repeteix per a diversos dispositius.</translation>
-        </message>
-        <message>
-            <source>Read a UTF-8 channel password from a file before listening. An empty file removes it.</source>
-            <translation>Llegeix la contrasenya del canal d'un fitxer UTF-8 abans d'escoltar connexions. Un fitxer buit l'elimina.</translation>
-        </message>
-        <message>
-            <source>Channel password. Empty removes it; environment or config avoids process-list exposure.</source>
-            <translation>Contrasenya del canal. Un valor buit l'elimina; l'entorn o la configuració eviten exposar-la a la llista de processos.</translation>
-        </message>
-        <message>
-            <source>SquadSpeak headless local channel host</source>
-            <translation>Amfitrió local de canals SquadSpeak sense interfície</translation>
-        </message>
-        <message>
-            <source>Environment variables (SQUADSPEAK_ prefix):</source>
-            <translation>Variables d'entorn (prefix SQUADSPEAK_):</translation>
-        </message>
-        <message>
-            <source>Host configuration could not be read or exceeds 1 MiB.</source>
-            <translation>No s'ha pogut llegir la configuració de l'amfitrió o supera 1 MiB.</translation>
-        </message>
-        <message>
-            <source>Host configuration must be UTF-8.</source>
-            <translation>La configuració de l'amfitrió ha de ser UTF-8.</translation>
-        </message>
-        <message>
-            <source>Host preset must be a JSON object.</source>
-            <translation>La configuració predefinida de l'amfitrió ha de ser un objecte JSON.</translation>
-        </message>
-        <message>
-            <source>Property line %1 must use key=value.</source>
-            <translation>La línia de propietats %1 ha d'utilitzar key=value.</translation>
-        </message>
-        <message>
-            <source>Property line %1: %2</source>
-            <translation>Línia de propietats %1: %2</translation>
-        </message>
-        <message>
-            <source>Standard input has no file descriptor.</source>
-            <translation>L'entrada estàndard no té descriptor de fitxer.</translation>
-        </message>
-        <message>
-            <source>Standard input could not be inspected.</source>
-            <translation>No s'ha pogut inspeccionar l'entrada estàndard.</translation>
-        </message>
-        <message>
-            <source>Could not write the command response: %1</source>
-            <translation>No s'ha pogut escriure la resposta de l'ordre: %1</translation>
-        </message>
-        <message>
-            <source>Standard input could not be read: %1</source>
-            <translation>No s'ha pogut llegir l'entrada estàndard: %1</translation>
-        </message>
-        <message>
-            <source>Input line exceeds 65536 bytes.</source>
-            <translation>La línia d'entrada supera 65536 bytes.</translation>
-        </message>
-        <message>
-            <source>Each input line must be a JSON object.</source>
-            <translation>Cada línia d'entrada ha de ser un objecte JSON.</translation>
-        </message>
-        <message>
-            <source>Input ended before a complete JSON line.</source>
-            <translation>L'entrada ha acabat abans de completar una línia JSON.</translation>
-        </message>
-        <message>
-            <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
-            <translation>ID opcional d'un canal propi per a les ordres status, configure, password, admission, history, chat i radio; per defecte s'utilitza el canal principal.</translation>
-        </message>
-        <message>
-            <source>Channel action must be list, add or remove.</source>
-            <translation>L'acció del canal ha de ser list, add o remove.</translation>
-        </message>
-        <message>
-            <source>Removing an own channel deletes its history, images, permissions and radio settings. Set confirmed=true to proceed.</source>
-            <translation>Eliminar un canal propi esborra l'historial, les imatges, els permisos i la configuració de ràdio. Estableix confirmed=true per continuar.</translation>
-        </message>
-        <message>
-            <source>id must identify an additional own channel.</source>
-            <translation>id ha d'identificar un canal propi addicional.</translation>
-        </message>
-        <message>
-            <source>The additional own channel could not be removed: %1</source>
-            <translation>No s'ha pogut eliminar el canal propi addicional: %1</translation>
-        </message>
-        <message>
-            <source>channelId must identify an own channel.</source>
-            <translation>channelId ha d'identificar un canal propi.</translation>
-        </message>
-        <message>
-            <source>values must be a host settings object.</source>
-            <translation>values ha de ser un objecte de configuració de l'amfitrió.</translation>
-        </message>
-        <message>
-            <source>Headless admission is always enabled for non-banned devices; requests off is not supported.</source>
-            <translation>L'admissió sense interfície sempre està activada per als dispositius no bloquejats; requests off no és compatible.</translation>
-        </message>
-        <message>
-            <source>value must be a password of at most 1024 UTF-8 bytes without control characters; an empty string removes it.</source>
-            <translation>value ha de ser una contrasenya de com a màxim 1024 bytes UTF-8 sense caràcters de control; una cadena buida l'elimina.</translation>
-        </message>
-        <message>
-            <source>The channel is not ready or a password change is in progress.</source>
-            <translation>El canal no està preparat o hi ha un canvi de contrasenya en curs.</translation>
-        </message>
-        <message>
-            <source>The channel was removed while saving the password.</source>
-            <translation>S'ha eliminat el canal mentre es desava la contrasenya.</translation>
-        </message>
-        <message>
-            <source>id is required.</source>
-            <translation>Cal id.</translation>
-        </message>
-        <message>
-            <source>text must be a valid non-empty chat message.</source>
-            <translation>text ha de ser un missatge de xat vàlid i no buit.</translation>
-        </message>
-        <message>
-            <source>The local channel is not ready.</source>
-            <translation>El canal local no està preparat.</translation>
-        </message>
-        <message>
-            <source>The channel's radio is unavailable.</source>
-            <translation>La ràdio del canal no està disponible.</translation>
-        </message>
-        <message>
-            <source>Unknown command. Use help.</source>
-            <translation>Ordre desconeguda. Utilitza help.</translation>
-        </message>
-        <message>
-            <source>search requires a query, non-negative offset and limit from 1 to 128.</source>
-            <translation>search requereix query, un offset no negatiu i un limit entre 1 i 128.</translation>
-        </message>
-        <message>
-            <source>add creates an id; update requires an existing id.</source>
-            <translation>add crea un id; update requereix un id existent.</translation>
-        </message>
-        <message>
-            <source>A station is already being checked.</source>
-            <translation>Ja s'està comprovant una emissora.</translation>
-        </message>
-        <message>
-            <source>The channel was removed while checking the station.</source>
-            <translation>S'ha eliminat el canal mentre es comprovava l'emissora.</translation>
-        </message>
-        <message>
-            <source>Unknown radio action.</source>
-            <translation>Acció de ràdio desconeguda.</translation>
-        </message>
-        <message>
-            <source>Could not load language: %1</source>
-            <translation>No s'ha pogut carregar l'idioma: %1</translation>
-        </message>
-        <message>
-            <source>The %1 option is incompatible with --headless.</source>
-            <translation>L'opció %1 és incompatible amb --headless.</translation>
-        </message>
-        <message>
-            <source>Unexpected positional arguments. Use --help.</source>
-            <translation>Arguments posicionals inesperats. Utilitza --help.</translation>
-        </message>
-        <message>
-            <source>--config / -f requires a non-empty path.</source>
-            <translation>--config / -f requereix un camí no buit.</translation>
-        </message>
-        <message>
-            <source>Choose --password or --password-file, not both.</source>
-            <translation>Tria --password o --password-file, no tots dos.</translation>
-        </message>
-        <message>
-            <source>Choose SQUADSPEAK_PASSWORD or SQUADSPEAK_PASSWORD_FILE, not both.</source>
-            <translation>Tria SQUADSPEAK_PASSWORD o SQUADSPEAK_PASSWORD_FILE, no tots dos.</translation>
-        </message>
-        <message>
-            <source>Choose password or passwordFile in one configuration layer, not both.</source>
-            <translation>Tria password o passwordFile en una mateixa capa de configuració, no tots dos.</translation>
-        </message>
-        <message>
-            <source>passwordFile must be a non-empty path.</source>
-            <translation>passwordFile ha de ser un camí no buit.</translation>
-        </message>
-        <message>
-            <source>Password file could not be read or is too large.</source>
-            <translation>No s'ha pogut llegir el fitxer de contrasenya o és massa gran.</translation>
-        </message>
-        <message>
-            <source>Password file must contain at most 1024 UTF-8 bytes without control characters.</source>
-            <translation>El fitxer de contrasenya ha de contenir com a màxim 1024 bytes UTF-8 sense caràcters de control.</translation>
-        </message>
-        <message>
-            <source>Password must be a string of at most 1024 UTF-8 bytes without control characters.</source>
-            <translation>La contrasenya ha de ser una cadena de com a màxim 1024 bytes UTF-8 sense caràcters de control.</translation>
-        </message>
-        <message>
-            <source>settingsFile must be a non-empty path.</source>
-            <translation>settingsFile ha de ser un camí no buit.</translation>
-        </message>
-        <message>
-            <source>identityFile must be a non-empty path.</source>
-            <translation>identityFile ha de ser un camí no buit.</translation>
-        </message>
-        <message>
-            <source>The settings directory could not be created.</source>
-            <translation>No s'ha pogut crear el directori de configuració.</translation>
-        </message>
-        <message>
-            <source>This SquadSpeak profile is already running or cannot be locked.</source>
-            <translation>Aquest perfil de SquadSpeak ja s'està executant o no es pot bloquejar.</translation>
-        </message>
-        <message>
-            <source>Standard input could not be opened.</source>
-            <translation>No s'ha pogut obrir l'entrada estàndard.</translation>
-        </message>
-        <message>
-            <source>Standard output could not be opened.</source>
-            <translation>No s'ha pogut obrir la sortida estàndard.</translation>
-        </message>
-        <message>
-            <source>This identity file is already in use or cannot be locked.</source>
-            <translation>Aquest fitxer d'identitat ja s'utilitza o no es pot bloquejar.</translation>
-        </message>
-        <message>
-            <source>Invalid host configuration: %1</source>
-            <translation>Configuració de l'amfitrió no vàlida: %1</translation>
-        </message>
-        <message>
-            <source>Radio channels could not be initialized.</source>
-            <translation>No s'han pogut inicialitzar els canals de ràdio.</translation>
-        </message>
-        <message>
-            <source>Headless host could not start: %1</source>
-            <translation>No s'ha pogut iniciar l'amfitrió sense interfície: %1</translation>
-        </message>
-        <message>
-            <source>Channel password could not be saved.</source>
-            <translation>No s'ha pogut desar la contrasenya del canal.</translation>
-        </message>
-        <message>
-            <source>Invalid channel password: %1</source>
-            <translation>Contrasenya del canal no vàlida: %1</translation>
-        </message>
-        <message>
-            <source>Headless host could not initialize: %1</source>
-            <translation>No s'ha pogut inicialitzar l'amfitrió sense interfície: %1</translation>
-        </message>
-        <message>
-            <source>SquadSpeak headless could not start: %1</source>
-            <translation>No s'ha pogut iniciar SquadSpeak sense interfície: %1</translation>
-        </message>
-        <message>
-            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
-            <translation>L'acció del suport ha de ser estat, inici de sessió, actualització, tancament o cancel·lació. status sign-in refresh sign-out</translation>
-        </message>
-        <message>
-            <source>A Supporter operation is in progress.</source>
-            <translation>Hi ha una operació de suport en curs.</translation>
-        </message>
-        <message>
-            <source>Supporter access is unavailable in this build.</source>
-            <translation>L'accés dels seguidors no està disponible en aquesta compilació.</translation>
-        </message>
-        <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>Precedència de la configuració: arguments &gt; entorn &gt; propietats &gt; valors del servidor desats.</translation>
+            <source>New image</source>
+            <translation>Imatge nova</translation>
         </message>
     </context>
     <context>
-        <name>Desktop</name>
+        <name>VideoCodec</name>
         <message>
-            <source>Open settings at startup.</source>
-            <translation>Obre la configuració en iniciar.</translation>
+            <source>Video codec: %1</source>
+            <translation>Còdec de vídeo: %1</translation>
         </message>
         <message>
-            <source>Open guided local test recording without starting network services.</source>
-            <translation>Obre l'enregistrament de prova local guiat sense iniciar serveis de xarxa.</translation>
+            <source>Video codec ABI does not match its headers.</source>
+            <translation>L'ABI del còdec de vídeo no coincideix amb els seus fitxers de capçalera.</translation>
         </message>
         <message>
-            <source>Alternative file for audio profiles.</source>
-            <translation>Fitxer alternatiu de perfils d'àudio.</translation>
+            <source>Video buffers could not be allocated.</source>
+            <translation>No s'ha pogut assignar memòria als búfers de vídeo.</translation>
         </message>
         <message>
-            <source>Load the interface without microphone capture and exit after one second.</source>
-            <translation>Carrega la interfície sense captar el micròfon i surt al cap d'un segon.</translation>
+            <source>Invalid video quality tier.</source>
+            <translation>Nivell de qualitat de vídeo no vàlid.</translation>
         </message>
         <message>
-            <source>Save an image of the app window during the UI test.</source>
-            <translation>Desa una imatge de la finestra durant la prova de la interfície.</translation>
+            <source>The screen source exceeds the supported capture size.</source>
+            <translation>La font de pantalla supera la mida de captura admesa.</translation>
         </message>
         <message>
-            <source>The window image could not be saved.</source>
-            <translation>No s'ha pogut desar la imatge de la finestra.</translation>
+            <source>The screen source is too narrow.</source>
+            <translation>La font de pantalla és massa estreta.</translation>
         </message>
         <message>
-            <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
-            <translation>La safata del sistema no està disponible; l'aplicació continua oberta en una finestra.</translation>
+            <source>The video encoder could not be allocated.</source>
+            <translation>No s'ha pogut assignar memòria al codificador de vídeo.</translation>
+        </message>
+        <message>
+            <source>No supported video encoder is available.</source>
+            <translation>No hi ha cap codificador de vídeo compatible disponible.</translation>
+        </message>
+        <message>
+            <source>Video encoder configuration is too large.</source>
+            <translation>La configuració del codificador de vídeo és massa gran.</translation>
+        </message>
+        <message>
+            <source>Video scaling could not be initialized.</source>
+            <translation>No s'ha pogut inicialitzar l'escalat de vídeo.</translation>
+        </message>
+        <message>
+            <source>The encoder returned an empty video packet.</source>
+            <translation>El codificador ha retornat un paquet de vídeo buit.</translation>
+        </message>
+        <message>
+            <source>Invalid video frame format.</source>
+            <translation>Format de fotograma de vídeo no vàlid.</translation>
+        </message>
+        <message>
+            <source>Invalid video decoder configuration.</source>
+            <translation>Configuració del descodificador de vídeo no vàlida.</translation>
+        </message>
+        <message>
+            <source>This video codec cannot be decoded.</source>
+            <translation>No es pot descodificar aquest còdec de vídeo.</translation>
+        </message>
+        <message>
+            <source>Video decoder could not be allocated.</source>
+            <translation>No s'ha pogut assignar memòria al descodificador de vídeo.</translation>
+        </message>
+        <message>
+            <source>Video decoder configuration could not be allocated.</source>
+            <translation>No s'ha pogut assignar memòria a la configuració del descodificador de vídeo.</translation>
+        </message>
+        <message>
+            <source>Decoded dimensions do not match the screen stream.</source>
+            <translation>Les dimensions descodificades no coincideixen amb la transmissió de pantalla.</translation>
+        </message>
+        <message>
+            <source>Decoded image could not be allocated.</source>
+            <translation>No s'ha pogut assignar memòria a la imatge descodificada.</translation>
+        </message>
+        <message>
+            <source>Video color conversion could not be initialized.</source>
+            <translation>No s'ha pogut inicialitzar la conversió de colors del vídeo.</translation>
+        </message>
+    </context>
+    <context>
+        <name>VoiceAvatar</name>
+        <message>
+            <source>Muted</source>
+            <translation>micròfon silenciat</translation>
+        </message>
+        <message>
+            <source>Sleeping</source>
+            <translation>Dormir</translation>
+        </message>
+        <message>
+            <source>Offline</source>
+            <translation>fora de línia</translation>
+        </message>
+        <message>
+            <source>Speaking</source>
+            <translation>Parlant</translation>
+        </message>
+        <message>
+            <source>Unavailable</source>
+            <translation>No disponible</translation>
+        </message>
+        <message>
+            <source>Listening</source>
+            <translation>Escoltant</translation>
+        </message>
+        <message>
+            <source>Deafened</source>
+            <translation>Els altaveus estan silenciats</translation>
+        </message>
+    </context>
+    <context>
+        <name>VoiceSession</name>
+        <message>
+            <source>Microphone muted</source>
+            <translation>micròfon silenciat</translation>
+        </message>
+        <message>
+            <source>Push-to-talk held</source>
+            <translation>Prem per parlar mantingut</translation>
+        </message>
+        <message>
+            <source>Ready - push-to-talk released</source>
+            <translation>llest: s'ha llançat el botó per parlar</translation>
+        </message>
+        <message>
+            <source>Microphone unmuted</source>
+            <translation>micròfon activat</translation>
+        </message>
+        <message>
+            <source>Settings could not be saved: %1</source>
+            <translation>No s'ha pogut desar la configuració: %1</translation>
+        </message>
+        <message>
+            <source>The push-to-talk sequence cannot be incremented further.</source>
+            <translation>La seqüència de prémer i parlar no es pot incrementar més.</translation>
+        </message>
+        <message>
+            <source>Choose System, Light or Dark.</source>
+            <translation>Trieu Sistema, Clar o Fosc.</translation>
+        </message>
+        <message>
+            <source>Choose a colour palette from the list.</source>
+            <translation>Trieu una paleta de colors de la llista.</translation>
+        </message>
+        <message>
+            <source>Choose an available avatar.</source>
+            <translation>tria un avatar disponible.</translation>
+        </message>
+        <message>
+            <source>Invalid push-to-talk binding.</source>
+            <translation>Vinculació de prémer i parlar no vàlida.</translation>
+        </message>
+        <message>
+            <source>Release the held push-to-talk key first.</source>
+            <translation>deixeu anar primer la tecla de prémer i parlar.</translation>
+        </message>
+        <message>
+            <source>Choose a language from the list.</source>
+            <translation>Trieu un idioma de la llista.</translation>
+        </message>
+        <message>
+            <source>This avatar requires Supporter.</source>
+            <translation>Aquest avatar requereix Supporter.</translation>
+        </message>
+        <message>
+            <source>The name must contain 1 to 64 characters.</source>
+            <translation>el nom ha de contenir d'1 a 64 caràcters.</translation>
+        </message>
+        <message>
+            <source>The name may not contain control characters or line breaks.</source>
+            <translation>El nom pot no contenir caràcters de control ni salts de línia.</translation>
+        </message>
+        <message>
+            <source>Session settings could not be read.</source>
+            <translation>No s'han pogut llegir els paràmetres de la sessió.</translation>
+        </message>
+        <message>
+            <source>Saved setting is invalid: %1</source>
+            <translation>Paràmetre desat no vàlid: %1</translation>
         </message>
     </context>
 </TS>

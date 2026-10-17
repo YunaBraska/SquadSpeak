@@ -26,8 +26,9 @@ bool InputProfile::valid() const noexcept {
 }
 
 double InputProfile::initialHighPassHz() const noexcept {
+    if (!highPassEnabled) return 0;
     if (!highPassAutomatic) return highPassHz;
-    return lowPassHz > 0 ? std::min(20.0, lowPassHz * 0.5) : 20.0;
+    return lowPassEnabled && lowPassHz > 0 ? std::min(20.0, lowPassHz * 0.5) : 20.0;
 }
 
 AudioProcessor::AudioProcessor(double sampleRate, InputProfile profile)
@@ -66,7 +67,7 @@ AudioProcessor::Filter AudioProcessor::cut(double frequency, bool highPass) cons
     const auto divisor = 1 + alpha;
     const auto b0 = (highPass ? 1 + cosine : 1 - cosine) / (2 * divisor);
     return {b0, (highPass ? -2 : 2) * b0, b0,
-            -2 * cosine / divisor, (1 - alpha) / divisor, 0, 0};
+            -2 * cosine / divisor, (1 - alpha) / divisor, {}, {}};
 }
 
 AudioProcessor& AudioProcessor::configure(InputProfile profile) {
@@ -75,19 +76,19 @@ AudioProcessor& AudioProcessor::configure(InputProfile profile) {
     if (profile.highPassHz > maximumFrequency() || profile.lowPassHz > maximumFrequency())
         throw std::invalid_argument(QT_TRANSLATE_NOOP("AudioModel", "Filter frequency exceeds this device's sample rate"));
     profile_ = profile;
-    gain_ = profile.gainAutomatic ? 1 : std::pow(10.0, profile.gainDb / 20.0);
+    gain_ = !profile.gainEnabled || profile.gainAutomatic ? 1 : std::pow(10.0, profile.gainDb / 20.0);
     highPassHz_ = profile.initialHighPassHz();
     highPass_ = cut(highPassHz_, true);
-    lowPass_ = cut(profile.lowPassHz, false);
+    lowPass_ = cut(profile.lowPassEnabled ? profile.lowPassHz : 0, false);
     bassPower_ = voicePower_ = 0; analysisSamples_ = bassDominantSamples_ = 0;
-    bassAnalysis_.z1 = bassAnalysis_.z2 = voiceAnalysis_.z1 = voiceAnalysis_.z2 = 0;
+    bassAnalysis_.z1 = bassAnalysis_.z2 = voiceAnalysis_.z1 = voiceAnalysis_.z2 = {};
     return *this;
 }
 
-double AudioProcessor::Filter::process(double sample) noexcept {
-    const auto result = b0 * sample + z1;
-    z1 = b1 * sample - a1 * result + z2;
-    z2 = b2 * sample - a2 * result;
+double AudioProcessor::Filter::process(double sample, std::size_t channel) noexcept {
+    const auto result = b0 * sample + z1[channel];
+    z1[channel] = b1 * sample - a1 * result + z2[channel];
+    z2[channel] = b2 * sample - a2 * result;
     return result;
 }
 
@@ -111,11 +112,14 @@ AudioProcessor& AudioProcessor::observeInput(float sample) noexcept {
     return *this;
 }
 
-float AudioProcessor::filter(float sample) noexcept {
+float AudioProcessor::filter(float sample) noexcept { return filter({sample, sample})[0]; }
+
+std::array<float, 2> AudioProcessor::filter(std::array<float, 2> samples) noexcept {
     // Device and upstream processing must not poison recursive filters with
     // non-finite values. Record unclipped filter output for the clipping meter.
-    const auto input = normalized(sample);
-    if (profile_.highPassAutomatic) {
+    for (auto& sample : samples) sample = normalized(sample);
+    const auto input = std::abs(samples[0]) >= std::abs(samples[1]) ? samples[0] : samples[1];
+    if (profile_.highPassEnabled && profile_.highPassAutomatic) {
         const auto bass = bassAnalysis_.process(input), voice = voiceAnalysis_.process(input);
         bassPower_ += powerStep_ * (bass * bass - bassPower_);
         voicePower_ += powerStep_ * (voice * voice - voicePower_);
@@ -123,7 +127,7 @@ float AudioProcessor::filter(float sample) noexcept {
             analysisSamples_ = 0;
             const auto excess = bassPower_ > 1e-5 ? std::clamp((bassPower_ / std::max(voicePower_, 1e-12) - 1) / 2, 0.0, 1.0) : 0;
             bassDominantSamples_ = excess > 0 ? std::min(bassDominantSamples_ + analysisInterval_, std::size_t(sampleRate_)) : 0;
-            const auto limit = profile_.lowPassHz > 0 ? std::min(100.0, profile_.lowPassHz * 0.5) : 100.0;
+            const auto limit = profile_.lowPassEnabled && profile_.lowPassHz > 0 ? std::min(100.0, profile_.lowPassHz * 0.5) : 100.0;
             const auto target = std::min(20 + (bassDominantSamples_ >= sampleRate_ * 0.8 ? 80 * excess : 0), limit);
             // Slow coefficient movement retains filter state and avoids clicks.
             highPassHz_ += std::clamp(target - highPassHz_, -0.8, 1.6);
@@ -131,16 +135,18 @@ float AudioProcessor::filter(float sample) noexcept {
             next.z1 = highPass_.z1; next.z2 = highPass_.z2; highPass_ = next;
         }
     }
-    const auto filtered = lowPass_.process(highPass_.process(input));
-    if (profile_.gainAutomatic) {
-        const auto target = std::min(1.0, 0.89 / std::max(std::abs(filtered), 1e-12));
+    std::array<double, 2> filtered{};
+    for (std::size_t channel = 0; channel < 2; ++channel)
+        filtered[channel] = lowPass_.process(highPass_.process(samples[channel], channel), channel);
+    if (profile_.gainEnabled && profile_.gainAutomatic) {
+        const auto target = std::min(1.0, 0.89 / std::max(std::max(std::abs(filtered[0]), std::abs(filtered[1])), 1e-12));
         gain_ = target < gain_ ? target : gain_ + releaseStep_ * (target - gain_);
     }
-    const auto processed = filtered * gain_;
+    const auto processed = (std::abs(filtered[0]) >= std::abs(filtered[1]) ? filtered[0] : filtered[1]) * gain_;
     output_[outputCursor_] = static_cast<float>(processed);
     outputCursor_ = (outputCursor_ + 1) % windowSize;
     outputFilled_ = std::min(outputFilled_ + 1, windowSize);
-    return static_cast<float>(std::clamp(processed, -1.0, 1.0));
+    return {float(std::clamp(filtered[0] * gain_, -1.0, 1.0)), float(std::clamp(filtered[1] * gain_, -1.0, 1.0))};
 }
 
 double AudioProcessor::gainDb() const noexcept { return decibels(gain_); }

@@ -1,7 +1,8 @@
 # Reproducible audio corpus
 
-40 repository PCM16/48 kHz mono excerpts provide 20 distinct English narrators,
-18 music recordings and two environmental sounds. The files occupy about 36 MiB.
+42 repository PCM16/48 kHz mono excerpts provide 20 distinct English narrators,
+18 music recordings, two environmental sounds and two keyboard recordings.
+The files occupy about 38 MiB.
 `manifest.json` owns source URLs, source/archive-member/fixture SHA-256 hashes,
 crop positions, source sample rates, speaker IDs and the mixing grid. Every
 source has an attribution notice in `licenses/`. The private microphone
@@ -13,16 +14,33 @@ and decaying noise are generated in `corpus_tests.cpp`, with durations listed
 in the manifest. They are not recordings of keyboards and do not validate a
 keyboard classifier. No extra asset download or storage is needed.
 
-The extended suite contains 9,790 deterministic cases:
+The extended mixture suite contains 10,636 deterministic cases:
 
-- 9,660 mixtures: 20 voices x 23 interference sources x 7 SNRs x 3 input levels.
-- 60 clean-speech controls and 69 interference-only controls at those levels.
+- 10,500 mixtures: 20 voices x 25 interference sources x 7 SNRs x 3 input levels.
+- 60 clean-speech controls and 75 interference-only controls at those levels.
 - One silence control.
 
 Each case passes through the real `VoiceMixer::encode -> receive -> render`
-path at 0%, 50% and 100% suppression: 29,370 app variants. These are combinations
-of 40 recordings and three synthesized signals, not thousands of independent
+path at 0%, 50% and 100% suppression: 31,908 app variants. These are combinations
+of 42 recordings and three synthesized signals, not thousands of independent
 people or recordings.
+
+Speech activation additionally uses two real CC0 keyboard recordings at three
+levels, alone and mixed with normal or quiet speech at 0/+10 dB SNR. The fast
+suite has 84 activation cases with three narrators. The extended suite has 492
+with all twenty, covering mono and stereo, including 200 ms voiced excerpts.
+These use the default gain and bass correction, public encoder and decoder
+with no audio device.
+They require at least 75% fewer admitted typing frames than a level-only gate,
+at least 10 dB attenuation for typing alone, and retention of over 98.5% of the
+clean speech energy in admitted frames. This measures admission and signal
+retention, not intelligibility or guaranteed removal of every keystroke.
+
+The laptop excerpt is from bsumusictech's Freesound recording 62594, using its
+public MP3 preview. The mechanical keyboard excerpt is Nmb910's recording
+234923, supplied as an individually CC0 sound in ESC-50. Its five seconds repeat
+in twelve-second mixtures. Source notices identify the exact distribution and
+conversion. No noncommercial dataset license is applied to the app.
 
 ## Sources and redistribution
 

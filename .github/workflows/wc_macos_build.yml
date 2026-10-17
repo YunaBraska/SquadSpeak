@@ -1,0 +1,233 @@
+name: "🍎 CI · macOS Build"
+
+on:
+  workflow_call:
+    inputs:
+      ref:
+        type: string
+        required: true
+      version:
+        type: string
+        required: true
+      runners:
+        description: JSON list of native macOS runner labels.
+        type: string
+        default: '["macos-15", "macos-15-intel"]'
+      xcode_version:
+        description: Installed Xcode version used for native compilation.
+        type: string
+        default: '26.3'
+      prepare_command:
+        type: string
+        required: true
+      build_command:
+        type: string
+        required: true
+      test_command:
+        type: string
+        required: true
+      package_command:
+        type: string
+        required: true
+      cache_paths:
+        type: string
+        required: true
+      cache_inputs:
+        description: JSON glob list selecting dependency versions, patches and build flags.
+        type: string
+        required: true
+      package_paths:
+        type: string
+        required: true
+      report_paths:
+        type: string
+        required: true
+      sign_updates:
+        type: boolean
+        default: false
+      update_public_key:
+        type: string
+        default: ''
+    secrets:
+      MACOS_SIGNING_CERTIFICATE:
+        required: false
+      MACOS_SIGNING_CERTIFICATE_PASSWORD:
+        required: false
+      MACOS_NOTARY_KEY:
+        required: false
+      MACOS_NOTARY_KEY_ID:
+        required: false
+      MACOS_NOTARY_ISSUER_ID:
+        required: false
+      UPDATE_PRIVATE_KEY:
+        required: false
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: "🍎 ${{ matrix.runner }}"
+    runs-on: ${{ matrix.runner }}
+    # Reserve time for native tests after a cold dependency build.
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: ${{ fromJSON(inputs.runners) }}
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_${{ inputs.xcode_version }}.app/Contents/Developer
+      VERSION: ${{ inputs.version }}
+      UPDATE_PUBLIC_KEY: ${{ inputs.update_public_key }}
+      CCACHE_DIR: ${{ github.workspace }}/build/compiler-cache
+      CCACHE_MAXSIZE: 500M
+      CMAKE_BUILD_PARALLEL_LEVEL: 3
+      CTEST_PARALLEL_LEVEL: 4
+    steps:
+      - name: "🧑‍💻 Checkout"
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ inputs.ref }}
+          persist-credentials: false
+      - name: "🔐 Prepare Signing"
+        id: signing
+        shell: sh
+        env:
+          CERTIFICATE: ${{ secrets.MACOS_SIGNING_CERTIFICATE }}
+          CERTIFICATE_PASSWORD: ${{ secrets.MACOS_SIGNING_CERTIFICATE_PASSWORD }}
+          NOTARY_KEY: ${{ secrets.MACOS_NOTARY_KEY }}
+          NOTARY_KEY_ID: ${{ secrets.MACOS_NOTARY_KEY_ID }}
+          NOTARY_ISSUER: ${{ secrets.MACOS_NOTARY_ISSUER_ID }}
+          SIGN_UPDATES: ${{ inputs.sign_updates }}
+          UPDATE_PRIVATE_KEY: ${{ secrets.UPDATE_PRIVATE_KEY }}
+        run: |
+          set -eu
+          identity=-
+          profile=''
+          umask 077
+          keychain="$RUNNER_TEMP/native-build.keychain-db"
+          password=$(uuidgen)
+          security create-keychain -p "$password" "$keychain"
+          security set-keychain-settings -lut 7200 "$keychain"
+          security unlock-keychain -p "$password" "$keychain"
+          security default-keychain -s "$keychain"
+          security list-keychains -d user -s "$keychain"
+          if test -n "$CERTIFICATE$CERTIFICATE_PASSWORD"; then
+            if test -z "$CERTIFICATE" || test -z "$CERTIFICATE_PASSWORD"; then
+              printf 'Set both the macOS signing certificate and its password.\n' >&2; exit 1
+            fi
+            printf '%s' "$CERTIFICATE" | base64 -D > "$RUNNER_TEMP/native-build.p12"
+            security import "$RUNNER_TEMP/native-build.p12" -k "$keychain" -P "$CERTIFICATE_PASSWORD" -T /usr/bin/codesign
+            security set-key-partition-list -S apple-tool:,apple: -s -k "$password" "$keychain" >/dev/null
+            identity=$(security find-identity -v -p codesigning "$keychain" | sed -n 's/.*"\(Developer ID Application:.*\)"/\1/p' | sed -n '1p')
+            test -n "$identity" || { printf 'Certificate has no Developer ID Application identity.\n' >&2; exit 1; }
+          fi
+          if test -n "$NOTARY_KEY$NOTARY_KEY_ID$NOTARY_ISSUER"; then
+            if test "$identity" = - || test -z "$NOTARY_KEY" || test -z "$NOTARY_KEY_ID" || test -z "$NOTARY_ISSUER"; then
+              printf 'Notarization needs a Developer ID certificate and all three notary credentials.\n' >&2; exit 1
+            fi
+            printf '%s' "$NOTARY_KEY" | base64 -D > "$RUNNER_TEMP/native-build.p8"
+            xcrun notarytool store-credentials native-build --keychain "$keychain" \
+              --key "$RUNNER_TEMP/native-build.p8" --key-id "$NOTARY_KEY_ID" --issuer "$NOTARY_ISSUER"
+            profile=native-build
+          fi
+          if test "$SIGN_UPDATES" = true; then
+            test -n "$UPDATE_PUBLIC_KEY" && test -n "$UPDATE_PRIVATE_KEY" || {
+              printf 'Update signing needs both the public and private key.\n' >&2; exit 1;
+            }
+          fi
+          {
+            printf 'identity=%s\n' "$identity"
+            printf 'notary_profile=%s\n' "$profile"
+          } >> "$GITHUB_OUTPUT"
+      - name: "🧾 Read Toolchain"
+        id: toolchain
+        env:
+          CACHE_INPUTS: ${{ inputs.cache_inputs }}
+        shell: sh
+        run: |
+          set -eu
+          xcodebuild -version
+          xcrun --show-sdk-version
+          identity=$( { xcodebuild -version; xcrun clang --version; xcrun --show-sdk-version; } | shasum -a 256 | cut -d ' ' -f 1)
+          printf 'identity=%s\n' "$identity" >> "$GITHUB_OUTPUT"
+          python3 - <<'PYHASH'
+          import glob, hashlib, json, os, pathlib
+          paths = sorted({name for pattern in json.loads(os.environ["CACHE_INPUTS"])
+                          for name in glob.glob(pattern, recursive=True) if pathlib.Path(name).is_file()})
+          if not paths:
+              raise SystemExit("Dependency cache input files are missing")
+          digest = hashlib.sha256()
+          for name in paths:
+              digest.update(name.encode() + b"\0" + pathlib.Path(name).read_bytes())
+          with open(os.environ["GITHUB_OUTPUT"], "a") as output:
+              output.write("inputs=" + digest.hexdigest() + "\n")
+          PYHASH
+      - name: "📥 Restore Dependencies"
+        id: dependencies
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
+        with:
+          path: ${{ inputs.cache_paths }}
+          key: native-macos-${{ runner.arch }}-${{ steps.toolchain.outputs.identity }}-${{ steps.toolchain.outputs.inputs }}
+      - name: "📥 Restore Compiler Cache"
+        id: compiler-cache
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
+        with:
+          path: build/compiler-cache
+          key: compiler-macos-${{ runner.arch }}-${{ steps.toolchain.outputs.identity }}-${{ github.sha }}
+          restore-keys: compiler-macos-${{ runner.arch }}-${{ steps.toolchain.outputs.identity }}-
+      - name: "🛠️ Prepare Toolchain"
+        shell: bash
+        run: ${{ inputs.prepare_command }}
+      - name: "🔨 Build"
+        shell: bash
+        run: ${{ inputs.build_command }}
+      - name: "📦 Cache Dependencies"
+        if: steps.dependencies.outputs.cache-hit != 'true'
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
+        with:
+          path: ${{ inputs.cache_paths }}
+          key: ${{ steps.dependencies.outputs.cache-primary-key }}
+      - name: "📦 Cache Compiled Objects"
+        if: ${{ !cancelled() && steps.compiler-cache.outcome == 'success' && steps.compiler-cache.outputs.cache-hit != 'true' }}
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
+        with:
+          path: build/compiler-cache
+          key: ${{ steps.compiler-cache.outputs.cache-primary-key }}
+      - name: "🧪 Test"
+        shell: bash
+        run: ${{ inputs.test_command }}
+      - name: "📦 Package and Sign"
+        shell: bash
+        env:
+          MACOS_SIGNING_IDENTITY: ${{ steps.signing.outputs.identity }}
+          MACOS_NOTARY_PROFILE: ${{ steps.signing.outputs.notary_profile }}
+          SIGN_UPDATES: ${{ inputs.sign_updates }}
+          UPDATE_PRIVATE_KEY: ${{ secrets.UPDATE_PRIVATE_KEY }}
+        run: ${{ inputs.package_command }}
+      - name: "🧼 Check Sources"
+        run: git diff --exit-code
+      - name: "📦 Upload Build Artifact"
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: release-macos-${{ runner.arch }}
+          path: ${{ inputs.package_paths }}
+          retention-days: 1
+          compression-level: 0
+          if-no-files-found: error
+      - name: "📋 Upload Test Reports"
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: macos-${{ runner.arch }}
+          path: ${{ inputs.report_paths }}
+          retention-days: 7
+          if-no-files-found: warn
+      - name: "🧹 Clean Signing"
+        if: always()
+        shell: sh
+        run: |
+          rm -f "$RUNNER_TEMP/native-build.p12" "$RUNNER_TEMP/native-build.p8"
+          if test -f "$RUNNER_TEMP/native-build.keychain-db"; then
+            security delete-keychain "$RUNNER_TEMP/native-build.keychain-db"
+          fi

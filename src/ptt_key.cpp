@@ -12,10 +12,17 @@
 namespace {
 QString plainKeyName(int qtKey, quint32 nativeKey) {
     switch (qtKey) {
+#ifdef Q_OS_MACOS
+    // Qt maps Command to Key_Control and Control to Key_Meta on macOS.
+    case Qt::Key_Control: return QStringLiteral("Cmd");
+    case Qt::Key_Meta: return QStringLiteral("Ctrl");
+    case Qt::Key_Alt: return QStringLiteral("Option");
+#else
     case Qt::Key_Control: return QStringLiteral("Ctrl");
-    case Qt::Key_Shift: return QStringLiteral("Shift");
     case Qt::Key_Alt: return QStringLiteral("Alt");
     case Qt::Key_Meta: return QStringLiteral("Meta");
+#endif
+    case Qt::Key_Shift: return QStringLiteral("Shift");
     default: {
         const auto name = QKeySequence(qtKey).toString(QKeySequence::NativeText);
         return name.isEmpty() ? QStringLiteral("Key %1").arg(nativeKey) : name;
@@ -58,7 +65,7 @@ PushToTalkKey::PushToTalkKey(VoiceSession& session, bool observeGlobal, QObject*
     if (auto* app = qobject_cast<QGuiApplication*>(QCoreApplication::instance()))
         connect(app, &QGuiApplication::applicationStateChanged, this, [this](Qt::ApplicationState state) {
             if (observeGlobal_ && state == Qt::ApplicationActive && !globalAvailable()
-                && (observedPtt_ || !observedKeys_.isEmpty() || !observedRemoteKeys_.isEmpty()))
+                && (observedPtt_ || !observedKeys_.isEmpty()))
                 observe(false);
         });
 }
@@ -66,16 +73,14 @@ PushToTalkKey::PushToTalkKey(VoiceSession& session, bool observeGlobal, QObject*
 PushToTalkKey::~PushToTalkKey() { stopObserving(); }
 
 void PushToTalkKey::refreshBindings() {
-    const auto local = session_.pttKeyCodes(false);
-    const auto remote = session_.pttKeyCodes(true);
+    const auto keys = session_.pttKeyCodes();
     const bool ptt = session_.pushToTalk();
     const bool request = (ptt && !observedPtt_)
-        || (!local.isEmpty() && local != observedKeys_)
-        || (!remote.isEmpty() && remote != observedRemoteKeys_);
-    heldKeys_.removeIf([&](int code) { return !local.contains(code) && !remote.contains(code); });
-    observedKeys_ = local; observedRemoteKeys_ = remote; observedPtt_ = ptt;
+        || (!keys.isEmpty() && keys != observedKeys_);
+    heldKeys_.removeIf([&](int code) { return !keys.contains(code); });
+    observedKeys_ = keys; observedPtt_ = ptt;
     if (request) observe(true);
-    else if (!ptt && local.isEmpty() && remote.isEmpty() && tap_) {
+    else if (!ptt && keys.isEmpty() && tap_) {
         stopObserving();
         setStatus(tr("No push-to-talk key selected yet."));
     }
@@ -117,16 +122,15 @@ bool PushToTalkKey::setStatus(QString text, bool result) {
     status_ = std::move(text); emit changed(); return result;
 }
 
-bool PushToTalkKey::capture(bool remote) {
-    if (capturing_ && captureRemote_ == remote) {
+bool PushToTalkKey::capture() {
+    if (capturing_) {
         capturing_ = false; captureStarted_ = false; captureKeys_.clear(); captureSequence_.clear(); captureNames_.clear();
         return setStatus(tr("Key selection canceled."));
     }
-    discardObservedKeys(remote);
-    if (!session_.releasePttKey(remote)) return setStatus(session_.error(), false);
+    heldKeys_.clear();
+    if (!session_.releasePttKey()) return setStatus(session_.error(), false);
     captureKeys_.clear(); captureSequence_.clear(); captureNames_.clear(); captureStarted_ = false;
     capturing_ = true;
-    captureRemote_ = remote;
     return setStatus(tr("Press and release a key or combination. Escape cancels."));
 }
 
@@ -226,8 +230,7 @@ bool PushToTalkKey::observe(bool requestPermission) {
                 if (!(raw->flags & XIKeyRepeat) && (!capturing_ || !down)) {
                     auto codes = down ? QList<int>{} : nativeHeldKeys_.take(raw->detail);
                     if (codes.isEmpty()) {
-                        auto bindings = observedKeys_ + observedRemoteKeys_;
-                        for (const auto code : bindings)
+                        for (const auto code : observedKeys_)
                             if (!codes.contains(code) && XKeysymToKeycode(display, KeySym(code)) == raw->detail) codes.append(code);
                     }
                     if (down && !codes.isEmpty()) nativeHeldKeys_.insert(raw->detail, codes);
@@ -379,30 +382,25 @@ bool PushToTalkKey::eventFilter(QObject* object, QEvent* event) {
     return QObject::eventFilter(object, event);
 }
 
-bool PushToTalkKey::clear(bool remote) {
-    if (capturing_ && captureRemote_ == remote) cancelCapture();
-    discardObservedKeys(remote);
-    if (!session_.releasePttKey(remote)) return setStatus(session_.error(), false);
-    const auto ok = session_.setPttShortcut(QList<int>{}, QStringList{}, remote);
+bool PushToTalkKey::clear() {
+    if (capturing_) cancelCapture();
+    heldKeys_.clear();
+    if (!session_.releasePttKey()) return setStatus(session_.error(), false);
+    const auto ok = session_.setPttShortcut(QList<int>{}, QStringList{});
     if (!ok) setStatus(session_.error(), false);
     return ok;
 }
 
-bool PushToTalkKey::chordHeld(bool remote) const {
-    const auto keys = session_.pttKeyCodes(remote);
+bool PushToTalkKey::chordHeld() const {
+    const auto keys = session_.pttKeyCodes();
     return !keys.isEmpty() && std::all_of(keys.cbegin(), keys.cend(), [this](int code) { return heldKeys_.contains(code); });
 }
 
 void PushToTalkKey::processObservedKey(int code, bool down, const QString&) {
     if (code < 0 || code > 65535) return;
-    const auto localKeys = session_.pttKeyCodes(false);
-    const auto remoteKeys = session_.pttKeyCodes(true);
-    const auto localAffected = localKeys.contains(code);
-    const auto remoteAffected = remoteKeys.contains(code);
-    if (!localAffected && !remoteAffected) return;
+    if (!session_.pttKeyCodes().contains(code)) return;
     if (down) heldKeys_.insert(code); else heldKeys_.remove(code);
-    if (localAffected) session_.setPttKeyHeld(chordHeld(false));
-    if (remoteAffected) session_.setPttKeyHeld(chordHeld(true), true);
+    session_.setPttKeyHeld(chordHeld());
 }
 
 void PushToTalkKey::processCaptureKey(int code, bool down, const QString& name) {
@@ -424,8 +422,8 @@ bool PushToTalkKey::finishCapture() {
     QList<int> keys = captureSequence_;
     QStringList names;
     for (const auto code : keys) names.append(captureNames_.value(code, tr("Key %1").arg(code)));
-    const bool unchanged = keys == session_.pttKeyCodes(captureRemote_);
-    const auto ok = session_.setPttShortcut(keys, names, captureRemote_);
+    const bool unchanged = keys == session_.pttKeyCodes();
+    const auto ok = session_.setPttShortcut(keys, names);
     captureKeys_.clear(); captureSequence_.clear(); captureNames_.clear();
     if (!ok) return setStatus(session_.error(), false);
     if (unchanged) observe(true);
@@ -441,11 +439,4 @@ void PushToTalkKey::cancelCapture() {
     captureKeys_.clear();
     captureSequence_.clear();
     captureNames_.clear();
-}
-
-void PushToTalkKey::discardObservedKeys(bool remote) {
-    const auto keys = session_.pttKeyCodes(remote);
-    const auto otherKeys = session_.pttKeyCodes(!remote);
-    for (const auto code : keys)
-        if (!otherKeys.contains(code)) heldKeys_.remove(code);
 }

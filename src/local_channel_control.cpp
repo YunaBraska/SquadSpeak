@@ -223,9 +223,14 @@ bool LocalChannel::remoteAction(const QString& action, const QVariantMap& data) 
     if (!remoteMode() || !remoteAllowed_ || !controlConnected_ || action.isEmpty() || action.size() > 32) return false;
     auto payload = QJsonObject::fromVariantMap(data);
     if (QJsonDocument(payload).toJson(QJsonDocument::Compact).size() > maximumFrame - 512) return false;
-    if (action != "join" && action != "leave" && action != "mute" && action != "deafen" && action != "chat" && action != "older" && action != "newer" && action != "latest" && action != "openChat") return false;
+    if (action != "join" && action != "leave" && action != "mute" && action != "deafen" && action != "chat" && action != "older" && action != "newer" && action != "latest" && action != "markChatRead" && action != "openChat"
+        && action != "openPrivate" && action != "blockPrivate") return false;
     if (action == "chat" && (!payload.value("text").isString() || !ChatHistory::validText(payload.value("text").toString()))) return false;
-    if (action == "chat" || action == "older" || action == "newer" || action == "latest")
+    if (action == "markChatRead" && (!payload.value("lastVisibleSequence").isDouble()
+        || payload.value("lastVisibleSequence").toDouble(-1) < 0
+        || payload.value("lastVisibleSequence").toDouble(-1) > 9007199254740991LL
+        || payload.value("lastVisibleSequence").toDouble(-1) != payload.value("lastVisibleSequence").toInteger(-1))) return false;
+    if (action == "chat" || action == "older" || action == "newer" || action == "latest" || action == "markChatRead")
         payload.insert("hostId", remoteView_.value("chatHostId").toString());
     return writeMessage(controller_, {{"type", "remoteAction"}, {"action", action}, {"data", payload}});
 }
@@ -359,9 +364,11 @@ void LocalChannel::sendRemoteView(QSslSocket* socket) {
         if (!peers_.value(peerSocket).controller || !peers_.value(peerSocket).joined
             || !controllers.value(peers_.value(peerSocket).id).toObject().value("remote").toBool()
             || (peers_.value(peerSocket).capabilitiesAdvertised && !peers_.value(peerSocket).capabilities.contains("remote-control"))) continue;
-        if (peers_.value(peerSocket).remoteSnapshotWaiting) { peers_[peerSocket].remoteSnapshotDirty = true; continue; }
+        if (peers_.value(peerSocket).snapshotWaiting) { peers_[peerSocket].snapshotDirty = true; continue; }
         if (encoded.isEmpty()) {
             const QVariantMap view{{"channels", savedChannels()}, {"participants", participants()},
+                {"privateChats", privateChats()}, {"privateChat", privateChat()}, {"teamSpeakChat", teamSpeakChat()},
+                {"privateBlocked", privateBlocked()}, {"privateBlockedByMe", privateBlockedByMe()},
                 {"messages", messages()}, {"chatBot", chatBot()}, {"chatLifetimeDays", chatLifetimeDays()}, {"chatHostId", chatHostId_}, {"chatMembers", chatMembers()}, {"joinedHostId", joinedHostId_}, {"joined", joined()},
                 {"chatReady", chatReady()}, {"chatPending", chatPending()},
                 {"chatOnlineIds", chatOnlineIds()}, {"chatPresenceKnown", chatPresenceKnown()}, {"receiveAudioBitrate", receiveAudioBitrate()},
@@ -384,22 +391,9 @@ void LocalChannel::sendRemoteView(QSslSocket* socket) {
             view.insert("chatLifetimeDays", std::min(view.value("chatLifetimeDays").toInt(), 30));
             snapshot = QJsonDocument(view).toJson(QJsonDocument::Compact);
         }
-        if (snapshot.size() > maximumRemoteView) { peerSocket->abort(); continue; }
-        auto& peer = peers_[peerSocket];
-        peer.remoteSnapshot = snapshot; peer.remoteSnapshotId = QUuid::createUuid().toString(QUuid::WithoutBraces);
-        peer.remoteSnapshotOffset = 0; peer.remoteSnapshotWaiting = true; peer.remoteSnapshotDirty = false;
-        const auto snapshotId = peer.remoteSnapshotId;
-        if (writeMessage(peerSocket, {{"type", "remoteViewStart"}, {"id", snapshotId}, {"size", snapshot.size()}}))
-            sendRemoteViewChunk(peerSocket);
+        if (snapshot.size() > maximumSnapshot) { peerSocket->abort(); continue; }
+        sendSnapshot(peerSocket, snapshot);
     }
-}
-
-void LocalChannel::sendRemoteViewChunk(QSslSocket* socket) {
-    const auto peer = peers_.constFind(socket);
-    if (peer == peers_.cend() || !peer->remoteSnapshotWaiting) return;
-    const auto chunk = peer->remoteSnapshot.mid(peer->remoteSnapshotOffset, remoteChunkSize);
-    writeMessage(socket, {{"type", "remoteViewChunk"}, {"id", peer->remoteSnapshotId},
-        {"offset", peer->remoteSnapshotOffset}, {"data", QString::fromLatin1(chunk.toBase64())}});
 }
 
 bool LocalChannel::applyRemoteView(const QByteArray& bytes) {
@@ -414,16 +408,32 @@ bool LocalChannel::applyRemoteView(const QByteArray& bytes) {
     if (view.contains("chatLifetimeDays")) {
         const auto days = view.value("chatLifetimeDays").toInteger(-1);
         if (view.value("chatLifetimeDays").toDouble(-1) != double(days)
-            || (days != 0 && days != 1 && days != 7 && days != 30)) return false;
+            || days < 0
+            || (days != 0 && (days > ChatHistory::maximumLifetime / ChatHistory::lifetime
+                || !ChatHistory::validLifetime(days * ChatHistory::lifetime)))) return false;
     }
     const auto host = view.value("joinedHostId").toString();
     if (!view.value("joinedHostId").isString() || (!host.isEmpty() && !validId(host)) || (view.value("joined").toBool() && host.isEmpty())) return false;
+    for (const auto* key : {"privateChat", "privateBlocked", "privateBlockedByMe"})
+        if (view.contains(key) && !view.value(key).isBool()) return false;
+    if (view.contains("privateChats") && !view.value("privateChats").isArray()) return false;
+    auto entries = view.value("channels").toArray();
+    for (const auto value : view.value("privateChats").toArray()) {
+        const auto entry = value.toObject();
+        if (entry.value("private") != true || !validId(entry.value("peerId").toString())
+            || !validId(entry.value("deviceId").toString()) || !entry.value("blocked").isBool()
+            || !entry.value("blockedByMe").isBool()
+            || (entry.contains("unread") && !entry.value("unread").isBool())) return false;
+        if (!entries.contains(value)) entries.append(value);
+    }
     QSet<QString> ids;
-    for (const auto value : view.value("channels").toArray()) {
+    for (const auto value : entries) {
         const auto entry = value.toObject(); const auto id = entry.value("id").toString();
         if (!validId(id) || ids.contains(id) || !displayName(entry.value("name")) || !entry.value("online").isBool()
+            || (entry.contains("ownerName") && entry.value("ownerName") != QJsonValue("") && !displayName(entry.value("ownerName")))
             || !entry.value("autoJoin").isBool() || !validEndpointHost(entry.value("address").toString())
             || entry.value("port").toInt() < 1 || entry.value("port").toInt() > 65535
+            || (entry.contains("unread") && !entry.value("unread").isBool())
             || !validMembers(entry.value("members")) || (!entry.value("online").toBool() && !entry.value("members").toArray().isEmpty())
             || !entry.value("access").isString() || entry.value("access").toString().size() > 32) return false;
         ids.insert(id);
@@ -451,7 +461,7 @@ bool LocalChannel::applyRemoteView(const QByteArray& bytes) {
     qint64 sequence = 0;
     for (const auto value : messages) {
         const auto entry = value.toObject();
-        if (!ChatHistory::validMessage(entry) || entry.value("sequence").toInteger() <= sequence) return false;
+        if (entry.contains("sealed") || !ChatHistory::validMessage(entry) || entry.value("sequence").toInteger() <= sequence) return false;
         sequence = entry.value("sequence").toInteger();
     }
     if (remoteView_.value("chatHostId").toString() != view.value("chatHostId").toString()) {
@@ -467,7 +477,7 @@ bool LocalChannel::handleRemoteAction(QSslSocket* socket, const QJsonObject& mes
     const auto data = message.value("data").toObject();
     if (action.isEmpty() || action.size() > 32 || QJsonDocument(data).toJson(QJsonDocument::Compact).size() > maximumFrame - 512) { socket->abort(); return false; }
     bool okay = false;
-    if ((action == "chat" || action == "older" || action == "newer" || action == "latest")
+    if ((action == "chat" || action == "older" || action == "newer" || action == "latest" || action == "markChatRead")
         && data.value("hostId").toString() != chatHostId_) {
         writeMessage(socket, {{"type", "remoteActionResult"}, {"action", action}, {"ok", false}, {"error", tr("The viewed channel changed. Try again.")}});
         return false;
@@ -481,13 +491,22 @@ bool LocalChannel::handleRemoteAction(QSslSocket* socket, const QJsonObject& mes
         okay = validId(id) && (savedChannels_.contains(id) || ownChannel(id)) && joinSaved(id);
     } else if (action == "openChat") {
         const auto id = data.value("hostId").toString();
-        okay = validId(id) && (savedChannels_.contains(id) || ownChannel(id)) && openSavedChat(id);
+        okay = validId(id) && openSavedChat(id);
+    } else if (action == "openPrivate") {
+        okay = openPrivateChat(data.value("hostId").toString(), data.value("peerId").toString());
+    } else if (action == "blockPrivate" && data.value("value").isBool()) {
+        okay = setPrivateBlocked(data.value("conversation").toString(), data.value("value").toBool());
     } else if (action == "older") {
         okay = loadOlderMessages();
     } else if (action == "newer") {
         okay = loadNewerMessages();
     } else if (action == "latest") {
         okay = refreshChat();
+    } else if (action == "markChatRead") {
+        const auto sequence = data.value("lastVisibleSequence").toInteger(-1);
+        okay = data.value("lastVisibleSequence").isDouble()
+            && data.value("lastVisibleSequence").toDouble(-1) == double(sequence)
+            && sequence >= 0 && markChatRead(chatHostId_, sequence);
     } else if (action == "leave") {
         okay = leave();
     } else if (action == "mute" && data.value("value").isBool()) {
@@ -542,7 +561,7 @@ void LocalChannel::controlMessage(const QJsonObject& message) {
         if (!remoteMode() || !remoteAllowed_ || !controlConnected_) { blockControl(tr("Remote view is not authorized.")); return; }
         if (type == "remoteViewStart") {
             const auto id = message.value("id").toString(); const auto size = message.value("size").toInteger(-1);
-            if (!remoteSnapshotId_.isEmpty() || QUuid(id).isNull() || size < 2 || size > maximumRemoteView
+            if (!remoteSnapshotId_.isEmpty() || QUuid(id).isNull() || size < 2 || size > maximumSnapshot
                 || message.value("size").toDouble(-1) != double(size)) { blockControl(tr("Invalid remote view.")); return; }
             remoteSnapshotId_ = id; remoteSnapshotExpected_ = size; remoteSnapshotBuffer_.clear(); return;
         }
@@ -550,7 +569,7 @@ void LocalChannel::controlMessage(const QJsonObject& message) {
             const auto id = message.value("id").toString(); const auto offset = message.value("offset").toInteger(-1);
             const auto bytes = QByteArray::fromBase64Encoding(message.value("data").toString().toLatin1(), QByteArray::AbortOnBase64DecodingErrors);
             if (id != remoteSnapshotId_ || id.isEmpty() || offset != remoteSnapshotBuffer_.size() || message.value("offset").toDouble(-1) != double(offset)
-                || !bytes || bytes.decoded.isEmpty() || bytes.decoded.size() > remoteChunkSize || remoteSnapshotExpected_ < 0
+                || !bytes || bytes.decoded.isEmpty() || bytes.decoded.size() > snapshotChunkSize || remoteSnapshotExpected_ < 0
                 || remoteSnapshotBuffer_.size() + bytes.decoded.size() > remoteSnapshotExpected_) { blockControl(tr("Invalid remote view chunk.")); return; }
             remoteSnapshotBuffer_.append(bytes.decoded);
             writeMessage(controller_, {{"type", "remoteViewAck"}, {"id", id}, {"offset", offset}}); return;

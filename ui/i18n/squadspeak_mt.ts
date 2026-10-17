@@ -36,14 +36,6 @@
             <translation>Iftaħ is-settings tal-privatezza tas-sistema u ħalli l-aċċess għall-mikrofonu ta' SquadSpeak.</translation>
         </message>
         <message>
-            <source>Microphone analysis active. Test audio stays on this computer.</source>
-            <translation>L-analiżi tal-mikrofonu hija attiva. L-awdjo tat-test jibqa' fuq dan il-kompjuter.</translation>
-        </message>
-        <message>
-            <source>Finish the test recording before changing devices.</source>
-            <translation>Lesti r-reġistrazzjoni tat-test qabel tibdel l-apparat.</translation>
-        </message>
-        <message>
             <source>The output format is not supported.</source>
             <translation>Il-format tal-output mhuwiex appoġġat.</translation>
         </message>
@@ -68,32 +60,12 @@
             <translation>It-ton tat-test ma setax jindaqq.</translation>
         </message>
         <message>
-            <source>The microphone has provided no data for five seconds. Recording discarded.</source>
-            <translation>Il-mikrofonu ma pprovdiex dejta għal ħames sekondi. Ir-reġistrazzjoni ġiet skartata.</translation>
-        </message>
-        <message>
-            <source>The microphone was interrupted or changed. Recording discarded.</source>
-            <translation>Il-mikrofonu ġie interrott jew inbidel. Ir-reġistrazzjoni ġiet skartata.</translation>
-        </message>
-        <message>
-            <source>Cancelled. The incomplete recording was discarded.</source>
-            <translation>Ikkanċellat. Ir-reġistrazzjoni mhux kompluta ġiet skartata.</translation>
-        </message>
-        <message>
             <source>No selected microphone is available</source>
             <translation>M'hemm l-ebda mikrofonu magħżul disponibbli</translation>
         </message>
         <message>
             <source>Allow microphone access in the system dialog.</source>
             <translation>Ħalli l-aċċess għall-mikrofonu fid-djalogu tas-sistema.</translation>
-        </message>
-        <message>
-            <source>Microphone capture active for the voice channel.</source>
-            <translation>Il-qbid tal-mikrofonu huwa attiv għall-kanal tal-vuċi.</translation>
-        </message>
-        <message>
-            <source>Microphone access was denied. Nothing was saved.</source>
-            <translation>L-aċċess għall-mikrofonu ġie miċħud. Xejn ma ġie ffrankat.</translation>
         </message>
         <message>
             <source>Microphone access is missing. Allow it in System Settings.</source>
@@ -259,103 +231,16 @@
             <source>App audio only</source>
             <translation>Awdjo tal-app biss</translation>
         </message>
-    </context>
-    <context>
-        <name>AudioRecording</name>
         <message>
-            <source>Incomplete audio block. Recording discarded.</source>
-            <translation>Blokk tal-awdjo mhux komplut. Ir-reġistrazzjoni ġiet skartata.</translation>
-        </message>
-        <message>
-            <source>Move about one meter from the microphone. Keep the background sound playing and read the sentence.</source>
-            <translation>Imxi madwar metru mill-mikrofonu. Żomm il-ħoss fl-isfond għaddej u aqra s-sentenza.</translation>
-        </message>
-        <message>
-            <source>Voice with background sound</source>
-            <translation>Vuċi b'ħoss fl-isfond</translation>
-        </message>
-        <message>
-            <source>The recordings folder could not be created.</source>
-            <translation>Il-folder tar-reġistrazzjonijiet ma setax jinħoloq.</translation>
-        </message>
-        <message>
-            <source>You can stop the background sound now.</source>
-            <translation>Issa tista' twaqqaf il-ħoss fl-isfond.</translation>
-        </message>
-        <message>
-            <source>Recordings saved</source>
-            <translation>Reġistrazzjonijiet salvati</translation>
-        </message>
-        <message>
-            <source>The test recording could not be saved completely.</source>
-            <translation>Ir-reġistrazzjoni tat-test ma setgħetx tiġi ffrankata kompletament.</translation>
-        </message>
-        <message>
-            <source>Keep music off and stay quiet. Start when ready.</source>
-            <translation>Żomm il-mużika mitfija u oqgħod kwiet. Ibda meta tkun lest.</translation>
-        </message>
-        <message>
-            <source>Your voice</source>
-            <translation>Leħnek</translation>
-        </message>
-        <message>
-            <source>Play music or another background sound at a normal volume. Stay quiet while recording.</source>
-            <translation>Iddoqq il-mużika jew ħoss ieħor fl-isfond b'volum normali. Oqgħod kwiet waqt ir-reġistrazzjoni.</translation>
-        </message>
-        <message>
-            <source>The test recording could not be created.</source>
-            <translation>Ir-reġistrazzjoni tat-test ma setgħetx tinħoloq.</translation>
-        </message>
-        <message>
-            <source>Background sound</source>
-            <translation>Ħoss fl-isfond</translation>
-        </message>
-        <message>
-            <source>The window is open. I can hear the rain outside. One, two, three, four, five.</source>
-            <translation>It-tieqa hija miftuħa. Nista' nisma' x-xita barra. Wieħed, tnejn, tlieta, erbgħa, ħamsa.</translation>
-        </message>
-        <message>
-            <source>This microphone format is not supported for test recordings.</source>
-            <translation>Dan il-format tal-mikrofonu mhuwiex appoġġat għar-reġistrazzjonijiet tat-testijiet.</translation>
-        </message>
-        <message>
-            <source>Keep the background volume unchanged. Read the sentence, then stop recording.</source>
-            <translation>Żomm il-volum fl-isfond l-istess. Aqra s-sentenza, imbagħad waqqaf ir-reġistrazzjoni.</translation>
-        </message>
-        <message>
-            <source>Record at least half a second, then try again.</source>
-            <translation>Irreġistra mill-inqas nofs sekonda, imbagħad erġa' pprova.</translation>
-        </message>
-        <message>
-            <source>Sit at your usual distance. Read the sentence, then stop recording.</source>
-            <translation>Poġġi fid-distanza tas-soltu tiegħek. Aqra s-sentenza, imbagħad waqqaf ir-reġistrazzjoni.</translation>
-        </message>
-        <message>
-            <source>The recording description could not be saved.</source>
-            <translation>Id-deskrizzjoni tar-reġistrazzjoni ma setgħetx tiġi ffrankata.</translation>
-        </message>
-        <message>
-            <source>The WAV file could not be finalized.</source>
-            <translation>Il-fajl WAV ma setax jiġi ffinalizzat.</translation>
-        </message>
-        <message>
-            <source>The WAV header could not be written.</source>
-            <translation>L-intestatura WAV ma setgħetx tinkiteb.</translation>
-        </message>
-        <message>
-            <source>Voice farther away</source>
-            <translation>Vuċi mill-bogħod</translation>
-        </message>
-        <message>
-            <source>Room sound</source>
-            <translation>Ħoss tal-kamra</translation>
+            <source>Speech output is unavailable.</source>
+            <translation>L-output tal-vuċi mhuwiex disponibbli.</translation>
         </message>
     </context>
     <context>
         <name>AudioSettings</name>
         <message>
-            <source>Echo cancellation</source>
-            <translation>Tneħħija tal-eku</translation>
+            <source>Echo</source>
+            <translation>Eku</translation>
         </message>
         <message>
             <source>Off</source>
@@ -402,12 +287,12 @@
             <translation>Il-daqq tiegħek</translation>
         </message>
         <message>
-            <source>Clear local key</source>
-            <translation>Neħħi t-tast lokali</translation>
+            <source>Clear key</source>
+            <translation>Neħħi t-tast</translation>
         </message>
         <message>
-            <source>Low cut</source>
-            <translation>Qatgħa baxxa</translation>
+            <source>Highpass</source>
+            <translation>Pass għoli</translation>
         </message>
         <message>
             <source>Microphone access is off</source>
@@ -418,32 +303,16 @@
             <translation>Apparat tad-dħul</translation>
         </message>
         <message>
-            <source>Microphone paused for others</source>
-            <translation>Il-mikrofonu waqaf għal utenti oħra</translation>
-        </message>
-        <message>
             <source>Cancel</source>
             <translation>Ikkanċella</translation>
-        </message>
-        <message>
-            <source>Guided recording</source>
-            <translation>Reġistrazzjoni gwidata</translation>
         </message>
         <message>
             <source>Clipping. Reduce microphone gain.</source>
             <translation>Il-ħoss qed jinqata'. Naqqas l-amplifikazzjoni tal-mikrofonu.</translation>
         </message>
         <message>
-            <source>Silent</source>
-            <translation>Sieket</translation>
-        </message>
-        <message>
             <source>Test output</source>
             <translation>Output tat-test</translation>
-        </message>
-        <message>
-            <source>Voice level</source>
-            <translation>Livell tal-vuċi</translation>
         </message>
         <message>
             <source>Voice threshold</source>
@@ -462,20 +331,16 @@
             <translation>Apparat skonnettjat</translation>
         </message>
         <message>
-            <source>Local key</source>
-            <translation>Tast lokali</translation>
+            <source>PTT key</source>
+            <translation>Tast biex titkellem</translation>
         </message>
         <message>
             <source>Voice activation</source>
             <translation>Attivazzjoni bil-vuċi</translation>
         </message>
         <message>
-            <source>Remote PTT key</source>
-            <translation>Tast PTT mill-bogħod</translation>
-        </message>
-        <message>
-            <source>Noise reduction</source>
-            <translation>Tnaqqis tal-istorbju</translation>
+            <source>Denoise</source>
+            <translation>Tnaqqis tal-ħoss</translation>
         </message>
         <message>
             <source>Selected device is not connected</source>
@@ -486,32 +351,120 @@
             <translation>Jittrażmetti</translation>
         </message>
         <message>
-            <source>Microphone gain</source>
-            <translation>Amplifikazzjoni tal-mikrofonu</translation>
-        </message>
-        <message>
-            <source>Clear remote key</source>
-            <translation>Neħħi t-tast mill-bogħod</translation>
-        </message>
-        <message>
-            <source>Playback volume</source>
-            <translation>Volum tal-daqq</translation>
+            <source>Gain</source>
+            <translation>Amplifikazzjoni</translation>
         </message>
         <message>
             <source>Not assigned</source>
             <translation>Mhux assenjat</translation>
         </message>
         <message>
-            <source>High cut</source>
-            <translation>Qtugħ għoli</translation>
+            <source>Lowpass</source>
+            <translation>Pass baxx</translation>
         </message>
         <message>
             <source>Level audio automatically</source>
             <translation>Aġġusta l-livell tal-awdjo awtomatikament</translation>
         </message>
+        <message>
+            <source>Voice volume</source>
+            <translation>Volum taċ-chat bil-vuċi</translation>
+        </message>
+        <message>
+            <source>App sounds</source>
+            <translation>Ħsejjes tal-app</translation>
+        </message>
+        <message>
+            <source>Read bot messages aloud</source>
+            <translation>Aqra l-messaġġi tal-bot b'leħen għoli</translation>
+        </message>
+        <message>
+            <source>Download a high-quality voice for this language in macOS settings.</source>
+            <translation>Niżżel vuċi ta' kwalità għolja għal din il-lingwa fis-settings ta' macOS.</translation>
+        </message>
+        <message>
+            <source>Bot voice</source>
+            <translation>Vuċi tal-bot</translation>
+        </message>
+        <message>
+            <source>Automatic</source>
+            <translation>Awtomatiku</translation>
+        </message>
+        <message>
+            <source>Unavailable</source>
+            <translation>Mhux disponibbli</translation>
+        </message>
+        <message>
+            <source>Download voices in your device's Accessibility speech settings.</source>
+            <translation>Niżżel l-ilħna mis-settings tat-taħdit taħt Aċċessibbiltà fuq it-tagħmir tiegħek.</translation>
+        </message>
+        <message>
+            <source>Voice download help</source>
+            <translation>Għajnuna biex tniżżel l-ilħna</translation>
+        </message>
+        <message>
+            <source>Strength, not the percentage of echo removed.</source>
+            <translation>Qawwa, mhux il-perċentwal tal-eku mneħħi.</translation>
+        </message>
+        <message>
+            <source>Auto also checks for speech, not just volume.</source>
+            <translation>Il-mod awtomatiku jiċċekkja wkoll għat-taħdit, mhux biss il-volum.</translation>
+        </message>
     </context>
     <context>
         <name>Channels</name>
+        <message>
+            <source>Audio received</source>
+            <translation>Awdjo riċevut</translation>
+        </message>
+        <message>
+            <source>Search channels</source>
+            <translation>Fittex kanali</translation>
+        </message>
+        <message>
+            <source>No matches</source>
+            <translation>Ebda riżultat</translation>
+        </message>
+        <message>
+            <source>Copy address</source>
+            <translation>Ikkopja l-indirizz</translation>
+        </message>
+        <message>
+            <source>Messages</source>
+            <translation>Messaġġi</translation>
+        </message>
+        <message>
+            <source>Message</source>
+            <translation>Messaġġ</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Iftaħ</translation>
+        </message>
+        <message>
+            <source>Online</source>
+            <translation>Online</translation>
+        </message>
+        <message>
+            <source>Offline</source>
+            <translation>Mhux konness</translation>
+        </message>
+        <message>
+            <source>No private messages</source>
+            <translation>L-ebda messaġġ privat</translation>
+        </message>
+        <message>
+            <source>Private messages are unavailable for this contact.</source>
+            <translation>Messaġġi privati mhumiex disponibbli għal dan il-kuntatt.</translation>
+        </message>
+        <message>
+            <source>If asked, allow local network access. You can change this in system settings.</source>
+            <translation>Jekk tintalab, ħalli l-aċċess għan-netwerk lokali. Tista' tibdel dan fis-settings tas-sistema.</translation>
+        </message>
+        <message>
+            <source>Retry</source>
+            <translation>Erġa' pprova</translation>
+        </message>
         <message>
             <source>Updates</source>
             <translation>Aġġornamenti</translation>
@@ -531,6 +484,10 @@
         <message>
             <source>DDNS cannot bypass CGNAT. If your provider shares the public IP, use a private VPN on all participating devices or a publicly reachable server.</source>
             <translation>DDNS ma jistax jevita CGNAT. Jekk il-fornitur tiegħek jaqsam l-IP pubbliku, uża VPN privat fuq l-apparati parteċipanti kollha jew server aċċessibbli pubblikament.</translation>
+        </message>
+        <message>
+            <source>Remove server</source>
+            <translation>Neħħi s-server</translation>
         </message>
         <message>
             <source>Low</source>
@@ -653,10 +610,6 @@
             <translation>Ħsejjes ta' notifika</translation>
         </message>
         <message>
-            <source>Lifetime for new messages. Earlier messages keep their expiry.</source>
-            <translation>Tul il-ħajja tal-messaġġi ġodda. Il-messaġġi ta' qabel iżommu l-iskadenza tagħhom.</translation>
-        </message>
-        <message>
             <source>Enable speakers</source>
             <translation>Ixgħel il-kelliema</translation>
         </message>
@@ -691,10 +644,6 @@
         <message>
             <source>Allow device</source>
             <translation>Ħalli l-apparat</translation>
-        </message>
-        <message>
-            <source>Receive quality: %1 kb/s per voice. Adjusts automatically for this device.</source>
-            <translation>Kwalità tar-riċeviment: %1 kb/s għal kull vuċi. Tiġi aġġustata awtomatikament għal dan l-apparat.</translation>
         </message>
         <message>
             <source>Stop radio</source>
@@ -1188,6 +1137,50 @@
             <source>This device</source>
             <translation>Dan l-apparat</translation>
         </message>
+        <message>
+            <source>Use default music volume</source>
+            <translation>Uża l-volum predefinit tal-mużika</translation>
+        </message>
+        <message>
+            <source>Show in Dock</source>
+            <translation>Uri fid-Dock</translation>
+        </message>
+        <message>
+            <source>App language</source>
+            <translation>Lingwa tal-app</translation>
+        </message>
+        <message>
+            <source>Send in</source>
+            <translation>Ibgħat bil-</translation>
+        </message>
+        <message>
+            <source>Hear in</source>
+            <translation>Isma' bil-</translation>
+        </message>
+        <message>
+            <source>Download language models for %1 and %2?</source>
+            <translation>Tniżżel mudelli tal-lingwa għal %1 u %2?</translation>
+        </message>
+        <message>
+            <source>Download</source>
+            <translation>Niżżel</translation>
+        </message>
+        <message>
+            <source>PTT, chat and channel controls. Uses the controlled device's microphone.</source>
+            <translation>Kontrolli tal-PTT, taċ-chat u tal-kanali. Jintuża l-mikrofonu tal-apparat ikkontrollat.</translation>
+        </message>
+        <message>
+            <source>Connect the other device to one of your channels, then allow it here.</source>
+            <translation>Qabbad l-apparat l-ieħor ma' wieħed mill-kanali tiegħek, imbagħad ħallih hawn.</translation>
+        </message>
+        <message>
+            <source>On the other device, open Settings &gt; Input &gt; Remote control and allow this device.</source>
+            <translation>Fuq l-apparat l-ieħor, iftaħ Settings &gt; Dħul &gt; Kontroll mill-bogħod u ħalli dan l-apparat.</translation>
+        </message>
+        <message>
+            <source>Unread messages</source>
+            <translation>Messaġġi mhux moqrija</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1299,6 +1292,22 @@
             <source>The sanitized image could not be written completely.</source>
             <translation>L.immaġni sanitizzata ma setgħetx tinkiteb kompletament.</translation>
         </message>
+        <message>
+            <source>%1 joined.</source>
+            <translation>%1 ingħaqad.</translation>
+        </message>
+        <message>
+            <source>%1 left.</source>
+            <translation>%1 telaq.</translation>
+        </message>
+        <message>
+            <source>%1 was kicked.</source>
+            <translation>%1 tkeċċa.</translation>
+        </message>
+        <message>
+            <source>%1 was banned from the channel.</source>
+            <translation>%1 ġie mblukkat mill-kanal.</translation>
+        </message>
     </context>
     <context>
         <name>ChatPanel</name>
@@ -1363,22 +1372,6 @@
             <translation>Qed jitgħabba...</translation>
         </message>
         <message>
-            <source>%1 joined.</source>
-            <translation>%1 ingħaqad.</translation>
-        </message>
-        <message>
-            <source>%1 left.</source>
-            <translation>%1 telaq.</translation>
-        </message>
-        <message>
-            <source>%1 was kicked.</source>
-            <translation>%1 tkeċċa.</translation>
-        </message>
-        <message>
-            <source>%1 was banned from the channel.</source>
-            <translation>%1 ġie mblukkat mill-kanal.</translation>
-        </message>
-        <message>
             <source>Message could not be sent. Check the connection and text length.</source>
             <translation>Il-messaġġ ma setax jintbagħat. Iċċekkja l-konnessjoni u t-tul tat-test.</translation>
         </message>
@@ -1404,7 +1397,400 @@
         </message>
     </context>
     <context>
+        <name>Desktop</name>
+        <message>
+            <source>Open settings at startup.</source>
+            <translation>Iftaħ is-settings mal-bidu.</translation>
+        </message>
+        <message>
+            <source>Alternative file for audio profiles.</source>
+            <translation>Fajl alternattiv għall-profili tal-awdjo.</translation>
+        </message>
+        <message>
+            <source>Load the interface without microphone capture and exit after one second.</source>
+            <translation>Tagħbija tal-interfaċċa mingħajr reġistrazzjoni mill-mikrofonu u ħruġ wara sekonda.</translation>
+        </message>
+        <message>
+            <source>Save an image of the app window during the UI test.</source>
+            <translation>Issejvja immaġni tat-tieqa tal-app waqt it-test tal-interfaċċa.</translation>
+        </message>
+        <message>
+            <source>The window image could not be saved.</source>
+            <translation>Ma setgħetx tiġi ssejvjata l-immaġni tat-tieqa.</translation>
+        </message>
+        <message>
+            <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
+            <translation>It-trej tas-sistema mhux disponibbli; l-app tibqa' miftuħa f'tieqa.</translation>
+        </message>
+    </context>
+    <context>
+        <name>Headless</name>
+        <message>
+            <source>Host display name.</source>
+            <translation>Isem tal-host li jintwera.</translation>
+        </message>
+        <message>
+            <source>Command failed.</source>
+            <translation>Il-kmand falla.</translation>
+        </message>
+        <message>
+            <source>%1 must be an integer.</source>
+            <translation>%1 għandu jkun numru sħiħ.</translation>
+        </message>
+        <message>
+            <source>Requests must be on/off or true/false.</source>
+            <translation>It-talbiet għandhom ikunu on/off jew true/false.</translation>
+        </message>
+        <message>
+            <source>Unknown host property: %1</source>
+            <translation>Proprjetà mhux magħrufa tal-host: %1</translation>
+        </message>
+        <message>
+            <source>Run without GUI, microphone capture, or local audio output.</source>
+            <translation>Ħaddem mingħajr interfaċċa grafika, qbid tal-mikrofonu jew ħruġ lokali tal-awdjo.</translation>
+        </message>
+        <message>
+            <source>Server storage prefix. Personal/audio/GUI profiles are not loaded.</source>
+            <translation>Prefiss tal-ħażna tas-server. Il-profili personali, tal-awdjo u tal-interfaċċa ma jitgħabbewx.</translation>
+        </message>
+        <message>
+            <source>Optional private identity file instead of the OS credential store (Linux/macOS). Parent directory must exist and belong to this account.</source>
+            <translation>Fajl privat tal-identità fakultattiv minflok il-maħżen tal-kredenzjali tas-sistema (Linux/macOS). Id-direttorju ġenitur irid jeżisti u jkun ta' dan il-kont.</translation>
+        </message>
+        <message>
+            <source>UTF-8 key=value properties or JSON host preset. Default: application.properties, then config/application.properties beside the app.</source>
+            <translation>Proprjetajiet UTF-8 key=value jew issettjar minn qabel tal-host f'JSON. Default: application.properties, imbagħad config/application.properties ħdejn l-app.</translation>
+        </message>
+        <message>
+            <source>Channel display name.</source>
+            <translation>Isem muri tal-kanal.</translation>
+        </message>
+        <message>
+            <source>System and radio bot display name.</source>
+            <translation>Isem muri tal-bot tas-sistema u tar-radju.</translation>
+        </message>
+        <message>
+            <source>TCP service port (1-65535).</source>
+            <translation>Port TCP tas-servizz (1-65535).</translation>
+        </message>
+        <message>
+            <source>Headless admission is always on; only 'on' or 'true' is accepted.</source>
+            <translation>L-aċċess mingħajr interfaċċa grafika huwa dejjem mixgħul; huma aċċettati biss 'on' jew 'true'.</translation>
+        </message>
+        <message>
+            <source>Preapprove a device ID; repeat for several devices. Existing bans remain.</source>
+            <translation>Approva ID ta' apparat minn qabel; irrepeti għal diversi apparati. Il-projbizzjonijiet eżistenti jibqgħu.</translation>
+        </message>
+        <message>
+            <source>Block a device ID; repeat for several devices.</source>
+            <translation>Imblokka ID ta' apparat; irrepeti għal diversi apparati.</translation>
+        </message>
+        <message>
+            <source>Read a UTF-8 channel password from a file before listening. An empty file removes it.</source>
+            <translation>Aqra l-password UTF-8 tal-kanal minn fajl qabel tibda tisma'. Fajl vojt ineħħiha.</translation>
+        </message>
+        <message>
+            <source>Channel password. Empty removes it; environment or config avoids process-list exposure.</source>
+            <translation>Password tal-kanal. Valur vojt ineħħiha; l-ambjent jew il-konfigurazzjoni jevitaw li tidher fil-lista tal-proċessi.</translation>
+        </message>
+        <message>
+            <source>SquadSpeak headless local channel host</source>
+            <translation>Host lokali ta' kanal SquadSpeak mingħajr interfaċċa grafika</translation>
+        </message>
+        <message>
+            <source>Environment variables (SQUADSPEAK_ prefix):</source>
+            <translation>Varjabbli tal-ambjent (prefiss SQUADSPEAK_):</translation>
+        </message>
+        <message>
+            <source>Host configuration could not be read or exceeds 1 MiB.</source>
+            <translation>Il-konfigurazzjoni tal-host ma setgħetx tinqara jew taqbeż 1 MiB.</translation>
+        </message>
+        <message>
+            <source>Host configuration must be UTF-8.</source>
+            <translation>Il-konfigurazzjoni tal-host trid tkun UTF-8.</translation>
+        </message>
+        <message>
+            <source>Host preset must be a JSON object.</source>
+            <translation>L-issettjar minn qabel tal-host irid ikun oġġett JSON.</translation>
+        </message>
+        <message>
+            <source>Property line %1 must use key=value.</source>
+            <translation>Il-linja tal-proprjetajiet %1 trid tuża key=value.</translation>
+        </message>
+        <message>
+            <source>Property line %1: %2</source>
+            <translation>Linja tal-proprjetajiet %1: %2</translation>
+        </message>
+        <message>
+            <source>Standard input has no file descriptor.</source>
+            <translation>Id-dħul standard m'għandux deskrittur tal-fajl.</translation>
+        </message>
+        <message>
+            <source>Standard input could not be inspected.</source>
+            <translation>Id-dħul standard ma setax jiġi spezzjonat.</translation>
+        </message>
+        <message>
+            <source>Could not write the command response: %1</source>
+            <translation>It-tweġiba tal-kmand ma setgħetx tinkiteb: %1</translation>
+        </message>
+        <message>
+            <source>Standard input could not be read: %1</source>
+            <translation>Id-dħul standard ma setax jinqara: %1</translation>
+        </message>
+        <message>
+            <source>Input line exceeds 65536 bytes.</source>
+            <translation>Il-linja tad-dħul taqbeż 65536 byte.</translation>
+        </message>
+        <message>
+            <source>Each input line must be a JSON object.</source>
+            <translation>Kull linja tad-dħul trid tkun oġġett JSON.</translation>
+        </message>
+        <message>
+            <source>Input ended before a complete JSON line.</source>
+            <translation>Id-dħul intemm qabel linja JSON sħiħa.</translation>
+        </message>
+        <message>
+            <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
+            <translation>ID fakultattiv tal-kanal tiegħek għall-kmandi status, configure, password, admission, history, chat u radio; id-default huwa l-kanal prinċipali.</translation>
+        </message>
+        <message>
+            <source>Channel action must be list, add or remove.</source>
+            <translation>L-azzjoni tal-kanal trid tkun list, add jew remove.</translation>
+        </message>
+        <message>
+            <source>Removing an own channel deletes its history, images, permissions and radio settings. Set confirmed=true to proceed.</source>
+            <translation>It-tneħħija ta' kanal tiegħek tħassar l-istorja, l-immaġnijiet, il-permessi u s-settings tar-radju tiegħu. Issettja confirmed=true biex tkompli.</translation>
+        </message>
+        <message>
+            <source>id must identify an additional own channel.</source>
+            <translation>id irid jidentifika kanal addizzjonali tiegħek.</translation>
+        </message>
+        <message>
+            <source>The additional own channel could not be removed: %1</source>
+            <translation>Il-kanal addizzjonali tiegħek ma setax jitneħħa: %1</translation>
+        </message>
+        <message>
+            <source>channelId must identify an own channel.</source>
+            <translation>channelId irid jidentifika kanal tiegħek.</translation>
+        </message>
+        <message>
+            <source>values must be a host settings object.</source>
+            <translation>values irid ikun oġġett tas-settings tal-host.</translation>
+        </message>
+        <message>
+            <source>Headless admission is always enabled for non-banned devices; requests off is not supported.</source>
+            <translation>L-aċċess mingħajr interfaċċa grafika huwa dejjem attiv għal apparati mhux ipprojbiti; requests off mhuwiex appoġġjat.</translation>
+        </message>
+        <message>
+            <source>value must be a password of at most 1024 UTF-8 bytes without control characters; an empty string removes it.</source>
+            <translation>value irid ikun password ta' mhux aktar minn 1024 byte UTF-8 mingħajr karattri ta' kontroll; sekwenza vojta tneħħiha.</translation>
+        </message>
+        <message>
+            <source>The channel is not ready or a password change is in progress.</source>
+            <translation>Il-kanal mhuwiex lest jew għaddejja bidla fil-password.</translation>
+        </message>
+        <message>
+            <source>The channel was removed while saving the password.</source>
+            <translation>Il-kanal tneħħa waqt li kienet qed tiġi salvata l-password.</translation>
+        </message>
+        <message>
+            <source>id is required.</source>
+            <translation>id huwa meħtieġ.</translation>
+        </message>
+        <message>
+            <source>text must be a valid non-empty chat message.</source>
+            <translation>text irid ikun messaġġ taċ-chat validu u mhux vojt.</translation>
+        </message>
+        <message>
+            <source>The local channel is not ready.</source>
+            <translation>Il-kanal lokali mhuwiex lest.</translation>
+        </message>
+        <message>
+            <source>The channel's radio is unavailable.</source>
+            <translation>Ir-radju tal-kanal mhuwiex disponibbli.</translation>
+        </message>
+        <message>
+            <source>Unknown command. Use help.</source>
+            <translation>Kmand mhux magħruf. Uża help.</translation>
+        </message>
+        <message>
+            <source>search requires a query, non-negative offset and limit from 1 to 128.</source>
+            <translation>search jeħtieġ query, offset mhux negattiv u limit minn 1 sa 128.</translation>
+        </message>
+        <message>
+            <source>add creates an id; update requires an existing id.</source>
+            <translation>add joħloq id; update jeħtieġ id eżistenti.</translation>
+        </message>
+        <message>
+            <source>A station is already being checked.</source>
+            <translation>Diġà qed jiġi ċċekkjat stazzjon.</translation>
+        </message>
+        <message>
+            <source>The channel was removed while checking the station.</source>
+            <translation>Il-kanal tneħħa waqt li kien qed jiġi ċċekkjat l-istazzjon.</translation>
+        </message>
+        <message>
+            <source>Unknown radio action.</source>
+            <translation>Azzjoni tar-radju mhux magħrufa.</translation>
+        </message>
+        <message>
+            <source>Could not load language: %1</source>
+            <translation>Il-lingwa ma setgħetx titgħabba: %1</translation>
+        </message>
+        <message>
+            <source>The %1 option is incompatible with --headless.</source>
+            <translation>L-għażla %1 mhijiex kompatibbli ma' --headless.</translation>
+        </message>
+        <message>
+            <source>Unexpected positional arguments. Use --help.</source>
+            <translation>Argumenti pożizzjonali mhux mistennija. Uża --help.</translation>
+        </message>
+        <message>
+            <source>--config / -f requires a non-empty path.</source>
+            <translation>--config / -f jeħtieġ mogħdija mhux vojta.</translation>
+        </message>
+        <message>
+            <source>Choose --password or --password-file, not both.</source>
+            <translation>Agħżel --password jew --password-file, mhux it-tnejn.</translation>
+        </message>
+        <message>
+            <source>Choose SQUADSPEAK_PASSWORD or SQUADSPEAK_PASSWORD_FILE, not both.</source>
+            <translation>Agħżel SQUADSPEAK_PASSWORD jew SQUADSPEAK_PASSWORD_FILE, mhux it-tnejn.</translation>
+        </message>
+        <message>
+            <source>Choose password or passwordFile in one configuration layer, not both.</source>
+            <translation>Agħżel password jew passwordFile f'saff wieħed tal-konfigurazzjoni, mhux it-tnejn.</translation>
+        </message>
+        <message>
+            <source>passwordFile must be a non-empty path.</source>
+            <translation>passwordFile irid ikun mogħdija mhux vojta.</translation>
+        </message>
+        <message>
+            <source>Password file could not be read or is too large.</source>
+            <translation>Il-fajl tal-password ma setax jinqara jew huwa kbir wisq.</translation>
+        </message>
+        <message>
+            <source>Password file must contain at most 1024 UTF-8 bytes without control characters.</source>
+            <translation>Il-fajl tal-password irid ikun fih mhux aktar minn 1024 byte UTF-8 mingħajr karattri ta' kontroll.</translation>
+        </message>
+        <message>
+            <source>Password must be a string of at most 1024 UTF-8 bytes without control characters.</source>
+            <translation>Il-password trid tkun sekwenza ta' mhux aktar minn 1024 byte UTF-8 mingħajr karattri ta' kontroll.</translation>
+        </message>
+        <message>
+            <source>settingsFile must be a non-empty path.</source>
+            <translation>settingsFile irid ikun mogħdija mhux vojta.</translation>
+        </message>
+        <message>
+            <source>identityFile must be a non-empty path.</source>
+            <translation>identityFile irid ikun mogħdija mhux vojta.</translation>
+        </message>
+        <message>
+            <source>The settings directory could not be created.</source>
+            <translation>Id-direttorju tas-settings ma setax jinħoloq.</translation>
+        </message>
+        <message>
+            <source>This SquadSpeak profile is already running or cannot be locked.</source>
+            <translation>Dan il-profil SquadSpeak diġà qed jaħdem jew ma jistax jissakkar.</translation>
+        </message>
+        <message>
+            <source>Standard input could not be opened.</source>
+            <translation>Id-dħul standard ma setax jinfetaħ.</translation>
+        </message>
+        <message>
+            <source>Standard output could not be opened.</source>
+            <translation>Il-ħruġ standard ma setax jinfetaħ.</translation>
+        </message>
+        <message>
+            <source>This identity file is already in use or cannot be locked.</source>
+            <translation>Dan il-fajl tal-identità diġà qed jintuża jew ma jistax jissakkar.</translation>
+        </message>
+        <message>
+            <source>Invalid host configuration: %1</source>
+            <translation>Konfigurazzjoni tal-host mhux valida: %1</translation>
+        </message>
+        <message>
+            <source>Radio channels could not be initialized.</source>
+            <translation>Il-kanali tar-radju ma setgħux jiġu inizjalizzati.</translation>
+        </message>
+        <message>
+            <source>Headless host could not start: %1</source>
+            <translation>Il-host mingħajr interfaċċa grafika ma setax jibda: %1</translation>
+        </message>
+        <message>
+            <source>Channel password could not be saved.</source>
+            <translation>Il-password tal-kanal ma setgħetx tiġi salvata.</translation>
+        </message>
+        <message>
+            <source>Invalid channel password: %1</source>
+            <translation>Password tal-kanal mhux valida: %1</translation>
+        </message>
+        <message>
+            <source>Headless host could not initialize: %1</source>
+            <translation>Il-host mingħajr interfaċċa grafika ma setax jiġi inizjalizzat: %1</translation>
+        </message>
+        <message>
+            <source>SquadSpeak headless could not start: %1</source>
+            <translation>SquadSpeak mingħajr interfaċċa grafika ma setax jibda: %1</translation>
+        </message>
+        <message>
+            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
+            <translation>L-azzjoni tal-partitarju trid tkun status, sign-in, refresh, sign-out jew tikkanċella. cancel</translation>
+        </message>
+        <message>
+            <source>A Supporter operation is in progress.</source>
+            <translation>Għaddejja operazzjoni ta' Supporter.</translation>
+        </message>
+        <message>
+            <source>Supporter access is unavailable in this build.</source>
+            <translation>L-aċċess għall-partitarji mhux disponibbli f'din il-bini.</translation>
+        </message>
+        <message>
+            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
+            <translation>Preċedenza tal-issettjar: argumenti &gt; ambjent &gt; proprjetajiet &gt; valuri tas-server salvati.</translation>
+        </message>
+    </context>
+    <context>
+        <name>License</name>
+        <message>
+            <source>License storage is busy or unavailable.</source>
+            <translation>Il-ħażna tal-liċenzja hija okkupata jew mhux disponibbli.</translation>
+        </message>
+        <message>
+            <source>License storage is unavailable.</source>
+            <translation>Il-ħażna tal-liċenzja mhix disponibbli.</translation>
+        </message>
+        <message>
+            <source>Sign-in expired. Try again.</source>
+            <translation>Id-dħul skada. Erġa' pprova.</translation>
+        </message>
+        <message>
+            <source>GitHub sign-in is unavailable. Try again.</source>
+            <translation>Id-dħul ta' GitHub mhuwiex disponibbli. Erġa' pprova.</translation>
+        </message>
+        <message>
+            <source>GitHub sign-in was not completed. Try again.</source>
+            <translation>Id-dħul ta' GitHub ma tlestietx. Erġa' pprova.</translation>
+        </message>
+        <message>
+            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
+            <translation>GitHub ma setax jiġi ċċekkjat. L-aċċess offline idum mhux aktar minn sebat ijiem.</translation>
+        </message>
+        <message>
+            <source>Sign in with GitHub again.</source>
+            <translation>Idħol mill-ġdid ma' GitHub.</translation>
+        </message>
+    </context>
+    <context>
         <name>LocalChannel</name>
+        <message>
+            <source>Insufficient permissions.</source>
+            <translation>Permessi insuffiċjenti.</translation>
+        </message>
+        <message>
+            <source>Blocked</source>
+            <translation>Imblukkati</translation>
+        </message>
         <message>
             <source>Host is not responding. Reconnecting.</source>
             <translation>Il-host mhux qed iwieġeb. Qed jerġa' jgħaqqad.</translation>
@@ -1926,8 +2312,8 @@
             <translation>It-trasferiment tal-immaġni ħa żmien twil wisq.</translation>
         </message>
         <message>
-            <source>The channel is full. Text chat is still available.</source>
-            <translation>Il-kanal huwa mimli. Iċ-chat tat-test għadu disponibbli.</translation>
+            <source>The host is busy. Try again shortly.</source>
+            <translation>Il-host huwa okkupat. Erġa' pprova dalwaqt.</translation>
         </message>
         <message>
             <source>All own channels use the device's shared port.</source>
@@ -2189,6 +2575,53 @@
             <source>Voice relay codec could not be configured.</source>
             <translation>Il-codec tat-trażmissjoni tal-vuċi ma setax jiġi kkonfigurat.</translation>
         </message>
+        <message>
+            <source>Unsupported audio codec</source>
+            <translation>Codec tal-awdjo mhux appoġġjat</translation>
+        </message>
+        <message>
+            <source>Speaking is not allowed in this channel.</source>
+            <translation>Mhux permess titkellem f'dan il-kanal.</translation>
+        </message>
+    </context>
+    <context>
+        <name>LocalLanguage</name>
+        <message>
+            <source>Translation (experimental)</source>
+            <translation>Traduzzjoni (sperimentali)</translation>
+        </message>
+        <message>
+            <source>Translate messages</source>
+            <translation>Ittraduċi l-messaġġi</translation>
+        </message>
+        <message>
+            <source>Translated voice</source>
+            <translation>Vuċi tradotta</translation>
+        </message>
+        <message>
+            <source>Original audio</source>
+            <translation>Awdjo oriġinali</translation>
+        </message>
+        <message>
+            <source>Original text</source>
+            <translation>Test oriġinali</translation>
+        </message>
+        <message>
+            <source>Prepare languages</source>
+            <translation>Ipprepara l-lingwi</translation>
+        </message>
+        <message>
+            <source>Local language processing is unavailable.</source>
+            <translation>L-ipproċessar lokali tal-lingwa mhux disponibbli.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be read.</source>
+            <translation>Is-settings tal-lingwa ma setgħux jinqraw.</translation>
+        </message>
+        <message>
+            <source>Language settings could not be saved.</source>
+            <translation>Is-settings tal-lingwa ma setgħux jiġu ssejvjati.</translation>
+        </message>
     </context>
     <context>
         <name>PushToTalkKey</name>
@@ -2329,50 +2762,61 @@
         </message>
     </context>
     <context>
-        <name>RecordingPanel</name>
+        <name>ScreenPanel</name>
         <message>
-            <source>Stop</source>
-            <translation>Waqqaf</translation>
+            <source>Video paused</source>
+            <translation>Il-video waqaf</translation>
         </message>
         <message>
-            <source>Start</source>
-            <translation>Ibda</translation>
+            <source>Stream ended</source>
+            <translation>Il-fluss intemm</translation>
         </message>
         <message>
-            <source>Saved on this device only. Nothing is uploaded.</source>
-            <translation>Salvat fuq dan l-apparat biss. Xejn ma jittella'.</translation>
+            <source>Connecting</source>
+            <translation>Qed jgħaqqad</translation>
         </message>
         <message>
-            <source>Keep this take or record it again.</source>
-            <translation>Żomm din ir-reġistrazzjoni jew irreġistra mill-ġdid.</translation>
+            <source>Open screen stream</source>
+            <translation>Iftaħ il-fluss tal-iskrin</translation>
         </message>
         <message>
-            <source>Record again</source>
-            <translation>Irreġistra mill-ġdid</translation>
+            <source>Screen stream</source>
+            <translation>Fluss tal-iskrin</translation>
         </message>
         <message>
-            <source>Use recording</source>
-            <translation>Uża r-reġistrazzjoni</translation>
+            <source>%1 kbit/s</source>
+            <translation>%1 kbit/s</translation>
+        </message>
+    </context>
+    <context>
+        <name>ScreenShare</name>
+        <message>
+            <source>Allow screen recording in system settings.</source>
+            <translation>Ippermetti r-reġistrazzjoni tal-iskrin fis-settings tas-sistema.</translation>
         </message>
         <message>
-            <source>Recording progress</source>
-            <translation>Progress tar-reġistrazzjoni</translation>
+            <source>The shared screen was removed. Select a source to start again.</source>
+            <translation>L-iskrin maqsum tneħħa. Agħżel sors biex terġa' tibda.</translation>
         </message>
         <message>
-            <source>Step %1 of %2</source>
-            <translation>Pass %1 ta' %2</translation>
+            <source>The shared window was closed. Select a source to start again.</source>
+            <translation>It-tieqa maqsuma ngħalqet. Agħżel sors biex terġa' tibda.</translation>
         </message>
         <message>
-            <source>Open recordings</source>
-            <translation>Reġistrazzjonijiet miftuħa</translation>
+            <source>The selected screen is no longer available.</source>
+            <translation>L-iskrin magħżul m'għadux disponibbli.</translation>
         </message>
         <message>
-            <source>Reset test</source>
-            <translation>Irrisettja t-test</translation>
+            <source>The selected window is no longer available.</source>
+            <translation>It-tieqa magħżula m'għadhiex disponibbli.</translation>
         </message>
         <message>
-            <source>%1 s remaining / %2 dBFS</source>
-            <translation>%1 s fadal / %2 dBFS</translation>
+            <source>The selected source exceeds the capture size limit.</source>
+            <translation>Is-sors magħżul jaqbeż il-limitu tad-daqs tal-qbid.</translation>
+        </message>
+        <message>
+            <source>Close a video view before opening another stream.</source>
+            <translation>Agħlaq veduta tal-video qabel tiftaħ fluss ieħor.</translation>
         </message>
     </context>
     <context>
@@ -2449,10 +2893,6 @@
             <translation>Il-ġbir tas-sinjal...</translation>
         </message>
         <message>
-            <source>Dashed curve: configured gain and frequency cuts, using the right dB scale. Noise reduction and voice activation are not part of this curve.</source>
-            <translation>Kurva bit-tikek: il-qligħ u l-qtugħ tal-frekwenza kkonfigurati, bl-użu tal-iskala dB fuq il-lemin. It-tnaqqis tal-istorbju u l-attivazzjoni bil-vuċi mhumiex parti minn din il-kurva.</translation>
-        </message>
-        <message>
             <source>Microphone preview is not running</source>
             <translation>Il-previżjoni tal-mikrofonu mhijiex qed taħdem</translation>
         </message>
@@ -2463,303 +2903,6 @@
         <message>
             <source>Peak: %1</source>
             <translation>Quċċata: %1</translation>
-        </message>
-    </context>
-    <context>
-        <name>Tray</name>
-        <message>
-            <source>Quit</source>
-            <translation>Ħruġ</translation>
-        </message>
-        <message>
-            <source>SquadSpeak - speaking</source>
-            <translation>SquadSpeak - qed jitkellem</translation>
-        </message>
-        <message>
-            <source>Settings</source>
-            <translation>Settings</translation>
-        </message>
-        <message>
-            <source>Channels</source>
-            <translation>Il-kanali</translation>
-        </message>
-        <message>
-            <source>New image</source>
-            <translation>Immaġni ġdida</translation>
-        </message>
-    </context>
-    <context>
-        <name>VoiceAvatar</name>
-        <message>
-            <source>Muted</source>
-            <translation>Mikrofonu sieket</translation>
-        </message>
-        <message>
-            <source>Sleeping</source>
-            <translation>Irqad</translation>
-        </message>
-        <message>
-            <source>Offline</source>
-            <translation>Mhux konness</translation>
-        </message>
-        <message>
-            <source>Speaking</source>
-            <translation>Qed jitkellem</translation>
-        </message>
-        <message>
-            <source>Unavailable</source>
-            <translation>Mhux disponibbli</translation>
-        </message>
-        <message>
-            <source>Listening</source>
-            <translation>Qed jisma'</translation>
-        </message>
-        <message>
-            <source>Deafened</source>
-            <translation>Kelliema siekta</translation>
-        </message>
-    </context>
-    <context>
-        <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>Mhux disponibbli - settings tal-awdjo jew test tat-ton</translation>
-        </message>
-        <message>
-            <source>Microphone muted</source>
-            <translation>Mikrofonu sieket</translation>
-        </message>
-        <message>
-            <source>Push-to-talk held</source>
-            <translation>Push-to-talk miżmum</translation>
-        </message>
-        <message>
-            <source>Ready - push-to-talk released</source>
-            <translation>Lest - il-push-to-talk ġie rilaxxat</translation>
-        </message>
-        <message>
-            <source>Microphone unmuted</source>
-            <translation>Mikrofonu mhux sieket</translation>
-        </message>
-        <message>
-            <source>Settings could not be saved: %1</source>
-            <translation>Is-settings ma setgħux jiġu ffrankati: %1</translation>
-        </message>
-        <message>
-            <source>The push-to-talk sequence cannot be incremented further.</source>
-            <translation>Is-sekwenza tal-push-to-talk ma tistax tiżdied aktar.</translation>
-        </message>
-        <message>
-            <source>Choose System, Light or Dark.</source>
-            <translation>Agħżel Sistema, Dawl jew Dlam.</translation>
-        </message>
-        <message>
-            <source>Choose a colour palette from the list.</source>
-            <translation>Agħżel paletta tal-kuluri mil-lista.</translation>
-        </message>
-        <message>
-            <source>Choose an available avatar.</source>
-            <translation>Agħżel avatar disponibbli.</translation>
-        </message>
-        <message>
-            <source>Invalid push-to-talk binding.</source>
-            <translation>Rbit tal-push-to-talk invalidu.</translation>
-        </message>
-        <message>
-            <source>Release the held push-to-talk key first.</source>
-            <translation>L-ewwel eħles iċ-ċavetta tal-push-to-talk miżmuma.</translation>
-        </message>
-        <message>
-            <source>Choose a language from the list.</source>
-            <translation>Agħżel lingwa mil-lista.</translation>
-        </message>
-        <message>
-            <source>This avatar requires Supporter.</source>
-            <translation>Dan l-avatar jeħtieġ Supporter.</translation>
-        </message>
-        <message>
-            <source>The name must contain 1 to 64 characters.</source>
-            <translation>L-isem għandu jkun fih minn 1 sa 64 karattru.</translation>
-        </message>
-        <message>
-            <source>The name may not contain control characters or line breaks.</source>
-            <translation>L-isem ma jistax ikun fih karattri ta' kontroll jew linji ġodda.</translation>
-        </message>
-        <message>
-            <source>Session settings could not be read.</source>
-            <translation>Ma setgħux jinqraw is-settings tas-sessjoni.</translation>
-        </message>
-        <message>
-            <source>Saved setting is invalid: %1</source>
-            <translation>Setting issejvjat mhux validu: %1</translation>
-        </message>
-    </context>
-    <context>
-        <name>License</name>
-        <message>
-            <source>License storage is busy or unavailable.</source>
-            <translation>Il-ħażna tal-liċenzja hija okkupata jew mhux disponibbli.</translation>
-        </message>
-        <message>
-            <source>License storage is unavailable.</source>
-            <translation>Il-ħażna tal-liċenzja mhix disponibbli.</translation>
-        </message>
-        <message>
-            <source>Sign-in expired. Try again.</source>
-            <translation>Id-dħul skada. Erġa' pprova.</translation>
-        </message>
-        <message>
-            <source>GitHub sign-in is unavailable. Try again.</source>
-            <translation>Id-dħul ta' GitHub mhuwiex disponibbli. Erġa' pprova.</translation>
-        </message>
-        <message>
-            <source>GitHub sign-in was not completed. Try again.</source>
-            <translation>Id-dħul ta' GitHub ma tlestietx. Erġa' pprova.</translation>
-        </message>
-        <message>
-            <source>GitHub could not be checked. Offline access lasts at most seven days.</source>
-            <translation>GitHub ma setax jiġi ċċekkjat. L-aċċess offline idum mhux aktar minn sebat ijiem.</translation>
-        </message>
-        <message>
-            <source>Sign in with GitHub again.</source>
-            <translation>Idħol mill-ġdid ma' GitHub.</translation>
-        </message>
-    </context>
-    <context>
-        <name>ScreenShare</name>
-        <message>
-            <source>The shared screen was removed. Select a source to start again.</source>
-            <translation>L-iskrin maqsum tneħħa. Agħżel sors biex terġa' tibda.</translation>
-        </message>
-        <message>
-            <source>The shared window was closed. Select a source to start again.</source>
-            <translation>It-tieqa maqsuma ngħalqet. Agħżel sors biex terġa' tibda.</translation>
-        </message>
-        <message>
-            <source>The selected screen is no longer available.</source>
-            <translation>L-iskrin magħżul m'għadux disponibbli.</translation>
-        </message>
-        <message>
-            <source>The selected window is no longer available.</source>
-            <translation>It-tieqa magħżula m'għadhiex disponibbli.</translation>
-        </message>
-        <message>
-            <source>The selected source exceeds the capture size limit.</source>
-            <translation>Is-sors magħżul jaqbeż il-limitu tad-daqs tal-qbid.</translation>
-        </message>
-        <message>
-            <source>Close a video view before opening another stream.</source>
-            <translation>Agħlaq veduta tal-video qabel tiftaħ fluss ieħor.</translation>
-        </message>
-    </context>
-    <context>
-        <name>ScreenPanel</name>
-        <message>
-            <source>Media capacity reached</source>
-            <translation>Intlaħqet il-kapaċità tal-midja</translation>
-        </message>
-        <message>
-            <source>Video paused</source>
-            <translation>Il-video waqaf</translation>
-        </message>
-        <message>
-            <source>Stream ended</source>
-            <translation>Il-fluss intemm</translation>
-        </message>
-        <message>
-            <source>Connecting</source>
-            <translation>Qed jgħaqqad</translation>
-        </message>
-        <message>
-            <source>Open screen stream</source>
-            <translation>Iftaħ il-fluss tal-iskrin</translation>
-        </message>
-        <message>
-            <source>Screen stream</source>
-            <translation>Fluss tal-iskrin</translation>
-        </message>
-        <message>
-            <source>%1 kbit/s</source>
-            <translation>%1 kbit/s</translation>
-        </message>
-    </context>
-    <context>
-        <name>VideoCodec</name>
-        <message>
-            <source>Video codec: %1</source>
-            <translation>Codec tal-vidjo: %1</translation>
-        </message>
-        <message>
-            <source>Video codec ABI does not match its headers.</source>
-            <translation>L-ABI tal-codec tal-vidjo ma jaqbilx mal-fajls header tiegħu.</translation>
-        </message>
-        <message>
-            <source>Video buffers could not be allocated.</source>
-            <translation>Ma setgħetx tiġi allokata memorja għall-buffers tal-vidjo.</translation>
-        </message>
-        <message>
-            <source>Invalid video quality tier.</source>
-            <translation>Livell ta' kwalità tal-vidjo mhux validu.</translation>
-        </message>
-        <message>
-            <source>The screen source exceeds the supported capture size.</source>
-            <translation>Is-sors tal-iskrin jaqbeż id-daqs tal-qbid appoġġjat.</translation>
-        </message>
-        <message>
-            <source>The screen source is too narrow.</source>
-            <translation>Is-sors tal-iskrin huwa dejjaq wisq.</translation>
-        </message>
-        <message>
-            <source>The video encoder could not be allocated.</source>
-            <translation>Ma setgħetx tiġi allokata memorja għall-kodifikatur tal-vidjo.</translation>
-        </message>
-        <message>
-            <source>No supported video encoder is available.</source>
-            <translation>M'hemm l-ebda kodifikatur tal-vidjo appoġġjat disponibbli.</translation>
-        </message>
-        <message>
-            <source>Video encoder configuration is too large.</source>
-            <translation>Il-konfigurazzjoni tal-kodifikatur tal-vidjo hija kbira wisq.</translation>
-        </message>
-        <message>
-            <source>Video scaling could not be initialized.</source>
-            <translation>Ma setax jiġi inizjalizzat l-iskalar tal-vidjo.</translation>
-        </message>
-        <message>
-            <source>The encoder returned an empty video packet.</source>
-            <translation>Il-kodifikatur irritorna pakkett tal-vidjo vojt.</translation>
-        </message>
-        <message>
-            <source>Invalid video frame format.</source>
-            <translation>Format tal-frejm tal-vidjo mhux validu.</translation>
-        </message>
-        <message>
-            <source>Invalid video decoder configuration.</source>
-            <translation>Konfigurazzjoni tad-dekodifikatur tal-vidjo mhux valida.</translation>
-        </message>
-        <message>
-            <source>This video codec cannot be decoded.</source>
-            <translation>Dan il-codec tal-vidjo ma jistax jiġi dekodifikat.</translation>
-        </message>
-        <message>
-            <source>Video decoder could not be allocated.</source>
-            <translation>Ma setgħetx tiġi allokata memorja għad-dekodifikatur tal-vidjo.</translation>
-        </message>
-        <message>
-            <source>Video decoder configuration could not be allocated.</source>
-            <translation>Ma setgħetx tiġi allokata memorja għall-konfigurazzjoni tad-dekodifikatur tal-vidjo.</translation>
-        </message>
-        <message>
-            <source>Decoded dimensions do not match the screen stream.</source>
-            <translation>Id-dimensjonijiet dekodifikati ma jaqblux mal-fluss tal-iskrin.</translation>
-        </message>
-        <message>
-            <source>Decoded image could not be allocated.</source>
-            <translation>Ma setgħetx tiġi allokata memorja għall-immaġni dekodifikata.</translation>
-        </message>
-        <message>
-            <source>Video color conversion could not be initialized.</source>
-            <translation>Ma setgħetx tiġi inizjalizzata l-konverżjoni tal-kuluri tal-vidjo.</translation>
         </message>
     </context>
     <context>
@@ -2877,359 +3020,208 @@
             <translation>Il-password ma setgħetx tiġi vverifikata.</translation>
         </message>
     </context>
-
     <context>
-        <name>Headless</name>
+        <name>Tray</name>
         <message>
-            <source>Command failed.</source>
-            <translation>Il-kmand falla.</translation>
+            <source>Quit</source>
+            <translation>Ħruġ</translation>
         </message>
         <message>
-            <source>%1 must be an integer.</source>
-            <translation>%1 għandu jkun numru sħiħ.</translation>
+            <source>SquadSpeak - speaking</source>
+            <translation>SquadSpeak - qed jitkellem</translation>
         </message>
         <message>
-            <source>Requests must be on/off or true/false.</source>
-            <translation>It-talbiet għandhom ikunu on/off jew true/false.</translation>
+            <source>Settings</source>
+            <translation>Settings</translation>
         </message>
         <message>
-            <source>Unknown host property: %1</source>
-            <translation>Proprjetà mhux magħrufa tal-host: %1</translation>
+            <source>Channels</source>
+            <translation>Il-kanali</translation>
         </message>
         <message>
-            <source>Run without GUI, microphone capture, or local audio output.</source>
-            <translation>Ħaddem mingħajr interfaċċa grafika, qbid tal-mikrofonu jew ħruġ lokali tal-awdjo.</translation>
-        </message>
-        <message>
-            <source>Server storage prefix. Personal/audio/GUI profiles are not loaded.</source>
-            <translation>Prefiss tal-ħażna tas-server. Il-profili personali, tal-awdjo u tal-interfaċċa ma jitgħabbewx.</translation>
-        </message>
-        <message>
-            <source>Optional private identity file instead of the OS credential store (Linux/macOS). Parent directory must exist and belong to this account.</source>
-            <translation>Fajl privat tal-identità fakultattiv minflok il-maħżen tal-kredenzjali tas-sistema (Linux/macOS). Id-direttorju ġenitur irid jeżisti u jkun ta' dan il-kont.</translation>
-        </message>
-        <message>
-            <source>UTF-8 key=value properties or JSON host preset. Default: application.properties, then config/application.properties beside the app.</source>
-            <translation>Proprjetajiet UTF-8 key=value jew issettjar minn qabel tal-host f'JSON. Default: application.properties, imbagħad config/application.properties ħdejn l-app.</translation>
-        </message>
-        <message>
-            <source>Channel display name.</source>
-            <translation>Isem muri tal-kanal.</translation>
-        </message>
-        <message>
-            <source>System and radio bot display name.</source>
-            <translation>Isem muri tal-bot tas-sistema u tar-radju.</translation>
-        </message>
-        <message>
-            <source>TCP service port (1-65535).</source>
-            <translation>Port TCP tas-servizz (1-65535).</translation>
-        </message>
-        <message>
-            <source>Headless admission is always on; only 'on' or 'true' is accepted.</source>
-            <translation>L-aċċess mingħajr interfaċċa grafika huwa dejjem mixgħul; huma aċċettati biss 'on' jew 'true'.</translation>
-        </message>
-        <message>
-            <source>Preapprove a device ID; repeat for several devices. Existing bans remain.</source>
-            <translation>Approva ID ta' apparat minn qabel; irrepeti għal diversi apparati. Il-projbizzjonijiet eżistenti jibqgħu.</translation>
-        </message>
-        <message>
-            <source>Block a device ID; repeat for several devices.</source>
-            <translation>Imblokka ID ta' apparat; irrepeti għal diversi apparati.</translation>
-        </message>
-        <message>
-            <source>Read a UTF-8 channel password from a file before listening. An empty file removes it.</source>
-            <translation>Aqra l-password UTF-8 tal-kanal minn fajl qabel tibda tisma'. Fajl vojt ineħħiha.</translation>
-        </message>
-        <message>
-            <source>Channel password. Empty removes it; environment or config avoids process-list exposure.</source>
-            <translation>Password tal-kanal. Valur vojt ineħħiha; l-ambjent jew il-konfigurazzjoni jevitaw li tidher fil-lista tal-proċessi.</translation>
-        </message>
-        <message>
-            <source>SquadSpeak headless local channel host</source>
-            <translation>Host lokali ta' kanal SquadSpeak mingħajr interfaċċa grafika</translation>
-        </message>
-        <message>
-            <source>Environment variables (SQUADSPEAK_ prefix):</source>
-            <translation>Varjabbli tal-ambjent (prefiss SQUADSPEAK_):</translation>
-        </message>
-        <message>
-            <source>Host configuration could not be read or exceeds 1 MiB.</source>
-            <translation>Il-konfigurazzjoni tal-host ma setgħetx tinqara jew taqbeż 1 MiB.</translation>
-        </message>
-        <message>
-            <source>Host configuration must be UTF-8.</source>
-            <translation>Il-konfigurazzjoni tal-host trid tkun UTF-8.</translation>
-        </message>
-        <message>
-            <source>Host preset must be a JSON object.</source>
-            <translation>L-issettjar minn qabel tal-host irid ikun oġġett JSON.</translation>
-        </message>
-        <message>
-            <source>Property line %1 must use key=value.</source>
-            <translation>Il-linja tal-proprjetajiet %1 trid tuża key=value.</translation>
-        </message>
-        <message>
-            <source>Property line %1: %2</source>
-            <translation>Linja tal-proprjetajiet %1: %2</translation>
-        </message>
-        <message>
-            <source>Standard input has no file descriptor.</source>
-            <translation>Id-dħul standard m'għandux deskrittur tal-fajl.</translation>
-        </message>
-        <message>
-            <source>Standard input could not be inspected.</source>
-            <translation>Id-dħul standard ma setax jiġi spezzjonat.</translation>
-        </message>
-        <message>
-            <source>Could not write the command response: %1</source>
-            <translation>It-tweġiba tal-kmand ma setgħetx tinkiteb: %1</translation>
-        </message>
-        <message>
-            <source>Standard input could not be read: %1</source>
-            <translation>Id-dħul standard ma setax jinqara: %1</translation>
-        </message>
-        <message>
-            <source>Input line exceeds 65536 bytes.</source>
-            <translation>Il-linja tad-dħul taqbeż 65536 byte.</translation>
-        </message>
-        <message>
-            <source>Each input line must be a JSON object.</source>
-            <translation>Kull linja tad-dħul trid tkun oġġett JSON.</translation>
-        </message>
-        <message>
-            <source>Input ended before a complete JSON line.</source>
-            <translation>Id-dħul intemm qabel linja JSON sħiħa.</translation>
-        </message>
-        <message>
-            <source>Optional own channel ID for status, configure, password, admission, history, chat and radio commands; defaults to the primary channel.</source>
-            <translation>ID fakultattiv tal-kanal tiegħek għall-kmandi status, configure, password, admission, history, chat u radio; id-default huwa l-kanal prinċipali.</translation>
-        </message>
-        <message>
-            <source>Channel action must be list, add or remove.</source>
-            <translation>L-azzjoni tal-kanal trid tkun list, add jew remove.</translation>
-        </message>
-        <message>
-            <source>Removing an own channel deletes its history, images, permissions and radio settings. Set confirmed=true to proceed.</source>
-            <translation>It-tneħħija ta' kanal tiegħek tħassar l-istorja, l-immaġnijiet, il-permessi u s-settings tar-radju tiegħu. Issettja confirmed=true biex tkompli.</translation>
-        </message>
-        <message>
-            <source>id must identify an additional own channel.</source>
-            <translation>id irid jidentifika kanal addizzjonali tiegħek.</translation>
-        </message>
-        <message>
-            <source>The additional own channel could not be removed: %1</source>
-            <translation>Il-kanal addizzjonali tiegħek ma setax jitneħħa: %1</translation>
-        </message>
-        <message>
-            <source>channelId must identify an own channel.</source>
-            <translation>channelId irid jidentifika kanal tiegħek.</translation>
-        </message>
-        <message>
-            <source>values must be a host settings object.</source>
-            <translation>values irid ikun oġġett tas-settings tal-host.</translation>
-        </message>
-        <message>
-            <source>Headless admission is always enabled for non-banned devices; requests off is not supported.</source>
-            <translation>L-aċċess mingħajr interfaċċa grafika huwa dejjem attiv għal apparati mhux ipprojbiti; requests off mhuwiex appoġġjat.</translation>
-        </message>
-        <message>
-            <source>value must be a password of at most 1024 UTF-8 bytes without control characters; an empty string removes it.</source>
-            <translation>value irid ikun password ta' mhux aktar minn 1024 byte UTF-8 mingħajr karattri ta' kontroll; sekwenza vojta tneħħiha.</translation>
-        </message>
-        <message>
-            <source>The channel is not ready or a password change is in progress.</source>
-            <translation>Il-kanal mhuwiex lest jew għaddejja bidla fil-password.</translation>
-        </message>
-        <message>
-            <source>The channel was removed while saving the password.</source>
-            <translation>Il-kanal tneħħa waqt li kienet qed tiġi salvata l-password.</translation>
-        </message>
-        <message>
-            <source>id is required.</source>
-            <translation>id huwa meħtieġ.</translation>
-        </message>
-        <message>
-            <source>text must be a valid non-empty chat message.</source>
-            <translation>text irid ikun messaġġ taċ-chat validu u mhux vojt.</translation>
-        </message>
-        <message>
-            <source>The local channel is not ready.</source>
-            <translation>Il-kanal lokali mhuwiex lest.</translation>
-        </message>
-        <message>
-            <source>The channel's radio is unavailable.</source>
-            <translation>Ir-radju tal-kanal mhuwiex disponibbli.</translation>
-        </message>
-        <message>
-            <source>Unknown command. Use help.</source>
-            <translation>Kmand mhux magħruf. Uża help.</translation>
-        </message>
-        <message>
-            <source>search requires a query, non-negative offset and limit from 1 to 128.</source>
-            <translation>search jeħtieġ query, offset mhux negattiv u limit minn 1 sa 128.</translation>
-        </message>
-        <message>
-            <source>add creates an id; update requires an existing id.</source>
-            <translation>add joħloq id; update jeħtieġ id eżistenti.</translation>
-        </message>
-        <message>
-            <source>A station is already being checked.</source>
-            <translation>Diġà qed jiġi ċċekkjat stazzjon.</translation>
-        </message>
-        <message>
-            <source>The channel was removed while checking the station.</source>
-            <translation>Il-kanal tneħħa waqt li kien qed jiġi ċċekkjat l-istazzjon.</translation>
-        </message>
-        <message>
-            <source>Unknown radio action.</source>
-            <translation>Azzjoni tar-radju mhux magħrufa.</translation>
-        </message>
-        <message>
-            <source>Could not load language: %1</source>
-            <translation>Il-lingwa ma setgħetx titgħabba: %1</translation>
-        </message>
-        <message>
-            <source>The %1 option is incompatible with --headless.</source>
-            <translation>L-għażla %1 mhijiex kompatibbli ma' --headless.</translation>
-        </message>
-        <message>
-            <source>Unexpected positional arguments. Use --help.</source>
-            <translation>Argumenti pożizzjonali mhux mistennija. Uża --help.</translation>
-        </message>
-        <message>
-            <source>--config / -f requires a non-empty path.</source>
-            <translation>--config / -f jeħtieġ mogħdija mhux vojta.</translation>
-        </message>
-        <message>
-            <source>Choose --password or --password-file, not both.</source>
-            <translation>Agħżel --password jew --password-file, mhux it-tnejn.</translation>
-        </message>
-        <message>
-            <source>Choose SQUADSPEAK_PASSWORD or SQUADSPEAK_PASSWORD_FILE, not both.</source>
-            <translation>Agħżel SQUADSPEAK_PASSWORD jew SQUADSPEAK_PASSWORD_FILE, mhux it-tnejn.</translation>
-        </message>
-        <message>
-            <source>Choose password or passwordFile in one configuration layer, not both.</source>
-            <translation>Agħżel password jew passwordFile f'saff wieħed tal-konfigurazzjoni, mhux it-tnejn.</translation>
-        </message>
-        <message>
-            <source>passwordFile must be a non-empty path.</source>
-            <translation>passwordFile irid ikun mogħdija mhux vojta.</translation>
-        </message>
-        <message>
-            <source>Password file could not be read or is too large.</source>
-            <translation>Il-fajl tal-password ma setax jinqara jew huwa kbir wisq.</translation>
-        </message>
-        <message>
-            <source>Password file must contain at most 1024 UTF-8 bytes without control characters.</source>
-            <translation>Il-fajl tal-password irid ikun fih mhux aktar minn 1024 byte UTF-8 mingħajr karattri ta' kontroll.</translation>
-        </message>
-        <message>
-            <source>Password must be a string of at most 1024 UTF-8 bytes without control characters.</source>
-            <translation>Il-password trid tkun sekwenza ta' mhux aktar minn 1024 byte UTF-8 mingħajr karattri ta' kontroll.</translation>
-        </message>
-        <message>
-            <source>settingsFile must be a non-empty path.</source>
-            <translation>settingsFile irid ikun mogħdija mhux vojta.</translation>
-        </message>
-        <message>
-            <source>identityFile must be a non-empty path.</source>
-            <translation>identityFile irid ikun mogħdija mhux vojta.</translation>
-        </message>
-        <message>
-            <source>The settings directory could not be created.</source>
-            <translation>Id-direttorju tas-settings ma setax jinħoloq.</translation>
-        </message>
-        <message>
-            <source>This SquadSpeak profile is already running or cannot be locked.</source>
-            <translation>Dan il-profil SquadSpeak diġà qed jaħdem jew ma jistax jissakkar.</translation>
-        </message>
-        <message>
-            <source>Standard input could not be opened.</source>
-            <translation>Id-dħul standard ma setax jinfetaħ.</translation>
-        </message>
-        <message>
-            <source>Standard output could not be opened.</source>
-            <translation>Il-ħruġ standard ma setax jinfetaħ.</translation>
-        </message>
-        <message>
-            <source>This identity file is already in use or cannot be locked.</source>
-            <translation>Dan il-fajl tal-identità diġà qed jintuża jew ma jistax jissakkar.</translation>
-        </message>
-        <message>
-            <source>Invalid host configuration: %1</source>
-            <translation>Konfigurazzjoni tal-host mhux valida: %1</translation>
-        </message>
-        <message>
-            <source>Radio channels could not be initialized.</source>
-            <translation>Il-kanali tar-radju ma setgħux jiġu inizjalizzati.</translation>
-        </message>
-        <message>
-            <source>Headless host could not start: %1</source>
-            <translation>Il-host mingħajr interfaċċa grafika ma setax jibda: %1</translation>
-        </message>
-        <message>
-            <source>Channel password could not be saved.</source>
-            <translation>Il-password tal-kanal ma setgħetx tiġi salvata.</translation>
-        </message>
-        <message>
-            <source>Invalid channel password: %1</source>
-            <translation>Password tal-kanal mhux valida: %1</translation>
-        </message>
-        <message>
-            <source>Headless host could not initialize: %1</source>
-            <translation>Il-host mingħajr interfaċċa grafika ma setax jiġi inizjalizzat: %1</translation>
-        </message>
-        <message>
-            <source>SquadSpeak headless could not start: %1</source>
-            <translation>SquadSpeak mingħajr interfaċċa grafika ma setax jibda: %1</translation>
-        </message>
-        <message>
-            <source>Supporter action must be status, sign-in, refresh, sign-out or cancel.</source>
-            <translation>L-azzjoni tal-partitarju trid tkun status, sign-in, refresh, sign-out jew tikkanċella. cancel</translation>
-        </message>
-        <message>
-            <source>A Supporter operation is in progress.</source>
-            <translation>Għaddejja operazzjoni ta' Supporter.</translation>
-        </message>
-        <message>
-            <source>Supporter access is unavailable in this build.</source>
-            <translation>L-aċċess għall-partitarji mhux disponibbli f'din il-bini.</translation>
-        </message>
-        <message>
-            <source>Settings precedence: arguments &gt; environment &gt; properties &gt; saved server values.</source>
-            <translation>Preċedenza tal-issettjar: argumenti &gt; ambjent &gt; proprjetajiet &gt; valuri tas-server salvati.</translation>
+            <source>New image</source>
+            <translation>Immaġni ġdida</translation>
         </message>
     </context>
     <context>
-        <name>Desktop</name>
+        <name>VideoCodec</name>
         <message>
-            <source>Open settings at startup.</source>
-            <translation>Iftaħ is-settings mal-bidu.</translation>
+            <source>Video codec: %1</source>
+            <translation>Codec tal-vidjo: %1</translation>
         </message>
         <message>
-            <source>Open guided local test recording without starting network services.</source>
-            <translation>Iftaħ ir-reġistrazzjoni lokali ta' prova ggwidata mingħajr ma tibda s-servizzi tan-netwerk.</translation>
+            <source>Video codec ABI does not match its headers.</source>
+            <translation>L-ABI tal-codec tal-vidjo ma jaqbilx mal-fajls header tiegħu.</translation>
         </message>
         <message>
-            <source>Alternative file for audio profiles.</source>
-            <translation>Fajl alternattiv għall-profili tal-awdjo.</translation>
+            <source>Video buffers could not be allocated.</source>
+            <translation>Ma setgħetx tiġi allokata memorja għall-buffers tal-vidjo.</translation>
         </message>
         <message>
-            <source>Load the interface without microphone capture and exit after one second.</source>
-            <translation>Tagħbija tal-interfaċċa mingħajr reġistrazzjoni mill-mikrofonu u ħruġ wara sekonda.</translation>
+            <source>Invalid video quality tier.</source>
+            <translation>Livell ta' kwalità tal-vidjo mhux validu.</translation>
         </message>
         <message>
-            <source>Save an image of the app window during the UI test.</source>
-            <translation>Issejvja immaġni tat-tieqa tal-app waqt it-test tal-interfaċċa.</translation>
+            <source>The screen source exceeds the supported capture size.</source>
+            <translation>Is-sors tal-iskrin jaqbeż id-daqs tal-qbid appoġġjat.</translation>
         </message>
         <message>
-            <source>The window image could not be saved.</source>
-            <translation>Ma setgħetx tiġi ssejvjata l-immaġni tat-tieqa.</translation>
+            <source>The screen source is too narrow.</source>
+            <translation>Is-sors tal-iskrin huwa dejjaq wisq.</translation>
         </message>
         <message>
-            <source>The system tray is unavailable; SquadSpeak remains accessible as a window.</source>
-            <translation>It-trej tas-sistema mhux disponibbli; l-app tibqa' miftuħa f'tieqa.</translation>
+            <source>The video encoder could not be allocated.</source>
+            <translation>Ma setgħetx tiġi allokata memorja għall-kodifikatur tal-vidjo.</translation>
+        </message>
+        <message>
+            <source>No supported video encoder is available.</source>
+            <translation>M'hemm l-ebda kodifikatur tal-vidjo appoġġjat disponibbli.</translation>
+        </message>
+        <message>
+            <source>Video encoder configuration is too large.</source>
+            <translation>Il-konfigurazzjoni tal-kodifikatur tal-vidjo hija kbira wisq.</translation>
+        </message>
+        <message>
+            <source>Video scaling could not be initialized.</source>
+            <translation>Ma setax jiġi inizjalizzat l-iskalar tal-vidjo.</translation>
+        </message>
+        <message>
+            <source>The encoder returned an empty video packet.</source>
+            <translation>Il-kodifikatur irritorna pakkett tal-vidjo vojt.</translation>
+        </message>
+        <message>
+            <source>Invalid video frame format.</source>
+            <translation>Format tal-frejm tal-vidjo mhux validu.</translation>
+        </message>
+        <message>
+            <source>Invalid video decoder configuration.</source>
+            <translation>Konfigurazzjoni tad-dekodifikatur tal-vidjo mhux valida.</translation>
+        </message>
+        <message>
+            <source>This video codec cannot be decoded.</source>
+            <translation>Dan il-codec tal-vidjo ma jistax jiġi dekodifikat.</translation>
+        </message>
+        <message>
+            <source>Video decoder could not be allocated.</source>
+            <translation>Ma setgħetx tiġi allokata memorja għad-dekodifikatur tal-vidjo.</translation>
+        </message>
+        <message>
+            <source>Video decoder configuration could not be allocated.</source>
+            <translation>Ma setgħetx tiġi allokata memorja għall-konfigurazzjoni tad-dekodifikatur tal-vidjo.</translation>
+        </message>
+        <message>
+            <source>Decoded dimensions do not match the screen stream.</source>
+            <translation>Id-dimensjonijiet dekodifikati ma jaqblux mal-fluss tal-iskrin.</translation>
+        </message>
+        <message>
+            <source>Decoded image could not be allocated.</source>
+            <translation>Ma setgħetx tiġi allokata memorja għall-immaġni dekodifikata.</translation>
+        </message>
+        <message>
+            <source>Video color conversion could not be initialized.</source>
+            <translation>Ma setgħetx tiġi inizjalizzata l-konverżjoni tal-kuluri tal-vidjo.</translation>
+        </message>
+    </context>
+    <context>
+        <name>VoiceAvatar</name>
+        <message>
+            <source>Muted</source>
+            <translation>Mikrofonu sieket</translation>
+        </message>
+        <message>
+            <source>Sleeping</source>
+            <translation>Irqad</translation>
+        </message>
+        <message>
+            <source>Offline</source>
+            <translation>Mhux konness</translation>
+        </message>
+        <message>
+            <source>Speaking</source>
+            <translation>Qed jitkellem</translation>
+        </message>
+        <message>
+            <source>Unavailable</source>
+            <translation>Mhux disponibbli</translation>
+        </message>
+        <message>
+            <source>Listening</source>
+            <translation>Qed jisma'</translation>
+        </message>
+        <message>
+            <source>Deafened</source>
+            <translation>Kelliema siekta</translation>
+        </message>
+    </context>
+    <context>
+        <name>VoiceSession</name>
+        <message>
+            <source>Microphone muted</source>
+            <translation>Mikrofonu sieket</translation>
+        </message>
+        <message>
+            <source>Push-to-talk held</source>
+            <translation>Push-to-talk miżmum</translation>
+        </message>
+        <message>
+            <source>Ready - push-to-talk released</source>
+            <translation>Lest - il-push-to-talk ġie rilaxxat</translation>
+        </message>
+        <message>
+            <source>Microphone unmuted</source>
+            <translation>Mikrofonu mhux sieket</translation>
+        </message>
+        <message>
+            <source>Settings could not be saved: %1</source>
+            <translation>Is-settings ma setgħux jiġu ffrankati: %1</translation>
+        </message>
+        <message>
+            <source>The push-to-talk sequence cannot be incremented further.</source>
+            <translation>Is-sekwenza tal-push-to-talk ma tistax tiżdied aktar.</translation>
+        </message>
+        <message>
+            <source>Choose System, Light or Dark.</source>
+            <translation>Agħżel Sistema, Dawl jew Dlam.</translation>
+        </message>
+        <message>
+            <source>Choose a colour palette from the list.</source>
+            <translation>Agħżel paletta tal-kuluri mil-lista.</translation>
+        </message>
+        <message>
+            <source>Choose an available avatar.</source>
+            <translation>Agħżel avatar disponibbli.</translation>
+        </message>
+        <message>
+            <source>Invalid push-to-talk binding.</source>
+            <translation>Rbit tal-push-to-talk invalidu.</translation>
+        </message>
+        <message>
+            <source>Release the held push-to-talk key first.</source>
+            <translation>L-ewwel eħles iċ-ċavetta tal-push-to-talk miżmuma.</translation>
+        </message>
+        <message>
+            <source>Choose a language from the list.</source>
+            <translation>Agħżel lingwa mil-lista.</translation>
+        </message>
+        <message>
+            <source>This avatar requires Supporter.</source>
+            <translation>Dan l-avatar jeħtieġ Supporter.</translation>
+        </message>
+        <message>
+            <source>The name must contain 1 to 64 characters.</source>
+            <translation>L-isem għandu jkun fih minn 1 sa 64 karattru.</translation>
+        </message>
+        <message>
+            <source>The name may not contain control characters or line breaks.</source>
+            <translation>L-isem ma jistax ikun fih karattri ta' kontroll jew linji ġodda.</translation>
+        </message>
+        <message>
+            <source>Session settings could not be read.</source>
+            <translation>Ma setgħux jinqraw is-settings tas-sessjoni.</translation>
+        </message>
+        <message>
+            <source>Saved setting is invalid: %1</source>
+            <translation>Setting issejvjat mhux validu: %1</translation>
         </message>
     </context>
 </TS>

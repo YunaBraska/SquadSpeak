@@ -5,6 +5,7 @@
 #include <QList>
 #include <QString>
 #include <array>
+#include <functional>
 #include <deque>
 #include <memory>
 #include <map>
@@ -25,16 +26,20 @@ struct VoiceActivation final {
     [[nodiscard]] bool valid() const noexcept;
 };
 
-// One capture stream and independent receive streams. PCM is mono, packets are
-// 20 ms Opus frames at 48 kHz. Timestamps are from the caller's monotonic clock.
+// One capture stream and independent receive streams. PCM is interleaved mono
+// or stereo, packets are 20 ms Opus frames at 48 kHz.
 class VoiceMixer final {
 public:
-    VoiceMixer();
+    explicit VoiceMixer(int channels = 1);
+    [[nodiscard]] int channelCount() const { return channels_; }
     // Denied capture still updates the preview, but produces no packets. A
     // permission transition discards buffered audio before examining new input.
     [[nodiscard]] QList<QByteArray> encode(std::span<const float> samples, int sampleRate, bool transmissionAllowed = true);
     [[nodiscard]] bool receive(const QString& peer, const QByteArray& packet, qint64 now, int missing = 0);
-    [[nodiscard]] std::vector<float> render(int sampleRate, qint64 now);
+    using PlaybackFilter = std::function<void(const QString&, std::span<float>, qint64)>;
+    // Processes each decoded 48 kHz peer frame before normalization and mixing.
+    // The borrowed frame cannot escape the callback. Empty queues provide silence.
+    [[nodiscard]] std::vector<float> render(int sampleRate, qint64 now, const PlaybackFilter& filter = {});
     VoiceMixer& setGain(const QString& peer, double gain);
     VoiceMixer& setAutomatic(bool enabled);
     // Zero bypasses suppression. Positive values blend aligned original and
@@ -54,7 +59,7 @@ public:
     // settings. remove() also forgets that peer's configuration.
     VoiceMixer& resetPlayback();
 private:
-    struct Frame final { std::array<float, 960> samples; qint64 received; };
+    struct Frame final { std::array<float, 1920> samples{}; qint64 received = 0; };
     struct Stream final {
         std::unique_ptr<OpusDecoder, decltype(&opus_decoder_destroy)> decoder{nullptr, opus_decoder_destroy};
         std::deque<Frame> frames;
@@ -63,20 +68,23 @@ private:
         double level = 0;
         qint64 played = -1;
     };
-    static void resampleInto(SRC_STATE* state, std::span<const float> samples, double ratio,
-        std::vector<float>& output);
+    void resampleInto(SRC_STATE* state, std::span<const float> samples, double ratio,
+        std::vector<float>& output) const;
+    using Denoiser = std::unique_ptr<DenoiseState, decltype(&std::free)>;
+    int channels_ = 1;
     std::unique_ptr<OpusEncoder, decltype(&opus_encoder_destroy)> encoder_{nullptr, opus_encoder_destroy};
-    std::unique_ptr<DenoiseState, decltype(&std::free)> denoiser_{nullptr, std::free};
-    std::array<float, 960> delayedCapture_{};
+    std::array<Denoiser, 2> denoisers_{{Denoiser{nullptr, std::free}, Denoiser{nullptr, std::free}}};
+    std::array<float, 1920> delayedCapture_{};
     double noiseSuppression_ = 0;
     VoiceActivation activation_;
     double activationThresholdDb_ = -45;
     double activationLevelDb_ = -96;
     double transmitLevel_ = 0;
     int trailingFrames_ = 0;
+    int speechFrames_ = 0;
     bool voiceActive_ = false;
     bool captureTransmissionAllowed_ = true;
-    std::deque<std::array<float, 960>> preRoll_;
+    std::deque<std::array<float, 1920>> preRoll_;
     std::unique_ptr<SRC_STATE, decltype(&src_delete)> inputConverter_{nullptr, src_delete};
     std::unique_ptr<SRC_STATE, decltype(&src_delete)> outputConverter_{nullptr, src_delete};
     std::map<QString, Stream> streams_;

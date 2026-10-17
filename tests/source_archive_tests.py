@@ -35,7 +35,7 @@ class SourceArchiveTests(unittest.TestCase):
             "archives": [{"name": "source.tar.xz", "url": self.url, "sha256": digest}],
         }
         (self.root / "cmake/source_archives.json").write_text(json.dumps(self.manifest), encoding="utf-8")
-        for relative in ("CMakeLists.txt", "cmake/AudioProcessing.cmake", "cmake/Updates.cmake"):
+        for relative in ("CMakeLists.txt", "cmake/Dependencies.cmake", "cmake/AudioProcessing.cmake", "cmake/Updates.cmake"):
             (self.root / relative).write_text(
                 f"FetchContent_Declare(x URL {self.url} URL_HASH SHA256={digest})\n", encoding="utf-8"
             )
@@ -78,6 +78,28 @@ class SourceArchiveTests(unittest.TestCase):
             head = subprocess.check_output(["git", "-C", str(self.root), "rev-parse", "HEAD"], text=True).strip()
             self.assertIn(head, readme)
             self.assertIn("tests/macos-ci.sh", readme)
+
+    def test_cargo_lock_sources_are_included_and_git_must_be_pinned(self) -> None:
+        directory = self.root / "src/teamspeak_bridge"
+        directory.mkdir(parents=True)
+        lock = directory / "Cargo.lock"
+        lock.write_text('[ [package] ]'.replace(' ', '') + '\nname = "example"\nversion = "1.2.3"\n'
+                        'source = "registry+https://github.com/rust-lang/crates.io-index"\n'
+                        'checksum = "' + hashlib.sha256(self.payload).hexdigest() + '"\n')
+        cache = self.root / "cache"
+        cache.mkdir()
+        for name in ("source.tar.xz", "example-1.2.3.crate"):
+            (cache / name).write_bytes(self.payload)
+        output = self.root / "cargo.tar.gz"
+        result = self.run_tool("--cache", str(cache), "--output", str(output))
+        self.assertEqual(result.returncode, 0, result.stderr)
+        with tarfile.open(output) as archive:
+            self.assertIn("sources/example-1.2.3.crate", archive.getnames())
+        lock.write_text(lock.read_text().replace("registry+https://github.com/rust-lang/crates.io-index",
+                         "git+https://github.com/example/dependency?rev=abc#abc"))
+        result = self.run_tool("--check")
+        self.assertEqual(result.returncode, 2)
+        self.assertIn("does not cover Cargo git source", result.stderr)
 
     def test_source_version_matches_bundled_qt(self) -> None:
         matching = self.run_tool("--check", "--qt-version", "6.10.2")
@@ -153,7 +175,7 @@ class SourceArchiveTests(unittest.TestCase):
                 result = self.run_tool("--check")
                 self.assertEqual(result.returncode, 2)
                 self.assertIn(message, result.stderr)
-        for relative in ("CMakeLists.txt", "cmake/AudioProcessing.cmake", "cmake/Updates.cmake", "tests/macos-ci.sh", "tests/windows-ci.ps1"):
+        for relative in ("CMakeLists.txt", "cmake/Dependencies.cmake", "cmake/AudioProcessing.cmake", "cmake/Updates.cmake", "tests/macos-ci.sh", "tests/windows-ci.ps1"):
             (self.root / relative).write_text("# no pins\n", encoding="utf-8")
         self.assertIn("no pinned source archives", self.run_tool("--check").stderr)
 
@@ -255,7 +277,7 @@ class SourceArchiveTests(unittest.TestCase):
         for route, success in (("valid", True), ("secure-redirect", True), ("corrupt", False), ("missing", False), ("large", False), ("redirect", False)):
             with self.subTest(route=route):
                 url = f"https://127.0.0.1:{secure.server_port}/{route}"
-                for relative in ("CMakeLists.txt", "cmake/AudioProcessing.cmake", "cmake/Updates.cmake", "tests/macos-ci.sh", "tests/windows-ci.ps1"):
+                for relative in ("CMakeLists.txt", "cmake/Dependencies.cmake", "cmake/AudioProcessing.cmake", "cmake/Updates.cmake", "tests/macos-ci.sh", "tests/windows-ci.ps1"):
                     path = self.root / relative
                     path.write_text(path.read_text().replace(self.url, url), encoding="utf-8")
                 self.url = url

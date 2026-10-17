@@ -1,0 +1,102 @@
+name: "📦 CD · Publish"
+
+on:
+  workflow_call:
+    inputs:
+      commit_sha:
+        required: true
+        type: string
+      version:
+        required: true
+        type: string
+      release_mode:
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      actions: read
+      contents: write
+    steps:
+      - name: "🧑‍💻 Checkout"
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ inputs.commit_sha }}
+          persist-credentials: false
+      - name: "📥 Download tested packages"
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333
+        with:
+          pattern: release-*
+          path: release-assets
+          merge-multiple: true
+      - name: "🛡️ Verify package set and create checksums"
+        shell: sh
+        env:
+          RELEASE_VERSION: ${{ inputs.version }}
+          RELEASE_MODE: ${{ inputs.release_mode }}
+        run: |
+          set -eu
+          cmake "-DSQUADSPEAK_VERSION=$RELEASE_VERSION" -P cmake/Version.cmake
+          set -- squadspeak-linux-aarch64.tar.gz squadspeak-linux-x86_64.tar.gz squadspeak-macos-arm64.zip squadspeak-macos-x86_64.zip squadspeak-windows-x86_64.zip squadspeak-windows-device-test.zip squadspeak-third-party-sources.tar.gz
+          case "$RELEASE_MODE:$RELEASE_VERSION" in
+            snapshot:*-SNAPSHOT.*) ;;
+            release:*-*) printf 'A stable release cannot use a snapshot version.\n' >&2; exit 1 ;;
+            release:*) set -- "$@" appcast-macos-arm64.xml appcast-macos-x86_64.xml ;;
+            *) printf 'Release mode and version do not match.\n' >&2; exit 1 ;;
+          esac
+          test "$(find release-assets -maxdepth 1 -type f | wc -l)" -eq "$#"
+          for file do
+            test -s "release-assets/$file"
+          done
+          if test "$RELEASE_MODE" = release; then
+            cmake -DSQUADSPEAK_VERSION="$RELEASE_VERSION" -DARCHIVES_DIR=release-assets -P cmake/BuildCask.cmake
+          fi
+          (cd release-assets && sha256sum -- * > SHA256SUMS && sha256sum --check SHA256SUMS)
+      - name: "🏷️ Publish the tested desktop release"
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_VERSION: ${{ inputs.version }}
+          SOURCE_REVISION: ${{ inputs.commit_sha }}
+          RELEASE_MODE: ${{ inputs.release_mode }}
+        shell: sh
+        run: |
+          set -eu
+          # Upload completely before exposing the release to downloads and updates.
+          cat > release-notes.md <<'NOTES'
+          Desktop packages:
+
+          - macOS 13 or newer, Apple Silicon and Intel. The macOS build signs and verifies the packaged app. Without configured Apple distribution credentials it uses an ad-hoc signature, which does not identify a verified publisher.
+          - Ubuntu 26.04, ARM64 and x86_64. Packages use the distribution's Qt 6.10, OpenSSL, Opus, libsamplerate and Secret Service libraries, plus fonts-noto-core and fonts-noto-cjk for language coverage.
+
+          - Windows 10 version 1903 or newer, x86_64. Extract the archive, run bin/vc_redist.x64.exe once, then bin/squadspeak.exe. Screen audio requires Windows 11 or Server 2022. CI uses Server 2022; Windows 10 runtime verification and publisher signing are pending.
+
+          For the standalone Windows device check, use squadspeak-windows-device-test.zip instead of the regular Windows archive. Extract it and open device-test/Start.cmd. It includes the same app plus two isolated test profiles and German instructions; no developer tools or GitHub login are needed.
+
+          Automated platform and packaged-startup checks have passed for this revision. Physical microphone/headset observations, Windows 10 hardware execution and Apple notification/Focus checks follow this release. Do not interpret native Server 2022 tests as Windows 10 hardware certification. See docs/roadmap.md for remaining load and device qualification work.
+
+          Known Markdown limitation: escaped characters inside an image caption can make Qt display that image more than once. Plain image captions work; the original message and attachment are retained.
+
+          Mobile packages and Supporter purchases are not part of this release. Updates never install without your confirmation.
+          squadspeak-third-party-sources.tar.gz contains the pinned dependency sources and build patches. The matching application source and build scripts are linked below.
+          SHA256SUMS verifies file integrity, not publisher identity.
+          NOTES
+          if test "$RELEASE_MODE" = snapshot; then
+            printf '\nSnapshot preview from a tested merge. Homebrew and stable app updates do not use this version.\n' >> release-notes.md
+          else
+            printf '\nsquadspeak.rb is the Homebrew cask generated from these exact macOS archives.\n' >> release-notes.md
+          fi
+          printf '\n[Source code (GPL-3.0)](https://github.com/%s/archive/%s.tar.gz), including build instructions. Third-party licenses remain applicable.\n' "$GH_REPO" "$SOURCE_REVISION" >> release-notes.md
+          gh release create "$RELEASE_VERSION" release-assets/* --target "$SOURCE_REVISION" \
+            --title "SquadSpeak $RELEASE_VERSION" --notes-file release-notes.md --draft --latest=false
+          if test "$RELEASE_MODE" = snapshot; then
+            gh release edit "$RELEASE_VERSION" --draft=false --prerelease=true --latest=false
+          else
+            gh release edit "$RELEASE_VERSION" --draft=false --prerelease=false --latest=true
+          fi

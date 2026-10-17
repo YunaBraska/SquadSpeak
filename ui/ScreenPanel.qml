@@ -31,7 +31,7 @@ Item {
     Component.onDestruction: if (share) share.detach(preview.videoSink)
     function quality(details, localSource = false) {
         if (localSource) return qsTr("%1 kbit/s").arg(Math.round(share.bitrate))
-        if (details.status === "full") return qsTr("Media capacity reached")
+        if (details.status === "busy") return qsTranslate("LocalChannel", "The host is busy. Try again shortly.")
         if (details.tier === 4 || (details.available && !details.watching)) return qsTr("Video paused")
         if (!details.available) return qsTr("Stream ended")
         return details.width > 0 ? details.width + " x " + details.height : qsTr("Connecting")
@@ -39,6 +39,9 @@ Item {
     Rectangle { anchors.fill: parent; color: Theme.background; radius: Theme.controlRadius; border.color: Theme.border }
     VideoOutput { id: preview; objectName: "screenThumbnail"; anchors.fill: parent; anchors.margins: 4; fillMode: VideoOutput.PreserveAspectFit }
     Label {
+        objectName: "screenStatus"
+        width: Math.min(implicitWidth, Math.max(0, panel.width - 12))
+        wrapMode: Text.WordWrap
         anchors.right: parent.right; anchors.bottom: parent.bottom; anchors.margins: 6
         text: panel.quality(panel.info, panel.local); color: Theme.text; padding: 4
         background: Rectangle { color: Theme.surface; radius: Theme.smallRadius }
