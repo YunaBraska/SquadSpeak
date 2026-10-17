@@ -608,8 +608,8 @@ if(BUILD_TESTING)
         ENVIRONMENT "QT_QPA_PLATFORM=${ui_test_platform};QT_QUICK_BACKEND=software;QT_QUICK_CONTROLS_STYLE=Basic")
     if(WIN32)
         # The child still has 15 seconds. Allow a bounded dump and cleanup on failure.
-        # Measure cold QML startup without concurrent archive or CPU-heavy tests.
-        set_tests_properties(desktop_smoke PROPERTIES TIMEOUT 30 RUN_SERIAL TRUE)
+        # Check cold QML startup before the long suite, without competing workloads.
+        set_tests_properties(desktop_smoke PROPERTIES TIMEOUT 30 RUN_SERIAL TRUE COST 2000)
         set_property(TEST desktop_smoke APPEND PROPERTY ENVIRONMENT QML_IMPORT_TRACE=1)
     endif()
     add_test(NAME process_deadline COMMAND ${Python3_EXECUTABLE}
