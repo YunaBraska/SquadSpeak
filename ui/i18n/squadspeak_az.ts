@@ -303,10 +303,6 @@
             <translation>Daxiletmə cihazı</translation>
         </message>
         <message>
-            <source>Microphone paused for others</source>
-            <translation>Mikrofon başqaları üçün dayandırıldı</translation>
-        </message>
-        <message>
             <source>Cancel</source>
             <translation>Ləğv et</translation>
         </message>
@@ -315,16 +311,8 @@
             <translation>Klipinq. Mikrofonun gücləndirilməsini azaldın.</translation>
         </message>
         <message>
-            <source>Silent</source>
-            <translation>Səssiz</translation>
-        </message>
-        <message>
             <source>Test output</source>
             <translation>Test çıxışı</translation>
-        </message>
-        <message>
-            <source>Voice level</source>
-            <translation>Səs səviyyəsi</translation>
         </message>
         <message>
             <source>Voice threshold</source>
@@ -1176,6 +1164,10 @@
         <message>
             <source>On the other device, open Settings &gt; Input &gt; Remote control and allow this device.</source>
             <translation>Digər cihazda Parametrlər &gt; Giriş &gt; Uzaqdan idarəetmə bölməsini aç və bu cihaza icazə ver.</translation>
+        </message>
+        <message>
+            <source>Unread messages</source>
+            <translation>Oxunmamış mesajlar</translation>
         </message>
     </context>
     <context>
@@ -3151,10 +3143,6 @@
     </context>
     <context>
         <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>Əlçatan deyil - audio parametrləri və ya ton testi</translation>
-        </message>
         <message>
             <source>Microphone muted</source>
             <translation>Mikrofon səsi kəsildi</translation>

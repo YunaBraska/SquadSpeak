@@ -303,10 +303,6 @@
             <translation>输入设备</translation>
         </message>
         <message>
-            <source>Microphone paused for others</source>
-            <translation>已为其他人暂停麦克风</translation>
-        </message>
-        <message>
             <source>Cancel</source>
             <translation>取消</translation>
         </message>
@@ -315,16 +311,8 @@
             <translation>削波.请降低麦克风增益.</translation>
         </message>
         <message>
-            <source>Silent</source>
-            <translation>静音</translation>
-        </message>
-        <message>
             <source>Test output</source>
             <translation>测试输出</translation>
-        </message>
-        <message>
-            <source>Voice level</source>
-            <translation>语音音量</translation>
         </message>
         <message>
             <source>Voice threshold</source>
@@ -1176,6 +1164,10 @@
         <message>
             <source>On the other device, open Settings &gt; Input &gt; Remote control and allow this device.</source>
             <translation>在另一台设备上打开设置 &gt; 输入 &gt; 远程控制，然后允许此设备。</translation>
+        </message>
+        <message>
+            <source>Unread messages</source>
+            <translation>未读消息</translation>
         </message>
     </context>
     <context>
@@ -3151,10 +3143,6 @@
     </context>
     <context>
         <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>不可用 - 音频设置或音调测试</translation>
-        </message>
         <message>
             <source>Microphone muted</source>
             <translation>麦克风已静音</translation>

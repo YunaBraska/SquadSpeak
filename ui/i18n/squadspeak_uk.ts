@@ -303,10 +303,6 @@
             <translation>Пристрій введення</translation>
         </message>
         <message>
-            <source>Microphone paused for others</source>
-            <translation>мікрофон призупинено для інших</translation>
-        </message>
-        <message>
             <source>Cancel</source>
             <translation>Скасувати</translation>
         </message>
@@ -315,16 +311,8 @@
             <translation>Кліпінг. Зменште підсилення мікрофона.</translation>
         </message>
         <message>
-            <source>Silent</source>
-            <translation>Тихо</translation>
-        </message>
-        <message>
             <source>Test output</source>
             <translation>Тестовий результат</translation>
-        </message>
-        <message>
-            <source>Voice level</source>
-            <translation>рівень голосу</translation>
         </message>
         <message>
             <source>Voice threshold</source>
@@ -1176,6 +1164,10 @@
         <message>
             <source>On the other device, open Settings &gt; Input &gt; Remote control and allow this device.</source>
             <translation>На іншому пристрої відкрий Налаштування &gt; Введення &gt; Пульт дистанційного керування і дозволь цей пристрій.</translation>
+        </message>
+        <message>
+            <source>Unread messages</source>
+            <translation>Непрочитані повідомлення</translation>
         </message>
     </context>
     <context>
@@ -3151,10 +3143,6 @@
     </context>
     <context>
         <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>Недоступно - налаштування аудіо або перевірка звуку</translation>
-        </message>
         <message>
             <source>Microphone muted</source>
             <translation>мікрофон вимкнено</translation>

@@ -303,10 +303,6 @@
             <translation>Kifaa cha ingizo</translation>
         </message>
         <message>
-            <source>Microphone paused for others</source>
-            <translation>Kipaza sauti kimezimishwa kwa wengine</translation>
-        </message>
-        <message>
             <source>Cancel</source>
             <translation>Ghairi</translation>
         </message>
@@ -315,16 +311,8 @@
             <translation>Sauti imepanda kupita kiwango. Punguza ongezeko la kipaza sauti.</translation>
         </message>
         <message>
-            <source>Silent</source>
-            <translation>Kimya</translation>
-        </message>
-        <message>
             <source>Test output</source>
             <translation>Jaribu pato la sauti</translation>
-        </message>
-        <message>
-            <source>Voice level</source>
-            <translation>Kiwango cha sauti</translation>
         </message>
         <message>
             <source>Voice threshold</source>
@@ -1176,6 +1164,10 @@
         <message>
             <source>On the other device, open Settings &gt; Input &gt; Remote control and allow this device.</source>
             <translation>Kwenye kifaa kingine, fungua Mipangilio &gt; Ingiza &gt; Kidhibiti cha mbali na uruhusu kifaa hiki.</translation>
+        </message>
+        <message>
+            <source>Unread messages</source>
+            <translation>Ujumbe ambao haujasomwa</translation>
         </message>
     </context>
     <context>
@@ -3151,10 +3143,6 @@
     </context>
     <context>
         <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>Hapatu - rekebisha mipangilio ya sauti au jaribu sauti</translation>
-        </message>
         <message>
             <source>Microphone muted</source>
             <translation>Mikrofoni imezimwa</translation>

@@ -311,7 +311,7 @@ private slots:
             QVERIFY(session.setPttKeyHeld(true));
             QVERIFY(session.setMuted(true)); QVERIFY(!session.transmissionAllowed());
             QVERIFY(session.setMuted(false));
-            QVERIFY(session.setAudioSettingsOpen(true)); QVERIFY(!session.transmissionAllowed());
+            QVERIFY(session.setAudioTestActive(true)); QVERIFY(!session.transmissionAllowed());
             QVERIFY(!session.setPttShortcut(101, "F9"));
         }
         VoiceSession restored(path);
@@ -361,28 +361,23 @@ private slots:
         QVERIFY(file.open(QIODevice::ReadOnly));
         QVERIFY(!file.readAll().contains("remotePttKey"));
     }
-    void overlappingAudioRestrictionsRestoreTheLatestIntent() {
+    void toneTestRestoresTheLatestMuteIntent() {
         QTemporaryDir folder;
         VoiceSession session(folder.filePath("session.json"));
         QVERIFY(session.setMuted(false));
         QVERIFY(session.transmissionAllowed());
-        QVERIFY(session.setAudioSettingsOpen(true));
-        QVERIFY(session.setAudioSettingsOpen(true));
+        QVERIFY(session.setAudioTestActive(true));
+        QVERIFY(session.setAudioTestActive(true));
         QVERIFY(!session.available());
         QVERIFY(!session.transmissionAllowed());
-        QVERIFY(session.setAudioTestActive(true));
-        QVERIFY(session.setAudioSettingsOpen(false));
-        QVERIFY(!session.available());
         QVERIFY(session.setMuted(true));
         QVERIFY(session.setAudioTestActive(false));
         QVERIFY(session.available());
         QVERIFY(!session.transmissionAllowed());
-        QVERIFY(session.setAudioSettingsOpen(true));
+        QVERIFY(session.setAudioTestActive(true));
         QVERIFY(session.setMuted(false));
         QVERIFY(!session.transmissionAllowed());
-        QVERIFY(session.setAudioSettingsOpen(false));
-        QVERIFY(session.transmissionAllowed());
-        QVERIFY(session.setAudioSettingsOpen(false));
+        QVERIFY(session.setAudioTestActive(false));
         QVERIFY(session.transmissionAllowed());
     }
 
@@ -393,7 +388,6 @@ private slots:
             VoiceSession session(path);
             QVERIFY(session.muted());
             QVERIFY(session.setMuted(false));
-            QVERIFY(session.setAudioSettingsOpen(true));
             QVERIFY(session.setAudioTestActive(true));
         }
         VoiceSession restored(path);

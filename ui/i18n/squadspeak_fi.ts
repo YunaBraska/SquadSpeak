@@ -303,10 +303,6 @@
             <translation>Syöttölaite</translation>
         </message>
         <message>
-            <source>Microphone paused for others</source>
-            <translation>Mikrofoni keskeytetty muille</translation>
-        </message>
-        <message>
             <source>Cancel</source>
             <translation>Peruuta</translation>
         </message>
@@ -315,16 +311,8 @@
             <translation>Leikkautumista. Pienennä mikrofonin vahvistusta.</translation>
         </message>
         <message>
-            <source>Silent</source>
-            <translation>Mykistetty</translation>
-        </message>
-        <message>
             <source>Test output</source>
             <translation>Testaa ääntä</translation>
-        </message>
-        <message>
-            <source>Voice level</source>
-            <translation>Äänitaso</translation>
         </message>
         <message>
             <source>Voice threshold</source>
@@ -1176,6 +1164,10 @@
         <message>
             <source>On the other device, open Settings &gt; Input &gt; Remote control and allow this device.</source>
             <translation>Avaa toisessa laitteessa Asetukset &gt; Syöttö &gt; Etäkäyttö ja salli tämä laite.</translation>
+        </message>
+        <message>
+            <source>Unread messages</source>
+            <translation>Lukemattomat viestit</translation>
         </message>
     </context>
     <context>
@@ -3151,10 +3143,6 @@
     </context>
     <context>
         <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>Ei saatavilla - ääniasetukset tai testi</translation>
-        </message>
         <message>
             <source>Microphone muted</source>
             <translation>Mikrofoni mykistetty</translation>

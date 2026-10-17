@@ -14,6 +14,7 @@ Item {
     property bool animated: true
     property bool circular: false
     property bool music: false
+    property bool teamSpeak: false
     property bool systemMessage: false
     property string identity: name
     property double animationTime: 0
@@ -125,6 +126,16 @@ Item {
                 c.putImageData(pixels, 0, 0, 0, 0, pixels.width, pixels.height)
             }
         }
+    }
+    Rectangle {
+        objectName: "teamSpeakBadge"
+        visible: root.teamSpeak
+        anchors.top: parent.top; anchors.right: parent.right
+        width: Math.max(14, Math.min(20, root.width * 0.4)); height: width
+        radius: Theme.smallRadius; color: Theme.surface
+        Accessible.role: Accessible.StaticText
+        Accessible.name: "TeamSpeak"
+        Text { anchors.centerIn: parent; text: "TS"; color: Theme.text; font.pixelSize: parent.width * 0.55; font.bold: true }
     }
     Row {
         anchors.bottom: parent.bottom

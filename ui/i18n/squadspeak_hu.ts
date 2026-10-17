@@ -303,10 +303,6 @@
             <translation>Beviteli eszköz</translation>
         </message>
         <message>
-            <source>Microphone paused for others</source>
-            <translation>A mikrofon szünetel mások számára</translation>
-        </message>
-        <message>
             <source>Cancel</source>
             <translation>Mégsem</translation>
         </message>
@@ -315,16 +311,8 @@
             <translation>Vágás. Csökkentse a mikrofon erősítését.</translation>
         </message>
         <message>
-            <source>Silent</source>
-            <translation>Néma</translation>
-        </message>
-        <message>
             <source>Test output</source>
             <translation>Teszt kimenet</translation>
-        </message>
-        <message>
-            <source>Voice level</source>
-            <translation>Hangszint</translation>
         </message>
         <message>
             <source>Voice threshold</source>
@@ -1176,6 +1164,10 @@
         <message>
             <source>On the other device, open Settings &gt; Input &gt; Remote control and allow this device.</source>
             <translation>A másik eszközön nyisd meg a(z) Beállítások &gt; Bemenet &gt; Távirányító menüt, és engedélyezd ezt az eszközt.</translation>
+        </message>
+        <message>
+            <source>Unread messages</source>
+            <translation>Olvasatlan üzenetek</translation>
         </message>
     </context>
     <context>
@@ -3151,10 +3143,6 @@
     </context>
     <context>
         <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>Nem érhető el - hangbeállítások vagy hangszínteszt</translation>
-        </message>
         <message>
             <source>Microphone muted</source>
             <translation>Mikrofon elnémítva</translation>

@@ -303,10 +303,6 @@
             <translation>Ulazni uređaj</translation>
         </message>
         <message>
-            <source>Microphone paused for others</source>
-            <translation>Mikrofon je trenutno isključen za ostale</translation>
-        </message>
-        <message>
             <source>Cancel</source>
             <translation>Odustani</translation>
         </message>
@@ -315,16 +311,8 @@
             <translation>Iskrivljenje zvuka. Smanjite pojačanje mikrofona.</translation>
         </message>
         <message>
-            <source>Silent</source>
-            <translation>Tišina</translation>
-        </message>
-        <message>
             <source>Test output</source>
             <translation>Test izlaza</translation>
-        </message>
-        <message>
-            <source>Voice level</source>
-            <translation>Razina glasa</translation>
         </message>
         <message>
             <source>Voice threshold</source>
@@ -1176,6 +1164,10 @@
         <message>
             <source>On the other device, open Settings &gt; Input &gt; Remote control and allow this device.</source>
             <translation>Na drugom uređaju otvori Postavke &gt; Unos &gt; Daljinsko upravljanje i dopusti ovaj uređaj.</translation>
+        </message>
+        <message>
+            <source>Unread messages</source>
+            <translation>Nepročitane poruke</translation>
         </message>
     </context>
     <context>
@@ -3151,10 +3143,6 @@
     </context>
     <context>
         <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>Nedostupan - postavke zvuka ili test zvuka</translation>
-        </message>
         <message>
             <source>Microphone muted</source>
             <translation>Mikrofon je isključen</translation>

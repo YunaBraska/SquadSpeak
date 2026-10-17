@@ -303,10 +303,6 @@
             <translation>Енгізу құрылғысы</translation>
         </message>
         <message>
-            <source>Microphone paused for others</source>
-            <translation>Басқалар үшін микрофон кідіртілді</translation>
-        </message>
-        <message>
             <source>Cancel</source>
             <translation>Болдырмау</translation>
         </message>
@@ -315,16 +311,8 @@
             <translation>Клиппинг. Микрофонның күшейтуін азайтыңыз.</translation>
         </message>
         <message>
-            <source>Silent</source>
-            <translation>Үнсіз</translation>
-        </message>
-        <message>
             <source>Test output</source>
             <translation>Сынақ шығысы</translation>
-        </message>
-        <message>
-            <source>Voice level</source>
-            <translation>Дауыс деңгейі</translation>
         </message>
         <message>
             <source>Voice threshold</source>
@@ -1176,6 +1164,10 @@
         <message>
             <source>On the other device, open Settings &gt; Input &gt; Remote control and allow this device.</source>
             <translation>Басқа құрылғыда Параметрлер &gt; Кіріс &gt; қашықтан басқару пульті тармақтарын ашып, осы құрылғыға рұқсат бер.</translation>
+        </message>
+        <message>
+            <source>Unread messages</source>
+            <translation>Оқылмаған хабарламалар</translation>
         </message>
     </context>
     <context>
@@ -3151,10 +3143,6 @@
     </context>
     <context>
         <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>Қолжетімсіз - аудио параметрлері немесе тон сынағы</translation>
-        </message>
         <message>
             <source>Microphone muted</source>
             <translation>Микрофон дыбысы өшірілді</translation>

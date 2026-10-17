@@ -412,6 +412,7 @@ LocalChannel::LocalChannel(VoiceSession& session, QString storageFile, std::opti
             auto& c = *connection;
             if (!c.teamSpeak && !c.chatClock.isValid()) continue;
             const auto now = c.teamSpeak ? clock_() : c.serverTime + c.chatClock.elapsed();
+            if (c.unreadExpires > 0 && c.unreadExpires <= now) { c.unreadExpires = 0; emit hostsChanged(); }
             QJsonArray retained;
             for (const auto value : c.messages) if (value.toObject().value("expires").toInteger() > now) retained.append(value);
             if (retained.size() != c.messages.size()) { c.messages = retained; trimHistory(c, false); emit chatChanged(); }
@@ -1340,6 +1341,9 @@ QVariantList LocalChannel::savedChannels() const {
         entry.insert("lifetimeDays", owner ? owner->messageLifetimeDays() : c && c->accepted ? c->messageLifetimeDays : 0);
         entry.insert("access", c ? c->access : QStringLiteral("saved"));
         entry.insert("members", c && c->accepted ? humanMembers(c->members) : QVariantList{});
+        const auto now = c && c->teamSpeak ? clock_() : c && c->chatClock.isValid()
+            ? c->serverTime + c->chatClock.elapsed() : c ? c->serverTime : 0;
+        entry.insert("unread", c && c->unreadExpires > now);
         auto bot = owner ? owner->hostBot() : QVariantMap{};
         if (!owner && c && c->accepted) for (const auto& member : c->members)
             if (member.toMap().value("music").toBool()) { bot = member.toMap(); break; }

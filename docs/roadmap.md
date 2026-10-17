@@ -49,11 +49,12 @@ Bluetooth audio devices are distinct from Bluetooth-only app networking, which i
 
 ## TeamSpeak interoperability
 
-New owner feedback under U173 challenges native TS private messages, capture
-quality, keyboard suppression and normal-quit behavior. These require targeted
-regressions before release. The missing-UID private-message case now resolves
-the known roster identity and preserves the existing conversation and reply
-target. It passes the bridge-boundary contract, not a new native-client check.
+U173 capture quality and keyboard suppression remain under investigation. The
+missing-UID private-message case resolves the known roster identity and preserves
+the conversation and reply target. The installed macOS app and native TeamSpeak
+3 client exchange channel and private messages in both directions. Normal app
+quit produces an immediate disconnect in TeamSpeak. Stable UID-derived portraits
+and a separate TS badge share the existing participant and chat presentation.
 
 Direct TS3 is integrated through the pinned ReSpeak Rust library. The macOS
 public-entrypoint test connected two separate identities to the owner's servers,
@@ -88,11 +89,12 @@ do not become TS3 protocol features.
 
 ## Next implementation order
 
-The U173 review comes first: reproduce native TS messaging and shutdown, compare
-recorded capture stages and codec modes, and eliminate unchanged presence/roster
-traffic. Implement live audio settings and the agreed channel-state corrections
-in the existing components. Resolve O-30 before dependent interaction changes.
-The previous automatic settings mute is still implemented and must be removed.
+Continue U173 with capture-stage and codec comparisons, unchanged presence/roster
+traffic reduction, compact search and resource-based admission. Native TS text
+interoperability and normal shutdown are checked. Audio settings preserve live
+conversation, with exclusive Voice activation/PTT controls and a combined
+threshold meter. Unread marks follow the foreground chat position, and opening
+a chat does not imply voice participation.
 
 1. Finish automated sustained load, shared-uplink impairment and measured A/V timing/resource checks. Physical hearing, device and Apple notification observations use the [short prepared handoff](development.md#device-checks-with-limited-human-time), retaining scoped prior results under U138. Do not wait for user availability to run technical tests. Measure conversation output, not only packet delivery.
 2. Close direct distribution gates, then mobile/Store delivery; merchant approval, signing accounts and device access remain separate from implementation work.

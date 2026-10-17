@@ -303,10 +303,6 @@
             <translation>Na'urar shigarwa</translation>
         </message>
         <message>
-            <source>Microphone paused for others</source>
-            <translation>Mai karɓar sauti ya dakata ga sauran</translation>
-        </message>
-        <message>
             <source>Cancel</source>
             <translation>Cece</translation>
         </message>
@@ -315,16 +311,8 @@
             <translation>Sauti ya yi ƙarfi har ya gurɓace. Rage ƙarin ƙarfin makirufo.</translation>
         </message>
         <message>
-            <source>Silent</source>
-            <translation>Sauri</translation>
-        </message>
-        <message>
             <source>Test output</source>
             <translation>Jarraba fitarwa</translation>
-        </message>
-        <message>
-            <source>Voice level</source>
-            <translation>Matsayin murya</translation>
         </message>
         <message>
             <source>Voice threshold</source>
@@ -1176,6 +1164,10 @@
         <message>
             <source>On the other device, open Settings &gt; Input &gt; Remote control and allow this device.</source>
             <translation>A ɗayan na'urar, buɗe Saita &gt; Shigar &gt; Kwamfuta ta nesa sannan ka ba wannan na'urar izini.</translation>
+        </message>
+        <message>
+            <source>Unread messages</source>
+            <translation>Saƙonnin da ba a karanta ba</translation>
         </message>
     </context>
     <context>
@@ -3151,10 +3143,6 @@
     </context>
     <context>
         <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>Babu samani - duba saitunan sauti ko gwajai sauti</translation>
-        </message>
         <message>
             <source>Microphone muted</source>
             <translation>Mai kunna igogi ya rufe</translation>

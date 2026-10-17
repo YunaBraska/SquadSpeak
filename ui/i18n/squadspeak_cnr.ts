@@ -303,10 +303,6 @@
             <translation>Ulazni uređaj</translation>
         </message>
         <message>
-            <source>Microphone paused for others</source>
-            <translation>Mikrofon je pauziran za druge</translation>
-        </message>
-        <message>
             <source>Cancel</source>
             <translation>Otkaži</translation>
         </message>
@@ -315,16 +311,8 @@
             <translation>Kliping. Smanjite pojačanje mikrofona.</translation>
         </message>
         <message>
-            <source>Silent</source>
-            <translation>Tiho</translation>
-        </message>
-        <message>
             <source>Test output</source>
             <translation>Test izlaz</translation>
-        </message>
-        <message>
-            <source>Voice level</source>
-            <translation>Nivo glasa</translation>
         </message>
         <message>
             <source>Voice threshold</source>
@@ -1176,6 +1164,10 @@
         <message>
             <source>Remove server</source>
             <translation>Ukloni server</translation>
+        </message>
+        <message>
+            <source>Unread messages</source>
+            <translation>Nepročitane poruke</translation>
         </message>
     </context>
     <context>
@@ -2471,10 +2463,6 @@
     </context>
     <context>
         <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>Nedostupno - audio postavke ili test tona</translation>
-        </message>
         <message>
             <source>Microphone muted</source>
             <translation>Mikrofon je isključen</translation>

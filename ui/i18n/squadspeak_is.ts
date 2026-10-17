@@ -303,10 +303,6 @@
             <translation>Inntakstæki</translation>
         </message>
         <message>
-            <source>Microphone paused for others</source>
-            <translation>Hlé á hljóðnema fyrir aðra</translation>
-        </message>
-        <message>
             <source>Cancel</source>
             <translation>Hætta við</translation>
         </message>
@@ -315,16 +311,8 @@
             <translation>Bjögun. Dragðu úr mögnun hljóðnemans.</translation>
         </message>
         <message>
-            <source>Silent</source>
-            <translation>Þögn</translation>
-        </message>
-        <message>
             <source>Test output</source>
             <translation>Prófúttak</translation>
-        </message>
-        <message>
-            <source>Voice level</source>
-            <translation>Raddstig</translation>
         </message>
         <message>
             <source>Voice threshold</source>
@@ -1176,6 +1164,10 @@
         <message>
             <source>On the other device, open Settings &gt; Input &gt; Remote control and allow this device.</source>
             <translation>Opnaðu Stillingar &gt; Inntak &gt; Fjarstýring á hinu tækinu og leyfðu þessu tæki.</translation>
+        </message>
+        <message>
+            <source>Unread messages</source>
+            <translation>Ólesin skilaboð</translation>
         </message>
     </context>
     <context>
@@ -3151,10 +3143,6 @@
     </context>
     <context>
         <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>Ekki tiltækt - hljóðstillingar eða tónprófun</translation>
-        </message>
         <message>
             <source>Microphone muted</source>
             <translation>Hljóðnemi slökktur</translation>

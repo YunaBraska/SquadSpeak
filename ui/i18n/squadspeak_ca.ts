@@ -303,10 +303,6 @@
             <translation>Dispositiu d'entrada</translation>
         </message>
         <message>
-            <source>Microphone paused for others</source>
-            <translation>micròfon en pausa per als altres</translation>
-        </message>
-        <message>
             <source>Cancel</source>
             <translation>Cancel·la</translation>
         </message>
@@ -315,16 +311,8 @@
             <translation>Saturació. Redueix el guany del micròfon.</translation>
         </message>
         <message>
-            <source>Silent</source>
-            <translation>En silenci</translation>
-        </message>
-        <message>
             <source>Test output</source>
             <translation>Sortida de prova</translation>
-        </message>
-        <message>
-            <source>Voice level</source>
-            <translation>Nivell de veu</translation>
         </message>
         <message>
             <source>Voice threshold</source>
@@ -1176,6 +1164,10 @@
         <message>
             <source>On the other device, open Settings &gt; Input &gt; Remote control and allow this device.</source>
             <translation>A l'altre dispositiu, obre Configuració &gt; Entrada &gt; Comandament a distància i permet aquest dispositiu.</translation>
+        </message>
+        <message>
+            <source>Unread messages</source>
+            <translation>Missatges no llegits</translation>
         </message>
     </context>
     <context>
@@ -3151,10 +3143,6 @@
     </context>
     <context>
         <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>No disponible: configuració d'àudio o prova de to</translation>
-        </message>
         <message>
             <source>Microphone muted</source>
             <translation>micròfon silenciat</translation>

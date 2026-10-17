@@ -303,10 +303,6 @@
             <translation>Perangkat input</translation>
         </message>
         <message>
-            <source>Microphone paused for others</source>
-            <translation>Mikrofon dijeda untuk orang lain</translation>
-        </message>
-        <message>
             <source>Cancel</source>
             <translation>Batal</translation>
         </message>
@@ -315,16 +311,8 @@
             <translation>Clipping. Kurangi gain mikrofon.</translation>
         </message>
         <message>
-            <source>Silent</source>
-            <translation>Hening</translation>
-        </message>
-        <message>
             <source>Test output</source>
             <translation>Uji output</translation>
-        </message>
-        <message>
-            <source>Voice level</source>
-            <translation>Level suara</translation>
         </message>
         <message>
             <source>Voice threshold</source>
@@ -1176,6 +1164,10 @@
         <message>
             <source>On the other device, open Settings &gt; Input &gt; Remote control and allow this device.</source>
             <translation>Di perangkat lain, buka Pengaturan &gt; Input &gt; Kontrol jarak jauh lalu izinkan perangkat ini.</translation>
+        </message>
+        <message>
+            <source>Unread messages</source>
+            <translation>Pesan belum dibaca</translation>
         </message>
     </context>
     <context>
@@ -3151,10 +3143,6 @@
     </context>
     <context>
         <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>Tidak tersedia - pengaturan audio atau uji nada</translation>
-        </message>
         <message>
             <source>Microphone muted</source>
             <translation>Mikrofon dibisukan</translation>

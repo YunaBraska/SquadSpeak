@@ -303,10 +303,6 @@
             <translation>ان پٹ ڈیوائس</translation>
         </message>
         <message>
-            <source>Microphone paused for others</source>
-            <translation>مائیکروفون دوسروں کے لیے روک دیا گیا۔</translation>
-        </message>
-        <message>
             <source>Cancel</source>
             <translation>منسوخ کریں۔</translation>
         </message>
@@ -315,16 +311,8 @@
             <translation>آواز مسخ ہو رہی ہے۔ مائیکروفون کی ایمپلیفیکیشن کم کریں۔</translation>
         </message>
         <message>
-            <source>Silent</source>
-            <translation>خاموش</translation>
-        </message>
-        <message>
             <source>Test output</source>
             <translation>ٹیسٹ آؤٹ پٹ</translation>
-        </message>
-        <message>
-            <source>Voice level</source>
-            <translation>آواز کی سطح</translation>
         </message>
         <message>
             <source>Voice threshold</source>
@@ -1176,6 +1164,10 @@
         <message>
             <source>On the other device, open Settings &gt; Input &gt; Remote control and allow this device.</source>
             <translation>دوسری ڈیوائس پر ترتیبات &gt; ان پٹ &gt; ریموٹ کنٹرول کھولیں اور اس ڈیوائس کو اجازت دیں۔</translation>
+        </message>
+        <message>
+            <source>Unread messages</source>
+            <translation>بغیر پڑھے پیغامات</translation>
         </message>
     </context>
     <context>
@@ -3151,10 +3143,6 @@
     </context>
     <context>
         <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>دستیاب نہیں - آڈیو سیٹنگز یا ٹون ٹیسٹ</translation>
-        </message>
         <message>
             <source>Microphone muted</source>
             <translation>مائیکروفون خاموش ہو گیا۔</translation>

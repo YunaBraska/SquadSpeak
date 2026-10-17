@@ -303,10 +303,6 @@
             <translation>ievades ierīce</translation>
         </message>
         <message>
-            <source>Microphone paused for others</source>
-            <translation>mikrofons ir apturēts citiem</translation>
-        </message>
-        <message>
             <source>Cancel</source>
             <translation>Atcelt</translation>
         </message>
@@ -315,16 +311,8 @@
             <translation>Skaņas kropļojumi. Samaziniet mikrofona pastiprinājumu.</translation>
         </message>
         <message>
-            <source>Silent</source>
-            <translation>Kluss</translation>
-        </message>
-        <message>
             <source>Test output</source>
             <translation>Testa izvade</translation>
-        </message>
-        <message>
-            <source>Voice level</source>
-            <translation>balss līmenis</translation>
         </message>
         <message>
             <source>Voice threshold</source>
@@ -1176,6 +1164,10 @@
         <message>
             <source>On the other device, open Settings &gt; Input &gt; Remote control and allow this device.</source>
             <translation>Otrā ierīcē atver Iestatījumi &gt; ievade &gt; Tālvadības pults un atļauj šo ierīci.</translation>
+        </message>
+        <message>
+            <source>Unread messages</source>
+            <translation>Nelasīti ziņojumi</translation>
         </message>
     </context>
     <context>
@@ -3151,10 +3143,6 @@
     </context>
     <context>
         <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>nav pieejams - audio iestatījumi vai toņa pārbaude</translation>
-        </message>
         <message>
             <source>Microphone muted</source>
             <translation>mikrofons ir izslēgts</translation>

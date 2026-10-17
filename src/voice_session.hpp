@@ -73,7 +73,7 @@ public:
     [[nodiscard]] int pttKeyCode() const { return preferences_.value("pttKeyCode").toInt(); }
     [[nodiscard]] QString pttKeyName() const;
     [[nodiscard]] QList<int> pttKeyCodes() const;
-    [[nodiscard]] bool available() const { return !settingsOpen_ && !testActive_; }
+    [[nodiscard]] bool available() const { return !testActive_; }
     [[nodiscard]] bool inputReady() const { return inputReady_; }
     [[nodiscard]] bool outputReady() const { return outputReady_; }
     bool setAudioReadiness(bool inputReady, bool outputReady);
@@ -94,7 +94,6 @@ public:
     bool setRemotePttHeld(bool held);
     bool setPttLocal(bool local);
     Q_INVOKABLE bool releasePttInput();
-    Q_INVOKABLE bool setAudioSettingsOpen(bool open);
     Q_INVOKABLE bool setAudioTestActive(bool active);
 signals:
     void preferencesChanged();
@@ -114,7 +113,6 @@ private:
     QString error_;
     bool remotePttHeld_ = false;
     bool pttLocal_ = true;
-    bool settingsOpen_ = false;
     bool testActive_ = false;
     bool supporterEnabled_ = false;
     bool inputReady_ = true;

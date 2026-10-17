@@ -9,6 +9,8 @@ ColumnLayout {
     required property var audio
     property real chartHeight: 166
     property bool showReadouts: true
+    property real thresholdDb: NaN
+    onThresholdDbChanged: chart.requestPaint()
     spacing: 4
 
     Flow {
@@ -93,6 +95,10 @@ ColumnLayout {
             }
             ctx.setLineDash([4, 4])
             draw(response, Theme.warning, -48, 24)
+            if (isFinite(root.thresholdDb)) {
+                ctx.setLineDash([2, 5])
+                draw([root.thresholdDb, root.thresholdDb], Theme.text, -90, 0)
+            }
         }
         Label {
             anchors.centerIn: parent
@@ -119,6 +125,8 @@ ColumnLayout {
                 const t = (mouse.x - 42) / w
                 if (t < 0 || t > 1 || mouse.y < 20 || mouse.y > 20 + h) { showing = false; return }
                 const candidates = [
+                    {values: isFinite(root.thresholdDb) ? [root.thresholdDb, root.thresholdDb] : [], min: -90, max: 0, unit: qsTr("dBFS"),
+                        text: qsTranslate("AudioSettings", "Voice threshold")},
                     {values: chart.response, min: -48, max: 24, unit: qsTr("dB"),
                         text: qsTr("Filter curve: the configured change in level at each frequency, read on the right dB scale. It excludes noise reduction and voice activation.")},
                     {values: chart.active ? chart.raw : [], min: -90, max: 0, unit: qsTr("dBFS"),

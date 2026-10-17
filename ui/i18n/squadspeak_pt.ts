@@ -303,10 +303,6 @@
             <translation>Dispositivo de entrada</translation>
         </message>
         <message>
-            <source>Microphone paused for others</source>
-            <translation>Microfone pausado para os outros</translation>
-        </message>
-        <message>
             <source>Cancel</source>
             <translation>Cancelar</translation>
         </message>
@@ -315,16 +311,8 @@
             <translation>Saturação. Reduza o ganho do microfone.</translation>
         </message>
         <message>
-            <source>Silent</source>
-            <translation>Silencioso</translation>
-        </message>
-        <message>
             <source>Test output</source>
             <translation>Testar saída</translation>
-        </message>
-        <message>
-            <source>Voice level</source>
-            <translation>Nível de voz</translation>
         </message>
         <message>
             <source>Voice threshold</source>
@@ -1176,6 +1164,10 @@
         <message>
             <source>On the other device, open Settings &gt; Input &gt; Remote control and allow this device.</source>
             <translation>No outro dispositivo, abre Definições &gt; Entrada &gt; Controlo remoto e autoriza este dispositivo.</translation>
+        </message>
+        <message>
+            <source>Unread messages</source>
+            <translation>Mensagens não lidas</translation>
         </message>
     </context>
     <context>
@@ -3151,10 +3143,6 @@
     </context>
     <context>
         <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>Indisponível - definições de áudio ou teste de tom</translation>
-        </message>
         <message>
             <source>Microphone muted</source>
             <translation>Microfone silenciado</translation>

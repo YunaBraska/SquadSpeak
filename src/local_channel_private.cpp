@@ -113,6 +113,7 @@ QVariantList LocalChannel::privateChats() const {
             {"protocol", c->teamSpeak ? "teamspeak" : "squadspeak"}, {"online", link != nullptr}, {"peerOnline", link && c->privatePeerOnline}, {"access", link ? "accepted" : "offline"}, {"autoJoin", false},
             {"members", link ? c->members : QVariantList{}}, {"expires", c->privateExpires},
             {"hasMessages", c->privateExpires > (c->teamSpeak ? clock_() : c->chatClock.isValid() ? c->serverTime + c->chatClock.elapsed() : c->serverTime)},
+            {"unread", c->unreadExpires > (c->teamSpeak ? clock_() : c->chatClock.isValid() ? c->serverTime + c->chatClock.elapsed() : c->serverTime)},
             {"blockedByMe", c->blockedByMe}, {"blocked", c->blockedByMe || c->blockedByPeer}});
     }
     std::sort(result.begin(), result.end(), [](const auto& a, const auto& b) { return a.toMap().value("id").toString() < b.toMap().value("id").toString(); });

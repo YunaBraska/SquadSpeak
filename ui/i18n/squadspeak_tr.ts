@@ -303,10 +303,6 @@
             <translation>Giriş aygıtı</translation>
         </message>
         <message>
-            <source>Microphone paused for others</source>
-            <translation>Mikrofon diğerleri için duraklatıldı</translation>
-        </message>
-        <message>
             <source>Cancel</source>
             <translation>İptal</translation>
         </message>
@@ -315,16 +311,8 @@
             <translation>Seste kırpılma var. Mikrofon kazancını azaltın.</translation>
         </message>
         <message>
-            <source>Silent</source>
-            <translation>Sessiz</translation>
-        </message>
-        <message>
             <source>Test output</source>
             <translation>Çıkışı test et</translation>
-        </message>
-        <message>
-            <source>Voice level</source>
-            <translation>Konuşma düzeyi</translation>
         </message>
         <message>
             <source>Voice threshold</source>
@@ -1176,6 +1164,10 @@
         <message>
             <source>On the other device, open Settings &gt; Input &gt; Remote control and allow this device.</source>
             <translation>Diğer cihazda Ayarlar &gt; Giriş &gt; Uzaktan kontrol bölümünü aç ve bu cihaza izin ver.</translation>
+        </message>
+        <message>
+            <source>Unread messages</source>
+            <translation>Okunmamış mesajlar</translation>
         </message>
     </context>
     <context>
@@ -3151,10 +3143,6 @@
     </context>
     <context>
         <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>Kullanılamıyor - ses ayarları veya ses testi</translation>
-        </message>
         <message>
             <source>Microphone muted</source>
             <translation>Mikrofon sessizde</translation>

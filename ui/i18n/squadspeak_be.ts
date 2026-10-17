@@ -303,10 +303,6 @@
             <translation>Прылада ўводу</translation>
         </message>
         <message>
-            <source>Microphone paused for others</source>
-            <translation>Мікрафон прыпынены для іншых</translation>
-        </message>
-        <message>
             <source>Cancel</source>
             <translation>Адмена</translation>
         </message>
@@ -315,16 +311,8 @@
             <translation>Скажэнне гуку. Паменшыце ўзмацненне мікрафона.</translation>
         </message>
         <message>
-            <source>Silent</source>
-            <translation>Ціха</translation>
-        </message>
-        <message>
             <source>Test output</source>
             <translation>Вывад тэсту</translation>
-        </message>
-        <message>
-            <source>Voice level</source>
-            <translation>Узровень галасы</translation>
         </message>
         <message>
             <source>Voice threshold</source>
@@ -1176,6 +1164,10 @@
         <message>
             <source>On the other device, open Settings &gt; Input &gt; Remote control and allow this device.</source>
             <translation>На іншай прыладзе адкрый Налады &gt; Увод &gt; Пульт дыстанцыйнага кіравання і дазволь гэтай прыладзе.</translation>
+        </message>
+        <message>
+            <source>Unread messages</source>
+            <translation>Непрачытаныя паведамленні</translation>
         </message>
     </context>
     <context>
@@ -3151,10 +3143,6 @@
     </context>
     <context>
         <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>Недаступна - налады гуку або праверка гуку</translation>
-        </message>
         <message>
             <source>Microphone muted</source>
             <translation>мікрафон адключаны</translation>

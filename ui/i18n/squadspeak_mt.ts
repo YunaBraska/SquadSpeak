@@ -303,10 +303,6 @@
             <translation>Apparat tad-dħul</translation>
         </message>
         <message>
-            <source>Microphone paused for others</source>
-            <translation>Il-mikrofonu waqaf għal utenti oħra</translation>
-        </message>
-        <message>
             <source>Cancel</source>
             <translation>Ikkanċella</translation>
         </message>
@@ -315,16 +311,8 @@
             <translation>Il-ħoss qed jinqata'. Naqqas l-amplifikazzjoni tal-mikrofonu.</translation>
         </message>
         <message>
-            <source>Silent</source>
-            <translation>Sieket</translation>
-        </message>
-        <message>
             <source>Test output</source>
             <translation>Output tat-test</translation>
-        </message>
-        <message>
-            <source>Voice level</source>
-            <translation>Livell tal-vuċi</translation>
         </message>
         <message>
             <source>Voice threshold</source>
@@ -1176,6 +1164,10 @@
         <message>
             <source>On the other device, open Settings &gt; Input &gt; Remote control and allow this device.</source>
             <translation>Fuq l-apparat l-ieħor, iftaħ Settings &gt; Dħul &gt; Kontroll mill-bogħod u ħalli dan l-apparat.</translation>
+        </message>
+        <message>
+            <source>Unread messages</source>
+            <translation>Messaġġi mhux moqrija</translation>
         </message>
     </context>
     <context>
@@ -3151,10 +3143,6 @@
     </context>
     <context>
         <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>Mhux disponibbli - settings tal-awdjo jew test tat-ton</translation>
-        </message>
         <message>
             <source>Microphone muted</source>
             <translation>Mikrofonu sieket</translation>

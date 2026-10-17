@@ -295,6 +295,7 @@ bool LocalChannel::applyChat(Client& c, QJsonObject payload, bool keyMessage) {
             throw std::runtime_error(QT_TRANSLATE_NOOP("LocalChannel", "Invalid message from host."));
         const auto sequence = record.value("sequence").toInteger();
         const bool fresh = sequence > c.lastChatSequence;
+        const bool unreadBefore = c.unreadExpires > now;
         c.lastChatSequence = std::max(c.lastChatSequence, sequence);
         bool known = false;
         for (qsizetype i = 0; i < c.messages.size(); ++i) {
@@ -317,6 +318,10 @@ bool LocalChannel::applyChat(Client& c, QJsonObject payload, bool keyMessage) {
             const auto text = c.privatePeer.isEmpty() ? c.pending.value("text").toString() : c.pendingText; c.pendingText.clear(); c.pending = {}; c.pendingImage.clear(); c.chatError.clear(); emit chatSent(text, c.id);
         }
         const auto event = record.value("event").toObject();
+        if (fresh && event.isEmpty() && record.value("sender").toString() != ownId()
+            && record.value("expires").toInteger() > now) {
+            c.unreadExpires = std::max(c.unreadExpires, record.value("expires").toInteger());
+        }
         if (fresh && !hostOnly_ && !remoteMode() && c.accepted && c.voice && c.id == joinedHostId_
             && record.value("sender") != ownId() && record.value("expires").toInteger() > c.serverTime) {
             if (!event.isEmpty()) emit botNotification(record.toVariantMap());
@@ -324,6 +329,8 @@ bool LocalChannel::applyChat(Client& c, QJsonObject payload, bool keyMessage) {
                 emit chatNotification(c.id, record.toVariantMap());
         }
         emit chatChanged();
+        const bool unreadAfter = c.unreadExpires > now;
+        if (!unreadBefore && unreadAfter) emit hostsChanged();
         return true;
     } catch (const std::exception& error) {
         if (!c.privatePeer.isEmpty() && c.id == chatHostId_ && payload.value("kind") == "imageData")
@@ -651,6 +658,30 @@ bool LocalChannel::historyLoading() const { const auto* c = chatClient(); return
 bool LocalChannel::hasOlderMessages() const { const auto* c = chatClient(); return c && c->hasOlder; }
 
 bool LocalChannel::hasNewerMessages() const { const auto* c = chatClient(); return c && c->hasNewer; }
+
+bool LocalChannel::markChatRead(const QString& hostId, qint64 lastVisibleSequence) {
+    if (remoteMode()) {
+        if (lastVisibleSequence < 0 || hostId != remoteView_.value("chatHostId").toString()) return false;
+        const auto entries = remoteView_.value("channels").toList() + remoteView_.value("privateChats").toList();
+        for (const auto& value : entries) {
+            const auto entry = value.toMap();
+            if (entry.value("id").toString() == hostId)
+                return !entry.value("unread").toBool() || remoteAction("markChatRead", {{"lastVisibleSequence", lastVisibleSequence}});
+        }
+        return false;
+    }
+    if (lastVisibleSequence < 0 || hostId != chatHostId_) return false;
+    auto* c = chatClient();
+    if (!c || !c->accepted || !chatReady() || !c->historyRequest.isEmpty() || c->hasNewer) return false;
+    const auto visible = messages();
+    const auto latest = visible.isEmpty() ? 0 : visible.last().toMap().value("sequence").toLongLong();
+    if (lastVisibleSequence != latest) return false;
+    if (!c->unreadExpires) return true;
+    c->unreadExpires = 0;
+    emit chatChanged();
+    emit hostsChanged();
+    return true;
+}
 
 QString LocalChannel::chatError() const {
     const auto* c = chatClient();

@@ -303,10 +303,6 @@
             <translation>įvesties įrenginys</translation>
         </message>
         <message>
-            <source>Microphone paused for others</source>
-            <translation>Mikrofonas pristabdytas kitiems</translation>
-        </message>
-        <message>
             <source>Cancel</source>
             <translation>Atšaukti</translation>
         </message>
@@ -315,16 +311,8 @@
             <translation>Klipingas. Sumažinkite mikrofono stiprinimą.</translation>
         </message>
         <message>
-            <source>Silent</source>
-            <translation>Tyli</translation>
-        </message>
-        <message>
             <source>Test output</source>
             <translation>Bandymo išvestis</translation>
-        </message>
-        <message>
-            <source>Voice level</source>
-            <translation>balso lygis</translation>
         </message>
         <message>
             <source>Voice threshold</source>
@@ -1176,6 +1164,10 @@
         <message>
             <source>On the other device, open Settings &gt; Input &gt; Remote control and allow this device.</source>
             <translation>Kitame įrenginyje atverk Nustatymai &gt; įvestis &gt; Nuotolinio valdymo pultas ir leisk šiam įrenginiui.</translation>
+        </message>
+        <message>
+            <source>Unread messages</source>
+            <translation>Neskaitytos žinutės</translation>
         </message>
     </context>
     <context>
@@ -3151,10 +3143,6 @@
     </context>
     <context>
         <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>nepasiekiamas - garso nustatymai arba tono testas</translation>
-        </message>
         <message>
             <source>Microphone muted</source>
             <translation>mikrofonas nutildytas</translation>

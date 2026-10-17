@@ -303,10 +303,6 @@
             <translation>Vstupní zařízení</translation>
         </message>
         <message>
-            <source>Microphone paused for others</source>
-            <translation>Mikrofon je ztlumen pro ostatní</translation>
-        </message>
-        <message>
             <source>Cancel</source>
             <translation>Zrušit</translation>
         </message>
@@ -315,16 +311,8 @@
             <translation>Překročení maximální úrovně. Snižte citlivost mikrofonu.</translation>
         </message>
         <message>
-            <source>Silent</source>
-            <translation>Bez zvuku</translation>
-        </message>
-        <message>
             <source>Test output</source>
             <translation>Test výstupu</translation>
-        </message>
-        <message>
-            <source>Voice level</source>
-            <translation>Úroveň hlasu</translation>
         </message>
         <message>
             <source>Voice threshold</source>
@@ -1176,6 +1164,10 @@
         <message>
             <source>On the other device, open Settings &gt; Input &gt; Remote control and allow this device.</source>
             <translation>Na druhém zařízení otevři Nastavení &gt; Vstup &gt; Vzdálené ovládání a povol toto zařízení.</translation>
+        </message>
+        <message>
+            <source>Unread messages</source>
+            <translation>Nepřečtené zprávy</translation>
         </message>
     </context>
     <context>
@@ -3151,10 +3143,6 @@
     </context>
     <context>
         <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>Nedostupný - nastavení zvuku nebo test zvuku</translation>
-        </message>
         <message>
             <source>Microphone muted</source>
             <translation>Mikrofon ztlumený</translation>

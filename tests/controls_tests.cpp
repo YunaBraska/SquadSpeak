@@ -21,6 +21,7 @@
 #include <QTemporaryDir>
 #include <QStandardPaths>
 #include <QImage>
+#include <QImageWriter>
 #include <QPainter>
 #include <QUrl>
 #include <QTranslator>
@@ -288,7 +289,13 @@ public slots:
     bool expireChat(int days = 1) { now_ += days * ChatHistory::lifetime + 1; return true; }
     bool saveWindow(QObject* window, const QString& path) {
         auto* view = qobject_cast<QQuickWindow*>(window);
-        return view && view->grabWindow().save(path);
+        if (!view) return false;
+        const auto image = view->grabWindow();
+        QImageWriter writer(path);
+        if (writer.write(image)) return true;
+        qWarning() << "Screenshot failed" << path << writer.errorString()
+                   << "image" << image.size() << "visible" << view->isVisible() << "exposed" << view->isExposed();
+        return false;
     }
     bool scrollPixels(QObject* object, int x, int y) {
         auto* item = qobject_cast<QQuickItem*>(object);

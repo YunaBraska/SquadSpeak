@@ -10,6 +10,8 @@ ColumnLayout {
     property real to: 100
     property real value: 0
     property real stepSize: 1
+    property real levelValue: NaN
+    property color levelColor: Theme.accent
     property bool autoAvailable: false
     property bool automatic: false
     property var applyAutomatic: null
@@ -69,7 +71,13 @@ ColumnLayout {
             height: 4
             radius: Theme.smallRadius
             color: Theme.border
-            Rectangle { width: control.visualPosition * parent.width; height: parent.height; radius: Theme.smallRadius; color: Theme.accent }
+            Rectangle {
+                width: parent.width * (isFinite(setting.levelValue)
+                    ? Math.max(0, Math.min(1, (setting.levelValue - setting.from) / (setting.to - setting.from)))
+                    : control.visualPosition)
+                height: parent.height; radius: Theme.smallRadius
+                color: isFinite(setting.levelValue) ? setting.levelColor : Theme.accent
+            }
         }
         handle: Rectangle {
             x: control.leftPadding + control.visualPosition * (control.availableWidth - width)

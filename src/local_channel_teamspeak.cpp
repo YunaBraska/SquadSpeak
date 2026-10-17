@@ -11,6 +11,11 @@ namespace {
 QString tsId(const QString& server, const QString& kind, const QString& value) {
     return QString::fromLatin1(QCryptographicHash::hash((server + '/' + kind + '/' + value).toUtf8(), QCryptographicHash::Sha256).toHex());
 }
+QString tsAvatar(const QString& identity) {
+    const auto choices = VoiceSession::avatars();
+    const auto hash = QCryptographicHash::hash(identity.toUtf8(), QCryptographicHash::Sha256);
+    return choices.at(qFromBigEndian<quint32>(hash.constData()) % choices.size());
+}
 QString tsEndpoint(const QString& address, quint16 port) {
     return (address.contains(':') ? '[' + address + ']' : address) + ':' + QString::number(port);
 }
@@ -249,8 +254,9 @@ void LocalChannel::teamSpeakState(const QJsonObject& state) {
             const auto peer = tsClient == self ? ownId() : tsId(connection->id, "member", uid.isEmpty() ? tsClient : uid);
             c->onlineIds.append(peer);
             if (member.value("channel") != channel) continue;
+            const auto avatar = tsClient == self ? session_.avatar() : tsAvatar(uid.isEmpty() ? peer : uid);
             c->members.append(QVariantMap{{"id", peer}, {"tsClient", tsClient}, {"tsUid", uid}, {"name", tsName(member.value("name").toString())},
-                {"avatarId", "mossling"}, {"avatar", "mossling"}, {"available", true}, {"muted", member.value("inputMuted").toBool()},
+                {"avatarId", avatar}, {"avatar", VoiceSession::avatarFallback(avatar)}, {"teamSpeak", true}, {"available", true}, {"muted", member.value("inputMuted").toBool()},
                 {"deafened", member.value("outputMuted").toBool()}, {"sleeping", false}});
         }
         if (c->voice) {
@@ -325,9 +331,10 @@ void LocalChannel::teamSpeakEvent(const QJsonObject& event) {
             if (okay) {
                 const auto now = clock_();
                 QJsonObject record{{"sequence", ++teamSpeak_->sequence}, {"sender", ownId()}, {"name", session_.userName()},
-                    {"avatarId", session_.avatar()}, {"request", request}, {"created", now}, {"expires", now + ChatHistory::lifetime},
+                    {"avatarId", session_.avatar()}, {"teamSpeak", true}, {"request", request}, {"created", now}, {"expires", now + ChatHistory::lifetime},
                     {"text", c->pending.value("text")}};
                 c->messages.append(record); c->privateExpires = now + ChatHistory::lifetime;
+                c->lastChatSequence = std::max(c->lastChatSequence, record.value("sequence").toInteger());
                 while (c->messages.size() > maximumWindowMessages) c->messages.removeFirst();
                 emit chatSent(c->pending.value("text").toString(), c->id);
             } else c->chatError = event.value("error").toString();
@@ -337,6 +344,7 @@ void LocalChannel::teamSpeakEvent(const QJsonObject& event) {
     }
     if (type != "message" || event.value("fromId") == teamSpeak_->state.value("self")) return;
     const auto mode = event.value("mode").toString();
+    if (mode != "channel" && mode != "private" && mode != "server") return;
     auto id = tsId(teamSpeak_->id, "channel", event.value("channel").toString());
     auto uid = event.value("fromUid").toString();
     if (uid.isEmpty()) {
@@ -364,13 +372,18 @@ void LocalChannel::teamSpeakEvent(const QJsonObject& event) {
     const auto text = event.value("text").toString();
     if (!ChatHistory::validText(text)) return;
     const auto now = clock_();
-    c->messages.append(QJsonObject{{"sequence", ++teamSpeak_->sequence}, {"sender", peer}, {"name", tsName(event.value("fromName").toString())},
-        {"avatarId", "mossling"}, {"request", QUuid::createUuid().toString(QUuid::WithoutBraces)},
+    const bool unreadBefore = c->unreadExpires > now;
+    const auto sequence = ++teamSpeak_->sequence;
+    c->messages.append(QJsonObject{{"sequence", sequence}, {"sender", peer}, {"name", tsName(event.value("fromName").toString())},
+        {"avatarId", tsAvatar(uid.isEmpty() ? peer : uid)}, {"teamSpeak", true}, {"request", QUuid::createUuid().toString(QUuid::WithoutBraces)},
         {"created", now}, {"expires", now + ChatHistory::lifetime}, {"text", text}});
     c->privateExpires = now + ChatHistory::lifetime;
+    c->lastChatSequence = std::max(c->lastChatSequence, sequence);
+    c->unreadExpires = now + ChatHistory::lifetime;
     while (c->messages.size() > maximumWindowMessages) c->messages.removeFirst();
     if (c->voice) emit chatNotification(c->id, c->messages.last().toObject().toVariantMap());
-    emit chatChanged(); emit hostsChanged();
+    emit chatChanged();
+    if (!unreadBefore) emit hostsChanged();
 }
 
 bool LocalChannel::sendTeamSpeakChat(Client& c, const QString& text) {

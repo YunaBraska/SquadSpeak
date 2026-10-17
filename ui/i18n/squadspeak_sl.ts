@@ -303,10 +303,6 @@
             <translation>Vhodna naprava</translation>
         </message>
         <message>
-            <source>Microphone paused for others</source>
-            <translation>Mikrofon zaustavljen za druge</translation>
-        </message>
-        <message>
             <source>Cancel</source>
             <translation>Prekliči</translation>
         </message>
@@ -315,16 +311,8 @@
             <translation>Preobremenitev. Zmanjšajte ojačanje mikrofona.</translation>
         </message>
         <message>
-            <source>Silent</source>
-            <translation>Tiho</translation>
-        </message>
-        <message>
             <source>Test output</source>
             <translation>Testni izhod</translation>
-        </message>
-        <message>
-            <source>Voice level</source>
-            <translation>Raven glasu</translation>
         </message>
         <message>
             <source>Voice threshold</source>
@@ -1176,6 +1164,10 @@
         <message>
             <source>On the other device, open Settings &gt; Input &gt; Remote control and allow this device.</source>
             <translation>Na drugi napravi odpri Nastavitve &gt; Vnos &gt; Daljinski upravljalnik in dovoli to napravo.</translation>
+        </message>
+        <message>
+            <source>Unread messages</source>
+            <translation>Neprebrana sporočila</translation>
         </message>
     </context>
     <context>
@@ -3151,10 +3143,6 @@
     </context>
     <context>
         <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>Ni na voljo - zvočne nastavitve ali preizkus zvoka</translation>
-        </message>
         <message>
             <source>Microphone muted</source>
             <translation>mikrofon izklopljen</translation>

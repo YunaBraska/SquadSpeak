@@ -45,7 +45,6 @@ class AudioModel final : public QObject {
     Q_PROPERTY(double echoStrength READ echoStrength NOTIFY profileChanged)
     Q_PROPERTY(QString echoReference READ echoReference NOTIFY activityChanged)
     Q_PROPERTY(bool echoRetryAvailable READ echoRetryAvailable NOTIFY activityChanged)
-    Q_PROPERTY(bool activationEnabled READ activationEnabled NOTIFY profileChanged)
     Q_PROPERTY(bool activationAutomatic READ activationAutomatic NOTIFY profileChanged)
     Q_PROPERTY(double activationThresholdDb READ activationThresholdDb NOTIFY activityChanged)
     Q_PROPERTY(double activationLevelDb READ activationLevelDb NOTIFY activityChanged)
@@ -108,7 +107,6 @@ public:
     [[nodiscard]] QString echoReference() const;
     [[nodiscard]] bool echoRetryAvailable() const { return source_ && echoCancellation() && outputMonitor_.retryNeeded(); }
     Q_INVOKABLE bool retryEchoReference();
-    [[nodiscard]] bool activationEnabled() const { return activation_.enabled; }
     [[nodiscard]] bool activationAutomatic() const { return activation_.automatic; }
     [[nodiscard]] double activationThresholdDb() const { return mixer_.activationThresholdDb(); }
     [[nodiscard]] double activationLevelDb() const { return mixer_.activationLevelDb(); }
@@ -142,7 +140,7 @@ public:
     Q_INVOKABLE bool previewOutput(double volume);
     [[nodiscard]] double maximumFrequency() const;
     [[nodiscard]] bool running() const { return source_ != nullptr && wantsCapture_; }
-    [[nodiscard]] bool testActive() const { return wantsCapture_ || testingOutput_; }
+    [[nodiscard]] bool testActive() const { return testingOutput_; }
     [[nodiscard]] bool automaticVolume() const { return automaticVolume_; }
     [[nodiscard]] QString inputStatus() const { return inputStatus_; }
     [[nodiscard]] QString outputStatus() const { return outputStatus_; }
@@ -164,7 +162,6 @@ public:
     Q_INVOKABLE bool setNoiseSuppression(double value);
     Q_INVOKABLE bool setEchoAutomatic(bool automatic);
     Q_INVOKABLE bool setEchoStrength(double strength);
-    Q_INVOKABLE bool setActivationEnabled(bool enabled);
     Q_INVOKABLE bool setActivationAutomatic(bool automatic);
     Q_INVOKABLE bool setActivationThresholdDb(double value);
     Q_INVOKABLE bool setOutputVolume(double value);

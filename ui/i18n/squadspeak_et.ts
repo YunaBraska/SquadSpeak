@@ -303,10 +303,6 @@
             <translation>Sisendseade</translation>
         </message>
         <message>
-            <source>Microphone paused for others</source>
-            <translation>Mikrofon on teistele peatatud</translation>
-        </message>
-        <message>
             <source>Cancel</source>
             <translation>Tühista</translation>
         </message>
@@ -315,16 +311,8 @@
             <translation>Liiga tugev signaal. Vähenda mikrofoni võimendust.</translation>
         </message>
         <message>
-            <source>Silent</source>
-            <translation>Häälestatud vaikne</translation>
-        </message>
-        <message>
             <source>Test output</source>
             <translation>Test väljund</translation>
-        </message>
-        <message>
-            <source>Voice level</source>
-            <translation>Hääle tase</translation>
         </message>
         <message>
             <source>Voice threshold</source>
@@ -1176,6 +1164,10 @@
         <message>
             <source>On the other device, open Settings &gt; Input &gt; Remote control and allow this device.</source>
             <translation>Ava teises seadmes Seaded &gt; Sisend &gt; Kaugjuhtimine ja luba see seade.</translation>
+        </message>
+        <message>
+            <source>Unread messages</source>
+            <translation>Lugemata sõnumid</translation>
         </message>
     </context>
     <context>
@@ -3151,10 +3143,6 @@
     </context>
     <context>
         <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>Saamatav - heliseaded või helikontroll</translation>
-        </message>
         <message>
             <source>Microphone muted</source>
             <translation>Mikrofon on vaigistatud</translation>

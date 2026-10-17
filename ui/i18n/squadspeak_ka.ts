@@ -303,10 +303,6 @@
             <translation>შეყვანის მოწყობილობა</translation>
         </message>
         <message>
-            <source>Microphone paused for others</source>
-            <translation>მიკროფონი შეჩერებულია სხვებისთვის</translation>
-        </message>
-        <message>
             <source>Cancel</source>
             <translation>გაუქმება</translation>
         </message>
@@ -315,16 +311,8 @@
             <translation>კლიპინგი. შეამცირეთ მიკროფონის გაძლიერება.</translation>
         </message>
         <message>
-            <source>Silent</source>
-            <translation>ჩუმად</translation>
-        </message>
-        <message>
             <source>Test output</source>
             <translation>ტესტის გამომავალი</translation>
-        </message>
-        <message>
-            <source>Voice level</source>
-            <translation>ხმის დონე</translation>
         </message>
         <message>
             <source>Voice threshold</source>
@@ -1176,6 +1164,10 @@
         <message>
             <source>On the other device, open Settings &gt; Input &gt; Remote control and allow this device.</source>
             <translation>სხვა მოწყობილობაზე გახსენი პარამეტრები &gt; შეყვანა &gt; დისტანციური მართვა და მიეცი ამ მოწყობილობას ნებართვა.</translation>
+        </message>
+        <message>
+            <source>Unread messages</source>
+            <translation>წაუკითხავი შეტყობინებები</translation>
         </message>
     </context>
     <context>
@@ -3151,10 +3143,6 @@
     </context>
     <context>
         <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>მიუწვდომელია - აუდიო პარამეტრები ან ტონის ტესტი</translation>
-        </message>
         <message>
             <source>Microphone muted</source>
             <translation>მიკროფონი დადუმებულია</translation>

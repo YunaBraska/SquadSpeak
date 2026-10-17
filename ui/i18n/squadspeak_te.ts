@@ -303,10 +303,6 @@
             <translation>ఇన్‌పుట్ పరికరం</translation>
         </message>
         <message>
-            <source>Microphone paused for others</source>
-            <translation>మైక్రోఫోన్ ఇతరుల కోసం పాజ్ చేయబడింది</translation>
-        </message>
-        <message>
             <source>Cancel</source>
             <translation>రద్దు చేయండి</translation>
         </message>
@@ -315,16 +311,8 @@
             <translation>క్లిప్పింగ్. మైక్రోఫోన్ గెయిన్‌ను తగ్గించండి.</translation>
         </message>
         <message>
-            <source>Silent</source>
-            <translation>నిశ్శబ్దం</translation>
-        </message>
-        <message>
             <source>Test output</source>
             <translation>టెస్ట్ అవుట్‌పుట్</translation>
-        </message>
-        <message>
-            <source>Voice level</source>
-            <translation>వాయిస్ స్థాయి</translation>
         </message>
         <message>
             <source>Voice threshold</source>
@@ -1176,6 +1164,10 @@
         <message>
             <source>On the other device, open Settings &gt; Input &gt; Remote control and allow this device.</source>
             <translation>ఇతర పరికరంలో సెట్టింగ్‌లు &gt; సమర్పించు &gt; దూర నియంత్రణ తెరిచి, ఈ పరికరాన్ని అనుమతించండి.</translation>
+        </message>
+        <message>
+            <source>Unread messages</source>
+            <translation>చదవని సందేశాలు</translation>
         </message>
     </context>
     <context>
@@ -3151,10 +3143,6 @@
     </context>
     <context>
         <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>అందుబాటులో లేరు - ఆడియో సెట్టింగ్‌లు లేదా ధ్వని పరీక్ష</translation>
-        </message>
         <message>
             <source>Microphone muted</source>
             <translation>మైక్రోఫోన్ నిశ్శబ్దంగా ఉంది</translation>

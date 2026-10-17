@@ -303,10 +303,6 @@
             <translation>Gléas ionchuir</translation>
         </message>
         <message>
-            <source>Microphone paused for others</source>
-            <translation>Micreafón ar sos do dhaoine eile</translation>
-        </message>
-        <message>
             <source>Cancel</source>
             <translation>Cealaigh</translation>
         </message>
@@ -315,16 +311,8 @@
             <translation>Klipáil. Laghdaigh gnóthachan an mhicreafóin.</translation>
         </message>
         <message>
-            <source>Silent</source>
-            <translation>Ciúin</translation>
-        </message>
-        <message>
             <source>Test output</source>
             <translation>Aschur tástála</translation>
-        </message>
-        <message>
-            <source>Voice level</source>
-            <translation>Leibhéal gutha</translation>
         </message>
         <message>
             <source>Voice threshold</source>
@@ -1176,6 +1164,10 @@
         <message>
             <source>On the other device, open Settings &gt; Input &gt; Remote control and allow this device.</source>
             <translation>Ar an ngléas eile, oscail Socruithe &gt; Ionchur &gt; Cianrialú agus ceadaigh an gléas seo.</translation>
+        </message>
+        <message>
+            <source>Unread messages</source>
+            <translation>Teachtaireachtaí gan léamh</translation>
         </message>
     </context>
     <context>
@@ -3151,10 +3143,6 @@
     </context>
     <context>
         <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>Níl fáil air - socruithe fuaime nó tástáil toin</translation>
-        </message>
         <message>
             <source>Microphone muted</source>
             <translation>Micreafón balbhaithe</translation>

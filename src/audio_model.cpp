@@ -228,13 +228,6 @@ bool AudioModel::setNoiseSuppression(double value) {
     }
 }
 
-bool AudioModel::setActivationEnabled(bool enabled) {
-    auto next = activation_;
-    next.enabled = enabled;
-    next.thresholdDb = mixer_.activationThresholdDb();
-    return updateActivation(next);
-}
-
 bool AudioModel::setActivationAutomatic(bool automatic) {
     auto next = activation_;
     next.automatic = automatic;
@@ -681,7 +674,7 @@ bool AudioModel::testOutput() {
 
 void AudioModel::applyActivation() {
     auto effective = activation_;
-    if (pushToTalk_) effective.enabled = false;
+    effective.enabled = !pushToTalk_;
     mixer_.setVoiceActivation(effective);
 }
 

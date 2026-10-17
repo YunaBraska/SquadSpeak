@@ -18,6 +18,12 @@ PanelWindow {
         ToolTip.text: Accessible.name
         ToolTip.delay: 600
     }
+    component UnreadDot: Rectangle {
+        implicitWidth: 7; implicitHeight: 7
+        radius: width / 2; color: Theme.accent
+        Accessible.role: Accessible.StaticText
+        Accessible.name: qsTr("Unread messages")
+    }
     component MenuAction: MenuItem {
         id: action
         property bool destructive: false
@@ -69,7 +75,7 @@ PanelWindow {
                 VoiceAvatar {
                     objectName: "participantAvatar"
                     Layout.preferredWidth: 44; Layout.preferredHeight: 44; circular: true
-                    avatar: modelData.avatarId || modelData.avatar || "mossling"; name: modelData.name; music: !!modelData.music
+                    avatar: modelData.avatarId || modelData.avatar || "mossling"; name: modelData.name; music: !!modelData.music; teamSpeak: !!modelData.teamSpeak
                     available: modelData.available; muted: modelData.muted; deafened: !!modelData.deafened; sleeping: !!modelData.sleeping
                     identity: modelData.id; animationTime: root.avatarTime
                     animated: root.voice.animatedAvatars && memberEntry.y + memberEntry.height >= grid.contentY && memberEntry.y <= grid.contentY + grid.height
@@ -323,14 +329,16 @@ PanelWindow {
             return Number(!!b.owned) - Number(!!a.owned) || a.label.localeCompare(b.label) || a.key.localeCompare(b.key)
         })
         for (const group of sortedGroups) {
-            orderedChannels(group.channels).forEach(function(entry, index) { ordered.push({channelData: entry, groupLabel: index === 0 ? group.label : "", groupId: group.key}) })
+            const privateUnread = group.privateChats.some(function(entry) { return !!entry.unread })
+            const groupUnread = privateUnread || group.channels.some(function(entry) { return !!entry.unread })
+            orderedChannels(group.channels).forEach(function(entry, index) { ordered.push({channelData: entry, groupLabel: index === 0 ? group.label : "", groupId: group.key, groupUnread: groupUnread}) })
             group.privateChats.sort(function(a, b) {
                 return (a.name || "").localeCompare(b.name || "") || a.id.localeCompare(b.id)
             })
             if (group.privateChats.length > 0) {
-                ordered.push({channelData: {id: "private-folder:" + group.key, name: qsTr("Messages"), privateFolder: true, hostId: group.key}, groupLabel: ordered.length === 0 || ordered[ordered.length - 1].groupId !== group.key ? group.label : "", groupId: group.key})
+                ordered.push({channelData: {id: "private-folder:" + group.key, name: qsTr("Messages"), privateFolder: true, hostId: group.key, unread: privateUnread}, groupLabel: ordered.length === 0 || ordered[ordered.length - 1].groupId !== group.key ? group.label : "", groupId: group.key, groupUnread: groupUnread})
                 if (privateFolderIsExpanded(group.key)) for (const entry of group.privateChats)
-                    ordered.push({channelData: Object.assign({}, entry, {id: entry.id, private: true, hostId: privateHostId(entry)}), groupLabel: "", groupId: group.key})
+                    ordered.push({channelData: Object.assign({}, entry, {id: entry.id, private: true, hostId: privateHostId(entry)}), groupLabel: "", groupId: group.key, groupUnread: groupUnread})
             }
         }
         for (let i = channelRows.count - 1; i >= 0; --i) {
@@ -358,7 +366,6 @@ PanelWindow {
         const active = audioSettingsOpen
         const preview = active && settingsPage === 1
         if (!preview) audio.stop()
-        voice.setAudioSettingsOpen(active)
         previewRequested(preview)
     }
     onAudioSettingsOpenChanged: syncAudioSettings()
@@ -1319,7 +1326,7 @@ PanelWindow {
                 width: requestScroll.availableWidth; spacing: 12
                 RowLayout {
                     Layout.fillWidth: true
-                    VoiceAvatar { objectName: "requestAvatar"; width: 56; height: 56; circular: true; animated: false; avatar: requestInfo.entry.avatarId || "mossling"; name: requestInfo.entry.name || "" }
+                    VoiceAvatar { objectName: "requestAvatar"; width: 56; height: 56; circular: true; animated: false; avatar: requestInfo.entry.avatarId || "mossling"; name: requestInfo.entry.name || ""; teamSpeak: !!requestInfo.entry.teamSpeak }
                     DetailText { objectName: "requestName"; text: requestInfo.entry.name || ""; font.weight: Font.DemiBold }
                     ActionButton {
                         objectName: "messageInspectedMember"
@@ -1662,15 +1669,19 @@ PanelWindow {
                         readonly property var modelData: channelData
                         required property string groupLabel
                         required property string groupId
+                        required property bool groupUnread
                         readonly property real headingHeight: hostHeading.visible ? hostHeading.implicitHeight + hostHeading.Layout.topMargin + hostHeading.Layout.bottomMargin : 0
                         Layout.fillWidth: true; spacing: 2
-                        DetailText {
+                        RowLayout {
                             id: hostHeading
-                            objectName: "hostGroup_" + channelEntry.groupId
                             visible: channelEntry.groupLabel.length > 0
                             Layout.fillWidth: true; Layout.topMargin: 4; Layout.bottomMargin: 2
-                            text: channelEntry.groupLabel; color: Theme.muted; font.pixelSize: 11
-                            selectByMouse: true; wrapMode: TextEdit.WrapAnywhere
+                            DetailText {
+                                objectName: "hostGroup_" + channelEntry.groupId
+                                text: channelEntry.groupLabel; color: Theme.muted; font.pixelSize: 11
+                                selectByMouse: true; wrapMode: TextEdit.WrapAnywhere
+                            }
+                            UnreadDot { objectName: "unreadHost_" + channelEntry.groupId; visible: channelEntry.groupUnread }
                         }
                         Rectangle {
                             id: channelRow
@@ -1682,7 +1693,7 @@ PanelWindow {
                             readonly property bool selected: root.inspectedHost === modelData.id && root.chatExpanded
                             readonly property var members: modelData.members || []
                             Layout.fillWidth: true; implicitHeight: (privateFolder ? 34 : 42) + (selected && !privateFolder ? chatSlot.height + 8 : 0)
-                            radius: Theme.controlRadius; color: selected ? Theme.surface : channelHover.containsMouse ? Theme.surface : "transparent"
+                            radius: Theme.controlRadius; color: active ? Theme.surface : channelHover.containsMouse ? Theme.raised : "transparent"
                             border.width: channelRow.active || activeFocus ? 1 : 0; border.color: Theme.accent
                             MouseArea {
                                 id: channelHover
@@ -1707,10 +1718,11 @@ PanelWindow {
                             }
                             RowLayout {
                                 anchors.left: parent.left; anchors.right: parent.right; height: channelRow.privateFolder ? 34 : 42
-                                anchors.leftMargin: channelRow.privateFolder || channelRow.privateConversation ? 18 : 8 + (modelData.depth || 0) * 12; anchors.rightMargin: 2; spacing: 6
+                                anchors.leftMargin: channelRow.privateConversation ? 18 : 8 + (modelData.depth || 0) * 12; anchors.rightMargin: 2; spacing: 6
                                 Glyph { symbol: channelRow.privateFolder ? "down" : channelRow.privateConversation ? "chat" : "down"; rotation: channelRow.privateFolder ? (root.privateFolderIsExpanded(modelData.hostId) ? 0 : -90) : channelRow.selected ? 0 : -90; color: channelRow.selected || channelRow.privateFolder ? Theme.accent : Theme.muted }
                                 Glyph { objectName: "ownedChannel_" + modelData.id; visible: channelRow.owned; symbol: "home"; description: qsTr("You host"); color: Theme.accent }
                                 Label { objectName: "channelName_" + modelData.id; text: modelData.name; textFormat: Text.PlainText; font.weight: channelRow.selected || channelRow.owned || channelRow.active || channelRow.privateFolder ? Font.DemiBold : Font.Normal; Layout.fillWidth: true; elide: Text.ElideRight }
+                                UnreadDot { objectName: "unreadChannel_" + modelData.id; visible: !!modelData.unread }
                                 Label { visible: channelRow.privateConversation; text: modelData.peerOnline ? qsTr("Online") : qsTr("Offline"); color: Theme.muted; font.pixelSize: 11 }
                                 Glyph { objectName: "joinedChannel_" + modelData.id; visible: channelRow.active; symbol: "headphones"; description: qsTr("Connected to voice"); color: Theme.accent }
                                 Glyph { objectName: "channelMusic_" + modelData.id; visible: !channelRow.privateConversation && !!modelData.music; symbol: "music"; description: qsTr("Radio"); color: Theme.accent }
@@ -1736,7 +1748,7 @@ PanelWindow {
                                             id: memberAvatar
                                             required property var modelData
                                             width: 36; height: 36; circular: true
-                                            avatar: modelData.avatarId || modelData.avatar || "mossling"; name: modelData.name; music: !!modelData.music
+                                            avatar: modelData.avatarId || modelData.avatar || "mossling"; name: modelData.name; music: !!modelData.music; teamSpeak: !!modelData.teamSpeak
                                             available: modelData.available; muted: modelData.muted; deafened: !!modelData.deafened; sleeping: !!modelData.sleeping
                                             identity: modelData.id; animationTime: root.avatarTime
                                             objectName: "channelAvatar_" + channelRow.modelData.id + "_" + modelData.id
@@ -1852,6 +1864,8 @@ PanelWindow {
             memberLevel: function(id) { return root.inspectedHost === root.activeHost ? root.memberLevel(id) : 0 }
             onMemberRequested: (member, contextual) => root.memberOptions(member, root.inspectedHost, contextual)
             active: root.visible && root.showChat
+            readable: active && root.active && !settings.visible
+            readViewport: scroll
             Layout.fillWidth: true; Layout.fillHeight: true
         }
     }

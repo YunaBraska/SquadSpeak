@@ -4833,6 +4833,74 @@ private slots:
         QCOMPARE(messages.size(), count);
     }
 
+    void unreadTracksLiveMessagesAcrossHistoryExpiryAndRemoteReading() {
+        QTemporaryDir dir;
+        qint64 now = 1700000000000;
+        const auto clock = [&] { return now; };
+        Device host(dir.filePath("host"), "Host", TlsIdentity::create(), clock);
+        Device reader(dir.filePath("reader"), "Reader", TlsIdentity::create(), clock);
+        Device writer(dir.filePath("writer"), "Writer", TlsIdentity::create(), clock);
+        Device control(dir.filePath("control"), "Control");
+        QVERIFY(host.channel.listen(QHostAddress::LocalHost));
+        QVERIFY(host.channel.decide(reader.channel.ownId(), true));
+        QVERIFY(host.channel.decide(writer.channel.ownId(), true));
+        QVERIFY(writer.join(host.channel)); QTRY_VERIFY(writer.channel.chatReady());
+        QVERIFY(writer.channel.sendChat("History")); QTRY_VERIFY(!writer.channel.chatPending());
+        QVERIFY(reader.channel.openChat(host.channel.ownId(), "127.0.0.1", host.channel.port()));
+        QTRY_VERIFY(reader.channel.chatReady() && !reader.channel.historyLoading());
+        const auto unread = [&] {
+            for (const auto& value : reader.channel.savedChannels())
+                if (value.toMap().value("id") == host.channel.ownId()) return value.toMap().value("unread").toBool();
+            return false;
+        };
+        QVERIFY(!unread());
+        QVERIFY(!reader.channel.joined());
+        QVERIFY(host.channel.sendSystemMessage("Announcement"));
+        QTRY_VERIFY(reader.channel.messages().last().toMap().contains("event"));
+        QVERIFY(!unread());
+        QVERIFY(host.channel.setMessageLifetimeDays(7));
+        QVERIFY(writer.channel.sendChat("Long lived")); QTRY_VERIFY(!writer.channel.chatPending());
+        QTRY_VERIFY(unread());
+        QVERIFY(host.channel.setMessageLifetimeDays(1));
+        QVERIFY(writer.channel.sendChat("Short lived")); QTRY_VERIFY(!writer.channel.chatPending());
+        QTRY_COMPARE(memberMessages(reader.channel).size(), 3);
+        const auto last = reader.channel.messages().last().toMap().value("sequence").toLongLong();
+        QVERIFY(!reader.channel.markChatRead(host.channel.ownId(), last - 1));
+        QVERIFY(!reader.channel.markChatRead(host.channel.ownId(), last + 1));
+        QVERIFY(reader.channel.refreshChat()); QTRY_VERIFY(!reader.channel.historyLoading());
+        QVERIFY(unread());
+        // A later, shorter-lived message cannot erase an older unread message.
+        now += 2 * ChatHistory::lifetime;
+        QTRY_COMPARE(memberMessages(reader.channel).size(), 1);
+        QVERIFY(unread());
+        QVERIFY(reader.channel.markChatRead(host.channel.ownId(), reader.channel.messages().last().toMap().value("sequence").toLongLong()));
+        QVERIFY(!unread());
+        QVERIFY(writer.channel.sendChat("Read from remote")); QTRY_VERIFY(!writer.channel.chatPending());
+        QTRY_VERIFY(unread());
+        QVERIFY(reader.channel.startService(QHostAddress::LocalHost, 0));
+        QVERIFY(control.channel.pairAddress("127.0.0.1:" + QString::number(reader.channel.port())));
+        QTRY_COMPARE(reader.channel.controlRequests().size(), 1);
+        QVERIFY(reader.channel.decideControl(control.channel.ownId(), true));
+        QTRY_VERIFY(control.channel.controlConnected());
+        QVERIFY(reader.channel.setRemotePermission(control.channel.ownId(), true));
+        QTRY_VERIFY(control.channel.remoteAllowed());
+        QVERIFY(control.channel.setRemoteMode(true));
+        QTRY_COMPARE(control.channel.remoteView().value("chatHostId").toString(), host.channel.ownId());
+        QTRY_VERIFY(!control.channel.remoteView().value("messages").toList().isEmpty());
+        const auto visible = control.channel.remoteView().value("messages").toList().last().toMap().value("sequence").toLongLong();
+        QVERIFY(!control.channel.markChatRead(reader.channel.ownId(), visible));
+        QVERIFY(!control.channel.remoteAction("markChatRead", {{"lastVisibleSequence", 0.5}}));
+        QVERIFY(control.channel.markChatRead(host.channel.ownId(), visible));
+        QTRY_VERIFY(!unread());
+        QVERIFY(control.channel.setRemoteMode(false));
+        QVERIFY(reader.channel.sendChat("Own reply")); QTRY_VERIFY(!reader.channel.chatPending());
+        QVERIFY(!unread());
+        QVERIFY(writer.channel.sendChat("Expires unread")); QTRY_VERIFY(!writer.channel.chatPending());
+        QTRY_VERIFY(unread());
+        now += 8 * ChatHistory::lifetime;
+        QTRY_VERIFY(!unread());
+    }
+
     void chatSurvivesHostRestartAndReplaysToNewApprovedParticipants() {
         QTemporaryDir dir;
         qint64 now = 1700000000000;
@@ -4988,8 +5056,8 @@ private slots:
         QVERIFY(a.session.setPttButtonHeld(true)); QTRY_VERIFY(target.session.transmissionAllowed());
         QVERIFY(target.session.setMuted(true)); QVERIFY(!target.session.transmissionAllowed());
         QVERIFY(target.session.setMuted(false)); QVERIFY(target.session.transmissionAllowed());
-        QVERIFY(target.session.setAudioSettingsOpen(true)); QVERIFY(!target.session.transmissionAllowed());
-        QVERIFY(target.session.setAudioSettingsOpen(false)); QVERIFY(target.session.transmissionAllowed());
+        QVERIFY(target.session.setAudioTestActive(true)); QVERIFY(!target.session.transmissionAllowed());
+        QVERIFY(target.session.setAudioTestActive(false)); QVERIFY(target.session.transmissionAllowed());
         QVERIFY(target.channel.startHost()); QVERIFY(target.channel.stopHost());
         QVERIFY(a.channel.controlConnected()); QVERIFY(target.session.transmissionAllowed());
         QVERIFY(target.channel.decideControl(a.channel.ownId(), false));
@@ -5366,8 +5434,8 @@ private slots:
         const auto decoded = decoder.render(48000, 0);
         QVERIFY(std::any_of(decoded.begin(), decoded.end(), [](auto sample) { return std::abs(sample) > 0.01; }));
         QVERIFY(!controller.channel.joined()); QVERIFY(!target.channel.hosting()); QCOMPARE(controlAudio.size(), 0);
-        QVERIFY(target.session.setAudioSettingsOpen(true)); QVERIFY(!target.channel.sendAudio(packet));
-        QVERIFY(target.session.setAudioSettingsOpen(false));
+        QVERIFY(target.session.setAudioTestActive(true)); QVERIFY(!target.channel.sendAudio(packet));
+        QVERIFY(target.session.setAudioTestActive(false));
         QTRY_VERIFY(participant(receiver.channel, target.channel.ownId()).value("available").toBool());
         QVERIFY(target.channel.sendAudio(packet)); QTRY_COMPARE(heard.size(), 2);
         QVERIFY(controller.session.setPttKeyHeld(false)); QTRY_VERIFY(!target.session.transmissionAllowed());
@@ -5799,21 +5867,21 @@ private slots:
         const auto rendered = decoder.render(48000, 0);
         QVERIFY(std::any_of(rendered.begin(), rendered.end(), [](auto sample) { return std::abs(sample) > 0.01; }));
         QCOMPARE(receivedC.size(), 0); QCOMPARE(receivedA.size(), 0);
-        QVERIFY(c.session.setAudioSettingsOpen(true));
-        QTRY_COMPARE(participant(d.channel, c.channel.ownId()).value("available").toBool(), false);
-        QVERIFY(!c.channel.sendAudio("private-test"));
         QVERIFY(c.session.setAudioTestActive(true));
-        QVERIFY(c.session.setAudioSettingsOpen(false));
-        QVERIFY(!c.channel.sendAudio("still-private"));
+        QTRY_COMPARE(participant(d.channel, c.channel.ownId()).value("available").toBool(), false);
+        QVERIFY(!c.channel.sendAudio(voice));
+        QVERIFY(c.session.setAudioTestActive(true));
+        QVERIFY(!c.channel.sendAudio(voice));
         QVERIFY(c.session.setAudioTestActive(false));
         QTRY_COMPARE(participant(d.channel, c.channel.ownId()).value("available").toBool(), true);
         QVERIFY(c.channel.sendAudio(voice));
         QTRY_COMPARE(receivedD.size(), 2);
         QCOMPARE(receivedD.last().at(1).toByteArray(), voice);
-        QVERIFY(c.session.setAudioSettingsOpen(true));
+        QVERIFY(c.session.setAudioTestActive(true));
         QVERIFY(c.session.setMuted(true));
-        QVERIFY(c.session.setAudioSettingsOpen(false));
-        QVERIFY(!c.channel.sendAudio("explicit-mute-wins"));
+        QVERIFY(c.session.setAudioTestActive(false));
+        QVERIFY(!c.channel.sendAudio(voice));
+        QVERIFY(c.session.setMuted(false));
         QVERIFY(!c.channel.sendAudio(QByteArray(8193, 'a')));
         QVERIFY(c.channel.leave());
         QTRY_COMPARE(d.channel.participants().size(), 2);
@@ -5942,7 +6010,7 @@ private slots:
                 if (wasRunning) process.closeWriteChannel();
                 const bool stopped = wasRunning && process.waitForFinished(5000);
                 if (process.state() != QProcess::NotRunning) { process.kill(); process.waitForFinished(5000); }
-                qInfo().noquote() << process.readAllStandardError();
+                qInfo().noquote() << "Receiver process" << group << "diagnostics:\n" << process.readAllStandardError();
                 allExited &= stopped && process.exitStatus() == QProcess::NormalExit && process.exitCode() == 0;
             }
             QVERIFY2(allExited, "Receiver processes must remain alive until shutdown and exit successfully");
@@ -6035,7 +6103,7 @@ private slots:
             host.closeWriteChannel();
             const bool stopped = host.waitForFinished(5000);
             if (!stopped) { host.kill(); host.waitForFinished(5000); }
-            qInfo().noquote() << host.readAllStandardError();
+            qInfo().noquote() << "Host process diagnostics:\n" << host.readAllStandardError();
             QVERIFY(stopped); QCOMPARE(host.exitStatus(), QProcess::NormalExit); QCOMPARE(host.exitCode(), 0);
         });
         QVERIFY(host.waitForStarted(5000));
@@ -6086,9 +6154,18 @@ private slots:
         QCOMPARE(opus_packet_get_nb_samples(reinterpret_cast<const unsigned char*>(packet.constData()), int(packet.size()), 48000), 960);
         qInfo() << "Capacity source packet" << (sourceChannels == 1 ? "mono-32" : "stereo-128")
                 << "bytes" << packet.size();
-        for (const auto& client : clients) QVERIFY(client->channel.sendAudio(packet));
-        QVERIFY(commandReceivers({{"operation", "burst"}}));
-        for (size_t i = 0; i < audioCounts.size(); ++i) QTRY_COMPARE(audioCounts[i], 63);
+        // Establish and verify every source binding before measuring steady
+        // fanout. Admission work must not become an unmeasured 4032-packet
+        // startup burst that already changes the receivers' quality tiers.
+        for (int source = 0; source < 64; ++source) {
+            if (source < speakers) QVERIFY(clients[size_t(source)]->channel.sendAudio(packet));
+            else QVERIFY(commandReceivers({{"operation", "send"}, {"source", source}}));
+            QVERIFY2(waitForEvents([&] {
+                for (size_t i = 0; i < audioCounts.size(); ++i)
+                    if (audioCounts[i] != source + 1 - (int(i) <= source ? 1 : 0)) return false;
+                return true;
+            }, 5000), qPrintable(QString("Source %1 did not reach every other participant").arg(source)));
+        }
         QMap<int, int> startingTiers;
         for (const auto& client : clients) ++startingTiers[client->channel.receiveAudioBitrate()];
         for (const auto& report : receiverStates)
@@ -6211,7 +6288,7 @@ private slots:
 #endif
         const auto receivedFrames = std::accumulate(audioCounts.begin(), audioCounts.end(), 0);
         const auto missingFrames = std::accumulate(missingCounts.begin(), missingCounts.end(), 0);
-        qInfo() << "64 clients; all-to-all burst plus" << sustainedFrames
+        qInfo() << "64 clients; verified all-to-all bindings plus" << sustainedFrames
                 << "frames per speaker; simultaneous speakers" << speakers << "requested soak seconds" << soakSeconds
                 << "received packets" << receivedFrames << "reported gaps" << missingFrames << "rendered frames" << renderedFrames
                 << "non-silent frames at listeners 0/1" << audibleFrames[0] << audibleFrames[1]
@@ -6477,7 +6554,7 @@ int main(int argc, char** argv) {
                 if (operation == "join") ok &= client.channel.join(request.value("host").toString(),
                     "127.0.0.1", quint16(request.value("port").toInt()));
                 else if (operation == "unmute") ok &= client.session.setMuted(false);
-                else if (operation == "burst") ok &= client.channel.sendAudio(packet);
+                else if (operation == "send" && int(i) + first == request.value("source").toInt()) ok &= client.channel.sendAudio(packet);
                 else if (operation == "leave" && int(i) + first < request.value("before").toInt()) ok &= client.channel.leave();
                 else if (operation == "reset") { heard[size_t(first) + i] = 0; missing[size_t(first) + i] = 0; }
             }

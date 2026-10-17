@@ -303,10 +303,6 @@
             <translation>Ingångsenhet</translation>
         </message>
         <message>
-            <source>Microphone paused for others</source>
-            <translation>Mikrofonen är pausad för andra</translation>
-        </message>
-        <message>
             <source>Cancel</source>
             <translation>Avbryt</translation>
         </message>
@@ -315,16 +311,8 @@
             <translation>Överstyrning. Sänk mikrofonförstärkningen.</translation>
         </message>
         <message>
-            <source>Silent</source>
-            <translation>Tyst</translation>
-        </message>
-        <message>
             <source>Test output</source>
             <translation>Testa utgång</translation>
-        </message>
-        <message>
-            <source>Voice level</source>
-            <translation>Röstnivå</translation>
         </message>
         <message>
             <source>Voice threshold</source>
@@ -1176,6 +1164,10 @@
         <message>
             <source>On the other device, open Settings &gt; Input &gt; Remote control and allow this device.</source>
             <translation>Öppna Inställningar &gt; Ingång &gt; Fjärrstyrning på den andra enheten och tillåt den här enheten.</translation>
+        </message>
+        <message>
+            <source>Unread messages</source>
+            <translation>Olästa meddelanden</translation>
         </message>
     </context>
     <context>
@@ -3151,10 +3143,6 @@
     </context>
     <context>
         <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>Inte tillgänglig - ljudinställningar eller ljudtest</translation>
-        </message>
         <message>
             <source>Microphone muted</source>
             <translation>Mikrofon avstängd</translation>

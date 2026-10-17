@@ -303,10 +303,6 @@
             <translation>Συσκευή εισόδου</translation>
         </message>
         <message>
-            <source>Microphone paused for others</source>
-            <translation>Το μικρόφωνο σε παύση για άλλους</translation>
-        </message>
-        <message>
             <source>Cancel</source>
             <translation>Ακύρωση</translation>
         </message>
@@ -315,16 +311,8 @@
             <translation>Κλιπάρισμα. Μειώστε την ενίσχυση του μικροφώνου.</translation>
         </message>
         <message>
-            <source>Silent</source>
-            <translation>Σιωπηλός</translation>
-        </message>
-        <message>
             <source>Test output</source>
             <translation>Έξοδος δοκιμής</translation>
-        </message>
-        <message>
-            <source>Voice level</source>
-            <translation>Επίπεδο φωνής</translation>
         </message>
         <message>
             <source>Voice threshold</source>
@@ -1176,6 +1164,10 @@
         <message>
             <source>On the other device, open Settings &gt; Input &gt; Remote control and allow this device.</source>
             <translation>Στην άλλη συσκευή, άνοιξε Ρυθμίσεις &gt; Εισαγωγή &gt; Τηλεχειριστήριο και επίτρεψε αυτήν τη συσκευή.</translation>
+        </message>
+        <message>
+            <source>Unread messages</source>
+            <translation>Μη αναγνωσμένα μηνύματα</translation>
         </message>
     </context>
     <context>
@@ -3151,10 +3143,6 @@
     </context>
     <context>
         <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>Μη διαθέσιμο - ρυθμίσεις ήχου ή δοκιμή τόνου</translation>
-        </message>
         <message>
             <source>Microphone muted</source>
             <translation>Σίγαση του μικροφώνου</translation>

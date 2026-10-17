@@ -210,7 +210,6 @@ TestCase {
         radio.cancelStationCheck()
         findChild(view, "chatDraft").text = ""
         findChild(view, "chatPanel").drafts = ({})
-        session.setAudioSettingsOpen(false)
         session.setAudioTestActive(false)
         channel.setHostPassword("")
         remoteChannel.setHostPassword("")
@@ -1202,6 +1201,10 @@ TestCase {
         }, 10000)
         verify(waitForRendering(panel))
         if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/private-chat.png"))
+        const folder = findChild(view.contentItem, "channelName_private-folder:" + groupId)
+        const host = findChild(view.contentItem, "channelName_" + channel.ownId)
+        verify(folder && host)
+        compare(folder.parent.x, host.parent.x, "Messages folder aligns with channel disclosure controls")
         draft.text = "Unsent draft"
         verify(fixtures.expireChat())
         tryVerify(function() {
@@ -1913,12 +1916,12 @@ TestCase {
         verify(visualChild(settings.contentItem, "avatarChoice_mechanic") !== null)
         verify(session.available)
         view.settingsPage = 1
-        tryCompare(session, "available", false)
+        tryCompare(session, "available", true)
         verify(findChild(settings, "previewMicrophone") === null, "Input tab owns preview")
         verify(findChild(settings, "guidedTest") === null, "Input settings need no recording wizard")
         verify(findChild(view, "recordingDialog") === null)
         view.settingsPage = 2
-        verify(!session.available)
+        verify(session.available)
         for (const name of ["playbackVolume", "musicVolume", "notificationVolume"])
             verify(findChild(settings, name) !== null, "Output slider: " + name)
         const speech = findChild(settings, "readBotMessages")
@@ -2012,7 +2015,7 @@ TestCase {
         verify(channel.setAutoJoin(channel.ownId, previousAutoJoin))
     }
 
-    function test_inputTabOwnsPreviewAndMutesBeforeStartingIt() {
+    function test_inputTabOwnsPreviewWithoutChangingTransmission() {
         verify(previewRequests.valid)
         session.setMuted(false)
         view.openSettings(0)
@@ -2020,10 +2023,10 @@ TestCase {
         view.settingsPage = 1
         tryVerify(function() { return previewRequests.count > 0 })
         compare(previewRequests.signalArguments[previewRequests.count - 1][0], true)
-        verify(!session.available)
+        verify(session.available)
         view.settingsPage = 2
         compare(previewRequests.signalArguments[previewRequests.count - 1][0], false)
-        verify(!session.available)
+        verify(session.available)
         view.settingsPage = 1
         compare(previewRequests.signalArguments[previewRequests.count - 1][0], true)
         view.closeSettings()
@@ -2032,46 +2035,38 @@ TestCase {
         verify(!session.muted)
     }
 
-    function test_voiceActivationCanBeToggledAndAdjustedInInput() {
+    function test_voiceActivationAndPttAreExclusiveAndThresholdEditsDisableAuto() {
         view.openSettings(1)
         const activation = findChild(view, "voiceActivation")
-        verify(activation !== null)
-        const original = audio.activationEnabled
-        if (!audio.inputAvailable) {
-            verify(!activation.enabled)
-            verify(!audio.setActivationEnabled(!original))
-            compare(audio.activationEnabled, original)
-            verify(!audio.running)
-            verify(!session.available)
-            return
-        }
-        for (let i = 0; i < 4; ++i) {
-            reveal(activation)
-            mouseClick(activation)
-            compare(audio.activationEnabled, i % 2 === 0 ? !original : original)
-            compare(activation.checked, audio.activationEnabled)
-            verify(!audio.running)
-            verify(!session.available)
-        }
-        // Native accessibility changes the checked property without a click.
-        activation.checked = !original
-        compare(audio.activationEnabled, !original)
-        activation.checked = original
-        compare(audio.activationEnabled, original)
-        audio.setActivationEnabled(true)
+        const ptt = findChild(view, "pushToTalkMode")
+        verify(activation && ptt)
+        verify(activation.checked && !ptt.checked)
+        reveal(ptt); mouseClick(ptt)
+        verify(session.pushToTalk && ptt.checked && !activation.checked)
+        mouseClick(ptt)
+        verify(session.pushToTalk, "Clicking the selected mode cannot create an always-open third mode")
+        reveal(activation); mouseClick(activation)
+        verify(!session.pushToTalk && activation.checked && !ptt.checked)
         const threshold = findChild(view, "voiceThreshold")
-        const automatic = findChild(threshold, "automaticControl")
-        audio.setActivationAutomatic(true)
-        compare(automatic.checked, true)
-        const value = findChild(threshold, "valueControl")
-        value.value = -32
-        compare(audio.activationAutomatic, false)
-        compare(automatic.checked, false)
-        compare(audio.activationThresholdDb, -32)
-        automatic.checked = true
-        compare(audio.activationAutomatic, true)
-        verify(!audio.running)
-        audio.setActivationEnabled(original)
+        verify(threshold)
+        verify(findChild(view, "voiceMeter") === null, "One editable meter replaces duplicated level and threshold controls")
+        if (!audio.inputAvailable) { verify(!threshold.enabled); return }
+        const original = audio.activationThresholdDb, wasAuto = audio.activationAutomatic
+        try {
+            const automatic = findChild(threshold, "automaticControl")
+            audio.setActivationAutomatic(true)
+            compare(automatic.checked, true)
+            findChild(threshold, "valueControl").value = -32
+            compare(audio.activationAutomatic, false)
+            compare(automatic.checked, false)
+            compare(audio.activationThresholdDb, -32)
+            automatic.checked = true
+            compare(audio.activationAutomatic, true)
+        } finally {
+            audio.setActivationThresholdDb(original)
+            audio.setActivationAutomatic(wasAuto)
+        }
+        verify(session.available)
     }
 
     function test_inputAutomationCanBeOverriddenIndependently() {
@@ -2108,7 +2103,6 @@ TestCase {
     function test_inputWheelScrollsWithFeedback_data() {
         return [
             {tag: "spectrum", target: "frequencyChart"},
-            {tag: "meter", target: "voiceMeter"},
             {tag: "slider", target: "voiceThreshold"}
         ]
     }
@@ -2183,7 +2177,7 @@ TestCase {
         audio.setGainAutomatic(wasAutomatic)
         waitForRendering(chart)
         const chartY = chart.mapToItem(view.contentItem, 0, 0).y
-        const meter = findChild(view, "voiceMeter")
+        const meter = findChild(view, "voiceThreshold")
         verify(meter !== null)
         const meterY = meter.mapToItem(view.contentItem, 0, 0).y
         reveal(findChild(view, "choosePttKey"))
@@ -2258,7 +2252,7 @@ TestCase {
             audio.setEchoStrength(original)
             audio.setEchoAutomatic(wasAutomatic)
         }
-        verify(!session.available)
+        verify(session.available)
         verify(!audio.running)
     }
 
@@ -2279,9 +2273,10 @@ TestCase {
         tryCompare(pttKey, "capturing", false)
         verify(findChild(view, "enableGlobalKeys") === null)
         const ptt = findChild(view, "pushToTalkMode")
-        ptt.checked = true
+        reveal(ptt); mouseClick(ptt)
         compare(session.pushToTalk, true)
-        ptt.checked = false
+        const activation = findChild(view, "voiceActivation")
+        reveal(activation); mouseClick(activation)
         compare(session.pushToTalk, false)
     }
 
@@ -2615,6 +2610,21 @@ TestCase {
             item.deafened = false
             verify(!output.visible)
         }
+    }
+
+    function test_teamSpeakBadgeStaysSeparateFromPortraitAndAudioBadges() {
+        const item = createTemporaryObject(variablePortrait, view.contentItem, {width: 32, height: 32, muted: true, deafened: true})
+        verify(item)
+        const badge = findChild(item, "teamSpeakBadge")
+        verify(badge)
+        verify(!badge.visible)
+        item.teamSpeak = true
+        verify(badge.visible)
+        compare(badge.x + badge.width, item.width)
+        compare(badge.y, 0)
+        verify(badge.height <= findChild(item, "microphoneBadge").mapToItem(item, 0, 0).y)
+        item.teamSpeak = false
+        verify(!badge.visible)
     }
 
     function test_idlePortraitVariesPausesAndHeldPosesWithoutLosingSynchronization() {
@@ -3656,6 +3666,44 @@ TestCase {
         }
     }
 
+    function test_unreadMarksOnlyClearAtVisibleLatestMessage() {
+        verify(fixtures.startHost()); verify(fixtures.startRemoteHost())
+        verify(remoteChannel.decide(channel.ownId, true))
+        verify(remoteChannel.join(remoteChannel.ownId, "127.0.0.1", remoteChannel.servicePort))
+        verify(channel.openChat(remoteChannel.ownId, "127.0.0.1", remoteChannel.servicePort))
+        tryVerify(function() { return channel.chatReady && remoteChannel.chatReady })
+        view.chatExpanded = false
+        verify(remoteChannel.sendChat("A new message while hidden")); tryCompare(remoteChannel, "chatPending", false)
+        const markerName = "unreadChannel_" + remoteChannel.ownId
+        tryVerify(function() { const dot = visualChild(view.contentItem, markerName); return dot && dot.visible })
+        const hostDot = visualChild(view.contentItem, "unreadHost_" + remoteChannel.ownId)
+        verify(hostDot && hostDot.visible)
+        view.requestActivate(); tryCompare(view, "active", true)
+        view.chatExpanded = true
+        const panel = findChild(view, "chatPanel"), history = findChild(panel, "chatHistory")
+        tryVerify(function() { return !visualChild(view.contentItem, markerName).visible })
+        verify(!hostDot.visible)
+        // Neither our own receipt nor a participant event creates an unread mark.
+        verify(channel.sendChat("My reply")); tryCompare(channel, "chatPending", false)
+        view.chatExpanded = false
+        verify(channel.join(remoteChannel.ownId, "127.0.0.1", remoteChannel.servicePort))
+        tryCompare(channel, "joined", true)
+        tryVerify(function() { return channel.messages.some(function(m) { return !!m.event }) })
+        verify(!visualChild(view.contentItem, markerName).visible)
+        // A long page prevents new arrivals from being read by a stationary reader.
+        view.chatExpanded = true
+        verify(remoteChannel.sendChat(("Long message with enough text to scroll.\n\n").repeat(40)))
+        tryCompare(remoteChannel, "chatPending", false)
+        tryVerify(function() { return history.contentHeight > history.height * 2 && history.atYEnd && !panel.updating })
+        history.scrollTo(0)
+        verify(remoteChannel.sendChat("Read me at the bottom")); tryCompare(remoteChannel, "chatPending", false)
+        tryVerify(function() { return visualChild(view.contentItem, markerName).visible && !panel.updating })
+        verify(!history.atYEnd)
+        history.scrollTo(history.contentHeight - history.height)
+        tryVerify(function() { return !visualChild(view.contentItem, markerName).visible })
+        verify(!hostDot.visible)
+    }
+
     function test_multipleChatsKeepDraftsAndVoiceSeparate() {
         const previousName = session.userName, previousChannel = channel.channelName
         const previousRemote = remoteChannel.channelName
@@ -3686,6 +3734,7 @@ TestCase {
         tryCompare(panel, "visible", true)
         const loungeSlot = visualChild(view.contentItem, "conversationSlot_" + remoteChannel.ownId)
         verify(loungeSlot !== null, "Chat is inside its expanded channel")
+        compare(loungeSlot.parent.color, "#00000000", "Reading an unjoined channel does not give it an active background")
         compare(panel.parent.parent, loungeSlot)
         draft.text = "A draft for the lounge"
         const ownRow = visualChild(view.contentItem, "channelRow_" + channel.ownId)
@@ -4246,16 +4295,17 @@ TestCase {
         compare(session.transmissionAllowed, false)
         session.setMuted(false)
         compare(session.transmissionAllowed, true)
-        session.setAudioSettingsOpen(true)
+        session.setAudioTestActive(true)
         compare(session.transmissionAllowed, false)
         mouseRelease(button)
         compare(session.pttHeld, false)
-        session.setAudioSettingsOpen(false)
+        session.setAudioTestActive(false)
         compare(session.transmissionAllowed, false)
-        reveal(mode)
-        mouseClick(mode)
+        const activation = findChild(view, "voiceActivation")
+        reveal(activation)
+        mouseClick(activation)
         tryCompare(session, "pushToTalk", false)
-        compare(session.transmissionAllowed, false)
+        compare(session.transmissionAllowed, true)
         findChild(view, "settingsDialog").close()
         tryCompare(session, "transmissionAllowed", true)
         view.width = 520

@@ -303,10 +303,6 @@
             <translation>Invoerapparaat</translation>
         </message>
         <message>
-            <source>Microphone paused for others</source>
-            <translation>Microfoon gepauzeerd voor anderen</translation>
-        </message>
-        <message>
             <source>Cancel</source>
             <translation>Annuleren</translation>
         </message>
@@ -315,16 +311,8 @@
             <translation>Clipping. Verlaag de microfoongain.</translation>
         </message>
         <message>
-            <source>Silent</source>
-            <translation>Stil</translation>
-        </message>
-        <message>
             <source>Test output</source>
             <translation>Uitvoer testen</translation>
-        </message>
-        <message>
-            <source>Voice level</source>
-            <translation>Stemniveau</translation>
         </message>
         <message>
             <source>Voice threshold</source>
@@ -1176,6 +1164,10 @@
         <message>
             <source>On the other device, open Settings &gt; Input &gt; Remote control and allow this device.</source>
             <translation>Open op het andere apparaat Instellingen &gt; Invoer &gt; Externe bediening en sta dit apparaat toe.</translation>
+        </message>
+        <message>
+            <source>Unread messages</source>
+            <translation>Ongelezen berichten</translation>
         </message>
     </context>
     <context>
@@ -3151,10 +3143,6 @@
     </context>
     <context>
         <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>Niet beschikbaar - audio-instellingen of testtoon</translation>
-        </message>
         <message>
             <source>Microphone muted</source>
             <translation>Microfoon gedempt</translation>

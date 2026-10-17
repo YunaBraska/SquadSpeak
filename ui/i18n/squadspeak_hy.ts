@@ -303,10 +303,6 @@
             <translation>Մուտքային սարք</translation>
         </message>
         <message>
-            <source>Microphone paused for others</source>
-            <translation>Խոսափողն այլոց համար կանգ է առել</translation>
-        </message>
-        <message>
             <source>Cancel</source>
             <translation>Չեղարկել</translation>
         </message>
@@ -315,16 +311,8 @@
             <translation>Կլիպինգ: նվազեցրեք խոսափողի ուժեղացումը:</translation>
         </message>
         <message>
-            <source>Silent</source>
-            <translation>Լուռ</translation>
-        </message>
-        <message>
             <source>Test output</source>
             <translation>Փորձարկման արդյունք</translation>
-        </message>
-        <message>
-            <source>Voice level</source>
-            <translation>Ձայնի մակարդակ</translation>
         </message>
         <message>
             <source>Voice threshold</source>
@@ -1176,6 +1164,10 @@
         <message>
             <source>On the other device, open Settings &gt; Input &gt; Remote control and allow this device.</source>
             <translation>Մյուս սարքում բացիր Կարգավորումներ &gt; Մուտք &gt; Հեռակառավարման վահանակ և թույլատրի՛ր այս սարքը։</translation>
+        </message>
+        <message>
+            <source>Unread messages</source>
+            <translation>Չընթերցված հաղորդագրություններ</translation>
         </message>
     </context>
     <context>
@@ -3151,10 +3143,6 @@
     </context>
     <context>
         <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>անհասանելի է - աուդիո կարգավորումներ կամ ձայնի թեստ</translation>
-        </message>
         <message>
             <source>Microphone muted</source>
             <translation>խոսափողն անջատված է</translation>

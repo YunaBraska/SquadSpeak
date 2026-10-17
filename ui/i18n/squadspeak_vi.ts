@@ -303,10 +303,6 @@
             <translation>Thiết bị đầu vào</translation>
         </message>
         <message>
-            <source>Microphone paused for others</source>
-            <translation>Mic đã tạm dừng với người khác</translation>
-        </message>
-        <message>
             <source>Cancel</source>
             <translation>Hủy</translation>
         </message>
@@ -315,16 +311,8 @@
             <translation>Clipping. Giảm gain mic.</translation>
         </message>
         <message>
-            <source>Silent</source>
-            <translation>Im lặng</translation>
-        </message>
-        <message>
             <source>Test output</source>
             <translation>Kiểm tra đầu ra</translation>
-        </message>
-        <message>
-            <source>Voice level</source>
-            <translation>Mức giọng nói</translation>
         </message>
         <message>
             <source>Voice threshold</source>
@@ -1176,6 +1164,10 @@
         <message>
             <source>On the other device, open Settings &gt; Input &gt; Remote control and allow this device.</source>
             <translation>Trên thiết bị kia, mở Cài đặt &gt; Đầu vào &gt; Điều khiển từ xa và cho phép thiết bị này.</translation>
+        </message>
+        <message>
+            <source>Unread messages</source>
+            <translation>Tin nhắn chưa đọc</translation>
         </message>
     </context>
     <context>
@@ -3151,10 +3143,6 @@
     </context>
     <context>
         <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>Không khả dụng - cài đặt âm thanh hoặc kiểm tra âm</translation>
-        </message>
         <message>
             <source>Microphone muted</source>
             <translation>Mic đã tắt tiếng</translation>

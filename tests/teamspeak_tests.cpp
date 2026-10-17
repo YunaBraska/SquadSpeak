@@ -241,6 +241,51 @@ private slots:
         QVERIFY(lastOptions.contains("inputMuted"));
     }
 
+    void portraitsFollowIdentityAcrossNicknameAndClientIdChanges() {
+        resetFake();
+        auto state = QJsonDocument::fromJson(stateEvent(true)).object();
+        auto members = state.value("members").toArray();
+        for (int i = 8; i < 28; ++i) members.append(QJsonObject{{"id", QString::number(i)},
+            {"uid", QString("peer-%1").arg(i)}, {"name", QString("Peer %1").arg(i)}, {"channel", "1"}});
+        state.insert("members", members);
+        fakeEvents.enqueue(QJsonDocument(state).toJson(QJsonDocument::Compact));
+        QTemporaryDir dir;
+        VoiceSession session(dir.filePath("session"));
+        QVERIFY(session.setAvatar("coral-diver"));
+        LocalChannel channel(session, dir.filePath("channel"), TlsIdentity::create());
+        QVERIFY(channel.addTeamSpeak("127.0.0.1"));
+        QTRY_COMPARE(channel.participants().size(), 22);
+        QSet<QString> portraits;
+        QString peer, avatar;
+        for (const auto& value : channel.participants()) {
+            const auto member = value.toMap();
+            QVERIFY(member.value("teamSpeak").toBool());
+            const auto selected = member.value("avatarId").toString();
+            QVERIFY(VoiceSession::avatars().contains(selected));
+            portraits.insert(selected);
+            if (member.value("id") == channel.ownId()) QCOMPARE(selected, session.avatar());
+            if (member.value("tsUid") == "remote-uid") { peer = member.value("id").toString(); avatar = selected; }
+        }
+        QVERIFY(portraits.size() > 1);
+        auto renamed = members.at(1).toObject();
+        renamed.insert("id", "70"); renamed.insert("name", "Renamed"); members[1] = renamed;
+        state.insert("members", members);
+        fakeEvents.enqueue(QJsonDocument(state).toJson(QJsonDocument::Compact));
+        QTRY_VERIFY([&] {
+            for (const auto& value : channel.participants()) {
+                const auto member = value.toMap();
+                if (member.value("id") == peer) return member.value("name") == "Renamed" && member.value("avatarId") == avatar;
+            }
+            return false;
+        }());
+        QVERIFY(channel.openPrivateChat(channel.joinedHostId(), peer));
+        fakeEvents.enqueue(QJsonDocument(QJsonObject{{"type", "message"}, {"mode", "private"}, {"fromId", "70"},
+            {"fromName", "Renamed"}, {"text", "Same portrait"}}).toJson(QJsonDocument::Compact));
+        QTRY_COMPARE(channel.messages().size(), 1);
+        QCOMPARE(channel.messages().first().toMap().value("avatarId").toString(), avatar);
+        QVERIFY(channel.messages().first().toMap().value("teamSpeak").toBool());
+    }
+
     void repeatedJoinReusesConnection() {
         resetFake();
         {
@@ -303,6 +348,65 @@ private slots:
         QTRY_VERIFY_WITH_TIMEOUT(!channel.messages().isEmpty(), 1000);
         QMutexLocker lock(&fakeMutex);
         QVERIFY(lastChatCommand.contains("\"action\":\"chat\""));
+    }
+
+    void unreadMessagesRequireFreshCurrentChatRead_data() {
+        QTest::addColumn<QString>("mode");
+        QTest::newRow("channel") << QString("channel");
+        QTest::newRow("server") << QString("server");
+    }
+
+    void unreadMessagesRequireFreshCurrentChatRead() {
+        QFETCH(QString, mode);
+        resetFake();
+        fakeEvents.enqueue(stateEvent(true));
+        QTemporaryDir dir;
+        VoiceSession session(dir.filePath("session"));
+        LocalChannel channel(session, dir.filePath("channel"), TlsIdentity::create());
+        QVERIFY(channel.initialize());
+        QVERIFY(channel.addTeamSpeak("127.0.0.1:9987"));
+        QTRY_VERIFY_WITH_TIMEOUT(channel.chatReady(), 1000);
+        const auto host = channel.joinedHostId();
+        QString peer;
+        for (const auto& value : channel.participants())
+            if (value.toMap().value("tsUid") == "remote-uid") peer = value.toMap().value("id").toString();
+        QVERIFY(!peer.isEmpty());
+        const auto unread = [&](const QString& id) {
+            for (const auto& value : channel.savedChannels())
+                if (value.toMap().value("id") == id) return value.toMap().value("unread").toBool();
+            for (const auto& value : channel.privateChats())
+                if (value.toMap().value("id") == id) return value.toMap().value("unread").toBool();
+            return false;
+        };
+        QVERIFY(!unread(host));
+        fakeEvents.enqueue(QJsonDocument(QJsonObject{{"type", "message"}, {"mode", mode}, {"channel", "1"},
+            {"fromId", "7"}, {"fromUid", "remote-uid"}, {"fromName", "Remote"}, {"text", "new"}}).toJson(QJsonDocument::Compact));
+        QTRY_VERIFY_WITH_TIMEOUT(unread(host), 1000);
+        const auto sequence = channel.messages().first().toMap().value("sequence").toLongLong();
+        QVERIFY(sequence > 0);
+        QVERIFY(!channel.markChatRead(host, -1));
+        QVERIFY(!channel.markChatRead(host, sequence - 1));
+        QVERIFY(!channel.markChatRead(host, sequence + 1));
+        QVERIFY(!channel.markChatRead(QStringLiteral("wrong"), sequence));
+        QVERIFY(channel.markChatRead(host, sequence));
+        QVERIFY(!unread(host));
+        QVERIFY(channel.markChatRead(host, sequence));
+
+        QVERIFY(channel.sendChat("self"));
+        acknowledgePendingChat();
+        QTRY_VERIFY_WITH_TIMEOUT(!channel.messages().isEmpty(), 1000);
+        QVERIFY(!unread(host));
+
+        QVERIFY(channel.openPrivateChat(host, peer));
+        QTRY_VERIFY_WITH_TIMEOUT(channel.chatReady(), 1000);
+        fakeEvents.enqueue(QJsonDocument(QJsonObject{{"type", "message"}, {"mode", "private"}, {"fromId", "7"},
+            {"fromUid", "remote-uid"}, {"fromName", "Remote"}, {"text", "private"}}).toJson(QJsonDocument::Compact));
+        QTRY_VERIFY_WITH_TIMEOUT(channel.messages().size() == 1 && unread(channel.chatHostId()), 1000);
+        const auto privateHost = channel.chatHostId();
+        const auto privateSequence = channel.messages().first().toMap().value("sequence").toLongLong();
+        QVERIFY(!channel.markChatRead(host, privateSequence));
+        QVERIFY(channel.markChatRead(privateHost, privateSequence));
+        QVERIFY(!unread(privateHost));
     }
 
     void privateMessageUsesStableRemoteIdentity_data() {

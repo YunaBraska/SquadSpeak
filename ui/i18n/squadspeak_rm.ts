@@ -303,10 +303,6 @@
             <translation>apparat d'endataziun</translation>
         </message>
         <message>
-            <source>Microphone paused for others</source>
-            <translation>Il microfon è serrà per auters</translation>
-        </message>
-        <message>
             <source>Cancel</source>
             <translation>Interrumper</translation>
         </message>
@@ -315,16 +311,8 @@
             <translation>Kliping. Reduci il rinforzament dal microfon.</translation>
         </message>
         <message>
-            <source>Silent</source>
-            <translation>Silenzi</translation>
-        </message>
-        <message>
             <source>Test output</source>
             <translation>Emissiun dals tests</translation>
-        </message>
-        <message>
-            <source>Voice level</source>
-            <translation>Fermezza dal tun</translation>
         </message>
         <message>
             <source>Voice threshold</source>
@@ -1176,6 +1164,10 @@
         <message>
             <source>On the other device, open Settings &gt; Input &gt; Remote control and allow this device.</source>
             <translation>Sin l'auter dispositiv, avra Parameters &gt; Inoltraziun &gt; telecumond e permetta quest dispositiv.</translation>
+        </message>
+        <message>
+            <source>Unread messages</source>
+            <translation>Messadis betg legids</translation>
         </message>
     </context>
     <context>
@@ -3151,10 +3143,6 @@
     </context>
     <context>
         <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>Betg disponibel - parameters d'audio u prova da tun</translation>
-        </message>
         <message>
             <source>Microphone muted</source>
             <translation>Il microfon è stizzà</translation>

@@ -219,6 +219,7 @@ public:
     Q_INVOKABLE bool chooseRemoteOffer(const QString& hostId);
     Q_INVOKABLE bool setRemoteMode(bool enabled);
     Q_INVOKABLE bool remoteAction(const QString& action, const QVariantMap& data = {});
+    Q_INVOKABLE bool markChatRead(const QString& hostId, qint64 lastVisibleSequence);
     Q_INVOKABLE bool clearControlTarget();
     Q_INVOKABLE bool leave();
     Q_INVOKABLE bool decide(const QString& peerId, bool allow);
@@ -362,6 +363,7 @@ private:
         QString chatEpoch;
         QJsonArray messages;
         qint64 lastChatSequence = 0;
+        qint64 unreadExpires = 0;
         QJsonObject pending;
         QByteArray pendingImage;
         QString chatError;

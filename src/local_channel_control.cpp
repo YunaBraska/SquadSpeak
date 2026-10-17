@@ -223,10 +223,14 @@ bool LocalChannel::remoteAction(const QString& action, const QVariantMap& data) 
     if (!remoteMode() || !remoteAllowed_ || !controlConnected_ || action.isEmpty() || action.size() > 32) return false;
     auto payload = QJsonObject::fromVariantMap(data);
     if (QJsonDocument(payload).toJson(QJsonDocument::Compact).size() > maximumFrame - 512) return false;
-    if (action != "join" && action != "leave" && action != "mute" && action != "deafen" && action != "chat" && action != "older" && action != "newer" && action != "latest" && action != "openChat"
+    if (action != "join" && action != "leave" && action != "mute" && action != "deafen" && action != "chat" && action != "older" && action != "newer" && action != "latest" && action != "markChatRead" && action != "openChat"
         && action != "openPrivate" && action != "blockPrivate") return false;
     if (action == "chat" && (!payload.value("text").isString() || !ChatHistory::validText(payload.value("text").toString()))) return false;
-    if (action == "chat" || action == "older" || action == "newer" || action == "latest")
+    if (action == "markChatRead" && (!payload.value("lastVisibleSequence").isDouble()
+        || payload.value("lastVisibleSequence").toDouble(-1) < 0
+        || payload.value("lastVisibleSequence").toDouble(-1) > 9007199254740991LL
+        || payload.value("lastVisibleSequence").toDouble(-1) != payload.value("lastVisibleSequence").toInteger(-1))) return false;
+    if (action == "chat" || action == "older" || action == "newer" || action == "latest" || action == "markChatRead")
         payload.insert("hostId", remoteView_.value("chatHostId").toString());
     return writeMessage(controller_, {{"type", "remoteAction"}, {"action", action}, {"data", payload}});
 }
@@ -431,7 +435,8 @@ bool LocalChannel::applyRemoteView(const QByteArray& bytes) {
         const auto entry = value.toObject();
         if (entry.value("private") != true || !validId(entry.value("peerId").toString())
             || !validId(entry.value("deviceId").toString()) || !entry.value("blocked").isBool()
-            || !entry.value("blockedByMe").isBool()) return false;
+            || !entry.value("blockedByMe").isBool()
+            || (entry.contains("unread") && !entry.value("unread").isBool())) return false;
         if (!entries.contains(value)) entries.append(value);
     }
     QSet<QString> ids;
@@ -441,6 +446,7 @@ bool LocalChannel::applyRemoteView(const QByteArray& bytes) {
             || (entry.contains("ownerName") && entry.value("ownerName") != QJsonValue("") && !displayName(entry.value("ownerName")))
             || !entry.value("autoJoin").isBool() || !validEndpointHost(entry.value("address").toString())
             || entry.value("port").toInt() < 1 || entry.value("port").toInt() > 65535
+            || (entry.contains("unread") && !entry.value("unread").isBool())
             || !validMembers(entry.value("members")) || (!entry.value("online").toBool() && !entry.value("members").toArray().isEmpty())
             || !entry.value("access").isString() || entry.value("access").toString().size() > 32) return false;
         ids.insert(id);
@@ -484,7 +490,7 @@ bool LocalChannel::handleRemoteAction(QSslSocket* socket, const QJsonObject& mes
     const auto data = message.value("data").toObject();
     if (action.isEmpty() || action.size() > 32 || QJsonDocument(data).toJson(QJsonDocument::Compact).size() > maximumFrame - 512) { socket->abort(); return false; }
     bool okay = false;
-    if ((action == "chat" || action == "older" || action == "newer" || action == "latest")
+    if ((action == "chat" || action == "older" || action == "newer" || action == "latest" || action == "markChatRead")
         && data.value("hostId").toString() != chatHostId_) {
         writeMessage(socket, {{"type", "remoteActionResult"}, {"action", action}, {"ok", false}, {"error", tr("The viewed channel changed. Try again.")}});
         return false;
@@ -509,6 +515,11 @@ bool LocalChannel::handleRemoteAction(QSslSocket* socket, const QJsonObject& mes
         okay = loadNewerMessages();
     } else if (action == "latest") {
         okay = refreshChat();
+    } else if (action == "markChatRead") {
+        const auto sequence = data.value("lastVisibleSequence").toInteger(-1);
+        okay = data.value("lastVisibleSequence").isDouble()
+            && data.value("lastVisibleSequence").toDouble(-1) == double(sequence)
+            && sequence >= 0 && markChatRead(chatHostId_, sequence);
     } else if (action == "leave") {
         okay = leave();
     } else if (action == "mute" && data.value("value").isBool()) {

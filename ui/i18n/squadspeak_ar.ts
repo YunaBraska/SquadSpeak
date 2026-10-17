@@ -303,10 +303,6 @@
             <translation>جهاز الإدخال</translation>
         </message>
         <message>
-            <source>Microphone paused for others</source>
-            <translation>الميكروفون متوقف مؤقتًا للآخرين</translation>
-        </message>
-        <message>
             <source>Cancel</source>
             <translation>إلغاء</translation>
         </message>
@@ -315,16 +311,8 @@
             <translation>تشبع. خفّض كسب الميكروفون.</translation>
         </message>
         <message>
-            <source>Silent</source>
-            <translation>صامت</translation>
-        </message>
-        <message>
             <source>Test output</source>
             <translation>اختبار الخرج</translation>
-        </message>
-        <message>
-            <source>Voice level</source>
-            <translation>مستوى الصوت</translation>
         </message>
         <message>
             <source>Voice threshold</source>
@@ -1176,6 +1164,10 @@
         <message>
             <source>On the other device, open Settings &gt; Input &gt; Remote control and allow this device.</source>
             <translation>على الجهاز الآخر، افتح الإعدادات &gt; إدخال &gt; التحكم عن بعد واسمح لهذا الجهاز.</translation>
+        </message>
+        <message>
+            <source>Unread messages</source>
+            <translation>رسائل غير مقروءة</translation>
         </message>
     </context>
     <context>
@@ -3151,10 +3143,6 @@
     </context>
     <context>
         <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>غير متاح - إعدادات الصوت أو اختبار النغمة</translation>
-        </message>
         <message>
             <source>Microphone muted</source>
             <translation>الميكروفون مكتوم</translation>

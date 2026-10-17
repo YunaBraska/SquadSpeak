@@ -1,5 +1,6 @@
 #include "voice_session.hpp"
 
+#include <QCoreApplication>
 #include <QFile>
 #include <QDir>
 #include <QLocale>
@@ -206,7 +207,7 @@ QString VoiceSession::validatedName(const QString& value) {
 }
 
 QString VoiceSession::presenceText() const {
-    if (!available()) return tr("Unavailable - audio settings or tone test");
+    if (!available()) return QCoreApplication::translate("Channels", "Unavailable");
     if (muted()) return tr("Microphone muted");
     if (pushToTalk()) return pttHeld() ? tr("Push-to-talk held") : tr("Ready - push-to-talk released");
     return tr("Microphone unmuted");
@@ -421,13 +422,6 @@ bool VoiceSession::releasePttInput() {
     next.insert("pttButtonHeld", false); next.insert("pttKeyHeld", false);
     next.insert("pttRevision", pttInputRevision() + 1);
     return save(std::move(next));
-}
-
-bool VoiceSession::setAudioSettingsOpen(bool open) {
-    if (settingsOpen_ == open) return true;
-    settingsOpen_ = open;
-    emit presenceChanged();
-    return true;
 }
 
 bool VoiceSession::setAudioReadiness(bool inputReady, bool outputReady) {

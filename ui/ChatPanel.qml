@@ -12,6 +12,9 @@ Item {
     property var memberLevel: function(id) { return 0 }
     signal memberRequested(var member, bool contextual)
     property bool active: visible
+    property bool readable: active
+    property Item readViewport: null
+    property string readReceipt: ""
     readonly property bool remote: network.remoteMode
     readonly property var current: remote ? network.remoteView : network
     readonly property string hostId: current.chatHostId || ""
@@ -60,6 +63,24 @@ Item {
         updating = true
         restorePosition.restart()
     }
+    function readLatest() {
+        if (!readable || !visible || updating || current.historyLoading || current.hasNewerMessages
+            || !current.chatReady || !history.atYEnd || visibleMessages.count === 0) return
+        const last = messageRows.itemAt(visibleMessages.count - 1)
+        if (!last) return
+        if (readViewport) {
+            const bottom = last.mapToItem(readViewport, 0, last.height).y
+            if (bottom < 0 || bottom > readViewport.height) return
+        }
+        const sequence = last.message.sequence
+        const receipt = hostId + ":" + sequence
+        if (readReceipt !== receipt && network.markChatRead(hostId, sequence)) readReceipt = receipt
+    }
+    onReadableChanged: Qt.callLater(readLatest)
+    Connections {
+        target: root.readViewport ? root.readViewport.contentItem : null
+        function onContentYChanged() { Qt.callLater(root.readLatest) }
+    }
 
     function saveAnchor() {
         if (updating) return
@@ -103,6 +124,7 @@ Item {
             root.layoutWidth = history.width; root.layoutHeight = history.height
             root.updating = false
             root.saveAnchor()
+            root.readLatest()
         }
     }
 
@@ -114,6 +136,7 @@ Item {
         else network.loadNewerMessages()
     }
     function switchDraft() {
+        readReceipt = ""
         if (draftKey.length > 0) drafts[draftKey] = draft.text
         if (draftKey.length > 0) language.cancel("draft:" + draftKey.substring(draftKey.indexOf(":") + 1))
         draftKey = (remote ? "remote:" : "local:") + hostId
@@ -180,6 +203,7 @@ Item {
             onContentHeightChanged: root.restoreLayout()
             onContentYChanged: {
                 if (width === root.layoutWidth && height === root.layoutHeight) root.saveAnchor()
+                Qt.callLater(root.readLatest)
                 if (!moving || root.updating || root.current.historyLoading) return
                 if (atYBeginning && root.current.hasOlderMessages) root.page(true)
                 else if (atYEnd && root.current.hasNewerMessages) root.page(false)
@@ -248,6 +272,7 @@ Item {
                                 sourceComponent: VoiceAvatar {
                                     objectName: "messageAvatar_" + messageRow.message.sender
                                     systemMessage: messageRow.systemMessage
+                                    teamSpeak: !!messageRow.message.teamSpeak || !!messageRow.member.teamSpeak
                                     online: systemMessage || !root.current.chatPresenceKnown || (root.current.chatOnlineIds || []).includes(messageRow.message.sender)
                                     avatar: messageRow.message.avatarId || messageRow.message.avatar || "mossling"; name: messageRow.message.name
                                     readonly property var member: messageRow.member

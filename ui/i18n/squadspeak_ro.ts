@@ -303,10 +303,6 @@
             <translation>Dispozitiv de intrare</translation>
         </message>
         <message>
-            <source>Microphone paused for others</source>
-            <translation>Microfonul a fost întrerupt pentru alții</translation>
-        </message>
-        <message>
             <source>Cancel</source>
             <translation>Anulează</translation>
         </message>
@@ -315,16 +311,8 @@
             <translation>Saturație. Reduceți amplificarea microfonului.</translation>
         </message>
         <message>
-            <source>Silent</source>
-            <translation>Tacut</translation>
-        </message>
-        <message>
             <source>Test output</source>
             <translation>Ieșire de testare</translation>
-        </message>
-        <message>
-            <source>Voice level</source>
-            <translation>Nivelul vocii</translation>
         </message>
         <message>
             <source>Voice threshold</source>
@@ -1176,6 +1164,10 @@
         <message>
             <source>On the other device, open Settings &gt; Input &gt; Remote control and allow this device.</source>
             <translation>Pe celălalt dispozitiv, deschide Setări &gt; Intrare &gt; Telecomanda și permite acest dispozitiv.</translation>
+        </message>
+        <message>
+            <source>Unread messages</source>
+            <translation>Mesaje necitite</translation>
         </message>
     </context>
     <context>
@@ -3151,10 +3143,6 @@
     </context>
     <context>
         <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>Indisponibil - setări audio sau test de ton</translation>
-        </message>
         <message>
             <source>Microphone muted</source>
             <translation>Microfon dezactivat</translation>

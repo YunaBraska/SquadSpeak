@@ -303,10 +303,6 @@
             <translation>Input Apparat</translation>
         </message>
         <message>
-            <source>Microphone paused for others</source>
-            <translation>Mikro fir anerer gestoppt</translation>
-        </message>
-        <message>
             <source>Cancel</source>
             <translation>Ofbriechen</translation>
         </message>
@@ -315,16 +311,8 @@
             <translation>Iwwersteierung. Mikrofonverstäerkung reduzéieren.</translation>
         </message>
         <message>
-            <source>Silent</source>
-            <translation>roueg</translation>
-        </message>
-        <message>
             <source>Test output</source>
             <translation>Testausgang</translation>
-        </message>
-        <message>
-            <source>Voice level</source>
-            <translation>Stëmm Niveau</translation>
         </message>
         <message>
             <source>Voice threshold</source>
@@ -1176,6 +1164,10 @@
         <message>
             <source>On the other device, open Settings &gt; Input &gt; Remote control and allow this device.</source>
             <translation>Maach um aneren Apparat Astellungen &gt; Input &gt; Fernsteierung op a gëff dësem Apparat d'Erlaabnes.</translation>
+        </message>
+        <message>
+            <source>Unread messages</source>
+            <translation>Ongelies Messagen</translation>
         </message>
     </context>
     <context>
@@ -3151,10 +3143,6 @@
     </context>
     <context>
         <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>Net verfügbar - Audio Astellungen oder Toun Test</translation>
-        </message>
         <message>
             <source>Microphone muted</source>
             <translation>Mikro gedämpft</translation>

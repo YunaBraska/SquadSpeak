@@ -1,4 +1,4 @@
-name: "Compare audio source channel load"
+name: "Validate hosted Intel audio capacity"
 
 on:
   push:
@@ -26,7 +26,7 @@ jobs:
       test_command: |
         set -eu
         mkdir -p build/macos-ci/artifacts
-        ctest --test-dir build/macos-ci/app --no-tests=error --verbose \
+        SQUAD_SOAK_SPEAKERS=2 ctest --test-dir build/macos-ci/app --no-tests=error --verbose \
           -R '^(channel_contract_sixtyFourClientsHaveOneConsistentRosterAndAudioFanout|channel_contract_receiverQualityAdaptsWithoutChangingOtherReceivers)$' \
           --output-log "$PWD/build/macos-ci/artifacts/source-channel-comparison.log"
       package_command: test -s build/macos-ci/artifacts/source-channel-comparison.log

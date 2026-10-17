@@ -303,10 +303,6 @@
             <translation>Pajisja hyrëse</translation>
         </message>
         <message>
-            <source>Microphone paused for others</source>
-            <translation>Mikrofoni u ndal për të tjerët</translation>
-        </message>
-        <message>
             <source>Cancel</source>
             <translation>Anulo</translation>
         </message>
@@ -315,16 +311,8 @@
             <translation>Shtrembërim i sinjalit. Ulni përforcimin e mikrofonit.</translation>
         </message>
         <message>
-            <source>Silent</source>
-            <translation>Hesht</translation>
-        </message>
-        <message>
             <source>Test output</source>
             <translation>Testi i prodhimit</translation>
-        </message>
-        <message>
-            <source>Voice level</source>
-            <translation>Niveli i zërit</translation>
         </message>
         <message>
             <source>Voice threshold</source>
@@ -1176,6 +1164,10 @@
         <message>
             <source>On the other device, open Settings &gt; Input &gt; Remote control and allow this device.</source>
             <translation>Në pajisjen tjetër, hap Cilësimet &gt; Hyrja &gt; Telekomanda dhe lejoje këtë pajisje.</translation>
+        </message>
+        <message>
+            <source>Unread messages</source>
+            <translation>Mesazhe të palexuara</translation>
         </message>
     </context>
     <context>
@@ -3151,10 +3143,6 @@
     </context>
     <context>
         <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>I padisponueshëm - cilësimet e audios ose testi i tonit</translation>
-        </message>
         <message>
             <source>Microphone muted</source>
             <translation>Mikrofoni i çaktivizuar</translation>

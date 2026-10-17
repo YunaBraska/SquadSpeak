@@ -69,6 +69,21 @@ Rectangle {
             verify(tip.text.indexOf("0.0 dB") >= 0)
             verify(tip.text.indexOf("dBFS") < 0)
         }
+        function test_thresholdFollowsItsLevelAndIsAbsentForPtt() {
+            fixture.signal = Object.assign({}, referenceTone, {running: false, filterResponse: []})
+            spectrum.thresholdDb = -45
+            const chart = findChild(spectrum, "frequencyChart"), tip = findChild(spectrum, "frequencyTooltip")
+            verify(waitForRendering(spectrum))
+            mouseMove(chart, 200, 20 + (chart.height - 48) / 2)
+            tryCompare(tip, "visible", true)
+            verify(tip.text.indexOf("Voice threshold") >= 0 && tip.text.indexOf("-45.0 dBFS") >= 0)
+            spectrum.thresholdDb = -18
+            mouseMove(chart, 200, 20 + (chart.height - 48) / 5)
+            tryVerify(function() { return tip.text.indexOf("-18.0 dBFS") >= 0 })
+            spectrum.thresholdDb = NaN
+            mouseMove(chart, 220, 20 + (chart.height - 48) / 5)
+            tryCompare(tip, "visible", false)
+        }
         function test_overlappingCurvesShowBothUnits() {
             const chart = findChild(spectrum, "frequencyChart")
             const tip = findChild(chart, "frequencyTooltip")

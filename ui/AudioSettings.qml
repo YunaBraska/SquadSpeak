@@ -40,43 +40,6 @@ Item {
         color: Theme.border
     }
 
-    component Meter: ColumnLayout {
-        id: meter
-        property string caption
-        property real decibels: -96
-        property real minimumDb: -60
-        property real thresholdDb: NaN
-        property color barColor: Theme.accent
-        spacing: 6
-        RowLayout {
-            Layout.fillWidth: true
-            Label { text: caption; Layout.fillWidth: true }
-            Label { text: decibels <= -96 ? qsTr("Silent") : qsTr("%1 dBFS").arg(decibels.toFixed(1)); font.family: "monospace" }
-        }
-        Rectangle {
-            Layout.fillWidth: true
-            implicitHeight: 8
-            color: Theme.raised
-            radius: Theme.smallRadius
-            Rectangle {
-                width: parent.width * Math.max(0, Math.min(1, (decibels - minimumDb) / -minimumDb))
-                height: parent.height
-                radius: Theme.smallRadius
-                color: barColor
-            }
-            Rectangle {
-                visible: isFinite(meter.thresholdDb)
-                x: visible ? Math.max(0, Math.min(parent.width - width,
-                    parent.width * (meter.thresholdDb - minimumDb) / -minimumDb)) : 0
-                y: -3
-                width: 2
-                height: parent.height + 6
-                color: Theme.text
-            }
-        }
-    }
-
-
     ScrollView {
         id: settingsScroll
         objectName: "audioSettingsScroll"
@@ -120,33 +83,47 @@ Item {
                 RowLayout {
                     Layout.fillWidth: true
                     Label { text: audio.inputName; textFormat: Text.PlainText; elide: Text.ElideRight; Layout.fillWidth: true; color: Theme.muted; font.pixelSize: 11 }
-                    Glyph { symbol: "mute"; color: Theme.muted; description: qsTr("Microphone paused for others"); implicitWidth: 14; implicitHeight: 14 }
                 }
                 SpectrumView {
                     Layout.fillWidth: true
                     audio: root.audioSource
+                    thresholdDb: root.sessionSource.pushToTalk ? NaN : audio.activationThresholdDb
                     chartHeight: root.height < 350 ? 120 : 166
                     showReadouts: root.height >= 350
                 }
-                Meter {
-                    objectName: "voiceMeter"
+                RowLayout {
                     Layout.fillWidth: true
-                    caption: audio.running ? (audio.activationOpen ? qsTr("Would transmit") : qsTr("Would stay silent")) : qsTr("Voice level")
-                    minimumDb: -80
-                    decibels: audio.activationLevelDb
-                    thresholdDb: audio.activationEnabled ? audio.activationThresholdDb : NaN
-                    barColor: audio.activationOpen ? Theme.accent : Theme.muted
+                    RadioButton {
+                        objectName: "voiceActivation"
+                        text: qsTr("Voice activation")
+                        checked: !root.sessionSource.pushToTalk
+                        onClicked: root.sessionSource.setPushToTalk(false)
+                    }
+                    RadioButton {
+                        objectName: "pushToTalkMode"
+                        text: qsTr("Push to talk")
+                        checked: root.sessionSource.pushToTalk
+                        onClicked: root.sessionSource.setPushToTalk(true)
+                    }
+                }
+                SettingSlider {
+                    objectName: "voiceThreshold"
+                    Layout.fillWidth: true
+                    visible: !root.sessionSource.pushToTalk
+                    enabled: audio.inputAvailable
+                    caption: audio.running ? (audio.activationOpen ? qsTr("Would transmit") : qsTr("Would stay silent")) : qsTr("Voice threshold")
+                    from: -80; to: 0; stepSize: 1
+                    value: audio.activationThresholdDb
+                    valueText: qsTr("%1 dBFS").arg(audio.activationThresholdDb.toFixed(1))
+                    levelValue: audio.activationLevelDb
+                    levelColor: audio.activationOpen ? Theme.accent : Theme.muted
+                    autoAvailable: true; automatic: audio.activationAutomatic
+                    applyAutomatic: function(value) { return audio.setActivationAutomatic(value) }
+                    applyValue: function(value) { return audio.setActivationThresholdDb(value) }
                     ToolTip.visible: gateHelp.hovered
-                    ToolTip.text: qsTr("Microphone paused for others") + "\n"
-                        + (audio.activationAutomatic ? qsTr("Auto also checks for speech, not just volume.")
-                                                     : qsTr("Voice threshold") + ": " + qsTr("%1 dBFS").arg(audio.activationThresholdDb.toFixed(1)))
+                    ToolTip.text: qsTr("Voice threshold") + (audio.activationAutomatic ? "\n" + qsTr("Auto also checks for speech, not just volume.") : "")
                     HoverHandler { id: gateHelp }
                 }
-            }
-            Label {
-                visible: root.settingsPage === 1
-                text: qsTr("Microphone paused for others")
-                color: Theme.muted; font.pixelSize: 12
             }
             ColumnLayout {
                 Layout.fillWidth: true
@@ -161,30 +138,6 @@ Item {
                         visible: audio.clipped
                         text: qsTr("Clipping. Reduce microphone gain.")
                         color: Theme.danger; wrapMode: Text.Wrap; Layout.fillWidth: true
-                    }
-                    OptionCheck {
-                        objectName: "voiceActivation"
-                        enabled: audio.inputAvailable
-                        text: qsTr("Voice activation")
-                        checked: audio.activationEnabled
-                        onCheckedChanged: {
-                            if (checked === audio.activationEnabled) return
-                            audio.setActivationEnabled(checked)
-                            checked = Qt.binding(function() { return audio.activationEnabled })
-                        }
-                    }
-                    SettingSlider {
-                        objectName: "voiceThreshold"
-                        Layout.fillWidth: true
-                        visible: audio.activationEnabled
-                        enabled: audio.inputAvailable
-                        caption: qsTr("Voice threshold")
-                        from: -80; to: 0; stepSize: 1
-                        value: audio.activationThresholdDb
-                        valueText: qsTr("%1 dBFS").arg(audio.activationThresholdDb.toFixed(1))
-                        autoAvailable: true; automatic: audio.activationAutomatic
-                        applyAutomatic: function(value) { return audio.setActivationAutomatic(value) }
-                        applyValue: function(value) { return audio.setActivationThresholdDb(value) }
                     }
                     SettingSlider {
                         objectName: "echoCancellation"
@@ -268,17 +221,6 @@ Item {
                 Divider {}
                 RowLayout {
                     Layout.fillWidth: true
-                    OptionCheck {
-                        objectName: "pushToTalkMode"
-                        text: qsTr("Push to talk")
-                        Layout.fillWidth: true
-                        checked: root.sessionSource.pushToTalk
-                        onCheckedChanged: {
-                            if (checked === root.sessionSource.pushToTalk) return
-                            root.sessionSource.setPushToTalk(checked)
-                            checked = Qt.binding(function() { return root.sessionSource.pushToTalk })
-                        }
-                    }
                     ActionButton {
                         objectName: "configureRemoteControl"
                         text: qsTranslate("Channels", "Remote control")

@@ -303,10 +303,6 @@
             <translation>入力デバイス</translation>
         </message>
         <message>
-            <source>Microphone paused for others</source>
-            <translation>他の参加者向けにマイクを一時停止</translation>
-        </message>
-        <message>
             <source>Cancel</source>
             <translation>キャンセル</translation>
         </message>
@@ -315,16 +311,8 @@
             <translation>クリッピング. マイクゲインを下げてください.</translation>
         </message>
         <message>
-            <source>Silent</source>
-            <translation>無音</translation>
-        </message>
-        <message>
             <source>Test output</source>
             <translation>出力をテスト</translation>
-        </message>
-        <message>
-            <source>Voice level</source>
-            <translation>音声レベル</translation>
         </message>
         <message>
             <source>Voice threshold</source>
@@ -1176,6 +1164,10 @@
         <message>
             <source>On the other device, open Settings &gt; Input &gt; Remote control and allow this device.</source>
             <translation>もう一方のデバイスで設定 &gt; 入力 &gt; リモート操作を開き、このデバイスを許可します。</translation>
+        </message>
+        <message>
+            <source>Unread messages</source>
+            <translation>未読メッセージ</translation>
         </message>
     </context>
     <context>
@@ -3151,10 +3143,6 @@
     </context>
     <context>
         <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>利用不可 - オーディオ設定またはトーンテスト</translation>
-        </message>
         <message>
             <source>Microphone muted</source>
             <translation>マイクをミュート中</translation>

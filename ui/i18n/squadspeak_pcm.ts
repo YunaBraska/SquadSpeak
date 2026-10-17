@@ -303,10 +303,6 @@
             <translation>Device wey dey input sound</translation>
         </message>
         <message>
-            <source>Microphone paused for others</source>
-            <translation>Microphone pause for other people</translation>
-        </message>
-        <message>
             <source>Cancel</source>
             <translation>Cancel</translation>
         </message>
@@ -315,16 +311,8 @@
             <translation>Sound dey clip. Reduce microphone gain.</translation>
         </message>
         <message>
-            <source>Silent</source>
-            <translation>Silent</translation>
-        </message>
-        <message>
             <source>Test output</source>
             <translation>Test di output</translation>
-        </message>
-        <message>
-            <source>Voice level</source>
-            <translation>Voice level</translation>
         </message>
         <message>
             <source>Voice threshold</source>
@@ -1176,6 +1164,10 @@
         <message>
             <source>Remove server</source>
             <translation>Comot server</translation>
+        </message>
+        <message>
+            <source>Unread messages</source>
+            <translation>Messages wey you never read</translation>
         </message>
     </context>
     <context>
@@ -2471,10 +2463,6 @@
     </context>
     <context>
         <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>No dey available - audio settings or tone test</translation>
-        </message>
         <message>
             <source>Microphone muted</source>
             <translation>Microphone muted</translation>

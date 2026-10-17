@@ -303,10 +303,6 @@
             <translation>ইনপুট ডিভাইস</translation>
         </message>
         <message>
-            <source>Microphone paused for others</source>
-            <translation>মাইক্রোফোন অন্যদের জন্য বিরতি দেওয়া হয়েছে</translation>
-        </message>
-        <message>
             <source>Cancel</source>
             <translation>বাতিল করুন</translation>
         </message>
@@ -315,16 +311,8 @@
             <translation>শব্দ বিকৃত হচ্ছে। মাইক্রোফোনের পরিবর্ধন কমান।</translation>
         </message>
         <message>
-            <source>Silent</source>
-            <translation>নীরব</translation>
-        </message>
-        <message>
             <source>Test output</source>
             <translation>টেস্ট আউটপুট</translation>
-        </message>
-        <message>
-            <source>Voice level</source>
-            <translation>ভয়েস লেভেল</translation>
         </message>
         <message>
             <source>Voice threshold</source>
@@ -1176,6 +1164,10 @@
         <message>
             <source>On the other device, open Settings &gt; Input &gt; Remote control and allow this device.</source>
             <translation>অন্য ডিভাইসে সেটিংস &gt; ইনপুট &gt; রিমোট কন্ট্রোল খুলে এই ডিভাইসটিকে অনুমতি দিন।</translation>
+        </message>
+        <message>
+            <source>Unread messages</source>
+            <translation>অপঠিত বার্তা</translation>
         </message>
     </context>
     <context>
@@ -3151,10 +3143,6 @@
     </context>
     <context>
         <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>অনুপলব্ধ - অডিও সেটিংস বা টোন পরীক্ষা</translation>
-        </message>
         <message>
             <source>Microphone muted</source>
             <translation>মাইক্রোফোন নিঃশব্দ</translation>

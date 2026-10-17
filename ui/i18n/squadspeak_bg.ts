@@ -303,10 +303,6 @@
             <translation>Входно устройство</translation>
         </message>
         <message>
-            <source>Microphone paused for others</source>
-            <translation>Микрофонът е спрян за другите</translation>
-        </message>
-        <message>
             <source>Cancel</source>
             <translation>Отмяна</translation>
         </message>
@@ -315,16 +311,8 @@
             <translation>Претоварване. Намалете усилването на микрофона.</translation>
         </message>
         <message>
-            <source>Silent</source>
-            <translation>Без звук</translation>
-        </message>
-        <message>
             <source>Test output</source>
             <translation>Тестов изход</translation>
-        </message>
-        <message>
-            <source>Voice level</source>
-            <translation>Ниво на гласа</translation>
         </message>
         <message>
             <source>Voice threshold</source>
@@ -1176,6 +1164,10 @@
         <message>
             <source>On the other device, open Settings &gt; Input &gt; Remote control and allow this device.</source>
             <translation>На другото устройство отворете Настройки &gt; Въвеждане &gt; Дистанционно управление и разрешете това устройство.</translation>
+        </message>
+        <message>
+            <source>Unread messages</source>
+            <translation>Непрочетени съобщения</translation>
         </message>
     </context>
     <context>
@@ -3151,10 +3143,6 @@
     </context>
     <context>
         <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>Недостъпен - настройки за аудио или тест на звука</translation>
-        </message>
         <message>
             <source>Microphone muted</source>
             <translation>Микрофонът е заглушен</translation>

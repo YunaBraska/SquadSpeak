@@ -303,10 +303,6 @@
             <translation>इनपुट डिवाइस</translation>
         </message>
         <message>
-            <source>Microphone paused for others</source>
-            <translation>दूसरों के लिए माइक्रोफोन रुका हुआ है</translation>
-        </message>
-        <message>
             <source>Cancel</source>
             <translation>रद्द करें</translation>
         </message>
@@ -315,16 +311,8 @@
             <translation>क्लिपिंग. माइक्रोफोन गेन कम करें.</translation>
         </message>
         <message>
-            <source>Silent</source>
-            <translation>मौन</translation>
-        </message>
-        <message>
             <source>Test output</source>
             <translation>आउटपुट जांचें</translation>
-        </message>
-        <message>
-            <source>Voice level</source>
-            <translation>वॉइस स्तर</translation>
         </message>
         <message>
             <source>Voice threshold</source>
@@ -1176,6 +1164,10 @@
         <message>
             <source>On the other device, open Settings &gt; Input &gt; Remote control and allow this device.</source>
             <translation>दूसरे डिवाइस पर सेटिंग &gt; इनपुट &gt; रिमोट कंट्रोल खोलें और इस डिवाइस को अनुमति दें।</translation>
+        </message>
+        <message>
+            <source>Unread messages</source>
+            <translation>अपठित संदेश</translation>
         </message>
     </context>
     <context>
@@ -3151,10 +3143,6 @@
     </context>
     <context>
         <name>VoiceSession</name>
-        <message>
-            <source>Unavailable - audio settings or tone test</source>
-            <translation>उपलब्ध नहीं - ऑडियो सेटिंग या टोन टेस्ट</translation>
-        </message>
         <message>
             <source>Microphone muted</source>
             <translation>माइक्रोफोन म्यूट है</translation>
