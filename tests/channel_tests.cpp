@@ -95,9 +95,13 @@ int controlledProcess(QCoreApplication& application, std::function<void(const QJ
             const auto request = QJsonDocument::fromJson(QByteArray::fromStdString(line)).object();
             QMetaObject::invokeMethod(&application, [&, request] { if (command) command(request); }, Qt::QueuedConnection);
         }
-        QMetaObject::invokeMethod(&application, &QCoreApplication::quit, Qt::QueuedConnection);
+        QMetaObject::invokeMethod(&application, [&] {
+            qInfo() << "Capacity command input closed";
+            application.quit();
+        }, Qt::QueuedConnection);
     });
     const auto result = application.exec();
+    qInfo() << "Capacity event loop stopped";
     input.join();
     return result;
 }
@@ -6328,6 +6332,7 @@ private slots:
         for (int i = 0; i < speakers; ++i) {
             clients.push_back(std::make_unique<Device>(dir.filePath(QString::number(i)), QString("Member %1").arg(i),
                 i == 0 ? firstIdentity : TlsIdentity::create()));
+            QVERIFY(clients.back()->session.setMuted(false));
             approved.append(clients.back()->channel.ownId());
         }
         for (const auto& report : receiverStates)
@@ -6391,11 +6396,9 @@ private slots:
                 [&, i](const QString& id, const QByteArray& bytes, int missing) {
                     if (sustained.isValid()) validAudio &= playback[i].receive(id, bytes, sustained.elapsed(), missing);
                 });
-            QVERIFY(clients[i]->session.setMuted(false));
         }
-        QVERIFY(commandReceivers({{"operation", "unmute"}}));
-        // The command acknowledgement precedes roster delivery. Service all
-        // peers continuously until every view reflects the unmute operation.
+        // Microphone state is part of admission. Build the load fixture with
+        // that state already saved, without a second 64-way settings burst.
         QVERIFY(waitForEvents([&] {
             for (const auto& client : clients) {
                 const auto members = client->channel.participants();
@@ -6745,6 +6748,7 @@ int main(int argc, char** argv) {
         for (int index = first; index < first + count; ++index) {
             clients.push_back(std::make_unique<Device>(arguments[2] + "/" + QString::number(index),
                 QString("Member %1").arg(index)));
+            if (!clients.back()->session.setMuted(false)) return 1;
             QObject::connect(&clients.back()->channel, &LocalChannel::audioReceived, &clients.back()->channel,
                 [&, index](const QString&, const QByteArray&, int gaps) { ++heard[size_t(index)]; missing[size_t(index)] += gaps; });
         }
@@ -6765,20 +6769,22 @@ int main(int argc, char** argv) {
         };
         report(0, true);
         const auto packet = voicePacket();
-        return controlledProcess(application, [&](const QJsonObject& request) {
+        const auto result = controlledProcess(application, [&](const QJsonObject& request) {
             const auto operation = request.value("operation").toString();
             bool ok = true;
             for (size_t i = 0; i < clients.size(); ++i) {
                 auto& client = *clients[i];
                 if (operation == "join") ok &= client.channel.join(request.value("host").toString(),
                     "127.0.0.1", quint16(request.value("port").toInt()));
-                else if (operation == "unmute") ok &= client.session.setMuted(false);
                 else if (operation == "send" && int(i) + first == request.value("source").toInt()) ok &= client.channel.sendAudio(packet);
                 else if (operation == "leave" && int(i) + first < request.value("before").toInt()) ok &= client.channel.leave();
                 else if (operation == "reset") { heard[size_t(first) + i] = 0; missing[size_t(first) + i] = 0; }
             }
             report(request.value("serial").toInt(), ok);
         });
+        clients.clear();
+        qInfo() << "Capacity receiver devices closed";
+        return result;
     }
     if (arguments.size() == 3 && arguments[1] == "--capacity-host") {
         QLoggingCategory::setFilterRules(QStringLiteral("squadspeak.media.sender.debug=true"));
