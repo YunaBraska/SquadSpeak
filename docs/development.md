@@ -765,6 +765,7 @@ Configure and build with the matching Qt iOS kit and the macOS Qt host tools. Ch
 ```sh
 DEVICE_ID='replace-with-simulator-udid'
 IOS_QT="$HOME/Library/Caches/squadspeak-qt/6.11.3/ios"
+rustup target add x86_64-apple-ios
 "$IOS_QT/bin/qt-cmake" -S . -B build/ios-simulator -G Ninja \
   -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=ON \
   -DCMAKE_OSX_SYSROOT=iphonesimulator \
@@ -790,6 +791,11 @@ ctest --test-dir build/ios-simulator --output-on-failure \
 ```
 
 CTest automatically installs each test app before launching it through `simctl`. It runs shared image, mixer and media-transport tests plus selected channel, video and QML interaction cases. Test bundles use the same device-family and launch metadata as the app. It does not register desktop capture or process-worker tests. Simulator tests run serially on the selected device and fail on Qt Test assertions even when `simctl` exits successfully. The app needs the Qt Multimedia and imageformats modules in the iOS kit, plus the target FFmpeg archives built by the dependency script.
+
+The separate `ios_audio_capture` test needs microphone permission for the test
+app on the selected simulator. It checks preview restart, capture with playback,
+encoded output and mute/restart. It neither saves recordings nor connects to a
+server. Run it with `ctest --test-dir build/ios-simulator -R '^ios_audio_capture$'`.
 
 The chat UI selection requests real native portrait and landscape geometry and
 checks that rotation preserves the reading anchor and draft. It also opens the

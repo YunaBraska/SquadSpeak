@@ -200,6 +200,9 @@ public slots:
         audio_->setDeafened(previous);
         return {{"accepted", accepted}, {"testing", testing}, {"capturing", audio_->running()}};
     }
+    bool setAudioVoiceState(bool joined, bool transmit) {
+        return audio_->setVoiceState(joined, transmit, true);
+    }
     bool acceptsBotMessage(const QString& text, bool joined, bool deafened) {
         const auto previous = audio_->deafened();
         audio_->setVoiceState(joined, false);

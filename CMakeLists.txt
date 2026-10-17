@@ -453,10 +453,6 @@ if(BUILD_TESTING)
             string(REGEX REPLACE "_tests$" "" fixture "${target}")
             string(REPLACE "_" "-" bundle_name "${fixture}")
             target_link_libraries(${target} PRIVATE Qt6::Gui)
-            if(${target} STREQUAL "controls_tests")
-                qt_import_plugins(${target} INCLUDE_BY_TYPE permissions
-                    Qt6::QDarwinMicrophonePermissionPlugin)
-            endif()
             set_target_properties(${target} PROPERTIES MACOSX_BUNDLE TRUE
                 MACOSX_BUNDLE_GUI_IDENTIFIER "app.squadspeak.${bundle_name}-tests"
                 MACOSX_BUNDLE_BUNDLE_NAME "SquadSpeak Tests"
@@ -498,7 +494,8 @@ if(BUILD_TESTING)
             DirectChannelControls::test_dockPreferenceIsMacOnlyAndKeepsVoiceState)
         squad_add_ios_test(controls_tests ios_audio_capture
             -input "${CMAKE_CURRENT_SOURCE_DIR}/tests/tst_channel_controls.qml"
-            DirectChannelControls::test_iosAudioSessionCapturesAndCanRestart)
+            DirectChannelControls::test_iosAudioSessionCapturesAndCanRestart
+            DirectChannelControls::test_iosAudioSessionTransmitsWithPlaybackAndMute)
         set_tests_properties(ios_audio_capture PROPERTIES
             ENVIRONMENT "SIMCTL_CHILD_SQUADSPEAK_TEST_INPUT=present")
         squad_add_ios_test(controls_tests channel_controls

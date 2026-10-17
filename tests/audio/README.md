@@ -27,9 +27,10 @@ people or recordings.
 
 Speech activation additionally uses two real CC0 keyboard recordings at three
 levels, alone and mixed with normal or quiet speech at 0/+10 dB SNR. The fast
-suite has 42 activation cases with three narrators. The extended suite has 246
-with all twenty, including 200 ms voiced excerpts. These use the default gain
-and bass correction, public encoder and decoder with no audio device.
+suite has 84 activation cases with three narrators. The extended suite has 492
+with all twenty, covering mono and stereo, including 200 ms voiced excerpts.
+These use the default gain and bass correction, public encoder and decoder
+with no audio device.
 They require at least 75% fewer admitted typing frames than a level-only gate,
 at least 10 dB attenuation for typing alone, and retention of over 98.5% of the
 clean speech energy in admitted frames. This measures admission and signal

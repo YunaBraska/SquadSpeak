@@ -1497,6 +1497,38 @@ TestCase {
         tryCompare(audio, "running", false, 5000)
     }
 
+    function test_iosAudioSessionTransmitsWithPlaybackAndMute() {
+        if (!nativeCaptureAcceptance) return
+        const packets = createTemporaryObject(audioPacketSpy, test)
+        verify(packets.valid)
+        verify(audio.inputAvailable)
+        verify(audio.outputAvailable)
+        try {
+            // Open the real output before capture, as when joining while muted.
+            verify(fixtures.setAudioVoiceState(true, false))
+            compare(audio.running, false)
+            for (let attempt = 0; attempt < 2; ++attempt) {
+                verify(fixtures.setAudioVoiceState(true, true))
+                tryCompare(audio, "running", true, 5000)
+                tryVerify(function() { return packets.count >= 3 }, 5000,
+                          "Live capture must produce encoded voice packets")
+                verify(audio.voiceSending)
+                verify(fixtures.setAudioVoiceState(true, false))
+                tryCompare(audio, "running", false, 5000)
+                compare(audio.voiceSending, false)
+                packets.clear()
+                view.update()
+                verify(waitForRendering(view.contentItem))
+                compare(packets.count, 0)
+            }
+        } finally {
+            verify(fixtures.setAudioVoiceState(false, false))
+            verify(audio.stop())
+        }
+    }
+
+    Component { id: audioPacketSpy; SignalSpy { target: audio; signalName: "audioPacket" } }
+
     function test_languageChangeKeepsSettingsKeyboardFocus() {
         view.openSettings(0)
         tryCompare(findChild(view, "settingsDialog"), "opened", true)
