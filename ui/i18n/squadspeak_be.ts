@@ -239,8 +239,8 @@
     <context>
         <name>AudioSettings</name>
         <message>
-            <source>Echo cancellation</source>
-            <translation>Падаўленне рэха</translation>
+            <source>Echo</source>
+            <translation>Рэха</translation>
         </message>
         <message>
             <source>Off</source>
@@ -291,8 +291,8 @@
             <translation>Ачысціць клавішу</translation>
         </message>
         <message>
-            <source>Low cut</source>
-            <translation>Нізкачашчынны зрэз</translation>
+            <source>Highpass</source>
+            <translation>Высокапрапускны</translation>
         </message>
         <message>
             <source>Microphone access is off</source>
@@ -339,8 +339,8 @@
             <translation>Актывацыя мікрафона голасам</translation>
         </message>
         <message>
-            <source>Noise reduction</source>
-            <translation>Зніжэнне шуму</translation>
+            <source>Denoise</source>
+            <translation>Шумапрыглушэнне</translation>
         </message>
         <message>
             <source>Selected device is not connected</source>
@@ -351,16 +351,16 @@
             <translation>перадаў бы</translation>
         </message>
         <message>
-            <source>Microphone gain</source>
-            <translation>Узмацненне мікрафона</translation>
+            <source>Gain</source>
+            <translation>Узмацненне</translation>
         </message>
         <message>
             <source>Not assigned</source>
             <translation>Не прызначаны</translation>
         </message>
         <message>
-            <source>High cut</source>
-            <translation>Высокачашчынны зрэз</translation>
+            <source>Lowpass</source>
+            <translation>Нізкапрапускны</translation>
         </message>
         <message>
             <source>Level audio automatically</source>

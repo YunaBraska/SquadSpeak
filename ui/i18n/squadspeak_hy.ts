@@ -239,8 +239,8 @@
     <context>
         <name>AudioSettings</name>
         <message>
-            <source>Echo cancellation</source>
-            <translation>Արձագանքի չեղարկում</translation>
+            <source>Echo</source>
+            <translation>Արձագանք</translation>
         </message>
         <message>
             <source>Off</source>
@@ -291,8 +291,8 @@
             <translation>Մաքրել ստեղնը</translation>
         </message>
         <message>
-            <source>Low cut</source>
-            <translation>Ցածր հաճախականության կտրում</translation>
+            <source>Highpass</source>
+            <translation>Բարձրանցիկ</translation>
         </message>
         <message>
             <source>Microphone access is off</source>
@@ -339,8 +339,8 @@
             <translation>Ձայնով ակտիվացված խոսափող</translation>
         </message>
         <message>
-            <source>Noise reduction</source>
-            <translation>Աղմուկի նվազեցում</translation>
+            <source>Denoise</source>
+            <translation>Աղմկազտում</translation>
         </message>
         <message>
             <source>Selected device is not connected</source>
@@ -351,16 +351,16 @@
             <translation>Կփոխանցի</translation>
         </message>
         <message>
-            <source>Microphone gain</source>
-            <translation>Խոսափողի ուժեղացում</translation>
+            <source>Gain</source>
+            <translation>Ուժեղացում</translation>
         </message>
         <message>
             <source>Not assigned</source>
             <translation>նշանակված չէ</translation>
         </message>
         <message>
-            <source>High cut</source>
-            <translation>Բարձր հաճախականության կտրում</translation>
+            <source>Lowpass</source>
+            <translation>Ցածրանցիկ</translation>
         </message>
         <message>
             <source>Level audio automatically</source>

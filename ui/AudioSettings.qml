@@ -141,7 +141,7 @@ Item {
                     SettingSlider {
                         objectName: "echoCancellation"
                         Layout.fillWidth: true
-                        caption: qsTr("Echo cancellation")
+                        caption: qsTr("Echo")
                         toggleAvailable: true; filterEnabled: audio.filtersEnabled.echo
                         applyEnabled: function(value) { return audio.setFilterEnabled("echo", value) }
                         enabled: audio.inputAvailable
@@ -180,7 +180,7 @@ Item {
                             objectName: "microphoneGain"
                             Layout.fillWidth: true; Layout.preferredWidth: 1
                             enabled: audio.inputAvailable
-                            caption: qsTr("Microphone gain")
+                            caption: qsTr("Gain")
                             toggleAvailable: true; filterEnabled: audio.filtersEnabled.gain
                             applyEnabled: function(value) { return audio.setFilterEnabled("gain", value) }
                             from: -24; to: 24; stepSize: 0.5
@@ -194,7 +194,7 @@ Item {
                             Layout.fillWidth: true; Layout.preferredWidth: 1
                             enabled: audio.inputAvailable
                             objectName: "noiseReduction"
-                            caption: qsTr("Noise reduction")
+                            caption: qsTr("Denoise")
                             toggleAvailable: true; filterEnabled: audio.filtersEnabled.noise
                             applyEnabled: function(value) { return audio.setFilterEnabled("noise", value) }
                             from: 0; to: 1; stepSize: 0.05
@@ -205,7 +205,7 @@ Item {
                         SettingSlider {
                             Layout.fillWidth: true; Layout.preferredWidth: 1
                             enabled: audio.inputAvailable
-                            caption: qsTr("Low cut")
+                            caption: qsTr("Highpass")
                             toggleAvailable: true; filterEnabled: audio.filtersEnabled.highPass
                             applyEnabled: function(value) { return audio.setFilterEnabled("highPass", value) }
                             objectName: "microphoneLowCut"
@@ -220,7 +220,7 @@ Item {
                             Layout.fillWidth: true; Layout.preferredWidth: 1
                             enabled: audio.inputAvailable
                             objectName: "microphoneHighCut"
-                            caption: qsTr("High cut")
+                            caption: qsTr("Lowpass")
                             toggleAvailable: true; filterEnabled: audio.filtersEnabled.lowPass
                             applyEnabled: function(value) { return audio.setFilterEnabled("lowPass", value) }
                             from: 0; to: audio.maximumFrequency; stepSize: 100

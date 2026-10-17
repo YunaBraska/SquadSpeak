@@ -239,8 +239,8 @@
     <context>
         <name>AudioSettings</name>
         <message>
-            <source>Echo cancellation</source>
-            <translation>Ekoreducering</translation>
+            <source>Echo</source>
+            <translation>Eko</translation>
         </message>
         <message>
             <source>Off</source>
@@ -291,8 +291,8 @@
             <translation>Rensa tangent</translation>
         </message>
         <message>
-            <source>Low cut</source>
-            <translation>Basfilter</translation>
+            <source>Highpass</source>
+            <translation>Högpass</translation>
         </message>
         <message>
             <source>Microphone access is off</source>
@@ -339,8 +339,8 @@
             <translation>Röstaktivering</translation>
         </message>
         <message>
-            <source>Noise reduction</source>
-            <translation>Brusreducering</translation>
+            <source>Denoise</source>
+            <translation>Brusfilter</translation>
         </message>
         <message>
             <source>Selected device is not connected</source>
@@ -351,16 +351,16 @@
             <translation>Skulle sända</translation>
         </message>
         <message>
-            <source>Microphone gain</source>
-            <translation>Mikrofonförstärkning</translation>
+            <source>Gain</source>
+            <translation>Förstärkning</translation>
         </message>
         <message>
             <source>Not assigned</source>
             <translation>Inte tilldelad</translation>
         </message>
         <message>
-            <source>High cut</source>
-            <translation>Diskantfilter</translation>
+            <source>Lowpass</source>
+            <translation>Lågpass</translation>
         </message>
         <message>
             <source>Level audio automatically</source>

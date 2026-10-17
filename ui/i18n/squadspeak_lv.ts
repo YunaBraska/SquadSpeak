@@ -239,8 +239,8 @@
     <context>
         <name>AudioSettings</name>
         <message>
-            <source>Echo cancellation</source>
-            <translation>Atbalss slāpēšana</translation>
+            <source>Echo</source>
+            <translation>Atbalss</translation>
         </message>
         <message>
             <source>Off</source>
@@ -291,8 +291,8 @@
             <translation>Notīrīt taustiņu</translation>
         </message>
         <message>
-            <source>Low cut</source>
-            <translation>Zemas frekvences griezums</translation>
+            <source>Highpass</source>
+            <translation>Augstcaurlaides</translation>
         </message>
         <message>
             <source>Microphone access is off</source>
@@ -339,8 +339,8 @@
             <translation>ar balsi aktivizēts mikrofons</translation>
         </message>
         <message>
-            <source>Noise reduction</source>
-            <translation>trokšņu samazināšana</translation>
+            <source>Denoise</source>
+            <translation>Atrokšņošana</translation>
         </message>
         <message>
             <source>Selected device is not connected</source>
@@ -351,16 +351,16 @@
             <translation>pārraidītu</translation>
         </message>
         <message>
-            <source>Microphone gain</source>
-            <translation>mikrofona pastiprinājums</translation>
+            <source>Gain</source>
+            <translation>Pastiprinājums</translation>
         </message>
         <message>
             <source>Not assigned</source>
             <translation>nav piešķirts</translation>
         </message>
         <message>
-            <source>High cut</source>
-            <translation>Augstas frekvences griezums</translation>
+            <source>Lowpass</source>
+            <translation>Zemcaurlaides</translation>
         </message>
         <message>
             <source>Level audio automatically</source>

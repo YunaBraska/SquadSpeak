@@ -239,8 +239,8 @@
     <context>
         <name>AudioSettings</name>
         <message>
-            <source>Echo cancellation</source>
-            <translation>Kaja eemaldamine</translation>
+            <source>Echo</source>
+            <translation>Kaja</translation>
         </message>
         <message>
             <source>Off</source>
@@ -291,8 +291,8 @@
             <translation>Eemalda klahv</translation>
         </message>
         <message>
-            <source>Low cut</source>
-            <translation>Madalate sageduste lõige</translation>
+            <source>Highpass</source>
+            <translation>Kõrgpääs</translation>
         </message>
         <message>
             <source>Microphone access is off</source>
@@ -339,8 +339,8 @@
             <translation>Mikrofon, mis töötab häälkäskudega</translation>
         </message>
         <message>
-            <source>Noise reduction</source>
-            <translation>Müra vähendamine</translation>
+            <source>Denoise</source>
+            <translation>Mürasummutus</translation>
         </message>
         <message>
             <source>Selected device is not connected</source>
@@ -351,16 +351,16 @@
             <translation>Saaks edastada</translation>
         </message>
         <message>
-            <source>Microphone gain</source>
-            <translation>Mikrofoni võimendus</translation>
+            <source>Gain</source>
+            <translation>Võimendus</translation>
         </message>
         <message>
             <source>Not assigned</source>
             <translation>Mitte määratud</translation>
         </message>
         <message>
-            <source>High cut</source>
-            <translation>Kõrgete sageduste lõige</translation>
+            <source>Lowpass</source>
+            <translation>Madalpääs</translation>
         </message>
         <message>
             <source>Level audio automatically</source>

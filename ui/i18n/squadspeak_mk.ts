@@ -239,8 +239,8 @@
     <context>
         <name>AudioSettings</name>
         <message>
-            <source>Echo cancellation</source>
-            <translation>Поништување ехо</translation>
+            <source>Echo</source>
+            <translation>Ехо</translation>
         </message>
         <message>
             <source>Off</source>
@@ -291,8 +291,8 @@
             <translation>Исчисти копче</translation>
         </message>
         <message>
-            <source>Low cut</source>
-            <translation>Нискофреквентно сечење</translation>
+            <source>Highpass</source>
+            <translation>Високопропусен</translation>
         </message>
         <message>
             <source>Microphone access is off</source>
@@ -339,8 +339,8 @@
             <translation>Микрофон кој се активира со глас</translation>
         </message>
         <message>
-            <source>Noise reduction</source>
-            <translation>Намалување на бучавата</translation>
+            <source>Denoise</source>
+            <translation>Обезшумување</translation>
         </message>
         <message>
             <source>Selected device is not connected</source>
@@ -351,16 +351,16 @@
             <translation>Ќе пренесе</translation>
         </message>
         <message>
-            <source>Microphone gain</source>
-            <translation>Засилување на микрофонот</translation>
+            <source>Gain</source>
+            <translation>Засилување</translation>
         </message>
         <message>
             <source>Not assigned</source>
             <translation>Не е доделен</translation>
         </message>
         <message>
-            <source>High cut</source>
-            <translation>Сечење со висока фреквенција</translation>
+            <source>Lowpass</source>
+            <translation>Нископропусен</translation>
         </message>
         <message>
             <source>Level audio automatically</source>

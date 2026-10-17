@@ -239,8 +239,8 @@
     <context>
         <name>AudioSettings</name>
         <message>
-            <source>Echo cancellation</source>
-            <translation>Visszhangszűrés</translation>
+            <source>Echo</source>
+            <translation>Visszhang</translation>
         </message>
         <message>
             <source>Off</source>
@@ -291,8 +291,8 @@
             <translation>Billentyű törlése</translation>
         </message>
         <message>
-            <source>Low cut</source>
-            <translation>Alacsony frekvenciájú vágás</translation>
+            <source>Highpass</source>
+            <translation>Felüláteresztő</translation>
         </message>
         <message>
             <source>Microphone access is off</source>
@@ -339,8 +339,8 @@
             <translation>Hangvezérelt mikrofon</translation>
         </message>
         <message>
-            <source>Noise reduction</source>
-            <translation>Zajcsökkentés</translation>
+            <source>Denoise</source>
+            <translation>Zajszűrés</translation>
         </message>
         <message>
             <source>Selected device is not connected</source>
@@ -351,16 +351,16 @@
             <translation>Átküldené</translation>
         </message>
         <message>
-            <source>Microphone gain</source>
-            <translation>Mikrofon erősítés</translation>
+            <source>Gain</source>
+            <translation>Erősítés</translation>
         </message>
         <message>
             <source>Not assigned</source>
             <translation>Nincs hozzárendelve</translation>
         </message>
         <message>
-            <source>High cut</source>
-            <translation>Nagyfrekvenciás vágás</translation>
+            <source>Lowpass</source>
+            <translation>Aluláteresztő</translation>
         </message>
         <message>
             <source>Level audio automatically</source>

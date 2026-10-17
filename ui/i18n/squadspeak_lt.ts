@@ -239,8 +239,8 @@
     <context>
         <name>AudioSettings</name>
         <message>
-            <source>Echo cancellation</source>
-            <translation>Aido slopinimas</translation>
+            <source>Echo</source>
+            <translation>Aidas</translation>
         </message>
         <message>
             <source>Off</source>
@@ -291,8 +291,8 @@
             <translation>Išvalyti klavišą</translation>
         </message>
         <message>
-            <source>Low cut</source>
-            <translation>Žemo dažnio pjovimas</translation>
+            <source>Highpass</source>
+            <translation>Aukštadažnis</translation>
         </message>
         <message>
             <source>Microphone access is off</source>
@@ -339,8 +339,8 @@
             <translation>balsu įjungiamas mikrofonas</translation>
         </message>
         <message>
-            <source>Noise reduction</source>
-            <translation>Triukšmo mažinimas</translation>
+            <source>Denoise</source>
+            <translation>Triukšmo slopinimas</translation>
         </message>
         <message>
             <source>Selected device is not connected</source>
@@ -351,16 +351,16 @@
             <translation>Perduotų</translation>
         </message>
         <message>
-            <source>Microphone gain</source>
-            <translation>mikrofono stiprinimas</translation>
+            <source>Gain</source>
+            <translation>Stiprinimas</translation>
         </message>
         <message>
             <source>Not assigned</source>
             <translation>nepriskirta</translation>
         </message>
         <message>
-            <source>High cut</source>
-            <translation>aukšto dažnio pjovimas</translation>
+            <source>Lowpass</source>
+            <translation>Žemadažnis</translation>
         </message>
         <message>
             <source>Level audio automatically</source>

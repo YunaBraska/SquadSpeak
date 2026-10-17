@@ -239,8 +239,8 @@
     <context>
         <name>AudioSettings</name>
         <message>
-            <source>Echo cancellation</source>
-            <translation>ექოს გაუქმება</translation>
+            <source>Echo</source>
+            <translation>ექო</translation>
         </message>
         <message>
             <source>Off</source>
@@ -291,8 +291,8 @@
             <translation>ღილაკის გასუფთავება</translation>
         </message>
         <message>
-            <source>Low cut</source>
-            <translation>დაბალი სიხშირის ჭრა</translation>
+            <source>Highpass</source>
+            <translation>მაღალგამტარი</translation>
         </message>
         <message>
             <source>Microphone access is off</source>
@@ -339,7 +339,7 @@
             <translation>ხმით გააქტიურებული მიკროფონი</translation>
         </message>
         <message>
-            <source>Noise reduction</source>
+            <source>Denoise</source>
             <translation>ხმაურის შემცირება</translation>
         </message>
         <message>
@@ -351,16 +351,16 @@
             <translation>გადასცემდა</translation>
         </message>
         <message>
-            <source>Microphone gain</source>
-            <translation>მიკროფონის გაძლიერება</translation>
+            <source>Gain</source>
+            <translation>გაძლიერება</translation>
         </message>
         <message>
             <source>Not assigned</source>
             <translation>არ არის დანიშნული</translation>
         </message>
         <message>
-            <source>High cut</source>
-            <translation>მაღალი სიხშირის ჭრა</translation>
+            <source>Lowpass</source>
+            <translation>დაბალგამტარი</translation>
         </message>
         <message>
             <source>Level audio automatically</source>

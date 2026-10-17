@@ -239,8 +239,8 @@
     <context>
         <name>AudioSettings</name>
         <message>
-            <source>Echo cancellation</source>
-            <translation>प्रतिध्वनी रद्द करणे</translation>
+            <source>Echo</source>
+            <translation>प्रतिध्वनी</translation>
         </message>
         <message>
             <source>Off</source>
@@ -291,8 +291,8 @@
             <translation>की काढा</translation>
         </message>
         <message>
-            <source>Low cut</source>
-            <translation>कमी-फ्रिक्वेंसी कट</translation>
+            <source>Highpass</source>
+            <translation>हायपास</translation>
         </message>
         <message>
             <source>Microphone access is off</source>
@@ -339,8 +339,8 @@
             <translation>व्हॉइस-सक्रिय मायक्रोफोन</translation>
         </message>
         <message>
-            <source>Noise reduction</source>
-            <translation>आवाज कमी करणे</translation>
+            <source>Denoise</source>
+            <translation>गोंगाट कमी</translation>
         </message>
         <message>
             <source>Selected device is not connected</source>
@@ -351,16 +351,16 @@
             <translation>प्रसारित होईल</translation>
         </message>
         <message>
-            <source>Microphone gain</source>
-            <translation>मायक्रोफोन प्रवर्धन</translation>
+            <source>Gain</source>
+            <translation>प्रवर्धन</translation>
         </message>
         <message>
             <source>Not assigned</source>
             <translation>नियुक्त केलेले नाही</translation>
         </message>
         <message>
-            <source>High cut</source>
-            <translation>उच्च-वारंवारता कट</translation>
+            <source>Lowpass</source>
+            <translation>लोपास</translation>
         </message>
         <message>
             <source>Level audio automatically</source>

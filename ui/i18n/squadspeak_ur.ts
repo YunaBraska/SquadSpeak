@@ -239,8 +239,8 @@
     <context>
         <name>AudioSettings</name>
         <message>
-            <source>Echo cancellation</source>
-            <translation>گونج کا خاتمہ</translation>
+            <source>Echo</source>
+            <translation>گونج</translation>
         </message>
         <message>
             <source>Off</source>
@@ -291,8 +291,8 @@
             <translation>کلید صاف کریں</translation>
         </message>
         <message>
-            <source>Low cut</source>
-            <translation>کم تعدد کٹ</translation>
+            <source>Highpass</source>
+            <translation>ہائی پاس</translation>
         </message>
         <message>
             <source>Microphone access is off</source>
@@ -339,8 +339,8 @@
             <translation>آواز سے چلنے والا مائکروفون</translation>
         </message>
         <message>
-            <source>Noise reduction</source>
-            <translation>شور کی کمی</translation>
+            <source>Denoise</source>
+            <translation>شور کم کریں</translation>
         </message>
         <message>
             <source>Selected device is not connected</source>
@@ -351,16 +351,16 @@
             <translation>منتقل کرے گا۔</translation>
         </message>
         <message>
-            <source>Microphone gain</source>
-            <translation>مائیکروفون کی ایمپلیفیکیشن</translation>
+            <source>Gain</source>
+            <translation>گین</translation>
         </message>
         <message>
             <source>Not assigned</source>
             <translation>تفویض نہیں کیا گیا۔</translation>
         </message>
         <message>
-            <source>High cut</source>
-            <translation>ہائی فریکوئنسی کٹ</translation>
+            <source>Lowpass</source>
+            <translation>لو پاس</translation>
         </message>
         <message>
             <source>Level audio automatically</source>

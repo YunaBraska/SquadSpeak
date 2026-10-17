@@ -239,8 +239,8 @@
     <context>
         <name>AudioSettings</name>
         <message>
-            <source>Echo cancellation</source>
-            <translation>Жаңғырықты басу</translation>
+            <source>Echo</source>
+            <translation>Жаңғырық</translation>
         </message>
         <message>
             <source>Off</source>
@@ -291,8 +291,8 @@
             <translation>Пернені тазалау</translation>
         </message>
         <message>
-            <source>Low cut</source>
-            <translation>Төмен жиілікті кесу</translation>
+            <source>Highpass</source>
+            <translation>Жоғарыөткізгіш</translation>
         </message>
         <message>
             <source>Microphone access is off</source>
@@ -339,8 +339,8 @@
             <translation>Дауыспен белсендірілген микрофон</translation>
         </message>
         <message>
-            <source>Noise reduction</source>
-            <translation>Шуды азайту</translation>
+            <source>Denoise</source>
+            <translation>Шусыздандыру</translation>
         </message>
         <message>
             <source>Selected device is not connected</source>
@@ -351,16 +351,16 @@
             <translation>жібереді</translation>
         </message>
         <message>
-            <source>Microphone gain</source>
-            <translation>Микрофонды күшейту</translation>
+            <source>Gain</source>
+            <translation>Күшейту</translation>
         </message>
         <message>
             <source>Not assigned</source>
             <translation>тағайындалмаған</translation>
         </message>
         <message>
-            <source>High cut</source>
-            <translation>Жоғары жиілікті кесу</translation>
+            <source>Lowpass</source>
+            <translation>Төменөткізгіш</translation>
         </message>
         <message>
             <source>Level audio automatically</source>

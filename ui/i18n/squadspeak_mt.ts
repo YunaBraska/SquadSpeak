@@ -239,8 +239,8 @@
     <context>
         <name>AudioSettings</name>
         <message>
-            <source>Echo cancellation</source>
-            <translation>Tneħħija tal-eku</translation>
+            <source>Echo</source>
+            <translation>Eku</translation>
         </message>
         <message>
             <source>Off</source>
@@ -291,8 +291,8 @@
             <translation>Neħħi t-tast</translation>
         </message>
         <message>
-            <source>Low cut</source>
-            <translation>Qatgħa baxxa</translation>
+            <source>Highpass</source>
+            <translation>Pass għoli</translation>
         </message>
         <message>
             <source>Microphone access is off</source>
@@ -339,8 +339,8 @@
             <translation>Attivazzjoni bil-vuċi</translation>
         </message>
         <message>
-            <source>Noise reduction</source>
-            <translation>Tnaqqis tal-istorbju</translation>
+            <source>Denoise</source>
+            <translation>Tnaqqis tal-ħoss</translation>
         </message>
         <message>
             <source>Selected device is not connected</source>
@@ -351,16 +351,16 @@
             <translation>Jittrażmetti</translation>
         </message>
         <message>
-            <source>Microphone gain</source>
-            <translation>Amplifikazzjoni tal-mikrofonu</translation>
+            <source>Gain</source>
+            <translation>Amplifikazzjoni</translation>
         </message>
         <message>
             <source>Not assigned</source>
             <translation>Mhux assenjat</translation>
         </message>
         <message>
-            <source>High cut</source>
-            <translation>Qtugħ għoli</translation>
+            <source>Lowpass</source>
+            <translation>Pass baxx</translation>
         </message>
         <message>
             <source>Level audio automatically</source>

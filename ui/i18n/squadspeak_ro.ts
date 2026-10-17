@@ -239,8 +239,8 @@
     <context>
         <name>AudioSettings</name>
         <message>
-            <source>Echo cancellation</source>
-            <translation>Anularea ecoului</translation>
+            <source>Echo</source>
+            <translation>Ecou</translation>
         </message>
         <message>
             <source>Off</source>
@@ -291,8 +291,8 @@
             <translation>Șterge tasta</translation>
         </message>
         <message>
-            <source>Low cut</source>
-            <translation>Tăierea frecvențelor joase</translation>
+            <source>Highpass</source>
+            <translation>Trece-sus</translation>
         </message>
         <message>
             <source>Microphone access is off</source>
@@ -339,8 +339,8 @@
             <translation>Microfon activat prin voce</translation>
         </message>
         <message>
-            <source>Noise reduction</source>
-            <translation>Reducerea zgomotului</translation>
+            <source>Denoise</source>
+            <translation>Antizgomot</translation>
         </message>
         <message>
             <source>Selected device is not connected</source>
@@ -351,16 +351,16 @@
             <translation>Ar transmite</translation>
         </message>
         <message>
-            <source>Microphone gain</source>
-            <translation>Câștigul microfonului</translation>
+            <source>Gain</source>
+            <translation>Amplificare</translation>
         </message>
         <message>
             <source>Not assigned</source>
             <translation>Nu este atribuit</translation>
         </message>
         <message>
-            <source>High cut</source>
-            <translation>Tăierea frecvențelor înalte</translation>
+            <source>Lowpass</source>
+            <translation>Trece-jos</translation>
         </message>
         <message>
             <source>Level audio automatically</source>

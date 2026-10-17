@@ -239,8 +239,8 @@
     <context>
         <name>AudioSettings</name>
         <message>
-            <source>Echo cancellation</source>
-            <translation>Bergmálsdeyfing</translation>
+            <source>Echo</source>
+            <translation>Bergmál</translation>
         </message>
         <message>
             <source>Off</source>
@@ -291,8 +291,8 @@
             <translation>Hreinsa takka</translation>
         </message>
         <message>
-            <source>Low cut</source>
-            <translation>Lágtíðni skorið</translation>
+            <source>Highpass</source>
+            <translation>Háhleypisía</translation>
         </message>
         <message>
             <source>Microphone access is off</source>
@@ -339,8 +339,8 @@
             <translation>Raddstýrður hljóðnemi</translation>
         </message>
         <message>
-            <source>Noise reduction</source>
-            <translation>Hávaðaminnkun</translation>
+            <source>Denoise</source>
+            <translation>Suðhreinsun</translation>
         </message>
         <message>
             <source>Selected device is not connected</source>
@@ -351,16 +351,16 @@
             <translation>Myndi senda</translation>
         </message>
         <message>
-            <source>Microphone gain</source>
-            <translation>Hljóðnema mögnun</translation>
+            <source>Gain</source>
+            <translation>Mögnun</translation>
         </message>
         <message>
             <source>Not assigned</source>
             <translation>Ekki úthlutað</translation>
         </message>
         <message>
-            <source>High cut</source>
-            <translation>Hátíðniklipping</translation>
+            <source>Lowpass</source>
+            <translation>Lághleypisía</translation>
         </message>
         <message>
             <source>Level audio automatically</source>

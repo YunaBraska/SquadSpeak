@@ -239,8 +239,8 @@
     <context>
         <name>AudioSettings</name>
         <message>
-            <source>Echo cancellation</source>
-            <translation>Anulimi i jehonës</translation>
+            <source>Echo</source>
+            <translation>Jehonë</translation>
         </message>
         <message>
             <source>Off</source>
@@ -291,8 +291,8 @@
             <translation>Pastro tastin</translation>
         </message>
         <message>
-            <source>Low cut</source>
-            <translation>Prerje e frekuencave të ulëta</translation>
+            <source>Highpass</source>
+            <translation>Kalues-lartë</translation>
         </message>
         <message>
             <source>Microphone access is off</source>
@@ -339,8 +339,8 @@
             <translation>Mikrofoni i aktivizuar me zë</translation>
         </message>
         <message>
-            <source>Noise reduction</source>
-            <translation>Reduktimi i zhurmës</translation>
+            <source>Denoise</source>
+            <translation>Ulje zhurme</translation>
         </message>
         <message>
             <source>Selected device is not connected</source>
@@ -351,16 +351,16 @@
             <translation>Do të transmetonte</translation>
         </message>
         <message>
-            <source>Microphone gain</source>
-            <translation>Përforcimi i mikrofonit</translation>
+            <source>Gain</source>
+            <translation>Përforcim</translation>
         </message>
         <message>
             <source>Not assigned</source>
             <translation>Nuk është caktuar</translation>
         </message>
         <message>
-            <source>High cut</source>
-            <translation>Prerje e frekuencave të larta</translation>
+            <source>Lowpass</source>
+            <translation>Kalues-ulët</translation>
         </message>
         <message>
             <source>Level audio automatically</source>

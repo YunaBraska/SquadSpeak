@@ -239,8 +239,8 @@
     <context>
         <name>AudioSettings</name>
         <message>
-            <source>Echo cancellation</source>
-            <translation>Cancelación de eco</translation>
+            <source>Echo</source>
+            <translation>Eco</translation>
         </message>
         <message>
             <source>Off</source>
@@ -291,8 +291,8 @@
             <translation>Borrar tecla</translation>
         </message>
         <message>
-            <source>Low cut</source>
-            <translation>Corte de graves</translation>
+            <source>Highpass</source>
+            <translation>Pasaaltos</translation>
         </message>
         <message>
             <source>Microphone access is off</source>
@@ -339,8 +339,8 @@
             <translation>Activación por voz</translation>
         </message>
         <message>
-            <source>Noise reduction</source>
-            <translation>Reducción de ruido</translation>
+            <source>Denoise</source>
+            <translation>Antirruido</translation>
         </message>
         <message>
             <source>Selected device is not connected</source>
@@ -351,16 +351,16 @@
             <translation>Transmitiría</translation>
         </message>
         <message>
-            <source>Microphone gain</source>
-            <translation>Ganancia del micrófono</translation>
+            <source>Gain</source>
+            <translation>Ganancia</translation>
         </message>
         <message>
             <source>Not assigned</source>
             <translation>Sin asignar</translation>
         </message>
         <message>
-            <source>High cut</source>
-            <translation>Corte de agudos</translation>
+            <source>Lowpass</source>
+            <translation>Pasabajos</translation>
         </message>
         <message>
             <source>Level audio automatically</source>

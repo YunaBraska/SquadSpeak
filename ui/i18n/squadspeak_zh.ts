@@ -239,8 +239,8 @@
     <context>
         <name>AudioSettings</name>
         <message>
-            <source>Echo cancellation</source>
-            <translation>回声消除</translation>
+            <source>Echo</source>
+            <translation>回声</translation>
         </message>
         <message>
             <source>Off</source>
@@ -291,8 +291,8 @@
             <translation>清除按键</translation>
         </message>
         <message>
-            <source>Low cut</source>
-            <translation>低频切除</translation>
+            <source>Highpass</source>
+            <translation>高通</translation>
         </message>
         <message>
             <source>Microphone access is off</source>
@@ -339,7 +339,7 @@
             <translation>语音激活</translation>
         </message>
         <message>
-            <source>Noise reduction</source>
+            <source>Denoise</source>
             <translation>降噪</translation>
         </message>
         <message>
@@ -351,16 +351,16 @@
             <translation>将发送</translation>
         </message>
         <message>
-            <source>Microphone gain</source>
-            <translation>麦克风增益</translation>
+            <source>Gain</source>
+            <translation>增益</translation>
         </message>
         <message>
             <source>Not assigned</source>
             <translation>未分配</translation>
         </message>
         <message>
-            <source>High cut</source>
-            <translation>高频切除</translation>
+            <source>Lowpass</source>
+            <translation>低通</translation>
         </message>
         <message>
             <source>Level audio automatically</source>

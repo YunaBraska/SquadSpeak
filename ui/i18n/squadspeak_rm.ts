@@ -239,8 +239,8 @@
     <context>
         <name>AudioSettings</name>
         <message>
-            <source>Echo cancellation</source>
-            <translation>Suppressiun d'eco</translation>
+            <source>Echo</source>
+            <translation>Eco</translation>
         </message>
         <message>
             <source>Off</source>
@@ -291,8 +291,8 @@
             <translation>Stizzar la tasta</translation>
         </message>
         <message>
-            <source>Low cut</source>
-            <translation>Tagl da bassas frequenzas</translation>
+            <source>Highpass</source>
+            <translation>Tagl bass</translation>
         </message>
         <message>
             <source>Microphone access is off</source>
@@ -339,8 +339,8 @@
             <translation>Activaziun cun la vusch</translation>
         </message>
         <message>
-            <source>Noise reduction</source>
-            <translation>Suppressiun da la ramur</translation>
+            <source>Denoise</source>
+            <translation>Reducir ramur</translation>
         </message>
         <message>
             <source>Selected device is not connected</source>
@@ -351,16 +351,16 @@
             <translation>Transferiment</translation>
         </message>
         <message>
-            <source>Microphone gain</source>
-            <translation>Rinforzament dal microfon</translation>
+            <source>Gain</source>
+            <translation>Rinforzament</translation>
         </message>
         <message>
             <source>Not assigned</source>
             <translation>Betg attribuì</translation>
         </message>
         <message>
-            <source>High cut</source>
-            <translation>Tagl da autas frequenzas</translation>
+            <source>Lowpass</source>
+            <translation>Tagl aut</translation>
         </message>
         <message>
             <source>Level audio automatically</source>

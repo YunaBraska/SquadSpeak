@@ -239,8 +239,8 @@
     <context>
         <name>AudioSettings</name>
         <message>
-            <source>Echo cancellation</source>
-            <translation>Cire amon murya</translation>
+            <source>Echo</source>
+            <translation>Amo</translation>
         </message>
         <message>
             <source>Off</source>
@@ -291,8 +291,8 @@
             <translation>Goge maɓalli</translation>
         </message>
         <message>
-            <source>Low cut</source>
-            <translation>Tacewar mitoci kasa</translation>
+            <source>Highpass</source>
+            <translation>Yanke ƙasa</translation>
         </message>
         <message>
             <source>Microphone access is off</source>
@@ -339,8 +339,8 @@
             <translation>Masajar muryar ta kunna ta atomatik</translation>
         </message>
         <message>
-            <source>Noise reduction</source>
-            <translation>Ƙara ɗaunar murya</translation>
+            <source>Denoise</source>
+            <translation>Rage hayaniya</translation>
         </message>
         <message>
             <source>Selected device is not connected</source>
@@ -351,16 +351,16 @@
             <translation>Zai aiko</translation>
         </message>
         <message>
-            <source>Microphone gain</source>
-            <translation>Ƙarfin masajar muryar</translation>
+            <source>Gain</source>
+            <translation>Ƙarfafawa</translation>
         </message>
         <message>
             <source>Not assigned</source>
             <translation>Ba'a yi ainihi ba</translation>
         </message>
         <message>
-            <source>High cut</source>
-            <translation>Tacewar mitoci sama</translation>
+            <source>Lowpass</source>
+            <translation>Yanke sama</translation>
         </message>
         <message>
             <source>Level audio automatically</source>

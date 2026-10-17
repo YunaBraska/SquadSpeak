@@ -239,8 +239,8 @@
     <context>
         <name>AudioSettings</name>
         <message>
-            <source>Echo cancellation</source>
-            <translation>Khử tiếng vọng</translation>
+            <source>Echo</source>
+            <translation>Vọng</translation>
         </message>
         <message>
             <source>Off</source>
@@ -291,8 +291,8 @@
             <translation>Xóa phím</translation>
         </message>
         <message>
-            <source>Low cut</source>
-            <translation>Cắt tần số thấp</translation>
+            <source>Highpass</source>
+            <translation>Thông cao</translation>
         </message>
         <message>
             <source>Microphone access is off</source>
@@ -339,7 +339,7 @@
             <translation>Kích hoạt bằng giọng nói</translation>
         </message>
         <message>
-            <source>Noise reduction</source>
+            <source>Denoise</source>
             <translation>Khử nhiễu</translation>
         </message>
         <message>
@@ -351,16 +351,16 @@
             <translation>Sẽ truyền</translation>
         </message>
         <message>
-            <source>Microphone gain</source>
-            <translation>Gain mic</translation>
+            <source>Gain</source>
+            <translation>Độ lợi</translation>
         </message>
         <message>
             <source>Not assigned</source>
             <translation>Chưa gán</translation>
         </message>
         <message>
-            <source>High cut</source>
-            <translation>Cắt tần số cao</translation>
+            <source>Lowpass</source>
+            <translation>Thông thấp</translation>
         </message>
         <message>
             <source>Level audio automatically</source>

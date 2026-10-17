@@ -239,8 +239,8 @@
     <context>
         <name>AudioSettings</name>
         <message>
-            <source>Echo cancellation</source>
-            <translation>Yankı giderme</translation>
+            <source>Echo</source>
+            <translation>Yankı</translation>
         </message>
         <message>
             <source>Off</source>
@@ -291,8 +291,8 @@
             <translation>Tuşu temizle</translation>
         </message>
         <message>
-            <source>Low cut</source>
-            <translation>Alt kesim</translation>
+            <source>Highpass</source>
+            <translation>Yüksekgeçiren</translation>
         </message>
         <message>
             <source>Microphone access is off</source>
@@ -339,8 +339,8 @@
             <translation>Sesle etkinleştirme</translation>
         </message>
         <message>
-            <source>Noise reduction</source>
-            <translation>Gürültü azaltma</translation>
+            <source>Denoise</source>
+            <translation>Gürültü giderme</translation>
         </message>
         <message>
             <source>Selected device is not connected</source>
@@ -351,16 +351,16 @@
             <translation>Ses iletilir</translation>
         </message>
         <message>
-            <source>Microphone gain</source>
-            <translation>Mikrofon kazancı</translation>
+            <source>Gain</source>
+            <translation>Kazanç</translation>
         </message>
         <message>
             <source>Not assigned</source>
             <translation>Atanmamış</translation>
         </message>
         <message>
-            <source>High cut</source>
-            <translation>Üst kesim</translation>
+            <source>Lowpass</source>
+            <translation>Alçakgeçiren</translation>
         </message>
         <message>
             <source>Level audio automatically</source>

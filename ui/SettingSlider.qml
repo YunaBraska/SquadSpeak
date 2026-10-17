@@ -32,8 +32,8 @@ GridLayout {
         Layout.row: 0; Layout.column: 0
         Layout.rowSpan: setting.toggleAvailable ? 2 : 1
         Layout.fillWidth: true
-        Layout.preferredWidth: setting.toggleAvailable ? 160 : -1
-        Layout.maximumWidth: setting.toggleAvailable ? 160 : Infinity
+        Layout.preferredWidth: setting.toggleAvailable ? 112 : -1
+        Layout.maximumWidth: setting.toggleAvailable ? 112 : Infinity
         wrapMode: Text.Wrap
     }
     SettingToggle {

@@ -239,8 +239,8 @@
     <context>
         <name>AudioSettings</name>
         <message>
-            <source>Echo cancellation</source>
-            <translation>エコー除去</translation>
+            <source>Echo</source>
+            <translation>エコー</translation>
         </message>
         <message>
             <source>Off</source>
@@ -291,8 +291,8 @@
             <translation>キーを消去</translation>
         </message>
         <message>
-            <source>Low cut</source>
-            <translation>低域カット</translation>
+            <source>Highpass</source>
+            <translation>ハイパス</translation>
         </message>
         <message>
             <source>Microphone access is off</source>
@@ -339,8 +339,8 @@
             <translation>音声アクティベーション</translation>
         </message>
         <message>
-            <source>Noise reduction</source>
-            <translation>ノイズ抑制</translation>
+            <source>Denoise</source>
+            <translation>ノイズ除去</translation>
         </message>
         <message>
             <source>Selected device is not connected</source>
@@ -351,16 +351,16 @@
             <translation>送信します</translation>
         </message>
         <message>
-            <source>Microphone gain</source>
-            <translation>マイクゲイン</translation>
+            <source>Gain</source>
+            <translation>ゲイン</translation>
         </message>
         <message>
             <source>Not assigned</source>
             <translation>未割り当て</translation>
         </message>
         <message>
-            <source>High cut</source>
-            <translation>高域カット</translation>
+            <source>Lowpass</source>
+            <translation>ローパス</translation>
         </message>
         <message>
             <source>Level audio automatically</source>

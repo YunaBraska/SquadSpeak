@@ -239,8 +239,8 @@
     <context>
         <name>AudioSettings</name>
         <message>
-            <source>Echo cancellation</source>
-            <translation>Cealú macalla</translation>
+            <source>Echo</source>
+            <translation>Macalla</translation>
         </message>
         <message>
             <source>Off</source>
@@ -291,8 +291,8 @@
             <translation>Glan an eochair</translation>
         </message>
         <message>
-            <source>Low cut</source>
-            <translation>Gearradh íseal-minicíochta</translation>
+            <source>Highpass</source>
+            <translation>Gearradh íseal</translation>
         </message>
         <message>
             <source>Microphone access is off</source>
@@ -339,7 +339,7 @@
             <translation>Micreafón gníomhachtaithe gutha</translation>
         </message>
         <message>
-            <source>Noise reduction</source>
+            <source>Denoise</source>
             <translation>Laghdú torainn</translation>
         </message>
         <message>
@@ -351,16 +351,16 @@
             <translation>Tharchuirfeadh</translation>
         </message>
         <message>
-            <source>Microphone gain</source>
-            <translation>Aimpliú micreafón</translation>
+            <source>Gain</source>
+            <translation>Aimpliú</translation>
         </message>
         <message>
             <source>Not assigned</source>
             <translation>Gan sannadh</translation>
         </message>
         <message>
-            <source>High cut</source>
-            <translation>Gearradh ard-minicíochta</translation>
+            <source>Lowpass</source>
+            <translation>Gearradh ard</translation>
         </message>
         <message>
             <source>Level audio automatically</source>

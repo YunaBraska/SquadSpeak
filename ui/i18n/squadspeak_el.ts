@@ -239,8 +239,8 @@
     <context>
         <name>AudioSettings</name>
         <message>
-            <source>Echo cancellation</source>
-            <translation>Ακύρωση ηχούς</translation>
+            <source>Echo</source>
+            <translation>Ηχώ</translation>
         </message>
         <message>
             <source>Off</source>
@@ -291,8 +291,8 @@
             <translation>Εκκαθάριση πλήκτρου</translation>
         </message>
         <message>
-            <source>Low cut</source>
-            <translation>Κοπή χαμηλής συχνότητας</translation>
+            <source>Highpass</source>
+            <translation>Υψιπερατό</translation>
         </message>
         <message>
             <source>Microphone access is off</source>
@@ -339,8 +339,8 @@
             <translation>Μικρόφωνο που ενεργοποιείται με φωνή</translation>
         </message>
         <message>
-            <source>Noise reduction</source>
-            <translation>Μείωση θορύβου</translation>
+            <source>Denoise</source>
+            <translation>Αποθορυβοποίηση</translation>
         </message>
         <message>
             <source>Selected device is not connected</source>
@@ -351,16 +351,16 @@
             <translation>Θα μετέδιδε</translation>
         </message>
         <message>
-            <source>Microphone gain</source>
-            <translation>Ενίσχυση μικροφώνου</translation>
+            <source>Gain</source>
+            <translation>Ενίσχυση</translation>
         </message>
         <message>
             <source>Not assigned</source>
             <translation>Δεν έχει ανατεθεί</translation>
         </message>
         <message>
-            <source>High cut</source>
-            <translation>Κοπή υψηλής συχνότητας</translation>
+            <source>Lowpass</source>
+            <translation>Χαμηλοπερατό</translation>
         </message>
         <message>
             <source>Level audio automatically</source>

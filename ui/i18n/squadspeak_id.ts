@@ -239,8 +239,8 @@
     <context>
         <name>AudioSettings</name>
         <message>
-            <source>Echo cancellation</source>
-            <translation>Pembatalan gema</translation>
+            <source>Echo</source>
+            <translation>Gema</translation>
         </message>
         <message>
             <source>Off</source>
@@ -291,8 +291,8 @@
             <translation>Hapus tombol</translation>
         </message>
         <message>
-            <source>Low cut</source>
-            <translation>Potong frekuensi rendah</translation>
+            <source>Highpass</source>
+            <translation>Lolos-tinggi</translation>
         </message>
         <message>
             <source>Microphone access is off</source>
@@ -339,8 +339,8 @@
             <translation>Aktivasi suara</translation>
         </message>
         <message>
-            <source>Noise reduction</source>
-            <translation>Pengurangan noise</translation>
+            <source>Denoise</source>
+            <translation>Peredam derau</translation>
         </message>
         <message>
             <source>Selected device is not connected</source>
@@ -351,16 +351,16 @@
             <translation>Akan mentransmisikan</translation>
         </message>
         <message>
-            <source>Microphone gain</source>
-            <translation>Gain mikrofon</translation>
+            <source>Gain</source>
+            <translation>Penguatan</translation>
         </message>
         <message>
             <source>Not assigned</source>
             <translation>Belum ditetapkan</translation>
         </message>
         <message>
-            <source>High cut</source>
-            <translation>Potong frekuensi tinggi</translation>
+            <source>Lowpass</source>
+            <translation>Lolos-rendah</translation>
         </message>
         <message>
             <source>Level audio automatically</source>

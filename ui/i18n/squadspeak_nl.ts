@@ -239,8 +239,8 @@
     <context>
         <name>AudioSettings</name>
         <message>
-            <source>Echo cancellation</source>
-            <translation>Echo-onderdrukking</translation>
+            <source>Echo</source>
+            <translation>Echo</translation>
         </message>
         <message>
             <source>Off</source>
@@ -291,8 +291,8 @@
             <translation>Toets wissen</translation>
         </message>
         <message>
-            <source>Low cut</source>
-            <translation>Lage tonen afsnijden</translation>
+            <source>Highpass</source>
+            <translation>Hoogdoorlaat</translation>
         </message>
         <message>
             <source>Microphone access is off</source>
@@ -339,8 +339,8 @@
             <translation>Spraakactivatie</translation>
         </message>
         <message>
-            <source>Noise reduction</source>
-            <translation>Ruisonderdrukking</translation>
+            <source>Denoise</source>
+            <translation>Ruisfilter</translation>
         </message>
         <message>
             <source>Selected device is not connected</source>
@@ -351,16 +351,16 @@
             <translation>Zou uitzenden</translation>
         </message>
         <message>
-            <source>Microphone gain</source>
-            <translation>Microfoongain</translation>
+            <source>Gain</source>
+            <translation>Versterking</translation>
         </message>
         <message>
             <source>Not assigned</source>
             <translation>Niet toegewezen</translation>
         </message>
         <message>
-            <source>High cut</source>
-            <translation>Hoge tonen afsnijden</translation>
+            <source>Lowpass</source>
+            <translation>Laagdoorlaat</translation>
         </message>
         <message>
             <source>Level audio automatically</source>

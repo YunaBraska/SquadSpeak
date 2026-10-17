@@ -239,8 +239,8 @@
     <context>
         <name>AudioSettings</name>
         <message>
-            <source>Echo cancellation</source>
-            <translation>إلغاء الصدى</translation>
+            <source>Echo</source>
+            <translation>صدى</translation>
         </message>
         <message>
             <source>Off</source>
@@ -291,8 +291,8 @@
             <translation>مسح المفتاح</translation>
         </message>
         <message>
-            <source>Low cut</source>
-            <translation>خفض الترددات المنخفضة</translation>
+            <source>Highpass</source>
+            <translation>تمرير عالٍ</translation>
         </message>
         <message>
             <source>Microphone access is off</source>
@@ -339,8 +339,8 @@
             <translation>التنشيط بالصوت</translation>
         </message>
         <message>
-            <source>Noise reduction</source>
-            <translation>تقليل الضوضاء</translation>
+            <source>Denoise</source>
+            <translation>تنقية</translation>
         </message>
         <message>
             <source>Selected device is not connected</source>
@@ -351,16 +351,16 @@
             <translation>سيتم الإرسال</translation>
         </message>
         <message>
-            <source>Microphone gain</source>
-            <translation>كسب الميكروفون</translation>
+            <source>Gain</source>
+            <translation>كسب</translation>
         </message>
         <message>
             <source>Not assigned</source>
             <translation>غير معين</translation>
         </message>
         <message>
-            <source>High cut</source>
-            <translation>خفض الترددات العالية</translation>
+            <source>Lowpass</source>
+            <translation>تمرير منخفض</translation>
         </message>
         <message>
             <source>Level audio automatically</source>

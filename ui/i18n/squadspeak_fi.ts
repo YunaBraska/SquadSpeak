@@ -239,8 +239,8 @@
     <context>
         <name>AudioSettings</name>
         <message>
-            <source>Echo cancellation</source>
-            <translation>Kaiunpoisto</translation>
+            <source>Echo</source>
+            <translation>Kaiku</translation>
         </message>
         <message>
             <source>Off</source>
@@ -291,8 +291,8 @@
             <translation>Poista näppäin</translation>
         </message>
         <message>
-            <source>Low cut</source>
-            <translation>Alataajuuksien leikkaus</translation>
+            <source>Highpass</source>
+            <translation>Ylipäästö</translation>
         </message>
         <message>
             <source>Microphone access is off</source>
@@ -339,8 +339,8 @@
             <translation>Puheaktivointi</translation>
         </message>
         <message>
-            <source>Noise reduction</source>
-            <translation>Kohinanvaimennus</translation>
+            <source>Denoise</source>
+            <translation>Kohinanpoisto</translation>
         </message>
         <message>
             <source>Selected device is not connected</source>
@@ -351,16 +351,16 @@
             <translation>Lähettäisi</translation>
         </message>
         <message>
-            <source>Microphone gain</source>
-            <translation>Mikrofonin vahvistus</translation>
+            <source>Gain</source>
+            <translation>Vahvistus</translation>
         </message>
         <message>
             <source>Not assigned</source>
             <translation>Ei määritetty</translation>
         </message>
         <message>
-            <source>High cut</source>
-            <translation>Ylätaajuuksien leikkaus</translation>
+            <source>Lowpass</source>
+            <translation>Alipäästö</translation>
         </message>
         <message>
             <source>Level audio automatically</source>

@@ -239,8 +239,8 @@
     <context>
         <name>AudioSettings</name>
         <message>
-            <source>Echo cancellation</source>
-            <translation>Ekkokansellering</translation>
+            <source>Echo</source>
+            <translation>Ekko</translation>
         </message>
         <message>
             <source>Off</source>
@@ -291,8 +291,8 @@
             <translation>Fjern tast</translation>
         </message>
         <message>
-            <source>Low cut</source>
-            <translation>Lavfrekvent kutt</translation>
+            <source>Highpass</source>
+            <translation>Høypass</translation>
         </message>
         <message>
             <source>Microphone access is off</source>
@@ -339,8 +339,8 @@
             <translation>Stemmeaktivert mikrofon</translation>
         </message>
         <message>
-            <source>Noise reduction</source>
-            <translation>Støyreduksjon</translation>
+            <source>Denoise</source>
+            <translation>Støyfilter</translation>
         </message>
         <message>
             <source>Selected device is not connected</source>
@@ -351,16 +351,16 @@
             <translation>Ville sende</translation>
         </message>
         <message>
-            <source>Microphone gain</source>
-            <translation>Mikrofonforsterkning</translation>
+            <source>Gain</source>
+            <translation>Forsterkning</translation>
         </message>
         <message>
             <source>Not assigned</source>
             <translation>Ikke tildelt</translation>
         </message>
         <message>
-            <source>High cut</source>
-            <translation>Høyfrekvent kutt</translation>
+            <source>Lowpass</source>
+            <translation>Lavpass</translation>
         </message>
         <message>
             <source>Level audio automatically</source>

@@ -239,8 +239,8 @@
     <context>
         <name>AudioSettings</name>
         <message>
-            <source>Echo cancellation</source>
-            <translation>প্রতিধ্বনি বাতিল</translation>
+            <source>Echo</source>
+            <translation>প্রতিধ্বনি</translation>
         </message>
         <message>
             <source>Off</source>
@@ -291,8 +291,8 @@
             <translation>কী মুছুন</translation>
         </message>
         <message>
-            <source>Low cut</source>
-            <translation>কম ফ্রিকোয়েন্সি কাট</translation>
+            <source>Highpass</source>
+            <translation>হাইপাস</translation>
         </message>
         <message>
             <source>Microphone access is off</source>
@@ -339,8 +339,8 @@
             <translation>ভয়েস-অ্যাক্টিভেটেড মাইক্রোফোন</translation>
         </message>
         <message>
-            <source>Noise reduction</source>
-            <translation>শব্দ হ্রাস</translation>
+            <source>Denoise</source>
+            <translation>শব্দহ্রাস</translation>
         </message>
         <message>
             <source>Selected device is not connected</source>
@@ -351,16 +351,16 @@
             <translation>প্রেরণ করা হবে</translation>
         </message>
         <message>
-            <source>Microphone gain</source>
-            <translation>মাইক্রোফোন পরিবর্ধন</translation>
+            <source>Gain</source>
+            <translation>পরিবর্ধন</translation>
         </message>
         <message>
             <source>Not assigned</source>
             <translation>বরাদ্দ করা হয়নি</translation>
         </message>
         <message>
-            <source>High cut</source>
-            <translation>উচ্চ-ফ্রিকোয়েন্সি কাট</translation>
+            <source>Lowpass</source>
+            <translation>লোপাস</translation>
         </message>
         <message>
             <source>Level audio automatically</source>

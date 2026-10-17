@@ -239,8 +239,8 @@
     <context>
         <name>AudioSettings</name>
         <message>
-            <source>Echo cancellation</source>
-            <translation>ప్రతిధ్వని తొలగింపు</translation>
+            <source>Echo</source>
+            <translation>ప్రతిధ్వని</translation>
         </message>
         <message>
             <source>Off</source>
@@ -291,8 +291,8 @@
             <translation>కీని తొలగించండి</translation>
         </message>
         <message>
-            <source>Low cut</source>
-            <translation>తక్కువ పౌనఃపున్యాల కట్</translation>
+            <source>Highpass</source>
+            <translation>హైపాస్</translation>
         </message>
         <message>
             <source>Microphone access is off</source>
@@ -339,8 +339,8 @@
             <translation>వాయిస్ యాక్టివేషన్</translation>
         </message>
         <message>
-            <source>Noise reduction</source>
-            <translation>శబ్ద తగ్గింపు</translation>
+            <source>Denoise</source>
+            <translation>శబ్దతగ్గింపు</translation>
         </message>
         <message>
             <source>Selected device is not connected</source>
@@ -351,16 +351,16 @@
             <translation>పంపబడుతుంది</translation>
         </message>
         <message>
-            <source>Microphone gain</source>
-            <translation>మైక్రోఫోన్ గెయిన్</translation>
+            <source>Gain</source>
+            <translation>గెయిన్</translation>
         </message>
         <message>
             <source>Not assigned</source>
             <translation>నిర్వచించబడలేదు</translation>
         </message>
         <message>
-            <source>High cut</source>
-            <translation>అధిక పౌనఃపున్యాల కట్</translation>
+            <source>Lowpass</source>
+            <translation>లోపాస్</translation>
         </message>
         <message>
             <source>Level audio automatically</source>

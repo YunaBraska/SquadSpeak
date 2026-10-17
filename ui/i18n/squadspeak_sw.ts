@@ -239,8 +239,8 @@
     <context>
         <name>AudioSettings</name>
         <message>
-            <source>Echo cancellation</source>
-            <translation>Kuondoa mwangwi</translation>
+            <source>Echo</source>
+            <translation>Mwangwi</translation>
         </message>
         <message>
             <source>Off</source>
@@ -291,7 +291,7 @@
             <translation>Futa kitufe</translation>
         </message>
         <message>
-            <source>Low cut</source>
+            <source>Highpass</source>
             <translation>Kata masafa ya chini</translation>
         </message>
         <message>
@@ -339,8 +339,8 @@
             <translation>Uanzishaji wa sauti</translation>
         </message>
         <message>
-            <source>Noise reduction</source>
-            <translation>Kupunguza kelele</translation>
+            <source>Denoise</source>
+            <translation>Punguza kelele</translation>
         </message>
         <message>
             <source>Selected device is not connected</source>
@@ -351,15 +351,15 @@
             <translation>Itatuma mawasilisho</translation>
         </message>
         <message>
-            <source>Microphone gain</source>
-            <translation>Ongezeko la kipaza sauti</translation>
+            <source>Gain</source>
+            <translation>Ukuzaji</translation>
         </message>
         <message>
             <source>Not assigned</source>
             <translation>Hujuma</translation>
         </message>
         <message>
-            <source>High cut</source>
+            <source>Lowpass</source>
             <translation>Kata masafa ya juu</translation>
         </message>
         <message>

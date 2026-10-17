@@ -239,8 +239,8 @@
     <context>
         <name>AudioSettings</name>
         <message>
-            <source>Echo cancellation</source>
-            <translation>Potlačení ozvěny</translation>
+            <source>Echo</source>
+            <translation>Ozvěna</translation>
         </message>
         <message>
             <source>Off</source>
@@ -291,8 +291,8 @@
             <translation>Vymazat klávesu</translation>
         </message>
         <message>
-            <source>Low cut</source>
-            <translation>Ořez nízkých frekvencí</translation>
+            <source>Highpass</source>
+            <translation>Horní propust</translation>
         </message>
         <message>
             <source>Microphone access is off</source>
@@ -339,8 +339,8 @@
             <translation>Aktivace hlasem</translation>
         </message>
         <message>
-            <source>Noise reduction</source>
-            <translation>Potlačení šumu</translation>
+            <source>Denoise</source>
+            <translation>Odšumění</translation>
         </message>
         <message>
             <source>Selected device is not connected</source>
@@ -351,16 +351,16 @@
             <translation>Odesílalo by</translation>
         </message>
         <message>
-            <source>Microphone gain</source>
-            <translation>Zesílení mikrofonu</translation>
+            <source>Gain</source>
+            <translation>Zesílení</translation>
         </message>
         <message>
             <source>Not assigned</source>
             <translation>Neuvedeno</translation>
         </message>
         <message>
-            <source>High cut</source>
-            <translation>Ořez vysokých frekvencí</translation>
+            <source>Lowpass</source>
+            <translation>Dolní propust</translation>
         </message>
         <message>
             <source>Level audio automatically</source>

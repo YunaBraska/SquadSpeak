@@ -239,8 +239,8 @@
     <context>
         <name>AudioSettings</name>
         <message>
-            <source>Echo cancellation</source>
-            <translation>Echoënnerdréckung</translation>
+            <source>Echo</source>
+            <translation>Echo</translation>
         </message>
         <message>
             <source>Off</source>
@@ -291,8 +291,8 @@
             <translation>Tast läschen</translation>
         </message>
         <message>
-            <source>Low cut</source>
-            <translation>Niddereg-Frequenz Schnëtt</translation>
+            <source>Highpass</source>
+            <translation>Héichpass</translation>
         </message>
         <message>
             <source>Microphone access is off</source>
@@ -339,8 +339,8 @@
             <translation>Stëmm-aktivéiert Mikro</translation>
         </message>
         <message>
-            <source>Noise reduction</source>
-            <translation>Kaméidi Reduktioun</translation>
+            <source>Denoise</source>
+            <translation>Kaméidifilter</translation>
         </message>
         <message>
             <source>Selected device is not connected</source>
@@ -351,16 +351,16 @@
             <translation>Géif iwwerdroen</translation>
         </message>
         <message>
-            <source>Microphone gain</source>
-            <translation>Mikrofonverstäerkung</translation>
+            <source>Gain</source>
+            <translation>Verstäerkung</translation>
         </message>
         <message>
             <source>Not assigned</source>
             <translation>Net zougewisen</translation>
         </message>
         <message>
-            <source>High cut</source>
-            <translation>Héichfrequenz Schnëtt</translation>
+            <source>Lowpass</source>
+            <translation>Déifpass</translation>
         </message>
         <message>
             <source>Level audio automatically</source>

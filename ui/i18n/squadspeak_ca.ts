@@ -239,8 +239,8 @@
     <context>
         <name>AudioSettings</name>
         <message>
-            <source>Echo cancellation</source>
-            <translation>Cancel·lació d'eco</translation>
+            <source>Echo</source>
+            <translation>Eco</translation>
         </message>
         <message>
             <source>Off</source>
@@ -291,8 +291,8 @@
             <translation>Esborra la tecla</translation>
         </message>
         <message>
-            <source>Low cut</source>
-            <translation>Retall de freqüències baixes</translation>
+            <source>Highpass</source>
+            <translation>Passaalt</translation>
         </message>
         <message>
             <source>Microphone access is off</source>
@@ -339,8 +339,8 @@
             <translation>Micròfon activat per veu</translation>
         </message>
         <message>
-            <source>Noise reduction</source>
-            <translation>Reducció de soroll</translation>
+            <source>Denoise</source>
+            <translation>Reduir soroll</translation>
         </message>
         <message>
             <source>Selected device is not connected</source>
@@ -351,16 +351,16 @@
             <translation>transmetria</translation>
         </message>
         <message>
-            <source>Microphone gain</source>
-            <translation>Guany del micròfon</translation>
+            <source>Gain</source>
+            <translation>Guany</translation>
         </message>
         <message>
             <source>Not assigned</source>
             <translation>No assignat</translation>
         </message>
         <message>
-            <source>High cut</source>
-            <translation>Retall de freqüències altes</translation>
+            <source>Lowpass</source>
+            <translation>Passabaix</translation>
         </message>
         <message>
             <source>Level audio automatically</source>
