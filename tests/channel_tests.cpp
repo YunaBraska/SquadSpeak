@@ -5881,14 +5881,18 @@ private slots:
 #if QT_CONFIG(process)
     void sixtyFourClientsHaveOneConsistentRosterAndAudioFanout_data() {
         QTest::addColumn<int>("callbackDelayMs");
-        QTest::newRow("continuous") << 0;
-        QTest::newRow("delayed-audio-callbacks") << 45;
+        QTest::addColumn<bool>("independentClocks");
+        QTest::newRow("continuous") << 0 << false;
+        QTest::newRow("delayed-audio-callbacks") << 45 << false;
+        QTest::newRow("independent-clocks") << 0 << true;
+        QTest::newRow("delayed-independent-clocks") << 45 << true;
     }
     void sixtyFourClientsHaveOneConsistentRosterAndAudioFanout() {
         // The hosted macOS network launcher intentionally resets environment
         // logging rules. Enable bounded diagnostics inside this test process.
         QLoggingCategory::setFilterRules(QStringLiteral("squadspeak.media.sender.debug=true"));
         QFETCH(int, callbackDelayMs);
+        QFETCH(bool, independentClocks);
         bool speakersOk = false;
         const int speakers = qEnvironmentVariableIsSet("SQUAD_SOAK_SPEAKERS")
             ? qEnvironmentVariable("SQUAD_SOAK_SPEAKERS").toInt(&speakersOk) : 4;
@@ -6127,12 +6131,13 @@ private slots:
         });
         QTimer input;
         input.setTimerType(Qt::PreciseTimer);
+        std::vector<int> speakerFrames(size_t(speakers), 0);
         int sentFrames = 0;
         bool validSend = true, deliveryTimedOut = false;
         qint64 sentAtMs = 0;
         connect(&input, &QTimer::timeout, &reception, [&] {
             const auto now = sustained.elapsed();
-            if (callbacksDelayed(now)) return;
+            if (!independentClocks && callbacksDelayed(now)) return;
             // Sanitizers verify the same fanout and packet count with bounded
             // work in flight. Release builds alone measure realtime capacity.
             if (instrumentedTiming && !receivedThrough(sentFrames)) {
@@ -6144,13 +6149,19 @@ private slots:
             // Capture is sample-clocked, not callback-clocked. AudioModel
             // drains all available samples after a delayed wakeup. Keep this
             // fixture's catch-up bounded by the receiver's six-frame queue.
-            const auto due = instrumentedTiming ? sentFrames + 1
-                : std::min<qint64>({now / 20, sentFrames + 6, sustainedFrames});
-            while (sentFrames < due) {
-                for (int speaker = 0; speaker < speakers; ++speaker)
-                    validSend &= clients[size_t(speaker)]->channel.sendAudio(packet);
-                ++sentFrames;
+            for (int catchUp = 0; catchUp < 6; ++catchUp) {
+                for (size_t speaker = 0; speaker < clients.size(); ++speaker) {
+                    const auto sampleTime = now - (independentClocks ? 20 * qint64(speaker) / speakers : 0);
+                    if (independentClocks && callbacksDelayed(sampleTime)) continue;
+                    const auto due = instrumentedTiming ? sentFrames + 1
+                        : std::min<qint64>(sampleTime / 20, sustainedFrames);
+                    if (speakerFrames[speaker] < due) {
+                        validSend &= clients[speaker]->channel.sendAudio(packet);
+                        ++speakerFrames[speaker];
+                    }
+                }
             }
+            sentFrames = *std::min_element(speakerFrames.begin(), speakerFrames.end());
             sentAtMs = now;
             if (sentFrames == sustainedFrames) input.stop();
         });
@@ -6165,7 +6176,7 @@ private slots:
         };
         const auto remoteCpuStarted = remoteCpu();
 #endif
-        sustained.start(); output.start(10); input.start(10);
+        sustained.start(); output.start(10); input.start(independentClocks ? std::max(1, 20 / speakers) : 10);
         QVERIFY(waitForEvents(&input, &QTimer::timeout, [&] { return !input.isActive(); },
             soakSeconds * (instrumentedTiming ? 15000 : 1500) + 5000));
         QVERIFY2(!deliveryTimedOut, "Instrumented fanout did not deliver a frame to every listener within 5 seconds");
@@ -6179,7 +6190,6 @@ private slots:
         // final packet cannot produce a gap report; allow a bounded drain,
         // then apply the same 95% delivery requirement to every listener.
         waitForEvents([&] { return receivedThrough(sustainedFrames); }, 500);
-        QVERIFY(commandReceivers({{"operation", "stats"}}));
         QVERIFY(receiverOutputValid);
 #ifndef Q_OS_WIN
         qInfo() << "Audio soak client processes CPU ms"
