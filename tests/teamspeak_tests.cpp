@@ -583,6 +583,65 @@ private slots:
         QCOMPARE(received.size(), 2);
     }
 
+    void voicePlaybackRecoversAfterPacketLoss_data() {
+        QTest::addColumn<int>("lost");
+        QTest::addColumn<int>("firstSequence");
+        QTest::newRow("continuous") << 0 << 100;
+        QTest::newRow("six-lost") << 6 << 100;
+        QTest::newRow("seven-lost") << 7 << 100;
+        QTest::newRow("ten-lost") << 10 << 100;
+        QTest::newRow("fifty-lost") << 50 << 100;
+        QTest::newRow("sequence-wrap") << 10 << 65530;
+    }
+
+    void voicePlaybackRecoversAfterPacketLoss() {
+        QFETCH(int, lost);
+        QFETCH(int, firstSequence);
+        resetFake(); fakeEvents.enqueue(stateEvent(true));
+        QTemporaryDir dir;
+        VoiceSession session(dir.filePath("session"));
+        LocalChannel channel(session, dir.filePath("channel"), TlsIdentity::create());
+        QVERIFY(channel.addTeamSpeak("127.0.0.1"));
+        QTRY_VERIFY(channel.joined());
+        squad::VoiceMixer source(2), receiver(2);
+        receiver.setAutomatic(false);
+        std::array<float, 1920> samples{};
+        QList<QByteArray> packets;
+        for (int frame = 0; frame < lost + 3; ++frame) {
+            for (size_t i = 0; i < samples.size() / 2; ++i)
+                samples[i * 2] = samples[i * 2 + 1] = float(0.2 * std::sin(2 * std::numbers::pi * 440 * double(frame * 960 + i) / 48000));
+            packets.append(source.encode(samples, 48000));
+        }
+        QCOMPARE(packets.size(), lost + 3);
+        QList<bool> decoded;
+        QList<double> levels;
+        connect(&channel, &LocalChannel::audioReceived, &channel, [&](const QString& peer, const QByteArray& packet, int missing) {
+            const auto now = 1000 + decoded.size() * 1000;
+            decoded.append(receiver.receive(peer, packet, now, missing));
+            std::vector<float> output;
+            // Reach the newly received frame after bounded concealment.
+            for (int frame = 0; frame < std::min(missing + 1, 6); ++frame)
+                output = receiver.render(48000, now + frame * 20);
+            levels.append(std::sqrt(std::inner_product(output.begin(), output.end(), output.begin(), 0.0) / double(output.size())));
+        });
+        const auto enqueue = [&](int offset) {
+            const auto sequence = quint16(firstSequence + offset);
+            QByteArray event; event.append(char(2)); event.append(char(0)); event.append(char(7));
+            event.append(char(sequence >> 8)); event.append(char(sequence & 0xff)); event.append(char(4));
+            event.append(packets[offset]);
+            const QMutexLocker lock(&fakeMutex);
+            fakeEvents.enqueue(event);
+        };
+        enqueue(0);
+        enqueue(lost + 1);
+        enqueue(lost + 1); // Duplicate and older frames cannot replay sound.
+        enqueue(0);
+        enqueue(lost + 2);
+        QTRY_COMPARE(decoded.size(), 3);
+        QCOMPARE(decoded, (QList<bool>{true, true, true}));
+        for (const auto level : levels) QVERIFY2(level > 0.001, qPrintable(QString::number(level)));
+    }
+
     void rejectedChannelMoveKeepsCurrentVoiceAndCanRetryPassword() {
         resetFake(); fakeEvents.enqueue(stateEvent());
         QTemporaryDir dir;

@@ -183,7 +183,7 @@ void LocalChannel::pollTeamSpeak() {
                     if (old != connection->audioSequences.cend() && now - old->second < 2000) {
                         const auto advance = quint16(sequence - old->first);
                         if (advance == 0 || advance > 32767) break;
-                        missing = std::min(10, int(advance) - 1);
+                        missing = std::min(6, int(advance) - 1);
                     }
                     connection->audioSequences.insert(clientId, {sequence, now});
                     emit audioReceived(member.value("id").toString(), buffer.mid(6, size - 6), missing); break;
