@@ -410,6 +410,14 @@
             <source>Auto also checks for speech, not just volume.</source>
             <translation>Automatisch controleert ook op spraak, niet alleen op volume.</translation>
         </message>
+        <message>
+            <source>Minimum</source>
+            <translation>Minimum</translation>
+        </message>
+        <message>
+            <source>Auto will not lower the voice threshold below this level.</source>
+            <translation>Auto verlaagt de stemdrempel niet tot onder dit niveau.</translation>
+        </message>
     </context>
     <context>
         <name>Channels</name>
@@ -2865,16 +2873,16 @@
             <translation>Frequentiespectrum in hertz en dBFS</translation>
         </message>
         <message>
-            <source>After gain / cuts</source>
-            <translation>Na gain / filters</translation>
+            <source>Processed</source>
+            <translation>Verwerkt</translation>
         </message>
         <message>
             <source>Input: sound picked up by the microphone before gain and frequency cuts. Left is bass, right is treble; higher is louder.</source>
             <translation>Invoer: geluid dat de microfoon opvangt vóór gain en frequentiefilters. Links staan de lage tonen, rechts de hoge tonen; hoger betekent luider.</translation>
         </message>
         <message>
-            <source>After gain / cuts: the measured spectrum after microphone gain and frequency filters. It does not identify a speaker.</source>
-            <translation>Na gain / filters: gemeten spectrum na microfoongain en frequentiefilters. Het identificeert geen spreker.</translation>
+            <source>After all filters, before transmission.</source>
+            <translation>Na alle filters, vóór verzending.</translation>
         </message>
         <message>
             <source>Filter curve: the configured change in level at each frequency, read on the right dB scale. It excludes noise reduction and voice activation.</source>

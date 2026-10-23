@@ -410,6 +410,14 @@
             <source>Auto also checks for speech, not just volume.</source>
             <translation>Sjálfvirk stilling greinir líka tal, ekki aðeins hljóðstyrk.</translation>
         </message>
+        <message>
+            <source>Minimum</source>
+            <translation>Lágmark</translation>
+        </message>
+        <message>
+            <source>Auto will not lower the voice threshold below this level.</source>
+            <translation>Sjálfvirk stilling lækkar ekki raddþröskuldinn niður fyrir þetta stig.</translation>
+        </message>
     </context>
     <context>
         <name>Channels</name>
@@ -2865,16 +2873,16 @@
             <translation>Tíðniróf í hertz og dBFS</translation>
         </message>
         <message>
-            <source>After gain / cuts</source>
-            <translation>Eftir mögnun og tíðnisíur</translation>
+            <source>Processed</source>
+            <translation>Unnið</translation>
         </message>
         <message>
             <source>Input: sound picked up by the microphone before gain and frequency cuts. Left is bass, right is treble; higher is louder.</source>
             <translation>Inntak: hljóð tekið upp af hljóðnemanum fyrir aukningu og tíðniskerðingu. Vinstri er bassi, hægri er diskur; hærra er hærra.</translation>
         </message>
         <message>
-            <source>After gain / cuts: the measured spectrum after microphone gain and frequency filters. It does not identify a speaker.</source>
-            <translation>Eftir mögnun / tíðniskerðingu: mælt litróf eftir hljóðnemamögnun og tíðnisíur. Það auðkennir ekki talanda.</translation>
+            <source>After all filters, before transmission.</source>
+            <translation>Eftir allar síur, fyrir sendingu.</translation>
         </message>
         <message>
             <source>Filter curve: the configured change in level at each frequency, read on the right dB scale. It excludes noise reduction and voice activation.</source>

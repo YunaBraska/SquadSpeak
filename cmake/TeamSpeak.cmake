@@ -10,6 +10,20 @@ else()
 endif()
 set(squad_ts_target "${CMAKE_BINARY_DIR}/teamspeak")
 set(squad_rust_args)
+set(squad_rust_manifest "${PROJECT_SOURCE_DIR}/src/teamspeak_bridge/Cargo.toml")
+option(SQUADSPEAK_DENOISE_CANDIDATE "Local DeepFilterNet evaluation, not cleared for distribution" OFF)
+if(SQUADSPEAK_DENOISE_CANDIDATE)
+    file(READ "${squad_rust_manifest}" squad_rust_manifest_content)
+    file(READ "${PROJECT_SOURCE_DIR}/src/teamspeak_bridge/Denoise.toml" squad_denoise_dependencies)
+    string(REPLACE "[lib]" "[lib]\npath = \"${PROJECT_SOURCE_DIR}/src/teamspeak_bridge/src/lib.rs\""
+        squad_rust_manifest_content "${squad_rust_manifest_content}")
+    set(squad_rust_manifest "${CMAKE_BINARY_DIR}/denoise-candidate/Cargo.toml")
+    file(GENERATE OUTPUT "${squad_rust_manifest}" CONTENT "${squad_rust_manifest_content}\n${squad_denoise_dependencies}")
+    configure_file(src/teamspeak_bridge/Cargo.denoise.lock denoise-candidate/Cargo.lock COPYONLY)
+    list(APPEND squad_rust_args --features neural-denoise)
+    message(WARNING "Local denoise candidate includes model weights not yet cleared for distribution")
+    install(CODE "message(FATAL_ERROR \"The local denoise candidate is not cleared for distribution\")")
+endif()
 if(IOS)
     if(CMAKE_OSX_SYSROOT MATCHES "[Ss]imulator")
         if(CMAKE_OSX_ARCHITECTURES STREQUAL "x86_64")
@@ -64,14 +78,18 @@ if(ANDROID)
 endif()
 add_custom_command(OUTPUT "${squad_ts_library}"
     COMMAND ${CMAKE_COMMAND} -E env ${squad_rust_env} "${SQUAD_CARGO}" build --release --locked
-        --manifest-path "${PROJECT_SOURCE_DIR}/src/teamspeak_bridge/Cargo.toml" ${squad_rust_args}
-    DEPENDS rust-toolchain.toml src/teamspeak_bridge/teamspeak_bridge.h src/teamspeak_bridge/Cargo.toml src/teamspeak_bridge/Cargo.lock src/teamspeak_bridge/src/lib.rs
+        --manifest-path "${squad_rust_manifest}" ${squad_rust_args}
+    DEPENDS rust-toolchain.toml src/teamspeak_bridge/teamspeak_bridge.h src/teamspeak_bridge/denoise_bridge.h src/teamspeak_bridge/Cargo.toml src/teamspeak_bridge/Cargo.lock src/teamspeak_bridge/Cargo.denoise.lock src/teamspeak_bridge/Denoise.toml src/teamspeak_bridge/src/lib.rs src/teamspeak_bridge/src/denoise.rs
     WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
     USES_TERMINAL VERBATIM)
 add_custom_target(squad_teamspeak_build DEPENDS "${squad_ts_library}")
 add_library(squad_teamspeak STATIC IMPORTED GLOBAL)
 set_target_properties(squad_teamspeak PROPERTIES IMPORTED_LOCATION "${squad_ts_library}")
 add_dependencies(squad_teamspeak squad_teamspeak_build)
+if(SQUADSPEAK_DENOISE_CANDIDATE)
+    target_compile_definitions(squad_audio PUBLIC SQUADSPEAK_DENOISE_CANDIDATE=1)
+    target_link_libraries(squad_audio PRIVATE squad_teamspeak)
+endif()
 if(APPLE)
     set_property(TARGET squad_teamspeak PROPERTY INTERFACE_LINK_LIBRARIES "-framework Security;-framework SystemConfiguration;-framework CoreFoundation;-framework Foundation;-framework Network;resolv")
 elseif(WIN32)
@@ -81,8 +99,15 @@ else()
 endif()
 
 if(BUILD_TESTING AND NOT CMAKE_CROSSCOMPILING)
+    # Test-only Cargo features can rebuild dependencies. Do that during the
+    # build, before CTest starts the bounded execution deadline.
+    add_custom_target(squad_teamspeak_test_build ALL
+        COMMAND ${CMAKE_COMMAND} -E env ${squad_rust_env} "${SQUAD_CARGO}" test --no-run --release --locked
+            --manifest-path "${squad_rust_manifest}" ${squad_rust_args}
+        WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}" USES_TERMINAL VERBATIM)
+    add_dependencies(squad_teamspeak_test_build squad_teamspeak_build)
     add_test(NAME teamspeak_bridge COMMAND ${CMAKE_COMMAND} -E env ${squad_rust_env}
-        "${SQUAD_CARGO}" test --release --locked --manifest-path "${PROJECT_SOURCE_DIR}/src/teamspeak_bridge/Cargo.toml")
+        "${SQUAD_CARGO}" test --release --locked --manifest-path "${squad_rust_manifest}" ${squad_rust_args})
     set_tests_properties(teamspeak_bridge PROPERTIES WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}" TIMEOUT 180)
     if(APPLE)
         set_tests_properties(teamspeak_bridge PROPERTIES ENVIRONMENT_MODIFICATION "DYLD_FALLBACK_LIBRARY_PATH=path_list_prepend:${squad_opus_prefix}/lib")

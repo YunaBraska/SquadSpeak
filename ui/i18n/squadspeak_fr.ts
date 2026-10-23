@@ -410,6 +410,14 @@
             <source>Auto also checks for speech, not just volume.</source>
             <translation>Le mode automatique détecte aussi la parole, pas seulement le volume.</translation>
         </message>
+        <message>
+            <source>Minimum</source>
+            <translation>Minimum</translation>
+        </message>
+        <message>
+            <source>Auto will not lower the voice threshold below this level.</source>
+            <translation>Le mode automatique ne réduira pas le seuil vocal sous ce niveau.</translation>
+        </message>
     </context>
     <context>
         <name>Channels</name>
@@ -2865,16 +2873,16 @@
             <translation>Spectre des fréquences en hertz et dBFS</translation>
         </message>
         <message>
-            <source>After gain / cuts</source>
-            <translation>Après gain / coupes</translation>
+            <source>Processed</source>
+            <translation>Traité</translation>
         </message>
         <message>
             <source>Input: sound picked up by the microphone before gain and frequency cuts. Left is bass, right is treble; higher is louder.</source>
             <translation>Entrée : son capté par le microphone avant le gain et les filtres de fréquence. Les graves sont à gauche, les aigus à droite ; plus la courbe est haute, plus le son est fort.</translation>
         </message>
         <message>
-            <source>After gain / cuts: the measured spectrum after microphone gain and frequency filters. It does not identify a speaker.</source>
-            <translation>Après gain / coupes : spectre mesuré après le gain du microphone et les filtres de fréquence. Il n'identifie pas un locuteur.</translation>
+            <source>After all filters, before transmission.</source>
+            <translation>Après tous les filtres, avant la transmission.</translation>
         </message>
         <message>
             <source>Filter curve: the configured change in level at each frequency, read on the right dB scale. It excludes noise reduction and voice activation.</source>

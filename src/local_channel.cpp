@@ -2745,6 +2745,7 @@ void LocalChannel::clientMessage(Client& c, const QJsonObject& message) {
 
 void LocalChannel::sendPresence() {
     if (teamSpeak_ && teamSpeak_->connected) {
+        if (session_.deafened()) teamSpeak_->audioSequences.clear();
         const QJsonObject presence{{"action", "presence"}, {"name", session_.userName()},
             {"inputMuted", session_.muted() || !session_.available() || !session_.inputReady()}, {"outputMuted", session_.deafened() || !session_.outputReady()}};
         if (teamSpeak_->lastPresence != presence && teamSpeakCommand(presence)) teamSpeak_->lastPresence = presence;
@@ -2758,10 +2759,25 @@ void LocalChannel::sendPresence() {
     }
 }
 
+int LocalChannel::audioPacketLimit() const {
+    return teamSpeak_ && teamSpeak_->connected ? SS_TS_MAX_AUDIO : 4000;
+}
+
 bool LocalChannel::sendAudio(const QByteArray& packet) {
+    if (packet.isEmpty()) {
+        if (!teamSpeak_ || !teamSpeak_->connected || !teamSpeak_->sendingAudio) return false;
+        if (!ss_ts_audio(teamSpeak_->handle, nullptr, 0)) return false;
+        teamSpeak_->sendingAudio = false;
+        return true;
+    }
     const auto c = clients_.value(joinedHostId_);
-    if (remoteMode() || !c || !c->accepted || !c->voice || !session_.transmissionAllowed() || packet.isEmpty() || packet.size() > 8192) return false;
-    if (c->teamSpeak) return teamSpeak_ && teamSpeak_->connected && c->teamSpeakCanSend && ss_ts_audio(teamSpeak_->handle, reinterpret_cast<const uint8_t*>(packet.constData()), size_t(packet.size()));
+    if (remoteMode() || !c || !c->accepted || !c->voice || !session_.transmissionAllowed() || packet.size() > audioPacketLimit()) return false;
+    if (c->teamSpeak) {
+        if (!teamSpeak_ || !teamSpeak_->connected || !c->teamSpeakCanSend
+            || !ss_ts_audio(teamSpeak_->handle, reinterpret_cast<const uint8_t*>(packet.constData()), size_t(packet.size()))) return false;
+        teamSpeak_->sendingAudio = true;
+        return true;
+    }
     if (c->media) return c->media->send(ownId(), packet);
     return writeMessage(c->socket, {{"type", "audio"}, {"data", QString::fromLatin1(packet.toBase64())}});
 }

@@ -1,7 +1,8 @@
 # Reproducible audio corpus
 
-42 repository PCM16/48 kHz mono excerpts provide 20 distinct English narrators,
-18 music recordings, two environmental sounds and two keyboard recordings.
+43 repository PCM16/48 kHz mono excerpts provide 20 distinct English narrators,
+18 music recordings, two environmental sounds, two keyboard recordings and one
+breathing recording.
 The files occupy about 38 MiB.
 `manifest.json` owns source URLs, source/archive-member/fixture SHA-256 hashes,
 crop positions, source sample rates, speaker IDs and the mixing grid. Every
@@ -14,33 +15,48 @@ and decaying noise are generated in `corpus_tests.cpp`, with durations listed
 in the manifest. They are not recordings of keyboards and do not validate a
 keyboard classifier. No extra asset download or storage is needed.
 
-The extended mixture suite contains 10,636 deterministic cases:
+The extended mixture suite contains 11,059 deterministic cases:
 
-- 10,500 mixtures: 20 voices x 25 interference sources x 7 SNRs x 3 input levels.
-- 60 clean-speech controls and 75 interference-only controls at those levels.
+- 10,920 mixtures: 20 voices x 26 interference sources x 7 SNRs x 3 input levels.
+- 60 clean-speech controls and 78 interference-only controls at those levels.
 - One silence control.
 
 Each case passes through the real `VoiceMixer::encode -> receive -> render`
-path at 0%, 50% and 100% suppression: 31,908 app variants. These are combinations
-of 42 recordings and three synthesized signals, not thousands of independent
+path at 0%, 50% and 100% suppression: 33,177 app variants. These are combinations
+of 43 recordings and three synthesized signals, not thousands of independent
 people or recordings.
 
-Speech activation additionally uses two real CC0 keyboard recordings at three
-levels, alone and mixed with normal or quiet speech at 0/+10 dB SNR. The fast
-suite has 84 activation cases with three narrators. The extended suite has 492
-with all twenty, covering mono and stereo, including 200 ms voiced excerpts.
-These use the default gain and bass correction, public encoder and decoder
-with no audio device.
-They require at least 75% fewer admitted typing frames than a level-only gate,
-at least 10 dB attenuation for typing alone, and retention of over 98.5% of the
+Speech activation additionally uses two CC0 keyboard recordings and one CC0
+breathing recording at three levels. The keyboards are also mixed with normal
+or quiet speech at 0/+10 dB SNR. The fast suite has 90 activation cases with three
+narrators. The extended suite has 498 with all twenty, covering mono and stereo, including 200 ms voiced
+excerpts. Four additional onset regressions reuse a live stream across loud and
+quiet voices with pauses, with suppression enabled and bypassed. They catch
+missing word beginnings that a sentence-wide energy total can hide.
+Overlapping breathing remains in the mixture diagnostics. In that harder
+condition the detector can still miss word onsets, so it is not covered by the
+keyboard admission regression limits.
+These use the default gain, bass correction and noise suppression, public
+encoder and decoder with no audio device. Clean-speech controls also check
+10 ms windows above 25 dB below the loudest window. The default must not reduce
+any such detail by 6.5 dB or more. This catches brief losses hidden by a
+sentence-wide average.
+They require at least 75% fewer admitted noise frames than a level-only gate,
+at least 10 dB attenuation for noise alone, and retention of over 98.5% of the
 clean speech energy in admitted frames. This measures admission and signal
-retention, not intelligibility or guaranteed removal of every keystroke.
+retention, not intelligibility or guaranteed removal of every keystroke or breath.
 
 The laptop excerpt is from bsumusictech's Freesound recording 62594, using its
 public MP3 preview. The mechanical keyboard excerpt is Nmb910's recording
 234923, supplied as an individually CC0 sound in ESC-50. Its five seconds repeat
 in twelve-second mixtures. Source notices identify the exact distribution and
 conversion. No noncommercial dataset license is applied to the app.
+
+The breathing excerpt is Walter_Odington's individually CC0 recording 18631,
+also distributed through ESC-50. The author describes it as scripted, unnatural
+breathing. The five-second excerpt repeats in twelve-second mixtures. It is a
+regression fixture, not a representative evaluation of all people, breaths or
+microphones.
 
 ## Sources and redistribution
 
@@ -50,8 +66,9 @@ Barnett, supplied through the [librosa example collection](https://librosa.org/d
 Seventeen additional, distinct speakers come from the pinned `test-clean`
 archive. Their published speaker IDs, reader names and utterance paths are
 recorded in the manifest and individual notices. Each speech crop lasts eight
-seconds. All speech sources are 16 kHz; upsampling does not restore missing
-high frequencies or make these full-band microphone recordings.
+seconds. The first three sources are 22.05 kHz and the other seventeen are
+16 kHz. Upsampling does not restore missing high frequencies or make these
+full-band microphone recordings.
 
 | Fixture | Recording and attribution | Coverage | License |
 | --- | --- | --- | --- |
@@ -99,8 +116,8 @@ endorsement is implied.
 
 ## Run
 
-The fast regression suite contains 74 cases: the original three
-voices, four recorded and three synthetic interference sources, SNR -5/0/+10 dB, clean speech, pure
+The fast regression suite contains 94 cases: the original three
+voices, six recorded and three synthetic interference sources, SNR -5/0/+10 dB, clean speech, pure
 interference and silence. It requires no downloads, Python, FFmpeg, microphone
 or audio device after building:
 
@@ -119,7 +136,42 @@ python3 tests/audio/run.py --binary build/corpus_tests \
 An optimized CMake Release build reduces runtime. `--workers` bounds CPU and
 memory use; each worker runs an independent partition. The default is at most
 four workers. The matrix is intentionally not part of every default CTest run.
-`--suite smoke` also exercises the batch runner with the 74 quick cases.
+`--suite smoke` also exercises the batch runner with the 94 quick cases.
+
+`--suite denoise` is the bounded speech-cleanup comparison. Its 190 cases use
+all 20 voices, both keyboard recordings and breathing at 0/+10 dB SNR and
+-6 dBFS mixture peak. It also includes 60 clean controls and nine noise-only
+controls at -30/-18/-6 dBFS, plus silence. It runs the same public audio path
+and quality guards. The normal CTest suite separately covers activation and echo.
+
+The optional local DeepFilterNet3 candidate uses the existing Rust runtime and
+Denoise control. Ordinary builds retain RNNoise. Model redistribution is pending
+in [upstream issue 712](https://github.com/Rikorose/DeepFilterNet/issues/712).
+Normal install packaging rejects candidate builds. Explicit local A/B tests may
+use signed candidate copies. The pending model license does not block releases
+with RNNoise, and the candidate model is not part of normal packages.
+To evaluate in an already configured native build:
+
+```sh
+cmake -S . -B build -DSQUADSPEAK_DENOISE_CANDIDATE=ON
+cmake --build build --target squadspeak mixer_tests corpus_tests -j 2
+ctest --test-dir build --output-on-failure -R '^(mixer_contract|audio_corpus.*)$' -j 2
+python3 tests/audio/run.py --binary build/corpus_tests --suite denoise \
+  --output build/denoise-candidate --workers 3
+```
+
+Compare against the same commands with the option `OFF` and another output
+directory. Reports identify the backend and its delay. The candidate adds 30 ms
+of filter history, compared with RNNoise's 20 ms. Input gain compensation is local
+to the model and undone using the matching delayed gain. It does not change the
+microphone gain. At the default setting, the blend retains 60 percent original
+audio. Stronger manual settings also use the existing noise estimate in pauses.
+High manual strength can still degrade speech mixed with breathing even when
+clean-speech controls pass. Neither configuration guarantees complete removal
+of overlapping noises.
+The candidate also has a stricter level-transition guard: each clean-speech
+segment must stay within 3 dB after abrupt near/far changes without a reset.
+The existing filter does not meet that additional adoption criterion.
 
 `report.json` contains every completed case and filter variant. `summary.json`
 reports SI-SDR gain by music category, SNR and absolute input level, the worst
@@ -132,9 +184,8 @@ process kill, verify that no worker is running before removing a stale lock.
 
 `status: complete` means execution and coverage passed. It does not mean the
 filter sounds good. Quality diagnostics are reported separately, including
-negative improvements. The original smoke suite retains its hard clean-speech
-guards. The new stress cases expose their retention failures as diagnostics;
-their quality targets have not been calibrated or accepted by listening tests.
+negative improvements. Clean-speech controls enforce their precodec retention
+guards in all suites. Passing waveform checks does not replace listening.
 
 ## Mixing and measurements
 
@@ -159,19 +210,23 @@ The app path checks packet delivery, mute enforcement, finite bounded samples,
 silence and noise-only amplification. Receiving-side automatic normalization is
 off to keep its behavior separate from suppression. The smoke clean-speech
 guards require -12 to +6 dB relative level and correlation above 0.6; they catch
-large regressions, not subtle audible damage.
+large regressions, not subtle audible damage. Before encoding, every clean
+speech control additionally requires correlation above 0.97 and less than
+3 dB level change. This separates filter distortion from Opus phase changes.
 The synthetic smoke fixtures additionally require at least 10 dB of click-only
 attenuation at full suppression and no precodec SI-SDR loss for their speech
-mixtures. These are fixture regression limits, not a promise for real keyboards.
+mixtures. Recorded laptop and desktop typing must fall by at least 20 dB alone
+at full strength, with no precodec SI-SDR loss in speech mixtures at 0 dB SNR
+or above. These are fixture regression limits, not a promise for every keyboard.
 
-A separate measurement applies the pinned RNNoise library before Opus, with
-its 20 ms delay compensated. Zero-mean SI-SDR compares the result to clean
+The capture observer measures the actual adaptive noise filter before Opus,
+with the backend's reported history compensated. Zero-mean SI-SDR compares the result to clean
 speech. This waveform diagnostic is not perceived quality, intelligibility or
 speaker identification, and its scale invariance can hide attenuation. Check
 clean-speech level/correlation diagnostics as well. Applying SI-SDR across Opus
 would confound codec phase changes with suppression. Noise-only reduction does
-not prove equal reduction during simultaneous speech. The app codec/mixer path
-is checked independently; the library measurement does not replace it.
+not prove equal reduction during simultaneous speech. The decoded app output
+is also checked to retain codec and playback coverage.
 
 Export one exact stress case for listening, including clean speech,
 interference, mixture, app outputs and pre-codec outputs:

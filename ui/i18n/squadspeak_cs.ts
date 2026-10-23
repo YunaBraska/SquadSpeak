@@ -410,6 +410,14 @@
             <source>Auto also checks for speech, not just volume.</source>
             <translation>Automatický režim kontroluje také řeč, nejen hlasitost.</translation>
         </message>
+        <message>
+            <source>Minimum</source>
+            <translation>Minimum</translation>
+        </message>
+        <message>
+            <source>Auto will not lower the voice threshold below this level.</source>
+            <translation>Automatika nesníží práh hlasu pod tuto úroveň.</translation>
+        </message>
     </context>
     <context>
         <name>Channels</name>
@@ -2865,16 +2873,16 @@
             <translation>Frekvenční spektrum v hertzech a dBFS</translation>
         </message>
         <message>
-            <source>After gain / cuts</source>
-            <translation>Po zesílení / úpravách</translation>
+            <source>Processed</source>
+            <translation>Zpracováno</translation>
         </message>
         <message>
             <source>Input: sound picked up by the microphone before gain and frequency cuts. Left is bass, right is treble; higher is louder.</source>
             <translation>Vstup: zvuk zachycený mikrofonem před zesílením a úpravami. Vlevo jsou basy, vpravo výšky; vyšší hodnota znamená hlasitější zvuk.</translation>
         </message>
         <message>
-            <source>After gain / cuts: the measured spectrum after microphone gain and frequency filters. It does not identify a speaker.</source>
-            <translation>Po zesílení / úpravách: naměřené spektrum po aplikaci zesílení mikrofonu a filtrů. Neslouží k identifikaci mluvčího.</translation>
+            <source>After all filters, before transmission.</source>
+            <translation>Po všech filtrech, před přenosem.</translation>
         </message>
         <message>
             <source>Filter curve: the configured change in level at each frequency, read on the right dB scale. It excludes noise reduction and voice activation.</source>

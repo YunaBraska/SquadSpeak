@@ -410,6 +410,14 @@
             <source>Auto also checks for speech, not just volume.</source>
             <translation>Mode otomatis juga mendeteksi ucapan, bukan hanya volume.</translation>
         </message>
+        <message>
+            <source>Minimum</source>
+            <translation>Minimum</translation>
+        </message>
+        <message>
+            <source>Auto will not lower the voice threshold below this level.</source>
+            <translation>Mode otomatis tidak akan menurunkan ambang suara di bawah tingkat ini.</translation>
+        </message>
     </context>
     <context>
         <name>Channels</name>
@@ -2865,16 +2873,16 @@
             <translation>Spektrum frekuensi dalam hertz dan dBFS</translation>
         </message>
         <message>
-            <source>After gain / cuts</source>
-            <translation>Setelah gain / pemotongan</translation>
+            <source>Processed</source>
+            <translation>Diproses</translation>
         </message>
         <message>
             <source>Input: sound picked up by the microphone before gain and frequency cuts. Left is bass, right is treble; higher is louder.</source>
             <translation>Input: suara yang ditangkap mikrofon sebelum gain dan pemotongan frekuensi. Bass di kiri, treble di kanan; semakin tinggi berarti semakin keras.</translation>
         </message>
         <message>
-            <source>After gain / cuts: the measured spectrum after microphone gain and frequency filters. It does not identify a speaker.</source>
-            <translation>Setelah gain / pemotongan: spektrum terukur setelah gain mikrofon dan filter frekuensi. Ini tidak mengidentifikasi pembicara.</translation>
+            <source>After all filters, before transmission.</source>
+            <translation>Setelah semua filter, sebelum dikirim.</translation>
         </message>
         <message>
             <source>Filter curve: the configured change in level at each frequency, read on the right dB scale. It excludes noise reduction and voice activation.</source>

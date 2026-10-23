@@ -6,6 +6,8 @@
 
 namespace squad {
 namespace {
+constexpr int maximumPlaybackDelayMs = 160;
+
 void validRate(int rate) {
     if (rate < 8000 || rate > 192000)
         throw std::invalid_argument(QT_TRANSLATE_NOOP("AudioModel", "Audio sample rate must be between 8000 and 192000 Hz"));
@@ -13,12 +15,15 @@ void validRate(int rate) {
 }
 
 bool VoiceActivation::valid() const noexcept {
-    return std::isfinite(thresholdDb) && thresholdDb >= -80 && thresholdDb <= 0;
+    return std::isfinite(thresholdDb) && thresholdDb >= -80 && thresholdDb <= 0
+        && std::isfinite(minimumDb) && minimumDb >= -80 && minimumDb <= 0;
 }
 
-VoiceMixer::VoiceMixer(int channels) : channels_(channels) {
+VoiceMixer::VoiceMixer(int channels, int playbackDelayMs) : channels_(channels), playbackDelayMs_(playbackDelayMs) {
     if (channels_ != 1 && channels_ != 2)
         throw std::invalid_argument("Voice mixer must have one or two channels");
+    if (playbackDelayMs_ < 0 || playbackDelayMs_ > 100)
+        throw std::invalid_argument("Playback delay must be between 0 and 100 ms");
     if (rnnoise_get_frame_size() != 480)
         throw std::runtime_error(QT_TRANSLATE_NOOP("AudioModel", "Unexpected noise suppression frame size"));
     for (int channel = 0; channel < channels_; ++channel) {
@@ -64,7 +69,8 @@ void VoiceMixer::resampleInto(SRC_STATE* state, std::span<const float> samples, 
     output.resize(originalSize + size_t(data.output_frames_gen) * size_t(channels_));
 }
 
-QList<QByteArray> VoiceMixer::encode(std::span<const float> samples, int sampleRate, bool transmissionAllowed) {
+QList<QByteArray> VoiceMixer::encode(std::span<const float> samples, int sampleRate,
+    bool transmissionAllowed, const CaptureFilter& filter, const CaptureObserver& observer) {
     validRate(sampleRate);
     if (samples.size() % size_t(channels_) != 0 || samples.size() > size_t(sampleRate) * size_t(channels_)
         || std::any_of(samples.begin(), samples.end(), [](auto value) { return !std::isfinite(value); }))
@@ -80,7 +86,7 @@ QList<QByteArray> VoiceMixer::encode(std::span<const float> samples, int sampleR
     const auto frameSamples = size_t(960 * channels_);
     const auto appendPacket = [&](const float* frame) {
         if (!transmissionAllowed) return;
-        QByteArray packet(4000, '\0');
+        QByteArray packet(packetLimit_, '\0');
         const auto bytes = opus_encode_float(encoder_.get(), frame, 960,
             reinterpret_cast<unsigned char*>(packet.data()), int(packet.size()));
         if (bytes < 0) throw std::runtime_error(opus_strerror(bytes));
@@ -93,17 +99,31 @@ QList<QByteArray> VoiceMixer::encode(std::span<const float> samples, int sampleR
     };
     size_t used = 0;
     while (capture_.size() - used >= frameSamples) {
+        std::array<float, 1920> original{};
+        std::copy_n(capture_.data() + used, frameSamples, original.begin());
+        if (filter) {
+            const auto captured = std::span(capture_).subspan(used, frameSamples);
+            filter(captured);
+            if (std::any_of(captured.begin(), captured.end(), [](float value) { return !std::isfinite(value) || std::abs(value) > 1; }))
+                throw std::runtime_error(QT_TRANSLATE_NOOP("AudioModel", "Capture chunk is too large or contains invalid samples"));
+        }
         const float* frame = capture_.data() + used;
         double energy = 0;
         for (size_t i = 0; i < frameSamples; ++i) energy += double(frame[i]) * frame[i];
         activationLevelDb_ = energy > 0 ? std::max(-96.0, 10 * std::log10(energy / frameSamples)) : -96;
         double speechLevelDb = activationLevelDb_;
         std::array<float, 1920> suppressed{};
+        std::array<float, 1920> alignedPreview{};
         double speechProbability = 0;
+        double speechConfidence = 0;
         bool speechFrame = false;
         if (noiseSuppression_ > 0 || (activation_.enabled && activation_.automatic)) {
-            double probability = 0;
-            bool channelSpeech = false;
+            // RNNoise holds its recurrent state during digital silence. Forget
+            // stale loud-speech history after a quiet second, before a softer onset.
+            silenceFrames_ = activationLevelDb_ < -80 ? std::min(51, silenceFrames_ + 1) : 0;
+            if (silenceFrames_ == 50)
+                for (int channel = 0; channel < channels_; ++channel)
+                    rnnoise_init(denoisers_[size_t(channel)].get(), nullptr);
             std::array<float, 480> input{};
             for (int channel = 0; channel < channels_; ++channel) {
                 for (size_t i = 0; i < 480; ++i)
@@ -118,32 +138,72 @@ QList<QByteArray> VoiceMixer::encode(std::span<const float> samples, int sampleR
                     suppressed[(i + 480) * size_t(channels_) + size_t(channel)] = input[i];
                 if (!std::isfinite(firstProbability) || !std::isfinite(secondProbability))
                     throw std::runtime_error(QT_TRANSLATE_NOOP("AudioModel", "Speech analysis produced an invalid probability"));
-                probability = std::max(probability, double(std::max(firstProbability, secondProbability)));
-                channelSpeech = channelSpeech || std::min(firstProbability, secondProbability) >= 0.8;
+                speechProbability = std::max(speechProbability, double(std::max(firstProbability, secondProbability)));
+                speechConfidence = std::max(speechConfidence, double(std::min(firstProbability, secondProbability)));
             }
-            speechProbability = probability;
-            speechFrame = channelSpeech;
+            speechFrame = speechConfidence >= 0.6;
         }
         if (noiseSuppression_ > 0) {
+#ifdef SQUADSPEAK_DENOISE_CANDIDATE
+            std::array<float, 1920> noiseOnly{};
+            const auto halfSamples = size_t(480 * channels_);
+            for (size_t i = 0; i < frameSamples; ++i) {
+                const auto position = i % halfSamples;
+                noiseOnly[i] = delayedNoise_[position];
+                delayedNoise_[position] = suppressed[i] / 32768.0f;
+            }
+            float speechSnr = 0;
+            if (!squad_denoise_process(neuralDenoiser_.get(), frame, suppressed.data(), &speechSnr))
+                throw std::runtime_error(QT_TRANSLATE_NOOP("AudioModel", "Noise suppression produced invalid audio"));
+            // Use the model's existing speech/noise estimate. Requiring speech
+            // in both 10 ms halves retains temporal confirmation.
+            speechFrame = speechFrame || speechSnr >= -10;
+#endif
+            const auto previousProtection = speechProtection_;
+            // Retain natural consonants and timbre during speech, then release
+            // smoothly into full noise reduction over the following pauses.
+            speechProtection_ = std::max(speechConfidence >= 0.8 ? speechProbability : 0.0, speechProtection_ * 0.9);
             double suppressedEnergy = 0;
             for (size_t i = 0; i < frameSamples; ++i) {
-                const auto original = std::clamp(frame[i], -1.0f, 1.0f);
+                const auto dry = std::clamp(frame[i], -1.0f, 1.0f);
+                const auto progress = double(i / size_t(channels_) + 1) / 960;
+                const auto protection = previousProtection + progress * (speechProtection_ - previousProtection);
+#ifdef SQUADSPEAK_DENOISE_CANDIDATE
+                // At high manual strengths, use the existing noise estimate in
+                // pauses. The default blend stays entirely on the neural model.
+                const auto noiseOnlyMix = std::max(0.0, 2.0 * noiseSuppression_ - 1.0) * (1.0 - protection);
+                const auto denoised = suppressed[i] * (1.0 - noiseOnlyMix) + noiseOnly[i] * noiseOnlyMix;
+                const auto requested = noiseSuppression_ <= 0.5 ? noiseSuppression_ * 0.8 : noiseSuppression_ * 1.2 - 0.2;
+                const auto strength = requested - std::max(0.0, requested - 0.5) * protection;
+#else
                 const auto denoised = suppressed[i] / 32768.0f;
-                const auto value = denoised * noiseSuppression_ + delayedCapture_[i] * (1.0 - noiseSuppression_);
+                const auto strength = noiseSuppression_ * (1.0 - 0.5 * protection);
+#endif
+                const auto value = denoised * strength + delayedCapture_[delayPosition_] * (1.0 - strength);
                 if (!std::isfinite(value)) throw std::runtime_error(QT_TRANSLATE_NOOP("AudioModel", "Noise suppression produced invalid audio"));
                 suppressed[i] = float(std::clamp(value, -1.0, 1.0));
                 suppressedEnergy += double(suppressed[i]) * suppressed[i];
-                delayedCapture_[i] = original;
+                delayedCapture_[delayPosition_] = dry;
+                alignedPreview[i] = delayedPreview_[delayPosition_];
+                delayedPreview_[delayPosition_] = original[i];
+                delayPosition_ = (delayPosition_ + 1) % size_t(suppressionDelaySamples() * channels_);
             }
             frame = suppressed.data();
             speechLevelDb = suppressedEnergy > 0 ? 10 * std::log10(suppressedEnergy / frameSamples) : -96;
         }
-        if (activation_.enabled && activation_.automatic && speechProbability < 0.2) {
+        if (observer) {
+            observer(std::span(noiseSuppression_ > 0 ? alignedPreview : original).first(frameSamples),
+                std::span(frame, frameSamples));
+        }
+        if (activation_.enabled && activation_.automatic && speechProbability < 0.2 && !speechFrame) {
             const auto target = std::clamp(activationLevelDb_ + 10, -70.0, -20.0);
             activationThresholdDb_ += std::clamp(target - activationThresholdDb_, -0.12, 0.02);
         }
+        if (activation_.automatic && activation_.minimumEnabled)
+            activationThresholdDb_ = std::max(activationThresholdDb_, activation_.minimumDb);
+        if (activation_.automatic) activationLevelDb_ = std::max(-96.0, speechLevelDb);
         speechFrames_ = speechFrame ? std::min(2, speechFrames_ + 1) : 0;
-        const bool aboveThreshold = (activation_.automatic ? speechLevelDb : activationLevelDb_) >= activationThresholdDb_
+        const bool aboveThreshold = activationLevelDb_ >= activationThresholdDb_
             && (!activation_.automatic || speechFrames_ == 2);
         voiceActive_ = !activation_.enabled || aboveThreshold || trailingFrames_ > 0;
         if (aboveThreshold) trailingFrames_ = 15;
@@ -155,7 +215,7 @@ QList<QByteArray> VoiceMixer::encode(std::span<const float> samples, int sampleR
         } else {
             std::array<float, 1920> previous{};
             std::copy_n(frame, frameSamples, previous.begin());
-            if (preRoll_.size() == 2) preRoll_.pop_front();
+            if (preRoll_.size() == (activation_.automatic ? 3u : 2u)) preRoll_.pop_front();
             preRoll_.push_back(std::move(previous));
         }
         used += frameSamples;
@@ -163,6 +223,12 @@ QList<QByteArray> VoiceMixer::encode(std::span<const float> samples, int sampleR
     capture_.erase(capture_.begin(), capture_.begin() + used);
     if (used > 0 && packets.isEmpty()) transmitLevel_ = 0;
     return packets;
+}
+
+VoiceMixer& VoiceMixer::setPacketLimit(int bytes) {
+    if (bytes < 1 || bytes > 4000) throw std::invalid_argument("Invalid Opus packet limit");
+    packetLimit_ = bytes;
+    return *this;
 }
 
 bool VoiceMixer::receive(const QString& peer, const QByteArray& packet, qint64 now, int missing) {
@@ -178,14 +244,49 @@ bool VoiceMixer::receive(const QString& peer, const QByteArray& packet, qint64 n
     }
     Frame frame;
     frame.received = now;
+    const auto gap = now - stream.receivedAt;
+    // A pause beyond the jitter budget starts a new utterance only after
+    // playback drains. Do not train network jitter on intentional silence.
+    if (stream.receivedAt < 0 || (gap > maximumPlaybackDelayMs + 20
+        && (now - stream.nextFrameAt > maximumPlaybackDelayMs + 20
+            || (stream.frames.empty() && now > stream.nextFrameAt)))) {
+        stream.frames.clear();
+        if (stream.receivedAt < 0) stream.playbackDelay = playbackDelayMs_ > 0 ? 100 : 0;
+        else if (stream.receivedAt - stream.lastJitterAt > 10000) stream.playbackDelay = playbackDelayMs_;
+        stream.lastJitterAt = now;
+        stream.readyAt = now + stream.playbackDelay;
+        stream.nextFrameAt = stream.readyAt;
+        // The previous utterance has drained. Concealing its sequence gap
+        // would replay silence and displace frames from the new utterance.
+        missing = 0;
+    } else if (playbackDelayMs_ > 0) {
+        // Excess over one packet interval, rounded to whole 20 ms frames.
+        const int needed = int(std::clamp<qint64>(((gap - 1) / 20) * 20, playbackDelayMs_, maximumPlaybackDelayMs));
+        if (needed > playbackDelayMs_) stream.lastJitterAt = now;
+        if (needed > stream.playbackDelay) {
+            // Extend the pending playback deadline, not the arrival time.
+            // Restarting a full delay after a late batch would overflow it.
+            stream.readyAt = std::max(stream.readyAt, stream.nextFrameAt) + needed - stream.playbackDelay;
+            stream.playbackDelay = needed;
+        }
+    }
+    stream.receivedAt = now;
+    // An exhausted queue needs its target depth again, even when a short
+    // speech pause did not cross the new-utterance timeout. A complete batch
+    // can still release this deadline below without waiting twice.
+    if (playbackDelayMs_ > 0 && stream.frames.empty() && now > stream.nextFrameAt)
+        stream.readyAt = now + stream.playbackDelay;
+    const auto frameLimit = size_t(std::max(7, stream.playbackDelay / 20 + 2));
     for (int gap = 0; gap < missing; ++gap) {
         if (opus_decode_float(stream.decoder.get(), nullptr, 0, frame.samples.data(), 960, 0) != 960) return false;
-        if (stream.frames.size() == 6) stream.frames.pop_front();
+        if (stream.frames.size() >= frameLimit) stream.frames.pop_front();
         stream.frames.push_back(frame);
     }
     if (opus_decode_float(stream.decoder.get(), data, int(packet.size()), frame.samples.data(), 960, 0) != 960) return false;
-    if (stream.frames.size() == 6) stream.frames.pop_front();
+    if (stream.frames.size() >= frameLimit) stream.frames.pop_front();
     stream.frames.push_back(std::move(frame));
+    if (stream.frames.size() > size_t(stream.playbackDelay / 20))
+        stream.readyAt = std::min(stream.readyAt, now);
     return true;
 }
 
@@ -197,23 +298,35 @@ std::vector<float> VoiceMixer::render(int sampleRate, qint64 now, const Playback
     const auto frameSamples = size_t(960 * channels_);
     std::array<float, 1920> mixed{};
     for (auto& [id, stream] : streams_) {
-        while (!stream.frames.empty() && now - stream.frames.front().received > 120) stream.frames.pop_front();
-        if (stream.frames.empty() && !filter) continue;
+        while (!stream.frames.empty() && now - stream.frames.front().received > 120 + stream.playbackDelay)
+            stream.frames.pop_front();
+        const bool ready = !stream.frames.empty() && now >= stream.readyAt;
+        if (!ready && !filter) continue;
         Frame frame;
         frame.received = now;
-        if (!stream.frames.empty()) { frame = std::move(stream.frames.front()); stream.frames.pop_front(); }
+        if (ready) {
+            frame = std::move(stream.frames.front()); stream.frames.pop_front();
+            stream.nextFrameAt = now + 20;
+        }
         if (filter) filter(id, std::span<float>(frame.samples.data(), frameSamples), now);
         double energy = 0;
         for (size_t i = 0; i < frameSamples; ++i) energy += double(frame.samples[i]) * frame.samples[i];
         const auto rms = std::sqrt(energy / frameSamples);
         stream.level = rms; stream.played = now;
+        const auto previousGain = stream.automaticGain;
         if (automatic_ && rms > 0.0032) {
             const auto target = std::clamp(0.1 / rms, 0.125, 8.0);
             const auto coefficient = target < stream.automaticGain ? 0.4 : 0.04;
             stream.automaticGain += coefficient * (target - stream.automaticGain);
         }
-        const auto gain = stream.gain * (automatic_ ? stream.automaticGain : 1.0);
-        for (size_t i = 0; i < frameSamples; ++i) mixed[i] += float(frame.samples[i] * gain);
+        auto gain = stream.gain * (automatic_ ? previousGain : 1.0);
+        const auto step = automatic_ ? stream.gain * (stream.automaticGain - previousGain) / 960 : 0.0;
+        // Keep automatic level changes continuous across decoded frame boundaries.
+        for (size_t i = 0; i < frameSamples; i += size_t(channels_)) {
+            gain += step;
+            for (int channel = 0; channel < channels_; ++channel)
+                mixed[i + size_t(channel)] += float(frame.samples[i + size_t(channel)] * gain);
+        }
     }
     float peak = 0;
     for (const auto sample : mixed) peak = std::max(peak, std::abs(sample));
@@ -246,7 +359,14 @@ VoiceMixer& VoiceMixer::setNoiseSuppression(double strength) {
     if (!std::isfinite(strength) || strength < 0 || strength > 1)
         throw std::invalid_argument(QT_TRANSLATE_NOOP("AudioModel", "Noise suppression strength must be between 0 and 1"));
     if (noiseSuppression_ == strength) return *this;
-    resetCapture();
+#ifdef SQUADSPEAK_DENOISE_CANDIDATE
+    if (strength > 0 && !neuralDenoiser_) {
+        neuralDenoiser_.reset(squad_denoise_create(channels_));
+        if (!neuralDenoiser_)
+            throw std::runtime_error(QT_TRANSLATE_NOOP("AudioModel", "Noise suppression could not be initialized"));
+    }
+#endif
+    if ((noiseSuppression_ == 0) != (strength == 0)) resetCapture();
     noiseSuppression_ = strength;
     return *this;
 }
@@ -255,7 +375,8 @@ VoiceMixer& VoiceMixer::setVoiceActivation(VoiceActivation activation) {
         throw std::invalid_argument(QT_TRANSLATE_NOOP("AudioModel", "Voice activation threshold must be between -80 and 0 dBFS"));
     if (activation_ == activation) return *this;
     activation_ = activation;
-    activationThresholdDb_ = activation.thresholdDb;
+    activationThresholdDb_ = activation.automatic && activation.minimumEnabled
+        ? std::max(activation.thresholdDb, activation.minimumDb) : activation.thresholdDb;
     return resetCapture();
 }
 VoiceMixer& VoiceMixer::remove(const QString& peer) {
@@ -268,9 +389,18 @@ VoiceMixer& VoiceMixer::resetCapture() {
     src_reset(inputConverter_.get());
     opus_encoder_ctl(encoder_.get(), OPUS_RESET_STATE);
     delayedCapture_.fill(0.0f);
+    delayedPreview_.fill(0.0f);
+    delayPosition_ = 0;
+#ifdef SQUADSPEAK_DENOISE_CANDIDATE
+    delayedNoise_.fill(0.0f);
+    if (neuralDenoiser_ && !squad_denoise_reset(neuralDenoiser_.get()))
+        throw std::runtime_error(QT_TRANSLATE_NOOP("AudioModel", "Noise suppression could not be initialized"));
+#endif
     preRoll_.clear();
     trailingFrames_ = 0;
     speechFrames_ = 0;
+    silenceFrames_ = 0;
+    speechProtection_ = 0;
     voiceActive_ = false;
     activationLevelDb_ = -96;
     transmitLevel_ = 0;

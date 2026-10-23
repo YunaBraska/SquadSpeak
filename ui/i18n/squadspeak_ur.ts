@@ -410,6 +410,14 @@
             <source>Auto also checks for speech, not just volume.</source>
             <translation>خودکار موڈ صرف آواز کی سطح نہیں، بول چال بھی پہچانتا ہے۔</translation>
         </message>
+        <message>
+            <source>Minimum</source>
+            <translation>کم از کم</translation>
+        </message>
+        <message>
+            <source>Auto will not lower the voice threshold below this level.</source>
+            <translation>خودکار وضع آواز کی حد کو اس سطح سے نیچے نہیں کرے گی۔</translation>
+        </message>
     </context>
     <context>
         <name>Channels</name>
@@ -2865,16 +2873,16 @@
             <translation>ہرٹز اور ڈی بی ایف ایس میں فریکوئنسی سپیکٹرم</translation>
         </message>
         <message>
-            <source>After gain / cuts</source>
-            <translation>ایمپلیفیکیشن اور فریکوئنسی فلٹرز کے بعد</translation>
+            <source>Processed</source>
+            <translation>پراسیس شدہ</translation>
         </message>
         <message>
             <source>Input: sound picked up by the microphone before gain and frequency cuts. Left is bass, right is treble; higher is louder.</source>
             <translation>ان پٹ: پروردن اور فریکوئنسی کٹس سے پہلے مائیکروفون کی پکڑی ہوئی آواز۔ بائیں باس، دائیں ٹریبل ہے؛ زیادہ اونچا یعنی زیادہ بلند ہے۔</translation>
         </message>
         <message>
-            <source>After gain / cuts: the measured spectrum after microphone gain and frequency filters. It does not identify a speaker.</source>
-            <translation>پروردن اور کٹس کے بعد: مائیکروفون پروردن اور فریکوئنسی فلٹرز کے بعد ناپا گیا اسپیکٹرم۔ یہ بولنے والے کی شناخت نہیں کرتا۔</translation>
+            <source>After all filters, before transmission.</source>
+            <translation>تمام فلٹرز کے بعد، بھیجنے سے پہلے۔</translation>
         </message>
         <message>
             <source>Filter curve: the configured change in level at each frequency, read on the right dB scale. It excludes noise reduction and voice activation.</source>

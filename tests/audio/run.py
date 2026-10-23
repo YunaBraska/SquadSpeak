@@ -27,21 +27,25 @@ def finite_number(value):
 
 
 def expected_cases(manifest, suite):
-    selected = [s for s in manifest["sources"] if suite == "extended" or s["id"] in manifest["smoke_sources"]]
+    selected = [s for s in manifest["sources"] if suite != "smoke" or s["id"] in manifest["smoke_sources"]]
     voices = [s["id"] for s in selected if s["kind"] == "speech"]
     noises = [s["id"] for s in selected if s["kind"] == "interference"]
     noises += [f"clicks-{ms}ms" for ms in manifest["synthetic_transients_ms"]]
-    config = manifest["extended"] if suite == "extended" else manifest
-    levels = config["mixture_peak_dbfs"] if suite == "extended" else [0]
+    config = manifest["extended"] if suite != "smoke" else manifest
+    levels = config["mixture_peak_dbfs"] if suite != "smoke" else [0]
+    if suite == "denoise":
+        noises = [s["id"] for s in selected if s.get("category") == "keyboard" or s["id"] == "breathing-deep"]
     result = {"silence": ("", "", None, None)}
     for level in levels:
-        suffix = f"-peak{level}" if suite == "extended" else ""
+        suffix = f"-peak{level}" if suite != "smoke" else ""
         for voice in voices:
             result[voice + "-clean" + suffix] = (voice, "", None, level)
         for noise in noises:
             result[noise + "-only" + suffix] = ("", noise, None, level)
+            if suite == "denoise" and level != -6:
+                continue
             for voice in voices:
-                for snr in config["snr_db"]:
+                for snr in ([0, 10] if suite == "denoise" else config["snr_db"]):
                     result[f"{voice}-{noise}-snr{snr}{suffix}"] = (voice, noise, snr, level)
     return result
 
@@ -149,7 +153,7 @@ def main():
     parser.add_argument("--declipping-ffmpeg", type=Path, help="Evaluate FFmpeg reconstruction instead of the app matrix.")
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--workers", type=int, default=min(4, os.cpu_count() or 1))
-    parser.add_argument("--suite", choices=("smoke", "extended"), default="extended")
+    parser.add_argument("--suite", choices=("smoke", "extended", "denoise"), default="extended")
     args = parser.parse_args()
     if not 1 <= args.workers <= 64:
         parser.error("--workers must be between 1 and 64")
@@ -200,7 +204,8 @@ def main():
             env.update(SQUAD_CORPUS_SUITE=args.suite, SQUAD_CORPUS_SHARD=str(shard),
                        SQUAD_CORPUS_SHARDS=str(args.workers), SQUAD_CORPUS_OUTPUT=str(folder),
                        SQUAD_CORPUS_EXPORT="0")
-            processes.append(subprocess.Popen([str(binary)], env=env, stdout=log, stderr=subprocess.STDOUT))
+            command = [str(binary)] + (["mixtures"] if args.suite == "denoise" else [])
+            processes.append(subprocess.Popen(command, env=env, stdout=log, stderr=subprocess.STDOUT))
         remaining = set(range(len(processes)))
         while remaining:
             for shard in sorted(remaining):
@@ -223,6 +228,8 @@ def main():
                         or worker["selected_case_count"] != len(worker["cases"])):
                     raise ValueError("Worker metadata/coverage mismatch")
                 codec = {key: worker[key] for key in ("sample_rate", "opus_version", "opus_delay_samples", "rnnoise_delay_samples")}
+                codec["suppression_delay_samples"] = worker.get("suppression_delay_samples", worker["rnnoise_delay_samples"])
+                codec["denoiser"] = worker.get("denoiser", "RNNoise")
                 if "codec" in report and report["codec"] != codec:
                     raise ValueError("Worker codec metadata mismatch")
                 report["codec"] = codec
@@ -239,13 +246,13 @@ def main():
                     numeric = ["common_headroom_gain", "input_peak_dbfs", "speech_rms_dbfs", "interference_rms_dbfs"]
                     if snr is not None:
                         numeric.append("input_snr_db")
-                    if args.suite == "extended" and level is not None:
+                    if args.suite != "smoke" and level is not None:
                         numeric.append("target_peak_dbfs")
                     if any(not finite_number(row.get(key)) for key in numeric):
                         raise ValueError("Missing or non-finite input measurements: " + ident)
                     if snr is not None and abs(row["input_snr_db"] - snr) >= 0.001:
                         raise ValueError("Incorrect SNR: " + ident)
-                    if args.suite == "extended" and level is not None:
+                    if args.suite != "smoke" and level is not None:
                         if row["target_peak_dbfs"] != level or abs(row["input_peak_dbfs"] - level) >= 0.001:
                             raise ValueError("Incorrect absolute level: " + ident)
                     if [v["suppression_percent"] for v in row["variants"]] != [0, 50, 100]:

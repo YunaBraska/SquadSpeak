@@ -182,7 +182,7 @@ PanelWindow {
     readonly property bool compactInput: mobileKeyboard && height < 360
     property Item conversationSlot: null
     property double avatarTime: Date.now()
-    Timer { interval: Atlas.frameInterval(); running: root.visible && root.voice.animatedAvatars; repeat: true; onTriggered: root.avatarTime = Date.now() }
+    Timer { interval: root.voice.animatedAvatars ? Atlas.frameInterval() : 80; running: root.visible; repeat: true; onTriggered: root.avatarTime = Date.now() }
     readonly property bool showChat: chatExpanded && inspectedHost.length > 0
     onInspectedHostChanged: {
         chatExpanded = true
@@ -1350,7 +1350,11 @@ PanelWindow {
                 RowLayout {
                     Layout.fillWidth: true
                     VoiceAvatar { objectName: "requestAvatar"; width: 56; height: 56; circular: true; animated: false; avatar: requestInfo.entry.avatarId || "mossling"; name: requestInfo.entry.name || ""; teamSpeak: !!requestInfo.entry.teamSpeak }
-                    DetailText { objectName: "requestName"; text: requestInfo.entry.name || ""; font.weight: Font.DemiBold }
+                    ColumnLayout {
+                        Layout.fillWidth: true; spacing: 2
+                        DetailText { objectName: "requestName"; text: requestInfo.entry.name || ""; font.weight: Font.DemiBold }
+                        DetailText { objectName: "requestClient"; visible: !!requestInfo.entry.id && !requestInfo.entry.music; text: requestInfo.entry.teamSpeak ? "TeamSpeak" : "SquadSpeak"; color: Theme.muted; font.pixelSize: 12 }
+                    }
                     ActionButton {
                         objectName: "messageInspectedMember"
                         text: qsTr("Message"); glyph: "chat"; iconOnly: true; flat: true

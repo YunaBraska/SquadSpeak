@@ -33,11 +33,100 @@
 #include <QSet>
 #include <QtEndian>
 #include <algorithm>
+#include <memory>
 #include <stdexcept>
 
 namespace {
+qsizetype closingDelimiter(const QString& text, qsizetype start, QChar open, QChar close) {
+    int depth = 0;
+    QChar quote;
+    for (auto i = start; i < text.size(); ++i) {
+        const auto c = text[i];
+        if (c == '\\') { ++i; continue; }
+        if (!quote.isNull()) { if (c == quote) quote = {}; continue; }
+        if (open == '(' && (c == '<' || ((c == '\'' || c == '"') && i > start && text[i - 1].isSpace()))) {
+            quote = c == '<' ? QChar('>') : c; continue;
+        }
+        if (c == open) ++depth;
+        else if (c == close && --depth == 0) return i;
+    }
+    return -1;
+}
+
 class DisplayDocument final : public QTextDocument {
     QVariant loadResource(int, const QUrl&) override { return {}; }
+public:
+    void setChatMarkdown(const QString& markdown) {
+        const auto features = MarkdownFeatures(MarkdownDialectGitHub) | MarkdownNoHTML;
+        QTextDocument::setMarkdown(markdown, features);
+        struct Image { int position; int length; QTextImageFormat format; };
+        QList<Image> images;
+        QString marker = "imageLabelMarker";
+        while (markdown.contains(marker)) marker += 'x';
+        // Qt inserts an image for each alt-text token (escapes, entities or
+        // emphasis). Let the same parser prove the image's exact document span
+        // using a single-token label. Never merge images merely sharing a URL.
+        for (auto start = markdown.indexOf("!["); start >= 0; start = markdown.indexOf("![", start + 2)) {
+            const auto end = closingDelimiter(markdown, start + 1, '[', ']');
+            if (end < 0) continue;
+            auto candidate = markdown;
+            const auto label = markdown.mid(start + 2, end - start - 2);
+            if (std::none_of(label.begin(), label.end(), [](QChar c) {
+                    return QStringView(u"\\&*_~`!\n").contains(c);
+                })) continue;
+            auto replacement = "![" + marker + ']';
+            const auto next = end + 1;
+            auto consumed = end - start + 1;
+            if (markdown.mid(next, 2) == "[]") {
+                replacement += '[' + label + ']';
+                consumed = next + 2 - start;
+            } else if (next == markdown.size() || (markdown[next] != '(' && markdown[next] != '[')) {
+                replacement += '[' + label + ']';
+            }
+            candidate.replace(start, consumed, replacement);
+            DisplayDocument probe;
+            probe.setDefaultFont(defaultFont());
+            probe.QTextDocument::setMarkdown(candidate, features);
+            const auto excess = characterCount() - probe.characterCount();
+            if (excess <= 0) continue;
+            for (auto block = probe.begin(); block.isValid(); block = block.next())
+                for (auto it = block.begin(); !it.atEnd(); ++it) {
+                    const auto fragment = it.fragment();
+                    if (!fragment.charFormat().isImageFormat()
+                        || fragment.charFormat().stringProperty(QTextFormat::ImageAltText) != marker
+                        || fragment.position() + excess >= characterCount() - 1) continue;
+                    auto format = fragment.charFormat().toImageFormat();
+                    QString description;
+                    bool sameImage = true;
+                    for (int position = fragment.position(); position <= fragment.position() + excess; ++position) {
+                        QTextCursor cursor(this);
+                        cursor.setPosition(position); cursor.setPosition(position + 1, QTextCursor::KeepAnchor);
+                        const auto part = cursor.charFormat();
+                        if (part.isImageFormat()) {
+                            if (part.toImageFormat().name() != format.name()) { sameImage = false; break; }
+                            description += part.stringProperty(QTextFormat::ImageAltText);
+                        } else {
+                            description += cursor.selectedText();
+                        }
+                    }
+                    if (!sameImage) continue;
+                    std::unique_ptr<QTextDocument> comparison(clone());
+                    QTextCursor cursor(comparison.get());
+                    cursor.setPosition(fragment.position());
+                    cursor.setPosition(fragment.position() + excess + 1, QTextCursor::KeepAnchor);
+                    cursor.insertImage(format);
+                    if (comparison->toHtml() != probe.toHtml()) continue;
+                    format.setProperty(QTextFormat::ImageAltText, description);
+                    images.append({fragment.position(), excess + 1, format});
+                    start = end;
+                }
+        }
+        for (auto it = images.crbegin(); it != images.crend(); ++it) {
+            QTextCursor cursor(this);
+            cursor.setPosition(it->position); cursor.setPosition(it->position + it->length, QTextCursor::KeepAnchor);
+            cursor.insertImage(it->format);
+        }
+    }
 };
 }
 
@@ -56,8 +145,7 @@ QString ChatContent::plainText(const QVariantMap& message) const {
     if (kind == "banned") return tr("%1 was banned from the channel.").arg(name);
     if (!kind.isEmpty() && kind != "announcement") return message.value("text").toString();
     DisplayDocument document;
-    document.setMarkdown(message.value("text").toString(),
-        QTextDocument::MarkdownFeatures(QTextDocument::MarkdownDialectGitHub) | QTextDocument::MarkdownNoHTML);
+    document.setChatMarkdown(message.value("text").toString());
     return document.toPlainText();
 }
 
@@ -70,7 +158,7 @@ QString ChatContent::format(const QString& markdown, const QVariantMap& attachme
                             const QColor& codeBackground, const QFont& font) const {
     DisplayDocument document;
     document.setDefaultFont(font);
-    document.setMarkdown(markdown, QTextDocument::MarkdownFeatures(QTextDocument::MarkdownDialectGitHub) | QTextDocument::MarkdownNoHTML);
+    document.setChatMarkdown(markdown);
     auto codeFont = QFontDatabase::systemFont(QFontDatabase::FixedFont);
     codeFont.setStyleHint(QFont::Monospace);
     codeFont.setFixedPitch(true);
@@ -180,23 +268,8 @@ QString ChatContent::embedImage(const QString& markdown, const QByteArray& image
         bool replaced = false;
         // Locate candidate image syntax, then let Qt prove that replacing it
         // changes only this image. Code, links and reference definitions stay intact.
-        const auto closing = [&result](qsizetype start, QChar open, QChar close) {
-            int depth = 0;
-            QChar quote;
-            for (auto i = start; i < result.size(); ++i) {
-                const auto c = result[i];
-                if (c == '\\') { ++i; continue; }
-                if (!quote.isNull()) { if (c == quote) quote = {}; continue; }
-                if (open == '(' && (c == '<' || ((c == '\'' || c == '"') && i > start && result[i - 1].isSpace()))) {
-                    quote = c == '<' ? QChar('>') : c; continue;
-                }
-                if (c == open) ++depth;
-                else if (c == close && --depth == 0) return i;
-            }
-            return qsizetype(-1);
-        };
         for (auto start = result.indexOf("![", search); start >= 0 && !replaced; start = result.indexOf("![", start + 2)) {
-            const auto label = closing(start + 1, '[', ']');
+            const auto label = closingDelimiter(result, start + 1, '[', ']');
             if (label < 0) continue;
             const auto replacement = result.mid(start, label - start + 1) + '(' + reference
                 + (title.isEmpty() ? QString{} : " \"" + title + '"') + ')';
@@ -204,7 +277,7 @@ QString ChatContent::embedImage(const QString& markdown, const QByteArray& image
             auto next = label + 1;
             while (next < result.size() && result[next].isSpace()) ++next;
             if (next < result.size() && (result[next] == '(' || result[next] == '[')) {
-                const auto end = closing(next, result[next], result[next] == '(' ? ')' : ']');
+                const auto end = closingDelimiter(result, next, result[next], result[next] == '(' ? ')' : ']');
                 if (end >= 0) ends.append(end);
             }
             for (const auto end : ends) {

@@ -410,6 +410,14 @@
             <source>Auto also checks for speech, not just volume.</source>
             <translation>Automaatrežiim kontrollib ka kõnet, mitte ainult helitugevust.</translation>
         </message>
+        <message>
+            <source>Minimum</source>
+            <translation>Alampiir</translation>
+        </message>
+        <message>
+            <source>Auto will not lower the voice threshold below this level.</source>
+            <translation>Automaatrežiim ei langeta hääleläve sellest tasemest madalamale.</translation>
+        </message>
     </context>
     <context>
         <name>Channels</name>
@@ -2865,16 +2873,16 @@
             <translation>Sagedusspektri (hertsi ja dBFS)</translation>
         </message>
         <message>
-            <source>After gain / cuts</source>
-            <translation>Pärast võimendust / summutust</translation>
+            <source>Processed</source>
+            <translation>Töödeldud</translation>
         </message>
         <message>
             <source>Input: sound picked up by the microphone before gain and frequency cuts. Left is bass, right is treble; higher is louder.</source>
             <translation>Sisend: Mikrofoni poolt kogunenud heli enne võimendust ja sagedussummutust. Vasakul bass, paremal kõrgeid toone; kõrgem tase tähendab suuremat helitugevust.</translation>
         </message>
         <message>
-            <source>After gain / cuts: the measured spectrum after microphone gain and frequency filters. It does not identify a speaker.</source>
-            <translation>Pärast tugevdust/summutust: mõõdetud spektraalne andmete näit, mis saadakse mikrofoni tugevduse ja sagedusfilterite abil. See ei identifitseeri kõnelejat.</translation>
+            <source>After all filters, before transmission.</source>
+            <translation>Pärast kõiki filtreid, enne edastamist.</translation>
         </message>
         <message>
             <source>Filter curve: the configured change in level at each frequency, read on the right dB scale. It excludes noise reduction and voice activation.</source>

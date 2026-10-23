@@ -205,7 +205,7 @@ int main(int argc, char** argv) {
         updateReadiness();
         const auto updateVoice = [&audio, &channel, &session] {
             audio.setVoiceState(channel.joined() || !channel.audioSources().isEmpty(),
-                channel.joined() && session.transmissionAllowed(), session.pushToTalk());
+                channel.joined() && session.transmissionAllowed(), session.pushToTalk(), channel.audioPacketLimit());
             audio.setDeafened(session.deafened());
         };
         QObject::connect(&channel, &LocalChannel::stateChanged, &audio, updateVoice);
@@ -215,6 +215,9 @@ int main(int argc, char** argv) {
         });
         QObject::connect(&channel, &LocalChannel::audioReceived, &audio, &AudioModel::receiveAudio);
         QObject::connect(&audio, &AudioModel::audioPacket, &channel, &LocalChannel::sendAudio);
+        QObject::connect(&audio, &AudioModel::activityChanged, &channel, [&] {
+            if (!audio.voiceSending()) channel.sendAudio({});
+        });
         QObject::connect(&channel, &LocalChannel::channelEvent, &audio, [&](const QString& kind) {
             const bool spoken = audio.botSpeechReady() && channel.joined() && kind != "leave" && kind != "request";
             if (session.eventSounds() && !spoken) audio.playEvent(kind);

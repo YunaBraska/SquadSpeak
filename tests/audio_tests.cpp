@@ -476,7 +476,7 @@ private slots:
                 if (offset + i >= delay) capture[i] = reference[size_t(offset + i - delay)] * 0.5f;
             for (auto sample : capture) analysis.observeInput(sample);
             const auto output = echo.capture(capture, rate, frame * 10, 0);
-            for (auto sample : output) (void)analysis.filter(sample);
+            for (auto sample : output) analysis.observeOutput(analysis.filter(sample));
             QCOMPARE(output.size(), capture.size());
             if (frame < 400) continue;
             for (auto value : capture) inputEnergy += value * value;
@@ -597,7 +597,7 @@ private slots:
         // Upstream frame buffering changes output size and timing. It must not
         // change the raw spectrum or conceal the full-scale device sample.
         for (int i = 0; i < 4800; ++i)
-            (void)buffered.filter(float(0.04 * std::sin(2 * std::numbers::pi * 730 * i / 48000)));
+            buffered.observeOutput(buffered.filter(float(0.04 * std::sin(2 * std::numbers::pi * 730 * i / 48000))));
         const auto levels = buffered.levels(), original = raw.levels();
         QCOMPARE(levels.inputDb, original.inputDb);
         QCOMPARE(levels.inputSpectrum, original.inputSpectrum);
@@ -607,7 +607,7 @@ private slots:
         QVERIFY(levels.outputDb < -35 && levels.outputDb > -38);
         QVERIFY(levels.outputSpectrum != levels.inputSpectrum);
         squad::AudioProcessor outputOnly(48000);
-        (void)outputOnly.filter(0.1f);
+        outputOnly.observeOutput(outputOnly.filter(0.1f));
         QCOMPARE(outputOnly.levels().inputDb, -96.0);
         QVERIFY(std::abs(outputOnly.levels().outputDb + 20) < 0.001);
         QVERIFY(!outputOnly.levels().spectrumReady);
@@ -842,6 +842,25 @@ private slots:
         QCOMPARE(audio.levels().strongestHz, 0.0);
     }
 
+    void stereoSpectraPreserveOppositePhaseAndIndependentTones() {
+        squad::AudioProcessor same(48000), opposite(48000), independent(48000);
+        for (int i = 0; i < 12000; ++i) {
+            const auto left = float(0.2 * std::sin(2 * std::numbers::pi * 440 * i / 48000));
+            const auto right = float(0.2 * std::sin(2 * std::numbers::pi * 3000 * i / 48000));
+            same.observeInput({left, left}).observeOutput({left, left});
+            opposite.observeInput({left, -left}).observeOutput({left, -left});
+            independent.observeInput({left, right}).observeOutput({left, right});
+        }
+        QCOMPARE(same.levels().inputSpectrum, opposite.levels().inputSpectrum);
+        QCOMPARE(same.levels().outputSpectrum, opposite.levels().outputSpectrum);
+        const auto levels = independent.levels();
+        const auto bin = [](double hz) { return size_t(std::round(std::log(hz / 20) / std::log(1000) * 255)); };
+        QVERIFY(levels.inputSpectrum[bin(440)] > -24);
+        QVERIFY(levels.inputSpectrum[bin(3000)] > -24);
+        QVERIFY(levels.inputSpectrum[bin(1500)] < -70);
+        QCOMPARE(levels.inputSpectrum, levels.outputSpectrum);
+    }
+
     void spectrumFindsTonesBetweenFormerMeasurementPoints_data() {
         QTest::addColumn<double>("frequency");
         for (double frequency : {110.0, 220.0, 1000.0, 5000.0, 14000.0})
@@ -1062,8 +1081,9 @@ private slots:
             const auto initial = profiles.voiceActivation("microphone");
             QVERIFY(initial.enabled);
             QVERIFY(initial.automatic);
+            QVERIFY(!initial.minimumEnabled); QCOMPARE(initial.minimumDb, -45);
             profiles.saveVoiceActivation("microphone", {true, false, -38});
-            profiles.saveVoiceActivation("headset", {true, true, -48});
+            profiles.saveVoiceActivation("headset", {true, true, -48, true, -35});
             profiles.saveVoiceActivation("disabled", {false, false, -40});
             QVERIFY_THROWS_EXCEPTION(std::invalid_argument, profiles.saveVoiceActivation("headset", {true, true, -90}));
         }
@@ -1072,15 +1092,24 @@ private slots:
         QVERIFY(manual.enabled); QVERIFY(!manual.automatic); QCOMPARE(manual.thresholdDb, -38);
         const auto automatic = restored.voiceActivation("headset");
         QVERIFY(automatic.enabled); QVERIFY(automatic.automatic); QCOMPARE(automatic.thresholdDb, -48);
+        QVERIFY(automatic.minimumEnabled); QCOMPARE(automatic.minimumDb, -35);
+        QVERIFY(!manual.minimumEnabled);
+        QVERIFY(!restored.voiceActivation("new-device").minimumEnabled);
         QVERIFY(restored.voiceActivation("new-device").enabled);
         QVERIFY(!restored.voiceActivation("disabled").enabled);
+        for (const auto& [key, value] : QList<QPair<QString, QVariant>>{{"minimumDb", "invalid"}, {"minimumDb", -81}, {"minimumEnabled", "maybe"}}) {
+            QSettings malformed(path, QSettings::IniFormat);
+            malformed.setValue("input/68656164736574/activation/" + key, value); malformed.sync();
+            QVERIFY_THROWS_EXCEPTION(std::runtime_error, squad::AudioProfiles(path).voiceActivation("headset"));
+            malformed.remove("input/68656164736574/activation/" + key); malformed.sync();
+        }
     }
     void noiseSuppressionIsOptionalPersistentAndDeviceBound() {
         QTemporaryDir directory;
         const auto filename = directory.filePath("profiles.ini");
         {
             squad::AudioProfiles profiles(filename);
-            QCOMPARE(profiles.noiseSuppression("microphone"), 1.0);
+            QCOMPARE(profiles.noiseSuppression("microphone"), 0.5);
             profiles.saveNoiseSuppression("microphone", 0.65).saveNoiseSuppression("headset", 0.3);
             profiles.saveInput("microphone", {6, 80, 9000}).saveOutput("microphone", 0.2);
             profiles.select(true, "headset");
@@ -1088,7 +1117,7 @@ private slots:
         squad::AudioProfiles restored(filename);
         QCOMPARE(restored.noiseSuppression("microphone"), 0.65);
         QCOMPARE(restored.noiseSuppression("headset"), 0.3);
-        QCOMPARE(restored.noiseSuppression("new-device"), 1.0);
+        QCOMPARE(restored.noiseSuppression("new-device"), 0.5);
         QCOMPARE(restored.output("microphone"), 0.2);
         restored.saveNoiseSuppression("headset", 0);
         QCOMPARE(restored.noiseSuppression("headset"), 0.0);
@@ -1137,7 +1166,7 @@ private slots:
         QVERIFY_THROWS_EXCEPTION(std::runtime_error, profiles.saveBotVoice("a", "voice"));
         QCOMPARE(profiles.botVoice("a"), QString{});
         QVERIFY_THROWS_EXCEPTION(std::runtime_error, profiles.saveNoiseSuppression("a", 0));
-        QCOMPARE(profiles.noiseSuppression("a"), 1.0);
+        QCOMPARE(profiles.noiseSuppression("a"), 0.5);
         QVERIFY_THROWS_EXCEPTION(std::runtime_error, profiles.select(true, "a"));
         QCOMPARE(profiles.selection(true), QByteArray{});
     }

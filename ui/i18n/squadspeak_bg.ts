@@ -410,6 +410,14 @@
             <source>Auto also checks for speech, not just volume.</source>
             <translation>Автоматичният режим проверява и за реч, не само силата на звука.</translation>
         </message>
+        <message>
+            <source>Minimum</source>
+            <translation>Минимум</translation>
+        </message>
+        <message>
+            <source>Auto will not lower the voice threshold below this level.</source>
+            <translation>Автоматичният режим няма да понижава прага за глас под това ниво.</translation>
+        </message>
     </context>
     <context>
         <name>Channels</name>
@@ -2865,16 +2873,16 @@
             <translation>Честотен спектър в херци и dBFS</translation>
         </message>
         <message>
-            <source>After gain / cuts</source>
-            <translation>След усилване / изрязване</translation>
+            <source>Processed</source>
+            <translation>Обработен</translation>
         </message>
         <message>
             <source>Input: sound picked up by the microphone before gain and frequency cuts. Left is bass, right is treble; higher is louder.</source>
             <translation>Вход: Звук, улавян от микрофона преди усилването и изрязването на честоти. Ляво е бас, дясно е високи честоти; по-високо означава по-силен.</translation>
         </message>
         <message>
-            <source>After gain / cuts: the measured spectrum after microphone gain and frequency filters. It does not identify a speaker.</source>
-            <translation>След усилване/намаляване: измереният спектър след прилагане на усилване на микрофона и филтри. Не идентифицира говорител.</translation>
+            <source>After all filters, before transmission.</source>
+            <translation>След всички филтри, преди предаване.</translation>
         </message>
         <message>
             <source>Filter curve: the configured change in level at each frequency, read on the right dB scale. It excludes noise reduction and voice activation.</source>

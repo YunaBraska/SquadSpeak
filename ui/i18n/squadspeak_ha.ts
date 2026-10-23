@@ -410,6 +410,14 @@
             <source>Auto also checks for speech, not just volume.</source>
             <translation>Yanayin atomatik yana gano magana ma, ba ƙarar sauti kawai ba.</translation>
         </message>
+        <message>
+            <source>Minimum</source>
+            <translation>Mafi ƙanƙanta</translation>
+        </message>
+        <message>
+            <source>Auto will not lower the voice threshold below this level.</source>
+            <translation>Yanayin atomatik ba zai rage iyakar murya ƙasa da wannan matakin ba.</translation>
+        </message>
     </context>
     <context>
         <name>Channels</name>
@@ -2865,16 +2873,16 @@
             <translation>Tasirin raɗun juju a cikin haɓakaƙuwa da dBFS</translation>
         </message>
         <message>
-            <source>After gain / cuts</source>
-            <translation>Bayan ƙarawar / raguwar sauti</translation>
+            <source>Processed</source>
+            <translation>An tace</translation>
         </message>
         <message>
             <source>Input: sound picked up by the microphone before gain and frequency cuts. Left is bass, right is treble; higher is louder.</source>
             <translation>Shigarwa: Saunin da makirufo ya ɗauka, kafin ƙara ko rage raɗun juju. Hagu na bass, dama na treble; mafi girma maɗa.</translation>
         </message>
         <message>
-            <source>After gain / cuts: the measured spectrum after microphone gain and frequency filters. It does not identify a speaker.</source>
-            <translation>Bayan ƙara/rage: Ƙididdigar firigiston da aka ajiye, bayan canza ƙarfin mikrofoni da kuma filters na frekuwensi. Ba ta tabbatar da mai magana ba.</translation>
+            <source>After all filters, before transmission.</source>
+            <translation>Bayan duk matatun sauti, kafin aikawa.</translation>
         </message>
         <message>
             <source>Filter curve: the configured change in level at each frequency, read on the right dB scale. It excludes noise reduction and voice activation.</source>

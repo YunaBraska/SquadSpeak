@@ -42,6 +42,7 @@ class DatagramLink final : public QObject {
 public:
     bool blocked = false, corrupt = false;
     int audioPackets = 0, dropEvery = 0;
+    bool bindingAnswered = false;
     QByteArray lastAudio, lastBinding;
     explicit DatagramLink(quint16 target) : target_(target) {
         if (!socket_.bind(QHostAddress::LocalHost)) throw std::runtime_error("UDP fixture cannot bind");
@@ -52,6 +53,8 @@ public:
                 if (!downstream) client_ = quint16(datagram.senderPort());
                 if (blocked) continue;
                 auto bytes = datagram.data();
+                if (downstream && bytes.size() >= 20 && bytes.first(2) == QByteArray::fromHex("0101"))
+                    bindingAnswered = true;
                 if (!downstream && bytes.size() >= 20 && bytes.first(2) == QByteArray::fromHex("0001"))
                     lastBinding = bytes;
                 const bool audio = bytes.size() > 12 && (quint8(bytes[0]) >> 6) == 2 && (quint8(bytes[1]) & 127) == 111;
@@ -65,7 +68,6 @@ public:
         });
     }
     quint16 port() const { return socket_.localPort(); }
-    bool receivedClientData() const { return client_ != 0; }
     void setTarget(quint16 target) { target_ = target; }
     qint64 sendToHost(const QByteArray& bytes) { return socket_.writeDatagram(bytes, QHostAddress::LocalHost, target_); }
     void replay() { socket_.writeDatagram(lastAudio, QHostAddress::LocalHost, client_); }
@@ -251,8 +253,8 @@ private slots:
             connect(pair.first, &Transport::signaling, pair.second, [peer = pair.second](const auto& message) { QVERIFY(peer->receive(message)); });
             connect(pair.second, &Transport::signaling, pair.first, [peer = pair.first](const auto& message) { QVERIFY(peer->receive(message)); });
         }
-        QTRY_VERIFY_WITH_TIMEOUT(firstHost.udpActive() && firstClient.udpActive()
-            && secondHost.udpActive() && secondClient.udpActive(), 10000);
+        QVERIFY(waitForEvents([&] { return firstHost.udpActive() && firstClient.udpActive()
+            && secondHost.udpActive() && secondClient.udpActive(); }, 10000));
         auto forged = secondLink.lastBinding;
         QVERIFY(forged.size() > 52);
         QCOMPARE(forged.sliced(forged.size() - 8, 4), QByteArray::fromHex("80280004"));
@@ -262,16 +264,21 @@ private slots:
         qToBigEndian<quint16>(quint16(forged.size() - 20), forged.data() + 2);
         SendGate rejected("STUN integrity check failed"); rejected.release();
         QCOMPARE(firstLink.sendToHost(forged), forged.size());
-        QTRY_VERIFY_WITH_TIMEOUT(rejected.entered(), 1000);
+        QVERIFY(waitForEvents([&] { return rejected.entered(); }, 1000));
         QSignalSpy firstReceived(&firstHost, &Transport::datagramReceived);
         QSignalSpy secondReceived(&secondHost, &Transport::datagramReceived);
+        // Liveness expires independently for each peer. Service both relays
+        // continuously and wait for the sender's current readiness before use.
+        QVERIFY(waitForEvents([&] { return firstClient.udpActive(); }));
         QVERIFY(firstClient.sendDatagram("original peer"));
-        QTRY_COMPARE_WITH_TIMEOUT(firstReceived.size(), 1, 1000);
+        QVERIFY(waitForEvents(&firstHost, &Transport::datagramReceived, [&] { return firstReceived.size() == 1; }));
         QCOMPARE(firstReceived.first().first().toByteArray(), QByteArray("original peer"));
         QCOMPARE(secondReceived.size(), 0);
+        QVERIFY(waitForEvents([&] { return secondClient.udpActive(); }));
         QVERIFY(secondClient.sendDatagram("other peer"));
-        QTRY_COMPARE_WITH_TIMEOUT(secondReceived.size(), 1, 1000);
+        QVERIFY(waitForEvents(&secondHost, &Transport::datagramReceived, [&] { return secondReceived.size() == 1; }));
         QCOMPARE(secondReceived.first().first().toByteArray(), QByteArray("other peer"));
+        QCOMPARE(firstReceived.size(), 1);
     }
 
     void dataDatagramsReleaseQueuedMessagesWhenPeerCloses_data() {
@@ -314,7 +321,7 @@ private slots:
         QJsonObject answer;
         connect(&host, &squad::MediaTransport::signaling, &client, [&](const auto& message) { QVERIFY(client.receive(message)); });
         connect(&client, &squad::MediaTransport::signaling, &host, [&](const auto& message) { answer = message; });
-        QTRY_VERIFY_WITH_TIMEOUT(!answer.isEmpty() && link.receivedClientData(), 5000);
+        QVERIFY(waitForEvents([&] { return !answer.isEmpty() && link.bindingAnswered; }, 5000));
         QVERIFY(host.receive(answer));
         QTRY_VERIFY_WITH_TIMEOUT(host.udpActive() && client.udpActive(), 10000);
         QSignalSpy received(&client, &squad::MediaTransport::datagramReceived);
@@ -409,14 +416,22 @@ private slots:
         link.blocked = false; QTRY_VERIFY_WITH_TIMEOUT(host.udpActive() && client.udpActive(), 5000);
         QVERIFY(host.send(first, packet)); QTRY_COMPARE(heard.size(), 4); QCOMPARE(fallback, 1); QVERIFY(valid);
     }
+    void prolongedBlockedUdpRenegotiatesWithoutLosingReliableAudio_data() {
+        QTest::addColumn<int>("recoverAt");
+        QTest::newRow("first-attempt") << 1;
+        QTest::newRow("backoff") << 2;
+    }
     void prolongedBlockedUdpRenegotiatesWithoutLosingReliableAudio() {
+        QFETCH(int, recoverAt);
+        QElapsedTimer recoveryClock; recoveryClock.start();
+        QList<qint64> attempts;
         DatagramLink link(0); link.blocked = true;
         const auto port = availableUdpPort(); QVERIFY(port); link.setTarget(port);
         squad::MediaTransport host(true, port, QHostAddress::LocalHost, 0);
         squad::MediaTransport client(false, 0, QHostAddress::LocalHost, link.port());
         int restarts = 0, fallback = 0;
         connect(&host, &squad::MediaTransport::signaling, &client, [&](const auto& message) {
-            if (message.value("kind") == "restart") { ++restarts; link.blocked = false; }
+            if (message.value("kind") == "restart") { attempts.append(recoveryClock.elapsed()); ++restarts; link.blocked = restarts < recoverAt; }
             fallback += message.value("kind") == "frame";
             QVERIFY(client.receive(message));
         });
@@ -428,8 +443,10 @@ private slots:
         const auto packet = speech();
         QVERIFY(host.send(first, packet)); QTRY_COMPARE(heard.size(), 1);
         QCOMPARE(fallback, 1);
-        QTRY_VERIFY_WITH_TIMEOUT(host.udpActive() && client.udpActive(), 38000);
-        QCOMPARE(restarts, 1);
+        QVERIFY(waitForEvents([&] { return host.udpActive() && client.udpActive(); }, recoverAt == 1 ? 10000 : 22000));
+        QCOMPARE(restarts, recoverAt);
+        QVERIFY(attempts.first() >= 5000);
+        if (recoverAt == 2) QVERIFY(attempts.last() - attempts.first() >= 10000);
         QVERIFY(host.send(first, packet)); QTRY_COMPARE(heard.size(), 2);
         QCOMPARE(fallback, 1); QCOMPARE(heard.last().at(2).toInt(), 0);
         // Simulate an overloaded UI thread that cannot service probe callbacks.
@@ -437,7 +454,7 @@ private slots:
         QVERIFY(!client.udpActive());
         // Duplicate and late restart messages do not tear down the recovered path.
         QSignalSpy renegotiation(&client, &squad::MediaTransport::signaling);
-        QVERIFY(client.receive({{"kind", "restart"}, {"epoch", 1}}));
+        QVERIFY(client.receive({{"kind", "restart"}, {"epoch", recoverAt}}));
         QVERIFY(client.receive({{"kind", "restart"}, {"epoch", 0}}));
         // A delayed test callback can age the 300 ms liveness probe. Wait for
         // a fresh acknowledgement, but reject any actual renegotiation.
@@ -728,12 +745,14 @@ private slots:
         QVERIFY(owner.setScreenSharing(true));
         QVERIFY(guest.openChat(owner.ownId(), "127.0.0.1", owner.port())); QTRY_VERIFY(guest.chatReady());
         QTRY_VERIFY(guest.screenInfo(owner.ownId()).value("available").toBool());
-        const auto port = availableUdpPort(); QVERIFY(port);
+        // Use the host's existing shared endpoint, as additional channels do.
+        // A separately probed, then released port is not reserved for this pair.
+        const auto port = owner.port();
         squad::MediaTransport sender(true, port, QHostAddress::LocalHost, 0);
         squad::MediaTransport receiver(false, 0, QHostAddress::LocalHost, port);
         connect(&sender, &squad::MediaTransport::signaling, &receiver, [&](const auto& m) { QVERIFY(receiver.receive(m)); });
         connect(&receiver, &squad::MediaTransport::signaling, &sender, [&](const auto& m) { QVERIFY(sender.receive(m)); });
-        QTRY_VERIFY(sender.udpActive() && receiver.udpActive());
+        QTRY_VERIFY2(sender.udpActive() && receiver.udpActive(), qPrintable(QString("UDP handshake on host port %1").arg(port)));
         const auto packet = speech();
         QSignalSpy delivered(&receiver, &squad::MediaTransport::audio);
         QVERIFY(sender.send(first, packet)); QTRY_COMPARE(delivered.size(), 1);

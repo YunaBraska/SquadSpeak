@@ -410,6 +410,14 @@
             <source>Auto also checks for speech, not just volume.</source>
             <translation>ऑटो केवळ आवाजाची पातळी नाही, तर बोलणेही ओळखतो.</translation>
         </message>
+        <message>
+            <source>Minimum</source>
+            <translation>किमान</translation>
+        </message>
+        <message>
+            <source>Auto will not lower the voice threshold below this level.</source>
+            <translation>स्वयंचलित मोड आवाजाची मर्यादा या पातळीखाली कमी करणार नाही.</translation>
+        </message>
     </context>
     <context>
         <name>Channels</name>
@@ -2865,16 +2873,16 @@
             <translation>हर्ट्झ आणि dBFS मध्ये वारंवारता स्पेक्ट्रम</translation>
         </message>
         <message>
-            <source>After gain / cuts</source>
-            <translation>प्रवर्धन आणि फ्रिक्वेन्सी कट केल्यानंतर</translation>
+            <source>Processed</source>
+            <translation>प्रक्रियाकृत</translation>
         </message>
         <message>
             <source>Input: sound picked up by the microphone before gain and frequency cuts. Left is bass, right is treble; higher is louder.</source>
             <translation>इनपुट: प्रवर्धन आणि फ्रिक्वेन्सी कट करण्यापूर्वी मायक्रोफोनने घेतलेला आवाज. डावीकडे बास, उजवीकडे ट्रेबल; अधिक म्हणजे अधिक मोठा आवाज.</translation>
         </message>
         <message>
-            <source>After gain / cuts: the measured spectrum after microphone gain and frequency filters. It does not identify a speaker.</source>
-            <translation>प्रवर्धन आणि कट केल्यानंतर: मायक्रोफोनच्या प्रवर्धन आणि फ्रिक्वेन्सी फिल्टरनंतर मोजलेले स्पेक्ट्रम. यात वक्त्याची ओळख पटत नाही.</translation>
+            <source>After all filters, before transmission.</source>
+            <translation>सर्व फिल्टरनंतर, पाठवण्यापूर्वी.</translation>
         </message>
         <message>
             <source>Filter curve: the configured change in level at each frequency, read on the right dB scale. It excludes noise reduction and voice activation.</source>

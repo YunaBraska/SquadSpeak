@@ -410,6 +410,14 @@
             <source>Auto also checks for speech, not just volume.</source>
             <translation>Tryb automatyczny wykrywa też mowę, nie tylko głośność.</translation>
         </message>
+        <message>
+            <source>Minimum</source>
+            <translation>Minimum</translation>
+        </message>
+        <message>
+            <source>Auto will not lower the voice threshold below this level.</source>
+            <translation>Tryb automatyczny nie obniży progu głosu poniżej tego poziomu.</translation>
+        </message>
     </context>
     <context>
         <name>Channels</name>
@@ -2865,16 +2873,16 @@
             <translation>Widmo częstotliwości w hercach i dBFS</translation>
         </message>
         <message>
-            <source>After gain / cuts</source>
-            <translation>Po wzmocnieniu / cięciach</translation>
+            <source>Processed</source>
+            <translation>Przetworzone</translation>
         </message>
         <message>
             <source>Input: sound picked up by the microphone before gain and frequency cuts. Left is bass, right is treble; higher is louder.</source>
             <translation>Wejście: dźwięk przechwycony przez mikrofon przed wzmocnieniem i cięciami częstotliwości. Po lewej są niskie, po prawej wysokie tony; wyżej oznacza głośniej.</translation>
         </message>
         <message>
-            <source>After gain / cuts: the measured spectrum after microphone gain and frequency filters. It does not identify a speaker.</source>
-            <translation>Po wzmocnieniu / cięciach: zmierzone widmo po wzmocnieniu mikrofonu i filtrach częstotliwości. Nie identyfikuje mówcy.</translation>
+            <source>After all filters, before transmission.</source>
+            <translation>Po wszystkich filtrach, przed transmisją.</translation>
         </message>
         <message>
             <source>Filter curve: the configured change in level at each frequency, read on the right dB scale. It excludes noise reduction and voice activation.</source>

@@ -83,3 +83,91 @@ https://github.com/qt/qtdeclarative/commit/4c1054b0f997f2977a54d42523856805b309d
      }
 
      static void setInt32(void* where, int32_t value)
+
+--- a/src/3rdparty/masm/yarr/YarrJIT.h
++++ b/src/3rdparty/masm/yarr/YarrJIT.h
+@@ -110,48 +110,73 @@
+     bool usesPatternContextBuffer() { return m_usesPatternContextBuffer; }
+     void setUsesPatternContextBuffer() { m_usesPatternContextBuffer = true; }
+
++    // Generated code has no Clang function-type metadata before its entry point.
++#if defined(__clang__)
++    __attribute__((no_sanitize("function")))
++#endif
+     MatchResult execute(const LChar* input, unsigned start, unsigned length, int* output, void* freeParenContext, unsigned parenContextSize)
+     {
+         ASSERT(has8BitCode());
+         return MatchResult(reinterpret_cast<YarrJITCode8>(m_ref8.code().executableAddress())(input, start, length, output, freeParenContext, parenContextSize));
+     }
+
++#if defined(__clang__)
++    __attribute__((no_sanitize("function")))
++#endif
+     MatchResult execute(const UChar* input, unsigned start, unsigned length, int* output, void* freeParenContext, unsigned parenContextSize)
+     {
+         ASSERT(has16BitCode());
+         return MatchResult(reinterpret_cast<YarrJITCode16>(m_ref16.code().executableAddress())(input, start, length, output, freeParenContext, parenContextSize));
+     }
+
++#if defined(__clang__)
++    __attribute__((no_sanitize("function")))
++#endif
+     MatchResult execute(const LChar* input, unsigned start, unsigned length, void* freeParenContext, unsigned parenContextSize)
+     {
+         ASSERT(has8BitCodeMatchOnly());
+         return MatchResult(reinterpret_cast<YarrJITCodeMatchOnly8>(m_matchOnly8.code().executableAddress())(input, start, length, 0, freeParenContext, parenContextSize));
+     }
+
++#if defined(__clang__)
++    __attribute__((no_sanitize("function")))
++#endif
+     MatchResult execute(const UChar* input, unsigned start, unsigned length, void* freeParenContext, unsigned parenContextSize)
+     {
+         ASSERT(has16BitCodeMatchOnly());
+         return MatchResult(reinterpret_cast<YarrJITCodeMatchOnly16>(m_matchOnly16.code().executableAddress())(input, start, length, 0, freeParenContext, parenContextSize));
+     }
+ #else
++#if defined(__clang__)
++    __attribute__((no_sanitize("function")))
++#endif
+     MatchResult execute(const LChar* input, unsigned start, unsigned length, int* output)
+     {
+         ASSERT(has8BitCode());
+         return MatchResult(reinterpret_cast<YarrJITCode8>(m_ref8.code().executableAddress())(input, start, length, output));
+     }
+
++#if defined(__clang__)
++    __attribute__((no_sanitize("function")))
++#endif
+     MatchResult execute(const UChar* input, unsigned start, unsigned length, int* output)
+     {
+         ASSERT(has16BitCode());
+         return MatchResult(reinterpret_cast<YarrJITCode16>(m_ref16.code().executableAddress())(input, start, length, output));
+     }
+
++#if defined(__clang__)
++    __attribute__((no_sanitize("function")))
++#endif
+     MatchResult execute(const LChar* input, unsigned start, unsigned length)
+     {
+         ASSERT(has8BitCodeMatchOnly());
+         return MatchResult(reinterpret_cast<YarrJITCodeMatchOnly8>(m_matchOnly8.code().executableAddress())(input, start, length));
+     }
+
++#if defined(__clang__)
++    __attribute__((no_sanitize("function")))
++#endif
+     MatchResult execute(const UChar* input, unsigned start, unsigned length)
+     {
+         ASSERT(has16BitCodeMatchOnly());
+
+--- a/src/3rdparty/masm/assembler/ARM64Assembler.h
++++ b/src/3rdparty/masm/assembler/ARM64Assembler.h
+@@ -3431,6 +3431,6 @@
+     {
+         int insn = *static_cast<int*>(address);
+         op = (insn >> 31) & 1;
+-        imm26 = (insn << 6) >> 6;
++        imm26 = (insn & 0x1ffffff) - (insn & 0x2000000);
+         return (insn & 0x7c000000) == 0x14000000;
+     }

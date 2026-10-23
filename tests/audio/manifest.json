@@ -1020,6 +1020,26 @@
       "sha256": "e10d4494dd5066db8758d2e81e6b6246476539ab59cd5593c8530b28ea8aec85",
       "category": "keyboard",
       "source_sample_rate": 44100
+    },
+    {
+      "id": "breathing-deep",
+      "kind": "interference",
+      "author": "Walter_Odington",
+      "license_id": "CC0-1.0",
+      "audio": {
+        "url": "https://raw.githubusercontent.com/karolpiczak/ESC-50/33c8ce9eb2cf0b1c2f8bcf322eb349b6be34dbb6/audio/1-18631-A-23.wav",
+        "sha256": "cdbd39617f2955d86ec18a4032ecd9090369c23f3d8c6d650f62e9e1ee19ea6a"
+      },
+      "license": {
+        "url": "https://freesound.org/people/Walter_Odington/sounds/18631/",
+        "notice": "female deep breathing.aif by Walter_Odington\nOriginal: https://freesound.org/people/Walter_Odington/sounds/18631/\nLicense: CC0 1.0 Universal\nhttps://creativecommons.org/publicdomain/zero/1.0/\n\nFive-second excerpt distributed by ESC-50. Only this individually CC0 sound\nis used, not the dataset under its aggregate CC BY-NC license.\nAttribution source: https://github.com/karolpiczak/ESC-50/blob/33c8ce9eb2cf0b1c2f8bcf322eb349b6be34dbb6/LICENSE\nConverted to mono PCM16 at 48 kHz. No normalization or denoising.\nThe author describes this as scripted, unnatural breathing. This one recording\ncannot represent all breathing sounds or microphone positions.\nNo endorsement is implied.\n",
+        "sha256": "5d036e393a7e724ac005998c2e9b2b677bc64c33ee2d7daac65f76ae9647cbcf"
+      },
+      "start_sample": 0,
+      "frames": 240000,
+      "sha256": "c7fb31abc97c8db735e36ea6b779eee8c046ce3d60480e0f0aef63b39a4a2837",
+      "category": "breathing",
+      "source_sample_rate": 44100
     }
   ],
   "decoder": "ffmpeg version 7.1.1 Copyright (c) 2000-2025 the FFmpeg developers",
@@ -1030,7 +1050,9 @@
     "instrumental",
     "song",
     "robin",
-    "traffic"
+    "traffic",
+    "typing-laptop",
+    "typing-desktop"
   ],
   "extended": {
     "snr_db": [

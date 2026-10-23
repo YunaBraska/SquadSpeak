@@ -410,6 +410,14 @@
             <source>Voice download help</source>
             <translation>مساعدة تنزيل الأصوات</translation>
         </message>
+        <message>
+            <source>Minimum</source>
+            <translation>الحد الأدنى</translation>
+        </message>
+        <message>
+            <source>Auto will not lower the voice threshold below this level.</source>
+            <translation>لن تخفض الوضعية التلقائية عتبة الصوت دون هذا المستوى.</translation>
+        </message>
     </context>
     <context>
         <name>Channels</name>
@@ -2865,16 +2873,16 @@
             <translation>طيف التردد بالهرتز و dBFS</translation>
         </message>
         <message>
-            <source>After gain / cuts</source>
-            <translation>بعد الكسب / القطع</translation>
+            <source>Processed</source>
+            <translation>مُعالج</translation>
         </message>
         <message>
             <source>Input: sound picked up by the microphone before gain and frequency cuts. Left is bass, right is treble; higher is louder.</source>
             <translation>الإدخال: الصوت الذي يلتقطه الميكروفون قبل الكسب وقطع الترددات. الترددات المنخفضة يسارًا والعالية يمينًا, والأعلى يعني صوتًا أعلى.</translation>
         </message>
         <message>
-            <source>After gain / cuts: the measured spectrum after microphone gain and frequency filters. It does not identify a speaker.</source>
-            <translation>بعد الكسب / القطع: الطيف المقاس بعد كسب الميكروفون ومرشحات التردد. لا يحدد متحدثًا.</translation>
+            <source>After all filters, before transmission.</source>
+            <translation>بعد جميع المرشحات، وقبل الإرسال.</translation>
         </message>
         <message>
             <source>Filter curve: the configured change in level at each frequency, read on the right dB scale. It excludes noise reduction and voice activation.</source>

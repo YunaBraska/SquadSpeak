@@ -40,18 +40,18 @@
     },
     {
       "name": "qtbase-everywhere-src-6.11.3.tar.xz",
-      "url": "https://download.qt.io/online/qtsdkrepository/all_os/qt/qt6_6113_unix_line_endings_src/qt.qt6.6113.src/6.11.3-0-202609240252qtbase-everywhere-src-6.11.3.tar.xz",
-      "sha256": "389ca4a93ffd13f6353bb91a255544e3b54abfcf8182039d303ab288b8c41e93"
+      "url": "https://master.qt.io/online/qtsdkrepository/all_os/qt/qt6_6113_unix_line_endings_src/qt.qt6.6113.src/6.11.3-0-202610220312qtbase-everywhere-src-6.11.3.tar.xz",
+      "sha256": "bd60222ad79b3d88e7e45c6dd1cd738d34db0ceb159b6221316da7f884525f0b"
     },
     {
       "name": "qtdeclarative-everywhere-src-6.11.3.tar.xz",
-      "url": "https://download.qt.io/online/qtsdkrepository/all_os/qt/qt6_6113_unix_line_endings_src/qt.qt6.6113.src/6.11.3-0-202609240252qtdeclarative-everywhere-src-6.11.3.tar.xz",
-      "sha256": "b3514c650bece885052da99e6e74fe38494f169fcde91129a3f3467ecb842b19"
+      "url": "https://master.qt.io/online/qtsdkrepository/all_os/qt/qt6_6113_unix_line_endings_src/qt.qt6.6113.src/6.11.3-0-202610220312qtdeclarative-everywhere-src-6.11.3.tar.xz",
+      "sha256": "90e941624ac1e99c376f9c32ef7a580519915d8d42adf4ad160142918f935ae2"
     },
     {
       "name": "qtimageformats-everywhere-src-6.11.3.tar.xz",
-      "url": "https://download.qt.io/online/qtsdkrepository/all_os/qt/qt6_6113_unix_line_endings_src/qt.qt6.6113.src/6.11.3-0-202609240252qtimageformats-everywhere-src-6.11.3.tar.xz",
-      "sha256": "2df6cb58a10d1ef2f377f93558682fb4543d9508622aeee7e4770c7a689d41eb"
+      "url": "https://master.qt.io/online/qtsdkrepository/all_os/qt/qt6_6113_unix_line_endings_src/qt.qt6.6113.src/6.11.3-0-202610220312qtimageformats-everywhere-src-6.11.3.tar.xz",
+      "sha256": "9074e35c9bbdb944ceebdbed03f54d7bba55703b0252491188779e4d1a714c90"
     },
     {
       "name": "qtkeychain.tar.gz",
@@ -60,38 +60,38 @@
     },
     {
       "name": "qtmultimedia-everywhere-src-6.11.3.tar.xz",
-      "url": "https://download.qt.io/online/qtsdkrepository/all_os/qt/qt6_6113_unix_line_endings_src/qt.qt6.6113.src/6.11.3-0-202609240252qtmultimedia-everywhere-src-6.11.3.tar.xz",
-      "sha256": "440ec5a4716a0a68910a7ce93e0c3bab4642feb96848b2d6bf8637449323eeda"
+      "url": "https://master.qt.io/online/qtsdkrepository/all_os/qt/qt6_6113_unix_line_endings_src/qt.qt6.6113.src/6.11.3-0-202610220312qtmultimedia-everywhere-src-6.11.3.tar.xz",
+      "sha256": "4bad515d50f8fb9b7c6f1e2bbd0ea20ad8afaf8686980317afa206658a5ae334"
     },
     {
       "name": "qtshadertools-everywhere-src-6.11.3.tar.xz",
-      "url": "https://download.qt.io/online/qtsdkrepository/all_os/qt/qt6_6113_unix_line_endings_src/qt.qt6.6113.src/6.11.3-0-202609240252qtshadertools-everywhere-src-6.11.3.tar.xz",
-      "sha256": "bd297273452e6fc6669d3ca08d19a8dc95cafe2dcecd6f2d16746ed1872719a2"
+      "url": "https://master.qt.io/online/qtsdkrepository/all_os/qt/qt6_6113_unix_line_endings_src/qt.qt6.6113.src/6.11.3-0-202610220312qtshadertools-everywhere-src-6.11.3.tar.xz",
+      "sha256": "9b5d1008bc9eac323e05f9829497f78f0e23c1c6d505e8522480556307c196ad"
     },
     {
       "name": "qtsvg-everywhere-src-6.11.3.tar.xz",
-      "url": "https://download.qt.io/online/qtsdkrepository/all_os/qt/qt6_6113_unix_line_endings_src/qt.qt6.6113.src/6.11.3-0-202609240252qtsvg-everywhere-src-6.11.3.tar.xz",
-      "sha256": "0b6750cf108de51d5d03e8fe0a840fac20bf25bfb7e9eb7a67da812a3589fe7b"
+      "url": "https://master.qt.io/online/qtsdkrepository/all_os/qt/qt6_6113_unix_line_endings_src/qt.qt6.6113.src/6.11.3-0-202610220312qtsvg-everywhere-src-6.11.3.tar.xz",
+      "sha256": "b712a27d4bc6ba510bc5c082f6eaac2ce38588d8a2d2eb771d08307735f9d44c"
     },
     {
       "name": "qttools-everywhere-src-6.11.3.tar.xz",
-      "url": "https://download.qt.io/online/qtsdkrepository/all_os/qt/qt6_6113_unix_line_endings_src/qt.qt6.6113.src/6.11.3-0-202609240252qttools-everywhere-src-6.11.3.tar.xz",
-      "sha256": "eaf9a070c4e59daca34463580073e61c933268472f597448944d115f198831ca"
+      "url": "https://master.qt.io/online/qtsdkrepository/all_os/qt/qt6_6113_unix_line_endings_src/qt.qt6.6113.src/6.11.3-0-202610220312qttools-everywhere-src-6.11.3.tar.xz",
+      "sha256": "0a2da018a67ae081ab93d686fefce47e95eb8d82389151c476202ee8c4b375e4"
     },
     {
       "name": "qttranslations-everywhere-src-6.11.3.tar.xz",
-      "url": "https://download.qt.io/online/qtsdkrepository/all_os/qt/qt6_6113_unix_line_endings_src/qt.qt6.6113.src/6.11.3-0-202609240252qttranslations-everywhere-src-6.11.3.tar.xz",
-      "sha256": "44d029707a4c6a4ebf733328122c60187ed6d1ed3fbe90ad00f80e9d9674b0a5"
+      "url": "https://master.qt.io/online/qtsdkrepository/all_os/qt/qt6_6113_unix_line_endings_src/qt.qt6.6113.src/6.11.3-0-202610220312qttranslations-everywhere-src-6.11.3.tar.xz",
+      "sha256": "b6cbcd7508afd5e5b6ab25f47436f8e0a67892214cabc9deeb1c4a9046e13952"
     },
     {
       "name": "rnnoise.tar.gz",
-      "url": "https://github.com/xiph/rnnoise/archive/372f7b4b76cde4ca1ec4605353dd17898a99de38.tar.gz",
-      "sha256": "40ff1568af151959933699fcbf2db3ee3c62fa9559557dbf61a65e7a12cd335d"
+      "url": "https://github.com/xiph/rnnoise/archive/70f1d256acd4b34a572f999a05c87bf00b67730d.tar.gz",
+      "sha256": "f61ee0b3f4c4cd337303e003d333357c5eaf25ef5d75a742109ee59e9a0a3932"
     },
     {
       "name": "rnnoise_model.tar.gz",
-      "url": "https://media.xiph.org/rnnoise/models/rnnoise_data-0b50c45.tar.gz",
-      "sha256": "4ac81c5c0884ec4bd5907026aaae16209b7b76cd9d7f71af582094a2f98f4b43"
+      "url": "https://media.xiph.org/rnnoise/models/rnnoise_data-0a8755f8e2d834eff6a54714ecc7d75f9932e845df35f8b59bc52a7cfe6e8b37.tar.gz",
+      "sha256": "0a8755f8e2d834eff6a54714ecc7d75f9932e845df35f8b59bc52a7cfe6e8b37"
     },
     {
       "name": "squad_apm_build.tar.gz",

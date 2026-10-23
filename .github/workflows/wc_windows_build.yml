@@ -52,7 +52,7 @@ jobs:
       CMAKE_C_COMPILER_LAUNCHER: sccache
       CMAKE_CXX_COMPILER_LAUNCHER: sccache
     runs-on: windows-2022
-    timeout-minutes: 60
+    timeout-minutes: 90
     steps:
       - name: "🧑‍💻 Checkout"
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1

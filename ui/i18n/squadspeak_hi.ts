@@ -410,6 +410,14 @@
             <source>Auto also checks for speech, not just volume.</source>
             <translation>ऑटो केवल आवाज़ का स्तर नहीं, बोली भी पहचानता है।</translation>
         </message>
+        <message>
+            <source>Minimum</source>
+            <translation>न्यूनतम</translation>
+        </message>
+        <message>
+            <source>Auto will not lower the voice threshold below this level.</source>
+            <translation>ऑटो आवाज़ की सीमा को इस स्तर से नीचे नहीं करेगा।</translation>
+        </message>
     </context>
     <context>
         <name>Channels</name>
@@ -2865,16 +2873,16 @@
             <translation>हर्ट्ज और dBFS में आवृत्ति स्पेक्ट्रम</translation>
         </message>
         <message>
-            <source>After gain / cuts</source>
-            <translation>गेन / कट के बाद</translation>
+            <source>Processed</source>
+            <translation>प्रसंस्कृत</translation>
         </message>
         <message>
             <source>Input: sound picked up by the microphone before gain and frequency cuts. Left is bass, right is treble; higher is louder.</source>
             <translation>इनपुट: गेन और आवृत्ति कट से पहले माइक्रोफोन द्वारा पकड़ी गई ध्वनि. बाईं ओर बास और दाईं ओर ट्रेबल है; अधिक ऊंचा मतलब अधिक तेज है.</translation>
         </message>
         <message>
-            <source>After gain / cuts: the measured spectrum after microphone gain and frequency filters. It does not identify a speaker.</source>
-            <translation>गेन / कट के बाद: माइक्रोफोन गेन और आवृत्ति फ़िल्टर के बाद मापा गया स्पेक्ट्रम. यह वक्ता की पहचान नहीं करता.</translation>
+            <source>After all filters, before transmission.</source>
+            <translation>सभी फ़िल्टर के बाद, भेजने से पहले।</translation>
         </message>
         <message>
             <source>Filter curve: the configured change in level at each frequency, read on the right dB scale. It excludes noise reduction and voice activation.</source>

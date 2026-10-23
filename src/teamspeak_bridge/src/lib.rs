@@ -1,4 +1,6 @@
 use base64::{engine::general_purpose::STANDARD, Engine as _};
+#[cfg(feature = "neural-denoise")]
+mod denoise;
 use futures::StreamExt;
 use serde::Deserialize;
 use serde_json::{json, Value};
@@ -14,7 +16,7 @@ use tsclientlib::{prelude::*, Connection, DisconnectOptions, Identity, OutComman
 use tsproto_packets::packets::{AudioData, CodecType, OutAudio};
 
 const MAX_JSON: usize = 64 * 1024;
-const MAX_AUDIO: usize = 4096;
+const MAX_AUDIO: usize = 500 - 13 - 3;
 const MAX_QUEUE_BYTES: usize = 512 * 1024;
 const MAX_PENDING_COMMANDS: usize = 256;
 
@@ -166,6 +168,47 @@ fn codec_type_number(codec: CodecType) -> Option<u8> {
     }
 }
 
+struct AudioQueue {
+    packets: VecDeque<Vec<u8>>,
+    speaking: bool,
+    pacing: tokio::time::Interval,
+}
+
+impl AudioQueue {
+    fn new() -> Self {
+        let mut pacing = tokio::time::interval(Duration::from_millis(20));
+        // Keep sample time after a delayed wake. Rebasing every late tick adds
+        // permanent latency and eventually overflows the capture queue.
+        pacing.set_missed_tick_behavior(tokio::time::MissedTickBehavior::Burst);
+        Self { packets: VecDeque::new(), speaking: false, pacing }
+    }
+
+    fn push(&mut self, data: Vec<u8>) {
+        if data.is_empty() {
+            if self.packets.back().map_or(self.speaking, |packet| !packet.is_empty()) {
+                self.packets.push_back(data);
+            }
+        } else {
+            if self.packets.is_empty() && !self.speaking { self.pacing.reset_immediately(); }
+            // Bound capture backlog to 120 ms plus the 60 ms activation pre-roll.
+            while self.packets.len() >= 9 { self.packets.pop_front(); }
+            self.packets.push_back(data);
+        }
+    }
+
+    fn clear(&mut self) -> bool {
+        self.packets.clear();
+        std::mem::replace(&mut self.speaking, false)
+    }
+
+    async fn next(&mut self) -> Vec<u8> {
+        self.pacing.tick().await;
+        let data = self.packets.pop_front().unwrap();
+        self.speaking = !data.is_empty();
+        data
+    }
+}
+
 fn run(options: Options, mut rx: mpsc::Receiver<Command>, queue: Queue) {
     let rt = match Builder::new_current_thread().enable_all().build() {
         Ok(r) => r,
@@ -223,23 +266,41 @@ fn run(options: Options, mut rx: mpsc::Receiver<Command>, queue: Queue) {
             }
         };
         let mut pending = HashMap::<u16, PendingCommand>::new();
-        let mut sequence = 0u16;
         let mut subscribed = false;
+        let mut directory_complete = false;
+        let mut audio = AudioQueue::new();
         let mut deadlines = tokio::time::interval(Duration::from_millis(250));
         enum Wake {
             Command(Option<Command>),
             Event(Option<Result<StreamItem, tsclientlib::Error>>),
             Deadline,
+            Audio(Vec<u8>),
         }
         loop {
             let wake = tokio::select! {
                 command = rx.recv() => Wake::Command(command),
                 event = next_event(&mut con) => Wake::Event(event),
                 _ = deadlines.tick() => Wake::Deadline,
+                data = audio.next(), if !audio.packets.is_empty() => Wake::Audio(data),
             };
             match wake {
+                Wake::Command(Some(Command::Audio(data))) => {
+                    audio.push(data);
+                }
                 Wake::Command(Some(command)) => {
-                    if !handle_command(&mut con, command, &queue, &mut pending, &mut sequence) {
+                    let interrupts = match &command {
+                        Command::Close => true,
+                        Command::Json(value) => matches!(value["action"].as_str(), Some("join" | "disconnect"))
+                            || (value["action"] == "presence"
+                                && (value["inputMuted"] == true || value["outputMuted"] == true)),
+                        _ => false,
+                    };
+                    if interrupts {
+                        if audio.clear() {
+                            handle_command(&mut con, Command::Audio(Vec::new()), &queue, &mut pending);
+                        }
+                    }
+                    if !handle_command(&mut con, command, &queue, &mut pending) {
                         let _ = tokio::time::timeout(Duration::from_millis(300), async {
                             while con.events().next().await.is_some() {}
                         }).await;
@@ -247,7 +308,12 @@ fn run(options: Options, mut rx: mpsc::Receiver<Command>, queue: Queue) {
                     }
                 }
                 Wake::Command(None) => return,
-                Wake::Event(Some(Ok(item))) => handle_event(&mut con, item, &queue, &mut pending, &mut subscribed),
+                Wake::Event(Some(Ok(item))) => {
+                    if matches!(item, StreamItem::DisconnectedTemporarily(_)) {
+                        audio.clear();
+                    }
+                    handle_event(&mut con, item, &queue, &mut pending, &mut subscribed, &mut directory_complete);
+                }
                 Wake::Event(Some(Err(error))) => {
                     fail_pending(&queue, &mut pending, "TeamSpeak connection ended.");
                     let mut event = error_event(&error);
@@ -261,6 +327,7 @@ fn run(options: Options, mut rx: mpsc::Receiver<Command>, queue: Queue) {
                     return;
                 }
                 Wake::Deadline => expire_pending(&queue, &mut pending),
+                Wake::Audio(data) => { handle_command(&mut con, Command::Audio(data), &queue, &mut pending); }
             }
         }
     });
@@ -275,7 +342,6 @@ fn handle_command(
     command: Command,
     queue: &Queue,
     pending: &mut HashMap<u16, PendingCommand>,
-    sequence: &mut u16,
 ) -> bool {
     match command {
         Command::Close => {
@@ -283,7 +349,7 @@ fn handle_command(
             false
         }
         Command::Audio(data) => {
-            if data.is_empty() || data.len() > MAX_AUDIO {
+            if data.len() > MAX_AUDIO {
                 emit(
                     queue,
                     json!({"type":"error","message":"Invalid raw Opus audio packet."}),
@@ -320,10 +386,8 @@ fn handle_command(
                     return true;
                 }
             };
-            let id = *sequence;
-            *sequence = sequence.wrapping_add(1);
             let packet = OutAudio::new(&AudioData::C2S {
-                id,
+                id: 0, // The transport assigns the wire sequence to every voice packet.
                 codec,
                 data: &data,
             });
@@ -539,6 +603,7 @@ fn handle_event(
     queue: &Queue,
     pending: &mut HashMap<u16, PendingCommand>,
     subscribed: &mut bool,
+    directory_complete: &mut bool,
 ) {
     match item {
         StreamItem::IdentityLevelIncreased => {
@@ -554,6 +619,7 @@ fn handle_event(
         }
         StreamItem::DisconnectedTemporarily(_) => {
             *subscribed = false;
+            *directory_complete = false;
             fail_pending(
                 queue,
                 pending,
@@ -609,6 +675,10 @@ fn handle_event(
                 }
             }
         }
+        StreamItem::MessageEvent(tsclientlib::InMessage::ChannelListFinished(_)) => {
+            *directory_complete = true;
+            emit_state(con, queue, true);
+        }
         StreamItem::MessageEvent(message) => emit_messages(con, message, queue),
         StreamItem::BookEvents(events) => {
             let mut changed = false;
@@ -642,15 +712,21 @@ fn handle_event(
             }
             if !*subscribed {
                 if let Ok(state) = con.get_state() {
-                    let _ = state.server.set_subscribed(true).send(con);
+                    let subscription = state.server.set_subscribed(true);
+                    let mut marker = state.client_update().to_packet().to_packet();
+                    marker.write_arg("client_meta_data", &"SquadSpeak");
+                    let _ = subscription.send(con);
+                    if let Err(error) = marker.send(con) {
+                        emit(queue, error_event(&error));
+                    }
                     *subscribed = true;
                 }
             }
             if changed {
-                emit_state(con, queue);
+                emit_state(con, queue, *directory_complete);
             }
         }
-        StreamItem::AudioChange(_) => emit_state(con, queue),
+        StreamItem::AudioChange(_) => emit_state(con, queue, *directory_complete),
         _ => {}
     }
 }
@@ -685,7 +761,7 @@ fn emit_messages(con: &Connection, message: tsclientlib::InMessage, queue: &Queu
     }
 }
 
-fn emit_state(con: &Connection, queue: &Queue) {
+fn emit_state(con: &Connection, queue: &Queue, directory_complete: bool) {
     let Ok(state) = con.get_state() else {
         return;
     };
@@ -696,10 +772,11 @@ fn emit_state(con: &Connection, queue: &Queue) {
     let members = state.clients.values().map(|c| json!({
         "id": c.id.0.to_string(), "uid": uid_value(c.uid.as_ref()), "name": c.name, "channel": c.channel.0.to_string(),
         "inputMuted": c.input_muted, "outputMuted": c.output_muted,
+        "squadSpeak": c.id == state.own_client || c.metadata == "SquadSpeak",
     })).collect::<Vec<_>>();
     emit(
         queue,
-        json!({"type":"state", "server":{"name":state.server.name,"uid":state.server.public_key.get_uid()},
+        json!({"type":"state", "directoryComplete":directory_complete, "server":{"name":state.server.name,"uid":state.server.public_key.get_uid()},
         "self":state.own_client.0.to_string(), "channel":state.clients.get(&state.own_client).map(|c| c.channel.0.to_string()).unwrap_or_default(),
         "canSend":con.can_send_audio(),
         "talkAllowed":state.clients.get(&state.own_client).and_then(|client| state.channels.get(&client.channel)
@@ -777,13 +854,16 @@ pub extern "C" fn ss_ts_command(handle: *mut c_void, ptr: *const u8, length: usi
 #[no_mangle]
 pub extern "C" fn ss_ts_audio(handle: *mut c_void, ptr: *const u8, length: usize) -> i32 {
     catch_unwind(|| {
-        if handle.is_null() || ptr.is_null() || length == 0 || length > MAX_AUDIO {
+        if handle.is_null() || (ptr.is_null() && length != 0) || length > MAX_AUDIO {
             return 0;
         }
         let h = unsafe { &*(handle as *mut Handle) };
-        h.tx.try_send(Command::Audio(unsafe {
-            std::slice::from_raw_parts(ptr, length).to_vec()
-        }))
+        let data = if length == 0 {
+            Vec::new()
+        } else {
+            unsafe { std::slice::from_raw_parts(ptr, length).to_vec() }
+        };
+        h.tx.try_send(Command::Audio(data))
         .is_ok() as i32
     })
     .unwrap_or(0)
@@ -820,6 +900,65 @@ pub extern "C" fn ss_ts_close(handle: *mut c_void) {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[tokio::test(start_paused = true)]
+    async fn audio_pacing_does_not_accumulate_scheduler_delays() {
+        let mut audio = AudioQueue::new();
+        let start = Instant::now();
+        for frame in 0..400u64 {
+            let deadline = start + Duration::from_millis(frame * 20);
+            let jitter = if frame > 0 && frame % 5 == 0 { 7 } else { 0 };
+            tokio::time::sleep_until(deadline + Duration::from_millis(jitter)).await;
+            audio.push(vec![1]);
+            assert_eq!(audio.next().await, vec![1]);
+            assert!(Instant::now() <= deadline + Duration::from_millis(jitter + 1),
+                "frame {frame} drifted by {:?}", Instant::now() - deadline);
+        }
+    }
+
+    #[tokio::test(start_paused = true)]
+    async fn audio_pacing_preserves_capture_batch_and_activation_preroll() {
+        let mut audio = AudioQueue::new();
+        // A 120 ms callback plus the existing 60 ms activation pre-roll.
+        for frame in 1..=9 { audio.push(vec![frame]); }
+        for frame in 1..=9 { assert_eq!(audio.next().await, vec![frame]); }
+        audio.push(Vec::new());
+        audio.push(Vec::new());
+        assert!(audio.next().await.is_empty());
+        tokio::time::advance(Duration::from_secs(10)).await;
+        let resumed = Instant::now();
+        audio.push(vec![10]); audio.push(vec![11]);
+        assert_eq!(audio.next().await, vec![10]);
+        assert_eq!(Instant::now(), resumed);
+        assert_eq!(audio.next().await, vec![11]);
+        assert_eq!(Instant::now() - resumed, Duration::from_millis(20));
+        assert!(audio.clear());
+        assert!(!audio.clear());
+        audio.push(Vec::new());
+        for frame in 1..=20 { audio.push(vec![frame]); }
+        for frame in 12..=20 { assert_eq!(audio.next().await, vec![frame]); }
+    }
+
+    #[test]
+    fn audio_ffi_preserves_end_markers_and_reports_backpressure() {
+        let (tx, mut rx) = mpsc::channel(2);
+        let handle = Box::into_raw(Box::new(Handle {
+            tx,
+            queue: Queue::default(),
+            join: Mutex::new(None),
+        })) as *mut c_void;
+        let packet = [1u8, 2, 3];
+        assert_eq!(ss_ts_audio(handle, packet.as_ptr(), packet.len()), 1);
+        assert_eq!(ss_ts_audio(handle, std::ptr::null(), 0), 1);
+        assert_eq!(ss_ts_audio(handle, packet.as_ptr(), packet.len()), 0);
+        assert!(matches!(rx.try_recv(), Ok(Command::Audio(data)) if data == packet));
+        assert!(matches!(rx.try_recv(), Ok(Command::Audio(data)) if data.is_empty()));
+        assert_eq!(ss_ts_audio(handle, std::ptr::null(), 1), 0);
+        assert_eq!(ss_ts_audio(handle, packet.as_ptr(), MAX_AUDIO + 1), 0);
+        assert_eq!(ss_ts_audio(std::ptr::null_mut(), std::ptr::null(), 0), 0);
+        ss_ts_close(handle);
+        assert!(matches!(rx.try_recv(), Ok(Command::Close)));
+    }
 
     #[test]
     fn identity_is_bounded_and_round_trips() {
@@ -892,7 +1031,7 @@ mod tests {
         let handle = ss_ts_open(options.as_ptr(), options.len());
         assert!(!handle.is_null());
         assert_eq!(ss_ts_command(handle, b"{".as_ptr(), 1), 0);
-        assert_eq!(ss_ts_audio(handle, std::ptr::null(), 0), 0);
+        assert_eq!(ss_ts_audio(handle, std::ptr::null(), 1), 0);
         ss_ts_close(handle);
     }
 }

@@ -410,6 +410,14 @@
             <source>Auto also checks for speech, not just volume.</source>
             <translation>Automatiskt läge upptäcker även tal, inte bara volym.</translation>
         </message>
+        <message>
+            <source>Minimum</source>
+            <translation>Minimum</translation>
+        </message>
+        <message>
+            <source>Auto will not lower the voice threshold below this level.</source>
+            <translation>Automatik sänker inte rösttröskeln under denna nivå.</translation>
+        </message>
     </context>
     <context>
         <name>Channels</name>
@@ -2865,16 +2873,16 @@
             <translation>Frekvensspektrum i hertz och dBFS</translation>
         </message>
         <message>
-            <source>After gain / cuts</source>
-            <translation>Efter förstärkning/filter</translation>
+            <source>Processed</source>
+            <translation>Bearbetat</translation>
         </message>
         <message>
             <source>Input: sound picked up by the microphone before gain and frequency cuts. Left is bass, right is treble; higher is louder.</source>
             <translation>Ingång: ljud som mikrofonen fångar före förstärkning och frekvensfilter. Bas till vänster, diskant till höger. Högre kurva betyder starkare ljud.</translation>
         </message>
         <message>
-            <source>After gain / cuts: the measured spectrum after microphone gain and frequency filters. It does not identify a speaker.</source>
-            <translation>Efter förstärkning/filter: det uppmätta spektrumet efter mikrofonförstärkning och frekvensfilter. Det identifierar inte talare.</translation>
+            <source>After all filters, before transmission.</source>
+            <translation>Efter alla filter, före överföring.</translation>
         </message>
         <message>
             <source>Filter curve: the configured change in level at each frequency, read on the right dB scale. It excludes noise reduction and voice activation.</source>

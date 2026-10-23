@@ -71,6 +71,26 @@ Item {
             keyClick(Qt.Key_Right)
             compare(editFinished.count, 3, "Rejected changes stay silent")
         }
+        function test_liveAutomaticValuesUpdateWithoutSavingAnOverride() {
+            editor.autoAvailable = true
+            editor.automatic = true
+            editor.applyAutomatic = function(next) { editor.automatic = next }
+            const control = findChild(editor, "valueControl")
+            const valueLabel = findChild(editor, "valueLabel")
+            verify(valueLabel !== null)
+            for (const value of [-1.0137, -0.067, 0, -0.8421]) {
+                storedValue = value
+                compare(control.value, value)
+                compare(valueLabel.text, value.toString())
+                compare(editor.automatic, true)
+                compare(writes, 0)
+                compare(editFinished.count, 0)
+            }
+            control.forceActiveFocus()
+            keyClick(Qt.Key_Right)
+            compare(writes, 1)
+            compare(editFinished.count, 1)
+        }
         function test_eventCuesRespectOutputAndDeafen() {
             compare(typeof audio.notificationVolume, "number")
             for (const kind of ["join", "memberJoin", "leave", "memberLeave", "kick", "ban", "message", "announcement", "request"]) {

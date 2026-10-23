@@ -410,6 +410,14 @@
             <source>Auto also checks for speech, not just volume.</source>
             <translation>Ավտոմատ ռեժիմը ստուգում է նաև խոսքի առկայությունը, ոչ միայն ձայնի ուժգնությունը։</translation>
         </message>
+        <message>
+            <source>Minimum</source>
+            <translation>Նվազագույն</translation>
+        </message>
+        <message>
+            <source>Auto will not lower the voice threshold below this level.</source>
+            <translation>Ավտոմատ ռեժիմը ձայնի շեմը չի իջեցնի այս մակարդակից ցածր։</translation>
+        </message>
     </context>
     <context>
         <name>Channels</name>
@@ -2865,16 +2873,16 @@
             <translation>Հաճախականության սպեկտր հերցում և dBFS-ում</translation>
         </message>
         <message>
-            <source>After gain / cuts</source>
-            <translation>Ուժեղացումից և հաճախականության կտրումներից հետո</translation>
+            <source>Processed</source>
+            <translation>Մշակված</translation>
         </message>
         <message>
             <source>Input: sound picked up by the microphone before gain and frequency cuts. Left is bass, right is treble; higher is louder.</source>
             <translation>Մուտք: խոսափողի որսացած ձայնը նախքան ուժեղացումը և հաճախականության կտրումները: Ձախում բասերն են, աջում՝ բարձր հաճախականությունները. ավելի բարձրն ավելի բարձրաձայն է:</translation>
         </message>
         <message>
-            <source>After gain / cuts: the measured spectrum after microphone gain and frequency filters. It does not identify a speaker.</source>
-            <translation>Ուժեղացումից և կտրումներից հետո. խոսափողի ուժեղացումից և հաճախականության զտիչներից հետո չափված սպեկտրը: Այն չի նույնականացնում խոսողին:</translation>
+            <source>After all filters, before transmission.</source>
+            <translation>Բոլոր զտիչներից հետո, փոխանցումից առաջ։</translation>
         </message>
         <message>
             <source>Filter curve: the configured change in level at each frequency, read on the right dB scale. It excludes noise reduction and voice activation.</source>

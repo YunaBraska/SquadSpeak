@@ -410,6 +410,14 @@
             <source>Auto also checks for speech, not just volume.</source>
             <translation>Автоматты режим дыбыс деңгейін ғана емес, сөйлеуді де тексереді.</translation>
         </message>
+        <message>
+            <source>Minimum</source>
+            <translation>Төменгі шек</translation>
+        </message>
+        <message>
+            <source>Auto will not lower the voice threshold below this level.</source>
+            <translation>Автоматты режим дауыс шегін осы деңгейден төмен түсірмейді.</translation>
+        </message>
     </context>
     <context>
         <name>Channels</name>
@@ -2865,16 +2873,16 @@
             <translation>Герц және dBFS жиілік спектрі</translation>
         </message>
         <message>
-            <source>After gain / cuts</source>
-            <translation>Күшейту мен жиілік кесулерінен кейін</translation>
+            <source>Processed</source>
+            <translation>Өңделген</translation>
         </message>
         <message>
             <source>Input: sound picked up by the microphone before gain and frequency cuts. Left is bass, right is treble; higher is louder.</source>
             <translation>Кіріс: микрофон күшейту мен жиілік кесулеріне дейін қабылдаған дыбыс. Сол жақта басс, оң жақта жоғары тондар; жоғарырақ дегені қаттырақ.</translation>
         </message>
         <message>
-            <source>After gain / cuts: the measured spectrum after microphone gain and frequency filters. It does not identify a speaker.</source>
-            <translation>Күшейту мен кесулерден кейін: микрофон күшейтуі мен жиілік сүзгілерінен кейін өлшенген спектр. Ол сөйлеушіні анықтамайды.</translation>
+            <source>After all filters, before transmission.</source>
+            <translation>Барлық сүзгілерден кейін, жіберу алдында.</translation>
         </message>
         <message>
             <source>Filter curve: the configured change in level at each frequency, read on the right dB scale. It excludes noise reduction and voice activation.</source>

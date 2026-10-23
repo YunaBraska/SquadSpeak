@@ -272,7 +272,8 @@ Item {
                                 sourceComponent: VoiceAvatar {
                                     objectName: "messageAvatar_" + messageRow.message.sender
                                     systemMessage: messageRow.systemMessage
-                                    teamSpeak: !!messageRow.message.teamSpeak || !!messageRow.member.teamSpeak
+                                    teamSpeak: !messageRow.own && (messageRow.member.teamSpeak !== undefined
+                                        ? !!messageRow.member.teamSpeak : !!messageRow.message.teamSpeak)
                                     online: systemMessage || !root.current.chatPresenceKnown || (root.current.chatOnlineIds || []).includes(messageRow.message.sender)
                                     avatar: messageRow.message.avatarId || messageRow.message.avatar || "mossling"; name: messageRow.message.name
                                     readonly property var member: messageRow.member

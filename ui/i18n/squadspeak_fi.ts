@@ -410,6 +410,14 @@
             <source>Auto also checks for speech, not just volume.</source>
             <translation>Automaattitila tunnistaa myös puheen, ei pelkkää äänenvoimakkuutta.</translation>
         </message>
+        <message>
+            <source>Minimum</source>
+            <translation>Alaraja</translation>
+        </message>
+        <message>
+            <source>Auto will not lower the voice threshold below this level.</source>
+            <translation>Automatiikka ei laske puhekynnystä tämän tason alle.</translation>
+        </message>
     </context>
     <context>
         <name>Channels</name>
@@ -2865,16 +2873,16 @@
             <translation>Taajuusspektri hertsin ja dBFS:n mukaan</translation>
         </message>
         <message>
-            <source>After gain / cuts</source>
-            <translation>Vahvistuksen ja taajuussuodatuksen jälkeen</translation>
+            <source>Processed</source>
+            <translation>Käsitelty</translation>
         </message>
         <message>
             <source>Input: sound picked up by the microphone before gain and frequency cuts. Left is bass, right is treble; higher is louder.</source>
             <translation>Sisääntulo: Mikrofoniin tallennettu ääni vahvistuksen ja taajuussuodatusten ennen.</translation>
         </message>
         <message>
-            <source>After gain / cuts: the measured spectrum after microphone gain and frequency filters. It does not identify a speaker.</source>
-            <translation>Vahvistuksen/vaimennuksen jälkeen: Mitattu spektri mikrofonin vahvistuksen ja taajuusfiltterien jälkeen. Se ei tunnista puhujaa.</translation>
+            <source>After all filters, before transmission.</source>
+            <translation>Kaikkien suodattimien jälkeen, ennen lähetystä.</translation>
         </message>
         <message>
             <source>Filter curve: the configured change in level at each frequency, read on the right dB scale. It excludes noise reduction and voice activation.</source>

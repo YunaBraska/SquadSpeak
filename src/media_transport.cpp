@@ -66,7 +66,7 @@ struct MediaTransport::State final {
     bool descriptionSeen = false, failed = false;
     quint32 epoch = 0;
     quint64 generation = 0;
-    qint64 attempted = 0;
+    qint64 attempted = 0, retryDelay = 5000;
     std::mutex mutex;
     std::deque<std::function<void()>> mailbox;
     qsizetype queuedBytes = 0, pendingBytes = 0;
@@ -641,10 +641,15 @@ void MediaTransport::tick() {
     const auto keepAlive = state_;
     auto& s = *keepAlive;
     const auto now = s.clock.elapsed();
-    if (s.offerer && now - s.attempted >= 30000 && !udpActive()
+    const bool active = udpActive();
+    if (active) s.retryDelay = 5000;
+    // Recover an initially stalled handshake promptly, without hammering a
+    // persistently unreachable endpoint. A confirmed path resets the backoff.
+    if (s.offerer && now - s.attempted >= s.retryDelay && !active
         && (s.failed || !s.channel || !s.channel->isOpen() || now - s.acknowledged > 5000)) {
         if (s.epoch == UINT32_MAX) return;
         ++s.epoch;
+        s.retryDelay = std::min<qint64>(30000, s.retryDelay * 2);
         emit signaling({{"kind", "restart"}, {"epoch", double(s.epoch)}});
         if (!s.owner) return;
         restartUdp(); return;

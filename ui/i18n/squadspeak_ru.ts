@@ -410,6 +410,14 @@
             <source>Auto also checks for speech, not just volume.</source>
             <translation>Автоматический режим также распознаёт речь, а не только громкость.</translation>
         </message>
+        <message>
+            <source>Minimum</source>
+            <translation>Минимум</translation>
+        </message>
+        <message>
+            <source>Auto will not lower the voice threshold below this level.</source>
+            <translation>Автоматический режим не снизит порог голоса ниже этого уровня.</translation>
+        </message>
     </context>
     <context>
         <name>Channels</name>
@@ -2865,16 +2873,16 @@
             <translation>Частотный спектр в герцах и dBFS</translation>
         </message>
         <message>
-            <source>After gain / cuts</source>
-            <translation>После усиления / срезов</translation>
+            <source>Processed</source>
+            <translation>Обработано</translation>
         </message>
         <message>
             <source>Input: sound picked up by the microphone before gain and frequency cuts. Left is bass, right is treble; higher is louder.</source>
             <translation>Вход: звук, захваченный микрофоном до усиления и частотных срезов. Слева низкие, справа высокие частоты; выше означает громче.</translation>
         </message>
         <message>
-            <source>After gain / cuts: the measured spectrum after microphone gain and frequency filters. It does not identify a speaker.</source>
-            <translation>После усиления / срезов: измеренный спектр после усиления микрофона и частотных фильтров. Он не идентифицирует говорящего.</translation>
+            <source>After all filters, before transmission.</source>
+            <translation>После всех фильтров, перед передачей.</translation>
         </message>
         <message>
             <source>Filter curve: the configured change in level at each frequency, read on the right dB scale. It excludes noise reduction and voice activation.</source>

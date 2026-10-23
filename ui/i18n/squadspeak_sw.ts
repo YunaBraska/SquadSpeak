@@ -410,6 +410,14 @@
             <source>Auto also checks for speech, not just volume.</source>
             <translation>Hali ya kiotomatiki hutambua pia usemi, si kiwango cha sauti tu.</translation>
         </message>
+        <message>
+            <source>Minimum</source>
+            <translation>Kiwango cha chini</translation>
+        </message>
+        <message>
+            <source>Auto will not lower the voice threshold below this level.</source>
+            <translation>Hali ya kiotomatiki haitapunguza kizingiti cha sauti chini ya kiwango hiki.</translation>
+        </message>
     </context>
     <context>
         <name>Channels</name>
@@ -2865,16 +2873,16 @@
             <translation>Mawimbi ya masauti kwa herzi na dBFS</translation>
         </message>
         <message>
-            <source>After gain / cuts</source>
-            <translation>Baada ya kuongeza sauti / kuchuja masafa</translation>
+            <source>Processed</source>
+            <translation>Imechakatwa</translation>
         </message>
         <message>
             <source>Input: sound picked up by the microphone before gain and frequency cuts. Left is bass, right is treble; higher is louder.</source>
             <translation>Ingizo: Sauti iliyopatikana kupitia kipaza sauti kabla ya kuongeza sauti na mapunguzo ya masauti. Upande wa kushoto ni besi, upande wa kulia ni tele; juu zaidi ina maana sauti kubwa.</translation>
         </message>
         <message>
-            <source>After gain / cuts: the measured spectrum after microphone gain and frequency filters. It does not identify a speaker.</source>
-            <translation>Baada ya kuongeza/kupunguza sauti: wimbi lililopimwa baada ya kuongeza na kupunguza sauti, pamoja na vichujio vya masauti. Haiutambui msemaji.</translation>
+            <source>After all filters, before transmission.</source>
+            <translation>Baada ya vichujio vyote, kabla ya kutuma.</translation>
         </message>
         <message>
             <source>Filter curve: the configured change in level at each frequency, read on the right dB scale. It excludes noise reduction and voice activation.</source>

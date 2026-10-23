@@ -410,6 +410,14 @@
             <source>Auto also checks for speech, not just volume.</source>
             <translation>O modo automático também deteta fala, não apenas o volume.</translation>
         </message>
+        <message>
+            <source>Minimum</source>
+            <translation>Mínimo</translation>
+        </message>
+        <message>
+            <source>Auto will not lower the voice threshold below this level.</source>
+            <translation>O modo automático não reduzirá o limiar de voz abaixo deste nível.</translation>
+        </message>
     </context>
     <context>
         <name>Channels</name>
@@ -2865,16 +2873,16 @@
             <translation>Espectro de frequência em hertz e dBFS</translation>
         </message>
         <message>
-            <source>After gain / cuts</source>
-            <translation>Depois do ganho / cortes</translation>
+            <source>Processed</source>
+            <translation>Processado</translation>
         </message>
         <message>
             <source>Input: sound picked up by the microphone before gain and frequency cuts. Left is bass, right is treble; higher is louder.</source>
             <translation>Entrada: som captado pelo microfone antes do ganho e dos cortes de frequência. À esquerda estão os graves, à direita os agudos; mais alto significa mais volume.</translation>
         </message>
         <message>
-            <source>After gain / cuts: the measured spectrum after microphone gain and frequency filters. It does not identify a speaker.</source>
-            <translation>Depois do ganho / cortes: espectro medido após o ganho do microfone e os filtros de frequência. Não identifica um locutor.</translation>
+            <source>After all filters, before transmission.</source>
+            <translation>Após todos os filtros, antes da transmissão.</translation>
         </message>
         <message>
             <source>Filter curve: the configured change in level at each frequency, read on the right dB scale. It excludes noise reduction and voice activation.</source>

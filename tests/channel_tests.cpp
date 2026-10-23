@@ -1983,13 +1983,18 @@ private slots:
         QTemporaryDir dir;
         Device host(dir.filePath("host"), "Owner"), first(dir.filePath("first"), "First"), second(dir.filePath("second"), "Second");
         QVERIFY(!host.channel.setScreenSharing(true));
-        QVERIFY(host.channel.listen(QHostAddress::LocalHost));
+        QVERIFY(host.listenWithUdp());
+        // This contract requires delivery of each exact frame to inspect ACK
+        // backpressure. Fence off UDP, where a dropped frame is valid and the
+        // capture source supplies another keyframe. The adjacent UDP contract
+        // verifies that loss and recovery path explicitly.
+        DelayedLink link(host.channel.port()); link.blockUdp = true;
         QVERIFY(!host.session.supporterEnabled());
         QVERIFY(host.channel.setScreenSharing(true));
         for (auto* client : {&first, &second}) {
             QVERIFY(!client->channel.watchScreen(host.channel.ownId(), true));
             QVERIFY(host.channel.decide(client->channel.ownId(), true));
-            QVERIFY(client->channel.openChat(host.channel.ownId(), "127.0.0.1", host.channel.port()));
+            QVERIFY(client->channel.openChat(host.channel.ownId(), "127.0.0.1", link.port()));
             QTRY_VERIFY(client->channel.chatReady());
             QTRY_VERIFY(client->channel.screenView().value("available").toBool());
             QVERIFY(client->channel.watchScreen(host.channel.ownId(), true));
@@ -2145,22 +2150,38 @@ private slots:
         QTRY_COMPARE(client.channel.screenInfo(host.channel.ownId()).value("tier").toInt(), 1);
         QVERIFY(speaker.session.setMuted(false));
         QTRY_VERIFY(!participant(client.channel, speaker.channel.ownId()).value("muted").toBool());
-        QSignalSpy audio(&client.channel, &LocalChannel::audioReceived), video(&client.channel, &LocalChannel::screenFrameReceived);
         connect(&client.channel, &LocalChannel::screenFrameReceived, &client.channel, [&](const QString& id, qint64 serial, const QJsonObject&, const QByteArray&) {
             QVERIFY(client.channel.acknowledgeScreen(id, serial, 1));
         });
-        const auto voice = voicePacket();
+        auto voice = voicePacket(0);
+        QByteArray image = "warmup";
         const QJsonObject format{{"codec", "mpeg4"}, {"width", 640}, {"height", 360}, {"extra", ""}};
         QTimer producer; producer.setInterval(34);
         connect(&producer, &QTimer::timeout, this, [&] {
             QVERIFY(speaker.channel.sendAudio(voice));
-            for (int tier : host.channel.screenTiers()) QVERIFY(host.channel.sendScreenFrame(tier, format, "image", true));
+            for (int tier : host.channel.screenTiers()) QVERIFY(host.channel.sendScreenFrame(tier, format, image, true));
         });
         producer.start();
-        QTRY_VERIFY_WITH_TIMEOUT(link.audioDatagrams >= 10 && link.videoDatagrams >= 10, 8000);
-        link.delay = 2000;
-        const auto beforeAudio = audio.size(), beforeVideo = video.size();
-        QTRY_VERIFY_WITH_TIMEOUT(audio.size() >= beforeAudio + 5 && video.size() >= beforeVideo + 5, 1000);
+        QVERIFY(waitForEvents([&] { return link.audioDatagrams >= 10 && link.videoDatagrams >= 10; }, 8000));
+        // Hold TLS until fresh audio and video arrive. A timing race against
+        // delayed TLS measures runner scheduling rather than transport isolation.
+        link.holdReliable = true;
+        voice = voicePacket(880); image = "UDP marker";
+        int receivedAudio = 0, receivedVideo = 0;
+        const std::unique_ptr<OpusDecoder, decltype(&opus_decoder_destroy)> decoder(
+            opus_decoder_create(48000, 2, nullptr), opus_decoder_destroy);
+        QVERIFY(decoder);
+        QObject reception;
+        connect(&client.channel, &LocalChannel::audioReceived, &reception, [&](const QString&, const QByteArray& packet) {
+            std::array<float, 1920> samples{};
+            QCOMPARE(opus_decode_float(decoder.get(), reinterpret_cast<const unsigned char*>(packet.constData()),
+                int(packet.size()), samples.data(), 960, 0), 960);
+            if (std::inner_product(samples.begin(), samples.end(), samples.begin(), 0.0) > 0.1) ++receivedAudio;
+        });
+        connect(&client.channel, &LocalChannel::screenFrameReceived, &reception,
+            [&](const QString&, qint64, const QJsonObject&, const QByteArray& frame) { if (frame == image) ++receivedVideo; });
+        QVERIFY(waitForEvents([&] { return receivedAudio >= 5 && receivedVideo >= 5; }));
+        link.holdReliable = false;
         producer.stop(); QVERIFY(client.channel.hosting()); QVERIFY(client.channel.joined());
     }
     void screenQualityPrioritizesVoiceInAnotherOwnedChannel() {
@@ -6254,7 +6275,8 @@ private slots:
         QVERIFY(sourceChannels == 1 || sourceChannels == 2);
         const int participantCount = qEnvironmentVariableIsSet("SQUAD_SOAK_CLIENTS")
             ? qEnvironmentVariable("SQUAD_SOAK_CLIENTS").toInt() : 64;
-        QVERIFY2(participantCount == 32 || participantCount == 64, "SQUAD_SOAK_CLIENTS must be 32 or 64");
+        QVERIFY2(participantCount == 8 || participantCount == 32 || participantCount == 64,
+            "SQUAD_SOAK_CLIENTS must be 8, 32 or 64");
         bool speakersOk = false;
         const int speakers = qEnvironmentVariableIsSet("SQUAD_SOAK_SPEAKERS")
             ? qEnvironmentVariable("SQUAD_SOAK_SPEAKERS").toInt(&speakersOk) : 4;
@@ -6415,10 +6437,12 @@ private slots:
         QVERIFY(overflow.channel.leave());
         QVERIFY(overflow.channel.watchScreen(hostId, false));
         QTRY_COMPARE(clients.back()->channel.participants().size(), participantCount);
-        std::array<squad::VoiceMixer, 2> playback{squad::VoiceMixer(2), squad::VoiceMixer(2)};
+        // Use the same adaptive receive delay as the desktop audio path.
+        std::array<squad::VoiceMixer, 2> playback{squad::VoiceMixer(2, 40), squad::VoiceMixer(2, 40)};
         std::array<int, 2> audibleFrames{};
         int renderedFrames = 0;
         qint64 lastInputMs = 0, lastOutputMs = 0, maxInputGapMs = 0, maxOutputGapMs = 0;
+        qint64 maxSendUs = 0, maxRenderUs = 0;
         bool validAudio = true;
         QElapsedTimer sustained;
         QObject reception; // Disconnect stack captures before their state is destroyed.
@@ -6515,11 +6539,13 @@ private slots:
             if (queuedUntilMs - now > 60) return;
             queuedUntilMs = std::max(queuedUntilMs, now) + 20;
             ++renderedFrames;
+            QElapsedTimer work; work.start();
             for (size_t i = 0; i < playback.size(); ++i) {
                 const auto samples = playback[i].render(48000, sustained.elapsed());
                 if (std::any_of(samples.begin(), samples.end(), [](float sample) { return std::abs(sample) > 0.005f; }))
                     ++audibleFrames[i];
             }
+            maxRenderUs = std::max(maxRenderUs, work.nsecsElapsed() / 1000);
         });
         QTimer input;
         input.setTimerType(Qt::PreciseTimer);
@@ -6542,11 +6568,13 @@ private slots:
             // fixture's catch-up bounded by the receiver's six-frame queue.
             const auto due = instrumentedTiming ? sentFrames + 1
                 : std::min<qint64>({now / 20, sentFrames + 6, sustainedFrames});
+            QElapsedTimer work; work.start();
             while (sentFrames < due) {
                 for (int speaker = 0; speaker < speakers; ++speaker)
                     validSend &= clients[size_t(speaker)]->channel.sendAudio(packet);
                 ++sentFrames;
             }
+            maxSendUs = std::max(maxSendUs, work.nsecsElapsed() / 1000);
             sentAtMs = now;
             if (sentFrames == sustainedFrames) input.stop();
         });
@@ -6590,6 +6618,7 @@ private slots:
                 << "sink played/underrun ms" << playedMs << playbackMs - playedMs
                 << "last input/output ms" << lastInputMs << lastOutputMs
                 << "maximum input/output gap ms" << maxInputGapMs << maxOutputGapMs
+                << "maximum send/render work us" << maxSendUs << maxRenderUs
                 << "total ms" << elapsed.elapsed();
         for (size_t i = 0; i < audioCounts.size(); ++i) {
             const int expected = sustainedFrames * (speakers - (i < size_t(speakers) ? 1 : 0));

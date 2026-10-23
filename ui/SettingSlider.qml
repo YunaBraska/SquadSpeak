@@ -74,6 +74,7 @@ GridLayout {
         }
     }
     Label {
+        objectName: "valueLabel"
         text: setting.filterEnabled ? valueText : qsTranslate("AudioSettings", "Off")
         textFormat: Text.PlainText; font.family: "monospace"
         Layout.row: 0; Layout.column: setting.toggleAvailable ? 3 : 2

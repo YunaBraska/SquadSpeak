@@ -30,6 +30,8 @@
 #include <QClipboard>
 #include <QUdpSocket>
 #include <QJsonDocument>
+#include <QSslSocket>
+#include <QtEndian>
 #include <QTextLayout>
 #include <QGlyphRun>
 #include <memory>
@@ -76,7 +78,7 @@ class AudioFixtures final : public QObject {
     std::unique_ptr<PushToTalkKey> pttKey_;
     std::unique_ptr<VoiceSession> remoteSession_;
     std::unique_ptr<LocalChannel> remoteChannel_;
-    std::vector<std::pair<std::unique_ptr<VoiceSession>, std::unique_ptr<LocalChannel>>> members_;
+    std::vector<std::unique_ptr<QSslSocket>> members_;
     ChatContent chatContent_;
     std::unique_ptr<AudioModel> audio_;
     std::unique_ptr<RadioPlayer> radio_;
@@ -85,6 +87,9 @@ class AudioFixtures final : public QObject {
     QTranslator translation_;
     QString appliedLanguage_ = "en";
 public slots:
+    QString imageDraft(const QString& markdown) const {
+        return ChatContent::embedImage(markdown, chatContent_.preparedImage());
+    }
     QString reloadedBotVoice() {
         AudioModel restored(folder_.filePath("audio.ini"));
         return restored.botVoiceId();
@@ -93,20 +98,41 @@ public slots:
     bool populateMembers(int count) {
         if (count < 0 || count > 63) return false;
         members_.clear();
+        const auto frame = [](const QJsonObject& object) {
+            const auto data = QJsonDocument(object).toJson(QJsonDocument::Compact);
+            QByteArray result(4, '\0');
+            qToBigEndian<quint32>(quint32(data.size()), result.data());
+            return result + data;
+        };
+        // This fixture exercises the real roster and UI, not media capacity.
+        // Prepare identities before network timers and omit unused UDP media.
         for (int i = 0; i < count; ++i) {
-            const auto path = folder_.filePath(QString("member-%1").arg(i));
-            auto session = std::make_unique<VoiceSession>(path + ".session");
-            session->setUserName(QString("Member %1").arg(i + 2, 2, 10, QChar('0')));
-            session->setAvatar(session->avatars().at(i % 10));
-            session->setMuted(i % 3 == 0);
-            auto client = std::make_unique<LocalChannel>(*session, path + ".channel", TlsIdentity::create(), [this] { return now_; });
-            if (!channel_->decide(client->ownId(), true)
-                || !client->join(channel_->ownId(), "127.0.0.1", channel_->port())) return false;
-            if (!QTest::qWaitFor([&] { return client->joined(); }, 5000)) {
-                qWarning() << "Member admission failed" << i + 2 << client->status();
+            const auto identity = TlsIdentity::create();
+            if (!channel_->decide(identity.id(), true)) return false;
+            auto socket = std::make_unique<QSslSocket>();
+            socket->setSslConfiguration(identity.configuration());
+            socket->setPeerVerifyMode(QSslSocket::VerifyNone);
+            connect(socket.get(), &QSslSocket::readyRead, socket.get(), [peer = socket.get()] { peer->readAll(); });
+            members_.push_back(std::move(socket));
+        }
+        for (int i = 0; i < count; ++i) {
+            auto& socket = *members_[size_t(i)];
+            socket.connectToHostEncrypted("127.0.0.1", channel_->port());
+            if (!QTest::qWaitFor([&] { return socket.isEncrypted(); }, 5000)) return false;
+            const auto hello = frame({{"type", "hello"}, {"version", 1},
+                {"name", QString("Member %1").arg(i + 2, 2, 10, QChar('0'))},
+                {"avatarId", session_->avatars().at(i % 10)}, {"muted", i % 3 == 0},
+                {"available", true}, {"capabilities", QJsonArray{}}});
+            if (socket.write(hello) != hello.size()) return false;
+            if (!QTest::qWaitFor([&] { return channel_->participants().size() == i + 2; }, 5000)) {
+                qWarning() << "Member admission failed" << i + 2 << socket.errorString();
                 return false;
             }
-            members_.emplace_back(std::move(session), std::move(client));
+            auto* heartbeat = new QTimer(&socket);
+            connect(heartbeat, &QTimer::timeout, &socket, [peer = &socket, ping = frame({{"type", "ping"}})] {
+                if (peer->isEncrypted()) peer->write(ping);
+            });
+            heartbeat->start(2000);
         }
         return true;
     }
@@ -464,9 +490,20 @@ public slots:
         engine->rootContext()->setContextProperty("nativeCaptureAcceptance",
             qEnvironmentVariable("SQUADSPEAK_TEST_INPUT") == "present");
         squad::AudioProcessor processor(48000, {0, 0, 300});
-        for (int i = 0; i < 24000; ++i) {
-            const auto phase = 2 * std::numbers::pi * 220 * i / 48000;
-            (void)processor.process(float(0.1 * std::sin(phase) + 0.25 * std::sin(2 * phase) + 0.08 * std::sin(3 * phase)));
+        squad::VoiceMixer preview;
+        preview.setNoiseSuppression(0.5);
+        for (int offset = 0; offset < 24000; offset += 960) {
+            std::array<float, 960> samples{};
+            for (size_t i = 0; i < samples.size(); ++i) {
+                const auto phase = 2 * std::numbers::pi * 220 * (offset + i) / 48000;
+                samples[i] = float(0.1 * std::sin(phase) + 0.25 * std::sin(2 * phase) + 0.08 * std::sin(3 * phase));
+            }
+            (void)preview.encode(samples, 48000, false,
+                [&](std::span<float> frame) { for (auto& sample : frame) sample = processor.filter(sample); },
+                [&](std::span<const float> raw, std::span<const float> filtered) {
+                    for (size_t i = 0; i < raw.size(); ++i)
+                        processor.observeInput(raw[i]).observeOutput(filtered[i]);
+                });
         }
         const auto levels = processor.levels();
         QVariantList raw, filtered;
@@ -474,6 +511,7 @@ public slots:
         for (const auto db : levels.outputSpectrum) filtered.push_back(db);
         engine->rootContext()->setContextProperty("referenceTone", QVariantMap{
             {"running", true}, {"spectrumReady", levels.spectrumReady},
+            {"inputDb", levels.inputDb}, {"outputDb", levels.outputDb},
             {"maximumFrequency", processor.maximumFrequency()},
             {"filterResponse", [&] { QVariantList values; for (const auto db : processor.filterResponse()) values.push_back(db); return values; }()},
             {"strongestHz", levels.strongestHz}, {"fundamentalHz", levels.fundamentalHz},

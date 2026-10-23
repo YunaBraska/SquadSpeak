@@ -410,6 +410,14 @@
             <source>Auto also checks for speech, not just volume.</source>
             <translation>ავტომატური რეჟიმი ამოწმებს მეტყველებასაც და არა მხოლოდ ხმის სიმაღლეს.</translation>
         </message>
+        <message>
+            <source>Minimum</source>
+            <translation>მინიმუმი</translation>
+        </message>
+        <message>
+            <source>Auto will not lower the voice threshold below this level.</source>
+            <translation>ავტომატური რეჟიმი ხმის ზღურბლს ამ დონეზე ქვემოთ არ დასწევს.</translation>
+        </message>
     </context>
     <context>
         <name>Channels</name>
@@ -2865,16 +2873,16 @@
             <translation>სიხშირის სპექტრი ჰერცში და dBFS-ში</translation>
         </message>
         <message>
-            <source>After gain / cuts</source>
-            <translation>გაძლიერებისა და სიხშირის ჭრების შემდეგ</translation>
+            <source>Processed</source>
+            <translation>დამუშავებული</translation>
         </message>
         <message>
             <source>Input: sound picked up by the microphone before gain and frequency cuts. Left is bass, right is treble; higher is louder.</source>
             <translation>შეყვანა: მიკროფონის მიერ დაჭერილი ხმა გაძლიერებამდე და სიხშირის ჭრებამდე. მარცხნივ ბასებია, მარჯვნივ მაღალი ტონები; უფრო მაღალი უფრო ხმამაღალია.</translation>
         </message>
         <message>
-            <source>After gain / cuts: the measured spectrum after microphone gain and frequency filters. It does not identify a speaker.</source>
-            <translation>გაძლიერებისა და ჭრების შემდეგ: მიკროფონის გაძლიერებისა და სიხშირის ფილტრების შემდეგ გაზომილი სპექტრი. ის მოსაუბრეს არ ამოიცნობს.</translation>
+            <source>After all filters, before transmission.</source>
+            <translation>ყველა ფილტრის შემდეგ, გადაცემამდე.</translation>
         </message>
         <message>
             <source>Filter curve: the configured change in level at each frequency, read on the right dB scale. It excludes noise reduction and voice activation.</source>

@@ -110,6 +110,7 @@ TestCase {
             Rectangle {
                 id: portraitGallery
                 property bool online: true
+                property int shownPortraits: 0
                 parent: view.contentItem
                 anchors.fill: parent; visible: false; z: 100; color: Theme.surface
                 Grid {
@@ -120,6 +121,8 @@ TestCase {
                         model: portraitGallery.visible ? session.avatars : []
                         Column {
                             required property string modelData
+                            required property int index
+                            visible: index < portraitGallery.shownPortraits
                             width: (portraitGallery.width - 40) / 5; spacing: 6
                             VoiceAvatar { width: parent.width; height: width; avatar: modelData; animated: false; circular: true; online: portraitGallery.online }
                             Text { width: parent.width; text: modelData.split("-").map(function(word) { return word.charAt(0).toUpperCase() + word.slice(1) }).join(" "); color: Theme.text; font.pixelSize: 11; horizontalAlignment: Text.AlignHCenter; wrapMode: Text.Wrap }
@@ -163,6 +166,7 @@ TestCase {
 
     }
     function cleanup() {
+        verify(fixtures.populateMembers(0))
         view.language = audio.language
         languageDisplay.preparation = ({})
         languageDisplay.downloads = 0
@@ -191,6 +195,7 @@ TestCase {
         portrait.visible = false
         portraitGallery.visible = false
         portraitGallery.online = true
+        portraitGallery.shownPortraits = 0
         controllerView.close()
         controllerView.chatExpanded = false
         remoteSession.releasePttInput()
@@ -677,6 +682,7 @@ TestCase {
         waitForRendering(requestCanvas)
         compare(findChild(dialog, "requestName").text, remoteSession.userName)
         compare(findChild(dialog, "requestIdentity").text, remoteChannel.ownId)
+        compare(findChild(dialog, "requestClient").text, "SquadSpeak")
         verify(!findChild(dialog, "audioQuality").visible, "Our receive quality must not be attributed to another member")
         verify(findChild(dialog, "requestAddress").text.includes("127.0.0.1"))
         compare(findChild(dialog, "requestChannel").text, remoteChannel.channelName)
@@ -800,15 +806,24 @@ TestCase {
         compare(session.avatar, selected, "Swiping scrolls without selecting a portrait")
         verify(session.setAvatar(previous))
         view.closeSettings()
+        tryCompare(findChild(view, "settingsDialog"), "visible", false)
         view.width = 640; view.height = 720
         portraitGallery.visible = true
         tryCompare(galleryPortraits, "count", session.avatars.length)
         verify(waitForRendering(portraitGallery))
         for (let i = 0; i < session.avatars.length; ++i) {
+            // Load each atlas within its own deadline, as the actual carousel does.
+            portraitGallery.shownPortraits = i + 1
             tryVerify(function() { return galleryPortraits.itemAt(i) !== null })
             const avatar = findChild(galleryPortraits.itemAt(i), "avatarCanvas").parent
-            tryVerify(function() { return fixtures.portraitHasDetail(avatar) }, 5000,
-                session.avatars[i] + " is visible in the gallery")
+            let detailed = false
+            try {
+                tryVerify(function() { detailed = fixtures.portraitHasDetail(avatar); return detailed },
+                    5000, session.avatars[i] + " is visible in the gallery")
+            } finally {
+                if (!detailed && imageDirectory.length > 0)
+                    fixtures.saveWindow(view, imageDirectory + "/avatar-gallery-failed.png")
+            }
         }
         if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/avatar-catalog.png"))
         portraitGallery.online = false
@@ -2337,13 +2352,19 @@ TestCase {
         audio.setGainDb(original)
         audio.setGainAutomatic(wasAutomatic)
         waitForRendering(chart)
+        // A previous settings test may leave this same tab scrolled down.
+        const scroll = findChild(view, "audioSettingsScroll").contentItem
+        scroll.cancelFlick()
+        scroll.contentY = 0
+        tryCompare(scroll, "contentY", 0)
+        verify(scroll.contentHeight > scroll.height)
         const chartY = chart.mapToItem(view.contentItem, 0, 0).y
         const meter = findChild(view, "voiceThreshold")
         verify(meter !== null)
         const meterY = meter.mapToItem(view.contentItem, 0, 0).y
         reveal(findChild(view, "choosePttKey"))
-        verify(chart.mapToItem(view.contentItem, 0, 0).y < chartY, "Spectrum scrolls with controls")
-        verify(meter.mapToItem(view.contentItem, 0, 0).y < meterY, "Voice admission scrolls with controls")
+        tryVerify(function() { return chart.mapToItem(view.contentItem, 0, 0).y < chartY }, 5000, "Spectrum scrolls with controls")
+        tryVerify(function() { return meter.mapToItem(view.contentItem, 0, 0).y < meterY }, 5000, "Voice admission scrolls with controls")
         for (const size of [[520, 740], [360, 560]]) {
             view.width = size[0]; view.height = size[1]
             findChild(view, "audioSettingsScroll").contentItem.contentY = 0
@@ -2724,6 +2745,63 @@ TestCase {
         }
     }
 
+    function test_speakingPortraitBridgesShortPausesButStopsOnMute() {
+        const item = createTemporaryObject(variablePortrait, view.contentItem, {animationTime: 1000})
+        verify(item !== null)
+        compare(item.stateRow, 0)
+        item.level = 0.04
+        compare(item.stateRow, 1)
+        item.animationTime = 1040
+        item.level = 0
+        compare(item.activity, 0, "The measured audio level is not smoothed")
+        compare(item.stateRow, 1, "A short audio pause must not flash the portrait off")
+        item.animationTime = 1200
+        compare(item.stateRow, 1)
+        item.level = 0.03
+        item.animationTime = 1300
+        item.level = 0
+        item.animationTime = 1540
+        compare(item.stateRow, 0, "Sustained silence ends the highlight")
+        for (const restriction of ["muted", "online", "available"]) {
+            item.level = 0.05
+            compare(item.stateRow, 1)
+            item[restriction] = restriction === "muted"
+            verify(item.stateRow !== 1, "Mute, disconnect and unavailability take effect immediately")
+            item.level = 0
+            item[restriction] = restriction !== "muted"
+            compare(item.stateRow, 0, "A restored silent participant must not inherit old activity")
+        }
+    }
+
+    function test_automaticVoiceMinimumIsOptionalAndKeepsManualMode() {
+        view.openSettings(1)
+        session.setPushToTalk(false)
+        const minimum = findChild(view, "voiceMinimum")
+        verify(minimum !== null)
+        if (!audio.inputAvailable) { verify(!minimum.enabled); return }
+        const enabled = audio.activationMinimumEnabled, value = audio.activationMinimumDb
+        const threshold = audio.activationThresholdDb, automatic = audio.activationAutomatic
+        try {
+            audio.setActivationAutomatic(true)
+            verify(minimum.visible)
+            verify(audio.setActivationMinimum(true, -38))
+            compare(minimum.filterEnabled, true)
+            findChild(minimum, "valueControl").value = -36
+            compare(audio.activationMinimumDb, -36)
+            compare(audio.activationAutomatic, true)
+            verify(audio.activationThresholdDb >= -36)
+            verify(audio.setActivationMinimum(false, audio.activationMinimumDb))
+            compare(audio.activationMinimumDb, -36)
+            audio.setActivationThresholdDb(-60)
+            verify(!minimum.visible)
+            compare(audio.activationThresholdDb, -60)
+        } finally {
+            audio.setActivationMinimum(enabled, value)
+            audio.setActivationThresholdDb(threshold)
+            audio.setActivationAutomatic(automatic)
+        }
+    }
+
     function test_avatarStatesHaveThreeAlternatingClipsAndActualSpeechHighlight() {
         portrait.available = true; portrait.muted = false; portrait.deafened = false; portrait.sleeping = false
         portrait.visible = true; portrait.animated = true; portrait.level = 0
@@ -2789,6 +2867,24 @@ TestCase {
         verify(badge.height <= findChild(item, "microphoneBadge").mapToItem(item, 0, 0).y)
         item.teamSpeak = false
         verify(!badge.visible)
+        view.memberOptions({id: "ts-peer", name: "Example", avatarId: "courier", teamSpeak: true}, "ts-host", false)
+        const dialog = findChild(view, "requestInfoDialog")
+        tryCompare(dialog, "opened", true)
+        compare(findChild(dialog, "requestClient").text, "TeamSpeak")
+        verify(findChild(findChild(dialog, "requestAvatar"), "teamSpeakBadge").visible)
+        tryVerify(function() { return fixtures.portraitHasDetail(findChild(dialog, "requestAvatar")) })
+        if (imageDirectory.length > 0) {
+            waitForRendering(view.contentItem)
+            verify(fixtures.saveWindow(view, imageDirectory + "/inspect-teamspeak.png"))
+        }
+        view.memberOptions({id: "squad-peer", name: "Example", avatarId: "courier", teamSpeak: false}, "ts-host", false)
+        compare(findChild(dialog, "requestClient").text, "SquadSpeak")
+        verify(!findChild(findChild(dialog, "requestAvatar"), "teamSpeakBadge").visible)
+        if (imageDirectory.length > 0) {
+            waitForRendering(view.contentItem)
+            verify(fixtures.saveWindow(view, imageDirectory + "/inspect-squadspeak.png"))
+        }
+        dialog.close()
     }
 
     function test_idlePortraitVariesPausesAndHeldPosesWithoutLosingSynchronization() {
@@ -2880,8 +2976,6 @@ TestCase {
                 items.push(item)
             }
         }
-        // Hide the ordinary catalog while inspecting the five animation strips.
-        for (let i = 0; i < galleryPortraits.count; ++i) galleryPortraits.itemAt(i).visible = false
         tryVerify(function() { return fixtures.portraitsHaveDetail(items, false) }, 5000)
         if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/" + data.tag + "-motion.png"))
         for (const item of items) {
@@ -2951,8 +3045,12 @@ TestCase {
             compare(canvas.crop.width, 32); compare(canvas.crop.height, 32)
         }
         portrait.level = 0
+        compare(portrait.cycleLength, 600)
+        portrait.animationTime += 239
+        compare(portrait.cycleLength, 600)
+        portrait.animationTime += 1
         compare(portrait.cycleLength, 4600)
-        for (const time of [599, 600, 4599]) {
+        for (const time of [2039, 4599, 4600]) {
             portrait.animationTime = time
             verify(portrait.frame >= 0 && portrait.frame < 2)
             compare(canvas.crop.y, 0)
@@ -3056,6 +3154,8 @@ TestCase {
         first.forceActiveFocus(); keyClick(Qt.Key_Return)
         tryCompare(info, "opened", true)
         compare(findChild(info, "requestIdentity").text, firstId)
+        verify(fixtures.populateMembers(0))
+        tryVerify(function() { return channel.participants.length === 1 })
     }
 
     function test_channelTreeAndIconControlsFitCompactWindow() {
@@ -3730,6 +3830,11 @@ TestCase {
         verify(findChild(other, "messageAvatar_" + remoteChannel.ownId).animated,
             "Chat portraits follow the channel animation preference")
         compare(own.own, true); compare(other.own, false)
+        const ownRecord = own.message
+        own.message = Object.assign({}, ownRecord, {teamSpeak: true})
+        verify(!findChild(own, "messageAvatar_" + channel.ownId).teamSpeak,
+            "An older protocol flag must not mark our own message as a TeamSpeak client")
+        own.message = ownRecord
         verify(findChild(own, "messageBody_" + own.message.sequence).x > findChild(other, "messageBody_" + other.message.sequence).x)
         const previousRemoteName = remoteSession.userName
         verify(remoteSession.setUserName("Mira updated")); verify(remoteSession.setAvatar("mechanic"))
@@ -4480,10 +4585,12 @@ TestCase {
         view.width = 520
     }
 
-    function test_compactChatSendsPreparedImageWithoutText_data() {
-        return [{tag: "minimum", height: 360}, {tag: "compact", height: 420}]
+    function test_compactChatSendsPreparedImage_data() {
+        return [{tag: "minimum", height: 360, markdown: ""}, {tag: "compact", height: 420, markdown: ""},
+                {tag: "escaped", height: 420, markdown: "![a \\] label](image.png)"},
+                {tag: "entity", height: 420, markdown: "![a &amp; b](image.png)"}]
     }
-    function test_compactChatSendsPreparedImageWithoutText(data) {
+    function test_compactChatSendsPreparedImage(data) {
         view.width = 400
         view.height = data.height
         verify(fixtures.startHost())
@@ -4498,7 +4605,7 @@ TestCase {
         compare(chatContent.error, "")
         const draft = findChild(panel, "chatDraft")
         const send = findChild(panel, "sendChat")
-        draft.clear()
+        draft.text = data.markdown.length ? fixtures.imageDraft(data.markdown) : ""
         tryCompare(send, "enabled", true)
         waitForRendering(panel)
         const position = send.mapToItem(view.contentItem, 0, 0)
@@ -4514,6 +4621,16 @@ TestCase {
         const last = channel.messages[channel.messages.length - 1]
         verify(last.text.includes("attachment:" + last.image.hash))
         tryVerify(function() { return channel.imageSource(last.image.hash).length > 0 })
+        const history = findChild(panel, "chatHistory")
+        tryVerify(function() { return history.rows.count > 0 })
+        history.scrollTo(history.rows.count - 1)
+        tryVerify(function() { return history.rows.itemAt(history.rows.count - 1) !== null })
+        const text = findChild(history.rows.itemAt(history.rows.count - 1), "messageText_" + last.sequence)
+        verify(text !== null)
+        tryVerify(function() { return (text.text.match(/<img\s/g) || []).length === 1 })
+        view.update()
+        verify(waitForRendering(text))
+        verify(text.contentHeight < last.image.height * 2, "One picture occupies one image height")
         verify(session.available)
         if (imageDirectory.length > 0) {
             waitForRendering(panel)

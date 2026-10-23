@@ -410,6 +410,14 @@
             <source>Auto also checks for speech, not just volume.</source>
             <translation>Seiceálann an mód uathoibríoch caint freisin, ní hamháin airde na fuaime.</translation>
         </message>
+        <message>
+            <source>Minimum</source>
+            <translation>Íosmhéid</translation>
+        </message>
+        <message>
+            <source>Auto will not lower the voice threshold below this level.</source>
+            <translation>Ní ísleoidh an mód uathoibríoch tairseach an ghutha faoin leibhéal seo.</translation>
+        </message>
     </context>
     <context>
         <name>Channels</name>
@@ -2865,16 +2873,16 @@
             <translation>Speictream minicíochta i hertz agus dBFS</translation>
         </message>
         <message>
-            <source>After gain / cuts</source>
-            <translation>Tar éis aimpliú agus gearradh minicíochta</translation>
+            <source>Processed</source>
+            <translation>Próiseáilte</translation>
         </message>
         <message>
             <source>Input: sound picked up by the microphone before gain and frequency cuts. Left is bass, right is treble; higher is louder.</source>
             <translation>Ionchur: fuaim a phiocann an micreafón suas roimh aimpliú agus gearradh minicíochta. Ar chlé tá an dord, ar dheis an trí oiread; ciallaíonn níos airde fuaim níos airde.</translation>
         </message>
         <message>
-            <source>After gain / cuts: the measured spectrum after microphone gain and frequency filters. It does not identify a speaker.</source>
-            <translation>Tar éis aimpliú / gearrtha: an speictream tomhaiste tar éis aimpliú micreafóin agus scagairí minicíochta. Ní aithníonn sé an cainteoir.</translation>
+            <source>After all filters, before transmission.</source>
+            <translation>Tar éis gach scagaire, roimh tharchur.</translation>
         </message>
         <message>
             <source>Filter curve: the configured change in level at each frequency, read on the right dB scale. It excludes noise reduction and voice activation.</source>

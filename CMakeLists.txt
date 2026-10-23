@@ -428,6 +428,7 @@ if(BUILD_TESTING)
     endif()
     qt_add_executable(mixer_tests tests/mixer_tests.cpp)
     target_link_libraries(mixer_tests PRIVATE squad_audio Qt6::Test)
+    qt_add_resources(mixer_tests "speech_fixture" PREFIX "/audio" BASE tests/audio FILES tests/audio/speech1.wav)
     qt_add_executable(media_transport_tests tests/media_transport_tests.cpp)
     target_link_libraries(media_transport_tests PRIVATE squad_session Qt6::Test PkgConfig::OPUS datachannel-static plog::plog)
     qt_add_executable(channel_tests tests/channel_tests.cpp)
@@ -503,7 +504,7 @@ if(BUILD_TESTING)
             DirectChannelControls::test_chatSendsOnlyAfterHostReceiptAndKeepsVoiceAvailable:English
             DirectChannelControls::test_all64MembersAreReachableFromChannelSummary
             DirectChannelControls::test_returningToChatPaintsWithoutScrolling
-            DirectChannelControls::test_compactChatSendsPreparedImageWithoutText
+            DirectChannelControls::test_compactChatSendsPreparedImage
             DirectChannelControls::test_settingsContainProfileAndAudioInTheChannelWindow
             DirectChannelControls::test_scrollLoadsOlderMessagesWithoutDownloadingThemAtOpen
             DirectChannelControls::test_scrollbarTracksLoadedMessagesWithoutResizing
@@ -719,7 +720,16 @@ if(BUILD_TESTING)
     target_compile_definitions(corpus_tests PRIVATE
         SQUAD_CORPUS_DIR="${CMAKE_CURRENT_SOURCE_DIR}/tests/audio"
         SQUAD_CORPUS_OUTPUT="${CMAKE_BINARY_DIR}/audio-corpus")
-    add_test(NAME audio_corpus COMMAND corpus_tests)
+    if(SQUADSPEAK_DENOISE_CANDIDATE)
+        add_test(NAME audio_corpus COMMAND corpus_tests mixtures)
+        foreach(part speechActivation quietWordOnsets repeatedSpeech automaticInput playbackEcho duplexEchoDecays)
+            add_test(NAME audio_corpus_${part} COMMAND corpus_tests ${part})
+            set_tests_properties(audio_corpus_${part} PROPERTIES TIMEOUT 600
+                ENVIRONMENT "SQUAD_CORPUS_OUTPUT=${CMAKE_BINARY_DIR}/audio-corpus-${part}")
+        endforeach()
+    else()
+        add_test(NAME audio_corpus COMMAND corpus_tests)
+    endif()
     # Instrumented inference is much slower; this is not a performance gate.
     set_tests_properties(audio_corpus PROPERTIES TIMEOUT 600)
     qt_add_executable(radio_tests tests/radio_tests.cpp)
@@ -735,7 +745,7 @@ if(BUILD_TESTING)
     qt_add_executable(teamspeak_tests tests/teamspeak_tests.cpp)
     target_link_libraries(teamspeak_tests PRIVATE squad_session squad_content squad_audio Qt6::Test)
     add_executable(teamspeak_live EXCLUDE_FROM_ALL tests/teamspeak_live.cpp)
-    target_link_libraries(teamspeak_live PRIVATE squad_session squad_content Qt6::Test PkgConfig::OPUS)
+    target_link_libraries(teamspeak_live PRIVATE squad_session squad_content squad_audio Qt6::Test)
     add_test(NAME teamspeak_contract COMMAND teamspeak_tests)
     set_tests_properties(teamspeak_contract PROPERTIES TIMEOUT 45 RESOURCE_LOCK channel_fixed_ports)
     qt_add_executable(license_tests tests/license_tests.cpp src/headless.cpp src/headless.hpp)

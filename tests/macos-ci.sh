@@ -22,7 +22,7 @@ if test "$phase" = prepare; then
         python3 -m venv "$build_root/toolchain/aqt"
         "$build_root/toolchain/aqt/bin/pip" install --disable-pip-version-check \
             'git+https://github.com/miurahr/aqtinstall.git@8c3695d4a4e1ceabf6a74dc6c79681656dc6b74b'
-        "$build_root/toolchain/aqt/bin/aqt" install-qt mac desktop 6.11.3 clang_64 \
+        "$build_root/toolchain/aqt/bin/aqt" install-qt mac desktop 6.11.3 clang_64 --base https://master.qt.io \
             --outputdir "$build_root/toolchain/Qt" --modules qtmultimedia qtimageformats
     fi
     test "$("$qt_prefix/bin/qmake" -query QT_VERSION)" = 6.11.3

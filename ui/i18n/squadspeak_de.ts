@@ -410,6 +410,14 @@
             <source>Auto also checks for speech, not just volume.</source>
             <translation>Auto prüft auch auf Sprache, nicht nur auf Lautstärke.</translation>
         </message>
+        <message>
+            <source>Minimum</source>
+            <translation>Untergrenze</translation>
+        </message>
+        <message>
+            <source>Auto will not lower the voice threshold below this level.</source>
+            <translation>Auto senkt die Sprachschwelle nicht unter diesen Pegel.</translation>
+        </message>
     </context>
     <context>
         <name>Channels</name>
@@ -2865,16 +2873,16 @@
             <translation>Frequenzspektrum in Hertz und dBFS</translation>
         </message>
         <message>
-            <source>After gain / cuts</source>
-            <translation>Nach Verstärkung / Filtern</translation>
+            <source>Processed</source>
+            <translation>Gefiltert</translation>
         </message>
         <message>
             <source>Input: sound picked up by the microphone before gain and frequency cuts. Left is bass, right is treble; higher is louder.</source>
             <translation>Eingang: Mikrofonsignal vor Verstärkung und Frequenzfiltern. Links sind tiefe, rechts hohe Töne; weiter oben bedeutet lauter.</translation>
         </message>
         <message>
-            <source>After gain / cuts: the measured spectrum after microphone gain and frequency filters. It does not identify a speaker.</source>
-            <translation>Nach Verstärkung / Filtern: das gemessene Spektrum nach Mikrofonverstärkung und Frequenzfiltern. Es erkennt keine bestimmte Person.</translation>
+            <source>After all filters, before transmission.</source>
+            <translation>Nach allen Filtern, vor dem Senden.</translation>
         </message>
         <message>
             <source>Filter curve: the configured change in level at each frequency, read on the right dB scale. It excludes noise reduction and voice activation.</source>

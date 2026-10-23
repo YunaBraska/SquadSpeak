@@ -410,6 +410,14 @@
             <source>Auto also checks for speech, not just volume.</source>
             <translation>Chế độ tự động cũng nhận diện lời nói, không chỉ âm lượng.</translation>
         </message>
+        <message>
+            <source>Minimum</source>
+            <translation>Tối thiểu</translation>
+        </message>
+        <message>
+            <source>Auto will not lower the voice threshold below this level.</source>
+            <translation>Chế độ tự động sẽ không hạ ngưỡng giọng nói dưới mức này.</translation>
+        </message>
     </context>
     <context>
         <name>Channels</name>
@@ -2865,16 +2873,16 @@
             <translation>Phổ tần số theo hertz và dBFS</translation>
         </message>
         <message>
-            <source>After gain / cuts</source>
-            <translation>Sau gain / cắt</translation>
+            <source>Processed</source>
+            <translation>Đã xử lý</translation>
         </message>
         <message>
             <source>Input: sound picked up by the microphone before gain and frequency cuts. Left is bass, right is treble; higher is louder.</source>
             <translation>Đầu vào: âm thanh mic thu được trước gain và cắt tần số. Âm trầm ở bên trái, âm cao ở bên phải; càng cao thì càng lớn.</translation>
         </message>
         <message>
-            <source>After gain / cuts: the measured spectrum after microphone gain and frequency filters. It does not identify a speaker.</source>
-            <translation>Sau gain / cắt: phổ đo được sau gain mic và bộ lọc tần số. Nó không xác định người nói.</translation>
+            <source>After all filters, before transmission.</source>
+            <translation>Sau tất cả bộ lọc, trước khi truyền.</translation>
         </message>
         <message>
             <source>Filter curve: the configured change in level at each frequency, read on the right dB scale. It excludes noise reduction and voice activation.</source>

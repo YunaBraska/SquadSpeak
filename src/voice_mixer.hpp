@@ -15,6 +15,9 @@
 #include <samplerate.h>
 #include <rnnoise.h>
 #include <cstdlib>
+#ifdef SQUADSPEAK_DENOISE_CANDIDATE
+#include "teamspeak_bridge/denoise_bridge.h"
+#endif
 
 namespace squad {
 
@@ -22,6 +25,8 @@ struct VoiceActivation final {
     bool enabled = false;
     bool automatic = true;
     double thresholdDb = -45;
+    bool minimumEnabled = false;
+    double minimumDb = -45;
     bool operator==(const VoiceActivation&) const = default;
     [[nodiscard]] bool valid() const noexcept;
 };
@@ -30,11 +35,19 @@ struct VoiceActivation final {
 // or stereo, packets are 20 ms Opus frames at 48 kHz.
 class VoiceMixer final {
 public:
-    explicit VoiceMixer(int channels = 1);
+    // Optional minimum receive delay adapts up to 160 ms for arrival jitter.
+    // Up to ten frames cover that delay and output callbacks. Zero disables it.
+    explicit VoiceMixer(int channels = 1, int playbackDelayMs = 0);
     [[nodiscard]] int channelCount() const { return channels_; }
     // Denied capture still updates the preview, but produces no packets. A
     // permission transition discards buffered audio before examining new input.
-    [[nodiscard]] QList<QByteArray> encode(std::span<const float> samples, int sampleRate, bool transmissionAllowed = true);
+    using CaptureFilter = std::function<void(std::span<float>)>;
+    using CaptureObserver = std::function<void(std::span<const float>, std::span<const float>)>;
+    // Filter receives complete 48 kHz frames before noise reduction. Observer
+    // receives the original and final PCM, aligned for suppressionDelaySamples(),
+    // before gating/encoding, even while muted. Borrowed spans cannot escape.
+    [[nodiscard]] QList<QByteArray> encode(std::span<const float> samples, int sampleRate,
+        bool transmissionAllowed = true, const CaptureFilter& filter = {}, const CaptureObserver& observer = {});
     [[nodiscard]] bool receive(const QString& peer, const QByteArray& packet, qint64 now, int missing = 0);
     using PlaybackFilter = std::function<void(const QString&, std::span<float>, qint64)>;
     // Processes each decoded 48 kHz peer frame before normalization and mixing.
@@ -43,9 +56,20 @@ public:
     VoiceMixer& setGain(const QString& peer, double gain);
     VoiceMixer& setAutomatic(bool enabled);
     // Zero bypasses suppression. Positive values blend aligned original and
-    // denoised capture before Opus; the pinned model adds 20 ms of history.
+    // denoised capture, preserving more original sound during detected speech.
+    // Delay is reported at 48 kHz, per channel. Bypass has no filter delay.
+    [[nodiscard]] static constexpr int suppressionDelaySamples() {
+#ifdef SQUADSPEAK_DENOISE_CANDIDATE
+        return 1440;
+#else
+        return 960;
+#endif
+    }
     VoiceMixer& setNoiseSuppression(double strength);
     VoiceMixer& setVoiceActivation(VoiceActivation activation);
+    // Bound each encoded frame to the transport's payload budget. The target
+    // bitrate and PCM processing are unchanged. Valid range: 1 to 4000 bytes.
+    VoiceMixer& setPacketLimit(int bytes);
     [[nodiscard]] double activationThresholdDb() const { return activationThresholdDb_; }
     [[nodiscard]] double activationLevelDb() const { return activationLevelDb_; }
     [[nodiscard]] bool voiceActive() const { return voiceActive_; }
@@ -67,21 +91,36 @@ private:
         double automaticGain = 1;
         double level = 0;
         qint64 played = -1;
+        qint64 readyAt = -1;
+        qint64 nextFrameAt = -1;
+        qint64 receivedAt = -1;
+        qint64 lastJitterAt = -1;
+        int playbackDelay = 0;
     };
     void resampleInto(SRC_STATE* state, std::span<const float> samples, double ratio,
         std::vector<float>& output) const;
     using Denoiser = std::unique_ptr<DenoiseState, decltype(&std::free)>;
     int channels_ = 1;
+    int playbackDelayMs_ = 0;
+    int packetLimit_ = 4000;
     std::unique_ptr<OpusEncoder, decltype(&opus_encoder_destroy)> encoder_{nullptr, opus_encoder_destroy};
     std::array<Denoiser, 2> denoisers_{{Denoiser{nullptr, std::free}, Denoiser{nullptr, std::free}}};
-    std::array<float, 1920> delayedCapture_{};
+    std::array<float, 2880> delayedCapture_{};
+    std::array<float, 2880> delayedPreview_{};
+    size_t delayPosition_ = 0;
+#ifdef SQUADSPEAK_DENOISE_CANDIDATE
+    std::unique_ptr<void, decltype(&squad_denoise_destroy)> neuralDenoiser_{nullptr, squad_denoise_destroy};
+    std::array<float, 960> delayedNoise_{};
+#endif
     double noiseSuppression_ = 0;
+    double speechProtection_ = 0;
     VoiceActivation activation_;
     double activationThresholdDb_ = -45;
     double activationLevelDb_ = -96;
     double transmitLevel_ = 0;
     int trailingFrames_ = 0;
     int speechFrames_ = 0;
+    int silenceFrames_ = 0;
     bool voiceActive_ = false;
     bool captureTransmissionAllowed_ = true;
     std::deque<std::array<float, 1920>> preRoll_;

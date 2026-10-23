@@ -281,6 +281,47 @@ private slots:
         QVERIFY(!ChatContent::allowedLink(QUrl("https://user:password@example.org")));
         QVERIFY(!content.openLink("file:///private/test.png"));
     }
+    void markdownUntrustedContentRemainsInert_data() {
+        QTest::addColumn<QString>("markdown");
+        for (const auto* scheme : {"javascript:alert(1)", "data:text/html,payload", "file:///private/test.png",
+                                  "qrc:/private/test.png", "ftp://example.org/file", "smb://example.org/file"}) {
+            QTest::newRow(scheme) << QString("[link](%1) ![image](%1)").arg(scheme);
+        }
+        QTest::newRow("HTML and event attributes")
+            << "<script>alert(1)</script><iframe src='https://example.org/frame'></iframe>"
+               "<img src='https://example.org/image' onerror='alert(1)'>"
+               "<video poster='file:///private/test.png'></video>";
+        QTest::newRow("entity encoded markup")
+            << "&lt;img src=\"file:///private/test.png\"&gt; &#60;script&#62;alert(1)&#60;/script&#62;";
+        QTest::newRow("escaped image label")
+            << "![a \\] <script>alert(1)</script>](file:///private/test.png)";
+        QTest::newRow("code examples")
+            << "`![image](file:///private/test.png)`\n\n```html\n<img src='https://example.org/image'>\n```";
+        QTest::newRow("nested links and quote")
+            << "> [![image](file:///private/test.png)](javascript:alert(1))\n\n"
+               "[**link**][ref]\n\n[ref]: data:text/html,payload";
+        QTest::newRow("HTML resource attributes")
+            << "<style>body{background:url(file:///private/test.png)}</style>"
+               "<table background='https://example.org/image'><tr><td>text</td></tr></table>"
+               "<object data='file:///private/test.png'></object>";
+    }
+    void markdownUntrustedContentRemainsInert() {
+        QFETCH(QString, markdown);
+        ChatContent content;
+        const auto html = content.format(markdown);
+        QVERIFY(!html.contains("<img", Qt::CaseInsensitive));
+        QVERIFY(!html.contains("<script", Qt::CaseInsensitive));
+        QVERIFY(!html.contains("<iframe", Qt::CaseInsensitive));
+        QTextDocument rendered;
+        rendered.setHtml(html);
+        QVERIFY(!rendered.toPlainText().isEmpty());
+        for (auto block = rendered.begin(); block.isValid(); block = block.next())
+            for (auto it = block.begin(); !it.atEnd(); ++it) {
+                const auto format = it.fragment().charFormat();
+                QVERIFY(!format.isImageFormat());
+                QVERIFY(!format.isAnchor());
+            }
+    }
     void markdownCodeAndQuotesAreVisuallyDistinctWithoutChangingCopiedText_data() {
         QTest::addColumn<QColor>("accent");
         QTest::addColumn<QColor>("background");
@@ -395,7 +436,35 @@ private slots:
         QCOMPARE(result, expected.arg(reference));
         QCOMPARE(ChatContent::embedImage(result, bytes), result);
     }
+    void formatKeepsRepeatedImagesAndIgnoresCodeImages_data() {
+        QTest::addColumn<QString>("markdown");
+        QTest::addColumn<int>("expectedImages");
+        QTest::addColumn<QString>("expectedLabels");
+        QTest::newRow("repeated") << "![one](%1) ![two](%1)" << 2 << "one|two";
+        QTest::newRow("adjacent") << "![one](%1)![two](%1)" << 2 << "one|two";
+        QTest::newRow("escaped") << "![a \\] label](%1)" << 1 << "a ] label";
+        QTest::newRow("entity") << "![a &amp; b](%1)" << 1 << "a & b";
+        QTest::newRow("emphasis") << "![a **bold** label](%1)" << 1 << "a bold label";
+        QTest::newRow("code") << "![a `code` label](%1)" << 1 << "a code label";
+        QTest::newRow("entity only") << "![&amp;](%1)" << 1 << "&";
+        QTest::newRow("line break") << "![a\nlabel](%1)" << 1 << "a label";
+        QTest::newRow("linked") << "[![a &amp; b](%1)](https://example.org)" << 1 << "a & b";
+        QTest::newRow("identical adjacent") << "![one](%1)![one](%1)" << 2 << "one|one";
+        QTest::newRow("nested image") << "![a ![b](%1) c](%1)" << 1 << "a b c";
+        QTest::newRow("nested complex image") << "![a ![b \\] c](%1) d](%1)" << 1 << "a b ] c d";
+        QTest::newRow("marker collision") << "![imageLabelMarker \\] label](%1)" << 1 << "imageLabelMarker ] label";
+        QTest::newRow("numeric entity") << "![a &#93; b](%1)" << 1 << "a ] b";
+        QTest::newRow("reference") << "![a \\] label][picture]\n\n[picture]: %1" << 1 << "a ] label";
+        QTest::newRow("shortcut") << "![a &amp; b]\n\n[a &amp; b]: %1" << 1 << "a & b";
+        QTest::newRow("collapsed") << "![a &amp; b][]\n\n[a &amp; b]: %1" << 1 << "a & b";
+        QTest::newRow("repeated complex") << "![a \\] label](%1)![a \\] label](%1)" << 2 << "a ] label|a ] label";
+        QTest::newRow("large code example") << "```md\n" + QString("![a \\] label](image.png)\n").repeated(350)
+            + "```\n\n![one](%1)" << 1 << "one";
+    }
     void formatKeepsRepeatedImagesAndIgnoresCodeImages() {
+        QFETCH(QString, markdown);
+        QFETCH(int, expectedImages);
+        QFETCH(QString, expectedLabels);
         ChatContent content;
         const QByteArray bytes("image fixture");
         const auto hash = QString::fromLatin1(QCryptographicHash::hash(bytes, QCryptographicHash::Sha256).toHex());
@@ -405,18 +474,26 @@ private slots:
         QBuffer buffer(&png);
         QVERIFY(buffer.open(QIODevice::WriteOnly));
         QVERIFY(image.save(&buffer, "PNG"));
-        const auto html = content.format(
-            "`![code](attachment:" + hash + ")`\n\n![one](attachment:" + hash + ") ![two](attachment:" + hash + ")",
+        const auto text = "`![code \\] label](attachment:" + hash + ")`\n\n" + markdown.arg("attachment:" + hash)
+            + "\n\nAfter **image**.";
+        const auto html = content.format(text,
             {{"hash", hash}, {"source", "data:image/png;base64," + QString::fromLatin1(png.toBase64())},
              {"width", image.width()}, {"height", image.height()}});
         QTextDocument rendered;
         rendered.setHtml(html);
         int imageCount = 0;
+        QStringList labels;
         for (auto block = rendered.begin(); block.isValid(); block = block.next())
             for (auto it = block.begin(); !it.atEnd(); ++it)
-                if (it.fragment().isValid() && it.fragment().charFormat().isImageFormat()) ++imageCount;
-        QCOMPARE(imageCount, 2);
-        QVERIFY(rendered.toPlainText().contains("![code](attachment:"));
+                if (it.fragment().isValid() && it.fragment().charFormat().isImageFormat()) {
+                    imageCount += it.fragment().length();
+                    for (int i = 0; i < it.fragment().length(); ++i)
+                        labels.append(it.fragment().charFormat().stringProperty(QTextFormat::ImageAltText));
+                }
+        QCOMPARE(imageCount, expectedImages);
+        QCOMPARE(labels.join('|'), expectedLabels);
+        QVERIFY(rendered.toPlainText().contains("![code \\] label](attachment:"));
+        QVERIFY(rendered.toPlainText().endsWith("After image."));
     }
     void markdownLinkBoundaries_data() {
         QTest::addColumn<QString>("markdown");

@@ -94,14 +94,21 @@ double AudioProcessor::Filter::process(double sample, std::size_t channel) noexc
 
 float AudioProcessor::process(float sample) noexcept {
     observeInput(sample);
-    return filter(sample);
+    const auto output = filter(sample);
+    observeOutput(output);
+    return output;
 }
 
 AudioProcessor& AudioProcessor::observeInput(float sample) noexcept {
-    const auto input = normalized(sample);
-    input_[inputCursor_] = input;
+    return observeInput({sample, sample});
+}
+
+AudioProcessor& AudioProcessor::observeInput(std::array<float, 2> samples) noexcept {
+    for (size_t channel = 0; channel < 2; ++channel)
+        input_[channel][inputCursor_] = normalized(samples[channel]);
     inputCursor_ = (inputCursor_ + 1) % windowSize;
     inputFilled_ = std::min(inputFilled_ + 1, windowSize);
+    const auto input = normalized(std::abs(samples[0]) >= std::abs(samples[1]) ? samples[0] : samples[1]);
     const auto pitchSample = pitchLowPass2_.process(pitchLowPass1_.process(input));
     if (++pitchDecimationCount_ >= pitchDecimation_) {
         pitchDecimationCount_ = 0;
@@ -112,11 +119,20 @@ AudioProcessor& AudioProcessor::observeInput(float sample) noexcept {
     return *this;
 }
 
+AudioProcessor& AudioProcessor::observeOutput(float sample) noexcept { return observeOutput({sample, sample}); }
+
+AudioProcessor& AudioProcessor::observeOutput(std::array<float, 2> samples) noexcept {
+    for (size_t channel = 0; channel < 2; ++channel)
+        output_[channel][outputCursor_] = normalized(samples[channel]);
+    outputCursor_ = (outputCursor_ + 1) % windowSize;
+    outputFilled_ = std::min(outputFilled_ + 1, windowSize);
+    return *this;
+}
+
 float AudioProcessor::filter(float sample) noexcept { return filter({sample, sample})[0]; }
 
 std::array<float, 2> AudioProcessor::filter(std::array<float, 2> samples) noexcept {
-    // Device and upstream processing must not poison recursive filters with
-    // non-finite values. Record unclipped filter output for the clipping meter.
+    // Device and upstream processing must not poison recursive filters.
     for (auto& sample : samples) sample = normalized(sample);
     const auto input = std::abs(samples[0]) >= std::abs(samples[1]) ? samples[0] : samples[1];
     if (profile_.highPassEnabled && profile_.highPassAutomatic) {
@@ -142,10 +158,6 @@ std::array<float, 2> AudioProcessor::filter(std::array<float, 2> samples) noexce
         const auto target = std::min(1.0, 0.89 / std::max(std::max(std::abs(filtered[0]), std::abs(filtered[1])), 1e-12));
         gain_ = target < gain_ ? target : gain_ + releaseStep_ * (target - gain_);
     }
-    const auto processed = (std::abs(filtered[0]) >= std::abs(filtered[1]) ? filtered[0] : filtered[1]) * gain_;
-    output_[outputCursor_] = static_cast<float>(processed);
-    outputCursor_ = (outputCursor_ + 1) % windowSize;
-    outputFilled_ = std::min(outputFilled_ + 1, windowSize);
     return {float(std::clamp(filtered[0] * gain_, -1.0, 1.0)), float(std::clamp(filtered[1] * gain_, -1.0, 1.0))};
 }
 
@@ -156,23 +168,32 @@ AudioLevels AudioProcessor::levels() const noexcept {
     result.inputSpectrum.fill(-96);
     result.outputSpectrum.fill(-96);
     double inPower = 0, outPower = 0;
-    for (std::size_t i = 0; i < inputFilled_; ++i) {
-        inPower += double(input_[i]) * input_[i];
-        result.clipped = result.clipped || std::abs(input_[i]) >= 1.0f;
+    for (size_t channel = 0; channel < 2; ++channel) {
+        for (std::size_t i = 0; i < inputFilled_; ++i) {
+            inPower += double(input_[channel][i]) * input_[channel][i];
+            result.clipped = result.clipped || std::abs(input_[channel][i]) >= 1.0f;
+        }
+        for (std::size_t i = 0; i < outputFilled_; ++i) {
+            outPower += double(output_[channel][i]) * output_[channel][i];
+            result.clipped = result.clipped || std::abs(output_[channel][i]) >= 1.0f;
+        }
     }
-    for (std::size_t i = 0; i < outputFilled_; ++i) {
-        outPower += double(output_[i]) * output_[i];
-        result.clipped = result.clipped || std::abs(output_[i]) >= 1.0f;
-    }
-    if (inputFilled_) result.inputDb = decibels(std::sqrt(inPower / inputFilled_));
-    if (outputFilled_) result.outputDb = decibels(std::sqrt(outPower / outputFilled_));
+    if (inputFilled_) result.inputDb = decibels(std::sqrt(inPower / (2 * inputFilled_)));
+    if (outputFilled_) result.outputDb = decibels(std::sqrt(outPower / (2 * outputFilled_)));
     result.fundamentalHz = fundamental();
     if (inputFilled_ < windowSize || outputFilled_ < windowSize)
         return result;
     result.spectrumReady = true;
-    const auto inputMagnitude = magnitudes(input_, inputCursor_);
+    const auto combined = [this](const auto& channels, size_t cursor) {
+        auto result = magnitudes(channels[0], cursor);
+        const auto right = magnitudes(channels[1], cursor);
+        for (size_t i = 0; i < result.size(); ++i)
+            result[i] = std::hypot(result[i], right[i]) / std::sqrt(2.0);
+        return result;
+    };
+    const auto inputMagnitude = combined(input_, inputCursor_);
     result.inputSpectrum = displaySpectrum(inputMagnitude);
-    result.outputSpectrum = displaySpectrum(magnitudes(output_, outputCursor_));
+    result.outputSpectrum = displaySpectrum(combined(output_, outputCursor_));
     const auto first = std::max<std::size_t>(1, std::ceil(20 * windowSize / sampleRate_));
     const auto last = std::size_t(maximumFrequency() * windowSize / sampleRate_);
     const auto peak = std::max_element(inputMagnitude.begin() + first, inputMagnitude.begin() + last + 1);

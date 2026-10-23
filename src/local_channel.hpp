@@ -9,6 +9,7 @@
 #include <QCache>
 #include <QBitArray>
 #include <QHash>
+#include <QMap>
 #include <QJsonObject>
 #include <QPointer>
 #include <QSet>
@@ -228,7 +229,9 @@ public:
     Q_INVOKABLE bool setRequestsAllowed(bool allowed);
     // Payload entrypoints remain bounded and permission-checked; the host
     // attaches the authenticated sender rather than accepting a claimed one.
+    // An empty packet ends an active TeamSpeak talk burst, including after mute.
     bool sendAudio(const QByteArray& packet);
+    [[nodiscard]] int audioPacketLimit() const;
     bool setMusicState(const QString& name, const QString& state, bool active);
     bool sendMusic(const QByteArray& packet);
     [[nodiscard]] QString musicId() const;
@@ -290,9 +293,16 @@ private:
         QString id, address, name, active, requested;
         quint16 port = 9987;
         QJsonObject state, lastPresence;
-        QHash<QString, QPair<quint16, qint64>> audioSequences;
+        struct Audio final {
+            QString peer;
+            qint64 highest = -1, delivered = -1, received = -1;
+            QMap<qint64, QPair<QByteArray, qint64>> pending;
+        };
+        QHash<QString, Audio> audioSequences;
         QByteArray buffer = QByteArray(512 * 1024, Qt::Uninitialized);
         bool connected = false;
+        bool movePending = false;
+        bool sendingAudio = false;
         qint64 sequence = 0;
         ~TeamSpeak();
     };

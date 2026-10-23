@@ -410,6 +410,14 @@
             <source>Auto also checks for speech, not just volume.</source>
             <translation>Il modus automatic examinescha er la lingua discurrida, betg mo il volumen.</translation>
         </message>
+        <message>
+            <source>Minimum</source>
+            <translation>Minimum</translation>
+        </message>
+        <message>
+            <source>Auto will not lower the voice threshold below this level.</source>
+            <translation>Il modus automatic na sbassa betg la sava da la vusch sut quest nivel.</translation>
+        </message>
     </context>
     <context>
         <name>Channels</name>
@@ -2865,16 +2873,16 @@
             <translation>Spectrum da frequenzas a Hertz e dBFS</translation>
         </message>
         <message>
-            <source>After gain / cuts</source>
-            <translation>Suenter rinforzament e tagls da frequenza</translation>
+            <source>Processed</source>
+            <translation>Elavurà</translation>
         </message>
         <message>
             <source>Input: sound picked up by the microphone before gain and frequency cuts. Left is bass, right is treble; higher is louder.</source>
             <translation>Entrada: tun recepì dal microfon avant il rinforzament e ils tagls da frequenza. A sanestra èn ils bass, a dretga las autas frequenzas; pli aut signifitga pli dad aut.</translation>
         </message>
         <message>
-            <source>After gain / cuts: the measured spectrum after microphone gain and frequency filters. It does not identify a speaker.</source>
-            <translation>Suenter rinforzament e tagls: il spectrum mesirà suenter il rinforzament dal microfon e ils filters da frequenza. El n'identifitgescha betg la persuna che discurra.</translation>
+            <source>After all filters, before transmission.</source>
+            <translation>Suenter tut ils filters, avant la transmissiun.</translation>
         </message>
         <message>
             <source>Filter curve: the configured change in level at each frequency, read on the right dB scale. It excludes noise reduction and voice activation.</source>

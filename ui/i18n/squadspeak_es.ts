@@ -410,6 +410,14 @@
             <source>Auto also checks for speech, not just volume.</source>
             <translation>El modo automático también detecta el habla, no solo el volumen.</translation>
         </message>
+        <message>
+            <source>Minimum</source>
+            <translation>Mínimo</translation>
+        </message>
+        <message>
+            <source>Auto will not lower the voice threshold below this level.</source>
+            <translation>El modo automático no reducirá el umbral de voz por debajo de este nivel.</translation>
+        </message>
     </context>
     <context>
         <name>Channels</name>
@@ -2865,16 +2873,16 @@
             <translation>Espectro de frecuencias en hercios y dBFS</translation>
         </message>
         <message>
-            <source>After gain / cuts</source>
-            <translation>Después de ganancia / cortes</translation>
+            <source>Processed</source>
+            <translation>Procesado</translation>
         </message>
         <message>
             <source>Input: sound picked up by the microphone before gain and frequency cuts. Left is bass, right is treble; higher is louder.</source>
             <translation>Entrada: sonido captado por el micrófono antes de la ganancia y los cortes de frecuencia. La izquierda son los graves y la derecha los agudos; más alto significa más volumen.</translation>
         </message>
         <message>
-            <source>After gain / cuts: the measured spectrum after microphone gain and frequency filters. It does not identify a speaker.</source>
-            <translation>Después de ganancia / cortes: espectro medido después de la ganancia del micrófono y los filtros de frecuencia. No identifica a un hablante.</translation>
+            <source>After all filters, before transmission.</source>
+            <translation>Después de todos los filtros, antes de transmitir.</translation>
         </message>
         <message>
             <source>Filter curve: the configured change in level at each frequency, read on the right dB scale. It excludes noise reduction and voice activation.</source>

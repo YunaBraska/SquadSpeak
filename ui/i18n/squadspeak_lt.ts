@@ -410,6 +410,14 @@
             <source>Auto also checks for speech, not just volume.</source>
             <translation>Automatinis režimas tikrina ir kalbą, ne tik garsumą.</translation>
         </message>
+        <message>
+            <source>Minimum</source>
+            <translation>Minimumas</translation>
+        </message>
+        <message>
+            <source>Auto will not lower the voice threshold below this level.</source>
+            <translation>Automatinis režimas nesumažins balso slenksčio žemiau šio lygio.</translation>
+        </message>
     </context>
     <context>
         <name>Channels</name>
@@ -2865,16 +2873,16 @@
             <translation>dažnių spektras hercais ir dBFS</translation>
         </message>
         <message>
-            <source>After gain / cuts</source>
-            <translation>Po stiprinimo ir dažnių pjūvių</translation>
+            <source>Processed</source>
+            <translation>Apdorota</translation>
         </message>
         <message>
             <source>Input: sound picked up by the microphone before gain and frequency cuts. Left is bass, right is treble; higher is louder.</source>
             <translation>Įvestis: mikrofono paimtas garsas prieš stiprinimą ir dažnių pjūvius. Kairėje yra žemieji, dešinėje aukštieji dažniai; aukščiau reiškia garsiau.</translation>
         </message>
         <message>
-            <source>After gain / cuts: the measured spectrum after microphone gain and frequency filters. It does not identify a speaker.</source>
-            <translation>Po stiprinimo ir pjūvių: išmatuotas spektras po mikrofono stiprinimo ir dažnių filtrų. Jis neidentifikuoja kalbėtojo.</translation>
+            <source>After all filters, before transmission.</source>
+            <translation>Po visų filtrų, prieš perduodant.</translation>
         </message>
         <message>
             <source>Filter curve: the configured change in level at each frequency, read on the right dB scale. It excludes noise reduction and voice activation.</source>

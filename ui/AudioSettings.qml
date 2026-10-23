@@ -87,7 +87,7 @@ Item {
                 SpectrumView {
                     Layout.fillWidth: true
                     audio: root.audioSource
-                    thresholdDb: root.sessionSource.pushToTalk ? NaN : audio.activationThresholdDb
+                    activationEnabled: !root.sessionSource.pushToTalk
                     chartHeight: root.height < 350 ? 120 : 166
                     showReadouts: root.height >= 350
                 }
@@ -122,6 +122,22 @@ Item {
                     ToolTip.visible: gateHelp.hovered
                     ToolTip.text: qsTr("Voice threshold") + (audio.activationAutomatic ? "\n" + qsTr("Auto also checks for speech, not just volume.") : "")
                     HoverHandler { id: gateHelp }
+                }
+                SettingSlider {
+                    objectName: "voiceMinimum"
+                    Layout.fillWidth: true
+                    visible: !root.sessionSource.pushToTalk && audio.activationAutomatic
+                    enabled: audio.inputAvailable
+                    caption: qsTr("Minimum")
+                    toggleAvailable: true; filterEnabled: audio.activationMinimumEnabled
+                    applyEnabled: function(value) { return audio.setActivationMinimum(value, audio.activationMinimumDb) }
+                    from: -80; to: 0; stepSize: 1
+                    value: audio.activationMinimumDb
+                    valueText: qsTr("%1 dBFS").arg(value.toFixed(1))
+                    applyValue: function(value) { return audio.setActivationMinimum(true, value) }
+                    ToolTip.visible: minimumHelp.hovered
+                    ToolTip.text: qsTr("Auto will not lower the voice threshold below this level.")
+                    HoverHandler { id: minimumHelp }
                 }
             }
             ColumnLayout {

@@ -410,6 +410,14 @@
             <source>Auto also checks for speech, not just volume.</source>
             <translation>La modalità automatica rileva anche il parlato, non solo il volume.</translation>
         </message>
+        <message>
+            <source>Minimum</source>
+            <translation>Minimo</translation>
+        </message>
+        <message>
+            <source>Auto will not lower the voice threshold below this level.</source>
+            <translation>La modalità automatica non abbasserà la soglia vocale sotto questo livello.</translation>
+        </message>
     </context>
     <context>
         <name>Channels</name>
@@ -2865,16 +2873,16 @@
             <translation>Spettro delle frequenze in hertz e dBFS</translation>
         </message>
         <message>
-            <source>After gain / cuts</source>
-            <translation>Dopo guadagno / tagli</translation>
+            <source>Processed</source>
+            <translation>Elaborato</translation>
         </message>
         <message>
             <source>Input: sound picked up by the microphone before gain and frequency cuts. Left is bass, right is treble; higher is louder.</source>
             <translation>Ingresso: suono captato dal microfono prima del guadagno e dei tagli di frequenza. A sinistra ci sono i bassi, a destra gli acuti; più in alto significa più forte.</translation>
         </message>
         <message>
-            <source>After gain / cuts: the measured spectrum after microphone gain and frequency filters. It does not identify a speaker.</source>
-            <translation>Dopo guadagno / tagli: spettro misurato dopo il guadagno del microfono e i filtri di frequenza. Non identifica chi parla.</translation>
+            <source>After all filters, before transmission.</source>
+            <translation>Dopo tutti i filtri, prima dell'invio.</translation>
         </message>
         <message>
             <source>Filter curve: the configured change in level at each frequency, read on the right dB scale. It excludes noise reduction and voice activation.</source>

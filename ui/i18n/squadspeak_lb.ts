@@ -410,6 +410,14 @@
             <source>Auto also checks for speech, not just volume.</source>
             <translation>Den automatesche Modus erkennt och Sprooch, net nëmmen d'Lautstäerkt.</translation>
         </message>
+        <message>
+            <source>Minimum</source>
+            <translation>Minimum</translation>
+        </message>
+        <message>
+            <source>Auto will not lower the voice threshold below this level.</source>
+            <translation>Automatik setzt d'Stëmmschwell net ënner dësen Niveau.</translation>
+        </message>
     </context>
     <context>
         <name>Channels</name>
@@ -2865,16 +2873,16 @@
             <translation>Frequenz Spektrum an Hertz an dBFS</translation>
         </message>
         <message>
-            <source>After gain / cuts</source>
-            <translation>No Verstäerkung a Frequenzschnëtt</translation>
+            <source>Processed</source>
+            <translation>Veraarbecht</translation>
         </message>
         <message>
             <source>Input: sound picked up by the microphone before gain and frequency cuts. Left is bass, right is treble; higher is louder.</source>
             <translation>Input: Toun, dee vum Mikrofon virun der Verstäerkung an de Frequenzschnëtt opgeholl gëtt. Lénks sinn d'Déiften, riets d'Héichten; méi héich ass méi haart.</translation>
         </message>
         <message>
-            <source>After gain / cuts: the measured spectrum after microphone gain and frequency filters. It does not identify a speaker.</source>
-            <translation>No Verstäerkung a Schnëtt: de gemoossene Spektrum no der Mikrofonverstäerkung an de Frequenzfilter. Et identifizéiert kee Spriecher.</translation>
+            <source>After all filters, before transmission.</source>
+            <translation>No alle Filteren, virum Senden.</translation>
         </message>
         <message>
             <source>Filter curve: the configured change in level at each frequency, read on the right dB scale. It excludes noise reduction and voice activation.</source>

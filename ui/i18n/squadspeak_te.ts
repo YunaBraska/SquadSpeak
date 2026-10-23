@@ -410,6 +410,14 @@
             <source>Auto also checks for speech, not just volume.</source>
             <translation>ఆటో శబ్ద స్థాయిని మాత్రమే కాకుండా, మాటలను కూడా గుర్తిస్తుంది.</translation>
         </message>
+        <message>
+            <source>Minimum</source>
+            <translation>కనిష్ఠం</translation>
+        </message>
+        <message>
+            <source>Auto will not lower the voice threshold below this level.</source>
+            <translation>ఆటో వాయిస్ పరిమితిని ఈ స్థాయి కంటే తగ్గించదు.</translation>
+        </message>
     </context>
     <context>
         <name>Channels</name>
@@ -2865,16 +2873,16 @@
             <translation>హెర్ట్జ్ మరియు dBFS లలో ఫ్రీక్వెన్సీ స్పెక్ట్రమ్</translation>
         </message>
         <message>
-            <source>After gain / cuts</source>
-            <translation>విస్తరణ / పౌనఃపున్య వడపోత తర్వాత</translation>
+            <source>Processed</source>
+            <translation>ప్రాసెస్ చేసినది</translation>
         </message>
         <message>
             <source>Input: sound picked up by the microphone before gain and frequency cuts. Left is bass, right is treble; higher is louder.</source>
             <translation>ఇన్‌పుట్: మైక్రోఫోన్ ద్వారా గ్రహించబడిన ధ్వని. ఎడమ వైపు బాస్, కుడి వైపు ట్రెబుల్; పైకి ఉంటే బిగ్గరగా ఉంటుంది.</translation>
         </message>
         <message>
-            <source>After gain / cuts: the measured spectrum after microphone gain and frequency filters. It does not identify a speaker.</source>
-            <translation>లాభం / నష్టాలు: మైక్రోఫోన్ లాభం మరియు ఫ్రీక్వెన్సీ ఫిల్టర్ల తర్వాత కొలిచిన స్పెక్ట్రమ్. ఇది ఒక వ్యక్తిని గుర్తించదు.</translation>
+            <source>After all filters, before transmission.</source>
+            <translation>అన్ని ఫిల్టర్ల తర్వాత, పంపే ముందు.</translation>
         </message>
         <message>
             <source>Filter curve: the configured change in level at each frequency, read on the right dB scale. It excludes noise reduction and voice activation.</source>

@@ -9,15 +9,22 @@ ColumnLayout {
     required property var audio
     property real chartHeight: 166
     property bool showReadouts: true
-    property real thresholdDb: NaN
-    onThresholdDbChanged: chart.requestPaint()
+    property bool activationEnabled: false
     spacing: 4
 
     Flow {
         Layout.fillWidth: true
         spacing: 12
-        Label { text: qsTr("Input"); color: Theme.muted; font.pixelSize: 12 }
-        Label { text: qsTr("After gain / cuts"); color: Theme.accent; font.pixelSize: 12 }
+        Label {
+            objectName: "inputLevel"
+            text: qsTr("Input") + (chart.active ? " " + audio.inputDb.toFixed(1) + " " + qsTr("dBFS") : "")
+            color: Theme.muted; font.pixelSize: 12
+        }
+        Label {
+            objectName: "processedLevel"
+            text: qsTr("Processed") + (chart.active ? " " + audio.outputDb.toFixed(1) + " " + qsTr("dBFS") : "")
+            color: chart.gated ? Theme.danger : Theme.accent; font.pixelSize: 12
+        }
         Label { text: qsTr("Filter curve"); color: Theme.warning; font.pixelSize: 12 }
     }
     Canvas {
@@ -30,11 +37,13 @@ ColumnLayout {
         property var response: audio.filterResponse || []
         property real maximum: audio.maximumFrequency
         property bool active: audio.running && audio.spectrumReady
+        readonly property bool gated: active && root.activationEnabled && audio.activationOpen === false
         onRawChanged: requestPaint()
         onResponseChanged: requestPaint()
         onProcessedChanged: requestPaint()
         onMaximumChanged: requestPaint()
         onActiveChanged: requestPaint()
+        onGatedChanged: requestPaint()
         onWidthChanged: requestPaint()
         onHeightChanged: requestPaint()
         Connections { target: Theme; function onTonesChanged() { chart.requestPaint() } }
@@ -46,6 +55,9 @@ ColumnLayout {
             const top = 20
             const plotWidth = width - left - 36
             const plotHeight = height - top - 28
+            const yFor = function(value, minimum, maximum) {
+                return top + plotHeight * (1 - Math.max(0, Math.min(1, (value - minimum) / (maximum - minimum))))
+            }
             const xFor = function(hz) {
                 return left + plotWidth * Math.log(hz / 20) / Math.log(maximum / 20)
             }
@@ -77,14 +89,38 @@ ColumnLayout {
                 ctx.beginPath()
                 for (let i = 0; i < values.length; ++i) {
                     const x = left + i * plotWidth / (values.length - 1)
-                    const y = top + plotHeight * (1 - Math.max(0, Math.min(1, (values[i] - minimum) / (maximum - minimum))))
+                    const y = yFor(values[i], minimum, maximum)
                     if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y)
                 }
                 ctx.stroke()
             }
             if (active) {
+                if (gated && processed.length > 1) {
+                    ctx.fillStyle = Theme.danger
+                    ctx.globalAlpha = 0.12
+                    ctx.beginPath()
+                    ctx.moveTo(left, top + plotHeight)
+                    for (let i = 0; i < processed.length; ++i)
+                        ctx.lineTo(left + i * plotWidth / (processed.length - 1), yFor(processed[i], -90, 0))
+                    ctx.lineTo(left + plotWidth, top + plotHeight)
+                    ctx.closePath(); ctx.fill()
+                    ctx.globalAlpha = 1
+                }
+                if (raw.length === processed.length && raw.length > 1) {
+                    ctx.fillStyle = Theme.accent
+                    ctx.globalAlpha = 0.12
+                    ctx.beginPath()
+                    for (let i = 0; i < raw.length; ++i) {
+                        const x = left + i * plotWidth / (raw.length - 1), y = yFor(raw[i], -90, 0)
+                        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y)
+                    }
+                    for (let i = processed.length - 1; i >= 0; --i)
+                        ctx.lineTo(left + i * plotWidth / (processed.length - 1), yFor(processed[i], -90, 0))
+                    ctx.closePath(); ctx.fill()
+                    ctx.globalAlpha = 1
+                }
                 draw(raw, Theme.muted, -90, 0)
-                draw(processed, Theme.accent, -90, 0)
+                draw(processed, gated ? Theme.danger : Theme.accent, -90, 0)
             }
             ctx.fillStyle = Theme.warning
             ctx.textAlign = "right"
@@ -95,10 +131,6 @@ ColumnLayout {
             }
             ctx.setLineDash([4, 4])
             draw(response, Theme.warning, -48, 24)
-            if (isFinite(root.thresholdDb)) {
-                ctx.setLineDash([2, 5])
-                draw([root.thresholdDb, root.thresholdDb], Theme.text, -90, 0)
-            }
         }
         Label {
             anchors.centerIn: parent
@@ -125,14 +157,12 @@ ColumnLayout {
                 const t = (mouse.x - 42) / w
                 if (t < 0 || t > 1 || mouse.y < 20 || mouse.y > 20 + h) { showing = false; return }
                 const candidates = [
-                    {values: isFinite(root.thresholdDb) ? [root.thresholdDb, root.thresholdDb] : [], min: -90, max: 0, unit: qsTr("dBFS"),
-                        text: qsTranslate("AudioSettings", "Voice threshold")},
                     {values: chart.response, min: -48, max: 24, unit: qsTr("dB"),
                         text: qsTr("Filter curve: the configured change in level at each frequency, read on the right dB scale. It excludes noise reduction and voice activation.")},
                     {values: chart.active ? chart.raw : [], min: -90, max: 0, unit: qsTr("dBFS"),
                         text: qsTr("Input: sound picked up by the microphone before gain and frequency cuts. Left is bass, right is treble; higher is louder.")},
                     {values: chart.active ? chart.processed : [], min: -90, max: 0, unit: qsTr("dBFS"),
-                        text: qsTr("After gain / cuts: the measured spectrum after microphone gain and frequency filters. It does not identify a speaker.")}
+                        text: qsTr("After all filters, before transmission.")}
                 ]
                 const matches = []
                 for (const line of candidates) {
@@ -147,6 +177,14 @@ ColumnLayout {
                 frequencyTip.text = qsTr("%1 Hz").arg(Math.round(20 * Math.pow(chart.maximum / 20, t)))
                     + "\n" + matches.map(function(line) { return line.text }).join("\n\n")
                 showing = matches.length > 0
+                if (chart.gated && chart.processed.length > 1) {
+                    const at = t * (chart.processed.length - 1), lo = Math.floor(at), hi = Math.min(lo + 1, chart.processed.length - 1)
+                    const value = chart.processed[lo] + (chart.processed[hi] - chart.processed[lo]) * (at - lo)
+                    if (mouse.y >= 20 + h * (1 - Math.max(0, Math.min(1, (value + 90) / 90)))) {
+                        frequencyTip.text += "\n" + qsTranslate("AudioSettings", "Would stay silent")
+                        showing = true
+                    }
+                }
             }
             ToolTip {
                 id: frequencyTip

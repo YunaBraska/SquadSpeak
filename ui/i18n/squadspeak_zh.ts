@@ -410,6 +410,14 @@
             <source>Auto also checks for speech, not just volume.</source>
             <translation>自动模式还会检测语音，而不只是音量。</translation>
         </message>
+        <message>
+            <source>Minimum</source>
+            <translation>下限</translation>
+        </message>
+        <message>
+            <source>Auto will not lower the voice threshold below this level.</source>
+            <translation>自动模式不会将语音阈值降至此音量以下。</translation>
+        </message>
     </context>
     <context>
         <name>Channels</name>
@@ -2865,16 +2873,16 @@
             <translation>赫兹和 dBFS 频谱</translation>
         </message>
         <message>
-            <source>After gain / cuts</source>
-            <translation>增益 / 切除后</translation>
+            <source>Processed</source>
+            <translation>处理后</translation>
         </message>
         <message>
             <source>Input: sound picked up by the microphone before gain and frequency cuts. Left is bass, right is treble; higher is louder.</source>
             <translation>输入: 麦克风在增益和频率切除前拾取的声音.左侧为低音, 右侧为高音; 越高表示声音越大.</translation>
         </message>
         <message>
-            <source>After gain / cuts: the measured spectrum after microphone gain and frequency filters. It does not identify a speaker.</source>
-            <translation>增益 / 切除后: 麦克风增益和频率滤波器处理后的测量频谱.它不能识别说话者.</translation>
+            <source>After all filters, before transmission.</source>
+            <translation>应用所有滤镜后，传输前。</translation>
         </message>
         <message>
             <source>Filter curve: the configured change in level at each frequency, read on the right dB scale. It excludes noise reduction and voice activation.</source>

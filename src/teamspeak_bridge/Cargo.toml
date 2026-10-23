@@ -7,6 +7,10 @@ license = "GPL-3.0-only"
 [lib]
 crate-type = ["staticlib"]
 
+[features]
+# The local CMake candidate build supplies this feature's extra dependencies.
+neural-denoise = []
+
 [dependencies]
 audiopus_sys = { version = "0.2.2", features = ["dynamic"] }
 base64 = "0.22"
@@ -20,3 +24,6 @@ tokio = { version = "1", features = ["rt-multi-thread", "sync", "time", "macros"
 [profile.dev]
 debug = 0
 incremental = false
+
+[dev-dependencies]
+tokio = { version = "1", features = ["test-util"] }

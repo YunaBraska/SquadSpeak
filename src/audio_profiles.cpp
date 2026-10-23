@@ -145,7 +145,7 @@ bool AudioProfiles::automaticVolume(const QByteArray& deviceId) const {
 
 double AudioProfiles::noiseSuppression(const QByteArray& deviceId) const {
     bool valid;
-    const auto value = settings_.value(key(deviceId, true) + "noiseSuppression", 1.0).toDouble(&valid);
+    const auto value = settings_.value(key(deviceId, true) + "noiseSuppression", 0.5).toDouble(&valid);
     if (!valid || !std::isfinite(value) || value < 0 || value > 1)
         throw std::runtime_error(QT_TRANSLATE_NOOP("AudioModel", "Stored noise suppression strength is invalid"));
     return value;
@@ -184,10 +184,13 @@ VoiceActivation AudioProfiles::voiceActivation(const QByteArray& deviceId) const
     const auto prefix = key(deviceId, true) + "activation/";
     const auto enabled = settings_.value(prefix + "enabled", true);
     const auto automatic = settings_.value(prefix + "automatic", true);
-    bool valid;
-    VoiceActivation result{enabled.toBool(), automatic.toBool(), settings_.value(prefix + "thresholdDb", -45.0).toDouble(&valid)};
+    const auto minimum = settings_.value(prefix + "minimumEnabled", false);
+    bool valid, minimumValid;
+    VoiceActivation result{enabled.toBool(), automatic.toBool(), settings_.value(prefix + "thresholdDb", -45.0).toDouble(&valid),
+        minimum.toBool(), settings_.value(prefix + "minimumDb", -45.0).toDouble(&minimumValid)};
     if ((enabled.toString() != "true" && enabled.toString() != "false")
-        || (automatic.toString() != "true" && automatic.toString() != "false") || !valid || !result.valid())
+        || (automatic.toString() != "true" && automatic.toString() != "false")
+        || (minimum.toString() != "true" && minimum.toString() != "false") || !valid || !minimumValid || !result.valid())
         throw std::runtime_error(QT_TRANSLATE_NOOP("AudioModel", "Stored voice activation settings are invalid"));
     return result;
 }
@@ -196,7 +199,8 @@ AudioProfiles& AudioProfiles::saveVoiceActivation(const QByteArray& deviceId, Vo
     if (!activation.valid()) throw std::invalid_argument(QT_TRANSLATE_NOOP("AudioModel", "Voice activation threshold must be between -80 and 0 dBFS"));
     const auto prefix = key(deviceId, true) + "activation/";
     return write({{prefix + "enabled", activation.enabled}, {prefix + "automatic", activation.automatic},
-                  {prefix + "thresholdDb", activation.thresholdDb}});
+                  {prefix + "thresholdDb", activation.thresholdDb},
+                  {prefix + "minimumEnabled", activation.minimumEnabled}, {prefix + "minimumDb", activation.minimumDb}});
 }
 
 AudioProfiles& AudioProfiles::saveParticipant(const QByteArray& deviceId, const QString& peer, double volume) {

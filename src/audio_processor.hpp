@@ -45,11 +45,17 @@ public:
     // Separate observation preserves the raw meter when an upstream processor
     // buffers frames or removes echo before this stage's gain and cuts.
     AudioProcessor& observeInput(float sample) noexcept;
+    AudioProcessor& observeOutput(float sample) noexcept;
+    // Stereo analysis combines channel powers, never opposite-phase samples.
+    AudioProcessor& observeInput(std::array<float, 2> samples) noexcept;
+    AudioProcessor& observeOutput(std::array<float, 2> samples) noexcept;
+    // Filtering does not record measurements. process() observes both sides
+    // for standalone use; a complete capture pipeline observes its endpoints.
     [[nodiscard]] float filter(float sample) noexcept;
     [[nodiscard]] std::array<float, 2> filter(std::array<float, 2> samples) noexcept;
     [[nodiscard]] AudioLevels levels() const noexcept;
-    // Per-bin transfer gain of the configured input path, in dB. The bins
-    // use the same logarithmic frequencies as inputSpectrum/outputSpectrum.
+    // Transfer of gain and frequency cuts only, in dB. Echo cancellation and
+    // denoising are measured separately. Bins match the measured spectra.
     [[nodiscard]] std::array<double, AudioLevels::spectrumSize> filterResponse() const noexcept;
     [[nodiscard]] double maximumFrequency() const noexcept;
     [[nodiscard]] double gainDb() const noexcept;
@@ -78,8 +84,8 @@ private:
     Filter voiceAnalysis_;
     Filter highPass_;
     Filter lowPass_;
-    std::array<float, windowSize> input_{};
-    std::array<float, windowSize> output_{};
+    std::array<std::array<float, windowSize>, 2> input_{};
+    std::array<std::array<float, windowSize>, 2> output_{};
     std::array<double, windowSize> window_{};
     std::array<double, AudioLevels::spectrumSize> frequencies_{};
     double windowSum_ = 0.0;

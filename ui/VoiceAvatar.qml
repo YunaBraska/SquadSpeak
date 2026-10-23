@@ -29,9 +29,18 @@ Item {
     readonly property real cycleLength: activeDuration + clipRow.pause + (clipRow.pause > 0 ? animationSeed % (systemMessage ? 6000 : 1500) : 0)
     readonly property real phase: (animationTime + animationSeed) % cycleLength
     readonly property real cycle: Math.floor((animationTime + animationSeed) / cycleLength)
-    readonly property real activity: online && available && !muted && isFinite(level) && level > 0.001
+    readonly property bool canSpeak: online && available && !muted
+    readonly property real activity: canSpeak && isFinite(level) && level > 0.001
         ? Math.min(1, (20 * Math.log(level) / Math.LN10 + 60) / 40) : 0
-    readonly property int stateRow: !online ? 4 : activity > 0 ? 1 : sleeping ? 4 : deafened ? 3 : muted ? 2 : 0
+    property real speechUntil: -1
+    onActivityChanged: {
+        if (activity > 0) speechUntil = Infinity
+        else if (speechUntil === Infinity) speechUntil = canSpeak ? animationTime + 240 : -1
+    }
+    onCanSpeakChanged: { if (!canSpeak) speechUntil = -1 }
+    readonly property bool speaking: canSpeak && (activity > 0
+        || (animationTime < speechUntil && animationTime >= speechUntil - 240))
+    readonly property int stateRow: !online ? 4 : speaking ? 1 : sleeping ? 4 : deafened ? 3 : muted ? 2 : 0
     readonly property int column: {
         if (!online || !animated) return 0
         if (clipRow.pause > 0) return Atlas.idleColumn(clipRow, cycle, phase, animationSeed)
@@ -64,10 +73,10 @@ Item {
         height: root.circular ? width : root.height
         radius: root.circular ? width / 2 : Theme.panelRadius
         color: !root.online ? (Theme.dark ? "#333333" : "#ececec") : Theme.raised
-        border.color: root.activity > 0 ? Theme.accent : "transparent"
+        border.color: root.speaking ? Theme.accent : "transparent"
         border.width: 2
     }
-    Glyph { anchors.centerIn: parent; width: parent.width * 0.55; height: width; symbol: "music"; color: root.activity > 0 ? Theme.accent : Theme.muted; visible: root.music }
+    Glyph { anchors.centerIn: parent; width: parent.width * 0.55; height: width; symbol: "music"; color: root.speaking ? Theme.accent : Theme.muted; visible: root.music }
     Canvas {
         id: circle
         objectName: "avatarCanvas"

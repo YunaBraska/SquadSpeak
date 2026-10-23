@@ -76,7 +76,7 @@ QString AudioModel::outputName() const { return output_.isNull() ? tr("No select
 QVariantList AudioModel::inputSpectrum() const { return spectrum(levels_.inputSpectrum); }
 QVariantList AudioModel::outputSpectrum() const { return spectrum(levels_.outputSpectrum); }
 QVariantList AudioModel::filterResponse() const { return spectrum(filterResponse_); }
-double AudioModel::maximumFrequency() const { return input_.isNull() ? 20000 : std::min(20000.0, captureFormat(input_).sampleRate() * 0.45); }
+double AudioModel::maximumFrequency() const { return 20000; }
 bool AudioModel::inputReady() const {
     return inputAvailable() && !inputFailed_ && qApp->checkPermission(QMicrophonePermission{}) == Qt::PermissionStatus::Granted;
 }
@@ -144,7 +144,7 @@ void AudioModel::refreshDevices() {
     try {
         if (inputChanged && !input_.isNull()) {
             profile_ = profiles_.input(input_.id());
-            filterResponse_ = squad::AudioProcessor(captureFormat(input_).sampleRate(), profile_).filterResponse();
+            filterResponse_ = squad::AudioProcessor(48000, profile_).filterResponse();
             noiseSuppression_ = profiles_.noiseSuppression(input_.id());
             mixer_.setNoiseSuppression(profile_.noiseEnabled ? noiseSuppression_ : 0);
             echoSuppression_ = profiles_.echoSuppression(input_.id());
@@ -258,6 +258,13 @@ bool AudioModel::setActivationThresholdDb(double value) {
     return updateActivation(next);
 }
 
+bool AudioModel::setActivationMinimum(bool enabled, double value) {
+    auto next = activation_;
+    next.minimumEnabled = enabled;
+    next.minimumDb = value;
+    return updateActivation(next);
+}
+
 bool AudioModel::updateActivation(squad::VoiceActivation activation) {
     if (input_.isNull()) return false;
     try {
@@ -279,7 +286,7 @@ bool AudioModel::updateProfile(squad::InputProfile profile) {
     if (input_.isNull()) return false;
     try {
         // Validate at the boundary before persistence or changing the live path.
-        const squad::AudioProcessor validated(captureFormat(input_).sampleRate(), profile);
+        const squad::AudioProcessor validated(48000, profile);
         profiles_.saveInput(input_.id(), profile);
         const bool echoChanged = profile_.echoEnabled != profile.echoEnabled;
         profile_ = profile;
@@ -500,7 +507,7 @@ void AudioModel::beginCapture() {
             throw std::runtime_error(sessionError.isEmpty()
                 ? QT_TRANSLATE_NOOP("AudioModel", "Microphone could not be opened") : sessionError.toUtf8().constData());
 #endif
-        processor_ = std::make_unique<squad::AudioProcessor>(format_.sampleRate(), profile_);
+        processor_ = std::make_unique<squad::AudioProcessor>(48000, profile_);
         source_ = std::make_unique<QAudioSource>(input_, format_);
         source_->setBufferSize(format_.bytesForDuration(50000));
         connect(source_.get(), &QAudioSource::stateChanged, this, [this](QtAudio::State state) {
@@ -545,7 +552,6 @@ void AudioModel::consume() {
             const auto value = format_.normalizedSampleValue(pending_.constData() + offset + sourceChannel * sampleBytes);
             frame[channel] = std::isfinite(value) ? std::clamp(value, -1.0f, 1.0f) : 0.0f;
         }
-        processor_->observeInput(std::abs(frame[0]) >= std::abs(frame[1]) ? frame[0] : frame[1]);
         processed.insert(processed.end(), frame.begin(), frame.end());
     }
     pending_.remove(0, usable);
@@ -561,12 +567,20 @@ void AudioModel::consume() {
         }
         // Qt provides no capture timestamp. The callback size is not a
         // hardware latency measurement; AEC estimates the remaining delay.
-        processed = echo_.capture(processed, format_.sampleRate(), clock_.elapsed(), 0);
-        for (size_t frame = 0; frame < processed.size(); frame += 2) {
-            const auto filtered = processor_->filter({processed[frame], processed[frame + 1]});
-            processed[frame] = filtered[0]; processed[frame + 1] = filtered[1];
-        }
-        const auto packets = mixer_.encode(processed, format_.sampleRate(), voiceActive_ && transmitEnabled_ && !testActive());
+        const auto packets = mixer_.encode(processed, format_.sampleRate(), voiceActive_ && transmitEnabled_ && !testActive(),
+            [this, now](std::span<float> frame) {
+                const auto clean = echo_.capture(frame, 48000, now, 0);
+                for (size_t i = 0; i < frame.size(); i += 2) {
+                    const auto filtered = processor_->filter({clean[i], clean[i + 1]});
+                    frame[i] = filtered[0]; frame[i + 1] = filtered[1];
+                }
+            },
+            [this](std::span<const float> raw, std::span<const float> filtered) {
+                for (size_t i = 0; i < raw.size(); i += 2) {
+                    processor_->observeInput({raw[i], raw[i + 1]});
+                    processor_->observeOutput({filtered[i], filtered[i + 1]});
+                }
+            });
         if (!packets.isEmpty()) lastPacketAt_ = clock_.elapsed();
         for (const auto& packet : packets) emit audioPacket(packet);
         emit activityChanged();
@@ -640,7 +654,7 @@ void AudioModel::stopCapture() {
         source_.reset();
     }
     processor_.reset();
-    if (!input_.isNull()) filterResponse_ = squad::AudioProcessor(captureFormat(input_).sampleRate(), profile_).filterResponse();
+    if (!input_.isNull()) filterResponse_ = squad::AudioProcessor(48000, profile_).filterResponse();
     pending_.clear();
     mixer_.resetCapture();
     levels_ = {};
@@ -701,7 +715,8 @@ void AudioModel::applyActivation() {
     mixer_.setVoiceActivation(effective);
 }
 
-bool AudioModel::setVoiceState(bool joined, bool transmit, bool pushToTalk) {
+bool AudioModel::setVoiceState(bool joined, bool transmit, bool pushToTalk, int packetLimit) {
+    mixer_.setPacketLimit(packetLimit);
     if (voiceActive_ == joined && transmitEnabled_ == transmit && pushToTalk_ == pushToTalk) return true;
     const bool changedChannelState = voiceActive_ != joined;
     voiceActive_ = joined;

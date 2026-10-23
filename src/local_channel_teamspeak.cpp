@@ -77,6 +77,7 @@ bool LocalChannel::addTeamSpeak(const QString& endpoint, const QString& password
 
 bool LocalChannel::teamSpeakCommand(const QJsonObject& command) {
     if (!teamSpeak_ || !teamSpeak_->handle) return false;
+    if (command.value("action") == "join") sendAudio({});
     const auto bytes = QJsonDocument(command).toJson(QJsonDocument::Compact);
     return ss_ts_command(teamSpeak_->handle, reinterpret_cast<const uint8_t*>(bytes.constData()), size_t(bytes.size())) != 0;
 }
@@ -93,7 +94,7 @@ bool LocalChannel::joinTeamSpeak(const QString& id, const QString& suppliedPassw
         c->name = entry.value("name").toString(); c->teamSpeakChannel = entry.value("tsChannel").toString();
         c->reconnectWanted = false; clients_.insert(id, c);
     }
-    if (teamSpeak_ && teamSpeak_->id == device && !c->passwordRequired && (joinedHostId_ == id || teamSpeak_->requested == id)) {
+    if (teamSpeak_ && teamSpeak_->id == device && !c->passwordRequired && (joinedHostId_ == id || (teamSpeak_->movePending && teamSpeak_->requested == id))) {
         selectChat(id); return true;
     }
     QString password = suppliedPassword;
@@ -109,7 +110,7 @@ bool LocalChannel::joinTeamSpeak(const QString& id, const QString& suppliedPassw
                 c->passwordRequired = true; emit stateChanged(); return true;
             }
             if (!teamSpeakCommand({{"action", "join"}, {"channel", c->teamSpeakChannel}, {"password", password}, {"request", "join:" + id}})) return false;
-            teamSpeak_->requested = id; c->passwordRequired = false;
+            teamSpeak_->requested = id; teamSpeak_->movePending = true; c->passwordRequired = false; c->chatError.clear();
             c->password = password; c->rememberPassword = remember;
             return true;
         }
@@ -169,33 +170,56 @@ void LocalChannel::pollTeamSpeak() {
     if (!teamSpeak_) return;
     const auto connection = teamSpeak_;
     auto& buffer = connection->buffer;
+    if (session_.deafened()) connection->audioSequences.clear();
+    const auto flush = [&](const QString& clientId, bool full = false) {
+        while (teamSpeak_ == connection && connection->connected && !session_.deafened()) {
+            auto it = connection->audioSequences.find(clientId);
+            if (it == connection->audioSequences.end() || it->pending.isEmpty()) return;
+            auto& stream = *it;
+            const auto packet = stream.pending.cbegin();
+            const auto missing = stream.delivered < 0 ? 0 : int(std::min<qint64>(6, packet.key() - stream.delivered - 1));
+            // Wait only for a gap. TS3 may deliver a whole batch out of order.
+            if (missing && !full && controlClock_.elapsed() - packet->second < 40) return;
+            const auto peer = stream.peer;
+            const auto payload = packet->first;
+            stream.delivered = packet.key();
+            stream.pending.remove(packet.key());
+            full = false;
+            // Talk-end packets consume a sequence number without an Opus frame.
+            if (payload.size() > 1) emit audioReceived(peer, payload, missing);
+        }
+    };
     // Limit each GUI dispatch. Audio packets cannot indefinitely starve input or paint events.
     for (int i = 0; i < 128 && teamSpeak_ == connection; ++i) {
         const auto size = ss_ts_next(connection->handle, reinterpret_cast<uint8_t*>(buffer.data()), size_t(buffer.size()));
         if (size <= 0) break;
         if (buffer[0] == 1) teamSpeakEvent(QJsonDocument::fromJson(buffer.mid(1, size - 1)).object());
-        else if (buffer[0] == 2 && size > 6 && connection->connected && (buffer[5] == 4 || buffer[5] == 5)) {
+        else if (buffer[0] == 2 && size >= 6 && connection->connected && (buffer[5] == 4 || buffer[5] == 5)) {
             const auto clientId = QString::number(qFromBigEndian<quint16>(reinterpret_cast<const uchar*>(buffer.constData() + 1)));
             const auto c = clients_.value(joinedHostId_);
             if (!c || !c->teamSpeak || !c->voice || session_.deafened()) continue;
             for (const auto& value : c->members) {
                 const auto member = value.toMap();
-                if (member.value("tsClient") == clientId && member.value("id").toString() != ownId()) {
+                if (member.value("tsClient") == clientId && member.value("id").toString() != ownId()
+                    && !member.value("muted").toBool()) {
                     const auto sequence = qFromBigEndian<quint16>(reinterpret_cast<const uchar*>(buffer.constData() + 3));
                     const auto now = controlClock_.elapsed();
-                    const auto old = connection->audioSequences.constFind(clientId);
-                    int missing = 0;
-                    if (old != connection->audioSequences.cend() && now - old->second < 2000) {
-                        const auto advance = quint16(sequence - old->first);
-                        if (advance == 0 || advance > 32767) break;
-                        missing = std::min(6, int(advance) - 1);
-                    }
-                    connection->audioSequences.insert(clientId, {sequence, now});
-                    emit audioReceived(member.value("id").toString(), buffer.mid(6, size - 6), missing); break;
+                    auto& stream = connection->audioSequences[clientId];
+                    if (now - stream.received >= 2000) stream = {};
+                    const auto serial = stream.highest < 0 ? qint64(sequence) + 65536
+                        : stream.highest + qint16(sequence - quint16(stream.highest));
+                    if (serial <= stream.delivered || stream.pending.contains(serial)) break;
+                    stream.peer = member.value("id").toString();
+                    stream.highest = std::max(stream.highest, serial);
+                    stream.received = now;
+                    stream.pending.insert(serial, {buffer.mid(6, size - 6), now});
+                    if (stream.pending.size() > 6) flush(clientId, true);
+                    break;
                 }
             }
         }
     }
+    for (const auto& clientId : connection->audioSequences.keys()) flush(clientId);
 }
 
 void LocalChannel::teamSpeakState(const QJsonObject& state) {
@@ -203,6 +227,7 @@ void LocalChannel::teamSpeakState(const QJsonObject& state) {
     const bool first = !connection->connected;
     const auto self = state.value("self").toString();
     const auto active = state.value("channel").toString();
+    if (active.isEmpty()) return;
     const auto serverName = tsName(state.value("server").toObject().value("name").toString());
     connection->connected = true; connection->state = state; connection->name = serverName;
     const auto previous = joinedHostId_;
@@ -220,13 +245,18 @@ void LocalChannel::teamSpeakState(const QJsonObject& state) {
         }
     }
     connection->active = tsId(connection->id, "channel", active);
+    if (previous != connection->active) connection->audioSequences.clear();
     joinedHostId_ = connection->active;
     QJsonObject next = savedChannels_;
     QSet<QString> seen;
     const auto channels = state.value("channels").toArray();
     const auto members = state.value("members").toArray();
     QSet<QString> connectedClients;
-    for (const auto& member : members) connectedClients.insert(member.toObject().value("id").toString());
+    for (const auto& value : members) {
+        const auto member = value.toObject();
+        if (member.value("channel") == active && !member.value("inputMuted").toBool())
+            connectedClients.insert(member.value("id").toString());
+    }
     for (auto it = connection->audioSequences.begin(); it != connection->audioSequences.end();)
         if (!connectedClients.contains(it.key())) it = connection->audioSequences.erase(it); else ++it;
     for (const auto& value : channels) {
@@ -261,7 +291,7 @@ void LocalChannel::teamSpeakState(const QJsonObject& state) {
             if (member.value("channel") != channel) continue;
             const auto avatar = tsClient == self ? session_.avatar() : tsAvatar(uid.isEmpty() ? peer : uid);
             c->members.append(QVariantMap{{"id", peer}, {"tsClient", tsClient}, {"tsUid", uid}, {"name", tsName(member.value("name").toString())},
-                {"avatarId", avatar}, {"avatar", VoiceSession::avatarFallback(avatar)}, {"teamSpeak", true}, {"available", true}, {"muted", member.value("inputMuted").toBool()},
+                {"avatarId", avatar}, {"avatar", VoiceSession::avatarFallback(avatar)}, {"teamSpeak", tsClient != self && !member.value("squadSpeak").toBool()}, {"available", true}, {"muted", member.value("inputMuted").toBool()},
                 {"deafened", member.value("outputMuted").toBool()}, {"sleeping", false}});
         }
         if (c->voice) {
@@ -273,7 +303,8 @@ void LocalChannel::teamSpeakState(const QJsonObject& state) {
     }
     for (auto it = next.begin(); it != next.end();) {
         const auto entry = it.value().toObject();
-        if (entry.value("protocol") == "teamspeak" && entry.value("deviceId") == connection->id && !seen.contains(it.key())) {
+        if (state.value("directoryComplete").toBool() && entry.value("protocol") == "teamspeak"
+            && entry.value("deviceId") == connection->id && !seen.contains(it.key())) {
             const auto id = it.key(); it = next.erase(it); clients_.remove(id);
         } else ++it;
     }
@@ -291,9 +322,10 @@ void LocalChannel::teamSpeakState(const QJsonObject& state) {
     }
     if (const auto selected = clients_.value(chatHostId_)) status_ = selected->status;
     if (first) { automaticAttempt_ = false; sendPresence(); emit channelEvent("join"); }
-    if (connection->requested == joinedHostId_) connection->requested.clear();
+    if (connection->requested == joinedHostId_) { connection->requested.clear(); connection->movePending = false; }
     emit hostsChanged(); emit participantsChanged(); emit stateChanged(); emit chatChanged();
-    if (first && requested != joinedHostId_ && savedChannels_.contains(requested)) {
+    // The server sends its channel directory incrementally after connecting.
+    if (!connection->movePending && requested != joinedHostId_ && seen.contains(requested)) {
         connection->requested.clear(); joinTeamSpeak(requested);
     }
 }
@@ -304,7 +336,8 @@ void LocalChannel::teamSpeakEvent(const QJsonObject& event) {
     if (type == "state") { teamSpeakState(event); return; }
     if (type == "identity") { if (event.value("value").isObject()) saveTeamSpeakIdentity(event.value("value").toObject()); return; }
     if (type == "reconnecting") {
-        teamSpeak_->connected = false; teamSpeak_->audioSequences.clear(); teamSpeak_->lastPresence = {};
+        teamSpeak_->connected = false; teamSpeak_->movePending = false; teamSpeak_->sendingAudio = false;
+        teamSpeak_->audioSequences.clear(); teamSpeak_->lastPresence = {};
         for (const auto& c : clients_) if (c->teamSpeak) { c->accepted = false; c->access = "connecting"; c->members.clear(); }
         emit stateChanged(); emit hostsChanged(); emit participantsChanged(); return;
     }
@@ -329,14 +362,15 @@ void LocalChannel::teamSpeakEvent(const QJsonObject& event) {
             if (!okay) {
                 if (c) { c->chatError = tsError(event.value("error").toString()); c->passwordRequired = event.value("passwordRequired").toBool(); }
             }
-            teamSpeak_->requested.clear(); emit chatChanged(); emit stateChanged(); return;
+            if (teamSpeak_->requested == request.mid(5)) { teamSpeak_->requested.clear(); teamSpeak_->movePending = false; }
+            emit chatChanged(); emit stateChanged(); return;
         }
         for (const auto& c : clients_) {
             if (!c->teamSpeak || c->pending.value("request") != request) continue;
             if (okay) {
                 const auto now = clock_();
                 QJsonObject record{{"sequence", ++teamSpeak_->sequence}, {"sender", ownId()}, {"name", session_.userName()},
-                    {"avatarId", session_.avatar()}, {"teamSpeak", true}, {"request", request}, {"created", now}, {"expires", now + ChatHistory::lifetime},
+                    {"avatarId", session_.avatar()}, {"teamSpeak", false}, {"request", request}, {"created", now}, {"expires", now + ChatHistory::lifetime},
                     {"text", c->pending.value("text")}};
                 c->messages.append(record); c->privateExpires = now + ChatHistory::lifetime;
                 c->lastChatSequence = std::max(c->lastChatSequence, record.value("sequence").toInteger());
@@ -352,13 +386,13 @@ void LocalChannel::teamSpeakEvent(const QJsonObject& event) {
     if (mode != "channel" && mode != "private" && mode != "server") return;
     auto id = tsId(teamSpeak_->id, "channel", event.value("channel").toString());
     auto uid = event.value("fromUid").toString();
-    if (uid.isEmpty()) {
-        for (const auto& value : teamSpeak_->state.value("members").toArray()) {
-            const auto member = value.toObject();
-            if (member.value("id") == event.value("fromId")) {
-                uid = member.value("uid").toString();
-                break;
-            }
+    bool squadSpeak = false;
+    for (const auto& value : teamSpeak_->state.value("members").toArray()) {
+        const auto member = value.toObject();
+        if (member.value("id") == event.value("fromId")) {
+            if (uid.isEmpty()) uid = member.value("uid").toString();
+            squadSpeak = member.value("squadSpeak").toBool();
+            break;
         }
     }
     const auto peer = tsId(teamSpeak_->id, "member", uid.isEmpty() ? event.value("fromId").toString() : uid);
@@ -380,7 +414,7 @@ void LocalChannel::teamSpeakEvent(const QJsonObject& event) {
     const bool unreadBefore = c->unreadExpires > now;
     const auto sequence = ++teamSpeak_->sequence;
     c->messages.append(QJsonObject{{"sequence", sequence}, {"sender", peer}, {"name", tsName(event.value("fromName").toString())},
-        {"avatarId", tsAvatar(uid.isEmpty() ? peer : uid)}, {"teamSpeak", true}, {"request", QUuid::createUuid().toString(QUuid::WithoutBraces)},
+        {"avatarId", tsAvatar(uid.isEmpty() ? peer : uid)}, {"teamSpeak", !squadSpeak}, {"request", QUuid::createUuid().toString(QUuid::WithoutBraces)},
         {"created", now}, {"expires", now + ChatHistory::lifetime}, {"text", text}});
     c->privateExpires = now + ChatHistory::lifetime;
     c->lastChatSequence = std::max(c->lastChatSequence, sequence);

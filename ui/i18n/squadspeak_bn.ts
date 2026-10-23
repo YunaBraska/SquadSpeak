@@ -410,6 +410,14 @@
             <source>Auto also checks for speech, not just volume.</source>
             <translation>স্বয়ংক্রিয় মোড শুধু আওয়াজের মাত্রা নয়, কথাও শনাক্ত করে।</translation>
         </message>
+        <message>
+            <source>Minimum</source>
+            <translation>সর্বনিম্ন</translation>
+        </message>
+        <message>
+            <source>Auto will not lower the voice threshold below this level.</source>
+            <translation>স্বয়ংক্রিয় মোড কণ্ঠস্বরের সীমা এই স্তরের নিচে নামাবে না।</translation>
+        </message>
     </context>
     <context>
         <name>Channels</name>
@@ -2865,16 +2873,16 @@
             <translation>হার্টজ এবং ডিবিএফএস-এ ফ্রিকোয়েন্সি স্পেকট্রাম</translation>
         </message>
         <message>
-            <source>After gain / cuts</source>
-            <translation>পরিবর্ধন ও ফ্রিকোয়েন্সি কাটের পরে</translation>
+            <source>Processed</source>
+            <translation>প্রক্রিয়াকৃত</translation>
         </message>
         <message>
             <source>Input: sound picked up by the microphone before gain and frequency cuts. Left is bass, right is treble; higher is louder.</source>
             <translation>ইনপুট: পরিবর্ধন ও ফ্রিকোয়েন্সি কাটের আগে মাইক্রোফোনে ধরা শব্দ। বাঁ দিকে বাস, ডান দিকে ট্রেবল; বেশি হলে বেশি জোরে শোনা যায়।</translation>
         </message>
         <message>
-            <source>After gain / cuts: the measured spectrum after microphone gain and frequency filters. It does not identify a speaker.</source>
-            <translation>পরিবর্ধন ও কাটের পরে: মাইক্রোফোনের পরিবর্ধন ও ফ্রিকোয়েন্সি ফিল্টারের পরিমাপ করা স্পেকট্রাম। এটি বক্তাকে শনাক্ত করে না।</translation>
+            <source>After all filters, before transmission.</source>
+            <translation>সব ফিল্টারের পরে, পাঠানোর আগে।</translation>
         </message>
         <message>
             <source>Filter curve: the configured change in level at each frequency, read on the right dB scale. It excludes noise reduction and voice activation.</source>

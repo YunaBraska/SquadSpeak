@@ -410,6 +410,14 @@
             <source>Auto also checks for speech, not just volume.</source>
             <translation>Automātiskais režīms pārbauda arī runu, ne tikai skaļumu.</translation>
         </message>
+        <message>
+            <source>Minimum</source>
+            <translation>Minimums</translation>
+        </message>
+        <message>
+            <source>Auto will not lower the voice threshold below this level.</source>
+            <translation>Automātiskais režīms nepazeminās balss slieksni zem šī līmeņa.</translation>
+        </message>
     </context>
     <context>
         <name>Channels</name>
@@ -2865,16 +2873,16 @@
             <translation>frekvenču spektrs hercos un dBFS</translation>
         </message>
         <message>
-            <source>After gain / cuts</source>
-            <translation>Pēc pastiprinājuma un frekvenču griezumiem</translation>
+            <source>Processed</source>
+            <translation>Apstrādāts</translation>
         </message>
         <message>
             <source>Input: sound picked up by the microphone before gain and frequency cuts. Left is bass, right is treble; higher is louder.</source>
             <translation>Ievade: mikrofona uztvertā skaņa pirms pastiprinājuma un frekvenču griezumiem. Kreisajā pusē ir basi, labajā - augstās frekvences; augstāks nozīmē skaļāks.</translation>
         </message>
         <message>
-            <source>After gain / cuts: the measured spectrum after microphone gain and frequency filters. It does not identify a speaker.</source>
-            <translation>Pēc pastiprinājuma un griezumiem: izmērītais spektrs pēc mikrofona pastiprinājuma un frekvenču filtriem. Tas neidentificē runātāju.</translation>
+            <source>After all filters, before transmission.</source>
+            <translation>Pēc visiem filtriem, pirms pārraides.</translation>
         </message>
         <message>
             <source>Filter curve: the configured change in level at each frequency, read on the right dB scale. It excludes noise reduction and voice activation.</source>

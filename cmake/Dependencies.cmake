@@ -96,8 +96,8 @@ if(CMAKE_SYSTEM_NAME MATCHES "^(Darwin|Linux|Windows)$")
         list(APPEND qt_runtime_modules qml)
     elseif(Qt6_VERSION VERSION_EQUAL "6.11.3")
         FetchContent_Declare(qt_qml
-            URL https://download.qt.io/online/qtsdkrepository/all_os/qt/qt6_6113_unix_line_endings_src/qt.qt6.6113.src/6.11.3-0-202609240252qtdeclarative-everywhere-src-6.11.3.tar.xz
-            URL_HASH SHA256=b3514c650bece885052da99e6e74fe38494f169fcde91129a3f3467ecb842b19
+            URL https://master.qt.io/online/qtsdkrepository/all_os/qt/qt6_6113_unix_line_endings_src/qt.qt6.6113.src/6.11.3-0-202610220312qtdeclarative-everywhere-src-6.11.3.tar.xz
+            URL_HASH SHA256=90e941624ac1e99c376f9c32ef7a580519915d8d42adf4ad160142918f935ae2
             SOURCE_SUBDIR unused DOWNLOAD_EXTRACT_TIMESTAMP TRUE)
         set(qt_qml_patches qt-qml-runtime.patch)
         list(APPEND qt_runtime_modules qml)
@@ -380,23 +380,23 @@ function(squad_add_keychain)
 endfunction()
 squad_add_keychain()
 
-# v0.2 plus its immediate upstream ARM/SSE build correction. Model and code
-# are pinned separately; the resulting library needs no runtime downloads.
+# Upstream inference and its matching sparse model. Keep both pins together.
+# The smaller model uses the same API and needs no runtime downloads.
 FetchContent_Declare(rnnoise
-    URL https://github.com/xiph/rnnoise/archive/372f7b4b76cde4ca1ec4605353dd17898a99de38.tar.gz
-    URL_HASH SHA256=40ff1568af151959933699fcbf2db3ee3c62fa9559557dbf61a65e7a12cd335d
-    DOWNLOAD_EXTRACT_TIMESTAMP TRUE)
+    URL https://github.com/xiph/rnnoise/archive/70f1d256acd4b34a572f999a05c87bf00b67730d.tar.gz
+    URL_HASH SHA256=f61ee0b3f4c4cd337303e003d333357c5eaf25ef5d75a742109ee59e9a0a3932
+    DOWNLOAD_EXTRACT_TIMESTAMP FALSE)
 FetchContent_Declare(rnnoise_model
-    URL https://media.xiph.org/rnnoise/models/rnnoise_data-0b50c45.tar.gz
-    URL_HASH SHA256=4ac81c5c0884ec4bd5907026aaae16209b7b76cd9d7f71af582094a2f98f4b43
-    DOWNLOAD_EXTRACT_TIMESTAMP TRUE)
+    URL https://media.xiph.org/rnnoise/models/rnnoise_data-0a8755f8e2d834eff6a54714ecc7d75f9932e845df35f8b59bc52a7cfe6e8b37.tar.gz
+    URL_HASH SHA256=0a8755f8e2d834eff6a54714ecc7d75f9932e845df35f8b59bc52a7cfe6e8b37
+    DOWNLOAD_EXTRACT_TIMESTAMP FALSE)
 FetchContent_MakeAvailable(rnnoise rnnoise_model)
 add_library(squad_rnnoise STATIC
     ${rnnoise_SOURCE_DIR}/src/denoise.c ${rnnoise_SOURCE_DIR}/src/rnn.c
     ${rnnoise_SOURCE_DIR}/src/pitch.c ${rnnoise_SOURCE_DIR}/src/kiss_fft.c
     ${rnnoise_SOURCE_DIR}/src/celt_lpc.c ${rnnoise_SOURCE_DIR}/src/nnet.c
     ${rnnoise_SOURCE_DIR}/src/nnet_default.c ${rnnoise_SOURCE_DIR}/src/parse_lpcnet_weights.c
-    ${rnnoise_SOURCE_DIR}/src/rnnoise_tables.c ${rnnoise_model_SOURCE_DIR}/src/rnnoise_data.c)
+    ${rnnoise_SOURCE_DIR}/src/rnnoise_tables.c ${rnnoise_model_SOURCE_DIR}/src/rnnoise_data_little.c)
 set_target_properties(squad_rnnoise PROPERTIES C_STANDARD 99 POSITION_INDEPENDENT_CODE ON AUTOMOC OFF AUTOUIC OFF)
 target_include_directories(squad_rnnoise PUBLIC ${rnnoise_SOURCE_DIR}/include
     PRIVATE ${rnnoise_SOURCE_DIR}/src ${rnnoise_model_SOURCE_DIR}/src)

@@ -109,7 +109,7 @@ python3 cmake/build_sources.py --rust-notices --output docs/third-party/RUST-NOT
 
 ## Build and test
 
-The app uses C++20, Qt 6.10 or newer with Multimedia, Quick, Sql (QSQLITE) and LinguistTools, OpenSSL 3, Opus and libsamplerate. Pinned sources supply RNNoise, QtKeychain and WebRTC Audio Processing 2.1 with static Abseil 20240722.0. Pinned libdatachannel and its bundled dependencies supply encrypted UDP media. CMake, Ninja and Meson are build tools; Meson uses the audio library's upstream source lists. Radio requires Qt Multimedia's FFmpeg backend; the Darwin backend alone cannot provide `QAudioBufferOutput`. The video codec libraries must match the selected Qt multimedia kit.
+The app uses C++20, Qt 6.10 or newer with Multimedia, Quick, Sql (QSQLITE) and LinguistTools, OpenSSL 3, Opus and libsamplerate. Paired RNNoise source/model pins use its smaller local model. Extraction-time timestamps make dependency upgrades rebuild matching objects. Other pinned sources supply QtKeychain and WebRTC Audio Processing 2.1 with static Abseil 20240722.0. Pinned libdatachannel and its bundled dependencies supply encrypted UDP media. CMake, Ninja and Meson are build tools; Meson uses the audio library's upstream source lists. Radio requires Qt Multimedia's FFmpeg backend; the Darwin backend alone cannot provide `QAudioBufferOutput`. The video codec libraries must match the selected Qt multimedia kit.
 
 Qt 6.10 provides the public foreign-window capture constructor used to associate
 Windows windows with their owning process. The package keeps Windows 10 support
@@ -253,6 +253,12 @@ Terminal-launched processes can bypass macOS local-network privacy. Verify actua
 discovery traffic even when the permission switch is on. Keep any permission
 renewal limited to the approved test copies. Apple recommends Apple-issued signing
 for reliable local-network identity in [TN3179](https://developer.apple.com/documentation/technotes/tn3179-understanding-local-network-privacy).
+
+For a virtual-audio comparison, record the unchanged input alongside the receiving
+app while every test app is active. Validate it against the source before rating
+filters, codecs or playback. A clean standalone loopback or zero callback error
+flags do not establish a clean shared-device path. Reject corrupted input runs.
+
 Run native UI tests separately from manual interaction so window activation is not
 stolen by another app. Join the copies to one test channel before handing over. For a Windows visit without a
 maintainer present, use the standalone kit below. A captures the microphone,
@@ -365,7 +371,9 @@ SQUAD_VIDEO_SOAK_SECONDS=120 build/local/video_tests roundTripAndQualityChanges:
 Audio accepts 2-1800 seconds. Video accepts 0-1800, where zero keeps the normal
 short test. Audio uses 64 clients and four simultaneous senders by default.
 `SQUAD_SOAK_SPEAKERS` accepts 2 up to the selected client count to measure greater overlap.
-`SQUAD_SOAK_CLIENTS` accepts 32 or 64. The hosted Intel workflow uses 32 clients
+`SQUAD_SOAK_CLIENTS` accepts 8, 32 or 64. Eight clients provide a smaller control
+for distinguishing simultaneous-speaker load from distribution to many listeners.
+The hosted Intel workflow uses 32 clients
 and two simultaneous senders. All source-to-receiver bindings, mono/stereo rows,
 delayed callbacks and the original delivery/playout thresholds remain checked.
 This fixture setting does not restrict the application or certify greater overlap.
@@ -713,7 +721,11 @@ The macOS build workflow owns signing and notarization. Optional secrets are
 Developer ID identity signs the deployed bundle before package checks. Notary
 credentials additionally submit and staple it before the final archive is tested.
 An isolated runner keychain and imported credentials are removed after the job.
-Without those secrets, packages use ad-hoc signatures. Quit running copies before replacing their bundles. An ad-hoc code identity changes with the build, so privacy permissions can require renewed approval even when System Settings still shows an enabled entry. Reuse a consistent signing identity. Apple specifically requires an Apple-issued identity for reliable Local Network tracking. A local self-signed identity alone does not guarantee that macOS will avoid duplicate Local Network rows across builds. For the local A/B copies, `tests/prepare_two_apps.py` defaults to the existing `SquadSpeak Local Development` identity. Use `--sign-identity` to select another existing development identity. Reuse its private key and keep the bundle identifiers, install paths and data profiles stable across builds. Do not provision a new certificate for each build or test copy. Never commit private keys. Developer ID signing, notarization and store accounts are separate distribution work. Store builds exclude external Supporter purchasing and activation. No signing credentials belong in this repository.
+Without those secrets, packages use ad-hoc signatures. Quit running copies before replacing their bundles. An ad-hoc code identity changes with the build, so privacy permissions can require renewed approval even when System Settings still shows an enabled entry. Reuse a consistent signing identity. Apple specifically requires an Apple-issued identity for reliable Local Network tracking. A local self-signed identity alone does not guarantee that macOS will avoid duplicate Local Network rows across builds. For the local A/B copies, `tests/prepare_two_apps.py` defaults to the existing `SquadSpeak Local Development` identity. For Local Network tests, pass an existing Apple Development identity with
+`--sign-identity`. A free Personal Team in Xcode can provision this identity
+through automatic signing without paid Developer Program enrollment. Reuse it
+for both test copies. Creating the identity may require account authentication
+and a one-time approval. Reuse its private key and keep the bundle identifiers, install paths and data profiles stable across builds. Do not provision a new certificate for each build or test copy. Never commit private keys. Developer ID signing, notarization and store accounts are separate distribution work. Store builds exclude external Supporter purchasing and activation. No signing credentials belong in this repository.
 
 Local language experiments require Xcode 26 or newer to build. The reusable
 macOS workflow selects its installed toolchain through `xcode_version` (26.3 by default). Their Apple APIs

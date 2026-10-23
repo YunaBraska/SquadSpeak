@@ -410,6 +410,14 @@
             <source>Auto also checks for speech, not just volume.</source>
             <translation>自動モードは音量だけでなく、音声かどうかも確認します。</translation>
         </message>
+        <message>
+            <source>Minimum</source>
+            <translation>下限</translation>
+        </message>
+        <message>
+            <source>Auto will not lower the voice threshold below this level.</source>
+            <translation>自動調整では音声のしきい値をこのレベルより下げません。</translation>
+        </message>
     </context>
     <context>
         <name>Channels</name>
@@ -2865,16 +2873,16 @@
             <translation>ヘルツとdBFSの周波数スペクトル</translation>
         </message>
         <message>
-            <source>After gain / cuts</source>
-            <translation>ゲイン / カット後</translation>
+            <source>Processed</source>
+            <translation>処理後</translation>
         </message>
         <message>
             <source>Input: sound picked up by the microphone before gain and frequency cuts. Left is bass, right is treble; higher is louder.</source>
             <translation>入力: ゲインと周波数カット前にマイクが拾った音です. 左が低音, 右が高音で, 高いほど音量が大きくなります.</translation>
         </message>
         <message>
-            <source>After gain / cuts: the measured spectrum after microphone gain and frequency filters. It does not identify a speaker.</source>
-            <translation>ゲイン / カット後: マイクゲインと周波数フィルター後の測定スペクトルです. 話者を識別するものではありません.</translation>
+            <source>After all filters, before transmission.</source>
+            <translation>すべてのフィルターの適用後、送信前。</translation>
         </message>
         <message>
             <source>Filter curve: the configured change in level at each frequency, read on the right dB scale. It excludes noise reduction and voice activation.</source>

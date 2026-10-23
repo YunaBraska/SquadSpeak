@@ -47,6 +47,8 @@ class AudioModel final : public QObject {
     Q_PROPERTY(QString echoReference READ echoReference NOTIFY activityChanged)
     Q_PROPERTY(bool echoRetryAvailable READ echoRetryAvailable NOTIFY activityChanged)
     Q_PROPERTY(bool activationAutomatic READ activationAutomatic NOTIFY profileChanged)
+    Q_PROPERTY(bool activationMinimumEnabled READ activationMinimumEnabled NOTIFY profileChanged)
+    Q_PROPERTY(double activationMinimumDb READ activationMinimumDb NOTIFY profileChanged)
     Q_PROPERTY(double activationThresholdDb READ activationThresholdDb NOTIFY activityChanged)
     Q_PROPERTY(double activationLevelDb READ activationLevelDb NOTIFY activityChanged)
     Q_PROPERTY(bool activationOpen READ activationOpen NOTIFY activityChanged)
@@ -111,6 +113,8 @@ public:
     [[nodiscard]] bool echoRetryAvailable() const { return source_ && echoCancellation() && outputMonitor_.retryNeeded(); }
     Q_INVOKABLE bool retryEchoReference();
     [[nodiscard]] bool activationAutomatic() const { return activation_.automatic; }
+    [[nodiscard]] bool activationMinimumEnabled() const { return activation_.minimumEnabled; }
+    [[nodiscard]] double activationMinimumDb() const { return activation_.minimumDb; }
     [[nodiscard]] double activationThresholdDb() const { return mixer_.activationThresholdDb(); }
     [[nodiscard]] double activationLevelDb() const { return mixer_.activationLevelDb(); }
     [[nodiscard]] bool activationOpen() const { return mixer_.voiceActive(); }
@@ -167,11 +171,12 @@ public:
     Q_INVOKABLE bool setEchoStrength(double strength);
     Q_INVOKABLE bool setActivationAutomatic(bool automatic);
     Q_INVOKABLE bool setActivationThresholdDb(double value);
+    Q_INVOKABLE bool setActivationMinimum(bool enabled, double value);
     Q_INVOKABLE bool setOutputVolume(double value);
     Q_INVOKABLE bool setAutomaticVolume(bool value);
     Q_INVOKABLE double participantVolume(const QString& peer) const;
     Q_INVOKABLE bool setParticipantVolume(const QString& peer, double value);
-    bool setVoiceState(bool joined, bool transmit, bool pushToTalk = false);
+    bool setVoiceState(bool joined, bool transmit, bool pushToTalk = false, int packetLimit = 4000);
     bool setParticipants(const QVariantList& participants, const QString& channel = {});
     bool receiveAudio(const QString& peer, const QByteArray& packet, int missing = 0);
     Q_INVOKABLE bool start();
@@ -253,7 +258,7 @@ private:
     QElapsedTimer clock_;
     qint64 lastPacketAt_ = -1;
     qint64 activityPublishedAt_ = -50;
-    squad::VoiceMixer mixer_{2};
+    squad::VoiceMixer mixer_{2, 40};
     QVariantList participants_;
     QHash<QString, double> participantVolumes_;
     bool voiceActive_ = false;

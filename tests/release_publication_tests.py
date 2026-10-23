@@ -316,6 +316,55 @@ else:
         self.assertTrue(selected, "No explicit QML test selections found")
         self.assertEqual(sorted((path, name) for path, name in selected if name not in available), [])
 
+    def test_native_rust_tests_are_prebuilt_outside_the_test_deadline(self):
+        (self.root / "src").mkdir()
+        (self.root / "src/teamspeak_bridge").symlink_to(self.repo / "src/teamspeak_bridge", target_is_directory=True)
+        (self.root / "rust-toolchain.toml").symlink_to(self.repo / "rust-toolchain.toml")
+        cargo = self.root / "bin/cargo"
+        cargo.write_text("#!" + sys.executable + "\n" + '''import os, pathlib, sys
+root = pathlib.Path(os.environ["CARGO_TARGET_DIR"])
+root.mkdir(parents=True, exist_ok=True)
+args = sys.argv[1:]
+with (root / "calls").open("a") as log: log.write(" ".join(args) + "\\n")
+if args[0] == "build":
+    (root / "release").mkdir(exist_ok=True)
+    (root / "release/libsquadspeak_teamspeak_bridge.a").touch()
+elif args[0] == "test" and "--no-run" in args:
+    if os.environ.get("FAIL_PREPARE"): sys.exit(37)
+    (root / "tests-ready").touch()
+elif args[0] == "test":
+    if not (root / "tests-ready").is_file():
+        sys.exit("Test attempted to compile dependencies inside its deadline")
+else: sys.exit(38)
+''')
+        cargo.chmod(0o700)
+        (self.root / "CMakeLists.txt").write_text('''cmake_minimum_required(VERSION 3.24)
+project(BuildContract NONE)
+include(CTest)
+include(cmake/TeamSpeak.cmake)
+add_custom_target(consumer ALL DEPENDS squad_teamspeak_build)
+''')
+        for mode, flags in (("native", []), ("production", ["-DBUILD_TESTING=OFF"]),
+                            ("cross", ["-DCMAKE_SYSTEM_NAME=Generic"])):
+            with self.subTest(mode=mode):
+                build = self.root / mode
+                result = subprocess.run(["cmake", "-S", str(self.root), "-B", str(build),
+                    "-DSQUAD_CARGO=" + str(cargo), "-DSQUAD_RUSTC=" + sys.executable, *flags],
+                    capture_output=True, text=True, timeout=30)
+                self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+                result = subprocess.run(["cmake", "--build", str(build), "--parallel", "2"],
+                                        capture_output=True, text=True, timeout=30)
+                self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+                if mode != "native":
+                    self.assertNotIn("test ", (build / "teamspeak/calls").read_text())
+                    continue
+                result = subprocess.run(["ctest", "--test-dir", str(build), "--output-on-failure", "--no-tests=error"],
+                                        capture_output=True, text=True, timeout=30)
+                self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+                result = subprocess.run(["cmake", "--build", str(build)],
+                    env=dict(os.environ, FAIL_PREPARE="1"), capture_output=True, text=True, timeout=30)
+                self.assertNotEqual(result.returncode, 0, "Test preparation failure must fail the build")
+
     def test_dependency_cache_ignores_test_and_release_changes(self):
         (self.root / "cmake").unlink()
         shutil.copytree(self.repo / "cmake", self.root / "cmake")

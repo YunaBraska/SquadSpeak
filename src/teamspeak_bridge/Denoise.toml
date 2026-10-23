@@ -1,0 +1,21 @@
+# Appended to the canonical manifest only by the local candidate build.
+[dependencies.deep_filter]
+git = "https://github.com/Rikorose/DeepFilterNet"
+rev = "d375b2d8309e0935d165700c91da9de862a99c31"
+default-features = false
+features = ["tract", "default-model"]
+
+[dependencies.ndarray]
+version = "0.15"
+
+[dependencies.tract-core]
+version = "=0.21.4"
+
+[dependencies.tract-hir]
+version = "=0.21.4"
+
+[dependencies.tract-onnx]
+version = "=0.21.4"
+
+[dependencies.tract-pulse]
+version = "=0.21.4"

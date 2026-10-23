@@ -1,6 +1,8 @@
 #include "voice_mixer.hpp"
+#include <QScopeGuard>
 #include "echo_canceller.hpp"
 #include "audio_processor.hpp"
+#include "audio_profiles.hpp"
 
 #include <QCryptographicHash>
 #include <QDataStream>
@@ -13,6 +15,7 @@
 #include <QRegularExpression>
 #include <QSaveFile>
 #include <QTest>
+#include <QTemporaryDir>
 #include <QtEndian>
 #include <algorithm>
 #include <cmath>
@@ -95,21 +98,6 @@ bool writeWav(const QString& path, const Samples& samples) {
     for (float sample : samples) stream << qint16(std::clamp(std::lround(sample * 32768.0), -32768L, 32767L));
     return stream.status() == QDataStream::Ok && file.commit();
 }
-// Independent library-level measurement, not a replacement for the app path.
-// The wet signal has 960 samples of history; flush before compensating it.
-Samples rawSuppression(const Samples& input) {
-    std::unique_ptr<DenoiseState, decltype(&std::free)> state(
-        static_cast<DenoiseState*>(std::malloc(rnnoise_get_size())), std::free);
-    if (!state || rnnoise_init(state.get(), nullptr) != 0) throw std::runtime_error("RNNoise initialization failed");
-    Samples output(input.size() + 960, 0);
-    for (size_t offset = 0; offset < output.size(); offset += 480) {
-        std::array<float, 480> frame{};
-        if (offset < input.size()) for (size_t i = 0; i < frame.size(); ++i) frame[i] = input[offset + i] * 32768;
-        rnnoise_process_frame(state.get(), frame.data(), frame.data());
-        for (size_t i = 0; i < frame.size(); ++i) output[offset + i] = std::clamp(frame[i] / 32768.0f, -1.0f, 1.0f);
-    }
-    return {output.begin() + 960, output.end()};
-}
 }
 
 class CorpusTests final : public QObject {
@@ -122,12 +110,19 @@ class CorpusTests final : public QObject {
     QJsonArray echoResults_;
     QJsonArray inputResults_;
     int codecDelay_ = 0;
+    int defaultSuppression_ = 0;
     QString outputDir_;
     QByteArray manifestHash_;
     bool extended_ = false;
+    QString suite_;
     int shard_ = 0, shards_ = 1, totalCases_ = 0, selectedCases_ = 0;
 private slots:
     void initTestCase() {
+        QTemporaryDir profile;
+        QVERIFY(profile.isValid());
+        defaultSuppression_ = qRound(squad::AudioProfiles(profile.filePath("audio.ini")).noiseSuppression("microphone") * 100);
+        QVERIFY2(defaultSuppression_ == 0 || defaultSuppression_ == 50 || defaultSuppression_ == 100,
+            "Corpus does not cover the default suppression strength");
         const QDir directory(QStringLiteral(SQUAD_CORPUS_DIR));
         const auto bytes = read(directory.filePath("manifest.json"));
         QJsonParseError error;
@@ -135,9 +130,9 @@ private slots:
         QCOMPARE(error.error, QJsonParseError::NoError);
         manifestHash_ = hash(bytes);
         QCOMPARE(manifest_.value("version").toInt(), 2);
-        const auto suite = qEnvironmentVariable("SQUAD_CORPUS_SUITE", "smoke");
-        QVERIFY2(suite == "smoke" || suite == "extended", "SQUAD_CORPUS_SUITE must be smoke or extended");
-        extended_ = suite == "extended";
+        suite_ = qEnvironmentVariable("SQUAD_CORPUS_SUITE", "smoke");
+        QVERIFY2(suite_ == "smoke" || suite_ == "extended" || suite_ == "denoise", "Invalid corpus suite");
+        extended_ = suite_ != "smoke";
         bool validShard = false, validCount = false;
         shard_ = qEnvironmentVariable("SQUAD_CORPUS_SHARD", "0").toInt(&validShard);
         shards_ = qEnvironmentVariable("SQUAD_CORPUS_SHARDS", "1").toInt(&validCount);
@@ -169,7 +164,7 @@ private slots:
             sources_.insert(id, std::move(samples));
         }
         QVERIFY(speech_.size() >= 3 && interference_.size() >= 4);
-        if (!extended_) { QCOMPARE(speech_.size(), 3); QCOMPARE(interference_.size(), 4); }
+        if (!extended_) { QCOMPARE(speech_.size(), 3); QCOMPARE(interference_.size(), 6); }
         // Reproducible broadband clicks, not recordings or a keyboard classifier.
         // Exercise short impulses alongside the same licensed speech fixtures.
         const auto durations = manifest_.value("synthetic_transients_ms").toArray();
@@ -199,27 +194,28 @@ private slots:
         QVERIFY(QDir().mkpath(outputDir_));
     }
     void speechActivation_data() {
-        QTest::addColumn<QString>("speaker"); QTest::addColumn<QString>("keyboard");
+        QTest::addColumn<QString>("speaker"); QTest::addColumn<QString>("disturbance");
         QTest::addColumn<int>("levelDb"); QTest::addColumn<int>("snrDb");
         QTest::addColumn<bool>("shortSpeech");
         QTest::addColumn<int>("channels");
+        const QStringList disturbances{"typing-laptop", "typing-desktop", "breathing-deep"};
         for (const int channels : {1, 2}) {
             const auto format = channels == 1 ? "-mono" : "-stereo";
-            for (const auto& keyboard : {QString("typing-laptop"), QString("typing-desktop")})
+            for (const auto& disturbance : disturbances)
                 for (const int level : {-40, -25, -12})
-                    QTest::newRow(qPrintable(keyboard + QString::number(level) + format)) << QString{} << keyboard << level << 0 << false << channels;
+                    QTest::newRow(qPrintable(disturbance + QString::number(level) + format)) << QString{} << disturbance << level << 0 << false << channels;
             for (const auto& speaker : speech_) for (const int level : {-30, -42}) {
                 QTest::newRow(qPrintable(speaker + "-clean" + QString::number(level) + format)) << speaker << QString{} << level << 0 << false << channels;
                 QTest::newRow(qPrintable(speaker + "-short" + QString::number(level) + format)) << speaker << QString{} << level << 0 << true << channels;
-                for (const auto& keyboard : {QString("typing-laptop"), QString("typing-desktop")})
+                for (const auto& disturbance : {QString("typing-laptop"), QString("typing-desktop")})
                     for (const int snr : {0, 10})
-                        QTest::newRow(qPrintable(speaker + "-" + keyboard + QString::number(level) + "-snr" + QString::number(snr) + format))
-                            << speaker << keyboard << level << snr << false << channels;
+                        QTest::newRow(qPrintable(speaker + "-" + disturbance + QString::number(level) + "-snr" + QString::number(snr) + format))
+                            << speaker << disturbance << level << snr << false << channels;
             }
         }
     }
     void speechActivation() {
-        QFETCH(QString, speaker); QFETCH(QString, keyboard); QFETCH(int, levelDb); QFETCH(int, snrDb);
+        QFETCH(QString, speaker); QFETCH(QString, disturbance); QFETCH(int, levelDb); QFETCH(int, snrDb);
         QFETCH(bool, shortSpeech);
         QFETCH(int, channels);
         Samples clean(length, 0), input(length, 0);
@@ -241,8 +237,8 @@ private slots:
             }
             for (size_t i = 0; i < excerpt.size(); ++i) clean[beginSpeech + i] = float(excerpt[i] * gain);
         }
-        if (!keyboard.isEmpty()) {
-            const auto& noise = sources_[keyboard];
+        if (!disturbance.isEmpty()) {
+            const auto& noise = sources_[disturbance];
             QVERIFY(!noise.empty());
             const auto gain = level * std::pow(10, -snrDb / 20.0) / rms(noise);
             for (size_t i = 0; i < input.size(); ++i) input[i] = float(noise[i % noise.size()] * gain);
@@ -253,7 +249,7 @@ private slots:
         squad::AudioProcessor processor(rate, {0, 0, 0, true, true});
         for (auto& sample : input) sample = processor.process(sample);
         squad::VoiceMixer sender(channels), receiver(channels), levelGate(channels);
-        sender.setVoiceActivation({true, true, -45}).setNoiseSuppression(1);
+        sender.setVoiceActivation({true, true, -45}).setNoiseSuppression(defaultSuppression_ / 100.0);
         levelGate.setVoiceActivation({true, false, -45});
         receiver.setAutomatic(false);
         Samples output(length, 0);
@@ -266,7 +262,7 @@ private slots:
                     capture[frame * size_t(channels) + size_t(channel)] = input[offset + frame];
             const auto packets = sender.encode(capture, rate);
             levelGateFrames += levelGate.encode(capture, rate).size();
-            QVERIFY(packets.size() <= 3);
+            QVERIFY(packets.size() <= 4);
             for (qsizetype p = 0; p < packets.size(); ++p) {
                 const auto position = offset - size_t(packets.size() - 1 - p) * 960;
                 QVERIFY(position < input.size());
@@ -280,22 +276,118 @@ private slots:
             }
         }
         double retained = 0;
-        for (size_t i = 0; i + 960 < clean.size(); ++i)
-            if (admitted[(i + 960) / 960]) retained += double(clean[i]) * clean[i];
+        const auto suppressionDelay = size_t(squad::VoiceMixer::suppressionDelaySamples());
+        for (size_t i = 0; i + suppressionDelay < clean.size(); ++i)
+            if (admitted[(i + suppressionDelay) / 960]) retained += double(clean[i]) * clean[i];
         const auto openFrames = std::count(admitted.begin(), admitted.end(), true);
         const auto retention = retained / std::max(energy(clean), 1e-30);
         qInfo() << "admitted frames" << openFrames << "/" << admitted.size() << "level-only frames" << levelGateFrames << "speech retention" << retention
                 << "output/input dB" << levelChange(output, input);
         if (speaker.isEmpty()) {
-            // RNNoise is not a perfect keyboard classifier. Pin the measured
-            // improvement over a level gate without claiming complete removal.
+            // Noise suppression is imperfect. Pin improvement over a level
+            // gate without claiming complete removal.
             QVERIFY(levelGateFrames > 0);
-            QVERIFY2(openFrames * 4 <= levelGateFrames, "Speech detection did not reduce typing admissions by at least 75%");
+            QVERIFY2(openFrames * 4 <= levelGateFrames, "Speech detection did not reduce noise admissions by at least 75%");
             QVERIFY(levelChange(output, input) < -10);
         } else {
             QVERIFY2(retention > 0.985, "Automatic activation clipped speech frames");
             QVERIFY(rms(body(output)) > rms(body(clean)) * 0.25);
+            double strongest = 0;
+            for (size_t i = beginSpeech; i < endSpeech; i += 480)
+                strongest = std::max(strongest, energy(std::span(clean).subspan(i, 480)));
+            int missing = 0, longest = 0;
+            QStringList missingTimes;
+            for (size_t i = beginSpeech; i < endSpeech; i += 480) {
+                const bool audible = energy(std::span(clean).subspan(i, 480)) >= strongest * std::pow(10.0, -25.0 / 10.0);
+                if (audible && !admitted[(i + suppressionDelay) / 960]) missingTimes.append(QString::number((i - beginSpeech) * 1000 / rate));
+                missing = audible && !admitted[(i + suppressionDelay) / 960] ? missing + 1 : 0;
+                longest = std::max(longest, missing);
+            }
+            QVERIFY2(longest <= 2, qPrintable(QString("Automatic activation omitted %1 ms inside speech at %2").arg(longest * 10).arg(missingTimes.join(","))));
         }
+    }
+    void quietWordOnsets_data() {
+        QTest::addColumn<int>("channels"); QTest::addColumn<int>("suppression");
+        for (const int channels : {1, 2}) for (const int suppression : {0, 50})
+            QTest::newRow(qPrintable(QString("%1ch-%2percent").arg(channels).arg(suppression))) << channels << suppression;
+    }
+    void repeatedSpeech_data() { quietWordOnsets_data(); }
+    void repeatedSpeech() {
+        QFETCH(int, channels); QFETCH(int, suppression);
+        const auto& speech = sources_["speech1"];
+        const auto gain = 0.16 / peak(speech);
+        Samples input(33 * rate, 0);
+        for (const int start : {3, 13, 23})
+            for (size_t i = 0; i < speech.size(); ++i)
+                input[size_t(start * rate) + i] = float(speech[i] * gain);
+        const auto clean = input;
+        squad::AudioProcessor processor(rate, {0, 0, 0, true, true});
+        for (auto& sample : input) sample = processor.process(sample);
+        squad::VoiceMixer sender(channels);
+        sender.setVoiceActivation({true, true, -45}).setNoiseSuppression(suppression / 100.0);
+        std::vector<bool> admitted(input.size() / 960, false);
+        for (size_t offset = 0; offset < input.size(); offset += 960) {
+            Samples frame(size_t(960 * channels));
+            for (size_t i = 0; i < 960; ++i) for (int channel = 0; channel < channels; ++channel)
+                frame[i * size_t(channels) + size_t(channel)] = input[offset + i];
+            const auto packets = sender.encode(frame, rate);
+            for (qsizetype p = 0; p < packets.size(); ++p)
+                admitted[offset / 960 - size_t(packets.size() - 1 - p)] = true;
+        }
+        const auto delay = suppression ? size_t(squad::VoiceMixer::suppressionDelaySamples()) : 0;
+        double strongest = 0;
+        for (size_t i = 0; i < clean.size(); i += 480)
+            strongest = std::max(strongest, energy(std::span(clean).subspan(i, 480)));
+        for (const int start : {3, 13, 23}) {
+            int missing = 0, longest = 0;
+            double retained = 0, total = 0;
+            for (size_t i = size_t(start * rate); i < size_t((start + 8) * rate); i += 480) {
+                const auto power = energy(std::span(clean).subspan(i, 480));
+                const bool sent = admitted[(i + delay) / 960];
+                missing = !sent && power >= strongest * std::pow(10.0, -25.0 / 10.0) ? missing + 1 : 0;
+                longest = std::max(longest, missing);
+                retained += sent ? power : 0;
+                total += power;
+            }
+            qInfo() << "burst" << start << "retained" << retained / total << "missing ms" << longest * 10;
+            QVERIFY2(longest <= 2 && retained / total > 0.985, "Repeated live speech loses audible syllables");
+        }
+    }
+    void quietWordOnsets() {
+        QFETCH(int, channels); QFETCH(int, suppression);
+        // A fresh detector passes this onset. Reuse the same stream across
+        // loud and quiet speech, as a live microphone does.
+        Samples input(length * 4, 0);
+        for (size_t part = 0; part < 4; ++part) {
+            const auto& speech = sources_[part < 2 ? "speech1" : "speech3"];
+            const auto gain = std::pow(10.0, (part % 2 ? -30.0 : -6.0) / 20.0) / peak(speech);
+            for (size_t i = 0; i < speech.size(); ++i) input[part * length + beginSpeech + i] = float(speech[i] * gain);
+        }
+        squad::AudioProcessor processor(rate, {0, 0, 0, true, true});
+        const auto reference = input;
+        for (auto& sample : input) sample = processor.process(sample);
+        squad::VoiceMixer sender(channels);
+        sender.setVoiceActivation({true, true, -45}).setNoiseSuppression(suppression / 100.0);
+        std::vector<bool> admitted(input.size() / 960, false);
+        for (size_t offset = 0; offset < input.size(); offset += 960) {
+            Samples frame(size_t(960 * channels));
+            for (size_t i = 0; i < 960; ++i) for (int channel = 0; channel < channels; ++channel)
+                frame[i * size_t(channels) + size_t(channel)] = input[offset + i];
+            const auto packets = sender.encode(frame, rate);
+            for (qsizetype p = 0; p < packets.size(); ++p)
+                admitted[offset / 960 - size_t(packets.size() - 1 - p)] = true;
+        }
+        const auto delay = suppression ? size_t(squad::VoiceMixer::suppressionDelaySamples()) : 0;
+        double strongest = 0;
+        for (size_t offset = 3 * length + beginSpeech; offset < 3 * length + endSpeech; offset += 480)
+            strongest = std::max(strongest, energy(std::span(reference).subspan(offset, 480)));
+        int missing = 0, longest = 0;
+        for (size_t offset = 3 * length + beginSpeech; offset < 3 * length + endSpeech; offset += 480) {
+            const bool audible = energy(std::span(reference).subspan(offset, 480)) >= strongest * std::pow(10.0, -25.0 / 10.0);
+            missing = audible && !admitted[(offset + delay) / 960] ? missing + 1 : 0;
+            longest = std::max(longest, missing);
+        }
+        QVERIFY2(longest <= 2, qPrintable(QString("Automatic activation omitted %1 ms of a quiet word onset").arg(longest * 10)));
     }
     void automaticInput_data() {
         QTest::addColumn<QString>("speaker"); QTest::addColumn<int>("rumbleHz");
@@ -514,7 +606,8 @@ private slots:
         add("silence", {}, {}, 0, 0);
         const auto config = manifest_.value("extended").toObject();
         const auto levels = extended_ ? config.value("mixture_peak_dbfs").toArray() : QJsonArray{QJsonValue(0)};
-        const auto snrs = extended_ ? config.value("snr_db").toArray() : manifest_.value("snr_db").toArray();
+        const auto snrs = suite_ == "denoise" ? QJsonArray{0, 10}
+            : extended_ ? config.value("snr_db").toArray() : manifest_.value("snr_db").toArray();
         QVERIFY(!levels.isEmpty() && !snrs.isEmpty());
         QSet<int> uniqueLevels, uniqueSnrs;
         for (const auto value : levels) {
@@ -528,7 +621,9 @@ private slots:
         for (const auto level : levels) {
             for (const auto& speaker : speech_) add(speaker + "-clean", speaker, {}, 0, level.toInt());
             for (const auto& noise : interference_) {
+                if (suite_ == "denoise" && categories_[noise] != "keyboard" && noise != "breathing-deep") continue;
                 add(noise + "-only", {}, noise, 0, level.toInt());
+                if (suite_ == "denoise" && level.toInt() != -6) continue;
                 for (const auto& speaker : speech_) for (const auto snr : snrs)
                     add(speaker + "-" + noise + "-snr" + QString::number(snr.toInt()), speaker, noise, snr.toInt(), level.toInt());
             }
@@ -572,18 +667,19 @@ private slots:
         row.insert("interference_rms_dbfs", 20 * std::log10(std::max(rms(body(noise)), 1e-12)));
         if (extended_ && id != "silence") row.insert("target_peak_dbfs", peakDb);
         if (!speaker.isEmpty() && !interference.isEmpty()) row.insert("input_snr_db", levelChange(body(reference), body(noise)));
-        const auto wet = rawSuppression(input);
         Samples baseline;
         QJsonArray variants;
+        const auto saveCase = qScopeGuard([&] { row.insert("variants", variants); results_.append(row); });
         const double inputSiSdr = speaker.isEmpty() ? 0 : siSdr(body(input), body(reference));
         for (int strength : {0, 50, 100}) {
             squad::VoiceMixer sender, receiver;
             sender.setNoiseSuppression(strength / 100.0);
             receiver.setAutomatic(false);
             Samples padded = input; padded.resize(input.size() + 3 * 960, 0);
-            Samples decoded; decoded.reserve(padded.size());
+            Samples decoded, observed; decoded.reserve(padded.size()); observed.reserve(padded.size());
             for (size_t offset = 0; offset < padded.size(); offset += 960) {
-                const auto packets = sender.encode(std::span(padded).subspan(offset, 960), rate);
+                const auto packets = sender.encode(std::span(padded).subspan(offset, 960), rate, true, {},
+                    [&](auto, auto processed) { observed.insert(observed.end(), processed.begin(), processed.end()); });
                 QCOMPARE(packets.size(), 1);
                 const qint64 now = qint64(offset / 48);
                 QVERIFY(receiver.receive("speaker", packets.first(), now));
@@ -592,30 +688,53 @@ private slots:
                 decoded.insert(decoded.end(), frame.begin(), frame.end());
             }
             QVERIFY(sender.encode(std::span(input).first(960), rate, false).isEmpty());
-            const auto delay = codecDelay_ + (strength ? 960 : 0);
+            const auto delay = codecDelay_ + (strength ? squad::VoiceMixer::suppressionDelaySamples() : 0);
             Samples aligned(decoded.begin() + delay, decoded.begin() + delay + length);
             QVERIFY(std::all_of(aligned.begin(), aligned.end(), [](float value) { return std::isfinite(value) && std::abs(value) <= 0.95001; }));
             if (!strength) baseline = aligned;
             QJsonObject variant{{"suppression_percent", strength}, {"pipeline_peak", peak(aligned)},
                 {"pipeline_level_vs_bypass_db", levelChange(body(aligned), body(baseline))}};
-            Samples raw(length);
-            for (size_t i = 0; i < raw.size(); ++i) raw[i] = float(input[i] * (1 - strength / 100.0) + wet[i] * (strength / 100.0));
+            const auto saveVariant = qScopeGuard([&] { variants.append(variant); });
+            const auto filterDelay = strength ? squad::VoiceMixer::suppressionDelaySamples() : 0;
+            Samples raw(observed.begin() + filterDelay, observed.begin() + filterDelay + length);
             if (!speaker.isEmpty()) {
                 variant.insert("precodec_si_sdr_db", siSdr(body(raw), body(reference)));
                 if (!interference.isEmpty()) {
                     const auto improvement = siSdr(body(raw), body(reference)) - inputSiSdr;
                     variant.insert("precodec_si_sdr_gain_db", improvement);
+                    if (categories_[interference] == "keyboard" && snr >= 0 && strength == 100)
+                        QVERIFY2(improvement >= 0, "Keyboard filtering degraded the clean speech reference");
                     if (!extended_ && categories_[interference] == "synthetic-transient" && strength == 100)
                         QVERIFY2(improvement >= 0, "Full suppression degraded a speech/click regression fixture");
                 }
                 if (interference.isEmpty()) {
                     const auto retained = levelChange(body(aligned), body(baseline));
                     const auto similarity = correlation(body(aligned), body(baseline));
+                    const auto filterRetained = levelChange(body(raw), body(reference));
+                    const auto filterSimilarity = correlation(body(raw), body(reference));
+                    variant.insert("clean_precodec_correlation", filterSimilarity);
+                    variant.insert("clean_precodec_level_change_db", filterRetained);
                     variant.insert("clean_pipeline_correlation", similarity);
-                    const bool retainedSpeech = retained > -12 && retained < 6 && similarity > 0.6;
+                    double strongestWindow = 0, weakestWindowDb = 0;
+                    for (int offset = beginSpeech; offset < endSpeech; offset += 480)
+                        strongestWindow = std::max(strongestWindow, energy(std::span(reference).subspan(offset, 480)));
+                    for (int offset = beginSpeech; offset < endSpeech; offset += 480) {
+                        const auto original = std::span(reference).subspan(offset, 480);
+                        // Sentence-wide metrics can hide lost consonants and word endings.
+                        if (energy(original) >= strongestWindow * std::pow(10.0, -25.0 / 10.0))
+                            weakestWindowDb = std::min(weakestWindowDb,
+                                levelChange(std::span(raw).subspan(offset, 480), original));
+                    }
+                    variant.insert("clean_weakest_window_db", weakestWindowDb);
+                    if (strength == defaultSuppression_)
+                        QVERIFY2(weakestWindowDb > -6.5, qPrintable(QString("Default suppression lost %1 dB in a clean 10 ms detail")
+                            .arg(-weakestWindowDb)));
+                    const bool retainedSpeech = filterRetained > -3 && filterRetained < 3 && filterSimilarity > 0.97;
                     variant.insert("clean_retention_guard_passed", retainedSpeech);
-                    // Preserve the original regression gate. Uncalibrated quiet/new
-                    // recordings in the stress matrix report degradation explicitly.
+                    QVERIFY2(retainedSpeech, qPrintable(QString("Clean speech filter changed level by %1 dB, correlation %2")
+                        .arg(filterRetained).arg(filterSimilarity)));
+                    // Opus can change phase. Retain the separate decoded regression
+                    // guard without mistaking codec changes for filter distortion.
                     if (!extended_) {
                         QVERIFY2(retained > -12 && retained < 6, qPrintable(QString("Clean speech level changed by %1 dB").arg(retained)));
                         QVERIFY2(similarity > 0.6, qPrintable(QString("Clean speech correlation %1").arg(similarity)));
@@ -623,6 +742,9 @@ private slots:
                 }
             } else if (!interference.isEmpty()) {
                 variant.insert("precodec_level_vs_input_db", levelChange(body(raw), body(input)));
+                if (categories_[interference] == "keyboard" && strength == 100)
+                    QVERIFY2(levelChange(body(raw), body(input)) < -20,
+                        qPrintable(QString("Keyboard-only reduction %1 dB, expected at least 20 dB").arg(-levelChange(body(raw), body(input)))));
                 QVERIFY(levelChange(body(aligned), body(baseline)) < 6);
                 if (!extended_ && categories_[interference] == "synthetic-transient" && strength == 100)
                     QVERIFY2(levelChange(body(aligned), body(baseline)) < -10, "Synthetic clicks must be attenuated by at least 10 dB");
@@ -633,19 +755,23 @@ private slots:
                 QVERIFY(writeWav(path("app-" + QString::number(strength)), aligned));
                 QVERIFY(writeWav(path("precodec-" + QString::number(strength)), raw));
             }
-            variants.append(variant);
         }
-        row.insert("variants", variants); results_.append(row);
     }
     void cleanupTestCase() {
         if (outputDir_.isEmpty()) return;
         QJsonObject report{{"version", 2}, {"fixture_manifest_sha256", QString::fromLatin1(manifestHash_)},
-            {"suite", extended_ ? "extended" : "smoke"}, {"shard", shard_}, {"shards", shards_},
+            {"suite", suite_}, {"shard", shard_}, {"shards", shards_},
             {"total_case_count", totalCases_}, {"selected_case_count", selectedCases_},
             {"sample_rate", rate}, {"opus_version", opus_get_version_string()}, {"opus_delay_samples", codecDelay_},
-            {"rnnoise_delay_samples", 960}, {"measurement_interval_seconds", QJsonArray({2, 10})},
+            {"rnnoise_delay_samples", 960},
+#ifdef SQUADSPEAK_DENOISE_CANDIDATE
+            {"denoiser", "DeepFilterNet3 local candidate"},
+#else
+            {"denoiser", "RNNoise"},
+#endif
+            {"suppression_delay_samples", squad::VoiceMixer::suppressionDelaySamples()}, {"measurement_interval_seconds", QJsonArray({2, 10})},
             {"echo_measurement_interval_seconds", QJsonArray({5, 9})},
-            {"scope", "Artificial mixtures. Precodec SI-SDR is library-level RNNoise, not perceived quality or speaker identity. Pipeline levels use the actual app codec/mixer with output normalization off. Passed guards are not product audio acceptance."},
+            {"scope", "Artificial mixtures. Precodec SI-SDR observes the app capture filter before encoding, not perceived quality or speaker identity. Pipeline levels use the actual app codec/mixer with output normalization off. Passed guards are not product audio acceptance."},
             {"cases", results_}, {"echo_cases", echoResults_}, {"input_cases", inputResults_}};
         QSaveFile output(outputDir_ + "/report.json");
         QVERIFY(output.open(QIODevice::WriteOnly));

@@ -410,6 +410,14 @@
             <source>Auto also checks for speech, not just volume.</source>
             <translation>Modaliteti automatik kontrollon edhe të folurin, jo vetëm volumin.</translation>
         </message>
+        <message>
+            <source>Minimum</source>
+            <translation>Minimumi</translation>
+        </message>
+        <message>
+            <source>Auto will not lower the voice threshold below this level.</source>
+            <translation>Modaliteti automatik nuk do ta ulë pragun e zërit nën këtë nivel.</translation>
+        </message>
     </context>
     <context>
         <name>Channels</name>
@@ -2865,16 +2873,16 @@
             <translation>Spektri i frekuencës në herc dhe dBFS</translation>
         </message>
         <message>
-            <source>After gain / cuts</source>
-            <translation>Pas amplifikimit dhe prerjeve të frekuencës</translation>
+            <source>Processed</source>
+            <translation>Përpunuar</translation>
         </message>
         <message>
             <source>Input: sound picked up by the microphone before gain and frequency cuts. Left is bass, right is treble; higher is louder.</source>
             <translation>Hyrja: zëri që merret nga mikrofoni përpara uljes së fitimit dhe frekuencës. Majtas është bas, djathtas është treshe; më e lartë është më e zhurmshme.</translation>
         </message>
         <message>
-            <source>After gain / cuts: the measured spectrum after microphone gain and frequency filters. It does not identify a speaker.</source>
-            <translation>Pas fitimit / shkurtimeve: spektri i matur pas fitimit të mikrofonit dhe filtrave të frekuencës. Nuk identifikon një folës.</translation>
+            <source>After all filters, before transmission.</source>
+            <translation>Pas të gjithë filtrave, para transmetimit.</translation>
         </message>
         <message>
             <source>Filter curve: the configured change in level at each frequency, read on the right dB scale. It excludes noise reduction and voice activation.</source>

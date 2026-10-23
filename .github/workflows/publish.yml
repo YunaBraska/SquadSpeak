@@ -81,8 +81,6 @@ jobs:
 
           Automated platform and packaged-startup checks have passed for this revision. Physical microphone/headset observations, Windows 10 hardware execution and Apple notification/Focus checks follow this release. Do not interpret native Server 2022 tests as Windows 10 hardware certification. See docs/roadmap.md for remaining load and device qualification work.
 
-          Known Markdown limitation: escaped characters inside an image caption can make Qt display that image more than once. Plain image captions work; the original message and attachment are retained.
-
           Mobile packages and Supporter purchases are not part of this release. Updates never install without your confirmation.
           squadspeak-third-party-sources.tar.gz contains the pinned dependency sources and build patches. The matching application source and build scripts are linked below.
           SHA256SUMS verifies file integrity, not publisher identity.

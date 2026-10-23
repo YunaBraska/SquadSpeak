@@ -410,6 +410,14 @@
             <source>Auto also checks for speech, not just volume.</source>
             <translation>Автоматичний режим також розпізнає мовлення, а не лише гучність.</translation>
         </message>
+        <message>
+            <source>Minimum</source>
+            <translation>Мінімум</translation>
+        </message>
+        <message>
+            <source>Auto will not lower the voice threshold below this level.</source>
+            <translation>Автоматичний режим не знизить поріг голосу нижче цього рівня.</translation>
+        </message>
     </context>
     <context>
         <name>Channels</name>
@@ -2865,16 +2873,16 @@
             <translation>Спектр частот у герцах і dBFS</translation>
         </message>
         <message>
-            <source>After gain / cuts</source>
-            <translation>Після підсилення та частотних фільтрів</translation>
+            <source>Processed</source>
+            <translation>Оброблено</translation>
         </message>
         <message>
             <source>Input: sound picked up by the microphone before gain and frequency cuts. Left is bass, right is treble; higher is louder.</source>
             <translation>Вхід: звук, який вловлює мікрофон до підсилення та частотних зрізів. Ліворуч - низькі частоти, праворуч - високі; вище означає гучніше.</translation>
         </message>
         <message>
-            <source>After gain / cuts: the measured spectrum after microphone gain and frequency filters. It does not identify a speaker.</source>
-            <translation>Після підсилення та зрізів: виміряний спектр після підсилення мікрофона та частотних фільтрів. Він не ідентифікує мовця.</translation>
+            <source>After all filters, before transmission.</source>
+            <translation>Після всіх фільтрів, перед передаванням.</translation>
         </message>
         <message>
             <source>Filter curve: the configured change in level at each frequency, read on the right dB scale. It excludes noise reduction and voice activation.</source>
