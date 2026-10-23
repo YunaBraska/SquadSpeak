@@ -69,8 +69,9 @@ jobs:
   build:
     name: "🍎 ${{ matrix.runner }}"
     runs-on: ${{ matrix.runner }}
-    # Reserve time for native tests after a cold dependency build.
-    timeout-minutes: 90
+    # Intel cold build: 85 min, tests: 22 min, packaging: 4 min.
+    # Reserve the remaining time for setup, caches and runner variation.
+    timeout-minutes: 135
     strategy:
       fail-fast: false
       matrix:
