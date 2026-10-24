@@ -772,7 +772,7 @@ if(BUILD_TESTING)
         # Only network contracts use the root exemption. CTest stays unprivileged.
         find_program(SQUAD_SUDO sudo REQUIRED)
         set(network_test_launcher "${SQUAD_SUDO}" -n
-            --preserve-env=QT_QPA_PLATFORM,QT_QUICK_BACKEND,QT_QUICK_CONTROLS_STYLE,SQUAD_TEST_ARTIFACTS,QV4_JIT_CALL_THRESHOLD,QV4_GC_TIMELIMIT,SQUAD_SOAK_CLIENTS,SQUAD_SOAK_SPEAKERS,SQUAD_SOAK_SECONDS
+            --preserve-env=QT_QPA_PLATFORM,QT_QUICK_BACKEND,QT_QUICK_CONTROLS_STYLE,SQUAD_TEST_ARTIFACTS,QV4_JIT_CALL_THRESHOLD,QV4_GC_TIMELIMIT,SQUAD_SOAK_CLIENTS,SQUAD_SOAK_SPEAKERS,SQUAD_SOAK_SECONDS,SQUAD_SOAK_PACING
             env "QT_LOGGING_RULES=")
     endif()
     set(channel_discovery_file "${CMAKE_CURRENT_BINARY_DIR}/channel_contract_discovered.cmake")

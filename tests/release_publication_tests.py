@@ -260,6 +260,31 @@ else: sys.exit(7)
                 self.assertNotIn(private_key, result.stdout + result.stderr)
                 self.assertFalse((self.root / "update-key.der").exists())
 
+    def test_only_intel_ci_requests_delivery_paced_audio(self):
+        workflow = (self.repo / ".github/workflows/verify.yml").read_text()
+        command = re.search(r"^  macos:\n.*?^      test_command: \|\n((?:        [^\n]*\n)+)",
+                            workflow, re.MULTILINE | re.DOTALL)
+        self.assertIsNotNone(command)
+        script = "\n".join(line[8:] for line in command[1].splitlines())
+        (self.root / "tests").mkdir()
+        (self.root / "tests/macos-ci.sh").write_text(
+            "#!/bin/sh\nexec \"$TEST_PYTHON\" -c 'import json, os; "
+            "print(json.dumps({k: v for k, v in os.environ.items() if k.startswith(\"SQUAD_SOAK_\")}))'\n")
+        for architecture in ("X64", "ARM64"):
+            with self.subTest(architecture=architecture):
+                env = {key: value for key, value in os.environ.items() if not key.startswith("SQUAD_SOAK_")}
+                env.update(RUNNER_ARCH=architecture, TEST_PYTHON=sys.executable)
+                result = subprocess.run(["sh", "-eu", "-c", script], cwd=self.root, env=env,
+                                        capture_output=True, text=True, timeout=10)
+                self.assertEqual(result.returncode, 0, result.stderr)
+                expected = {"SQUAD_SOAK_CLIENTS": "32", "SQUAD_SOAK_SPEAKERS": "2",
+                            "SQUAD_SOAK_PACING": "delivery"} if architecture == "X64" else {}
+                self.assertEqual(json.loads(result.stdout), expected)
+        # The hosted network launcher clears unlisted environment variables.
+        preserved = re.search(r"--preserve-env=([^\s]+)",
+                              (self.repo / "CMakeLists.txt").read_text())[1].split(",")
+        self.assertIn("SQUAD_SOAK_PACING", preserved)
+
     def test_network_launcher_keeps_function_inventory_and_resource_guards(self):
         executable = self.root / "network contract"
         executable.write_text("#!" + sys.executable + "\n" + '''import sys

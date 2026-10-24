@@ -371,11 +371,13 @@ SQUAD_VIDEO_SOAK_SECONDS=120 build/local/video_tests roundTripAndQualityChanges:
 Audio accepts 2-1800 seconds. Video accepts 0-1800, where zero keeps the normal
 short test. Audio uses 64 clients and four simultaneous senders by default.
 `SQUAD_SOAK_SPEAKERS` accepts 2 up to the selected client count to measure greater overlap.
-`SQUAD_SOAK_CLIENTS` accepts 8, 32 or 64. Eight clients provide a smaller control
+`SQUAD_SOAK_CLIENTS` accepts 8-256. Eight clients provide a smaller control
 for distinguishing simultaneous-speaker load from distribution to many listeners.
-The hosted Intel workflow uses 32 clients
-and two simultaneous senders. All source-to-receiver bindings, mono/stereo rows,
-delayed callbacks and the original delivery/playout thresholds remain checked.
+The hosted Intel workflow uses 32 clients and two simultaneous senders with
+`SQUAD_SOAK_PACING=delivery`. It waits for every listener before sending the next
+frame and requires every packet, including the final frame, within five seconds.
+All source-to-receiver bindings, mono/stereo rows and delayed callbacks remain
+checked. This mode proves complete delivery and decoding, not realtime capacity.
 This fixture setting does not restrict the application or certify greater overlap.
 Set `QTEST_FUNCTION_TIMEOUT` above the requested duration plus setup
 and teardown; Qt Test otherwise stops each function after 300 seconds.
@@ -388,7 +390,8 @@ so simulated clients do not share the host's global sender. Neither fixture
 measures acoustic latency.
 
 The 64-client audio test keeps its 90% real-time playout threshold in
-uninstrumented builds, both with normal scheduling and 45 ms delays to capture
+uninstrumented builds with the default `SQUAD_SOAK_PACING=realtime`, both with
+normal scheduling and 45 ms delays to capture
 and playback callbacks. Network processing continues during those delays.
 Its source follows elapsed sample time. Its simulated output matches the app's
 80 ms sink and 10 ms refill cadence, with underruns counted rather than hidden.
