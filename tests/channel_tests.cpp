@@ -79,8 +79,8 @@ struct Device final {
                 return false;
             }
             const auto port = reservation.serverPort();
-            if (!channel.startService(address, port)) continue;
             reservation.close();
+            if (!channel.startService(address, port)) continue;
             return channel.listen(address, port);
         }
         qWarning() << "Unable to find a TCP/UDP media port after 32 attempts:" << channel.status();
