@@ -83,10 +83,11 @@ TestCase {
         property url verificationUrl: "https://github.com/login/device"
         property date expiresAt: new Date(2030, 0, 1)
         property string status: ""
-        readonly property url purchaseUrl: "https://github.com/sponsors/YunaBraska"
+        property url purchaseUrl: "https://github.com/sponsors/YunaBraska"
         function reset() {
             configured = true; active = false; signedIn = false; busy = false; pending = false
             account = ""; userCode = ""; status = ""
+            purchaseUrl = "https://github.com/sponsors/YunaBraska"
         }
         function signIn() { pending = true; userCode = "ABCD-EFGH"; status = ""; return true }
         function cancelSignIn() { pending = false; userCode = ""; return true }
@@ -934,6 +935,9 @@ TestCase {
         mouseClick(findChild(view, "supportLink"))
         tryCompare(openedLinks, "count", 1)
         compare(openedLinks.signalArguments[0][0], licenseDisplay.purchaseUrl.toString())
+        licenseDisplay.purchaseUrl = supporterLicense.purchaseUrl
+        verify(!findChild(view, "supportLink").visible)
+        verify(findChild(view, "signInGithub").visible)
         if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/supporter-" + data.language + ".png"))
     }
 

@@ -176,7 +176,7 @@ private slots:
         QVERIFY(QDir(dir.path()).entryList(QDir::Files).isEmpty());
 #else
         QVERIFY(license.configured()); QVERIFY(License::directDistribution());
-        QCOMPARE(License::purchaseUrl().host(), "github.com");
+        QVERIFY(License::purchaseUrl().isEmpty());
 #endif
     }
 #if !SQUADSPEAK_STORE_BUILD
