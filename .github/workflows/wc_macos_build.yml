@@ -127,7 +127,7 @@ jobs:
             if test "$identity" = - || test -z "$NOTARY_KEY" || test -z "$NOTARY_KEY_ID" || test -z "$NOTARY_ISSUER"; then
               printf 'Notarization needs a Developer ID certificate and all three notary credentials.\n' >&2; exit 1
             fi
-            printf '%s' "$NOTARY_KEY" | base64 -D > "$RUNNER_TEMP/native-build.p8"
+            printf '%s' "$NOTARY_KEY" > "$RUNNER_TEMP/native-build.p8"
             xcrun notarytool store-credentials native-build --keychain "$keychain" \
               --key "$RUNNER_TEMP/native-build.p8" --key-id "$NOTARY_KEY_ID" --issuer "$NOTARY_ISSUER"
             profile=native-build

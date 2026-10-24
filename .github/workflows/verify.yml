@@ -187,7 +187,7 @@ jobs:
         env:
           RELEASE_MODE: ${{ steps.mode.outputs.release_mode }}
           UPDATE_PUBLIC_KEY: ${{ vars.SQUADSPEAK_UPDATE_PUBLIC_KEY }}
-          UPDATE_PRIVATE_KEY: ${{ secrets.SQUADSPEAK_UPDATE_PRIVATE_KEY }}
+          UPDATE_PRIVATE_KEY: ${{ steps.mode.outputs.release_mode == 'release' && secrets.SQUADSPEAK_UPDATE_PRIVATE_KEY || '' }}
         shell: sh
         run: |
           set -eu
@@ -335,12 +335,12 @@ jobs:
       sign_updates: ${{ needs.prepare.outputs.release_mode == 'release' }}
       update_public_key: ${{ vars.SQUADSPEAK_UPDATE_PUBLIC_KEY }}
     secrets:
-      MACOS_SIGNING_CERTIFICATE: ${{ secrets.MACOS_SIGNING_CERTIFICATE }}
-      MACOS_SIGNING_CERTIFICATE_PASSWORD: ${{ secrets.MACOS_SIGNING_CERTIFICATE_PASSWORD }}
-      MACOS_NOTARY_KEY: ${{ secrets.MACOS_NOTARY_KEY }}
-      MACOS_NOTARY_KEY_ID: ${{ secrets.MACOS_NOTARY_KEY_ID }}
-      MACOS_NOTARY_ISSUER_ID: ${{ secrets.MACOS_NOTARY_ISSUER_ID }}
-      UPDATE_PRIVATE_KEY: ${{ secrets.SQUADSPEAK_UPDATE_PRIVATE_KEY }}
+      MACOS_SIGNING_CERTIFICATE: ${{ needs.prepare.outputs.release_mode == 'release' && secrets.MACOS_SIGNING_CERTIFICATE || '' }}
+      MACOS_SIGNING_CERTIFICATE_PASSWORD: ${{ needs.prepare.outputs.release_mode == 'release' && secrets.MACOS_SIGNING_CERTIFICATE_PASSWORD || '' }}
+      MACOS_NOTARY_KEY: ${{ needs.prepare.outputs.release_mode == 'release' && secrets.MACOS_NOTARY_KEY || '' }}
+      MACOS_NOTARY_KEY_ID: ${{ needs.prepare.outputs.release_mode == 'release' && secrets.MACOS_NOTARY_KEY_ID || '' }}
+      MACOS_NOTARY_ISSUER_ID: ${{ needs.prepare.outputs.release_mode == 'release' && secrets.MACOS_NOTARY_ISSUER_ID || '' }}
+      UPDATE_PRIVATE_KEY: ${{ needs.prepare.outputs.release_mode == 'release' && secrets.SQUADSPEAK_UPDATE_PRIVATE_KEY || '' }}
 
   windows:
     needs: prepare
