@@ -14,7 +14,7 @@ Download the desktop packages from [Releases](https://github.com/YunaBraska/Squa
 The release notes distinguish automated package checks from device tests that
 still need real hardware. See [feature status and known limitations](docs/roadmap.md).
 
-- **macOS:** Native Apple Silicon and Intel builds target macOS 13 or newer. Apple Silicon does not need Rosetta. Packages currently use an ad-hoc signature; Apple notarization is pending.
+- **macOS:** Native Apple Silicon and Intel builds target macOS 13 or newer. Apple Silicon does not need Rosetta. Snapshot packages use an ad-hoc signature. Stable releases use Developer ID signing, notarization and signed architecture-specific update feeds.
 - **Linux:** The current package targets Ubuntu 26.04. Under Wayland, screen sharing currently captures the whole screen; individual windows follow later. Global push-to-talk depends on desktop support; voice activation and the app's own push-to-talk control remain available.
 - **Windows:** Native x86_64 archive for Windows 10 version 1903 or newer, with runtime libraries included. Screen audio requires Windows 11 or Server 2022; Windows 10 retains screen video. CI currently runs on Server 2022; Windows 10 runtime verification and publisher signing are pending.
 - **Android, iPhone and iPad:** Follow the desktop release; mobile packages are not ready yet.
