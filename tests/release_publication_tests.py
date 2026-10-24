@@ -475,6 +475,79 @@ elif args[0] == "wait": print(0)
                      BUILT_IMAGE=image, TEST_ARTIFACTS=str(artifacts)), capture_output=True, text=True, timeout=20)
         self.assertEqual(result.returncode, 0, result.stderr)
 
+    def test_macos_package_signs_nested_helpers_and_requires_accepted_notarization(self):
+        boundary = "#!" + sys.executable + "\n" + '''import json, os, pathlib, sys
+name = pathlib.Path(sys.argv[0]).name
+args = sys.argv[1:]
+with open(os.environ["TRACE"], "a") as output:
+    output.write(json.dumps([name] + args) + "\\n")
+scenario = os.environ["SCENARIO"]
+if name == "uname": print("arm64")
+elif name == "cmake":
+    app = pathlib.Path(args[args.index("--prefix") + 1]) / "squadspeak.app"
+    (app / "Contents/Resources").mkdir(parents=True)
+    framework = app / "Contents/Frameworks/Sparkle.framework/Versions/B"
+    for path in ("XPCServices/Installer.xpc", "XPCServices/Downloader.xpc", "Updater.app"):
+        (framework / path).mkdir(parents=True)
+    (framework / "Autoupdate").touch()
+elif name == "codesign" and scenario == "signing-failure": sys.exit(9)
+elif name == "ditto":
+    destination = pathlib.Path(args[-1])
+    if "-x" in args: destination.mkdir(parents=True, exist_ok=True)
+    else: destination.write_bytes(b"archive")
+elif name == "python3":
+    if not args[0].endswith("check_macos_bundle.py"):
+        os.execv(sys.executable, [sys.executable] + args)
+elif name == "xcrun" and args[:2] == ["notarytool", "submit"]:
+    if scenario == "submit-failure": sys.exit(7)
+    if scenario == "malformed": print("not json")
+    else: print(json.dumps({"id": "submission-1", "status": "Accepted" if scenario == "log-failure" else scenario}))
+elif name == "xcrun" and args[:2] == ["notarytool", "log"]:
+    if scenario == "log-failure": sys.exit(8)
+    pathlib.Path(args[-1]).write_text(json.dumps({"status": scenario, "issues": []}))
+'''
+        for name in ("uname", "cmake", "codesign", "macdeployqt", "ditto", "python3", "xcrun"):
+            path = self.root / "bin" / name
+            path.write_text(boundary)
+            path.chmod(0o700)
+        for scenario in ("Accepted", "Invalid", "In Progress", "malformed", "submit-failure",
+                         "log-failure", "signing-failure"):
+            with self.subTest(scenario=scenario):
+                trace = self.root / "trace.jsonl"
+                trace.unlink(missing_ok=True)
+                build = self.root / scenario
+                result = subprocess.run(["sh", str(self.repo / "tests/macos-ci.sh"),
+                    str(self.root), str(build), "package"], capture_output=True, text=True, timeout=20,
+                    env=dict(os.environ, PATH=str(self.root / "bin") + os.pathsep + os.environ["PATH"],
+                        TRACE=str(trace), SCENARIO=scenario, TMPDIR=str(self.root), RUNNER_TEMP=str(self.root),
+                        MACOS_SIGNING_IDENTITY="Release Test", MACOS_NOTARY_PROFILE="test-profile", SIGN_UPDATES="false"))
+                calls = [json.loads(line) for line in trace.read_text().splitlines()]
+                stapling = [call[1:3] for call in calls if call[0] == "xcrun" and call[1] == "stapler"]
+                if scenario == "Accepted":
+                    self.assertEqual(result.returncode, 0, result.stderr)
+                    self.assertEqual(stapling, [["stapler", "staple"], ["stapler", "validate"]])
+                    signed = [call for call in calls if call[0] == "codesign" and "--sign" in call]
+                    self.assertEqual(len(signed), 4)
+                    self.assertEqual({Path(call[-1]).name for call in signed},
+                                     {"Installer.xpc", "Downloader.xpc", "Autoupdate", "Updater.app"})
+                    for call in signed:
+                        self.assertEqual(call[call.index("--sign") + 1], "Release Test")
+                        self.assertIn("--timestamp", call)
+                        self.assertEqual(call[call.index("--options") + 1], "runtime")
+                    downloader = next(call for call in signed if call[-1].endswith("Downloader.xpc"))
+                    self.assertIn("--preserve-metadata=entitlements", downloader)
+                    deploy = next(i for i, call in enumerate(calls) if call[0] == "macdeployqt")
+                    self.assertTrue(all(calls.index(call) < deploy for call in signed))
+                    log = next(i for i, call in enumerate(calls) if call[1:3] == ["notarytool", "log"])
+                    staple = next(i for i, call in enumerate(calls) if call[1:3] == ["stapler", "staple"])
+                    self.assertLess(log, staple)
+                else:
+                    self.assertNotEqual(result.returncode, 0, result.stdout)
+                    self.assertEqual(stapling, [])
+                if scenario in ("Accepted", "Invalid", "In Progress"):
+                    self.assertEqual(json.loads((build / "artifacts/notarization-log.json").read_text())["status"], scenario)
+                self.assertEqual(list(self.root.glob("squadspeak-package.*")), [])
+
     def test_publish_only_after_all_uploads_succeed(self):
         assets = self.root / "release-assets"
         assets.mkdir()

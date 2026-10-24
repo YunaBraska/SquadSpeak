@@ -163,13 +163,31 @@ if test "${MACOS_SIGNING_IDENTITY:--}" != -; then
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0"><dict><key>com.apple.security.cs.allow-jit</key><true/></dict></plist>
 ENTITLEMENTS
+    # macdeployqt signs the framework, but not Sparkle's nested executables.
+    sparkle="$app/Contents/Frameworks/Sparkle.framework/Versions/B"
+    for helper in XPCServices/Installer.xpc Autoupdate Updater.app; do
+        codesign --force --sign "$MACOS_SIGNING_IDENTITY" --options runtime --timestamp "$sparkle/$helper"
+    done
+    codesign --force --sign "$MACOS_SIGNING_IDENTITY" --options runtime --timestamp \
+        --preserve-metadata=entitlements "$sparkle/XPCServices/Downloader.xpc"
     "$qt_prefix/bin/macdeployqt" "$app" "-sign-for-notarization=$MACOS_SIGNING_IDENTITY"
     codesign --verify --deep --strict "$app"
 fi
 if test -n "${MACOS_NOTARY_PROFILE:-}"; then
     ditto -c -k --sequesterRsrc --keepParent "$app" "$stage_root/notarization.zip"
+    report="$build_root/artifacts/notarization.json"
     xcrun notarytool submit "$stage_root/notarization.zip" --keychain-profile "$MACOS_NOTARY_PROFILE" \
-        --keychain "$RUNNER_TEMP/native-build.keychain-db" --wait --timeout 15m
+        --keychain "$RUNNER_TEMP/native-build.keychain-db" --wait --timeout 15m --output-format json > "$report"
+    submission=$(python3 -c 'import json, sys; print(json.load(open(sys.argv[1]))["id"])' "$report")
+    xcrun notarytool log "$submission" --keychain-profile "$MACOS_NOTARY_PROFILE" \
+        --keychain "$RUNNER_TEMP/native-build.keychain-db" "$build_root/artifacts/notarization-log.json"
+    cat "$build_root/artifacts/notarization-log.json"
+    python3 - "$report" <<'PYNOTARY'
+import json, sys
+status = json.load(open(sys.argv[1]))["status"]
+if status != "Accepted":
+    raise SystemExit("Notarization was not accepted: " + str(status))
+PYNOTARY
     xcrun stapler staple "$app"
     xcrun stapler validate "$app"
 fi
