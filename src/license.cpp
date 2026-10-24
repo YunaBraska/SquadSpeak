@@ -51,7 +51,8 @@ QString License::storageDirectory() {
 }
 bool License::directDistribution() { return !SQUADSPEAK_STORE_BUILD; }
 QUrl License::purchaseUrl() {
-    return directDistribution() ? QUrl("https://github.com/sponsors/YunaBraska/sponsorships?tier_id=665094") : QUrl{};
+    // Checkout stays unavailable until the paid buyer flow is verified.
+    return {};
 }
 QJsonObject License::policy() const {
     auto result = product_;
