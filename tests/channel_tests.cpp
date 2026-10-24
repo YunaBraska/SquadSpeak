@@ -796,8 +796,10 @@ private slots:
         Device b(dir.filePath("b"), "Bea", TlsIdentity::create(), [&] { return now; });
         Device unrelated(dir.filePath("other"), "Other", TlsIdentity::create(), [&] { return now; });
         QVERIFY(host.channel.listen(QHostAddress::LocalHost));
+        DelayedLink senderLink(host.channel.port());
         for (auto* client : {&a, &b, &unrelated}) {
-            QVERIFY(client->join(host.channel));
+            QVERIFY(client->channel.join(host.channel.ownId(), "127.0.0.1",
+                client == &a ? senderLink.port() : host.channel.port()));
             QTRY_VERIFY(!host.channel.requests().isEmpty());
             QVERIFY(host.channel.decide(client->channel.ownId(), true));
             QTRY_VERIFY(client->channel.chatReady());
@@ -823,8 +825,14 @@ private slots:
         QVERIFY(!b.channel.sendChat("also blocked"));
         QVERIFY(b.channel.setPrivateBlocked(conversation, false));
         QTRY_VERIFY(!a.channel.privateBlocked());
+        // Receiving a message does not confirm delivery back to its sender.
+        senderLink.holdReliable = true;
         QVERIFY(a.channel.sendChat("allowed again"));
         QTRY_COMPARE(b.channel.messages().size(), 2);
+        QVERIFY(a.channel.chatPending());
+        QVERIFY(!a.channel.sendChat("Wait for the receipt"));
+        senderLink.holdReliable = false;
+        QTRY_VERIFY(!a.channel.chatPending());
         QVERIFY(b.channel.closeChat(host.channel.ownId()));
         QVERIFY(a.channel.sendChat("Stored while Bea is offline"));
         QTRY_VERIFY(!a.channel.chatPending());
