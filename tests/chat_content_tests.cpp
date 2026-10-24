@@ -16,6 +16,7 @@
 #include <QtConcurrentRun>
 #endif
 #include <QTimer>
+#include <QElapsedTimer>
 #include <QTcpServer>
 #include <QTcpSocket>
 #include <QSignalSpy>
@@ -454,12 +455,45 @@ private slots:
         QTest::newRow("nested complex image") << "![a ![b \\] c](%1) d](%1)" << 1 << "a b ] c d";
         QTest::newRow("marker collision") << "![imageLabelMarker \\] label](%1)" << 1 << "imageLabelMarker ] label";
         QTest::newRow("numeric entity") << "![a &#93; b](%1)" << 1 << "a ] b";
+        QTest::newRow("underscore emphasis") << "![_soft_ and __strong__](%1)" << 1 << "soft and strong";
+        QTest::newRow("strikethrough") << "![~~old~~ new](%1)" << 1 << "old new";
+        QTest::newRow("nested external image") << "![a ![b &amp; c](https://example.org/b.png) d](%1)" << 1 << "a b & c d";
+        QTest::newRow("nested reference image") << "![a ![b &amp; c][nested] d](%1)\n\n[nested]: https://example.org/b.png" << 1 << "a b & c d";
+        QTest::newRow("encoded marker collision") << "![&#105;mageLabelMarker0S &amp; &#105;mageLabelMarker0E](%1)" << 1 << "imageLabelMarker0S & imageLabelMarker0E";
+        QTest::newRow("formatted marker collision") << "![x image**Label**Marker0E**next**](%1)" << 1 << "x imageLabelMarker0Enext";
         QTest::newRow("reference") << "![a \\] label][picture]\n\n[picture]: %1" << 1 << "a ] label";
         QTest::newRow("shortcut") << "![a &amp; b]\n\n[a &amp; b]: %1" << 1 << "a & b";
         QTest::newRow("collapsed") << "![a &amp; b][]\n\n[a &amp; b]: %1" << 1 << "a & b";
         QTest::newRow("repeated complex") << "![a \\] label](%1)![a \\] label](%1)" << 2 << "a ] label|a ] label";
         QTest::newRow("large code example") << "```md\n" + QString("![a \\] label](image.png)\n").repeated(350)
             + "```\n\n![one](%1)" << 1 << "one";
+    }
+    void denseImageLabelsDoNotStallTheChat() {
+        ChatContent content;
+        const auto markdown = QStringLiteral("![a&amp;b](x) ").repeated(1000);
+        QVERIFY(markdown.toUtf8().size() <= 16384);
+        QElapsedTimer elapsed; elapsed.start();
+        const auto html = content.format(markdown);
+        // A generous deadline catches per-image reparsing, not normal runner jitter.
+        QVERIFY2(elapsed.elapsed() < 5000, "A single bounded message must not stall chat rendering for five seconds");
+        QTextDocument rendered; rendered.setHtml(html);
+        QCOMPARE(rendered.toPlainText().count("a&b"), 1000);
+        QVERIFY(!html.contains("<img"));
+    }
+    void imageLabelCorrectionPreservesLiteralSyntax() {
+        ChatContent content;
+        const QStringList literals{
+            "![a &amp; b][missing]", "![a &amp; b][]", "![a &amp; b]",
+            "\\![a &amp; b](x)", "`![a &amp; b](x)`", "```md\n![a &amp; b](x)\n```"
+        };
+        for (const auto& literal : literals) {
+            QTextDocument expected, actual;
+            expected.setMarkdown(literal, QTextDocument::MarkdownFeatures(QTextDocument::MarkdownDialectGitHub)
+                | QTextDocument::MarkdownNoHTML);
+            actual.setHtml(content.format(literal + "\n\n![real &amp; image](x)"));
+            QCOMPARE(actual.toPlainText(), expected.toPlainText() + "\nreal & image");
+            QVERIFY(!actual.toHtml().contains("imageLabelMarker"));
+        }
     }
     void formatKeepsRepeatedImagesAndIgnoresCodeImages() {
         QFETCH(QString, markdown);

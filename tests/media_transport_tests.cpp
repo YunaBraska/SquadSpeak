@@ -667,28 +667,31 @@ private slots:
         connect(&client, &squad::MediaTransport::signaling, &host, [&](const auto& message) { QVERIFY(host.receive(message)); });
         QSignalSpy heard(&client, &squad::MediaTransport::audio);
         QSignalSpy quality(&host, &squad::MediaTransport::quality);
-        QTRY_VERIFY_WITH_TIMEOUT(host.udpActive() && client.udpActive(), 10000);
+        QVERIFY(waitForEvents([&] { return host.udpActive() && client.udpActive(); }, 10000));
         const auto packet = speech();
         SendGate gate;
         QVERIFY(host.send(first, packet));
-        QTRY_VERIFY_WITH_TIMEOUT(gate.entered(), 1000);
+        // Wait at the native send boundary. QtTest's polling sleeps can expire
+        // the 300 ms path lease while this fixture deliberately blocks its sender.
+        QVERIFY(gate.waitForPackets(1));
+        QVERIFY(gate.entered());
         QVERIFY2(!gate.onOwner(), "SRTP send blocks the Qt owner thread");
         for (int i = 0; i < 1000; ++i) QVERIFY(host.send(first, packet));
         gate.release();
-        QTRY_VERIFY_WITH_TIMEOUT(host.udpActive() && client.udpActive(), 3000);
+        QVERIFY(waitForEvents([&] { return host.udpActive() && client.udpActive(); }, 3000));
         QVERIFY(host.send(second, packet));
-        QTRY_VERIFY_WITH_TIMEOUT(std::any_of(heard.begin(), heard.end(), [](const auto& event) {
-            return event.first().toString() == second;
-        }), 3000);
+        QVERIFY(waitForEvents(&client, &squad::MediaTransport::audio, [&] {
+            return std::any_of(heard.begin(), heard.end(), [](const auto& event) { return event.first().toString() == second; });
+        }, 3000));
         // One in-flight frame, at most six queued frames of that speaker, then
         // the marker. Queue pressure must not spill old speech into TLS.
         QVERIFY(link.audioPackets <= 8);
         QCOMPARE(fallback, 0);
         QCOMPARE(heard.last().at(1).toByteArray(), packet);
         QVERIFY(std::any_of(heard.begin(), heard.end(), [](const auto& event) { return event.at(2).toInt() > 0; }));
-        QTRY_VERIFY_WITH_TIMEOUT(std::any_of(quality.begin(), quality.end(), [](const auto& event) {
-            return event.first().toInt() < 0;
-        }), 3000);
+        QVERIFY(waitForEvents(&host, &squad::MediaTransport::quality, [&] {
+            return std::any_of(quality.begin(), quality.end(), [](const auto& event) { return event.first().toInt() < 0; });
+        }, 3000));
     }
     void busyAudioConnectionDoesNotStarveAnotherConnection() {
         const auto port = availableUdpPort(); QVERIFY(port);

@@ -361,20 +361,22 @@ void License::refreshToken() {
         });
 }
 void License::failCheck() { finish(tr("GitHub could not be checked. Offline access lasts at most seven days."), true); }
-void License::checkPage(const QString& cursor, bool accountOnly) {
-    static const QString query = QStringLiteral(R"(query($after:String,$owner:String!,$repository:String!) {
-      viewer { databaseId login sponsorsActivities(first:100,after:$after,period:ALL,includeAsSponsor:true,
+void License::checkPage(const QString& cursor, bool accountOnly, bool payments) {
+    static const QString query = QStringLiteral(R"(query($after:String,$owner:String!,$repository:String!,$payments:Boolean!) {
+      viewer { databaseId login }
+      recipient:user(login:$owner) @include(if:$payments) { databaseId
+        sponsorsActivities(first:100,after:$after,period:ALL,includeAsSponsor:false,
         includePrivate:true,actions:[NEW_SPONSORSHIP,REFUND],orderBy:{field:TIMESTAMP,direction:DESC}) {
-          nodes { id action timestamp sponsor { ... on User { databaseId } ... on Organization { databaseId } }
-            sponsorable { ... on User { databaseId } ... on Organization { databaseId } }
+          nodes { id action timestamp sponsor { __typename ... on User { databaseId } }
+            sponsorable { ... on User { databaseId } }
             sponsorsTier { id isOneTime monthlyPriceInCents } }
           pageInfo { hasNextPage endCursor }
       } }
       repository(owner:$owner,name:$repository) { object(expression:"HEAD:CONTRIBUTORS.md") { ... on Blob { text isTruncated } } }
     })");
     request(endpoint_, {{"query", accountOnly ? QStringLiteral("query { viewer { databaseId login } }") : query}, {"variables", QJsonObject{{"after", cursor.isEmpty() ? QJsonValue(QJsonValue::Null) : QJsonValue(cursor)},
-        {"owner", product_.value("owner")}, {"repository", product_.value("repository")}}}}, true,
-        [this, cursor, accountOnly](const QJsonObject& response, int code) {
+        {"owner", product_.value("owner")}, {"repository", product_.value("repository")}, {"payments", payments}}}}, true,
+        [this, cursor, accountOnly, payments](const QJsonObject& response, int code) {
             if (code == 401 && !rotated_ && record_.contains("refresh_token")) { refreshToken(); return; }
             if (code == 401) {
                 auto next = record_; next.remove("token"); next.insert("valid", false);
@@ -414,13 +416,17 @@ void License::checkPage(const QString& cursor, bool accountOnly) {
                 contributor_ = contributor;
             } else if (!cursor.isEmpty() && contributor_) { failCheck(); return; }
             if (!contributor_) {
-                const auto activities = viewer.value("sponsorsActivities").toObject();
+                if (!payments) { checkPage({}, false, true); return; }
+                const auto recipientAccount = data.value("recipient").toObject();
+                if (recipientAccount.value("databaseId") != product_.value("recipient_id")) { failCheck(); return; }
+                const auto activities = recipientAccount.value("sponsorsActivities").toObject();
                 const auto page = activities.value("pageInfo").toObject();
                 if (!activities.value("nodes").isArray() || activities.value("nodes").toArray().size() > 100
                     || !page.value("hasNextPage").isBool()) { failCheck(); return; }
                 for (const auto& value : activities.value("nodes").toArray()) {
                     if (!value.isObject()) { failCheck(); return; }
                     const auto event = value.toObject();
+                    if (event.value("sponsor").toObject().value("__typename") == "Organization") continue;
                     const auto payer = event.value("sponsor").toObject().value("databaseId");
                     const auto recipient = event.value("sponsorable").toObject().value("databaseId");
                     if (!positiveId(payer) || !positiveId(recipient)) { failCheck(); return; }
@@ -440,7 +446,7 @@ void License::checkPage(const QString& cursor, bool accountOnly) {
                 if (page.value("hasNextPage").toBool()) {
                     const auto next = page.value("endCursor").toString();
                     if (next.isEmpty() || cursors_.contains(next) || cursors_.size() >= 99) { failCheck(); return; }
-                    cursors_.insert(next); checkPage(next); return;
+                    cursors_.insert(next); checkPage(next, false, true); return;
                 }
             }
             qint64 paid = 0, refunded = 0;

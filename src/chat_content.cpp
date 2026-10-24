@@ -31,9 +31,9 @@
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QSet>
+#include <QRegularExpression>
 #include <QtEndian>
 #include <algorithm>
-#include <memory>
 #include <stdexcept>
 
 namespace {
@@ -56,25 +56,28 @@ qsizetype closingDelimiter(const QString& text, qsizetype start, QChar open, QCh
 class DisplayDocument final : public QTextDocument {
     QVariant loadResource(int, const QUrl&) override { return {}; }
 public:
+    DisplayDocument() {
+        // This document transforms markup. The chat view performs the layout.
+        setLayoutEnabled(false);
+        setUndoRedoEnabled(false);
+    }
     void setChatMarkdown(const QString& markdown) {
         const auto features = MarkdownFeatures(MarkdownDialectGitHub) | MarkdownNoHTML;
         QTextDocument::setMarkdown(markdown, features);
-        struct Image { int position; int length; QTextImageFormat format; };
-        QList<Image> images;
         QString marker = "imageLabelMarker";
-        while (markdown.contains(marker)) marker += 'x';
-        // Qt inserts an image for each alt-text token (escapes, entities or
-        // emphasis). Let the same parser prove the image's exact document span
-        // using a single-token label. Never merge images merely sharing a URL.
+        const auto original = toHtml();
+        while (markdown.contains(marker) || original.contains(marker)) marker += 'x';
+        struct Label { qsizetype start; qsizetype length; QString replacement; };
+        QList<Label> labels;
         for (auto start = markdown.indexOf("!["); start >= 0; start = markdown.indexOf("![", start + 2)) {
             const auto end = closingDelimiter(markdown, start + 1, '[', ']');
             if (end < 0) continue;
-            auto candidate = markdown;
             const auto label = markdown.mid(start + 2, end - start - 2);
             if (std::none_of(label.begin(), label.end(), [](QChar c) {
                     return QStringView(u"\\&*_~`!\n").contains(c);
                 })) continue;
-            auto replacement = "![" + marker + ']';
+            const auto token = marker + QString::number(labels.size());
+            auto replacement = "![" + token + "S " + label + ' ' + token + "E]";
             const auto next = end + 1;
             auto consumed = end - start + 1;
             if (markdown.mid(next, 2) == "[]") {
@@ -83,49 +86,64 @@ public:
             } else if (next == markdown.size() || (markdown[next] != '(' && markdown[next] != '[')) {
                 replacement += '[' + label + ']';
             }
-            candidate.replace(start, consumed, replacement);
-            DisplayDocument probe;
-            probe.setDefaultFont(defaultFont());
-            probe.QTextDocument::setMarkdown(candidate, features);
-            const auto excess = characterCount() - probe.characterCount();
-            if (excess <= 0) continue;
-            for (auto block = probe.begin(); block.isValid(); block = block.next())
-                for (auto it = block.begin(); !it.atEnd(); ++it) {
-                    const auto fragment = it.fragment();
-                    if (!fragment.charFormat().isImageFormat()
-                        || fragment.charFormat().stringProperty(QTextFormat::ImageAltText) != marker
-                        || fragment.position() + excess >= characterCount() - 1) continue;
-                    auto format = fragment.charFormat().toImageFormat();
-                    QString description;
-                    bool sameImage = true;
-                    for (int position = fragment.position(); position <= fragment.position() + excess; ++position) {
-                        QTextCursor cursor(this);
-                        cursor.setPosition(position); cursor.setPosition(position + 1, QTextCursor::KeepAnchor);
-                        const auto part = cursor.charFormat();
-                        if (part.isImageFormat()) {
-                            if (part.toImageFormat().name() != format.name()) { sameImage = false; break; }
-                            description += part.stringProperty(QTextFormat::ImageAltText);
-                        } else {
-                            description += cursor.selectedText();
-                        }
-                    }
-                    if (!sameImage) continue;
-                    std::unique_ptr<QTextDocument> comparison(clone());
-                    QTextCursor cursor(comparison.get());
-                    cursor.setPosition(fragment.position());
-                    cursor.setPosition(fragment.position() + excess + 1, QTextCursor::KeepAnchor);
-                    cursor.insertImage(format);
-                    if (comparison->toHtml() != probe.toHtml()) continue;
-                    format.setProperty(QTextFormat::ImageAltText, description);
-                    images.append({fragment.position(), excess + 1, format});
-                    start = end;
-                }
+            labels.append({start, consumed, replacement});
+            start = end;
         }
+        if (labels.isEmpty()) return;
+        const auto parse = [&](const QSet<int>& selected) {
+            auto candidate = markdown;
+            for (int i = labels.size() - 1; i >= 0; --i)
+                if (selected.contains(i)) candidate.replace(labels[i].start, labels[i].length, labels[i].replacement);
+            QTextDocument::setMarkdown(candidate, features);
+        };
+        QSet<int> selected;
+        for (int i = 0; i < labels.size(); ++i) selected.insert(i);
+        parse(selected);
+        const QRegularExpression startMarker(marker + "(\\d+)S ");
+        QSet<int> confirmed;
+        for (auto block = begin(); block.isValid(); block = block.next())
+            for (auto it = block.begin(); !it.atEnd(); ++it) {
+                const auto format = it.fragment().charFormat();
+                if (!format.isImageFormat()) continue;
+                const auto match = startMarker.match(format.stringProperty(QTextFormat::ImageAltText));
+                if (match.hasMatch()) confirmed.insert(match.captured(1).toInt());
+            }
+        // Keep code samples, escaped syntax and undefined references untouched.
+        if (confirmed != selected) parse(confirmed);
+        struct Image { int position; int length; QTextImageFormat format; };
+        QList<Image> images;
+        QString description, endMarker;
+        Image current{};
+        // Qt splits formatted alt text into several image fragments. Delimit all
+        // labels in one parse, then collapse each span without reparsing the message.
+        for (auto block = begin(); block.isValid(); block = block.next())
+            for (auto it = block.begin(); !it.atEnd(); ++it) {
+                const auto fragment = it.fragment();
+                const auto format = fragment.charFormat();
+                const auto part = format.isImageFormat()
+                    ? format.stringProperty(QTextFormat::ImageAltText).repeated(fragment.length()) : fragment.text();
+                if (endMarker.isEmpty()) {
+                    if (!format.isImageFormat()) continue;
+                    const auto match = startMarker.match(part);
+                    if (!match.hasMatch()) continue;
+                    current = {fragment.position(), 0, format.toImageFormat()};
+                    endMarker = ' ' + marker + match.captured(1) + 'E';
+                    description = part.mid(match.capturedEnd());
+                } else description += part;
+                if (!description.endsWith(endMarker)) continue;
+                description.chop(endMarker.size());
+                current.length = fragment.position() + fragment.length() - current.position;
+                current.format.setProperty(QTextFormat::ImageAltText, description);
+                images.append(current);
+                endMarker.clear();
+            }
+        QTextCursor cursor(this);
+        cursor.beginEditBlock();
         for (auto it = images.crbegin(); it != images.crend(); ++it) {
-            QTextCursor cursor(this);
             cursor.setPosition(it->position); cursor.setPosition(it->position + it->length, QTextCursor::KeepAnchor);
             cursor.insertImage(it->format);
         }
+        cursor.endEditBlock();
     }
 };
 }
@@ -230,11 +248,13 @@ QString ChatContent::format(const QString& markdown, const QVariantMap& attachme
         }
     }
     // Reverse order keeps positions stable while replacing image objects.
+    QTextCursor cursor(&document);
+    cursor.beginEditBlock();
     for (auto it = changes.crbegin(); it != changes.crend(); ++it) {
-        QTextCursor cursor(&document);
         cursor.setPosition(it->start); cursor.setPosition(it->start + it->length, QTextCursor::KeepAnchor);
         if (it->replace) cursor.insertText(it->text, it->format); else cursor.setCharFormat(it->format);
     }
+    cursor.endEditBlock();
     return document.toHtml();
 }
 

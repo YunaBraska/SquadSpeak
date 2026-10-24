@@ -164,15 +164,20 @@ void LocalChannel::rememberPrivatePeer(QSslSocket* socket, bool joining) {
     if (!peer.joined || peer.controller || !peer.capabilities.contains("private-chat")) return;
     auto* root = service_ ? service_ : this;
     auto records = root->security_.value("privatePeers").toObject();
-    auto record = records.value(peer.id).toObject();
-    record.insert("name", peer.name); record.insert("avatar", peer.avatar);
-    record.insert("certificate", QString::fromLatin1(socket->peerCertificate().toDer().toBase64()));
+    const auto profile = [&](QSslSocket* connection) {
+        const auto current = peers_.value(connection);
+        auto record = records.value(current.id).toObject();
+        record.insert("name", current.name); record.insert("avatar", current.avatar);
+        record.insert("certificate", QString::fromLatin1(connection->peerCertificate().toDer().toBase64()));
+        return record;
+    };
+    auto record = profile(socket);
     auto contacts = record.value("contacts").toObject();
     for (auto* otherSocket : peers_.keys()) {
         const auto other = peers_.value(otherSocket);
         if (other.id == peer.id || !other.joined || other.controller || !other.capabilities.contains("private-chat")) continue;
         contacts.insert(other.id, true);
-        auto otherRecord = records.value(other.id).toObject();
+        auto otherRecord = profile(otherSocket);
         auto reciprocal = otherRecord.value("contacts").toObject(); reciprocal.insert(peer.id, true);
         otherRecord.insert("contacts", reciprocal); records.insert(other.id, otherRecord);
     }

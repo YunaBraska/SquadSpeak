@@ -531,11 +531,22 @@ fn handle_command(
                             changed = true;
                         }
                     }
+                    let mut packet = update.to_packet().to_packet();
+                    if let Some(metadata) = value.get("metadata").and_then(Value::as_str) {
+                        if metadata.len() > 256 {
+                            result(queue, &request, false, Some("Invalid client metadata.".into()));
+                            return true;
+                        }
+                        if metadata != current.metadata {
+                            packet.write_arg("client_meta_data", &metadata);
+                            changed = true;
+                        }
+                    }
                     if !changed {
                         result(queue, &request, true, None);
                         return true;
                     }
-                    update.to_packet().send_with_result(con)
+                    packet.send_with_result(con)
                 }
                 "disconnect" => {
                     let sent = con.disconnect(DisconnectOptions::new());
@@ -713,12 +724,7 @@ fn handle_event(
             if !*subscribed {
                 if let Ok(state) = con.get_state() {
                     let subscription = state.server.set_subscribed(true);
-                    let mut marker = state.client_update().to_packet().to_packet();
-                    marker.write_arg("client_meta_data", &"SquadSpeak");
                     let _ = subscription.send(con);
-                    if let Err(error) = marker.send(con) {
-                        emit(queue, error_event(&error));
-                    }
                     *subscribed = true;
                 }
             }
@@ -772,7 +778,7 @@ fn emit_state(con: &Connection, queue: &Queue, directory_complete: bool) {
     let members = state.clients.values().map(|c| json!({
         "id": c.id.0.to_string(), "uid": uid_value(c.uid.as_ref()), "name": c.name, "channel": c.channel.0.to_string(),
         "inputMuted": c.input_muted, "outputMuted": c.output_muted,
-        "squadSpeak": c.id == state.own_client || c.metadata == "SquadSpeak",
+        "metadata": c.metadata,
     })).collect::<Vec<_>>();
     emit(
         queue,

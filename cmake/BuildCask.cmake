@@ -32,6 +32,11 @@ file(WRITE "${ARCHIVES_DIR}/squadspeak.rb" "cask \"squadspeak\" do
   desc \"Voice and chat for local networks and private servers\"
   homepage \"https://github.com/YunaBraska/SquadSpeak\"
 
+  livecheck do
+    url :url
+    strategy :github_latest
+  end
+
   depends_on macos: :ventura
 
   app \"squadspeak.app\"

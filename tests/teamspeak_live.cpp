@@ -256,6 +256,7 @@ int main(int argc, char** argv) {
     QDir().mkpath(root);
     VoiceSession sa(root + "/a.ini"), sb(root + "/b.ini");
     sa.setUserName("SquadSpeak test A"); sb.setUserName("SquadSpeak test B");
+    sa.setAvatar("mechanic"); sb.setAvatar("courier");
     sa.setMuted(true); sb.setMuted(true); sa.setDeafened(false); sb.setDeafened(false);
     sa.setAudioReadiness(true, true); sb.setAudioReadiness(true, true);
     LocalChannel a(sa, root + "/a.channel", TlsIdentity::loadFile(root + "/a.identity", true));
@@ -272,17 +273,20 @@ int main(int argc, char** argv) {
         && hasPeer(a, "SquadSpeak test B") && hasPeer(b, "SquadSpeak test A"); }, 20000), "two real server connections")) {
         std::fprintf(stderr, "A: %s\nB: %s\n", qPrintable(a.status()), qPrintable(b.status())); return 2;
     }
-    const auto squadBadges = [](const LocalChannel& channel) {
+    const auto squadBadges = [&](const LocalChannel& channel) {
         int matched = 0;
         for (const auto& value : channel.participants()) {
             const auto member = value.toMap();
             if (member.value("name") != "SquadSpeak test A" && member.value("name") != "SquadSpeak test B") continue;
             if (member.value("teamSpeak").toBool()) return false;
+            if (member.value("avatarId") != (member.value("name") == sa.userName() ? sa.avatar() : sb.avatar())) return false;
             ++matched;
         }
         return matched == 2;
     };
     if (!check(QTest::qWaitFor([&] { return squadBadges(a) && squadBadges(b); }, 5000), "client identity metadata")) return 24;
+    sa.setAvatar("mossling");
+    if (!check(QTest::qWaitFor([&] { return squadBadges(a) && squadBadges(b); }, 5000), "live portrait update")) return 24;
     QString peer;
     for (const auto& value : a.participants()) if (value.toMap().value("name") == "SquadSpeak test B") peer = value.toMap().value("id").toString();
     if (!check(!peer.isEmpty() && a.openPrivateChat(a.joinedHostId(), peer), "private recipient")) return 3;

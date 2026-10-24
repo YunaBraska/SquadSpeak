@@ -250,7 +250,24 @@ void LocalChannel::teamSpeakState(const QJsonObject& state) {
     QJsonObject next = savedChannels_;
     QSet<QString> seen;
     const auto channels = state.value("channels").toArray();
-    const auto members = state.value("members").toArray();
+    auto members = state.value("members").toArray();
+    QHash<QString, QJsonObject> profiles;
+    for (qsizetype index = 0; index < members.size(); ++index) {
+        auto member = members[index].toObject();
+        const auto client = member.value("id").toString();
+        const auto uid = member.value("uid").toString();
+        const auto peer = client == self ? ownId() : tsId(connection->id, "member", uid.isEmpty() ? client : uid);
+        const auto metadata = member.value("metadata").toString();
+        const auto profile = metadata.size() <= 256 ? QJsonDocument::fromJson(metadata.toUtf8()).object() : QJsonObject{};
+        const bool squadSpeak = client == self || metadata == "SquadSpeak" || profile.value("application") == "SquadSpeak";
+        const auto advertised = profile.value("avatar").toString();
+        const auto avatar = client == self ? session_.avatar()
+            : squadSpeak && VoiceSession::validAvatar(advertised) ? advertised : tsAvatar(uid.isEmpty() ? peer : uid);
+        member.insert("squadSpeak", squadSpeak); member.insert("avatarId", avatar);
+        members[index] = member;
+        profiles.insert(peer, QJsonObject{{"name", tsName(member.value("name").toString())}, {"avatarId", avatar}, {"teamSpeak", !squadSpeak}});
+    }
+    connection->state.insert("members", members);
     QSet<QString> connectedClients;
     for (const auto& value : members) {
         const auto member = value.toObject();
@@ -289,7 +306,7 @@ void LocalChannel::teamSpeakState(const QJsonObject& state) {
             const auto peer = tsClient == self ? ownId() : tsId(connection->id, "member", uid.isEmpty() ? tsClient : uid);
             c->onlineIds.append(peer);
             if (member.value("channel") != channel) continue;
-            const auto avatar = tsClient == self ? session_.avatar() : tsAvatar(uid.isEmpty() ? peer : uid);
+            const auto avatar = member.value("avatarId").toString();
             c->members.append(QVariantMap{{"id", peer}, {"tsClient", tsClient}, {"tsUid", uid}, {"name", tsName(member.value("name").toString())},
                 {"avatarId", avatar}, {"avatar", VoiceSession::avatarFallback(avatar)}, {"teamSpeak", tsClient != self && !member.value("squadSpeak").toBool()}, {"available", true}, {"muted", member.value("inputMuted").toBool()},
                 {"deafened", member.value("outputMuted").toBool()}, {"sleeping", false}});
@@ -319,6 +336,15 @@ void LocalChannel::teamSpeakState(const QJsonObject& state) {
             if (peer == c->privatePeer) { c->teamSpeakPeer = m.value("id").toString(); c->name = tsName(m.value("name").toString()); }
         }
         c->privatePeerOnline = !c->teamSpeakPeer.isEmpty();
+    }
+    for (const auto& c : clients_) if (c->teamSpeak && c->deviceId == connection->id) {
+        for (qsizetype index = 0; index < c->messages.size(); ++index) {
+            auto record = c->messages[index].toObject();
+            const auto profile = profiles.constFind(record.value("sender").toString());
+            if (profile == profiles.cend()) continue;
+            for (auto field = profile->begin(); field != profile->end(); ++field) record.insert(field.key(), field.value());
+            c->messages[index] = record;
+        }
     }
     if (const auto selected = clients_.value(chatHostId_)) status_ = selected->status;
     if (first) { automaticAttempt_ = false; sendPresence(); emit channelEvent("join"); }
@@ -387,11 +413,13 @@ void LocalChannel::teamSpeakEvent(const QJsonObject& event) {
     auto id = tsId(teamSpeak_->id, "channel", event.value("channel").toString());
     auto uid = event.value("fromUid").toString();
     bool squadSpeak = false;
+    QString avatar;
     for (const auto& value : teamSpeak_->state.value("members").toArray()) {
         const auto member = value.toObject();
         if (member.value("id") == event.value("fromId")) {
             if (uid.isEmpty()) uid = member.value("uid").toString();
             squadSpeak = member.value("squadSpeak").toBool();
+            avatar = member.value("avatarId").toString();
             break;
         }
     }
@@ -414,7 +442,7 @@ void LocalChannel::teamSpeakEvent(const QJsonObject& event) {
     const bool unreadBefore = c->unreadExpires > now;
     const auto sequence = ++teamSpeak_->sequence;
     c->messages.append(QJsonObject{{"sequence", sequence}, {"sender", peer}, {"name", tsName(event.value("fromName").toString())},
-        {"avatarId", tsAvatar(uid.isEmpty() ? peer : uid)}, {"teamSpeak", !squadSpeak}, {"request", QUuid::createUuid().toString(QUuid::WithoutBraces)},
+        {"avatarId", avatar.isEmpty() ? tsAvatar(uid.isEmpty() ? peer : uid) : avatar}, {"teamSpeak", !squadSpeak}, {"request", QUuid::createUuid().toString(QUuid::WithoutBraces)},
         {"created", now}, {"expires", now + ChatHistory::lifetime}, {"text", text}});
     c->privateExpires = now + ChatHistory::lifetime;
     c->lastChatSequence = std::max(c->lastChatSequence, sequence);

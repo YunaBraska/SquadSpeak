@@ -27,6 +27,7 @@ namespace {
 Q_LOGGING_CATEGORY(mediaLog, "squadspeak.media", QtWarningMsg)
 Q_LOGGING_CATEGORY(connectionLog, "squadspeak.connection", QtWarningMsg)
 constexpr int maximumPendingPeers = 32;
+constexpr qint64 maximumPermissionBytes = 16 * 1024 * 1024;
 constexpr std::array<int, 6> audioBitrates{128, 64, 32, 20, 12, 8};
 // Keep reliable audio bounded below the general write limit while RTP
 // bindings are established.
@@ -208,7 +209,7 @@ LocalChannel::LocalChannel(VoiceSession& session, QString storageFile, std::opti
     QFile file(storageFile_);
     const bool newChannel = !service_ && !storageFile_.isEmpty() && !file.exists();
     if (file.exists()) {
-        if (!file.open(QIODevice::ReadOnly) || file.size() > 1024 * 1024)
+        if (!file.open(QIODevice::ReadOnly) || file.size() > maximumPermissionBytes)
             throw std::runtime_error(tr("Channel permissions could not be read.").toStdString());
         QJsonParseError error;
         const auto document = QJsonDocument::fromJson(file.readAll(), &error);
@@ -907,7 +908,7 @@ bool LocalChannel::persist(const QSet<QString>& approved, const QHash<QString, A
     if (!service_) object.insert("ownedChannels", QJsonArray::fromStringList(ownedIds_));
     if (!hostName_.isEmpty()) object.insert("hostName", hostName_);
     const auto data = QJsonDocument(object).toJson(QJsonDocument::Compact);
-    if (data.size() > 1024 * 1024)
+    if (data.size() > maximumPermissionBytes)
         return setStatus(tr("The local permission store is full."), false);
     QSaveFile file(storageFile_);
     if (!file.open(QIODevice::WriteOnly) || file.write(data) != data.size() || !file.commit())
@@ -2746,7 +2747,9 @@ void LocalChannel::clientMessage(Client& c, const QJsonObject& message) {
 void LocalChannel::sendPresence() {
     if (teamSpeak_ && teamSpeak_->connected) {
         if (session_.deafened()) teamSpeak_->audioSequences.clear();
-        const QJsonObject presence{{"action", "presence"}, {"name", session_.userName()},
+        const auto metadata = QString::fromUtf8(QJsonDocument(QJsonObject{{"application", "SquadSpeak"},
+            {"avatar", session_.avatar()}}).toJson(QJsonDocument::Compact));
+        const QJsonObject presence{{"action", "presence"}, {"name", session_.userName()}, {"metadata", metadata},
             {"inputMuted", session_.muted() || !session_.available() || !session_.inputReady()}, {"outputMuted", session_.deafened() || !session_.outputReady()}};
         if (teamSpeak_->lastPresence != presence && teamSpeakCommand(presence)) teamSpeak_->lastPresence = presence;
     }

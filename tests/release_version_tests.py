@@ -104,6 +104,7 @@ class HomebrewTests(unittest.TestCase):
             for arch in ("arm64", "x86_64"):
                 self.assertIn(hashlib.sha256(arch.encode()).hexdigest(), text)
                 self.assertIn(f"# yuna-release-asset: squadspeak-macos-{arch}.zip", text)
+            self.assertIn("strategy :github_latest", text)
             self.assertIn('version "2026.10.4"', text)
             self.assertIn('binary "#{appdir}/squadspeak.app/Contents/MacOS/squadspeak"', text)
             self.assertNotIn("no_check", text)

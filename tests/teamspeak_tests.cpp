@@ -331,7 +331,7 @@ private slots:
         auto state = QJsonDocument::fromJson(stateEvent(true)).object();
         auto members = state.value("members").toArray();
         auto other = members.at(1).toObject();
-        other.insert("squadSpeak", true); members[1] = other;
+        other.insert("metadata", "SquadSpeak"); members[1] = other;
         members.append(QJsonObject{{"id", "8"}, {"uid", "official-uid"}, {"name", "SquadSpeak nickname"}, {"channel", "1"}});
         state.insert("members", members);
         fakeEvents.enqueue(QJsonDocument(state).toJson(QJsonDocument::Compact));
@@ -372,6 +372,91 @@ private slots:
             }
             return false;
         }());
+    }
+
+    void advertisedPortraitsFollowProfileChanges() {
+        resetFake();
+        QTemporaryDir dir;
+        VoiceSession session(dir.filePath("session"));
+        QVERIFY(session.setAvatar("coral-diver"));
+        LocalChannel channel(session, dir.filePath("channel"), TlsIdentity::create());
+        QVERIFY(channel.addTeamSpeak("127.0.0.1"));
+        auto state = QJsonDocument::fromJson(stateEvent(true)).object();
+        auto members = state.value("members").toArray();
+        auto remote = members.at(1).toObject();
+        remote.insert("metadata", R"({"application":"SquadSpeak","avatar":"mechanic"})");
+        members[1] = remote; state.insert("members", members);
+        fakeEvents.enqueue(QJsonDocument(state).toJson(QJsonDocument::Compact));
+        QTRY_COMPARE(channel.participants().size(), 2);
+        QString peer;
+        for (const auto& value : channel.participants()) {
+            const auto member = value.toMap();
+            if (member.value("tsClient") != "7") continue;
+            peer = member.value("id").toString();
+            QCOMPARE(member.value("avatarId").toString(), QString("mechanic"));
+            QVERIFY(!member.value("teamSpeak").toBool());
+        }
+        QVERIFY(!peer.isEmpty());
+        const auto advertised = QJsonDocument::fromJson(QJsonDocument::fromJson(lastCommand).object()
+            .value("metadata").toString().toUtf8()).object();
+        QCOMPARE(advertised.value("application").toString(), QString("SquadSpeak"));
+        QCOMPARE(advertised.value("avatar").toString(), session.avatar());
+        const auto joined = channel.joinedHostId();
+        for (const auto& mode : {QStringLiteral("channel"), QStringLiteral("private")}) {
+            if (mode == "private") QVERIFY(channel.openPrivateChat(joined, peer));
+            fakeEvents.enqueue(QJsonDocument(QJsonObject{{"type", "message"}, {"mode", mode}, {"channel", "1"},
+                {"fromId", "7"}, {"fromName", "Remote"}, {"text", "Profile from the TS server"}}).toJson(QJsonDocument::Compact));
+            QTRY_COMPARE(channel.messages().size(), 1);
+            QCOMPARE(channel.messages().first().toMap().value("avatarId").toString(), QString("mechanic"));
+        }
+        QVERIFY(session.setAvatar("courier"));
+        QTRY_COMPARE(QJsonDocument::fromJson(QJsonDocument::fromJson(lastCommand).object()
+            .value("metadata").toString().toUtf8()).object().value("avatar").toString(), QString("courier"));
+        remote.insert("metadata", R"({"application":"SquadSpeak","avatar":"future-dragon-v2","futureField":true})");
+        members[1] = remote; state.insert("members", members);
+        fakeEvents.enqueue(QJsonDocument(state).toJson(QJsonDocument::Compact));
+        QVERIFY(channel.openSavedChat(joined));
+        QTRY_COMPARE(channel.messages().first().toMap().value("avatarId").toString(), QString("future-dragon-v2"));
+        QVERIFY(channel.openPrivateChat(joined, peer));
+        QTRY_COMPARE(channel.messages().first().toMap().value("avatarId").toString(), QString("future-dragon-v2"));
+    }
+
+    void untrustedPortraitMetadata_data() {
+        QTest::addColumn<QString>("metadata");
+        QTest::addColumn<bool>("squadSpeak");
+        QTest::newRow("missing") << QString{} << false;
+        QTest::newRow("malformed") << QString("{invalid") << false;
+        QTest::newRow("different-app") << QString(R"({"application":"Other","avatar":"mechanic"})") << false;
+        QTest::newRow("path") << QString(R"({"application":"SquadSpeak","avatar":"../image.png"})") << true;
+        QTest::newRow("url") << QString("{\"application\":\"SquadSpeak\",\"avatar\":\"https://example.com/image.png\"}") << true;
+        QTest::newRow("oversized") << QString(257, 'x') << false;
+    }
+
+    void untrustedPortraitMetadata() {
+        QFETCH(QString, metadata);
+        QFETCH(bool, squadSpeak);
+        resetFake();
+        QTemporaryDir dir;
+        VoiceSession session(dir.filePath("session"));
+        LocalChannel channel(session, dir.filePath("channel"), TlsIdentity::create());
+        QVERIFY(channel.addTeamSpeak("127.0.0.1"));
+        fakeEvents.enqueue(stateEvent(true));
+        QTRY_COMPARE(channel.participants().size(), 2);
+        const auto portrait = [&] {
+            for (const auto& value : channel.participants())
+                if (value.toMap().value("tsClient") == "7") return value.toMap();
+            return QVariantMap{};
+        };
+        const auto fallback = portrait().value("avatarId");
+        auto state = QJsonDocument::fromJson(stateEvent(true)).object();
+        auto members = state.value("members").toArray();
+        auto member = members[1].toObject();
+        member.insert("metadata", metadata); member.insert("name", "Updated");
+        members[1] = member; state.insert("members", members);
+        fakeEvents.enqueue(QJsonDocument(state).toJson(QJsonDocument::Compact));
+        QTRY_COMPARE(portrait().value("name").toString(), QString("Updated"));
+        QCOMPARE(portrait().value("avatarId"), fallback);
+        QCOMPARE(portrait().value("teamSpeak").toBool(), !squadSpeak);
     }
 
     void repeatedJoinReusesConnection() {

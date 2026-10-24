@@ -70,7 +70,7 @@ private:
     void pollAuthorization();
     bool acceptToken(const QJsonObject& response);
     void refreshToken();
-    void checkPage(const QString& cursor = {}, bool accountOnly = false);
+    void checkPage(const QString& cursor = {}, bool accountOnly = false, bool payments = false);
     void failCheck();
     [[nodiscard]] QJsonObject policy() const;
     bool save(const QJsonObject& record);

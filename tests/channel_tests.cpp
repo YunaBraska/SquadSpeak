@@ -362,6 +362,68 @@ private slots:
         }
     }
 #endif
+    void permissionStoreRetainsLargeApprovalLists() {
+        QTemporaryDir dir;
+        const auto path = dir.filePath("host");
+        { Device initial(path, "Host"); QVERIFY(initial.channel.setChannelName("Large host")); }
+        QFile store(path + ".channel"); QVERIFY(store.open(QIODevice::ReadOnly));
+        auto object = QJsonDocument::fromJson(store.readAll()).object(); store.close();
+        QJsonArray approved;
+        for (int i = 1; i <= 20000; ++i) approved.append(QString::number(i, 16).rightJustified(64, '0'));
+        object.insert("approved", approved);
+        QVERIFY(store.open(QIODevice::WriteOnly | QIODevice::Truncate));
+        const auto bytes = QJsonDocument(object).toJson(QJsonDocument::Compact);
+        QVERIFY(bytes.size() > 1024 * 1024); QCOMPARE(store.write(bytes), bytes.size()); store.close();
+        try {
+            Device loaded(path, "Host");
+            QVERIFY(loaded.channel.setChannelName("Renamed large host"));
+        } catch (const std::exception& error) { QFAIL(error.what()); }
+        QVERIFY(store.open(QIODevice::ReadOnly));
+        const auto saved = QJsonDocument::fromJson(store.readAll()).object();
+        QCOMPARE(saved.value("approved").toArray().size(), approved.size());
+        QCOMPARE(saved.value("channelName").toString(), QString("Renamed large host"));
+        store.close();
+        QVERIFY(store.open(QIODevice::WriteOnly | QIODevice::Append));
+        const QByteArray padding(16 * 1024 * 1024 + 1 - store.size(), ' ');
+        QCOMPARE(store.write(padding), padding.size()); store.close();
+        QVERIFY_EXCEPTION_THROWN(Device(path, "Host"), std::runtime_error);
+    }
+
+    void privateContactsRecoverAfterAdmissionStorageFailure() {
+        QTemporaryDir dir;
+        Device host(dir.filePath("host"), "Host"),
+            a(dir.filePath("a"), "Alice"), b(dir.filePath("b"), "Bea");
+        QVERIFY(host.channel.listen(QHostAddress::LocalHost));
+        for (auto* client : {&a, &b}) QVERIFY(host.channel.decide(client->channel.ownId(), true));
+        const auto store = dir.filePath("host.channel");
+        QVERIFY(QFile::rename(store, store + ".saved"));
+        QVERIFY(QDir().mkdir(store));
+        QVERIFY(a.join(host.channel));
+        QTRY_VERIFY(a.channel.joined());
+        QTRY_VERIFY(host.channel.status().contains("could not be saved"));
+        QVERIFY(a.session.setUserName("Alice updated"));
+        QTRY_VERIFY(([&] { const auto participants = host.channel.hostParticipants(); return std::any_of(participants.cbegin(), participants.cend(),
+            [](const QVariant& value) { return value.toMap().value("name") == "Alice updated"; }); }()));
+        QVERIFY(QDir().rmdir(store));
+        QVERIFY(QFile::rename(store + ".saved", store));
+        bool disconnected = false;
+        QObject observation;
+        connect(&a.channel, &LocalChannel::stateChanged, &observation, [&] { disconnected |= !a.channel.joined(); });
+        QVERIFY(b.join(host.channel));
+        QTRY_VERIFY(b.channel.joined());
+        QTRY_VERIFY(b.channel.canPrivateChat(host.channel.ownId(), a.channel.ownId()));
+        QTRY_VERIFY(a.channel.canPrivateChat(host.channel.ownId(), b.channel.ownId()));
+        QVERIFY(b.channel.openPrivateChat(host.channel.ownId(), a.channel.ownId()));
+        QVERIFY(a.channel.openPrivateChat(host.channel.ownId(), b.channel.ownId()));
+        QVERIFY(b.channel.sendChat("Storage recovered"));
+        QTRY_COMPARE(a.channel.messages().size(), 1);
+        QCOMPARE(a.channel.messages().first().toMap().value("text").toString(), QString("Storage recovered"));
+        QVERIFY(!disconnected);
+        // Loading the persisted permission file also checks reciprocal contact integrity.
+        Device restored(dir.filePath("host"), "Host", TlsIdentity::create());
+        QVERIFY(restored.channel.ready());
+    }
+
     void privateChatPersistenceFailureAndPagingRecover() {
         QTemporaryDir dir;
         qint64 now = 1700000000000;
@@ -6275,8 +6337,8 @@ private slots:
         QVERIFY(sourceChannels == 1 || sourceChannels == 2);
         const int participantCount = qEnvironmentVariableIsSet("SQUAD_SOAK_CLIENTS")
             ? qEnvironmentVariable("SQUAD_SOAK_CLIENTS").toInt() : 64;
-        QVERIFY2(participantCount == 8 || participantCount == 32 || participantCount == 64,
-            "SQUAD_SOAK_CLIENTS must be 8, 32 or 64");
+        QVERIFY2(participantCount >= 8 && participantCount <= 256,
+            "SQUAD_SOAK_CLIENTS must be between 8 and 256 for this local fixture");
         bool speakersOk = false;
         const int speakers = qEnvironmentVariableIsSet("SQUAD_SOAK_SPEAKERS")
             ? qEnvironmentVariable("SQUAD_SOAK_SPEAKERS").toInt(&speakersOk) : 4;
@@ -6478,11 +6540,17 @@ private slots:
         for (int source = 0; source < participantCount; ++source) {
             if (source < speakers) QVERIFY(clients[size_t(source)]->channel.sendAudio(packet));
             else QVERIFY(commandReceivers({{"operation", "send"}, {"source", source}}));
-            QVERIFY2(waitForEvents([&] {
+            const bool delivered = waitForEvents([&] {
                 for (size_t i = 0; i < audioCounts.size(); ++i)
                     if (audioCounts[i] != source + 1 - (int(i) <= source ? 1 : 0)) return false;
                 return true;
-            }, 5000), qPrintable(QString("Source %1 did not reach every other participant").arg(source)));
+            }, 5000);
+            if (!delivered) for (size_t i = 0; i < audioCounts.size(); ++i) {
+                const auto expected = source + 1 - (int(i) <= source ? 1 : 0);
+                if (audioCounts[i] != expected) qWarning() << "Source binding" << source << "listener" << i
+                    << "received/expected" << audioCounts[i] << expected << "reported gaps" << missingCounts[i];
+            }
+            QVERIFY2(delivered, qPrintable(QString("Source %1 did not reach every other participant").arg(source)));
         }
         QMap<int, int> startingTiers;
         for (const auto& client : clients) ++startingTiers[client->channel.receiveAudioBitrate()];
@@ -6807,8 +6875,8 @@ int main(int argc, char** argv) {
     const auto arguments = application.arguments();
     if (arguments.size() == 5 && arguments[1] == "--capacity-receivers") {
         const auto first = arguments[3].toInt(), count = arguments[4].toInt();
-        if (first < 2 || count < 1 || first + count > 64) return 2;
-        std::array<int, 64> heard{}, missing{};
+        if (first < 2 || count < 1 || first + count > 256) return 2;
+        std::vector<int> heard(size_t(first + count)), missing(size_t(first + count));
         std::vector<std::unique_ptr<Device>> clients;
         for (int index = first; index < first + count; ++index) {
             clients.push_back(std::make_unique<Device>(arguments[2] + "/" + QString::number(index),
@@ -6839,8 +6907,14 @@ int main(int argc, char** argv) {
             bool ok = true;
             for (size_t i = 0; i < clients.size(); ++i) {
                 auto& client = *clients[i];
-                if (operation == "join") ok &= client.channel.join(request.value("host").toString(),
-                    "127.0.0.1", quint16(request.value("port").toInt()));
+                if (operation == "join") {
+                    ok &= client.channel.join(request.value("host").toString(),
+                        "127.0.0.1", quint16(request.value("port").toInt()));
+                    // Measure established capacity separately from the bounded
+                    // simultaneous admission budget covered by its own test.
+                    ok &= waitForEvents(&client.channel, &LocalChannel::stateChanged,
+                        [&] { return client.channel.joined(); }, 5000);
+                }
                 else if (operation == "send" && int(i) + first == request.value("source").toInt()) ok &= client.channel.sendAudio(packet);
                 else if (operation == "leave" && int(i) + first < request.value("before").toInt()) ok &= client.channel.leave();
                 else if (operation == "reset") { heard[size_t(first) + i] = 0; missing[size_t(first) + i] = 0; }

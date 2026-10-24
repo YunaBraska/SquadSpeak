@@ -72,7 +72,7 @@ public:
                         && input.value("variables").toObject().value("after") == unauthorizedCursor) {
                         responseStatus = 401; unauthorizedSent = true;
                     }
-                    if (alter && path == "/graphql" && input.value("query").toString().contains("sponsorsActivities")) alter(response);
+                    if (alter && path == "/graphql" && input.value("variables").toObject().value("payments").toBool()) alter(response);
                     if (beforeResponse && path == "/graphql") beforeResponse();
                     const auto body = bodyOverride.isEmpty() ? QJsonDocument(response).toJson(QJsonDocument::Compact) : bodyOverride;
                     socket->write("HTTP/1.1 " + QByteArray::number(responseStatus) + " Result\r\nContent-Type: application/json\r\nContent-Length: "
@@ -129,18 +129,25 @@ private:
         const auto query = input.value("query").toString();
         if (query == "query { viewer { databaseId login } }")
             return {{"data", QJsonObject{{"viewer", QJsonObject{{"databaseId", viewerId}, {"login", login}}}}}};
-        if (!query.contains("includeAsSponsor:true") || !query.contains("includePrivate:true")
+        if (query.contains("... on Organization { databaseId }"))
+            return {{"errors", QJsonArray{QJsonObject{{"type", "INSUFFICIENT_SCOPES"}}}}};
+        if (!query.contains("recipient:user(login:$owner)"))
+            return {{"errors", QJsonArray{QJsonObject{{"type", "FORBIDDEN"},
+                {"path", QJsonArray{"viewer", "sponsorsActivities", "nodes", 1}}}}}};
+        if (!query.contains("includeAsSponsor:false") || !query.contains("includePrivate:true")
             || !query.contains("actions:[NEW_SPONSORSHIP,REFUND]") || !query.contains("HEAD:CONTRIBUTORS.md")) failures << "query contract";
         const auto variables = input.value("variables").toObject();
         if (variables.value("owner") != "fixture-owner" || variables.value("repository") != "fixture-app") failures << "wrong repository";
         const auto offset = variables.value("after").toString().toInt();
         QJsonArray nodes;
         for (int i = offset; i < ledger.size() && i < offset + pageSize; ++i) nodes.append(ledger[i]);
-        return {{"data", QJsonObject{{"viewer", QJsonObject{{"databaseId", viewerId}, {"login", login},
-            {"sponsorsActivities", QJsonObject{{"nodes", nodes}, {"pageInfo", QJsonObject{
-                {"hasNextPage", offset + pageSize < ledger.size()}, {"endCursor", QString::number(offset + pageSize)}}}}}}},
+        QJsonObject data{{"viewer", QJsonObject{{"databaseId", viewerId}, {"login", login}}},
             {"repository", QJsonObject{{"object", contributorFile.isEmpty() ? QJsonValue(QJsonValue::Null)
-                : QJsonValue(QJsonObject{{"text", contributorFile}, {"isTruncated", false}})}}}}}};
+                : QJsonValue(QJsonObject{{"text", contributorFile}, {"isTruncated", false}})}}}};
+        if (variables.value("payments").toBool()) data.insert("recipient", QJsonObject{{"databaseId", 100},
+            {"sponsorsActivities", QJsonObject{{"nodes", nodes}, {"pageInfo", QJsonObject{
+                {"hasNextPage", offset + pageSize < ledger.size()}, {"endCursor", QString::number(offset + pageSize)}}}}}});
+        return {{"data", data}};
     }
 };
 void advanceAuthorization(License& license, qint64& time) {
@@ -210,6 +217,7 @@ private slots:
         server.payment("wrong-tier", start, "NEW_SPONSORSHIP", "ST_other");
         server.payment("wrong-recipient", start, "NEW_SPONSORSHIP", "ST_fixture", 101);
         server.payment("wrong-payer", start, "NEW_SPONSORSHIP", "ST_fixture", 100, 201);
+        server.ledger.append(QJsonObject{{"sponsor", QJsonObject{{"__typename", "Organization"}}}});
         server.payment("first-payment", start);
         run({{"command", "license"}, {"action", "refresh"}});
         QTRY_VERIFY(!license.busy()); QVERIFY2(license.active(), qPrintable(license.status()));
@@ -257,7 +265,7 @@ private slots:
             QCOMPARE(server.paths.size(), count);
             time += day - 1; QVERIFY(!license.refreshIfDue()); QCOMPARE(server.paths.size(), count);
             time += 1; QVERIFY(license.refreshIfDue()); QTRY_VERIFY(!license.busy());
-            QCOMPARE(server.paths.size(), count + 1); checkedAt = time;
+            QCOMPARE(server.paths.size(), count + 2); checkedAt = time;
             QFile file(dir.filePath("supporter.bin")); QVERIFY(file.open(QIODevice::ReadOnly));
             const auto bytes = file.readAll();
             QVERIFY(!bytes.contains(server.accessToken.toUtf8())); QVERIFY(!bytes.contains("fixture-member"));
@@ -277,7 +285,7 @@ private slots:
 
     void malformedAndPartialPagesNeverExtendOfflineAccess_data() {
         QTest::addColumn<QString>("failure");
-        for (const auto* value : {"invalid-json", "oversized", "graphql-error", "null-nodes", "null-viewer", "missing-page", "truncated-contributors", "cursor-cycle", "conflicting-event", "future-payment", "wrong-price", "monthly"})
+        for (const auto* value : {"invalid-json", "oversized", "graphql-error", "null-nodes", "null-viewer", "missing-page", "truncated-contributors", "cursor-cycle", "conflicting-event", "future-payment", "wrong-price", "monthly", "wrong-recipient-account", "missing-payer"})
             QTest::newRow(value) << QString(value);
     }
     void malformedAndPartialPagesNeverExtendOfflineAccess() {
@@ -291,7 +299,8 @@ private slots:
         if (failure == "oversized") server.bodyOverride = QByteArray(1024 * 1024 + 1, ' ');
         server.alter = [failure](QJsonObject& response) {
             auto data = response.value("data").toObject(); auto viewer = data.value("viewer").toObject();
-            auto activity = viewer.value("sponsorsActivities").toObject();
+            auto recipient = data.value("recipient").toObject();
+            auto activity = recipient.value("sponsorsActivities").toObject();
             auto nodes = activity.value("nodes").toArray(); auto event = nodes.first().toObject();
             if (failure == "graphql-error") response.insert("errors", QJsonArray{QJsonObject{{"message", "limited"}}});
             if (failure == "null-nodes") activity.insert("nodes", QJsonArray{QJsonValue::Null});
@@ -305,7 +314,10 @@ private slots:
                 tier.insert(failure == "monthly" ? "isOneTime" : "monthlyPriceInCents", failure == "monthly" ? QJsonValue(false) : QJsonValue(100));
                 event.insert("sponsorsTier", tier); activity.insert("nodes", QJsonArray{event});
             }
-            viewer.insert("sponsorsActivities", activity); data.insert("viewer", failure == "null-viewer" ? QJsonValue(QJsonValue::Null) : QJsonValue(viewer)); response.insert("data", data);
+            if (failure == "missing-payer") { event.remove("sponsor"); activity.insert("nodes", QJsonArray{event}); }
+            if (failure == "wrong-recipient-account") recipient.insert("databaseId", 101);
+            recipient.insert("sponsorsActivities", activity); data.insert("recipient", recipient);
+            data.insert("viewer", failure == "null-viewer" ? QJsonValue(QJsonValue::Null) : QJsonValue(viewer)); response.insert("data", data);
         };
         time += 6 * day; checked(license); QVERIFY(license.active()); QVERIFY(!license.status().isEmpty());
         time = confirmed + 7 * day; checked(license); QVERIFY(!license.active());
@@ -436,10 +448,11 @@ private slots:
         GitHub server; server.authorized = true;
         server.contributorFile = "| 200 | fixture-member |\n";
         server.alter = [](QJsonObject& response) {
-            auto data = response.value("data").toObject(); auto viewer = data.value("viewer").toObject();
-            auto activity = viewer.value("sponsorsActivities").toObject();
+            auto data = response.value("data").toObject();
+            auto recipient = data.value("recipient").toObject();
+            auto activity = recipient.value("sponsorsActivities").toObject();
             activity.insert("nodes", QJsonArray{QJsonValue::Null});
-            viewer.insert("sponsorsActivities", activity); data.insert("viewer", viewer); response.insert("data", data);
+            recipient.insert("sponsorsActivities", activity); data.insert("recipient", recipient); response.insert("data", data);
         };
         QTemporaryDir dir; qint64 time = start;
         License license(dir.path(), product, server.url(), TlsIdentity::newKey(), [&] { return time; }, {}, nullptr, server.oauth());
@@ -498,7 +511,11 @@ private slots:
         QVERIFY(license.signIn()); advanceAuthorization(license, time); QVERIFY(license.active());
         const auto path = dir.filePath("supporter.bin"); QFile file(path);
         QVERIFY(file.open(QIODevice::ReadOnly)); const auto previous = file.readAll(); file.close();
-        server.beforeResponse = [&] { QVERIFY(QFile::remove(path)); QVERIFY(QDir().mkdir(path)); };
+        bool blockedStorage = false;
+        server.beforeResponse = [&] {
+            if (blockedStorage) return;
+            QVERIFY(QFile::remove(path)); QVERIFY(QDir().mkdir(path)); blockedStorage = true;
+        };
         server.payment("refund", time, "REFUND"); checked(license); QVERIFY(!license.active());
         QVERIFY(!license.status().isEmpty()); server.beforeResponse = {};
         QVERIFY(QDir().rmdir(path)); QVERIFY(file.open(QIODevice::WriteOnly)); QCOMPARE(file.write(previous), previous.size()); file.close();

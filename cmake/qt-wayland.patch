@@ -461,3 +461,27 @@
 
      enum OperationState { NoOperation, CreateSession, SelectSources, StartStream, OpenPipeWireRemote };
      OperationState m_operationState = NoOperation;
+--- a/src/multimedia/pipewire/qpipewire_async_support.cpp
++++ b/src/multimedia/pipewire/qpipewire_async_support.cpp
+@@ -82,7 +82,9 @@
+
+ CoreEventListener::~CoreEventListener()
+ {
+-    removeHooks();
++    QAudioContextManager::withEventLoopLock([&] {
++        removeHooks();
++    });
+ }
+
+ ///////////////////////////////////////////////////////////////////////////////////////////////////
+@@ -96,8 +98,8 @@
+         CoreEventDoneListener *listener = reinterpret_cast<CoreEventDoneListener *>(self);
+         if (id == PW_ID_CORE && listener->m_seqnum == seq) {
+             listener->m_seqnum = -1;
+-            if (listener->m_handler)
+-                listener->m_handler();
++            if (auto handler = std::exchange(listener->m_handler, {}))
++                handler();
+         }
+     };
+ }

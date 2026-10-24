@@ -84,6 +84,8 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
         URL_HASH SHA256=93f7ef0106fbd731165a2723f3e436c911fc5e6880f5bc987b55516c20833e2b
         SOURCE_SUBDIR unused DOWNLOAD_EXTRACT_TIMESTAMP TRUE)
     list(APPEND qt_runtime_modules capture)
+    # Includes upstream PipeWire listener lifetime fixes 1c6fb56 and 5a0d4a1:
+    # unregister under the event-loop lock and consume callbacks before invoking.
     set(qt_capture_patches qt-wayland.patch)
 endif()
 if(CMAKE_SYSTEM_NAME MATCHES "^(Darwin|Linux|Windows)$")
