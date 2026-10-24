@@ -730,8 +730,9 @@ if(BUILD_TESTING)
     else()
         add_test(NAME audio_corpus COMMAND corpus_tests)
     endif()
-    # Instrumented inference is much slower; this is not a performance gate.
-    set_tests_properties(audio_corpus PROPERTIES TIMEOUT 600)
+    # Instrumented inference is much slower. It also needs an uncontended CPU
+    # on hosted Intel runners, while preserving the same 10-minute hard stop.
+    set_tests_properties(audio_corpus PROPERTIES TIMEOUT 600 RUN_SERIAL TRUE COST 500)
     qt_add_executable(radio_tests tests/radio_tests.cpp)
     target_link_libraries(radio_tests PRIVATE squad_radio Qt6::Test)
     add_test(NAME radio_contract COMMAND radio_tests)
@@ -747,7 +748,8 @@ if(BUILD_TESTING)
     add_executable(teamspeak_live EXCLUDE_FROM_ALL tests/teamspeak_live.cpp)
     target_link_libraries(teamspeak_live PRIVATE squad_session squad_content squad_audio Qt6::Test)
     add_test(NAME teamspeak_contract COMMAND teamspeak_tests)
-    set_tests_properties(teamspeak_contract PROPERTIES TIMEOUT 45 RESOURCE_LOCK channel_fixed_ports)
+    # The real transport fixture must not compete with CPU-heavy DSP work.
+    set_tests_properties(teamspeak_contract PROPERTIES TIMEOUT 90 RESOURCE_LOCK channel_fixed_ports RUN_SERIAL TRUE)
     qt_add_executable(license_tests tests/license_tests.cpp src/headless.cpp src/headless.hpp)
     target_link_libraries(license_tests PRIVATE squad_radio Qt6::Test qt6keychain)
     add_test(NAME license_contract COMMAND license_tests)
@@ -869,7 +871,7 @@ if(BUILD_TESTING)
     if(TEST capture_contract)
         set_tests_properties(capture_contract PROPERTIES RUN_SERIAL TRUE)
     endif()
-    set_tests_properties(channel_controls radio_contract audio_corpus PROPERTIES COST 500)
+    set_tests_properties(channel_controls radio_contract PROPERTIES COST 500)
     # GUI, clipboard and audio-device fixtures share the runner's desktop.
     set_tests_properties(headless_contract desktop_smoke process_deadline
         audio_controls frequency_display channel_controls avatar_scale_1.5 avatar_scale_2
