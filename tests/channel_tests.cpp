@@ -6502,7 +6502,10 @@ private slots:
         // Check admission before the load phase. Afterwards measured pressure
         // may correctly reject a new participant while existing speech works.
         QVERIFY(joinHost(overflow));
-        QTRY_VERIFY(overflow.channel.joined());
+        // The host is already servicing 64 TLS peers. On a loaded native
+        // runner, accept plus the new TLS handshake exceeds QtTest's 5 s
+        // default although the participant is correctly admitted.
+        QTRY_VERIFY_WITH_TIMEOUT(overflow.channel.joined(), 30000);
         QTRY_COMPARE(clients.back()->channel.participants().size(), participantCount + 1);
         QTRY_VERIFY(overflow.channel.chatReady());
         QVERIFY(overflow.channel.sendChat("Text and media remain available to a new participant."));
