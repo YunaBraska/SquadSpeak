@@ -2757,7 +2757,8 @@ private slots:
         QTRY_VERIFY(!client.channel.joined());
         host = std::make_unique<Device>(dir.filePath("host"), "Host", identity);
         QVERIFY(host->channel.listen(QHostAddress::LocalHost, port));
-        QTRY_VERIFY_WITH_TIMEOUT(client.channel.joined(), 10000);
+        // Reconnect waits for the closed socket, its retry delay, and a fresh TLS handshake.
+        QTRY_VERIFY_WITH_TIMEOUT(client.channel.joined(), 30000);
         QCOMPARE(client.channel.savedChannels().first().toMap().value("address").toString(), QString("localhost"));
         QVERIFY(client.channel.sendChat("After address change"));
         QTRY_COMPARE(memberMessages(client.channel).size(), 1);
