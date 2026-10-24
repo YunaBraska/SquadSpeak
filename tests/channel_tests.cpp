@@ -73,14 +73,14 @@ struct Device final {
     bool join(LocalChannel& host) { return channel.join(host.ownId(), "127.0.0.1", host.port()); }
     bool listenWithUdp(const QHostAddress& address = QHostAddress::LocalHost) {
         for (int attempt = 0; attempt < 32; ++attempt) {
-            QUdpSocket reservation;
-            if (!reservation.bind(QHostAddress::Any, 0, QAbstractSocket::DontShareAddress)) {
-                qWarning() << "Unable to reserve UDP media port:" << reservation.errorString();
+            QTcpServer reservation;
+            if (!reservation.listen(QHostAddress::Any, 0)) {
+                qWarning() << "Unable to reserve device access port:" << reservation.errorString();
                 return false;
             }
-            const auto port = reservation.localPort();
-            if (!channel.startService(address, port)) continue;
+            const auto port = reservation.serverPort();
             reservation.close();
+            if (!channel.startService(address, port)) continue;
             return channel.listen(address, port);
         }
         qWarning() << "Unable to find a TCP/UDP media port after 32 attempts:" << channel.status();
