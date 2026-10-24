@@ -6340,6 +6340,11 @@ private slots:
         // The hosted macOS network launcher intentionally resets environment
         // logging rules. Enable bounded diagnostics inside this test process.
         QLoggingCategory::setFilterRules(QStringLiteral("squadspeak.media.sender.debug=true"));
+        const auto pacing = qEnvironmentVariable("SQUAD_SOAK_PACING", "realtime");
+        QVERIFY2(pacing == "realtime" || pacing == "delivery",
+            "SQUAD_SOAK_PACING must be realtime or delivery");
+        const bool completeDelivery = pacing == "delivery";
+        const bool deliveryPaced = instrumentedTiming || completeDelivery;
         QFETCH(int, callbackDelayMs);
         QFETCH(int, sourceChannels);
         QVERIFY(sourceChannels == 1 || sourceChannels == 2);
@@ -6454,7 +6459,7 @@ private slots:
         connect(&receiverPoll, &QTimer::timeout, &receiverEvents, [&] {
             receiverOutputValid &= writeReceivers({{"operation", "stats"}}) >= 0;
         });
-        receiverPoll.start(instrumentedTiming ? 10 : 100);
+        receiverPoll.start(deliveryPaced ? 10 : 100);
         QJsonArray approved;
         const auto firstIdentity = TlsIdentity::create();
         for (int i = 0; i < speakers; ++i) {
@@ -6581,7 +6586,7 @@ private slots:
         QVERIFY2(soakSeconds >= 2 && soakSeconds <= 1800,
             "SQUAD_SOAK_SECONDS must be between 2 and 1800");
         QVERIFY(commandReceivers({{"operation", "reset"}}));
-        if (!instrumentedTiming) receiverPoll.stop();
+        if (!deliveryPaced) receiverPoll.stop();
         for (auto& count : audioCounts) count = 0;
         for (auto& count : missingCounts) count = 0;
         const int sustainedFrames = soakSeconds * 50;
@@ -6593,7 +6598,7 @@ private slots:
         const auto receivedThrough = [&](int frames) {
             for (size_t i = 0; i < audioCounts.size(); ++i) {
                 const int expected = frames * (speakers - (i < size_t(speakers) ? 1 : 0));
-                if (audioCounts[i] + missingCounts[i] < expected) return false;
+                if (audioCounts[i] + (completeDelivery ? 0 : missingCounts[i]) < expected) return false;
             }
             return true;
         };
@@ -6631,9 +6636,9 @@ private slots:
         connect(&input, &QTimer::timeout, &reception, [&] {
             const auto now = sustained.elapsed();
             if (callbacksDelayed(now)) return;
-            // Sanitizers verify the same fanout and packet count with bounded
-            // work in flight. Release builds alone measure realtime capacity.
-            if (instrumentedTiming && !receivedThrough(sentFrames)) {
+            // Delivery pacing bounds work in flight without reducing the
+            // fanout or packet count. The default path measures realtime load.
+            if (deliveryPaced && !receivedThrough(sentFrames)) {
                 if (now - sentAtMs >= 5000) { deliveryTimedOut = true; input.stop(); }
                 return;
             }
@@ -6642,7 +6647,7 @@ private slots:
             // Capture is sample-clocked, not callback-clocked. AudioModel
             // drains all available samples after a delayed wakeup. Keep this
             // fixture's catch-up bounded by the receiver's six-frame queue.
-            const auto due = instrumentedTiming ? sentFrames + 1
+            const auto due = deliveryPaced ? sentFrames + 1
                 : std::min<qint64>({now / 20, sentFrames + 6, sustainedFrames});
             QElapsedTimer work; work.start();
             while (sentFrames < due) {
@@ -6655,7 +6660,7 @@ private slots:
             if (sentFrames == sustainedFrames) input.stop();
         });
         qInfo() << "Starting audio soak; simultaneous speakers" << speakers
-                << "requested seconds" << soakSeconds << "setup ms" << connectedMs;
+                << "delivery paced" << deliveryPaced << "requested seconds" << soakSeconds << "setup ms" << connectedMs;
 #ifndef Q_OS_WIN
         // Microsoft clock() measures wall time, unlike the POSIX CPU clock.
         const auto cpuStarted = std::clock();
@@ -6667,8 +6672,8 @@ private slots:
 #endif
         sustained.start(); output.start(10); input.start(10);
         QVERIFY(waitForEvents(&input, &QTimer::timeout, [&] { return !input.isActive(); },
-            soakSeconds * (instrumentedTiming ? 15000 : 1500) + 5000));
-        QVERIFY2(!deliveryTimedOut, "Instrumented fanout did not deliver a frame to every listener within 5 seconds");
+            soakSeconds * (deliveryPaced ? 15000 : 1500) + 5000));
+        QVERIFY2(!deliveryTimedOut, "Delivery-paced fanout did not deliver a frame to every listener within 5 seconds");
         QCOMPARE(sentFrames, sustainedFrames);
         QVERIFY(validSend);
         output.stop();
@@ -6676,9 +6681,11 @@ private slots:
         advancePlayback(playbackMs);
         receiverPoll.start(10);
         // RTP can report a gap only when a later packet arrives. Losing the
-        // final packet cannot produce a gap report; allow a bounded drain,
-        // then apply the same 95% delivery requirement to every listener.
-        waitForEvents([&] { return receivedThrough(sustainedFrames); }, 500);
+        // final packet cannot produce a gap report. Controlled delivery must
+        // receive it too, within the same per-frame deadline.
+        const bool drained = waitForEvents([&] { return receivedThrough(sustainedFrames); },
+            completeDelivery ? 5000 : 500);
+        QVERIFY2(!completeDelivery || drained, "Controlled fanout did not deliver every final packet within 5 seconds");
         QVERIFY(receiverOutputValid);
 #ifndef Q_OS_WIN
         qInfo() << "Audio soak client processes CPU ms"
@@ -6699,14 +6706,14 @@ private slots:
         for (size_t i = 0; i < audioCounts.size(); ++i) {
             const int expected = sustainedFrames * (speakers - (i < size_t(speakers) ? 1 : 0));
             QVERIFY(audioCounts[i] + missingCounts[i] <= expected);
-            QVERIFY2(audioCounts[i] >= expected * 95 / 100,
+            QVERIFY2(audioCounts[i] >= expected * (completeDelivery ? 100 : 95) / 100,
                 qPrintable(QString("listener %1 received %2 / %3 packets; reported gaps %4")
                     .arg(i).arg(audioCounts[i]).arg(expected).arg(missingCounts[i])));
         }
         QVERIFY(validAudio);
         for (const auto frames : audibleFrames) QVERIFY(frames > 0);
-        if (instrumentedTiming) {
-            qInfo() << "Instrumented delivery-paced run; realtime capacity is verified by the release matrix";
+        if (deliveryPaced) {
+            qInfo() << "Delivery-paced run, not a realtime capacity measurement";
         } else {
             const auto expectedFrames = playbackMs / 20;
             QVERIFY2(renderedFrames >= expectedFrames * 9 / 10,
