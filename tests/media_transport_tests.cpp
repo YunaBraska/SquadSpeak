@@ -1,4 +1,5 @@
 #include "media_transport.hpp"
+#include "voice_mixer.hpp"
 #include "local_channel.hpp"
 #include <QTemporaryDir>
 #include "event_wait.hpp"
@@ -162,6 +163,58 @@ class MediaTransportTests final : public QObject {
 private slots:
     void initTestCase() {
         SendGate::initialize();
+    }
+    void pacedCaptureBurstSurvivesEncryptedTransport_data() {
+        QTest::addColumn<int>("channels"); QTest::addColumn<bool>("udp");
+        for (int channels : {1, 2}) for (bool udp : {false, true})
+            QTest::newRow(qPrintable(QString("%1ch-%2").arg(channels).arg(udp ? "udp" : "reliable"))) << channels << udp;
+    }
+    void pacedCaptureBurstSurvivesEncryptedTransport() {
+        QFETCH(int, channels); QFETCH(bool, udp);
+        const auto port = availableUdpPort(); QVERIFY(port);
+        squad::MediaTransport host(true, port, QHostAddress::LocalHost, 0);
+        squad::MediaTransport client(false, 0, QHostAddress::LocalHost, port);
+        int fallback = 0;
+        connect(&host, &squad::MediaTransport::signaling, &client, [&](const auto& message) {
+            fallback += message.value("kind") == "frame";
+            if (udp || message.value("kind") != "description") QVERIFY(client.receive(message));
+        });
+        connect(&client, &squad::MediaTransport::signaling, &host, [&](const auto& message) { QVERIFY(host.receive(message)); });
+        QSignalSpy heard(&client, &squad::MediaTransport::audio);
+        if (udp) QTRY_VERIFY_WITH_TIMEOUT(host.udpActive() && client.udpActive(), 10000);
+        squad::VoiceMixer sender(channels), receiver(channels), reference(channels);
+        receiver.setAutomatic(false); reference.setAutomatic(false);
+        QList<QByteArray> captured, sent;
+        for (int frame = 0; frame < 90; ++frame) {
+            std::vector<float> input(size_t(960 * channels));
+            for (size_t i = 0; i < input.size(); ++i)
+                input[i] = float(0.2 * std::sin((frame * 960 + i / channels) * (0.02 + (i % channels) * 0.01)));
+            captured.append(sender.encode(input, 48000));
+        }
+        qsizetype consumed = 0;
+        for (int now = 0; now < 2000; now += 20) {
+            QList<QByteArray> batch;
+            // Largest admitted onset: 240 ms pre-roll plus a 120 ms callback.
+            if (now == 0) { batch = captured.sliced(0, 18); consumed = 18; }
+            else if (now % 120 == 0 && consumed < captured.size()) {
+                batch = captured.sliced(consumed, std::min<qsizetype>(6, captured.size() - consumed));
+                consumed += batch.size();
+            }
+            const auto ready = sender.pace(batch, now);
+            for (const auto& packet : ready) QVERIFY(host.send(first, packet));
+            QVERIFY(waitForEvents([&] { return heard.size() == sent.size() + ready.size(); }, 2000));
+            for (const auto& packet : ready) {
+                const auto event = heard[sent.size()];
+                QCOMPARE(event.at(1).toByteArray(), packet); QCOMPARE(event.at(2).toInt(), 0);
+                QVERIFY(receiver.receive(first, event.at(1).toByteArray(), now));
+                QVERIFY(reference.receive(first, packet, now));
+                sent.append(packet);
+            }
+            QCOMPARE(receiver.render(48000, now), reference.render(48000, now));
+        }
+        QCOMPARE(sent, captured);
+        QVERIFY(!sender.capturePending());
+        QCOMPARE(fallback, udp ? 0 : int(captured.size()));
     }
     void dataDatagramsCarryBinaryPayloads_data() {
         QTest::addColumn<QHostAddress>("address");

@@ -216,7 +216,7 @@ QList<QByteArray> VoiceMixer::encode(std::span<const float> samples, int sampleR
         } else {
             std::array<float, 1920> previous{};
             std::copy_n(frame, frameSamples, previous.begin());
-            if (preRoll_.size() == (activation_.automatic ? 3u : 2u)) preRoll_.pop_front();
+            if (preRoll_.size() == (activation_.automatic ? 12u : 2u)) preRoll_.pop_front();
             preRoll_.push_back(std::move(previous));
         }
         used += frameSamples;
@@ -224,6 +224,26 @@ QList<QByteArray> VoiceMixer::encode(std::span<const float> samples, int sampleR
     capture_.erase(capture_.begin(), capture_.begin() + used);
     if (used > 0 && packets.isEmpty()) transmitLevel_ = 0;
     return packets;
+}
+
+QList<QByteArray> VoiceMixer::pace(QList<QByteArray> packets, qint64 now) {
+    if (now < 0) throw std::invalid_argument("Capture clock must be nonnegative");
+    if (outgoing_.isEmpty() && packets.isEmpty()) return {};
+    if (outgoing_.isEmpty() && (nextPacketAt_ < 0 || now - nextPacketAt_ > 120)) nextPacketAt_ = now;
+    // Catch up within the transport's six-frame budget, never dump an entire
+    // retained word into the receiver's smaller jitter buffer in one callback.
+    if (now - nextPacketAt_ > 100) {
+        const auto stale = std::min<qsizetype>(outgoing_.size(), (now - nextPacketAt_ - 100 + 19) / 20);
+        outgoing_.remove(0, stale);
+        nextPacketAt_ = std::max(nextPacketAt_ + stale * 20, now - 100);
+    }
+    outgoing_.append(std::move(packets));
+    if (outgoing_.size() > 18) outgoing_.remove(0, outgoing_.size() - 18);
+    const auto count = std::min<qsizetype>(outgoing_.size(), now >= nextPacketAt_ ? (now - nextPacketAt_) / 20 + 1 : 0);
+    auto ready = outgoing_.sliced(0, count);
+    outgoing_.remove(0, count);
+    nextPacketAt_ += count * 20;
+    return ready;
 }
 
 VoiceMixer& VoiceMixer::setPacketLimit(int bytes) {
@@ -398,6 +418,8 @@ VoiceMixer& VoiceMixer::resetCapture() {
         throw std::runtime_error(QT_TRANSLATE_NOOP("AudioModel", "Noise suppression could not be initialized"));
 #endif
     preRoll_.clear();
+    outgoing_.clear();
+    nextPacketAt_ = -1;
     trailingFrames_ = 0;
     silenceFrames_ = 0;
     speechProtection_ = 0;

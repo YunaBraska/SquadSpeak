@@ -48,6 +48,11 @@ public:
     // before gating/encoding, even while muted. Borrowed spans cannot escape.
     [[nodiscard]] QList<QByteArray> encode(std::span<const float> samples, int sampleRate,
         bool transmissionAllowed = true, const CaptureFilter& filter = {}, const CaptureObserver& observer = {});
+    // Pace encoded capture on a monotonic millisecond clock. Empty input drains
+    // pending frames. Retain at most 240 ms pre-roll plus a 120 ms capture batch,
+    // and release at most six frames after a late callback. resetCapture clears it.
+    [[nodiscard]] QList<QByteArray> pace(QList<QByteArray> packets, qint64 now);
+    [[nodiscard]] bool capturePending() const { return !outgoing_.isEmpty(); }
     [[nodiscard]] bool receive(const QString& peer, const QByteArray& packet, qint64 now, int missing = 0);
     using PlaybackFilter = std::function<void(const QString&, std::span<float>, qint64)>;
     // Processes each decoded 48 kHz peer frame before normalization and mixing.
@@ -123,6 +128,8 @@ private:
     bool voiceActive_ = false;
     bool captureTransmissionAllowed_ = true;
     std::deque<std::array<float, 1920>> preRoll_;
+    QList<QByteArray> outgoing_;
+    qint64 nextPacketAt_ = -1;
     std::unique_ptr<SRC_STATE, decltype(&src_delete)> inputConverter_{nullptr, src_delete};
     std::unique_ptr<SRC_STATE, decltype(&src_delete)> outputConverter_{nullptr, src_delete};
     std::map<QString, Stream> streams_;

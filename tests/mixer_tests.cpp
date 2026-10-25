@@ -385,6 +385,26 @@ private slots:
         }
     }
 
+    void automaticActivationRetainsQuietWordOnset_data() {
+        QTest::addColumn<int>("channels");
+        QTest::newRow("mono") << 1;
+        QTest::newRow("stereo") << 2;
+    }
+    void automaticActivationRetainsQuietWordOnset() {
+        QFETCH(int, channels);
+        squad::VoiceMixer gated(channels);
+        gated.setVoiceActivation({true, true, -45});
+        for (int frame = 0; frame < 20; ++frame)
+            QVERIFY(gated.encode(speechFrame(frame, channels, 0.00001), 48000).isEmpty());
+        QList<QByteArray> onset;
+        for (int frame = 20; frame < 100 && onset.isEmpty(); ++frame)
+            onset = gated.encode(speechFrame(frame, channels, 0.3), 48000);
+        QCOMPARE(onset.size(), 13); // Twelve retained frames and the activating frame.
+        gated.resetCapture();
+        gated.setVoiceActivation({false, true, -45});
+        QCOMPARE(gated.encode(speechFrame(20, channels, 0.3), 48000).size(), 1);
+    }
+
     void activationPreservesWordEdgesAndStopsAfterTheTail() {
         squad::VoiceMixer gated, reference;
         gated.setVoiceActivation({true, false, -30});
@@ -406,6 +426,90 @@ private slots:
         QVERIFY(!gated.voiceActive());
         QVERIFY(gated.activationLevelDb() < gated.activationThresholdDb());
         QCOMPARE(gated.activationThresholdDb(), -30);
+    }
+    void capturePacingPreservesSampleTimeAndBoundsStalls() {
+        squad::VoiceMixer encoder, pacer;
+        QList<QByteArray> frames;
+        for (int frame = 0; frame < 40; ++frame) frames.append(encoder.encode(speechFrame(frame, 1, 0.3), 48000));
+        for (int now = 0; now < 500; now += 10) QVERIFY(pacer.pace({}, now).isEmpty());
+        QCOMPARE(pacer.pace(frames.sliced(0, 18), 500), frames.sliced(0, 1));
+        QVERIFY(pacer.capturePending());
+        for (int frame = 1; frame < 18; ++frame) {
+            const auto now = 500 + frame * 20 + (frame % 5 == 0 ? 7 : 0);
+            QCOMPARE(pacer.pace({}, now), frames.sliced(frame, 1));
+            QVERIFY(pacer.pace({}, now).isEmpty());
+        }
+        QVERIFY(!pacer.capturePending());
+        QCOMPARE(pacer.pace(frames.sliced(18, 1), 860), frames.sliced(18, 1));
+        // After silence the next utterance starts immediately, without old debt.
+        QCOMPARE(pacer.pace(frames.sliced(0, 18), 5000), frames.sliced(0, 1));
+        QCOMPARE(pacer.pace({}, 5120), frames.sliced(1, 6));
+        QVERIFY(pacer.pace({}, 5120).isEmpty());
+        QVERIFY(pacer.pace({}, 5520).isEmpty());
+        QVERIFY(!pacer.capturePending());
+        // Excess capture is bounded. Keep the newest 360 ms on overload.
+        pacer.resetCapture();
+        QCOMPARE(pacer.pace(frames, 5540), frames.sliced(22, 1));
+        pacer.resetCapture();
+        QVERIFY(!pacer.capturePending());
+        QVERIFY(pacer.pace({}, 5560).isEmpty());
+        QCOMPARE(pacer.pace(frames.sliced(0, 1), 5580), frames.sliced(0, 1));
+        // A late callback supplies fresh samples. Old pacing debt must not
+        // discard their first frame just because the previous queue was empty.
+        QCOMPARE(pacer.pace(frames.sliced(1, 6), 5720), frames.sliced(1, 6));
+        QVERIFY_THROWS_EXCEPTION(std::invalid_argument, (void)pacer.pace({}, -1));
+    }
+    void pacedActivationReachesPlaybackUnchanged_data() {
+        QTest::addColumn<int>("channels"); QTest::addColumn<int>("batch"); QTest::addColumn<bool>("ptt");
+        for (int channels : {1, 2}) for (int batch : {1, 6}) for (bool ptt : {false, true})
+            QTest::newRow(qPrintable(QString("%1ch-%2frames-%3").arg(channels).arg(batch).arg(ptt ? "ptt" : "auto")))
+                << channels << batch << ptt;
+    }
+    void pacedActivationReachesPlaybackUnchanged() {
+        QFETCH(int, channels); QFETCH(int, batch); QFETCH(bool, ptt);
+        squad::VoiceMixer sender(channels), receiver(channels), reference(channels);
+        sender.setVoiceActivation({!ptt, true, -45}).setNoiseSuppression(0.5);
+        receiver.setAutomatic(false); reference.setAutomatic(false);
+        QList<QByteArray> encoded, sent;
+        std::vector<float> expected, played;
+        qsizetype largest = 0;
+        int generated = 0;
+        for (int now = 0; now < 5000; now += 20) {
+            QList<QByteArray> packets;
+            if (now < 4000 && now % (batch * 20) == 0) {
+                std::vector<float> capture;
+                for (int i = 0; i < batch; ++i, ++generated) {
+                    const auto frame = speechFrame(generated, channels, generated < 20 ? 0.00001 : 0.3);
+                    capture.insert(capture.end(), frame.begin(), frame.end());
+                }
+                packets = sender.encode(capture, 48000);
+                largest = std::max(largest, packets.size());
+                encoded.append(packets);
+            }
+            for (const auto& packet : sender.pace(packets, now)) {
+                QVERIFY(receiver.receive("speaker", packet, now));
+                QVERIFY(reference.receive("speaker", packet, sent.size() * 20));
+                const auto frame = reference.render(48000, sent.size() * 20);
+                expected.insert(expected.end(), frame.begin(), frame.end());
+                sent.append(packet);
+            }
+            const auto output = receiver.render(48000, now);
+            if (!sent.isEmpty() && played.size() < expected.size()) played.insert(played.end(), output.begin(), output.end());
+        }
+        QCOMPARE(sent, encoded);
+        QCOMPARE(played, expected);
+        QVERIFY(!sender.capturePending());
+        QVERIFY(largest <= (ptt ? batch : batch + 12));
+        if (!ptt) QVERIFY(largest >= 13);
+        // Muting, mode changes and device resets cannot leak queued capture.
+        for (int reset = 0; reset < 3; ++reset) {
+            (void)sender.pace(encoded.sliced(0, 13), 6000 + reset * 1000);
+            QVERIFY(sender.capturePending());
+            if (reset == 0) QVERIFY(sender.encode(speechFrame(0, channels, 0.3), 48000, false).isEmpty());
+            else if (reset == 1) sender.setVoiceActivation({ptt, false, -40});
+            else sender.resetCapture();
+            QVERIFY(sender.pace({}, 6500 + reset * 1000).isEmpty());
+        }
     }
     void activationResetAndModeChangeDiscardBufferedAudio() {
         squad::VoiceMixer gated, fresh;
@@ -535,7 +639,7 @@ private slots:
         for (int frame = 0; frame < 100; ++frame) {
             const auto speech = speechFrame(frame, channels, 0.3);
             history.push_back(speech);
-            if (history.size() > 4) history.pop_front();
+            if (history.size() > 13) history.pop_front();
             const auto packets = gated.encode(speech, 48000);
             QVERIFY(size_t(packets.size()) <= history.size());
             for (qsizetype p = 0; p < packets.size(); ++p)

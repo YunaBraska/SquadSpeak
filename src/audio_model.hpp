@@ -118,7 +118,7 @@ public:
     [[nodiscard]] double activationThresholdDb() const { return mixer_.activationThresholdDb(); }
     [[nodiscard]] double activationLevelDb() const { return mixer_.activationLevelDb(); }
     [[nodiscard]] bool activationOpen() const { return mixer_.voiceActive(); }
-    [[nodiscard]] bool voiceSending() const { return voiceActive_ && transmitEnabled_ && !testActive() && mixer_.voiceActive(); }
+    [[nodiscard]] bool voiceSending() const { return voiceActive_ && transmitEnabled_ && !testActive() && (mixer_.voiceActive() || mixer_.capturePending()); }
     [[nodiscard]] QVariantMap playbackLevels() const;
     [[nodiscard]] double transmitLevel() const;
     [[nodiscard]] double musicVolume() const { return musicVolume_; }
@@ -203,6 +203,7 @@ private:
     void beginPlayback();
     void playVoice();
     void consume();
+    void sendCapture(QList<QByteArray> packets = {});
     void monitorOutput(bool retry = false);
     bool updateProfile(squad::InputProfile profile);
     bool updateActivation(squad::VoiceActivation activation);

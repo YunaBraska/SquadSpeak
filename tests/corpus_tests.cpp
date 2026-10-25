@@ -268,27 +268,44 @@ private slots:
         receiver.setAutomatic(false);
         Samples output(length, 0);
         std::vector<bool> admitted(length / 960, false);
+        std::deque<size_t> pendingPositions, playbackPositions;
         qsizetype levelGateFrames = 0;
-        for (size_t offset = 0; offset < input.size(); offset += 960) {
-            Samples capture(size_t(960 * channels));
-            for (size_t frame = 0; frame < 960; ++frame)
-                for (int channel = 0; channel < channels; ++channel)
-                    capture[frame * size_t(channels) + size_t(channel)] = input[offset + frame];
-            const auto packets = sender.encode(capture, rate);
-            levelGateFrames += levelGate.encode(capture, rate).size();
-            QVERIFY(packets.size() <= 4);
-            for (qsizetype p = 0; p < packets.size(); ++p) {
-                const auto position = offset - size_t(packets.size() - 1 - p) * 960;
-                QVERIFY(position < input.size());
-                const auto now = qint64(position / 48);
-                QVERIFY(receiver.receive("speaker", packets[p], now));
-                const auto frame = receiver.render(rate, now);
+        for (size_t offset = 0; offset < input.size() + 18 * 960; offset += 960) {
+            QList<QByteArray> packets;
+            if (offset < input.size()) {
+                Samples capture(size_t(960 * channels));
+                for (size_t frame = 0; frame < 960; ++frame)
+                    for (int channel = 0; channel < channels; ++channel)
+                        capture[frame * size_t(channels) + size_t(channel)] = input[offset + frame];
+                packets = sender.encode(capture, rate);
+                levelGateFrames += levelGate.encode(capture, rate).size();
+                QVERIFY(packets.size() <= 13);
+                for (qsizetype p = 0; p < packets.size(); ++p) {
+                    const auto position = offset - size_t(packets.size() - 1 - p) * 960;
+                    QVERIFY(position < input.size());
+                    pendingPositions.push_back(position);
+                }
+            }
+            const auto now = qint64(offset / 48);
+            const auto ready = sender.pace(packets, now);
+            QVERIFY(ready.size() <= 6);
+            for (const auto& packet : ready) {
+                QVERIFY(!pendingPositions.empty());
+                playbackPositions.push_back(pendingPositions.front()); pendingPositions.pop_front();
+                QVERIFY(receiver.receive("speaker", packet, now));
+            }
+            const auto frame = receiver.render(rate, now);
+            if (!playbackPositions.empty()) {
+                const auto position = playbackPositions.front(); playbackPositions.pop_front();
                 for (size_t sample = 0; sample < 960; ++sample)
                     output[position + sample] = std::accumulate(frame.begin() + sample * size_t(channels),
                         frame.begin() + (sample + 1) * size_t(channels), 0.0f) / channels;
                 admitted[position / 960] = true;
             }
         }
+        QVERIFY(pendingPositions.empty());
+        QVERIFY(playbackPositions.empty());
+        QVERIFY(!sender.capturePending());
         double retained = 0;
         const auto suppressionDelay = size_t(squad::VoiceMixer::suppressionDelaySamples());
         for (size_t i = 0; i + suppressionDelay < clean.size(); ++i)

@@ -57,6 +57,7 @@ AudioModel::AudioModel(const QString& settingsFile, QObject* parent) try
     playbackTimer_.setInterval(10);
     playbackTimer_.setTimerType(Qt::PreciseTimer);
     connect(&playbackTimer_, &QTimer::timeout, this, [this] {
+        sendCapture();
         playVoice();
         if (clock_.elapsed() - activityPublishedAt_ >= 50) {
             activityPublishedAt_ = clock_.elapsed(); emit activityChanged();
@@ -581,14 +582,22 @@ void AudioModel::consume() {
                     processor_->observeOutput({filtered[i], filtered[i + 1]});
                 }
             });
-        if (!packets.isEmpty()) lastPacketAt_ = clock_.elapsed();
-        for (const auto& packet : packets) emit audioPacket(packet);
+        sendCapture(packets);
         emit activityChanged();
     } catch (const std::exception& error) {
         echo_.reset();
         mixer_.resetCapture();
         setStatus(tr(error.what()));
         emit activityChanged();
+    }
+}
+
+void AudioModel::sendCapture(QList<QByteArray> packets) {
+    if (!voiceActive_ || !transmitEnabled_ || testActive()) return;
+    const auto now = clock_.elapsed();
+    for (const auto& packet : mixer_.pace(std::move(packets), now)) {
+        lastPacketAt_ = now;
+        emit audioPacket(packet);
     }
 }
 
@@ -738,6 +747,7 @@ bool AudioModel::setVoiceState(bool joined, bool transmit, bool pushToTalk, int 
 }
 
 bool AudioModel::setParticipants(const QVariantList& participants, const QString& channel) {
+    if (language_.channel() != channel) mixer_.resetCapture();
     for (const auto& previous : participants_) {
         const auto id = previous.toMap().value("id").toString();
         const auto current = std::find_if(participants.begin(), participants.end(), [&](const auto& value) {

@@ -50,14 +50,14 @@ Bluetooth audio devices are distinct from Bluetooth-only app networking, which i
 ## TeamSpeak interoperability
 
 U173 capture quality and keyboard suppression remain under investigation.
-Automatic activation now learns its background threshold from the same processed
-signal it compares for admission. The normal corpus includes additional noisy
-speech regressions and retains clean/short speech coverage for all twenty
-narrators. The existing noise-reduction limits still pass, with up to 19 extra
-20 ms keyboard admissions per 12-second control compared with the prior build.
-Some 40-180 ms omissions remain in the extended mixtures before transport.
-A local 240 ms pre-roll experiment passes all 498 activation cases, but increasing
-the accepted 60 ms delay budget needs a decision and full send-path verification.
+Automatic activation uses 240 ms pre-roll, as approved to preserve word beginnings,
+and learns its threshold from the same processed signal used for admission.
+One bounded capture pacer releases frames before protocol selection, preserving
+speech through the smaller transport and playback queues without changing PCM.
+PTT has no activation pre-roll. The extended corpus covers 498 activation cases
+with twenty voices, brief speech, two keyboards, breathing controls and mono/stereo.
+The longer pre-roll can admit more brief noise and adds up to 180 ms onset delay
+compared with the previous setting. Native conversation acceptance remains separate.
 Strong manual suppression can still attenuate brief speech details. Passing
 transport checks alone does not establish capture quality. The TS bridge
 boundary retains encoded packets unchanged, with fullband decoding and the
