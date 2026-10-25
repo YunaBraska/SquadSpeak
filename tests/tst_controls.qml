@@ -111,6 +111,14 @@ Item {
                 verify(independent, "Zero voice volume leaves app cues audible")
             }
         }
+        function test_participantsRemainUsableWithoutOutputDevice() {
+            const result = fixtures.participantsWithoutOutput()
+            verify(!result.outputAvailable)
+            verify(result.accepted && result.repeated && result.cleared)
+            verify(result.automatic)
+            verify(!result.editAccepted)
+            compare(result.status, "")
+        }
         function test_outputFeedbackRespectsVolumeAndMute() {
             const original = audio.notificationVolume
             try {

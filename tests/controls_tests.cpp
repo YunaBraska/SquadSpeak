@@ -96,6 +96,18 @@ public slots:
         AudioModel restored(folder_.filePath("audio.ini"));
         return restored.botVoiceId();
     }
+    QVariantMap participantsWithoutOutput() {
+        const auto path = folder_.filePath("disconnected-output.ini");
+        squad::AudioProfiles(path).select(false, "disconnected-test-output");
+        AudioModel model(path);
+        const QVariantList members{QVariantMap{{"id", "peer"}, {"available", true}}};
+        const auto accepted = model.setParticipants(members);
+        const auto repeated = model.setParticipants(members);
+        return {{"outputAvailable", model.outputAvailable()}, {"accepted", accepted},
+            {"repeated", repeated}, {"automatic", model.participantAutomatic("peer")},
+            {"editAccepted", model.setParticipantAutomatic("peer", false)},
+            {"cleared", model.setParticipants({})}, {"status", model.outputStatus()}};
+    }
 
     bool populateMembers(int count) {
         if (count < 0 || count > 63) return false;

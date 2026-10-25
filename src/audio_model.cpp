@@ -874,7 +874,7 @@ void AudioModel::applyOutputVolumes() {
         const auto id = member.value("id").toString();
         mixer_.setGain(id, participantVolumes_.value(id, 1.0)
             * (member.value("music").toBool() ? channelMusicVolume(id) : outputVolume_));
-        mixer_.setAutomatic(profiles_.automaticVolume(output_.id(), id), id);
+        mixer_.setAutomatic(output_.isNull() ? automaticVolume_ : profiles_.automaticVolume(output_.id(), id), id);
     }
     emit profileChanged();
 }
