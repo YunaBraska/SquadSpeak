@@ -25,14 +25,14 @@ public:
     AudioProfiles& saveBotVoice(const QByteArray& deviceId, const QString& voiceId);
     [[nodiscard]] double output(const QByteArray& deviceId) const;
     [[nodiscard]] double participant(const QByteArray& deviceId, const QString& peer) const;
-    [[nodiscard]] bool automaticVolume(const QByteArray& deviceId) const;
+    [[nodiscard]] bool automaticVolume(const QByteArray& deviceId, const QString& peer = {}) const;
     [[nodiscard]] double noiseSuppression(const QByteArray& deviceId) const;
     [[nodiscard]] std::optional<double> echoSuppression(const QByteArray& deviceId) const;
     [[nodiscard]] VoiceActivation voiceActivation(const QByteArray& deviceId) const;
     AudioProfiles& saveInput(const QByteArray& deviceId, InputProfile profile);
     AudioProfiles& saveOutput(const QByteArray& deviceId, double volume);
     AudioProfiles& saveParticipant(const QByteArray& deviceId, const QString& peer, double volume);
-    AudioProfiles& saveAutomaticVolume(const QByteArray& deviceId, bool enabled);
+    AudioProfiles& saveAutomaticVolume(const QByteArray& deviceId, bool enabled, const QString& peer = {});
     AudioProfiles& saveNoiseSuppression(const QByteArray& deviceId, double strength);
     AudioProfiles& saveEchoSuppression(const QByteArray& deviceId, std::optional<double> strength);
     AudioProfiles& saveVoiceActivation(const QByteArray& deviceId, VoiceActivation activation);

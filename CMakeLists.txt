@@ -720,7 +720,7 @@ if(BUILD_TESTING)
         SQUAD_CORPUS_DIR="${CMAKE_CURRENT_SOURCE_DIR}/tests/audio"
         SQUAD_CORPUS_OUTPUT="${CMAKE_BINARY_DIR}/audio-corpus")
     add_test(NAME audio_corpus COMMAND corpus_tests mixtures)
-    foreach(part speechActivation quietWordOnsets repeatedSpeech automaticInput playbackEcho duplexEchoDecays)
+    foreach(part speechActivation quietWordOnsets repeatedSpeech automaticInput playbackEcho duplexEchoDecays receiveNormalization)
         add_test(NAME audio_corpus_${part} COMMAND corpus_tests ${part})
         set_tests_properties(audio_corpus_${part} PROPERTIES TIMEOUT 600
             ENVIRONMENT "SQUAD_CORPUS_OUTPUT=${CMAKE_BINARY_DIR}/audio-corpus-${part}")

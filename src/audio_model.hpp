@@ -175,6 +175,8 @@ public:
     Q_INVOKABLE bool setOutputVolume(double value);
     Q_INVOKABLE bool setAutomaticVolume(bool value);
     Q_INVOKABLE double participantVolume(const QString& peer) const;
+    Q_INVOKABLE bool participantAutomatic(const QString& peer);
+    Q_INVOKABLE bool setParticipantAutomatic(const QString& peer, bool enabled);
     Q_INVOKABLE bool setParticipantVolume(const QString& peer, double value);
     bool setVoiceState(bool joined, bool transmit, bool pushToTalk = false, int packetLimit = 4000);
     bool setParticipants(const QVariantList& participants, const QString& channel = {});

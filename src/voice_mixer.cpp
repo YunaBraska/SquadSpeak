@@ -342,7 +342,8 @@ std::vector<float> VoiceMixer::render(int sampleRate, qint64 now, const Playback
         const auto rms = std::sqrt(energy / frameSamples);
         stream.level = rms; stream.played = now;
         const auto previousGain = stream.automaticGain;
-        if (automatic_ && rms > 0.0032) {
+        const auto automatic = automaticPeers_.value(id, automatic_);
+        if (automatic && rms > 0.0032) {
             // Follow sustained speaker levels, not individual quiet syllables.
             // Hold the last 400 ms of active audio, with fast loudness reduction.
             stream.recentLevels[stream.levelCursor] = rms;
@@ -352,8 +353,8 @@ std::vector<float> VoiceMixer::render(int sampleRate, qint64 now, const Playback
             const auto coefficient = target < stream.automaticGain ? 0.4 : 0.04;
             stream.automaticGain += coefficient * (target - stream.automaticGain);
         }
-        auto gain = stream.gain * (automatic_ ? previousGain : 1.0);
-        const auto step = automatic_ ? stream.gain * (stream.automaticGain - previousGain) / 960 : 0.0;
+        auto gain = stream.gain * (automatic ? previousGain : 1.0);
+        const auto step = automatic ? stream.gain * (stream.automaticGain - previousGain) / 960 : 0.0;
         // Keep automatic level changes continuous across decoded frame boundaries.
         for (size_t i = 0; i < frameSamples; i += size_t(channels_)) {
             gain += step;
@@ -384,8 +385,9 @@ VoiceMixer& VoiceMixer::setGain(const QString& peer, double gain) {
     if (streams_.contains(peer)) streams_.at(peer).gain = gain;
     return *this;
 }
-VoiceMixer& VoiceMixer::setAutomatic(bool enabled) {
-    automatic_ = enabled;
+VoiceMixer& VoiceMixer::setAutomatic(bool enabled, const QString& peer) {
+    if (peer.isEmpty()) automatic_ = enabled;
+    else automaticPeers_.insert(peer, enabled);
     return *this;
 }
 VoiceMixer& VoiceMixer::setNoiseSuppression(double strength) {
@@ -414,6 +416,7 @@ VoiceMixer& VoiceMixer::setVoiceActivation(VoiceActivation activation) {
 }
 VoiceMixer& VoiceMixer::remove(const QString& peer) {
     gains_.remove(peer);
+    automaticPeers_.remove(peer);
     streams_.erase(peer);
     return *this;
 }

@@ -193,6 +193,44 @@ private slots:
         outputDir_ = qEnvironmentVariable("SQUAD_CORPUS_OUTPUT", QStringLiteral(SQUAD_CORPUS_OUTPUT));
         QVERIFY(QDir().mkpath(outputDir_));
     }
+    void receiveNormalization_data() {
+        QTest::addColumn<QString>("speaker");
+        QTest::addColumn<int>("channels");
+        QTest::addColumn<int>("levelDb");
+        for (const auto* speaker : {"speech1", "speech-ls5639", "speech-ls61"})
+            for (int channels : {1, 2}) for (int level : {-30, -42})
+                QTest::newRow(qPrintable(QString("%1-%2-%3").arg(speaker).arg(channels).arg(level)))
+                    << QString(speaker) << channels << level;
+    }
+    void receiveNormalization() {
+        QFETCH(QString, speaker); QFETCH(int, channels); QFETCH(int, levelDb);
+        const auto& speech = sources_[speaker];
+        const auto sourceLevel = rms(speech);
+        const auto quietScale = std::pow(10.0, levelDb / 20.0) / sourceLevel;
+        const auto referenceScale = std::pow(10.0, -24.0 / 20.0) / sourceLevel;
+        squad::VoiceMixer quietSender(channels), referenceSender(channels), quiet(channels), reference(channels);
+        double quietEnergy = 0, referenceEnergy = 0;
+        // Repeat real speech once to separate adaptation from the measured phrase.
+        for (size_t frame = 0; frame < speech.size() / 960 * 2; ++frame) {
+            Samples low(size_t(960 * channels)), normal(low.size());
+            for (size_t i = 0; i < low.size(); ++i) {
+                const auto sample = speech[(frame * 960 + i / channels) % speech.size()];
+                low[i] = float(sample * quietScale);
+                normal[i] = float(sample * referenceScale);
+            }
+            QVERIFY(quiet.receive("speaker", quietSender.encode(low, rate).first(), frame * 20));
+            QVERIFY(reference.receive("speaker", referenceSender.encode(normal, rate).first(), frame * 20));
+            const auto lowOutput = quiet.render(rate, frame * 20);
+            const auto normalOutput = reference.render(rate, frame * 20);
+            if (frame >= speech.size() / 960) {
+                quietEnergy += energy(lowOutput);
+                referenceEnergy += energy(normalOutput);
+            }
+        }
+        const auto differenceDb = 10 * std::log10(quietEnergy / referenceEnergy);
+        qInfo() << "Receive level difference" << differenceDb << "dB";
+        QVERIFY2(std::abs(differenceDb) < 3, qPrintable(QString("Quiet speech stays %1 dB below reference").arg(differenceDb)));
+    }
     void speechActivation_data() {
         QTest::addColumn<QString>("speaker"); QTest::addColumn<QString>("disturbance");
         QTest::addColumn<int>("levelDb"); QTest::addColumn<int>("snrDb");

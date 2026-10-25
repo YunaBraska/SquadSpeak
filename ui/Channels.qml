@@ -1387,6 +1387,9 @@ PanelWindow {
                     property int revision: 0
                     value: { revision; return requestInfo.entry.id ? audio.participantVolume(requestInfo.entry.id) : 1 }
                     valueText: Math.round(value * 100) + " %"
+                    autoAvailable: true
+                    automatic: { revision; return audio.participantAutomatic(requestInfo.entry.id || "") }
+                    applyAutomatic: function(enabled) { return requestInfo.personalControls && audio.setParticipantAutomatic(requestInfo.entry.id, enabled) }
                     applyValue: function(value) { return requestInfo.personalControls && audio.setParticipantVolume(requestInfo.entry.id, value) }
                     Connections { target: audio; function onProfileChanged() { memberGain.revision++ } }
                 }

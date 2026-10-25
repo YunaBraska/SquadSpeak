@@ -136,8 +136,10 @@ AudioProfiles& AudioProfiles::saveBotVoice(const QByteArray& deviceId, const QSt
     return write({{key(deviceId, false) + "botVoice", voiceId}});
 }
 
-bool AudioProfiles::automaticVolume(const QByteArray& deviceId) const {
-    const auto value = settings_.value(key(deviceId, false) + "automaticVolume", true);
+bool AudioProfiles::automaticVolume(const QByteArray& deviceId, const QString& peer) const {
+    const auto value = peer.isEmpty()
+        ? settings_.value(key(deviceId, false) + "automaticVolume", true)
+        : settings_.value(key(deviceId, false) + "automaticParticipants/" + peer.toUtf8().toHex(), automaticVolume(deviceId));
     if (value.toString() != "true" && value.toString() != "false")
         throw std::runtime_error(QT_TRANSLATE_NOOP("AudioModel", "Stored automatic volume setting is invalid"));
     return value.toBool();
@@ -209,8 +211,9 @@ AudioProfiles& AudioProfiles::saveParticipant(const QByteArray& deviceId, const 
     return write({{key(deviceId, false) + "participants/" + peer.toUtf8().toHex(), volume}});
 }
 
-AudioProfiles& AudioProfiles::saveAutomaticVolume(const QByteArray& deviceId, bool enabled) {
-    return write({{key(deviceId, false) + "automaticVolume", enabled}});
+AudioProfiles& AudioProfiles::saveAutomaticVolume(const QByteArray& deviceId, bool enabled, const QString& peer) {
+    return write({{key(deviceId, false) + (peer.isEmpty() ? QStringLiteral("automaticVolume")
+        : "automaticParticipants/" + peer.toUtf8().toHex()), enabled}});
 }
 
 AudioProfiles& AudioProfiles::saveInput(const QByteArray& deviceId, InputProfile profile) {

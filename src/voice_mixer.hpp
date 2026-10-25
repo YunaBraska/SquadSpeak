@@ -59,7 +59,8 @@ public:
     // The borrowed frame cannot escape the callback. Empty queues provide silence.
     [[nodiscard]] std::vector<float> render(int sampleRate, qint64 now, const PlaybackFilter& filter = {});
     VoiceMixer& setGain(const QString& peer, double gain);
-    VoiceMixer& setAutomatic(bool enabled);
+    // A peer override survives playback resets. An empty peer sets the default.
+    VoiceMixer& setAutomatic(bool enabled, const QString& peer = {});
     // Zero bypasses suppression. Positive values blend aligned original and
     // denoised capture, preserving more original sound during detected speech.
     // Delay is reported at 48 kHz, per channel. Bypass has no filter delay.
@@ -136,6 +137,7 @@ private:
     std::unique_ptr<SRC_STATE, decltype(&src_delete)> outputConverter_{nullptr, src_delete};
     std::map<QString, Stream> streams_;
     QHash<QString, double> gains_;
+    QHash<QString, bool> automaticPeers_;
     std::vector<float> capture_;
     int inputRate_ = 0;
     int outputRate_ = 0;

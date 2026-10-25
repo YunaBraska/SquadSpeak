@@ -1014,6 +1014,43 @@ private slots:
         QCOMPARE(rms(quietReceiver.render(48000, 4820)), 0.0);
         QCOMPARE(rms(loudReceiver.render(48000, 5000)), 0.0);
     }
+    void automaticLevelCanBeChosenPerPerson() {
+        squad::VoiceMixer sender, receiver, reference;
+        reference.setAutomatic(false);
+        // Explicit choices override the default, including before first audio.
+        receiver.setAutomatic(false).setAutomatic(true, "auto").setAutomatic(false, "manual");
+        receiver.setGain("auto", 0.5).setGain("manual", 0.25).setGain("default", 0);
+        const auto run = [&](int first, int end) {
+            for (int frame = first; frame < end; ++frame) {
+                const auto packet = sender.encode(tone(0.02), 48000).first();
+                QVERIFY(receiver.receive("auto", packet, frame * 20));
+                QVERIFY(receiver.receive("manual", packet, frame * 20));
+                QVERIFY(receiver.receive("default", packet, frame * 20));
+                QVERIFY(reference.receive("manual", packet, frame * 20));
+                const auto raw = rms(reference.render(48000, frame * 20));
+                const auto mixed = rms(receiver.render(48000, frame * 20));
+                if (frame >= end - 10) QVERIFY(std::abs(mixed - (0.05 + raw * 0.25)) < 0.002);
+            }
+        };
+        run(0, 240);
+        receiver.setAutomatic(true); // Does not erase a manual peer override.
+        run(240, 280);
+        receiver.resetPlayback(); // Device restart retains both overrides and trim.
+        reference.resetPlayback();
+        run(280, 520);
+        receiver.setAutomatic(false, "auto");
+        const auto packet = sender.encode(tone(0.02), 48000).first();
+        QVERIFY(receiver.receive("auto", packet, 10400));
+        QVERIFY(reference.receive("manual", packet, 10400));
+        QVERIFY(std::abs(rms(receiver.render(48000, 10400)) - 0.5 * rms(reference.render(48000, 10400))) < 0.0001);
+        receiver.remove("auto"); // Departures forget the transient mixer override.
+        double resumed = 0;
+        for (int frame = 521; frame < 761; ++frame) {
+            QVERIFY(receiver.receive("auto", sender.encode(tone(0.02), 48000).first(), frame * 20));
+            resumed = rms(receiver.render(48000, frame * 20));
+        }
+        QVERIFY(resumed > 0.09);
+    }
     void equalizationFollowsTheSameSpeakerMovingNearAndFar() {
         squad::VoiceMixer sender, receiver, steadySender, steadyReceiver;
         int frame = 0;
@@ -1495,7 +1532,8 @@ private slots:
         {
             squad::AudioProfiles profiles(path);
             profiles.saveParticipant("headset", "alice", 0.4).saveParticipant("speaker", "alice", 1.2)
-                .saveAutomaticVolume("headset", false).saveOutput("headset", 0.25);
+                .saveAutomaticVolume("headset", false).saveOutput("headset", 0.25)
+                .saveAutomaticVolume("headset", true, "alice").saveAutomaticVolume("speaker", false, "alice");
         }
         const squad::AudioProfiles profiles(path);
         QCOMPARE(profiles.participant("headset", "alice"), 0.4);
@@ -1504,6 +1542,10 @@ private slots:
         QCOMPARE(profiles.output("headset"), 0.25);
         QVERIFY(!profiles.automaticVolume("headset"));
         QVERIFY(profiles.automaticVolume("speaker"));
+        QVERIFY(profiles.automaticVolume("headset", "alice"));
+        QVERIFY(!profiles.automaticVolume("speaker", "alice"));
+        QVERIFY(!profiles.automaticVolume("headset", "bob"));
+        QVERIFY(profiles.automaticVolume("speaker", "bob"));
     }
 };
 QTEST_GUILESS_MAIN(MixerTests)
