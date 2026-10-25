@@ -1,4 +1,8 @@
 title: SquadSpeak
-description: Small voice chat for your channels and computers.
-logo: https://raw.githubusercontent.com/YunaBraska/SquadSpeak/main/ui/icons/app.png
-theme: jekyll-theme-minimal
+product: SquadSpeak
+description: Private voice and chat for your channels and computers.
+repository: https://github.com/YunaBraska/SquadSpeak
+support: https://github.com/YunaBraska/SquadSpeak/issues
+accent: "#7b59d1"
+accent_soft: "#f0eafe"
+color_scheme: light

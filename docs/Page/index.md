@@ -1,25 +1,47 @@
 ---
 layout: default
-title: SquadSpeak
+title: Voice and chat for your own channels
+description: Private voice, Markdown chat and animated portraits for direct conversations.
 ---
 
-# SquadSpeak
+<section class="hero">
+  <div class="hero-copy">
+    <p class="eyebrow">Private voice and chat</p>
+    <h1>Keep the conversation yours.</h1>
+    <p class="lead">SquadSpeak brings direct voice, Markdown chat and animated portraits into a compact desktop app for the channels and computers you choose.</p>
+    <p class="actions"><a class="button" href="documentation.html">Explore SquadSpeak</a><a class="button secondary" href="install.html">Release availability</a></p>
+  </div>
+  <figure class="hero-art">
+    <img src="https://raw.githubusercontent.com/YunaBraska/SquadSpeak/main/docs/images/channel-chat.png" alt="SquadSpeak channel with chat messages and animated member portraits">
+    <figcaption>Voice, messages and a shared channel stay in one deliberately small desktop app.</figcaption>
+  </figure>
+</section>
 
-Small voice chat with channels, Markdown chat and animated portraits.
+<section class="section">
+  <h2>Talk directly. Keep the account out of it.</h2>
+  <p class="section-intro">Use a local-network host name or an address you control. Each running app can host a channel. No general chat account is required.</p>
+  <div class="feature-grid">
+    <article class="feature"><h3>Join your own channels</h3><p>Discover nearby conversations or connect directly by host name or IP address, with device approvals under the channel owner's control.</p></article>
+    <article class="feature"><h3>Keep voice and chat together</h3><p>Speak, write Markdown, share a channel and see the people in it without bouncing between separate tools.</p></article>
+    <article class="feature"><h3>Make the space feel human</h3><p>Animated portraits, local settings and compact controls leave room for the conversation instead of another corporate dashboard.</p></article>
+  </div>
+</section>
 
-[Documentation](documentation.html) | [Download](https://github.com/YunaBraska/SquadSpeak/releases/latest) | [Install](install.html)
+<section class="section">
+  <h2>Built for an actual conversation.</h2>
+  <p class="section-intro">The app combines channel chat with audio controls, device behavior and a visual identity that remains personal without needing a hosted social profile.</p>
+  <div class="screenshot-grid">
+    <figure><img src="https://raw.githubusercontent.com/YunaBraska/SquadSpeak/main/docs/images/channel-chat.png" alt="SquadSpeak chat interface with channel members"><figcaption>Read, write and see channel state in the same focused view.</figcaption></figure>
+    <figure><img src="https://raw.githubusercontent.com/YunaBraska/SquadSpeak/main/docs/images/audio-settings.png" alt="SquadSpeak audio settings"><figcaption>Choose devices and audio behavior without leaving a conversation.</figcaption></figure>
+  </div>
+</section>
 
-## What it does
-
-- Connects people directly by local-network host name or IP address.
-- Keeps voice, Markdown chat and animated portraits in one compact window.
-- Runs without a chat account.
-- Publishes signed update feeds for Apple silicon and Intel Macs.
-
-## Screenshot
-
-![SquadSpeak channel chat](https://raw.githubusercontent.com/YunaBraska/SquadSpeak/main/docs/images/channel-chat.png)
-
-## Requirements
-
-SquadSpeak supports macOS 13 and later.
+<section class="section">
+  <h2>Desktop distribution is being finished deliberately.</h2>
+  <p class="section-intro">Stable macOS distribution remains on hold until prolonged voice sessions pass continuity verification. That avoids asking people to install a build that loses audio during a real conversation.</p>
+  <div class="install-options">
+    <article class="install-option"><h3>GitHub download</h3><p>Stable public downloads will appear after the voice-continuity check is complete.</p><a href="https://github.com/YunaBraska/SquadSpeak/releases">View release status</a></article>
+    <article class="install-option"><h3>Homebrew</h3><p>The cask follows the first stable macOS release, not a preview build.</p></article>
+    <article class="install-option"><h3>Mac App Store</h3><p>Coming later, after the desktop release channel is established.</p></article>
+  </div>
+</section>
