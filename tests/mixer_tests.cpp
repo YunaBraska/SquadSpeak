@@ -441,6 +441,16 @@ private slots:
         }
         QVERIFY(!pacer.capturePending());
         QCOMPARE(pacer.pace(frames.sliced(18, 1), 860), frames.sliced(18, 1));
+        // A delayed callback includes samples that are already due. They must
+        // not consume the capacity reserved for future pre-roll playback.
+        pacer.resetCapture();
+        QCOMPARE(pacer.pace(frames.sliced(0, 18), 1000), frames.sliced(0, 1));
+        QCOMPARE(pacer.pace({}, 1040), frames.sliced(1, 2));
+        QCOMPARE(pacer.pace(frames.sliced(18, 6), 1120), frames.sliced(3, 4));
+        QList<QByteArray> remaining;
+        for (int now = 1140; now <= 1480; now += 20) remaining.append(pacer.pace({}, now));
+        QCOMPARE(remaining, frames.sliced(7, 17));
+        QVERIFY(!pacer.capturePending());
         // After silence the next utterance starts immediately, without old debt.
         QCOMPARE(pacer.pace(frames.sliced(0, 18), 5000), frames.sliced(0, 1));
         QCOMPARE(pacer.pace({}, 5120), frames.sliced(1, 6));

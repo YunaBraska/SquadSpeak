@@ -238,8 +238,12 @@ QList<QByteArray> VoiceMixer::pace(QList<QByteArray> packets, qint64 now) {
         nextPacketAt_ = std::max(nextPacketAt_ + stale * 20, now - 100);
     }
     outgoing_.append(std::move(packets));
-    if (outgoing_.size() > 18) outgoing_.remove(0, outgoing_.size() - 18);
-    const auto count = std::min<qsizetype>(outgoing_.size(), now >= nextPacketAt_ ? (now - nextPacketAt_) / 20 + 1 : 0);
+    const auto due = now >= nextPacketAt_ ? (now - nextPacketAt_) / 20 + 1 : 0;
+    // Catch-up packets leave now, so only future packets consume the retained
+    // pre-roll budget. Trimming them first cuts speech after a delayed callback.
+    const auto capacity = 18 + std::max<qint64>(0, due - 1);
+    if (outgoing_.size() > capacity) outgoing_.remove(0, outgoing_.size() - capacity);
+    const auto count = std::min<qsizetype>(outgoing_.size(), due);
     auto ready = outgoing_.sliced(0, count);
     outgoing_.remove(0, count);
     nextPacketAt_ += count * 20;
