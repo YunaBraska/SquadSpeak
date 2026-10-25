@@ -2125,25 +2125,38 @@ private slots:
         QVERIFY(viewer.channel.watchScreen(host.channel.ownId(), true));
         QVERIFY(waitForEvents([&] { return viewer.channel.screenView().value("tier").toInt() == 1; }));
         QSignalSpy frames(&viewer.channel, &LocalChannel::screenFrameReceived);
+        int acknowledgmentMs = 1;
         connect(&viewer.channel, &LocalChannel::screenFrameReceived, &viewer.channel, [&](const QString& id, qint64 serial, const QJsonObject&, const QByteArray&) {
-            QVERIFY(viewer.channel.acknowledgeScreen(id, serial, decodeMs));
+            QVERIFY(viewer.channel.acknowledgeScreen(id, serial, acknowledgmentMs));
         });
-        QVERIFY(waitForEvents([&] { return link.videoDatagrams > 20; }, 5000));
         const QJsonObject format{{"codec", "mpeg4"}, {"width", 640}, {"height", 360}, {"extra", ""}};
         const QByteArray payload(120000, 'v');
-        link.delay = 2000; const auto previous = link.videoDatagrams;
+        QTimer source;
+        source.setInterval(34);
+        const auto warmup = connect(&source, &QTimer::timeout, &viewer.channel, [&] {
+            for (int tier : host.channel.screenTiers())
+                QVERIFY(host.channel.sendScreenFrame(tier, format, QByteArray(120000, 'w'), true));
+        });
+        source.start();
+        QVERIFY(waitForEvents([&] {
+            return link.videoDatagrams > 20 && !frames.isEmpty() && host.channel.screenTiers().contains(1);
+        }, 5000));
+        source.stop(); disconnect(warmup); frames.clear();
+        acknowledgmentMs = decodeMs;
+        // Hold TLS until this frame and its ACK arrive. Heartbeat counts do
+        // not establish readiness, and timer races can measure runner stalls.
+        link.holdReliable = true; const auto previous = link.videoDatagrams;
         QElapsedTimer latency; latency.start();
         QVERIFY(host.channel.sendScreenFrame(1, format, payload, true));
-        QVERIFY(waitForEvents([&] { return frames.size() == 1; }, 1000));
-        QVERIFY(latency.elapsed() < 1000); QCOMPARE(frames.first().at(3).toByteArray(), payload);
+        QVERIFY(waitForEvents([&] { return frames.size() == 1; }, 5000));
+        QCOMPARE(frames.first().at(3).toByteArray(), payload);
         QVERIFY(link.videoDatagrams > previous);
-        QVERIFY(waitForEvents([&] { return host.channel.screenTiers().contains(1); }, 300));
+        QVERIFY(waitForEvents([&] { return host.channel.screenTiers().contains(1); }, 5000));
         qInfo() << "Screen frame and decode acknowledgment bypass delayed TLS in" << latency.elapsed() << "ms";
+        link.holdReliable = false; link.delay = 2000;
         const QByteArray largest(2 * 1024 * 1024, 'L');
         // UDP may discard a frame. Keep supplying keyframes as the real capture
         // source does, but never queue one behind a frame awaiting its ACK.
-        QTimer source;
-        source.setInterval(34);
         int largeFramesSent = 0;
         const auto largeSource = connect(&source, &QTimer::timeout, &viewer.channel, [&] {
             if (frames.size() != 1) return;

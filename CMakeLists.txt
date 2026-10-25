@@ -719,18 +719,14 @@ if(BUILD_TESTING)
     target_compile_definitions(corpus_tests PRIVATE
         SQUAD_CORPUS_DIR="${CMAKE_CURRENT_SOURCE_DIR}/tests/audio"
         SQUAD_CORPUS_OUTPUT="${CMAKE_BINARY_DIR}/audio-corpus")
-    if(SQUADSPEAK_DENOISE_CANDIDATE)
-        add_test(NAME audio_corpus COMMAND corpus_tests mixtures)
-        foreach(part speechActivation quietWordOnsets repeatedSpeech automaticInput playbackEcho duplexEchoDecays)
-            add_test(NAME audio_corpus_${part} COMMAND corpus_tests ${part})
-            set_tests_properties(audio_corpus_${part} PROPERTIES TIMEOUT 600
-                ENVIRONMENT "SQUAD_CORPUS_OUTPUT=${CMAKE_BINARY_DIR}/audio-corpus-${part}")
-        endforeach()
-    else()
-        add_test(NAME audio_corpus COMMAND corpus_tests)
-    endif()
-    # Instrumented inference is much slower. It also needs an uncontended CPU
-    # on hosted Intel runners, while preserving the same 10-minute hard stop.
+    add_test(NAME audio_corpus COMMAND corpus_tests mixtures)
+    foreach(part speechActivation quietWordOnsets repeatedSpeech automaticInput playbackEcho duplexEchoDecays)
+        add_test(NAME audio_corpus_${part} COMMAND corpus_tests ${part})
+        set_tests_properties(audio_corpus_${part} PROPERTIES TIMEOUT 600
+            ENVIRONMENT "SQUAD_CORPUS_OUTPUT=${CMAKE_BINARY_DIR}/audio-corpus-${part}")
+    endforeach()
+    # Independent corpus functions retain every data row and their own deadline.
+    # Mixture throughput needs an uncontended CPU, including under sanitizers.
     set_tests_properties(audio_corpus PROPERTIES TIMEOUT 600 RUN_SERIAL TRUE COST 500)
     qt_add_executable(radio_tests tests/radio_tests.cpp)
     target_link_libraries(radio_tests PRIVATE squad_radio Qt6::Test)

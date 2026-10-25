@@ -126,7 +126,7 @@ or audio device after building:
 
 ```sh
 cmake --build build --target corpus_tests -j 6
-ctest --test-dir build --output-on-failure -R '^audio_corpus$'
+ctest --test-dir build --output-on-failure -R '^audio_corpus' -j 2
 ```
 
 Run the complete matrix explicitly with Python 3 (standard library only):
