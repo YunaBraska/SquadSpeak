@@ -2298,13 +2298,16 @@ private slots:
     void screenUsesUdpWhileReliableTrafficIsDelayed_data() {
         QTest::addColumn<bool>("loseFirstLargeFrame");
         QTest::addColumn<int>("decodeMs");
-        QTest::newRow("unimpaired") << false << 1;
-        QTest::newRow("lost-keyframe") << true << 1;
-        QTest::newRow("lost-keyframe-slow-decoder") << true << 100;
+        QTest::addColumn<bool>("slowStart");
+        QTest::newRow("unimpaired") << false << 1 << false;
+        QTest::newRow("lost-keyframe") << true << 1 << false;
+        QTest::newRow("lost-keyframe-slow-decoder") << true << 100 << false;
+        QTest::newRow("adapted-before-stream") << false << 1 << true;
     }
     void screenUsesUdpWhileReliableTrafficIsDelayed() {
         QFETCH(bool, loseFirstLargeFrame);
         QFETCH(int, decodeMs);
+        QFETCH(bool, slowStart);
         QTemporaryDir dir;
         Device host(dir.filePath("host"), "Owner"), viewer(dir.filePath("viewer"), "Viewer");
         QVERIFY(host.listenWithUdp());
@@ -2315,6 +2318,10 @@ private slots:
         QVERIFY(waitForEvents([&] { return viewer.channel.screenView().value("available").toBool(); }));
         QVERIFY(viewer.channel.watchScreen(host.channel.ownId(), true));
         QVERIFY(waitForEvents([&] { return viewer.channel.screenView().value("tier").toInt() == 1; }));
+        if (slowStart) {
+            QVERIFY(host.channel.reportScreenEncodeTime(1000));
+            QCOMPARE(host.channel.screenTiers(), QSet<int>{2});
+        }
         QSignalSpy frames(&viewer.channel, &LocalChannel::screenFrameReceived);
         int acknowledgmentMs = 1;
         connect(&viewer.channel, &LocalChannel::screenFrameReceived, &viewer.channel, [&](const QString& id, qint64 serial, const QJsonObject&, const QByteArray&) {
@@ -2329,20 +2336,24 @@ private slots:
                 QVERIFY(host.channel.sendScreenFrame(tier, format, QByteArray(120000, 'w'), true));
         });
         source.start();
-        QVERIFY(waitForEvents([&] {
-            return link.videoDatagrams > 20 && !frames.isEmpty() && host.channel.screenTiers().contains(1);
-        }, 5000));
+        QVERIFY2(waitForEvents([&] {
+            return link.videoDatagrams > 20 && !frames.isEmpty() && !host.channel.screenTiers().isEmpty();
+        }, 5000), qPrintable(QString("UDP warmup: %1 datagrams, %2 frames, viewer tier %3")
+            .arg(link.videoDatagrams).arg(frames.size()).arg(viewer.channel.screenView().value("tier").toInt())));
         source.stop(); disconnect(warmup); frames.clear();
+        // Quality may already have adapted during setup. Readiness means a
+        // frame can be sent, not that its initial quality tier stayed fixed.
+        const int initialTier = *host.channel.screenTiers().begin();
         acknowledgmentMs = decodeMs;
         // Hold TLS until this frame and its ACK arrive. Heartbeat counts do
         // not establish readiness, and timer races can measure runner stalls.
         link.holdReliable = true; const auto previous = link.videoDatagrams;
         QElapsedTimer latency; latency.start();
-        QVERIFY(host.channel.sendScreenFrame(1, format, payload, true));
+        QVERIFY(host.channel.sendScreenFrame(initialTier, format, payload, true));
         QVERIFY(waitForEvents([&] { return frames.size() == 1; }, 5000));
         QCOMPARE(frames.first().at(3).toByteArray(), payload);
         QVERIFY(link.videoDatagrams > previous);
-        QVERIFY(waitForEvents([&] { return host.channel.screenTiers().contains(1); }, 5000));
+        QVERIFY(waitForEvents([&] { return !host.channel.screenTiers().isEmpty(); }, 5000));
         qInfo() << "Screen frame and decode acknowledgment bypass delayed TLS in" << latency.elapsed() << "ms";
         link.holdReliable = false; link.delay = 2000;
         const QByteArray largest(2 * 1024 * 1024, 'L');
@@ -2371,8 +2382,8 @@ private slots:
         QCOMPARE(frames.last().at(3).toByteArray(), largest);
         QVERIFY(waitForEvents([&] { return !host.channel.screenTiers().isEmpty(); }));
         const int fallbackTier = *host.channel.screenTiers().begin();
-        QVERIFY(fallbackTier >= 1 && fallbackTier <= 2);
-        if (decodeMs == 100) QCOMPARE(fallbackTier, 2);
+        QVERIFY(fallbackTier >= initialTier && fallbackTier <= std::min(3, initialTier + 1));
+        if (decodeMs == 100) QCOMPARE(fallbackTier, std::min(3, initialTier + 1));
         link.blockUdp = true; QTestEventLoop().enterLoopMSecs(450);
         latency.restart(); QVERIFY(host.channel.sendScreenFrame(fallbackTier, format, payload, true));
         QVERIFY(waitForEvents([&] { return frames.size() == 3; }, 5000));
