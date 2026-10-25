@@ -36,7 +36,7 @@ struct VoiceActivation final {
 class VoiceMixer final {
 public:
     // Optional minimum receive delay adapts up to 160 ms for arrival jitter.
-    // Up to ten frames cover that delay and output callbacks. Zero disables it.
+    // Up to fourteen frames cover that delay and output callbacks. Zero disables it.
     explicit VoiceMixer(int channels = 1, int playbackDelayMs = 0);
     [[nodiscard]] int channelCount() const { return channels_; }
     // Denied capture still updates the preview, but produces no packets. A
@@ -94,6 +94,8 @@ private:
         std::deque<Frame> frames;
         double gain = 1;
         double automaticGain = 1;
+        std::array<double, 20> recentLevels{};
+        size_t levelCursor = 0;
         double level = 0;
         qint64 played = -1;
         qint64 readyAt = -1;

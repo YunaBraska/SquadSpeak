@@ -1054,6 +1054,33 @@ private slots:
         QTest::newRow("mono") << 1;
         QTest::newRow("stereo") << 2;
     }
+    void automaticLevelPreservesSyllableContrast_data() {
+        QTest::addColumn<int>("channels");
+        QTest::newRow("mono") << 1;
+        QTest::newRow("stereo") << 2;
+    }
+    void automaticLevelPreservesSyllableContrast() {
+        QFETCH(int, channels);
+        squad::VoiceMixer sender(channels), reference(channels), receiver(channels);
+        reference.setAutomatic(false);
+        double leastGain = 100, greatestGain = 0;
+        for (int frame = 0; frame < 360; ++frame) {
+            const auto amplitude = frame >= 240 && (frame / 10) % 2 == 0 ? 0.02 : 0.12;
+            const auto input = channels == 1 ? tone(amplitude) : stereoTone(amplitude, amplitude * 0.7);
+            const auto packet = sender.encode(input, 48000).first();
+            QVERIFY(reference.receive("speaker", packet, frame * 20));
+            QVERIFY(receiver.receive("speaker", packet, frame * 20));
+            const auto raw = reference.render(48000, frame * 20);
+            const auto output = receiver.render(48000, frame * 20);
+            if (frame >= 240) {
+                const auto gain = rms(output) / rms(raw);
+                leastGain = std::min(leastGain, gain);
+                greatestGain = std::max(greatestGain, gain);
+            }
+        }
+        const auto modulation = 20 * std::log10(greatestGain / leastGain);
+        QVERIFY2(modulation < 1.2, qPrintable(QString("Syllables changed receive gain by %1 dB").arg(modulation)));
+    }
     void automaticLevelChangesDoNotCreateFrameBoundaryClicks() {
         QFETCH(int, channels);
         squad::VoiceMixer sender(channels), reference(channels), receiver(channels);

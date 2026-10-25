@@ -339,7 +339,12 @@ std::vector<float> VoiceMixer::render(int sampleRate, qint64 now, const Playback
         stream.level = rms; stream.played = now;
         const auto previousGain = stream.automaticGain;
         if (automatic_ && rms > 0.0032) {
-            const auto target = std::clamp(0.1 / rms, 0.125, 8.0);
+            // Follow sustained speaker levels, not individual quiet syllables.
+            // Hold the last 400 ms of active audio, with fast loudness reduction.
+            stream.recentLevels[stream.levelCursor] = rms;
+            stream.levelCursor = (stream.levelCursor + 1) % stream.recentLevels.size();
+            const auto level = *std::max_element(stream.recentLevels.begin(), stream.recentLevels.end());
+            const auto target = std::clamp(0.1 / level, 0.125, 8.0);
             const auto coefficient = target < stream.automaticGain ? 0.4 : 0.04;
             stream.automaticGain += coefficient * (target - stream.automaticGain);
         }

@@ -613,7 +613,10 @@ private slots:
             }
             for (const auto& output : playback) {
                 QVERIFY(std::all_of(output.begin(), output.end(), [](float value) { return std::isfinite(value); }));
-                tail[enabled] += energy(std::span(output).subspan(10 * rate));
+                // Both voices stop at 6 s. Allow 1 s for playback and AEC to settle,
+                // then measure the full residual. Waiting until 10 s can miss
+                // the unfiltered feedback after normalization itself drains it.
+                tail[enabled] += energy(std::span(output).subspan(7 * rate));
             }
             QVERIFY(rms(std::span(playback[1]).subspan(rate, 2 * rate)) > 0.01);
             QVERIFY(rms(std::span(playback[0]).subspan(4 * rate, 2 * rate)) > 0.01);
