@@ -1,21 +1,20 @@
 ---
 layout: default
 title: Documentation
-description: SquadSpeak guides for conversations, voice behavior, avatars and development.
+description: Help for joining channels, making voice clear and hosting a conversation.
 ---
 
 <header class="page-heading">
   <p class="eyebrow">Documentation</p>
   <h1>Understand the channel before you join it.</h1>
-  <p>SquadSpeak documents its product boundaries, voice behavior and development approach so that privacy and operating limits remain visible.</p>
+  <p>Join or host a channel, tune voice and chat without handing your conversation to a chat account.</p>
 </header>
 
 <section class="section">
   <ul class="doc-list">
-    <li><a href="{{ '/reference/README.html' | relative_url }}">Getting started</a><p>Learn how to join or host a channel, and what the desktop builds currently support.</p></li>
-    <li><a href="{{ '/reference/docs/specs/voice-chat.html' | relative_url }}">Voice chat</a><p>Read the voice architecture, privacy boundary and supported connection behavior.</p></li>
-    <li><a href="{{ '/reference/docs/specs/avatars.html' | relative_url }}">Avatars</a><p>See how animated portraits are represented and kept local to the product.</p></li>
-    <li><a href="{{ '/reference/docs/roadmap.html' | relative_url }}">Feature status</a><p>Check the current release boundary and known platform limitations.</p></li>
-    <li><a href="{{ '/reference/docs/development.html' | relative_url }}">Development guide</a><p>Build, test and run the project from source when you contribute.</p></li>
+    <li><a href="{{ '/help/index.html' | relative_url }}">Join a conversation</a><p>Discover a channel or connect directly to a host.</p></li>
+    <li><a href="{{ '/help/index.html#voice' | relative_url }}">Voice and audio</a><p>Choose a microphone and make voice activation or push-to-talk work for you.</p></li>
+    <li><a href="{{ '/help/index.html#chat' | relative_url }}">Chat and avatars</a><p>Use Markdown chat, choose an avatar and keep a channel readable.</p></li>
+    <li><a href="{{ '/help/index.html#hosting' | relative_url }}">Hosting</a><p>Keep a channel available from a desktop or a quiet headless host.</p></li>
   </ul>
 </section>
