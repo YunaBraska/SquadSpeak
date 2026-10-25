@@ -199,18 +199,30 @@ private slots:
         QTest::addColumn<bool>("shortSpeech");
         QTest::addColumn<int>("channels");
         const QStringList disturbances{"typing-laptop", "typing-desktop", "breathing-deep"};
+        QStringList speakers;
+        for (const auto value : manifest_.value("sources").toArray()) {
+            const auto source = value.toObject();
+            if (source.value("kind") == "speech") speakers.append(source.value("id").toString());
+        }
         for (const int channels : {1, 2}) {
             const auto format = channels == 1 ? "-mono" : "-stereo";
             for (const auto& disturbance : disturbances)
                 for (const int level : {-40, -25, -12})
                     QTest::newRow(qPrintable(disturbance + QString::number(level) + format)) << QString{} << disturbance << level << 0 << false << channels;
-            for (const auto& speaker : speech_) for (const int level : {-30, -42}) {
+            for (const auto& speaker : speakers) for (const int level : {-30, -42}) {
                 QTest::newRow(qPrintable(speaker + "-clean" + QString::number(level) + format)) << speaker << QString{} << level << 0 << false << channels;
                 QTest::newRow(qPrintable(speaker + "-short" + QString::number(level) + format)) << speaker << QString{} << level << 0 << true << channels;
+                if (!speech_.contains(speaker)) continue;
                 for (const auto& disturbance : {QString("typing-laptop"), QString("typing-desktop")})
                     for (const int snr : {0, 10})
                         QTest::newRow(qPrintable(speaker + "-" + disturbance + QString::number(level) + "-snr" + QString::number(snr) + format))
                             << speaker << disturbance << level << snr << false << channels;
+            }
+            if (!extended_) {
+                // Requiring two complete speech frames clipped this noisy onset.
+                // All voices run clean above. The extended corpus adds all mixtures.
+                QTest::newRow(qPrintable(QString("speech-ls5639-typing-laptop-30-snr0") + format))
+                    << QString("speech-ls5639") << QString("typing-laptop") << -30 << 0 << false << channels;
             }
         }
     }

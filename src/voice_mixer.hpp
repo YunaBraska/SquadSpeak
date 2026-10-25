@@ -119,7 +119,6 @@ private:
     double activationLevelDb_ = -96;
     double transmitLevel_ = 0;
     int trailingFrames_ = 0;
-    int speechFrames_ = 0;
     int silenceFrames_ = 0;
     bool voiceActive_ = false;
     bool captureTransmissionAllowed_ = true;

@@ -202,9 +202,10 @@ QList<QByteArray> VoiceMixer::encode(std::span<const float> samples, int sampleR
         if (activation_.automatic && activation_.minimumEnabled)
             activationThresholdDb_ = std::max(activationThresholdDb_, activation_.minimumDb);
         if (activation_.automatic) activationLevelDb_ = std::max(-96.0, speechLevelDb);
-        speechFrames_ = speechFrame ? std::min(2, speechFrames_ + 1) : 0;
+        // speechFrame already confirms both 10 ms halves. Requiring a second
+        // complete frame delays word edges beyond the retained pre-roll.
         const bool aboveThreshold = activationLevelDb_ >= activationThresholdDb_
-            && (!activation_.automatic || speechFrames_ == 2);
+            && (!activation_.automatic || speechFrame);
         voiceActive_ = !activation_.enabled || aboveThreshold || trailingFrames_ > 0;
         if (aboveThreshold) trailingFrames_ = 15;
         else if (trailingFrames_ > 0) --trailingFrames_;
@@ -398,7 +399,6 @@ VoiceMixer& VoiceMixer::resetCapture() {
 #endif
     preRoll_.clear();
     trailingFrames_ = 0;
-    speechFrames_ = 0;
     silenceFrames_ = 0;
     speechProtection_ = 0;
     voiceActive_ = false;

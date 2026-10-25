@@ -1,6 +1,6 @@
 # Release readiness
 
-Updated: 2026-10-24. Behavior: [specification](specs/voice-chat.md).
+Updated: 2026-10-25. Behavior: [specification](specs/voice-chat.md).
 
 Under U139, the first regular desktop release follows successful automated
 platform and package checks; physical device observations follow the public
@@ -50,7 +50,14 @@ Bluetooth audio devices are distinct from Bluetooth-only app networking, which i
 ## TeamSpeak interoperability
 
 U173 capture quality and keyboard suppression remain under investigation. The
-licensed speech/typing activation cases pass in mono and stereo. The TS bridge
+normal speech/typing activation cases pass in mono and stereo. This now
+includes clean and short speech from all twenty corpus narrators and a noisy
+onset regression that exposed a redundant activation-confirmation delay.
+The extended 20-voice corpus still reproduces 40-180 ms omissions with typing,
+before network transport. These failures remain in the extended suite. Strong
+manual noise suppression can also attenuate brief clean-speech details despite
+a nearly unchanged sentence-average level. Passing transport checks does not
+resolve these capture defects. The TS bridge
 boundary retains encoded packets unchanged, with fullband decoding and the
 expected level in both Opus channel modes. Silent WOT comparisons now use the
 same clean male/female recording through the installed A/B copies and original
