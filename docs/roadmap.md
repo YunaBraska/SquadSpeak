@@ -53,6 +53,9 @@ U173 capture quality and keyboard suppression remain under investigation. The
 normal speech/typing activation cases pass in mono and stereo. This now
 includes clean and short speech from all twenty corpus narrators and a noisy
 onset regression that exposed a redundant activation-confirmation delay.
+This candidate also admits up to 23 additional 20 ms keyboard-only frames in
+a 12-second control, while retaining the existing noise-reduction limits.
+Adopting this speech/noise tradeoff as the default awaits the owner decision.
 The extended 20-voice corpus still reproduces 40-180 ms omissions with typing,
 before network transport. These failures remain in the extended suite. Strong
 manual noise suppression can also attenuate brief clean-speech details despite
