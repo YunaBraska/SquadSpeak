@@ -795,15 +795,17 @@ private slots:
         VoiceSession hostSession(dir.filePath("host")), guestSession(dir.filePath("guest"));
         LocalChannel owner(hostSession, dir.filePath("host.channel"), TlsIdentity::create());
         LocalChannel guest(guestSession, dir.filePath("guest.channel"), TlsIdentity::create());
-        QVERIFY(owner.listen(QHostAddress::LocalHost));
+        // A TCP-assigned ephemeral port may be unavailable for UDP on Windows.
+        // Select through UDP before sharing this endpoint with the channel host.
+        const auto port = availableUdpPort(); QVERIFY(port);
+        QVERIFY(owner.listen(QHostAddress::LocalHost, port));
         QVERIFY(owner.decide(guest.ownId(), true));
         QVERIFY(owner.join(owner.ownId(), "127.0.0.1", owner.port())); QTRY_VERIFY(owner.joined());
         QVERIFY(owner.setScreenSharing(true));
         QVERIFY(guest.openChat(owner.ownId(), "127.0.0.1", owner.port())); QTRY_VERIFY(guest.chatReady());
         QTRY_VERIFY(guest.screenInfo(owner.ownId()).value("available").toBool());
         // Use the host's existing shared endpoint, as additional channels do.
-        // A separately probed, then released port is not reserved for this pair.
-        const auto port = owner.port();
+        QCOMPARE(owner.port(), port);
         squad::MediaTransport sender(true, port, QHostAddress::LocalHost, 0);
         squad::MediaTransport receiver(false, 0, QHostAddress::LocalHost, port);
         connect(&sender, &squad::MediaTransport::signaling, &receiver, [&](const auto& m) { QVERIFY(receiver.receive(m)); });
