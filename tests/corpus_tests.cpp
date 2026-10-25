@@ -339,7 +339,7 @@ private slots:
     }
     void quietWordOnsets_data() {
         QTest::addColumn<int>("channels"); QTest::addColumn<int>("suppression");
-        for (const int channels : {1, 2}) for (const int suppression : {0, 50})
+        for (const int channels : {1, 2}) for (const int suppression : {0, 50, 100})
             QTest::newRow(qPrintable(QString("%1ch-%2percent").arg(channels).arg(suppression))) << channels << suppression;
     }
     void repeatedSpeech_data() { quietWordOnsets_data(); }
@@ -409,16 +409,18 @@ private slots:
                 admitted[offset / 960 - size_t(packets.size() - 1 - p)] = true;
         }
         const auto delay = suppression ? size_t(squad::VoiceMixer::suppressionDelaySamples()) : 0;
-        double strongest = 0;
-        for (size_t offset = 3 * length + beginSpeech; offset < 3 * length + endSpeech; offset += 480)
-            strongest = std::max(strongest, energy(std::span(reference).subspan(offset, 480)));
-        int missing = 0, longest = 0;
-        for (size_t offset = 3 * length + beginSpeech; offset < 3 * length + endSpeech; offset += 480) {
-            const bool audible = energy(std::span(reference).subspan(offset, 480)) >= strongest * std::pow(10.0, -25.0 / 10.0);
-            missing = audible && !admitted[(offset + delay) / 960] ? missing + 1 : 0;
-            longest = std::max(longest, missing);
+        for (size_t part = 0; part < 4; ++part) {
+            double strongest = 0;
+            for (size_t offset = part * length + beginSpeech; offset < part * length + endSpeech; offset += 480)
+                strongest = std::max(strongest, energy(std::span(reference).subspan(offset, 480)));
+            int missing = 0, longest = 0;
+            for (size_t offset = part * length + beginSpeech; offset < part * length + endSpeech; offset += 480) {
+                const bool audible = energy(std::span(reference).subspan(offset, 480)) >= strongest * std::pow(10.0, -25.0 / 10.0);
+                missing = audible && !admitted[(offset + delay) / 960] ? missing + 1 : 0;
+                longest = std::max(longest, missing);
+            }
+            QVERIFY2(longest <= 2, qPrintable(QString("Automatic activation omitted %1 ms in speech segment %2").arg(longest * 10).arg(part)));
         }
-        QVERIFY2(longest <= 2, qPrintable(QString("Automatic activation omitted %1 ms of a quiet word onset").arg(longest * 10)));
     }
     void automaticInput_data() {
         QTest::addColumn<QString>("speaker"); QTest::addColumn<int>("rumbleHz");
