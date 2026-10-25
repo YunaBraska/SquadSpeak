@@ -866,12 +866,16 @@ private slots:
 
     void speechEndDoesNotInventLostVoiceFrames_data() {
         QTest::addColumn<int>("endSize");
-        QTest::newRow("empty-end") << 0;
-        QTest::newRow("one-byte-end") << 1;
+        QTest::addColumn<int>("resumeOffset");
+        for (int offset : {0, 7}) {
+            QTest::newRow(qPrintable(QString("empty-end-%1").arg(offset))) << 0 << offset;
+            QTest::newRow(qPrintable(QString("one-byte-end-%1").arg(offset))) << 1 << offset;
+        }
     }
 
     void speechEndDoesNotInventLostVoiceFrames() {
         QFETCH(int, endSize);
+        QFETCH(int, resumeOffset);
         resetFake(); fakeEvents.enqueue(stateEvent(true));
         QTemporaryDir dir;
         VoiceSession session(dir.filePath("session"));
@@ -887,9 +891,9 @@ private slots:
         enqueue(65534, "first");
         enqueue(65535, QByteArray(endSize, '\0'));
         enqueue(65535, QByteArray(endSize, '\0')); // Repeated ends are harmless.
-        enqueue(0, "second");
+        enqueue(resumeOffset, "second");
         enqueue(65535, QByteArray(endSize, '\0')); // Late end cannot erase newer audio.
-        enqueue(2, "third"); // This is a real gap and must still be concealed.
+        enqueue(resumeOffset + 2, "third"); // This is a real gap and must still be concealed.
         QTRY_COMPARE(received.size(), 3);
         QCOMPARE(received[0][1].toByteArray(), QByteArray("first"));
         QCOMPARE(received[1][1].toByteArray(), QByteArray("second"));

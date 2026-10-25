@@ -177,7 +177,8 @@ void LocalChannel::pollTeamSpeak() {
             if (it == connection->audioSequences.end() || it->pending.isEmpty()) return;
             auto& stream = *it;
             const auto packet = stream.pending.cbegin();
-            const auto missing = stream.delivered < 0 ? 0 : int(std::min<qint64>(6, packet.key() - stream.delivered - 1));
+            const auto missing = stream.delivered < 0 || stream.ended ? 0
+                : int(std::min<qint64>(6, packet.key() - stream.delivered - 1));
             // Wait only for a gap. TS3 may deliver a whole batch out of order.
             if (missing && !full && controlClock_.elapsed() - packet->second < 40) return;
             const auto peer = stream.peer;
@@ -185,8 +186,9 @@ void LocalChannel::pollTeamSpeak() {
             stream.delivered = packet.key();
             stream.pending.remove(packet.key());
             full = false;
-            // Talk-end packets consume a sequence number without an Opus frame.
-            if (payload.size() > 1) emit audioReceived(peer, payload, missing);
+            // A completed talk burst cannot lose frames during its following silence.
+            stream.ended = payload.size() <= 1;
+            if (!stream.ended) emit audioReceived(peer, payload, missing);
         }
     };
     // Limit each GUI dispatch. Audio packets cannot indefinitely starve input or paint events.

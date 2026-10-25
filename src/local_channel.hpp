@@ -297,6 +297,7 @@ private:
             QString peer;
             qint64 highest = -1, delivered = -1, received = -1;
             QMap<qint64, QPair<QByteArray, qint64>> pending;
+            bool ended = false;
         };
         QHash<QString, Audio> audioSequences;
         QByteArray buffer = QByteArray(512 * 1024, Qt::Uninitialized);
