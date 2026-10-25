@@ -196,7 +196,7 @@ QList<QByteArray> VoiceMixer::encode(std::span<const float> samples, int sampleR
                 std::span(frame, frameSamples));
         }
         if (activation_.enabled && activation_.automatic && speechProbability < 0.2 && !speechFrame) {
-            const auto target = std::clamp(activationLevelDb_ + 10, -70.0, -20.0);
+            const auto target = std::clamp(speechLevelDb + 10, -70.0, -20.0);
             activationThresholdDb_ += std::clamp(target - activationThresholdDb_, -0.12, 0.02);
         }
         if (activation_.automatic && activation_.minimumEnabled)

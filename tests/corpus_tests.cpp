@@ -204,6 +204,8 @@ private slots:
             const auto source = value.toObject();
             if (source.value("kind") == "speech") speakers.append(source.value("id").toString());
         }
+        auto mixtureSpeakers = speech_;
+        if (!extended_) mixtureSpeakers.append({"speech-ls260", "speech-ls1221", "speech-ls237"});
         for (const int channels : {1, 2}) {
             const auto format = channels == 1 ? "-mono" : "-stereo";
             for (const auto& disturbance : disturbances)
@@ -212,7 +214,7 @@ private slots:
             for (const auto& speaker : speakers) for (const int level : {-30, -42}) {
                 QTest::newRow(qPrintable(speaker + "-clean" + QString::number(level) + format)) << speaker << QString{} << level << 0 << false << channels;
                 QTest::newRow(qPrintable(speaker + "-short" + QString::number(level) + format)) << speaker << QString{} << level << 0 << true << channels;
-                if (!speech_.contains(speaker)) continue;
+                if (!mixtureSpeakers.contains(speaker)) continue;
                 for (const auto& disturbance : {QString("typing-laptop"), QString("typing-desktop")})
                     for (const int snr : {0, 10})
                         QTest::newRow(qPrintable(speaker + "-" + disturbance + QString::number(level) + "-snr" + QString::number(snr) + format))

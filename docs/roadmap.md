@@ -49,19 +49,17 @@ Bluetooth audio devices are distinct from Bluetooth-only app networking, which i
 
 ## TeamSpeak interoperability
 
-U173 capture quality and keyboard suppression remain under investigation. The
-normal speech/typing activation cases pass in mono and stereo. This now
-includes clean and short speech from all twenty corpus narrators and a noisy
-onset regression that exposed a redundant activation-confirmation delay.
-This candidate also admits up to 23 additional 20 ms keyboard-only frames in
-a 12-second control, while retaining the existing noise-reduction limits.
-The accepted default prioritizes retaining speech over these brief additional
-keyboard admissions. Filter strength and pre-roll remain unchanged.
-The extended 20-voice corpus still reproduces 40-180 ms omissions with typing,
-before network transport. These failures remain in the extended suite. Strong
-manual noise suppression can also attenuate brief clean-speech details despite
-a nearly unchanged sentence-average level. Passing transport checks does not
-resolve these capture defects. The TS bridge
+U173 capture quality and keyboard suppression remain under investigation.
+Automatic activation now learns its background threshold from the same processed
+signal it compares for admission. The normal corpus includes additional noisy
+speech regressions and retains clean/short speech coverage for all twenty
+narrators. The existing noise-reduction limits still pass, with up to 19 extra
+20 ms keyboard admissions per 12-second control compared with the prior build.
+Some 40-180 ms omissions remain in the extended mixtures before transport.
+A local 240 ms pre-roll experiment passes all 498 activation cases, but increasing
+the accepted 60 ms delay budget needs a decision and full send-path verification.
+Strong manual suppression can still attenuate brief speech details. Passing
+transport checks alone does not establish capture quality. The TS bridge
 boundary retains encoded packets unchanged, with fullband decoding and the
 expected level in both Opus channel modes. Silent WOT comparisons now use the
 same clean male/female recording through the installed A/B copies and original
