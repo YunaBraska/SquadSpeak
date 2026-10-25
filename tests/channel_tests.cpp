@@ -3655,6 +3655,91 @@ private slots:
         QVERIFY(scanner.channel.setDiscoverySearch(false));
     }
 
+    void repeatedDiscoveryDoesNotRebuildUnchangedChannels() {
+        QTemporaryDir dir;
+        Device host(dir.filePath("host"), "Host");
+        Device scanner(dir.filePath("scanner"), "Scanner");
+        quint16 port = 48763;
+        while (port <= 48783 && !host.channel.listen(QHostAddress::LocalHost, port)) ++port;
+        QVERIFY(port <= 48783);
+        QVERIFY(scanner.channel.startService(QHostAddress::LocalHost, 0));
+        QSignalSpy changes(&scanner.channel, &LocalChannel::hostsChanged);
+        QVERIFY(scanner.channel.setDiscoverySearch(true));
+        QTRY_VERIFY(!scanner.channel.discoverySearching());
+        QCOMPARE(scanner.channel.hosts().size(), 1);
+        QCOMPARE(changes.size(), 1);
+        const auto original = scanner.channel.hosts();
+        changes.clear();
+        for (int repeat = 0; repeat < 3; ++repeat) {
+            QVERIFY(scanner.channel.setDiscoverySearch(true));
+            QTRY_VERIFY(!scanner.channel.discoverySearching());
+            QCOMPARE(scanner.channel.hosts(), original);
+            QCOMPARE(changes.size(), 0);
+        }
+        QVERIFY(host.channel.setChannelName("Renamed"));
+        QVERIFY(scanner.channel.setDiscoverySearch(true));
+        QTRY_VERIFY(!scanner.channel.discoverySearching());
+        QCOMPARE(changes.size(), 1);
+        QCOMPARE(scanner.channel.hosts().first().toMap().value("name").toString(), QString("Renamed"));
+    }
+
+    void discoveryRefreshesLivenessWithoutRepeatingVisibleUpdates() {
+        QTemporaryDir dir;
+        qint64 now = 1700000000000;
+        Device observer(dir.filePath("observer"), "Observer", TlsIdentity::create(), [&] { return now; });
+        QVERIFY(observer.channel.startDiscovery());
+        QUdpSocket source;
+        QVERIFY(source.bind(QHostAddress::LocalHost, 0));
+        const QString device(64, 'a'), second(64, 'b');
+        QJsonObject message{{"protocol", "squadspeak/1"}, {"id", device}, {"name", "Host"}, {"port", 50100},
+            {"channels", QJsonArray{QJsonObject{{"id", device}, {"name", "First"}},
+                                   QJsonObject{{"id", second}, {"name", "Second"}}}}};
+        const auto send = [&] {
+            const auto data = QJsonDocument(message).toJson(QJsonDocument::Compact);
+            return source.writeDatagram(data, QHostAddress::LocalHost, 48762) == data.size();
+        };
+        QSignalSpy changes(&observer.channel, &LocalChannel::hostsChanged);
+        QVERIFY(send());
+        QTRY_COMPARE(observer.channel.hosts().size(), 2);
+        QCOMPARE(changes.size(), 1);
+        changes.clear();
+        now += 5000;
+        for (int repeat = 0; repeat < 5; ++repeat) QVERIFY(send());
+        // A changed datagram is the completion barrier for preceding repeats.
+        message.insert("port", 50101);
+        QVERIFY(send());
+        QTRY_COMPARE(observer.channel.hosts().first().toMap().value("port").toInt(), 50101);
+        QCOMPARE(changes.size(), 1);
+        changes.clear();
+        now += 3000;
+        QTest::qWait(1700); // Original announcement expired, refreshed hosts must remain.
+        QCOMPARE(observer.channel.hosts().size(), 2);
+        QCOMPARE(changes.size(), 0);
+        message.insert("channels", QJsonArray{QJsonObject{{"id", device}, {"name", "Renamed"}}});
+        QVERIFY(send());
+        QTRY_COMPARE(observer.channel.hosts().size(), 1);
+        QCOMPARE(observer.channel.hosts().first().toMap().value("name").toString(), QString("Renamed"));
+        QCOMPARE(changes.size(), 1);
+        now += 6001;
+        QTRY_VERIFY_WITH_TIMEOUT(observer.channel.hosts().isEmpty(), 3000);
+        QCOMPARE(changes.size(), 2);
+    }
+
+    void unchangedDiscoveryHeartbeatDoesNotRebuildChannels() {
+        QTemporaryDir dir;
+        Device host(dir.filePath("host"), "Host");
+        QVERIFY(host.channel.listen(QHostAddress::LocalHost, 0));
+        QVERIFY(host.channel.startDiscovery());
+        QSignalSpy changes(&host.channel, &LocalChannel::hostsChanged);
+        const auto original = host.channel.hosts();
+        QTest::qWait(3200); // Observe two scheduled discovery announcements.
+        QCOMPARE(host.channel.hosts(), original);
+        QCOMPARE(changes.size(), 0);
+        QVERIFY(host.channel.setChannelName("Renamed"));
+        QCOMPARE(changes.size(), 1);
+        QCOMPARE(host.channel.hosts().first().toMap().value("name").toString(), QString("Renamed"));
+    }
+
     void boundedDiscoveryResultsSurviveUntilTheDialogCloses_data() {
         QTest::addColumn<bool>("selected");
         QTest::newRow("unselected") << false;

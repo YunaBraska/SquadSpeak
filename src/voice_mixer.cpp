@@ -297,7 +297,10 @@ bool VoiceMixer::receive(const QString& peer, const QByteArray& packet, qint64 n
     // can still release this deadline below without waiting twice.
     if (playbackDelayMs_ > 0 && stream.frames.empty() && now > stream.nextFrameAt)
         stream.readyAt = now + stream.playbackDelay;
-    const auto frameLimit = size_t(std::max(7, stream.playbackDelay / 20 + 2));
+    // A delayed application loop receives its catch-up batch before it can
+    // refill the output device. Retain that batch in addition to jitter depth,
+    // within the same 120 ms freshness reserve enforced by render().
+    const auto frameLimit = size_t(std::max(7, stream.playbackDelay / 20 + 6));
     for (int gap = 0; gap < missing; ++gap) {
         if (opus_decode_float(stream.decoder.get(), nullptr, 0, frame.samples.data(), 960, 0) != 960) return false;
         if (stream.frames.size() >= frameLimit) stream.frames.pop_front();

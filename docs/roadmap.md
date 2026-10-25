@@ -54,6 +54,8 @@ Automatic activation uses 240 ms pre-roll, as approved to preserve word beginnin
 and learns its threshold from the same processed signal used for admission.
 One bounded capture pacer releases frames before protocol selection, preserving
 speech through the smaller transport and playback queues without changing PCM.
+The capture buffer and decoded queue also retain short, simultaneous callback
+stalls. Unchanged discovery heartbeats no longer rebuild the channel UI.
 PTT has no activation pre-roll. The extended corpus covers 498 activation cases
 with twenty voices, brief speech, two keyboards, breathing controls and mono/stereo.
 The longer pre-roll can admit more brief noise and adds up to 180 ms onset delay

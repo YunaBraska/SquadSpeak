@@ -1530,6 +1530,8 @@ TestCase {
                 tryVerify(function() { return packets.count >= 10 }, 5000,
                           "Live capture must produce encoded voice packets")
                 verify(audio.voiceSending)
+                verify(fixtures.captureSurvivesCallbackPauses(),
+                       "Short callback pauses must not repeatedly discard microphone samples")
                 verify(fixtures.setAudioVoiceState(true, false))
                 compare(audio.voiceSending, false)
                 packets.clear()

@@ -32,8 +32,8 @@ or quiet speech at 0/+10 dB SNR. The normal suite has 228 activation cases.
 All twenty narrators run as clean speech and 200 ms excerpts at both levels,
 in mono and stereo. Keyboard mixtures cover the original three narrators plus
 a recorded onset regression. The extended suite has 498 cases with every
-narrator also mixed with both keyboards. It currently exposes additional
-40-180 ms omissions that the normal suite does not cover. Four additional onset
+narrator also mixed with both keyboards. These cases check word-edge retention
+with 240 ms automatic pre-roll through the paced sender and decoder. Four additional onset
 regressions reuse a live stream across loud and quiet voices with pauses, with suppression enabled and bypassed. They catch
 missing word beginnings that a sentence-wide energy total can hide.
 Overlapping breathing remains in the mixture diagnostics. In that harder

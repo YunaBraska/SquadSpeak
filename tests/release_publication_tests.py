@@ -291,6 +291,10 @@ else: sys.exit(7)
 if sys.argv[1] == "-functions":
     print("boundedDiscoveryAcceptsKnownHosts()")
     print("sixtyFourClientsHaveOneConsistentRosterAndAudioFanout()")
+    print("repeatedDiscoveryDoesNotRebuildUnchangedChannels()")
+    print("discoveryRefreshesLivenessWithoutRepeatingVisibleUpdates()")
+    print("unchangedDiscoveryHeartbeatDoesNotRebuildChannels()")
+    print("addChannelCandidatesExcludeSavedHostsAndDuplicateEndpoints()")
 else:
     print("EXECUTED " + sys.argv[1])
 ''')
@@ -318,14 +322,16 @@ else:
                                     capture_output=True, text=True, timeout=15)
             self.assertEqual(result.returncode, 0, result.stderr)
             tests = json.loads(result.stdout)["tests"]
-            self.assertEqual(len(tests), 2)
+            self.assertEqual(len(tests), 6)
             properties = [{p["name"]: p["value"] for p in test["properties"]} for test in tests]
             self.assertEqual(properties[0]["RESOURCE_LOCK"], ["channel_fixed_ports"])
             self.assertTrue(properties[1]["RUN_SERIAL"])
+            for discovery in properties[2:]:
+                self.assertEqual(discovery.get("RESOURCE_LOCK"), ["channel_fixed_ports"])
             result = subprocess.run(["ctest", "--test-dir", str(self.root), "--parallel", "2", "-V"],
                                     capture_output=True, text=True, timeout=15)
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
-            self.assertEqual(result.stdout.count("EXECUTED "), 2)
+            self.assertEqual(result.stdout.count("EXECUTED "), 6)
 
     def test_ci_qml_selectors_exist_before_native_builds(self):
         available = set()

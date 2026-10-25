@@ -816,15 +816,25 @@ bool LocalChannel::receiveDirectory(const QString& device, const QJsonObject& me
         if (!saved.isEmpty() && pinned != device) return false;
         ids.insert(id);
     }
+    bool changed = false;
     for (auto it = discovery_.hosts.begin(); it != discovery_.hosts.end();) {
-        if (it->deviceId == device && !ids.contains(it.key())) it = discovery_.hosts.erase(it); else ++it;
+        if (it->deviceId == device && !ids.contains(it.key())) {
+            it = discovery_.hosts.erase(it); changed = true;
+        } else ++it;
     }
     for (const auto& entry : directory) {
         const auto value = entry.toObject(); const auto id = value.value("id").toString();
         if (discovery_.hosts.size() >= 1024 && !discovery_.hosts.contains(id)) break;
-        discovery_.hosts.insert(id, {value.value("name").toString(), address, port, clock_(), direct || discovery_.hosts.value(id).direct, scanned, device});
+        const auto previous = discovery_.hosts.constFind(id);
+        const auto name = value.value("name").toString();
+        changed |= previous == discovery_.hosts.cend() || previous->name != name
+            || previous->address != address || previous->port != port || previous->deviceId != device;
+        const auto wasDirect = previous != discovery_.hosts.cend() && previous->direct;
+        discovery_.hosts.insert(id, {name, address, port, clock_(), direct || wasDirect, scanned, device});
     }
-    emit hostsChanged(); return true;
+    // Refresh liveness without rebuilding the UI for unchanged announcements.
+    if (changed) emit hostsChanged();
+    return true;
 }
 
 bool LocalChannel::validId(const QString& value) {

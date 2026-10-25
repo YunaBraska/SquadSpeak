@@ -510,7 +510,9 @@ void AudioModel::beginCapture() {
 #endif
         processor_ = std::make_unique<squad::AudioProcessor>(48000, profile_);
         source_ = std::make_unique<QAudioSource>(input_, format_);
-        source_->setBufferSize(format_.bytesForDuration(50000));
+        // Capacity, not a fill target. Keep short callback stalls from
+        // discarding microphone samples before the paced sender sees them.
+        source_->setBufferSize(format_.bytesForDuration(120000));
         connect(source_.get(), &QAudioSource::stateChanged, this, [this](QtAudio::State state) {
             if (source_ && state == QtAudio::StoppedState && source_->error() != QtAudio::NoError) {
                 const QPointer<QAudioSource> failed = source_.get();

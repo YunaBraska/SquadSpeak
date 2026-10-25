@@ -1119,6 +1119,42 @@ private slots:
         QCOMPARE(delivered, expected.size());
     }
 
+    void playbackKeepsFramesWhenReceiveAndRenderCallbacksStall_data() {
+        QTest::addColumn<int>("channels"); QTest::addColumn<int>("pause");
+        for (int channels : {1, 2}) for (int pause : {80, 120})
+            QTest::newRow(qPrintable(QString("%1ch-%2ms").arg(channels).arg(pause))) << channels << pause;
+    }
+    void playbackKeepsFramesWhenReceiveAndRenderCallbacksStall() {
+        QFETCH(int, channels); QFETCH(int, pause);
+        squad::VoiceMixer sender(channels), reference(channels), receiver(channels, 40);
+        reference.setAutomatic(false); receiver.setAutomatic(false);
+        QList<QByteArray> packets;
+        std::vector<std::vector<float>> expected;
+        for (int frame = 0; frame < 100; ++frame) {
+            const auto packet = sender.encode(speechFrame(frame + 50, channels, 0.5), 48000).first();
+            packets.append(packet);
+            QVERIFY(reference.receive("speaker", packet, frame * 20));
+            expected.push_back(reference.render(48000, frame * 20));
+        }
+        size_t received = 0, played = 0;
+        int nextRender = 0;
+        for (int now = 0; now < 2400; now += 10) {
+            // Both callbacks share the application loop. Network packets
+            // accumulate while the audio device drains its existing buffer.
+            if (now >= 800 && now < 800 + pause) continue;
+            while (received < expected.size() && int(received) * 20 <= now)
+                QVERIFY(receiver.receive("speaker", packets[qsizetype(received++)], now));
+            if (now < nextRender) continue;
+            nextRender += 20;
+            const auto output = receiver.render(48000, now);
+            if (rms(output) == 0) continue;
+            QVERIFY(played < expected.size());
+            QVERIFY2(output == expected[played], qPrintable(QString("Frame %1 lost at %2 ms").arg(played).arg(now)));
+            ++played;
+        }
+        QCOMPARE(played, expected.size());
+    }
+
     void playbackSpeechPauseDoesNotIncreaseDelay_data() {
         QTest::addColumn<int>("channels"); QTest::addColumn<int>("pause");
         QTest::addColumn<int>("reportedMissing");
