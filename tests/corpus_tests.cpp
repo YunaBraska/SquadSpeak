@@ -573,6 +573,7 @@ private slots:
         const auto& voice = sources_[speaker];
         const double voiceGain = 0.04 / rms(voice);
         std::array<double, 2> tail{};
+        double unfilteredEcho = 0;
         for (const bool enabled : {false, true}) {
             std::array<squad::EchoCanceller, 2> echoes;
             std::array<squad::VoiceMixer, 2> mixers;
@@ -598,10 +599,13 @@ private slots:
                         const int position = offset + i;
                         const int speaking = position - peer * 3 * rate;
                         double sample = speaking >= 0 && speaking < 3 * rate ? voice[speaking] * voiceGain : 0;
+                        double reflectedSample = 0;
                         for (const auto [tap, gain] : {std::pair{0, 0.6}, {480, 0.2}, {1392, 0.1}}) {
                             const int reflected = position - delayMs * 48 - tap;
-                            if (reflected >= 0) sample += playback[peer][reflected] * gain;
+                            if (reflected >= 0) reflectedSample += playback[peer][reflected] * gain;
                         }
+                        if (!enabled && position >= 6 * rate) unfilteredEcho += reflectedSample * reflectedSample;
+                        sample += reflectedSample;
                         microphone[i] = float(std::clamp(sample, -1.0, 1.0));
                         processors[peer].observeInput(microphone[i]);
                     }
@@ -621,10 +625,11 @@ private slots:
             QVERIFY(rms(std::span(playback[1]).subspan(rate, 2 * rate)) > 0.01);
             QVERIFY(rms(std::span(playback[0]).subspan(4 * rate, 2 * rate)) > 0.01);
         }
-        qInfo() << "duplex echo tail energy, disabled/enabled" << tail[false] << tail[true];
-        // Speech-aware gating can itself break the loop with AEC disabled.
-        // Continuous transmission retains the independent failure control.
-        if (!activation) QVERIFY(tail[false] > 1);
+        qInfo() << "duplex reflected energy and tail, disabled/enabled" << unfilteredEcho << tail[false] << tail[true];
+        // Prove the fixture returns echo after speech stops. Both gating and
+        // normalization can drain it before the tail window, even without AEC.
+        // Requiring an endless unfiltered loop would reject that valid recovery.
+        if (!activation) QVERIFY(unfilteredEcho > 1);
         QVERIFY(tail[true] < std::max(tail[false], 1.0) * 0.01);
     }
 
