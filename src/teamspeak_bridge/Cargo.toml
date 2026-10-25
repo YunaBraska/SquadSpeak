@@ -13,7 +13,7 @@ neural-denoise = []
 
 [dependencies]
 audiopus_sys = { version = "0.2.2", features = ["dynamic"] }
-base64 = "0.22"
+base64 = "0.23"
 tsclientlib = { git = "https://github.com/ReSpeak/tsclientlib", rev = "ee3bc6f45a7137db7793ba5593a321df400d53e5", features = ["audio"] }
 tsproto-packets = { git = "https://github.com/ReSpeak/tsclientlib", rev = "ee3bc6f45a7137db7793ba5593a321df400d53e5" }
 serde = { version = "1", features = ["derive"] }
