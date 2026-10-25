@@ -214,6 +214,7 @@ int main(int argc, char** argv) {
             updateVoice(); audio.setParticipants(channel.audioSources(), channel.joinedHostId());
         });
         QObject::connect(&channel, &LocalChannel::audioReceived, &audio, &AudioModel::receiveAudio);
+        QObject::connect(&channel, &LocalChannel::contactsObserved, &audio, &AudioModel::observeContacts);
         QObject::connect(&audio, &AudioModel::audioPacket, &channel, &LocalChannel::sendAudio);
         QObject::connect(&audio, &AudioModel::activityChanged, &channel, [&] {
             if (!audio.voiceSending()) channel.sendAudio({});

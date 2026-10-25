@@ -215,6 +215,10 @@ LocalChannel::LocalChannel(VoiceSession& session, QString storageFile, std::opti
         const auto document = QJsonDocument::fromJson(file.readAll(), &error);
         file.close();
         const auto object = document.object();
+        extensions_ = object;
+        for (const auto* key : {"version", "channelName", "botName", "servicePort", "messageLifetimeDays", "approved",
+                 "attempts", "requestsAllowed", "endpointPins", "control", "security", "channels", "ownedChannels", "hostName"})
+            extensions_.remove(key);
         if (error.error != QJsonParseError::NoError || !document.isObject()
             || object.value("version").toInt() != 1 || !object.value("approved").isArray()
             || !object.value("attempts").isObject() || !object.value("requestsAllowed").isBool())
@@ -338,6 +342,7 @@ LocalChannel::LocalChannel(VoiceSession& session, QString storageFile, std::opti
     });
     maintenanceTimer_.setInterval(1000);
     connect(&maintenanceTimer_, &QTimer::timeout, this, [this] {
+        maintainContacts();
         const auto elapsed = controlClock_.elapsed();
         if (auto* c = chatClient(); c && c->passwordRequired && c->passwordRetryAt > 0) {
             if (c->passwordRetryAt <= elapsed) c->passwordRetryAt = 0;
@@ -432,6 +437,10 @@ LocalChannel::LocalChannel(VoiceSession& session, QString storageFile, std::opti
         if (removedImage) { ++imageRevision_; emit imagesChanged(); }
     });
     maintenanceTimer_.start();
+    const auto observeContacts = [this] { maintainContacts(true); };
+    connect(this, &LocalChannel::hostParticipantsChanged, this, observeContacts);
+    connect(this, &LocalChannel::participantsChanged, this, observeContacts);
+    connect(this, &LocalChannel::controlChanged, this, observeContacts);
     connect(&teamSpeakTimer_, &QTimer::timeout, this, &LocalChannel::pollTeamSpeak);
     controlClock_.start();
     controlTimer_.setInterval(2000);
@@ -500,9 +509,12 @@ LocalChannel::LocalChannel(VoiceSession& session, QString storageFile, std::opti
     if (migrateName && !persist(approved_, attempts_, requestsAllowed_, endpointPins_, control_, security_))
         throw std::runtime_error(status_.toStdString());
     if (newChannel && !migrateName) channelName_ = VoiceSession::suggestedName(true);
+    if (file.exists()) maintainContacts();
 }
 
 LocalChannel::~LocalChannel() {
+    contactsCheckedAt_ = -1;
+    maintainContacts();
     disconnectTeamSpeak();
     // Destruction emits signals. Observers must not retrieve a child whose
     // final shared reference is already being released.
@@ -720,6 +732,7 @@ bool LocalChannel::syncOwnedChannels() {
             connect(child.get(), &LocalChannel::stateChanged, this, [this] { emit ownedChannelsChanged(); emit hostsChanged(); });
             connect(child.get(), &LocalChannel::requestsChanged, this, &LocalChannel::requestsChanged);
             connect(child.get(), &LocalChannel::channelEvent, this, &LocalChannel::channelEvent);
+            connect(child.get(), &LocalChannel::hostParticipantsChanged, this, [this] { maintainContacts(true); });
             connect(child.get(), &LocalChannel::screenChanged, this, &LocalChannel::screenChanged);
         }
         child->hostOnly_ = hostOnly_;
@@ -883,6 +896,7 @@ bool LocalChannel::initialize(bool hostOnly) {
         publishRemoteAvailability();
     }
     if (ready()) {
+        maintainContacts();
         if (!startHost()) return false;
         if (!hostOnly_ && !remoteMode() && chatHostId_.isEmpty()) openChat(ownId(), "127.0.0.1", port());
         startDiscovery();
@@ -902,6 +916,153 @@ bool LocalChannel::initialize(bool hostOnly) {
     });
 }
 
+QSet<QString> LocalChannel::storedContacts(const QJsonObject& state) {
+    QSet<QString> ids;
+    for (const auto& id : state.value("approved").toArray()) ids.insert(id.toString());
+    const auto attempts = state.value("attempts").toObject();
+    for (auto it = attempts.begin(); it != attempts.end(); ++it) ids.insert(it.key().section(':', -1));
+    for (const auto& id : state.value("endpointPins").toObject()) ids.insert(id.toString());
+    const auto security = state.value("security").toObject();
+    for (const auto* name : {"blocked", "saved", "teamSpeakPins", "privatePeers", "privateStates"}) {
+        const auto entries = security.value(name).toObject();
+        for (auto it = entries.begin(); it != entries.end(); ++it) ids.insert(it.key());
+    }
+    const auto control = state.value("control").toObject();
+    const auto controllers = control.value("controllers").toObject();
+    for (auto it = controllers.begin(); it != controllers.end(); ++it) ids.insert(it.key());
+    ids.insert(control.value("target").toObject().value("id").toString());
+    const auto channels = state.value("channels").toObject();
+    for (auto it = channels.begin(); it != channels.end(); ++it) {
+        ids.insert(it.key()); ids.insert(it.value().toObject().value("deviceId").toString());
+    }
+    ids.remove({});
+    return ids;
+}
+
+void LocalChannel::maintainContacts(bool observeChange) {
+    const bool first = contactsCheckedAt_ < 0;
+    if (!ready() || (first && !QFile::exists(storageFile_))) return;
+    const auto now = clock_();
+    const bool due = first || now < contactsCheckedAt_ || now - contactsCheckedAt_ >= 60000;
+    if (!due && !observeChange) return;
+    QSet<QString> seen{ownId(), channelId()};
+    for (const auto& id : ownedIds_) seen.insert(id);
+    const auto observe = [&](LocalChannel& channel) {
+        seen.insert(channel.channelId());
+        seen.insert(channel.hostBot().value("id").toString());
+        for (const auto& peer : channel.peers_) seen.insert(peer.id);
+        for (const auto& c : channel.clients_) if (c->accepted) {
+            if (c->privatePeer.isEmpty() || c->privatePeerOnline) seen.insert(c->id);
+            seen.insert(c->deviceId);
+            if (c->privatePeer.isEmpty()) for (const auto& id : c->onlineIds) seen.insert(id);
+            if (c->privatePeer.isEmpty() || c->privatePeerOnline)
+                for (const auto& value : c->members) seen.insert(value.toMap().value("id").toString());
+        }
+        if (channel.controlConnected_) seen.insert(channel.control_.value("target").toObject().value("id").toString());
+    };
+    observe(*this);
+    for (const auto& child : owned_) observe(*child);
+    seen.remove({});
+    recentContacts_.unite(seen);
+    if (!due) return;
+    seen = recentContacts_;
+    contactsCheckedAt_ = now;
+    const auto privatePeers = security_.value("privatePeers").toObject();
+    const auto privateStates = security_.value("privateStates").toObject();
+    for (auto it = privatePeers.begin(); it != privatePeers.end(); ++it) if (seen.contains(it.key())) {
+        const auto contacts = it.value().toObject().value("contacts").toObject();
+        for (auto contact = contacts.begin(); contact != contacts.end(); ++contact) if (seen.contains(contact.key())) {
+            const auto id = conversationId(ownId(), it.key(), contact.key());
+            if (privateStates.contains(id)) seen.insert(id);
+        }
+    }
+    emit contactsObserved(seen.values());
+    auto security = security_;
+    auto lastSeen = security.value("lastSeen").toObject();
+    QSet<QString> expired;
+    for (auto it = lastSeen.begin(); it != lastSeen.end(); ++it) {
+        const auto previous = it.value().toInteger(-1);
+        if (seen.contains(it.key()) || previous < 0 || previous > now) it.value() = now;
+        else if (now - previous >= 365LL * 86400000) expired.insert(it.key());
+    }
+    for (const auto& peer : expired.values()) {
+        const auto contacts = privatePeers.value(peer).toObject().value("contacts").toObject();
+        for (auto contact = contacts.begin(); contact != contacts.end(); ++contact) {
+            const auto id = conversationId(ownId(), peer, contact.key());
+            if (privateStates.contains(id)) expired.insert(id);
+        }
+    }
+    for (const auto& id : expired.values()) if (privateStates.contains(id)) {
+        if (privateStates.value(id).toObject().value("expires").toInteger() > now) {
+            expired.remove(id); continue;
+        }
+        privateHistories_.remove(id);
+        const auto path = storageFile_ + ".private/" + id;
+        bool removed = true;
+        for (const auto* suffix : {".sqlite", ".sqlite-journal"})
+            if (QFile::exists(path + suffix) && !QFile::remove(path + suffix)) removed = false;
+        if (QDir(path + ".images").exists() && !QDir(path + ".images").removeRecursively()) removed = false;
+        if (!removed) {
+            expired.remove(id);
+            chatError_ = tr("Chat history could not be saved."); emit chatChanged();
+        }
+    }
+    security.insert("lastSeen", lastSeen);
+    if (expired.isEmpty()) {
+        if ((first || security != security_) && !persist(approved_, attempts_, requestsAllowed_, endpointPins_, control_, security)) return;
+        recentContacts_.clear();
+        return;
+    }
+    auto approved = approved_; approved.subtract(expired);
+    auto attempts = attempts_;
+    for (auto it = attempts.begin(); it != attempts.end();)
+        if (expired.contains(it.key().section(':', -1))) it = attempts.erase(it); else ++it;
+    auto pins = endpointPins_;
+    for (auto it = pins.begin(); it != pins.end();)
+        if (expired.contains(it.value())) it = pins.erase(it); else ++it;
+    for (const auto* name : {"blocked", "saved", "teamSpeakPins", "privatePeers", "privateStates"}) {
+        auto entries = security.value(name).toObject();
+        for (const auto& id : expired) entries.remove(id);
+        if (security.contains(name)) security.insert(name, entries);
+    }
+    auto records = security.value("privatePeers").toObject();
+    for (auto it = records.begin(); it != records.end(); ++it) {
+        auto record = it.value().toObject(), contacts = record.value("contacts").toObject();
+        for (const auto& id : expired) contacts.remove(id);
+        record.insert("contacts", contacts); it.value() = record;
+    }
+    if (security.contains("privatePeers")) security.insert("privatePeers", records);
+    auto states = security.value("privateStates").toObject();
+    for (auto it = states.begin(); it != states.end(); ++it) {
+        auto state = it.value().toObject(), blocks = state.value("blocks").toObject();
+        for (const auto& id : expired) blocks.remove(id);
+        if (state.contains("blocks")) state.insert("blocks", blocks);
+        it.value() = state;
+    }
+    if (security.contains("privateStates")) security.insert("privateStates", states);
+    auto control = control_, controllers = control.value("controllers").toObject();
+    for (const auto& id : expired) controllers.remove(id);
+    control.insert("controllers", controllers);
+    if (expired.contains(control.value("target").toObject().value("id").toString())) {
+        control.insert("target", QJsonObject{}); control.insert("remoteMode", false);
+    }
+    auto channels = savedChannels_;
+    for (auto it = channels.begin(); it != channels.end();)
+        if (expired.contains(it.key()) || expired.contains(it.value().toObject().value("deviceId").toString())) it = channels.erase(it);
+        else ++it;
+    if (!persist(approved, attempts, requestsAllowed_, pins, control, security, &channels)) return;
+    recentContacts_.clear();
+    for (const auto& id : clients_.keys()) {
+        const auto c = clients_.value(id);
+        if ((!c->accepted || (!c->privatePeer.isEmpty() && !c->privatePeerOnline))
+            && (expired.contains(id) || expired.contains(c->deviceId) || expired.contains(c->privatePeer))) {
+            if (chatHostId_ == id) selectChat({});
+            closeClient(*c); clients_.remove(id);
+        }
+    }
+    emit hostsChanged(); emit controlChanged();
+}
+
 bool LocalChannel::persist(const QSet<QString>& approved, const QHash<QString, Attempt>& attempts, bool allowed,
                            const QHash<QString, QString>& pins, const QJsonObject& control, const QJsonObject& security,
                            const QJsonObject* channels) {
@@ -913,10 +1074,23 @@ bool LocalChannel::persist(const QSet<QString>& approved, const QHash<QString, A
         retries.insert(it.key(), QJsonObject{{"count", it->count}, {"next", it->next}});
     QJsonObject addresses;
     for (auto it = pins.begin(); it != pins.end(); ++it) addresses.insert(it.key(), it.value());
-    QJsonObject object{{"version", 1}, {"channelName", channelName_}, {"botName", botName_}, {"servicePort", configuredPort_}, {"messageLifetimeDays", messageLifetimeDays_}, {"approved", approvals},
+    const QJsonObject values{{"version", 1}, {"channelName", channelName_}, {"botName", botName_}, {"servicePort", configuredPort_}, {"messageLifetimeDays", messageLifetimeDays_}, {"approved", approvals},
         {"attempts", retries}, {"requestsAllowed", allowed}, {"endpointPins", addresses}, {"control", control}, {"security", security}, {"channels", saved}};
+    auto object = extensions_;
+    for (auto it = values.begin(); it != values.end(); ++it) object.insert(it.key(), it.value());
     if (!service_) object.insert("ownedChannels", QJsonArray::fromStringList(ownedIds_));
     if (!hostName_.isEmpty()) object.insert("hostName", hostName_);
+    auto nextSecurity = security;
+    auto lastSeen = security.value("lastSeen").toObject();
+    const auto states = security.value("privateStates").toObject();
+    for (auto it = states.begin(); it != states.end(); ++it)
+        if (it.value().toObject().value("expires").toInteger() > security_.value("privateStates").toObject().value(it.key()).toObject().value("expires").toInteger())
+            lastSeen.insert(it.key(), clock_());
+    const auto ids = storedContacts(object);
+    for (const auto& id : ids) if (!lastSeen.contains(id)) lastSeen.insert(id, clock_());
+    for (auto it = lastSeen.begin(); it != lastSeen.end();)
+        if (!ids.contains(it.key())) it = lastSeen.erase(it); else ++it;
+    nextSecurity.insert("lastSeen", lastSeen); object.insert("security", nextSecurity);
     const auto data = QJsonDocument(object).toJson(QJsonDocument::Compact);
     if (data.size() > maximumPermissionBytes)
         return setStatus(tr("The local permission store is full."), false);
@@ -929,7 +1103,7 @@ bool LocalChannel::persist(const QSet<QString>& approved, const QHash<QString, A
     endpointPins_ = pins;
     const bool wasRemote = remoteMode();
     control_ = control;
-    security_ = security;
+    security_ = nextSecurity;
     savedChannels_ = saved;
     updateControlIntent();
     if (wasRemote != remoteMode()) publishRemoteAvailability();

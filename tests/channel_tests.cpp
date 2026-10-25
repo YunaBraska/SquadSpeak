@@ -906,6 +906,194 @@ private slots:
             QTRY_VERIFY(host.channel.hostClients().isEmpty() && host.channel.requests().isEmpty());
         }
     }
+    void inactiveContactsExpirePermissionsAndSavedConnections() {
+        QTemporaryDir dir;
+        qint64 now = 1700000000000;
+        const auto clock = [&] { return now; };
+        const auto hostId = TlsIdentity::create(), visitorId = TlsIdentity::create(), bannedId = TlsIdentity::create();
+        {
+            Device host(dir.filePath("host"), "Host", hostId, clock), visitor(dir.filePath("visitor"), "Visitor", visitorId, clock);
+            QVERIFY(host.channel.decide(visitorId.id(), true));
+            QVERIFY(host.channel.setBlocked(bannedId.id(), true));
+            QVERIFY(host.channel.listen(QHostAddress::LocalHost));
+            QVERIFY(visitor.join(host.channel));
+            QTRY_VERIFY(visitor.channel.joined());
+            QVERIFY(!visitor.channel.savedChannels().isEmpty());
+            QVERIFY(host.channel.setRemotePermission(visitorId.id(), true));
+            QCOMPARE(host.channel.controllers().size(), 1);
+            QVERIFY(visitor.channel.leave());
+        }
+        now += 365LL * 86400000 - 1;
+        {
+            QFile file(dir.filePath("host.channel")); QVERIFY(file.open(QIODevice::ReadOnly));
+            auto object = QJsonDocument::fromJson(file.readAll()).object(); file.close();
+            object.insert("futureOption", "preserved");
+            auto security = object.value("security").toObject(); security.insert("futureSecurity", true);
+            object.insert("security", security);
+            QVERIFY(file.open(QIODevice::WriteOnly | QIODevice::Truncate));
+            file.write(QJsonDocument(object).toJson());
+        }
+        {
+            Device host(dir.filePath("host"), "Host", hostId, clock), visitor(dir.filePath("visitor"), "Visitor", visitorId, clock);
+            QCOMPARE(host.channel.blockedClients().size(), 1);
+            QCOMPARE(host.channel.controllers().size(), 1);
+            QVERIFY(!visitor.channel.savedChannels().isEmpty());
+        }
+        ++now;
+        Device host(dir.filePath("host"), "Host", hostId, clock), visitor(dir.filePath("visitor"), "Visitor", visitorId, clock);
+        QVERIFY(host.channel.blockedClients().isEmpty());
+        QVERIFY(host.channel.controllers().isEmpty());
+        QVERIFY(visitor.channel.savedChannels().isEmpty());
+        QVERIFY(host.channel.listen(QHostAddress::LocalHost));
+        QVERIFY(visitor.join(host.channel));
+        QTRY_COMPARE(host.channel.requests().size(), 1);
+        QVERIFY(!visitor.channel.joined());
+        QVERIFY(host.channel.decide(visitorId.id(), true));
+        QTRY_VERIFY(visitor.channel.joined());
+        QFile file(dir.filePath("host.channel")); QVERIFY(file.open(QIODevice::ReadOnly));
+        const auto stored = QJsonDocument::fromJson(file.readAll()).object();
+        QCOMPARE(stored.value("futureOption").toString(), QString("preserved"));
+        QVERIFY(stored.value("security").toObject().value("futureSecurity").toBool());
+    }
+    void connectedContactsRenewPermissionsAcrossTheYearBoundary() {
+        QTemporaryDir dir;
+        qint64 now = 1700000000000;
+        const auto clock = [&] { return now; };
+        const auto identity = TlsIdentity::create();
+        Device host(dir.filePath("host"), "Host", identity, clock), visitor(dir.filePath("visitor"), "Visitor", TlsIdentity::create(), clock);
+        QVERIFY(host.channel.listen(QHostAddress::LocalHost));
+        QVERIFY(host.channel.decide(visitor.channel.ownId(), true));
+        QVERIFY(visitor.join(host.channel)); QTRY_VERIFY(visitor.channel.joined());
+        QSignalSpy observed(&host.channel, &LocalChannel::contactsObserved);
+        QSignalSpy visitorObserved(&visitor.channel, &LocalChannel::contactsObserved);
+        now += 365LL * 86400000;
+        QTRY_VERIFY(!observed.isEmpty() && !visitorObserved.isEmpty());
+        QVERIFY(observed.last().first().toStringList().contains(visitor.channel.ownId()));
+        QVERIFY(visitorObserved.last().first().toStringList().contains(host.channel.ownId()));
+        QVERIFY(visitor.channel.leave());
+        QVERIFY(visitor.channel.closeChat(host.channel.ownId()));
+        QTRY_VERIFY(host.channel.hostClients().isEmpty());
+        QVERIFY(visitor.join(host.channel)); QTRY_VERIFY(visitor.channel.joined());
+        QVERIFY(host.channel.requests().isEmpty());
+    }
+    void contactCleanupWaitsForTheProtectedIdentity() {
+        QTemporaryDir dir;
+        qint64 now = 1700000000000;
+        const auto clock = [&] { return now; };
+        const auto identity = TlsIdentity::create();
+        const auto path = dir.filePath("host");
+        {
+            Device host(path, "Host", identity, clock);
+            QVERIFY(host.channel.decide(identity.id(), true));
+        }
+        now += 365LL * 86400000;
+        VoiceSession session(path + ".session");
+        LocalChannel waiting(session, path + ".channel", std::nullopt, clock);
+        QVERIFY(!waiting.ready());
+        QFile file(path + ".channel"); QVERIFY(file.open(QIODevice::ReadOnly));
+        QVERIFY(QJsonDocument::fromJson(file.readAll()).object().value("approved").toArray().contains(identity.id()));
+    }
+    void briefContactRenewsPermissionsBetweenMaintenancePasses() {
+        QTemporaryDir dir;
+        qint64 now = 1700000000000;
+        const auto clock = [&] { return now; };
+        Device host(dir.filePath("host"), "Host", TlsIdentity::create(), clock),
+            visitor(dir.filePath("visitor"), "Visitor", TlsIdentity::create(), clock);
+        QVERIFY(host.channel.listen(QHostAddress::LocalHost));
+        QVERIFY(host.channel.decide(visitor.channel.ownId(), true));
+        QSignalSpy observed(&host.channel, &LocalChannel::contactsObserved);
+        now += 365LL * 86400000 - 60000;
+        QTRY_VERIFY(!observed.isEmpty()); observed.clear();
+        now += 1000;
+        QVERIFY(visitor.join(host.channel)); QTRY_VERIFY(visitor.channel.joined());
+        QTRY_COMPARE(host.channel.hostClients().size(), 1);
+        QVERIFY(visitor.channel.leave()); QVERIFY(visitor.channel.closeChat(host.channel.ownId()));
+        QTRY_VERIFY(host.channel.hostClients().isEmpty());
+        now += 60000;
+        QTRY_VERIFY(!observed.isEmpty());
+        QVERIFY(visitor.join(host.channel)); QTRY_VERIFY(visitor.channel.joined());
+        QVERIFY(host.channel.requests().isEmpty());
+    }
+    void olderPermissionsGetOneYearFromFirstLoad_data() {
+        QTest::addColumn<bool>("emptyTimestamps");
+        QTest::newRow("missing") << false;
+        QTest::newRow("empty") << true;
+    }
+    void olderPermissionsGetOneYearFromFirstLoad() {
+        QFETCH(bool, emptyTimestamps);
+        QTemporaryDir dir;
+        qint64 now = 1700000000000;
+        const auto clock = [&] { return now; };
+        const auto identity = TlsIdentity::create();
+        const auto path = dir.filePath("host");
+        {
+            Device host(path, "Host", identity, clock);
+            QVERIFY(host.channel.setBlocked(TlsIdentity::create().id(), true));
+        }
+        QFile file(path + ".channel"); QVERIFY(file.open(QIODevice::ReadOnly));
+        auto saved = QJsonDocument::fromJson(file.readAll()).object(); file.close();
+        auto security = saved.value("security").toObject(); security.remove("lastSeen");
+        if (emptyTimestamps) security.insert("lastSeen", QJsonObject{});
+        saved.insert("security", security);
+        QVERIFY(file.open(QIODevice::WriteOnly | QIODevice::Truncate));
+        QVERIFY(file.write(QJsonDocument(saved).toJson()) > 0); file.close();
+        now += 365LL * 86400000;
+        { Device loaded(path, "Host", identity, clock); QCOMPARE(loaded.channel.blockedClients().size(), 1); }
+        now += 365LL * 86400000 - 1;
+        { Device loaded(path, "Host", identity, clock); QCOMPARE(loaded.channel.blockedClients().size(), 1); }
+        ++now;
+        Device expired(path, "Host", identity, clock);
+        QVERIFY(expired.channel.blockedClients().isEmpty());
+    }
+    void failedContactCleanupRetainsPermissionsAndRetries() {
+        QTemporaryDir dir;
+        qint64 now = 1700000000000;
+        const auto path = dir.filePath("host");
+        Device host(path, "Host", TlsIdentity::create(), [&] { return now; });
+        QVERIFY(host.channel.setBlocked(TlsIdentity::create().id(), true));
+        QVERIFY(QFile::rename(path + ".channel", path + ".saved"));
+        QVERIFY(QDir().mkdir(path + ".channel"));
+        now += 365LL * 86400000;
+        QTRY_VERIFY(host.channel.status().contains("could not be saved"));
+        QCOMPARE(host.channel.blockedClients().size(), 1);
+        QVERIFY(QDir().rmdir(path + ".channel"));
+        QVERIFY(QFile::rename(path + ".saved", path + ".channel"));
+        now += 60000;
+        QTRY_VERIFY(host.channel.blockedClients().isEmpty());
+    }
+    void expiredPrivateContactsRemoveConversationFilesAndBlocks() {
+        QTemporaryDir dir;
+        qint64 now = 1700000000000;
+        const auto clock = [&] { return now; };
+        const auto hostId = TlsIdentity::create();
+        QString conversation;
+        {
+            Device host(dir.filePath("host"), "Host", hostId, clock),
+                alice(dir.filePath("alice"), "Alice", TlsIdentity::create(), clock),
+                bea(dir.filePath("bea"), "Bea", TlsIdentity::create(), clock);
+            QVERIFY(host.channel.listen(QHostAddress::LocalHost));
+            for (auto* client : {&alice, &bea}) {
+                QVERIFY(host.channel.decide(client->channel.ownId(), true));
+                QVERIFY(client->join(host.channel)); QTRY_VERIFY(client->channel.chatReady());
+            }
+            QTRY_VERIFY(alice.channel.canPrivateChat(host.channel.ownId(), bea.channel.ownId()));
+            QVERIFY(alice.channel.openPrivateChat(host.channel.ownId(), bea.channel.ownId()));
+            conversation = alice.channel.chatHostId();
+            QVERIFY(alice.channel.sendChat("Expires")); QTRY_VERIFY(!alice.channel.chatPending());
+            QVERIFY(alice.channel.setPrivateBlocked(conversation, true));
+            QTRY_VERIFY(alice.channel.privateBlockedByMe());
+        }
+        const auto file = dir.filePath("host.channel.private/") + conversation + ".sqlite";
+        QVERIFY(QFile::exists(file));
+        now += 365LL * 86400000;
+        Device host(dir.filePath("host"), "Host", hostId, clock);
+        QVERIFY(!QFile::exists(file));
+        QFile store(dir.filePath("host.channel")); QVERIFY(store.open(QIODevice::ReadOnly));
+        const auto security = QJsonDocument::fromJson(store.readAll()).object().value("security").toObject();
+        QVERIFY(security.value("privatePeers").toObject().isEmpty());
+        QVERIFY(security.value("privateStates").toObject().isEmpty());
+        QVERIFY(security.value("lastSeen").toObject().isEmpty());
+    }
     void tlsWithoutDeviceCertificateCannotReachAdmission() {
         QTemporaryDir dir;
         Device host(dir.filePath("host"), "Owner");
@@ -1762,9 +1950,11 @@ private slots:
 #else
         QTemporaryDir dir;
         const auto identity = TlsIdentity::create();
+        qint64 now = 1700000000000;
+        const auto clock = [&] { return now; };
         QString first;
         {
-            Device host(dir.filePath("host"), "Owner", identity);
+            Device host(dir.filePath("host"), "Owner", identity, clock);
             QVERIFY(host.channel.listen(QHostAddress::LocalHost));
             QVERIFY(host.session.setSupporterEnabled(true));
             for (int n = 0; n < 9; ++n) {
@@ -1781,7 +1971,8 @@ private slots:
                 QVERIFY(!item.toMap().value("hosting").toBool());
             QVERIFY(QFile::exists(dir.filePath("host.channel.hosts/") + first + "/channel.json.chat.sqlite"));
         }
-        Device restored(dir.filePath("host"), "Owner", identity);
+        now += 365LL * 86400000;
+        Device restored(dir.filePath("host"), "Owner", identity, clock);
         QVERIFY(restored.channel.listen(QHostAddress::LocalHost));
         QCOMPARE(restored.channel.ownedChannels().size(), 10);
         QVERIFY(!restored.channel.ownChannel(first)->hosting());

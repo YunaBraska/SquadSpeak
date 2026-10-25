@@ -69,6 +69,12 @@ AudioModel::AudioModel(const QString& settingsFile, QObject* parent) try
 }
 
 QVariantList AudioModel::inputs() const { return deviceList(QMediaDevices::audioInputs()); }
+bool AudioModel::observeContacts(const QStringList& ids) {
+    try {
+        profiles_.observeContacts(ids);
+        return language_.observeContacts(ids);
+    } catch (const std::exception& error) { setStatus(tr(error.what()), false); return false; }
+}
 QVariantList AudioModel::outputs() const { return deviceList(QMediaDevices::audioOutputs()); }
 int AudioModel::inputIndex() const { return selectedIndex(QMediaDevices::audioInputs(), profiles_.selection(true)); }
 int AudioModel::outputIndex() const { return selectedIndex(QMediaDevices::audioOutputs(), profiles_.selection(false)); }

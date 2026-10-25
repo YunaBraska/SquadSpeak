@@ -1006,12 +1006,15 @@ private slots:
             loud = rms(loudReceiver.render(48000, i * 20));
         }
         QVERIFY2(std::abs(quiet - loud) < 0.015, qPrintable(QString("quiet=%1 loud=%2").arg(quiet).arg(loud)));
-        quietReceiver.setGain("quiet", 0.5);
+        quietReceiver.setGain("quiet", 2);
         QVERIFY(quietReceiver.receive("quiet", quietSender.encode(tone(0.02), 48000).first(), 4800));
-        QVERIFY(std::abs(rms(quietReceiver.render(48000, 4800)) - quiet / 2) < 0.01);
-        quietReceiver.setGain("quiet", 0);
+        QVERIFY(std::abs(rms(quietReceiver.render(48000, 4800)) - quiet * 2) < 0.01);
+        quietReceiver.setGain("quiet", 0.5);
         QVERIFY(quietReceiver.receive("quiet", quietSender.encode(tone(0.02), 48000).first(), 4820));
-        QCOMPARE(rms(quietReceiver.render(48000, 4820)), 0.0);
+        QVERIFY(std::abs(rms(quietReceiver.render(48000, 4820)) - quiet / 2) < 0.01);
+        quietReceiver.setGain("quiet", 0);
+        QVERIFY(quietReceiver.receive("quiet", quietSender.encode(tone(0.02), 48000).first(), 4840));
+        QCOMPARE(rms(quietReceiver.render(48000, 4840)), 0.0);
         QCOMPARE(rms(loudReceiver.render(48000, 5000)), 0.0);
     }
     void automaticLevelCanBeChosenPerPerson() {
@@ -1546,6 +1549,93 @@ private slots:
         QVERIFY(!profiles.automaticVolume("speaker", "alice"));
         QVERIFY(!profiles.automaticVolume("headset", "bob"));
         QVERIFY(profiles.automaticVolume("speaker", "bob"));
+    }
+    void participantSettingsExpireAfterAYearWithoutContact() {
+        QTemporaryDir dir;
+        const auto path = dir.filePath("audio.ini");
+        constexpr qint64 year = 365LL * 86400000;
+        qint64 now = 1700000000000;
+        const auto clock = [&] { return now; };
+        {
+            squad::AudioProfiles profiles(path, clock);
+            profiles.saveParticipant("headset", "alice", 2).saveParticipant("speaker", "alice", 0.4)
+                .saveAutomaticVolume("headset", false, "alice")
+                .saveParticipant("headset", "bob", 0).saveAutomaticVolume("speaker", false, "bob")
+                .saveMusicVolume("headset", 0.3).saveChannelMusicVolume("headset", "old-channel", 0.8)
+                .saveOutput("headset", 0.25).saveNoiseSuppression("microphone", 0.7);
+            now += year - 1;
+            profiles.observeContacts({"alice", "unsaved"});
+            QCOMPARE(profiles.participant("headset", "bob"), 0.0);
+            QCOMPARE(profiles.musicVolume("headset", "old-channel"), 0.8);
+            ++now;
+            profiles.observeContacts({"alice"});
+            QCOMPARE(profiles.participant("headset", "bob"), 1.0);
+            QVERIFY(profiles.automaticVolume("speaker", "bob"));
+            QCOMPARE(profiles.musicVolume("headset", "old-channel"), 0.3);
+            QCOMPARE(profiles.participant("headset", "alice"), 2.0);
+            QCOMPARE(profiles.participant("speaker", "alice"), 0.4);
+            QVERIFY(!profiles.automaticVolume("headset", "alice"));
+        }
+        {
+            squad::AudioProfiles reopened(path, clock);
+            QCOMPARE(reopened.participant("headset", "alice"), 2.0);
+            now += year;
+        }
+        const squad::AudioProfiles expired(path, clock);
+        QCOMPARE(expired.participant("headset", "alice"), 1.0);
+        QCOMPARE(expired.participant("speaker", "alice"), 1.0);
+        QVERIFY(expired.automaticVolume("headset", "alice"));
+        QCOMPARE(expired.output("headset"), 0.25);
+        QCOMPARE(expired.noiseSuppression("microphone"), 0.7);
+        const QSettings raw(path, QSettings::IniFormat);
+        for (const auto& key : raw.allKeys()) {
+            QVERIFY(!key.contains("participants/"));
+            QVERIFY(!key.contains("automaticParticipants/"));
+            QVERIFY(!key.startsWith("contacts/"));
+        }
+    }
+    void olderParticipantSettingsKeepDefaultsAndFutureFields() {
+        QTemporaryDir dir;
+        const auto path = dir.filePath("audio.ini");
+        qint64 now = 1700000000000;
+        const auto clock = [&] { return now; };
+        {
+            QSettings raw(path, QSettings::IniFormat);
+            raw.setValue("output/independentVolumes", true);
+            raw.setValue("output/61/participants/616c696365", 1.7);
+            raw.setValue("output/61/futureSetting", "preserved");
+        }
+        {
+            squad::AudioProfiles profiles(path, clock);
+            QCOMPARE(profiles.participant("a", "alice"), 1.7);
+            QVERIFY(profiles.automaticVolume("a", "alice"));
+            QCOMPARE(profiles.participant("a", "new"), 1.0);
+            profiles.observeContacts({"new"}).saveAutomaticVolume("a", false, "alice");
+        }
+        now += 365LL * 86400000;
+        const squad::AudioProfiles expired(path, clock);
+        QCOMPARE(expired.participant("a", "alice"), 1.0);
+        QVERIFY(expired.automaticVolume("a", "alice"));
+        const QSettings raw(path, QSettings::IniFormat);
+        QCOMPARE(raw.value("output/61/futureSetting").toString(), QString("preserved"));
+        QVERIFY(!raw.contains("contacts/6e6577"));
+    }
+    void contactTimestampsRecoverFromClockReversal() {
+        QTemporaryDir dir;
+        const auto path = dir.filePath("audio.ini");
+        qint64 now = 1700000000000;
+        const auto clock = [&] { return now; };
+        { squad::AudioProfiles(path, clock).saveParticipant("a", "alice", 0.3); }
+        now -= 86400000;
+        {
+            squad::AudioProfiles profiles(path, clock);
+            QCOMPARE(profiles.participant("a", "alice"), 0.3);
+            now += 365LL * 86400000 - 1;
+            profiles.observeContacts({});
+            QCOMPARE(profiles.participant("a", "alice"), 0.3);
+        }
+        ++now;
+        QCOMPARE(squad::AudioProfiles(path, clock).participant("a", "alice"), 1.0);
     }
 };
 QTEST_GUILESS_MAIN(MixerTests)

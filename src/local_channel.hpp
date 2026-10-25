@@ -132,7 +132,7 @@ public:
     [[nodiscard]] QVariantMap chatBot() const;
     Q_INVOKABLE bool setChannelName(const QString& name);
     // Applies host-only settings atomically. Permission lists add entries;
-    // existing bans survive approvals and can only be removed explicitly.
+    // Existing bans survive approvals until removal or contact expiry.
     bool configureHost(const QJsonObject& configuration);
     [[nodiscard]] QJsonObject hostConfiguration() const;
     [[nodiscard]] int messageLifetimeDays() const { return session_.supporterEnabled() ? messageLifetimeDays_ : std::min(messageLifetimeDays_, 30); }
@@ -260,6 +260,7 @@ signals:
     void hostsChanged();
     void discoverySearchChanged();
     void participantsChanged();
+    void contactsObserved(const QStringList& ids);
     void hostParticipantsChanged();
     void requestsChanged();
     void controlChanged();
@@ -275,6 +276,9 @@ signals:
     void imagesChanged();
     void channelEvent(const QString& kind);
 private:
+    static QSet<QString> storedContacts(const QJsonObject& state);
+    static QString conversationId(const QString& host, QString a, QString b);
+    void maintainContacts(bool observeChange = false);
     LocalChannel(VoiceSession& session, QString storageFile, std::optional<TlsIdentity> identity,
                  std::function<qint64()> clock, QObject* parent, LocalChannel* service, QString channelId);
     LocalChannel* service_ = nullptr;
@@ -661,6 +665,9 @@ private:
     QHash<QString, Attempt> attempts_;
     QHash<QString, QString> endpointPins_;
     QJsonObject security_{{"verifier", ""}, {"saved", QJsonObject{}}};
+    QJsonObject extensions_;
+    QSet<QString> recentContacts_;
+    qint64 contactsCheckedAt_ = -1;
     QThreadPool passwordWorkers_;
     int passwordChecks_ = 0;
     bool passwordBusy_ = false;

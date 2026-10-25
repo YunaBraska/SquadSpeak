@@ -3,7 +3,9 @@
 #include "audio_processor.hpp"
 #include "voice_mixer.hpp"
 #include <QSettings>
+#include <QDateTime>
 #include <QString>
+#include <functional>
 #include <optional>
 
 namespace squad {
@@ -12,7 +14,8 @@ namespace squad {
 // aliases such as the system default are stored separately from profiles.
 class AudioProfiles final {
 public:
-    explicit AudioProfiles(const QString& filename);
+    explicit AudioProfiles(const QString& filename, std::function<qint64()> clock = QDateTime::currentMSecsSinceEpoch);
+    AudioProfiles& observeContacts(const QStringList& ids);
     [[nodiscard]] InputProfile input(const QByteArray& deviceId) const;
     [[nodiscard]] double musicVolume(const QByteArray& deviceId, const QString& source = {}) const;
     AudioProfiles& saveMusicVolume(const QByteArray& deviceId, double volume);
@@ -43,6 +46,7 @@ private:
     [[nodiscard]] static QString key(const QByteArray& deviceId, bool input);
     AudioProfiles& write(QVariantMap values);
     mutable QSettings settings_;
+    std::function<qint64()> clock_;
 };
 
 }

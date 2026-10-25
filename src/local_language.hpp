@@ -5,6 +5,8 @@
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QElapsedTimer>
+#include <QDateTime>
+#include <functional>
 #include <QTimer>
 #include <QSet>
 #include <QMap>
@@ -29,7 +31,9 @@ class LocalLanguage final : public QObject {
     Q_PROPERTY(int revision READ revision NOTIFY changed)
     Q_PROPERTY(QString error READ error NOTIFY changed)
 public:
-    explicit LocalLanguage(QString settingsFile = {}, QObject* parent = nullptr);
+    explicit LocalLanguage(QString settingsFile = {}, QObject* parent = nullptr,
+                           std::function<qint64()> clock = QDateTime::currentMSecsSinceEpoch);
+    bool observeContacts(const QStringList& ids);
     ~LocalLanguage() override;
     [[nodiscard]] static bool supported();
     [[nodiscard]] bool preparing() const { return !preparing_.isEmpty(); }
@@ -91,6 +95,7 @@ private:
     bool save(QJsonObject preferences);
     void notify();
     QString settingsFile_, error_, channel_;
+    std::function<qint64()> wallClock_;
     QVariantList voices_ = SpeechOutput::voices();
     QJsonObject preferences_, capabilities_;
     QHash<QString, QVariantMap> results_;

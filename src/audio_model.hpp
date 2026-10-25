@@ -79,6 +79,7 @@ class AudioModel final : public QObject {
     Q_PROPERTY(QVariantList outputSpectrum READ outputSpectrum NOTIFY levelsChanged)
 public:
     explicit AudioModel(const QString& settingsFile, QObject* parent = nullptr);
+    bool observeContacts(const QStringList& ids);
 public slots:
     bool setPreviewActive(bool enabled) { return enabled ? start() : stop(); }
 public:

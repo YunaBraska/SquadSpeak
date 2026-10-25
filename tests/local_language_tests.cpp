@@ -43,6 +43,43 @@ void squad_language_cancel(void*, int64_t req) { current->requests.erase(req); }
 class LanguageTests final : public QObject {
     Q_OBJECT
 private slots:
+    void unusedLanguagePreferencesExpireWithoutDroppingUnknownFields() {
+        QTemporaryDir dir;
+        const auto path = dir.filePath("language.json");
+        qint64 now = 1700000000000;
+        const auto clock = [&] { return now; };
+        {
+            LocalLanguage language(path, nullptr, clock);
+            QVERIFY(language.configureChannel("seen", true, "de", false, ""));
+            QVERIFY(language.configureChannel("old", false, "fr", true, "en"));
+            now += 364LL * 86400000;
+            QVERIFY(language.observeContacts({"seen", "not-saved"}));
+        }
+        {
+            QFile file(path); QVERIFY(file.open(QIODevice::ReadOnly));
+            auto value = QJsonDocument::fromJson(file.readAll()).object(); file.close();
+            value.insert("futureOption", "preserved");
+            auto channels = value.value("channels").toObject(), seen = channels.value("seen").toObject();
+            seen.remove("voice"); seen.insert("futureMode", "preserved");
+            channels.insert("seen", seen); value.insert("channels", channels);
+            QVERIFY(file.open(QIODevice::WriteOnly | QIODevice::Truncate));
+            file.write(QJsonDocument(value).toJson());
+        }
+        now += 86400000;
+        LocalLanguage restored(path, nullptr, clock);
+        QVERIFY(restored.channelPreferences("seen").value("messages").toBool());
+        QVERIFY(restored.channelPreferences("old").value("outgoing").toString().isEmpty());
+        QVERIFY(restored.channelPreferences("old").value("listenTarget") == "en");
+        QFile file(path); QVERIFY(file.open(QIODevice::ReadOnly));
+        const auto saved = QJsonDocument::fromJson(file.readAll()).object();
+        file.close();
+        QCOMPARE(saved.value("channels").toObject().size(), 1);
+        QCOMPARE(saved.value("futureOption").toString(), QString("preserved"));
+        QVERIFY(restored.configureChannel("seen", false, "en", true, "de"));
+        QVERIFY(file.open(QIODevice::ReadOnly));
+        QCOMPARE(QJsonDocument::fromJson(file.readAll()).object().value("channels").toObject()
+            .value("seen").toObject().value("futureMode").toString(), QString("preserved"));
+    }
     void channelPreferencesFollowAppLanguageAndStayLocal() {
         QTemporaryDir dir;
         const auto path = dir.filePath("languages.json");
