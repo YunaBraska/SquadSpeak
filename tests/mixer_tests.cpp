@@ -385,6 +385,26 @@ private slots:
         }
     }
 
+    void automaticActivationRetainsQuietWordOnset_data() {
+        QTest::addColumn<int>("channels");
+        QTest::newRow("mono") << 1;
+        QTest::newRow("stereo") << 2;
+    }
+    void automaticActivationRetainsQuietWordOnset() {
+        QFETCH(int, channels);
+        squad::VoiceMixer gated(channels);
+        gated.setVoiceActivation({true, true, -45});
+        for (int frame = 0; frame < 20; ++frame)
+            QVERIFY(gated.encode(speechFrame(frame, channels, 0.00001), 48000).isEmpty());
+        QList<QByteArray> onset;
+        for (int frame = 20; frame < 100 && onset.isEmpty(); ++frame)
+            onset = gated.encode(speechFrame(frame, channels, 0.3), 48000);
+        QCOMPARE(onset.size(), 13); // Twelve retained frames and the activating frame.
+        gated.resetCapture();
+        gated.setVoiceActivation({false, true, -45});
+        QCOMPARE(gated.encode(speechFrame(20, channels, 0.3), 48000).size(), 1);
+    }
+
     void activationPreservesWordEdgesAndStopsAfterTheTail() {
         squad::VoiceMixer gated, reference;
         gated.setVoiceActivation({true, false, -30});
@@ -406,6 +426,100 @@ private slots:
         QVERIFY(!gated.voiceActive());
         QVERIFY(gated.activationLevelDb() < gated.activationThresholdDb());
         QCOMPARE(gated.activationThresholdDb(), -30);
+    }
+    void capturePacingPreservesSampleTimeAndBoundsStalls() {
+        squad::VoiceMixer encoder, pacer;
+        QList<QByteArray> frames;
+        for (int frame = 0; frame < 40; ++frame) frames.append(encoder.encode(speechFrame(frame, 1, 0.3), 48000));
+        for (int now = 0; now < 500; now += 10) QVERIFY(pacer.pace({}, now).isEmpty());
+        QCOMPARE(pacer.pace(frames.sliced(0, 18), 500), frames.sliced(0, 1));
+        QVERIFY(pacer.capturePending());
+        for (int frame = 1; frame < 18; ++frame) {
+            const auto now = 500 + frame * 20 + (frame % 5 == 0 ? 7 : 0);
+            QCOMPARE(pacer.pace({}, now), frames.sliced(frame, 1));
+            QVERIFY(pacer.pace({}, now).isEmpty());
+        }
+        QVERIFY(!pacer.capturePending());
+        QCOMPARE(pacer.pace(frames.sliced(18, 1), 860), frames.sliced(18, 1));
+        // A delayed callback includes samples that are already due. They must
+        // not consume the capacity reserved for future pre-roll playback.
+        pacer.resetCapture();
+        QCOMPARE(pacer.pace(frames.sliced(0, 18), 1000), frames.sliced(0, 1));
+        QCOMPARE(pacer.pace({}, 1040), frames.sliced(1, 2));
+        QCOMPARE(pacer.pace(frames.sliced(18, 6), 1120), frames.sliced(3, 4));
+        QList<QByteArray> remaining;
+        for (int now = 1140; now <= 1480; now += 20) remaining.append(pacer.pace({}, now));
+        QCOMPARE(remaining, frames.sliced(7, 17));
+        QVERIFY(!pacer.capturePending());
+        // After silence the next utterance starts immediately, without old debt.
+        QCOMPARE(pacer.pace(frames.sliced(0, 18), 5000), frames.sliced(0, 1));
+        QCOMPARE(pacer.pace({}, 5120), frames.sliced(1, 6));
+        QVERIFY(pacer.pace({}, 5120).isEmpty());
+        QVERIFY(pacer.pace({}, 5520).isEmpty());
+        QVERIFY(!pacer.capturePending());
+        // Excess capture is bounded. Keep the newest 360 ms on overload.
+        pacer.resetCapture();
+        QCOMPARE(pacer.pace(frames, 5540), frames.sliced(22, 1));
+        pacer.resetCapture();
+        QVERIFY(!pacer.capturePending());
+        QVERIFY(pacer.pace({}, 5560).isEmpty());
+        QCOMPARE(pacer.pace(frames.sliced(0, 1), 5580), frames.sliced(0, 1));
+        // A late callback supplies fresh samples. Old pacing debt must not
+        // discard their first frame just because the previous queue was empty.
+        QCOMPARE(pacer.pace(frames.sliced(1, 6), 5720), frames.sliced(1, 6));
+        QVERIFY_THROWS_EXCEPTION(std::invalid_argument, (void)pacer.pace({}, -1));
+    }
+    void pacedActivationReachesPlaybackUnchanged_data() {
+        QTest::addColumn<int>("channels"); QTest::addColumn<int>("batch"); QTest::addColumn<bool>("ptt");
+        for (int channels : {1, 2}) for (int batch : {1, 6}) for (bool ptt : {false, true})
+            QTest::newRow(qPrintable(QString("%1ch-%2frames-%3").arg(channels).arg(batch).arg(ptt ? "ptt" : "auto")))
+                << channels << batch << ptt;
+    }
+    void pacedActivationReachesPlaybackUnchanged() {
+        QFETCH(int, channels); QFETCH(int, batch); QFETCH(bool, ptt);
+        squad::VoiceMixer sender(channels), receiver(channels), reference(channels);
+        sender.setVoiceActivation({!ptt, true, -45}).setNoiseSuppression(0.5);
+        receiver.setAutomatic(false); reference.setAutomatic(false);
+        QList<QByteArray> encoded, sent;
+        std::vector<float> expected, played;
+        qsizetype largest = 0;
+        int generated = 0;
+        for (int now = 0; now < 5000; now += 20) {
+            QList<QByteArray> packets;
+            if (now < 4000 && now % (batch * 20) == 0) {
+                std::vector<float> capture;
+                for (int i = 0; i < batch; ++i, ++generated) {
+                    const auto frame = speechFrame(generated, channels, generated < 20 ? 0.00001 : 0.3);
+                    capture.insert(capture.end(), frame.begin(), frame.end());
+                }
+                packets = sender.encode(capture, 48000);
+                largest = std::max(largest, packets.size());
+                encoded.append(packets);
+            }
+            for (const auto& packet : sender.pace(packets, now)) {
+                QVERIFY(receiver.receive("speaker", packet, now));
+                QVERIFY(reference.receive("speaker", packet, sent.size() * 20));
+                const auto frame = reference.render(48000, sent.size() * 20);
+                expected.insert(expected.end(), frame.begin(), frame.end());
+                sent.append(packet);
+            }
+            const auto output = receiver.render(48000, now);
+            if (!sent.isEmpty() && played.size() < expected.size()) played.insert(played.end(), output.begin(), output.end());
+        }
+        QCOMPARE(sent, encoded);
+        QCOMPARE(played, expected);
+        QVERIFY(!sender.capturePending());
+        QVERIFY(largest <= (ptt ? batch : batch + 12));
+        if (!ptt) QVERIFY(largest >= 13);
+        // Muting, mode changes and device resets cannot leak queued capture.
+        for (int reset = 0; reset < 3; ++reset) {
+            (void)sender.pace(encoded.sliced(0, 13), 6000 + reset * 1000);
+            QVERIFY(sender.capturePending());
+            if (reset == 0) QVERIFY(sender.encode(speechFrame(0, channels, 0.3), 48000, false).isEmpty());
+            else if (reset == 1) sender.setVoiceActivation({ptt, false, -40});
+            else sender.resetCapture();
+            QVERIFY(sender.pace({}, 6500 + reset * 1000).isEmpty());
+        }
     }
     void activationResetAndModeChangeDiscardBufferedAudio() {
         squad::VoiceMixer gated, fresh;
@@ -535,7 +649,7 @@ private slots:
         for (int frame = 0; frame < 100; ++frame) {
             const auto speech = speechFrame(frame, channels, 0.3);
             history.push_back(speech);
-            if (history.size() > 4) history.pop_front();
+            if (history.size() > 13) history.pop_front();
             const auto packets = gated.encode(speech, 48000);
             QVERIFY(size_t(packets.size()) <= history.size());
             for (qsizetype p = 0; p < packets.size(); ++p)
@@ -892,13 +1006,53 @@ private slots:
             loud = rms(loudReceiver.render(48000, i * 20));
         }
         QVERIFY2(std::abs(quiet - loud) < 0.015, qPrintable(QString("quiet=%1 loud=%2").arg(quiet).arg(loud)));
-        quietReceiver.setGain("quiet", 0.5);
+        quietReceiver.setGain("quiet", 2);
         QVERIFY(quietReceiver.receive("quiet", quietSender.encode(tone(0.02), 48000).first(), 4800));
-        QVERIFY(std::abs(rms(quietReceiver.render(48000, 4800)) - quiet / 2) < 0.01);
-        quietReceiver.setGain("quiet", 0);
+        QVERIFY(std::abs(rms(quietReceiver.render(48000, 4800)) - quiet * 2) < 0.01);
+        quietReceiver.setGain("quiet", 0.5);
         QVERIFY(quietReceiver.receive("quiet", quietSender.encode(tone(0.02), 48000).first(), 4820));
-        QCOMPARE(rms(quietReceiver.render(48000, 4820)), 0.0);
+        QVERIFY(std::abs(rms(quietReceiver.render(48000, 4820)) - quiet / 2) < 0.01);
+        quietReceiver.setGain("quiet", 0);
+        QVERIFY(quietReceiver.receive("quiet", quietSender.encode(tone(0.02), 48000).first(), 4840));
+        QCOMPARE(rms(quietReceiver.render(48000, 4840)), 0.0);
         QCOMPARE(rms(loudReceiver.render(48000, 5000)), 0.0);
+    }
+    void automaticLevelCanBeChosenPerPerson() {
+        squad::VoiceMixer sender, receiver, reference;
+        reference.setAutomatic(false);
+        // Explicit choices override the default, including before first audio.
+        receiver.setAutomatic(false).setAutomatic(true, "auto").setAutomatic(false, "manual");
+        receiver.setGain("auto", 0.5).setGain("manual", 0.25).setGain("default", 0);
+        const auto run = [&](int first, int end) {
+            for (int frame = first; frame < end; ++frame) {
+                const auto packet = sender.encode(tone(0.02), 48000).first();
+                QVERIFY(receiver.receive("auto", packet, frame * 20));
+                QVERIFY(receiver.receive("manual", packet, frame * 20));
+                QVERIFY(receiver.receive("default", packet, frame * 20));
+                QVERIFY(reference.receive("manual", packet, frame * 20));
+                const auto raw = rms(reference.render(48000, frame * 20));
+                const auto mixed = rms(receiver.render(48000, frame * 20));
+                if (frame >= end - 10) QVERIFY(std::abs(mixed - (0.05 + raw * 0.25)) < 0.002);
+            }
+        };
+        run(0, 240);
+        receiver.setAutomatic(true); // Does not erase a manual peer override.
+        run(240, 280);
+        receiver.resetPlayback(); // Device restart retains both overrides and trim.
+        reference.resetPlayback();
+        run(280, 520);
+        receiver.setAutomatic(false, "auto");
+        const auto packet = sender.encode(tone(0.02), 48000).first();
+        QVERIFY(receiver.receive("auto", packet, 10400));
+        QVERIFY(reference.receive("manual", packet, 10400));
+        QVERIFY(std::abs(rms(receiver.render(48000, 10400)) - 0.5 * rms(reference.render(48000, 10400))) < 0.0001);
+        receiver.remove("auto"); // Departures forget the transient mixer override.
+        double resumed = 0;
+        for (int frame = 521; frame < 761; ++frame) {
+            QVERIFY(receiver.receive("auto", sender.encode(tone(0.02), 48000).first(), frame * 20));
+            resumed = rms(receiver.render(48000, frame * 20));
+        }
+        QVERIFY(resumed > 0.09);
     }
     void equalizationFollowsTheSameSpeakerMovingNearAndFar() {
         squad::VoiceMixer sender, receiver, steadySender, steadyReceiver;
@@ -949,6 +1103,33 @@ private slots:
         QTest::addColumn<int>("channels");
         QTest::newRow("mono") << 1;
         QTest::newRow("stereo") << 2;
+    }
+    void automaticLevelPreservesSyllableContrast_data() {
+        QTest::addColumn<int>("channels");
+        QTest::newRow("mono") << 1;
+        QTest::newRow("stereo") << 2;
+    }
+    void automaticLevelPreservesSyllableContrast() {
+        QFETCH(int, channels);
+        squad::VoiceMixer sender(channels), reference(channels), receiver(channels);
+        reference.setAutomatic(false);
+        double leastGain = 100, greatestGain = 0;
+        for (int frame = 0; frame < 360; ++frame) {
+            const auto amplitude = frame >= 240 && (frame / 10) % 2 == 0 ? 0.02 : 0.12;
+            const auto input = channels == 1 ? tone(amplitude) : stereoTone(amplitude, amplitude * 0.7);
+            const auto packet = sender.encode(input, 48000).first();
+            QVERIFY(reference.receive("speaker", packet, frame * 20));
+            QVERIFY(receiver.receive("speaker", packet, frame * 20));
+            const auto raw = reference.render(48000, frame * 20);
+            const auto output = receiver.render(48000, frame * 20);
+            if (frame >= 240) {
+                const auto gain = rms(output) / rms(raw);
+                leastGain = std::min(leastGain, gain);
+                greatestGain = std::max(greatestGain, gain);
+            }
+        }
+        const auto modulation = 20 * std::log10(greatestGain / leastGain);
+        QVERIFY2(modulation < 1.2, qPrintable(QString("Syllables changed receive gain by %1 dB").arg(modulation)));
     }
     void automaticLevelChangesDoNotCreateFrameBoundaryClicks() {
         QFETCH(int, channels);
@@ -1013,6 +1194,42 @@ private slots:
                 qPrintable(QString("Decoded frame changed or disappeared at %1 ms").arg(now)));
         }
         QCOMPARE(delivered, expected.size());
+    }
+
+    void playbackKeepsFramesWhenReceiveAndRenderCallbacksStall_data() {
+        QTest::addColumn<int>("channels"); QTest::addColumn<int>("pause");
+        for (int channels : {1, 2}) for (int pause : {80, 120})
+            QTest::newRow(qPrintable(QString("%1ch-%2ms").arg(channels).arg(pause))) << channels << pause;
+    }
+    void playbackKeepsFramesWhenReceiveAndRenderCallbacksStall() {
+        QFETCH(int, channels); QFETCH(int, pause);
+        squad::VoiceMixer sender(channels), reference(channels), receiver(channels, 40);
+        reference.setAutomatic(false); receiver.setAutomatic(false);
+        QList<QByteArray> packets;
+        std::vector<std::vector<float>> expected;
+        for (int frame = 0; frame < 100; ++frame) {
+            const auto packet = sender.encode(speechFrame(frame + 50, channels, 0.5), 48000).first();
+            packets.append(packet);
+            QVERIFY(reference.receive("speaker", packet, frame * 20));
+            expected.push_back(reference.render(48000, frame * 20));
+        }
+        size_t received = 0, played = 0;
+        int nextRender = 0;
+        for (int now = 0; now < 2400; now += 10) {
+            // Both callbacks share the application loop. Network packets
+            // accumulate while the audio device drains its existing buffer.
+            if (now >= 800 && now < 800 + pause) continue;
+            while (received < expected.size() && int(received) * 20 <= now)
+                QVERIFY(receiver.receive("speaker", packets[qsizetype(received++)], now));
+            if (now < nextRender) continue;
+            nextRender += 20;
+            const auto output = receiver.render(48000, now);
+            if (rms(output) == 0) continue;
+            QVERIFY(played < expected.size());
+            QVERIFY2(output == expected[played], qPrintable(QString("Frame %1 lost at %2 ms").arg(played).arg(now)));
+            ++played;
+        }
+        QCOMPARE(played, expected.size());
     }
 
     void playbackSpeechPauseDoesNotIncreaseDelay_data() {
@@ -1318,7 +1535,8 @@ private slots:
         {
             squad::AudioProfiles profiles(path);
             profiles.saveParticipant("headset", "alice", 0.4).saveParticipant("speaker", "alice", 1.2)
-                .saveAutomaticVolume("headset", false).saveOutput("headset", 0.25);
+                .saveAutomaticVolume("headset", false).saveOutput("headset", 0.25)
+                .saveAutomaticVolume("headset", true, "alice").saveAutomaticVolume("speaker", false, "alice");
         }
         const squad::AudioProfiles profiles(path);
         QCOMPARE(profiles.participant("headset", "alice"), 0.4);
@@ -1327,6 +1545,97 @@ private slots:
         QCOMPARE(profiles.output("headset"), 0.25);
         QVERIFY(!profiles.automaticVolume("headset"));
         QVERIFY(profiles.automaticVolume("speaker"));
+        QVERIFY(profiles.automaticVolume("headset", "alice"));
+        QVERIFY(!profiles.automaticVolume("speaker", "alice"));
+        QVERIFY(!profiles.automaticVolume("headset", "bob"));
+        QVERIFY(profiles.automaticVolume("speaker", "bob"));
+    }
+    void participantSettingsExpireAfterAYearWithoutContact() {
+        QTemporaryDir dir;
+        const auto path = dir.filePath("audio.ini");
+        constexpr qint64 year = 365LL * 86400000;
+        qint64 now = 1700000000000;
+        const auto clock = [&] { return now; };
+        {
+            squad::AudioProfiles profiles(path, clock);
+            profiles.saveParticipant("headset", "alice", 2).saveParticipant("speaker", "alice", 0.4)
+                .saveAutomaticVolume("headset", false, "alice")
+                .saveParticipant("headset", "bob", 0).saveAutomaticVolume("speaker", false, "bob")
+                .saveMusicVolume("headset", 0.3).saveChannelMusicVolume("headset", "old-channel", 0.8)
+                .saveOutput("headset", 0.25).saveNoiseSuppression("microphone", 0.7);
+            now += year - 1;
+            profiles.observeContacts({"alice", "unsaved"});
+            QCOMPARE(profiles.participant("headset", "bob"), 0.0);
+            QCOMPARE(profiles.musicVolume("headset", "old-channel"), 0.8);
+            ++now;
+            profiles.observeContacts({"alice"});
+            QCOMPARE(profiles.participant("headset", "bob"), 1.0);
+            QVERIFY(profiles.automaticVolume("speaker", "bob"));
+            QCOMPARE(profiles.musicVolume("headset", "old-channel"), 0.3);
+            QCOMPARE(profiles.participant("headset", "alice"), 2.0);
+            QCOMPARE(profiles.participant("speaker", "alice"), 0.4);
+            QVERIFY(!profiles.automaticVolume("headset", "alice"));
+        }
+        {
+            squad::AudioProfiles reopened(path, clock);
+            QCOMPARE(reopened.participant("headset", "alice"), 2.0);
+            now += year;
+        }
+        const squad::AudioProfiles expired(path, clock);
+        QCOMPARE(expired.participant("headset", "alice"), 1.0);
+        QCOMPARE(expired.participant("speaker", "alice"), 1.0);
+        QVERIFY(expired.automaticVolume("headset", "alice"));
+        QCOMPARE(expired.output("headset"), 0.25);
+        QCOMPARE(expired.noiseSuppression("microphone"), 0.7);
+        const QSettings raw(path, QSettings::IniFormat);
+        for (const auto& key : raw.allKeys()) {
+            QVERIFY(!key.contains("participants/"));
+            QVERIFY(!key.contains("automaticParticipants/"));
+            QVERIFY(!key.startsWith("contacts/"));
+        }
+    }
+    void olderParticipantSettingsKeepDefaultsAndFutureFields() {
+        QTemporaryDir dir;
+        const auto path = dir.filePath("audio.ini");
+        qint64 now = 1700000000000;
+        const auto clock = [&] { return now; };
+        {
+            QSettings raw(path, QSettings::IniFormat);
+            raw.setValue("output/independentVolumes", true);
+            raw.setValue("output/61/participants/616c696365", 1.7);
+            raw.setValue("output/61/futureSetting", "preserved");
+        }
+        {
+            squad::AudioProfiles profiles(path, clock);
+            QCOMPARE(profiles.participant("a", "alice"), 1.7);
+            QVERIFY(profiles.automaticVolume("a", "alice"));
+            QCOMPARE(profiles.participant("a", "new"), 1.0);
+            profiles.observeContacts({"new"}).saveAutomaticVolume("a", false, "alice");
+        }
+        now += 365LL * 86400000;
+        const squad::AudioProfiles expired(path, clock);
+        QCOMPARE(expired.participant("a", "alice"), 1.0);
+        QVERIFY(expired.automaticVolume("a", "alice"));
+        const QSettings raw(path, QSettings::IniFormat);
+        QCOMPARE(raw.value("output/61/futureSetting").toString(), QString("preserved"));
+        QVERIFY(!raw.contains("contacts/6e6577"));
+    }
+    void contactTimestampsRecoverFromClockReversal() {
+        QTemporaryDir dir;
+        const auto path = dir.filePath("audio.ini");
+        qint64 now = 1700000000000;
+        const auto clock = [&] { return now; };
+        { squad::AudioProfiles(path, clock).saveParticipant("a", "alice", 0.3); }
+        now -= 86400000;
+        {
+            squad::AudioProfiles profiles(path, clock);
+            QCOMPARE(profiles.participant("a", "alice"), 0.3);
+            now += 365LL * 86400000 - 1;
+            profiles.observeContacts({});
+            QCOMPARE(profiles.participant("a", "alice"), 0.3);
+        }
+        ++now;
+        QCOMPARE(squad::AudioProfiles(path, clock).participant("a", "alice"), 1.0);
     }
 };
 QTEST_GUILESS_MAIN(MixerTests)

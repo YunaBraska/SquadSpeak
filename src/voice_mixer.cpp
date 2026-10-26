@@ -196,15 +196,16 @@ QList<QByteArray> VoiceMixer::encode(std::span<const float> samples, int sampleR
                 std::span(frame, frameSamples));
         }
         if (activation_.enabled && activation_.automatic && speechProbability < 0.2 && !speechFrame) {
-            const auto target = std::clamp(activationLevelDb_ + 10, -70.0, -20.0);
+            const auto target = std::clamp(speechLevelDb + 10, -70.0, -20.0);
             activationThresholdDb_ += std::clamp(target - activationThresholdDb_, -0.12, 0.02);
         }
         if (activation_.automatic && activation_.minimumEnabled)
             activationThresholdDb_ = std::max(activationThresholdDb_, activation_.minimumDb);
         if (activation_.automatic) activationLevelDb_ = std::max(-96.0, speechLevelDb);
-        speechFrames_ = speechFrame ? std::min(2, speechFrames_ + 1) : 0;
+        // speechFrame already confirms both 10 ms halves. Requiring a second
+        // complete frame delays word edges beyond the retained pre-roll.
         const bool aboveThreshold = activationLevelDb_ >= activationThresholdDb_
-            && (!activation_.automatic || speechFrames_ == 2);
+            && (!activation_.automatic || speechFrame);
         voiceActive_ = !activation_.enabled || aboveThreshold || trailingFrames_ > 0;
         if (aboveThreshold) trailingFrames_ = 15;
         else if (trailingFrames_ > 0) --trailingFrames_;
@@ -215,7 +216,7 @@ QList<QByteArray> VoiceMixer::encode(std::span<const float> samples, int sampleR
         } else {
             std::array<float, 1920> previous{};
             std::copy_n(frame, frameSamples, previous.begin());
-            if (preRoll_.size() == (activation_.automatic ? 3u : 2u)) preRoll_.pop_front();
+            if (preRoll_.size() == (activation_.automatic ? 12u : 2u)) preRoll_.pop_front();
             preRoll_.push_back(std::move(previous));
         }
         used += frameSamples;
@@ -223,6 +224,30 @@ QList<QByteArray> VoiceMixer::encode(std::span<const float> samples, int sampleR
     capture_.erase(capture_.begin(), capture_.begin() + used);
     if (used > 0 && packets.isEmpty()) transmitLevel_ = 0;
     return packets;
+}
+
+QList<QByteArray> VoiceMixer::pace(QList<QByteArray> packets, qint64 now) {
+    if (now < 0) throw std::invalid_argument("Capture clock must be nonnegative");
+    if (outgoing_.isEmpty() && packets.isEmpty()) return {};
+    if (outgoing_.isEmpty() && (nextPacketAt_ < 0 || now - nextPacketAt_ > 120)) nextPacketAt_ = now;
+    // Catch up within the transport's six-frame budget, never dump an entire
+    // retained word into the receiver's smaller jitter buffer in one callback.
+    if (now - nextPacketAt_ > 100) {
+        const auto stale = std::min<qsizetype>(outgoing_.size(), (now - nextPacketAt_ - 100 + 19) / 20);
+        outgoing_.remove(0, stale);
+        nextPacketAt_ = std::max(nextPacketAt_ + stale * 20, now - 100);
+    }
+    outgoing_.append(std::move(packets));
+    const auto due = now >= nextPacketAt_ ? (now - nextPacketAt_) / 20 + 1 : 0;
+    // Catch-up packets leave now, so only future packets consume the retained
+    // pre-roll budget. Trimming them first cuts speech after a delayed callback.
+    const auto capacity = 18 + std::max<qint64>(0, due - 1);
+    if (outgoing_.size() > capacity) outgoing_.remove(0, outgoing_.size() - capacity);
+    const auto count = std::min<qsizetype>(outgoing_.size(), due);
+    auto ready = outgoing_.sliced(0, count);
+    outgoing_.remove(0, count);
+    nextPacketAt_ += count * 20;
+    return ready;
 }
 
 VoiceMixer& VoiceMixer::setPacketLimit(int bytes) {
@@ -276,7 +301,10 @@ bool VoiceMixer::receive(const QString& peer, const QByteArray& packet, qint64 n
     // can still release this deadline below without waiting twice.
     if (playbackDelayMs_ > 0 && stream.frames.empty() && now > stream.nextFrameAt)
         stream.readyAt = now + stream.playbackDelay;
-    const auto frameLimit = size_t(std::max(7, stream.playbackDelay / 20 + 2));
+    // A delayed application loop receives its catch-up batch before it can
+    // refill the output device. Retain that batch in addition to jitter depth,
+    // within the same 120 ms freshness reserve enforced by render().
+    const auto frameLimit = size_t(std::max(7, stream.playbackDelay / 20 + 6));
     for (int gap = 0; gap < missing; ++gap) {
         if (opus_decode_float(stream.decoder.get(), nullptr, 0, frame.samples.data(), 960, 0) != 960) return false;
         if (stream.frames.size() >= frameLimit) stream.frames.pop_front();
@@ -314,13 +342,19 @@ std::vector<float> VoiceMixer::render(int sampleRate, qint64 now, const Playback
         const auto rms = std::sqrt(energy / frameSamples);
         stream.level = rms; stream.played = now;
         const auto previousGain = stream.automaticGain;
-        if (automatic_ && rms > 0.0032) {
-            const auto target = std::clamp(0.1 / rms, 0.125, 8.0);
+        const auto automatic = automaticPeers_.value(id, automatic_);
+        if (automatic && rms > 0.0032) {
+            // Follow sustained speaker levels, not individual quiet syllables.
+            // Hold the last 400 ms of active audio, with fast loudness reduction.
+            stream.recentLevels[stream.levelCursor] = rms;
+            stream.levelCursor = (stream.levelCursor + 1) % stream.recentLevels.size();
+            const auto level = *std::max_element(stream.recentLevels.begin(), stream.recentLevels.end());
+            const auto target = std::clamp(0.1 / level, 0.125, 8.0);
             const auto coefficient = target < stream.automaticGain ? 0.4 : 0.04;
             stream.automaticGain += coefficient * (target - stream.automaticGain);
         }
-        auto gain = stream.gain * (automatic_ ? previousGain : 1.0);
-        const auto step = automatic_ ? stream.gain * (stream.automaticGain - previousGain) / 960 : 0.0;
+        auto gain = stream.gain * (automatic ? previousGain : 1.0);
+        const auto step = automatic ? stream.gain * (stream.automaticGain - previousGain) / 960 : 0.0;
         // Keep automatic level changes continuous across decoded frame boundaries.
         for (size_t i = 0; i < frameSamples; i += size_t(channels_)) {
             gain += step;
@@ -351,8 +385,9 @@ VoiceMixer& VoiceMixer::setGain(const QString& peer, double gain) {
     if (streams_.contains(peer)) streams_.at(peer).gain = gain;
     return *this;
 }
-VoiceMixer& VoiceMixer::setAutomatic(bool enabled) {
-    automatic_ = enabled;
+VoiceMixer& VoiceMixer::setAutomatic(bool enabled, const QString& peer) {
+    if (peer.isEmpty()) automatic_ = enabled;
+    else automaticPeers_.insert(peer, enabled);
     return *this;
 }
 VoiceMixer& VoiceMixer::setNoiseSuppression(double strength) {
@@ -381,6 +416,7 @@ VoiceMixer& VoiceMixer::setVoiceActivation(VoiceActivation activation) {
 }
 VoiceMixer& VoiceMixer::remove(const QString& peer) {
     gains_.remove(peer);
+    automaticPeers_.remove(peer);
     streams_.erase(peer);
     return *this;
 }
@@ -397,8 +433,9 @@ VoiceMixer& VoiceMixer::resetCapture() {
         throw std::runtime_error(QT_TRANSLATE_NOOP("AudioModel", "Noise suppression could not be initialized"));
 #endif
     preRoll_.clear();
+    outgoing_.clear();
+    nextPacketAt_ = -1;
     trailingFrames_ = 0;
-    speechFrames_ = 0;
     silenceFrames_ = 0;
     speechProtection_ = 0;
     voiceActive_ = false;

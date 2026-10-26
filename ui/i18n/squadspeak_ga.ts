@@ -1038,8 +1038,8 @@
             <translation>Seoladh</translation>
         </message>
         <message>
-            <source>Device ID</source>
-            <translation>Aitheantas an Ghléis</translation>
+            <source>Identity ID</source>
+            <translation>ID aitheantais</translation>
         </message>
         <message>
             <source>Check now</source>

@@ -193,24 +193,76 @@ private slots:
         outputDir_ = qEnvironmentVariable("SQUAD_CORPUS_OUTPUT", QStringLiteral(SQUAD_CORPUS_OUTPUT));
         QVERIFY(QDir().mkpath(outputDir_));
     }
+    void receiveNormalization_data() {
+        QTest::addColumn<QString>("speaker");
+        QTest::addColumn<int>("channels");
+        QTest::addColumn<int>("levelDb");
+        for (const auto* speaker : {"speech1", "speech-ls5639", "speech-ls61"})
+            for (int channels : {1, 2}) for (int level : {-30, -42})
+                QTest::newRow(qPrintable(QString("%1-%2-%3").arg(speaker).arg(channels).arg(level)))
+                    << QString(speaker) << channels << level;
+    }
+    void receiveNormalization() {
+        QFETCH(QString, speaker); QFETCH(int, channels); QFETCH(int, levelDb);
+        const auto& speech = sources_[speaker];
+        const auto sourceLevel = rms(speech);
+        const auto quietScale = std::pow(10.0, levelDb / 20.0) / sourceLevel;
+        const auto referenceScale = std::pow(10.0, -24.0 / 20.0) / sourceLevel;
+        squad::VoiceMixer quietSender(channels), referenceSender(channels), quiet(channels), reference(channels);
+        double quietEnergy = 0, referenceEnergy = 0;
+        // Repeat real speech once to separate adaptation from the measured phrase.
+        for (size_t frame = 0; frame < speech.size() / 960 * 2; ++frame) {
+            Samples low(size_t(960 * channels)), normal(low.size());
+            for (size_t i = 0; i < low.size(); ++i) {
+                const auto sample = speech[(frame * 960 + i / channels) % speech.size()];
+                low[i] = float(sample * quietScale);
+                normal[i] = float(sample * referenceScale);
+            }
+            QVERIFY(quiet.receive("speaker", quietSender.encode(low, rate).first(), frame * 20));
+            QVERIFY(reference.receive("speaker", referenceSender.encode(normal, rate).first(), frame * 20));
+            const auto lowOutput = quiet.render(rate, frame * 20);
+            const auto normalOutput = reference.render(rate, frame * 20);
+            if (frame >= speech.size() / 960) {
+                quietEnergy += energy(lowOutput);
+                referenceEnergy += energy(normalOutput);
+            }
+        }
+        const auto differenceDb = 10 * std::log10(quietEnergy / referenceEnergy);
+        qInfo() << "Receive level difference" << differenceDb << "dB";
+        QVERIFY2(std::abs(differenceDb) < 3, qPrintable(QString("Quiet speech stays %1 dB below reference").arg(differenceDb)));
+    }
     void speechActivation_data() {
         QTest::addColumn<QString>("speaker"); QTest::addColumn<QString>("disturbance");
         QTest::addColumn<int>("levelDb"); QTest::addColumn<int>("snrDb");
         QTest::addColumn<bool>("shortSpeech");
         QTest::addColumn<int>("channels");
         const QStringList disturbances{"typing-laptop", "typing-desktop", "breathing-deep"};
+        QStringList speakers;
+        for (const auto value : manifest_.value("sources").toArray()) {
+            const auto source = value.toObject();
+            if (source.value("kind") == "speech") speakers.append(source.value("id").toString());
+        }
+        auto mixtureSpeakers = speech_;
+        if (!extended_) mixtureSpeakers.append({"speech-ls260", "speech-ls1221", "speech-ls237"});
         for (const int channels : {1, 2}) {
             const auto format = channels == 1 ? "-mono" : "-stereo";
             for (const auto& disturbance : disturbances)
                 for (const int level : {-40, -25, -12})
                     QTest::newRow(qPrintable(disturbance + QString::number(level) + format)) << QString{} << disturbance << level << 0 << false << channels;
-            for (const auto& speaker : speech_) for (const int level : {-30, -42}) {
+            for (const auto& speaker : speakers) for (const int level : {-30, -42}) {
                 QTest::newRow(qPrintable(speaker + "-clean" + QString::number(level) + format)) << speaker << QString{} << level << 0 << false << channels;
                 QTest::newRow(qPrintable(speaker + "-short" + QString::number(level) + format)) << speaker << QString{} << level << 0 << true << channels;
+                if (!mixtureSpeakers.contains(speaker)) continue;
                 for (const auto& disturbance : {QString("typing-laptop"), QString("typing-desktop")})
                     for (const int snr : {0, 10})
                         QTest::newRow(qPrintable(speaker + "-" + disturbance + QString::number(level) + "-snr" + QString::number(snr) + format))
                             << speaker << disturbance << level << snr << false << channels;
+            }
+            if (!extended_) {
+                // Requiring two complete speech frames clipped this noisy onset.
+                // All voices run clean above. The extended corpus adds all mixtures.
+                QTest::newRow(qPrintable(QString("speech-ls5639-typing-laptop-30-snr0") + format))
+                    << QString("speech-ls5639") << QString("typing-laptop") << -30 << 0 << false << channels;
             }
         }
     }
@@ -254,27 +306,44 @@ private slots:
         receiver.setAutomatic(false);
         Samples output(length, 0);
         std::vector<bool> admitted(length / 960, false);
+        std::deque<size_t> pendingPositions, playbackPositions;
         qsizetype levelGateFrames = 0;
-        for (size_t offset = 0; offset < input.size(); offset += 960) {
-            Samples capture(size_t(960 * channels));
-            for (size_t frame = 0; frame < 960; ++frame)
-                for (int channel = 0; channel < channels; ++channel)
-                    capture[frame * size_t(channels) + size_t(channel)] = input[offset + frame];
-            const auto packets = sender.encode(capture, rate);
-            levelGateFrames += levelGate.encode(capture, rate).size();
-            QVERIFY(packets.size() <= 4);
-            for (qsizetype p = 0; p < packets.size(); ++p) {
-                const auto position = offset - size_t(packets.size() - 1 - p) * 960;
-                QVERIFY(position < input.size());
-                const auto now = qint64(position / 48);
-                QVERIFY(receiver.receive("speaker", packets[p], now));
-                const auto frame = receiver.render(rate, now);
+        for (size_t offset = 0; offset < input.size() + 18 * 960; offset += 960) {
+            QList<QByteArray> packets;
+            if (offset < input.size()) {
+                Samples capture(size_t(960 * channels));
+                for (size_t frame = 0; frame < 960; ++frame)
+                    for (int channel = 0; channel < channels; ++channel)
+                        capture[frame * size_t(channels) + size_t(channel)] = input[offset + frame];
+                packets = sender.encode(capture, rate);
+                levelGateFrames += levelGate.encode(capture, rate).size();
+                QVERIFY(packets.size() <= 13);
+                for (qsizetype p = 0; p < packets.size(); ++p) {
+                    const auto position = offset - size_t(packets.size() - 1 - p) * 960;
+                    QVERIFY(position < input.size());
+                    pendingPositions.push_back(position);
+                }
+            }
+            const auto now = qint64(offset / 48);
+            const auto ready = sender.pace(packets, now);
+            QVERIFY(ready.size() <= 6);
+            for (const auto& packet : ready) {
+                QVERIFY(!pendingPositions.empty());
+                playbackPositions.push_back(pendingPositions.front()); pendingPositions.pop_front();
+                QVERIFY(receiver.receive("speaker", packet, now));
+            }
+            const auto frame = receiver.render(rate, now);
+            if (!playbackPositions.empty()) {
+                const auto position = playbackPositions.front(); playbackPositions.pop_front();
                 for (size_t sample = 0; sample < 960; ++sample)
                     output[position + sample] = std::accumulate(frame.begin() + sample * size_t(channels),
                         frame.begin() + (sample + 1) * size_t(channels), 0.0f) / channels;
                 admitted[position / 960] = true;
             }
         }
+        QVERIFY(pendingPositions.empty());
+        QVERIFY(playbackPositions.empty());
+        QVERIFY(!sender.capturePending());
         double retained = 0;
         const auto suppressionDelay = size_t(squad::VoiceMixer::suppressionDelaySamples());
         for (size_t i = 0; i + suppressionDelay < clean.size(); ++i)
@@ -308,7 +377,7 @@ private slots:
     }
     void quietWordOnsets_data() {
         QTest::addColumn<int>("channels"); QTest::addColumn<int>("suppression");
-        for (const int channels : {1, 2}) for (const int suppression : {0, 50})
+        for (const int channels : {1, 2}) for (const int suppression : {0, 50, 100})
             QTest::newRow(qPrintable(QString("%1ch-%2percent").arg(channels).arg(suppression))) << channels << suppression;
     }
     void repeatedSpeech_data() { quietWordOnsets_data(); }
@@ -378,16 +447,18 @@ private slots:
                 admitted[offset / 960 - size_t(packets.size() - 1 - p)] = true;
         }
         const auto delay = suppression ? size_t(squad::VoiceMixer::suppressionDelaySamples()) : 0;
-        double strongest = 0;
-        for (size_t offset = 3 * length + beginSpeech; offset < 3 * length + endSpeech; offset += 480)
-            strongest = std::max(strongest, energy(std::span(reference).subspan(offset, 480)));
-        int missing = 0, longest = 0;
-        for (size_t offset = 3 * length + beginSpeech; offset < 3 * length + endSpeech; offset += 480) {
-            const bool audible = energy(std::span(reference).subspan(offset, 480)) >= strongest * std::pow(10.0, -25.0 / 10.0);
-            missing = audible && !admitted[(offset + delay) / 960] ? missing + 1 : 0;
-            longest = std::max(longest, missing);
+        for (size_t part = 0; part < 4; ++part) {
+            double strongest = 0;
+            for (size_t offset = part * length + beginSpeech; offset < part * length + endSpeech; offset += 480)
+                strongest = std::max(strongest, energy(std::span(reference).subspan(offset, 480)));
+            int missing = 0, longest = 0;
+            for (size_t offset = part * length + beginSpeech; offset < part * length + endSpeech; offset += 480) {
+                const bool audible = energy(std::span(reference).subspan(offset, 480)) >= strongest * std::pow(10.0, -25.0 / 10.0);
+                missing = audible && !admitted[(offset + delay) / 960] ? missing + 1 : 0;
+                longest = std::max(longest, missing);
+            }
+            QVERIFY2(longest <= 2, qPrintable(QString("Automatic activation omitted %1 ms in speech segment %2").arg(longest * 10).arg(part)));
         }
-        QVERIFY2(longest <= 2, qPrintable(QString("Automatic activation omitted %1 ms of a quiet word onset").arg(longest * 10)));
     }
     void automaticInput_data() {
         QTest::addColumn<QString>("speaker"); QTest::addColumn<int>("rumbleHz");
@@ -542,6 +613,7 @@ private slots:
         const auto& voice = sources_[speaker];
         const double voiceGain = 0.04 / rms(voice);
         std::array<double, 2> tail{};
+        double unfilteredEcho = 0;
         for (const bool enabled : {false, true}) {
             std::array<squad::EchoCanceller, 2> echoes;
             std::array<squad::VoiceMixer, 2> mixers;
@@ -567,10 +639,13 @@ private slots:
                         const int position = offset + i;
                         const int speaking = position - peer * 3 * rate;
                         double sample = speaking >= 0 && speaking < 3 * rate ? voice[speaking] * voiceGain : 0;
+                        double reflectedSample = 0;
                         for (const auto [tap, gain] : {std::pair{0, 0.6}, {480, 0.2}, {1392, 0.1}}) {
                             const int reflected = position - delayMs * 48 - tap;
-                            if (reflected >= 0) sample += playback[peer][reflected] * gain;
+                            if (reflected >= 0) reflectedSample += playback[peer][reflected] * gain;
                         }
+                        if (!enabled && position >= 6 * rate) unfilteredEcho += reflectedSample * reflectedSample;
+                        sample += reflectedSample;
                         microphone[i] = float(std::clamp(sample, -1.0, 1.0));
                         processors[peer].observeInput(microphone[i]);
                     }
@@ -582,15 +657,19 @@ private slots:
             }
             for (const auto& output : playback) {
                 QVERIFY(std::all_of(output.begin(), output.end(), [](float value) { return std::isfinite(value); }));
-                tail[enabled] += energy(std::span(output).subspan(10 * rate));
+                // Both voices stop at 6 s. Allow 1 s for playback and AEC to settle,
+                // then measure the full residual. Waiting until 10 s can miss
+                // the unfiltered feedback after normalization itself drains it.
+                tail[enabled] += energy(std::span(output).subspan(7 * rate));
             }
             QVERIFY(rms(std::span(playback[1]).subspan(rate, 2 * rate)) > 0.01);
             QVERIFY(rms(std::span(playback[0]).subspan(4 * rate, 2 * rate)) > 0.01);
         }
-        qInfo() << "duplex echo tail energy, disabled/enabled" << tail[false] << tail[true];
-        // Speech-aware gating can itself break the loop with AEC disabled.
-        // Continuous transmission retains the independent failure control.
-        if (!activation) QVERIFY(tail[false] > 1);
+        qInfo() << "duplex reflected energy and tail, disabled/enabled" << unfilteredEcho << tail[false] << tail[true];
+        // Prove the fixture returns echo after speech stops. Both gating and
+        // normalization can drain it before the tail window, even without AEC.
+        // Requiring an endless unfiltered loop would reject that valid recovery.
+        if (!activation) QVERIFY(unfilteredEcho > 1);
         QVERIFY(tail[true] < std::max(tail[false], 1.0) * 0.01);
     }
 

@@ -1,6 +1,6 @@
 # Release readiness
 
-Updated: 2026-10-24. Behavior: [specification](specs/voice-chat.md).
+Updated: 2026-10-25. Behavior: [specification](specs/voice-chat.md).
 
 Under U139, the first regular desktop release follows successful automated
 platform and package checks; physical device observations follow the public
@@ -49,8 +49,19 @@ Bluetooth audio devices are distinct from Bluetooth-only app networking, which i
 
 ## TeamSpeak interoperability
 
-U173 capture quality and keyboard suppression remain under investigation. The
-licensed speech/typing activation cases pass in mono and stereo. The TS bridge
+U173 capture quality and keyboard suppression remain under investigation.
+Automatic activation uses 240 ms pre-roll, as approved to preserve word beginnings,
+and learns its threshold from the same processed signal used for admission.
+One bounded capture pacer releases frames before protocol selection, preserving
+speech through the smaller transport and playback queues without changing PCM.
+The capture buffer and decoded queue also retain short, simultaneous callback
+stalls. Unchanged discovery heartbeats no longer rebuild the channel UI.
+PTT has no activation pre-roll. The extended corpus covers 498 activation cases
+with twenty voices, brief speech, two keyboards, breathing controls and mono/stereo.
+The longer pre-roll can admit more brief noise and adds up to 180 ms onset delay
+compared with the previous setting. Native conversation acceptance remains separate.
+Strong manual suppression can still attenuate brief speech details. Passing
+transport checks alone does not establish capture quality. The TS bridge
 boundary retains encoded packets unchanged, with fullband decoding and the
 expected level in both Opus channel modes. Silent WOT comparisons now use the
 same clean male/female recording through the installed A/B copies and original

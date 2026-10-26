@@ -1038,8 +1038,8 @@
             <translation>Osoite</translation>
         </message>
         <message>
-            <source>Device ID</source>
-            <translation>Laite-ID</translation>
+            <source>Identity ID</source>
+            <translation>Identiteetin tunniste</translation>
         </message>
         <message>
             <source>Check now</source>

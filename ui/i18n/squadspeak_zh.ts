@@ -1038,8 +1038,8 @@
             <translation>地址</translation>
         </message>
         <message>
-            <source>Device ID</source>
-            <translation>设备 ID</translation>
+            <source>Identity ID</source>
+            <translation>身份 ID</translation>
         </message>
         <message>
             <source>Check now</source>

@@ -10,11 +10,11 @@
 #include <algorithm>
 #include <stdexcept>
 
-namespace {
-QString conversationId(const QString& host, QString a, QString b) {
+QString LocalChannel::conversationId(const QString& host, QString a, QString b) {
     if (b < a) std::swap(a, b);
     return QString::fromLatin1(QCryptographicHash::hash(("SquadSpeak/private/v1/" + host + '/' + a + '/' + b).toUtf8(), QCryptographicHash::Sha256).toHex());
 }
+namespace {
 QByteArray context(const QString& host, const QString& conversation, const QString& request, const QString& sender) {
     return ("SquadSpeak/private/v1/" + host + '/' + conversation + '/' + request + '/' + sender).toUtf8();
 }

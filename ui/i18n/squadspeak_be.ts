@@ -1038,8 +1038,8 @@
             <translation>Адрас</translation>
         </message>
         <message>
-            <source>Device ID</source>
-            <translation>ID прылады</translation>
+            <source>Identity ID</source>
+            <translation>ID ідэнтычнасці</translation>
         </message>
         <message>
             <source>Check now</source>

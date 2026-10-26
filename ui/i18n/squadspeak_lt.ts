@@ -1038,8 +1038,8 @@
             <translation>Adresas</translation>
         </message>
         <message>
-            <source>Device ID</source>
-            <translation>įrenginio ID</translation>
+            <source>Identity ID</source>
+            <translation>Tapatybės ID</translation>
         </message>
         <message>
             <source>Check now</source>

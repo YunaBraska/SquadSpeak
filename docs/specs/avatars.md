@@ -10,6 +10,16 @@ Create original, friendly fantasy and science-fiction bust portraits inspired by
 
 The catalog consists of mossling, courier, mechanic, ember-dragon, moon-owl, mushroom-sage, coral-diver, clockwork-beetle, crystal-golem, cloud-shepherd, star-moth, lantern-ghost, desert-fennec, octopus-pilot, snail-captain, orchid-mantis, comet-axolotl, frost-yeti, raccoon-alchemist and sunflower-knight. The System bot is a separate friendly mechanical portrait with the same state contract. Stable IDs are asset identities, not translated display text.
 
+When a personal profile has no saved avatar, loading its identity assigns and saves
+one from the first ten free catalog entries. Selection uses SHA-256 of the UTF-8
+identity ID, the first four digest bytes as an unsigned big-endian number, modulo
+ten. Identical identities select the same initial avatar across platforms. Restarts,
+catalog changes and later identity loading do not replace a saved selection,
+including an explicit choice of mossling. Users can change the avatar immediately.
+The profile field is labelled "Identity ID", not "Device ID", because it identifies
+the application profile rather than physical hardware. TS3 fallback portraits reuse
+the same mapping with the full catalog and retain their existing assignments.
+
 ## States and animation
 
 | Row | State | Three distinct clip ideas |

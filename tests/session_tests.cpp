@@ -17,6 +17,39 @@
 class SessionTests final : public QObject {
     Q_OBJECT
 private slots:
+    void initialAvatarCoversFreeCatalogAndNeverReplacesSavedChoices() {
+        QTemporaryDir dir;
+        const auto free = VoiceSession::avatars().first(10);
+        QSet<QString> selected;
+        for (int index = 0; index < 64; ++index) {
+            const auto identity = QString::number(index, 16).rightJustified(64, '0');
+            const auto path = dir.filePath(QString::number(index));
+            VoiceSession pending(path);
+            QVERIFY(pending.setMuted(true));
+            VoiceSession session(path);
+            QVERIFY(session.initializeAvatar(identity));
+            QVERIFY(free.contains(session.avatar()));
+            selected.insert(session.avatar());
+            VoiceSession sameIdentity;
+            QVERIFY(sameIdentity.initializeAvatar(identity));
+            QCOMPARE(sameIdentity.avatar(), session.avatar());
+            VoiceSession restored(path);
+            QVERIFY(restored.initializeAvatar(QString(64, 'f')));
+            QCOMPARE(restored.avatar(), session.avatar());
+            QVERIFY(restored.setAvatar("mossling"));
+            QVERIFY(restored.initializeAvatar(identity));
+            QCOMPARE(restored.avatar(), QString("mossling"));
+        }
+        QCOMPARE(selected, QSet<QString>(free.begin(), free.end()));
+        VoiceSession failed(dir.filePath("missing/session"));
+        QVERIFY(!failed.initializeAvatar(QString(64, 'a')));
+        QVERIFY(!failed.error().isEmpty());
+        QVERIFY(QDir(dir.path()).mkdir("missing"));
+        QVERIFY(failed.initializeAvatar(QString(64, 'a')));
+        VoiceSession recovered(dir.filePath("missing/session"));
+        QCOMPARE(recovered.avatar(), failed.avatar());
+    }
+
     void firstProfileNameIsGeneratedOnceAndRemainsEditable() {
         QTemporaryDir dir;
         const auto path = dir.filePath("session.json");
@@ -264,6 +297,7 @@ private slots:
         QVERIFY(session.setSupporterEnabled(false)); QCOMPARE(session.avatar(), VoiceSession::avatarFallback(paid));
         QVERIFY(session.transmissionAllowed());
         VoiceSession restored(path); QVERIFY(!restored.supporterEnabled());
+        QVERIFY(restored.initializeAvatar(QString(64, 'a')));
         QCOMPARE(restored.avatar(), VoiceSession::avatarFallback(paid));
         QVERIFY(restored.setSupporterEnabled(true)); QCOMPARE(restored.avatar(), paid);
         QVERIFY(restored.transmissionAllowed());
@@ -277,6 +311,7 @@ private slots:
         file.close();
         try {
             VoiceSession restored(path);
+            QVERIFY(restored.initializeAvatar(QString(64, 'a')));
             QCOMPARE(restored.avatar(), QString("future-dragon-v2"));
             QVERIFY(!restored.setAvatar("../arbitrary-file"));
         } catch (const std::exception& error) { QFAIL(error.what()); }

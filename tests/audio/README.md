@@ -28,10 +28,13 @@ people or recordings.
 
 Speech activation additionally uses two CC0 keyboard recordings and one CC0
 breathing recording at three levels. The keyboards are also mixed with normal
-or quiet speech at 0/+10 dB SNR. The fast suite has 90 activation cases with three
-narrators. The extended suite has 498 with all twenty, covering mono and stereo, including 200 ms voiced
-excerpts. Four additional onset regressions reuse a live stream across loud and
-quiet voices with pauses, with suppression enabled and bypassed. They catch
+or quiet speech at 0/+10 dB SNR. The normal suite has 228 activation cases.
+All twenty narrators run as clean speech and 200 ms excerpts at both levels,
+in mono and stereo. Keyboard mixtures cover the original three narrators plus
+a recorded onset regression. The extended suite has 498 cases with every
+narrator also mixed with both keyboards. These cases check word-edge retention
+with 240 ms automatic pre-roll through the paced sender and decoder. Four additional onset
+regressions reuse a live stream across loud and quiet voices with pauses, with suppression enabled and bypassed. They catch
 missing word beginnings that a sentence-wide energy total can hide.
 Overlapping breathing remains in the mixture diagnostics. In that harder
 condition the detector can still miss word onsets, so it is not covered by the
@@ -123,7 +126,7 @@ or audio device after building:
 
 ```sh
 cmake --build build --target corpus_tests -j 6
-ctest --test-dir build --output-on-failure -R '^audio_corpus$'
+ctest --test-dir build --output-on-failure -R '^audio_corpus' -j 2
 ```
 
 Run the complete matrix explicitly with Python 3 (standard library only):

@@ -1387,6 +1387,9 @@ PanelWindow {
                     property int revision: 0
                     value: { revision; return requestInfo.entry.id ? audio.participantVolume(requestInfo.entry.id) : 1 }
                     valueText: Math.round(value * 100) + " %"
+                    autoAvailable: true
+                    automatic: { revision; return audio.participantAutomatic(requestInfo.entry.id || "") }
+                    applyAutomatic: function(enabled) { return requestInfo.personalControls && audio.setParticipantAutomatic(requestInfo.entry.id, enabled) }
                     applyValue: function(value) { return requestInfo.personalControls && audio.setParticipantVolume(requestInfo.entry.id, value) }
                     Connections { target: audio; function onProfileChanged() { memberGain.revision++ } }
                 }
@@ -1394,7 +1397,7 @@ PanelWindow {
                 DetailText { objectName: "requestChannel"; visible: text.length > 0; text: requestInfo.entry.channel || "" }
                 Label { text: qsTr("Address"); visible: !!requestInfo.entry.address; color: Theme.muted }
                 DetailText { objectName: "requestAddress"; visible: text.length > 0; text: root.endpoint(requestInfo.entry) }
-                Label { text: qsTr("Device ID"); color: Theme.muted }
+                Label { text: qsTr("Identity ID"); color: Theme.muted }
                 DetailText { objectName: "requestIdentity"; text: requestInfo.entry.id || ""; font.pixelSize: 11 }
             }
         }

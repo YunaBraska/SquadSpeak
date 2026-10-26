@@ -1038,8 +1038,8 @@
             <translation>アドレス</translation>
         </message>
         <message>
-            <source>Device ID</source>
-            <translation>デバイスID</translation>
+            <source>Identity ID</source>
+            <translation>アイデンティティID</translation>
         </message>
         <message>
             <source>Check now</source>

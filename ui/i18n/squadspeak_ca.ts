@@ -1038,8 +1038,8 @@
             <translation>Adreça</translation>
         </message>
         <message>
-            <source>Device ID</source>
-            <translation>ID del dispositiu</translation>
+            <source>Identity ID</source>
+            <translation>ID d'identitat</translation>
         </message>
         <message>
             <source>Check now</source>

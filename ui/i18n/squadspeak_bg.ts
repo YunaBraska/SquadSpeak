@@ -1038,8 +1038,8 @@
             <translation>Адрес</translation>
         </message>
         <message>
-            <source>Device ID</source>
-            <translation>Идентификатор на устройството</translation>
+            <source>Identity ID</source>
+            <translation>Идентификатор на самоличността</translation>
         </message>
         <message>
             <source>Check now</source>

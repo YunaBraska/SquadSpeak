@@ -190,7 +190,7 @@ impl AudioQueue {
             }
         } else {
             if self.packets.is_empty() && !self.speaking { self.pacing.reset_immediately(); }
-            // Bound capture backlog to 120 ms plus the 60 ms activation pre-roll.
+            // Bound worker backlog to 180 ms. Capture pre-roll is paced before the bridge.
             while self.packets.len() >= 9 { self.packets.pop_front(); }
             self.packets.push_back(data);
         }
@@ -925,7 +925,7 @@ mod tests {
     #[tokio::test(start_paused = true)]
     async fn audio_pacing_preserves_capture_batch_and_activation_preroll() {
         let mut audio = AudioQueue::new();
-        // A 120 ms callback plus the existing 60 ms activation pre-roll.
+        // Six catch-up frames plus three frames of worker scheduling margin.
         for frame in 1..=9 { audio.push(vec![frame]); }
         for frame in 1..=9 { assert_eq!(audio.next().await, vec![frame]); }
         audio.push(Vec::new());

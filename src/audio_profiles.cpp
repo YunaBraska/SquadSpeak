@@ -1,12 +1,14 @@
 #include "audio_profiles.hpp"
 #include <QCoreApplication>
+#include <QSet>
 
 #include <cmath>
 #include <stdexcept>
 
 namespace squad {
 
-AudioProfiles::AudioProfiles(const QString& filename) : settings_(filename, QSettings::IniFormat) {
+AudioProfiles::AudioProfiles(const QString& filename, std::function<qint64()> clock)
+    : settings_(filename, QSettings::IniFormat), clock_(std::move(clock)) {
     settings_.setFallbacksEnabled(false);
     if (settings_.status() != QSettings::NoError)
         throw std::runtime_error(QT_TRANSLATE_NOOP("AudioModel", "Audio settings could not be read"));
@@ -30,6 +32,41 @@ AudioProfiles::AudioProfiles(const QString& filename) : settings_(filename, QSet
         }
         if (!migrated.isEmpty()) write(migrated);
     }
+    observeContacts({});
+}
+
+AudioProfiles& AudioProfiles::observeContacts(const QStringList& ids) {
+    constexpr qint64 year = 365LL * 86400000;
+    const auto now = clock_();
+    QMap<QString, QStringList> entries;
+    for (const auto& key : settings_.allKeys()) {
+        const auto parts = key.split('/');
+        if (parts.size() == 4 && parts[0] == "output"
+            && (parts[2] == "participants" || parts[2] == "automaticParticipants" || parts[2] == "music"))
+            entries[parts[3]].append(key);
+    }
+    QSet<QString> seen;
+    for (const auto& id : ids) seen.insert(QString::fromLatin1(id.toUtf8().toHex()));
+    QVariantMap changes;
+    for (auto it = entries.cbegin(); it != entries.cend(); ++it) {
+        const auto key = "contacts/" + it.key();
+        bool valid = false;
+        auto lastSeen = settings_.value(key).toLongLong(&valid);
+        // Older files have no timestamp. Give them a full retention period.
+        if (!valid || lastSeen < 0 || lastSeen > now) {
+            lastSeen = now;
+            changes.insert(key, now);
+        }
+        if (now - lastSeen >= year && !seen.contains(it.key())) {
+            for (const auto& entry : it.value()) changes.insert(entry, {});
+            changes.insert(key, {});
+        } else if (seen.contains(it.key()) && now - lastSeen >= 60000) {
+            changes.insert(key, now);
+        }
+    }
+    for (const auto& key : settings_.allKeys())
+        if (key.startsWith("contacts/") && !entries.contains(key.mid(9))) changes.insert(key, {});
+    return changes.isEmpty() ? *this : write(changes);
 }
 
 QString AudioProfiles::key(const QByteArray& deviceId, bool input) {
@@ -136,8 +173,10 @@ AudioProfiles& AudioProfiles::saveBotVoice(const QByteArray& deviceId, const QSt
     return write({{key(deviceId, false) + "botVoice", voiceId}});
 }
 
-bool AudioProfiles::automaticVolume(const QByteArray& deviceId) const {
-    const auto value = settings_.value(key(deviceId, false) + "automaticVolume", true);
+bool AudioProfiles::automaticVolume(const QByteArray& deviceId, const QString& peer) const {
+    const auto value = peer.isEmpty()
+        ? settings_.value(key(deviceId, false) + "automaticVolume", true)
+        : settings_.value(key(deviceId, false) + "automaticParticipants/" + peer.toUtf8().toHex(), automaticVolume(deviceId));
     if (value.toString() != "true" && value.toString() != "false")
         throw std::runtime_error(QT_TRANSLATE_NOOP("AudioModel", "Stored automatic volume setting is invalid"));
     return value.toBool();
@@ -209,8 +248,9 @@ AudioProfiles& AudioProfiles::saveParticipant(const QByteArray& deviceId, const 
     return write({{key(deviceId, false) + "participants/" + peer.toUtf8().toHex(), volume}});
 }
 
-AudioProfiles& AudioProfiles::saveAutomaticVolume(const QByteArray& deviceId, bool enabled) {
-    return write({{key(deviceId, false) + "automaticVolume", enabled}});
+AudioProfiles& AudioProfiles::saveAutomaticVolume(const QByteArray& deviceId, bool enabled, const QString& peer) {
+    return write({{key(deviceId, false) + (peer.isEmpty() ? QStringLiteral("automaticVolume")
+        : "automaticParticipants/" + peer.toUtf8().toHex()), enabled}});
 }
 
 AudioProfiles& AudioProfiles::saveInput(const QByteArray& deviceId, InputProfile profile) {
@@ -247,6 +287,14 @@ AudioProfiles& AudioProfiles::write(QVariantMap values) {
     if (settings_.status() != QSettings::NoError)
         throw std::runtime_error(QT_TRANSLATE_NOOP("AudioModel", "Audio settings are unavailable; fix file access and restart the app"));
     QVariantMap previous;
+    QVariantMap contacts;
+    for (auto it = values.cbegin(); it != values.cend(); ++it) {
+        const auto parts = it.key().split('/');
+        if (it.value().isValid() && parts.size() == 4 && parts[0] == "output"
+            && (parts[2] == "participants" || parts[2] == "automaticParticipants" || parts[2] == "music")
+            && !settings_.contains("contacts/" + parts[3])) contacts.insert("contacts/" + parts[3], clock_());
+    }
+    values.insert(contacts);
     values.insert("output/independentVolumes", true);
     for (auto entry = values.cbegin(); entry != values.cend(); ++entry) {
         previous.insert(entry.key(), settings_.value(entry.key()));

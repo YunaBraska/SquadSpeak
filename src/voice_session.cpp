@@ -1,6 +1,7 @@
 #include "voice_session.hpp"
 
 #include <QCoreApplication>
+#include <QCryptographicHash>
 #include <QFile>
 #include <QDir>
 #include <QLocale>
@@ -10,6 +11,7 @@
 #include <QSaveFile>
 #include <QTranslator>
 #include <QRandomGenerator>
+#include <QtEndian>
 #include <array>
 #include <stdexcept>
 #include <utility>
@@ -298,7 +300,7 @@ bool VoiceSession::setMuted(bool muted) {
 
 bool VoiceSession::setAnimatedAvatars(bool enabled) { return edit("animatedAvatars", enabled); }
 QString VoiceSession::avatar() const {
-    const auto selected = preferences_.value("avatar").toString();
+    const auto selected = preferences_.value("avatar").toString("mossling");
     return !supporterEnabled_ && avatars().indexOf(selected) >= 10 ? avatarFallback(selected) : selected;
 }
 bool VoiceSession::setSupporterEnabled(bool enabled) {
@@ -328,6 +330,14 @@ QStringList VoiceSession::avatars() {
         "lantern-ghost", "desert-fennec", "octopus-pilot", "snail-captain", "orchid-mantis",
         "comet-axolotl", "frost-yeti", "raccoon-alchemist", "sunflower-knight"};
     return available;
+}
+QString VoiceSession::avatarForIdentity(const QString& identity, bool freeOnly) {
+    const auto choices = avatars();
+    const auto hash = QCryptographicHash::hash(identity.toUtf8(), QCryptographicHash::Sha256);
+    return choices.at(qFromBigEndian<quint32>(hash.constData()) % (freeOnly ? 10 : choices.size()));
+}
+bool VoiceSession::initializeAvatar(const QString& identity) {
+    return preferences_.contains("avatar") || setAvatar(avatarForIdentity(identity, true));
 }
 bool VoiceSession::setAvatar(const QString& avatar) {
     if (!avatars().contains(avatar)) return fail(tr("Choose an available avatar."));

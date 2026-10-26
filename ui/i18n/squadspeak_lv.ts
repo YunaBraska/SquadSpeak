@@ -1038,8 +1038,8 @@
             <translation>Adrese</translation>
         </message>
         <message>
-            <source>Device ID</source>
-            <translation>ierīces ID</translation>
+            <source>Identity ID</source>
+            <translation>Identitātes ID</translation>
         </message>
         <message>
             <source>Check now</source>

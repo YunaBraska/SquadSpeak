@@ -11,12 +11,15 @@ import json
 import os
 from pathlib import Path
 import re
+import ssl
 import subprocess
 import sys
 import tarfile
 import tempfile
+import time
 import tomllib
 from urllib.parse import urlsplit, urlunsplit
+import urllib.error
 import urllib.request
 
 
@@ -195,30 +198,41 @@ def _download(cache: Path, item: dict) -> Path:
     temporary_path = Path(temporary)
     published = False
     try:
-        digest = hashlib.sha256()
         opener = urllib.request.build_opener(HttpsRedirectHandler())
-        with opener.open(item["url"], timeout=60) as response, temporary_path.open("wb") as out:
-            status = getattr(response, "status", None)
-            if status is not None and not 200 <= status < 300:
-                raise SourceError(f"HTTP status {status}")
-            content_length = response.headers.get("Content-Length")
-            if content_length and int(content_length) > MAX_ARCHIVE_SIZE:
-                raise SourceError(f"download exceeds {MAX_ARCHIVE_SIZE} bytes")
-            total = 0
-            while True:
-                block = response.read(1024 * 1024)
-                if not block:
-                    break
-                total += len(block)
-                if total > MAX_ARCHIVE_SIZE:
-                    raise SourceError(f"download exceeds {MAX_ARCHIVE_SIZE} bytes")
-                digest.update(block)
-                out.write(block)
-        if digest.hexdigest() != item["sha256"]:
-            raise SourceError(f"downloaded archive hash mismatch: {item['name']}")
-        temporary_path.replace(target)
-        published = True
-        return target
+        for attempt in range(3):
+            try:
+                digest = hashlib.sha256()
+                with opener.open(item["url"], timeout=60) as response, temporary_path.open("wb") as out:
+                    status = getattr(response, "status", None)
+                    if status is not None and not 200 <= status < 300:
+                        raise SourceError(f"HTTP status {status}")
+                    content_length = response.headers.get("Content-Length")
+                    if content_length and int(content_length) > MAX_ARCHIVE_SIZE:
+                        raise SourceError(f"download exceeds {MAX_ARCHIVE_SIZE} bytes")
+                    total = 0
+                    while True:
+                        block = response.read(1024 * 1024)
+                        if not block:
+                            break
+                        total += len(block)
+                        if total > MAX_ARCHIVE_SIZE:
+                            raise SourceError(f"download exceeds {MAX_ARCHIVE_SIZE} bytes")
+                        digest.update(block)
+                        out.write(block)
+                if digest.hexdigest() != item["sha256"]:
+                    raise SourceError(f"downloaded archive hash mismatch: {item['name']}")
+                temporary_path.replace(target)
+                published = True
+                return target
+            except (urllib.error.URLError, TimeoutError, ConnectionError) as exc:
+                if isinstance(exc, urllib.error.HTTPError):
+                    exc.close()
+                if (attempt == 2
+                    or isinstance(exc, urllib.error.HTTPError) and exc.code not in (408, 429, 500, 502, 503, 504)
+                    or isinstance(getattr(exc, "reason", None), ssl.SSLError)):
+                    raise
+                print(f"Retrying {item['name']} after network failure ({attempt + 1}/3): {exc}", file=sys.stderr)
+                time.sleep(attempt + 1)
     except (OSError, ValueError, SourceError) as exc:
         raise SourceError(f"could not fetch {item['name']}: {exc}") from exc
     finally:

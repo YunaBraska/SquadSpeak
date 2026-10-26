@@ -16,11 +16,6 @@ QString tsError(const QString& message) {
 QString tsId(const QString& server, const QString& kind, const QString& value) {
     return QString::fromLatin1(QCryptographicHash::hash((server + '/' + kind + '/' + value).toUtf8(), QCryptographicHash::Sha256).toHex());
 }
-QString tsAvatar(const QString& identity) {
-    const auto choices = VoiceSession::avatars();
-    const auto hash = QCryptographicHash::hash(identity.toUtf8(), QCryptographicHash::Sha256);
-    return choices.at(qFromBigEndian<quint32>(hash.constData()) % choices.size());
-}
 QString tsEndpoint(const QString& address, quint16 port) {
     return (address.contains(':') ? '[' + address + ']' : address) + ':' + QString::number(port);
 }
@@ -177,7 +172,8 @@ void LocalChannel::pollTeamSpeak() {
             if (it == connection->audioSequences.end() || it->pending.isEmpty()) return;
             auto& stream = *it;
             const auto packet = stream.pending.cbegin();
-            const auto missing = stream.delivered < 0 ? 0 : int(std::min<qint64>(6, packet.key() - stream.delivered - 1));
+            const auto missing = stream.delivered < 0 || stream.ended ? 0
+                : int(std::min<qint64>(6, packet.key() - stream.delivered - 1));
             // Wait only for a gap. TS3 may deliver a whole batch out of order.
             if (missing && !full && controlClock_.elapsed() - packet->second < 40) return;
             const auto peer = stream.peer;
@@ -185,8 +181,9 @@ void LocalChannel::pollTeamSpeak() {
             stream.delivered = packet.key();
             stream.pending.remove(packet.key());
             full = false;
-            // Talk-end packets consume a sequence number without an Opus frame.
-            if (payload.size() > 1) emit audioReceived(peer, payload, missing);
+            // A completed talk burst cannot lose frames during its following silence.
+            stream.ended = payload.size() <= 1;
+            if (!stream.ended) emit audioReceived(peer, payload, missing);
         }
     };
     // Limit each GUI dispatch. Audio packets cannot indefinitely starve input or paint events.
@@ -262,7 +259,7 @@ void LocalChannel::teamSpeakState(const QJsonObject& state) {
         const bool squadSpeak = client == self || metadata == "SquadSpeak" || profile.value("application") == "SquadSpeak";
         const auto advertised = profile.value("avatar").toString();
         const auto avatar = client == self ? session_.avatar()
-            : squadSpeak && VoiceSession::validAvatar(advertised) ? advertised : tsAvatar(uid.isEmpty() ? peer : uid);
+            : squadSpeak && VoiceSession::validAvatar(advertised) ? advertised : VoiceSession::avatarForIdentity(uid.isEmpty() ? peer : uid, false);
         member.insert("squadSpeak", squadSpeak); member.insert("avatarId", avatar);
         members[index] = member;
         profiles.insert(peer, QJsonObject{{"name", tsName(member.value("name").toString())}, {"avatarId", avatar}, {"teamSpeak", !squadSpeak}});
@@ -442,7 +439,7 @@ void LocalChannel::teamSpeakEvent(const QJsonObject& event) {
     const bool unreadBefore = c->unreadExpires > now;
     const auto sequence = ++teamSpeak_->sequence;
     c->messages.append(QJsonObject{{"sequence", sequence}, {"sender", peer}, {"name", tsName(event.value("fromName").toString())},
-        {"avatarId", avatar.isEmpty() ? tsAvatar(uid.isEmpty() ? peer : uid) : avatar}, {"teamSpeak", !squadSpeak}, {"request", QUuid::createUuid().toString(QUuid::WithoutBraces)},
+        {"avatarId", avatar.isEmpty() ? VoiceSession::avatarForIdentity(uid.isEmpty() ? peer : uid, false) : avatar}, {"teamSpeak", !squadSpeak}, {"request", QUuid::createUuid().toString(QUuid::WithoutBraces)},
         {"created", now}, {"expires", now + ChatHistory::lifetime}, {"text", text}});
     c->privateExpires = now + ChatHistory::lifetime;
     c->lastChatSequence = std::max(c->lastChatSequence, sequence);

@@ -7,7 +7,9 @@ qt_add_executable(controls_tests controls_tests.cpp
     ../src/audio_model.cpp ../src/audio_model.hpp)
 if(IOS)
     set_source_files_properties(controls_tests.cpp PROPERTIES LANGUAGE OBJCXX)
-    # Qt finalizes here, before the parent registers the simulator tests.
+endif()
+if(APPLE)
+    # Qt finalizes here, before the parent registers the capture tests.
     # It needs the usage descriptions now to link permission requests.
     set_target_properties(controls_tests PROPERTIES
         MACOSX_BUNDLE_INFO_PLIST "${PROJECT_BINARY_DIR}/ui/Info.plist.in")

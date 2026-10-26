@@ -231,6 +231,11 @@ cp /tmp/squadspeak-ci-build/Testing/Temporary/LastTest.log /output/test-details.
 if test -f /tmp/squadspeak-ci-build/audio-corpus/report.json; then
     cp /tmp/squadspeak-ci-build/audio-corpus/report.json /output/audio-report.json
 fi
+for report in /tmp/squadspeak-ci-build/audio-corpus-*/report.json; do
+    test -f "$report" || continue
+    part=${report%/report.json}
+    cp "$report" "/output/${part##*/}.json"
+done
 if test -d /tmp/squadspeak-ci-build/smoke; then
     cp -R /tmp/squadspeak-ci-build/smoke /output/screenshots
 fi

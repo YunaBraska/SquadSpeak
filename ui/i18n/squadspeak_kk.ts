@@ -1038,8 +1038,8 @@
             <translation>Мекенжай</translation>
         </message>
         <message>
-            <source>Device ID</source>
-            <translation>Құрылғы идентификаторы</translation>
+            <source>Identity ID</source>
+            <translation>Сәйкестік идентификаторы</translation>
         </message>
         <message>
             <source>Check now</source>

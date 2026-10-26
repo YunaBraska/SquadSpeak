@@ -1038,8 +1038,8 @@
             <translation>Anwani</translation>
         </message>
         <message>
-            <source>Device ID</source>
-            <translation>Kitambulisho cha kifaa</translation>
+            <source>Identity ID</source>
+            <translation>Kitambulisho cha utambulisho</translation>
         </message>
         <message>
             <source>Check now</source>

@@ -1030,8 +1030,8 @@
             <translation>العنوان</translation>
         </message>
         <message>
-            <source>Device ID</source>
-            <translation>معرف الجهاز</translation>
+            <source>Identity ID</source>
+            <translation>معرّف الهوية</translation>
         </message>
         <message>
             <source>Check now</source>

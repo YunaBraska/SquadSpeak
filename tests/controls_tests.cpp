@@ -10,6 +10,8 @@
 #include "screen_share.hpp"
 #include "radio_station.hpp"
 #include <QNetworkInterface>
+#include <QSignalSpy>
+#include <QThread>
 #include <QtQuickTest/quicktest.h>
 #include <QQmlEngine>
 #include <QQmlContext>
@@ -93,6 +95,18 @@ public slots:
     QString reloadedBotVoice() {
         AudioModel restored(folder_.filePath("audio.ini"));
         return restored.botVoiceId();
+    }
+    QVariantMap participantsWithoutOutput() {
+        const auto path = folder_.filePath("disconnected-output.ini");
+        squad::AudioProfiles(path).select(false, "disconnected-test-output");
+        AudioModel model(path);
+        const QVariantList members{QVariantMap{{"id", "peer"}, {"available", true}}};
+        const auto accepted = model.setParticipants(members);
+        const auto repeated = model.setParticipants(members);
+        return {{"outputAvailable", model.outputAvailable()}, {"accepted", accepted},
+            {"repeated", repeated}, {"automatic", model.participantAutomatic("peer")},
+            {"editAccepted", model.setParticipantAutomatic("peer", false)},
+            {"cleared", model.setParticipants({})}, {"status", model.outputStatus()}};
     }
 
     bool populateMembers(int count) {
@@ -228,6 +242,22 @@ public slots:
     }
     bool setAudioVoiceState(bool joined, bool transmit) {
         return audio_->setVoiceState(joined, transmit, true);
+    }
+    bool captureSurvivesCallbackPauses() {
+        QSignalSpy packets(audio_.get(), &AudioModel::audioPacket);
+        QElapsedTimer elapsed;
+        elapsed.start();
+        // Fault injection, not readiness sleeps. Record across several
+        // stalls so callback grouping cannot hide missing input samples.
+        for (int pause = 0; pause < 6; ++pause) {
+            QThread::msleep(80);
+            QTest::qWait(80);
+        }
+        QTest::qWait(120);
+        const auto expected = elapsed.elapsed() / 20;
+        qInfo() << "Captured packets across callback pauses:" << packets.size() << "expected:" << expected;
+        // Allow one capture block and the bounded sender tail at either end.
+        return packets.size() >= expected - 3;
     }
     bool acceptsBotMessage(const QString& text, bool joined, bool deafened) {
         const auto previous = audio_->deafened();
@@ -481,6 +511,9 @@ public slots:
         // Use the real settings API without starting capture, playback or
         // connecting it to the test channels.
         audio_ = std::make_unique<AudioModel>(folder_.filePath("audio.ini"));
+        const auto testInput = qEnvironmentVariable("SQUADSPEAK_TEST_INPUT_DEVICE");
+        if (!testInput.isEmpty() && !audio_->selectInput(testInput))
+            qFatal("The requested virtual test input is unavailable.");
         audio_->setAppLanguage(session_->language());
         const auto expectedInput = qgetenv("SQUADSPEAK_TEST_INPUT");
         if ((expectedInput == "present" && !audio_->inputAvailable())

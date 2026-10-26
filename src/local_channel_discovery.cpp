@@ -188,9 +188,12 @@ void LocalChannel::Discovery::announce() {
         start(); return;
     }
     const auto now = owner_.clock_();
+    const auto previousError = error;
+    bool changed = false;
     for (auto it = hosts.begin(); it != hosts.end();) {
-        if (it.key() != owner_.ownId() && !it->direct && !it->scanned && now - it->seen > 6000) it = hosts.erase(it);
-        else ++it;
+        if (it.key() != owner_.ownId() && !it->direct && !it->scanned && now - it->seen > 6000) {
+            it = hosts.erase(it); changed = true;
+        } else ++it;
     }
     if (socket_.state() == QAbstractSocket::BoundState) {
         const auto current = discoveryInterfaces();
@@ -225,14 +228,19 @@ void LocalChannel::Discovery::announce() {
         if (interfaces_.isEmpty()) {
             socket_.close();
             error = LocalChannel::tr("The network does not allow local multicast discovery.");
-            emit owner_.hostsChanged(); return;
+            if (changed || error != previousError) emit owner_.hostsChanged();
+            return;
         }
         error.clear();
     }
     if (owner_.hosting()) {
         for (const auto& entry : owner_.channelDirectory()) {
             const auto value = entry.toObject();
-            hosts.insert(value.value("id").toString(), {value.value("name").toString(), "127.0.0.1", owner_.port(), now, false, false, owner_.ownId()});
+            const auto id = value.value("id").toString();
+            const auto name = value.value("name").toString();
+            const auto previous = hosts.constFind(id);
+            changed |= previous == hosts.cend() || previous->name != name || previous->port != owner_.port();
+            hosts.insert(id, {name, "127.0.0.1", owner_.port(), now, false, false, owner_.ownId()});
         }
         if (socket_.state() == QAbstractSocket::BoundState) {
             const auto data = QJsonDocument(QJsonObject{{"protocol", "squadspeak/1"}, {"id", owner_.ownId()},
@@ -253,7 +261,7 @@ void LocalChannel::Discovery::announce() {
             if (!sentAny) socket_.close();
         }
     }
-    emit owner_.hostsChanged();
+    if (changed || error != previousError) emit owner_.hostsChanged();
 }
 
 void LocalChannel::Discovery::receive() {
@@ -275,6 +283,5 @@ void LocalChannel::Discovery::receive() {
                 c->address = datagram.senderAddress().toString(); c->port = port;
             }
         }
-        emit owner_.hostsChanged();
     }
 }

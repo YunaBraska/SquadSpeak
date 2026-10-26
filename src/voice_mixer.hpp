@@ -36,7 +36,7 @@ struct VoiceActivation final {
 class VoiceMixer final {
 public:
     // Optional minimum receive delay adapts up to 160 ms for arrival jitter.
-    // Up to ten frames cover that delay and output callbacks. Zero disables it.
+    // Up to fourteen frames cover that delay and output callbacks. Zero disables it.
     explicit VoiceMixer(int channels = 1, int playbackDelayMs = 0);
     [[nodiscard]] int channelCount() const { return channels_; }
     // Denied capture still updates the preview, but produces no packets. A
@@ -48,13 +48,19 @@ public:
     // before gating/encoding, even while muted. Borrowed spans cannot escape.
     [[nodiscard]] QList<QByteArray> encode(std::span<const float> samples, int sampleRate,
         bool transmissionAllowed = true, const CaptureFilter& filter = {}, const CaptureObserver& observer = {});
+    // Pace encoded capture on a monotonic millisecond clock. Empty input drains
+    // pending frames. Retain at most 240 ms pre-roll plus a 120 ms capture batch,
+    // and release at most six frames after a late callback. resetCapture clears it.
+    [[nodiscard]] QList<QByteArray> pace(QList<QByteArray> packets, qint64 now);
+    [[nodiscard]] bool capturePending() const { return !outgoing_.isEmpty(); }
     [[nodiscard]] bool receive(const QString& peer, const QByteArray& packet, qint64 now, int missing = 0);
     using PlaybackFilter = std::function<void(const QString&, std::span<float>, qint64)>;
     // Processes each decoded 48 kHz peer frame before normalization and mixing.
     // The borrowed frame cannot escape the callback. Empty queues provide silence.
     [[nodiscard]] std::vector<float> render(int sampleRate, qint64 now, const PlaybackFilter& filter = {});
     VoiceMixer& setGain(const QString& peer, double gain);
-    VoiceMixer& setAutomatic(bool enabled);
+    // A peer override survives playback resets. An empty peer sets the default.
+    VoiceMixer& setAutomatic(bool enabled, const QString& peer = {});
     // Zero bypasses suppression. Positive values blend aligned original and
     // denoised capture, preserving more original sound during detected speech.
     // Delay is reported at 48 kHz, per channel. Bypass has no filter delay.
@@ -89,6 +95,8 @@ private:
         std::deque<Frame> frames;
         double gain = 1;
         double automaticGain = 1;
+        std::array<double, 20> recentLevels{};
+        size_t levelCursor = 0;
         double level = 0;
         qint64 played = -1;
         qint64 readyAt = -1;
@@ -119,15 +127,17 @@ private:
     double activationLevelDb_ = -96;
     double transmitLevel_ = 0;
     int trailingFrames_ = 0;
-    int speechFrames_ = 0;
     int silenceFrames_ = 0;
     bool voiceActive_ = false;
     bool captureTransmissionAllowed_ = true;
     std::deque<std::array<float, 1920>> preRoll_;
+    QList<QByteArray> outgoing_;
+    qint64 nextPacketAt_ = -1;
     std::unique_ptr<SRC_STATE, decltype(&src_delete)> inputConverter_{nullptr, src_delete};
     std::unique_ptr<SRC_STATE, decltype(&src_delete)> outputConverter_{nullptr, src_delete};
     std::map<QString, Stream> streams_;
     QHash<QString, double> gains_;
+    QHash<QString, bool> automaticPeers_;
     std::vector<float> capture_;
     int inputRate_ = 0;
     int outputRate_ = 0;

@@ -1038,8 +1038,8 @@
             <translation>Naslov</translation>
         </message>
         <message>
-            <source>Device ID</source>
-            <translation>ID naprave</translation>
+            <source>Identity ID</source>
+            <translation>ID identitete</translation>
         </message>
         <message>
             <source>Check now</source>

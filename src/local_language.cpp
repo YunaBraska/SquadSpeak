@@ -38,8 +38,8 @@ bool LocalLanguage::supported() {
     return false;
 #endif
 }
-LocalLanguage::LocalLanguage(QString settingsFile, QObject* parent)
-    : QObject(parent), settingsFile_(std::move(settingsFile)) {
+LocalLanguage::LocalLanguage(QString settingsFile, QObject* parent, std::function<qint64()> clock)
+    : QObject(parent), settingsFile_(std::move(settingsFile)), wallClock_(std::move(clock)) {
     clock_.start();
     if (!settingsFile_.isEmpty()) {
         QFile file(settingsFile_);
@@ -57,15 +57,22 @@ LocalLanguage::LocalLanguage(QString settingsFile, QObject* parent)
                         it.value() = QJsonObject{{"messages", false}, {"outgoing", it.value().toString()}, {"voice", false}, {"voiceTarget", ""}};
                     }
                     const auto value = it.value().toObject();
-                    valid &= value.value("messages").isBool() && value.value("voice").isBool()
-                        && value.value("outgoing").isString() && optionalLocale(value.value("outgoing").toString())
-                        && value.value("voiceTarget").isString() && optionalLocale(value.value("voiceTarget").toString());
+                    valid &= it.value().isObject() && (!value.contains("messages") || value.value("messages").isBool())
+                        && (!value.contains("voice") || value.value("voice").isBool())
+                        && (!value.contains("outgoing") || (value.value("outgoing").isString() && optionalLocale(value.value("outgoing").toString())))
+                        && (!value.contains("voiceTarget") || (value.value("voiceTarget").isString() && optionalLocale(value.value("voiceTarget").toString())));
                 }
-                if (valid) preferences_ = {{"version", 2}, {"channels", channels}};
+                if (valid) {
+                    preferences_ = object;
+                    preferences_.insert("channels", channels);
+                    // The removed per-person feature has no runtime consumer.
+                    if (version == 1) preferences_.remove("members");
+                }
                 else error_ = tr("Language settings could not be read.");
             } else error_ = tr("Language settings could not be read.");
         }
     }
+    if (error_.isEmpty()) observeContacts({});
 #if defined(SQUAD_LOCAL_LANGUAGE_NATIVE)
     native_ = squad_language_create([](void* context, int64_t request, const char* json) {
         static_cast<LocalLanguage*>(context)->event(request, QJsonDocument::fromJson(QByteArray(json)).object());
@@ -88,6 +95,23 @@ LocalLanguage::LocalLanguage(QString settingsFile, QObject* parent)
         for (const auto& id : failed) failMember(id);
         if (translations_.empty() && std::none_of(active_.begin(), active_.end(), [](const auto& item) { return item.second->request != 0; })) deadline_.stop();
     });
+}
+bool LocalLanguage::observeContacts(const QStringList& ids) {
+    auto channels = preferences_.value("channels").toObject();
+    const auto now = wallClock_();
+    for (auto it = channels.begin(); it != channels.end();) {
+        auto value = it.value().toObject();
+        const auto lastSeen = value.value("lastSeen").toInteger(-1);
+        if (!ids.contains(it.key()) && lastSeen >= 0 && lastSeen <= now && now - lastSeen >= 365LL * 86400000) {
+            it = channels.erase(it); continue;
+        }
+        if (!value.contains("lastSeen") || lastSeen < 0 || lastSeen > now || ids.contains(it.key()))
+            value.insert("lastSeen", now);
+        it.value() = value; ++it;
+    }
+    if (channels == preferences_.value("channels").toObject()) return true;
+    auto preferences = preferences_; preferences.insert("channels", channels);
+    return save(preferences);
 }
 LocalLanguage::~LocalLanguage() {
 #if defined(SQUAD_LOCAL_LANGUAGE_NATIVE)
@@ -135,7 +159,11 @@ bool LocalLanguage::configureChannel(const QString& id, bool messages, const QSt
     auto preferences = preferences_;
     auto channels = preferences.value("channels").toObject();
     if (!channels.contains(id) && channels.size() >= 512) return false;
-    channels.insert(id, QJsonObject{{"messages", messages}, {"outgoing", outgoing}, {"voice", voice}, {"voiceTarget", voiceTarget}});
+    auto value = channels.value(id).toObject();
+    value.insert("messages", messages); value.insert("outgoing", outgoing);
+    value.insert("voice", voice); value.insert("voiceTarget", voiceTarget);
+    if (!value.contains("lastSeen")) value.insert("lastSeen", wallClock_());
+    channels.insert(id, value);
     preferences.insert("channels", channels);
     if (!save(preferences)) return false;
     cancelPreparation(); offeredPreparations_.clear(); clearResults();

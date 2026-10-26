@@ -1038,8 +1038,8 @@
             <translation>Địa chỉ</translation>
         </message>
         <message>
-            <source>Device ID</source>
-            <translation>ID thiết bị</translation>
+            <source>Identity ID</source>
+            <translation>ID danh tính</translation>
         </message>
         <message>
             <source>Check now</source>

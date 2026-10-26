@@ -657,6 +657,7 @@ private slots:
         qint64 bytes = 0;
         double outputEnergy = 0;
         std::array<float, 1920> input{}, output{};
+        QList<QByteArray> captured;
         for (int frame = 0; frame < 100; ++frame) {
             for (int sample = 0; sample < 960; ++sample) {
                 const auto time = double(frame * 960 + sample) / 48000;
@@ -668,15 +669,29 @@ private slots:
             const auto packets = capture.encode(input, 48000);
             QCOMPARE(packets.size(), 1);
             QVERIFY2(packets.first().size() <= 484, qPrintable(QString::number(packets.first().size())));
-            QVERIFY(channel.sendAudio(packets.first()));
-            QCOMPARE(lastAudio, packets.first());
-            const auto* data = reinterpret_cast<const unsigned char*>(lastAudio.constData());
-            QCOMPARE(opus_packet_get_nb_samples(data, int(lastAudio.size()), 48000), 960);
-            QCOMPARE(opus_packet_get_bandwidth(data), OPUS_BANDWIDTH_FULLBAND);
-            QCOMPARE(opus_decode_float(decoder.get(), data, int(lastAudio.size()), output.data(), 960, 0), 960);
-            outputEnergy += std::inner_product(output.begin(), output.begin() + 960 * outputChannels, output.begin(), 0.0);
-            bytes += lastAudio.size();
+            captured.append(packets);
         }
+        qsizetype consumed = 0;
+        for (int now = 0; now < 2400; now += 20) {
+            QList<QByteArray> batch;
+            if (now == 0) { batch = captured.sliced(0, 18); consumed = 18; }
+            else if (now % 120 == 0 && consumed < captured.size()) {
+                batch = captured.sliced(consumed, std::min<qsizetype>(6, captured.size() - consumed));
+                consumed += batch.size();
+            }
+            for (const auto& packet : capture.pace(batch, now)) {
+                QCOMPARE(packet, captured[audioCount]);
+                QVERIFY(channel.sendAudio(packet));
+                QCOMPARE(lastAudio, packet);
+                const auto* data = reinterpret_cast<const unsigned char*>(lastAudio.constData());
+                QCOMPARE(opus_packet_get_nb_samples(data, int(lastAudio.size()), 48000), 960);
+                QCOMPARE(opus_packet_get_bandwidth(data), OPUS_BANDWIDTH_FULLBAND);
+                QCOMPARE(opus_decode_float(decoder.get(), data, int(lastAudio.size()), output.data(), 960, 0), 960);
+                outputEnergy += std::inner_product(output.begin(), output.begin() + 960 * outputChannels, output.begin(), 0.0);
+                bytes += lastAudio.size();
+            }
+        }
+        QVERIFY(!capture.capturePending());
         QCOMPARE(audioCount, 100);
         QVERIFY(!channel.sendAudio(QByteArray(485, 'x')));
         QCOMPARE(audioCount, 100);
@@ -851,12 +866,16 @@ private slots:
 
     void speechEndDoesNotInventLostVoiceFrames_data() {
         QTest::addColumn<int>("endSize");
-        QTest::newRow("empty-end") << 0;
-        QTest::newRow("one-byte-end") << 1;
+        QTest::addColumn<int>("resumeOffset");
+        for (int offset : {0, 7}) {
+            QTest::newRow(qPrintable(QString("empty-end-%1").arg(offset))) << 0 << offset;
+            QTest::newRow(qPrintable(QString("one-byte-end-%1").arg(offset))) << 1 << offset;
+        }
     }
 
     void speechEndDoesNotInventLostVoiceFrames() {
         QFETCH(int, endSize);
+        QFETCH(int, resumeOffset);
         resetFake(); fakeEvents.enqueue(stateEvent(true));
         QTemporaryDir dir;
         VoiceSession session(dir.filePath("session"));
@@ -872,9 +891,9 @@ private slots:
         enqueue(65534, "first");
         enqueue(65535, QByteArray(endSize, '\0'));
         enqueue(65535, QByteArray(endSize, '\0')); // Repeated ends are harmless.
-        enqueue(0, "second");
+        enqueue(resumeOffset, "second");
         enqueue(65535, QByteArray(endSize, '\0')); // Late end cannot erase newer audio.
-        enqueue(2, "third"); // This is a real gap and must still be concealed.
+        enqueue(resumeOffset + 2, "third"); // This is a real gap and must still be concealed.
         QTRY_COMPARE(received.size(), 3);
         QCOMPARE(received[0][1].toByteArray(), QByteArray("first"));
         QCOMPARE(received[1][1].toByteArray(), QByteArray("second"));

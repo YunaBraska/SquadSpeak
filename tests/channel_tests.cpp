@@ -25,6 +25,7 @@
 #include <QFile>
 #include <QDir>
 #include <QJsonDocument>
+#include <QCryptographicHash>
 #include <QSignalSpy>
 #include <QTemporaryDir>
 #include <QTest>
@@ -71,14 +72,19 @@ struct Device final {
         if (!session.setUserName(name)) throw std::runtime_error("Fixture name failed");
     }
     bool join(LocalChannel& host) { return channel.join(host.ownId(), "127.0.0.1", host.port()); }
-    bool listenWithUdp(const QHostAddress& address = QHostAddress::LocalHost) {
+    bool listenWithUdp(const QHostAddress& address = QHostAddress::LocalHost, quint16 firstPort = 0) {
         for (int attempt = 0; attempt < 32; ++attempt) {
             QTcpServer reservation;
-            if (!reservation.listen(QHostAddress::Any, 0)) {
+            if (!reservation.listen(QHostAddress::Any, attempt == 0 ? firstPort : 0)) {
+                if (attempt == 0 && firstPort) continue;
                 qWarning() << "Unable to reserve device access port:" << reservation.errorString();
                 return false;
             }
             const auto port = reservation.serverPort();
+            // Windows can reserve different port ranges for TCP and UDP.
+            // Check both protocols before starting the channel listener.
+            QUdpSocket mediaReservation;
+            if (!mediaReservation.bind(QHostAddress::Any, port, QUdpSocket::DontShareAddress)) continue;
             reservation.close();
             if (!channel.startService(address, port)) continue;
             return channel.listen(address, port);
@@ -93,10 +99,11 @@ int controlledProcess(QCoreApplication& application, std::function<void(const QJ
         std::string line;
         while (std::getline(std::cin, line)) {
             const auto request = QJsonDocument::fromJson(QByteArray::fromStdString(line)).object();
+            if (request.value("operation") == "stop") break;
             QMetaObject::invokeMethod(&application, [&, request] { if (command) command(request); }, Qt::QueuedConnection);
         }
         QMetaObject::invokeMethod(&application, [&] {
-            qInfo() << "Capacity command input closed";
+            qInfo() << "Capacity stop requested";
             application.quit();
         }, Qt::QueuedConnection);
     });
@@ -117,6 +124,31 @@ QVariantList memberMessages(const LocalChannel& channel) {
         if (!record.toMap().contains("event")) records.append(record);
     return records;
 }
+class DiscoveryChanges final : public QObject {
+public:
+    DiscoveryChanges(LocalChannel& channel, const QSet<QString>& ids) {
+        const auto read = [&channel, ids] {
+            std::array<QVariantList, 2> lists;
+            for (const auto& value : channel.hosts())
+                lists[ids.contains(value.toMap().value("id").toString()) ? 0 : 1].append(value);
+            return lists;
+        };
+        state_ = read();
+        connect(&channel, &LocalChannel::hostsChanged, this, [this, read] {
+            const auto next = read();
+            // Other running apps may legitimately change the directory. Still
+            // count every redundant signal when neither set has changed.
+            if (next[0] != state_[0] || next[1] == state_[1]) ++count_;
+            state_ = next;
+        });
+    }
+    const QVariantList& hosts() const { return state_[0]; }
+    qsizetype size() const { return count_; }
+    void clear() { count_ = 0; }
+private:
+    std::array<QVariantList, 2> state_;
+    qsizetype count_ = 0;
+};
 QByteArray voicePacket(double frequency = 440) {
     squad::VoiceMixer encoder(2);
     std::array<float, 1920> samples{};
@@ -300,6 +332,41 @@ class ChannelTests final : public QObject {
     Q_OBJECT
 private slots:
 #if QT_CONFIG(process)
+    void capacityProcessesStopCleanly_data() {
+        QTest::addColumn<QString>("mode");
+        QTest::addColumn<bool>("closeInput");
+        QTest::newRow("host-command") << QString("--capacity-host") << false;
+        QTest::newRow("host-eof") << QString("--capacity-host") << true;
+        QTest::newRow("receivers-command") << QString("--capacity-receivers") << false;
+        QTest::newRow("receivers-eof") << QString("--capacity-receivers") << true;
+    }
+    void capacityProcessesStopCleanly() {
+        QFETCH(QString, mode);
+        QFETCH(bool, closeInput);
+        QTemporaryDir dir;
+        QProcess child;
+        QByteArray readiness;
+        connect(&child, &QProcess::readyReadStandardOutput, &child,
+            [&] { readiness += child.readAllStandardOutput(); });
+        const auto cleanup = qScopeGuard([&] {
+            if (child.state() != QProcess::NotRunning) { child.kill(); child.waitForFinished(5000); }
+        });
+        QStringList arguments{mode, mode == "--capacity-host" ? dir.filePath("host") : dir.path()};
+        if (mode == "--capacity-receivers") arguments.append({"2", "1"});
+        child.start(QCoreApplication::applicationFilePath(), arguments);
+        QVERIFY(child.waitForStarted(5000));
+        QVERIFY(waitForEvents(&child, &QProcess::readyReadStandardOutput,
+            [&] { return readiness.contains('\n'); }, 10000));
+        if (closeInput) child.closeWriteChannel();
+        else {
+            const QByteArray stop = "{\"operation\":\"stop\"}\n";
+            QCOMPARE(child.write(stop), stop.size());
+        }
+        QVERIFY(waitForEvents(&child, &QProcess::stateChanged,
+            [&] { return child.state() == QProcess::NotRunning; }));
+        QCOMPARE(child.exitStatus(), QProcess::NormalExit);
+        QCOMPARE(child.exitCode(), 0);
+    }
     void failedTestStillDrainsCleanupEvents() {
         if (qEnvironmentVariableIsSet("SQUAD_TEST_CLEANUP_FAILURE")) {
             const auto cleanup = qScopeGuard([] {
@@ -905,6 +972,194 @@ private slots:
             socket.abort();
             QTRY_VERIFY(host.channel.hostClients().isEmpty() && host.channel.requests().isEmpty());
         }
+    }
+    void inactiveContactsExpirePermissionsAndSavedConnections() {
+        QTemporaryDir dir;
+        qint64 now = 1700000000000;
+        const auto clock = [&] { return now; };
+        const auto hostId = TlsIdentity::create(), visitorId = TlsIdentity::create(), bannedId = TlsIdentity::create();
+        {
+            Device host(dir.filePath("host"), "Host", hostId, clock), visitor(dir.filePath("visitor"), "Visitor", visitorId, clock);
+            QVERIFY(host.channel.decide(visitorId.id(), true));
+            QVERIFY(host.channel.setBlocked(bannedId.id(), true));
+            QVERIFY(host.channel.listen(QHostAddress::LocalHost));
+            QVERIFY(visitor.join(host.channel));
+            QTRY_VERIFY(visitor.channel.joined());
+            QVERIFY(!visitor.channel.savedChannels().isEmpty());
+            QVERIFY(host.channel.setRemotePermission(visitorId.id(), true));
+            QCOMPARE(host.channel.controllers().size(), 1);
+            QVERIFY(visitor.channel.leave());
+        }
+        now += 365LL * 86400000 - 1;
+        {
+            QFile file(dir.filePath("host.channel")); QVERIFY(file.open(QIODevice::ReadOnly));
+            auto object = QJsonDocument::fromJson(file.readAll()).object(); file.close();
+            object.insert("futureOption", "preserved");
+            auto security = object.value("security").toObject(); security.insert("futureSecurity", true);
+            object.insert("security", security);
+            QVERIFY(file.open(QIODevice::WriteOnly | QIODevice::Truncate));
+            file.write(QJsonDocument(object).toJson());
+        }
+        {
+            Device host(dir.filePath("host"), "Host", hostId, clock), visitor(dir.filePath("visitor"), "Visitor", visitorId, clock);
+            QCOMPARE(host.channel.blockedClients().size(), 1);
+            QCOMPARE(host.channel.controllers().size(), 1);
+            QVERIFY(!visitor.channel.savedChannels().isEmpty());
+        }
+        ++now;
+        Device host(dir.filePath("host"), "Host", hostId, clock), visitor(dir.filePath("visitor"), "Visitor", visitorId, clock);
+        QVERIFY(host.channel.blockedClients().isEmpty());
+        QVERIFY(host.channel.controllers().isEmpty());
+        QVERIFY(visitor.channel.savedChannels().isEmpty());
+        QVERIFY(host.channel.listen(QHostAddress::LocalHost));
+        QVERIFY(visitor.join(host.channel));
+        QTRY_COMPARE(host.channel.requests().size(), 1);
+        QVERIFY(!visitor.channel.joined());
+        QVERIFY(host.channel.decide(visitorId.id(), true));
+        QTRY_VERIFY(visitor.channel.joined());
+        QFile file(dir.filePath("host.channel")); QVERIFY(file.open(QIODevice::ReadOnly));
+        const auto stored = QJsonDocument::fromJson(file.readAll()).object();
+        QCOMPARE(stored.value("futureOption").toString(), QString("preserved"));
+        QVERIFY(stored.value("security").toObject().value("futureSecurity").toBool());
+    }
+    void connectedContactsRenewPermissionsAcrossTheYearBoundary() {
+        QTemporaryDir dir;
+        qint64 now = 1700000000000;
+        const auto clock = [&] { return now; };
+        const auto identity = TlsIdentity::create();
+        Device host(dir.filePath("host"), "Host", identity, clock), visitor(dir.filePath("visitor"), "Visitor", TlsIdentity::create(), clock);
+        QVERIFY(host.channel.listen(QHostAddress::LocalHost));
+        QVERIFY(host.channel.decide(visitor.channel.ownId(), true));
+        QVERIFY(visitor.join(host.channel)); QTRY_VERIFY(visitor.channel.joined());
+        QSignalSpy observed(&host.channel, &LocalChannel::contactsObserved);
+        QSignalSpy visitorObserved(&visitor.channel, &LocalChannel::contactsObserved);
+        now += 365LL * 86400000;
+        QTRY_VERIFY(!observed.isEmpty() && !visitorObserved.isEmpty());
+        QVERIFY(observed.last().first().toStringList().contains(visitor.channel.ownId()));
+        QVERIFY(visitorObserved.last().first().toStringList().contains(host.channel.ownId()));
+        QVERIFY(visitor.channel.leave());
+        QVERIFY(visitor.channel.closeChat(host.channel.ownId()));
+        QTRY_VERIFY(host.channel.hostClients().isEmpty());
+        QVERIFY(visitor.join(host.channel)); QTRY_VERIFY(visitor.channel.joined());
+        QVERIFY(host.channel.requests().isEmpty());
+    }
+    void contactCleanupWaitsForTheProtectedIdentity() {
+        QTemporaryDir dir;
+        qint64 now = 1700000000000;
+        const auto clock = [&] { return now; };
+        const auto identity = TlsIdentity::create();
+        const auto path = dir.filePath("host");
+        {
+            Device host(path, "Host", identity, clock);
+            QVERIFY(host.channel.decide(identity.id(), true));
+        }
+        now += 365LL * 86400000;
+        VoiceSession session(path + ".session");
+        LocalChannel waiting(session, path + ".channel", std::nullopt, clock);
+        QVERIFY(!waiting.ready());
+        QFile file(path + ".channel"); QVERIFY(file.open(QIODevice::ReadOnly));
+        QVERIFY(QJsonDocument::fromJson(file.readAll()).object().value("approved").toArray().contains(identity.id()));
+    }
+    void briefContactRenewsPermissionsBetweenMaintenancePasses() {
+        QTemporaryDir dir;
+        qint64 now = 1700000000000;
+        const auto clock = [&] { return now; };
+        Device host(dir.filePath("host"), "Host", TlsIdentity::create(), clock),
+            visitor(dir.filePath("visitor"), "Visitor", TlsIdentity::create(), clock);
+        QVERIFY(host.channel.listen(QHostAddress::LocalHost));
+        QVERIFY(host.channel.decide(visitor.channel.ownId(), true));
+        QSignalSpy observed(&host.channel, &LocalChannel::contactsObserved);
+        now += 365LL * 86400000 - 60000;
+        QTRY_VERIFY(!observed.isEmpty()); observed.clear();
+        now += 1000;
+        QVERIFY(visitor.join(host.channel)); QTRY_VERIFY(visitor.channel.joined());
+        QTRY_COMPARE(host.channel.hostClients().size(), 1);
+        QVERIFY(visitor.channel.leave()); QVERIFY(visitor.channel.closeChat(host.channel.ownId()));
+        QTRY_VERIFY(host.channel.hostClients().isEmpty());
+        now += 60000;
+        QTRY_VERIFY(!observed.isEmpty());
+        QVERIFY(visitor.join(host.channel)); QTRY_VERIFY(visitor.channel.joined());
+        QVERIFY(host.channel.requests().isEmpty());
+    }
+    void olderPermissionsGetOneYearFromFirstLoad_data() {
+        QTest::addColumn<bool>("emptyTimestamps");
+        QTest::newRow("missing") << false;
+        QTest::newRow("empty") << true;
+    }
+    void olderPermissionsGetOneYearFromFirstLoad() {
+        QFETCH(bool, emptyTimestamps);
+        QTemporaryDir dir;
+        qint64 now = 1700000000000;
+        const auto clock = [&] { return now; };
+        const auto identity = TlsIdentity::create();
+        const auto path = dir.filePath("host");
+        {
+            Device host(path, "Host", identity, clock);
+            QVERIFY(host.channel.setBlocked(TlsIdentity::create().id(), true));
+        }
+        QFile file(path + ".channel"); QVERIFY(file.open(QIODevice::ReadOnly));
+        auto saved = QJsonDocument::fromJson(file.readAll()).object(); file.close();
+        auto security = saved.value("security").toObject(); security.remove("lastSeen");
+        if (emptyTimestamps) security.insert("lastSeen", QJsonObject{});
+        saved.insert("security", security);
+        QVERIFY(file.open(QIODevice::WriteOnly | QIODevice::Truncate));
+        QVERIFY(file.write(QJsonDocument(saved).toJson()) > 0); file.close();
+        now += 365LL * 86400000;
+        { Device loaded(path, "Host", identity, clock); QCOMPARE(loaded.channel.blockedClients().size(), 1); }
+        now += 365LL * 86400000 - 1;
+        { Device loaded(path, "Host", identity, clock); QCOMPARE(loaded.channel.blockedClients().size(), 1); }
+        ++now;
+        Device expired(path, "Host", identity, clock);
+        QVERIFY(expired.channel.blockedClients().isEmpty());
+    }
+    void failedContactCleanupRetainsPermissionsAndRetries() {
+        QTemporaryDir dir;
+        qint64 now = 1700000000000;
+        const auto path = dir.filePath("host");
+        Device host(path, "Host", TlsIdentity::create(), [&] { return now; });
+        QVERIFY(host.channel.setBlocked(TlsIdentity::create().id(), true));
+        QVERIFY(QFile::rename(path + ".channel", path + ".saved"));
+        QVERIFY(QDir().mkdir(path + ".channel"));
+        now += 365LL * 86400000;
+        QTRY_VERIFY(host.channel.status().contains("could not be saved"));
+        QCOMPARE(host.channel.blockedClients().size(), 1);
+        QVERIFY(QDir().rmdir(path + ".channel"));
+        QVERIFY(QFile::rename(path + ".saved", path + ".channel"));
+        now += 60000;
+        QTRY_VERIFY(host.channel.blockedClients().isEmpty());
+    }
+    void expiredPrivateContactsRemoveConversationFilesAndBlocks() {
+        QTemporaryDir dir;
+        qint64 now = 1700000000000;
+        const auto clock = [&] { return now; };
+        const auto hostId = TlsIdentity::create();
+        QString conversation;
+        {
+            Device host(dir.filePath("host"), "Host", hostId, clock),
+                alice(dir.filePath("alice"), "Alice", TlsIdentity::create(), clock),
+                bea(dir.filePath("bea"), "Bea", TlsIdentity::create(), clock);
+            QVERIFY(host.channel.listen(QHostAddress::LocalHost));
+            for (auto* client : {&alice, &bea}) {
+                QVERIFY(host.channel.decide(client->channel.ownId(), true));
+                QVERIFY(client->join(host.channel)); QTRY_VERIFY(client->channel.chatReady());
+            }
+            QTRY_VERIFY(alice.channel.canPrivateChat(host.channel.ownId(), bea.channel.ownId()));
+            QVERIFY(alice.channel.openPrivateChat(host.channel.ownId(), bea.channel.ownId()));
+            conversation = alice.channel.chatHostId();
+            QVERIFY(alice.channel.sendChat("Expires")); QTRY_VERIFY(!alice.channel.chatPending());
+            QVERIFY(alice.channel.setPrivateBlocked(conversation, true));
+            QTRY_VERIFY(alice.channel.privateBlockedByMe());
+        }
+        const auto file = dir.filePath("host.channel.private/") + conversation + ".sqlite";
+        QVERIFY(QFile::exists(file));
+        now += 365LL * 86400000;
+        Device host(dir.filePath("host"), "Host", hostId, clock);
+        QVERIFY(!QFile::exists(file));
+        QFile store(dir.filePath("host.channel")); QVERIFY(store.open(QIODevice::ReadOnly));
+        const auto security = QJsonDocument::fromJson(store.readAll()).object().value("security").toObject();
+        QVERIFY(security.value("privatePeers").toObject().isEmpty());
+        QVERIFY(security.value("privateStates").toObject().isEmpty());
+        QVERIFY(security.value("lastSeen").toObject().isEmpty());
     }
     void tlsWithoutDeviceCertificateCannotReachAdmission() {
         QTemporaryDir dir;
@@ -1762,9 +2017,11 @@ private slots:
 #else
         QTemporaryDir dir;
         const auto identity = TlsIdentity::create();
+        qint64 now = 1700000000000;
+        const auto clock = [&] { return now; };
         QString first;
         {
-            Device host(dir.filePath("host"), "Owner", identity);
+            Device host(dir.filePath("host"), "Owner", identity, clock);
             QVERIFY(host.channel.listen(QHostAddress::LocalHost));
             QVERIFY(host.session.setSupporterEnabled(true));
             for (int n = 0; n < 9; ++n) {
@@ -1781,7 +2038,8 @@ private slots:
                 QVERIFY(!item.toMap().value("hosting").toBool());
             QVERIFY(QFile::exists(dir.filePath("host.channel.hosts/") + first + "/channel.json.chat.sqlite"));
         }
-        Device restored(dir.filePath("host"), "Owner", identity);
+        now += 365LL * 86400000;
+        Device restored(dir.filePath("host"), "Owner", identity, clock);
         QVERIFY(restored.channel.listen(QHostAddress::LocalHost));
         QCOMPARE(restored.channel.ownedChannels().size(), 10);
         QVERIFY(!restored.channel.ownChannel(first)->hosting());
@@ -2107,13 +2365,16 @@ private slots:
     void screenUsesUdpWhileReliableTrafficIsDelayed_data() {
         QTest::addColumn<bool>("loseFirstLargeFrame");
         QTest::addColumn<int>("decodeMs");
-        QTest::newRow("unimpaired") << false << 1;
-        QTest::newRow("lost-keyframe") << true << 1;
-        QTest::newRow("lost-keyframe-slow-decoder") << true << 100;
+        QTest::addColumn<bool>("slowStart");
+        QTest::newRow("unimpaired") << false << 1 << false;
+        QTest::newRow("lost-keyframe") << true << 1 << false;
+        QTest::newRow("lost-keyframe-slow-decoder") << true << 100 << false;
+        QTest::newRow("adapted-before-stream") << false << 1 << true;
     }
     void screenUsesUdpWhileReliableTrafficIsDelayed() {
         QFETCH(bool, loseFirstLargeFrame);
         QFETCH(int, decodeMs);
+        QFETCH(bool, slowStart);
         QTemporaryDir dir;
         Device host(dir.filePath("host"), "Owner"), viewer(dir.filePath("viewer"), "Viewer");
         QVERIFY(host.listenWithUdp());
@@ -2124,26 +2385,47 @@ private slots:
         QVERIFY(waitForEvents([&] { return viewer.channel.screenView().value("available").toBool(); }));
         QVERIFY(viewer.channel.watchScreen(host.channel.ownId(), true));
         QVERIFY(waitForEvents([&] { return viewer.channel.screenView().value("tier").toInt() == 1; }));
+        if (slowStart) {
+            QVERIFY(host.channel.reportScreenEncodeTime(1000));
+            QCOMPARE(host.channel.screenTiers(), QSet<int>{2});
+        }
         QSignalSpy frames(&viewer.channel, &LocalChannel::screenFrameReceived);
+        int acknowledgmentMs = 1;
         connect(&viewer.channel, &LocalChannel::screenFrameReceived, &viewer.channel, [&](const QString& id, qint64 serial, const QJsonObject&, const QByteArray&) {
-            QVERIFY(viewer.channel.acknowledgeScreen(id, serial, decodeMs));
+            QVERIFY(viewer.channel.acknowledgeScreen(id, serial, acknowledgmentMs));
         });
-        QVERIFY(waitForEvents([&] { return link.videoDatagrams > 20; }, 5000));
         const QJsonObject format{{"codec", "mpeg4"}, {"width", 640}, {"height", 360}, {"extra", ""}};
         const QByteArray payload(120000, 'v');
-        link.delay = 2000; const auto previous = link.videoDatagrams;
+        QTimer source;
+        source.setInterval(34);
+        const auto warmup = connect(&source, &QTimer::timeout, &viewer.channel, [&] {
+            for (int tier : host.channel.screenTiers())
+                QVERIFY(host.channel.sendScreenFrame(tier, format, QByteArray(120000, 'w'), true));
+        });
+        source.start();
+        QVERIFY2(waitForEvents([&] {
+            return link.videoDatagrams > 20 && !frames.isEmpty() && !host.channel.screenTiers().isEmpty();
+        }, 5000), qPrintable(QString("UDP warmup: %1 datagrams, %2 frames, viewer tier %3")
+            .arg(link.videoDatagrams).arg(frames.size()).arg(viewer.channel.screenView().value("tier").toInt())));
+        source.stop(); disconnect(warmup); frames.clear();
+        // Quality may already have adapted during setup. Readiness means a
+        // frame can be sent, not that its initial quality tier stayed fixed.
+        const int initialTier = *host.channel.screenTiers().begin();
+        acknowledgmentMs = decodeMs;
+        // Hold TLS until this frame and its ACK arrive. Heartbeat counts do
+        // not establish readiness, and timer races can measure runner stalls.
+        link.holdReliable = true; const auto previous = link.videoDatagrams;
         QElapsedTimer latency; latency.start();
-        QVERIFY(host.channel.sendScreenFrame(1, format, payload, true));
-        QVERIFY(waitForEvents([&] { return frames.size() == 1; }, 1000));
-        QVERIFY(latency.elapsed() < 1000); QCOMPARE(frames.first().at(3).toByteArray(), payload);
+        QVERIFY(host.channel.sendScreenFrame(initialTier, format, payload, true));
+        QVERIFY(waitForEvents([&] { return frames.size() == 1; }, 5000));
+        QCOMPARE(frames.first().at(3).toByteArray(), payload);
         QVERIFY(link.videoDatagrams > previous);
-        QVERIFY(waitForEvents([&] { return host.channel.screenTiers().contains(1); }, 300));
+        QVERIFY(waitForEvents([&] { return !host.channel.screenTiers().isEmpty(); }, 5000));
         qInfo() << "Screen frame and decode acknowledgment bypass delayed TLS in" << latency.elapsed() << "ms";
+        link.holdReliable = false; link.delay = 2000;
         const QByteArray largest(2 * 1024 * 1024, 'L');
         // UDP may discard a frame. Keep supplying keyframes as the real capture
         // source does, but never queue one behind a frame awaiting its ACK.
-        QTimer source;
-        source.setInterval(34);
         int largeFramesSent = 0;
         const auto largeSource = connect(&source, &QTimer::timeout, &viewer.channel, [&] {
             if (frames.size() != 1) return;
@@ -2167,8 +2449,8 @@ private slots:
         QCOMPARE(frames.last().at(3).toByteArray(), largest);
         QVERIFY(waitForEvents([&] { return !host.channel.screenTiers().isEmpty(); }));
         const int fallbackTier = *host.channel.screenTiers().begin();
-        QVERIFY(fallbackTier >= 1 && fallbackTier <= 2);
-        if (decodeMs == 100) QCOMPARE(fallbackTier, 2);
+        QVERIFY(fallbackTier >= initialTier && fallbackTier <= std::min(3, initialTier + 1));
+        if (decodeMs == 100) QCOMPARE(fallbackTier, std::min(3, initialTier + 1));
         link.blockUdp = true; QTestEventLoop().enterLoopMSecs(450);
         latency.restart(); QVERIFY(host.channel.sendScreenFrame(fallbackTier, format, payload, true));
         QVERIFY(waitForEvents([&] { return frames.size() == 3; }, 5000));
@@ -2207,10 +2489,27 @@ private slots:
         QVERIFY(waitForEvents([&] { return frames.size() == received + 1; }));
         QVERIFY(viewer.channel.chatReady());
     }
+    void hostingClientsKeepVoiceAndScreenDatagramsIndependent_data() {
+        QTest::addColumn<QString>("occupiedProtocol");
+        QTest::newRow("available") << QString{};
+        QTest::newRow("udp-unavailable") << QString("udp");
+        QTest::newRow("tcp-unavailable") << QString("tcp");
+    }
     void hostingClientsKeepVoiceAndScreenDatagramsIndependent() {
+        QFETCH(QString, occupiedProtocol);
+        QUdpSocket occupiedUdp;
+        QTcpServer occupiedTcp;
+        quint16 firstPort = 0;
+        if (occupiedProtocol == "udp") {
+            QVERIFY(occupiedUdp.bind(QHostAddress::Any, 0, QUdpSocket::DontShareAddress));
+            firstPort = occupiedUdp.localPort();
+        } else if (occupiedProtocol == "tcp") {
+            QVERIFY(occupiedTcp.listen(QHostAddress::Any, 0));
+            firstPort = occupiedTcp.serverPort();
+        }
         QTemporaryDir dir;
         Device host(dir.filePath("host"), "Owner"), client(dir.filePath("client"), "Viewer"), speaker(dir.filePath("speaker"), "Speaker");
-        QVERIFY(host.listenWithUdp()); QVERIFY(client.listenWithUdp());
+        QVERIFY(host.listenWithUdp(QHostAddress::LocalHost, firstPort)); QVERIFY(client.listenWithUdp());
         QVERIFY(host.channel.setScreenSharing(true));
         QVERIFY(host.channel.decide(client.channel.ownId(), true)); QVERIFY(host.channel.decide(speaker.channel.ownId(), true));
         DelayedLink link(host.channel.port()); link.udpDelay = 0;
@@ -2558,6 +2857,54 @@ private slots:
         for (int sample = 0; sample < 9; ++sample) QVERIFY(host.channel.reportScreenEncodeTime(400));
         QVERIFY(host.channel.screenSharing());
     }
+    void firstAvatarUsesIdentityAndPersistsWithoutReplacingSelections() {
+        QTemporaryDir dir;
+        const auto identity = TlsIdentity::create();
+        const auto hash = QCryptographicHash::hash(identity.id().toUtf8(), QCryptographicHash::Sha256);
+        const auto expected = VoiceSession::avatars().at(qFromBigEndian<quint32>(hash.constData()) % 10);
+        for (int attempt = 0; attempt < 2; ++attempt) {
+            const auto path = dir.filePath(QString::number(attempt));
+            VoiceSession session(path + ".session");
+            // Settings may be edited before the asynchronous identity load finishes.
+            QVERIFY(session.setUserName("New member"));
+            {
+                LocalChannel channel(session, path + ".channel", identity);
+                QVERIFY(channel.startService(QHostAddress::LocalHost, 0));
+                QVERIFY(channel.initialize());
+                QCOMPARE(session.avatar(), expected);
+            }
+            VoiceSession restored(path + ".session");
+            QCOMPARE(restored.avatar(), expected);
+            QFile saved(path + ".session");
+            QVERIFY(saved.open(QIODevice::ReadOnly));
+            QCOMPARE(QJsonDocument::fromJson(saved.readAll()).object().value("avatar").toString(), expected);
+            saved.close();
+            QVERIFY(restored.setAvatar("mossling"));
+            VoiceSession selected(path + ".session");
+            LocalChannel reopened(selected, path + ".channel", identity);
+            QVERIFY(reopened.startService(QHostAddress::LocalHost, 0));
+            QVERIFY(reopened.initialize());
+            QCOMPARE(selected.avatar(), QString("mossling"));
+        }
+    }
+
+    void firstAvatarSaveFailureCanBeRetriedBeforeHosting() {
+        QTemporaryDir dir;
+        const auto path = dir.filePath("missing/session");
+        VoiceSession session(path);
+        LocalChannel channel(session, dir.filePath("channel"), TlsIdentity::create());
+        QVERIFY(channel.startService(QHostAddress::LocalHost, 0));
+        QVERIFY(!channel.initialize());
+        QVERIFY(!channel.hosting());
+        QVERIFY(!session.error().isEmpty());
+        QCOMPARE(channel.status(), session.error());
+        QVERIFY(QDir(dir.path()).mkdir("missing"));
+        QVERIFY(channel.initialize());
+        QVERIFY(channel.hosting());
+        VoiceSession restored(path);
+        QCOMPARE(restored.avatar(), session.avatar());
+    }
+
     void firstChannelNameIsGeneratedOnceWithoutCreatingExtraChannels() {
         QTemporaryDir dir;
         VoiceSession session;
@@ -3654,6 +4001,97 @@ private slots:
             offered |= value.toMap().value("id").toString() == host.channel.ownId();
         QVERIFY(!offered);
         QVERIFY(scanner.channel.setDiscoverySearch(false));
+    }
+
+    void repeatedDiscoveryDoesNotRebuildUnchangedChannels() {
+        QTemporaryDir dir;
+        Device host(dir.filePath("host"), "Host");
+        Device scanner(dir.filePath("scanner"), "Scanner");
+        quint16 port = 48763;
+        while (port <= 48783 && !host.channel.listen(QHostAddress::LocalHost, port)) ++port;
+        QVERIFY(port <= 48783);
+        QVERIFY(scanner.channel.startService(QHostAddress::LocalHost, 0));
+        DiscoveryChanges changes(scanner.channel, {host.channel.ownId()});
+        QVERIFY(scanner.channel.setDiscoverySearch(true));
+        QTRY_VERIFY(!scanner.channel.discoverySearching());
+        QCOMPARE(changes.hosts().size(), 1);
+        QCOMPARE(changes.size(), 1);
+        const auto original = changes.hosts();
+        changes.clear();
+        for (int repeat = 0; repeat < 3; ++repeat) {
+            QVERIFY(scanner.channel.setDiscoverySearch(true));
+            QTRY_VERIFY(!scanner.channel.discoverySearching());
+            QCOMPARE(changes.hosts(), original);
+            QCOMPARE(changes.size(), 0);
+        }
+        QVERIFY(host.channel.setChannelName("Renamed"));
+        QVERIFY(scanner.channel.setDiscoverySearch(true));
+        QTRY_VERIFY(!scanner.channel.discoverySearching());
+        QCOMPARE(changes.size(), 1);
+        QCOMPARE(changes.hosts().first().toMap().value("name").toString(), QString("Renamed"));
+    }
+
+    void discoveryRefreshesLivenessWithoutRepeatingVisibleUpdates() {
+        QTemporaryDir dir;
+        qint64 now = 1700000000000;
+        Device observer(dir.filePath("observer"), "Observer", TlsIdentity::create(), [&] { return now; });
+        QVERIFY(observer.channel.startDiscovery());
+        QUdpSocket source;
+        QVERIFY(source.bind(QHostAddress::AnyIPv4, 0));
+        const auto interface = multicastInterface();
+        QVERIFY(interface.isValid());
+        source.setMulticastInterface(interface);
+        source.setSocketOption(QAbstractSocket::MulticastTtlOption, 0);
+        source.setSocketOption(QAbstractSocket::MulticastLoopbackOption, 1);
+        const QString device(64, 'a'), second(64, 'b');
+        QJsonObject message{{"protocol", "squadspeak/1"}, {"id", device}, {"name", "Host"}, {"port", 50100},
+            {"channels", QJsonArray{QJsonObject{{"id", device}, {"name", "First"}},
+                                   QJsonObject{{"id", second}, {"name", "Second"}}}}};
+        const auto send = [&] {
+            const auto data = QJsonDocument(message).toJson(QJsonDocument::Compact);
+            // Unicast to a shared port can reach a different running app.
+            return source.writeDatagram(data, QHostAddress("239.255.85.73"), 48762) == data.size();
+        };
+        DiscoveryChanges changes(observer.channel, {device, second});
+        QVERIFY(send());
+        QTRY_COMPARE(changes.hosts().size(), 2);
+        QCOMPARE(changes.size(), 1);
+        changes.clear();
+        now += 5000;
+        for (int repeat = 0; repeat < 5; ++repeat) QVERIFY(send());
+        // A changed datagram is the completion barrier for preceding repeats.
+        message.insert("port", 50101);
+        QVERIFY(send());
+        QTRY_COMPARE(changes.hosts().first().toMap().value("port").toInt(), 50101);
+        QCOMPARE(changes.size(), 1);
+        changes.clear();
+        now += 3000;
+        QTest::qWait(1700); // Original announcement expired, refreshed hosts must remain.
+        QCOMPARE(changes.hosts().size(), 2);
+        QCOMPARE(changes.size(), 0);
+        message.insert("channels", QJsonArray{QJsonObject{{"id", device}, {"name", "Renamed"}}});
+        QVERIFY(send());
+        QTRY_COMPARE(changes.hosts().size(), 1);
+        QCOMPARE(changes.hosts().first().toMap().value("name").toString(), QString("Renamed"));
+        QCOMPARE(changes.size(), 1);
+        now += 6001;
+        QTRY_VERIFY_WITH_TIMEOUT(changes.hosts().isEmpty(), 3000);
+        QCOMPARE(changes.size(), 2);
+    }
+
+    void unchangedDiscoveryHeartbeatDoesNotRebuildChannels() {
+        QTemporaryDir dir;
+        Device host(dir.filePath("host"), "Host");
+        QVERIFY(host.channel.listen(QHostAddress::LocalHost, 0));
+        QVERIFY(host.channel.startDiscovery());
+        DiscoveryChanges changes(host.channel, {host.channel.ownId()});
+        const auto original = changes.hosts();
+        QTest::qWait(3200); // Observe two scheduled discovery announcements.
+        QCOMPARE(changes.hosts(), original);
+        QCOMPARE(changes.size(), 0);
+        QVERIFY(host.channel.setChannelName("Renamed"));
+        QCOMPARE(changes.size(), 1);
+        QCOMPARE(changes.hosts().first().toMap().value("name").toString(), QString("Renamed"));
     }
 
     void boundedDiscoveryResultsSurviveUntilTheDialogCloses_data() {
@@ -6378,8 +6816,12 @@ private slots:
             receiverPoll.stop();
             // Keep Qt servicing sockets while native media workers stop. Close
             // receivers before the relay, including when setup fails early.
-            for (auto& process : receivers)
-                if (process.state() != QProcess::NotRunning) process.closeWriteChannel();
+            const QByteArray stop = "{\"operation\":\"stop\"}\n";
+            for (auto& process : receivers) {
+                if (process.state() == QProcess::NotRunning) continue;
+                process.write(stop);
+                process.closeWriteChannel();
+            }
             bool allExited = waitForEvents([&] {
                 return std::all_of(receivers.begin(), receivers.end(), [](const auto& process) {
                     return process.state() == QProcess::NotRunning;
@@ -6392,7 +6834,10 @@ private slots:
                 qInfo().noquote() << "Receiver process" << group << "diagnostics:\n" << process.readAllStandardError();
                 allExited &= process.exitStatus() == QProcess::NormalExit && process.exitCode() == 0;
             }
-            host.closeWriteChannel();
+            if (host.state() != QProcess::NotRunning) {
+                host.write(stop);
+                host.closeWriteChannel();
+            }
             const bool hostStopped = waitForEvents(&host, &QProcess::stateChanged,
                 [&] { return host.state() == QProcess::NotRunning; }, 5000);
             if (!hostStopped) { host.kill(); host.waitForFinished(5000); }

@@ -1038,8 +1038,8 @@
             <translation>Ünvan</translation>
         </message>
         <message>
-            <source>Device ID</source>
-            <translation>Cihaz ID-si</translation>
+            <source>Identity ID</source>
+            <translation>Kimlik ID-si</translation>
         </message>
         <message>
             <source>Check now</source>

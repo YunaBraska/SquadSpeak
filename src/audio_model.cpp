@@ -57,6 +57,7 @@ AudioModel::AudioModel(const QString& settingsFile, QObject* parent) try
     playbackTimer_.setInterval(10);
     playbackTimer_.setTimerType(Qt::PreciseTimer);
     connect(&playbackTimer_, &QTimer::timeout, this, [this] {
+        sendCapture();
         playVoice();
         if (clock_.elapsed() - activityPublishedAt_ >= 50) {
             activityPublishedAt_ = clock_.elapsed(); emit activityChanged();
@@ -68,6 +69,12 @@ AudioModel::AudioModel(const QString& settingsFile, QObject* parent) try
 }
 
 QVariantList AudioModel::inputs() const { return deviceList(QMediaDevices::audioInputs()); }
+bool AudioModel::observeContacts(const QStringList& ids) {
+    try {
+        profiles_.observeContacts(ids);
+        return language_.observeContacts(ids);
+    } catch (const std::exception& error) { setStatus(tr(error.what()), false); return false; }
+}
 QVariantList AudioModel::outputs() const { return deviceList(QMediaDevices::audioOutputs()); }
 int AudioModel::inputIndex() const { return selectedIndex(QMediaDevices::audioInputs(), profiles_.selection(true)); }
 int AudioModel::outputIndex() const { return selectedIndex(QMediaDevices::audioOutputs(), profiles_.selection(false)); }
@@ -509,7 +516,9 @@ void AudioModel::beginCapture() {
 #endif
         processor_ = std::make_unique<squad::AudioProcessor>(48000, profile_);
         source_ = std::make_unique<QAudioSource>(input_, format_);
-        source_->setBufferSize(format_.bytesForDuration(50000));
+        // Capacity, not a fill target. Keep short callback stalls from
+        // discarding microphone samples before the paced sender sees them.
+        source_->setBufferSize(format_.bytesForDuration(120000));
         connect(source_.get(), &QAudioSource::stateChanged, this, [this](QtAudio::State state) {
             if (source_ && state == QtAudio::StoppedState && source_->error() != QtAudio::NoError) {
                 const QPointer<QAudioSource> failed = source_.get();
@@ -581,14 +590,22 @@ void AudioModel::consume() {
                     processor_->observeOutput({filtered[i], filtered[i + 1]});
                 }
             });
-        if (!packets.isEmpty()) lastPacketAt_ = clock_.elapsed();
-        for (const auto& packet : packets) emit audioPacket(packet);
+        sendCapture(packets);
         emit activityChanged();
     } catch (const std::exception& error) {
         echo_.reset();
         mixer_.resetCapture();
         setStatus(tr(error.what()));
         emit activityChanged();
+    }
+}
+
+void AudioModel::sendCapture(QList<QByteArray> packets) {
+    if (!voiceActive_ || !transmitEnabled_ || testActive()) return;
+    const auto now = clock_.elapsed();
+    for (const auto& packet : mixer_.pace(std::move(packets), now)) {
+        lastPacketAt_ = now;
+        emit audioPacket(packet);
     }
 }
 
@@ -738,6 +755,7 @@ bool AudioModel::setVoiceState(bool joined, bool transmit, bool pushToTalk, int 
 }
 
 bool AudioModel::setParticipants(const QVariantList& participants, const QString& channel) {
+    if (language_.channel() != channel) mixer_.resetCapture();
     for (const auto& previous : participants_) {
         const auto id = previous.toMap().value("id").toString();
         const auto current = std::find_if(participants.begin(), participants.end(), [&](const auto& value) {
@@ -798,6 +816,21 @@ double AudioModel::participantVolume(const QString& peer) const {
     return participantVolumes_.value(peer, 1.0);
 }
 
+bool AudioModel::participantAutomatic(const QString& peer) {
+    if (output_.isNull()) return automaticVolume_;
+    try { return profiles_.automaticVolume(output_.id(), peer); }
+    catch (const std::exception& error) { setStatus(tr(error.what()), false); return false; }
+}
+
+bool AudioModel::setParticipantAutomatic(const QString& peer, bool enabled) {
+    if (output_.isNull() || peer.isEmpty()) return false;
+    try {
+        profiles_.saveAutomaticVolume(output_.id(), enabled, peer);
+        applyOutputVolumes();
+        return true;
+    } catch (const std::exception& error) { setStatus(tr(error.what()), false); return false; }
+}
+
 bool AudioModel::setParticipantVolume(const QString& peer, double value) {
     if (output_.isNull()) return false;
     try {
@@ -847,6 +880,7 @@ void AudioModel::applyOutputVolumes() {
         const auto id = member.value("id").toString();
         mixer_.setGain(id, participantVolumes_.value(id, 1.0)
             * (member.value("music").toBool() ? channelMusicVolume(id) : outputVolume_));
+        mixer_.setAutomatic(output_.isNull() ? automaticVolume_ : profiles_.automaticVolume(output_.id(), id), id);
     }
     emit profileChanged();
 }
@@ -857,7 +891,7 @@ bool AudioModel::setAutomaticVolume(bool value) {
         profiles_.saveAutomaticVolume(output_.id(), value);
         automaticVolume_ = value;
         mixer_.setAutomatic(value);
-        emit profileChanged();
+        applyOutputVolumes();
         return true;
     } catch (const std::exception& error) { setStatus(tr(error.what()), false); return false; }
 }
