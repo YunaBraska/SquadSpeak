@@ -1038,8 +1038,8 @@
             <translation>پتہ</translation>
         </message>
         <message>
-            <source>Device ID</source>
-            <translation>ڈیوائس آئی ڈی</translation>
+            <source>Identity ID</source>
+            <translation>شناختی آئی ڈی</translation>
         </message>
         <message>
             <source>Check now</source>

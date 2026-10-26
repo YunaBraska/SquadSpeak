@@ -25,6 +25,7 @@
 #include <QFile>
 #include <QDir>
 #include <QJsonDocument>
+#include <QCryptographicHash>
 #include <QSignalSpy>
 #include <QTemporaryDir>
 #include <QTest>
@@ -2773,6 +2774,54 @@ private slots:
         for (int sample = 0; sample < 9; ++sample) QVERIFY(host.channel.reportScreenEncodeTime(400));
         QVERIFY(host.channel.screenSharing());
     }
+    void firstAvatarUsesIdentityAndPersistsWithoutReplacingSelections() {
+        QTemporaryDir dir;
+        const auto identity = TlsIdentity::create();
+        const auto hash = QCryptographicHash::hash(identity.id().toUtf8(), QCryptographicHash::Sha256);
+        const auto expected = VoiceSession::avatars().at(qFromBigEndian<quint32>(hash.constData()) % 10);
+        for (int attempt = 0; attempt < 2; ++attempt) {
+            const auto path = dir.filePath(QString::number(attempt));
+            VoiceSession session(path + ".session");
+            // Settings may be edited before the asynchronous identity load finishes.
+            QVERIFY(session.setUserName("New member"));
+            {
+                LocalChannel channel(session, path + ".channel", identity);
+                QVERIFY(channel.startService(QHostAddress::LocalHost, 0));
+                QVERIFY(channel.initialize());
+                QCOMPARE(session.avatar(), expected);
+            }
+            VoiceSession restored(path + ".session");
+            QCOMPARE(restored.avatar(), expected);
+            QFile saved(path + ".session");
+            QVERIFY(saved.open(QIODevice::ReadOnly));
+            QCOMPARE(QJsonDocument::fromJson(saved.readAll()).object().value("avatar").toString(), expected);
+            saved.close();
+            QVERIFY(restored.setAvatar("mossling"));
+            VoiceSession selected(path + ".session");
+            LocalChannel reopened(selected, path + ".channel", identity);
+            QVERIFY(reopened.startService(QHostAddress::LocalHost, 0));
+            QVERIFY(reopened.initialize());
+            QCOMPARE(selected.avatar(), QString("mossling"));
+        }
+    }
+
+    void firstAvatarSaveFailureCanBeRetriedBeforeHosting() {
+        QTemporaryDir dir;
+        const auto path = dir.filePath("missing/session");
+        VoiceSession session(path);
+        LocalChannel channel(session, dir.filePath("channel"), TlsIdentity::create());
+        QVERIFY(channel.startService(QHostAddress::LocalHost, 0));
+        QVERIFY(!channel.initialize());
+        QVERIFY(!channel.hosting());
+        QVERIFY(!session.error().isEmpty());
+        QCOMPARE(channel.status(), session.error());
+        QVERIFY(QDir(dir.path()).mkdir("missing"));
+        QVERIFY(channel.initialize());
+        QVERIFY(channel.hosting());
+        VoiceSession restored(path);
+        QCOMPARE(restored.avatar(), session.avatar());
+    }
+
     void firstChannelNameIsGeneratedOnceWithoutCreatingExtraChannels() {
         QTemporaryDir dir;
         VoiceSession session;

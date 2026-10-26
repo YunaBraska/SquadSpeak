@@ -1038,8 +1038,8 @@
             <translation>पत्ता</translation>
         </message>
         <message>
-            <source>Device ID</source>
-            <translation>डिव्हाइस आयडी</translation>
+            <source>Identity ID</source>
+            <translation>ओळख आयडी</translation>
         </message>
         <message>
             <source>Check now</source>

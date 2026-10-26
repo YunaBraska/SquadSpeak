@@ -1038,8 +1038,8 @@
             <translation>Διεύθυνση</translation>
         </message>
         <message>
-            <source>Device ID</source>
-            <translation>Αναγνωριστικό συσκευής</translation>
+            <source>Identity ID</source>
+            <translation>Αναγνωριστικό ταυτότητας</translation>
         </message>
         <message>
             <source>Check now</source>

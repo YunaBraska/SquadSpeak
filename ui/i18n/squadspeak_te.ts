@@ -1038,8 +1038,8 @@
             <translation>చిరునామా</translation>
         </message>
         <message>
-            <source>Device ID</source>
-            <translation>పరికర గుర్తింపు (Device ID)</translation>
+            <source>Identity ID</source>
+            <translation>గుర్తింపు ID</translation>
         </message>
         <message>
             <source>Check now</source>

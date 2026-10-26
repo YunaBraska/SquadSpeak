@@ -16,11 +16,6 @@ QString tsError(const QString& message) {
 QString tsId(const QString& server, const QString& kind, const QString& value) {
     return QString::fromLatin1(QCryptographicHash::hash((server + '/' + kind + '/' + value).toUtf8(), QCryptographicHash::Sha256).toHex());
 }
-QString tsAvatar(const QString& identity) {
-    const auto choices = VoiceSession::avatars();
-    const auto hash = QCryptographicHash::hash(identity.toUtf8(), QCryptographicHash::Sha256);
-    return choices.at(qFromBigEndian<quint32>(hash.constData()) % choices.size());
-}
 QString tsEndpoint(const QString& address, quint16 port) {
     return (address.contains(':') ? '[' + address + ']' : address) + ':' + QString::number(port);
 }
@@ -264,7 +259,7 @@ void LocalChannel::teamSpeakState(const QJsonObject& state) {
         const bool squadSpeak = client == self || metadata == "SquadSpeak" || profile.value("application") == "SquadSpeak";
         const auto advertised = profile.value("avatar").toString();
         const auto avatar = client == self ? session_.avatar()
-            : squadSpeak && VoiceSession::validAvatar(advertised) ? advertised : tsAvatar(uid.isEmpty() ? peer : uid);
+            : squadSpeak && VoiceSession::validAvatar(advertised) ? advertised : VoiceSession::avatarForIdentity(uid.isEmpty() ? peer : uid, false);
         member.insert("squadSpeak", squadSpeak); member.insert("avatarId", avatar);
         members[index] = member;
         profiles.insert(peer, QJsonObject{{"name", tsName(member.value("name").toString())}, {"avatarId", avatar}, {"teamSpeak", !squadSpeak}});
@@ -444,7 +439,7 @@ void LocalChannel::teamSpeakEvent(const QJsonObject& event) {
     const bool unreadBefore = c->unreadExpires > now;
     const auto sequence = ++teamSpeak_->sequence;
     c->messages.append(QJsonObject{{"sequence", sequence}, {"sender", peer}, {"name", tsName(event.value("fromName").toString())},
-        {"avatarId", avatar.isEmpty() ? tsAvatar(uid.isEmpty() ? peer : uid) : avatar}, {"teamSpeak", !squadSpeak}, {"request", QUuid::createUuid().toString(QUuid::WithoutBraces)},
+        {"avatarId", avatar.isEmpty() ? VoiceSession::avatarForIdentity(uid.isEmpty() ? peer : uid, false) : avatar}, {"teamSpeak", !squadSpeak}, {"request", QUuid::createUuid().toString(QUuid::WithoutBraces)},
         {"created", now}, {"expires", now + ChatHistory::lifetime}, {"text", text}});
     c->privateExpires = now + ChatHistory::lifetime;
     c->lastChatSequence = std::max(c->lastChatSequence, sequence);

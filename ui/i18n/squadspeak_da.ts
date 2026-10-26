@@ -1038,8 +1038,8 @@
             <translation>Adresse</translation>
         </message>
         <message>
-            <source>Device ID</source>
-            <translation>Enheds-ID</translation>
+            <source>Identity ID</source>
+            <translation>Identitets-ID</translation>
         </message>
         <message>
             <source>Check now</source>

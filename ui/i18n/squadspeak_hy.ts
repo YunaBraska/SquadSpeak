@@ -1038,8 +1038,8 @@
             <translation>Հասցե</translation>
         </message>
         <message>
-            <source>Device ID</source>
-            <translation>Սարքի ID</translation>
+            <source>Identity ID</source>
+            <translation>Ինքնության ID</translation>
         </message>
         <message>
             <source>Check now</source>

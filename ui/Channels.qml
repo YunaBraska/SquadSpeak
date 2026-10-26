@@ -1397,7 +1397,7 @@ PanelWindow {
                 DetailText { objectName: "requestChannel"; visible: text.length > 0; text: requestInfo.entry.channel || "" }
                 Label { text: qsTr("Address"); visible: !!requestInfo.entry.address; color: Theme.muted }
                 DetailText { objectName: "requestAddress"; visible: text.length > 0; text: root.endpoint(requestInfo.entry) }
-                Label { text: qsTr("Device ID"); color: Theme.muted }
+                Label { text: qsTr("Identity ID"); color: Theme.muted }
                 DetailText { objectName: "requestIdentity"; text: requestInfo.entry.id || ""; font.pixelSize: 11 }
             }
         }

@@ -44,6 +44,9 @@ public:
     // Runtime entitlement only; imported profile preferences cannot grant it.
     bool setSupporterEnabled(bool enabled);
     [[nodiscard]] static QStringList avatars();
+    [[nodiscard]] static QString avatarForIdentity(const QString& identity, bool freeOnly);
+    // Assign once after identity loading. Explicit and restored selections win.
+    bool initializeAvatar(const QString& identity);
     [[nodiscard]] QString language() const { return preferences_.value("language").toString(); }
     [[nodiscard]] static QVariantList languages();
     Q_INVOKABLE bool setLanguage(const QString& language);
@@ -106,7 +109,7 @@ private:
     QString settingsFile_;
     QString legacyChannelName_;
     QJsonObject preferences_{{"version", 2}, {"userName", "Member"},
-        {"avatar", "mossling"}, {"theme", "system"}, {"palette", "plum"}, {"language", "en"}, {"deafened", false}, {"eventSounds", true},
+        {"theme", "system"}, {"palette", "plum"}, {"language", "en"}, {"deafened", false}, {"eventSounds", true},
         {"muted", true}, {"animatedAvatars", true}, {"pushToTalk", false}, {"pttButtonHeld", false}, {"pttKeyHeld", false},
         {"pttKeyCode", -1}, {"pttKeyName", ""}, {"pttRevision", 0},
         {"pttKeyCodes", QJsonArray{}}, {"pttKeyNames", QJsonArray{}}};

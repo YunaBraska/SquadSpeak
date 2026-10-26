@@ -1038,8 +1038,8 @@
             <translation>Heimilisfang</translation>
         </message>
         <message>
-            <source>Device ID</source>
-            <translation>Auðkenni tækis</translation>
+            <source>Identity ID</source>
+            <translation>Auðkennis-ID</translation>
         </message>
         <message>
             <source>Check now</source>

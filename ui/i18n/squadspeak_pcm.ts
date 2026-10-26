@@ -1034,8 +1034,8 @@
             <translation>Address</translation>
         </message>
         <message>
-            <source>Device ID</source>
-            <translation>ID for device</translation>
+            <source>Identity ID</source>
+            <translation>Identity ID</translation>
         </message>
         <message>
             <source>Check now</source>

@@ -1038,8 +1038,8 @@
             <translation>Adiresi</translation>
         </message>
         <message>
-            <source>Device ID</source>
-            <translation>Sakan na na'ura</translation>
+            <source>Identity ID</source>
+            <translation>ID na ainihi</translation>
         </message>
         <message>
             <source>Check now</source>

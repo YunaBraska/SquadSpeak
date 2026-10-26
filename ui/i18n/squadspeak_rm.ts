@@ -1038,8 +1038,8 @@
             <translation>Adressa</translation>
         </message>
         <message>
-            <source>Device ID</source>
-            <translation>ID d'apparats</translation>
+            <source>Identity ID</source>
+            <translation>ID d'identitad</translation>
         </message>
         <message>
             <source>Check now</source>

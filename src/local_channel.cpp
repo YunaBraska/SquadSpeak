@@ -896,6 +896,7 @@ bool LocalChannel::initialize(bool hostOnly) {
         publishRemoteAvailability();
     }
     if (ready()) {
+        if (!hostOnly_ && !session_.initializeAvatar(ownId())) return setStatus(session_.error(), false);
         maintainContacts();
         if (!startHost()) return false;
         if (!hostOnly_ && !remoteMode() && chatHostId_.isEmpty()) openChat(ownId(), "127.0.0.1", port());

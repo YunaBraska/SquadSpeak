@@ -1038,8 +1038,8 @@
             <translation>पता</translation>
         </message>
         <message>
-            <source>Device ID</source>
-            <translation>डिवाइस ID</translation>
+            <source>Identity ID</source>
+            <translation>पहचान आईडी</translation>
         </message>
         <message>
             <source>Check now</source>

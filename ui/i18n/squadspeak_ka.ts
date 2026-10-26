@@ -1038,8 +1038,8 @@
             <translation>მისამართი</translation>
         </message>
         <message>
-            <source>Device ID</source>
-            <translation>მოწყობილობის ID</translation>
+            <source>Identity ID</source>
+            <translation>იდენტობის ID</translation>
         </message>
         <message>
             <source>Check now</source>

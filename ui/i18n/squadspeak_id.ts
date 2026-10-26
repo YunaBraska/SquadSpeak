@@ -1038,8 +1038,8 @@
             <translation>Alamat</translation>
         </message>
         <message>
-            <source>Device ID</source>
-            <translation>ID perangkat</translation>
+            <source>Identity ID</source>
+            <translation>ID identitas</translation>
         </message>
         <message>
             <source>Check now</source>

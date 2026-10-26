@@ -1038,8 +1038,8 @@
             <translation>ঠিকানা</translation>
         </message>
         <message>
-            <source>Device ID</source>
-            <translation>ডিভাইস আইডি</translation>
+            <source>Identity ID</source>
+            <translation>পরিচয় আইডি</translation>
         </message>
         <message>
             <source>Check now</source>

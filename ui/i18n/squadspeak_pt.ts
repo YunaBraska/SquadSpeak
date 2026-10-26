@@ -1038,8 +1038,8 @@
             <translation>Endereço</translation>
         </message>
         <message>
-            <source>Device ID</source>
-            <translation>ID do dispositivo</translation>
+            <source>Identity ID</source>
+            <translation>ID de identidade</translation>
         </message>
         <message>
             <source>Check now</source>

@@ -1038,8 +1038,8 @@
             <translation>Adresa</translation>
         </message>
         <message>
-            <source>Device ID</source>
-            <translation>ID e pajisjes</translation>
+            <source>Identity ID</source>
+            <translation>ID e identitetit</translation>
         </message>
         <message>
             <source>Check now</source>

@@ -1038,8 +1038,8 @@
             <translation>Cím</translation>
         </message>
         <message>
-            <source>Device ID</source>
-            <translation>Eszközazonosító</translation>
+            <source>Identity ID</source>
+            <translation>Identitásazonosító</translation>
         </message>
         <message>
             <source>Check now</source>
