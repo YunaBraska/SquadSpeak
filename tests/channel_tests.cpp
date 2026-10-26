@@ -73,23 +73,30 @@ struct Device final {
     }
     bool join(LocalChannel& host) { return channel.join(host.ownId(), "127.0.0.1", host.port()); }
     bool listenWithUdp(const QHostAddress& address = QHostAddress::LocalHost, quint16 firstPort = 0) {
-        for (int attempt = 0; attempt < 32; ++attempt) {
+        if (!firstPort) {
             QTcpServer reservation;
-            if (!reservation.listen(QHostAddress::Any, attempt == 0 ? firstPort : 0)) {
-                if (attempt == 0 && firstPort) continue;
+            if (!reservation.listen(QHostAddress::Any, 0)) {
                 qWarning() << "Unable to reserve device access port:" << reservation.errorString();
                 return false;
             }
-            const auto port = reservation.serverPort();
-            // Windows can reserve different port ranges for TCP and UDP.
-            // Check both protocols before starting the channel listener.
-            QUdpSocket mediaReservation;
-            if (!mediaReservation.bind(QHostAddress::Any, port, QUdpSocket::DontShareAddress)) continue;
-            reservation.close();
-            if (!channel.startService(address, port)) continue;
-            return channel.listen(address, port);
+            firstPort = reservation.serverPort();
         }
-        qWarning() << "Unable to find a TCP/UDP media port after 32 attempts:" << channel.status();
+        firstPort = std::max<quint16>(1024, firstPort);
+        auto port = firstPort;
+        do {
+            // Windows excludes whole ranges independently for TCP and UDP.
+            // Walk distinct candidates instead of asking TCP for another port
+            // which may still be inside the same UDP exclusion range.
+            QTcpServer reservation;
+            QUdpSocket mediaReservation;
+            if (reservation.listen(QHostAddress::Any, port)
+                && mediaReservation.bind(QHostAddress::Any, port, QUdpSocket::DontShareAddress)) {
+                reservation.close();
+                if (channel.startService(address, port)) return channel.listen(address, port);
+            }
+            port = port == 65535 ? 1024 : quint16(port + 1);
+        } while (port != firstPort);
+        qWarning() << "No shared TCP/UDP test port is available:" << channel.status();
         return false;
     }
 };
@@ -2493,18 +2500,30 @@ private slots:
     }
     void hostingClientsKeepVoiceAndScreenDatagramsIndependent_data() {
         QTest::addColumn<QString>("occupiedProtocol");
-        QTest::newRow("available") << QString{};
-        QTest::newRow("udp-unavailable") << QString("udp");
-        QTest::newRow("tcp-unavailable") << QString("tcp");
+        QTest::addColumn<int>("occupiedCount");
+        QTest::newRow("available") << QString{} << 0;
+        QTest::newRow("udp-unavailable") << QString("udp") << 1;
+        QTest::newRow("tcp-unavailable") << QString("tcp") << 1;
+        QTest::newRow("udp-range-unavailable") << QString("udp") << 64;
     }
     void hostingClientsKeepVoiceAndScreenDatagramsIndependent() {
         QFETCH(QString, occupiedProtocol);
+        QFETCH(int, occupiedCount);
         QUdpSocket occupiedUdp;
         QTcpServer occupiedTcp;
+        std::vector<std::unique_ptr<QUdpSocket>> occupiedRange;
         quint16 firstPort = 0;
         if (occupiedProtocol == "udp") {
             QVERIFY(occupiedUdp.bind(QHostAddress::Any, 0, QUdpSocket::DontShareAddress));
             firstPort = occupiedUdp.localPort();
+            for (int offset = 1; offset < occupiedCount; ++offset) {
+                auto socket = std::make_unique<QUdpSocket>();
+                const auto port = quint16(1024 + (int(firstPort) - 1024 + offset) % (65536 - 1024));
+                QVERIFY(socket->bind(QHostAddress::Any, port, QUdpSocket::DontShareAddress)
+                    || socket->error() == QAbstractSocket::AddressInUseError
+                    || socket->error() == QAbstractSocket::SocketAccessError);
+                occupiedRange.push_back(std::move(socket));
+            }
         } else if (occupiedProtocol == "tcp") {
             QVERIFY(occupiedTcp.listen(QHostAddress::Any, 0));
             firstPort = occupiedTcp.serverPort();
@@ -2512,6 +2531,8 @@ private slots:
         QTemporaryDir dir;
         Device host(dir.filePath("host"), "Owner"), client(dir.filePath("client"), "Viewer"), speaker(dir.filePath("speaker"), "Speaker");
         QVERIFY(host.listenWithUdp(QHostAddress::LocalHost, firstPort)); QVERIFY(client.listenWithUdp());
+        for (int offset = 0; offset < occupiedCount; ++offset)
+            QVERIFY(host.channel.port() != quint16(1024 + (int(firstPort) - 1024 + offset) % (65536 - 1024)));
         QVERIFY(host.channel.setScreenSharing(true));
         QVERIFY(host.channel.decide(client.channel.ownId(), true)); QVERIFY(host.channel.decide(speaker.channel.ownId(), true));
         DelayedLink link(host.channel.port()); link.udpDelay = 0;
