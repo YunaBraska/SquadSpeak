@@ -3990,6 +3990,45 @@ TestCase {
         verify(channel.setChannelName(previousChannel))
     }
 
+    function test_channelDisclosureRespondsOnClickRelease() {
+        verify(fixtures.startHost())
+        verify(channel.joinSaved(channel.ownId))
+        tryVerify(function() { return channel.joined && channel.chatReady && !channel.historyLoading })
+        const panel = findChild(view, "chatPanel")
+        const draft = findChild(panel, "chatDraft")
+        draft.text = "Keep this draft while opening and closing"
+        const row = visualChild(view.contentItem, "channelRow_" + channel.ownId)
+        verify(row)
+        for (let pass = 0; pass < 3; ++pass) {
+            view.update()
+            verify(waitForRendering(row))
+            mouseClick(row, 35, row.height / 2)
+            compare(panel.visible, false, "A click closes the chat without waiting for a double click")
+            verify(waitForRendering(row))
+            mouseClick(row, 35, row.height / 2)
+            compare(panel.visible, true, "A click opens the chat without waiting for a double click")
+            compare(draft.text, "Keep this draft while opening and closing")
+            compare(channel.joinedHostId, channel.ownId)
+            verify(channel.joined)
+        }
+    }
+
+    function test_doubleClickJoinsAndKeepsChatOpen_data() {
+        return [{tag: "closed", expanded: false}, {tag: "open", expanded: true}]
+    }
+    function test_doubleClickJoinsAndKeepsChatOpen(data) {
+        verify(fixtures.startHost())
+        verify(channel.openSavedChat(channel.ownId))
+        tryCompare(channel, "chatReady", true)
+        view.chatExpanded = data.expanded
+        const row = visualChild(view.contentItem, "channelRow_" + channel.ownId)
+        view.update()
+        verify(row && waitForRendering(row))
+        mouseDoubleClickSequence(row, 35, row.height / 2)
+        tryCompare(channel, "joined", true)
+        compare(findChild(view, "chatPanel").visible, true)
+    }
+
     function test_returningToChatPaintsWithoutScrolling_data() {
         return Qt.platform.os === "ios" || Qt.platform.os === "android" ? [{tag: "native"}]
             : [{tag: "desktop", width: 520, height: 700}, {tag: "compact", width: 360, height: 640}]

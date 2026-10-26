@@ -450,12 +450,6 @@ PanelWindow {
         lastNotice = text; notice = text; noticeTimer.restart()
     }
     Timer { id: noticeTimer; interval: 4000; onTriggered: root.notice = "" }
-    Timer {
-        id: channelClick
-        property string hostId: ""
-        interval: Qt.styleHints.mouseDoubleClickInterval
-        onTriggered: root.showHostChat(hostId)
-    }
     function openHostChat(id) {
         if (!network.ready) return false
         const privateEntry = privateChatList.find(function(chat) { return chat.id === id })
@@ -1793,7 +1787,6 @@ PanelWindow {
                                 hoverEnabled: true; acceptedButtons: Qt.LeftButton | Qt.RightButton
                                 onDoubleClicked: function(mouse) {
                                     if (mouse.button !== Qt.LeftButton) return
-                                    channelClick.stop()
                                     if (channelRow.privateFolder) root.togglePrivateFolder(modelData.hostId)
                                     else { root.chatExpanded = true; root.joinHost(modelData.id) }
                                 }
@@ -1804,7 +1797,7 @@ PanelWindow {
                                     }
                                     if (mouse.button === Qt.RightButton && channelRow.privateConversation) { privateMessages.hostId = root.privateHostId(modelData); privateMessages.hostDeviceId = modelData.deviceId; privateMessages.open() }
                                     else if (mouse.button === Qt.RightButton) { root.selectedHost = modelData.id; channelMenu.popup() }
-                                    else if (mouse.button === Qt.LeftButton) { channelClick.hostId = modelData.id; channelClick.restart() }
+                                    else if (mouse.button === Qt.LeftButton) root.showHostChat(modelData.id)
                                 }
                             }
                             RowLayout {
