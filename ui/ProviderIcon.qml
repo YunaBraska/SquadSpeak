@@ -8,7 +8,7 @@ Item {
     Image {
         objectName: "providerArtwork"
         anchors.fill: parent
-        source: root.label.length === 0 ? "" : root.provider === "teamspeak" ? "icons/teamspeak.svg" : "icons/app.png"
+        source: root.label.length === 0 ? "" : root.provider === "teamspeak" ? "icons/teamspeak.png" : "icons/app.png"
         sourceSize.width: Math.ceil(width * Screen.devicePixelRatio)
         sourceSize.height: Math.ceil(height * Screen.devicePixelRatio)
         fillMode: Image.PreserveAspectFit

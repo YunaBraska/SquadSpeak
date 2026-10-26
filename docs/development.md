@@ -457,7 +457,8 @@ For fresh UI screenshots, set `SQUAD_TEST_ARTIFACTS` to an output directory when
 
 The application icon source is `ui/icons/app-source.png`. Run `python3 ui/icons/generate.py`
 with `rsvg-convert` installed to regenerate the PNG, macOS ICNS and Windows ICO.
-The generator only resizes the approved artwork. The menu icon is drawn separately
+The generator resizes the approved app artwork and renders the TeamSpeak provider SVG
+to PNG, so installed apps need no SVG decoder for provider marks. The menu icon is drawn separately
 in `src/main.cpp` as an outline speech bubble, filled while transmitting speech.
 
 ## Headless server

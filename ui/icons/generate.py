@@ -44,3 +44,7 @@ for size in windows_sizes:
     payload.append(data)
     offset += len(data)
 (root / "app.ico").write_bytes(header + b"".join(entries + payload))
+
+# Keep provider marks independent of optional runtime SVG plugins.
+subprocess.run(["rsvg-convert", "--width", "64", "--height", "64", "--keep-aspect-ratio",
+                "--output", str(root / "teamspeak.png"), str(root / "teamspeak.svg")], check=True)
