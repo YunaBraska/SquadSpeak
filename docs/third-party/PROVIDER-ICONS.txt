@@ -1,0 +1,11 @@
+TeamSpeak provider icon
+
+Font Awesome Free 6.7.2, Copyright 2024 Fonticons, Inc.
+Source: https://github.com/FortAwesome/Font-Awesome/blob/6.7.2/svgs/brands/teamspeak.svg
+License: Creative Commons Attribution 4.0 International
+https://creativecommons.org/licenses/by/4.0/
+Modification: explicit blue fill for light and dark surfaces.
+
+TeamSpeak is a trademark of its respective owner. The icon identifies the
+TeamSpeak service or client and does not imply endorsement.
+The SquadSpeak provider icon reuses the application's existing artwork.

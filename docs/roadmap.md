@@ -75,7 +75,7 @@ concealment stays bounded without rejecting the next valid packet after a long g
 missing-UID private-message case resolves the known roster identity and preserves
 the conversation and reply target. The installed macOS app and native TeamSpeak
 3 client exchange channel and private messages in both directions. Normal app
-quit produces an immediate disconnect in TeamSpeak. Native TS clients use stable UID-derived portraits and a separate TS badge. SquadSpeak clients exchange selected avatar IDs through TS metadata, including live profile updates in participants and cached messages. Both installed Mac copies show matching portraits.
+quit produces an immediate disconnect in TeamSpeak. Native TS clients use stable UID-derived portraits and a separate TeamSpeak client icon. SquadSpeak clients exchange selected avatar IDs through TS metadata, including live profile updates in participants and cached messages. Both installed Mac copies show matching portraits.
 
 Direct TS3 is integrated through the pinned ReSpeak Rust library. The macOS
 public-entrypoint test connected two separate identities to the owner's servers,
@@ -111,6 +111,10 @@ do not become TS3 protocol features.
 | Host-created chat polls | Planned | U170, SS-182, O-29; chat "+", single/multiple choice, editable options, aggregate results and closing. Reuse chat infrastructure. Resolve the remaining lifecycle rules before implementation |
 
 ## Next implementation order
+
+The next provider is Mumble (U176), using the shared host/channel/chat interface.
+Define authentication, voice/chat support and protocol differences before implementation.
+Trillian is a navigation reference.
 
 Continue U173 with capture-stage and codec comparisons and sustained resource
 qualification. New media admission pauses during shared audio backlog or slow screen encoding. Large

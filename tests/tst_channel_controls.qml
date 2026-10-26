@@ -176,6 +176,8 @@ TestCase {
         tryCompare(Qt.inputMethod, "visible", false)
         for (const window of [view, controllerView]) {
             window.searchOpen = false
+            window.collapsedHosts = ({})
+            window.updateChannelRows()
             findChild(window, "remoteTargetsDialog").close()
             window.closeSettings()
             for (const action of ["autoJoinMenuItem", "inspectMember"]) {
@@ -480,6 +482,14 @@ TestCase {
         verify(remoteSession.setUserName(session.userName))
         tryCompare(foreignGroup, "text", ownedGroup.text)
         verify(foreignGroup !== ownedGroup, "Identical profile names never merge different hosts")
+        const ownToggle = visualChild(view.contentItem, "toggleHost_" + channel.ownId)
+        verify(fixtures.pressAccessible(ownToggle))
+        for (const id of [extra, channel.ownId]) {
+            const row = visualChild(view.contentItem, "channelRow_" + id)
+            verify(!row || !row.visible, "Collapsing a host hides all its channels")
+        }
+        verify(fixtures.pressAccessible(ownToggle))
+        tryVerify(function() { return position(extra) >= 0 && position(extra) < position(channel.ownId) })
         verify(remoteSession.setUserName("Moonlit Fox with a surprisingly long but valid profile name"))
         tryCompare(foreignGroup, "text", remoteSession.userName)
         view.update()
@@ -494,6 +504,55 @@ TestCase {
         verify(icon !== null); verify(!icon.visible)
         verify(fixtures.setTestMusic(true)); tryCompare(icon, "visible", true)
         verify(fixtures.setTestMusic(false)); tryCompare(icon, "visible", false)
+    }
+
+    function test_hostCollapsePreservesVoiceDraftAndUnread_data() {
+        return [{tag: "desktop", width: 520, height: 700}, {tag: "compact", width: 320, height: 568}]
+    }
+    function test_hostCollapsePreservesVoiceDraftAndUnread(data) {
+        view.width = data.width; view.height = data.height
+        verify(fixtures.startHost()); verify(fixtures.startRemoteHost())
+        verify(remoteChannel.setChannelName("Moonlight"))
+        verify(remoteChannel.decide(channel.ownId, true))
+        verify(remoteChannel.joinSaved(remoteChannel.ownId))
+        verify(channel.join(remoteChannel.ownId, "127.0.0.1", remoteChannel.servicePort))
+        tryVerify(function() { return channel.joined && channel.chatReady && remoteChannel.chatReady })
+        const id = remoteChannel.ownId
+        const toggle = visualChild(view.contentItem, "toggleHost_" + id)
+        verify(toggle !== null, "Host groups have an accessible disclosure button")
+        const draft = findChild(view, "chatDraft")
+        draft.text = "Keep this draft"
+        verify(fixtures.pressAccessible(toggle))
+        tryCompare(visualChild(view.contentItem, "channelRow_" + id), "visible", false)
+        compare(channel.joinedHostId, id)
+        verify(visualChild(view.contentItem, "activeHost_" + id).visible)
+        verify(remoteSession.setUserName("Renamed host"))
+        tryCompare(visualChild(view.contentItem, "hostGroup_" + id), "text", "Renamed host")
+        verify(!visualChild(view.contentItem, "channelRow_" + id).visible)
+        verify(remoteChannel.sendChat("Arrived while the host was collapsed"))
+        tryCompare(remoteChannel, "chatPending", false)
+        tryVerify(function() { return visualChild(view.contentItem, "unreadHost_" + id).visible })
+        view.searchOpen = true
+        const search = findChild(view, "channelSearch")
+        search.text = "Moonlight"
+        verify(!toggle.enabled)
+        tryCompare(visualChild(view.contentItem, "channelRow_" + id), "visible", true)
+        search.text = ""
+        tryCompare(visualChild(view.contentItem, "channelRow_" + id), "visible", false)
+        view.searchOpen = false
+        view.requestActivate(); tryCompare(view, "active", true)
+        verify(waitForRendering(toggle))
+        toggle.forceActiveFocus(); tryCompare(toggle, "activeFocus", true)
+        keyClick(Qt.Key_Space)
+        tryCompare(visualChild(view.contentItem, "channelRow_" + id), "visible", true)
+        compare(draft.text, "Keep this draft")
+        compare(channel.joinedHostId, id)
+        tryVerify(function() { return !visualChild(view.contentItem, "unreadHost_" + id).visible })
+        verify(fixtures.pressAccessible(toggle))
+        verify(waitForRendering(view.contentItem))
+        if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/collapsed-host-" + data.tag + ".png"))
+        channel.leave()
+        tryCompare(visualChild(view.contentItem, "activeHost_" + id), "visible", false)
     }
 
     function test_channelSearchKeepsVoiceAndDraft_data() {
@@ -2873,35 +2932,52 @@ TestCase {
         }
     }
 
-    function test_teamSpeakBadgeStaysSeparateFromPortraitAndAudioBadges() {
-        const item = createTemporaryObject(variablePortrait, view.contentItem, {width: 32, height: 32, muted: true, deafened: true})
+    function test_providerIconsIdentifyClientsWithoutChangingPortraitOrAudioBadges_data() {
+        return [{tag: "light", mode: "light"}, {tag: "dark", mode: "dark"}]
+    }
+    function test_providerIconsIdentifyClientsWithoutChangingPortraitOrAudioBadges(data) {
+        session.setTheme(data.mode)
+        const item = createTemporaryObject(variablePortrait, view.contentItem, {width: 32, height: 32, name: "Member", muted: true, deafened: true})
         verify(item)
-        const badge = findChild(item, "teamSpeakBadge")
+        const badge = findChild(item, "providerBadge")
         verify(badge)
-        verify(!badge.visible)
+        verify(badge.visible)
+        const icon = findChild(badge, "providerIcon")
+        compare(icon.label, "SquadSpeak")
+        tryCompare(findChild(icon, "providerArtwork"), "status", Image.Ready)
         item.teamSpeak = true
+        compare(icon.label, "TeamSpeak")
+        tryCompare(findChild(icon, "providerArtwork"), "status", Image.Ready)
         verify(badge.visible)
         compare(badge.x + badge.width, item.width)
         compare(badge.y, 0)
         verify(badge.height <= findChild(item, "microphoneBadge").mapToItem(item, 0, 0).y)
         item.teamSpeak = false
+        compare(icon.label, "SquadSpeak")
+        item.systemMessage = true
         verify(!badge.visible)
+        item.systemMessage = false
+        item.name = ""
+        verify(!badge.visible, "Artwork previews have no client identity")
+        item.identity = "known-person"
+        verify(badge.visible, "A known person keeps the client icon even without a display name")
+        item.visible = false
         view.memberOptions({id: "ts-peer", name: "Example", avatarId: "courier", teamSpeak: true}, "ts-host", false)
         const dialog = findChild(view, "requestInfoDialog")
         tryCompare(dialog, "opened", true)
         compare(findChild(dialog, "requestClient").text, "TeamSpeak")
-        verify(findChild(findChild(dialog, "requestAvatar"), "teamSpeakBadge").visible)
+        compare(findChild(findChild(dialog, "requestAvatar"), "providerIcon").label, "TeamSpeak")
         tryVerify(function() { return fixtures.portraitHasDetail(findChild(dialog, "requestAvatar")) })
         if (imageDirectory.length > 0) {
             waitForRendering(view.contentItem)
-            verify(fixtures.saveWindow(view, imageDirectory + "/inspect-teamspeak.png"))
+            verify(fixtures.saveWindow(view, imageDirectory + "/inspect-teamspeak-" + data.tag + ".png"))
         }
         view.memberOptions({id: "squad-peer", name: "Example", avatarId: "courier", teamSpeak: false}, "ts-host", false)
         compare(findChild(dialog, "requestClient").text, "SquadSpeak")
-        verify(!findChild(findChild(dialog, "requestAvatar"), "teamSpeakBadge").visible)
+        compare(findChild(findChild(dialog, "requestAvatar"), "providerIcon").label, "SquadSpeak")
         if (imageDirectory.length > 0) {
             waitForRendering(view.contentItem)
-            verify(fixtures.saveWindow(view, imageDirectory + "/inspect-squadspeak.png"))
+            verify(fixtures.saveWindow(view, imageDirectory + "/inspect-squadspeak-" + data.tag + ".png"))
         }
         dialog.close()
     }
@@ -4660,6 +4736,30 @@ TestCase {
         channel.stopHost()
         view.width = 520
         view.height = 700
+    }
+
+    function test_providerHostIconUsesProtocolAndCollapsesOfflineServer() {
+        verify(fixtures.startHost())
+        verify(channel.addTeamSpeak("127.0.0.1:1"))
+        const entry = channel.savedChannels.find(function(c) { return c.protocol === "teamspeak" })
+        verify(entry)
+        try {
+            const icon = visualChild(view.contentItem, "hostProvider_" + entry.deviceId)
+            verify(icon)
+            compare(icon.label, "TeamSpeak")
+            tryCompare(findChild(icon, "providerArtwork"), "status", Image.Ready)
+            compare(visualChild(view.contentItem, "hostProvider_" + channel.ownId).label, "SquadSpeak")
+            const label = visualChild(view.contentItem, "hostGroup_" + entry.deviceId)
+            verify(!label.text.includes("[TS3]"))
+            const toggle = visualChild(view.contentItem, "toggleHost_" + entry.deviceId)
+            verify(fixtures.pressAccessible(toggle))
+            tryCompare(visualChild(view.contentItem, "channelRow_" + entry.id), "visible", false)
+            verify(waitForRendering(view.contentItem))
+            if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/provider-hosts.png"))
+        } finally {
+            channel.removeChannel(entry.id)
+        }
+        tryVerify(function() { return visualChild(view.contentItem, "hostGroup_" + entry.deviceId) === null })
     }
 
     function test_teamSpeakAddressUsesTheSameAddDialog() {
