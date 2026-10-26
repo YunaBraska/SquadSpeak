@@ -99,10 +99,11 @@ int controlledProcess(QCoreApplication& application, std::function<void(const QJ
         std::string line;
         while (std::getline(std::cin, line)) {
             const auto request = QJsonDocument::fromJson(QByteArray::fromStdString(line)).object();
+            if (request.value("operation") == "stop") break;
             QMetaObject::invokeMethod(&application, [&, request] { if (command) command(request); }, Qt::QueuedConnection);
         }
         QMetaObject::invokeMethod(&application, [&] {
-            qInfo() << "Capacity command input closed";
+            qInfo() << "Capacity stop requested";
             application.quit();
         }, Qt::QueuedConnection);
     });
@@ -331,6 +332,41 @@ class ChannelTests final : public QObject {
     Q_OBJECT
 private slots:
 #if QT_CONFIG(process)
+    void capacityProcessesStopCleanly_data() {
+        QTest::addColumn<QString>("mode");
+        QTest::addColumn<bool>("closeInput");
+        QTest::newRow("host-command") << QString("--capacity-host") << false;
+        QTest::newRow("host-eof") << QString("--capacity-host") << true;
+        QTest::newRow("receivers-command") << QString("--capacity-receivers") << false;
+        QTest::newRow("receivers-eof") << QString("--capacity-receivers") << true;
+    }
+    void capacityProcessesStopCleanly() {
+        QFETCH(QString, mode);
+        QFETCH(bool, closeInput);
+        QTemporaryDir dir;
+        QProcess child;
+        QByteArray readiness;
+        connect(&child, &QProcess::readyReadStandardOutput, &child,
+            [&] { readiness += child.readAllStandardOutput(); });
+        const auto cleanup = qScopeGuard([&] {
+            if (child.state() != QProcess::NotRunning) { child.kill(); child.waitForFinished(5000); }
+        });
+        QStringList arguments{mode, mode == "--capacity-host" ? dir.filePath("host") : dir.path()};
+        if (mode == "--capacity-receivers") arguments.append({"2", "1"});
+        child.start(QCoreApplication::applicationFilePath(), arguments);
+        QVERIFY(child.waitForStarted(5000));
+        QVERIFY(waitForEvents(&child, &QProcess::readyReadStandardOutput,
+            [&] { return readiness.contains('\n'); }, 10000));
+        if (closeInput) child.closeWriteChannel();
+        else {
+            const QByteArray stop = "{\"operation\":\"stop\"}\n";
+            QCOMPARE(child.write(stop), stop.size());
+        }
+        QVERIFY(waitForEvents(&child, &QProcess::stateChanged,
+            [&] { return child.state() == QProcess::NotRunning; }));
+        QCOMPARE(child.exitStatus(), QProcess::NormalExit);
+        QCOMPARE(child.exitCode(), 0);
+    }
     void failedTestStillDrainsCleanupEvents() {
         if (qEnvironmentVariableIsSet("SQUAD_TEST_CLEANUP_FAILURE")) {
             const auto cleanup = qScopeGuard([] {
@@ -6780,8 +6816,12 @@ private slots:
             receiverPoll.stop();
             // Keep Qt servicing sockets while native media workers stop. Close
             // receivers before the relay, including when setup fails early.
-            for (auto& process : receivers)
-                if (process.state() != QProcess::NotRunning) process.closeWriteChannel();
+            const QByteArray stop = "{\"operation\":\"stop\"}\n";
+            for (auto& process : receivers) {
+                if (process.state() == QProcess::NotRunning) continue;
+                process.write(stop);
+                process.closeWriteChannel();
+            }
             bool allExited = waitForEvents([&] {
                 return std::all_of(receivers.begin(), receivers.end(), [](const auto& process) {
                     return process.state() == QProcess::NotRunning;
@@ -6794,7 +6834,10 @@ private slots:
                 qInfo().noquote() << "Receiver process" << group << "diagnostics:\n" << process.readAllStandardError();
                 allExited &= process.exitStatus() == QProcess::NormalExit && process.exitCode() == 0;
             }
-            host.closeWriteChannel();
+            if (host.state() != QProcess::NotRunning) {
+                host.write(stop);
+                host.closeWriteChannel();
+            }
             const bool hostStopped = waitForEvents(&host, &QProcess::stateChanged,
                 [&] { return host.state() == QProcess::NotRunning; }, 5000);
             if (!hostStopped) { host.kill(); host.waitForFinished(5000); }
