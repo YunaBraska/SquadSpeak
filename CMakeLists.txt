@@ -733,7 +733,9 @@ if(BUILD_TESTING)
     add_test(NAME radio_contract COMMAND radio_tests)
     # The reconnect and paced playback cases take 169 s on hosted Linux;
     # allow slower runners to complete the same per-operation assertions.
-    set_tests_properties(radio_contract PROPERTIES TIMEOUT 240)
+    # Live normalization sends expiring RTP packets and needs the same
+    # uncontended scheduler as the other transport contracts.
+    set_tests_properties(radio_contract PROPERTIES TIMEOUT 240 RUN_SERIAL TRUE)
     qt_add_executable(session_tests tests/session_tests.cpp)
     target_link_libraries(session_tests PRIVATE squad_session Qt6::Test OpenSSL::Crypto)
     target_compile_definitions(session_tests PRIVATE SQUAD_TRANSLATION_DIRECTORY="${CMAKE_CURRENT_SOURCE_DIR}/ui/i18n")
