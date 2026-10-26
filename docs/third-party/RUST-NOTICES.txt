@@ -1,5 +1,5 @@
 Rust dependency notices
-Cargo.lock SHA256: e57448151d2f811018bf92d2e6df03750a900b799ed6c012567366ab8d69f72f
+Cargo.lock SHA256: eb2a4e3fb7ebdbd0af026d796c1e4d8efdafd64f77ef4e103c17f7c3893e6c4e
 
 Package: aead 0.5.2
 Source: registry+https://github.com/rust-lang/crates.io-index
@@ -1318,7 +1318,7 @@ Notice: cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30
 Notice: fd80a26fbb3f644af1fa994134446702932968519797227e07a1368dea80f0bc
 Notice: 84b34dd7608f7fb9b17bd588a6bf392bf7de504e2716f024a77d89f1b145a151
 
-Package: tokio 1.53.3
+Package: tokio 1.54.1
 Source: registry+https://github.com/rust-lang/crates.io-index
 License: MIT
 Notice: 253cd04c6714889df2d32f3f64d669179a1c95c76ac43c40882c52eb06bc3552
