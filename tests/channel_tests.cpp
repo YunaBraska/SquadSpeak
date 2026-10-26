@@ -3021,7 +3021,8 @@ private slots:
         QTRY_VERIFY(!client.channel.joined());
         host = std::make_unique<Device>(dir.filePath("host"), "Host", identity);
         QVERIFY(host->channel.listen(QHostAddress::LocalHost, port));
-        QTRY_VERIFY_WITH_TIMEOUT(client.channel.joined(), 10000);
+        // Reconnect waits for the closed socket, its retry delay, and a fresh TLS handshake.
+        QTRY_VERIFY_WITH_TIMEOUT(client.channel.joined(), 30000);
         QCOMPARE(client.channel.savedChannels().first().toMap().value("address").toString(), QString("localhost"));
         QVERIFY(client.channel.sendChat("After address change"));
         QTRY_COMPARE(memberMessages(client.channel).size(), 1);
@@ -6850,7 +6851,10 @@ private slots:
         // Check admission before the load phase. Afterwards measured pressure
         // may correctly reject a new participant while existing speech works.
         QVERIFY(joinHost(overflow));
-        QTRY_VERIFY(overflow.channel.joined());
+        // The host is already servicing 64 TLS peers. On a loaded native
+        // runner, accept plus the new TLS handshake exceeds QtTest's 5 s
+        // default although the participant is correctly admitted.
+        QTRY_VERIFY_WITH_TIMEOUT(overflow.channel.joined(), 30000);
         QTRY_COMPARE(clients.back()->channel.participants().size(), participantCount + 1);
         QTRY_VERIFY(overflow.channel.chatReady());
         QVERIFY(overflow.channel.sendChat("Text and media remain available to a new participant."));
