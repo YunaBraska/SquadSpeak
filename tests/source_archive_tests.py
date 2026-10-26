@@ -244,12 +244,23 @@ class SourceArchiveTests(unittest.TestCase):
                        check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=15)
         payload = self.payload
         plain_requests = []
+        requests = {}
         class Handler(BaseHTTPRequestHandler):
             def log_message(self, *_):
                 pass
             def do_GET(self):
+                requests[self.path] = requests.get(self.path, 0) + 1
                 if not isinstance(self.connection, ssl.SSLSocket):
                     plain_requests.append(self.path)
+                if self.path == "/disconnect" and requests[self.path] == 1:
+                    self.close_connection = True
+                    return
+                if self.path == "/unavailable" or (self.path == "/retry" and requests[self.path] < 3):
+                    self.send_error(503)
+                    return
+                if self.path == "/rate-limit" and requests[self.path] == 1:
+                    self.send_error(429)
+                    return
                 if self.path in ("/redirect", "/secure-redirect"):
                     self.send_response(302)
                     target = f"http://127.0.0.1:{plain.server_port}" if self.path == "/redirect" else f"https://127.0.0.1:{secure.server_port}"
@@ -274,7 +285,9 @@ class SourceArchiveTests(unittest.TestCase):
             self.addCleanup(server.server_close)
             self.addCleanup(server.shutdown)
         environment = dict(os.environ, SSL_CERT_FILE=str(certificate), NO_PROXY="127.0.0.1,localhost")
-        for route, success in (("valid", True), ("secure-redirect", True), ("corrupt", False), ("missing", False), ("large", False), ("redirect", False)):
+        for route, success in (("valid", True), ("secure-redirect", True), ("corrupt", False), ("missing", False),
+                               ("large", False), ("redirect", False), ("retry", True), ("rate-limit", True),
+                               ("disconnect", True), ("unavailable", False)):
             with self.subTest(route=route):
                 url = f"https://127.0.0.1:{secure.server_port}/{route}"
                 for relative in ("CMakeLists.txt", "cmake/Dependencies.cmake", "cmake/AudioProcessing.cmake", "cmake/Updates.cmake", "tests/macos-ci.sh", "tests/windows-ci.ps1"):
@@ -288,6 +301,7 @@ class SourceArchiveTests(unittest.TestCase):
                 output.write_bytes(b"previous package")
                 result = self.run_tool("--cache", str(cache), "--output", str(output), environment=environment)
                 self.assertEqual(result.returncode == 0, success, result.stderr)
+                self.assertEqual(requests["/" + route], {"retry": 3, "rate-limit": 2, "disconnect": 2, "unavailable": 3}.get(route, 1))
                 if success:
                     self.assertEqual((cache / "source.tar.xz").read_bytes(), payload)
                     with tarfile.open(output) as archive:
@@ -296,6 +310,17 @@ class SourceArchiveTests(unittest.TestCase):
                     self.assertEqual(output.read_bytes(), b"previous package")
                     self.assertFalse((cache / "source.tar.xz").exists())
                 self.assertFalse(list(cache.glob(".*")))
+        untrusted = dict(environment)
+        untrusted.pop("SSL_CERT_FILE")
+        requests_before = dict(requests)
+        cache = self.root / "untrusted-cache"
+        result = self.run_tool("--cache", str(cache), "--output", str(output), environment=untrusted)
+        self.assertEqual(result.returncode, 2)
+        self.assertIn("certificate", result.stderr.lower())
+        self.assertNotIn("Retrying", result.stderr)
+        self.assertEqual(requests, requests_before)
+        self.assertEqual(output.read_bytes(), b"previous package")
+        self.assertFalse(list(cache.iterdir()))
         self.assertEqual(plain_requests, [], "HTTPS redirects must be rejected before any plaintext request")
 
 
