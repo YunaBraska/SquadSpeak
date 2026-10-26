@@ -378,9 +378,11 @@ private slots:
                 bool completed = false;
                 QTimer::singleShot(0, &signal, [&] { completed = true; });
                 const bool polled = waitForEvents([&] { return completed; });
-                QElapsedTimer elapsed; elapsed.start();
+                // Verify cleanup event delivery, not an exact wall-clock boundary.
+                completed = false;
+                QTimer::singleShot(0, &signal, [&] { completed = true; });
                 const bool expired = !waitForEvents([] { return false; }, 10)
-                    && elapsed.elapsed() >= 10;
+                    && completed;
                 qInfo("cleanup signalled=%d polled=%d expired=%d", signalled, polled, expired);
             });
             QFAIL("Intentional failure before asynchronous cleanup");
