@@ -357,11 +357,16 @@ private slots:
     }
     void encryptedDatagramsCarryIndependentSources_data() {
         QTest::addColumn<QHostAddress>("address");
-        QTest::newRow("ipv4") << QHostAddress(QHostAddress::LocalHost);
-        QTest::newRow("ipv6") << QHostAddress(QHostAddress::LocalHostIPv6);
+        QTest::addColumn<bool>("ownerStalled");
+        QTest::newRow("ipv4") << QHostAddress(QHostAddress::LocalHost) << false;
+        QTest::newRow("ipv6") << QHostAddress(QHostAddress::LocalHostIPv6) << false;
+        QTest::newRow("ipv4-owner-stall") << QHostAddress(QHostAddress::LocalHost) << true;
+        QTest::newRow("ipv6-owner-stall") << QHostAddress(QHostAddress::LocalHostIPv6) << true;
     }
     void encryptedDatagramsCarryIndependentSources() {
         QFETCH(QHostAddress, address);
+        QFETCH(bool, ownerStalled);
+        const auto packet = speech(); QVERIFY(!packet.isEmpty());
         const auto port = availableUdpPort(); QVERIFY(port);
         squad::MediaTransport host(true, port, address, 0);
         squad::MediaTransport client(false, 0, address, port);
@@ -373,17 +378,20 @@ private slots:
             fallback += message.value("kind") == "frame"; valid &= host.receive(message);
         });
         QSignalSpy atHost(&host, &squad::MediaTransport::audio), atClient(&client, &squad::MediaTransport::audio);
-        QTRY_VERIFY_WITH_TIMEOUT(host.udpActive() && client.udpActive(), 10000);
-        const auto packet = speech(); QVERIFY(!packet.isEmpty());
+        QVERIFY(waitForEvents([&] { return host.udpActive() && client.udpActive(); }, 10000));
+        // Deliberately expire liveness, as a paused CI worker can do.
+        if (ownerStalled) QTest::qSleep(400);
         QSet<QString> sources;
         for (int index = 0; index < 70; ++index) {
             const auto source = QString("%1").arg(index, 64, 16, QLatin1Char('0'));
+            QVERIFY(waitForEvents([&] { return host.udpActive(); }));
             QVERIFY(host.send(source, packet));
             QVERIFY(waitForEvents(&client, &squad::MediaTransport::audio, [&] { return atClient.size() == index + 1; }));
             QCOMPARE(atClient.last().at(0).toString(), source);
             QCOMPARE(atClient.last().at(1).toByteArray(), packet);
             sources.insert(source);
         }
+        QVERIFY(waitForEvents([&] { return client.udpActive(); }));
         QVERIFY(client.send(first, packet)); QTRY_COMPARE(atHost.size(), 1);
         QCOMPARE(sources.size(), 70); QCOMPARE(fallback, 0); QVERIFY(valid);
     }
