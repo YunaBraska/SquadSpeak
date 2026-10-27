@@ -208,6 +208,7 @@ PanelWindow {
     }
     Shortcut { sequences: [StandardKey.Find]; enabled: root.active && !settings.visible; onActivated: root.searchOpen = true }
     property var privateFolderExpanded: ({})
+    property var collapsedHosts: ({})
     readonly property var selectedOwner: { const revision = network.ownedChannels; return remote ? null : network.ownChannel(selectedHost) }
     readonly property var managedHost: selectedOwner || network
     readonly property var memberHost: { const revision = network.ownedChannels; return remote ? null : network.ownChannel(selectedMemberHost) }
@@ -248,6 +249,13 @@ PanelWindow {
     function privateDeviceForHost(hostId) {
         const host = channelList.find(function(entry) { return entry.id === hostId || entry.deviceId === hostId })
         return host ? (host.deviceId || host.id) : hostId
+    }
+    function toggleHost(id) {
+        const next = Object.assign({}, collapsedHosts)
+        if (next[id]) delete next[id]
+        else next[id] = true
+        collapsedHosts = next
+        updateChannelRows()
     }
     function privateFolderIsExpanded(id) { return privateFolderExpanded[id] !== false }
     function togglePrivateFolder(id) {
@@ -304,8 +312,8 @@ PanelWindow {
             }
             const key = entry.deviceId || entry.id
             const named = !!entry.ownerName
-            const label = (entry.protocol === "teamspeak" ? "[TS3] " : "") + (entry.ownerName || (entry.owned ? qsTr("This device") : endpoint(entry)))
-            if (!groups.has(key)) groups.set(key, {key: key, label: label, named: named, owned: false, channels: [], privateChats: []})
+            const label = entry.ownerName || (entry.owned ? qsTr("This device") : endpoint(entry))
+            if (!groups.has(key)) groups.set(key, {key: key, label: label, protocol: entry.protocol || "squadspeak", named: named, owned: false, channels: [], privateChats: []})
             const group = groups.get(key)
             if ((named && !group.named) || (named === group.named && label.localeCompare(group.label) < 0)) {
                 group.label = label
@@ -324,13 +332,16 @@ PanelWindow {
             const key = entry.deviceId
             if (!key) continue
             const label = entry.ownerName || entry.name || key
-            if (!groups.has(key)) groups.set(key, {key: key, label: label, named: !!entry.ownerName, channels: [], privateChats: []})
+            if (!groups.has(key)) groups.set(key, {key: key, label: label, protocol: entry.protocol || "squadspeak", named: !!entry.ownerName, channels: [], privateChats: []})
             const group = groups.get(key)
             if (entry.ownerName && (!group.named || label.localeCompare(group.label) < 0)) {
                 group.label = label; group.named = true
             }
             group.privateChats.push(entry)
         }
+        const retained = {}
+        for (const key of Object.keys(collapsedHosts)) if (groups.has(key)) retained[key] = true
+        collapsedHosts = retained
         const ordered = []
         const sortedGroups = Array.from(groups.values()).sort(function(a, b) {
             return Number(!!b.owned) - Number(!!a.owned) || a.label.localeCompare(b.label) || a.key.localeCompare(b.key)
@@ -338,6 +349,7 @@ PanelWindow {
         for (const group of sortedGroups) {
             const privateUnread = group.privateChats.some(function(entry) { return !!entry.unread })
             const groupUnread = privateUnread || group.channels.some(function(entry) { return !!entry.unread })
+            const groupExpanded = !!query || !collapsedHosts[group.key]
             if (query && !group.label.toLowerCase().includes(query)) {
                 const matches = new Set()
                 for (const entry of group.channels) {
@@ -351,15 +363,19 @@ PanelWindow {
                 group.channels = group.channels.filter(function(entry) { return matches.has(entry.id) })
                 group.privateChats = group.privateChats.filter(function(entry) { return (entry.name || "").toLowerCase().includes(query) })
             }
-            orderedChannels(group.channels).forEach(function(entry, index) { ordered.push({channelData: entry, groupLabel: index === 0 ? group.label : "", groupId: group.key, groupUnread: groupUnread}) })
+            const entries = orderedChannels(group.channels)
             group.privateChats.sort(function(a, b) {
                 return (a.name || "").localeCompare(b.name || "") || a.id.localeCompare(b.id)
             })
             if (group.privateChats.length > 0) {
-                ordered.push({channelData: {id: "private-folder:" + group.key, name: qsTr("Messages"), privateFolder: true, hostId: group.key, unread: privateUnread}, groupLabel: ordered.length === 0 || ordered[ordered.length - 1].groupId !== group.key ? group.label : "", groupId: group.key, groupUnread: groupUnread})
+                entries.push({id: "private-folder:" + group.key, name: qsTr("Messages"), privateFolder: true, hostId: group.key, unread: privateUnread})
                 if (query || privateFolderIsExpanded(group.key)) for (const entry of group.privateChats)
-                    ordered.push({channelData: Object.assign({}, entry, {id: entry.id, private: true, hostId: privateHostId(entry)}), groupLabel: "", groupId: group.key, groupUnread: groupUnread})
+                    entries.push(Object.assign({}, entry, {id: entry.id, private: true, hostId: privateHostId(entry)}))
             }
+            // Retain the first row's heading while releasing collapsed contents.
+            for (const [index, entry] of (groupExpanded ? entries : entries.slice(0, 1)).entries())
+                ordered.push({channelData: entry, groupLabel: index === 0 ? group.label : "", groupId: group.key,
+                    groupProtocol: group.protocol, groupUnread: groupUnread, groupExpanded: groupExpanded})
         }
         for (let i = channelRows.count - 1; i >= 0; --i) {
             const row = channelRows.get(i).channelData
@@ -434,12 +450,6 @@ PanelWindow {
         lastNotice = text; notice = text; noticeTimer.restart()
     }
     Timer { id: noticeTimer; interval: 4000; onTriggered: root.notice = "" }
-    Timer {
-        id: channelClick
-        property string hostId: ""
-        interval: Qt.styleHints.mouseDoubleClickInterval
-        onTriggered: root.showHostChat(hostId)
-    }
     function openHostChat(id) {
         if (!network.ready) return false
         const privateEntry = privateChatList.find(function(chat) { return chat.id === id })
@@ -1728,27 +1738,44 @@ PanelWindow {
                         required property string groupLabel
                         required property string groupId
                         required property bool groupUnread
+                        required property string groupProtocol
+                        required property bool groupExpanded
                         readonly property real headingHeight: hostHeading.visible ? hostHeading.implicitHeight + hostHeading.Layout.topMargin + hostHeading.Layout.bottomMargin : 0
                         Layout.fillWidth: true; spacing: 2
                         RowLayout {
                             id: hostHeading
                             visible: channelEntry.groupLabel.length > 0
                             Layout.fillWidth: true; Layout.topMargin: 4; Layout.bottomMargin: 2
+                            ActionButton {
+                                objectName: "toggleHost_" + channelEntry.groupId
+                                text: channelEntry.groupLabel; iconOnly: true; flat: true
+                                enabled: channelSearch.text.trim().length === 0
+                                Accessible.role: Accessible.Button
+                                Accessible.checkable: true
+                                Accessible.checked: channelEntry.groupExpanded
+                                contentItem: Glyph { symbol: "down"; rotation: channelEntry.groupExpanded ? 0 : -90; color: Theme.muted }
+                                onClicked: root.toggleHost(channelEntry.groupId)
+                                Keys.onLeftPressed: if (channelEntry.groupExpanded) root.toggleHost(channelEntry.groupId)
+                                Keys.onRightPressed: if (!channelEntry.groupExpanded) root.toggleHost(channelEntry.groupId)
+                            }
+                            ProviderIcon { objectName: "hostProvider_" + channelEntry.groupId; provider: channelEntry.groupProtocol }
                             DetailText {
                                 objectName: "hostGroup_" + channelEntry.groupId
                                 text: channelEntry.groupLabel; color: Theme.muted; font.pixelSize: 11
                                 selectByMouse: true; wrapMode: TextEdit.WrapAnywhere
                             }
+                            Glyph { objectName: "activeHost_" + channelEntry.groupId; symbol: "headphones"; color: Theme.accent; visible: !!root.current.joined && root.channelList.some(function(entry) { return entry.id === root.activeHost && (entry.deviceId || entry.id) === channelEntry.groupId }); description: qsTr("Connected to voice") }
                             UnreadDot { objectName: "unreadHost_" + channelEntry.groupId; visible: channelEntry.groupUnread }
                         }
                         Rectangle {
                             id: channelRow
+                            visible: channelEntry.groupExpanded
                             readonly property var modelData: channelEntry.channelData
                             readonly property bool privateFolder: !!modelData.privateFolder
                             readonly property bool privateConversation: !!modelData.private
                             readonly property bool active: root.activeHost === modelData.id && !!root.current.joined
                             readonly property bool owned: !privateFolder && !privateConversation && (!!modelData.owned || modelData.id === (root.current.ownId || root.network.ownId))
-                            readonly property bool selected: root.inspectedHost === modelData.id && root.chatExpanded
+                            readonly property bool selected: visible && root.inspectedHost === modelData.id && root.chatExpanded
                             readonly property var members: modelData.members || []
                             Layout.fillWidth: true; implicitHeight: (privateFolder ? 34 : 42) + (selected && !privateFolder ? chatSlot.height + 8 : 0)
                             radius: Theme.controlRadius; color: active ? Theme.surface : channelHover.containsMouse ? Theme.raised : "transparent"
@@ -1760,7 +1787,6 @@ PanelWindow {
                                 hoverEnabled: true; acceptedButtons: Qt.LeftButton | Qt.RightButton
                                 onDoubleClicked: function(mouse) {
                                     if (mouse.button !== Qt.LeftButton) return
-                                    channelClick.stop()
                                     if (channelRow.privateFolder) root.togglePrivateFolder(modelData.hostId)
                                     else { root.chatExpanded = true; root.joinHost(modelData.id) }
                                 }
@@ -1771,7 +1797,7 @@ PanelWindow {
                                     }
                                     if (mouse.button === Qt.RightButton && channelRow.privateConversation) { privateMessages.hostId = root.privateHostId(modelData); privateMessages.hostDeviceId = modelData.deviceId; privateMessages.open() }
                                     else if (mouse.button === Qt.RightButton) { root.selectedHost = modelData.id; channelMenu.popup() }
-                                    else if (mouse.button === Qt.LeftButton) { channelClick.hostId = modelData.id; channelClick.restart() }
+                                    else if (mouse.button === Qt.LeftButton) root.showHostChat(modelData.id)
                                 }
                             }
                             RowLayout {

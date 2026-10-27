@@ -73,23 +73,30 @@ struct Device final {
     }
     bool join(LocalChannel& host) { return channel.join(host.ownId(), "127.0.0.1", host.port()); }
     bool listenWithUdp(const QHostAddress& address = QHostAddress::LocalHost, quint16 firstPort = 0) {
-        for (int attempt = 0; attempt < 32; ++attempt) {
+        if (!firstPort) {
             QTcpServer reservation;
-            if (!reservation.listen(QHostAddress::Any, attempt == 0 ? firstPort : 0)) {
-                if (attempt == 0 && firstPort) continue;
+            if (!reservation.listen(QHostAddress::Any, 0)) {
                 qWarning() << "Unable to reserve device access port:" << reservation.errorString();
                 return false;
             }
-            const auto port = reservation.serverPort();
-            // Windows can reserve different port ranges for TCP and UDP.
-            // Check both protocols before starting the channel listener.
-            QUdpSocket mediaReservation;
-            if (!mediaReservation.bind(QHostAddress::Any, port, QUdpSocket::DontShareAddress)) continue;
-            reservation.close();
-            if (!channel.startService(address, port)) continue;
-            return channel.listen(address, port);
+            firstPort = reservation.serverPort();
         }
-        qWarning() << "Unable to find a TCP/UDP media port after 32 attempts:" << channel.status();
+        firstPort = std::max<quint16>(1024, firstPort);
+        auto port = firstPort;
+        do {
+            // Windows excludes whole ranges independently for TCP and UDP.
+            // Walk distinct candidates instead of asking TCP for another port
+            // which may still be inside the same UDP exclusion range.
+            QTcpServer reservation;
+            QUdpSocket mediaReservation;
+            if (reservation.listen(QHostAddress::Any, port)
+                && mediaReservation.bind(QHostAddress::Any, port, QUdpSocket::DontShareAddress)) {
+                reservation.close();
+                if (channel.startService(address, port)) return channel.listen(address, port);
+            }
+            port = port == 65535 ? 1024 : quint16(port + 1);
+        } while (port != firstPort);
+        qWarning() << "No shared TCP/UDP test port is available:" << channel.status();
         return false;
     }
 };
@@ -378,9 +385,11 @@ private slots:
                 bool completed = false;
                 QTimer::singleShot(0, &signal, [&] { completed = true; });
                 const bool polled = waitForEvents([&] { return completed; });
-                QElapsedTimer elapsed; elapsed.start();
+                // Verify cleanup event delivery, not an exact wall-clock boundary.
+                completed = false;
+                QTimer::singleShot(0, &signal, [&] { completed = true; });
                 const bool expired = !waitForEvents([] { return false; }, 10)
-                    && elapsed.elapsed() >= 10;
+                    && completed;
                 qInfo("cleanup signalled=%d polled=%d expired=%d", signalled, polled, expired);
             });
             QFAIL("Intentional failure before asynchronous cleanup");
@@ -2491,18 +2500,30 @@ private slots:
     }
     void hostingClientsKeepVoiceAndScreenDatagramsIndependent_data() {
         QTest::addColumn<QString>("occupiedProtocol");
-        QTest::newRow("available") << QString{};
-        QTest::newRow("udp-unavailable") << QString("udp");
-        QTest::newRow("tcp-unavailable") << QString("tcp");
+        QTest::addColumn<int>("occupiedCount");
+        QTest::newRow("available") << QString{} << 0;
+        QTest::newRow("udp-unavailable") << QString("udp") << 1;
+        QTest::newRow("tcp-unavailable") << QString("tcp") << 1;
+        QTest::newRow("udp-range-unavailable") << QString("udp") << 64;
     }
     void hostingClientsKeepVoiceAndScreenDatagramsIndependent() {
         QFETCH(QString, occupiedProtocol);
+        QFETCH(int, occupiedCount);
         QUdpSocket occupiedUdp;
         QTcpServer occupiedTcp;
+        std::vector<std::unique_ptr<QUdpSocket>> occupiedRange;
         quint16 firstPort = 0;
         if (occupiedProtocol == "udp") {
             QVERIFY(occupiedUdp.bind(QHostAddress::Any, 0, QUdpSocket::DontShareAddress));
             firstPort = occupiedUdp.localPort();
+            for (int offset = 1; offset < occupiedCount; ++offset) {
+                auto socket = std::make_unique<QUdpSocket>();
+                const auto port = quint16(1024 + (int(firstPort) - 1024 + offset) % (65536 - 1024));
+                QVERIFY(socket->bind(QHostAddress::Any, port, QUdpSocket::DontShareAddress)
+                    || socket->error() == QAbstractSocket::AddressInUseError
+                    || socket->error() == QAbstractSocket::SocketAccessError);
+                occupiedRange.push_back(std::move(socket));
+            }
         } else if (occupiedProtocol == "tcp") {
             QVERIFY(occupiedTcp.listen(QHostAddress::Any, 0));
             firstPort = occupiedTcp.serverPort();
@@ -2510,6 +2531,8 @@ private slots:
         QTemporaryDir dir;
         Device host(dir.filePath("host"), "Owner"), client(dir.filePath("client"), "Viewer"), speaker(dir.filePath("speaker"), "Speaker");
         QVERIFY(host.listenWithUdp(QHostAddress::LocalHost, firstPort)); QVERIFY(client.listenWithUdp());
+        for (int offset = 0; offset < occupiedCount; ++offset)
+            QVERIFY(host.channel.port() != quint16(1024 + (int(firstPort) - 1024 + offset) % (65536 - 1024)));
         QVERIFY(host.channel.setScreenSharing(true));
         QVERIFY(host.channel.decide(client.channel.ownId(), true)); QVERIFY(host.channel.decide(speaker.channel.ownId(), true));
         DelayedLink link(host.channel.port()); link.udpDelay = 0;
@@ -2525,31 +2548,45 @@ private slots:
         auto voice = voicePacket(0);
         QByteArray image = "warmup";
         const QJsonObject format{{"codec", "mpeg4"}, {"width", 640}, {"height", 360}, {"extra", ""}};
+        int deliveredAudio = 0, receivedAudio = 0, receivedVideo = 0;
+        const std::unique_ptr<OpusDecoder, decltype(&opus_decoder_destroy)> decoder(
+            opus_decoder_create(48000, 2, nullptr), opus_decoder_destroy);
+        QVERIFY(decoder);
+        QObject reception;
+        connect(&client.channel, &LocalChannel::audioReceived, &reception, [&](const QString& id, const QByteArray& packet) {
+            QCOMPARE(id, speaker.channel.ownId());
+            std::array<float, 1920> samples{};
+            QCOMPARE(opus_decode_float(decoder.get(), reinterpret_cast<const unsigned char*>(packet.constData()),
+                int(packet.size()), samples.data(), 960, 0), 960);
+            ++deliveredAudio;
+            if (std::inner_product(samples.begin(), samples.end(), samples.begin(), 0.0) > 0.1) ++receivedAudio;
+        });
+        connect(&client.channel, &LocalChannel::screenFrameReceived, &reception,
+            [&](const QString& id, qint64, const QJsonObject&, const QByteArray& frame) {
+                QCOMPARE(id, host.channel.ownId());
+                if (frame == image) ++receivedVideo;
+            });
         QTimer producer; producer.setInterval(34);
         connect(&producer, &QTimer::timeout, this, [&] {
             QVERIFY(speaker.channel.sendAudio(voice));
             for (int tier : host.channel.screenTiers()) QVERIFY(host.channel.sendScreenFrame(tier, format, image, true));
         });
         producer.start();
-        QVERIFY(waitForEvents([&] { return link.audioDatagrams >= 10 && link.videoDatagrams >= 10; }, 8000));
-        // Hold TLS until fresh audio and video arrive. A timing race against
-        // delayed TLS measures runner scheduling rather than transport isolation.
+        // DTLS traffic also includes handshake and probe records. Wait for
+        // delivered media and its final acknowledgement before blocking TLS.
+        QVERIFY2(waitForEvents([&] {
+            return link.audioDatagrams >= 10 && link.videoDatagrams >= 10
+                && deliveredAudio >= 5 && receivedVideo >= 5 && !host.channel.screenTiers().isEmpty();
+        }, 8000), qPrintable(QString("Warmup audio=%1 video=%2; proxy audio=%3 video=%4")
+            .arg(deliveredAudio).arg(receivedVideo).arg(link.audioDatagrams).arg(link.videoDatagrams)));
+        // Fresh audio and video must still arrive while reliable traffic is held.
         link.holdReliable = true;
         voice = voicePacket(880); image = "UDP marker";
-        int receivedAudio = 0, receivedVideo = 0;
-        const std::unique_ptr<OpusDecoder, decltype(&opus_decoder_destroy)> decoder(
-            opus_decoder_create(48000, 2, nullptr), opus_decoder_destroy);
-        QVERIFY(decoder);
-        QObject reception;
-        connect(&client.channel, &LocalChannel::audioReceived, &reception, [&](const QString&, const QByteArray& packet) {
-            std::array<float, 1920> samples{};
-            QCOMPARE(opus_decode_float(decoder.get(), reinterpret_cast<const unsigned char*>(packet.constData()),
-                int(packet.size()), samples.data(), 960, 0), 960);
-            if (std::inner_product(samples.begin(), samples.end(), samples.begin(), 0.0) > 0.1) ++receivedAudio;
-        });
-        connect(&client.channel, &LocalChannel::screenFrameReceived, &reception,
-            [&](const QString&, qint64, const QJsonObject&, const QByteArray& frame) { if (frame == image) ++receivedVideo; });
-        QVERIFY(waitForEvents([&] { return receivedAudio >= 5 && receivedVideo >= 5; }));
+        receivedAudio = receivedVideo = 0;
+        QVERIFY2(waitForEvents([&] { return receivedAudio >= 5 && receivedVideo >= 5; }),
+            qPrintable(QString("Received audio=%1 video=%2; proxy audio=%3 video=%4; joined=%5 screen=%6")
+                .arg(receivedAudio).arg(receivedVideo).arg(link.audioDatagrams).arg(link.videoDatagrams)
+                .arg(client.channel.joined()).arg(client.channel.screenInfo(host.channel.ownId()).value("tier").toInt())));
         link.holdReliable = false;
         producer.stop(); QVERIFY(client.channel.hosting()); QVERIFY(client.channel.joined());
     }

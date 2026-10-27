@@ -229,7 +229,10 @@ QList<QByteArray> VoiceMixer::encode(std::span<const float> samples, int sampleR
 QList<QByteArray> VoiceMixer::pace(QList<QByteArray> packets, qint64 now) {
     if (now < 0) throw std::invalid_argument("Capture clock must be nonnegative");
     if (outgoing_.isEmpty() && packets.isEmpty()) return {};
-    if (outgoing_.isEmpty() && (nextPacketAt_ < 0 || now - nextPacketAt_ > 120)) nextPacketAt_ = now;
+    // A delayed callback can supply several frames of continuous capture.
+    // Only reset after silence preceding that batch, not its arrival delay.
+    if (outgoing_.isEmpty() && (nextPacketAt_ < 0
+        || now - nextPacketAt_ > 120 + (packets.size() - 1) * 20)) nextPacketAt_ = now;
     // Catch up within the transport's six-frame budget, never dump an entire
     // retained word into the receiver's smaller jitter buffer in one callback.
     if (now - nextPacketAt_ > 100) {
