@@ -4153,6 +4153,8 @@ TestCase {
         draft.text = "A draft for the lounge"
         const ownRow = visualChild(view.contentItem, "channelRow_" + channel.ownId)
         reveal(ownRow)
+        // Move the pointer after scrolling so stale hover popups cannot swallow the click.
+        mouseMove(ownRow, 35, ownRow.height / 2)
         mouseClick(ownRow, 35, ownRow.height / 2)
         tryCompare(channel, "chatHostId", channel.ownId)
         compare(channel.joinedHostId, channel.ownId)
@@ -4160,6 +4162,7 @@ TestCase {
         draft.text = "A separate workshop draft"
         let other = visualChild(view.contentItem, "channelRow_" + remoteChannel.ownId)
         reveal(other)
+        mouseMove(other, 35, other.height / 2)
         mouseClick(other, 35, other.height / 2)
         tryCompare(channel, "chatHostId", remoteChannel.ownId)
         compare(draft.text, "A draft for the lounge")
@@ -4180,6 +4183,7 @@ TestCase {
         if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/chat-multiple-hosts.png"))
         other = visualChild(view.contentItem, "channelRow_" + remoteChannel.ownId)
         reveal(other)
+        mouseMove(other, 35, other.height / 2)
         mouseDoubleClickSequence(other, 35, other.height / 2)
         tryCompare(channel, "joinedHostId", remoteChannel.ownId)
         tryCompare(channel, "joined", true)
