@@ -2548,31 +2548,45 @@ private slots:
         auto voice = voicePacket(0);
         QByteArray image = "warmup";
         const QJsonObject format{{"codec", "mpeg4"}, {"width", 640}, {"height", 360}, {"extra", ""}};
+        int deliveredAudio = 0, receivedAudio = 0, receivedVideo = 0;
+        const std::unique_ptr<OpusDecoder, decltype(&opus_decoder_destroy)> decoder(
+            opus_decoder_create(48000, 2, nullptr), opus_decoder_destroy);
+        QVERIFY(decoder);
+        QObject reception;
+        connect(&client.channel, &LocalChannel::audioReceived, &reception, [&](const QString& id, const QByteArray& packet) {
+            QCOMPARE(id, speaker.channel.ownId());
+            std::array<float, 1920> samples{};
+            QCOMPARE(opus_decode_float(decoder.get(), reinterpret_cast<const unsigned char*>(packet.constData()),
+                int(packet.size()), samples.data(), 960, 0), 960);
+            ++deliveredAudio;
+            if (std::inner_product(samples.begin(), samples.end(), samples.begin(), 0.0) > 0.1) ++receivedAudio;
+        });
+        connect(&client.channel, &LocalChannel::screenFrameReceived, &reception,
+            [&](const QString& id, qint64, const QJsonObject&, const QByteArray& frame) {
+                QCOMPARE(id, host.channel.ownId());
+                if (frame == image) ++receivedVideo;
+            });
         QTimer producer; producer.setInterval(34);
         connect(&producer, &QTimer::timeout, this, [&] {
             QVERIFY(speaker.channel.sendAudio(voice));
             for (int tier : host.channel.screenTiers()) QVERIFY(host.channel.sendScreenFrame(tier, format, image, true));
         });
         producer.start();
-        QVERIFY(waitForEvents([&] { return link.audioDatagrams >= 10 && link.videoDatagrams >= 10; }, 8000));
-        // Hold TLS until fresh audio and video arrive. A timing race against
-        // delayed TLS measures runner scheduling rather than transport isolation.
+        // DTLS traffic also includes handshake and probe records. Wait for
+        // delivered media and its final acknowledgement before blocking TLS.
+        QVERIFY2(waitForEvents([&] {
+            return link.audioDatagrams >= 10 && link.videoDatagrams >= 10
+                && deliveredAudio >= 5 && receivedVideo >= 5 && !host.channel.screenTiers().isEmpty();
+        }, 8000), qPrintable(QString("Warmup audio=%1 video=%2; proxy audio=%3 video=%4")
+            .arg(deliveredAudio).arg(receivedVideo).arg(link.audioDatagrams).arg(link.videoDatagrams)));
+        // Fresh audio and video must still arrive while reliable traffic is held.
         link.holdReliable = true;
         voice = voicePacket(880); image = "UDP marker";
-        int receivedAudio = 0, receivedVideo = 0;
-        const std::unique_ptr<OpusDecoder, decltype(&opus_decoder_destroy)> decoder(
-            opus_decoder_create(48000, 2, nullptr), opus_decoder_destroy);
-        QVERIFY(decoder);
-        QObject reception;
-        connect(&client.channel, &LocalChannel::audioReceived, &reception, [&](const QString&, const QByteArray& packet) {
-            std::array<float, 1920> samples{};
-            QCOMPARE(opus_decode_float(decoder.get(), reinterpret_cast<const unsigned char*>(packet.constData()),
-                int(packet.size()), samples.data(), 960, 0), 960);
-            if (std::inner_product(samples.begin(), samples.end(), samples.begin(), 0.0) > 0.1) ++receivedAudio;
-        });
-        connect(&client.channel, &LocalChannel::screenFrameReceived, &reception,
-            [&](const QString&, qint64, const QJsonObject&, const QByteArray& frame) { if (frame == image) ++receivedVideo; });
-        QVERIFY(waitForEvents([&] { return receivedAudio >= 5 && receivedVideo >= 5; }));
+        receivedAudio = receivedVideo = 0;
+        QVERIFY2(waitForEvents([&] { return receivedAudio >= 5 && receivedVideo >= 5; }),
+            qPrintable(QString("Received audio=%1 video=%2; proxy audio=%3 video=%4; joined=%5 screen=%6")
+                .arg(receivedAudio).arg(receivedVideo).arg(link.audioDatagrams).arg(link.videoDatagrams)
+                .arg(client.channel.joined()).arg(client.channel.screenInfo(host.channel.ownId()).value("tier").toInt())));
         link.holdReliable = false;
         producer.stop(); QVERIFY(client.channel.hosting()); QVERIFY(client.channel.joined());
     }

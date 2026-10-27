@@ -419,6 +419,7 @@ TestCase {
         let scrollName = "settingsScroll"
         let ancestor = item
         while (ancestor) {
+            if (ancestor.objectName === "channelsScroll") { scrollName = "channelsScroll"; break }
             if (ancestor.objectName === "audioSettings") { target.openSettings(1); scrollName = "audioSettingsScroll"; break }
             if (ancestor.objectName === "hostPage") { openOwnChannelInfo(); scrollName = "channelInfoScroll"; break }
             if (ancestor.objectName === "generalSettings") { view.openSettings(0); break }
@@ -4113,12 +4114,15 @@ TestCase {
         verify(!hostDot.visible)
     }
 
-    function test_multipleChatsKeepDraftsAndVoiceSeparate() {
+    function test_multipleChatsKeepDraftsAndVoiceSeparate_data() {
+        return [{tag: "desktop", height: 640}, {tag: "compact", height: 360}]
+    }
+    function test_multipleChatsKeepDraftsAndVoiceSeparate(data) {
         const previousName = session.userName, previousChannel = channel.channelName
         const previousRemote = remoteChannel.channelName
         session.setUserName("Alex"); channel.setChannelName("Workshop")
         remoteChannel.setChannelName("Evening lounge")
-        view.width = 460; view.height = 640
+        view.width = 460; view.height = data.height
         verify(fixtures.startHost()); verify(fixtures.startRemoteHost())
         verify(remoteChannel.decide(channel.ownId, true))
         verify(channel.join(channel.ownId, "127.0.0.1", channel.servicePort))
@@ -4143,18 +4147,19 @@ TestCase {
         tryCompare(panel, "visible", true)
         const loungeSlot = visualChild(view.contentItem, "conversationSlot_" + remoteChannel.ownId)
         verify(loungeSlot !== null, "Chat is inside its expanded channel")
-        compare(loungeSlot.parent.color, "#00000000", "Reading an unjoined channel does not give it an active background")
+        verify(["#00000000", Theme.raised.toString()].includes(loungeSlot.parent.color.toString()),
+            "Reading or hovering an unjoined channel does not give it the voice channel background")
         compare(panel.parent.parent, loungeSlot)
         draft.text = "A draft for the lounge"
         const ownRow = visualChild(view.contentItem, "channelRow_" + channel.ownId)
-        waitForRendering(ownRow)
+        reveal(ownRow)
         mouseClick(ownRow, 35, ownRow.height / 2)
         tryCompare(channel, "chatHostId", channel.ownId)
         compare(channel.joinedHostId, channel.ownId)
         compare(draft.text, "")
         draft.text = "A separate workshop draft"
         let other = visualChild(view.contentItem, "channelRow_" + remoteChannel.ownId)
-        waitForRendering(other)
+        reveal(other)
         mouseClick(other, 35, other.height / 2)
         tryCompare(channel, "chatHostId", remoteChannel.ownId)
         compare(draft.text, "A draft for the lounge")
@@ -4174,7 +4179,7 @@ TestCase {
         waitForRendering(panel)
         if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/chat-multiple-hosts.png"))
         other = visualChild(view.contentItem, "channelRow_" + remoteChannel.ownId)
-        waitForRendering(other)
+        reveal(other)
         mouseDoubleClickSequence(other, 35, other.height / 2)
         tryCompare(channel, "joinedHostId", remoteChannel.ownId)
         tryCompare(channel, "joined", true)
