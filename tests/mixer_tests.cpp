@@ -469,6 +469,30 @@ private slots:
         QCOMPARE(pacer.pace(frames.sliced(1, 6), 5720), frames.sliced(1, 6));
         QVERIFY_THROWS_EXCEPTION(std::invalid_argument, (void)pacer.pace({}, -1));
     }
+    void capturePacingDistinguishesLateSamplesFromSilence_data() {
+        QTest::addColumn<int>("arrival");
+        QTest::addColumn<int>("batch");
+        QTest::addColumn<int>("immediate");
+        QTest::newRow("late-at-boundary") << 140 << 6 << 6;
+        QTest::newRow("late-past-boundary") << 141 << 6 << 6;
+        QTest::newRow("silence-one-frame") << 5000 << 1 << 1;
+        QTest::newRow("silence-six-frames") << 5000 << 6 << 1;
+        QTest::newRow("silence-pre-roll") << 5000 << 18 << 1;
+    }
+    void capturePacingDistinguishesLateSamplesFromSilence() {
+        QFETCH(int, arrival); QFETCH(int, batch); QFETCH(int, immediate);
+        squad::VoiceMixer encoder, pacer;
+        QList<QByteArray> frames;
+        for (int frame = 0; frame <= batch + 1; ++frame)
+            frames.append(encoder.encode(speechFrame(frame, 1, 0.3), 48000));
+        QCOMPARE(pacer.pace(frames.sliced(0, 1), 0), frames.sliced(0, 1));
+        QCOMPARE(pacer.pace(frames.sliced(1, batch), arrival), frames.sliced(1, immediate));
+        for (int frame = immediate; frame < batch; ++frame)
+            QCOMPARE(pacer.pace({}, arrival + (frame - immediate + 1) * 20), frames.sliced(frame + 1, 1));
+        QVERIFY(!pacer.capturePending());
+        QCOMPARE(pacer.pace(frames.sliced(batch + 1, 1), arrival + (batch - immediate + 1) * 20),
+                 frames.sliced(batch + 1, 1));
+    }
     void pacedActivationReachesPlaybackUnchanged_data() {
         QTest::addColumn<int>("channels"); QTest::addColumn<int>("batch"); QTest::addColumn<bool>("ptt");
         for (int channels : {1, 2}) for (int batch : {1, 6}) for (bool ptt : {false, true})
