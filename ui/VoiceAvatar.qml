@@ -138,14 +138,14 @@ Item {
     }
     Rectangle {
         objectName: "providerBadge"
-        visible: root.identity.length > 0 && !root.music && !root.systemMessage
+        visible: root.teamSpeak && root.identity.length > 0 && !root.music && !root.systemMessage
         anchors.top: parent.top; anchors.right: parent.right
         width: Math.max(14, Math.min(20, root.width * 0.4)); height: width
         radius: Theme.smallRadius; color: Theme.surface
         ProviderIcon {
             objectName: "providerIcon"
             anchors.fill: parent; anchors.margins: 1
-            provider: root.teamSpeak ? "teamspeak" : "squadspeak"
+            provider: root.teamSpeak ? "teamspeak" : ""
         }
     }
     Row {

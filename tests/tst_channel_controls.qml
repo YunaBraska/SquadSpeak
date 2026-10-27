@@ -3231,10 +3231,9 @@ TestCase {
         verify(item)
         const badge = findChild(item, "providerBadge")
         verify(badge)
-        verify(badge.visible)
+        verify(!badge.visible, "SquadSpeak participants have no provider badge")
         const icon = findChild(badge, "providerIcon")
-        compare(icon.label, "SquadSpeak")
-        tryCompare(findChild(icon, "providerArtwork"), "status", Image.Ready)
+        compare(findChild(icon, "providerArtwork").source.toString(), "")
         item.teamSpeak = true
         compare(icon.label, "TeamSpeak")
         tryCompare(findChild(icon, "providerArtwork"), "status", Image.Ready)
@@ -3243,7 +3242,11 @@ TestCase {
         compare(badge.y, 0)
         verify(badge.height <= findChild(item, "microphoneBadge").mapToItem(item, 0, 0).y)
         item.teamSpeak = false
-        compare(icon.label, "SquadSpeak")
+        verify(!badge.visible, "SquadSpeak clients on a TS3 host also have no provider badge")
+        item.teamSpeak = true
+        item.music = true
+        verify(!badge.visible)
+        item.music = false
         item.systemMessage = true
         verify(!badge.visible)
         item.systemMessage = false
@@ -3264,7 +3267,7 @@ TestCase {
         }
         view.memberOptions({id: "squad-peer", name: "Example", avatarId: "courier", teamSpeak: false}, "ts-host", false)
         compare(findChild(dialog, "requestClient").text, "SquadSpeak")
-        compare(findChild(findChild(dialog, "requestAvatar"), "providerIcon").label, "SquadSpeak")
+        verify(!findChild(findChild(dialog, "requestAvatar"), "providerBadge").visible)
         if (imageDirectory.length > 0) {
             waitForRendering(view.contentItem)
             verify(fixtures.saveWindow(view, imageDirectory + "/inspect-squadspeak-" + data.tag + ".png"))
