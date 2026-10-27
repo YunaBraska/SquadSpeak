@@ -13,7 +13,6 @@ Item {
     signal memberRequested(var member, bool contextual)
     property bool active: visible
     property bool readable: active
-    property Item readViewport: null
     property string readReceipt: ""
     readonly property bool remote: network.remoteMode
     readonly property var current: remote ? network.remoteView : network
@@ -68,19 +67,11 @@ Item {
             || !current.chatReady || !history.atYEnd || visibleMessages.count === 0) return
         const last = messageRows.itemAt(visibleMessages.count - 1)
         if (!last) return
-        if (readViewport) {
-            const bottom = last.mapToItem(readViewport, 0, last.height).y
-            if (bottom < 0 || bottom > readViewport.height) return
-        }
         const sequence = last.message.sequence
         const receipt = hostId + ":" + sequence
         if (readReceipt !== receipt && network.markChatRead(hostId, sequence)) readReceipt = receipt
     }
     onReadableChanged: Qt.callLater(readLatest)
-    Connections {
-        target: root.readViewport ? root.readViewport.contentItem : null
-        function onContentYChanged() { Qt.callLater(root.readLatest) }
-    }
 
     function saveAnchor() {
         if (updating) return
