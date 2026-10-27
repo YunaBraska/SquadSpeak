@@ -1189,6 +1189,10 @@
             <source>Unread messages</source>
             <translation>Mesazhe të palexuara</translation>
         </message>
+        <message>
+            <source>Chat only</source>
+            <translation>Vetëm bisedë</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>

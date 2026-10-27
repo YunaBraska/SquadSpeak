@@ -1189,6 +1189,10 @@
             <source>Unread messages</source>
             <translation>Pesan belum dibaca</translation>
         </message>
+        <message>
+            <source>Chat only</source>
+            <translation>Hanya chat</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>

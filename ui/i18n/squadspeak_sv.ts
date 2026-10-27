@@ -1189,6 +1189,10 @@
             <source>Unread messages</source>
             <translation>Olästa meddelanden</translation>
         </message>
+        <message>
+            <source>Chat only</source>
+            <translation>Endast chatt</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>

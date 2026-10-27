@@ -1189,6 +1189,10 @@
             <source>Unread messages</source>
             <translation>Չընթերցված հաղորդագրություններ</translation>
         </message>
+        <message>
+            <source>Chat only</source>
+            <translation>Միայն զրույց</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>

@@ -1189,6 +1189,10 @@
             <source>Unread messages</source>
             <translation>Оқылмаған хабарламалар</translation>
         </message>
+        <message>
+            <source>Chat only</source>
+            <translation>Тек чат</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>

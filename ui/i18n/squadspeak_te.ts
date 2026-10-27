@@ -1189,6 +1189,10 @@
             <source>Unread messages</source>
             <translation>చదవని సందేశాలు</translation>
         </message>
+        <message>
+            <source>Chat only</source>
+            <translation>చాట్ మాత్రమే</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>

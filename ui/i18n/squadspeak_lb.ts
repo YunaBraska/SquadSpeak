@@ -1189,6 +1189,10 @@
             <source>Unread messages</source>
             <translation>Ongelies Messagen</translation>
         </message>
+        <message>
+            <source>Chat only</source>
+            <translation>Nëmmen Chat</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>

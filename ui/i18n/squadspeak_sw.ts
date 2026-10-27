@@ -1189,6 +1189,10 @@
             <source>Unread messages</source>
             <translation>Ujumbe ambao haujasomwa</translation>
         </message>
+        <message>
+            <source>Chat only</source>
+            <translation>Mazungumzo ya maandishi tu</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>

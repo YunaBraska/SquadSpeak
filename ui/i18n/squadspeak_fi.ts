@@ -1189,6 +1189,10 @@
             <source>Unread messages</source>
             <translation>Lukemattomat viestit</translation>
         </message>
+        <message>
+            <source>Chat only</source>
+            <translation>Vain chat</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>

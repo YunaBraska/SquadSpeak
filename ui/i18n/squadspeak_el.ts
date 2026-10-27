@@ -1189,6 +1189,10 @@
             <source>Unread messages</source>
             <translation>Μη αναγνωσμένα μηνύματα</translation>
         </message>
+        <message>
+            <source>Chat only</source>
+            <translation>Μόνο συνομιλία</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
