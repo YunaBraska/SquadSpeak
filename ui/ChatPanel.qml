@@ -139,10 +139,7 @@ Item {
     onHostIdChanged: switchDraft()
     onRemoteChanged: switchDraft()
     onRecordsChanged: updateHistory()
-    onActiveChanged: if (active) {
-        initialPage = true
-        restoreLayout()
-    }
+    onActiveChanged: if (active) restoreLayout()
     Component.onCompleted: switchDraft()
 
     ListModel { id: visibleMessages; dynamicRoles: true }
