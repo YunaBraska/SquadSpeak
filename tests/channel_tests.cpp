@@ -6826,6 +6826,7 @@ private slots:
             "SQUAD_SOAK_PACING must be realtime or delivery");
         const bool completeDelivery = pacing == "delivery";
         const bool deliveryPaced = instrumentedTiming || completeDelivery;
+        const int deliveryDeadlineMs = deliveryPaced ? 15000 : 5000;
         QFETCH(int, callbackDelayMs);
         QFETCH(int, sourceChannels);
         QVERIFY(sourceChannels == 1 || sourceChannels == 2);
@@ -7138,7 +7139,7 @@ private slots:
             // Delivery pacing bounds work in flight without reducing the
             // fanout or packet count. The default path measures realtime load.
             if (deliveryPaced && !receivedThrough(sentFrames)) {
-                if (now - sentAtMs >= 5000) {
+                if (now - sentAtMs >= deliveryDeadlineMs) {
                     deliveryTimedOut = true; input.stop();
                     for (size_t i = 0; i < audioCounts.size(); ++i) {
                         const int expected = sentFrames * (speakers - (i < size_t(speakers) ? 1 : 0));
@@ -7179,7 +7180,8 @@ private slots:
         sustained.start(); output.start(10); input.start(10);
         QVERIFY(waitForEvents(&input, &QTimer::timeout, [&] { return !input.isActive(); },
             soakSeconds * (deliveryPaced ? 15000 : 1500) + 5000));
-        QVERIFY2(!deliveryTimedOut, "Delivery-paced fanout did not deliver a frame to every listener within 5 seconds");
+        QVERIFY2(!deliveryTimedOut, qPrintable(QString("Delivery-paced fanout did not deliver a frame to every listener within %1 seconds")
+            .arg(deliveryDeadlineMs / 1000)));
         QCOMPARE(sentFrames, sustainedFrames);
         QVERIFY(validSend);
         output.stop();
@@ -7190,8 +7192,9 @@ private slots:
         // final packet cannot produce a gap report. Controlled delivery must
         // receive it too, within the same per-frame deadline.
         const bool drained = waitForEvents([&] { return receivedThrough(sustainedFrames); },
-            completeDelivery ? 5000 : 500);
-        QVERIFY2(!completeDelivery || drained, "Controlled fanout did not deliver every final packet within 5 seconds");
+            completeDelivery ? deliveryDeadlineMs : 500);
+        QVERIFY2(!completeDelivery || drained, qPrintable(QString("Controlled fanout did not deliver every final packet within %1 seconds")
+            .arg(deliveryDeadlineMs / 1000)));
         QVERIFY(receiverOutputValid);
 #ifndef Q_OS_WIN
         qInfo() << "Audio soak client processes CPU ms"

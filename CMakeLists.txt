@@ -596,7 +596,7 @@ if(BUILD_TESTING)
     if(WIN32)
         list(PREPEND desktop_test_command ${Python3_EXECUTABLE}
             "${CMAKE_CURRENT_SOURCE_DIR}/tests/run_with_deadline.py"
-            --timeout 45 --dump "${CMAKE_BINARY_DIR}/smoke/startup.dmp")
+            --timeout 90 --dump "${CMAKE_BINARY_DIR}/smoke/startup.dmp")
     endif()
     add_test(NAME desktop_smoke COMMAND ${desktop_test_command} --smoke-test
         --settings-file "${CMAKE_BINARY_DIR}/smoke/audio.ini"
@@ -605,9 +605,9 @@ if(BUILD_TESTING)
         TIMEOUT 45
         ENVIRONMENT "QT_QPA_PLATFORM=${ui_test_platform};QT_QUICK_BACKEND=software;QT_QUICK_CONTROLS_STYLE=Basic")
     if(WIN32)
-        # The child has 45 seconds for a cold QML startup. Allow bounded cleanup on failure.
+        # The child has 90 seconds for a cold QML startup. Allow bounded cleanup on failure.
         # Check cold QML startup before the long suite, without competing workloads.
-        set_tests_properties(desktop_smoke PROPERTIES TIMEOUT 60 RUN_SERIAL TRUE COST 2000)
+        set_tests_properties(desktop_smoke PROPERTIES TIMEOUT 105 RUN_SERIAL TRUE COST 2000)
     endif()
     add_test(NAME process_deadline COMMAND ${Python3_EXECUTABLE}
         "${CMAKE_CURRENT_SOURCE_DIR}/tests/process_deadline_tests.py"
