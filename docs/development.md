@@ -374,8 +374,9 @@ short test. Audio uses 64 clients and four simultaneous senders by default.
 `SQUAD_SOAK_CLIENTS` accepts 8-256. Eight clients provide a smaller control
 for distinguishing simultaneous-speaker load from distribution to many listeners.
 The hosted Intel workflow uses 32 clients and two simultaneous senders with
-`SQUAD_SOAK_PACING=delivery`. It waits for every listener before sending the next
-frame and requires every packet, including the final frame, within five seconds.
+`SQUAD_SOAK_PACING=delivery`. It waits for every listener and at least 20 ms of
+source time before sending the next frame. It requires every packet, including
+the final frame, within five seconds.
 All source-to-receiver bindings, mono/stereo rows and delayed callbacks remain
 checked. This mode proves complete delivery and decoding, not realtime capacity.
 This fixture setting does not restrict the application or certify greater overlap.

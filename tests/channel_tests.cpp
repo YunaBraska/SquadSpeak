@@ -7015,7 +7015,7 @@ private slots:
         std::array<squad::VoiceMixer, 2> playback{squad::VoiceMixer(2, 40), squad::VoiceMixer(2, 40)};
         std::array<int, 2> audibleFrames{};
         int renderedFrames = 0;
-        qint64 lastInputMs = 0, lastOutputMs = 0, maxInputGapMs = 0, maxOutputGapMs = 0;
+        qint64 lastInputMs = 0, lastOutputMs = 0, minInputGapMs = 0, maxInputGapMs = 0, maxOutputGapMs = 0;
         qint64 maxSendUs = 0, maxRenderUs = 0;
         bool validAudio = true;
         QElapsedTimer sustained;
@@ -7148,7 +7148,11 @@ private slots:
                 }
                 return;
             }
+            // Delivery feedback can arrive before the next 20 ms of audio
+            // exists. Preserve the source sample clock even on fast receivers.
+            if (deliveryPaced && now - lastInputMs < 20) return;
             maxInputGapMs = std::max(maxInputGapMs, now - lastInputMs);
+            minInputGapMs = sentFrames ? std::min(minInputGapMs, now - lastInputMs) : now - lastInputMs;
             lastInputMs = now;
             // Capture is sample-clocked, not callback-clocked. AudioModel
             // drains all available samples after a delayed wakeup. Keep this
@@ -7219,6 +7223,8 @@ private slots:
         QVERIFY(validAudio);
         for (const auto frames : audibleFrames) QVERIFY(frames > 0);
         if (deliveryPaced) {
+            QVERIFY2(minInputGapMs >= 20,
+                qPrintable(QString("Controlled source sent 20 ms frames only %1 ms apart").arg(minInputGapMs)));
             qInfo() << "Delivery-paced run, not a realtime capacity measurement";
         } else {
             const auto expectedFrames = playbackMs / 20;
