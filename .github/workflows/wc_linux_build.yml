@@ -61,7 +61,9 @@ jobs:
   build:
     name: "🐧 ${{ inputs.runner }} · ${{ inputs.mode }}"
     runs-on: ${{ inputs.runner }}
-    timeout-minutes: 60
+    # Instrumented cold builds need time for compilation plus the full test run.
+    # Per-test deadlines and post-suite collection checks remain unchanged.
+    timeout-minutes: ${{ inputs.mode == 'sanitizers' && 90 || 60 }}
     env:
       VERSION: ${{ inputs.version }}
       BUILD_MODE: ${{ inputs.mode }}
