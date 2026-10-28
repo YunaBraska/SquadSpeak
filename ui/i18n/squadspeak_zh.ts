@@ -1189,6 +1189,10 @@
             <source>Unread messages</source>
             <translation>未读消息</translation>
         </message>
+        <message>
+            <source>Chat only</source>
+            <translation>仅聊天</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>

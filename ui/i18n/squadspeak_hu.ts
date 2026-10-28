@@ -1189,6 +1189,10 @@
             <source>Unread messages</source>
             <translation>Olvasatlan üzenetek</translation>
         </message>
+        <message>
+            <source>Chat only</source>
+            <translation>Csak csevegés</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>

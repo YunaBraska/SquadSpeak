@@ -1189,6 +1189,10 @@
             <source>Unread messages</source>
             <translation>Messadis betg legids</translation>
         </message>
+        <message>
+            <source>Chat only</source>
+            <translation>Mo chat</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>

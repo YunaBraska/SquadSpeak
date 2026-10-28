@@ -1189,6 +1189,10 @@
             <source>Unread messages</source>
             <translation>Nelasīti ziņojumi</translation>
         </message>
+        <message>
+            <source>Chat only</source>
+            <translation>Tikai tērzēšana</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>

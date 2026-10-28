@@ -1189,6 +1189,10 @@
             <source>Unread messages</source>
             <translation>Neskaitytos žinutės</translation>
         </message>
+        <message>
+            <source>Chat only</source>
+            <translation>Tik pokalbis</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>

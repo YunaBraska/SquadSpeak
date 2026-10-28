@@ -3,6 +3,8 @@ import QtQuick.Controls.Basic
 
 CheckBox {
     id: root
+    Accessible.onPressAction: root.click()
+    Accessible.onToggleAction: root.click()
     implicitHeight: 32
     spacing: 8
     padding: 0

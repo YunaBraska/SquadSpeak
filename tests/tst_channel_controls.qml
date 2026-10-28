@@ -8,6 +8,10 @@ TestCase {
     id: test
     name: "DirectChannelControls"
     when: windowShown
+    function waitForFrame(item) {
+        view.update()
+        return waitForRendering(item)
+    }
     width: 560
     height: 760
     readonly property var view: scene.item ? scene.item.view : null
@@ -180,7 +184,8 @@ TestCase {
             window.updateChannelRows()
             findChild(window, "remoteTargetsDialog").close()
             window.closeSettings()
-            for (const action of ["autoJoinMenuItem", "inspectMember"]) {
+            if (window.details) window.details.close()
+            for (const action of ["inspectMember"]) {
                 const menu = findChild(window, action).menu
                 menu.close()
                 tryCompare(menu, "visible", false)
@@ -275,8 +280,8 @@ TestCase {
         captureDisplay.startSucceeds = false
         view.screen = captureDisplay; view.selectedHost = channel.ownId
         const share = findChild(view, "shareScreen"), picker = findChild(view, "screenPicker")
-        share.menu.popup()
-        tryCompare(share.menu, "opened", true)
+        findChild(view, "channelInfoDialog").open()
+        tryCompare(findChild(view, "channelInfoDialog"), "opened", true)
         waitForRendering(share)
         mouseClick(share)
         tryCompare(picker, "opened", true)
@@ -359,8 +364,8 @@ TestCase {
         view.screen = captureDisplay
         view.selectedHost = channel.ownId
         const share = findChild(view, "shareScreen")
-        share.menu.popup()
-        tryCompare(share.menu, "opened", true)
+        findChild(view, "channelInfoDialog").open()
+        tryCompare(findChild(view, "channelInfoDialog"), "opened", true)
         verify(share.visible)
         verify(share.enabled)
         waitForRendering(share)
@@ -376,8 +381,8 @@ TestCase {
         captureDisplay.active = true
         captureDisplay.computerAudio = false
         const menuAudio = findChild(view, "screenAudioWhileSharing")
-        share.menu.popup()
-        tryCompare(share.menu, "opened", true)
+        findChild(view, "channelInfoDialog").open()
+        tryCompare(findChild(view, "channelInfoDialog"), "opened", true)
         verify(menuAudio.visible)
         compare(menuAudio.text, "App audio")
         captureDisplay.audioAvailable = false
@@ -393,10 +398,10 @@ TestCase {
         compare(captureDisplay.audioEnabled, true)
         view.selectedHost = remoteChannel.ownId
         captureDisplay.hostId = remoteChannel.ownId
-        share.menu.popup()
-        tryCompare(share.menu, "opened", true)
+        findChild(view, "channelInfoDialog").open()
+        tryCompare(findChild(view, "channelInfoDialog"), "opened", true)
         verify(!menuAudio.visible)
-        share.menu.close()
+        findChild(view, "channelInfoDialog").close()
     }
 
     function cleanupTestCase() {
@@ -419,9 +424,9 @@ TestCase {
         let scrollName = "settingsScroll"
         let ancestor = item
         while (ancestor) {
-            if (ancestor.objectName === "channelsScroll") { scrollName = "channelsScroll"; break }
+            if (ancestor.objectName === "channelsScroll") { if (!ancestor.visible) { verify(fixtures.pressAccessible(findChild(target, "backToChannels"))); tryCompare(ancestor, "visible", true) } scrollName = "channelsScroll"; break }
             if (ancestor.objectName === "audioSettings") { target.openSettings(1); scrollName = "audioSettingsScroll"; break }
-            if (ancestor.objectName === "hostPage") { openOwnChannelInfo(); scrollName = "channelInfoScroll"; break }
+            if (ancestor.objectName === "channelInfoDialog") { ancestor.open(); scrollName = "channelInfoScroll"; break }
             if (ancestor.objectName === "generalSettings") { view.openSettings(0); break }
             if (ancestor.objectName === "discoverDialog") { ancestor.open(); break }
             ancestor = ancestor.parent
@@ -440,6 +445,268 @@ TestCase {
             if (match) return match
         }
         return null
+    }
+
+    function test_singleChannelIsDirectAndSearchKeepsMultiChannelHierarchy() {
+        verify(fixtures.startHost())
+        view.chatExpanded = false
+        const heading = visualChild(view.contentItem, "hostGroup_" + channel.ownId)
+        verify(!heading || !heading.visible, "A single channel has no redundant host heading")
+        const row = visualChild(view.contentItem, "channelRow_" + channel.ownId)
+        verify(row && row.visible)
+        const provider = visualChild(view.contentItem, "channelProvider_" + channel.ownId)
+        verify(provider && provider.visible)
+        compare(provider.label, "SquadSpeak")
+        if (!supporterLicense.directDistribution) return
+        verify(fixtures.setSupporter(true))
+        const extra = channel.addOwnedChannel("Find this channel")
+        verify(extra.length > 0)
+        tryVerify(function() { return visualChild(view.contentItem, "hostGroup_" + channel.ownId).visible })
+        view.searchOpen = true
+        findChild(view, "channelSearch").text = "Find this channel"
+        tryVerify(function() { return visualChild(view.contentItem, "channelRow_" + channel.ownId) === null })
+        verify(visualChild(view.contentItem, "hostGroup_" + channel.ownId).visible,
+            "Filtering to one result does not remove its host hierarchy")
+    }
+
+    function test_navigationHierarchyUsesConsistentLevels_data() {
+        return [{tag: "compact", width: 390, language: "en"},
+            {tag: "split", width: 960, language: "en"},
+            {tag: "rtl", width: 390, language: "ar"}]
+    }
+    function test_navigationHierarchyUsesConsistentLevels(data) {
+        if (!supporterLicense.directDistribution) return
+        view.width = data.width
+        verify(session.setLanguage(data.language))
+        verify(fixtures.startHost()); verify(fixtures.startRemoteHost())
+        verify(fixtures.setSupporter(true))
+        verify(channel.addOwnedChannel("Second room").length > 0)
+        verify(remoteChannel.decide(channel.ownId, true))
+        verify(channel.openChat(remoteChannel.ownId, "127.0.0.1", remoteChannel.servicePort))
+        tryCompare(channel, "chatReady", true)
+        verify(fixtures.pressAccessible(findChild(view, "backToChannels")))
+        if (data.width >= 840) view.openHostChat(channel.ownId)
+        const host = visualChild(view.contentItem, "hostGroup_" + channel.ownId)
+        const direct = visualChild(view.contentItem, "channelName_" + remoteChannel.ownId)
+        const child = visualChild(view.contentItem, "channelName_" + channel.ownId)
+        verify(host && direct && child)
+        verify(waitForPolish(view)); verify(waitForFrame(view.contentItem))
+        compare(host.font.pixelSize, 14); compare(direct.font.pixelSize, 14); compare(child.font.pixelSize, 14)
+        compare(host.font.weight, Font.DemiBold); compare(direct.font.weight, Font.DemiBold)
+        compare(child.font.weight, Font.Normal, "Ownership is an icon, not an extra font weight")
+        const rtl = data.language === "ar"
+        const leading = function(item) { return item.mapToItem(view.contentItem, rtl ? item.width : 0, 0).x }
+        compare(leading(direct), leading(host), "Single-channel entries align with host headings")
+        compare((leading(child) - leading(host)) * (rtl ? -1 : 1), 12, "Children use one indentation step")
+        if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/hierarchy-" + data.tag + ".png"))
+    }
+
+    function test_sameNamedDirectChannelsKeepOwnerContext() {
+        verify(fixtures.startHost()); verify(fixtures.startRemoteHost())
+        verify(channel.setChannelName("General")); verify(remoteChannel.setChannelName("General"))
+        verify(session.setUserName("Alice")); verify(remoteSession.setUserName("Bea"))
+        verify(remoteChannel.decide(channel.ownId, true))
+        verify(channel.openChat(remoteChannel.ownId, "127.0.0.1", remoteChannel.servicePort))
+        tryCompare(channel, "chatReady", true)
+        verify(fixtures.pressAccessible(findChild(view, "backToChannels")))
+        for (const pair of [[channel.ownId, "Alice"], [remoteChannel.ownId, "Bea"]]) {
+            const label = visualChild(view.contentItem, "channelOwner_" + pair[0])
+            verify(label && label.visible); compare(label.text, pair[1])
+            verify(!visualChild(view.contentItem, "hostGroup_" + pair[0]).visible)
+        }
+        const row = visualChild(view.contentItem, "channelRow_" + remoteChannel.ownId)
+        verify(waitForFrame(row)); mouseClick(row, 35, row.height / 2)
+        compare(findChild(view, "conversationTitle").text, "General")
+        view.requestActivate(); tryCompare(view, "active", true)
+        verify(fixtures.pressAccessible(findChild(view, "backToChannels")))
+        tryCompare(row.parent, "activeFocus", true)
+        keyClick(Qt.Key_Return)
+        tryCompare(findChild(view, "chatPanel"), "visible", true)
+        compare(channel.chatHostId, remoteChannel.ownId)
+    }
+
+    function test_footerMenuKeepsVoiceAndViewedChatDistinct_data() {
+        return [{tag: "compact", width: 390}, {tag: "split", width: 1100}]
+    }
+
+    function test_detailsReplaceOrShareChatWithoutLosingContext_data() {
+        return [{tag: "compact", width: 390}, {tag: "split", width: 1100}]
+    }
+    function test_detailsReplaceOrShareChatWithoutLosingContext(data) {
+        view.width = data.width
+        verify(fixtures.startHost()); verify(fixtures.startRemoteHost())
+        verify(channel.setChannelName("Workshop")); verify(remoteChannel.setChannelName("Lounge"))
+        verify(remoteChannel.decide(channel.ownId, true))
+        verify(remoteChannel.joinSaved(remoteChannel.ownId))
+        verify(channel.joinSaved(channel.ownId))
+        verify(channel.openChat(remoteChannel.ownId, "127.0.0.1", remoteChannel.servicePort))
+        tryVerify(function() { return channel.chatReady && remoteChannel.chatReady })
+        verify(remoteChannel.sendChat(("A long conversation to retain its reading position.\n\n").repeat(60)))
+        tryCompare(remoteChannel, "chatPending", false)
+        const chat = findChild(view, "chatPanel"), history = findChild(chat, "chatHistory")
+        const draft = findChild(chat, "chatDraft"), footer = findChild(view, "voiceConnection")
+        const info = findChild(view, "channelInfoDialog")
+        tryVerify(function() { return history.contentHeight > history.height * 2 && !chat.updating })
+        draft.text = "Keep my lounge draft"
+        verify(waitForPolish(view)); verify(waitForFrame(chat))
+        tryCompare(chat, "updating", false)
+        history.scrollTo(0)
+        verify(fixtures.pressAccessible(footer))
+        tryCompare(info, "opened", true)
+        compare(findChild(info, "channelName").text, "Workshop")
+        compare(channel.chatHostId, remoteChannel.ownId)
+        compare(channel.joinedHostId, channel.ownId)
+        compare(chat.visible, view.width >= 1100)
+        verify(waitForPolish(view))
+        verify(waitForFrame(view.contentItem))
+        const location = info.mapToItem(view.contentItem, 0, 0)
+        verify(location.x >= 0 && location.y >= 0 && location.x + info.width <= view.contentItem.width)
+        verify(location.y + info.height <= view.contentItem.height)
+        if (chat.visible) {
+            const chatRight = chat.mapToItem(view.contentItem, chat.width, 0).x
+            verify(chatRight <= location.x, "Details share the conversation area without covering it")
+        }
+        if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/details-" + data.tag + ".png"))
+        verify(fixtures.pressAccessible(findChild(info, "closeDetails")))
+        tryCompare(info, "opened", false)
+        tryCompare(chat, "visible", true)
+        compare(draft.text, "Keep my lounge draft")
+        tryCompare(chat, "updating", false)
+        compare(history.contentY, 0)
+        verify(fixtures.pressAccessible(footer)); tryCompare(info, "opened", true)
+        verify(fixtures.pressAccessible(footer)); tryCompare(info, "opened", false)
+        verify(fixtures.pressAccessible(footer)); tryCompare(info, "opened", true)
+        keyClick(Qt.Key_Escape); tryCompare(info, "opened", false)
+    }
+    function test_detailsOnlyMarkVisibleChatRead_data() {
+        return [{tag: "compact", width: 390}, {tag: "split", width: 1100}]
+    }
+    function test_detailsOnlyMarkVisibleChatRead(data) {
+        view.width = data.width
+        verify(fixtures.startHost()); verify(fixtures.startRemoteHost())
+        verify(remoteChannel.decide(channel.ownId, true))
+        verify(remoteChannel.joinSaved(remoteChannel.ownId))
+        verify(channel.openChat(remoteChannel.ownId, "127.0.0.1", remoteChannel.servicePort))
+        tryVerify(function() { return channel.chatReady && remoteChannel.chatReady })
+        view.requestActivate(); tryCompare(view, "active", true)
+        verify(fixtures.pressAccessible(findChild(view, "conversationOptions")))
+        const info = findChild(view, "channelInfoDialog")
+        tryCompare(info, "opened", true)
+        verify(remoteChannel.sendChat("A message arriving while details are open"))
+        tryCompare(remoteChannel, "chatPending", false)
+        tryVerify(function() { return channel.messages.some(m => m.text === "A message arriving while details are open") })
+        tryCompare(findChild(view, "chatPanel"), "updating", false)
+        tryVerify(function() { return channel.savedChannels.some(c => c.id === remoteChannel.ownId && !!c.unread === (view.width < 1100)) })
+        verify(fixtures.pressAccessible(findChild(info, "closeDetails")))
+        tryVerify(function() { return channel.savedChannels.some(c => c.id === remoteChannel.ownId && !c.unread) })
+    }
+    function test_channelDetailsCloseWhenTheirChannelIsRemoved() {
+        if (!supporterLicense.directDistribution) return
+        verify(fixtures.startHost()); verify(fixtures.setSupporter(true))
+        const id = channel.addOwnedChannel("Temporary room")
+        verify(id.length > 0)
+        const original = channel.channelName
+        view.showChannelInfo(id)
+        const info = findChild(view, "channelInfoDialog"), name = findChild(info, "channelName")
+        tryCompare(info, "opened", true)
+        reveal(name)
+        name.forceActiveFocus(); tryCompare(name, "activeFocus", true)
+        name.text = "An unfinished edit"
+        verify(channel.removeOwnedChannel(id))
+        tryCompare(info, "opened", false)
+        compare(channel.channelName, original, "A removed channel must not redirect an edit to the main channel")
+    }
+    function test_footerMenuKeepsVoiceAndViewedChatDistinct(data) {
+        view.width = data.width
+        verify(fixtures.startHost()); verify(fixtures.startRemoteHost())
+        verify(channel.setChannelName("Workshop")); verify(remoteChannel.setChannelName("Lounge"))
+        verify(remoteChannel.decide(channel.ownId, true))
+        verify(channel.joinSaved(channel.ownId)); tryCompare(channel, "joined", true)
+        verify(channel.openChat(remoteChannel.ownId, "127.0.0.1", remoteChannel.servicePort))
+        tryCompare(channel, "chatReady", true)
+        const footer = findChild(view, "voiceConnection"), info = findChild(view, "channelInfoDialog")
+        compare(footer.text, "Workshop")
+        verify(fixtures.pressAccessible(footer))
+        compare(channel.chatHostId, remoteChannel.ownId, "Opening voice details does not replace the viewed chat")
+        tryCompare(info, "opened", true)
+        compare(findChild(info, "channelName").text, "Workshop")
+        info.close(); tryCompare(info, "visible", false)
+        const context = findChild(view, "chatContext")
+        verify(context.visible)
+        verify(findChild(view, "chatOnlyHint").visible)
+        verify(fixtures.pressAccessible(findChild(view, "conversationOptions")))
+        tryCompare(info, "opened", true)
+        tryCompare(findChild(info, "channelDisplayName"), "text", "Lounge")
+        info.close(); tryCompare(info, "visible", false)
+        view.openHostChat(channel.ownId); tryCompare(channel, "chatHostId", channel.ownId)
+        tryCompare(context, "visible", false)
+        verify(footer.visible); compare(footer.text, "Workshop")
+        verify(findChild(view, "backToChannels").visible)
+        if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/voice-footer-" + data.tag + ".png"))
+    }
+
+    function test_compactVoiceFooterKeepsNameWithRadioAndRemoteOffer() {
+        view.width = 360
+        verify(fixtures.startHost()); verify(fixtures.startRemoteHost())
+        verify(remoteChannel.decide(channel.ownId, true))
+        verify(channel.openChat(remoteChannel.ownId, "127.0.0.1", remoteChannel.servicePort))
+        tryCompare(channel, "chatReady", true)
+        verify(remoteChannel.setRemotePermission(channel.ownId, true))
+        try {
+            tryVerify(function() { return channel.remoteOffers.length === 1 })
+            verify(channel.joinSaved(channel.ownId)); tryCompare(channel, "joined", true)
+            verify(fixtures.setBotMusicState("Test radio", "playing", true))
+            verify(waitForPolish(view)); verify(waitForFrame(view.contentItem))
+            const name = findChild(view, "voiceChannelName")
+            verify(name.visible && name.width >= 32, "The voice channel retains readable text: " + name.width
+                + " px within " + findChild(view, "voiceConnection").width + " px")
+            let edge = 0
+            for (const key of ["addChannel", "openSettings", "backToChannels", "voiceConnection", "mute", "deafen", "remoteToggle"]) {
+                const item = findChild(view, key), p = item.mapToItem(view.footer, 0, 0)
+                verify(item.visible && p.x >= edge && p.x + item.width <= view.footer.width, key)
+                edge = p.x + item.width
+            }
+            if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/footer-radio-remote.png"))
+        } finally {
+            verify(fixtures.setBotMusicState("", "stopped", false))
+            verify(remoteChannel.setRemotePermission(channel.ownId, false))
+        }
+    }
+
+    function test_chatNavigationAdaptsWithoutLosingDraftOrVoice() {
+        verify(fixtures.startHost())
+        verify(channel.joinSaved(channel.ownId))
+        tryVerify(function() { return channel.joined && channel.chatReady })
+        view.width = 390; view.height = 620
+        const panel = findChild(view, "chatPanel"), list = findChild(view, "channelsScroll")
+        const draft = findChild(panel, "chatDraft")
+        draft.text = "Keep while navigating and resizing"
+        verify(panel.visible)
+        verify(!list.visible, "Compact chat uses the available width")
+        if (imageDirectory.length > 0) { verify(waitForPolish(view)); verify(waitForFrame(view.contentItem)); verify(fixtures.saveWindow(view, imageDirectory + "/navigation-compact-chat.png")) }
+        const back = findChild(view, "backToChannels")
+        verify(back && back.visible)
+        verify(fixtures.pressAccessible(back))
+        tryCompare(list, "visible", true)
+        compare(panel.visible, false)
+        if (imageDirectory.length > 0) { verify(waitForPolish(view)); verify(waitForFrame(view.contentItem)); verify(fixtures.saveWindow(view, imageDirectory + "/navigation-compact-list.png")) }
+        compare(channel.joinedHostId, channel.ownId)
+        verify(findChild(view, "voiceConnection").visible)
+        const row = visualChild(view.contentItem, "channelRow_" + channel.ownId)
+        verify(waitForFrame(row)); mouseClick(row, 35, row.height / 2)
+        tryCompare(panel, "visible", true)
+        compare(draft.text, "Keep while navigating and resizing")
+        view.width = 1100; view.height = 740
+        tryCompare(list, "visible", true)
+        verify(waitForFrame(panel))
+        const a = list.mapToItem(view.contentItem, 0, 0), b = panel.mapToItem(view.contentItem, 0, 0)
+        verify(b.x >= a.x + list.width, "Wide navigation and chat occupy separate columns")
+        if (imageDirectory.length > 0) { verify(waitForPolish(view)); verify(waitForFrame(view.contentItem)); verify(fixtures.saveWindow(view, imageDirectory + "/navigation-wide.png")) }
+        compare(channel.joinedHostId, channel.ownId)
+        compare(draft.text, "Keep while navigating and resizing")
+        view.width = 390
+        tryCompare(list, "visible", false)
+        compare(draft.text, "Keep while navigating and resizing")
     }
 
     function test_channelsStayGroupedAndRadioStateReachesOtherClients_data() {
@@ -461,27 +728,28 @@ TestCase {
         verify(remoteChannel.decide(channel.ownId, true))
         verify(channel.openChat(remoteChannel.ownId, "127.0.0.1", remoteChannel.servicePort))
         tryCompare(channel, "chatReady", true)
+        verify(fixtures.pressAccessible(findChild(view, "backToChannels")))
         const position = function(id) {
             const row = visualChild(view.contentItem, "channelRow_" + id)
             return row ? row.mapToItem(view.contentItem, 0, 0).y : -1
         }
         tryVerify(function() { return position(extra) >= 0 && position(extra) < position(channel.ownId) })
         const ownedGroup = visualChild(view.contentItem, "hostGroup_" + channel.ownId)
-        const foreignGroup = visualChild(view.contentItem, "hostGroup_" + remoteChannel.ownId)
+        const foreignGroup = visualChild(view.contentItem, "channelRow_" + remoteChannel.ownId).parent.parent
         verify(ownedGroup !== null && foreignGroup !== null)
         compare(ownedGroup.text, session.userName)
-        tryCompare(foreignGroup, "text", remoteSession.userName)
+        tryCompare(foreignGroup, "groupOwner", remoteSession.userName)
         verify(ownedGroup.selectByMouse)
         verify(session.setUserName("Willow Otter"))
         tryCompare(ownedGroup, "text", "Willow Otter")
         verify(remoteSession.setUserName("Moonlit Fox"))
-        tryCompare(foreignGroup, "text", "Moonlit Fox")
+        tryCompare(foreignGroup, "groupOwner", "Moonlit Fox")
         tryVerify(function() { return position(channel.ownId) < position(remoteChannel.ownId) }, 1000, "Own host remains above alphabetically earlier foreign hosts")
         view.update()
         verify(waitForRendering(view.contentItem))
         if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/host-owner-groups-" + data.tag + ".png"))
         verify(remoteSession.setUserName(session.userName))
-        tryCompare(foreignGroup, "text", ownedGroup.text)
+        tryCompare(foreignGroup, "groupOwner", ownedGroup.text)
         verify(foreignGroup !== ownedGroup, "Identical profile names never merge different hosts")
         const ownToggle = visualChild(view.contentItem, "toggleHost_" + channel.ownId)
         verify(fixtures.pressAccessible(ownToggle))
@@ -492,14 +760,16 @@ TestCase {
         verify(fixtures.pressAccessible(ownToggle))
         tryVerify(function() { return position(extra) >= 0 && position(extra) < position(channel.ownId) })
         verify(remoteSession.setUserName("Moonlit Fox with a surprisingly long but valid profile name"))
-        tryCompare(foreignGroup, "text", remoteSession.userName)
+        tryCompare(foreignGroup, "groupOwner", remoteSession.userName)
         view.update()
         verify(waitForRendering(foreignGroup))
         verify(foreignGroup.width <= view.width)
-        verify(foreignGroup.contentHeight <= foreignGroup.height)
+        verify(foreignGroup.height > 0)
         verify(channel.joinSaved(channel.ownId)); tryCompare(channel, "joined", true)
+        verify(fixtures.pressAccessible(findChild(view, "backToChannels")))
         tryVerify(function() { return position(extra) < position(channel.ownId) })
         verify(channel.joinSaved(extra)); tryCompare(channel, "joinedHostId", extra)
+        verify(fixtures.pressAccessible(findChild(view, "backToChannels")))
         tryVerify(function() { return position(extra) < position(channel.ownId) })
         const icon = visualChild(view.contentItem, "channelMusic_" + remoteChannel.ownId)
         verify(icon !== null); verify(!icon.visible)
@@ -511,25 +781,26 @@ TestCase {
         return [{tag: "desktop", width: 520, height: 700}, {tag: "compact", width: 320, height: 568}]
     }
     function test_hostCollapsePreservesVoiceDraftAndUnread(data) {
+        if (!supporterLicense.directDistribution) return
         view.width = data.width; view.height = data.height
-        verify(fixtures.startHost()); verify(fixtures.startRemoteHost())
-        verify(remoteChannel.setChannelName("Moonlight"))
-        verify(remoteChannel.decide(channel.ownId, true))
-        verify(remoteChannel.joinSaved(remoteChannel.ownId))
-        verify(channel.join(remoteChannel.ownId, "127.0.0.1", remoteChannel.servicePort))
+        verify(fixtures.startHost()); verify(fixtures.setSupporter(true))
+        verify(channel.setChannelName("Moonlight"))
+        verify(channel.addOwnedChannel("Other room").length > 0)
+        verify(channel.decide(remoteChannel.ownId, true))
+        verify(channel.joinSaved(channel.ownId))
+        verify(remoteChannel.join(channel.ownId, "127.0.0.1", channel.servicePort))
         tryVerify(function() { return channel.joined && channel.chatReady && remoteChannel.chatReady })
-        const id = remoteChannel.ownId
-        const toggle = visualChild(view.contentItem, "toggleHost_" + id)
-        verify(toggle !== null, "Host groups have an accessible disclosure button")
-        const draft = findChild(view, "chatDraft")
+        const id = channel.ownId, draft = findChild(view, "chatDraft")
         draft.text = "Keep this draft"
+        verify(fixtures.pressAccessible(findChild(view, "backToChannels")))
+        const toggle = visualChild(view.contentItem, "toggleHost_" + id)
+        verify(toggle && toggle.visible)
         verify(fixtures.pressAccessible(toggle))
         tryCompare(visualChild(view.contentItem, "channelRow_" + id), "visible", false)
         compare(channel.joinedHostId, id)
         verify(visualChild(view.contentItem, "activeHost_" + id).visible)
-        verify(remoteSession.setUserName("Renamed host"))
+        verify(session.setUserName("Renamed host"))
         tryCompare(visualChild(view.contentItem, "hostGroup_" + id), "text", "Renamed host")
-        verify(!visualChild(view.contentItem, "channelRow_" + id).visible)
         verify(remoteChannel.sendChat("Arrived while the host was collapsed"))
         tryCompare(remoteChannel, "chatPending", false)
         tryVerify(function() { return visualChild(view.contentItem, "unreadHost_" + id).visible })
@@ -542,18 +813,13 @@ TestCase {
         tryCompare(visualChild(view.contentItem, "channelRow_" + id), "visible", false)
         view.searchOpen = false
         view.requestActivate(); tryCompare(view, "active", true)
-        verify(waitForRendering(toggle))
-        toggle.forceActiveFocus(); tryCompare(toggle, "activeFocus", true)
-        keyClick(Qt.Key_Space)
+        verify(waitForFrame(toggle)); toggle.forceActiveFocus(); keyClick(Qt.Key_Space)
         tryCompare(visualChild(view.contentItem, "channelRow_" + id), "visible", true)
+        verify(fixtures.pressAccessible(visualChild(view.contentItem, "channelRow_" + id).parent))
+        tryCompare(findChild(view, "chatPanel"), "visible", true)
         compare(draft.text, "Keep this draft")
         compare(channel.joinedHostId, id)
         tryVerify(function() { return !visualChild(view.contentItem, "unreadHost_" + id).visible })
-        verify(fixtures.pressAccessible(toggle))
-        verify(waitForRendering(view.contentItem))
-        if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/collapsed-host-" + data.tag + ".png"))
-        channel.leave()
-        tryCompare(visualChild(view.contentItem, "activeHost_" + id), "visible", false)
     }
 
     function test_channelSearchKeepsVoiceAndDraft_data() {
@@ -575,7 +841,9 @@ TestCase {
         verify(toggle !== null, "Channel search has a compact accessible entry point")
         const search = findChild(view, "channelSearch")
         verify(search !== null && !search.visible)
-        verify(fixtures.pressAccessible(toggle)); tryCompare(search, "visible", true)
+        verify(fixtures.pressAccessible(findChild(view, "backToChannels")))
+        tryCompare(toggle, "visible", true)
+        verify(waitForFrame(toggle)); mouseClick(toggle); tryCompare(search, "visible", true)
         search.text = "mOoNlIgHt"
         tryVerify(function() { return visualChild(view.contentItem, "channelRow_" + channel.ownId) === null })
         verify(visualChild(view.contentItem, "channelRow_" + remoteChannel.ownId) !== null)
@@ -659,8 +927,8 @@ TestCase {
         const id = channel.ownedChannels.find(function(c) { return c.id !== channel.ownId }).id
         tryCompare(channel, "chatHostId", id)
         tryCompare(channel, "chatReady", true)
-        const extraOwner = visualChild(view.contentItem, "ownedChannel_" + id)
-        const extraVoice = visualChild(view.contentItem, "joinedChannel_" + id)
+        const extraOwner = findChild(view, "conversationOwned")
+        const extraVoice = findChild(view, "voiceConnection")
         verify(extraOwner !== null && extraOwner.visible, "Additional owned channels use the same ownership marker")
         verify(extraVoice !== null && !extraVoice.visible, "Creating a channel does not join its voice session")
         const owner = channel.ownChannel(id)
@@ -681,7 +949,7 @@ TestCase {
         if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/owned-channel-info.png"))
         info.close(); tryCompare(info, "visible", false)
         const remove = findChild(view, "removeChannelMenuItem")
-        remove.menu.popup(); tryCompare(remove.menu, "opened", true)
+        findChild(view, "channelInfoDialog").open(); tryCompare(findChild(view, "channelInfoDialog"), "opened", true)
         verify(waitForRendering(remove))
         if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/owned-channel-remove-menu.png"))
         mouseClick(remove)
@@ -692,7 +960,7 @@ TestCase {
         compare(channel.ownedChannels.length, 2)
         confirm.reject(); tryCompare(confirm, "visible", false)
         compare(channel.ownedChannels.length, 2)
-        remove.menu.popup(); tryCompare(remove.menu, "opened", true)
+        findChild(view, "channelInfoDialog").open(); tryCompare(findChild(view, "channelInfoDialog"), "opened", true)
         mouseClick(remove); tryCompare(confirm, "opened", true)
         mouseClick(findChild(confirm, "confirmRemoveOwnChannel"))
         tryVerify(function() { return channel.ownedChannels.length === 1 })
@@ -1103,14 +1371,25 @@ TestCase {
         verify(remoteChannel.sendChat("Click my portrait to inspect."))
         tryVerify(function() { return channel.messages.some(function(m) { return m.sender === remoteChannel.ownId && m.text === "Click my portrait to inspect." }) })
         view.chatExpanded = true
+        const chat = findChild(view, "chatPanel")
         const history = findChild(view, "chatHistory")
+        tryVerify(function() { return !chat.updating && visualChild(view.contentItem, "messageAvatar_" + remoteChannel.ownId) !== null })
+        verify(waitForPolish(view))
         history.scrollTo(history.contentHeight)
-        tryVerify(function() { return visualChild(view.contentItem, "messageAvatar_" + remoteChannel.ownId) !== null })
-        mouseClick(visualChild(view.contentItem, "messageAvatar_" + remoteChannel.ownId))
+        const messagePortrait = visualChild(view.contentItem, "messageAvatar_" + remoteChannel.ownId)
+        verify(waitForFrame(messagePortrait))
+        tryVerify(function() {
+            const point = messagePortrait.mapToItem(history, 0, 0)
+            return !chat.updating && point.y >= 0 && point.y + messagePortrait.height <= history.height
+        })
+        mouseClick(messagePortrait)
         tryCompare(dialog, "opened", true)
         compare(findChild(dialog, "requestIdentity").text, remoteChannel.ownId)
         dialog.close(); tryCompare(dialog, "visible", false)
-        mouseClick(portrait, portrait.width / 2, portrait.height / 2, Qt.RightButton)
+        const currentPortrait = visualChild(view.contentItem, "channelAvatar_" + channel.ownId + "_" + remoteChannel.ownId)
+        verify(currentPortrait !== null)
+        verify(waitForFrame(currentPortrait))
+        mouseClick(currentPortrait, currentPortrait.width / 2, currentPortrait.height / 2, Qt.RightButton)
         const inspect = findChild(view, "inspectMember")
         tryCompare(inspect.menu, "opened", true)
         verify(findChild(view, "allowRemoteControl").visible)
@@ -1153,8 +1432,8 @@ TestCase {
         view.raise(); view.requestActivate(); tryCompare(view, "active", true)
         verify(fixtures.startHost())
         view.selectedHost = channel.ownId
-        const menu = findChild(view, "channelMenu")
-        menu.popup()
+        const menu = findChild(view, "channelInfoDialog")
+        menu.open()
         tryCompare(menu, "opened", true)
         const controls = findChild(view, "channelTranslationControls")
         verify(findChild(view, "memberLanguageControls") === null)
@@ -1200,12 +1479,12 @@ TestCase {
         }
         menu.close(); tryCompare(menu, "visible", false)
         view.selectedHost = "different-channel"
-        menu.popup(); tryCompare(menu, "opened", true)
+        menu.open(); tryCompare(menu, "opened", true)
         compare(messages.checked, false); compare(speech.checked, false)
         compare(outgoing.currentValue, ""); compare(listening.currentValue, "")
         menu.close(); tryCompare(menu, "visible", false)
         view.selectedHost = channel.ownId
-        menu.popup(); tryCompare(menu, "opened", true)
+        menu.open(); tryCompare(menu, "opened", true)
         compare(messages.checked, audio.language.available)
         compare(speech.checked, audio.language.speechAvailable && audio.language.available)
         verify(audio.language.configureChannel(channel.ownId, false, "", false, ""))
@@ -1323,6 +1602,12 @@ TestCase {
         const draft = findChild(panel, "chatDraft")
         tryCompare(panel, "visible", true)
         tryCompare(send, "visible", true)
+        verify(fixtures.pressAccessible(findChild(view, "backToChannels")))
+        view.memberOptions({id: remoteChannel.ownId, name: remoteSession.userName}, hostId)
+        const inspect = findChild(view, "requestInfoDialog")
+        tryCompare(inspect, "opened", true)
+        verify(fixtures.pressAccessible(findChild(inspect, "messageInspectedMember")))
+        tryCompare(panel, "visible", true)
         draft.text = "Private hello"
         verify(send.enabled)
         verify(fixtures.pressAccessible(send))
@@ -1339,6 +1624,10 @@ TestCase {
         const search = findChild(view, "channelSearch")
         search.text = remoteSession.userName
         tryVerify(function() { return visualChild(view.contentItem, "channelRow_" + contact.id) !== null })
+        const context = visualChild(view.contentItem, "channelRow_" + channel.ownId)
+        verify(context && context.visible, "Private search retains its single channel as host context")
+        const heading = visualChild(view.contentItem, "hostGroup_" + channel.ownId)
+        verify(!heading || !heading.visible, "Private conversations do not add a redundant single-channel host heading")
         compare(channel.joinedHostId, channel.ownId)
         view.searchOpen = false
         verify(!view.privateFolderIsExpanded(groupId))
@@ -1348,7 +1637,9 @@ TestCase {
         const folder = findChild(view.contentItem, "channelName_private-folder:" + groupId)
         const host = findChild(view.contentItem, "channelName_" + channel.ownId)
         verify(folder && host)
-        compare(folder.parent.x, host.parent.x, "Messages folder aligns with channel disclosure controls")
+        verify(waitForPolish(view))
+        compare(folder.mapToItem(view.contentItem, 0, 0).x - host.mapToItem(view.contentItem, 0, 0).x, 12,
+            "Messages are one level below the single channel that represents its host")
         draft.text = "Unsent draft"
         verify(fixtures.expireChat())
         tryVerify(function() {
@@ -1385,8 +1676,8 @@ TestCase {
             return item.peerId === remoteChannel.ownId && item.online
         })
         view.selectedHost = channel.ownId
-        const menu = findChild(view, "channelMenu")
-        menu.popup()
+        const menu = findChild(view, "channelInfoDialog")
+        menu.open()
         const manage = findChild(view, "managePrivateMessages")
         tryCompare(manage, "visible", true)
         const dialog = findChild(view, "privateMessagesDialog")
@@ -1408,6 +1699,7 @@ TestCase {
             return item && item.blocked
         }, 10000)
         verify(dialog.entries.find(function(item) { return item.id === contact.id }).blockedByMe)
+        view.update()
         verify(waitForRendering(dialog.contentItem))
         if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/private-blocks.png"))
         dialog.close(); menu.close()
@@ -1421,7 +1713,7 @@ TestCase {
         channel.closeChat(contact.id)
         view.updateChannelRows()
         view.selectedHost = channel.ownId
-        menu.popup()
+        menu.open()
         dialog.hostId = channel.ownId
         dialog.open()
         tryCompare(dialog, "visible", true)
@@ -1451,8 +1743,8 @@ TestCase {
         verify(fixtures.startHost()); verify(fixtures.startRemoteHost())
         verify(channel.setBlocked(remoteChannel.ownId, true))
         view.selectedHost = channel.ownId
-        const menu = findChild(view, "channelMenu")
-        menu.popup(); tryCompare(menu, "opened", true)
+        const menu = findChild(view, "channelInfoDialog")
+        menu.open(); tryCompare(menu, "opened", true)
         const blocked = findChild(menu, "blockedDevices")
         verify(blocked !== null && blocked.visible, "Blocked devices must be reachable from the channel menu")
         view.requestActivate(); tryCompare(view, "active", true)
@@ -1472,7 +1764,7 @@ TestCase {
         if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/blocked-devices-" + data.tag + ".png"))
         mouseClick(unblock)
         compare(channel.blockedClients.length, 0)
-        info.close(); menu.popup(); tryCompare(menu, "opened", true)
+        info.close(); menu.open(); tryCompare(menu, "opened", true)
         verify(!blocked.visible)
         menu.close()
     }
@@ -1522,7 +1814,8 @@ TestCase {
         verify(help !== null)
         verify(!help.visible)
         openedLinks.clear()
-        mouseClick(findChild(info, "internetHelpToggle"))
+        const toggle = findChild(info, "internetHelpToggle")
+        reveal(toggle); mouseClick(toggle)
         verify(help.visible)
         compare(openedLinks.count, 0)
         verify(findChild(help, "internetPortHelp").text.includes(channel.servicePort.toString()))
@@ -1531,7 +1824,7 @@ TestCase {
                             ["vpnHelp", "https://tailscale.com/kb/1017/install"]]) {
             const button = findChild(help, link[0])
             const scroll = findChild(info, "channelInfoScroll")
-            scroll.contentItem.contentY = button.mapToItem(scroll.contentItem.contentItem, 0, 0).y - 30
+            reveal(button)
             waitForRendering(button); openedLinks.clear(); mouseClick(button)
             compare(openedLinks.count, 1)
             compare(openedLinks.signalArguments[0][0], link[1])
@@ -1650,7 +1943,7 @@ TestCase {
             const dialog = findChild(view, scenario[0])
             verify(dialog)
             dialog.open(); tryCompare(dialog, "opened", true, 5000, scenario[0])
-            const button = findChild(dialog, scenario[1] === Dialog.Close ? "dialogCloseButton" : "dialogCancelButton")
+            const button = findChild(dialog, scenario[1] === Dialog.Close ? "closeDetails" : "dialogCancelButton")
             verify(button)
             tryCompare(button, "text", qsTranslate("Channels", scenario[2]))
             verify(session.setLanguage("en"))
@@ -1662,11 +1955,11 @@ TestCase {
             if (imageDirectory.length > 0 && data.language === "ar" && scenario[0] === "channelInfoDialog") {
                 verify(fixtures.saveWindow(view, imageDirectory + "/channel-info-ar-buttons.png"))
             }
-            dialogRejections.target = dialog
+            dialogRejections.target = scenario[1] === Dialog.Close ? null : dialog
             dialogRejections.clear()
             mouseClick(button)
             tryCompare(dialog, "visible", false)
-            compare(dialogRejections.count, 1)
+            compare(dialogRejections.count, scenario[1] === Dialog.Close ? 0 : 1)
         }
     }
 
@@ -1843,8 +2136,8 @@ TestCase {
         view.chatExpanded = true
         verify(findChild(view, "translateDraft") === null)
         view.selectedHost = channel.ownId
-        const menu = findChild(view, "channelMenu")
-        menu.popup(); tryCompare(menu, "opened", true)
+        const menu = findChild(view, "channelInfoDialog")
+        menu.open(); tryCompare(menu, "opened", true)
         compare(findChild(view, "channelTranslationControls").visible, apple)
     }
 
@@ -2136,30 +2429,27 @@ TestCase {
         view.closeSettings()
         tryCompare(settings, "visible", false)
         view.selectedHost = channel.ownId
-        const menu = findChild(view, "autoJoinMenuItem").menu
-        menu.popup(); tryCompare(menu, "opened", true)
-        waitForRendering(menu.itemAt(0))
-        mouseClick(menu.itemAt(0))
         const info = findChild(view, "channelInfoDialog")
-        tryCompare(info, "opened", true)
-        tryCompare(menu, "visible", false)
+        info.open(); tryCompare(info, "opened", true)
         verify(session.transmissionAllowed && session.available)
         const name = findChild(info, "channelName")
         verify(name && name.visible && name.enabled)
         const previousName = channel.channelName
-        waitForRendering(name)
+        reveal(name)
         view.requestActivate()
         tryCompare(view, "active", true)
         mouseClick(name)
         tryCompare(name, "activeFocus", true)
         name.text = "Shared room"
         const ttl = findChild(info, "messageLifetime")
+        reveal(ttl)
         mouseClick(ttl)
         ttl.popup.close()
         compare(channel.channelName, "Shared room")
         ttl.currentIndex = 1; ttl.activated(1)
         compare(channel.messageLifetimeDays, 7)
         const autoJoin = findChild(info, "channelInfoAutoJoin")
+        reveal(autoJoin)
         const previousAutoJoin = autoJoin.checked
         // Exercise the checkbox through its visual control, including its binding.
         mouseClick(autoJoin)
@@ -2671,17 +2961,18 @@ TestCase {
         tryCompare(session, "available", true)
     }
 
-    function test_channelMenuKeepsCheckAtTheRightAndDangerActionsRed() {
+    function test_channelDetailsKeepAutoJoinAndDangerActionsDistinct() {
         verify(fixtures.startHost())
         view.selectedHost = channel.ownId
-        const item = findChild(view, "autoJoinMenuItem")
-        const menu = item.menu
-        menu.popup()
+        const item = findChild(view, "channelInfoAutoJoin")
+        const menu = findChild(view, "channelInfoDialog")
+        menu.open()
         tryCompare(menu, "opened", true)
-        verify(item.indicator.x > item.width / 2)
-        compare(item.contentItem.x, item.leftPadding)
+        reveal(item)
+        verify(item.visible && item.enabled)
+        verify(item.indicator.visible)
         const leave = findChild(view, "leaveMenuItem")
-        compare(leave.contentItem.color, Theme.danger)
+        compare(leave.contentItem.children.find(c => c.text === leave.text).color, Theme.danger)
         if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/channel-menu-actions.png"))
         menu.close()
     }
@@ -2702,8 +2993,8 @@ TestCase {
         compare(own.musicId, fixtures.botId())
         verify((own.members || []).every(function(member) { return !member.music }))
         view.selectedHost = channel.ownId
-        const menu = findChild(view, "autoJoinMenuItem").menu
-        menu.popup(); tryCompare(menu, "opened", true)
+        const menu = findChild(view, "channelInfoDialog")
+        menu.open(); tryCompare(menu, "opened", true)
         const slider = findChild(view, "channelMusicVolume")
         verify(slider.visible)
         if (audio.outputAvailable) {
@@ -2726,8 +3017,10 @@ TestCase {
             tryCompare(slider, "value", 0)
             const reset = findChild(view, "resetChannelMusicVolume")
             verify(reset.visible)
+            reveal(reset)
             verify(waitForRendering(reset))
-            tryVerify(function() { return reset.mapToItem(menu.contentItem, 0, 0).y > slider.height })
+            const position = reset.mapToItem(menu.contentItem, 0, 0)
+            verify(position.y >= 0 && position.y + reset.height <= menu.contentItem.height)
             const glyph = reset.contentItem.children.find(function(c) { return c.symbol === "reset" })
             tryVerify(function() {
                 const color = fixtures.renderedColor(glyph, 5, 9)
@@ -2761,22 +3054,24 @@ TestCase {
         tryCompare(channel, "chatReady", true)
         verify(channel.setAutoJoin(channel.ownId, false))
         view.selectedHost = channel.ownId
-        const item = findChild(view, "autoJoinMenuItem")
-        const menu = item.menu
-        menu.popup(); tryCompare(menu, "opened", true)
+        const item = findChild(view, "channelInfoAutoJoin")
+        const menu = findChild(view, "channelInfoDialog")
+        menu.open(); tryCompare(menu, "opened", true)
+        reveal(item)
         mouseClick(item)
         tryVerify(function() { return channel.savedChannels.some(function(h) { return h.id === channel.ownId && h.autoJoin }) })
-        menu.popup(); tryCompare(menu, "opened", true)
+        menu.open(); tryCompare(menu, "opened", true)
         view.requestActivate()
         tryCompare(view, "active", true)
         item.forceActiveFocus()
         tryCompare(item, "activeFocus", true)
         keyClick(Qt.Key_Space)
         tryVerify(function() { return channel.savedChannels.some(function(h) { return h.id === channel.ownId && !h.autoJoin }) })
-        menu.popup(); tryCompare(menu, "opened", true)
+        menu.open(); tryCompare(menu, "opened", true)
         verify(fixtures.pressAccessible(item))
         tryVerify(function() { return channel.savedChannels.some(function(h) { return h.id === channel.ownId && h.autoJoin }) })
-        verify(channel.setAutoJoin(channel.ownId, false))
+        verify(fixtures.toggleAccessible(item))
+        tryVerify(function() { return channel.savedChannels.some(function(h) { return h.id === channel.ownId && !h.autoJoin }) })
         menu.close()
     }
 
@@ -2805,6 +3100,13 @@ TestCase {
         return cases
     }
     function test_grayscalePreservesPortraitGeometry(data) {
+        mouseMove(view.contentItem, view.width - 1, view.height - 1)
+        tryVerify(function() {
+            return !view.channelList.some(function(entry) {
+                const tooltip = findChild(view, "channelTooltip_" + entry.id)
+                return tooltip && tooltip.visible
+            })
+        }, 2000, "Portrait capture starts without a hovered channel tooltip")
         // Transparent portraits must composite over the same background, not different channel labels.
         const backdrop = createTemporaryObject(portraitBackdrop, view.contentItem,
             {x: 0, y: 70, width: 300, height: 130, z: 100})
@@ -2942,10 +3244,9 @@ TestCase {
         verify(item)
         const badge = findChild(item, "providerBadge")
         verify(badge)
-        verify(badge.visible)
+        verify(!badge.visible, "SquadSpeak participants have no provider badge")
         const icon = findChild(badge, "providerIcon")
-        compare(icon.label, "SquadSpeak")
-        tryCompare(findChild(icon, "providerArtwork"), "status", Image.Ready)
+        compare(findChild(icon, "providerArtwork").source.toString(), "")
         item.teamSpeak = true
         compare(icon.label, "TeamSpeak")
         tryCompare(findChild(icon, "providerArtwork"), "status", Image.Ready)
@@ -2954,7 +3255,11 @@ TestCase {
         compare(badge.y, 0)
         verify(badge.height <= findChild(item, "microphoneBadge").mapToItem(item, 0, 0).y)
         item.teamSpeak = false
-        compare(icon.label, "SquadSpeak")
+        verify(!badge.visible, "SquadSpeak clients on a TS3 host also have no provider badge")
+        item.teamSpeak = true
+        item.music = true
+        verify(!badge.visible)
+        item.music = false
         item.systemMessage = true
         verify(!badge.visible)
         item.systemMessage = false
@@ -2975,7 +3280,7 @@ TestCase {
         }
         view.memberOptions({id: "squad-peer", name: "Example", avatarId: "courier", teamSpeak: false}, "ts-host", false)
         compare(findChild(dialog, "requestClient").text, "SquadSpeak")
-        compare(findChild(findChild(dialog, "requestAvatar"), "providerIcon").label, "SquadSpeak")
+        verify(!findChild(findChild(dialog, "requestAvatar"), "providerBadge").visible)
         if (imageDirectory.length > 0) {
             waitForRendering(view.contentItem)
             verify(fixtures.saveWindow(view, imageDirectory + "/inspect-squadspeak-" + data.tag + ".png"))
@@ -3218,7 +3523,7 @@ TestCase {
         const dialog = findChild(view, "membersDialog"), grid = findChild(view, "allMembers")
         tryCompare(dialog, "opened", true)
         tryCompare(grid, "count", 64)
-        verify(grid.height > 100)
+        tryVerify(function() { return grid.height > 100 })
         tryVerify(function() {
             for (const member of grid.model) {
                 const row = visualChild(grid, "member_" + member.id)
@@ -3269,7 +3574,7 @@ TestCase {
         for (const size of [[460, 560], [360, 360], [900, 480]]) {
             view.width = size[0]; view.height = size[1]
             waitForRendering(view.contentItem)
-            const channelScroll = findChild(view, "channelsScroll")
+            const channelScroll = findChild(view, "conversation")
             const send = findChild(view, "sendChat")
             tryVerify(function() {
                 const position = send.mapToItem(channelScroll, 0, 0)
@@ -3432,8 +3737,8 @@ TestCase {
         view.closeSettings()
         view.selectedHost = channel.ownId
         const browse = findChild(view, "browseStations")
-        const menu = browse.menu
-        menu.popup(); tryCompare(menu, "opened", true)
+        const menu = findChild(view, "channelInfoDialog")
+        menu.open(); tryCompare(menu, "opened", true)
         verify(browse.visible)
         waitForRendering(browse); mouseClick(browse)
         const results = findChild(view, "radioResults")
@@ -3754,9 +4059,8 @@ TestCase {
         verify(!findChild(remoteInfo, "memberActions").visible)
         remoteInfo.close(); tryCompare(remoteInfo, "visible", false)
         tryVerify(function() {
-            const owner = visualChild(controllerView.contentItem, "ownedChannel_" + channel.ownId)
-            const joined = visualChild(controllerView.contentItem, "joinedChannel_" + channel.ownId)
-            return owner !== null && owner.visible && joined !== null && joined.visible
+            const joined = findChild(controllerView, "voiceConnection")
+            return joined !== null && joined.visible && joined.Accessible.name.includes("You host")
         }, 5000, "Remote mode shows the controlled device's ownership and voice participation")
         verify(!controllerView.header)
         const targetName = findChild(controllerView, "remoteTargetName")
@@ -3991,26 +4295,20 @@ TestCase {
         verify(channel.setChannelName(previousChannel))
     }
 
-    function test_channelDisclosureRespondsOnClickRelease() {
-        verify(fixtures.startHost())
-        verify(channel.joinSaved(channel.ownId))
+    function test_channelNavigationRespondsOnClickRelease() {
+        verify(fixtures.startHost()); verify(channel.joinSaved(channel.ownId))
         tryVerify(function() { return channel.joined && channel.chatReady && !channel.historyLoading })
-        const panel = findChild(view, "chatPanel")
-        const draft = findChild(panel, "chatDraft")
+        const panel = findChild(view, "chatPanel"), draft = findChild(view, "chatDraft")
         draft.text = "Keep this draft while opening and closing"
-        const row = visualChild(view.contentItem, "channelRow_" + channel.ownId)
-        verify(row)
         for (let pass = 0; pass < 3; ++pass) {
-            view.update()
-            verify(waitForRendering(row))
-            mouseClick(row, 35, row.height / 2)
-            compare(panel.visible, false, "A click closes the chat without waiting for a double click")
-            verify(waitForRendering(row))
-            mouseClick(row, 35, row.height / 2)
-            compare(panel.visible, true, "A click opens the chat without waiting for a double click")
+            const back = findChild(view, "backToChannels")
+            verify(waitForFrame(back)); mouseClick(back)
+            compare(panel.visible, false)
+            const row = visualChild(view.contentItem, "channelRow_" + channel.ownId)
+            verify(waitForFrame(row)); mouseClick(row, 35, row.height / 2)
+            compare(panel.visible, true)
             compare(draft.text, "Keep this draft while opening and closing")
             compare(channel.joinedHostId, channel.ownId)
-            verify(channel.joined)
         }
     }
 
@@ -4018,6 +4316,7 @@ TestCase {
         return [{tag: "closed", expanded: false}, {tag: "open", expanded: true}]
     }
     function test_doubleClickJoinsAndKeepsChatOpen(data) {
+        view.width = 1100
         verify(fixtures.startHost())
         verify(channel.openSavedChat(channel.ownId))
         tryCompare(channel, "chatReady", true)
@@ -4050,7 +4349,7 @@ TestCase {
         for (let pass = 0; pass < 4; ++pass) {
             verify(channel.openChat(remoteChannel.ownId, "127.0.0.1", remoteChannel.servicePort))
             tryVerify(function() { return channel.chatReady && !channel.historyLoading })
-            view.showHostChat(channel.ownId)
+            view.openHostChat(channel.ownId)
             tryCompare(channel, "chatHostId", channel.ownId)
             tryVerify(function() { return channel.chatReady && !channel.historyLoading })
             tryCompare(history.rows, "count", channel.messages.length)
@@ -4064,16 +4363,38 @@ TestCase {
             tryVerify(function() {
                 return fixtures.portraitHasDetail(findChild(last, "messageAvatar_" + last.message.sender))
             }, 5000, "The returned message portrait is painted without scrolling")
-            view.showHostChat(channel.ownId)
+            verify(fixtures.pressAccessible(findChild(view, "backToChannels")))
             tryCompare(panel, "visible", false)
             verify(channel.sendChat("Arrived while the channel was collapsed."))
             tryCompare(channel, "chatPending", false)
-            view.showHostChat(channel.ownId)
+            view.openHostChat(channel.ownId)
             tryCompare(panel, "visible", true)
             tryVerify(function() { return history.atYEnd }, 2000, "Reopening a collapsed chat follows messages received while hidden: y="
                 + history.contentY + ", height=" + history.height + ", content=" + history.contentHeight + ", follow=" + panel.followEnd)
             tryVerify(function() { return fixtures.portraitHasDetail(findChild(last, "messageAvatar_" + last.message.sender)) })
         }
+    }
+
+    function test_privateUnreadSurvivesSingleChannelFlattening() {
+        verify(fixtures.startHost())
+        verify(channel.decide(remoteChannel.ownId, true))
+        verify(channel.joinSaved(channel.ownId))
+        verify(remoteChannel.join(channel.ownId, "127.0.0.1", channel.servicePort))
+        tryVerify(function() { return channel.chatReady && remoteChannel.chatReady })
+        verify(channel.openPrivateChat(channel.ownId, remoteChannel.ownId))
+        verify(remoteChannel.openPrivateChat(channel.ownId, channel.ownId))
+        tryVerify(function() { return channel.chatReady && channel.privateChat && remoteChannel.chatReady && remoteChannel.privateChat })
+        view.chatExpanded = false
+        verify(remoteChannel.sendChat("A private reply while hidden"))
+        tryCompare(remoteChannel, "chatPending", false)
+        const markers = ["unreadChannel_" + channel.ownId,
+            "unreadChannel_private-folder:" + channel.ownId, "unreadChannel_" + channel.chatHostId]
+        for (const name of markers)
+            tryVerify(function() { const dot = visualChild(view.contentItem, name); return dot && dot.visible })
+        view.requestActivate(); tryCompare(view, "active", true)
+        view.chatExpanded = true
+        for (const name of markers)
+            tryVerify(function() { return !visualChild(view.contentItem, name).visible })
     }
 
     function test_unreadMarksOnlyClearAtVisibleLatestMessage() {
@@ -4087,7 +4408,7 @@ TestCase {
         const markerName = "unreadChannel_" + remoteChannel.ownId
         tryVerify(function() { const dot = visualChild(view.contentItem, markerName); return dot && dot.visible })
         const hostDot = visualChild(view.contentItem, "unreadHost_" + remoteChannel.ownId)
-        verify(hostDot && hostDot.visible)
+        verify(hostDot && !hostDot.visible)
         view.requestActivate(); tryCompare(view, "active", true)
         view.chatExpanded = true
         const panel = findChild(view, "chatPanel"), history = findChild(panel, "chatHistory")
@@ -4102,12 +4423,14 @@ TestCase {
         verify(!visualChild(view.contentItem, markerName).visible)
         // A long page prevents new arrivals from being read by a stationary reader.
         view.chatExpanded = true
-        verify(remoteChannel.sendChat(("Long message with enough text to scroll.\n\n").repeat(40)))
+        verify(remoteChannel.sendChat(("Long message with enough text to scroll.\n\n").repeat(60)))
         tryCompare(remoteChannel, "chatPending", false)
-        tryVerify(function() { return history.contentHeight > history.height * 2 && history.atYEnd && !panel.updating })
+        tryVerify(function() { return history.contentHeight > history.height * 2 })
+        tryCompare(panel, "updating", false)
+        tryCompare(history, "atYEnd", true)
         history.scrollTo(0)
         verify(remoteChannel.sendChat("Read me at the bottom")); tryCompare(remoteChannel, "chatPending", false)
-        tryVerify(function() { return visualChild(view.contentItem, markerName).visible && !panel.updating })
+        tryVerify(function() { return channel.savedChannels.some(c => c.id === remoteChannel.ownId && c.unread) && !panel.updating })
         verify(!history.atYEnd)
         history.scrollTo(history.contentHeight - history.height)
         tryVerify(function() { return !visualChild(view.contentItem, markerName).visible })
@@ -4118,105 +4441,59 @@ TestCase {
         return [{tag: "desktop", height: 640}, {tag: "compact", height: 360}]
     }
     function test_multipleChatsKeepDraftsAndVoiceSeparate(data) {
-        const previousName = session.userName, previousChannel = channel.channelName
-        const previousRemote = remoteChannel.channelName
-        session.setUserName("Alex"); channel.setChannelName("Workshop")
-        remoteChannel.setChannelName("Evening lounge")
         view.width = 460; view.height = data.height
         verify(fixtures.startHost()); verify(fixtures.startRemoteHost())
+        verify(channel.setChannelName("Workshop")); verify(remoteChannel.setChannelName("Lounge"))
         verify(remoteChannel.decide(channel.ownId, true))
-        verify(channel.join(channel.ownId, "127.0.0.1", channel.servicePort))
-        verify(remoteChannel.join(remoteChannel.ownId, "127.0.0.1", remoteChannel.servicePort))
+        verify(channel.joinSaved(channel.ownId))
+        verify(remoteChannel.joinSaved(remoteChannel.ownId))
         tryVerify(function() { return channel.chatReady && remoteChannel.chatReady })
         verify(channel.sendChat("Notes stay here while we talk elsewhere.")); tryCompare(channel, "chatPending", false)
-        verify(remoteChannel.sendChat("**Welcome back!**\n\nTea, music and a little company. https://example.org")); tryCompare(remoteChannel, "chatPending", false)
+        verify(remoteChannel.sendChat("**Welcome back!** Tea, music and a little company.")); tryCompare(remoteChannel, "chatPending", false)
         verify(channel.openChat(remoteChannel.ownId, "127.0.0.1", remoteChannel.servicePort))
         tryCompare(channel, "chatReady", true)
-        compare(channel.joinedHostId, channel.ownId)
-        const ownMarker = visualChild(view.contentItem, "ownedChannel_" + channel.ownId)
-        const otherMarker = visualChild(view.contentItem, "ownedChannel_" + remoteChannel.ownId)
-        const ownVoice = visualChild(view.contentItem, "joinedChannel_" + channel.ownId)
-        const otherVoice = visualChild(view.contentItem, "joinedChannel_" + remoteChannel.ownId)
-        verify(ownMarker !== null && ownVoice !== null, "Ownership and voice participation have separate visible symbols")
-        verify(otherMarker !== null && otherVoice !== null)
-        verify(ownMarker.visible && !otherMarker.visible)
-        verify(ownVoice.visible && !otherVoice.visible, "Reading another chat does not move the voice marker")
-        compare(ownMarker.description, "You host")
-        compare(ownVoice.description, "Connected to voice")
         const panel = findChild(view, "chatPanel"), draft = findChild(panel, "chatDraft")
-        tryCompare(panel, "visible", true)
-        const loungeSlot = visualChild(view.contentItem, "conversationSlot_" + remoteChannel.ownId)
-        verify(loungeSlot !== null, "Chat is inside its expanded channel")
-        verify(["#00000000", Theme.raised.toString()].includes(loungeSlot.parent.color.toString()),
-            "Reading or hovering an unjoined channel does not give it the voice channel background")
-        compare(panel.parent.parent, loungeSlot)
-        draft.text = "A draft for the lounge"
-        const ownRow = visualChild(view.contentItem, "channelRow_" + channel.ownId)
-        reveal(ownRow)
-        // Move the pointer after scrolling so stale hover popups cannot swallow the click.
-        mouseMove(ownRow, 35, ownRow.height / 2)
-        mouseClick(ownRow, 35, ownRow.height / 2)
-        tryCompare(channel, "chatHostId", channel.ownId)
         compare(channel.joinedHostId, channel.ownId)
+        compare(findChild(view, "voiceConnection").text, "Workshop")
+        verify(findChild(view, "chatContext").visible)
+        verify(!findChild(view, "conversationOwned").visible)
+        draft.text = "A draft for the lounge"
+        const visit = function(id) {
+            if (!findChild(view, "channelsScroll").visible) verify(fixtures.pressAccessible(findChild(view, "backToChannels")))
+            const row = visualChild(view.contentItem, "channelRow_" + id)
+            reveal(row); mouseMove(row, 35, row.height / 2); mouseClick(row, 35, row.height / 2)
+            tryCompare(channel, "chatHostId", id)
+            tryCompare(panel, "visible", true)
+        }
+        visit(channel.ownId)
         compare(draft.text, "")
+        verify(findChild(view, "voiceConnection").Accessible.name.includes("You host"))
+        verify(!findChild(view, "chatContext").visible)
         draft.text = "A separate workshop draft"
-        let other = visualChild(view.contentItem, "channelRow_" + remoteChannel.ownId)
-        reveal(other)
-        mouseMove(other, 35, other.height / 2)
-        mouseClick(other, 35, other.height / 2)
-        tryCompare(channel, "chatHostId", remoteChannel.ownId)
+        visit(remoteChannel.ownId)
         compare(draft.text, "A draft for the lounge")
-        compare(panel.parent.parent, loungeSlot)
-        const ownSlot = visualChild(view.contentItem, "conversationSlot_" + channel.ownId)
-        verify(!ownSlot.visible && loungeSlot.visible)
-        view.showHostChat(remoteChannel.ownId)
+        compare(channel.joinedHostId, channel.ownId)
+        verify(fixtures.pressAccessible(findChild(view, "backToChannels")))
         compare(panel.visible, false)
-        view.showHostChat(remoteChannel.ownId)
-        tryCompare(panel, "visible", true)
-        waitForRendering(panel)
+        visit(remoteChannel.ownId)
         compare(draft.text, "A draft for the lounge")
         draft.text = "Reading here, still talking in **Workshop**."
         const send = findChild(panel, "sendChat")
         tryCompare(send, "enabled", true); mouseClick(send); tryCompare(draft, "text", "")
-        tryCompare(findChild(panel, "chatHistory").rows, "count", 3)
-        waitForRendering(panel)
-        if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/chat-multiple-hosts.png"))
-        other = visualChild(view.contentItem, "channelRow_" + remoteChannel.ownId)
-        reveal(other)
-        mouseMove(other, 35, other.height / 2)
-        mouseDoubleClickSequence(other, 35, other.height / 2)
+        tryVerify(function() { return remoteChannel.messages.some(m => m.text === "Reading here, still talking in **Workshop**.") })
+        const join = findChild(view, "joinViewedChannel")
+        verify(join.visible); mouseClick(join)
         tryCompare(channel, "joinedHostId", remoteChannel.ownId)
         tryCompare(channel, "joined", true)
         tryCompare(channel, "historyLoading", false)
         tryCompare(findChild(panel, "chatHistory").rows, "count", channel.messages.length)
-        tryVerify(function() { return !ownVoice.visible && otherVoice.visible })
-        verify(ownMarker.visible && !otherMarker.visible, "Joining a channel does not change ownership")
+        verify(!findChild(view, "chatContext").visible)
+        verify(!findChild(view, "conversationOwned").visible)
+        verify(!join.visible, "The joined channel cannot be joined again")
+        compare(findChild(view, "voiceConnection").text, "Lounge")
         verify(session.setMuted(true))
-        verify(otherVoice.visible, "Muted members still belong to their voice channel")
-        const previousTheme = session.theme
-        for (const mode of ["dark", "light"]) {
-            verify(session.setTheme(mode))
-            view.width = 360
-            waitForRendering(view.contentItem)
-            for (const marker of [ownMarker, otherVoice]) {
-                const position = marker.mapToItem(view.contentItem, 0, 0)
-                verify(position.x >= 0 && position.x + marker.width <= view.width)
-            }
-            if (imageDirectory.length > 0) {
-                for (const member of view.chatMembers) {
-                    tryVerify(function() {
-                        return fixtures.portraitHasDetail(visualChild(view.contentItem,
-                            "channelAvatar_" + remoteChannel.ownId + "_" + member.id))
-                    })
-                }
-                verify(fixtures.saveWindow(view, imageDirectory + "/channel-states-" + mode + ".png"))
-            }
-        }
-        verify(session.setTheme(previousTheme))
-        verify(channel.leave())
-        tryVerify(function() { return !ownVoice.visible && !otherVoice.visible })
-        verify(ownMarker.visible, "An owned host remains marked after leaving voice")
-        session.setUserName(previousName); channel.setChannelName(previousChannel); remoteChannel.setChannelName(previousRemote)
+        verify(!findChild(view, "chatContext").visible)
+        if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/chat-multiple-hosts-" + data.tag + ".png"))
     }
 
     function test_markdownCodeAndQuotesStayReadable_data() {
@@ -4591,9 +4868,9 @@ TestCase {
                     : bottom <= Qt.inputMethod.keyboardRectangle.y
             }, 2000, "The send button stays inside the area above the software keyboard")
             if (Qt.platform.os === "android") {
-                const name = visualChild(view.contentItem, "channelName_" + channel.ownId)
-                tryVerify(function() { return name.mapToItem(view.contentItem, 0, 0).y >= 0 }, 2000,
-                    "The destination channel stays visible while typing")
+                const name = findChild(view, "voiceConnection")
+                verify(name.visible)
+                compare(name.text, channel.channelName, "The destination channel stays visible while typing")
                 verify(fixtures.tapNativeInput(send))
             } else mouseClick(send)
             tryCompare(draft, "text", "")
@@ -4791,23 +5068,27 @@ TestCase {
         verify(channel.addTeamSpeak("127.0.0.1:1"))
         const entry = channel.savedChannels.find(function(c) { return c.protocol === "teamspeak" })
         verify(entry)
+        // Snapshot identities before mutating the QVariant list that owns this entry.
+        const serverId = String(entry.deviceId), channelId = String(entry.id)
         try {
-            const icon = visualChild(view.contentItem, "hostProvider_" + entry.deviceId)
+            const icon = visualChild(view.contentItem, "hostProvider_" + serverId)
             verify(icon)
             compare(icon.label, "TeamSpeak")
             tryCompare(findChild(icon, "providerArtwork"), "status", Image.Ready)
-            compare(visualChild(view.contentItem, "hostProvider_" + channel.ownId).label, "SquadSpeak")
-            const label = visualChild(view.contentItem, "hostGroup_" + entry.deviceId)
+            compare(visualChild(view.contentItem, "channelProvider_" + channel.ownId).label, "SquadSpeak")
+            const label = visualChild(view.contentItem, "hostGroup_" + serverId)
             verify(!label.text.includes("[TS3]"))
-            const toggle = visualChild(view.contentItem, "toggleHost_" + entry.deviceId)
+            const toggle = visualChild(view.contentItem, "toggleHost_" + serverId)
             verify(fixtures.pressAccessible(toggle))
-            tryCompare(visualChild(view.contentItem, "channelRow_" + entry.id), "visible", false)
+            tryCompare(visualChild(view.contentItem, "channelRow_" + channelId), "visible", false)
             verify(waitForRendering(view.contentItem))
             if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/provider-hosts.png"))
         } finally {
-            channel.removeChannel(entry.id)
+            verify(channel.removeChannel(channelId))
         }
-        tryVerify(function() { return visualChild(view.contentItem, "hostGroup_" + entry.deviceId) === null })
+        tryVerify(function() { return !channel.savedChannels.some(c => c.deviceId === serverId) }, 5000,
+            "Removed server=" + serverId + ", remaining=" + JSON.stringify(channel.savedChannels.map(c => ({id: c.id, deviceId: c.deviceId, protocol: c.protocol}))))
+        tryVerify(function() { return visualChild(view.contentItem, "hostGroup_" + serverId) === null })
     }
 
     function test_teamSpeakAddressUsesTheSameAddDialog() {

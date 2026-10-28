@@ -1189,6 +1189,10 @@
             <source>Unread messages</source>
             <translation>Tin nhắn chưa đọc</translation>
         </message>
+        <message>
+            <source>Chat only</source>
+            <translation>Chỉ trò chuyện</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>

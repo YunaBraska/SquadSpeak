@@ -1189,6 +1189,10 @@
             <source>Unread messages</source>
             <translation>Neprebrana sporočila</translation>
         </message>
+        <message>
+            <source>Chat only</source>
+            <translation>Samo klepet</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>

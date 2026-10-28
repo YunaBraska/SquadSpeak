@@ -1189,6 +1189,10 @@
             <source>Unread messages</source>
             <translation>Nepřečtené zprávy</translation>
         </message>
+        <message>
+            <source>Chat only</source>
+            <translation>Pouze chat</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>

@@ -2575,14 +2575,19 @@ private slots:
         // DTLS traffic also includes handshake and probe records. Wait for
         // delivered media and its final acknowledgement before blocking TLS.
         QVERIFY2(waitForEvents([&] {
-            return link.audioDatagrams >= 10 && link.videoDatagrams >= 10
-                && deliveredAudio >= 5 && receivedVideo >= 5 && !host.channel.screenTiers().isEmpty();
+            const bool delivered = link.audioDatagrams >= 10 && link.videoDatagrams >= 10
+                && deliveredAudio >= 5 && receivedVideo >= 5;
+            // Do not replace an acknowledged warmup frame while waiting for
+            // that acknowledgement to finish the phase.
+            if (delivered) producer.stop();
+            return delivered && !host.channel.screenTiers().isEmpty();
         }, 8000), qPrintable(QString("Warmup audio=%1 video=%2; proxy audio=%3 video=%4")
             .arg(deliveredAudio).arg(receivedVideo).arg(link.audioDatagrams).arg(link.videoDatagrams)));
         // Fresh audio and video must still arrive while reliable traffic is held.
         link.holdReliable = true;
         voice = voicePacket(880); image = "UDP marker";
         receivedAudio = receivedVideo = 0;
+        producer.start();
         QVERIFY2(waitForEvents([&] { return receivedAudio >= 5 && receivedVideo >= 5; }),
             qPrintable(QString("Received audio=%1 video=%2; proxy audio=%3 video=%4; joined=%5 screen=%6")
                 .arg(receivedAudio).arg(receivedVideo).arg(link.audioDatagrams).arg(link.videoDatagrams)
@@ -6894,11 +6899,12 @@ private slots:
                     const auto document = QJsonDocument::fromJson(buffer.left(end));
                     buffer.remove(0, end + 1);
                     const auto report = document.object();
-                    const auto members = report.value("clients").toArray();
+                    const bool audioReport = report.contains("audio");
+                    const auto members = report.value(audioReport ? "audio" : "clients").toArray();
                     if (!document.isObject() || !report.value("ok").toBool() || members.size() != receiverCount[group]) {
                         receiverOutputValid = false; continue;
                     }
-                    receiverStates[group] = report;
+                    if (!audioReport) receiverStates[group] = report;
                     for (qsizetype i = 0; i < members.size(); ++i) {
                         const auto member = members[i].toObject();
                         const auto index = size_t(receiverFirst[group] + i);
@@ -6925,6 +6931,9 @@ private slots:
             return commandSerial;
         };
         const auto commandReceivers = [&](QJsonObject command) {
+            const bool polling = receiverPoll.isActive();
+            receiverPoll.stop();
+            const auto resume = qScopeGuard([&] { if (polling) receiverPoll.start(); });
             const auto serial = writeReceivers(std::move(command));
             if (serial < 0) return false;
             return waitForEvents([&] {
@@ -6939,10 +6948,14 @@ private slots:
                     if (!matches(member.toObject())) return false;
             return receiverOutputValid;
         };
+        int pendingPoll = 0;
         connect(&receiverPoll, &QTimer::timeout, &receiverEvents, [&] {
-            receiverOutputValid &= writeReceivers({{"operation", "stats"}}) >= 0;
+            for (size_t group = 0; group < receivers.size(); ++group)
+                if (receiverCount[group] && receiverStates[group].value("serial").toInt() < pendingPoll) return;
+            pendingPoll = writeReceivers({{"operation", "stats"}});
+            receiverOutputValid &= pendingPoll >= 0;
         });
-        receiverPoll.start(deliveryPaced ? 10 : 100);
+        receiverPoll.start(100);
         QJsonArray approved;
         const auto firstIdentity = TlsIdentity::create();
         for (int i = 0; i < speakers; ++i) {
@@ -7125,7 +7138,14 @@ private slots:
             // Delivery pacing bounds work in flight without reducing the
             // fanout or packet count. The default path measures realtime load.
             if (deliveryPaced && !receivedThrough(sentFrames)) {
-                if (now - sentAtMs >= 5000) { deliveryTimedOut = true; input.stop(); }
+                if (now - sentAtMs >= 5000) {
+                    deliveryTimedOut = true; input.stop();
+                    for (size_t i = 0; i < audioCounts.size(); ++i) {
+                        const int expected = sentFrames * (speakers - (i < size_t(speakers) ? 1 : 0));
+                        if (audioCounts[i] < expected) qWarning() << "Fanout listener" << i
+                            << "received/expected" << audioCounts[i] << expected << "reported gaps" << missingCounts[i];
+                    }
+                }
                 return;
             }
             maxInputGapMs = std::max(maxInputGapMs, now - lastInputMs);
@@ -7379,12 +7399,27 @@ int main(int argc, char** argv) {
         if (first < 2 || count < 1 || first + count > 256) return 2;
         std::vector<int> heard(size_t(first + count)), missing(size_t(first + count));
         std::vector<std::unique_ptr<Device>> clients;
+        // Controlled senders wait for real reception, not a 100 Hz rebuild of
+        // every simulated client's roster. Coalesce arrivals per event turn.
+        QTimer audioReport;
+        audioReport.setSingleShot(true);
+        const bool reportAudio = instrumentedTiming || qEnvironmentVariable("SQUAD_SOAK_PACING") == "delivery";
+        QObject::connect(&audioReport, &QTimer::timeout, &audioReport, [&] {
+            QJsonArray counts;
+            for (int index = first; index < first + count; ++index)
+                counts.append(QJsonObject{{"heard", heard[size_t(index)]}, {"missing", missing[size_t(index)]}});
+            const auto bytes = QJsonDocument(QJsonObject{{"ok", true}, {"audio", counts}}).toJson(QJsonDocument::Compact);
+            std::puts(bytes.constData()); std::fflush(stdout);
+        });
         for (int index = first; index < first + count; ++index) {
             clients.push_back(std::make_unique<Device>(arguments[2] + "/" + QString::number(index),
                 QString("Member %1").arg(index)));
             if (!clients.back()->session.setMuted(false)) return 1;
             QObject::connect(&clients.back()->channel, &LocalChannel::audioReceived, &clients.back()->channel,
-                [&, index](const QString&, const QByteArray&, int gaps) { ++heard[size_t(index)]; missing[size_t(index)] += gaps; });
+                [&, index](const QString&, const QByteArray&, int gaps) {
+                    ++heard[size_t(index)]; missing[size_t(index)] += gaps;
+                    if (reportAudio && !audioReport.isActive()) audioReport.start();
+                });
         }
         const auto report = [&](int serial, bool ok) {
             QJsonArray members;

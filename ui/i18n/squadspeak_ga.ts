@@ -1189,6 +1189,10 @@
             <source>Unread messages</source>
             <translation>Teachtaireachtaí gan léamh</translation>
         </message>
+        <message>
+            <source>Chat only</source>
+            <translation>Comhrá amháin</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>

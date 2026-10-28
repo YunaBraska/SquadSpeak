@@ -1189,6 +1189,10 @@
             <source>Unread messages</source>
             <translation>Messaġġi mhux moqrija</translation>
         </message>
+        <message>
+            <source>Chat only</source>
+            <translation>Chat biss</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>

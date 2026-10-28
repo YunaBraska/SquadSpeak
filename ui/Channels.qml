@@ -7,7 +7,6 @@ import "AvatarAtlas.js" as Atlas
 PanelWindow {
     id: root
     property var language: audio.language
-    onHeightChanged: if (conversationSlot) Qt.callLater(conversationSlot.selectSlot)
     component DetailText: TextArea {
         readOnly: true; selectByMouse: true
         textFormat: TextEdit.PlainText; wrapMode: Text.WrapAnywhere
@@ -48,6 +47,88 @@ PanelWindow {
             border.color: action.checked ? Theme.accent : Theme.muted
             radius: Theme.smallRadius
             Glyph { anchors.centerIn: parent; width: 12; height: 12; symbol: "check"; color: Theme.accent; visible: action.checked }
+        }
+    }
+    component DetailPane: Page {
+        id: pane
+        parent: detailArea
+        anchors.fill: parent
+        readonly property bool opened: root.details === pane
+        property var returnFocus: null
+        visible: opened
+        padding: 12
+        signal shown()
+        signal closed()
+        function open() {
+            if (opened) return
+            returnFocus = root.activeFocusItem
+            root.details = pane
+        }
+        function close() {
+            if (!opened) return
+            root.details = null
+            if (returnFocus && returnFocus.visible) returnFocus.forceActiveFocus(Qt.OtherFocusReason)
+            else if (voiceConnection.visible) voiceConnection.forceActiveFocus(Qt.OtherFocusReason)
+            else root.contentItem.forceActiveFocus(Qt.OtherFocusReason)
+        }
+        onOpenedChanged: {
+            if (opened) { forceActiveFocus(Qt.OtherFocusReason); shown() }
+            else closed()
+        }
+        Keys.onEscapePressed: close()
+        header: RowLayout {
+            spacing: 8
+            Label { text: pane.title; textFormat: Text.PlainText; font.pixelSize: 16; font.weight: Font.DemiBold; Layout.fillWidth: true; Layout.minimumWidth: 0; Layout.leftMargin: 12; elide: Text.ElideRight }
+            ActionButton { objectName: "closeDetails"; text: qsTr("Close"); glyph: "close"; iconOnly: true; flat: true; onClicked: pane.close() }
+        }
+        background: Rectangle { color: Theme.surface; radius: Theme.controlRadius }
+    }
+    component MemberSummary: RowLayout {
+        id: summary
+        required property string hostId
+        required property var members
+        readonly property bool active: hostId === root.activeHost
+        spacing: 4
+        Row {
+            objectName: summary.visible ? "memberSummary_" + summary.hostId : ""
+            visible: summary.members.length > 0
+            spacing: -5
+            activeFocusOnTab: true
+            Accessible.role: Accessible.Button
+            Accessible.name: qsTr("Show all %1 members").arg(summary.members.length)
+            Accessible.onPressAction: root.toggleMembers(summary.hostId)
+            Keys.onReturnPressed: root.toggleMembers(summary.hostId)
+            Keys.onSpacePressed: root.toggleMembers(summary.hostId)
+            Repeater {
+                model: summary.visible ? summary.members.slice(0, 3) : []
+                VoiceAvatar {
+                    id: memberAvatar
+                    required property var modelData
+                    width: 36; height: 36; circular: true
+                    avatar: modelData.avatarId || modelData.avatar || "mossling"; name: modelData.name; music: !!modelData.music; teamSpeak: !!modelData.teamSpeak
+                    available: modelData.available; muted: modelData.muted; deafened: !!modelData.deafened; sleeping: !!modelData.sleeping
+                    identity: modelData.id; animationTime: root.avatarTime
+                    objectName: "channelAvatar_" + summary.hostId + "_" + modelData.id
+                    activeFocusOnTab: true
+                    Accessible.role: Accessible.Button
+                    Accessible.onPressAction: root.memberOptions(modelData, summary.hostId)
+                    Keys.onReturnPressed: root.memberOptions(modelData, summary.hostId)
+                    Keys.onSpacePressed: root.memberOptions(modelData, summary.hostId)
+                    MouseArea { anchors.fill: parent; acceptedButtons: Qt.LeftButton | Qt.RightButton; onClicked: mouse => root.memberOptions(modelData, summary.hostId, mouse.button === Qt.RightButton) }
+                    animated: root.voice.animatedAvatars && summary.visible
+                    level: summary.active ? root.memberLevel(modelData.id) : 0
+                    TextToolTip { objectName: "memberTooltip"; parent: memberAvatar; text: memberAvatar.name; visible: avatarHover.hovered }
+                    HoverHandler { id: avatarHover }
+                }
+            }
+        }
+        ActionButton {
+            objectName: summary.visible ? "showMembers_" + summary.hostId : ""
+            visible: summary.members.length > 3
+            text: "+" + (summary.members.length - 3)
+            flat: true
+            Accessible.name: qsTr("Show all %1 members").arg(summary.members.length)
+            onClicked: root.toggleMembers(summary.hostId)
         }
     }
     component MemberGrid: GridView {
@@ -94,16 +175,13 @@ PanelWindow {
             HoverHandler { id: memberHover }
         }
     }
-    PanelDialog {
+    DetailPane {
         id: memberList
         objectName: "membersDialog"
         property string hostId: ""
         readonly property var entry: root.channelList.find(function(c) { return c.id === hostId }) || ({})
-        parent: Overlay.overlay; anchors.centerIn: parent
-        width: Math.min(520, parent.width - 24); height: Math.min(580, parent.height - 24)
         title: (entry.name || "") + " (" + (entry.members || []).length + ")"
-        modal: true; focus: true; buttons: Dialog.Close
-        onOpened: allMembers.positionViewAtBeginning()
+        onShown: allMembers.positionViewAtBeginning()
         contentItem: MemberGrid {
             id: allMembers
             objectName: "allMembers"
@@ -180,10 +258,16 @@ PanelWindow {
     PointHandler { parent: root.contentItem; acceptedDevices: PointerDevice.TouchScreen; onActiveChanged: if (active) root.touchControls = true }
     readonly property bool mobileKeyboard: (Qt.platform.os === "android" || Qt.platform.os === "ios") && Qt.inputMethod.visible
     readonly property bool compactInput: mobileKeyboard && height < 360
-    property Item conversationSlot: null
+    readonly property bool wideLayout: width >= 840
+    readonly property bool splitDetails: width >= 1100
+    property Item details: null
+    onRemoteChanged: if (details) details.close()
+    readonly property var inspectedChannel: channelList.find(c => c.id === inspectedHost) || privateChatList.find(c => c.id === inspectedHost) || ({})
+    readonly property var voiceChannel: channelList.find(c => c.id === activeHost) || ({})
     property double avatarTime: Date.now()
     Timer { interval: root.voice.animatedAvatars ? Atlas.frameInterval() : 80; running: root.visible; repeat: true; onTriggered: root.avatarTime = Date.now() }
     readonly property bool showChat: chatExpanded && inspectedHost.length > 0
+    readonly property bool viewingVoice: !!current.joined && inspectedHost === activeHost
     onInspectedHostChanged: {
         chatExpanded = true
         Qt.callLater(root.updateChannelRows)
@@ -203,7 +287,7 @@ PanelWindow {
     property string selectedHost: ""
     property bool searchOpen: false
     onSearchOpenChanged: {
-        if (searchOpen) Qt.callLater(channelSearch.forceActiveFocus)
+        if (searchOpen) { if (!wideLayout) chatExpanded = false; Qt.callLater(channelSearch.forceActiveFocus) }
         else channelSearch.text = ""
     }
     Shortcut { sequences: [StandardKey.Find]; enabled: root.active && !settings.visible; onActivated: root.searchOpen = true }
@@ -265,6 +349,7 @@ PanelWindow {
         updateChannelRows()
     }
     function openPrivate(entry) {
+        if (details) details.close()
         const hostId = privateHostId(entry)
         const opened = root.network.openPrivateChat(hostId, entry.peerId)
         if (opened) chatExpanded = true
@@ -276,7 +361,9 @@ PanelWindow {
             return false
         }
         requestInfo.close()
-        return network.openPrivateChat(selectedMemberHost, selectedMember.id)
+        const opened = network.openPrivateChat(selectedMemberHost, selectedMember.id)
+        if (opened) chatExpanded = true
+        return opened
     }
     ListModel { id: channelRows; dynamicRoles: true }
     function orderedChannels(entries) {
@@ -302,7 +389,7 @@ PanelWindow {
         return result
     }
     function updateChannelRows() {
-        const groups = new Map()
+        const groups = new Map(), names = new Map()
         const query = channelSearch.text.trim().toLowerCase()
         const livePrivateChats = []
         for (const entry of channelList) {
@@ -310,6 +397,7 @@ PanelWindow {
                 if (entry.hasMessages || entry.id === inspectedHost) livePrivateChats.push(entry)
                 continue
             }
+            names.set(entry.name, (names.get(entry.name) || 0) + 1)
             const key = entry.deviceId || entry.id
             const named = !!entry.ownerName
             const label = entry.ownerName || (entry.owned ? qsTr("This device") : endpoint(entry))
@@ -349,7 +437,9 @@ PanelWindow {
         for (const group of sortedGroups) {
             const privateUnread = group.privateChats.some(function(entry) { return !!entry.unread })
             const groupUnread = privateUnread || group.channels.some(function(entry) { return !!entry.unread })
-            const groupExpanded = !!query || !collapsedHosts[group.key]
+            const grouped = group.channels.length !== 1
+                || (group.protocol === "teamspeak" && group.channels[0].tsChannel === "0")
+            const groupExpanded = !grouped || !!query || !collapsedHosts[group.key]
             if (query && !group.label.toLowerCase().includes(query)) {
                 const matches = new Set()
                 for (const entry of group.channels) {
@@ -360,8 +450,8 @@ PanelWindow {
                         ancestor = group.channels.find(function(item) { return item.id === ancestor.parent })
                     }
                 }
-                group.channels = group.channels.filter(function(entry) { return matches.has(entry.id) })
                 group.privateChats = group.privateChats.filter(function(entry) { return (entry.name || "").toLowerCase().includes(query) })
+                group.channels = group.channels.filter(function(entry) { return matches.has(entry.id) || (!grouped && group.privateChats.length > 0) })
             }
             const entries = orderedChannels(group.channels)
             group.privateChats.sort(function(a, b) {
@@ -374,7 +464,7 @@ PanelWindow {
             }
             // Retain the first row's heading while releasing collapsed contents.
             for (const [index, entry] of (groupExpanded ? entries : entries.slice(0, 1)).entries())
-                ordered.push({channelData: entry, groupLabel: index === 0 ? group.label : "", groupId: group.key,
+                ordered.push({channelData: entry, groupLabel: grouped && index === 0 ? group.label : "", groupId: group.key, groupOwner: group.label, grouped: grouped || !!entry.privateFolder || !!entry.private, ambiguous: !grouped && names.get(entry.name) > 1,
                     groupProtocol: group.protocol, groupUnread: groupUnread, groupExpanded: groupExpanded})
         }
         for (let i = channelRows.count - 1; i >= 0; --i) {
@@ -391,7 +481,10 @@ PanelWindow {
             }
         }
     }
-    onChannelListChanged: updateChannelRows()
+    onChannelListChanged: {
+        updateChannelRows()
+        if ((channelInfo.opened || radioBrowser.opened) && !channelList.some(c => c.id === selectedHost)) details.close()
+    }
     Connections { target: root.network; function onHostsChanged() { root.updateChannelRows() } }
     Component.onCompleted: updateChannelRows()
     Binding { target: Theme; property: "mode"; value: session.theme }
@@ -410,7 +503,7 @@ PanelWindow {
         if (settings.visible && settingsPage === 3) pickAboutSentence()
         syncAudioSettings()
     }
-    onClosing: { settings.close(); searchOpen = false }
+    onClosing: { if (details) details.close(); settings.close(); searchOpen = false }
     width: 460
     height: 560
     minimumWidth: 360
@@ -452,14 +545,31 @@ PanelWindow {
     Timer { id: noticeTimer; interval: 4000; onTriggered: root.notice = "" }
     function openHostChat(id) {
         if (!network.ready) return false
+        if (details) details.close()
         const privateEntry = privateChatList.find(function(chat) { return chat.id === id })
         if (privateEntry) return openPrivate(privateEntry)
         chatExpanded = true
         return remote ? network.remoteAction("openChat", {hostId: id}) : network.openSavedChat(id)
     }
-    function showHostChat(id) {
-        if (id === inspectedHost && chatExpanded) chatExpanded = false
-        else openHostChat(id)
+    function showChannelList() {
+        if (details) details.close()
+        chatExpanded = false
+        Qt.callLater(function() {
+            for (let i = 0; i < channelRepeater.count; ++i) {
+                const entry = channelRepeater.itemAt(i)
+                if (entry && entry.channelData.id === root.inspectedHost) { entry.focusChannel(); return }
+            }
+        })
+    }
+    function showChannelInfo(id, toggle) {
+        if (toggle && details === channelInfo && selectedHost === id) { channelInfo.close(); return }
+        if (details) details.close()
+        selectedHost = id
+        channelInfo.open()
+    }
+    function channelLabel(entry) {
+        const name = entry.name || ""
+        return entry.protocol === "teamspeak" ? name.replace(/^\[[*clr]?spacer[^\]]*\]/i, "").replace(/^[_-]{3,}$/, "─") : name
     }
     function memberLevel(id) { return remote ? (network.remoteLevels[id] || 0) : id === network.ownId ? audio.transmitLevel : (audio.playbackLevels[id] || 0) }
     function toggleMembers(id) { memberList.hostId = id; memberList.open() }
@@ -483,19 +593,15 @@ PanelWindow {
         }
     }
 
-    PanelDialog {
+    DetailPane {
         id: privateMessages
         objectName: "privateMessagesDialog"
-        parent: Overlay.overlay; anchors.centerIn: parent
-        width: Math.min(420, parent.width - 24)
-        height: Math.min(520, parent.height - 24)
-        modal: true; focus: true; title: qsTr("Messages")
+        title: qsTr("Messages")
         property string hostId: ""
         property string hostDeviceId: ""
         readonly property var entries: root.privateChatsForHost(hostId)
         readonly property bool managesLifetime: !root.remote && hostDeviceId.length > 0 && hostDeviceId === (root.network.ownId || "")
         readonly property var lifetimeDays: session.supporterEnabled ? [1, 7, 30, 90, 180, 360] : [1, 7, 30]
-        buttons: Dialog.Close
         contentItem: ScrollView {
             id: privateMessagesScroll
             clip: true; contentWidth: availableWidth
@@ -567,7 +673,7 @@ PanelWindow {
             if (error.length && error !== previousError) root.showNotice(error)
             previousError = error
             if (Object.keys(root.language.preparation).length && !root.remote && root.visible) {
-                channelMenu.close(); open()
+                channelInfo.close(); open()
             } else close()
         }
         Connections { target: root.language; function onChanged() { languageDownload.updatePrompt() } }
@@ -778,15 +884,12 @@ PanelWindow {
             Label { Layout.fillWidth: true; text: root.network.status; textFormat: Text.PlainText; color: Theme.muted; wrapMode: Text.Wrap }
         }
     }
-    PanelDialog {
+    DetailPane {
         id: radioBrowser
         objectName: "radioBrowser"
-        parent: Overlay.overlay; anchors.centerIn: parent
-        width: Math.min(480, parent.width - 24)
-        height: Math.min(550, parent.height - 24)
         title: qsTr("Radio")
-        modal: true
-        onOpened: { radioSearch.text = ""; radioResults.reload(); radioSearch.forceActiveFocus() }
+        onClosed: radioSearchDelay.stop()
+        onShown: { radioSearch.text = ""; radioResults.reload(); radioSearch.forceActiveFocus() }
         Connections { target: root.hostRadio; function onStationsChanged() { if (radioBrowser.visible) radioResults.reload() } }
         contentItem: ColumnLayout {
             RowLayout {
@@ -822,7 +925,7 @@ PanelWindow {
                     for (const station of page.items) stationRows.append({entry: station})
                     loading = false
                 }
-                onAtYEndChanged: if (atYEnd && !loading && count < total) loadMore()
+                onAtYEndChanged: if (radioBrowser.opened && atYEnd && !loading && count < total) loadMore()
                 ScrollBar.vertical: ScrollBar { id: radioScroll }
                 delegate: RowLayout {
                     required property var entry
@@ -859,7 +962,6 @@ PanelWindow {
                 Layout.fillWidth: true
                 ActionButton { text: qsTr("Source"); flat: true; onClicked: Qt.openUrlExternally(radio.catalogInfo.source) }
                 Item { Layout.fillWidth: true }
-                ActionButton { text: qsTr("Close"); onClicked: radioBrowser.close() }
             }
         }
     }
@@ -1179,24 +1281,20 @@ PanelWindow {
             }
         }
     }
-    PanelDialog {
+    DetailPane {
         id: channelInfo
         objectName: "channelInfoDialog"
         property var addresses: []
         property bool focusBlocked: false
         readonly property var entry: root.channelList.find(function(h) { return h.id === root.selectedHost }) || ({})
         readonly property bool manageable: !!root.selectedOwner
-        parent: Overlay.overlay; anchors.centerIn: parent
-        width: Math.min(440, parent.width - 24)
-        height: Math.min(manageable ? 620 : 300, parent.height - 24)
-        modal: true; focus: true; title: qsTr("Channel info")
-        buttons: Dialog.Close
+        title: qsTr("Channel info")
         function positionContent() {
             const flick = channelInfoScroll.contentItem
             flick.contentY = focusBlocked ? Math.max(0, Math.min(flick.contentHeight - flick.height,
                 blockedDeviceList.mapToItem(flick.contentItem, 0, 0).y)) : 0
         }
-        onOpened: {
+        onShown: {
             addresses = root.network.channelAddresses(root.selectedHost)
             internetHelp.visible = false
             Qt.callLater(positionContent)
@@ -1211,6 +1309,15 @@ PanelWindow {
                 spacing: 12
                 onHeightChanged: if (channelInfo.opened && channelInfo.focusBlocked) Qt.callLater(channelInfo.positionContent)
                 DetailText { objectName: "channelDisplayName"; visible: !channelInfo.manageable; text: channelInfo.entry.name || ""; font.weight: Font.DemiBold }
+                EntryField {
+                    objectName: "channelName"; Layout.fillWidth: true
+                    visible: channelInfo.manageable; enabled: channelInfo.manageable
+                    text: channelInfo.entry.name || ""; Accessible.name: qsTr("Channel name")
+                    onEditingFinished: {
+                        if (root.selectedOwner) root.selectedOwner.setChannelName(text)
+                        text = Qt.binding(function() { return channelInfo.entry.name || "" })
+                    }
+                }
                 Label { text: qsTr("Address"); visible: channelInfo.addresses.length > 0; color: Theme.muted }
                 Repeater {
                     model: channelInfo.addresses
@@ -1221,6 +1328,123 @@ PanelWindow {
                         ActionButton { objectName: "copyChannelAddress"; text: qsTr("Copy address"); glyph: "copy"; iconOnly: true; flat: true; onClicked: { addressText.selectAll(); addressText.copy(); addressText.deselect() } }
                     }
                 }
+                ActionButton { Layout.fillWidth: true; flat: true; horizontalAlignment: Text.AlignLeft;
+                    objectName: "blockedDevices"
+                    text: qsTr("Blocked devices") + " (" + root.managedHost.blockedClients.length + ")"
+                    visible: !!root.selectedOwner && root.managedHost.blockedClients.length > 0
+                    onClicked: { channelInfo.focusBlocked = true; Qt.callLater(channelInfo.positionContent) }
+                }
+                ActionButton { Layout.fillWidth: true; flat: true; horizontalAlignment: Text.AlignLeft;
+                    objectName: "managePrivateMessages"
+                    text: qsTr("Messages")
+                    visible: root.privateChatsForHost(root.selectedHost).length > 0
+                    onClicked: { privateMessages.hostId = root.selectedHost; privateMessages.hostDeviceId = root.privateDeviceForHost(root.selectedHost); privateMessages.open() }
+                }
+                ActionButton { Layout.fillWidth: true; flat: true; horizontalAlignment: Text.AlignLeft;
+                    objectName: "shareScreen"
+                    visible: !!root.screen && !root.remote && !!root.selectedOwner
+                    readonly property bool sharingHere: root.screen && root.screen.active && root.screen.hostId === root.selectedHost
+                    text: sharingHere ? qsTr("Stop sharing") : qsTr("Share screen")
+                    destructive: sharingHere
+                    enabled: sharingHere || (root.selectedOwner && root.selectedOwner.hosting && root.screen && !root.screen.active && !root.screen.watching)
+                    onClicked: {
+                        if (root.screen.active) root.screen.stop()
+                        else { root.screen.refreshSources(); screenPicker.open() }
+                    }
+                }
+                OptionCheck { Layout.fillWidth: true;
+                    objectName: "screenAudioWhileSharing"
+                    text: root.screen && root.screen.computerAudio ? qsTr("Computer audio") : qsTr("App audio")
+                    visible: !root.remote && !!root.selectedOwner && root.screen && root.screen.active && root.screen.audioAvailable && root.screen.hostId === root.selectedHost
+                    checked: root.screen && root.screen.audioEnabled
+                    onClicked: root.screen.setAudioEnabled(checked)
+                }
+                ActionButton { Layout.fillWidth: true; flat: true; horizontalAlignment: Text.AlignLeft; objectName: "browseStations"; text: qsTr("Browse stations"); enabled: !!root.hostRadio; visible: !root.remote && !!root.selectedOwner; onClicked: radioBrowser.open() }
+                ActionButton { Layout.fillWidth: true; flat: true; horizontalAlignment: Text.AlignLeft; objectName: "joinChannel"; text: qsTr("Join"); enabled: root.network.ready && (!root.activeHost || root.selectedHost !== root.activeHost); onClicked: root.joinHost(root.selectedHost) }
+                Item {
+                    Layout.fillWidth: true
+                    id: channelMusic
+                    implicitWidth: 240; implicitHeight: visible ? 64 : 0
+                    readonly property string musicId: {
+                        const entry = root.channelList.find(function(h) { return h.id === root.selectedHost })
+                        return entry && entry.musicId ? entry.musicId : ""
+                    }
+                    property int revision: 0
+                    visible: !root.remote && musicId.length > 0
+                    Connections { target: audio; function onProfileChanged() { ++channelMusic.revision } }
+                    RowLayout {
+                        anchors.fill: parent; anchors.margins: 12
+                        enabled: audio.outputAvailable
+                        SettingSlider {
+                            objectName: "channelMusicVolume"
+                            Layout.fillWidth: true
+                            caption: qsTranslate("AudioSettings", "Music volume")
+                            from: 0; to: 1; stepSize: 0.01
+                            value: { const revision = channelMusic.revision; return audio.channelMusicVolume(channelMusic.musicId) }
+                            valueText: qsTranslate("AudioSettings", "%1 %").arg(Math.round(value * 100))
+                            applyValue: function(value) { return audio.setChannelMusicVolume(channelMusic.musicId, value) }
+                        }
+                        ActionButton {
+                            objectName: "resetChannelMusicVolume"
+                            iconOnly: true; flat: true; destructive: true; glyph: "reset"
+                            text: qsTr("Use default music volume")
+                            onClicked: audio.resetChannelMusicVolume(channelMusic.musicId)
+                        }
+                    }
+                }
+                Item {
+                    Layout.fillWidth: true
+                    id: channelTranslation
+                    objectName: "channelTranslationControls"
+                    implicitHeight: visible ? translationRows.implicitHeight + 20 : 0
+                    visible: root.language.supported && !root.remote
+                    readonly property var preferences: { root.language.revision; return root.language.channelPreferences(root.selectedHost) }
+                    function save(key, value) {
+                        const next = Object.assign({}, preferences)
+                        next[key] = value
+                        return root.language.configureChannel(root.selectedHost, !!next.messages, next.outgoing || "", !!next.voice, next.voiceTarget || "")
+                    }
+                    ColumnLayout {
+                        id: translationRows
+                        anchors.fill: parent; anchors.margins: 10; spacing: 6
+                        Repeater {
+                            model: [
+                                { key: "messages", target: "outgoing", label: qsTranslate("LocalLanguage", "Translate messages"), choice: qsTranslate("LocalLanguage", "Original text") },
+                                { key: "voice", target: "voiceTarget", label: qsTranslate("LocalLanguage", "Translated voice"), choice: qsTr("App language") }
+                            ]
+                            RowLayout {
+                                id: translationRow
+                                required property var modelData
+                                Layout.fillWidth: true; spacing: 8
+                                OptionCheck {
+                                    objectName: translationRow.modelData.key === "messages" ? "channelTranslateMessages" : "channelTranslateVoice"
+                                    Layout.fillWidth: true
+                                    text: translationRow.modelData.label
+                                    checked: !!channelTranslation.preferences[translationRow.modelData.key]
+                                    enabled: root.language.available && (translationRow.modelData.key === "messages" || root.language.speechAvailable)
+                                    onClicked: { channelTranslation.save(translationRow.modelData.key, checked); checked = Qt.binding(function() { return !!channelTranslation.preferences[translationRow.modelData.key] }) }
+                                    ToolTip.visible: hovered
+                                    ToolTip.text: enabled ? qsTranslate("LocalLanguage", "Translation (experimental)") : qsTranslate("LocalLanguage", "Local language processing is unavailable.")
+                                    ToolTip.delay: 600
+                                }
+                                ChoiceBox {
+                                    objectName: translationRow.modelData.key === "messages" ? "channelOutgoingLanguage" : "channelVoiceLanguage"
+                                    Layout.preferredWidth: 150
+                                    model: [{id: "", name: translationRow.modelData.choice}].concat(root.language.languages)
+                                    textRole: "name"; valueRole: "id"
+                                    currentIndex: Math.max(0, model.findIndex(function(item) { return item.id === (channelTranslation.preferences[translationRow.modelData.target] || "").split("-")[0] }))
+                                    enabled: root.language.available && !!channelTranslation.preferences[translationRow.modelData.key]
+                                    Accessible.name: translationRow.modelData.key === "messages" ? qsTr("Send in") : qsTr("Hear in")
+                                    ToolTip.visible: hovered; ToolTip.text: Accessible.name; ToolTip.delay: 600
+                                    onActivated: channelTranslation.save(translationRow.modelData.target, currentValue)
+                                }
+                            }
+                        }
+                    }
+                }
+                ActionButton { Layout.fillWidth: true; flat: true; horizontalAlignment: Text.AlignLeft; objectName: "leaveMenuItem"; destructive: true; text: qsTr("Leave"); enabled: root.activeHost === root.selectedHost; onClicked: root.leaveHost() }
+                Rectangle { Layout.fillWidth: true; implicitHeight: 1; color: Theme.border; visible: !root.remote && root.selectedHost !== root.network.ownId; height: visible ? implicitHeight : 0 }
+                ActionButton { Layout.fillWidth: true; flat: true; horizontalAlignment: Text.AlignLeft; objectName: "removeChannelMenuItem"; destructive: true; text: root.channelList.some(function(c) { return c.id === root.selectedHost && c.protocol === "teamspeak" }) ? qsTr("Remove server") : qsTr("Remove channel"); visible: !root.remote && root.selectedHost !== root.network.ownId; onClicked: root.selectedOwner ? removeOwnChannel.open() : root.network.removeChannel(root.selectedHost) }
                 DetailText { objectName: "channelIdentity"; text: channelInfo.entry.id || ""; color: Theme.muted; font.pixelSize: 11; Accessible.name: qsTr("Channel ID") }
                 ActionButton { objectName: "internetHelpToggle"; text: qsTr("Internet access"); flat: true; onClicked: internetHelp.visible = !internetHelp.visible }
                 ColumnLayout {
@@ -1250,7 +1474,6 @@ PanelWindow {
                     visible: channelInfo.manageable
                     enabled: channelInfo.manageable
                     Layout.fillWidth: true; spacing: 12
-                    EntryField { objectName: "channelName"; Layout.fillWidth: true; text: root.managedHost.channelName; Accessible.name: qsTr("Channel name"); onEditingFinished: { root.managedHost.setChannelName(text); text = Qt.binding(function() { return root.managedHost.channelName }) } }
                     Label { text: root.managedHost.hosting ? qsTr("Hosting") : qsTr("Channel unavailable"); color: Theme.muted; wrapMode: Text.Wrap; Layout.fillWidth: true }
                     Label { objectName: "channelConfiguration"; text: root.managedHost.passwordProtected ? qsTr("Password required") : qsTr("No password"); color: Theme.muted }
                     RowLayout {
@@ -1330,24 +1553,21 @@ PanelWindow {
         }
     }
 
-    PanelDialog {
+    DetailPane {
         id: requestInfo
         objectName: "requestInfoDialog"
-        parent: Overlay.overlay; anchors.centerIn: parent
-        width: Math.min(440, parent.width - 24)
-        height: Math.min(requestDetails.implicitHeight + topPadding + bottomPadding + implicitHeaderHeight + implicitFooterHeight + spacing * 2, parent.height - 24)
-        modal: true; focus: true; title: root.inspectedRequestId ? qsTr("Join request") : qsTr("Inspect")
+        title: root.inspectedRequestId ? qsTr("Join request") : qsTr("Inspect")
         readonly property var entry: root.inspectedRequestId ? root.network.requests.find(function(r) { return r.id === root.inspectedRequestId && (!root.inspectedRequestHost || r.hostId === root.inspectedRequestHost) }) || ({}) : root.selectedMember
         readonly property bool personalControls: !root.inspectedRequestId && !root.remote && !!entry.id && !entry.music && entry.id !== root.network.ownId
-        onOpened: {
+        onShown: {
             requestScroll.contentItem.contentY = 0
         }
         onClosed: memberMenu.close()
         footer: RowLayout {
+            visible: !!root.inspectedRequestId
             spacing: 8
             ActionButton { objectName: "denyInspectedRequest"; text: qsTr("Deny"); destructive: true; visible: !!root.inspectedRequestId; Layout.leftMargin: 12; Layout.bottomMargin: 12; enabled: !!requestInfo.entry.id; onClicked: root.decideRequest(requestInfo.entry.id, requestInfo.entry.hostId, false) }
             Item { Layout.fillWidth: true }
-            ActionButton { text: qsTr("Close"); Layout.bottomMargin: 12; Layout.rightMargin: root.inspectedRequestId ? 0 : 12; onClicked: requestInfo.close() }
             ActionButton { objectName: "approveInspectedRequest"; text: qsTr("Approve"); primary: true; visible: !!root.inspectedRequestId; Layout.rightMargin: 12; Layout.bottomMargin: 12; enabled: !!requestInfo.entry.id; onClicked: root.decideRequest(requestInfo.entry.id, requestInfo.entry.hostId, true) }
         }
         contentItem: ScrollView {
@@ -1502,139 +1722,7 @@ PanelWindow {
             }
         }
     }
-    Menu {
-        popupType: Popup.Item
-        background: Rectangle { implicitWidth: 240; implicitHeight: 40; radius: Theme.controlRadius; color: Theme.surface; border.color: Theme.border }
-        id: channelMenu
-        objectName: "channelMenu"
-        width: Math.min(root.width - 24, root.language.supported && !root.remote ? 336 : 240)
-        MenuAction { text: qsTr("Channel info"); onTriggered: channelInfo.open() }
-        MenuAction {
-            objectName: "blockedDevices"
-            text: qsTr("Blocked devices") + " (" + root.managedHost.blockedClients.length + ")"
-            visible: !!root.selectedOwner && root.managedHost.blockedClients.length > 0
-            onTriggered: { channelInfo.focusBlocked = true; channelInfo.open() }
-        }
-        MenuAction {
-            objectName: "managePrivateMessages"
-            text: qsTr("Messages")
-            visible: root.privateChatsForHost(root.selectedHost).length > 0
-            onTriggered: { privateMessages.hostId = root.selectedHost; privateMessages.hostDeviceId = root.privateDeviceForHost(root.selectedHost); privateMessages.open() }
-        }
-        MenuAction {
-            objectName: "shareScreen"
-            visible: !!root.screen && !root.remote && !!root.selectedOwner
-            readonly property bool sharingHere: root.screen && root.screen.active && root.screen.hostId === root.selectedHost
-            text: sharingHere ? qsTr("Stop sharing") : qsTr("Share screen")
-            destructive: sharingHere
-            enabled: sharingHere || (root.selectedOwner && root.selectedOwner.hosting && root.screen && !root.screen.active && !root.screen.watching)
-            onTriggered: {
-                if (root.screen.active) root.screen.stop()
-                else { root.screen.refreshSources(); screenPicker.open() }
-            }
-        }
-        MenuAction {
-            objectName: "screenAudioWhileSharing"
-            text: root.screen && root.screen.computerAudio ? qsTr("Computer audio") : qsTr("App audio"); checkable: true
-            visible: !root.remote && !!root.selectedOwner && root.screen && root.screen.active && root.screen.audioAvailable && root.screen.hostId === root.selectedHost
-            checked: root.screen && root.screen.audioEnabled
-            onTriggered: root.screen.setAudioEnabled(checked)
-        }
-        MenuAction { objectName: "browseStations"; text: qsTr("Browse stations"); enabled: !!root.hostRadio; visible: !root.remote && !!root.selectedOwner; onTriggered: radioBrowser.open() }
-        MenuAction { objectName: "joinChannel"; text: qsTr("Join"); enabled: root.network.ready && (!root.activeHost || root.selectedHost !== root.activeHost); onTriggered: root.joinHost(root.selectedHost) }
-        Item {
-            id: channelMusic
-            implicitWidth: 240; implicitHeight: visible ? 64 : 0
-            readonly property string musicId: {
-                const entry = root.channelList.find(function(h) { return h.id === root.selectedHost })
-                return entry && entry.musicId ? entry.musicId : ""
-            }
-            property int revision: 0
-            visible: !root.remote && musicId.length > 0
-            Connections { target: audio; function onProfileChanged() { ++channelMusic.revision } }
-            RowLayout {
-                anchors.fill: parent; anchors.margins: 12
-                enabled: audio.outputAvailable
-                SettingSlider {
-                    objectName: "channelMusicVolume"
-                    Layout.fillWidth: true
-                    caption: qsTranslate("AudioSettings", "Music volume")
-                    from: 0; to: 1; stepSize: 0.01
-                    value: { const revision = channelMusic.revision; return audio.channelMusicVolume(channelMusic.musicId) }
-                    valueText: qsTranslate("AudioSettings", "%1 %").arg(Math.round(value * 100))
-                    applyValue: function(value) { return audio.setChannelMusicVolume(channelMusic.musicId, value) }
-                }
-                ActionButton {
-                    objectName: "resetChannelMusicVolume"
-                    iconOnly: true; flat: true; destructive: true; glyph: "reset"
-                    text: qsTr("Use default music volume")
-                    onClicked: audio.resetChannelMusicVolume(channelMusic.musicId)
-                }
-            }
-        }
-        Item {
-            id: channelTranslation
-            objectName: "channelTranslationControls"
-            implicitHeight: visible ? translationRows.implicitHeight + 20 : 0
-            visible: root.language.supported && !root.remote
-            readonly property var preferences: { root.language.revision; return root.language.channelPreferences(root.selectedHost) }
-            function save(key, value) {
-                const next = Object.assign({}, preferences)
-                next[key] = value
-                return root.language.configureChannel(root.selectedHost, !!next.messages, next.outgoing || "", !!next.voice, next.voiceTarget || "")
-            }
-            ColumnLayout {
-                id: translationRows
-                anchors.fill: parent; anchors.margins: 10; spacing: 6
-                Repeater {
-                    model: [
-                        { key: "messages", target: "outgoing", label: qsTranslate("LocalLanguage", "Translate messages"), choice: qsTranslate("LocalLanguage", "Original text") },
-                        { key: "voice", target: "voiceTarget", label: qsTranslate("LocalLanguage", "Translated voice"), choice: qsTr("App language") }
-                    ]
-                    RowLayout {
-                        id: translationRow
-                        required property var modelData
-                        Layout.fillWidth: true; spacing: 8
-                        OptionCheck {
-                            objectName: translationRow.modelData.key === "messages" ? "channelTranslateMessages" : "channelTranslateVoice"
-                            Layout.fillWidth: true
-                            text: translationRow.modelData.label
-                            checked: !!channelTranslation.preferences[translationRow.modelData.key]
-                            enabled: root.language.available && (translationRow.modelData.key === "messages" || root.language.speechAvailable)
-                            onClicked: { channelTranslation.save(translationRow.modelData.key, checked); checked = Qt.binding(function() { return !!channelTranslation.preferences[translationRow.modelData.key] }) }
-                            ToolTip.visible: hovered
-                            ToolTip.text: enabled ? qsTranslate("LocalLanguage", "Translation (experimental)") : qsTranslate("LocalLanguage", "Local language processing is unavailable.")
-                            ToolTip.delay: 600
-                        }
-                        ChoiceBox {
-                            objectName: translationRow.modelData.key === "messages" ? "channelOutgoingLanguage" : "channelVoiceLanguage"
-                            Layout.preferredWidth: 150
-                            model: [{id: "", name: translationRow.modelData.choice}].concat(root.language.languages)
-                            textRole: "name"; valueRole: "id"
-                            currentIndex: Math.max(0, model.findIndex(function(item) { return item.id === (channelTranslation.preferences[translationRow.modelData.target] || "").split("-")[0] }))
-                            enabled: root.language.available && !!channelTranslation.preferences[translationRow.modelData.key]
-                            Accessible.name: translationRow.modelData.key === "messages" ? qsTr("Send in") : qsTr("Hear in")
-                            ToolTip.visible: hovered; ToolTip.text: Accessible.name; ToolTip.delay: 600
-                            onActivated: channelTranslation.save(translationRow.modelData.target, currentValue)
-                        }
-                    }
-                }
-            }
-        }
-        MenuAction {
-            objectName: "autoJoinMenuItem"
-            text: qsTr("Auto-join"); checkable: true; visible: !root.remote
-            checked: root.channelList.some(function(h) { return h.id === root.selectedHost && h.autoJoin })
-            onTriggered: {
-                const previous = root.channelList.some(function(h) { return h.id === root.selectedHost && h.autoJoin })
-                root.network.setAutoJoin(root.selectedHost, !previous)
-                checked = Qt.binding(function() { return root.channelList.some(function(h) { return h.id === root.selectedHost && h.autoJoin }) })
-            }
-        }
-        MenuAction { objectName: "leaveMenuItem"; destructive: true; text: qsTr("Leave"); enabled: root.activeHost === root.selectedHost; onTriggered: root.leaveHost() }
-        MenuSeparator { visible: !root.remote && root.selectedHost !== root.network.ownId; height: visible ? implicitHeight : 0 }
-        MenuAction { objectName: "removeChannelMenuItem"; destructive: true; text: root.channelList.some(function(c) { return c.id === root.selectedHost && c.protocol === "teamspeak" }) ? qsTr("Remove server") : qsTr("Remove channel"); visible: !root.remote && root.selectedHost !== root.network.ownId; onTriggered: root.selectedOwner ? removeOwnChannel.open() : root.network.removeChannel(root.selectedHost) }
-    }
+
     Menu {
         popupType: Popup.Item
         background: Rectangle { implicitWidth: 240; implicitHeight: 40; radius: Theme.controlRadius; color: Theme.surface; border.color: Theme.border }
@@ -1656,15 +1744,17 @@ PanelWindow {
         MenuAction { destructive: true; text: qsTr("Kick"); visible: root.canModerateMember; onTriggered: root.memberHost.kick(root.selectedMember.id) }
         MenuAction { destructive: true; text: qsTr("Block"); visible: root.canModerateMember; onTriggered: root.memberHost.setBlocked(root.selectedMember.id, true) }
     }
-    PanelDialog {
+    DetailPane {
         id: originalTranscript
-        parent: Overlay.overlay; anchors.centerIn: parent; width: Math.min(380, parent.width - 24)
         title: root.selectedMember.name || ""
-        buttons: Dialog.Close
-        contentItem: TextEdit {
-            text: { root.language.revision; const info = root.language.member(root.selectedMember.id); return [info.status, info.transcript].filter(Boolean).join("\n\n") }
-            textFormat: TextEdit.PlainText; readOnly: true; selectByMouse: true; wrapMode: TextEdit.Wrap
-            color: Theme.text; font.pixelSize: 12
+        contentItem: ScrollView {
+            contentWidth: availableWidth; clip: true
+            TextEdit {
+                width: parent.width
+                text: { root.language.revision; const info = root.language.member(root.selectedMember.id); return [info.status, info.transcript].filter(Boolean).join("\n\n") }
+                textFormat: TextEdit.PlainText; readOnly: true; selectByMouse: true; wrapMode: TextEdit.Wrap
+                color: Theme.text; font.pixelSize: 12
+            }
         }
     }
     ColumnLayout {
@@ -1720,242 +1810,243 @@ PanelWindow {
                 }
             }
         }
-        ScrollView {
-            id: scroll
-            objectName: "channelsScroll"
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            clip: true; contentWidth: availableWidth
-            ColumnLayout {
-                width: scroll.availableWidth; spacing: 2
-                Repeater {
-                    id: channelRepeater
-                    model: channelRows
-                    delegate: ColumnLayout {
-                        id: channelEntry
-                        required property var channelData
-                        readonly property var modelData: channelData
-                        required property string groupLabel
-                        required property string groupId
-                        required property bool groupUnread
-                        required property string groupProtocol
-                        required property bool groupExpanded
-                        readonly property real headingHeight: hostHeading.visible ? hostHeading.implicitHeight + hostHeading.Layout.topMargin + hostHeading.Layout.bottomMargin : 0
-                        Layout.fillWidth: true; spacing: 2
-                        RowLayout {
-                            id: hostHeading
-                            visible: channelEntry.groupLabel.length > 0
-                            Layout.fillWidth: true; Layout.topMargin: 4; Layout.bottomMargin: 2
-                            ActionButton {
-                                objectName: "toggleHost_" + channelEntry.groupId
-                                text: channelEntry.groupLabel; iconOnly: true; flat: true
-                                enabled: channelSearch.text.trim().length === 0
-                                Accessible.role: Accessible.Button
-                                Accessible.checkable: true
-                                Accessible.checked: channelEntry.groupExpanded
-                                contentItem: Glyph { symbol: "down"; rotation: channelEntry.groupExpanded ? 0 : -90; color: Theme.muted }
-                                onClicked: root.toggleHost(channelEntry.groupId)
-                                Keys.onLeftPressed: if (channelEntry.groupExpanded) root.toggleHost(channelEntry.groupId)
-                                Keys.onRightPressed: if (!channelEntry.groupExpanded) root.toggleHost(channelEntry.groupId)
+        RowLayout {
+            Layout.fillWidth: true; Layout.fillHeight: true; spacing: 12
+            ScrollView {
+                id: scroll
+                objectName: "channelsScroll"
+                visible: root.wideLayout || (!root.showChat && !root.details)
+                Layout.preferredWidth: root.wideLayout && (root.showChat || root.details) ? 280 : -1
+                Layout.fillWidth: !root.wideLayout || (!root.showChat && !root.details)
+                Layout.fillHeight: true
+                clip: true; contentWidth: availableWidth
+                ColumnLayout {
+                    width: scroll.availableWidth; spacing: 2
+                    Repeater {
+                        id: channelRepeater
+                        model: channelRows
+                        delegate: ColumnLayout {
+                            id: channelEntry
+                            required property var channelData
+                            readonly property var modelData: channelData
+                            required property string groupLabel
+                            required property string groupId
+                            required property bool groupUnread
+                            required property string groupProtocol
+                            required property bool groupExpanded
+                            required property bool grouped
+                            required property string groupOwner
+                            required property bool ambiguous
+                            function focusChannel() {
+                                const flick = scroll.contentItem
+                                const top = channelRow.mapToItem(flick.contentItem, 0, 0).y
+                                flick.contentY = Math.max(0, Math.min(top - 8, flick.contentHeight - flick.height))
+                                channelRow.forceActiveFocus()
                             }
-                            ProviderIcon { objectName: "hostProvider_" + channelEntry.groupId; provider: channelEntry.groupProtocol }
-                            DetailText {
-                                objectName: "hostGroup_" + channelEntry.groupId
-                                text: channelEntry.groupLabel; color: Theme.muted; font.pixelSize: 11
-                                selectByMouse: true; wrapMode: TextEdit.WrapAnywhere
-                            }
-                            Glyph { objectName: "activeHost_" + channelEntry.groupId; symbol: "headphones"; color: Theme.accent; visible: !!root.current.joined && root.channelList.some(function(entry) { return entry.id === root.activeHost && (entry.deviceId || entry.id) === channelEntry.groupId }); description: qsTr("Connected to voice") }
-                            UnreadDot { objectName: "unreadHost_" + channelEntry.groupId; visible: channelEntry.groupUnread }
-                        }
-                        Rectangle {
-                            id: channelRow
-                            visible: channelEntry.groupExpanded
-                            readonly property var modelData: channelEntry.channelData
-                            readonly property bool privateFolder: !!modelData.privateFolder
-                            readonly property bool privateConversation: !!modelData.private
-                            readonly property bool active: root.activeHost === modelData.id && !!root.current.joined
-                            readonly property bool owned: !privateFolder && !privateConversation && (!!modelData.owned || modelData.id === (root.current.ownId || root.network.ownId))
-                            readonly property bool selected: visible && root.inspectedHost === modelData.id && root.chatExpanded
-                            readonly property var members: modelData.members || []
-                            Layout.fillWidth: true; implicitHeight: (privateFolder ? 34 : 42) + (selected && !privateFolder ? chatSlot.height + 8 : 0)
-                            radius: Theme.controlRadius; color: active ? Theme.surface : channelHover.containsMouse ? Theme.raised : "transparent"
-                            border.width: channelRow.active || activeFocus ? 1 : 0; border.color: Theme.accent
-                            MouseArea {
-                                id: channelHover
-                                objectName: "channelRow_" + modelData.id
-                                anchors.left: parent.left; anchors.right: parent.right; height: channelRow.privateFolder ? 34 : 42
-                                hoverEnabled: true; acceptedButtons: Qt.LeftButton | Qt.RightButton
-                                onDoubleClicked: function(mouse) {
-                                    if (mouse.button !== Qt.LeftButton) return
-                                    if (channelRow.privateFolder) root.togglePrivateFolder(modelData.hostId)
-                                    else { root.chatExpanded = true; root.joinHost(modelData.id) }
-                                }
-                                onClicked: function(mouse) {
-                                    if (channelRow.privateFolder) {
-                                        if (mouse.button === Qt.LeftButton) root.togglePrivateFolder(modelData.hostId)
-                                        return
-                                    }
-                                    if (mouse.button === Qt.RightButton && channelRow.privateConversation) { privateMessages.hostId = root.privateHostId(modelData); privateMessages.hostDeviceId = modelData.deviceId; privateMessages.open() }
-                                    else if (mouse.button === Qt.RightButton) { root.selectedHost = modelData.id; channelMenu.popup() }
-                                    else if (mouse.button === Qt.LeftButton) root.showHostChat(modelData.id)
-                                }
-                            }
+                            Layout.fillWidth: true; spacing: 2
                             RowLayout {
-                                anchors.left: parent.left; anchors.right: parent.right; height: channelRow.privateFolder ? 34 : 42
-                                anchors.leftMargin: channelRow.privateConversation ? 18 : 8 + (modelData.depth || 0) * 12; anchors.rightMargin: 2; spacing: 6
-                                Glyph { symbol: channelRow.privateFolder ? "down" : channelRow.privateConversation ? "chat" : "down"; rotation: channelRow.privateFolder ? (root.privateFolderIsExpanded(modelData.hostId) ? 0 : -90) : channelRow.selected ? 0 : -90; color: channelRow.selected || channelRow.privateFolder ? Theme.accent : Theme.muted }
-                                Glyph { objectName: "ownedChannel_" + modelData.id; visible: channelRow.owned; symbol: "home"; description: qsTr("You host"); color: Theme.accent }
-                                Label { objectName: "channelName_" + modelData.id; text: modelData.name; textFormat: Text.PlainText; font.weight: channelRow.selected || channelRow.owned || channelRow.active || channelRow.privateFolder ? Font.DemiBold : Font.Normal; Layout.fillWidth: true; elide: Text.ElideRight }
-                                UnreadDot { objectName: "unreadChannel_" + modelData.id; visible: !!modelData.unread }
-                                Label { visible: channelRow.privateConversation; text: modelData.peerOnline ? qsTr("Online") : qsTr("Offline"); color: Theme.muted; font.pixelSize: 11 }
-                                Glyph { objectName: "joinedChannel_" + modelData.id; visible: channelRow.active; symbol: "headphones"; description: qsTr("Connected to voice"); color: Theme.accent }
-                                Glyph { objectName: "channelMusic_" + modelData.id; visible: !channelRow.privateConversation && !!modelData.music; symbol: "music"; description: qsTr("Radio"); color: Theme.accent }
-                                Label {
-                                    visible: !channelRow.privateConversation && !channelRow.privateFolder && !modelData.online
-                                    text: root.accessLabel(modelData.access)
-                                    font.pixelSize: 11; color: Theme.muted
-                                    Layout.maximumWidth: 75; elide: Text.ElideRight
-                                }
-                                Row {
-                                    objectName: "memberSummary_" + modelData.id
-                                    visible: !channelRow.privateFolder && !channelRow.privateConversation && !!modelData.online && channelRow.members.length > 0
-                                    spacing: -5
-                                    activeFocusOnTab: true
+                                id: hostHeading
+                                visible: channelEntry.groupLabel.length > 0
+                                Layout.fillWidth: true; Layout.minimumHeight: 46
+                                Layout.leftMargin: 8; Layout.rightMargin: 2; spacing: 6
+                                ActionButton {
+                                    Layout.preferredWidth: 32; padding: 6
+                                    objectName: "toggleHost_" + channelEntry.groupId
+                                    text: channelEntry.groupLabel; iconOnly: true; flat: true
+                                    enabled: channelSearch.text.trim().length === 0
                                     Accessible.role: Accessible.Button
-                                    Accessible.name: qsTr("Show all %1 members").arg(channelRow.members.length)
-                                    Accessible.onPressAction: root.toggleMembers(channelRow.modelData.id)
-                                    Keys.onReturnPressed: root.toggleMembers(channelRow.modelData.id)
-                                    Keys.onSpacePressed: root.toggleMembers(channelRow.modelData.id)
-                                    Repeater {
-                                        model: channelRow.members.slice(0, 3)
-                                        VoiceAvatar {
-                                            id: memberAvatar
-                                            required property var modelData
-                                            width: 36; height: 36; circular: true
-                                            avatar: modelData.avatarId || modelData.avatar || "mossling"; name: modelData.name; music: !!modelData.music; teamSpeak: !!modelData.teamSpeak
-                                            available: modelData.available; muted: modelData.muted; deafened: !!modelData.deafened; sleeping: !!modelData.sleeping
-                                            identity: modelData.id; animationTime: root.avatarTime
-                                            objectName: "channelAvatar_" + channelRow.modelData.id + "_" + modelData.id
-                                            activeFocusOnTab: true
-                                            Accessible.role: Accessible.Button
-                                            Accessible.onPressAction: root.memberOptions(modelData, channelRow.modelData.id)
-                                            Keys.onReturnPressed: root.memberOptions(modelData, channelRow.modelData.id)
-                                            Keys.onSpacePressed: root.memberOptions(modelData, channelRow.modelData.id)
-                                            MouseArea { anchors.fill: parent; acceptedButtons: Qt.LeftButton | Qt.RightButton; onClicked: mouse => root.memberOptions(modelData, channelRow.modelData.id, mouse.button === Qt.RightButton) }
-                                            animated: root.voice.animatedAvatars
-                                            level: channelRow.active ? root.memberLevel(modelData.id) : 0
-                                            TextToolTip { objectName: "memberTooltip"; parent: memberAvatar; text: memberAvatar.name; visible: avatarHover.hovered }
-                                            HoverHandler { id: avatarHover }
+                                    Accessible.checkable: true
+                                    Accessible.checked: channelEntry.groupExpanded
+                                    contentItem: Glyph { symbol: "down"; rotation: channelEntry.groupExpanded ? 0 : -90; color: Theme.muted }
+                                    onClicked: root.toggleHost(channelEntry.groupId)
+                                    Keys.onLeftPressed: if (channelEntry.groupExpanded) root.toggleHost(channelEntry.groupId)
+                                    Keys.onRightPressed: if (!channelEntry.groupExpanded) root.toggleHost(channelEntry.groupId)
+                                }
+                                ProviderIcon { objectName: "hostProvider_" + channelEntry.groupId; provider: channelEntry.groupProtocol }
+                                DetailText {
+                                    objectName: "hostGroup_" + channelEntry.groupId
+                                    text: channelEntry.groupLabel; font.pixelSize: 14; font.weight: Font.DemiBold
+                                    horizontalAlignment: Text.AlignLeft
+                                    selectByMouse: true; wrapMode: TextEdit.WrapAnywhere
+                                }
+                                Glyph { objectName: "activeHost_" + channelEntry.groupId; symbol: "headphones"; color: Theme.accent; visible: !!root.current.joined && root.channelList.some(function(entry) { return entry.id === root.activeHost && (entry.deviceId || entry.id) === channelEntry.groupId }); description: qsTr("Connected to voice") }
+                                UnreadDot { objectName: "unreadHost_" + channelEntry.groupId; visible: channelEntry.groupUnread }
+                            }
+                            Rectangle {
+                                id: channelRow
+                                visible: channelEntry.groupExpanded
+                                readonly property var modelData: channelEntry.channelData
+                                readonly property bool privateFolder: !!modelData.privateFolder
+                                readonly property bool privateConversation: !!modelData.private
+                                readonly property bool active: root.activeHost === modelData.id && !!root.current.joined
+                                readonly property bool owned: !privateFolder && !privateConversation && (!!modelData.owned || modelData.id === (root.current.ownId || root.network.ownId))
+                                readonly property bool selected: visible && root.inspectedHost === modelData.id && root.chatExpanded
+                                readonly property var members: modelData.members || []
+                                Layout.fillWidth: true; implicitHeight: 46
+                                radius: Theme.controlRadius; color: selected ? Theme.raised : channelHover.containsMouse ? Theme.surface : "transparent"
+                                border.width: activeFocus ? 1 : 0; border.color: Theme.accent
+                                MouseArea {
+                                    id: channelHover
+                                    objectName: "channelRow_" + modelData.id
+                                    anchors.left: parent.left; anchors.right: parent.right; height: channelRow.height
+                                    hoverEnabled: true; acceptedButtons: Qt.LeftButton | Qt.RightButton
+                                    onDoubleClicked: function(mouse) {
+                                        if (mouse.button !== Qt.LeftButton) return
+                                        if (channelRow.privateFolder) root.togglePrivateFolder(modelData.hostId)
+                                        else { root.chatExpanded = true; root.joinHost(modelData.id) }
+                                    }
+                                    onClicked: function(mouse) {
+                                        if (channelRow.privateFolder) {
+                                            if (mouse.button === Qt.LeftButton) root.togglePrivateFolder(modelData.hostId)
+                                            return
                                         }
+                                        if (mouse.button === Qt.RightButton && channelRow.privateConversation) { privateMessages.hostId = root.privateHostId(modelData); privateMessages.hostDeviceId = modelData.deviceId; privateMessages.open() }
+                                        else if (mouse.button === Qt.RightButton) root.showChannelInfo(modelData.id)
+                                        else if (mouse.button === Qt.LeftButton) root.openHostChat(modelData.id)
                                     }
                                 }
-                                ActionButton {
-                                    objectName: "showMembers_" + modelData.id
-                                    visible: !channelRow.privateFolder && !channelRow.privateConversation && !!modelData.online && channelRow.members.length > 3
-                                    text: "+" + (channelRow.members.length - 3)
-                                    flat: true
-                                    Accessible.name: qsTr("Show all %1 members").arg(channelRow.members.length)
-                                    onClicked: root.toggleMembers(modelData.id)
+                                RowLayout {
+                                    anchors.left: parent.left; anchors.right: parent.right; height: channelRow.height
+                                    anchors.leftMargin: 8 + (channelEntry.grouped ? 50 : 0) + (channelRow.privateConversation ? 12 : (modelData.depth || 0) * 12); anchors.rightMargin: 2; spacing: 6
+                                    Item { visible: !channelEntry.grouped; Layout.preferredWidth: 32; Layout.preferredHeight: 1 }
+                                    ProviderIcon { objectName: "channelProvider_" + modelData.id; visible: !channelEntry.grouped; provider: channelEntry.groupProtocol }
+                                    Glyph { visible: channelEntry.grouped; symbol: channelRow.privateFolder ? "down" : channelRow.privateConversation ? "chat" : "channel"; rotation: channelRow.privateFolder && !root.privateFolderIsExpanded(modelData.hostId) ? -90 : 0; color: Theme.muted }
+                                    ColumnLayout {
+                                        Layout.fillWidth: true; Layout.minimumWidth: 0; spacing: 0
+                                        Label { objectName: "channelName_" + modelData.id; text: root.channelLabel(modelData); textFormat: Text.PlainText; font.pixelSize: 14; font.weight: channelEntry.grouped ? Font.Normal : Font.DemiBold; horizontalAlignment: Text.AlignLeft; Layout.fillWidth: true; elide: Text.ElideRight }
+                                        Label { objectName: "channelOwner_" + modelData.id; visible: channelEntry.ambiguous; text: channelEntry.groupOwner; textFormat: Text.PlainText; color: Theme.muted; font.pixelSize: 11; Layout.fillWidth: true; elide: Text.ElideRight }
+                                    }
+                                    Glyph { objectName: "ownedChannel_" + modelData.id; visible: channelRow.owned; symbol: "home"; description: qsTr("You host"); color: Theme.accent }
+                                    UnreadDot { objectName: "unreadChannel_" + modelData.id; visible: !!modelData.unread || (!channelEntry.grouped && channelEntry.groupUnread) }
+                                    Label { visible: channelRow.privateConversation; text: modelData.peerOnline ? qsTr("Online") : qsTr("Offline"); color: Theme.muted; font.pixelSize: 11 }
+                                    Glyph { objectName: "joinedChannel_" + modelData.id; visible: channelRow.active; symbol: "headphones"; description: qsTr("Connected to voice"); color: Theme.accent }
+                                    Glyph { objectName: "channelMusic_" + modelData.id; visible: !channelRow.privateConversation && !!modelData.music; symbol: "music"; description: qsTr("Radio"); color: Theme.accent }
+                                    Label {
+                                        visible: !channelRow.privateConversation && !channelRow.privateFolder && !modelData.online
+                                        text: root.accessLabel(modelData.access)
+                                        font.pixelSize: 11; color: Theme.muted
+                                        Layout.maximumWidth: 75; elide: Text.ElideRight
+                                    }
+                                    MemberSummary {
+                                        hostId: channelRow.modelData.id; members: channelRow.members
+                                        visible: !channelRow.privateFolder && !channelRow.privateConversation && !!modelData.online && (!root.wideLayout || !root.showChat)
+                                    }
+                                    ActionButton {
+                                        text: qsTr("Channel options"); glyph: "more"; iconOnly: true; flat: true
+                                        visible: !channelRow.privateFolder && !channelRow.privateConversation
+                                        onClicked: root.showChannelInfo(modelData.id)
+                                    }
                                 }
-                                ActionButton {
-                                    text: qsTr("Channel options"); glyph: "more"; iconOnly: true; flat: true
-                                    visible: !channelRow.privateFolder && !channelRow.privateConversation
-                                    onClicked: { root.selectedHost = modelData.id; channelMenu.popup() }
-                                }
+                                activeFocusOnTab: true
+                                Accessible.role: Accessible.Button
+                                Accessible.name: modelData.name + (channelRow.owned ? ", " + qsTr("You host") : "") + (channelRow.active ? ", " + qsTr("Connected to voice") : "")
+                                Accessible.description: channelEntry.groupOwner + "\n" + root.endpoint(modelData)
+                                TextToolTip { objectName: "channelTooltip_" + modelData.id; parent: channelRow; text: channelEntry.groupOwner + "\n" + root.endpoint(modelData); visible: channelHover.containsMouse && !channelRow.privateFolder }
+                                Accessible.onPressAction: channelRow.privateFolder ? root.togglePrivateFolder(modelData.hostId) : root.openHostChat(modelData.id)
+                                Keys.onReturnPressed: channelRow.privateFolder ? root.togglePrivateFolder(modelData.hostId) : root.openHostChat(modelData.id)
+                                Keys.onSpacePressed: channelRow.privateFolder ? root.togglePrivateFolder(modelData.hostId) : root.openHostChat(modelData.id)
                             }
-                            Item {
-                                id: chatSlot
-                                objectName: "conversationSlot_" + channelRow.modelData.id
-                                anchors.left: parent.left; anchors.right: parent.right; anchors.top: parent.top; anchors.topMargin: 42
-                                height: {
-                                    const count = Math.min(3, channelRepeater.count)
-                                    let headings = 0
-                                    for (let i = 0; i < count; ++i) {
-                                        const entry = channelRepeater.itemAt(i)
-                                        if (entry) headings += entry.headingHeight
-                                    }
-                                    return Math.max(root.compactInput ? 0 : 128, conversation.implicitHeight, scroll.height - count * 44 - headings - 12)
-                                }
-                                visible: channelRow.selected && !channelRow.privateFolder
-                                function selectSlot() {
-                                    if (channelRow.selected) {
-                                        root.conversationSlot = chatSlot
-                                        Qt.callLater(function() {
-                                            if (!channelRow || !channelRow.selected || !scroll) return
-                                            const flick = scroll.contentItem
-                                            const top = channelRow.mapToItem(flick.contentItem, 0, 0).y
-                                            const bottom = top + channelRow.height
-                                            if (top < flick.contentY) flick.contentY = top
-                                            else if (bottom > flick.contentY + flick.height)
-                                                flick.contentY = Math.max(0, bottom - flick.height)
-                                        })
-                                    }
-                                    else if (root.conversationSlot === chatSlot) root.conversationSlot = null
-                                }
-                                Component.onCompleted: selectSlot()
-                                Component.onDestruction: if (root.conversationSlot === chatSlot) root.conversationSlot = null
-                                Connections { target: channelRow; function onSelectedChanged() { chatSlot.selectSlot() } }
+                        }
+                    }
+                    Label { visible: root.channelList.length === 0; text: root.remote ? root.network.controlStatus : qsTr("No channels yet"); Layout.fillWidth: true; color: Theme.muted; wrapMode: Text.Wrap }
+                    Label { objectName: "emptyChannelSearch"; visible: channelSearch.text.trim().length > 0 && channelRows.count === 0; text: qsTr("No matches"); Layout.fillWidth: true; color: Theme.muted; wrapMode: Text.Wrap }
+                }
+            }
+            ColumnLayout {
+                id: conversation
+                objectName: "conversation"
+                Layout.fillWidth: true; Layout.fillHeight: true; Layout.minimumWidth: 0; Layout.preferredWidth: 1
+                visible: root.showChat && (!root.details || root.splitDetails)
+                spacing: 6
+                Rectangle {
+                    objectName: "chatContext"
+                    visible: !root.viewingVoice
+                    Layout.fillWidth: true
+                    implicitHeight: chatContextRow.implicitHeight + 12
+                    radius: Theme.controlRadius
+                    color: root.current.joined ? Qt.rgba(Theme.warning.r, Theme.warning.g, Theme.warning.b, 0.12) : Theme.surface
+                    RowLayout {
+                        id: chatContextRow
+                        anchors.fill: parent; anchors.margins: 6; spacing: 6
+                        ProviderIcon { provider: root.inspectedChannel.protocol || "squadspeak" }
+                        ColumnLayout {
+                            Layout.fillWidth: true; Layout.minimumWidth: 0; spacing: 1
+                            Label {
+                                objectName: "conversationTitle"
+                                Layout.fillWidth: true; Layout.minimumWidth: 0
+                                text: root.channelLabel(root.inspectedChannel); textFormat: Text.PlainText
+                                font.weight: Font.DemiBold; font.pixelSize: 14; elide: Text.ElideRight
+                                ToolTip.text: text + "\n" + (root.inspectedChannel.ownerName || root.endpoint(root.inspectedChannel))
+                                ToolTip.visible: titleHover.hovered
+                                HoverHandler { id: titleHover }
                             }
-                            activeFocusOnTab: true
-                            Accessible.role: Accessible.Button
-                            Accessible.name: modelData.name + (channelRow.owned ? ", " + qsTr("You host") : "") + (channelRow.active ? ", " + qsTr("Connected to voice") : "")
-                            Accessible.onPressAction: root.showHostChat(modelData.id)
-                            Keys.onReturnPressed: root.showHostChat(modelData.id)
-                            Keys.onSpacePressed: root.showHostChat(modelData.id)
+                            Label { objectName: "chatOnlyHint"; text: qsTr("Chat only"); visible: !!root.current.joined; font.pixelSize: 11; color: Theme.warning }
+                        }
+                        Glyph { objectName: "conversationOwned"; symbol: "home"; visible: !root.inspectedChannel.private && (!!root.inspectedChannel.owned || root.inspectedHost === (root.current.ownId || root.network.ownId)); description: qsTr("You host"); color: Theme.accent }
+                        Glyph { symbol: "music"; visible: !!root.inspectedChannel.music; description: qsTr("Radio"); color: Theme.accent }
+                        ActionButton {
+                            objectName: "conversationOptions"
+                            text: qsTr("Channel options"); glyph: "more"; iconOnly: true; flat: true
+                            onClicked: {
+                                if (root.inspectedChannel.private) {
+                                    privateMessages.hostId = root.privateHostId(root.inspectedChannel)
+                                    privateMessages.hostDeviceId = root.inspectedChannel.deviceId
+                                    privateMessages.open()
+                                } else root.showChannelInfo(root.inspectedHost)
+                            }
                         }
                     }
                 }
-                Label { visible: root.channelList.length === 0; text: root.remote ? root.network.controlStatus : qsTr("No channels yet"); Layout.fillWidth: true; color: Theme.muted; wrapMode: Text.Wrap }
-                Label { objectName: "emptyChannelSearch"; visible: channelSearch.text.trim().length > 0 && channelRows.count === 0; text: qsTr("No matches"); Layout.fillWidth: true; color: Theme.muted; wrapMode: Text.Wrap }
+                RowLayout {
+                    Layout.fillWidth: true
+                    visible: !root.compactInput && !root.inspectedChannel.private
+                    MemberSummary { hostId: root.inspectedHost; members: root.inspectedChannel.members || []; visible: !!root.inspectedChannel.online }
+                    Label { text: root.accessLabel(root.inspectedChannel.access); visible: !root.inspectedChannel.online; color: Theme.muted }
+                    Item { Layout.fillWidth: true }
+                    Label {
+                        visible: !!root.current.chatReady && root.current.chatLifetimeDays > 0
+                        text: root.current.chatLifetimeDays === 1 ? qsTr("24 h") : qsTr("%1 d").arg(root.current.chatLifetimeDays || 1)
+                        color: Theme.muted; font.pixelSize: 11
+                        ToolTip.text: qsTr("New message lifetime")
+                        ToolTip.visible: expiryHover.hovered
+                        HoverHandler { id: expiryHover }
+                    }
+                    ActionButton { objectName: "joinViewedChannel"; text: qsTr("Join"); visible: !root.inspectedChannel.private && root.activeHost !== root.inspectedHost; flat: true; onClicked: root.joinHost(root.inspectedHost) }
+                }
+                Loader {
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: visible ? (root.height < 460 ? 48 : 112) : 0
+                    active: !!root.screen
+                    visible: !root.compactInput && !root.remote && (!!root.network.screenView.available || (root.screen && root.screen.active && root.screen.hostId === root.inspectedHost))
+                    sourceComponent: ScreenPanel { share: root.screen; network: root.network; hostId: root.inspectedHost }
+                }
+                Label {
+                    visible: root.screen && root.screen.error.length > 0
+                    text: root.screen ? root.screen.error : ""; textFormat: Text.PlainText; color: Theme.danger
+                    Layout.fillWidth: true; wrapMode: Text.Wrap
+                }
+                ChatPanel {
+                    id: chat
+                    objectName: "chatPanel"
+                    network: root.network; animatedAvatars: root.voice.animatedAvatars
+                    animationTime: root.avatarTime
+                    memberLevel: function(id) { return root.inspectedHost === root.activeHost ? root.memberLevel(id) : 0 }
+                    onMemberRequested: (member, contextual) => root.memberOptions(member, root.inspectedHost, contextual)
+                    active: root.visible && conversation.visible
+                    readable: active && root.active && !settings.visible
+                    Layout.fillWidth: true; Layout.fillHeight: true
+                }
             }
-        }
-    }
-    ColumnLayout {
-        id: conversation
-        parent: root.conversationSlot || root.contentItem
-        anchors.fill: parent; anchors.leftMargin: 8; anchors.rightMargin: 8
-        visible: root.showChat && root.conversationSlot !== null
-        spacing: 4
-        RowLayout {
-            visible: !root.compactInput
-            Layout.fillWidth: true; spacing: 6
-            Item { Layout.fillWidth: true }
-            Label {
-                visible: !!root.current.chatReady && root.current.chatLifetimeDays > 0
-                text: root.current.chatLifetimeDays === 1 ? qsTr("24 h") : qsTr("%1 d").arg(root.current.chatLifetimeDays || 1)
-                color: Theme.muted; font.pixelSize: 11
-                ToolTip.text: qsTr("New message lifetime")
-                ToolTip.visible: expiryHover.hovered
-                HoverHandler { id: expiryHover }
+            Item {
+                id: detailArea
+                objectName: "detailArea"
+                visible: !!root.details
+                Layout.fillWidth: true; Layout.fillHeight: true; Layout.minimumWidth: 0; Layout.preferredWidth: 1
             }
-        }
-        Loader {
-            Layout.fillWidth: true
-            Layout.preferredHeight: visible ? (root.height < 460 ? 48 : 112) : 0
-            active: !!root.screen
-            visible: !root.compactInput && !root.remote && (!!root.network.screenView.available || (root.screen && root.screen.active && root.screen.hostId === root.inspectedHost))
-            sourceComponent: ScreenPanel { share: root.screen; network: root.network; hostId: root.inspectedHost }
-        }
-        Label {
-            visible: root.screen && root.screen.error.length > 0
-            text: root.screen ? root.screen.error : ""; textFormat: Text.PlainText; color: Theme.danger
-            Layout.fillWidth: true; wrapMode: Text.Wrap
-        }
-        ChatPanel {
-            id: chat
-            objectName: "chatPanel"
-            network: root.network; animatedAvatars: root.voice.animatedAvatars
-            animationTime: root.avatarTime
-            memberLevel: function(id) { return root.inspectedHost === root.activeHost ? root.memberLevel(id) : 0 }
-            onMemberRequested: (member, contextual) => root.memberOptions(member, root.inspectedHost, contextual)
-            active: root.visible && root.showChat
-            readable: active && root.active && !settings.visible
-            readViewport: scroll
-            Layout.fillWidth: true; Layout.fillHeight: true
         }
     }
     footer: Rectangle {
-        visible: !root.mobileKeyboard
+        visible: !root.mobileKeyboard || root.showChat
         implicitHeight: visible ? controls.implicitHeight + 16 : 0
         color: Theme.surface
         ColumnLayout {
@@ -1963,7 +2054,7 @@ PanelWindow {
             anchors.fill: parent; anchors.margins: 8; spacing: 4
             RowLayout {
                 objectName: "pendingRequest"
-                visible: !root.remote && !!root.incomingRequest.id
+                visible: !root.mobileKeyboard && !root.remote && !!root.incomingRequest.id
                 Layout.fillWidth: true; spacing: 6
                 Label { text: root.network.ownedChannels.length > 1 ? qsTr("%1 wants to join %2").arg(root.incomingRequest.name || "").arg(root.incomingRequest.hostName || "") : qsTr("%1 wants to join").arg(root.incomingRequest.name || ""); textFormat: Text.PlainText; Layout.fillWidth: true; wrapMode: Text.Wrap; maximumLineCount: 2; elide: Text.ElideRight; font.pixelSize: 12 }
                 ActionButton { objectName: "inspectRequest"; text: qsTr("Inspect"); font.pixelSize: 12; onClicked: { root.inspectedRequestId = root.incomingRequest.id; root.inspectedRequestHost = root.incomingRequest.hostId; requestInfo.open() } }
@@ -1971,15 +2062,43 @@ PanelWindow {
             }
             RowLayout {
                 Layout.fillWidth: true; spacing: 4
-                ActionButton { objectName: "addChannel"; visible: !root.remote; text: qsTr("Add channel"); glyph: "plus"; iconOnly: true; flat: true; onClicked: discover.open() }
-                ActionButton { objectName: "openSettings"; visible: !root.remote; text: qsTr("Settings"); glyph: "settings"; iconOnly: true; flat: true; onClicked: root.openSettings(0) }
-                ActionButton { objectName: "searchChannels"; text: qsTr("Search channels"); glyph: "search"; iconOnly: true; flat: true; checked: root.searchOpen; onClicked: root.searchOpen = !root.searchOpen }
+                ActionButton { objectName: "addChannel"; visible: !root.mobileKeyboard && !root.remote; text: qsTr("Add channel"); glyph: "plus"; iconOnly: true; flat: true; onClicked: discover.open() }
+                ActionButton { objectName: "openSettings"; visible: !root.mobileKeyboard && !root.remote; text: qsTr("Settings"); glyph: "settings"; iconOnly: true; flat: true; onClicked: root.openSettings(0) }
+                ActionButton {
+                    objectName: "backToChannels"
+                    visible: root.showChat
+                    text: qsTranslate("Tray", "Channels"); iconOnly: true; flat: true
+                    contentItem: Glyph { symbol: "down"; rotation: Qt.application.layoutDirection === Qt.RightToLeft ? -90 : 90 }
+                    onClicked: root.showChannelList()
+                }
+                ActionButton { objectName: "searchChannels"; visible: !root.mobileKeyboard && (!root.showChat || root.wideLayout); text: qsTr("Search channels"); glyph: "search"; iconOnly: true; flat: true; checked: root.searchOpen; onClicked: root.searchOpen = !root.searchOpen }
+                ActionButton {
+                    id: voiceConnection
+                    objectName: "voiceConnection"
+                    Layout.fillWidth: true; Layout.minimumWidth: 100; Layout.maximumWidth: 260
+                    visible: !!root.current.joined
+                    text: root.channelLabel(root.voiceChannel) || qsTr("Connected to voice"); glyph: "headphones"; flat: true
+                    horizontalAlignment: Text.AlignLeft
+                    Accessible.name: [qsTr("Connected to voice") + ": " + text,
+                        !!root.voiceChannel.owned || root.activeHost === (root.current.ownId || root.network.ownId) ? qsTr("You host") : "",
+                        root.voiceChannel.music ? qsTr("Radio") : ""].filter(Boolean).join(", ")
+                    contentItem: RowLayout {
+                        spacing: 4
+                        Glyph { symbol: "headphones" }
+                        Label { objectName: "voiceChannelName"; text: voiceConnection.text; textFormat: Text.PlainText; Layout.fillWidth: true; Layout.minimumWidth: 0; elide: Text.ElideRight; horizontalAlignment: Text.AlignLeft }
+                    }
+                    checked: root.details === channelInfo && root.selectedHost === root.activeHost
+                    ToolTip.text: Accessible.name
+                    ToolTip.visible: hovered || activeFocus
+                    ToolTip.delay: 600
+                    onClicked: root.showChannelInfo(root.activeHost, true)
+                }
                 Item { Layout.fillWidth: true }
-                ActionButton { objectName: "mute"; text: root.micMuted ? qsTr("Unmute microphone") : qsTr("Mute microphone"); glyph: root.micMuted || (!root.remote && !root.voice.available) ? "mute" : "mic"; iconOnly: true; flat: true; checked: root.micMuted; enabled: !root.remote || root.network.remoteAllowed; onClicked: root.remote ? root.network.remoteAction("mute", {value: !root.micMuted}) : root.voice.setMuted(!root.micMuted) }
-                ActionButton { objectName: "deafen"; text: root.outputMuted ? qsTr("Enable speakers") : qsTr("Mute speakers"); glyph: root.outputMuted ? "deafen" : "speaker"; iconOnly: true; flat: true; checked: root.outputMuted; enabled: !root.remote || root.network.remoteAllowed; onClicked: root.remote ? root.network.remoteAction("deafen", {value: !root.outputMuted}) : root.voice.setDeafened(!root.outputMuted) }
+                ActionButton { objectName: "mute"; visible: !root.mobileKeyboard; text: root.micMuted ? qsTr("Unmute microphone") : qsTr("Mute microphone"); glyph: root.micMuted || (!root.remote && !root.voice.available) ? "mute" : "mic"; iconOnly: true; flat: true; checked: root.micMuted; enabled: !root.remote || root.network.remoteAllowed; onClicked: root.remote ? root.network.remoteAction("mute", {value: !root.micMuted}) : root.voice.setMuted(!root.micMuted) }
+                ActionButton { objectName: "deafen"; visible: !root.mobileKeyboard; text: root.outputMuted ? qsTr("Enable speakers") : qsTr("Mute speakers"); glyph: root.outputMuted ? "deafen" : "speaker"; iconOnly: true; flat: true; checked: root.outputMuted; enabled: !root.remote || root.network.remoteAllowed; onClicked: root.remote ? root.network.remoteAction("deafen", {value: !root.outputMuted}) : root.voice.setDeafened(!root.outputMuted) }
                 ActionButton {
                     objectName: "remoteToggle"
-                    visible: root.remote || root.network.remoteOffers.length > 0
+                    visible: !root.mobileKeyboard && (root.remote || root.network.remoteOffers.length > 0)
                     text: root.remote ? qsTr("Return to this device") + "\n" + (root.current.name || root.network.controlTargetName)
                         : qsTr("Remote control") + (root.network.remoteOffers.length === 1 ? "\n" + root.network.remoteOffers[0].name : "")
                     glyph: "remote"; iconOnly: true; flat: true; checked: root.remote
@@ -1993,7 +2112,7 @@ PanelWindow {
             ActionButton {
                 objectName: "pttButton"
                 Layout.fillWidth: true
-                visible: root.touchControls && (root.voice.pushToTalk || root.remote)
+                visible: !root.mobileKeyboard && root.touchControls && (root.voice.pushToTalk || root.remote)
                 text: root.voice.pttButtonHeld ? qsTr("Transmitting key held") : qsTr("Hold to talk")
                 glyph: "mic"; checked: root.voice.pttButtonHeld
                 onPressed: root.voice.setPttButtonHeld(true)
@@ -2002,7 +2121,7 @@ PanelWindow {
             }
             RowLayout {
                 Layout.fillWidth: true
-                visible: statusMessage.text.length > 0 || retryIdentity.visible
+                visible: !root.mobileKeyboard && (statusMessage.text.length > 0 || retryIdentity.visible)
                 Label {
                     id: statusMessage
                     objectName: "channelStatus"

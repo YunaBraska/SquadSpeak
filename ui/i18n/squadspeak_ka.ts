@@ -1189,6 +1189,10 @@
             <source>Unread messages</source>
             <translation>წაუკითხავი შეტყობინებები</translation>
         </message>
+        <message>
+            <source>Chat only</source>
+            <translation>მხოლოდ ჩატი</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>

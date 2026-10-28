@@ -1189,6 +1189,10 @@
             <source>Unread messages</source>
             <translation>Saƙonnin da ba a karanta ba</translation>
         </message>
+        <message>
+            <source>Chat only</source>
+            <translation>Hira kawai</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
