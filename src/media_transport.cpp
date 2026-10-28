@@ -198,7 +198,7 @@ struct MediaTransport::State::Sender final {
             active[worker] = packet.channel.get();
             if (worker == 0) {
                 primaryStarted = Clock::now();
-                if (backupWaiting) backupChanged.notify_one();
+                if (backupWaiting && ready() != queues.end()) backupChanged.notify_one();
             }
             lock.unlock();
             const auto sendStarted = Clock::now();
@@ -229,7 +229,6 @@ struct MediaTransport::State::Sender final {
                 }
             }
             changed.notify_all();
-            if (backupWaiting) backupChanged.notify_one();
         }
     }
 
@@ -266,7 +265,7 @@ struct MediaTransport::State::Sender final {
         if (!ssrc) changed.wait(lock, [&] { return !busy(channel.get()); });
     }
     bool enqueue(const std::shared_ptr<rtc::Channel>& channel, QByteArray bytes, std::function<void(bool)> failed) {
-        const auto ssrc = quint8(bytes[1]) == 111 ? qFromBigEndian<quint32>(bytes.constData() + 8) : 0;
+        const auto ssrc = quint8(bytes.constData()[1]) == 111 ? qFromBigEndian<quint32>(bytes.constData() + 8) : 0;
         std::lock_guard lock(mutex);
         if (stopping) return false;
         const auto key = std::pair{quintptr(channel.get()), ssrc};
@@ -294,8 +293,9 @@ struct MediaTransport::State::Sender final {
         ++counts[key]; ++queued; maximumQueued = std::max(maximumQueued, queued);
         current->second.push_back({channel, std::move(bytes), ssrc, Clock::now() + std::chrono::milliseconds(120), std::move(failed)});
         if (added) {
-            changed.notify_all();
-            if (backupWaiting) backupChanged.notify_one();
+            // An in-flight primary rechecks the queue under this mutex.
+            if (!active[0]) changed.notify_all();
+            if (backupWaiting && active[0]) backupChanged.notify_one();
         }
         return true;
     }
