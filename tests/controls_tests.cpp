@@ -343,6 +343,13 @@ public slots:
         action->doAction(QAccessibleActionInterface::pressAction());
         return true;
     }
+    bool toggleAccessible(QObject* object) {
+        auto* accessible = QAccessible::queryAccessibleInterface(object);
+        auto* action = accessible ? accessible->actionInterface() : nullptr;
+        if (!action || !action->actionNames().contains(QAccessibleActionInterface::toggleAction())) return false;
+        action->doAction(QAccessibleActionInterface::toggleAction());
+        return true;
+    }
     bool advanceTime() { now_ += 600001; return true; }
     bool setSupporter(bool enabled) { return session_->setSupporterEnabled(enabled); }
     bool expireChat(int days = 1) { now_ += days * ChatHistory::lifetime + 1; return true; }

@@ -3058,7 +3058,8 @@ TestCase {
         menu.open(); tryCompare(menu, "opened", true)
         verify(fixtures.pressAccessible(item))
         tryVerify(function() { return channel.savedChannels.some(function(h) { return h.id === channel.ownId && h.autoJoin }) })
-        verify(channel.setAutoJoin(channel.ownId, false))
+        verify(fixtures.toggleAccessible(item))
+        tryVerify(function() { return channel.savedChannels.some(function(h) { return h.id === channel.ownId && !h.autoJoin }) })
         menu.close()
     }
 
