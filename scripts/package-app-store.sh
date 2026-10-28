@@ -3,7 +3,7 @@ set -eu
 
 test "$#" -eq 2 || { printf 'Expected marketing version and build number.\n' >&2; exit 2; }
 : "${APP_STORE_BUNDLE_ID:?}" "${APP_STORE_TEAM_ID:?}"
-: "${MACOS_APP_STORE_APPLICATION_IDENTITY:?}" "${MACOS_APP_STORE_INSTALLER_IDENTITY:?}"
+: "${MACOS_APP_STORE_APPLICATION_IDENTITY:?}"
 : "${MACOS_APP_STORE_PROFILE_PATH:?}"
 case "$2" in *[!0-9]*|'') printf 'Invalid build number.\n' >&2; exit 2 ;; esac
 root=$(CDPATH='' cd "$(dirname "$0")/.." && pwd)
@@ -40,9 +40,7 @@ codesign --force --sign "$MACOS_APP_STORE_APPLICATION_IDENTITY" --timestamp \
     --entitlements "$stage/app.entitlements" "$app"
 codesign --verify --deep --strict "$app"
 mkdir -p "$root/dist/app-store"
-test ! -e "$root/dist/app-store/SquadSpeak.app" && test ! -e "$root/dist/app-store/SquadSpeak.pkg" || {
+test ! -e "$root/dist/app-store/SquadSpeak.app" || {
     printf 'Store outputs already exist. Remove or move them before packaging.\n' >&2; exit 1;
 }
 ditto "$app" "$root/dist/app-store/SquadSpeak.app"
-productbuild --component "$root/dist/app-store/SquadSpeak.app" /Applications \
-    --sign "$MACOS_APP_STORE_INSTALLER_IDENTITY" "$root/dist/app-store/SquadSpeak.pkg"
