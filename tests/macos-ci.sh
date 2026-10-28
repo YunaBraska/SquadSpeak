@@ -8,7 +8,7 @@ test "$#" -ge 2 && test "$#" -le 3 || {
 phase=${3:-all}
 SQUADSPEAK_VERSION=${SQUADSPEAK_VERSION:-${VERSION:-}}
 if test -n "$SQUADSPEAK_VERSION"; then export SQUADSPEAK_VERSION; else unset SQUADSPEAK_VERSION; fi
-export SQUADSPEAK_UPDATE_PUBLIC_KEY=${SQUADSPEAK_UPDATE_PUBLIC_KEY:-${UPDATE_PUBLIC_KEY:-}}
+export SQUADSPEAK_UPDATE_PUBLIC_KEY="${SQUADSPEAK_UPDATE_PUBLIC_KEY:-${UPDATE_PUBLIC_KEY:-}}"
 case "$phase" in prepare|build|test|package|all) ;; *) printf 'Unknown phase: %s\n' "$phase" >&2; exit 2 ;; esac
 qt_prefix=$1
 mkdir -p "$2"
@@ -95,6 +95,9 @@ if command -v ccache >/dev/null 2>&1; then
 fi
 if test -n "${SQUADSPEAK_UPDATE_PUBLIC_KEY:-}"; then
     set -- "$@" "-DSQUADSPEAK_UPDATE_PUBLIC_KEY=$SQUADSPEAK_UPDATE_PUBLIC_KEY"
+fi
+if test "${SQUADSPEAK_STORE_BUILD:-OFF}" = ON; then
+    set -- "$@" -DSQUADSPEAK_STORE_BUILD=ON
 fi
 cmake -S "$source_root" -B "$build_root/app" -G Ninja \
     -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=ON -DCMAKE_PREFIX_PATH="$qt_prefix;$prefix" \
