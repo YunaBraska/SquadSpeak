@@ -2575,14 +2575,19 @@ private slots:
         // DTLS traffic also includes handshake and probe records. Wait for
         // delivered media and its final acknowledgement before blocking TLS.
         QVERIFY2(waitForEvents([&] {
-            return link.audioDatagrams >= 10 && link.videoDatagrams >= 10
-                && deliveredAudio >= 5 && receivedVideo >= 5 && !host.channel.screenTiers().isEmpty();
+            const bool delivered = link.audioDatagrams >= 10 && link.videoDatagrams >= 10
+                && deliveredAudio >= 5 && receivedVideo >= 5;
+            // Do not replace an acknowledged warmup frame while waiting for
+            // that acknowledgement to finish the phase.
+            if (delivered) producer.stop();
+            return delivered && !host.channel.screenTiers().isEmpty();
         }, 8000), qPrintable(QString("Warmup audio=%1 video=%2; proxy audio=%3 video=%4")
             .arg(deliveredAudio).arg(receivedVideo).arg(link.audioDatagrams).arg(link.videoDatagrams)));
         // Fresh audio and video must still arrive while reliable traffic is held.
         link.holdReliable = true;
         voice = voicePacket(880); image = "UDP marker";
         receivedAudio = receivedVideo = 0;
+        producer.start();
         QVERIFY2(waitForEvents([&] { return receivedAudio >= 5 && receivedVideo >= 5; }),
             qPrintable(QString("Received audio=%1 video=%2; proxy audio=%3 video=%4; joined=%5 screen=%6")
                 .arg(receivedAudio).arg(receivedVideo).arg(link.audioDatagrams).arg(link.videoDatagrams)

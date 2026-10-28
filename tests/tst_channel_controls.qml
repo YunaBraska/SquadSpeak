@@ -8,6 +8,10 @@ TestCase {
     id: test
     name: "DirectChannelControls"
     when: windowShown
+    function waitForFrame(item) {
+        view.update()
+        return waitForRendering(item)
+    }
     width: 560
     height: 760
     readonly property var view: scene.item ? scene.item.view : null
@@ -486,7 +490,7 @@ TestCase {
         const direct = visualChild(view.contentItem, "channelName_" + remoteChannel.ownId)
         const child = visualChild(view.contentItem, "channelName_" + channel.ownId)
         verify(host && direct && child)
-        verify(waitForPolish(view)); verify(waitForRendering(view.contentItem))
+        verify(waitForPolish(view)); verify(waitForFrame(view.contentItem))
         compare(host.font.pixelSize, 14); compare(direct.font.pixelSize, 14); compare(child.font.pixelSize, 14)
         compare(host.font.weight, Font.DemiBold); compare(direct.font.weight, Font.DemiBold)
         compare(child.font.weight, Font.Normal, "Ownership is an icon, not an extra font weight")
@@ -511,7 +515,7 @@ TestCase {
             verify(!visualChild(view.contentItem, "hostGroup_" + pair[0]).visible)
         }
         const row = visualChild(view.contentItem, "channelRow_" + remoteChannel.ownId)
-        verify(waitForRendering(row)); mouseClick(row, 35, row.height / 2)
+        verify(waitForFrame(row)); mouseClick(row, 35, row.height / 2)
         compare(findChild(view, "conversationTitle").text, "General")
         view.requestActivate(); tryCompare(view, "active", true)
         verify(fixtures.pressAccessible(findChild(view, "backToChannels")))
@@ -544,7 +548,7 @@ TestCase {
         const info = findChild(view, "channelInfoDialog")
         tryVerify(function() { return history.contentHeight > history.height * 2 && !chat.updating })
         draft.text = "Keep my lounge draft"
-        verify(waitForPolish(view)); verify(waitForRendering(chat))
+        verify(waitForPolish(view)); verify(waitForFrame(chat))
         tryCompare(chat, "updating", false)
         history.scrollTo(0)
         verify(fixtures.pressAccessible(footer))
@@ -554,7 +558,7 @@ TestCase {
         compare(channel.joinedHostId, channel.ownId)
         compare(chat.visible, view.width >= 1100)
         verify(waitForPolish(view))
-        verify(waitForRendering(view.contentItem))
+        verify(waitForFrame(view.contentItem))
         const location = info.mapToItem(view.contentItem, 0, 0)
         verify(location.x >= 0 && location.y >= 0 && location.x + info.width <= view.contentItem.width)
         verify(location.y + info.height <= view.contentItem.height)
@@ -652,7 +656,7 @@ TestCase {
             tryVerify(function() { return channel.remoteOffers.length === 1 })
             verify(channel.joinSaved(channel.ownId)); tryCompare(channel, "joined", true)
             verify(fixtures.setBotMusicState("Test radio", "playing", true))
-            verify(waitForPolish(view)); verify(waitForRendering(view.contentItem))
+            verify(waitForPolish(view)); verify(waitForFrame(view.contentItem))
             const name = findChild(view, "voiceChannelName")
             verify(name.visible && name.width >= 32, "The voice channel retains readable text: " + name.width
                 + " px within " + findChild(view, "voiceConnection").width + " px")
@@ -679,25 +683,25 @@ TestCase {
         draft.text = "Keep while navigating and resizing"
         verify(panel.visible)
         verify(!list.visible, "Compact chat uses the available width")
-        if (imageDirectory.length > 0) { verify(waitForPolish(view)); verify(waitForRendering(view.contentItem)); verify(fixtures.saveWindow(view, imageDirectory + "/navigation-compact-chat.png")) }
+        if (imageDirectory.length > 0) { verify(waitForPolish(view)); verify(waitForFrame(view.contentItem)); verify(fixtures.saveWindow(view, imageDirectory + "/navigation-compact-chat.png")) }
         const back = findChild(view, "backToChannels")
         verify(back && back.visible)
         verify(fixtures.pressAccessible(back))
         tryCompare(list, "visible", true)
         compare(panel.visible, false)
-        if (imageDirectory.length > 0) { verify(waitForPolish(view)); verify(waitForRendering(view.contentItem)); verify(fixtures.saveWindow(view, imageDirectory + "/navigation-compact-list.png")) }
+        if (imageDirectory.length > 0) { verify(waitForPolish(view)); verify(waitForFrame(view.contentItem)); verify(fixtures.saveWindow(view, imageDirectory + "/navigation-compact-list.png")) }
         compare(channel.joinedHostId, channel.ownId)
         verify(findChild(view, "voiceConnection").visible)
         const row = visualChild(view.contentItem, "channelRow_" + channel.ownId)
-        verify(waitForRendering(row)); mouseClick(row, 35, row.height / 2)
+        verify(waitForFrame(row)); mouseClick(row, 35, row.height / 2)
         tryCompare(panel, "visible", true)
         compare(draft.text, "Keep while navigating and resizing")
         view.width = 1100; view.height = 740
         tryCompare(list, "visible", true)
-        verify(waitForRendering(panel))
+        verify(waitForFrame(panel))
         const a = list.mapToItem(view.contentItem, 0, 0), b = panel.mapToItem(view.contentItem, 0, 0)
         verify(b.x >= a.x + list.width, "Wide navigation and chat occupy separate columns")
-        if (imageDirectory.length > 0) { verify(waitForPolish(view)); verify(waitForRendering(view.contentItem)); verify(fixtures.saveWindow(view, imageDirectory + "/navigation-wide.png")) }
+        if (imageDirectory.length > 0) { verify(waitForPolish(view)); verify(waitForFrame(view.contentItem)); verify(fixtures.saveWindow(view, imageDirectory + "/navigation-wide.png")) }
         compare(channel.joinedHostId, channel.ownId)
         compare(draft.text, "Keep while navigating and resizing")
         view.width = 390
@@ -809,7 +813,7 @@ TestCase {
         tryCompare(visualChild(view.contentItem, "channelRow_" + id), "visible", false)
         view.searchOpen = false
         view.requestActivate(); tryCompare(view, "active", true)
-        verify(waitForRendering(toggle)); toggle.forceActiveFocus(); keyClick(Qt.Key_Space)
+        verify(waitForFrame(toggle)); toggle.forceActiveFocus(); keyClick(Qt.Key_Space)
         tryCompare(visualChild(view.contentItem, "channelRow_" + id), "visible", true)
         verify(fixtures.pressAccessible(visualChild(view.contentItem, "channelRow_" + id).parent))
         tryCompare(findChild(view, "chatPanel"), "visible", true)
@@ -839,7 +843,7 @@ TestCase {
         verify(search !== null && !search.visible)
         verify(fixtures.pressAccessible(findChild(view, "backToChannels")))
         tryCompare(toggle, "visible", true)
-        verify(waitForRendering(toggle)); mouseClick(toggle); tryCompare(search, "visible", true)
+        verify(waitForFrame(toggle)); mouseClick(toggle); tryCompare(search, "visible", true)
         search.text = "mOoNlIgHt"
         tryVerify(function() { return visualChild(view.contentItem, "channelRow_" + channel.ownId) === null })
         verify(visualChild(view.contentItem, "channelRow_" + remoteChannel.ownId) !== null)
@@ -1376,7 +1380,7 @@ TestCase {
         dialog.close(); tryCompare(dialog, "visible", false)
         const currentPortrait = visualChild(view.contentItem, "channelAvatar_" + channel.ownId + "_" + remoteChannel.ownId)
         verify(currentPortrait !== null)
-        verify(waitForRendering(currentPortrait))
+        verify(waitForFrame(currentPortrait))
         mouseClick(currentPortrait, currentPortrait.width / 2, currentPortrait.height / 2, Qt.RightButton)
         const inspect = findChild(view, "inspectMember")
         tryCompare(inspect.menu, "opened", true)
@@ -4290,10 +4294,10 @@ TestCase {
         draft.text = "Keep this draft while opening and closing"
         for (let pass = 0; pass < 3; ++pass) {
             const back = findChild(view, "backToChannels")
-            verify(waitForRendering(back)); mouseClick(back)
+            verify(waitForFrame(back)); mouseClick(back)
             compare(panel.visible, false)
             const row = visualChild(view.contentItem, "channelRow_" + channel.ownId)
-            verify(waitForRendering(row)); mouseClick(row, 35, row.height / 2)
+            verify(waitForFrame(row)); mouseClick(row, 35, row.height / 2)
             compare(panel.visible, true)
             compare(draft.text, "Keep this draft while opening and closing")
             compare(channel.joinedHostId, channel.ownId)
