@@ -3511,7 +3511,7 @@ TestCase {
         const dialog = findChild(view, "membersDialog"), grid = findChild(view, "allMembers")
         tryCompare(dialog, "opened", true)
         tryCompare(grid, "count", 64)
-        verify(grid.height > 100)
+        tryVerify(function() { return grid.height > 100 })
         tryVerify(function() {
             for (const member of grid.model) {
                 const row = visualChild(grid, "member_" + member.id)
