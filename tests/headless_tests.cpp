@@ -35,6 +35,18 @@
 #include <unistd.h>
 #endif
 
+namespace {
+quint16 configuredTestPort() {
+    // Do not release an OS-assigned ephemeral port and then hand it to a
+    // subprocess. Concurrent clients can claim it before that process binds.
+    // This range stays below the dynamic TCP ranges on our CI platforms.
+    QTcpServer reservation;
+    for (quint16 port = 20000; port < 21000; ++port)
+        if (reservation.listen(QHostAddress::Any, port)) return port;
+    return 0;
+}
+}
+
 class HeadlessTests final : public QObject {
     Q_OBJECT
     const QString executable_ = qEnvironmentVariable("SQUAD_TEST_APP", QStringLiteral(SQUAD_HEADLESS_APP));
@@ -140,9 +152,7 @@ private slots:
         };
         QVERIFY(writeIdentity("invalid test identity"));
         temporaryIdentitySlots_[slot] = true;
-        QTcpServer reservation;
-        QVERIFY(reservation.listen(QHostAddress::LocalHost, 0));
-        const auto port = reservation.serverPort(); reservation.close();
+        const auto port = configuredTestPort(); QVERIFY(port != 0);
         QVERIFY(host.configureHost({{"port", port}, {"approvedClients", QJsonArray{peer.ownId()}}}));
         const auto configuration = host.hostConfiguration();
         QVERIFY(host.initialize());
@@ -439,8 +449,7 @@ private slots:
         QFETCH(QString, closure);
         QFETCH(bool, synchronousPipe);
         QTemporaryDir directory;
-        QTcpServer reservation; QVERIFY(reservation.listen(QHostAddress::LocalHost));
-        const auto port = reservation.serverPort(); reservation.close();
+        const auto port = configuredTestPort(); QVERIFY(port != 0);
         const auto profile = directory.filePath("server");
         QProcess process, sink;
         const auto cleanup = qScopeGuard([&] {
@@ -586,10 +595,11 @@ with (root / 'replies').open('wb') as replies:
         QFETCH(bool, fileIdentity);
         QTemporaryDir directory;
         const auto identityPath = directory.filePath("identity.pem");
-        QTcpServer reservation;
-        QVERIFY(reservation.listen(QHostAddress::LocalHost));
-        const auto port = reservation.serverPort();
-        reservation.close();
+        QTcpServer occupied;
+        const auto occupiedPort = configuredTestPort(); QVERIFY(occupiedPort != 0);
+        QVERIFY(occupied.listen(QHostAddress::Any, occupiedPort));
+        const auto port = configuredTestPort(); QVERIFY(port != 0);
+        QVERIFY(port != occupiedPort);
         const auto profile = directory.filePath("production.ini");
         const auto identitySlot = registerProfile(profile);
         VoiceSession readerSession(directory.filePath("reader.session"));
@@ -865,8 +875,8 @@ with (root / 'replies').open('wb') as replies:
             QFile file(directory.filePath(path));
             return file.open(QIODevice::WriteOnly) && file.write(contents) == contents.size();
         };
-        QTcpServer reservation; QVERIFY(reservation.listen(QHostAddress::LocalHost));
-        const auto port = QByteArray::number(reservation.serverPort()); reservation.close();
+        const auto selectedPort = configuredTestPort(); QVERIFY(selectedPort != 0);
+        const auto port = QByteArray::number(selectedPort);
         QVERIFY(writeFile("bin/application.properties", "# executable defaults\nchannelName=Base\nhostName=Base host\nport=" + port + "\nrequestsAllowed=true\nmessageLifetimeDays=30\nprivateLifetimeDays=7\nsettingsFile=../server0\n"));
         QVERIFY(writeFile("bin/config/application.properties", "channelName=Subfolder\nhostName=Subfolder host\nmessageLifetimeDays=7\nprivateMessageTtl=30d\n"));
         QVERIFY(writeFile("working/application.properties", "this file must never be read"));
