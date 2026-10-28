@@ -1371,10 +1371,18 @@ TestCase {
         verify(remoteChannel.sendChat("Click my portrait to inspect."))
         tryVerify(function() { return channel.messages.some(function(m) { return m.sender === remoteChannel.ownId && m.text === "Click my portrait to inspect." }) })
         view.chatExpanded = true
+        const chat = findChild(view, "chatPanel")
         const history = findChild(view, "chatHistory")
+        tryVerify(function() { return !chat.updating && visualChild(view.contentItem, "messageAvatar_" + remoteChannel.ownId) !== null })
+        verify(waitForPolish(view))
         history.scrollTo(history.contentHeight)
-        tryVerify(function() { return visualChild(view.contentItem, "messageAvatar_" + remoteChannel.ownId) !== null })
-        mouseClick(visualChild(view.contentItem, "messageAvatar_" + remoteChannel.ownId))
+        const messagePortrait = visualChild(view.contentItem, "messageAvatar_" + remoteChannel.ownId)
+        verify(waitForFrame(messagePortrait))
+        tryVerify(function() {
+            const point = messagePortrait.mapToItem(history, 0, 0)
+            return !chat.updating && point.y >= 0 && point.y + messagePortrait.height <= history.height
+        })
+        mouseClick(messagePortrait)
         tryCompare(dialog, "opened", true)
         compare(findChild(dialog, "requestIdentity").text, remoteChannel.ownId)
         dialog.close(); tryCompare(dialog, "visible", false)
