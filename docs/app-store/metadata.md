@@ -1,6 +1,6 @@
 # App Store listing
 
-This file is the review source for the SquadSpeak App Store Connect record. The public listing and privacy page must match it.
+This file is the review source for the Squad Speak Chat App Store Connect record. The public listing and privacy page must match it.
 
 | Field | Value |
 | --- | --- |
@@ -13,7 +13,7 @@ This file is the review source for the SquadSpeak App Store Connect record. The 
 
 ## English (U.S.)
 
-**Name:** SquadSpeak
+**Name:** Squad Speak Chat
 
 **Subtitle:** Voice and chat for your channels
 
