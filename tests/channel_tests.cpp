@@ -61,6 +61,22 @@ constexpr bool instrumentedTiming = __has_feature(address_sanitizer);
 constexpr bool instrumentedTiming = false;
 #endif
 
+bool listenWithReservedUdp(QTcpServer& server, QUdpSocket& udp, QString* error = nullptr) {
+    QString lastError;
+    for (int attempt = 0; attempt < 32; ++attempt) {
+        udp.close(); server.close();
+        if (!server.listen(QHostAddress::LocalHost, 0)) {
+            lastError = server.errorString();
+            continue;
+        }
+        if (udp.bind(QHostAddress::LocalHost, server.serverPort(), QUdpSocket::DontShareAddress)) return true;
+        lastError = udp.errorString();
+        server.close();
+    }
+    if (error) *error = QString("No shared TCP/UDP test port is available: %1").arg(lastError);
+    return false;
+}
+
 struct Device final {
     VoiceSession session;
     LocalChannel channel;
@@ -274,16 +290,8 @@ public:
                 else { held.insert(target); ++it; }
             }
         });
-        // Reserve UDP first: a TCP ephemeral port may be unavailable to UDP.
-        for (int attempt = 0; attempt < 32 && !server_.isListening(); ++attempt) {
-            udp_.close();
-            if (!udp_.bind(QHostAddress::LocalHost, 0, QUdpSocket::DontShareAddress))
-                throw std::runtime_error(QString("Delayed UDP link cannot bind: %1").arg(udp_.errorString()).toStdString());
-            server_.listen(QHostAddress::LocalHost, udp_.localPort());
-        }
-        if (!server_.isListening())
-            throw std::runtime_error(QString("Delayed TLS link cannot bind port %1: %2")
-                .arg(udp_.localPort()).arg(server_.errorString()).toStdString());
+        QString endpointError;
+        if (!listenWithReservedUdp(server_, udp_, &endpointError)) throw std::runtime_error(endpointError.toStdString());
         // Match the media library's bounded receive window. OS defaults must
         // not add packet loss to a link configured without impairment.
         udp_.setSocketOption(QAbstractSocket::ReceiveBufferSizeSocketOption, 1024 * 1024);
@@ -2219,15 +2227,12 @@ private slots:
         const auto identity = TlsIdentity::create(); auto configuration = identity.configuration();
         configuration.setPeerVerifyMode(QSslSocket::VerifyNone);
         QSslServer server; server.setSslConfiguration(configuration);
-        // TCP's ephemeral allocation does not reserve the matching UDP port.
-        // Hold both until the real media transport takes over the UDP socket.
+        // Hold both protocols until the real media transport takes over UDP.
+        // Ask TCP for the ephemeral port first: Windows can protect UDP-chosen
+        // ports from TCP listeners.
         QUdpSocket reservation;
-        for (int attempt = 0; attempt < 32 && !server.isListening(); ++attempt) {
-            reservation.close();
-            QVERIFY2(reservation.bind(QHostAddress::Any, 0, QUdpSocket::DontShareAddress), qPrintable(reservation.errorString()));
-            server.listen(QHostAddress::LocalHost, reservation.localPort());
-        }
-        QVERIFY2(server.isListening(), qPrintable(server.errorString()));
+        QString endpointError;
+        QVERIFY2(listenWithReservedUdp(server, reservation, &endpointError), qPrintable(endpointError));
         QVERIFY(client.channel.join(identity.id(), "127.0.0.1", server.serverPort()));
         QTRY_VERIFY(server.hasPendingConnections());
         auto* control = qobject_cast<QSslSocket*>(server.nextPendingConnection()); QVERIFY(control);

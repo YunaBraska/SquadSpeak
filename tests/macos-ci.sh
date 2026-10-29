@@ -182,6 +182,7 @@ ENTITLEMENTS
         target="$app/Contents/Frameworks/lib$library.dylib"
         test -s "$source"
         cp -f "$source" "$target"
+        cmp -s "$source" "$target"
         codesign --force --sign "$MACOS_SIGNING_IDENTITY" --options runtime --timestamp "$target"
     done
     codesign --force --deep --sign "$MACOS_SIGNING_IDENTITY" --options runtime --timestamp "$app"
