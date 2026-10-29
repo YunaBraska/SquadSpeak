@@ -1,6 +1,6 @@
 # Development
 
-[Product requirements](specs/voice-chat.md), [feature status](roadmap.md) and [avatar production](specs/avatars.md) are the project references. The README is for people using the app.
+[Product requirements](specs/voice-chat.md), [feature status](roadmap.md), [avatar production](specs/avatars.md) and [App Review preparation](app-review.md) are the project references. The README is for people using the app.
 
 ## Translations
 

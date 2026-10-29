@@ -664,6 +664,106 @@ private slots:
         QVERIFY(b.channel.joined());
     }
 
+    void privateBlockRejectsWireMessagesAndOnlyItsOwnerCanLiftIt() {
+        QTemporaryDir dir;
+        const auto sender = TlsIdentity::create(), receiver = TlsIdentity::create();
+        Device host(dir.filePath("host"), "Host"), recipient(dir.filePath("recipient"), "Recipient", receiver);
+        QVERIFY(host.channel.listen(QHostAddress::LocalHost));
+        QVERIFY(host.channel.decide(sender.id(), true));
+        QVERIFY(host.channel.decide(recipient.channel.ownId(), true));
+        QVERIFY(recipient.join(host.channel));
+        QTRY_VERIFY(recipient.channel.chatReady());
+        QSslSocket socket; socket.setSslConfiguration(sender.configuration());
+        connect(&socket, &QSslSocket::sslErrors, &socket, [&](const QList<QSslError>& errors) { socket.ignoreSslErrors(errors); });
+        QByteArray incoming; QList<QJsonObject> responses;
+        connect(&socket, &QSslSocket::readyRead, &socket, [&] {
+            incoming += socket.readAll();
+            while (incoming.size() >= 4) {
+                const auto size = qFromBigEndian<quint32>(incoming.constData());
+                if (incoming.size() < size + 4) break;
+                responses.append(QJsonDocument::fromJson(incoming.mid(4, size)).object());
+                incoming.remove(0, size + 4);
+            }
+        });
+        socket.connectToHostEncrypted("127.0.0.1", host.channel.port());
+        QTRY_VERIFY(socket.isEncrypted());
+        socket.write(wireFrame({{"type", "hello"}, {"version", 1}, {"name", "Sender"}, {"available", true},
+            {"muted", true}, {"capabilities", QJsonArray{"private-chat"}}}));
+        QTRY_VERIFY(recipient.channel.canPrivateChat(host.channel.ownId(), sender.id()));
+        QVERIFY(recipient.channel.openPrivateChat(host.channel.ownId(), sender.id()));
+        QTRY_VERIFY(!recipient.channel.historyLoading());
+        const auto conversation = recipient.channel.chatHostId();
+        const auto send = [&](QJsonObject payload) {
+            payload.insert("conversation", conversation); payload.insert("peer", recipient.channel.ownId());
+            socket.write(wireFrame({{"type", "privateChat"}, {"payload", payload}}));
+        };
+        const auto request = QUuid::createUuid().toString(QUuid::WithoutBraces);
+        const auto binding = ("SquadSpeak/private/v1/" + host.channel.ownId() + '/' + conversation + '/' + request + '/' + sender.id()).toUtf8();
+        const auto sealed = sender.sealFor(QCborValue::fromJsonValue(QJsonObject{{"text", "Allowed only after unblock"}}).toCbor(),
+            receiver.configuration().localCertificate(), binding);
+        const QJsonObject message{{"kind", "send"}, {"request", request}, {"issued", QDateTime::currentMSecsSinceEpoch()},
+            {"sealed", QString::fromLatin1(sealed.toBase64())}};
+        QVERIFY(recipient.channel.setPrivateBlocked(conversation, true));
+        QTRY_VERIFY(recipient.channel.privateBlockedByMe());
+        for (int attempt = 0; attempt < 2; ++attempt) {
+            responses.clear();
+            if (attempt) send({{"kind", "block"}, {"value", false}, {"sender", recipient.channel.ownId()}});
+            send(message);
+            QTRY_VERIFY(std::any_of(responses.begin(), responses.end(), [](const auto& response) {
+                const auto payload = response.value("payload").toObject();
+                return payload.value("kind") == "error" && payload.value("error") == "Blocked";
+            }));
+            QVERIFY(recipient.channel.privateBlockedByMe());
+            QVERIFY(recipient.channel.messages().isEmpty());
+        }
+        QVERIFY(recipient.channel.setPrivateBlocked(conversation, false));
+        QTRY_VERIFY(!recipient.channel.privateBlocked());
+        send(message);
+        QTRY_COMPARE(recipient.channel.messages().size(), 1);
+        QCOMPARE(recipient.channel.messages().first().toMap().value("text").toString(), QString("Allowed only after unblock"));
+        QVERIFY(recipient.channel.joined());
+    }
+
+    void privateBlockPersistenceFailureKeepsCommittedState_data() {
+        QTest::addColumn<bool>("initiallyBlocked");
+        QTest::newRow("block") << false;
+        QTest::newRow("unblock") << true;
+    }
+    void privateBlockPersistenceFailureKeepsCommittedState() {
+        QFETCH(bool, initiallyBlocked);
+        QTemporaryDir dir;
+        Device host(dir.filePath("host"), "Host"), a(dir.filePath("a"), "Alice"), b(dir.filePath("b"), "Bea");
+        QVERIFY(host.channel.listen(QHostAddress::LocalHost));
+        for (auto* peer : {&a, &b}) {
+            QVERIFY(host.channel.decide(peer->channel.ownId(), true));
+            QVERIFY(peer->join(host.channel));
+            QTRY_VERIFY(peer->channel.chatReady());
+        }
+        QTRY_VERIFY(a.channel.canPrivateChat(host.channel.ownId(), b.channel.ownId()));
+        QVERIFY(a.channel.openPrivateChat(host.channel.ownId(), b.channel.ownId()));
+        QVERIFY(b.channel.openPrivateChat(host.channel.ownId(), a.channel.ownId()));
+        QTRY_VERIFY(!a.channel.historyLoading() && !b.channel.historyLoading());
+        const auto conversation = b.channel.chatHostId();
+        if (initiallyBlocked) {
+            QVERIFY(b.channel.setPrivateBlocked(conversation, true));
+            QTRY_VERIFY(a.channel.privateBlocked() && b.channel.privateBlockedByMe());
+        }
+        const auto path = dir.filePath("host.channel"), backup = path + ".backup";
+        QVERIFY(QFile::rename(path, backup)); QVERIFY(QDir().mkdir(path));
+        QVERIFY(b.channel.setPrivateBlocked(conversation, !initiallyBlocked));
+        QTRY_VERIFY(!b.channel.chatError().isEmpty());
+        QCOMPARE(a.channel.privateBlocked(), initiallyBlocked);
+        QCOMPARE(b.channel.privateBlockedByMe(), initiallyBlocked);
+        QVERIFY(QDir().rmdir(path)); QVERIFY(QFile::rename(backup, path));
+        QVERIFY(b.channel.setPrivateBlocked(conversation, !initiallyBlocked));
+        QTRY_COMPARE(a.channel.privateBlocked(), !initiallyBlocked);
+        QTRY_COMPARE(b.channel.privateBlockedByMe(), !initiallyBlocked);
+        QVERIFY(b.channel.setPrivateBlocked(conversation, false));
+        QTRY_VERIFY(!a.channel.privateBlocked() && !b.channel.privateBlocked());
+        QVERIFY(a.channel.sendChat("Still usable"));
+        QTRY_COMPARE(b.channel.messages().size(), 1);
+    }
+
     void privateChatScopeAndRemoteControlUseTheSameConversation() {
         QTemporaryDir dir;
         Device host(dir.filePath("host"), "Host"), otherHost(dir.filePath("other-host"), "Other host"),
