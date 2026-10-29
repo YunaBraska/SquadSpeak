@@ -422,6 +422,10 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Text size</source>
+            <translation>Мәтін өлшемі</translation>
+        </message>
+        <message>
             <source>Audio received</source>
             <translation>Қабылданған дыбыс</translation>
         </message>

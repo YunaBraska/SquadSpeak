@@ -51,6 +51,8 @@ if(APPLE)
         target_sources(squadspeak PRIVATE "${permission_text}")
     endforeach()
     target_sources(squadspeak PRIVATE ../src/apple_notifications.mm ../src/apple_notifications.hpp)
+    target_sources(squadspeak PRIVATE ../src/system_appearance.mm ../src/system_appearance.hpp)
+    set_source_files_properties(../src/system_appearance.mm PROPERTIES COMPILE_OPTIONS "-fobjc-arc")
     set_source_files_properties(../src/apple_notifications.mm PROPERTIES COMPILE_OPTIONS "-fobjc-arc")
     target_link_libraries(squadspeak PRIVATE "-framework UserNotifications")
     if(IOS)
@@ -97,6 +99,7 @@ if(IOS)
     set_target_properties(squadspeak PROPERTIES XCODE_ATTRIBUTE_TARGETED_DEVICE_FAMILY "1,2")
 else()
     set(squad_platform_plist "<key>CFBundleIconFile</key><string>app.icns</string>
+        <key>LSApplicationCategoryType</key><string>public.app-category.social-networking</string>
         <key>LSUIElement</key><true/>
         <key>LSMinimumSystemVersion</key><string>\${CMAKE_OSX_DEPLOYMENT_TARGET}</string>")
 endif()

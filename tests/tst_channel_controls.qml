@@ -148,6 +148,9 @@ TestCase {
     }
 
     function init() {
+        session.setTextScale(100)
+        systemAppearance.reducedMotion = false
+        systemAppearance.textScale = 1
         view.touchControls = Qt.platform.os === "ios" || Qt.platform.os === "android"
         controllerView.touchControls = view.touchControls
         licenseDisplay.reset()
@@ -530,9 +533,11 @@ TestCase {
     }
 
     function test_detailsReplaceOrShareChatWithoutLosingContext_data() {
-        return [{tag: "compact", width: 390}, {tag: "split", width: 1100}]
+        return [{tag: "compact", width: 390, scale: 100}, {tag: "split", width: 1100, scale: 100},
+                {tag: "compact-large-text", width: 390, scale: 200}, {tag: "split-large-text", width: 1100, scale: 200}]
     }
     function test_detailsReplaceOrShareChatWithoutLosingContext(data) {
+        verify(session.setTextScale(data.scale))
         view.width = data.width
         verify(fixtures.startHost()); verify(fixtures.startRemoteHost())
         verify(channel.setChannelName("Workshop")); verify(remoteChannel.setChannelName("Lounge"))
@@ -566,6 +571,12 @@ TestCase {
             const chatRight = chat.mapToItem(view.contentItem, chat.width, 0).x
             verify(chatRight <= location.x, "Details share the conversation area without covering it")
         }
+        const music = findChild(info, "channelMusicVolume")
+        verify(music.height >= music.implicitHeight, "Enlarged music controls must fit their layout")
+        const translation = findChild(info, "channelTranslationControls")
+        if (translation.visible)
+            verify(music.mapToItem(info, 0, music.height).y <= translation.mapToItem(info, 0, 0).y,
+                   "Music controls must not overlap translation controls")
         if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/details-" + data.tag + ".png"))
         verify(fixtures.pressAccessible(findChild(info, "closeDetails")))
         tryCompare(info, "opened", false)
@@ -3645,6 +3656,88 @@ TestCase {
         compare(updateDisplay.checks, 1)
         verify(session.available && session.transmissionAllowed)
         view.closeSettings()
+    }
+
+    function test_textSizeCanDoubleWithoutLosingSettingsOrVoice() {
+        view.width = 360; view.height = 640
+        view.openSettings(0)
+        const choice = findChild(view, "textSizeChoice")
+        verify(choice, "Profile must offer text enlargement")
+        reveal(choice)
+        choice.forceActiveFocus()
+        keyClick(Qt.Key_End)
+        compare(session.textScale, 200)
+        compare(view.font.pixelSize, 28)
+        verify(session.available)
+        for (let page = 0; page < 4; ++page) {
+            view.settingsPage = page
+            verify(waitForFrame(view.contentItem))
+            const tabs = findChild(view, "settingsSection")
+            verify(tabs.width <= view.width)
+            const tab = tabs.itemAt(page)
+            verify(tab.height >= tab.contentItem.implicitHeight)
+            if (page === 1 || page === 2) {
+                const scroll = findChild(view, "audioSettingsScroll")
+                verify(findChild(view, "audioSettingsContent").width <= scroll.availableWidth)
+                const slider = findChild(view, page === 1 ? "voiceThreshold" : "playbackVolume")
+                verify(slider)
+                const label = findChild(slider, "valueLabel")
+                verify(label.x >= 0 && label.x + label.width <= slider.width + 1)
+            }
+            if (imageDirectory.length) verify(fixtures.saveWindow(view, imageDirectory + "/text-200-" + page + ".png"))
+        }
+        view.settingsPage = 0
+        reveal(choice)
+        choice.forceActiveFocus()
+        keyClick(Qt.Key_Home)
+        compare(session.textScale, 100)
+        compare(view.font.pixelSize, 14)
+        view.closeSettings()
+    }
+
+    function test_paletteTextContrast_data() {
+        const rows = []
+        for (const mode of ["light", "dark"])
+            for (const palette of ["plum", "ocean", "forest", "graphite"])
+                rows.push({ tag: mode + "-" + palette, mode: mode, palette: palette })
+        return rows
+    }
+
+    function test_systemAccessibilityChangesKeepSavedPreferences() {
+        portrait.visible = true; portrait.online = true; portrait.animated = true
+        verify(session.setAnimatedAvatars(true))
+        verify(session.setTextScale(125))
+        systemAppearance.reducedMotion = true
+        systemAppearance.textScale = 1.5
+        compare(view.font.pixelSize, Math.round(14 * 1.25 * 1.5))
+        for (const time of [0, 127, 2305, 6123]) {
+            portrait.animationTime = time
+            compare(portrait.column, 0)
+        }
+        verify(session.animatedAvatars)
+        compare(session.textScale, 125)
+        portrait.systemMessage = true
+        verify(waitForFrame(portrait))
+        tryVerify(() => fixtures.portraitHasDetail(portrait, false))
+        systemAppearance.reducedMotion = false
+        systemAppearance.textScale = 1
+        compare(view.font.pixelSize, Math.round(14 * 1.25))
+        verify(portrait.atlasSource.toString().endsWith("system-animated.png"))
+    }
+
+    function test_paletteTextContrast(row) {
+        function luminance(color) {
+            return [color.r, color.g, color.b].map(c => c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4))
+                .reduce((sum, c, index) => sum + c * [0.2126, 0.7152, 0.0722][index], 0)
+        }
+        verify(session.setTheme(row.mode)); verify(session.setPalette(row.palette))
+        for (const foreground of [Theme.text, Theme.muted, Theme.accent, Theme.warning, Theme.danger]) {
+            for (const background of [Theme.background, Theme.surface, Theme.raised, Theme.input]) {
+                const a = luminance(foreground), b = luminance(background)
+                const ratio = (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05)
+                verify(ratio >= 4.5, "Small text contrast: " + ratio)
+            }
+        }
     }
 
     function test_aboutUsesLogoVersionRotatingTextAndVerifiedSupportLinksWithoutMuting() {

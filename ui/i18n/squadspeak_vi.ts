@@ -422,6 +422,10 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Text size</source>
+            <translation>Cỡ chữ</translation>
+        </message>
+        <message>
             <source>Audio received</source>
             <translation>Âm thanh nhận được</translation>
         </message>

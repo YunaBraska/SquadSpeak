@@ -422,6 +422,10 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Text size</source>
+            <translation>Tekstin koko</translation>
+        </message>
+        <message>
             <source>Audio received</source>
             <translation>Vastaanotettu ääni</translation>
         </message>

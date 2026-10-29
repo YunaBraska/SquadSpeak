@@ -223,6 +223,34 @@ private slots:
         file.resize(0); file.write(QJsonDocument(invalid).toJson()); file.close();
         QVERIFY_EXCEPTION_THROWN(VoiceSession{path}, std::runtime_error);
     }
+    void textSizePersistsAndRejectsInvalidValuesWithoutChangingVoice() {
+        QTemporaryDir dir;
+        const auto path = dir.filePath("session.json");
+        VoiceSession session(path);
+        QCOMPARE(session.textScale(), 100);
+        QVERIFY(session.setMuted(false));
+        for (const auto size : {100, 125, 200, 200}) {
+            QVERIFY(session.setTextScale(size));
+            VoiceSession restored(path);
+            QCOMPARE(restored.textScale(), size);
+            QVERIFY(restored.transmissionAllowed());
+        }
+        for (const auto invalid : {-1, 0, 99, 113, 201}) {
+            QVERIFY(!session.setTextScale(invalid));
+            QCOMPARE(session.textScale(), 200);
+        }
+        VoiceSession failure(dir.filePath("missing/session.json"));
+        QVERIFY(!failure.setTextScale(125));
+        QCOMPARE(failure.textScale(), 100);
+        QFile file(path);
+        QVERIFY(file.open(QIODevice::ReadWrite));
+        auto data = QJsonDocument::fromJson(file.readAll()).object();
+        for (const auto& value : {QJsonValue(200.5), QJsonValue(99), QJsonValue(113), QJsonValue("125")}) {
+            data.insert("textScale", value);
+            file.resize(0); file.seek(0); file.write(QJsonDocument(data).toJson()); file.flush();
+            QVERIFY_THROWS_EXCEPTION(std::runtime_error, VoiceSession{path});
+        }
+    }
     void palettesPersistIndependentlyOfAppearanceAndTransmission() {
         QTemporaryDir dir;
         const auto path = dir.filePath("session.json");

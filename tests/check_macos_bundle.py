@@ -78,6 +78,8 @@ def main():
 
     with (app / "Contents/Info.plist").open("rb") as source:
         metadata = plistlib.load(source)
+    if metadata.get("LSApplicationCategoryType") != "public.app-category.social-networking":
+        errors.append({"check": "application_category"})
     if "SUPublicEDKey" in metadata:
         try:
             assert len(base64.b64decode(metadata["SUPublicEDKey"], validate=True)) == 32

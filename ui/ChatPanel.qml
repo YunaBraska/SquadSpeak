@@ -208,7 +208,7 @@ Item {
                         anchors.centerIn: parent
                         objectName: "loadOlderMessages"
                         text: root.current.historyLoading ? qsTr("Loading...") : qsTr("Earlier messages")
-                        flat: true; font.pixelSize: 11
+                        flat: true; font.pixelSize: Theme.fontSize(11)
                         visible: !!root.current.hasOlderMessages || !!root.current.historyLoading
                         enabled: !root.current.historyLoading
                         onClicked: root.page(true)
@@ -292,7 +292,7 @@ Item {
                                             onClicked: mouse => root.memberRequested(messageRow.member, mouse.button === Qt.RightButton)
                                         }
                                     }
-                                    Label { text: Qt.formatDateTime(new Date(messageRow.message.created), "hh:mm"); color: Theme.muted; font.pixelSize: 11 }
+                                    Label { text: Qt.formatDateTime(new Date(messageRow.message.created), "hh:mm"); color: Theme.muted; font.pixelSize: Theme.fontSize(11) }
                                 }
                                 ActionButton {
                                     objectName: "translationOriginal_" + messageRow.message.sequence
@@ -330,7 +330,7 @@ Item {
                                     readOnly: true; selectByMouse: mouseSelection.active; selectByKeyboard: true; wrapMode: TextEdit.Wrap
                                     // A mouse drag selects text. Touch starts with no selection grab so the list can scroll.
                                     PointHandler { id: mouseSelection; acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad }
-                                    color: messageRow.systemMessage ? Theme.muted : Theme.text; font.pixelSize: messageRow.systemMessage ? 12 : 14
+                                    color: messageRow.systemMessage ? Theme.muted : Theme.text; font.pixelSize: Theme.fontSize(messageRow.systemMessage ? 12 : 14)
                                     function requestAttachment() {
                                         if (messageRow.inViewport && messageRow.message.image)
                                             root.network.requestImage(messageRow.message.image.hash)
@@ -345,7 +345,7 @@ Item {
                                     visible: messageRow.showOriginal && messageRow.hasTranslation
                                     text: chatContent.plainText(messageRow.message); textFormat: TextEdit.PlainText
                                     readOnly: true; selectByMouse: true; wrapMode: TextEdit.Wrap
-                                    color: Theme.muted; font.pixelSize: 12
+                                    color: Theme.muted; font.pixelSize: Theme.fontSize(12)
                                 }
                             }
                         }
@@ -387,7 +387,7 @@ Item {
             RowLayout {
                 Layout.fillWidth: true
                 Label {
-                    Layout.fillWidth: true; wrapMode: Text.Wrap; font.pixelSize: 12; color: Theme.muted
+                    Layout.fillWidth: true; wrapMode: Text.Wrap; font.pixelSize: Theme.fontSize(12); color: Theme.muted
                     text: root.translatedDraft.text ? chatContent.plainText({text: root.translatedDraft.text})
                         : root.translatedDraft.error || qsTranslate("ChatPanel", "Loading...")
                     textFormat: Text.PlainText; maximumLineCount: 3; elide: Text.ElideRight

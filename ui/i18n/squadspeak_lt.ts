@@ -422,6 +422,10 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Text size</source>
+            <translation>Teksto dydis</translation>
+        </message>
+        <message>
             <source>Audio received</source>
             <translation>Gaunamas garsas</translation>
         </message>

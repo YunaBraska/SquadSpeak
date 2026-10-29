@@ -86,6 +86,12 @@ VoiceSession::VoiceSession(QString settingsFile, QObject* parent)
             throw invalid("palette");
         preferences_.insert("palette", palette);
     }
+    if (object.contains("textScale")) {
+        const auto value = object.value("textScale");
+        if (!value.isDouble() || value.toInt() < 100 || value.toInt() > 200 || value.toDouble() != value.toInt() || value.toInt() % 25 != 0)
+            throw invalid("textScale");
+        preferences_.insert("textScale", value);
+    }
     if (object.contains("animatedAvatars")) {
         if (!object.value("animatedAvatars").isBool()) throw invalid("animatedAvatars");
         preferences_.insert("animatedAvatars", object.value("animatedAvatars"));
@@ -259,6 +265,11 @@ bool VoiceSession::setTheme(const QString& theme) {
     if (theme != "system" && theme != "light" && theme != "dark")
         return fail(tr("Choose System, Light or Dark."));
     return edit("theme", theme);
+}
+
+bool VoiceSession::setTextScale(int percent) {
+    if (percent < 100 || percent > 200 || percent % 25 != 0) return fail(tr("Saved setting is invalid: %1").arg("textScale"));
+    return edit("textScale", percent);
 }
 
 QVariantList VoiceSession::languages() {
