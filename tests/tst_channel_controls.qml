@@ -22,6 +22,7 @@ TestCase {
     SignalSpy { id: previewRequests; target: view; signalName: "previewRequested" }
     SignalSpy { id: openedLinks; target: fixtures; signalName: "externalUrlOpened" }
     SignalSpy { id: dialogRejections; signalName: "rejected" }
+    SignalSpy { id: stationSaves; target: radio; signalName: "stationSaved" }
     Component { id: variablePortrait; VoiceAvatar { width: 96; height: 112 } }
     Component { id: portraitBackdrop; Rectangle { color: Theme.surface } }
     Component { id: atlasImage; Image { visible: false } }
@@ -1341,7 +1342,9 @@ TestCase {
         verify(!findChild(dialog, "audioQuality").visible, "Our receive quality must not be attributed to another member")
         const gain = findChild(volume, "valueControl")
         const automatic = findChild(volume, "automaticControl")
-        verify(automatic && automatic.visible && automatic.checked)
+        verify(automatic !== null, "Personal volume has an Auto control")
+        verify(automatic.visible, "Auto control is visible, autoAvailable=" + volume.autoAvailable)
+        verify(automatic.checked, "Auto control reflects participantAutomatic=" + audio.participantAutomatic(remoteChannel.ownId))
         const previous = audio.participantVolume(remoteChannel.ownId)
         verify(audio.setParticipantVolume(remoteChannel.ownId, 1))
         view.requestActivate(); tryCompare(view, "active", true)
@@ -3863,8 +3866,11 @@ TestCase {
         const name = "<b>Station test</b>"
         findChild(view, "stationName").text = name
         findChild(view, "stationUrl").text = fixtures.stationUrl()
+        stationSaves.clear()
         mouseClick(findChild(view, "saveStation"))
-        tryCompare(findChild(view, "stationEditor"), "visible", false, 17000)
+        tryCompare(stationSaves, "count", 1, 17000)
+        verify(stationSaves.signalArguments[0][1], "Station validation: " + radio.error)
+        tryCompare(findChild(view, "stationEditor"), "visible", false)
         compare(radio.stations.length, 1)
         const id = radio.stations[0].id
         tryCompare(results.model.get(0).entry, "id", id)
