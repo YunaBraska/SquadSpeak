@@ -182,7 +182,7 @@ fetch() {
 fetch openssl-3.6.5.tar.gz https://github.com/openssl/openssl/releases/download/openssl-3.6.5/openssl-3.6.5.tar.gz a2157c2830efdec3788939b00c9b0638306d3f0bbb76dc4832ee503bb397df98
 fetch opus-1.6.1.tar.gz https://distfiles.macports.org/libopus/opus-1.6.1.tar.gz 6ffcb593207be92584df15b32466ed64bbec99109f007c82205f0194572411a1
 fetch libsamplerate-0.2.2.tar.xz https://github.com/libsndfile/libsamplerate/releases/download/0.2.2/libsamplerate-0.2.2.tar.xz 3258da280511d24b49d6b08615bbe824d0cacc9842b0e4caf11c52cf2b043893
-fetch ffmpeg-7.1.5.tar.xz https://ffmpeg.org/releases/ffmpeg-7.1.5.tar.xz de668509caf9e35e3cd162473441fdb29538c6d96ed080292b3cf9e6fc5d558f
+fetch FFmpeg-n7.1.5.tar.gz https://github.com/FFmpeg/FFmpeg/archive/refs/tags/n7.1.5.tar.gz e3963a50831c985933e1a625ed566ec4c7adb5c012c34fa9f84438e1d61bdacc
 
 openssl_source="$build_root/sources/openssl-3.6.5"
 (
@@ -240,7 +240,7 @@ for dependency in opus-1.6.1 libsamplerate-0.2.2; do
     fi
 done
 
-ffmpeg_source="$build_root/sources/ffmpeg-7.1.5"
+ffmpeg_source="$build_root/sources/FFmpeg-n7.1.5"
 if test "$mode" = ios-simulator; then
     ffmpeg_cpu_flags=""
     if test "$architecture" = x86_64; then ffmpeg_cpu_flags="--disable-x86asm --disable-runtime-cpudetect --disable-mmx --disable-mmxext --disable-sse --disable-sse2 --disable-sse3 --disable-sse4 --disable-sse42"; fi

@@ -106,7 +106,7 @@ if ($DependenciesOnly) {
 $appBuild = "$BuildRoot/app"
 $env:PATH = "$appBuild/qt-qml/bin;$QtRoot/bin;$prefix/bin;$appBuild/audio-processing/bin;$env:PATH"
 if ($Phase -in @("all", "build")) {
-$ffmpeg = Get-Source "ffmpeg-7.1.5.tar.xz" "https://ffmpeg.org/releases/ffmpeg-7.1.5.tar.xz" "de668509caf9e35e3cd162473441fdb29538c6d96ed080292b3cf9e6fc5d558f"
+$ffmpeg = Get-Source "FFmpeg-n7.1.5.tar.gz" "https://github.com/FFmpeg/FFmpeg/archive/refs/tags/n7.1.5.tar.gz" "e3963a50831c985933e1a625ed566ec4c7adb5c012c34fa9f84438e1d61bdacc"
 
 # The Qt kit supplies the runtime DLLs. Generate only matching MSVC import
 # libraries from their exports, then compile against official FFmpeg headers.
