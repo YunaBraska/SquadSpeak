@@ -1142,6 +1142,7 @@ PanelWindow {
                             Repeater {
                                 model: [
                                     {key: "repository", label: qsTr("Repository"), url: "https://github.com/YunaBraska/SquadSpeak"},
+                                    {key: "privacy", label: qsTr("Privacy policy"), url: "https://yunabraska.github.io/SquadSpeak/privacy.html"},
                                     {key: "issues", label: qsTr("Report an issue"), url: "https://github.com/YunaBraska/SquadSpeak/issues/new"}
                                 ]
                                 ActionButton { required property var modelData; objectName: "aboutLink_" + modelData.key; Layout.fillWidth: true; text: modelData.label; onClicked: Qt.openUrlExternally(modelData.url) }
