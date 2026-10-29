@@ -174,6 +174,17 @@ ENTITLEMENTS
     codesign --force --sign "$MACOS_SIGNING_IDENTITY" --options runtime --timestamp \
         --preserve-metadata=entitlements "$sparkle/XPCServices/Downloader.xpc"
     "$qt_prefix/bin/macdeployqt" "$app" "-sign-for-notarization=$MACOS_SIGNING_IDENTITY"
+    # macdeployqt can replace the patched FFmpeg ABI libraries with the Qt SDK
+    # copies while scanning multimedia plugins. Restore the tested runtime and
+    # sign the final bundle after that mutation.
+    for library in avcodec.61 avutil.59 swscale.8 avformat.61 swresample.5; do
+        source="$build_root/app/ffmpeg/lib/lib$library.dylib"
+        target="$app/Contents/Frameworks/lib$library.dylib"
+        test -s "$source"
+        cp -f "$source" "$target"
+        codesign --force --sign "$MACOS_SIGNING_IDENTITY" --options runtime --timestamp "$target"
+    done
+    codesign --force --deep --sign "$MACOS_SIGNING_IDENTITY" --options runtime --timestamp "$app"
     codesign --verify --deep --strict "$app"
 fi
 if test -n "${MACOS_NOTARY_PROFILE:-}"; then
