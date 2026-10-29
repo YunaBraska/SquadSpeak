@@ -2514,18 +2514,18 @@ private slots:
         std::vector<std::unique_ptr<QUdpSocket>> occupiedRange;
         quint16 firstPort = 0;
         if (occupiedProtocol == "udp") {
-            QVERIFY(occupiedUdp.bind(QHostAddress::Any, 0, QUdpSocket::DontShareAddress));
+            QVERIFY(occupiedUdp.bind(QHostAddress::LocalHost, 0, QUdpSocket::DontShareAddress));
             firstPort = occupiedUdp.localPort();
             for (int offset = 1; offset < occupiedCount; ++offset) {
                 auto socket = std::make_unique<QUdpSocket>();
                 const auto port = quint16(1024 + (int(firstPort) - 1024 + offset) % (65536 - 1024));
-                QVERIFY(socket->bind(QHostAddress::Any, port, QUdpSocket::DontShareAddress)
+                QVERIFY(socket->bind(QHostAddress::LocalHost, port, QUdpSocket::DontShareAddress)
                     || socket->error() == QAbstractSocket::AddressInUseError
                     || socket->error() == QAbstractSocket::SocketAccessError);
                 occupiedRange.push_back(std::move(socket));
             }
         } else if (occupiedProtocol == "tcp") {
-            QVERIFY(occupiedTcp.listen(QHostAddress::Any, 0));
+            QVERIFY(occupiedTcp.listen(QHostAddress::LocalHost, 0));
             firstPort = occupiedTcp.serverPort();
         }
         QTemporaryDir dir;
