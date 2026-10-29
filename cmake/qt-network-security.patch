@@ -149,7 +149,7 @@ not copied into the dependency build, which has tests disabled.
          (m_connectionType == Type::Server && (streamID & 1) == 1)) {
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -11,6 +11,32 @@
+@@ -11,6 +11,36 @@
 
  # Get the repo version and CMake policy details
  include(.cmake.conf)
@@ -175,6 +175,10 @@ not copied into the dependency build, which has tests disabled.
 +        find_package(WrapOpenSSL REQUIRED)
 +    endif()
 +    qt_feature_evaluate_features("${CMAKE_CURRENT_SOURCE_DIR}/src/network/configure.cmake")
++    # Instrumented modules resolve Clang sanitizers from the executable.
++    if(CMAKE_CXX_COMPILER_ID MATCHES "Clang" AND CMAKE_CXX_FLAGS MATCHES "-fsanitize=[^ ]*address")
++        set(QT_FEATURE_sanitizer ON)
++    endif()
 +    add_subdirectory(src/network)
 +    qt_build_repo_end()
 +    return()
