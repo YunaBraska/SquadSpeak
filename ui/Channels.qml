@@ -78,7 +78,7 @@ PanelWindow {
         Keys.onEscapePressed: close()
         header: RowLayout {
             spacing: 8
-            Label { text: pane.title; textFormat: Text.PlainText; font.pixelSize: 16; font.weight: Font.DemiBold; Layout.fillWidth: true; Layout.minimumWidth: 0; Layout.leftMargin: 12; elide: Text.ElideRight }
+            Label { text: pane.title; textFormat: Text.PlainText; font.pixelSize: Theme.fontSize(16); font.weight: Font.DemiBold; Layout.fillWidth: true; Layout.minimumWidth: 0; Layout.leftMargin: 12; elide: Text.ElideRight }
             ActionButton { objectName: "closeDetails"; text: qsTr("Close"); glyph: "close"; iconOnly: true; flat: true; onClicked: pane.close() }
         }
         background: Rectangle { color: Theme.surface; radius: Theme.controlRadius }
@@ -136,7 +136,7 @@ PanelWindow {
         property string hostId: ""
         clip: true
         cellWidth: width < 350 ? width : width / 2
-        cellHeight: 54
+        cellHeight: Math.max(54, Theme.fontSize(32) + 16)
         cacheBuffer: 0
         ScrollBar.vertical: ScrollBar { policy: grid.contentHeight > grid.height ? ScrollBar.AlwaysOn : ScrollBar.AsNeeded }
         delegate: Item {
@@ -162,7 +162,7 @@ PanelWindow {
                     animated: root.voice.animatedAvatars && memberEntry.y + memberEntry.height >= grid.contentY && memberEntry.y <= grid.contentY + grid.height
                     level: grid.hostId === root.activeHost ? root.memberLevel(modelData.id) : 0
                 }
-                Label { text: modelData.name; textFormat: Text.PlainText; Layout.fillWidth: true; elide: Text.ElideRight; font.pixelSize: 12 }
+                Label { text: modelData.name; textFormat: Text.PlainText; Layout.fillWidth: true; elide: Text.ElideRight; font.pixelSize: Theme.fontSize(12) }
             }
             MouseArea { anchors.fill: parent; acceptedButtons: Qt.LeftButton | Qt.RightButton; onClicked: mouse => root.memberOptions(modelData, grid.hostId, mouse.button === Qt.RightButton) }
             ActionButton {
@@ -195,14 +195,14 @@ PanelWindow {
     component AvatarShelf: PathView {
         id: avatarShelf
         property bool preview: false
-        Layout.fillWidth: true; Layout.preferredHeight: 120
+        Layout.fillWidth: true; Layout.preferredHeight: 98 + Theme.fontSize(22)
         clip: true; dragMargin: height
         model: root.voice.supporterEnabled ? root.voice.avatars : root.voice.avatars.slice(0, 10)
         currentIndex: preview ? 0 : Math.max(0, model.indexOf(root.voice.avatar))
         pathItemCount: Math.ceil(width / 100) + 1
         cacheItemCount: 2
         preferredHighlightBegin: 0.5; preferredHighlightEnd: 0.5
-        snapMode: PathView.SnapToItem; highlightMoveDuration: 120
+        snapMode: PathView.SnapToItem; highlightMoveDuration: Theme.reducedMotion ? 0 : 120
         activeFocusOnTab: true
         Keys.onLeftPressed: decrementCurrentIndex()
         Keys.onRightPressed: incrementCurrentIndex()
@@ -228,11 +228,11 @@ PanelWindow {
             required property string modelData
             required property int index
             objectName: (avatarShelf.preview ? "avatarPreview_" : "avatarChoice_") + modelData
-            width: 96; height: 110
+            width: 96; height: 88 + Theme.fontSize(22)
             readonly property string label: modelData.split("-").map(function(word) { return word.charAt(0).toUpperCase() + word.slice(1) }).join(" ")
             VoiceAvatar { anchors.top: parent.top; anchors.horizontalCenter: parent.horizontalCenter; width: 88; height: 88; avatar: modelData; muted: false; animated: false; online: true; Accessible.ignored: true }
             Rectangle { anchors.horizontalCenter: parent.horizontalCenter; width: 88; height: 88; color: "transparent"; radius: Theme.panelRadius; border.color: (!avatarShelf.preview && root.voice.avatar === modelData) || (avatarShelf.activeFocus && index === avatarShelf.currentIndex) ? Theme.accent : "transparent"; border.width: 2 }
-            Label { anchors.bottom: parent.bottom; width: parent.width; text: parent.label; font.pixelSize: 11; horizontalAlignment: Text.AlignHCenter; elide: Text.ElideRight }
+            Label { anchors.bottom: parent.bottom; width: parent.width; text: parent.label; font.pixelSize: Theme.fontSize(11); horizontalAlignment: Text.AlignHCenter; elide: Text.ElideRight }
             TapHandler { enabled: !avatarShelf.preview; onTapped: root.voice.setAvatar(modelData) }
             Accessible.role: avatarShelf.preview ? Accessible.Graphic : Accessible.RadioButton
             Accessible.name: label
@@ -265,7 +265,7 @@ PanelWindow {
     readonly property var inspectedChannel: channelList.find(c => c.id === inspectedHost) || privateChatList.find(c => c.id === inspectedHost) || ({})
     readonly property var voiceChannel: channelList.find(c => c.id === activeHost) || ({})
     property double avatarTime: Date.now()
-    Timer { interval: root.voice.animatedAvatars ? Atlas.frameInterval() : 80; running: root.visible; repeat: true; onTriggered: root.avatarTime = Date.now() }
+    Timer { interval: root.voice.animatedAvatars && !Theme.reducedMotion ? Atlas.frameInterval() : 80; running: root.visible; repeat: true; onTriggered: root.avatarTime = Date.now() }
     readonly property bool showChat: chatExpanded && inspectedHost.length > 0
     readonly property bool viewingVoice: !!current.joined && inspectedHost === activeHost
     onInspectedHostChanged: {
@@ -489,6 +489,7 @@ PanelWindow {
     Component.onCompleted: updateChannelRows()
     Binding { target: Theme; property: "mode"; value: session.theme }
     Binding { target: Theme; property: "paletteName"; value: session.palette }
+    Binding { target: Theme; property: "textScale"; value: session.textScale / 100 }
     signal previewRequested(bool enabled)
     readonly property bool audioSettingsOpen: visible && settings.visible && settingsPage >= 1 && settingsPage <= 2
     function syncAudioSettings() {
@@ -626,7 +627,7 @@ PanelWindow {
                         }
                         Label {
                             text: modelData.blocked ? qsTr("Blocked") : modelData.peerOnline ? qsTr("Online") : qsTr("Offline")
-                            color: modelData.blocked ? Theme.danger : Theme.muted; font.pixelSize: 11
+                            color: modelData.blocked ? Theme.danger : Theme.muted; font.pixelSize: Theme.fontSize(11)
                         }
                         ActionButton {
                             objectName: "openPrivateMessage_" + modelData.id
@@ -826,7 +827,7 @@ PanelWindow {
                 Label {
                     objectName: "networkPermissionHint"
                     text: qsTr("If asked, allow local network access. You can change this in system settings.")
-                    color: Theme.muted; font.pixelSize: 12
+                    color: Theme.muted; font.pixelSize: Theme.fontSize(12)
                     wrapMode: Text.Wrap; Layout.fillWidth: true
                 }
                 ActionButton {
@@ -936,11 +937,11 @@ PanelWindow {
                 delegate: RowLayout {
                     required property var entry
                     width: radioResults.width - (radioScroll.visible ? radioScroll.width + 4 : 0)
-                    height: 54
+                    height: Math.max(54, implicitHeight)
                     ColumnLayout {
                         Layout.fillWidth: true; spacing: 2
                         Label { text: entry.name; textFormat: Text.PlainText; elide: Text.ElideRight; Layout.fillWidth: true; color: (root.hostRadio && root.hostRadio.active) && root.hostRadio.selectedId === entry.id ? Theme.accent : Theme.text }
-                        Label { text: entry.manual ? qsTr("My station") : [entry.country, entry.language].filter(Boolean).join(" / "); textFormat: Text.PlainText; elide: Text.ElideRight; Layout.fillWidth: true; color: Theme.muted; font.pixelSize: 12 }
+                        Label { text: entry.manual ? qsTr("My station") : [entry.country, entry.language].filter(Boolean).join(" / "); textFormat: Text.PlainText; elide: Text.ElideRight; Layout.fillWidth: true; color: Theme.muted; font.pixelSize: Theme.fontSize(12) }
                         HoverHandler { id: stationHover }
                         ToolTip {
                             id: stationTip
@@ -963,7 +964,7 @@ PanelWindow {
                 ActionButton { objectName: "stopCurrentStation"; text: qsTr("Stop"); glyph: "stop"; iconOnly: true; flat: true; onClicked: root.hostRadio.stop() }
             }
             Label { Layout.fillWidth: true; visible: (root.hostRadio ? root.hostRadio.error : radio.error).length > 0; text: root.hostRadio ? root.hostRadio.error : radio.error; textFormat: Text.PlainText; color: Theme.danger; wrapMode: Text.Wrap }
-            Label { Layout.fillWidth: true; text: qsTr("Radio Browser snapshot: %1").arg(radio.catalogInfo.retrievedAt.slice(0, 10)); color: Theme.muted; font.pixelSize: 12; wrapMode: Text.Wrap }
+            Label { Layout.fillWidth: true; text: qsTr("Radio Browser snapshot: %1").arg(radio.catalogInfo.retrievedAt.slice(0, 10)); color: Theme.muted; font.pixelSize: Theme.fontSize(12); wrapMode: Text.Wrap }
             RowLayout {
                 Layout.fillWidth: true
                 ActionButton { text: qsTr("Source"); flat: true; onClicked: Qt.openUrlExternally(radio.catalogInfo.source) }
@@ -1007,8 +1008,8 @@ PanelWindow {
         palette: root.palette
         padding: 16
         header: RowLayout {
-            height: 52
-            Label { text: root.remote ? qsTr("Settings for this device") : qsTr("Settings"); font.pixelSize: 20; font.weight: Font.DemiBold; Layout.fillWidth: true; Layout.leftMargin: 16 }
+            height: Math.max(52, implicitHeight)
+            Label { text: root.remote ? qsTr("Settings for this device") : qsTr("Settings"); font.pixelSize: Theme.fontSize(20); font.weight: Font.DemiBold; Layout.fillWidth: true; Layout.leftMargin: 16 }
             ActionButton { text: qsTr("Done"); glyph: "close"; flat: true; Layout.rightMargin: 8; onClicked: settings.close() }
         }
         onOpened: { settingsScroll.contentItem.contentY = 0; if (root.settingsPage === 3) root.pickAboutSentence() }
@@ -1028,7 +1029,7 @@ PanelWindow {
                         objectName: "settingsTab_" + index
                         text: settingsTabs.labels[index]
                         width: settingsTabs.width / settingsTabs.count
-                        font.pixelSize: 12
+                        font.pixelSize: Theme.fontSize(12)
                         contentItem: Text { text: parent.text; font: parent.font; color: parent.checked ? Theme.text : Theme.muted; horizontalAlignment: Text.AlignHCenter; verticalAlignment: Text.AlignVCenter; elide: Text.ElideRight }
                         ToolTip.visible: hovered
                         ToolTip.delay: 500
@@ -1067,12 +1068,12 @@ PanelWindow {
                             Image { objectName: "aboutLogo"; source: "icons/app.png"; Layout.preferredWidth: 52; Layout.preferredHeight: 52; fillMode: Image.PreserveAspectFit; sourceSize.width: 104; sourceSize.height: 104 }
                             ColumnLayout {
                                 Layout.fillWidth: true; spacing: 2
-                                Label { text: "SquadSpeak"; font.pixelSize: 20; font.weight: Font.DemiBold }
+                                Label { text: "SquadSpeak"; font.pixelSize: Theme.fontSize(20); font.weight: Font.DemiBold }
                                 Label { objectName: "aboutVersion"; Layout.fillWidth: true; text: qsTr("Version %1").arg(Qt.application.version); color: Theme.muted; wrapMode: Text.Wrap }
                                 Label {
                                     objectName: "aboutLicense"
                                     text: "YunaBraska - <a href='https://spdx.org/licenses/GPL-3.0-only.html'>GPL-3.0</a>"
-                                    textFormat: Text.RichText; color: Theme.muted; linkColor: Theme.accent; font.pixelSize: 12
+                                    textFormat: Text.RichText; color: Theme.muted; linkColor: Theme.accent; font.pixelSize: Theme.fontSize(12)
                                     onLinkActivated: link => Qt.openUrlExternally(link)
                                 }
                             }
@@ -1182,6 +1183,18 @@ PanelWindow {
                             onActivated: { root.voice.setLanguage(currentValue); currentIndex = Qt.binding(function() { return root.voice.languages.findIndex(function(item) { return item.code === root.voice.language }) }) }
                         }
                         Label { text: qsTr("Appearance"); font.weight: Font.DemiBold }
+                        RowLayout {
+                            Layout.fillWidth: true
+                            Label { text: qsTr("Text size"); Layout.fillWidth: true; wrapMode: Text.Wrap }
+                            ChoiceBox {
+                                objectName: "textSizeChoice"
+                                Layout.preferredWidth: Math.max(112, Theme.fontSize(64))
+                                model: ["100%", "125%", "150%", "175%", "200%"]
+                                currentIndex: Math.round((session.textScale - 100) / 25)
+                                Accessible.name: qsTr("Text size")
+                                onActivated: { session.setTextScale(100 + currentIndex * 25); currentIndex = Qt.binding(() => Math.round((session.textScale - 100) / 25)) }
+                            }
+                        }
                         OptionCheck {
                             objectName: "showInDock"
                             visible: Qt.platform.os === "osx"
@@ -1241,7 +1254,7 @@ PanelWindow {
                 width: remoteSetupScroll.availableWidth; spacing: 12
                 Label {
                     text: qsTr("PTT, chat and channel controls. Uses the controlled device's microphone.")
-                    Layout.fillWidth: true; wrapMode: Text.Wrap; color: Theme.muted; font.pixelSize: 12
+                    Layout.fillWidth: true; wrapMode: Text.Wrap; color: Theme.muted; font.pixelSize: Theme.fontSize(12)
                 }
                 Label { text: qsTr("Allow remote control"); font.bold: true }
                 Label { text: qsTr("This device") + ": " + root.voice.userName; textFormat: Text.PlainText; Layout.fillWidth: true; wrapMode: Text.Wrap; color: Theme.muted }
@@ -1370,7 +1383,7 @@ PanelWindow {
                 Item {
                     Layout.fillWidth: true
                     id: channelMusic
-                    implicitWidth: 240; implicitHeight: visible ? 64 : 0
+                    implicitWidth: 240; implicitHeight: visible ? musicControls.implicitHeight + 24 : 0
                     readonly property string musicId: {
                         const entry = root.channelList.find(function(h) { return h.id === root.selectedHost })
                         return entry && entry.musicId ? entry.musicId : ""
@@ -1379,6 +1392,7 @@ PanelWindow {
                     visible: !root.remote && musicId.length > 0
                     Connections { target: audio; function onProfileChanged() { ++channelMusic.revision } }
                     RowLayout {
+                        id: musicControls
                         anchors.fill: parent; anchors.margins: 12
                         enabled: audio.outputAvailable
                         SettingSlider {
@@ -1451,15 +1465,15 @@ PanelWindow {
                 ActionButton { Layout.fillWidth: true; flat: true; horizontalAlignment: Text.AlignLeft; objectName: "leaveMenuItem"; destructive: true; text: qsTr("Leave"); enabled: root.activeHost === root.selectedHost; onClicked: root.leaveHost() }
                 Rectangle { Layout.fillWidth: true; implicitHeight: 1; color: Theme.border; visible: !root.remote && root.selectedHost !== root.network.ownId; height: visible ? implicitHeight : 0 }
                 ActionButton { Layout.fillWidth: true; flat: true; horizontalAlignment: Text.AlignLeft; objectName: "removeChannelMenuItem"; destructive: true; text: root.channelList.some(function(c) { return c.id === root.selectedHost && c.protocol === "teamspeak" }) ? qsTr("Remove server") : qsTr("Remove channel"); visible: !root.remote && root.selectedHost !== root.network.ownId; onClicked: root.selectedOwner ? removeOwnChannel.open() : root.network.removeChannel(root.selectedHost) }
-                DetailText { objectName: "channelIdentity"; text: channelInfo.entry.id || ""; color: Theme.muted; font.pixelSize: 11; Accessible.name: qsTr("Channel ID") }
+                DetailText { objectName: "channelIdentity"; text: channelInfo.entry.id || ""; color: Theme.muted; font.pixelSize: Theme.fontSize(11); Accessible.name: qsTr("Channel ID") }
                 ActionButton { objectName: "internetHelpToggle"; text: qsTr("Internet access"); flat: true; onClicked: internetHelp.visible = !internetHelp.visible }
                 ColumnLayout {
                     id: internetHelp
                     objectName: "internetHelp"
                     visible: false; Layout.fillWidth: true; spacing: 8
-                    DetailText { text: qsTr("Share a DNS name such as my-channel.duckdns.org:%1. Your router or DDNS provider keeps its IP address updated; SquadSpeak resolves the name again when reconnecting.").arg(channelInfo.entry.port || 48763); color: Theme.muted; font.pixelSize: 12 }
-                    DetailText { objectName: "internetPortHelp"; text: qsTr("On the host's router, forward %2 port %1 to the host and allow it through the firewall. Set a channel password.").arg(channelInfo.entry.port || 48763).arg("TCP/UDP"); color: Theme.muted; font.pixelSize: 12 }
-                    DetailText { text: qsTr("DDNS cannot bypass CGNAT. If your provider shares the public IP, use a private VPN on all participating devices or a publicly reachable server."); color: Theme.muted; font.pixelSize: 12 }
+                    DetailText { text: qsTr("Share a DNS name such as my-channel.duckdns.org:%1. Your router or DDNS provider keeps its IP address updated; SquadSpeak resolves the name again when reconnecting.").arg(channelInfo.entry.port || 48763); color: Theme.muted; font.pixelSize: Theme.fontSize(12) }
+                    DetailText { objectName: "internetPortHelp"; text: qsTr("On the host's router, forward %2 port %1 to the host and allow it through the firewall. Set a channel password.").arg(channelInfo.entry.port || 48763).arg("TCP/UDP"); color: Theme.muted; font.pixelSize: Theme.fontSize(12) }
+                    DetailText { text: qsTr("DDNS cannot bypass CGNAT. If your provider shares the public IP, use a private VPN on all participating devices or a publicly reachable server."); color: Theme.muted; font.pixelSize: Theme.fontSize(12) }
                     RowLayout {
                         ActionButton { objectName: "ddnsHelp"; text: "DuckDNS"; flat: true; onClicked: Qt.openUrlExternally("https://www.duckdns.org/why.jsp") }
                         ActionButton { objectName: "vpnHelp"; text: "Tailscale"; flat: true; onClicked: Qt.openUrlExternally("https://tailscale.com/kb/1017/install") }
@@ -1491,7 +1505,7 @@ PanelWindow {
                             id: hostPort; objectName: "hostPort"; from: 1; to: 65535; editable: true; value: root.managedHost.configuredPort; textFromValue: function(value) { return value.toString() }; valueFromText: function(text) { return /^\d+$/.test(text) ? Number(text) : value }; Accessible.name: qsTr("Host port") }
                         ActionButton { objectName: "saveHostPort"; text: qsTr("Apply port"); glyph: "check"; iconOnly: true; enabled: hostPort.value !== root.managedHost.configuredPort; onClicked: root.managedHost.setConfiguredPort(hostPort.value) }
                     }
-                    Label { text: qsTr("Port changes apply after restart."); color: Theme.muted; font.pixelSize: 12 }
+                    Label { text: qsTr("Port changes apply after restart."); color: Theme.muted; font.pixelSize: Theme.fontSize(12) }
                     RowLayout {
                         Layout.fillWidth: true
                         Label { objectName: "messageLifetimeLabel"; text: qsTr("Keep new messages"); Layout.fillWidth: true; Layout.minimumWidth: 0; wrapMode: Text.WordWrap }
@@ -1589,7 +1603,7 @@ PanelWindow {
                     ColumnLayout {
                         Layout.fillWidth: true; spacing: 2
                         DetailText { objectName: "requestName"; text: requestInfo.entry.name || ""; font.weight: Font.DemiBold }
-                        DetailText { objectName: "requestClient"; visible: !!requestInfo.entry.id && !requestInfo.entry.music; text: requestInfo.entry.teamSpeak ? "TeamSpeak" : "SquadSpeak"; color: Theme.muted; font.pixelSize: 12 }
+                        DetailText { objectName: "requestClient"; visible: !!requestInfo.entry.id && !requestInfo.entry.music; text: requestInfo.entry.teamSpeak ? "TeamSpeak" : "SquadSpeak"; color: Theme.muted; font.pixelSize: Theme.fontSize(12) }
                     }
                     ActionButton {
                         objectName: "messageInspectedMember"
@@ -1609,7 +1623,7 @@ PanelWindow {
                     readonly property int bitrate: root.current.receiveAudioBitrate || 0
                     visible: !root.inspectedRequestId && requestInfo.entry.id === root.current.ownId && bitrate > 0
                     text: (bitrate >= 32 ? qsTr("High") : bitrate === 20 ? qsTr("Balanced") : bitrate === 12 ? qsTr("Low") : qsTr("Minimum")) + " (" + bitrate + " kb/s)"
-                    glyph: "signal"; flat: true; font.pixelSize: 12
+                    glyph: "signal"; flat: true; font.pixelSize: Theme.fontSize(12)
                     Layout.fillWidth: true
                     ToolTip.visible: hovered || activeFocus
                     ToolTip.text: qsTr("Audio received")
@@ -1634,7 +1648,7 @@ PanelWindow {
                 Label { text: qsTr("Address"); visible: !!requestInfo.entry.address; color: Theme.muted }
                 DetailText { objectName: "requestAddress"; visible: text.length > 0; text: root.endpoint(requestInfo.entry) }
                 Label { text: qsTr("Identity ID"); color: Theme.muted }
-                DetailText { objectName: "requestIdentity"; text: requestInfo.entry.id || ""; font.pixelSize: 11 }
+                DetailText { objectName: "requestIdentity"; text: requestInfo.entry.id || ""; font.pixelSize: Theme.fontSize(11) }
             }
         }
     }
@@ -1759,7 +1773,7 @@ PanelWindow {
                 width: parent.width
                 text: { root.language.revision; const info = root.language.member(root.selectedMember.id); return [info.status, info.transcript].filter(Boolean).join("\n\n") }
                 textFormat: TextEdit.PlainText; readOnly: true; selectByMouse: true; wrapMode: TextEdit.Wrap
-                color: Theme.text; font.pixelSize: 12
+                color: Theme.text; font.pixelSize: Theme.fontSize(12)
             }
         }
     }
@@ -1805,7 +1819,7 @@ PanelWindow {
                     Layout.fillWidth: true; spacing: 1
                     Label {
                         objectName: "remoteContextTitle"
-                        text: qsTr("Remote control"); color: Theme.accent; font.pixelSize: 11
+                        text: qsTr("Remote control"); color: Theme.accent; font.pixelSize: Theme.fontSize(11)
                     }
                     Label {
                         objectName: "remoteTargetName"
@@ -1871,7 +1885,7 @@ PanelWindow {
                                 ProviderIcon { objectName: "hostProvider_" + channelEntry.groupId; provider: channelEntry.groupProtocol }
                                 DetailText {
                                     objectName: "hostGroup_" + channelEntry.groupId
-                                    text: channelEntry.groupLabel; font.pixelSize: 14; font.weight: Font.DemiBold
+                                    text: channelEntry.groupLabel; font.pixelSize: Theme.fontSize(14); font.weight: Font.DemiBold
                                     horizontalAlignment: Text.AlignLeft
                                     selectByMouse: true; wrapMode: TextEdit.WrapAnywhere
                                 }
@@ -1888,7 +1902,7 @@ PanelWindow {
                                 readonly property bool owned: !privateFolder && !privateConversation && (!!modelData.owned || modelData.id === (root.current.ownId || root.network.ownId))
                                 readonly property bool selected: visible && root.inspectedHost === modelData.id && root.chatExpanded
                                 readonly property var members: modelData.members || []
-                                Layout.fillWidth: true; implicitHeight: 46
+                                Layout.fillWidth: true; implicitHeight: Math.max(46, Theme.fontSize(30) + 16)
                                 radius: Theme.controlRadius; color: selected ? Theme.raised : channelHover.containsMouse ? Theme.surface : "transparent"
                                 border.width: activeFocus ? 1 : 0; border.color: Theme.accent
                                 MouseArea {
@@ -1919,18 +1933,18 @@ PanelWindow {
                                     Glyph { visible: channelEntry.grouped; symbol: channelRow.privateFolder ? "down" : channelRow.privateConversation ? "chat" : "channel"; rotation: channelRow.privateFolder && !root.privateFolderIsExpanded(modelData.hostId) ? -90 : 0; color: Theme.muted }
                                     ColumnLayout {
                                         Layout.fillWidth: true; Layout.minimumWidth: 0; spacing: 0
-                                        Label { objectName: "channelName_" + modelData.id; text: root.channelLabel(modelData); textFormat: Text.PlainText; font.pixelSize: 14; font.weight: channelEntry.grouped ? Font.Normal : Font.DemiBold; horizontalAlignment: Text.AlignLeft; Layout.fillWidth: true; elide: Text.ElideRight }
-                                        Label { objectName: "channelOwner_" + modelData.id; visible: channelEntry.ambiguous; text: channelEntry.groupOwner; textFormat: Text.PlainText; color: Theme.muted; font.pixelSize: 11; Layout.fillWidth: true; elide: Text.ElideRight }
+                                        Label { objectName: "channelName_" + modelData.id; text: root.channelLabel(modelData); textFormat: Text.PlainText; font.pixelSize: Theme.fontSize(14); font.weight: channelEntry.grouped ? Font.Normal : Font.DemiBold; horizontalAlignment: Text.AlignLeft; Layout.fillWidth: true; elide: Text.ElideRight }
+                                        Label { objectName: "channelOwner_" + modelData.id; visible: channelEntry.ambiguous; text: channelEntry.groupOwner; textFormat: Text.PlainText; color: Theme.muted; font.pixelSize: Theme.fontSize(11); Layout.fillWidth: true; elide: Text.ElideRight }
                                     }
                                     Glyph { objectName: "ownedChannel_" + modelData.id; visible: channelRow.owned; symbol: "home"; description: qsTr("You host"); color: Theme.accent }
                                     UnreadDot { objectName: "unreadChannel_" + modelData.id; visible: !!modelData.unread || (!channelEntry.grouped && channelEntry.groupUnread) }
-                                    Label { visible: channelRow.privateConversation; text: modelData.peerOnline ? qsTr("Online") : qsTr("Offline"); color: Theme.muted; font.pixelSize: 11 }
+                                    Label { visible: channelRow.privateConversation; text: modelData.peerOnline ? qsTr("Online") : qsTr("Offline"); color: Theme.muted; font.pixelSize: Theme.fontSize(11) }
                                     Glyph { objectName: "joinedChannel_" + modelData.id; visible: channelRow.active; symbol: "headphones"; description: qsTr("Connected to voice"); color: Theme.accent }
                                     Glyph { objectName: "channelMusic_" + modelData.id; visible: !channelRow.privateConversation && !!modelData.music; symbol: "music"; description: qsTr("Radio"); color: Theme.accent }
                                     Label {
                                         visible: !channelRow.privateConversation && !channelRow.privateFolder && !modelData.online
                                         text: root.accessLabel(modelData.access)
-                                        font.pixelSize: 11; color: Theme.muted
+                                        font.pixelSize: Theme.fontSize(11); color: Theme.muted
                                         Layout.maximumWidth: 75; elide: Text.ElideRight
                                     }
                                     MemberSummary {
@@ -1981,12 +1995,12 @@ PanelWindow {
                                 objectName: "conversationTitle"
                                 Layout.fillWidth: true; Layout.minimumWidth: 0
                                 text: root.channelLabel(root.inspectedChannel); textFormat: Text.PlainText
-                                font.weight: Font.DemiBold; font.pixelSize: 14; elide: Text.ElideRight
+                                font.weight: Font.DemiBold; font.pixelSize: Theme.fontSize(14); elide: Text.ElideRight
                                 ToolTip.text: text + "\n" + (root.inspectedChannel.ownerName || root.endpoint(root.inspectedChannel))
                                 ToolTip.visible: titleHover.hovered
                                 HoverHandler { id: titleHover }
                             }
-                            Label { objectName: "chatOnlyHint"; text: qsTr("Chat only"); visible: !!root.current.joined; font.pixelSize: 11; color: Theme.warning }
+                            Label { objectName: "chatOnlyHint"; text: qsTr("Chat only"); visible: !!root.current.joined; font.pixelSize: Theme.fontSize(11); color: Theme.warning }
                         }
                         Glyph { objectName: "conversationOwned"; symbol: "home"; visible: !root.inspectedChannel.private && (!!root.inspectedChannel.owned || root.inspectedHost === (root.current.ownId || root.network.ownId)); description: qsTr("You host"); color: Theme.accent }
                         Glyph { symbol: "music"; visible: !!root.inspectedChannel.music; description: qsTr("Radio"); color: Theme.accent }
@@ -2012,7 +2026,7 @@ PanelWindow {
                     Label {
                         visible: !!root.current.chatReady && root.current.chatLifetimeDays > 0
                         text: root.current.chatLifetimeDays === 1 ? qsTr("24 h") : qsTr("%1 d").arg(root.current.chatLifetimeDays || 1)
-                        color: Theme.muted; font.pixelSize: 11
+                        color: Theme.muted; font.pixelSize: Theme.fontSize(11)
                         ToolTip.text: qsTr("New message lifetime")
                         ToolTip.visible: expiryHover.hovered
                         HoverHandler { id: expiryHover }
@@ -2062,9 +2076,9 @@ PanelWindow {
                 objectName: "pendingRequest"
                 visible: !root.mobileKeyboard && !root.remote && !!root.incomingRequest.id
                 Layout.fillWidth: true; spacing: 6
-                Label { text: root.network.ownedChannels.length > 1 ? qsTr("%1 wants to join %2").arg(root.incomingRequest.name || "").arg(root.incomingRequest.hostName || "") : qsTr("%1 wants to join").arg(root.incomingRequest.name || ""); textFormat: Text.PlainText; Layout.fillWidth: true; wrapMode: Text.Wrap; maximumLineCount: 2; elide: Text.ElideRight; font.pixelSize: 12 }
-                ActionButton { objectName: "inspectRequest"; text: qsTr("Inspect"); font.pixelSize: 12; onClicked: { root.inspectedRequestId = root.incomingRequest.id; root.inspectedRequestHost = root.incomingRequest.hostId; requestInfo.open() } }
-                ActionButton { objectName: "approveRequest"; text: qsTr("Approve"); primary: true; font.pixelSize: 12; property var pressedRequest: ({}); onPressed: pressedRequest = root.incomingRequest; onCanceled: pressedRequest = ({}); onClicked: { const request = pressedRequest.id ? pressedRequest : root.incomingRequest; if (root.network.requests.some(function(r) { return r.id === request.id && r.hostId === request.hostId })) root.decideRequest(request.id, request.hostId, true); pressedRequest = ({}) } }
+                Label { text: root.network.ownedChannels.length > 1 ? qsTr("%1 wants to join %2").arg(root.incomingRequest.name || "").arg(root.incomingRequest.hostName || "") : qsTr("%1 wants to join").arg(root.incomingRequest.name || ""); textFormat: Text.PlainText; Layout.fillWidth: true; wrapMode: Text.Wrap; maximumLineCount: 2; elide: Text.ElideRight; font.pixelSize: Theme.fontSize(12) }
+                ActionButton { objectName: "inspectRequest"; text: qsTr("Inspect"); font.pixelSize: Theme.fontSize(12); onClicked: { root.inspectedRequestId = root.incomingRequest.id; root.inspectedRequestHost = root.incomingRequest.hostId; requestInfo.open() } }
+                ActionButton { objectName: "approveRequest"; text: qsTr("Approve"); primary: true; font.pixelSize: Theme.fontSize(12); property var pressedRequest: ({}); onPressed: pressedRequest = root.incomingRequest; onCanceled: pressedRequest = ({}); onClicked: { const request = pressedRequest.id ? pressedRequest : root.incomingRequest; if (root.network.requests.some(function(r) { return r.id === request.id && r.hostId === request.hostId })) root.decideRequest(request.id, request.hostId, true); pressedRequest = ({}) } }
             }
             RowLayout {
                 Layout.fillWidth: true; spacing: 4
@@ -2133,7 +2147,7 @@ PanelWindow {
                     objectName: "channelStatus"
                     Layout.fillWidth: true
                     text: (!root.network.ready ? root.network.status : "") || root.voice.error || root.notice || (root.remote && !root.network.controlConnected ? root.network.controlStatus : "")
-                    textFormat: Text.PlainText; font.pixelSize: 11; color: root.voice.error ? Theme.danger : Theme.muted
+                    textFormat: Text.PlainText; font.pixelSize: Theme.fontSize(11); color: root.voice.error ? Theme.danger : Theme.muted
                     maximumLineCount: 2; wrapMode: Text.Wrap; elide: Text.ElideRight
                     TextToolTip { parent: statusMessage; text: statusMessage.text; visible: statusHover.hovered }
                     HoverHandler { id: statusHover }

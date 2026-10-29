@@ -125,7 +125,7 @@ bool LocalChannel::setRemotePermission(const QString& id, bool allow) {
         if (peer.id != id || !peer.joined) continue;
         if (peer.controller) {
             const bool supported = !peer.capabilitiesAdvertised || peer.capabilities.contains("remote-control");
-            writeMessage(socket, {{"type", "control"}, {"result", "accepted"}, {"remoteAllowed", supported},
+            writeMessage(socket, {{"type", "control"}, {"result", "accepted"}, {"name", session_.userName()}, {"remoteAllowed", supported},
                 {"capabilities", capabilityAdvertisement()}});
             sendRemoteView(socket);
         } else if (peer.remoteOffers) writeMessage(socket, {{"type", "remoteOffer"}, {"allowed", true}, {"available", !hostOnly_ && !remoteMode()}});
@@ -607,10 +607,15 @@ void LocalChannel::controlMessage(const QJsonObject& message) {
     const auto result = message.value("result").toString();
     if (result == "accepted") {
         QSet<QString> capabilities;
-        if (!parseCapabilities(message, &capabilities)) { blockControl(tr("Invalid response from the control target.")); return; }
+        if (!parseCapabilities(message, &capabilities)
+            || (message.contains("name") && !displayName(message.value("name")))) {
+            blockControl(tr("Invalid response from the control target.")); return;
+        }
         unavailableControlTargets_.remove(control_.value("target").toObject().value("id").toString());
         auto next = control_;
-        auto target = next.value("target").toObject(); target.insert("pairing", false); next.insert("target", target);
+        auto target = next.value("target").toObject(); target.insert("pairing", false);
+        if (message.contains("name")) target.insert("name", message.value("name"));
+        next.insert("target", target);
         if (!persistControl(next)) { controlStopped_ = true; controlTimer_.stop(); closeControl(); setControlStatus(tr("Pairing could not be saved."), false); return; }
         controlConnected_ = true; controlPending_ = false;
         remoteAllowed_ = message.value("remoteAllowed").toBool()

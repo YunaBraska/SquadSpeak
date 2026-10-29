@@ -121,7 +121,7 @@ struct MediaTransport::State::Sender final {
     std::map<rtc::Channel*, std::deque<Packet>> queues;
     decltype(queues)::iterator turn = queues.end();
     size_t queued = 0;
-    size_t processedCount = 0, expiredCount = 0, shedCount = 0, failureCount = 0, maximumQueued = 0;
+    size_t processedCount = 0, expiredCount = 0, shedCount = 0, failureCount = 0, maximumQueued = 0, detailedCount = 0;
     Clock::time_point reportAt = Clock::now(), overloadedUntil{};
     long long sendMicros = 0, maximumSendMicros = 0;
     std::map<std::pair<quintptr, quint32>, int> counts;
@@ -191,14 +191,15 @@ struct MediaTransport::State::Sender final {
             auto current = ready();
             turn = std::next(current);
             auto& queue = current->second;
-            if (queue.front().expires <= Clock::now()) samplePressure();
+            const auto dequeuedAt = Clock::now();
+            if (queue.front().expires <= dequeuedAt) samplePressure();
             uncount(queue.front());
             auto packet = std::move(queue.front()); queue.pop_front(); --queued;
             removeEmpty(current);
             active[worker] = packet.channel.get();
             if (worker == 0) {
                 primaryStarted = Clock::now();
-                if (backupWaiting) backupChanged.notify_one();
+                if (backupWaiting && ready() != queues.end()) backupChanged.notify_one();
             }
             lock.unlock();
             const auto sendStarted = Clock::now();
@@ -211,6 +212,7 @@ struct MediaTransport::State::Sender final {
                 } catch (const std::exception& error) { qCDebug(mediaTransportLog) << error.what(); fatal = true; }
                 if (!sent) { failure = true; packet.failed(fatal); }
             }
+            const auto sendReturned = Clock::now();
             lock.lock();
             active[worker] = nullptr;
             if (mediaSenderLog().isDebugEnabled()) {
@@ -220,16 +222,23 @@ struct MediaTransport::State::Sender final {
                 const auto now = Clock::now();
                 const auto micros = std::chrono::duration_cast<std::chrono::microseconds>(now - sendStarted).count();
                 sendMicros += micros; maximumSendMicros = std::max<long long>(maximumSendMicros, micros);
+                if ((expired || micros >= 50000) && detailedCount < 8) {
+                    ++detailedCount;
+                    const auto us = [](auto duration) { return std::chrono::duration_cast<std::chrono::microseconds>(duration).count(); };
+                    qCDebug(mediaSenderLog) << "RTP delayed worker/channel/source/sequence" << worker << quintptr(packet.channel.get())
+                            << packet.ssrc << (packet.ssrc ? int(qFromBigEndian<quint16>(packet.bytes.constData() + 2)) : -1) << "expired" << expired
+                            << "queue/dispatch/send+fallback/relock us" << us(dequeuedAt - (packet.expires - std::chrono::milliseconds(120)))
+                            << us(sendStarted - dequeuedAt) << us(sendReturned - sendStarted) << us(now - sendReturned);
+                }
                 if (now - reportAt >= std::chrono::seconds(1)) {
                     qCDebug(mediaSenderLog) << "RTP dequeued" << processedCount << "expired" << expiredCount << "shed" << shedCount
                             << "failed" << failureCount << "queue max" << maximumQueued << "send us mean/max"
                             << sendMicros / std::max<size_t>(1, processedCount) << maximumSendMicros;
-                    processedCount = expiredCount = shedCount = failureCount = maximumQueued = 0;
+                    processedCount = expiredCount = shedCount = failureCount = maximumQueued = detailedCount = 0;
                     sendMicros = maximumSendMicros = 0; reportAt = now;
                 }
             }
             changed.notify_all();
-            if (backupWaiting) backupChanged.notify_one();
         }
     }
 
@@ -266,7 +275,7 @@ struct MediaTransport::State::Sender final {
         if (!ssrc) changed.wait(lock, [&] { return !busy(channel.get()); });
     }
     bool enqueue(const std::shared_ptr<rtc::Channel>& channel, QByteArray bytes, std::function<void(bool)> failed) {
-        const auto ssrc = quint8(bytes[1]) == 111 ? qFromBigEndian<quint32>(bytes.constData() + 8) : 0;
+        const auto ssrc = quint8(bytes.constData()[1]) == 111 ? qFromBigEndian<quint32>(bytes.constData() + 8) : 0;
         std::lock_guard lock(mutex);
         if (stopping) return false;
         const auto key = std::pair{quintptr(channel.get()), ssrc};
@@ -294,8 +303,9 @@ struct MediaTransport::State::Sender final {
         ++counts[key]; ++queued; maximumQueued = std::max(maximumQueued, queued);
         current->second.push_back({channel, std::move(bytes), ssrc, Clock::now() + std::chrono::milliseconds(120), std::move(failed)});
         if (added) {
-            changed.notify_all();
-            if (backupWaiting) backupChanged.notify_one();
+            // An in-flight primary rechecks the queue under this mutex.
+            if (!active[0]) changed.notify_all();
+            if (backupWaiting && active[0]) backupChanged.notify_one();
         }
         return true;
     }

@@ -19,11 +19,8 @@ still need real hardware. See [feature status and known limitations](docs/roadma
 - **Windows:** Native x86_64 archive for Windows 10 version 1903 or newer, with runtime libraries included. Screen audio requires Windows 11 or Server 2022; Windows 10 retains screen video. CI currently runs on Server 2022; Windows 10 runtime verification and publisher signing are pending.
 - **Android, iPhone and iPad:** Follow the desktop release; mobile packages are not ready yet.
 
-On macOS with Homebrew:
-
-```sh
-brew install --cask yunabraska/tap/squadspeak
-```
+Homebrew installation is pending publication in the tap. Use the release
+archives for now. Snapshots are previews and do not replace stable installations.
 
 <details>
 <summary>Install the Windows archive</summary>
@@ -70,11 +67,13 @@ without one, use the protected identity-file option documented below.
 1. Open SquadSpeak on both computers.
 2. Press **+**, choose a discovered channel and select **Add**. If discovery does not find it, enter its DNS name or IP address, optionally followed by a port. The default port is `48763`. For Internet hosting, forward both TCP and UDP on that port; voice and screen sharing fall back to TCP when UDP is unavailable.
 3. The desktop host approves your device. Enter the channel password if one is set.
-4. Double-click the channel to join voice. Expand its row to read and send messages.
+4. Double-click the channel to join voice. Select it to read and send messages.
 
-You can stay connected to several chats while speaking in one channel. The channel's **...** menu contains its settings and actions. Your own channel remains available while the app runs.
+You can read several chats while speaking in one channel. The footer shows your
+voice channel. Click it to open its information and controls. Other channels
+keep their **...** menu. Your own channel remains available while the app runs.
 
-Approvals belong to the device's saved cryptographic identity. Changing Wi-Fi or IP address does not create a new device. Keep the app's identity when moving or backing up a profile; deleting it requires a new approval.
+Approvals belong to the saved cryptographic identity. Changing Wi-Fi or IP address does not create a new identity. Keep the app's identity when moving or backing up a profile; deleting it requires a new approval.
 
 ## Connect to TeamSpeak 3
 

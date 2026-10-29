@@ -5,6 +5,7 @@
 #include "chat_history.hpp"
 #include "media_transport.hpp"
 #include <QDateTime>
+#include <QDirListing>
 #include <QElapsedTimer>
 #include <QCache>
 #include <QBitArray>
@@ -410,7 +411,7 @@ private:
     static bool validPrivateState(const QJsonObject& security);
     void hostPrivate(QSslSocket* socket, const QJsonObject& payload);
     bool clientPrivate(Client& transport, const QJsonObject& message);
-    QJsonObject privateContact(const QString& viewer, const QString& other) const;
+    QJsonObject privateContact(const QString& viewer, const QString& other);
     void publishPrivate(const QString& conversation, const QJsonObject& payload = {});
     void publishPrivateContacts(const QString& peer = {});
     void publishPrivateReceipt(const QString& conversation, const QJsonObject& record, qint64 now);
@@ -419,6 +420,8 @@ private:
     QJsonObject openPrivateRecord(Client& client, QJsonObject record);
     bool applyChat(Client& client, QJsonObject payload, bool keyMessage = false);
     QCache<QString, ChatHistory> privateHistories_{8};
+    std::optional<QDirListing> privateCleanup_;
+    QDirListing::const_iterator privateCleanupEntry_;
     bool sendChatCommand(Client& client, const QJsonObject& payload);
     bool sendChatCommand(const QJsonObject& payload);
     bool submitPassword(Client& client, const QString& password, bool remember);

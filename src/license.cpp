@@ -241,6 +241,8 @@ void License::read(Action action, const QByteArray& sealed) {
 void License::request(const QUrl& url, const QJsonObject& payload, bool authenticated,
                       std::function<void(QJsonObject, int)> completion) {
     QNetworkRequest request(url);
+    // Avoid Qt's HTTP/2 CVE-2026-95620 and CVE-2026-96432 on distro runtimes.
+    request.setAttribute(QNetworkRequest::Http2AllowedAttribute, false);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     request.setRawHeader("Accept", "application/json");
     request.setRawHeader("User-Agent", "YunaSupporter");

@@ -422,6 +422,10 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Text size</source>
+            <translation>Metin boyutu</translation>
+        </message>
+        <message>
             <source>Audio received</source>
             <translation>Alınan ses</translation>
         </message>

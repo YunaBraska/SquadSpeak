@@ -1,0 +1,198 @@
+Qt Network security fixes for the exact Linux Qt 6.10.2 ABI.
+
+Upstream Qt advisories and patches:
+https://www.qt.io/blog/security-advisory-cve-2026-105946
+https://download.qt.io/official_releases/qt/6.11/CVE-2026-105946-qtbase-6.11-0001.diff
+https://download.qt.io/official_releases/qt/6.11/CVE-2026-105946-qtbase-6.11-0002.diff
+https://download.qt.io/official_releases/qt/6.11/CVE-2026-105946-qtbase-6.11-0003.diff
+https://www.qt.io/blog/security-advisory-cve-2026-95620
+https://download.qt.io/official_releases/qt/6.11/CVE-2026-95620-qtbase-6.11.diff
+https://www.qt.io/blog/security-advisory-cve-2026-96432
+https://download.qt.io/official_releases/qt/6.11/CVE-2026-96432-qtbase-6.11.diff
+
+The NTLM production hunks apply unchanged. HTTP/2 hunks retain the 6.10.2
+string literals. No public API or class layout changes. Upstream tests are
+not copied into the dependency build, which has tests disabled.
+
+--- a/src/network/kernel/qauthenticator.cpp
++++ b/src/network/kernel/qauthenticator.cpp
+@@ -671,6 +671,8 @@
+         const char *start = d;
+         while (d < end && *d != '=')
+             ++d;
++        if (d >= end)
++            break;
+         QByteArrayView key = QByteArrayView(start, d - start);
+         ++d;
+         if (d >= end)
+@@ -701,7 +703,8 @@
+         }
+         while (d < end && *d != ',')
+             ++d;
+-        ++d;
++        if (d < end)
++            ++d;
+         options[key.toByteArray()] = std::move(value);
+     }
+
+@@ -987,6 +990,8 @@
+ const int blockSize = 64; //As per RFC2104 Block-size is 512 bits
+ const quint8 respversion = 1;
+ const quint8 hirespversion = 1;
++// FILETIME: two 32-bit values = 8 bytes (MS-DTYP section 2.3.3)
++static constexpr quint16 NtlmFileTimeSize = 8;
+
+ /* usage:
+    // fill up ctx with what we know.
+@@ -1313,24 +1318,29 @@
+ static QByteArray qExtractServerTime(const QByteArray& targetInfoBuff)
+ {
+     QByteArray timeArray;
+-    QDataStream ds(targetInfoBuff);
+-    ds.setByteOrder(QDataStream::LittleEndian);
+-
++    const char *ptr = targetInfoBuff.constBegin();
++    const char *end = targetInfoBuff.constEnd();
+     quint16 avId;
+     quint16 avLen;
+
+-    ds >> avId;
+-    ds >> avLen;
+-    while(avId != 0) {
++    while (end - ptr >= 4) {
++        avId = qFromLittleEndian<quint16>(ptr + 0);
++        avLen = qFromLittleEndian<quint16>(ptr + 2);
++        ptr += 4;
++
+         if (avId == AVTIMESTAMP) {
+-            timeArray.resize(avLen);
+-            //avLen size of QByteArray is allocated
+-            ds.readRawData(timeArray.data(), avLen);
++            if (avLen != NtlmFileTimeSize)
++                break;
++            if (end - ptr < NtlmFileTimeSize)
++                break;
++
++            timeArray.assign(ptr, ptr + NtlmFileTimeSize);
+             break;
+         }
+-        ds.skipRawData(avLen);
+-        ds >> avId;
+-        ds >> avLen;
++
++        if (avLen > end - ptr)
++            break;
++        ptr += avLen;
+     }
+     return timeArray;
+ }
+@@ -1446,14 +1456,20 @@
+     ds >> ch.targetInfo;
+
+     if (ch.targetName.len > 0) {
+-        if (qsizetype(ch.targetName.len + ch.targetName.offset) > data.size())
++        qsizetype total;
++        if (qAddOverflow(qsizetype(ch.targetName.offset), qsizetype(ch.targetName.len), &total))
+             return false;
++        if (total > data.size())
++            return false;
+
+         ch.targetNameStr = qStringFromUcs2Le(data.mid(ch.targetName.offset, ch.targetName.len));
+     }
+
+     if (ch.targetInfo.len > 0) {
+-        if (ch.targetInfo.len + ch.targetInfo.offset > (unsigned)data.size())
++        qsizetype total;
++        if (qAddOverflow(qsizetype(ch.targetInfo.offset), qsizetype(ch.targetInfo.len), &total))
++            return false;
++        if (total > data.size())
+             return false;
+
+         ch.targetInfoBuff = data.mid(ch.targetInfo.offset, ch.targetInfo.len);
+--- a/src/network/access/qhttp2connection.cpp
++++ b/src/network/access/qhttp2connection.cpp
+@@ -637,6 +637,8 @@
+         emit uploadDeviceError("Upload device destroyed while uploading"_L1);
+     }
+     m_uploadDevice = nullptr;
++    m_owningByteDevice = false;
++    m_uploadByteDevice = nullptr;
+ }
+
+ void QHttp2Stream::setState(State newState)
+@@ -1744,7 +1746,7 @@
+     Q_ASSERT(inboundFrame.payloadSize() == 4);
+
+     const auto error = qFromBigEndian<quint32>(inboundFrame.dataBegin());
+-    if (QPointer<QHttp2Stream> stream = m_streams[streamID])
++    if (QPointer<QHttp2Stream> stream = m_streams.value(streamID))
+         emit stream->rstFrameReceived(error);
+
+     // Verify that whatever stream is being RST'd is not in the idle state:
+@@ -1761,7 +1763,7 @@
+
+     Q_ASSERT(inboundFrame.dataSize() == 4);
+
+-    if (QPointer<QHttp2Stream> stream = m_streams[streamID])
++    if (QPointer<QHttp2Stream> stream = m_streams.value(streamID))
+         stream->handleRST_STREAM(inboundFrame);
+ }
+
+@@ -1849,7 +1851,7 @@
+     // I.e. If you are the server then the client must have initiated the stream you are sending
+     // the promise on. And since this is about _sending_ we have to invert "Remote" to "Local"
+     // because we are receiving.
+-    if (it == m_streams.constEnd())
++    if (it == m_streams.constEnd() || it->isNull())
+         return connectionError(ENHANCE_YOUR_CALM, "PUSH_PROMISE with invalid associated stream");
+     if ((m_connectionType == Type::Client && (streamID & 1) == 0) ||
+         (m_connectionType == Type::Server && (streamID & 1) == 1)) {
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -11,6 +11,36 @@
+
+ # Get the repo version and CMake policy details
+ include(.cmake.conf)
++
++# Rebuild Network with the installed Core ABI and configuration, without
++# configuring or producing a replacement Core library.
++if(SQUADSPEAK_NETWORK_ONLY)
++    project(QtNetwork VERSION "${QT_REPO_MODULE_VERSION}" LANGUAGES CXX C)
++    find_package(Qt6 ${PROJECT_VERSION} EXACT CONFIG REQUIRED COMPONENTS BuildInternals)
++    qt_internal_project_setup()
++    find_package(Qt6 ${PROJECT_VERSION} EXACT CONFIG REQUIRED COMPONENTS Core CorePrivate)
++    qt_build_repo_begin()
++    if(QT_FEATURE_system_zlib)
++        find_package(WrapZLIB REQUIRED)
++    endif()
++    if(QT_FEATURE_zstd)
++        find_package(WrapZSTD REQUIRED)
++    endif()
++    if(QT_FEATURE_openssl)
++        find_package(WrapOpenSSLHeaders REQUIRED)
++    endif()
++    if(QT_FEATURE_openssl_linked)
++        find_package(WrapOpenSSL REQUIRED)
++    endif()
++    qt_feature_evaluate_features("${CMAKE_CURRENT_SOURCE_DIR}/src/network/configure.cmake")
++    # Instrumented modules resolve Clang sanitizers from the executable.
++    if(CMAKE_CXX_COMPILER_ID MATCHES "Clang" AND CMAKE_CXX_FLAGS MATCHES "-fsanitize=[^ ]*address")
++        set(QT_FEATURE_sanitizer ON)
++    endif()
++    add_subdirectory(src/network)
++    qt_build_repo_end()
++    return()
++endif()
+
+ include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/QtBaseHelpers.cmake)
+
+--- a/src/network/ssl/qpassworddigestor.cpp
++++ b/src/network/ssl/qpassworddigestor.cpp
+@@ -9,6 +9,6 @@
+ #include <QtCore/QtEndian>
+ #include <QtCore/QList>
+
+-#include "qtcore-config_p.h"
++#include <QtCore/private/qtcore-config_p.h>
+
+ #include <limits>

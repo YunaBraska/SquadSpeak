@@ -422,6 +422,10 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Text size</source>
+            <translation>文字大小</translation>
+        </message>
+        <message>
             <source>Audio received</source>
             <translation>接收的音频</translation>
         </message>

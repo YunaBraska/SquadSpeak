@@ -26,8 +26,17 @@ public:
             auto* socket = server_.nextPendingConnection(); sockets.insert(socket);
             socket->setParent(this);
             connect(socket, &QTcpSocket::disconnected, this, [this, socket] { sockets.remove(socket); socket->deleteLater(); });
-            connect(socket, &QTcpSocket::readyRead, this, [this, socket, channels] {
-                if (!socket->readAll().contains("GET")) return;
+            connect(socket, &QTcpSocket::readyRead, this, [this, socket, channels, request = QByteArray{}, started = false]() mutable {
+                if (started) { socket->readAll(); return; }
+                constexpr qsizetype maximumHeader = 8192;
+                request += socket->read(maximumHeader + 1 - request.size());
+                const auto end = request.indexOf("\r\n\r\n");
+                if (end < 0 && request.size() <= maximumHeader) return;
+                if (end < 0 || end + 4 > maximumHeader || !request.startsWith("GET ")) {
+                    socket->disconnectFromHost(); return;
+                }
+                started = true;
+                request.clear();
                 ++requests;
                 if (stalled) return;
                 if (!running) { socket->disconnectFromHost(); return; }

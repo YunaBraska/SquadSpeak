@@ -59,23 +59,19 @@ bool LocalChannel::validPrivateState(const QJsonObject& security) {
 }
 
 void LocalChannel::maintainPrivate() {
-    // Reopen at most one expired, evicted conversation per maintenance pass.
-    auto states = security_.value("privateStates").toObject();
-    for (auto it = states.begin(); it != states.end(); ++it) {
-        auto state = it.value().toObject();
-        if (state.value("expires").toInteger() <= 0 || state.value("expires").toInteger() > clock_()) continue;
-        const auto id = it.key();
-        privateHistory(id);
-        state.insert("expires", 0); states.insert(id, state);
-        auto next = security_; next.insert("privateStates", states);
-        if (!persist(approved_, attempts_, requestsAllowed_, endpointPins_, control_, next)) return;
-        publishPrivate(id);
-        break;
+    // Visit one persisted history per tick, including evicted histories and
+    // receipts committed just before a crash. Never retire unfinished cleanup.
+    if (!privateCleanup_ || privateCleanupEntry_ == privateCleanup_->end()) {
+        privateCleanup_.emplace(storageFile_ + ".private", QStringList{"*.sqlite"}, QDirListing::IteratorFlag::FilesOnly);
+        privateCleanupEntry_ = privateCleanup_->begin();
     }
-    for (const auto& id : privateHistories_.keys()) {
-        auto* history = privateHistories_.object(id);
-        if (history->expire(clock_())) publishPrivate(id, {{"kind", "time"}, {"now", history->time()}});
-    }
+    if (privateCleanupEntry_ == privateCleanup_->end()) return;
+    const auto entry = privateCleanupEntry_->fileInfo();
+    ++privateCleanupEntry_;
+    const auto id = entry.completeBaseName();
+    if (!validId(id) || entry.isSymLink() || !entry.exists()) return;
+    auto* history = privateHistory(id);
+    if (history->expire(clock_())) publishPrivate(id, {{"kind", "time"}, {"now", history->time()}});
 }
 
 LocalChannel::Client* LocalChannel::privateTransport(const QString& device) const {
@@ -201,8 +197,9 @@ void LocalChannel::publishPrivateContacts(const QString& peer) {
             : contacts.contains(peer) ? QStringList{peer} : QStringList{};
         QJsonArray page;
         for (qsizetype index = 0; index < changed.size(); ++index) {
-            page.append(privateContact(recipient.id, changed[index]));
-            if (page.size() < 16 && index + 1 < changed.size()) continue;
+            const auto contact = privateContact(recipient.id, changed[index]);
+            if (!contact.isEmpty()) page.append(contact);
+            if (page.isEmpty() || (page.size() < 16 && index + 1 < changed.size())) continue;
             if (!channel->writeMessage(socket, {{"type", "privateChat"}, {"payload", QJsonObject{
                     {"kind", "contacts"}, {"contacts", page}, {"now", clock_()}}}})) break;
             page = {};
@@ -210,13 +207,21 @@ void LocalChannel::publishPrivateContacts(const QString& peer) {
     }
 }
 
-QJsonObject LocalChannel::privateContact(const QString& viewer, const QString& other) const {
+QJsonObject LocalChannel::privateContact(const QString& viewer, const QString& other) {
     const auto records = security_.value("privatePeers").toObject();
     if (viewer == other || !records.value(viewer).toObject().value("contacts").toObject().contains(other)) return {};
     const auto record = records.value(other).toObject();
     const auto id = conversationId(ownId(), viewer, other);
     const auto state = security_.value("privateStates").toObject().value(id).toObject();
     const auto blocks = state.value("blocks").toObject();
+    qint64 expires = 0;
+    try {
+        if (privateHistories_.contains(id) || QFile::exists(storageFile_ + ".private/" + id + ".sqlite"))
+            expires = privateHistory(id)->expires();
+    } catch (const std::exception& error) {
+        chatError_ = QString::fromUtf8(error.what()); emit chatChanged();
+        return {};
+    }
     bool online = false;
     const auto connected = [&other](const LocalChannel& channel) {
         for (const auto& peer : channel.peers_) if (peer.id == other && peer.joined && !peer.controller) return true;
@@ -226,13 +231,13 @@ QJsonObject LocalChannel::privateContact(const QString& viewer, const QString& o
     for (const auto& child : owned_) online = online || connected(*child);
     return {{"id", id}, {"peer", other}, {"name", record.value("name")}, {"avatar", record.value("avatar")},
         {"certificate", record.value("certificate")}, {"online", online}, {"mine", blocks.value(viewer).toBool()}, {"theirs", blocks.value(other).toBool()},
-        {"expires", state.value("expires").toInteger()}, {"lifetimeDays", privateLifetimeDays()}};
+        {"expires", expires}, {"lifetimeDays", privateLifetimeDays()}};
 }
 
 ChatHistory* LocalChannel::privateHistory(const QString& id) {
     if (auto* existing = privateHistories_.object(id)) return existing;
     if (!validId(id) || !QDir().mkpath(storageFile_ + ".private")) throw std::runtime_error(QT_TRANSLATE_NOOP("LocalChannel", "Chat history could not be saved."));
-    auto* history = new ChatHistory(storageFile_ + ".private/" + id, *identity_, clock_());
+    auto* history = new ChatHistory(storageFile_ + ".private/" + id, *identity_, clock_(), 0);
     privateHistories_.insert(id, history); return history;
 }
 
@@ -248,7 +253,7 @@ void LocalChannel::publishPrivate(const QString& id, const QJsonObject& payload)
         for (auto it = contacts.begin(); it != contacts.end(); ++it) {
             if (conversationId(hostId, peer.id, it.key()) != id) continue;
             const auto contact = privateContact(peer.id, it.key());
-            channel->writeMessage(socket, {{"type", "privateChat"}, {"payload", QJsonObject{{"kind", "contacts"}, {"contacts", QJsonArray{contact}}, {"now", clock_()}}}});
+            if (!contact.isEmpty()) channel->writeMessage(socket, {{"type", "privateChat"}, {"payload", QJsonObject{{"kind", "contacts"}, {"contacts", QJsonArray{contact}}, {"now", clock_()}}}});
             if (!payload.isEmpty()) channel->writeChat(socket, payload, id);
             break;
         }
@@ -271,7 +276,8 @@ void LocalChannel::hostPrivate(QSslSocket* socket, const QJsonObject& payload) {
         for (auto it = known.begin(); it != known.end(); ++it) {
             if (it.key() <= after) continue;
             if (contacts.size() == 16) { next = contacts.last().toObject().value("peer").toString(); break; }
-            contacts.append(root->privateContact(sender, it.key()));
+            const auto contact = root->privateContact(sender, it.key());
+            if (!contact.isEmpty()) contacts.append(contact);
         }
         writeMessage(socket, {{"type", "privateChat"}, {"payload", QJsonObject{{"kind", "contacts"}, {"contacts", contacts}, {"next", next}, {"now", clock_()}}}}); return;
     }
@@ -331,10 +337,11 @@ void LocalChannel::hostPrivate(QSslSocket* socket, const QJsonObject& payload) {
 void LocalChannel::publishPrivateReceipt(const QString& id, const QJsonObject& receipt, qint64 now) {
     auto states = security_.value("privateStates").toObject();
     auto state = states.value(id).toObject();
-    state.insert("expires", std::max(state.value("expires").toInteger(), receipt.value("expires").toInteger()));
-    states.insert(id, state); auto next = security_; next.insert("privateStates", states);
-    if (!persist(approved_, attempts_, requestsAllowed_, endpointPins_, control_, next))
-        throw std::runtime_error(QT_TRANSLATE_NOOP("LocalChannel", "Chat history could not be saved."));
+    state.remove("expires");
+    // Remember the conversation for contact retention without a second durable
+    // commit. Visibility and cleanup read expiry from the history itself.
+    states.insert(id, state); security_.insert("privateStates", states);
+    recentContacts_.insert(id);
     publishPrivate(id, {{"kind", "message"}, {"record", receipt}, {"now", now}});
 }
 

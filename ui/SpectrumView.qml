@@ -14,24 +14,31 @@ ColumnLayout {
 
     Flow {
         Layout.fillWidth: true
+        Layout.minimumWidth: 0
         spacing: 12
         Label {
             objectName: "inputLevel"
             text: qsTr("Input") + (chart.active ? " " + audio.inputDb.toFixed(1) + " " + qsTr("dBFS") : "")
-            color: Theme.muted; font.pixelSize: 12
+            color: Theme.muted; font.pixelSize: Theme.fontSize(12)
         }
         Label {
             objectName: "processedLevel"
             text: qsTr("Processed") + (chart.active ? " " + audio.outputDb.toFixed(1) + " " + qsTr("dBFS") : "")
-            color: chart.gated ? Theme.danger : Theme.accent; font.pixelSize: 12
+            color: chart.gated ? Theme.danger : Theme.accent; font.pixelSize: Theme.fontSize(12)
         }
-        Label { text: qsTr("Filter curve"); color: Theme.warning; font.pixelSize: 12 }
+        Label { text: qsTr("Filter curve"); color: Theme.warning; font.pixelSize: Theme.fontSize(12) }
     }
     Canvas {
         id: chart
         objectName: "frequencyChart"
         Layout.fillWidth: true
-        implicitHeight: root.chartHeight
+        implicitHeight: Math.max(root.chartHeight, Theme.fontSize(110))
+        readonly property real leftInset: Theme.fontSize(42)
+        readonly property real topInset: Theme.fontSize(20)
+        readonly property real plotWidth: width - leftInset - Theme.fontSize(36)
+        readonly property real plotHeight: height - topInset - Theme.fontSize(28)
+        readonly property int axisFont: Theme.fontSize(11)
+        onAxisFontChanged: requestPaint()
         property var raw: audio.inputSpectrum
         property var processed: audio.outputSpectrum
         property var response: audio.filterResponse || []
@@ -51,19 +58,19 @@ ColumnLayout {
         onPaint: {
             const ctx = getContext("2d")
             ctx.reset()
-            const left = 42
-            const top = 20
-            const plotWidth = width - left - 36
-            const plotHeight = height - top - 28
+            const left = leftInset
+            const top = topInset
+            const plotWidth = chart.plotWidth
+            const plotHeight = chart.plotHeight
             const yFor = function(value, minimum, maximum) {
                 return top + plotHeight * (1 - Math.max(0, Math.min(1, (value - minimum) / (maximum - minimum))))
             }
             const xFor = function(hz) {
                 return left + plotWidth * Math.log(hz / 20) / Math.log(maximum / 20)
             }
-            ctx.font = "11px sans-serif"
+            ctx.font = axisFont + "px sans-serif"
             ctx.fillStyle = Theme.muted
-            ctx.fillText(qsTr("dBFS"), 0, 12)
+            ctx.fillText(qsTr("dBFS"), 0, Theme.fontSize(12))
             for (const db of [0, -30, -60, -90]) {
                 const y = top - db / 90 * plotHeight
                 ctx.strokeStyle = Theme.border
@@ -71,11 +78,11 @@ ColumnLayout {
                 ctx.fillText(String(db), 6, y + 4)
             }
             ctx.textAlign = "left"
-            const ticks = width < 450 ? [20, 100, 1000, 10000] : [20, 50, 100, 200, 500, 1000, 2000, 5000, 10000]
+            const ticks = width < Theme.fontSize(450) ? [20, 100, 1000, 10000] : [20, 50, 100, 200, 500, 1000, 2000, 5000, 10000]
             for (const hz of ticks) {
                 if (hz >= maximum * 0.85) continue
                 const x = xFor(hz)
-                if (x > left + plotWidth - 56) continue
+                if (x > left + plotWidth - Theme.fontSize(56)) continue
                 ctx.strokeStyle = Theme.raised
                 ctx.beginPath(); ctx.moveTo(x, top); ctx.lineTo(x, top + plotHeight); ctx.stroke()
                 ctx.fillText(hz >= 1000 ? qsTr("%1k").arg(String(hz / 1000)) : String(hz), x - 7, height - 7)
@@ -124,7 +131,7 @@ ColumnLayout {
             }
             ctx.fillStyle = Theme.warning
             ctx.textAlign = "right"
-            ctx.fillText(qsTr("dB"), width, 12)
+            ctx.fillText(qsTr("dB"), width, Theme.fontSize(12))
             for (const db of [24, 0, -24, -48]) {
                 const y = top + (24 - db) / 72 * plotHeight
                 ctx.fillText(db > 0 ? "+" + db : String(db), width, y + 4)
@@ -153,9 +160,9 @@ ColumnLayout {
             onPositionChanged: function(mouse) {
                 if (showing && Math.hypot(mouse.x - anchorX, mouse.y - anchorY) < 8) return
                 anchorX = mouse.x; anchorY = mouse.y
-                const w = chart.width - 78, h = chart.height - 48
-                const t = (mouse.x - 42) / w
-                if (t < 0 || t > 1 || mouse.y < 20 || mouse.y > 20 + h) { showing = false; return }
+                const w = chart.plotWidth, h = chart.plotHeight
+                const t = (mouse.x - chart.leftInset) / w
+                if (t < 0 || t > 1 || mouse.y < chart.topInset || mouse.y > chart.topInset + h) { showing = false; return }
                 const candidates = [
                     {values: chart.response, min: -48, max: 24, unit: qsTr("dB"),
                         text: qsTr("Filter curve: the configured change in level at each frequency, read on the right dB scale. It excludes noise reduction and voice activation.")},
@@ -169,7 +176,7 @@ ColumnLayout {
                     if (line.values.length < 2) continue
                     const at = t * (line.values.length - 1), lo = Math.floor(at), hi = Math.min(lo + 1, line.values.length - 1)
                     const value = line.values[lo] + (line.values[hi] - line.values[lo]) * (at - lo)
-                    const y = 20 + h * (1 - Math.max(0, Math.min(1, (value - line.min) / (line.max - line.min))))
+                    const y = chart.topInset + h * (1 - Math.max(0, Math.min(1, (value - line.min) / (line.max - line.min))))
                     const distance = Math.abs(mouse.y - y)
                     if (distance < 13) matches.push({distance: distance, text: value.toFixed(1) + " " + line.unit + "\n" + line.text})
                 }
@@ -180,7 +187,7 @@ ColumnLayout {
                 if (chart.gated && chart.processed.length > 1) {
                     const at = t * (chart.processed.length - 1), lo = Math.floor(at), hi = Math.min(lo + 1, chart.processed.length - 1)
                     const value = chart.processed[lo] + (chart.processed[hi] - chart.processed[lo]) * (at - lo)
-                    if (mouse.y >= 20 + h * (1 - Math.max(0, Math.min(1, (value + 90) / 90)))) {
+                    if (mouse.y >= chart.topInset + h * (1 - Math.max(0, Math.min(1, (value + 90) / 90)))) {
                         frequencyTip.text += "\n" + qsTranslate("AudioSettings", "Would stay silent")
                         showing = true
                     }
@@ -206,12 +213,12 @@ ColumnLayout {
         Label {
             objectName: "frequencyPeak"
             text: qsTr("Peak: %1").arg(!audio.running || audio.strongestHz <= 0 ? qsTr("No signal") : qsTr("%1 Hz").arg(Math.round(audio.strongestHz)))
-            color: Theme.muted; font.pixelSize: 12
+            color: Theme.muted; font.pixelSize: Theme.fontSize(12)
         }
         Label {
             objectName: "fundamentalEstimate"
             text: qsTr("Pitch estimate: %1").arg(!audio.running || audio.fundamentalHz <= 0 ? qsTr("No stable value") : qsTr("%1 Hz").arg(Math.round(audio.fundamentalHz)))
-            color: Theme.muted; font.pixelSize: 12
+            color: Theme.muted; font.pixelSize: Theme.fontSize(12)
             ToolTip.visible: pitchHover.hovered
             ToolTip.text: qsTr("A periodic pitch can also come from music or hum. It does not identify a person.")
             HoverHandler { id: pitchHover }
