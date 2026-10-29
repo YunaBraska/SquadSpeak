@@ -1463,6 +1463,7 @@ TestCase {
         compare(speech.enabled, audio.language.speechAvailable && audio.language.available)
         verify(!outgoing.enabled && !listening.enabled)
         if (messages.enabled) {
+            reveal(messages)
             verify(waitForRendering(messages))
             mouseClick(messages)
             compare(audio.language.channelPreferences(channel.ownId).messages, true)
@@ -1474,15 +1475,17 @@ TestCase {
             verify(!speech.checked)
         }
         if (speech.enabled) {
+            reveal(speech)
             mouseClick(speech)
             compare(audio.language.channelPreferences(channel.ownId).voice, true)
             compare(listening.enabled, true)
         }
-        verify(waitForRendering(menu.contentItem))
+        const viewport = findChild(menu, "channelInfoScroll").contentItem
         for (const control of [messages, speech, outgoing, listening]) {
-            const position = control.mapToItem(menu.contentItem, 0, 0)
-            verify(position.x >= 0 && position.x + control.width <= menu.contentItem.width + 1)
-            verify(position.y >= 0 && position.y + control.height <= menu.contentItem.height + 1, control.objectName + " y=" + position.y + " height=" + control.height + " menu=" + menu.contentItem.height)
+            reveal(control)
+            const position = control.mapToItem(viewport, 0, 0)
+            verify(position.x >= 0 && position.x + control.width <= viewport.width + 1)
+            verify(position.y >= 0 && position.y + control.height <= viewport.height + 1, control.objectName + " y=" + position.y + " height=" + control.height + " viewport=" + viewport.height)
         }
         if (imageDirectory.length > 0) {
             waitForRendering(menu.contentItem)
@@ -3683,6 +3686,13 @@ TestCase {
                 verify(slider)
                 const label = findChild(slider, "valueLabel")
                 verify(label.x >= 0 && label.x + label.width <= slider.width + 1)
+            }
+            if (page === 3 && supporterLicense.directDistribution) {
+                const preview = findChild(view, "supporterAvatarPreview")
+                tryVerify(function() {
+                    const canvas = preview.currentItem && findChild(preview.currentItem, "avatarCanvas")
+                    return canvas && fixtures.portraitHasDetail(canvas.parent)
+                }, 5000, "Enlarged About page must finish drawing its avatar preview")
             }
             if (imageDirectory.length) verify(fixtures.saveWindow(view, imageDirectory + "/text-200-" + page + ".png"))
         }

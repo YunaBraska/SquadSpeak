@@ -18,12 +18,14 @@ public:
     static constexpr int maximumTextBytes = 16384;
     static constexpr int maximumPageMessages = 40;
     static constexpr int maximumPageBytes = 40 * 1024;
-    ChatHistory(QString file, const TlsIdentity& identity, qint64 now);
+    // Event-loop callers use zero so lock contention cannot pause media or UI.
+    ChatHistory(QString file, const TlsIdentity& identity, qint64 now, int lockTimeoutMs = 1000);
     ~ChatHistory();
     ChatHistory(const ChatHistory&) = delete;
     ChatHistory& operator=(const ChatHistory&) = delete;
     [[nodiscard]] QJsonObject page(qint64 cursor = 0, const QString& direction = "latest", bool extended = true) const;
     [[nodiscard]] qint64 time() const { return time_; }
+    [[nodiscard]] qint64 expires() const;
     // Repeating the same sender/request returns its original receipt. Conflicting
     // reuse is rejected. No message becomes visible before the atomic save.
     QJsonObject append(const QString& sender, const QString& name,

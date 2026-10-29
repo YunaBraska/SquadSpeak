@@ -69,6 +69,12 @@ cache. No private key is exported. The independent host-wide TTL is configured
 through the Messages menu, `--private-message-ttl`,
 `SQUADSPEAK_PRIVATE_MESSAGE_TTL`, `privateMessageTtl` or `privateLifetimeDays`.
 Headless relays private messages without becoming a participant.
+Conversation visibility comes from committed history, not from a second permission-file
+write. Maintenance revisits persisted private histories in bounded passes after restart,
+including histories no longer in the open-database cache.
+App-owned histories fail immediately on a database lock so storage contention cannot
+pause the UI/network event loop. The existing error and message-retry paths retain
+the draft. Independent background writers keep their bounded lock wait.
 
 ## TeamSpeak build and tests
 
@@ -220,7 +226,9 @@ not the existence of this script.
 
 For Linux, `tests/linux.Dockerfile` and `tests/linux-ci.sh` define the same isolated dependency, virtual-audio and Secret Service environment used by CI. Run `release`, `store` or `sanitizers`; mount the checkout read-only at `/source` and a writable artifact directory at `/output`. Release and sanitizer capture tests additionally need Docker's `--device /dev/fuse --cap-add SYS_ADMIN --security-opt apparmor=unconfined` for the real desktop portal's private document mount. The default Docker AppArmor profile denies that mount even with the device and capability. Use a disposable Linux runner; Store and runtime-only package checks do not require these privileges. `tests/discovery-network.sh` additionally exercises independent network namespaces.
 
-Linux packages use the system Qt runtime, including `libqt6sql6-sqlite` for encrypted chat storage. With Qt 6.10.2, CMake rebuilds and bundles the ABI-matching Multimedia and Qml libraries. `cmake/qt-wayland.patch` contains the portal request routing, cancellation and session cleanup fixes; `cmake/qt-qml-gc.patch` backports the QML incremental-GC transition and sweep corrections. These builds need Qt's matching private development headers. The verified Linux build requires exactly Qt 6.10.2 rather than mixing Qt ABIs. The `runtime` stage of `tests/linux.Dockerfile` installs only runtime packages. CI extracts the archive as a non-root user, verifies that it resolves the bundled capture and Qml libraries, and checks the GUI, image worker and headless entrypoint without development packages or a build tree. All desktop builds also apply `cmake/qt-qml-runtime.patch` to their exact Qml source: Qt 6.10.2 on Linux and the pinned 6.11.3 SDK on macOS/Windows. It preserves the JIT accumulator after property writes and uses unaligned-safe machine-code pointer accesses. UI tests lower the JIT threshold and collect garbage frequently. After the full UI suite, Linux CI repeats the compact Markdown/theme cases 20 times and stops on the first failure. Package checks verify that deployment retained the corrected runtime.
+Linux packages use the system Qt runtime, including `libqt6sql6-sqlite` for encrypted chat storage. With Qt 6.10.2, CMake rebuilds and bundles ABI-matching Multimedia, Qml and Network libraries. The corresponding patches are `qt-wayland.patch`, `qt-qml-gc.patch` and `qt-network-security.patch` under `cmake/`. Network includes the upstream NTLM and HTTP/2 security fixes for CVE-2026-105946, CVE-2026-95620 and CVE-2026-96432. Its build uses the installed Core/CorePrivate and preserves every exported Network feature. It does not build or bundle another Core. Image import and Supporter HTTPS requests also explicitly use HTTP/1.1. Remove these version-specific repairs only after upgrading and verifying the complete Linux runtime.
+
+These module builds require matching private development headers and exactly Qt 6.10.2 on Linux. The Docker `runtime` stage contains no development packages. CI extracts the archive as a non-root user, verifies the bundled modules' runtime resolution, and checks GUI, image-worker and headless entrypoints. All desktop builds also apply `qt-qml-runtime.patch` to their exact Qml source, 6.10.2 on Linux and 6.11.3 on macOS/Windows. It preserves the JIT accumulator after property writes and uses unaligned-safe pointer accesses. UI tests lower the JIT threshold and collect garbage frequently. Linux CI then repeats compact Markdown/theme cases 20 times and stops on the first failure. Package checks reject unpatched runtime copies.
 
 Linux packages use system fonts. Install `fonts-noto-core` and `fonts-noto-cjk`
 alongside the runtime libraries to cover the offered scripts. The language-switch

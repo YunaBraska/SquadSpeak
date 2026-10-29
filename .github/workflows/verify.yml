@@ -251,10 +251,13 @@ jobs:
         build/native-cache/cargo-cache
         build/native-cache/_deps/qt_capture-*
         build/native-cache/_deps/qt_qml-*
+        build/native-cache/_deps/qt_network-*
         build/native-cache/qt-capture
         build/native-cache/qt-qml
+        build/native-cache/qt-network
         build/native-cache/squad_qt_capture_build-prefix
         build/native-cache/squad_qt_qml_build-prefix
+        build/native-cache/squad_qt_network_build-prefix
       build_command: |
         set -eu
         mkdir -p build/ci build/compiler-cache build/native-cache

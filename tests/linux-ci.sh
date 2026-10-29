@@ -18,7 +18,7 @@ case "$mode" in
         tar -xzf "/output/squadspeak-linux-$(uname -m).tar.gz" -C "$work"
         ldd "$work/bin/squadspeak" > "$work/runtime-libraries.txt"
         cat "$work/runtime-libraries.txt"
-        for module in Multimedia Qml; do
+        for module in Multimedia Qml Network; do
             library="libQt6$module.so.6"
             test -s "$work/lib/$library"
             resolved=$(awk -v library="$library" '$1 == library && $2 == "=>" { print $3 }' "$work/runtime-libraries.txt")

@@ -566,6 +566,150 @@ private slots:
         QCOMPARE(b.channel.messages().last().toMap().value("name").toString(), QString("Alice renamed"));
     }
 
+    void privateReceiptSurvivesPermissionStoreFailureAndRestart() {
+        QTemporaryDir dir;
+        const auto identity = TlsIdentity::create();
+        auto host = std::make_unique<Device>(dir.filePath("host"), "Host", identity);
+        Device a(dir.filePath("a"), "Alice"), b(dir.filePath("b"), "Bea");
+        QVERIFY(host->channel.listen(QHostAddress::LocalHost));
+        for (auto* client : {&a, &b}) {
+            QVERIFY(host->channel.decide(client->channel.ownId(), true)); QVERIFY(client->join(host->channel));
+            QTRY_VERIFY(client->channel.chatReady());
+        }
+        QTRY_VERIFY(a.channel.canPrivateChat(identity.id(), b.channel.ownId()));
+        QVERIFY(a.channel.openPrivateChat(identity.id(), b.channel.ownId()));
+        b.channel.leave();
+        const auto store = dir.filePath("host.channel");
+        QVERIFY(QFile::rename(store, store + ".saved")); QVERIFY(QDir().mkdir(store));
+        QSignalSpy sent(&a.channel, &LocalChannel::chatSent);
+        QVERIFY(a.channel.sendChat("Durable offline message"));
+        QTRY_VERIFY(!a.channel.chatPending());
+        QCOMPARE(sent.size(), 1);
+        QVERIFY2(a.channel.chatError().isEmpty(), qPrintable(a.channel.chatError()));
+        QVERIFY(QDir().rmdir(store)); QVERIFY(QFile::rename(store + ".saved", store));
+        a.channel.leave(); host.reset();
+        host = std::make_unique<Device>(dir.filePath("host"), "Host", identity);
+        QVERIFY(host->channel.listen(QHostAddress::LocalHost)); QVERIFY(b.join(host->channel));
+        QTRY_VERIFY(b.channel.chatReady());
+        QTRY_VERIFY(b.channel.privateChats().size() == 1 && b.channel.privateChats().first().toMap().value("hasMessages").toBool());
+        QVERIFY(b.channel.openPrivateChat(identity.id(), a.channel.ownId()));
+        QTRY_COMPARE(b.channel.messages().size(), 1);
+        QCOMPARE(b.channel.messages().first().toMap().value("text").toString(), QString("Durable offline message"));
+    }
+
+    void privateContactReadFailureDoesNotHideExistingConversation() {
+        QTemporaryDir dir;
+        Device host(dir.filePath("host"), "Host"), a(dir.filePath("a"), "Alice"), b(dir.filePath("b"), "Bea");
+        QVERIFY(host.channel.listen(QHostAddress::LocalHost));
+        for (auto* client : {&a, &b}) {
+            QVERIFY(host.channel.decide(client->channel.ownId(), true)); QVERIFY(client->join(host.channel));
+            QTRY_VERIFY(client->channel.chatReady());
+        }
+        QTRY_VERIFY(a.channel.canPrivateChat(host.channel.ownId(), b.channel.ownId()));
+        QVERIFY(a.channel.openPrivateChat(host.channel.ownId(), b.channel.ownId()));
+        QVERIFY(a.channel.sendChat("Keep this conversation visible")); QTRY_VERIFY(!a.channel.chatPending());
+        QTRY_VERIFY(b.channel.privateChats().first().toMap().value("hasMessages").toBool());
+        const auto connection = QUuid::createUuid().toString();
+        {
+            auto locked = QSqlDatabase::addDatabase("QSQLITE", connection);
+            locked.setDatabaseName(dir.filePath("host.channel.private/") + a.channel.chatHostId() + ".sqlite");
+            QVERIFY(locked.open()); QSqlQuery query(locked); QVERIFY(query.exec("BEGIN EXCLUSIVE"));
+            QElapsedTimer responsiveness; responsiveness.start();
+            QVERIFY(a.session.setUserName("Alice during storage failure"));
+            QTRY_VERIFY_WITH_TIMEOUT(!host.channel.chatError().isEmpty(), 10000);
+            qInfo() << "Locked private storage response:" << responsiveness.elapsed() << "ms";
+            QVERIFY2(responsiveness.elapsed() < 750, "A database lock must not stall the channel event loop.");
+            QVERIFY(b.channel.privateChats().first().toMap().value("hasMessages").toBool());
+            QVERIFY(b.channel.joined());
+            QVERIFY(query.exec("ROLLBACK")); locked.close();
+        }
+        QSqlDatabase::removeDatabase(connection);
+        QVERIFY(a.session.setUserName("Alice after recovery"));
+        QTRY_COMPARE(b.channel.privateChats().first().toMap().value("name").toString(), QString("Alice after recovery"));
+        QVERIFY(b.channel.privateChats().first().toMap().value("hasMessages").toBool());
+    }
+
+    void privateExpiryContinuesAfterRestartWithoutReaders() {
+        QTemporaryDir dir;
+        qint64 now = 1700000000000;
+        const auto clock = [&] { return now; };
+        const auto identity = TlsIdentity::create();
+        auto host = std::make_unique<Device>(dir.filePath("host"), "Host", identity, clock);
+        Device a(dir.filePath("a"), "Alice", TlsIdentity::create(), clock), b(dir.filePath("b"), "Bea", TlsIdentity::create(), clock);
+        QVERIFY(host->channel.listen(QHostAddress::LocalHost));
+        for (auto* client : {&a, &b}) {
+            QVERIFY(host->channel.decide(client->channel.ownId(), true)); QVERIFY(client->join(host->channel));
+            QTRY_VERIFY(client->channel.chatReady());
+        }
+        QTRY_VERIFY(a.channel.canPrivateChat(identity.id(), b.channel.ownId()));
+        QVERIFY(a.channel.openPrivateChat(identity.id(), b.channel.ownId()));
+        const auto conversation = a.channel.chatHostId();
+        for (int i = 0; i < 530; ++i) {
+            if (i % 8 == 0) now += 10000;
+            QVERIFY(a.channel.sendChat(QString::number(i)));
+            QTRY_VERIFY(!a.channel.chatPending());
+            QVERIFY2(a.channel.chatError().isEmpty(), qPrintable(a.channel.chatError()));
+        }
+        a.channel.leave(); b.channel.leave();
+        const auto connection = QUuid::createUuid().toString();
+        {
+            auto disk = QSqlDatabase::addDatabase("QSQLITE", connection);
+            disk.setDatabaseName(dir.filePath("host.channel.private/") + conversation + ".sqlite");
+            QVERIFY(disk.open());
+            const auto remaining = [&] {
+                QSqlQuery query(disk);
+                return query.exec("SELECT COUNT(*) FROM messages") && query.next() ? query.value(0).toInt() : -1;
+            };
+            QCOMPARE(remaining(), 530);
+            now += ChatHistory::lifetime + 1;
+            QTRY_VERIFY(remaining() < 530);
+            QVERIFY(remaining() > 0);
+            host.reset();
+            host = std::make_unique<Device>(dir.filePath("host"), "Host", identity, clock);
+            QVERIFY(host->channel.listen(QHostAddress::LocalHost));
+            QTRY_COMPARE_WITH_TIMEOUT(remaining(), 0, 10000);
+            disk.close();
+        }
+        QSqlDatabase::removeDatabase(connection);
+    }
+
+    void contactExpiryPreservesPrivateReceiptsAfterInterruptedMetadataSave() {
+        QTemporaryDir dir;
+        qint64 now = 1700000000000;
+        const auto clock = [&] { return now; };
+        const auto identity = TlsIdentity::create();
+        auto host = std::make_unique<Device>(dir.filePath("host"), "Host", identity, clock);
+        Device a(dir.filePath("a"), "Alice", TlsIdentity::create(), clock), b(dir.filePath("b"), "Bea", TlsIdentity::create(), clock);
+        QVERIFY(host->channel.listen(QHostAddress::LocalHost));
+        for (auto* client : {&a, &b}) {
+            QVERIFY(host->channel.decide(client->channel.ownId(), true)); QVERIFY(client->join(host->channel));
+            QTRY_VERIFY(client->channel.chatReady());
+        }
+        QTRY_VERIFY(a.channel.canPrivateChat(identity.id(), b.channel.ownId()));
+        QVERIFY(a.channel.openPrivateChat(identity.id(), b.channel.ownId()));
+        const auto conversation = a.channel.chatHostId();
+        QVERIFY(a.channel.sendChat("Unexpired receipt")); QTRY_VERIFY(!a.channel.chatPending());
+        QVERIFY(a.channel.chatError().isEmpty());
+        a.channel.leave(); b.channel.leave(); host.reset();
+        // A crash can leave the permission file at its older committed revision.
+        QFile store(dir.filePath("host.channel")); QVERIFY(store.open(QIODevice::ReadOnly));
+        auto saved = QJsonDocument::fromJson(store.readAll()).object(); store.close();
+        auto security = saved.value("security").toObject();
+        auto states = security.value("privateStates").toObject();
+        states.insert(conversation, QJsonObject{{"expires", 0}}); security.insert("privateStates", states);
+        auto seen = security.value("lastSeen").toObject();
+        seen.insert(conversation, now - 365LL * 86400000); security.insert("lastSeen", seen);
+        saved.insert("security", security);
+        QVERIFY(store.open(QIODevice::WriteOnly | QIODevice::Truncate));
+        const auto bytes = QJsonDocument(saved).toJson(); QCOMPARE(store.write(bytes), bytes.size()); store.close();
+        host = std::make_unique<Device>(dir.filePath("host"), "Host", identity, clock);
+        QVERIFY(host->channel.listen(QHostAddress::LocalHost));
+        const auto path = dir.filePath("host.channel.private/") + conversation;
+        QVERIFY(QFile::exists(path + ".sqlite"));
+        ChatHistory history(path, identity, now);
+        QCOMPARE(history.page().value("records").toArray().size(), 1);
+    }
+
     void privateChatRejectsMalformedPeerContentWithoutLosingVoice_data() {
         QTest::addColumn<bool>("badCiphertext");
         QTest::newRow("invalid-pixels") << false;
@@ -5162,6 +5306,43 @@ private slots:
             QStringList{"localhost:" + QString::number(host.channel.port())});
     }
 
+    void identifyBeforeAdmissionReturnsOnlyPublicChannelName_data() {
+        QTest::addColumn<bool>("blocked");
+        QTest::newRow("unknown-device") << false;
+        QTest::newRow("blocked-device") << true;
+    }
+
+    void identifyBeforeAdmissionReturnsOnlyPublicChannelName() {
+        QFETCH(bool, blocked);
+        QTemporaryDir dir;
+        Device host(dir.filePath("host"), "Private owner profile");
+        const auto visitor = TlsIdentity::create();
+        QVERIFY(host.channel.setChannelName("Public channel"));
+        QVERIFY(host.channel.setHostPassword("Channel password"));
+        QTRY_VERIFY(host.channel.passwordProtected());
+        if (blocked) QVERIFY(host.channel.setBlocked(visitor.id(), true));
+        QVERIFY(host.channel.listen(QHostAddress::LocalHost));
+        QSslSocket socket;
+        socket.setSslConfiguration(visitor.configuration());
+        connect(&socket, &QSslSocket::sslErrors, &socket,
+            [&socket](const QList<QSslError>& errors) { socket.ignoreSslErrors(errors); });
+        QByteArray received;
+        connect(&socket, &QSslSocket::readyRead, &socket, [&] { received += socket.readAll(); });
+        socket.connectToHostEncrypted("127.0.0.1", host.channel.port());
+        QTRY_VERIFY(socket.isEncrypted());
+        const auto request = wireFrame({{"type", "identify"}, {"version", 1}});
+        QCOMPARE(socket.write(request), request.size());
+        QTRY_VERIFY(received.size() >= 4);
+        const auto size = qFromBigEndian<quint32>(received.constData());
+        QTRY_VERIFY(received.size() >= size + 4);
+        const auto reply = QJsonDocument::fromJson(received.mid(4, size)).object();
+        QCOMPARE(reply.value("type").toString(), QString("identity"));
+        QCOMPARE(reply.value("name").toString(), QString("Public channel"));
+        QCOMPARE(reply.value("channel").toString(), QString("Public channel"));
+        QVERIFY(!QJsonDocument(reply).toJson().contains("Private owner profile"));
+        QVERIFY(host.channel.requests().isEmpty());
+    }
+
     void hostOwnerNamesUpdateAcrossChannelsAndSurviveRestart() {
         QTemporaryDir dir;
         const auto identity = TlsIdentity::create();
@@ -6305,8 +6486,10 @@ private slots:
         QVERIFY(target->session.setPushToTalk(true)); QVERIFY(target->session.setMuted(false));
         QVERIFY(controller->channel.pairAddress("127.0.0.1:" + QString::number(port)));
         QTRY_COMPARE(target->channel.controlRequests().size(), 1);
+        QCOMPARE(controller->channel.controlTargetName(), target->channel.channelName());
         QVERIFY(target->channel.decideControl(controller->channel.ownId(), true));
         QTRY_VERIFY(controller->channel.controlConnected());
+        QCOMPARE(controller->channel.controlTargetName(), QString("Target"));
         QVERIFY(controller->session.setPttButtonHeld(true)); QTRY_VERIFY(target->session.transmissionAllowed());
         controller.reset();
         QVERIFY(target->session.transmissionAllowed());

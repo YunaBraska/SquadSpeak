@@ -59,8 +59,9 @@ providers? Such reporting is proposed here, not presented as implemented.
   Setting someone's listening volume to zero is not a message block.
 - Channel unban restores eligibility to connect. It does not notify a
   disconnected peer proactively. Do not claim full SS-179 completion.
-- Finalize the deferred privacy policy and a working developer contact route.
-  The repository's bug-report link is not an offensive-content report service.
+- Verify the published [privacy policy](Page/privacy.md) against the submitted
+  build and provide the reviewer with a working developer contact route.
+  The public bug-report link is not a private offensive-content report service.
 - Supply a reachable review host with test identities and exact steps for the
   submitted build. Keep credentials and private addresses out of this file.
   Do not submit test-only controls or promise unavailable mobile behavior.

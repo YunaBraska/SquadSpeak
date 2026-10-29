@@ -4,6 +4,7 @@
 #include "headless.hpp"
 #include "local_channel.hpp"
 #include "radio_player.hpp"
+#include "chat_content.hpp"
 #include <QBuffer>
 #include <QFile>
 #include <QJsonArray>
@@ -188,6 +189,67 @@ private slots:
         QSslConfiguration::setDefaultConfiguration(fixtureTls);
     }
     void cleanupTestCase() { QSslConfiguration::setDefaultConfiguration(original_); }
+
+    void httpsRequestsUseHttp11_data() {
+        QTest::addColumn<bool>("image");
+        QTest::addColumn<QByteArray>("challenge");
+        QTest::newRow("sign-in") << false << QByteArray{};
+        QTest::newRow("image") << true << QByteArray{};
+        // Qt CVE-2026-105946 upstream timestamp-wrong-avlen regression vector.
+        QTest::newRow("malformed-ntlm") << true << QByteArray(
+            "NTLM TlRMTVNTUAACAAAADAAMADgAAAAzgoriASNFZ4mrze8AAAAAAAAAAAgACABEAAAABgBwFwAAAA9TAGUAcgB2AGUAcgAHAAQAAAAAAA==");
+    }
+    void httpsRequestsUseHttp11() {
+        QFETCH(bool, image);
+        QFETCH(QByteArray, challenge);
+        QSslServer server;
+        auto configuration = TlsIdentity::create().configuration();
+        configuration.setPeerVerifyMode(QSslSocket::VerifyNone);
+        configuration.setMissingCertificateIsFatal(false);
+        configuration.setAllowedNextProtocols({"h2", "http/1.1"});
+        server.setSslConfiguration(configuration);
+        QVERIFY(server.listen(QHostAddress::LocalHost));
+        const QUrl endpoint(QString("https://127.0.0.1:%1").arg(server.serverPort()));
+        QTemporaryDir dir;
+        License license(dir.path(), product, endpoint.resolved(QUrl("/graphql")),
+            TlsIdentity::newKey(), [] { return start; }, {}, nullptr, endpoint);
+        ChatContent content;
+        QSignalSpy prepared(&content, &ChatContent::messagePrepared);
+        if (image) QVERIFY(content.prepareMessage("![image](" + endpoint.toString() + "/image.png)"));
+        else QVERIFY(license.signIn());
+        QTRY_VERIFY(server.hasPendingConnections());
+        auto* socket = qobject_cast<QSslSocket*>(server.nextPendingConnection());
+        QVERIFY(socket);
+        const auto protocol = socket->sslConfiguration().nextNegotiatedProtocol();
+        QVERIFY(protocol.isEmpty() || protocol == "http/1.1");
+        QTRY_VERIFY(socket->bytesAvailable() > 0);
+        const auto request = socket->readAll();
+        QVERIFY(request.startsWith(image ? "GET /image.png HTTP/1.1\r\n" : "POST /login/device/code HTTP/1.1\r\n"));
+        const auto body = image ? QByteArray::fromHex("89504e470d0a1a0a")
+            : QJsonDocument(QJsonObject{{"device_code", "fixture-device-secret"}, {"user_code", "ABCD-EFGH"},
+                {"verification_uri", endpoint.resolved(QUrl("/login/device")).toString()}, {"interval", 5}, {"expires_in", 900}})
+                .toJson(QJsonDocument::Compact);
+        if (challenge.isEmpty())
+            socket->write("HTTP/1.1 200 OK\r\nConnection: close\r\nContent-Length: "
+                + QByteArray::number(body.size()) + "\r\n\r\n" + body);
+        else socket->write("HTTP/1.1 401 Unauthorized\r\nWWW-Authenticate: " + challenge
+            + "\r\nConnection: keep-alive\r\nContent-Length: 0\r\n\r\n");
+        if (!challenge.isEmpty()) {
+            QTRY_VERIFY(!content.busy() || socket->bytesAvailable() > 0);
+            if (socket->bytesAvailable() > 0) {
+                socket->readAll();
+                socket->write("HTTP/1.1 403 Forbidden\r\nConnection: close\r\nContent-Length: 0\r\n\r\n");
+            }
+            socket->disconnectFromHost();
+            QTRY_VERIFY(!content.busy()); QVERIFY(!content.error().isEmpty()); QVERIFY(prepared.isEmpty());
+            QVERIFY(content.preparedImage().isEmpty());
+        }
+        else {
+            socket->disconnectFromHost();
+            if (image) { QTRY_COMPARE(prepared.size(), 1); QCOMPARE(content.preparedImage(), body); }
+            else { QTRY_VERIFY(license.pending()); QCOMPARE(license.userCode(), QString("ABCD-EFGH")); }
+        }
+    }
 
     void multiplePaymentsThroughHeadlessUnlockRenewRevokeAndRestore() {
         GitHub server; QTemporaryDir dir; qint64 time = start;
