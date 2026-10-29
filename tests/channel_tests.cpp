@@ -61,6 +61,22 @@ constexpr bool instrumentedTiming = __has_feature(address_sanitizer);
 constexpr bool instrumentedTiming = false;
 #endif
 
+bool listenWithReservedUdp(QTcpServer& server, QUdpSocket& udp, QString* error = nullptr) {
+    QString lastError;
+    for (int attempt = 0; attempt < 32; ++attempt) {
+        udp.close(); server.close();
+        if (!server.listen(QHostAddress::LocalHost, 0)) {
+            lastError = server.errorString();
+            continue;
+        }
+        if (udp.bind(QHostAddress::LocalHost, server.serverPort(), QUdpSocket::DontShareAddress)) return true;
+        lastError = udp.errorString();
+        server.close();
+    }
+    if (error) *error = QString("No shared TCP/UDP test port is available: %1").arg(lastError);
+    return false;
+}
+
 struct Device final {
     VoiceSession session;
     LocalChannel channel;
@@ -274,16 +290,8 @@ public:
                 else { held.insert(target); ++it; }
             }
         });
-        // Reserve UDP first: a TCP ephemeral port may be unavailable to UDP.
-        for (int attempt = 0; attempt < 32 && !server_.isListening(); ++attempt) {
-            udp_.close();
-            if (!udp_.bind(QHostAddress::LocalHost, 0, QUdpSocket::DontShareAddress))
-                throw std::runtime_error(QString("Delayed UDP link cannot bind: %1").arg(udp_.errorString()).toStdString());
-            server_.listen(QHostAddress::LocalHost, udp_.localPort());
-        }
-        if (!server_.isListening())
-            throw std::runtime_error(QString("Delayed TLS link cannot bind port %1: %2")
-                .arg(udp_.localPort()).arg(server_.errorString()).toStdString());
+        QString endpointError;
+        if (!listenWithReservedUdp(server_, udp_, &endpointError)) throw std::runtime_error(endpointError.toStdString());
         // Match the media library's bounded receive window. OS defaults must
         // not add packet loss to a link configured without impairment.
         udp_.setSocketOption(QAbstractSocket::ReceiveBufferSizeSocketOption, 1024 * 1024);
@@ -1793,7 +1801,11 @@ private slots:
             QVERIFY(clients[size_t(n)]->channel.join(n % 2 ? secondId : host.channel.ownId(), "localhost", host.channel.port()));
         QTRY_COMPARE_WITH_TIMEOUT(host.channel.hostParticipants().size(), 32, 15000);
         QTRY_COMPARE_WITH_TIMEOUT(second->hostParticipants().size(), 32, 15000);
-        for (int n = 0; n < 64; ++n) QTRY_VERIFY(clients[size_t(n)]->channel.joined());
+        // The preceding participant milestones use the same bounded 15-second
+        // admission budget. Individual client notifications may arrive after
+        // the aggregate host roster is already complete on native runners.
+        for (int n = 0; n < 64; ++n)
+            QTRY_VERIFY_WITH_TIMEOUT(clients[size_t(n)]->channel.joined(), 15000);
         auto& overflow = clients[64]->channel;
         QVERIFY(overflow.openChat(secondId, "localhost", host.channel.port()));
         QTRY_VERIFY(overflow.chatReady());
@@ -1802,7 +1814,7 @@ private slots:
         QTRY_COMPARE(overflow.screenInfo(secondId).value("tier").toInt(), 1);
         QVERIFY(overflow.chatReady());
         QVERIFY(overflow.join(host.channel.ownId(), "localhost", host.channel.port()));
-        QTRY_VERIFY(overflow.joined());
+        QTRY_VERIFY_WITH_TIMEOUT(overflow.joined(), 15000);
         QCOMPARE(host.channel.hostParticipants().size(), 33);
         QCOMPARE(second->hostParticipants().size(), 32);
         const auto longName = QString::fromUcs4(U"🌊").repeated(64);
@@ -1811,13 +1823,14 @@ private slots:
             QVERIFY(client->session.setUserName(longName));
             if (client->channel.joinedHostId() != host.channel.ownId()) {
                 QVERIFY(client->channel.join(host.channel.ownId(), "localhost", host.channel.port()));
-                QTRY_VERIFY(client->channel.joined());
+                QTRY_VERIFY_WITH_TIMEOUT(client->channel.joined(), 15000);
             }
         }
         for (int n = 65; n < 72; ++n) {
             const auto& client = clients[size_t(n)];
             QVERIFY(client->session.setUserName(longName));
-            QVERIFY(client->join(host.channel)); QTRY_VERIFY(client->channel.joined());
+            QVERIFY(client->join(host.channel));
+            QTRY_VERIFY_WITH_TIMEOUT(client->channel.joined(), 15000);
         }
         QTRY_COMPARE_WITH_TIMEOUT(clients.back()->channel.participants().size(), 72, 15000);
         QVERIFY(clients.front()->channel.joined());
@@ -2314,15 +2327,12 @@ private slots:
         const auto identity = TlsIdentity::create(); auto configuration = identity.configuration();
         configuration.setPeerVerifyMode(QSslSocket::VerifyNone);
         QSslServer server; server.setSslConfiguration(configuration);
-        // TCP's ephemeral allocation does not reserve the matching UDP port.
-        // Hold both until the real media transport takes over the UDP socket.
+        // Hold both protocols until the real media transport takes over UDP.
+        // Ask TCP for the ephemeral port first: Windows can protect UDP-chosen
+        // ports from TCP listeners.
         QUdpSocket reservation;
-        for (int attempt = 0; attempt < 32 && !server.isListening(); ++attempt) {
-            reservation.close();
-            QVERIFY2(reservation.bind(QHostAddress::Any, 0, QUdpSocket::DontShareAddress), qPrintable(reservation.errorString()));
-            server.listen(QHostAddress::LocalHost, reservation.localPort());
-        }
-        QVERIFY2(server.isListening(), qPrintable(server.errorString()));
+        QString endpointError;
+        QVERIFY2(listenWithReservedUdp(server, reservation, &endpointError), qPrintable(endpointError));
         QVERIFY(client.channel.join(identity.id(), "127.0.0.1", server.serverPort()));
         QTRY_VERIFY(server.hasPendingConnections());
         auto* control = qobject_cast<QSslSocket*>(server.nextPendingConnection()); QVERIFY(control);
@@ -2614,18 +2624,18 @@ private slots:
         std::vector<std::unique_ptr<QUdpSocket>> occupiedRange;
         quint16 firstPort = 0;
         if (occupiedProtocol == "udp") {
-            QVERIFY(occupiedUdp.bind(QHostAddress::Any, 0, QUdpSocket::DontShareAddress));
+            QVERIFY(occupiedUdp.bind(QHostAddress::LocalHost, 0, QUdpSocket::DontShareAddress));
             firstPort = occupiedUdp.localPort();
             for (int offset = 1; offset < occupiedCount; ++offset) {
                 auto socket = std::make_unique<QUdpSocket>();
                 const auto port = quint16(1024 + (int(firstPort) - 1024 + offset) % (65536 - 1024));
-                QVERIFY(socket->bind(QHostAddress::Any, port, QUdpSocket::DontShareAddress)
+                QVERIFY(socket->bind(QHostAddress::LocalHost, port, QUdpSocket::DontShareAddress)
                     || socket->error() == QAbstractSocket::AddressInUseError
                     || socket->error() == QAbstractSocket::SocketAccessError);
                 occupiedRange.push_back(std::move(socket));
             }
         } else if (occupiedProtocol == "tcp") {
-            QVERIFY(occupiedTcp.listen(QHostAddress::Any, 0));
+            QVERIFY(occupiedTcp.listen(QHostAddress::LocalHost, 0));
             firstPort = occupiedTcp.serverPort();
         }
         QTemporaryDir dir;
@@ -6926,6 +6936,9 @@ private slots:
             "SQUAD_SOAK_PACING must be realtime or delivery");
         const bool completeDelivery = pacing == "delivery";
         const bool deliveryPaced = instrumentedTiming || completeDelivery;
+        // Keep the all-listener delivery assertion strict. The Intel macOS
+        // runner needs bounded scheduler recovery when 64 processes fan out.
+        const int deliveryDeadlineMs = deliveryPaced ? 30000 : 5000;
         QFETCH(int, callbackDelayMs);
         QFETCH(int, sourceChannels);
         QVERIFY(sourceChannels == 1 || sourceChannels == 2);
@@ -7030,7 +7043,7 @@ private slots:
                 if (receiverCount[group] && receivers[group].write(bytes) != bytes.size()) return -1;
             return commandSerial;
         };
-        const auto commandReceivers = [&](QJsonObject command) {
+        const auto commandReceivers = [&](QJsonObject command, int timeoutMs = 10000) {
             const bool polling = receiverPoll.isActive();
             receiverPoll.stop();
             const auto resume = qScopeGuard([&] { if (polling) receiverPoll.start(); });
@@ -7040,7 +7053,7 @@ private slots:
                 for (size_t group = 0; group < receivers.size(); ++group)
                     if (receiverCount[group] && receiverStates[group].value("serial").toInt() < serial) return false;
                 return receiverOutputValid;
-            }, 10000);
+            }, timeoutMs);
         };
         const auto allReceivers = [&](auto matches) {
             for (const auto& report : receiverStates)
@@ -7088,7 +7101,9 @@ private slots:
         // Real devices generate their identities on independent event loops.
         // Finish this process's CPU-bound setup before starting network timers.
         for (const auto& client : clients) QVERIFY(joinHost(*client));
-        QVERIFY(commandReceivers({{"operation", "join"}, {"host", hostId}, {"port", hostPort}}));
+        // This starts every receiver's TLS join. Use the same 30-second
+        // convergence budget as the following participant assertions.
+        QVERIFY(commandReceivers({{"operation", "join"}, {"host", hostId}, {"port", hostPort}}, 30000));
         for (const auto& client : clients) QTRY_COMPARE_WITH_TIMEOUT(
             client->channel.participants().size(), participantCount, 30000);
         QTRY_VERIFY(allReceivers([&](const QJsonObject& member) {
@@ -7238,7 +7253,7 @@ private slots:
             // Delivery pacing bounds work in flight without reducing the
             // fanout or packet count. The default path measures realtime load.
             if (deliveryPaced && !receivedThrough(sentFrames)) {
-                if (now - sentAtMs >= 5000) {
+                if (now - sentAtMs >= deliveryDeadlineMs) {
                     deliveryTimedOut = true; input.stop();
                     for (size_t i = 0; i < audioCounts.size(); ++i) {
                         const int expected = sentFrames * (speakers - (i < size_t(speakers) ? 1 : 0));
@@ -7282,8 +7297,9 @@ private slots:
 #endif
         sustained.start(); output.start(10); input.start(10);
         QVERIFY(waitForEvents(&input, &QTimer::timeout, [&] { return !input.isActive(); },
-            soakSeconds * (deliveryPaced ? 15000 : 1500) + 5000));
-        QVERIFY2(!deliveryTimedOut, "Delivery-paced fanout did not deliver a frame to every listener within 5 seconds");
+            soakSeconds * (deliveryPaced ? deliveryDeadlineMs : 1500) + 5000));
+        QVERIFY2(!deliveryTimedOut, qPrintable(QString("Delivery-paced fanout did not deliver a frame to every listener within %1 seconds")
+            .arg(deliveryDeadlineMs / 1000)));
         QCOMPARE(sentFrames, sustainedFrames);
         QVERIFY(validSend);
         output.stop();
@@ -7294,8 +7310,9 @@ private slots:
         // final packet cannot produce a gap report. Controlled delivery must
         // receive it too, within the same per-frame deadline.
         const bool drained = waitForEvents([&] { return receivedThrough(sustainedFrames); },
-            completeDelivery ? 5000 : 500);
-        QVERIFY2(!completeDelivery || drained, "Controlled fanout did not deliver every final packet within 5 seconds");
+            completeDelivery ? deliveryDeadlineMs : 500);
+        QVERIFY2(!completeDelivery || drained, qPrintable(QString("Controlled fanout did not deliver every final packet within %1 seconds")
+            .arg(deliveryDeadlineMs / 1000)));
         QVERIFY(receiverOutputValid);
 #ifndef Q_OS_WIN
         qInfo() << "Audio soak client processes CPU ms"

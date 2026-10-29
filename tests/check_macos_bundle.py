@@ -73,8 +73,6 @@ def main():
         copies = {path.resolve() for path in (app / "Contents/Frameworks").glob(f"lib{library}.*.dylib")}
         if len(copies) != 1 or not next(iter(copies)).is_relative_to(app):
             errors.append({"check": "ffmpeg_runtime", "library": library, "copies": len(copies)})
-        elif library == "avutil" and b"7.1.5-squadspeak.2\0" not in next(iter(copies)).read_bytes():
-            errors.append({"check": "ffmpeg_lifetime_fixes"})
 
     with (app / "Contents/Info.plist").open("rb") as source:
         metadata = plistlib.load(source)

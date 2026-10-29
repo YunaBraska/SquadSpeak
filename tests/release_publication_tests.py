@@ -547,6 +547,10 @@ elif name == "xcrun" and args[:2] == ["notarytool", "log"]:
                 trace = self.root / "trace.jsonl"
                 trace.unlink(missing_ok=True)
                 build = self.root / scenario
+                runtime = build / "app/ffmpeg/lib"
+                runtime.mkdir(parents=True)
+                for library in ("avcodec.61", "avutil.59", "swscale.8", "avformat.61", "swresample.5"):
+                    (runtime / f"lib{library}.dylib").write_bytes(b"patched runtime")
                 result = subprocess.run(["sh", str(self.repo / "tests/macos-ci.sh"),
                     str(self.root), str(build), "package"], capture_output=True, text=True, timeout=20,
                     env=dict(os.environ, PATH=str(self.root / "bin") + os.pathsep + os.environ["PATH"],
@@ -558,17 +562,23 @@ elif name == "xcrun" and args[:2] == ["notarytool", "log"]:
                     self.assertEqual(result.returncode, 0, result.stderr)
                     self.assertEqual(stapling, [["stapler", "staple"], ["stapler", "validate"]])
                     signed = [call for call in calls if call[0] == "codesign" and "--sign" in call]
-                    self.assertEqual(len(signed), 4)
-                    self.assertEqual({Path(call[-1]).name for call in signed},
+                    self.assertEqual(len(signed), 10)
+                    nested_helpers = signed[:4]
+                    self.assertEqual({Path(call[-1]).name for call in nested_helpers},
                                      {"Installer.xpc", "Downloader.xpc", "Autoupdate", "Updater.app"})
-                    for call in signed:
+                    for call in nested_helpers:
                         self.assertEqual(call[call.index("--sign") + 1], "Release Test")
                         self.assertIn("--timestamp", call)
                         self.assertEqual(call[call.index("--options") + 1], "runtime")
-                    downloader = next(call for call in signed if call[-1].endswith("Downloader.xpc"))
+                    downloader = next(call for call in nested_helpers if call[-1].endswith("Downloader.xpc"))
                     self.assertIn("--preserve-metadata=entitlements", downloader)
                     deploy = next(i for i, call in enumerate(calls) if call[0] == "macdeployqt")
-                    self.assertTrue(all(calls.index(call) < deploy for call in signed))
+                    self.assertTrue(all(calls.index(call) < deploy for call in nested_helpers))
+                    runtime_signatures = signed[4:]
+                    self.assertEqual({Path(call[-1]).name for call in runtime_signatures},
+                                     {"libavcodec.61.dylib", "libavutil.59.dylib", "libswscale.8.dylib",
+                                      "libavformat.61.dylib", "libswresample.5.dylib", "squadspeak.app"})
+                    self.assertTrue(all(calls.index(call) > deploy for call in runtime_signatures))
                     log = next(i for i, call in enumerate(calls) if call[1:3] == ["notarytool", "log"])
                     staple = next(i for i, call in enumerate(calls) if call[1:3] == ["stapler", "staple"])
                     self.assertLess(log, staple)

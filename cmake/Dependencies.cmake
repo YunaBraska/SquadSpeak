@@ -197,8 +197,8 @@ endif()
 add_library(squad_ffmpeg INTERFACE)
 if(APPLE AND NOT SQUADSPEAK_IOS)
     FetchContent_Declare(ffmpeg
-        URL https://ffmpeg.org/releases/ffmpeg-7.1.5.tar.xz
-        URL_HASH SHA256=de668509caf9e35e3cd162473441fdb29538c6d96ed080292b3cf9e6fc5d558f
+        URL https://github.com/FFmpeg/FFmpeg/archive/refs/tags/n7.1.5.tar.gz
+        URL_HASH SHA256=e3963a50831c985933e1a625ed566ec4c7adb5c012c34fa9f84438e1d61bdacc
         DOWNLOAD_EXTRACT_TIMESTAMP TRUE)
     FetchContent_MakeAvailable(ffmpeg)
     # FFmpeg 04ff86d0355a58c3d02dbf562ccb708942a29435: a dropped

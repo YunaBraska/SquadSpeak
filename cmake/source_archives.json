@@ -19,9 +19,9 @@
       "sha256": "12dd8df1488a314c53e3751abd2750cf233b830651d168b6a9f15e7d0cf71f7b"
     },
     {
-      "name": "ffmpeg-7.1.5.tar.xz",
-      "url": "https://ffmpeg.org/releases/ffmpeg-7.1.5.tar.xz",
-      "sha256": "de668509caf9e35e3cd162473441fdb29538c6d96ed080292b3cf9e6fc5d558f"
+      "name": "FFmpeg-n7.1.5.tar.gz",
+      "url": "https://github.com/FFmpeg/FFmpeg/archive/refs/tags/n7.1.5.tar.gz",
+      "sha256": "e3963a50831c985933e1a625ed566ec4c7adb5c012c34fa9f84438e1d61bdacc"
     },
     {
       "name": "libsamplerate-0.2.2.tar.xz",

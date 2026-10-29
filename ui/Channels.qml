@@ -558,7 +558,13 @@ PanelWindow {
         Qt.callLater(function() {
             for (let i = 0; i < channelRepeater.count; ++i) {
                 const entry = channelRepeater.itemAt(i)
-                if (entry && entry.channelData.id === root.inspectedHost) { entry.focusChannel(); return }
+                if (entry && entry.channelData.id === root.inspectedHost) {
+                    // Let the compact list become visible before restoring its
+                    // keyboard focus. The first deferred turn applies the
+                    // chatExpanded binding; the second has a focusable row.
+                    Qt.callLater(entry.focusChannel)
+                    return
+                }
             }
         })
     }

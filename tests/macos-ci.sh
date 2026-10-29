@@ -8,7 +8,7 @@ test "$#" -ge 2 && test "$#" -le 3 || {
 phase=${3:-all}
 SQUADSPEAK_VERSION=${SQUADSPEAK_VERSION:-${VERSION:-}}
 if test -n "$SQUADSPEAK_VERSION"; then export SQUADSPEAK_VERSION; else unset SQUADSPEAK_VERSION; fi
-export SQUADSPEAK_UPDATE_PUBLIC_KEY=${SQUADSPEAK_UPDATE_PUBLIC_KEY:-${UPDATE_PUBLIC_KEY:-}}
+export SQUADSPEAK_UPDATE_PUBLIC_KEY="${SQUADSPEAK_UPDATE_PUBLIC_KEY:-${UPDATE_PUBLIC_KEY:-}}"
 case "$phase" in prepare|build|test|package|all) ;; *) printf 'Unknown phase: %s\n' "$phase" >&2; exit 2 ;; esac
 qt_prefix=$1
 mkdir -p "$2"
@@ -66,7 +66,7 @@ else
 fetch openssl-3.6.5.tar.gz https://github.com/openssl/openssl/releases/download/openssl-3.6.5/openssl-3.6.5.tar.gz a2157c2830efdec3788939b00c9b0638306d3f0bbb76dc4832ee503bb397df98
 fetch opus-1.6.1.tar.gz https://distfiles.macports.org/libopus/opus-1.6.1.tar.gz 6ffcb593207be92584df15b32466ed64bbec99109f007c82205f0194572411a1
 fetch libsamplerate-0.2.2.tar.xz https://github.com/libsndfile/libsamplerate/releases/download/0.2.2/libsamplerate-0.2.2.tar.xz 3258da280511d24b49d6b08615bbe824d0cacc9842b0e4caf11c52cf2b043893
-fetch ffmpeg-7.1.5.tar.xz https://ffmpeg.org/releases/ffmpeg-7.1.5.tar.xz de668509caf9e35e3cd162473441fdb29538c6d96ed080292b3cf9e6fc5d558f
+fetch FFmpeg-n7.1.5.tar.gz https://github.com/FFmpeg/FFmpeg/archive/refs/tags/n7.1.5.tar.gz e3963a50831c985933e1a625ed566ec4c7adb5c012c34fa9f84438e1d61bdacc
 
 (
     cd "$build_root/dependencies/openssl-3.6.5"
@@ -96,11 +96,14 @@ fi
 if test -n "${SQUADSPEAK_UPDATE_PUBLIC_KEY:-}"; then
     set -- "$@" "-DSQUADSPEAK_UPDATE_PUBLIC_KEY=$SQUADSPEAK_UPDATE_PUBLIC_KEY"
 fi
+if test "${SQUADSPEAK_STORE_BUILD:-OFF}" = ON; then
+    set -- "$@" -DSQUADSPEAK_STORE_BUILD=ON
+fi
 cmake -S "$source_root" -B "$build_root/app" -G Ninja \
     -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=ON -DCMAKE_PREFIX_PATH="$qt_prefix;$prefix" \
     -DCMAKE_OSX_ARCHITECTURES="$architecture" -DCMAKE_OSX_DEPLOYMENT_TARGET=13.0 \
     -DOPENSSL_ROOT_DIR="$prefix" \
-    -DFETCHCONTENT_SOURCE_DIR_FFMPEG="$build_root/dependencies/ffmpeg-7.1.5" "$@"
+    -DFETCHCONTENT_SOURCE_DIR_FFMPEG="$build_root/dependencies/FFmpeg-n7.1.5" "$@"
 cmake --build "$build_root/app" --parallel "${CMAKE_BUILD_PARALLEL_LEVEL:-3}"
 if command -v ccache >/dev/null 2>&1; then ccache --show-stats; fi
 fi
@@ -171,6 +174,18 @@ ENTITLEMENTS
     codesign --force --sign "$MACOS_SIGNING_IDENTITY" --options runtime --timestamp \
         --preserve-metadata=entitlements "$sparkle/XPCServices/Downloader.xpc"
     "$qt_prefix/bin/macdeployqt" "$app" "-sign-for-notarization=$MACOS_SIGNING_IDENTITY"
+    # macdeployqt can replace the patched FFmpeg ABI libraries with the Qt SDK
+    # copies while scanning multimedia plugins. Restore the tested runtime and
+    # sign the final bundle after that mutation.
+    for library in avcodec.61 avutil.59 swscale.8 avformat.61 swresample.5; do
+        source="$build_root/app/ffmpeg/lib/lib$library.dylib"
+        target="$app/Contents/Frameworks/lib$library.dylib"
+        test -s "$source"
+        cp -f "$source" "$target"
+        cmp -s "$source" "$target"
+        codesign --force --sign "$MACOS_SIGNING_IDENTITY" --options runtime --timestamp "$target"
+    done
+    codesign --force --deep --sign "$MACOS_SIGNING_IDENTITY" --options runtime --timestamp "$app"
     codesign --verify --deep --strict "$app"
 fi
 if test -n "${MACOS_NOTARY_PROFILE:-}"; then
