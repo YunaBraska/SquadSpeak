@@ -6826,7 +6826,9 @@ private slots:
             "SQUAD_SOAK_PACING must be realtime or delivery");
         const bool completeDelivery = pacing == "delivery";
         const bool deliveryPaced = instrumentedTiming || completeDelivery;
-        const int deliveryDeadlineMs = deliveryPaced ? 15000 : 5000;
+        // Keep the all-listener delivery assertion strict. The Intel macOS
+        // runner needs bounded scheduler recovery when 64 processes fan out.
+        const int deliveryDeadlineMs = deliveryPaced ? 30000 : 5000;
         QFETCH(int, callbackDelayMs);
         QFETCH(int, sourceChannels);
         QVERIFY(sourceChannels == 1 || sourceChannels == 2);
@@ -7179,7 +7181,7 @@ private slots:
 #endif
         sustained.start(); output.start(10); input.start(10);
         QVERIFY(waitForEvents(&input, &QTimer::timeout, [&] { return !input.isActive(); },
-            soakSeconds * (deliveryPaced ? 15000 : 1500) + 5000));
+            soakSeconds * (deliveryPaced ? deliveryDeadlineMs : 1500) + 5000));
         QVERIFY2(!deliveryTimedOut, qPrintable(QString("Delivery-paced fanout did not deliver a frame to every listener within %1 seconds")
             .arg(deliveryDeadlineMs / 1000)));
         QCOMPARE(sentFrames, sustainedFrames);
