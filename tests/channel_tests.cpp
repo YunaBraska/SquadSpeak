@@ -61,18 +61,31 @@ constexpr bool instrumentedTiming = __has_feature(address_sanitizer);
 constexpr bool instrumentedTiming = false;
 #endif
 
-bool listenWithReservedUdp(QTcpServer& server, QUdpSocket& udp, QString* error = nullptr) {
-    QString lastError;
-    for (int attempt = 0; attempt < 32; ++attempt) {
-        udp.close(); server.close();
+bool listenWithReservedUdp(QTcpServer& server, QUdpSocket& udp, QString* error = nullptr, quint16 firstPort = 0) {
+    udp.close(); server.close();
+    if (!firstPort) {
         if (!server.listen(QHostAddress::LocalHost, 0)) {
-            lastError = server.errorString();
-            continue;
+            if (error) *error = server.errorString();
+            return false;
         }
-        if (udp.bind(QHostAddress::LocalHost, server.serverPort(), QUdpSocket::DontShareAddress)) return true;
-        lastError = udp.errorString();
-        server.close();
+        firstPort = server.serverPort();
     }
+    firstPort = std::max<quint16>(1024, firstPort);
+    QString lastError;
+    auto port = firstPort;
+    do {
+        // TCP and UDP availability differ. Visit each candidate once instead
+        // of repeatedly accepting an OS-selected port blocked for UDP.
+        if (server.isListening() || server.listen(QHostAddress::LocalHost, port)) {
+            if (udp.bind(QHostAddress::LocalHost, port, QUdpSocket::DontShareAddress)) {
+                if (error) error->clear();
+                return true;
+            }
+            lastError = udp.errorString();
+        } else lastError = server.errorString();
+        udp.close(); server.close();
+        port = port == 65535 ? 1024 : quint16(port + 1);
+    } while (port != firstPort);
     if (error) *error = QString("No shared TCP/UDP test port is available: %1").arg(lastError);
     return false;
 }
@@ -2460,7 +2473,7 @@ private slots:
     }
     void screenDatagramValidationAndReassembly_data() {
         QTest::addColumn<QString>("scenario");
-        for (const auto* value : {"reorder-duplicate", "replace-incomplete", "unknown", "short-header", "oversize",
+        for (const auto* value : {"reorder-duplicate", "replace-incomplete", "udp-range-unavailable", "unknown", "short-header", "oversize",
             "unaligned", "invalid-json", "invalid-format", "empty-metadata", "oversize-metadata", "missing-payload",
             "oversize-payload", "changing-size", "invalid-serial"})
             QTest::newRow(value) << QString(value);
@@ -2471,12 +2484,28 @@ private slots:
         const auto identity = TlsIdentity::create(); auto configuration = identity.configuration();
         configuration.setPeerVerifyMode(QSslSocket::VerifyNone);
         QSslServer server; server.setSslConfiguration(configuration);
+        std::vector<std::unique_ptr<QUdpSocket>> occupiedRange;
+        quint16 firstPort = 0;
+        if (scenario == "udp-range-unavailable") {
+            auto first = std::make_unique<QUdpSocket>();
+            QVERIFY(first->bind(QHostAddress::LocalHost, 0, QUdpSocket::DontShareAddress));
+            firstPort = first->localPort();
+            occupiedRange.push_back(std::move(first));
+            for (int offset = 1; offset < 64; ++offset) {
+                auto socket = std::make_unique<QUdpSocket>();
+                const auto port = quint16(1024 + (int(firstPort) - 1024 + offset) % (65536 - 1024));
+                QVERIFY(socket->bind(QHostAddress::LocalHost, port, QUdpSocket::DontShareAddress)
+                    || socket->error() == QAbstractSocket::AddressInUseError
+                    || socket->error() == QAbstractSocket::SocketAccessError);
+                occupiedRange.push_back(std::move(socket));
+            }
+        }
         // Hold both protocols until the real media transport takes over UDP.
-        // Ask TCP for the ephemeral port first: Windows can protect UDP-chosen
-        // ports from TCP listeners.
         QUdpSocket reservation;
         QString endpointError;
-        QVERIFY2(listenWithReservedUdp(server, reservation, &endpointError), qPrintable(endpointError));
+        QVERIFY2(listenWithReservedUdp(server, reservation, &endpointError, firstPort), qPrintable(endpointError));
+        for (size_t offset = 0; offset < occupiedRange.size(); ++offset)
+            QVERIFY(server.serverPort() != quint16(1024 + (int(firstPort) - 1024 + int(offset)) % (65536 - 1024)));
         QVERIFY(client.channel.join(identity.id(), "127.0.0.1", server.serverPort()));
         QTRY_VERIFY(server.hasPendingConnections());
         auto* control = qobject_cast<QSslSocket*>(server.nextPendingConnection()); QVERIFY(control);
@@ -2521,7 +2550,8 @@ private slots:
             qToBigEndian(serial, bytes.data() + 4); qToBigEndian<quint32>(quint32(envelope.size()), bytes.data() + 12);
             qToBigEndian(offset, bytes.data() + 16); bytes += envelope.mid(offset, 16364); return bytes;
         };
-        const bool accepted = scenario == "reorder-duplicate" || scenario == "replace-incomplete" || scenario == "unknown";
+        const bool accepted = scenario == "reorder-duplicate" || scenario == "replace-incomplete"
+            || scenario == "udp-range-unavailable" || scenario == "unknown";
         auto first = fragment(1, 0);
         if (scenario == "short-header") first = "SQVF";
         if (scenario == "oversize") qToBigEndian<quint32>(3000000, first.data() + 12);
