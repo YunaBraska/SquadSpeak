@@ -647,7 +647,7 @@ private slots:
         for (int i = 0; i < 530; ++i) {
             if (i % 8 == 0) now += 10000;
             QVERIFY(a.channel.sendChat(QString::number(i)));
-            QTRY_VERIFY(!a.channel.chatPending());
+            QVERIFY(waitForEvents(&a.channel, &LocalChannel::chatChanged, [&] { return !a.channel.chatPending(); }));
             QVERIFY2(a.channel.chatError().isEmpty(), qPrintable(a.channel.chatError()));
         }
         a.channel.leave(); b.channel.leave();
