@@ -1693,7 +1693,11 @@ private slots:
             QVERIFY(clients[size_t(n)]->channel.join(n % 2 ? secondId : host.channel.ownId(), "localhost", host.channel.port()));
         QTRY_COMPARE_WITH_TIMEOUT(host.channel.hostParticipants().size(), 32, 15000);
         QTRY_COMPARE_WITH_TIMEOUT(second->hostParticipants().size(), 32, 15000);
-        for (int n = 0; n < 64; ++n) QTRY_VERIFY(clients[size_t(n)]->channel.joined());
+        // The preceding participant milestones use the same bounded 15-second
+        // admission budget. Individual client notifications may arrive after
+        // the aggregate host roster is already complete on native runners.
+        for (int n = 0; n < 64; ++n)
+            QTRY_VERIFY_WITH_TIMEOUT(clients[size_t(n)]->channel.joined(), 15000);
         auto& overflow = clients[64]->channel;
         QVERIFY(overflow.openChat(secondId, "localhost", host.channel.port()));
         QTRY_VERIFY(overflow.chatReady());
@@ -1702,7 +1706,7 @@ private slots:
         QTRY_COMPARE(overflow.screenInfo(secondId).value("tier").toInt(), 1);
         QVERIFY(overflow.chatReady());
         QVERIFY(overflow.join(host.channel.ownId(), "localhost", host.channel.port()));
-        QTRY_VERIFY(overflow.joined());
+        QTRY_VERIFY_WITH_TIMEOUT(overflow.joined(), 15000);
         QCOMPARE(host.channel.hostParticipants().size(), 33);
         QCOMPARE(second->hostParticipants().size(), 32);
         const auto longName = QString::fromUcs4(U"🌊").repeated(64);
@@ -1711,13 +1715,14 @@ private slots:
             QVERIFY(client->session.setUserName(longName));
             if (client->channel.joinedHostId() != host.channel.ownId()) {
                 QVERIFY(client->channel.join(host.channel.ownId(), "localhost", host.channel.port()));
-                QTRY_VERIFY(client->channel.joined());
+                QTRY_VERIFY_WITH_TIMEOUT(client->channel.joined(), 15000);
             }
         }
         for (int n = 65; n < 72; ++n) {
             const auto& client = clients[size_t(n)];
             QVERIFY(client->session.setUserName(longName));
-            QVERIFY(client->join(host.channel)); QTRY_VERIFY(client->channel.joined());
+            QVERIFY(client->join(host.channel));
+            QTRY_VERIFY_WITH_TIMEOUT(client->channel.joined(), 15000);
         }
         QTRY_COMPARE_WITH_TIMEOUT(clients.back()->channel.participants().size(), 72, 15000);
         QVERIFY(clients.front()->channel.joined());
@@ -6933,7 +6938,7 @@ private slots:
                 if (receiverCount[group] && receivers[group].write(bytes) != bytes.size()) return -1;
             return commandSerial;
         };
-        const auto commandReceivers = [&](QJsonObject command) {
+        const auto commandReceivers = [&](QJsonObject command, int timeoutMs = 10000) {
             const bool polling = receiverPoll.isActive();
             receiverPoll.stop();
             const auto resume = qScopeGuard([&] { if (polling) receiverPoll.start(); });
@@ -6943,7 +6948,7 @@ private slots:
                 for (size_t group = 0; group < receivers.size(); ++group)
                     if (receiverCount[group] && receiverStates[group].value("serial").toInt() < serial) return false;
                 return receiverOutputValid;
-            }, 10000);
+            }, timeoutMs);
         };
         const auto allReceivers = [&](auto matches) {
             for (const auto& report : receiverStates)
@@ -6991,7 +6996,9 @@ private slots:
         // Real devices generate their identities on independent event loops.
         // Finish this process's CPU-bound setup before starting network timers.
         for (const auto& client : clients) QVERIFY(joinHost(*client));
-        QVERIFY(commandReceivers({{"operation", "join"}, {"host", hostId}, {"port", hostPort}}));
+        // This starts every receiver's TLS join. Use the same 30-second
+        // convergence budget as the following participant assertions.
+        QVERIFY(commandReceivers({{"operation", "join"}, {"host", hostId}, {"port", hostPort}}, 30000));
         for (const auto& client : clients) QTRY_COMPARE_WITH_TIMEOUT(
             client->channel.participants().size(), participantCount, 30000);
         QTRY_VERIFY(allReceivers([&](const QJsonObject& member) {
