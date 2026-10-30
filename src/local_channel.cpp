@@ -782,7 +782,7 @@ bool LocalChannel::removeOwnedChannel(const QString& id) {
     child->history_.reset();
     const auto reopen = [&] {
         if (!hadHistory) return true;
-        try { child->history_ = std::make_unique<ChatHistory>(child->storageFile_ + ".chat", *child->identity_, clock_()); return true; }
+        try { child->history_ = std::make_unique<ChatHistory>(child->storageFile_ + ".chat", *child->identity_, clock_(), 0); return true; }
         catch (const std::exception& error) { child->stopHost(); return setStatus(tr(error.what()), false); }
     };
     if (!QDir().rename(directory, directory + ".deleted")) {
@@ -990,15 +990,22 @@ void LocalChannel::maintainContacts(bool observeChange) {
         const auto contacts = privatePeers.value(peer).toObject().value("contacts").toObject();
         for (auto contact = contacts.begin(); contact != contacts.end(); ++contact) {
             const auto id = conversationId(ownId(), peer, contact.key());
-            if (privateStates.contains(id)) expired.insert(id);
+            if (privateStates.contains(id) || QFile::exists(storageFile_ + ".private/" + id + ".sqlite")) expired.insert(id);
         }
     }
-    for (const auto& id : expired.values()) if (privateStates.contains(id)) {
-        if (privateStates.value(id).toObject().value("expires").toInteger() > now) {
-            expired.remove(id); continue;
+    for (const auto& id : expired.values()) {
+        const auto path = storageFile_ + ".private/" + id;
+        if (!privateStates.contains(id) && !QFile::exists(path + ".sqlite")) continue;
+        try {
+            if (QFile::exists(path + ".sqlite") && privateHistory(id)->expires() > now) {
+                expired.remove(id); continue;
+            }
+        } catch (const std::exception& error) {
+            expired.remove(id);
+            chatError_ = QString::fromUtf8(error.what()); emit chatChanged();
+            continue;
         }
         privateHistories_.remove(id);
-        const auto path = storageFile_ + ".private/" + id;
         bool removed = true;
         for (const auto* suffix : {".sqlite", ".sqlite-journal"})
             if (QFile::exists(path + suffix) && !QFile::remove(path + suffix)) removed = false;
@@ -1083,10 +1090,6 @@ bool LocalChannel::persist(const QSet<QString>& approved, const QHash<QString, A
     if (!hostName_.isEmpty()) object.insert("hostName", hostName_);
     auto nextSecurity = security;
     auto lastSeen = security.value("lastSeen").toObject();
-    const auto states = security.value("privateStates").toObject();
-    for (auto it = states.begin(); it != states.end(); ++it)
-        if (it.value().toObject().value("expires").toInteger() > security_.value("privateStates").toObject().value(it.key()).toObject().value("expires").toInteger())
-            lastSeen.insert(it.key(), clock_());
     const auto ids = storedContacts(object);
     for (const auto& id : ids) if (!lastSeen.contains(id)) lastSeen.insert(id, clock_());
     for (auto it = lastSeen.begin(); it != lastSeen.end();)
@@ -1394,7 +1397,7 @@ bool LocalChannel::listen(const QHostAddress& address, quint16 port) {
         return false;
     if (!startService(address, port)) return false;
     try {
-        history_ = std::make_unique<ChatHistory>(storageFile_ + ".chat", *identity_, clock_());
+        history_ = std::make_unique<ChatHistory>(storageFile_ + ".chat", *identity_, clock_(), 0);
         hostChatKey_ = TlsIdentity::newKey();
         hostChatEpoch_ = QUuid::createUuid().toString(QUuid::WithoutBraces);
     } catch (const std::exception& error) { return setStatus(tr(error.what()), false); }
@@ -1808,7 +1811,8 @@ void LocalChannel::acceptPeer(QSslSocket* socket) {
     if (controller) {
         const auto allowed = control_.value("controllers").toObject().value(peers_[socket].id).toObject().value("remote").toBool()
             && (!peers_[socket].capabilitiesAdvertised || peers_[socket].capabilities.contains("remote-control"));
-        writeMessage(socket, {{"type", "control"}, {"result", "accepted"}, {"remoteAllowed", allowed}, {"capabilities", capabilityAdvertisement()}});
+        writeMessage(socket, {{"type", "control"}, {"result", "accepted"}, {"name", session_.userName()},
+            {"remoteAllowed", allowed}, {"capabilities", capabilityAdvertisement()}});
         if (allowed) sendRemoteView(socket);
     } else writeMessage(socket, {{"type", "join"}, {"result", "accepted"}, {"adaptiveAudio", peers_[socket].adaptiveAudio}, {"capabilities", capabilityAdvertisement()}});
     if (wasPending) emit requestsChanged();
@@ -1841,7 +1845,7 @@ void LocalChannel::hostMessage(QSslSocket* socket, const QJsonObject& message) {
     }
     const auto id = peers_[socket].id;
     if (type == "identify" && peers_[socket].name.isEmpty() && message.value("version").toInt() == 1) {
-        writeMessage(socket, {{"type", "identity"}, {"version", 1}, {"name", hostOnly_ ? channelName_ : session_.userName()},
+        writeMessage(socket, {{"type", "identity"}, {"version", 1}, {"name", channelName_},
             {"channel", channelName_}, {"hosting", hosting()}, {"channels", channelDirectory()}});
         finishPeer(socket);
         return;

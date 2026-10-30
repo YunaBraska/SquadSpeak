@@ -422,6 +422,10 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Text size</source>
+            <translation>Μέγεθος κειμένου</translation>
+        </message>
+        <message>
             <source>Audio received</source>
             <translation>Λαμβανόμενος ήχος</translation>
         </message>

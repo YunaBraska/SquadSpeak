@@ -6,19 +6,19 @@ description: SquadSpeak desktop release availability and the planned installatio
 
 <header class="page-heading">
   <p class="eyebrow">Release availability</p>
-  <h1>Stable downloads follow the voice check.</h1>
-  <p>SquadSpeak's desktop packaging and macOS delivery path are prepared. Public distribution waits for prolonged voice sessions to meet the continuity requirement.</p>
+  <h1>Choose your desktop package.</h1>
+  <p>Desktop packages are available on GitHub. Current corrections are delivered as snapshots while voice and device qualification continues.</p>
 </header>
 
 <section class="install-step">
   <h2>GitHub download</h2>
-  <p>Stable packages will be published on the release page after the voice-continuity check passes. Preview assets, if present, are not an everyday release channel.</p>
+  <p>The release page distinguishes stable packages from snapshot previews. Read the known limitations for your version before installing.</p>
   <p><a class="button" href="https://github.com/YunaBraska/SquadSpeak/releases">View releases</a></p>
 </section>
 
 <section class="install-step">
   <h2>Homebrew</h2>
-  <p>The macOS cask will be added after the first stable signed and notarized desktop release. It will use the same YunaBraska tap as the other macOS apps.</p>
+  <p>The SquadSpeak cask is not yet published in the YunaBraska tap. Use the macOS release archive for now.</p>
 </section>
 
 <section class="install-step">

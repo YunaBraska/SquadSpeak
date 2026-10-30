@@ -24,6 +24,7 @@ ENV PATH="/usr/local/cargo/bin:${PATH}" RUSTUP_HOME=/usr/local/rustup CARGO_HOME
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
     build-essential ccache clang llvm libclang-rt-dev cmake ninja-build meson pkg-config ca-certificates python3 git openssl \
     libssl-dev libopus-dev libsamplerate0-dev libpulse-dev libsecret-1-dev \
+    libproxy-dev libkrb5-dev libsctp-dev libpsl-dev libzstd-dev \
     libavcodec-dev libavformat-dev libavutil-dev libswscale-dev libswresample-dev \
     qt6-base-dev qt6-base-private-dev qt6-declarative-dev qt6-declarative-private-dev \
     qt6-multimedia-dev qt6-shadertools-dev qt6-svg-private-dev qt6-tools-dev qt6-l10n-tools \

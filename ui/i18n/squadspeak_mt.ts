@@ -422,6 +422,10 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Text size</source>
+            <translation>Daqs tat-test</translation>
+        </message>
+        <message>
             <source>Audio received</source>
             <translation>Awdjo riċevut</translation>
         </message>

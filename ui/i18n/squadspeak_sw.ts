@@ -422,6 +422,10 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Text size</source>
+            <translation>Ukubwa wa maandishi</translation>
+        </message>
+        <message>
             <source>Audio received</source>
             <translation>Sauti iliyopokelewa</translation>
         </message>

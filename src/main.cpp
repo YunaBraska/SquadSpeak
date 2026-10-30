@@ -12,6 +12,7 @@
 #endif
 #if defined(Q_OS_MACOS) || defined(Q_OS_IOS)
 #include "apple_notifications.hpp"
+#include "system_appearance.hpp"
 #endif
 
 #include <QApplication>
@@ -31,6 +32,7 @@
 #include <QPainterPath>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
+#include <QQmlPropertyMap>
 #include <QQuickStyle>
 #include <QQuickWindow>
 #include <QStandardPaths>
@@ -41,6 +43,8 @@
 
 #include <cstdio>
 #ifdef Q_OS_MACOS
+#include <QKeySequence>
+#include <QMenuBar>
 #import <AppKit/AppKit.h>
 #endif
 
@@ -166,7 +170,15 @@ int main(int argc, char** argv) {
 #ifdef SQUADSPEAK_UPDATES
         AppUpdates updates(!arguments.isSet("smoke-test"));
 #endif
+        QQmlPropertyMap systemAppearance;
+#if defined(Q_OS_MACOS) || defined(Q_OS_IOS)
+        observeSystemAppearance(systemAppearance);
+#else
+        systemAppearance.insert("reducedMotion", false);
+        systemAppearance.insert("textScale", 1.0);
+#endif
         QQmlApplicationEngine engine;
+        engine.rootContext()->setContextProperty("systemAppearance", &systemAppearance);
         engine.setUiLanguage(session.language());
         QObject::connect(&session, &VoiceSession::preferencesChanged, &engine, [&] {
             if (applyLanguage()) {
@@ -319,6 +331,33 @@ int main(int argc, char** argv) {
         auto* settingsAction = menu.addAction(QCoreApplication::translate("Tray", "Settings"), &app, showSettings);
         menu.addSeparator();
         auto* quitAction = menu.addAction(QCoreApplication::translate("Tray", "Quit"), &app, &QCoreApplication::quit);
+#ifdef Q_OS_MACOS
+        // A parentless menu bar supplies the native app menu to Qt Quick windows.
+        QMenuBar applicationMenuBar;
+        auto* applicationMenu = applicationMenuBar.addMenu(app.applicationName());
+        auto* aboutAction = applicationMenu->addAction(QCoreApplication::translate("Channels", "About"), channels,
+            [channels, showChannels] {
+                showChannels();
+                QMetaObject::invokeMethod(channels, "openSettings", Q_ARG(QVariant, 3));
+            });
+        aboutAction->setMenuRole(QAction::AboutRole);
+        settingsAction->setMenuRole(QAction::PreferencesRole);
+        settingsAction->setShortcut(QKeySequence::Preferences);
+        settingsAction->setShortcutContext(Qt::ApplicationShortcut);
+        quitAction->setMenuRole(QAction::QuitRole);
+        applicationMenu->addAction(settingsAction);
+        applicationMenu->addSeparator();
+        applicationMenu->addAction(quitAction);
+        const auto updateLocalMenu = [&channel, settingsAction, aboutAction] {
+            settingsAction->setEnabled(!channel.remoteMode());
+            aboutAction->setEnabled(!channel.remoteMode());
+        };
+        QObject::connect(&channel, &LocalChannel::remoteChanged, &applicationMenuBar, updateLocalMenu);
+        updateLocalMenu();
+        QObject::connect(&session, &VoiceSession::preferencesChanged, &applicationMenuBar, [aboutAction] {
+            aboutAction->setText(QCoreApplication::translate("Channels", "About"));
+        });
+#endif
         QObject::connect(&session, &VoiceSession::preferencesChanged, &menu, [&] {
             channelsAction->setText(QCoreApplication::translate("Tray", "Channels"));
             settingsAction->setText(QCoreApplication::translate("Tray", "Settings"));
@@ -365,6 +404,28 @@ int main(int argc, char** argv) {
             if (!audio.selectInput("")) return 1;
             showChannels();
             if (!session.available()) return 1;
+#ifdef Q_OS_MACOS
+            qInfo("UI smoke: checking native Settings and About actions");
+            auto* settingsDialog = channels->findChild<QObject*>("settingsDialog");
+            settingsAction->trigger();
+            if ((QGuiApplication::platformName() == "cocoa" && !applicationMenuBar.isNativeMenuBar())
+                    || settingsAction->shortcut() != QKeySequence(QKeySequence::Preferences)
+                    || !settingsDialog || !settingsDialog->property("visible").toBool()
+                    || channels->property("settingsPage").toInt() != 0 || !session.available()) {
+                qCritical("UI smoke: native Settings must open the profile settings (platform=%s native=%d shortcut=%d dialog=%d visible=%d page=%d voice=%d)",
+                    qPrintable(QGuiApplication::platformName()), applicationMenuBar.isNativeMenuBar(),
+                    settingsAction->shortcut() == QKeySequence(QKeySequence::Preferences), bool(settingsDialog),
+                    settingsDialog && settingsDialog->property("visible").toBool(),
+                    channels->property("settingsPage").toInt(), session.available());
+                return 1;
+            }
+            aboutAction->trigger();
+            if (!settingsDialog->property("visible").toBool() || channels->property("settingsPage").toInt() != 3
+                    || !session.available()) {
+                qCritical("UI smoke: native About must open the About settings");
+                return 1;
+            }
+#endif
             if (!QMetaObject::invokeMethod(channels, "openSettings", Q_ARG(QVariant, 1)) || !session.available()) {
                 qCritical("UI smoke: audio settings must preserve voice availability");
                 return 1;

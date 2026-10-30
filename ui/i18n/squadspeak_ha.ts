@@ -422,6 +422,10 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Text size</source>
+            <translation>Girman rubutu</translation>
+        </message>
+        <message>
             <source>Audio received</source>
             <translation>Sautin da aka karɓa</translation>
         </message>

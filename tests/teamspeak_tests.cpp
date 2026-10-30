@@ -606,6 +606,8 @@ private slots:
         const auto peer = QString::fromLatin1(QCryptographicHash::hash((server + "/member/remote-uid").toUtf8(), QCryptographicHash::Sha256).toHex());
         QVERIFY(channel.openPrivateChat(host, peer));
         QTRY_VERIFY_WITH_TIMEOUT(channel.chatReady(), 1000);
+        QVERIFY(!channel.setPrivateBlocked(channel.chatHostId(), true));
+        QVERIFY(!channel.privateBlocked());
         {
             const QMutexLocker lock(&fakeMutex);
             fakeEvents.enqueue(QJsonDocument(QJsonObject{{"type", "message"}, {"mode", "private"}, {"fromId", "7"}, {"fromUid", messageUid}, {"fromName", "Remote"}, {"text", "hello privately"}}).toJson(QJsonDocument::Compact));

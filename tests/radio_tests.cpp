@@ -23,6 +23,89 @@
 class RadioTests final : public QObject {
     Q_OBJECT
 private slots:
+    void fragmentedHttpHeaderProducesAudio() {
+        RadioStation station;
+        QTcpSocket client;
+        const QUrl url(station.url());
+        client.connectToHost(url.host(), quint16(url.port()));
+        QTRY_COMPARE(client.state(), QAbstractSocket::ConnectedState);
+        QTRY_COMPARE(station.sockets.size(), 1);
+        QSignalSpy received(*station.sockets.cbegin(), &QTcpSocket::readyRead);
+        QCOMPARE(client.write("G"), 1);
+        // Observe the real socket delivery before sending the next fragment.
+        QTRY_VERIFY(!received.isEmpty());
+        QCOMPARE(client.bytesAvailable(), 0);
+        const QByteArray rest = "ET /radio.wav HTTP/1.1\r\nHost: localhost";
+        QCOMPARE(client.write(rest), rest.size());
+        QTRY_VERIFY(received.size() >= 2);
+        QCOMPARE(client.bytesAvailable(), 0);
+        QCOMPARE(client.write("\r\n\r\n"), 4);
+        QByteArray response;
+        QVERIFY(waitForEvents([&] {
+            response += client.readAll();
+            const auto headerEnd = response.indexOf("\r\n\r\n");
+            return headerEnd >= 0 && response.size() >= headerEnd + 4 + 44 + 4;
+        }));
+        QVERIFY(response.startsWith("HTTP/1.1 200 OK\r\n"));
+        const auto wav = response.mid(response.indexOf("\r\n\r\n") + 4);
+        QCOMPARE(wav.first(4), QByteArray("RIFF"));
+        QCOMPARE(wav.mid(8, 4), QByteArray("WAVE"));
+        QCOMPARE(qFromLittleEndian<quint32>(wav.constData() + 24), quint32(48000));
+        QCOMPARE(qFromLittleEndian<qint16>(wav.constData() + 46), qint16(402));
+    }
+    void httpHeaderSizeIsBounded_data() {
+        QTest::addColumn<int>("size");
+        QTest::addColumn<bool>("complete");
+        QTest::newRow("limit") << 8192 << true;
+        QTest::newRow("oversized") << 8193 << true;
+        QTest::newRow("unterminated") << 8193 << false;
+    }
+    void httpHeaderSizeIsBounded() {
+        QFETCH(int, size);
+        QFETCH(bool, complete);
+        RadioStation station;
+        QTcpSocket client;
+        const QUrl url(station.url());
+        client.connectToHost(url.host(), quint16(url.port()));
+        QTRY_COMPARE(client.state(), QAbstractSocket::ConnectedState);
+        QByteArray request = "GET /radio.wav HTTP/1.1\r\nHost: localhost\r\nX-Padding: ";
+        request += QByteArray(size - request.size() - (complete ? 4 : 0), 'x');
+        if (complete) request += "\r\n\r\n";
+        QCOMPARE(client.write(request), request.size());
+        if (size == 8192) {
+            QByteArray response;
+            QVERIFY(waitForEvents([&] {
+                response += client.readAll();
+                return response.contains("\r\n\r\nRIFF");
+            }));
+            QVERIFY(response.startsWith("HTTP/1.1 200 OK\r\n"));
+        } else {
+            QTRY_COMPARE(client.state(), QAbstractSocket::UnconnectedState);
+            QVERIFY(client.readAll().isEmpty());
+        }
+    }
+    void oneHttpConnectionStartsOneStream() {
+        RadioStation station;
+        QTcpSocket client;
+        const QUrl url(station.url());
+        client.connectToHost(url.host(), quint16(url.port()));
+        QTRY_COMPARE(client.state(), QAbstractSocket::ConnectedState);
+        QTRY_COMPARE(station.sockets.size(), 1);
+        auto* serverSocket = *station.sockets.cbegin();
+        QSignalSpy received(serverSocket, &QTcpSocket::readyRead);
+        const QByteArray request = "GET /radio.wav HTTP/1.1\r\nHost: localhost\r\n\r\n";
+        QCOMPARE(client.write(request), request.size());
+        QTRY_VERIFY(!received.isEmpty());
+        QCOMPARE(client.write(request), request.size());
+        QTRY_VERIFY(received.size() >= 2);
+        // A graceful close delivers every queued byte, including an erroneous
+        // second response, before the client observes the end of the stream.
+        serverSocket->disconnectFromHost();
+        QTRY_COMPARE(client.state(), QAbstractSocket::UnconnectedState);
+        const auto response = client.readAll();
+        QVERIFY(response.startsWith("HTTP/1.1 200 OK\r\n"));
+        QCOMPARE(response.count("HTTP/1.1 200 OK\r\n"), 1);
+    }
     void damagedSettingsUseSelectedLanguage_data() {
         QTest::addColumn<QString>("language");
         QTest::addColumn<QByteArray>("settings");

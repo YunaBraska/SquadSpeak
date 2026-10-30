@@ -363,6 +363,8 @@ bool ChatContent::prepareMessage(const QString& markdown) {
     busy_ = true; prepared_.clear(); error_.clear(); preparedUrl_ = link; emit changed();
     auto* manager = new QNetworkAccessManager(this);
     QNetworkRequest request(url);
+    // Avoid Qt's HTTP/2 CVE-2026-95620 and CVE-2026-96432 on distro runtimes.
+    request.setAttribute(QNetworkRequest::Http2AllowedAttribute, false);
     request.setMaximumRedirectsAllowed(5);
     request.setAttribute(QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::NoLessSafeRedirectPolicy);
     request.setAttribute(QNetworkRequest::CookieLoadControlAttribute, QNetworkRequest::Manual);

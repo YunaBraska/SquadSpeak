@@ -422,6 +422,10 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Text size</source>
+            <translation>Méid an téacs</translation>
+        </message>
+        <message>
             <source>Audio received</source>
             <translation>Fuaim faighte</translation>
         </message>

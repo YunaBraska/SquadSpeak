@@ -15,6 +15,7 @@
 #include <QtQuickTest/quicktest.h>
 #include <QQmlEngine>
 #include <QQmlContext>
+#include <QQmlPropertyMap>
 #include <QDir>
 #include <QQuickWindow>
 #include <QQuickItem>
@@ -88,6 +89,7 @@ class AudioFixtures final : public QObject {
     std::array<VideoCodec, 4> videoEncoders_;
     QTranslator translation_;
     QString appliedLanguage_ = "en";
+    QQmlPropertyMap systemAppearance_;
 public slots:
     QString imageDraft(const QString& markdown) const {
         return ChatContent::embedImage(markdown, chatContent_.preparedImage());
@@ -468,6 +470,9 @@ public slots:
         station_ = std::make_unique<RadioStation>();
         qputenv("QT_SSL_USE_TEMPORARY_KEYCHAIN", "1");
         engine->rootContext()->setContextProperty("fixtures", this);
+        systemAppearance_.insert("reducedMotion", false);
+        systemAppearance_.insert("textScale", 1.0);
+        engine->rootContext()->setContextProperty("systemAppearance", &systemAppearance_);
         session_ = std::make_unique<VoiceSession>(folder_.filePath("session.json"));
         license_ = std::make_unique<License>(folder_.filePath("license"), QJsonObject{}, QUrl{});
         engine->rootContext()->setContextProperty("supporterLicense", license_.get());

@@ -23,7 +23,7 @@ description: Private voice, Markdown chat and animated portraits for direct conv
   <div class="feature-grid">
     <article class="feature"><h3>Join your own channels</h3><p>Discover nearby conversations or connect directly by host name or IP address, with device approvals under the channel owner's control.</p></article>
     <article class="feature"><h3>Keep voice and chat together</h3><p>Speak, write Markdown, share a channel and see the people in it without bouncing between separate tools.</p></article>
-    <article class="feature"><h3>Make the space feel human</h3><p>Animated portraits, local settings and compact controls leave room for the conversation instead of another corporate dashboard.</p></article>
+    <article class="feature"><h3>Make the space feel human</h3><p>Choose a portrait and adjust your microphone and listening volume without leaving the conversation.</p></article>
   </div>
 </section>
 
@@ -37,11 +37,11 @@ description: Private voice, Markdown chat and animated portraits for direct conv
 </section>
 
 <section class="section">
-  <h2>Desktop distribution is being finished deliberately.</h2>
-  <p class="section-intro">Stable macOS distribution remains on hold until prolonged voice sessions pass continuity verification. That avoids asking people to install a build that loses audio during a real conversation.</p>
+  <h2>Desktop downloads and previews.</h2>
+  <p class="section-intro">Existing desktop releases are available on GitHub. Current corrections remain in snapshots while voice and device qualification continues.</p>
   <div class="install-options">
-    <article class="install-option"><h3>GitHub download</h3><p>Stable public downloads will appear after the voice-continuity check is complete.</p><a href="https://github.com/YunaBraska/SquadSpeak/releases">View release status</a></article>
-    <article class="install-option"><h3>Homebrew</h3><p>The cask follows the first stable macOS release, not a preview build.</p></article>
+    <article class="install-option"><h3>GitHub download</h3><p>Choose a published desktop package and check its release notes.</p><a href="https://github.com/YunaBraska/SquadSpeak/releases">View release status</a></article>
+    <article class="install-option"><h3>Homebrew</h3><p>The cask is not yet published in the tap.</p></article>
     <article class="install-option"><h3>Mac App Store</h3><p>Coming later, after the desktop release channel is established.</p></article>
   </div>
 </section>

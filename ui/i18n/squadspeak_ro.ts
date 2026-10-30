@@ -422,6 +422,10 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Text size</source>
+            <translation>Dimensiunea textului</translation>
+        </message>
+        <message>
             <source>Audio received</source>
             <translation>Sunet primit</translation>
         </message>

@@ -422,6 +422,10 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Text size</source>
+            <translation>Textstorlek</translation>
+        </message>
+        <message>
             <source>Audio received</source>
             <translation>Mottaget ljud</translation>
         </message>

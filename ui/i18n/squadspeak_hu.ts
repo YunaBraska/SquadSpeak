@@ -422,6 +422,10 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Text size</source>
+            <translation>Szövegméret</translation>
+        </message>
+        <message>
             <source>Audio received</source>
             <translation>Fogadott hang</translation>
         </message>

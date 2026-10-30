@@ -3,7 +3,7 @@ import QtQuick.Controls.Basic
 
 TextField {
     id: root
-    implicitHeight: 38
+    implicitHeight: Math.max(38, contentHeight + topPadding + bottomPadding)
     leftPadding: 12
     rightPadding: 12
     color: Theme.text

@@ -29,7 +29,7 @@ Item {
         function onMicrophoneAccessDenied() { if (root.Window.window && root.Window.window.visible) microphonePermission.open() }
     }
     component SectionLabel: Label {
-        font.pixelSize: 16
+        font.pixelSize: Theme.fontSize(16)
         font.weight: Font.DemiBold
         topPadding: 8
     }
@@ -57,7 +57,8 @@ Item {
             }
         }
         ColumnLayout {
-            width: parent.width
+            objectName: "audioSettingsContent"
+            width: settingsScroll.availableWidth
             spacing: 10
             ColumnLayout {
                 visible: root.settingsPage === 0
@@ -82,7 +83,7 @@ Item {
                 }
                 RowLayout {
                     Layout.fillWidth: true
-                    Label { text: audio.inputName; textFormat: Text.PlainText; elide: Text.ElideRight; Layout.fillWidth: true; color: Theme.muted; font.pixelSize: 11 }
+                    Label { text: audio.inputName; textFormat: Text.PlainText; elide: Text.ElideRight; Layout.fillWidth: true; color: Theme.muted; font.pixelSize: Theme.fontSize(11) }
                 }
                 SpectrumView {
                     Layout.fillWidth: true
@@ -94,6 +95,7 @@ Item {
                 RowLayout {
                     Layout.fillWidth: true
                     SettingToggle {
+                        Layout.fillWidth: true; Layout.minimumWidth: 0
                         objectName: "pushToTalkMode"
                         text: qsTr("Push to talk")
                         checked: root.sessionSource.pushToTalk
@@ -102,8 +104,7 @@ Item {
                             checked = Qt.binding(function() { return root.sessionSource.pushToTalk })
                         }
                     }
-                    Item { Layout.fillWidth: true }
-                    Label { text: qsTr("Voice activation"); visible: !root.sessionSource.pushToTalk; color: Theme.muted }
+                    Label { text: qsTr("Voice activation"); visible: !root.sessionSource.pushToTalk; color: Theme.muted; Layout.fillWidth: true; Layout.minimumWidth: 0; wrapMode: Text.Wrap; horizontalAlignment: Text.AlignRight }
                 }
                 SettingSlider {
                     objectName: "voiceThreshold"
@@ -179,7 +180,7 @@ Item {
                             objectName: "echoReference"
                             text: audio.echoReference
                             color: Theme.muted
-                            font.pixelSize: 12
+                            font.pixelSize: Theme.fontSize(12)
                             Layout.fillWidth: true
                         }
                         ActionButton {

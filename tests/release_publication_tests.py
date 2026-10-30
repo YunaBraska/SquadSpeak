@@ -426,6 +426,15 @@ add_custom_target(consumer ALL DEPENDS squad_teamspeak_build)
                         self.assertEqual(fingerprint(), baseline)
                     finally:
                         path.write_text(original)
+            for name in ("cmake/qt-network-security.patch", "cmake/qt-wayland.patch"):
+                with self.subTest(selection=selection, linux_only=name):
+                    path = self.root / name
+                    original = path.read_text()
+                    path.write_text(original + "\n# changed Linux-only repair\n")
+                    try:
+                        self.assertEqual(fingerprint() != baseline, "tests/linux-ci.sh" in json.loads(selection))
+                    finally:
+                        path.write_text(original)
             pins = ["cmake/Dependencies.cmake", "cmake/AudioProcessing.cmake", "cmake/Media.cmake",
                     "cmake/Updates.cmake", "cmake/qt-qml-runtime.patch", "cmake/source_archives.json"]
             pins += [name for name in json.loads(selection) if name.startswith("tests/")]
