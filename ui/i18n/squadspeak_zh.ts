@@ -990,6 +990,10 @@
             <translation>代码仓库</translation>
         </message>
         <message>
+            <source>Privacy policy</source>
+            <translation>Privacy policy</translation>
+        </message>
+        <message>
             <source>Report an issue</source>
             <translation>报告问题</translation>
         </message>
