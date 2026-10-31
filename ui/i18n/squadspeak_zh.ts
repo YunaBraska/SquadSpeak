@@ -422,6 +422,10 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Text size</source>
+            <translation>文字大小</translation>
+        </message>
+        <message>
             <source>Audio received</source>
             <translation>接收的音频</translation>
         </message>
@@ -988,6 +992,10 @@
         <message>
             <source>Repository</source>
             <translation>代码仓库</translation>
+        </message>
+        <message>
+            <source>Privacy policy</source>
+            <translation>Privacy policy</translation>
         </message>
         <message>
             <source>Report an issue</source>

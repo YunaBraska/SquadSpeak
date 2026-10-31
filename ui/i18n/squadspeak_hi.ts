@@ -422,6 +422,10 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Text size</source>
+            <translation>टेक्स्ट का आकार</translation>
+        </message>
+        <message>
             <source>Audio received</source>
             <translation>प्राप्त ऑडियो</translation>
         </message>
@@ -988,6 +992,10 @@
         <message>
             <source>Repository</source>
             <translation>रिपॉजिटरी</translation>
+        </message>
+        <message>
+            <source>Privacy policy</source>
+            <translation>Privacy policy</translation>
         </message>
         <message>
             <source>Report an issue</source>

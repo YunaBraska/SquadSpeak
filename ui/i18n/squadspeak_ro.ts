@@ -422,6 +422,10 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Text size</source>
+            <translation>Dimensiunea textului</translation>
+        </message>
+        <message>
             <source>Audio received</source>
             <translation>Sunet primit</translation>
         </message>
@@ -988,6 +992,10 @@
         <message>
             <source>Repository</source>
             <translation>Depozitul</translation>
+        </message>
+        <message>
+            <source>Privacy policy</source>
+            <translation>Privacy policy</translation>
         </message>
         <message>
             <source>Report an issue</source>

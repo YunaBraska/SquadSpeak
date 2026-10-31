@@ -6,6 +6,7 @@
 #include <QSignalSpy>
 #include <QElapsedTimer>
 #include <QUdpSocket>
+#include <QTcpServer>
 #include <QNetworkDatagram>
 #include <QTest>
 #include <QTimer>
@@ -803,10 +804,21 @@ private slots:
         VoiceSession hostSession(dir.filePath("host")), guestSession(dir.filePath("guest"));
         LocalChannel owner(hostSession, dir.filePath("host.channel"), TlsIdentity::create());
         LocalChannel guest(guestSession, dir.filePath("guest.channel"), TlsIdentity::create());
-        // A TCP-assigned ephemeral port may be unavailable for UDP on Windows.
-        // Select through UDP before sharing this endpoint with the channel host.
-        const auto port = availableUdpPort(); QVERIFY(port);
-        QVERIFY(owner.listen(QHostAddress::LocalHost, port));
+        // The host needs both protocols. Probe them together below the default
+        // dynamic ranges to avoid competing with outgoing ephemeral sockets.
+        QTcpServer tcp;
+        QUdpSocket udp;
+        quint16 port = 21000;
+        for (; port < 22000; ++port) {
+            if (!tcp.listen(QHostAddress::LocalHost, port)) continue;
+            if (udp.bind(QHostAddress::Any, port, QAbstractSocket::DontShareAddress)) break;
+            tcp.close();
+        }
+        QVERIFY2(port < 22000, qPrintable(QString("No shared TCP/UDP port in 21000-21999: %1; %2")
+            .arg(tcp.errorString(), udp.errorString())));
+        tcp.close();
+        QVERIFY2(owner.listen(QHostAddress::LocalHost, port), qPrintable(owner.status()));
+        udp.close();
         QVERIFY(owner.decide(guest.ownId(), true));
         QVERIFY(owner.join(owner.ownId(), "127.0.0.1", owner.port())); QTRY_VERIFY(owner.joined());
         QVERIFY(owner.setScreenSharing(true));

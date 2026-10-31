@@ -89,7 +89,7 @@ QJsonObject ChatHistory::forReader(QJsonObject message, bool extended) {
     return message;
 }
 
-ChatHistory::ChatHistory(QString file, const TlsIdentity& identity, qint64 now)
+ChatHistory::ChatHistory(QString file, const TlsIdentity& identity, qint64 now, int lockTimeoutMs)
     : file_(std::move(file)), context_("SquadSpeak/chat-store/v1/" + identity.id().toUtf8()), time_(timestamp(now)) {
     key_ = identity.deriveKey(context_, "history encryption");
     indexKey_ = identity.deriveKey(context_, "history index");
@@ -104,7 +104,7 @@ ChatHistory::ChatHistory(QString file, const TlsIdentity& identity, qint64 now)
             disk.close();
         }
         database_.setDatabaseName(path);
-        database_.setConnectOptions("QSQLITE_BUSY_TIMEOUT=1000");
+        database_.setConnectOptions("QSQLITE_BUSY_TIMEOUT=" + QString::number(std::clamp(lockTimeoutMs, 0, 1000)));
         require(database_.open(), QT_TRANSLATE_NOOP("LocalChannel", "Chat history could not be read."));
         query("PRAGMA journal_mode=DELETE");
         query("PRAGMA synchronous=FULL");
@@ -248,6 +248,11 @@ QJsonObject ChatHistory::page(qint64 cursor, const QString& direction, bool exte
         return result.next();
     };
     return {{"kind", "history"}, {"direction", direction}, {"records", records}, {"older", edge(true)}, {"newer", edge(false)}, {"now", time_}};
+}
+
+qint64 ChatHistory::expires() const {
+    auto latest = query("SELECT " + recordColumns + " FROM " + recordTables + " ORDER BY m.expires DESC LIMIT 1");
+    return latest.next() ? record(latest).value("expires").toInteger() : 0;
 }
 
 bool ChatHistory::expire(qint64 now) {

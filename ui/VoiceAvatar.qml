@@ -42,7 +42,7 @@ Item {
         || (animationTime < speechUntil && animationTime >= speechUntil - 240))
     readonly property int stateRow: !online ? 4 : speaking ? 1 : sleeping ? 4 : deafened ? 3 : muted ? 2 : 0
     readonly property int column: {
-        if (!online || !animated) return 0
+        if (!online || !animated || Theme.reducedMotion) return 0
         if (clipRow.pause > 0) return Atlas.idleColumn(clipRow, cycle, phase, animationSeed)
         const clip = (cycle + animationSeed + Math.floor(cycle / 3)) % clipRow.frames.length
         return clipRow.frames.slice(0, clip).reduce(function(sum, count) { return sum + count }, 0)
@@ -58,7 +58,7 @@ Item {
     }
     readonly property int frame: column - clipRow.frames.slice(0, variant).reduce(function(sum, count) { return sum + count }, 0)
     readonly property string displayAvatar: session.avatars.includes(avatar) ? avatar : session.avatarFallback(avatar)
-    readonly property url atlasSource: Qt.resolvedUrl("avatars/" + (systemMessage ? (animated ? "system-animated" : "system") : displayAvatar) + ".png")
+    readonly property url atlasSource: Qt.resolvedUrl("avatars/" + (systemMessage ? (animated && !Theme.reducedMotion ? "system-animated" : "system") : displayAvatar) + ".png")
     readonly property string stateLabel: [qsTr("Listening"), qsTr("Speaking"), qsTr("Muted"), qsTr("Deafened"), qsTr("Sleeping")][stateRow]
     implicitWidth: 48
     implicitHeight: 48
@@ -115,7 +115,7 @@ Item {
                 c.shadowBlur = 2
                 c.shadowOffsetY = 1.5
             }
-            const still = root.systemMessage && !root.animated
+            const still = root.systemMessage && (!root.animated || Theme.reducedMotion)
             const aspect = still ? 1 : crop.width / crop.height
             const w = Math.min(width, height * aspect), h = w / aspect
             const x = (width - w) / 2, y = (height - h) / 2

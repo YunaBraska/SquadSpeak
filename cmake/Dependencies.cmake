@@ -87,6 +87,12 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     # Includes upstream PipeWire listener lifetime fixes 1c6fb56 and 5a0d4a1:
     # unregister under the event-loop lock and consume callbacks before invoking.
     set(qt_capture_patches qt-wayland.patch)
+    FetchContent_Declare(qt_network
+        URL https://download.qt.io/archive/qt/6.10/6.10.2/submodules/qtbase-everywhere-src-6.10.2.tar.xz
+        URL_HASH SHA256=aeb78d29291a2b5fd53cb55950f8f5065b4978c25fb1d77f627d695ab9adf21e
+        SOURCE_SUBDIR unused DOWNLOAD_EXTRACT_TIMESTAMP TRUE)
+    set(qt_network_patches qt-network-security.patch)
+    list(APPEND qt_runtime_modules network)
 endif()
 if(CMAKE_SYSTEM_NAME MATCHES "^(Darwin|Linux|Windows)$")
     if(Qt6_VERSION VERSION_EQUAL "6.10.2")
@@ -119,6 +125,8 @@ if(qt_runtime_modules)
         FetchContent_MakeAvailable(qt_${module})
         if(module STREQUAL "capture")
             set(component Multimedia)
+        elseif(module STREQUAL "network")
+            set(component Network)
         else()
             set(component Qml)
         endif()
@@ -135,6 +143,30 @@ if(qt_runtime_modules)
                     WORKING_DIRECTORY "${source}" COMMAND_ERROR_IS_FATAL ANY)
             endif()
         endforeach()
+        set(module_cmake_args)
+        if(module STREQUAL "network")
+            # Build only Network against the installed Core/CorePrivate. A full
+            # QtBase build would produce another Core beside Network and put it
+            # on the application's runtime path.
+            # Preserve every exported Network feature. Missing development
+            # dependencies must fail configuration instead of removing proxy,
+            # authentication, compression or socket functionality silently.
+            foreach(visibility IN ITEMS PUBLIC PRIVATE)
+                foreach(state IN ITEMS ENABLED DISABLED)
+                    get_target_property(features Qt6::Network QT_${state}_${visibility}_FEATURES)
+                    if(features)
+                        foreach(feature IN LISTS features)
+                            if(state STREQUAL "ENABLED")
+                                list(APPEND module_cmake_args "-DFEATURE_${feature}=ON")
+                            else()
+                                list(APPEND module_cmake_args "-DFEATURE_${feature}=OFF")
+                            endif()
+                        endforeach()
+                    endif()
+                endforeach()
+            endforeach()
+            list(APPEND module_cmake_args -DSQUADSPEAK_NETWORK_ONLY=ON -DCMAKE_SKIP_RPATH=ON)
+        endif()
         set(module_build "${CMAKE_CURRENT_BINARY_DIR}/qt-${module}")
         set(libdir "${module_build}/${qt_runtime_libdir}")
         set(module_byproducts)
@@ -155,7 +187,7 @@ if(qt_runtime_modules)
         set(module_build_options
             BINARY_DIR "${module_build}"
             CMAKE_ARGS "-DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}" -DQT_BUILD_TESTS=OFF -DQT_BUILD_EXAMPLES=OFF
-                "-DQt6_DIR=${Qt6_DIR}" -DFEATURE_gstreamer=OFF
+                "-DQt6_DIR=${Qt6_DIR}" -DFEATURE_gstreamer=OFF ${module_cmake_args}
                 "-DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}" "-DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}"
                 "-DCMAKE_C_COMPILER_LAUNCHER=${CMAKE_C_COMPILER_LAUNCHER}"
                 "-DCMAKE_CXX_COMPILER_LAUNCHER=${CMAKE_CXX_COMPILER_LAUNCHER}"
@@ -169,6 +201,10 @@ if(qt_runtime_modules)
         if(module STREQUAL "capture")
             ExternalProject_Add(squad_qt_capture_build
                 SOURCE_DIR "${qt_capture_SOURCE_DIR}" DOWNLOAD_COMMAND "" UPDATE_COMMAND ""
+                INSTALL_COMMAND "" ${module_build_options})
+        elseif(module STREQUAL "network")
+            ExternalProject_Add(squad_qt_network_build
+                SOURCE_DIR "${qt_network_SOURCE_DIR}" DOWNLOAD_COMMAND "" UPDATE_COMMAND ""
                 INSTALL_COMMAND "" ${module_build_options})
         else()
             ExternalProject_Add(squad_qt_qml_build

@@ -27,6 +27,7 @@ Switch {
         leftPadding: control.mirrored || !control.text.length ? 0 : control.indicator.width + control.spacing
         rightPadding: !control.mirrored || !control.text.length ? 0 : control.indicator.width + control.spacing
         verticalAlignment: Text.AlignVCenter
+        wrapMode: Text.Wrap
         opacity: control.enabled ? 1 : 0.45
     }
 }

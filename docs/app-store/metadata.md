@@ -1,6 +1,6 @@
 # App Store listing
 
-This file is the review source for the Squad Speak Chat App Store Connect record. The public listing and privacy page must match it.
+This file is the review source for the Squad Speak App Store Connect record. The public listing and privacy page must match it.
 
 | Field | Value |
 | --- | --- |
@@ -13,7 +13,7 @@ This file is the review source for the Squad Speak Chat App Store Connect record
 
 ## English (U.S.)
 
-**Name:** Squad Speak Chat
+**Name:** Squad Speak
 
 **Subtitle:** Voice and chat for your channels
 
@@ -30,5 +30,5 @@ SquadSpeak is designed around direct channels instead of a general chat account.
 ## App review blockers
 
 - The current public product is still under development. Do not submit it for App Review until the voice-continuity and user-generated-content safety review is complete.
-- App review must accurately declare user-generated chat and voice content, peer-to-peer/user-hosted transport, reporting and blocking behavior, and microphone use.
+- Use the [App Review explanation](../app-review.md) for host responsibility, blocking limits and the unresolved Guideline 1.2 question. The sandboxed package still needs its own microphone, network, image-helper, screen-sharing and restart checks. A successful direct-download test does not prove sandbox behavior.
 - Screenshots: `docs/app-store/screenshots/mac/en-US/audio-settings.png` is 1280×800 with no alpha channel. Add up to nine further real macOS screenshots in the same accepted format.

@@ -171,3 +171,43 @@ https://github.com/qt/qtdeclarative/commit/4c1054b0f997f2977a54d42523856805b309d
 +        imm26 = (insn & 0x1ffffff) - (insn & 0x2000000);
          return (insn & 0x7c000000) == 0x14000000;
      }
+
+Preserve objects allocated by destruction handlers during collection:
+https://github.com/qt/qtdeclarative/commit/059ee9db91507b8b86cdf4bf033985c9ea41e0d4
+
+--- a/src/qml/memory/qv4mm.cpp
++++ b/src/qml/memory/qv4mm.cpp
+@@ -274,9 +274,12 @@
+     HeapItem *o = realBase();
+     bool lastSlotFree = false;
+     for (uint i = 0; i < Chunk::EntriesInBitmap; ++i) {
+-        quintptr toFree = objectBitmap[i] ^ blackBitmap[i];
++        // Destructors may allocate into this word while it is being swept.
++        const quintptr objectsToFree = objectBitmap[i] ^ blackBitmap[i];
++        const quintptr extendsBefore = extendsBitmap[i];
++        quintptr toFree = objectsToFree;
+         Q_ASSERT((toFree & objectBitmap[i]) == toFree); // check all black objects are marked as being used
+-        quintptr e = extendsBitmap[i];
++        quintptr e = extendsBefore;
+         SDUMP() << "   index=" << i;
+         SDUMP() << "        toFree      =" << binary(toFree);
+         SDUMP() << "        black       =" << binary(blackBitmap[i]);
+@@ -312,12 +315,13 @@
+             heaptrack_report_free(itemToFree);
+ #endif
+         }
+-        Q_V4_PROFILE_DEALLOC(engine, qPopulationCount((objectBitmap[i] | extendsBitmap[i])
+-                                                      - (blackBitmap[i] | e)) * Chunk::SlotSize,
++        const quintptr extendsToFree = extendsBefore & ~e;
++        Q_V4_PROFILE_DEALLOC(engine,
++                             qPopulationCount(objectsToFree | extendsToFree) * Chunk::SlotSize,
+                              Profiling::SmallItem);
+-        objectBitmap[i] = blackBitmap[i];
+-        hasUsedSlots |= (blackBitmap[i] != 0);
+-        extendsBitmap[i] = e;
++        objectBitmap[i] &= ~objectsToFree;
++        extendsBitmap[i] &= ~extendsToFree;
++        hasUsedSlots |= (objectBitmap[i] != 0);
+         lastSlotFree = !((objectBitmap[i]|extendsBitmap[i]) >> (sizeof(quintptr)*8 - 1));
+         SDUMP() << "        new extends =" << binary(e);
+         SDUMP() << "        lastSlotFree" << lastSlotFree;

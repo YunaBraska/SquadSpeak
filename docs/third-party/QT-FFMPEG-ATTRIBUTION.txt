@@ -38,6 +38,8 @@ All desktop builds additionally apply cmake/qt-qml-runtime.patch to the exact
 Qt Qml source (6.10.2 on Linux, 6.11.3 SDK on macOS/Windows). The JIT correction
 preserves its accumulator across property-setter calls that return no value:
 https://github.com/qt/qtdeclarative/commit/4c1054b0f997f2977a54d42523856805b309db9a
+The collector also retains the slots of objects created during destruction:
+https://github.com/qt/qtdeclarative/commit/059ee9db91507b8b86cdf4bf033985c9ea41e0d4
 Local changes replace unaligned pointer dereferences in X86Assembler with
 byte copies, preserving machine-code representation without alignment UB.
 Instrumented Clang builds retain Qt's sanitizer link policy. Two call boundaries

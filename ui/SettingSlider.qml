@@ -22,23 +22,26 @@ GridLayout {
     signal editingFinished()
     property bool ready: false
     property bool restoring: false
+    readonly property bool stacked: width < Theme.fontSize(300)
+    readonly property bool inlineFilter: toggleAvailable && !stacked
     Component.onCompleted: ready = true
-    columns: toggleAvailable ? 4 : 3
+    columns: stacked ? 2 : toggleAvailable ? 4 : 3
     columnSpacing: 6
     rowSpacing: 0
     Label {
         objectName: "filterCaption"
         text: caption; textFormat: Text.PlainText
         Layout.row: 0; Layout.column: 0
-        Layout.rowSpan: setting.toggleAvailable ? 2 : 1
+        Layout.rowSpan: setting.inlineFilter ? 2 : 1
+        Layout.columnSpan: setting.stacked && !setting.toggleAvailable ? 2 : 1
         Layout.fillWidth: true
-        Layout.preferredWidth: setting.toggleAvailable ? 112 : -1
-        Layout.maximumWidth: setting.toggleAvailable ? 112 : Infinity
+        Layout.preferredWidth: setting.inlineFilter ? 112 : -1
+        Layout.maximumWidth: setting.inlineFilter ? 112 : Infinity
         wrapMode: Text.Wrap
     }
     SettingToggle {
         objectName: "filterEnabledControl"
-        Layout.row: 0; Layout.column: 1; Layout.rowSpan: 2
+        Layout.row: 0; Layout.column: 1; Layout.rowSpan: setting.stacked ? 1 : 2
         visible: setting.toggleAvailable
         checked: setting.filterEnabled
         Accessible.name: setting.caption
@@ -50,13 +53,13 @@ GridLayout {
     CheckBox {
         id: automaticCheck
         objectName: "automaticControl"
-        Layout.row: setting.toggleAvailable ? 1 : 0
-        Layout.column: setting.toggleAvailable ? 3 : 1
+        Layout.row: setting.stacked || setting.toggleAvailable ? 1 : 0
+        Layout.column: setting.stacked ? 0 : setting.toggleAvailable ? 3 : 1
         Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
         visible: setting.autoAvailable
         enabled: setting.filterEnabled
         text: qsTr("Auto")
-        padding: 0; spacing: 4; font.pixelSize: 12
+        padding: 0; spacing: 4; font.pixelSize: Theme.fontSize(12)
         checked: setting.automatic
         indicator: Rectangle {
             implicitWidth: 14; implicitHeight: 14
@@ -77,8 +80,8 @@ GridLayout {
         objectName: "valueLabel"
         text: setting.filterEnabled ? valueText : qsTranslate("AudioSettings", "Off")
         textFormat: Text.PlainText; font.family: "monospace"
-        Layout.row: 0; Layout.column: setting.toggleAvailable ? 3 : 2
-        Layout.rowSpan: setting.toggleAvailable && !setting.autoAvailable ? 2 : 1
+        Layout.row: setting.stacked ? 1 : 0; Layout.column: setting.stacked ? 1 : setting.toggleAvailable ? 3 : 2
+        Layout.rowSpan: setting.inlineFilter && !setting.autoAvailable ? 2 : 1
         Layout.minimumWidth: setting.toggleAvailable ? 64 : 0
         horizontalAlignment: Text.AlignRight
         Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
@@ -87,11 +90,11 @@ GridLayout {
         id: control
         enabled: setting.filterEnabled
         objectName: "valueControl"
-        Layout.row: setting.toggleAvailable ? 0 : 1
-        Layout.column: setting.toggleAvailable ? 2 : 0
-        Layout.columnSpan: setting.toggleAvailable ? 1 : 3
-        Layout.rowSpan: setting.toggleAvailable ? 2 : 1
-        Layout.minimumWidth: setting.toggleAvailable ? 80 : 0
+        Layout.row: setting.stacked ? 2 : setting.toggleAvailable ? 0 : 1
+        Layout.column: setting.inlineFilter ? 2 : 0
+        Layout.columnSpan: setting.stacked ? 2 : setting.toggleAvailable ? 1 : 3
+        Layout.rowSpan: setting.inlineFilter ? 2 : 1
+        Layout.minimumWidth: setting.inlineFilter ? 80 : 0
         Layout.fillWidth: true
         from: parent.from
         to: parent.to

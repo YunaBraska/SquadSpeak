@@ -8,7 +8,7 @@ Button {
     property bool destructive: false
     property string glyph: ""
     property int horizontalAlignment: Text.AlignHCenter
-    implicitHeight: 36
+    implicitHeight: Math.max(36, contentItem.implicitHeight + 16)
     implicitWidth: iconOnly ? 36 : Math.max(36, label.implicitWidth + (glyph.length > 0 ? 24 : 0) + 24)
     padding: 10
     spacing: 8
@@ -21,7 +21,7 @@ Button {
     opacity: enabled ? 1 : 0.45
     contentItem: Item {
         implicitWidth: root.iconOnly ? 18 : label.implicitWidth + (root.glyph.length > 0 ? 24 : 0)
-        implicitHeight: 20
+        implicitHeight: root.iconOnly ? 20 : Math.max(20, label.implicitHeight)
         Glyph {
             visible: root.glyph.length > 0
             symbol: root.glyph

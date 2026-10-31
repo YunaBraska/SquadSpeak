@@ -3,7 +3,7 @@ import QtQuick.Controls.Basic
 
 ComboBox {
     id: root
-    implicitHeight: 38
+    implicitHeight: Math.max(38, contentItem.implicitHeight + 16)
     implicitWidth: 180
     leftPadding: 12
     rightPadding: 34

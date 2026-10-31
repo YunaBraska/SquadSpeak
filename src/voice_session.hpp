@@ -18,6 +18,7 @@ class VoiceSession final : public QObject {
     Q_PROPERTY(QString language READ language NOTIFY preferencesChanged)
     Q_PROPERTY(QVariantList languages READ languages CONSTANT)
     Q_PROPERTY(QString theme READ theme NOTIFY preferencesChanged)
+    Q_PROPERTY(int textScale READ textScale NOTIFY preferencesChanged)
     Q_PROPERTY(bool showInDock READ showInDock NOTIFY preferencesChanged)
     Q_PROPERTY(QString palette READ palette NOTIFY preferencesChanged)
     Q_PROPERTY(bool deafened READ deafened NOTIFY preferencesChanged)
@@ -52,6 +53,8 @@ public:
     Q_INVOKABLE bool setLanguage(const QString& language);
     [[nodiscard]] QString theme() const { return preferences_.value("theme").toString(); }
     Q_INVOKABLE bool setTheme(const QString& theme);
+    [[nodiscard]] int textScale() const { return preferences_.value("textScale").toInt(100); }
+    Q_INVOKABLE bool setTextScale(int percent);
     [[nodiscard]] bool showInDock() const { return preferences_.value("showInDock").toBool(true); }
     Q_INVOKABLE bool setShowInDock(bool enabled);
     [[nodiscard]] QString palette() const { return preferences_.value("palette").toString(); }

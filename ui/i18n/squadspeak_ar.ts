@@ -422,6 +422,10 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Text size</source>
+            <translation>حجم النص</translation>
+        </message>
+        <message>
             <source>Audio received</source>
             <translation>الصوت المستلَم</translation>
         </message>
@@ -980,6 +984,10 @@
         <message>
             <source>Repository</source>
             <translation>المستودع</translation>
+        </message>
+        <message>
+            <source>Privacy policy</source>
+            <translation>Privacy policy</translation>
         </message>
         <message>
             <source>Report an issue</source>

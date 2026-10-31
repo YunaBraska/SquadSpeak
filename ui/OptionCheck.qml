@@ -5,7 +5,7 @@ CheckBox {
     id: root
     Accessible.onPressAction: root.click()
     Accessible.onToggleAction: root.click()
-    implicitHeight: 32
+    implicitHeight: Math.max(32, contentItem.implicitHeight + topPadding + bottomPadding)
     spacing: 8
     padding: 0
     opacity: enabled ? 1 : 0.45

@@ -19,5 +19,5 @@ ApplicationWindow {
     palette.mid: Theme.border
     palette.dark: Theme.muted
     palette.link: Theme.accent
-    font.pixelSize: 14
+    font.pixelSize: Theme.fontSize(14)
 }
