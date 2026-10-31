@@ -262,14 +262,20 @@ jobs:
         set -eu
         mkdir -p build/ci build/compiler-cache build/native-cache
         trap 'sudo chown -R "$(id -u):$(id -g)" build/native-cache' EXIT
+        cargo_jobs=4
         set --
         case "$BUILD_MODE" in
-          release|sanitizers) set -- --device /dev/fuse --cap-add SYS_ADMIN --security-opt apparmor=unconfined ;;
+          release) set -- --device /dev/fuse --cap-add SYS_ADMIN --security-opt apparmor=unconfined ;;
+          sanitizers)
+            # Instrumented Rust objects use substantially more temporary disk space.
+            cargo_jobs=1
+            set -- --device /dev/fuse --cap-add SYS_ADMIN --security-opt apparmor=unconfined
+            ;;
           store) ;;
           *) printf 'Invalid Linux build mode: %s\n' "$BUILD_MODE" >&2; exit 1 ;;
         esac
         docker run --rm --init "$@" --env SQUADSPEAK_VERSION="$VERSION" \
-          --env CARGO_HOME=/tmp/squadspeak-ci-build/cargo-cache --env CCACHE_DIR=/compiler-cache --env CCACHE_MAXSIZE=500M --env CTEST_PARALLEL_LEVEL=4 \
+          --env CARGO_HOME=/tmp/squadspeak-ci-build/cargo-cache --env CARGO_BUILD_JOBS="$cargo_jobs" --env CCACHE_DIR=/compiler-cache --env CCACHE_MAXSIZE=500M --env CTEST_PARALLEL_LEVEL=4 \
           --mount "type=bind,src=$PWD,dst=/source,readonly" \
           --mount "type=bind,src=$PWD/build/ci,dst=/output" \
           --mount "type=bind,src=$PWD/build/native-cache,dst=/tmp/squadspeak-ci-build" \

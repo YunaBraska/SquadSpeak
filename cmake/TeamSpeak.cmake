@@ -54,7 +54,14 @@ if(WIN32)
 else()
     set(squad_ts_library "${squad_rust_dir}/libsquadspeak_teamspeak_bridge.a")
 endif()
-set(squad_rust_env "RUSTC=${SQUAD_RUSTC}" "CARGO_TARGET_DIR=${squad_ts_target}" "CARGO_BUILD_JOBS=4" "CARGO_PROFILE_RELEASE_STRIP=none"
+set(squad_cargo_build_jobs "$ENV{CARGO_BUILD_JOBS}")
+if(NOT squad_cargo_build_jobs)
+    set(squad_cargo_build_jobs 4)
+endif()
+if(NOT squad_cargo_build_jobs MATCHES "^[1-9][0-9]*$")
+    message(FATAL_ERROR "CARGO_BUILD_JOBS must be a positive integer")
+endif()
+set(squad_rust_env "RUSTC=${SQUAD_RUSTC}" "CARGO_TARGET_DIR=${squad_ts_target}" "CARGO_BUILD_JOBS=${squad_cargo_build_jobs}" "CARGO_PROFILE_RELEASE_STRIP=none"
     "OPUS_NO_PKG=1" "OPUS_LIB_DIR=${squad_opus_prefix}"
     "OPENSSL_DIR=${OPENSSL_ROOT_DIR}" "OPENSSL_STATIC=1")
 if(IOS OR ANDROID)
