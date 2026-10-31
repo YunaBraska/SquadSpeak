@@ -1,6 +1,7 @@
 //! Mumble's upstream packet cipher, with the existing protocol voice framing.
 use bytes::BytesMut;
-use mumble_protocol::voice::{Clientbound, Serverbound, VoiceCodec, VoicePacket};
+use mumble_protocol::voice::{Clientbound, Serverbound, VoicePacket};
+use crate::mumble_voice::VoiceWire;
 use std::{ffi::c_void, io, ptr::NonNull};
 use tokio_util::codec::{Decoder, Encoder};
 
@@ -21,17 +22,17 @@ extern "C" {
     ) -> bool;
 }
 
-pub struct ClientCryptState(NonNull<c_void>);
+pub struct ClientCryptState(NonNull<c_void>, VoiceWire);
 // Each state belongs exclusively to one connection task. The upstream object
 // contains no thread-local or shared state and is never accessed concurrently.
 unsafe impl Send for ClientCryptState {}
 
 impl ClientCryptState {
-    pub fn new_from(key: [u8; 16], encrypt: [u8; 16], decrypt: [u8; 16]) -> io::Result<Self> {
+    pub fn new_from(key: [u8; 16], encrypt: [u8; 16], decrypt: [u8; 16], modern: bool) -> io::Result<Self> {
         NonNull::new(unsafe {
             squad_mumble_crypt_new(key.as_ptr(), encrypt.as_ptr(), decrypt.as_ptr())
         })
-        .map(Self)
+        .map(|state| Self(state, VoiceWire::new(modern)))
         .ok_or_else(|| io::Error::other("Mumble encryption initialization failed"))
     }
     pub fn get_encrypt_nonce(&self) -> [u8; 16] {
@@ -59,7 +60,7 @@ impl Encoder<VoicePacket<Serverbound>> for ClientCryptState {
     type Error = io::Error;
     fn encode(&mut self, packet: VoicePacket<Serverbound>, dst: &mut BytesMut) -> io::Result<()> {
         let mut plain = BytesMut::new();
-        VoiceCodec::<Serverbound, Clientbound>::new().encode(packet, &mut plain)?;
+        self.1.encode(packet, &mut plain)?;
         if plain.is_empty() || plain.len() > 8192 {
             return Err(io::Error::other("Invalid Mumble voice size"));
         }
@@ -101,6 +102,6 @@ impl Decoder for ClientCryptState {
         if !valid {
             return Ok(None);
         }
-        VoiceCodec::<Serverbound, Clientbound>::new().decode(&mut plain)
+        self.1.decode(&mut plain)
     }
 }

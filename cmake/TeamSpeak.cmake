@@ -59,8 +59,11 @@ else()
 endif()
 set(squad_rust_env "RUSTC=${SQUAD_RUSTC}" "CARGO_TARGET_DIR=${squad_ts_target}" "CARGO_BUILD_JOBS=4" "CARGO_PROFILE_RELEASE_STRIP=none"
     "OPUS_NO_PKG=1" "OPUS_LIB_DIR=${squad_opus_prefix}"
-    "SQUAD_MUMBLE_CRYPT_DIR=${PROJECT_SOURCE_DIR}/src/teamspeak_bridge/mumble-crypt"
-    "OPENSSL_DIR=${OPENSSL_ROOT_DIR}" "OPENSSL_STATIC=1")
+    "PROTOC=${SQUAD_PROTOC}"
+    "SQUAD_MUMBLE_CRYPT_DIR=${PROJECT_SOURCE_DIR}/src/teamspeak_bridge/mumble-crypt")
+if(OPENSSL_ROOT_DIR)
+    list(APPEND squad_rust_env "OPENSSL_DIR=${OPENSSL_ROOT_DIR}" "OPENSSL_STATIC=1")
+endif()
 if(IOS OR ANDROID)
     list(APPEND squad_rust_env "OPUS_STATIC=1")
 endif()
@@ -85,7 +88,7 @@ endif()
 add_custom_command(OUTPUT "${squad_ts_library}"
     COMMAND ${CMAKE_COMMAND} -E env ${squad_rust_env} "${SQUAD_CARGO}" build --release --locked
         --manifest-path "${squad_rust_manifest}" ${squad_rust_args}
-    DEPENDS rust-toolchain.toml src/teamspeak_bridge/teamspeak_bridge.h src/teamspeak_bridge/denoise_bridge.h src/teamspeak_bridge/Cargo.toml src/teamspeak_bridge/Cargo.lock src/teamspeak_bridge/Cargo.denoise.lock src/teamspeak_bridge/Denoise.toml src/teamspeak_bridge/src/lib.rs src/teamspeak_bridge/src/mumble.rs src/teamspeak_bridge/src/mumble_crypt.rs src/teamspeak_bridge/build.rs src/teamspeak_bridge/mumble-crypt/CryptStateOCB2.cpp src/teamspeak_bridge/mumble-crypt/CryptStateOCB2.h src/teamspeak_bridge/mumble-crypt/CryptState.h src/teamspeak_bridge/mumble-crypt/platform.hpp src/teamspeak_bridge/mumble-crypt/bridge.cpp src/teamspeak_bridge/src/denoise.rs
+    DEPENDS rust-toolchain.toml src/teamspeak_bridge/teamspeak_bridge.h src/teamspeak_bridge/denoise_bridge.h src/teamspeak_bridge/Cargo.toml src/teamspeak_bridge/Cargo.lock src/teamspeak_bridge/Cargo.denoise.lock src/teamspeak_bridge/Denoise.toml src/teamspeak_bridge/src/lib.rs src/teamspeak_bridge/src/mumble.rs src/teamspeak_bridge/src/mumble_crypt.rs src/teamspeak_bridge/src/mumble_voice.rs src/teamspeak_bridge/build.rs src/teamspeak_bridge/mumble-crypt/CryptStateOCB2.cpp src/teamspeak_bridge/mumble-crypt/CryptStateOCB2.h src/teamspeak_bridge/mumble-crypt/CryptState.h src/teamspeak_bridge/mumble-crypt/platform.hpp src/teamspeak_bridge/mumble-crypt/bridge.cpp src/teamspeak_bridge/src/denoise.rs
     WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
     USES_TERMINAL VERBATIM)
 add_custom_target(squad_teamspeak_build DEPENDS "${squad_ts_library}")

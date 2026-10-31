@@ -95,7 +95,10 @@ python3 tests/mumble_server.py build/native-audio/mumble_tests
 Linux CI installs the real server and enables `SQUADSPEAK_MUMBLE_E2E` for CTest.
 The suite verifies authentication, saved identity and access tokens, nested
 channels, independent-peer channel/private messaging, PTT, mute, encrypted UDP
-and TLS voice transport, variable Opus duration and graceful disconnect.
+and TLS voice transport, variable Opus duration and graceful disconnect. The UDP
+comparison crosses a complete encryption nonce-byte cycle and checks every
+captured Opus packet without transcoding. Mumble 1.5 uses protobuf voice framing,
+while older servers retain their negotiated legacy framing.
 The server's test-only connection and message burst allowances permit rapid
 isolated setup. They do not alter production client limits or permissions.
 

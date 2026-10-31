@@ -75,9 +75,9 @@ bool LocalChannel::addExternal(const QString& providerId, const QString& endpoin
     for (auto it = savedChannels_.begin(); it != savedChannels_.end(); ++it)
         if (it.value().toObject().value("protocol") == providerId && it.value().toObject().value("deviceId") == device) { saved = it.key(); break; }
     if (saved.isEmpty()) {
-        saved = externalId(device, "channel", "0");
+        saved = externalId(device, "channel", "");
         auto next = savedChannels_;
-        next.insert(saved, QJsonObject{{"protocol", providerId}, {"deviceId", device}, {"providerChannel", "0"},
+        next.insert(saved, QJsonObject{{"protocol", providerId}, {"deviceId", device}, {"providerChannel", ""},
             {"name", externalName(address)}, {"address", address}, {"port", port}, {"autoJoin", false}, {"lastJoined", 0}});
         if (!persist(approved_, attempts_, requestsAllowed_, endpointPins_, control_, security_, &next)) return false;
     }

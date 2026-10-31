@@ -354,6 +354,12 @@ else:
         cargo = self.root / "bin/cargo"
         cargo.write_text("#!" + sys.executable + "\n" + '''import os, pathlib, sys
 root = pathlib.Path(os.environ["CARGO_TARGET_DIR"])
+if "OPENSSL_DIR" in os.environ and not os.environ["OPENSSL_DIR"]:
+    sys.exit("An empty OpenSSL override hides the system installation")
+if os.environ.get("PROTOC") != sys.executable:
+    sys.exit("The configured protobuf compiler was not passed to Cargo")
+if os.environ.get("OPENSSL_DIR") and os.environ.get("OPENSSL_STATIC") != "1":
+    sys.exit("The packaged OpenSSL library must be linked statically")
 root.mkdir(parents=True, exist_ok=True)
 args = sys.argv[1:]
 with (root / "calls").open("a") as log: log.write(" ".join(args) + "\\n")
@@ -376,7 +382,8 @@ include(cmake/TeamSpeak.cmake)
 add_custom_target(consumer ALL DEPENDS squad_teamspeak_build)
 ''')
         for mode, flags in (("native", []), ("production", ["-DBUILD_TESTING=OFF"]),
-                            ("cross", ["-DCMAKE_SYSTEM_NAME=Generic"])):
+                            ("cross", ["-DCMAKE_SYSTEM_NAME=Generic"]),
+                            ("pinned", ["-DBUILD_TESTING=OFF", "-DOPENSSL_ROOT_DIR=" + str(self.root / "packaged-openssl")])):
             with self.subTest(mode=mode):
                 build = self.root / mode
                 result = subprocess.run(["cmake", "-S", str(self.root), "-B", str(build),

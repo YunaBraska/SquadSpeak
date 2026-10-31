@@ -16,6 +16,7 @@ use tsclientlib::{prelude::*, Connection, DisconnectOptions, Identity, OutComman
 use tsproto_packets::packets::{AudioData, CodecType, OutAudio};
 mod mumble;
 mod mumble_crypt;
+mod mumble_voice;
 
 const MAX_JSON: usize = 64 * 1024;
 const MAX_AUDIO: usize = 500 - 13 - 3;

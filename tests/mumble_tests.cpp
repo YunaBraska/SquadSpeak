@@ -225,8 +225,8 @@ public:
         }
         return result;
     }
-    bool acl(quint32 channel, const QByteArray& token = {}) {
-        QByteArray list = bytes(4, bytes(5, "all") + number(7, 4));
+    bool acl(quint32 channel, const QByteArray& token = {}, quint32 denied = 4, quint32 granted = 0) {
+        QByteArray list = bytes(4, bytes(5, "all") + number(7, denied) + number(6, granted));
         if (!token.isEmpty()) list += bytes(4, bytes(5, "#" + token) + number(6, 4));
         send(13, number(1, channel) + number(2, 1) + list);
         const auto before = received.size();
@@ -268,6 +268,8 @@ private slots:
         QVERIFY2(!endpoint.isEmpty() && !password.isEmpty(), "Run this suite through tests/mumble_server.py.");
         QVERIFY2(admin.open(endpoint, "SuperUser", password), qPrintable(admin.socket.errorString()));
         QVERIFY(admin.createChannel("Lounge", 0));
+        QVERIFY(admin.acl(0, {}, 8));
+        QVERIFY(admin.acl(admin.channels.value("Lounge"), {}, 0, 8));
         QVERIFY(admin.createChannel("Studio", admin.channels.value("Lounge")));
         QVERIFY(admin.createChannel("Token", 0)); QVERIFY(admin.acl(admin.channels.value("Token"), "open-sesame"));
         QVERIFY(admin.createChannel("Private", 0)); QVERIFY(admin.acl(admin.channels.value("Private")));
@@ -285,6 +287,11 @@ private slots:
             QTRY_VERIFY_WITH_TIMEOUT(client.channel.passwordRequired(), 10000);
             QVERIFY(client.channel.submitPassword(password, true));
             QTRY_VERIFY_WITH_TIMEOUT(client.channel.joined(), 10000);
+            // ServerSync reports root permissions, not those of the default
+            // channel. Root is moderated, but the initial Lounge allows speech.
+            QCOMPARE(client.channel.joinedHostId(), channelNamed(client.channel, "Lounge").value("id").toString());
+            QTRY_VERIFY_WITH_TIMEOUT(client.channel.sendAudio(opusFrame(960, 440)), 3000);
+            QVERIFY(client.channel.sendAudio({}));
             QTRY_VERIFY_WITH_TIMEOUT((remoteSession = admin.sessionNamed("Mumble A")) != 0, 5000);
             certificateHash = admin.certificateHash(remoteSession);
             QVERIFY(!certificateHash.isEmpty());
@@ -402,6 +409,9 @@ private slots:
     }
     void opusAudioIsDeliveredWithoutEchoOrTranscoding() {
         QTemporaryDir directory;
+        ProtocolPeer observer;
+        QVERIFY(observer.open(endpoint, "Audio observer", password));
+        QVERIFY(observer.move(admin.channels.value("Studio")));
         Peer a(directory.filePath("a"), "Audio A", TlsIdentity::create());
         Peer b(directory.filePath("b"), "Audio B", TlsIdentity::create());
         QVERIFY(a.channel.addMumble(endpoint, password)); QVERIFY(b.channel.addMumble(endpoint, password));
@@ -418,6 +428,7 @@ private slots:
         QVERIFY(admin.waitForGoodPackets(bSession, 1));
         const auto udpBaseline = admin.goodPacketsFrom(aSession);
         squad::VoiceMixer encoder(2), receiver(2); receiver.setAutomatic(false);
+        constexpr int frames = 300; // Cross a complete UDP nonce-byte cycle.
         QList<QByteArray> sent, received;
         QList<int> receivedSamples;
         QList<bool> receivedFinal;
@@ -443,21 +454,46 @@ private slots:
             }
             const auto packet = encoder.encode(input, 48000).first(); sent.append(packet);
             QVERIFY(a.channel.sendAudio(packet));
-            if (sent.size() == 40) { sender.stop(); QVERIFY(a.channel.sendAudio({})); }
+            if (sent.size() == frames) { sender.stop(); QVERIFY(a.channel.sendAudio({})); }
         });
         sender.start(20);
-        const auto complete = QTest::qWaitFor([&] { return received.size() == 40; }, 10000);
+        const auto complete = QTest::qWaitFor([&] { return receivedFinal.contains(true); }, frames * 20 + 10000);
         if (!complete) {
-            QList<int> indices;
-            for (const auto& packet : received) indices.append(int(sent.indexOf(packet)));
-            qWarning() << "Received frame indices" << indices << "missing ticks" << missing
+            admin.waitForGoodPackets(aSession, udpBaseline + sent.size(), 1000);
+            for (auto it = admin.received.crbegin(); it != admin.received.crend(); ++it) {
+                if (it->first == 22 && fields(it->second).value(1).toUInt() == aSession) {
+                    qWarning() << "Server client UDP counters" << fields(fields(it->second).value(4).toByteArray());
+                    break;
+                }
+            }
+            qWarning() << "Received frames" << received.size() << "expected speech frames" << frames << "missing ticks" << missing
+                << "independent peer packets" << observer.voiceFrom(aSession).size()
                 << "server UDP packets" << admin.goodPacketsFrom(aSession) << "baseline" << udpBaseline;
         }
         QVERIFY(complete);
-        QVERIFY(admin.waitForGoodPackets(aSession, udpBaseline + 40));
-        QCOMPARE(received, sent); QCOMPARE(missing, 0); QCOMPARE(echo.size(), 0);
+        QVERIFY(admin.waitForGoodPackets(aSession, udpBaseline + frames));
+        // Modern servers need a nonempty Opus terminator. The additional
+        // packet is silence, while every captured frame remains unchanged.
+        const auto silence = QByteArray::fromHex("f8fffe");
+        int opusError = OPUS_OK;
+        auto* decoder = opus_decoder_create(48000, 2, &opusError);
+        QVERIFY(decoder && opusError == OPUS_OK);
+        std::array<float, 1920> tail{};
+        const auto samples = opus_decode_float(decoder,
+            reinterpret_cast<const unsigned char*>(silence.constData()), int(silence.size()), tail.data(), 960, 0);
+        opus_decoder_destroy(decoder);
+        QCOMPARE(samples, 960);
+        QVERIFY(std::all_of(tail.begin(), tail.end(), [](float sample) { return std::abs(sample) < 0.00001f; }));
+        auto expected = sent;
+        if (received.size() == frames + 1) expected.append(silence);
+        QCOMPARE(received, expected); QCOMPARE(missing, 0); QCOMPARE(echo.size(), 0);
+        QTRY_VERIFY_WITH_TIMEOUT(observer.voiceFrom(aSession).size() >= frames + 1, 5000);
+        const auto observed = observer.voiceFrom(aSession);
+        for (int i = 0; i < frames; ++i) QCOMPARE(observed[i].opus, sent[i]);
+        QVERIFY(observed.last().final);
+        const auto beforeShort = received.size();
         QVERIFY(a.channel.sendAudio(opusFrame(480, 659)));
-        QTRY_COMPARE_WITH_TIMEOUT(received.size(), 41, 5000);
+        QTRY_COMPARE_WITH_TIMEOUT(received.size(), beforeShort + 1, 5000);
         QCOMPARE(receivedSamples.last(), 480);
         QVERIFY(a.channel.sendAudio({}));
         QTRY_VERIFY_WITH_TIMEOUT(receivedFinal.contains(true), 5000);
@@ -474,7 +510,7 @@ private slots:
         QTRY_VERIFY_WITH_TIMEOUT(app.channel.joined(), 10000);
         const auto html = QString("<b>Hello &amp; welcome</b><br/>Second line<img src=\"http://127.0.0.1:%1/image.png\"/>")
             .arg(resources.serverPort());
-        QVERIFY(peer.sendChannelText(0, html));
+        QVERIFY(peer.sendChannelText(peer.users.value(peer.own).value(5).toUInt(), html));
         QTRY_VERIFY_WITH_TIMEOUT(!app.channel.messages().isEmpty(), 5000);
         QCOMPARE(app.channel.messages().last().toMap().value("text").toString(),
             QString("Hello & welcome\nSecond line"));
@@ -559,7 +595,7 @@ private slots:
         const auto appVoice = peer.voiceFrom(appSession);
         QCOMPARE(appVoice[appVoice.size() - 3].opus, outgoingLong);
         QCOMPARE(appVoice[appVoice.size() - 2].opus, outgoingShort);
-        QCOMPARE(appVoice.last().opus.size(), 0);
+        QVERIFY(appVoice.last().opus.isEmpty() || appVoice.last().opus == QByteArray::fromHex("f8fffe"));
         QVERIFY(appVoice.last().final);
         QVERIFY(app.session.setMuted(true));
         QVERIFY(!app.channel.sendAudio(outgoingLong));

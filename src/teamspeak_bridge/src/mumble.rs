@@ -1,10 +1,11 @@
-//! Mumble 1.4 compatible control-channel adapter. Cryptographic primitives and
+//! Mumble 1.4 and 1.5 compatible control-channel adapter. Cryptographic primitives and
 //! packet codecs use OpenSSL, the corrected upstream Mumble cipher and mumble-protocol.
 use crate::mumble_crypt::ClientCryptState;
+use crate::mumble_voice::ControlWire;
 use crate::{emit, Queue, MAX_JSON, MAX_QUEUE_BYTES};
 use bytes::Bytes;
 use futures::{SinkExt, StreamExt};
-use mumble_protocol::control::{msgs, ClientControlCodec, ControlPacket};
+use mumble_protocol::control::{msgs, ControlPacket};
 use mumble_protocol::voice::{VoicePacket, VoicePacketPayload};
 use openssl::{
     hash::MessageDigest,
@@ -275,9 +276,9 @@ fn run(
         if options.server_key.as_ref().is_some_and(|saved| !saved.is_empty() && !saved.eq_ignore_ascii_case(&pin)) {
             fail(&queue,"Mumble server key changed.",false);return;
         }
-        let mut framed = Framed::new(tls, ClientControlCodec::new());
+        let mut framed = Framed::new(tls, ControlWire::new(false));
         macro_rules! send_control { ($writer:ident,$packet:expr) => { cancellable!(timeout(Duration::from_secs(2),$writer.send($packet))) }; }
-        let mut version = msgs::Version::new(); version.set_version_v1(0x010400); version.set_release("SquadSpeak".into()); version.set_os("SquadSpeak".into());
+        let mut version = msgs::Version::new(); version.set_version_v1(0x010500); version.set_version_v2((1u64 << 48) | (5u64 << 32)); version.set_release("SquadSpeak".into()); version.set_os("SquadSpeak".into());
         if !matches!(cancellable!(timeout(Duration::from_secs(3),framed.send(version.into()))),Ok(Ok(()))) { fail(&queue,"Mumble handshake failed.",false);return; }
         let input_muted=options.input_muted.unwrap_or(true); let output_muted=options.output_muted.unwrap_or(true);
         let mut auth = msgs::Authenticate::new(); auth.set_username(options.name.unwrap_or_else(||"SquadSpeak".into())); auth.set_opus(true);
@@ -302,9 +303,14 @@ fn run(
         let authentication_deadline=Instant::now()+Duration::from_secs(12);
         let mut audio = crate::AudioQueue::new();
         macro_rules! send_audio { ($data:expr) => {{
-            let data: Vec<u8> = $data;
+            let mut data: Vec<u8> = $data;
+            let final_packet = data.is_empty();
+            // Protobuf Mumble servers reject empty Opus payloads, including
+            // terminators. A standard 20 ms Opus silence frame ends the stream
+            // without changing or delaying any captured speech.
+            if final_packet && framed.codec().modern { data = vec![0xf8, 0xff, 0xfe]; }
             let ticks = if data.is_empty() { 0 } else { audio_ticks(&data).unwrap_or(0) };
-    let payload = VoicePacketPayload::Opus(Bytes::from(data), ticks == 0);
+    let payload = VoicePacketPayload::Opus(Bytes::from(data), final_packet);
     let packet = VoicePacket::Audio {
         _dst: std::marker::PhantomData,
         target: 0,
@@ -547,6 +553,14 @@ fn run(
                         };
                         let mut changed = false;
                         match packet {
+                            ControlPacket::Version(m) => {
+                                // Advertise both wire formats, then use the server's version.
+                                framed.codec_mut().modern = if m.has_version_v2() {
+                                    m.version_v2() >= ((1u64 << 48) | (5u64 << 32))
+                                } else {
+                                    m.version_v1() >= 0x010500
+                                };
+                            }
                             ControlPacket::CryptSetup(m) => {
                                 if (m.has_key() && (!m.has_client_nonce() || !m.has_server_nonce() || m.key().len() != 16))
                                     || (m.has_client_nonce() && m.client_nonce().len() != 16)
@@ -560,7 +574,7 @@ fn run(
                                         m.client_nonce().try_into(),
                                         m.server_nonce().try_into(),
                                     ) {
-                                        match ClientCryptState::new_from(k, c, s) {
+                                        match ClientCryptState::new_from(k, c, s, framed.codec().modern) {
                                             Ok(state) => {
                                                 if let Some(u) = udp.as_mut() {
                                                     *u.codec_mut() = state;
@@ -602,7 +616,16 @@ fn run(
                                         .min(AUDIO_LIMIT);
                                 }
                                 own = m.session();
-                                can_send = m.has_permissions().then(|| m.permissions() & 8 != 0);
+                                // ServerSync permissions belong to root. The server
+                                // may have placed us in a different default channel.
+                                can_send = Some(false);
+                                if let Some(channel) = users.get(&own)
+                                    .and_then(|user| user["channel"].as_str())
+                                    .and_then(|channel| channel.parse::<u32>().ok()) {
+                                    let mut query = msgs::PermissionQuery::new();
+                                    query.set_channel_id(channel);
+                                    let _ = send_control!(framed, query.into());
+                                }
                                 synced = true;
                                 changed = true;
                                 if input_muted || output_muted {
