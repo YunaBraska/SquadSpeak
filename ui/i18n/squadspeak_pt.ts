@@ -994,6 +994,10 @@
             <translation>Repositório</translation>
         </message>
         <message>
+            <source>Privacy policy</source>
+            <translation>Privacy policy</translation>
+        </message>
+        <message>
             <source>Report an issue</source>
             <translation>Comunicar um problema</translation>
         </message>

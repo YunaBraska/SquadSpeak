@@ -994,6 +994,10 @@
             <translation>Kho mã nguồn</translation>
         </message>
         <message>
+            <source>Privacy policy</source>
+            <translation>Privacy policy</translation>
+        </message>
+        <message>
             <source>Report an issue</source>
             <translation>Báo cáo sự cố</translation>
         </message>

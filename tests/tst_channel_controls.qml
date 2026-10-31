@@ -3773,6 +3773,7 @@ TestCase {
         }
         const expected = {
             repository: "https://github.com/YunaBraska/SquadSpeak",
+            privacy: "https://yunabraska.github.io/SquadSpeak/privacy.html",
             issues: "https://github.com/YunaBraska/SquadSpeak/issues/new",
             sponsors: "https://github.com/sponsors/YunaBraska",
             coffee: "https://buymeacoffee.com/YunaBraska",

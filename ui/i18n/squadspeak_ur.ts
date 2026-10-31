@@ -994,6 +994,10 @@
             <translation>مخزن</translation>
         </message>
         <message>
+            <source>Privacy policy</source>
+            <translation>Privacy policy</translation>
+        </message>
+        <message>
             <source>Report an issue</source>
             <translation>کسی مسئلے کی اطلاع دیں۔</translation>
         </message>
