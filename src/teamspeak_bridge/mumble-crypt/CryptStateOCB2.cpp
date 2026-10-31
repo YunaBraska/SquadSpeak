@@ -233,9 +233,13 @@ typedef subblock keyblock[BLOCKSIZE];
 #define HIGHBIT (1 << SHIFTBITS);
 
 
-static void inline XOR(subblock *dst, const subblock *a, const subblock *b) {
-	for (int i = 0; i < BLOCKSIZE; i++) {
-		dst[i] = a[i] ^ b[i];
+static void inline XOR(void *dst, const void *a, const void *b) {
+	// Packet payloads follow a four-byte header and need not be word-aligned.
+	auto *output = static_cast< unsigned char * >(dst);
+	const auto *left = static_cast< const unsigned char * >(a);
+	const auto *right = static_cast< const unsigned char * >(b);
+	for (int i = 0; i < AES_BLOCK_SIZE; i++) {
+		output[i] = left[i] ^ right[i];
 	}
 }
 
@@ -265,7 +269,7 @@ static void inline ZERO(keyblock &block) {
 		EVP_CIPHER_CTX_set_padding(enc_ctx, 0);                                                     \
 		EVP_EncryptUpdate(enc_ctx, reinterpret_cast< unsigned char * >(dst), &outlen,               \
 						  reinterpret_cast< const unsigned char * >(src), AES_BLOCK_SIZE);          \
-		EVP_EncryptFinal_ex(enc_ctx, reinterpret_cast< unsigned char * >((dst) + outlen), &outlen); \
+		EVP_EncryptFinal_ex(enc_ctx, reinterpret_cast< unsigned char * >(dst) + outlen, &outlen); \
 	}
 #define AESdecrypt_ctx(src, dst, key, dec_ctx)                                                      \
 	{                                                                                               \
@@ -274,7 +278,7 @@ static void inline ZERO(keyblock &block) {
 		EVP_CIPHER_CTX_set_padding(dec_ctx, 0);                                                     \
 		EVP_DecryptUpdate(dec_ctx, reinterpret_cast< unsigned char * >(dst), &outlen,               \
 						  reinterpret_cast< const unsigned char * >(src), AES_BLOCK_SIZE);          \
-		EVP_DecryptFinal_ex(dec_ctx, reinterpret_cast< unsigned char * >((dst) + outlen), &outlen); \
+		EVP_DecryptFinal_ex(dec_ctx, reinterpret_cast< unsigned char * >(dst) + outlen, &outlen); \
 	}
 
 #define AESencrypt(src, dst, key) AESencrypt_ctx(src, dst, key, enc_ctx_ocb_enc)
@@ -314,13 +318,13 @@ bool CryptStateOCB2::ocb_encrypt(const unsigned char *plain, unsigned char *encr
 		}
 
 		S2(delta);
-		XOR(tmp, delta, reinterpret_cast< const subblock * >(plain));
+		XOR(tmp, delta, plain);
 		if (flipABit) {
 			*reinterpret_cast< unsigned char * >(tmp) ^= 1;
 		}
 		AESencrypt(tmp, tmp, raw_key);
-		XOR(reinterpret_cast< subblock * >(encrypted), delta, tmp);
-		XOR(checksum, checksum, reinterpret_cast< const subblock * >(plain));
+		XOR(encrypted, delta, tmp);
+		XOR(checksum, checksum, plain);
 		if (flipABit) {
 			*reinterpret_cast< unsigned char * >(checksum) ^= 1;
 		}
@@ -335,12 +339,12 @@ bool CryptStateOCB2::ocb_encrypt(const unsigned char *plain, unsigned char *encr
 	tmp[BLOCKSIZE - 1] = SWAPPED(len * 8);
 	XOR(tmp, tmp, delta);
 	AESencrypt(tmp, pad, raw_key);
-	memcpy(tmp, plain, len);
+	if (len) memcpy(tmp, plain, len);
 	memcpy(reinterpret_cast< unsigned char * >(tmp) + len, reinterpret_cast< const unsigned char * >(pad) + len,
 		   AES_BLOCK_SIZE - len);
 	XOR(checksum, checksum, tmp);
 	XOR(tmp, pad, tmp);
-	memcpy(encrypted, tmp, len);
+	if (len) memcpy(encrypted, tmp, len);
 
 	S3(delta);
 	XOR(tmp, delta, checksum);
@@ -366,10 +370,10 @@ bool CryptStateOCB2::ocb_decrypt(const unsigned char *encrypted, unsigned char *
 
 	while (len > AES_BLOCK_SIZE) {
 		S2(delta);
-		XOR(tmp, delta, reinterpret_cast< const subblock * >(encrypted));
+		XOR(tmp, delta, encrypted);
 		AESdecrypt(tmp, tmp, raw_key);
-		XOR(reinterpret_cast< subblock * >(plain), delta, tmp);
-		XOR(checksum, checksum, reinterpret_cast< const subblock * >(plain));
+		XOR(plain, delta, tmp);
+		XOR(checksum, checksum, plain);
 		len -= AES_BLOCK_SIZE;
 		plain += AES_BLOCK_SIZE;
 		encrypted += AES_BLOCK_SIZE;
@@ -381,10 +385,10 @@ bool CryptStateOCB2::ocb_decrypt(const unsigned char *encrypted, unsigned char *
 	XOR(tmp, tmp, delta);
 	AESencrypt(tmp, pad, raw_key);
 	memset(tmp, 0, AES_BLOCK_SIZE);
-	memcpy(tmp, encrypted, len);
+	if (len) memcpy(tmp, encrypted, len);
 	XOR(tmp, tmp, pad);
 	XOR(checksum, checksum, tmp);
-	memcpy(plain, tmp, len);
+	if (len) memcpy(plain, tmp, len);
 
 	// Counter-cryptanalysis described in section 9 of https://eprint.iacr.org/2019/311
 	// In an attack, the decrypted last block would need to equal `delta ^ len(128)`.

@@ -2,6 +2,7 @@
 import json
 import os
 import re
+import shlex
 import shutil
 from pathlib import Path
 import subprocess
@@ -403,6 +404,35 @@ add_custom_target(consumer ALL DEPENDS squad_teamspeak_build)
                 result = subprocess.run(["cmake", "--build", str(build)],
                     env=dict(os.environ, FAIL_PREPARE="1"), capture_output=True, text=True, timeout=30)
                 self.assertNotEqual(result.returncode, 0, "Test preparation failure must fail the build")
+
+    def test_audio_processing_uses_its_pinned_headers_before_ambient_packages(self):
+        # A build tool can install a newer, incompatible Abseil alongside the
+        # private WebRTC dependency. Compile through the real CMake interface.
+        build = self.root / "build"
+        pinned = build / "audio-processing/include/absl/base"
+        ambient = self.root / "ambient/absl/base"
+        pinned.mkdir(parents=True)
+        ambient.mkdir(parents=True)
+        (pinned / "nullability.h").write_text("namespace absl { template<class T> using Nullable = T; }\n")
+        (ambient / "nullability.h").write_text("namespace absl {}\n")
+        (self.root / "consumer.cpp").write_text(
+            '#include <absl/base/nullability.h>\nabsl::Nullable<int*> value = nullptr;\n')
+        (self.root / "CMakeLists.txt").write_text('''cmake_minimum_required(VERSION 3.24)
+project(HeaderContract LANGUAGES C CXX)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+include(cmake/AudioProcessing.cmake)
+add_library(consumer OBJECT consumer.cpp)
+target_link_libraries(consumer PRIVATE squad_apm)
+''')
+        result = subprocess.run(["cmake", "-S", str(self.root), "-B", str(build),
+                                 "-DSQUAD_MESON=" + sys.executable],
+                                capture_output=True, text=True, timeout=30)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        command = json.loads((build / "compile_commands.json").read_text())[0]
+        result = subprocess.run(shlex.split(command["command"]), cwd=command["directory"],
+                                env=dict(os.environ, CPATH=str(self.root / "ambient")),
+                                capture_output=True, text=True, timeout=30)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 
     def test_dependency_cache_ignores_test_and_release_changes(self):
         (self.root / "cmake").unlink()
