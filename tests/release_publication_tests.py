@@ -380,7 +380,8 @@ add_custom_target(consumer ALL DEPENDS squad_teamspeak_build)
             with self.subTest(mode=mode):
                 build = self.root / mode
                 result = subprocess.run(["cmake", "-S", str(self.root), "-B", str(build),
-                    "-DSQUAD_CARGO=" + str(cargo), "-DSQUAD_RUSTC=" + sys.executable, *flags],
+                    "-DSQUAD_CARGO=" + str(cargo), "-DSQUAD_RUSTC=" + sys.executable,
+                    "-DSQUAD_PROTOC=" + sys.executable, *flags],
                     capture_output=True, text=True, timeout=30)
                 self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
                 result = subprocess.run(["cmake", "--build", str(build), "--parallel", "2"],
