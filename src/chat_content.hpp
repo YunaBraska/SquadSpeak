@@ -18,6 +18,7 @@ class ChatContent final : public QObject {
     Q_PROPERTY(QString error READ error NOTIFY changed)
 public:
     using QObject::QObject;
+    [[nodiscard]] static QString importedHtmlText(const QString& html);
     Q_INVOKABLE QString plainText(const QVariantMap& message) const;
     Q_INVOKABLE QString format(const QString& markdown, const QVariantMap& attachment = {},
                                const QColor& linkColor = Qt::blue, const QColor& codeBackground = Qt::lightGray,

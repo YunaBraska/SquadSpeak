@@ -85,7 +85,7 @@ target_compile_options(squad_audio PRIVATE $<$<CXX_COMPILER_ID:AppleClang,Clang,
 
 include(cmake/TeamSpeak.cmake)
 
-add_library(squad_session src/local_channel_teamspeak.cpp src/voice_session.cpp src/voice_session.hpp src/tls_identity.cpp src/tls_identity.hpp src/local_channel.cpp src/local_channel_chat.cpp src/local_channel_private.cpp src/local_channel_control.cpp src/local_channel_discovery.cpp src/local_channel_video.cpp src/local_channel.hpp src/media_transport.cpp src/media_transport.hpp src/chat_history.cpp src/chat_history.hpp src/license.cpp src/license.hpp)
+add_library(squad_session src/local_channel_external.cpp src/voice_session.cpp src/voice_session.hpp src/tls_identity.cpp src/tls_identity.hpp src/local_channel.cpp src/local_channel_chat.cpp src/local_channel_private.cpp src/local_channel_control.cpp src/local_channel_discovery.cpp src/local_channel_video.cpp src/local_channel.hpp src/media_transport.cpp src/media_transport.hpp src/chat_history.cpp src/chat_history.hpp src/license.cpp src/license.hpp)
 target_include_directories(squad_session PUBLIC src)
 # Version changes only rebuild entrypoints that report the version.
 set_source_files_properties(src/headless.cpp tests/headless_tests.cpp PROPERTIES
@@ -751,6 +751,24 @@ if(BUILD_TESTING)
     add_executable(teamspeak_live EXCLUDE_FROM_ALL tests/teamspeak_live.cpp)
     target_link_libraries(teamspeak_live PRIVATE squad_session squad_content squad_audio Qt6::Test)
     add_test(NAME teamspeak_contract COMMAND teamspeak_tests)
+    qt_add_executable(mumble_crypt_tests tests/mumble_crypt_tests.cpp
+        src/teamspeak_bridge/mumble-crypt/CryptStateOCB2.cpp)
+    target_include_directories(mumble_crypt_tests PRIVATE src/teamspeak_bridge/mumble-crypt)
+    target_link_libraries(mumble_crypt_tests PRIVATE Qt6::Test OpenSSL::Crypto)
+    if(WIN32)
+        target_link_libraries(mumble_crypt_tests PRIVATE ws2_32)
+    endif()
+    add_test(NAME mumble_crypt COMMAND mumble_crypt_tests)
+    set_tests_properties(mumble_crypt PROPERTIES TIMEOUT 30)
+    qt_add_executable(mumble_tests tests/mumble_tests.cpp)
+    target_link_libraries(mumble_tests PRIVATE squad_session squad_audio Qt6::Test)
+    option(SQUADSPEAK_MUMBLE_E2E "Run the Mumble client against a disposable real server" OFF)
+    if(SQUADSPEAK_MUMBLE_E2E)
+        find_package(Python3 REQUIRED COMPONENTS Interpreter)
+        add_test(NAME mumble_e2e COMMAND "${Python3_EXECUTABLE}"
+            "${CMAKE_CURRENT_SOURCE_DIR}/tests/mumble_server.py" "$<TARGET_FILE:mumble_tests>")
+        set_tests_properties(mumble_e2e PROPERTIES TIMEOUT 240 RUN_SERIAL TRUE)
+    endif()
     # The real transport fixture must not compete with CPU-heavy DSP work.
     set_tests_properties(teamspeak_contract PROPERTIES TIMEOUT 90 RESOURCE_LOCK channel_fixed_ports RUN_SERIAL TRUE)
     qt_add_executable(license_tests tests/license_tests.cpp src/headless.cpp src/headless.hpp)

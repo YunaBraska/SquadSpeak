@@ -67,6 +67,8 @@ extern "C" void* ss_ts_open(const uint8_t* data, size_t size) {
     ++openCount;
     return reinterpret_cast<void*>(quintptr(1));
 }
+// This fixture substitutes only TeamSpeak. Mumble is exercised against a real server.
+extern "C" void* ss_mumble_open(const uint8_t*, size_t) { return nullptr; }
 extern "C" int ss_ts_command(void*, const uint8_t* data, size_t size) {
     const QByteArray command(reinterpret_cast<const char*>(data), qsizetype(size));
     const QMutexLocker lock(&fakeMutex);
@@ -128,7 +130,7 @@ private slots:
         QVERIFY(options.value("password").toString().isEmpty());
         fakeEvents.enqueue(stateEvent());
         QTRY_VERIFY(channel.joined());
-        QVERIFY(channel.teamSpeakChat());
+        QVERIFY(channel.externalChat());
         QVERIFY(channel.leave());
     }
 
@@ -187,7 +189,7 @@ private slots:
         QTRY_VERIFY(!channel.directBusy());
         QVERIFY(channel.status().contains("identity"));
         QCOMPARE(openCount, 0);
-        QVERIFY(!channel.teamSpeakChat());
+        QVERIFY(!channel.externalChat());
     }
 
     void remotePttUsesTheTargetsTeamSpeakConnection() {
@@ -228,7 +230,7 @@ private slots:
         LocalChannel channel(session, dir.filePath("channel"), TlsIdentity::create());
         QVERIFY(channel.initialize());
         QVERIFY(!channel.addTeamSpeak("http://not-team-speak", {}));
-        QVERIFY(!channel.teamSpeakChat());
+        QVERIFY(!channel.externalChat());
     }
 
     void stateSnapshotBuildsNestedSavedChannels() {
@@ -299,12 +301,12 @@ private slots:
         QString peer, avatar;
         for (const auto& value : channel.participants()) {
             const auto member = value.toMap();
-            QCOMPARE(member.value("teamSpeak").toBool(), member.value("id") != channel.ownId());
+            QCOMPARE(member.value("provider").toString() == "teamspeak", member.value("id") != channel.ownId());
             const auto selected = member.value("avatarId").toString();
             QVERIFY(VoiceSession::avatars().contains(selected));
             portraits.insert(selected);
             if (member.value("id") == channel.ownId()) QCOMPARE(selected, session.avatar());
-            if (member.value("tsUid") == "remote-uid") { peer = member.value("id").toString(); avatar = selected; }
+            if (member.value("providerUid") == "remote-uid") { peer = member.value("id").toString(); avatar = selected; }
         }
         QVERIFY(portraits.size() > 1);
         auto renamed = members.at(1).toObject();
@@ -323,7 +325,7 @@ private slots:
             {"fromName", "Renamed"}, {"text", "Same portrait"}}).toJson(QJsonDocument::Compact));
         QTRY_COMPARE(channel.messages().size(), 1);
         QCOMPARE(channel.messages().first().toMap().value("avatarId").toString(), avatar);
-        QVERIFY(channel.messages().first().toMap().value("teamSpeak").toBool());
+        QVERIFY(channel.messages().first().toMap().value("provider").toString() == "teamspeak");
     }
 
     void clientBadgesFollowTheApplicationAcrossChatsAndReconnects() {
@@ -343,8 +345,8 @@ private slots:
         QString peer;
         for (const auto& value : channel.participants()) {
             const auto member = value.toMap();
-            QCOMPARE(member.value("teamSpeak").toBool(), member.value("tsClient") == "8");
-            if (member.value("tsClient") == "7") peer = member.value("id").toString();
+            QCOMPARE(member.value("provider").toString() == "teamspeak", member.value("providerClient") == "8");
+            if (member.value("providerClient") == "7") peer = member.value("id").toString();
         }
         const auto joined = channel.joinedHostId();
         for (const auto& mode : {QStringLiteral("channel"), QStringLiteral("private")}) {
@@ -353,10 +355,10 @@ private slots:
             fakeEvents.enqueue(QJsonDocument(QJsonObject{{"type", "message"}, {"mode", mode}, {"channel", "1"},
                 {"fromId", "7"}, {"fromUid", "remote-uid"}, {"fromName", "Remote"}, {"text", "Hello"}}).toJson(QJsonDocument::Compact));
             QTRY_COMPARE(channel.messages().size(), previous + 1);
-            QVERIFY(!channel.messages().last().toMap().value("teamSpeak").toBool());
+            QVERIFY(channel.messages().last().toMap().value("provider").toString().isEmpty());
             QVERIFY(channel.sendChat("Reply")); acknowledgePendingChat();
             QTRY_COMPARE(channel.messages().size(), previous + 2);
-            QVERIFY(!channel.messages().last().toMap().value("teamSpeak").toBool());
+            QVERIFY(channel.messages().last().toMap().value("provider").toString().isEmpty());
         }
         fakeEvents.enqueue("{\"type\":\"reconnecting\"}");
         QTRY_VERIFY(!channel.joined());
@@ -368,7 +370,7 @@ private slots:
         QTRY_VERIFY([&] {
             for (const auto& value : channel.participants()) {
                 const auto member = value.toMap();
-                if (member.value("id") == peer) return member.value("tsClient") == "70" && !member.value("teamSpeak").toBool();
+                if (member.value("id") == peer) return member.value("providerClient") == "70" && member.value("provider").toString().isEmpty();
             }
             return false;
         }());
@@ -391,10 +393,10 @@ private slots:
         QString peer;
         for (const auto& value : channel.participants()) {
             const auto member = value.toMap();
-            if (member.value("tsClient") != "7") continue;
+            if (member.value("providerClient") != "7") continue;
             peer = member.value("id").toString();
             QCOMPARE(member.value("avatarId").toString(), QString("mechanic"));
-            QVERIFY(!member.value("teamSpeak").toBool());
+            QVERIFY(member.value("provider").toString().isEmpty());
         }
         QVERIFY(!peer.isEmpty());
         const auto advertised = QJsonDocument::fromJson(QJsonDocument::fromJson(lastCommand).object()
@@ -444,7 +446,7 @@ private slots:
         QTRY_COMPARE(channel.participants().size(), 2);
         const auto portrait = [&] {
             for (const auto& value : channel.participants())
-                if (value.toMap().value("tsClient") == "7") return value.toMap();
+                if (value.toMap().value("providerClient") == "7") return value.toMap();
             return QVariantMap{};
         };
         const auto fallback = portrait().value("avatarId");
@@ -456,7 +458,7 @@ private slots:
         fakeEvents.enqueue(QJsonDocument(state).toJson(QJsonDocument::Compact));
         QTRY_COMPARE(portrait().value("name").toString(), QString("Updated"));
         QCOMPARE(portrait().value("avatarId"), fallback);
-        QCOMPARE(portrait().value("teamSpeak").toBool(), !squadSpeak);
+        QCOMPARE(portrait().value("provider").toString() == "teamspeak", !squadSpeak);
     }
 
     void repeatedJoinReusesConnection() {
@@ -542,7 +544,7 @@ private slots:
         const auto host = channel.joinedHostId();
         QString peer;
         for (const auto& value : channel.participants())
-            if (value.toMap().value("tsUid") == "remote-uid") peer = value.toMap().value("id").toString();
+            if (value.toMap().value("providerUid") == "remote-uid") peer = value.toMap().value("id").toString();
         QVERIFY(!peer.isEmpty());
         const auto unread = [&](const QString& id) {
             for (const auto& value : channel.savedChannels())

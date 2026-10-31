@@ -2,6 +2,7 @@
 import json
 import os
 import re
+import shlex
 import shutil
 from pathlib import Path
 import subprocess
@@ -354,6 +355,12 @@ else:
         cargo = self.root / "bin/cargo"
         cargo.write_text("#!" + sys.executable + "\n" + '''import os, pathlib, sys
 root = pathlib.Path(os.environ["CARGO_TARGET_DIR"])
+if "OPENSSL_DIR" in os.environ and not os.environ["OPENSSL_DIR"]:
+    sys.exit("An empty OpenSSL override hides the system installation")
+if os.environ.get("PROTOC") != sys.executable:
+    sys.exit("The configured protobuf compiler was not passed to Cargo")
+if os.environ.get("OPENSSL_DIR") and os.environ.get("OPENSSL_STATIC") != "1":
+    sys.exit("The packaged OpenSSL library must be linked statically")
 root.mkdir(parents=True, exist_ok=True)
 args = sys.argv[1:]
 with (root / "calls").open("a") as log: log.write(" ".join(args) + "\\n")
@@ -376,11 +383,13 @@ include(cmake/TeamSpeak.cmake)
 add_custom_target(consumer ALL DEPENDS squad_teamspeak_build)
 ''')
         for mode, flags in (("native", []), ("production", ["-DBUILD_TESTING=OFF"]),
-                            ("cross", ["-DCMAKE_SYSTEM_NAME=Generic"])):
+                            ("cross", ["-DCMAKE_SYSTEM_NAME=Generic"]),
+                            ("pinned", ["-DBUILD_TESTING=OFF", "-DOPENSSL_ROOT_DIR=" + str(self.root / "packaged-openssl")])):
             with self.subTest(mode=mode):
                 build = self.root / mode
                 result = subprocess.run(["cmake", "-S", str(self.root), "-B", str(build),
-                    "-DSQUAD_CARGO=" + str(cargo), "-DSQUAD_RUSTC=" + sys.executable, *flags],
+                    "-DSQUAD_CARGO=" + str(cargo), "-DSQUAD_RUSTC=" + sys.executable,
+                    "-DSQUAD_PROTOC=" + sys.executable, *flags],
                     capture_output=True, text=True, timeout=30)
                 self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
                 result = subprocess.run(["cmake", "--build", str(build), "--parallel", "2"],
@@ -395,6 +404,35 @@ add_custom_target(consumer ALL DEPENDS squad_teamspeak_build)
                 result = subprocess.run(["cmake", "--build", str(build)],
                     env=dict(os.environ, FAIL_PREPARE="1"), capture_output=True, text=True, timeout=30)
                 self.assertNotEqual(result.returncode, 0, "Test preparation failure must fail the build")
+
+    def test_audio_processing_uses_its_pinned_headers_before_ambient_packages(self):
+        # A build tool can install a newer, incompatible Abseil alongside the
+        # private WebRTC dependency. Compile through the real CMake interface.
+        build = self.root / "build"
+        pinned = build / "audio-processing/include/absl/base"
+        ambient = self.root / "ambient/absl/base"
+        pinned.mkdir(parents=True)
+        ambient.mkdir(parents=True)
+        (pinned / "nullability.h").write_text("namespace absl { template<class T> using Nullable = T; }\n")
+        (ambient / "nullability.h").write_text("namespace absl {}\n")
+        (self.root / "consumer.cpp").write_text(
+            '#include <absl/base/nullability.h>\nabsl::Nullable<int*> value = nullptr;\n')
+        (self.root / "CMakeLists.txt").write_text('''cmake_minimum_required(VERSION 3.24)
+project(HeaderContract LANGUAGES C CXX)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+include(cmake/AudioProcessing.cmake)
+add_library(consumer OBJECT consumer.cpp)
+target_link_libraries(consumer PRIVATE squad_apm)
+''')
+        result = subprocess.run(["cmake", "-S", str(self.root), "-B", str(build),
+                                 "-DSQUAD_MESON=" + sys.executable],
+                                capture_output=True, text=True, timeout=30)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        command = json.loads((build / "compile_commands.json").read_text())[0]
+        result = subprocess.run(shlex.split(command["command"]), cwd=command["directory"],
+                                env=dict(os.environ, CPATH=str(self.root / "ambient")),
+                                capture_output=True, text=True, timeout=30)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 
     def test_dependency_cache_ignores_test_and_release_changes(self):
         (self.root / "cmake").unlink()

@@ -224,7 +224,7 @@ Item {
                         required property var message
                         readonly property bool systemMessage: !!message.event
                         readonly property var member: systemMessage ? (root.current.chatBot || {}) : (root.current.chatMembers || []).find(function(m) { return m.id === message.sender })
-                            || ({id: message.sender, name: message.name, avatarId: message.avatarId || message.avatar})
+                            || ({id: message.sender, name: message.name, avatarId: message.avatarId || message.avatar, provider: message.provider || ""})
                         readonly property string translationKey: root.hostId + ":" + message.sequence
                         readonly property var translated: { root.language.revision; return root.language.result(translationKey) }
                         readonly property bool wantsTranslation: !root.remote && !systemMessage && !own && !!root.translationPreference.messages
@@ -260,8 +260,7 @@ Item {
                                 sourceComponent: VoiceAvatar {
                                     objectName: "messageAvatar_" + messageRow.message.sender
                                     systemMessage: messageRow.systemMessage
-                                    teamSpeak: !messageRow.own && (messageRow.member.teamSpeak !== undefined
-                                        ? !!messageRow.member.teamSpeak : !!messageRow.message.teamSpeak)
+                                    provider: messageRow.own ? "" : (messageRow.member.provider || "")
                                     online: systemMessage || !root.current.chatPresenceKnown || (root.current.chatOnlineIds || []).includes(messageRow.message.sender)
                                     avatar: messageRow.message.avatarId || messageRow.message.avatar || "mossling"; name: messageRow.message.name
                                     readonly property var member: messageRow.member
@@ -407,7 +406,7 @@ Item {
                 id: composer
                 anchors.fill: parent; anchors.margins: 4; spacing: 2
                 ActionButton {
-                    text: qsTr("Attach image"); glyph: "plus"; iconOnly: true; flat: true; visible: !root.remote && !root.current.teamSpeakChat
+                    text: qsTr("Attach image"); glyph: "plus"; iconOnly: true; flat: true; visible: !root.remote && !root.current.externalChat
                     enabled: !chatContent.busy && !root.current.chatPending && !!root.current.chatReady
                     Layout.alignment: Qt.AlignBottom
                     onClicked: attachmentMenu.popup()
@@ -456,7 +455,7 @@ Item {
                         if (root.remote) {
                             root.awaitingRemoteReceipt = root.network.remoteAction("chat", {text: draft.text})
                             if (!root.awaitingRemoteReceipt) root.sendError = qsTr("Message could not be sent. Check the connection and text length.")
-                        } else if (root.current.teamSpeakChat) root.network.sendChat(root.translationTarget.length && draft.text.trim().length ? root.translatedDraft.text : draft.text)
+                        } else if (root.current.externalChat) root.network.sendChat(root.translationTarget.length && draft.text.trim().length ? root.translatedDraft.text : draft.text)
                         else chatContent.prepareMessage(root.translationTarget.length && draft.text.trim().length ? root.translatedDraft.text : draft.text)
                     }
                 }

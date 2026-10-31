@@ -47,7 +47,7 @@ static int stress(const QString& endpoint, const QString& root, const QString& t
         }
         if (!QTest::qWaitFor([&] {
             for (const auto& item : peer.channel.savedChannels())
-                if (item.toMap().value("tsChannel") == target && item.toMap().value("online").toBool()) return true;
+                if (item.toMap().value("providerChannel") == target && item.toMap().value("online").toBool()) return true;
             return false;
         }, 10000)) { std::puts("Selected stress channel was not received."); return 21; }
         if (index == 0) {
@@ -58,7 +58,7 @@ static int stress(const QString& endpoint, const QString& root, const QString& t
                     const auto name = member.toMap().value("name").toString();
                     return name == peer.session.userName() || (!observer.isEmpty() && name == observer);
                 });
-                if (row.value("protocol") == "teamspeak" && row.value("online").toBool() && row.value("tsChannel") == target
+                if (row.value("protocol") == "teamspeak" && row.value("online").toBool() && row.value("providerChannel") == target
                     && safe && !row.value("password").toBool()) selected = row.value("id").toString();
             }
             if (selected.isEmpty()) { std::puts("Stress test requires an empty, explicitly selected channel."); return 21; }
@@ -278,7 +278,7 @@ int main(int argc, char** argv) {
         for (const auto& value : channel.participants()) {
             const auto member = value.toMap();
             if (member.value("name") != "SquadSpeak test A" && member.value("name") != "SquadSpeak test B") continue;
-            if (member.value("teamSpeak").toBool()) return false;
+            if (!member.value("provider").toString().isEmpty()) return false;
             if (member.value("avatarId") != (member.value("name") == sa.userName() ? sa.avatar() : sb.avatar())) return false;
             ++matched;
         }
@@ -295,23 +295,23 @@ int main(int argc, char** argv) {
     if (!check(a.sendChat(text) && QTest::qWaitFor([&] { return !receipt.empty() && !b.privateChats().empty(); }, 10000), "private server acknowledgement")) return 4;
     const auto conversation = b.privateChats().first().toMap();
     if (!check(b.openSavedChat(conversation.value("id").toString()) && !b.messages().empty() && b.messages().last().toMap().value("text") == text, "private end-to-end delivery")) return 5;
-    if (!check(!a.messages().last().toMap().value("teamSpeak").toBool()
-        && !b.messages().last().toMap().value("teamSpeak").toBool(), "private client badges")) return 24;
+    if (!check(a.messages().last().toMap().value("provider").toString().isEmpty()
+        && b.messages().last().toMap().value("provider").toString().isEmpty(), "private client badges")) return 24;
     a.openSavedChat(a.joinedHostId()); b.openSavedChat(b.joinedHostId());
     if (!target.isEmpty()) {
         bool moved = false;
         for (const auto& item : a.savedChannels()) {
             const auto candidate = item.toMap();
             if (candidate.value("protocol") != "teamspeak" || !candidate.value("online").toBool()
-                || candidate.value("tsChannel").toString().isEmpty()
-                || (target != "empty" && candidate.value("tsChannel") != target) || candidate.value("password").toBool()
+                || candidate.value("providerChannel").toString().isEmpty()
+                || (target != "empty" && candidate.value("providerChannel") != target) || candidate.value("password").toBool()
                 || !candidate.value("members").toList().isEmpty()) continue;
             const auto id = candidate.value("id").toString();
             if (a.joinSaved(id) && b.joinSaved(id) && QTest::qWaitFor([&] {
                 return a.joinedHostId() == id && b.joinedHostId() == id && a.participants().size() == 2 && b.participants().size() == 2;
             }, 5000)) { moved = true; break; }
             std::fprintf(stderr, "Move to %s (%s) failed: A=%s B=%s, joined=%s/%s, members=%lld/%lld, status=%s/%s\n",
-                qPrintable(candidate.value("name").toString()), qPrintable(candidate.value("tsChannel").toString()),
+                qPrintable(candidate.value("name").toString()), qPrintable(candidate.value("providerChannel").toString()),
                 qPrintable(a.chatError()), qPrintable(b.chatError()), qPrintable(a.joinedHostId()), qPrintable(b.joinedHostId()),
                 (long long)a.participants().size(), (long long)b.participants().size(), qPrintable(a.status()), qPrintable(b.status()));
         }

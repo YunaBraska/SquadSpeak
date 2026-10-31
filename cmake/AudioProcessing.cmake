@@ -149,6 +149,9 @@ else()
     add_library(squad_apm SHARED IMPORTED GLOBAL)
 endif()
 set_target_properties(squad_apm PROPERTIES IMPORTED_LOCATION "${squad_apm_library}"
+    # The private headers must outrank ambient Abseil installations. Treating
+    # them as system headers lets CPATH silently substitute an incompatible ABI.
+    IMPORTED_NO_SYSTEM TRUE
     INTERFACE_INCLUDE_DIRECTORIES "${squad_apm_prefix}/include/webrtc-audio-processing-2;${squad_apm_prefix}/include"
     INTERFACE_COMPILE_DEFINITIONS "WEBRTC_LIBRARY_IMPL")
 if(WIN32)

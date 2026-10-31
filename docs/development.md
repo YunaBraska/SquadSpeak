@@ -76,10 +76,39 @@ App-owned histories fail immediately on a database lock so storage contention ca
 pause the UI/network event loop. The existing error and message-retry paths retain
 the draft. Independent background writers keep their bounded lock wait.
 
+## Mumble client tests
+
+Mumble uses the same Rust static bridge, Opus encoder, playback mixer and external
+channel UI as TeamSpeak. The UDP cipher is the corrected upstream Mumble source
+under `src/teamspeak_bridge/mumble-crypt/`. Its existing regression tests run as
+`mumble_crypt`. Do not enable the `mumble-protocol` crate's older cipher.
+
+Run the real-server suite locally with either `mumble-server` installed or Docker
+running. It binds only to loopback, creates disposable credentials and removes
+its server and data afterwards. Audio is synthetic and never reaches a device.
+
+```sh
+cmake --build build/native-audio --target mumble_tests mumble_crypt_tests
+python3 tests/mumble_server.py build/native-audio/mumble_tests
+```
+
+Linux CI installs the real server and enables `SQUADSPEAK_MUMBLE_E2E` for CTest.
+The suite verifies authentication, saved identity and access tokens, nested
+channels, independent-peer channel/private messaging, PTT, mute, encrypted UDP
+and TLS voice transport, variable Opus duration and graceful disconnect. The UDP
+comparison crosses a complete encryption nonce-byte cycle and checks every
+captured Opus packet without transcoding. Mumble 1.5 uses protobuf voice framing,
+while older servers retain their negotiated legacy framing.
+The server's test-only connection and message burst allowances permit rapid
+isolated setup. They do not alter production client limits or permissions.
+
 ## TeamSpeak build and tests
 
-The C++ app links a pinned Rust static library. Install Rust using rustup, with
-the version in `rust-toolchain.toml`. CMake uses the existing Opus dependency.
+The C++ app links a pinned Rust static library for TeamSpeak and Mumble. Install
+Rust using rustup, with the version in `rust-toolchain.toml`, and the host's
+Protobuf compiler (`brew install protobuf`, `apt install protobuf-compiler` or
+`choco install protoc`). `protoc` is needed only at build time, including mobile
+cross-compilation. CMake uses the existing Opus dependency.
 For cross-compilation, first install the matching Rust target with `rustup target add`
 (`aarch64-apple-ios-sim`, `aarch64-apple-ios`, `aarch64-linux-android` or
 `x86_64-linux-android`). Keep the selected C++ and Rust architectures identical.

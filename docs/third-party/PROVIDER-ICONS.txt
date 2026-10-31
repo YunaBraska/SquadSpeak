@@ -9,3 +9,9 @@ Modifications: explicit blue fill for light and dark surfaces, rendered as PNG.
 TeamSpeak is a trademark of its respective owner. The icon identifies the
 TeamSpeak service or client and does not imply endorsement.
 The SquadSpeak provider icon reuses the application's existing artwork.
+
+Mumble provider icon
+
+Source: https://github.com/mumble-voip/mumble/blob/v1.5.857/icons/mumble_256x256.png
+Unmodified upstream artwork. BSD-style license: MUMBLE-LICENSE.txt.
+The icon identifies Mumble interoperability and does not imply endorsement.
