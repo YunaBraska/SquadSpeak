@@ -399,6 +399,24 @@ private slots:
         QTRY_COMPARE_WITH_TIMEOUT(restored.channel.joinedHostId(), tokenChannel, 10000);
         QTRY_VERIFY(restored.channel.joined());
     }
+    void channelTextFromAnotherChannelUsesTheRecipientConversation() {
+        QTemporaryDir directory;
+        ProtocolPeer peer;
+        QVERIFY(peer.open(endpoint, "Remote channel sender", password));
+        Peer app(directory.filePath("app"), "Channel recipient", TlsIdentity::create());
+        QVERIFY(app.channel.addMumble(endpoint, password));
+        QTRY_VERIFY_WITH_TIMEOUT(app.channel.joined(), 10000);
+        const auto savedStudio = channelNamed(app.channel, "Studio").value("id").toString();
+        const auto savedLounge = channelNamed(app.channel, "Lounge").value("id").toString();
+        QVERIFY(app.channel.joinSaved(savedStudio));
+        QTRY_COMPARE_WITH_TIMEOUT(app.channel.joinedHostId(), savedStudio, 10000);
+        QVERIFY(peer.sendChannelText(admin.channels.value("Studio"), "Message from another channel"));
+        QTRY_VERIFY_WITH_TIMEOUT(!app.channel.messages().isEmpty(), 5000);
+        QCOMPARE(app.channel.messages().last().toMap().value("text").toString(),
+            QString("Message from another channel"));
+        QVERIFY(app.channel.openSavedChat(savedLounge));
+        QVERIFY(app.channel.messages().isEmpty());
+    }
     void channelAndPrivateMessagesReuseTheSharedChat() {
         QTemporaryDir directory;
         Peer a(directory.filePath("a"), "Chat A", TlsIdentity::create());

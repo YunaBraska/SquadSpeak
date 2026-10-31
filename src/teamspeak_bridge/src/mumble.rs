@@ -769,7 +769,12 @@ fn run(
                                 };
                                 let from = m.actor();
                                 let u = users.get(&from).cloned().unwrap_or(Value::Null);
-                                let channel = u["channel"].as_str().unwrap_or("");
+                                // Channel text can be sent from a different channel.
+                                // The server delivers it to us as a member of the
+                                // receiving channel, independently of the sender.
+                                let channel = users.get(&own)
+                                    .and_then(|user| user["channel"].as_str())
+                                    .unwrap_or("");
                                 emit(
                                     &queue,
                                     json!({"type":"message","mode":mode,"fromId":from.to_string(),"fromUid":u["uid"].as_str().unwrap_or(""),"fromName":u["name"].as_str().unwrap_or(""),"text":m.message(),"channel":channel}),
