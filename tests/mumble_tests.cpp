@@ -290,6 +290,7 @@ private slots:
             // ServerSync reports root permissions, not those of the default
             // channel. Root is moderated, but the initial Lounge allows speech.
             QCOMPARE(client.channel.joinedHostId(), channelNamed(client.channel, "Lounge").value("id").toString());
+            QCOMPARE(channelNamed(client.channel, "Lounge").value("ownerName").toString(), QString("SquadSpeak E2E"));
             QTRY_VERIFY_WITH_TIMEOUT(client.channel.sendAudio(opusFrame(960, 440)), 3000);
             QVERIFY(client.channel.sendAudio({}));
             QTRY_VERIFY_WITH_TIMEOUT((remoteSession = admin.sessionNamed("Mumble A")) != 0, 5000);
@@ -320,6 +321,24 @@ private slots:
         QFile state(directory.filePath("a.json")); QVERIFY(state.open(QIODevice::ReadOnly));
         const auto savedState = state.readAll(); QVERIFY(!savedState.contains(password.toUtf8()));
         QVERIFY(savedState.contains("mumblePins"));
+    }
+    void localMuteIsDistinctFromServerSpeakingRestriction() {
+        QTemporaryDir directory;
+        Peer client(directory.filePath("mute"), "Muted client", TlsIdentity::create());
+        QVERIFY(client.session.setMuted(true));
+        QVERIFY(client.channel.addMumble(endpoint, password));
+        QTRY_VERIFY(client.channel.joined());
+        quint32 session = 0;
+        QTRY_VERIFY((session = admin.sessionNamed("Muted client")) != 0);
+        QTRY_VERIFY(admin.users.value(session).value(9).toBool());
+        QVERIFY2(client.channel.status().isEmpty(), qPrintable(client.channel.status()));
+        QVERIFY(admin.send(9, number(1, session) + number(6, 1)));
+        QTRY_VERIFY(client.channel.status().contains("Speaking is not allowed"));
+        QVERIFY(admin.send(9, number(1, session) + number(6, 0)));
+        QTRY_VERIFY(client.channel.status().isEmpty());
+        QVERIFY(client.session.muted());
+        QVERIFY(!client.channel.sendAudio(opusFrame(960, 440)));
+        QVERIFY(client.channel.leave());
     }
     void changedServerKeyFailsBeforeAuthentication() {
         QTemporaryDir directory; QVERIFY(directory.isValid());

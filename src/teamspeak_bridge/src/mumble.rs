@@ -136,8 +136,16 @@ fn read_state(
     packet_limit: usize,
 ) -> Value {
     let user = users.get(&own).cloned().unwrap_or(Value::Null);
+    let server = channels
+        .get(&0)
+        .and_then(|root| root["name"].as_str())
+        .filter(|name| !name.trim().is_empty())
+        .unwrap_or(server);
+    let talk_allowed = can_send.unwrap_or(true)
+        && !user["_serverMute"].as_bool().unwrap_or(false)
+        && !user["_suppress"].as_bool().unwrap_or(false);
     json!({"type":"state","directoryComplete":synced,"server":{"name":server,"uid":pin},
-        "self":own.to_string(),"channel":user["channel"].as_str().unwrap_or(""),"maximumAudioPacket":packet_limit,"canSend":can_send.unwrap_or(true) && packet_limit>0,"talkAllowed":can_send.unwrap_or(true) && !user["inputMuted"].as_bool().unwrap_or(false),
+        "self":own.to_string(),"channel":user["channel"].as_str().unwrap_or(""),"maximumAudioPacket":packet_limit,"canSend":talk_allowed && packet_limit>0,"talkAllowed":talk_allowed,
         "channels":channels.values().cloned().collect::<Vec<_>>(),"members":users.values().cloned().collect::<Vec<_>>()})
 }
 
