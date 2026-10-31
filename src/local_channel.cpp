@@ -2462,6 +2462,17 @@ bool LocalChannel::accessAddress(const QString& endpoint, AddressAction action) 
     addressText = canonicalEndpointHost(addressText);
     const QString key = endpointKey(addressText, quint16(port));
     const auto expected = endpointPins_.value(key);
+    if (mayConnectExternal && expected.isEmpty()) {
+        // A pinned external endpoint already has an authenticated protocol.
+        // Reuse it before discovery can reveal the native client identity.
+        for (auto it = savedChannels_.constBegin(); it != savedChannels_.constEnd(); ++it) {
+            const auto entry = it.value().toObject();
+            const auto* provider = externalVoiceProvider(entry.value("protocol").toString());
+            if (provider && entry.value("address").toString() == addressText && entry.value("port").toInt() == port
+                && security_.value(QLatin1String(provider->pins)).toObject().contains(entry.value("deviceId").toString()))
+                return joinExternal(it.key(), {}, false);
+        }
+    }
     auto* socket = new QSslSocket(this);
     direct_ = socket;
     directBuffer_.clear();

@@ -375,11 +375,15 @@ private slots:
     }
     void changedServerKeyDoesNotReceiveClientCertificate_data() {
         QTest::addColumn<int>("protocol");
-        QTest::newRow("TLS1.2") << int(QSsl::TlsV1_2);
-        QTest::newRow("TLS1.3") << int(QSsl::TlsV1_3);
+        QTest::addColumn<bool>("addressEntry");
+        QTest::newRow("TLS1.2-adapter") << int(QSsl::TlsV1_2) << false;
+        QTest::newRow("TLS1.3-adapter") << int(QSsl::TlsV1_3) << false;
+        QTest::newRow("TLS1.2-address") << int(QSsl::TlsV1_2) << true;
+        QTest::newRow("TLS1.3-address") << int(QSsl::TlsV1_3) << true;
     }
     void changedServerKeyDoesNotReceiveClientCertificate() {
         QFETCH(int, protocol);
+        QFETCH(bool, addressEntry);
         const auto serverIdentity = TlsIdentity::create();
         auto configuration = serverIdentity.configuration();
         configuration.setProtocol(QSsl::SslProtocol(protocol));
@@ -405,8 +409,38 @@ private slots:
             handshakeFinished = true;
         });
         QVERIFY(server.listen(QHostAddress::LocalHost));
+        const auto address = QString("127.0.0.1:%1").arg(server.serverPort());
+        if (addressEntry) {
+            QTemporaryDir directory;
+            const auto path = directory.filePath("known-server");
+            const auto identity = TlsIdentity::create();
+            QString serverId;
+            {
+                Peer first(path, "First use", identity);
+                QVERIFY(first.channel.addMumble(address));
+                QTRY_VERIFY_WITH_TIMEOUT(handshakeFinished, 5000);
+                QVERIFY(certificateReceived);
+                for (const auto& row : first.channel.savedChannels())
+                    if (row.toMap().value("protocol") == "mumble") serverId = row.toMap().value("deviceId").toString();
+                QVERIFY(!serverId.isEmpty());
+            }
+            QFile file(path + ".json"); QVERIFY(file.open(QIODevice::ReadOnly));
+            auto state = QJsonDocument::fromJson(file.readAll()).object(); file.close();
+            auto security = state.value("security").toObject();
+            security.insert("mumblePins", QJsonObject{{serverId, QString(64, '0')}});
+            state.insert("security", security);
+            QVERIFY(file.open(QIODevice::WriteOnly | QIODevice::Truncate));
+            QVERIFY(file.write(QJsonDocument(state).toJson()) > 0); file.close();
+            handshakeFinished = false; certificateReceived = false;
+            Peer rejected(path, "Known server", identity);
+            QVERIFY(rejected.channel.openAddress(address));
+            QTRY_VERIFY_WITH_TIMEOUT(handshakeFinished, 5000);
+            QVERIFY(!certificateReceived);
+            QTRY_VERIFY_WITH_TIMEOUT(rejected.channel.status().contains("key changed"), 5000);
+            return;
+        }
         const auto options = QJsonDocument(QJsonObject{
-            {"address", QString("127.0.0.1:%1").arg(server.serverPort())},
+            {"address", address},
             {"name", "Private identity"}, {"password", "must-not-be-sent"},
             {"identityPem", QString::fromUtf8(TlsIdentity::create().pem())},
             {"serverKey", QString(64, '0')}
