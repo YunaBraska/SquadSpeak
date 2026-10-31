@@ -53,7 +53,7 @@ public:
     // and release at most six frames after a late callback. resetCapture clears it.
     [[nodiscard]] QList<QByteArray> pace(QList<QByteArray> packets, qint64 now);
     [[nodiscard]] bool capturePending() const { return !outgoing_.isEmpty(); }
-    [[nodiscard]] bool receive(const QString& peer, const QByteArray& packet, qint64 now, int missing = 0);
+    [[nodiscard]] bool receive(const QString& peer, const QByteArray& packet, qint64 now, int missing = 0, int missingFrameSamples = 960, bool last = false);
     using PlaybackFilter = std::function<void(const QString&, std::span<float>, qint64)>;
     // Processes each decoded 48 kHz peer frame before normalization and mixing.
     // The borrowed frame cannot escape the callback. Empty queues provide silence.
@@ -93,6 +93,9 @@ private:
     struct Stream final {
         std::unique_ptr<OpusDecoder, decltype(&opus_decoder_destroy)> decoder{nullptr, opus_decoder_destroy};
         std::deque<Frame> frames;
+        Frame partial;
+        size_t partialSamples = 0;
+        int packetDurationMs = 20;
         double gain = 1;
         double automaticGain = 1;
         std::array<double, 20> recentLevels{};

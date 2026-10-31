@@ -785,14 +785,14 @@ bool AudioModel::setParticipants(const QVariantList& participants, const QString
     } catch (const std::exception& error) { setStatus(tr(error.what()), false); return false; }
 }
 
-bool AudioModel::receiveAudio(const QString& peer, const QByteArray& packet, int missing) {
+bool AudioModel::receiveAudio(const QString& peer, const QByteArray& packet, int missing, int missingFrameSamples, bool last) {
     if (!voiceActive_) return false;
     const bool permitted = std::any_of(participants_.begin(), participants_.end(), [&](const auto& value) {
         const auto member = value.toMap();
         return member.value("id").toString() == peer && member.value("available").toBool() && !member.value("muted").toBool();
     });
     if (!permitted) return false;
-    try { return mixer_.receive(peer, packet, clock_.elapsed(), missing); }
+    try { return mixer_.receive(peer, packet, clock_.elapsed(), missing, missingFrameSamples, last); }
     catch (const std::exception& error) { setStatus(tr(error.what()), false); return false; }
 }
 

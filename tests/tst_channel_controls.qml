@@ -3253,7 +3253,10 @@ TestCase {
     }
 
     function test_providerIconsIdentifyClientsWithoutChangingPortraitOrAudioBadges_data() {
-        return [{tag: "light", mode: "light"}, {tag: "dark", mode: "dark"}]
+        return [{tag: "ts-light", mode: "light", provider: "teamspeak", label: "TeamSpeak"},
+            {tag: "ts-dark", mode: "dark", provider: "teamspeak", label: "TeamSpeak"},
+            {tag: "mumble-light", mode: "light", provider: "mumble", label: "Mumble"},
+            {tag: "mumble-dark", mode: "dark", provider: "mumble", label: "Mumble"}]
     }
     function test_providerIconsIdentifyClientsWithoutChangingPortraitOrAudioBadges(data) {
         session.setTheme(data.mode)
@@ -3264,16 +3267,16 @@ TestCase {
         verify(!badge.visible, "SquadSpeak participants have no provider badge")
         const icon = findChild(badge, "providerIcon")
         compare(findChild(icon, "providerArtwork").source.toString(), "")
-        item.teamSpeak = true
-        compare(icon.label, "TeamSpeak")
+        item.provider = data.provider
+        compare(icon.label, data.label)
         tryCompare(findChild(icon, "providerArtwork"), "status", Image.Ready)
         verify(badge.visible)
         compare(badge.x + badge.width, item.width)
         compare(badge.y, 0)
         verify(badge.height <= findChild(item, "microphoneBadge").mapToItem(item, 0, 0).y)
-        item.teamSpeak = false
+        item.provider = ""
         verify(!badge.visible, "SquadSpeak clients on a TS3 host also have no provider badge")
-        item.teamSpeak = true
+        item.provider = data.provider
         item.music = true
         verify(!badge.visible)
         item.music = false
@@ -3285,17 +3288,20 @@ TestCase {
         item.identity = "known-person"
         verify(badge.visible, "A known person keeps the client icon even without a display name")
         item.visible = false
-        view.memberOptions({id: "ts-peer", name: "Example", avatarId: "courier", teamSpeak: true}, "ts-host", false)
+        view.memberOptions({id: "ts-peer", name: "Example", avatarId: "courier", provider: data.provider}, "ts-host", false)
         const dialog = findChild(view, "requestInfoDialog")
         tryCompare(dialog, "opened", true)
-        compare(findChild(dialog, "requestClient").text, "TeamSpeak")
-        compare(findChild(findChild(dialog, "requestAvatar"), "providerIcon").label, "TeamSpeak")
+        compare(findChild(dialog, "requestClient").text, data.label)
+        const volume = findChild(dialog, "memberVolume")
+        verify(waitForPolish(view))
+        verify(volume.width >= dialog.availableWidth - 2, "Person slider uses the pane width: " + volume.width + "/" + dialog.availableWidth + ", scroll=" + findChild(dialog, "requestDetailsScroll").width + ", column=" + volume.parent.width)
+        compare(findChild(findChild(dialog, "requestAvatar"), "providerIcon").label, data.label)
         tryVerify(function() { return fixtures.portraitHasDetail(findChild(dialog, "requestAvatar")) })
         if (imageDirectory.length > 0) {
             waitForRendering(view.contentItem)
             verify(fixtures.saveWindow(view, imageDirectory + "/inspect-teamspeak-" + data.tag + ".png"))
         }
-        view.memberOptions({id: "squad-peer", name: "Example", avatarId: "courier", teamSpeak: false}, "ts-host", false)
+        view.memberOptions({id: "squad-peer", name: "Example", avatarId: "courier", provider: ""}, "ts-host", false)
         compare(findChild(dialog, "requestClient").text, "SquadSpeak")
         verify(!findChild(findChild(dialog, "requestAvatar"), "providerBadge").visible)
         if (imageDirectory.length > 0) {
@@ -4341,8 +4347,8 @@ TestCase {
             "Chat portraits follow the channel animation preference")
         compare(own.own, true); compare(other.own, false)
         const ownRecord = own.message
-        own.message = Object.assign({}, ownRecord, {teamSpeak: true})
-        verify(!findChild(own, "messageAvatar_" + channel.ownId).teamSpeak,
+        own.message = Object.assign({}, ownRecord, {provider: "teamspeak"})
+        verify(!findChild(own, "messageAvatar_" + channel.ownId).provider,
             "An older protocol flag must not mark our own message as a TeamSpeak client")
         own.message = ownRecord
         verify(findChild(own, "messageBody_" + own.message.sequence).x > findChild(other, "messageBody_" + other.message.sequence).x)
@@ -4376,6 +4382,11 @@ TestCase {
             waitForRendering(panel)
             verify(fixtures.saveWindow(view, imageDirectory + "/channel-chat.png"))
         }
+        const otherRecord = other.message
+        other.message = Object.assign({}, otherRecord, {provider: "mumble"})
+        verify(!findChild(other, "messageAvatar_" + remoteChannel.ownId).provider,
+            "The current participant profile overrides an older external-provider badge")
+        other.message = otherRecord
         verify(remoteChannel.closeChat(channel.ownId))
         tryVerify(function() { return channel.chatPresenceKnown && !channel.chatOnlineIds.includes(remoteChannel.ownId) })
         history.scrollTo(other.y)

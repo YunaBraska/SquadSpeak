@@ -14,7 +14,7 @@ Item {
     property bool animated: true
     property bool circular: false
     property bool music: false
-    property bool teamSpeak: false
+    property string provider: ""
     property bool systemMessage: false
     property string identity: name
     property double animationTime: 0
@@ -138,14 +138,14 @@ Item {
     }
     Rectangle {
         objectName: "providerBadge"
-        visible: root.teamSpeak && root.identity.length > 0 && !root.music && !root.systemMessage
+        visible: root.provider.length > 0 && root.identity.length > 0 && !root.music && !root.systemMessage
         anchors.top: parent.top; anchors.right: parent.right
         width: Math.max(14, Math.min(20, root.width * 0.4)); height: width
         radius: Theme.smallRadius; color: Theme.surface
         ProviderIcon {
             objectName: "providerIcon"
             anchors.fill: parent; anchors.margins: 1
-            provider: root.teamSpeak ? "teamspeak" : ""
+            provider: root.provider
         }
     }
     Row {

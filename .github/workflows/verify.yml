@@ -373,6 +373,10 @@ jobs:
         $nasmVersion = & "$nasmDir/nasm.exe" -v
         if ($LASTEXITCODE -ne 0 -or $nasmVersion -notmatch '^NASM version 3\.02(?: |$)') { throw "Unexpected NASM version: $nasmVersion" }
         Write-Host $nasmVersion
+        choco install protoc --version=33.0.0 --no-progress --yes
+        if ($LASTEXITCODE -ne 0) { throw "Protobuf compiler installation failed" }
+        protoc --version
+        if ($LASTEXITCODE -ne 0) { throw "Protobuf compiler is unavailable" }
         python -m pip install --disable-pip-version-check meson==1.12.1
         if ($LASTEXITCODE -ne 0) { throw "Meson installation failed" }
         ./tests/windows-audio.ps1 -BuildRoot "$env:GITHUB_WORKSPACE/build/windows-ci"

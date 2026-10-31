@@ -105,7 +105,7 @@ PanelWindow {
                     id: memberAvatar
                     required property var modelData
                     width: 36; height: 36; circular: true
-                    avatar: modelData.avatarId || modelData.avatar || "mossling"; name: modelData.name; music: !!modelData.music; teamSpeak: !!modelData.teamSpeak
+                    avatar: modelData.avatarId || modelData.avatar || "mossling"; name: modelData.name; music: !!modelData.music; provider: modelData.provider || ""
                     available: modelData.available; muted: modelData.muted; deafened: !!modelData.deafened; sleeping: !!modelData.sleeping
                     identity: modelData.id; animationTime: root.avatarTime
                     objectName: "channelAvatar_" + summary.hostId + "_" + modelData.id
@@ -156,7 +156,7 @@ PanelWindow {
                 VoiceAvatar {
                     objectName: "participantAvatar"
                     Layout.preferredWidth: 44; Layout.preferredHeight: 44; circular: true
-                    avatar: modelData.avatarId || modelData.avatar || "mossling"; name: modelData.name; music: !!modelData.music; teamSpeak: !!modelData.teamSpeak
+                    avatar: modelData.avatarId || modelData.avatar || "mossling"; name: modelData.name; music: !!modelData.music; provider: modelData.provider || ""
                     available: modelData.available; muted: modelData.muted; deafened: !!modelData.deafened; sleeping: !!modelData.sleeping
                     identity: modelData.id; animationTime: root.avatarTime
                     animated: root.voice.animatedAvatars && memberEntry.y + memberEntry.height >= grid.contentY && memberEntry.y <= grid.contentY + grid.height
@@ -367,20 +367,22 @@ PanelWindow {
     }
     ListModel { id: channelRows; dynamicRoles: true }
     function orderedChannels(entries) {
-        if (!entries.some(function(c) { return c.protocol === "teamspeak" }))
+        if (!entries.some(function(c) { return c.protocol === "teamspeak" || c.protocol === "mumble" }))
             return entries.slice().sort(function(a, b) { return a.name.localeCompare(b.name) || a.id.localeCompare(b.id) })
         const result = [], seen = new Set(), ids = new Set(entries.map(function(c) { return c.id }))
         function appendSiblings(parent, depth) {
             const siblings = entries.filter(function(c) { return parent ? c.parent === parent : !ids.has(c.parent) })
+            const mumble = siblings.length && siblings[0].protocol === "mumble"
+            if (mumble) siblings.sort(function(a, b) { return (Number(a.order) - Number(b.order)) || a.name.localeCompare(b.name) || a.id.localeCompare(b.id) })
             let previous = "0"
             while (siblings.length) {
-                let index = siblings.findIndex(function(c) { return c.order === previous })
+                let index = mumble ? 0 : siblings.findIndex(function(c) { return c.order === previous })
                 if (index < 0) index = 0
                 const entry = siblings.splice(index, 1)[0]
                 if (seen.has(entry.id)) continue
                 seen.add(entry.id)
                 result.push(Object.assign({}, entry, {depth: Math.min(depth, 8)}))
-                previous = entry.tsChannel
+                previous = entry.providerChannel
                 if (depth < 64) appendSiblings(entry.id, depth + 1)
             }
         }
@@ -438,7 +440,7 @@ PanelWindow {
             const privateUnread = group.privateChats.some(function(entry) { return !!entry.unread })
             const groupUnread = privateUnread || group.channels.some(function(entry) { return !!entry.unread })
             const grouped = group.channels.length !== 1
-                || (group.protocol === "teamspeak" && group.channels[0].tsChannel === "0")
+                || (group.protocol === "teamspeak" && group.channels[0].providerChannel === "0")
             const groupExpanded = !grouped || !!query || !collapsedHosts[group.key]
             if (query && !group.label.toLowerCase().includes(query)) {
                 const matches = new Set()
@@ -638,7 +640,7 @@ PanelWindow {
                             objectName: "togglePrivateBlock_" + modelData.id
                             text: modelData.blockedByMe ? qsTr("Unblock") : qsTr("Block")
                             destructive: !modelData.blockedByMe
-                            visible: modelData.protocol !== "teamspeak"
+                            visible: modelData.protocol !== "teamspeak" && modelData.protocol !== "mumble"
                             onClicked: root.network.setPrivateBlocked(modelData.id, !modelData.blockedByMe)
                         }
                     }
@@ -710,7 +712,7 @@ PanelWindow {
         anchors.centerIn: parent
         width: Math.min(360, parent.width - 24)
         modal: true
-        title: root.network.teamSpeakChat ? qsTr("Password") : qsTr("Channel password")
+        title: root.network.externalChat ? qsTr("Password") : qsTr("Channel password")
         closePolicy: Popup.NoAutoClose
         onOpened: { joinSecret.clear(); rememberSecret.checked = root.network.passwordSaved; joinSecret.forceActiveFocus() }
         onClosed: joinSecret.clear()
@@ -1465,7 +1467,7 @@ PanelWindow {
                 }
                 ActionButton { Layout.fillWidth: true; flat: true; horizontalAlignment: Text.AlignLeft; objectName: "leaveMenuItem"; destructive: true; text: qsTr("Leave"); enabled: root.activeHost === root.selectedHost; onClicked: root.leaveHost() }
                 Rectangle { Layout.fillWidth: true; implicitHeight: 1; color: Theme.border; visible: !root.remote && root.selectedHost !== root.network.ownId; height: visible ? implicitHeight : 0 }
-                ActionButton { Layout.fillWidth: true; flat: true; horizontalAlignment: Text.AlignLeft; objectName: "removeChannelMenuItem"; destructive: true; text: root.channelList.some(function(c) { return c.id === root.selectedHost && c.protocol === "teamspeak" }) ? qsTr("Remove server") : qsTr("Remove channel"); visible: !root.remote && root.selectedHost !== root.network.ownId; onClicked: root.selectedOwner ? removeOwnChannel.open() : root.network.removeChannel(root.selectedHost) }
+                ActionButton { Layout.fillWidth: true; flat: true; horizontalAlignment: Text.AlignLeft; objectName: "removeChannelMenuItem"; destructive: true; text: root.channelList.some(function(c) { return c.id === root.selectedHost && (c.protocol === "teamspeak" || c.protocol === "mumble") }) ? qsTr("Remove server") : qsTr("Remove channel"); visible: !root.remote && root.selectedHost !== root.network.ownId; onClicked: root.selectedOwner ? removeOwnChannel.open() : root.network.removeChannel(root.selectedHost) }
                 DetailText { objectName: "channelIdentity"; text: channelInfo.entry.id || ""; color: Theme.muted; font.pixelSize: Theme.fontSize(11); Accessible.name: qsTr("Channel ID") }
                 ActionButton { objectName: "internetHelpToggle"; text: qsTr("Internet access"); flat: true; onClicked: internetHelp.visible = !internetHelp.visible }
                 ColumnLayout {
@@ -1600,11 +1602,11 @@ PanelWindow {
                 width: requestScroll.availableWidth; spacing: 12
                 RowLayout {
                     Layout.fillWidth: true
-                    VoiceAvatar { objectName: "requestAvatar"; width: 56; height: 56; circular: true; animated: false; avatar: requestInfo.entry.avatarId || "mossling"; name: requestInfo.entry.name || ""; teamSpeak: !!requestInfo.entry.teamSpeak }
+                    VoiceAvatar { objectName: "requestAvatar"; width: 56; height: 56; circular: true; animated: false; avatar: requestInfo.entry.avatarId || "mossling"; name: requestInfo.entry.name || ""; provider: requestInfo.entry.provider || "" }
                     ColumnLayout {
                         Layout.fillWidth: true; spacing: 2
                         DetailText { objectName: "requestName"; text: requestInfo.entry.name || ""; font.weight: Font.DemiBold }
-                        DetailText { objectName: "requestClient"; visible: !!requestInfo.entry.id && !requestInfo.entry.music; text: requestInfo.entry.teamSpeak ? "TeamSpeak" : "SquadSpeak"; color: Theme.muted; font.pixelSize: Theme.fontSize(12) }
+                        DetailText { objectName: "requestClient"; visible: !!requestInfo.entry.id && !requestInfo.entry.music; text: requestInfo.entry.provider === "mumble" ? "Mumble" : requestInfo.entry.provider === "teamspeak" ? "TeamSpeak" : "SquadSpeak"; color: Theme.muted; font.pixelSize: Theme.fontSize(12) }
                     }
                     ActionButton {
                         objectName: "messageInspectedMember"
@@ -1632,6 +1634,7 @@ PanelWindow {
                 }
                 SettingSlider {
                     id: memberGain; objectName: "memberVolume"
+                    Layout.minimumWidth: requestDetails.width
                     Layout.fillWidth: true; visible: requestInfo.personalControls
                     caption: qsTr("Volume for me")
                     from: 0; to: 2; stepSize: 0.05

@@ -85,7 +85,7 @@ class LocalChannel final : public QObject {
     Q_PROPERTY(QVariantList requests READ requests NOTIFY requestsChanged)
     Q_PROPERTY(QVariantList messages READ messages NOTIFY chatChanged)
     Q_PROPERTY(bool chatReady READ chatReady NOTIFY chatChanged)
-    Q_PROPERTY(bool teamSpeakChat READ teamSpeakChat NOTIFY chatChanged)
+    Q_PROPERTY(bool externalChat READ externalChat NOTIFY chatChanged)
     Q_PROPERTY(bool chatPending READ chatPending NOTIFY chatChanged)
     Q_PROPERTY(bool historyLoading READ historyLoading NOTIFY chatChanged)
     Q_PROPERTY(bool hasOlderMessages READ hasOlderMessages NOTIFY chatChanged)
@@ -159,7 +159,8 @@ public:
     [[nodiscard]] QVariantList controlRequests() const;
     [[nodiscard]] QVariantList messages() const;
     [[nodiscard]] bool chatReady() const;
-    [[nodiscard]] bool teamSpeakChat() const;
+    [[nodiscard]] bool externalChat() const;
+    Q_INVOKABLE bool addMumble(const QString& endpoint, const QString& password = {});
     Q_INVOKABLE bool addTeamSpeak(const QString& endpoint, const QString& password = {});
     [[nodiscard]] bool chatPending() const;
     [[nodiscard]] bool historyLoading() const;
@@ -269,7 +270,7 @@ signals:
     void remoteLevelsChanged();
     void remoteChatSent(const QString& text);
     void remoteChatFailed(const QString& error);
-    void audioReceived(const QString& peerId, const QByteArray& packet, int missing = 0);
+    void audioReceived(const QString& peerId, const QByteArray& packet, int missing = 0, int missingFrameSamples = 960, bool last = false);
     void chatChanged();
     void chatSent(const QString& text, const QString& hostId);
     void chatNotification(const QString& hostId, const QVariantMap& message);
@@ -293,15 +294,17 @@ private:
     void acceptSocket(QSslSocket* socket);
     void dispatchMessage(QSslSocket* socket, const QJsonObject& message);
     struct Client;
-    struct TeamSpeak final {
+    struct ExternalVoice final {
         void* handle = nullptr;
-        QString id, address, name, active, requested;
+        QString id, address, name, active, requested, provider;
         quint16 port = 9987;
         QJsonObject state, lastPresence;
         struct Audio final {
             QString peer;
             qint64 highest = -1, delivered = -1, received = -1;
-            QMap<qint64, QPair<QByteArray, qint64>> pending;
+            struct Packet final { QByteArray payload; qint64 received; int ticks; bool last; };
+            QMap<qint64, Packet> pending;
+            int lastTicks = 1;
             bool ended = false;
         };
         QHash<QString, Audio> audioSequences;
@@ -310,26 +313,29 @@ private:
         bool movePending = false;
         bool sendingAudio = false;
         qint64 sequence = 0;
-        ~TeamSpeak();
+        ~ExternalVoice();
     };
-    std::shared_ptr<TeamSpeak> teamSpeak_;
-    QTimer teamSpeakTimer_;
-    bool joinTeamSpeak(const QString& id, const QString& password = {}, bool remember = false);
-    void pollTeamSpeak();
-    void teamSpeakEvent(const QJsonObject& event);
-    bool teamSpeakCommand(const QJsonObject& command);
-    void disconnectTeamSpeak();
-    void teamSpeakState(const QJsonObject& state);
-    bool sendTeamSpeakChat(Client& client, const QString& text);
-    bool openTeamSpeakPrivate(const QString& host, const QString& peer);
+    std::shared_ptr<ExternalVoice> external_;
+    QTimer externalTimer_;
+    bool addExternal(const QString& provider, const QString& endpoint, const QString& password);
+    void probeExternal(const QString& address, quint16 mumblePort, quint16 teamSpeakPort);
+    bool joinExternal(const QString& id, const QString& password = {}, bool remember = false);
+    void pollExternal();
+    void externalEvent(const QJsonObject& event);
+    bool externalCommand(const QJsonObject& command);
+    void disconnectExternal();
+    void externalState(const QJsonObject& state);
+    bool sendExternalChat(Client& client, const QString& text);
+    bool openExternalPrivate(const QString& host, const QString& peer);
     bool saveTeamSpeakIdentity(const QJsonObject& identity);
     struct Client final {
         QString id;
         QString deviceId;
-        QString teamSpeakChannel;
-        QString teamSpeakPeer;
-        bool teamSpeak = false;
-        bool teamSpeakCanSend = false;
+        QString providerChannel;
+        QString providerPeer;
+        QString provider;
+        bool external() const { return !provider.isEmpty(); }
+        bool externalCanSend = false;
         QString privatePeer;
         QSslCertificate privateCertificate;
         bool blockedByMe = false, blockedByPeer = false, privatePeerOnline = false;

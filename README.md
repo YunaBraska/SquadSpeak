@@ -75,23 +75,28 @@ keep their **...** menu. Your own channel remains available while the app runs.
 
 Approvals belong to the saved cryptographic identity. Changing Wi-Fi or IP address does not create a new identity. Keep the app's identity when moving or backing up a profile; deleting it requires a new approval.
 
-## Connect to TeamSpeak 3
+## Connect to TeamSpeak 3 or Mumble
 
 In **+**, enter the server address and select **Add**. SquadSpeak detects the
-protocol. Without an explicit port, it checks SquadSpeak on `48763`, then TS3 on
-`9987`. For another port, enter `example.org:12345`, `192.168.1.20:12345`
-or `[2001:db8::20]:12345`. Both protocols use the port you entered.
+protocol. Without an explicit port, it checks SquadSpeak on `48763`, Mumble on
+`64738`, then TS3 on `9987`. For another port, enter `example.org:12345`, `192.168.1.20:12345`
+or `[2001:db8::20]:12345`. Each protocol uses the port you entered.
 Enter a password only if the server asks. **Save password** remembers it
 securely for the next connection. Channels stay in their server's
-hierarchy, with a TS3 marker on the host. Double-click to join. Use the same
+hierarchy, with the provider's icon on the host. Double-click to join. Use the same
 microphone, push-to-talk and volume settings. Click a member to open **Message**.
 
-SquadSpeak generates and keeps a separate TS3 identity. Remote control uses the
+SquadSpeak generates and keeps a separate TS3 identity. Mumble uses the existing
+SquadSpeak certificate identity. Remote control uses the
 controlled computer's identity and connection. Server permissions still apply.
 The current integration supports Opus voice and text, without requiring the
 TeamSpeak client. It does not yet import an existing TS3 identity, manage server
 permissions, transfer files or send whispers. TS3 chats have no offline delivery
-or server-side history. See [the support limits](docs/roadmap.md#teamspeak-interoperability).
+or server-side history. Mumble supports Opus voice, nested channels, channel and
+private text, server passwords and channel access tokens. Mumble images, whispers,
+linked-channel voice, positional audio and server administration are not supported.
+It also has no server-side chat history or offline private delivery. See
+[the support limits](docs/roadmap.md#teamspeak-interoperability).
 
 ## Make yourself heard
 

@@ -19,8 +19,8 @@ const QSet<QString> knownChatKinds{
 QVariantList LocalChannel::messages() const {
     const auto* c = chatClient();
     QVariantList result;
-    if (!c || !c->accepted || (c->teamSpeak && !chatReady())) return result;
-    const auto now = c->teamSpeak ? clock_() : c->chatClock.isValid() ? c->serverTime + c->chatClock.elapsed() : c->serverTime;
+    if (!c || !c->accepted || (c->external() && !chatReady())) return result;
+    const auto now = c->external() ? clock_() : c->chatClock.isValid() ? c->serverTime + c->chatClock.elapsed() : c->serverTime;
     const auto bot = chatBot();
     for (const auto value : c->messages) {
         auto record = value.toObject().toVariantMap();
@@ -342,7 +342,7 @@ bool LocalChannel::applyChat(Client& c, QJsonObject payload, bool keyMessage) {
 }
 
 bool LocalChannel::requestHistory(Client& c, const QString& direction) {
-    if (c.teamSpeak) { emit chatChanged(); return c.accepted; }
+    if (c.external()) { emit chatChanged(); return c.accepted; }
     if (!(c.accepted && (!c.privatePeer.isEmpty() || c.chatKey.size() == 32)) || !c.historyRequest.isEmpty()) return false;
     c.historyDirection = direction;
     c.historyRequest = QUuid::createUuid().toString(QUuid::WithoutBraces);
@@ -373,7 +373,7 @@ bool LocalChannel::sendChat(const QString& text, const QByteArray& image) {
     auto* current = chatClient();
     if (!current) return false;
     auto& c = *current;
-    if (c.teamSpeak) return !remoteMode() && image.isEmpty() && sendTeamSpeakChat(c, text);
+    if (c.external()) return !remoteMode() && image.isEmpty() && sendExternalChat(c, text);
     if (!remoteMode() && !c.privatePeer.isEmpty()) return sendPrivate(c, text, image);
     if (remoteMode() || !(c.accepted && c.chatKey.size() == 32) || !c.pending.isEmpty() || (!ChatHistory::validText(text) && !(text.isEmpty() && !image.isEmpty()))
         || image.size() > ChatContent::maximumSourceBytes) {
@@ -649,7 +649,7 @@ void LocalChannel::trimHistory(Client& c, bool older) {
         if (!images.contains(it.key())) it = c.privateImages.erase(it); else ++it;
 }
 
-bool LocalChannel::chatReady() const { const auto* c = chatClient(); return c && c->accepted && (c->teamSpeak ? (teamSpeak_ && teamSpeak_->connected && (!c->privatePeer.isEmpty() || c->id == joinedHostId_)) : !c->privatePeer.isEmpty() ? privateTransport(c->deviceId) != nullptr : c->chatKey.size() == 32); }
+bool LocalChannel::chatReady() const { const auto* c = chatClient(); return c && c->accepted && (c->external() ? (external_ && external_->connected && (!c->privatePeer.isEmpty() || c->id == joinedHostId_)) : !c->privatePeer.isEmpty() ? privateTransport(c->deviceId) != nullptr : c->chatKey.size() == 32); }
 
 bool LocalChannel::chatPending() const { const auto* c = chatClient(); return c && !c->pending.isEmpty(); }
 

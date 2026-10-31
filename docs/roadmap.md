@@ -113,9 +113,11 @@ do not become TS3 protocol features.
 
 ## Next implementation order
 
-The next provider is Mumble (U176), using the shared host/channel/chat interface.
-Define authentication, voice/chat support and protocol differences before implementation.
-Trillian is a navigation reference.
+Mumble client integration follows U179 and SS-188/189. It reuses the host/channel/chat
+interface, nested channels, Opus voice, PTT and private text. Its local integration
+suite runs against the official Mumble server. Cross-platform CI and the running
+interface must pass before the branch is ready to merge. Trillian remains a
+navigation reference.
 
 Continue U173 with capture-stage and codec comparisons and sustained resource
 qualification. New media admission pauses during shared audio backlog or slow screen encoding. Large

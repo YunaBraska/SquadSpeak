@@ -1,4 +1,5 @@
 #include "local_channel.hpp"
+#include "external_voice.hpp"
 #include "teamspeak_bridge/teamspeak_bridge.h"
 #include "chat_content.hpp"
 
@@ -266,7 +267,11 @@ LocalChannel::LocalChannel(VoiceSession& session, QString storageFile, std::opti
             throw std::runtime_error(tr("Invalid saved channel list.").toStdString());
         savedChannels_ = object.value("channels").toObject();
         for (auto it = savedChannels_.begin(); it != savedChannels_.end(); ++it) {
-            const auto entry = it.value().toObject();
+            auto entry = it.value().toObject();
+            if (entry.contains("tsChannel") && !entry.contains("providerChannel")) {
+                entry.insert("providerChannel", entry.take("tsChannel"));
+                it.value() = entry;
+            }
             const auto port = entry.value("port").toInt();
             const auto joined = entry.value("lastJoined").toInteger(-1);
             if (!validId(it.key()) || (entry.contains("deviceId") && !validId(entry.value("deviceId").toString()))
@@ -376,7 +381,7 @@ LocalChannel::LocalChannel(VoiceSession& session, QString storageFile, std::opti
         }
         for (const auto& connection : clients_) {
             auto& c = *connection;
-            if (c.teamSpeak) continue;
+            if (c.external()) continue;
             if (!c.privatePeer.isEmpty()) {
                 const auto* link = privateTransport(c.deviceId);
                 const bool connected = link != nullptr;
@@ -416,8 +421,8 @@ LocalChannel::LocalChannel(VoiceSession& session, QString storageFile, std::opti
         }
         for (const auto& connection : clients_) {
             auto& c = *connection;
-            if (!c.teamSpeak && !c.chatClock.isValid()) continue;
-            const auto now = c.teamSpeak ? clock_() : c.serverTime + c.chatClock.elapsed();
+            if (!c.external() && !c.chatClock.isValid()) continue;
+            const auto now = c.external() ? clock_() : c.serverTime + c.chatClock.elapsed();
             if (c.unreadExpires > 0 && c.unreadExpires <= now) { c.unreadExpires = 0; emit hostsChanged(); }
             QJsonArray retained;
             for (const auto value : c.messages) if (value.toObject().value("expires").toInteger() > now) retained.append(value);
@@ -425,7 +430,7 @@ LocalChannel::LocalChannel(VoiceSession& session, QString storageFile, std::opti
             if (!c.privatePeer.isEmpty() && c.privateExpires > 0 && c.privateExpires <= now) {
                 c.privateExpires = 0; emit hostsChanged();
             }
-            if (!c.teamSpeak && !c.pending.isEmpty() && c.pending.value("kind") != "preparing" && now >= c.pendingUntil) {
+            if (!c.external() && !c.pending.isEmpty() && c.pending.value("kind") != "preparing" && now >= c.pendingUntil) {
                 c.pending = {}; c.pendingImage.clear(); c.chatError = tr("Delivery was not confirmed. The 24-hour period has expired."); emit chatChanged();
             }
         }
@@ -441,7 +446,7 @@ LocalChannel::LocalChannel(VoiceSession& session, QString storageFile, std::opti
     connect(this, &LocalChannel::hostParticipantsChanged, this, observeContacts);
     connect(this, &LocalChannel::participantsChanged, this, observeContacts);
     connect(this, &LocalChannel::controlChanged, this, observeContacts);
-    connect(&teamSpeakTimer_, &QTimer::timeout, this, &LocalChannel::pollTeamSpeak);
+    connect(&externalTimer_, &QTimer::timeout, this, &LocalChannel::pollExternal);
     controlClock_.start();
     controlTimer_.setInterval(2000);
     connect(&controlTimer_, &QTimer::timeout, this, [this] {
@@ -515,7 +520,7 @@ LocalChannel::LocalChannel(VoiceSession& session, QString storageFile, std::opti
 LocalChannel::~LocalChannel() {
     contactsCheckedAt_ = -1;
     maintainContacts();
-    disconnectTeamSpeak();
+    disconnectExternal();
     // Destruction emits signals. Observers must not retrieve a child whose
     // final shared reference is already being released.
     auto children = std::exchange(owned_, {});
@@ -558,7 +563,7 @@ QVariantList LocalChannel::audioSources() const {
 
 QVariantList LocalChannel::chatMembers() const {
     const auto* c = chatClient();
-    return c && c->accepted && (!c->teamSpeak || chatReady()) ? humanMembers(c->members) : QVariantList{};
+    return c && c->accepted && (!c->external() || chatReady()) ? humanMembers(c->members) : QVariantList{};
 }
 
 QVariantMap LocalChannel::chatBot() const {
@@ -569,10 +574,10 @@ QVariantMap LocalChannel::chatBot() const {
 }
 
 QStringList LocalChannel::chatOnlineIds() const {
-    const auto* c = chatClient(); return c && c->accepted && (!c->teamSpeak || chatReady()) ? c->onlineIds : QStringList{};
+    const auto* c = chatClient(); return c && c->accepted && (!c->external() || chatReady()) ? c->onlineIds : QStringList{};
 }
 bool LocalChannel::chatPresenceKnown() const {
-    const auto* c = chatClient(); return c && c->accepted && (!c->teamSpeak || chatReady()) && c->presenceKnown;
+    const auto* c = chatClient(); return c && c->accepted && (!c->external() || chatReady()) && c->presenceKnown;
 }
 
 bool LocalChannel::passwordRequired() const { const auto* c = chatClient(); return c && c->passwordRequired; }
@@ -590,7 +595,7 @@ bool LocalChannel::setClientStatus(Client& c, QString text, bool result) {
 
 void LocalChannel::selectChat(const QString& id) {
     if (chatHostId_ == id) return;
-    if (auto* previous = chatClient(); previous && !previous->teamSpeak) {
+    if (auto* previous = chatClient(); previous && !previous->external()) {
         previous->messages = {}; previous->historyRequest.clear(); previous->hasOlder = false; previous->hasNewer = false;
         previous->privateImages.clear();
     }
@@ -599,7 +604,7 @@ void LocalChannel::selectChat(const QString& id) {
     ++imageRevision_; emit imagesChanged();
     if (auto* c = chatClient()) {
         status_ = c->status;
-        if (!c->teamSpeak && c->accepted && (!c->privatePeer.isEmpty() || c->chatKey.size() == 32)) requestHistory(*c, "latest");
+        if (!c->external() && c->accepted && (!c->privatePeer.isEmpty() || c->chatKey.size() == 32)) requestHistory(*c, "latest");
     }
     emit chatChanged(); emit screenChanged(); emit participantsChanged(); emit stateChanged();
 }
@@ -661,8 +666,8 @@ bool LocalChannel::openChat(const QString& id, const QString& address, int port)
 }
 
 bool LocalChannel::openSavedChat(const QString& id) {
-    if (auto c = clients_.value(id); c && c->teamSpeak) { selectChat(id); return true; }
-    if (savedChannels_.value(id).toObject().value("protocol") == "teamspeak") return joinTeamSpeak(id);
+    if (auto c = clients_.value(id); c && c->external()) { selectChat(id); return true; }
+    if (externalVoiceProvider(savedChannels_.value(id).toObject().value("protocol").toString())) return joinExternal(id);
     if (auto c = clients_.value(id); c && !c->privatePeer.isEmpty()) {
         if (remoteMode() || !privateTransport(c->deviceId)) return false;
         c->accepted = true; selectChat(id); return true;
@@ -924,7 +929,7 @@ QSet<QString> LocalChannel::storedContacts(const QJsonObject& state) {
     for (auto it = attempts.begin(); it != attempts.end(); ++it) ids.insert(it.key().section(':', -1));
     for (const auto& id : state.value("endpointPins").toObject()) ids.insert(id.toString());
     const auto security = state.value("security").toObject();
-    for (const auto* name : {"blocked", "saved", "teamSpeakPins", "privatePeers", "privateStates"}) {
+    for (const auto* name : {"blocked", "saved", "teamSpeakPins", "mumblePins", "privatePeers", "privateStates"}) {
         const auto entries = security.value(name).toObject();
         for (auto it = entries.begin(); it != entries.end(); ++it) ids.insert(it.key());
     }
@@ -1028,7 +1033,7 @@ void LocalChannel::maintainContacts(bool observeChange) {
     auto pins = endpointPins_;
     for (auto it = pins.begin(); it != pins.end();)
         if (expired.contains(it.value())) it = pins.erase(it); else ++it;
-    for (const auto* name : {"blocked", "saved", "teamSpeakPins", "privatePeers", "privateStates"}) {
+    for (const auto* name : {"blocked", "saved", "teamSpeakPins", "mumblePins", "privatePeers", "privateStates"}) {
         auto entries = security.value(name).toObject();
         for (const auto& id : expired) entries.remove(id);
         if (security.contains(name)) security.insert(name, entries);
@@ -1241,7 +1246,7 @@ void LocalChannel::checkPassword(QSslSocket* socket, const QJsonObject& message)
 }
 
 bool LocalChannel::submitPassword(Client& c, const QString& password, bool remember) {
-    if (c.teamSpeak) return c.passwordRequired && joinTeamSpeak(c.id, password, remember);
+    if (c.external()) return c.passwordRequired && joinExternal(c.id, password, remember);
     if (!c.passwordRequired || c.passwordRetryAt > controlClock_.elapsed() || !c.socket || !c.socket->isEncrypted()) return false;
     if (password.isEmpty() || password.toUtf8().size() > 1024 || QString::fromUtf8(password.toUtf8()) != password)
         return setClientStatus(c, tr("Enter a password with at most 1024 UTF-8 bytes."), false);
@@ -1530,7 +1535,7 @@ QVariantList LocalChannel::savedChannels() const {
         entry.insert("lifetimeDays", owner ? owner->messageLifetimeDays() : c && c->accepted ? c->messageLifetimeDays : 0);
         entry.insert("access", c ? c->access : QStringLiteral("saved"));
         entry.insert("members", c && c->accepted ? humanMembers(c->members) : QVariantList{});
-        const auto now = c && c->teamSpeak ? clock_() : c && c->chatClock.isValid()
+        const auto now = c && c->external() ? clock_() : c && c->chatClock.isValid()
             ? c->serverTime + c->chatClock.elapsed() : c ? c->serverTime : 0;
         entry.insert("unread", c && c->unreadExpires > now);
         auto bot = owner ? owner->hostBot() : QVariantMap{};
@@ -1582,14 +1587,14 @@ bool LocalChannel::setAutoJoin(const QString& id, bool enabled) {
 }
 
 bool LocalChannel::removeChannel(const QString& id) {
-    if (savedChannels_.value(id).toObject().value("protocol") == "teamspeak") {
+    if (externalVoiceProvider(savedChannels_.value(id).toObject().value("protocol").toString())) {
         const auto device = savedChannels_.value(id).toObject().value("deviceId").toString();
         auto next = savedChannels_;
         for (auto it = next.begin(); it != next.end();)
             if (it.value().toObject().value("deviceId") == device) it = next.erase(it);
             else ++it;
         if (!persist(approved_, attempts_, requestsAllowed_, endpointPins_, control_, security_, &next)) return false;
-        if (teamSpeak_ && teamSpeak_->id == device) leave();
+        if (external_ && external_->id == device) leave();
         for (const auto& key : clients_.keys()) if (clients_.value(key)->deviceId == device) {
             if (chatHostId_ == key) selectChat({});
             clients_.remove(key);
@@ -1606,7 +1611,7 @@ bool LocalChannel::removeChannel(const QString& id) {
 }
 
 bool LocalChannel::joinSaved(const QString& id) {
-    if (savedChannels_.value(id).toObject().value("protocol") == "teamspeak") return joinTeamSpeak(id);
+    if (externalVoiceProvider(savedChannels_.value(id).toObject().value("protocol").toString())) return joinExternal(id);
     if (auto c = clients_.value(id); c && !c->privatePeer.isEmpty()) return openSavedChat(id);
     if (const auto* owner = ownChannel(id))
         return owner->hosting() ? join(id, "127.0.0.1", port()) : setStatus(tr("Channel unavailable"), false);
@@ -1619,15 +1624,15 @@ bool LocalChannel::joinSaved(const QString& id) {
 }
 
 void LocalChannel::tryAutoJoin() {
-    if (service_ || teamSpeak_) return;
+    if (service_ || external_) return;
     if (hostOnly_ || !ready() || (clients_.contains(joinedHostId_) && clients_.value(joinedHostId_)->socket) || joined() || (!automaticAttempt_ && !joinedHostId_.isEmpty()) || remoteMode()) return;
     for (const auto& value : savedChannels()) {
         const auto entry = value.toMap(); const auto id = entry.value("id").toString();
         if (!entry.value("autoJoin").toBool() || pausedAutoJoin_.contains(id) || triedAutoJoin_.contains(id)) continue;
         triedAutoJoin_.insert(id);
         const auto [address, port] = channelEndpoint(id);
-        const bool started = entry.value("protocol") == "teamspeak" ? joinTeamSpeak(id) : beginJoin(id, address, port, true);
-        if (entry.value("protocol") == "teamspeak") automaticAttempt_ = started;
+        const bool started = externalVoiceProvider(entry.value("protocol").toString()) ? joinExternal(id) : beginJoin(id, address, port, true);
+        if (externalVoiceProvider(entry.value("protocol").toString())) automaticAttempt_ = started;
         if (!started) QTimer::singleShot(0, this, &LocalChannel::tryAutoJoin);
         return;
     }
@@ -2428,9 +2433,10 @@ void LocalChannel::finishDirect() {
 bool LocalChannel::accessAddress(const QString& endpoint, AddressAction action) {
     if (!ready() || directBusy()) return setStatus(tr("Device access is busy or not ready."), false);
     auto text = endpoint.trimmed();
-    const bool mayConnectTeamSpeak = (action == AddressAction::Browse || action == AddressAction::Join)
+    const bool mayConnectExternal = (action == AddressAction::Browse || action == AddressAction::Join)
         && !hostOnly_ && !remoteMode();
-    if (mayConnectTeamSpeak && text.startsWith("ts3://")) return addTeamSpeak(text);
+    if (mayConnectExternal && text.startsWith("ts3://")) return addTeamSpeak(text);
+    if (mayConnectExternal && text.startsWith("mumble://")) return addMumble(text);
     QString addressText = text, portText;
     bool explicitPort = false, bracketed = false;
     if (text.startsWith('[')) {
@@ -2461,13 +2467,11 @@ bool LocalChannel::accessAddress(const QString& endpoint, AddressAction action) 
     directBuffer_.clear();
     socket->setReadBufferSize(2 * maximumFrame);
     socket->setSslConfiguration(identity_->configuration());
-    const auto tryTeamSpeak = [this, socket, mayConnectTeamSpeak, expected, addressText, port, explicitPort] {
+    const auto tryExternal = [this, socket, mayConnectExternal, expected, addressText, port, explicitPort] {
         // Never turn a rejected or previously pinned native identity into another protocol.
-        if (!mayConnectTeamSpeak || !expected.isEmpty() || socket->property("squadTlsSeen").toBool()) return false;
-        const auto endpoint = (addressText.contains(':') ? '[' + addressText + ']' : addressText)
-            + ':' + QString::number(explicitPort ? port : 9987);
+        if (!mayConnectExternal || !expected.isEmpty() || socket->property("squadTlsSeen").toBool()) return false;
         finishDirect();
-        addTeamSpeak(endpoint);
+        probeExternal(addressText, quint16(explicitPort ? port : 64738), quint16(explicitPort ? port : 9987));
         return true;
     };
     const auto identityMatches = [socket, expected] {
@@ -2488,9 +2492,23 @@ bool LocalChannel::accessAddress(const QString& endpoint, AddressAction action) 
             setStatus(tr("The saved device identity does not match."), false);
             return;
         }
-        writeMessage(socket, {{"type", "identify"}, {"version", 1}});
+        // Mumble sends its Version immediately after TLS. Let its greeting
+        // select the adapter before sending the native identify request.
+        QTimer::singleShot(50, socket, [this, socket] {
+            if (direct_ == socket) writeMessage(socket, {{"type", "identify"}, {"version", 1}});
+        });
     });
-    connect(socket, &QSslSocket::readyRead, this, [this, socket, key, addressText, port, action] {
+    connect(socket, &QSslSocket::readyRead, this, [this, socket, key, addressText, port, action, mayConnectExternal, expected] {
+        if (direct_ != socket) return;
+        if (directBuffer_.isEmpty() && socket->bytesAvailable() < 6) return;
+        if (directBuffer_.isEmpty() && mumbleGreeting(socket->peek(6))) {
+            if (!mayConnectExternal || !expected.isEmpty()) {
+                finishDirect(); setStatus(tr("The saved device identity does not match."), false); return;
+            }
+            finishDirect();
+            addMumble((addressText.contains(':') ? '[' + addressText + ']' : addressText) + ':' + QString::number(port));
+            return;
+        }
         auto buffer = std::move(directBuffer_);
         readMessages(socket, buffer, [this, socket, key, addressText, port, action](const QJsonObject& message) {
             if (direct_ != socket) return;
@@ -2529,7 +2547,7 @@ bool LocalChannel::accessAddress(const QString& endpoint, AddressAction action) 
         if (direct_ == socket) directBuffer_ = std::move(buffer);
     });
     const bool preferIpv4 = QHostAddress(addressText).isNull();
-    connect(socket, &QSslSocket::errorOccurred, this, [this, socket, addressText, port, tryTeamSpeak, ipv4Attempt = preferIpv4](QAbstractSocket::SocketError error) mutable {
+    connect(socket, &QSslSocket::errorOccurred, this, [this, socket, addressText, port, tryExternal, ipv4Attempt = preferIpv4](QAbstractSocket::SocketError error) mutable {
         if (direct_ != socket) return;
         if (ipv4Attempt && addressConnectionFailure(error, socket)) {
             ipv4Attempt = false;
@@ -2541,19 +2559,19 @@ bool LocalChannel::accessAddress(const QString& endpoint, AddressAction action) 
             });
             return;
         }
-        if (tryTeamSpeak()) return;
+        if (tryExternal()) return;
         const auto reason = socket->errorString();
         finishDirect(); setStatus(tr("Device access failed: %1").arg(reason), false);
     });
-    connect(socket, &QSslSocket::disconnected, this, [this, socket, tryTeamSpeak] {
+    connect(socket, &QSslSocket::disconnected, this, [this, socket, tryExternal] {
         if (direct_ != socket) return;
         if (socket->property("squadIpv6Retry").toBool()) return;
-        if (tryTeamSpeak()) return;
+        if (tryExternal()) return;
         finishDirect(); setStatus(tr("Device access closed without a valid response."), false);
     });
-    QTimer::singleShot(5000, socket, [this, socket, tryTeamSpeak] {
+    QTimer::singleShot(5000, socket, [this, socket, tryExternal] {
         if (direct_ != socket) return;
-        if (tryTeamSpeak()) return;
+        if (tryExternal()) return;
         finishDirect(); setStatus(tr("Device was not reachable in time. Check the address, port, and firewall."), false);
     });
     setStatus(tr("Checking device identity at %1.").arg(key));
@@ -2646,7 +2664,7 @@ void LocalChannel::connectClient(Client& c) {
 
 void LocalChannel::closeClient(Client& c) {
     c.lastPresence = {}; c.rosterBuffer.clear(); c.rosterId.clear(); c.rosterExpected = 0;
-    if (c.teamSpeak) { c.accepted = false; c.voice = false; c.reconnectWanted = false; return; }
+    if (c.external()) { c.accepted = false; c.voice = false; c.reconnectWanted = false; return; }
     if (!c.privatePeer.isEmpty()) {
         c.accepted = false; c.socket = nullptr; c.messages = {}; c.privateImages.clear(); c.historyRequest.clear();
         emit chatChanged(); return;
@@ -2675,7 +2693,7 @@ bool LocalChannel::leaveChannel(bool pauseAutoJoin) {
     if (pauseAutoJoin && !joinedHostId_.isEmpty()) pausedAutoJoin_.insert(joinedHostId_);
     automaticAttempt_ = false;
     finishDirect();
-    disconnectTeamSpeak();
+    disconnectExternal();
     const auto id = std::exchange(joinedHostId_, {});
     if (auto c = clients_.value(id)) {
         c->voice = false;
@@ -2934,16 +2952,16 @@ void LocalChannel::clientMessage(Client& c, const QJsonObject& message) {
 }
 
 void LocalChannel::sendPresence() {
-    if (teamSpeak_ && teamSpeak_->connected) {
-        if (session_.deafened()) teamSpeak_->audioSequences.clear();
+    if (external_ && external_->connected) {
+        if (session_.deafened()) external_->audioSequences.clear();
         const auto metadata = QString::fromUtf8(QJsonDocument(QJsonObject{{"application", "SquadSpeak"},
             {"avatar", session_.avatar()}}).toJson(QJsonDocument::Compact));
         const QJsonObject presence{{"action", "presence"}, {"name", session_.userName()}, {"metadata", metadata},
             {"inputMuted", session_.muted() || !session_.available() || !session_.inputReady()}, {"outputMuted", session_.deafened() || !session_.outputReady()}};
-        if (teamSpeak_->lastPresence != presence && teamSpeakCommand(presence)) teamSpeak_->lastPresence = presence;
+        if (external_->lastPresence != presence && externalCommand(presence)) external_->lastPresence = presence;
     }
     for (const auto& c : clients_) {
-        if (!c->accepted || c->teamSpeak) continue;
+        if (!c->accepted || c->external()) continue;
         const QJsonObject presence{{"type", "presence"}, {"name", session_.userName()},
             {"available", session_.available()}, {"muted", !c->voice || session_.muted() || !session_.available() || !session_.inputReady()},
             {"deafened", session_.deafened() || !session_.outputReady()}, {"avatar", VoiceSession::avatarFallback(session_.avatar())}, {"avatarId", session_.avatar()}, {"language", session_.language()}};
@@ -2952,22 +2970,24 @@ void LocalChannel::sendPresence() {
 }
 
 int LocalChannel::audioPacketLimit() const {
-    return teamSpeak_ && teamSpeak_->connected ? SS_TS_MAX_AUDIO : 4000;
+    if (!external_ || !external_->connected) return 4000;
+    const auto maximum = externalVoiceProvider(external_->provider)->maximumAudioPacket;
+    return std::clamp(external_->state.value("maximumAudioPacket").toInt(maximum), 1, maximum);
 }
 
 bool LocalChannel::sendAudio(const QByteArray& packet) {
     if (packet.isEmpty()) {
-        if (!teamSpeak_ || !teamSpeak_->connected || !teamSpeak_->sendingAudio) return false;
-        if (!ss_ts_audio(teamSpeak_->handle, nullptr, 0)) return false;
-        teamSpeak_->sendingAudio = false;
+        if (!external_ || !external_->connected || !external_->sendingAudio) return false;
+        if (!ss_ts_audio(external_->handle, nullptr, 0)) return false;
+        external_->sendingAudio = false;
         return true;
     }
     const auto c = clients_.value(joinedHostId_);
     if (remoteMode() || !c || !c->accepted || !c->voice || !session_.transmissionAllowed() || packet.size() > audioPacketLimit()) return false;
-    if (c->teamSpeak) {
-        if (!teamSpeak_ || !teamSpeak_->connected || !c->teamSpeakCanSend
-            || !ss_ts_audio(teamSpeak_->handle, reinterpret_cast<const uint8_t*>(packet.constData()), size_t(packet.size()))) return false;
-        teamSpeak_->sendingAudio = true;
+    if (c->external()) {
+        if (!external_ || !external_->connected || !c->externalCanSend
+            || !ss_ts_audio(external_->handle, reinterpret_cast<const uint8_t*>(packet.constData()), size_t(packet.size()))) return false;
+        external_->sendingAudio = true;
         return true;
     }
     if (c->media) return c->media->send(ownId(), packet);
