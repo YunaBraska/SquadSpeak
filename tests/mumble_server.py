@@ -38,7 +38,7 @@ def main():
                 user = "uname=root\n" if hasattr(os, "geteuid") and os.geteuid() == 0 else ""
                 config.write_text(f"database={root / 'mumble.sqlite'}\nport={port}\nhost=127.0.0.1\n"
                                   f"serverpassword={password}\nregisterName=SquadSpeak E2E\n"
-                                  "defaultchannel=1\nbandwidth=256000\nusers=128\nmessageburst=128\nautobanAttempts=0\nallowhtml=true\nlogfile=\npidfile=\n" + user)
+                                  "defaultchannel=1\nbandwidth=1000000\nusers=128\nmessageburst=128\nautobanAttempts=0\nallowhtml=true\nlogfile=\npidfile=\n" + user)
                 subprocess.run([native, "-ini", str(config), "-supw", password], check=True,
                                stdout=log, stderr=subprocess.STDOUT, timeout=20)
                 server = subprocess.Popen([native, "-fg", "-ini", str(config)], stdout=log, stderr=subprocess.STDOUT)
@@ -52,7 +52,7 @@ def main():
                                 "--env", "MUMBLE_SUPERUSER_PASSWORD=" + password,
                                 "--env", "MUMBLE_CONFIG_SERVER_PASSWORD=" + password,
                                 "--env", "MUMBLE_CONFIG_REGISTER_NAME=SquadSpeak E2E",
-                                "--env", "MUMBLE_CONFIG_BANDWIDTH=256000",
+                                "--env", "MUMBLE_CONFIG_BANDWIDTH=1000000",
                                 "--env", "MUMBLE_CONFIG_DEFAULTCHANNEL=1",
                                 "--env", "MUMBLE_CONFIG_ALLOW_HTML=true",
                                 "--env", "MUMBLE_CONFIG_MESSAGEBURST=128",

@@ -25,6 +25,9 @@ use tokio_openssl::SslStream;
 use tokio_util::{codec::Framed, udp::UdpFramed};
 
 const AUDIO_LIMIT: usize = 1275;
+// Mumble datagrams are capped at 1024 bytes. Reserve room for the cipher,
+// protobuf/legacy framing, a full sequence number and the sender session.
+const SEND_PACKET_LIMIT: usize = 1024 - 32;
 const MAX_CHANNELS: usize = 4096;
 const MAX_USERS: usize = 8192;
 const MAX_SERVER_TEXT: usize = 4096;
@@ -295,7 +298,7 @@ fn run(
         let mut pending=HashMap::<String,Pending>::new();
         let mut seq=0u64;
         let overhead=if address.is_ipv4(){44}else{64};
-        let mut packet_limit=AUDIO_LIMIT;
+        let mut packet_limit=SEND_PACKET_LIMIT;
         let started=Instant::now();
         let mut ping=tokio::time::interval(Duration::from_secs(15));
         let mut udp_ping=tokio::time::interval(Duration::from_secs(1));
@@ -605,7 +608,7 @@ fn run(
                                 if m.has_max_bandwidth() {
                                     packet_limit = (m.max_bandwidth() as usize / 400)
                                         .saturating_sub(overhead)
-                                        .min(AUDIO_LIMIT);
+                                        .min(SEND_PACKET_LIMIT);
                                     changed = true;
                                 }
                             }
@@ -613,7 +616,7 @@ fn run(
                                 if m.has_max_bandwidth() {
                                     packet_limit = (m.max_bandwidth() as usize / 400)
                                         .saturating_sub(overhead)
-                                        .min(AUDIO_LIMIT);
+                                        .min(SEND_PACKET_LIMIT);
                                 }
                                 own = m.session();
                                 // ServerSync permissions belong to root. The server

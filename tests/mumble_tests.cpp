@@ -427,6 +427,9 @@ private slots:
         QVERIFY(admin.waitForGoodPackets(aSession, 1));
         QVERIFY(admin.waitForGoodPackets(bSession, 1));
         const auto udpBaseline = admin.goodPacketsFrom(aSession);
+        // The server bandwidth setting must never permit packets larger than
+        // the Mumble wire maximum, including encryption and voice headers.
+        QVERIFY(a.channel.audioPacketLimit() <= 1024 - 32);
         squad::VoiceMixer encoder(2), receiver(2); receiver.setAutomatic(false);
         constexpr int frames = 300; // Cross a complete UDP nonce-byte cycle.
         QList<QByteArray> sent, received;
@@ -495,8 +498,28 @@ private slots:
         QVERIFY(a.channel.sendAudio(opusFrame(480, 659)));
         QTRY_COMPARE_WITH_TIMEOUT(received.size(), beforeShort + 1, 5000);
         QCOMPARE(receivedSamples.last(), 480);
+        auto padded = opusFrame(960, 659);
+        const auto originalSize = padded.size();
+        padded.resize(a.channel.audioPacketLimit());
+        QCOMPARE(opus_packet_pad(reinterpret_cast<unsigned char*>(padded.data()),
+            int(originalSize), int(padded.size())), OPUS_OK);
+        const auto beforePadded = received.size();
+        QVERIFY(a.channel.sendAudio(padded));
+        QTRY_COMPARE_WITH_TIMEOUT(received.size(), beforePadded + 1, 5000);
+        QVERIFY(!a.channel.sendAudio(padded + '\0'));
+        auto unpadded = received.last();
+        QCOMPARE(unpadded.size(), padded.size());
+        // Mumble's upstream cipher may change an unused padding bit. The
+        // encoded audio itself must still arrive exactly as sent.
+        for (auto* packet : {&unpadded, &padded}) {
+            const auto size = opus_packet_unpad(reinterpret_cast<unsigned char*>(packet->data()), int(packet->size()));
+            QVERIFY(size > 0);
+            packet->resize(size);
+        }
+        QCOMPARE(unpadded, padded);
+        const auto completedBursts = receivedFinal.count(true);
         QVERIFY(a.channel.sendAudio({}));
-        QTRY_VERIFY_WITH_TIMEOUT(receivedFinal.contains(true), 5000);
+        QTRY_COMPARE_WITH_TIMEOUT(receivedFinal.count(true), completedBursts + 1, 5000);
         QVERIFY(a.session.setMuted(true)); QVERIFY(!a.channel.sendAudio(sent.first()));
     }
     void htmlMessagesRemainReadableWithoutLoadingResources() {

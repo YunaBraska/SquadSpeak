@@ -20,7 +20,7 @@ struct ExternalVoiceProvider final {
 inline const ExternalVoiceProvider* externalVoiceProvider(QStringView id) {
     static const ExternalVoiceProvider providers[] = {
         {"teamspeak", "TeamSpeak", "ts3", "teamSpeakPins", 9987, SS_TS_MAX_AUDIO, ss_ts_open},
-        {"mumble", "Mumble", "mumble", "mumblePins", 64738, 1275, ss_mumble_open}
+        {"mumble", "Mumble", "mumble", "mumblePins", 64738, 1024 - 32, ss_mumble_open}
     };
     for (const auto& provider : providers)
         if (id == QLatin1StringView(provider.id)) return &provider;
