@@ -11,11 +11,12 @@ use openssl::{
     hash::MessageDigest,
     pkey::PKey,
     ssl::{SslConnector, SslMethod, SslVerifyMode},
-    x509::X509,
+    x509::{X509, X509Ref},
 };
 use serde::Deserialize;
 use serde_json::{json, Value};
 use std::collections::{BTreeMap, HashMap};
+use std::sync::{atomic::{AtomicBool, Ordering}, Arc};
 use tokio::{
     io::AsyncWriteExt,
     net::{lookup_host, TcpStream, UdpSocket},
@@ -121,8 +122,10 @@ fn fail(queue: &Queue, message: &str, password: bool) {
     );
 }
 
-fn hex(bytes: &[u8]) -> String {
-    bytes.iter().map(|b| format!("{b:02x}")).collect()
+fn certificate_pin(certificate: &X509Ref) -> Option<String> {
+    let key = certificate.public_key().ok()?.public_key_to_der().ok()?;
+    let digest = openssl::hash::hash(MessageDigest::sha256(), &key).ok()?;
+    Some(digest.iter().map(|b| format!("{b:02x}")).collect())
 }
 
 fn read_state(
@@ -262,7 +265,23 @@ fn run(
         if builder.set_min_proto_version(Some(openssl::ssl::SslVersion::TLS1_2)).is_err() {
             fail(&queue,"Could not require TLS 1.2.",false);return;
         }
-        builder.set_verify(SslVerifyMode::NONE); // Mumble deployments commonly use self-signed certs; key pin is checked below.
+        let pin_rejected = Arc::new(AtomicBool::new(false));
+        if let Some(saved) = options.server_key.as_ref().filter(|pin| !pin.is_empty()).cloned() {
+            let rejected = Arc::clone(&pin_rejected);
+            // Reject a changed server during its certificate verification,
+            // before TLS sends our persistent client certificate and proof.
+            builder.set_verify_callback(SslVerifyMode::PEER, move |_, context| {
+                if context.error_depth() != 0 { return true; }
+                let matches = context.current_cert().and_then(certificate_pin)
+                    .is_some_and(|pin| saved.eq_ignore_ascii_case(&pin));
+                if !matches { rejected.store(true, Ordering::Relaxed); }
+                matches
+            });
+        } else {
+            // First-use Mumble deployments commonly have self-signed certs.
+            // The accepted public-key pin is persisted after authentication.
+            builder.set_verify(SslVerifyMode::NONE);
+        }
         if builder.set_certificate(&cert).is_err() || builder.set_private_key(&key).is_err() {
             fail(&queue,"Invalid Mumble client identity.",false);return;
         }
@@ -278,15 +297,11 @@ fn run(
         if ssl.set_hostname(host).is_err() { fail(&queue,"Invalid Mumble server name.",false);return; }
         let mut tls = SslStream::new(ssl, stream).unwrap();
         if !matches!(cancellable!(timeout(Duration::from_secs(8), std::pin::Pin::new(&mut tls).connect())), Ok(Ok(()))) {
-            fail(&queue,"Mumble TLS connection failed.",false);return;
+            fail(&queue,if pin_rejected.load(Ordering::Relaxed) {"Mumble server key changed."} else {"Mumble TLS connection failed."},false);return;
         }
-        let remote = match tls.ssl().peer_certificate().and_then(|c| c.public_key().ok()).and_then(|k| k.public_key_to_der().ok()) {
+        let pin = match tls.ssl().peer_certificate().as_deref().and_then(certificate_pin) {
             Some(v)=>v,None=>{fail(&queue,"Mumble server did not provide a public key.",false);return;}
         };
-        let pin = match openssl::hash::hash(MessageDigest::sha256(), &remote) { Ok(v)=>hex(&v),Err(_)=>{fail(&queue,"Could not verify Mumble server key.",false);return;} };
-        if options.server_key.as_ref().is_some_and(|saved| !saved.is_empty() && !saved.eq_ignore_ascii_case(&pin)) {
-            fail(&queue,"Mumble server key changed.",false);return;
-        }
         let mut framed = Framed::new(tls, ControlWire::new(false));
         macro_rules! send_control { ($writer:ident,$packet:expr) => { cancellable!(timeout(Duration::from_secs(2),$writer.send($packet))) }; }
         let mut version = msgs::Version::new(); version.set_version_v1(0x010500); version.set_version_v2((1u64 << 48) | (5u64 << 32)); version.set_release("SquadSpeak".into()); version.set_os("SquadSpeak".into());

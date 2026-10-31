@@ -1,11 +1,13 @@
 #include "local_channel.hpp"
 #include "voice_mixer.hpp"
+#include "teamspeak_bridge/teamspeak_bridge.h"
 #include <QCoreApplication>
 #include <QElapsedTimer>
 #include <QFile>
 #include <QJsonDocument>
 #include <QSignalSpy>
 #include <QSslSocket>
+#include <QSslServer>
 #include <QTcpServer>
 #include <QTemporaryDir>
 #include <QTest>
@@ -14,6 +16,7 @@
 #include <QtEndian>
 #include <algorithm>
 #include <cmath>
+#include <memory>
 #include <numbers>
 #include <optional>
 #include <vector>
@@ -369,6 +372,59 @@ private slots:
         QTRY_VERIFY_WITH_TIMEOUT(rejected.channel.status().contains("key changed"), 10000);
         QVERIFY(!rejected.channel.joined());
         QCOMPARE(admin.sessionNamed("Must not authenticate"), quint32(0));
+    }
+    void changedServerKeyDoesNotReceiveClientCertificate_data() {
+        QTest::addColumn<int>("protocol");
+        QTest::newRow("TLS1.2") << int(QSsl::TlsV1_2);
+        QTest::newRow("TLS1.3") << int(QSsl::TlsV1_3);
+    }
+    void changedServerKeyDoesNotReceiveClientCertificate() {
+        QFETCH(int, protocol);
+        const auto serverIdentity = TlsIdentity::create();
+        auto configuration = serverIdentity.configuration();
+        configuration.setProtocol(QSsl::SslProtocol(protocol));
+        configuration.setPeerVerifyMode(QSslSocket::QueryPeer);
+        QSslServer server;
+        server.setSslConfiguration(configuration);
+        bool handshakeFinished = false;
+        bool certificateReceived = false;
+        connect(&server, &QSslServer::peerVerifyError, &server,
+            [&](QSslSocket* socket, const QSslError&) {
+                certificateReceived |= !socket->peerCertificate().isNull();
+            });
+        connect(&server, &QSslServer::sslErrors, &server,
+            [](QSslSocket* socket, const QList<QSslError>& errors) { socket->ignoreSslErrors(errors); });
+        connect(&server, &QSslServer::errorOccurred, &server,
+            [&](QSslSocket* socket, QAbstractSocket::SocketError) {
+                certificateReceived |= !socket->peerCertificate().isNull();
+                handshakeFinished = true;
+            });
+        connect(&server, &QSslServer::pendingConnectionAvailable, &server, [&] {
+            auto* socket = qobject_cast<QSslSocket*>(server.nextPendingConnection());
+            certificateReceived |= socket && !socket->peerCertificate().isNull();
+            handshakeFinished = true;
+        });
+        QVERIFY(server.listen(QHostAddress::LocalHost));
+        const auto options = QJsonDocument(QJsonObject{
+            {"address", QString("127.0.0.1:%1").arg(server.serverPort())},
+            {"name", "Private identity"}, {"password", "must-not-be-sent"},
+            {"identityPem", QString::fromUtf8(TlsIdentity::create().pem())},
+            {"serverKey", QString(64, '0')}
+        }).toJson(QJsonDocument::Compact);
+        std::unique_ptr<void, decltype(&ss_ts_close)> handle(
+            ss_mumble_open(reinterpret_cast<const uint8_t*>(options.constData()), size_t(options.size())), ss_ts_close);
+        QVERIFY(handle);
+        QJsonObject failure;
+        QTRY_VERIFY_WITH_TIMEOUT(([&] {
+            QByteArray packet(4096, Qt::Uninitialized);
+            const auto size = ss_ts_next(handle.get(), reinterpret_cast<uint8_t*>(packet.data()), size_t(packet.size()));
+            if (size > 1 && packet.front() == 1)
+                failure = QJsonDocument::fromJson(packet.mid(1, size - 1)).object();
+            return failure.value("type") == "closed";
+        })(), 10000);
+        QVERIFY(failure.value("message").toString().contains("key changed"));
+        QTRY_VERIFY_WITH_TIMEOUT(handshakeFinished, 5000);
+        QVERIFY(!certificateReceived);
     }
     void hostnameUsesAReachableResolvedAddress() {
         QTemporaryDir directory; QVERIFY(directory.isValid());
