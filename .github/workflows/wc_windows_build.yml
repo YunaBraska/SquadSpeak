@@ -105,7 +105,7 @@ jobs:
           path: ${{ inputs.cache_paths }}
           key: windows-dependencies-${{ runner.os }}-${{ runner.arch }}-msvc-${{ steps.msvc-cache.outputs.version }}-sdk-${{ steps.msvc-cache.outputs.sdk }}-${{ steps.msvc-cache.outputs.inputs }}
       - name: "🛠️ Install Qt MSVC"
-        uses: jurplel/install-qt-action@a9c63c7c123f3069cff414e7e482d95dfa9d8125
+        uses: jurplel/install-qt-action@b344308e4483fc892e0d27b3cd1b173ebdd95f06
         with:
           version: ${{ inputs.qt_version }}
           cache: true
