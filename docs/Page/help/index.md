@@ -13,7 +13,7 @@ SquadSpeak keeps voice, Markdown chat and portraits in one compact desktop app. 
 
 Open SquadSpeak on both computers. Select **+**, choose a discovered channel and add it. If discovery cannot see the host, enter its DNS name or IP address. The host approves a new device and may ask for a channel password.
 
-![A SquadSpeak channel with members and Markdown chat]({{ '/assets/help/channel-chat.png' | relative_url }})
+![SquadSpeak channels, private messages and Markdown chat]({{ '/assets/screenshots/workspace-light.png' | relative_url }})
 
 Double-click a channel to join voice. Expand the row to read and write messages. A running app can host a channel while its owner participates elsewhere.
 
@@ -23,7 +23,7 @@ Double-click a channel to join voice. Expand the row to read and write messages.
 
 Open **Settings > Input** to select a microphone and tune voice activation, echo cancellation, gain, noise reduction and frequency cuts. Each audio device keeps its own profile. Mute and push-to-talk still work while you adjust it.
 
-![SquadSpeak input and audio settings]({{ '/assets/help/audio-settings.png' | relative_url }})
+![SquadSpeak input and audio settings]({{ '/assets/screenshots/audio-controls.png' | relative_url }})
 
 Use headphones when testing two copies on one computer. This avoids feeding one app's speakers into the other app's microphone.
 

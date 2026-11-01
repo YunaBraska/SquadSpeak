@@ -9,6 +9,7 @@
 #include "radio_player.hpp"
 #include "screen_share.hpp"
 #include "radio_station.hpp"
+#include "voice_mixer.hpp"
 #include <QNetworkInterface>
 #include <QSignalSpy>
 #include <QThread>
@@ -43,6 +44,10 @@
 #include <numbers>
 #include <cstdio>
 #include <cstdlib>
+#if defined(Q_OS_MACOS)
+#include <CoreAudio/CoreAudio.h>
+#include <unistd.h>
+#endif
 #if defined(Q_OS_IOS)
 #import <UIKit/UIKit.h>
 #elif defined(Q_OS_ANDROID)
@@ -84,6 +89,9 @@ class AudioFixtures final : public QObject {
     std::vector<std::unique_ptr<QSslSocket>> members_;
     ChatContent chatContent_;
     std::unique_ptr<AudioModel> audio_;
+    QList<QMetaObject::Connection> audioChannelConnections_;
+    squad::VoiceMixer audioTestEncoder_{2};
+    bool audioTestParticipantReady_ = false;
     std::unique_ptr<RadioPlayer> radio_;
     std::unique_ptr<RadioStation> station_;
     std::array<VideoCodec, 4> videoEncoders_;
@@ -91,6 +99,68 @@ class AudioFixtures final : public QObject {
     QString appliedLanguage_ = "en";
     QQmlPropertyMap systemAppearance_;
 public slots:
+    bool bindAudioToChannel() {
+        if (!audio_ || !channel_ || !audioChannelConnections_.isEmpty()) return false;
+        const auto updateVoice = [this] {
+            audio_->setVoiceState(channel_->joined() || !channel_->audioSources().isEmpty(),
+                channel_->joined() && session_->transmissionAllowed(), session_->pushToTalk(), channel_->audioPacketLimit());
+            audio_->setDeafened(session_->deafened());
+        };
+        audioChannelConnections_.append(connect(channel_.get(), &LocalChannel::stateChanged, audio_.get(), updateVoice));
+        audioChannelConnections_.append(connect(session_.get(), &VoiceSession::presenceChanged, audio_.get(), updateVoice));
+        updateVoice();
+        return true;
+    }
+    void unbindAudioFromChannel() {
+        for (const auto& connection : audioChannelConnections_) disconnect(connection);
+        audioChannelConnections_.clear();
+        if (audio_) {
+            audio_->setVoiceState(false, false);
+            audio_->setParticipants({});
+        }
+        audioTestParticipantReady_ = false;
+    }
+    bool queueTestSpeechFrame() {
+        if (!audio_) return false;
+        const QString peer = QStringLiteral("deafen-test-peer");
+        if (!audioTestParticipantReady_) {
+            const QVariantList participants{QVariantMap{{"id", peer}, {"available", true}, {"muted", false}}};
+            if (!audio_->setParticipants(participants) || !audio_->setParticipantVolume(peer, 0)) return false;
+            audioTestParticipantReady_ = true;
+        }
+        std::array<float, 1920> samples{};
+        for (size_t frame = 0; frame < 960; ++frame) {
+            const auto sample = float(0.35 * std::sin(2 * std::numbers::pi * 440 * frame / 48000));
+            samples[frame * 2] = sample;
+            samples[frame * 2 + 1] = sample;
+        }
+        const auto packets = audioTestEncoder_.encode(samples, 48000, true);
+        return packets.size() == 1 && audio_->receiveAudio(peer, packets.front());
+    }
+
+    int nativeAudioOutputRunning() const {
+#if defined(Q_OS_MACOS)
+        if (QOperatingSystemVersion::current() < QOperatingSystemVersion(QOperatingSystemVersion::MacOS, 14, 2)) return -1;
+        const pid_t processId = getpid();
+        AudioObjectPropertyAddress address{
+            kAudioHardwarePropertyTranslatePIDToProcessObject,
+            kAudioObjectPropertyScopeGlobal,
+            kAudioObjectPropertyElementMain};
+        AudioObjectID process = kAudioObjectUnknown;
+        UInt32 size = sizeof(process);
+        if (AudioObjectGetPropertyData(kAudioObjectSystemObject, &address, sizeof(processId), &processId,
+                &size, &process) != noErr) return -2;
+        if (process == kAudioObjectUnknown) return 0;
+        address.mSelector = kAudioProcessPropertyIsRunningOutput;
+        UInt32 running = 0;
+        size = sizeof(running);
+        if (AudioObjectGetPropertyData(process, &address, 0, nullptr, &size, &running) != noErr) return -2;
+        return running != 0 ? 1 : 0;
+#else
+        return -1;
+#endif
+    }
+
     QString imageDraft(const QString& markdown) const {
         return ChatContent::embedImage(markdown, chatContent_.preparedImage());
     }
@@ -523,6 +593,9 @@ public slots:
         // Use the real settings API without starting capture, playback or
         // connecting it to the test channels.
         audio_ = std::make_unique<AudioModel>(folder_.filePath("audio.ini"));
+        connect(session_.get(), &VoiceSession::presenceChanged, audio_.get(), [this] {
+            audio_->setDeafened(session_->deafened());
+        });
         const auto testInput = qEnvironmentVariable("SQUADSPEAK_TEST_INPUT_DEVICE");
         if (!testInput.isEmpty() && !audio_->selectInput(testInput))
             qFatal("The requested virtual test input is unavailable.");

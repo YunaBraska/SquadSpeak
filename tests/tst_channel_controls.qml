@@ -252,6 +252,86 @@ TestCase {
             verify(channel.joined, "Double-clicking the current channel preserves its connection")
         }
     }
+    function test_deafenReleasesNativeVoiceOutputAndResumesCleanly() {
+        if (!audio.outputAvailable) skip("No audio output device is available")
+        const outputState = fixtures.nativeAudioOutputRunning()
+        if (outputState === -1) skip("Core Audio process output probe requires macOS 14.2 or later")
+        verify(outputState >= 0, "Core Audio must report the output state on a supported system")
+        const previousDeafened = session.deafened
+        const previousMuted = session.muted
+        const previousEvents = session.eventSounds
+        try {
+            verify(session.setEventSounds(false))
+            verify(session.setDeafened(false))
+            verify(session.setMuted(true))
+            verify(audio.stop())
+            tryVerify(function() { return fixtures.nativeAudioOutputRunning() === 0 }, 1000,
+                "AudioModel::stop must leave no native output stream open before joining")
+            verify(fixtures.bindAudioToChannel())
+            verify(fixtures.startHost())
+            verify(channel.joinSaved(channel.ownId))
+            tryCompare(channel, "joined", true)
+            tryVerify(function() { return fixtures.nativeAudioOutputRunning() === 1 }, 2000,
+                "Joining must create the native voice output stream")
+            for (let frame = 0; frame < 6; ++frame) verify(fixtures.queueTestSpeechFrame())
+            tryVerify(function() { return audio.playbackLevels["deafen-test-peer"] > 0 }, 1000,
+                "The test speech reaches the active mixer before deafen")
+
+            verify(fixtures.pressAccessible(findChild(view, "deafen")))
+            tryCompare(session, "deafened", true)
+            tryVerify(function() { return fixtures.nativeAudioOutputRunning() === 0 }, 1000,
+                "Deafen must release local voice output")
+            verify(channel.joined, "Deafen keeps the voice connection alive")
+            compare(audio.outputStatus, "", "Deafen does not report an output failure")
+            compare(audio.playbackLevels["deafen-test-peer"], 0, "Deafen clears previously queued speech")
+            verify(!fixtures.queueTestSpeechFrame(), "Speech arriving while deafened is discarded")
+
+            verify(fixtures.pressAccessible(findChild(view, "deafen")))
+            tryCompare(session, "deafened", false)
+            tryVerify(function() { return fixtures.nativeAudioOutputRunning() === 1 }, 2000,
+                "Undeafen must recreate local voice output")
+            compare(audio.playbackLevels["deafen-test-peer"], 0, "Undeafen does not replay queued speech")
+            verify(fixtures.pressAccessible(findChild(view, "deafen")))
+            tryCompare(session, "deafened", true)
+            tryVerify(function() { return fixtures.nativeAudioOutputRunning() === 0 }, 1000,
+                "Repeated deafen must release the recreated output")
+
+            const outputs = audio.outputs
+            const previousIndex = audio.outputIndex
+            const restoreDevice = previousIndex > 0 && previousIndex < outputs.length
+                ? outputs[previousIndex].deviceId : ""
+            const alternate = outputs.find(function(device) {
+                return device.deviceId.length > 0 && device.label !== audio.outputName
+            })
+            if (alternate) {
+                verify(audio.selectOutput(alternate.deviceId))
+                tryVerify(function() { return fixtures.nativeAudioOutputRunning() === 0 }, 1000,
+                    "Changing the selected output while deafened must not reopen the sink")
+                verify(audio.selectOutput(restoreDevice))
+                tryVerify(function() { return fixtures.nativeAudioOutputRunning() === 0 }, 1000,
+                    "Restoring the output while deafened must keep the sink closed")
+                verify(channel.joined, "Changing output while deafened keeps the voice connection alive")
+                compare(audio.outputStatus, "", "Output changes while deafened do not report a playback failure")
+            }
+
+            verify(fixtures.pressAccessible(findChild(view, "deafen")))
+            tryCompare(session, "deafened", false)
+            tryVerify(function() { return fixtures.nativeAudioOutputRunning() === 1 }, 2000,
+                "Undeafen after an output change must recreate the sink")
+            compare(audio.outputStatus, "", "Undeafen does not report a reconnect failure")
+            channel.leave()
+            tryCompare(channel, "joined", false)
+            tryVerify(function() { return fixtures.nativeAudioOutputRunning() === 0 }, 1000,
+                "Leaving must release local voice output")
+        } finally {
+            channel.leave()
+            fixtures.unbindAudioFromChannel()
+            channel.stopHost()
+            session.setDeafened(previousDeafened)
+            session.setMuted(previousMuted)
+            session.setEventSounds(previousEvents)
+        }
+    }
 
     function test_identityUnavailableKeepsDiagnosticVisibleAndBlocksJoin() {
         view.network = unreadyChannel
@@ -4259,6 +4339,92 @@ TestCase {
         verify(!context.visible)
         verify(channel.decideControl(remoteChannel.ownId, false))
         session.setDeafened(false)
+    }
+
+    function test_multiHostWorkspaceKeepsChannelsPrivateChatAndVoiceTogether_data() {
+        return [{tag: "light", width: 1120, theme: "light"},
+                {tag: "dark", width: 1120, theme: "dark"},
+                {tag: "compact", width: 390, theme: "light"}]
+    }
+    function test_multiHostWorkspaceKeepsChannelsPrivateChatAndVoiceTogether(data) {
+        if (!supporterLicense.directDistribution) skip("Additional hosted channels are a direct-distribution extra")
+        const previous = {name: session.userName, avatar: session.avatar, theme: session.theme,
+            channel: channel.channelName, remoteName: remoteSession.userName,
+            remoteAvatar: remoteSession.avatar, remoteChannel: remoteChannel.channelName}
+        try {
+            view.width = data.width; view.height = 760
+            verify(session.setTheme(data.theme)); verify(session.setLanguage("en"))
+            verify(session.setUserName("Alex")); verify(session.setAvatar("ember-dragon"))
+            verify(remoteSession.setUserName("Mira")); verify(remoteSession.setAvatar("courier"))
+            verify(channel.setChannelName("Campfire")); verify(remoteChannel.setChannelName("Night owls"))
+            verify(fixtures.setSupporter(true))
+            verify(fixtures.startHost()); verify(fixtures.startRemoteHost())
+            const games = channel.addOwnedChannel("Game night")
+            const workshop = channel.addOwnedChannel("Workshop")
+            verify(games.length > 0 && workshop.length > 0)
+            verify(remoteChannel.decide(channel.ownId, true))
+            verify(channel.openChat(remoteChannel.ownId, "127.0.0.1", remoteChannel.servicePort))
+            tryCompare(channel, "chatReady", true)
+            verify(channel.decide(remoteChannel.ownId, true))
+            verify(channel.joinSaved(channel.ownId))
+            verify(remoteChannel.join(channel.ownId, "127.0.0.1", channel.servicePort))
+            tryVerify(function() { return channel.chatReady && remoteChannel.chatReady })
+            verify(channel.openPrivateChat(channel.ownId, remoteChannel.ownId))
+            verify(remoteChannel.openPrivateChat(channel.ownId, channel.ownId))
+            tryVerify(function() { return channel.chatReady && channel.privateChat && remoteChannel.chatReady && remoteChannel.privateChat })
+            verify(remoteChannel.sendChat("Saved you a seat by the campfire."))
+            tryCompare(remoteChannel, "chatPending", false)
+            view.openHostChat(channel.ownId)
+            verify(remoteChannel.openChat(channel.ownId, "127.0.0.1", channel.servicePort))
+            tryVerify(function() { return channel.chatReady && !channel.privateChat && remoteChannel.chatReady && !remoteChannel.privateChat })
+            const plan = "## Tonight at the campfire\n\n**Good company. No rush.**\n\n| When | Where |\n|---|---|\n| 20:00 | Campfire: catch up |\n| 20:30 | Game night: play together |\n| Later | Workshop: share ideas |"
+            verify(channel.sendChat(plan)); tryCompare(channel, "chatPending", false)
+            verify(remoteChannel.sendChat("I'm in! **Game night** sounds good.\n\n> Good company. No rush.\n\nAnd I have an idea for the Workshop."))
+            tryCompare(remoteChannel, "chatPending", false)
+            const panel = findChild(view, "chatPanel"), history = findChild(panel, "chatHistory")
+            tryVerify(function() { return channel.messages.some(function(message) { return message.text === plan }) })
+            tryCompare(panel, "updating", false)
+            verify(channel.joinedHostId === channel.ownId && channel.chatHostId === channel.ownId)
+            tryVerify(function() { return channel.participants.length === 2 })
+            compare(view.channelList.filter(function(entry) { return entry.owned }).length, 3,
+                "The workspace contains only its three current owned channels: " + JSON.stringify(view.channelList.map(function(entry) { return {name: entry.name, id: entry.id, owned: entry.owned} })))
+            verify(visualChild(view.contentItem, "hostGroup_" + channel.ownId))
+            verify(visualChild(view.contentItem, "channelRow_" + games))
+            verify(visualChild(view.contentItem, "channelRow_" + workshop))
+            if (data.width < 840) {
+                verify(fixtures.pressAccessible(findChild(view, "backToChannels")))
+                tryCompare(panel, "visible", false)
+            } else {
+                history.scrollTo(history.contentHeight - history.height)
+            }
+            verify(waitForPolish(view)); verify(waitForFrame(view.contentItem))
+            if (imageDirectory.length > 0)
+                verify(fixtures.saveWindow(view, imageDirectory + "/workspace-" + data.tag + ".png"))
+            if (data.tag === "light") {
+                view.memberOptions({id: remoteChannel.ownId, name: "Mira", avatarId: "courier", available: true}, channel.ownId, false)
+                const inspect = findChild(view, "requestInfoDialog")
+                tryCompare(inspect, "opened", true)
+                verify(waitForPolish(view)); verify(waitForFrame(view.contentItem))
+                if (imageDirectory.length > 0)
+                    verify(fixtures.saveWindow(view, imageDirectory + "/person-controls.png"))
+                inspect.close()
+                view.width = 720
+                view.openSettings(1)
+                verify(waitForPolish(view)); verify(waitForFrame(view.contentItem))
+                if (imageDirectory.length > 0)
+                    verify(fixtures.saveWindow(view, imageDirectory + "/audio-controls.png"))
+                view.closeSettings()
+            }
+            verify(channel.removeOwnedChannel(games))
+            compare(view.channelList.filter(function(entry) { return entry.id === games }).length, 0,
+                "Removing a channel updates the bound list before any unrelated network event")
+            tryVerify(function() { return visualChild(view.contentItem, "channelRow_" + games) === null })
+        } finally {
+            session.setUserName(previous.name); session.setAvatar(previous.avatar)
+            session.setTheme(previous.theme); channel.setChannelName(previous.channel)
+            remoteSession.setUserName(previous.remoteName); remoteSession.setAvatar(previous.remoteAvatar)
+            remoteChannel.setChannelName(previous.remoteChannel)
+        }
     }
 
     function test_chatSendsOnlyAfterHostReceiptAndKeepsVoiceAvailable_data() {
