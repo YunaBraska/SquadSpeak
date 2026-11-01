@@ -29,3 +29,6 @@ endif()
 target_link_libraries(controls_tests PRIVATE squad_video squad_radio squad_audio
     squad_session squad_content squad_language Qt6::QuickTest Qt6::QuickControls2
     Qt6::Multimedia ${squad_ptt_platform_libraries})
+if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    target_link_libraries(controls_tests PRIVATE "-framework CoreAudio")
+endif()

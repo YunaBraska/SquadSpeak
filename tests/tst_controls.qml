@@ -111,6 +111,7 @@ Item {
                 verify(independent, "Zero voice volume leaves app cues audible")
             }
         }
+
         function test_participantsRemainUsableWithoutOutputDevice() {
             const result = fixtures.participantsWithoutOutput()
             verify(!result.outputAvailable)

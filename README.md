@@ -8,7 +8,7 @@ No chat account is required. Each running app can provide a channel while its ow
 
 **[Product site](https://yunabraska.github.io/SquadSpeak/)** | **[User documentation](https://yunabraska.github.io/SquadSpeak/documentation.html)** | **[Install](https://yunabraska.github.io/SquadSpeak/install.html)**
 
-![A channel with two members and a Markdown conversation](docs/images/channel-chat.png)
+![SquadSpeak, TeamSpeak and Mumble channel trees with private messages and a Markdown conversation](docs/Page/assets/screenshots/workspace-light.png)
 
 ## Try it
 
@@ -106,7 +106,7 @@ Open **Settings > Input** to select a microphone, see its spectrum and adjust vo
 
 New microphone profiles automatically reduce sustained bass rumble and keep signal peaks below the output limit. Gain and low cut each have an **Auto** switch; moving a slider makes that setting manual. Already distorted microphone recordings cannot always be repaired.
 
-![Input settings with frequency filters and push-to-talk shortcuts](docs/images/audio-settings.png)
+![Input settings with automatic levels and individual audio filters](docs/Page/assets/screenshots/audio-controls.png)
 
 The screenshot shows the real settings interface with microphone capture stopped. Echo cancellation is on by default and can be switched off per microphone. Where supported and permitted, it uses the selected speaker device's digital mix, including other apps. Hover over **Echo** to see whether it uses **Speaker audio** or **App audio only**. This reference stays on your computer and is never saved or shared.
 

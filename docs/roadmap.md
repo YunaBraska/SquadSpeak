@@ -1,6 +1,6 @@
 # Release readiness
 
-Updated: 2026-10-29. Behavior: [specification](specs/voice-chat.md).
+Updated: 2026-11-01. Behavior: [specification](specs/voice-chat.md).
 
 Under U139, the first regular desktop release follows successful automated
 platform and package checks; physical device observations follow the public
@@ -29,7 +29,7 @@ configuration, not certification of every platform or physical setup.
 | Language selection and app-authored translations | Done | All 55 agreed languages are selectable: English plus 54 catalogs, with complete source coverage. Session/source/UI contracts and localized desktop/headless startup pass; CLI/JSON tokens stay stable. Technical checks do not imply native-speaker certification |
 | Headless configuration and bot administration | Done | `headless.cpp`; subprocess contracts, bounded history and persisted password commands; no personal user or local audio |
 | Additive protocol extensions and audio-state badges | Done | SS-165/166; authenticated future-message, malformed-message and portrait contracts |
-| Bundled avatars and variable-frame playback | Done | Twenty member portraits plus System, exactly five physical state rows, three clips per state, shared quiet timing, separate status overlays and static grayscale offline portraits. Four sheets contain 112-128 drawn frames; seventeen retain their two-frame clips. Fresh QML renders verify all 480 dense frames at 48 px, and the catalog/scroll/state/crop contracts pass. Tone-responsive expressions are not provided; they were a feasibility request, not a claim of emotion recognition |
+| Bundled avatars and variable-frame playback | Done | Every member portrait has more than 30 distinct drawn frames, with five physical state rows, three clips per state, shared quiet timing, separate status overlays and static grayscale offline portraits. System remains separately animated. QML render checks cover every member and System at 48 px, with catalog/scroll/state/crop and scaled-render contracts. Tone-responsive expressions are not provided; they were a feasibility request, not a claim of emotion recognition |
 | Desktop builds, packages and automated contracts | Done | Reproducible workflows, installed-package probes and native contracts cover macOS ARM/Intel, Windows and Linux ARM/x64, including Windows application capture with a signed virtual audio endpoint and GUI/headless startup from extracted packages. CI retains the tested revision, reports and packages together. Publication requires every platform job to pass for the release revision. |
 
 ## Release work with explicit exit conditions
@@ -38,7 +38,7 @@ configuration, not certification of every platform or physical setup.
 | --- | --- | --- |
 | App Store content safety | Open | U178 excludes central moderation and blanket word censorship. Native channel bans and private blocks exist. Resolve O-31 with App Review, including reporting and external-provider safeguards, before claiming Store readiness. The [review draft](app-review.md) names current limits and submission prerequisites. Direct distribution remains separate |
 | Markdown image rendering | Done | Escaped, formatted and entity-bearing image descriptions render one image per Markdown occurrence. Intentional repeats and code examples remain intact. The existing Qt parser validates each correction. Content tests and compact QML send/display tests cover the path without another Markdown dependency |
-| Network and sustained-load acceptance | In progress | Local ten-minute mono/stereo soaks pass with 64 clients and eight speakers. A three-minute 128-client/eight-speaker stereo run passes. Longer 16-speaker runs and 64 simultaneous speakers still miss real-time targets. Intel CI checks controlled delivery with 32 clients/two speakers and admission beyond 64. Other release runners retain realtime 64-client/four-speaker gates. Shared-uplink and cross-device qualification remains. There is no hard 64-person admission cap |
+| Network and sustained-load acceptance | In progress | Local ten-minute mono/stereo soaks passed with 64 clients and eight speakers. After the sender scheduling correction, all four real-time mono/stereo and delayed-callback variants pass with both 64 and 128 clients and four speakers. A prior three-minute 128-client/eight-speaker stereo run passed, but a subsequent run lost more than 5% at a listener, so that load is not consistently qualified. Longer 16-speaker runs and 64 simultaneous speakers still miss real-time targets. Intel CI checks controlled delivery with 32 clients/two speakers and admission beyond 64. Other release runners retain realtime 64-client/four-speaker gates. Shared-uplink and cross-device qualification remains. There is no hard 64-person admission cap |
 | Real audio/video quality | In progress | Physical Shure USB reconnection and bidirectional Mac window sharing pass. Linux X11/Wayland and Windows Server 2022 native capture/isolation fixtures pass. Windows 10 execution, Bluetooth, playback-reference clock drift/double-talk, measured A/V synchronization and sustained 4K/30 remain unverified. The 9,000-frame 4K codec run decodes every frame and adapts quality, but averages about 22 fps, with sampled RSS 233 to 248 MiB. U134 allows explicitly labelled computer audio where app-only capture is unavailable. Strong breath overlapping a word onset remains deferred |
 | Compact UI and event feedback | In progress | Public UI contracts cover keyboard/wheel input, compact/RTL layouts, text scaling, contrast, reduced motion, private blocks and host management. Mac microphone access, notification delivery and Focus suppression have device evidence. Visible notification banners remain unverified because active screen capture suppresses them. Simulator layouts do not establish physical mobile usability |
 | Resource and security review | In progress | Complete sustained device/video CPU, RSS and handle measurements. Input limits, authenticated transport, encrypted atomic history, decoder process isolation and bounded media queues have tests. Isolation is not an OS sandbox in direct desktop builds. Private history visibility and cleanup use the committed database, including restart and storage-failure cases. The source package must contain matching dependency sources and licenses. No universal leak-free claim |
@@ -118,6 +118,13 @@ interface, nested channels, Opus voice, PTT and private text. Its local integrat
 suite runs against the official Mumble server. Cross-platform CI and the running
 interface must pass before the branch is ready to merge. Trillian remains a
 navigation reference.
+
+XMPP voice is the next provider investigation. An isolated QXmpp 1.17.0 prototype
+accepted encrypted one-to-one calls from Dino through Prosody with audio in both directions,
+including repeated calls and rejection of invalid credentials, untrusted certificates
+and offers without DTLS. It is not integrated or shipped. Account UX, outgoing call initiation, call permissions,
+NAT traversal and reuse of the app's capture/playback path still need implementation
+and independent-client tests. IRC remains deferred because it provides text chat.
 
 Continue U173 with capture-stage and codec comparisons and sustained resource
 qualification. New media admission pauses during shared audio backlog or slow screen encoding. Large

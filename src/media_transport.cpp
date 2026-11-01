@@ -103,12 +103,13 @@ struct MediaTransport::State final {
 };
 
 // Track::send encrypts and writes synchronously. Normally one worker drains the
-// shared socket. A second can serve other connections if a send stalls, without
+// shared socket. A second helps when a send stalls or queued speech ages, without
 // making every short datagram contend on the socket. QObject state stays owned
 // by its original thread, with at most one send per connection in flight.
 struct MediaTransport::State::Sender final {
     using Clock = std::chrono::steady_clock;
     static constexpr auto backupDelay = std::chrono::milliseconds(5);
+    static constexpr auto packetLifetime = std::chrono::milliseconds(120);
     struct Packet {
         std::shared_ptr<rtc::Channel> channel;
         QByteArray bytes;
@@ -180,10 +181,15 @@ struct MediaTransport::State::Sender final {
             if (worker != 0) backupWaiting = false;
             if (stopping) return;
             if (worker != 0) {
-                while (active[0] && ready() != queues.end() && Clock::now() < primaryStarted + backupDelay) {
-                    // A healthy primary may finish thousands of sends while
-                    // this deadline is pending. Only shutdown needs to wake it.
-                    backupChanged.wait_until(lock, primaryStarted + backupDelay, [this] { return stopping; });
+                while (active[0]) {
+                    const auto next = ready();
+                    if (next == queues.end()) break;
+                    // Short sends must not continually postpone help while
+                    // other connections' speech waits behind them.
+                    const auto due = std::min(primaryStarted,
+                        next->second.front().expires - packetLifetime) + backupDelay;
+                    if (Clock::now() >= due) break;
+                    backupChanged.wait_until(lock, due, [this] { return stopping; });
                     if (stopping) return;
                 }
                 if (!active[0] || ready() == queues.end()) continue;
@@ -227,7 +233,7 @@ struct MediaTransport::State::Sender final {
                     const auto us = [](auto duration) { return std::chrono::duration_cast<std::chrono::microseconds>(duration).count(); };
                     qCDebug(mediaSenderLog) << "RTP delayed worker/channel/source/sequence" << worker << quintptr(packet.channel.get())
                             << packet.ssrc << (packet.ssrc ? int(qFromBigEndian<quint16>(packet.bytes.constData() + 2)) : -1) << "expired" << expired
-                            << "queue/dispatch/send+fallback/relock us" << us(dequeuedAt - (packet.expires - std::chrono::milliseconds(120)))
+                            << "queue/dispatch/send+fallback/relock us" << us(dequeuedAt - (packet.expires - packetLifetime))
                             << us(sendStarted - dequeuedAt) << us(sendReturned - sendStarted) << us(now - sendReturned);
                 }
                 if (now - reportAt >= std::chrono::seconds(1)) {
@@ -301,7 +307,7 @@ struct MediaTransport::State::Sender final {
         const auto [current, added] = queues.try_emplace(channel.get());
         if (turn == queues.end()) turn = current;
         ++counts[key]; ++queued; maximumQueued = std::max(maximumQueued, queued);
-        current->second.push_back({channel, std::move(bytes), ssrc, Clock::now() + std::chrono::milliseconds(120), std::move(failed)});
+        current->second.push_back({channel, std::move(bytes), ssrc, Clock::now() + packetLifetime, std::move(failed)});
         if (added) {
             // An in-flight primary rechecks the queue under this mutex.
             if (!active[0]) changed.notify_all();
