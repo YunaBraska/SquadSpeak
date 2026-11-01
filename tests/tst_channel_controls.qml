@@ -3784,10 +3784,15 @@ TestCase {
         const label = findChild(view, "avatarAnimationLabel")
         verify(label && label.width > 0 && label.height >= label.implicitHeight)
         const shelf = findChild(view, "avatarShelf")
+        // At large text sizes the selector and portrait cannot share the viewport.
+        // Render each visible surface before inspecting its pixels.
+        reveal(shelf)
         tryVerify(() => {
             const canvas = shelf.currentItem && findChild(shelf.currentItem, "avatarCanvas")
             return canvas && fixtures.portraitHasDetail(canvas.parent)
         })
+        reveal(choice)
+        verify(waitForFrame(view.contentItem))
         if (imageDirectory.length) verify(fixtures.saveWindow(view, imageDirectory + "/avatar-animation-" + row.tag + ".png"))
         view.closeSettings()
     }
