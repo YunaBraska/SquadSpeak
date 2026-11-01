@@ -232,7 +232,8 @@ int main(int argc, char** argv) {
             if (!audio.voiceSending()) channel.sendAudio({});
         });
         QObject::connect(&channel, &LocalChannel::channelEvent, &audio, [&](const QString& kind) {
-            const bool spoken = audio.botSpeechReady() && channel.joined() && kind != "leave" && kind != "request";
+            const bool spoken = !channel.joinedExternalVoice() && audio.botSpeechReady()
+                && channel.joined() && kind != "leave" && kind != "request";
             if (session.eventSounds() && !spoken) audio.playEvent(kind);
         });
         QObject::connect(&session, &VoiceSession::preferencesChanged, &audio, [&] {

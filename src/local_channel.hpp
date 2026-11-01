@@ -160,6 +160,7 @@ public:
     [[nodiscard]] QVariantList messages() const;
     [[nodiscard]] bool chatReady() const;
     [[nodiscard]] bool externalChat() const;
+    [[nodiscard]] bool joinedExternalVoice() const;
     Q_INVOKABLE bool addMumble(const QString& endpoint, const QString& password = {});
     Q_INVOKABLE bool addTeamSpeak(const QString& endpoint, const QString& password = {});
     [[nodiscard]] bool chatPending() const;

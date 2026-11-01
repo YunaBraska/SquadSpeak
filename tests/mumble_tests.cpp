@@ -277,6 +277,113 @@ private slots:
         QVERIFY(admin.createChannel("Token", 0)); QVERIFY(admin.acl(admin.channels.value("Token"), "open-sesame"));
         QVERIFY(admin.createChannel("Private", 0)); QVERIFY(admin.acl(admin.channels.value("Private")));
     }
+    void externalPresenceSoundsTrackOnlyTheJoinedChannel() {
+        QTemporaryDir directory; QVERIFY(directory.isValid());
+        const auto identity = TlsIdentity::create();
+        Peer a(directory.filePath("presence-a"), "Presence A", identity);
+        Peer b(directory.filePath("presence-b"), "Presence B", TlsIdentity::create());
+        Peer nativeHost(directory.filePath("presence-native-host"), "Native chat host", TlsIdentity::create());
+        QVERIFY(nativeHost.channel.listen(QHostAddress::LocalHost));
+        QVERIFY(nativeHost.channel.decide(a.channel.ownId(), true));
+        QSignalSpy eventsA(&a.channel, &LocalChannel::channelEvent);
+        QSignalSpy eventsB(&b.channel, &LocalChannel::channelEvent);
+
+        QVERIFY(a.channel.addMumble(endpoint, password));
+        QTRY_VERIFY_WITH_TIMEOUT(a.channel.joined(), 10000);
+        const auto lounge = a.channel.joinedHostId();
+        QVERIFY(!lounge.isEmpty());
+        QVERIFY(a.channel.joinedExternalVoice());
+        QVERIFY(a.channel.openChat(nativeHost.channel.ownId(), "127.0.0.1", nativeHost.channel.port()));
+        QTRY_VERIFY_WITH_TIMEOUT(a.channel.chatReady(), 5000);
+        QVERIFY(a.channel.joinedExternalVoice());
+        QVERIFY(a.channel.joined());
+        QVERIFY(b.channel.addMumble(endpoint, password));
+        QTRY_VERIFY_WITH_TIMEOUT(b.channel.joined(), 10000);
+        QCOMPARE(b.channel.joinedHostId(), lounge);
+        QCOMPARE(eventsB.count(), 1);
+        QCOMPARE(eventsB.at(0).at(0).toString(), QString("join"));
+        QTRY_VERIFY_WITH_TIMEOUT(!memberNamed(a.channel, "Presence B").isEmpty(), 5000);
+        QCOMPARE(eventsA.count(), 2);
+        QCOMPARE(eventsA.at(0).at(0).toString(), QString("join"));
+        QCOMPARE(eventsA.at(1).at(0).toString(), QString("memberJoin"));
+        QVERIFY(b.channel.messages().isEmpty());
+        QVERIFY(a.channel.messages().isEmpty());
+
+        const auto beforePresence = eventsA.count();
+        quint32 bSession = 0;
+        QTRY_VERIFY((bSession = admin.sessionNamed("Presence B")) != 0);
+        QVERIFY(admin.send(9, number(1, bSession) + number(6, 1)));
+        QTRY_VERIFY_WITH_TIMEOUT([&] {
+            for (const auto& participant : a.channel.participants())
+                if (participant.toMap().value("name") == "Presence B") return participant.toMap().value("muted").toBool();
+            return false;
+        }(), 5000);
+        QCOMPARE(eventsA.count(), beforePresence);
+        QVERIFY(admin.send(9, number(1, bSession) + number(6, 0)));
+
+        const auto beforeNoOpA = eventsA.count();
+        const auto beforeNoOpB = eventsB.count();
+        QVERIFY(a.channel.joinSaved(lounge));
+        QVERIFY(b.channel.joinSaved(lounge));
+        QCOMPARE(eventsA.count(), beforeNoOpA);
+        QCOMPARE(eventsB.count(), beforeNoOpB);
+
+        const auto studio = channelNamed(a.channel, "Studio").value("id").toString();
+        QVERIFY(!studio.isEmpty());
+        const auto privateChannel = channelNamed(a.channel, "Private").value("id").toString();
+        QVERIFY(!privateChannel.isEmpty());
+        const auto beforeFailedMove = eventsB.count();
+        QVERIFY(b.channel.joinSaved(privateChannel));
+        QTRY_VERIFY_WITH_TIMEOUT(b.channel.passwordRequired(), 5000);
+        QCOMPARE(b.channel.joinedHostId(), lounge);
+        QCOMPARE(eventsB.count(), beforeFailedMove);
+        QVERIFY(b.channel.joinSaved(studio));
+        QTRY_COMPARE_WITH_TIMEOUT(b.channel.joinedHostId(), studio, 10000);
+        QCOMPARE(eventsB.count(), 3);
+        QCOMPARE(eventsB.at(1).at(0).toString(), QString("leave"));
+        QCOMPARE(eventsB.at(2).at(0).toString(), QString("join"));
+        QTRY_COMPARE_WITH_TIMEOUT(eventsA.count(), 3, 5000);
+        QCOMPARE(eventsA.at(2).at(0).toString(), QString("memberLeave"));
+
+        QVERIFY(admin.createChannel("Presence side", 0));
+        const auto side = admin.channels.value("Presence side");
+        QVERIFY(side != 0);
+        QVERIFY(admin.acl(side, {}, 0, 8));
+        QString sideId;
+        QTRY_VERIFY_WITH_TIMEOUT([&] {
+            sideId = channelNamed(a.channel, "Presence side").value("id").toString();
+            return !sideId.isEmpty();
+        }(), 5000);
+        QVERIFY(b.channel.joinSaved(sideId));
+        QTRY_COMPARE_WITH_TIMEOUT(b.channel.joinedHostId(), sideId, 10000);
+        QCOMPARE(eventsB.count(), 5);
+        QTRY_VERIFY_WITH_TIMEOUT([&] {
+            const auto members = channelNamed(a.channel, "Presence side").value("members").toList();
+            for (const auto& member : members)
+                if (member.toMap().value("name") == "Presence B") return true;
+            return false;
+        }(), 5000);
+        QCOMPARE(eventsA.count(), 3);
+
+        QVERIFY(b.channel.joinSaved(lounge));
+        QTRY_COMPARE_WITH_TIMEOUT(b.channel.joinedHostId(), lounge, 10000);
+        QCOMPARE(eventsB.count(), 7);
+        QTRY_COMPARE_WITH_TIMEOUT(eventsA.count(), 4, 5000);
+        QCOMPARE(eventsA.at(3).at(0).toString(), QString("memberJoin"));
+        QVERIFY(a.channel.openSavedChat(lounge));
+        QVERIFY(a.channel.messages().isEmpty());
+        const auto beforeLeave = eventsA.count();
+        QVERIFY(b.channel.leave());
+        QCOMPARE(eventsB.count(), 8);
+        QCOMPARE(eventsB.at(7).at(0).toString(), QString("leave"));
+        QTRY_COMPARE_WITH_TIMEOUT(eventsA.count(), beforeLeave + 1, 5000);
+        QCOMPARE(eventsA.at(4).at(0).toString(), QString("memberLeave"));
+        QVERIFY(a.channel.leave());
+        QCOMPARE(eventsA.count(), 6);
+        QCOMPARE(eventsA.at(5).at(0).toString(), QString("leave"));
+        QVERIFY(a.channel.messages().isEmpty());
+        QVERIFY(b.channel.messages().isEmpty());
+    }
     void passwordDirectoryIdentityAndRepeatJoin() {
         QTemporaryDir directory; QVERIFY(directory.isValid());
         const auto identity = TlsIdentity::create();
