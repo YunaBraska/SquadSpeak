@@ -19,6 +19,8 @@
 #include <plog/Logger.h>
 #include <opus.h>
 #include <array>
+#include <atomic>
+#include <chrono>
 #include <cmath>
 #include <condition_variable>
 #include <memory>
@@ -97,6 +99,8 @@ class SendGate final {
         int remaining = 1;
         std::vector<int> packetSizes;
         size_t received = 0;
+        std::chrono::microseconds sendCost{};
+        std::chrono::microseconds maximumCost{};
         std::string boundary = "Protected SRTP packet, size=";
         const std::thread::id owner = std::this_thread::get_id();
     };
@@ -115,6 +119,20 @@ class SendGate final {
             const auto size = message.find("size=");
             s->packetSizes.push_back(size == std::string::npos ? 0 : std::stoi(message.substr(size + 5)));
             s->changed.notify_all();
+            if (s->sendCost.count() > 0) {
+                const auto cost = s->sendCost;
+                lock.unlock();
+                // Controlled work at the native SRTP boundary. A sleep would
+                // round to the host timer quantum and simulate a stalled send.
+                const auto started = std::chrono::steady_clock::now();
+                while (std::chrono::steady_clock::now() - started < cost)
+                    std::atomic_signal_fence(std::memory_order_seq_cst);
+                const auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(
+                    std::chrono::steady_clock::now() - started);
+                lock.lock();
+                s->maximumCost = std::max(s->maximumCost, elapsed);
+                return;
+            }
             if (s->remaining == 0) return;
             --s->remaining;
             s->entered = true;
@@ -142,6 +160,14 @@ public:
         rtc::InitLogger(rtc::LogLevel::Verbose);
     }
     ~SendGate() { release(); std::atomic_store(&observer().state, std::shared_ptr<State>{}); rtc::InitLogger(rtc::LogLevel::Info); }
+    void setSendCost(std::chrono::microseconds cost) {
+        std::lock_guard lock(state_->mutex);
+        state_->sendCost = cost;
+    }
+    qint64 maximumCostUs() const {
+        std::lock_guard lock(state_->mutex);
+        return state_->maximumCost.count();
+    }
     bool entered() const { std::lock_guard lock(state_->mutex); return state_->entered; }
     std::vector<int> packetSizes() const { std::lock_guard lock(state_->mutex); return state_->packetSizes; }
     bool waitForPackets(size_t count) {
@@ -792,6 +818,72 @@ private slots:
         const auto position = std::find(sizes.begin(), sizes.end(), sizes.front() + 100);
         QVERIFY(position != sizes.end());
         QCOMPARE(position - sizes.begin(), 1);
+    }
+    void shortNativeSendsDrainAgingQueuesBeforeSpeechExpires() {
+        struct Pair {
+            std::unique_ptr<squad::MediaTransport> host, client;
+            std::unique_ptr<QSignalSpy> atHost, atClient;
+        };
+        int fallback = 0;
+        std::array<Pair, 4> peers;
+        const auto packet = speech();
+        QVERIFY(!packet.isEmpty());
+        for (auto& pair : peers) {
+            const auto port = availableUdpPort(); QVERIFY(port);
+            pair.host = std::make_unique<squad::MediaTransport>(true, port, QHostAddress::LocalHost, 0);
+            pair.client = std::make_unique<squad::MediaTransport>(false, 0, QHostAddress::LocalHost, port);
+            auto* host = pair.host.get();
+            auto* client = pair.client.get();
+            connect(host, &squad::MediaTransport::signaling, client, [&, client](const auto& message) {
+                fallback += message.value("kind") == "frame";
+                QVERIFY(client->receive(message));
+            });
+            connect(client, &squad::MediaTransport::signaling, host, [&, host](const auto& message) {
+                fallback += message.value("kind") == "frame";
+                QVERIFY(host->receive(message));
+            });
+            pair.atHost = std::make_unique<QSignalSpy>(host, &squad::MediaTransport::audio);
+            pair.atClient = std::make_unique<QSignalSpy>(client, &squad::MediaTransport::audio);
+            QVERIFY(waitForEvents([&] { return host->udpActive() && client->udpActive(); }, 10000));
+            // Bind both real source IDs before loading the sender. Mapping or
+            // handshake work must not consume the queued speech deadline.
+            for (auto* sender : {host, client}) {
+                QVERIFY(sender->send(first, packet));
+                QVERIFY(sender->send(second, packet));
+            }
+            QVERIFY(waitForEvents([&] { return pair.atHost->size() == 2 && pair.atClient->size() == 2; }, 3000));
+            pair.atHost->clear(); pair.atClient->clear();
+        }
+        const auto setupFallback = fallback;
+        SendGate gate;
+        gate.setSendCost(std::chrono::microseconds(1500));
+        // Eight independent connections, two sources each, six queued frames
+        // per source. At 1.5 ms per native send, one worker needs 144 ms for
+        // these 96 packets. Two can finish in 72 ms, below speech's 120 ms
+        // deadline. No source exceeds the production six-frame queue limit.
+        for (int frame = 0; frame < 6; ++frame)
+            for (auto& pair : peers)
+                for (auto* sender : {pair.host.get(), pair.client.get()}) {
+                    QVERIFY(sender->send(first, packet));
+                    QVERIFY(sender->send(second, packet));
+                }
+        const bool delivered = waitForEvents([&] {
+            return std::all_of(peers.begin(), peers.end(), [](const auto& pair) {
+                return pair.atHost->size() == 12 && pair.atClient->size() == 12;
+            });
+        }, 3000);
+        int packets = 0, gaps = 0;
+        for (const auto& pair : peers)
+            for (const auto* received : {pair.atHost.get(), pair.atClient.get()})
+                for (const auto& event : *received) {
+                    ++packets; gaps += event.at(2).toInt();
+                    QCOMPARE(event.at(1).toByteArray(), packet);
+                }
+        qInfo() << "Short native sends delivered" << packets << "of 96; gaps" << gaps
+                << "maximum controlled native cost us" << gate.maximumCostUs();
+        QCOMPARE(fallback, setupFallback);
+        QCOMPARE(gaps, 0);
+        QVERIFY2(delivered, qPrintable(QString("Received %1 / 96 packets despite short native sends").arg(packets)));
     }
     void hostProtectsExistingMediaDuringSharedSenderOverload_data() {
         QTest::addColumn<int>("blockedSenders");

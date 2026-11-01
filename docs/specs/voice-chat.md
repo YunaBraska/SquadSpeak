@@ -431,7 +431,10 @@ Reordering, replay rejection, source-slot reuse and Opus concealment
 must be bounded. No external discovery or relay service is required.
 UDP audio encryption and socket writes MUST run outside the Qt owner thread through
 one shared sender. Ready connections take turns, preserving packet order within
-each connection so one backlog cannot monopolize transmission. Its queue holds
+each connection so one backlog cannot monopolize transmission. Its second worker
+helps when either an in-flight send or eligible queued speech has waited 5 ms.
+Repeated short sends cannot continually postpone that help. Each connection
+still has at most one native write in flight. Its queue holds
 at most six 20 ms packets per source and connection, with a global limit of
 4096 packets. Queued packets expire after
 120 ms. Overload discards old audio, preserving RTP sequence gaps for receiver
