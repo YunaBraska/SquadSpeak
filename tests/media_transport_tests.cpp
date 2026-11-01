@@ -522,14 +522,14 @@ private slots:
     void prolongedBlockedUdpRenegotiatesWithoutLosingReliableAudio() {
         QFETCH(int, recoverAt);
         QElapsedTimer recoveryClock; recoveryClock.start();
-        QList<qint64> attempts;
+        QList<std::chrono::nanoseconds> attempts;
         DatagramLink link(0); link.blocked = true;
         const auto port = availableUdpPort(); QVERIFY(port); link.setTarget(port);
         squad::MediaTransport host(true, port, QHostAddress::LocalHost, 0);
         squad::MediaTransport client(false, 0, QHostAddress::LocalHost, link.port());
         int restarts = 0, fallback = 0;
         connect(&host, &squad::MediaTransport::signaling, &client, [&](const auto& message) {
-            if (message.value("kind") == "restart") { attempts.append(recoveryClock.elapsed()); ++restarts; link.blocked = restarts < recoverAt; }
+            if (message.value("kind") == "restart") { attempts.append(recoveryClock.durationElapsed()); ++restarts; link.blocked = restarts < recoverAt; }
             fallback += message.value("kind") == "frame";
             QVERIFY(client.receive(message));
         });
@@ -543,8 +543,13 @@ private slots:
         QCOMPARE(fallback, 1);
         QVERIFY(waitForEvents([&] { return host.udpActive() && client.udpActive(); }, recoverAt == 1 ? 10000 : 22000));
         QCOMPARE(restarts, recoverAt);
-        QVERIFY(attempts.first() >= 5000);
-        if (recoverAt == 2) QVERIFY(attempts.last() - attempts.first() >= 10000);
+        QVERIFY2(attempts.first() >= std::chrono::seconds(5),
+            qPrintable(QString("First retry after %1 ns").arg(attempts.first().count())));
+        if (recoverAt == 2) {
+            const auto interval = attempts.last() - attempts.first();
+            QVERIFY2(interval >= std::chrono::seconds(10),
+                qPrintable(QString("Retry interval was %1 ns").arg(interval.count())));
+        }
         QVERIFY(host.send(first, packet)); QTRY_COMPARE(heard.size(), 2);
         QCOMPARE(fallback, 1); QCOMPARE(heard.last().at(2).toInt(), 0);
         // Simulate an overloaded UI thread that cannot service probe callbacks.

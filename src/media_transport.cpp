@@ -10,6 +10,7 @@
 #include <QtEndian>
 #include <rtc/rtc.hpp>
 #include <array>
+#include <chrono>
 #include <condition_variable>
 #include <deque>
 #include <map>
@@ -66,7 +67,8 @@ struct MediaTransport::State final {
     bool descriptionSeen = false, failed = false;
     quint32 epoch = 0;
     quint64 generation = 0;
-    qint64 attempted = 0, retryDelay = 5000;
+    std::chrono::nanoseconds attempted{};
+    qint64 retryDelay = 5000;
     std::mutex mutex;
     std::deque<std::function<void()>> mailbox;
     qsizetype queuedBytes = 0, pendingBytes = 0;
@@ -387,7 +389,7 @@ void MediaTransport::stopUdp() {
 void MediaTransport::start() {
     auto& s = *state_;
     if (s.connection || s.failed) return;
-    s.attempted = s.clock.elapsed();
+    s.attempted = s.clock.durationElapsed();
     try {
         rtc::Configuration config;
         config.disableAutoNegotiation = true;
@@ -661,7 +663,7 @@ void MediaTransport::tick() {
     if (active) s.retryDelay = 5000;
     // Recover an initially stalled handshake promptly, without hammering a
     // persistently unreachable endpoint. A confirmed path resets the backoff.
-    if (s.offerer && now - s.attempted >= s.retryDelay && !active
+    if (s.offerer && s.clock.durationElapsed() - s.attempted >= std::chrono::milliseconds(s.retryDelay) && !active
         && (s.failed || !s.channel || !s.channel->isOpen() || now - s.acknowledged > 5000)) {
         if (s.epoch == UINT32_MAX) return;
         ++s.epoch;
