@@ -57,6 +57,45 @@ std::vector<float> stereoTone(double left, double right, int frames = 960) {
 class MixerTests final : public QObject {
     Q_OBJECT
 private slots:
+    void variableOpusPacketsPreserveEveryDecodedSample_data() {
+        QTest::addColumn<int>("channels"); QTest::addColumn<int>("samples");
+        for (int channels : {1, 2}) for (int samples : {120, 240, 480, 960, 1920, 2880})
+            QTest::newRow(qPrintable(QString("%1ch-%2samples").arg(channels).arg(samples))) << channels << samples;
+    }
+
+    void variableOpusPacketsPreserveEveryDecodedSample() {
+        QFETCH(int, channels); QFETCH(int, samples);
+        squad::VoiceMixer receiver(channels);
+        receiver.setAutomatic(false);
+        std::unique_ptr<OpusEncoder, decltype(&opus_encoder_destroy)> encoder(
+            opus_encoder_create(48000, channels, OPUS_APPLICATION_AUDIO, nullptr), opus_encoder_destroy);
+        std::unique_ptr<OpusDecoder, decltype(&opus_decoder_destroy)> decoder(
+            opus_decoder_create(48000, channels, nullptr), opus_decoder_destroy);
+        QVERIFY(encoder && decoder);
+        const auto input = channels == 1 ? tone(0.1, 48000, samples) : stereoTone(0.1, 0.07, samples);
+        std::vector<float> reference, actual;
+        int buffered = 0;
+        for (int offset = 0; offset < 11520; offset += samples) {
+            QByteArray packet(4000, Qt::Uninitialized);
+            const auto bytes = opus_encode_float(encoder.get(), input.data(), samples,
+                reinterpret_cast<unsigned char*>(packet.data()), int(packet.size()));
+            QVERIFY(bytes > 0); packet.resize(bytes);
+            std::vector<float> decoded(size_t(samples * channels));
+            QCOMPARE(opus_decode_float(decoder.get(), reinterpret_cast<const unsigned char*>(packet.constData()),
+                bytes, decoded.data(), samples, 0), samples);
+            reference.insert(reference.end(), decoded.begin(), decoded.end());
+            QVERIFY(receiver.receive("speaker", packet, offset / 48));
+            buffered += samples;
+            while (buffered >= 960) {
+                const auto frame = receiver.render(48000, (offset + samples - buffered) / 48);
+                actual.insert(actual.end(), frame.begin(), frame.end());
+                buffered -= 960;
+            }
+        }
+        QCOMPARE(actual.size(), reference.size());
+        for (size_t i = 0; i < actual.size(); ++i) QVERIFY(std::abs(actual[i] - reference[i]) < 0.000001f);
+    }
+
     void capturePreviewIsAlignedAndDoesNotChangePackets_data() {
         QTest::addColumn<int>("channels"); QTest::addColumn<int>("rate"); QTest::addColumn<double>("strength");
         for (int channels : {1, 2}) for (int rate : {44100, 48000}) for (double strength : {0.0, 0.5, 1.0})

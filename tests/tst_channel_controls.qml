@@ -3261,7 +3261,10 @@ TestCase {
     }
 
     function test_providerIconsIdentifyClientsWithoutChangingPortraitOrAudioBadges_data() {
-        return [{tag: "light", mode: "light"}, {tag: "dark", mode: "dark"}]
+        return [{tag: "ts-light", mode: "light", provider: "teamspeak", label: "TeamSpeak"},
+            {tag: "ts-dark", mode: "dark", provider: "teamspeak", label: "TeamSpeak"},
+            {tag: "mumble-light", mode: "light", provider: "mumble", label: "Mumble"},
+            {tag: "mumble-dark", mode: "dark", provider: "mumble", label: "Mumble"}]
     }
     function test_providerIconsIdentifyClientsWithoutChangingPortraitOrAudioBadges(data) {
         session.setTheme(data.mode)
@@ -3272,16 +3275,16 @@ TestCase {
         verify(!badge.visible, "SquadSpeak participants have no provider badge")
         const icon = findChild(badge, "providerIcon")
         compare(findChild(icon, "providerArtwork").source.toString(), "")
-        item.teamSpeak = true
-        compare(icon.label, "TeamSpeak")
+        item.provider = data.provider
+        compare(icon.label, data.label)
         tryCompare(findChild(icon, "providerArtwork"), "status", Image.Ready)
         verify(badge.visible)
         compare(badge.x + badge.width, item.width)
         compare(badge.y, 0)
         verify(badge.height <= findChild(item, "microphoneBadge").mapToItem(item, 0, 0).y)
-        item.teamSpeak = false
+        item.provider = ""
         verify(!badge.visible, "SquadSpeak clients on a TS3 host also have no provider badge")
-        item.teamSpeak = true
+        item.provider = data.provider
         item.music = true
         verify(!badge.visible)
         item.music = false
@@ -3293,17 +3296,20 @@ TestCase {
         item.identity = "known-person"
         verify(badge.visible, "A known person keeps the client icon even without a display name")
         item.visible = false
-        view.memberOptions({id: "ts-peer", name: "Example", avatarId: "courier", teamSpeak: true}, "ts-host", false)
+        view.memberOptions({id: "ts-peer", name: "Example", avatarId: "courier", provider: data.provider}, "ts-host", false)
         const dialog = findChild(view, "requestInfoDialog")
         tryCompare(dialog, "opened", true)
-        compare(findChild(dialog, "requestClient").text, "TeamSpeak")
-        compare(findChild(findChild(dialog, "requestAvatar"), "providerIcon").label, "TeamSpeak")
+        compare(findChild(dialog, "requestClient").text, data.label)
+        const volume = findChild(dialog, "memberVolume")
+        verify(waitForPolish(view))
+        verify(volume.width >= dialog.availableWidth - 2, "Person slider uses the pane width: " + volume.width + "/" + dialog.availableWidth + ", scroll=" + findChild(dialog, "requestDetailsScroll").width + ", column=" + volume.parent.width)
+        compare(findChild(findChild(dialog, "requestAvatar"), "providerIcon").label, data.label)
         tryVerify(function() { return fixtures.portraitHasDetail(findChild(dialog, "requestAvatar")) })
         if (imageDirectory.length > 0) {
             waitForRendering(view.contentItem)
             verify(fixtures.saveWindow(view, imageDirectory + "/inspect-teamspeak-" + data.tag + ".png"))
         }
-        view.memberOptions({id: "squad-peer", name: "Example", avatarId: "courier", teamSpeak: false}, "ts-host", false)
+        view.memberOptions({id: "squad-peer", name: "Example", avatarId: "courier", provider: ""}, "ts-host", false)
         compare(findChild(dialog, "requestClient").text, "SquadSpeak")
         verify(!findChild(findChild(dialog, "requestAvatar"), "providerBadge").visible)
         if (imageDirectory.length > 0) {
@@ -4349,8 +4355,8 @@ TestCase {
             "Chat portraits follow the channel animation preference")
         compare(own.own, true); compare(other.own, false)
         const ownRecord = own.message
-        own.message = Object.assign({}, ownRecord, {teamSpeak: true})
-        verify(!findChild(own, "messageAvatar_" + channel.ownId).teamSpeak,
+        own.message = Object.assign({}, ownRecord, {provider: "teamspeak"})
+        verify(!findChild(own, "messageAvatar_" + channel.ownId).provider,
             "An older protocol flag must not mark our own message as a TeamSpeak client")
         own.message = ownRecord
         verify(findChild(own, "messageBody_" + own.message.sequence).x > findChild(other, "messageBody_" + other.message.sequence).x)
@@ -4384,6 +4390,11 @@ TestCase {
             waitForRendering(panel)
             verify(fixtures.saveWindow(view, imageDirectory + "/channel-chat.png"))
         }
+        const otherRecord = other.message
+        other.message = Object.assign({}, otherRecord, {provider: "mumble"})
+        verify(!findChild(other, "messageAvatar_" + remoteChannel.ownId).provider,
+            "The current participant profile overrides an older external-provider badge")
+        other.message = otherRecord
         verify(remoteChannel.closeChat(channel.ownId))
         tryVerify(function() { return channel.chatPresenceKnown && !channel.chatOnlineIds.includes(remoteChannel.ownId) })
         history.scrollTo(other.y)
@@ -5209,32 +5220,62 @@ TestCase {
         tryVerify(function() { return visualChild(view.contentItem, "hostGroup_" + serverId) === null })
     }
 
-    function test_teamSpeakAddressUsesTheSameAddDialog() {
-        const dialog = findChild(view, "discoverDialog")
-        dialog.open()
-        tryCompare(dialog, "opened", true)
-        const address = findChild(view, "directAddress")
-        const add = findChild(view, "joinAddress")
-        verify(address && add)
-        verify(!findChild(view, "serverProtocol"))
-        verify(!findChild(view, "teamSpeakPassword"))
-        address.text = "localhost:65536"
-        tryCompare(add, "enabled", true)
-        for (const size of [[360, 420], [520, 700]]) {
-            view.width = size[0]; view.height = size[1]
-            verify(waitForRendering(dialog.contentItem))
-            for (const control of [address, add]) {
+    function test_supportedServersUseTheSameAddDialog_data() {
+        return [{tag: "compact", width: 320, height: 568, language: "en", theme: "light"},
+                {tag: "supporter", width: 320, height: 568, language: "de", theme: "light", supporter: true},
+                {tag: "short", width: 360, height: 420, language: "en", theme: "dark"},
+                {tag: "desktop", width: 520, height: 700, language: "en", theme: "light"},
+                {tag: "rtl", width: 360, height: 568, language: "ar", theme: "dark"}]
+    }
+    function test_supportedServersUseTheSameAddDialog(data) {
+        const previousTheme = session.theme
+        verify(session.setTheme(data.theme))
+        verify(session.setLanguage(data.language))
+        if (data.supporter && supporterLicense.directDistribution) verify(fixtures.setSupporter(true))
+        view.width = data.width; view.height = data.height
+        try {
+            const dialog = findChild(view, "discoverDialog")
+            mouseClick(findChild(view, "addChannel"))
+            tryCompare(dialog, "opened", true)
+            const address = findChild(view, "directAddress")
+            const add = findChild(view, "joinAddress")
+            verify(address && add)
+            address.clear()
+            tryCompare(add, "enabled", false)
+            verify(!findChild(view, "serverProtocol"))
+            verify(!findChild(view, "teamSpeakPassword"))
+            const icons = ["squadspeak", "teamspeak", "mumble"].map(function(provider) {
+                const icon = visualChild(dialog.contentItem, "supportedProvider_" + provider)
+                verify(icon, "Missing supported server: " + provider)
+                tryCompare(findChild(icon, "providerArtwork"), "status", Image.Ready)
+                return icon
+            })
+            compare(icons.map(icon => icon.Accessible.name).join(", "), "SquadSpeak, TeamSpeak, Mumble")
+            verify(waitForFrame(dialog.contentItem))
+            const actions = [add, findChild(view, "approveAddress"), findChild(view, "createOwnChannel")]
+            for (const control of [address].concat(actions.filter(button => button.visible), icons)) {
                 const position = control.mapToItem(dialog.contentItem, 0, 0)
                 verify(position.x >= 0 && position.x + control.width <= dialog.contentItem.width + 1)
                 verify(position.y >= 0 && position.y + control.height <= dialog.contentItem.height + 1)
             }
-            mouseClick(add)
-            tryVerify(function() { return channel.status.includes("valid host or IP address") })
-            if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/add-teamspeak-" + size[0] + ".png"))
+            verify(address.width >= 160, "The address must remain usable beside the server symbols")
+            const row = [address].concat(icons).sort((a, b) => a.x - b.x)
+            for (let index = 1; index < row.length; ++index)
+                verify(row[index - 1].x + row[index - 1].width <= row[index].x,
+                    "Server symbols must not overlap the address or each other")
+            if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/add-supported-servers-" + data.tag + ".png"))
+            address.text = "localhost:65536"
+            tryCompare(add, "enabled", true)
+            address.forceActiveFocus()
+            tryCompare(address, "activeFocus", true)
+            keyClick(Qt.Key_Return)
+            tryCompare(channel, "status", qsTranslate("LocalChannel", "Enter a valid host or IP address, optionally with a port from 1 to 65535."))
+            verify(!channel.joined)
+            verify(dialog.opened)
+            dialog.close()
+        } finally {
+            session.setTheme(previousTheme)
         }
-        verify(!channel.joined)
-        verify(dialog.opened)
-        dialog.close()
     }
 
     function test_directAddressControlsAndErrors() {

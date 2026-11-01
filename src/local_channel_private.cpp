@@ -1,4 +1,5 @@
 #include "local_channel.hpp"
+#include "external_voice.hpp"
 #include "chat_content.hpp"
 
 #include <QCborValue>
@@ -98,7 +99,7 @@ QVariantList LocalChannel::privateChats() const {
     QVariantList result;
     for (const auto& c : clients_) {
         if (c->privatePeer.isEmpty()) continue;
-        const auto* link = c->teamSpeak && c->accepted ? c.get() : privateTransport(c->deviceId);
+        const auto* link = c->external() && c->accepted ? c.get() : privateTransport(c->deviceId);
         QString owner;
         for (const auto& saved : savedChannels_) if (saved.toObject().value("deviceId").toString() == c->deviceId) {
             owner = saved.toObject().value("ownerName").toString(); if (!owner.isEmpty()) break;
@@ -106,10 +107,10 @@ QVariantList LocalChannel::privateChats() const {
         if (c->deviceId == ownId()) owner = hostDisplayName();
         result.append(QVariantMap{{"id", c->id}, {"name", c->name}, {"private", true}, {"peerId", c->privatePeer},
             {"deviceId", c->deviceId}, {"ownerName", owner}, {"address", c->address}, {"port", c->port},
-            {"protocol", c->teamSpeak ? "teamspeak" : "squadspeak"}, {"online", link != nullptr}, {"peerOnline", link && c->privatePeerOnline}, {"access", link ? "accepted" : "offline"}, {"autoJoin", false},
+            {"protocol", c->external() ? c->provider : QStringLiteral("squadspeak")}, {"online", link != nullptr}, {"peerOnline", link && c->privatePeerOnline}, {"access", link ? "accepted" : "offline"}, {"autoJoin", false},
             {"members", link ? c->members : QVariantList{}}, {"expires", c->privateExpires},
-            {"hasMessages", c->privateExpires > (c->teamSpeak ? clock_() : c->chatClock.isValid() ? c->serverTime + c->chatClock.elapsed() : c->serverTime)},
-            {"unread", c->unreadExpires > (c->teamSpeak ? clock_() : c->chatClock.isValid() ? c->serverTime + c->chatClock.elapsed() : c->serverTime)},
+            {"hasMessages", c->privateExpires > (c->external() ? clock_() : c->chatClock.isValid() ? c->serverTime + c->chatClock.elapsed() : c->serverTime)},
+            {"unread", c->unreadExpires > (c->external() ? clock_() : c->chatClock.isValid() ? c->serverTime + c->chatClock.elapsed() : c->serverTime)},
             {"blockedByMe", c->blockedByMe}, {"blocked", c->blockedByMe || c->blockedByPeer}});
     }
     std::sort(result.begin(), result.end(), [](const auto& a, const auto& b) { return a.toMap().value("id").toString() < b.toMap().value("id").toString(); });
@@ -130,9 +131,9 @@ bool LocalChannel::canPrivateChat(const QString& host, const QString& peer) cons
     }
     const auto c = clients_.value(host);
     if (!c || !validId(peer) || peer == ownId()) return false;
-    if (c->teamSpeak) {
-        if (!teamSpeak_ || !teamSpeak_->connected || c->deviceId != teamSpeak_->id) return false;
-        for (const auto& other : clients_) if (other->teamSpeak && other->accepted) {
+    if (c->external()) {
+        if (!external_ || !external_->connected || c->deviceId != external_->id) return false;
+        for (const auto& other : clients_) if (other->external() && other->accepted) {
             if (other->privatePeer == peer) return true;
             for (const auto& member : other->members) if (member.toMap().value("id") == peer) return true;
         }
@@ -145,7 +146,7 @@ bool LocalChannel::openPrivateChat(const QString& host, const QString& peer) {
     if (hostOnly_) return false;
     if (remoteMode()) return remoteAction("openPrivate", {{"hostId", host}, {"peerId", peer}});
     if (!canPrivateChat(host, peer)) return false;
-    if (clients_.value(host)->teamSpeak) return openTeamSpeakPrivate(host, peer);
+    if (clients_.value(host)->external()) return openExternalPrivate(host, peer);
     const auto c = clients_.value(conversationId(clients_.value(host)->deviceId, ownId(), peer));
     c->accepted = true; selectChat(c->id); return true;
 }

@@ -1,6 +1,7 @@
 find_program(SQUAD_CARGO cargo HINTS "$ENV{HOME}/.cargo/bin" REQUIRED)
 get_filename_component(squad_rust_bin "${SQUAD_CARGO}" DIRECTORY)
 find_program(SQUAD_RUSTC rustc HINTS "${squad_rust_bin}" REQUIRED)
+find_program(SQUAD_PROTOC protoc REQUIRED)
 if(SQUADSPEAK_AUDIO_DEPS_ROOT)
     set(squad_opus_prefix "${SQUADSPEAK_AUDIO_DEPS_ROOT}")
 elseif(SQUADSPEAK_MOBILE_DEPS_ROOT)
@@ -16,6 +17,8 @@ if(SQUADSPEAK_DENOISE_CANDIDATE)
     file(READ "${squad_rust_manifest}" squad_rust_manifest_content)
     file(READ "${PROJECT_SOURCE_DIR}/src/teamspeak_bridge/Denoise.toml" squad_denoise_dependencies)
     string(REPLACE "[lib]" "[lib]\npath = \"${PROJECT_SOURCE_DIR}/src/teamspeak_bridge/src/lib.rs\""
+        squad_rust_manifest_content "${squad_rust_manifest_content}")
+    string(REPLACE "build = \"build.rs\"" "build = \"${PROJECT_SOURCE_DIR}/src/teamspeak_bridge/build.rs\""
         squad_rust_manifest_content "${squad_rust_manifest_content}")
     set(squad_rust_manifest "${CMAKE_BINARY_DIR}/denoise-candidate/Cargo.toml")
     file(GENERATE OUTPUT "${squad_rust_manifest}" CONTENT "${squad_rust_manifest_content}\n${squad_denoise_dependencies}")
@@ -56,7 +59,11 @@ else()
 endif()
 set(squad_rust_env "RUSTC=${SQUAD_RUSTC}" "CARGO_TARGET_DIR=${squad_ts_target}" "CARGO_BUILD_JOBS=4" "CARGO_PROFILE_RELEASE_STRIP=none"
     "OPUS_NO_PKG=1" "OPUS_LIB_DIR=${squad_opus_prefix}"
-    "OPENSSL_DIR=${OPENSSL_ROOT_DIR}" "OPENSSL_STATIC=1")
+    "PROTOC=${SQUAD_PROTOC}"
+    "SQUAD_MUMBLE_CRYPT_DIR=${PROJECT_SOURCE_DIR}/src/teamspeak_bridge/mumble-crypt")
+if(OPENSSL_ROOT_DIR)
+    list(APPEND squad_rust_env "OPENSSL_DIR=${OPENSSL_ROOT_DIR}" "OPENSSL_STATIC=1")
+endif()
 if(IOS OR ANDROID)
     list(APPEND squad_rust_env "OPUS_STATIC=1")
 endif()
@@ -70,16 +77,18 @@ if(ANDROID)
     string(REPLACE "-" "_" squad_rust_env_target "${squad_rust_env_target}")
     get_filename_component(squad_ndk_bin "${CMAKE_C_COMPILER}" DIRECTORY)
     set(squad_android_cc "${squad_ndk_bin}/${squad_rust_target}${CMAKE_SYSTEM_VERSION}-clang")
-    if(NOT EXISTS "${squad_android_cc}")
-        message(FATAL_ERROR "Missing Android target compiler: ${squad_android_cc}")
+    set(squad_android_cxx "${squad_ndk_bin}/${squad_rust_target}${CMAKE_SYSTEM_VERSION}-clang++")
+    if(NOT EXISTS "${squad_android_cc}" OR NOT EXISTS "${squad_android_cxx}")
+        message(FATAL_ERROR "Missing Android target C/C++ compilers in ${squad_ndk_bin}")
     endif()
     list(APPEND squad_rust_env "CARGO_TARGET_${squad_rust_env_target}_LINKER=${squad_android_cc}"
-        "CC_${squad_rust_target}=${squad_android_cc}" "AR_${squad_rust_target}=${CMAKE_AR}")
+        "CC_${squad_rust_target}=${squad_android_cc}" "CXX_${squad_rust_target}=${squad_android_cxx}"
+        "AR_${squad_rust_target}=${CMAKE_AR}")
 endif()
 add_custom_command(OUTPUT "${squad_ts_library}"
     COMMAND ${CMAKE_COMMAND} -E env ${squad_rust_env} "${SQUAD_CARGO}" build --release --locked
         --manifest-path "${squad_rust_manifest}" ${squad_rust_args}
-    DEPENDS rust-toolchain.toml src/teamspeak_bridge/teamspeak_bridge.h src/teamspeak_bridge/denoise_bridge.h src/teamspeak_bridge/Cargo.toml src/teamspeak_bridge/Cargo.lock src/teamspeak_bridge/Cargo.denoise.lock src/teamspeak_bridge/Denoise.toml src/teamspeak_bridge/src/lib.rs src/teamspeak_bridge/src/denoise.rs
+    DEPENDS rust-toolchain.toml src/teamspeak_bridge/teamspeak_bridge.h src/teamspeak_bridge/denoise_bridge.h src/teamspeak_bridge/Cargo.toml src/teamspeak_bridge/Cargo.lock src/teamspeak_bridge/Cargo.denoise.lock src/teamspeak_bridge/Denoise.toml src/teamspeak_bridge/src/lib.rs src/teamspeak_bridge/src/mumble.rs src/teamspeak_bridge/src/mumble_crypt.rs src/teamspeak_bridge/src/mumble_voice.rs src/teamspeak_bridge/build.rs src/teamspeak_bridge/mumble-crypt/CryptStateOCB2.cpp src/teamspeak_bridge/mumble-crypt/CryptStateOCB2.h src/teamspeak_bridge/mumble-crypt/CryptState.h src/teamspeak_bridge/mumble-crypt/platform.hpp src/teamspeak_bridge/mumble-crypt/bridge.cpp src/teamspeak_bridge/src/denoise.rs
     WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
     USES_TERMINAL VERBATIM)
 add_custom_target(squad_teamspeak_build DEPENDS "${squad_ts_library}")

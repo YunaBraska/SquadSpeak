@@ -22,7 +22,7 @@ ENV PATH="/usr/local/cargo/bin:${PATH}" RUSTUP_HOME=/usr/local/rustup CARGO_HOME
 # Linux archives use the target distribution's QSQLITE runtime plugin rather
 # than bundling a second Qt runtime; the package smoke verifies create/reopen.
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-    build-essential ccache clang llvm libclang-rt-dev cmake ninja-build meson pkg-config ca-certificates python3 git openssl \
+    build-essential ccache clang llvm libclang-rt-dev cmake ninja-build meson pkg-config ca-certificates python3 git openssl mumble-server protobuf-compiler \
     libssl-dev libopus-dev libsamplerate0-dev libpulse-dev libsecret-1-dev \
     libproxy-dev libkrb5-dev libsctp-dev libpsl-dev libzstd-dev \
     libavcodec-dev libavformat-dev libavutil-dev libswscale-dev libswresample-dev \
