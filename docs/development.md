@@ -209,7 +209,9 @@ SDK on Windows and macOS, plus compiled dependency and compiler caches. Final
 linking and tests run on every build. CTest has four scheduler slots. Each of
 the two heavy offline audio suites reserves two slots, allowing them to overlap
 without four competing encoders. They process recorded PCM with virtual audio
-time and write separate reports. Native loopback capture, video timing, UI and
+time and write separate reports. Intel macOS retains exclusive execution for
+both because concurrent encoding increased their runtime on the hosted runner.
+Native loopback capture, video timing, UI and
 load checks run alone; desktop/audio fixtures share a resource lock. Per-test
 deadlines and all data rows remain unchanged.
 Windows also caches its installed OpenSSL/Opus/libsamplerate prefix, keyed by
