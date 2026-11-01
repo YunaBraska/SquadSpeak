@@ -206,8 +206,12 @@ affected integration suites before the full release matrix. CLI subprocess,
 malformed-protocol, codec-lifetime and DPI checks prove different behavior;
 a passing end-to-end smoke test does not replace them. CI caches the pinned Qt
 SDK on Windows and macOS, plus compiled dependency and compiler caches. Final
-linking and tests run on every build. CTest runs four suites concurrently. Native
-loopback capture, video timing and 64-client load checks run alone; desktop/audio fixtures share a resource lock.
+linking and tests run on every build. CTest has four scheduler slots. Each of
+the two heavy offline audio suites reserves two slots, allowing them to overlap
+without four competing encoders. They process recorded PCM with virtual audio
+time and write separate reports. Native loopback capture, video timing, UI and
+load checks run alone; desktop/audio fixtures share a resource lock. Per-test
+deadlines and all data rows remain unchanged.
 Windows also caches its installed OpenSSL/Opus/libsamplerate prefix, keyed by
 compiler, SDK and build-script inputs. CI checks preparation and reuse before
 building the app; incompatible or incomplete prefixes fail explicitly.
