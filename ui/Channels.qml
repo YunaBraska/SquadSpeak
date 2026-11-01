@@ -804,21 +804,22 @@ PanelWindow {
         }
         function onStateChanged() {
             if (!root.remote) root.showNotice(root.network.status)
-            if (root.network.joined && discover.opened) discover.close()
+            if (root.network.joined && discover.opened && root.network.joinedHostId !== discover.voiceAtOpen) discover.close()
             if (root.network.passwordRequired && !joinPassword.opened) { discover.close(); joinPassword.open() }
             else if (!root.network.passwordRequired) joinPassword.close()
         }
     }
-    PanelDialog {
+    DetailPane {
         id: discover
         objectName: "discoverDialog"
-        parent: Overlay.overlay; anchors.centerIn: parent
-        width: Math.min(420, parent.width - 24)
-        height: Math.min(480, parent.height - 24)
-        modal: true
+        property string voiceAtOpen: ""
         title: qsTr("Add a channel")
-        buttons: Dialog.Close
-        onOpened: { root.network.setDiscoverySearch(true); discoveryList.refresh() }
+        onShown: {
+            voiceAtOpen = root.network.joinedHostId
+            root.network.setDiscoverySearch(true)
+            discoveryList.refresh()
+            directAddress.forceActiveFocus(Qt.OtherFocusReason)
+        }
         onClosed: { discoveryRefresh.stop(); root.network.setDiscoverySearch(false) }
         Timer { id: discoveryRefresh; interval: 50; onTriggered: discoveryList.refresh() }
         contentItem: ColumnLayout {
@@ -840,6 +841,26 @@ PanelWindow {
                         ? "x-apple.systempreferences:com.apple.preference.security?Privacy_LocalNetwork" : "app-settings:")
                 }
             }
+            RowLayout {
+                Layout.fillWidth: true; spacing: 8
+                EntryField { id: directAddress; objectName: "directAddress"; Layout.fillWidth: true; placeholderText: qsTr("Host or IP address, optional :port"); Accessible.name: placeholderText; maximumLength: 300; onAccepted: if (joinAddress.enabled) joinAddress.clicked() }
+                Repeater {
+                    model: ["squadspeak", "teamspeak", "mumble"]
+                    ProviderIcon {
+                        required property string modelData
+                        objectName: "supportedProvider_" + modelData
+                        provider: modelData
+                        Layout.preferredWidth: 20; Layout.preferredHeight: 20
+                    }
+                }
+            }
+            Flow {
+                Layout.fillWidth: true; spacing: 6
+                ActionButton { id: joinAddress; objectName: "joinAddress"; text: qsTr("Add"); glyph: "link"; primary: true; enabled: root.network.ready && !root.network.directBusy && directAddress.text.trim().length > 0; onClicked: root.network.openAddress(directAddress.text) }
+                ActionButton { objectName: "createOwnChannel"; text: qsTr("Host a channel"); visible: root.voice.supporterEnabled; enabled: root.network.ownedChannels.length < 10; onClicked: newOwnChannel.open() }
+                ActionButton { objectName: "approveAddress"; text: qsTr("Allow device"); enabled: joinAddress.enabled; onClicked: root.network.approveAddress(directAddress.text) }
+            }
+            Label { Layout.fillWidth: true; text: root.network.status; textFormat: Text.PlainText; color: Theme.muted; wrapMode: Text.Wrap }
             Label {
                 objectName: "discoveryStatus"
                 visible: (root.network.discoverySearching || !!root.network.discoveryError || discoveryList.count === 0)
@@ -884,26 +905,6 @@ PanelWindow {
                     ActionButton { objectName: "addDiscovered_" + modelData.id; text: qsTr("Add"); primary: true; onClicked: { if (root.network.openChat(modelData.id, modelData.address, modelData.port)) discover.close() } }
                 }
             }
-            RowLayout {
-                Layout.fillWidth: true; spacing: 8
-                EntryField { id: directAddress; objectName: "directAddress"; Layout.fillWidth: true; placeholderText: qsTr("Host or IP address, optional :port"); Accessible.name: placeholderText; maximumLength: 300; onAccepted: if (joinAddress.enabled) joinAddress.clicked() }
-                Repeater {
-                    model: ["squadspeak", "teamspeak", "mumble"]
-                    ProviderIcon {
-                        required property string modelData
-                        objectName: "supportedProvider_" + modelData
-                        provider: modelData
-                        Layout.preferredWidth: 20; Layout.preferredHeight: 20
-                    }
-                }
-            }
-            Flow {
-                Layout.fillWidth: true; spacing: 6
-                ActionButton { id: joinAddress; objectName: "joinAddress"; text: qsTr("Add"); glyph: "link"; primary: true; enabled: root.network.ready && !root.network.directBusy && directAddress.text.trim().length > 0; onClicked: root.network.openAddress(directAddress.text) }
-                ActionButton { objectName: "createOwnChannel"; text: qsTr("Host a channel"); visible: root.voice.supporterEnabled; enabled: root.network.ownedChannels.length < 10; onClicked: newOwnChannel.open() }
-                ActionButton { objectName: "approveAddress"; text: qsTr("Allow device"); enabled: joinAddress.enabled; onClicked: root.network.approveAddress(directAddress.text) }
-            }
-            Label { Layout.fillWidth: true; text: root.network.status; textFormat: Text.PlainText; color: Theme.muted; wrapMode: Text.Wrap }
         }
     }
     DetailPane {

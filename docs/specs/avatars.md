@@ -30,7 +30,7 @@ the same mapping with the full catalog and retain their existing assignments.
 | 3 | Deafened | Look aside; small ear/head gesture; settled rest |
 | 4 | Sleeping | Slow breathing; brief sleepy shift; gentle head dip |
 
-Every animated sheet has exactly five physical rows, one per state in the order above. Read frames left to right; variants of a state sit next to each other on that same row, never on additional rows. A row may contain one still frame, one animation or several independently drawn clips; three variants are the bundled catalog's art target, not a playback requirement. Each clip begins and ends near the same rest pose to avoid a jump at its boundary. Keep head position and occupied area consistent between frames. More frames refine the same motion; they do not add more head movements or shorten the rests. Eight frames per new clip is a production target, not a requirement to fabricate intermediate frames by crossfading two faces.
+Every animated sheet has exactly five physical rows, one per state in the order above. Read frames left to right; variants of a state sit next to each other on that same row, never on additional rows. A row may contain one still frame, one animation or several independently drawn clips; three variants are the bundled catalog's art target, not a playback requirement. Each clip begins and ends near the same rest pose to avoid a jump at its boundary. Keep head position and occupied area consistent between frames. More frames refine the same motion; they do not add more head movements or shorten the rests. Every bundled member sheet contains more than 30 distinct drawn frames. Additional frames refine the motion without fabricated duplicates or crossfades.
 
 ![Ember Dragon: five physical rows, 24 frames per state](../../ui/avatars/ember-dragon.png)
 
@@ -57,7 +57,7 @@ All portraits use the same centered, aspect-preserving renderer. Circular backgr
 - `duration` is the duration of one whole speaking clip, or the maximum duration of an idle move, in milliseconds. With `pause = 0`, `repeats` repeats the clip before another variant is selected. A positive `pause` enables the quiet schedule described above and bounds its randomized start delay; resting poses are not restricted to the first frame.
 - Atlas width is the largest row frame total multiplied by `stride`. Shorter rows leave transparent cells at the right. Rows tile the image height without gaps or overlap. Every crop stays within its state's physical row and inside the image. Row/cell dimensions and frame counts must be positive and finite.
 
-The fourteen standard member sheets remain 1374 x 1145 RGBA PNG, five rows, three two-frame clips per row, 229 px cells. Courier and the animated System portrait use 4 px display insets to exclude neighboring artwork at cell edges. Other sheets use zero inset. These are display crops only. `system.png` remains a separate static portrait.
+All twenty member sheets contain more than 30 drawn frames. Courier and the animated System portrait use 4 px display insets to exclude neighboring artwork at cell edges. Other sheets use zero inset. These are display crops only. `system.png` remains a separate static portrait.
 
 | Dense sheet | PNG size | Cell width | Row heights, top to bottom | Clip frame counts |
 | --- | --- | --- | --- | --- |
@@ -67,9 +67,23 @@ The fourteen standard member sheets remain 1374 x 1145 RGBA PNG, five rows, thre
 | Mechanic | 3072 x 655 | 128 | 131, 131, 131, 131, 131 | 8/8/8; deafened 8/4/4 |
 | Moon Owl | 3048 x 620 | 127 | 124, 124, 124, 124, 124 | 8/8/8 |
 | Mushroom Sage | 2940 x 680 | 140 | 136, 136, 136, 136, 136 | 7/7/7; deafened and sleeping 7/3/4 |
+| Coral Diver | 2016 x 865 | 168 | 173, 173, 173, 173, 173 | 4/4/4 |
+| Clockwork Beetle | 2100 x 880 | 175 | 176, 176, 176, 176, 176 | 4/4/4 |
+| Crystal Golem | 2268 x 835 | 189 | 167, 167, 167, 167, 167 | 4/4/4 |
+| Cloud Shepherd | 2220 x 820 | 185 | 164, 164, 164, 164, 164 | 4/4/4 |
+| Star Moth | 2123 x 870 | 193 | 174, 174, 174, 174, 174 | 4/3/4 |
+| Lantern Ghost | 2100 x 875 | 175 | 175, 175, 175, 175, 175 | 4/4/4 |
+| Desert Fennec | 2040 x 880 | 170 | 176, 176, 176, 176, 176 | 4/4/4 |
+| Octopus Pilot | 2197 x 855 | 169 | 171, 171, 171, 171, 171 | 4/5/4 |
+| Snail Captain | 2256 x 875 | 188 | 175, 175, 175, 175, 175 | 4/4/4 |
+| Orchid Mantis | 2256 x 870 | 188 | 174, 174, 174, 174, 174 | 4/4/4 |
+| Comet Axolotl | 2148 x 880 | 179 | 176, 176, 176, 176, 176 | 4/4/4 |
+| Frost Yeti | 2196 x 840 | 183 | 168, 168, 168, 168, 168 | 4/4/4 |
+| Raccoon Alchemist | 2184 x 835 | 182 | 167, 167, 167, 167, 167 | 4/4/4 |
+| Sunflower Knight | 2028 x 890 | 169 | 178, 178, 178, 178, 178 | 4/4/4 |
 | System | 2664 x 595 | 111 | 119, 119, 119, 119, 119 | 8/8/8; muted 8/4/4 |
 
-The three newer sheets contain 112, 120 and 91 drawn frames respectively, replacing 30 each. Their source frames were rearranged without resampling into five state rows. Transparent outer padding was trimmed and complete crops aligned to a common center and bust baseline. Each pasted crop was verified byte for byte. Clip duration and idle pauses are unchanged, so additional frames do not speed up movement. Metadata never fabricates poses or infers emotions.
+Mechanic, Moon Owl and Mushroom Sage contain 112, 120 and 91 drawn frames respectively, replacing 30 each. Their source frames were rearranged without resampling into five state rows. Transparent outer padding was trimmed and complete crops aligned to a common center and bust baseline. Each pasted crop was verified byte for byte. Clip duration and idle pauses are unchanged, so additional frames do not speed up movement. Metadata never fabricates poses or infers emotions.
 
 ## Reproduction workflow
 
@@ -85,6 +99,8 @@ Prompt template:
 > Original friendly [character description] bust portrait, transparent background, readable within a small circular crop. Preserve the supplied reference character's face, costume, camera and lighting. Draw [frame count] ordered frames of [one action] lasting [duration] ms, returning to the same rest pose. If producing a complete sheet, use exactly five physical rows, one per state, with all variants of that state side by side. Motion is subtle and includes [relevant mouth/head/shoulder detail]. No text, logos, status icons, speaking borders, added limbs, camera movement or background. Speaking highlights and microphone/speaker restrictions are drawn by the app, never in the artwork. Keep every frame centered at the same scale.
 
 Generative illustration is not inherently byte-reproducible. The historical model version, prompts and seeds for the existing sheets were not recorded in the repository; do not invent them. The checked-in PNGs are the canonical artwork; the replaced Mossling original is retained in `docs/artwork`. The original set's combined SHA-256 was `6450c62a6e8b8f4fec49755df719e107df3582790617623972214223f3031175`, calculated over each filename plus a NUL byte plus its PNG bytes, in filename order. Packaging these originals is deterministic; recreating identical historical artwork from a new prompt is not guaranteed.
+
+The remaining fourteen member sheets use 55 to 65 distinct drawn frames each. Their source cells are measured individually, aligned to a common horizontal center and lower baseline, and padded transparently without resampling. Every pasted crop retains its source RGBA pixels. Render checks enumerate all bundled frames in all five states, including stationary grayscale, at the actual 48 px display size.
 
 ## Deterministic row rearrangement
 

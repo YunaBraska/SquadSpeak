@@ -8,7 +8,7 @@ No chat account is required. Each running app can provide a channel while its ow
 
 **[Product site](https://yunabraska.github.io/SquadSpeak/)** | **[User documentation](https://yunabraska.github.io/SquadSpeak/documentation.html)** | **[Install](https://yunabraska.github.io/SquadSpeak/install.html)**
 
-![Multiple channels, private messages and a Markdown conversation](docs/Page/assets/screenshots/workspace-light.png)
+![SquadSpeak, TeamSpeak and Mumble channel trees with private messages and a Markdown conversation](docs/Page/assets/screenshots/workspace-light.png)
 
 ## Try it
 

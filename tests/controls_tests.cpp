@@ -642,6 +642,11 @@ public slots:
 #endif
         if (!imageDirectory.isEmpty()) QDir().mkpath(imageDirectory);
         engine->rootContext()->setContextProperty("imageDirectory", imageDirectory);
+        engine->rootContext()->setContextProperty("providerShowcase", QVariantMap{
+            {"teamspeak", qEnvironmentVariable("SQUAD_SHOWCASE_TEAMSPEAK_ENDPOINT")},
+            {"teamspeakPassword", qEnvironmentVariable("SQUAD_SHOWCASE_TEAMSPEAK_PASSWORD")},
+            {"mumble", qEnvironmentVariable("SQUAD_SHOWCASE_MUMBLE_ENDPOINT")},
+            {"mumblePassword", qEnvironmentVariable("SQUAD_SHOWCASE_MUMBLE_PASSWORD")}});
         engine->rootContext()->setContextProperty("nativeTranslationExpected",
             LocalLanguage::supported() && QGuiApplication::platformName() != "offscreen"
                 && QOperatingSystemVersion::current().majorVersion() >= 26);

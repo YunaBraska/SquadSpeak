@@ -12,8 +12,8 @@ description: Your own voice channels, Markdown chat and animated portraits, with
     <p class="actions"><a class="button" href="documentation.html">Explore SquadSpeak</a><a class="button secondary" href="install.html">Release availability</a></p>
   </div>
   <figure class="hero-art">
-    <a href="{{ '/assets/screenshots/workspace-light.png' | relative_url }}"><img src="{{ '/assets/screenshots/workspace-light.png' | relative_url }}" width="1120" height="760" fetchpriority="high" alt="Two expanded hosts, Alex and Mira, with three channels each. Alex hosts Campfire, Game night and Workshop. Mira hosts Music lounge, Night owls and Weekend plans. Campfire shows a Markdown conversation."></a>
-    <figcaption>Two hosts, six channels and a private conversation in one window. A real app snapshot with example conversations. Extra hosted channels are a Supporter feature. Select any screenshot to see it full size.</figcaption>
+    <a href="{{ '/assets/screenshots/workspace-light.png' | relative_url }}"><img src="{{ '/assets/screenshots/workspace-light.png' | relative_url }}" width="1120" height="760" fetchpriority="high" alt="SquadSpeak, Mumble and TeamSpeak hosts with their provider symbols and channel trees. Campfire shows a Markdown conversation and a private conversation with Mira is listed beside the channels."></a>
+    <figcaption>SquadSpeak, TeamSpeak and Mumble in one window, with nested channels and private messages. A real app snapshot with example conversations. Extra hosted channels are a Supporter feature. Select any screenshot to see it full size.</figcaption>
   </figure>
 </section>
 
@@ -31,8 +31,8 @@ description: Your own voice channels, Markdown chat and animated portraits, with
   <h2>Room for the conversation.</h2>
   <p class="section-intro">Use a small window beside your game, or give chat more room. Collapse host groups, find a channel and keep your voice connection visible in the footer.</p>
   <div class="screenshot-grid workspace-gallery">
-    <figure><a href="{{ '/assets/screenshots/workspace-compact.png' | relative_url }}"><img src="{{ '/assets/screenshots/workspace-compact.png' | relative_url }}" width="390" height="760" loading="lazy" alt="Compact desktop window with Alex and Mira as separate host groups, their channels, a private Messages section and the current voice channel in the footer."></a><figcaption>Multiple hosts in a compact window. Channels and private conversations stay within reach.</figcaption></figure>
-    <figure><a href="{{ '/assets/screenshots/workspace-dark.png' | relative_url }}"><img src="{{ '/assets/screenshots/workspace-dark.png' | relative_url }}" width="1120" height="760" loading="lazy" alt="Wide dark appearance with the channel list beside the Campfire conversation, including a formatted table and reply."></a><figcaption>More room for chat, with light and dark appearances.</figcaption></figure>
+    <figure><a href="{{ '/assets/screenshots/workspace-compact.png' | relative_url }}"><img src="{{ '/assets/screenshots/workspace-compact.png' | relative_url }}" width="390" height="760" loading="lazy" alt="Compact desktop window with separate SquadSpeak, Mumble and TeamSpeak host groups, nested channels, private messages and the current voice channel in the footer."></a><figcaption>Three server types in a compact window. Channels and private conversations stay within reach.</figcaption></figure>
+    <figure><a href="{{ '/assets/screenshots/workspace-dark.png' | relative_url }}"><img src="{{ '/assets/screenshots/workspace-dark.png' | relative_url }}" width="1120" height="760" loading="lazy" alt="Wide dark appearance with SquadSpeak, Mumble and TeamSpeak channel trees beside the Campfire conversation and reply."></a><figcaption>More room for chat, with light and dark appearances.</figcaption></figure>
   </div>
 </section>
 
