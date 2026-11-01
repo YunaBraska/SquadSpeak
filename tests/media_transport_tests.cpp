@@ -143,23 +143,26 @@ class SendGate final {
     static Observer& observer() {
         // plog retains appenders for the process lifetime. Install before any
         // transports start. Its callback must not serialize unrelated senders.
-        static auto* value = [] {
-            auto* result = new Observer;
-            plog::get()->addAppender(result);
-            return result;
-        }();
+        static auto* value = new Observer;
         return *value;
     }
     const std::shared_ptr<State> state_ = std::make_shared<State>();
 public:
-    static void initialize() { rtc::InitLogger(rtc::LogLevel::Info); observer(); }
+    static void initialize() {
+        // Printing every verbose RTP event adds unmeasured, serialized console
+        // I/O to timed sends. Keep warnings and observe native boundaries directly.
+        rtc::InitLogger(rtc::LogLevel::Info, [](rtc::LogLevel level, std::string message) {
+            if (level <= rtc::LogLevel::Warning) qWarning().noquote() << QString::fromStdString(message);
+        });
+        plog::get()->addAppender(&observer());
+    }
     explicit SendGate(std::string boundary = "Protected SRTP packet, size=", int blockedSenders = 1) {
         state_->remaining = blockedSenders;
         state_->boundary = std::move(boundary);
         std::atomic_store(&observer().state, state_);
-        rtc::InitLogger(rtc::LogLevel::Verbose);
+        plog::get()->setMaxSeverity(plog::verbose);
     }
-    ~SendGate() { release(); std::atomic_store(&observer().state, std::shared_ptr<State>{}); rtc::InitLogger(rtc::LogLevel::Info); }
+    ~SendGate() { release(); std::atomic_store(&observer().state, std::shared_ptr<State>{}); plog::get()->setMaxSeverity(plog::info); }
     void setSendCost(std::chrono::microseconds cost) {
         std::lock_guard lock(state_->mutex);
         state_->sendCost = cost;
@@ -190,6 +193,13 @@ class MediaTransportTests final : public QObject {
 private slots:
     void initTestCase() {
         SendGate::initialize();
+    }
+    void cleanup() {
+        // Local transports and gates are gone here, even after a failed assertion.
+        // Let the shared sender's five-second admission cooldown finish before
+        // another case opens a host. Do not bypass production recovery.
+        QVERIFY2(waitForEvents([] { return !squad::MediaTransport::overloaded(); }, 6000),
+            "The shared media sender did not recover after the test closed its transports");
     }
     void pacedCaptureBurstSurvivesEncryptedTransport_data() {
         QTest::addColumn<int>("channels"); QTest::addColumn<bool>("udp");
@@ -374,8 +384,8 @@ private slots:
         if (reuseClientPort) {
             do { clientPort = availableUdpPort(); QVERIFY(clientPort); } while (clientPort == port);
         }
-        rtc::InitLogger(rtc::LogLevel::Debug);
-        const auto restoreLogging = qScopeGuard([] { rtc::InitLogger(rtc::LogLevel::Info); });
+        plog::get()->setMaxSeverity(plog::debug);
+        const auto restoreLogging = qScopeGuard([] { plog::get()->setMaxSeverity(plog::info); });
         for (int repeat = 0; repeat < 20; ++repeat) {
             qInfo() << "Reconnect iteration" << repeat << "host/client ports" << port << clientPort;
             squad::MediaTransport host(true, port, QHostAddress::LocalHost, 0, squad::MediaTransport::Medium::Data);

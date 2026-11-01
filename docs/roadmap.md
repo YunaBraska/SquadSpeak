@@ -119,6 +119,13 @@ suite runs against the official Mumble server. Cross-platform CI and the running
 interface must pass before the branch is ready to merge. Trillian remains a
 navigation reference.
 
+XMPP voice is the next provider investigation. An isolated QXmpp 1.17.0 prototype
+completed encrypted one-to-one calls in both directions with Dino through Prosody,
+including repeated calls and rejection of invalid credentials, untrusted certificates
+and offers without DTLS. It is not integrated or shipped. Account UX, call permissions,
+NAT traversal and reuse of the app's capture/playback path still need implementation
+and independent-client tests. IRC remains deferred because it provides text chat.
+
 Continue U173 with capture-stage and codec comparisons and sustained resource
 qualification. New media admission pauses during shared audio backlog or slow screen encoding. Large
 member lists use bounded, acknowledged transfers without interrupting chat. On-demand channel search filters host, channel, address and private

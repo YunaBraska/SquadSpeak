@@ -846,6 +846,7 @@ TestCase {
         return [{tag: "desktop", width: 520, height: 700}, {tag: "compact", width: 360, height: 568}]
     }
     function test_channelSearchKeepsVoiceAndDraft(data) {
+        failOnWarning(/TypeError: Cannot read property 'contentItem'/)
         view.width = data.width; view.height = data.height
         verify(fixtures.startHost()); verify(fixtures.startRemoteHost())
         verify(channel.setChannelName("Workshop"))
@@ -5359,6 +5360,7 @@ TestCase {
         view.width = data.width; view.height = data.height
         const add = findChild(view, "addChannel")
         const pane = findChild(view, "discoverDialog")
+        verify(waitForPolish(view)); verify(waitForFrame(add))
         add.forceActiveFocus(Qt.OtherFocusReason)
         mouseClick(add)
         tryCompare(pane, "opened", true)
@@ -5389,12 +5391,17 @@ TestCase {
         verify(fixtures.startHost())
         verify(channel.joinSaved(channel.ownId))
         tryCompare(channel, "chatReady", true)
+        tryCompare(channel, "joined", true)
+        compare(channel.joinedHostId, channel.ownId)
+        compare(channel.chatHostId, channel.ownId)
         verify(fixtures.startRemoteHost())
         verify(remoteChannel.decide(channel.ownId, true))
         const pane = findChild(view, "discoverDialog")
         const field = findChild(pane, "directAddress")
         const add = findChild(pane, "joinAddress")
-        mouseClick(findChild(view, "addChannel"))
+        const openAdd = findChild(view, "addChannel")
+        verify(waitForPolish(view)); verify(waitForFrame(openAdd))
+        mouseClick(openAdd)
         tryCompare(pane, "opened", true)
         field.text = "localhost:65536"
         mouseClick(add)

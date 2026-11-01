@@ -558,16 +558,18 @@ PanelWindow {
         if (details) details.close()
         chatExpanded = false
         Qt.callLater(function() {
-            for (let i = 0; i < channelRepeater.count; ++i) {
-                const entry = channelRepeater.itemAt(i)
-                if (entry && entry.channelData.id === root.inspectedHost) {
-                    // Let the compact list become visible before restoring its
-                    // keyboard focus. The first deferred turn applies the
-                    // chatExpanded binding; the second has a focusable row.
-                    Qt.callLater(entry.focusChannel)
-                    return
+            // The second turn has a visible compact list. Resolve its current
+            // row then, because search or network updates can replace delegates.
+            Qt.callLater(function() {
+                if (!root.visible || root.showChat || root.details || root.searchOpen) return
+                for (let i = 0; i < channelRepeater.count; ++i) {
+                    const entry = channelRepeater.itemAt(i)
+                    if (entry && entry.channelData.id === root.inspectedHost) {
+                        entry.focusChannel()
+                        return
+                    }
                 }
-            }
+            })
         })
     }
     function showChannelInfo(id, toggle) {
