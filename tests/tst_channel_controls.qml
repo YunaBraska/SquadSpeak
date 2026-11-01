@@ -514,9 +514,17 @@ TestCase {
         tryCompare(channel, "chatReady", true)
         verify(fixtures.pressAccessible(findChild(view, "backToChannels")))
         for (const pair of [[channel.ownId, "Alice"], [remoteChannel.ownId, "Bea"]]) {
-            const label = visualChild(view.contentItem, "channelOwner_" + pair[0])
-            verify(label && label.visible); compare(label.text, pair[1])
-            verify(!visualChild(view.contentItem, "hostGroup_" + pair[0]).visible)
+            const labelName = "channelOwner_" + pair[0]
+            const groupName = "hostGroup_" + pair[0]
+            tryVerify(function() {
+                const label = visualChild(view.contentItem, labelName)
+                return label && label.visible
+            })
+            compare(visualChild(view.contentItem, labelName).text, pair[1])
+            tryVerify(function() {
+                const group = visualChild(view.contentItem, groupName)
+                return group && !group.visible
+            })
         }
         const row = visualChild(view.contentItem, "channelRow_" + remoteChannel.ownId)
         verify(waitForFrame(row)); mouseClick(row, 35, row.height / 2)

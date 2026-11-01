@@ -6,13 +6,15 @@ SquadSpeak keeps voice, Markdown chat and animated portraits in one compact wind
 Run it with friends on your local network, or connect directly to a host by name or IP address.
 No chat account is required. Each running app can provide a channel while its owner talks somewhere else.
 
+**[Product site](https://yunabraska.github.io/SquadSpeak/)** | **[User documentation](https://yunabraska.github.io/SquadSpeak/documentation.html)** | **[Install](https://yunabraska.github.io/SquadSpeak/install.html)**
+
 ![A channel with two members and a Markdown conversation](docs/images/channel-chat.png)
 
 ## Try it
 
 Download the desktop packages from [Releases](https://github.com/YunaBraska/SquadSpeak/releases).
 The release notes distinguish automated package checks from device tests that
-still need real hardware. See [feature status and known limitations](docs/roadmap.md).
+still need real hardware. See the [user documentation](https://yunabraska.github.io/SquadSpeak/documentation.html) for feature status and setup.
 
 - **macOS:** Native Apple Silicon and Intel builds target macOS 13 or newer. Apple Silicon does not need Rosetta. Snapshot packages use an ad-hoc signature. Stable releases use Developer ID signing, notarization and signed architecture-specific update feeds.
 - **Linux:** The current package targets Ubuntu 26.04. Under Wayland, screen sharing currently captures the whole screen; individual windows follow later. Global push-to-talk depends on desktop support; voice activation and the app's own push-to-talk control remain available.
