@@ -884,7 +884,19 @@ PanelWindow {
                     ActionButton { objectName: "addDiscovered_" + modelData.id; text: qsTr("Add"); primary: true; onClicked: { if (root.network.openChat(modelData.id, modelData.address, modelData.port)) discover.close() } }
                 }
             }
-            EntryField { id: directAddress; objectName: "directAddress"; Layout.fillWidth: true; placeholderText: qsTr("Host or IP address, optional :port"); Accessible.name: placeholderText; maximumLength: 300; onAccepted: if (joinAddress.enabled) joinAddress.clicked() }
+            RowLayout {
+                Layout.fillWidth: true; spacing: 8
+                EntryField { id: directAddress; objectName: "directAddress"; Layout.fillWidth: true; placeholderText: qsTr("Host or IP address, optional :port"); Accessible.name: placeholderText; maximumLength: 300; onAccepted: if (joinAddress.enabled) joinAddress.clicked() }
+                Repeater {
+                    model: ["squadspeak", "teamspeak", "mumble"]
+                    ProviderIcon {
+                        required property string modelData
+                        objectName: "supportedProvider_" + modelData
+                        provider: modelData
+                        Layout.preferredWidth: 20; Layout.preferredHeight: 20
+                    }
+                }
+            }
             RowLayout {
                 ActionButton { id: joinAddress; objectName: "joinAddress"; text: qsTr("Add"); glyph: "link"; primary: true; enabled: root.network.ready && !root.network.directBusy && directAddress.text.trim().length > 0; onClicked: root.network.openAddress(directAddress.text) }
                 ActionButton { objectName: "createOwnChannel"; text: qsTr("Host a channel"); visible: root.voice.supporterEnabled; enabled: root.network.ownedChannels.length < 10; onClicked: newOwnChannel.open() }

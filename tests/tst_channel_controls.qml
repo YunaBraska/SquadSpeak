@@ -5212,32 +5212,59 @@ TestCase {
         tryVerify(function() { return visualChild(view.contentItem, "hostGroup_" + serverId) === null })
     }
 
-    function test_teamSpeakAddressUsesTheSameAddDialog() {
-        const dialog = findChild(view, "discoverDialog")
-        dialog.open()
-        tryCompare(dialog, "opened", true)
-        const address = findChild(view, "directAddress")
-        const add = findChild(view, "joinAddress")
-        verify(address && add)
-        verify(!findChild(view, "serverProtocol"))
-        verify(!findChild(view, "teamSpeakPassword"))
-        address.text = "localhost:65536"
-        tryCompare(add, "enabled", true)
-        for (const size of [[360, 420], [520, 700]]) {
-            view.width = size[0]; view.height = size[1]
-            verify(waitForRendering(dialog.contentItem))
-            for (const control of [address, add]) {
+    function test_supportedServersUseTheSameAddDialog_data() {
+        return [{tag: "compact", width: 320, height: 568, language: "en", theme: "light"},
+                {tag: "short", width: 360, height: 420, language: "en", theme: "dark"},
+                {tag: "desktop", width: 520, height: 700, language: "en", theme: "light"},
+                {tag: "rtl", width: 360, height: 568, language: "ar", theme: "dark"}]
+    }
+    function test_supportedServersUseTheSameAddDialog(data) {
+        const previousTheme = session.theme
+        verify(session.setTheme(data.theme))
+        verify(session.setLanguage(data.language))
+        view.width = data.width; view.height = data.height
+        try {
+            const dialog = findChild(view, "discoverDialog")
+            mouseClick(findChild(view, "addChannel"))
+            tryCompare(dialog, "opened", true)
+            const address = findChild(view, "directAddress")
+            const add = findChild(view, "joinAddress")
+            verify(address && add)
+            address.clear()
+            tryCompare(add, "enabled", false)
+            verify(!findChild(view, "serverProtocol"))
+            verify(!findChild(view, "teamSpeakPassword"))
+            const icons = ["squadspeak", "teamspeak", "mumble"].map(function(provider) {
+                const icon = visualChild(dialog.contentItem, "supportedProvider_" + provider)
+                verify(icon, "Missing supported server: " + provider)
+                tryCompare(findChild(icon, "providerArtwork"), "status", Image.Ready)
+                return icon
+            })
+            compare(icons.map(icon => icon.Accessible.name).join(", "), "SquadSpeak, TeamSpeak, Mumble")
+            verify(waitForFrame(dialog.contentItem))
+            for (const control of [address, add].concat(icons)) {
                 const position = control.mapToItem(dialog.contentItem, 0, 0)
                 verify(position.x >= 0 && position.x + control.width <= dialog.contentItem.width + 1)
                 verify(position.y >= 0 && position.y + control.height <= dialog.contentItem.height + 1)
             }
-            mouseClick(add)
-            tryVerify(function() { return channel.status.includes("valid host or IP address") })
-            if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/add-teamspeak-" + size[0] + ".png"))
+            verify(address.width >= 160, "The address must remain usable beside the server symbols")
+            const row = [address].concat(icons).sort((a, b) => a.x - b.x)
+            for (let index = 1; index < row.length; ++index)
+                verify(row[index - 1].x + row[index - 1].width <= row[index].x,
+                    "Server symbols must not overlap the address or each other")
+            if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/add-supported-servers-" + data.tag + ".png"))
+            address.text = "localhost:65536"
+            tryCompare(add, "enabled", true)
+            address.forceActiveFocus()
+            tryCompare(address, "activeFocus", true)
+            keyClick(Qt.Key_Return)
+            tryCompare(channel, "status", qsTranslate("LocalChannel", "Enter a valid host or IP address, optionally with a port from 1 to 65535."))
+            verify(!channel.joined)
+            verify(dialog.opened)
+            dialog.close()
+        } finally {
+            session.setTheme(previousTheme)
         }
-        verify(!channel.joined)
-        verify(dialog.opened)
-        dialog.close()
     }
 
     function test_directAddressControlsAndErrors() {
