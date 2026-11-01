@@ -5222,6 +5222,7 @@ TestCase {
 
     function test_supportedServersUseTheSameAddDialog_data() {
         return [{tag: "compact", width: 320, height: 568, language: "en", theme: "light"},
+                {tag: "supporter", width: 320, height: 568, language: "de", theme: "light", supporter: true},
                 {tag: "short", width: 360, height: 420, language: "en", theme: "dark"},
                 {tag: "desktop", width: 520, height: 700, language: "en", theme: "light"},
                 {tag: "rtl", width: 360, height: 568, language: "ar", theme: "dark"}]
@@ -5230,6 +5231,7 @@ TestCase {
         const previousTheme = session.theme
         verify(session.setTheme(data.theme))
         verify(session.setLanguage(data.language))
+        if (data.supporter && supporterLicense.directDistribution) verify(fixtures.setSupporter(true))
         view.width = data.width; view.height = data.height
         try {
             const dialog = findChild(view, "discoverDialog")
@@ -5250,7 +5252,8 @@ TestCase {
             })
             compare(icons.map(icon => icon.Accessible.name).join(", "), "SquadSpeak, TeamSpeak, Mumble")
             verify(waitForFrame(dialog.contentItem))
-            for (const control of [address, add].concat(icons)) {
+            const actions = [add, findChild(view, "approveAddress"), findChild(view, "createOwnChannel")]
+            for (const control of [address].concat(actions.filter(button => button.visible), icons)) {
                 const position = control.mapToItem(dialog.contentItem, 0, 0)
                 verify(position.x >= 0 && position.x + control.width <= dialog.contentItem.width + 1)
                 verify(position.y >= 0 && position.y + control.height <= dialog.contentItem.height + 1)

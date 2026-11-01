@@ -897,7 +897,8 @@ PanelWindow {
                     }
                 }
             }
-            RowLayout {
+            Flow {
+                Layout.fillWidth: true; spacing: 6
                 ActionButton { id: joinAddress; objectName: "joinAddress"; text: qsTr("Add"); glyph: "link"; primary: true; enabled: root.network.ready && !root.network.directBusy && directAddress.text.trim().length > 0; onClicked: root.network.openAddress(directAddress.text) }
                 ActionButton { objectName: "createOwnChannel"; text: qsTr("Host a channel"); visible: root.voice.supporterEnabled; enabled: root.network.ownedChannels.length < 10; onClicked: newOwnChannel.open() }
                 ActionButton { objectName: "approveAddress"; text: qsTr("Allow device"); enabled: joinAddress.enabled; onClicked: root.network.approveAddress(directAddress.text) }
