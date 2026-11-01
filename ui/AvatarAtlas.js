@@ -15,10 +15,15 @@ const atlases = {
     mossling: layout([0, 108, 216, 324, 432, 540], 0, 113, [8, 8, 8]),
     courier: layout([0, 113, 225, 336, 449, 555], 4, 111, [8, 8, 8]),
     "ember-dragon": layout([0, 109, 216, 325, 432, 541], 0, 109, [8, 8, 8]),
-    mechanic: layout([0, 229, 458, 687, 916, 1145], 4),
+    mechanic: layout([0, 131, 262, 393, 524, 655], 0, 128, [8, 8, 8]),
+    "moon-owl": layout([0, 124, 248, 372, 496, 620], 0, 127, [8, 8, 8]),
+    "mushroom-sage": layout([0, 136, 272, 408, 544, 680], 0, 140, [7, 7, 7]),
     system: layout([0, 119, 238, 357, 476, 595], 4, 111, [8, 8, 8])
 }
 atlases.mossling.rows[3].frames = [8, 8, 16]
+atlases.mechanic.rows[3].frames = [8, 4, 4]
+atlases["mushroom-sage"].rows[3].frames = [7, 3, 4]
+atlases["mushroom-sage"].rows[4].frames = [7, 3, 4]
 atlases.system.rows[2].frames = [8, 4, 4]
 atlases.system.rows.forEach(function(row) {
     row.duration = 600; row.repeats = 1; row.pause = 11400

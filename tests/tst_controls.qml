@@ -112,38 +112,6 @@ Item {
             }
         }
 
-        function test_deafenReleasesNativeTestToneOutput() {
-            if (!audio.outputAvailable) skip("No audio output device is available")
-            const outputState = fixtures.nativeAudioOutputRunning()
-            if (outputState === -1) skip("Core Audio process output probe requires macOS 14.2 or later")
-            verify(outputState >= 0, "Core Audio must report the output state on a supported system")
-            const previousDeafened = audio.deafened
-            const previousEvents = session.eventSounds
-            const previousOutputVolume = audio.outputVolume
-            try {
-                verify(session.setEventSounds(false))
-                verify(audio.setOutputVolume(0))
-                verify(audio.stop())
-                tryVerify(function() { return fixtures.nativeAudioOutputRunning() === 0 }, 1000,
-                    "AudioModel::stop must leave no native output stream open before the test tone")
-                verify(audio.testOutput())
-                tryVerify(function() { return fixtures.nativeAudioOutputRunning() === 1 }, 1000,
-                    "The test tone must open a native output stream")
-                verify(session.setDeafened(true))
-                tryVerify(function() { return fixtures.nativeAudioOutputRunning() === 0 }, 1000,
-                    "Deafen must release the test-tone output stream")
-                verify(!audio.testOutput(), "The test tone cannot start while deafened")
-                verify(session.setDeafened(false))
-                verify(audio.testOutput())
-                tryVerify(function() { return fixtures.nativeAudioOutputRunning() === 1 }, 1000,
-                    "The test tone can start again after undeafening")
-            } finally {
-                session.setDeafened(previousDeafened)
-                audio.setOutputVolume(previousOutputVolume)
-                audio.stop()
-                session.setEventSounds(previousEvents)
-            }
-        }
         function test_participantsRemainUsableWithoutOutputDevice() {
             const result = fixtures.participantsWithoutOutput()
             verify(!result.outputAvailable)

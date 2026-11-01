@@ -57,16 +57,19 @@ All portraits use the same centered, aspect-preserving renderer. Circular backgr
 - `duration` is the duration of one whole speaking clip, or the maximum duration of an idle move, in milliseconds. With `pause = 0`, `repeats` repeats the clip before another variant is selected. A positive `pause` enables the quiet schedule described above and bounds its randomized start delay; resting poses are not restricted to the first frame.
 - Atlas width is the largest row frame total multiplied by `stride`. Shorter rows leave transparent cells at the right. Rows tile the image height without gaps or overlap. Every crop stays within its state's physical row and inside the image. Row/cell dimensions and frame counts must be positive and finite.
 
-The seventeen standard member sheets remain 1374 x 1145 RGBA PNG, five rows, three two-frame clips per row, 229 px cells. Mechanic, Courier and the animated System portrait use 4 px display insets to exclude neighboring artwork at cell edges; other sheets use zero inset. These are display crops only; the exported pixels remain unchanged. `system.png` remains a separate static portrait.
+The fourteen standard member sheets remain 1374 x 1145 RGBA PNG, five rows, three two-frame clips per row, 229 px cells. Courier and the animated System portrait use 4 px display insets to exclude neighboring artwork at cell edges. Other sheets use zero inset. These are display crops only. `system.png` remains a separate static portrait.
 
 | Dense sheet | PNG size | Cell width | Row heights, top to bottom | Clip frame counts |
 | --- | --- | --- | --- | --- |
 | Mossling | 3616 x 540 | 113 | 108, 108, 108, 108, 108 | 8/8/8; deafened 8/8/16 |
 | Courier | 2664 x 555 | 111 | 113, 112, 111, 113, 106 | 8/8/8 |
 | Ember Dragon | 2616 x 541 | 109 | 109, 107, 109, 107, 109 | 8/8/8 |
+| Mechanic | 3072 x 655 | 128 | 131, 131, 131, 131, 131 | 8/8/8; deafened 8/4/4 |
+| Moon Owl | 3048 x 620 | 127 | 124, 124, 124, 124, 124 | 8/8/8 |
+| Mushroom Sage | 2940 x 680 | 140 | 136, 136, 136, 136, 136 | 7/7/7; deafened and sleeping 7/3/4 |
 | System | 2664 x 595 | 111 | 119, 119, 119, 119, 119 | 8/8/8; muted 8/4/4 |
 
-This retains all 480 existing dense frames. Metadata never fabricates poses or infers emotions.
+The three newer sheets contain 112, 120 and 91 drawn frames respectively, replacing 30 each. Their source frames were rearranged without resampling into five state rows. Transparent outer padding was trimmed and complete crops aligned to a common center and bust baseline. Each pasted crop was verified byte for byte. Clip duration and idle pauses are unchanged, so additional frames do not speed up movement. Metadata never fabricates poses or infers emotions.
 
 ## Reproduction workflow
 
