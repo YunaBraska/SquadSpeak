@@ -92,9 +92,13 @@ VoiceSession::VoiceSession(QString settingsFile, QObject* parent)
             throw invalid("textScale");
         preferences_.insert("textScale", value);
     }
-    if (object.contains("animatedAvatars")) {
+    if (object.contains("avatarAnimation")) {
+        const auto mode = object.value("avatarAnimation").toString();
+        if (mode != "on" && mode != "off" && mode != "system") throw invalid("avatarAnimation");
+        preferences_.insert("avatarAnimation", mode);
+    } else if (object.contains("animatedAvatars")) {
         if (!object.value("animatedAvatars").isBool()) throw invalid("animatedAvatars");
-        preferences_.insert("animatedAvatars", object.value("animatedAvatars"));
+        preferences_.insert("avatarAnimation", object.value("animatedAvatars").toBool() ? "system" : "off");
     }
     if (object.value("version").toInt() == 2) {
         for (const auto* key : {"pushToTalk", "pttButtonHeld", "pttKeyHeld"}) {
@@ -309,7 +313,11 @@ bool VoiceSession::setMuted(bool muted) {
     return edit("muted", muted);
 }
 
-bool VoiceSession::setAnimatedAvatars(bool enabled) { return edit("animatedAvatars", enabled); }
+bool VoiceSession::setAvatarAnimation(const QString& mode) {
+    if (mode != "on" && mode != "off" && mode != "system")
+        return fail(tr("Saved setting is invalid: %1").arg("avatarAnimation"));
+    return edit("avatarAnimation", mode);
+}
 QString VoiceSession::avatar() const {
     const auto selected = preferences_.value("avatar").toString("mossling");
     return !supporterEnabled_ && avatars().indexOf(selected) >= 10 ? avatarFallback(selected) : selected;

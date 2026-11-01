@@ -1201,6 +1201,18 @@
             <source>Chat only</source>
             <translation>Само ћаскање</translation>
         </message>
+        <message>
+            <source>On</source>
+            <translation>Укључено</translation>
+        </message>
+        <message>
+            <source>Off</source>
+            <translation>Искључено</translation>
+        </message>
+        <message>
+            <source>System</source>
+            <translation>Систем</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>

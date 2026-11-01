@@ -1201,6 +1201,18 @@
             <source>Chat only</source>
             <translation>Μόνο συνομιλία</translation>
         </message>
+        <message>
+            <source>On</source>
+            <translation>Ενεργό</translation>
+        </message>
+        <message>
+            <source>Off</source>
+            <translation>Απενεργοποίηση</translation>
+        </message>
+        <message>
+            <source>System</source>
+            <translation>Σύστημα</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>

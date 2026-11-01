@@ -1201,6 +1201,18 @@
             <source>Chat only</source>
             <translation>Samo klepet</translation>
         </message>
+        <message>
+            <source>On</source>
+            <translation>Vklopljeno</translation>
+        </message>
+        <message>
+            <source>Off</source>
+            <translation>Izključeno</translation>
+        </message>
+        <message>
+            <source>System</source>
+            <translation>Sistem</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>

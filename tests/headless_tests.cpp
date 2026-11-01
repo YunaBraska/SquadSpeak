@@ -340,7 +340,7 @@ private slots:
     void desktopSessionFailureUsesSavedLanguage_data() {
         QTest::addColumn<QString>("key"); QTest::addColumn<QJsonValue>("value");
         QTest::addColumn<QString>("expectedKey");
-        for (const auto* key : {"version", "userName", "muted", "theme", "palette", "avatar", "animatedAvatars",
+        for (const auto* key : {"version", "userName", "muted", "theme", "palette", "avatar", "avatarAnimation",
                 "deafened", "eventSounds", "pushToTalk", "pttButtonHeld",
                 "pttKeyHeld", "pttKeyCode", "pttKeyCodes", "pttRevision"})
             QTest::newRow(key) << QString(key) << QJsonValue(QJsonValue::Null) << QString(key);

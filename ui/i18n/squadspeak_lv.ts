@@ -1201,6 +1201,18 @@
             <source>Chat only</source>
             <translation>Tikai tērzēšana</translation>
         </message>
+        <message>
+            <source>On</source>
+            <translation>Ieslēgts</translation>
+        </message>
+        <message>
+            <source>Off</source>
+            <translation>izslēgts</translation>
+        </message>
+        <message>
+            <source>System</source>
+            <translation>Sistēma</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>

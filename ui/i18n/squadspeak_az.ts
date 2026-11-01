@@ -1201,6 +1201,18 @@
             <source>Chat only</source>
             <translation>Yalnız söhbət</translation>
         </message>
+        <message>
+            <source>On</source>
+            <translation>Aktiv</translation>
+        </message>
+        <message>
+            <source>Off</source>
+            <translation>Söndür</translation>
+        </message>
+        <message>
+            <source>System</source>
+            <translation>Sistem</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>

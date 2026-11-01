@@ -165,7 +165,7 @@ TestCase {
         const shelf = findChild(view, "avatarShelf")
         shelf.currentIndex = session.avatars.indexOf(session.avatar)
         shelf.positionViewAtIndex(shelf.currentIndex, PathView.Center)
-        session.setAnimatedAvatars(true)
+        session.setAvatarAnimation("system")
         findChild(view, "channelsScroll").contentItem.contentY = 0
         session.setMuted(true)
         session.setPttButtonHeld(false)
@@ -203,8 +203,9 @@ TestCase {
         view.supporter = supporterLicense
         view.updates = null
         session.setLanguage("en")
-        portrait.online = true; portrait.avatar = "mossling"; portrait.systemMessage = false; portrait.level = 0
-        portrait.visible = false
+        portrait.online = false; portrait.level = 0
+        portrait.online = true; portrait.avatar = "mossling"; portrait.systemMessage = false
+        portrait.visible = false; portrait.animated = true
         portraitGallery.visible = false
         portraitGallery.online = true
         portraitGallery.shownPortraits = 0
@@ -3734,9 +3735,67 @@ TestCase {
         return rows
     }
 
+    function test_avatarAnimationChoice_data() {
+        return [
+            {tag: "wide", language: "en", width: 1120, scale: 100},
+            {tag: "compact-de", language: "de", width: 360, scale: 100},
+            {tag: "compact-rtl", language: "ar", width: 360, scale: 100},
+            {tag: "large-text", language: "en", width: 360, scale: 200}
+        ]
+    }
+    function test_avatarAnimationChoice(row) {
+        verify(session.setLanguage(row.language))
+        verify(session.setTextScale(row.scale))
+        view.width = row.width; view.height = 680
+        view.openSettings(0)
+        const choice = findChild(view, "avatarAnimationChoice")
+        verify(choice, "Avatar animation must offer On, Off and System")
+        compare(choice.count, 3)
+        tryCompare(choice, "currentIndex", 2)
+        reveal(choice)
+        portrait.visible = true; portrait.online = true; portrait.muted = false; portrait.level = 0.2
+        portrait.animated = Qt.binding(() => view.animateAvatars)
+        for (const mode of ["on", "off", "system"]) {
+            choice.forceActiveFocus()
+            keyClick(Qt.Key_Home)
+            for (let index = 0; index < ["on", "off", "system"].indexOf(mode); ++index) keyClick(Qt.Key_Down)
+            compare(session.avatarAnimation, mode)
+            tryCompare(choice.contentItem, "truncated", false)
+            for (const reduced of [false, true]) {
+                systemAppearance.reducedMotion = reduced
+                const moving = mode === "on" || (mode === "system" && !reduced)
+                compare(view.animateAvatars, moving)
+                const columns = new Set()
+                for (const time of [0, 127, 305, 423]) {
+                    portrait.animationTime = time
+                    columns.add(portrait.column)
+                    if (!moving) compare(portrait.column, 0)
+                }
+                if (moving) verify(columns.size > 1)
+                verify(portrait.speaking, "Static portraits retain speaking feedback")
+                portrait.systemMessage = true
+                verify(portrait.atlasSource.toString().endsWith(moving ? "system-animated.png" : "system.png"))
+                portrait.systemMessage = false
+                compare(session.avatarAnimation, mode)
+            }
+        }
+        verify(waitForFrame(view.contentItem))
+        verify(choice.width <= view.width)
+        const label = findChild(view, "avatarAnimationLabel")
+        verify(label && label.width > 0 && label.height >= label.implicitHeight)
+        const shelf = findChild(view, "avatarShelf")
+        tryVerify(() => {
+            const canvas = shelf.currentItem && findChild(shelf.currentItem, "avatarCanvas")
+            return canvas && fixtures.portraitHasDetail(canvas.parent)
+        })
+        if (imageDirectory.length) verify(fixtures.saveWindow(view, imageDirectory + "/avatar-animation-" + row.tag + ".png"))
+        view.closeSettings()
+    }
+
     function test_systemAccessibilityChangesKeepSavedPreferences() {
-        portrait.visible = true; portrait.online = true; portrait.animated = true
-        verify(session.setAnimatedAvatars(true))
+        portrait.visible = true; portrait.online = true
+        portrait.animated = Qt.binding(() => view.animateAvatars)
+        verify(session.setAvatarAnimation("system"))
         verify(session.setTextScale(125))
         systemAppearance.reducedMotion = true
         systemAppearance.textScale = 1.5
@@ -3745,7 +3804,7 @@ TestCase {
             portrait.animationTime = time
             compare(portrait.column, 0)
         }
-        verify(session.animatedAvatars)
+        compare(session.avatarAnimation, "system")
         compare(session.textScale, 125)
         portrait.systemMessage = true
         verify(waitForFrame(portrait))
@@ -4237,10 +4296,10 @@ TestCase {
             compare(messagePortrait.frame, rowPortrait.frame)
             compare(messagePortrait.variant, rowPortrait.variant)
         }
-        remoteSession.setAnimatedAvatars(false)
+        remoteSession.setAvatarAnimation("off")
         compare(messagePortrait.frame, 0); compare(rowPortrait.frame, 0)
         verify(messagePortrait.activity > 0, "Disabling animation preserves the speaking indicator")
-        remoteSession.setAnimatedAvatars(true)
+        remoteSession.setAvatarAnimation("system")
         session.setDeafened(false)
         session.setMuted(true)
         tryCompare(messagePortrait, "stateRow", 2)
@@ -4596,7 +4655,7 @@ TestCase {
     }
     function test_returningToChatPaintsWithoutScrolling(data) {
         if (data.tag !== "native") { view.width = data.width; view.height = data.height }
-        session.setAnimatedAvatars(false)
+        session.setAvatarAnimation("off")
         verify(fixtures.startHost()); verify(fixtures.startRemoteHost())
         verify(remoteChannel.decide(channel.ownId, true))
         verify(channel.join(channel.ownId, "127.0.0.1", channel.servicePort))
@@ -4849,7 +4908,7 @@ TestCase {
         return [{tag: "animated", animated: true}, {tag: "static", animated: false}]
     }
     function test_scrollbarTracksLoadedMessagesWithoutResizing(data) {
-        session.setAnimatedAvatars(data.animated)
+        session.setAvatarAnimation(data.animated ? "on" : "off")
         verify(fixtures.expireChat())
         verify(fixtures.startHost())
         verify(channel.openChat(channel.ownId, "127.0.0.1", channel.servicePort))

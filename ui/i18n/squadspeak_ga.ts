@@ -1201,6 +1201,18 @@
             <source>Chat only</source>
             <translation>Comhrá amháin</translation>
         </message>
+        <message>
+            <source>On</source>
+            <translation>Ar siúl</translation>
+        </message>
+        <message>
+            <source>Off</source>
+            <translation>Múchta</translation>
+        </message>
+        <message>
+            <source>System</source>
+            <translation>Córas</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>

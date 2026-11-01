@@ -1201,6 +1201,18 @@
             <source>Chat only</source>
             <translation>仅聊天</translation>
         </message>
+        <message>
+            <source>On</source>
+            <translation>开启</translation>
+        </message>
+        <message>
+            <source>Off</source>
+            <translation>关闭</translation>
+        </message>
+        <message>
+            <source>System</source>
+            <translation>系统</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>

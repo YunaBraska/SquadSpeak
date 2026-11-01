@@ -1201,6 +1201,18 @@
             <source>Chat only</source>
             <translation>チャットのみ</translation>
         </message>
+        <message>
+            <source>On</source>
+            <translation>オン</translation>
+        </message>
+        <message>
+            <source>Off</source>
+            <translation>オフ</translation>
+        </message>
+        <message>
+            <source>System</source>
+            <translation>システム</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>

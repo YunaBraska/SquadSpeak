@@ -1201,6 +1201,18 @@
             <source>Chat only</source>
             <translation>Samo chat</translation>
         </message>
+        <message>
+            <source>On</source>
+            <translation>Uključeno</translation>
+        </message>
+        <message>
+            <source>Off</source>
+            <translation>Isključeno</translation>
+        </message>
+        <message>
+            <source>System</source>
+            <translation>Sustav</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>

@@ -1201,6 +1201,18 @@
             <source>Chat only</source>
             <translation>Тек чат</translation>
         </message>
+        <message>
+            <source>On</source>
+            <translation>Қосулы</translation>
+        </message>
+        <message>
+            <source>Off</source>
+            <translation>Өшірулі</translation>
+        </message>
+        <message>
+            <source>System</source>
+            <translation>Жүйе</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>

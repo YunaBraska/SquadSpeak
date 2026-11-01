@@ -1201,6 +1201,18 @@
             <source>Chat only</source>
             <translation>Tik pokalbis</translation>
         </message>
+        <message>
+            <source>On</source>
+            <translation>Įjungta</translation>
+        </message>
+        <message>
+            <source>Off</source>
+            <translation>Išjungta</translation>
+        </message>
+        <message>
+            <source>System</source>
+            <translation>Sistema</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>

@@ -24,7 +24,7 @@ TestCase {
     SignalSpy { id: screenChanges; target: channel; signalName: "screenChanged" }
     function initTestCase() {
         session.setMuted(true)
-        session.setAnimatedAvatars(false)
+        session.setAvatarAnimation("off")
     }
     function cleanupTestCase() {
         const viewer = findChild(view, "screenViewer")

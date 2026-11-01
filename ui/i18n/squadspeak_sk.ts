@@ -1201,6 +1201,18 @@
             <source>Chat only</source>
             <translation>Iba čet</translation>
         </message>
+        <message>
+            <source>On</source>
+            <translation>Zapnuté</translation>
+        </message>
+        <message>
+            <source>Off</source>
+            <translation>Vypnuté</translation>
+        </message>
+        <message>
+            <source>System</source>
+            <translation>Systém</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>

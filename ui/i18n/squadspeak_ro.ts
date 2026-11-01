@@ -1201,6 +1201,18 @@
             <source>Chat only</source>
             <translation>Doar chat</translation>
         </message>
+        <message>
+            <source>On</source>
+            <translation>Pornit</translation>
+        </message>
+        <message>
+            <source>Off</source>
+            <translation>Oprit</translation>
+        </message>
+        <message>
+            <source>System</source>
+            <translation>Sistem</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>

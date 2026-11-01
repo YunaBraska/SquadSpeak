@@ -1201,6 +1201,18 @@
             <source>Chat only</source>
             <translation>చాట్ మాత్రమే</translation>
         </message>
+        <message>
+            <source>On</source>
+            <translation>ఆన్</translation>
+        </message>
+        <message>
+            <source>Off</source>
+            <translation>ఆఫ్</translation>
+        </message>
+        <message>
+            <source>System</source>
+            <translation>సిస్టమ్</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>

@@ -1201,6 +1201,18 @@
             <source>Chat only</source>
             <translation>صرف چیٹ</translation>
         </message>
+        <message>
+            <source>On</source>
+            <translation>چالو</translation>
+        </message>
+        <message>
+            <source>Off</source>
+            <translation>بند</translation>
+        </message>
+        <message>
+            <source>System</source>
+            <translation>سسٹم</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
