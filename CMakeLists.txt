@@ -732,8 +732,10 @@ if(BUILD_TESTING)
             ENVIRONMENT "SQUAD_CORPUS_OUTPUT=${CMAKE_BINARY_DIR}/audio-corpus-${part}")
     endforeach()
     # Independent corpus functions retain every data row and their own deadline.
-    # Mixture throughput needs an uncontended CPU, including under sanitizers.
+    # Mixtures and the full activation matrix repeatedly encode real audio.
+    # Keep both off competing workers, including on hosted Intel runners.
     set_tests_properties(audio_corpus PROPERTIES TIMEOUT 600 RUN_SERIAL TRUE COST 500)
+    set_tests_properties(audio_corpus_speechActivation PROPERTIES RUN_SERIAL TRUE COST 500)
     qt_add_executable(radio_tests tests/radio_tests.cpp)
     target_link_libraries(radio_tests PRIVATE squad_radio Qt6::Test)
     add_test(NAME radio_contract COMMAND radio_tests)
@@ -821,9 +823,9 @@ if(BUILD_TESTING)
         SQUAD_TEST_PYTHON="${Python3_EXECUTABLE}")
     add_dependencies(headless_tests squadspeak)
     add_test(NAME headless_contract COMMAND headless_tests)
-    # The suite launches dozens of real processes; per-operation deadlines stay
-    # in the tests, while this outer budget also allows loaded CI runners.
-    set_tests_properties(headless_contract PROPERTIES TIMEOUT 240)
+    # The suite launches dozens of real processes. Competing codec workloads
+    # must not consume its aggregate budget or its per-operation deadlines.
+    set_tests_properties(headless_contract PROPERTIES TIMEOUT 240 RUN_SERIAL TRUE)
     add_test(NAME audio_controls COMMAND controls_tests -input "${CMAKE_CURRENT_SOURCE_DIR}/tests/tst_controls.qml")
     set_tests_properties(audio_controls PROPERTIES
         ENVIRONMENT "QT_QPA_PLATFORM=${ui_test_platform};QT_QUICK_BACKEND=software;QT_QUICK_CONTROLS_STYLE=Basic")
