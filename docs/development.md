@@ -501,6 +501,11 @@ For fresh UI screenshots, set `SQUAD_TEST_ARTIFACTS` to an output directory when
 
 The application icon source is `ui/icons/app-source.png`. Run `python3 ui/icons/generate.py`
 with `rsvg-convert` installed to regenerate the PNG, macOS ICNS and Windows ICO.
+The macOS build also compiles this same artwork with `ui/icons/AppIcon.icon/icon.json`
+into `Assets.car` using Xcode's `actool`. The complete Icon Composer document is
+staged at `ui/app-icon/AppIcon.icon` inside the build directory. LaunchServices
+uses the native icon on macOS 26 and later. The app does not replace its Dock icon
+at startup, and the legacy ICNS remains bundled for older systems.
 The generator resizes the approved app artwork and renders the TeamSpeak provider SVG
 to PNG, so installed apps need no SVG decoder for provider marks. The menu icon is drawn separately
 in `src/main.cpp` as an outline speech bubble, filled while transmitting speech.

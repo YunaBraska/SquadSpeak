@@ -69,7 +69,9 @@ int main(int argc, char** argv) {
     app.setApplicationName("SquadSpeak");
     app.setOrganizationName("SquadSpeak");
     app.setApplicationVersion(QStringLiteral(SQUADSPEAK_VERSION));
+#ifndef Q_OS_MACOS
     app.setWindowIcon(QIcon(":/qt/qml/SquadSpeak/ui/icons/app.png"));
+#endif
     app.setDesktopFileName("app.squadspeak");
     app.setQuitOnLastWindowClosed(false);
     QQuickStyle::setStyle("Basic");
@@ -399,7 +401,12 @@ int main(int argc, char** argv) {
         if (!arguments.isSet("smoke-test")) channel.initialize();
         if (arguments.isSet("smoke-test")) {
             qInfo("UI smoke: checking profile and settings");
+#ifdef Q_OS_MACOS
+            if (![[NSImage imageNamed:@"AppIcon"] isValid]
+                    || (QGuiApplication::platformName() == "cocoa" && !NSApp.applicationIconImage.isValid)) return 1;
+#else
             if (app.windowIcon().isNull() || app.windowIcon().pixmap(32, 32).isNull()) return 1;
+#endif
             // Exercise settings persistence while the application instance lock
             // is held, even on test hosts without an audio input device.
             if (!audio.selectInput("")) return 1;

@@ -59,6 +59,23 @@ if(APPLE)
         set(squad_bundle_icon icons/app.png)
     else()
         set(squad_bundle_icon icons/app.icns)
+        # Compile the existing artwork as a native icon stack. Keep app.icns for
+        # older macOS releases, and let LaunchServices own the Dock appearance.
+        set(squad_icon_build "${CMAKE_CURRENT_BINARY_DIR}/app-icon")
+        configure_file(icons/AppIcon.icon/icon.json "${squad_icon_build}/AppIcon.icon/icon.json" COPYONLY)
+        configure_file(icons/app-source.png "${squad_icon_build}/AppIcon.icon/Assets/app-source.png" COPYONLY)
+        add_custom_command(OUTPUT "${squad_icon_build}/compiled/Assets.car"
+            COMMAND ${CMAKE_COMMAND} -E make_directory "${squad_icon_build}/compiled"
+            COMMAND xcrun actool "${squad_icon_build}/AppIcon.icon"
+                --compile "${squad_icon_build}/compiled" --platform macosx --target-device mac
+                --minimum-deployment-target "${CMAKE_OSX_DEPLOYMENT_TARGET}" --app-icon AppIcon
+                --output-partial-info-plist "${squad_icon_build}/compiled/icon.plist" --warnings --notices
+            DEPENDS "${squad_icon_build}/AppIcon.icon/icon.json"
+                "${squad_icon_build}/AppIcon.icon/Assets/app-source.png"
+            BYPRODUCTS "${squad_icon_build}/compiled/AppIcon.icns" "${squad_icon_build}/compiled/icon.plist"
+            VERBATIM)
+        set_source_files_properties("${squad_icon_build}/compiled/Assets.car" PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
+        target_sources(squadspeak PRIVATE "${squad_icon_build}/compiled/Assets.car")
     endif()
     set_source_files_properties(${squad_bundle_icon} PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
     target_sources(squadspeak PRIVATE ${squad_bundle_icon})
@@ -99,6 +116,7 @@ if(IOS)
     set_target_properties(squadspeak PROPERTIES XCODE_ATTRIBUTE_TARGETED_DEVICE_FAMILY "1,2")
 else()
     set(squad_platform_plist "<key>CFBundleIconFile</key><string>app.icns</string>
+        <key>CFBundleIconName</key><string>AppIcon</string>
         <key>LSApplicationCategoryType</key><string>public.app-category.social-networking</string>
         <key>LSUIElement</key><true/>
         <key>LSMinimumSystemVersion</key><string>\${CMAKE_OSX_DEPLOYMENT_TARGET}</string>")
