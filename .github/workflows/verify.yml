@@ -1,7 +1,6 @@
 name: "🧩 CI · Common Build"
 
 on:
-  workflow_dispatch:
   workflow_call:
     inputs:
       ref:
@@ -84,11 +83,10 @@ jobs:
             [System.Management.Automation.Language.Parser]::ParseFile($file.FullName, [ref]$null, [ref]$parseErrors) | Out-Null
             if ($parseErrors) { throw ($parseErrors | Out-String) }
           }
-          $windows = Get-Content .github/workflows/wc_windows_build.yml -Raw
           $caller = Get-Content .github/workflows/verify.yml -Raw
-          $windows += [regex]::Match($caller, '(?ms)^  windows:\r?\n.*?(?=^  sources:)').Value
-          $blocks = [regex]::Matches($windows, '(?m)^( +)(?:run|prepare_command): \|\r?\n((?:\1  .*\r?\n|\r?\n)+)')
-          if ($blocks.Count -lt 2) { throw "Windows workflow commands were not found" }
+          $windows = [regex]::Match($caller, '(?ms)^  windows:\r?\n.*?(?=^  sources:)').Value
+          $blocks = [regex]::Matches($windows, '(?m)^( +)prepare_command: \|\r?\n((?:\1  .*\r?\n|\r?\n)+)')
+          if ($blocks.Count -ne 1) { throw "Windows preparation command was not found" }
           foreach ($block in $blocks) {
             $parseErrors = $null
             [System.Management.Automation.Language.Parser]::ParseInput($block.Groups[2].Value, [ref]$null, [ref]$parseErrors) | Out-Null
@@ -235,7 +233,7 @@ jobs:
             mode: store
           - runner: ubuntu-24.04
             mode: sanitizers
-    uses: ./.github/workflows/wc_linux_build.yml
+    uses: YunaBraska/YunaBraska/.github/workflows/wc_cpp_linux_build.yml@0c16fe69a5b69ad9da903c444f855b19d4d555fc
     with:
       ref: ${{ needs.prepare.outputs.commit_sha }}
       version: ${{ needs.prepare.outputs.version }}
@@ -296,7 +294,7 @@ jobs:
 
   macos:
     needs: prepare
-    uses: ./.github/workflows/wc_macos_build.yml
+    uses: YunaBraska/YunaBraska/.github/workflows/wc_cpp_macos_build.yml@0c16fe69a5b69ad9da903c444f855b19d4d555fc
     with:
       ref: ${{ needs.prepare.outputs.commit_sha }}
       version: ${{ needs.prepare.outputs.version }}
@@ -349,7 +347,7 @@ jobs:
 
   windows:
     needs: prepare
-    uses: ./.github/workflows/wc_windows_build.yml
+    uses: YunaBraska/YunaBraska/.github/workflows/wc_cpp_windows_build.yml@0c16fe69a5b69ad9da903c444f855b19d4d555fc
     with:
       ref: ${{ needs.prepare.outputs.commit_sha }}
       version: ${{ needs.prepare.outputs.version }}
