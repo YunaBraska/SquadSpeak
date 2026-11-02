@@ -186,12 +186,17 @@ jobs:
       - name: "🔐 Validate update signing"
         env:
           RELEASE_MODE: ${{ steps.mode.outputs.release_mode }}
+          MACOS_DISTRIBUTION_READY: ${{ secrets.MACOS_SIGNING_CERTIFICATE != '' && secrets.MACOS_SIGNING_CERTIFICATE_PASSWORD != '' && secrets.MACOS_NOTARY_KEY != '' && secrets.MACOS_NOTARY_KEY_ID != '' && secrets.MACOS_NOTARY_ISSUER_ID != '' }}
           UPDATE_PUBLIC_KEY: ${{ vars.SQUADSPEAK_UPDATE_PUBLIC_KEY }}
           UPDATE_PRIVATE_KEY: ${{ steps.mode.outputs.release_mode == 'release' && secrets.SQUADSPEAK_UPDATE_PRIVATE_KEY || '' }}
         shell: sh
         run: |
           set -eu
           if test "$RELEASE_MODE" != release; then exit 0; fi
+          if test "$MACOS_DISTRIBUTION_READY" != true; then
+            printf 'Stable releases require Apple signing and notarization credentials.\n' >&2
+            exit 1
+          fi
           umask 077
           key="$RUNNER_TEMP/update-key.der"
           trap 'rm -f "$key"' EXIT

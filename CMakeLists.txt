@@ -731,11 +731,16 @@ if(BUILD_TESTING)
         set_tests_properties(audio_corpus_${part} PROPERTIES TIMEOUT 600
             ENVIRONMENT "SQUAD_CORPUS_OUTPUT=${CMAKE_BINARY_DIR}/audio-corpus-${part}")
     endforeach()
-    # Independent corpus functions retain every data row and their own deadline.
-    # Mixtures and the full activation matrix repeatedly encode real audio.
-    # Keep both off competing workers, including on hosted Intel runners.
-    set_tests_properties(audio_corpus PROPERTIES TIMEOUT 600 RUN_SERIAL TRUE COST 500)
-    set_tests_properties(audio_corpus_speechActivation PROPERTIES RUN_SERIAL TRUE COST 500)
+    # Offline PCM processing uses virtual audio time and independent report paths.
+    # Reserve two scheduler slots per heavy corpus suite so at most two run
+    # together at CI's parallel level of four. Live media contracts stay serial.
+    set_tests_properties(audio_corpus PROPERTIES TIMEOUT 600 PROCESSORS 2 COST 500)
+    set_tests_properties(audio_corpus_speechActivation PROPERTIES PROCESSORS 2 COST 500)
+    if(APPLE AND (CMAKE_OSX_ARCHITECTURES MATCHES "x86_64" OR CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64"))
+        # Hosted Intel contention doubled these suites' runtime. Keep their
+        # existing isolation instead of consuming the per-test deadline margin.
+        set_tests_properties(audio_corpus audio_corpus_speechActivation PROPERTIES RUN_SERIAL TRUE)
+    endif()
     qt_add_executable(radio_tests tests/radio_tests.cpp)
     target_link_libraries(radio_tests PRIVATE squad_radio Qt6::Test)
     add_test(NAME radio_contract COMMAND radio_tests)

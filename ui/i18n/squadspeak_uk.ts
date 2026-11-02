@@ -1201,6 +1201,18 @@
             <source>Chat only</source>
             <translation>Лише чат</translation>
         </message>
+        <message>
+            <source>On</source>
+            <translation>Увімк.</translation>
+        </message>
+        <message>
+            <source>Off</source>
+            <translation>Вимкнено</translation>
+        </message>
+        <message>
+            <source>System</source>
+            <translation>Система</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>

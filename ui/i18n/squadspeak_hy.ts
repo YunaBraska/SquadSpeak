@@ -1201,6 +1201,18 @@
             <source>Chat only</source>
             <translation>Միայն զրույց</translation>
         </message>
+        <message>
+            <source>On</source>
+            <translation>Միացված</translation>
+        </message>
+        <message>
+            <source>Off</source>
+            <translation>Անջատված</translation>
+        </message>
+        <message>
+            <source>System</source>
+            <translation>Համակարգ</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>

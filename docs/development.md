@@ -206,8 +206,14 @@ affected integration suites before the full release matrix. CLI subprocess,
 malformed-protocol, codec-lifetime and DPI checks prove different behavior;
 a passing end-to-end smoke test does not replace them. CI caches the pinned Qt
 SDK on Windows and macOS, plus compiled dependency and compiler caches. Final
-linking and tests run on every build. CTest runs four suites concurrently. Native
-loopback capture, video timing and 64-client load checks run alone; desktop/audio fixtures share a resource lock.
+linking and tests run on every build. CTest has four scheduler slots. Each of
+the two heavy offline audio suites reserves two slots, allowing them to overlap
+without four competing encoders. They process recorded PCM with virtual audio
+time and write separate reports. Intel macOS retains exclusive execution for
+both because concurrent encoding increased their runtime on the hosted runner.
+Native loopback capture, video timing, UI and
+load checks run alone; desktop/audio fixtures share a resource lock. Per-test
+deadlines and all data rows remain unchanged.
 Windows also caches its installed OpenSSL/Opus/libsamplerate prefix, keyed by
 compiler, SDK and build-script inputs. CI checks preparation and reuse before
 building the app; incompatible or incomplete prefixes fail explicitly.
@@ -495,6 +501,11 @@ For fresh UI screenshots, set `SQUAD_TEST_ARTIFACTS` to an output directory when
 
 The application icon source is `ui/icons/app-source.png`. Run `python3 ui/icons/generate.py`
 with `rsvg-convert` installed to regenerate the PNG, macOS ICNS and Windows ICO.
+The macOS build also compiles this same artwork with `ui/icons/AppIcon.icon/icon.json`
+into `Assets.car` using Xcode's `actool`. The complete Icon Composer document is
+staged at `ui/app-icon/AppIcon.icon` inside the build directory. LaunchServices
+uses the native icon on macOS 26 and later. The app does not replace its Dock icon
+at startup, and the legacy ICNS remains bundled for older systems.
 The generator resizes the approved app artwork and renders the TeamSpeak provider SVG
 to PNG, so installed apps need no SVG decoder for provider marks. The menu icon is drawn separately
 in `src/main.cpp` as an outline speech bubble, filled while transmitting speech.

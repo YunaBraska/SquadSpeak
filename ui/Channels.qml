@@ -115,7 +115,7 @@ PanelWindow {
                     Keys.onReturnPressed: root.memberOptions(modelData, summary.hostId)
                     Keys.onSpacePressed: root.memberOptions(modelData, summary.hostId)
                     MouseArea { anchors.fill: parent; acceptedButtons: Qt.LeftButton | Qt.RightButton; onClicked: mouse => root.memberOptions(modelData, summary.hostId, mouse.button === Qt.RightButton) }
-                    animated: root.voice.animatedAvatars && summary.visible
+                    animated: root.animateAvatars && summary.visible
                     level: summary.active ? root.memberLevel(modelData.id) : 0
                     TextToolTip { objectName: "memberTooltip"; parent: memberAvatar; text: memberAvatar.name; visible: avatarHover.hovered }
                     HoverHandler { id: avatarHover }
@@ -159,7 +159,7 @@ PanelWindow {
                     avatar: modelData.avatarId || modelData.avatar || "mossling"; name: modelData.name; music: !!modelData.music; provider: modelData.provider || ""
                     available: modelData.available; muted: modelData.muted; deafened: !!modelData.deafened; sleeping: !!modelData.sleeping
                     identity: modelData.id; animationTime: root.avatarTime
-                    animated: root.voice.animatedAvatars && memberEntry.y + memberEntry.height >= grid.contentY && memberEntry.y <= grid.contentY + grid.height
+                    animated: root.animateAvatars && memberEntry.y + memberEntry.height >= grid.contentY && memberEntry.y <= grid.contentY + grid.height
                     level: grid.hostId === root.activeHost ? root.memberLevel(modelData.id) : 0
                 }
                 Label { text: modelData.name; textFormat: Text.PlainText; Layout.fillWidth: true; elide: Text.ElideRight; font.pixelSize: Theme.fontSize(12) }
@@ -190,6 +190,8 @@ PanelWindow {
         }
     }
     property var voice: session
+    readonly property bool animateAvatars: voice.avatarAnimation === "on"
+        || (voice.avatarAnimation === "system" && !Theme.reducedMotion)
     property var supporter: typeof supporterLicense !== "undefined" ? supporterLicense : null
     property var updates: typeof appUpdates !== "undefined" ? appUpdates : null
     component AvatarShelf: PathView {
@@ -265,7 +267,7 @@ PanelWindow {
     readonly property var inspectedChannel: channelList.find(c => c.id === inspectedHost) || privateChatList.find(c => c.id === inspectedHost) || ({})
     readonly property var voiceChannel: channelList.find(c => c.id === activeHost) || ({})
     property double avatarTime: Date.now()
-    Timer { interval: root.voice.animatedAvatars && !Theme.reducedMotion ? Atlas.frameInterval() : 80; running: root.visible; repeat: true; onTriggered: root.avatarTime = Date.now() }
+    Timer { interval: root.animateAvatars ? Atlas.frameInterval() : 80; running: root.visible; repeat: true; onTriggered: root.avatarTime = Date.now() }
     readonly property bool showChat: chatExpanded && inspectedHost.length > 0
     readonly property bool viewingVoice: !!current.joined && inspectedHost === activeHost
     onInspectedHostChanged: {
@@ -1238,7 +1240,24 @@ PanelWindow {
                             onActivated: { root.voice.setPalette(["plum", "ocean", "forest", "graphite"][currentIndex]); currentIndex = Qt.binding(function() { return ["plum", "ocean", "forest", "graphite"].indexOf(root.voice.palette) }) }
                         }
                         OptionCheck { text: qsTr("Notification sounds"); checked: root.voice.eventSounds; onClicked: { root.voice.setEventSounds(checked); checked = Qt.binding(function() { return root.voice.eventSounds }) } }
-                        OptionCheck { objectName: "animatedAvatars"; text: qsTr("Animate portraits"); checked: root.voice.animatedAvatars; onClicked: { root.voice.setAnimatedAvatars(checked); checked = Qt.binding(function() { return root.voice.animatedAvatars }) } }
+                        RowLayout {
+                            Layout.fillWidth: true
+                            Label { objectName: "avatarAnimationLabel"; text: qsTr("Animate portraits"); Layout.fillWidth: true; Layout.minimumWidth: 0; wrapMode: Text.Wrap }
+                            ChoiceBox {
+                                id: avatarAnimationChoice
+                                objectName: "avatarAnimationChoice"
+                                implicitWidth: Math.max(112, Math.ceil(Math.max(onSize.advanceWidth, offSize.advanceWidth, systemSize.advanceWidth)) + leftPadding + rightPadding)
+                                Layout.minimumWidth: implicitWidth
+                                TextMetrics { id: onSize; font: avatarAnimationChoice.font; text: avatarAnimationChoice.model[0].label }
+                                TextMetrics { id: offSize; font: avatarAnimationChoice.font; text: avatarAnimationChoice.model[1].label }
+                                TextMetrics { id: systemSize; font: avatarAnimationChoice.font; text: avatarAnimationChoice.model[2].label }
+                                textRole: "label"; valueRole: "value"
+                                model: [{value: "on", label: qsTr("On")}, {value: "off", label: qsTr("Off")}, {value: "system", label: qsTr("System")}]
+                                currentIndex: model.findIndex(item => item.value === root.voice.avatarAnimation)
+                                Accessible.name: qsTr("Animate portraits")
+                                onActivated: { root.voice.setAvatarAnimation(currentValue); currentIndex = Qt.binding(() => avatarAnimationChoice.model.findIndex(item => item.value === root.voice.avatarAnimation)) }
+                            }
+                        }
                     }
                 }
             }
@@ -2068,7 +2087,7 @@ PanelWindow {
                 ChatPanel {
                     id: chat
                     objectName: "chatPanel"
-                    network: root.network; animatedAvatars: root.voice.animatedAvatars
+                    network: root.network; animatedAvatars: root.animateAvatars
                     animationTime: root.avatarTime
                     memberLevel: function(id) { return root.inspectedHost === root.activeHost ? root.memberLevel(id) : 0 }
                     onMemberRequested: (member, contextual) => root.memberOptions(member, root.inspectedHost, contextual)

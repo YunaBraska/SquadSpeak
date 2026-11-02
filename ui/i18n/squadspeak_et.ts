@@ -1201,6 +1201,18 @@
             <source>Chat only</source>
             <translation>Ainult vestlus</translation>
         </message>
+        <message>
+            <source>On</source>
+            <translation>Sees</translation>
+        </message>
+        <message>
+            <source>Off</source>
+            <translation>Väljas</translation>
+        </message>
+        <message>
+            <source>System</source>
+            <translation>Süsteem</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>

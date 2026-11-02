@@ -1201,6 +1201,18 @@
             <source>Chat only</source>
             <translation>Mo chat</translation>
         </message>
+        <message>
+            <source>On</source>
+            <translation>Activà</translation>
+        </message>
+        <message>
+            <source>Off</source>
+            <translation>Stizzà</translation>
+        </message>
+        <message>
+            <source>System</source>
+            <translation>Sistem</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>

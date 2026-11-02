@@ -1201,6 +1201,18 @@
             <source>Chat only</source>
             <translation>دردشة فقط</translation>
         </message>
+        <message>
+            <source>On</source>
+            <translation>تشغيل</translation>
+        </message>
+        <message>
+            <source>Off</source>
+            <translation>متوقف</translation>
+        </message>
+        <message>
+            <source>System</source>
+            <translation>النظام</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>

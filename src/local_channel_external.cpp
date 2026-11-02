@@ -37,6 +37,10 @@ QString externalName(const QString& raw) {
 LocalChannel::ExternalVoice::~ExternalVoice() { if (handle) ss_ts_close(handle); }
 
 bool LocalChannel::externalChat() const { const auto* c = chatClient(); return c && c->external(); }
+bool LocalChannel::joinedExternalVoice() const {
+    const auto c = clients_.value(joinedHostId_);
+    return c && c->external() && c->voice && c->accepted;
+}
 
 bool LocalChannel::saveTeamSpeakIdentity(const QJsonObject& identity) {
     const QByteArray context = "SquadSpeak/teamspeak-identity/v1";
@@ -288,6 +292,8 @@ void LocalChannel::pollExternal() {
 void LocalChannel::externalState(const QJsonObject& state) {
     const auto connection = external_;
     const bool first = !connection->connected;
+    const bool wasJoined = joined();
+    const bool rosterKnown = connection->state.value("directoryComplete").toBool();
     const auto self = state.value("self").toString();
     const auto active = state.value("channel").toString();
     if (active.isEmpty()) return;
@@ -309,7 +315,9 @@ void LocalChannel::externalState(const QJsonObject& state) {
         }
     }
     connection->active = externalId(connection->id, "channel", active);
-    if (previous != connection->active) connection->audioSequences.clear();
+    const bool channelChanged = previous != connection->active;
+    if (channelChanged) connection->audioSequences.clear();
+    if (!first && channelChanged && wasJoined) emit channelEvent("leave");
     joinedHostId_ = connection->active;
     QJsonObject next = savedChannels_;
     QSet<QString> seen;
@@ -363,6 +371,12 @@ void LocalChannel::externalState(const QJsonObject& state) {
         c->accepted = true; c->voice = id == joinedHostId_; c->access = "accepted"; c->reconnectWanted = false;
         c->messageLifetimeDays = 0; c->presenceKnown = true;
         c->externalCanSend = state.value("canSend").toBool() && (info.value("codec").toInt() == 4 || info.value("codec").toInt() == 5);
+        const bool compareRoster = !first && rosterKnown && !channelChanged && id == previous;
+        QSet<QString> previousMembers;
+        if (compareRoster) {
+            for (const auto& member : c->members)
+                previousMembers.insert(member.toMap().value("providerClient").toString());
+        }
         c->members.clear(); c->onlineIds.clear();
         for (const auto& raw : members) {
             const auto member = raw.toObject();
@@ -377,6 +391,13 @@ void LocalChannel::externalState(const QJsonObject& state) {
                 {"deafened", member.value("outputMuted").toBool()}, {"sleeping", false}});
         }
         if (c->voice) {
+            if (compareRoster) {
+                QSet<QString> currentMembers;
+                for (const auto& member : c->members)
+                    currentMembers.insert(member.toMap().value("providerClient").toString());
+                if (!(currentMembers - previousMembers).isEmpty()) emit channelEvent("memberJoin");
+                if (!(previousMembers - currentMembers).isEmpty()) emit channelEvent("memberLeave");
+            }
             c->audioBitrate = 0; // TS3 does not report a per-listener receive bitrate.
             c->status = (info.value("codec").toInt() != 4 && info.value("codec").toInt() != 5)
                 ? tr("Unsupported audio codec") : !state.value("talkAllowed").toBool(true)
@@ -413,6 +434,7 @@ void LocalChannel::externalState(const QJsonObject& state) {
     }
     if (const auto selected = clients_.value(chatHostId_)) status_ = selected->status;
     if (first) { automaticAttempt_ = false; sendPresence(); emit channelEvent("join"); }
+    else if (channelChanged) emit channelEvent("join");
     if (connection->requested == joinedHostId_) { connection->requested.clear(); connection->movePending = false; }
     emit hostsChanged(); emit participantsChanged(); emit stateChanged(); emit chatChanged();
     // The server sends its channel directory incrementally after connecting.

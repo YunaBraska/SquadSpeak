@@ -251,11 +251,20 @@ else: sys.exit(7)
             result = self.run_step("Validate update signing", "verify.yml", RELEASE_MODE=mode,
                                    UPDATE_PRIVATE_KEY="", UPDATE_PUBLIC_KEY="")
             self.assertEqual(result.returncode, 0, result.stderr)
+        for configured in ("", "false"):
+            with self.subTest(apple_distribution=configured):
+                result = self.run_step("Validate update signing", "verify.yml", RELEASE_MODE="release",
+                                       MACOS_DISTRIBUTION_READY=configured,
+                                       UPDATE_PRIVATE_KEY=private_key, UPDATE_PUBLIC_KEY=public_key)
+                self.assertNotEqual(result.returncode, 0, "A stable release needs Apple signing and notarization")
+                self.assertIn("Apple signing and notarization", result.stderr)
+                self.assertFalse((self.root / "update-key.der").exists())
         for private, pub, succeeds in (("", "", False), (private_key, "", False),
                 ("invalid", public_key, False), (private_key, base64.b64encode(bytes(32)).decode(), False),
                 (private_key, public_key, True), (private_key + "\n", public_key, True)):
             with self.subTest(valid=succeeds):
                 result = self.run_step("Validate update signing", "verify.yml", RELEASE_MODE="release",
+                                       MACOS_DISTRIBUTION_READY="true",
                                        UPDATE_PRIVATE_KEY=private, UPDATE_PUBLIC_KEY=pub)
                 self.assertEqual(result.returncode == 0, succeeds, result.stderr)
                 self.assertNotIn(private_key, result.stdout + result.stderr)

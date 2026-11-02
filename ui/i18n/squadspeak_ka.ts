@@ -1201,6 +1201,18 @@
             <source>Chat only</source>
             <translation>მხოლოდ ჩატი</translation>
         </message>
+        <message>
+            <source>On</source>
+            <translation>ჩართული</translation>
+        </message>
+        <message>
+            <source>Off</source>
+            <translation>გამორთვა</translation>
+        </message>
+        <message>
+            <source>System</source>
+            <translation>სისტემა</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>

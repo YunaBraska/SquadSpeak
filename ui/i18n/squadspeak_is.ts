@@ -1201,6 +1201,18 @@
             <source>Chat only</source>
             <translation>Aðeins spjall</translation>
         </message>
+        <message>
+            <source>On</source>
+            <translation>Kveikt</translation>
+        </message>
+        <message>
+            <source>Off</source>
+            <translation>Slökkt</translation>
+        </message>
+        <message>
+            <source>System</source>
+            <translation>Kerfi</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>

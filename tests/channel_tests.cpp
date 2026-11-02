@@ -4018,6 +4018,8 @@ private slots:
 
         QTRY_COMPARE(listener.channel.participants().size(), 4);
         QTRY_COMPARE(listenerTwo.channel.participants().size(), 4);
+        QTRY_COMPARE(first.channel.participants().size(), 4);
+        QTRY_COMPARE(second.channel.participants().size(), 4);
         listenerEvents.clear();
         listenerTwoEvents.clear();
 
@@ -4026,12 +4028,15 @@ private slots:
         QCOMPARE(listenerEvents.first().first().toString(), QString("memberLeave"));
         QTRY_COMPARE(listenerTwoEvents.count(), 1);
         QCOMPARE(listenerTwoEvents.first().first().toString(), QString("memberLeave"));
+        QTRY_COMPARE(second.channel.participants().size(), 3);
         listenerEvents.clear();
         listenerTwoEvents.clear();
         QVERIFY(first.join(host.channel));
         QTRY_VERIFY(first.channel.joined());
         QTRY_COMPARE(listener.channel.participants().size(), 4);
         QTRY_COMPARE(listenerTwo.channel.participants().size(), 4);
+        QTRY_COMPARE(first.channel.participants().size(), 4);
+        QTRY_COMPARE(second.channel.participants().size(), 4);
         listenerEvents.clear();
         listenerTwoEvents.clear();
         firstEvents.clear();
