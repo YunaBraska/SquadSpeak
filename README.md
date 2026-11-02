@@ -8,7 +8,7 @@ No chat account is required. Each running app can provide a channel while its ow
 
 **[Product site](https://yunabraska.github.io/SquadSpeak/)** | **[User documentation](https://yunabraska.github.io/SquadSpeak/documentation.html)** | **[Install](https://yunabraska.github.io/SquadSpeak/install.html)**
 
-![A channel with two members and a Markdown conversation](docs/images/channel-chat.png)
+![SquadSpeak, TeamSpeak and Mumble channel trees with private messages and a Markdown conversation](docs/Page/assets/screenshots/workspace-light.png)
 
 ## Try it
 
@@ -77,23 +77,28 @@ keep their **...** menu. Your own channel remains available while the app runs.
 
 Approvals belong to the saved cryptographic identity. Changing Wi-Fi or IP address does not create a new identity. Keep the app's identity when moving or backing up a profile; deleting it requires a new approval.
 
-## Connect to TeamSpeak 3
+## Connect to TeamSpeak 3 or Mumble
 
 In **+**, enter the server address and select **Add**. SquadSpeak detects the
-protocol. Without an explicit port, it checks SquadSpeak on `48763`, then TS3 on
-`9987`. For another port, enter `example.org:12345`, `192.168.1.20:12345`
-or `[2001:db8::20]:12345`. Both protocols use the port you entered.
+protocol. Without an explicit port, it checks SquadSpeak on `48763`, Mumble on
+`64738`, then TS3 on `9987`. For another port, enter `example.org:12345`, `192.168.1.20:12345`
+or `[2001:db8::20]:12345`. Each protocol uses the port you entered.
 Enter a password only if the server asks. **Save password** remembers it
 securely for the next connection. Channels stay in their server's
-hierarchy, with a TS3 marker on the host. Double-click to join. Use the same
+hierarchy, with the provider's icon on the host. Double-click to join. Use the same
 microphone, push-to-talk and volume settings. Click a member to open **Message**.
 
-SquadSpeak generates and keeps a separate TS3 identity. Remote control uses the
+SquadSpeak generates and keeps a separate TS3 identity. Mumble uses the existing
+SquadSpeak certificate identity. Remote control uses the
 controlled computer's identity and connection. Server permissions still apply.
 The current integration supports Opus voice and text, without requiring the
 TeamSpeak client. It does not yet import an existing TS3 identity, manage server
 permissions, transfer files or send whispers. TS3 chats have no offline delivery
-or server-side history. See [the support limits](docs/roadmap.md#teamspeak-interoperability).
+or server-side history. Mumble supports Opus voice, nested channels, channel and
+private text, server passwords and channel access tokens. Mumble images, whispers,
+linked-channel voice, positional audio and server administration are not supported.
+It also has no server-side chat history or offline private delivery. See
+[the support limits](docs/roadmap.md#teamspeak-interoperability).
 
 ## Make yourself heard
 
@@ -101,7 +106,7 @@ Open **Settings > Input** to select a microphone, see its spectrum and adjust vo
 
 New microphone profiles automatically reduce sustained bass rumble and keep signal peaks below the output limit. Gain and low cut each have an **Auto** switch; moving a slider makes that setting manual. Already distorted microphone recordings cannot always be repaired.
 
-![Input settings with frequency filters and push-to-talk shortcuts](docs/images/audio-settings.png)
+![Input settings with automatic levels and individual audio filters](docs/Page/assets/screenshots/audio-controls.png)
 
 The screenshot shows the real settings interface with microphone capture stopped. Echo cancellation is on by default and can be switched off per microphone. Where supported and permitted, it uses the selected speaker device's digital mix, including other apps. Hover over **Echo** to see whether it uses **Speaker audio** or **App audio only**. This reference stays on your computer and is never saved or shared.
 

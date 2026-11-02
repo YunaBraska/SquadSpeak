@@ -846,6 +846,7 @@ TestCase {
         return [{tag: "desktop", width: 520, height: 700}, {tag: "compact", width: 360, height: 568}]
     }
     function test_channelSearchKeepsVoiceAndDraft(data) {
+        failOnWarning(/TypeError: Cannot read property 'contentItem'/)
         view.width = data.width; view.height = data.height
         verify(fixtures.startHost()); verify(fixtures.startRemoteHost())
         verify(channel.setChannelName("Workshop"))
@@ -3261,7 +3262,10 @@ TestCase {
     }
 
     function test_providerIconsIdentifyClientsWithoutChangingPortraitOrAudioBadges_data() {
-        return [{tag: "light", mode: "light"}, {tag: "dark", mode: "dark"}]
+        return [{tag: "ts-light", mode: "light", provider: "teamspeak", label: "TeamSpeak"},
+            {tag: "ts-dark", mode: "dark", provider: "teamspeak", label: "TeamSpeak"},
+            {tag: "mumble-light", mode: "light", provider: "mumble", label: "Mumble"},
+            {tag: "mumble-dark", mode: "dark", provider: "mumble", label: "Mumble"}]
     }
     function test_providerIconsIdentifyClientsWithoutChangingPortraitOrAudioBadges(data) {
         session.setTheme(data.mode)
@@ -3272,16 +3276,16 @@ TestCase {
         verify(!badge.visible, "SquadSpeak participants have no provider badge")
         const icon = findChild(badge, "providerIcon")
         compare(findChild(icon, "providerArtwork").source.toString(), "")
-        item.teamSpeak = true
-        compare(icon.label, "TeamSpeak")
+        item.provider = data.provider
+        compare(icon.label, data.label)
         tryCompare(findChild(icon, "providerArtwork"), "status", Image.Ready)
         verify(badge.visible)
         compare(badge.x + badge.width, item.width)
         compare(badge.y, 0)
         verify(badge.height <= findChild(item, "microphoneBadge").mapToItem(item, 0, 0).y)
-        item.teamSpeak = false
+        item.provider = ""
         verify(!badge.visible, "SquadSpeak clients on a TS3 host also have no provider badge")
-        item.teamSpeak = true
+        item.provider = data.provider
         item.music = true
         verify(!badge.visible)
         item.music = false
@@ -3293,17 +3297,20 @@ TestCase {
         item.identity = "known-person"
         verify(badge.visible, "A known person keeps the client icon even without a display name")
         item.visible = false
-        view.memberOptions({id: "ts-peer", name: "Example", avatarId: "courier", teamSpeak: true}, "ts-host", false)
+        view.memberOptions({id: "ts-peer", name: "Example", avatarId: "courier", provider: data.provider}, "ts-host", false)
         const dialog = findChild(view, "requestInfoDialog")
         tryCompare(dialog, "opened", true)
-        compare(findChild(dialog, "requestClient").text, "TeamSpeak")
-        compare(findChild(findChild(dialog, "requestAvatar"), "providerIcon").label, "TeamSpeak")
+        compare(findChild(dialog, "requestClient").text, data.label)
+        const volume = findChild(dialog, "memberVolume")
+        verify(waitForPolish(view))
+        verify(volume.width >= dialog.availableWidth - 2, "Person slider uses the pane width: " + volume.width + "/" + dialog.availableWidth + ", scroll=" + findChild(dialog, "requestDetailsScroll").width + ", column=" + volume.parent.width)
+        compare(findChild(findChild(dialog, "requestAvatar"), "providerIcon").label, data.label)
         tryVerify(function() { return fixtures.portraitHasDetail(findChild(dialog, "requestAvatar")) })
         if (imageDirectory.length > 0) {
             waitForRendering(view.contentItem)
             verify(fixtures.saveWindow(view, imageDirectory + "/inspect-teamspeak-" + data.tag + ".png"))
         }
-        view.memberOptions({id: "squad-peer", name: "Example", avatarId: "courier", teamSpeak: false}, "ts-host", false)
+        view.memberOptions({id: "squad-peer", name: "Example", avatarId: "courier", provider: ""}, "ts-host", false)
         compare(findChild(dialog, "requestClient").text, "SquadSpeak")
         verify(!findChild(findChild(dialog, "requestAvatar"), "providerBadge").visible)
         if (imageDirectory.length > 0) {
@@ -3373,7 +3380,7 @@ TestCase {
 
     function test_denseAvatarFramesRenderAtDisplaySize_data() {
         const cases = []
-        for (const id of ["mossling", "courier", "ember-dragon", "system"])
+        for (const id of session.avatars.concat(["system"]))
             for (let variant = 0; variant < 3; ++variant)
                 cases.push({tag: id + "-clip-" + variant, avatar: id, variant: variant, system: id === "system"})
         return cases
@@ -3503,6 +3510,9 @@ TestCase {
             artwork.source = findChild(item, "avatarCanvas").atlas
             tryCompare(artwork, "status", Image.Ready)
             compare(layout.rows.length, 5)
+            verify(layout.rows.reduce(function(total, row) {
+                return total + row.frames.reduce(function(sum, frames) { return sum + frames }, 0)
+            }, 0) > 30, id + ": bundled animations need more than 30 drawn frames")
             compare(layout.rows[0].top, 0)
             compare(layout.rows[4].bottom, artwork.sourceSize.height)
             for (let row = 0; row < 5; ++row) {
@@ -4255,6 +4265,134 @@ TestCase {
         session.setDeafened(false)
     }
 
+    function test_multiHostWorkspaceKeepsChannelsPrivateChatAndVoiceTogether_data() {
+        return [{tag: "light", width: 1120, theme: "light"},
+                {tag: "dark", width: 1120, theme: "dark"},
+                {tag: "compact", width: 390, theme: "light"}]
+    }
+    function test_multiHostWorkspaceKeepsChannelsPrivateChatAndVoiceTogether(data) {
+        if (!supporterLicense.directDistribution) {
+            view.width = data.width; view.height = 760
+            verify(session.setTheme(data.theme))
+            verify(!fixtures.setSupporter(true))
+            verify(fixtures.startHost())
+            compare(channel.addOwnedChannel("Game night"), "")
+            compare(channel.ownedChannels.length, 1)
+            mouseClick(findChild(view, "addChannel"))
+            tryCompare(findChild(view, "discoverDialog"), "opened", true)
+            verify(!findChild(view, "createOwnChannel").visible,
+                "Store builds show the free host without unavailable extra-channel actions")
+            return
+        }
+        const previous = {name: session.userName, avatar: session.avatar, theme: session.theme,
+            channel: channel.channelName, remoteName: remoteSession.userName,
+            remoteAvatar: remoteSession.avatar, remoteChannel: remoteChannel.channelName}
+        const savedBefore = channel.savedChannels.map(function(host) { return host.id })
+        try {
+            view.width = data.width; view.height = 760
+            verify(session.setTheme(data.theme)); verify(session.setLanguage("en"))
+            verify(session.setUserName("Alex")); verify(session.setAvatar("ember-dragon"))
+            verify(remoteSession.setUserName("Mira")); verify(remoteSession.setAvatar("moon-owl"))
+            verify(channel.setChannelName("Campfire")); verify(remoteChannel.setChannelName("Night owls"))
+            verify(fixtures.setSupporter(true))
+            verify(fixtures.setSupporter(true, true))
+            verify(fixtures.startHost()); verify(fixtures.startRemoteHost())
+            const games = channel.addOwnedChannel("Game night")
+            const workshop = channel.addOwnedChannel("Workshop")
+            const remoteMusic = remoteChannel.addOwnedChannel("Music lounge")
+            const remotePlanning = remoteChannel.addOwnedChannel("Weekend plans")
+            verify(games.length > 0 && workshop.length > 0 && remoteMusic.length > 0 && remotePlanning.length > 0)
+            verify(channel.openAddress("127.0.0.1:" + remoteChannel.servicePort))
+            tryVerify(function() {
+                return !channel.directBusy && channel.hosts.some(function(host) { return host.id === remoteMusic })
+                    && channel.hosts.some(function(host) { return host.id === remotePlanning })
+            })
+            verify(remoteChannel.decide(channel.ownId, true))
+            verify(channel.openChat(remoteChannel.ownId, "127.0.0.1", remoteChannel.servicePort))
+            tryCompare(channel, "chatReady", true)
+            for (const id of [remoteMusic, remotePlanning]) {
+                verify(remoteChannel.ownChannel(id).decide(channel.ownId, true))
+                verify(channel.openChat(id, "127.0.0.1", remoteChannel.servicePort))
+                tryVerify(function() { return channel.chatReady && channel.chatHostId === id })
+            }
+            verify(channel.decide(remoteChannel.ownId, true))
+            verify(channel.joinSaved(channel.ownId))
+            verify(remoteChannel.join(channel.ownId, "127.0.0.1", channel.servicePort))
+            tryVerify(function() { return channel.chatReady && remoteChannel.chatReady })
+            verify(channel.openPrivateChat(channel.ownId, remoteChannel.ownId))
+            verify(remoteChannel.openPrivateChat(channel.ownId, channel.ownId))
+            tryVerify(function() { return channel.chatReady && channel.privateChat && remoteChannel.chatReady && remoteChannel.privateChat })
+            verify(remoteChannel.sendChat("Saved you a seat by the campfire."))
+            tryCompare(remoteChannel, "chatPending", false)
+            view.openHostChat(channel.ownId)
+            verify(remoteChannel.openChat(channel.ownId, "127.0.0.1", channel.servicePort))
+            tryVerify(function() { return channel.chatReady && !channel.privateChat && remoteChannel.chatReady && !remoteChannel.privateChat })
+            const plan = "## Tonight at the campfire\n\n**Good company. No rush.**\n\n| When | Where |\n|---|---|\n| 20:00 | Campfire: catch up |\n| 20:30 | Game night: play together |\n| Later | Workshop: share ideas |"
+            verify(channel.sendChat(plan)); tryCompare(channel, "chatPending", false)
+            verify(remoteChannel.sendChat("I'm in! **Game night** sounds good.\n\n> Good company. No rush.\n\nAnd I have an idea for the Workshop."))
+            tryCompare(remoteChannel, "chatPending", false)
+            const panel = findChild(view, "chatPanel"), history = findChild(panel, "chatHistory")
+            tryVerify(function() { return channel.messages.some(function(message) { return message.text === plan }) })
+            tryCompare(panel, "updating", false)
+            verify(channel.joinedHostId === channel.ownId && channel.chatHostId === channel.ownId)
+            tryVerify(function() { return channel.participants.length === 2 })
+            compare(view.channelList.filter(function(entry) { return entry.owned }).length, 3,
+                "The workspace contains only its three current owned channels: " + JSON.stringify(view.channelList.map(function(entry) { return {name: entry.name, id: entry.id, owned: entry.owned} })))
+            compare(view.channelList.filter(function(entry) { return entry.deviceId === remoteChannel.ownId }).length, 3,
+                "The remote host contains only its three current channels: " + JSON.stringify(view.channelList))
+            verify(visualChild(view.contentItem, "hostGroup_" + channel.ownId))
+            tryVerify(function() { return visualChild(view.contentItem, "hostGroup_" + remoteChannel.ownId) !== null })
+            verify(visualChild(view.contentItem, "channelRow_" + games))
+            verify(visualChild(view.contentItem, "channelRow_" + workshop))
+            verify(visualChild(view.contentItem, "channelRow_" + remoteMusic))
+            verify(visualChild(view.contentItem, "channelRow_" + remotePlanning))
+            if (data.width < 840) {
+                verify(fixtures.pressAccessible(findChild(view, "backToChannels")))
+                tryCompare(panel, "visible", false)
+            } else {
+                history.scrollTo(history.contentHeight - history.height)
+            }
+            mouseMove(view.contentItem, view.width - 8, 8)
+            view.contentItem.forceActiveFocus(Qt.OtherFocusReason)
+            verify(waitForPolish(view)); verify(waitForFrame(view.contentItem))
+            if (imageDirectory.length > 0)
+                verify(fixtures.saveWindow(view, imageDirectory + "/workspace-" + data.tag + ".png"))
+            if (data.tag === "light") {
+                view.memberOptions({id: remoteChannel.ownId, name: "Mira", avatarId: "moon-owl", available: true}, channel.ownId, false)
+                const inspect = findChild(view, "requestInfoDialog")
+                tryCompare(inspect, "opened", true)
+                verify(waitForPolish(view)); verify(waitForFrame(view.contentItem))
+                if (imageDirectory.length > 0)
+                    verify(fixtures.saveWindow(view, imageDirectory + "/person-controls.png"))
+                inspect.close()
+                view.width = 720
+                view.openSettings(1)
+                verify(waitForPolish(view)); verify(waitForFrame(view.contentItem))
+                if (imageDirectory.length > 0)
+                    verify(fixtures.saveWindow(view, imageDirectory + "/audio-controls.png"))
+                view.closeSettings()
+            }
+            verify(channel.removeOwnedChannel(games))
+            compare(view.channelList.filter(function(entry) { return entry.id === games }).length, 0,
+                "Removing a channel updates the bound list before any unrelated network event")
+            tryVerify(function() { return visualChild(view.contentItem, "channelRow_" + games) === null })
+        } finally {
+            const addedRemoteChannels = channel.savedChannels.filter(function(host) {
+                return host.deviceId === remoteChannel.ownId && savedBefore.indexOf(host.id) < 0
+            }).map(function(host) { return host.id })
+            for (const id of addedRemoteChannels) channel.closeChat(id)
+            for (const id of addedRemoteChannels) verify(channel.removeChannel(id))
+            const remoteOwnedIds = remoteChannel.ownedChannels.map(function(host) { return host.id })
+            for (const id of remoteOwnedIds)
+                if (id !== remoteChannel.ownId) verify(remoteChannel.removeOwnedChannel(id))
+            fixtures.setSupporter(false, true)
+            session.setUserName(previous.name); session.setAvatar(previous.avatar)
+            session.setTheme(previous.theme); channel.setChannelName(previous.channel)
+            remoteSession.setUserName(previous.remoteName); remoteSession.setAvatar(previous.remoteAvatar)
+            remoteChannel.setChannelName(previous.remoteChannel)
+        }
+    }
+
     function test_chatSendsOnlyAfterHostReceiptAndKeepsVoiceAvailable_data() {
         return [{tag: "English", language: "en"}, {tag: "Arabic", language: "ar"}]
     }
@@ -4349,8 +4487,8 @@ TestCase {
             "Chat portraits follow the channel animation preference")
         compare(own.own, true); compare(other.own, false)
         const ownRecord = own.message
-        own.message = Object.assign({}, ownRecord, {teamSpeak: true})
-        verify(!findChild(own, "messageAvatar_" + channel.ownId).teamSpeak,
+        own.message = Object.assign({}, ownRecord, {provider: "teamspeak"})
+        verify(!findChild(own, "messageAvatar_" + channel.ownId).provider,
             "An older protocol flag must not mark our own message as a TeamSpeak client")
         own.message = ownRecord
         verify(findChild(own, "messageBody_" + own.message.sequence).x > findChild(other, "messageBody_" + other.message.sequence).x)
@@ -4384,6 +4522,11 @@ TestCase {
             waitForRendering(panel)
             verify(fixtures.saveWindow(view, imageDirectory + "/channel-chat.png"))
         }
+        const otherRecord = other.message
+        other.message = Object.assign({}, otherRecord, {provider: "mumble"})
+        verify(!findChild(other, "messageAvatar_" + remoteChannel.ownId).provider,
+            "The current participant profile overrides an older external-provider badge")
+        other.message = otherRecord
         verify(remoteChannel.closeChat(channel.ownId))
         tryVerify(function() { return channel.chatPresenceKnown && !channel.chatOnlineIds.includes(remoteChannel.ownId) })
         history.scrollTo(other.y)
@@ -5209,32 +5352,145 @@ TestCase {
         tryVerify(function() { return visualChild(view.contentItem, "hostGroup_" + serverId) === null })
     }
 
-    function test_teamSpeakAddressUsesTheSameAddDialog() {
-        const dialog = findChild(view, "discoverDialog")
-        dialog.open()
-        tryCompare(dialog, "opened", true)
-        const address = findChild(view, "directAddress")
-        const add = findChild(view, "joinAddress")
-        verify(address && add)
-        verify(!findChild(view, "serverProtocol"))
-        verify(!findChild(view, "teamSpeakPassword"))
-        address.text = "localhost:65536"
-        tryCompare(add, "enabled", true)
-        for (const size of [[360, 420], [520, 700]]) {
-            view.width = size[0]; view.height = size[1]
-            verify(waitForRendering(dialog.contentItem))
-            for (const control of [address, add]) {
+    function test_addChannelUsesEmbeddedDetailsAndReturnsFocus_data() {
+        return [{tag: "compact", width: 390, height: 760},
+                {tag: "wide", width: 1120, height: 760}]
+    }
+    function test_addChannelUsesEmbeddedDetailsAndReturnsFocus(data) {
+        view.width = data.width; view.height = data.height
+        const add = findChild(view, "addChannel")
+        const pane = findChild(view, "discoverDialog")
+        verify(waitForPolish(view)); verify(waitForFrame(add))
+        add.forceActiveFocus(Qt.OtherFocusReason)
+        mouseClick(add)
+        tryCompare(pane, "opened", true)
+        compare(view.details, pane, "Add channel uses the existing embedded detail area")
+        tryVerify(function() { return pane.width >= (data.width >= 840 ? 600 : data.width - 40) }, 5000, "The embedded panel fills the detail area, width=" + pane.width)
+        const field = findChild(pane, "directAddress")
+        field.clear()
+        tryCompare(field, "activeFocus", true)
+        verify(fixtures.pressAccessible(findChild(pane, "closeDetails")))
+        tryCompare(pane, "opened", false)
+        tryCompare(channel, "discoverySearching", false)
+        tryCompare(add, "activeFocus", true)
+        keyClick(Qt.Key_Space)
+        tryCompare(pane, "opened", true)
+        verify(waitForFrame(pane.contentItem))
+        if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/add-panel-" + data.tag + ".png"))
+        keyClick(Qt.Key_Escape)
+        tryCompare(pane, "opened", false)
+        tryCompare(channel, "discoverySearching", false)
+        tryCompare(add, "activeFocus", true)
+    }
+
+    function test_addChannelRetriesAnAddressWithoutInterruptingVoice_data() {
+        return [{tag: "compact", width: 390}, {tag: "wide", width: 1120}]
+    }
+    function test_addChannelRetriesAnAddressWithoutInterruptingVoice(data) {
+        view.width = data.width; view.height = 760
+        verify(fixtures.startHost())
+        verify(channel.joinSaved(channel.ownId))
+        tryCompare(channel, "chatReady", true)
+        tryCompare(channel, "joined", true)
+        compare(channel.joinedHostId, channel.ownId)
+        compare(channel.chatHostId, channel.ownId)
+        verify(fixtures.startRemoteHost())
+        verify(remoteChannel.decide(channel.ownId, true))
+        const pane = findChild(view, "discoverDialog")
+        const field = findChild(pane, "directAddress")
+        const add = findChild(pane, "joinAddress")
+        const openAdd = findChild(view, "addChannel")
+        verify(waitForPolish(view)); verify(waitForFrame(openAdd))
+        mouseClick(openAdd)
+        tryCompare(pane, "opened", true)
+        field.text = "localhost:65536"
+        mouseClick(add)
+        verify(channel.status.includes("valid host or IP address"))
+        compare(channel.joinedHostId, channel.ownId)
+        verify(pane.opened)
+        field.text = "127.0.0.1:" + remoteChannel.servicePort
+        mouseClick(add)
+        tryVerify(function() { return channel.chatReady && channel.chatHostId === remoteChannel.ownId })
+        compare(channel.joinedHostId, channel.ownId)
+        verify(channel.savedChannels.some(function(host) { return host.id === remoteChannel.ownId }))
+        if (pane.opened) verify(fixtures.pressAccessible(findChild(pane, "closeDetails")))
+        tryCompare(pane, "opened", false)
+        verify(!view.details)
+        verify(findChild(view, "chatPanel").visible)
+        field.clear()
+        verify(channel.closeChat(remoteChannel.ownId))
+        verify(channel.removeChannel(remoteChannel.ownId))
+        mouseClick(findChild(view, "addChannel"))
+        tryCompare(pane, "opened", true)
+        const list = findChild(pane, "discoveryList")
+        tryVerify(function() { return list.model.some(function(host) { return host.id === remoteChannel.ownId }) })
+        const index = list.model.findIndex(function(host) { return host.id === remoteChannel.ownId })
+        list.positionViewAtIndex(index, ListView.Center)
+        tryVerify(function() { return findChild(list, "addDiscovered_" + remoteChannel.ownId) !== null })
+        const discoveredAdd = findChild(list, "addDiscovered_" + remoteChannel.ownId)
+        verify(waitForRendering(discoveredAdd))
+        mouseClick(discoveredAdd)
+        tryCompare(pane, "opened", false)
+        tryVerify(function() { return channel.chatReady && channel.chatHostId === remoteChannel.ownId })
+        compare(channel.joinedHostId, channel.ownId)
+    }
+
+    function test_supportedServersUseTheSameAddDialog_data() {
+        return [{tag: "compact", width: 320, height: 568, language: "en", theme: "light"},
+                {tag: "supporter", width: 320, height: 568, language: "de", theme: "light", supporter: true},
+                {tag: "short", width: 360, height: 420, language: "en", theme: "dark"},
+                {tag: "desktop", width: 520, height: 700, language: "en", theme: "light"},
+                {tag: "rtl", width: 360, height: 568, language: "ar", theme: "dark"}]
+    }
+    function test_supportedServersUseTheSameAddDialog(data) {
+        const previousTheme = session.theme
+        verify(session.setTheme(data.theme))
+        verify(session.setLanguage(data.language))
+        if (data.supporter && supporterLicense.directDistribution) verify(fixtures.setSupporter(true))
+        view.width = data.width; view.height = data.height
+        try {
+            const dialog = findChild(view, "discoverDialog")
+            mouseClick(findChild(view, "addChannel"))
+            tryCompare(dialog, "opened", true)
+            const address = findChild(view, "directAddress")
+            const add = findChild(view, "joinAddress")
+            verify(address && add)
+            address.clear()
+            tryCompare(add, "enabled", false)
+            verify(!findChild(view, "serverProtocol"))
+            verify(!findChild(view, "teamSpeakPassword"))
+            const icons = ["squadspeak", "teamspeak", "mumble"].map(function(provider) {
+                const icon = visualChild(dialog.contentItem, "supportedProvider_" + provider)
+                verify(icon, "Missing supported server: " + provider)
+                tryCompare(findChild(icon, "providerArtwork"), "status", Image.Ready)
+                return icon
+            })
+            compare(icons.map(icon => icon.Accessible.name).join(", "), "SquadSpeak, TeamSpeak, Mumble")
+            verify(waitForFrame(dialog.contentItem))
+            const actions = [add, findChild(view, "approveAddress"), findChild(view, "createOwnChannel")]
+            for (const control of [address].concat(actions.filter(button => button.visible), icons)) {
                 const position = control.mapToItem(dialog.contentItem, 0, 0)
                 verify(position.x >= 0 && position.x + control.width <= dialog.contentItem.width + 1)
                 verify(position.y >= 0 && position.y + control.height <= dialog.contentItem.height + 1)
             }
-            mouseClick(add)
-            tryVerify(function() { return channel.status.includes("valid host or IP address") })
-            if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/add-teamspeak-" + size[0] + ".png"))
+            verify(address.width >= 160, "The address must remain usable beside the server symbols")
+            const row = [address].concat(icons).sort((a, b) => a.x - b.x)
+            for (let index = 1; index < row.length; ++index)
+                verify(row[index - 1].x + row[index - 1].width <= row[index].x,
+                    "Server symbols must not overlap the address or each other")
+            if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/add-supported-servers-" + data.tag + ".png"))
+            address.text = "localhost:65536"
+            tryCompare(add, "enabled", true)
+            address.forceActiveFocus()
+            tryCompare(address, "activeFocus", true)
+            keyClick(Qt.Key_Return)
+            tryCompare(channel, "status", qsTranslate("LocalChannel", "Enter a valid host or IP address, optionally with a port from 1 to 65535."))
+            verify(!channel.joined)
+            verify(dialog.opened)
+            dialog.close()
+        } finally {
+            session.setTheme(previousTheme)
         }
-        verify(!channel.joined)
-        verify(dialog.opened)
-        dialog.close()
     }
 
     function test_directAddressControlsAndErrors() {

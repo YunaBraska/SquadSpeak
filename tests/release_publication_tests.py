@@ -2,6 +2,7 @@
 import json
 import os
 import re
+import shlex
 import shutil
 from pathlib import Path
 import subprocess
@@ -354,6 +355,12 @@ else:
         cargo = self.root / "bin/cargo"
         cargo.write_text("#!" + sys.executable + "\n" + '''import os, pathlib, sys
 root = pathlib.Path(os.environ["CARGO_TARGET_DIR"])
+if "OPENSSL_DIR" in os.environ and not os.environ["OPENSSL_DIR"]:
+    sys.exit("An empty OpenSSL override hides the system installation")
+if os.environ.get("PROTOC") != sys.executable:
+    sys.exit("The configured protobuf compiler was not passed to Cargo")
+if os.environ.get("OPENSSL_DIR") and os.environ.get("OPENSSL_STATIC") != "1":
+    sys.exit("The packaged OpenSSL library must be linked statically")
 root.mkdir(parents=True, exist_ok=True)
 args = sys.argv[1:]
 with (root / "calls").open("a") as log: log.write(" ".join(args) + "\\n")
@@ -376,11 +383,13 @@ include(cmake/TeamSpeak.cmake)
 add_custom_target(consumer ALL DEPENDS squad_teamspeak_build)
 ''')
         for mode, flags in (("native", []), ("production", ["-DBUILD_TESTING=OFF"]),
-                            ("cross", ["-DCMAKE_SYSTEM_NAME=Generic"])):
+                            ("cross", ["-DCMAKE_SYSTEM_NAME=Generic"]),
+                            ("pinned", ["-DBUILD_TESTING=OFF", "-DOPENSSL_ROOT_DIR=" + str(self.root / "packaged-openssl")])):
             with self.subTest(mode=mode):
                 build = self.root / mode
                 result = subprocess.run(["cmake", "-S", str(self.root), "-B", str(build),
-                    "-DSQUAD_CARGO=" + str(cargo), "-DSQUAD_RUSTC=" + sys.executable, *flags],
+                    "-DSQUAD_CARGO=" + str(cargo), "-DSQUAD_RUSTC=" + sys.executable,
+                    "-DSQUAD_PROTOC=" + sys.executable, *flags],
                     capture_output=True, text=True, timeout=30)
                 self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
                 result = subprocess.run(["cmake", "--build", str(build), "--parallel", "2"],
@@ -396,34 +405,59 @@ add_custom_target(consumer ALL DEPENDS squad_teamspeak_build)
                     env=dict(os.environ, FAIL_PREPARE="1"), capture_output=True, text=True, timeout=30)
                 self.assertNotEqual(result.returncode, 0, "Test preparation failure must fail the build")
 
+    def test_audio_processing_uses_its_pinned_headers_before_ambient_packages(self):
+        # A build tool can install a newer, incompatible Abseil alongside the
+        # private WebRTC dependency. Compile through the real CMake interface.
+        build = self.root / "build"
+        pinned = build / "audio-processing/include/absl/base"
+        ambient = self.root / "ambient/absl/base"
+        pinned.mkdir(parents=True)
+        ambient.mkdir(parents=True)
+        (pinned / "nullability.h").write_text("namespace absl { template<class T> using Nullable = T; }\n")
+        (ambient / "nullability.h").write_text("namespace absl {}\n")
+        (self.root / "consumer.cpp").write_text(
+            '#include <absl/base/nullability.h>\nabsl::Nullable<int*> value = nullptr;\n')
+        (self.root / "CMakeLists.txt").write_text('''cmake_minimum_required(VERSION 3.24)
+project(HeaderContract LANGUAGES C CXX)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+include(cmake/AudioProcessing.cmake)
+add_library(consumer OBJECT consumer.cpp)
+target_link_libraries(consumer PRIVATE squad_apm)
+''')
+        result = subprocess.run(["cmake", "-S", str(self.root), "-B", str(build),
+                                 "-DSQUAD_MESON=" + sys.executable],
+                                capture_output=True, text=True, timeout=30)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        command = json.loads((build / "compile_commands.json").read_text())[0]
+        result = subprocess.run(shlex.split(command["command"]), cwd=command["directory"],
+                                env=dict(os.environ, CPATH=str(self.root / "ambient")),
+                                capture_output=True, text=True, timeout=30)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
     def test_dependency_cache_ignores_test_and_release_changes(self):
         (self.root / "cmake").unlink()
         shutil.copytree(self.repo / "cmake", self.root / "cmake")
         (self.root / "tests").mkdir()
         for name in ("CMakeLists.txt", "tests/macos-ci.sh", "tests/windows-ci.ps1", "tests/linux-ci.sh"):
             shutil.copy2(self.repo / name, self.root / name)
-        for name in ("xcodebuild", "xcrun"):
-            tool = self.root / "bin" / name
-            tool.write_text("#!/bin/sh\nprintf 'fixed toolchain\\n'\n")
-            tool.chmod(0o700)
         workflow = (self.repo / ".github/workflows/verify.yml").read_text()
         selections = re.findall(r"^      cache_inputs: '(.*)'$", workflow, re.MULTILINE)
         self.assertEqual(len(selections), 3)
         for selection in selections:
-            def fingerprint():
-                linux = "tests/linux-ci.sh" in json.loads(selection)
-                result = self.run_step("Read Dependency Inputs" if linux else "Read Toolchain",
-                                       "wc_linux_build.yml" if linux else "wc_macos_build.yml", CACHE_INPUTS=selection)
-                self.assertEqual(result.returncode, 0, result.stderr)
-                return self.outputs()["inputs"]
-            baseline = fingerprint()
+            def selected_files():
+                return tuple(sorted(
+                    (path.relative_to(self.root).as_posix(), path.read_bytes())
+                    for pattern in json.loads(selection)
+                    for path in self.root.glob(pattern)
+                    if path.is_file()))
+            baseline = selected_files()
             for name in ("CMakeLists.txt", "cmake/Version.cmake", "cmake/DiscoverChannelTests.cmake"):
                 with self.subTest(selection=selection, unchanged=name):
                     path = self.root / name
                     original = path.read_text()
                     path.write_text(original + "\n# unrelated test or release change\n")
                     try:
-                        self.assertEqual(fingerprint(), baseline)
+                        self.assertEqual(selected_files(), baseline)
                     finally:
                         path.write_text(original)
             for name in ("cmake/qt-network-security.patch", "cmake/qt-wayland.patch"):
@@ -432,7 +466,7 @@ add_custom_target(consumer ALL DEPENDS squad_teamspeak_build)
                     original = path.read_text()
                     path.write_text(original + "\n# changed Linux-only repair\n")
                     try:
-                        self.assertEqual(fingerprint() != baseline, "tests/linux-ci.sh" in json.loads(selection))
+                        self.assertEqual(selected_files() != baseline, "tests/linux-ci.sh" in json.loads(selection))
                     finally:
                         path.write_text(original)
             pins = ["cmake/Dependencies.cmake", "cmake/AudioProcessing.cmake", "cmake/Media.cmake",
@@ -444,7 +478,7 @@ add_custom_target(consumer ALL DEPENDS squad_teamspeak_build)
                     original = path.read_text()
                     path.write_text(original + "\n# changed dependency input\n")
                     try:
-                        self.assertNotEqual(fingerprint(), baseline)
+                        self.assertNotEqual(selected_files(), baseline)
                     finally:
                         path.write_text(original)
 

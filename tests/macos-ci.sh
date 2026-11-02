@@ -16,7 +16,7 @@ build_root=$(cd "$2" && pwd)
 source_root=$(CDPATH='' cd "$(dirname "$0")/.." && pwd)
 if test "$qt_prefix" = auto; then qt_prefix="$build_root/toolchain/Qt/6.11.3/macos"; fi
 if test "$phase" = prepare; then
-    brew install cmake ninja meson pkgconf nasm ccache
+    brew install cmake ninja meson pkgconf nasm ccache protobuf
     ccache --zero-stats
     if test ! -x "$qt_prefix/bin/qmake"; then
         python3 -m venv "$build_root/toolchain/aqt"

@@ -259,10 +259,26 @@ VoiceMixer& VoiceMixer::setPacketLimit(int bytes) {
     return *this;
 }
 
-bool VoiceMixer::receive(const QString& peer, const QByteArray& packet, qint64 now, int missing) {
-    if (peer.isEmpty() || packet.isEmpty() || packet.size() > 4000 || now < 0 || missing < 0 || missing > 6) return false;
+bool VoiceMixer::receive(const QString& peer, const QByteArray& packet, qint64 now, int missing, int missingFrameSamples, bool last) {
+    if (peer.isEmpty() || packet.size() > 4000 || now < 0 || missing < 0
+        || (missingFrameSamples != 480 && missingFrameSamples != 960)
+        || missing > 5760 / missingFrameSamples) return false;
+    if (packet.isEmpty()) {
+        const auto found = streams_.find(peer);
+        if (!last || found == streams_.end()) return false;
+        auto& stream = found->second;
+        if (stream.partialSamples > 0) {
+            stream.partial.received = now;
+            std::fill(stream.partial.samples.begin() + stream.partialSamples, stream.partial.samples.end(), 0);
+            const auto frameLimit = size_t(std::max(7, stream.playbackDelay / 20 + 6));
+            if (stream.frames.size() >= frameLimit) stream.frames.pop_front();
+            stream.frames.push_back(stream.partial); stream.partialSamples = 0;
+        }
+        return true;
+    }
     const auto* data = reinterpret_cast<const unsigned char*>(packet.constData());
-    if (opus_packet_get_nb_samples(data, int(packet.size()), 48000) != 960) return false;
+    const int packetSamples = opus_packet_get_nb_samples(data, int(packet.size()), 48000);
+    if (packetSamples < 120 || packetSamples > 5760 || packetSamples % 120 != 0) return false;
     auto& stream = streams_[peer];
     if (!stream.decoder) {
         int error;
@@ -270,8 +286,6 @@ bool VoiceMixer::receive(const QString& peer, const QByteArray& packet, qint64 n
         if (!stream.decoder) { streams_.erase(peer); throw std::runtime_error(opus_strerror(error)); }
         stream.gain = gains_.value(peer, 1);
     }
-    Frame frame;
-    frame.received = now;
     const auto gap = now - stream.receivedAt;
     // A pause beyond the jitter budget starts a new utterance only after
     // playback drains. Do not train network jitter on intentional silence.
@@ -279,6 +293,7 @@ bool VoiceMixer::receive(const QString& peer, const QByteArray& packet, qint64 n
         && (now - stream.nextFrameAt > maximumPlaybackDelayMs + 20
             || (stream.frames.empty() && now > stream.nextFrameAt)))) {
         stream.frames.clear();
+        stream.partialSamples = 0;
         if (stream.receivedAt < 0) stream.playbackDelay = playbackDelayMs_ > 0 ? 100 : 0;
         else if (stream.receivedAt - stream.lastJitterAt > 10000) stream.playbackDelay = playbackDelayMs_;
         stream.lastJitterAt = now;
@@ -289,7 +304,7 @@ bool VoiceMixer::receive(const QString& peer, const QByteArray& packet, qint64 n
         missing = 0;
     } else if (playbackDelayMs_ > 0) {
         // Excess over one packet interval, rounded to whole 20 ms frames.
-        const int needed = int(std::clamp<qint64>(((gap - 1) / 20) * 20, playbackDelayMs_, maximumPlaybackDelayMs));
+        const int needed = int(std::clamp<qint64>(((gap - stream.packetDurationMs + 19) / 20) * 20, playbackDelayMs_, maximumPlaybackDelayMs));
         if (needed > playbackDelayMs_) stream.lastJitterAt = now;
         if (needed > stream.playbackDelay) {
             // Extend the pending playback deadline, not the arrival time.
@@ -308,14 +323,34 @@ bool VoiceMixer::receive(const QString& peer, const QByteArray& packet, qint64 n
     // refill the output device. Retain that batch in addition to jitter depth,
     // within the same 120 ms freshness reserve enforced by render().
     const auto frameLimit = size_t(std::max(7, stream.playbackDelay / 20 + 6));
+    std::array<float, 11520> decoded{};
+    const auto append = [&](int frames) {
+        const auto count = size_t(frames * channels_);
+        const auto frameSamples = size_t(960 * channels_);
+        for (size_t offset = 0; offset < count;) {
+            const auto take = std::min(count - offset, frameSamples - stream.partialSamples);
+            std::copy_n(decoded.data() + offset, take, stream.partial.samples.data() + stream.partialSamples);
+            stream.partialSamples += take; offset += take;
+            if (stream.partialSamples == frameSamples) {
+                stream.partial.received = now;
+                if (stream.frames.size() >= frameLimit) stream.frames.pop_front();
+                stream.frames.push_back(stream.partial); stream.partialSamples = 0;
+            }
+        }
+    };
     for (int gap = 0; gap < missing; ++gap) {
-        if (opus_decode_float(stream.decoder.get(), nullptr, 0, frame.samples.data(), 960, 0) != 960) return false;
-        if (stream.frames.size() >= frameLimit) stream.frames.pop_front();
-        stream.frames.push_back(frame);
+        if (opus_decode_float(stream.decoder.get(), nullptr, 0, decoded.data(), missingFrameSamples, 0) != missingFrameSamples) return false;
+        append(missingFrameSamples);
     }
-    if (opus_decode_float(stream.decoder.get(), data, int(packet.size()), frame.samples.data(), 960, 0) != 960) return false;
-    if (stream.frames.size() >= frameLimit) stream.frames.pop_front();
-    stream.frames.push_back(std::move(frame));
+    if (opus_decode_float(stream.decoder.get(), data, int(packet.size()), decoded.data(), packetSamples, 0) != packetSamples) return false;
+    append(packetSamples);
+    stream.packetDurationMs = packetSamples / 48;
+    if (last && stream.partialSamples > 0) {
+        stream.partial.received = now;
+        std::fill(stream.partial.samples.begin() + stream.partialSamples, stream.partial.samples.end(), 0);
+        if (stream.frames.size() >= frameLimit) stream.frames.pop_front();
+        stream.frames.push_back(stream.partial); stream.partialSamples = 0;
+    }
     if (stream.frames.size() > size_t(stream.playbackDelay / 20))
         stream.readyAt = std::min(stream.readyAt, now);
     return true;

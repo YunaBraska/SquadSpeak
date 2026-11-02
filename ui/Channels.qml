@@ -105,7 +105,7 @@ PanelWindow {
                     id: memberAvatar
                     required property var modelData
                     width: 36; height: 36; circular: true
-                    avatar: modelData.avatarId || modelData.avatar || "mossling"; name: modelData.name; music: !!modelData.music; teamSpeak: !!modelData.teamSpeak
+                    avatar: modelData.avatarId || modelData.avatar || "mossling"; name: modelData.name; music: !!modelData.music; provider: modelData.provider || ""
                     available: modelData.available; muted: modelData.muted; deafened: !!modelData.deafened; sleeping: !!modelData.sleeping
                     identity: modelData.id; animationTime: root.avatarTime
                     objectName: "channelAvatar_" + summary.hostId + "_" + modelData.id
@@ -156,7 +156,7 @@ PanelWindow {
                 VoiceAvatar {
                     objectName: "participantAvatar"
                     Layout.preferredWidth: 44; Layout.preferredHeight: 44; circular: true
-                    avatar: modelData.avatarId || modelData.avatar || "mossling"; name: modelData.name; music: !!modelData.music; teamSpeak: !!modelData.teamSpeak
+                    avatar: modelData.avatarId || modelData.avatar || "mossling"; name: modelData.name; music: !!modelData.music; provider: modelData.provider || ""
                     available: modelData.available; muted: modelData.muted; deafened: !!modelData.deafened; sleeping: !!modelData.sleeping
                     identity: modelData.id; animationTime: root.avatarTime
                     animated: root.voice.animatedAvatars && memberEntry.y + memberEntry.height >= grid.contentY && memberEntry.y <= grid.contentY + grid.height
@@ -367,20 +367,22 @@ PanelWindow {
     }
     ListModel { id: channelRows; dynamicRoles: true }
     function orderedChannels(entries) {
-        if (!entries.some(function(c) { return c.protocol === "teamspeak" }))
+        if (!entries.some(function(c) { return c.protocol === "teamspeak" || c.protocol === "mumble" }))
             return entries.slice().sort(function(a, b) { return a.name.localeCompare(b.name) || a.id.localeCompare(b.id) })
         const result = [], seen = new Set(), ids = new Set(entries.map(function(c) { return c.id }))
         function appendSiblings(parent, depth) {
             const siblings = entries.filter(function(c) { return parent ? c.parent === parent : !ids.has(c.parent) })
+            const mumble = siblings.length && siblings[0].protocol === "mumble"
+            if (mumble) siblings.sort(function(a, b) { return (Number(a.order) - Number(b.order)) || a.name.localeCompare(b.name) || a.id.localeCompare(b.id) })
             let previous = "0"
             while (siblings.length) {
-                let index = siblings.findIndex(function(c) { return c.order === previous })
+                let index = mumble ? 0 : siblings.findIndex(function(c) { return c.order === previous })
                 if (index < 0) index = 0
                 const entry = siblings.splice(index, 1)[0]
                 if (seen.has(entry.id)) continue
                 seen.add(entry.id)
                 result.push(Object.assign({}, entry, {depth: Math.min(depth, 8)}))
-                previous = entry.tsChannel
+                previous = entry.providerChannel
                 if (depth < 64) appendSiblings(entry.id, depth + 1)
             }
         }
@@ -438,7 +440,7 @@ PanelWindow {
             const privateUnread = group.privateChats.some(function(entry) { return !!entry.unread })
             const groupUnread = privateUnread || group.channels.some(function(entry) { return !!entry.unread })
             const grouped = group.channels.length !== 1
-                || (group.protocol === "teamspeak" && group.channels[0].tsChannel === "0")
+                || (group.protocol === "teamspeak" && group.channels[0].providerChannel === "0")
             const groupExpanded = !grouped || !!query || !collapsedHosts[group.key]
             if (query && !group.label.toLowerCase().includes(query)) {
                 const matches = new Set()
@@ -556,16 +558,18 @@ PanelWindow {
         if (details) details.close()
         chatExpanded = false
         Qt.callLater(function() {
-            for (let i = 0; i < channelRepeater.count; ++i) {
-                const entry = channelRepeater.itemAt(i)
-                if (entry && entry.channelData.id === root.inspectedHost) {
-                    // Let the compact list become visible before restoring its
-                    // keyboard focus. The first deferred turn applies the
-                    // chatExpanded binding; the second has a focusable row.
-                    Qt.callLater(entry.focusChannel)
-                    return
+            // The second turn has a visible compact list. Resolve its current
+            // row then, because search or network updates can replace delegates.
+            Qt.callLater(function() {
+                if (!root.visible || root.showChat || root.details || root.searchOpen) return
+                for (let i = 0; i < channelRepeater.count; ++i) {
+                    const entry = channelRepeater.itemAt(i)
+                    if (entry && entry.channelData.id === root.inspectedHost) {
+                        entry.focusChannel()
+                        return
+                    }
                 }
-            }
+            })
         })
     }
     function showChannelInfo(id, toggle) {
@@ -638,7 +642,7 @@ PanelWindow {
                             objectName: "togglePrivateBlock_" + modelData.id
                             text: modelData.blockedByMe ? qsTr("Unblock") : qsTr("Block")
                             destructive: !modelData.blockedByMe
-                            visible: modelData.protocol !== "teamspeak"
+                            visible: modelData.protocol !== "teamspeak" && modelData.protocol !== "mumble"
                             onClicked: root.network.setPrivateBlocked(modelData.id, !modelData.blockedByMe)
                         }
                     }
@@ -710,7 +714,7 @@ PanelWindow {
         anchors.centerIn: parent
         width: Math.min(360, parent.width - 24)
         modal: true
-        title: root.network.teamSpeakChat ? qsTr("Password") : qsTr("Channel password")
+        title: root.network.externalChat ? qsTr("Password") : qsTr("Channel password")
         closePolicy: Popup.NoAutoClose
         onOpened: { joinSecret.clear(); rememberSecret.checked = root.network.passwordSaved; joinSecret.forceActiveFocus() }
         onClosed: joinSecret.clear()
@@ -802,21 +806,22 @@ PanelWindow {
         }
         function onStateChanged() {
             if (!root.remote) root.showNotice(root.network.status)
-            if (root.network.joined && discover.opened) discover.close()
+            if (root.network.joined && discover.opened && root.network.joinedHostId !== discover.voiceAtOpen) discover.close()
             if (root.network.passwordRequired && !joinPassword.opened) { discover.close(); joinPassword.open() }
             else if (!root.network.passwordRequired) joinPassword.close()
         }
     }
-    PanelDialog {
+    DetailPane {
         id: discover
         objectName: "discoverDialog"
-        parent: Overlay.overlay; anchors.centerIn: parent
-        width: Math.min(420, parent.width - 24)
-        height: Math.min(480, parent.height - 24)
-        modal: true
+        property string voiceAtOpen: ""
         title: qsTr("Add a channel")
-        buttons: Dialog.Close
-        onOpened: { root.network.setDiscoverySearch(true); discoveryList.refresh() }
+        onShown: {
+            voiceAtOpen = root.network.joinedHostId
+            root.network.setDiscoverySearch(true)
+            discoveryList.refresh()
+            directAddress.forceActiveFocus(Qt.OtherFocusReason)
+        }
         onClosed: { discoveryRefresh.stop(); root.network.setDiscoverySearch(false) }
         Timer { id: discoveryRefresh; interval: 50; onTriggered: discoveryList.refresh() }
         contentItem: ColumnLayout {
@@ -838,6 +843,26 @@ PanelWindow {
                         ? "x-apple.systempreferences:com.apple.preference.security?Privacy_LocalNetwork" : "app-settings:")
                 }
             }
+            RowLayout {
+                Layout.fillWidth: true; spacing: 8
+                EntryField { id: directAddress; objectName: "directAddress"; Layout.fillWidth: true; placeholderText: qsTr("Host or IP address, optional :port"); Accessible.name: placeholderText; maximumLength: 300; onAccepted: if (joinAddress.enabled) joinAddress.clicked() }
+                Repeater {
+                    model: ["squadspeak", "teamspeak", "mumble"]
+                    ProviderIcon {
+                        required property string modelData
+                        objectName: "supportedProvider_" + modelData
+                        provider: modelData
+                        Layout.preferredWidth: 20; Layout.preferredHeight: 20
+                    }
+                }
+            }
+            Flow {
+                Layout.fillWidth: true; spacing: 6
+                ActionButton { id: joinAddress; objectName: "joinAddress"; text: qsTr("Add"); glyph: "link"; primary: true; enabled: root.network.ready && !root.network.directBusy && directAddress.text.trim().length > 0; onClicked: root.network.openAddress(directAddress.text) }
+                ActionButton { objectName: "createOwnChannel"; text: qsTr("Host a channel"); visible: root.voice.supporterEnabled; enabled: root.network.ownedChannels.length < 10; onClicked: newOwnChannel.open() }
+                ActionButton { objectName: "approveAddress"; text: qsTr("Allow device"); enabled: joinAddress.enabled; onClicked: root.network.approveAddress(directAddress.text) }
+            }
+            Label { Layout.fillWidth: true; text: root.network.status; textFormat: Text.PlainText; color: Theme.muted; wrapMode: Text.Wrap }
             Label {
                 objectName: "discoveryStatus"
                 visible: (root.network.discoverySearching || !!root.network.discoveryError || discoveryList.count === 0)
@@ -882,13 +907,6 @@ PanelWindow {
                     ActionButton { objectName: "addDiscovered_" + modelData.id; text: qsTr("Add"); primary: true; onClicked: { if (root.network.openChat(modelData.id, modelData.address, modelData.port)) discover.close() } }
                 }
             }
-            EntryField { id: directAddress; objectName: "directAddress"; Layout.fillWidth: true; placeholderText: qsTr("Host or IP address, optional :port"); Accessible.name: placeholderText; maximumLength: 300; onAccepted: if (joinAddress.enabled) joinAddress.clicked() }
-            RowLayout {
-                ActionButton { id: joinAddress; objectName: "joinAddress"; text: qsTr("Add"); glyph: "link"; primary: true; enabled: root.network.ready && !root.network.directBusy && directAddress.text.trim().length > 0; onClicked: root.network.openAddress(directAddress.text) }
-                ActionButton { objectName: "createOwnChannel"; text: qsTr("Host a channel"); visible: root.voice.supporterEnabled; enabled: root.network.ownedChannels.length < 10; onClicked: newOwnChannel.open() }
-                ActionButton { objectName: "approveAddress"; text: qsTr("Allow device"); enabled: joinAddress.enabled; onClicked: root.network.approveAddress(directAddress.text) }
-            }
-            Label { Layout.fillWidth: true; text: root.network.status; textFormat: Text.PlainText; color: Theme.muted; wrapMode: Text.Wrap }
         }
     }
     DetailPane {
@@ -1465,7 +1483,7 @@ PanelWindow {
                 }
                 ActionButton { Layout.fillWidth: true; flat: true; horizontalAlignment: Text.AlignLeft; objectName: "leaveMenuItem"; destructive: true; text: qsTr("Leave"); enabled: root.activeHost === root.selectedHost; onClicked: root.leaveHost() }
                 Rectangle { Layout.fillWidth: true; implicitHeight: 1; color: Theme.border; visible: !root.remote && root.selectedHost !== root.network.ownId; height: visible ? implicitHeight : 0 }
-                ActionButton { Layout.fillWidth: true; flat: true; horizontalAlignment: Text.AlignLeft; objectName: "removeChannelMenuItem"; destructive: true; text: root.channelList.some(function(c) { return c.id === root.selectedHost && c.protocol === "teamspeak" }) ? qsTr("Remove server") : qsTr("Remove channel"); visible: !root.remote && root.selectedHost !== root.network.ownId; onClicked: root.selectedOwner ? removeOwnChannel.open() : root.network.removeChannel(root.selectedHost) }
+                ActionButton { Layout.fillWidth: true; flat: true; horizontalAlignment: Text.AlignLeft; objectName: "removeChannelMenuItem"; destructive: true; text: root.channelList.some(function(c) { return c.id === root.selectedHost && (c.protocol === "teamspeak" || c.protocol === "mumble") }) ? qsTr("Remove server") : qsTr("Remove channel"); visible: !root.remote && root.selectedHost !== root.network.ownId; onClicked: root.selectedOwner ? removeOwnChannel.open() : root.network.removeChannel(root.selectedHost) }
                 DetailText { objectName: "channelIdentity"; text: channelInfo.entry.id || ""; color: Theme.muted; font.pixelSize: Theme.fontSize(11); Accessible.name: qsTr("Channel ID") }
                 ActionButton { objectName: "internetHelpToggle"; text: qsTr("Internet access"); flat: true; onClicked: internetHelp.visible = !internetHelp.visible }
                 ColumnLayout {
@@ -1600,11 +1618,11 @@ PanelWindow {
                 width: requestScroll.availableWidth; spacing: 12
                 RowLayout {
                     Layout.fillWidth: true
-                    VoiceAvatar { objectName: "requestAvatar"; width: 56; height: 56; circular: true; animated: false; avatar: requestInfo.entry.avatarId || "mossling"; name: requestInfo.entry.name || ""; teamSpeak: !!requestInfo.entry.teamSpeak }
+                    VoiceAvatar { objectName: "requestAvatar"; width: 56; height: 56; circular: true; animated: false; avatar: requestInfo.entry.avatarId || "mossling"; name: requestInfo.entry.name || ""; provider: requestInfo.entry.provider || "" }
                     ColumnLayout {
                         Layout.fillWidth: true; spacing: 2
                         DetailText { objectName: "requestName"; text: requestInfo.entry.name || ""; font.weight: Font.DemiBold }
-                        DetailText { objectName: "requestClient"; visible: !!requestInfo.entry.id && !requestInfo.entry.music; text: requestInfo.entry.teamSpeak ? "TeamSpeak" : "SquadSpeak"; color: Theme.muted; font.pixelSize: Theme.fontSize(12) }
+                        DetailText { objectName: "requestClient"; visible: !!requestInfo.entry.id && !requestInfo.entry.music; text: requestInfo.entry.provider === "mumble" ? "Mumble" : requestInfo.entry.provider === "teamspeak" ? "TeamSpeak" : "SquadSpeak"; color: Theme.muted; font.pixelSize: Theme.fontSize(12) }
                     }
                     ActionButton {
                         objectName: "messageInspectedMember"
@@ -1632,6 +1650,7 @@ PanelWindow {
                 }
                 SettingSlider {
                     id: memberGain; objectName: "memberVolume"
+                    Layout.minimumWidth: requestDetails.width
                     Layout.fillWidth: true; visible: requestInfo.personalControls
                     caption: qsTr("Volume for me")
                     from: 0; to: 2; stepSize: 0.05

@@ -85,7 +85,7 @@ target_compile_options(squad_audio PRIVATE $<$<CXX_COMPILER_ID:AppleClang,Clang,
 
 include(cmake/TeamSpeak.cmake)
 
-add_library(squad_session src/local_channel_teamspeak.cpp src/voice_session.cpp src/voice_session.hpp src/tls_identity.cpp src/tls_identity.hpp src/local_channel.cpp src/local_channel_chat.cpp src/local_channel_private.cpp src/local_channel_control.cpp src/local_channel_discovery.cpp src/local_channel_video.cpp src/local_channel.hpp src/media_transport.cpp src/media_transport.hpp src/chat_history.cpp src/chat_history.hpp src/license.cpp src/license.hpp)
+add_library(squad_session src/local_channel_external.cpp src/voice_session.cpp src/voice_session.hpp src/tls_identity.cpp src/tls_identity.hpp src/local_channel.cpp src/local_channel_chat.cpp src/local_channel_private.cpp src/local_channel_control.cpp src/local_channel_discovery.cpp src/local_channel_video.cpp src/local_channel.hpp src/media_transport.cpp src/media_transport.hpp src/chat_history.cpp src/chat_history.hpp src/license.cpp src/license.hpp)
 target_include_directories(squad_session PUBLIC src)
 # Version changes only rebuild entrypoints that report the version.
 set_source_files_properties(src/headless.cpp tests/headless_tests.cpp PROPERTIES
@@ -732,8 +732,10 @@ if(BUILD_TESTING)
             ENVIRONMENT "SQUAD_CORPUS_OUTPUT=${CMAKE_BINARY_DIR}/audio-corpus-${part}")
     endforeach()
     # Independent corpus functions retain every data row and their own deadline.
-    # Mixture throughput needs an uncontended CPU, including under sanitizers.
+    # Mixtures and the full activation matrix repeatedly encode real audio.
+    # Keep both off competing workers, including on hosted Intel runners.
     set_tests_properties(audio_corpus PROPERTIES TIMEOUT 600 RUN_SERIAL TRUE COST 500)
+    set_tests_properties(audio_corpus_speechActivation PROPERTIES RUN_SERIAL TRUE COST 500)
     qt_add_executable(radio_tests tests/radio_tests.cpp)
     target_link_libraries(radio_tests PRIVATE squad_radio Qt6::Test)
     add_test(NAME radio_contract COMMAND radio_tests)
@@ -751,6 +753,24 @@ if(BUILD_TESTING)
     add_executable(teamspeak_live EXCLUDE_FROM_ALL tests/teamspeak_live.cpp)
     target_link_libraries(teamspeak_live PRIVATE squad_session squad_content squad_audio Qt6::Test)
     add_test(NAME teamspeak_contract COMMAND teamspeak_tests)
+    qt_add_executable(mumble_crypt_tests tests/mumble_crypt_tests.cpp
+        src/teamspeak_bridge/mumble-crypt/CryptStateOCB2.cpp)
+    target_include_directories(mumble_crypt_tests PRIVATE src/teamspeak_bridge/mumble-crypt)
+    target_link_libraries(mumble_crypt_tests PRIVATE Qt6::Test OpenSSL::Crypto)
+    if(WIN32)
+        target_link_libraries(mumble_crypt_tests PRIVATE ws2_32)
+    endif()
+    add_test(NAME mumble_crypt COMMAND mumble_crypt_tests)
+    set_tests_properties(mumble_crypt PROPERTIES TIMEOUT 30)
+    qt_add_executable(mumble_tests tests/mumble_tests.cpp)
+    target_link_libraries(mumble_tests PRIVATE squad_session squad_audio Qt6::Test)
+    option(SQUADSPEAK_MUMBLE_E2E "Run the Mumble client against a disposable real server" OFF)
+    if(SQUADSPEAK_MUMBLE_E2E)
+        find_package(Python3 REQUIRED COMPONENTS Interpreter)
+        add_test(NAME mumble_e2e COMMAND "${Python3_EXECUTABLE}"
+            "${CMAKE_CURRENT_SOURCE_DIR}/tests/mumble_server.py" "$<TARGET_FILE:mumble_tests>")
+        set_tests_properties(mumble_e2e PROPERTIES TIMEOUT 240 RUN_SERIAL TRUE)
+    endif()
     # The real transport fixture must not compete with CPU-heavy DSP work.
     set_tests_properties(teamspeak_contract PROPERTIES TIMEOUT 90 RESOURCE_LOCK channel_fixed_ports RUN_SERIAL TRUE)
     qt_add_executable(license_tests tests/license_tests.cpp src/headless.cpp src/headless.hpp)
@@ -803,12 +823,20 @@ if(BUILD_TESTING)
         SQUAD_TEST_PYTHON="${Python3_EXECUTABLE}")
     add_dependencies(headless_tests squadspeak)
     add_test(NAME headless_contract COMMAND headless_tests)
-    # The suite launches dozens of real processes; per-operation deadlines stay
-    # in the tests, while this outer budget also allows loaded CI runners.
-    set_tests_properties(headless_contract PROPERTIES TIMEOUT 240)
+    # The suite launches dozens of real processes. Competing codec workloads
+    # must not consume its aggregate budget or its per-operation deadlines.
+    set_tests_properties(headless_contract PROPERTIES TIMEOUT 240 RUN_SERIAL TRUE)
     add_test(NAME audio_controls COMMAND controls_tests -input "${CMAKE_CURRENT_SOURCE_DIR}/tests/tst_controls.qml")
     set_tests_properties(audio_controls PROPERTIES
         ENVIRONMENT "QT_QPA_PLATFORM=${ui_test_platform};QT_QUICK_BACKEND=software;QT_QUICK_CONTROLS_STYLE=Basic")
+    # Darwin 23.2 is macOS 14.2, the first per-process Core Audio stream probe.
+    # Keep native acceptance out of portable suites instead of skipping it there.
+    if(CMAKE_SYSTEM_NAME STREQUAL "Darwin" AND CMAKE_HOST_SYSTEM_VERSION VERSION_GREATER_EQUAL 23.2)
+        add_test(NAME native_audio_output COMMAND controls_tests
+            -input "${CMAKE_CURRENT_SOURCE_DIR}/tests/tst_native_audio_output.qml")
+        set_tests_properties(native_audio_output PROPERTIES TIMEOUT 30 LABELS "native" RESOURCE_LOCK desktop
+            ENVIRONMENT "QT_QPA_PLATFORM=cocoa;QT_QUICK_BACKEND=software;QT_QUICK_CONTROLS_STYLE=Basic")
+    endif()
     add_test(NAME frequency_display COMMAND controls_tests -input "${CMAKE_CURRENT_SOURCE_DIR}/tests/tst_spectrum.qml")
     set_tests_properties(frequency_display PROPERTIES
         ENVIRONMENT "QT_QPA_PLATFORM=${ui_test_platform};QT_QUICK_BACKEND=software;QT_QUICK_CONTROLS_STYLE=Basic;SQUAD_TEST_ARTIFACTS=${CMAKE_BINARY_DIR}/smoke")

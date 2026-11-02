@@ -148,6 +148,13 @@ public:
 };
 }
 
+QString ChatContent::importedHtmlText(const QString& html) {
+    if (html.size() > 4096) return {};
+    DisplayDocument document;
+    document.setHtml(html);
+    return document.toPlainText().remove(QChar::ObjectReplacementCharacter);
+}
+
 bool ChatContent::allowedLink(const QUrl& link) {
     return link.isValid() && (link.scheme() == "https" || link.scheme() == "http")
         && !link.host().isEmpty() && link.userInfo().isEmpty();

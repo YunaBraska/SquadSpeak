@@ -181,7 +181,7 @@ public:
     Q_INVOKABLE bool setParticipantVolume(const QString& peer, double value);
     bool setVoiceState(bool joined, bool transmit, bool pushToTalk = false, int packetLimit = 4000);
     bool setParticipants(const QVariantList& participants, const QString& channel = {});
-    bool receiveAudio(const QString& peer, const QByteArray& packet, int missing = 0);
+    bool receiveAudio(const QString& peer, const QByteArray& packet, int missing = 0, int missingFrameSamples = 960, bool last = false);
     Q_INVOKABLE bool start();
     Q_INVOKABLE bool stop();
     Q_INVOKABLE bool testOutput();

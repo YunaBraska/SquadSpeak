@@ -14,6 +14,9 @@ use tokio::sync::mpsc;
 use tokio::time::{Duration, Instant};
 use tsclientlib::{prelude::*, Connection, DisconnectOptions, Identity, OutCommandExt, StreamItem};
 use tsproto_packets::packets::{AudioData, CodecType, OutAudio};
+mod mumble;
+mod mumble_crypt;
+mod mumble_voice;
 
 const MAX_JSON: usize = 64 * 1024;
 const MAX_AUDIO: usize = 500 - 13 - 3;
@@ -28,18 +31,22 @@ impl Queue {
         if value.len() > MAX_QUEUE_BYTES {
             value = [
                 vec![1],
-                br#"{"type":"closed","message":"TeamSpeak state exceeded its limit."}"#.to_vec(),
+                br#"{"type":"closed","message":"External voice state exceeded its limit."}"#
+                    .to_vec(),
             ]
             .concat();
         }
         let mut q = self.0.lock().unwrap();
         let mut bytes: usize = q.iter().map(Vec::len).sum();
         while bytes + value.len() > MAX_QUEUE_BYTES {
-            let Some(index) = q.iter().position(|entry| entry.first() == Some(&2)) else {
+            let Some(index) = q
+                .iter()
+                .position(|entry| matches!(entry.first(), Some(2 | 3)))
+            else {
                 if value.first() == Some(&1) {
                     q.clear();
                     let mut closed = vec![1];
-                    closed.extend_from_slice(br#"{"type":"closed","message":"TeamSpeak event queue exceeded its limit."}"#);
+                    closed.extend_from_slice(br#"{"type":"closed","message":"External voice event queue exceeded its limit."}"#);
                     q.push_back(closed);
                 }
                 return;
@@ -85,6 +92,8 @@ struct Handle {
     tx: mpsc::Sender<Command>,
     queue: Queue,
     join: Mutex<Option<JoinHandle<()>>>,
+    max_audio: usize,
+    cancel: Option<tokio::sync::watch::Sender<bool>>,
 }
 
 #[derive(Deserialize)]
@@ -180,18 +189,30 @@ impl AudioQueue {
         // Keep sample time after a delayed wake. Rebasing every late tick adds
         // permanent latency and eventually overflows the capture queue.
         pacing.set_missed_tick_behavior(tokio::time::MissedTickBehavior::Burst);
-        Self { packets: VecDeque::new(), speaking: false, pacing }
+        Self {
+            packets: VecDeque::new(),
+            speaking: false,
+            pacing,
+        }
     }
 
     fn push(&mut self, data: Vec<u8>) {
         if data.is_empty() {
-            if self.packets.back().map_or(self.speaking, |packet| !packet.is_empty()) {
+            if self
+                .packets
+                .back()
+                .map_or(self.speaking, |packet| !packet.is_empty())
+            {
                 self.packets.push_back(data);
             }
         } else {
-            if self.packets.is_empty() && !self.speaking { self.pacing.reset_immediately(); }
+            if self.packets.is_empty() && !self.speaking {
+                self.pacing.reset_immediately();
+            }
             // Bound worker backlog to 180 ms. Capture pre-roll is paced before the bridge.
-            while self.packets.len() >= 9 { self.packets.pop_front(); }
+            while self.packets.len() >= 9 {
+                self.packets.pop_front();
+            }
             self.packets.push_back(data);
         }
     }
@@ -534,7 +555,12 @@ fn handle_command(
                     let mut packet = update.to_packet().to_packet();
                     if let Some(metadata) = value.get("metadata").and_then(Value::as_str) {
                         if metadata.len() > 256 {
-                            result(queue, &request, false, Some("Invalid client metadata.".into()));
+                            result(
+                                queue,
+                                &request,
+                                false,
+                                Some("Invalid client metadata.".into()),
+                            );
                             return true;
                         }
                         if metadata != current.metadata {
@@ -835,9 +861,17 @@ pub extern "C" fn ss_ts_open(ptr: *const u8, length: usize) -> *mut c_void {
             tx,
             queue,
             join: Mutex::new(Some(join)),
+            max_audio: MAX_AUDIO,
+            cancel: None,
         })) as *mut c_void
     })
     .unwrap_or(std::ptr::null_mut())
+}
+
+/// Opens a Mumble connection using the shared opaque handle/event/audio ABI.
+#[no_mangle]
+pub extern "C" fn ss_mumble_open(ptr: *const u8, length: usize) -> *mut c_void {
+    catch_unwind(|| mumble::open(ptr, length)).unwrap_or(std::ptr::null_mut())
 }
 
 #[no_mangle]
@@ -860,17 +894,19 @@ pub extern "C" fn ss_ts_command(handle: *mut c_void, ptr: *const u8, length: usi
 #[no_mangle]
 pub extern "C" fn ss_ts_audio(handle: *mut c_void, ptr: *const u8, length: usize) -> i32 {
     catch_unwind(|| {
-        if handle.is_null() || (ptr.is_null() && length != 0) || length > MAX_AUDIO {
+        if handle.is_null() || (ptr.is_null() && length != 0) {
             return 0;
         }
         let h = unsafe { &*(handle as *mut Handle) };
+        if length > h.max_audio {
+            return 0;
+        }
         let data = if length == 0 {
             Vec::new()
         } else {
             unsafe { std::slice::from_raw_parts(ptr, length).to_vec() }
         };
-        h.tx.try_send(Command::Audio(data))
-        .is_ok() as i32
+        h.tx.try_send(Command::Audio(data)).is_ok() as i32
     })
     .unwrap_or(0)
 }
@@ -895,6 +931,9 @@ pub extern "C" fn ss_ts_close(handle: *mut c_void) {
             return;
         }
         let h = unsafe { Box::from_raw(handle as *mut Handle) };
+        if let Some(cancel) = &h.cancel {
+            let _ = cancel.send(true);
+        }
         let _ = h.tx.blocking_send(Command::Close);
         let join = { h.join.lock().unwrap().take() };
         if let Some(join) = join {
@@ -917,8 +956,11 @@ mod tests {
             tokio::time::sleep_until(deadline + Duration::from_millis(jitter)).await;
             audio.push(vec![1]);
             assert_eq!(audio.next().await, vec![1]);
-            assert!(Instant::now() <= deadline + Duration::from_millis(jitter + 1),
-                "frame {frame} drifted by {:?}", Instant::now() - deadline);
+            assert!(
+                Instant::now() <= deadline + Duration::from_millis(jitter + 1),
+                "frame {frame} drifted by {:?}",
+                Instant::now() - deadline
+            );
         }
     }
 
@@ -926,14 +968,19 @@ mod tests {
     async fn audio_pacing_preserves_capture_batch_and_activation_preroll() {
         let mut audio = AudioQueue::new();
         // Six catch-up frames plus three frames of worker scheduling margin.
-        for frame in 1..=9 { audio.push(vec![frame]); }
-        for frame in 1..=9 { assert_eq!(audio.next().await, vec![frame]); }
+        for frame in 1..=9 {
+            audio.push(vec![frame]);
+        }
+        for frame in 1..=9 {
+            assert_eq!(audio.next().await, vec![frame]);
+        }
         audio.push(Vec::new());
         audio.push(Vec::new());
         assert!(audio.next().await.is_empty());
         tokio::time::advance(Duration::from_secs(10)).await;
         let resumed = Instant::now();
-        audio.push(vec![10]); audio.push(vec![11]);
+        audio.push(vec![10]);
+        audio.push(vec![11]);
         assert_eq!(audio.next().await, vec![10]);
         assert_eq!(Instant::now(), resumed);
         assert_eq!(audio.next().await, vec![11]);
@@ -941,8 +988,12 @@ mod tests {
         assert!(audio.clear());
         assert!(!audio.clear());
         audio.push(Vec::new());
-        for frame in 1..=20 { audio.push(vec![frame]); }
-        for frame in 12..=20 { assert_eq!(audio.next().await, vec![frame]); }
+        for frame in 1..=20 {
+            audio.push(vec![frame]);
+        }
+        for frame in 12..=20 {
+            assert_eq!(audio.next().await, vec![frame]);
+        }
     }
 
     #[test]
@@ -952,6 +1003,8 @@ mod tests {
             tx,
             queue: Queue::default(),
             join: Mutex::new(None),
+            max_audio: MAX_AUDIO,
+            cancel: None,
         })) as *mut c_void;
         let packet = [1u8, 2, 3];
         assert_eq!(ss_ts_audio(handle, packet.as_ptr(), packet.len()), 1);

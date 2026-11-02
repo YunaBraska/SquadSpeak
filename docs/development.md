@@ -76,10 +76,39 @@ App-owned histories fail immediately on a database lock so storage contention ca
 pause the UI/network event loop. The existing error and message-retry paths retain
 the draft. Independent background writers keep their bounded lock wait.
 
+## Mumble client tests
+
+Mumble uses the same Rust static bridge, Opus encoder, playback mixer and external
+channel UI as TeamSpeak. The UDP cipher is the corrected upstream Mumble source
+under `src/teamspeak_bridge/mumble-crypt/`. Its existing regression tests run as
+`mumble_crypt`. Do not enable the `mumble-protocol` crate's older cipher.
+
+Run the real-server suite locally with either `mumble-server` installed or Docker
+running. It binds only to loopback, creates disposable credentials and removes
+its server and data afterwards. Audio is synthetic and never reaches a device.
+
+```sh
+cmake --build build/native-audio --target mumble_tests mumble_crypt_tests
+python3 tests/mumble_server.py build/native-audio/mumble_tests
+```
+
+Linux CI installs the real server and enables `SQUADSPEAK_MUMBLE_E2E` for CTest.
+The suite verifies authentication, saved identity and access tokens, nested
+channels, independent-peer channel/private messaging, PTT, mute, encrypted UDP
+and TLS voice transport, variable Opus duration and graceful disconnect. The UDP
+comparison crosses a complete encryption nonce-byte cycle and checks every
+captured Opus packet without transcoding. Mumble 1.5 uses protobuf voice framing,
+while older servers retain their negotiated legacy framing.
+The server's test-only connection and message burst allowances permit rapid
+isolated setup. They do not alter production client limits or permissions.
+
 ## TeamSpeak build and tests
 
-The C++ app links a pinned Rust static library. Install Rust using rustup, with
-the version in `rust-toolchain.toml`. CMake uses the existing Opus dependency.
+The C++ app links a pinned Rust static library for TeamSpeak and Mumble. Install
+Rust using rustup, with the version in `rust-toolchain.toml`, and the host's
+Protobuf compiler (`brew install protobuf`, `apt install protobuf-compiler` or
+`choco install protoc`). `protoc` is needed only at build time, including mobile
+cross-compilation. CMake uses the existing Opus dependency.
 For cross-compilation, first install the matching Rust target with `rustup target add`
 (`aarch64-apple-ios-sim`, `aarch64-apple-ios`, `aarch64-linux-android` or
 `x86_64-linux-android`). Keep the selected C++ and Rust architectures identical.
@@ -632,11 +661,11 @@ GitHub permits squash merges only and removes merged branches automatically.
 The flow follows [PodLord's merge and release entrypoints](https://github.com/YunaBraska/podlord/tree/ffb730401033e5dab363b4923fa14e58abd90f87/.github/workflows)
 and the [shared Swift release contract](https://github.com/YunaBraska/YunaBraska/blob/036626606065b3b64488ef0611d63713abdcf70c/SWIFT_CI_CD.md).
 `verify.yml` resolves one revision and version, runs cheap preflight checks, then
-calls `wc_linux_build.yml`, `wc_macos_build.yml` and `wc_windows_build.yml`.
-These reusable workflows accept project commands, cache inputs and artifact
-paths. Windows supplies the MSVC/Qt toolchain, Linux the container environment.
-macOS also accepts optional signing and notarization credentials. Application
-names and package rules stay in the calling workflow.
+calls the shared `wc_cpp_linux_build.yml`, `wc_cpp_macos_build.yml` and
+`wc_cpp_windows_build.yml` workflows. They accept project commands, cache inputs
+and artifact paths. Windows supplies the MSVC/Qt toolchain, Linux the container
+environment. macOS also accepts optional signing and notarization credentials.
+Application names and package rules stay in the calling workflow.
 
 | Entry | Version and result |
 | --- | --- |
@@ -682,7 +711,7 @@ The application never writes `YunaBraska/homebrew-tap`. After the first stable
 release, add the generated `squadspeak.rb` there. Its release/asset markers let
 the existing tap updater open its normal maintenance PR for later releases.
 
-For manual branch verification, use `gh workflow run verify.yml --ref <branch>`.
+For manual branch verification, use `gh workflow run build-pr.yml --ref <branch>`.
 PR, merge, release and manual verification run the same complete matrix. Feature pushes are checked by their PR, avoiding duplicate platform runs.
 New PR checks cancel obsolete runs. Snapshot runs are grouped by commit so
 closely spaced merges do not discard a waiting snapshot. Stable releases run

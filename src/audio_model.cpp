@@ -319,9 +319,23 @@ bool AudioModel::setDeafened(bool deafened) {
     if (deafened_ == deafened) return true;
     deafened_ = deafened;
     echo_.reset();
-    if (sink_) sink_->setVolume(deafened_ ? 0 : outputVolume_);
-    if (voiceSink_) voiceSink_->setVolume(deafened_ ? 0 : 1);
-    if (deafened_) { cancelNotifications(); language_.suspend(true); }
+    if (deafened_) {
+        cancelNotifications();
+        language_.suspend(true);
+        sink_.reset();
+        tone_.close();
+        if (testingOutput_) {
+            testingOutput_ = false;
+            emit runningChanged();
+        }
+        voiceSink_.reset();
+        playback_ = nullptr;
+        mixer_.resetPlayback();
+    } else if (voiceActive_) {
+        mixer_.resetPlayback();
+        beginPlayback();
+        if (voiceSink_ && !playbackTimer_.isActive()) playbackTimer_.start();
+    }
     emit profileChanged();
     return true;
 }
@@ -684,7 +698,7 @@ void AudioModel::stopCapture() {
 }
 
 bool AudioModel::testOutput() {
-    if (output_.isNull()) return false;
+    if (deafened_ || output_.isNull()) return false;
     cancelNotifications();
     sink_.reset();
     tone_.close();
@@ -785,14 +799,14 @@ bool AudioModel::setParticipants(const QVariantList& participants, const QString
     } catch (const std::exception& error) { setStatus(tr(error.what()), false); return false; }
 }
 
-bool AudioModel::receiveAudio(const QString& peer, const QByteArray& packet, int missing) {
-    if (!voiceActive_) return false;
+bool AudioModel::receiveAudio(const QString& peer, const QByteArray& packet, int missing, int missingFrameSamples, bool last) {
+    if (!voiceActive_ || deafened_) return false;
     const bool permitted = std::any_of(participants_.begin(), participants_.end(), [&](const auto& value) {
         const auto member = value.toMap();
         return member.value("id").toString() == peer && member.value("available").toBool() && !member.value("muted").toBool();
     });
     if (!permitted) return false;
-    try { return mixer_.receive(peer, packet, clock_.elapsed(), missing); }
+    try { return mixer_.receive(peer, packet, clock_.elapsed(), missing, missingFrameSamples, last); }
     catch (const std::exception& error) { setStatus(tr(error.what()), false); return false; }
 }
 
@@ -897,7 +911,7 @@ bool AudioModel::setAutomaticVolume(bool value) {
 }
 
 void AudioModel::beginPlayback() {
-    if (!voiceActive_ || voiceSink_ || output_.isNull()) return;
+    if (!voiceActive_ || deafened_ || voiceSink_ || output_.isNull()) return;
     playbackFormat_ = captureFormat(output_);
     if (!playbackFormat_.isValid()) { outputFailed_ = true; setStatus(tr("No usable format for voice playback."), false); return; }
     voiceSink_ = std::make_unique<QAudioSink>(output_, playbackFormat_);

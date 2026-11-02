@@ -367,7 +367,7 @@ void LocalChannel::sendRemoteView(QSslSocket* socket) {
         if (peers_.value(peerSocket).snapshotWaiting) { peers_[peerSocket].snapshotDirty = true; continue; }
         if (encoded.isEmpty()) {
             const QVariantMap view{{"channels", savedChannels()}, {"participants", participants()},
-                {"privateChats", privateChats()}, {"privateChat", privateChat()}, {"teamSpeakChat", teamSpeakChat()},
+                {"privateChats", privateChats()}, {"privateChat", privateChat()}, {"externalChat", externalChat()},
                 {"privateBlocked", privateBlocked()}, {"privateBlockedByMe", privateBlockedByMe()},
                 {"messages", messages()}, {"chatBot", chatBot()}, {"chatLifetimeDays", chatLifetimeDays()}, {"chatHostId", chatHostId_}, {"chatMembers", chatMembers()}, {"joinedHostId", joinedHostId_}, {"joined", joined()},
                 {"chatReady", chatReady()}, {"chatPending", chatPending()},

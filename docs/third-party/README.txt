@@ -84,3 +84,9 @@ supplies OPUS_LIB_DIR, linking the same external Opus as the application instead
 of building that bundled copy. The advisory is informational, not a reported
 security vulnerability. The unmaintained binding remains a dependency risk.
 Reference: https://rustsec.org/advisories/RUSTSEC-2026-0150.html
+
+Mumble interoperability uses mumble-protocol-2x 0.6.0 with protobuf 3.7.2 for control messages and
+voice framing. UDP encryption uses the corrected Mumble 1.5.939 implementation,
+not the Rust crate cipher. MUMBLE-LICENSE.txt covers the vendored source and
+upstream regression tests. src/teamspeak_bridge/mumble-crypt/UPSTREAM.md records
+the limited portability changes. The application source archive includes them.
