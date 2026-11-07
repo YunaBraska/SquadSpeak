@@ -425,7 +425,7 @@ FetchContent_Declare(rnnoise
     URL_HASH SHA256=f61ee0b3f4c4cd337303e003d333357c5eaf25ef5d75a742109ee59e9a0a3932
     DOWNLOAD_EXTRACT_TIMESTAMP FALSE)
 FetchContent_Declare(rnnoise_model
-    URL https://media.xiph.org/rnnoise/models/rnnoise_data-0a8755f8e2d834eff6a54714ecc7d75f9932e845df35f8b59bc52a7cfe6e8b37.tar.gz
+    URL https://distfiles.gentoo.org/distfiles/dd/rnnoise_data-0a8755f8e2d834eff6a54714ecc7d75f9932e845df35f8b59bc52a7cfe6e8b37.tar.gz
     URL_HASH SHA256=0a8755f8e2d834eff6a54714ecc7d75f9932e845df35f8b59bc52a7cfe6e8b37
     DOWNLOAD_EXTRACT_TIMESTAMP FALSE)
 FetchContent_MakeAvailable(rnnoise rnnoise_model)

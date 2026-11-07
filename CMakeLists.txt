@@ -631,7 +631,7 @@ if(BUILD_TESTING)
     add_test(NAME source_archive_manifest COMMAND ${Python3_EXECUTABLE}
         "${CMAKE_CURRENT_SOURCE_DIR}/cmake/build_sources.py" --check ${source_archive_qt_version})
     add_test(NAME source_archive_contract COMMAND ${Python3_EXECUTABLE}
-        "${CMAKE_CURRENT_SOURCE_DIR}/tests/source_archive_tests.py")
+        "${CMAKE_CURRENT_SOURCE_DIR}/tests/source_archive_tests.py" -v)
     set_tests_properties(source_archive_manifest source_archive_contract PROPERTIES TIMEOUT 120)
     add_test(NAME dependency_notices COMMAND ${Python3_EXECUTABLE}
         -X warn_default_encoding -W error::EncodingWarning
