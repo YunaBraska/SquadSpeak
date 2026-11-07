@@ -1201,6 +1201,18 @@
             <source>Chat only</source>
             <translation>Chỉ trò chuyện</translation>
         </message>
+        <message>
+            <source>On</source>
+            <translation>Bật</translation>
+        </message>
+        <message>
+            <source>Off</source>
+            <translation>Tắt</translation>
+        </message>
+        <message>
+            <source>System</source>
+            <translation>Hệ thống</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>

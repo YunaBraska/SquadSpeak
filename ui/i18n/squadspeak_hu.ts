@@ -1201,6 +1201,18 @@
             <source>Chat only</source>
             <translation>Csak csevegés</translation>
         </message>
+        <message>
+            <source>On</source>
+            <translation>Be</translation>
+        </message>
+        <message>
+            <source>Off</source>
+            <translation>Ki</translation>
+        </message>
+        <message>
+            <source>System</source>
+            <translation>Rendszer</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>

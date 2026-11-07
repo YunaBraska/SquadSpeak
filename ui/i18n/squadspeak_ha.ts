@@ -1201,6 +1201,18 @@
             <source>Chat only</source>
             <translation>Hira kawai</translation>
         </message>
+        <message>
+            <source>On</source>
+            <translation>A kunne</translation>
+        </message>
+        <message>
+            <source>Off</source>
+            <translation>A kashe</translation>
+        </message>
+        <message>
+            <source>System</source>
+            <translation>Tsarin na’ura</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>

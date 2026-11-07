@@ -1201,6 +1201,18 @@
             <source>Chat only</source>
             <translation>Hanya chat</translation>
         </message>
+        <message>
+            <source>On</source>
+            <translation>Aktif</translation>
+        </message>
+        <message>
+            <source>Off</source>
+            <translation>Mati</translation>
+        </message>
+        <message>
+            <source>System</source>
+            <translation>Sistem</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>

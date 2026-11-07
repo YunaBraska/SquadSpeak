@@ -43,7 +43,7 @@ configuration, not certification of every platform or physical setup.
 | Compact UI and event feedback | In progress | Public UI contracts cover keyboard/wheel input, compact/RTL layouts, text scaling, contrast, reduced motion, private blocks and host management. Mac microphone access, notification delivery and Focus suppression have device evidence. Visible notification banners remain unverified because active screen capture suppresses them. Simulator layouts do not establish physical mobile usability |
 | Resource and security review | In progress | Complete sustained device/video CPU, RSS and handle measurements. Input limits, authenticated transport, encrypted atomic history, decoder process isolation and bounded media queues have tests. Isolation is not an OS sandbox in direct desktop builds. Private history visibility and cleanup use the committed database, including restart and storage-failure cases. The source package must contain matching dependency sources and licenses. No universal leak-free claim |
 | Supporter sponsorship | In progress | GitHub sign-in, exact-tier eligibility, contributor exemption, encrypted shared cache, seven-day offline limit and desktop/headless integration have local HTTPS tests. Installed Mac sign-in, refresh and restart persistence pass. The tier and checkout link remain unpublished until a real buyer completes payment and activation. No buyer is available. See [O-21](specs/voice-chat.md). Free desktop distribution is independent |
-| Direct desktop distribution | In progress | Stable `2026.10.19` remains public. The latest verified main snapshot is `2026.10.20-SNAPSHOT.40883699982` from `7db37fb`. Stable workflows require Developer ID signing, notarization, signed update metadata, matching sources and package checks. The generated cask is not yet in `YunaBraska/homebrew-tap`. A stable release containing current corrections and Windows publisher signing remain pending. Current authorization is snapshot-only |
+| Direct desktop distribution | In progress | Stable `2026.10.19` remains public, but its macOS archives use ad-hoc signatures and have no notarization tickets. Do not bootstrap Homebrew from those archives. The latest verified main snapshot is `2026.10.20-SNAPSHOT.41325714263` from `dab59cb`. Stable workflows require Developer ID signing, notarization, signed update metadata, matching sources and package checks. The generated cask is not yet in `YunaBraska/homebrew-tap`. A stable release containing current corrections and Windows publisher signing remain pending. Current authorization is snapshot-only |
 | Mobile and Store delivery | In progress | iPhone/iPad Simulator and Android emulator builds exercise shared UI/core paths. Apple simulators cover portrait/landscape, cross-device chat, identity persistence and microphone lifecycle. They do not establish physical audio quality. Native background hosting, screen capture, consistent 44-point touch targets and physical permissions/input/output need implementation or device proof. Android decoder isolation/minimum version remain undecided. The iOS 26 Chinese-glyph failure also reproduces outside Qt. Mac App Store packaging and the [listing](app-store/metadata.md) are prepared, but signed sandbox behavior and App Review safety approval remain gates. Store builds are free-only |
 
 Bluetooth audio devices are distinct from Bluetooth-only app networking, which is not implemented. See O-06/O-11 for platform scope. A feature cannot move to the completed table until its stated exit evidence exists; marking more rows `Done` is not a substitute for finishing them.
@@ -113,11 +113,11 @@ do not become TS3 protocol features.
 
 ## Next implementation order
 
-Mumble client integration follows U179 and SS-188/189. It reuses the host/channel/chat
-interface, nested channels, Opus voice, PTT and private text. Its local integration
-suite runs against the official Mumble server. Cross-platform CI and the running
-interface must pass before the branch is ready to merge. Trillian remains a
-navigation reference.
+Mumble is integrated under U179 and SS-188/189 through the shared host/channel/chat
+interface, nested channels, Opus voice, PTT and private text. The client contracts
+run against the official Mumble server in Linux CI. File transfer,
+whisper targets, positional audio, linked-channel voice and server administration
+remain outside the client scope. Trillian remains a navigation reference.
 
 XMPP voice is the next provider investigation. An isolated QXmpp 1.17.0 prototype
 accepted encrypted one-to-one calls from Dino through Prosody with audio in both directions,

@@ -1201,6 +1201,18 @@
             <source>Chat only</source>
             <translation>Mazungumzo ya maandishi tu</translation>
         </message>
+        <message>
+            <source>On</source>
+            <translation>Imewashwa</translation>
+        </message>
+        <message>
+            <source>Off</source>
+            <translation>Zima</translation>
+        </message>
+        <message>
+            <source>System</source>
+            <translation>Mfumo</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>

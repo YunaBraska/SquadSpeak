@@ -91,11 +91,19 @@ Item {
             compare(writes, 1)
             compare(editFinished.count, 1)
         }
-        function test_eventCuesRespectOutputAndDeafen() {
+        function test_eventCuesAreIndependentOfVoiceMute() {
             compare(typeof audio.notificationVolume, "number")
-            for (const kind of ["join", "memberJoin", "leave", "memberLeave", "kick", "ban", "message", "announcement", "request"]) {
-                compare(fixtures.playEvent(kind, false), audio.outputAvailable, kind)
-                verify(!fixtures.playEvent(kind, true), kind + " is silent while deafened")
+            const muted = session.muted
+            try {
+                for (const microphoneMuted of [false, true]) {
+                    verify(session.setMuted(microphoneMuted))
+                    for (const kind of ["join", "memberJoin", "leave", "memberLeave", "kick", "ban", "message", "announcement", "request"]) {
+                        compare(fixtures.playEvent(kind, false), audio.outputAvailable, kind)
+                        compare(fixtures.playEvent(kind, true), audio.outputAvailable, kind + " remains audible while voice is muted")
+                    }
+                }
+            } finally {
+                session.setMuted(muted)
             }
             verify(!fixtures.playEvent("future-event", false))
             verify(!fixtures.playEvent("", false))
@@ -103,6 +111,7 @@ Item {
                 const notificationVolume = audio.notificationVolume
                 verify(audio.setNotificationVolume(0))
                 verify(!fixtures.playEvent("message", false), "Zero notification volume suppresses every app cue")
+                verify(!fixtures.playEvent("message", true), "Voice mute does not override zero app volume")
                 verify(audio.setNotificationVolume(notificationVolume))
                 const volume = audio.outputVolume
                 verify(audio.setOutputVolume(0))
@@ -126,10 +135,12 @@ Item {
                 if (audio.outputAvailable) verify(audio.setNotificationVolume(0))
                 for (const volume of [0.2, 0.6, 1, 0, -1, 2, NaN, Infinity]) {
                     for (const muted of [false, true]) {
-                        const result = fixtures.previewOutput(volume, muted)
-                        compare(result.accepted, audio.outputAvailable && !muted && volume > 0 && volume <= 1)
-                        verify(!result.testing, "Slider feedback does not enter microphone test mode")
-                        verify(!result.capturing, "Slider feedback must not start the microphone")
+                        for (const sessionAudio of [false, true]) {
+                            const result = fixtures.previewOutput(volume, muted, sessionAudio)
+                            compare(result.accepted, audio.outputAvailable && !(muted && sessionAudio) && volume > 0 && volume <= 1)
+                            verify(!result.testing, "Slider feedback does not enter microphone test mode")
+                            verify(!result.capturing, "Slider feedback must not start the microphone")
+                        }
                     }
                 }
                 if (audio.outputAvailable) {

@@ -1201,6 +1201,18 @@
             <source>Chat only</source>
             <translation>Pouze chat</translation>
         </message>
+        <message>
+            <source>On</source>
+            <translation>Zapnuto</translation>
+        </message>
+        <message>
+            <source>Off</source>
+            <translation>Vypnuto</translation>
+        </message>
+        <message>
+            <source>System</source>
+            <translation>Systém</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>

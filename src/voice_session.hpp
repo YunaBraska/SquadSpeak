@@ -11,7 +11,7 @@
 // restrictions. Analysis may capture audio while transmission is restricted.
 class VoiceSession final : public QObject {
     Q_OBJECT
-    Q_PROPERTY(bool animatedAvatars READ animatedAvatars NOTIFY preferencesChanged)
+    Q_PROPERTY(QString avatarAnimation READ avatarAnimation NOTIFY preferencesChanged)
     Q_PROPERTY(QString avatar READ avatar NOTIFY preferencesChanged)
     Q_PROPERTY(QStringList avatars READ avatars CONSTANT)
     Q_PROPERTY(bool supporterEnabled READ supporterEnabled NOTIFY preferencesChanged)
@@ -38,8 +38,8 @@ class VoiceSession final : public QObject {
 public:
     // An empty path keeps transient session state without loading a personal profile.
     explicit VoiceSession(QString settingsFile = {}, QObject* parent = nullptr);
-    [[nodiscard]] bool animatedAvatars() const { return preferences_.value("animatedAvatars").toBool(); }
-    Q_INVOKABLE bool setAnimatedAvatars(bool enabled);
+    [[nodiscard]] QString avatarAnimation() const { return preferences_.value("avatarAnimation").toString(); }
+    Q_INVOKABLE bool setAvatarAnimation(const QString& mode);
     [[nodiscard]] QString avatar() const;
     [[nodiscard]] bool supporterEnabled() const { return supporterEnabled_; }
     // Runtime entitlement only; imported profile preferences cannot grant it.
@@ -113,7 +113,7 @@ private:
     QString legacyChannelName_;
     QJsonObject preferences_{{"version", 2}, {"userName", "Member"},
         {"theme", "system"}, {"palette", "plum"}, {"language", "en"}, {"deafened", false}, {"eventSounds", true},
-        {"muted", true}, {"animatedAvatars", true}, {"pushToTalk", false}, {"pttButtonHeld", false}, {"pttKeyHeld", false},
+        {"muted", true}, {"avatarAnimation", "system"}, {"pushToTalk", false}, {"pttButtonHeld", false}, {"pttKeyHeld", false},
         {"pttKeyCode", -1}, {"pttKeyName", ""}, {"pttRevision", 0},
         {"pttKeyCodes", QJsonArray{}}, {"pttKeyNames", QJsonArray{}}};
     QString error_;

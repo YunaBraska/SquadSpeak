@@ -6,6 +6,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import shutil
 import ssl
 import threading
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -21,39 +22,51 @@ SCRIPT = Path(__file__).resolve().parents[1] / "cmake" / "build_sources.py"
 
 
 class SourceArchiveTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls) -> None:
+        fixture = tempfile.TemporaryDirectory(prefix="source-archive-fixture-")
+        cls.addClassCleanup(fixture.cleanup)
+        cls.fixture = Path(fixture.name)
+        (cls.fixture / "cmake").mkdir()
+        (cls.fixture / "tests").mkdir()
+        cls.payload = b"small deterministic source archive\n"
+        digest = hashlib.sha256(cls.payload).hexdigest()
+        cls.url = "https://example.invalid/source.tar.xz"
+        manifest = {
+            "qt_version": "6.10.2",
+            "archives": [{"name": "source.tar.xz", "url": cls.url, "sha256": digest}],
+        }
+        (cls.fixture / "cmake/source_archives.json").write_text(json.dumps(manifest), encoding="utf-8")
+        for relative in ("CMakeLists.txt", "cmake/Dependencies.cmake", "cmake/AudioProcessing.cmake", "cmake/Updates.cmake"):
+            (cls.fixture / relative).write_text(
+                f"FetchContent_Declare(x URL {cls.url} URL_HASH SHA256={digest})\n", encoding="utf-8"
+            )
+        (cls.fixture / "tests/macos-ci.sh").write_text(
+            f"fetch source.tar.xz {cls.url} {digest}\n", encoding="utf-8"
+        )
+        (cls.fixture / "tests/windows-ci.ps1").write_text(
+            f'Get-Source "source.tar.xz" "{cls.url}" "{digest}"\n', encoding="utf-8"
+        )
+        cls.environment = dict(os.environ, GIT_CONFIG_GLOBAL=os.devnull, GIT_CONFIG_NOSYSTEM="1")
+        for args in (("init", "-q"), ("config", "user.email", "test@example.invalid"),
+                     ("config", "user.name", "Source Tests"), ("add", "."),
+                     ("-c", "commit.gpgsign=false", "commit", "-qm", "fixture"),
+                     ("remote", "add", "origin", "https://example.invalid/repo.git")):
+            subprocess.run(["git", "-C", str(cls.fixture), *args], check=True,
+                           timeout=20, env=cls.environment)
+
     def setUp(self) -> None:
         self.temp = tempfile.TemporaryDirectory(prefix="source-archives-")
         self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name)
-        (self.root / "cmake").mkdir()
-        (self.root / "tests").mkdir()
-        self.payload = b"small deterministic source archive\n"
-        digest = hashlib.sha256(self.payload).hexdigest()
-        self.url = "https://example.invalid/source.tar.xz"
-        self.manifest = {
-            "qt_version": "6.10.2",
-            "archives": [{"name": "source.tar.xz", "url": self.url, "sha256": digest}],
-        }
-        (self.root / "cmake/source_archives.json").write_text(json.dumps(self.manifest), encoding="utf-8")
-        for relative in ("CMakeLists.txt", "cmake/Dependencies.cmake", "cmake/AudioProcessing.cmake", "cmake/Updates.cmake"):
-            (self.root / relative).write_text(
-                f"FetchContent_Declare(x URL {self.url} URL_HASH SHA256={digest})\n", encoding="utf-8"
-            )
-        (self.root / "tests/macos-ci.sh").write_text(
-            f"fetch source.tar.xz {self.url} {digest}\n", encoding="utf-8"
-        )
-        (self.root / "tests/windows-ci.ps1").write_text(
-            f'Get-Source "source.tar.xz" "{self.url}" "{digest}"\n', encoding="utf-8"
-        )
-        subprocess.run(["git", "-C", str(self.root), "init", "-q"], check=True)
-        subprocess.run(["git", "-C", str(self.root), "config", "user.email", "test@example.invalid"], check=True)
-        subprocess.run(["git", "-C", str(self.root), "config", "user.name", "Source Tests"], check=True)
-        subprocess.run(["git", "-C", str(self.root), "add", "."], check=True)
-        subprocess.run(["git", "-C", str(self.root), "-c", "commit.gpgsign=false", "commit", "-qm", "fixture"], check=True)
-        subprocess.run(["git", "-C", str(self.root), "remote", "add", "origin", "https://example.invalid/repo.git"], check=True)
+        # Copy the immutable Git fixture, including its objects. Each case can
+        # change its repository without repeating commits or sharing mutations.
+        shutil.copytree(self.fixture, self.root, dirs_exist_ok=True)
+        self.manifest = json.loads((self.root / "cmake/source_archives.json").read_text(encoding="utf-8"))
 
     def run_tool(self, *args: str, environment=None) -> subprocess.CompletedProcess[str]:
-        return subprocess.run([sys.executable, str(SCRIPT), "--root", str(self.root), *args], text=True, capture_output=True, timeout=20, env=environment)
+        return subprocess.run([sys.executable, str(SCRIPT), "--root", str(self.root), *args], text=True, capture_output=True, timeout=20,
+                              env=self.environment if environment is None else environment)
 
     def test_check_and_deterministic_offline_package(self) -> None:
         checked = self.run_tool("--check")
@@ -284,7 +297,7 @@ class SourceArchiveTests(unittest.TestCase):
             self.addCleanup(thread.join, 5)
             self.addCleanup(server.server_close)
             self.addCleanup(server.shutdown)
-        environment = dict(os.environ, SSL_CERT_FILE=str(certificate), NO_PROXY="127.0.0.1,localhost")
+        environment = dict(self.environment, SSL_CERT_FILE=str(certificate), NO_PROXY="127.0.0.1,localhost")
         for route, success in (("valid", True), ("secure-redirect", True), ("corrupt", False), ("missing", False),
                                ("large", False), ("redirect", False), ("retry", True), ("rate-limit", True),
                                ("disconnect", True), ("unavailable", False)):

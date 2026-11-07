@@ -8,6 +8,49 @@ TestCase {
     when: windowShown
     Channels { id: view; visible: true }
 
+    function test_appSoundsAndBotSpeechWhileVoiceIsMuted() {
+        verify(audio.outputAvailable)
+        const deafened = session.deafened
+        const muted = session.muted
+        const volume = audio.notificationVolume
+        const readBot = audio.readBotMessages
+        try {
+            verify(session.setMuted(true))
+            verify(session.setDeafened(true))
+            verify(audio.setNotificationVolume(0.05))
+            verify(fixtures.setAudioVoiceState(true, false))
+            tryVerify(function() { return fixtures.nativeAudioOutputRunning() === 0 }, 1000)
+            for (const kind of ["join", "leave"]) {
+                verify(fixtures.playEvent(kind, true))
+                tryVerify(function() { return fixtures.nativeAudioOutputRunning() === 1 }, 1000,
+                    kind + " must reach native output while microphone and voice output are muted")
+                fixtures.cancelNotifications()
+                tryVerify(function() { return fixtures.nativeAudioOutputRunning() === 0 }, 1000)
+            }
+            verify(audio.setReadBotMessages(true))
+            verify(fixtures.queueBotMessage("Hello."))
+            tryVerify(function() { return fixtures.nativeAudioOutputRunning() === 1 }, 1000,
+                "Bot speech must open output without unmuting voice")
+            verify(!fixtures.queueTestSpeechFrame(), "Remote speech remains rejected during the bot announcement")
+            tryVerify(function() { return fixtures.nativeAudioOutputRunning() === 0 }, 10000,
+                "Bot speech must drain and release output without leaving a silent stream open")
+            compare(audio.outputStatus, "")
+            verify(session.muted && session.deafened)
+            verify(!audio.running, "Notifications must not activate the microphone")
+            verify(audio.setNotificationVolume(0))
+            verify(!fixtures.playEvent("join", true))
+            verify(!fixtures.queueBotMessage("Hello."))
+            compare(fixtures.nativeAudioOutputRunning(), 0)
+        } finally {
+            fixtures.cancelNotifications()
+            fixtures.unbindAudioFromChannel()
+            audio.setReadBotMessages(readBot)
+            audio.setNotificationVolume(volume)
+            session.setMuted(muted)
+            session.setDeafened(deafened)
+        }
+    }
+
     function test_deafenReleasesNativeTestToneOutput() {
         verify(audio.outputAvailable, "Native audio acceptance requires an output device")
         const outputState = fixtures.nativeAudioOutputRunning()

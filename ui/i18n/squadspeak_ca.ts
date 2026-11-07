@@ -1201,6 +1201,18 @@
             <source>Chat only</source>
             <translation>Només xat</translation>
         </message>
+        <message>
+            <source>On</source>
+            <translation>Activat</translation>
+        </message>
+        <message>
+            <source>Off</source>
+            <translation>apagat</translation>
+        </message>
+        <message>
+            <source>System</source>
+            <translation>Sistema</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>

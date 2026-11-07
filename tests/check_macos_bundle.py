@@ -125,6 +125,12 @@ def main():
     icon_file = app / "Contents/Resources" / icon_name
     if not icon_name or not icon_file.is_file() or icon_file.read_bytes()[:4] != b"icns":
         errors.append({"check": "app_icon", "file": icon_name})
+    # LaunchServices must find the native icon stack, not automatically place a
+    # legacy bitmap inside another grey tile on macOS 26 and later.
+    catalog = app / "Contents/Resources/Assets.car"
+    native_icon = metadata.get("CFBundleIconName", "")
+    if not native_icon or not catalog.is_file():
+        errors.append({"check": "native_app_icon"})
     declared_minimum = metadata.get("LSMinimumSystemVersion", "")
     if not declared_minimum or version(declared_minimum) > args.minimum_system:
         errors.append({"check": "bundle_minimum_system", "declared": declared_minimum})

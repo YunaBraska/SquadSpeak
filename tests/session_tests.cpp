@@ -348,13 +348,72 @@ private slots:
         QTemporaryDir directory;
         const auto path = directory.filePath("session");
         VoiceSession session(path);
-        QVERIFY(session.animatedAvatars()); QVERIFY(session.setMuted(false));
-        QVERIFY(session.setAnimatedAvatars(false)); QVERIFY(!session.animatedAvatars());
-        QVERIFY(session.transmissionAllowed());
-        VoiceSession restored(path); QVERIFY(!restored.animatedAvatars()); QVERIFY(restored.transmissionAllowed());
-        QVERIFY(restored.setAnimatedAvatars(true)); QVERIFY(restored.animatedAvatars());
+        QCOMPARE(session.avatarAnimation(), QString("system"));
+        QVERIFY(session.setMuted(false));
+        for (const auto* mode : {"on", "off", "system"}) {
+            QVERIFY(session.setAvatarAnimation(mode));
+            QVERIFY(session.setAvatarAnimation(mode));
+            QCOMPARE(session.avatarAnimation(), QString(mode));
+            QVERIFY(session.transmissionAllowed());
+            VoiceSession restored(path);
+            QCOMPARE(restored.avatarAnimation(), QString(mode));
+            QVERIFY(restored.transmissionAllowed());
+        }
+        for (const auto* invalid : {"", "auto", "ON"}) {
+            QVERIFY(!session.setAvatarAnimation(invalid));
+            QCOMPARE(session.avatarAnimation(), QString("system"));
+            VoiceSession restored(path);
+            QCOMPARE(restored.avatarAnimation(), QString("system"));
+        }
         VoiceSession failed(directory.filePath("absent/session"));
-        QVERIFY(!failed.setAnimatedAvatars(false)); QVERIFY(failed.animatedAvatars());
+        QVERIFY(!failed.setAvatarAnimation("off"));
+        QCOMPARE(failed.avatarAnimation(), QString("system"));
+    }
+
+    void avatarAnimationLoadsLegacyPreferences_data() {
+        QTest::addColumn<QJsonObject>("settings");
+        QTest::addColumn<QString>("expected");
+        QTest::newRow("missing") << QJsonObject{} << QString("system");
+        QTest::newRow("legacy-on") << QJsonObject{{"animatedAvatars", true}} << QString("system");
+        QTest::newRow("legacy-off") << QJsonObject{{"animatedAvatars", false}} << QString("off");
+        QTest::newRow("explicit-mode-wins") << QJsonObject{{"animatedAvatars", false}, {"avatarAnimation", "on"}} << QString("on");
+    }
+    void avatarAnimationLoadsLegacyPreferences() {
+        QFETCH(QJsonObject, settings); QFETCH(QString, expected);
+        QTemporaryDir directory;
+        const auto path = directory.filePath("session");
+        settings.insert("version", 1); settings.insert("userName", "Reader"); settings.insert("muted", true);
+        const auto original = QJsonDocument(settings).toJson();
+        QFile file(path); QVERIFY(file.open(QIODevice::WriteOnly));
+        QCOMPARE(file.write(original), original.size()); file.close();
+        VoiceSession loaded(path);
+        QCOMPARE(loaded.avatarAnimation(), expected);
+        QVERIFY(file.open(QIODevice::ReadOnly)); QCOMPARE(file.readAll(), original); file.close();
+        QVERIFY(loaded.setAvatarAnimation(expected));
+        QVERIFY(file.open(QIODevice::ReadOnly)); QCOMPARE(file.readAll(), original); file.close();
+        QVERIFY(loaded.setMuted(false));
+        VoiceSession restored(path); QCOMPARE(restored.avatarAnimation(), expected);
+        QVERIFY(file.open(QIODevice::ReadOnly));
+        const auto saved = QJsonDocument::fromJson(file.readAll()).object();
+        QCOMPARE(saved.value("avatarAnimation").toString(), expected);
+        QVERIFY(!saved.contains("animatedAvatars"));
+    }
+
+    void invalidAvatarAnimationDoesNotRewriteProfile_data() {
+        QTest::addColumn<QString>("key"); QTest::addColumn<QJsonValue>("value");
+        QTest::newRow("legacy-type") << QString("animatedAvatars") << QJsonValue("on");
+        QTest::newRow("new-type") << QString("avatarAnimation") << QJsonValue(true);
+        QTest::newRow("new-value") << QString("avatarAnimation") << QJsonValue("unknown");
+    }
+    void invalidAvatarAnimationDoesNotRewriteProfile() {
+        QFETCH(QString, key); QFETCH(QJsonValue, value);
+        QTemporaryDir directory;
+        const auto path = directory.filePath("session");
+        const auto original = QJsonDocument(QJsonObject{{"version", 1}, {"userName", "Reader"}, {"muted", true}, {key, value}}).toJson();
+        QFile file(path); QVERIFY(file.open(QIODevice::WriteOnly));
+        QCOMPARE(file.write(original), original.size()); file.close();
+        QVERIFY_EXCEPTION_THROWN(VoiceSession{path}, std::runtime_error);
+        QVERIFY(file.open(QIODevice::ReadOnly)); QCOMPARE(file.readAll(), original);
     }
 
     void pushToTalkSourcesCombineAndRestoreTheLastKnownState() {

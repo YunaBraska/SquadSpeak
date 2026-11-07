@@ -1201,6 +1201,18 @@
             <source>Chat only</source>
             <translation>Chat biss</translation>
         </message>
+        <message>
+            <source>On</source>
+            <translation>Mixgħul</translation>
+        </message>
+        <message>
+            <source>Off</source>
+            <translation>Mitfi</translation>
+        </message>
+        <message>
+            <source>System</source>
+            <translation>Sistema</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>

@@ -1201,6 +1201,18 @@
             <source>Chat only</source>
             <translation>Vain chat</translation>
         </message>
+        <message>
+            <source>On</source>
+            <translation>Päällä</translation>
+        </message>
+        <message>
+            <source>Off</source>
+            <translation>Pois päältä</translation>
+        </message>
+        <message>
+            <source>System</source>
+            <translation>Järjestelmä</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>

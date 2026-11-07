@@ -130,7 +130,7 @@ public:
     [[nodiscard]] double outputVolume() const { return outputVolume_; }
     [[nodiscard]] bool deafened() const { return deafened_; }
     bool setDeafened(bool deafened);
-    [[nodiscard]] bool eventAudioEnabled() const { return !deafened_ && outputReady() && notificationVolume_ > 0; }
+    [[nodiscard]] bool eventAudioEnabled() const { return outputReady() && notificationVolume_ > 0; }
     [[nodiscard]] double notificationVolume() const { return notificationVolume_; }
     [[nodiscard]] bool readBotMessages() const { return SpeechOutput::supported && readBotMessages_; }
     [[nodiscard]] bool speechAvailable() const { return SpeechOutput::supported; }
@@ -145,7 +145,7 @@ public:
     void cancelBotMessages();
     void cancelNotifications();
     bool playEvent(const QString& kind);
-    Q_INVOKABLE bool previewOutput(double volume);
+    Q_INVOKABLE bool previewOutput(double volume, bool sessionAudio = true);
     [[nodiscard]] double maximumFrequency() const;
     [[nodiscard]] bool running() const { return source_ != nullptr && wantsCapture_; }
     [[nodiscard]] bool testActive() const { return testingOutput_; }

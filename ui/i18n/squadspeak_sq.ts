@@ -1201,6 +1201,18 @@
             <source>Chat only</source>
             <translation>Vetëm bisedë</translation>
         </message>
+        <message>
+            <source>On</source>
+            <translation>Aktiv</translation>
+        </message>
+        <message>
+            <source>Off</source>
+            <translation>Fikur</translation>
+        </message>
+        <message>
+            <source>System</source>
+            <translation>Sistemi</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
