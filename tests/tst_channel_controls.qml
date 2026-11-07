@@ -2291,7 +2291,7 @@ TestCase {
         }
     }
 
-    function test_botSpeechRespectsOutputMuteVolumeAndOptIn() {
+    function test_botSpeechRespectsAppVolumeAndOptInWhileVoiceIsMuted() {
         if (!audio.outputAvailable || !audio.speechAvailable) {
             verify(!audio.setReadBotMessages(true))
             verify(!fixtures.acceptsBotMessage("Ari joined.", true, false))
@@ -2305,7 +2305,7 @@ TestCase {
             verify(!fixtures.acceptsBotMessage("Ari joined.", true, false))
             verify(audio.setReadBotMessages(true))
             verify(!fixtures.acceptsBotMessage("Ari joined.", false, false))
-            verify(!fixtures.acceptsBotMessage("Ari joined.", true, true))
+            verify(fixtures.acceptsBotMessage("Ari joined.", true, true))
             verify(fixtures.acceptsBotMessage("Ari joined.", true, false))
             verify(!fixtures.acceptsBotMessage("   ", true, false))
             verify(audio.setNotificationVolume(0))

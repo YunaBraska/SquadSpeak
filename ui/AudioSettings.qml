@@ -323,7 +323,7 @@ Item {
                         value: audio.notificationVolume
                         valueText: qsTr("%1 %").arg(Math.round(audio.notificationVolume * 100))
                         applyValue: function(value) { return audio.setNotificationVolume(value) }
-                        onEditingFinished: audio.previewOutput(audio.notificationVolume)
+                        onEditingFinished: audio.previewOutput(audio.notificationVolume, false)
                     }
                     OptionCheck {
                         objectName: "readBotMessages"

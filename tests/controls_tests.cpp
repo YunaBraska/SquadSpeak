@@ -299,15 +299,18 @@ public slots:
 #endif
     }
     bool playEvent(const QString& kind, bool deafened) {
-        audio_->setDeafened(deafened);
-        const bool accepted = audio_->playEvent(kind);
-        audio_->setDeafened(false);
-        return accepted;
-    }
-    QVariantMap previewOutput(double volume, bool deafened) {
         const auto previous = audio_->deafened();
         audio_->setDeafened(deafened);
-        const bool accepted = audio_->previewOutput(volume);
+        const bool accepted = audio_->playEvent(kind);
+        audio_->setDeafened(previous);
+        return accepted;
+    }
+    void cancelNotifications() { audio_->cancelNotifications(); }
+    bool queueBotMessage(const QString& text) { return audio_->readBotMessage(text); }
+    QVariantMap previewOutput(double volume, bool deafened, bool sessionAudio) {
+        const auto previous = audio_->deafened();
+        audio_->setDeafened(deafened);
+        const bool accepted = audio_->previewOutput(volume, sessionAudio);
         const bool testing = audio_->testActive();
         audio_->setDeafened(previous);
         return {{"accepted", accepted}, {"testing", testing}, {"capturing", audio_->running()}};
@@ -601,6 +604,9 @@ public slots:
         const auto testInput = qEnvironmentVariable("SQUADSPEAK_TEST_INPUT_DEVICE");
         if (!testInput.isEmpty() && !audio_->selectInput(testInput))
             qFatal("The requested virtual test input is unavailable.");
+        const auto testOutput = qEnvironmentVariable("SQUADSPEAK_TEST_OUTPUT_DEVICE");
+        if (!testOutput.isEmpty() && !audio_->selectOutput(testOutput))
+            qFatal("The requested virtual test output is unavailable.");
         audio_->setAppLanguage(session_->language());
         const auto expectedInput = qgetenv("SQUADSPEAK_TEST_INPUT");
         if ((expectedInput == "present" && !audio_->inputAvailable())
