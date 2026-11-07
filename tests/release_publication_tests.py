@@ -449,28 +449,24 @@ target_link_libraries(consumer PRIVATE squad_apm)
         (self.root / "tests").mkdir()
         for name in ("CMakeLists.txt", "tests/macos-ci.sh", "tests/windows-ci.ps1", "tests/linux-ci.sh"):
             shutil.copy2(self.repo / name, self.root / name)
-        for name in ("xcodebuild", "xcrun"):
-            tool = self.root / "bin" / name
-            tool.write_text("#!/bin/sh\nprintf 'fixed toolchain\\n'\n")
-            tool.chmod(0o700)
         workflow = (self.repo / ".github/workflows/verify.yml").read_text()
         selections = re.findall(r"^      cache_inputs: '(.*)'$", workflow, re.MULTILINE)
         self.assertEqual(len(selections), 3)
         for selection in selections:
-            def fingerprint():
-                linux = "tests/linux-ci.sh" in json.loads(selection)
-                result = self.run_step("Read Dependency Inputs" if linux else "Read Toolchain",
-                                       "wc_linux_build.yml" if linux else "wc_macos_build.yml", CACHE_INPUTS=selection)
-                self.assertEqual(result.returncode, 0, result.stderr)
-                return self.outputs()["inputs"]
-            baseline = fingerprint()
+            def selected_files():
+                return tuple(sorted(
+                    (path.relative_to(self.root).as_posix(), path.read_bytes())
+                    for pattern in json.loads(selection)
+                    for path in self.root.glob(pattern)
+                    if path.is_file()))
+            baseline = selected_files()
             for name in ("CMakeLists.txt", "cmake/Version.cmake", "cmake/DiscoverChannelTests.cmake"):
                 with self.subTest(selection=selection, unchanged=name):
                     path = self.root / name
                     original = path.read_text()
                     path.write_text(original + "\n# unrelated test or release change\n")
                     try:
-                        self.assertEqual(fingerprint(), baseline)
+                        self.assertEqual(selected_files(), baseline)
                     finally:
                         path.write_text(original)
             for name in ("cmake/qt-network-security.patch", "cmake/qt-wayland.patch"):
@@ -479,7 +475,7 @@ target_link_libraries(consumer PRIVATE squad_apm)
                     original = path.read_text()
                     path.write_text(original + "\n# changed Linux-only repair\n")
                     try:
-                        self.assertEqual(fingerprint() != baseline, "tests/linux-ci.sh" in json.loads(selection))
+                        self.assertEqual(selected_files() != baseline, "tests/linux-ci.sh" in json.loads(selection))
                     finally:
                         path.write_text(original)
             pins = ["cmake/Dependencies.cmake", "cmake/AudioProcessing.cmake", "cmake/Media.cmake",
@@ -491,7 +487,7 @@ target_link_libraries(consumer PRIVATE squad_apm)
                     original = path.read_text()
                     path.write_text(original + "\n# changed dependency input\n")
                     try:
-                        self.assertNotEqual(fingerprint(), baseline)
+                        self.assertNotEqual(selected_files(), baseline)
                     finally:
                         path.write_text(original)
 

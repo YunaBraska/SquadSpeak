@@ -672,11 +672,11 @@ GitHub permits squash merges only and removes merged branches automatically.
 The flow follows [PodLord's merge and release entrypoints](https://github.com/YunaBraska/podlord/tree/ffb730401033e5dab363b4923fa14e58abd90f87/.github/workflows)
 and the [shared Swift release contract](https://github.com/YunaBraska/YunaBraska/blob/036626606065b3b64488ef0611d63713abdcf70c/SWIFT_CI_CD.md).
 `verify.yml` resolves one revision and version, runs cheap preflight checks, then
-calls `wc_linux_build.yml`, `wc_macos_build.yml` and `wc_windows_build.yml`.
-These reusable workflows accept project commands, cache inputs and artifact
-paths. Windows supplies the MSVC/Qt toolchain, Linux the container environment.
-macOS also accepts optional signing and notarization credentials. Application
-names and package rules stay in the calling workflow.
+calls the shared `wc_cpp_linux_build.yml`, `wc_cpp_macos_build.yml` and
+`wc_cpp_windows_build.yml` workflows. They accept project commands, cache inputs
+and artifact paths. Windows supplies the MSVC/Qt toolchain, Linux the container
+environment. macOS also accepts optional signing and notarization credentials.
+Application names and package rules stay in the calling workflow.
 
 | Entry | Version and result |
 | --- | --- |
@@ -722,7 +722,7 @@ The application never writes `YunaBraska/homebrew-tap`. After the first stable
 release, add the generated `squadspeak.rb` there. Its release/asset markers let
 the existing tap updater open its normal maintenance PR for later releases.
 
-For manual branch verification, use `gh workflow run verify.yml --ref <branch>`.
+For manual branch verification, use `gh workflow run build-pr.yml --ref <branch>`.
 PR, merge, release and manual verification run the same complete matrix. Feature pushes are checked by their PR, avoiding duplicate platform runs.
 New PR checks cancel obsolete runs. Snapshot runs are grouped by commit so
 closely spaced merges do not discard a waiting snapshot. Stable releases run
