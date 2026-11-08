@@ -21,44 +21,46 @@ jobs:
         set -eu
         mkdir -p build/macos-ci/artifacts
         sudo -n dtrace -l -n 'syscall::sendto:entry' -n 'syscall::sendto:return' \
-          -n 'sched:::sleep' -n 'sched:::off-cpu' -n 'sched:::on-cpu' -n 'sched:::wakeup' -n 'syscall::exit:entry' \
+          -n 'sched:::sleep' -n 'sched:::off-cpu' -n 'sched:::on-cpu' -n 'profile:::profile-199' -n 'syscall::exit:entry' \
           > build/macos-ci/artifacts/native-send-probes.txt
         cat > build/macos-ci/native-send.d <<'DTRACE'
         #pragma D option quiet
         #pragma D option bufsize=8m
         #pragma D option dynvarsize=32m
+        dtrace:::BEGIN {
+          printf("CLOCK_BEGIN trace-us=%llu wall-us=%llu\n", (unsigned long long)(timestamp / 1000), (unsigned long long)(walltimestamp / 1000));
+        }
         syscall::sendto:entry /execname == "channel_tests"/ {
-          tracked_pid[tid] = pid;
           self->active = 2;
           self->start = timestamp; self->cpu = vtimestamp;
           self->fd = arg0; self->bytes = arg2;
           self->sleep = 0; self->off = 0; self->off_at = 0;
+          self->samples = 0; self->stacked = 0; self->late = 0;
         }
         sched:::sleep /self->active == 2/ {
           self->sleep++;
-          @sleep_stacks[stack(12)] = count();
         }
         sched:::off-cpu /self->active == 2/ { self->off_at = timestamp; }
         sched:::on-cpu /self->active == 2 && self->off_at/ {
           self->off += timestamp - self->off_at; self->off_at = 0;
         }
-        sched:::wakeup /tracked_pid[args[0]->pr_lwpid]/ {
-          runnable_at[args[0]->pr_lwpid] = timestamp;
-        }
-        sched:::on-cpu /runnable_at[tid] > 1/ {
-          this->delay = timestamp - runnable_at[tid];
-          if (this->delay >= 20000000) {
-            printf("WAKE_TO_RUN pid=%d tid=%d at-us=%llu delay-us=%llu\n",
-              (int)tracked_pid[tid], (int)tid, (unsigned long long)(runnable_at[tid] / 1000),
-              (unsigned long long)(this->delay / 1000));
+        profile:::profile-199 /self->active == 2 && arg0/ {
+          self->samples++;
+          self->late = arg2 > self->late ? arg2 : self->late;
+          if (!self->stacked && timestamp - self->start >= 20000000) {
+            self->stacked = 1;
+            printf("LONG_SENDTO_STACK pid=%d tid=%d at-us=%llu elapsed-us=%llu kernel-pc=%p user-pc=%p late-us=%llu\n",
+              (int)pid, (int)tid, (unsigned long long)(self->start / 1000),
+              (unsigned long long)((timestamp - self->start) / 1000), (void *)arg0, (void *)arg1, (unsigned long long)(arg2 / 1000));
+            stack(24);
+            ustack(16);
           }
-          runnable_at[tid] = 1;
         }
         syscall::sendto:return /self->active == 2 && timestamp - self->start >= 20000000/ {
-          printf("SENDTO pid=%d tid=%d at-us=%llu fd=%d bytes=%llu wall-us=%llu cpu-us=%llu off-us=%llu sleeps=%d result=%d\n",
+          printf("SENDTO pid=%d tid=%d at-us=%llu fd=%d bytes=%llu wall-us=%llu cpu-us=%llu off-us=%llu sleeps=%d samples=%d late-us=%llu result=%d\n",
             (int)pid, (int)tid, (unsigned long long)(self->start / 1000), (int)self->fd, (unsigned long long)self->bytes,
             (unsigned long long)((timestamp - self->start) / 1000), (unsigned long long)((vtimestamp - self->cpu) / 1000),
-            (unsigned long long)(self->off / 1000), (int)self->sleep, (int)arg0);
+            (unsigned long long)(self->off / 1000), (int)self->sleep, (int)self->samples, (unsigned long long)(self->late / 1000), (int)arg0);
         }
         syscall::sendto:return /self->active == 2/ {
           @calls[pid] = count(); @maximum_us[pid] = max((timestamp - self->start) / 1000);
@@ -66,6 +68,9 @@ jobs:
           self->active = 1;
         }
         syscall::exit:entry /pid == $target/ { printf("TARGET_EXIT_REQUEST=%d\n", (int)arg0); }
+        dtrace:::END {
+          printf("CLOCK_END trace-us=%llu wall-us=%llu\n", (unsigned long long)(timestamp / 1000), (unsigned long long)(walltimestamp / 1000));
+        }
         DTRACE
         sudo -n dtrace -e -s build/macos-ci/native-send.d
         rustup toolchain install 1.96.0 --profile minimal
@@ -75,6 +80,11 @@ jobs:
       build_command: sh tests/macos-ci.sh auto build/macos-ci build
       test_command: |
         set -eu
+        baseline_status=0
+        sudo -n env SQUAD_SOAK_CLIENTS=32 SQUAD_SOAK_SPEAKERS=2 SQUAD_SOAK_PACING=delivery \
+          SQUAD_SOAK_SECONDS=60 QT_LOGGING_RULES= \
+          build/macos-ci/app/channel_tests sixtyFourClientsHaveOneConsistentRosterAndAudioFanout \
+          -o build/macos-ci/artifacts/native-send-baseline.txt,txt || baseline_status=$?
         # Apply only after the shared build has saved its unmodified caches.
         patch -d build/macos-ci/app/_deps/media-src -p1 < tests/intel-native-diagnostic.patch
         cmake --build build/macos-ci/app --target channel_tests --parallel 3
@@ -89,10 +99,12 @@ jobs:
         cat build/macos-ci/artifacts/native-send-1.txt
         cat build/macos-ci/artifacts/native-send-kernel.txt
         # DTrace's status is not the child test's status.
-        if grep -Eq 'dynamic variable drop|drop(s)? on CPU|error on enabled probe|error(s)? in ERROR probe' build/macos-ci/artifacts/native-send-trace-errors.txt; then
+        if grep -Ei 'drop|error|warning' build/macos-ci/artifacts/native-send-trace-errors.txt; then
           printf 'Kernel trace dropped records and is incomplete.\n' >&2
           exit 1
         fi
+        test "$baseline_status" -eq 0
+        grep -q 'Totals: 6 passed, 0 failed, 0 skipped' build/macos-ci/artifacts/native-send-baseline.txt
         grep -q 'Totals: 6 passed, 0 failed, 0 skipped' build/macos-ci/artifacts/native-send-1.txt
         grep -qx 'TARGET_EXIT_REQUEST=0' build/macos-ci/artifacts/native-send-kernel.txt
       package_command: test -s build/macos-ci/artifacts/native-send-1.txt

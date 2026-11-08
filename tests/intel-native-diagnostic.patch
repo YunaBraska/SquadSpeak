@@ -120,19 +120,26 @@
  
 --- /dev/null
 +++ b/src/squad_native_trace.h
-@@ -0,0 +1,54 @@
+@@ -0,0 +1,82 @@
 +#pragma once
 +#include <errno.h>
++#include <pthread.h>
 +#include <stdint.h>
 +#include <stdio.h>
 +#include <stdlib.h>
 +#include <time.h>
 +#include <unistd.h>
++#ifdef __cplusplus
++static thread_local uint64_t squad_trace_tid;
++#else
++static _Thread_local uint64_t squad_trace_tid;
++#endif
 +typedef struct { int64_t wall; } squad_trace_stamp;
 +static squad_trace_stamp squad_trace_now(int enabled) {
 +    squad_trace_stamp result = {0};
 +    if (!enabled) return result;
 +    int saved = errno;
++    if (!squad_trace_tid) pthread_threadid_np(NULL, &squad_trace_tid);
 +    struct timespec wall = {0,0};
 +    clock_gettime(CLOCK_UPTIME_RAW, &wall);
 +    result.wall = (int64_t)wall.tv_sec * 1000000000LL + wall.tv_nsec;
@@ -142,11 +149,34 @@
 +static char squad_trace_lines[64][1024];
 +static unsigned squad_trace_lengths[64];
 +static unsigned squad_trace_counts[2];
-+static unsigned squad_trace_registered;
++static struct timespec squad_trace_clock_start[3];
++static void squad_trace_clock(struct timespec *points) {
++    clock_gettime(CLOCK_UPTIME_RAW, points);
++    clock_gettime(CLOCK_REALTIME, points + 1);
++    clock_gettime(CLOCK_UPTIME_RAW, points + 2);
++}
 +static void squad_trace_flush(void) {
++    fprintf(stderr, "CLOCK_NATIVE_BEGIN pid=%ld before-us=%lld wall-us=%lld after-us=%lld\n",
++        (long)getpid(), (long long)squad_trace_clock_start[0].tv_sec * 1000000LL + squad_trace_clock_start[0].tv_nsec / 1000,
++        (long long)squad_trace_clock_start[1].tv_sec * 1000000LL + squad_trace_clock_start[1].tv_nsec / 1000,
++        (long long)squad_trace_clock_start[2].tv_sec * 1000000LL + squad_trace_clock_start[2].tv_nsec / 1000);
++    struct timespec before, realtime, after;
++    clock_gettime(CLOCK_UPTIME_RAW, &before);
++    clock_gettime(CLOCK_REALTIME, &realtime);
++    clock_gettime(CLOCK_UPTIME_RAW, &after);
++    fprintf(stderr, "CLOCK_NATIVE_END pid=%ld before-us=%lld wall-us=%lld after-us=%lld\n",
++        (long)getpid(), (long long)before.tv_sec * 1000000LL + before.tv_nsec / 1000,
++        (long long)realtime.tv_sec * 1000000LL + realtime.tv_nsec / 1000,
++        (long long)after.tv_sec * 1000000LL + after.tv_nsec / 1000);
 +    for (unsigned i=0;i<64;++i) {
 +        unsigned length=__atomic_load_n(&squad_trace_lengths[i],__ATOMIC_ACQUIRE);
 +        if (length) (void)write(STDERR_FILENO,squad_trace_lines[i],length);
++    }
++}
++__attribute__((constructor)) static void squad_trace_init(void) {
++    if (getenv("SQUAD_TRACE_NATIVE_SEND")) {
++        squad_trace_clock(squad_trace_clock_start);
++        atexit(squad_trace_flush);
 +    }
 +}
 +static void squad_trace_report(const char *kind, const unsigned char *bytes, size_t size,
@@ -157,8 +187,6 @@
 +    unsigned slot=__atomic_fetch_add(&squad_trace_counts[bucket],1,__ATOMIC_RELAXED);
 +    if (slot >= 32) return;
 +    slot += bucket * 32;
-+    if (__atomic_exchange_n(&squad_trace_registered,1,__ATOMIC_RELAXED) == 0)
-+        atexit(squad_trace_flush);
 +    int saved = errno;
 +    uint32_t source = 0;
 +    int sequence = -1;
@@ -167,7 +195,7 @@
 +        source = ((uint32_t)bytes[8] << 24) | ((uint32_t)bytes[9] << 16) | ((uint32_t)bytes[10] << 8) | bytes[11];
 +    }
 +    char *line=squad_trace_lines[slot];
-+    int length = snprintf(line, 1024, "NATIVE_SEND %s pid=%ld at-us=%lld source=%u sequence=%d bytes=%zu wall-us",kind,(long)getpid(),(long long)(points[0].wall/1000),source,sequence,size);
++    int length = snprintf(line, 1024, "NATIVE_SEND %s pid=%ld tid=%llu at-us=%lld source=%u sequence=%d bytes=%zu wall-us",kind,(long)getpid(),(unsigned long long)squad_trace_tid,(long long)(points[0].wall/1000),source,sequence,size);
 +    for (int i=1;i<count && length < (int)1024-80;++i)
 +        length += snprintf(line+length,1024-(size_t)length," %lld",
 +            (long long)((points[i].wall-points[i-1].wall)/1000));
