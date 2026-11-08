@@ -19,6 +19,55 @@ jobs:
       runners: '["macos-15-intel"]'
       prepare_command: |
         set -eu
+        mkdir -p build/macos-ci/artifacts
+        sudo -n dtrace -l -n 'syscall::sendto:entry' -n 'syscall::sendto:return' \
+          -n 'sched:::sleep' -n 'sched:::off-cpu' -n 'sched:::on-cpu' -n 'sched:::wakeup' -n 'syscall::exit:entry' \
+          > build/macos-ci/artifacts/native-send-probes.txt
+        cat > build/macos-ci/native-send.d <<'DTRACE'
+        #pragma D option quiet
+        #pragma D option bufsize=8m
+        #pragma D option dynvarsize=32m
+        syscall::sendto:entry /execname == "channel_tests"/ {
+          tracked_pid[tid] = pid;
+          self->active = 2;
+          self->start = timestamp; self->cpu = vtimestamp;
+          self->fd = arg0; self->bytes = arg2;
+          self->sleep = 0; self->off = 0; self->off_at = 0;
+        }
+        sched:::sleep /self->active == 2/ {
+          self->sleep++;
+          @sleep_stacks[stack(12)] = count();
+        }
+        sched:::off-cpu /self->active == 2/ { self->off_at = timestamp; }
+        sched:::on-cpu /self->active == 2 && self->off_at/ {
+          self->off += timestamp - self->off_at; self->off_at = 0;
+        }
+        sched:::wakeup /tracked_pid[args[0]->pr_lwpid]/ {
+          runnable_at[args[0]->pr_lwpid] = timestamp;
+        }
+        sched:::on-cpu /runnable_at[tid] > 1/ {
+          this->delay = timestamp - runnable_at[tid];
+          if (this->delay >= 20000000) {
+            printf("WAKE_TO_RUN pid=%d tid=%d at-us=%llu delay-us=%llu\n",
+              (int)tracked_pid[tid], (int)tid, (unsigned long long)(runnable_at[tid] / 1000),
+              (unsigned long long)(this->delay / 1000));
+          }
+          runnable_at[tid] = 1;
+        }
+        syscall::sendto:return /self->active == 2 && timestamp - self->start >= 20000000/ {
+          printf("SENDTO pid=%d tid=%d at-us=%llu fd=%d bytes=%llu wall-us=%llu cpu-us=%llu off-us=%llu sleeps=%d result=%d\n",
+            (int)pid, (int)tid, (unsigned long long)(self->start / 1000), (int)self->fd, (unsigned long long)self->bytes,
+            (unsigned long long)((timestamp - self->start) / 1000), (unsigned long long)((vtimestamp - self->cpu) / 1000),
+            (unsigned long long)(self->off / 1000), (int)self->sleep, (int)arg0);
+        }
+        syscall::sendto:return /self->active == 2/ {
+          @calls[pid] = count(); @maximum_us[pid] = max((timestamp - self->start) / 1000);
+          /* Keep the thread-local key allocated between packets. */
+          self->active = 1;
+        }
+        syscall::exit:entry /pid == $target/ { printf("TARGET_EXIT_REQUEST=%d\n", (int)arg0); }
+        DTRACE
+        sudo -n dtrace -e -s build/macos-ci/native-send.d
         rustup toolchain install 1.96.0 --profile minimal
         printf '%s\n' "$HOME/.cargo/bin" >> "$GITHUB_PATH"
         export PATH="$HOME/.cargo/bin:$PATH"
@@ -29,46 +78,21 @@ jobs:
         # Apply only after the shared build has saved its unmodified caches.
         patch -d build/macos-ci/app/_deps/media-src -p1 < tests/intel-native-diagnostic.patch
         cmake --build build/macos-ci/app --target channel_tests --parallel 3
-        sudo -n dtrace -l -n 'syscall::sendto:entry' -n 'syscall::sendto:return' \
-          -n 'sched:::sleep' -n 'sched:::off-cpu' -n 'sched:::on-cpu' -n 'syscall::exit:entry' \
-          > build/macos-ci/artifacts/native-send-probes.txt
-        cat > build/macos-ci/native-send.d <<'DTRACE'
-        #pragma D option quiet
-        #pragma D option bufsize=8m
-        syscall::sendto:entry /execname == "channel_tests"/ {
-          self->start = timestamp; self->cpu = vtimestamp;
-          self->fd = arg0; self->bytes = arg2;
-          self->sleep = 0; self->off = 0; self->off_at = 0;
-        }
-        sched:::sleep /self->start/ {
-          self->sleep++;
-          @sleep_stacks[stack(12)] = count();
-        }
-        sched:::off-cpu /self->start/ { self->off_at = timestamp; }
-        sched:::on-cpu /self->start && self->off_at/ {
-          self->off += timestamp - self->off_at; self->off_at = 0;
-        }
-        syscall::sendto:return /self->start && timestamp - self->start >= 20000000/ {
-          printf("SENDTO pid=%d tid=%d at-us=%llu fd=%d bytes=%llu wall-us=%llu cpu-us=%llu off-us=%llu sleeps=%d result=%d\n",
-            (int)pid, (int)tid, (unsigned long long)(self->start / 1000), (int)self->fd, (unsigned long long)self->bytes,
-            (unsigned long long)((timestamp - self->start) / 1000), (unsigned long long)((vtimestamp - self->cpu) / 1000),
-            (unsigned long long)(self->off / 1000), (int)self->sleep, (int)arg0);
-        }
-        syscall::sendto:return /self->start/ {
-          @calls[pid] = count(); @latency_us[pid] = quantize((timestamp - self->start) / 1000);
-          self->start = 0;
-        }
-        syscall::exit:entry /pid == $target/ { printf("TARGET_EXIT_REQUEST=%d\n", (int)arg0); }
-        DTRACE
         sudo -n env SQUAD_TRACE_NATIVE_SEND=1 SQUAD_SOAK_CLIENTS=32 \
           SQUAD_SOAK_SPEAKERS=2 SQUAD_SOAK_PACING=delivery \
           SQUAD_SOAK_SECONDS=60 QT_LOGGING_RULES= \
           dtrace -s build/macos-ci/native-send.d \
           -o build/macos-ci/artifacts/native-send-kernel.txt \
-          -c 'build/macos-ci/app/channel_tests sixtyFourClientsHaveOneConsistentRosterAndAudioFanout -o build/macos-ci/artifacts/native-send-1.txt,txt'
+          -c 'build/macos-ci/app/channel_tests sixtyFourClientsHaveOneConsistentRosterAndAudioFanout -o build/macos-ci/artifacts/native-send-1.txt,txt' \
+          2> build/macos-ci/artifacts/native-send-trace-errors.txt
+        cat build/macos-ci/artifacts/native-send-trace-errors.txt
         cat build/macos-ci/artifacts/native-send-1.txt
         cat build/macos-ci/artifacts/native-send-kernel.txt
         # DTrace's status is not the child test's status.
+        if grep -Eq 'dynamic variable drop|drop(s)? on CPU|error on enabled probe|error(s)? in ERROR probe' build/macos-ci/artifacts/native-send-trace-errors.txt; then
+          printf 'Kernel trace dropped records and is incomplete.\n' >&2
+          exit 1
+        fi
         grep -q 'Totals: 6 passed, 0 failed, 0 skipped' build/macos-ci/artifacts/native-send-1.txt
         grep -qx 'TARGET_EXIT_REQUEST=0' build/macos-ci/artifacts/native-send-kernel.txt
       package_command: test -s build/macos-ci/artifacts/native-send-1.txt
