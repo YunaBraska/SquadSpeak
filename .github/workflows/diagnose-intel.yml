@@ -49,16 +49,16 @@ jobs:
           self->off += timestamp - self->off_at; self->off_at = 0;
         }
         syscall::sendto:return /self->start && timestamp - self->start >= 20000000/ {
-          printf("SENDTO pid=%d tid=%d at-us=%lld fd=%d bytes=%d wall-us=%lld cpu-us=%lld off-us=%lld sleeps=%d result=%d\n",
-            pid, tid, self->start / 1000, self->fd, self->bytes,
-            (timestamp - self->start) / 1000, (vtimestamp - self->cpu) / 1000,
-            self->off / 1000, self->sleep, arg0);
+          printf("SENDTO pid=%d tid=%d at-us=%llu fd=%d bytes=%llu wall-us=%llu cpu-us=%llu off-us=%llu sleeps=%d result=%d\n",
+            (int)pid, (int)tid, (unsigned long long)(self->start / 1000), (int)self->fd, (unsigned long long)self->bytes,
+            (unsigned long long)((timestamp - self->start) / 1000), (unsigned long long)((vtimestamp - self->cpu) / 1000),
+            (unsigned long long)(self->off / 1000), (int)self->sleep, (int)arg0);
         }
         syscall::sendto:return /self->start/ {
           @calls[pid] = count(); @latency_us[pid] = quantize((timestamp - self->start) / 1000);
           self->start = 0;
         }
-        syscall::exit:entry /pid == $target/ { printf("TARGET_EXIT_REQUEST=%d\n", arg0); }
+        syscall::exit:entry /pid == $target/ { printf("TARGET_EXIT_REQUEST=%d\n", (int)arg0); }
         DTRACE
         sudo -n env SQUAD_TRACE_NATIVE_SEND=1 SQUAD_SOAK_CLIENTS=32 \
           SQUAD_SOAK_SPEAKERS=2 SQUAD_SOAK_PACING=delivery \
