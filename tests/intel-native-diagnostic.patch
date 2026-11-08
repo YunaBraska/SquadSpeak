@@ -59,7 +59,34 @@
  
  #include <assert.h>
  #include <string.h>
-@@ -626,7 +627,10 @@
+@@ -597,16 +598,25 @@
+ 	JLOG_VERBOSE("Interrupting connections thread");
+ 
+ 	registry_impl_t *registry_impl = registry->impl;
++	const int tracing = getenv("SQUAD_TRACE_NATIVE_SEND") != NULL;
++	squad_trace_stamp trace[4]; trace[0] = squad_trace_now(tracing);
+ 	mutex_lock(&registry_impl->send_mutex);
++	trace[1] = squad_trace_now(tracing);
+ 	char dummy = 0; // Some C libraries might error out on NULL pointers
+-	if (udp_sendto_self(registry_impl->sock, &dummy, 0) < 0) {
++	const int result = udp_sendto_self(registry_impl->sock, &dummy, 0);
++	trace[2] = squad_trace_now(tracing);
++	if (result < 0) {
+ 		if (sockerrno != SEAGAIN && sockerrno != SEWOULDBLOCK) {
+ 			JLOG_WARN("Failed to interrupt poll by triggering socket, errno=%d", sockerrno);
+ 		}
+ 		mutex_unlock(&registry_impl->send_mutex);
++		trace[3] = squad_trace_now(tracing);
++		if (tracing) squad_trace_report("mux-wake-lock/sendto/unlock", (const unsigned char*)&dummy, 0, trace, 4);
+ 		return -1;
+ 	}
+ 	mutex_unlock(&registry_impl->send_mutex);
++	trace[3] = squad_trace_now(tracing);
++	if (tracing) squad_trace_report("mux-wake-lock/sendto/unlock", (const unsigned char*)&dummy, 0, trace, 4);
+ 	return 0;
+ }
+ 
+@@ -626,7 +636,10 @@
  	conn_impl_t *conn_impl = agent->conn_impl;
  	registry_impl_t *registry_impl = conn_impl->registry->impl;
  
@@ -70,7 +97,7 @@
  
  	if (registry_impl->send_ds >= 0 && registry_impl->send_ds != ds) {
  		JLOG_VERBOSE("Setting Differentiated Services field to 0x%X", ds);
-@@ -636,9 +640,11 @@
+@@ -636,9 +649,11 @@
  			registry_impl->send_ds = -1; // disable for next time
  	}
  
@@ -82,7 +109,7 @@
  	if (ret < 0) {
  		ret = -sockerrno;
  		if (sockerrno == SEAGAIN || sockerrno == SEWOULDBLOCK)
-@@ -650,6 +656,8 @@
+@@ -650,6 +665,8 @@
  	}
  
  	mutex_unlock(&registry_impl->send_mutex);
@@ -93,7 +120,7 @@
  
 --- /dev/null
 +++ b/src/squad_native_trace.h
-@@ -0,0 +1,57 @@
+@@ -0,0 +1,54 @@
 +#pragma once
 +#include <errno.h>
 +#include <stdint.h>
@@ -101,16 +128,14 @@
 +#include <stdlib.h>
 +#include <time.h>
 +#include <unistd.h>
-+typedef struct { int64_t wall, cpu; } squad_trace_stamp;
++typedef struct { int64_t wall; } squad_trace_stamp;
 +static squad_trace_stamp squad_trace_now(int enabled) {
-+    squad_trace_stamp result = {0, 0};
++    squad_trace_stamp result = {0};
 +    if (!enabled) return result;
 +    int saved = errno;
-+    struct timespec wall = {0,0}, cpu = {0,0};
-+    clock_gettime(CLOCK_MONOTONIC, &wall);
-+    clock_gettime(CLOCK_THREAD_CPUTIME_ID, &cpu);
++    struct timespec wall = {0,0};
++    clock_gettime(CLOCK_UPTIME_RAW, &wall);
 +    result.wall = (int64_t)wall.tv_sec * 1000000000LL + wall.tv_nsec;
-+    result.cpu = (int64_t)cpu.tv_sec * 1000000000LL + cpu.tv_nsec;
 +    errno = saved;
 +    return result;
 +}
@@ -142,11 +167,10 @@
 +        source = ((uint32_t)bytes[8] << 24) | ((uint32_t)bytes[9] << 16) | ((uint32_t)bytes[10] << 8) | bytes[11];
 +    }
 +    char *line=squad_trace_lines[slot];
-+    int length = snprintf(line, 1024, "NATIVE_SEND %s source=%u sequence=%d bytes=%zu wall/cpu-us",kind,source,sequence,size);
++    int length = snprintf(line, 1024, "NATIVE_SEND %s pid=%ld at-us=%lld source=%u sequence=%d bytes=%zu wall-us",kind,(long)getpid(),(long long)(points[0].wall/1000),source,sequence,size);
 +    for (int i=1;i<count && length < (int)1024-80;++i)
-+        length += snprintf(line+length,1024-(size_t)length," %lld/%lld",
-+            (long long)((points[i].wall-points[i-1].wall)/1000),
-+            (long long)((points[i].cpu-points[i-1].cpu)/1000));
++        length += snprintf(line+length,1024-(size_t)length," %lld",
++            (long long)((points[i].wall-points[i-1].wall)/1000));
 +    line[length++]='\n';
 +    __atomic_store_n(&squad_trace_lengths[slot],(unsigned)length,__ATOMIC_RELEASE);
 +    errno = saved;
