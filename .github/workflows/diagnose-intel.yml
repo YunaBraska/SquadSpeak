@@ -1,0 +1,57 @@
+name: "🔬 Diagnose Intel audio send"
+
+on:
+  push:
+    branches: [fix/intel-fanout-completion]
+    paths:
+      - .github/workflows/diagnose-intel.yml
+      - tests/intel-native-diagnostic.patch
+
+permissions:
+  contents: read
+
+jobs:
+  native-send:
+    uses: YunaBraska/YunaBraska/.github/workflows/wc_cpp_macos_build.yml@0c16fe69a5b69ad9da903c444f855b19d4d555fc
+    with:
+      ref: ${{ github.sha }}
+      version: '2026.11.8-SNAPSHOT.1'
+      runners: '["macos-15-intel"]'
+      prepare_command: |
+        set -eu
+        rustup toolchain install 1.96.0 --profile minimal
+        printf '%s\n' "$HOME/.cargo/bin" >> "$GITHUB_PATH"
+        export PATH="$HOME/.cargo/bin:$PATH"
+        sh tests/macos-ci.sh auto build/macos-ci prepare
+      build_command: sh tests/macos-ci.sh auto build/macos-ci build
+      test_command: |
+        set -eu
+        # Apply only after the shared build has saved its unmodified caches.
+        patch -d build/macos-ci/app/_deps/media-src -p1 < tests/intel-native-diagnostic.patch
+        cmake --build build/macos-ci/app --target channel_tests --parallel 3
+        for attempt in 1 2 3 4 5; do
+          sudo -n env SQUAD_TRACE_NATIVE_SEND=1 SQUAD_SOAK_CLIENTS=32 \
+            SQUAD_SOAK_SPEAKERS=2 SQUAD_SOAK_PACING=delivery \
+            SQUAD_SOAK_SECONDS=30 QT_LOGGING_RULES= \
+            build/macos-ci/app/channel_tests \
+            sixtyFourClientsHaveOneConsistentRosterAndAudioFanout \
+            -o "build/macos-ci/artifacts/native-send-$attempt.txt",txt
+          cat "build/macos-ci/artifacts/native-send-$attempt.txt"
+        done
+      package_command: test -s build/macos-ci/artifacts/native-send-1.txt
+      cache_inputs: '["tests/macos-ci.sh", "cmake/Dependencies.cmake", "cmake/AudioProcessing.cmake", "cmake/Media.cmake", "cmake/Updates.cmake", "cmake/audio-processing-echo.patch", "cmake/qt-qml-*.patch", "cmake/source_archives.json", "src/teamspeak_bridge/Cargo.lock", "rust-toolchain.toml", "cmake/TeamSpeak.cmake"]'
+      cache_paths: |
+        build/macos-ci/toolchain/Qt
+        build/macos-ci/dependencies
+        build/macos-ci/app/teamspeak
+        ~/.cargo/registry
+        ~/.cargo/git
+        build/macos-ci/app/_deps
+        build/macos-ci/app/qt-qml
+        build/macos-ci/app/squad_qt_qml_build-prefix
+        build/macos-ci/app/squad_ffmpeg_build-prefix
+        build/macos-ci/app/ffmpeg
+        build/macos-ci/app/squad_apm_build-prefix
+        build/macos-ci/app/audio-processing
+      package_paths: build/macos-ci/artifacts/native-send-*.txt
+      report_paths: build/macos-ci/artifacts
