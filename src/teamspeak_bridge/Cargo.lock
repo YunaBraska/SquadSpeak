@@ -2281,6 +2281,7 @@ dependencies = [
  "protobuf",
  "serde",
  "serde_json",
+ "simple_asn1",
  "tokio",
  "tokio-openssl",
  "tokio-util",

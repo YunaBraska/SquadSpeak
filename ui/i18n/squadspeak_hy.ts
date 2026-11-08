@@ -1213,6 +1213,18 @@
             <source>System</source>
             <translation>Համակարգ</translation>
         </message>
+        <message>
+            <source>Import identity...</source>
+            <translation>Ներմուծել ինքնությունը...</translation>
+        </message>
+        <message>
+            <source>Replace your TeamSpeak identity? An active TeamSpeak connection will close.</source>
+            <translation>Փոխարինե՞լ ձեր TeamSpeak ինքնությունը։ TeamSpeak-ի ակտիվ կապը կփակվի։</translation>
+        </message>
+        <message>
+            <source>Import</source>
+            <translation>Ներմուծել</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -2614,6 +2626,22 @@
         <message>
             <source>Speaking is not allowed in this channel.</source>
             <translation>Այս ալիքում խոսել չի թույլատրվում։</translation>
+        </message>
+        <message>
+            <source>Identity import is unavailable.</source>
+            <translation>Ինքնության ներմուծումն անհասանելի է։</translation>
+        </message>
+        <message>
+            <source>Choose a valid TeamSpeak identity export (.ini).</source>
+            <translation>Ընտրեք TeamSpeak ինքնության արտահանման վավեր ֆայլ (.ini)։</translation>
+        </message>
+        <message>
+            <source>Could not read the identity file.</source>
+            <translation>Չհաջողվեց կարդալ ինքնության ֆայլը։</translation>
+        </message>
+        <message>
+            <source>Identity imported.</source>
+            <translation>Ինքնությունը ներմուծվեց։</translation>
         </message>
     </context>
     <context>

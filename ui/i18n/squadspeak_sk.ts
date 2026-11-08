@@ -1213,6 +1213,18 @@
             <source>System</source>
             <translation>Systém</translation>
         </message>
+        <message>
+            <source>Import identity...</source>
+            <translation>Importovať identitu...</translation>
+        </message>
+        <message>
+            <source>Replace your TeamSpeak identity? An active TeamSpeak connection will close.</source>
+            <translation>Chcete nahradiť svoju identitu TeamSpeak? Aktívne pripojenie k TeamSpeak sa ukončí.</translation>
+        </message>
+        <message>
+            <source>Import</source>
+            <translation>Importovať</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -2614,6 +2626,22 @@
         <message>
             <source>Speaking is not allowed in this channel.</source>
             <translation>V tomto kanáli nie je dovolené hovoriť.</translation>
+        </message>
+        <message>
+            <source>Identity import is unavailable.</source>
+            <translation>Import identity nie je dostupný.</translation>
+        </message>
+        <message>
+            <source>Choose a valid TeamSpeak identity export (.ini).</source>
+            <translation>Vyberte platný súbor exportu identity TeamSpeak (.ini).</translation>
+        </message>
+        <message>
+            <source>Could not read the identity file.</source>
+            <translation>Súbor identity sa nepodarilo prečítať.</translation>
+        </message>
+        <message>
+            <source>Identity imported.</source>
+            <translation>Identita bola importovaná.</translation>
         </message>
     </context>
     <context>

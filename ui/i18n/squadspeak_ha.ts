@@ -1213,6 +1213,18 @@
             <source>System</source>
             <translation>Tsarin na’ura</translation>
         </message>
+        <message>
+            <source>Import identity...</source>
+            <translation>Shigo ganewa...</translation>
+        </message>
+        <message>
+            <source>Replace your TeamSpeak identity? An active TeamSpeak connection will close.</source>
+            <translation>Kana son maye gurbin ganewarka ta TeamSpeak? Za a rufe haɗin TeamSpeak mai aiki.</translation>
+        </message>
+        <message>
+            <source>Import</source>
+            <translation>Shigo</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -2614,6 +2626,22 @@
         <message>
             <source>Speaking is not allowed in this channel.</source>
             <translation>Ba a yarda da magana a wannan tashar ba.</translation>
+        </message>
+        <message>
+            <source>Identity import is unavailable.</source>
+            <translation>Ba a samun shigo da ganewa.</translation>
+        </message>
+        <message>
+            <source>Choose a valid TeamSpeak identity export (.ini).</source>
+            <translation>Zaɓi ingantaccen fayil ɗin fitar da ganewar TeamSpeak (.ini).</translation>
+        </message>
+        <message>
+            <source>Could not read the identity file.</source>
+            <translation>An kasa karanta fayil ɗin ganewa.</translation>
+        </message>
+        <message>
+            <source>Identity imported.</source>
+            <translation>An shigo da ganewa.</translation>
         </message>
     </context>
     <context>

@@ -1213,6 +1213,18 @@
             <source>System</source>
             <translation>सिस्टम</translation>
         </message>
+        <message>
+            <source>Import identity...</source>
+            <translation>ओळख आयात करा...</translation>
+        </message>
+        <message>
+            <source>Replace your TeamSpeak identity? An active TeamSpeak connection will close.</source>
+            <translation>तुमची TeamSpeak ओळख बदलायची आहे का? सक्रिय TeamSpeak कनेक्शन बंद होईल.</translation>
+        </message>
+        <message>
+            <source>Import</source>
+            <translation>आयात करा</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -2614,6 +2626,22 @@
         <message>
             <source>Speaking is not allowed in this channel.</source>
             <translation>या चॅनेलमध्ये बोलण्याची परवानगी नाही.</translation>
+        </message>
+        <message>
+            <source>Identity import is unavailable.</source>
+            <translation>ओळख आयात उपलब्ध नाही.</translation>
+        </message>
+        <message>
+            <source>Choose a valid TeamSpeak identity export (.ini).</source>
+            <translation>वैध TeamSpeak ओळख निर्यात फाइल निवडा (.ini).</translation>
+        </message>
+        <message>
+            <source>Could not read the identity file.</source>
+            <translation>ओळख फाइल वाचता आली नाही.</translation>
+        </message>
+        <message>
+            <source>Identity imported.</source>
+            <translation>ओळख आयात झाली.</translation>
         </message>
     </context>
     <context>

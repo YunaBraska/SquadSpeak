@@ -163,6 +163,10 @@ public:
     [[nodiscard]] bool joinedExternalVoice() const;
     Q_INVOKABLE bool addMumble(const QString& endpoint, const QString& password = {});
     Q_INVOKABLE bool addTeamSpeak(const QString& endpoint, const QString& password = {});
+    Q_INVOKABLE QString teamSpeakIdentityId() const;
+    Q_INVOKABLE QVariantMap prepareTeamSpeakIdentityImport(const QUrl& file);
+    Q_INVOKABLE bool confirmTeamSpeakIdentityImport();
+    Q_INVOKABLE void cancelTeamSpeakIdentityImport();
     [[nodiscard]] bool chatPending() const;
     [[nodiscard]] bool historyLoading() const;
     [[nodiscard]] bool hasOlderMessages() const;
@@ -329,6 +333,7 @@ private:
     bool sendExternalChat(Client& client, const QString& text);
     bool openExternalPrivate(const QString& host, const QString& peer);
     bool saveTeamSpeakIdentity(const QJsonObject& identity);
+    QJsonObject pendingTeamSpeakIdentity_;
     struct Client final {
         QString id;
         QString deviceId;

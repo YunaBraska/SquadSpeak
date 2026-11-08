@@ -2444,6 +2444,61 @@ TestCase {
         tryCompare(session, "available", true)
     }
 
+    function test_profileIdentityImportShowsPreviewCancelAndSuccess_data() {
+        return [{tag: "normal", scale: 100}, {tag: "large-text", scale: 200}]
+    }
+    function test_profileIdentityImportShowsPreviewCancelAndSuccess(data) {
+        session.setTextScale(data.scale)
+        view.width = 360; view.height = 500
+        view.openSettings(0)
+        const settings = findChild(view, "settingsDialog")
+        tryCompare(settings, "opened", true)
+        const section = findChild(settings, "teamSpeakIdentity")
+        const scroll = findChild(settings, "settingsScroll").contentItem
+        const button = findChild(settings, "importTeamSpeakIdentity")
+        verify(button.enabled)
+        tryVerify(function() { return button.x >= 0 && button.x + button.width <= section.width + 1 })
+        const original = channel.teamSpeakIdentityId()
+        section.prepare(fixtures.identityExportFile(false))
+        verify(section.failed)
+        verify(findChild(section, "identityImportFeedback").visible)
+        verify(!findChild(section, "confirmIdentityImport").visible)
+        compare(channel.teamSpeakIdentityId(), original)
+        section.prepare(fixtures.identityExportFile(true))
+        verify(!section.failed)
+        const uid = section.preview.uid
+        verify(uid.length > 0)
+        compare(findChild(section, "teamSpeakIdentityUid").text, uid)
+        compare(channel.teamSpeakIdentityId(), original)
+        for (const name of ["cancelIdentityImport", "confirmIdentityImport"]) {
+            if (name === "confirmIdentityImport") section.prepare(fixtures.identityExportFile(true))
+            const control = findChild(section, name)
+            tryVerify(function() {
+                view.update()
+                const position = control.mapToItem(scroll, 0, 0)
+                scroll.contentY = Math.max(0, Math.min(scroll.contentHeight - scroll.height,
+                    scroll.contentY + position.y - (scroll.height - control.height) / 2))
+                const visible = control.mapToItem(scroll, 0, 0)
+                return visible.y >= 0 && visible.y + control.height <= scroll.height
+            })
+            mouseClick(control)
+            tryVerify(function() { return !section.preview.uid })
+            compare(channel.teamSpeakIdentityId(), name === "cancelIdentityImport" ? original : uid)
+        }
+        verify(!section.failed)
+        verify(findChild(section, "identityImportFeedback").visible)
+        settings.close()
+        tryCompare(settings, "opened", false)
+        view.openSettings(0)
+        tryCompare(settings, "opened", true)
+        compare(section.currentUid, uid)
+        compare(section.feedback, "")
+        section.prepare(fixtures.identityExportFile(true))
+        settings.close()
+        tryCompare(settings, "opened", false)
+        verify(!channel.confirmTeamSpeakIdentityImport())
+    }
+
     function test_channelInfoOwnsConfigurationWithoutChangingVoiceOrForeignHosts() {
         verify(fixtures.startHost())
         verify(channel.join(channel.ownId, "127.0.0.1", channel.servicePort))

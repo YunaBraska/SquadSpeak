@@ -1213,6 +1213,18 @@
             <source>System</source>
             <translation>Hệ thống</translation>
         </message>
+        <message>
+            <source>Import identity...</source>
+            <translation>Nhập danh tính...</translation>
+        </message>
+        <message>
+            <source>Replace your TeamSpeak identity? An active TeamSpeak connection will close.</source>
+            <translation>Bạn có muốn thay thế danh tính TeamSpeak không? Kết nối TeamSpeak đang hoạt động sẽ bị đóng.</translation>
+        </message>
+        <message>
+            <source>Import</source>
+            <translation>Nhập</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -2614,6 +2626,22 @@
         <message>
             <source>Speaking is not allowed in this channel.</source>
             <translation>Không được phép nói trong kênh này.</translation>
+        </message>
+        <message>
+            <source>Identity import is unavailable.</source>
+            <translation>Không thể nhập danh tính lúc này.</translation>
+        </message>
+        <message>
+            <source>Choose a valid TeamSpeak identity export (.ini).</source>
+            <translation>Chọn tệp xuất danh tính TeamSpeak hợp lệ (.ini).</translation>
+        </message>
+        <message>
+            <source>Could not read the identity file.</source>
+            <translation>Không thể đọc tệp danh tính.</translation>
+        </message>
+        <message>
+            <source>Identity imported.</source>
+            <translation>Đã nhập danh tính.</translation>
         </message>
     </context>
     <context>

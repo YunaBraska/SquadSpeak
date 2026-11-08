@@ -1213,6 +1213,18 @@
             <source>System</source>
             <translation>সিস্টেম</translation>
         </message>
+        <message>
+            <source>Import identity...</source>
+            <translation>পরিচয় আমদানি...</translation>
+        </message>
+        <message>
+            <source>Replace your TeamSpeak identity? An active TeamSpeak connection will close.</source>
+            <translation>আপনার TeamSpeak পরিচয় প্রতিস্থাপন করবেন? সক্রিয় TeamSpeak সংযোগ বন্ধ হবে।</translation>
+        </message>
+        <message>
+            <source>Import</source>
+            <translation>আমদানি</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -2614,6 +2626,22 @@
         <message>
             <source>Speaking is not allowed in this channel.</source>
             <translation>এই চ্যানেলে কথা বলার অনুমতি নেই।</translation>
+        </message>
+        <message>
+            <source>Identity import is unavailable.</source>
+            <translation>পরিচয় আমদানি উপলভ্য নয়।</translation>
+        </message>
+        <message>
+            <source>Choose a valid TeamSpeak identity export (.ini).</source>
+            <translation>একটি বৈধ TeamSpeak পরিচয় রপ্তানি ফাইল বেছে নিন (.ini)।</translation>
+        </message>
+        <message>
+            <source>Could not read the identity file.</source>
+            <translation>পরিচয় ফাইলটি পড়া যায়নি।</translation>
+        </message>
+        <message>
+            <source>Identity imported.</source>
+            <translation>পরিচয় আমদানি হয়েছে।</translation>
         </message>
     </context>
     <context>

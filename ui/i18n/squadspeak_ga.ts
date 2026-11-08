@@ -1213,6 +1213,18 @@
             <source>System</source>
             <translation>Córas</translation>
         </message>
+        <message>
+            <source>Import identity...</source>
+            <translation>Iompórtáil céannacht...</translation>
+        </message>
+        <message>
+            <source>Replace your TeamSpeak identity? An active TeamSpeak connection will close.</source>
+            <translation>An bhfuil fonn ort d’aitheantas TeamSpeak a ionadú? Dúnfar nasc gníomhach TeamSpeak.</translation>
+        </message>
+        <message>
+            <source>Import</source>
+            <translation>Iompórtáil</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -2614,6 +2626,22 @@
         <message>
             <source>Speaking is not allowed in this channel.</source>
             <translation>Ní cheadaítear labhairt sa chainéal seo.</translation>
+        </message>
+        <message>
+            <source>Identity import is unavailable.</source>
+            <translation>Níl iompórtáil céannachta ar fáil.</translation>
+        </message>
+        <message>
+            <source>Choose a valid TeamSpeak identity export (.ini).</source>
+            <translation>Roghnaigh easpórtáil bhailí céannachta TeamSpeak (.ini).</translation>
+        </message>
+        <message>
+            <source>Could not read the identity file.</source>
+            <translation>Níorbh fhéidir an comhad céannachta a léamh.</translation>
+        </message>
+        <message>
+            <source>Identity imported.</source>
+            <translation>Iompórtáladh an chéannacht.</translation>
         </message>
     </context>
     <context>

@@ -1213,6 +1213,18 @@
             <source>System</source>
             <translation>系统</translation>
         </message>
+        <message>
+            <source>Import identity...</source>
+            <translation>导入身份...</translation>
+        </message>
+        <message>
+            <source>Replace your TeamSpeak identity? An active TeamSpeak connection will close.</source>
+            <translation>要替换你的 TeamSpeak 身份吗？当前的 TeamSpeak 连接将关闭。</translation>
+        </message>
+        <message>
+            <source>Import</source>
+            <translation>导入</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -2614,6 +2626,22 @@
         <message>
             <source>Speaking is not allowed in this channel.</source>
             <translation>此频道不允许发言。</translation>
+        </message>
+        <message>
+            <source>Identity import is unavailable.</source>
+            <translation>无法导入身份。</translation>
+        </message>
+        <message>
+            <source>Choose a valid TeamSpeak identity export (.ini).</source>
+            <translation>请选择有效的 TeamSpeak 身份导出文件（.ini）。</translation>
+        </message>
+        <message>
+            <source>Could not read the identity file.</source>
+            <translation>无法读取身份文件。</translation>
+        </message>
+        <message>
+            <source>Identity imported.</source>
+            <translation>身份已导入。</translation>
         </message>
     </context>
     <context>

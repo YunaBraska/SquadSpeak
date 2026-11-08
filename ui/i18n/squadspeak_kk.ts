@@ -1213,6 +1213,18 @@
             <source>System</source>
             <translation>Жүйе</translation>
         </message>
+        <message>
+            <source>Import identity...</source>
+            <translation>Сәйкестікті импорттау...</translation>
+        </message>
+        <message>
+            <source>Replace your TeamSpeak identity? An active TeamSpeak connection will close.</source>
+            <translation>TeamSpeak сәйкестігін ауыстыру керек пе? Белсенді TeamSpeak байланысы жабылады.</translation>
+        </message>
+        <message>
+            <source>Import</source>
+            <translation>Импорттау</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -2614,6 +2626,22 @@
         <message>
             <source>Speaking is not allowed in this channel.</source>
             <translation>Бұл арнада сөйлеуге рұқсат жоқ.</translation>
+        </message>
+        <message>
+            <source>Identity import is unavailable.</source>
+            <translation>Сәйкестікті импорттау қолжетімді емес.</translation>
+        </message>
+        <message>
+            <source>Choose a valid TeamSpeak identity export (.ini).</source>
+            <translation>Жарамды TeamSpeak сәйкестігін экспорттау файлын таңдаңыз (.ini).</translation>
+        </message>
+        <message>
+            <source>Could not read the identity file.</source>
+            <translation>Сәйкестік файлын оқу мүмкін болмады.</translation>
+        </message>
+        <message>
+            <source>Identity imported.</source>
+            <translation>Сәйкестік импортталды.</translation>
         </message>
     </context>
     <context>

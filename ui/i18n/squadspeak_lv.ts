@@ -1213,6 +1213,18 @@
             <source>System</source>
             <translation>Sistēma</translation>
         </message>
+        <message>
+            <source>Import identity...</source>
+            <translation>Importēt identitāti...</translation>
+        </message>
+        <message>
+            <source>Replace your TeamSpeak identity? An active TeamSpeak connection will close.</source>
+            <translation>Vai aizstāt savu TeamSpeak identitāti? Aktīvais TeamSpeak savienojums tiks aizvērts.</translation>
+        </message>
+        <message>
+            <source>Import</source>
+            <translation>Importēt</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -2614,6 +2626,22 @@
         <message>
             <source>Speaking is not allowed in this channel.</source>
             <translation>Šajā kanālā runāt nav atļauts.</translation>
+        </message>
+        <message>
+            <source>Identity import is unavailable.</source>
+            <translation>Identitātes importēšana nav pieejama.</translation>
+        </message>
+        <message>
+            <source>Choose a valid TeamSpeak identity export (.ini).</source>
+            <translation>Izvēlieties derīgu TeamSpeak identitātes eksportēšanas failu (.ini).</translation>
+        </message>
+        <message>
+            <source>Could not read the identity file.</source>
+            <translation>Neizdevās nolasīt identitātes failu.</translation>
+        </message>
+        <message>
+            <source>Identity imported.</source>
+            <translation>Identitāte importēta.</translation>
         </message>
     </context>
     <context>

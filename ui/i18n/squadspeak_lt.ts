@@ -1213,6 +1213,18 @@
             <source>System</source>
             <translation>Sistema</translation>
         </message>
+        <message>
+            <source>Import identity...</source>
+            <translation>Importuoti tapatybę...</translation>
+        </message>
+        <message>
+            <source>Replace your TeamSpeak identity? An active TeamSpeak connection will close.</source>
+            <translation>Pakeisti jūsų „TeamSpeak“ tapatybę? Aktyvus „TeamSpeak“ ryšys bus uždarytas.</translation>
+        </message>
+        <message>
+            <source>Import</source>
+            <translation>Importuoti</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -2614,6 +2626,22 @@
         <message>
             <source>Speaking is not allowed in this channel.</source>
             <translation>Šiame kanale kalbėti neleidžiama.</translation>
+        </message>
+        <message>
+            <source>Identity import is unavailable.</source>
+            <translation>Tapatybės importuoti negalima.</translation>
+        </message>
+        <message>
+            <source>Choose a valid TeamSpeak identity export (.ini).</source>
+            <translation>Pasirinkite tinkamą „TeamSpeak“ tapatybės eksportavimo failą (.ini).</translation>
+        </message>
+        <message>
+            <source>Could not read the identity file.</source>
+            <translation>Nepavyko perskaityti tapatybės failo.</translation>
+        </message>
+        <message>
+            <source>Identity imported.</source>
+            <translation>Tapatybė importuota.</translation>
         </message>
     </context>
     <context>

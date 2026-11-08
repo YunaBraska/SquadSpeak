@@ -2,6 +2,7 @@
 #include "audio_processor.hpp"
 #include "audio_model.hpp"
 #include "voice_session.hpp"
+#include "identity_fixture.hpp"
 #include "local_channel.hpp"
 #include "chat_content.hpp"
 #include "ptt_key.hpp"
@@ -99,6 +100,14 @@ class AudioFixtures final : public QObject {
     QString appliedLanguage_ = "en";
     QQmlPropertyMap systemAppearance_;
 public slots:
+    QUrl identityExportFile(bool valid) {
+        const auto path = folder_.filePath("identity-export.ini");
+        QFile file(path);
+        if (!file.open(QIODevice::WriteOnly)) return {};
+        const auto data = valid ? QByteArray(firstIdentityExport) : QByteArray("not an identity");
+        if (file.write(data) != data.size()) return {};
+        return QUrl::fromLocalFile(path);
+    }
     bool bindAudioToChannel() {
         if (!audio_ || !channel_ || !audioChannelConnections_.isEmpty()) return false;
         const auto updateVoice = [this] {

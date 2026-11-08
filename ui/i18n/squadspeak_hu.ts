@@ -1213,6 +1213,18 @@
             <source>System</source>
             <translation>Rendszer</translation>
         </message>
+        <message>
+            <source>Import identity...</source>
+            <translation>Identitás importálása...</translation>
+        </message>
+        <message>
+            <source>Replace your TeamSpeak identity? An active TeamSpeak connection will close.</source>
+            <translation>Szeretnéd lecserélni a TeamSpeak-identitásodat? Az aktív TeamSpeak-kapcsolat bezárul.</translation>
+        </message>
+        <message>
+            <source>Import</source>
+            <translation>Importálás</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -2614,6 +2626,22 @@
         <message>
             <source>Speaking is not allowed in this channel.</source>
             <translation>Ebben a csatornában nem beszélhetsz.</translation>
+        </message>
+        <message>
+            <source>Identity import is unavailable.</source>
+            <translation>Az identitás importálása nem érhető el.</translation>
+        </message>
+        <message>
+            <source>Choose a valid TeamSpeak identity export (.ini).</source>
+            <translation>Válassz érvényes TeamSpeak-identitásexport-fájlt (.ini).</translation>
+        </message>
+        <message>
+            <source>Could not read the identity file.</source>
+            <translation>Az identitásfájl nem olvasható.</translation>
+        </message>
+        <message>
+            <source>Identity imported.</source>
+            <translation>Identitás importálva.</translation>
         </message>
     </context>
     <context>

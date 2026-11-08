@@ -1213,6 +1213,18 @@
             <source>System</source>
             <translation>Σύστημα</translation>
         </message>
+        <message>
+            <source>Import identity...</source>
+            <translation>Εισαγωγή ταυτότητας...</translation>
+        </message>
+        <message>
+            <source>Replace your TeamSpeak identity? An active TeamSpeak connection will close.</source>
+            <translation>Να αντικατασταθεί η ταυτότητά σου στο TeamSpeak; Θα κλείσει η ενεργή σύνδεση TeamSpeak.</translation>
+        </message>
+        <message>
+            <source>Import</source>
+            <translation>Εισαγωγή</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -2614,6 +2626,22 @@
         <message>
             <source>Speaking is not allowed in this channel.</source>
             <translation>Δεν επιτρέπεται η ομιλία σε αυτό το κανάλι.</translation>
+        </message>
+        <message>
+            <source>Identity import is unavailable.</source>
+            <translation>Η εισαγωγή ταυτότητας δεν είναι διαθέσιμη.</translation>
+        </message>
+        <message>
+            <source>Choose a valid TeamSpeak identity export (.ini).</source>
+            <translation>Επίλεξε ένα έγκυρο αρχείο εξαγωγής ταυτότητας TeamSpeak (.ini).</translation>
+        </message>
+        <message>
+            <source>Could not read the identity file.</source>
+            <translation>Δεν ήταν δυνατή η ανάγνωση του αρχείου ταυτότητας.</translation>
+        </message>
+        <message>
+            <source>Identity imported.</source>
+            <translation>Η ταυτότητα εισήχθη.</translation>
         </message>
     </context>
     <context>

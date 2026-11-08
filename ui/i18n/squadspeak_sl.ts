@@ -1213,6 +1213,18 @@
             <source>System</source>
             <translation>Sistem</translation>
         </message>
+        <message>
+            <source>Import identity...</source>
+            <translation>Uvozi identiteto...</translation>
+        </message>
+        <message>
+            <source>Replace your TeamSpeak identity? An active TeamSpeak connection will close.</source>
+            <translation>Želite zamenjati svojo identiteto TeamSpeak? Aktivna povezava TeamSpeak bo zaprta.</translation>
+        </message>
+        <message>
+            <source>Import</source>
+            <translation>Uvozi</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -2614,6 +2626,22 @@
         <message>
             <source>Speaking is not allowed in this channel.</source>
             <translation>V tem kanalu ni dovoljeno govoriti.</translation>
+        </message>
+        <message>
+            <source>Identity import is unavailable.</source>
+            <translation>Uvoz identitete ni na voljo.</translation>
+        </message>
+        <message>
+            <source>Choose a valid TeamSpeak identity export (.ini).</source>
+            <translation>Izberite veljavno datoteko izvoza identitete TeamSpeak (.ini).</translation>
+        </message>
+        <message>
+            <source>Could not read the identity file.</source>
+            <translation>Datoteke z identiteto ni bilo mogoče prebrati.</translation>
+        </message>
+        <message>
+            <source>Identity imported.</source>
+            <translation>Identiteta je uvožena.</translation>
         </message>
     </context>
     <context>

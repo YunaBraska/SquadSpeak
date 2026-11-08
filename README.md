@@ -88,11 +88,17 @@ securely for the next connection. Channels stay in their server's
 hierarchy, with the provider's icon on the host. Double-click to join. Use the same
 microphone, push-to-talk and volume settings. Click a member to open **Message**.
 
-SquadSpeak generates and keeps a separate TS3 identity. Mumble uses the existing
+SquadSpeak generates and keeps a separate TS3 identity. To use your existing one,
+export it from TeamSpeak's **Identities** window, then open **Settings > Profile >
+TeamSpeak > Import identity...** in SquadSpeak. Select the `.ini` file, check the
+identity ID and confirm **Import**. An active TeamSpeak connection closes. Rejoin
+to use the imported identity and its existing server permissions. The identity is
+stored encrypted. Your nickname and SquadSpeak identity stay unchanged.
+Mumble uses the existing
 SquadSpeak certificate identity. Remote control uses the
 controlled computer's identity and connection. Server permissions still apply.
 The current integration supports Opus voice and text, without requiring the
-TeamSpeak client. It does not yet import an existing TS3 identity, manage server
+TeamSpeak client. It does not manage server
 permissions, transfer files or send whispers. TS3 chats have no offline delivery
 or server-side history. Mumble supports Opus voice, nested channels, channel and
 private text, server passwords and channel access tokens. Mumble images, whispers,
