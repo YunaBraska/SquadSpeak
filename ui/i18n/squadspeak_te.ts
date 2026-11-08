@@ -1213,6 +1213,18 @@
             <source>System</source>
             <translation>సిస్టమ్</translation>
         </message>
+        <message>
+            <source>Import identity...</source>
+            <translation>గుర్తింపును దిగుమతి చేయండి...</translation>
+        </message>
+        <message>
+            <source>Replace your TeamSpeak identity? An active TeamSpeak connection will close.</source>
+            <translation>మీ TeamSpeak గుర్తింపును మార్చాలా? ప్రస్తుతం ఉన్న TeamSpeak కనెక్షన్ మూసివేయబడుతుంది.</translation>
+        </message>
+        <message>
+            <source>Import</source>
+            <translation>దిగుమతి చేయండి</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -2614,6 +2626,22 @@
         <message>
             <source>Speaking is not allowed in this channel.</source>
             <translation>ఈ ఛానెల్‌లో మాట్లాడటానికి అనుమతి లేదు.</translation>
+        </message>
+        <message>
+            <source>Identity import is unavailable.</source>
+            <translation>గుర్తింపు దిగుమతి అందుబాటులో లేదు.</translation>
+        </message>
+        <message>
+            <source>Choose a valid TeamSpeak identity export (.ini).</source>
+            <translation>చెల్లుబాటు అయ్యే TeamSpeak గుర్తింపు ఎగుమతి ఫైల్‌ను ఎంచుకోండి (.ini).</translation>
+        </message>
+        <message>
+            <source>Could not read the identity file.</source>
+            <translation>గుర్తింపు ఫైల్‌ను చదవలేకపోయాం.</translation>
+        </message>
+        <message>
+            <source>Identity imported.</source>
+            <translation>గుర్తింపు దిగుమతి అయింది.</translation>
         </message>
     </context>
     <context>

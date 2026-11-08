@@ -19,6 +19,7 @@ tsclientlib = { git = "https://github.com/ReSpeak/tsclientlib", rev = "ee3bc6f45
 tsproto-packets = { git = "https://github.com/ReSpeak/tsclientlib", rev = "ee3bc6f45a7137db7793ba5593a321df400d53e5" }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
+simple_asn1 = "0.6.4"
 futures = "0.3"
 tokio = { version = "1", features = ["rt-multi-thread", "sync", "time", "macros", "io-util"] }
 mumble_protocol = { package = "mumble-protocol-2x", version = "=0.6.0", default-features = false, features = ["tokio-codec"] }

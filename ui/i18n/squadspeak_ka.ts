@@ -1213,6 +1213,18 @@
             <source>System</source>
             <translation>სისტემა</translation>
         </message>
+        <message>
+            <source>Import identity...</source>
+            <translation>იდენტობის იმპორტი...</translation>
+        </message>
+        <message>
+            <source>Replace your TeamSpeak identity? An active TeamSpeak connection will close.</source>
+            <translation>შევცვალოთ თქვენი TeamSpeak-ის იდენტობა? TeamSpeak-ის აქტიური კავშირი დაიხურება.</translation>
+        </message>
+        <message>
+            <source>Import</source>
+            <translation>იმპორტი</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -2614,6 +2626,22 @@
         <message>
             <source>Speaking is not allowed in this channel.</source>
             <translation>ამ არხში საუბარი დაუშვებელია.</translation>
+        </message>
+        <message>
+            <source>Identity import is unavailable.</source>
+            <translation>იდენტობის იმპორტი მიუწვდომელია.</translation>
+        </message>
+        <message>
+            <source>Choose a valid TeamSpeak identity export (.ini).</source>
+            <translation>აირჩიეთ TeamSpeak-ის იდენტობის სწორი საექსპორტო ფაილი (.ini).</translation>
+        </message>
+        <message>
+            <source>Could not read the identity file.</source>
+            <translation>იდენტობის ფაილის წაკითხვა ვერ მოხერხდა.</translation>
+        </message>
+        <message>
+            <source>Identity imported.</source>
+            <translation>იდენტობა იმპორტირებულია.</translation>
         </message>
     </context>
     <context>

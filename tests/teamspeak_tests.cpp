@@ -61,6 +61,20 @@ extern "C" int ss_ts_identity(uint8_t* out, size_t capacity) {
     memcpy(out, value.constData(), size_t(value.size()));
     return value.size();
 }
+// This suite substitutes the external bridge to exercise connection lifecycle.
+// identity_import_tests and teamspeak_bridge exercise the real parser and crypto.
+extern "C" int ss_ts_identity_import(const uint8_t*, size_t, uint8_t* out, size_t capacity) {
+    const QByteArray value = "{\"identity\":\"imported\"}";
+    if (!out || capacity < size_t(value.size())) return -value.size();
+    memcpy(out, value.constData(), size_t(value.size()));
+    return value.size();
+}
+extern "C" int ss_ts_identity_uid(const uint8_t*, size_t, uint8_t* out, size_t capacity) {
+    const QByteArray value = "test-identity-uid";
+    if (!out || capacity < size_t(value.size())) return -value.size();
+    memcpy(out, value.constData(), size_t(value.size()));
+    return value.size();
+}
 extern "C" void* ss_ts_open(const uint8_t* data, size_t size) {
     const QMutexLocker lock(&fakeMutex);
     lastOptions = QByteArray(reinterpret_cast<const char*>(data), qsizetype(size));
@@ -107,6 +121,38 @@ void acknowledgePendingChat() {
 class TeamSpeakTests final : public QObject {
     Q_OBJECT
 private slots:
+    void identityImportDisconnectsOnlyAfterConfirmationAndReusesNewIdentity() {
+        resetFake();
+        QTemporaryDir dir;
+        VoiceSession session(dir.filePath("session"));
+        LocalChannel channel(session, dir.filePath("channel"), TlsIdentity::create());
+        fakeEvents.enqueue(stateEvent());
+        QVERIFY(channel.addTeamSpeak("127.0.0.1"));
+        QTRY_VERIFY(channel.joined());
+        const auto old = QJsonDocument::fromJson(lastOptions).object().value("identity");
+        QFile file(dir.filePath("test.ini"));
+        QVERIFY(file.open(QIODevice::WriteOnly));
+        QVERIFY(file.write("bridge-test-export") > 0);
+        file.close();
+        QVERIFY(channel.prepareTeamSpeakIdentityImport(QUrl::fromLocalFile(file.fileName())).contains("uid"));
+        QCOMPARE(closeCount, 0);
+        QVERIFY(channel.joined());
+        channel.cancelTeamSpeakIdentityImport();
+        QVERIFY(!channel.confirmTeamSpeakIdentityImport());
+        QCOMPARE(closeCount, 0);
+        QVERIFY(channel.prepareTeamSpeakIdentityImport(QUrl::fromLocalFile(file.fileName())).contains("uid"));
+        QVERIFY(channel.confirmTeamSpeakIdentityImport());
+        QCOMPARE(closeCount, 1);
+        QVERIFY(!channel.joined());
+        fakeEvents.enqueue(stateEvent());
+        QVERIFY(channel.addTeamSpeak("127.0.0.1"));
+        QTRY_VERIFY(channel.joined());
+        const auto imported = QJsonDocument::fromJson(lastOptions).object().value("identity");
+        QVERIFY(imported != old);
+        QCOMPARE(imported.toObject().value("identity").toString(), "imported");
+        QCOMPARE(openCount, 2);
+    }
+
     void addressDetectsTeamSpeak_data() {
         QTest::addColumn<bool>("explicitPort");
         QTest::newRow("default-port") << false;

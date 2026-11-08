@@ -1,5 +1,5 @@
 Rust dependency notices
-Cargo.lock SHA256: 67ab5ff1793cd0b2d3b47a47af7238bc628feabda9f403a066b58b03ecee5a09
+Cargo.lock SHA256: a03ddd30968562222fffbd6515f25093eaac92f358d2a0a13b51cd8157de288b
 
 Package: aead 0.5.2
 Source: registry+https://github.com/rust-lang/crates.io-index

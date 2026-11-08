@@ -818,6 +818,161 @@ fn emit_state(con: &Connection, queue: &Queue, directory_complete: bool) {
 }
 
 #[no_mangle]
+pub extern "C" fn ss_ts_identity_import(
+    data: *const u8,
+    length: usize,
+    out: *mut u8,
+    capacity: usize,
+) -> i32 {
+    catch_unwind(|| {
+        if data.is_null() || length == 0 || length > 16384 {
+            return 0;
+        }
+        let Ok(text) = std::str::from_utf8(unsafe { std::slice::from_raw_parts(data, length) })
+        else {
+            return 0;
+        };
+        if text.contains('\0') {
+            return 0;
+        }
+        let mut in_identity = false;
+        let mut seen_section = false;
+        let mut key = None;
+        for line in text.trim_start_matches('\u{feff}').lines().map(str::trim) {
+            if line.is_empty() || line.starts_with(';') || line.starts_with('#') {
+                continue;
+            }
+            if line.starts_with('[') {
+                in_identity = line == "[Identity]";
+                if in_identity && seen_section {
+                    return 0;
+                }
+                seen_section |= in_identity;
+            } else if in_identity {
+                let Some((name, value)) = line.split_once('=') else {
+                    return 0;
+                };
+                if name.trim() == "identity" {
+                    if key.is_some() {
+                        return 0;
+                    }
+                    let value = value.trim();
+                    key = Some(
+                        value
+                            .strip_prefix('"')
+                            .and_then(|v| v.strip_suffix('"'))
+                            .unwrap_or(value),
+                    );
+                }
+            }
+        }
+        let Some(key) = key else {
+            return 0;
+        };
+        if key.len() > 2048 {
+            return 0;
+        }
+        let Some(identity) = imported_identity(key) else {
+            return 0;
+        };
+        // Qt's canonical JSON store preserves signed 64-bit integers exactly.
+        if identity.counter() > i64::MAX as u64 {
+            return 0;
+        }
+        let Ok(bytes) = serde_json::to_vec(&identity) else {
+            return 0;
+        };
+        if out.is_null() || capacity < bytes.len() {
+            return -(bytes.len() as i32);
+        }
+        unsafe {
+            std::ptr::copy_nonoverlapping(bytes.as_ptr(), out, bytes.len());
+        }
+        bytes.len() as i32
+    })
+    .unwrap_or(0)
+}
+
+fn imported_identity(value: &str) -> Option<Identity> {
+    if let Ok(identity) = Identity::new_from_ts_str(value) {
+        return Some(identity);
+    }
+    // The pinned library rejects valid DER private scalars shorter than 32 bytes.
+    // Normalize only that case, then reuse its key validation and identity type.
+    let (counter, encoded) = value.split_once('V')?;
+    let counter = counter.parse::<u64>().ok()?;
+    let mut data = STANDARD.decode(encoded).ok()?;
+    if data.len() < 20 {
+        return None;
+    }
+    let end = data[20..]
+        .iter()
+        .position(|b| *b == 0)
+        .unwrap_or(data.len() - 20);
+    let hash = openssl::sha::sha1(&data[20..20 + end]);
+    for (byte, mask) in data[..20].iter_mut().zip(hash) {
+        *byte ^= mask;
+    }
+    // TeamSpeak's export obfuscation is a file format, not encryption.
+    let mask = b"b9dfaa7bee6ac57ac7b65f1094a1c155e747327bc2fe5d51c512023fe54a280201004e90ad1daaae1075d53b7d571c30e063b5a62a4a017bb394833aa0983e6e";
+    for (byte, mask) in data.iter_mut().take(100).zip(mask) {
+        *byte ^= mask;
+    }
+    let der = STANDARD.decode(&data).ok()?;
+    let blocks = simple_asn1::from_der(&der).ok()?;
+    use simple_asn1::ASN1Block::{BitString, Integer, Sequence};
+    let [Sequence(_, fields)] = blocks.as_slice() else {
+        return None;
+    };
+    let [BitString(_, 1, flags), Integer(_, size), Integer(_, _), Integer(_, _), Integer(_, scalar)] =
+        fields.as_slice()
+    else {
+        return None;
+    };
+    if flags.as_slice() != [0x80] || size != &32.into() || scalar <= &0.into() {
+        return None;
+    }
+    let bytes = scalar.to_bytes_be().1;
+    if bytes.len() >= 32 {
+        return None;
+    }
+    let mut padded = [0u8; 32];
+    padded[32 - bytes.len()..].copy_from_slice(&bytes);
+    serde_json::from_value(
+        json!({"key":STANDARD.encode(padded), "counter":counter, "max_counter":counter}),
+    )
+    .ok()
+}
+
+#[no_mangle]
+pub extern "C" fn ss_ts_identity_uid(
+    data: *const u8,
+    length: usize,
+    out: *mut u8,
+    capacity: usize,
+) -> i32 {
+    catch_unwind(|| {
+        if data.is_null() || length == 0 || length > 8192 {
+            return 0;
+        }
+        let Ok(identity) =
+            serde_json::from_slice::<Identity>(unsafe { std::slice::from_raw_parts(data, length) })
+        else {
+            return 0;
+        };
+        let uid = identity.key().to_pub().get_uid();
+        if out.is_null() || capacity < uid.len() {
+            return -(uid.len() as i32);
+        }
+        unsafe {
+            std::ptr::copy_nonoverlapping(uid.as_ptr(), out, uid.len());
+        }
+        uid.len() as i32
+    })
+    .unwrap_or(0)
+}
+
+#[no_mangle]
 pub extern "C" fn ss_ts_identity(out: *mut u8, capacity: usize) -> i32 {
     catch_unwind(|| {
         let bytes = serde_json::to_vec(&Identity::create()).unwrap();
@@ -1026,6 +1181,110 @@ mod tests {
         assert!(size > 0);
         assert!(serde_json::from_slice::<Identity>(&bytes[..size as usize]).is_ok());
         assert!(ss_ts_identity(std::ptr::null_mut(), 0) < 0);
+    }
+
+    #[test]
+    fn identity_export_preserves_key_uid_and_counter() {
+        let identity = Identity::create();
+        let value = format!(
+            "{}V{}",
+            identity.counter(),
+            identity.key().to_ts_obfuscated()
+        );
+        for input in [
+            format!("[Identity]\nidentity=\"{value}\"\nnickname=Someone\n"),
+            format!("\u{feff}[Identity]\r\nid=Default\r\nidentity = {value}\r\n"),
+        ] {
+            let mut output = [0u8; 8192];
+            let count = ss_ts_identity_import(
+                input.as_ptr(),
+                input.len(),
+                output.as_mut_ptr(),
+                output.len(),
+            );
+            assert!(count > 0);
+            let imported: Identity = serde_json::from_slice(&output[..count as usize]).unwrap();
+            assert_eq!(imported.key().to_short(), identity.key().to_short());
+            assert_eq!(imported.counter(), identity.counter());
+            assert_eq!(imported.level(), identity.level());
+            let mut uid = [0u8; 64];
+            let length =
+                ss_ts_identity_uid(output.as_ptr(), count as usize, uid.as_mut_ptr(), uid.len());
+            assert_eq!(
+                &uid[..length as usize],
+                identity.key().to_pub().get_uid().as_bytes()
+            );
+            let mut small = [0xa5u8; 1];
+            assert_eq!(
+                ss_ts_identity_import(input.as_ptr(), input.len(), small.as_mut_ptr(), small.len()),
+                -count
+            );
+            assert_eq!(small, [0xa5]);
+            assert_eq!(
+                ss_ts_identity_uid(
+                    output.as_ptr(),
+                    count as usize,
+                    small.as_mut_ptr(),
+                    small.len()
+                ),
+                -length
+            );
+            assert_eq!(small, [0xa5]);
+        }
+    }
+
+    #[test]
+    fn identity_export_rejects_invalid_keys_and_limits_without_writing() {
+        let mut output = [0xa5u8; 8192];
+        for input in [
+            Vec::new(),
+            vec![b'a'; 16385],
+            b"[Identity]\nidentity=\"17Vnot-a-key\"".to_vec(),
+            b"[Identity]\nidentity=\"17VAAA=\"".to_vec(),
+            b"[Identity]\nidentity=\"17VAA==\"".to_vec(),
+            b"[Identity]\nidentity=\"17V\"\0".to_vec(),
+        ] {
+            assert_eq!(
+                ss_ts_identity_import(
+                    input.as_ptr(),
+                    input.len(),
+                    output.as_mut_ptr(),
+                    output.len()
+                ),
+                0
+            );
+            assert!(output.iter().all(|b| *b == 0xa5));
+        }
+        assert_eq!(
+            ss_ts_identity_import(std::ptr::null(), 1, output.as_mut_ptr(), output.len()),
+            0
+        );
+        assert_eq!(
+            ss_ts_identity_uid(std::ptr::null(), 1, output.as_mut_ptr(), output.len()),
+            0
+        );
+    }
+
+    #[test]
+    fn identity_export_preserves_a_private_scalar_with_leading_zeroes() {
+        let mut scalar = [0u8; 32];
+        scalar[31] = 1;
+        let identity = Identity::new_from_str(&STANDARD.encode(scalar)).unwrap();
+        let input = format!(
+            "[Identity]\nidentity=\"{}V{}\"\n",
+            identity.counter(),
+            identity.key().to_ts_obfuscated()
+        );
+        let mut output = [0u8; 8192];
+        let count = ss_ts_identity_import(
+            input.as_ptr(),
+            input.len(),
+            output.as_mut_ptr(),
+            output.len(),
+        );
+        assert!(count > 0);
+        let imported: Identity = serde_json::from_slice(&output[..count as usize]).unwrap();
+        assert_eq!(imported.key().to_short(), identity.key().to_short());
     }
 
     #[test]

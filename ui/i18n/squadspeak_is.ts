@@ -1213,6 +1213,18 @@
             <source>System</source>
             <translation>Kerfi</translation>
         </message>
+        <message>
+            <source>Import identity...</source>
+            <translation>Flytja inn auðkenni...</translation>
+        </message>
+        <message>
+            <source>Replace your TeamSpeak identity? An active TeamSpeak connection will close.</source>
+            <translation>Viltu skipta út TeamSpeak-auðkenninu þínu? Virkri TeamSpeak-tengingu verður lokað.</translation>
+        </message>
+        <message>
+            <source>Import</source>
+            <translation>Flytja inn</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -2614,6 +2626,22 @@
         <message>
             <source>Speaking is not allowed in this channel.</source>
             <translation>Ekki er leyfilegt að tala á þessari rás.</translation>
+        </message>
+        <message>
+            <source>Identity import is unavailable.</source>
+            <translation>Ekki er hægt að flytja inn auðkenni.</translation>
+        </message>
+        <message>
+            <source>Choose a valid TeamSpeak identity export (.ini).</source>
+            <translation>Veldu gilda TeamSpeak-auðkennisútflutningsskrá (.ini).</translation>
+        </message>
+        <message>
+            <source>Could not read the identity file.</source>
+            <translation>Ekki tókst að lesa auðkennisskrána.</translation>
+        </message>
+        <message>
+            <source>Identity imported.</source>
+            <translation>Auðkenni flutt inn.</translation>
         </message>
     </context>
     <context>

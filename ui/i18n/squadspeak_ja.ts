@@ -1213,6 +1213,18 @@
             <source>System</source>
             <translation>システム</translation>
         </message>
+        <message>
+            <source>Import identity...</source>
+            <translation>IDをインポート...</translation>
+        </message>
+        <message>
+            <source>Replace your TeamSpeak identity? An active TeamSpeak connection will close.</source>
+            <translation>TeamSpeak IDを置き換えますか？接続中のTeamSpeak接続は終了します。</translation>
+        </message>
+        <message>
+            <source>Import</source>
+            <translation>インポート</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -2614,6 +2626,22 @@
         <message>
             <source>Speaking is not allowed in this channel.</source>
             <translation>このチャンネルでは発言が許可されていません。</translation>
+        </message>
+        <message>
+            <source>Identity import is unavailable.</source>
+            <translation>IDのインポートは利用できません。</translation>
+        </message>
+        <message>
+            <source>Choose a valid TeamSpeak identity export (.ini).</source>
+            <translation>有効なTeamSpeak IDのエクスポートファイル（.ini）を選択してください。</translation>
+        </message>
+        <message>
+            <source>Could not read the identity file.</source>
+            <translation>IDファイルを読み込めませんでした。</translation>
+        </message>
+        <message>
+            <source>Identity imported.</source>
+            <translation>IDをインポートしました。</translation>
         </message>
     </context>
     <context>

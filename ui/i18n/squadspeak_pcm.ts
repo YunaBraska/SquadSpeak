@@ -1213,6 +1213,18 @@
             <source>System</source>
             <translation>System</translation>
         </message>
+        <message>
+            <source>Import identity...</source>
+            <translation>Import identity...</translation>
+        </message>
+        <message>
+            <source>Replace your TeamSpeak identity? An active TeamSpeak connection will close.</source>
+            <translation>You wan replace your TeamSpeak identity? Dem go close any TeamSpeak connection wey dey active.</translation>
+        </message>
+        <message>
+            <source>Import</source>
+            <translation>Import</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -2229,6 +2241,22 @@
         <message>
             <source>Speaking is not allowed in this channel.</source>
             <translation>You no fit talk for this channel.</translation>
+        </message>
+        <message>
+            <source>Identity import is unavailable.</source>
+            <translation>Dem no fit import identity now.</translation>
+        </message>
+        <message>
+            <source>Choose a valid TeamSpeak identity export (.ini).</source>
+            <translation>Choose correct TeamSpeak identity export file (.ini).</translation>
+        </message>
+        <message>
+            <source>Could not read the identity file.</source>
+            <translation>Dem no fit read the identity file.</translation>
+        </message>
+        <message>
+            <source>Identity imported.</source>
+            <translation>Identity don import.</translation>
         </message>
     </context>
     <context>

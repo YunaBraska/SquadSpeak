@@ -1213,6 +1213,18 @@
             <source>System</source>
             <translation>Mfumo</translation>
         </message>
+        <message>
+            <source>Import identity...</source>
+            <translation>Ingiza utambulisho...</translation>
+        </message>
+        <message>
+            <source>Replace your TeamSpeak identity? An active TeamSpeak connection will close.</source>
+            <translation>Unataka kubadilisha utambulisho wako wa TeamSpeak? Muunganisho wa TeamSpeak ulio hai utafungwa.</translation>
+        </message>
+        <message>
+            <source>Import</source>
+            <translation>Ingiza</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -2614,6 +2626,22 @@
         <message>
             <source>Speaking is not allowed in this channel.</source>
             <translation>Huruhusiwi kuzungumza kwenye chaneli hii.</translation>
+        </message>
+        <message>
+            <source>Identity import is unavailable.</source>
+            <translation>Uingizaji wa utambulisho haupatikani.</translation>
+        </message>
+        <message>
+            <source>Choose a valid TeamSpeak identity export (.ini).</source>
+            <translation>Chagua faili halali ya usafirishaji wa utambulisho wa TeamSpeak (.ini).</translation>
+        </message>
+        <message>
+            <source>Could not read the identity file.</source>
+            <translation>Faili ya utambulisho haikuweza kusomwa.</translation>
+        </message>
+        <message>
+            <source>Identity imported.</source>
+            <translation>Utambulisho umeingizwa.</translation>
         </message>
     </context>
     <context>

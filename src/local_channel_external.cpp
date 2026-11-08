@@ -3,6 +3,8 @@
 #include "chat_content.hpp"
 #include <QCryptographicHash>
 #include <QCoreApplication>
+#include <QFile>
+#include <QFileInfo>
 #include <QJsonDocument>
 #include <QUrl>
 #include <QUuid>
@@ -52,6 +54,58 @@ bool LocalChannel::saveTeamSpeakIdentity(const QJsonObject& identity) {
         return persist(approved_, attempts_, requestsAllowed_, endpointPins_, control_, next);
     } catch (const std::exception& e) { return setStatus(QString::fromUtf8(e.what()), false); }
 }
+
+QString LocalChannel::teamSpeakIdentityId() const {
+    if (!ready() || !security_.value("teamSpeakIdentity").isString()) return {};
+    const QByteArray context = "SquadSpeak/teamspeak-identity/v1";
+    try {
+        auto bytes = TlsIdentity::open(QByteArray::fromBase64(security_.value("teamSpeakIdentity").toString().toLatin1()),
+            identity_->deriveKey(context, "identity"), context);
+        QByteArray uid(64, Qt::Uninitialized);
+        const auto size = ss_ts_identity_uid(reinterpret_cast<const uint8_t*>(bytes.constData()), size_t(bytes.size()),
+            reinterpret_cast<uint8_t*>(uid.data()), size_t(uid.size()));
+        bytes.fill(0);
+        return size > 0 ? QString::fromLatin1(uid.constData(), size) : QString{};
+    } catch (const std::exception&) { return {}; }
+}
+
+QVariantMap LocalChannel::prepareTeamSpeakIdentityImport(const QUrl& url) {
+    pendingTeamSpeakIdentity_ = {};
+    if (!ready() || hostOnly_ || service_ || remoteMode())
+        return {{"error", tr("Identity import is unavailable.")}};
+    const auto invalid = tr("Choose a valid TeamSpeak identity export (.ini).");
+    if (!url.isLocalFile() || !url.host().isEmpty() || url.hasQuery() || url.hasFragment()) return {{"error", invalid}};
+    const QFileInfo info(url.toLocalFile());
+    if (!info.isFile() || info.size() <= 0 || info.size() > 16384) return {{"error", invalid}};
+    QFile file(info.filePath());
+    if (!file.open(QIODevice::ReadOnly)) return {{"error", tr("Could not read the identity file.")}};
+    auto bytes = file.read(16385);
+    if (file.error() != QFileDevice::NoError) return {{"error", tr("Could not read the identity file.")}};
+    QByteArray decoded(8192, Qt::Uninitialized);
+    const auto size = ss_ts_identity_import(reinterpret_cast<const uint8_t*>(bytes.constData()), size_t(bytes.size()),
+        reinterpret_cast<uint8_t*>(decoded.data()), size_t(decoded.size()));
+    bytes.fill(0);
+    if (size <= 0) return {{"error", invalid}};
+    decoded.resize(size);
+    QByteArray uid(64, Qt::Uninitialized);
+    const auto uidSize = ss_ts_identity_uid(reinterpret_cast<const uint8_t*>(decoded.constData()), size_t(decoded.size()),
+        reinterpret_cast<uint8_t*>(uid.data()), size_t(uid.size()));
+    if (uidSize > 0) pendingTeamSpeakIdentity_ = QJsonDocument::fromJson(decoded).object();
+    decoded.fill(0);
+    if (pendingTeamSpeakIdentity_.isEmpty()) return {{"error", invalid}};
+    return {{"uid", QString::fromLatin1(uid.constData(), uidSize)}};
+}
+
+bool LocalChannel::confirmTeamSpeakIdentityImport() {
+    if (!ready() || hostOnly_ || service_ || remoteMode() || pendingTeamSpeakIdentity_.isEmpty())
+        return setStatus(tr("Identity import is unavailable."), false);
+    if (!saveTeamSpeakIdentity(pendingTeamSpeakIdentity_)) return false;
+    pendingTeamSpeakIdentity_ = {};
+    if (external_ && external_->provider == "teamspeak") leaveChannel(true);
+    return setStatus(tr("Identity imported."));
+}
+
+void LocalChannel::cancelTeamSpeakIdentityImport() { pendingTeamSpeakIdentity_ = {}; }
 
 bool LocalChannel::addTeamSpeak(const QString& endpoint, const QString& password) {
     return addExternal("teamspeak", endpoint, password);

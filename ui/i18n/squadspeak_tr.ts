@@ -1213,6 +1213,18 @@
             <source>System</source>
             <translation>Sistem</translation>
         </message>
+        <message>
+            <source>Import identity...</source>
+            <translation>Kimliği içe aktar...</translation>
+        </message>
+        <message>
+            <source>Replace your TeamSpeak identity? An active TeamSpeak connection will close.</source>
+            <translation>TeamSpeak kimliğinizi değiştirmek istiyor musunuz? Etkin TeamSpeak bağlantısı kapatılacak.</translation>
+        </message>
+        <message>
+            <source>Import</source>
+            <translation>İçe aktar</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -2614,6 +2626,22 @@
         <message>
             <source>Speaking is not allowed in this channel.</source>
             <translation>Bu kanalda konuşmaya izin verilmiyor.</translation>
+        </message>
+        <message>
+            <source>Identity import is unavailable.</source>
+            <translation>Kimlik içe aktarma kullanılamıyor.</translation>
+        </message>
+        <message>
+            <source>Choose a valid TeamSpeak identity export (.ini).</source>
+            <translation>Geçerli bir TeamSpeak kimlik dışa aktarma dosyası seçin (.ini).</translation>
+        </message>
+        <message>
+            <source>Could not read the identity file.</source>
+            <translation>Kimlik dosyası okunamadı.</translation>
+        </message>
+        <message>
+            <source>Identity imported.</source>
+            <translation>Kimlik içe aktarıldı.</translation>
         </message>
     </context>
     <context>

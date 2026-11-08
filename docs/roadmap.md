@@ -92,8 +92,13 @@ The TS3 bridge and protocol contracts also pass on Windows and Linux. Live-serve
 voice and reconnect checks above were performed on macOS. Native Windows/Linux
 device observations follow the desktop packages; mobile TS3 remains unqualified.
 
+Profile settings can import a TS3 `.ini` identity export. The public ID is shown
+before confirmation. Import preserves the private key and security-level counter,
+uses the existing encrypted store and closes an active TS3 connection only after
+successful persistence. Cancelled or invalid imports preserve the current identity.
+
 Not supported: TS3 file transfer, whisper lists, permission administration,
-Speex/CELT channels, identity-file import, server avatars, pokes and server
+Speex/CELT channels, server avatars, pokes and server
 management. The current library rejects servers requiring an identity security
 level above 20. Only one TS3 server can be connected at a time. TS3 history is a
 bounded in-session cache, without server history or offline delivery. SquadSpeak

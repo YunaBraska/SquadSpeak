@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls.Basic
 import QtQuick.Layouts
 import QtMultimedia
+import QtQuick.Dialogs
 import "AvatarAtlas.js" as Atlas
 
 PanelWindow {
@@ -1032,8 +1033,8 @@ PanelWindow {
             Label { text: root.remote ? qsTr("Settings for this device") : qsTr("Settings"); font.pixelSize: Theme.fontSize(20); font.weight: Font.DemiBold; Layout.fillWidth: true; Layout.leftMargin: 16 }
             ActionButton { text: qsTr("Done"); glyph: "close"; flat: true; Layout.rightMargin: 8; onClicked: settings.close() }
         }
-        onOpened: { settingsScroll.contentItem.contentY = 0; if (root.settingsPage === 3) root.pickAboutSentence() }
-        onClosed: audio.stop()
+        onOpened: { settingsScroll.contentItem.contentY = 0; teamSpeakIdentity.currentUid = root.network.teamSpeakIdentityId(); if (root.settingsPage === 3) root.pickAboutSentence() }
+        onClosed: { audio.stop(); teamSpeakIdentity.cancel(); teamSpeakIdentity.feedback = "" }
         contentItem: ColumnLayout {
             TabBar {
                 id: settingsTabs
@@ -1202,6 +1203,75 @@ PanelWindow {
                             currentIndex: root.voice.languages.findIndex(function(item) { return item.code === root.voice.language })
                             Accessible.name: qsTr("Language")
                             onActivated: { root.voice.setLanguage(currentValue); currentIndex = Qt.binding(function() { return root.voice.languages.findIndex(function(item) { return item.code === root.voice.language }) }) }
+                        }
+                        ColumnLayout {
+                            id: teamSpeakIdentity
+                            objectName: "teamSpeakIdentity"
+                            Layout.fillWidth: true; spacing: 6
+                            property string currentUid: ""
+                            property var preview: ({})
+                            property string feedback: ""
+                            property bool failed: false
+                            function prepare(file) {
+                                feedback = ""
+                                preview = root.network.prepareTeamSpeakIdentityImport(file)
+                                failed = Boolean(preview.error)
+                                if (failed) feedback = preview.error
+                            }
+                            function cancel() { root.network.cancelTeamSpeakIdentityImport(); preview = ({}) }
+                            RowLayout {
+                                Layout.fillWidth: true
+                                Label { text: "TeamSpeak"; font.weight: Font.DemiBold; Layout.fillWidth: true }
+                                ActionButton {
+                                    objectName: "importTeamSpeakIdentity"
+                                    text: qsTr("Import identity...")
+                                    enabled: root.network.ready && !root.remote
+                                    onClicked: { teamSpeakIdentity.cancel(); teamSpeakIdentity.feedback = ""; identityFile.open() }
+                                }
+                            }
+                            DetailText {
+                                objectName: "teamSpeakIdentityUid"
+                                text: teamSpeakIdentity.preview.uid || teamSpeakIdentity.currentUid
+                                visible: text.length > 0
+                                Accessible.name: qsTr("Identity ID")
+                                font.pixelSize: Theme.fontSize(12); color: Theme.muted
+                            }
+                            Label {
+                                visible: Boolean(teamSpeakIdentity.preview.uid)
+                                text: qsTr("Replace your TeamSpeak identity? An active TeamSpeak connection will close.")
+                                Layout.fillWidth: true; wrapMode: Text.Wrap
+                            }
+                            RowLayout {
+                                visible: Boolean(teamSpeakIdentity.preview.uid)
+                                Layout.fillWidth: true
+                                Item { Layout.fillWidth: true }
+                                ActionButton { objectName: "cancelIdentityImport"; text: qsTr("Cancel"); onClicked: teamSpeakIdentity.cancel() }
+                                ActionButton {
+                                    objectName: "confirmIdentityImport"; text: qsTr("Import"); primary: true
+                                    onClicked: {
+                                        teamSpeakIdentity.failed = !root.network.confirmTeamSpeakIdentityImport()
+                                        teamSpeakIdentity.feedback = root.network.status
+                                        if (!teamSpeakIdentity.failed) {
+                                            teamSpeakIdentity.currentUid = root.network.teamSpeakIdentityId()
+                                            teamSpeakIdentity.cancel()
+                                        }
+                                    }
+                                }
+                            }
+                            Label {
+                                objectName: "identityImportFeedback"
+                                text: teamSpeakIdentity.feedback; textFormat: Text.PlainText; visible: text.length > 0
+                                color: teamSpeakIdentity.failed ? Theme.danger : Theme.muted
+                                Layout.fillWidth: true; wrapMode: Text.Wrap
+                            }
+                            FileDialog {
+                                id: identityFile
+                                objectName: "identityImportFile"
+                                title: qsTr("Import identity...")
+                                nameFilters: ["TeamSpeak (*.ini)"]
+                                onAccepted: teamSpeakIdentity.prepare(selectedFile)
+                                onRejected: teamSpeakIdentity.cancel()
+                            }
                         }
                         Label { text: qsTr("Appearance"); font.weight: Font.DemiBold }
                         RowLayout {

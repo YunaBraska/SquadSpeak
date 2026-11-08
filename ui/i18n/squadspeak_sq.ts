@@ -1213,6 +1213,18 @@
             <source>System</source>
             <translation>Sistemi</translation>
         </message>
+        <message>
+            <source>Import identity...</source>
+            <translation>Importo identitetin...</translation>
+        </message>
+        <message>
+            <source>Replace your TeamSpeak identity? An active TeamSpeak connection will close.</source>
+            <translation>Dëshiron ta zëvendësosh identitetin tënd në TeamSpeak? Lidhja aktive me TeamSpeak do të mbyllet.</translation>
+        </message>
+        <message>
+            <source>Import</source>
+            <translation>Importo</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -2614,6 +2626,22 @@
         <message>
             <source>Speaking is not allowed in this channel.</source>
             <translation>Nuk lejohet të flasësh në këtë kanal.</translation>
+        </message>
+        <message>
+            <source>Identity import is unavailable.</source>
+            <translation>Importimi i identitetit nuk është i disponueshëm.</translation>
+        </message>
+        <message>
+            <source>Choose a valid TeamSpeak identity export (.ini).</source>
+            <translation>Zgjidh një skedar të vlefshëm eksporti të identitetit TeamSpeak (.ini).</translation>
+        </message>
+        <message>
+            <source>Could not read the identity file.</source>
+            <translation>Skedari i identitetit nuk mund të lexohej.</translation>
+        </message>
+        <message>
+            <source>Identity imported.</source>
+            <translation>Identiteti u importua.</translation>
         </message>
     </context>
     <context>

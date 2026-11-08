@@ -1213,6 +1213,18 @@
             <source>System</source>
             <translation>Sistem</translation>
         </message>
+        <message>
+            <source>Import identity...</source>
+            <translation>Importă identitatea...</translation>
+        </message>
+        <message>
+            <source>Replace your TeamSpeak identity? An active TeamSpeak connection will close.</source>
+            <translation>Vrei să înlocuiești identitatea TeamSpeak? Conexiunea TeamSpeak activă se va închide.</translation>
+        </message>
+        <message>
+            <source>Import</source>
+            <translation>Importă</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -2614,6 +2626,22 @@
         <message>
             <source>Speaking is not allowed in this channel.</source>
             <translation>Nu poți vorbi pe acest canal.</translation>
+        </message>
+        <message>
+            <source>Identity import is unavailable.</source>
+            <translation>Importul identității nu este disponibil.</translation>
+        </message>
+        <message>
+            <source>Choose a valid TeamSpeak identity export (.ini).</source>
+            <translation>Alege un fișier valid de export al identității TeamSpeak (.ini).</translation>
+        </message>
+        <message>
+            <source>Could not read the identity file.</source>
+            <translation>Fișierul de identitate nu a putut fi citit.</translation>
+        </message>
+        <message>
+            <source>Identity imported.</source>
+            <translation>Identitate importată.</translation>
         </message>
     </context>
     <context>

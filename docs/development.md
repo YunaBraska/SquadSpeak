@@ -116,7 +116,12 @@ Python source packaging requires Python 3.11 or newer.
 
 `teamspeak_contract` covers the public C++ boundary without external servers.
 `teamspeak_bridge` tests the real Rust ABI and bounded queues. Live verification
-is deliberately opt-in and reuses two identities:
+is deliberately opt-in and reuses two identities. `identity_import` tests the real
+INI parser, encrypted storage, confirmation, cancellation, replacement, failed
+saves and restart using synthetic keys. The profile UI test exercises the same
+import entrypoints. Personal identity exports must never become test fixtures.
+
+Live verification:
 
 ```sh
 cmake --build build/native-release-sdk --target teamspeak_live

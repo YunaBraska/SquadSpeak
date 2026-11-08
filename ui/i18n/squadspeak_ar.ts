@@ -1213,6 +1213,18 @@
             <source>System</source>
             <translation>النظام</translation>
         </message>
+        <message>
+            <source>Import identity...</source>
+            <translation>استيراد الهوية...</translation>
+        </message>
+        <message>
+            <source>Replace your TeamSpeak identity? An active TeamSpeak connection will close.</source>
+            <translation>هل تريد استبدال هويتك في TeamSpeak؟ سيُغلق اتصال TeamSpeak النشط.</translation>
+        </message>
+        <message>
+            <source>Import</source>
+            <translation>استيراد</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -2614,6 +2626,22 @@
         <message>
             <source>Speaking is not allowed in this channel.</source>
             <translation>التحدث غير مسموح في هذه القناة.</translation>
+        </message>
+        <message>
+            <source>Identity import is unavailable.</source>
+            <translation>استيراد الهوية غير متاح.</translation>
+        </message>
+        <message>
+            <source>Choose a valid TeamSpeak identity export (.ini).</source>
+            <translation>اختر ملف تصدير صالحًا لهوية TeamSpeak (.ini).</translation>
+        </message>
+        <message>
+            <source>Could not read the identity file.</source>
+            <translation>تعذّرت قراءة ملف الهوية.</translation>
+        </message>
+        <message>
+            <source>Identity imported.</source>
+            <translation>تم استيراد الهوية.</translation>
         </message>
     </context>
     <context>

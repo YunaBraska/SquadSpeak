@@ -1213,6 +1213,18 @@
             <source>System</source>
             <translation>Sistem</translation>
         </message>
+        <message>
+            <source>Import identity...</source>
+            <translation>Impor identitas...</translation>
+        </message>
+        <message>
+            <source>Replace your TeamSpeak identity? An active TeamSpeak connection will close.</source>
+            <translation>Ganti identitas TeamSpeak Anda? Koneksi TeamSpeak yang aktif akan ditutup.</translation>
+        </message>
+        <message>
+            <source>Import</source>
+            <translation>Impor</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -2614,6 +2626,22 @@
         <message>
             <source>Speaking is not allowed in this channel.</source>
             <translation>Berbicara tidak diizinkan di channel ini.</translation>
+        </message>
+        <message>
+            <source>Identity import is unavailable.</source>
+            <translation>Impor identitas tidak tersedia.</translation>
+        </message>
+        <message>
+            <source>Choose a valid TeamSpeak identity export (.ini).</source>
+            <translation>Pilih file ekspor identitas TeamSpeak yang valid (.ini).</translation>
+        </message>
+        <message>
+            <source>Could not read the identity file.</source>
+            <translation>File identitas tidak dapat dibaca.</translation>
+        </message>
+        <message>
+            <source>Identity imported.</source>
+            <translation>Identitas diimpor.</translation>
         </message>
     </context>
     <context>
