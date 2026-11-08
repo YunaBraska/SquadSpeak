@@ -29,15 +29,48 @@ jobs:
         # Apply only after the shared build has saved its unmodified caches.
         patch -d build/macos-ci/app/_deps/media-src -p1 < tests/intel-native-diagnostic.patch
         cmake --build build/macos-ci/app --target channel_tests --parallel 3
-        for attempt in 1 2 3 4 5; do
-          sudo -n env SQUAD_TRACE_NATIVE_SEND=1 SQUAD_SOAK_CLIENTS=32 \
-            SQUAD_SOAK_SPEAKERS=2 SQUAD_SOAK_PACING=delivery \
-            SQUAD_SOAK_SECONDS=30 QT_LOGGING_RULES= \
-            build/macos-ci/app/channel_tests \
-            sixtyFourClientsHaveOneConsistentRosterAndAudioFanout \
-            -o "build/macos-ci/artifacts/native-send-$attempt.txt",txt
-          cat "build/macos-ci/artifacts/native-send-$attempt.txt"
-        done
+        sudo -n dtrace -l -n 'syscall::sendto:entry' -n 'syscall::sendto:return' \
+          -n 'sched:::sleep' -n 'sched:::off-cpu' -n 'sched:::on-cpu' -n 'syscall::exit:entry' \
+          > build/macos-ci/artifacts/native-send-probes.txt
+        cat > build/macos-ci/native-send.d <<'DTRACE'
+        #pragma D option quiet
+        #pragma D option bufsize=8m
+        syscall::sendto:entry /execname == "channel_tests"/ {
+          self->start = timestamp; self->cpu = vtimestamp;
+          self->fd = arg0; self->bytes = arg2;
+          self->sleep = 0; self->off = 0; self->off_at = 0;
+        }
+        sched:::sleep /self->start/ {
+          self->sleep++;
+          @sleep_stacks[stack(12)] = count();
+        }
+        sched:::off-cpu /self->start/ { self->off_at = timestamp; }
+        sched:::on-cpu /self->start && self->off_at/ {
+          self->off += timestamp - self->off_at; self->off_at = 0;
+        }
+        syscall::sendto:return /self->start && timestamp - self->start >= 20000000/ {
+          printf("SENDTO pid=%d tid=%d at-us=%lld fd=%d bytes=%d wall-us=%lld cpu-us=%lld off-us=%lld sleeps=%d result=%d\n",
+            pid, tid, self->start / 1000, self->fd, self->bytes,
+            (timestamp - self->start) / 1000, (vtimestamp - self->cpu) / 1000,
+            self->off / 1000, self->sleep, arg0);
+        }
+        syscall::sendto:return /self->start/ {
+          @calls[pid] = count(); @latency_us[pid] = quantize((timestamp - self->start) / 1000);
+          self->start = 0;
+        }
+        syscall::exit:entry /pid == $target/ { printf("TARGET_EXIT_REQUEST=%d\n", arg0); }
+        DTRACE
+        sudo -n env SQUAD_TRACE_NATIVE_SEND=1 SQUAD_SOAK_CLIENTS=32 \
+          SQUAD_SOAK_SPEAKERS=2 SQUAD_SOAK_PACING=delivery \
+          SQUAD_SOAK_SECONDS=60 QT_LOGGING_RULES= \
+          dtrace -s build/macos-ci/native-send.d \
+          -o build/macos-ci/artifacts/native-send-kernel.txt \
+          -c 'build/macos-ci/app/channel_tests sixtyFourClientsHaveOneConsistentRosterAndAudioFanout -o build/macos-ci/artifacts/native-send-1.txt,txt'
+        cat build/macos-ci/artifacts/native-send-1.txt
+        cat build/macos-ci/artifacts/native-send-kernel.txt
+        # DTrace's status is not the child test's status.
+        grep -q 'Totals: 6 passed, 0 failed, 0 skipped' build/macos-ci/artifacts/native-send-1.txt
+        grep -qx 'TARGET_EXIT_REQUEST=0' build/macos-ci/artifacts/native-send-kernel.txt
       package_command: test -s build/macos-ci/artifacts/native-send-1.txt
       cache_inputs: '["tests/macos-ci.sh", "cmake/Dependencies.cmake", "cmake/AudioProcessing.cmake", "cmake/Media.cmake", "cmake/Updates.cmake", "cmake/audio-processing-echo.patch", "cmake/qt-qml-*.patch", "cmake/source_archives.json", "src/teamspeak_bridge/Cargo.lock", "rust-toolchain.toml", "cmake/TeamSpeak.cmake"]'
       cache_paths: |
