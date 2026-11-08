@@ -12,7 +12,7 @@ on:
         type: string
         default: build
       force:
-        description: Release unchanged source. Never replaces a published version.
+        description: Release unchanged source. Never replaces a stable release.
         type: boolean
         default: false
     secrets:
@@ -46,7 +46,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: verify-${{ github.workflow }}-${{ inputs.release_mode == 'snapshot' && github.sha || github.ref }}
+  group: verify-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ inputs.release_mode == '' || inputs.release_mode == 'build' }}
 
 jobs:
@@ -165,18 +165,18 @@ jobs:
           set -eu
           if test "$RELEASE_MODE" != release; then
             case "$SNAPSHOT_VERSION" in
-              *-SNAPSHOT) version="$SNAPSHOT_VERSION.$GITHUB_RUN_ID" ;;
+              *-SNAPSHOT) version="$SNAPSHOT_VERSION" ;;
               *) printf 'Missing or invalid snapshot version.\n' >&2; exit 1 ;;
             esac
             cmake "-DSQUADSPEAK_VERSION=$version" -P cmake/Version.cmake
           else
             version=$(cmake -P cmake/Version.cmake 2>&1)
           fi
-          if test "$RELEASE_MODE" != build; then
+          if test "$RELEASE_MODE" = release; then
             gh api --paginate "repos/$GH_REPO/releases?per_page=100" --jq '.[].tag_name' > "$RUNNER_TEMP/releases.txt"
             gh api "repos/$GH_REPO/git/matching-refs/tags/$version" --jq '.[].ref' > "$RUNNER_TEMP/tags.txt"
             if grep -Fxq "$version" "$RUNNER_TEMP/releases.txt" || grep -Fxq "refs/tags/$version" "$RUNNER_TEMP/tags.txt"; then
-              printf 'Version %s already exists. Published packages are never replaced.\n' "$version" >&2
+              printf 'Version %s already exists. Stable releases are never replaced.\n' "$version" >&2
               exit 1
             fi
           fi
