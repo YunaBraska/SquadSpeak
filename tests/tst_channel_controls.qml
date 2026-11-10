@@ -2414,7 +2414,7 @@ TestCase {
             verify(audio.setReadBotMessages(false))
             verify(!fixtures.acceptsBotMessage("Ari joined.", true, false))
             verify(audio.setReadBotMessages(true))
-            verify(!fixtures.acceptsBotMessage("Ari joined.", false, false))
+            verify(fixtures.acceptsBotMessage("Ari joined.", false, false), "App events must be spoken without an active voice connection")
             verify(fixtures.acceptsBotMessage("Ari joined.", true, true))
             verify(fixtures.acceptsBotMessage("Ari joined.", true, false))
             verify(!fixtures.acceptsBotMessage("   ", true, false))

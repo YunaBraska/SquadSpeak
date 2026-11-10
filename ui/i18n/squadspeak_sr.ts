@@ -3288,4 +3288,15 @@
             <translation>Неважеће сачувано подешавање: %1</translation>
         </message>
     </context>
+    <context>
+        <name>AppFeedback</name>
+        <message>
+            <source>SquadSpeak started.</source>
+            <translation>SquadSpeak је покренут.</translation>
+        </message>
+        <message>
+            <source>SquadSpeak is closing.</source>
+            <translation>SquadSpeak се затвара.</translation>
+        </message>
+    </context>
 </TS>

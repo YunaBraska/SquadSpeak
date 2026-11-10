@@ -3288,4 +3288,15 @@
             <translation>सहेजी गई सेटिंग अमान्य है: %1</translation>
         </message>
     </context>
+    <context>
+        <name>AppFeedback</name>
+        <message>
+            <source>SquadSpeak started.</source>
+            <translation>SquadSpeak शुरू हो गया है।</translation>
+        </message>
+        <message>
+            <source>SquadSpeak is closing.</source>
+            <translation>SquadSpeak बंद हो रहा है।</translation>
+        </message>
+    </context>
 </TS>

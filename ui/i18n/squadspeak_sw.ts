@@ -3288,4 +3288,15 @@
             <translation>Mpangilio uliohifadhiwa si sahihi: %1</translation>
         </message>
     </context>
+    <context>
+        <name>AppFeedback</name>
+        <message>
+            <source>SquadSpeak started.</source>
+            <translation>SquadSpeak imeanza.</translation>
+        </message>
+        <message>
+            <source>SquadSpeak is closing.</source>
+            <translation>SquadSpeak inafungwa.</translation>
+        </message>
+    </context>
 </TS>

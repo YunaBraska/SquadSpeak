@@ -3288,4 +3288,15 @@
             <translation>Gespeicherte Einstellung ist ungültig: %1</translation>
         </message>
     </context>
+    <context>
+        <name>AppFeedback</name>
+        <message>
+            <source>SquadSpeak started.</source>
+            <translation>SquadSpeak wurde gestartet.</translation>
+        </message>
+        <message>
+            <source>SquadSpeak is closing.</source>
+            <translation>SquadSpeak wird beendet.</translation>
+        </message>
+    </context>
 </TS>

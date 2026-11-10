@@ -1,6 +1,6 @@
 set_source_files_properties(../src/main.cpp ../src/headless.cpp PROPERTIES
     COMPILE_DEFINITIONS "SQUADSPEAK_VERSION=\"${SQUADSPEAK_VERSION}\"")
-qt_add_executable(squadspeak MACOSX_BUNDLE ../src/main.cpp ../src/headless.cpp ../src/headless.hpp ../src/audio_model.cpp ../src/audio_model.hpp ../src/ptt_key.cpp ../src/ptt_key.hpp ../src/tray_menu.cpp ../src/tray_menu.hpp)
+qt_add_executable(squadspeak MACOSX_BUNDLE ../src/main.cpp ../src/headless.cpp ../src/headless.hpp ../src/audio_model.cpp ../src/audio_model.hpp ../src/app_feedback.hpp ../src/ptt_key.cpp ../src/ptt_key.hpp ../src/tray_menu.cpp ../src/tray_menu.hpp)
 if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     set_source_files_properties(../src/main.cpp PROPERTIES LANGUAGE OBJCXX)
     target_link_libraries(squadspeak PRIVATE "-framework AppKit")

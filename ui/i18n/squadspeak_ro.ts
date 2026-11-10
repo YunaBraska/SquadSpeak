@@ -3288,4 +3288,15 @@
             <translation>Setare salvată nevalidă: %1</translation>
         </message>
     </context>
+    <context>
+        <name>AppFeedback</name>
+        <message>
+            <source>SquadSpeak started.</source>
+            <translation>SquadSpeak a pornit.</translation>
+        </message>
+        <message>
+            <source>SquadSpeak is closing.</source>
+            <translation>SquadSpeak se închide.</translation>
+        </message>
+    </context>
 </TS>

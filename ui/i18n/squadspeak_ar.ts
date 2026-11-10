@@ -3288,4 +3288,15 @@
             <translation>إعداد محفوظ غير صالح: %1</translation>
         </message>
     </context>
+    <context>
+        <name>AppFeedback</name>
+        <message>
+            <source>SquadSpeak started.</source>
+            <translation>تم تشغيل SquadSpeak.</translation>
+        </message>
+        <message>
+            <source>SquadSpeak is closing.</source>
+            <translation>يتم إغلاق SquadSpeak.</translation>
+        </message>
+    </context>
 </TS>

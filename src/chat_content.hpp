@@ -19,6 +19,7 @@ class ChatContent final : public QObject {
 public:
     using QObject::QObject;
     [[nodiscard]] static QString importedHtmlText(const QString& html);
+    [[nodiscard]] static QString membershipText(const QString& kind, const QString& name);
     Q_INVOKABLE QString plainText(const QVariantMap& message) const;
     Q_INVOKABLE QString format(const QString& markdown, const QVariantMap& attachment = {},
                                const QColor& linkColor = Qt::blue, const QColor& codeBackground = Qt::lightGray,

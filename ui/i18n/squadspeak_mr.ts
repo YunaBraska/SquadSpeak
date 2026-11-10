@@ -3288,4 +3288,15 @@
             <translation>जतन केलेली सेटिंग अवैध आहे: %1</translation>
         </message>
     </context>
+    <context>
+        <name>AppFeedback</name>
+        <message>
+            <source>SquadSpeak started.</source>
+            <translation>SquadSpeak सुरू झाले आहे.</translation>
+        </message>
+        <message>
+            <source>SquadSpeak is closing.</source>
+            <translation>SquadSpeak बंद होत आहे.</translation>
+        </message>
+    </context>
 </TS>

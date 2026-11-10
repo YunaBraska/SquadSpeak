@@ -1,4 +1,5 @@
 #include "local_channel.hpp"
+#include <QCoreApplication>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QSslSocket>
@@ -74,6 +75,8 @@ bool LocalChannel::decideControl(const QString& id, bool allow) {
     if (!validId(id)) return setControlStatus(tr("Invalid device identity."), false);
     auto entries = control_.value("controllers").toObject();
     QSslSocket* selected = nullptr;
+    QString pendingName;
+    for (const auto& peer : peers_) if (peer.id == id && peer.controller && peer.pending) { pendingName = peer.name; break; }
     if (allow) {
         for (auto* socket : peers_.keys()) {
             const auto& peer = peers_[socket];
@@ -98,6 +101,9 @@ bool LocalChannel::decideControl(const QString& id, bool allow) {
         }
     }
     emit requestsChanged();
+    if (!pendingName.isEmpty()) emit channelEvent(allow ? "accepted" : "rejected",
+        QCoreApplication::translate("Channels", "Remote control") + ": " + pendingName + ". "
+        + QCoreApplication::translate("Channels", allow ? "Access approved" : "Rejected"));
     publishRemoteAvailability();
     return setControlStatus(allow ? tr("Controller paired. Local mute takes precedence.") : tr("Pairing removed."));
 }
@@ -619,6 +625,7 @@ void LocalChannel::controlMessage(const QJsonObject& message) {
     if (type != "control") { blockControl(tr("Invalid response from the control target.")); return; }
     const auto result = message.value("result").toString();
     if (result == "accepted") {
+        const bool pairing = controlPending_ || control_.value("target").toObject().value("pairing").toBool();
         QSet<QString> capabilities;
         if (!parseCapabilities(message, &capabilities)
             || (message.contains("name") && !displayName(message.value("name")))) {
@@ -642,6 +649,8 @@ void LocalChannel::controlMessage(const QJsonObject& message) {
         emit remoteChanged();
         setControlStatus(remoteAllowed_ ? tr("Remote control connected. Mute at the target takes precedence.")
             : tr("Push-to-talk connected. Enable additional controls on the target device."));
+        if (pairing) emit channelEvent("accepted", QCoreApplication::translate("Channels", "Remote control") + ". "
+            + QCoreApplication::translate("Channels", "Access approved"));
         sendControlState();
     } else if (result == "unavailable") {
         unavailableControlTargets_.insert(control_.value("target").toObject().value("id").toString());
@@ -652,12 +661,17 @@ void LocalChannel::controlMessage(const QJsonObject& message) {
         controlPending_ = true;
         setControlStatus(tr("Confirm remote push-to-talk pairing on the target device."));
     } else if (result == "rejected") {
+        emit channelEvent("rejected", QCoreApplication::translate("Channels", "Remote control") + ". "
+            + QCoreApplication::translate("Channels", "Rejected"));
         blockControl(tr("Pairing rejected. A new request is possible in %1 seconds at the earliest.").arg((message.value("retryMs").toInteger() + 999) / 1000), true);
     } else if (result == "stale") {
         blockControl(tr("The saved key state is stale. Confirm pairing again on the target."));
     } else if (result == "replaced") {
         blockControl(tr("A newer connection from this controller is active."));
     } else if (result == "revoked") {
+        emit channelEvent("rejected", QCoreApplication::translate("Channels", "Remote control") + ". "
+            + (controlPending_ ? QCoreApplication::translate("Channels", "Rejected")
+                : QCoreApplication::translate("LocalChannel", "Pairing removed.")));
         const auto id = control_.value("target").toObject().value("id").toString();
         QString channel;
         for (auto it = savedChannels_.begin(); it != savedChannels_.end(); ++it) {

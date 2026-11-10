@@ -371,7 +371,7 @@ void LocalChannel::externalState(const QJsonObject& state) {
     connection->active = externalId(connection->id, "channel", active);
     const bool channelChanged = previous != connection->active;
     if (channelChanged) connection->audioSequences.clear();
-    if (!first && channelChanged && wasJoined) emit channelEvent("leave");
+    if (!first && channelChanged && wasJoined) emit channelEvent("leave", ChatContent::membershipText("left", session_.userName()));
     joinedHostId_ = connection->active;
     QJsonObject next = savedChannels_;
     QSet<QString> seen;
@@ -481,7 +481,7 @@ void LocalChannel::externalState(const QJsonObject& state) {
         if (channelChanged) if (const auto old = clients_.value(previous)) addNotice(*old, "left", ownId(), session_.userName());
         if (const auto current = clients_.value(joinedHostId_)) addNotice(*current, "joined", ownId(), session_.userName());
         if (first) { automaticAttempt_ = false; sendPresence(); }
-        emit channelEvent("join");
+        emit channelEvent("join", ChatContent::membershipText("joined", session_.userName()));
     }
     if (connection->requested == joinedHostId_) { connection->requested.clear(); connection->movePending = false; }
     emit hostsChanged(); emit participantsChanged(); emit stateChanged(); emit chatChanged();
@@ -508,7 +508,7 @@ void LocalChannel::externalEvent(const QJsonObject& event) {
         if (type == "closed") {
             if (joined()) {
                 if (const auto current = clients_.value(joinedHostId_)) addNotice(*current, "left", ownId(), session_.userName());
-                emit channelEvent("leave");
+                emit channelEvent("leave", ChatContent::membershipText("left", session_.userName()));
             }
             const bool advance = automaticAttempt_;
             disconnectExternal();

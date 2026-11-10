@@ -3288,4 +3288,15 @@
             <translation>محفوظ کردہ ترتیب درست نہیں: %1</translation>
         </message>
     </context>
+    <context>
+        <name>AppFeedback</name>
+        <message>
+            <source>SquadSpeak started.</source>
+            <translation>SquadSpeak شروع ہو گیا ہے۔</translation>
+        </message>
+        <message>
+            <source>SquadSpeak is closing.</source>
+            <translation>SquadSpeak بند ہو رہا ہے۔</translation>
+        </message>
+    </context>
 </TS>

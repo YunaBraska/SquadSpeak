@@ -3288,4 +3288,15 @@
             <translation>Μη έγκυρη αποθηκευμένη ρύθμιση: %1</translation>
         </message>
     </context>
+    <context>
+        <name>AppFeedback</name>
+        <message>
+            <source>SquadSpeak started.</source>
+            <translation>Το SquadSpeak ξεκίνησε.</translation>
+        </message>
+        <message>
+            <source>SquadSpeak is closing.</source>
+            <translation>Το SquadSpeak κλείνει.</translation>
+        </message>
+    </context>
 </TS>

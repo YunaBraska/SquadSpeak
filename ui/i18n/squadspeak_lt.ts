@@ -3288,4 +3288,15 @@
             <translation>Netinkamas išsaugotas nustatymas: %1</translation>
         </message>
     </context>
+    <context>
+        <name>AppFeedback</name>
+        <message>
+            <source>SquadSpeak started.</source>
+            <translation>SquadSpeak paleista.</translation>
+        </message>
+        <message>
+            <source>SquadSpeak is closing.</source>
+            <translation>SquadSpeak uždaroma.</translation>
+        </message>
+    </context>
 </TS>

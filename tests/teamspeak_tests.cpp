@@ -345,6 +345,7 @@ private slots:
         QCOMPARE(channel.notices().last().toMap().value("event").toMap().value("name").toString(), QString("Updated profile"));
         QVERIFY(channel.messages().isEmpty());
         QCOMPARE(events.at(1).at(0).toString(), QString("memberJoin"));
+        QCOMPARE(events.at(1).at(1).toString(), QString("Updated profile joined."));
         fakeEvents.enqueue("{\"type\":\"reconnecting\"}");
         QTRY_VERIFY(!channel.joined());
         fakeEvents.enqueue(QJsonDocument(full).toJson());

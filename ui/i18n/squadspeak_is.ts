@@ -3288,4 +3288,15 @@
             <translation>Ógild vistuð stilling: %1</translation>
         </message>
     </context>
+    <context>
+        <name>AppFeedback</name>
+        <message>
+            <source>SquadSpeak started.</source>
+            <translation>SquadSpeak er ræst.</translation>
+        </message>
+        <message>
+            <source>SquadSpeak is closing.</source>
+            <translation>SquadSpeak er að lokast.</translation>
+        </message>
+    </context>
 </TS>

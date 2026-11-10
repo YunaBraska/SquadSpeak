@@ -3288,4 +3288,15 @@
             <translation>Definição guardada inválida: %1</translation>
         </message>
     </context>
+    <context>
+        <name>AppFeedback</name>
+        <message>
+            <source>SquadSpeak started.</source>
+            <translation>O SquadSpeak foi iniciado.</translation>
+        </message>
+        <message>
+            <source>SquadSpeak is closing.</source>
+            <translation>O SquadSpeak está a fechar.</translation>
+        </message>
+    </context>
 </TS>

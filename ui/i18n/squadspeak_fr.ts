@@ -3288,4 +3288,15 @@
             <translation>Paramètre enregistré non valide : %1</translation>
         </message>
     </context>
+    <context>
+        <name>AppFeedback</name>
+        <message>
+            <source>SquadSpeak started.</source>
+            <translation>SquadSpeak a démarré.</translation>
+        </message>
+        <message>
+            <source>SquadSpeak is closing.</source>
+            <translation>SquadSpeak se ferme.</translation>
+        </message>
+    </context>
 </TS>

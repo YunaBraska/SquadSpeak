@@ -3288,4 +3288,15 @@
             <translation>Impostazione salvata non valida: %1</translation>
         </message>
     </context>
+    <context>
+        <name>AppFeedback</name>
+        <message>
+            <source>SquadSpeak started.</source>
+            <translation>SquadSpeak è stato avviato.</translation>
+        </message>
+        <message>
+            <source>SquadSpeak is closing.</source>
+            <translation>SquadSpeak si sta chiudendo.</translation>
+        </message>
+    </context>
 </TS>

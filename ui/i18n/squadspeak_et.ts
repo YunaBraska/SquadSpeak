@@ -3288,4 +3288,15 @@
             <translation>Vigane salvestatud seade: %1</translation>
         </message>
     </context>
+    <context>
+        <name>AppFeedback</name>
+        <message>
+            <source>SquadSpeak started.</source>
+            <translation>SquadSpeak käivitus.</translation>
+        </message>
+        <message>
+            <source>SquadSpeak is closing.</source>
+            <translation>SquadSpeak sulgub.</translation>
+        </message>
+    </context>
 </TS>

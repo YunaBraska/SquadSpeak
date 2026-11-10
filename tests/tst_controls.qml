@@ -10,6 +10,8 @@ Item {
     property bool acceptEdits: true
     property int writes: 0
     SignalSpy { id: editFinished; signalName: "editingFinished" }
+    SignalSpy { id: notifications; target: audio; signalName: "notificationProgress" }
+    SignalSpy { id: notificationsFinished; target: audio; signalName: "notificationsFinished" }
     Component {
         id: actionComponent
         ActionButton {
@@ -97,7 +99,8 @@ Item {
             try {
                 for (const microphoneMuted of [false, true]) {
                     verify(session.setMuted(microphoneMuted))
-                    for (const kind of ["join", "memberJoin", "leave", "memberLeave", "kick", "ban", "message", "announcement", "request"]) {
+                    for (const kind of ["join", "memberJoin", "leave", "memberLeave", "kick", "ban", "message", "announcement", "request", "accepted", "rejected", "start", "quit"]) {
+                        fixtures.cancelNotifications()
                         compare(fixtures.playEvent(kind, false), audio.outputAvailable, kind)
                         compare(fixtures.playEvent(kind, true), audio.outputAvailable, kind + " remains audible while voice is muted")
                     }
@@ -118,6 +121,33 @@ Item {
                 const independent = fixtures.playEvent("announcement", false)
                 verify(audio.setOutputVolume(volume))
                 verify(independent, "Zero voice volume leaves app cues audible")
+            }
+        }
+
+        function test_notificationBurstsPlayInOrderWithoutInterrupting() {
+            if (!audio.outputAvailable) return
+            const volume = audio.notificationVolume
+            const readBot = audio.readBotMessages
+            try {
+                if (audio.speechAvailable) verify(audio.setReadBotMessages(false))
+                verify(audio.setNotificationVolume(0.01))
+                fixtures.cancelNotifications()
+                notifications.clear(); notificationsFinished.clear()
+                const kinds = ["start", "join", "leave", "request", "accepted", "rejected", "quit"]
+                for (const kind of kinds) verify(fixtures.queueEvent(kind, "Must not be spoken while disabled"))
+                if (audio.speechAvailable) verify(audio.setReadBotMessages(false))
+                tryCompare(notificationsFinished, "count", 1, 10000)
+                compare(notifications.count, kinds.length * 2)
+                for (let i = 0; i < kinds.length; ++i) {
+                    compare(notifications.signalArguments[i * 2][0], kinds[i])
+                    compare(notifications.signalArguments[i * 2][1], "tone")
+                    compare(notifications.signalArguments[i * 2 + 1][1], "finished")
+                }
+                verify(!audio.running)
+            } finally {
+                fixtures.cancelNotifications()
+                if (audio.speechAvailable) audio.setReadBotMessages(readBot)
+                audio.setNotificationVolume(volume)
             }
         }
 

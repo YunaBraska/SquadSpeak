@@ -1,4 +1,5 @@
 #include "audio_model.hpp"
+#include "app_feedback.hpp"
 #include "tray_menu.hpp"
 #include "voice_session.hpp"
 #include "local_channel.hpp"
@@ -234,28 +235,8 @@ int main(int argc, char** argv) {
         QObject::connect(&audio, &AudioModel::activityChanged, &channel, [&] {
             if (!audio.voiceSending()) channel.sendAudio({});
         });
-        QObject::connect(&channel, &LocalChannel::channelEvent, &audio, [&](const QString& kind) {
-            const bool spoken = !channel.joinedExternalVoice() && audio.botSpeechReady()
-                && channel.joined() && kind != "leave" && kind != "request";
-            if (session.eventSounds() && !spoken) audio.playEvent(kind);
-        });
-        QObject::connect(&session, &VoiceSession::preferencesChanged, &audio, [&] {
-            if (!session.eventSounds()) audio.cancelNotifications();
-        });
-        QObject::connect(&channel, &LocalChannel::stateChanged, &audio,
-            [&, host = QString{}]() mutable {
-                const auto next = channel.joinedHostId();
-                if (host != next || channel.remoteMode()) audio.cancelBotMessages();
-                host = next;
-            });
-        QObject::connect(&channel, &LocalChannel::botNotification, &audio, [&](const QVariantMap& message) {
-            if (!session.eventSounds()) return;
-            audio.readBotMessage(chatContent.plainText(message));
-        });
+        AppFeedback feedback(audio, session, channel);
         QObject::connect(&channel, &LocalChannel::chatNotification, &app, [&](const QString& hostId, const QVariantMap& message) {
-            const bool announcement = message.value("event").toMap().value("kind") == "announcement";
-            if (session.eventSounds() && !(announcement && audio.botSpeechReady()))
-                audio.playEvent(announcement ? "announcement" : "message");
 #if defined(Q_OS_MACOS) || defined(Q_OS_IOS)
             QString name;
             for (const auto& entry : channel.savedChannels())
@@ -266,6 +247,7 @@ int main(int argc, char** argv) {
             AppleNotifications::show(hostId + '/' + message.value("sequence").toString(), title, body);
 #else
             Q_UNUSED(hostId);
+            Q_UNUSED(message);
 #endif
         });
 #if defined(Q_OS_MACOS) || defined(Q_OS_IOS)
@@ -401,7 +383,12 @@ int main(int argc, char** argv) {
         channels->showMaximized();
 #endif
         if (!arguments.isSet("smoke-test") && arguments.isSet("settings")) showSettings();
-        if (!arguments.isSet("smoke-test")) channel.initialize();
+        if (!arguments.isSet("smoke-test")) {
+            app.installEventFilter(&feedback);
+            QObject::connect(&feedback, &AppFeedback::shutdownReady, &app, &QCoreApplication::quit, Qt::QueuedConnection);
+            feedback.start();
+            channel.initialize();
+        }
         if (arguments.isSet("smoke-test")) {
             qInfo("UI smoke: checking profile and settings");
 #ifdef Q_OS_MACOS

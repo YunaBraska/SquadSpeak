@@ -3288,4 +3288,15 @@
             <translation>Socrú sábháilte neamhbhailí: %1</translation>
         </message>
     </context>
+    <context>
+        <name>AppFeedback</name>
+        <message>
+            <source>SquadSpeak started.</source>
+            <translation>Tá SquadSpeak tosaithe.</translation>
+        </message>
+        <message>
+            <source>SquadSpeak is closing.</source>
+            <translation>Tá SquadSpeak ag dúnadh.</translation>
+        </message>
+    </context>
 </TS>

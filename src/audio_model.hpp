@@ -144,7 +144,8 @@ public:
     bool readBotMessage(const QString& text);
     void cancelBotMessages();
     void cancelNotifications();
-    bool playEvent(const QString& kind);
+    bool playEvent(const QString& kind, const QString& text = {});
+    [[nodiscard]] bool notificationsActive() const { return !notifications_.empty(); }
     Q_INVOKABLE bool previewOutput(double volume, bool sessionAudio = true);
     [[nodiscard]] double maximumFrequency() const;
     [[nodiscard]] bool running() const { return source_ != nullptr && wantsCapture_; }
@@ -196,9 +197,12 @@ signals:
     void levelsChanged();
     void audioPacket(const QByteArray& packet);
     void activityChanged();
+    void notificationProgress(const QString& kind, const QString& phase, const QString& text);
+    void notificationsFinished();
 
 private:
-    bool playSound(const QString& sound, double volume);
+    bool playSound(const QString& sound, double volume, const QString& kind = {}, const QString& text = {});
+    void advanceNotifications();
     void refreshDevices();
     void beginCapture();
     bool ensureCapture();
@@ -240,7 +244,12 @@ private:
     QVariantMap botVoice_;
     SpeechOutput speech_;
     LocalLanguage language_;
-    std::deque<std::pair<QString, qint64>> announcements_;
+    struct Notification { QString kind, sound, text; double volume; };
+    std::deque<Notification> notifications_;
+    enum class NotificationPhase { Idle, Tone, Speech, Drain };
+    NotificationPhase notificationPhase_ = NotificationPhase::Idle;
+    qint64 notificationStartedAt_ = 0;
+    qint64 notificationPlaybackEnd_ = 0;
     bool deafened_ = false;
     QSoundEffect eventSound_;
     std::unique_ptr<QAudioSource> source_;

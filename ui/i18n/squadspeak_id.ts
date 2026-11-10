@@ -3288,4 +3288,15 @@
             <translation>Pengaturan tersimpan tidak valid: %1</translation>
         </message>
     </context>
+    <context>
+        <name>AppFeedback</name>
+        <message>
+            <source>SquadSpeak started.</source>
+            <translation>SquadSpeak telah dimulai.</translation>
+        </message>
+        <message>
+            <source>SquadSpeak is closing.</source>
+            <translation>SquadSpeak sedang ditutup.</translation>
+        </message>
+    </context>
 </TS>

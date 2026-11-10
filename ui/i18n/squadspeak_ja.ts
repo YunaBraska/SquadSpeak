@@ -3288,4 +3288,15 @@
             <translation>保存された設定が無効です: %1</translation>
         </message>
     </context>
+    <context>
+        <name>AppFeedback</name>
+        <message>
+            <source>SquadSpeak started.</source>
+            <translation>SquadSpeakを起動しました。</translation>
+        </message>
+        <message>
+            <source>SquadSpeak is closing.</source>
+            <translation>SquadSpeakを終了します。</translation>
+        </message>
+    </context>
 </TS>

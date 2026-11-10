@@ -3288,4 +3288,15 @@
             <translation>সংরক্ষিত সেটিংস অবৈধ: %1</translation>
         </message>
     </context>
+    <context>
+        <name>AppFeedback</name>
+        <message>
+            <source>SquadSpeak started.</source>
+            <translation>SquadSpeak চালু হয়েছে।</translation>
+        </message>
+        <message>
+            <source>SquadSpeak is closing.</source>
+            <translation>SquadSpeak বন্ধ হচ্ছে।</translation>
+        </message>
+    </context>
 </TS>

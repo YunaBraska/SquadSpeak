@@ -3288,4 +3288,15 @@
             <translation>已保存的设置无效: %1</translation>
         </message>
     </context>
+    <context>
+        <name>AppFeedback</name>
+        <message>
+            <source>SquadSpeak started.</source>
+            <translation>SquadSpeak 已启动。</translation>
+        </message>
+        <message>
+            <source>SquadSpeak is closing.</source>
+            <translation>SquadSpeak 正在关闭。</translation>
+        </message>
+    </context>
 </TS>

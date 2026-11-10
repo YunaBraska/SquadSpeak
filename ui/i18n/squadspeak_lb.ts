@@ -3288,4 +3288,15 @@
             <translation>Ongëlteg gespäichert Astellung: %1</translation>
         </message>
     </context>
+    <context>
+        <name>AppFeedback</name>
+        <message>
+            <source>SquadSpeak started.</source>
+            <translation>SquadSpeak gouf gestart.</translation>
+        </message>
+        <message>
+            <source>SquadSpeak is closing.</source>
+            <translation>SquadSpeak gëtt zougemaach.</translation>
+        </message>
+    </context>
 </TS>

@@ -3288,4 +3288,15 @@
             <translation>Ajuste guardado no válido: %1</translation>
         </message>
     </context>
+    <context>
+        <name>AppFeedback</name>
+        <message>
+            <source>SquadSpeak started.</source>
+            <translation>SquadSpeak se ha iniciado.</translation>
+        </message>
+        <message>
+            <source>SquadSpeak is closing.</source>
+            <translation>SquadSpeak se está cerrando.</translation>
+        </message>
+    </context>
 </TS>

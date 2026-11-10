@@ -3288,4 +3288,15 @@
             <translation>App no fit save language settings.</translation>
         </message>
     </context>
+    <context>
+        <name>AppFeedback</name>
+        <message>
+            <source>SquadSpeak started.</source>
+            <translation>SquadSpeak don start.</translation>
+        </message>
+        <message>
+            <source>SquadSpeak is closing.</source>
+            <translation>SquadSpeak dey close.</translation>
+        </message>
+    </context>
 </TS>

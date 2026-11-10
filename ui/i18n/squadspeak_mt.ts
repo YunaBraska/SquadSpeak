@@ -3288,4 +3288,15 @@
             <translation>Setting issejvjat mhux validu: %1</translation>
         </message>
     </context>
+    <context>
+        <name>AppFeedback</name>
+        <message>
+            <source>SquadSpeak started.</source>
+            <translation>SquadSpeak beda.</translation>
+        </message>
+        <message>
+            <source>SquadSpeak is closing.</source>
+            <translation>SquadSpeak qed jagħlaq.</translation>
+        </message>
+    </context>
 </TS>

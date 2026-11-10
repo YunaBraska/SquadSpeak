@@ -3288,4 +3288,15 @@
             <translation>Paràmetre desat no vàlid: %1</translation>
         </message>
     </context>
+    <context>
+        <name>AppFeedback</name>
+        <message>
+            <source>SquadSpeak started.</source>
+            <translation>S’ha iniciat SquadSpeak.</translation>
+        </message>
+        <message>
+            <source>SquadSpeak is closing.</source>
+            <translation>SquadSpeak s’està tancant.</translation>
+        </message>
+    </context>
 </TS>

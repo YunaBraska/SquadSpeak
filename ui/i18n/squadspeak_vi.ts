@@ -3288,4 +3288,15 @@
             <translation>Cài đặt đã lưu không hợp lệ: %1</translation>
         </message>
     </context>
+    <context>
+        <name>AppFeedback</name>
+        <message>
+            <source>SquadSpeak started.</source>
+            <translation>SquadSpeak đã khởi động.</translation>
+        </message>
+        <message>
+            <source>SquadSpeak is closing.</source>
+            <translation>SquadSpeak đang đóng.</translation>
+        </message>
+    </context>
 </TS>

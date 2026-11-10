@@ -1,6 +1,7 @@
 #include <QOperatingSystemVersion>
 #include "audio_processor.hpp"
 #include "audio_model.hpp"
+#include "app_feedback.hpp"
 #include "voice_session.hpp"
 #include "identity_fixture.hpp"
 #include "local_channel.hpp"
@@ -91,6 +92,7 @@ class AudioFixtures final : public QObject {
     QMetaObject::Connection memberAdmission_;
     ChatContent chatContent_;
     std::unique_ptr<AudioModel> audio_;
+    std::unique_ptr<AppFeedback> feedback_;
     QList<QMetaObject::Connection> audioChannelConnections_;
     squad::VoiceMixer audioTestEncoder_{2};
     bool audioTestParticipantReady_ = false;
@@ -101,6 +103,16 @@ class AudioFixtures final : public QObject {
     QString appliedLanguage_ = "en";
     QQmlPropertyMap systemAppearance_;
 public slots:
+    bool bindFeedback() {
+        if (feedback_) return false;
+        feedback_ = std::make_unique<AppFeedback>(*audio_, *session_, *channel_);
+        connect(feedback_.get(), &AppFeedback::shutdownReady, this, &AudioFixtures::feedbackStopped);
+        return true;
+    }
+    void unbindFeedback() { feedback_.reset(); audio_->cancelNotifications(); }
+    bool startFeedback() { return feedback_ && feedback_->start(); }
+    void shutdownFeedback() { if (feedback_) feedback_->shutdown(); }
+    bool queueEvent(const QString& kind, const QString& text) { return audio_->playEvent(kind, text); }
     QUrl identityExportFile(bool valid) {
         const auto path = folder_.filePath("identity-export.ini");
         QFile file(path);
@@ -357,7 +369,7 @@ public slots:
         audio_->setVoiceState(joined, false);
         audio_->setDeafened(deafened);
         const bool accepted = audio_->readBotMessage(text);
-        audio_->cancelBotMessages();
+        audio_->cancelNotifications();
         audio_->setVoiceState(false, false);
         audio_->setDeafened(previous);
         return accepted;
@@ -707,6 +719,7 @@ public slots:
                 && QOperatingSystemVersion::current().majorVersion() >= 26);
     }
 signals:
+    void feedbackStopped();
     void externalUrlOpened(const QString& url);
 };
 

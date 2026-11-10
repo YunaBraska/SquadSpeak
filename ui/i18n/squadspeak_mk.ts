@@ -3288,4 +3288,15 @@
             <translation>Невалидна зачувана поставка: %1</translation>
         </message>
     </context>
+    <context>
+        <name>AppFeedback</name>
+        <message>
+            <source>SquadSpeak started.</source>
+            <translation>SquadSpeak е стартуван.</translation>
+        </message>
+        <message>
+            <source>SquadSpeak is closing.</source>
+            <translation>SquadSpeak се затвора.</translation>
+        </message>
+    </context>
 </TS>

@@ -3288,4 +3288,15 @@
             <translation>Geçersiz kayıtlı ayar: %1</translation>
         </message>
     </context>
+    <context>
+        <name>AppFeedback</name>
+        <message>
+            <source>SquadSpeak started.</source>
+            <translation>SquadSpeak başlatıldı.</translation>
+        </message>
+        <message>
+            <source>SquadSpeak is closing.</source>
+            <translation>SquadSpeak kapatılıyor.</translation>
+        </message>
+    </context>
 </TS>

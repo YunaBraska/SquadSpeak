@@ -3288,4 +3288,15 @@
             <translation>Недапушчальная захаваная налада: %1</translation>
         </message>
     </context>
+    <context>
+        <name>AppFeedback</name>
+        <message>
+            <source>SquadSpeak started.</source>
+            <translation>SquadSpeak запушчаны.</translation>
+        </message>
+        <message>
+            <source>SquadSpeak is closing.</source>
+            <translation>SquadSpeak закрываецца.</translation>
+        </message>
+    </context>
 </TS>

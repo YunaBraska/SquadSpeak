@@ -3288,4 +3288,15 @@
             <translation>Неприпустиме збережене налаштування: %1</translation>
         </message>
     </context>
+    <context>
+        <name>AppFeedback</name>
+        <message>
+            <source>SquadSpeak started.</source>
+            <translation>SquadSpeak запущено.</translation>
+        </message>
+        <message>
+            <source>SquadSpeak is closing.</source>
+            <translation>SquadSpeak закривається.</translation>
+        </message>
+    </context>
 </TS>
