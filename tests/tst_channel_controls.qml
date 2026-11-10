@@ -538,6 +538,66 @@ TestCase {
         compare(channel.chatHostId, remoteChannel.ownId)
     }
 
+    function test_voiceChatAppearanceAndPrimaryActions_data() {
+        return [{tag: "compact-light", width: 390, mode: "light", scale: 100},
+                {tag: "compact-dark-large-text", width: 390, mode: "dark", scale: 200},
+                {tag: "wide-light", width: 1100, mode: "light", scale: 100},
+                {tag: "wide-dark", width: 1100, mode: "dark", scale: 100}]
+    }
+    function test_voiceChatAppearanceAndPrimaryActions(data) {
+        const previousTheme = session.theme
+        try {
+            view.width = data.width; view.height = 640
+            verify(session.setTextScale(data.scale)); verify(session.setTheme(data.mode))
+            verify(fixtures.startHost()); verify(fixtures.startRemoteHost())
+            verify(channel.setChannelName("Workshop")); verify(remoteChannel.setChannelName("Lounge"))
+            verify(remoteChannel.decide(channel.ownId, true))
+            verify(channel.openChat(channel.ownId, "127.0.0.1", channel.servicePort))
+            tryCompare(channel, "chatReady", true)
+            tryCompare(channel, "historyLoading", false)
+            verify(channel.sendChat("Ready when you are.")); tryCompare(channel, "chatPending", false)
+            const surface = findChild(view, "conversationBackground")
+            verify(surface !== null, "The conversation itself shows its voice connection state")
+            const chatOnlyColor = surface.color.toString()
+            verify(channel.joinSaved(channel.ownId)); tryCompare(channel, "joined", true)
+            verify(waitForPolish(view)); verify(waitForFrame(view.contentItem))
+            verify(surface.color.toString() !== chatOnlyColor, "Joining changes the full conversation surface")
+            const voiceColor = surface.color.toString()
+            if (imageDirectory.length) {
+                tryCompare(channel, "historyLoading", false)
+                tryVerify(function() {
+                    const avatar = visualChild(view.contentItem, "channelAvatar_" + channel.ownId + "_" + channel.ownId)
+                    return avatar && fixtures.portraitHasDetail(avatar)
+                }, 5000, "The visible avatar is rendered before capture")
+                verify(fixtures.saveWindow(view, imageDirectory + "/voice-joined-" + data.tag + ".png"))
+            }
+            verify(channel.openChat(remoteChannel.ownId, "127.0.0.1", remoteChannel.servicePort))
+            tryCompare(channel, "chatReady", true)
+            compare(surface.color.toString(), chatOnlyColor, "Another chat must not look voice-connected")
+            compare(channel.joinedHostId, channel.ownId)
+            verify(channel.openChat(channel.ownId, "127.0.0.1", channel.servicePort))
+            tryCompare(channel, "chatReady", true)
+            compare(surface.color.toString(), voiceColor)
+            const footer = findChild(view, "voiceConnection"), info = findChild(view, "channelInfoDialog")
+            mouseClick(footer); tryCompare(info, "opened", true)
+            verify(waitForPolish(view)); verify(waitForFrame(view.contentItem))
+            const leave = findChild(info, "leaveMenuItem"), join = findChild(info, "joinChannel")
+            const scroll = findChild(info, "channelInfoScroll")
+            verify(leave.visible && leave.enabled); verify(!join.visible)
+            const position = leave.mapToItem(scroll, 0, 0)
+            verify(position.y >= 0 && position.y + leave.height <= scroll.height,
+                   "Leave must be reachable immediately without scrolling")
+            if (imageDirectory.length) verify(fixtures.saveWindow(view, imageDirectory + "/channel-actions-" + data.tag + ".png"))
+            mouseClick(leave); tryCompare(channel, "joined", false)
+            verify(join.visible && join.enabled); verify(!leave.visible)
+            info.close(); tryCompare(info, "visible", false)
+            compare(surface.color.toString(), chatOnlyColor)
+            verify(channel.chatReady, "Leaving voice preserves text chat")
+            if (imageDirectory.length) { verify(waitForPolish(view)); verify(waitForFrame(view.contentItem));
+                verify(fixtures.saveWindow(view, imageDirectory + "/voice-left-" + data.tag + ".png")) }
+        } finally { session.setTheme(previousTheme) }
+    }
+
     function test_localNoticesAndConnectionStatus_data() {
         return [{tag: "small", width: 390}, {tag: "large", width: 1100}]
     }
@@ -1804,31 +1864,34 @@ TestCase {
         view.width = data.width; view.height = data.height
         verify(fixtures.startHost()); verify(fixtures.startRemoteHost())
         verify(channel.setBlocked(remoteChannel.ownId, true))
-        view.selectedHost = channel.ownId
-        const menu = findChild(view, "channelInfoDialog")
-        menu.open(); tryCompare(menu, "opened", true)
-        const blocked = findChild(menu, "blockedDevices")
-        verify(blocked !== null && blocked.visible, "Blocked devices must be reachable from the channel menu")
-        view.requestActivate(); tryCompare(view, "active", true)
-        view.update(); verify(waitForRendering(blocked))
-        mouseClick(blocked)
-        const info = findChild(view, "channelInfoDialog")
-        tryCompare(info, "opened", true)
-        info.addresses = ["100.80.0.186:48764", "192.168.64.1:48764", "[fd6d:e9ed:ff65:3e44:104d:1e05:1885:d90d]:48764"]
-        view.update(); verify(waitForRendering(info.contentItem))
-        const unblock = visualChild(info.contentItem, "unblock_" + remoteChannel.ownId)
-        verify(unblock !== null)
-        tryVerify(function() {
-            const scroll = findChild(info, "channelInfoScroll")
-            const position = unblock.mapToItem(scroll, 0, 0)
-            return position.y >= 0 && position.y + unblock.height <= scroll.height
-        })
-        if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/blocked-devices-" + data.tag + ".png"))
-        mouseClick(unblock)
-        compare(channel.blockedClients.length, 0)
-        info.close(); menu.open(); tryCompare(menu, "opened", true)
-        verify(!blocked.visible)
-        menu.close()
+        try {
+            view.selectedHost = channel.ownId
+            const menu = findChild(view, "channelInfoDialog")
+            menu.open(); tryCompare(menu, "opened", true)
+            const blocked = findChild(menu, "blockedDevices")
+            verify(blocked !== null && blocked.visible, "Blocked devices must be reachable from the channel menu")
+            view.requestActivate(); tryCompare(view, "active", true)
+            reveal(blocked)
+            view.update(); verify(waitForRendering(blocked))
+            mouseClick(blocked)
+            const info = findChild(view, "channelInfoDialog")
+            tryCompare(info, "opened", true)
+            info.addresses = ["100.80.0.186:48764", "192.168.64.1:48764", "[fd6d:e9ed:ff65:3e44:104d:1e05:1885:d90d]:48764"]
+            view.update(); verify(waitForRendering(info.contentItem))
+            const unblock = visualChild(info.contentItem, "unblock_" + remoteChannel.ownId)
+            verify(unblock !== null)
+            tryVerify(function() {
+                const scroll = findChild(info, "channelInfoScroll")
+                const position = unblock.mapToItem(scroll, 0, 0)
+                return position.y >= 0 && position.y + unblock.height <= scroll.height
+            })
+            if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/blocked-devices-" + data.tag + ".png"))
+            mouseClick(unblock)
+            compare(channel.blockedClients.length, 0)
+            info.close(); menu.open(); tryCompare(menu, "opened", true)
+            verify(!blocked.visible)
+            menu.close()
+        } finally { channel.setBlocked(remoteChannel.ownId, false) }
     }
 
     function test_channelAndRequestDetailsCanBeCopied() {
