@@ -3793,6 +3793,7 @@ private slots:
         QCOMPARE(events.size(), 4);
         QCOMPARE(events.last().first().toString(), QString("memberLeave"));
         QVERIFY(witness.channel.messages().isEmpty());
+        QTRY_VERIFY(!witness.channel.historyLoading());
         QVERIFY(witness.channel.refreshChat());
         QTRY_VERIFY(!witness.channel.historyLoading());
         QCOMPARE(witness.channel.notices().size(), 5);

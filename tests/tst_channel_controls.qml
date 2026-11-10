@@ -1081,7 +1081,7 @@ TestCase {
         const remove = findChild(view, "removeChannelMenuItem")
         findChild(view, "channelInfoDialog").open(); tryCompare(findChild(view, "channelInfoDialog"), "opened", true)
         reveal(remove)
-        verify(waitForPolish(view)); verify(waitForRendering(remove))
+        verify(waitForPolish(view)); verify(waitForFrame(remove))
         if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/owned-channel-remove-menu.png"))
         mouseClick(remove)
         const confirm = findChild(view, "removeOwnChannelDialog")
@@ -1449,7 +1449,9 @@ TestCase {
         tryCompare(channel, "chatReady", true)
         tryCompare(remoteChannel, "chatReady", true)
         tryVerify(function() { return view.chatMembers.length === 2 })
-        mouseClick(findChild(view, "voiceMembers"))
+        const membersButton = findChild(view, "voiceMembers")
+        verify(waitForPolish(view)); verify(waitForFrame(membersButton))
+        mouseClick(membersButton)
         tryCompare(findChild(view, "membersDialog"), "opened", true)
         tryVerify(function() { return visualChild(findChild(view, "allMembers"), "member_" + remoteChannel.ownId) !== null })
         const portrait = visualChild(findChild(view, "allMembers"), "member_" + remoteChannel.ownId)
@@ -3841,14 +3843,14 @@ TestCase {
     }
 
     function test_speakersStayWithVoiceWhileReadingAnotherChat() {
+        verify(fixtures.startRemoteHost())
+        verify(remoteChannel.decide(channel.ownId, true))
         startControlledVoice(8)
         controllerView.width = 390; controllerView.height = 700
         controllerView.show()
         controllerView.chatExpanded = true
-        verify(fixtures.setSupporter(true))
-        const other = channel.addOwnedChannel("Text only")
-        verify(other.length > 0)
-        verify(channel.openSavedChat(other))
+        const other = remoteChannel.ownId
+        verify(channel.openChat(other, "127.0.0.1", remoteChannel.servicePort))
         tryCompare(controllerView, "inspectedHost", other)
         tryCompare(controllerView, "viewingVoice", false)
         const active = channel.participants.filter(function(m) { return m.available && !m.muted && !m.music })
