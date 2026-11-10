@@ -23,6 +23,7 @@ TestCase {
     SignalSpy { id: openedLinks; target: fixtures; signalName: "externalUrlOpened" }
     SignalSpy { id: dialogRejections; signalName: "rejected" }
     SignalSpy { id: stationSaves; target: radio; signalName: "stationSaved" }
+    SignalSpy { id: membershipEvents; target: channel; signalName: "channelEvent" }
     Component { id: variablePortrait; VoiceAvatar { width: 96; height: 112 } }
     Component { id: portraitBackdrop; Rectangle { color: Theme.surface } }
     Component { id: atlasImage; Image { visible: false } }
@@ -3737,9 +3738,9 @@ TestCase {
     function startControlledVoice(count) {
         verify(fixtures.startHost())
         verify(session.setMuted(false))
+        verify(fixtures.populateMembers(count - 1))
         verify(channel.join(channel.ownId, "127.0.0.1", channel.servicePort))
         tryCompare(channel, "chatReady", true)
-        verify(fixtures.populateMembers(count - 1))
         tryVerify(function() { return channel.participants.length === count }, 30000)
         verify(channel.decide(remoteChannel.ownId, true))
         verify(remoteChannel.openChat(channel.ownId, "127.0.0.1", channel.servicePort))
@@ -3896,10 +3897,14 @@ TestCase {
         if (Qt.platform.os === "ios" || Qt.platform.os === "android") orientChat(false)
         else { view.width = 460; view.height = 700 }
         verify(fixtures.startHost())
+        // Generate fixture identities before the owner's live connection needs heartbeats.
+        verify(fixtures.populateMembers(63))
         verify(channel.join(channel.ownId, "127.0.0.1", channel.servicePort))
         tryCompare(channel, "chatReady", true)
-        verify(fixtures.populateMembers(63))
+        membershipEvents.clear()
         tryVerify(function() { return channel.participants.length === 64 && view.chatMembers.length === 64 }, 30000)
+        verify(membershipEvents.signalArguments.every(event => event[0] !== "leave"),
+            "Preparing roster participants must not disconnect the owner")
         const more = findChild(view, "voiceMembers")
         tryVerify(function() { return more && more.visible })
         compare(more.text, "64")
