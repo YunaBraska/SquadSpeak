@@ -132,48 +132,78 @@ PanelWindow {
             onClicked: root.toggleMembers(summary.hostId)
         }
     }
+    component MemberTile: Item {
+        id: tile
+        required property var member
+        required property string hostId
+        property bool stacked: false
+        property int portraitSize: 44
+        property bool animate: true
+        activeFocusOnTab: true
+        Accessible.role: Accessible.Button
+        Accessible.name: portrait.Accessible.name
+        Accessible.onPressAction: root.memberOptions(member, hostId)
+        Keys.onReturnPressed: root.memberOptions(member, hostId)
+        Keys.onSpacePressed: root.memberOptions(member, hostId)
+        Rectangle { anchors.fill: parent; visible: tile.activeFocus; color: "transparent"; radius: Theme.controlRadius; border.color: Theme.accent }
+        GridLayout {
+            anchors.centerIn: parent; width: parent.width - 8
+            columns: tile.stacked ? 1 : 2; rowSpacing: 3; columnSpacing: 5
+            VoiceAvatar {
+                id: portrait
+                objectName: "participantAvatar"
+                Layout.preferredWidth: tile.portraitSize; Layout.preferredHeight: tile.portraitSize
+                Layout.alignment: Qt.AlignHCenter
+                circular: true
+                avatar: tile.member.avatarId || tile.member.avatar || "mossling"; name: tile.member.name; music: !!tile.member.music; provider: tile.member.provider || ""
+                available: tile.member.available; muted: tile.member.muted; deafened: !!tile.member.deafened; sleeping: !!tile.member.sleeping
+                identity: tile.member.id; animationTime: root.avatarTime
+                animated: root.animateAvatars && tile.visible && tile.animate
+                level: tile.hostId === root.activeHost ? root.memberLevel(tile.member.id) : 0
+                Rectangle {
+                    objectName: "speakingBadge"
+                    visible: portrait.speaking
+                    anchors.top: parent.top; anchors.left: parent.left
+                    width: Math.max(14, Math.min(20, portrait.width * 0.4)); height: width
+                    radius: width / 2; color: Theme.accent
+                    Glyph { anchors.fill: parent; anchors.margins: 2; symbol: "mic"; color: Theme.accentText; description: qsTranslate("VoiceAvatar", "Speaking") }
+                }
+            }
+            Label {
+                text: tile.member.name; textFormat: Text.PlainText
+                Layout.fillWidth: true; Layout.minimumWidth: 0
+                elide: Text.ElideRight; horizontalAlignment: tile.stacked ? Text.AlignHCenter : Text.AlignLeft
+                font.pixelSize: Theme.fontSize(12); font.weight: portrait.speaking ? Font.DemiBold : Font.Normal
+                color: portrait.speaking ? Theme.accent : Theme.text
+            }
+        }
+        MouseArea { anchors.fill: parent; acceptedButtons: Qt.LeftButton | Qt.RightButton; onClicked: mouse => root.memberOptions(tile.member, tile.hostId, mouse.button === Qt.RightButton) }
+        ActionButton {
+            anchors.right: parent.right; anchors.top: parent.top
+            text: qsTranslate("LocalLanguage", "Original text"); glyph: "chat"; iconOnly: true; flat: true
+            visible: { root.language.revision; const info = root.language.member(tile.member.id); return !!info.transcript || !!info.status }
+            onClicked: { root.selectedMember = tile.member; originalTranscript.open() }
+        }
+        TextToolTip { objectName: "memberTooltip"; parent: tile; text: tile.Accessible.name; visible: memberHover.hovered || tile.activeFocus }
+        HoverHandler { id: memberHover }
+    }
     component MemberGrid: GridView {
         id: grid
         property string hostId: ""
+        property bool gallery: false
         clip: true
-        cellWidth: width < 350 ? width : width / 2
-        cellHeight: Math.max(54, Theme.fontSize(32) + 16)
+        cellWidth: gallery ? width / Math.max(1, Math.min(count, Math.floor(width / 116))) : width < 350 ? width : width / 2
+        cellHeight: gallery ? count === 1 ? height : 88 + Theme.fontSize(18) : Math.max(54, Theme.fontSize(32) + 16)
         cacheBuffer: 0
         ScrollBar.vertical: ScrollBar { policy: grid.contentHeight > grid.height ? ScrollBar.AlwaysOn : ScrollBar.AsNeeded }
-        delegate: Item {
-            id: memberEntry
+        delegate: MemberTile {
             required property var modelData
             width: grid.cellWidth; height: grid.cellHeight
             objectName: "member_" + modelData.id
-            activeFocusOnTab: true
-            Accessible.role: Accessible.Button
-            Accessible.name: modelData.name
-            Accessible.onPressAction: root.memberOptions(modelData, grid.hostId)
-            Keys.onReturnPressed: root.memberOptions(modelData, grid.hostId)
-            Keys.onSpacePressed: root.memberOptions(modelData, grid.hostId)
-            Rectangle { anchors.fill: parent; visible: parent.activeFocus; color: "transparent"; radius: Theme.controlRadius; border.color: Theme.accent }
-            RowLayout {
-                anchors.fill: parent; anchors.rightMargin: 10; spacing: 5
-                VoiceAvatar {
-                    objectName: "participantAvatar"
-                    Layout.preferredWidth: 44; Layout.preferredHeight: 44; circular: true
-                    avatar: modelData.avatarId || modelData.avatar || "mossling"; name: modelData.name; music: !!modelData.music; provider: modelData.provider || ""
-                    available: modelData.available; muted: modelData.muted; deafened: !!modelData.deafened; sleeping: !!modelData.sleeping
-                    identity: modelData.id; animationTime: root.avatarTime
-                    animated: root.animateAvatars && memberEntry.y + memberEntry.height >= grid.contentY && memberEntry.y <= grid.contentY + grid.height
-                    level: grid.hostId === root.activeHost ? root.memberLevel(modelData.id) : 0
-                }
-                Label { text: modelData.name; textFormat: Text.PlainText; Layout.fillWidth: true; elide: Text.ElideRight; font.pixelSize: Theme.fontSize(12) }
-            }
-            MouseArea { anchors.fill: parent; acceptedButtons: Qt.LeftButton | Qt.RightButton; onClicked: mouse => root.memberOptions(modelData, grid.hostId, mouse.button === Qt.RightButton) }
-            ActionButton {
-                anchors.right: parent.right; anchors.verticalCenter: parent.verticalCenter
-                text: qsTranslate("LocalLanguage", "Original text"); glyph: "chat"; iconOnly: true; flat: true
-                visible: { root.language.revision; const info = root.language.member(modelData.id); return !!info.transcript || !!info.status }
-                onClicked: { root.selectedMember = modelData; originalTranscript.open() }
-            }
-            TextToolTip { parent: memberEntry; text: modelData.name; visible: memberHover.hovered }
-            HoverHandler { id: memberHover }
+            member: modelData; hostId: grid.hostId
+            stacked: grid.gallery
+            portraitSize: grid.gallery ? grid.count === 1 ? Math.max(16, Math.min(144, grid.height - Theme.fontSize(18) - 12, grid.width - 8)) : 72 : 44
+            animate: y + height >= grid.contentY && y <= grid.contentY + grid.height
         }
     }
     DetailPane {
@@ -295,7 +325,7 @@ PanelWindow {
     }
     Shortcut { sequences: [StandardKey.Find]; enabled: root.active && !settings.visible; onActivated: root.searchOpen = true }
     property var privateFolderExpanded: ({})
-    property var collapsedHosts: ({})
+    property var expandedHosts: ({})
     readonly property var selectedOwner: { const revision = network.ownedChannels; return remote ? null : network.ownChannel(selectedHost) }
     readonly property var managedHost: selectedOwner || network
     readonly property var memberHost: { const revision = network.ownedChannels; return remote ? null : network.ownChannel(selectedMemberHost) }
@@ -338,10 +368,10 @@ PanelWindow {
         return host ? (host.deviceId || host.id) : hostId
     }
     function toggleHost(id) {
-        const next = Object.assign({}, collapsedHosts)
+        const next = Object.assign({}, expandedHosts)
         if (next[id]) delete next[id]
         else next[id] = true
-        collapsedHosts = next
+        expandedHosts = next
         updateChannelRows()
     }
     function privateFolderIsExpanded(id) { return privateFolderExpanded[id] !== false }
@@ -433,8 +463,8 @@ PanelWindow {
             group.privateChats.push(entry)
         }
         const retained = {}
-        for (const key of Object.keys(collapsedHosts)) if (groups.has(key)) retained[key] = true
-        collapsedHosts = retained
+        for (const key of Object.keys(expandedHosts)) if (groups.has(key)) retained[key] = true
+        expandedHosts = retained
         const ordered = []
         const sortedGroups = Array.from(groups.values()).sort(function(a, b) {
             return Number(!!b.owned) - Number(!!a.owned) || a.label.localeCompare(b.label) || a.key.localeCompare(b.key)
@@ -444,7 +474,7 @@ PanelWindow {
             const groupUnread = privateUnread || group.channels.some(function(entry) { return !!entry.unread })
             const grouped = group.channels.length !== 1
                 || (group.protocol === "teamspeak" && group.channels[0].providerChannel === "0")
-            const groupExpanded = !grouped || !!query || !collapsedHosts[group.key]
+            const groupExpanded = !grouped || !!query || !!expandedHosts[group.key]
             if (query && !group.label.toLowerCase().includes(query)) {
                 const matches = new Set()
                 for (const entry of group.channels) {
@@ -567,7 +597,8 @@ PanelWindow {
                 if (!root.visible || root.showChat || root.details || root.searchOpen) return
                 for (let i = 0; i < channelRepeater.count; ++i) {
                     const entry = channelRepeater.itemAt(i)
-                    if (entry && entry.channelData.id === root.inspectedHost) {
+                    if (entry && (entry.channelData.id === root.inspectedHost
+                        || (!entry.groupExpanded && entry.groupId === (root.inspectedChannel.deviceId || root.inspectedHost)))) {
                         entry.focusChannel()
                         return
                     }
@@ -585,7 +616,34 @@ PanelWindow {
         const name = entry.name || ""
         return entry.protocol === "teamspeak" ? name.replace(/^\[[*clr]?spacer[^\]]*\]/i, "").replace(/^[_-]{3,}$/, "─") : name
     }
-    function memberLevel(id) { return remote ? (network.remoteLevels[id] || 0) : id === network.ownId ? audio.transmitLevel : (audio.playbackLevels[id] || 0) }
+    readonly property var voiceLevels: remote ? network.remoteLevels : Object.assign({}, audio.playbackLevels, {[network.ownId]: audio.transmitLevel})
+    property var speakers: []
+    property var speakerExpiry: ({})
+    property double nextSpeakerExpiry: 0
+    onVoiceLevelsChanged: updateSpeakers(false)
+    onMembersChanged: updateSpeakers(true)
+    onActiveHostChanged: { speakerExpiry = ({}); updateSpeakers(true) }
+    onVisibleChanged: updateSpeakers(true)
+    onAvatarTimeChanged: if (nextSpeakerExpiry > 0 && avatarTime >= nextSpeakerExpiry) updateSpeakers(false)
+    function updateSpeakers(refreshMembers) {
+        const expiry = ({})
+        const next = []
+        let deadline = 0
+        if (visible && current.joined) for (const member of members) {
+            if (!member.available || member.muted || member.music) continue
+            const level = voiceLevels[member.id] || 0
+            const previous = speakerExpiry[member.id] || 0
+            const until = isFinite(level) && level > 0.001 ? Infinity : previous === Infinity ? avatarTime + Atlas.speechHold : previous
+            if (until <= avatarTime || (until !== Infinity && avatarTime < until - Atlas.speechHold)) continue
+            expiry[member.id] = until
+            if (until !== Infinity) deadline = deadline > 0 ? Math.min(deadline, until) : until
+            next.push(member)
+        }
+        speakerExpiry = expiry
+        nextSpeakerExpiry = deadline
+        if (refreshMembers || speakers.length !== next.length || speakers.some((member, i) => member.id !== next[i].id)) speakers = next
+    }
+    function memberLevel(id) { return voiceLevels[id] || 0 }
     function toggleMembers(id) { memberList.hostId = id; memberList.open() }
     function memberOptions(member, host, contextual) {
         selectedMember = member; selectedMemberHost = host; inspectedRequestId = ""
@@ -1968,9 +2026,10 @@ PanelWindow {
                             required property bool ambiguous
                             function focusChannel() {
                                 const flick = scroll.contentItem
-                                const top = channelRow.mapToItem(flick.contentItem, 0, 0).y
+                                const target = groupExpanded ? channelRow : hostToggle
+                                const top = target.mapToItem(flick.contentItem, 0, 0).y
                                 flick.contentY = Math.max(0, Math.min(top - 8, flick.contentHeight - flick.height))
-                                channelRow.forceActiveFocus()
+                                target.forceActiveFocus()
                             }
                             Layout.fillWidth: true; spacing: 2
                             RowLayout {
@@ -1979,6 +2038,7 @@ PanelWindow {
                                 Layout.fillWidth: true; Layout.minimumHeight: 46
                                 Layout.leftMargin: 8; Layout.rightMargin: 2; spacing: 6
                                 ActionButton {
+                                    id: hostToggle
                                     Layout.preferredWidth: 32; padding: 6
                                     objectName: "toggleHost_" + channelEntry.groupId
                                     text: channelEntry.groupLabel; iconOnly: true; flat: true
@@ -2139,7 +2199,7 @@ PanelWindow {
                     RowLayout {
                         Layout.fillWidth: true
                         visible: !root.compactInput && !root.inspectedChannel.private
-                        MemberSummary { hostId: root.inspectedHost; members: root.inspectedChannel.members || []; visible: !!root.inspectedChannel.online }
+                        MemberSummary { hostId: root.inspectedHost; members: root.inspectedChannel.members || []; visible: !!root.inspectedChannel.online && !root.viewingVoice }
                         Label { text: root.accessLabel(root.inspectedChannel.access); visible: !root.inspectedChannel.online; color: Theme.muted }
                         Item { Layout.fillWidth: true }
                         Label {
@@ -2170,6 +2230,7 @@ PanelWindow {
                         network: root.network; animatedAvatars: root.animateAvatars
                         animationTime: root.avatarTime
                         memberLevel: function(id) { return root.inspectedHost === root.activeHost ? root.memberLevel(id) : 0 }
+                        emptyContent: root.viewingVoice && !root.inspectedChannel.private ? voiceRoster : null
                         onMemberRequested: (member, contextual) => root.memberOptions(member, root.inspectedHost, contextual)
                         active: root.visible && conversation.visible
                         readable: active && root.active && !settings.visible
@@ -2185,6 +2246,13 @@ PanelWindow {
             }
         }
     }
+    Component {
+        id: voiceRoster
+        MemberGrid {
+            objectName: "voiceRoster"
+            hostId: root.activeHost; model: root.members; gallery: true
+        }
+    }
     footer: Rectangle {
         visible: !root.mobileKeyboard || root.showChat
         implicitHeight: visible ? controls.implicitHeight + 16 : 0
@@ -2192,6 +2260,44 @@ PanelWindow {
         ColumnLayout {
             id: controls
             anchors.fill: parent; anchors.margins: 8; spacing: 4
+            RowLayout {
+                objectName: "voiceActivity"
+                visible: !!root.current.joined && !root.compactInput
+                Layout.fillWidth: true; spacing: 4
+                ListView {
+                    id: activeSpeakers
+                    objectName: "activeSpeakers"
+                    Layout.fillWidth: true; Layout.minimumWidth: 0
+                    Layout.preferredHeight: 42 + Theme.fontSize(18)
+                    orientation: ListView.Horizontal; clip: true; cacheBuffer: 0
+                    model: root.speakers
+                    ScrollBar.horizontal: ScrollBar {
+                        objectName: "activeSpeakersScrollBar"
+                        policy: activeSpeakers.contentWidth > activeSpeakers.width + 1 ? ScrollBar.AlwaysOn : ScrollBar.AlwaysOff
+                    }
+                    delegate: MemberTile {
+                        required property var modelData
+                        objectName: "speaker_" + modelData.id
+                        member: modelData; hostId: root.activeHost
+                        width: Math.min(132, activeSpeakers.width / Math.min(3, Math.max(1, activeSpeakers.count)))
+                        height: activeSpeakers.height; stacked: true; portraitSize: 32
+                        animate: x + width >= activeSpeakers.contentX && x <= activeSpeakers.contentX + activeSpeakers.width
+                    }
+                    Label {
+                        anchors.verticalCenter: parent.verticalCenter
+                        visible: activeSpeakers.count === 0
+                        text: root.outputMuted ? qsTranslate("VoiceAvatar", "Deafened") : qsTranslate("VoiceAvatar", "Listening")
+                        color: Theme.muted; font.pixelSize: Theme.fontSize(12)
+                    }
+                }
+                ActionButton {
+                    objectName: "voiceMembers"
+                    text: root.members.length.toString(); glyph: "person"; flat: true
+                    Accessible.name: qsTr("Show all %1 members").arg(root.members.length)
+                    ToolTip.text: Accessible.name; ToolTip.visible: hovered; ToolTip.delay: 600
+                    onClicked: root.toggleMembers(root.activeHost)
+                }
+            }
             RowLayout {
                 objectName: "pendingRequest"
                 visible: !root.mobileKeyboard && !root.remote && !!root.incomingRequest.id

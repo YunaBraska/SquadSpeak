@@ -3288,4 +3288,31 @@
             <translation>Ongëlteg gespäichert Astellung: %1</translation>
         </message>
     </context>
+    <context>
+        <name>AppFeedback</name>
+        <message>
+            <source>Hey, you're back.</source>
+            <translation>Hey, do bass de jo erëm.</translation>
+        </message>
+        <message>
+            <source>Ready when you are.</source>
+            <translation>Wa s de wëlls.</translation>
+        </message>
+        <message>
+            <source>Let's talk.</source>
+            <translation>Komm, mir schwätzen.</translation>
+        </message>
+        <message>
+            <source>Catch you later.</source>
+            <translation>Bis méi spéit.</translation>
+        </message>
+        <message>
+            <source>Over and out.</source>
+            <translation>Ech sinn dann ewech.</translation>
+        </message>
+        <message>
+            <source>See you next time.</source>
+            <translation>Bis déi nächste Kéier.</translation>
+        </message>
+    </context>
 </TS>

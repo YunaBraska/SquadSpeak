@@ -3288,4 +3288,31 @@
             <translation>Недапушчальная захаваная налада: %1</translation>
         </message>
     </context>
+    <context>
+        <name>AppFeedback</name>
+        <message>
+            <source>Hey, you're back.</source>
+            <translation>О, зноў тут.</translation>
+        </message>
+        <message>
+            <source>Ready when you are.</source>
+            <translation>Можам пачынаць.</translation>
+        </message>
+        <message>
+            <source>Let's talk.</source>
+            <translation>Давай пагаворым.</translation>
+        </message>
+        <message>
+            <source>Catch you later.</source>
+            <translation>Да сустрэчы.</translation>
+        </message>
+        <message>
+            <source>Over and out.</source>
+            <translation>На сёння ўсё.</translation>
+        </message>
+        <message>
+            <source>See you next time.</source>
+            <translation>Да наступнага разу.</translation>
+        </message>
+    </context>
 </TS>

@@ -3288,4 +3288,31 @@
             <translation>Nevažeća spremljena postavka: %1</translation>
         </message>
     </context>
+    <context>
+        <name>AppFeedback</name>
+        <message>
+            <source>Hey, you're back.</source>
+            <translation>Hej, opet si tu.</translation>
+        </message>
+        <message>
+            <source>Ready when you are.</source>
+            <translation>Možemo kad ti kažeš.</translation>
+        </message>
+        <message>
+            <source>Let's talk.</source>
+            <translation>Hajdemo pričati.</translation>
+        </message>
+        <message>
+            <source>Catch you later.</source>
+            <translation>Vidimo se kasnije.</translation>
+        </message>
+        <message>
+            <source>Over and out.</source>
+            <translation>Odjava.</translation>
+        </message>
+        <message>
+            <source>See you next time.</source>
+            <translation>Do sljedećeg puta.</translation>
+        </message>
+    </context>
 </TS>

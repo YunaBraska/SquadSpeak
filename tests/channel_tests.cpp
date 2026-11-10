@@ -3644,6 +3644,40 @@ private slots:
         QVERIFY(bannedHost.channel.requests().isEmpty());
     }
 
+    void accessDecisionsNotifyBothSides_data() {
+        QTest::addColumn<bool>("allow");
+        QTest::addColumn<bool>("control");
+        QTest::newRow("access-accepted") << true << false;
+        QTest::newRow("access-rejected") << false << false;
+        QTest::newRow("control-accepted") << true << true;
+        QTest::newRow("control-rejected") << false << true;
+    }
+    void accessDecisionsNotifyBothSides() {
+        QFETCH(bool, allow);
+        QFETCH(bool, control);
+        QTemporaryDir dir;
+        Device host(dir.filePath("host"), "Host"), client(dir.filePath("client"), "Client");
+        QVERIFY(host.channel.listen(QHostAddress::LocalHost));
+        if (control) QVERIFY(host.channel.decide(client.channel.ownId(), true));
+        QSignalSpy hostEvents(&host.channel, &LocalChannel::channelEvent);
+        QSignalSpy clientEvents(&client.channel, &LocalChannel::channelEvent);
+        QVERIFY(control ? client.channel.pairAddress("127.0.0.1:" + QString::number(host.channel.port())) : client.join(host.channel));
+        QTRY_COMPARE(control ? host.channel.controlRequests().size() : host.channel.requests().size(), 1);
+        QTRY_COMPARE(hostEvents.size(), 1);
+        QCOMPARE(hostEvents.first().first().toString(), QString("request"));
+        QVERIFY(hostEvents.first().at(1).toString().contains("Client"));
+        QVERIFY(control ? host.channel.decideControl(client.channel.ownId(), allow) : host.channel.decide(client.channel.ownId(), allow));
+        const auto kind = allow ? QString("accepted") : QString("rejected");
+        QTRY_COMPARE(hostEvents.size(), 2);
+        QCOMPARE(hostEvents.last().first().toString(), kind);
+        QTRY_VERIFY(std::any_of(clientEvents.cbegin(), clientEvents.cend(), [&](const auto& event) {
+            return event.first().toString() == kind && !event.at(1).toString().isEmpty();
+        }));
+        const auto count = hostEvents.size();
+        if (control && allow) QVERIFY(!host.channel.decideControl(client.channel.ownId(), true));
+        else QVERIFY(control ? host.channel.decideControl(client.channel.ownId(), false) : host.channel.decide(client.channel.ownId(), allow));
+        QCOMPARE(hostEvents.size(), count); // Reapplying a stored decision is silent.
+    }
     void accessRequestsExposeAuthenticatedPeerServiceMetadata() {
         QTemporaryDir dir;
         Device host(dir.filePath("host"), "Host");
@@ -3759,6 +3793,7 @@ private slots:
         QCOMPARE(events.size(), 4);
         QCOMPARE(events.last().first().toString(), QString("memberLeave"));
         QVERIFY(witness.channel.messages().isEmpty());
+        QTRY_VERIFY(!witness.channel.historyLoading());
         QVERIFY(witness.channel.refreshChat());
         QTRY_VERIFY(!witness.channel.historyLoading());
         QCOMPARE(witness.channel.notices().size(), 5);
@@ -5998,49 +6033,54 @@ private slots:
         }());
         QCOMPARE(notifications.size(), 3);
     }
-    void botNotificationsContainOnlyFreshSystemMessagesInTheVoiceChannel() {
+    void notificationTextContainsOnlyFreshEventsInTheVoiceChannel() {
         QTemporaryDir dir;
         Device host(dir.filePath("host"), "Host"), reader(dir.filePath("reader"), "Reader"), member(dir.filePath("member"), "Member");
         QVERIFY(host.channel.listen(QHostAddress::LocalHost));
         QVERIFY(host.channel.decide(reader.channel.ownId(), true));
         QVERIFY(host.channel.decide(member.channel.ownId(), true));
         QVERIFY(host.channel.sendSystemMessage("Historical announcement"));
-        QSignalSpy messages(&reader.channel, &LocalChannel::botNotification);
+        QSignalSpy events(&reader.channel, &LocalChannel::channelEvent);
+        QSignalSpy chats(&reader.channel, &LocalChannel::chatNotification);
         QVERIFY(reader.join(host.channel));
         QTRY_VERIFY(reader.channel.chatReady() && !reader.channel.historyLoading() && !reader.channel.messages().isEmpty());
         QVERIFY(reader.channel.refreshChat()); QTRY_VERIFY(!reader.channel.historyLoading());
-        // Our own join can arrive live or with the initial page. Neither page
-        // may replay the earlier announcement. The refresh is a server fence.
-        for (const auto& delivery : messages) {
-            const auto event = delivery.at(0).toMap().value("event").toMap();
-            QCOMPARE(event.value("kind").toString(), QString("joined"));
-            QCOMPARE(event.value("member").toString(), reader.channel.ownId());
-        }
-        int count = int(messages.size());
-        const auto check = [&](const QString& kind) {
+        QCOMPARE(events.size(), 1);
+        QCOMPARE(events.first().at(0).toString(), QString("join"));
+        QCOMPARE(events.first().at(1).toString(), QString("Reader joined."));
+        QVERIFY(chats.isEmpty());
+        int count = 1;
+        const auto check = [&](const QString& kind, const QString& text) {
             ++count;
-            QTRY_COMPARE(messages.size(), count);
-            QCOMPARE(messages.last().at(0).toMap().value("event").toMap().value("kind").toString(), kind);
+            QTRY_COMPARE(events.size(), count);
+            QCOMPARE(events.last().at(0).toString(), kind);
+            QCOMPARE(events.last().at(1).toString(), text);
         };
-        QVERIFY(member.join(host.channel)); check("joined");
+        QVERIFY(member.join(host.channel)); check("memberJoin", "Member joined.");
         QTRY_VERIFY(member.channel.chatReady() && !member.channel.historyLoading());
         QVERIFY(member.channel.sendChat("A human message")); QTRY_VERIFY(!member.channel.chatPending());
-        QCOMPARE(messages.size(), count);
-        QVERIFY(member.channel.leave()); check("left");
-        QVERIFY(member.join(host.channel)); check("joined");
+        QTRY_COMPARE(chats.size(), 1);
+        QVERIFY(chats.first().at(1).toMap().value("event").toMap().isEmpty());
+        QCOMPARE(events.size(), count);
+        QVERIFY(member.channel.leave()); check("memberLeave", "Member left.");
+        QVERIFY(member.join(host.channel)); check("memberJoin", "Member joined.");
         QTRY_VERIFY(member.channel.chatReady() && !member.channel.historyLoading());
-        QVERIFY(host.channel.kick(member.channel.ownId())); check("kicked");
+        QVERIFY(host.channel.kick(member.channel.ownId())); check("kick", "Member was kicked.");
         QTRY_VERIFY(!member.channel.joined());
-        QVERIFY(member.join(host.channel)); check("joined");
+        QVERIFY(member.join(host.channel)); check("memberJoin", "Member joined.");
         QTRY_VERIFY(member.channel.chatReady() && !member.channel.historyLoading());
-        QVERIFY(host.channel.setBlocked(member.channel.ownId(), true)); check("banned");
-        QVERIFY(host.channel.sendSystemMessage("A new announcement")); check("announcement");
+        QVERIFY(host.channel.setBlocked(member.channel.ownId(), true)); check("ban", "Member was banned from the channel.");
+        QVERIFY(host.channel.sendSystemMessage("A new announcement"));
+        QTRY_COMPARE(chats.size(), 2);
+        QCOMPARE(chats.last().at(1).toMap().value("event").toMap().value("kind").toString(), QString("announcement"));
         QVERIFY(reader.channel.refreshChat()); QTRY_VERIFY(!reader.channel.historyLoading());
-        QCOMPARE(messages.size(), count);
-        QVERIFY(reader.channel.leave());
+        QCOMPARE(events.size(), count);
+        QCOMPARE(chats.size(), 2);
+        QVERIFY(reader.channel.leave()); check("leave", "Reader left.");
         QVERIFY(host.channel.sendSystemMessage("After leaving"));
         QVERIFY(reader.channel.refreshChat()); QTRY_VERIFY(!reader.channel.historyLoading());
-        QCOMPARE(messages.size(), count);
+        QCOMPARE(events.size(), count);
+        QCOMPARE(chats.size(), 2);
     }
 
     void unreadTracksLiveMessagesAcrossHistoryExpiryAndRemoteReading() {

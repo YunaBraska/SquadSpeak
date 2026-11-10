@@ -3288,4 +3288,31 @@
             <translation>Definição guardada inválida: %1</translation>
         </message>
     </context>
+    <context>
+        <name>AppFeedback</name>
+        <message>
+            <source>Hey, you're back.</source>
+            <translation>Ei, estás de volta.</translation>
+        </message>
+        <message>
+            <source>Ready when you are.</source>
+            <translation>Quando quiseres.</translation>
+        </message>
+        <message>
+            <source>Let's talk.</source>
+            <translation>Vamos conversar.</translation>
+        </message>
+        <message>
+            <source>Catch you later.</source>
+            <translation>Até logo.</translation>
+        </message>
+        <message>
+            <source>Over and out.</source>
+            <translation>Câmbio e desligo.</translation>
+        </message>
+        <message>
+            <source>See you next time.</source>
+            <translation>Até à próxima.</translation>
+        </message>
+    </context>
 </TS>

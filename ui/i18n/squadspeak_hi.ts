@@ -3288,4 +3288,31 @@
             <translation>सहेजी गई सेटिंग अमान्य है: %1</translation>
         </message>
     </context>
+    <context>
+        <name>AppFeedback</name>
+        <message>
+            <source>Hey, you're back.</source>
+            <translation>अरे, फिर आ गए।</translation>
+        </message>
+        <message>
+            <source>Ready when you are.</source>
+            <translation>जब चाहो शुरू करें।</translation>
+        </message>
+        <message>
+            <source>Let's talk.</source>
+            <translation>चलो बातें करें।</translation>
+        </message>
+        <message>
+            <source>Catch you later.</source>
+            <translation>बाद में मिलते हैं।</translation>
+        </message>
+        <message>
+            <source>Over and out.</source>
+            <translation>अब विदा।</translation>
+        </message>
+        <message>
+            <source>See you next time.</source>
+            <translation>अगली बार मिलते हैं।</translation>
+        </message>
+    </context>
 </TS>

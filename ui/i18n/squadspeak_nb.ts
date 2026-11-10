@@ -3288,4 +3288,31 @@
             <translation>Ugyldig lagret innstilling: %1</translation>
         </message>
     </context>
+    <context>
+        <name>AppFeedback</name>
+        <message>
+            <source>Hey, you're back.</source>
+            <translation>Hei, du er tilbake.</translation>
+        </message>
+        <message>
+            <source>Ready when you are.</source>
+            <translation>Klar når du er.</translation>
+        </message>
+        <message>
+            <source>Let's talk.</source>
+            <translation>La oss prate.</translation>
+        </message>
+        <message>
+            <source>Catch you later.</source>
+            <translation>Vi ses senere.</translation>
+        </message>
+        <message>
+            <source>Over and out.</source>
+            <translation>Over og ut.</translation>
+        </message>
+        <message>
+            <source>See you next time.</source>
+            <translation>Vi ses neste gang.</translation>
+        </message>
+    </context>
 </TS>

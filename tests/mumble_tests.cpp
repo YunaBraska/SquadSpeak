@@ -306,6 +306,7 @@ private slots:
         QCOMPARE(eventsA.count(), 2);
         QCOMPARE(eventsA.at(0).at(0).toString(), QString("join"));
         QCOMPARE(eventsA.at(1).at(0).toString(), QString("memberJoin"));
+        QCOMPARE(eventsA.at(1).at(1).toString(), QString("Presence B joined."));
         QVERIFY(b.channel.messages().isEmpty());
         QCOMPARE(b.channel.notices().size(), 1);
         QVERIFY(a.channel.messages().isEmpty());
@@ -343,6 +344,7 @@ private slots:
         QTRY_COMPARE_WITH_TIMEOUT(b.channel.joinedHostId(), studio, 10000);
         QCOMPARE(eventsB.count(), 3);
         QCOMPARE(eventsB.at(1).at(0).toString(), QString("leave"));
+        QCOMPARE(eventsB.at(1).at(1).toString(), QString("Presence B left."));
         QCOMPARE(eventsB.at(2).at(0).toString(), QString("join"));
         QTRY_COMPARE_WITH_TIMEOUT(eventsA.count(), 3, 5000);
         QCOMPARE(eventsA.at(2).at(0).toString(), QString("memberLeave"));

@@ -3288,4 +3288,31 @@
             <translation>Неприпустиме збережене налаштування: %1</translation>
         </message>
     </context>
+    <context>
+        <name>AppFeedback</name>
+        <message>
+            <source>Hey, you're back.</source>
+            <translation>О, ти знову тут.</translation>
+        </message>
+        <message>
+            <source>Ready when you are.</source>
+            <translation>Почнемо, коли захочеш.</translation>
+        </message>
+        <message>
+            <source>Let's talk.</source>
+            <translation>Давай побалакаємо.</translation>
+        </message>
+        <message>
+            <source>Catch you later.</source>
+            <translation>До зустрічі.</translation>
+        </message>
+        <message>
+            <source>Over and out.</source>
+            <translation>Кінець зв'язку.</translation>
+        </message>
+        <message>
+            <source>See you next time.</source>
+            <translation>До наступного разу.</translation>
+        </message>
+    </context>
 </TS>

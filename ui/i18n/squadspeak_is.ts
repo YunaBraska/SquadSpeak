@@ -3288,4 +3288,31 @@
             <translation>Ógild vistuð stilling: %1</translation>
         </message>
     </context>
+    <context>
+        <name>AppFeedback</name>
+        <message>
+            <source>Hey, you're back.</source>
+            <translation>Hæ, gaman að sjá þig.</translation>
+        </message>
+        <message>
+            <source>Ready when you are.</source>
+            <translation>Byrjum þegar þú vilt.</translation>
+        </message>
+        <message>
+            <source>Let's talk.</source>
+            <translation>Spjöllum.</translation>
+        </message>
+        <message>
+            <source>Catch you later.</source>
+            <translation>Sjáumst síðar.</translation>
+        </message>
+        <message>
+            <source>Over and out.</source>
+            <translation>Yfir og út.</translation>
+        </message>
+        <message>
+            <source>See you next time.</source>
+            <translation>Sjáumst næst.</translation>
+        </message>
+    </context>
 </TS>

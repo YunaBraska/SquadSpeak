@@ -4,6 +4,7 @@
 #include "chat_content.hpp"
 
 #include <QCryptographicHash>
+#include <QCoreApplication>
 #include <QFile>
 #include <QFileInfo>
 #include <QDir>
@@ -550,20 +551,24 @@ void LocalChannel::observeMembers(Client& c, const QVariantList& members, bool a
             const auto person = member.toMap();
             after.insert(person.value("providerClient", person.value("id")).toString(), person);
         }
-        QSet<QString> sounds;
+        QMap<QString, QStringList> sounds;
         for (auto it = after.cbegin(); it != after.cend(); ++it) if (!before.contains(it.key())) {
             const auto id = it->value("id").toString();
             if (id == ownId()) continue;
-            addNotice(c, "joined", id, it->value("name").toString()); sounds.insert("memberJoin");
+            addNotice(c, "joined", id, it->value("name").toString()); sounds["memberJoin"].append(it->value("name").toString());
         }
         for (auto it = before.cbegin(); it != before.cend(); ++it) if (!after.contains(it.key())) {
             const auto id = it->value("id").toString();
             if (id == ownId()) continue;
             const auto reason = departures.value(id).toString();
-            if (reason == "kicked" || reason == "banned") sounds.insert(reason == "kicked" ? "kick" : "ban");
-            else { addNotice(c, "left", id, it->value("name").toString()); sounds.insert("memberLeave"); }
+            if (reason == "kicked" || reason == "banned") sounds[reason == "kicked" ? "kick" : "ban"].append(it->value("name").toString());
+            else { addNotice(c, "left", id, it->value("name").toString()); sounds["memberLeave"].append(it->value("name").toString()); }
         }
-        if (c.voice && c.id == joinedHostId_) for (const auto& sound : sounds) emit channelEvent(sound);
+        if (c.voice && c.id == joinedHostId_) for (auto it = sounds.cbegin(); it != sounds.cend(); ++it) {
+            const auto kind = it.key() == "memberJoin" ? "joined" : it.key() == "memberLeave" ? "left"
+                : it.key() == "kick" ? "kicked" : "banned";
+            emit channelEvent(it.key(), ChatContent::membershipText(kind, it.value().join(", ")));
+        }
     }
     c.members = members;
 }
@@ -1938,7 +1943,7 @@ void LocalChannel::hostMessage(QSslSocket* socket, const QJsonObject& message) {
         peers_[socket].pending = true;
         writeMessage(socket, {{"type", "control"}, {"result", "pending"}});
         emit requestsChanged();
-        emit channelEvent("request"); return;
+        emit channelEvent("request", QCoreApplication::translate("Channels", "Remote control") + ": " + peers_.value(socket).name); return;
     }
     if (peers_[socket].controller) {
         if (type == "controlPing" && peers_[socket].pending) { writeMessage(socket, {{"type", "controlWait"}}); return; }
@@ -2216,7 +2221,7 @@ void LocalChannel::admitPeer(QSslSocket* socket) {
     if (!peers_.contains(socket)) return;
     peers_[socket].pending = true;
     emit requestsChanged();
-    emit channelEvent("request");
+    emit channelEvent("request", QCoreApplication::translate("Channels", "Join request") + ": " + peers_.value(socket).name);
 }
 
 bool LocalChannel::decide(const QString& id, bool allow) {
@@ -2226,7 +2231,11 @@ bool LocalChannel::decide(const QString& id, bool allow) {
     auto approvals = approved_;
     if (allow) approvals.insert(id); else approvals.remove(id);
     if (!persist(approvals, attempts_, requestsAllowed_, endpointPins_, control_, security_)) return false;
+    QString pendingName;
+    for (const auto& peer : peers_) if (peer.id == id && peer.pending && !peer.controller) { pendingName = peer.name; break; }
     applyDecision(id, allow);
+    if (!pendingName.isEmpty()) emit channelEvent(allow ? "accepted" : "rejected",
+        QCoreApplication::translate("Channels", allow ? "Access approved" : "Rejected") + ": " + pendingName);
     return true;
 }
 
@@ -2699,7 +2708,7 @@ void LocalChannel::connectClient(Client& c) {
 void LocalChannel::closeClient(Client& c) {
     if (c.accepted && c.voice && c.id == joinedHostId_) {
         addNotice(c, "left", ownId(), session_.userName());
-        emit channelEvent("leave");
+        emit channelEvent("leave", ChatContent::membershipText("left", session_.userName()));
     }
     c.lastPresence = {}; c.rosterBuffer.clear(); c.rosterId.clear(); c.rosterExpected = 0;
     if (c.external()) { c.accepted = false; c.voice = false; c.reconnectWanted = false; return; }
@@ -2729,7 +2738,7 @@ bool LocalChannel::leave() {
 bool LocalChannel::leaveChannel(bool pauseAutoJoin) {
     if (joined()) {
         if (const auto c = clients_.value(joinedHostId_)) addNotice(*c, "left", ownId(), session_.userName());
-        emit channelEvent("leave");
+        emit channelEvent("leave", ChatContent::membershipText("left", session_.userName()));
     }
     if (pauseAutoJoin && !joinedHostId_.isEmpty()) pausedAutoJoin_.insert(joinedHostId_);
     automaticAttempt_ = false;
@@ -2808,6 +2817,7 @@ void LocalChannel::clientMessage(Client& c, const QJsonObject& message) {
         c.capabilitiesAdvertised = message.contains("capabilities");
         if (!parseCapabilities(message, &c.capabilities)) { if (c.socket) c.socket->abort(); return; }
         const auto result = message.value("result").toString();
+        const auto previousAccess = c.access;
         c.access = result;
         emit hostsChanged();
         c.passwordAutoRetry = false;
@@ -2829,9 +2839,12 @@ void LocalChannel::clientMessage(Client& c, const QJsonObject& message) {
         c.passwordRequired = false;
         const bool wasJoined = c.accepted;
         c.accepted = result == "accepted";
+        if ((previousAccess == "pending" && result == "accepted") || (result == "rejected" && previousAccess != "rejected"))
+            emit channelEvent(result, QCoreApplication::translate("Channels", result == "accepted" ? "Access approved" : "Rejected")
+                + ": " + c.name);
         if (c.voice && c.accepted && !wasJoined) {
             addNotice(c, "joined", ownId(), session_.userName());
-            emit channelEvent("join");
+            emit channelEvent("join", ChatContent::membershipText("joined", session_.userName()));
         }
         c.reconnectWanted = c.accepted;
         if (!c.accepted) {
@@ -2867,7 +2880,8 @@ void LocalChannel::clientMessage(Client& c, const QJsonObject& message) {
         else if (result == "pending") setClientStatus(c, tr("Waiting for host approval."));
         else if (result == "busy") setClientStatus(c, tr("The host is busy. Try again shortly."), false);
         else if (result == "kicked" || result == "blocked") {
-            if (c.voice && wasJoined) emit channelEvent(result == "kicked" ? "kick" : "ban");
+            if (c.voice && wasJoined) emit channelEvent(result == "kicked" ? "kick" : "ban",
+                ChatContent::membershipText(result == "kicked" ? "kicked" : "banned", session_.userName()));
             pausedAutoJoin_.insert(c.id);
             if (result == "blocked") {
                 auto next = savedChannels_; next.remove(c.id);

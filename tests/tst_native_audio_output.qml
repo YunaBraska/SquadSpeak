@@ -7,6 +7,75 @@ TestCase {
     name: "NativeAudioOutput"
     when: windowShown
     Channels { id: view; visible: true }
+    SignalSpy { id: progress; target: audio; signalName: "notificationProgress" }
+    SignalSpy { id: stopped; target: fixtures; signalName: "feedbackStopped" }
+    Connections {
+        target: audio
+        function onNotificationProgress(kind, phase, text) {
+            console.info("Notification", kind, phase, "native output", fixtures.nativeAudioOutputRunning())
+        }
+    }
+
+    function test_startJoinLeaveAndQuitSpeakAfterTheirCue() {
+        verify(audio.outputAvailable && audio.speechAvailable)
+        const volume = audio.notificationVolume
+        const readBot = audio.readBotMessages
+        const events = session.eventSounds
+        const muted = session.muted
+        const deafened = session.deafened
+        const language = session.language
+        try {
+            verify(session.setLanguage("en"))
+            verify(session.setMuted(true)); verify(session.setDeafened(true))
+            verify(audio.setNotificationVolume(0.01))
+            verify(audio.setReadBotMessages(true))
+            verify(audio.botVoice.id !== undefined)
+            verify(fixtures.bindAudioToChannel())
+            verify(fixtures.bindFeedback())
+            progress.clear(); stopped.clear()
+            verify(session.setEventSounds(false))
+            verify(!fixtures.startFeedback())
+            compare(progress.count, 0)
+            verify(session.setEventSounds(true))
+            verify(fixtures.startFeedback())
+            verify(fixtures.startHost())
+            verify(channel.joinSaved(channel.ownId))
+            tryCompare(channel, "joined", true)
+            verify(channel.leave())
+            tryCompare(channel, "joined", false)
+            tryCompare(progress, "count", 9, 15000)
+            const kinds = ["start", "join", "leave"]
+            for (let i = 0; i < kinds.length; ++i) {
+                compare(progress.signalArguments[i * 3][0], kinds[i])
+                compare(progress.signalArguments[i * 3][1], "tone")
+                compare(progress.signalArguments[i * 3 + 1][1], "speech")
+                compare(progress.signalArguments[i * 3 + 2][1], "finished")
+                verify(progress.signalArguments[i * 3 + 1][2].length > 0)
+            }
+            verify(["Hey, you're back.", "Ready when you are.", "Let's talk."].includes(
+                progress.signalArguments[1][2]), "Startup uses a short greeting")
+            verify(session.setLanguage("de"))
+            fixtures.shutdownFeedback()
+            tryCompare(stopped, "count", 1, 7000)
+            compare(progress.count, 12, "Quit completes its cue and speech before shutdown")
+            compare(progress.signalArguments[9][0], "quit")
+            compare(progress.signalArguments[10][1], "speech")
+            compare(progress.signalArguments[11][1], "finished")
+            verify(["Bis später.", "Ich bin dann weg.", "Bis zum nächsten Mal."].includes(
+                progress.signalArguments[10][2]), "Goodbye follows the current app language")
+            fixtures.shutdownFeedback()
+            compare(stopped.count, 1)
+            verify(!audio.running && !channel.joined)
+            compare(audio.outputStatus, "")
+        } finally {
+            fixtures.unbindFeedback()
+            fixtures.unbindAudioFromChannel()
+            channel.leave(); channel.stopHost()
+            audio.setReadBotMessages(readBot); audio.setNotificationVolume(volume)
+            session.setEventSounds(events); session.setMuted(muted); session.setDeafened(deafened)
+            session.setLanguage(language)
+        }
+    }
 
     function test_appSoundsAndBotSpeechWhileVoiceIsMuted() {
         verify(audio.outputAvailable)
@@ -28,16 +97,26 @@ TestCase {
                 tryVerify(function() { return fixtures.nativeAudioOutputRunning() === 0 }, 1000)
             }
             verify(audio.setReadBotMessages(true))
+            progress.clear()
             verify(fixtures.queueBotMessage("Hello."))
             tryVerify(function() { return fixtures.nativeAudioOutputRunning() === 1 }, 1000,
                 "Bot speech must open output without unmuting voice")
             verify(!fixtures.queueTestSpeechFrame(), "Remote speech remains rejected during the bot announcement")
-            tryVerify(function() { return fixtures.nativeAudioOutputRunning() === 0 }, 10000,
+            tryVerify(function() { return progress.count === 3 && fixtures.nativeAudioOutputRunning() === 0 }, 10000,
                 "Bot speech must drain and release output without leaving a silent stream open")
+            compare(progress.signalArguments[1][1], "speech")
+            compare(progress.signalArguments[2][1], "finished")
             compare(audio.outputStatus, "")
             verify(session.muted && session.deafened)
             verify(!audio.running, "Notifications must not activate the microphone")
+            progress.clear()
+            verify(fixtures.queueBotMessage("This announcement will be cancelled while it is being read."))
+            tryCompare(progress, "count", 2, 1000)
+            compare(progress.signalArguments[1][1], "speech")
+            tryVerify(function() { return fixtures.nativeAudioOutputRunning() === 1 }, 1000)
             verify(audio.setNotificationVolume(0))
+            tryVerify(function() { return fixtures.nativeAudioOutputRunning() === 0 }, 1000,
+                "Cancelling an announcement must close output without draining cancelled speech")
             verify(!fixtures.playEvent("join", true))
             verify(!fixtures.queueBotMessage("Hello."))
             compare(fixtures.nativeAudioOutputRunning(), 0)

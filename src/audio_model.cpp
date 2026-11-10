@@ -58,7 +58,9 @@ AudioModel::AudioModel(const QString& settingsFile, QObject* parent) try
     playbackTimer_.setTimerType(Qt::PreciseTimer);
     connect(&playbackTimer_, &QTimer::timeout, this, [this] {
         sendCapture();
+        advanceNotifications();
         playVoice();
+        if (!voiceActive_ && !notificationsActive() && !voiceSink_) playbackTimer_.stop();
         if (clock_.elapsed() - activityPublishedAt_ >= 50) {
             activityPublishedAt_ = clock_.elapsed(); emit activityChanged();
         }
@@ -133,10 +135,11 @@ void AudioModel::refreshDevices() {
         outputMonitor_.stop();
         outputReferenceAt_ = -1; deviceReference_ = false;
         echo_.reset();
+        if (sink_) sink_->reset();
         sink_.reset();
         tone_.close();
         testingOutput_ = false;
-        voiceSink_.reset(); playback_ = nullptr;
+        closePlayback();
         mixer_.resetPlayback();
         participantVolumes_.clear();
         cancelNotifications();
@@ -321,14 +324,14 @@ bool AudioModel::setDeafened(bool deafened) {
     echo_.reset();
     if (deafened_) {
         language_.suspend(true);
+        if (sink_) sink_->reset();
         sink_.reset();
         tone_.close();
         if (testingOutput_) {
             testingOutput_ = false;
             emit runningChanged();
         }
-        voiceSink_.reset();
-        playback_ = nullptr;
+        closePlayback();
         mixer_.resetPlayback();
         beginPlayback();
     } else if (voiceActive_) {
@@ -361,15 +364,16 @@ bool AudioModel::updateEcho(std::optional<double> strength) {
     } catch (const std::exception& error) { setStatus(tr(error.what())); return false; }
 }
 
-bool AudioModel::playEvent(const QString& kind) {
+bool AudioModel::playEvent(const QString& kind, const QString& text) {
     if (!eventAudioEnabled()) return false;
     QString sound;
-    if (kind == "join" || kind == "memberJoin") sound = "join";
-    else if (kind == "leave" || kind == "memberLeave") sound = "leave";
+    if (kind == "join" || kind == "memberJoin" || kind == "start" || kind == "accepted") sound = "join";
+    else if (kind == "leave" || kind == "memberLeave" || kind == "quit") sound = "leave";
+    else if (kind == "rejected") sound = "kick";
     else if (kind == "request") sound = "message";
     else if (kind == "kick" || kind == "ban" || kind == "message" || kind == "announcement") sound = kind;
     else return false;
-    return playSound(sound, notificationVolume_);
+    return playSound(sound, notificationVolume_, kind, text);
 }
 
 bool AudioModel::previewOutput(double volume, bool sessionAudio) {
@@ -377,14 +381,69 @@ bool AudioModel::previewOutput(double volume, bool sessionAudio) {
     return playSound("message", volume);
 }
 
-bool AudioModel::playSound(const QString& sound, double volume) {
-    eventSound_.stop();
+bool AudioModel::playSound(const QString& sound, double volume, const QString& kind, const QString& text) {
     if (!outputReady() || volume == 0) return false;
-    eventSound_.setAudioDevice(output_);
-    eventSound_.setVolume(volume);
-    eventSound_.setSource(QUrl("qrc:/qt/qml/SquadSpeak/ui/sounds/" + sound + ".wav"));
-    eventSound_.play();
+    // One bounded queue owns both parts. A later cue never cuts off the
+    // current cue or its speech. Slider previews replace only pending previews.
+    if (kind.isEmpty()) for (auto it = notifications_.begin(); it != notifications_.end();) {
+        if (it->kind.isEmpty() && (it != notifications_.begin() || notificationPhase_ == NotificationPhase::Idle)) it = notifications_.erase(it);
+        else ++it;
+    }
+    if (notifications_.size() >= 64) return false;
+    auto plain = botSpeechReady() && !testActive() ? text.simplified() : QString{};
+    if (plain.size() > 400) {
+        plain.truncate(397);
+        if (plain.back().isHighSurrogate()) plain.chop(1);
+        plain += "...";
+    }
+    notifications_.push_back({kind, sound, plain, volume});
+    playbackTimer_.start();
+    advanceNotifications();
     return true;
+}
+
+void AudioModel::advanceNotifications() {
+    if (notifications_.empty()) return;
+    const auto notice = notifications_.front();
+    if (notificationPhase_ == NotificationPhase::Idle) {
+        notificationPhase_ = NotificationPhase::Tone;
+        notificationStartedAt_ = clock_.elapsed();
+        eventSound_.setAudioDevice(output_);
+        eventSound_.setVolume(notice.volume);
+        eventSound_.setSource(QUrl("qrc:/qt/qml/SquadSpeak/ui/sounds/" + notice.sound + ".wav"));
+        eventSound_.play();
+        emit notificationProgress(notice.kind, "tone", notice.text);
+        return;
+    }
+    if (notificationPhase_ == NotificationPhase::Tone) {
+        if (eventSound_.status() == QSoundEffect::Error || clock_.elapsed() - notificationStartedAt_ > 5000) {
+            eventSound_.stop();
+            setStatus(tr("The test tone could not be played."), false);
+        } else if (eventSound_.isPlaying() || eventSound_.status() == QSoundEffect::Loading) return;
+        if (!notice.text.isEmpty() && botSpeechReady() && !testActive()) {
+            beginPlayback();
+            if (notifications_.empty()) return;
+            if (playback_ && speech_.start(notice.text, playbackFormat_.sampleRate(), botVoice_.value("id").toString())) {
+                notificationPhase_ = NotificationPhase::Speech;
+                emit notificationProgress(notice.kind, "speech", notice.text);
+                return;
+            }
+            setStatus(tr("Speech output is unavailable."), false);
+        }
+    } else if (notificationPhase_ == NotificationPhase::Speech) {
+        if (speech_.active()) return;
+        if (speech_.failed()) setStatus(tr("Speech output is unavailable."), false);
+        speech_.stop();
+        notificationPlaybackEnd_ = voiceSink_ ? voiceSink_->processedUSecs() + playbackFormat_.durationForBytes(
+            voiceSink_->bufferSize() - voiceSink_->bytesFree()) : 0;
+        notificationPhase_ = NotificationPhase::Drain;
+    }
+    if (notificationPhase_ == NotificationPhase::Drain && voiceSink_
+        && voiceSink_->state() != QtAudio::IdleState && voiceSink_->processedUSecs() < notificationPlaybackEnd_) return;
+    notifications_.pop_front();
+    notificationPhase_ = NotificationPhase::Idle;
+    emit notificationProgress(notice.kind, "finished", notice.text);
+    if (notifications_.empty()) emit notificationsFinished();
 }
 
 bool AudioModel::setOutputVolume(double value) {
@@ -411,13 +470,17 @@ bool AudioModel::start() {
 
 void AudioModel::cancelNotifications() {
     eventSound_.stop();
+    const bool pending = notificationsActive();
+    notifications_.clear();
+    notificationPhase_ = NotificationPhase::Idle;
     cancelBotMessages();
+    if (pending) emit notificationsFinished();
 }
 
 void AudioModel::cancelBotMessages() {
     speech_.stop();
-    announcements_.clear();
-    if (deafened_) { voiceSink_.reset(); playback_ = nullptr; }
+    for (auto& notice : notifications_) notice.text.clear();
+    if (deafened_ || !voiceActive_) { closePlayback(); }
 }
 
 bool AudioModel::setNotificationVolume(double value) {
@@ -425,6 +488,7 @@ bool AudioModel::setNotificationVolume(double value) {
     try {
         profiles_.saveNotificationVolume(output_.id(), value);
         notificationVolume_ = value;
+        for (auto& notice : notifications_) if (!notice.kind.isEmpty()) notice.volume = value;
         eventSound_.setVolume(value);
         if (value == 0) cancelNotifications();
         emit profileChanged();
@@ -438,7 +502,7 @@ bool AudioModel::setReadBotMessages(bool enabled) {
         profiles_.saveReadBotMessages(output_.id(), enabled);
         readBotMessages_ = enabled;
         if (enabled) language_.refreshVoices();
-        cancelNotifications();
+        cancelBotMessages();
         emit profileChanged();
         return true;
     } catch (const std::exception& error) { setStatus(tr(error.what()), false); return false; }
@@ -469,20 +533,9 @@ bool AudioModel::setBotVoice(const QString& id) {
 }
 
 bool AudioModel::readBotMessage(const QString& text) {
-    if (!botSpeechReady() || !eventAudioEnabled() || !voiceActive_ || testActive()
+    if (!botSpeechReady() || !eventAudioEnabled() || testActive()
             || text.trimmed().isEmpty()) return false;
-    // Bound both announcement bursts and long free-form messages. Expired queued
-    // announcements are discarded during playback, never replayed after unmute.
-    if (announcements_.size() == 3) announcements_.pop_front();
-    auto plain = text.simplified();
-    if (plain.size() > 400) {
-        plain.truncate(397);
-        if (plain.back().isHighSurrogate()) plain.chop(1);
-        plain += "...";
-    }
-    announcements_.emplace_back(std::move(plain), clock_.elapsed());
-    beginPlayback();
-    return playback_ != nullptr;
+    return playEvent("announcement", text);
 }
 
 bool AudioModel::ensureCapture() {
@@ -670,6 +723,7 @@ bool AudioModel::openMicrophoneSettings() {
 bool AudioModel::stop() {
     wantsCapture_ = false;
     testingOutput_ = false;
+    if (sink_) sink_->reset();
     sink_.reset(); tone_.close();
     emit runningChanged();
     return ensureCapture();
@@ -702,6 +756,7 @@ void AudioModel::stopCapture() {
 bool AudioModel::testOutput() {
     if (deafened_ || output_.isNull()) return false;
     cancelNotifications();
+    if (sink_) sink_->reset();
     sink_.reset();
     tone_.close();
     const auto format = output_.preferredFormat();
@@ -759,12 +814,11 @@ bool AudioModel::setVoiceState(bool joined, bool transmit, bool pushToTalk, int 
     mixer_.resetCapture();
     if (changedChannelState) {
         language_.suspend(!joined || deafened_ || testActive());
-        cancelBotMessages();
         echo_.reset();
         mixer_.resetPlayback();
-        voiceSink_.reset(); playback_ = nullptr;
+        if (!notificationsActive()) { closePlayback(); }
         if (joined) { beginPlayback(); playbackTimer_.start(); }
-        else playbackTimer_.stop();
+        else if (!notificationsActive()) playbackTimer_.stop();
     }
     emit activityChanged();
     return ensureCapture();
@@ -913,8 +967,7 @@ bool AudioModel::setAutomaticVolume(bool value) {
 }
 
 void AudioModel::beginPlayback() {
-    if (!voiceActive_ || voiceSink_ || output_.isNull()
-        || (deafened_ && announcements_.empty() && !speech_.active())) return;
+    if (voiceSink_ || output_.isNull() || ((!voiceActive_ || deafened_) && !notificationsActive())) return;
     playbackFormat_ = captureFormat(output_);
     if (!playbackFormat_.isValid()) { outputFailed_ = true; setStatus(tr("No usable format for voice playback."), false); return; }
     voiceSink_ = std::make_unique<QAudioSink>(output_, playbackFormat_);
@@ -928,7 +981,7 @@ void AudioModel::beginPlayback() {
                 outputFailed_ = true;
                 cancelNotifications();
                 echo_.reset();
-                voiceSink_.reset(); playback_ = nullptr;
+                closePlayback();
                 setStatus(tr("Voice playback could not be opened."), false);
             });
         }
@@ -937,20 +990,26 @@ void AudioModel::beginPlayback() {
     outputFailed_ = !playback_ || voiceSink_->error() != QtAudio::NoError;
     if (!playback_ || voiceSink_->error() != QtAudio::NoError) {
         cancelNotifications();
-        voiceSink_.reset(); playback_ = nullptr;
+        closePlayback();
         setStatus(tr("Voice playback could not be opened."), false);
     }
     emit readinessChanged();
 }
 
+void AudioModel::closePlayback() {
+    // Destruction drains queued audio. Muting, cancelling and disconnecting
+    // must stop it immediately, including the native stream.
+    if (voiceSink_) voiceSink_->reset();
+    voiceSink_.reset();
+    playback_ = nullptr;
+}
+
 void AudioModel::playVoice() {
     if (!voiceSink_ || !playback_) return;
-    if (deafened_ && announcements_.empty() && !speech_.active()) {
-        if (speech_.failed()) setStatus(tr("Speech output is unavailable."), false);
-        speech_.stop();
+    if ((!voiceActive_ || deafened_) && !speech_.active()) {
         // Drain the last announcement block, then release native output. Do not
         // keep feeding silence while the conversation is muted.
-        if (voiceSink_->state() == QtAudio::IdleState) { voiceSink_.reset(); playback_ = nullptr; }
+        if (voiceSink_->state() == QtAudio::IdleState) { closePlayback(); }
         return;
     }
     const auto required = playbackFormat_.bytesForDuration(20000);
@@ -962,18 +1021,7 @@ void AudioModel::playVoice() {
             language_.processVoice(peer, frame, now, 2);
         };
         auto samples = mixer_.render(playbackFormat_.sampleRate(), clock_.elapsed(), filter);
-        if (deafened_) std::fill(samples.begin(), samples.end(), 0);
-        if (!speech_.active()) {
-            if (speech_.failed()) setStatus(tr("Speech output is unavailable."), false);
-            speech_.stop();
-            while (!announcements_.empty() && clock_.elapsed() - announcements_.front().second > 10000)
-                announcements_.pop_front();
-            if (!announcements_.empty()) {
-                if (!speech_.start(announcements_.front().first, playbackFormat_.sampleRate(), botVoice_.value("id").toString()))
-                    setStatus(tr("Speech output is unavailable."), false);
-                announcements_.pop_front();
-            }
-        }
+        if (deafened_ || !voiceActive_) std::fill(samples.begin(), samples.end(), 0);
         speech_.mix(samples, notificationVolume_, 2);
         if (testingOutput_) std::fill(samples.begin(), samples.end(), 0);
         QByteArray data(qsizetype(samples.size() / 2) * playbackFormat_.bytesPerFrame(), '\0');
@@ -1013,7 +1061,7 @@ void AudioModel::playVoice() {
         echo_.reset();
         outputFailed_ = true;
         cancelNotifications();
-        voiceSink_.reset(); playback_ = nullptr; playbackTimer_.stop();
+        closePlayback(); playbackTimer_.stop();
         setStatus(tr(error.what()), false);
     }
 }

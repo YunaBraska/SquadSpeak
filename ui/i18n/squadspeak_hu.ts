@@ -3288,4 +3288,31 @@
             <translation>Érvénytelen mentett beállítás: %1</translation>
         </message>
     </context>
+    <context>
+        <name>AppFeedback</name>
+        <message>
+            <source>Hey, you're back.</source>
+            <translation>Szia, újra itt vagy.</translation>
+        </message>
+        <message>
+            <source>Ready when you are.</source>
+            <translation>Kezdhetjük, amikor szeretnéd.</translation>
+        </message>
+        <message>
+            <source>Let's talk.</source>
+            <translation>Beszélgessünk.</translation>
+        </message>
+        <message>
+            <source>Catch you later.</source>
+            <translation>Később találkozunk.</translation>
+        </message>
+        <message>
+            <source>Over and out.</source>
+            <translation>Vétel vége.</translation>
+        </message>
+        <message>
+            <source>See you next time.</source>
+            <translation>Legközelebb találkozunk.</translation>
+        </message>
+    </context>
 </TS>

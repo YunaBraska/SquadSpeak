@@ -3288,4 +3288,31 @@
             <translation>Gespeicherte Einstellung ist ungültig: %1</translation>
         </message>
     </context>
+    <context>
+        <name>AppFeedback</name>
+        <message>
+            <source>Hey, you're back.</source>
+            <translation>Hey, da bist du ja.</translation>
+        </message>
+        <message>
+            <source>Ready when you are.</source>
+            <translation>Bereit, wenn du es bist.</translation>
+        </message>
+        <message>
+            <source>Let's talk.</source>
+            <translation>Lass uns quatschen.</translation>
+        </message>
+        <message>
+            <source>Catch you later.</source>
+            <translation>Bis später.</translation>
+        </message>
+        <message>
+            <source>Over and out.</source>
+            <translation>Ich bin dann weg.</translation>
+        </message>
+        <message>
+            <source>See you next time.</source>
+            <translation>Bis zum nächsten Mal.</translation>
+        </message>
+    </context>
 </TS>

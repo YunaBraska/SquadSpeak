@@ -45,8 +45,6 @@ void LocalChannel::addNotice(Client& c, const QString& kind, const QString& memb
     c.notices.append(notice);
     while (c.notices.size() > maximumWindowMessages) c.notices.removeFirst();
     emit chatChanged();
-    if (!hostOnly_ && !remoteMode() && !c.external() && c.voice && c.id == joinedHostId_ && !(kind == "left" && member == ownId()))
-        emit botNotification(notice);
 }
 
 void LocalChannel::sendChatKey(QSslSocket* socket) {
@@ -342,7 +340,6 @@ bool LocalChannel::applyChat(Client& c, QJsonObject payload, bool keyMessage) {
         }
         if (fresh && !hostOnly_ && !remoteMode() && c.accepted && c.voice && c.id == joinedHostId_
             && record.value("sender") != ownId() && record.value("expires").toInteger() > c.serverTime) {
-            if (!event.isEmpty() && event.value("kind") != "joined" && event.value("kind") != "left") emit botNotification(record.toVariantMap());
             if (event.isEmpty() || event.value("kind") == "announcement")
                 emit chatNotification(c.id, record.toVariantMap());
         }

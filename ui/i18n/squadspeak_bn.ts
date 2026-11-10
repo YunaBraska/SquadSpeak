@@ -3288,4 +3288,31 @@
             <translation>সংরক্ষিত সেটিংস অবৈধ: %1</translation>
         </message>
     </context>
+    <context>
+        <name>AppFeedback</name>
+        <message>
+            <source>Hey, you're back.</source>
+            <translation>এই যে, আবার এসেছ।</translation>
+        </message>
+        <message>
+            <source>Ready when you are.</source>
+            <translation>তুমি তৈরি হলেই শুরু।</translation>
+        </message>
+        <message>
+            <source>Let's talk.</source>
+            <translation>চলো আড্ডা দিই।</translation>
+        </message>
+        <message>
+            <source>Catch you later.</source>
+            <translation>পরে দেখা হবে।</translation>
+        </message>
+        <message>
+            <source>Over and out.</source>
+            <translation>আজকের মতো বিদায়।</translation>
+        </message>
+        <message>
+            <source>See you next time.</source>
+            <translation>আবার দেখা হবে।</translation>
+        </message>
+    </context>
 </TS>

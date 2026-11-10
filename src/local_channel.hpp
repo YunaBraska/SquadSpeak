@@ -281,9 +281,8 @@ signals:
     void chatChanged();
     void chatSent(const QString& text, const QString& hostId);
     void chatNotification(const QString& hostId, const QVariantMap& message);
-    void botNotification(const QVariantMap& message);
     void imagesChanged();
-    void channelEvent(const QString& kind);
+    void channelEvent(const QString& kind, const QString& text = {});
 private:
     static QSet<QString> storedContacts(const QJsonObject& state);
     static QString conversationId(const QString& host, QString a, QString b);

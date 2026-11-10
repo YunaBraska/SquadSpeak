@@ -3288,4 +3288,31 @@
             <translation>Nederīgs saglabātais iestatījums: %1</translation>
         </message>
     </context>
+    <context>
+        <name>AppFeedback</name>
+        <message>
+            <source>Hey, you're back.</source>
+            <translation>Čau, atkal klāt.</translation>
+        </message>
+        <message>
+            <source>Ready when you are.</source>
+            <translation>Sākam, kad vēlies.</translation>
+        </message>
+        <message>
+            <source>Let's talk.</source>
+            <translation>Parunāsim.</translation>
+        </message>
+        <message>
+            <source>Catch you later.</source>
+            <translation>Tiekamies vēlāk.</translation>
+        </message>
+        <message>
+            <source>Over and out.</source>
+            <translation>Sakaru beigas.</translation>
+        </message>
+        <message>
+            <source>See you next time.</source>
+            <translation>Līdz nākamajai reizei.</translation>
+        </message>
+    </context>
 </TS>

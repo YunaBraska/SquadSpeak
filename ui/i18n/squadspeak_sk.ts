@@ -3288,4 +3288,31 @@
             <translation>Neplatné uložené nastavenie: %1</translation>
         </message>
     </context>
+    <context>
+        <name>AppFeedback</name>
+        <message>
+            <source>Hey, you're back.</source>
+            <translation>Ahoj, už si späť.</translation>
+        </message>
+        <message>
+            <source>Ready when you are.</source>
+            <translation>Môžeme, keď budeš chcieť.</translation>
+        </message>
+        <message>
+            <source>Let's talk.</source>
+            <translation>Poďme pokecať.</translation>
+        </message>
+        <message>
+            <source>Catch you later.</source>
+            <translation>Tak zatiaľ.</translation>
+        </message>
+        <message>
+            <source>Over and out.</source>
+            <translation>Končím príjem.</translation>
+        </message>
+        <message>
+            <source>See you next time.</source>
+            <translation>Uvidíme sa nabudúce.</translation>
+        </message>
+    </context>
 </TS>

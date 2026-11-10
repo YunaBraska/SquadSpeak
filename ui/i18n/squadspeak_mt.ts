@@ -3288,4 +3288,31 @@
             <translation>Setting issejvjat mhux validu: %1</translation>
         </message>
     </context>
+    <context>
+        <name>AppFeedback</name>
+        <message>
+            <source>Hey, you're back.</source>
+            <translation>Ħej, erġajt hawn.</translation>
+        </message>
+        <message>
+            <source>Ready when you are.</source>
+            <translation>Nibdew meta trid.</translation>
+        </message>
+        <message>
+            <source>Let's talk.</source>
+            <translation>Ejja nitkellmu.</translation>
+        </message>
+        <message>
+            <source>Catch you later.</source>
+            <translation>Narak aktar tard.</translation>
+        </message>
+        <message>
+            <source>Over and out.</source>
+            <translation>Daqshekk għal-lum.</translation>
+        </message>
+        <message>
+            <source>See you next time.</source>
+            <translation>Sal-ħin li jmiss.</translation>
+        </message>
+    </context>
 </TS>

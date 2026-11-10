@@ -3288,4 +3288,31 @@
             <translation>Geçersiz kayıtlı ayar: %1</translation>
         </message>
     </context>
+    <context>
+        <name>AppFeedback</name>
+        <message>
+            <source>Hey, you're back.</source>
+            <translation>Hey, yine buradasın.</translation>
+        </message>
+        <message>
+            <source>Ready when you are.</source>
+            <translation>Sen hazır olunca başlayalım.</translation>
+        </message>
+        <message>
+            <source>Let's talk.</source>
+            <translation>Hadi sohbet edelim.</translation>
+        </message>
+        <message>
+            <source>Catch you later.</source>
+            <translation>Sonra görüşürüz.</translation>
+        </message>
+        <message>
+            <source>Over and out.</source>
+            <translation>Tamam, çıkıyorum.</translation>
+        </message>
+        <message>
+            <source>See you next time.</source>
+            <translation>Bir dahaki sefere görüşürüz.</translation>
+        </message>
+    </context>
 </TS>

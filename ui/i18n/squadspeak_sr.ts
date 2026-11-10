@@ -3288,4 +3288,31 @@
             <translation>Неважеће сачувано подешавање: %1</translation>
         </message>
     </context>
+    <context>
+        <name>AppFeedback</name>
+        <message>
+            <source>Hey, you're back.</source>
+            <translation>Хеј, опет си ту.</translation>
+        </message>
+        <message>
+            <source>Ready when you are.</source>
+            <translation>Можемо кад ти кажеш.</translation>
+        </message>
+        <message>
+            <source>Let's talk.</source>
+            <translation>Хајде да причамо.</translation>
+        </message>
+        <message>
+            <source>Catch you later.</source>
+            <translation>Видимо се касније.</translation>
+        </message>
+        <message>
+            <source>Over and out.</source>
+            <translation>Одјава.</translation>
+        </message>
+        <message>
+            <source>See you next time.</source>
+            <translation>До следећег пута.</translation>
+        </message>
+    </context>
 </TS>

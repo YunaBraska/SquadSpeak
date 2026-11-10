@@ -3288,4 +3288,31 @@
             <translation>Невалидна зачувана поставка: %1</translation>
         </message>
     </context>
+    <context>
+        <name>AppFeedback</name>
+        <message>
+            <source>Hey, you're back.</source>
+            <translation>Еј, пак си тука.</translation>
+        </message>
+        <message>
+            <source>Ready when you are.</source>
+            <translation>Почнуваме кога сакаш.</translation>
+        </message>
+        <message>
+            <source>Let's talk.</source>
+            <translation>Ајде да зборуваме.</translation>
+        </message>
+        <message>
+            <source>Catch you later.</source>
+            <translation>Се гледаме подоцна.</translation>
+        </message>
+        <message>
+            <source>Over and out.</source>
+            <translation>Крај на врската.</translation>
+        </message>
+        <message>
+            <source>See you next time.</source>
+            <translation>До следниот пат.</translation>
+        </message>
+    </context>
 </TS>

@@ -3288,4 +3288,31 @@
             <translation>Yanlış saxlanılmış parametr: %1</translation>
         </message>
     </context>
+    <context>
+        <name>AppFeedback</name>
+        <message>
+            <source>Hey, you're back.</source>
+            <translation>Hey, yenə buradasan.</translation>
+        </message>
+        <message>
+            <source>Ready when you are.</source>
+            <translation>Hazır olanda başlayaq.</translation>
+        </message>
+        <message>
+            <source>Let's talk.</source>
+            <translation>Söhbət edək.</translation>
+        </message>
+        <message>
+            <source>Catch you later.</source>
+            <translation>Sonra görüşərik.</translation>
+        </message>
+        <message>
+            <source>Over and out.</source>
+            <translation>Mən getdim.</translation>
+        </message>
+        <message>
+            <source>See you next time.</source>
+            <translation>Gələn dəfə görüşərik.</translation>
+        </message>
+    </context>
 </TS>

@@ -3288,4 +3288,31 @@
             <translation>Pengaturan tersimpan tidak valid: %1</translation>
         </message>
     </context>
+    <context>
+        <name>AppFeedback</name>
+        <message>
+            <source>Hey, you're back.</source>
+            <translation>Hei, kamu kembali.</translation>
+        </message>
+        <message>
+            <source>Ready when you are.</source>
+            <translation>Siap kapan pun kamu mau.</translation>
+        </message>
+        <message>
+            <source>Let's talk.</source>
+            <translation>Ayo ngobrol.</translation>
+        </message>
+        <message>
+            <source>Catch you later.</source>
+            <translation>Sampai nanti.</translation>
+        </message>
+        <message>
+            <source>Over and out.</source>
+            <translation>Ganti dan selesai.</translation>
+        </message>
+        <message>
+            <source>See you next time.</source>
+            <translation>Sampai jumpa lagi.</translation>
+        </message>
+    </context>
 </TS>

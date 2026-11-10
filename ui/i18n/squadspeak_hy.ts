@@ -3288,4 +3288,31 @@
             <translation>Պահված կարգավորումն անվավեր է: %1</translation>
         </message>
     </context>
+    <context>
+        <name>AppFeedback</name>
+        <message>
+            <source>Hey, you're back.</source>
+            <translation>Հեյ, նորից այստեղ ես։</translation>
+        </message>
+        <message>
+            <source>Ready when you are.</source>
+            <translation>Սկսենք, երբ ուզես։</translation>
+        </message>
+        <message>
+            <source>Let's talk.</source>
+            <translation>Եկ զրուցենք։</translation>
+        </message>
+        <message>
+            <source>Catch you later.</source>
+            <translation>Կտեսնվենք։</translation>
+        </message>
+        <message>
+            <source>Over and out.</source>
+            <translation>Կապի ավարտ։</translation>
+        </message>
+        <message>
+            <source>See you next time.</source>
+            <translation>Մինչև հաջորդ անգամ։</translation>
+        </message>
+    </context>
 </TS>

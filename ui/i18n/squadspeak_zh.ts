@@ -3288,4 +3288,31 @@
             <translation>已保存的设置无效: %1</translation>
         </message>
     </context>
+    <context>
+        <name>AppFeedback</name>
+        <message>
+            <source>Hey, you're back.</source>
+            <translation>嘿，你回来啦。</translation>
+        </message>
+        <message>
+            <source>Ready when you are.</source>
+            <translation>准备好就开始吧。</translation>
+        </message>
+        <message>
+            <source>Let's talk.</source>
+            <translation>聊聊吧。</translation>
+        </message>
+        <message>
+            <source>Catch you later.</source>
+            <translation>回头见。</translation>
+        </message>
+        <message>
+            <source>Over and out.</source>
+            <translation>通话结束。</translation>
+        </message>
+        <message>
+            <source>See you next time.</source>
+            <translation>下次见。</translation>
+        </message>
+    </context>
 </TS>

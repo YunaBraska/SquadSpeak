@@ -3288,4 +3288,31 @@
             <translation>Netinkamas išsaugotas nustatymas: %1</translation>
         </message>
     </context>
+    <context>
+        <name>AppFeedback</name>
+        <message>
+            <source>Hey, you're back.</source>
+            <translation>Labas, vėl čia.</translation>
+        </message>
+        <message>
+            <source>Ready when you are.</source>
+            <translation>Pradėkim, kai norėsi.</translation>
+        </message>
+        <message>
+            <source>Let's talk.</source>
+            <translation>Pabendraukim.</translation>
+        </message>
+        <message>
+            <source>Catch you later.</source>
+            <translation>Iki vėliau.</translation>
+        </message>
+        <message>
+            <source>Over and out.</source>
+            <translation>Ryšio pabaiga.</translation>
+        </message>
+        <message>
+            <source>See you next time.</source>
+            <translation>Iki kito karto.</translation>
+        </message>
+    </context>
 </TS>
