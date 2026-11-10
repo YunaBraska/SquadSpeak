@@ -135,10 +135,11 @@ void AudioModel::refreshDevices() {
         outputMonitor_.stop();
         outputReferenceAt_ = -1; deviceReference_ = false;
         echo_.reset();
+        if (sink_) sink_->reset();
         sink_.reset();
         tone_.close();
         testingOutput_ = false;
-        voiceSink_.reset(); playback_ = nullptr;
+        closePlayback();
         mixer_.resetPlayback();
         participantVolumes_.clear();
         cancelNotifications();
@@ -323,14 +324,14 @@ bool AudioModel::setDeafened(bool deafened) {
     echo_.reset();
     if (deafened_) {
         language_.suspend(true);
+        if (sink_) sink_->reset();
         sink_.reset();
         tone_.close();
         if (testingOutput_) {
             testingOutput_ = false;
             emit runningChanged();
         }
-        voiceSink_.reset();
-        playback_ = nullptr;
+        closePlayback();
         mixer_.resetPlayback();
         beginPlayback();
     } else if (voiceActive_) {
@@ -479,7 +480,7 @@ void AudioModel::cancelNotifications() {
 void AudioModel::cancelBotMessages() {
     speech_.stop();
     for (auto& notice : notifications_) notice.text.clear();
-    if (deafened_ || !voiceActive_) { voiceSink_.reset(); playback_ = nullptr; }
+    if (deafened_ || !voiceActive_) { closePlayback(); }
 }
 
 bool AudioModel::setNotificationVolume(double value) {
@@ -722,6 +723,7 @@ bool AudioModel::openMicrophoneSettings() {
 bool AudioModel::stop() {
     wantsCapture_ = false;
     testingOutput_ = false;
+    if (sink_) sink_->reset();
     sink_.reset(); tone_.close();
     emit runningChanged();
     return ensureCapture();
@@ -754,6 +756,7 @@ void AudioModel::stopCapture() {
 bool AudioModel::testOutput() {
     if (deafened_ || output_.isNull()) return false;
     cancelNotifications();
+    if (sink_) sink_->reset();
     sink_.reset();
     tone_.close();
     const auto format = output_.preferredFormat();
@@ -813,7 +816,7 @@ bool AudioModel::setVoiceState(bool joined, bool transmit, bool pushToTalk, int 
         language_.suspend(!joined || deafened_ || testActive());
         echo_.reset();
         mixer_.resetPlayback();
-        if (!notificationsActive()) { voiceSink_.reset(); playback_ = nullptr; }
+        if (!notificationsActive()) { closePlayback(); }
         if (joined) { beginPlayback(); playbackTimer_.start(); }
         else if (!notificationsActive()) playbackTimer_.stop();
     }
@@ -978,7 +981,7 @@ void AudioModel::beginPlayback() {
                 outputFailed_ = true;
                 cancelNotifications();
                 echo_.reset();
-                voiceSink_.reset(); playback_ = nullptr;
+                closePlayback();
                 setStatus(tr("Voice playback could not be opened."), false);
             });
         }
@@ -987,10 +990,18 @@ void AudioModel::beginPlayback() {
     outputFailed_ = !playback_ || voiceSink_->error() != QtAudio::NoError;
     if (!playback_ || voiceSink_->error() != QtAudio::NoError) {
         cancelNotifications();
-        voiceSink_.reset(); playback_ = nullptr;
+        closePlayback();
         setStatus(tr("Voice playback could not be opened."), false);
     }
     emit readinessChanged();
+}
+
+void AudioModel::closePlayback() {
+    // Destruction drains queued audio. Muting, cancelling and disconnecting
+    // must stop it immediately, including the native stream.
+    if (voiceSink_) voiceSink_->reset();
+    voiceSink_.reset();
+    playback_ = nullptr;
 }
 
 void AudioModel::playVoice() {
@@ -998,7 +1009,7 @@ void AudioModel::playVoice() {
     if ((!voiceActive_ || deafened_) && !speech_.active()) {
         // Drain the last announcement block, then release native output. Do not
         // keep feeding silence while the conversation is muted.
-        if (voiceSink_->state() == QtAudio::IdleState) { voiceSink_.reset(); playback_ = nullptr; }
+        if (voiceSink_->state() == QtAudio::IdleState) { closePlayback(); }
         return;
     }
     const auto required = playbackFormat_.bytesForDuration(20000);
@@ -1050,7 +1061,7 @@ void AudioModel::playVoice() {
         echo_.reset();
         outputFailed_ = true;
         cancelNotifications();
-        voiceSink_.reset(); playback_ = nullptr; playbackTimer_.stop();
+        closePlayback(); playbackTimer_.stop();
         setStatus(tr(error.what()), false);
     }
 }

@@ -208,6 +208,7 @@ private:
     bool ensureCapture();
     void stopCapture();
     void beginPlayback();
+    void closePlayback();
     void playVoice();
     void consume();
     void sendCapture(QList<QByteArray> packets = {});

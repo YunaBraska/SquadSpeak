@@ -9,6 +9,12 @@ TestCase {
     Channels { id: view; visible: true }
     SignalSpy { id: progress; target: audio; signalName: "notificationProgress" }
     SignalSpy { id: stopped; target: fixtures; signalName: "feedbackStopped" }
+    Connections {
+        target: audio
+        function onNotificationProgress(kind, phase, text) {
+            console.info("Notification", kind, phase, "native output", fixtures.nativeAudioOutputRunning())
+        }
+    }
 
     function test_startJoinLeaveAndQuitSpeakAfterTheirCue() {
         verify(audio.outputAvailable && audio.speechAvailable)
@@ -91,16 +97,26 @@ TestCase {
                 tryVerify(function() { return fixtures.nativeAudioOutputRunning() === 0 }, 1000)
             }
             verify(audio.setReadBotMessages(true))
+            progress.clear()
             verify(fixtures.queueBotMessage("Hello."))
             tryVerify(function() { return fixtures.nativeAudioOutputRunning() === 1 }, 1000,
                 "Bot speech must open output without unmuting voice")
             verify(!fixtures.queueTestSpeechFrame(), "Remote speech remains rejected during the bot announcement")
-            tryVerify(function() { return fixtures.nativeAudioOutputRunning() === 0 }, 10000,
+            tryVerify(function() { return progress.count === 3 && fixtures.nativeAudioOutputRunning() === 0 }, 10000,
                 "Bot speech must drain and release output without leaving a silent stream open")
+            compare(progress.signalArguments[1][1], "speech")
+            compare(progress.signalArguments[2][1], "finished")
             compare(audio.outputStatus, "")
             verify(session.muted && session.deafened)
             verify(!audio.running, "Notifications must not activate the microphone")
+            progress.clear()
+            verify(fixtures.queueBotMessage("This announcement will be cancelled while it is being read."))
+            tryCompare(progress, "count", 2, 1000)
+            compare(progress.signalArguments[1][1], "speech")
+            tryVerify(function() { return fixtures.nativeAudioOutputRunning() === 1 }, 1000)
             verify(audio.setNotificationVolume(0))
+            tryVerify(function() { return fixtures.nativeAudioOutputRunning() === 0 }, 1000,
+                "Cancelling an announcement must close output without draining cancelled speech")
             verify(!fixtures.playEvent("join", true))
             verify(!fixtures.queueBotMessage("Hello."))
             compare(fixtures.nativeAudioOutputRunning(), 0)

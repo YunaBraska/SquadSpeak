@@ -846,8 +846,17 @@ if(BUILD_TESTING)
     # Keep native acceptance out of portable suites instead of skipping it there.
     if(CMAKE_SYSTEM_NAME STREQUAL "Darwin" AND CMAKE_HOST_SYSTEM_VERSION VERSION_GREATER_EQUAL 23.2)
         add_test(NAME native_audio_output COMMAND controls_tests
-            -input "${CMAKE_CURRENT_SOURCE_DIR}/tests/tst_native_audio_output.qml")
-        set_tests_properties(native_audio_output PROPERTIES TIMEOUT 30 LABELS "native" RESOURCE_LOCK desktop
+            -input "${CMAKE_CURRENT_SOURCE_DIR}/tests/tst_native_audio_output.qml"
+            NativeAudioOutput::test_appSoundsAndBotSpeechWhileVoiceIsMuted
+            NativeAudioOutput::test_deafenReleasesNativeTestToneOutput
+            NativeAudioOutput::test_deafenReleasesNativeVoiceOutputAndResumesCleanly)
+        # The lifecycle sequence has its own 15 + 7 second waits. Keep its
+        # process budget separate from the existing output-release checks.
+        add_test(NAME native_notification_lifecycle COMMAND controls_tests
+            -input "${CMAKE_CURRENT_SOURCE_DIR}/tests/tst_native_audio_output.qml"
+            NativeAudioOutput::test_startJoinLeaveAndQuitSpeakAfterTheirCue)
+        set_tests_properties(native_audio_output native_notification_lifecycle PROPERTIES
+            TIMEOUT 30 LABELS "native" RESOURCE_LOCK desktop
             ENVIRONMENT "QT_QPA_PLATFORM=cocoa;QT_QUICK_BACKEND=software;QT_QUICK_CONTROLS_STYLE=Basic")
     endif()
     add_test(NAME frequency_display COMMAND controls_tests -input "${CMAKE_CURRENT_SOURCE_DIR}/tests/tst_spectrum.qml")
