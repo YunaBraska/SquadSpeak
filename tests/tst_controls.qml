@@ -12,6 +12,15 @@ Item {
     SignalSpy { id: editFinished; signalName: "editingFinished" }
     SignalSpy { id: notifications; target: audio; signalName: "notificationProgress" }
     SignalSpy { id: notificationsFinished; target: audio; signalName: "notificationsFinished" }
+    Connections {
+        target: audio
+        function onNotificationProgress(kind, phase, text) {
+            console.info("Notification", kind, phase, Date.now())
+        }
+        function onStatusChanged() {
+            if (audio.outputStatus.length > 0) console.warn("Audio output:", audio.outputStatus)
+        }
+    }
     Component {
         id: actionComponent
         ActionButton {
@@ -52,6 +61,9 @@ Item {
             verify(editor !== null)
             editFinished.target = editor
             editFinished.clear()
+        }
+        function cleanup() {
+            fixtures.cancelNotifications()
         }
         function test_sliderFeedbackFollowsCompletedUserEdits() {
             verify(editFinished.valid)
@@ -137,6 +149,7 @@ Item {
                 for (const kind of kinds) verify(fixtures.queueEvent(kind, "Must not be spoken while disabled"))
                 if (audio.speechAvailable) verify(audio.setReadBotMessages(false))
                 tryCompare(notificationsFinished, "count", 1, 10000)
+                compare(audio.outputStatus, "", "Every cue must play without falling through its failure timeout")
                 compare(notifications.count, kinds.length * 2)
                 for (let i = 0; i < kinds.length; ++i) {
                     compare(notifications.signalArguments[i * 2][0], kinds[i])
