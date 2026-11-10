@@ -2094,8 +2094,6 @@ PanelWindow {
                     radius: Theme.controlRadius
                     color: root.viewingVoice ? Qt.tint(Theme.surface, Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.14))
                         : Theme.colors.graphite[Theme.dark ? "dark" : "light"][2]
-                    border.color: root.viewingVoice ? Theme.accent : Theme.border
-                    border.width: root.viewingVoice ? 2 : 1
                 }
                 contentItem: ColumnLayout {
                     spacing: 6
