@@ -369,7 +369,7 @@ void LocalChannel::sendRemoteView(QSslSocket* socket) {
             const QVariantMap view{{"channels", savedChannels()}, {"participants", participants()},
                 {"privateChats", privateChats()}, {"privateChat", privateChat()}, {"externalChat", externalChat()},
                 {"privateBlocked", privateBlocked()}, {"privateBlockedByMe", privateBlockedByMe()},
-                {"messages", messages()}, {"chatBot", chatBot()}, {"chatLifetimeDays", chatLifetimeDays()}, {"chatHostId", chatHostId_}, {"chatMembers", chatMembers()}, {"joinedHostId", joinedHostId_}, {"joined", joined()},
+                {"messages", messages()}, {"notices", notices()}, {"chatBot", chatBot()}, {"chatLifetimeDays", chatLifetimeDays()}, {"chatHostId", chatHostId_}, {"chatMembers", chatMembers()}, {"joinedHostId", joinedHostId_}, {"joined", joined()},
                 {"chatReady", chatReady()}, {"chatPending", chatPending()},
                 {"chatOnlineIds", chatOnlineIds()}, {"chatPresenceKnown", chatPresenceKnown()}, {"receiveAudioBitrate", receiveAudioBitrate()},
                 {"historyLoading", historyLoading()}, {"hasOlderMessages", hasOlderMessages()}, {"hasNewerMessages", hasNewerMessages()}, {"muted", session_.muted()},
@@ -458,6 +458,19 @@ bool LocalChannel::applyRemoteView(const QByteArray& bytes) {
     const auto messages = view.value("messages").toArray();
     if ((!view.value("chatReady").toBool() && (!messages.isEmpty() || !view.value("chatMembers").toArray().isEmpty()))
         || messages.size() > maximumWindowMessages || QJsonDocument(messages).toJson(QJsonDocument::Compact).size() > maximumWindowBytes) return false;
+    if (view.contains("notices")) {
+        if (!view.value("notices").isArray() || view.value("notices").toArray().size() > maximumWindowMessages) return false;
+        QSet<QString> noticeIds;
+        for (const auto value : view.value("notices").toArray()) {
+            const auto notice = value.toObject(); const auto id = notice.value("id").toString();
+            const auto event = notice.value("event").toObject(); const auto kind = event.value("kind").toString();
+            const auto created = notice.value("created").toInteger(-1);
+            if (QUuid(id).isNull() || noticeIds.contains(id) || created < 0 || created > 9007199254740991LL
+                || notice.value("created").toDouble(-1) != double(created) || (kind != "joined" && kind != "left")
+                || !validId(event.value("member").toString()) || !displayName(event.value("name"))) return false;
+            noticeIds.insert(id);
+        }
+    }
     qint64 sequence = 0;
     for (const auto value : messages) {
         const auto entry = value.toObject();

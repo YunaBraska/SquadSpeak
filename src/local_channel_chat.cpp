@@ -25,10 +25,28 @@ QVariantList LocalChannel::messages() const {
     for (const auto value : c->messages) {
         auto record = value.toObject().toVariantMap();
         if (record.value("expires").toLongLong() <= now) continue;
+        const auto kind = record.value("event").toMap().value("kind").toString();
+        if (kind == "joined" || kind == "left") continue;
         if (record.contains("event") && record.value("sender") == bot.value("id")) record.insert("name", bot.value("name"));
         result.append(record);
     }
     return result;
+}
+
+QVariantList LocalChannel::notices() const {
+    const auto* c = chatClient();
+    return c ? c->notices : QVariantList{};
+}
+
+void LocalChannel::addNotice(Client& c, const QString& kind, const QString& member, const QString& name) {
+    const auto now = c.chatClock.isValid() ? c.serverTime + c.chatClock.elapsed() : clock_();
+    const QVariantMap notice{{"id", QUuid::createUuid().toString(QUuid::WithoutBraces)}, {"created", now},
+        {"event", QVariantMap{{"kind", kind}, {"member", member}, {"name", name}}}};
+    c.notices.append(notice);
+    while (c.notices.size() > maximumWindowMessages) c.notices.removeFirst();
+    emit chatChanged();
+    if (!hostOnly_ && !remoteMode() && !c.external() && c.voice && c.id == joinedHostId_ && !(kind == "left" && member == ownId()))
+        emit botNotification(notice);
 }
 
 void LocalChannel::sendChatKey(QSslSocket* socket) {
@@ -324,7 +342,7 @@ bool LocalChannel::applyChat(Client& c, QJsonObject payload, bool keyMessage) {
         }
         if (fresh && !hostOnly_ && !remoteMode() && c.accepted && c.voice && c.id == joinedHostId_
             && record.value("sender") != ownId() && record.value("expires").toInteger() > c.serverTime) {
-            if (!event.isEmpty()) emit botNotification(record.toVariantMap());
+            if (!event.isEmpty() && event.value("kind") != "joined" && event.value("kind") != "left") emit botNotification(record.toVariantMap());
             if (event.isEmpty() || event.value("kind") == "announcement")
                 emit chatNotification(c.id, record.toVariantMap());
         }

@@ -422,6 +422,10 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Not connected</source>
+            <translation>Net verbonnen</translation>
+        </message>
+        <message>
             <source>Text size</source>
             <translation>Textgréisst</translation>
         </message>

@@ -422,6 +422,10 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Not connected</source>
+            <translation>Mhux konness</translation>
+        </message>
+        <message>
             <source>Text size</source>
             <translation>Daqs tat-test</translation>
         </message>

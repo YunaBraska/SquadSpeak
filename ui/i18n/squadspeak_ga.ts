@@ -422,6 +422,10 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Not connected</source>
+            <translation>Gan cheangal</translation>
+        </message>
+        <message>
             <source>Text size</source>
             <translation>Méid an téacs</translation>
         </message>

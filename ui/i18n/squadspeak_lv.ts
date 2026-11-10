@@ -422,6 +422,10 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Not connected</source>
+            <translation>Nav savienojuma</translation>
+        </message>
+        <message>
             <source>Text size</source>
             <translation>Teksta lielums</translation>
         </message>

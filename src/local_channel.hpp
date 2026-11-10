@@ -61,6 +61,7 @@ class LocalChannel final : public QObject {
     Q_PROPERTY(QString channelId READ channelId NOTIFY stateChanged)
     Q_PROPERTY(QVariantList ownedChannels READ ownedChannels NOTIFY ownedChannelsChanged)
     Q_PROPERTY(QString chatHostId READ chatHostId NOTIFY chatChanged)
+    Q_PROPERTY(QVariantList notices READ notices NOTIFY chatChanged)
     Q_PROPERTY(QVariantList chatMembers READ chatMembers NOTIFY participantsChanged)
     Q_PROPERTY(QStringList chatOnlineIds READ chatOnlineIds NOTIFY participantsChanged)
     Q_PROPERTY(bool chatPresenceKnown READ chatPresenceKnown NOTIFY participantsChanged)
@@ -158,6 +159,7 @@ public:
     [[nodiscard]] QVariantList remoteOffers() const;
     [[nodiscard]] QVariantList controlRequests() const;
     [[nodiscard]] QVariantList messages() const;
+    [[nodiscard]] QVariantList notices() const;
     [[nodiscard]] bool chatReady() const;
     [[nodiscard]] bool externalChat() const;
     [[nodiscard]] bool joinedExternalVoice() const;
@@ -393,6 +395,7 @@ private:
         QByteArray chatKey;
         QString chatEpoch;
         QJsonArray messages;
+        QVariantList notices;
         qint64 lastChatSequence = 0;
         qint64 unreadExpires = 0;
         QJsonObject pending;
@@ -412,6 +415,8 @@ private:
     bool screenBusy(const Client* receiver, const LocalChannel* sender) const;
     bool receivesScreenAudio(const Client& client) const;
     Client* chatClient() const;
+    void addNotice(Client& client, const QString& kind, const QString& member, const QString& name);
+    void observeMembers(Client& client, const QVariantList& members, bool announce, const QJsonObject& departures = {});
     bool openConnection(const QString& id, const QString& address, int port, bool voice, bool automatic);
     QPair<QString, int> channelEndpoint(const QString& id) const;
     void selectChat(const QString& id);

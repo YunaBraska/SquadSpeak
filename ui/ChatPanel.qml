@@ -17,7 +17,21 @@ Item {
     readonly property bool remote: network.remoteMode
     readonly property var current: remote ? network.remoteView : network
     readonly property string hostId: current.chatHostId || ""
-    readonly property var records: current.messages || []
+    readonly property var records: {
+        const messages = current.messages || []
+        const first = messages.length ? messages[0].created : 0
+        const last = messages.length ? messages[messages.length - 1].created : 0
+        const notices = (current.notices || []).filter(n => (!current.hasOlderMessages || n.created >= first)
+            && (!current.hasNewerMessages || n.created <= last)).map(n => ({
+                sequence: "notice:" + n.id, created: n.created, event: n.event, local: true,
+                name: "", sender: "", text: ""}))
+        const rows = messages.slice()
+        for (const notice of notices) {
+            const index = rows.findIndex(row => row.created > notice.created)
+            rows.splice(index < 0 ? rows.length : index, 0, notice)
+        }
+        return rows
+    }
     property var drafts: ({})
     property string draftKey: ""
     property string sentDraft: ""
@@ -28,7 +42,7 @@ Item {
     property var sentDrafts: ({})
     property bool updating: false
     property bool initialPage: true
-    property real anchorSequence: 0
+    property var anchorSequence: 0
     property real anchorOffset: 0
     property bool followEnd: true
     property real layoutWidth: 0
@@ -67,7 +81,9 @@ Item {
             || !current.chatReady || !history.atYEnd || visibleMessages.count === 0) return
         const last = messageRows.itemAt(visibleMessages.count - 1)
         if (!last) return
-        const sequence = last.message.sequence
+        const messages = current.messages || []
+        if (!messages.length) return
+        const sequence = messages[messages.length - 1].sequence
         const receipt = hostId + ":" + sequence
         if (readReceipt !== receipt && network.markChatRead(hostId, sequence)) readReceipt = receipt
     }
@@ -88,12 +104,15 @@ Item {
         updating = true
         const incoming = records
         for (let i = 0; i < incoming.length; ++i) {
-            while (i < visibleMessages.count && visibleMessages.get(i).message.sequence < incoming[i].sequence)
-                visibleMessages.remove(i)
-            if (i >= visibleMessages.count || visibleMessages.get(i).message.sequence !== incoming[i].sequence)
-                visibleMessages.insert(i, {message: incoming[i]})
-            else if (JSON.stringify(visibleMessages.get(i).message) !== JSON.stringify(incoming[i]))
-                visibleMessages.setProperty(i, "message", incoming[i])
+            let found = -1
+            for (let j = i; j < visibleMessages.count; ++j)
+                if (visibleMessages.get(j).message.sequence === incoming[i].sequence) { found = j; break }
+            if (found < 0) visibleMessages.insert(i, {message: incoming[i]})
+            else {
+                if (found !== i) visibleMessages.move(found, i, 1)
+                if (JSON.stringify(visibleMessages.get(i).message) !== JSON.stringify(incoming[i]))
+                    visibleMessages.setProperty(i, "message", incoming[i])
+            }
         }
         if (visibleMessages.count > incoming.length)
             visibleMessages.remove(incoming.length, visibleMessages.count - incoming.length)
@@ -105,7 +124,7 @@ Item {
         onTriggered: {
             messageColumn.forceLayout()
             if (root.initialPage || root.followEnd) history.scrollTo(history.contentHeight - history.height)
-            else if (root.anchorSequence > 0) {
+            else if (root.anchorSequence !== 0) {
                 for (let i = 0; i < visibleMessages.count; ++i) if (visibleMessages.get(i).message.sequence === root.anchorSequence) {
                     history.scrollTo(messageRows.itemAt(i).y + root.anchorOffset)
                     break
@@ -222,6 +241,7 @@ Item {
                         LayoutMirroring.enabled: false
                         LayoutMirroring.childrenInherit: true
                         required property var message
+                        readonly property bool localNotice: !!message.local
                         readonly property bool systemMessage: !!message.event
                         readonly property var member: systemMessage ? (root.current.chatBot || {}) : (root.current.chatMembers || []).find(function(m) { return m.id === message.sender })
                             || ({id: message.sender, name: message.name, avatarId: message.avatarId || message.avatar, provider: message.provider || ""})
@@ -256,7 +276,8 @@ Item {
                             spacing: 8
                             Loader {
                                 Layout.preferredWidth: 44; Layout.preferredHeight: 44; Layout.alignment: Qt.AlignTop
-                                active: messageRow.inViewport
+                                visible: !messageRow.localNotice
+                                active: visible && messageRow.inViewport
                                 sourceComponent: VoiceAvatar {
                                     objectName: "messageAvatar_" + messageRow.message.sender
                                     systemMessage: messageRow.systemMessage
@@ -283,6 +304,7 @@ Item {
                                 Layout.fillWidth: true
                                 spacing: 3
                                 RowLayout {
+                                    visible: !messageRow.localNotice
                                     Layout.fillWidth: true
                                     Label {
                                         text: messageRow.message.name; textFormat: Text.PlainText; elide: Text.ElideRight; font.weight: Font.DemiBold; Layout.fillWidth: true; horizontalAlignment: messageRow.own ? Text.AlignRight : Text.AlignLeft
@@ -309,23 +331,27 @@ Item {
                                     id: messageText
                                     objectName: "messageText_" + messageRow.message.sequence
                                     Layout.fillWidth: true
-                                    text: {
+                                    readonly property var presentation: {
                                         Qt.uiLanguage // Reformat after the translation catalog changes.
                                         if (messageRow.systemMessage) {
                                             const event = messageRow.message.event
-                                            if (event.kind !== "announcement") return chatContent.plainText(messageRow.message)
+                                            if (event.kind !== "announcement") return {plain: true, content: chatContent.plainText(messageRow.message)}
                                         }
                                         root.network.imageRevision
                                         const image = messageRow.message.image
-                                        return chatContent.format(messageRow.hasTranslation ? messageRow.translated.text : messageRow.message.text, image ? {
+                                        return {plain: false, content: chatContent.format(messageRow.hasTranslation ? messageRow.translated.text : messageRow.message.text, image ? {
                                             "hash": image.hash,
                                             // Keep image geometry without retaining offscreen decoded images.
                                             "source": (messageRow.inViewport && root.network.imageSource(image.hash))
                                                 || "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVR4nGNgAAIAAAUAAXpeqz8AAAAASUVORK5CYII=",
                                             "width": image.width, "height": image.height, "displayWidth": width
-                                        } : {}, Theme.accent, Theme.codeBackground, font)
+                                        } : {}, Theme.accent, Theme.codeBackground, font)}
                                     }
-                                    textFormat: messageRow.systemMessage && messageRow.message.event.kind !== "announcement" ? TextEdit.PlainText : TextEdit.RichText
+                                    onPresentationChanged: {
+                                        // Set the parser before assigning content when a row changes format.
+                                        textFormat = presentation.plain ? TextEdit.PlainText : TextEdit.RichText
+                                        text = presentation.content
+                                    }
                                     readOnly: true; selectByMouse: mouseSelection.active; selectByKeyboard: true; wrapMode: TextEdit.Wrap
                                     // A mouse drag selects text. Touch starts with no selection grab so the list can scroll.
                                     PointHandler { id: mouseSelection; acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad }

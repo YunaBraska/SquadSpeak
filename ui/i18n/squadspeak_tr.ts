@@ -422,6 +422,10 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Not connected</source>
+            <translation>Bağlı değil</translation>
+        </message>
+        <message>
             <source>Text size</source>
             <translation>Metin boyutu</translation>
         </message>

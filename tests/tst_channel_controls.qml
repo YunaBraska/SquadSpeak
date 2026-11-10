@@ -538,6 +538,40 @@ TestCase {
         compare(channel.chatHostId, remoteChannel.ownId)
     }
 
+    function test_localNoticesAndConnectionStatus_data() {
+        return [{tag: "small", width: 390}, {tag: "large", width: 1100}]
+    }
+    function test_localNoticesAndConnectionStatus(data) {
+        view.width = data.width; view.height = 700
+        verify(fixtures.startHost())
+        verify(channel.setChannelName("Workshop"))
+        verify(channel.openChat(channel.ownId, "127.0.0.1", channel.servicePort))
+        tryCompare(channel, "chatReady", true)
+        const footer = findChild(view, "voiceConnection")
+        verify(footer.visible)
+        compare(footer.text, "Not connected")
+        verify(!footer.enabled)
+        compare(findChild(view, "chatOnlyHint").text, "Chat only")
+        verify(channel.joinSaved(channel.ownId)); tryCompare(channel, "joined", true)
+        compare(footer.text, "Workshop"); verify(footer.enabled)
+        const panel = findChild(view, "chatPanel"), history = findChild(panel, "chatHistory")
+        tryCompare(history.rows, "count", 1)
+        verify(history.rows.itemAt(0).localNotice)
+        compare(channel.messages.length, 0)
+        fixtures.advanceTime()
+        verify(channel.sendChat("A real message")); tryCompare(channel, "chatPending", false)
+        tryCompare(history.rows, "count", 2)
+        verify(channel.leave())
+        tryCompare(history.rows, "count", 3)
+        compare(footer.text, "Not connected"); verify(!footer.enabled)
+        verify(history.rows.itemAt(2).localNotice)
+        compare(channel.messages.length, 1)
+        verify(channel.refreshChat()); tryCompare(channel, "historyLoading", false)
+        tryCompare(history.rows, "count", 3)
+        verify(waitForPolish(view)); verify(waitForFrame(view.contentItem))
+        if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/local-notices-" + data.tag + ".png"))
+    }
+
     function test_footerMenuKeepsVoiceAndViewedChatDistinct_data() {
         return [{tag: "compact", width: 390}, {tag: "split", width: 1100}]
     }
@@ -952,7 +986,7 @@ TestCase {
         const extraOwner = findChild(view, "conversationOwned")
         const extraVoice = findChild(view, "voiceConnection")
         verify(extraOwner !== null && extraOwner.visible, "Additional owned channels use the same ownership marker")
-        verify(extraVoice !== null && !extraVoice.visible, "Creating a channel does not join its voice session")
+        verify(extraVoice !== null && extraVoice.visible && !extraVoice.enabled && !channel.joined, "Creating a channel does not join its voice session")
         const owner = channel.ownChannel(id)
         view.selectedHost = id
         const info = findChild(view, "channelInfoDialog")
@@ -972,7 +1006,8 @@ TestCase {
         info.close(); tryCompare(info, "visible", false)
         const remove = findChild(view, "removeChannelMenuItem")
         findChild(view, "channelInfoDialog").open(); tryCompare(findChild(view, "channelInfoDialog"), "opened", true)
-        verify(waitForRendering(remove))
+        reveal(remove)
+        verify(waitForPolish(view)); verify(waitForRendering(remove))
         if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/owned-channel-remove-menu.png"))
         mouseClick(remove)
         const confirm = findChild(view, "removeOwnChannelDialog")
@@ -3124,7 +3159,7 @@ TestCase {
         view.chatExpanded = true
         const panel = findChild(view, "chatPanel")
         const history = findChild(panel, "chatHistory")
-        tryCompare(history.rows, "count", channel.messages.length)
+        tryCompare(history.rows, "count", panel.records.length)
         history.scrollTo(history.contentHeight - history.height)
         waitForRendering(panel)
         if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/system-bot-chat.png"))
@@ -4530,7 +4565,10 @@ TestCase {
         tryCompare(channel, "chatReady", true)
         tryCompare(remoteChannel, "chatReady", true)
         tryCompare(channel, "historyLoading", false)
-        tryVerify(function() { return channel.messages.filter(function(m) { return !!m.event }).length === 2 })
+        tryVerify(function() { return channel.notices.length >= 1 })
+        verify(fixtures.publishSystem("Welcome to the workshop"))
+        tryVerify(function() { return channel.messages.length === 1 })
+        fixtures.advanceTime()
         const initialCount = channel.messages.length
         view.chatExpanded = true
         const panel = findChild(view, "chatPanel")
@@ -4551,13 +4589,15 @@ TestCase {
         compare(remoteChannel.messages[remoteChannel.messages.length - 1].text, markdown)
         verify(remoteChannel.sendChat("> Start whenever you are ready.\n\nSounds good! I brought **snacks**. Notes: https://example.org\n\n- Voice first\n- No rush"))
         tryCompare(remoteChannel, "chatPending", false)
-        tryCompare(findChild(panel, "chatHistory").rows, "count", initialCount + 2)
+        tryVerify(function() { return channel.messages.length === initialCount + 2 })
+        tryCompare(findChild(panel, "chatHistory").rows, "count", panel.records.length)
         compare(channel.messages[initialCount + 1].sender, remoteChannel.ownId)
         draft.text = "Tip: use `Shift+Enter` for a new line.\n\n```text\nGood company. Clear voices.\n```"
         tryCompare(send, "enabled", true)
         mouseClick(send)
         tryCompare(draft, "text", "")
-        tryCompare(findChild(panel, "chatHistory").rows, "count", initialCount + 3)
+        tryVerify(function() { return channel.messages.length === initialCount + 3 })
+        tryCompare(findChild(panel, "chatHistory").rows, "count", panel.records.length)
         verify(session.available)
         const history = findChild(panel, "chatHistory")
         waitForRendering(panel)
@@ -4566,18 +4606,20 @@ TestCase {
             history.scrollTo(0)
             return history.atYBeginning && history.rows.itemAt(0) !== null
         })
-        const systemRow = history.rows.itemAt(0)
+        const systemRow = findChild(history, "messageRow_" + channel.messages[0].sequence)
         verify(systemRow && systemRow.systemMessage && !systemRow.own)
         const systemAvatar = findChild(systemRow, "messageAvatar_" + systemRow.message.sender)
         verify(systemAvatar.systemMessage && systemAvatar.online && systemAvatar.animated)
-        compare(findChild(systemRow, "messageText_" + systemRow.message.sequence).textFormat, TextEdit.PlainText)
+        const membershipNotice = panel.records.find(record => record.local)
+        const noticeRow = findChild(history, "messageRow_" + membershipNotice.sequence)
+        verify(noticeRow.localNotice)
         const joinedText = data.language === "ar" ? "%1 انضم." : "%1 joined."
-        compare(findChild(systemRow, "messageText_" + systemRow.message.sequence).text, joinedText.arg(systemRow.message.event.name))
+        compare(findChild(noticeRow, "messageText_" + membershipNotice.sequence).textFormat, TextEdit.PlainText)
+        compare(findChild(noticeRow, "messageText_" + membershipNotice.sequence).text, joinedText.arg(membershipNotice.event.name))
         verify(session.setLanguage("de"))
-        compare(chatContent.plainText(systemRow.message), "%1 ist beigetreten.".arg(systemRow.message.event.name))
-        tryCompare(findChild(systemRow, "messageText_" + systemRow.message.sequence), "text", "%1 ist beigetreten.".arg(systemRow.message.event.name))
+        tryCompare(findChild(noticeRow, "messageText_" + membershipNotice.sequence), "text", "%1 ist beigetreten.".arg(membershipNotice.event.name))
         verify(session.setLanguage(data.language))
-        tryCompare(findChild(systemRow, "messageText_" + systemRow.message.sequence), "text", joinedText.arg(systemRow.message.event.name))
+        tryCompare(findChild(noticeRow, "messageText_" + membershipNotice.sequence), "text", joinedText.arg(membershipNotice.event.name))
         const originalEvent = systemRow.message
         const futureText = "<b>Future notice</b> **literal fallback**"
         systemRow.message = Object.assign({}, originalEvent, {event: {kind: "future.notice.v2"}, text: futureText})
@@ -4587,7 +4629,7 @@ TestCase {
         waitForRendering(panel)
         tryVerify(function() {
             history.scrollTo(0)
-            const row = history.rows.itemAt(0)
+            const row = systemRow
             const avatar = row ? findChild(row, "messageAvatar_" + row.message.sender) : null
             return avatar !== null && fixtures.portraitHasDetail(avatar)
         }, 5000,
@@ -4597,8 +4639,8 @@ TestCase {
             verify(fixtures.saveWindow(view, imageDirectory + "/chat-future-event-" + data.language + ".png"))
         }
         systemRow.message = originalEvent
-        tryVerify(function() { return history.rows.itemAt(initialCount) !== null && history.rows.itemAt(initialCount + 1) !== null })
-        const own = history.rows.itemAt(initialCount), other = history.rows.itemAt(initialCount + 1)
+        const own = findChild(history, "messageRow_" + channel.messages[initialCount].sequence)
+        const other = findChild(history, "messageRow_" + channel.messages[initialCount + 1].sequence)
         verify(own && other)
         history.scrollTo(other.y)
         tryVerify(function() { return findChild(other, "messageAvatar_" + remoteChannel.ownId) !== null })
@@ -4654,9 +4696,9 @@ TestCase {
         waitForRendering(panel)
         if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/chat-offline-avatar.png"))
         verify(fixtures.publishSystem("**Server notice**: https://example.org"))
-        tryVerify(function() { return channel.messages.some(function(m) { return m.event && m.event.kind === "announcement" }) })
-        tryCompare(history.rows, "count", channel.messages.length)
-        const announcementIndex = channel.messages.findIndex(function(m) { return m.event && m.event.kind === "announcement" })
+        tryVerify(function() { return channel.messages.some(function(m) { return m.event && m.event.kind === "announcement" && m.text.includes("Server notice") }) })
+        tryCompare(history.rows, "count", panel.records.length)
+        const announcementIndex = panel.records.findIndex(function(m) { return m.text.includes("Server notice") })
         tryVerify(function() {
             waitForRendering(history)
             history.scrollTo(history.contentHeight - history.height)
@@ -4732,7 +4774,7 @@ TestCase {
             view.openHostChat(channel.ownId)
             tryCompare(channel, "chatHostId", channel.ownId)
             tryVerify(function() { return channel.chatReady && !channel.historyLoading })
-            tryCompare(history.rows, "count", channel.messages.length)
+            tryCompare(history.rows, "count", panel.records.length)
             tryCompare(panel, "updating", false)
             tryVerify(function() { return history.atYEnd }, 2000, "Returning shows the newest messages without a scroll event")
             const last = history.rows.itemAt(history.rows.count - 1)
@@ -4799,7 +4841,7 @@ TestCase {
         view.chatExpanded = false
         verify(channel.join(remoteChannel.ownId, "127.0.0.1", remoteChannel.servicePort))
         tryCompare(channel, "joined", true)
-        tryVerify(function() { return channel.messages.some(function(m) { return !!m.event }) })
+        tryVerify(function() { return channel.notices.some(function(m) { return m.event.kind === "joined" }) })
         verify(!visualChild(view.contentItem, markerName).visible)
         // A long page prevents new arrivals from being read by a stationary reader.
         view.chatExpanded = true
@@ -4866,7 +4908,7 @@ TestCase {
         tryCompare(channel, "joinedHostId", remoteChannel.ownId)
         tryCompare(channel, "joined", true)
         tryCompare(channel, "historyLoading", false)
-        tryCompare(findChild(panel, "chatHistory").rows, "count", channel.messages.length)
+        tryCompare(findChild(panel, "chatHistory").rows, "count", panel.records.length)
         verify(!findChild(view, "chatContext").visible)
         verify(!findChild(view, "conversationOwned").visible)
         verify(!join.visible, "The joined channel cannot be joined again")
@@ -5423,9 +5465,10 @@ TestCase {
         tryVerify(function() { return channel.imageSource(last.image.hash).length > 0 })
         const history = findChild(panel, "chatHistory")
         tryVerify(function() { return history.rows.count > 0 })
-        history.scrollTo(history.rows.count - 1)
-        tryVerify(function() { return history.rows.itemAt(history.rows.count - 1) !== null })
-        const text = findChild(history.rows.itemAt(history.rows.count - 1), "messageText_" + last.sequence)
+        tryVerify(function() { return findChild(history, "messageRow_" + last.sequence) !== null })
+        const row = findChild(history, "messageRow_" + last.sequence)
+        history.scrollTo(row.y)
+        const text = findChild(row, "messageText_" + last.sequence)
         verify(text !== null)
         tryVerify(function() { return (text.text.match(/<img\s/g) || []).length === 1 })
         view.update()

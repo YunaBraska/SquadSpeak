@@ -79,14 +79,22 @@ jobs:
               printf 'A newer main revision exists. Leaving the current snapshot unchanged.\n'
               exit 0
             fi
-            gh api "repos/$GH_REPO/git/matching-refs/tags/$RELEASE_VERSION" --jq '.[].ref' > snapshot-tags.txt
+            gh api "repos/$GH_REPO/git/matching-refs/tags/$RELEASE_VERSION" --jq '.[].ref' > snapshot-refs.txt
             gh api --paginate --slurp "repos/$GH_REPO/releases?per_page=100" > snapshot-releases.json
-            jq -e --arg version "$RELEASE_VERSION" '
-              all(.[][]; if .tag_name == $version or .tag_name == "snapshot-upload"
-                then .prerelease and (.immutable != true) and
-                  (.tag_name != "snapshot-upload" or .draft)
-                else true end)' snapshot-releases.json > /dev/null
-            if jq -e 'any(.[][]; .tag_name == "snapshot-upload")' snapshot-releases.json > /dev/null; then
+            python3 - <<'PYRELEASE'
+          import json, os, pathlib, re
+          releases = [r for page in json.loads(pathlib.Path("snapshot-releases.json").read_text()) for r in page]
+          version = os.environ["RELEASE_VERSION"]
+          for release in releases:
+              if release["tag_name"] in (version, "snapshot-upload"):
+                  if not release["prerelease"] or release.get("immutable") or (release["tag_name"] == "snapshot-upload" and not release["draft"]):
+                      raise SystemExit("Refusing to replace a protected release")
+          pathlib.Path("snapshot-tags.txt").write_text("\n".join(r["tag_name"] for r in releases) + "\n")
+          pathlib.Path("obsolete-snapshots.txt").write_text("".join(r["tag_name"] + "\n" for r in releases
+              if r["prerelease"] and r["tag_name"] != version
+              and re.fullmatch(r"[0-9]+\.[0-9]+\.[0-9]+-SNAPSHOT(?:\.[0-9]+)?", r["tag_name"])))
+          PYRELEASE
+            if grep -Fxq snapshot-upload snapshot-tags.txt; then
               gh release delete snapshot-upload --yes
             fi
           fi
@@ -116,19 +124,16 @@ jobs:
           if test "$RELEASE_MODE" = snapshot; then
             gh release create snapshot-upload release-assets/* --target "$SOURCE_REVISION" \
               --title "SquadSpeak $RELEASE_VERSION" --notes-file release-notes.md --draft --prerelease --latest=false
-            if jq -e --arg version "$RELEASE_VERSION" 'any(.[][]; .tag_name == $version)' snapshot-releases.json > /dev/null; then
+            if grep -Fxq "$RELEASE_VERSION" snapshot-tags.txt; then
               gh release delete "$RELEASE_VERSION" --yes
             fi
-            if grep -Fxq "refs/tags/$RELEASE_VERSION" snapshot-tags.txt; then
+            if grep -Fxq "refs/tags/$RELEASE_VERSION" snapshot-refs.txt; then
               gh api --method PATCH "repos/$GH_REPO/git/refs/tags/$RELEASE_VERSION" \
                 -f "sha=$SOURCE_REVISION" -F force=true > /dev/null
             fi
             gh release edit snapshot-upload --tag "$RELEASE_VERSION" --target "$SOURCE_REVISION" \
               --draft=false --prerelease=true --latest=false
             # Retain exactly one snapshot, including after the stable version changes.
-            jq -r --arg version "$RELEASE_VERSION" '.[][] | select(.prerelease and .tag_name != $version) |
-              .tag_name | select(test("^[0-9]+\\.[0-9]+\\.[0-9]+-SNAPSHOT(\\.[0-9]+)?$"))' \
-              snapshot-releases.json > obsolete-snapshots.txt
             while IFS= read -r tag; do
               gh release delete "$tag" --yes --cleanup-tag
             done < obsolete-snapshots.txt

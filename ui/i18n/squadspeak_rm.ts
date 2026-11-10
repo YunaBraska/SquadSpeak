@@ -422,6 +422,10 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Not connected</source>
+            <translation>Betg collià</translation>
+        </message>
+        <message>
             <source>Text size</source>
             <translation>Grondezza dal text</translation>
         </message>

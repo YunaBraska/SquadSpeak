@@ -661,6 +661,9 @@ elif name == "xcrun" and args[:2] == ["notarytool", "log"]:
         state = self.root / "github.json"
         state.write_text(json.dumps({"releases": releases, "latest": "2026.10.3",
                                      "tags": {tag: "c" * 40 for tag in releases}}))
+        jq = self.root / "bin/jq"
+        jq.write_text("#!/bin/sh\nexit 99\n")
+        jq.chmod(0o700)
         gh = self.root / "bin/gh"
         gh.write_text("#!" + sys.executable + "\n" + r'''import json, os, pathlib, sys
 args = sys.argv[1:]

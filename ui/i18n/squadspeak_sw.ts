@@ -422,6 +422,10 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Not connected</source>
+            <translation>Haijaunganishwa</translation>
+        </message>
+        <message>
             <source>Text size</source>
             <translation>Ukubwa wa maandishi</translation>
         </message>
