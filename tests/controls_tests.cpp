@@ -88,6 +88,7 @@ class AudioFixtures final : public QObject {
     std::unique_ptr<VoiceSession> remoteSession_;
     std::unique_ptr<LocalChannel> remoteChannel_;
     std::vector<std::unique_ptr<QSslSocket>> members_;
+    QMetaObject::Connection memberAdmission_;
     ChatContent chatContent_;
     std::unique_ptr<AudioModel> audio_;
     QList<QMetaObject::Connection> audioChannelConnections_;
@@ -192,6 +193,7 @@ public slots:
 
     bool populateMembers(int count) {
         if (count < 0 || count > 63) return false;
+        disconnect(memberAdmission_);
         members_.clear();
         const auto frame = [](const QJsonObject& object) {
             const auto data = QJsonDocument(object).toJson(QJsonDocument::Compact);
@@ -212,23 +214,30 @@ public slots:
         }
         for (int i = 0; i < count; ++i) {
             auto& socket = *members_[size_t(i)];
-            socket.connectToHostEncrypted("127.0.0.1", channel_->port());
-            if (!QTest::qWaitFor([&] { return socket.isEncrypted(); }, 5000)) return false;
             const auto hello = frame({{"type", "hello"}, {"version", 1},
                 {"name", QString("Member %1").arg(i + 2, 2, 10, QChar('0'))},
                 {"avatarId", session_->avatars().at(i % 10)}, {"muted", i % 3 == 0},
                 {"available", true}, {"capabilities", QJsonArray{}}});
-            if (socket.write(hello) != hello.size()) return false;
-            if (!QTest::qWaitFor([&] { return channel_->participants().size() == i + 2; }, 5000)) {
-                qWarning() << "Member admission failed" << i + 2 << socket.errorString();
-                return false;
-            }
             auto* heartbeat = new QTimer(&socket);
             connect(heartbeat, &QTimer::timeout, &socket, [peer = &socket, ping = frame({{"type", "ping"}})] {
                 if (peer->isEncrypted()) peer->write(ping);
             });
-            heartbeat->start(2000);
+            connect(&socket, &QSslSocket::encrypted, &socket, [peer = &socket, hello, heartbeat] {
+                peer->write(hello);
+                heartbeat->start(2000);
+            });
         }
+        if (members_.empty()) return true;
+        // Admit one client at a time without nesting waits inside the GUI event
+        // loop. The QML test waits for the public participant count to settle.
+        memberAdmission_ = connect(channel_.get(), &LocalChannel::participantsChanged, this, [this] {
+            const auto next = channel_->participants().size() - 1;
+            if (next < 0 || size_t(next) >= members_.size()) return;
+            auto& socket = *members_[size_t(next)];
+            if (socket.state() == QAbstractSocket::UnconnectedState)
+                socket.connectToHostEncrypted("127.0.0.1", channel_->port());
+        });
+        members_.front()->connectToHostEncrypted("127.0.0.1", channel_->port());
         return true;
     }
     bool tapNativeInput(QObject* object) {
@@ -478,6 +487,37 @@ public slots:
     }
     bool portraitHasDetail(QObject* object, bool grayscale = false) {
         return portraitsHaveDetail({object}, grayscale);
+    }
+    int avatarDetachedPixels(const QUrl& source, const QVariantList& crops) {
+        const QImage image(source.isLocalFile() ? source.toLocalFile() : ":" + source.path());
+        if (image.isNull() || crops.isEmpty()) return -1;
+        int worst = 0;
+        for (const auto& crop : crops) {
+            const auto rect = crop.toRectF().toRect();
+            if (rect.isEmpty() || !image.rect().contains(rect)) return -1;
+            auto frame = image.copy(rect).convertToFormat(QImage::Format_ARGB32);
+            int total = 0, largest = 0;
+            for (int y = 0; y < frame.height(); ++y) for (int x = 0; x < frame.width(); ++x) {
+                if (qAlpha(frame.pixel(x, y)) <= 128) continue;
+                QList<QPoint> pending{{x, y}};
+                frame.setPixel(x, y, 0);
+                int area = 0;
+                while (!pending.isEmpty()) {
+                    const auto point = pending.takeLast();
+                    ++area;
+                    for (const auto delta : {QPoint{-1, 0}, QPoint{1, 0}, QPoint{0, -1}, QPoint{0, 1}}) {
+                        const auto next = point + delta;
+                        if (!frame.rect().contains(next) || qAlpha(frame.pixel(next)) <= 128) continue;
+                        frame.setPixel(next, 0);
+                        pending.append(next);
+                    }
+                }
+                total += area;
+                largest = std::max(largest, area);
+            }
+            worst = std::max(worst, total - largest);
+        }
+        return worst;
     }
     bool portraitsHaveDetail(const QList<QObject*>& objects, bool grayscale = false) {
         if (objects.isEmpty()) return false;

@@ -2268,7 +2268,10 @@ PanelWindow {
                     Layout.preferredHeight: 42 + Theme.fontSize(18)
                     orientation: ListView.Horizontal; clip: true; cacheBuffer: 0
                     model: root.speakers
-                    ScrollBar.horizontal: ScrollBar { policy: activeSpeakers.contentWidth > activeSpeakers.width ? ScrollBar.AlwaysOn : ScrollBar.AsNeeded }
+                    ScrollBar.horizontal: ScrollBar {
+                        objectName: "activeSpeakersScrollBar"
+                        policy: activeSpeakers.contentWidth > activeSpeakers.width + 1 ? ScrollBar.AlwaysOn : ScrollBar.AlwaysOff
+                    }
                     delegate: MemberTile {
                         required property var modelData
                         objectName: "speaker_" + modelData.id

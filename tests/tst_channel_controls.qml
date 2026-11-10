@@ -3705,6 +3705,20 @@ TestCase {
         }
     }
 
+    function test_dragonFramesExcludeNeighbouringPortraits() {
+        const item = createTemporaryObject(variablePortrait, view.contentItem, {avatar: "ember-dragon"})
+        const layout = Atlas.forAvatar("ember-dragon", false)
+        const crops = []
+        for (const row of layout.rows)
+            for (let column = 0; column < row.frames.reduce((sum, count) => sum + count, 0); ++column)
+                crops.push(Atlas.frameRect(layout, row, column))
+        compare(crops.length, 120)
+        const detached = fixtures.avatarDetachedPixels(item.atlasSource, crops)
+        // This character has one connected silhouette. Allow isolated edge
+        // pixels, but not the neighbouring horns/body visible in the report.
+        verify(detached >= 0 && detached <= 2, "Detached pixels outside the dragon: " + detached)
+    }
+
     function test_voiceParticipants_data() {
         return [1, 8, 64].map(count => ({tag: count.toString(), count: count}))
     }
@@ -3726,6 +3740,7 @@ TestCase {
     }
 
     function test_voiceParticipants(data) {
+        verify(session.setAvatar("ember-dragon"))
         startControlledVoice(data.count)
         const levels = ({})
         const strip = findChild(controllerView, "activeSpeakers")
@@ -3788,11 +3803,30 @@ TestCase {
         tryVerify(function() { return Object.keys(remoteChannel.remoteLevels).length === 0 })
         tryCompare(strip, "count", 0)
         verify(findChild(controllerView, "voiceRoster").visible)
-        verify(channel.sendChat("A real message"))
+        verify(fixtures.advanceTime())
+        verify(channel.sendChat("**Bereit für die nächste Runde?**\nTreffpunkt ist die Brücke."))
         tryVerify(function() { return !findChild(controllerView, "chatPanel").showingEmptyContent })
         verify(fixtures.publishLevels(levels))
         tryCompare(strip, "count", Object.keys(levels).length)
         verify(findChild(controllerView, "chatDraft").visible)
+        if (data.count === 8) {
+            findChild(controllerView, "chatDraft").text = "Ich bringe die Karte mit."
+            mouseClick(findChild(controllerView, "sendChat"))
+            tryVerify(function() { return findChild(controllerView, "chatPanel").current.messages.some(m => m.text === "Ich bringe die Karte mit.") })
+            for (const size of [[390, 700], [1200, 820]]) {
+                controllerView.width = size[0]; controllerView.height = size[1]
+                verify(waitForPolish(controllerView))
+                verify(waitForRendering(controllerView.contentItem))
+                verify(!findChild(controllerView, "chatPanel").showingEmptyContent)
+                compare(strip.count, 3)
+                tryVerify(function() { return strip.contentWidth <= strip.width + 1 }, 5000,
+                    "Three speakers fit without horizontal overflow: " + strip.contentWidth + "/" + strip.width)
+                tryCompare(findChild(controllerView, "activeSpeakersScrollBar"), "visible", false)
+                verify(findChild(controllerView, "chatDraft").visible)
+                if (imageDirectory.length > 0)
+                    verify(fixtures.saveWindow(controllerView, imageDirectory + "/voice-chat-" + size[0] + ".png"))
+            }
+        }
         verify(channel.leave())
         tryCompare(strip, "visible", false)
         tryCompare(strip, "count", 0)
@@ -3817,6 +3851,7 @@ TestCase {
         tryCompare(strip, "count", active.length)
         verify(strip.count > 3)
         verify(strip.contentWidth > strip.width)
+        tryCompare(findChild(controllerView, "activeSpeakersScrollBar"), "visible", true)
         compare(findChild(controllerView, "voiceConnection").text, channel.channelName)
         verify(!findChild(controllerView, "chatPanel").showingEmptyContent)
         remoteSession.setAvatarAnimation("off")

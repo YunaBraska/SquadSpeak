@@ -59,11 +59,16 @@ All portraits use the same centered, aspect-preserving renderer. Circular backgr
 
 All twenty member sheets contain more than 30 drawn frames. Courier and the animated System portrait use 4 px display insets to exclude neighboring artwork at cell edges. Other sheets use zero inset. These are display crops only. `system.png` remains a separate static portrait.
 
+Ember Dragon's measured transparent separators do not follow its original fixed
+109 px grid. Its 120 frames are repacked into 123 px cells with clear side margins.
+All source pixels are preserved without resampling. This prevents neighboring
+horns and body fragments from appearing in a portrait.
+
 | Dense sheet | PNG size | Cell width | Row heights, top to bottom | Clip frame counts |
 | --- | --- | --- | --- | --- |
 | Mossling | 3616 x 540 | 113 | 108, 108, 108, 108, 108 | 8/8/8; deafened 8/8/16 |
 | Courier | 2664 x 555 | 111 | 113, 112, 111, 113, 106 | 8/8/8 |
-| Ember Dragon | 2616 x 541 | 109 | 109, 107, 109, 107, 109 | 8/8/8 |
+| Ember Dragon | 2952 x 541 | 123 | 109, 107, 109, 107, 109 | 8/8/8 |
 | Mechanic | 3072 x 655 | 128 | 131, 131, 131, 131, 131 | 8/8/8; deafened 8/4/4 |
 | Moon Owl | 3048 x 620 | 127 | 124, 124, 124, 124, 124 | 8/8/8 |
 | Mushroom Sage | 2940 x 680 | 140 | 136, 136, 136, 136, 136 | 7/7/7; deafened and sleeping 7/3/4 |
