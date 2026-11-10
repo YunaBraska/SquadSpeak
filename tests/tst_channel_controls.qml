@@ -162,6 +162,8 @@ TestCase {
         verify(fixtures.setSupporter(false))
         verify(fixtures.expireChat())
         view.show()
+        view.requestActivate()
+        tryCompare(view, "active", true)
         const shelf = findChild(view, "avatarShelf")
         shelf.currentIndex = session.avatars.indexOf(session.avatar)
         shelf.positionViewAtIndex(shelf.currentIndex, PathView.Center)
@@ -209,7 +211,11 @@ TestCase {
         portraitGallery.visible = false
         portraitGallery.online = true
         portraitGallery.shownPortraits = 0
-        controllerView.close()
+        if (controllerView.visible) {
+            controllerView.close()
+            view.show(); view.requestActivate()
+            tryCompare(view, "active", true)
+        }
         controllerView.chatExpanded = false
         remoteSession.releasePttInput()
         for (const device of channel.controllers) channel.decideControl(device.id, false)
@@ -566,7 +572,7 @@ TestCase {
             if (imageDirectory.length) {
                 tryCompare(channel, "historyLoading", false)
                 tryVerify(function() {
-                    const avatar = visualChild(view.contentItem, "channelAvatar_" + channel.ownId + "_" + channel.ownId)
+                    const avatar = visualChild(view.contentItem, "messageAvatar_" + channel.ownId)
                     return avatar && fixtures.portraitHasDetail(avatar)
                 }, 5000, "The visible avatar is rendered before capture")
                 verify(fixtures.saveWindow(view, imageDirectory + "/voice-joined-" + data.tag + ".png"))
@@ -1435,7 +1441,10 @@ TestCase {
         tryCompare(channel, "chatReady", true)
         tryCompare(remoteChannel, "chatReady", true)
         tryVerify(function() { return view.chatMembers.length === 2 })
-        const portrait = visualChild(view.contentItem, "channelAvatar_" + channel.ownId + "_" + remoteChannel.ownId)
+        mouseClick(findChild(view, "voiceMembers"))
+        tryCompare(findChild(view, "membersDialog"), "opened", true)
+        tryVerify(function() { return visualChild(findChild(view, "allMembers"), "member_" + remoteChannel.ownId) !== null })
+        const portrait = visualChild(findChild(view, "allMembers"), "member_" + remoteChannel.ownId)
         verify(portrait !== null)
         verify(waitForRendering(portrait))
         mouseClick(portrait)
@@ -1505,7 +1514,10 @@ TestCase {
         tryCompare(dialog, "opened", true)
         compare(findChild(dialog, "requestIdentity").text, remoteChannel.ownId)
         dialog.close(); tryCompare(dialog, "visible", false)
-        const currentPortrait = visualChild(view.contentItem, "channelAvatar_" + channel.ownId + "_" + remoteChannel.ownId)
+        mouseClick(findChild(view, "voiceMembers"))
+        tryCompare(findChild(view, "membersDialog"), "opened", true)
+        tryVerify(function() { return visualChild(findChild(view, "allMembers"), "member_" + remoteChannel.ownId) !== null })
+        const currentPortrait = visualChild(findChild(view, "allMembers"), "member_" + remoteChannel.ownId)
         verify(currentPortrait !== null)
         verify(waitForFrame(currentPortrait))
         mouseClick(currentPortrait, currentPortrait.width / 2, currentPortrait.height / 2, Qt.RightButton)
@@ -3693,7 +3705,148 @@ TestCase {
         }
     }
 
-    function test_all64MembersAreReachableFromChannelSummary() {
+    function test_voiceParticipants_data() {
+        return [1, 8, 64].map(count => ({tag: count.toString(), count: count}))
+    }
+
+    function startControlledVoice(count) {
+        verify(fixtures.startHost())
+        verify(session.setMuted(false))
+        verify(channel.join(channel.ownId, "127.0.0.1", channel.servicePort))
+        tryCompare(channel, "chatReady", true)
+        verify(fixtures.populateMembers(count - 1))
+        tryVerify(function() { return channel.participants.length === count }, 30000)
+        verify(channel.decide(remoteChannel.ownId, true))
+        verify(remoteChannel.openChat(channel.ownId, "127.0.0.1", channel.servicePort))
+        tryCompare(remoteChannel, "chatReady", true)
+        verify(channel.setRemotePermission(remoteChannel.ownId, true))
+        tryVerify(function() { return remoteChannel.remoteOffers.length === 1 })
+        verify(remoteChannel.chooseRemoteOffer(channel.ownId))
+        tryCompare(remoteChannel, "remoteAllowed", true)
+    }
+
+    function test_voiceParticipants(data) {
+        startControlledVoice(data.count)
+        const levels = ({})
+        const strip = findChild(controllerView, "activeSpeakers")
+        for (const size of [[390, 700], [1200, 820]]) {
+            controllerView.width = size[0]; controllerView.height = size[1]
+            controllerView.show()
+            controllerView.requestActivate()
+            tryCompare(controllerView, "active", true)
+            controllerView.chatExpanded = true
+            tryCompare(controllerView, "viewingVoice", true)
+            tryVerify(function() { const grid = findChild(controllerView, "voiceRoster"); return grid && grid.visible })
+            const gallery = findChild(controllerView, "voiceRoster")
+            verify(gallery !== null, "An empty voice chat shows named participants")
+            tryCompare(gallery, "visible", true)
+            tryCompare(gallery, "count", data.count)
+            const originalOrder = gallery.model.map(function(m) { return m.id }).join(",")
+            const eligible = channel.participants.filter(function(m) { return m.available && !m.muted && !m.music })
+            // Include a speaker at the end of a large roster, outside the first viewport.
+            const speakers = data.count === 1 ? eligible : [eligible[0], eligible[1], eligible[eligible.length - 1]]
+            for (const member of speakers) levels[member.id] = 0.12
+            verify(fixtures.publishLevels(levels))
+            verify(strip !== null)
+            tryCompare(strip, "count", speakers.length)
+            compare(gallery.model.map(function(m) { return m.id }).join(","), originalOrder)
+            for (const member of speakers) {
+                tryVerify(function() { return visualChild(strip, "speaker_" + member.id) !== null })
+                const row = visualChild(strip, "speaker_" + member.id)
+                verify(row.Accessible.name.includes(member.name))
+                tryVerify(function() { return findChild(row, "participantAvatar").speaking })
+                verify(row.mapToItem(strip, 0, 0).x + row.width <= strip.width + 1, "Three simultaneous speakers fit the compact window")
+            }
+            verify(findChild(controllerView, "chatDraft").visible)
+            verify(waitForRendering(controllerView.contentItem))
+            tryVerify(function() {
+                for (const member of gallery.model) {
+                    const row = visualChild(gallery, "member_" + member.id)
+                    if (!row) continue
+                    const y = row.mapToItem(gallery, 0, 0).y
+                    if (y >= 0 && y + row.height <= gallery.height
+                        && !fixtures.portraitHasDetail(findChild(row, "participantAvatar"))) return false
+                }
+                return true
+            })
+            findChild(controllerView, "chatDraft").forceActiveFocus()
+            mouseMove(controllerView.contentItem, 0, 0)
+            for (const member of speakers)
+                tryCompare(findChild(visualChild(strip, "speaker_" + member.id), "memberTooltip"), "visible", false)
+            verify(waitForRendering(controllerView.contentItem))
+            if (imageDirectory.length > 0)
+                verify(fixtures.saveWindow(controllerView, imageDirectory + "/voice-" + data.tag + "-" + size[0] + ".png"))
+            const lastSpeaker = visualChild(strip, "speaker_" + speakers[speakers.length - 1].id)
+            mouseClick(lastSpeaker, lastSpeaker.width / 2, lastSpeaker.height / 2)
+            const inspect = findChild(controllerView, "requestInfoDialog")
+            tryCompare(inspect, "opened", true)
+            compare(findChild(inspect, "requestName").text, speakers[speakers.length - 1].name)
+            inspect.close()
+        }
+        // Join/leave notices leave the gallery intact, actual chat replaces it.
+        verify(fixtures.publishLevels({}))
+        tryVerify(function() { return Object.keys(remoteChannel.remoteLevels).length === 0 })
+        tryCompare(strip, "count", 0)
+        verify(findChild(controllerView, "voiceRoster").visible)
+        verify(channel.sendChat("A real message"))
+        tryVerify(function() { return !findChild(controllerView, "chatPanel").showingEmptyContent })
+        verify(fixtures.publishLevels(levels))
+        tryCompare(strip, "count", Object.keys(levels).length)
+        verify(findChild(controllerView, "chatDraft").visible)
+        verify(channel.leave())
+        tryCompare(strip, "visible", false)
+        tryCompare(strip, "count", 0)
+    }
+
+    function test_speakersStayWithVoiceWhileReadingAnotherChat() {
+        startControlledVoice(8)
+        controllerView.width = 390; controllerView.height = 700
+        controllerView.show()
+        controllerView.chatExpanded = true
+        verify(fixtures.setSupporter(true))
+        const other = channel.addOwnedChannel("Text only")
+        verify(other.length > 0)
+        verify(channel.openSavedChat(other))
+        tryCompare(controllerView, "inspectedHost", other)
+        tryCompare(controllerView, "viewingVoice", false)
+        const active = channel.participants.filter(function(m) { return m.available && !m.muted && !m.music })
+        const levels = ({})
+        for (const member of active) levels[member.id] = 0.1
+        verify(fixtures.publishLevels(levels))
+        const strip = findChild(controllerView, "activeSpeakers")
+        tryCompare(strip, "count", active.length)
+        verify(strip.count > 3)
+        verify(strip.contentWidth > strip.width)
+        compare(findChild(controllerView, "voiceConnection").text, channel.channelName)
+        verify(!findChild(controllerView, "chatPanel").showingEmptyContent)
+        remoteSession.setAvatarAnimation("off")
+        strip.positionViewAtEnd()
+        const last = active[active.length - 1]
+        tryVerify(function() { return visualChild(strip, "speaker_" + last.id) !== null })
+        const tile = visualChild(strip, "speaker_" + last.id)
+        const avatar = findChild(tile, "participantAvatar")
+        tryCompare(avatar, "speaking", true)
+        compare(avatar.frame, 0)
+        tile.forceActiveFocus(); keyClick(Qt.Key_Return)
+        const inspect = findChild(controllerView, "requestInfoDialog")
+        tryCompare(inspect, "opened", true)
+        compare(findChild(inspect, "requestIdentity").text, last.id)
+        inspect.close()
+        // Opening the participant list still refers to voice, not the other chat.
+        mouseClick(findChild(controllerView, "voiceMembers"))
+        const list = findChild(controllerView, "membersDialog")
+        tryCompare(list, "opened", true)
+        compare(findChild(controllerView, "allMembers").count, 8)
+        list.close()
+        verify(session.setMuted(true))
+        tryVerify(function() { return !strip.model.some(function(m) { return m.id === channel.ownId }) })
+        verify(fixtures.populateMembers(0))
+        tryCompare(strip, "count", 0)
+        verify(channel.leave())
+        tryCompare(strip, "visible", false)
+    }
+
+    function test_all64MembersAreReachableFromVoiceRoster() {
         if (Qt.platform.os === "ios" || Qt.platform.os === "android") orientChat(false)
         else { view.width = 460; view.height = 700 }
         verify(fixtures.startHost())
@@ -3701,11 +3854,13 @@ TestCase {
         tryCompare(channel, "chatReady", true)
         verify(fixtures.populateMembers(63))
         tryVerify(function() { return channel.participants.length === 64 && view.chatMembers.length === 64 }, 30000)
-        const more = visualChild(view.contentItem, "showMembers_" + channel.ownId)
+        const more = findChild(view, "voiceMembers")
         tryVerify(function() { return more && more.visible })
-        compare(more.text, "+61")
-        const inlineGrid = findChild(view, "channelMembers")
-        verify(!inlineGrid || !inlineGrid.visible, "The channel has one member summary, not a duplicate roster above chat")
+        compare(more.text, "64")
+        tryVerify(function() { const grid = findChild(view, "voiceRoster"); return grid && grid.visible })
+        const inlineGrid = findChild(view, "voiceRoster")
+        verify(inlineGrid && inlineGrid.visible)
+        compare(inlineGrid.count, 64)
         compare(findChild(view, "leaveChannel"), null)
         if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/members-64-channel.png"))
         mouseClick(more)
@@ -3756,8 +3911,10 @@ TestCase {
         tryCompare(channel, "chatReady", true)
         tryCompare(remoteChannel, "chatReady", true)
         tryVerify(function() { return channel.participants.length === 2 })
-        const inlineGrid = findChild(view, "channelMembers")
-        verify(!inlineGrid || !inlineGrid.visible, "Members are not repeated below the channel header")
+        tryVerify(function() { const grid = findChild(view, "voiceRoster"); return grid && grid.visible })
+        const inlineGrid = findChild(view, "voiceRoster")
+        verify(inlineGrid && inlineGrid.visible)
+        compare(inlineGrid.count, 2)
         verify(!view.header, "Channel content starts without an app header")
         verify(findChild(view, "leaveChannel") === null, "Leave stays in the channel menu")
         for (const size of [[460, 560], [360, 360], [900, 480]]) {
@@ -3780,12 +3937,13 @@ TestCase {
             verify(!findChild(view, "remoteToggle").visible)
             verify(session.available)
             for (const member of channel.participants) {
-                const avatar = visualChild(view.contentItem, "channelAvatar_" + channel.ownId + "_" + member.id)
+                const row = visualChild(inlineGrid, "member_" + member.id)
+                const avatar = row ? findChild(row, "participantAvatar") : null
                 tryVerify(function() { return fixtures.portraitHasDetail(avatar) }, 5000, "Every visible channel portrait is painted")
             }
             if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/channels-new-" + size[0] + ".png"))
         }
-        const summary = visualChild(view.contentItem, "memberSummary_" + channel.ownId)
+        const summary = findChild(view, "voiceMembers")
         verify(summary && summary.visible)
         verify(fixtures.pressAccessible(summary))
         const members = findChild(view, "membersDialog")
@@ -4437,16 +4595,17 @@ TestCase {
         compare(last.sender, channel.ownId)
         compare(last.name, session.userName)
         verify(!remoteChannel.joined)
-        tryVerify(function() {
-            return visualChild(controllerView.contentItem, "channelAvatar_" + channel.ownId + "_" + channel.ownId) !== null
-                && visualChild(chat, "messageAvatar_" + channel.ownId) !== null
-        })
-        const rowPortrait = visualChild(controllerView.contentItem, "channelAvatar_" + channel.ownId + "_" + channel.ownId)
-        const messagePortrait = visualChild(chat, "messageAvatar_" + channel.ownId)
-        verify(rowPortrait !== null && messagePortrait !== null)
         const levels = ({})
         levels[channel.ownId] = 0.1
         verify(fixtures.publishLevels(levels))
+        const speakerList = findChild(controllerView, "activeSpeakers")
+        tryVerify(function() {
+            return visualChild(speakerList, "speaker_" + channel.ownId) !== null
+                && visualChild(chat, "messageAvatar_" + channel.ownId) !== null
+        })
+        const rowPortrait = findChild(visualChild(speakerList, "speaker_" + channel.ownId), "participantAvatar")
+        const messagePortrait = visualChild(chat, "messageAvatar_" + channel.ownId)
+        verify(rowPortrait !== null && messagePortrait !== null)
         tryVerify(function() { return rowPortrait.activity > 0 && messagePortrait.activity > 0 })
         compare(messagePortrait.stateRow, rowPortrait.stateRow)
         for (const time of [0, 400, 1000, 1700, 4500, 9100]) {
@@ -4462,8 +4621,7 @@ TestCase {
         session.setMuted(true)
         tryCompare(messagePortrait, "stateRow", 2)
         tryVerify(function() {
-            const updated = visualChild(controllerView.contentItem, "channelAvatar_" + channel.ownId + "_" + channel.ownId)
-            return updated !== null && updated.stateRow === 2 && updated.activity === 0
+            return visualChild(speakerList, "speaker_" + channel.ownId) === null
         })
         for (const size of [[560, 780], [320, 568]]) {
             controllerView.width = size[0]; controllerView.height = size[1]

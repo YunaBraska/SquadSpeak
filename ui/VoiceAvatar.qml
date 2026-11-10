@@ -35,11 +35,11 @@ Item {
     property real speechUntil: -1
     onActivityChanged: {
         if (activity > 0) speechUntil = Infinity
-        else if (speechUntil === Infinity) speechUntil = canSpeak ? animationTime + 240 : -1
+        else if (speechUntil === Infinity) speechUntil = canSpeak ? animationTime + Atlas.speechHold : -1
     }
     onCanSpeakChanged: { if (!canSpeak) speechUntil = -1 }
     readonly property bool speaking: canSpeak && (activity > 0
-        || (animationTime < speechUntil && animationTime >= speechUntil - 240))
+        || (animationTime < speechUntil && animationTime >= speechUntil - Atlas.speechHold))
     readonly property int stateRow: !online ? 4 : speaking ? 1 : sleeping ? 4 : deafened ? 3 : muted ? 2 : 0
     readonly property int column: {
         if (!online || !animated) return 0

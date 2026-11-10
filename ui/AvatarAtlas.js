@@ -1,5 +1,7 @@
 .pragma library
 
+const speechHold = 240
+
 // One physical row per state, with one or more clips and their timing in ms.
 function layout(edges, inset, stride = 229, frames = [2, 2, 2]) {
     return { stride: stride, inset: inset, rows: edges.slice(0, -1).map(function(top, row) {

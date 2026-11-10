@@ -7,6 +7,9 @@ Item {
     id: root
     implicitHeight: chatLayout.implicitHeight
     required property var network
+    property Component emptyContent: null
+    readonly property bool showingEmptyContent: emptyContent !== null && !!current.chatReady && !current.historyLoading
+        && !(current.messages || []).length && !current.hasOlderMessages && !current.hasNewerMessages && !current.chatError
     property bool animatedAvatars: true
     property double animationTime: 0
     property var memberLevel: function(id) { return 0 }
@@ -172,10 +175,17 @@ Item {
         id: chatLayout
         anchors.fill: parent
         spacing: 6
+        Loader {
+            Layout.fillWidth: true; Layout.fillHeight: true
+            active: root.showingEmptyContent; visible: active
+            sourceComponent: root.emptyContent
+        }
         Flickable {
             id: history
             objectName: "chatHistory"
-            Layout.fillWidth: true; Layout.fillHeight: true; Layout.minimumHeight: 16
+            visible: !root.showingEmptyContent || root.records.length > 0
+            Layout.fillWidth: true; Layout.fillHeight: !root.showingEmptyContent; Layout.minimumHeight: 16
+            Layout.preferredHeight: root.showingEmptyContent ? Math.min(contentHeight, 64) : -1
             clip: true
             contentWidth: width
             contentHeight: messageColumn.height
@@ -380,7 +390,7 @@ Item {
             Label {
                 anchors.centerIn: parent
                 width: parent.width - 24; horizontalAlignment: Text.AlignHCenter; wrapMode: Text.Wrap
-                visible: messageRows.count === 0 && !root.current.chatError
+                visible: !root.showingEmptyContent && messageRows.count === 0 && !root.current.chatError
                 text: root.current.historyLoading ? qsTr("Loading...") : root.current.chatReady ? qsTr("Start the conversation.") : qsTr("Chat opens after access is approved.")
                 color: Theme.muted
             }
