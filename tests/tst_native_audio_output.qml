@@ -17,7 +17,9 @@ TestCase {
         const events = session.eventSounds
         const muted = session.muted
         const deafened = session.deafened
+        const language = session.language
         try {
+            verify(session.setLanguage("en"))
             verify(session.setMuted(true)); verify(session.setDeafened(true))
             verify(audio.setNotificationVolume(0.01))
             verify(audio.setReadBotMessages(true))
@@ -44,12 +46,17 @@ TestCase {
                 compare(progress.signalArguments[i * 3 + 2][1], "finished")
                 verify(progress.signalArguments[i * 3 + 1][2].length > 0)
             }
+            verify(["Hey, you're back.", "Ready when you are.", "Let's talk."].includes(
+                progress.signalArguments[1][2]), "Startup uses a short greeting")
+            verify(session.setLanguage("de"))
             fixtures.shutdownFeedback()
             tryCompare(stopped, "count", 1, 7000)
             compare(progress.count, 12, "Quit completes its cue and speech before shutdown")
             compare(progress.signalArguments[9][0], "quit")
             compare(progress.signalArguments[10][1], "speech")
             compare(progress.signalArguments[11][1], "finished")
+            verify(["Bis später.", "Ich bin dann weg.", "Bis zum nächsten Mal."].includes(
+                progress.signalArguments[10][2]), "Goodbye follows the current app language")
             fixtures.shutdownFeedback()
             compare(stopped.count, 1)
             verify(!audio.running && !channel.joined)
@@ -60,6 +67,7 @@ TestCase {
             channel.leave(); channel.stopHost()
             audio.setReadBotMessages(readBot); audio.setNotificationVolume(volume)
             session.setEventSounds(events); session.setMuted(muted); session.setDeafened(deafened)
+            session.setLanguage(language)
         }
     }
 

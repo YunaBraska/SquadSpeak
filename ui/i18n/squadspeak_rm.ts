@@ -3291,12 +3291,28 @@
     <context>
         <name>AppFeedback</name>
         <message>
-            <source>SquadSpeak started.</source>
-            <translation>SquadSpeak è vegnì lantschà.</translation>
+            <source>Hey, you're back.</source>
+            <translation>Hallo, ti es puspè qua.</translation>
         </message>
         <message>
-            <source>SquadSpeak is closing.</source>
-            <translation>SquadSpeak vegn serrà.</translation>
+            <source>Ready when you are.</source>
+            <translation>Cumenzain cura che ti vuls.</translation>
+        </message>
+        <message>
+            <source>Let's talk.</source>
+            <translation>Faschain ina baterlada.</translation>
+        </message>
+        <message>
+            <source>Catch you later.</source>
+            <translation>A pli tard.</translation>
+        </message>
+        <message>
+            <source>Over and out.</source>
+            <translation>Jau sun lura davent.</translation>
+        </message>
+        <message>
+            <source>See you next time.</source>
+            <translation>A la proxima.</translation>
         </message>
     </context>
 </TS>

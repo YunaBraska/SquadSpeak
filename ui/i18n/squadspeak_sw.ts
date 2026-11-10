@@ -3291,12 +3291,28 @@
     <context>
         <name>AppFeedback</name>
         <message>
-            <source>SquadSpeak started.</source>
-            <translation>SquadSpeak imeanza.</translation>
+            <source>Hey, you're back.</source>
+            <translation>Hujambo, umerudi.</translation>
         </message>
         <message>
-            <source>SquadSpeak is closing.</source>
-            <translation>SquadSpeak inafungwa.</translation>
+            <source>Ready when you are.</source>
+            <translation>Tuanze ukiwa tayari.</translation>
+        </message>
+        <message>
+            <source>Let's talk.</source>
+            <translation>Tupige gumzo.</translation>
+        </message>
+        <message>
+            <source>Catch you later.</source>
+            <translation>Tutaonana baadaye.</translation>
+        </message>
+        <message>
+            <source>Over and out.</source>
+            <translation>Nimeondoka.</translation>
+        </message>
+        <message>
+            <source>See you next time.</source>
+            <translation>Hadi wakati ujao.</translation>
         </message>
     </context>
 </TS>

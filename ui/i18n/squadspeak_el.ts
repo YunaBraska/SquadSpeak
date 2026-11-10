@@ -3291,12 +3291,28 @@
     <context>
         <name>AppFeedback</name>
         <message>
-            <source>SquadSpeak started.</source>
-            <translation>Το SquadSpeak ξεκίνησε.</translation>
+            <source>Hey, you're back.</source>
+            <translation>Γεια, πάλι εδώ.</translation>
         </message>
         <message>
-            <source>SquadSpeak is closing.</source>
-            <translation>Το SquadSpeak κλείνει.</translation>
+            <source>Ready when you are.</source>
+            <translation>Ξεκινάμε όποτε θες.</translation>
+        </message>
+        <message>
+            <source>Let's talk.</source>
+            <translation>Ας τα πούμε.</translation>
+        </message>
+        <message>
+            <source>Catch you later.</source>
+            <translation>Τα λέμε μετά.</translation>
+        </message>
+        <message>
+            <source>Over and out.</source>
+            <translation>Τέλος επικοινωνίας.</translation>
+        </message>
+        <message>
+            <source>See you next time.</source>
+            <translation>Μέχρι την επόμενη φορά.</translation>
         </message>
     </context>
 </TS>

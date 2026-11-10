@@ -3291,12 +3291,28 @@
     <context>
         <name>AppFeedback</name>
         <message>
-            <source>SquadSpeak started.</source>
-            <translation>SquadSpeak đã khởi động.</translation>
+            <source>Hey, you're back.</source>
+            <translation>Chào, bạn lại đến rồi.</translation>
         </message>
         <message>
-            <source>SquadSpeak is closing.</source>
-            <translation>SquadSpeak đang đóng.</translation>
+            <source>Ready when you are.</source>
+            <translation>Sẵn sàng khi bạn muốn.</translation>
+        </message>
+        <message>
+            <source>Let's talk.</source>
+            <translation>Cùng trò chuyện nào.</translation>
+        </message>
+        <message>
+            <source>Catch you later.</source>
+            <translation>Hẹn gặp lại nhé.</translation>
+        </message>
+        <message>
+            <source>Over and out.</source>
+            <translation>Kết thúc liên lạc.</translation>
+        </message>
+        <message>
+            <source>See you next time.</source>
+            <translation>Hẹn lần sau.</translation>
         </message>
     </context>
 </TS>

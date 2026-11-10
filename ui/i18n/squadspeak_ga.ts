@@ -3291,12 +3291,28 @@
     <context>
         <name>AppFeedback</name>
         <message>
-            <source>SquadSpeak started.</source>
-            <translation>Tá SquadSpeak tosaithe.</translation>
+            <source>Hey, you're back.</source>
+            <translation>Haigh, tá tú ar ais.</translation>
         </message>
         <message>
-            <source>SquadSpeak is closing.</source>
-            <translation>Tá SquadSpeak ag dúnadh.</translation>
+            <source>Ready when you are.</source>
+            <translation>Réidh nuair atá tusa.</translation>
+        </message>
+        <message>
+            <source>Let's talk.</source>
+            <translation>Déanaimis comhrá.</translation>
+        </message>
+        <message>
+            <source>Catch you later.</source>
+            <translation>Slán go fóill.</translation>
+        </message>
+        <message>
+            <source>Over and out.</source>
+            <translation>Sin sin uaimse.</translation>
+        </message>
+        <message>
+            <source>See you next time.</source>
+            <translation>Go dtí an chéad uair eile.</translation>
         </message>
     </context>
 </TS>

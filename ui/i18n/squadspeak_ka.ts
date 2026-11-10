@@ -3291,12 +3291,28 @@
     <context>
         <name>AppFeedback</name>
         <message>
-            <source>SquadSpeak started.</source>
-            <translation>SquadSpeak გაეშვა.</translation>
+            <source>Hey, you're back.</source>
+            <translation>ჰეი, ისევ აქ ხარ.</translation>
         </message>
         <message>
-            <source>SquadSpeak is closing.</source>
-            <translation>SquadSpeak იხურება.</translation>
+            <source>Ready when you are.</source>
+            <translation>დავიწყოთ, როცა გინდა.</translation>
+        </message>
+        <message>
+            <source>Let's talk.</source>
+            <translation>მოდი, ვისაუბროთ.</translation>
+        </message>
+        <message>
+            <source>Catch you later.</source>
+            <translation>დროებით.</translation>
+        </message>
+        <message>
+            <source>Over and out.</source>
+            <translation>კავშირი დასრულდა.</translation>
+        </message>
+        <message>
+            <source>See you next time.</source>
+            <translation>შემდეგ შეხვედრამდე.</translation>
         </message>
     </context>
 </TS>

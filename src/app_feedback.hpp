@@ -6,6 +6,7 @@
 #include "voice_session.hpp"
 #include <QCoreApplication>
 #include <QEvent>
+#include <QRandomGenerator>
 #include <QTimer>
 
 // One desktop/mobile policy for cues and optional local speech. Headless hosts
@@ -33,8 +34,9 @@ public:
     }
 
     bool start() {
-        return !quitting_ && session_.eventSounds()
-            && audio_.playEvent("start", tr("SquadSpeak started."));
+        if (quitting_ || !session_.eventSounds()) return false;
+        const QStringList greetings{tr("Hey, you're back."), tr("Ready when you are."), tr("Let's talk.")};
+        return audio_.playEvent("start", greetings.at(QRandomGenerator::global()->bounded(int(greetings.size()))));
     }
 
     void shutdown() {
@@ -44,7 +46,8 @@ public:
         channel_.leave();
         audio_.setVoiceState(false, false);
         audio_.stop();
-        if (session_.eventSounds() && audio_.playEvent("quit", tr("SquadSpeak is closing."))) deadline_.start();
+        const QStringList goodbyes{tr("Catch you later."), tr("Over and out."), tr("See you next time.")};
+        if (session_.eventSounds() && audio_.playEvent("quit", goodbyes.at(QRandomGenerator::global()->bounded(int(goodbyes.size()))))) deadline_.start();
         else finishShutdown();
     }
 
