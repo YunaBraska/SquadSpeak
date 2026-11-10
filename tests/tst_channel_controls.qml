@@ -162,6 +162,7 @@ TestCase {
         verify(fixtures.setSupporter(false))
         verify(fixtures.expireChat())
         view.show()
+        view.raise()
         view.requestActivate()
         tryCompare(view, "active", true)
         const shelf = findChild(view, "avatarShelf")
