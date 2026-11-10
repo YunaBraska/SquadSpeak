@@ -418,7 +418,8 @@ if(BUILD_TESTING)
         if(NOT SQUADSPEAK_IOS)
             add_test(NAME native_language_contract COMMAND native_language_tests
                 nativeCapabilitiesAndSameLanguageTranslation nativePendingCallbacksDoNotOutliveTheirOwner)
-            set_tests_properties(native_language_contract PROPERTIES TIMEOUT 45 LABELS "native")
+            set_tests_properties(native_language_contract PROPERTIES
+                TIMEOUT 45 LABELS "native" RESOURCE_LOCK desktop)
         endif()
     endif()
     qt_add_executable(audio_tests tests/audio_tests.cpp)
