@@ -82,7 +82,8 @@ private slots:
         QVERIFY(target.setRemotePermission(controller.ownId(), true));
         QVERIFY(controller.setRemoteMode(true));
         QTRY_VERIFY(controller.remoteAllowed());
-        QTRY_VERIFY(!controller.remoteView().value("joined").toBool());
+        QTRY_COMPARE(controller.remoteView().value("ownId").toString(), target.ownId());
+        QVERIFY(!controller.remoteView().value("joined").toBool());
 
         QMenu menu;
         addTrayQuickActions(menu, controllerSession, controller, radio);
