@@ -422,6 +422,10 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Not connected</source>
+            <translation>Δεν υπάρχει σύνδεση</translation>
+        </message>
+        <message>
             <source>Text size</source>
             <translation>Μέγεθος κειμένου</translation>
         </message>

@@ -749,6 +749,10 @@ if(BUILD_TESTING)
     # Live normalization sends expiring RTP packets and needs the same
     # uncontended scheduler as the other transport contracts.
     set_tests_properties(radio_contract PROPERTIES TIMEOUT 240 RUN_SERIAL TRUE)
+    qt_add_executable(tray_menu_tests tests/tray_menu_tests.cpp src/tray_menu.cpp src/tray_menu.hpp)
+    target_link_libraries(tray_menu_tests PRIVATE squad_radio Qt6::Test Qt6::Widgets)
+    add_test(NAME tray_menu_contract COMMAND tray_menu_tests)
+    set_tests_properties(tray_menu_contract PROPERTIES TIMEOUT 60 ENVIRONMENT "QT_QPA_PLATFORM=offscreen")
     qt_add_executable(session_tests tests/session_tests.cpp)
     target_link_libraries(session_tests PRIVATE squad_session Qt6::Test OpenSSL::Crypto)
     target_compile_definitions(session_tests PRIVATE SQUAD_TRANSLATION_DIRECTORY="${CMAKE_CURRENT_SOURCE_DIR}/ui/i18n")

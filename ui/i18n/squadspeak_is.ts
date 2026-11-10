@@ -422,6 +422,10 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Not connected</source>
+            <translation>Ekki tengt</translation>
+        </message>
+        <message>
             <source>Text size</source>
             <translation>Textastærð</translation>
         </message>

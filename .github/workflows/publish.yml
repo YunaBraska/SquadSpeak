@@ -18,6 +18,9 @@ permissions:
 
 jobs:
   publish:
+    concurrency:
+      group: squadspeak-publication
+      cancel-in-progress: false
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:
@@ -45,7 +48,7 @@ jobs:
           cmake "-DSQUADSPEAK_VERSION=$RELEASE_VERSION" -P cmake/Version.cmake
           set -- squadspeak-linux-aarch64.tar.gz squadspeak-linux-x86_64.tar.gz squadspeak-macos-arm64.zip squadspeak-macos-x86_64.zip squadspeak-windows-x86_64.zip squadspeak-windows-device-test.zip squadspeak-third-party-sources.tar.gz
           case "$RELEASE_MODE:$RELEASE_VERSION" in
-            snapshot:*-SNAPSHOT.*) ;;
+            snapshot:*-SNAPSHOT) ;;
             release:*-*) printf 'A stable release cannot use a snapshot version.\n' >&2; exit 1 ;;
             release:*) set -- "$@" appcast-macos-arm64.xml appcast-macos-x86_64.xml ;;
             *) printf 'Release mode and version do not match.\n' >&2; exit 1 ;;
@@ -65,9 +68,36 @@ jobs:
           RELEASE_VERSION: ${{ inputs.version }}
           SOURCE_REVISION: ${{ inputs.commit_sha }}
           RELEASE_MODE: ${{ inputs.release_mode }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
         shell: sh
         run: |
           set -eu
+          # An older completed build must never replace a newer main snapshot.
+          if test "$RELEASE_MODE" = snapshot; then
+            head=$(gh api "repos/$GH_REPO/git/ref/heads/$DEFAULT_BRANCH" --jq '.object.sha')
+            if test "$head" != "$SOURCE_REVISION"; then
+              printf 'A newer main revision exists. Leaving the current snapshot unchanged.\n'
+              exit 0
+            fi
+            gh api "repos/$GH_REPO/git/matching-refs/tags/$RELEASE_VERSION" --jq '.[].ref' > snapshot-refs.txt
+            gh api --paginate --slurp "repos/$GH_REPO/releases?per_page=100" > snapshot-releases.json
+            python3 - <<'PYRELEASE'
+          import json, os, pathlib, re
+          releases = [r for page in json.loads(pathlib.Path("snapshot-releases.json").read_text()) for r in page]
+          version = os.environ["RELEASE_VERSION"]
+          for release in releases:
+              if release["tag_name"] in (version, "snapshot-upload"):
+                  if not release["prerelease"] or release.get("immutable") or (release["tag_name"] == "snapshot-upload" and not release["draft"]):
+                      raise SystemExit("Refusing to replace a protected release")
+          pathlib.Path("snapshot-tags.txt").write_text("\n".join(r["tag_name"] for r in releases) + "\n")
+          pathlib.Path("obsolete-snapshots.txt").write_text("".join(r["tag_name"] + "\n" for r in releases
+              if r["prerelease"] and r["tag_name"] != version
+              and re.fullmatch(r"[0-9]+\.[0-9]+\.[0-9]+-SNAPSHOT(?:\.[0-9]+)?", r["tag_name"])))
+          PYRELEASE
+            if grep -Fxq snapshot-upload snapshot-tags.txt; then
+              gh release delete snapshot-upload --yes
+            fi
+          fi
           # Upload completely before exposing the release to downloads and updates.
           cat > release-notes.md <<'NOTES'
           Desktop packages:
@@ -91,10 +121,24 @@ jobs:
             printf '\nsquadspeak.rb is the Homebrew cask generated from these exact macOS archives.\n' >> release-notes.md
           fi
           printf '\n[Source code (GPL-3.0)](https://github.com/%s/archive/%s.tar.gz), including build instructions. Third-party licenses remain applicable.\n' "$GH_REPO" "$SOURCE_REVISION" >> release-notes.md
-          gh release create "$RELEASE_VERSION" release-assets/* --target "$SOURCE_REVISION" \
-            --title "SquadSpeak $RELEASE_VERSION" --notes-file release-notes.md --draft --latest=false
           if test "$RELEASE_MODE" = snapshot; then
-            gh release edit "$RELEASE_VERSION" --draft=false --prerelease=true --latest=false
+            gh release create snapshot-upload release-assets/* --target "$SOURCE_REVISION" \
+              --title "SquadSpeak $RELEASE_VERSION" --notes-file release-notes.md --draft --prerelease --latest=false
+            if grep -Fxq "$RELEASE_VERSION" snapshot-tags.txt; then
+              gh release delete "$RELEASE_VERSION" --yes
+            fi
+            if grep -Fxq "refs/tags/$RELEASE_VERSION" snapshot-refs.txt; then
+              gh api --method PATCH "repos/$GH_REPO/git/refs/tags/$RELEASE_VERSION" \
+                -f "sha=$SOURCE_REVISION" -F force=true > /dev/null
+            fi
+            gh release edit snapshot-upload --tag "$RELEASE_VERSION" --target "$SOURCE_REVISION" \
+              --draft=false --prerelease=true --latest=false
+            # Retain exactly one snapshot, including after the stable version changes.
+            while IFS= read -r tag; do
+              gh release delete "$tag" --yes --cleanup-tag
+            done < obsolete-snapshots.txt
           else
+            gh release create "$RELEASE_VERSION" release-assets/* --target "$SOURCE_REVISION" \
+              --title "SquadSpeak $RELEASE_VERSION" --notes-file release-notes.md --draft --latest=false
             gh release edit "$RELEASE_VERSION" --draft=false --prerelease=false --latest=true
           fi

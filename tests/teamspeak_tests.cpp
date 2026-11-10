@@ -314,12 +314,14 @@ private slots:
         QVERIFY(channel.addTeamSpeak("127.0.0.1"));
         QTRY_VERIFY(channel.joined());
         QCOMPARE(events.count(), 1);
+        QCOMPARE(channel.notices().size(), 1);
         QCOMPARE(events.at(0).at(0).toString(), QString("join"));
 
         auto full = QJsonDocument::fromJson(stateEvent(true)).object();
         fakeEvents.enqueue(QJsonDocument(full).toJson());
         QTRY_COMPARE(channel.participants().size(), 2);
         QCOMPARE(events.count(), 1);
+        QCOMPARE(channel.notices().size(), 1);
         auto members = full.value("members").toArray();
         auto peer = members[1].toObject();
         peer.insert("uid", "newly-known-uid");
@@ -332,12 +334,16 @@ private slots:
             return false;
         }());
         QCOMPARE(events.count(), 1);
+        QCOMPARE(channel.notices().size(), 1);
 
         peer.insert("id", "8"); peer.insert("uid", "new-member-uid");
         members.append(peer); full.insert("members", members);
         fakeEvents.enqueue(QJsonDocument(full).toJson());
         QTRY_COMPARE(channel.participants().size(), 3);
         QCOMPARE(events.count(), 2);
+        QCOMPARE(channel.notices().size(), 2);
+        QCOMPARE(channel.notices().last().toMap().value("event").toMap().value("name").toString(), QString("Updated profile"));
+        QVERIFY(channel.messages().isEmpty());
         QCOMPARE(events.at(1).at(0).toString(), QString("memberJoin"));
         fakeEvents.enqueue("{\"type\":\"reconnecting\"}");
         QTRY_VERIFY(!channel.joined());

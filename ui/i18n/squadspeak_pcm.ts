@@ -422,6 +422,10 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Not connected</source>
+            <translation>E no connect</translation>
+        </message>
+        <message>
             <source>Text size</source>
             <translation>Text size</translation>
         </message>

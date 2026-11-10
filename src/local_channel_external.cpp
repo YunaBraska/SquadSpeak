@@ -425,13 +425,9 @@ void LocalChannel::externalState(const QJsonObject& state) {
         c->accepted = true; c->voice = id == joinedHostId_; c->access = "accepted"; c->reconnectWanted = false;
         c->messageLifetimeDays = 0; c->presenceKnown = true;
         c->externalCanSend = state.value("canSend").toBool() && (info.value("codec").toInt() == 4 || info.value("codec").toInt() == 5);
-        const bool compareRoster = !first && rosterKnown && !channelChanged && id == previous;
-        QSet<QString> previousMembers;
-        if (compareRoster) {
-            for (const auto& member : c->members)
-                previousMembers.insert(member.toMap().value("providerClient").toString());
-        }
-        c->members.clear(); c->onlineIds.clear();
+        const bool compareRoster = !first && rosterKnown && !channelChanged && (id == previous || id == chatHostId_);
+        QVariantList nextMembers;
+        c->onlineIds.clear();
         for (const auto& raw : members) {
             const auto member = raw.toObject();
             const auto providerClient = member.value("id").toString();
@@ -440,18 +436,12 @@ void LocalChannel::externalState(const QJsonObject& state) {
             c->onlineIds.append(peer);
             if (member.value("channel") != channel) continue;
             const auto avatar = member.value("avatarId").toString();
-            c->members.append(QVariantMap{{"id", peer}, {"providerClient", providerClient}, {"providerUid", uid}, {"name", externalName(member.value("name").toString())},
+            nextMembers.append(QVariantMap{{"id", peer}, {"providerClient", providerClient}, {"providerUid", uid}, {"name", externalName(member.value("name").toString())},
                 {"avatarId", avatar}, {"avatar", VoiceSession::avatarFallback(avatar)}, {"provider", providerClient != self && !member.value("squadSpeak").toBool() ? connection->provider : QString{}}, {"available", true}, {"muted", member.value("inputMuted").toBool()},
                 {"deafened", member.value("outputMuted").toBool()}, {"sleeping", false}});
         }
+        observeMembers(*c, nextMembers, compareRoster);
         if (c->voice) {
-            if (compareRoster) {
-                QSet<QString> currentMembers;
-                for (const auto& member : c->members)
-                    currentMembers.insert(member.toMap().value("providerClient").toString());
-                if (!(currentMembers - previousMembers).isEmpty()) emit channelEvent("memberJoin");
-                if (!(previousMembers - currentMembers).isEmpty()) emit channelEvent("memberLeave");
-            }
             c->audioBitrate = 0; // TS3 does not report a per-listener receive bitrate.
             c->status = (info.value("codec").toInt() != 4 && info.value("codec").toInt() != 5)
                 ? tr("Unsupported audio codec") : !state.value("talkAllowed").toBool(true)
@@ -487,8 +477,12 @@ void LocalChannel::externalState(const QJsonObject& state) {
         }
     }
     if (const auto selected = clients_.value(chatHostId_)) status_ = selected->status;
-    if (first) { automaticAttempt_ = false; sendPresence(); emit channelEvent("join"); }
-    else if (channelChanged) emit channelEvent("join");
+    if (first || channelChanged) {
+        if (channelChanged) if (const auto old = clients_.value(previous)) addNotice(*old, "left", ownId(), session_.userName());
+        if (const auto current = clients_.value(joinedHostId_)) addNotice(*current, "joined", ownId(), session_.userName());
+        if (first) { automaticAttempt_ = false; sendPresence(); }
+        emit channelEvent("join");
+    }
     if (connection->requested == joinedHostId_) { connection->requested.clear(); connection->movePending = false; }
     emit hostsChanged(); emit participantsChanged(); emit stateChanged(); emit chatChanged();
     // The server sends its channel directory incrementally after connecting.
@@ -512,6 +506,10 @@ void LocalChannel::externalEvent(const QJsonObject& event) {
         const auto text = tsError(event.value("message").toString());
         const auto selected = clients_.value(chatHostId_);
         if (type == "closed") {
+            if (joined()) {
+                if (const auto current = clients_.value(joinedHostId_)) addNotice(*current, "left", ownId(), session_.userName());
+                emit channelEvent("leave");
+            }
             const bool advance = automaticAttempt_;
             disconnectExternal();
             if (advance) QTimer::singleShot(0, this, &LocalChannel::tryAutoJoin);

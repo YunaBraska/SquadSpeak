@@ -422,6 +422,10 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Not connected</source>
+            <translation>არ არის დაკავშირებული</translation>
+        </message>
+        <message>
             <source>Text size</source>
             <translation>ტექსტის ზომა</translation>
         </message>

@@ -261,9 +261,15 @@ private slots:
         QVERIFY(host.listen(QHostAddress::LocalHost));
         QVERIFY(host.decide(client.ownId(), true));
         QVERIFY(client.join(host.ownId(), "127.0.0.1", host.port())); QTRY_VERIFY(client.joined());
+        QCOMPARE(client.notices().size(), 1);
+        const auto joined = client.notices().first().toMap().value("event").toMap();
+        QCOMPARE(joined.value("kind").toString(), QString("joined"));
+        QCOMPARE(joined.value("member").toString(), client.ownId());
         QVERIFY(host.sendSystemMessage("The system is ready."));
-        QTRY_COMPARE(client.messages().size(), 2);
+        QTRY_COMPARE(client.messages().size(), 1);
         const auto announcement = client.messages().last().toMap();
+        QCOMPARE(announcement.value("text").toString(), QString("The system is ready."));
+        QCOMPARE(announcement.value("event").toMap().value("kind").toString(), QString("announcement"));
         QCOMPARE(announcement.value("name").toString(), QString("Clockwork"));
         QCOMPARE(announcement.value("sender").toString(), host.musicId());
         QVERIFY(host.setMusicState("Station title", "playing", true));

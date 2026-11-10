@@ -1445,22 +1445,8 @@ PanelWindow {
                         text = Qt.binding(function() { return channelInfo.entry.name || "" })
                     }
                 }
-                Label { text: qsTr("Address"); visible: channelInfo.addresses.length > 0; color: Theme.muted }
-                Repeater {
-                    model: channelInfo.addresses
-                    delegate: RowLayout {
-                        required property string modelData
-                        Layout.fillWidth: true
-                        DetailText { id: addressText; objectName: "channelAddress"; text: modelData; color: Theme.muted; Accessible.name: qsTr("Address") }
-                        ActionButton { objectName: "copyChannelAddress"; text: qsTr("Copy address"); glyph: "copy"; iconOnly: true; flat: true; onClicked: { addressText.selectAll(); addressText.copy(); addressText.deselect() } }
-                    }
-                }
-                ActionButton { Layout.fillWidth: true; flat: true; horizontalAlignment: Text.AlignLeft;
-                    objectName: "blockedDevices"
-                    text: qsTr("Blocked devices") + " (" + root.managedHost.blockedClients.length + ")"
-                    visible: !!root.selectedOwner && root.managedHost.blockedClients.length > 0
-                    onClicked: { channelInfo.focusBlocked = true; Qt.callLater(channelInfo.positionContent) }
-                }
+                ActionButton { Layout.fillWidth: true; primary: true; horizontalAlignment: Text.AlignLeft; objectName: "joinChannel"; text: qsTr("Join"); visible: root.activeHost !== root.selectedHost; enabled: root.network.ready && root.activeHost !== root.selectedHost; onClicked: root.joinHost(root.selectedHost) }
+                ActionButton { Layout.fillWidth: true; horizontalAlignment: Text.AlignLeft; objectName: "leaveMenuItem"; destructive: true; text: qsTr("Leave"); visible: root.activeHost === root.selectedHost; onClicked: root.leaveHost() }
                 ActionButton { Layout.fillWidth: true; flat: true; horizontalAlignment: Text.AlignLeft;
                     objectName: "managePrivateMessages"
                     text: qsTr("Messages")
@@ -1487,7 +1473,6 @@ PanelWindow {
                     onClicked: root.screen.setAudioEnabled(checked)
                 }
                 ActionButton { Layout.fillWidth: true; flat: true; horizontalAlignment: Text.AlignLeft; objectName: "browseStations"; text: qsTr("Browse stations"); enabled: !!root.hostRadio; visible: !root.remote && !!root.selectedOwner; onClicked: radioBrowser.open() }
-                ActionButton { Layout.fillWidth: true; flat: true; horizontalAlignment: Text.AlignLeft; objectName: "joinChannel"; text: qsTr("Join"); enabled: root.network.ready && (!root.activeHost || root.selectedHost !== root.activeHost); onClicked: root.joinHost(root.selectedHost) }
                 Item {
                     Layout.fillWidth: true
                     id: channelMusic
@@ -1570,9 +1555,22 @@ PanelWindow {
                         }
                     }
                 }
-                ActionButton { Layout.fillWidth: true; flat: true; horizontalAlignment: Text.AlignLeft; objectName: "leaveMenuItem"; destructive: true; text: qsTr("Leave"); enabled: root.activeHost === root.selectedHost; onClicked: root.leaveHost() }
-                Rectangle { Layout.fillWidth: true; implicitHeight: 1; color: Theme.border; visible: !root.remote && root.selectedHost !== root.network.ownId; height: visible ? implicitHeight : 0 }
-                ActionButton { Layout.fillWidth: true; flat: true; horizontalAlignment: Text.AlignLeft; objectName: "removeChannelMenuItem"; destructive: true; text: root.channelList.some(function(c) { return c.id === root.selectedHost && (c.protocol === "teamspeak" || c.protocol === "mumble") }) ? qsTr("Remove server") : qsTr("Remove channel"); visible: !root.remote && root.selectedHost !== root.network.ownId; onClicked: root.selectedOwner ? removeOwnChannel.open() : root.network.removeChannel(root.selectedHost) }
+                Label { text: qsTr("Address"); visible: channelInfo.addresses.length > 0; color: Theme.muted }
+                Repeater {
+                    model: channelInfo.addresses
+                    delegate: RowLayout {
+                        required property string modelData
+                        Layout.fillWidth: true
+                        DetailText { id: addressText; objectName: "channelAddress"; text: modelData; color: Theme.muted; Accessible.name: qsTr("Address") }
+                        ActionButton { objectName: "copyChannelAddress"; text: qsTr("Copy address"); glyph: "copy"; iconOnly: true; flat: true; onClicked: { addressText.selectAll(); addressText.copy(); addressText.deselect() } }
+                    }
+                }
+                ActionButton { Layout.fillWidth: true; flat: true; horizontalAlignment: Text.AlignLeft;
+                    objectName: "blockedDevices"
+                    text: qsTr("Blocked devices") + " (" + root.managedHost.blockedClients.length + ")"
+                    visible: !!root.selectedOwner && root.managedHost.blockedClients.length > 0
+                    onClicked: { channelInfo.focusBlocked = true; Qt.callLater(channelInfo.positionContent) }
+                }
                 DetailText { objectName: "channelIdentity"; text: channelInfo.entry.id || ""; color: Theme.muted; font.pixelSize: Theme.fontSize(11); Accessible.name: qsTr("Channel ID") }
                 ActionButton { objectName: "internetHelpToggle"; text: qsTr("Internet access"); flat: true; onClicked: internetHelp.visible = !internetHelp.visible }
                 ColumnLayout {
@@ -1677,6 +1675,8 @@ PanelWindow {
                     }
                     Label { text: root.managedHost.status; textFormat: Text.PlainText; wrapMode: Text.Wrap; Layout.fillWidth: true; color: Theme.muted }
                 }
+                Rectangle { Layout.fillWidth: true; implicitHeight: 1; color: Theme.border; visible: !root.remote && root.selectedHost !== root.network.ownId; height: visible ? implicitHeight : 0 }
+                ActionButton { Layout.fillWidth: true; flat: true; horizontalAlignment: Text.AlignLeft; objectName: "removeChannelMenuItem"; destructive: true; text: root.channelList.some(function(c) { return c.id === root.selectedHost && (c.protocol === "teamspeak" || c.protocol === "mumble") }) ? qsTr("Remove server") : qsTr("Remove channel"); visible: !root.remote && root.selectedHost !== root.network.ownId; onClicked: root.selectedOwner ? removeOwnChannel.open() : root.network.removeChannel(root.selectedHost) }
             }
         }
     }
@@ -2012,8 +2012,10 @@ PanelWindow {
                                 readonly property bool selected: visible && root.inspectedHost === modelData.id && root.chatExpanded
                                 readonly property var members: modelData.members || []
                                 Layout.fillWidth: true; implicitHeight: Math.max(46, Theme.fontSize(30) + 16)
-                                radius: Theme.controlRadius; color: selected ? Theme.raised : channelHover.containsMouse ? Theme.surface : "transparent"
-                                border.width: activeFocus ? 1 : 0; border.color: Theme.accent
+                                radius: Theme.controlRadius
+                                color: active ? Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.16)
+                                    : selected ? Theme.surface : channelHover.containsMouse ? Theme.surface : "transparent"
+                                border.width: activeFocus || selected ? 1 : 0; border.color: Theme.accent
                                 MouseArea {
                                     id: channelHover
                                     objectName: "channelRow_" + modelData.id
@@ -2042,7 +2044,7 @@ PanelWindow {
                                     Glyph { visible: channelEntry.grouped; symbol: channelRow.privateFolder ? "down" : channelRow.privateConversation ? "chat" : "channel"; rotation: channelRow.privateFolder && !root.privateFolderIsExpanded(modelData.hostId) ? -90 : 0; color: Theme.muted }
                                     ColumnLayout {
                                         Layout.fillWidth: true; Layout.minimumWidth: 0; spacing: 0
-                                        Label { objectName: "channelName_" + modelData.id; text: root.channelLabel(modelData); textFormat: Text.PlainText; font.pixelSize: Theme.fontSize(14); font.weight: channelEntry.grouped ? Font.Normal : Font.DemiBold; horizontalAlignment: Text.AlignLeft; Layout.fillWidth: true; elide: Text.ElideRight }
+                                        Label { objectName: "channelName_" + modelData.id; text: root.channelLabel(modelData); color: channelRow.active ? Theme.accent : !modelData.online && !channelRow.privateFolder ? Theme.muted : Theme.text; textFormat: Text.PlainText; font.pixelSize: Theme.fontSize(14); font.weight: channelEntry.grouped ? Font.Normal : Font.DemiBold; horizontalAlignment: Text.AlignLeft; Layout.fillWidth: true; elide: Text.ElideRight }
                                         Label { objectName: "channelOwner_" + modelData.id; visible: channelEntry.ambiguous; text: channelEntry.groupOwner; textFormat: Text.PlainText; color: Theme.muted; font.pixelSize: Theme.fontSize(11); Layout.fillWidth: true; elide: Text.ElideRight }
                                     }
                                     Glyph { objectName: "ownedChannel_" + modelData.id; visible: channelRow.owned; symbol: "home"; description: qsTr("You host"); color: Theme.accent }
@@ -2081,89 +2083,98 @@ PanelWindow {
                     Label { objectName: "emptyChannelSearch"; visible: channelSearch.text.trim().length > 0 && channelRows.count === 0; text: qsTr("No matches"); Layout.fillWidth: true; color: Theme.muted; wrapMode: Text.Wrap }
                 }
             }
-            ColumnLayout {
+            Pane {
                 id: conversation
                 objectName: "conversation"
                 Layout.fillWidth: true; Layout.fillHeight: true; Layout.minimumWidth: 0; Layout.preferredWidth: 1
                 visible: root.showChat && (!root.details || root.splitDetails)
-                spacing: 6
-                Rectangle {
-                    objectName: "chatContext"
-                    visible: !root.viewingVoice
-                    Layout.fillWidth: true
-                    implicitHeight: chatContextRow.implicitHeight + 12
+                padding: 8
+                background: Rectangle {
+                    objectName: "conversationBackground"
                     radius: Theme.controlRadius
-                    color: root.current.joined ? Qt.rgba(Theme.warning.r, Theme.warning.g, Theme.warning.b, 0.12) : Theme.surface
+                    color: root.viewingVoice ? Qt.tint(Theme.surface, Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, 0.14))
+                        : Theme.colors.graphite[Theme.dark ? "dark" : "light"][2]
+                }
+                contentItem: ColumnLayout {
+                    spacing: 6
+                    Rectangle {
+                        objectName: "chatContext"
+                        visible: !root.viewingVoice
+                        Layout.fillWidth: true
+                        implicitHeight: chatContextRow.implicitHeight + 12
+                        radius: Theme.controlRadius
+                        color: root.current.joined ? Qt.rgba(Theme.warning.r, Theme.warning.g, Theme.warning.b, 0.12) : Theme.surface
+                        RowLayout {
+                            id: chatContextRow
+                            anchors.fill: parent; anchors.margins: 6; spacing: 6
+                            ProviderIcon { provider: root.inspectedChannel.protocol || "squadspeak" }
+                            ColumnLayout {
+                                Layout.fillWidth: true; Layout.minimumWidth: 0; spacing: 1
+                                Label {
+                                    objectName: "conversationTitle"
+                                    Layout.fillWidth: true; Layout.minimumWidth: 0
+                                    text: root.channelLabel(root.inspectedChannel); textFormat: Text.PlainText
+                                    font.weight: Font.DemiBold; font.pixelSize: Theme.fontSize(14); elide: Text.ElideRight
+                                    ToolTip.text: text + "\n" + (root.inspectedChannel.ownerName || root.endpoint(root.inspectedChannel))
+                                    ToolTip.visible: titleHover.hovered
+                                    HoverHandler { id: titleHover }
+                                }
+                                Label { objectName: "chatOnlyHint"; text: root.current.chatReady ? qsTr("Chat only") : qsTr("Not connected"); font.pixelSize: Theme.fontSize(11); color: root.current.chatReady ? Theme.warning : Theme.muted }
+                            }
+                            Glyph { objectName: "conversationOwned"; symbol: "home"; visible: !root.inspectedChannel.private && (!!root.inspectedChannel.owned || root.inspectedHost === (root.current.ownId || root.network.ownId)); description: qsTr("You host"); color: Theme.accent }
+                            Glyph { symbol: "music"; visible: !!root.inspectedChannel.music; description: qsTr("Radio"); color: Theme.accent }
+                            ActionButton {
+                                objectName: "conversationOptions"
+                                text: qsTr("Channel options"); glyph: "more"; iconOnly: true; flat: true
+                                onClicked: {
+                                    if (root.inspectedChannel.private) {
+                                        privateMessages.hostId = root.privateHostId(root.inspectedChannel)
+                                        privateMessages.hostDeviceId = root.inspectedChannel.deviceId
+                                        privateMessages.open()
+                                    } else root.showChannelInfo(root.inspectedHost)
+                                }
+                            }
+                        }
+                    }
                     RowLayout {
-                        id: chatContextRow
-                        anchors.fill: parent; anchors.margins: 6; spacing: 6
-                        ProviderIcon { provider: root.inspectedChannel.protocol || "squadspeak" }
-                        ColumnLayout {
-                            Layout.fillWidth: true; Layout.minimumWidth: 0; spacing: 1
-                            Label {
-                                objectName: "conversationTitle"
-                                Layout.fillWidth: true; Layout.minimumWidth: 0
-                                text: root.channelLabel(root.inspectedChannel); textFormat: Text.PlainText
-                                font.weight: Font.DemiBold; font.pixelSize: Theme.fontSize(14); elide: Text.ElideRight
-                                ToolTip.text: text + "\n" + (root.inspectedChannel.ownerName || root.endpoint(root.inspectedChannel))
-                                ToolTip.visible: titleHover.hovered
-                                HoverHandler { id: titleHover }
-                            }
-                            Label { objectName: "chatOnlyHint"; text: qsTr("Chat only"); visible: !!root.current.joined; font.pixelSize: Theme.fontSize(11); color: Theme.warning }
+                        Layout.fillWidth: true
+                        visible: !root.compactInput && !root.inspectedChannel.private
+                        MemberSummary { hostId: root.inspectedHost; members: root.inspectedChannel.members || []; visible: !!root.inspectedChannel.online }
+                        Label { text: root.accessLabel(root.inspectedChannel.access); visible: !root.inspectedChannel.online; color: Theme.muted }
+                        Item { Layout.fillWidth: true }
+                        Label {
+                            visible: !!root.current.chatReady && root.current.chatLifetimeDays > 0
+                            text: root.current.chatLifetimeDays === 1 ? qsTr("24 h") : qsTr("%1 d").arg(root.current.chatLifetimeDays || 1)
+                            color: Theme.muted; font.pixelSize: Theme.fontSize(11)
+                            ToolTip.text: qsTr("New message lifetime")
+                            ToolTip.visible: expiryHover.hovered
+                            HoverHandler { id: expiryHover }
                         }
-                        Glyph { objectName: "conversationOwned"; symbol: "home"; visible: !root.inspectedChannel.private && (!!root.inspectedChannel.owned || root.inspectedHost === (root.current.ownId || root.network.ownId)); description: qsTr("You host"); color: Theme.accent }
-                        Glyph { symbol: "music"; visible: !!root.inspectedChannel.music; description: qsTr("Radio"); color: Theme.accent }
-                        ActionButton {
-                            objectName: "conversationOptions"
-                            text: qsTr("Channel options"); glyph: "more"; iconOnly: true; flat: true
-                            onClicked: {
-                                if (root.inspectedChannel.private) {
-                                    privateMessages.hostId = root.privateHostId(root.inspectedChannel)
-                                    privateMessages.hostDeviceId = root.inspectedChannel.deviceId
-                                    privateMessages.open()
-                                } else root.showChannelInfo(root.inspectedHost)
-                            }
-                        }
+                        ActionButton { objectName: "joinViewedChannel"; text: qsTr("Join"); visible: !root.inspectedChannel.private && root.activeHost !== root.inspectedHost; flat: true; onClicked: root.joinHost(root.inspectedHost) }
                     }
-                }
-                RowLayout {
-                    Layout.fillWidth: true
-                    visible: !root.compactInput && !root.inspectedChannel.private
-                    MemberSummary { hostId: root.inspectedHost; members: root.inspectedChannel.members || []; visible: !!root.inspectedChannel.online }
-                    Label { text: root.accessLabel(root.inspectedChannel.access); visible: !root.inspectedChannel.online; color: Theme.muted }
-                    Item { Layout.fillWidth: true }
+                    Loader {
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: visible ? (root.height < 460 ? 48 : 112) : 0
+                        active: !!root.screen
+                        visible: !root.compactInput && !root.remote && (!!root.network.screenView.available || (root.screen && root.screen.active && root.screen.hostId === root.inspectedHost))
+                        sourceComponent: ScreenPanel { share: root.screen; network: root.network; hostId: root.inspectedHost }
+                    }
                     Label {
-                        visible: !!root.current.chatReady && root.current.chatLifetimeDays > 0
-                        text: root.current.chatLifetimeDays === 1 ? qsTr("24 h") : qsTr("%1 d").arg(root.current.chatLifetimeDays || 1)
-                        color: Theme.muted; font.pixelSize: Theme.fontSize(11)
-                        ToolTip.text: qsTr("New message lifetime")
-                        ToolTip.visible: expiryHover.hovered
-                        HoverHandler { id: expiryHover }
+                        visible: root.screen && root.screen.error.length > 0
+                        text: root.screen ? root.screen.error : ""; textFormat: Text.PlainText; color: Theme.danger
+                        Layout.fillWidth: true; wrapMode: Text.Wrap
                     }
-                    ActionButton { objectName: "joinViewedChannel"; text: qsTr("Join"); visible: !root.inspectedChannel.private && root.activeHost !== root.inspectedHost; flat: true; onClicked: root.joinHost(root.inspectedHost) }
-                }
-                Loader {
-                    Layout.fillWidth: true
-                    Layout.preferredHeight: visible ? (root.height < 460 ? 48 : 112) : 0
-                    active: !!root.screen
-                    visible: !root.compactInput && !root.remote && (!!root.network.screenView.available || (root.screen && root.screen.active && root.screen.hostId === root.inspectedHost))
-                    sourceComponent: ScreenPanel { share: root.screen; network: root.network; hostId: root.inspectedHost }
-                }
-                Label {
-                    visible: root.screen && root.screen.error.length > 0
-                    text: root.screen ? root.screen.error : ""; textFormat: Text.PlainText; color: Theme.danger
-                    Layout.fillWidth: true; wrapMode: Text.Wrap
-                }
-                ChatPanel {
-                    id: chat
-                    objectName: "chatPanel"
-                    network: root.network; animatedAvatars: root.animateAvatars
-                    animationTime: root.avatarTime
-                    memberLevel: function(id) { return root.inspectedHost === root.activeHost ? root.memberLevel(id) : 0 }
-                    onMemberRequested: (member, contextual) => root.memberOptions(member, root.inspectedHost, contextual)
-                    active: root.visible && conversation.visible
-                    readable: active && root.active && !settings.visible
-                    Layout.fillWidth: true; Layout.fillHeight: true
+                    ChatPanel {
+                        id: chat
+                        objectName: "chatPanel"
+                        network: root.network; animatedAvatars: root.animateAvatars
+                        animationTime: root.avatarTime
+                        memberLevel: function(id) { return root.inspectedHost === root.activeHost ? root.memberLevel(id) : 0 }
+                        onMemberRequested: (member, contextual) => root.memberOptions(member, root.inspectedHost, contextual)
+                        active: root.visible && conversation.visible
+                        readable: active && root.active && !settings.visible
+                        Layout.fillWidth: true; Layout.fillHeight: true
+                    }
                 }
             }
             Item {
@@ -2205,16 +2216,23 @@ PanelWindow {
                     id: voiceConnection
                     objectName: "voiceConnection"
                     Layout.fillWidth: true; Layout.minimumWidth: 100; Layout.maximumWidth: 260
-                    visible: !!root.current.joined
-                    text: root.channelLabel(root.voiceChannel) || qsTr("Connected to voice"); glyph: "headphones"; flat: true
+                    enabled: !!root.current.joined
+                    text: root.current.joined ? root.channelLabel(root.voiceChannel) || qsTr("Connected to voice") : qsTr("Not connected")
+                    glyph: "headphones"; flat: true
+                    opacity: 1
                     horizontalAlignment: Text.AlignLeft
-                    Accessible.name: [qsTr("Connected to voice") + ": " + text,
+                    Accessible.name: !root.current.joined ? qsTranslate("LocalChannel", "Not joined to a voice channel.") : [qsTr("Connected to voice") + ": " + text,
                         !!root.voiceChannel.owned || root.activeHost === (root.current.ownId || root.network.ownId) ? qsTr("You host") : "",
                         root.voiceChannel.music ? qsTr("Radio") : ""].filter(Boolean).join(", ")
                     contentItem: RowLayout {
                         spacing: 4
-                        Glyph { symbol: "headphones" }
-                        Label { objectName: "voiceChannelName"; text: voiceConnection.text; textFormat: Text.PlainText; Layout.fillWidth: true; Layout.minimumWidth: 0; elide: Text.ElideRight; horizontalAlignment: Text.AlignLeft }
+                        Glyph { symbol: "headphones"; color: root.current.joined ? Theme.accent : Theme.muted }
+                        Label { objectName: "voiceChannelName"; color: root.current.joined ? Theme.text : Theme.muted; text: voiceConnection.text; textFormat: Text.PlainText; Layout.fillWidth: true; Layout.minimumWidth: 0; elide: Text.ElideRight; horizontalAlignment: Text.AlignLeft }
+                    }
+                    background: Rectangle {
+                        radius: Theme.controlRadius
+                        color: root.current.joined ? Qt.rgba(Theme.accent.r, Theme.accent.g, Theme.accent.b, voiceConnection.down ? 0.25 : 0.16) : Theme.surface
+                        border.width: voiceConnection.activeFocus ? 1 : 0; border.color: Theme.accent
                     }
                     checked: root.details === channelInfo && root.selectedHost === root.activeHost
                     ToolTip.text: Accessible.name

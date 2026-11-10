@@ -422,6 +422,10 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Not connected</source>
+            <translation>Ei yhteyttä</translation>
+        </message>
+        <message>
             <source>Text size</source>
             <translation>Tekstin koko</translation>
         </message>

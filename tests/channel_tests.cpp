@@ -3718,7 +3718,8 @@ private slots:
         QTRY_VERIFY(observer.channel.chatReady());
         QVERIFY(member.join(host.channel));
         QTRY_VERIFY(member.channel.joined());
-        QTRY_COMPARE(observer.channel.messages().size(), 1);
+        QTRY_COMPARE(observer.channel.notices().size(), 1);
+        QVERIFY(observer.channel.messages().isEmpty());
         QSignalSpy events(&member.channel, &LocalChannel::channelEvent);
         for (int repeat = 0; repeat < 3; ++repeat) {
             QVERIFY(member.join(host.channel));
@@ -3727,13 +3728,44 @@ private slots:
             QVERIFY(member.channel.joined());
         }
         QVERIFY(member.channel.sendChat("Still connected"));
-        QTRY_COMPARE(observer.channel.messages().last().toMap().value("text").toString(), QString("Still connected"));
-        QCOMPARE(observer.channel.messages().size(), 2);
+        QTRY_COMPARE(observer.channel.messages().size(), 1);
+        QCOMPARE(observer.channel.messages().last().toMap().value("text").toString(), QString("Still connected"));
+        QCOMPARE(observer.channel.notices().size(), 1);
         QCOMPARE(events.size(), 0);
         QCOMPARE(host.channel.hostParticipants().size(), 1);
     }
 
-    void systemMessagesTrackVoiceOnlyAndKeepHostLifetime() {
+    void leavingAndClosingPublishOneLocalNoticeWithoutStoredMessages() {
+        QTemporaryDir dir;
+        Device host(dir.filePath("host"), "Host"), witness(dir.filePath("witness"), "Witness");
+        auto member = std::make_unique<Device>(dir.filePath("member"), "Member");
+        QVERIFY(host.channel.listen(QHostAddress::LocalHost));
+        QVERIFY(host.channel.decide(witness.channel.ownId(), true));
+        QVERIFY(host.channel.decide(member->channel.ownId(), true));
+        QVERIFY(witness.join(host.channel));
+        QTRY_VERIFY(witness.channel.joined() && witness.channel.chatReady());
+        QSignalSpy events(&witness.channel, &LocalChannel::channelEvent);
+        QVERIFY(member->join(host.channel));
+        QTRY_COMPARE(witness.channel.notices().size(), 2);
+        QVERIFY(member->channel.leave());
+        QTRY_COMPARE(witness.channel.notices().size(), 3);
+        QCOMPARE(member->channel.notices().last().toMap().value("event").toMap().value("kind").toString(), QString("left"));
+        QVERIFY(member->channel.leave());
+        QCOMPARE(member->channel.notices().size(), 2);
+        QVERIFY(member->join(host.channel));
+        QTRY_COMPARE(witness.channel.notices().size(), 4);
+        member.reset();
+        QTRY_COMPARE_WITH_TIMEOUT(witness.channel.notices().size(), 5, 2000);
+        QCOMPARE(events.size(), 4);
+        QCOMPARE(events.last().first().toString(), QString("memberLeave"));
+        QVERIFY(witness.channel.messages().isEmpty());
+        QVERIFY(witness.channel.refreshChat());
+        QTRY_VERIFY(!witness.channel.historyLoading());
+        QCOMPARE(witness.channel.notices().size(), 5);
+        QCOMPARE(events.size(), 4);
+    }
+
+    void membershipNoticesAreLocalAndModerationKeepsHostLifetime() {
         QTemporaryDir dir;
         qint64 now = 1700000000000;
         const auto identity = TlsIdentity::create();
@@ -3746,22 +3778,34 @@ private slots:
         QVERIFY(observer.channel.openChat(host.channel.ownId(), "127.0.0.1", host.channel.port()));
         QVERIFY(member.channel.openChat(host.channel.ownId(), "127.0.0.1", host.channel.port()));
         QTRY_VERIFY(observer.channel.chatReady() && member.channel.chatReady());
-        QTest::qWait(100); QVERIFY(observer.channel.messages().isEmpty());
+        QVERIFY(observer.channel.messages().isEmpty());
+        QVERIFY(observer.channel.property("notices").toList().isEmpty());
         QVERIFY(member.join(host.channel)); QTRY_VERIFY(member.channel.joined());
-        QTRY_COMPARE(observer.channel.messages().size(), 1);
+        QTRY_COMPARE(observer.channel.property("notices").toList().size(), 1);
+        QVERIFY(observer.channel.messages().isEmpty());
         QVERIFY(member.channel.leave()); QTRY_VERIFY(!member.channel.joined());
-        QTRY_COMPARE(observer.channel.messages().size(), 2);
+        QTRY_COMPARE(observer.channel.property("notices").toList().size(), 2);
+        QVERIFY(observer.channel.messages().isEmpty());
         QVERIFY(member.join(host.channel)); QTRY_VERIFY(member.channel.joined());
-        QTRY_COMPARE(observer.channel.messages().size(), 3);
+        QTRY_COMPARE(observer.channel.property("notices").toList().size(), 3);
+        QVERIFY(observer.channel.messages().isEmpty());
         QVERIFY(host.channel.kick(member.channel.ownId())); QTRY_VERIFY(!member.channel.joined());
-        QTRY_COMPARE(observer.channel.messages().size(), 4);
+        QTRY_COMPARE(observer.channel.messages().size(), 1);
         QVERIFY(member.join(host.channel)); QTRY_VERIFY(member.channel.joined());
-        QTRY_COMPARE(observer.channel.messages().size(), 5);
+        QTRY_COMPARE(observer.channel.property("notices").toList().size(), 4);
         QVERIFY(host.channel.setBlocked(member.channel.ownId(), true)); QTRY_VERIFY(!member.channel.joined());
-        QTRY_COMPARE(observer.channel.messages().size(), 6);
-        const QStringList kinds{"joined", "left", "joined", "kicked", "joined", "banned"};
-        const QStringList texts{"Member joined.", "Member left.", "Member joined.",
-                                "Member was kicked.", "Member joined.", "Member was banned from the channel."};
+        QTRY_COMPARE(observer.channel.messages().size(), 2);
+        QCOMPARE(observer.channel.property("notices").toList().size(), 4);
+        const QStringList localKinds{"joined", "left", "joined", "joined"};
+        for (int i = 0; i < localKinds.size(); ++i) {
+            const auto event = observer.channel.property("notices").toList().at(i).toMap().value("event").toMap();
+            QCOMPARE(event.value("kind").toString(), localKinds.at(i));
+            QCOMPARE(event.value("name").toString(), QString("Member"));
+        }
+        QVERIFY(observer.channel.refreshChat()); QTRY_VERIFY(!observer.channel.historyLoading());
+        QCOMPARE(observer.channel.property("notices").toList().size(), 4);
+        const QStringList kinds{"kicked", "banned"};
+        const QStringList texts{"Member was kicked.", "Member was banned from the channel."};
         for (int i = 0; i < kinds.size(); ++i) {
             const auto record = observer.channel.messages().at(i).toMap();
             QCOMPARE(record.value("text").toString(), texts.at(i));
@@ -3775,11 +3819,11 @@ private slots:
             QCOMPARE(record.value("expires").toLongLong() - record.value("created").toLongLong(), 7 * ChatHistory::lifetime);
         }
         QVERIFY(observer.channel.sendChat("System-looking user text is still a member message."));
-        QTRY_COMPARE(observer.channel.messages().size(), 7);
+        QTRY_COMPARE(observer.channel.messages().size(), 3);
         QVERIFY(!observer.channel.messages().last().toMap().contains("event"));
         host.channel.stopHost();
         ChatHistory saved(dir.filePath("events.channel.chat"), identity, now);
-        QCOMPARE(saved.page().value("records").toArray().size(), 7);
+        QCOMPARE(saved.page().value("records").toArray().size(), 3);
         QVERIFY(ChatHistory::validMessage(saved.page().value("records").toArray().first().toObject()));
         auto malformed = saved.page().value("records").toArray().first().toObject();
         malformed.insert("event", QJsonObject{{"kind", "joined"}, {"member", "invalid-device"}, {"name", "Member"}});
@@ -6380,7 +6424,26 @@ private slots:
         QVERIFY(controller.channel.remoteLevels().isEmpty());
     }
 
-    void remoteViewRejectsOverflowingChatLifetimeBeforeMultiplication() {
+    void remoteViewValidatesHistoryAndLocalNotices_data() {
+        QTest::addColumn<QJsonObject>("fields");
+        QTest::addColumn<bool>("accepted");
+        const QJsonObject notice{{"id", QUuid::createUuid().toString(QUuid::WithoutBraces)}, {"created", 1000},
+            {"event", QJsonObject{{"kind", "left"}, {"member", QString(64, 'a')}, {"name", "Member"}}}};
+        QTest::newRow("local-notice-after-disconnect") << QJsonObject{{"notices", QJsonArray{notice}}} << true;
+        QTest::newRow("lifetime-overflow") << QJsonObject{{"chatLifetimeDays", QJsonValue(qint64(1) + (qint64(1) << 54))}} << false;
+        QTest::newRow("notice-not-array") << QJsonObject{{"notices", notice}} << false;
+        QTest::newRow("duplicate-notice") << QJsonObject{{"notices", QJsonArray{notice, notice}}} << false;
+        auto invalid = notice; invalid.insert("created", 1.5);
+        QTest::newRow("fractional-timestamp") << QJsonObject{{"notices", QJsonArray{invalid}}} << false;
+        invalid = notice; invalid.insert("event", QJsonObject{{"kind", "announcement"}, {"member", QString(64, 'a')}, {"name", "Member"}});
+        QTest::newRow("unsupported-notice-kind") << QJsonObject{{"notices", QJsonArray{invalid}}} << false;
+        QJsonArray many; for (int i = 0; i < 161; ++i) { auto item = notice; item.insert("id", QUuid::createUuid().toString(QUuid::WithoutBraces)); many.append(item); }
+        QTest::newRow("too-many-notices") << QJsonObject{{"notices", many}} << false;
+    }
+
+    void remoteViewValidatesHistoryAndLocalNotices() {
+        QFETCH(QJsonObject, fields);
+        QFETCH(bool, accepted);
         QTemporaryDir dir;
         Device controller(dir.filePath("controller"), "Controller");
         const auto targetIdentity = TlsIdentity::create();
@@ -6415,8 +6478,9 @@ private slots:
             {"historyLoading", false}, {"hasOlderMessages", false}, {"hasNewerMessages", false},
             {"muted", false}, {"deafened", false}, {"available", true}, {"pushToTalk", false},
             {"joinedHostId", ""}, {"chatHostId", ""},
-            {"chatLifetimeDays", QJsonValue(qint64(1) + (qint64(1) << 54))}
+            {"chatLifetimeDays", 1}
         };
+        for (auto it = fields.constBegin(); it != fields.constEnd(); ++it) snapshot.insert(it.key(), it.value());
         const auto bytes = QJsonDocument(snapshot).toJson(QJsonDocument::Compact);
         const auto id = QUuid::createUuid().toString(QUuid::WithoutBraces);
         control->write(wireFrame({{"type", "remoteViewStart"}, {"id", id}, {"size", bytes.size()}})
@@ -6424,8 +6488,13 @@ private slots:
                 {"data", QString::fromLatin1(bytes.toBase64())}})
             + wireFrame({{"type", "remoteViewEnd"}, {"id", id}}));
 
-        QTRY_VERIFY(!controller.channel.controlConnected());
-        QVERIFY(controller.channel.remoteView().isEmpty());
+        if (accepted) {
+            QTRY_COMPARE(controller.channel.remoteView().value("notices").toList(), fields.value("notices").toArray().toVariantList());
+            QVERIFY(controller.channel.controlConnected());
+        } else {
+            QTRY_VERIFY(!controller.channel.controlConnected());
+            QVERIFY(controller.channel.remoteView().isEmpty());
+        }
     }
 
     void savedPrivateLifetimeRejectsOverflowBeforeMultiplication() {

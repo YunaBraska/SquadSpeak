@@ -422,6 +422,10 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Not connected</source>
+            <translation>Ba a haɗa ba</translation>
+        </message>
+        <message>
             <source>Text size</source>
             <translation>Girman rubutu</translation>
         </message>

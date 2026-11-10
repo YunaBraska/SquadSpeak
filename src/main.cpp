@@ -1,4 +1,5 @@
 #include "audio_model.hpp"
+#include "tray_menu.hpp"
 #include "voice_session.hpp"
 #include "local_channel.hpp"
 #include "chat_content.hpp"
@@ -330,6 +331,8 @@ int main(int argc, char** argv) {
         };
         const auto idleIcon = speechIcon(false), speakingIcon = speechIcon(true);
         QMenu menu;
+        addTrayQuickActions(menu, session, channel, radio);
+        menu.addSeparator();
         auto* channelsAction = menu.addAction(QCoreApplication::translate("Tray", "Channels"), &app, showChannels);
         auto* settingsAction = menu.addAction(QCoreApplication::translate("Tray", "Settings"), &app, showSettings);
         menu.addSeparator();

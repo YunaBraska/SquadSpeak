@@ -422,6 +422,10 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Not connected</source>
+            <translation>Nincs kapcsolat</translation>
+        </message>
+        <message>
             <source>Text size</source>
             <translation>Szövegméret</translation>
         </message>

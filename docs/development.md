@@ -700,8 +700,10 @@ snapshots as GitHub prereleases through `publish.yml`, also used by stable relea
 
 Version and commit are resolved once and passed to every job. Snapshots use the
 pinned `YunaBraska/semver-info-action` and its `next_snapshot` output from the
-newest reachable stable tag by creation date, with `0.0.1` as fallback. The run ID
-makes each workflow version unique, for example `2026.10.12-SNAPSHOT.1234`.
+newest reachable stable tag by creation date, with `0.0.1` as fallback. The version
+stays replaceable, for example `2026.10.20-SNAPSHOT`, without a workflow run suffix.
+Each successful publication replaces that snapshot and removes older snapshot
+releases and their tags. The workflow run and source link identify the exact build.
 The app displays the full label. Native bundle metadata uses its numeric part.
 Stable versions use `cmake/Version.cmake` and UTC without leading zeroes. Snapshot
 tags never hide product changes since the last stable release.
@@ -710,16 +712,22 @@ As in the shared flows, documentation, tests, specs, examples, benchmarks,
 licenses and `.github` changes alone do not request a stable release. Every main
 merge still produces a snapshot. Use `force` when deliberately releasing only
 packaging or pipeline changes, including the
-packaging entrypoints under `tests/`. Force never replaces an existing version.
-Tag/release collisions and API failures stop before native builds. Snapshots
+packaging entrypoints under `tests/`. Force never replaces a stable version.
+Stable tag/release collisions and API failures stop before native builds. Snapshots
 need no publication secrets. Test reports remain available for seven days.
 
 Publication requires all five desktop archives, the standalone Windows test kit
 and corresponding third-party sources. Stable releases additionally require
 matching signed macOS appcasts and a generated Homebrew cask. Checksums cover all
 assets. Uploads go into a draft first. Only a complete upload becomes public.
-Snapshots are prereleases and never become latest. Published assets are
-immutable. If publication fails, inspect the private draft before explicitly
+Snapshots are prereleases and never become latest. Stable assets are immutable.
+A snapshot upload is staged in the private `snapshot-upload` draft while the previous
+public download remains available. Once upload succeeds, publication replaces the
+snapshot release and moves its tag to the tested commit. GitHub has no atomic
+release replacement, so downloads can briefly be unavailable during this final
+switch. A failed switch retains the complete draft. Rerunning rebuilds the draft
+and finishes publication. Other previews and stable releases are not deleted.
+For a failed stable publication, inspect the private draft before explicitly
 removing it and retrying. The source revision stays fixed throughout the workflow.
 Physical device observations follow the initial release under U139.
 
@@ -729,8 +737,9 @@ the existing tap updater open its normal maintenance PR for later releases.
 
 For manual branch verification, use `gh workflow run build-pr.yml --ref <branch>`.
 PR, merge, release and manual verification run the same complete matrix. Feature pushes are checked by their PR, avoiding duplicate platform runs.
-New PR checks cancel obsolete runs. Snapshot runs are grouped by commit so
-closely spaced merges do not discard a waiting snapshot. Stable releases run
+New PR checks cancel obsolete runs. Snapshot runs share one queue. A running
+build finishes, and only the newest pending merge waits. Publication is serialized
+and refuses a snapshot when its source is no longer the default branch head. Stable releases run
 one at a time without cancelling an active release. Build jobs keep read-only
 repository permissions. Only publication can write tags/releases. The application
 runtime gains no pipeline dependency.

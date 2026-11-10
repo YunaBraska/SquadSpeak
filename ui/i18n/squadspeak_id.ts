@@ -422,6 +422,10 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Not connected</source>
+            <translation>Tidak terhubung</translation>
+        </message>
+        <message>
             <source>Text size</source>
             <translation>Ukuran teks</translation>
         </message>

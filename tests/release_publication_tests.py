@@ -159,25 +159,19 @@ else: sys.exit(7)
         self.git("tag", "2026.10.3")
         (self.root / "source.cpp").write_text("changed\n")
         self.git("commit", "--quiet", "-am", "Change source", date="2026-10-04T12:00:00Z")
-        self.git("tag", "2026.10.4-SNAPSHOT.17")
+        self.git("tag", "2026.10.4-SNAPSHOT")
         mode = self.mode()
         self.assertEqual(mode["latest_tag"], "2026.10.3")
         self.assertEqual(mode["release_mode"], "release")
 
-    def test_snapshot_version_distinguishes_workflow_runs(self):
-        for run_id in ("17", "18"):
-            with self.subTest(run_id=run_id):
-                result = self.run_step("Resolve build version", "verify.yml", RELEASE_MODE="build",
-                                       GITHUB_RUN_ID=run_id)
-                self.assertEqual(result.returncode, 0, result.stderr)
-                self.assertEqual(self.outputs()["version"], f"2026.10.4-SNAPSHOT.{run_id}")
-        for run_id in ("", "0", "01", "17-SNAPSHOT", "17;bad"):
-            with self.subTest(invalid_run=run_id):
-                (self.root / "output").unlink(missing_ok=True)
-                result = self.run_step("Resolve build version", "verify.yml", RELEASE_MODE="build",
-                                       GITHUB_RUN_ID=run_id)
-                self.assertNotEqual(result.returncode, 0)
-                self.assertFalse((self.root / "output").exists())
+    def test_snapshot_version_is_reused_across_workflow_runs(self):
+        for mode in ("build", "snapshot"):
+            for run_id in ("17", "18"):
+                with self.subTest(mode=mode, run_id=run_id):
+                    result = self.run_step("Resolve build version", "verify.yml", RELEASE_MODE=mode,
+                                           GITHUB_RUN_ID=run_id)
+                    self.assertEqual(result.returncode, 0, result.stderr)
+                    self.assertEqual(self.outputs()["version"], "2026.10.4-SNAPSHOT")
 
     def test_deleted_source_is_a_product_change(self):
         self.repository()
@@ -210,7 +204,7 @@ else: sys.exit(7)
     def test_snapshot_uses_action_version_without_github_mutations(self):
         result = self.run_step("Resolve build version", "verify.yml", RELEASE_MODE="build")
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertEqual(self.outputs()["version"], "2026.10.4-SNAPSHOT.17")
+        self.assertEqual(self.outputs()["version"], "2026.10.4-SNAPSHOT")
         self.assertFalse((self.root / "trace.jsonl").exists())
         for invalid in ("", "invalid", "2026.10.4", "1.2.3-SNAPSHOT;bad"):
             (self.root / "output").unlink(missing_ok=True)
@@ -224,22 +218,19 @@ else: sys.exit(7)
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(self.outputs()["version"], "2026.10.4")
 
-    def test_existing_release_tag_or_api_failure_stops_before_builds(self):
-        for release_mode, version in (("release", "2026.10.4"), ("snapshot", "2026.10.4-SNAPSHOT.17")):
-            for scenario in ("release", "tag", "network"):
-                with self.subTest(mode=release_mode, failure=scenario):
-                    result = self.run_step("Resolve build version", "verify.yml", SCENARIO=scenario,
-                                           RELEASE_MODE=release_mode, COLLISION_VERSION=version)
-                    self.assertNotEqual(result.returncode, 0)
-                    self.assertFalse((self.root / "output").exists())
+    def test_existing_stable_release_tag_or_api_failure_stops_before_builds(self):
+        for scenario in ("release", "tag", "network"):
+            with self.subTest(failure=scenario):
+                result = self.run_step("Resolve build version", "verify.yml", SCENARIO=scenario)
+                self.assertNotEqual(result.returncode, 0)
+                self.assertFalse((self.root / "output").exists())
 
-    def test_new_snapshot_checks_collisions_and_resolves_version(self):
-        result = self.run_step("Resolve build version", "verify.yml", RELEASE_MODE="snapshot")
+    def test_snapshot_resolution_accepts_replacement_without_api_calls(self):
+        result = self.run_step("Resolve build version", "verify.yml", RELEASE_MODE="snapshot",
+                               SCENARIO="release", COLLISION_VERSION="2026.10.4-SNAPSHOT")
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertEqual(self.outputs()["version"], "2026.10.4-SNAPSHOT.17")
-        calls = [json.loads(line) for line in (self.root / "trace.jsonl").read_text().splitlines()]
-        self.assertEqual(len(calls), 2)
-        self.assertTrue(all(call[0] == "api" for call in calls))
+        self.assertEqual(self.outputs()["version"], "2026.10.4-SNAPSHOT")
+        self.assertFalse((self.root / "trace.jsonl").exists())
 
     def test_update_keys_fail_before_native_builds(self):
         import base64
@@ -511,7 +502,7 @@ details.write_text("failed test details")
 sys.exit(9)
 ''')
         ctest.chmod(0o700)
-        for version, native, expected in (("", "", None), ("2026.10.11-SNAPSHOT.17", "", "2026.10.11-SNAPSHOT.17"),
+        for version, native, expected in (("", "", None), ("2026.10.11-SNAPSHOT", "", "2026.10.11-SNAPSHOT"),
                                           ("2026.10.11", "2026.10.10", "2026.10.10")):
             with self.subTest(version=version, native=native):
                 (self.root / "trace.jsonl").unlink(missing_ok=True)
@@ -666,23 +657,143 @@ elif name == "xcrun" and args[:2] == ["notarytool", "log"]:
         self.assertIn("--latest=true", calls[1])
         self.assertTrue((self.root / "public").exists())
 
-    def test_snapshot_publication_never_updates_latest(self):
+    def snapshot_service(self, releases):
+        state = self.root / "github.json"
+        state.write_text(json.dumps({"releases": releases, "latest": "2026.10.3",
+                                     "tags": {tag: "c" * 40 for tag in releases}}))
+        jq = self.root / "bin/jq"
+        jq.write_text("#!/bin/sh\nexit 99\n")
+        jq.chmod(0o700)
+        gh = self.root / "bin/gh"
+        gh.write_text("#!" + sys.executable + "\n" + r'''import json, os, pathlib, sys
+args = sys.argv[1:]
+path = pathlib.Path("github.json")
+state = json.loads(path.read_text())
+with open(os.environ["TRACE"], "a") as log: log.write(json.dumps(args) + "\n")
+scenario = os.environ.get("SCENARIO", "")
+releases = state["releases"]
+def value(flag): return args[args.index(flag) + 1]
+if args[0] == "api":
+    if scenario == "network": sys.exit(4)
+    if "git/ref/heads/" in args[1]:
+        print("b" * 40 if scenario == "stale" else os.environ["SOURCE_REVISION"])
+    elif "matching-refs" in " ".join(args):
+        print("\n".join("refs/tags/" + tag for tag in state["tags"] if tag == os.environ["RELEASE_VERSION"]))
+    elif "PATCH" in args:
+        state["tags"][os.environ["RELEASE_VERSION"]] = os.environ["SOURCE_REVISION"]
+        path.write_text(json.dumps(state))
+    else:
+        print(json.dumps([list(releases.values())]))
+    sys.exit(0)
+tag = args[2]
+if args[:2] == ["release", "create"]:
+    if tag in releases: sys.exit("duplicate release")
+    releases[tag] = {"tag_name": tag, "draft": "--draft" in args,
+                     "prerelease": "--prerelease" in args, "complete": scenario != "upload-failure",
+                     "sha": value("--target")}
+elif args[:2] == ["release", "delete"]:
+    if scenario == "delete-failure": sys.exit(5)
+    del releases[tag]
+    if "--cleanup-tag" in args: state["tags"].pop(tag, None)
+elif args[:2] == ["release", "edit"]:
+    if scenario == "promotion-failure": sys.exit(8)
+    release = releases.pop(tag)
+    if not release["complete"]: sys.exit("incomplete package upload")
+    tag = value("--tag")
+    if tag in releases: sys.exit("duplicate tag")
+    release.update(tag_name=tag, draft=False, prerelease="--prerelease=true" in args)
+    releases[tag] = release
+    state["tags"].setdefault(tag, release["sha"])
+    if state["tags"][tag] != release["sha"]: sys.exit("tag points to wrong source")
+    if "--latest=true" in args: state["latest"] = tag
+else: sys.exit("unexpected GitHub call")
+path.write_text(json.dumps(state))
+if scenario == "upload-failure" and args[1] == "create": sys.exit(5)
+''')
+        gh.chmod(0o700)
         assets = self.root / "release-assets"
-        assets.mkdir()
+        assets.mkdir(exist_ok=True)
         (assets / "package.zip").write_bytes(b"package fixture")
-        result = self.run_step("Publish the tested desktop release", RELEASE_MODE="snapshot",
-                               RELEASE_VERSION="2026.10.4-SNAPSHOT.17")
-        self.assertEqual(result.returncode, 0, result.stderr)
-        calls = [json.loads(line) for line in (self.root / "trace.jsonl").read_text().splitlines()]
-        self.assertEqual(len(calls), 2)
-        self.assertIn("--draft", calls[0])
-        self.assertIn("a" * 40, calls[0])
-        self.assertIn("--prerelease=true", calls[1])
-        self.assertTrue(all("--latest=false" in call for call in calls))
-        self.assertTrue((self.root / "public").exists())
+        return state
+
+    def publish_snapshot(self, **values):
+        return self.run_step("Publish the tested desktop release", RELEASE_MODE="snapshot",
+                             RELEASE_VERSION="2026.10.4-SNAPSHOT", **values)
+
+    def test_snapshot_replaces_packages_and_cleans_only_obsolete_snapshots(self):
+        stable = {"tag_name": "2026.10.3", "draft": False, "prerelease": False}
+        current = {"tag_name": "2026.10.4-SNAPSHOT", "draft": False, "prerelease": True,
+                   "sha": "c" * 40, "complete": True}
+        legacy = {"tag_name": "2026.10.4-SNAPSHOT.17", "draft": False, "prerelease": True}
+        older = {"tag_name": "2026.10.3-SNAPSHOT", "draft": False, "prerelease": True}
+        other = {"tag_name": "manual-preview", "draft": True, "prerelease": True}
+        state = self.snapshot_service({r["tag_name"]: r for r in (stable, current, legacy, older, other)})
+        for revision in ("a" * 40, "d" * 40):
+            result = self.publish_snapshot(SOURCE_REVISION=revision)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            after = json.loads(state.read_text())
+            self.assertEqual(set(after["releases"]), {stable["tag_name"], current["tag_name"], other["tag_name"]})
+            self.assertEqual(after["releases"][stable["tag_name"]], stable)
+            self.assertEqual(after["releases"][other["tag_name"]], other)
+            snapshot = after["releases"][current["tag_name"]]
+            self.assertEqual(snapshot["sha"], revision)
+            self.assertEqual(after["tags"][current["tag_name"]], revision)
+            self.assertNotIn(legacy["tag_name"], after["tags"])
+            self.assertNotIn(older["tag_name"], after["tags"])
+            self.assertTrue(snapshot["complete"] and snapshot["prerelease"])
+            self.assertFalse(snapshot["draft"])
+            self.assertEqual(after["latest"], stable["tag_name"])
         notes = (self.root / "release-notes.md").read_text()
         self.assertIn("Snapshot preview", notes)
         self.assertNotIn("squadspeak.rb is", notes)
+
+    def test_first_snapshot_and_retry_after_partial_upload(self):
+        state = self.snapshot_service({})
+        failed = self.publish_snapshot(SCENARIO="upload-failure")
+        self.assertNotEqual(failed.returncode, 0)
+        self.assertTrue(json.loads(state.read_text())["releases"]["snapshot-upload"]["draft"])
+        result = self.publish_snapshot()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(set(json.loads(state.read_text())["releases"]), {"2026.10.4-SNAPSHOT"})
+
+    def test_snapshot_failure_or_stale_build_does_not_remove_previous_download(self):
+        current = {"tag_name": "2026.10.4-SNAPSHOT", "draft": False, "prerelease": True,
+                   "sha": "c" * 40, "complete": True}
+        state = self.snapshot_service({current["tag_name"]: current})
+        for scenario in ("network", "stale", "upload-failure", "delete-failure"):
+            with self.subTest(scenario=scenario):
+                result = self.publish_snapshot(SCENARIO=scenario)
+                self.assertEqual(result.returncode == 0, scenario == "stale", result.stderr)
+                self.assertEqual(json.loads(state.read_text())["releases"][current["tag_name"]], current)
+
+    def test_promotion_failure_retains_complete_draft_for_retry(self):
+        state = self.snapshot_service({"2026.10.4-SNAPSHOT": {
+            "tag_name": "2026.10.4-SNAPSHOT", "draft": False, "prerelease": True}})
+        self.assertNotEqual(self.publish_snapshot(SCENARIO="promotion-failure").returncode, 0)
+        draft = json.loads(state.read_text())["releases"]["snapshot-upload"]
+        self.assertTrue(draft["draft"] and draft["complete"])
+        result = self.publish_snapshot()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(set(json.loads(state.read_text())["releases"]), {"2026.10.4-SNAPSHOT"})
+
+    def test_orphaned_snapshot_tag_moves_to_the_tested_revision(self):
+        state = self.snapshot_service({})
+        before = json.loads(state.read_text())
+        before["tags"]["2026.10.4-SNAPSHOT"] = "c" * 40
+        state.write_text(json.dumps(before))
+        result = self.publish_snapshot()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(json.loads(state.read_text())["tags"]["2026.10.4-SNAPSHOT"], "a" * 40)
+
+    def test_snapshot_never_overwrites_stable_immutable_or_public_staging_release(self):
+        for collision in ({"tag_name": "2026.10.4-SNAPSHOT", "draft": False, "prerelease": False},
+                          {"tag_name": "2026.10.4-SNAPSHOT", "draft": False, "prerelease": True, "immutable": True},
+                          {"tag_name": "snapshot-upload", "draft": False, "prerelease": True}):
+            with self.subTest(collision=collision):
+                state = self.snapshot_service({collision["tag_name"]: collision})
+                before = state.read_text()
+                self.assertNotEqual(self.publish_snapshot().returncode, 0)
+                self.assertEqual(state.read_text(), before)
 
     def test_snapshot_package_set_omits_update_feeds_and_homebrew(self):
         assets = self.root / "release-assets"
@@ -690,7 +801,7 @@ elif name == "xcrun" and args[:2] == ["notarytool", "log"]:
         expected = self.assets[:-2]
         for name in expected:
             (assets / name).write_bytes(name.encode())
-        values = dict(RELEASE_MODE="snapshot", RELEASE_VERSION="2026.10.4-SNAPSHOT.17")
+        values = dict(RELEASE_MODE="snapshot", RELEASE_VERSION="2026.10.4-SNAPSHOT")
         for name in ("appcast-macos-arm64.xml", "squadspeak.rb"):
             (assets / name).write_text("unexpected")
             result = self.run_step("Verify package set and create checksums", **values)
@@ -707,7 +818,7 @@ elif name == "xcrun" and args[:2] == ["notarytool", "log"]:
 
     def test_publication_mode_must_match_version(self):
         (self.root / "release-assets").mkdir()
-        for mode, version in (("snapshot", "2026.10.4"), ("release", "2026.10.4-SNAPSHOT.17"),
+        for mode, version in (("snapshot", "2026.10.4"), ("release", "2026.10.4-SNAPSHOT"),
                               ("unknown", "2026.10.4")):
             with self.subTest(mode=mode):
                 result = self.run_step("Verify package set and create checksums",

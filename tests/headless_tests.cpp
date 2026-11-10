@@ -143,14 +143,17 @@ private slots:
         VoiceSession session(profile + ".session"), peerSession(directory.filePath("peer.session"));
         LocalChannel host(session, profile + ".channel.json");
         LocalChannel peer(peerSession, directory.filePath("peer.channel"), TlsIdentity::create());
+        QString writeError;
         const auto writeIdentity = [&](const QByteArray& bytes) {
             QKeychain::WritePasswordJob job("SquadSpeak");
             job.setAutoDelete(false); job.setKey(slot); job.setInsecureFallback(false); job.setBinaryData(bytes);
             QSignalSpy finished(&job, &QKeychain::Job::finished);
             job.start();
-            return (finished.count() > 0 || finished.wait(5000)) && job.error() == QKeychain::NoError;
+            const bool completed = finished.count() > 0 || finished.wait(5000);
+            writeError = completed ? job.errorString() : QStringLiteral("Keychain write did not finish");
+            return completed && job.error() == QKeychain::NoError;
         };
-        QVERIFY(writeIdentity("invalid test identity"));
+        QVERIFY2(writeIdentity("invalid test identity"), qPrintable(writeError));
         temporaryIdentitySlots_[slot] = true;
         const auto port = configuredTestPort(); QVERIFY(port != 0);
         QVERIFY(host.configureHost({{"port", port}, {"approvedClients", QJsonArray{peer.ownId()}}}));
@@ -168,7 +171,7 @@ private slots:
         QVERIFY(!host.startHost());
         QCOMPARE(host.status(), failure);
         QCOMPARE(host.hostConfiguration(), configuration);
-        QVERIFY(writeIdentity(storedIdentity.pem()));
+        QVERIFY2(writeIdentity(storedIdentity.pem()), qPrintable(writeError));
         QVERIFY(host.initialize());
         QVERIFY(host.initialize());
         QTRY_VERIFY_WITH_TIMEOUT(host.chatReady(), 5000);
@@ -1374,12 +1377,16 @@ with (root / 'replies').open('wb') as replies:
         controller.process(QJsonObject{{"command", "requests"}});
         controller.process(QJsonObject{{"command", "approve"}, {"id", requestId}});
         QTRY_VERIFY(client.joined());
+        QCOMPARE(client.notices().size(), 1);
+        const auto joined = client.notices().first().toMap().value("event").toMap();
+        QCOMPARE(joined.value("kind").toString(), QString("joined"));
+        QCOMPARE(joined.value("member").toString(), client.ownId());
         controller.process(QJsonObject{{"command", "chat"}, {"text", "headless durable chat"}});
         controller.process(QJsonObject{{"command", "chat"}, {"text", "second independent announcement"}});
         QTRY_VERIFY(output.data().contains("\"delivered\":true"));
-        QTRY_COMPARE(client.messages().size(), 3);
-        QCOMPARE(client.messages().at(1).toMap().value("text").toString(), QString("headless durable chat"));
-        QCOMPARE(client.messages().at(2).toMap().value("text").toString(), QString("second independent announcement"));
+        QTRY_COMPARE(client.messages().size(), 2);
+        QCOMPARE(client.messages().at(0).toMap().value("text").toString(), QString("headless durable chat"));
+        QCOMPARE(client.messages().at(1).toMap().value("text").toString(), QString("second independent announcement"));
         QVERIFY(!client.chatOnlineIds().contains(host.ownId()));
         controller.process(QJsonObject{{"command", "kick"}, {"id", requestId}});
         QTRY_VERIFY(!client.joined());

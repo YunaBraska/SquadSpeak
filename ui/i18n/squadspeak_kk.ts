@@ -422,6 +422,10 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Not connected</source>
+            <translation>Қосылмаған</translation>
+        </message>
+        <message>
             <source>Text size</source>
             <translation>Мәтін өлшемі</translation>
         </message>

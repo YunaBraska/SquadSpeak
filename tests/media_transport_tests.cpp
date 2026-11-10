@@ -988,7 +988,11 @@ private slots:
         DatagramLink link(port);
         squad::MediaTransport host(true, port, QHostAddress::LocalHost, 0);
         squad::MediaTransport client(false, 0, QHostAddress::LocalHost, link.port());
-        connect(&host, &squad::MediaTransport::signaling, &client, [&](const auto& message) { QVERIFY(client.receive(message)); });
+        int fallbackFrames = 0;
+        connect(&host, &squad::MediaTransport::signaling, &client, [&](const auto& message) {
+            fallbackFrames += message.value("kind") == "frame";
+            QVERIFY(client.receive(message));
+        });
         connect(&client, &squad::MediaTransport::signaling, &host, [&](const auto& message) { QVERIFY(host.receive(message)); });
         QSignalSpy heard(&client, &squad::MediaTransport::audio);
         QTRY_VERIFY_WITH_TIMEOUT(host.udpActive() && client.udpActive(), 10000);
@@ -1008,13 +1012,18 @@ private slots:
         // The intentional stall can expire UDP liveness too. Wait for a real
         // probe reply before using UDP delivery as the completion marker.
         QTRY_VERIFY_WITH_TIMEOUT(host.udpActive() && client.udpActive(), 3000);
-        QVERIFY(host.send(second, packet));
-        QTRY_VERIFY_WITH_TIMEOUT(std::any_of(heard.begin(), heard.end(), [](const auto& event) {
-            return event.first().toString() == second;
-        }), 3000);
+        const auto resumedSource = removeSource ? second : first;
+        QVERIFY(host.send(resumedSource, packet));
+        QTRY_COMPARE_WITH_TIMEOUT(heard.size(), removeSource ? 1 : 2, 3000);
+        QCOMPARE(heard.last().at(0).toString(), resumedSource);
+        QCOMPARE(heard.last().at(1).toByteArray(), packet);
+        // A later frame from the same source must resume intact and report
+        // exactly the expired frames, without sending stale speech over TLS.
+        QCOMPARE(heard.last().at(2).toInt(), removeSource ? 0 : 6);
+        if (!removeSource) QCOMPARE(heard.first().at(2).toInt(), 0);
+        QCOMPARE(fallbackFrames, 0);
         // The packet already being sent can arrive. Queued old packets cannot.
         QCOMPARE(link.audioPackets, 2);
-        if (removeSource) QCOMPARE(heard.size(), 1);
     }
     void audioQueuesReleaseWhenPeerCloses() {
         const auto packet = speech();

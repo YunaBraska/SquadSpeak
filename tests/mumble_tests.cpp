@@ -307,7 +307,9 @@ private slots:
         QCOMPARE(eventsA.at(0).at(0).toString(), QString("join"));
         QCOMPARE(eventsA.at(1).at(0).toString(), QString("memberJoin"));
         QVERIFY(b.channel.messages().isEmpty());
+        QCOMPARE(b.channel.notices().size(), 1);
         QVERIFY(a.channel.messages().isEmpty());
+        QVERIFY(a.channel.notices().isEmpty()); // The selected native chat has no voice changes.
 
         const auto beforePresence = eventsA.count();
         quint32 bSession = 0;
@@ -364,23 +366,30 @@ private slots:
             return false;
         }(), 5000);
         QCOMPARE(eventsA.count(), 3);
+        QVERIFY(a.channel.openSavedChat(sideId));
+        QVERIFY(a.channel.notices().isEmpty());
 
         QVERIFY(b.channel.joinSaved(lounge));
         QTRY_COMPARE_WITH_TIMEOUT(b.channel.joinedHostId(), lounge, 10000);
         QCOMPARE(eventsB.count(), 7);
         QTRY_COMPARE_WITH_TIMEOUT(eventsA.count(), 4, 5000);
         QCOMPARE(eventsA.at(3).at(0).toString(), QString("memberJoin"));
+        QCOMPARE(a.channel.notices().size(), 1);
+        QCOMPARE(a.channel.notices().first().toMap().value("event").toMap().value("kind").toString(), QString("left"));
         QVERIFY(a.channel.openSavedChat(lounge));
         QVERIFY(a.channel.messages().isEmpty());
+        QCOMPARE(a.channel.notices().size(), 4);
         const auto beforeLeave = eventsA.count();
         QVERIFY(b.channel.leave());
         QCOMPARE(eventsB.count(), 8);
         QCOMPARE(eventsB.at(7).at(0).toString(), QString("leave"));
         QTRY_COMPARE_WITH_TIMEOUT(eventsA.count(), beforeLeave + 1, 5000);
         QCOMPARE(eventsA.at(4).at(0).toString(), QString("memberLeave"));
+        QCOMPARE(a.channel.notices().size(), 5);
         QVERIFY(a.channel.leave());
         QCOMPARE(eventsA.count(), 6);
         QCOMPARE(eventsA.at(5).at(0).toString(), QString("leave"));
+        QCOMPARE(a.channel.notices().size(), 6);
         QVERIFY(a.channel.messages().isEmpty());
         QVERIFY(b.channel.messages().isEmpty());
     }

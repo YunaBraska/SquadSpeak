@@ -539,6 +539,35 @@ LocalChannel::Client* LocalChannel::chatClient() const {
     return clients_.value(chatHostId_).get();
 }
 
+void LocalChannel::observeMembers(Client& c, const QVariantList& members, bool announce, const QJsonObject& departures) {
+    if (announce) {
+        QHash<QString, QVariantMap> before, after;
+        for (const auto& member : humanMembers(c.members)) {
+            const auto person = member.toMap();
+            before.insert(person.value("providerClient", person.value("id")).toString(), person);
+        }
+        for (const auto& member : humanMembers(members)) {
+            const auto person = member.toMap();
+            after.insert(person.value("providerClient", person.value("id")).toString(), person);
+        }
+        QSet<QString> sounds;
+        for (auto it = after.cbegin(); it != after.cend(); ++it) if (!before.contains(it.key())) {
+            const auto id = it->value("id").toString();
+            if (id == ownId()) continue;
+            addNotice(c, "joined", id, it->value("name").toString()); sounds.insert("memberJoin");
+        }
+        for (auto it = before.cbegin(); it != before.cend(); ++it) if (!after.contains(it.key())) {
+            const auto id = it->value("id").toString();
+            if (id == ownId()) continue;
+            const auto reason = departures.value(id).toString();
+            if (reason == "kicked" || reason == "banned") sounds.insert(reason == "kicked" ? "kick" : "ban");
+            else { addNotice(c, "left", id, it->value("name").toString()); sounds.insert("memberLeave"); }
+        }
+        if (c.voice && c.id == joinedHostId_) for (const auto& sound : sounds) emit channelEvent(sound);
+    }
+    c.members = members;
+}
+
 bool LocalChannel::joined() const {
     const auto c = clients_.value(joinedHostId_);
     return c && c->voice && c->accepted;
@@ -1795,10 +1824,8 @@ void LocalChannel::acceptPeer(QSslSocket* socket) {
         return;
     }
     // One logical device occupies one participant slot even after a fast reconnect.
-    bool wasInVoice = false;
     for (auto* other : peers_.keys()) {
         if (other == socket || peers_.value(other).id != id || peers_.value(other).controller != controller) continue;
-        wasInVoice |= peers_.value(other).joined && !peers_.value(other).observer;
         peers_[other].joined = false;
         peers_[other].pending = false;
         writeMessage(other, {{"type", controller ? "control" : "join"}, {"result", "replaced"}});
@@ -1824,8 +1851,6 @@ void LocalChannel::acceptPeer(QSslSocket* socket) {
     if (!controller) {
         rememberPrivatePeer(socket, true);
         sendChatKey(socket); broadcastRoster(); startMedia(socket);
-        if (!peers_.value(socket).observer && !wasInVoice) publishMembership("joined", id, peers_.value(socket).name);
-        else if (peers_.value(socket).observer && wasInVoice) publishMembership("left", id, peers_.value(socket).name);
         const auto* device = service_ ? service_ : this;
         if (peers_.value(socket).remoteOffers) writeMessage(socket, {{"type", "remoteOffer"},
             {"allowed", device->control_.value("controllers").toObject().value(id).toObject().value("remote").toBool()
@@ -1989,11 +2014,9 @@ void LocalChannel::hostMessage(QSslSocket* socket, const QJsonObject& message) {
         const auto media = peers_[socket].media;
         if (!media || (message.value("kind") == "source" && message.value("id") != id) || !media->receive(message)) socket->abort();
     } else if (type == "voiceLeave") {
-        const bool wasInVoice = !peers_[socket].observer;
         peers_[socket].observer = true; peers_[socket].muted = true;
         peers_[socket].relay.reset();
         broadcastRoster();
-        if (wasInVoice) publishMembership("left", id, peers_[socket].name);
     } else if (type == "audioAck") {
         auto& peer = peers_[socket];
         if (!peer.adaptiveAudio) { socket->abort(); return; }
@@ -2222,7 +2245,6 @@ void LocalChannel::endMembership(const Peer& peer) {
         closeViewers(peer.id);
         publishPrivateContacts(peer.id);
         rotateChatKey(); broadcastRoster();
-        if (!peer.observer) publishMembership("left", peer.id, peer.name);
     }
 }
 
@@ -2260,7 +2282,8 @@ bool LocalChannel::disconnectMember(const QString& id, const QString& reason) {
     if (member && !voiceName.isEmpty() && (reason == "kicked" || reason == "blocked"))
         pendingDepartureReasons_.insert(id, reason == "kicked" ? QStringLiteral("kicked") : QStringLiteral("banned"));
     broadcastRoster(); emit requestsChanged();
-    if (!voiceName.isEmpty()) publishMembership(reason == "kicked" ? "kicked" : reason == "blocked" ? "banned" : "left", id, voiceName);
+    if (!voiceName.isEmpty() && (reason == "kicked" || reason == "blocked"))
+        publishMembership(reason == "kicked" ? "kicked" : "banned", id, voiceName);
     return found;
 }
 
@@ -2674,6 +2697,10 @@ void LocalChannel::connectClient(Client& c) {
 }
 
 void LocalChannel::closeClient(Client& c) {
+    if (c.accepted && c.voice && c.id == joinedHostId_) {
+        addNotice(c, "left", ownId(), session_.userName());
+        emit channelEvent("leave");
+    }
     c.lastPresence = {}; c.rosterBuffer.clear(); c.rosterId.clear(); c.rosterExpected = 0;
     if (c.external()) { c.accepted = false; c.voice = false; c.reconnectWanted = false; return; }
     if (!c.privatePeer.isEmpty()) {
@@ -2700,7 +2727,10 @@ bool LocalChannel::leave() {
 }
 
 bool LocalChannel::leaveChannel(bool pauseAutoJoin) {
-    if (joined()) emit channelEvent("leave");
+    if (joined()) {
+        if (const auto c = clients_.value(joinedHostId_)) addNotice(*c, "left", ownId(), session_.userName());
+        emit channelEvent("leave");
+    }
     if (pauseAutoJoin && !joinedHostId_.isEmpty()) pausedAutoJoin_.insert(joinedHostId_);
     automaticAttempt_ = false;
     finishDirect();
@@ -2799,7 +2829,10 @@ void LocalChannel::clientMessage(Client& c, const QJsonObject& message) {
         c.passwordRequired = false;
         const bool wasJoined = c.accepted;
         c.accepted = result == "accepted";
-        if (c.voice && c.accepted && !wasJoined) emit channelEvent("join");
+        if (c.voice && c.accepted && !wasJoined) {
+            addNotice(c, "joined", ownId(), session_.userName());
+            emit channelEvent("join");
+        }
         c.reconnectWanted = c.accepted;
         if (!c.accepted) {
             c.media.reset(); c.members.clear(); c.onlineIds.clear(); c.presenceKnown = false; c.messages = {}; c.historyRequest.clear(); c.hasOlder = false; c.hasNewer = false;
@@ -2906,24 +2939,8 @@ void LocalChannel::clientMessage(Client& c, const QJsonObject& message) {
         const auto members = message.value("members").toArray().toVariantList();
         QSet<QString> ids;
         for (const auto& member : humanMembers(members)) ids.insert(member.toMap().value("id").toString());
-        if (c.voice && c.rosterSeen) {
-            QSet<QString> previous;
-            for (const auto& member : humanMembers(c.members)) previous.insert(member.toMap().value("id").toString());
-            if (!(ids - previous).isEmpty()) emit channelEvent("memberJoin");
-            bool memberLeave = false, kicked = false, banned = false;
-            const auto departures = message.value("departures").toObject();
-            for (const auto& removed : previous - ids) {
-                const auto kind = departures.value(removed).toString();
-                if (kind == "kicked") kicked = true;
-                else if (kind == "banned") banned = true;
-                else memberLeave = true;
-            }
-            if (memberLeave) emit channelEvent("memberLeave");
-            if (kicked) emit channelEvent("kick");
-            if (banned) emit channelEvent("ban");
-        }
+        observeMembers(c, members, c.rosterSeen, message.value("departures").toObject());
         c.rosterSeen = true;
-        c.members = members;
         if (c.media) {
             auto sources = ids.values(); sources.append(ownId());
             for (const auto& member : members) if (member.toMap().value("music").toBool()) sources.append(member.toMap().value("id").toString());

@@ -422,6 +422,10 @@
     <context>
         <name>Channels</name>
         <message>
+            <source>Not connected</source>
+            <translation>Pole ühendatud</translation>
+        </message>
+        <message>
             <source>Text size</source>
             <translation>Teksti suurus</translation>
         </message>
