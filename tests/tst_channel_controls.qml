@@ -186,7 +186,7 @@ TestCase {
         tryCompare(Qt.inputMethod, "visible", false)
         for (const window of [view, controllerView]) {
             window.searchOpen = false
-            window.collapsedHosts = ({})
+            window.expandedHosts = ({})
             window.updateChannelRows()
             findChild(window, "remoteTargetsDialog").close()
             window.closeSettings()
@@ -496,6 +496,7 @@ TestCase {
         verify(channel.openChat(remoteChannel.ownId, "127.0.0.1", remoteChannel.servicePort))
         tryCompare(channel, "chatReady", true)
         verify(fixtures.pressAccessible(findChild(view, "backToChannels")))
+        verify(fixtures.pressAccessible(visualChild(view.contentItem, "toggleHost_" + channel.ownId)))
         if (data.width >= 840) view.openHostChat(channel.ownId)
         const host = visualChild(view.contentItem, "hostGroup_" + channel.ownId)
         const direct = visualChild(view.contentItem, "channelName_" + remoteChannel.ownId)
@@ -840,6 +841,7 @@ TestCase {
         verify(channel.setChannelName("Zulu"))
         const extra = channel.addOwnedChannel("Alpha")
         verify(extra.length > 0)
+        verify(fixtures.pressAccessible(visualChild(view.contentItem, "toggleHost_" + channel.ownId)))
         const ownMusic = visualChild(view.contentItem, "channelMusic_" + extra)
         verify(ownMusic !== null); verify(!ownMusic.visible)
         verify(fixtures.setBotMusicState("Own station", "playing", true, extra))
@@ -916,6 +918,10 @@ TestCase {
         verify(fixtures.pressAccessible(findChild(view, "backToChannels")))
         const toggle = visualChild(view.contentItem, "toggleHost_" + id)
         verify(toggle && toggle.visible)
+        tryCompare(visualChild(view.contentItem, "channelRow_" + id), "visible", false)
+        tryCompare(toggle, "activeFocus", true)
+        keyClick(Qt.Key_Right)
+        tryCompare(visualChild(view.contentItem, "channelRow_" + id), "visible", true)
         verify(fixtures.pressAccessible(toggle))
         tryCompare(visualChild(view.contentItem, "channelRow_" + id), "visible", false)
         compare(channel.joinedHostId, id)
@@ -941,6 +947,8 @@ TestCase {
         compare(draft.text, "Keep this draft")
         compare(channel.joinedHostId, id)
         tryVerify(function() { return !visualChild(view.contentItem, "unreadHost_" + id).visible })
+        verify(fixtures.pressAccessible(findChild(view, "backToChannels")))
+        tryCompare(visualChild(view.contentItem, "channelRow_" + id), "visible", true)
     }
 
     function test_channelSearchKeepsVoiceAndDraft_data() {
@@ -4752,6 +4760,8 @@ TestCase {
                 "The remote host contains only its three current channels: " + JSON.stringify(view.channelList))
             verify(visualChild(view.contentItem, "hostGroup_" + channel.ownId))
             tryVerify(function() { return visualChild(view.contentItem, "hostGroup_" + remoteChannel.ownId) !== null })
+            for (const hostId of [channel.ownId, remoteChannel.ownId])
+                verify(fixtures.pressAccessible(visualChild(view.contentItem, "toggleHost_" + hostId)))
             verify(visualChild(view.contentItem, "channelRow_" + games))
             verify(visualChild(view.contentItem, "channelRow_" + workshop))
             verify(visualChild(view.contentItem, "channelRow_" + remoteMusic))
@@ -5742,24 +5752,26 @@ TestCase {
         view.height = 700
     }
 
-    function test_providerHostIconUsesProtocolAndCollapsesOfflineServer() {
+    function test_providerIconKeepsOfflineServerReachableWithoutExtraHostRow() {
         verify(fixtures.startHost())
         verify(channel.addTeamSpeak("127.0.0.1:1"))
+        if (!findChild(view, "channelsScroll").visible)
+            verify(fixtures.pressAccessible(findChild(view, "backToChannels")))
         const entry = channel.savedChannels.find(function(c) { return c.protocol === "teamspeak" })
         verify(entry)
         // Snapshot identities before mutating the QVariant list that owns this entry.
         const serverId = String(entry.deviceId), channelId = String(entry.id)
         try {
-            const icon = visualChild(view.contentItem, "hostProvider_" + serverId)
-            verify(icon)
+            const icon = visualChild(view.contentItem, "channelProvider_" + channelId)
+            verify(icon && icon.visible)
             compare(icon.label, "TeamSpeak")
             tryCompare(findChild(icon, "providerArtwork"), "status", Image.Ready)
             compare(visualChild(view.contentItem, "channelProvider_" + channel.ownId).label, "SquadSpeak")
-            const label = visualChild(view.contentItem, "hostGroup_" + serverId)
-            verify(!label.text.includes("[TS3]"))
-            const toggle = visualChild(view.contentItem, "toggleHost_" + serverId)
-            verify(fixtures.pressAccessible(toggle))
-            tryCompare(visualChild(view.contentItem, "channelRow_" + channelId), "visible", false)
+            const label = visualChild(view.contentItem, "channelName_" + channelId)
+            verify(label.visible && !label.text.includes("[TS3]"))
+            verify(!visualChild(view.contentItem, "hostGroup_" + serverId).visible)
+            verify(!visualChild(view.contentItem, "toggleHost_" + serverId).visible)
+            verify(visualChild(view.contentItem, "channelRow_" + channelId).visible)
             verify(waitForRendering(view.contentItem))
             if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/provider-hosts.png"))
         } finally {

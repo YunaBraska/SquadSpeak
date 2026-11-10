@@ -325,7 +325,7 @@ PanelWindow {
     }
     Shortcut { sequences: [StandardKey.Find]; enabled: root.active && !settings.visible; onActivated: root.searchOpen = true }
     property var privateFolderExpanded: ({})
-    property var collapsedHosts: ({})
+    property var expandedHosts: ({})
     readonly property var selectedOwner: { const revision = network.ownedChannels; return remote ? null : network.ownChannel(selectedHost) }
     readonly property var managedHost: selectedOwner || network
     readonly property var memberHost: { const revision = network.ownedChannels; return remote ? null : network.ownChannel(selectedMemberHost) }
@@ -368,10 +368,10 @@ PanelWindow {
         return host ? (host.deviceId || host.id) : hostId
     }
     function toggleHost(id) {
-        const next = Object.assign({}, collapsedHosts)
+        const next = Object.assign({}, expandedHosts)
         if (next[id]) delete next[id]
         else next[id] = true
-        collapsedHosts = next
+        expandedHosts = next
         updateChannelRows()
     }
     function privateFolderIsExpanded(id) { return privateFolderExpanded[id] !== false }
@@ -463,8 +463,8 @@ PanelWindow {
             group.privateChats.push(entry)
         }
         const retained = {}
-        for (const key of Object.keys(collapsedHosts)) if (groups.has(key)) retained[key] = true
-        collapsedHosts = retained
+        for (const key of Object.keys(expandedHosts)) if (groups.has(key)) retained[key] = true
+        expandedHosts = retained
         const ordered = []
         const sortedGroups = Array.from(groups.values()).sort(function(a, b) {
             return Number(!!b.owned) - Number(!!a.owned) || a.label.localeCompare(b.label) || a.key.localeCompare(b.key)
@@ -474,7 +474,7 @@ PanelWindow {
             const groupUnread = privateUnread || group.channels.some(function(entry) { return !!entry.unread })
             const grouped = group.channels.length !== 1
                 || (group.protocol === "teamspeak" && group.channels[0].providerChannel === "0")
-            const groupExpanded = !grouped || !!query || !collapsedHosts[group.key]
+            const groupExpanded = !grouped || !!query || !!expandedHosts[group.key]
             if (query && !group.label.toLowerCase().includes(query)) {
                 const matches = new Set()
                 for (const entry of group.channels) {
@@ -597,7 +597,8 @@ PanelWindow {
                 if (!root.visible || root.showChat || root.details || root.searchOpen) return
                 for (let i = 0; i < channelRepeater.count; ++i) {
                     const entry = channelRepeater.itemAt(i)
-                    if (entry && entry.channelData.id === root.inspectedHost) {
+                    if (entry && (entry.channelData.id === root.inspectedHost
+                        || (!entry.groupExpanded && entry.groupId === (root.inspectedChannel.deviceId || root.inspectedHost)))) {
                         entry.focusChannel()
                         return
                     }
@@ -2025,9 +2026,10 @@ PanelWindow {
                             required property bool ambiguous
                             function focusChannel() {
                                 const flick = scroll.contentItem
-                                const top = channelRow.mapToItem(flick.contentItem, 0, 0).y
+                                const target = groupExpanded ? channelRow : hostToggle
+                                const top = target.mapToItem(flick.contentItem, 0, 0).y
                                 flick.contentY = Math.max(0, Math.min(top - 8, flick.contentHeight - flick.height))
-                                channelRow.forceActiveFocus()
+                                target.forceActiveFocus()
                             }
                             Layout.fillWidth: true; spacing: 2
                             RowLayout {
@@ -2036,6 +2038,7 @@ PanelWindow {
                                 Layout.fillWidth: true; Layout.minimumHeight: 46
                                 Layout.leftMargin: 8; Layout.rightMargin: 2; spacing: 6
                                 ActionButton {
+                                    id: hostToggle
                                     Layout.preferredWidth: 32; padding: 6
                                     objectName: "toggleHost_" + channelEntry.groupId
                                     text: channelEntry.groupLabel; iconOnly: true; flat: true
