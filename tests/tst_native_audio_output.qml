@@ -12,7 +12,8 @@ TestCase {
     Connections {
         target: audio
         function onNotificationProgress(kind, phase, text) {
-            console.info("Notification", kind, phase, "native output", fixtures.nativeAudioOutputRunning())
+            console.info("Notification", kind, phase, "at", Date.now(), "voice", audio.botVoice.name,
+                         "native output", fixtures.nativeAudioOutputRunning())
         }
     }
 
@@ -37,13 +38,18 @@ TestCase {
             verify(!fixtures.startFeedback())
             compare(progress.count, 0)
             verify(session.setEventSounds(true))
+            const sequenceStarted = Date.now()
             verify(fixtures.startFeedback())
+            tryCompare(progress, "count", 3, 15000)
+            // Exercise the language change through normal announcements before
+            // testing natural quit completion. Cold-language shutdown is separate.
+            verify(session.setLanguage("de"))
             verify(fixtures.startHost())
             verify(channel.joinSaved(channel.ownId))
             tryCompare(channel, "joined", true)
             verify(channel.leave())
             tryCompare(channel, "joined", false)
-            tryCompare(progress, "count", 9, 15000)
+            tryCompare(progress, "count", 9, Math.max(1, 15000 - (Date.now() - sequenceStarted)))
             const kinds = ["start", "join", "leave"]
             for (let i = 0; i < kinds.length; ++i) {
                 compare(progress.signalArguments[i * 3][0], kinds[i])
@@ -54,7 +60,6 @@ TestCase {
             }
             verify(["Hey, you're back.", "Ready when you are.", "Let's talk."].includes(
                 progress.signalArguments[1][2]), "Startup uses a short greeting")
-            verify(session.setLanguage("de"))
             fixtures.shutdownFeedback()
             tryCompare(stopped, "count", 1, 7000)
             compare(progress.count, 12, "Quit completes its cue and speech before shutdown")
@@ -74,6 +79,47 @@ TestCase {
             audio.setReadBotMessages(readBot); audio.setNotificationVolume(volume)
             session.setEventSounds(events); session.setMuted(muted); session.setDeafened(deafened)
             session.setLanguage(language)
+        }
+    }
+
+    function test_languageChangeQuitUsesCurrentLanguageAndStaysBounded() {
+        verify(audio.outputAvailable && audio.speechAvailable)
+        const volume = audio.notificationVolume
+        const readBot = audio.readBotMessages
+        const events = session.eventSounds
+        const language = session.language
+        try {
+            verify(session.setLanguage("en"))
+            verify(audio.setNotificationVolume(0.01))
+            verify(audio.setReadBotMessages(true))
+            verify(session.setEventSounds(true))
+            verify(fixtures.bindFeedback())
+            progress.clear(); stopped.clear()
+            verify(session.setLanguage("de"))
+            const started = Date.now()
+            fixtures.shutdownFeedback()
+            tryCompare(stopped, "count", 1, 7000)
+            const elapsed = Date.now() - started
+            verify(elapsed < 7000, "A cold system voice cannot hold shutdown open")
+            verify(progress.count === 2 || progress.count === 3)
+            // The default coarse timer may fire up to 5% before six seconds.
+            if (progress.count === 2) verify(elapsed >= 5700, "Only the shutdown deadline may cancel speech")
+            compare(progress.signalArguments[0][0], "quit")
+            compare(progress.signalArguments[0][1], "tone")
+            compare(progress.signalArguments[1][1], "speech")
+            verify(["Bis später.", "Ich bin dann weg.", "Bis zum nächsten Mal."].includes(
+                progress.signalArguments[1][2]), "Immediate quit uses the current app language")
+            if (progress.count === 3) compare(progress.signalArguments[2][1], "finished")
+            tryVerify(function() { return fixtures.nativeAudioOutputRunning() === 0 }, 1000,
+                "Shutdown releases native output after completion or deadline cancellation")
+            fixtures.shutdownFeedback()
+            compare(stopped.count, 1)
+            verify(!audio.running && !channel.joined)
+            compare(audio.outputStatus, "")
+        } finally {
+            fixtures.unbindFeedback()
+            audio.setReadBotMessages(readBot); audio.setNotificationVolume(volume)
+            session.setEventSounds(events); session.setLanguage(language)
         }
     }
 
