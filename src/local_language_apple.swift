@@ -211,10 +211,12 @@ private final class LanguageBridge {
       var available = false
       var error = "Text and speech translation requires macOS or iOS 26"
       if #available(macOS 26.0, iOS 26.0, *) {
+#if !targetEnvironment(simulator)
         speechLanguages = await SpeechTranscriber.supportedLocales.map(localeName)
-        available = true
-        speechAvailable = SpeechTranscriber.isAvailable
+        available = !languages.isEmpty
+        speechAvailable = available && SpeechTranscriber.isAvailable
         error = ""
+#endif
       }
       let voice = AVSpeechSynthesisVoice(language: nil)
       let event: [String: Any] = ["kind": "capabilities", "available": available, "speechAvailable": speechAvailable,

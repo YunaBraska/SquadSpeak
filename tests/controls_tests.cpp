@@ -740,8 +740,12 @@ public slots:
             {"mumble", qEnvironmentVariable("SQUAD_SHOWCASE_MUMBLE_ENDPOINT")},
             {"mumblePassword", qEnvironmentVariable("SQUAD_SHOWCASE_MUMBLE_PASSWORD")}});
         engine->rootContext()->setContextProperty("nativeTranslationExpected",
+#if defined(Q_OS_IOS) && TARGET_OS_SIMULATOR
+            false);
+#else
             LocalLanguage::supported() && QGuiApplication::platformName() != "offscreen"
                 && QOperatingSystemVersion::current().majorVersion() >= 26);
+#endif
     }
 signals:
     void feedbackStopped();

@@ -1568,7 +1568,7 @@ PanelWindow {
                     id: channelTranslation
                     objectName: "channelTranslationControls"
                     implicitHeight: visible ? translationRows.implicitHeight + 20 : 0
-                    visible: root.language.supported && !root.remote
+                    visible: root.language.available && !root.remote
                     readonly property var preferences: { root.language.revision; return root.language.channelPreferences(root.selectedHost) }
                     function save(key, value) {
                         const next = Object.assign({}, preferences)
@@ -1578,6 +1578,13 @@ PanelWindow {
                     ColumnLayout {
                         id: translationRows
                         anchors.fill: parent; anchors.margins: 10; spacing: 6
+                        Label {
+                            objectName: "translationExperimental"
+                            Layout.fillWidth: true
+                            text: qsTranslate("LocalLanguage", "Translation (experimental)")
+                            wrapMode: Text.Wrap
+                            color: Theme.muted
+                        }
                         Repeater {
                             model: [
                                 { key: "messages", target: "outgoing", label: qsTranslate("LocalLanguage", "Translate messages"), choice: qsTranslate("LocalLanguage", "Original text") },
@@ -1587,6 +1594,7 @@ PanelWindow {
                                 id: translationRow
                                 required property var modelData
                                 Layout.fillWidth: true; spacing: 8
+                                visible: modelData.key === "messages" || root.language.speechAvailable
                                 OptionCheck {
                                     objectName: translationRow.modelData.key === "messages" ? "channelTranslateMessages" : "channelTranslateVoice"
                                     Layout.fillWidth: true
@@ -1594,9 +1602,6 @@ PanelWindow {
                                     checked: !!channelTranslation.preferences[translationRow.modelData.key]
                                     enabled: root.language.available && (translationRow.modelData.key === "messages" || root.language.speechAvailable)
                                     onClicked: { channelTranslation.save(translationRow.modelData.key, checked); checked = Qt.binding(function() { return !!channelTranslation.preferences[translationRow.modelData.key] }) }
-                                    ToolTip.visible: hovered
-                                    ToolTip.text: enabled ? qsTranslate("LocalLanguage", "Translation (experimental)") : qsTranslate("LocalLanguage", "Local language processing is unavailable.")
-                                    ToolTip.delay: 600
                                 }
                                 ChoiceBox {
                                     objectName: translationRow.modelData.key === "messages" ? "channelOutgoingLanguage" : "channelVoiceLanguage"
