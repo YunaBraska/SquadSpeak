@@ -7721,10 +7721,23 @@ private slots:
             QByteArray buffer;
             bool encrypted = false;
             int passwordChallenges = 0;
+            int pongReplies = 0;
         };
         TlsIdentity identity = TlsIdentity::create();
         std::vector<RawPeer> peers;
         peers.reserve(41);
+        QTimer heartbeat;
+        heartbeat.setInterval(2000);
+        QObject::connect(&heartbeat, &QTimer::timeout, &host.channel, [&] {
+            const auto data = QJsonDocument(QJsonObject{{"type", "ping"}}).toJson(QJsonDocument::Compact);
+            QByteArray frame(4, '\0');
+            qToBigEndian<quint32>(quint32(data.size()), frame.data());
+            frame.append(data);
+            for (auto& peer : peers)
+                if (peer.socket && peer.socket->isEncrypted() && peer.passwordChallenges == 1)
+                    peer.socket->write(frame);
+        });
+        heartbeat.start();
         const auto startPeer = [&](int index) {
             auto& peer = peers[static_cast<size_t>(index)];
             peer.socket = std::make_unique<QSslSocket>();
@@ -7755,6 +7768,7 @@ private slots:
                     raw.buffer.remove(0, 4 + size);
                     if (message.value("type").toString() == "join"
                         && message.value("result").toString() == "password") ++raw.passwordChallenges;
+                    if (message.value("type").toString() == "pong") ++raw.pongReplies;
                 }
             });
             socket->connectToHostEncrypted(QStringLiteral("127.0.0.1"), host.channel.port());
@@ -7767,9 +7781,11 @@ private slots:
         QTRY_COMPARE_WITH_TIMEOUT(std::count_if(peers.begin(), peers.begin() + 32, [](const auto& peer) {
             return peer.passwordChallenges == 1;
         }), 32, 10000);
-        // The encrypted hello and password challenge keep these peers alive past
-        // the missing-hello timer; raw TCP ConnectedState is not the contract.
-        QTest::qWait(6000);
+        // Pending clients send the same two-second heartbeat as real clients.
+        // Five replies keep the budget occupied beyond the eight-second idle timeout.
+        QTRY_VERIFY_WITH_TIMEOUT(std::all_of(peers.begin(), peers.begin() + 32, [](const auto& peer) {
+            return peer.pongReplies >= 5;
+        }), 15000);
         QCOMPARE(std::count_if(peers.begin(), peers.begin() + 32, [](const auto& peer) {
             return peer.encrypted && peer.socket->state() == QAbstractSocket::ConnectedState
                 && peer.passwordChallenges == 1;
