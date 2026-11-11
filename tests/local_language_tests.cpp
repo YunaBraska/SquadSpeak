@@ -10,6 +10,9 @@
 #include <QSignalSpy>
 #include <set>
 #include <array>
+#if defined(Q_OS_IOS)
+#include <TargetConditionals.h>
+#endif
 
 #ifndef SQUAD_NATIVE_LANGUAGE_ACCEPTANCE
 // The OS boundary is asynchronous and controllable. Production policy, rich
@@ -318,6 +321,10 @@ private slots:
         LocalLanguage language;
         QVERIFY(language.supported());
         QTRY_VERIFY_WITH_TIMEOUT(!language.languages().isEmpty(), 20000);
+#if defined(Q_OS_IOS) && TARGET_OS_SIMULATOR
+        QVERIFY(!language.available());
+        QVERIFY(!language.speechAvailable());
+#endif
         QSet<QString> choices;
         for (const auto& entry : language.languages()) {
             const auto code = entry.toMap().value("id").toString().section('-', 0, 0);

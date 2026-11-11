@@ -53,7 +53,8 @@ Item {
     readonly property var language: audio.language
     readonly property string translationKey: "draft:" + hostId
     readonly property var translationPreference: { language.revision; return language.channelPreferences(hostId) }
-    readonly property string translationTarget: remote || !translationPreference.messages ? "" : (translationPreference.outgoing || "")
+    readonly property bool translationEnabled: language.available && !remote && !!translationPreference.messages
+    readonly property string translationTarget: translationEnabled ? (translationPreference.outgoing || "") : ""
     readonly property var translatedDraft: { language.revision; return language.result(translationKey) }
     readonly property bool translationReady: !draft.text.trim().length || !translationTarget.length || (translatedDraft.original === draft.text
         && translatedDraft.target === translationTarget && !!translatedDraft.text && !translatedDraft.pending)
@@ -257,7 +258,7 @@ Item {
                             || ({id: message.sender, name: message.name, avatarId: message.avatarId || message.avatar, provider: message.provider || ""})
                         readonly property string translationKey: root.hostId + ":" + message.sequence
                         readonly property var translated: { root.language.revision; return root.language.result(translationKey) }
-                        readonly property bool wantsTranslation: !root.remote && !systemMessage && !own && !!root.translationPreference.messages
+                        readonly property bool wantsTranslation: root.translationEnabled && !systemMessage && !own
                         readonly property bool hasTranslation: wantsTranslation && translated.original === message.text && translated.target === root.translationPreference.incomingTarget && !!translated.text && !translated.pending
                         property bool showOriginal: false
                         Timer {

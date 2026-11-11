@@ -1581,8 +1581,11 @@ TestCase {
         const controls = findChild(view, "channelTranslationControls")
         verify(findChild(view, "memberLanguageControls") === null)
         verify(findChild(view, "translateDraft") === null)
-        compare(controls.visible, audio.language.supported)
+        compare(controls.visible, audio.language.available)
         if (!controls.visible) return
+        const experimental = findChild(controls, "translationExperimental")
+        verify(experimental !== null && experimental.visible)
+        compare(experimental.text, "Translation (experimental)")
         const messages = findChild(controls, "channelTranslateMessages")
         const speech = findChild(controls, "channelTranslateVoice")
         const outgoing = findChild(controls, "channelOutgoingLanguage")
@@ -1592,6 +1595,8 @@ TestCase {
         compare(outgoing.currentValue, "")
         compare(listening.currentValue, "")
         compare(messages.enabled, audio.language.available)
+        compare(speech.visible, audio.language.speechAvailable)
+        compare(listening.visible, audio.language.speechAvailable)
         compare(speech.enabled, audio.language.speechAvailable && audio.language.available)
         verify(!outgoing.enabled && !listening.enabled)
         if (messages.enabled) {
@@ -1614,12 +1619,14 @@ TestCase {
         }
         const viewport = findChild(menu, "channelInfoScroll").contentItem
         for (const control of [messages, speech, outgoing, listening]) {
+            if (!control.visible) continue
             reveal(control)
             const position = control.mapToItem(viewport, 0, 0)
             verify(position.x >= 0 && position.x + control.width <= viewport.width + 1)
             verify(position.y >= 0 && position.y + control.height <= viewport.height + 1, control.objectName + " y=" + position.y + " height=" + control.height + " viewport=" + viewport.height)
         }
         if (imageDirectory.length > 0) {
+            reveal(experimental)
             waitForRendering(menu.contentItem)
             verify(fixtures.saveWindow(view, imageDirectory + "/channel-language-" + data.tag + ".png"))
         }
@@ -2287,7 +2294,37 @@ TestCase {
         view.selectedHost = channel.ownId
         const menu = findChild(view, "channelInfoDialog")
         menu.open(); tryCompare(menu, "opened", true)
-        compare(findChild(view, "channelTranslationControls").visible, apple)
+        compare(findChild(view, "channelTranslationControls").visible, audio.language.available)
+        if (!audio.language.available) {
+            for (const name of ["channelTranslateMessages", "channelTranslateVoice", "channelOutgoingLanguage", "channelVoiceLanguage"]) {
+                const option = findChild(view, name)
+                verify(option === null || !option.visible, name + " must be hidden without local translation")
+            }
+        }
+    }
+
+    function test_unavailableTranslationPreferencesDoNotBlockChat() {
+        if (nativeTranslationExpected) tryCompare(audio.language, "available", true, 15000)
+        if (audio.language.available) return
+        verify(fixtures.startHost())
+        verify(channel.join(channel.ownId, "127.0.0.1", channel.servicePort))
+        tryCompare(channel, "chatReady", true)
+        view.chatExpanded = true
+        // A profile can retain translation choices from a supported device.
+        verify(audio.language.configureChannel(channel.ownId, true, "de", true, "de"))
+        const panel = findChild(view, "chatPanel")
+        const draft = findChild(panel, "chatDraft")
+        const send = findChild(panel, "sendChat")
+        const message = "Send original text when local translation is unavailable."
+        try {
+            draft.text = message
+            tryCompare(send, "enabled", true)
+            verify(fixtures.pressAccessible(send))
+            tryCompare(draft, "text", "")
+            tryVerify(function() { return channel.messages.some(m => m.text === message) })
+        } finally {
+            verify(audio.language.configureChannel(channel.ownId, false, "", false, ""))
+        }
     }
 
     function test_dockPreferenceIsMacOnlyAndKeepsVoiceState() {
