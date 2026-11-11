@@ -2324,9 +2324,9 @@ TestCase {
             verify(choice !== null, "Bot narration needs an installed-voice selector")
             verify(audio.setBotVoice(""))
             compare(choice.currentIndex, 0)
-            verify(choice.count > 1, "Native speech test requires an installed voice")
-            const selected = choice.model[1].id
-            choice.currentIndex = 1; choice.activated(1)
+            verify(choice.count > 2, "Native speech test requires an installed voice")
+            const selected = choice.model[2].id
+            choice.currentIndex = 2; choice.activated(2)
             compare(audio.botVoiceId, selected)
             compare(audio.botVoice.id, selected)
             verify(!findChild(settings, "botVoiceDownloadHint").visible, "An explicit installed voice must not prompt another download")
@@ -2349,6 +2349,53 @@ TestCase {
             settings.close()
         } finally {
             if (previousVoice !== undefined) audio.setBotVoice(previousVoice)
+            session.setLanguage(previousLanguage)
+            audio.setReadBotMessages(enabled)
+        }
+    }
+
+    function test_botVoiceSystemDefaultPersistsWithoutPinningItsVoice() {
+        if (!audio.speechAvailable || !audio.outputAvailable) return
+        const enabled = audio.readBotMessages
+        const previousLanguage = session.language
+        const previousVoice = audio.botVoiceId
+        try {
+            verify(audio.setReadBotMessages(true))
+            view.openSettings(2)
+            const settings = findChild(view, "settingsDialog")
+            tryCompare(settings, "opened", true)
+            const choice = findChild(settings, "botVoiceChoice")
+            const index = choice.model.findIndex(v => v.id === "system")
+            verify(index >= 0, "Bot voice must offer the macOS/iOS system choice")
+            choice.currentIndex = index; choice.activated(index)
+            compare(audio.botVoiceId, "system")
+            compare(fixtures.reloadedBotVoice(), "system", "Restart must retain the mode, not the current voice ID")
+            const current = audio.language.voices.find(v => v.systemDefault && !v.personal)
+            compare(audio.botVoice.id, current ? current.id : undefined)
+            verify(session.setLanguage(previousLanguage === "de" ? "en" : "de"))
+            compare(audio.botVoice.id, current ? current.id : undefined, "System voice is independent of the app language")
+            compare(audio.botVoiceId, "system")
+            compare(findChild(settings, "botVoiceName").visible, !!current)
+            if (imageDirectory.length > 0) {
+                verify(waitForRendering(view.contentItem))
+                tryVerify(function() {
+                    const mark = fixtures.renderedColor(choice.indicator, 9, 11)
+                    const background = fixtures.renderedColor(choice.indicator, 1, 1)
+                    return Math.abs(mark.r - background.r) + Math.abs(mark.g - background.g)
+                        + Math.abs(mark.b - background.b) > 0.15
+                }, 1000, "Wait for the voice selector icon to finish painting before capture")
+                verify(fixtures.saveWindow(view, imageDirectory + "/bot-system-voice.png"))
+            }
+            verify(!audio.setBotVoice("missing-system-voice"))
+            compare(audio.botVoiceId, "system")
+            settings.close(); view.openSettings(2)
+            tryCompare(settings, "opened", true)
+            compare(choice.model[choice.currentIndex].id, "system")
+            verify(audio.setBotVoice(""))
+            compare(fixtures.reloadedBotVoice(), "")
+            settings.close()
+        } finally {
+            audio.setBotVoice(previousVoice)
             session.setLanguage(previousLanguage)
             audio.setReadBotMessages(enabled)
         }

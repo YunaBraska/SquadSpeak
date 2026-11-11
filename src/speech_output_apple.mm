@@ -40,6 +40,7 @@ void SpeechOutput::stop() {
 
 QVariantList SpeechOutput::voices() {
     QVariantList result;
+    auto* systemVoice = [AVSpeechSynthesisVoice voiceWithLanguage:nil];
     for (AVSpeechSynthesisVoice* voice in AVSpeechSynthesisVoice.speechVoices) {
         bool novelty = false, personal = false;
         if (@available(macOS 14.0, iOS 17.0, *)) {
@@ -48,7 +49,8 @@ QVariantList SpeechOutput::voices() {
         }
         result.append(QVariantMap{{"id", QString::fromNSString(voice.identifier)},
             {"name", QString::fromNSString(voice.name)}, {"language", QString::fromNSString(voice.language)},
-            {"quality", int(voice.quality)}, {"novelty", novelty}, {"personal", personal}});
+            {"quality", int(voice.quality)}, {"novelty", novelty}, {"personal", personal},
+            {"systemDefault", bool(systemVoice && [voice.identifier isEqualToString:systemVoice.identifier])}});
     }
     return result;
 }
@@ -56,7 +58,11 @@ QVariantList SpeechOutput::voices() {
 bool SpeechOutput::start(const QString& text, int sampleRate, const QString& voice) {
     if (text.trimmed().isEmpty() || text.size() > 400 || sampleRate < 8000 || sampleRate > 192000) return false;
     AVSpeechSynthesisVoice* selected = nil;
-    if (!voice.isEmpty()) {
+    if (voice.isEmpty() || voice == "system") {
+        // Resolve the API's current default on each utterance. Apple may return
+        // a substitute when the user's Siri voice is unavailable to this app.
+        selected = [AVSpeechSynthesisVoice voiceWithLanguage:nil];
+    } else {
         auto* identifier = voice.toNSString();
         for (AVSpeechSynthesisVoice* installed in AVSpeechSynthesisVoice.speechVoices) {
             if ([installed.identifier isEqualToString:identifier]) {
@@ -65,7 +71,10 @@ bool SpeechOutput::start(const QString& text, int sampleRate, const QString& voi
             }
         }
     }
-    if (!voice.isEmpty() && !selected) return false;
+    if (!selected) return false;
+    if (@available(macOS 14.0, iOS 17.0, *)) {
+        if (selected.voiceTraits & AVSpeechSynthesisVoiceTraitIsPersonalVoice) return false;
+    }
     stop();
     auto state = std::make_shared<Impl::State>();
     int error;
@@ -75,11 +84,8 @@ bool SpeechOutput::start(const QString& text, int sampleRate, const QString& voi
     state->deadline.start();
     impl_->state = state;
     impl_->synthesizer = [[AVSpeechSynthesizer alloc] init];
-    // Use the system default voice and honor active assistive technology settings.
-    // These preferences do not expose a reliable translation target language.
     auto* utterance = [AVSpeechUtterance speechUtteranceWithString:text.toNSString()];
-    utterance.prefersAssistiveTechnologySettings = voice.isEmpty();
-    if (selected) utterance.voice = selected;
+    utterance.voice = selected;
     [impl_->synthesizer writeUtterance:utterance toBufferCallback:^(AVAudioBuffer* buffer) {
         std::lock_guard lock(state->mutex);
         if (state->stopped || state->done) return;

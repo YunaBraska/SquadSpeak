@@ -94,6 +94,7 @@ class AudioFixtures final : public QObject {
     std::unique_ptr<AudioModel> audio_;
     std::unique_ptr<AppFeedback> feedback_;
     QList<QMetaObject::Connection> audioChannelConnections_;
+    QList<QMetaObject::Connection> showcaseAudioConnections_;
     squad::VoiceMixer audioTestEncoder_{2};
     bool audioTestParticipantReady_ = false;
     std::unique_ptr<RadioPlayer> radio_;
@@ -141,6 +142,30 @@ public slots:
             audio_->setParticipants({});
         }
         audioTestParticipantReady_ = false;
+    }
+    bool bindShowcaseAudioToChannel() {
+        if (!audio_ || !channel_ || audioChannelConnections_.isEmpty() || !showcaseAudioConnections_.isEmpty()) return false;
+        showcaseAudioConnections_.append(connect(channel_.get(), &LocalChannel::participantsChanged, audio_.get(), [this] {
+            audio_->setParticipants(channel_->audioSources(), channel_->joinedHostId());
+        }));
+        showcaseAudioConnections_.append(connect(channel_.get(), &LocalChannel::audioReceived,
+            audio_.get(), &AudioModel::receiveAudio));
+        return audio_->setParticipants(channel_->audioSources(), channel_->joinedHostId());
+    }
+    void unbindShowcaseAudioFromChannel() {
+        for (const auto& connection : showcaseAudioConnections_) disconnect(connection);
+        showcaseAudioConnections_.clear();
+    }
+    bool sendShowcaseSpeechFrame() {
+        if (!audio_ || !remoteChannel_ || !remoteChannel_->joined() || !remoteSession_->transmissionAllowed()) return false;
+        std::array<float, 1920> samples{};
+        for (size_t frame = 0; frame < 960; ++frame) {
+            const auto sample = float(0.28 * std::sin(2 * std::numbers::pi * 440 * frame / 48000));
+            samples[frame * 2] = sample;
+            samples[frame * 2 + 1] = sample;
+        }
+        const auto packets = audioTestEncoder_.encode(samples, 48000, true);
+        return packets.size() == 1 && remoteChannel_->sendAudio(packets.front());
     }
     bool queueTestSpeechFrame() {
         if (!audio_) return false;

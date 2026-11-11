@@ -83,6 +83,7 @@ TestCase {
         const muted = session.muted
         const volume = audio.notificationVolume
         const readBot = audio.readBotMessages
+        const voice = audio.botVoiceId
         try {
             verify(session.setMuted(true))
             verify(session.setDeafened(true))
@@ -96,7 +97,10 @@ TestCase {
                 fixtures.cancelNotifications()
                 tryVerify(function() { return fixtures.nativeAudioOutputRunning() === 0 }, 1000)
             }
+            verify(audio.setBotVoice("system"))
             verify(audio.setReadBotMessages(true))
+            compare(audio.botVoiceId, "system")
+            verify(audio.botVoice.systemDefault)
             progress.clear()
             verify(fixtures.queueBotMessage("Hello."))
             tryVerify(function() { return fixtures.nativeAudioOutputRunning() === 1 }, 1000,
@@ -123,6 +127,7 @@ TestCase {
         } finally {
             fixtures.cancelNotifications()
             fixtures.unbindAudioFromChannel()
+            audio.setBotVoice(voice)
             audio.setReadBotMessages(readBot)
             audio.setNotificationVolume(volume)
             session.setMuted(muted)

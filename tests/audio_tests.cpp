@@ -172,6 +172,19 @@ private slots:
         QCOMPARE(SpeechOutput::preferredVoice({enhanced, basic}, "en", "gb-basic"), basic);
     }
 
+    void systemVoiceFollowsCurrentInventoryWithoutChangingTheSavedMode() {
+        QVariantMap first{{"id", "voice-three"}, {"language", "de-DE"}, {"quality", 2}, {"systemDefault", true}};
+        QVariantMap second{{"id", "english-premium"}, {"language", "en-GB"}, {"quality", 3}};
+        QCOMPARE(SpeechOutput::preferredVoice({first, second}, "en", "system"), first);
+        first["systemDefault"] = false;
+        second["systemDefault"] = true;
+        QCOMPARE(SpeechOutput::preferredVoice({first, second}, "de", "system"), second);
+        QCOMPARE(SpeechOutput::preferredVoice({first, second}, "de", "voice-three"), first);
+        QVERIFY(SpeechOutput::preferredVoice({}, "de", "system").isEmpty());
+        second["personal"] = true;
+        QVERIFY(SpeechOutput::preferredVoice({first, second}, "de", "system").isEmpty());
+    }
+
     void speechProducesLocalPcmAndStopsWithoutLatePlayback_data() {
         QTest::addColumn<int>("rate");
         QTest::addColumn<QString>("language");
@@ -179,6 +192,7 @@ private slots:
         QTest::newRow("48k") << 48000 << QString{} << 1;
         QTest::newRow("44k") << 44100 << QString{} << 1;
         QTest::newRow("automatic-english") << 48000 << QString("en-GB") << 1;
+        QTest::newRow("system-choice") << 48000 << QString("system") << 1;
         QTest::newRow("stereo") << 48000 << QString{} << 2;
     }
     void speechProducesLocalPcmAndStopsWithoutLatePlayback() {
@@ -197,7 +211,12 @@ private slots:
             return;
         }
         QString voice;
-        if (!language.isEmpty()) {
+        if (language == "system") {
+            const auto current = SpeechOutput::preferredVoice(SpeechOutput::voices(), {}, "system");
+            QVERIFY2(!current.isEmpty(), "Native synthesis requires an installed non-personal system voice");
+            voice = "system";
+            qInfo() << "System speech voice:" << current.value("name").toString() << current.value("language").toString();
+        } else if (!language.isEmpty()) {
             const auto selected = SpeechOutput::preferredVoice(SpeechOutput::voices(), language);
             voice = selected.value("id").toString();
             QVERIFY2(!voice.isEmpty(), "Install an English voice for the native synthesis contract");

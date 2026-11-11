@@ -995,23 +995,28 @@ private slots:
         });
         connect(&client, &squad::MediaTransport::signaling, &host, [&](const auto& message) { QVERIFY(host.receive(message)); });
         QSignalSpy heard(&client, &squad::MediaTransport::audio);
-        QTRY_VERIFY_WITH_TIMEOUT(host.udpActive() && client.udpActive(), 10000);
+        QVERIFY(waitForEvents([&] { return host.udpActive() && client.udpActive(); }, 10000));
         const auto packet = speech();
         SendGate gate;
         QVERIFY(host.send(first, packet));
-        QTRY_VERIFY_WITH_TIMEOUT(gate.entered(), 1000);
+        // Do not age the 300 ms UDP lease with polling sleeps while the native
+        // send is blocked. The burst must enter the actual UDP sender queue.
+        QVERIFY(gate.waitForPackets(1));
+        QVERIFY(gate.entered());
         QVERIFY(!gate.onOwner());
+        QVERIFY2(host.udpActive(), "UDP expired before the queued-audio scenario began");
         for (int i = 0; i < 6; ++i) QVERIFY(host.send(first, packet));
+        QCOMPARE(fallbackFrames, 0);
         if (removeSource) {
             host.retainSources({}); client.retainSources({});
         } else {
             QElapsedTimer stalled; stalled.start();
-            QTRY_VERIFY_WITH_TIMEOUT(stalled.elapsed() >= 350, 1000);
+            QVERIFY(waitForEvents([&] { return stalled.elapsed() >= 350; }, 1000));
         }
         gate.release();
         // The intentional stall can expire UDP liveness too. Wait for a real
         // probe reply before using UDP delivery as the completion marker.
-        QTRY_VERIFY_WITH_TIMEOUT(host.udpActive() && client.udpActive(), 3000);
+        QVERIFY(waitForEvents([&] { return host.udpActive() && client.udpActive(); }, 3000));
         const auto resumedSource = removeSource ? second : first;
         QVERIFY(host.send(resumedSource, packet));
         QTRY_COMPARE_WITH_TIMEOUT(heard.size(), removeSource ? 1 : 2, 3000);

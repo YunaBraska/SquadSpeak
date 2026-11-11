@@ -13,12 +13,15 @@ class SpeechOutput final {
 public:
     // Prefer quality, then the requested region, with a stable tie-breaker.
     // Automatic selection stays within the language. An explicit missing voice
-    // stays unavailable. Personal voices require a separate authorization flow.
+    // stays unavailable. "system" follows the current native default, regardless
+    // of app language. Personal voices require a separate authorization flow.
     static QVariantMap preferredVoice(const QVariantList& voices, QString language, const QString& selectedId = {}) {
         if (!selectedId.isEmpty()) {
             for (const auto& entry : voices) {
                 const auto voice = entry.toMap();
-                if (voice.value("id").toString() == selectedId && !voice.value("personal").toBool()) return voice;
+                const bool matches = selectedId == "system" ? voice.value("systemDefault").toBool()
+                    : voice.value("id").toString() == selectedId;
+                if (matches && !voice.value("personal").toBool()) return voice;
             }
             return {};
         }

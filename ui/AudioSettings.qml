@@ -345,9 +345,10 @@ Item {
                             const voices = audio.language.voices.filter(v => !v.personal)
                                 .map(v => ({ id: v.id, label: v.name + " (" + v.language + ")" }))
                                 .sort((a, b) => a.label.localeCompare(b.label))
-                            if (audio.botVoiceId && !voices.some(v => v.id === audio.botVoiceId))
+                            if (audio.botVoiceId && audio.botVoiceId !== "system" && !voices.some(v => v.id === audio.botVoiceId))
                                 voices.unshift({ id: audio.botVoiceId, label: qsTr("Unavailable") })
-                            return [{ id: "", label: qsTr("Automatic") }].concat(voices)
+                            return [{ id: "", label: qsTr("Automatic") },
+                                { id: "system", label: qsTranslate("AudioModel", "System default") }].concat(voices)
                         }
                         currentIndex: model.findIndex(v => v.id === audio.botVoiceId)
                         onActivated: function(index) {
@@ -358,7 +359,7 @@ Item {
                     Label {
                         objectName: "botVoiceName"
                         Layout.fillWidth: true
-                        visible: audio.readBotMessages && !audio.botVoiceId && !!audio.botVoice.name
+                        visible: audio.readBotMessages && (!audio.botVoiceId || audio.botVoiceId === "system") && !!audio.botVoice.name
                         text: audio.botVoice.name ? audio.botVoice.name + " (" + audio.botVoice.language + ")" : ""
                         textFormat: Text.PlainText
                         wrapMode: Text.Wrap
