@@ -106,7 +106,7 @@ else: sys.exit(7)
                 self.assertEqual(mode["commit_sha"], self.git("rev-parse", "HEAD"))
         self.assertFalse((self.root / "trace.jsonl").exists())
 
-    def test_default_branch_snapshot_is_publishable_without_force(self):
+    def test_default_branch_snapshot_builds_without_force(self):
         self.repository()
         self.git("tag", "2026.10.3")
         self.assertEqual(self.mode(REQUEST_MODE="snapshot")["release_mode"], "snapshot")
@@ -225,7 +225,7 @@ else: sys.exit(7)
                 self.assertNotEqual(result.returncode, 0)
                 self.assertFalse((self.root / "output").exists())
 
-    def test_snapshot_resolution_accepts_replacement_without_api_calls(self):
+    def test_snapshot_resolution_needs_no_github_api(self):
         result = self.run_step("Resolve build version", "verify.yml", RELEASE_MODE="snapshot",
                                SCENARIO="release", COLLISION_VERSION="2026.10.4-SNAPSHOT")
         self.assertEqual(result.returncode, 0, result.stderr)
