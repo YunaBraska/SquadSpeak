@@ -423,7 +423,8 @@ void AudioModel::advanceNotifications() {
         if (!notice.text.isEmpty() && botSpeechReady() && !testActive()) {
             beginPlayback();
             if (notifications_.empty()) return;
-            if (playback_ && speech_.start(notice.text, playbackFormat_.sampleRate(), botVoice_.value("id").toString())) {
+            if (playback_ && speech_.start(notice.text, playbackFormat_.sampleRate(),
+                    botVoiceId_ == "system" ? botVoiceId_ : botVoice_.value("id").toString())) {
                 notificationPhase_ = NotificationPhase::Speech;
                 emit notificationProgress(notice.kind, "speech", notice.text);
                 return;
@@ -520,7 +521,8 @@ void AudioModel::setAppLanguage(const QString& language) {
 
 bool AudioModel::setBotVoice(const QString& id) {
     if (!speechAvailable() || output_.isNull()) return false;
-    if (!id.isEmpty() && SpeechOutput::preferredVoice(language_.voices(), botLanguage_, id).isEmpty()) return false;
+    if (!id.isEmpty() && id != "system"
+            && SpeechOutput::preferredVoice(language_.voices(), botLanguage_, id).isEmpty()) return false;
     if (botVoiceId_ == id) return true;
     try {
         profiles_.saveBotVoice(output_.id(), id);
