@@ -204,7 +204,12 @@ def main():
             env.update(SQUAD_CORPUS_SUITE=args.suite, SQUAD_CORPUS_SHARD=str(shard),
                        SQUAD_CORPUS_SHARDS=str(args.workers), SQUAD_CORPUS_OUTPUT=str(folder),
                        SQUAD_CORPUS_EXPORT="0")
-            command = [str(binary)] + (["mixtures"] if args.suite == "denoise" else [])
+            # Activation and mixtures are sharded. The other tests run once on worker zero.
+            command = [str(binary)]
+            if args.suite == "denoise":
+                command.append("mixtures")
+            elif shard > 0:
+                command.extend(("speechActivation", "mixtures"))
             processes.append(subprocess.Popen(command, env=env, stdout=log, stderr=subprocess.STDOUT))
         remaining = set(range(len(processes)))
         while remaining:

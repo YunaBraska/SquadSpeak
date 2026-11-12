@@ -140,6 +140,8 @@ An optimized CMake Release build reduces runtime. `--workers` bounds CPU and
 memory use; each worker runs an independent partition. The default is at most
 four workers. The matrix is intentionally not part of every default CTest run.
 `--suite smoke` also exercises the batch runner with the 94 quick cases.
+For smoke and extended runs, activation and mixtures are distributed across workers;
+one worker also runs the remaining audio checks once.
 
 `--suite denoise` is the bounded speech-cleanup comparison. Its 190 cases use
 all 20 voices, both keyboard recordings and breathing at 0/+10 dB SNR and

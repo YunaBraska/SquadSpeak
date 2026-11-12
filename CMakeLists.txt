@@ -732,11 +732,17 @@ if(BUILD_TESTING)
         set_tests_properties(audio_corpus_${part} PROPERTIES TIMEOUT 600
             ENVIRONMENT "SQUAD_CORPUS_OUTPUT=${CMAKE_BINARY_DIR}/audio-corpus-${part}")
     endforeach()
+    add_test(NAME audio_corpus_activation_sharding COMMAND "${Python3_EXECUTABLE}"
+        "${CMAKE_CURRENT_SOURCE_DIR}/tests/audio/test_activation_shards.py" $<TARGET_FILE:corpus_tests>)
+    set_tests_properties(audio_corpus_activation_sharding PROPERTIES TIMEOUT 120)
     # Offline PCM processing uses virtual audio time and independent report paths.
     # Reserve two scheduler slots per heavy corpus suite so at most two run
     # together at CI's parallel level of four. Live media contracts stay serial.
     set_tests_properties(audio_corpus PROPERTIES TIMEOUT 600 PROCESSORS 2 COST 500)
     set_tests_properties(audio_corpus_speechActivation PROPERTIES PROCESSORS 2 COST 500)
+    # A direct CTest run must cover all activation cases regardless of the caller's runner environment.
+    set_property(TEST audio_corpus_speechActivation APPEND PROPERTY ENVIRONMENT
+        "SQUAD_CORPUS_SHARD=0" "SQUAD_CORPUS_SHARDS=1")
     if(APPLE AND (CMAKE_OSX_ARCHITECTURES MATCHES "x86_64" OR CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64"))
         # Hosted Intel contention doubled these suites' runtime. Keep their
         # existing isolation instead of consuming the per-test deadline margin.
