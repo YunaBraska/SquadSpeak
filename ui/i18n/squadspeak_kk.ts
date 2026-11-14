@@ -1436,12 +1436,12 @@
             <translation>Алдыңғы хабарлар</translation>
         </message>
         <message>
-            <source>Attach image</source>
-            <translation>Суретті тіркеңіз</translation>
-        </message>
-        <message>
             <source>Chat message. Markdown supported. Shift+Enter for a new line.</source>
             <translation>Чат хабары. Markdown қолдауы бар. Жаңа жол үшін Shift+Enter.</translation>
+        </message>
+        <message>
+            <source>Add</source>
+            <translation>қосу</translation>
         </message>
     </context>
     <context>
@@ -2647,6 +2647,14 @@
             <source>Identity imported.</source>
             <translation>Сәйкестік импортталды.</translation>
         </message>
+        <message>
+            <source>Invalid game state.</source>
+            <translation>Ойын күйі жарамсыз.</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Бұл ойын әрекеті енді қолжетімді емес.</translation>
+        </message>
     </context>
     <context>
         <name>LocalLanguage</name>
@@ -3313,6 +3321,156 @@
         <message>
             <source>See you next time.</source>
             <translation>Келесі кездескенше.</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameCard</name>
+        <message>
+            <source>Invited by %1</source>
+            <translation>Шақырған: %1</translation>
+        </message>
+        <message>
+            <source>Ready</source>
+            <translation>Дайын</translation>
+        </message>
+        <message>
+            <source>%1 wins!</source>
+            <translation>%1 жеңді!</translation>
+        </message>
+        <message>
+            <source>Game ended. A player disconnected.</source>
+            <translation>Ойын аяқталды. Ойыншының байланысы үзілді.</translation>
+        </message>
+        <message>
+            <source>Game ended. A player left.</source>
+            <translation>Ойын аяқталды. Ойыншы шығып кетті.</translation>
+        </message>
+        <message>
+            <source>Waiting for a player</source>
+            <translation>Ойыншы күтілуде</translation>
+        </message>
+        <message>
+            <source>Join</source>
+            <translation>Қосылыңыз</translation>
+        </message>
+        <message>
+            <source>Leave</source>
+            <translation>Кетіңіз</translation>
+        </message>
+        <message>
+            <source>Elements</source>
+            <translation>Элементтер</translation>
+        </message>
+        <message>
+            <source>Game ended</source>
+            <translation>Ойын аяқталды</translation>
+        </message>
+        <message>
+            <source>In progress</source>
+            <translation>Жүріп жатыр</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Ашу</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameWindow</name>
+        <message>
+            <source>Finish your current game first.</source>
+            <translation>Алдымен қазіргі ойыныңды аяқта.</translation>
+        </message>
+        <message>
+            <source>Fire</source>
+            <translation>От</translation>
+        </message>
+        <message>
+            <source>Water</source>
+            <translation>Су</translation>
+        </message>
+        <message>
+            <source>Ice</source>
+            <translation>Мұз</translation>
+        </message>
+        <message>
+            <source>Core</source>
+            <translation>Өзек</translation>
+        </message>
+        <message>
+            <source>Trap</source>
+            <translation>Тұзақ</translation>
+        </message>
+        <message>
+            <source>Unknown</source>
+            <translation>Белгісіз</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Бұл ойын әрекеті енді қолжетімді емес.</translation>
+        </message>
+        <message>
+            <source>Game unavailable</source>
+            <translation>Ойын қолжетімді емес</translation>
+        </message>
+        <message>
+            <source>Ready in %1 s</source>
+            <translation>%1 с кейін дайын</translation>
+        </message>
+        <message>
+            <source>Choose your Core and Trap.</source>
+            <translation>Өзегің мен Тұзағыңды таңда.</translation>
+        </message>
+        <message>
+            <source>Choice locked. Waiting for the other player.</source>
+            <translation>Таңдау бекітілді. Екінші ойыншы күтілуде.</translation>
+        </message>
+        <message>
+            <source>Same element. Choose again.</source>
+            <translation>Бірдей элемент. Қайта таңда.</translation>
+        </message>
+        <message>
+            <source>Your turn</source>
+            <translation>Сенің кезегің</translation>
+        </message>
+        <message>
+            <source>%1's turn</source>
+            <translation>%1 ойыншысының кезегі</translation>
+        </message>
+        <message>
+            <source>Waiting for the other player</source>
+            <translation>Екінші ойыншы күтілуде</translation>
+        </message>
+        <message>
+            <source>Water beats Fire. Fire beats Ice. Ice beats Water.</source>
+            <translation>Су отты жеңеді. От мұзды жеңеді. Мұз суды жеңеді.</translation>
+        </message>
+        <message>
+            <source>Empty</source>
+            <translation>Бос</translation>
+        </message>
+        <message>
+            <source>Ice freezes Water</source>
+            <translation>Мұз суды қатырады</translation>
+        </message>
+        <message>
+            <source>Fire melts Ice</source>
+            <translation>От мұзды ерітеді</translation>
+        </message>
+        <message>
+            <source>Water extinguishes Fire</source>
+            <translation>Су отты өшіреді</translation>
+        </message>
+        <message>
+            <source>Trap triggered</source>
+            <translation>Тұзақ іске қосылды</translation>
+        </message>
+        <message>
+            <source>Core captured</source>
+            <translation>Өзек алынды</translation>
+        </message>
+        <message>
+            <source>Find the Core. Watch for traps.</source>
+            <translation>Өзекті тап. Тұзақтардан сақтан.</translation>
         </message>
     </context>
 </TS>

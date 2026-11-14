@@ -1436,12 +1436,12 @@
             <translation>Παλαιότερα μηνύματα</translation>
         </message>
         <message>
-            <source>Attach image</source>
-            <translation>Επισύναψη εικόνας</translation>
-        </message>
-        <message>
             <source>Chat message. Markdown supported. Shift+Enter for a new line.</source>
             <translation>Μήνυμα συνομιλίας. Υποστηρίζεται το Markdown. Shift+Enter για νέα γραμμή.</translation>
+        </message>
+        <message>
+            <source>Add</source>
+            <translation>Προσθήκη</translation>
         </message>
     </context>
     <context>
@@ -2647,6 +2647,14 @@
             <source>Identity imported.</source>
             <translation>Η ταυτότητα εισήχθη.</translation>
         </message>
+        <message>
+            <source>Invalid game state.</source>
+            <translation>Μη έγκυρη κατάσταση παιχνιδιού.</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Αυτή η ενέργεια παιχνιδιού δεν είναι πλέον διαθέσιμη.</translation>
+        </message>
     </context>
     <context>
         <name>LocalLanguage</name>
@@ -3313,6 +3321,156 @@
         <message>
             <source>See you next time.</source>
             <translation>Μέχρι την επόμενη φορά.</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameCard</name>
+        <message>
+            <source>Invited by %1</source>
+            <translation>Πρόσκληση από %1</translation>
+        </message>
+        <message>
+            <source>Ready</source>
+            <translation>Έτοιμος</translation>
+        </message>
+        <message>
+            <source>%1 wins!</source>
+            <translation>Ο παίκτης %1 κερδίζει!</translation>
+        </message>
+        <message>
+            <source>Game ended. A player disconnected.</source>
+            <translation>Το παιχνίδι τελείωσε. Ένας παίκτης αποσυνδέθηκε.</translation>
+        </message>
+        <message>
+            <source>Game ended. A player left.</source>
+            <translation>Το παιχνίδι τελείωσε. Ένας παίκτης αποχώρησε.</translation>
+        </message>
+        <message>
+            <source>Waiting for a player</source>
+            <translation>Αναμονή για παίκτη</translation>
+        </message>
+        <message>
+            <source>Join</source>
+            <translation>Συμμετοχή</translation>
+        </message>
+        <message>
+            <source>Leave</source>
+            <translation>Φύγε</translation>
+        </message>
+        <message>
+            <source>Elements</source>
+            <translation>Στοιχεία</translation>
+        </message>
+        <message>
+            <source>Game ended</source>
+            <translation>Το παιχνίδι τελείωσε</translation>
+        </message>
+        <message>
+            <source>In progress</source>
+            <translation>Σε εξέλιξη</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Άνοιγμα</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameWindow</name>
+        <message>
+            <source>Finish your current game first.</source>
+            <translation>Ολοκλήρωσε πρώτα το τρέχον παιχνίδι σου.</translation>
+        </message>
+        <message>
+            <source>Fire</source>
+            <translation>Φωτιά</translation>
+        </message>
+        <message>
+            <source>Water</source>
+            <translation>Νερό</translation>
+        </message>
+        <message>
+            <source>Ice</source>
+            <translation>Πάγος</translation>
+        </message>
+        <message>
+            <source>Core</source>
+            <translation>Πυρήνας</translation>
+        </message>
+        <message>
+            <source>Trap</source>
+            <translation>Παγίδα</translation>
+        </message>
+        <message>
+            <source>Unknown</source>
+            <translation>Άγνωστο</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Αυτή η ενέργεια παιχνιδιού δεν είναι πλέον διαθέσιμη.</translation>
+        </message>
+        <message>
+            <source>Game unavailable</source>
+            <translation>Το παιχνίδι δεν είναι διαθέσιμο</translation>
+        </message>
+        <message>
+            <source>Ready in %1 s</source>
+            <translation>Έτοιμος σε %1 δ</translation>
+        </message>
+        <message>
+            <source>Choose your Core and Trap.</source>
+            <translation>Διάλεξε τον Πυρήνα και την Παγίδα σου.</translation>
+        </message>
+        <message>
+            <source>Choice locked. Waiting for the other player.</source>
+            <translation>Η επιλογή κλειδώθηκε. Αναμονή για τον άλλο παίκτη.</translation>
+        </message>
+        <message>
+            <source>Same element. Choose again.</source>
+            <translation>Ίδιο στοιχείο. Διάλεξε ξανά.</translation>
+        </message>
+        <message>
+            <source>Your turn</source>
+            <translation>Η σειρά σου</translation>
+        </message>
+        <message>
+            <source>%1's turn</source>
+            <translation>Σειρά του παίκτη %1</translation>
+        </message>
+        <message>
+            <source>Waiting for the other player</source>
+            <translation>Αναμονή για τον άλλο παίκτη</translation>
+        </message>
+        <message>
+            <source>Water beats Fire. Fire beats Ice. Ice beats Water.</source>
+            <translation>Το νερό νικά τη φωτιά. Η φωτιά νικά τον πάγο. Ο πάγος νικά το νερό.</translation>
+        </message>
+        <message>
+            <source>Empty</source>
+            <translation>Κενό</translation>
+        </message>
+        <message>
+            <source>Ice freezes Water</source>
+            <translation>Ο πάγος παγώνει το νερό</translation>
+        </message>
+        <message>
+            <source>Fire melts Ice</source>
+            <translation>Η φωτιά λιώνει τον πάγο</translation>
+        </message>
+        <message>
+            <source>Water extinguishes Fire</source>
+            <translation>Το νερό σβήνει τη φωτιά</translation>
+        </message>
+        <message>
+            <source>Trap triggered</source>
+            <translation>Η παγίδα ενεργοποιήθηκε</translation>
+        </message>
+        <message>
+            <source>Core captured</source>
+            <translation>Ο Πυρήνας κατακτήθηκε</translation>
+        </message>
+        <message>
+            <source>Find the Core. Watch for traps.</source>
+            <translation>Βρες τον Πυρήνα. Πρόσεχε τις παγίδες.</translation>
         </message>
     </context>
 </TS>

@@ -1436,12 +1436,12 @@
             <translation>Eerdere berichten</translation>
         </message>
         <message>
-            <source>Attach image</source>
-            <translation>Afbeelding toevoegen</translation>
-        </message>
-        <message>
             <source>Chat message. Markdown supported. Shift+Enter for a new line.</source>
             <translation>Chatbericht. Markdown wordt ondersteund. Shift+Enter maakt een nieuwe regel.</translation>
+        </message>
+        <message>
+            <source>Add</source>
+            <translation>Toevoegen</translation>
         </message>
     </context>
     <context>
@@ -2647,6 +2647,14 @@
             <source>Identity imported.</source>
             <translation>Identiteit geïmporteerd.</translation>
         </message>
+        <message>
+            <source>Invalid game state.</source>
+            <translation>Ongeldige spelstatus.</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Deze spelactie is niet meer beschikbaar.</translation>
+        </message>
     </context>
     <context>
         <name>LocalLanguage</name>
@@ -3313,6 +3321,156 @@
         <message>
             <source>See you next time.</source>
             <translation>Tot de volgende keer.</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameCard</name>
+        <message>
+            <source>Invited by %1</source>
+            <translation>Uitgenodigd door %1</translation>
+        </message>
+        <message>
+            <source>Ready</source>
+            <translation>Klaar</translation>
+        </message>
+        <message>
+            <source>%1 wins!</source>
+            <translation>%1 wint!</translation>
+        </message>
+        <message>
+            <source>Game ended. A player disconnected.</source>
+            <translation>Spel afgelopen. Een speler heeft de verbinding verloren.</translation>
+        </message>
+        <message>
+            <source>Game ended. A player left.</source>
+            <translation>Spel afgelopen. Een speler is vertrokken.</translation>
+        </message>
+        <message>
+            <source>Waiting for a player</source>
+            <translation>Wachten op een speler</translation>
+        </message>
+        <message>
+            <source>Join</source>
+            <translation>Deelnemen</translation>
+        </message>
+        <message>
+            <source>Leave</source>
+            <translation>Verlaten</translation>
+        </message>
+        <message>
+            <source>Elements</source>
+            <translation>Elementen</translation>
+        </message>
+        <message>
+            <source>Game ended</source>
+            <translation>Spel afgelopen</translation>
+        </message>
+        <message>
+            <source>In progress</source>
+            <translation>Bezig</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Openen</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameWindow</name>
+        <message>
+            <source>Finish your current game first.</source>
+            <translation>Maak eerst je huidige spel af.</translation>
+        </message>
+        <message>
+            <source>Fire</source>
+            <translation>Vuur</translation>
+        </message>
+        <message>
+            <source>Water</source>
+            <translation>Water</translation>
+        </message>
+        <message>
+            <source>Ice</source>
+            <translation>IJs</translation>
+        </message>
+        <message>
+            <source>Core</source>
+            <translation>Kern</translation>
+        </message>
+        <message>
+            <source>Trap</source>
+            <translation>Val</translation>
+        </message>
+        <message>
+            <source>Unknown</source>
+            <translation>Onbekend</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Deze spelactie is niet meer beschikbaar.</translation>
+        </message>
+        <message>
+            <source>Game unavailable</source>
+            <translation>Spel niet beschikbaar</translation>
+        </message>
+        <message>
+            <source>Ready in %1 s</source>
+            <translation>Klaar over %1 s</translation>
+        </message>
+        <message>
+            <source>Choose your Core and Trap.</source>
+            <translation>Kies je Kern en je Val.</translation>
+        </message>
+        <message>
+            <source>Choice locked. Waiting for the other player.</source>
+            <translation>Keuze vastgelegd. Wachten op de andere speler.</translation>
+        </message>
+        <message>
+            <source>Same element. Choose again.</source>
+            <translation>Hetzelfde element. Kies opnieuw.</translation>
+        </message>
+        <message>
+            <source>Your turn</source>
+            <translation>Jij bent aan de beurt</translation>
+        </message>
+        <message>
+            <source>%1's turn</source>
+            <translation>%1 is aan de beurt</translation>
+        </message>
+        <message>
+            <source>Waiting for the other player</source>
+            <translation>Wachten op de andere speler</translation>
+        </message>
+        <message>
+            <source>Water beats Fire. Fire beats Ice. Ice beats Water.</source>
+            <translation>Water verslaat vuur. Vuur verslaat ijs. IJs verslaat water.</translation>
+        </message>
+        <message>
+            <source>Empty</source>
+            <translation>Leeg</translation>
+        </message>
+        <message>
+            <source>Ice freezes Water</source>
+            <translation>IJs bevriest water</translation>
+        </message>
+        <message>
+            <source>Fire melts Ice</source>
+            <translation>Vuur smelt ijs</translation>
+        </message>
+        <message>
+            <source>Water extinguishes Fire</source>
+            <translation>Water dooft vuur</translation>
+        </message>
+        <message>
+            <source>Trap triggered</source>
+            <translation>Val geactiveerd</translation>
+        </message>
+        <message>
+            <source>Core captured</source>
+            <translation>Kern veroverd</translation>
+        </message>
+        <message>
+            <source>Find the Core. Watch for traps.</source>
+            <translation>Vind de Kern. Pas op voor vallen.</translation>
         </message>
     </context>
 </TS>

@@ -24,6 +24,7 @@
 #include <QFile>
 #include <QFileInfo>
 #if !defined(Q_OS_IOS) && !defined(Q_OS_ANDROID)
+#include "desktop_window_state.hpp"
 #include <QMenu>
 #include <QSystemTrayIcon>
 #endif
@@ -209,6 +210,12 @@ int main(int argc, char** argv) {
         if (engine.rootObjects().size() != 1) return 1;
         auto* channels = qobject_cast<QQuickWindow*>(engine.rootObjects().first());
         if (!channels) return 1;
+#if !defined(Q_OS_IOS) && !defined(Q_OS_ANDROID)
+        DesktopWindowState windowState(*channels, settingsFile);
+        QObject::connect(&app, &QCoreApplication::aboutToQuit, &windowState, [&] {
+            if (!windowState.save()) qWarning("Could not save the desktop window size");
+        });
+#endif
         if (license.configured() && !arguments.isSet("smoke-test")) license.refresh();
         if (!arguments.isSet("smoke-test") && !QObject::connect(channels, SIGNAL(previewRequested(bool)),
                 &audio, SLOT(setPreviewActive(bool)))) return 1;

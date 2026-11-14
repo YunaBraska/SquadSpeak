@@ -1436,12 +1436,12 @@
             <translation>আগের বার্তা</translation>
         </message>
         <message>
-            <source>Attach image</source>
-            <translation>ছবি সংযুক্ত করুন</translation>
-        </message>
-        <message>
             <source>Chat message. Markdown supported. Shift+Enter for a new line.</source>
             <translation>চ্যাট বার্তা। মার্কডাউন সমর্থিত। একটি নতুন লাইনের জন্য Shift+Enter।</translation>
+        </message>
+        <message>
+            <source>Add</source>
+            <translation>যোগ করুন</translation>
         </message>
     </context>
     <context>
@@ -2647,6 +2647,14 @@
             <source>Identity imported.</source>
             <translation>পরিচয় আমদানি হয়েছে।</translation>
         </message>
+        <message>
+            <source>Invalid game state.</source>
+            <translation>খেলার অবস্থা সঠিক নয়।</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>খেলার এই কাজটি আর করা যাচ্ছে না।</translation>
+        </message>
     </context>
     <context>
         <name>LocalLanguage</name>
@@ -3313,6 +3321,156 @@
         <message>
             <source>See you next time.</source>
             <translation>আবার দেখা হবে।</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameCard</name>
+        <message>
+            <source>Invited by %1</source>
+            <translation>%1 আমন্ত্রণ জানিয়েছে</translation>
+        </message>
+        <message>
+            <source>Ready</source>
+            <translation>প্রস্তুত</translation>
+        </message>
+        <message>
+            <source>%1 wins!</source>
+            <translation>%1 জিতেছে!</translation>
+        </message>
+        <message>
+            <source>Game ended. A player disconnected.</source>
+            <translation>খেলা শেষ। একজন খেলোয়াড়ের সংযোগ বিচ্ছিন্ন হয়েছে।</translation>
+        </message>
+        <message>
+            <source>Game ended. A player left.</source>
+            <translation>খেলা শেষ। একজন খেলোয়াড় চলে গেছে।</translation>
+        </message>
+        <message>
+            <source>Waiting for a player</source>
+            <translation>খেলোয়াড়ের অপেক্ষায়</translation>
+        </message>
+        <message>
+            <source>Join</source>
+            <translation>যোগ দিন</translation>
+        </message>
+        <message>
+            <source>Leave</source>
+            <translation>ছেড়ে দিন</translation>
+        </message>
+        <message>
+            <source>Elements</source>
+            <translation>উপাদান</translation>
+        </message>
+        <message>
+            <source>Game ended</source>
+            <translation>খেলা শেষ</translation>
+        </message>
+        <message>
+            <source>In progress</source>
+            <translation>খেলা চলছে</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>খুলুন</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameWindow</name>
+        <message>
+            <source>Finish your current game first.</source>
+            <translation>আগে তোমার বর্তমান খেলা শেষ করো।</translation>
+        </message>
+        <message>
+            <source>Fire</source>
+            <translation>আগুন</translation>
+        </message>
+        <message>
+            <source>Water</source>
+            <translation>জল</translation>
+        </message>
+        <message>
+            <source>Ice</source>
+            <translation>বরফ</translation>
+        </message>
+        <message>
+            <source>Core</source>
+            <translation>কেন্দ্র</translation>
+        </message>
+        <message>
+            <source>Trap</source>
+            <translation>ফাঁদ</translation>
+        </message>
+        <message>
+            <source>Unknown</source>
+            <translation>অজানা</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>খেলার এই কাজটি আর করা যাচ্ছে না।</translation>
+        </message>
+        <message>
+            <source>Game unavailable</source>
+            <translation>খেলা উপলভ্য নয়</translation>
+        </message>
+        <message>
+            <source>Ready in %1 s</source>
+            <translation>%1 সেকেন্ডে প্রস্তুত</translation>
+        </message>
+        <message>
+            <source>Choose your Core and Trap.</source>
+            <translation>তোমার কেন্দ্র ও ফাঁদ বেছে নাও।</translation>
+        </message>
+        <message>
+            <source>Choice locked. Waiting for the other player.</source>
+            <translation>পছন্দ নিশ্চিত হয়েছে। অন্য খেলোয়াড়ের অপেক্ষায়।</translation>
+        </message>
+        <message>
+            <source>Same element. Choose again.</source>
+            <translation>একই উপাদান। আবার বেছে নাও।</translation>
+        </message>
+        <message>
+            <source>Your turn</source>
+            <translation>তোমার পালা</translation>
+        </message>
+        <message>
+            <source>%1's turn</source>
+            <translation>%1-এর পালা</translation>
+        </message>
+        <message>
+            <source>Waiting for the other player</source>
+            <translation>অন্য খেলোয়াড়ের অপেক্ষায়</translation>
+        </message>
+        <message>
+            <source>Water beats Fire. Fire beats Ice. Ice beats Water.</source>
+            <translation>জল আগুনকে হারায়। আগুন বরফকে হারায়। বরফ জলকে হারায়।</translation>
+        </message>
+        <message>
+            <source>Empty</source>
+            <translation>খালি</translation>
+        </message>
+        <message>
+            <source>Ice freezes Water</source>
+            <translation>বরফ জল জমিয়ে দেয়</translation>
+        </message>
+        <message>
+            <source>Fire melts Ice</source>
+            <translation>আগুন বরফ গলিয়ে দেয়</translation>
+        </message>
+        <message>
+            <source>Water extinguishes Fire</source>
+            <translation>জল আগুন নিভিয়ে দেয়</translation>
+        </message>
+        <message>
+            <source>Trap triggered</source>
+            <translation>ফাঁদ সক্রিয় হয়েছে</translation>
+        </message>
+        <message>
+            <source>Core captured</source>
+            <translation>কেন্দ্র দখল হয়েছে</translation>
+        </message>
+        <message>
+            <source>Find the Core. Watch for traps.</source>
+            <translation>কেন্দ্র খুঁজে নাও। ফাঁদ থেকে সাবধান।</translation>
         </message>
     </context>
 </TS>

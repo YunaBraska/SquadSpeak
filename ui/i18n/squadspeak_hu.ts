@@ -1436,12 +1436,12 @@
             <translation>Korábbi üzenetek</translation>
         </message>
         <message>
-            <source>Attach image</source>
-            <translation>Kép csatolása</translation>
-        </message>
-        <message>
             <source>Chat message. Markdown supported. Shift+Enter for a new line.</source>
             <translation>Csevegőüzenet. Markdown támogatott. Shift+Enter új sorhoz.</translation>
+        </message>
+        <message>
+            <source>Add</source>
+            <translation>Add</translation>
         </message>
     </context>
     <context>
@@ -2647,6 +2647,14 @@
             <source>Identity imported.</source>
             <translation>Identitás importálva.</translation>
         </message>
+        <message>
+            <source>Invalid game state.</source>
+            <translation>Érvénytelen játékállapot.</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Ez a játékművelet már nem érhető el.</translation>
+        </message>
     </context>
     <context>
         <name>LocalLanguage</name>
@@ -3313,6 +3321,156 @@
         <message>
             <source>See you next time.</source>
             <translation>Legközelebb találkozunk.</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameCard</name>
+        <message>
+            <source>Invited by %1</source>
+            <translation>Meghívó: %1</translation>
+        </message>
+        <message>
+            <source>Ready</source>
+            <translation>Kész</translation>
+        </message>
+        <message>
+            <source>%1 wins!</source>
+            <translation>%1 nyert!</translation>
+        </message>
+        <message>
+            <source>Game ended. A player disconnected.</source>
+            <translation>A játék véget ért. Egy játékos kapcsolata megszakadt.</translation>
+        </message>
+        <message>
+            <source>Game ended. A player left.</source>
+            <translation>A játék véget ért. Egy játékos kilépett.</translation>
+        </message>
+        <message>
+            <source>Waiting for a player</source>
+            <translation>Várakozás egy játékosra</translation>
+        </message>
+        <message>
+            <source>Join</source>
+            <translation>Csatlakozz</translation>
+        </message>
+        <message>
+            <source>Leave</source>
+            <translation>Kilépés</translation>
+        </message>
+        <message>
+            <source>Elements</source>
+            <translation>Elemek</translation>
+        </message>
+        <message>
+            <source>Game ended</source>
+            <translation>A játék véget ért</translation>
+        </message>
+        <message>
+            <source>In progress</source>
+            <translation>Folyamatban</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Megnyitás</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameWindow</name>
+        <message>
+            <source>Finish your current game first.</source>
+            <translation>Előbb fejezd be a jelenlegi játékodat.</translation>
+        </message>
+        <message>
+            <source>Fire</source>
+            <translation>Tűz</translation>
+        </message>
+        <message>
+            <source>Water</source>
+            <translation>Víz</translation>
+        </message>
+        <message>
+            <source>Ice</source>
+            <translation>Jég</translation>
+        </message>
+        <message>
+            <source>Core</source>
+            <translation>Mag</translation>
+        </message>
+        <message>
+            <source>Trap</source>
+            <translation>Csapda</translation>
+        </message>
+        <message>
+            <source>Unknown</source>
+            <translation>Ismeretlen</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Ez a játékművelet már nem érhető el.</translation>
+        </message>
+        <message>
+            <source>Game unavailable</source>
+            <translation>A játék nem érhető el</translation>
+        </message>
+        <message>
+            <source>Ready in %1 s</source>
+            <translation>Kezdés %1 mp múlva</translation>
+        </message>
+        <message>
+            <source>Choose your Core and Trap.</source>
+            <translation>Válaszd ki a Magod és a Csapdád helyét.</translation>
+        </message>
+        <message>
+            <source>Choice locked. Waiting for the other player.</source>
+            <translation>Választás rögzítve. Várakozás a másik játékosra.</translation>
+        </message>
+        <message>
+            <source>Same element. Choose again.</source>
+            <translation>Azonos elem. Válassz újra.</translation>
+        </message>
+        <message>
+            <source>Your turn</source>
+            <translation>Te következel</translation>
+        </message>
+        <message>
+            <source>%1's turn</source>
+            <translation>%1 következik</translation>
+        </message>
+        <message>
+            <source>Waiting for the other player</source>
+            <translation>Várakozás a másik játékosra</translation>
+        </message>
+        <message>
+            <source>Water beats Fire. Fire beats Ice. Ice beats Water.</source>
+            <translation>A víz legyőzi a tüzet. A tűz legyőzi a jeget. A jég legyőzi a vizet.</translation>
+        </message>
+        <message>
+            <source>Empty</source>
+            <translation>Üres</translation>
+        </message>
+        <message>
+            <source>Ice freezes Water</source>
+            <translation>A jég megfagyasztja a vizet</translation>
+        </message>
+        <message>
+            <source>Fire melts Ice</source>
+            <translation>A tűz megolvasztja a jeget</translation>
+        </message>
+        <message>
+            <source>Water extinguishes Fire</source>
+            <translation>A víz eloltja a tüzet</translation>
+        </message>
+        <message>
+            <source>Trap triggered</source>
+            <translation>Csapda aktiválva</translation>
+        </message>
+        <message>
+            <source>Core captured</source>
+            <translation>Mag elfoglalva</translation>
+        </message>
+        <message>
+            <source>Find the Core. Watch for traps.</source>
+            <translation>Találd meg a Magot. Vigyázz a csapdákra.</translation>
         </message>
     </context>
 </TS>

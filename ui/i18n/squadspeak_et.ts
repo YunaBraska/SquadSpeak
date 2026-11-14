@@ -1436,12 +1436,12 @@
             <translation>Varasemad sõnumid</translation>
         </message>
         <message>
-            <source>Attach image</source>
-            <translation>Lisage pilt</translation>
-        </message>
-        <message>
             <source>Chat message. Markdown supported. Shift+Enter for a new line.</source>
             <translation>Vestluse sõnum. Markdown on toetatud. Uue rea jaoks vajutage Shift+Enter.</translation>
+        </message>
+        <message>
+            <source>Add</source>
+            <translation>Lisada</translation>
         </message>
     </context>
     <context>
@@ -2647,6 +2647,14 @@
             <source>Identity imported.</source>
             <translation>Identiteet imporditud.</translation>
         </message>
+        <message>
+            <source>Invalid game state.</source>
+            <translation>Vigane mänguolek.</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>See mängutoiming pole enam saadaval.</translation>
+        </message>
     </context>
     <context>
         <name>LocalLanguage</name>
@@ -3313,6 +3321,156 @@
         <message>
             <source>See you next time.</source>
             <translation>Järgmise korrani.</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameCard</name>
+        <message>
+            <source>Invited by %1</source>
+            <translation>Kutsuja: %1</translation>
+        </message>
+        <message>
+            <source>Ready</source>
+            <translation>Valmis</translation>
+        </message>
+        <message>
+            <source>%1 wins!</source>
+            <translation>%1 võidab!</translation>
+        </message>
+        <message>
+            <source>Game ended. A player disconnected.</source>
+            <translation>Mäng lõppes. Mängija ühendus katkes.</translation>
+        </message>
+        <message>
+            <source>Game ended. A player left.</source>
+            <translation>Mäng lõppes. Mängija lahkus.</translation>
+        </message>
+        <message>
+            <source>Waiting for a player</source>
+            <translation>Oodatakse mängijat</translation>
+        </message>
+        <message>
+            <source>Join</source>
+            <translation>Liitu</translation>
+        </message>
+        <message>
+            <source>Leave</source>
+            <translation>Lahku</translation>
+        </message>
+        <message>
+            <source>Elements</source>
+            <translation>Elemendid</translation>
+        </message>
+        <message>
+            <source>Game ended</source>
+            <translation>Mäng lõppes</translation>
+        </message>
+        <message>
+            <source>In progress</source>
+            <translation>Pooleli</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Ava</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameWindow</name>
+        <message>
+            <source>Finish your current game first.</source>
+            <translation>Lõpeta esmalt oma praegune mäng.</translation>
+        </message>
+        <message>
+            <source>Fire</source>
+            <translation>Tuli</translation>
+        </message>
+        <message>
+            <source>Water</source>
+            <translation>Vesi</translation>
+        </message>
+        <message>
+            <source>Ice</source>
+            <translation>Jää</translation>
+        </message>
+        <message>
+            <source>Core</source>
+            <translation>Tuum</translation>
+        </message>
+        <message>
+            <source>Trap</source>
+            <translation>Lõks</translation>
+        </message>
+        <message>
+            <source>Unknown</source>
+            <translation>Teadmata</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>See mängutoiming pole enam saadaval.</translation>
+        </message>
+        <message>
+            <source>Game unavailable</source>
+            <translation>Mäng pole saadaval</translation>
+        </message>
+        <message>
+            <source>Ready in %1 s</source>
+            <translation>Valmis %1 s pärast</translation>
+        </message>
+        <message>
+            <source>Choose your Core and Trap.</source>
+            <translation>Vali oma Tuum ja Lõks.</translation>
+        </message>
+        <message>
+            <source>Choice locked. Waiting for the other player.</source>
+            <translation>Valik lukustatud. Oodatakse teist mängijat.</translation>
+        </message>
+        <message>
+            <source>Same element. Choose again.</source>
+            <translation>Sama element. Vali uuesti.</translation>
+        </message>
+        <message>
+            <source>Your turn</source>
+            <translation>Sinu käik</translation>
+        </message>
+        <message>
+            <source>%1's turn</source>
+            <translation>Mängija %1 käik</translation>
+        </message>
+        <message>
+            <source>Waiting for the other player</source>
+            <translation>Oodatakse teist mängijat</translation>
+        </message>
+        <message>
+            <source>Water beats Fire. Fire beats Ice. Ice beats Water.</source>
+            <translation>Vesi võidab tule. Tuli võidab jää. Jää võidab vee.</translation>
+        </message>
+        <message>
+            <source>Empty</source>
+            <translation>Tühi</translation>
+        </message>
+        <message>
+            <source>Ice freezes Water</source>
+            <translation>Jää külmutab vee</translation>
+        </message>
+        <message>
+            <source>Fire melts Ice</source>
+            <translation>Tuli sulatab jää</translation>
+        </message>
+        <message>
+            <source>Water extinguishes Fire</source>
+            <translation>Vesi kustutab tule</translation>
+        </message>
+        <message>
+            <source>Trap triggered</source>
+            <translation>Lõks käivitus</translation>
+        </message>
+        <message>
+            <source>Core captured</source>
+            <translation>Tuum vallutatud</translation>
+        </message>
+        <message>
+            <source>Find the Core. Watch for traps.</source>
+            <translation>Leia Tuum. Hoidu lõksudest.</translation>
         </message>
     </context>
 </TS>

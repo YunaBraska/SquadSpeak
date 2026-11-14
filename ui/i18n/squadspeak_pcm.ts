@@ -1436,12 +1436,12 @@
             <translation>Earlier messages</translation>
         </message>
         <message>
-            <source>Attach image</source>
-            <translation>Attach image</translation>
-        </message>
-        <message>
             <source>Chat message. Markdown supported. Shift+Enter for a new line.</source>
             <translation>Chat message. Markdown dey work. Shift+Enter go start new line.</translation>
+        </message>
+        <message>
+            <source>Add</source>
+            <translation>Add</translation>
         </message>
     </context>
     <context>
@@ -2261,6 +2261,14 @@
         <message>
             <source>Identity imported.</source>
             <translation>Identity don import.</translation>
+        </message>
+        <message>
+            <source>Invalid game state.</source>
+            <translation>Di game state no correct.</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>You no fit do dis game action again.</translation>
         </message>
     </context>
     <context>
@@ -3313,6 +3321,156 @@
         <message>
             <source>See you next time.</source>
             <translation>Till next time.</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameCard</name>
+        <message>
+            <source>Invited by %1</source>
+            <translation>Na %1 invite you</translation>
+        </message>
+        <message>
+            <source>Ready</source>
+            <translation>I don ready</translation>
+        </message>
+        <message>
+            <source>%1 wins!</source>
+            <translation>%1 don win!</translation>
+        </message>
+        <message>
+            <source>Game ended. A player disconnected.</source>
+            <translation>Game don end. One player connection don cut.</translation>
+        </message>
+        <message>
+            <source>Game ended. A player left.</source>
+            <translation>Game don end. One player don comot.</translation>
+        </message>
+        <message>
+            <source>Waiting for a player</source>
+            <translation>De wait for player</translation>
+        </message>
+        <message>
+            <source>Join</source>
+            <translation>Join</translation>
+        </message>
+        <message>
+            <source>Leave</source>
+            <translation>Leave</translation>
+        </message>
+        <message>
+            <source>Elements</source>
+            <translation>Di Elements</translation>
+        </message>
+        <message>
+            <source>Game ended</source>
+            <translation>Game don end</translation>
+        </message>
+        <message>
+            <source>In progress</source>
+            <translation>Game de go on</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Open</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameWindow</name>
+        <message>
+            <source>Finish your current game first.</source>
+            <translation>Finish di game wey you de play first.</translation>
+        </message>
+        <message>
+            <source>Fire</source>
+            <translation>Fire</translation>
+        </message>
+        <message>
+            <source>Water</source>
+            <translation>Water</translation>
+        </message>
+        <message>
+            <source>Ice</source>
+            <translation>Ice</translation>
+        </message>
+        <message>
+            <source>Core</source>
+            <translation>Core</translation>
+        </message>
+        <message>
+            <source>Trap</source>
+            <translation>Trap</translation>
+        </message>
+        <message>
+            <source>Unknown</source>
+            <translation>We no know</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>You no fit do dis game action again.</translation>
+        </message>
+        <message>
+            <source>Game unavailable</source>
+            <translation>Game no dey available</translation>
+        </message>
+        <message>
+            <source>Ready in %1 s</source>
+            <translation>Go ready in %1 s</translation>
+        </message>
+        <message>
+            <source>Choose your Core and Trap.</source>
+            <translation>Choose your Core and Trap.</translation>
+        </message>
+        <message>
+            <source>Choice locked. Waiting for the other player.</source>
+            <translation>Your choice don lock. De wait for di oda player.</translation>
+        </message>
+        <message>
+            <source>Same element. Choose again.</source>
+            <translation>Na di same element. Choose again.</translation>
+        </message>
+        <message>
+            <source>Your turn</source>
+            <translation>Na your turn</translation>
+        </message>
+        <message>
+            <source>%1's turn</source>
+            <translation>Na %1 turn</translation>
+        </message>
+        <message>
+            <source>Waiting for the other player</source>
+            <translation>De wait for di oda player</translation>
+        </message>
+        <message>
+            <source>Water beats Fire. Fire beats Ice. Ice beats Water.</source>
+            <translation>Water beat Fire. Fire beat Ice. Ice beat Water.</translation>
+        </message>
+        <message>
+            <source>Empty</source>
+            <translation>Nothing dey here</translation>
+        </message>
+        <message>
+            <source>Ice freezes Water</source>
+            <translation>Ice de freeze Water</translation>
+        </message>
+        <message>
+            <source>Fire melts Ice</source>
+            <translation>Fire de melt Ice</translation>
+        </message>
+        <message>
+            <source>Water extinguishes Fire</source>
+            <translation>Water de quench Fire</translation>
+        </message>
+        <message>
+            <source>Trap triggered</source>
+            <translation>Trap don catch</translation>
+        </message>
+        <message>
+            <source>Core captured</source>
+            <translation>Dem don capture Core</translation>
+        </message>
+        <message>
+            <source>Find the Core. Watch for traps.</source>
+            <translation>Find di Core. Watch out for traps.</translation>
         </message>
     </context>
 </TS>

@@ -1436,12 +1436,12 @@
             <translation>Ավելի վաղ հաղորդագրություններ</translation>
         </message>
         <message>
-            <source>Attach image</source>
-            <translation>Կցեք պատկերը</translation>
-        </message>
-        <message>
             <source>Chat message. Markdown supported. Shift+Enter for a new line.</source>
             <translation>Զրույցի հաղորդագրություն: Markdown-ն աջակցում է: Shift+Enter նոր տողի համար:</translation>
+        </message>
+        <message>
+            <source>Add</source>
+            <translation>Ավելացնել</translation>
         </message>
     </context>
     <context>
@@ -2647,6 +2647,14 @@
             <source>Identity imported.</source>
             <translation>Ինքնությունը ներմուծվեց։</translation>
         </message>
+        <message>
+            <source>Invalid game state.</source>
+            <translation>Խաղի անվավեր վիճակ։</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Խաղի այս գործողությունն այլևս հասանելի չէ։</translation>
+        </message>
     </context>
     <context>
         <name>LocalLanguage</name>
@@ -3313,6 +3321,156 @@
         <message>
             <source>See you next time.</source>
             <translation>Մինչև հաջորդ անգամ։</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameCard</name>
+        <message>
+            <source>Invited by %1</source>
+            <translation>Հրավիրել է %1-ը</translation>
+        </message>
+        <message>
+            <source>Ready</source>
+            <translation>Պատրաստ</translation>
+        </message>
+        <message>
+            <source>%1 wins!</source>
+            <translation>%1-ը հաղթում է։</translation>
+        </message>
+        <message>
+            <source>Game ended. A player disconnected.</source>
+            <translation>Խաղն ավարտվեց։ Խաղացողը կորցրեց կապը։</translation>
+        </message>
+        <message>
+            <source>Game ended. A player left.</source>
+            <translation>Խաղն ավարտվեց։ Խաղացողը հեռացավ։</translation>
+        </message>
+        <message>
+            <source>Waiting for a player</source>
+            <translation>Սպասում ենք խաղացողի</translation>
+        </message>
+        <message>
+            <source>Join</source>
+            <translation>Միացեք</translation>
+        </message>
+        <message>
+            <source>Leave</source>
+            <translation>Հեռանալ</translation>
+        </message>
+        <message>
+            <source>Elements</source>
+            <translation>Տարրեր</translation>
+        </message>
+        <message>
+            <source>Game ended</source>
+            <translation>Խաղն ավարտվեց</translation>
+        </message>
+        <message>
+            <source>In progress</source>
+            <translation>Ընթացքում է</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Բացել</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameWindow</name>
+        <message>
+            <source>Finish your current game first.</source>
+            <translation>Նախ ավարտիր ընթացիկ խաղդ։</translation>
+        </message>
+        <message>
+            <source>Fire</source>
+            <translation>Կրակ</translation>
+        </message>
+        <message>
+            <source>Water</source>
+            <translation>Ջուր</translation>
+        </message>
+        <message>
+            <source>Ice</source>
+            <translation>Սառույց</translation>
+        </message>
+        <message>
+            <source>Core</source>
+            <translation>Միջուկ</translation>
+        </message>
+        <message>
+            <source>Trap</source>
+            <translation>Թակարդ</translation>
+        </message>
+        <message>
+            <source>Unknown</source>
+            <translation>Անհայտ</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Խաղի այս գործողությունն այլևս հասանելի չէ։</translation>
+        </message>
+        <message>
+            <source>Game unavailable</source>
+            <translation>Խաղն անհասանելի է</translation>
+        </message>
+        <message>
+            <source>Ready in %1 s</source>
+            <translation>Պատրաստ կլինի %1 վ-ից</translation>
+        </message>
+        <message>
+            <source>Choose your Core and Trap.</source>
+            <translation>Ընտրիր քո Միջուկն ու Թակարդը։</translation>
+        </message>
+        <message>
+            <source>Choice locked. Waiting for the other player.</source>
+            <translation>Ընտրությունը հաստատված է։ Սպասում ենք մյուս խաղացողին։</translation>
+        </message>
+        <message>
+            <source>Same element. Choose again.</source>
+            <translation>Նույն տարրն է։ Նորից ընտրիր։</translation>
+        </message>
+        <message>
+            <source>Your turn</source>
+            <translation>Քո հերթն է</translation>
+        </message>
+        <message>
+            <source>%1's turn</source>
+            <translation>%1-ի հերթն է</translation>
+        </message>
+        <message>
+            <source>Waiting for the other player</source>
+            <translation>Սպասում ենք մյուս խաղացողին</translation>
+        </message>
+        <message>
+            <source>Water beats Fire. Fire beats Ice. Ice beats Water.</source>
+            <translation>Ջուրը հաղթում է կրակին։ Կրակը հաղթում է սառույցին։ Սառույցը հաղթում է ջրին։</translation>
+        </message>
+        <message>
+            <source>Empty</source>
+            <translation>Դատարկ</translation>
+        </message>
+        <message>
+            <source>Ice freezes Water</source>
+            <translation>Սառույցը սառեցնում է ջուրը</translation>
+        </message>
+        <message>
+            <source>Fire melts Ice</source>
+            <translation>Կրակը հալեցնում է սառույցը</translation>
+        </message>
+        <message>
+            <source>Water extinguishes Fire</source>
+            <translation>Ջուրը հանգցնում է կրակը</translation>
+        </message>
+        <message>
+            <source>Trap triggered</source>
+            <translation>Թակարդը գործարկվեց</translation>
+        </message>
+        <message>
+            <source>Core captured</source>
+            <translation>Միջուկը գրավված է</translation>
+        </message>
+        <message>
+            <source>Find the Core. Watch for traps.</source>
+            <translation>Գտիր Միջուկը։ Զգուշացիր թակարդներից։</translation>
         </message>
     </context>
 </TS>

@@ -1436,12 +1436,12 @@
             <translation>Претходни пораки</translation>
         </message>
         <message>
-            <source>Attach image</source>
-            <translation>Прикачи слика</translation>
-        </message>
-        <message>
             <source>Chat message. Markdown supported. Shift+Enter for a new line.</source>
             <translation>Порака за разговор. Поддржан Markdown. Shift+Enter за нова линија.</translation>
+        </message>
+        <message>
+            <source>Add</source>
+            <translation>Додај</translation>
         </message>
     </context>
     <context>
@@ -2647,6 +2647,14 @@
             <source>Identity imported.</source>
             <translation>Идентитетот е увезен.</translation>
         </message>
+        <message>
+            <source>Invalid game state.</source>
+            <translation>Неважечка состојба на играта.</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Ова дејство во играта веќе не е достапно.</translation>
+        </message>
     </context>
     <context>
         <name>LocalLanguage</name>
@@ -3313,6 +3321,156 @@
         <message>
             <source>See you next time.</source>
             <translation>До следниот пат.</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameCard</name>
+        <message>
+            <source>Invited by %1</source>
+            <translation>Покана од %1</translation>
+        </message>
+        <message>
+            <source>Ready</source>
+            <translation>Подготвено</translation>
+        </message>
+        <message>
+            <source>%1 wins!</source>
+            <translation>%1 победува!</translation>
+        </message>
+        <message>
+            <source>Game ended. A player disconnected.</source>
+            <translation>Играта заврши. Играч ја изгуби врската.</translation>
+        </message>
+        <message>
+            <source>Game ended. A player left.</source>
+            <translation>Играта заврши. Играч замина.</translation>
+        </message>
+        <message>
+            <source>Waiting for a player</source>
+            <translation>Чекање играч</translation>
+        </message>
+        <message>
+            <source>Join</source>
+            <translation>Придружи се</translation>
+        </message>
+        <message>
+            <source>Leave</source>
+            <translation>Остави</translation>
+        </message>
+        <message>
+            <source>Elements</source>
+            <translation>Елементи</translation>
+        </message>
+        <message>
+            <source>Game ended</source>
+            <translation>Играта заврши</translation>
+        </message>
+        <message>
+            <source>In progress</source>
+            <translation>Во тек</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Отвори</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameWindow</name>
+        <message>
+            <source>Finish your current game first.</source>
+            <translation>Прво заврши ја тековната игра.</translation>
+        </message>
+        <message>
+            <source>Fire</source>
+            <translation>Оган</translation>
+        </message>
+        <message>
+            <source>Water</source>
+            <translation>Вода</translation>
+        </message>
+        <message>
+            <source>Ice</source>
+            <translation>Мраз</translation>
+        </message>
+        <message>
+            <source>Core</source>
+            <translation>Јадро</translation>
+        </message>
+        <message>
+            <source>Trap</source>
+            <translation>Стапица</translation>
+        </message>
+        <message>
+            <source>Unknown</source>
+            <translation>Непознато</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Ова дејство во играта веќе не е достапно.</translation>
+        </message>
+        <message>
+            <source>Game unavailable</source>
+            <translation>Играта не е достапна</translation>
+        </message>
+        <message>
+            <source>Ready in %1 s</source>
+            <translation>Подготвено за %1 с</translation>
+        </message>
+        <message>
+            <source>Choose your Core and Trap.</source>
+            <translation>Избери ги твоето Јадро и Стапица.</translation>
+        </message>
+        <message>
+            <source>Choice locked. Waiting for the other player.</source>
+            <translation>Изборот е потврден. Се чека другиот играч.</translation>
+        </message>
+        <message>
+            <source>Same element. Choose again.</source>
+            <translation>Ист елемент. Избери повторно.</translation>
+        </message>
+        <message>
+            <source>Your turn</source>
+            <translation>Твој потег</translation>
+        </message>
+        <message>
+            <source>%1's turn</source>
+            <translation>%1 е на потег</translation>
+        </message>
+        <message>
+            <source>Waiting for the other player</source>
+            <translation>Чекање на другиот играч</translation>
+        </message>
+        <message>
+            <source>Water beats Fire. Fire beats Ice. Ice beats Water.</source>
+            <translation>Водата го победува огнот. Огнот го победува мразот. Мразот ја победува водата.</translation>
+        </message>
+        <message>
+            <source>Empty</source>
+            <translation>Празно</translation>
+        </message>
+        <message>
+            <source>Ice freezes Water</source>
+            <translation>Мразот ја замрзнува водата</translation>
+        </message>
+        <message>
+            <source>Fire melts Ice</source>
+            <translation>Огнот го топи мразот</translation>
+        </message>
+        <message>
+            <source>Water extinguishes Fire</source>
+            <translation>Водата го гаси огнот</translation>
+        </message>
+        <message>
+            <source>Trap triggered</source>
+            <translation>Стапицата е активирана</translation>
+        </message>
+        <message>
+            <source>Core captured</source>
+            <translation>Јадрото е освоено</translation>
+        </message>
+        <message>
+            <source>Find the Core. Watch for traps.</source>
+            <translation>Најди го Јадрото. Внимавај на стапиците.</translation>
         </message>
     </context>
 </TS>

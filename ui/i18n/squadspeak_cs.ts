@@ -1436,12 +1436,12 @@
             <translation>Předchozí zprávy</translation>
         </message>
         <message>
-            <source>Attach image</source>
-            <translation>Přidat obrázek</translation>
-        </message>
-        <message>
             <source>Chat message. Markdown supported. Shift+Enter for a new line.</source>
             <translation>Text zprávy. Podporována je syntaxe Markdown. Stisknutím Shift+Enter vytvoříte nový řádek.</translation>
+        </message>
+        <message>
+            <source>Add</source>
+            <translation>Přidat</translation>
         </message>
     </context>
     <context>
@@ -2647,6 +2647,14 @@
             <source>Identity imported.</source>
             <translation>Identita byla importována.</translation>
         </message>
+        <message>
+            <source>Invalid game state.</source>
+            <translation>Neplatný stav hry.</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Tato herní akce už není dostupná.</translation>
+        </message>
     </context>
     <context>
         <name>LocalLanguage</name>
@@ -3313,6 +3321,156 @@
         <message>
             <source>See you next time.</source>
             <translation>Uvidíme se příště.</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameCard</name>
+        <message>
+            <source>Invited by %1</source>
+            <translation>Pozvánka od %1</translation>
+        </message>
+        <message>
+            <source>Ready</source>
+            <translation>Připraveno</translation>
+        </message>
+        <message>
+            <source>%1 wins!</source>
+            <translation>%1 vyhrává!</translation>
+        </message>
+        <message>
+            <source>Game ended. A player disconnected.</source>
+            <translation>Hra skončila. Hráč ztratil spojení.</translation>
+        </message>
+        <message>
+            <source>Game ended. A player left.</source>
+            <translation>Hra skončila. Hráč odešel.</translation>
+        </message>
+        <message>
+            <source>Waiting for a player</source>
+            <translation>Čekání na hráče</translation>
+        </message>
+        <message>
+            <source>Join</source>
+            <translation>Připojit se</translation>
+        </message>
+        <message>
+            <source>Leave</source>
+            <translation>Opustit</translation>
+        </message>
+        <message>
+            <source>Elements</source>
+            <translation>Živly</translation>
+        </message>
+        <message>
+            <source>Game ended</source>
+            <translation>Hra skončila</translation>
+        </message>
+        <message>
+            <source>In progress</source>
+            <translation>Probíhá</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Otevřít</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameWindow</name>
+        <message>
+            <source>Finish your current game first.</source>
+            <translation>Nejdřív dokonči aktuální hru.</translation>
+        </message>
+        <message>
+            <source>Fire</source>
+            <translation>Oheň</translation>
+        </message>
+        <message>
+            <source>Water</source>
+            <translation>Voda</translation>
+        </message>
+        <message>
+            <source>Ice</source>
+            <translation>Led</translation>
+        </message>
+        <message>
+            <source>Core</source>
+            <translation>Jádro</translation>
+        </message>
+        <message>
+            <source>Trap</source>
+            <translation>Past</translation>
+        </message>
+        <message>
+            <source>Unknown</source>
+            <translation>Neznámé</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Tato herní akce už není dostupná.</translation>
+        </message>
+        <message>
+            <source>Game unavailable</source>
+            <translation>Hra není dostupná</translation>
+        </message>
+        <message>
+            <source>Ready in %1 s</source>
+            <translation>Připraveno za %1 s</translation>
+        </message>
+        <message>
+            <source>Choose your Core and Trap.</source>
+            <translation>Vyber své Jádro a Past.</translation>
+        </message>
+        <message>
+            <source>Choice locked. Waiting for the other player.</source>
+            <translation>Volba potvrzena. Čekání na druhého hráče.</translation>
+        </message>
+        <message>
+            <source>Same element. Choose again.</source>
+            <translation>Stejný živel. Vyber znovu.</translation>
+        </message>
+        <message>
+            <source>Your turn</source>
+            <translation>Jsi na tahu</translation>
+        </message>
+        <message>
+            <source>%1's turn</source>
+            <translation>Na tahu je %1</translation>
+        </message>
+        <message>
+            <source>Waiting for the other player</source>
+            <translation>Čekání na druhého hráče</translation>
+        </message>
+        <message>
+            <source>Water beats Fire. Fire beats Ice. Ice beats Water.</source>
+            <translation>Voda porazí oheň. Oheň porazí led. Led porazí vodu.</translation>
+        </message>
+        <message>
+            <source>Empty</source>
+            <translation>Prázdné</translation>
+        </message>
+        <message>
+            <source>Ice freezes Water</source>
+            <translation>Led zmrazí vodu</translation>
+        </message>
+        <message>
+            <source>Fire melts Ice</source>
+            <translation>Oheň roztaví led</translation>
+        </message>
+        <message>
+            <source>Water extinguishes Fire</source>
+            <translation>Voda uhasí oheň</translation>
+        </message>
+        <message>
+            <source>Trap triggered</source>
+            <translation>Past spuštěna</translation>
+        </message>
+        <message>
+            <source>Core captured</source>
+            <translation>Jádro dobyto</translation>
+        </message>
+        <message>
+            <source>Find the Core. Watch for traps.</source>
+            <translation>Najdi Jádro. Pozor na pasti.</translation>
         </message>
     </context>
 </TS>

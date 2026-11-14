@@ -1436,12 +1436,12 @@
             <translation>Pesan sebelumnya</translation>
         </message>
         <message>
-            <source>Attach image</source>
-            <translation>Lampirkan gambar</translation>
-        </message>
-        <message>
             <source>Chat message. Markdown supported. Shift+Enter for a new line.</source>
             <translation>Pesan chat. Mendukung Markdown. Shift+Enter untuk baris baru.</translation>
+        </message>
+        <message>
+            <source>Add</source>
+            <translation>Tambah</translation>
         </message>
     </context>
     <context>
@@ -2647,6 +2647,14 @@
             <source>Identity imported.</source>
             <translation>Identitas diimpor.</translation>
         </message>
+        <message>
+            <source>Invalid game state.</source>
+            <translation>Status permainan tidak valid.</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Aksi permainan ini sudah tidak tersedia.</translation>
+        </message>
     </context>
     <context>
         <name>LocalLanguage</name>
@@ -3313,6 +3321,156 @@
         <message>
             <source>See you next time.</source>
             <translation>Sampai jumpa lagi.</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameCard</name>
+        <message>
+            <source>Invited by %1</source>
+            <translation>Diundang oleh %1</translation>
+        </message>
+        <message>
+            <source>Ready</source>
+            <translation>Siap</translation>
+        </message>
+        <message>
+            <source>%1 wins!</source>
+            <translation>%1 menang!</translation>
+        </message>
+        <message>
+            <source>Game ended. A player disconnected.</source>
+            <translation>Permainan berakhir. Koneksi seorang pemain terputus.</translation>
+        </message>
+        <message>
+            <source>Game ended. A player left.</source>
+            <translation>Permainan berakhir. Seorang pemain keluar.</translation>
+        </message>
+        <message>
+            <source>Waiting for a player</source>
+            <translation>Menunggu pemain</translation>
+        </message>
+        <message>
+            <source>Join</source>
+            <translation>Gabung</translation>
+        </message>
+        <message>
+            <source>Leave</source>
+            <translation>Keluar</translation>
+        </message>
+        <message>
+            <source>Elements</source>
+            <translation>Elemen</translation>
+        </message>
+        <message>
+            <source>Game ended</source>
+            <translation>Permainan berakhir</translation>
+        </message>
+        <message>
+            <source>In progress</source>
+            <translation>Sedang berlangsung</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Buka</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameWindow</name>
+        <message>
+            <source>Finish your current game first.</source>
+            <translation>Selesaikan permainanmu saat ini dulu.</translation>
+        </message>
+        <message>
+            <source>Fire</source>
+            <translation>Api</translation>
+        </message>
+        <message>
+            <source>Water</source>
+            <translation>Air</translation>
+        </message>
+        <message>
+            <source>Ice</source>
+            <translation>Es</translation>
+        </message>
+        <message>
+            <source>Core</source>
+            <translation>Inti</translation>
+        </message>
+        <message>
+            <source>Trap</source>
+            <translation>Jebakan</translation>
+        </message>
+        <message>
+            <source>Unknown</source>
+            <translation>Tidak diketahui</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Aksi permainan ini sudah tidak tersedia.</translation>
+        </message>
+        <message>
+            <source>Game unavailable</source>
+            <translation>Permainan tidak tersedia</translation>
+        </message>
+        <message>
+            <source>Ready in %1 s</source>
+            <translation>Siap dalam %1 dtk</translation>
+        </message>
+        <message>
+            <source>Choose your Core and Trap.</source>
+            <translation>Pilih Inti dan Jebakanmu.</translation>
+        </message>
+        <message>
+            <source>Choice locked. Waiting for the other player.</source>
+            <translation>Pilihan dikunci. Menunggu pemain lain.</translation>
+        </message>
+        <message>
+            <source>Same element. Choose again.</source>
+            <translation>Elemen sama. Pilih lagi.</translation>
+        </message>
+        <message>
+            <source>Your turn</source>
+            <translation>Giliranmu</translation>
+        </message>
+        <message>
+            <source>%1's turn</source>
+            <translation>Giliran %1</translation>
+        </message>
+        <message>
+            <source>Waiting for the other player</source>
+            <translation>Menunggu pemain lain</translation>
+        </message>
+        <message>
+            <source>Water beats Fire. Fire beats Ice. Ice beats Water.</source>
+            <translation>Air mengalahkan api. Api mengalahkan es. Es mengalahkan air.</translation>
+        </message>
+        <message>
+            <source>Empty</source>
+            <translation>Kosong</translation>
+        </message>
+        <message>
+            <source>Ice freezes Water</source>
+            <translation>Es membekukan air</translation>
+        </message>
+        <message>
+            <source>Fire melts Ice</source>
+            <translation>Api mencairkan es</translation>
+        </message>
+        <message>
+            <source>Water extinguishes Fire</source>
+            <translation>Air memadamkan api</translation>
+        </message>
+        <message>
+            <source>Trap triggered</source>
+            <translation>Jebakan terpicu</translation>
+        </message>
+        <message>
+            <source>Core captured</source>
+            <translation>Inti direbut</translation>
+        </message>
+        <message>
+            <source>Find the Core. Watch for traps.</source>
+            <translation>Temukan Inti. Hati-hati dengan jebakan.</translation>
         </message>
     </context>
 </TS>

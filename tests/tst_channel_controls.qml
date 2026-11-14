@@ -187,6 +187,7 @@ TestCase {
         Qt.inputMethod.hide()
         tryCompare(Qt.inputMethod, "visible", false)
         for (const window of [view, controllerView]) {
+            findChild(window, "gameWindow").close()
             window.searchOpen = false
             window.expandedHosts = ({})
             window.updateChannelRows()
@@ -900,6 +901,138 @@ TestCase {
         verify(icon !== null); verify(!icon.visible)
         verify(fixtures.setTestMusic(true)); tryCompare(icon, "visible", true)
         verify(fixtures.setTestMusic(false)); tryCompare(icon, "visible", false)
+    }
+
+    function test_gameBoardChatOnlyJourney_data() {
+        return [{tag: "compact", width: 390, height: 760, language: "en"},
+                {tag: "wide", width: 1100, height: 760, language: "en"},
+                {tag: "german", width: 390, height: 760, language: "de"},
+                {tag: "rtl", width: 390, height: 760, language: "ar"}]
+    }
+    function test_gameBoardChatOnlyJourney(data) {
+        session.setLanguage(data.language)
+        view.width = data.width; view.height = data.height
+        verify(fixtures.startHost())
+        verify(channel.decide(remoteChannel.ownId, true))
+        verify(channel.openChat(channel.ownId, "127.0.0.1", channel.servicePort))
+        verify(remoteChannel.openChat(channel.ownId, "127.0.0.1", channel.servicePort))
+        tryVerify(function() { return channel.chatReady && remoteChannel.chatReady && !channel.historyLoading && !remoteChannel.historyLoading })
+        const previousCount = channel.games.length
+        view.chatExpanded = true
+        const panel = findChild(view, "chatPanel")
+        verify(fixtures.pressAccessible(findChild(panel, "chatAdd")))
+        tryCompare(findChild(panel, "chatAddMenu"), "opened", true)
+        const start = findChild(panel, "startGame")
+        verify(waitForRendering(start))
+        mouseClick(start)
+        tryCompare(channel, "canStartGame", false)
+        tryVerify(function() { return channel.games.length === previousCount + 1 })
+        const id = channel.games[channel.games.length - 1].id
+        const ownGame = () => channel.games.find(g => g.id === id)
+        const otherGame = () => remoteChannel.games.find(g => g.id === id)
+        tryVerify(function() { return !!otherGame() })
+        let card = findChild(panel, "gameCard_" + id)
+        tryVerify(function() { card = findChild(panel, "gameCard_" + id); return card && card.visible })
+        compare(card.LayoutMirroring.enabled, data.language === "ar")
+        compare(findChild(card, "gameJoin").visible, false)
+        const board = findChild(view, "gameWindow")
+        tryCompare(board, "visible", true)
+        board.width = data.width < 500 ? 390 : 700; board.height = data.width < 500 ? 580 : 700
+        compare(findChild(board, "gameReady").enabled, false)
+        verify(fixtures.pressAccessible(visualChild(board.contentItem, "gameCell_35")))
+        verify(fixtures.pressAccessible(visualChild(board.contentItem, "gameCell_36")))
+        tryVerify(function() { return ownGame().setup })
+        const setupStatus = findChild(board, "boardStatus")
+        const secondsShown = () => Number((setupStatus.text.match(/\d+/) || ["10"])[0])
+        tryVerify(function() { return secondsShown() < 10 })
+        const beforeMessage = secondsShown()
+        verify(remoteChannel.sendChat("A message during setup"))
+        tryCompare(remoteChannel, "chatPending", false)
+        tryVerify(function() { return channel.messages.some(m => m.text === "A message during setup") })
+        verify(secondsShown() <= beforeMessage, "Chat traffic must not restart the visible readiness countdown")
+        board.update(); verify(waitForRendering(board.contentItem))
+        if (imageDirectory.length) verify(fixtures.saveWindow(board, imageDirectory + "/setup-" + data.tag + ".png"))
+        verify(fixtures.pressAccessible(findChild(board, "gameReady")))
+        controllerView.show(); controllerView.requestActivate(); controllerView.chatExpanded = true
+        const remotePanel = findChild(controllerView, "chatPanel")
+        let other
+        tryVerify(function() { other = findChild(remotePanel, "gameCard_" + id); return other && other.visible })
+        verify(fixtures.pressAccessible(findChild(other, "gameJoin")))
+        const remoteBoard = findChild(controllerView, "gameWindow")
+        tryCompare(remoteBoard, "visible", true)
+        verify(fixtures.pressAccessible(visualChild(remoteBoard.contentItem, "gameCell_0")))
+        verify(fixtures.pressAccessible(visualChild(remoteBoard.contentItem, "gameCell_1")))
+        tryVerify(function() { return otherGame().setup })
+        verify(fixtures.pressAccessible(findChild(remoteBoard, "gameReady")))
+        tryVerify(function() { return ownGame().phase === "playing" && otherGame().phase === "playing" })
+        verify(!channel.joined && !remoteChannel.joined)
+        compare(findChild(board, "battleSummary").visible, false)
+        const mover = ownGame().turn === channel.ownId ? board : remoteBoard
+        const from = mover === board ? 28 : 7, to = mover === board ? 21 : 14
+        verify(fixtures.pressAccessible(visualChild(mover.contentItem, "gameCell_" + from)))
+        verify(fixtures.pressAccessible(visualChild(mover.contentItem, "gameCell_" + to)))
+        tryVerify(function() { return ownGame().round === 2 && otherGame().round === 2 })
+        const responder = mover === board ? remoteBoard : board
+        const responseFrom = mover === board ? 7 : 28, responseTo = mover === board ? 14 : 21
+        verify(fixtures.pressAccessible(visualChild(responder.contentItem, "gameCell_" + responseFrom)))
+        verify(fixtures.pressAccessible(visualChild(responder.contentItem, "gameCell_" + responseTo)))
+        tryVerify(function() { return ownGame().round === 3 && otherGame().round === 3 })
+        verify(fixtures.pressAccessible(visualChild(mover.contentItem, "gameCell_" + to)))
+        verify(fixtures.pressAccessible(visualChild(mover.contentItem, "gameCell_" + responseTo)))
+        tryVerify(function() { return !!ownGame().lastBattle.effect && !!otherGame().lastBattle.effect })
+        if (ownGame().phase === "duel") {
+            compare(findChild(board, "battleSummary").visible, false)
+            verify(fixtures.pressAccessible(visualChild(mover.contentItem, "gameChoice_fire")))
+            tryVerify(function() { return mover.game.choice === "fire" })
+            compare(responder.game.choice, "")
+            verify(fixtures.pressAccessible(visualChild(responder.contentItem, "gameChoice_ice")))
+        }
+        tryVerify(function() { return ownGame().round === 4 && otherGame().round === 4 })
+        compare(findChild(board, "battleSummary").visible, true)
+        const summary = findChild(board, "battleSummary")
+        verify(summary.mapToItem(board.contentItem, 0, summary.height).y <= board.contentItem.height,
+               "The combat result must fit above the window footer")
+        verify(remoteChannel.sendChat("Ready? Let's play."))
+        tryCompare(remoteChannel, "chatPending", false)
+        tryVerify(function() { return channel.messages.length > 0 })
+        board.requestActivate(); tryCompare(board, "active", true)
+        board.update(); verify(waitForRendering(board.contentItem))
+        if (imageDirectory.length) verify(fixtures.saveWindow(board, imageDirectory + "/board-" + data.tag + ".png"))
+        view.requestActivate(); tryCompare(view, "active", true)
+        verify(waitForFrame(view.contentItem))
+        if (imageDirectory.length) verify(fixtures.saveWindow(view, imageDirectory + "/invitation-" + data.tag + ".png"))
+        verify(fixtures.pressAccessible(findChild(card, "gameOpen")))
+        tryCompare(board, "active", true)
+        board.close()
+        tryVerify(function() { return ownGame().phase === "cancelled" && otherGame().phase === "cancelled" })
+        remoteBoard.close()
+        verify(!channel.joined && !remoteChannel.joined)
+    }
+
+    function test_disconnectedHostsHaveASeparateSectionAndReconnectInPlace() {
+        verify(fixtures.startHost()); verify(fixtures.startRemoteHost())
+        verify(remoteSession.setUserName("Aardvark host"))
+        verify(remoteChannel.decide(channel.ownId, true))
+        verify(channel.openChat(remoteChannel.ownId, "127.0.0.1", remoteChannel.servicePort))
+        tryCompare(channel, "chatReady", true)
+        verify(fixtures.pressAccessible(findChild(view, "backToChannels")))
+        const row = function(id) { return visualChild(view.contentItem, "channelRow_" + id) }
+        tryVerify(function() { return row(remoteChannel.ownId) !== null })
+        compare(row(remoteChannel.ownId).parent.parent.groupDisconnected, false)
+        verify(channel.closeChat(remoteChannel.ownId))
+        tryCompare(row(remoteChannel.ownId).parent.parent, "groupDisconnected", true)
+        const section = visualChild(view.contentItem, "disconnectedHosts_" + remoteChannel.ownId)
+        verify(section && section.visible)
+        compare(section.text, "Not connected")
+        compare(row(channel.ownId).parent.parent.groupDisconnected, false,
+                "A running local host remains available without a voice/chat join")
+        verify(section.mapToItem(view.contentItem, 0, 0).y > row(channel.ownId).mapToItem(view.contentItem, 0, 0).y)
+        verify(waitForRendering(view.contentItem))
+        if (imageDirectory.length) verify(fixtures.saveWindow(view, imageDirectory + "/disconnected-hosts.png"))
+        verify(channel.openSavedChat(remoteChannel.ownId)); tryCompare(channel, "chatReady", true)
+        verify(fixtures.pressAccessible(findChild(view, "backToChannels")))
+        tryCompare(row(remoteChannel.ownId).parent.parent, "groupDisconnected", false)
+        verify(!visualChild(view.contentItem, "disconnectedHosts_" + remoteChannel.ownId).visible)
     }
 
     function test_hostCollapsePreservesVoiceDraftAndUnread_data() {

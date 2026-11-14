@@ -1436,12 +1436,12 @@
             <translation>Frühere Nachrichten</translation>
         </message>
         <message>
-            <source>Attach image</source>
-            <translation>Bild anhängen</translation>
-        </message>
-        <message>
             <source>Chat message. Markdown supported. Shift+Enter for a new line.</source>
             <translation>Chatnachricht. Markdown wird unterstützt. Umschalt+Enter für eine neue Zeile.</translation>
+        </message>
+        <message>
+            <source>Add</source>
+            <translation>Hinzufügen</translation>
         </message>
     </context>
     <context>
@@ -2647,6 +2647,14 @@
             <source>Identity imported.</source>
             <translation>Identität importiert.</translation>
         </message>
+        <message>
+            <source>Invalid game state.</source>
+            <translation>Ungültiger Spielzustand.</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Diese Spielaktion ist nicht mehr verfügbar.</translation>
+        </message>
     </context>
     <context>
         <name>LocalLanguage</name>
@@ -3313,6 +3321,156 @@
         <message>
             <source>See you next time.</source>
             <translation>Bis zum nächsten Mal.</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameCard</name>
+        <message>
+            <source>Invited by %1</source>
+            <translation>Eingeladen von %1</translation>
+        </message>
+        <message>
+            <source>Ready</source>
+            <translation>Bereit</translation>
+        </message>
+        <message>
+            <source>%1 wins!</source>
+            <translation>%1 gewinnt!</translation>
+        </message>
+        <message>
+            <source>Game ended. A player disconnected.</source>
+            <translation>Spiel beendet. Ein Spieler hat die Verbindung verloren.</translation>
+        </message>
+        <message>
+            <source>Game ended. A player left.</source>
+            <translation>Spiel beendet. Ein Spieler hat das Spiel verlassen.</translation>
+        </message>
+        <message>
+            <source>Waiting for a player</source>
+            <translation>Warten auf einen Spieler</translation>
+        </message>
+        <message>
+            <source>Join</source>
+            <translation>Beitreten</translation>
+        </message>
+        <message>
+            <source>Leave</source>
+            <translation>Verlassen</translation>
+        </message>
+        <message>
+            <source>Elements</source>
+            <translation>Elemente</translation>
+        </message>
+        <message>
+            <source>Game ended</source>
+            <translation>Spiel beendet</translation>
+        </message>
+        <message>
+            <source>In progress</source>
+            <translation>Läuft</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Öffnen</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameWindow</name>
+        <message>
+            <source>Finish your current game first.</source>
+            <translation>Beende zuerst dein aktuelles Spiel.</translation>
+        </message>
+        <message>
+            <source>Fire</source>
+            <translation>Feuer</translation>
+        </message>
+        <message>
+            <source>Water</source>
+            <translation>Wasser</translation>
+        </message>
+        <message>
+            <source>Ice</source>
+            <translation>Eis</translation>
+        </message>
+        <message>
+            <source>Core</source>
+            <translation>Kern</translation>
+        </message>
+        <message>
+            <source>Trap</source>
+            <translation>Falle</translation>
+        </message>
+        <message>
+            <source>Unknown</source>
+            <translation>Unbekannt</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Diese Spielaktion ist nicht mehr verfügbar.</translation>
+        </message>
+        <message>
+            <source>Game unavailable</source>
+            <translation>Spiel nicht verfügbar</translation>
+        </message>
+        <message>
+            <source>Ready in %1 s</source>
+            <translation>Bereit in %1 s</translation>
+        </message>
+        <message>
+            <source>Choose your Core and Trap.</source>
+            <translation>Wähle deinen Kern und deine Falle.</translation>
+        </message>
+        <message>
+            <source>Choice locked. Waiting for the other player.</source>
+            <translation>Auswahl bestätigt. Warten auf den anderen Spieler.</translation>
+        </message>
+        <message>
+            <source>Same element. Choose again.</source>
+            <translation>Gleiches Element. Wähle erneut.</translation>
+        </message>
+        <message>
+            <source>Your turn</source>
+            <translation>Du bist dran</translation>
+        </message>
+        <message>
+            <source>%1's turn</source>
+            <translation>%1 ist dran</translation>
+        </message>
+        <message>
+            <source>Waiting for the other player</source>
+            <translation>Warten auf den anderen Spieler</translation>
+        </message>
+        <message>
+            <source>Water beats Fire. Fire beats Ice. Ice beats Water.</source>
+            <translation>Wasser schlägt Feuer. Feuer schlägt Eis. Eis schlägt Wasser.</translation>
+        </message>
+        <message>
+            <source>Empty</source>
+            <translation>Leer</translation>
+        </message>
+        <message>
+            <source>Ice freezes Water</source>
+            <translation>Eis friert Wasser ein</translation>
+        </message>
+        <message>
+            <source>Fire melts Ice</source>
+            <translation>Feuer schmilzt Eis</translation>
+        </message>
+        <message>
+            <source>Water extinguishes Fire</source>
+            <translation>Wasser löscht Feuer</translation>
+        </message>
+        <message>
+            <source>Trap triggered</source>
+            <translation>Falle ausgelöst</translation>
+        </message>
+        <message>
+            <source>Core captured</source>
+            <translation>Kern erobert</translation>
+        </message>
+        <message>
+            <source>Find the Core. Watch for traps.</source>
+            <translation>Finde den Kern. Achte auf Fallen.</translation>
         </message>
     </context>
 </TS>

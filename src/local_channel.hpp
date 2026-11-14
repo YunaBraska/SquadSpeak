@@ -16,6 +16,7 @@
 #include <QSet>
 #include <QSslServer>
 #include <QTimer>
+#include "channel_game.hpp"
 #include <QThreadPool>
 #include <QUdpSocket>
 #include <QNetworkInterface>
@@ -62,6 +63,10 @@ class LocalChannel final : public QObject {
     Q_PROPERTY(QVariantList ownedChannels READ ownedChannels NOTIFY ownedChannelsChanged)
     Q_PROPERTY(QString chatHostId READ chatHostId NOTIFY chatChanged)
     Q_PROPERTY(QVariantList notices READ notices NOTIFY chatChanged)
+    Q_PROPERTY(QVariantList games READ games NOTIFY chatChanged)
+    Q_PROPERTY(QString gameId READ gameId NOTIFY chatChanged)
+    Q_PROPERTY(QVariantMap currentGame READ currentGame NOTIFY chatChanged)
+    Q_PROPERTY(bool canStartGame READ canStartGame NOTIFY chatChanged)
     Q_PROPERTY(QVariantList chatMembers READ chatMembers NOTIFY participantsChanged)
     Q_PROPERTY(QStringList chatOnlineIds READ chatOnlineIds NOTIFY participantsChanged)
     Q_PROPERTY(bool chatPresenceKnown READ chatPresenceKnown NOTIFY participantsChanged)
@@ -186,6 +191,12 @@ public:
     Q_INVOKABLE bool canPrivateChat(const QString& hostId, const QString& peerId) const;
     Q_INVOKABLE bool openPrivateChat(const QString& hostId, const QString& peerId);
     Q_INVOKABLE bool setPrivateBlocked(const QString& conversation, bool blocked);
+    [[nodiscard]] QVariantList games() const;
+    [[nodiscard]] QString gameId() const;
+    [[nodiscard]] bool canStartGame() const;
+    [[nodiscard]] QVariantMap currentGame() const;
+    Q_INVOKABLE QVariantMap gameView(const QString& host, const QString& id, const QString& identity = {}) const;
+    Q_INVOKABLE bool gameAction(const QString& action, const QVariantMap& selection, const QString& host = {}, const QString& identity = {});
     Q_INVOKABLE bool sendChat(const QString& text, const QByteArray& image = {});
     bool sendSystemMessage(const QString& text);
     // Reads one bounded page from this owned channel, without joining as a user.
@@ -395,6 +406,8 @@ private:
         QString chatEpoch;
         QJsonArray messages;
         QVariantList notices;
+        QJsonArray games;
+        QString gameId;
         qint64 lastChatSequence = 0;
         qint64 unreadExpires = 0;
         QJsonObject pending;
@@ -473,6 +486,8 @@ private:
         bool sleeping = false;
         QString avatar = QStringLiteral("mossling");
         qint64 lastSpoke = 0;
+        qint64 gameWindow = 0;
+        int gameRequests = 0;
         bool pending = false;
         bool controller = false;
         bool held = false;
@@ -662,6 +677,13 @@ private:
         QList<Target> queue_;
         QHash<QSslSocket*, Probe> probes_;
     } discovery_{*this};
+    bool hostGameAction(QSslSocket* socket, const QJsonObject& command);
+    bool applyGame(Client& client, const QJsonObject& state);
+    static bool validGameState(const QJsonObject& state);
+    void publishGame(QSslSocket* recipient = nullptr, QSslSocket* actor = nullptr, const QString& receipt = {});
+    QString pendingGameHost_, pendingGameRequest_;
+    ChannelGame hostGame_;
+    QTimer gameTimer_;
     QTimer controlTimer_;
     QTimer maintenanceTimer_;
     QTimer autoJoinTimer_;

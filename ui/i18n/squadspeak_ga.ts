@@ -1436,12 +1436,12 @@
             <translation>Teachtaireachtaí níos luaithe</translation>
         </message>
         <message>
-            <source>Attach image</source>
-            <translation>Ceangail íomhá</translation>
-        </message>
-        <message>
             <source>Chat message. Markdown supported. Shift+Enter for a new line.</source>
             <translation>Teachtaireacht comhrá. Markdown tacaithe. Shift+Iontráil le haghaidh líne nua.</translation>
+        </message>
+        <message>
+            <source>Add</source>
+            <translation>Cuir</translation>
         </message>
     </context>
     <context>
@@ -2647,6 +2647,14 @@
             <source>Identity imported.</source>
             <translation>Iompórtáladh an chéannacht.</translation>
         </message>
+        <message>
+            <source>Invalid game state.</source>
+            <translation>Staid chluiche neamhbhailí.</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Níl an gníomh cluiche seo ar fáil a thuilleadh.</translation>
+        </message>
     </context>
     <context>
         <name>LocalLanguage</name>
@@ -3313,6 +3321,156 @@
         <message>
             <source>See you next time.</source>
             <translation>Go dtí an chéad uair eile.</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameCard</name>
+        <message>
+            <source>Invited by %1</source>
+            <translation>Cuireadh ó %1</translation>
+        </message>
+        <message>
+            <source>Ready</source>
+            <translation>Réidh</translation>
+        </message>
+        <message>
+            <source>%1 wins!</source>
+            <translation>Tá an bua ag %1!</translation>
+        </message>
+        <message>
+            <source>Game ended. A player disconnected.</source>
+            <translation>Tá an cluiche thart. Cailleadh nasc imreora.</translation>
+        </message>
+        <message>
+            <source>Game ended. A player left.</source>
+            <translation>Tá an cluiche thart. D’fhág imreoir an cluiche.</translation>
+        </message>
+        <message>
+            <source>Waiting for a player</source>
+            <translation>Ag fanacht le himreoir</translation>
+        </message>
+        <message>
+            <source>Join</source>
+            <translation>Bígí</translation>
+        </message>
+        <message>
+            <source>Leave</source>
+            <translation>Fág</translation>
+        </message>
+        <message>
+            <source>Elements</source>
+            <translation>Dúile</translation>
+        </message>
+        <message>
+            <source>Game ended</source>
+            <translation>Tá an cluiche thart</translation>
+        </message>
+        <message>
+            <source>In progress</source>
+            <translation>Ar siúl</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Oscail</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameWindow</name>
+        <message>
+            <source>Finish your current game first.</source>
+            <translation>Críochnaigh do chluiche reatha ar dtús.</translation>
+        </message>
+        <message>
+            <source>Fire</source>
+            <translation>Tine</translation>
+        </message>
+        <message>
+            <source>Water</source>
+            <translation>Uisce</translation>
+        </message>
+        <message>
+            <source>Ice</source>
+            <translation>Oighear</translation>
+        </message>
+        <message>
+            <source>Core</source>
+            <translation>Croí</translation>
+        </message>
+        <message>
+            <source>Trap</source>
+            <translation>Gaiste</translation>
+        </message>
+        <message>
+            <source>Unknown</source>
+            <translation>Anaithnid</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Níl an gníomh cluiche seo ar fáil a thuilleadh.</translation>
+        </message>
+        <message>
+            <source>Game unavailable</source>
+            <translation>Níl an cluiche ar fáil</translation>
+        </message>
+        <message>
+            <source>Ready in %1 s</source>
+            <translation>Réidh i gceann %1 s</translation>
+        </message>
+        <message>
+            <source>Choose your Core and Trap.</source>
+            <translation>Roghnaigh do Chroí agus do Ghaiste.</translation>
+        </message>
+        <message>
+            <source>Choice locked. Waiting for the other player.</source>
+            <translation>Rogha deimhnithe. Ag fanacht leis an imreoir eile.</translation>
+        </message>
+        <message>
+            <source>Same element. Choose again.</source>
+            <translation>An dúil chéanna. Roghnaigh arís.</translation>
+        </message>
+        <message>
+            <source>Your turn</source>
+            <translation>Do sheal</translation>
+        </message>
+        <message>
+            <source>%1's turn</source>
+            <translation>Seal %1</translation>
+        </message>
+        <message>
+            <source>Waiting for the other player</source>
+            <translation>Ag fanacht leis an imreoir eile</translation>
+        </message>
+        <message>
+            <source>Water beats Fire. Fire beats Ice. Ice beats Water.</source>
+            <translation>Buaileann uisce tine. Buaileann tine oighear. Buaileann oighear uisce.</translation>
+        </message>
+        <message>
+            <source>Empty</source>
+            <translation>Folamh</translation>
+        </message>
+        <message>
+            <source>Ice freezes Water</source>
+            <translation>Reonn oighear uisce</translation>
+        </message>
+        <message>
+            <source>Fire melts Ice</source>
+            <translation>Leánn tine oighear</translation>
+        </message>
+        <message>
+            <source>Water extinguishes Fire</source>
+            <translation>Múchann uisce tine</translation>
+        </message>
+        <message>
+            <source>Trap triggered</source>
+            <translation>Gaiste curtha i ngníomh</translation>
+        </message>
+        <message>
+            <source>Core captured</source>
+            <translation>Croí gafa</translation>
+        </message>
+        <message>
+            <source>Find the Core. Watch for traps.</source>
+            <translation>Aimsigh an Croí. Bí ag faire amach do ghaistí.</translation>
         </message>
     </context>
 </TS>

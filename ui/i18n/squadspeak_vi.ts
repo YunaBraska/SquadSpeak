@@ -1436,12 +1436,12 @@
             <translation>Tin nhắn cũ hơn</translation>
         </message>
         <message>
-            <source>Attach image</source>
-            <translation>Đính kèm hình ảnh</translation>
-        </message>
-        <message>
             <source>Chat message. Markdown supported. Shift+Enter for a new line.</source>
             <translation>Tin nhắn chat. Hỗ trợ Markdown. Shift+Enter để xuống dòng.</translation>
+        </message>
+        <message>
+            <source>Add</source>
+            <translation>Thêm</translation>
         </message>
     </context>
     <context>
@@ -2647,6 +2647,14 @@
             <source>Identity imported.</source>
             <translation>Đã nhập danh tính.</translation>
         </message>
+        <message>
+            <source>Invalid game state.</source>
+            <translation>Trạng thái trò chơi không hợp lệ.</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Thao tác này trong trò chơi không còn khả dụng.</translation>
+        </message>
     </context>
     <context>
         <name>LocalLanguage</name>
@@ -3313,6 +3321,156 @@
         <message>
             <source>See you next time.</source>
             <translation>Hẹn lần sau.</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameCard</name>
+        <message>
+            <source>Invited by %1</source>
+            <translation>Lời mời từ %1</translation>
+        </message>
+        <message>
+            <source>Ready</source>
+            <translation>Sẵn sàng</translation>
+        </message>
+        <message>
+            <source>%1 wins!</source>
+            <translation>%1 thắng!</translation>
+        </message>
+        <message>
+            <source>Game ended. A player disconnected.</source>
+            <translation>Trò chơi kết thúc. Một người chơi đã mất kết nối.</translation>
+        </message>
+        <message>
+            <source>Game ended. A player left.</source>
+            <translation>Trò chơi kết thúc. Một người chơi đã rời đi.</translation>
+        </message>
+        <message>
+            <source>Waiting for a player</source>
+            <translation>Đang chờ người chơi</translation>
+        </message>
+        <message>
+            <source>Join</source>
+            <translation>Tham gia</translation>
+        </message>
+        <message>
+            <source>Leave</source>
+            <translation>Rời đi</translation>
+        </message>
+        <message>
+            <source>Elements</source>
+            <translation>Nguyên tố</translation>
+        </message>
+        <message>
+            <source>Game ended</source>
+            <translation>Trò chơi kết thúc</translation>
+        </message>
+        <message>
+            <source>In progress</source>
+            <translation>Đang chơi</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Mở</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameWindow</name>
+        <message>
+            <source>Finish your current game first.</source>
+            <translation>Hãy kết thúc trò chơi hiện tại trước.</translation>
+        </message>
+        <message>
+            <source>Fire</source>
+            <translation>Lửa</translation>
+        </message>
+        <message>
+            <source>Water</source>
+            <translation>Nước</translation>
+        </message>
+        <message>
+            <source>Ice</source>
+            <translation>Băng</translation>
+        </message>
+        <message>
+            <source>Core</source>
+            <translation>Lõi</translation>
+        </message>
+        <message>
+            <source>Trap</source>
+            <translation>Bẫy</translation>
+        </message>
+        <message>
+            <source>Unknown</source>
+            <translation>Chưa biết</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Thao tác này trong trò chơi không còn khả dụng.</translation>
+        </message>
+        <message>
+            <source>Game unavailable</source>
+            <translation>Trò chơi không khả dụng</translation>
+        </message>
+        <message>
+            <source>Ready in %1 s</source>
+            <translation>Sẵn sàng sau %1 giây</translation>
+        </message>
+        <message>
+            <source>Choose your Core and Trap.</source>
+            <translation>Chọn Lõi và Bẫy của bạn.</translation>
+        </message>
+        <message>
+            <source>Choice locked. Waiting for the other player.</source>
+            <translation>Đã chốt lựa chọn. Đang chờ người chơi còn lại.</translation>
+        </message>
+        <message>
+            <source>Same element. Choose again.</source>
+            <translation>Cùng nguyên tố. Hãy chọn lại.</translation>
+        </message>
+        <message>
+            <source>Your turn</source>
+            <translation>Lượt của bạn</translation>
+        </message>
+        <message>
+            <source>%1's turn</source>
+            <translation>Lượt của %1</translation>
+        </message>
+        <message>
+            <source>Waiting for the other player</source>
+            <translation>Đang chờ người chơi còn lại</translation>
+        </message>
+        <message>
+            <source>Water beats Fire. Fire beats Ice. Ice beats Water.</source>
+            <translation>Nước thắng lửa. Lửa thắng băng. Băng thắng nước.</translation>
+        </message>
+        <message>
+            <source>Empty</source>
+            <translation>Trống</translation>
+        </message>
+        <message>
+            <source>Ice freezes Water</source>
+            <translation>Băng đóng băng nước</translation>
+        </message>
+        <message>
+            <source>Fire melts Ice</source>
+            <translation>Lửa làm tan băng</translation>
+        </message>
+        <message>
+            <source>Water extinguishes Fire</source>
+            <translation>Nước dập tắt lửa</translation>
+        </message>
+        <message>
+            <source>Trap triggered</source>
+            <translation>Bẫy đã kích hoạt</translation>
+        </message>
+        <message>
+            <source>Core captured</source>
+            <translation>Lõi đã bị chiếm</translation>
+        </message>
+        <message>
+            <source>Find the Core. Watch for traps.</source>
+            <translation>Tìm Lõi. Cẩn thận với bẫy.</translation>
         </message>
     </context>
 </TS>

@@ -1436,12 +1436,12 @@
             <translation>پہلے کے پیغامات</translation>
         </message>
         <message>
-            <source>Attach image</source>
-            <translation>تصویر منسلک کریں۔</translation>
-        </message>
-        <message>
             <source>Chat message. Markdown supported. Shift+Enter for a new line.</source>
             <translation>چیٹ میسج۔ مارک ڈاؤن کی حمایت کی۔ نئی لائن کے لیے Shift+Enter۔</translation>
+        </message>
+        <message>
+            <source>Add</source>
+            <translation>شامل کریں۔</translation>
         </message>
     </context>
     <context>
@@ -2647,6 +2647,14 @@
             <source>Identity imported.</source>
             <translation>شناخت درآمد ہو گئی۔</translation>
         </message>
+        <message>
+            <source>Invalid game state.</source>
+            <translation>کھیل کی حالت درست نہیں۔</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>کھیل کا یہ عمل اب دستیاب نہیں۔</translation>
+        </message>
     </context>
     <context>
         <name>LocalLanguage</name>
@@ -3313,6 +3321,156 @@
         <message>
             <source>See you next time.</source>
             <translation>اگلی بار ملتے ہیں۔</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameCard</name>
+        <message>
+            <source>Invited by %1</source>
+            <translation>%1 کی طرف سے دعوت</translation>
+        </message>
+        <message>
+            <source>Ready</source>
+            <translation>تیار</translation>
+        </message>
+        <message>
+            <source>%1 wins!</source>
+            <translation>%1 جیت گیا!</translation>
+        </message>
+        <message>
+            <source>Game ended. A player disconnected.</source>
+            <translation>کھیل ختم ہوگیا۔ ایک کھلاڑی کا کنکشن ٹوٹ گیا۔</translation>
+        </message>
+        <message>
+            <source>Game ended. A player left.</source>
+            <translation>کھیل ختم ہوگیا۔ ایک کھلاڑی چلا گیا۔</translation>
+        </message>
+        <message>
+            <source>Waiting for a player</source>
+            <translation>کھلاڑی کا انتظار ہے</translation>
+        </message>
+        <message>
+            <source>Join</source>
+            <translation>شامل ہوں۔</translation>
+        </message>
+        <message>
+            <source>Leave</source>
+            <translation>چھوڑ دو</translation>
+        </message>
+        <message>
+            <source>Elements</source>
+            <translation>عناصر</translation>
+        </message>
+        <message>
+            <source>Game ended</source>
+            <translation>کھیل ختم ہوگیا</translation>
+        </message>
+        <message>
+            <source>In progress</source>
+            <translation>کھیل جاری ہے</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>کھولیں</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameWindow</name>
+        <message>
+            <source>Finish your current game first.</source>
+            <translation>پہلے اپنا موجودہ کھیل ختم کرو۔</translation>
+        </message>
+        <message>
+            <source>Fire</source>
+            <translation>آگ</translation>
+        </message>
+        <message>
+            <source>Water</source>
+            <translation>پانی</translation>
+        </message>
+        <message>
+            <source>Ice</source>
+            <translation>برف</translation>
+        </message>
+        <message>
+            <source>Core</source>
+            <translation>مرکز</translation>
+        </message>
+        <message>
+            <source>Trap</source>
+            <translation>جال</translation>
+        </message>
+        <message>
+            <source>Unknown</source>
+            <translation>نامعلوم</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>کھیل کا یہ عمل اب دستیاب نہیں۔</translation>
+        </message>
+        <message>
+            <source>Game unavailable</source>
+            <translation>کھیل دستیاب نہیں</translation>
+        </message>
+        <message>
+            <source>Ready in %1 s</source>
+            <translation>%1 سیکنڈ میں تیار</translation>
+        </message>
+        <message>
+            <source>Choose your Core and Trap.</source>
+            <translation>اپنا مرکز اور جال چنو۔</translation>
+        </message>
+        <message>
+            <source>Choice locked. Waiting for the other player.</source>
+            <translation>انتخاب پکا ہوگیا۔ دوسرے کھلاڑی کا انتظار ہے۔</translation>
+        </message>
+        <message>
+            <source>Same element. Choose again.</source>
+            <translation>ایک ہی عنصر ہے۔ دوبارہ چنو۔</translation>
+        </message>
+        <message>
+            <source>Your turn</source>
+            <translation>تمہاری باری</translation>
+        </message>
+        <message>
+            <source>%1's turn</source>
+            <translation>%1 کی باری</translation>
+        </message>
+        <message>
+            <source>Waiting for the other player</source>
+            <translation>دوسرے کھلاڑی کا انتظار ہے</translation>
+        </message>
+        <message>
+            <source>Water beats Fire. Fire beats Ice. Ice beats Water.</source>
+            <translation>پانی آگ کو ہراتا ہے۔ آگ برف کو ہراتی ہے۔ برف پانی کو ہراتی ہے۔</translation>
+        </message>
+        <message>
+            <source>Empty</source>
+            <translation>خالی</translation>
+        </message>
+        <message>
+            <source>Ice freezes Water</source>
+            <translation>برف پانی جما دیتی ہے</translation>
+        </message>
+        <message>
+            <source>Fire melts Ice</source>
+            <translation>آگ برف پگھلا دیتی ہے</translation>
+        </message>
+        <message>
+            <source>Water extinguishes Fire</source>
+            <translation>پانی آگ بجھا دیتا ہے</translation>
+        </message>
+        <message>
+            <source>Trap triggered</source>
+            <translation>جال چل گیا</translation>
+        </message>
+        <message>
+            <source>Core captured</source>
+            <translation>مرکز پر قبضہ ہوگیا</translation>
+        </message>
+        <message>
+            <source>Find the Core. Watch for traps.</source>
+            <translation>مرکز ڈھونڈو۔ جال سے بچو۔</translation>
         </message>
     </context>
 </TS>

@@ -51,6 +51,11 @@ Canvas {
             c.beginPath(); c.arc(12, 11, 8, Math.PI, Math.PI * 2); c.stroke()
             c.beginPath(); c.roundedRect(4, 11, 4, 9, 2, 2); c.stroke()
             c.beginPath(); c.roundedRect(16, 11, 4, 9, 2, 2); c.stroke()
+        } else if (symbol === "game") {
+            c.beginPath(); c.roundedRect(2, 6, 20, 13, 5, 5); c.stroke()
+            line([6, 12, 12, 12]); line([9, 9, 9, 15])
+            c.beginPath(); c.arc(17, 10, 1, 0, 7); c.fill()
+            c.beginPath(); c.arc(19, 14, 1, 0, 7); c.fill()
         } else if (symbol === "music") {
             line([9, 17, 9, 5, 20, 3, 20, 15])
             c.beginPath(); c.ellipse(3, 15, 6, 5); c.fill()

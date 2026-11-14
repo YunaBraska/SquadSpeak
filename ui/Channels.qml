@@ -8,6 +8,17 @@ import "AvatarAtlas.js" as Atlas
 PanelWindow {
     id: root
     property var language: audio.language
+    GameWindow { id: gameWindow; network: root.network }
+    property string openedGame: ""
+    readonly property var currentGame: current.currentGame || ({})
+    onCurrentGameChanged: {
+        const game = currentGame
+        if (game.id && game.id !== openedGame && ["waiting", "preparing", "playing", "duel"].includes(game.phase)) {
+            openedGame = game.id
+            gameWindow.openGame(game.hostId, game.id)
+        }
+    }
+    Component.onDestruction: gameWindow.hide()
     component DetailText: TextArea {
         readOnly: true; selectByMouse: true
         textFormat: TextEdit.PlainText; wrapMode: Text.WrapAnywhere
@@ -466,10 +477,17 @@ PanelWindow {
         for (const key of Object.keys(expandedHosts)) if (groups.has(key)) retained[key] = true
         expandedHosts = retained
         const ordered = []
+        const disconnected = function(group) {
+            return !group.owned && !group.channels.some(entry => entry.online || entry.hosting)
+                && !group.privateChats.some(entry => entry.online)
+        }
         const sortedGroups = Array.from(groups.values()).sort(function(a, b) {
-            return Number(!!b.owned) - Number(!!a.owned) || a.label.localeCompare(b.label) || a.key.localeCompare(b.key)
+            return Number(!!b.owned) - Number(!!a.owned) || Number(disconnected(a)) - Number(disconnected(b))
+                || a.label.localeCompare(b.label) || a.key.localeCompare(b.key)
         })
+        let disconnectedSectionShown = false
         for (const group of sortedGroups) {
+            const groupDisconnected = disconnected(group)
             const privateUnread = group.privateChats.some(function(entry) { return !!entry.unread })
             const groupUnread = privateUnread || group.channels.some(function(entry) { return !!entry.unread })
             const grouped = group.channels.length !== 1
@@ -498,9 +516,12 @@ PanelWindow {
                     entries.push(Object.assign({}, entry, {id: entry.id, private: true, hostId: privateHostId(entry)}))
             }
             // Retain the first row's heading while releasing collapsed contents.
-            for (const [index, entry] of (groupExpanded ? entries : entries.slice(0, 1)).entries())
+            for (const [index, entry] of (groupExpanded ? entries : entries.slice(0, 1)).entries()) {
                 ordered.push({channelData: entry, groupLabel: grouped && index === 0 ? group.label : "", groupId: group.key, groupOwner: group.label, grouped: grouped || !!entry.privateFolder || !!entry.private, ambiguous: !grouped && names.get(entry.name) > 1,
-                    groupProtocol: group.protocol, groupUnread: groupUnread, groupExpanded: groupExpanded})
+                    groupProtocol: group.protocol, groupUnread: groupUnread, groupExpanded: groupExpanded,
+                    groupDisconnected: groupDisconnected, disconnectedSection: groupDisconnected && !disconnectedSectionShown})
+                if (groupDisconnected) disconnectedSectionShown = true
+            }
         }
         for (let i = channelRows.count - 1; i >= 0; --i) {
             const row = channelRows.get(i).channelData
@@ -2026,6 +2047,8 @@ PanelWindow {
                             required property bool groupUnread
                             required property string groupProtocol
                             required property bool groupExpanded
+                            required property bool groupDisconnected
+                            required property bool disconnectedSection
                             required property bool grouped
                             required property string groupOwner
                             required property bool ambiguous
@@ -2037,6 +2060,16 @@ PanelWindow {
                                 target.forceActiveFocus()
                             }
                             Layout.fillWidth: true; spacing: 2
+                            RowLayout {
+                                visible: channelEntry.disconnectedSection
+                                Layout.fillWidth: true; Layout.topMargin: 12; Layout.bottomMargin: 4
+                                Layout.leftMargin: 8; Layout.rightMargin: 8; spacing: 8
+                                Label {
+                                    objectName: "disconnectedHosts_" + channelEntry.groupId
+                                    text: qsTr("Not connected"); color: Theme.muted; font.pixelSize: Theme.fontSize(11)
+                                }
+                                Rectangle { Layout.fillWidth: true; implicitHeight: 1; color: Theme.border }
+                            }
                             RowLayout {
                                 id: hostHeading
                                 visible: channelEntry.groupLabel.length > 0
@@ -2051,15 +2084,17 @@ PanelWindow {
                                     Accessible.role: Accessible.Button
                                     Accessible.checkable: true
                                     Accessible.checked: channelEntry.groupExpanded
+                                    Accessible.description: channelEntry.groupDisconnected ? qsTr("Not connected") : ""
                                     contentItem: Glyph { symbol: "down"; rotation: channelEntry.groupExpanded ? 0 : -90; color: Theme.muted }
                                     onClicked: root.toggleHost(channelEntry.groupId)
                                     Keys.onLeftPressed: if (channelEntry.groupExpanded) root.toggleHost(channelEntry.groupId)
                                     Keys.onRightPressed: if (!channelEntry.groupExpanded) root.toggleHost(channelEntry.groupId)
                                 }
-                                ProviderIcon { objectName: "hostProvider_" + channelEntry.groupId; provider: channelEntry.groupProtocol }
+                                ProviderIcon { objectName: "hostProvider_" + channelEntry.groupId; provider: channelEntry.groupProtocol; opacity: channelEntry.groupDisconnected ? 0.5 : 1 }
                                 DetailText {
                                     objectName: "hostGroup_" + channelEntry.groupId
                                     text: channelEntry.groupLabel; font.pixelSize: Theme.fontSize(14); font.weight: Font.DemiBold
+                                    color: channelEntry.groupDisconnected ? Theme.muted : Theme.text
                                     horizontalAlignment: Text.AlignLeft
                                     selectByMouse: true; wrapMode: TextEdit.WrapAnywhere
                                 }
@@ -2105,20 +2140,21 @@ PanelWindow {
                                     anchors.left: parent.left; anchors.right: parent.right; height: channelRow.height
                                     anchors.leftMargin: 8 + (channelEntry.grouped ? 50 : 0) + (channelRow.privateConversation ? 12 : (modelData.depth || 0) * 12); anchors.rightMargin: 2; spacing: 6
                                     Item { visible: !channelEntry.grouped; Layout.preferredWidth: 32; Layout.preferredHeight: 1 }
-                                    ProviderIcon { objectName: "channelProvider_" + modelData.id; visible: !channelEntry.grouped; provider: channelEntry.groupProtocol }
+                                    ProviderIcon { objectName: "channelProvider_" + modelData.id; visible: !channelEntry.grouped; provider: channelEntry.groupProtocol; opacity: channelEntry.groupDisconnected ? 0.5 : 1 }
                                     Glyph { visible: channelEntry.grouped; symbol: channelRow.privateFolder ? "down" : channelRow.privateConversation ? "chat" : "channel"; rotation: channelRow.privateFolder && !root.privateFolderIsExpanded(modelData.hostId) ? -90 : 0; color: Theme.muted }
                                     ColumnLayout {
                                         Layout.fillWidth: true; Layout.minimumWidth: 0; spacing: 0
-                                        Label { objectName: "channelName_" + modelData.id; text: root.channelLabel(modelData); color: channelRow.active ? Theme.accent : !modelData.online && !channelRow.privateFolder ? Theme.muted : Theme.text; textFormat: Text.PlainText; font.pixelSize: Theme.fontSize(14); font.weight: channelEntry.grouped ? Font.Normal : Font.DemiBold; horizontalAlignment: Text.AlignLeft; Layout.fillWidth: true; elide: Text.ElideRight }
+                                        Label { objectName: "channelName_" + modelData.id; text: root.channelLabel(modelData); color: channelRow.active ? Theme.accent : channelEntry.groupDisconnected ? Theme.muted : Theme.text; textFormat: Text.PlainText; font.pixelSize: Theme.fontSize(14); font.weight: channelEntry.grouped ? Font.Normal : Font.DemiBold; horizontalAlignment: Text.AlignLeft; Layout.fillWidth: true; elide: Text.ElideRight }
                                         Label { objectName: "channelOwner_" + modelData.id; visible: channelEntry.ambiguous; text: channelEntry.groupOwner; textFormat: Text.PlainText; color: Theme.muted; font.pixelSize: Theme.fontSize(11); Layout.fillWidth: true; elide: Text.ElideRight }
                                     }
                                     Glyph { objectName: "ownedChannel_" + modelData.id; visible: channelRow.owned; symbol: "home"; description: qsTr("You host"); color: Theme.accent }
                                     UnreadDot { objectName: "unreadChannel_" + modelData.id; visible: !!modelData.unread || (!channelEntry.grouped && channelEntry.groupUnread) }
                                     Label { visible: channelRow.privateConversation; text: modelData.peerOnline ? qsTr("Online") : qsTr("Offline"); color: Theme.muted; font.pixelSize: Theme.fontSize(11) }
                                     Glyph { objectName: "joinedChannel_" + modelData.id; visible: channelRow.active; symbol: "headphones"; description: qsTr("Connected to voice"); color: Theme.accent }
+                                    Glyph { objectName: "channelGame_" + modelData.id; visible: !!modelData.game; symbol: "game"; description: qsTranslate("GameCard", "Elements"); color: Theme.accent }
                                     Glyph { objectName: "channelMusic_" + modelData.id; visible: !channelRow.privateConversation && !!modelData.music; symbol: "music"; description: qsTr("Radio"); color: Theme.accent }
                                     Label {
-                                        visible: !channelRow.privateConversation && !channelRow.privateFolder && !modelData.online
+                                        visible: !channelRow.owned && !channelRow.privateConversation && !channelRow.privateFolder && !modelData.online
                                         text: root.accessLabel(modelData.access)
                                         font.pixelSize: Theme.fontSize(11); color: Theme.muted
                                         Layout.maximumWidth: 75; elide: Text.ElideRight
@@ -2136,7 +2172,7 @@ PanelWindow {
                                 activeFocusOnTab: true
                                 Accessible.role: Accessible.Button
                                 Accessible.name: modelData.name + (channelRow.owned ? ", " + qsTr("You host") : "") + (channelRow.active ? ", " + qsTr("Connected to voice") : "")
-                                Accessible.description: channelEntry.groupOwner + "\n" + root.endpoint(modelData)
+                                Accessible.description: (channelEntry.groupDisconnected ? qsTr("Not connected") + "\n" : "") + channelEntry.groupOwner + "\n" + root.endpoint(modelData)
                                 TextToolTip { objectName: "channelTooltip_" + modelData.id; parent: channelRow; text: channelEntry.groupOwner + "\n" + root.endpoint(modelData); visible: channelHover.containsMouse && !channelRow.privateFolder }
                                 Accessible.onPressAction: channelRow.privateFolder ? root.togglePrivateFolder(modelData.hostId) : root.openHostChat(modelData.id)
                                 Keys.onReturnPressed: channelRow.privateFolder ? root.togglePrivateFolder(modelData.hostId) : root.openHostChat(modelData.id)
@@ -2236,6 +2272,7 @@ PanelWindow {
                         animationTime: root.avatarTime
                         memberLevel: function(id) { return root.inspectedHost === root.activeHost ? root.memberLevel(id) : 0 }
                         emptyContent: root.viewingVoice && !root.inspectedChannel.private ? voiceRoster : null
+                        onGameRequested: (host, id) => gameWindow.openGame(host, id)
                         onMemberRequested: (member, contextual) => root.memberOptions(member, root.inspectedHost, contextual)
                         active: root.visible && conversation.visible
                         readable: active && root.active && !settings.visible
@@ -2290,8 +2327,8 @@ PanelWindow {
                     }
                     Label {
                         anchors.verticalCenter: parent.verticalCenter
-                        visible: activeSpeakers.count === 0
-                        text: root.outputMuted ? qsTranslate("VoiceAvatar", "Deafened") : qsTranslate("VoiceAvatar", "Listening")
+                        visible: root.outputMuted && activeSpeakers.count === 0
+                        text: qsTranslate("VoiceAvatar", "Deafened")
                         color: Theme.muted; font.pixelSize: Theme.fontSize(12)
                     }
                 }

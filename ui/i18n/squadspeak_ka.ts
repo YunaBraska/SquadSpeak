@@ -1436,12 +1436,12 @@
             <translation>ადრეული შეტყობინებები</translation>
         </message>
         <message>
-            <source>Attach image</source>
-            <translation>სურათის მიმაგრება</translation>
-        </message>
-        <message>
             <source>Chat message. Markdown supported. Shift+Enter for a new line.</source>
             <translation>ჩატის შეტყობინება. Markdown-ის მხარდაჭერა. Shift+Enter ახალი ხაზისთვის.</translation>
+        </message>
+        <message>
+            <source>Add</source>
+            <translation>დამატება</translation>
         </message>
     </context>
     <context>
@@ -2647,6 +2647,14 @@
             <source>Identity imported.</source>
             <translation>იდენტობა იმპორტირებულია.</translation>
         </message>
+        <message>
+            <source>Invalid game state.</source>
+            <translation>თამაშის არასწორი მდგომარეობა.</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>თამაშის ეს მოქმედება აღარ არის ხელმისაწვდომი.</translation>
+        </message>
     </context>
     <context>
         <name>LocalLanguage</name>
@@ -3313,6 +3321,156 @@
         <message>
             <source>See you next time.</source>
             <translation>შემდეგ შეხვედრამდე.</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameCard</name>
+        <message>
+            <source>Invited by %1</source>
+            <translation>მომწვევი: %1</translation>
+        </message>
+        <message>
+            <source>Ready</source>
+            <translation>მზადაა</translation>
+        </message>
+        <message>
+            <source>%1 wins!</source>
+            <translation>%1 იმარჯვებს!</translation>
+        </message>
+        <message>
+            <source>Game ended. A player disconnected.</source>
+            <translation>თამაში დასრულდა. მოთამაშეს კავშირი გაუწყდა.</translation>
+        </message>
+        <message>
+            <source>Game ended. A player left.</source>
+            <translation>თამაში დასრულდა. მოთამაშე გავიდა.</translation>
+        </message>
+        <message>
+            <source>Waiting for a player</source>
+            <translation>მოთამაშის მოლოდინი</translation>
+        </message>
+        <message>
+            <source>Join</source>
+            <translation>შეუერთდი</translation>
+        </message>
+        <message>
+            <source>Leave</source>
+            <translation>წადი</translation>
+        </message>
+        <message>
+            <source>Elements</source>
+            <translation>სტიქიები</translation>
+        </message>
+        <message>
+            <source>Game ended</source>
+            <translation>თამაში დასრულდა</translation>
+        </message>
+        <message>
+            <source>In progress</source>
+            <translation>მიმდინარეობს</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>გახსნა</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameWindow</name>
+        <message>
+            <source>Finish your current game first.</source>
+            <translation>ჯერ მიმდინარე თამაში დაასრულე.</translation>
+        </message>
+        <message>
+            <source>Fire</source>
+            <translation>ცეცხლი</translation>
+        </message>
+        <message>
+            <source>Water</source>
+            <translation>წყალი</translation>
+        </message>
+        <message>
+            <source>Ice</source>
+            <translation>ყინული</translation>
+        </message>
+        <message>
+            <source>Core</source>
+            <translation>ბირთვი</translation>
+        </message>
+        <message>
+            <source>Trap</source>
+            <translation>ხაფანგი</translation>
+        </message>
+        <message>
+            <source>Unknown</source>
+            <translation>უცნობი</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>თამაშის ეს მოქმედება აღარ არის ხელმისაწვდომი.</translation>
+        </message>
+        <message>
+            <source>Game unavailable</source>
+            <translation>თამაში მიუწვდომელია</translation>
+        </message>
+        <message>
+            <source>Ready in %1 s</source>
+            <translation>მზად იქნება %1 წამში</translation>
+        </message>
+        <message>
+            <source>Choose your Core and Trap.</source>
+            <translation>აირჩიე შენი ბირთვი და ხაფანგი.</translation>
+        </message>
+        <message>
+            <source>Choice locked. Waiting for the other player.</source>
+            <translation>არჩევანი დადასტურებულია. მეორე მოთამაშის მოლოდინი.</translation>
+        </message>
+        <message>
+            <source>Same element. Choose again.</source>
+            <translation>ერთნაირი სტიქია. აირჩიე თავიდან.</translation>
+        </message>
+        <message>
+            <source>Your turn</source>
+            <translation>შენი სვლაა</translation>
+        </message>
+        <message>
+            <source>%1's turn</source>
+            <translation>%1-ის სვლაა</translation>
+        </message>
+        <message>
+            <source>Waiting for the other player</source>
+            <translation>მეორე მოთამაშის მოლოდინი</translation>
+        </message>
+        <message>
+            <source>Water beats Fire. Fire beats Ice. Ice beats Water.</source>
+            <translation>წყალი ამარცხებს ცეცხლს. ცეცხლი ამარცხებს ყინულს. ყინული ამარცხებს წყალს.</translation>
+        </message>
+        <message>
+            <source>Empty</source>
+            <translation>ცარიელი</translation>
+        </message>
+        <message>
+            <source>Ice freezes Water</source>
+            <translation>ყინული ყინავს წყალს</translation>
+        </message>
+        <message>
+            <source>Fire melts Ice</source>
+            <translation>ცეცხლი ადნობს ყინულს</translation>
+        </message>
+        <message>
+            <source>Water extinguishes Fire</source>
+            <translation>წყალი აქრობს ცეცხლს</translation>
+        </message>
+        <message>
+            <source>Trap triggered</source>
+            <translation>ხაფანგი გააქტიურდა</translation>
+        </message>
+        <message>
+            <source>Core captured</source>
+            <translation>ბირთვი აღებულია</translation>
+        </message>
+        <message>
+            <source>Find the Core. Watch for traps.</source>
+            <translation>იპოვე ბირთვი. უფრთხილდი ხაფანგებს.</translation>
         </message>
     </context>
 </TS>

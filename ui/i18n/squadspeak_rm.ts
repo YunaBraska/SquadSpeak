@@ -1436,12 +1436,12 @@
             <translation>Anteriuras novitads</translation>
         </message>
         <message>
-            <source>Attach image</source>
-            <translation>Agiuntar il maletg</translation>
-        </message>
-        <message>
             <source>Chat message. Markdown supported. Shift+Enter for a new line.</source>
             <translation>l'infurmaziun da chat. Markdown vegn sustegnì. Shift+Enter per ina nova lingia.</translation>
+        </message>
+        <message>
+            <source>Add</source>
+            <translation>Agiuntar</translation>
         </message>
     </context>
     <context>
@@ -2647,6 +2647,14 @@
             <source>Identity imported.</source>
             <translation>Identitad importada.</translation>
         </message>
+        <message>
+            <source>Invalid game state.</source>
+            <translation>Stadi dal gieu nunvalid.</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Questa acziun da gieu n’è betg pli disponibla.</translation>
+        </message>
     </context>
     <context>
         <name>LocalLanguage</name>
@@ -3313,6 +3321,156 @@
         <message>
             <source>See you next time.</source>
             <translation>A la proxima.</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameCard</name>
+        <message>
+            <source>Invited by %1</source>
+            <translation>Envidà da %1</translation>
+        </message>
+        <message>
+            <source>Ready</source>
+            <translation>Pront</translation>
+        </message>
+        <message>
+            <source>%1 wins!</source>
+            <translation>%1 gudogna!</translation>
+        </message>
+        <message>
+            <source>Game ended. A player disconnected.</source>
+            <translation>Il gieu è a fin. In giugader ha pers la connexiun.</translation>
+        </message>
+        <message>
+            <source>Game ended. A player left.</source>
+            <translation>Il gieu è a fin. In giugader è sortì.</translation>
+        </message>
+        <message>
+            <source>Waiting for a player</source>
+            <translation>Spetgar in giugader</translation>
+        </message>
+        <message>
+            <source>Join</source>
+            <translation>Entrar</translation>
+        </message>
+        <message>
+            <source>Leave</source>
+            <translation>Bandunar</translation>
+        </message>
+        <message>
+            <source>Elements</source>
+            <translation>Elements</translation>
+        </message>
+        <message>
+            <source>Game ended</source>
+            <translation>Il gieu è a fin</translation>
+        </message>
+        <message>
+            <source>In progress</source>
+            <translation>En curs</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Avrir</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameWindow</name>
+        <message>
+            <source>Finish your current game first.</source>
+            <translation>Terminescha l’emprim tes gieu actual.</translation>
+        </message>
+        <message>
+            <source>Fire</source>
+            <translation>Fieu</translation>
+        </message>
+        <message>
+            <source>Water</source>
+            <translation>Aua</translation>
+        </message>
+        <message>
+            <source>Ice</source>
+            <translation>Glatsch</translation>
+        </message>
+        <message>
+            <source>Core</source>
+            <translation>Minz</translation>
+        </message>
+        <message>
+            <source>Trap</source>
+            <translation>Trapla</translation>
+        </message>
+        <message>
+            <source>Unknown</source>
+            <translation>Nunenconuschent</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Questa acziun da gieu n’è betg pli disponibla.</translation>
+        </message>
+        <message>
+            <source>Game unavailable</source>
+            <translation>Gieu betg disponibel</translation>
+        </message>
+        <message>
+            <source>Ready in %1 s</source>
+            <translation>Pront en %1 s</translation>
+        </message>
+        <message>
+            <source>Choose your Core and Trap.</source>
+            <translation>Tscherna tes Minz e tia Trapla.</translation>
+        </message>
+        <message>
+            <source>Choice locked. Waiting for the other player.</source>
+            <translation>Tscherna confermada. Spetgar l’auter giugader.</translation>
+        </message>
+        <message>
+            <source>Same element. Choose again.</source>
+            <translation>Il medem element. Tscherna anc ina giada.</translation>
+        </message>
+        <message>
+            <source>Your turn</source>
+            <translation>Tia roda</translation>
+        </message>
+        <message>
+            <source>%1's turn</source>
+            <translation>Roda da %1</translation>
+        </message>
+        <message>
+            <source>Waiting for the other player</source>
+            <translation>Spetgar l’auter giugader</translation>
+        </message>
+        <message>
+            <source>Water beats Fire. Fire beats Ice. Ice beats Water.</source>
+            <translation>L’aua batta il fieu. Il fieu batta il glatsch. Il glatsch batta l’aua.</translation>
+        </message>
+        <message>
+            <source>Empty</source>
+            <translation>Vid</translation>
+        </message>
+        <message>
+            <source>Ice freezes Water</source>
+            <translation>Il glatsch schelenta l’aua</translation>
+        </message>
+        <message>
+            <source>Fire melts Ice</source>
+            <translation>Il fieu luenta il glatsch</translation>
+        </message>
+        <message>
+            <source>Water extinguishes Fire</source>
+            <translation>L’aua stizza il fieu</translation>
+        </message>
+        <message>
+            <source>Trap triggered</source>
+            <translation>Trapla activada</translation>
+        </message>
+        <message>
+            <source>Core captured</source>
+            <translation>Minz conquistà</translation>
+        </message>
+        <message>
+            <source>Find the Core. Watch for traps.</source>
+            <translation>Chatta il Minz. Fa adatg da traplas.</translation>
         </message>
     </context>
 </TS>

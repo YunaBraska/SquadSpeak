@@ -1436,12 +1436,12 @@
             <translation>Aikaisemmat viestit</translation>
         </message>
         <message>
-            <source>Attach image</source>
-            <translation>Lisää kuva</translation>
-        </message>
-        <message>
             <source>Chat message. Markdown supported. Shift+Enter for a new line.</source>
             <translation>Viesti. Markdown-muotoilu tuettu. Shift+Enter uuden rivin luomiseksi.</translation>
+        </message>
+        <message>
+            <source>Add</source>
+            <translation>Lisää</translation>
         </message>
     </context>
     <context>
@@ -2647,6 +2647,14 @@
             <source>Identity imported.</source>
             <translation>Identiteetti tuotu.</translation>
         </message>
+        <message>
+            <source>Invalid game state.</source>
+            <translation>Virheellinen pelitila.</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Tämä pelitoiminto ei ole enää käytettävissä.</translation>
+        </message>
     </context>
     <context>
         <name>LocalLanguage</name>
@@ -3313,6 +3321,156 @@
         <message>
             <source>See you next time.</source>
             <translation>Ensi kertaan.</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameCard</name>
+        <message>
+            <source>Invited by %1</source>
+            <translation>Kutsuja: %1</translation>
+        </message>
+        <message>
+            <source>Ready</source>
+            <translation>Valmis</translation>
+        </message>
+        <message>
+            <source>%1 wins!</source>
+            <translation>%1 voittaa!</translation>
+        </message>
+        <message>
+            <source>Game ended. A player disconnected.</source>
+            <translation>Peli päättyi. Pelaajan yhteys katkesi.</translation>
+        </message>
+        <message>
+            <source>Game ended. A player left.</source>
+            <translation>Peli päättyi. Pelaaja poistui.</translation>
+        </message>
+        <message>
+            <source>Waiting for a player</source>
+            <translation>Odotetaan pelaajaa</translation>
+        </message>
+        <message>
+            <source>Join</source>
+            <translation>Liity</translation>
+        </message>
+        <message>
+            <source>Leave</source>
+            <translation>Poistu</translation>
+        </message>
+        <message>
+            <source>Elements</source>
+            <translation>Elementit</translation>
+        </message>
+        <message>
+            <source>Game ended</source>
+            <translation>Peli päättyi</translation>
+        </message>
+        <message>
+            <source>In progress</source>
+            <translation>Käynnissä</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Avaa</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameWindow</name>
+        <message>
+            <source>Finish your current game first.</source>
+            <translation>Pelaa nykyinen pelisi ensin loppuun.</translation>
+        </message>
+        <message>
+            <source>Fire</source>
+            <translation>Tuli</translation>
+        </message>
+        <message>
+            <source>Water</source>
+            <translation>Vesi</translation>
+        </message>
+        <message>
+            <source>Ice</source>
+            <translation>Jää</translation>
+        </message>
+        <message>
+            <source>Core</source>
+            <translation>Ydin</translation>
+        </message>
+        <message>
+            <source>Trap</source>
+            <translation>Ansa</translation>
+        </message>
+        <message>
+            <source>Unknown</source>
+            <translation>Tuntematon</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Tämä pelitoiminto ei ole enää käytettävissä.</translation>
+        </message>
+        <message>
+            <source>Game unavailable</source>
+            <translation>Peli ei ole saatavilla</translation>
+        </message>
+        <message>
+            <source>Ready in %1 s</source>
+            <translation>Valmis %1 s kuluttua</translation>
+        </message>
+        <message>
+            <source>Choose your Core and Trap.</source>
+            <translation>Valitse Ytimesi ja Ansasi.</translation>
+        </message>
+        <message>
+            <source>Choice locked. Waiting for the other player.</source>
+            <translation>Valinta lukittu. Odotetaan toista pelaajaa.</translation>
+        </message>
+        <message>
+            <source>Same element. Choose again.</source>
+            <translation>Sama elementti. Valitse uudelleen.</translation>
+        </message>
+        <message>
+            <source>Your turn</source>
+            <translation>Sinun vuorosi</translation>
+        </message>
+        <message>
+            <source>%1's turn</source>
+            <translation>Pelaajan %1 vuoro</translation>
+        </message>
+        <message>
+            <source>Waiting for the other player</source>
+            <translation>Odotetaan toista pelaajaa</translation>
+        </message>
+        <message>
+            <source>Water beats Fire. Fire beats Ice. Ice beats Water.</source>
+            <translation>Vesi voittaa tulen. Tuli voittaa jään. Jää voittaa veden.</translation>
+        </message>
+        <message>
+            <source>Empty</source>
+            <translation>Tyhjä</translation>
+        </message>
+        <message>
+            <source>Ice freezes Water</source>
+            <translation>Jää jäädyttää veden</translation>
+        </message>
+        <message>
+            <source>Fire melts Ice</source>
+            <translation>Tuli sulattaa jään</translation>
+        </message>
+        <message>
+            <source>Water extinguishes Fire</source>
+            <translation>Vesi sammuttaa tulen</translation>
+        </message>
+        <message>
+            <source>Trap triggered</source>
+            <translation>Ansa laukesi</translation>
+        </message>
+        <message>
+            <source>Core captured</source>
+            <translation>Ydin vallattu</translation>
+        </message>
+        <message>
+            <source>Find the Core. Watch for traps.</source>
+            <translation>Etsi Ydin. Varo ansoja.</translation>
         </message>
     </context>
 </TS>

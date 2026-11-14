@@ -1436,12 +1436,12 @@
             <translation>Ankstesni pranešimai</translation>
         </message>
         <message>
-            <source>Attach image</source>
-            <translation>pridėkite vaizdą</translation>
-        </message>
-        <message>
             <source>Chat message. Markdown supported. Shift+Enter for a new line.</source>
             <translation>pokalbio žinutė. Palaikomas žymėjimas. "Shift" + "Enter" - naujai eilutei.</translation>
+        </message>
+        <message>
+            <source>Add</source>
+            <translation>Pridėti</translation>
         </message>
     </context>
     <context>
@@ -2647,6 +2647,14 @@
             <source>Identity imported.</source>
             <translation>Tapatybė importuota.</translation>
         </message>
+        <message>
+            <source>Invalid game state.</source>
+            <translation>Netinkama žaidimo būsena.</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Šis žaidimo veiksmas nebepasiekiamas.</translation>
+        </message>
     </context>
     <context>
         <name>LocalLanguage</name>
@@ -3313,6 +3321,156 @@
         <message>
             <source>See you next time.</source>
             <translation>Iki kito karto.</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameCard</name>
+        <message>
+            <source>Invited by %1</source>
+            <translation>Pakvietė %1</translation>
+        </message>
+        <message>
+            <source>Ready</source>
+            <translation>Pasiruošęs</translation>
+        </message>
+        <message>
+            <source>%1 wins!</source>
+            <translation>%1 laimi!</translation>
+        </message>
+        <message>
+            <source>Game ended. A player disconnected.</source>
+            <translation>Žaidimas baigėsi. Žaidėjas prarado ryšį.</translation>
+        </message>
+        <message>
+            <source>Game ended. A player left.</source>
+            <translation>Žaidimas baigėsi. Žaidėjas išėjo.</translation>
+        </message>
+        <message>
+            <source>Waiting for a player</source>
+            <translation>Laukiama žaidėjo</translation>
+        </message>
+        <message>
+            <source>Join</source>
+            <translation>Prisijunkite</translation>
+        </message>
+        <message>
+            <source>Leave</source>
+            <translation>Išeik</translation>
+        </message>
+        <message>
+            <source>Elements</source>
+            <translation>Elementai</translation>
+        </message>
+        <message>
+            <source>Game ended</source>
+            <translation>Žaidimas baigėsi</translation>
+        </message>
+        <message>
+            <source>In progress</source>
+            <translation>Vyksta</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Atidaryti</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameWindow</name>
+        <message>
+            <source>Finish your current game first.</source>
+            <translation>Pirmiausia užbaik dabartinį žaidimą.</translation>
+        </message>
+        <message>
+            <source>Fire</source>
+            <translation>Ugnis</translation>
+        </message>
+        <message>
+            <source>Water</source>
+            <translation>Vanduo</translation>
+        </message>
+        <message>
+            <source>Ice</source>
+            <translation>Ledas</translation>
+        </message>
+        <message>
+            <source>Core</source>
+            <translation>Branduolys</translation>
+        </message>
+        <message>
+            <source>Trap</source>
+            <translation>Spąstai</translation>
+        </message>
+        <message>
+            <source>Unknown</source>
+            <translation>Nežinoma</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Šis žaidimo veiksmas nebepasiekiamas.</translation>
+        </message>
+        <message>
+            <source>Game unavailable</source>
+            <translation>Žaidimas nepasiekiamas</translation>
+        </message>
+        <message>
+            <source>Ready in %1 s</source>
+            <translation>Pasiruošęs po %1 s</translation>
+        </message>
+        <message>
+            <source>Choose your Core and Trap.</source>
+            <translation>Pasirink savo Branduolį ir Spąstus.</translation>
+        </message>
+        <message>
+            <source>Choice locked. Waiting for the other player.</source>
+            <translation>Pasirinkimas patvirtintas. Laukiama kito žaidėjo.</translation>
+        </message>
+        <message>
+            <source>Same element. Choose again.</source>
+            <translation>Tas pats elementas. Pasirink dar kartą.</translation>
+        </message>
+        <message>
+            <source>Your turn</source>
+            <translation>Tavo ėjimas</translation>
+        </message>
+        <message>
+            <source>%1's turn</source>
+            <translation>Žaidėjo %1 ėjimas</translation>
+        </message>
+        <message>
+            <source>Waiting for the other player</source>
+            <translation>Laukiama kito žaidėjo</translation>
+        </message>
+        <message>
+            <source>Water beats Fire. Fire beats Ice. Ice beats Water.</source>
+            <translation>Vanduo nugali ugnį. Ugnis nugali ledą. Ledas nugali vandenį.</translation>
+        </message>
+        <message>
+            <source>Empty</source>
+            <translation>Tuščia</translation>
+        </message>
+        <message>
+            <source>Ice freezes Water</source>
+            <translation>Ledas užšaldo vandenį</translation>
+        </message>
+        <message>
+            <source>Fire melts Ice</source>
+            <translation>Ugnis ištirpdo ledą</translation>
+        </message>
+        <message>
+            <source>Water extinguishes Fire</source>
+            <translation>Vanduo užgesina ugnį</translation>
+        </message>
+        <message>
+            <source>Trap triggered</source>
+            <translation>Spąstai suveikė</translation>
+        </message>
+        <message>
+            <source>Core captured</source>
+            <translation>Branduolys užimtas</translation>
+        </message>
+        <message>
+            <source>Find the Core. Watch for traps.</source>
+            <translation>Surask Branduolį. Saugokis spąstų.</translation>
         </message>
     </context>
 </TS>

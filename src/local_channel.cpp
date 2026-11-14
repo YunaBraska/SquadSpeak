@@ -36,7 +36,7 @@ constexpr std::array<int, 6> audioBitrates{128, 64, 32, 20, 12, 8};
 constexpr qint64 maximumQueuedAudio = 128 * 1024;
 const QSet<QString> protocolCapabilities{
     QStringLiteral("udp-audio"), QStringLiteral("udp-screen"), QStringLiteral("adaptive-audio"), QStringLiteral("audio-64"), QStringLiteral("audio-stereo"), QStringLiteral("screen-share"), QStringLiteral("screen-audio"),
-    QStringLiteral("remote-control"), QStringLiteral("extended-retention"), QStringLiteral("private-chat")};
+    QStringLiteral("remote-control"), QStringLiteral("extended-retention"), QStringLiteral("private-chat"), QStringLiteral("channel-games")};
 const QSet<QString> knownMessageTypes{
     QStringLiteral("media"), QStringLiteral("audio"), QStringLiteral("audioAck"), QStringLiteral("audioProbe"), QStringLiteral("audioQuality"),
     QStringLiteral("privateChat"), QStringLiteral("chat"), QStringLiteral("chatKey"), QStringLiteral("control"), QStringLiteral("controlAck"),
@@ -205,6 +205,11 @@ LocalChannel::LocalChannel(VoiceSession& session, QString storageFile, std::opti
                            std::function<qint64()> clock, QObject* parent, LocalChannel* service, QString channelId)
     : QObject(parent), service_(service), channelId_(std::move(channelId)), session_(session), storageFile_(std::move(storageFile)),
       identity_(std::move(identity)), clock_(std::move(clock)) {
+    gameTimer_.setSingleShot(true);
+    gameTimer_.setTimerType(Qt::PreciseTimer);
+    connect(&gameTimer_, &QTimer::timeout, this, [this] {
+        if (hostGame_.advance(controlClock_.elapsed())) publishGame();
+    });
     if (!ready()) status_ = tr("Device identity is not ready yet.");
     bool migrateName = !service_ && !session_.legacyChannelName().isEmpty();
     if (migrateName) channelName_ = session_.legacyChannelName();
@@ -1450,12 +1455,15 @@ bool LocalChannel::listen(const QHostAddress& address, quint16 port) {
 }
 
 bool LocalChannel::stopHost() {
+    gameTimer_.stop();
+    if (hostGame_.end("disconnected")) publishGame();
     pendingDepartureReasons_ = {};
     for (const auto& child : owned_) child->stopHost();
     setScreenSharing(false);
     hosting_ = false;
     const auto sockets = peers_.keys();
     for (auto* socket : sockets) if (!peers_.value(socket).controller) socket->abort();
+    hostGame_ = ChannelGame{};
     history_.reset(); hostChatKey_.fill(0); hostChatKey_.clear(); hostChatEpoch_.clear();
     discovery_.hosts.remove(channelId());
     if (service_) { service_->discovery_.hosts.remove(channelId()); emit service_->hostsChanged(); }
@@ -1565,6 +1573,8 @@ QVariantList LocalChannel::savedChannels() const {
         entry.insert("id", it.key());
         entry.insert("online", c && c->accepted);
         entry.insert("screen", c && c->accepted && c->screenAvailable);
+        const auto gamePhase = c && !c->games.isEmpty() ? c->games.last().toObject().value("phase").toString() : QString{};
+        entry.insert("game", c && c->accepted && (gamePhase == "waiting" || gamePhase == "preparing" || gamePhase == "playing" || gamePhase == "duel"));
         const auto* owner = ownChannel(it.key());
         entry.insert("lifetimeDays", owner ? owner->messageLifetimeDays() : c && c->accepted ? c->messageLifetimeDays : 0);
         entry.insert("access", c ? c->access : QStringLiteral("saved"));
@@ -2251,6 +2261,7 @@ void LocalChannel::applyDecision(const QString& id, bool allow) {
 void LocalChannel::endMembership(const Peer& peer) {
     if (peer.pending) emit requestsChanged();
     if (peer.joined && !peer.controller) {
+        if (hostGame_.contains(peer.id) && hostGame_.end("disconnected")) publishGame();
         closeViewers(peer.id);
         publishPrivateContacts(peer.id);
         rotateChatKey(); broadcastRoster();
@@ -2287,7 +2298,10 @@ bool LocalChannel::disconnectMember(const QString& id, const QString& reason) {
             {"retryMs", std::max<qint64>(0, attempts_.value(id).next - clock_())}});
         finishPeer(socket);
     }
-    if (member) { rotateChatKey(); publishPrivateContacts(id); }
+    if (member) {
+        if (hostGame_.contains(id) && hostGame_.end("disconnected")) publishGame();
+        rotateChatKey(); publishPrivateContacts(id);
+    }
     if (member && !voiceName.isEmpty() && (reason == "kicked" || reason == "blocked"))
         pendingDepartureReasons_.insert(id, reason == "kicked" ? QStringLiteral("kicked") : QStringLiteral("banned"));
     broadcastRoster(); emit requestsChanged();
@@ -2706,6 +2720,7 @@ void LocalChannel::connectClient(Client& c) {
 }
 
 void LocalChannel::closeClient(Client& c) {
+    if (pendingGameHost_ == c.id) { pendingGameHost_.clear(); pendingGameRequest_.clear(); }
     if (c.accepted && c.voice && c.id == joinedHostId_) {
         addNotice(c, "left", ownId(), session_.userName());
         emit channelEvent("leave", ChatContent::membershipText("left", session_.userName()));
@@ -2723,6 +2738,17 @@ void LocalChannel::closeClient(Client& c) {
         socket->disconnect(this); socket->abort(); socket->deleteLater();
     }
     if (c.accepted) c.access = "offline";
+    if (!c.games.isEmpty()) {
+        auto state = c.games.last().toObject();
+        const auto phase = state.value("phase").toString();
+        if (phase == "waiting" || phase == "preparing" || phase == "playing" || phase == "duel") {
+            state.insert("phase", "cancelled"); state.insert("reason", "disconnected"); state.insert("choice", "");
+            state.insert("readyMs", 0); state.insert("turn", ""); state.insert("duel", QJsonObject{});
+            auto players = state.value("players").toArray();
+            for (qsizetype n = 0; n < players.size(); ++n) { auto player = players[n].toObject(); player.insert("chosen", false); players[n] = player; }
+            state.insert("players", players); c.games[c.games.size() - 1] = state;
+        }
+    }
     c.accepted = false; c.rosterSeen = false; c.members.clear(); c.onlineIds.clear(); c.presenceKnown = false; c.buffer.clear();
     c.adaptiveAudio = false; c.audioBitrate = 32;
     c.historyRequest.clear(); c.messages = {}; c.hasOlder = false; c.hasNewer = false;

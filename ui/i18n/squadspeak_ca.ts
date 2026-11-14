@@ -1436,12 +1436,12 @@
             <translation>Missatges anteriors</translation>
         </message>
         <message>
-            <source>Attach image</source>
-            <translation>Adjuntar imatge</translation>
-        </message>
-        <message>
             <source>Chat message. Markdown supported. Shift+Enter for a new line.</source>
             <translation>missatge de xat. Admet rebaixa. Maj+Intro per a una línia nova.</translation>
+        </message>
+        <message>
+            <source>Add</source>
+            <translation>Afegeix</translation>
         </message>
     </context>
     <context>
@@ -2647,6 +2647,14 @@
             <source>Identity imported.</source>
             <translation>S’ha importat la identitat.</translation>
         </message>
+        <message>
+            <source>Invalid game state.</source>
+            <translation>Estat de joc no vàlid.</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Aquesta acció de joc ja no està disponible.</translation>
+        </message>
     </context>
     <context>
         <name>LocalLanguage</name>
@@ -3313,6 +3321,156 @@
         <message>
             <source>See you next time.</source>
             <translation>Fins a la propera.</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameCard</name>
+        <message>
+            <source>Invited by %1</source>
+            <translation>Invitació de %1</translation>
+        </message>
+        <message>
+            <source>Ready</source>
+            <translation>A punt</translation>
+        </message>
+        <message>
+            <source>%1 wins!</source>
+            <translation>%1 guanya!</translation>
+        </message>
+        <message>
+            <source>Game ended. A player disconnected.</source>
+            <translation>La partida ha acabat. Un jugador ha perdut la connexió.</translation>
+        </message>
+        <message>
+            <source>Game ended. A player left.</source>
+            <translation>La partida ha acabat. Un jugador ha marxat.</translation>
+        </message>
+        <message>
+            <source>Waiting for a player</source>
+            <translation>Esperant un jugador</translation>
+        </message>
+        <message>
+            <source>Join</source>
+            <translation>uneix-te</translation>
+        </message>
+        <message>
+            <source>Leave</source>
+            <translation>Surt</translation>
+        </message>
+        <message>
+            <source>Elements</source>
+            <translation>Elements</translation>
+        </message>
+        <message>
+            <source>Game ended</source>
+            <translation>Partida acabada</translation>
+        </message>
+        <message>
+            <source>In progress</source>
+            <translation>En curs</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Obre</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameWindow</name>
+        <message>
+            <source>Finish your current game first.</source>
+            <translation>Acaba primer la partida actual.</translation>
+        </message>
+        <message>
+            <source>Fire</source>
+            <translation>Foc</translation>
+        </message>
+        <message>
+            <source>Water</source>
+            <translation>Aigua</translation>
+        </message>
+        <message>
+            <source>Ice</source>
+            <translation>Gel</translation>
+        </message>
+        <message>
+            <source>Core</source>
+            <translation>Nucli</translation>
+        </message>
+        <message>
+            <source>Trap</source>
+            <translation>Trampa</translation>
+        </message>
+        <message>
+            <source>Unknown</source>
+            <translation>Desconegut</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Aquesta acció de joc ja no està disponible.</translation>
+        </message>
+        <message>
+            <source>Game unavailable</source>
+            <translation>Partida no disponible</translation>
+        </message>
+        <message>
+            <source>Ready in %1 s</source>
+            <translation>A punt d’aquí a %1 s</translation>
+        </message>
+        <message>
+            <source>Choose your Core and Trap.</source>
+            <translation>Tria el teu Nucli i la teva Trampa.</translation>
+        </message>
+        <message>
+            <source>Choice locked. Waiting for the other player.</source>
+            <translation>Tria confirmada. Esperant l’altre jugador.</translation>
+        </message>
+        <message>
+            <source>Same element. Choose again.</source>
+            <translation>El mateix element. Torna a triar.</translation>
+        </message>
+        <message>
+            <source>Your turn</source>
+            <translation>El teu torn</translation>
+        </message>
+        <message>
+            <source>%1's turn</source>
+            <translation>Torn de %1</translation>
+        </message>
+        <message>
+            <source>Waiting for the other player</source>
+            <translation>Esperant l’altre jugador</translation>
+        </message>
+        <message>
+            <source>Water beats Fire. Fire beats Ice. Ice beats Water.</source>
+            <translation>L’aigua venç el foc. El foc venç el gel. El gel venç l’aigua.</translation>
+        </message>
+        <message>
+            <source>Empty</source>
+            <translation>Buit</translation>
+        </message>
+        <message>
+            <source>Ice freezes Water</source>
+            <translation>El gel congela l’aigua</translation>
+        </message>
+        <message>
+            <source>Fire melts Ice</source>
+            <translation>El foc fon el gel</translation>
+        </message>
+        <message>
+            <source>Water extinguishes Fire</source>
+            <translation>L’aigua apaga el foc</translation>
+        </message>
+        <message>
+            <source>Trap triggered</source>
+            <translation>Trampa activada</translation>
+        </message>
+        <message>
+            <source>Core captured</source>
+            <translation>Nucli capturat</translation>
+        </message>
+        <message>
+            <source>Find the Core. Watch for traps.</source>
+            <translation>Troba el Nucli. Vigila amb les trampes.</translation>
         </message>
     </context>
 </TS>

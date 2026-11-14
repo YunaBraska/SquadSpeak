@@ -1436,12 +1436,12 @@
             <translation>Ранейшыя паведамленні</translation>
         </message>
         <message>
-            <source>Attach image</source>
-            <translation>Далучыць малюнак</translation>
-        </message>
-        <message>
             <source>Chat message. Markdown supported. Shift+Enter for a new line.</source>
             <translation>Паведамленне ў чаце. Уцэнка падтрымліваецца. Shift+Enter для новага радка.</translation>
+        </message>
+        <message>
+            <source>Add</source>
+            <translation>Дадаць</translation>
         </message>
     </context>
     <context>
@@ -2647,6 +2647,14 @@
             <source>Identity imported.</source>
             <translation>Ідэнтычнасць імпартавана.</translation>
         </message>
+        <message>
+            <source>Invalid game state.</source>
+            <translation>Недапушчальны стан гульні.</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Гэтае дзеянне ў гульні больш недаступнае.</translation>
+        </message>
     </context>
     <context>
         <name>LocalLanguage</name>
@@ -3313,6 +3321,156 @@
         <message>
             <source>See you next time.</source>
             <translation>Да наступнага разу.</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameCard</name>
+        <message>
+            <source>Invited by %1</source>
+            <translation>Запрашэнне ад %1</translation>
+        </message>
+        <message>
+            <source>Ready</source>
+            <translation>Гатова</translation>
+        </message>
+        <message>
+            <source>%1 wins!</source>
+            <translation>%1 перамагае!</translation>
+        </message>
+        <message>
+            <source>Game ended. A player disconnected.</source>
+            <translation>Гульня скончана. Гулец страціў злучэнне.</translation>
+        </message>
+        <message>
+            <source>Game ended. A player left.</source>
+            <translation>Гульня скончана. Гулец выйшаў.</translation>
+        </message>
+        <message>
+            <source>Waiting for a player</source>
+            <translation>Чаканне гульца</translation>
+        </message>
+        <message>
+            <source>Join</source>
+            <translation>Далучайцеся</translation>
+        </message>
+        <message>
+            <source>Leave</source>
+            <translation>Сыходзь</translation>
+        </message>
+        <message>
+            <source>Elements</source>
+            <translation>Стыхіі</translation>
+        </message>
+        <message>
+            <source>Game ended</source>
+            <translation>Гульня скончана</translation>
+        </message>
+        <message>
+            <source>In progress</source>
+            <translation>Гульня ідзе</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Адкрыць</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameWindow</name>
+        <message>
+            <source>Finish your current game first.</source>
+            <translation>Спачатку скончы бягучую гульню.</translation>
+        </message>
+        <message>
+            <source>Fire</source>
+            <translation>Агонь</translation>
+        </message>
+        <message>
+            <source>Water</source>
+            <translation>Вада</translation>
+        </message>
+        <message>
+            <source>Ice</source>
+            <translation>Лёд</translation>
+        </message>
+        <message>
+            <source>Core</source>
+            <translation>Ядро</translation>
+        </message>
+        <message>
+            <source>Trap</source>
+            <translation>Пастка</translation>
+        </message>
+        <message>
+            <source>Unknown</source>
+            <translation>Невядома</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Гэтае дзеянне ў гульні больш недаступнае.</translation>
+        </message>
+        <message>
+            <source>Game unavailable</source>
+            <translation>Гульня недаступная</translation>
+        </message>
+        <message>
+            <source>Ready in %1 s</source>
+            <translation>Гатоўнасць праз %1 с</translation>
+        </message>
+        <message>
+            <source>Choose your Core and Trap.</source>
+            <translation>Выберы сваё Ядро і Пастку.</translation>
+        </message>
+        <message>
+            <source>Choice locked. Waiting for the other player.</source>
+            <translation>Выбар пацверджаны. Чаканне іншага гульца.</translation>
+        </message>
+        <message>
+            <source>Same element. Choose again.</source>
+            <translation>Аднолькавая стыхія. Выберы зноў.</translation>
+        </message>
+        <message>
+            <source>Your turn</source>
+            <translation>Твой ход</translation>
+        </message>
+        <message>
+            <source>%1's turn</source>
+            <translation>Ход гульца %1</translation>
+        </message>
+        <message>
+            <source>Waiting for the other player</source>
+            <translation>Чаканне іншага гульца</translation>
+        </message>
+        <message>
+            <source>Water beats Fire. Fire beats Ice. Ice beats Water.</source>
+            <translation>Вада перамагае агонь. Агонь перамагае лёд. Лёд перамагае ваду.</translation>
+        </message>
+        <message>
+            <source>Empty</source>
+            <translation>Пуста</translation>
+        </message>
+        <message>
+            <source>Ice freezes Water</source>
+            <translation>Лёд замарожвае ваду</translation>
+        </message>
+        <message>
+            <source>Fire melts Ice</source>
+            <translation>Агонь растоплівае лёд</translation>
+        </message>
+        <message>
+            <source>Water extinguishes Fire</source>
+            <translation>Вада тушыць агонь</translation>
+        </message>
+        <message>
+            <source>Trap triggered</source>
+            <translation>Пастка спрацавала</translation>
+        </message>
+        <message>
+            <source>Core captured</source>
+            <translation>Ядро захоплена</translation>
+        </message>
+        <message>
+            <source>Find the Core. Watch for traps.</source>
+            <translation>Знайдзі Ядро. Сцеражыся пастак.</translation>
         </message>
     </context>
 </TS>

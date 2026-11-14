@@ -1436,12 +1436,12 @@
             <translation>Tidligere beskeder</translation>
         </message>
         <message>
-            <source>Attach image</source>
-            <translation>Vedhæft billede</translation>
-        </message>
-        <message>
             <source>Chat message. Markdown supported. Shift+Enter for a new line.</source>
             <translation>Chatbesked. Markdown understøttes. Skift+Enter for en ny linje.</translation>
+        </message>
+        <message>
+            <source>Add</source>
+            <translation>Tilføj</translation>
         </message>
     </context>
     <context>
@@ -2647,6 +2647,14 @@
             <source>Identity imported.</source>
             <translation>Identitet importeret.</translation>
         </message>
+        <message>
+            <source>Invalid game state.</source>
+            <translation>Ugyldig spiltilstand.</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Denne spilhandling er ikke længere tilgængelig.</translation>
+        </message>
     </context>
     <context>
         <name>LocalLanguage</name>
@@ -3313,6 +3321,156 @@
         <message>
             <source>See you next time.</source>
             <translation>Vi ses næste gang.</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameCard</name>
+        <message>
+            <source>Invited by %1</source>
+            <translation>Inviteret af %1</translation>
+        </message>
+        <message>
+            <source>Ready</source>
+            <translation>Klar</translation>
+        </message>
+        <message>
+            <source>%1 wins!</source>
+            <translation>%1 vinder!</translation>
+        </message>
+        <message>
+            <source>Game ended. A player disconnected.</source>
+            <translation>Spillet er slut. En spiller mistede forbindelsen.</translation>
+        </message>
+        <message>
+            <source>Game ended. A player left.</source>
+            <translation>Spillet er slut. En spiller forlod spillet.</translation>
+        </message>
+        <message>
+            <source>Waiting for a player</source>
+            <translation>Venter på en spiller</translation>
+        </message>
+        <message>
+            <source>Join</source>
+            <translation>Deltag</translation>
+        </message>
+        <message>
+            <source>Leave</source>
+            <translation>Forlad</translation>
+        </message>
+        <message>
+            <source>Elements</source>
+            <translation>Elementer</translation>
+        </message>
+        <message>
+            <source>Game ended</source>
+            <translation>Spillet er slut</translation>
+        </message>
+        <message>
+            <source>In progress</source>
+            <translation>I gang</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Åbn</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameWindow</name>
+        <message>
+            <source>Finish your current game first.</source>
+            <translation>Afslut først dit igangværende spil.</translation>
+        </message>
+        <message>
+            <source>Fire</source>
+            <translation>Ild</translation>
+        </message>
+        <message>
+            <source>Water</source>
+            <translation>Vand</translation>
+        </message>
+        <message>
+            <source>Ice</source>
+            <translation>Is</translation>
+        </message>
+        <message>
+            <source>Core</source>
+            <translation>Kerne</translation>
+        </message>
+        <message>
+            <source>Trap</source>
+            <translation>Fælde</translation>
+        </message>
+        <message>
+            <source>Unknown</source>
+            <translation>Ukendt</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Denne spilhandling er ikke længere tilgængelig.</translation>
+        </message>
+        <message>
+            <source>Game unavailable</source>
+            <translation>Spillet er ikke tilgængeligt</translation>
+        </message>
+        <message>
+            <source>Ready in %1 s</source>
+            <translation>Klar om %1 s</translation>
+        </message>
+        <message>
+            <source>Choose your Core and Trap.</source>
+            <translation>Vælg din Kerne og din Fælde.</translation>
+        </message>
+        <message>
+            <source>Choice locked. Waiting for the other player.</source>
+            <translation>Valget er låst. Venter på den anden spiller.</translation>
+        </message>
+        <message>
+            <source>Same element. Choose again.</source>
+            <translation>Samme element. Vælg igen.</translation>
+        </message>
+        <message>
+            <source>Your turn</source>
+            <translation>Din tur</translation>
+        </message>
+        <message>
+            <source>%1's turn</source>
+            <translation>Det er %1s tur</translation>
+        </message>
+        <message>
+            <source>Waiting for the other player</source>
+            <translation>Venter på den anden spiller</translation>
+        </message>
+        <message>
+            <source>Water beats Fire. Fire beats Ice. Ice beats Water.</source>
+            <translation>Vand slår ild. Ild slår is. Is slår vand.</translation>
+        </message>
+        <message>
+            <source>Empty</source>
+            <translation>Tom</translation>
+        </message>
+        <message>
+            <source>Ice freezes Water</source>
+            <translation>Is fryser vand</translation>
+        </message>
+        <message>
+            <source>Fire melts Ice</source>
+            <translation>Ild smelter is</translation>
+        </message>
+        <message>
+            <source>Water extinguishes Fire</source>
+            <translation>Vand slukker ild</translation>
+        </message>
+        <message>
+            <source>Trap triggered</source>
+            <translation>Fælde udløst</translation>
+        </message>
+        <message>
+            <source>Core captured</source>
+            <translation>Kerne erobret</translation>
+        </message>
+        <message>
+            <source>Find the Core. Watch for traps.</source>
+            <translation>Find Kernen. Pas på fælder.</translation>
         </message>
     </context>
 </TS>

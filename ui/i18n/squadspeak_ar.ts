@@ -1436,12 +1436,12 @@
             <translation>الرسائل السابقة</translation>
         </message>
         <message>
-            <source>Attach image</source>
-            <translation>إرفاق صورة</translation>
-        </message>
-        <message>
             <source>Chat message. Markdown supported. Shift+Enter for a new line.</source>
             <translation>رسالة دردشة. Markdown مدعوم. Shift+Enter لسطر جديد.</translation>
+        </message>
+        <message>
+            <source>Add</source>
+            <translation>إضافة</translation>
         </message>
     </context>
     <context>
@@ -2647,6 +2647,14 @@
             <source>Identity imported.</source>
             <translation>تم استيراد الهوية.</translation>
         </message>
+        <message>
+            <source>Invalid game state.</source>
+            <translation>حالة اللعبة غير صالحة.</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>لم يعد هذا الإجراء متاحًا في اللعبة.</translation>
+        </message>
     </context>
     <context>
         <name>LocalLanguage</name>
@@ -3313,6 +3321,156 @@
         <message>
             <source>See you next time.</source>
             <translation>إلى اللقاء.</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameCard</name>
+        <message>
+            <source>Invited by %1</source>
+            <translation>دعوة من %1</translation>
+        </message>
+        <message>
+            <source>Ready</source>
+            <translation>جاهز</translation>
+        </message>
+        <message>
+            <source>%1 wins!</source>
+            <translation>فاز %1!</translation>
+        </message>
+        <message>
+            <source>Game ended. A player disconnected.</source>
+            <translation>انتهت اللعبة. انقطع اتصال أحد اللاعبين.</translation>
+        </message>
+        <message>
+            <source>Game ended. A player left.</source>
+            <translation>انتهت اللعبة. غادر أحد اللاعبين.</translation>
+        </message>
+        <message>
+            <source>Waiting for a player</source>
+            <translation>في انتظار لاعب</translation>
+        </message>
+        <message>
+            <source>Join</source>
+            <translation>انضمام</translation>
+        </message>
+        <message>
+            <source>Leave</source>
+            <translation>مغادرة</translation>
+        </message>
+        <message>
+            <source>Elements</source>
+            <translation>العناصر</translation>
+        </message>
+        <message>
+            <source>Game ended</source>
+            <translation>انتهت اللعبة</translation>
+        </message>
+        <message>
+            <source>In progress</source>
+            <translation>جارية</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>فتح</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameWindow</name>
+        <message>
+            <source>Finish your current game first.</source>
+            <translation>أنهِ لعبتك الحالية أولًا.</translation>
+        </message>
+        <message>
+            <source>Fire</source>
+            <translation>نار</translation>
+        </message>
+        <message>
+            <source>Water</source>
+            <translation>ماء</translation>
+        </message>
+        <message>
+            <source>Ice</source>
+            <translation>جليد</translation>
+        </message>
+        <message>
+            <source>Core</source>
+            <translation>النواة</translation>
+        </message>
+        <message>
+            <source>Trap</source>
+            <translation>الفخ</translation>
+        </message>
+        <message>
+            <source>Unknown</source>
+            <translation>مجهول</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>لم يعد هذا الإجراء متاحًا في اللعبة.</translation>
+        </message>
+        <message>
+            <source>Game unavailable</source>
+            <translation>اللعبة غير متاحة</translation>
+        </message>
+        <message>
+            <source>Ready in %1 s</source>
+            <translation>جاهز خلال %1 ث</translation>
+        </message>
+        <message>
+            <source>Choose your Core and Trap.</source>
+            <translation>اختر نواتك وفخك.</translation>
+        </message>
+        <message>
+            <source>Choice locked. Waiting for the other player.</source>
+            <translation>تم تثبيت الاختيار. في انتظار اللاعب الآخر.</translation>
+        </message>
+        <message>
+            <source>Same element. Choose again.</source>
+            <translation>العنصر نفسه. اختر مجددًا.</translation>
+        </message>
+        <message>
+            <source>Your turn</source>
+            <translation>دورك</translation>
+        </message>
+        <message>
+            <source>%1's turn</source>
+            <translation>دور %1</translation>
+        </message>
+        <message>
+            <source>Waiting for the other player</source>
+            <translation>في انتظار اللاعب الآخر</translation>
+        </message>
+        <message>
+            <source>Water beats Fire. Fire beats Ice. Ice beats Water.</source>
+            <translation>الماء يهزم النار. النار تهزم الجليد. الجليد يهزم الماء.</translation>
+        </message>
+        <message>
+            <source>Empty</source>
+            <translation>فارغ</translation>
+        </message>
+        <message>
+            <source>Ice freezes Water</source>
+            <translation>الجليد يجمّد الماء</translation>
+        </message>
+        <message>
+            <source>Fire melts Ice</source>
+            <translation>النار تذيب الجليد</translation>
+        </message>
+        <message>
+            <source>Water extinguishes Fire</source>
+            <translation>الماء يطفئ النار</translation>
+        </message>
+        <message>
+            <source>Trap triggered</source>
+            <translation>تم تفعيل الفخ</translation>
+        </message>
+        <message>
+            <source>Core captured</source>
+            <translation>تم الاستيلاء على النواة</translation>
+        </message>
+        <message>
+            <source>Find the Core. Watch for traps.</source>
+            <translation>اعثر على النواة. احذر الفخاخ.</translation>
         </message>
     </context>
 </TS>

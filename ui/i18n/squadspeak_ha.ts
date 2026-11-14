@@ -1436,12 +1436,12 @@
             <translation>Magana na daɗa</translation>
         </message>
         <message>
-            <source>Attach image</source>
-            <translation>Joaɗa hoton</translation>
-        </message>
-        <message>
             <source>Chat message. Markdown supported. Shift+Enter for a new line.</source>
             <translation>Sakon magana. An ba da izinin amfani da Markdown. Latsa Shift+Enter don sabon layi.</translation>
+        </message>
+        <message>
+            <source>Add</source>
+            <translation>Ƙara</translation>
         </message>
     </context>
     <context>
@@ -2647,6 +2647,14 @@
             <source>Identity imported.</source>
             <translation>An shigo da ganewa.</translation>
         </message>
+        <message>
+            <source>Invalid game state.</source>
+            <translation>Halin wasan ba daidai ba ne.</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Ba a ƙara samun wannan aikin wasan ba.</translation>
+        </message>
     </context>
     <context>
         <name>LocalLanguage</name>
@@ -3313,6 +3321,156 @@
         <message>
             <source>See you next time.</source>
             <translation>Sai wani lokaci.</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameCard</name>
+        <message>
+            <source>Invited by %1</source>
+            <translation>Gayyata daga %1</translation>
+        </message>
+        <message>
+            <source>Ready</source>
+            <translation>A shirye</translation>
+        </message>
+        <message>
+            <source>%1 wins!</source>
+            <translation>%1 ya ci!</translation>
+        </message>
+        <message>
+            <source>Game ended. A player disconnected.</source>
+            <translation>An gama wasan. Wani ɗan wasa ya rasa haɗi.</translation>
+        </message>
+        <message>
+            <source>Game ended. A player left.</source>
+            <translation>An gama wasan. Wani ɗan wasa ya fita.</translation>
+        </message>
+        <message>
+            <source>Waiting for a player</source>
+            <translation>Ana jiran ɗan wasa</translation>
+        </message>
+        <message>
+            <source>Join</source>
+            <translation>Shiga</translation>
+        </message>
+        <message>
+            <source>Leave</source>
+            <translation>Fita</translation>
+        </message>
+        <message>
+            <source>Elements</source>
+            <translation>Sinadarai</translation>
+        </message>
+        <message>
+            <source>Game ended</source>
+            <translation>An gama wasan</translation>
+        </message>
+        <message>
+            <source>In progress</source>
+            <translation>Ana wasa</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Buɗe</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameWindow</name>
+        <message>
+            <source>Finish your current game first.</source>
+            <translation>Ka fara gama wasanka na yanzu.</translation>
+        </message>
+        <message>
+            <source>Fire</source>
+            <translation>Wuta</translation>
+        </message>
+        <message>
+            <source>Water</source>
+            <translation>Ruwa</translation>
+        </message>
+        <message>
+            <source>Ice</source>
+            <translation>Kankara</translation>
+        </message>
+        <message>
+            <source>Core</source>
+            <translation>Cibiya</translation>
+        </message>
+        <message>
+            <source>Trap</source>
+            <translation>Tarko</translation>
+        </message>
+        <message>
+            <source>Unknown</source>
+            <translation>Ba a sani ba</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Ba a ƙara samun wannan aikin wasan ba.</translation>
+        </message>
+        <message>
+            <source>Game unavailable</source>
+            <translation>Babu wasan</translation>
+        </message>
+        <message>
+            <source>Ready in %1 s</source>
+            <translation>A shirye cikin daƙiƙa %1</translation>
+        </message>
+        <message>
+            <source>Choose your Core and Trap.</source>
+            <translation>Zaɓi Cibiyarka da Tarkonka.</translation>
+        </message>
+        <message>
+            <source>Choice locked. Waiting for the other player.</source>
+            <translation>An tabbatar da zaɓi. Ana jiran ɗayan ɗan wasan.</translation>
+        </message>
+        <message>
+            <source>Same element. Choose again.</source>
+            <translation>Sinadari iri ɗaya. Sake zaɓa.</translation>
+        </message>
+        <message>
+            <source>Your turn</source>
+            <translation>Lokacinka ne</translation>
+        </message>
+        <message>
+            <source>%1's turn</source>
+            <translation>Lokacin %1 ne</translation>
+        </message>
+        <message>
+            <source>Waiting for the other player</source>
+            <translation>Ana jiran ɗayan ɗan wasan</translation>
+        </message>
+        <message>
+            <source>Water beats Fire. Fire beats Ice. Ice beats Water.</source>
+            <translation>Ruwa yana doke wuta. Wuta tana doke kankara. Kankara tana doke ruwa.</translation>
+        </message>
+        <message>
+            <source>Empty</source>
+            <translation>Babu komai</translation>
+        </message>
+        <message>
+            <source>Ice freezes Water</source>
+            <translation>Kankara tana daskare ruwa</translation>
+        </message>
+        <message>
+            <source>Fire melts Ice</source>
+            <translation>Wuta tana narkar da kankara</translation>
+        </message>
+        <message>
+            <source>Water extinguishes Fire</source>
+            <translation>Ruwa yana kashe wuta</translation>
+        </message>
+        <message>
+            <source>Trap triggered</source>
+            <translation>Tarko ya tashi</translation>
+        </message>
+        <message>
+            <source>Core captured</source>
+            <translation>An kama Cibiya</translation>
+        </message>
+        <message>
+            <source>Find the Core. Watch for traps.</source>
+            <translation>Nemo Cibiya. Ka kula da tarkuna.</translation>
         </message>
     </context>
 </TS>

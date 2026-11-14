@@ -1436,12 +1436,12 @@
             <translation>Fréier Messagen</translation>
         </message>
         <message>
-            <source>Attach image</source>
-            <translation>Befestegt Bild</translation>
-        </message>
-        <message>
             <source>Chat message. Markdown supported. Shift+Enter for a new line.</source>
             <translation>Chat Message. Markdown ënnerstëtzt. Shift + Enter fir eng nei Zeil.</translation>
+        </message>
+        <message>
+            <source>Add</source>
+            <translation>Dobäi</translation>
         </message>
     </context>
     <context>
@@ -2647,6 +2647,14 @@
             <source>Identity imported.</source>
             <translation>Identitéit importéiert.</translation>
         </message>
+        <message>
+            <source>Invalid game state.</source>
+            <translation>Ongültege Spillzoustand.</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Dës Spillaktioun ass net méi disponibel.</translation>
+        </message>
     </context>
     <context>
         <name>LocalLanguage</name>
@@ -3313,6 +3321,156 @@
         <message>
             <source>See you next time.</source>
             <translation>Bis déi nächste Kéier.</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameCard</name>
+        <message>
+            <source>Invited by %1</source>
+            <translation>Invitéiert vu %1</translation>
+        </message>
+        <message>
+            <source>Ready</source>
+            <translation>Prett</translation>
+        </message>
+        <message>
+            <source>%1 wins!</source>
+            <translation>%1 gewënnt!</translation>
+        </message>
+        <message>
+            <source>Game ended. A player disconnected.</source>
+            <translation>D’Spill ass eriwwer. E Spiller huet d’Verbindung verluer.</translation>
+        </message>
+        <message>
+            <source>Game ended. A player left.</source>
+            <translation>D’Spill ass eriwwer. E Spiller ass fortgaangen.</translation>
+        </message>
+        <message>
+            <source>Waiting for a player</source>
+            <translation>Op e Spiller waarden</translation>
+        </message>
+        <message>
+            <source>Join</source>
+            <translation>eng</translation>
+        </message>
+        <message>
+            <source>Leave</source>
+            <translation>Verloossen</translation>
+        </message>
+        <message>
+            <source>Elements</source>
+            <translation>Elementer</translation>
+        </message>
+        <message>
+            <source>Game ended</source>
+            <translation>D’Spill ass eriwwer</translation>
+        </message>
+        <message>
+            <source>In progress</source>
+            <translation>Leeft</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Opmaachen</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameWindow</name>
+        <message>
+            <source>Finish your current game first.</source>
+            <translation>Maach fir d’éischt däin aktuellt Spill fäerdeg.</translation>
+        </message>
+        <message>
+            <source>Fire</source>
+            <translation>Feier</translation>
+        </message>
+        <message>
+            <source>Water</source>
+            <translation>Waasser</translation>
+        </message>
+        <message>
+            <source>Ice</source>
+            <translation>Äis</translation>
+        </message>
+        <message>
+            <source>Core</source>
+            <translation>Kär</translation>
+        </message>
+        <message>
+            <source>Trap</source>
+            <translation>Fal</translation>
+        </message>
+        <message>
+            <source>Unknown</source>
+            <translation>Onbekannt</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Dës Spillaktioun ass net méi disponibel.</translation>
+        </message>
+        <message>
+            <source>Game unavailable</source>
+            <translation>Spill net disponibel</translation>
+        </message>
+        <message>
+            <source>Ready in %1 s</source>
+            <translation>Prett an %1 s</translation>
+        </message>
+        <message>
+            <source>Choose your Core and Trap.</source>
+            <translation>Wiel däi Kär an deng Fal.</translation>
+        </message>
+        <message>
+            <source>Choice locked. Waiting for the other player.</source>
+            <translation>Auswiel bestätegt. Op deen anere Spiller waarden.</translation>
+        </message>
+        <message>
+            <source>Same element. Choose again.</source>
+            <translation>Dat selwecht Element. Wiel nach eng Kéier.</translation>
+        </message>
+        <message>
+            <source>Your turn</source>
+            <translation>Du bass drun</translation>
+        </message>
+        <message>
+            <source>%1's turn</source>
+            <translation>%1 ass drun</translation>
+        </message>
+        <message>
+            <source>Waiting for the other player</source>
+            <translation>Op deen anere Spiller waarden</translation>
+        </message>
+        <message>
+            <source>Water beats Fire. Fire beats Ice. Ice beats Water.</source>
+            <translation>Waasser schléit Feier. Feier schléit Äis. Äis schléit Waasser.</translation>
+        </message>
+        <message>
+            <source>Empty</source>
+            <translation>Eidel</translation>
+        </message>
+        <message>
+            <source>Ice freezes Water</source>
+            <translation>Äis léisst Waasser gefréieren</translation>
+        </message>
+        <message>
+            <source>Fire melts Ice</source>
+            <translation>Feier schmëlzt Äis</translation>
+        </message>
+        <message>
+            <source>Water extinguishes Fire</source>
+            <translation>Waasser läscht Feier</translation>
+        </message>
+        <message>
+            <source>Trap triggered</source>
+            <translation>Fal ausgeléist</translation>
+        </message>
+        <message>
+            <source>Core captured</source>
+            <translation>Kär eruewert</translation>
+        </message>
+        <message>
+            <source>Find the Core. Watch for traps.</source>
+            <translation>Fann de Kär. Pass op Falen op.</translation>
         </message>
     </context>
 </TS>

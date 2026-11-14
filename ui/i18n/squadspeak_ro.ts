@@ -1436,12 +1436,12 @@
             <translation>Mesaje anterioare</translation>
         </message>
         <message>
-            <source>Attach image</source>
-            <translation>Atașați imaginea</translation>
-        </message>
-        <message>
             <source>Chat message. Markdown supported. Shift+Enter for a new line.</source>
             <translation>Mesaj de chat. Reducere acceptată. Shift+Enter pentru o linie nouă.</translation>
+        </message>
+        <message>
+            <source>Add</source>
+            <translation>Adăugați</translation>
         </message>
     </context>
     <context>
@@ -2647,6 +2647,14 @@
             <source>Identity imported.</source>
             <translation>Identitate importată.</translation>
         </message>
+        <message>
+            <source>Invalid game state.</source>
+            <translation>Stare de joc nevalidă.</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Această acțiune de joc nu mai este disponibilă.</translation>
+        </message>
     </context>
     <context>
         <name>LocalLanguage</name>
@@ -3313,6 +3321,156 @@
         <message>
             <source>See you next time.</source>
             <translation>Pe data viitoare.</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameCard</name>
+        <message>
+            <source>Invited by %1</source>
+            <translation>Invitație de la %1</translation>
+        </message>
+        <message>
+            <source>Ready</source>
+            <translation>Gata</translation>
+        </message>
+        <message>
+            <source>%1 wins!</source>
+            <translation>%1 câștigă!</translation>
+        </message>
+        <message>
+            <source>Game ended. A player disconnected.</source>
+            <translation>Joc încheiat. Un jucător a pierdut conexiunea.</translation>
+        </message>
+        <message>
+            <source>Game ended. A player left.</source>
+            <translation>Joc încheiat. Un jucător a plecat.</translation>
+        </message>
+        <message>
+            <source>Waiting for a player</source>
+            <translation>Se așteaptă un jucător</translation>
+        </message>
+        <message>
+            <source>Join</source>
+            <translation>Alăturați-vă</translation>
+        </message>
+        <message>
+            <source>Leave</source>
+            <translation>Părăsește</translation>
+        </message>
+        <message>
+            <source>Elements</source>
+            <translation>Elemente</translation>
+        </message>
+        <message>
+            <source>Game ended</source>
+            <translation>Joc încheiat</translation>
+        </message>
+        <message>
+            <source>In progress</source>
+            <translation>În desfășurare</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Deschide</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameWindow</name>
+        <message>
+            <source>Finish your current game first.</source>
+            <translation>Termină mai întâi jocul curent.</translation>
+        </message>
+        <message>
+            <source>Fire</source>
+            <translation>Foc</translation>
+        </message>
+        <message>
+            <source>Water</source>
+            <translation>Apă</translation>
+        </message>
+        <message>
+            <source>Ice</source>
+            <translation>Gheață</translation>
+        </message>
+        <message>
+            <source>Core</source>
+            <translation>Nucleu</translation>
+        </message>
+        <message>
+            <source>Trap</source>
+            <translation>Capcană</translation>
+        </message>
+        <message>
+            <source>Unknown</source>
+            <translation>Necunoscut</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Această acțiune de joc nu mai este disponibilă.</translation>
+        </message>
+        <message>
+            <source>Game unavailable</source>
+            <translation>Joc indisponibil</translation>
+        </message>
+        <message>
+            <source>Ready in %1 s</source>
+            <translation>Gata în %1 s</translation>
+        </message>
+        <message>
+            <source>Choose your Core and Trap.</source>
+            <translation>Alege-ți Nucleul și Capcana.</translation>
+        </message>
+        <message>
+            <source>Choice locked. Waiting for the other player.</source>
+            <translation>Alegere confirmată. Se așteaptă celălalt jucător.</translation>
+        </message>
+        <message>
+            <source>Same element. Choose again.</source>
+            <translation>Același element. Alege din nou.</translation>
+        </message>
+        <message>
+            <source>Your turn</source>
+            <translation>Rândul tău</translation>
+        </message>
+        <message>
+            <source>%1's turn</source>
+            <translation>Rândul lui %1</translation>
+        </message>
+        <message>
+            <source>Waiting for the other player</source>
+            <translation>Se așteaptă celălalt jucător</translation>
+        </message>
+        <message>
+            <source>Water beats Fire. Fire beats Ice. Ice beats Water.</source>
+            <translation>Apa bate focul. Focul bate gheața. Gheața bate apa.</translation>
+        </message>
+        <message>
+            <source>Empty</source>
+            <translation>Gol</translation>
+        </message>
+        <message>
+            <source>Ice freezes Water</source>
+            <translation>Gheața îngheață apa</translation>
+        </message>
+        <message>
+            <source>Fire melts Ice</source>
+            <translation>Focul topește gheața</translation>
+        </message>
+        <message>
+            <source>Water extinguishes Fire</source>
+            <translation>Apa stinge focul</translation>
+        </message>
+        <message>
+            <source>Trap triggered</source>
+            <translation>Capcană declanșată</translation>
+        </message>
+        <message>
+            <source>Core captured</source>
+            <translation>Nucleu capturat</translation>
+        </message>
+        <message>
+            <source>Find the Core. Watch for traps.</source>
+            <translation>Găsește Nucleul. Ferește-te de capcane.</translation>
         </message>
     </context>
 </TS>

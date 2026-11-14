@@ -1436,12 +1436,12 @@
             <translation>Ujumbe wa awali</translation>
         </message>
         <message>
-            <source>Attach image</source>
-            <translation>Attach picha</translation>
-        </message>
-        <message>
             <source>Chat message. Markdown supported. Shift+Enter for a new line.</source>
             <translation>Ujumbe wa mazungumzo. Mfumo 'Markdown' unaoendwa. Bonyeza 'Shift+Enter' kwa mstari mpya.</translation>
+        </message>
+        <message>
+            <source>Add</source>
+            <translation>Ongeza</translation>
         </message>
     </context>
     <context>
@@ -2647,6 +2647,14 @@
             <source>Identity imported.</source>
             <translation>Utambulisho umeingizwa.</translation>
         </message>
+        <message>
+            <source>Invalid game state.</source>
+            <translation>Hali ya mchezo si sahihi.</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Kitendo hiki cha mchezo hakipatikani tena.</translation>
+        </message>
     </context>
     <context>
         <name>LocalLanguage</name>
@@ -3313,6 +3321,156 @@
         <message>
             <source>See you next time.</source>
             <translation>Hadi wakati ujao.</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameCard</name>
+        <message>
+            <source>Invited by %1</source>
+            <translation>Umealikwa na %1</translation>
+        </message>
+        <message>
+            <source>Ready</source>
+            <translation>Tayari</translation>
+        </message>
+        <message>
+            <source>%1 wins!</source>
+            <translation>%1 ameshinda!</translation>
+        </message>
+        <message>
+            <source>Game ended. A player disconnected.</source>
+            <translation>Mchezo umeisha. Mchezaji amepoteza muunganisho.</translation>
+        </message>
+        <message>
+            <source>Game ended. A player left.</source>
+            <translation>Mchezo umeisha. Mchezaji ameondoka.</translation>
+        </message>
+        <message>
+            <source>Waiting for a player</source>
+            <translation>Inasubiri mchezaji</translation>
+        </message>
+        <message>
+            <source>Join</source>
+            <translation>Ungana</translation>
+        </message>
+        <message>
+            <source>Leave</source>
+            <translation>Ondoka</translation>
+        </message>
+        <message>
+            <source>Elements</source>
+            <translation>Elementi</translation>
+        </message>
+        <message>
+            <source>Game ended</source>
+            <translation>Mchezo umeisha</translation>
+        </message>
+        <message>
+            <source>In progress</source>
+            <translation>Unaendelea</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Fungua</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameWindow</name>
+        <message>
+            <source>Finish your current game first.</source>
+            <translation>Maliza kwanza mchezo wako wa sasa.</translation>
+        </message>
+        <message>
+            <source>Fire</source>
+            <translation>Moto</translation>
+        </message>
+        <message>
+            <source>Water</source>
+            <translation>Maji</translation>
+        </message>
+        <message>
+            <source>Ice</source>
+            <translation>Barafu</translation>
+        </message>
+        <message>
+            <source>Core</source>
+            <translation>Kiini</translation>
+        </message>
+        <message>
+            <source>Trap</source>
+            <translation>Mtego</translation>
+        </message>
+        <message>
+            <source>Unknown</source>
+            <translation>Haijulikani</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Kitendo hiki cha mchezo hakipatikani tena.</translation>
+        </message>
+        <message>
+            <source>Game unavailable</source>
+            <translation>Mchezo haupatikani</translation>
+        </message>
+        <message>
+            <source>Ready in %1 s</source>
+            <translation>Tayari baada ya sekunde %1</translation>
+        </message>
+        <message>
+            <source>Choose your Core and Trap.</source>
+            <translation>Chagua Kiini na Mtego wako.</translation>
+        </message>
+        <message>
+            <source>Choice locked. Waiting for the other player.</source>
+            <translation>Chaguo limethibitishwa. Inasubiri mchezaji mwingine.</translation>
+        </message>
+        <message>
+            <source>Same element. Choose again.</source>
+            <translation>Elementi sawa. Chagua tena.</translation>
+        </message>
+        <message>
+            <source>Your turn</source>
+            <translation>Zamu yako</translation>
+        </message>
+        <message>
+            <source>%1's turn</source>
+            <translation>Zamu ya %1</translation>
+        </message>
+        <message>
+            <source>Waiting for the other player</source>
+            <translation>Inasubiri mchezaji mwingine</translation>
+        </message>
+        <message>
+            <source>Water beats Fire. Fire beats Ice. Ice beats Water.</source>
+            <translation>Maji hushinda moto. Moto hushinda barafu. Barafu hushinda maji.</translation>
+        </message>
+        <message>
+            <source>Empty</source>
+            <translation>Tupu</translation>
+        </message>
+        <message>
+            <source>Ice freezes Water</source>
+            <translation>Barafu hugandisha maji</translation>
+        </message>
+        <message>
+            <source>Fire melts Ice</source>
+            <translation>Moto huyeyusha barafu</translation>
+        </message>
+        <message>
+            <source>Water extinguishes Fire</source>
+            <translation>Maji huzima moto</translation>
+        </message>
+        <message>
+            <source>Trap triggered</source>
+            <translation>Mtego umefyatuka</translation>
+        </message>
+        <message>
+            <source>Core captured</source>
+            <translation>Kiini kimetekwa</translation>
+        </message>
+        <message>
+            <source>Find the Core. Watch for traps.</source>
+            <translation>Tafuta Kiini. Jihadhari na mitego.</translation>
         </message>
     </context>
 </TS>

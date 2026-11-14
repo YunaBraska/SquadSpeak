@@ -85,7 +85,7 @@ target_compile_options(squad_audio PRIVATE $<$<CXX_COMPILER_ID:AppleClang,Clang,
 
 include(cmake/TeamSpeak.cmake)
 
-add_library(squad_session src/local_channel_external.cpp src/voice_session.cpp src/voice_session.hpp src/tls_identity.cpp src/tls_identity.hpp src/local_channel.cpp src/local_channel_chat.cpp src/local_channel_private.cpp src/local_channel_control.cpp src/local_channel_discovery.cpp src/local_channel_video.cpp src/local_channel.hpp src/media_transport.cpp src/media_transport.hpp src/chat_history.cpp src/chat_history.hpp src/license.cpp src/license.hpp)
+add_library(squad_session src/channel_game.cpp src/channel_game.hpp src/local_channel_game.cpp src/local_channel_external.cpp src/voice_session.cpp src/voice_session.hpp src/tls_identity.cpp src/tls_identity.hpp src/local_channel.cpp src/local_channel_chat.cpp src/local_channel_private.cpp src/local_channel_control.cpp src/local_channel_discovery.cpp src/local_channel_video.cpp src/local_channel.hpp src/media_transport.cpp src/media_transport.hpp src/chat_history.cpp src/chat_history.hpp src/license.cpp src/license.hpp)
 target_include_directories(squad_session PUBLIC src)
 # Version changes only rebuild entrypoints that report the version.
 set_source_files_properties(src/headless.cpp tests/headless_tests.cpp PROPERTIES
@@ -511,6 +511,7 @@ if(BUILD_TESTING)
             DirectChannelControls::test_scrollbarTracksLoadedMessagesWithoutResizing
             DirectChannelControls::test_chatKeepsReadingPositionAcrossResize
             DirectChannelControls::test_wheelScrollsInsideOversizedMessage
+            DirectChannelControls::test_gameBoardChatOnlyJourney:compact
             DirectChannelControls::test_touchScrollsChatAndReleasesPtt)
         set_tests_properties(channel_controls PROPERTIES
             TIMEOUT 180
@@ -521,6 +522,8 @@ if(BUILD_TESTING)
             ownerCanKickBanAndUnblockWithoutJoining
             passwordsPreserveActiveMembersAndPersistPerHostSecrets
             remotePttNeedsSeparateApprovalAndCombinesControllers
+            gameChatOnlyBoardKeepsSetupPrivateAndHistoryUnchanged
+            gameDisconnectEndsMatchAndRestartHasNoStoredGame
             chatSurvivesHostRestartAndReplaysToNewApprovedParticipants)
         squad_add_ios_test(channel_tests native_identity_contract simulatorIdentitySurvivesReload)
         squad_add_ios_test(mixer_tests mixer_contract)
@@ -577,6 +580,7 @@ if(BUILD_TESTING)
             DirectChannelControls::test_scrollbarTracksLoadedMessagesWithoutResizing
             DirectChannelControls::test_chatKeepsReadingPositionAcrossResize
             DirectChannelControls::test_wheelScrollsInsideOversizedMessage
+            DirectChannelControls::test_gameBoardChatOnlyJourney:compact
             DirectChannelControls::test_touchScrollsChatAndReleasesPtt)
         set_property(TEST channel_controls APPEND PROPERTY ENVIRONMENT "QT_ANDROID_NO_FULLSCREEN_KEYBOARD=1")
         squad_add_android_test(channel_tests channel_contract
@@ -585,6 +589,8 @@ if(BUILD_TESTING)
             ownerCanKickBanAndUnblockWithoutJoining
             passwordsPreserveActiveMembersAndPersistPerHostSecrets
             remotePttNeedsSeparateApprovalAndCombinesControllers
+            gameChatOnlyBoardKeepsSetupPrivateAndHistoryUnchanged
+            gameDisconnectEndsMatchAndRestartHasNoStoredGame
             chatSurvivesHostRestartAndReplaysToNewApprovedParticipants)
         squad_add_android_test(mixer_tests mixer_contract)
         squad_add_android_test(media_transport_tests media_transport_contract)
@@ -594,6 +600,11 @@ if(BUILD_TESTING)
         return()
     endif()
     find_package(Qt6 REQUIRED COMPONENTS QmlPrivate)
+    add_executable(desktop_window_tests tests/desktop_window_tests.cpp)
+    target_link_libraries(desktop_window_tests PRIVATE Qt6::Gui Qt6::Test)
+    add_test(NAME desktop_window_contract COMMAND desktop_window_tests)
+    set_tests_properties(desktop_window_contract PROPERTIES TIMEOUT 30
+        ENVIRONMENT "QT_QPA_PLATFORM=offscreen")
     add_executable(qt_runtime_tests tests/qt_runtime_tests.cpp)
     target_link_libraries(qt_runtime_tests PRIVATE Qt6::QmlPrivate Qt6::Test)
     add_dependencies(qt_runtime_tests squad_qt_qml_build)
@@ -754,6 +765,10 @@ if(BUILD_TESTING)
     target_link_libraries(tray_menu_tests PRIVATE squad_radio Qt6::Test Qt6::Widgets)
     add_test(NAME tray_menu_contract COMMAND tray_menu_tests)
     set_tests_properties(tray_menu_contract PROPERTIES TIMEOUT 60 ENVIRONMENT "QT_QPA_PLATFORM=offscreen")
+    qt_add_executable(channel_game_tests tests/channel_game_tests.cpp src/channel_game.cpp)
+    target_link_libraries(channel_game_tests PRIVATE Qt6::Core Qt6::Test)
+    add_test(NAME channel_game_contract COMMAND channel_game_tests)
+    set_tests_properties(channel_game_contract PROPERTIES TIMEOUT 30)
     qt_add_executable(session_tests tests/session_tests.cpp)
     target_link_libraries(session_tests PRIVATE squad_session Qt6::Test OpenSSL::Crypto)
     target_compile_definitions(session_tests PRIVATE SQUAD_TRANSLATION_DIRECTORY="${CMAKE_CURRENT_SOURCE_DIR}/ui/i18n")

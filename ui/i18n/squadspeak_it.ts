@@ -1436,12 +1436,12 @@
             <translation>Messaggi precedenti</translation>
         </message>
         <message>
-            <source>Attach image</source>
-            <translation>Allega immagine</translation>
-        </message>
-        <message>
             <source>Chat message. Markdown supported. Shift+Enter for a new line.</source>
             <translation>Messaggio chat. Markdown supportato. Maiusc+Invio per una nuova riga.</translation>
+        </message>
+        <message>
+            <source>Add</source>
+            <translation>Aggiungi</translation>
         </message>
     </context>
     <context>
@@ -2647,6 +2647,14 @@
             <source>Identity imported.</source>
             <translation>Identità importata.</translation>
         </message>
+        <message>
+            <source>Invalid game state.</source>
+            <translation>Stato della partita non valido.</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Questa azione di gioco non è più disponibile.</translation>
+        </message>
     </context>
     <context>
         <name>LocalLanguage</name>
@@ -3313,6 +3321,156 @@
         <message>
             <source>See you next time.</source>
             <translation>Alla prossima.</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameCard</name>
+        <message>
+            <source>Invited by %1</source>
+            <translation>Invito di %1</translation>
+        </message>
+        <message>
+            <source>Ready</source>
+            <translation>Pronto</translation>
+        </message>
+        <message>
+            <source>%1 wins!</source>
+            <translation>%1 vince!</translation>
+        </message>
+        <message>
+            <source>Game ended. A player disconnected.</source>
+            <translation>Partita terminata. Un giocatore ha perso la connessione.</translation>
+        </message>
+        <message>
+            <source>Game ended. A player left.</source>
+            <translation>Partita terminata. Un giocatore è uscito.</translation>
+        </message>
+        <message>
+            <source>Waiting for a player</source>
+            <translation>In attesa di un giocatore</translation>
+        </message>
+        <message>
+            <source>Join</source>
+            <translation>Entra</translation>
+        </message>
+        <message>
+            <source>Leave</source>
+            <translation>Esci</translation>
+        </message>
+        <message>
+            <source>Elements</source>
+            <translation>Elementi</translation>
+        </message>
+        <message>
+            <source>Game ended</source>
+            <translation>Partita terminata</translation>
+        </message>
+        <message>
+            <source>In progress</source>
+            <translation>In corso</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Apri</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameWindow</name>
+        <message>
+            <source>Finish your current game first.</source>
+            <translation>Termina prima la partita in corso.</translation>
+        </message>
+        <message>
+            <source>Fire</source>
+            <translation>Fuoco</translation>
+        </message>
+        <message>
+            <source>Water</source>
+            <translation>Acqua</translation>
+        </message>
+        <message>
+            <source>Ice</source>
+            <translation>Ghiaccio</translation>
+        </message>
+        <message>
+            <source>Core</source>
+            <translation>Nucleo</translation>
+        </message>
+        <message>
+            <source>Trap</source>
+            <translation>Trappola</translation>
+        </message>
+        <message>
+            <source>Unknown</source>
+            <translation>Sconosciuto</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Questa azione di gioco non è più disponibile.</translation>
+        </message>
+        <message>
+            <source>Game unavailable</source>
+            <translation>Partita non disponibile</translation>
+        </message>
+        <message>
+            <source>Ready in %1 s</source>
+            <translation>Pronto tra %1 s</translation>
+        </message>
+        <message>
+            <source>Choose your Core and Trap.</source>
+            <translation>Scegli il tuo Nucleo e la tua Trappola.</translation>
+        </message>
+        <message>
+            <source>Choice locked. Waiting for the other player.</source>
+            <translation>Scelta confermata. In attesa dell’altro giocatore.</translation>
+        </message>
+        <message>
+            <source>Same element. Choose again.</source>
+            <translation>Stesso elemento. Scegli di nuovo.</translation>
+        </message>
+        <message>
+            <source>Your turn</source>
+            <translation>Tocca a te</translation>
+        </message>
+        <message>
+            <source>%1's turn</source>
+            <translation>Tocca a %1</translation>
+        </message>
+        <message>
+            <source>Waiting for the other player</source>
+            <translation>In attesa dell’altro giocatore</translation>
+        </message>
+        <message>
+            <source>Water beats Fire. Fire beats Ice. Ice beats Water.</source>
+            <translation>L’acqua batte il fuoco. Il fuoco batte il ghiaccio. Il ghiaccio batte l’acqua.</translation>
+        </message>
+        <message>
+            <source>Empty</source>
+            <translation>Vuoto</translation>
+        </message>
+        <message>
+            <source>Ice freezes Water</source>
+            <translation>Il ghiaccio congela l’acqua</translation>
+        </message>
+        <message>
+            <source>Fire melts Ice</source>
+            <translation>Il fuoco scioglie il ghiaccio</translation>
+        </message>
+        <message>
+            <source>Water extinguishes Fire</source>
+            <translation>L’acqua spegne il fuoco</translation>
+        </message>
+        <message>
+            <source>Trap triggered</source>
+            <translation>Trappola attivata</translation>
+        </message>
+        <message>
+            <source>Core captured</source>
+            <translation>Nucleo catturato</translation>
+        </message>
+        <message>
+            <source>Find the Core. Watch for traps.</source>
+            <translation>Trova il Nucleo. Attento alle trappole.</translation>
         </message>
     </context>
 </TS>

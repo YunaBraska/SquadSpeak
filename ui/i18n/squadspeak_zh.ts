@@ -1436,12 +1436,12 @@
             <translation>较早的消息</translation>
         </message>
         <message>
-            <source>Attach image</source>
-            <translation>附加图片</translation>
-        </message>
-        <message>
             <source>Chat message. Markdown supported. Shift+Enter for a new line.</source>
             <translation>聊天消息.支持 Markdown.按 Shift+Enter 换行.</translation>
+        </message>
+        <message>
+            <source>Add</source>
+            <translation>添加</translation>
         </message>
     </context>
     <context>
@@ -2647,6 +2647,14 @@
             <source>Identity imported.</source>
             <translation>身份已导入。</translation>
         </message>
+        <message>
+            <source>Invalid game state.</source>
+            <translation>游戏状态无效。</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>此游戏操作已不可用。</translation>
+        </message>
     </context>
     <context>
         <name>LocalLanguage</name>
@@ -3313,6 +3321,156 @@
         <message>
             <source>See you next time.</source>
             <translation>下次见。</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameCard</name>
+        <message>
+            <source>Invited by %1</source>
+            <translation>%1 发起了邀请</translation>
+        </message>
+        <message>
+            <source>Ready</source>
+            <translation>准备好了</translation>
+        </message>
+        <message>
+            <source>%1 wins!</source>
+            <translation>%1 获胜！</translation>
+        </message>
+        <message>
+            <source>Game ended. A player disconnected.</source>
+            <translation>游戏结束。一名玩家断开了连接。</translation>
+        </message>
+        <message>
+            <source>Game ended. A player left.</source>
+            <translation>游戏结束。一名玩家离开了。</translation>
+        </message>
+        <message>
+            <source>Waiting for a player</source>
+            <translation>等待玩家</translation>
+        </message>
+        <message>
+            <source>Join</source>
+            <translation>加入</translation>
+        </message>
+        <message>
+            <source>Leave</source>
+            <translation>离开</translation>
+        </message>
+        <message>
+            <source>Elements</source>
+            <translation>元素</translation>
+        </message>
+        <message>
+            <source>Game ended</source>
+            <translation>游戏结束</translation>
+        </message>
+        <message>
+            <source>In progress</source>
+            <translation>进行中</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>打开</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameWindow</name>
+        <message>
+            <source>Finish your current game first.</source>
+            <translation>请先完成当前游戏。</translation>
+        </message>
+        <message>
+            <source>Fire</source>
+            <translation>火</translation>
+        </message>
+        <message>
+            <source>Water</source>
+            <translation>水</translation>
+        </message>
+        <message>
+            <source>Ice</source>
+            <translation>冰</translation>
+        </message>
+        <message>
+            <source>Core</source>
+            <translation>核心</translation>
+        </message>
+        <message>
+            <source>Trap</source>
+            <translation>陷阱</translation>
+        </message>
+        <message>
+            <source>Unknown</source>
+            <translation>未知</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>此游戏操作已不可用。</translation>
+        </message>
+        <message>
+            <source>Game unavailable</source>
+            <translation>游戏不可用</translation>
+        </message>
+        <message>
+            <source>Ready in %1 s</source>
+            <translation>%1 秒后准备就绪</translation>
+        </message>
+        <message>
+            <source>Choose your Core and Trap.</source>
+            <translation>选择你的核心和陷阱。</translation>
+        </message>
+        <message>
+            <source>Choice locked. Waiting for the other player.</source>
+            <translation>已确定选择。等待另一名玩家。</translation>
+        </message>
+        <message>
+            <source>Same element. Choose again.</source>
+            <translation>元素相同。请重新选择。</translation>
+        </message>
+        <message>
+            <source>Your turn</source>
+            <translation>轮到你了</translation>
+        </message>
+        <message>
+            <source>%1's turn</source>
+            <translation>轮到 %1 了</translation>
+        </message>
+        <message>
+            <source>Waiting for the other player</source>
+            <translation>等待另一名玩家</translation>
+        </message>
+        <message>
+            <source>Water beats Fire. Fire beats Ice. Ice beats Water.</source>
+            <translation>水胜火，火胜冰，冰胜水。</translation>
+        </message>
+        <message>
+            <source>Empty</source>
+            <translation>空</translation>
+        </message>
+        <message>
+            <source>Ice freezes Water</source>
+            <translation>冰冻结水</translation>
+        </message>
+        <message>
+            <source>Fire melts Ice</source>
+            <translation>火融化冰</translation>
+        </message>
+        <message>
+            <source>Water extinguishes Fire</source>
+            <translation>水熄灭火</translation>
+        </message>
+        <message>
+            <source>Trap triggered</source>
+            <translation>陷阱已触发</translation>
+        </message>
+        <message>
+            <source>Core captured</source>
+            <translation>核心已被占领</translation>
+        </message>
+        <message>
+            <source>Find the Core. Watch for traps.</source>
+            <translation>找到核心。小心陷阱。</translation>
         </message>
     </context>
 </TS>

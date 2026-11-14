@@ -1436,12 +1436,12 @@
             <translation>Iepriekšējie ziņojumi</translation>
         </message>
         <message>
-            <source>Attach image</source>
-            <translation>pievienojiet attēlu</translation>
-        </message>
-        <message>
             <source>Chat message. Markdown supported. Shift+Enter for a new line.</source>
             <translation>tērzēšanas ziņojums. Atbalstīta atzīme. Shift+Enter, lai atvērtu jaunu rindiņu.</translation>
+        </message>
+        <message>
+            <source>Add</source>
+            <translation>pievienot</translation>
         </message>
     </context>
     <context>
@@ -2647,6 +2647,14 @@
             <source>Identity imported.</source>
             <translation>Identitāte importēta.</translation>
         </message>
+        <message>
+            <source>Invalid game state.</source>
+            <translation>Nederīgs spēles stāvoklis.</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Šī spēles darbība vairs nav pieejama.</translation>
+        </message>
     </context>
     <context>
         <name>LocalLanguage</name>
@@ -3313,6 +3321,156 @@
         <message>
             <source>See you next time.</source>
             <translation>Līdz nākamajai reizei.</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameCard</name>
+        <message>
+            <source>Invited by %1</source>
+            <translation>Uzaicinājums no %1</translation>
+        </message>
+        <message>
+            <source>Ready</source>
+            <translation>Gatavs</translation>
+        </message>
+        <message>
+            <source>%1 wins!</source>
+            <translation>%1 uzvar!</translation>
+        </message>
+        <message>
+            <source>Game ended. A player disconnected.</source>
+            <translation>Spēle beidzās. Spēlētājs zaudēja savienojumu.</translation>
+        </message>
+        <message>
+            <source>Game ended. A player left.</source>
+            <translation>Spēle beidzās. Spēlētājs aizgāja.</translation>
+        </message>
+        <message>
+            <source>Waiting for a player</source>
+            <translation>Gaida spēlētāju</translation>
+        </message>
+        <message>
+            <source>Join</source>
+            <translation>pievienojieties</translation>
+        </message>
+        <message>
+            <source>Leave</source>
+            <translation>Aiziet</translation>
+        </message>
+        <message>
+            <source>Elements</source>
+            <translation>Elementi</translation>
+        </message>
+        <message>
+            <source>Game ended</source>
+            <translation>Spēle beidzās</translation>
+        </message>
+        <message>
+            <source>In progress</source>
+            <translation>Notiek</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Atvērt</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameWindow</name>
+        <message>
+            <source>Finish your current game first.</source>
+            <translation>Vispirms pabeidz pašreizējo spēli.</translation>
+        </message>
+        <message>
+            <source>Fire</source>
+            <translation>Uguns</translation>
+        </message>
+        <message>
+            <source>Water</source>
+            <translation>Ūdens</translation>
+        </message>
+        <message>
+            <source>Ice</source>
+            <translation>Ledus</translation>
+        </message>
+        <message>
+            <source>Core</source>
+            <translation>Kodols</translation>
+        </message>
+        <message>
+            <source>Trap</source>
+            <translation>Lamatas</translation>
+        </message>
+        <message>
+            <source>Unknown</source>
+            <translation>Nezināms</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Šī spēles darbība vairs nav pieejama.</translation>
+        </message>
+        <message>
+            <source>Game unavailable</source>
+            <translation>Spēle nav pieejama</translation>
+        </message>
+        <message>
+            <source>Ready in %1 s</source>
+            <translation>Gatavs pēc %1 s</translation>
+        </message>
+        <message>
+            <source>Choose your Core and Trap.</source>
+            <translation>Izvēlies savu Kodolu un Lamatas.</translation>
+        </message>
+        <message>
+            <source>Choice locked. Waiting for the other player.</source>
+            <translation>Izvēle apstiprināta. Gaida otru spēlētāju.</translation>
+        </message>
+        <message>
+            <source>Same element. Choose again.</source>
+            <translation>Tas pats elements. Izvēlies vēlreiz.</translation>
+        </message>
+        <message>
+            <source>Your turn</source>
+            <translation>Tavs gājiens</translation>
+        </message>
+        <message>
+            <source>%1's turn</source>
+            <translation>%1 gājiens</translation>
+        </message>
+        <message>
+            <source>Waiting for the other player</source>
+            <translation>Gaida otru spēlētāju</translation>
+        </message>
+        <message>
+            <source>Water beats Fire. Fire beats Ice. Ice beats Water.</source>
+            <translation>Ūdens uzvar uguni. Uguns uzvar ledu. Ledus uzvar ūdeni.</translation>
+        </message>
+        <message>
+            <source>Empty</source>
+            <translation>Tukšs</translation>
+        </message>
+        <message>
+            <source>Ice freezes Water</source>
+            <translation>Ledus sasaldē ūdeni</translation>
+        </message>
+        <message>
+            <source>Fire melts Ice</source>
+            <translation>Uguns izkausē ledu</translation>
+        </message>
+        <message>
+            <source>Water extinguishes Fire</source>
+            <translation>Ūdens nodzēš uguni</translation>
+        </message>
+        <message>
+            <source>Trap triggered</source>
+            <translation>Lamatas iedarbinātas</translation>
+        </message>
+        <message>
+            <source>Core captured</source>
+            <translation>Kodols ieņemts</translation>
+        </message>
+        <message>
+            <source>Find the Core. Watch for traps.</source>
+            <translation>Atrodi Kodolu. Uzmanies no lamatām.</translation>
         </message>
     </context>
 </TS>
