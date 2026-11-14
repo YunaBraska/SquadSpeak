@@ -90,8 +90,8 @@ dimensional character artwork matching the avatars, with transparent silhouettes
 Concealed opponents share one neutral character with no role clues. Selection,
 ownership markers and shadows are rendered separately by the app. Each viewer
 sees their own pieces on blue rounded bases and opponents on red angular bases.
-Setup uses the hover preview without a floating instruction figure. All figures
-must remain distinct and uncropped in compact and large windows.
+Setup uses the hover preview without floating cell labels or an instruction
+figure. All figures must remain distinct and uncropped in compact and large windows.
 
 A compact water → fire → ice → water icon circle replaces the permanent rule
 paragraph. The same icons become the nearby element choices during a fight.
@@ -141,6 +141,11 @@ Reject observer actions, unrelated channels, private/external chats and invalid
 commands. Check compact and large channel views, keyboard/touch controls, reduced
 motion, actual avatar consistency, adjacent element choices, close/leave/switch/quit
 confirmation and cancellation, and voice/chat remaining usable during play.
+
+An iPhone Simulator run in portrait and landscape is sufficient for the mobile
+game-interface acceptance. A physical iPhone is not required for this journey.
+Use native orientation and touch input, including Chat/Game switching, computer
+confirmation, setup, moves, scrollable help and cancelled/confirmed departure.
 
 ## Later candidates
 

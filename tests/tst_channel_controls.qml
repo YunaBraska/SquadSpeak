@@ -1094,7 +1094,7 @@ TestCase {
         verify(fixtures.pressAccessible(findChild(board, "gameInfo")))
         const info = findChild(board, "gameInformation")
         tryCompare(info, "opened", true)
-        const helpIcon = info.contentItem.children[0]
+        const helpIcon = findChild(info, "gameHelpElements")
         tryVerify(function() {
             const water = fixtures.renderedColor(helpIcon, helpIcon.width * 0.5, helpIcon.height * 0.23)
             return water.b > water.r * 1.5 && water.g > water.r * 1.5
@@ -1241,6 +1241,8 @@ TestCase {
     }
 
     function test_gameComputerSeat_data() {
+        if (Qt.platform.os === "ios" || Qt.platform.os === "android")
+            return [{tag: "portrait", landscape: false}, {tag: "landscape", landscape: true}]
         return [{tag: "portrait", width: 390, height: 760},
                 {tag: "landscape", width: 760, height: 390},
                 {tag: "wide", width: 1100, height: 780}]
@@ -1248,26 +1250,34 @@ TestCase {
     function test_gameComputerSeat(data) {
         const volume = audio.notificationVolume
         verify(audio.setNotificationVolume(0))
-        view.width = data.width; view.height = data.height
+        if (data.landscape !== undefined) orientChat(data.landscape)
+        else { view.width = data.width; view.height = data.height }
+        const tap = item => {
+            verify(item && item.visible && item.enabled)
+            verify(waitForPolish(view))
+            const finger = touchEvent(item)
+            finger.press(0, item, item.width / 2, item.height / 2).commit()
+            finger.release(0, item, item.width / 2, item.height / 2).commit()
+        }
         verify(fixtures.startHost()); verify(channel.joinSaved(channel.ownId))
         tryCompare(channel, "chatReady", true)
         view.chatExpanded = true
         const chat = findChild(view, "chatPanel")
-        verify(fixtures.pressAccessible(findChild(chat, "chatAdd")))
+        tap(findChild(chat, "chatAdd"))
         tryCompare(findChild(chat, "chatAddMenu"), "opened", true)
-        verify(fixtures.pressAccessible(findChild(chat, "startGame")))
+        tap(findChild(chat, "startGame"))
         const pane = findChild(view, "gamePane")
         tryVerify(function() { return pane.visible && pane.canAddComputer })
         const seat = visualChild(pane.contentItem, "gameAddComputer")
         verify(seat && seat.visible)
-        verify(fixtures.pressAccessible(seat))
+        tap(seat)
         const confirmation = findChild(pane, "gameComputerConfirmation")
         tryCompare(confirmation, "opened", true)
-        verify(fixtures.pressAccessible(confirmation.standardButton(Dialog.No)))
+        tap(confirmation.standardButton(Dialog.No))
         compare(channel.currentGame.players.length, 1)
         verify(seat.visible)
-        verify(fixtures.pressAccessible(seat)); tryCompare(confirmation, "opened", true)
-        verify(fixtures.pressAccessible(confirmation.standardButton(Dialog.Yes)))
+        tap(seat); tryCompare(confirmation, "opened", true)
+        tap(confirmation.standardButton(Dialog.Yes))
         tryVerify(function() { return channel.currentGame.players.length === 2 })
         compare(channel.currentGame.players[1].computer, true)
         compare(channel.participants.length, 1, "The computer occupies no voice seat")
@@ -1275,26 +1285,70 @@ TestCase {
         const avatar = visualChild(pane.contentItem, "gameAvatar_1")
         compare(avatar.systemMessage, true)
         compare(avatar.name, "Computer")
-        verify(fixtures.pressAccessible(visualChild(pane.contentItem, "gameCell_35")))
-        verify(fixtures.pressAccessible(visualChild(pane.contentItem, "gameCell_36")))
+        tap(visualChild(pane.contentItem, "gameCell_35"))
+        tap(visualChild(pane.contentItem, "gameCell_36"))
         tryVerify(function() { return channel.currentGame.phase === "playing" })
         const board = findChild(pane, "gameBoard")
         tryVerify(function() { return channel.currentGame.turn === channel.ownId })
         tryCompare(board, "effectRunning", false)
         const before = channel.currentGame.round
-        verify(fixtures.pressAccessible(visualChild(pane.contentItem, "gameCell_28")))
-        verify(fixtures.pressAccessible(visualChild(pane.contentItem, "gameCell_21")))
+        // The computer may move first. Pick an empty destination that cannot
+        // immediately start a duel, which is covered by the human journey.
+        const pieces = channel.currentGame.board
+        const adjacent = (a, b) => Math.abs(a % 7 - b % 7) + Math.abs(Math.floor(a / 7) - Math.floor(b / 7)) === 1
+        let from = -1, to = -1
+        for (let i = 0; i < pieces.length && from < 0; ++i) {
+            if (pieces[i].owner !== channel.ownId || pieces[i].kind !== "neutral") continue
+            const target = pieces.findIndex((piece, cell) => !piece.owner && adjacent(i, cell)
+                && !pieces.some((opponent, other) => opponent.owner && opponent.owner !== channel.ownId && adjacent(cell, other)))
+            if (target >= 0) { from = i; to = target }
+        }
+        verify(from >= 0 && to >= 0)
+        tap(visualChild(pane.contentItem, "gameCell_" + from))
+        tryCompare(pane, "selected", from)
+        tap(visualChild(pane.contentItem, "gameCell_" + to))
         tryVerify(function() { return channel.currentGame.round >= before + 2 })
         compare(channel.currentGame.turn, channel.ownId, "Computer returns the turn without user intervention")
+        const match = channel.currentGame.id
+        tap(visualChild(findChild(view, "gameViewTabs"), "gameChatTab"))
+        tryCompare(pane, "visible", false)
+        verify(channel.joined && channel.currentGame.id === match)
+        if (imageDirectory.length) verify(fixtures.saveWindow(view, imageDirectory + "/computer-chat-" + data.tag + ".png"))
+        tap(visualChild(findChild(view, "gameViewTabs"), "gamePlayTab"))
+        tryCompare(pane, "visible", true)
         verify(waitForPolish(view)); view.update(); verify(waitForRendering(pane.contentItem))
         verify(board.width > 150 && board.height > 120)
         const bottom = board.mapToItem(pane, 0, board.height)
         verify(bottom.y <= pane.height + 1)
         if (imageDirectory.length) verify(fixtures.saveWindow(view, imageDirectory + "/computer-" + data.tag + ".png"))
-        verify(fixtures.pressAccessible(findChild(pane, "gameLeave")))
+        tap(findChild(pane, "gameInfo"))
+        const help = findChild(pane, "gameInformation")
+        tryCompare(help, "opened", true)
+        if (imageDirectory.length) verify(fixtures.saveWindow(view, imageDirectory + "/computer-help-" + data.tag + ".png"))
+        const helpClose = help.standardButton(Dialog.Close)
+        const closeBottom = helpClose.mapToItem(view.contentItem, helpClose.width, helpClose.height)
+        verify(closeBottom.x <= view.width + 1 && closeBottom.y <= view.height + 1,
+               "Game information must remain closable on the visible screen")
+        const helpHistory = findChild(help, "gameHelpScroll").contentItem
+        if (helpHistory.contentHeight > helpHistory.height) {
+            const start = helpHistory.contentY, finger = touchEvent(helpHistory)
+            finger.press(0, helpHistory, helpHistory.width - 12, helpHistory.height * 0.8).commit()
+            for (let step = 1; step <= 4; ++step) {
+                finger.move(0, helpHistory, helpHistory.width - 12, helpHistory.height * (0.8 - step * 0.15)).commit()
+                waitForRendering(helpHistory)
+            }
+            finger.release(0, helpHistory, helpHistory.width - 12, helpHistory.height * 0.2).commit()
+            tryVerify(function() { return helpHistory.contentY > start }, 5000, "Game help must scroll to the remaining figures and rules")
+        }
+        tap(helpClose); tryCompare(help, "opened", false)
+        tap(findChild(pane, "gameLeave"))
         const departure = findChild(pane, "gameDepartureConfirmation")
         tryCompare(departure, "opened", true)
-        verify(fixtures.pressAccessible(departure.standardButton(Dialog.Ok)))
+        tap(departure.standardButton(Dialog.Cancel))
+        tryCompare(departure, "opened", false)
+        verify(channel.joined && channel.currentGame.id === match)
+        tap(findChild(pane, "gameLeave")); tryCompare(departure, "opened", true)
+        tap(departure.standardButton(Dialog.Ok))
         tryVerify(function() { return !channel.currentGame.id && !pane.visible })
         verify(channel.joined)
         verify(audio.setNotificationVolume(volume))

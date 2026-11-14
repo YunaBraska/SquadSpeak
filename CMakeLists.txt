@@ -507,7 +507,7 @@ if(BUILD_TESTING)
         squad_add_ios_test(controls_tests channel_controls
             -input "${CMAKE_CURRENT_SOURCE_DIR}/tests/tst_channel_controls.qml"
             DirectChannelControls::test_chatSendsOnlyAfterHostReceiptAndKeepsVoiceAvailable:English
-            DirectChannelControls::test_all64MembersAreReachableFromChannelSummary
+            DirectChannelControls::test_all64MembersAreReachableFromVoiceRoster
             DirectChannelControls::test_returningToChatPaintsWithoutScrolling
             DirectChannelControls::test_compactChatSendsPreparedImage
             DirectChannelControls::test_settingsContainProfileAndAudioInTheChannelWindow
@@ -515,9 +515,17 @@ if(BUILD_TESTING)
             DirectChannelControls::test_scrollbarTracksLoadedMessagesWithoutResizing
             DirectChannelControls::test_chatKeepsReadingPositionAcrossResize
             DirectChannelControls::test_wheelScrollsInsideOversizedMessage
-            DirectChannelControls::test_gameBoardChatOnlyJourney:compact
             DirectChannelControls::test_touchScrollsChatAndReleasesPtt)
         set_tests_properties(channel_controls PROPERTIES
+            TIMEOUT 180
+            ENVIRONMENT "SIMCTL_CHILD_SQUAD_TEST_ARTIFACTS=${CMAKE_BINARY_DIR}/smoke")
+        squad_add_ios_test(controls_tests game_controls
+            -input "${CMAKE_CURRENT_SOURCE_DIR}/tests/tst_channel_controls.qml"
+            DirectChannelControls::test_gameBoardVoiceJourney:compact
+            DirectChannelControls::test_gameComputerSeat
+            DirectChannelControls::test_gamePromptsStayWithTheirMatch
+            DirectChannelControls::test_gameResultKeepsPlayerProfilesAfterVoiceLeave)
+        set_tests_properties(game_controls PROPERTIES
             TIMEOUT 180
             ENVIRONMENT "SIMCTL_CHILD_SQUAD_TEST_ARTIFACTS=${CMAKE_BINARY_DIR}/smoke")
         squad_add_ios_test(channel_tests channel_contract
@@ -526,8 +534,8 @@ if(BUILD_TESTING)
             ownerCanKickBanAndUnblockWithoutJoining
             passwordsPreserveActiveMembersAndPersistPerHostSecrets
             remotePttNeedsSeparateApprovalAndCombinesControllers
-            gameChatOnlyBoardKeepsSetupPrivateAndHistoryUnchanged
-            gameDisconnectEndsMatchAndRestartHasNoStoredGame
+            voiceGameKeepsChoicesPrivateAndHistoryUnchanged
+            gameDisconnectForfeitsAndRestartHasNoStoredGame
             chatSurvivesHostRestartAndReplaysToNewApprovedParticipants)
         squad_add_ios_test(channel_tests native_identity_contract simulatorIdentitySurvivesReload)
         squad_add_ios_test(mixer_tests mixer_contract)
@@ -577,14 +585,14 @@ if(BUILD_TESTING)
             DirectChannelControls::test_platformSpecificLanguageControls
             DirectChannelControls::test_dockPreferenceIsMacOnlyAndKeepsVoiceState
             DirectChannelControls::test_chatSendsOnlyAfterHostReceiptAndKeepsVoiceAvailable:English
-            DirectChannelControls::test_all64MembersAreReachableFromChannelSummary
+            DirectChannelControls::test_all64MembersAreReachableFromVoiceRoster
             DirectChannelControls::test_returningToChatPaintsWithoutScrolling
             DirectChannelControls::test_settingsContainProfileAndAudioInTheChannelWindow
             DirectChannelControls::test_scrollLoadsOlderMessagesWithoutDownloadingThemAtOpen
             DirectChannelControls::test_scrollbarTracksLoadedMessagesWithoutResizing
             DirectChannelControls::test_chatKeepsReadingPositionAcrossResize
             DirectChannelControls::test_wheelScrollsInsideOversizedMessage
-            DirectChannelControls::test_gameBoardChatOnlyJourney:compact
+            DirectChannelControls::test_gameBoardVoiceJourney:compact
             DirectChannelControls::test_touchScrollsChatAndReleasesPtt)
         set_property(TEST channel_controls APPEND PROPERTY ENVIRONMENT "QT_ANDROID_NO_FULLSCREEN_KEYBOARD=1")
         squad_add_android_test(channel_tests channel_contract
@@ -593,8 +601,8 @@ if(BUILD_TESTING)
             ownerCanKickBanAndUnblockWithoutJoining
             passwordsPreserveActiveMembersAndPersistPerHostSecrets
             remotePttNeedsSeparateApprovalAndCombinesControllers
-            gameChatOnlyBoardKeepsSetupPrivateAndHistoryUnchanged
-            gameDisconnectEndsMatchAndRestartHasNoStoredGame
+            voiceGameKeepsChoicesPrivateAndHistoryUnchanged
+            gameDisconnectForfeitsAndRestartHasNoStoredGame
             chatSurvivesHostRestartAndReplaysToNewApprovedParticipants)
         squad_add_android_test(mixer_tests mixer_contract)
         squad_add_android_test(media_transport_tests media_transport_contract)

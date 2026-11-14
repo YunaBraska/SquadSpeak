@@ -323,31 +323,41 @@ Pane {
     }
     Dialog {
         id: help; objectName: "gameInformation"
-        anchors.centerIn: parent; width: Math.min(430, root.width - 24); modal: true
+        parent: Overlay.overlay; anchors.centerIn: parent
+        width: Math.min(430, parent.width - 24)
+        height: Math.min(implicitHeight, parent.height - 24)
+        modal: true
         title: qsTranslate("GamePane", "Information")
         standardButtons: Dialog.Close
-        contentItem: ColumnLayout {
-            spacing: 8
-            ElementsIcon { Layout.alignment: Qt.AlignHCenter; Layout.preferredWidth: 100; Layout.preferredHeight: 100 }
-            Label { text: qsTranslate("GamePane", "Water beats Fire. Fire beats Ice. Ice beats Water."); color: Theme.text; wrapMode: Text.Wrap; Layout.fillWidth: true }
-            GridLayout {
-                columns: 3; Layout.fillWidth: true
-                Repeater {
-                    model: ["neutral","trap","core","water","fire","ice"]
-                    Button {
-                        id: helpPiece
-                        required property string modelData
-                        Layout.fillWidth: true; implicitHeight: 78; padding: 4; hoverEnabled: true
-                        Accessible.name: board.label(modelData)
-                        onClicked: { helpDetail.text = modelData === "neutral" ? qsTranslate("GamePane", "Choose its element in its first fight. Ties let you choose again.") : modelData === "trap" ? qsTranslate("GamePane", "Stays put. Defeats every attacker.") : modelData === "core" ? qsTranslate("GamePane", "Stays put. Protect it to stay in the game.") : modelData === "water" ? qsTranslate("GamePane", "Water extinguishes Fire") : modelData === "fire" ? qsTranslate("GamePane", "Fire melts Ice") : qsTranslate("GamePane", "Ice freezes Water"); root.feedbackRequested("piece-" + modelData) }
-                        contentItem: ColumnLayout {
-                            Image { source: board.art(helpPiece.modelData); sourceSize: Qt.size(128,128); fillMode: Image.PreserveAspectFit; Layout.preferredWidth: 48; Layout.preferredHeight: 48; Layout.alignment: Qt.AlignHCenter }
-                            Label { text: board.label(helpPiece.modelData); color: Theme.text; Layout.alignment: Qt.AlignHCenter }
+        contentItem: ScrollView {
+            id: helpScroll; objectName: "gameHelpScroll"
+            contentWidth: availableWidth; clip: true
+            implicitHeight: helpContent.implicitHeight
+            ColumnLayout {
+                id: helpContent
+                width: helpScroll.availableWidth
+                spacing: 8
+                ElementsIcon { objectName: "gameHelpElements"; Layout.alignment: Qt.AlignHCenter; Layout.preferredWidth: 100; Layout.preferredHeight: 100 }
+                Label { text: qsTranslate("GamePane", "Water beats Fire. Fire beats Ice. Ice beats Water."); color: Theme.text; wrapMode: Text.Wrap; Layout.fillWidth: true }
+                GridLayout {
+                    columns: 3; Layout.fillWidth: true
+                    Repeater {
+                        model: ["neutral","trap","core","water","fire","ice"]
+                        Button {
+                            id: helpPiece
+                            required property string modelData
+                            Layout.fillWidth: true; implicitHeight: 78; padding: 4; hoverEnabled: true
+                            Accessible.name: board.label(modelData)
+                            onClicked: { helpDetail.text = modelData === "neutral" ? qsTranslate("GamePane", "Choose its element in its first fight. Ties let you choose again.") : modelData === "trap" ? qsTranslate("GamePane", "Stays put. Defeats every attacker.") : modelData === "core" ? qsTranslate("GamePane", "Stays put. Protect it to stay in the game.") : modelData === "water" ? qsTranslate("GamePane", "Water extinguishes Fire") : modelData === "fire" ? qsTranslate("GamePane", "Fire melts Ice") : qsTranslate("GamePane", "Ice freezes Water"); root.feedbackRequested("piece-" + modelData) }
+                            contentItem: ColumnLayout {
+                                Image { source: board.art(helpPiece.modelData); sourceSize: Qt.size(128,128); fillMode: Image.PreserveAspectFit; Layout.preferredWidth: 48; Layout.preferredHeight: 48; Layout.alignment: Qt.AlignHCenter }
+                                Label { text: board.label(helpPiece.modelData); color: Theme.text; Layout.alignment: Qt.AlignHCenter }
+                            }
                         }
                     }
                 }
+                Label { id: helpDetail; text: qsTranslate("GamePane", "Choose Trap, then Core. Move one square. Capture the other Core to win."); color: Theme.text; wrapMode: Text.Wrap; Layout.fillWidth: true }
             }
-            Label { id: helpDetail; text: qsTranslate("GamePane", "Choose Trap, then Core. Move one square. Capture the other Core to win."); color: Theme.text; wrapMode: Text.Wrap; Layout.fillWidth: true }
         }
     }
 }

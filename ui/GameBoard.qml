@@ -121,7 +121,6 @@ Item {
                         Behavior on scale { NumberAnimation { duration: Theme.reducedMotion ? 0 : 100 } }
                     }
                 }
-                TextToolTip { parent: cellButton; text: cellButton.Accessible.name; visible: cellButton.hovered || cellButton.activeFocus }
             }
         }
     }

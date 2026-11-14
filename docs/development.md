@@ -866,7 +866,7 @@ xcrun simctl boot "$DEVICE_ID"
 xcrun simctl install "$DEVICE_ID" build/ios-simulator/squadspeak.app
 xcrun simctl launch --console-pty --arch=x86_64 "$DEVICE_ID" app.squadspeak.desktop --smoke-test
 ctest --test-dir build/ios-simulator --output-on-failure \
-  -R '^(chat_content_contract|channel_controls|channel_contract|mixer_contract|media_transport_contract|video_contract)$'
+  -R '^(chat_content_contract|channel_controls|game_controls|channel_contract|mixer_contract|media_transport_contract|video_contract)$'
 ```
 
 CTest automatically installs each test app before launching it through `simctl`. It runs shared image, mixer and media-transport tests plus selected channel, video and QML interaction cases. Test bundles use the same device-family and launch metadata as the app. It does not register desktop capture or process-worker tests. Simulator tests run serially on the selected device and fail on Qt Test assertions even when `simctl` exits successfully. The app needs the Qt Multimedia and imageformats modules in the iOS kit, plus the target FFmpeg archives built by the dependency script.
@@ -883,6 +883,13 @@ request is a failed check, not evidence from a resized desktop window. On iPadOS
 26, some window modes reject programmatic orientation changes. Use a simulator
 window mode that permits rotation or perform device rotation before accepting
 that case. Keep software keyboards enabled when running these checks.
+
+`game_controls` covers the shared Chat/Game view, two-player play, the computer
+opponent, cancelled and confirmed departure, and retained result profiles. Its
+computer journey uses touch input in both native orientations and checks the
+scrollable information panel. The game and voice connection survive switching
+back to chat. Simulator results cover this interface journey, not physical audio
+quality or sustained device performance.
 
 The x86_64 Simulator codec disables x86 SIMD after color round trips exposed corruption under translation on Apple Silicon. These tests establish correctness, not native arm64 device performance. The remaining mobile work includes broader safe-area and touch review, local-network permission handling, notification integration and background lifecycle review. Native screen capture, microphone permissions, background hosting and physical hardware remain unsupported by this Simulator smoke path.
 
