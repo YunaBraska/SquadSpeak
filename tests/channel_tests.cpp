@@ -594,6 +594,8 @@ private slots:
         const auto localGame = controller.channel.currentGame().value("id").toString();
         QVERIFY(controller.channel.setRemoteMode(true));
         QTRY_VERIFY(controller.channel.remoteAllowed());
+        // Permission arrives before the restored remote game snapshot.
+        QTRY_COMPARE(controller.channel.gameView(id, gameId.toString(), host.channel.ownId()).value("id"), gameId);
         QVERIFY(controller.channel.gameView(controller.channel.ownId(), localGame, controller.channel.ownId()).isEmpty());
         QVERIFY(controller.channel.gameView(id, gameId.toString(), guest.channel.ownId()).isEmpty());
         QVERIFY(!controller.channel.gameAction("leave", {{"id", gameId}, {"round", 1}}, id, guest.channel.ownId()));
