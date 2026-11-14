@@ -1233,6 +1233,14 @@
             <source>Status unknown</source>
             <translation>Stádas anaithnid</translation>
         </message>
+        <message>
+            <source>Chat</source>
+            <translation>Comhrá</translation>
+        </message>
+        <message>
+            <source>Game</source>
+            <translation>Cluiche</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -3359,7 +3367,7 @@
         </message>
     </context>
     <context>
-        <name>GameWindow</name>
+        <name>GamePane</name>
         <message>
             <source>Finish your current game first.</source>
             <translation>Críochnaigh do chluiche reatha ar dtús.</translation>
@@ -3487,6 +3495,14 @@
         <message>
             <source>Stays put. Protect it to stay in the game.</source>
             <translation>Ní bhogann sé. Cosain é le fanacht sa chluiche.</translation>
+        </message>
+        <message>
+            <source>Computer</source>
+            <translation>Ríomhaire</translation>
+        </message>
+        <message>
+            <source>Play against the computer?</source>
+            <translation>Imirt in aghaidh an ríomhaire?</translation>
         </message>
     </context>
 </TS>

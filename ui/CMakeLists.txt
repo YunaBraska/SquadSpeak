@@ -6,7 +6,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     target_link_libraries(squadspeak PRIVATE "-framework AppKit")
 endif()
 set_target_properties(squadspeak PROPERTIES LINKER_LANGUAGE CXX)
-set(squad_qml_files Theme.qml PanelWindow.qml PanelDialog.qml TextToolTip.qml ActionButton.qml EntryField.qml ChoiceBox.qml OptionCheck.qml Glyph.qml ProviderIcon.qml AudioSettings.qml Channels.qml ChatPanel.qml GameCard.qml GameWindow.qml GameBoard.qml ElementsIcon.qml VoiceAvatar.qml AvatarAtlas.js SettingSlider.qml SettingToggle.qml SpectrumView.qml ScreenPanel.qml)
+set(squad_qml_files Theme.qml PanelWindow.qml PanelDialog.qml TextToolTip.qml ActionButton.qml EntryField.qml ChoiceBox.qml OptionCheck.qml Glyph.qml ProviderIcon.qml AudioSettings.qml Channels.qml ChatPanel.qml GameCard.qml GamePane.qml GameBoard.qml ElementsIcon.qml VoiceAvatar.qml AvatarAtlas.js SettingSlider.qml SettingToggle.qml SpectrumView.qml ScreenPanel.qml)
 set(squad_resource_files icons/app.png icons/teamspeak.png icons/mumble.png avatars/mossling.png avatars/courier.png avatars/mechanic.png avatars/system.png avatars/system-animated.png
     avatars/ember-dragon.png
     avatars/moon-owl.png

@@ -1233,6 +1233,14 @@
             <source>Status unknown</source>
             <translation>Hali haijulikani</translation>
         </message>
+        <message>
+            <source>Chat</source>
+            <translation>Gumzo</translation>
+        </message>
+        <message>
+            <source>Game</source>
+            <translation>Mchezo</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -3359,7 +3367,7 @@
         </message>
     </context>
     <context>
-        <name>GameWindow</name>
+        <name>GamePane</name>
         <message>
             <source>Finish your current game first.</source>
             <translation>Maliza kwanza mchezo wako wa sasa.</translation>
@@ -3487,6 +3495,14 @@
         <message>
             <source>Stays put. Protect it to stay in the game.</source>
             <translation>Hakisongei. Kilinde ili ubaki mchezoni.</translation>
+        </message>
+        <message>
+            <source>Computer</source>
+            <translation>Kompyuta</translation>
+        </message>
+        <message>
+            <source>Play against the computer?</source>
+            <translation>Ucheze dhidi ya kompyuta?</translation>
         </message>
     </context>
 </TS>

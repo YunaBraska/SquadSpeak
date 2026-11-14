@@ -1233,6 +1233,14 @@
             <source>Status unknown</source>
             <translation>অবস্থা অজানা</translation>
         </message>
+        <message>
+            <source>Chat</source>
+            <translation>চ্যাট</translation>
+        </message>
+        <message>
+            <source>Game</source>
+            <translation>খেলা</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -3359,7 +3367,7 @@
         </message>
     </context>
     <context>
-        <name>GameWindow</name>
+        <name>GamePane</name>
         <message>
             <source>Finish your current game first.</source>
             <translation>আগে তোমার বর্তমান খেলা শেষ করো।</translation>
@@ -3487,6 +3495,14 @@
         <message>
             <source>Stays put. Protect it to stay in the game.</source>
             <translation>নড়ে না। খেলায় থাকতে একে রক্ষা করো।</translation>
+        </message>
+        <message>
+            <source>Computer</source>
+            <translation>কম্পিউটার</translation>
+        </message>
+        <message>
+            <source>Play against the computer?</source>
+            <translation>কম্পিউটারের বিরুদ্ধে খেলবে?</translation>
         </message>
     </context>
 </TS>

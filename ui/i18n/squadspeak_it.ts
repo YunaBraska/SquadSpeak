@@ -1233,6 +1233,14 @@
             <source>Status unknown</source>
             <translation>Stato sconosciuto</translation>
         </message>
+        <message>
+            <source>Chat</source>
+            <translation>Chat</translation>
+        </message>
+        <message>
+            <source>Game</source>
+            <translation>Gioco</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -3359,7 +3367,7 @@
         </message>
     </context>
     <context>
-        <name>GameWindow</name>
+        <name>GamePane</name>
         <message>
             <source>Finish your current game first.</source>
             <translation>Termina prima la partita in corso.</translation>
@@ -3487,6 +3495,14 @@
         <message>
             <source>Stays put. Protect it to stay in the game.</source>
             <translation>Resta fermo. Proteggilo per restare in gioco.</translation>
+        </message>
+        <message>
+            <source>Computer</source>
+            <translation>Computer</translation>
+        </message>
+        <message>
+            <source>Play against the computer?</source>
+            <translation>Giocare contro il computer?</translation>
         </message>
     </context>
 </TS>

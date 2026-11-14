@@ -1233,6 +1233,14 @@
             <source>Status unknown</source>
             <translation>Būsena nežinoma</translation>
         </message>
+        <message>
+            <source>Chat</source>
+            <translation>Pokalbis</translation>
+        </message>
+        <message>
+            <source>Game</source>
+            <translation>Žaidimas</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -3359,7 +3367,7 @@
         </message>
     </context>
     <context>
-        <name>GameWindow</name>
+        <name>GamePane</name>
         <message>
             <source>Finish your current game first.</source>
             <translation>Pirmiausia užbaik dabartinį žaidimą.</translation>
@@ -3487,6 +3495,14 @@
         <message>
             <source>Stays put. Protect it to stay in the game.</source>
             <translation>Nejuda. Saugok jį, kad liktum žaidime.</translation>
+        </message>
+        <message>
+            <source>Computer</source>
+            <translation>Kompiuteris</translation>
+        </message>
+        <message>
+            <source>Play against the computer?</source>
+            <translation>Žaisti prieš kompiuterį?</translation>
         </message>
     </context>
 </TS>

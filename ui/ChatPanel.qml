@@ -351,7 +351,7 @@ Item {
                                         game: (root.current.games || []).find(g => g.id === messageRow.message.game) || ({})
                                         identity: root.current.ownId || ""
                                         canJoin: !!root.current.canStartGame
-                                        onActionRequested: (action, selection) => { root.sendError = root.network.gameAction(action, selection) ? "" : qsTranslate("GameWindow", "Finish your current game first.") }
+                                        onActionRequested: (action, selection) => { root.sendError = root.network.gameAction(action, selection) ? "" : qsTranslate("GamePane", "Finish your current game first.") }
                                         onOpenRequested: root.gameRequested(root.hostId, game.id)
                                     }
                                 }

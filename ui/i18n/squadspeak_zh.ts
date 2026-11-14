@@ -1233,6 +1233,14 @@
             <source>Status unknown</source>
             <translation>状态未知</translation>
         </message>
+        <message>
+            <source>Chat</source>
+            <translation>聊天</translation>
+        </message>
+        <message>
+            <source>Game</source>
+            <translation>游戏</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -3359,7 +3367,7 @@
         </message>
     </context>
     <context>
-        <name>GameWindow</name>
+        <name>GamePane</name>
         <message>
             <source>Finish your current game first.</source>
             <translation>请先完成当前游戏。</translation>
@@ -3487,6 +3495,14 @@
         <message>
             <source>Stays put. Protect it to stay in the game.</source>
             <translation>不能移动。保护它才能留在游戏中。</translation>
+        </message>
+        <message>
+            <source>Computer</source>
+            <translation>电脑</translation>
+        </message>
+        <message>
+            <source>Play against the computer?</source>
+            <translation>要与电脑对战吗？</translation>
         </message>
     </context>
 </TS>

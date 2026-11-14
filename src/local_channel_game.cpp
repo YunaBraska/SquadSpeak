@@ -70,7 +70,7 @@ bool LocalChannel::canStartGame() const {
 
 bool LocalChannel::gameAction(const QString& action, const QVariantMap& selection, const QString& host, const QString& identity) {
     const auto validActions = {QStringLiteral("start"), QStringLiteral("join"), QStringLiteral("dismiss"),
-        QStringLiteral("choose"), QStringLiteral("leave"), QStringLiteral("setup"), QStringLiteral("move")};
+        QStringLiteral("computer"), QStringLiteral("choose"), QStringLiteral("leave"), QStringLiteral("setup"), QStringLiteral("move")};
     if (std::find(validActions.begin(), validActions.end(), action) == validActions.end()
         || QJsonDocument(QJsonObject::fromVariantMap(selection)).toJson(QJsonDocument::Compact).size() > 256) return false;
     const auto actor = identity.isEmpty() ? remoteMode() ? remoteView_.value("ownId").toString() : ownId() : identity;
@@ -193,6 +193,34 @@ void LocalChannel::publishGame(const QString& id, QSslSocket* actor, const QStri
             {"request", socket == actor ? receipt : QString{}}});
     }
     if (!snapshot.active()) hostGames_.remove(id);
+    refreshComputerTimer();
+}
+
+void LocalChannel::refreshComputerTimer() {
+    const auto now = controlClock_.elapsed();
+    for (const auto& id : computerDue_.keys()) {
+        const auto game = hostGames_.constFind(id);
+        if (game == hostGames_.cend() || !game->computerPending()) computerDue_.remove(id);
+    }
+    for (auto game = hostGames_.cbegin(); game != hostGames_.cend(); ++game)
+        if (game->computerPending() && !computerDue_.contains(game.key())) computerDue_.insert(game.key(), now + 1200);
+    if (computerDue_.isEmpty()) { computerTimer_.stop(); return; }
+    const auto next = *std::min_element(computerDue_.cbegin(), computerDue_.cend());
+    computerTimer_.start(int(std::max<qint64>(1, next - now)));
+}
+
+void LocalChannel::playComputers() {
+    const auto now = controlClock_.elapsed();
+    const auto due = computerDue_;
+    for (auto action = due.cbegin(); action != due.cend(); ++action) {
+        if (action.value() > now) continue;
+        computerDue_.remove(action.key());
+        auto game = hostGames_.find(action.key());
+        if (game == hostGames_.end() || !game->computerPending()) continue;
+        const auto result = game->advanceComputer(now);
+        if (result.changed || game->end("cancelled")) publishGame(action.key());
+    }
+    refreshComputerTimer();
 }
 
 void LocalChannel::endGames(const QString& identity, const QString& reason) {

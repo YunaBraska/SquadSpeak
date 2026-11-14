@@ -1233,6 +1233,14 @@
             <source>Status unknown</source>
             <translation>స్థితి తెలియదు</translation>
         </message>
+        <message>
+            <source>Chat</source>
+            <translation>చాట్</translation>
+        </message>
+        <message>
+            <source>Game</source>
+            <translation>ఆట</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -3359,7 +3367,7 @@
         </message>
     </context>
     <context>
-        <name>GameWindow</name>
+        <name>GamePane</name>
         <message>
             <source>Finish your current game first.</source>
             <translation>ముందు నీ ప్రస్తుత ఆటను పూర్తి చేయి.</translation>
@@ -3487,6 +3495,14 @@
         <message>
             <source>Stays put. Protect it to stay in the game.</source>
             <translation>కదలదు. ఆటలో ఉండటానికి దీన్ని కాపాడు.</translation>
+        </message>
+        <message>
+            <source>Computer</source>
+            <translation>కంప్యూటర్</translation>
+        </message>
+        <message>
+            <source>Play against the computer?</source>
+            <translation>కంప్యూటర్‌తో ఆడాలా?</translation>
         </message>
     </context>
 </TS>

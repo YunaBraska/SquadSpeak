@@ -1233,6 +1233,14 @@
             <source>Status unknown</source>
             <translation>स्थिति अज्ञात</translation>
         </message>
+        <message>
+            <source>Chat</source>
+            <translation>चैट</translation>
+        </message>
+        <message>
+            <source>Game</source>
+            <translation>खेल</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -3359,7 +3367,7 @@
         </message>
     </context>
     <context>
-        <name>GameWindow</name>
+        <name>GamePane</name>
         <message>
             <source>Finish your current game first.</source>
             <translation>पहले अपना मौजूदा खेल पूरा करो।</translation>
@@ -3487,6 +3495,14 @@
         <message>
             <source>Stays put. Protect it to stay in the game.</source>
             <translation>हिलता नहीं। खेल में बने रहने के लिए इसे बचाओ।</translation>
+        </message>
+        <message>
+            <source>Computer</source>
+            <translation>कंप्यूटर</translation>
+        </message>
+        <message>
+            <source>Play against the computer?</source>
+            <translation>कंप्यूटर के विरुद्ध खेलें?</translation>
         </message>
     </context>
 </TS>

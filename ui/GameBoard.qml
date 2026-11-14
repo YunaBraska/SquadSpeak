@@ -6,6 +6,8 @@ Item {
     id: root
     required property var game
     required property string identity
+    readonly property color selfColor: "#348ddb"
+    readonly property color opponentColor: "#df5c65"
     property int core: -1
     property int trap: -1
     property bool settingUp: false
@@ -29,9 +31,9 @@ Item {
     function point(cell) { const t = tile(cell); return Qt.point(t % 7 * tileSize, Math.floor(t / 7) * tileSize) }
     function art(kind) { return Qt.resolvedUrl("games/elements/" + (["fire", "water", "ice", "core", "trap"].includes(kind) ? kind : "hidden") + ".png") }
     function label(kind) {
-        return kind === "fire" ? qsTranslate("GameWindow", "Fire") : kind === "water" ? qsTranslate("GameWindow", "Water")
-            : kind === "ice" ? qsTranslate("GameWindow", "Ice") : kind === "core" ? qsTranslate("GameWindow", "Core")
-            : kind === "trap" ? qsTranslate("GameWindow", "Trap") : kind === "neutral" ? qsTranslate("GameWindow", "Neutral") : qsTranslate("GameWindow", "Unknown")
+        return kind === "fire" ? qsTranslate("GamePane", "Fire") : kind === "water" ? qsTranslate("GamePane", "Water")
+            : kind === "ice" ? qsTranslate("GamePane", "Ice") : kind === "core" ? qsTranslate("GamePane", "Core")
+            : kind === "trap" ? qsTranslate("GamePane", "Trap") : kind === "neutral" ? qsTranslate("GamePane", "Neutral") : qsTranslate("GamePane", "Unknown")
     }
     function legal(cell) {
         return selected >= 0 && myTurn && ((game.board || [])[cell] || {}).owner !== identity
@@ -87,7 +89,7 @@ Item {
                 enabled: !!root.game.connected && !root.effectRunning && (root.settingUp ? candidate : root.myTurn)
                 opacity: 1
                 Accessible.name: String.fromCharCode(65 + cell % 7) + (Math.floor(cell / 7) + 1) + ": "
-                    + (piece.owner ? ((root.game.players || []).find(p => p.id === piece.owner) || {}).name + ", " + root.label(kind) : qsTranslate("GameWindow", "Empty"))
+                    + (piece.owner ? ((root.game.players || []).find(p => p.id === piece.owner) || {}).name + ", " + root.label(kind) : qsTranslate("GamePane", "Empty"))
                 onClicked: root.cellPicked(cell)
                 Keys.onLeftPressed: { const next = cells.itemAt(index - 1); if (next && next.enabled) next.forceActiveFocus() }
                 Keys.onRightPressed: { const next = cells.itemAt(index + 1); if (next && next.enabled) next.forceActiveFocus() }
@@ -102,9 +104,13 @@ Item {
                 contentItem: Item {
                     opacity: cellButton.hiddenForMotion ? 0 : 1
                     Rectangle {
-                        anchors.horizontalCenter: parent.horizontalCenter; y: parent.height * 0.82
-                        width: parent.width * 0.6; height: parent.height * 0.1; radius: height / 2
-                        color: "#33000000"; visible: !!cellButton.kind
+                        objectName: "gameTeam_" + cellButton.cell
+                        anchors.horizontalCenter: parent.horizontalCenter; y: parent.height * 0.80
+                        width: parent.width * 0.76; height: parent.height * 0.17
+                        radius: cellButton.own ? height / 2 : 2
+                        color: cellButton.own ? root.selfColor : root.opponentColor
+                        border.color: Qt.darker(color, 1.4); border.width: 1
+                        visible: !!cellButton.kind
                     }
                     Image {
                         objectName: "gamePiece_" + cellButton.cell
@@ -113,11 +119,6 @@ Item {
                         sourceSize: Qt.size(256, 256); fillMode: Image.PreserveAspectFit; smooth: true; mipmap: true
                         scale: root.selected === cellButton.cell || (cellButton.candidate && cellButton.hovered) ? 1.05 : 1
                         Behavior on scale { NumberAnimation { duration: Theme.reducedMotion ? 0 : 100 } }
-                    }
-                    Rectangle {
-                        anchors.bottom: parent.bottom; anchors.horizontalCenter: parent.horizontalCenter
-                        width: parent.width * 0.5; height: 3; radius: 2; visible: !!cellButton.kind
-                        color: cellButton.own ? Theme.accent : Theme.warning
                     }
                 }
                 TextToolTip { parent: cellButton; text: cellButton.Accessible.name; visible: cellButton.hovered || cellButton.activeFocus }

@@ -1233,6 +1233,14 @@
             <source>Status unknown</source>
             <translation>Okänd status</translation>
         </message>
+        <message>
+            <source>Chat</source>
+            <translation>Chatt</translation>
+        </message>
+        <message>
+            <source>Game</source>
+            <translation>Spel</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -3359,7 +3367,7 @@
         </message>
     </context>
     <context>
-        <name>GameWindow</name>
+        <name>GamePane</name>
         <message>
             <source>Finish your current game first.</source>
             <translation>Avsluta ditt nuvarande spel först.</translation>
@@ -3487,6 +3495,14 @@
         <message>
             <source>Stays put. Protect it to stay in the game.</source>
             <translation>Står still. Skydda den för att vara kvar i spelet.</translation>
+        </message>
+        <message>
+            <source>Computer</source>
+            <translation>Dator</translation>
+        </message>
+        <message>
+            <source>Play against the computer?</source>
+            <translation>Spela mot datorn?</translation>
         </message>
     </context>
 </TS>

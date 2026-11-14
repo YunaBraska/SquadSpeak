@@ -1233,6 +1233,14 @@
             <source>Status unknown</source>
             <translation>Durum bilinmiyor</translation>
         </message>
+        <message>
+            <source>Chat</source>
+            <translation>Sohbet</translation>
+        </message>
+        <message>
+            <source>Game</source>
+            <translation>Oyun</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -3359,7 +3367,7 @@
         </message>
     </context>
     <context>
-        <name>GameWindow</name>
+        <name>GamePane</name>
         <message>
             <source>Finish your current game first.</source>
             <translation>Önce mevcut oyununu bitir.</translation>
@@ -3487,6 +3495,14 @@
         <message>
             <source>Stays put. Protect it to stay in the game.</source>
             <translation>Hareket etmez. Oyunda kalmak için onu koru.</translation>
+        </message>
+        <message>
+            <source>Computer</source>
+            <translation>Bilgisayar</translation>
+        </message>
+        <message>
+            <source>Play against the computer?</source>
+            <translation>Bilgisayara karşı oynansın mı?</translation>
         </message>
     </context>
 </TS>

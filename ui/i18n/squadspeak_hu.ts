@@ -1233,6 +1233,14 @@
             <source>Status unknown</source>
             <translation>Ismeretlen állapot</translation>
         </message>
+        <message>
+            <source>Chat</source>
+            <translation>Csevegés</translation>
+        </message>
+        <message>
+            <source>Game</source>
+            <translation>Játék</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -3359,7 +3367,7 @@
         </message>
     </context>
     <context>
-        <name>GameWindow</name>
+        <name>GamePane</name>
         <message>
             <source>Finish your current game first.</source>
             <translation>Előbb fejezd be a jelenlegi játékodat.</translation>
@@ -3487,6 +3495,14 @@
         <message>
             <source>Stays put. Protect it to stay in the game.</source>
             <translation>Nem mozog. Védd meg, hogy játékban maradj.</translation>
+        </message>
+        <message>
+            <source>Computer</source>
+            <translation>Számítógép</translation>
+        </message>
+        <message>
+            <source>Play against the computer?</source>
+            <translation>Játszol a számítógép ellen?</translation>
         </message>
     </context>
 </TS>

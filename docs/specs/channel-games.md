@@ -15,8 +15,17 @@ offer this action.
 
 The chat invitation contains the creator, game name, element-circle icon and Join.
 It disappears when full or cancelled. The same icon marks a channel with a game.
-Play opens in one separate window, using the players' current voice-chat avatars
-and names. Existing participants focus that window instead of joining again.
+Play uses the channel's compact Chat / Game switch on every platform. Switching
+views preserves the game and voice connection. There is no separate game window.
+The same voice avatars, speaking levels, animation preference and mute indicators
+are used in chat and game. Existing participants open their game instead of joining again.
+
+The creator can click the empty opponent seat and confirm a local computer opponent.
+It occupies the second seat and removes the invitation. A concurrent human join and
+computer request cannot create an extra player. The computer uses the same game
+actions and only its redacted player view, never secret opposing roles or choices.
+One host-owned timer paces computer actions beyond combat animation and cancels
+work when the game ends. It creates no account, voice participant or persisted data.
 
 Setup proceeds by hovering and clicking one Trap, then one Core on distinct home
 squares. Selection immediately readies the player and locks setup. Ready avatars
@@ -25,8 +34,8 @@ countdown or extra Ready button. First-fight and tied-fight element choices appe
 beside the player's fighting piece. The information button provides concise rules
 and tappable figure descriptions. Gameplay itself has no permanent rule paragraph.
 
-The door button and window close request confirmation before leaving an active
-game. Voice leave, channel switch and application quit use the same confirmation.
+The door button requests confirmation before leaving an active game.
+Switching to chat does not leave it. Voice leave, channel switch and application quit use the same confirmation.
 Cancel preserves both game and voice. Confirm leaves the game. In a two-player
 game a known departure, disconnect or existing transport timeout awards the other
 player a win, including during setup. A lone invitation is cancelled. Unknown host
@@ -37,11 +46,11 @@ Games reuse authenticated encrypted channel transport and its access rules. Ther
 is no game server, database or account. The channel host remains authoritative,
 while the participant who creates a game is its owner. Secret setup and pending
 choices must stay private. Repeated or stale commands cannot create extra players,
-turns, games or windows. Disconnect never automatically rejoins a game.
+turns or games. Disconnect never automatically rejoins a game.
 
 Only active games remain on the host. Results are sent once to participants and
 removed from host memory. Clients retain current invitations and at most one
-personal result, dismissed when its window closes or a new game starts. No game
+personal result, dismissed with its close action or when a new game starts. No game
 cards enter persisted chat history. A broken connection may miss the remote result
 and instead show a local disconnection outcome. No result-replay cache is added.
 Late voice participants receive current open invitations. Capability negotiation
@@ -79,7 +88,9 @@ extinguishing and freezing effects explain outcomes while keeping the board visi
 effects follow SquadSpeak's style and do not reuse ICQ assets. Pieces use detailed,
 dimensional character artwork matching the avatars, with transparent silhouettes.
 Concealed opponents share one neutral character with no role clues. Selection,
-ownership markers and shadows are rendered separately by the app. All figures
+ownership markers and shadows are rendered separately by the app. Each viewer
+sees their own pieces on blue rounded bases and opponents on red angular bases.
+Setup uses the hover preview without a floating instruction figure. All figures
 must remain distinct and uncropped in compact and large windows.
 
 A compact water → fire → ice → water icon circle replaces the permanent rule
@@ -125,9 +136,9 @@ or overlapping role selections, automatic readiness, legal/illegal moves, altern
 turns, neutral first encounters, one-sided choice against an established element,
 all elemental outcomes, hidden tie choices, retained elements, trap and target encounters,
 replayed commands and terminal outcomes through the actual UI and TLS path.
-Verify Leave, window reopening, disconnect, host stop, late readers and restart.
+Verify Leave, view reopening, disconnect, host stop, late readers and restart.
 Reject observer actions, unrelated channels, private/external chats and invalid
-commands. Check compact and large game windows, keyboard/touch controls, reduced
+commands. Check compact and large channel views, keyboard/touch controls, reduced
 motion, actual avatar consistency, adjacent element choices, close/leave/switch/quit
 confirmation and cancellation, and voice/chat remaining usable during play.
 

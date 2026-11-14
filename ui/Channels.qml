@@ -8,28 +8,22 @@ import "AvatarAtlas.js" as Atlas
 PanelWindow {
     id: root
     property var language: audio.language
-    GameWindow {
-        id: gameWindow; network: root.network; voice: root.voice
-        onFeedbackRequested: kind => { if (root.voice.eventSounds) audio.playEvent(kind) }
-    }
-    property string openedGame: ""
+    property bool gameSelected: false
     signal quitConfirmed()
     function confirmQuit() {
-        gameWindow.confirmDeparture(function() { root.quitConfirmed() }, null, network.currentGame, network.ownId)
+        gamePane.confirmDeparture(function() { root.quitConfirmed() }, null, network.currentGame, network.ownId)
     }
     readonly property var currentGame: current.currentGame || ({})
     onCurrentGameChanged: {
         const game = currentGame
-        if (game.id && game.id !== openedGame && ["waiting", "preparing", "playing", "duel"].includes(game.phase)) {
-            openedGame = game.id
-            gameWindow.openGame(game.hostId, game.id)
+        if (game.id && (game.id !== gamePane.gameId || gamePane.identity !== (current.ownId || network.ownId)) && ["waiting", "preparing", "playing", "duel"].includes(game.phase)) {
+            gamePane.openGame(game.hostId, game.id)
         }
     }
-    Component.onDestruction: gameWindow.hide()
     Connections {
         target: root.network
         function onExternalJoinConfirmationRequested() {
-            gameWindow.confirmDeparture(function() { root.network.confirmExternalJoin(true) },
+            gamePane.confirmDeparture(function() { root.network.confirmExternalJoin(true) },
                                         function() { root.network.confirmExternalJoin(false) })
         }
     }
@@ -324,9 +318,10 @@ PanelWindow {
     readonly property var voiceChannel: channelList.find(c => c.id === activeHost) || ({})
     property double avatarTime: Date.now()
     Timer { interval: root.animateAvatars ? Atlas.frameInterval() : 80; running: root.visible; repeat: true; onTriggered: root.avatarTime = Date.now() }
-    readonly property bool showChat: chatExpanded && inspectedHost.length > 0
+    readonly property bool showChat: chatExpanded && (inspectedHost.length > 0 || (gameSelected && !!gamePane.game.id))
     readonly property bool viewingVoice: !!current.joined && inspectedHost === activeHost
     onInspectedHostChanged: {
+        if (inspectedHost) gameSelected = false
         chatExpanded = true
         Qt.callLater(root.updateChannelRows)
     }
@@ -591,13 +586,13 @@ PanelWindow {
         }
         if (entry && entry.private) return openPrivate(entry)
         if (entry && ["pending", "password", "connecting"].includes(entry.access)) return openHostChat(id)
-        gameWindow.confirmDeparture(function() {
+        gamePane.confirmDeparture(function() {
             if (root.remote) root.network.remoteAction("join", {hostId: id}); else root.network.joinSaved(id)
         })
         return true
     }
     function leaveHost() {
-        gameWindow.confirmDeparture(function() {
+        gamePane.confirmDeparture(function() {
             if (root.remote) root.network.remoteAction("leave", {}); else root.network.leave()
         })
         return true
@@ -609,7 +604,7 @@ PanelWindow {
     }
     function closeSettings() { settings.close() }
     function controlDevice(id) {
-        gameWindow.confirmDeparture(function() {
+        gamePane.confirmDeparture(function() {
             if (!root.network.chooseRemoteOffer(id)) {
                 if (remoteTargets.visible) remoteTargets.error = root.network.controlStatus
                 else root.showNotice(root.network.controlStatus)
@@ -2223,6 +2218,44 @@ PanelWindow {
                 }
                 contentItem: ColumnLayout {
                     spacing: 6
+                    TabBar {
+                        id: gameTabs
+                        spacing: 0
+                        objectName: "gameViewTabs"
+                        visible: !!gamePane.game.id
+                        Layout.alignment: Qt.AlignHCenter
+                        implicitWidth: 240
+                        Layout.preferredWidth: Math.min(240, conversation.availableWidth)
+                        currentIndex: root.gameSelected ? 1 : 0
+                        background: Rectangle { radius: Theme.controlRadius; color: Theme.raised }
+                        Repeater {
+                            model: [qsTr("Chat"), qsTr("Game")]
+                            TabButton {
+                                required property int index
+                                required property string modelData
+                                objectName: index === 0 ? "gameChatTab" : "gamePlayTab"
+                                text: modelData; width: gameTabs.width / 2; implicitHeight: 34
+                                onClicked: root.gameSelected = index === 1
+                                contentItem: Label { text: parent.text; color: parent.checked ? Theme.accentText : Theme.text; horizontalAlignment: Text.AlignHCenter; verticalAlignment: Text.AlignVCenter; elide: Text.ElideRight }
+                                background: Rectangle { radius: Theme.controlRadius; color: parent.checked ? Theme.accent : "transparent" }
+                            }
+                        }
+                    }
+                    GamePane {
+                        id: gamePane
+                        network: root.network; voice: root.voice
+                        animatedAvatars: root.animateAvatars; animationTime: root.avatarTime
+                        memberLevel: function(id) { return root.memberLevel(id) }
+                        visible: root.gameSelected && !!game.id
+                        Layout.fillWidth: true; Layout.fillHeight: true
+                        onActivated: { root.details = null; root.chatExpanded = true; root.gameSelected = true; forceActiveFocus() }
+                        onClosed: root.gameSelected = false
+                        onFeedbackRequested: kind => { if (root.voice.eventSounds) audio.playEvent(kind) }
+                    }
+                    ColumnLayout {
+                        visible: !root.gameSelected || !gamePane.game.id
+                        Layout.fillWidth: true; Layout.fillHeight: true
+                        spacing: 6
                     Rectangle {
                         objectName: "chatContext"
                         visible: !root.viewingVoice
@@ -2297,11 +2330,12 @@ PanelWindow {
                         animationTime: root.avatarTime
                         memberLevel: function(id) { return root.inspectedHost === root.activeHost ? root.memberLevel(id) : 0 }
                         emptyContent: root.viewingVoice && !root.inspectedChannel.private ? voiceRoster : null
-                        onGameRequested: (host, id) => gameWindow.openGame(host, id)
+                        onGameRequested: (host, id) => gamePane.openGame(host, id)
                         onMemberRequested: (member, contextual) => root.memberOptions(member, root.inspectedHost, contextual)
-                        active: root.visible && conversation.visible
+                        active: root.visible && conversation.visible && !root.gameSelected
                         readable: active && root.active && !settings.visible
                         Layout.fillWidth: true; Layout.fillHeight: true
+                    }
                     }
                 }
             }
@@ -2329,7 +2363,7 @@ PanelWindow {
             anchors.fill: parent; anchors.margins: 8; spacing: 4
             RowLayout {
                 objectName: "voiceActivity"
-                visible: !!root.current.joined && !root.compactInput
+                visible: !!root.current.joined && !root.compactInput && !gamePane.visible
                 Layout.fillWidth: true; spacing: 4
                 ListView {
                     id: activeSpeakers

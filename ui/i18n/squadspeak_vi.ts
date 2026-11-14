@@ -1233,6 +1233,14 @@
             <source>Status unknown</source>
             <translation>Chưa rõ trạng thái</translation>
         </message>
+        <message>
+            <source>Chat</source>
+            <translation>Trò chuyện</translation>
+        </message>
+        <message>
+            <source>Game</source>
+            <translation>Trò chơi</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -3359,7 +3367,7 @@
         </message>
     </context>
     <context>
-        <name>GameWindow</name>
+        <name>GamePane</name>
         <message>
             <source>Finish your current game first.</source>
             <translation>Hãy kết thúc trò chơi hiện tại trước.</translation>
@@ -3487,6 +3495,14 @@
         <message>
             <source>Stays put. Protect it to stay in the game.</source>
             <translation>Đứng yên. Bảo vệ nó để tiếp tục chơi.</translation>
+        </message>
+        <message>
+            <source>Computer</source>
+            <translation>Máy tính</translation>
+        </message>
+        <message>
+            <source>Play against the computer?</source>
+            <translation>Chơi với máy tính?</translation>
         </message>
     </context>
 </TS>

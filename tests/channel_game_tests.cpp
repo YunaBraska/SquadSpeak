@@ -36,6 +36,142 @@ struct Match final {
 class ChannelGameTests final : public QObject {
     Q_OBJECT
 private slots:
+    void computerSeatIsCreatorOnlyAndAtomicWithHumanJoin_data() {
+        QTest::addColumn<bool>("humanFirst");
+        QTest::newRow("computer-first") << false;
+        QTest::newRow("human-first") << true;
+    }
+    void computerSeatIsCreatorOnlyAndAtomicWithHumanJoin() {
+        QFETCH(bool, humanFirst);
+        Match match(3);
+        QVERIFY(match.game.start(owner, "Owner", match.now++, 123456));
+        match.id = match.view().value("id").toString();
+        const auto waiting = match.view();
+        QVERIFY(!match.game.act(match.id, 1, observer, "Observer", "computer", {}, match.now++).accepted);
+        QVERIFY(!match.act(0, "computer", {}, 0).accepted);
+        QVERIFY(!match.act(0, "computer", {{"extra", true}}).accepted);
+        QCOMPARE(match.view(), waiting);
+        if (humanFirst) {
+            QVERIFY(match.act(1, "join").changed);
+            QVERIFY(!match.act(0, "computer").accepted);
+            QVERIFY(!match.game.computerPending());
+        } else {
+            QVERIFY(match.act(0, "computer").changed);
+            QCOMPARE(match.view().value("phase").toString(), QString("preparing"));
+            const auto players = match.view().value("players").toArray();
+            QCOMPARE(players.size(), 2);
+            QCOMPARE(players[1].toObject().value("id").toString(), QString("computer"));
+            QVERIFY(players[1].toObject().value("computer").toBool());
+            const auto full = match.view();
+            QVERIFY(!match.act(0, "computer").accepted);
+            QVERIFY(!match.act(1, "join").accepted);
+            QCOMPARE(match.view(), full);
+            QVERIFY(match.game.computerPending());
+            QVERIFY(match.game.advanceComputer(match.now++).changed);
+            QVERIFY(!match.game.computerPending());
+            QVERIFY(match.view("computer").value("setup").toBool());
+            for (const auto& viewer : {owner, observer, QString("computer")}) QVERIFY(ChannelGame::validView(match.view(viewer)));
+            auto malformed = match.view(); auto people = malformed.value("players").toArray();
+            auto computer = people[1].toObject(); computer.insert("computer", false); people[1] = computer;
+            malformed.insert("players", people); QVERIFY(!ChannelGame::validView(malformed));
+            for (const auto& marker : {QJsonValue("true"), QJsonValue(1), QJsonValue(QJsonValue::Null)}) {
+                malformed = match.view(); people = malformed.value("players").toArray();
+                computer = people[1].toObject(); computer.insert("computer", marker); people[1] = computer;
+                malformed.insert("players", people); QVERIFY(!ChannelGame::validView(malformed));
+            }
+            malformed = match.view(); people = malformed.value("players").toArray();
+            auto human = people[0].toObject(); human.insert("computer", true); people[0] = human;
+            malformed.insert("players", people); QVERIFY(!ChannelGame::validView(malformed));
+        }
+    }
+
+    void computerDecisionsIgnoreOpponentHiddenRolesAndPendingChoice() {
+        Match first(7), second(7);
+        for (auto* match : {&first, &second}) {
+            QVERIFY(match->game.start(owner, "Owner", match->now++, 123456));
+            match->id = match->view().value("id").toString();
+            QVERIFY(match->act(0, "computer").accepted);
+        }
+        QVERIFY(first.act(0, "setup", {{"core", 35}, {"trap", 36}}).accepted);
+        QVERIFY(second.act(0, "setup", {{"core", 40}, {"trap", 41}}).accepted);
+        for (auto* match : {&first, &second}) QVERIFY(match->game.advanceComputer(match->now++).changed);
+        QCOMPARE(first.view("computer").value("board"), second.view("computer").value("board"));
+        QCOMPARE(first.view().value("turn"), second.view().value("turn"));
+        const auto board = first.view("computer").value("board").toArray();
+        int column = 0;
+        while (board[7 + column].toObject().value("kind") != "neutral") ++column;
+        const auto computerMove = [&](Match& match, int from, int to) {
+            return match.game.act(match.id, match.view().value("round").toInt(), "computer", "Computer", "move",
+                {{"from", from}, {"to", to}}, match.now++).accepted;
+        };
+        const bool humanStarts = first.view().value("turn") == owner;
+        for (auto* match : {&first, &second}) {
+            if (humanStarts) {
+                QVERIFY(match->move(0, 28 + column, 21 + column));
+                QVERIFY(computerMove(*match, 7 + column, 14 + column));
+                QVERIFY(match->move(0, 21 + column, 14 + column));
+            } else {
+                QVERIFY(computerMove(*match, 7 + column, 14 + column));
+                QVERIFY(match->move(0, 28 + column, 21 + column));
+                QVERIFY(computerMove(*match, 14 + column, 21 + column));
+            }
+            QCOMPARE(match->view().value("phase").toString(), QString("duel"));
+        }
+        QVERIFY(first.act(0, "choose", {{"choice", "fire"}}).accepted);
+        QVERIFY(second.act(0, "choose", {{"choice", "water"}}).accepted);
+        QVERIFY(first.view("computer").value("choice").toString().isEmpty());
+        QVERIFY(second.view("computer").value("choice").toString().isEmpty());
+        QVERIFY(first.game.advanceComputer(first.now++).changed);
+        QVERIFY(second.game.advanceComputer(second.now++).changed);
+        const auto computerRole = humanStarts ? "defence" : "attack";
+        QCOMPARE(first.view().value("lastBattle").toObject().value(computerRole), second.view().value("lastBattle").toObject().value(computerRole));
+        for (auto* match : {&first, &second}) QVERIFY(match->game.end("left", owner));
+        for (auto* match : {&first, &second}) {
+            const auto terminal = match->view();
+            QVERIFY(!match->game.computerPending());
+            QVERIFY(!match->game.advanceComputer(match->now++).accepted);
+            QCOMPARE(match->view(), terminal);
+        }
+    }
+
+    void seededComputerMatchCompletesThroughLegalActions() {
+        Match match(13);
+        QRandomGenerator human(41);
+        QVERIFY(match.game.start(owner, "Owner", match.now++, 123456));
+        match.id = match.view().value("id").toString();
+        QVERIFY(match.act(0, "computer").accepted);
+        QVERIFY(match.act(0, "setup", {{"core", 35}, {"trap", 36}}).accepted);
+        int actions = 0;
+        while (match.game.active() && actions++ < 2000) {
+            if (match.game.computerPending()) {
+                QVERIFY(match.game.advanceComputer(match.now++).changed);
+            } else if (match.view().value("phase") == "duel") {
+                const QStringList elements{"fire", "water", "ice"};
+                QVERIFY(match.act(0, "choose", {{"choice", elements[int(human.bounded(3))]}}).changed);
+            } else {
+                QCOMPARE(match.view().value("turn").toString(), owner);
+                const auto board = match.view().value("board").toArray();
+                QVector<QJsonObject> moves;
+                for (int from = 0; from < 42; ++from) {
+                    const auto piece = board[from].toObject();
+                    if (piece.value("owner") != owner || piece.value("kind") == "core" || piece.value("kind") == "trap") continue;
+                    for (int to = 0; to < 42; ++to)
+                        if (std::abs(from / 7 - to / 7) + std::abs(from % 7 - to % 7) == 1
+                            && board[to].toObject().value("owner") != owner) moves.append(QJsonObject{{"from", from}, {"to", to}});
+                }
+                if (moves.isEmpty()) QVERIFY(match.act(0, "leave").changed);
+                else QVERIFY(match.act(0, "move", moves[int(human.bounded(quint32(moves.size())))]).changed);
+            }
+            QVERIFY(ChannelGame::validView(match.view(owner)));
+            QVERIFY(ChannelGame::validView(match.view("computer")));
+        }
+        QVERIFY2(actions < 2000, "The seeded public match must complete within its bounded action budget.");
+        QCOMPARE(match.view().value("phase").toString(), QString("finished"));
+        QVERIFY(match.view().value("winner") == owner || match.view().value("winner") == "computer");
+        QVERIFY(!match.game.computerPending());
+        QVERIFY(ChannelGame::validView(match.view(observer)));
+    }
+
     void elementalBattles_data() {
         QTest::addColumn<QString>("attack");
         QTest::addColumn<QString>("defence");

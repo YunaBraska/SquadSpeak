@@ -449,6 +449,8 @@ LocalChannel::LocalChannel(VoiceSession& session, QString storageFile, std::opti
     connect(this, &LocalChannel::controlChanged, this, observeContacts);
     connect(&externalTimer_, &QTimer::timeout, this, &LocalChannel::pollExternal);
     controlClock_.start();
+    computerTimer_.setSingleShot(true);
+    connect(&computerTimer_, &QTimer::timeout, this, &LocalChannel::playComputers);
     controlTimer_.setInterval(2000);
     connect(&controlTimer_, &QTimer::timeout, this, [this] {
         if (!controller_) { connectControl(); return; }
@@ -1455,6 +1457,7 @@ bool LocalChannel::listen(const QHostAddress& address, quint16 port) {
 }
 
 bool LocalChannel::stopHost() {
+    computerTimer_.stop(); computerDue_.clear();
     for (const auto& id : hostGames_.keys()) {
         auto game = hostGames_.find(id);
         if (game != hostGames_.end() && game->end("disconnected")) publishGame(id);
@@ -1466,6 +1469,7 @@ bool LocalChannel::stopHost() {
     const auto sockets = peers_.keys();
     for (auto* socket : sockets) if (!peers_.value(socket).controller) socket->abort();
     hostGames_.clear();
+    computerTimer_.stop(); computerDue_.clear();
     history_.reset(); hostChatKey_.fill(0); hostChatKey_.clear(); hostChatEpoch_.clear();
     discovery_.hosts.remove(channelId());
     if (service_) { service_->discovery_.hosts.remove(channelId()); emit service_->hostsChanged(); }

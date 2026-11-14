@@ -1233,6 +1233,14 @@
             <source>Status unknown</source>
             <translation>Ba a san hali ba</translation>
         </message>
+        <message>
+            <source>Chat</source>
+            <translation>Hira</translation>
+        </message>
+        <message>
+            <source>Game</source>
+            <translation>Wasa</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -3359,7 +3367,7 @@
         </message>
     </context>
     <context>
-        <name>GameWindow</name>
+        <name>GamePane</name>
         <message>
             <source>Finish your current game first.</source>
             <translation>Ka fara gama wasanka na yanzu.</translation>
@@ -3487,6 +3495,14 @@
         <message>
             <source>Stays put. Protect it to stay in the game.</source>
             <translation>Ba ta motsi. Kare ta don ka ci gaba da wasa.</translation>
+        </message>
+        <message>
+            <source>Computer</source>
+            <translation>Kwamfuta</translation>
+        </message>
+        <message>
+            <source>Play against the computer?</source>
+            <translation>A yi wasa da kwamfuta?</translation>
         </message>
     </context>
 </TS>

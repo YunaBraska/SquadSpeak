@@ -1233,6 +1233,14 @@
             <source>Status unknown</source>
             <translation>Άγνωστη κατάσταση</translation>
         </message>
+        <message>
+            <source>Chat</source>
+            <translation>Συνομιλία</translation>
+        </message>
+        <message>
+            <source>Game</source>
+            <translation>Παιχνίδι</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -3359,7 +3367,7 @@
         </message>
     </context>
     <context>
-        <name>GameWindow</name>
+        <name>GamePane</name>
         <message>
             <source>Finish your current game first.</source>
             <translation>Ολοκλήρωσε πρώτα το τρέχον παιχνίδι σου.</translation>
@@ -3487,6 +3495,14 @@
         <message>
             <source>Stays put. Protect it to stay in the game.</source>
             <translation>Μένει ακίνητος. Προστάτεψέ τον για να μείνεις στο παιχνίδι.</translation>
+        </message>
+        <message>
+            <source>Computer</source>
+            <translation>Υπολογιστής</translation>
+        </message>
+        <message>
+            <source>Play against the computer?</source>
+            <translation>Παιχνίδι εναντίον του υπολογιστή;</translation>
         </message>
     </context>
 </TS>

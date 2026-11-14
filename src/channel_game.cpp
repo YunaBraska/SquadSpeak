@@ -66,6 +66,14 @@ ChannelGame::Result ChannelGame::act(const QString& id, int round, const QString
         const QString& name, const QString& action, const QJsonObject& selection, qint64 now) {
     if (!active() || id != id_ || now < 0) return {};
     auto player = std::find_if(players_.begin(), players_.end(), [&](const Player& p) { return p.id == sender; });
+    if (action == "computer") {
+        if (sender != players_.front().id || phase_ != "waiting" || players_.size() != 1
+            || round != round_ || !selection.isEmpty()) return {};
+        players_.push_back({"computer", "Computer"});
+        for (int i = 0; i < 14; ++i) board_[i] = {1, "neutral", false};
+        phase_ = "preparing";
+        return {true, true};
+    }
     if (action == "join") {
         if (!selection.isEmpty()) return {};
         if (player != players_.end()) return {true, false};
@@ -169,6 +177,74 @@ bool ChannelGame::end(const QString& reason, const QString& departingIdentity) {
     return true;
 }
 
+bool ChannelGame::computerPending() const {
+    if (!active() || !contains("computer")) return false;
+    const auto own = view("computer");
+    const auto phase = own.value("phase").toString();
+    if (phase == "preparing") return !own.value("setup").toBool();
+    if (phase == "playing") return own.value("turn") == "computer";
+    if (phase != "duel" || !own.value("choice").toString().isEmpty()) return false;
+    const auto board = own.value("board").toArray();
+    const auto duel = own.value("duel").toObject();
+    const auto a = board[duel.value("from").toInt()].toObject(), b = board[duel.value("to").toInt()].toObject();
+    const auto fighter = a.value("owner") == "computer" ? a : b;
+    const auto opponent = a.value("owner") == "computer" ? b : a;
+    return chooses(fighter.value("kind").toString(), opponent.value("kind").toString());
+}
+
+ChannelGame::Result ChannelGame::advanceComputer(qint64 now) {
+    if (now < 0 || !computerPending()) return {};
+    // All policy inputs come from the computer's redacted view. In particular,
+    // the human's private roles and uncommitted element never enter this policy.
+    const auto own = view("computer");
+    const auto phase = own.value("phase").toString();
+    const auto board = own.value("board").toArray();
+    QString action;
+    QJsonObject selection;
+    if (phase == "preparing") {
+        const auto core = int(random_.bounded(7));
+        auto trap = int(random_.bounded(13));
+        if (trap >= core) ++trap;
+        action = "setup"; selection = {{"core", core}, {"trap", trap}};
+    } else if (phase == "duel") {
+        const auto duel = own.value("duel").toObject();
+        const auto a = board[duel.value("from").toInt()].toObject(), b = board[duel.value("to").toInt()].toObject();
+        const auto fighter = a.value("owner") == "computer" ? a : b;
+        const auto opponent = a.value("owner") == "computer" ? b : a;
+        const QStringList elements{"fire", "water", "ice"};
+        auto choice = elements[int(random_.bounded(3))];
+        if (fighter.value("kind") == "neutral" && element(opponent.value("kind").toString()))
+            for (const auto& candidate : elements) if (beats(candidate, opponent.value("kind").toString())) choice = candidate;
+        action = "choose"; selection = {{"choice", choice}};
+    } else {
+        QVector<QJsonObject> best;
+        int bestScore = std::numeric_limits<int>::min();
+        for (int from = 0; from < 42; ++from) {
+            const auto piece = board[from].toObject();
+            const auto kind = piece.value("kind").toString();
+            if (piece.value("owner") != "computer" || !movable(kind)) continue;
+            for (const auto to : {from - 7, from + 7, from - 1, from + 1}) {
+                if (to < 0 || to >= 42 || !adjacent(from, to)) continue;
+                const auto target = board[to].toObject();
+                if (target.value("owner") == "computer") continue;
+                int score = (to / 7 - from / 7) * 10;
+                if (!target.isEmpty()) {
+                    const auto defence = target.value("kind").toString();
+                    score += defence == "trap" ? -1000 : defence == "core" ? 1000
+                        : defence == "hidden" ? 35 : kind == "neutral" && element(defence) ? 80
+                        : beats(kind, defence) ? 100 : beats(defence, kind) || (element(kind) && defence == "neutral") ? -100 : 20;
+                }
+                if (score > bestScore) { bestScore = score; best.clear(); }
+                if (score == bestScore) best.append(QJsonObject{{"from", from}, {"to", to}});
+            }
+        }
+        // A trapped computer can resign through the same transition as a person.
+        action = best.isEmpty() ? "leave" : "move";
+        if (!best.isEmpty()) selection = best[int(random_.bounded(quint32(best.size())))];
+    }
+    return act(own.value("id").toString(), own.value("round").toInt(), "computer", "Computer", action, selection, now);
+}
+
 QJsonObject ChannelGame::view(const QString& viewer) const {
     if (id_.isEmpty()) return {};
     QJsonArray players, board;
@@ -177,7 +253,9 @@ QJsonObject ChannelGame::view(const QString& viewer) const {
     bool setup = false;
     for (qsizetype i = 0; i < players_.size(); ++i) {
         const auto& player = players_[i];
-        players.append(QJsonObject{{"id", player.id}, {"name", player.name}, {"ready", player.core >= 0}, {"chosen", !player.choice.isEmpty()}});
+        QJsonObject entry{{"id", player.id}, {"name", player.name}, {"ready", player.core >= 0}, {"chosen", !player.choice.isEmpty()}};
+        if (player.id == "computer") entry.insert("computer", true);
+        players.append(entry);
         if (player.id == viewer) {
             ownChoice = player.choice; setup = player.core >= 0;
             if (setup) {
@@ -222,7 +300,10 @@ bool ChannelGame::validView(const QJsonObject& state) {
     for (const auto& value : players) {
         const auto player = value.toObject();
         const auto id = player.value("id").toString();
-        if (!value.isObject() || !hasFields(player, {"id", "name", "ready", "chosen"}) || !playerId(id) || ids.contains(id)
+        const bool computer = player.value("computer").toBool();
+        if (!value.isObject() || !hasFields(player, {"id", "name", "ready", "chosen"})
+            || (player.contains("computer") && !player.value("computer").isBool())
+            || (computer ? id != "computer" || ids.size() != 1 : !playerId(id)) || ids.contains(id)
             || !playerName(player.value("name")) || !player.value("ready").isBool() || !player.value("chosen").isBool()
             || ((phase == "playing" || phase == "duel" || (phase == "finished" && !forfeit)) && !player.value("ready").toBool())) return false;
         ids.append(id);

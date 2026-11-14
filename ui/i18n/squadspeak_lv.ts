@@ -1233,6 +1233,14 @@
             <source>Status unknown</source>
             <translation>Statuss nav zināms</translation>
         </message>
+        <message>
+            <source>Chat</source>
+            <translation>Saruna</translation>
+        </message>
+        <message>
+            <source>Game</source>
+            <translation>Spēle</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -3359,7 +3367,7 @@
         </message>
     </context>
     <context>
-        <name>GameWindow</name>
+        <name>GamePane</name>
         <message>
             <source>Finish your current game first.</source>
             <translation>Vispirms pabeidz pašreizējo spēli.</translation>
@@ -3487,6 +3495,14 @@
         <message>
             <source>Stays put. Protect it to stay in the game.</source>
             <translation>Nekustas. Sargā to, lai paliktu spēlē.</translation>
+        </message>
+        <message>
+            <source>Computer</source>
+            <translation>Dators</translation>
+        </message>
+        <message>
+            <source>Play against the computer?</source>
+            <translation>Spēlēt pret datoru?</translation>
         </message>
     </context>
 </TS>

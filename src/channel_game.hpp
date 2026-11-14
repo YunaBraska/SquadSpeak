@@ -17,6 +17,8 @@ public:
                const QString& action, const QJsonObject& selection, qint64 now);
     // A known departing participant forfeits a two-player game. Unknown shutdown cancels it.
     bool end(const QString& reason, const QString& departingIdentity = {});
+    [[nodiscard]] bool computerPending() const;
+    Result advanceComputer(qint64 now);
     [[nodiscard]] bool active() const;
     [[nodiscard]] bool contains(const QString& player) const;
     [[nodiscard]] QJsonObject view(const QString& viewer) const;

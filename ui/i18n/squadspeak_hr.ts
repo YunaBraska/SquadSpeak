@@ -1233,6 +1233,14 @@
             <source>Status unknown</source>
             <translation>Nepoznat status</translation>
         </message>
+        <message>
+            <source>Chat</source>
+            <translation>Razgovor</translation>
+        </message>
+        <message>
+            <source>Game</source>
+            <translation>Igra</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -3359,7 +3367,7 @@
         </message>
     </context>
     <context>
-        <name>GameWindow</name>
+        <name>GamePane</name>
         <message>
             <source>Finish your current game first.</source>
             <translation>Prvo završi trenutačnu igru.</translation>
@@ -3487,6 +3495,14 @@
         <message>
             <source>Stays put. Protect it to stay in the game.</source>
             <translation>Ne miče se. Čuvaj je kako bi ostao u igri.</translation>
+        </message>
+        <message>
+            <source>Computer</source>
+            <translation>Računalo</translation>
+        </message>
+        <message>
+            <source>Play against the computer?</source>
+            <translation>Igrati protiv računala?</translation>
         </message>
     </context>
 </TS>

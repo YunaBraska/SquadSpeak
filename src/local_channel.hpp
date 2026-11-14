@@ -687,9 +687,13 @@ private:
     void sendGames(QSslSocket* socket);
     void publishGame(const QString& id, QSslSocket* actor = nullptr, const QString& receipt = {});
     void endGames(const QString& identity, const QString& reason);
+    void refreshComputerTimer();
+    void playComputers();
     QString pendingGameHost_, pendingGameRequest_;
     QVariantMap detachedGame_;
     QHash<QString, ChannelGame> hostGames_;
+    QHash<QString, qint64> computerDue_;
+    QTimer computerTimer_;
     QTimer controlTimer_;
     QTimer maintenanceTimer_;
     QTimer autoJoinTimer_;

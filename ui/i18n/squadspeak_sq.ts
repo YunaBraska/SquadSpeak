@@ -1233,6 +1233,14 @@
             <source>Status unknown</source>
             <translation>Gjendje e panjohur</translation>
         </message>
+        <message>
+            <source>Chat</source>
+            <translation>Bisedë</translation>
+        </message>
+        <message>
+            <source>Game</source>
+            <translation>Lojë</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -3359,7 +3367,7 @@
         </message>
     </context>
     <context>
-        <name>GameWindow</name>
+        <name>GamePane</name>
         <message>
             <source>Finish your current game first.</source>
             <translation>Përfundo fillimisht lojën aktuale.</translation>
@@ -3487,6 +3495,14 @@
         <message>
             <source>Stays put. Protect it to stay in the game.</source>
             <translation>Nuk lëviz. Mbroje për të qëndruar në lojë.</translation>
+        </message>
+        <message>
+            <source>Computer</source>
+            <translation>Kompjuter</translation>
+        </message>
+        <message>
+            <source>Play against the computer?</source>
+            <translation>Të luash kundër kompjuterit?</translation>
         </message>
     </context>
 </TS>
