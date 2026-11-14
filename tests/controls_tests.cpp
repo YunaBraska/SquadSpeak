@@ -21,6 +21,7 @@
 #include <QQmlPropertyMap>
 #include <QDir>
 #include <QQuickWindow>
+#include <QQuickStyle>
 #include <QQuickItem>
 #include <QWheelEvent>
 #include <QPointingDevice>
@@ -759,6 +760,7 @@ signals:
 
 int main(int argc, char** argv) {
     QTEST_SET_MAIN_SOURCE_PATH
+    QQuickStyle::setStyle("Basic");
     QGuiApplication app(argc, argv);
     previousMessageHandler = qInstallMessageHandler(failOnQuickTestStartupWarning);
     // Audio and network fixtures must be destroyed before Qt's application services.

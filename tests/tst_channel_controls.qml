@@ -1072,6 +1072,8 @@ TestCase {
         const beforeTab = ownGame().round
         verify(tab("gameChatTab")); tryCompare(panel, "visible", true)
         compare(panel.active, true)
+        tryVerify(function() { return fixtures.portraitHasDetail(findChild(panel, "messageAvatar_" + remoteChannel.ownId)) }, 5000,
+            "The message portrait paints after switching from the game")
         if (imageDirectory.length) verify(fixtures.saveWindow(view, imageDirectory + "/game-chat-" + data.tag + ".png"))
         verify(tab("gamePlayTab")); tryCompare(board, "visible", true)
         compare(ownGame().round, beforeTab)
@@ -1285,6 +1287,9 @@ TestCase {
         const avatar = visualChild(pane.contentItem, "gameAvatar_1")
         compare(avatar.systemMessage, true)
         compare(avatar.name, "Computer")
+        const players = [visualChild(pane.contentItem, "gameAvatar_0"), avatar]
+        tryVerify(function() { return fixtures.portraitsHaveDetail(players) }, 5000,
+            "Both player portraits are painted at game start")
         tap(visualChild(pane.contentItem, "gameCell_35"))
         tap(visualChild(pane.contentItem, "gameCell_36"))
         tryVerify(function() { return channel.currentGame.phase === "playing" })
@@ -1317,6 +1322,8 @@ TestCase {
         tap(visualChild(findChild(view, "gameViewTabs"), "gamePlayTab"))
         tryCompare(pane, "visible", true)
         verify(waitForPolish(view)); view.update(); verify(waitForRendering(pane.contentItem))
+        tryVerify(function() { return fixtures.portraitsHaveDetail(players) }, 5000,
+            "Both player portraits repaint after returning from chat")
         verify(board.width > 150 && board.height > 120)
         const bottom = board.mapToItem(pane, 0, board.height)
         verify(bottom.y <= pane.height + 1)
@@ -1324,8 +1331,14 @@ TestCase {
         tap(findChild(pane, "gameInfo"))
         const help = findChild(pane, "gameInformation")
         tryCompare(help, "opened", true)
-        if (imageDirectory.length) verify(fixtures.saveWindow(view, imageDirectory + "/computer-help-" + data.tag + ".png"))
+        const helpIcon = findChild(help, "gameHelpElements")
+        tryVerify(function() {
+            const water = fixtures.renderedColor(helpIcon, helpIcon.width * 0.5, helpIcon.height * 0.23)
+            return water.b > water.r * 1.5 && water.g > water.r * 1.5
+        }, 2000, "Help paints its element circle before capture")
         const helpClose = help.standardButton(Dialog.Close)
+        verify(waitForPolish(view))
+        if (imageDirectory.length) verify(fixtures.saveWindow(view, imageDirectory + "/computer-help-" + data.tag + ".png"))
         const closeBottom = helpClose.mapToItem(view.contentItem, helpClose.width, helpClose.height)
         verify(closeBottom.x <= view.width + 1 && closeBottom.y <= view.height + 1,
                "Game information must remain closable on the visible screen")
@@ -1344,6 +1357,8 @@ TestCase {
         tap(findChild(pane, "gameLeave"))
         const departure = findChild(pane, "gameDepartureConfirmation")
         tryCompare(departure, "opened", true)
+        verify(waitForPolish(view)); verify(waitForFrame(pane.contentItem))
+        if (imageDirectory.length) verify(fixtures.saveWindow(view, imageDirectory + "/computer-leave-" + data.tag + ".png"))
         tap(departure.standardButton(Dialog.Cancel))
         tryCompare(departure, "opened", false)
         verify(channel.joined && channel.currentGame.id === match)

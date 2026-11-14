@@ -887,7 +887,9 @@ that case. Keep software keyboards enabled when running these checks.
 `game_controls` covers the shared Chat/Game view, two-player play, the computer
 opponent, cancelled and confirmed departure, and retained result profiles. Its
 computer journey uses touch input in both native orientations and checks the
-scrollable information panel. The game and voice connection survive switching
+scrollable information panel. The test runner selects the same Basic control
+style as the app and verifies painted portraits before capturing screenshots.
+The game and voice connection survive switching
 back to chat. Simulator results cover this interface journey, not physical audio
 quality or sustained device performance.
 
