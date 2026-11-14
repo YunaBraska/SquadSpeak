@@ -541,19 +541,29 @@ private slots:
         QVERIFY(observer.channel.games().isEmpty());
     }
 
+    void gameOwnedChannelsAndRemoteControlShareAuthorization_data() {
+        QTest::addColumn<bool>("additionalChannel");
+        QTest::newRow("primary") << false;
+#if !SQUADSPEAK_STORE_BUILD
+        QTest::newRow("additional") << true;
+#endif
+    }
+
     void gameOwnedChannelsAndRemoteControlShareAuthorization() {
-#if SQUADSPEAK_STORE_BUILD
-        QSKIP("Additional owned channels are unavailable in store builds.");
-#else
+        QFETCH(bool, additionalChannel);
         QTemporaryDir dir;
         Device host(dir.filePath("host"), "Owner"), guest(dir.filePath("guest"), "Guest"), controller(dir.filePath("controller"), "Controller");
-        QVERIFY(host.listenWithUdp()); QVERIFY(host.session.setSupporterEnabled(true));
-        const auto id = host.channel.addOwnedChannel("Games"); QVERIFY(!id.isEmpty());
-        auto* second = host.channel.ownChannel(id); QVERIFY(second);
-        QVERIFY(second->decide(guest.channel.ownId(), true));
-        QVERIFY(guest.channel.openAddress("127.0.0.1:" + QString::number(host.channel.port())));
-        QTRY_VERIFY(!guest.channel.directBusy());
-        QTRY_VERIFY(guest.channel.availableHosts().size() >= 2);
+        QVERIFY(host.listenWithUdp());
+        if (additionalChannel) QVERIFY(host.session.setSupporterEnabled(true));
+        const auto id = additionalChannel ? host.channel.addOwnedChannel("Games") : host.channel.ownId();
+        QVERIFY(!id.isEmpty());
+        auto* owner = host.channel.ownChannel(id); QVERIFY(owner);
+        QVERIFY(owner->decide(guest.channel.ownId(), true));
+        if (additionalChannel) {
+            QVERIFY(guest.channel.openAddress("127.0.0.1:" + QString::number(host.channel.port())));
+            QTRY_VERIFY(!guest.channel.directBusy());
+            QTRY_VERIFY(guest.channel.availableHosts().size() >= 2);
+        }
         QVERIFY(host.channel.join(id, "127.0.0.1", host.channel.port()));
         QVERIFY(guest.channel.join(id, "127.0.0.1", host.channel.port()));
         QTRY_VERIFY(host.channel.canStartGame()); QTRY_VERIFY(guest.channel.chatReady());
@@ -594,6 +604,8 @@ private slots:
         QVERIFY(controller.channel.setRemoteMode(false));
         QVERIFY(controller.channel.gameView(id, gameId.toString(), host.channel.ownId()).isEmpty());
         QVERIFY(!controller.channel.gameAction("leave", {{"id", gameId}, {"round", 1}}, id, host.channel.ownId()));
+        QVERIFY(host.channel.gameAction("dismiss", {{"id", gameId}}));
+        if (!additionalChannel) host.channel.leave();
         QVERIFY(host.join(host.channel));
         QTRY_VERIFY(host.channel.canStartGame()); QVERIFY(host.channel.games().isEmpty());
         QVERIFY(host.channel.gameAction("join", {{"id", gameId}, {"round", 1}}));
@@ -602,7 +614,6 @@ private slots:
         QTRY_VERIFY(host.channel.chatReady()); QVERIFY(host.channel.privateChat());
         QVERIFY(!host.channel.canStartGame());
         QVERIFY(!host.channel.gameAction("start", {{"id", ""}, {"round", 0}}));
-#endif
     }
 
     void gameParticipationIsExclusiveAcrossHosts() {

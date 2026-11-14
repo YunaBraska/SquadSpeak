@@ -1325,6 +1325,9 @@ TestCase {
         tryVerify(function() { return fixtures.portraitsHaveDetail(players) }, 5000,
             "Both player portraits repaint after returning from chat")
         verify(board.width > 150 && board.height > 120)
+        if (pane.shortWide)
+            verify(board.height >= pane.height * 0.85,
+                   "Landscape play uses the freed header space for the board")
         const bottom = board.mapToItem(pane, 0, board.height)
         verify(bottom.y <= pane.height + 1)
         if (imageDirectory.length) verify(fixtures.saveWindow(view, imageDirectory + "/computer-" + data.tag + ".png"))

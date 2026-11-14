@@ -182,16 +182,15 @@ Pane {
         RowLayout {
             id: gameHeader
             width: parent.width
+            z: 2
             ActionButton { objectName: "gameInfo"; text: qsTranslate("GamePane", "Information"); glyph: "info"; iconOnly: true; flat: true; onClicked: help.open() }
-            Item { Layout.fillWidth: true }
-            ElementsIcon { Layout.preferredWidth: 42; Layout.preferredHeight: 42 }
             Item { Layout.fillWidth: true }
             ActionButton { objectName: "gameLeave"; text: root.playing ? qsTranslate("GameCard", "Leave") : qsTranslate("Channels", "Close"); glyph: "leave"; iconOnly: true; flat: true; onClicked: root.close() }
         }
         RowLayout {
             id: gamePlayers
             width: parent.width
-            y: root.shortWide ? gameHeader.height + (parent.height - gameHeader.height - height) / 2 : gameHeader.height + 4
+            y: root.shortWide ? (parent.height - height) / 2 : gameHeader.height + 4
             spacing: root.shortWide ? board.width + 20 : 12
             z: 1
             visible: !["finished", "cancelled"].includes(root.game.phase) || board.effectRunning
@@ -234,7 +233,7 @@ Pane {
         Item {
             id: boardArea
             width: parent.width
-            y: gameHeader.height + (root.shortWide ? 4 : gamePlayers.height + 8)
+            y: root.shortWide ? 0 : gameHeader.height + gamePlayers.height + 8
             height: Math.max(0, parent.height - y - (gameError.visible ? gameError.implicitHeight + 4 : 0))
             GameBoard {
                 id: board

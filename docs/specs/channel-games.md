@@ -45,8 +45,9 @@ Victory and defeat show both avatars, remaining pieces and captured pieces.
 Games reuse authenticated encrypted channel transport and its access rules. There
 is no game server, database or account. The channel host remains authoritative,
 while the participant who creates a game is its owner. Secret setup and pending
-choices must stay private. Repeated or stale commands cannot create extra players,
-turns or games. Disconnect never automatically rejoins a game.
+choices must stay private. Clients serialize admission requests. The host rejects
+simultaneous participation and stale turn actions, so neither can add a player or
+advance a turn twice. Disconnect never automatically rejoins a game.
 
 Only active games remain on the host. Results are sent once to participants and
 removed from host memory. Clients retain current invitations and at most one
@@ -93,8 +94,11 @@ sees their own pieces on blue rounded bases and opponents on red angular bases.
 Setup uses the hover preview without floating cell labels or an instruction
 figure. All figures must remain distinct and uncropped in compact and large windows.
 
-A compact water → fire → ice → water icon circle replaces the permanent rule
-paragraph. The same icons become the nearby element choices during a fight.
+A compact water → fire → ice → water icon circle explains the rules in the
+information panel and identifies invitations. The playing view has no permanent
+rule paragraph or element circle. In compact landscape, the board uses the full
+available height with Information and Leave in the side margins. The same
+element icons become the nearby choices during a fight.
 An accessible description preserves the complete rule. Movement, required choices,
 combat outcomes and game end have short local cues through App/Bot Sounds.
 Voice mute does not mute these cues. Disabled notification sounds or zero app
