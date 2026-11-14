@@ -3421,10 +3421,6 @@
             <translation>Wähle deinen Kern und deine Falle.</translation>
         </message>
         <message>
-            <source>Choice locked. Waiting for the other player.</source>
-            <translation>Auswahl bestätigt. Warten auf den anderen Spieler.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>Gleiches Element. Wähle erneut.</translation>
         </message>
@@ -3469,8 +3465,12 @@
             <translation>Kern erobert</translation>
         </message>
         <message>
-            <source>Find the Core. Watch for traps.</source>
-            <translation>Finde den Kern. Achte auf Fallen.</translation>
+            <source>Neutral</source>
+            <translation>Neutral</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>Wähle ein Element</translation>
         </message>
     </context>
 </TS>

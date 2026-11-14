@@ -26,6 +26,8 @@ bool integer(const QJsonValue& value, qint64 low, qint64 high) {
     return value.isDouble() && number >= low && number <= high && value.toDouble() == double(number);
 }
 bool element(const QString& kind) { return kind == "fire" || kind == "water" || kind == "ice"; }
+bool movable(const QString& kind) { return kind == "neutral" || element(kind); }
+bool chooses(const QString& own, const QString& other) { return own == "neutral" || (element(own) && own == other); }
 bool beats(const QString& attack, const QString& defence) {
     return (attack == "water" && defence == "fire") || (attack == "fire" && defence == "ice")
         || (attack == "ice" && defence == "water");
@@ -56,7 +58,7 @@ bool ChannelGame::start(const QString& owner, const QString& name, qint64 now, q
     duelFrom_ = -1; duelTo_ = -1; lastBattle_ = {}; board_ = {};
     created_ = created;
     players_ = {{owner, name}};
-    for (int i = 28; i < 42; ++i) board_[i] = {0, "hidden", false};
+    for (int i = 28; i < 42; ++i) board_[i] = {0, "neutral", false};
     return true;
 }
 
@@ -69,7 +71,7 @@ ChannelGame::Result ChannelGame::act(const QString& id, int round, const QString
         if (player != players_.end()) return {true, false};
         if (players_.size() == 2 || phase_ != "waiting" || !playerId(sender) || !playerName(name)) return {};
         players_.push_back({sender, name});
-        for (int i = 0; i < 14; ++i) board_[i] = {1, "hidden", false};
+        for (int i = 0; i < 14; ++i) board_[i] = {1, "neutral", false};
         phase_ = "preparing";
         advance(now);
         return {true, true};
@@ -85,11 +87,8 @@ ChannelGame::Result ChannelGame::act(const QString& id, int round, const QString
         const auto home = who == 0 ? 28 : 0;
         if (core == trap || core < home || core >= home + 14 || trap < home || trap >= home + 14) return {};
         if (player->core == core && player->trap == trap) return {true, false};
-        QVector<QString> elements{"fire", "fire", "fire", "fire", "water", "water", "water", "water", "ice", "ice", "ice", "ice"};
-        for (int i = int(elements.size()) - 1; i > 0; --i) std::swap(elements[i], elements[int(random_.bounded(quint32(i + 1)))]);
-        int next = 0;
         for (int i = home; i < home + 14; ++i)
-            board_[i] = {who, i == core ? QString("core") : i == trap ? QString("trap") : elements[next++], false};
+            board_[i] = {who, i == core ? QString("core") : i == trap ? QString("trap") : QString("neutral"), false};
         player->core = core; player->trap = trap; player->readyAt = now + 10000;
         return {true, true};
     }
@@ -106,7 +105,7 @@ ChannelGame::Result ChannelGame::act(const QString& id, int round, const QString
         if (phase_ != "playing" || turn_ != who || !fields(selection, {"from", "to"})
             || !integer(selection.value("from"), 0, 41) || !integer(selection.value("to"), 0, 41)) return {};
         from = selection.value("from").toInt(); to = selection.value("to").toInt();
-        if (!adjacent(from, to) || board_[from].owner != who || !element(board_[from].kind) || board_[to].owner == who) return {};
+        if (!adjacent(from, to) || board_[from].owner != who || !movable(board_[from].kind) || board_[to].owner == who) return {};
         if (board_[to].owner < 0) {
             board_[to] = board_[from]; board_[from] = {};
             turn_ = 1 - turn_;
@@ -118,21 +117,25 @@ ChannelGame::Result ChannelGame::act(const QString& id, int round, const QString
     } else if (action == "choose") {
         if (phase_ != "duel" || !fields(selection, {"choice"}) || !selection.value("choice").isString()
             || !element(selection.value("choice").toString())) return {};
+        from = duelFrom_; to = duelTo_;
+        const bool attackChooses = chooses(board_[from].kind, board_[to].kind);
+        const bool defenceChooses = chooses(board_[to].kind, board_[from].kind);
+        if (!(board_[from].owner == who ? attackChooses : defenceChooses)) return {};
         const auto choice = selection.value("choice").toString();
         if (!player->choice.isEmpty()) return {player->choice == choice, false};
         player->choice = choice;
-        if (players_[0].choice.isEmpty() || players_[1].choice.isEmpty()) return {true, true};
-        from = duelFrom_; to = duelTo_;
-        board_[from].kind = players_[board_[from].owner].choice;
-        board_[to].kind = players_[board_[to].owner].choice;
+        if ((attackChooses && players_[board_[from].owner].choice.isEmpty())
+            || (defenceChooses && players_[board_[to].owner].choice.isEmpty())) return {true, true};
+        if (attackChooses) board_[from].kind = players_[board_[from].owner].choice;
+        if (defenceChooses) board_[to].kind = players_[board_[to].owner].choice;
         for (auto& p : players_) p.choice.clear();
     } else return {};
 
     const auto attacker = board_[from].owner, defender = board_[to].owner;
     const auto attack = board_[from].kind, defence = board_[to].kind;
     QString effect, battleWinner;
-    if (attack == defence) {
-        effect = "tie";
+    if (movable(defence) && (attack == "neutral" || defence == "neutral" || attack == defence)) {
+        effect = attack == "neutral" || defence == "neutral" ? "choose" : "tie";
         phase_ = "duel"; duelFrom_ = from; duelTo_ = to;
     } else {
         const bool attackerWins = defence == "core" || (defence != "trap" && beats(attack, defence));
@@ -143,8 +146,8 @@ ChannelGame::Result ChannelGame::act(const QString& id, int round, const QString
         if (attackerWins) board_[to] = board_[from];
         board_[from] = {};
         phase_ = "playing"; duelFrom_ = -1; duelTo_ = -1; turn_ = defender;
-        const bool attackerHasMoves = std::any_of(board_.begin(), board_.end(), [&](const Piece& p) { return p.owner == attacker && element(p.kind); });
-        const bool defenderHasMoves = std::any_of(board_.begin(), board_.end(), [&](const Piece& p) { return p.owner == defender && element(p.kind); });
+        const bool attackerHasMoves = std::any_of(board_.begin(), board_.end(), [&](const Piece& p) { return p.owner == attacker && movable(p.kind); });
+        const bool defenderHasMoves = std::any_of(board_.begin(), board_.end(), [&](const Piece& p) { return p.owner == defender && movable(p.kind); });
         if (defence == "core" || !attackerHasMoves || !defenderHasMoves) {
             phase_ = "finished"; turn_ = -1;
             winner_ = defence == "core" || !defenderHasMoves ? players_[attacker].id : players_[defender].id;
@@ -152,7 +155,7 @@ ChannelGame::Result ChannelGame::act(const QString& id, int round, const QString
     }
     lastBattle_ = {{"number", round_}, {"from", from}, {"to", to}, {"attacker", players_[attacker].id},
         {"defender", players_[defender].id}, {"attack", attack}, {"defence", defence}, {"winner", battleWinner}, {"effect", effect}};
-    if (action == "choose" || effect != "tie") {
+    if (action == "choose" || (effect != "tie" && effect != "choose")) {
         if (round_ == std::numeric_limits<int>::max()) end("cancelled");
         else ++round_;
     }
@@ -261,7 +264,7 @@ bool ChannelGame::validView(const QJsonObject& state) {
         const auto who = ids.indexOf(piece.value("owner").toString());
         const auto kind = piece.value("kind").toString();
         if (!hasFields(piece, {"owner", "kind", "revealed"}) || who < 0 || !piece.value("revealed").isBool()
-            || (!element(kind) && kind != "hidden" && kind != "core" && kind != "trap")
+            || (!movable(kind) && kind != "hidden" && kind != "core" && kind != "trap")
             || (kind == "hidden" && piece.value("revealed").toBool()) || ++counts[who] > 14) return false;
         if (kind == "core" && ++cores[who] > 1) return false;
         if (kind == "trap" && ++traps[who] > 1) return false;
@@ -287,8 +290,19 @@ bool ChannelGame::validView(const QJsonObject& state) {
         const auto from = duel.value("from").toInt(), to = duel.value("to").toInt();
         const auto a = board[from].toObject(), b = board[to].toObject();
         if (!adjacent(from, to) || a.value("owner") != turn || a.value("owner") == b.value("owner")
-            || !element(a.value("kind").toString()) || a.value("kind") != b.value("kind")
+            || !movable(a.value("kind").toString()) || !movable(b.value("kind").toString())
+            || (!chooses(a.value("kind").toString(), b.value("kind").toString())
+                && !chooses(b.value("kind").toString(), a.value("kind").toString()))
             || !a.value("revealed").toBool() || !b.value("revealed").toBool()) return false;
+        int eligible = 0;
+        for (const auto& value : players) {
+            const auto p = value.toObject();
+            const bool attacking = p.value("id") == a.value("owner");
+            const bool required = chooses((attacking ? a : b).value("kind").toString(), (attacking ? b : a).value("kind").toString());
+            if (required) ++eligible;
+            else if (p.value("chosen").toBool()) return false;
+        }
+        if (chosen >= eligible) return false;
     } else if (!duel.isEmpty()) return false;
     const auto battle = state.value("lastBattle").toObject();
     if (battle.isEmpty()) return phase != "duel" && phase != "finished";
@@ -298,14 +312,21 @@ bool ChannelGame::validView(const QJsonObject& state) {
     for (const auto* key : {"attacker", "defender", "attack", "defence", "winner", "effect"}) if (!battle.value(key).isString()) return false;
     const auto attacker = battle.value("attacker").toString(), defender = battle.value("defender").toString();
     const auto attack = battle.value("attack").toString(), defence = battle.value("defence").toString();
-    if (!ids.contains(attacker) || !ids.contains(defender) || attacker == defender || !element(attack)
-        || (!element(defence) && defence != "core" && defence != "trap")) return false;
+    if (!ids.contains(attacker) || !ids.contains(defender) || attacker == defender || !movable(attack)
+        || (!movable(defence) && defence != "core" && defence != "trap")) return false;
     const bool attackWins = defence == "core" || (defence != "trap" && beats(attack, defence));
-    const auto expectedWinner = attack == defence ? QString{} : attackWins ? attacker : defender;
+    const bool pending = movable(defence) && (attack == "neutral" || defence == "neutral" || attack == defence);
+    const auto expectedWinner = pending ? QString{} : attackWins ? attacker : defender;
     const auto surviving = attackWins ? attack : defence;
-    const auto effect = attack == defence ? QString("tie") : defence == "core" ? QString("capture") : defence == "trap" ? QString("trap")
+    const auto effect = pending ? (attack == "neutral" || defence == "neutral" ? QString("choose") : QString("tie"))
+        : defence == "core" ? QString("capture") : defence == "trap" ? QString("trap")
         : surviving == "water" ? QString("extinguish") : surviving == "fire" ? QString("melt") : QString("freeze");
     return battle.value("winner") == expectedWinner && battle.value("effect") == effect
+        && (!pending || phase == "duel" || phase == "cancelled")
         && (phase != "finished" || winner == expectedWinner)
-        && (phase != "duel" || (effect == "tie" && battle.value("from") == duel.value("from") && battle.value("to") == duel.value("to")));
+        && (phase != "duel" || (pending && battle.value("from") == duel.value("from") && battle.value("to") == duel.value("to")
+            && attack == board[duel.value("from").toInt()].toObject().value("kind")
+            && defence == board[duel.value("to").toInt()].toObject().value("kind")
+            && attacker == board[duel.value("from").toInt()].toObject().value("owner")
+            && defender == board[duel.value("to").toInt()].toObject().value("owner")));
 }

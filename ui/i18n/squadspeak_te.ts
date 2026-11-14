@@ -3421,10 +3421,6 @@
             <translation>నీ కేంద్రకాన్ని, ఉచ్చును ఎంచుకో.</translation>
         </message>
         <message>
-            <source>Choice locked. Waiting for the other player.</source>
-            <translation>ఎంపిక ఖరారైంది. మరో ఆటగాడి కోసం వేచి ఉంది.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>ఒకే మూలకం. మళ్లీ ఎంచుకో.</translation>
         </message>
@@ -3469,8 +3465,12 @@
             <translation>కేంద్రకాన్ని స్వాధీనం చేసుకున్నారు</translation>
         </message>
         <message>
-            <source>Find the Core. Watch for traps.</source>
-            <translation>కేంద్రకాన్ని కనుక్కో. ఉచ్చులతో జాగ్రత్త.</translation>
+            <source>Neutral</source>
+            <translation>తటస్థం</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>ఒక మూలకాన్ని ఎంచుకో</translation>
         </message>
     </context>
 </TS>

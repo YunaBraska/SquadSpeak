@@ -46,13 +46,19 @@ historical ICQ detail has been recovered:
 - Two players use a board seven columns wide and six rows high. Each starts with
   fourteen pieces in their two home rows.
 - Each player selects one immobile target and one immobile trap. The
-  neutral target name is **Core** (German **Kern**). The other twelve positions
-  receive four fire, four water and four ice pieces in random order.
-- Players alternate moving one elemental piece one square horizontally or
+  neutral target name is **Core** (German **Kern**). The twelve movable pieces
+  begin neutral. There is no random element assignment or element quota.
+- At their first encounter with another movable piece, neutral pieces choose
+  fire, water or ice privately. If only one piece is neutral, only its player
+  chooses. An established element remains unchanged until a tie. Choices are
+  revealed together once all required players have chosen. A locked choice
+  cannot be changed or exposed early.
+- Players alternate moving one movable piece one square horizontally or
   vertically. No diagonal move or jump is allowed.
 - Water defeats fire, fire defeats ice, and ice defeats water. The losing piece
   is removed. Equal elements require both players to choose a new element
-  privately, repeating if necessary until there is a winner.
+  privately, repeating if necessary until there is a winner. The surviving
+  piece retains that element on subsequent moves and encounters.
 - Opposing piece roles remain hidden until combat reveals them. The surviving
   piece's revealed element remains visible. Private setup and pending choices
   must never be included in the opponent's or an uninvolved reader's snapshot.
@@ -67,6 +73,15 @@ dimensional character artwork matching the avatars, with transparent silhouettes
 Concealed opponents share one neutral character with no role clues. Selection,
 ownership markers and shadows are rendered separately by the app. All figures
 must remain distinct and uncropped in compact and large windows.
+
+A compact water → fire → ice → water icon circle replaces the permanent rule
+paragraph. The same icons become the element selection controls during a fight.
+An accessible description preserves the complete rule. Movement, required choices,
+combat outcomes and game end have short local cues through App/Bot Sounds.
+Voice mute does not mute these cues. Disabled notification sounds or zero app
+volume silence them. Opening an existing game or receiving unrelated chat traffic
+must not replay old sounds. Effects never block actions, and there is no looping
+background music.
 
 The host remains the trusted authority, as for channel chat. This feature does
 not introduce a separate game service or claim protection against a modified
@@ -83,7 +98,8 @@ review of the mobile adaptation, not an original PC rules manual.
 The current [RPS Ninja developer guide](https://rpsninja.uk/landing/de) documents
 a classic 7×6 board, hidden setup, persistent traps and combat disclosure.
 [Helpiqo's own rules](https://helpiqo.com/en/rps-duel) explicitly specify four
-pieces per element, orthogonal movement and immobile flag/trap pieces. These are
+pieces per element, orthogonal movement and immobile flag/trap pieces. SquadSpeak's
+later confirmed neutral-first-encounter rule replaces that initial distribution. These are
 modern remakes and evidence for the proposed reconstruction, not authority for
 every original ICQ detail.
 
@@ -102,7 +118,8 @@ newly chosen elements. No per-turn timeout is added.
 Exercise invitation, approved chat-only join, full lobby, concurrent joins and
 cross-channel/host attempts to join a second game. Verify private setup, invalid
 or overlapping role selections, premature Ready, legal/illegal moves, alternating
-turns, all elemental outcomes, hidden tie choices, trap and target encounters,
+turns, neutral first encounters, one-sided choice against an established element,
+all elemental outcomes, hidden tie choices, retained elements, trap and target encounters,
 replayed commands and terminal outcomes through the actual UI and TLS path.
 Verify Leave, window reopening, disconnect, host stop, late readers and restart.
 Reject unauthorized starts, unrelated channels, private/external chats and invalid

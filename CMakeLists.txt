@@ -78,7 +78,9 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
 endif()
 qt_add_resources(squad_audio event_sounds PREFIX /qt/qml/SquadSpeak/ui BASE ui
     FILES ui/sounds/join.wav ui/sounds/leave.wav ui/sounds/kick.wav ui/sounds/ban.wav
-          ui/sounds/message.wav ui/sounds/announcement.wav)
+          ui/sounds/message.wav ui/sounds/announcement.wav
+          ui/sounds/game-choose.wav ui/sounds/game-move.wav ui/sounds/game-melt.wav ui/sounds/game-freeze.wav
+          ui/sounds/game-extinguish.wav ui/sounds/game-trap.wav ui/sounds/game-win.wav ui/sounds/game-end.wav)
 target_include_directories(squad_audio PUBLIC src)
 target_link_libraries(squad_audio PUBLIC Qt6::Core PkgConfig::OPUS PkgConfig::SAMPLERATE squad_rnnoise PRIVATE squad_apm)
 target_compile_options(squad_audio PRIVATE $<$<CXX_COMPILER_ID:AppleClang,Clang,GNU>:-Wall;-Wextra;-Wpedantic>)

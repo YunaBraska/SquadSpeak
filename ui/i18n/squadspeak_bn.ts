@@ -3421,10 +3421,6 @@
             <translation>তোমার কেন্দ্র ও ফাঁদ বেছে নাও।</translation>
         </message>
         <message>
-            <source>Choice locked. Waiting for the other player.</source>
-            <translation>পছন্দ নিশ্চিত হয়েছে। অন্য খেলোয়াড়ের অপেক্ষায়।</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>একই উপাদান। আবার বেছে নাও।</translation>
         </message>
@@ -3469,8 +3465,12 @@
             <translation>কেন্দ্র দখল হয়েছে</translation>
         </message>
         <message>
-            <source>Find the Core. Watch for traps.</source>
-            <translation>কেন্দ্র খুঁজে নাও। ফাঁদ থেকে সাবধান।</translation>
+            <source>Neutral</source>
+            <translation>নিরপেক্ষ</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>একটি উপাদান বেছে নাও</translation>
         </message>
     </context>
 </TS>

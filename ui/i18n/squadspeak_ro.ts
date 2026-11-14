@@ -3421,10 +3421,6 @@
             <translation>Alege-ți Nucleul și Capcana.</translation>
         </message>
         <message>
-            <source>Choice locked. Waiting for the other player.</source>
-            <translation>Alegere confirmată. Se așteaptă celălalt jucător.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>Același element. Alege din nou.</translation>
         </message>
@@ -3469,8 +3465,12 @@
             <translation>Nucleu capturat</translation>
         </message>
         <message>
-            <source>Find the Core. Watch for traps.</source>
-            <translation>Găsește Nucleul. Ferește-te de capcane.</translation>
+            <source>Neutral</source>
+            <translation>Neutru</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>Alege un element</translation>
         </message>
     </context>
 </TS>

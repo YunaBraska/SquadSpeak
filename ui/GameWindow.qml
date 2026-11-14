@@ -20,6 +20,13 @@ PanelWindow {
     property double now: Date.now()
     property string shownBattle: ""
     property string actionError: ""
+    signal feedbackRequested(string kind)
+    readonly property var duel: game.duel || ({})
+    readonly property var attacker: (game.board || [])[duel.from] || ({})
+    readonly property var defender: (game.board || [])[duel.to] || ({})
+    readonly property var fighter: attacker.owner === identity ? attacker : defender.owner === identity ? defender : ({})
+    readonly property bool choosing: game.phase === "duel" && participant && (fighter.kind === "neutral"
+        || (["fire", "water", "ice"].includes(fighter.kind) && attacker.kind === defender.kind))
     readonly property var players: game.players || []
     readonly property var me: players.find(p => p.id === identity) || ({})
     readonly property bool participant: !!me.id
@@ -36,7 +43,7 @@ PanelWindow {
     function name(id) { return (players.find(p => p.id === id) || {}).name || "" }
     function label(kind) {
         return kind === "fire" ? qsTr("Fire") : kind === "water" ? qsTr("Water") : kind === "ice" ? qsTr("Ice")
-            : kind === "core" ? qsTr("Core") : kind === "trap" ? qsTr("Trap") : qsTr("Unknown")
+            : kind === "core" ? qsTr("Core") : kind === "trap" ? qsTr("Trap") : kind === "neutral" ? qsTr("Neutral") : qsTr("Unknown")
     }
     function act(action, values) {
         const selection = Object.assign({id: gameId, round: game.round || 0}, values || {})
@@ -48,15 +55,24 @@ PanelWindow {
         now = Date.now()
         if (next.id !== game.id || next.readyMs !== game.readyMs || next.phase !== game.phase)
             readyDeadline = now + (next.readyMs || 0)
+        const previous = game
         game = next
         if (game.setup) { core = game.core; trap = game.trap }
         if (!myTurn) selected = -1
         const battle = game.lastBattle || ({})
         const outcome = JSON.stringify(battle)
-        if (battle.number && outcome !== shownBattle) {
-            shownBattle = outcome
-            if (visible && !Theme.reducedMotion && battle.effect !== "tie") effect.restart()
+        const newBattle = battle.number && outcome !== shownBattle
+        if (newBattle && visible && !Theme.reducedMotion && !["tie", "choose"].includes(battle.effect)) effect.restart()
+        if (visible && participant && previous.id === game.id) {
+            if (game.phase !== previous.phase && ["finished", "cancelled"].includes(game.phase))
+                feedbackRequested(game.phase === "finished" ? "game-win" : "game-end")
+            else if (newBattle) {
+                if (["tie", "choose"].includes(battle.effect)) { if (choosing) feedbackRequested("game-choose") }
+                else feedbackRequested("game-" + battle.effect)
+            } else if (game.phase === "playing" && (previous.phase !== "playing" || game.round !== previous.round))
+                feedbackRequested("game-move")
         }
+        shownBattle = outcome
     }
     function openGame(host, id) {
         if (gameId !== id || hostId !== host) {
@@ -74,7 +90,7 @@ PanelWindow {
             else { trap = cell; if (core === cell) core = -1; placing = "core" }
             if (core >= 0 && trap >= 0) act("setup", {core: core, trap: trap})
         } else if (myTurn) {
-            if (piece.owner === identity && ["fire", "water", "ice"].includes(piece.kind)) selected = cell
+            if (piece.owner === identity && ["neutral", "fire", "water", "ice"].includes(piece.kind)) selected = cell
             else if (legal(cell)) { act("move", {from: selected, to: cell}); selected = -1 }
         }
     }
@@ -86,7 +102,7 @@ PanelWindow {
         return selected >= 0 && myTurn && ((game.board || [])[cell] || {}).owner !== identity
             && Math.abs(cell % 7 - selected % 7) + Math.abs(Math.floor(cell / 7) - Math.floor(selected / 7)) === 1
     }
-    onClosing: event => { if (playing && participant) act("leave") }
+    onClosing: event => { if (playing && participant) { act("leave"); feedbackRequested("game-end") } }
     onVisibleChanged: if (!visible) effect.stop()
     Connections {
         target: root.network
@@ -107,21 +123,72 @@ PanelWindow {
             ColumnLayout {
                 id: introduction
                 Layout.fillWidth: true; spacing: 12
-                Label {
-                    id: status; objectName: "boardStatus"
-                    Layout.fillWidth: true; Layout.leftMargin: 16; Layout.rightMargin: 16
-                    color: Theme.text; wrapMode: Text.Wrap; textFormat: Text.PlainText
-                    text: !root.game.id ? qsTr("Game unavailable")
-                        : root.game.phase === "cancelled" ? (root.game.reason === "disconnected" ? qsTranslate("GameCard", "Game ended. A player disconnected.") : qsTranslate("GameCard", "Game ended. A player left."))
-                        : root.game.phase === "finished" ? qsTranslate("GameCard", "%1 wins!").arg(root.name(root.game.winner))
-                        : root.settingUp ? (root.game.setup ? qsTr("Ready in %1 s").arg(root.seconds) : qsTr("Choose your Core and Trap."))
-                        : root.game.phase === "duel" ? (root.game.choice ? qsTr("Choice locked. Waiting for the other player.") : qsTr("Same element. Choose again."))
-                        : root.myTurn ? qsTr("Your turn") : root.game.phase === "playing" ? qsTr("%1's turn").arg(root.name(root.game.turn)) : qsTr("Waiting for the other player")
-                }
-                Label {
-                    Layout.fillWidth: true; Layout.leftMargin: 16; Layout.rightMargin: 16
-                    text: qsTr("Water beats Fire. Fire beats Ice. Ice beats Water.")
-                    color: Theme.muted; wrapMode: Text.Wrap; font.pixelSize: Theme.fontSize(12)
+                RowLayout {
+                    Layout.fillWidth: true; Layout.leftMargin: 16; Layout.rightMargin: 16; spacing: 8
+                    Label {
+                        id: status; objectName: "boardStatus"
+                        Layout.fillWidth: true
+                        color: Theme.text; wrapMode: Text.Wrap; textFormat: Text.PlainText
+                        text: !root.game.id ? qsTr("Game unavailable")
+                            : root.game.phase === "cancelled" ? (root.game.reason === "disconnected" ? qsTranslate("GameCard", "Game ended. A player disconnected.") : qsTranslate("GameCard", "Game ended. A player left."))
+                            : root.game.phase === "finished" ? qsTranslate("GameCard", "%1 wins!").arg(root.name(root.game.winner))
+                            : root.settingUp ? (root.game.setup ? qsTr("Ready in %1 s").arg(root.seconds) : qsTr("Choose your Core and Trap."))
+                            : root.game.phase === "duel" ? (!root.choosing || root.game.choice ? qsTr("Waiting for the other player")
+                                : (root.game.lastBattle || {}).effect === "tie" ? qsTr("Same element. Choose again.") : qsTr("Choose an element"))
+                            : root.myTurn ? qsTr("Your turn") : root.game.phase === "playing" ? qsTr("%1's turn").arg(root.name(root.game.turn)) : qsTr("Waiting for the other player")
+                    }
+                    Item {
+                        id: cycle
+                        objectName: "elementCycle"
+                        Layout.preferredWidth: 132; Layout.preferredHeight: 116
+                        LayoutMirroring.enabled: false; LayoutMirroring.childrenInherit: true
+                        Accessible.role: Accessible.Grouping
+                        Accessible.name: qsTr("Water beats Fire. Fire beats Ice. Ice beats Water.")
+                        Canvas {
+                            anchors.fill: parent
+                            property color ink: Theme.muted
+                            onInkChanged: requestPaint()
+                            onPaint: {
+                                const c = getContext("2d")
+                                c.reset(); c.strokeStyle = ink; c.fillStyle = ink; c.lineWidth = 1.5
+                                for (let i = 0; i < 3; ++i) {
+                                    const start = -Math.PI / 2 + i * Math.PI * 2 / 3 + 0.65
+                                    const end = start + Math.PI * 2 / 3 - 1.3
+                                    c.beginPath(); c.arc(66, 58, 39, start, end); c.stroke()
+                                    const x = 66 + Math.cos(end) * 39, y = 58 + Math.sin(end) * 39
+                                    c.save(); c.translate(x, y); c.rotate(end + Math.PI / 2)
+                                    c.beginPath(); c.moveTo(3, 0); c.lineTo(-4, -3); c.lineTo(-4, 3); c.closePath(); c.fill(); c.restore()
+                                }
+                            }
+                        }
+                        Repeater {
+                            model: ["water", "fire", "ice"]
+                            Button {
+                                id: elementButton
+                                required property int index
+                                required property string modelData
+                                objectName: "gameChoice_" + modelData
+                                x: 42 + Math.cos(-Math.PI / 2 + index * Math.PI * 2 / 3) * 39
+                                y: 34 + Math.sin(-Math.PI / 2 + index * Math.PI * 2 / 3) * 34
+                                width: 48; height: 48; padding: 3; hoverEnabled: true
+                                enabled: root.choosing && !!root.game.connected && !root.game.choice
+                                opacity: root.game.choice && root.game.choice !== modelData ? 0.5 : 1
+                                Accessible.name: root.label(modelData)
+                                onClicked: root.act("choose", {choice: modelData})
+                                background: Rectangle {
+                                    radius: 24
+                                    color: elementButton.hovered || elementButton.activeFocus || root.game.choice === elementButton.modelData ? Theme.raised : "transparent"
+                                    border.width: root.choosing || elementButton.activeFocus ? 1 : 0
+                                    border.color: root.game.choice === elementButton.modelData || elementButton.activeFocus ? Theme.accent : Theme.muted
+                                }
+                                contentItem: Image {
+                                    source: Qt.resolvedUrl("games/elements/" + elementButton.modelData + ".png")
+                                    sourceSize: Qt.size(128, 128); fillMode: Image.PreserveAspectFit; smooth: true; mipmap: true
+                                }
+                                TextToolTip { parent: elementButton; text: root.label(elementButton.modelData); visible: elementButton.hovered || elementButton.activeFocus }
+                            }
+                        }
+                    }
                 }
                 RowLayout {
                     visible: root.settingUp; Layout.alignment: Qt.AlignHCenter
@@ -149,6 +216,7 @@ PanelWindow {
                             readonly property int cell: root.flipped ? 41 - index : index
                             readonly property var piece: (root.game.board || [])[cell] || ({})
                             readonly property bool own: piece.owner === root.identity
+                            readonly property bool fighting: root.game.phase === "duel" && (cell === root.duel.from || cell === root.duel.to)
                             readonly property string kind: root.settingUp && own && cell === root.core ? "core"
                                 : root.settingUp && own && cell === root.trap ? "trap" : piece.kind || ""
                             objectName: "gameCell_" + cell
@@ -166,9 +234,9 @@ PanelWindow {
                             background: Rectangle {
                                 radius: Theme.controlRadius
                                 color: (Math.floor(cellButton.cell / 7) + cellButton.cell % 7) % 2 ? Theme.surface : Theme.raised
-                                border.color: root.selected === cellButton.cell || cellButton.activeFocus ? Theme.accent
+                                border.color: root.selected === cellButton.cell || cellButton.activeFocus || cellButton.fighting ? Theme.accent
                                     : root.legal(cellButton.cell) ? Theme.accent : "transparent"
-                                border.width: root.selected === cellButton.cell ? 3 : 1
+                                border.width: root.selected === cellButton.cell ? 3 : cellButton.fighting ? 2 : 1
                                 Rectangle { anchors.centerIn: parent; width: 8; height: 8; radius: 4; visible: root.legal(cellButton.cell) && !cellButton.piece.owner; color: Theme.accent }
                             }
                             contentItem: Item {
@@ -203,8 +271,28 @@ PanelWindow {
                         }
                     }
                 }
+                Image {
+                    id: defeated
+                    readonly property var battle: root.game.lastBattle || ({})
+                    readonly property bool lostAttack: battle.winner !== battle.attacker
+                    readonly property string kind: (lostAttack ? battle.attack : battle.defence) || "hidden"
+                    readonly property int cell: lostAttack ? battle.from || 0 : battle.to || 0
+                    readonly property int tile: root.flipped ? 41 - cell : cell
+                    width: boardArea.width / 7; height: width
+                    x: tile % 7 * width; y: Math.floor(tile / 7) * height
+                    visible: effect.running
+                    source: visible ? Qt.resolvedUrl("games/elements/" + (["fire", "water", "ice", "core", "trap"].includes(kind) ? kind : "hidden") + ".png") : ""
+                    sourceSize: Qt.size(192, 192); fillMode: Image.PreserveAspectFit; smooth: true; mipmap: true
+                    opacity: 1 - burst.progress
+                    transform: Scale {
+                        origin.x: defeated.width / 2; origin.y: defeated.height
+                        xScale: defeated.battle.effect === "melt" ? 1 + burst.progress * 0.15 : 1
+                        yScale: defeated.battle.effect === "melt" ? 1 - burst.progress : 1
+                    }
+                }
                 Canvas {
                     id: burst
+                    objectName: "battleEffect"
                     anchors.fill: parent
                     property real progress: 1
                     visible: effect.running
@@ -213,11 +301,23 @@ PanelWindow {
                     onPaint: {
                         const c = getContext("2d"), b = root.game.lastBattle || ({})
                         c.reset()
-                        const tile = root.flipped ? 41 - b.to : b.to
+                        const tile = defeated.tile
                         const x = (tile % 7 + 0.5) * width / 7, y = (Math.floor(tile / 7) + 0.5) * height / 6
                         c.globalAlpha = 1 - progress
-                        c.strokeStyle = b.effect === "melt" ? "#ee9958" : b.effect === "freeze" ? "#b3e9eb" : "#66b6e6"
+                        c.strokeStyle = b.effect === "melt" ? "#ee9958" : b.effect === "freeze" ? "#b3e9eb"
+                            : b.effect === "trap" ? "#96bf64" : b.effect === "capture" ? "#ffd37b" : "#66b6e6"
                         c.lineWidth = 3
+                        if (b.effect === "freeze") {
+                            c.fillStyle = "rgba(170, 225, 255, 0.35)"
+                            const radius = width / 7 * (0.3 + progress * 0.1)
+                            c.beginPath()
+                            for (let i = 0; i < 6; ++i) {
+                                const angle = i * Math.PI / 3
+                                const px = x + Math.cos(angle) * radius, py = y + Math.sin(angle) * radius
+                                if (i === 0) c.moveTo(px, py); else c.lineTo(px, py)
+                            }
+                            c.closePath(); c.fill()
+                        }
                         for (let i = 0; i < 8; ++i) {
                             const angle = Math.PI * i / 4, distance = (8 + progress * 26) * width / 500
                             c.beginPath()
@@ -228,6 +328,10 @@ PanelWindow {
                             } else if (b.effect === "melt") {
                                 const px = x + Math.cos(angle) * 18, py = y + Math.sin(angle) * 12 + progress * 32
                                 c.moveTo(px, py - 5); c.quadraticCurveTo(px + 6, py + 4, px, py + 5); c.quadraticCurveTo(px - 6, py + 4, px, py - 5)
+                            } else if (b.effect === "capture" || b.effect === "trap") {
+                                const spread = b.effect === "trap" ? 30 * (1 - progress) : distance
+                                const px = x + Math.cos(angle) * spread, py = y + Math.sin(angle) * spread
+                                c.moveTo(px - 3, py); c.lineTo(px + 3, py); c.moveTo(px, py - 3); c.lineTo(px, py + 3)
                             } else {
                                 const px = x + Math.cos(angle) * distance, py = y - progress * 30 + Math.sin(angle) * 12
                                 c.moveTo(px, py); c.bezierCurveTo(px - 8, py - 5, px + 8, py - 10, px, py - 16)
@@ -246,24 +350,10 @@ PanelWindow {
                     id: battleSummary
                     objectName: "battleSummary"
                     readonly property string outcome: (root.game.lastBattle || {}).effect || ""
-                    visible: !!battleSummary.outcome && battleSummary.outcome !== "tie"
+                    visible: !!battleSummary.outcome && !["tie", "choose"].includes(battleSummary.outcome)
                     text: battleSummary.outcome === "freeze" ? qsTr("Ice freezes Water") : battleSummary.outcome === "melt" ? qsTr("Fire melts Ice")
                         : battleSummary.outcome === "extinguish" ? qsTr("Water extinguishes Fire") : battleSummary.outcome === "trap" ? qsTr("Trap triggered")
                         : battleSummary.outcome === "capture" ? qsTr("Core captured") : qsTr("Same element. Choose again.")
-                }
-                Flow {
-                    Layout.fillWidth: true; Layout.preferredHeight: childrenRect.height; Layout.leftMargin: 12; Layout.rightMargin: 12
-                    spacing: 8; visible: root.game.phase === "duel" && root.participant
-                    Repeater {
-                        model: ["fire", "water", "ice"]
-                        ActionButton {
-                            required property string modelData
-                            objectName: "gameChoice_" + modelData
-                            text: root.label(modelData); primary: root.game.choice === modelData
-                            enabled: !!root.game.connected && !root.game.choice
-                            onClicked: root.act("choose", {choice: modelData})
-                        }
-                    }
                 }
                 Label {
                     visible: !!root.game.error || !!root.actionError
@@ -275,7 +365,7 @@ PanelWindow {
     }
     footer: RowLayout {
         spacing: 8
-        Label { text: qsTr("Find the Core. Watch for traps."); color: Theme.muted; font.pixelSize: Theme.fontSize(12); wrapMode: Text.Wrap; Layout.fillWidth: true; Layout.margins: 12 }
+        Item { Layout.fillWidth: true }
         ActionButton {
             objectName: "gameLeave"; text: root.playing && root.participant ? qsTranslate("GameCard", "Leave") : qsTranslate("Channels", "Close")
             Layout.margins: 8

@@ -3421,10 +3421,6 @@
             <translation>Chọn Lõi và Bẫy của bạn.</translation>
         </message>
         <message>
-            <source>Choice locked. Waiting for the other player.</source>
-            <translation>Đã chốt lựa chọn. Đang chờ người chơi còn lại.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>Cùng nguyên tố. Hãy chọn lại.</translation>
         </message>
@@ -3469,8 +3465,12 @@
             <translation>Lõi đã bị chiếm</translation>
         </message>
         <message>
-            <source>Find the Core. Watch for traps.</source>
-            <translation>Tìm Lõi. Cẩn thận với bẫy.</translation>
+            <source>Neutral</source>
+            <translation>Trung tính</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>Chọn nguyên tố</translation>
         </message>
     </context>
 </TS>

@@ -3421,10 +3421,6 @@
             <translation>Escolhe o teu Núcleo e a tua Armadilha.</translation>
         </message>
         <message>
-            <source>Choice locked. Waiting for the other player.</source>
-            <translation>Escolha confirmada. À espera do outro jogador.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>Mesmo elemento. Escolhe novamente.</translation>
         </message>
@@ -3469,8 +3465,12 @@
             <translation>Núcleo capturado</translation>
         </message>
         <message>
-            <source>Find the Core. Watch for traps.</source>
-            <translation>Encontra o Núcleo. Cuidado com as armadilhas.</translation>
+            <source>Neutral</source>
+            <translation>Neutro</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>Escolhe um elemento</translation>
         </message>
     </context>
 </TS>

@@ -3421,10 +3421,6 @@
             <translation>Çekirdeğini ve Tuzağını seç.</translation>
         </message>
         <message>
-            <source>Choice locked. Waiting for the other player.</source>
-            <translation>Seçim kilitlendi. Diğer oyuncu bekleniyor.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>Aynı element. Tekrar seç.</translation>
         </message>
@@ -3469,8 +3465,12 @@
             <translation>Çekirdek ele geçirildi</translation>
         </message>
         <message>
-            <source>Find the Core. Watch for traps.</source>
-            <translation>Çekirdeği bul. Tuzaklara dikkat et.</translation>
+            <source>Neutral</source>
+            <translation>Nötr</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>Bir element seç</translation>
         </message>
     </context>
 </TS>

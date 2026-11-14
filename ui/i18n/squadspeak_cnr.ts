@@ -3421,10 +3421,6 @@
             <translation>Izaberi svoje Jezgro i Zamku.</translation>
         </message>
         <message>
-            <source>Choice locked. Waiting for the other player.</source>
-            <translation>Izbor je potvrđen. Čekanje drugog igrača.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>Isti element. Izaberi ponovo.</translation>
         </message>
@@ -3469,8 +3465,12 @@
             <translation>Jezgro osvojeno</translation>
         </message>
         <message>
-            <source>Find the Core. Watch for traps.</source>
-            <translation>Pronađi Jezgro. Pazi na zamke.</translation>
+            <source>Neutral</source>
+            <translation>Neutralno</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>Izaberi element</translation>
         </message>
     </context>
 </TS>

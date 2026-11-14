@@ -549,6 +549,37 @@ private slots:
         QVERIFY(mover.channel.gameAction("move", {{"id", current(mover).value("id")}, {"round", 1}, {"from", to}, {"to", from}}));
         QTRY_VERIFY(!mover.channel.chatError().isEmpty());
         QCOMPARE(current(host).value("round").toInt(), 2);
+        auto& responder = &mover == &host ? guest : host;
+        const int responseFrom = &mover == &host ? 7 : 28, responseTo = &mover == &host ? 14 : 21;
+        const auto move = [&](Device& d, int source, int target) {
+            return d.channel.gameAction("move", {{"id", current(d).value("id")}, {"round", current(d).value("round")},
+                {"from", source}, {"to", target}});
+        };
+        const auto choose = [&](Device& d, const QString& element) {
+            return d.channel.gameAction("choose", {{"id", current(d).value("id")}, {"round", current(d).value("round")}, {"choice", element}});
+        };
+        QVERIFY(move(responder, responseFrom, responseTo));
+        QTRY_COMPARE(current(mover).value("round").toInt(), 3);
+        QVERIFY(move(mover, to, responseTo));
+        QTRY_COMPARE(current(observer).value("phase").toString(), QString("duel"));
+        QTRY_COMPARE(current(mover).value("phase").toString(), QString("duel"));
+        QTRY_COMPARE(current(responder).value("phase").toString(), QString("duel"));
+        QVERIFY(choose(mover, "fire"));
+        QTRY_COMPARE(current(mover).value("choice").toString(), QString("fire"));
+        QVERIFY(current(responder).value("choice").toString().isEmpty());
+        QCOMPARE(current(observer).value("board").toList()[to].toMap().value("kind").toString(), QString("neutral"));
+        QVERIFY(choose(responder, "fire"));
+        QTRY_COMPARE(current(mover).value("round").toInt(), 4);
+        QTRY_COMPARE(current(responder).value("round").toInt(), 4);
+        QTRY_COMPARE(current(observer).value("lastBattle").toMap().value("effect").toString(), QString("tie"));
+        QVERIFY(choose(mover, "water"));
+        QTRY_COMPARE(current(mover).value("choice").toString(), QString("water"));
+        QVERIFY(current(responder).value("choice").toString().isEmpty());
+        QVERIFY(choose(responder, "fire"));
+        QTRY_COMPARE(current(observer).value("round").toInt(), 5);
+        QCOMPARE(current(observer).value("lastBattle").toMap().value("effect").toString(), QString("extinguish"));
+        QCOMPARE(current(observer).value("board").toList()[responseTo].toMap().value("kind").toString(), QString("water"));
+        QTRY_COMPARE(current(guest).value("round").toInt(), 5);
         QVERIFY(act(guest, "leave"));
         QTRY_COMPARE(current(observer).value("phase").toString(), QString("cancelled"));
         QTRY_VERIFY(host.channel.canStartGame());

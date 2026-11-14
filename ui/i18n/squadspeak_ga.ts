@@ -3421,10 +3421,6 @@
             <translation>Roghnaigh do Chroí agus do Ghaiste.</translation>
         </message>
         <message>
-            <source>Choice locked. Waiting for the other player.</source>
-            <translation>Rogha deimhnithe. Ag fanacht leis an imreoir eile.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>An dúil chéanna. Roghnaigh arís.</translation>
         </message>
@@ -3469,8 +3465,12 @@
             <translation>Croí gafa</translation>
         </message>
         <message>
-            <source>Find the Core. Watch for traps.</source>
-            <translation>Aimsigh an Croí. Bí ag faire amach do ghaistí.</translation>
+            <source>Neutral</source>
+            <translation>Neodrach</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>Roghnaigh dúil</translation>
         </message>
     </context>
 </TS>

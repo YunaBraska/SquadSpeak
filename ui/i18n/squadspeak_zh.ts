@@ -3421,10 +3421,6 @@
             <translation>选择你的核心和陷阱。</translation>
         </message>
         <message>
-            <source>Choice locked. Waiting for the other player.</source>
-            <translation>已确定选择。等待另一名玩家。</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>元素相同。请重新选择。</translation>
         </message>
@@ -3469,8 +3465,12 @@
             <translation>核心已被占领</translation>
         </message>
         <message>
-            <source>Find the Core. Watch for traps.</source>
-            <translation>找到核心。小心陷阱。</translation>
+            <source>Neutral</source>
+            <translation>无属性</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>选择元素</translation>
         </message>
     </context>
 </TS>

@@ -144,7 +144,7 @@ public:
     bool readBotMessage(const QString& text);
     void cancelBotMessages();
     void cancelNotifications();
-    bool playEvent(const QString& kind, const QString& text = {});
+    Q_INVOKABLE bool playEvent(const QString& kind, const QString& text = {});
     [[nodiscard]] bool notificationsActive() const { return !notifications_.empty(); }
     Q_INVOKABLE bool previewOutput(double volume, bool sessionAudio = true);
     [[nodiscard]] double maximumFrequency() const;

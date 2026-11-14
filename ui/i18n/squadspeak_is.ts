@@ -3421,10 +3421,6 @@
             <translation>Veldu Kjarnann þinn og Gildruna þína.</translation>
         </message>
         <message>
-            <source>Choice locked. Waiting for the other player.</source>
-            <translation>Val staðfest. Beðið eftir hinum leikmanninum.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>Sama frumefni. Veldu aftur.</translation>
         </message>
@@ -3469,8 +3465,12 @@
             <translation>Kjarni tekinn</translation>
         </message>
         <message>
-            <source>Find the Core. Watch for traps.</source>
-            <translation>Finndu Kjarnann. Varastu gildrur.</translation>
+            <source>Neutral</source>
+            <translation>Hlutlaust</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>Veldu frumefni</translation>
         </message>
     </context>
 </TS>

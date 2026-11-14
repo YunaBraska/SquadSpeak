@@ -3421,10 +3421,6 @@
             <translation>Өзегің мен Тұзағыңды таңда.</translation>
         </message>
         <message>
-            <source>Choice locked. Waiting for the other player.</source>
-            <translation>Таңдау бекітілді. Екінші ойыншы күтілуде.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>Бірдей элемент. Қайта таңда.</translation>
         </message>
@@ -3469,8 +3465,12 @@
             <translation>Өзек алынды</translation>
         </message>
         <message>
-            <source>Find the Core. Watch for traps.</source>
-            <translation>Өзекті тап. Тұзақтардан сақтан.</translation>
+            <source>Neutral</source>
+            <translation>Бейтарап</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>Элемент таңда</translation>
         </message>
     </context>
 </TS>

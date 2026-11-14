@@ -3421,10 +3421,6 @@
             <translation>Избери своето Ядро и Капан.</translation>
         </message>
         <message>
-            <source>Choice locked. Waiting for the other player.</source>
-            <translation>Изборът е потвърден. Изчакване на другия играч.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>Еднаква стихия. Избери отново.</translation>
         </message>
@@ -3469,8 +3465,12 @@
             <translation>Ядрото е превзето</translation>
         </message>
         <message>
-            <source>Find the Core. Watch for traps.</source>
-            <translation>Намери Ядрото. Пази се от капани.</translation>
+            <source>Neutral</source>
+            <translation>Неутрално</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>Избери стихия</translation>
         </message>
     </context>
 </TS>

@@ -3421,10 +3421,6 @@
             <translation>अपना केंद्र और जाल चुनो।</translation>
         </message>
         <message>
-            <source>Choice locked. Waiting for the other player.</source>
-            <translation>चुनाव पक्का हो गया। दूसरे खिलाड़ी का इंतज़ार है।</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>एक ही तत्व। फिर से चुनो।</translation>
         </message>
@@ -3469,8 +3465,12 @@
             <translation>केंद्र पर कब्ज़ा हुआ</translation>
         </message>
         <message>
-            <source>Find the Core. Watch for traps.</source>
-            <translation>केंद्र ढूँढो। जाल से बचो।</translation>
+            <source>Neutral</source>
+            <translation>तटस्थ</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>एक तत्व चुनो</translation>
         </message>
     </context>
 </TS>

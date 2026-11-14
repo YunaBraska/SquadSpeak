@@ -3421,10 +3421,6 @@
             <translation>Vælg din Kerne og din Fælde.</translation>
         </message>
         <message>
-            <source>Choice locked. Waiting for the other player.</source>
-            <translation>Valget er låst. Venter på den anden spiller.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>Samme element. Vælg igen.</translation>
         </message>
@@ -3469,8 +3465,12 @@
             <translation>Kerne erobret</translation>
         </message>
         <message>
-            <source>Find the Core. Watch for traps.</source>
-            <translation>Find Kernen. Pas på fælder.</translation>
+            <source>Neutral</source>
+            <translation>Neutral</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>Vælg et element</translation>
         </message>
     </context>
 </TS>

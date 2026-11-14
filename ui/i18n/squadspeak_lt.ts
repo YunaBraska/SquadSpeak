@@ -3421,10 +3421,6 @@
             <translation>Pasirink savo Branduolį ir Spąstus.</translation>
         </message>
         <message>
-            <source>Choice locked. Waiting for the other player.</source>
-            <translation>Pasirinkimas patvirtintas. Laukiama kito žaidėjo.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>Tas pats elementas. Pasirink dar kartą.</translation>
         </message>
@@ -3469,8 +3465,12 @@
             <translation>Branduolys užimtas</translation>
         </message>
         <message>
-            <source>Find the Core. Watch for traps.</source>
-            <translation>Surask Branduolį. Saugokis spąstų.</translation>
+            <source>Neutral</source>
+            <translation>Neutralu</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>Pasirink elementą</translation>
         </message>
     </context>
 </TS>

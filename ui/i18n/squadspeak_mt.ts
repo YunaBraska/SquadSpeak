@@ -3421,10 +3421,6 @@
             <translation>Agħżel il-Qalba u n-Nassa tiegħek.</translation>
         </message>
         <message>
-            <source>Choice locked. Waiting for the other player.</source>
-            <translation>L-għażla ġiet ikkonfermata. Qed tistenna l-plejer l-ieħor.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>L-istess element. Agħżel mill-ġdid.</translation>
         </message>
@@ -3469,8 +3465,12 @@
             <translation>Qalba maqbuda</translation>
         </message>
         <message>
-            <source>Find the Core. Watch for traps.</source>
-            <translation>Sib il-Qalba. Oqgħod attent għan-nases.</translation>
+            <source>Neutral</source>
+            <translation>Newtrali</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>Agħżel element</translation>
         </message>
     </context>
 </TS>

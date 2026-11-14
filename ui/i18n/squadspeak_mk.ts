@@ -3421,10 +3421,6 @@
             <translation>Избери ги твоето Јадро и Стапица.</translation>
         </message>
         <message>
-            <source>Choice locked. Waiting for the other player.</source>
-            <translation>Изборот е потврден. Се чека другиот играч.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>Ист елемент. Избери повторно.</translation>
         </message>
@@ -3469,8 +3465,12 @@
             <translation>Јадрото е освоено</translation>
         </message>
         <message>
-            <source>Find the Core. Watch for traps.</source>
-            <translation>Најди го Јадрото. Внимавај на стапиците.</translation>
+            <source>Neutral</source>
+            <translation>Неутрално</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>Избери елемент</translation>
         </message>
     </context>
 </TS>

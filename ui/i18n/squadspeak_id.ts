@@ -3421,10 +3421,6 @@
             <translation>Pilih Inti dan Jebakanmu.</translation>
         </message>
         <message>
-            <source>Choice locked. Waiting for the other player.</source>
-            <translation>Pilihan dikunci. Menunggu pemain lain.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>Elemen sama. Pilih lagi.</translation>
         </message>
@@ -3469,8 +3465,12 @@
             <translation>Inti direbut</translation>
         </message>
         <message>
-            <source>Find the Core. Watch for traps.</source>
-            <translation>Temukan Inti. Hati-hati dengan jebakan.</translation>
+            <source>Neutral</source>
+            <translation>Netral</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>Pilih elemen</translation>
         </message>
     </context>
 </TS>

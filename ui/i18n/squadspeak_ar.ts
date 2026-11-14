@@ -3421,10 +3421,6 @@
             <translation>اختر نواتك وفخك.</translation>
         </message>
         <message>
-            <source>Choice locked. Waiting for the other player.</source>
-            <translation>تم تثبيت الاختيار. في انتظار اللاعب الآخر.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>العنصر نفسه. اختر مجددًا.</translation>
         </message>
@@ -3469,8 +3465,12 @@
             <translation>تم الاستيلاء على النواة</translation>
         </message>
         <message>
-            <source>Find the Core. Watch for traps.</source>
-            <translation>اعثر على النواة. احذر الفخاخ.</translation>
+            <source>Neutral</source>
+            <translation>محايد</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>اختر عنصرًا</translation>
         </message>
     </context>
 </TS>

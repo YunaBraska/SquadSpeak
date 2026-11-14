@@ -3421,10 +3421,6 @@
             <translation>Wiel däi Kär an deng Fal.</translation>
         </message>
         <message>
-            <source>Choice locked. Waiting for the other player.</source>
-            <translation>Auswiel bestätegt. Op deen anere Spiller waarden.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>Dat selwecht Element. Wiel nach eng Kéier.</translation>
         </message>
@@ -3469,8 +3465,12 @@
             <translation>Kär eruewert</translation>
         </message>
         <message>
-            <source>Find the Core. Watch for traps.</source>
-            <translation>Fann de Kär. Pass op Falen op.</translation>
+            <source>Neutral</source>
+            <translation>Neutral</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>Wiel en Element</translation>
         </message>
     </context>
 </TS>

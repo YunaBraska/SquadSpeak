@@ -3421,10 +3421,6 @@
             <translation>Vyber si svoje Jadro a Pascu.</translation>
         </message>
         <message>
-            <source>Choice locked. Waiting for the other player.</source>
-            <translation>Voľba potvrdená. Čaká sa na druhého hráča.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>Rovnaký živel. Vyber znova.</translation>
         </message>
@@ -3469,8 +3465,12 @@
             <translation>Jadro dobyté</translation>
         </message>
         <message>
-            <source>Find the Core. Watch for traps.</source>
-            <translation>Nájdi Jadro. Pozor na pasce.</translation>
+            <source>Neutral</source>
+            <translation>Neutrálne</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>Vyber si živel</translation>
         </message>
     </context>
 </TS>

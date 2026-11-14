@@ -3421,10 +3421,6 @@
             <translation>コアと罠を選んでね。</translation>
         </message>
         <message>
-            <source>Choice locked. Waiting for the other player.</source>
-            <translation>選択を確定しました。相手を待っています。</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>同じ属性です。もう一度選んでね。</translation>
         </message>
@@ -3469,8 +3465,12 @@
             <translation>コアを奪取</translation>
         </message>
         <message>
-            <source>Find the Core. Watch for traps.</source>
-            <translation>コアを見つけよう。罠に気をつけてね。</translation>
+            <source>Neutral</source>
+            <translation>無属性</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>属性を選んでね</translation>
         </message>
     </context>
 </TS>

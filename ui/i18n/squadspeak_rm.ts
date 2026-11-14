@@ -3421,10 +3421,6 @@
             <translation>Tscherna tes Minz e tia Trapla.</translation>
         </message>
         <message>
-            <source>Choice locked. Waiting for the other player.</source>
-            <translation>Tscherna confermada. Spetgar l’auter giugader.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>Il medem element. Tscherna anc ina giada.</translation>
         </message>
@@ -3469,8 +3465,12 @@
             <translation>Minz conquistà</translation>
         </message>
         <message>
-            <source>Find the Core. Watch for traps.</source>
-            <translation>Chatta il Minz. Fa adatg da traplas.</translation>
+            <source>Neutral</source>
+            <translation>Neutral</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>Tscherna in element</translation>
         </message>
     </context>
 </TS>

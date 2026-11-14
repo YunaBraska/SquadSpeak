@@ -3421,10 +3421,6 @@
             <translation>Välj din Kärna och din Fälla.</translation>
         </message>
         <message>
-            <source>Choice locked. Waiting for the other player.</source>
-            <translation>Valet är låst. Väntar på den andra spelaren.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>Samma element. Välj igen.</translation>
         </message>
@@ -3469,8 +3465,12 @@
             <translation>Kärnan erövrad</translation>
         </message>
         <message>
-            <source>Find the Core. Watch for traps.</source>
-            <translation>Hitta Kärnan. Se upp för fällor.</translation>
+            <source>Neutral</source>
+            <translation>Neutral</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>Välj ett element</translation>
         </message>
     </context>
 </TS>

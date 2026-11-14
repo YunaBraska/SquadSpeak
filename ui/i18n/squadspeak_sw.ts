@@ -3421,10 +3421,6 @@
             <translation>Chagua Kiini na Mtego wako.</translation>
         </message>
         <message>
-            <source>Choice locked. Waiting for the other player.</source>
-            <translation>Chaguo limethibitishwa. Inasubiri mchezaji mwingine.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>Elementi sawa. Chagua tena.</translation>
         </message>
@@ -3469,8 +3465,12 @@
             <translation>Kiini kimetekwa</translation>
         </message>
         <message>
-            <source>Find the Core. Watch for traps.</source>
-            <translation>Tafuta Kiini. Jihadhari na mitego.</translation>
+            <source>Neutral</source>
+            <translation>Isiyo na elementi</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>Chagua elementi</translation>
         </message>
     </context>
 </TS>

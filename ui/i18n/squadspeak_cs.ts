@@ -3421,10 +3421,6 @@
             <translation>Vyber své Jádro a Past.</translation>
         </message>
         <message>
-            <source>Choice locked. Waiting for the other player.</source>
-            <translation>Volba potvrzena. Čekání na druhého hráče.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>Stejný živel. Vyber znovu.</translation>
         </message>
@@ -3469,8 +3465,12 @@
             <translation>Jádro dobyto</translation>
         </message>
         <message>
-            <source>Find the Core. Watch for traps.</source>
-            <translation>Najdi Jádro. Pozor na pasti.</translation>
+            <source>Neutral</source>
+            <translation>Neutrální</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>Vyber živel</translation>
         </message>
     </context>
 </TS>

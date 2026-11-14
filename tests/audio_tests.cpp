@@ -317,7 +317,8 @@ private slots:
 
     void eventSoundAssetsAreDistinctBoundedPcm() {
         QSet<QByteArray> hashes;
-        for (const auto* name : {"join", "leave", "kick", "ban", "message", "announcement"}) {
+        for (const auto* name : {"join", "leave", "kick", "ban", "message", "announcement",
+                "game-choose", "game-move", "game-melt", "game-freeze", "game-extinguish", "game-trap", "game-win", "game-end"}) {
             QFile file(QString(":/qt/qml/SquadSpeak/ui/sounds/%1.wav").arg(name));
             QVERIFY2(file.open(QIODevice::ReadOnly), name);
             const auto bytes = file.readAll();
@@ -332,13 +333,23 @@ private slots:
             QCOMPARE(bytes.sliced(36, 4), "data"); QCOMPARE(u32(40), bytes.size() - 44);
             QVERIFY(u32(40) >= u32(24) / 5 && u32(40) <= u32(24) * 2);
             int peak = 0;
-            for (qsizetype offset = 44; offset + 1 < bytes.size(); offset += 2)
-                peak = std::max(peak, std::abs(int(qFromLittleEndian<qint16>(bytes.constData() + offset))));
+            double energy = 0;
+            for (qsizetype offset = 44; offset + 1 < bytes.size(); offset += 2) {
+                const auto sample = int(qFromLittleEndian<qint16>(bytes.constData() + offset));
+                peak = std::max(peak, std::abs(sample));
+                energy += double(sample) * sample;
+            }
             QVERIFY(peak > 1000 && peak < 10000);
+            if (QByteArrayView(name).startsWith("game-")) {
+                const auto duration = double(u32(40)) / u32(28);
+                QVERIFY2(duration >= 0.1 && duration <= 0.7, name);
+                const auto rms = std::sqrt(energy / (u32(40) / 2));
+                QVERIFY2(rms > 300 && rms < 4000, name);
+            }
             QCOMPARE(u16(44), 0); QCOMPARE(u16(int(bytes.size()) - 2), 0);
             hashes.insert(QCryptographicHash::hash(bytes, QCryptographicHash::Sha256));
         }
-        QCOMPARE(hashes.size(), 6);
+        QCOMPARE(hashes.size(), 14);
     }
 
     void echoDefaultsAndDeviceProfilesPersist() {

@@ -3421,10 +3421,6 @@
             <translation>Zgjidh Bërthamën dhe Kurthin tënd.</translation>
         </message>
         <message>
-            <source>Choice locked. Waiting for the other player.</source>
-            <translation>Zgjedhja u konfirmua. Në pritje të lojtarit tjetër.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>I njëjti element. Zgjidh përsëri.</translation>
         </message>
@@ -3469,8 +3465,12 @@
             <translation>Bërthama u kap</translation>
         </message>
         <message>
-            <source>Find the Core. Watch for traps.</source>
-            <translation>Gjej Bërthamën. Kujdes nga kurthet.</translation>
+            <source>Neutral</source>
+            <translation>Neutrale</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>Zgjidh një element</translation>
         </message>
     </context>
 </TS>

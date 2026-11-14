@@ -3421,10 +3421,6 @@
             <translation>Velg Kjernen og Fellen din.</translation>
         </message>
         <message>
-            <source>Choice locked. Waiting for the other player.</source>
-            <translation>Valget er låst. Venter på den andre spilleren.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>Samme element. Velg på nytt.</translation>
         </message>
@@ -3469,8 +3465,12 @@
             <translation>Kjernen erobret</translation>
         </message>
         <message>
-            <source>Find the Core. Watch for traps.</source>
-            <translation>Finn Kjernen. Pass deg for feller.</translation>
+            <source>Neutral</source>
+            <translation>Nøytral</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>Velg et element</translation>
         </message>
     </context>
 </TS>

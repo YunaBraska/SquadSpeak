@@ -3421,10 +3421,6 @@
             <translation>აირჩიე შენი ბირთვი და ხაფანგი.</translation>
         </message>
         <message>
-            <source>Choice locked. Waiting for the other player.</source>
-            <translation>არჩევანი დადასტურებულია. მეორე მოთამაშის მოლოდინი.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>ერთნაირი სტიქია. აირჩიე თავიდან.</translation>
         </message>
@@ -3469,8 +3465,12 @@
             <translation>ბირთვი აღებულია</translation>
         </message>
         <message>
-            <source>Find the Core. Watch for traps.</source>
-            <translation>იპოვე ბირთვი. უფრთხილდი ხაფანგებს.</translation>
+            <source>Neutral</source>
+            <translation>ნეიტრალური</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>აირჩიე სტიქია</translation>
         </message>
     </context>
 </TS>

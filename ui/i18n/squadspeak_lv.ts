@@ -3421,10 +3421,6 @@
             <translation>Izvēlies savu Kodolu un Lamatas.</translation>
         </message>
         <message>
-            <source>Choice locked. Waiting for the other player.</source>
-            <translation>Izvēle apstiprināta. Gaida otru spēlētāju.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>Tas pats elements. Izvēlies vēlreiz.</translation>
         </message>
@@ -3469,8 +3465,12 @@
             <translation>Kodols ieņemts</translation>
         </message>
         <message>
-            <source>Find the Core. Watch for traps.</source>
-            <translation>Atrodi Kodolu. Uzmanies no lamatām.</translation>
+            <source>Neutral</source>
+            <translation>Neitrāls</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>Izvēlies elementu</translation>
         </message>
     </context>
 </TS>

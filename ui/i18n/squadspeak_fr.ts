@@ -3421,10 +3421,6 @@
             <translation>Choisis ton Noyau et ton Piège.</translation>
         </message>
         <message>
-            <source>Choice locked. Waiting for the other player.</source>
-            <translation>Choix verrouillé. En attente de l’autre joueur.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>Même élément. Choisis à nouveau.</translation>
         </message>
@@ -3469,8 +3465,12 @@
             <translation>Noyau capturé</translation>
         </message>
         <message>
-            <source>Find the Core. Watch for traps.</source>
-            <translation>Trouve le Noyau. Attention aux pièges.</translation>
+            <source>Neutral</source>
+            <translation>Neutre</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>Choisis un élément</translation>
         </message>
     </context>
 </TS>

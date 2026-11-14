@@ -3421,10 +3421,6 @@
             <translation>Выбери своё Ядро и Ловушку.</translation>
         </message>
         <message>
-            <source>Choice locked. Waiting for the other player.</source>
-            <translation>Выбор подтверждён. Ожидание другого игрока.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>Одинаковая стихия. Выбери снова.</translation>
         </message>
@@ -3469,8 +3465,12 @@
             <translation>Ядро захвачено</translation>
         </message>
         <message>
-            <source>Find the Core. Watch for traps.</source>
-            <translation>Найди Ядро. Берегись ловушек.</translation>
+            <source>Neutral</source>
+            <translation>Нейтральный</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>Выбери стихию</translation>
         </message>
     </context>
 </TS>

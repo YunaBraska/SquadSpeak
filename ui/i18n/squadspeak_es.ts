@@ -3421,10 +3421,6 @@
             <translation>Elige tu Núcleo y tu Trampa.</translation>
         </message>
         <message>
-            <source>Choice locked. Waiting for the other player.</source>
-            <translation>Elección confirmada. Esperando al otro jugador.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>Mismo elemento. Elige de nuevo.</translation>
         </message>
@@ -3469,8 +3465,12 @@
             <translation>Núcleo capturado</translation>
         </message>
         <message>
-            <source>Find the Core. Watch for traps.</source>
-            <translation>Encuentra el Núcleo. Cuidado con las trampas.</translation>
+            <source>Neutral</source>
+            <translation>Neutral</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>Elige un elemento</translation>
         </message>
     </context>
 </TS>

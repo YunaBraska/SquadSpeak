@@ -24,6 +24,7 @@ TestCase {
     SignalSpy { id: dialogRejections; signalName: "rejected" }
     SignalSpy { id: stationSaves; target: radio; signalName: "stationSaved" }
     SignalSpy { id: membershipEvents; target: channel; signalName: "channelEvent" }
+    SignalSpy { id: gameFeedback; signalName: "feedbackRequested" }
     Component { id: variablePortrait; VoiceAvatar { width: 96; height: 112 } }
     Component { id: portraitBackdrop; Rectangle { color: Theme.surface } }
     Component { id: atlasImage; Image { visible: false } }
@@ -910,6 +911,8 @@ TestCase {
                 {tag: "rtl", width: 390, height: 760, language: "ar"}]
     }
     function test_gameBoardChatOnlyJourney(data) {
+        const previousVolume = audio.notificationVolume
+        verify(audio.setNotificationVolume(0))
         session.setLanguage(data.language)
         verify(session.setTheme(data.tag === "wide" || data.tag === "rtl" ? "dark" : "light"))
         view.width = data.width; view.height = data.height
@@ -937,6 +940,7 @@ TestCase {
         compare(card.LayoutMirroring.enabled, data.language === "ar")
         compare(findChild(card, "gameJoin").visible, false)
         const board = findChild(view, "gameWindow")
+        gameFeedback.target = board; gameFeedback.clear()
         tryCompare(board, "visible", true)
         board.width = data.width < 500 ? 390 : 700; board.height = data.width < 500 ? 580 : 700
         compare(findChild(board, "gameReady").enabled, false)
@@ -975,7 +979,12 @@ TestCase {
             tryCompare(art, "status", piece.kind ? Image.Ready : Image.Null)
             if (piece.kind) renderedKinds[piece.kind] = true
         }
-        compare(Object.keys(renderedKinds).length, 6, "All roles, including concealed opponents, have artwork")
+        compare(Object.keys(renderedKinds).sort().join(","), "core,hidden,neutral,trap")
+        for (const kind of ["fire", "water", "ice"]) {
+            const option = visualChild(board.contentItem, "gameChoice_" + kind)
+            tryCompare(option.contentItem, "status", Image.Ready)
+            verify(!option.enabled, "An element cannot be selected before a fight")
+        }
         compare(findChild(board, "battleSummary").visible, false)
         const mover = ownGame().turn === channel.ownId ? board : remoteBoard
         const from = mover === board ? 28 : 7, to = mover === board ? 21 : 14
@@ -990,22 +999,40 @@ TestCase {
         verify(fixtures.pressAccessible(visualChild(mover.contentItem, "gameCell_" + to)))
         verify(fixtures.pressAccessible(visualChild(mover.contentItem, "gameCell_" + responseTo)))
         tryVerify(function() { return !!ownGame().lastBattle.effect && !!otherGame().lastBattle.effect })
-        if (ownGame().phase === "duel") {
-            compare(findChild(board, "battleSummary").visible, false)
-            verify(fixtures.pressAccessible(visualChild(mover.contentItem, "gameChoice_fire")))
-            tryVerify(function() { return mover.game.choice === "fire" })
-            compare(responder.game.choice, "")
-            verify(fixtures.pressAccessible(visualChild(responder.contentItem, "gameChoice_ice")))
-        }
+        compare(ownGame().phase, "duel")
+        compare(ownGame().lastBattle.effect, "choose")
+        compare(visualChild(board.contentItem, "gameCell_" + to).background.border.width, 2)
+        compare(visualChild(board.contentItem, "gameCell_" + responseTo).background.border.width, 2)
+        board.requestActivate(); tryCompare(board, "active", true)
+        board.update(); verify(waitForRendering(board.contentItem))
+        if (imageDirectory.length) verify(fixtures.saveWindow(board, imageDirectory + "/choice-" + data.tag + ".png"))
+        compare(findChild(board, "battleSummary").visible, false)
+        verify(gameFeedback.signalArguments.some(args => args[0] === "game-choose"))
+        verify(fixtures.pressAccessible(visualChild(mover.contentItem, "gameChoice_fire")))
+        tryVerify(function() { return mover.game.choice === "fire" })
+        compare(responder.game.choice, "")
+        verify(fixtures.pressAccessible(visualChild(responder.contentItem, "gameChoice_fire")))
         tryVerify(function() { return ownGame().round === 4 && otherGame().round === 4 })
+        compare(ownGame().phase, "duel")
+        compare(ownGame().lastBattle.effect, "tie")
+        verify(visualChild(mover.contentItem, "gameChoice_water").enabled)
+        verify(fixtures.pressAccessible(visualChild(mover.contentItem, "gameChoice_water")))
+        tryVerify(function() { return mover.game.choice === "water" })
+        compare(responder.game.choice, "")
+        verify(fixtures.pressAccessible(visualChild(responder.contentItem, "gameChoice_fire")))
+        tryVerify(function() { return ownGame().round === 5 && otherGame().round === 5 })
+        verify(gameFeedback.signalArguments.some(args => args[0] === "game-extinguish"))
         compare(findChild(board, "battleSummary").visible, true)
         const summary = findChild(board, "battleSummary")
         verify(summary.mapToItem(board.contentItem, 0, summary.height).y <= board.contentItem.height,
                "The combat result must fit above the window footer")
+        const cuesBeforeChat = gameFeedback.count
         verify(remoteChannel.sendChat("Ready? Let's play."))
         tryCompare(remoteChannel, "chatPending", false)
-        tryVerify(function() { return channel.messages.length > 0 })
+        tryVerify(function() { return channel.messages.some(m => m.text === "Ready? Let's play.") })
+        compare(gameFeedback.count, cuesBeforeChat, "Chat updates must not replay combat sounds")
         board.requestActivate(); tryCompare(board, "active", true)
+        tryCompare(findChild(board, "battleEffect"), "visible", false)
         board.update(); verify(waitForRendering(board.contentItem))
         if (imageDirectory.length) verify(fixtures.saveWindow(board, imageDirectory + "/board-" + data.tag + ".png"))
         view.requestActivate(); tryCompare(view, "active", true)
@@ -1013,10 +1040,14 @@ TestCase {
         if (imageDirectory.length) verify(fixtures.saveWindow(view, imageDirectory + "/invitation-" + data.tag + ".png"))
         verify(fixtures.pressAccessible(findChild(card, "gameOpen")))
         tryCompare(board, "active", true)
+        compare(gameFeedback.count, cuesBeforeChat, "Opening the current game must not replay sounds")
         board.close()
         tryVerify(function() { return ownGame().phase === "cancelled" && otherGame().phase === "cancelled" })
         remoteBoard.close()
         verify(!channel.joined && !remoteChannel.joined)
+        verify(gameFeedback.signalArguments.some(args => args[0] === "game-end"))
+        gameFeedback.target = null
+        verify(audio.setNotificationVolume(previousVolume))
         verify(session.setTheme("system"))
     }
 

@@ -3421,10 +3421,6 @@
             <translation>Διάλεξε τον Πυρήνα και την Παγίδα σου.</translation>
         </message>
         <message>
-            <source>Choice locked. Waiting for the other player.</source>
-            <translation>Η επιλογή κλειδώθηκε. Αναμονή για τον άλλο παίκτη.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>Ίδιο στοιχείο. Διάλεξε ξανά.</translation>
         </message>
@@ -3469,8 +3465,12 @@
             <translation>Ο Πυρήνας κατακτήθηκε</translation>
         </message>
         <message>
-            <source>Find the Core. Watch for traps.</source>
-            <translation>Βρες τον Πυρήνα. Πρόσεχε τις παγίδες.</translation>
+            <source>Neutral</source>
+            <translation>Ουδέτερο</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>Διάλεξε ένα στοιχείο</translation>
         </message>
     </context>
 </TS>

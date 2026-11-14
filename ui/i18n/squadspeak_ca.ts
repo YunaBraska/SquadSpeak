@@ -3421,10 +3421,6 @@
             <translation>Tria el teu Nucli i la teva Trampa.</translation>
         </message>
         <message>
-            <source>Choice locked. Waiting for the other player.</source>
-            <translation>Tria confirmada. Esperant l’altre jugador.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>El mateix element. Torna a triar.</translation>
         </message>
@@ -3469,8 +3465,12 @@
             <translation>Nucli capturat</translation>
         </message>
         <message>
-            <source>Find the Core. Watch for traps.</source>
-            <translation>Troba el Nucli. Vigila amb les trampes.</translation>
+            <source>Neutral</source>
+            <translation>Neutral</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>Tria un element</translation>
         </message>
     </context>
 </TS>

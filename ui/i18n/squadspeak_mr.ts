@@ -3421,10 +3421,6 @@
             <translation>तुझा गाभा आणि सापळा निवड.</translation>
         </message>
         <message>
-            <source>Choice locked. Waiting for the other player.</source>
-            <translation>निवड पक्की झाली. दुसऱ्या खेळाडूची वाट पाहत आहे.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>तेच तत्त्व. पुन्हा निवड.</translation>
         </message>
@@ -3469,8 +3465,12 @@
             <translation>गाभा ताब्यात घेतला</translation>
         </message>
         <message>
-            <source>Find the Core. Watch for traps.</source>
-            <translation>गाभा शोध. सापळ्यांपासून सावध राहा.</translation>
+            <source>Neutral</source>
+            <translation>तटस्थ</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>एक तत्त्व निवड</translation>
         </message>
     </context>
 </TS>

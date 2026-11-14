@@ -3421,10 +3421,6 @@
             <translation>Zaɓi Cibiyarka da Tarkonka.</translation>
         </message>
         <message>
-            <source>Choice locked. Waiting for the other player.</source>
-            <translation>An tabbatar da zaɓi. Ana jiran ɗayan ɗan wasan.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>Sinadari iri ɗaya. Sake zaɓa.</translation>
         </message>
@@ -3469,8 +3465,12 @@
             <translation>An kama Cibiya</translation>
         </message>
         <message>
-            <source>Find the Core. Watch for traps.</source>
-            <translation>Nemo Cibiya. Ka kula da tarkuna.</translation>
+            <source>Neutral</source>
+            <translation>Tsaka tsaki</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>Zaɓi sinadari</translation>
         </message>
     </context>
 </TS>

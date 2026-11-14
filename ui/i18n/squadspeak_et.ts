@@ -3421,10 +3421,6 @@
             <translation>Vali oma Tuum ja Lõks.</translation>
         </message>
         <message>
-            <source>Choice locked. Waiting for the other player.</source>
-            <translation>Valik lukustatud. Oodatakse teist mängijat.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>Sama element. Vali uuesti.</translation>
         </message>
@@ -3469,8 +3465,12 @@
             <translation>Tuum vallutatud</translation>
         </message>
         <message>
-            <source>Find the Core. Watch for traps.</source>
-            <translation>Leia Tuum. Hoidu lõksudest.</translation>
+            <source>Neutral</source>
+            <translation>Neutraalne</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>Vali element</translation>
         </message>
     </context>
 </TS>

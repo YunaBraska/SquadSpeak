@@ -3421,10 +3421,6 @@
             <translation>Choose your Core and Trap.</translation>
         </message>
         <message>
-            <source>Choice locked. Waiting for the other player.</source>
-            <translation>Your choice don lock. De wait for di oda player.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>Na di same element. Choose again.</translation>
         </message>
@@ -3469,8 +3465,12 @@
             <translation>Dem don capture Core</translation>
         </message>
         <message>
-            <source>Find the Core. Watch for traps.</source>
-            <translation>Find di Core. Watch out for traps.</translation>
+            <source>Neutral</source>
+            <translation>E neutral</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>Choose one element</translation>
         </message>
     </context>
 </TS>

@@ -3421,10 +3421,6 @@
             <translation>Вибери своє Ядро та Пастку.</translation>
         </message>
         <message>
-            <source>Choice locked. Waiting for the other player.</source>
-            <translation>Вибір підтверджено. Очікування іншого гравця.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>Однакова стихія. Вибери знову.</translation>
         </message>
@@ -3469,8 +3465,12 @@
             <translation>Ядро захоплено</translation>
         </message>
         <message>
-            <source>Find the Core. Watch for traps.</source>
-            <translation>Знайди Ядро. Стережися пасток.</translation>
+            <source>Neutral</source>
+            <translation>Нейтральний</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>Вибери стихію</translation>
         </message>
     </context>
 </TS>

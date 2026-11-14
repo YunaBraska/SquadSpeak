@@ -3421,10 +3421,6 @@
             <translation>اپنا مرکز اور جال چنو۔</translation>
         </message>
         <message>
-            <source>Choice locked. Waiting for the other player.</source>
-            <translation>انتخاب پکا ہوگیا۔ دوسرے کھلاڑی کا انتظار ہے۔</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>ایک ہی عنصر ہے۔ دوبارہ چنو۔</translation>
         </message>
@@ -3469,8 +3465,12 @@
             <translation>مرکز پر قبضہ ہوگیا</translation>
         </message>
         <message>
-            <source>Find the Core. Watch for traps.</source>
-            <translation>مرکز ڈھونڈو۔ جال سے بچو۔</translation>
+            <source>Neutral</source>
+            <translation>غیر جانب دار</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>ایک عنصر چنو</translation>
         </message>
     </context>
 </TS>

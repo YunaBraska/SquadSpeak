@@ -8,7 +8,10 @@ import "AvatarAtlas.js" as Atlas
 PanelWindow {
     id: root
     property var language: audio.language
-    GameWindow { id: gameWindow; network: root.network }
+    GameWindow {
+        id: gameWindow; network: root.network
+        onFeedbackRequested: kind => { if (root.voice.eventSounds) audio.playEvent(kind) }
+    }
     property string openedGame: ""
     readonly property var currentGame: current.currentGame || ({})
     onCurrentGameChanged: {

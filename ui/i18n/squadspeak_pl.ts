@@ -3421,10 +3421,6 @@
             <translation>Wybierz swój Rdzeń i Pułapkę.</translation>
         </message>
         <message>
-            <source>Choice locked. Waiting for the other player.</source>
-            <translation>Wybór zatwierdzony. Oczekiwanie na drugiego gracza.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>Ten sam żywioł. Wybierz ponownie.</translation>
         </message>
@@ -3469,8 +3465,12 @@
             <translation>Rdzeń zdobyty</translation>
         </message>
         <message>
-            <source>Find the Core. Watch for traps.</source>
-            <translation>Znajdź Rdzeń. Uważaj na pułapki.</translation>
+            <source>Neutral</source>
+            <translation>Neutralne</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>Wybierz żywioł</translation>
         </message>
     </context>
 </TS>

@@ -3421,10 +3421,6 @@
             <translation>Ընտրիր քո Միջուկն ու Թակարդը։</translation>
         </message>
         <message>
-            <source>Choice locked. Waiting for the other player.</source>
-            <translation>Ընտրությունը հաստատված է։ Սպասում ենք մյուս խաղացողին։</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>Նույն տարրն է։ Նորից ընտրիր։</translation>
         </message>
@@ -3469,8 +3465,12 @@
             <translation>Միջուկը գրավված է</translation>
         </message>
         <message>
-            <source>Find the Core. Watch for traps.</source>
-            <translation>Գտիր Միջուկը։ Զգուշացիր թակարդներից։</translation>
+            <source>Neutral</source>
+            <translation>Չեզոք</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>Ընտրիր տարր</translation>
         </message>
     </context>
 </TS>

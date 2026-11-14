@@ -3421,10 +3421,6 @@
             <translation>Válaszd ki a Magod és a Csapdád helyét.</translation>
         </message>
         <message>
-            <source>Choice locked. Waiting for the other player.</source>
-            <translation>Választás rögzítve. Várakozás a másik játékosra.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>Azonos elem. Válassz újra.</translation>
         </message>
@@ -3469,8 +3465,12 @@
             <translation>Mag elfoglalva</translation>
         </message>
         <message>
-            <source>Find the Core. Watch for traps.</source>
-            <translation>Találd meg a Magot. Vigyázz a csapdákra.</translation>
+            <source>Neutral</source>
+            <translation>Semleges</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>Válassz egy elemet</translation>
         </message>
     </context>
 </TS>

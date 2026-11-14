@@ -3421,10 +3421,6 @@
             <translation>Valitse Ytimesi ja Ansasi.</translation>
         </message>
         <message>
-            <source>Choice locked. Waiting for the other player.</source>
-            <translation>Valinta lukittu. Odotetaan toista pelaajaa.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>Sama elementti. Valitse uudelleen.</translation>
         </message>
@@ -3469,8 +3465,12 @@
             <translation>Ydin vallattu</translation>
         </message>
         <message>
-            <source>Find the Core. Watch for traps.</source>
-            <translation>Etsi Ydin. Varo ansoja.</translation>
+            <source>Neutral</source>
+            <translation>Neutraali</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>Valitse elementti</translation>
         </message>
     </context>
 </TS>

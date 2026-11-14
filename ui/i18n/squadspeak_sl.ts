@@ -3421,10 +3421,6 @@
             <translation>Izberi svoje Jedro in Past.</translation>
         </message>
         <message>
-            <source>Choice locked. Waiting for the other player.</source>
-            <translation>Izbira potrjena. Čakanje na drugega igralca.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>Enak element. Izberi znova.</translation>
         </message>
@@ -3469,8 +3465,12 @@
             <translation>Jedro osvojeno</translation>
         </message>
         <message>
-            <source>Find the Core. Watch for traps.</source>
-            <translation>Poišči Jedro. Pazi na pasti.</translation>
+            <source>Neutral</source>
+            <translation>Nevtralno</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>Izberi element</translation>
         </message>
     </context>
 </TS>

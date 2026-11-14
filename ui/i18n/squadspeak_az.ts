@@ -3421,10 +3421,6 @@
             <translation>Özəyini və Tələni seç.</translation>
         </message>
         <message>
-            <source>Choice locked. Waiting for the other player.</source>
-            <translation>Seçim təsdiqləndi. Digər oyunçu gözlənilir.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>Eyni element. Yenidən seç.</translation>
         </message>
@@ -3469,8 +3465,12 @@
             <translation>Özək ələ keçirildi</translation>
         </message>
         <message>
-            <source>Find the Core. Watch for traps.</source>
-            <translation>Özəyi tap. Tələlərə diqqət et.</translation>
+            <source>Neutral</source>
+            <translation>Neytral</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>Element seç</translation>
         </message>
     </context>
 </TS>

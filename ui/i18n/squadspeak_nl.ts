@@ -3421,10 +3421,6 @@
             <translation>Kies je Kern en je Val.</translation>
         </message>
         <message>
-            <source>Choice locked. Waiting for the other player.</source>
-            <translation>Keuze vastgelegd. Wachten op de andere speler.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>Hetzelfde element. Kies opnieuw.</translation>
         </message>
@@ -3469,8 +3465,12 @@
             <translation>Kern veroverd</translation>
         </message>
         <message>
-            <source>Find the Core. Watch for traps.</source>
-            <translation>Vind de Kern. Pas op voor vallen.</translation>
+            <source>Neutral</source>
+            <translation>Neutraal</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>Kies een element</translation>
         </message>
     </context>
 </TS>
