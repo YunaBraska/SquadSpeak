@@ -1229,6 +1229,10 @@
             <source>Import</source>
             <translation>আমদানি</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>অবস্থা অজানা</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -3330,24 +3334,8 @@
             <translation>%1 আমন্ত্রণ জানিয়েছে</translation>
         </message>
         <message>
-            <source>Ready</source>
-            <translation>প্রস্তুত</translation>
-        </message>
-        <message>
             <source>%1 wins!</source>
             <translation>%1 জিতেছে!</translation>
-        </message>
-        <message>
-            <source>Game ended. A player disconnected.</source>
-            <translation>খেলা শেষ। একজন খেলোয়াড়ের সংযোগ বিচ্ছিন্ন হয়েছে।</translation>
-        </message>
-        <message>
-            <source>Game ended. A player left.</source>
-            <translation>খেলা শেষ। একজন খেলোয়াড় চলে গেছে।</translation>
-        </message>
-        <message>
-            <source>Waiting for a player</source>
-            <translation>খেলোয়াড়ের অপেক্ষায়</translation>
         </message>
         <message>
             <source>Join</source>
@@ -3364,10 +3352,6 @@
         <message>
             <source>Game ended</source>
             <translation>খেলা শেষ</translation>
-        </message>
-        <message>
-            <source>In progress</source>
-            <translation>খেলা চলছে</translation>
         </message>
         <message>
             <source>Open</source>
@@ -3413,14 +3397,6 @@
             <translation>খেলা উপলভ্য নয়</translation>
         </message>
         <message>
-            <source>Ready in %1 s</source>
-            <translation>%1 সেকেন্ডে প্রস্তুত</translation>
-        </message>
-        <message>
-            <source>Choose your Core and Trap.</source>
-            <translation>তোমার কেন্দ্র ও ফাঁদ বেছে নাও।</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>একই উপাদান। আবার বেছে নাও।</translation>
         </message>
@@ -3457,20 +3433,60 @@
             <translation>জল আগুন নিভিয়ে দেয়</translation>
         </message>
         <message>
-            <source>Trap triggered</source>
-            <translation>ফাঁদ সক্রিয় হয়েছে</translation>
-        </message>
-        <message>
-            <source>Core captured</source>
-            <translation>কেন্দ্র দখল হয়েছে</translation>
-        </message>
-        <message>
             <source>Neutral</source>
             <translation>নিরপেক্ষ</translation>
         </message>
         <message>
             <source>Choose an element</source>
             <translation>একটি উপাদান বেছে নাও</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>তথ্য</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>জয়</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>পরাজয়</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>বাকি</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>হারানো</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>খেলা ছেড়ে যাবে?</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>চলে গেলে অন্য খেলোয়াড় জিতবে।</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>এই আমন্ত্রণ বাতিল করবে?</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>প্রথমে ফাঁদ, তারপর কেন্দ্র বেছে নাও। এক ঘর চলো। জিততে প্রতিপক্ষের কেন্দ্র দখল করো।</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>প্রথম লড়াইয়ে উপাদান বেছে নাও। সমান হলে আবার বেছে নিতে পারবে।</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>নড়ে না। সব আক্রমণকারীকে হারায়।</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>নড়ে না। খেলায় থাকতে একে রক্ষা করো।</translation>
         </message>
     </context>
 </TS>

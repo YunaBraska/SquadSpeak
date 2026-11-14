@@ -1229,6 +1229,10 @@
             <source>Import</source>
             <translation>Importa</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>Status mhux magħruf</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -3330,24 +3334,8 @@
             <translation>Stedina minn %1</translation>
         </message>
         <message>
-            <source>Ready</source>
-            <translation>Lest</translation>
-        </message>
-        <message>
             <source>%1 wins!</source>
             <translation>%1 rebaħ!</translation>
-        </message>
-        <message>
-            <source>Game ended. A player disconnected.</source>
-            <translation>Il-logħba spiċċat. Plejer tilef il-konnessjoni.</translation>
-        </message>
-        <message>
-            <source>Game ended. A player left.</source>
-            <translation>Il-logħba spiċċat. Plejer telaq.</translation>
-        </message>
-        <message>
-            <source>Waiting for a player</source>
-            <translation>Qed tistenna plejer</translation>
         </message>
         <message>
             <source>Join</source>
@@ -3364,10 +3352,6 @@
         <message>
             <source>Game ended</source>
             <translation>Il-logħba spiċċat</translation>
-        </message>
-        <message>
-            <source>In progress</source>
-            <translation>Għaddejja</translation>
         </message>
         <message>
             <source>Open</source>
@@ -3413,14 +3397,6 @@
             <translation>Il-logħba mhix disponibbli</translation>
         </message>
         <message>
-            <source>Ready in %1 s</source>
-            <translation>Lest fi %1 s</translation>
-        </message>
-        <message>
-            <source>Choose your Core and Trap.</source>
-            <translation>Agħżel il-Qalba u n-Nassa tiegħek.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>L-istess element. Agħżel mill-ġdid.</translation>
         </message>
@@ -3457,20 +3433,60 @@
             <translation>L-ilma jitfi n-nar</translation>
         </message>
         <message>
-            <source>Trap triggered</source>
-            <translation>Nassa attivata</translation>
-        </message>
-        <message>
-            <source>Core captured</source>
-            <translation>Qalba maqbuda</translation>
-        </message>
-        <message>
             <source>Neutral</source>
             <translation>Newtrali</translation>
         </message>
         <message>
             <source>Choose an element</source>
             <translation>Agħżel element</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>Informazzjoni</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>Rebħa</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>Telfa</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>Fadal</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>Maqbuda</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>Titlaq mil-logħba?</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>Jekk titlaq, jirbaħ il-plejer l-ieħor.</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>Tħassar l-istedina?</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>Agħżel Nassa, imbagħad Qalba. Imxi kaxxa waħda. Aqbad il-Qalba l-oħra biex tirbaħ.</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>Agħżel l-element fl-ewwel ġlieda. Jekk tispiċċa ndaqs, agħżel mill-ġdid.</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>Ma tiċċaqlaqx. Tegħleb kull attakkant.</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>Ma tiċċaqlaqx. Ipproteġiha biex tibqa’ fil-logħba.</translation>
         </message>
     </context>
 </TS>

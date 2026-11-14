@@ -1229,6 +1229,10 @@
             <source>Import</source>
             <translation>استيراد</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>الحالة غير معروفة</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -3330,24 +3334,8 @@
             <translation>دعوة من %1</translation>
         </message>
         <message>
-            <source>Ready</source>
-            <translation>جاهز</translation>
-        </message>
-        <message>
             <source>%1 wins!</source>
             <translation>فاز %1!</translation>
-        </message>
-        <message>
-            <source>Game ended. A player disconnected.</source>
-            <translation>انتهت اللعبة. انقطع اتصال أحد اللاعبين.</translation>
-        </message>
-        <message>
-            <source>Game ended. A player left.</source>
-            <translation>انتهت اللعبة. غادر أحد اللاعبين.</translation>
-        </message>
-        <message>
-            <source>Waiting for a player</source>
-            <translation>في انتظار لاعب</translation>
         </message>
         <message>
             <source>Join</source>
@@ -3364,10 +3352,6 @@
         <message>
             <source>Game ended</source>
             <translation>انتهت اللعبة</translation>
-        </message>
-        <message>
-            <source>In progress</source>
-            <translation>جارية</translation>
         </message>
         <message>
             <source>Open</source>
@@ -3413,14 +3397,6 @@
             <translation>اللعبة غير متاحة</translation>
         </message>
         <message>
-            <source>Ready in %1 s</source>
-            <translation>جاهز خلال %1 ث</translation>
-        </message>
-        <message>
-            <source>Choose your Core and Trap.</source>
-            <translation>اختر نواتك وفخك.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>العنصر نفسه. اختر مجددًا.</translation>
         </message>
@@ -3457,20 +3433,60 @@
             <translation>الماء يطفئ النار</translation>
         </message>
         <message>
-            <source>Trap triggered</source>
-            <translation>تم تفعيل الفخ</translation>
-        </message>
-        <message>
-            <source>Core captured</source>
-            <translation>تم الاستيلاء على النواة</translation>
-        </message>
-        <message>
             <source>Neutral</source>
             <translation>محايد</translation>
         </message>
         <message>
             <source>Choose an element</source>
             <translation>اختر عنصرًا</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>معلومات</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>انتصار</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>هزيمة</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>المتبقي</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>المأسور</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>مغادرة اللعبة؟</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>إذا غادرت، يفوز اللاعب الآخر.</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>إلغاء هذه الدعوة؟</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>اختر الفخ ثم النواة. تحرك مربعًا واحدًا. استولِ على نواة الخصم لتفوز.</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>اختر عنصرها في أول قتال. عند التعادل اختر مجددًا.</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>يبقى ثابتًا. يهزم كل مهاجم.</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>تبقى ثابتة. احمها لتبقى في اللعبة.</translation>
         </message>
     </context>
 </TS>

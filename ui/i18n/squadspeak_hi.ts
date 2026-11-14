@@ -1229,6 +1229,10 @@
             <source>Import</source>
             <translation>आयात करें</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>स्थिति अज्ञात</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -3330,24 +3334,8 @@
             <translation>%1 ने आमंत्रित किया</translation>
         </message>
         <message>
-            <source>Ready</source>
-            <translation>तैयार</translation>
-        </message>
-        <message>
             <source>%1 wins!</source>
             <translation>%1 जीत गया!</translation>
-        </message>
-        <message>
-            <source>Game ended. A player disconnected.</source>
-            <translation>खेल खत्म। एक खिलाड़ी का कनेक्शन टूट गया।</translation>
-        </message>
-        <message>
-            <source>Game ended. A player left.</source>
-            <translation>खेल खत्म। एक खिलाड़ी चला गया।</translation>
-        </message>
-        <message>
-            <source>Waiting for a player</source>
-            <translation>खिलाड़ी का इंतज़ार है</translation>
         </message>
         <message>
             <source>Join</source>
@@ -3364,10 +3352,6 @@
         <message>
             <source>Game ended</source>
             <translation>खेल खत्म</translation>
-        </message>
-        <message>
-            <source>In progress</source>
-            <translation>खेल जारी है</translation>
         </message>
         <message>
             <source>Open</source>
@@ -3413,14 +3397,6 @@
             <translation>खेल उपलब्ध नहीं</translation>
         </message>
         <message>
-            <source>Ready in %1 s</source>
-            <translation>%1 सेकंड में तैयार</translation>
-        </message>
-        <message>
-            <source>Choose your Core and Trap.</source>
-            <translation>अपना केंद्र और जाल चुनो।</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>एक ही तत्व। फिर से चुनो।</translation>
         </message>
@@ -3457,20 +3433,60 @@
             <translation>पानी आग बुझा देता है</translation>
         </message>
         <message>
-            <source>Trap triggered</source>
-            <translation>जाल सक्रिय हुआ</translation>
-        </message>
-        <message>
-            <source>Core captured</source>
-            <translation>केंद्र पर कब्ज़ा हुआ</translation>
-        </message>
-        <message>
             <source>Neutral</source>
             <translation>तटस्थ</translation>
         </message>
         <message>
             <source>Choose an element</source>
             <translation>एक तत्व चुनो</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>जानकारी</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>जीत</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>हार</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>बाकी</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>हराए गए</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>खेल छोड़ें?</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>छोड़ने पर दूसरा खिलाड़ी जीत जाएगा।</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>यह आमंत्रण रद्द करें?</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>पहले जाल, फिर केंद्र चुनो। एक खाना चलो। जीतने के लिए विरोधी का केंद्र पकड़ो।</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>पहली लड़ाई में तत्व चुनो। बराबरी पर फिर चुन सकते हो।</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>हिलता नहीं। हर हमलावर को हरा देता है।</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>हिलता नहीं। खेल में बने रहने के लिए इसे बचाओ।</translation>
         </message>
     </context>
 </TS>

@@ -31,6 +31,12 @@ Canvas {
         if (symbol === "search") {
             c.beginPath(); c.arc(10, 10, 6, 0, Math.PI * 2); c.stroke()
             line([15, 15, 21, 21])
+        } else if (symbol === "info") {
+            c.beginPath(); c.arc(12, 12, 9, 0, Math.PI * 2); c.stroke()
+            line([12, 11, 12, 17]); c.beginPath(); c.arc(12, 7, 1, 0, Math.PI * 2); c.fill()
+        } else if (symbol === "trophy") {
+            line([6, 3, 18, 3, 17, 11, 12, 15, 7, 11, 6, 3]); line([12, 15, 12, 21]); line([7, 21, 17, 21])
+            line([6, 5, 2, 5, 3, 10, 7, 12]); line([18, 5, 22, 5, 21, 10, 17, 12])
         } else if (symbol === "copy") {
             c.strokeRect(8, 8, 13, 13); line([4, 16, 3, 16, 3, 3, 16, 3, 16, 4])
         } else if (symbol === "translate") {

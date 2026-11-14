@@ -1229,6 +1229,10 @@
             <source>Import</source>
             <translation>Importo</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>Gjendje e panjohur</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -3330,24 +3334,8 @@
             <translation>Ftesë nga %1</translation>
         </message>
         <message>
-            <source>Ready</source>
-            <translation>Gati</translation>
-        </message>
-        <message>
             <source>%1 wins!</source>
             <translation>%1 fiton!</translation>
-        </message>
-        <message>
-            <source>Game ended. A player disconnected.</source>
-            <translation>Loja përfundoi. Një lojtar humbi lidhjen.</translation>
-        </message>
-        <message>
-            <source>Game ended. A player left.</source>
-            <translation>Loja përfundoi. Një lojtar u largua.</translation>
-        </message>
-        <message>
-            <source>Waiting for a player</source>
-            <translation>Në pritje të një lojtari</translation>
         </message>
         <message>
             <source>Join</source>
@@ -3364,10 +3352,6 @@
         <message>
             <source>Game ended</source>
             <translation>Loja përfundoi</translation>
-        </message>
-        <message>
-            <source>In progress</source>
-            <translation>Në vazhdim</translation>
         </message>
         <message>
             <source>Open</source>
@@ -3413,14 +3397,6 @@
             <translation>Loja nuk është e disponueshme</translation>
         </message>
         <message>
-            <source>Ready in %1 s</source>
-            <translation>Gati pas %1 s</translation>
-        </message>
-        <message>
-            <source>Choose your Core and Trap.</source>
-            <translation>Zgjidh Bërthamën dhe Kurthin tënd.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>I njëjti element. Zgjidh përsëri.</translation>
         </message>
@@ -3457,20 +3433,60 @@
             <translation>Uji shuan zjarrin</translation>
         </message>
         <message>
-            <source>Trap triggered</source>
-            <translation>Kurthi u aktivizua</translation>
-        </message>
-        <message>
-            <source>Core captured</source>
-            <translation>Bërthama u kap</translation>
-        </message>
-        <message>
             <source>Neutral</source>
             <translation>Neutrale</translation>
         </message>
         <message>
             <source>Choose an element</source>
             <translation>Zgjidh një element</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>Informacion</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>Fitore</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>Humbje</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>Mbetur</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>Të kapura</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>Të dalësh nga loja?</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>Nëse largohesh, fiton lojtari tjetër.</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>Ta anulosh ftesën?</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>Zgjidh Kurthin, pastaj Bërthamën. Lëviz një katror. Kap Bërthamën kundërshtare për të fituar.</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>Zgjidh elementin në betejën e parë. Në barazim zgjidh përsëri.</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>Nuk lëviz. Mund çdo sulmues.</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>Nuk lëviz. Mbroje për të qëndruar në lojë.</translation>
         </message>
     </context>
 </TS>

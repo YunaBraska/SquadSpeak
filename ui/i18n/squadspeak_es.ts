@@ -1229,6 +1229,10 @@
             <source>Import</source>
             <translation>Importar</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>Estado desconocido</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -3330,24 +3334,8 @@
             <translation>Invitación de %1</translation>
         </message>
         <message>
-            <source>Ready</source>
-            <translation>Listo</translation>
-        </message>
-        <message>
             <source>%1 wins!</source>
             <translation>¡%1 gana!</translation>
-        </message>
-        <message>
-            <source>Game ended. A player disconnected.</source>
-            <translation>Partida terminada. Un jugador perdió la conexión.</translation>
-        </message>
-        <message>
-            <source>Game ended. A player left.</source>
-            <translation>Partida terminada. Un jugador se fue.</translation>
-        </message>
-        <message>
-            <source>Waiting for a player</source>
-            <translation>Esperando a un jugador</translation>
         </message>
         <message>
             <source>Join</source>
@@ -3364,10 +3352,6 @@
         <message>
             <source>Game ended</source>
             <translation>Partida terminada</translation>
-        </message>
-        <message>
-            <source>In progress</source>
-            <translation>En curso</translation>
         </message>
         <message>
             <source>Open</source>
@@ -3413,14 +3397,6 @@
             <translation>Partida no disponible</translation>
         </message>
         <message>
-            <source>Ready in %1 s</source>
-            <translation>Listo en %1 s</translation>
-        </message>
-        <message>
-            <source>Choose your Core and Trap.</source>
-            <translation>Elige tu Núcleo y tu Trampa.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>Mismo elemento. Elige de nuevo.</translation>
         </message>
@@ -3457,20 +3433,60 @@
             <translation>El agua apaga el fuego</translation>
         </message>
         <message>
-            <source>Trap triggered</source>
-            <translation>Trampa activada</translation>
-        </message>
-        <message>
-            <source>Core captured</source>
-            <translation>Núcleo capturado</translation>
-        </message>
-        <message>
             <source>Neutral</source>
             <translation>Neutral</translation>
         </message>
         <message>
             <source>Choose an element</source>
             <translation>Elige un elemento</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>Información</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>Victoria</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>Derrota</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>Restantes</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>Capturadas</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>¿Salir de la partida?</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>Si sales, gana la otra persona.</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>¿Cancelar esta invitación?</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>Elige Trampa y luego Núcleo. Mueve una casilla. Captura el Núcleo rival para ganar.</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>Elige su elemento en el primer combate. Si hay empate, elige de nuevo.</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>No se mueve. Vence a cualquier atacante.</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>No se mueve. Protégelo para seguir jugando.</translation>
         </message>
     </context>
 </TS>

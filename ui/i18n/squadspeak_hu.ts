@@ -1229,6 +1229,10 @@
             <source>Import</source>
             <translation>Importálás</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>Ismeretlen állapot</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -3330,24 +3334,8 @@
             <translation>Meghívó: %1</translation>
         </message>
         <message>
-            <source>Ready</source>
-            <translation>Kész</translation>
-        </message>
-        <message>
             <source>%1 wins!</source>
             <translation>%1 nyert!</translation>
-        </message>
-        <message>
-            <source>Game ended. A player disconnected.</source>
-            <translation>A játék véget ért. Egy játékos kapcsolata megszakadt.</translation>
-        </message>
-        <message>
-            <source>Game ended. A player left.</source>
-            <translation>A játék véget ért. Egy játékos kilépett.</translation>
-        </message>
-        <message>
-            <source>Waiting for a player</source>
-            <translation>Várakozás egy játékosra</translation>
         </message>
         <message>
             <source>Join</source>
@@ -3364,10 +3352,6 @@
         <message>
             <source>Game ended</source>
             <translation>A játék véget ért</translation>
-        </message>
-        <message>
-            <source>In progress</source>
-            <translation>Folyamatban</translation>
         </message>
         <message>
             <source>Open</source>
@@ -3413,14 +3397,6 @@
             <translation>A játék nem érhető el</translation>
         </message>
         <message>
-            <source>Ready in %1 s</source>
-            <translation>Kezdés %1 mp múlva</translation>
-        </message>
-        <message>
-            <source>Choose your Core and Trap.</source>
-            <translation>Válaszd ki a Magod és a Csapdád helyét.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>Azonos elem. Válassz újra.</translation>
         </message>
@@ -3457,20 +3433,60 @@
             <translation>A víz eloltja a tüzet</translation>
         </message>
         <message>
-            <source>Trap triggered</source>
-            <translation>Csapda aktiválva</translation>
-        </message>
-        <message>
-            <source>Core captured</source>
-            <translation>Mag elfoglalva</translation>
-        </message>
-        <message>
             <source>Neutral</source>
             <translation>Semleges</translation>
         </message>
         <message>
             <source>Choose an element</source>
             <translation>Válassz egy elemet</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>Információ</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>Győzelem</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>Vereség</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>Megmaradt</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>Legyőzött</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>Kilépsz a játékból?</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>Ha kilépsz, a másik játékos nyer.</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>Visszavonod a meghívást?</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>Válaszd ki a Csapdát, majd a Magot. Lépj egy mezőt. Foglald el a másik Magját a győzelemhez.</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>Válassz elemet az első harcban. Döntetlennél újra választhatsz.</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>Nem mozog. Minden támadót legyőz.</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>Nem mozog. Védd meg, hogy játékban maradj.</translation>
         </message>
     </context>
 </TS>

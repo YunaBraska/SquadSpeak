@@ -1229,6 +1229,10 @@
             <source>Import</source>
             <translation>Ingiza</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>Hali haijulikani</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -3330,24 +3334,8 @@
             <translation>Umealikwa na %1</translation>
         </message>
         <message>
-            <source>Ready</source>
-            <translation>Tayari</translation>
-        </message>
-        <message>
             <source>%1 wins!</source>
             <translation>%1 ameshinda!</translation>
-        </message>
-        <message>
-            <source>Game ended. A player disconnected.</source>
-            <translation>Mchezo umeisha. Mchezaji amepoteza muunganisho.</translation>
-        </message>
-        <message>
-            <source>Game ended. A player left.</source>
-            <translation>Mchezo umeisha. Mchezaji ameondoka.</translation>
-        </message>
-        <message>
-            <source>Waiting for a player</source>
-            <translation>Inasubiri mchezaji</translation>
         </message>
         <message>
             <source>Join</source>
@@ -3364,10 +3352,6 @@
         <message>
             <source>Game ended</source>
             <translation>Mchezo umeisha</translation>
-        </message>
-        <message>
-            <source>In progress</source>
-            <translation>Unaendelea</translation>
         </message>
         <message>
             <source>Open</source>
@@ -3413,14 +3397,6 @@
             <translation>Mchezo haupatikani</translation>
         </message>
         <message>
-            <source>Ready in %1 s</source>
-            <translation>Tayari baada ya sekunde %1</translation>
-        </message>
-        <message>
-            <source>Choose your Core and Trap.</source>
-            <translation>Chagua Kiini na Mtego wako.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>Elementi sawa. Chagua tena.</translation>
         </message>
@@ -3457,20 +3433,60 @@
             <translation>Maji huzima moto</translation>
         </message>
         <message>
-            <source>Trap triggered</source>
-            <translation>Mtego umefyatuka</translation>
-        </message>
-        <message>
-            <source>Core captured</source>
-            <translation>Kiini kimetekwa</translation>
-        </message>
-        <message>
             <source>Neutral</source>
             <translation>Isiyo na elementi</translation>
         </message>
         <message>
             <source>Choose an element</source>
             <translation>Chagua elementi</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>Taarifa</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>Ushindi</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>Kushindwa</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>Zilizobaki</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>Zilizoshindwa</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>Ondoka kwenye mchezo?</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>Ukiondoka, mchezaji mwingine atashinda.</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>Ghairi mwaliko huu?</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>Chagua Mtego, kisha Kiini. Sogeza mraba mmoja. Teka Kiini cha mpinzani ili ushinde.</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>Chagua elementi katika pambano la kwanza. Sare hukuruhusu kuchagua tena.</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>Haisogei. Hushinda kila mshambuliaji.</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>Hakisongei. Kilinde ili ubaki mchezoni.</translation>
         </message>
     </context>
 </TS>

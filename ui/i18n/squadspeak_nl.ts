@@ -1229,6 +1229,10 @@
             <source>Import</source>
             <translation>Importeren</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>Status onbekend</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -3330,24 +3334,8 @@
             <translation>Uitgenodigd door %1</translation>
         </message>
         <message>
-            <source>Ready</source>
-            <translation>Klaar</translation>
-        </message>
-        <message>
             <source>%1 wins!</source>
             <translation>%1 wint!</translation>
-        </message>
-        <message>
-            <source>Game ended. A player disconnected.</source>
-            <translation>Spel afgelopen. Een speler heeft de verbinding verloren.</translation>
-        </message>
-        <message>
-            <source>Game ended. A player left.</source>
-            <translation>Spel afgelopen. Een speler is vertrokken.</translation>
-        </message>
-        <message>
-            <source>Waiting for a player</source>
-            <translation>Wachten op een speler</translation>
         </message>
         <message>
             <source>Join</source>
@@ -3364,10 +3352,6 @@
         <message>
             <source>Game ended</source>
             <translation>Spel afgelopen</translation>
-        </message>
-        <message>
-            <source>In progress</source>
-            <translation>Bezig</translation>
         </message>
         <message>
             <source>Open</source>
@@ -3413,14 +3397,6 @@
             <translation>Spel niet beschikbaar</translation>
         </message>
         <message>
-            <source>Ready in %1 s</source>
-            <translation>Klaar over %1 s</translation>
-        </message>
-        <message>
-            <source>Choose your Core and Trap.</source>
-            <translation>Kies je Kern en je Val.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>Hetzelfde element. Kies opnieuw.</translation>
         </message>
@@ -3457,20 +3433,60 @@
             <translation>Water dooft vuur</translation>
         </message>
         <message>
-            <source>Trap triggered</source>
-            <translation>Val geactiveerd</translation>
-        </message>
-        <message>
-            <source>Core captured</source>
-            <translation>Kern veroverd</translation>
-        </message>
-        <message>
             <source>Neutral</source>
             <translation>Neutraal</translation>
         </message>
         <message>
             <source>Choose an element</source>
             <translation>Kies een element</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>Informatie</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>Gewonnen</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>Verloren</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>Over</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>Verslagen</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>Spel verlaten?</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>Als je vertrekt, wint de andere speler.</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>Deze uitnodiging intrekken?</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>Kies Val, dan Kern. Verplaats één vak. Verover de andere Kern om te winnen.</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>Kies het element bij het eerste gevecht. Bij gelijkspel kies je opnieuw.</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>Blijft staan. Verslaat elke aanvaller.</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>Blijft staan. Bescherm hem om in het spel te blijven.</translation>
         </message>
     </context>
 </TS>

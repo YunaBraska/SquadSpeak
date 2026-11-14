@@ -1229,6 +1229,10 @@
             <source>Import</source>
             <translation>Importuj</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>Status nieznany</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -3330,24 +3334,8 @@
             <translation>Zaproszenie od %1</translation>
         </message>
         <message>
-            <source>Ready</source>
-            <translation>Gotowość</translation>
-        </message>
-        <message>
             <source>%1 wins!</source>
             <translation>%1 wygrywa!</translation>
-        </message>
-        <message>
-            <source>Game ended. A player disconnected.</source>
-            <translation>Gra zakończona. Gracz utracił połączenie.</translation>
-        </message>
-        <message>
-            <source>Game ended. A player left.</source>
-            <translation>Gra zakończona. Gracz odszedł.</translation>
-        </message>
-        <message>
-            <source>Waiting for a player</source>
-            <translation>Oczekiwanie na gracza</translation>
         </message>
         <message>
             <source>Join</source>
@@ -3364,10 +3352,6 @@
         <message>
             <source>Game ended</source>
             <translation>Gra zakończona</translation>
-        </message>
-        <message>
-            <source>In progress</source>
-            <translation>W toku</translation>
         </message>
         <message>
             <source>Open</source>
@@ -3413,14 +3397,6 @@
             <translation>Gra niedostępna</translation>
         </message>
         <message>
-            <source>Ready in %1 s</source>
-            <translation>Gotowość za %1 s</translation>
-        </message>
-        <message>
-            <source>Choose your Core and Trap.</source>
-            <translation>Wybierz swój Rdzeń i Pułapkę.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>Ten sam żywioł. Wybierz ponownie.</translation>
         </message>
@@ -3457,20 +3433,60 @@
             <translation>Woda gasi ogień</translation>
         </message>
         <message>
-            <source>Trap triggered</source>
-            <translation>Pułapka uruchomiona</translation>
-        </message>
-        <message>
-            <source>Core captured</source>
-            <translation>Rdzeń zdobyty</translation>
-        </message>
-        <message>
             <source>Neutral</source>
             <translation>Neutralne</translation>
         </message>
         <message>
             <source>Choose an element</source>
             <translation>Wybierz żywioł</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>Informacje</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>Zwycięstwo</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>Porażka</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>Pozostałe</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>Pokonane</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>Opuścić grę?</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>Jeśli wyjdziesz, wygra druga osoba.</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>Anulować zaproszenie?</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>Wybierz Pułapkę, potem Rdzeń. Ruszaj o jedno pole. Zdobądź Rdzeń przeciwnika, by wygrać.</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>Wybierz żywioł przy pierwszej walce. Po remisie wybierz ponownie.</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>Nie rusza się. Pokonuje każdego atakującego.</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>Nie rusza się. Chroń go, by pozostać w grze.</translation>
         </message>
     </context>
 </TS>

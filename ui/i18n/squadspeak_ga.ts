@@ -1229,6 +1229,10 @@
             <source>Import</source>
             <translation>Iompórtáil</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>Stádas anaithnid</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -3330,24 +3334,8 @@
             <translation>Cuireadh ó %1</translation>
         </message>
         <message>
-            <source>Ready</source>
-            <translation>Réidh</translation>
-        </message>
-        <message>
             <source>%1 wins!</source>
             <translation>Tá an bua ag %1!</translation>
-        </message>
-        <message>
-            <source>Game ended. A player disconnected.</source>
-            <translation>Tá an cluiche thart. Cailleadh nasc imreora.</translation>
-        </message>
-        <message>
-            <source>Game ended. A player left.</source>
-            <translation>Tá an cluiche thart. D’fhág imreoir an cluiche.</translation>
-        </message>
-        <message>
-            <source>Waiting for a player</source>
-            <translation>Ag fanacht le himreoir</translation>
         </message>
         <message>
             <source>Join</source>
@@ -3364,10 +3352,6 @@
         <message>
             <source>Game ended</source>
             <translation>Tá an cluiche thart</translation>
-        </message>
-        <message>
-            <source>In progress</source>
-            <translation>Ar siúl</translation>
         </message>
         <message>
             <source>Open</source>
@@ -3413,14 +3397,6 @@
             <translation>Níl an cluiche ar fáil</translation>
         </message>
         <message>
-            <source>Ready in %1 s</source>
-            <translation>Réidh i gceann %1 s</translation>
-        </message>
-        <message>
-            <source>Choose your Core and Trap.</source>
-            <translation>Roghnaigh do Chroí agus do Ghaiste.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>An dúil chéanna. Roghnaigh arís.</translation>
         </message>
@@ -3457,20 +3433,60 @@
             <translation>Múchann uisce tine</translation>
         </message>
         <message>
-            <source>Trap triggered</source>
-            <translation>Gaiste curtha i ngníomh</translation>
-        </message>
-        <message>
-            <source>Core captured</source>
-            <translation>Croí gafa</translation>
-        </message>
-        <message>
             <source>Neutral</source>
             <translation>Neodrach</translation>
         </message>
         <message>
             <source>Choose an element</source>
             <translation>Roghnaigh dúil</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>Eolas</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>Bua</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>Cailleadh</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>Fágtha</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>Gafa</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>Fág an cluiche?</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>Má fhágann tú, buann an t-imreoir eile.</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>Cealaigh an cuireadh?</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>Roghnaigh Gaiste, ansin Croí. Bog cearnóg amháin. Gabh an Croí eile le buachan.</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>Roghnaigh a eilimint sa chéad troid. Roghnaigh arís má bhíonn comhscór ann.</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>Ní bhogann sé. Cloíonn sé gach ionsaitheoir.</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>Ní bhogann sé. Cosain é le fanacht sa chluiche.</translation>
         </message>
     </context>
 </TS>

@@ -1229,6 +1229,10 @@
             <source>Import</source>
             <translation>导入</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>状态未知</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -3330,24 +3334,8 @@
             <translation>%1 发起了邀请</translation>
         </message>
         <message>
-            <source>Ready</source>
-            <translation>准备好了</translation>
-        </message>
-        <message>
             <source>%1 wins!</source>
             <translation>%1 获胜！</translation>
-        </message>
-        <message>
-            <source>Game ended. A player disconnected.</source>
-            <translation>游戏结束。一名玩家断开了连接。</translation>
-        </message>
-        <message>
-            <source>Game ended. A player left.</source>
-            <translation>游戏结束。一名玩家离开了。</translation>
-        </message>
-        <message>
-            <source>Waiting for a player</source>
-            <translation>等待玩家</translation>
         </message>
         <message>
             <source>Join</source>
@@ -3364,10 +3352,6 @@
         <message>
             <source>Game ended</source>
             <translation>游戏结束</translation>
-        </message>
-        <message>
-            <source>In progress</source>
-            <translation>进行中</translation>
         </message>
         <message>
             <source>Open</source>
@@ -3413,14 +3397,6 @@
             <translation>游戏不可用</translation>
         </message>
         <message>
-            <source>Ready in %1 s</source>
-            <translation>%1 秒后准备就绪</translation>
-        </message>
-        <message>
-            <source>Choose your Core and Trap.</source>
-            <translation>选择你的核心和陷阱。</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>元素相同。请重新选择。</translation>
         </message>
@@ -3457,20 +3433,60 @@
             <translation>水熄灭火</translation>
         </message>
         <message>
-            <source>Trap triggered</source>
-            <translation>陷阱已触发</translation>
-        </message>
-        <message>
-            <source>Core captured</source>
-            <translation>核心已被占领</translation>
-        </message>
-        <message>
             <source>Neutral</source>
             <translation>无属性</translation>
         </message>
         <message>
             <source>Choose an element</source>
             <translation>选择元素</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>信息</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>胜利</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>失败</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>剩余</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>击败</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>离开游戏？</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>离开后，另一名玩家获胜。</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>取消邀请？</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>先选陷阱，再选核心。每次移动一格。夺取对方核心即可获胜。</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>首次战斗时选择元素。平局时可以重新选择。</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>不能移动。击败所有进攻者。</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>不能移动。保护它才能留在游戏中。</translation>
         </message>
     </context>
 </TS>

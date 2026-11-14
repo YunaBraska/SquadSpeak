@@ -403,6 +403,7 @@ void LocalChannel::sendRemoteView(QSslSocket* socket) {
 }
 
 bool LocalChannel::applyRemoteView(const QByteArray& bytes) {
+    if (bytes.size() > maximumSnapshot) return false;
     QJsonParseError error;
     const auto document = QJsonDocument::fromJson(bytes, &error);
     const auto view = document.object();
@@ -420,7 +421,7 @@ bool LocalChannel::applyRemoteView(const QByteArray& bytes) {
     }
     if (view.contains("games")) {
         const auto games = view.value("games").toArray();
-        if (!view.value("games").isArray() || games.size() > maximumWindowMessages) return false;
+        if (!view.value("games").isArray()) return false;
         if (!view.value("gameId").isString()) return false;
         QSet<QString> gameIds;
         for (const auto& value : games) {

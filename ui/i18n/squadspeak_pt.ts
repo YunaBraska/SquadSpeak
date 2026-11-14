@@ -1229,6 +1229,10 @@
             <source>Import</source>
             <translation>Importar</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>Estado desconhecido</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -3330,24 +3334,8 @@
             <translation>Convite de %1</translation>
         </message>
         <message>
-            <source>Ready</source>
-            <translation>Pronto</translation>
-        </message>
-        <message>
             <source>%1 wins!</source>
             <translation>%1 ganha!</translation>
-        </message>
-        <message>
-            <source>Game ended. A player disconnected.</source>
-            <translation>Jogo terminado. Um jogador perdeu a ligação.</translation>
-        </message>
-        <message>
-            <source>Game ended. A player left.</source>
-            <translation>Jogo terminado. Um jogador saiu.</translation>
-        </message>
-        <message>
-            <source>Waiting for a player</source>
-            <translation>À espera de um jogador</translation>
         </message>
         <message>
             <source>Join</source>
@@ -3364,10 +3352,6 @@
         <message>
             <source>Game ended</source>
             <translation>Jogo terminado</translation>
-        </message>
-        <message>
-            <source>In progress</source>
-            <translation>Em curso</translation>
         </message>
         <message>
             <source>Open</source>
@@ -3413,14 +3397,6 @@
             <translation>Jogo indisponível</translation>
         </message>
         <message>
-            <source>Ready in %1 s</source>
-            <translation>Pronto em %1 s</translation>
-        </message>
-        <message>
-            <source>Choose your Core and Trap.</source>
-            <translation>Escolhe o teu Núcleo e a tua Armadilha.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>Mesmo elemento. Escolhe novamente.</translation>
         </message>
@@ -3457,20 +3433,60 @@
             <translation>A água apaga o fogo</translation>
         </message>
         <message>
-            <source>Trap triggered</source>
-            <translation>Armadilha ativada</translation>
-        </message>
-        <message>
-            <source>Core captured</source>
-            <translation>Núcleo capturado</translation>
-        </message>
-        <message>
             <source>Neutral</source>
             <translation>Neutro</translation>
         </message>
         <message>
             <source>Choose an element</source>
             <translation>Escolhe um elemento</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>Informações</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>Vitória</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>Derrota</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>Restantes</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>Capturadas</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>Sair do jogo?</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>Se saíres, o outro jogador ganha.</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>Cancelar este convite?</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>Escolhe Armadilha, depois Núcleo. Move uma casa. Captura o Núcleo adversário para ganhar.</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>Escolhe o elemento no primeiro combate. Em caso de empate, escolhe de novo.</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>Não se move. Vence qualquer atacante.</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>Não se move. Protege-o para continuar no jogo.</translation>
         </message>
     </context>
 </TS>

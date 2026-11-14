@@ -170,6 +170,7 @@ public:
     [[nodiscard]] bool joinedExternalVoice() const;
     Q_INVOKABLE bool addMumble(const QString& endpoint, const QString& password = {});
     Q_INVOKABLE bool addTeamSpeak(const QString& endpoint, const QString& password = {});
+    Q_INVOKABLE bool confirmExternalJoin(bool confirmed);
     Q_INVOKABLE QString teamSpeakIdentityId() const;
     Q_INVOKABLE QVariantMap prepareTeamSpeakIdentityImport(const QUrl& file);
     Q_INVOKABLE bool confirmTeamSpeakIdentityImport();
@@ -272,6 +273,7 @@ public:
     bool acknowledgeScreen(const QString& hostId, qint64 serial, int decodeMilliseconds);
 
 signals:
+    void externalJoinConfirmationRequested();
     void ownedChannelsChanged();
     void screenChanged();
     void screenFrameReceived(const QString& hostId, qint64 serial, const QJsonObject& format, const QByteArray& packet);
@@ -333,10 +335,11 @@ private:
         ~ExternalVoice();
     };
     std::shared_ptr<ExternalVoice> external_;
+    QString pendingExternalJoin_;
     QTimer externalTimer_;
     bool addExternal(const QString& provider, const QString& endpoint, const QString& password);
     void probeExternal(const QString& address, quint16 mumblePort, quint16 teamSpeakPort);
-    bool joinExternal(const QString& id, const QString& password = {}, bool remember = false);
+    bool joinExternal(const QString& id, const QString& password = {}, bool remember = false, bool departureConfirmed = false);
     void pollExternal();
     void externalEvent(const QJsonObject& event);
     bool externalCommand(const QJsonObject& command);
@@ -488,6 +491,7 @@ private:
         qint64 lastSpoke = 0;
         qint64 gameWindow = 0;
         int gameRequests = 0;
+        QSet<QString> gameInvitations;
         bool pending = false;
         bool controller = false;
         bool held = false;
@@ -542,7 +546,7 @@ private:
     qint64 botLastActive_ = 0;
     std::shared_ptr<Relay> musicRelay_;
     struct Attempt final { int count = 0; qint64 next = 0; };
-    struct Host final { QString name; QString address; quint16 port = 0; qint64 seen = 0; bool direct = false; bool scanned = false; QString deviceId; };
+    struct Host final { QString name; QString address; quint16 port = 0; qint64 seen = 0; bool direct = false; bool scanned = false; QString deviceId; bool fresh = true; };
     bool setStatus(QString text, bool result = true);
     bool setControlStatus(QString text, bool result = true);
     bool persist(const QSet<QString>& approved, const QHash<QString, Attempt>& attempts, bool requestsAllowed,
@@ -678,12 +682,14 @@ private:
         QHash<QSslSocket*, Probe> probes_;
     } discovery_{*this};
     bool hostGameAction(QSslSocket* socket, const QJsonObject& command);
-    bool applyGame(Client& client, const QJsonObject& state);
+    bool applyGame(Client& client, const QJsonObject& state, const QString& removed = {});
     static bool validGameState(const QJsonObject& state);
-    void publishGame(QSslSocket* recipient = nullptr, QSslSocket* actor = nullptr, const QString& receipt = {});
+    void sendGames(QSslSocket* socket);
+    void publishGame(const QString& id, QSslSocket* actor = nullptr, const QString& receipt = {});
+    void endGames(const QString& identity, const QString& reason);
     QString pendingGameHost_, pendingGameRequest_;
-    ChannelGame hostGame_;
-    QTimer gameTimer_;
+    QVariantMap detachedGame_;
+    QHash<QString, ChannelGame> hostGames_;
     QTimer controlTimer_;
     QTimer maintenanceTimer_;
     QTimer autoJoinTimer_;

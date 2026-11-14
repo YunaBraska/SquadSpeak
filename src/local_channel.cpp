@@ -205,11 +205,6 @@ LocalChannel::LocalChannel(VoiceSession& session, QString storageFile, std::opti
                            std::function<qint64()> clock, QObject* parent, LocalChannel* service, QString channelId)
     : QObject(parent), service_(service), channelId_(std::move(channelId)), session_(session), storageFile_(std::move(storageFile)),
       identity_(std::move(identity)), clock_(std::move(clock)) {
-    gameTimer_.setSingleShot(true);
-    gameTimer_.setTimerType(Qt::PreciseTimer);
-    connect(&gameTimer_, &QTimer::timeout, this, [this] {
-        if (hostGame_.advance(controlClock_.elapsed())) publishGame();
-    });
     if (!ready()) status_ = tr("Device identity is not ready yet.");
     bool migrateName = !service_ && !session_.legacyChannelName().isEmpty();
     if (migrateName) channelName_ = session_.legacyChannelName();
@@ -655,6 +650,7 @@ bool LocalChannel::openConnection(const QString& id, const QString& address, int
     const auto canonicalAddress = canonicalEndpointHost(address);
     if (!validId(id) || canonicalAddress.isEmpty() || port < 1 || port > 65535)
         return setStatus(tr("The channel address or device identity is invalid."), false);
+    pendingExternalJoin_.clear();
     if (!voice) {
         if (auto c = clients_.value(id); c && c->socket && (c->accepted || c->access == "pending" || c->passwordRequired)) {
             selectChat(id); return true;
@@ -737,14 +733,15 @@ bool LocalChannel::closeChat(const QString& id) {
     }
     if (id == joinedHostId_) leave();
     c->reconnectWanted = false; closeClient(*c);
+    if (!c->gameId.isEmpty()) detachedGame_ = gameView(id, c->gameId);
     if (chatHostId_ == id) selectChat({});
-    clients_.remove(id); emit hostsChanged(); return true;
+    clients_.remove(id); emit hostsChanged(); emit chatChanged(); return true;
 }
 
 void LocalChannel::closeClients() {
     leaveChannel(false);
     for (const auto& c : clients_) { c->reconnectWanted = false; closeClient(*c); }
-    selectChat({}); clients_.clear();
+    selectChat({}); clients_.clear(); detachedGame_.clear();
 }
 
 QVariantList LocalChannel::ownedChannels() const {
@@ -884,8 +881,11 @@ bool LocalChannel::receiveDirectory(const QString& device, const QJsonObject& me
         if (discovery_.hosts.size() >= 1024 && !discovery_.hosts.contains(id)) break;
         const auto previous = discovery_.hosts.constFind(id);
         const auto name = value.value("name").toString();
+        const auto c = clients_.value(id);
+        const auto* owner = ownChannel(id);
         changed |= previous == discovery_.hosts.cend() || previous->name != name
-            || previous->address != address || previous->port != port || previous->deviceId != device;
+            || previous->address != address || previous->port != port || previous->deviceId != device
+            || (!previous->fresh && !(c && c->accepted) && !(owner && owner->hosting()));
         const auto wasDirect = previous != discovery_.hosts.cend() && previous->direct;
         discovery_.hosts.insert(id, {name, address, port, clock_(), direct || wasDirect, scanned, device});
     }
@@ -1455,15 +1455,17 @@ bool LocalChannel::listen(const QHostAddress& address, quint16 port) {
 }
 
 bool LocalChannel::stopHost() {
-    gameTimer_.stop();
-    if (hostGame_.end("disconnected")) publishGame();
+    for (const auto& id : hostGames_.keys()) {
+        auto game = hostGames_.find(id);
+        if (game != hostGames_.end() && game->end("disconnected")) publishGame(id);
+    }
     pendingDepartureReasons_ = {};
     for (const auto& child : owned_) child->stopHost();
     setScreenSharing(false);
     hosting_ = false;
     const auto sockets = peers_.keys();
     for (auto* socket : sockets) if (!peers_.value(socket).controller) socket->abort();
-    hostGame_ = ChannelGame{};
+    hostGames_.clear();
     history_.reset(); hostChatKey_.fill(0); hostChatKey_.clear(); hostChatEpoch_.clear();
     discovery_.hosts.remove(channelId());
     if (service_) { service_->discovery_.hosts.remove(channelId()); emit service_->hostsChanged(); }
@@ -1474,8 +1476,12 @@ bool LocalChannel::stopHost() {
 
 QVariantList LocalChannel::hosts() const {
     QVariantList result;
-    for (auto it = discovery_.hosts.begin(); it != discovery_.hosts.end(); ++it)
-        result.append(QVariantMap{{"id", it.key()}, {"deviceId", it->deviceId.isEmpty() ? it.key() : it->deviceId}, {"name", it->name}, {"address", it->address}, {"port", it->port}});
+    for (auto it = discovery_.hosts.begin(); it != discovery_.hosts.end(); ++it) {
+        const auto c = clients_.value(it.key());
+        const auto* owner = ownChannel(it.key());
+        result.append(QVariantMap{{"id", it.key()}, {"deviceId", it->deviceId.isEmpty() ? it.key() : it->deviceId}, {"name", it->name}, {"address", it->address}, {"port", it->port},
+            {"reachable", it->fresh || (c && c->accepted) || (owner && owner->hosting())}});
+    }
     std::sort(result.begin(), result.end(), [](const auto& a, const auto& b) {
         return a.toMap().value("name").toString().localeAwareCompare(b.toMap().value("name").toString()) < 0;
     });
@@ -1576,6 +1582,10 @@ QVariantList LocalChannel::savedChannels() const {
         const auto gamePhase = c && !c->games.isEmpty() ? c->games.last().toObject().value("phase").toString() : QString{};
         entry.insert("game", c && c->accepted && (gamePhase == "waiting" || gamePhase == "preparing" || gamePhase == "playing" || gamePhase == "duel"));
         const auto* owner = ownChannel(it.key());
+        const auto discovered = discovery_.hosts.constFind(it.key());
+        entry.insert("reachable", (c && c->accepted) || (owner && owner->hosting())
+            || (!externalVoiceProvider(entry.value("protocol").toString())
+                && discovered != discovery_.hosts.cend() && discovered->fresh));
         entry.insert("lifetimeDays", owner ? owner->messageLifetimeDays() : c && c->accepted ? c->messageLifetimeDays : 0);
         entry.insert("access", c ? c->access : QStringLiteral("saved"));
         entry.insert("members", c && c->accepted ? humanMembers(c->members) : QVariantList{});
@@ -1841,6 +1851,8 @@ void LocalChannel::acceptPeer(QSslSocket* socket) {
     // One logical device occupies one participant slot even after a fast reconnect.
     for (auto* other : peers_.keys()) {
         if (other == socket || peers_.value(other).id != id || peers_.value(other).controller != controller) continue;
+        if (peers_.value(other).joined && !peers_.value(other).controller && !peers_.value(other).observer)
+            endGames(id, "disconnected");
         peers_[other].joined = false;
         peers_[other].pending = false;
         writeMessage(other, {{"type", controller ? "control" : "join"}, {"result", "replaced"}});
@@ -1865,7 +1877,7 @@ void LocalChannel::acceptPeer(QSslSocket* socket) {
     if (wasPending) emit requestsChanged();
     if (!controller) {
         rememberPrivatePeer(socket, true);
-        sendChatKey(socket); broadcastRoster(); startMedia(socket);
+        sendChatKey(socket); sendGames(socket); broadcastRoster(); startMedia(socket);
         const auto* device = service_ ? service_ : this;
         if (peers_.value(socket).remoteOffers) writeMessage(socket, {{"type", "remoteOffer"},
             {"allowed", device->control_.value("controllers").toObject().value(id).toObject().value("remote").toBool()
@@ -2029,8 +2041,14 @@ void LocalChannel::hostMessage(QSslSocket* socket, const QJsonObject& message) {
         const auto media = peers_[socket].media;
         if (!media || (message.value("kind") == "source" && message.value("id") != id) || !media->receive(message)) socket->abort();
     } else if (type == "voiceLeave") {
-        peers_[socket].observer = true; peers_[socket].muted = true;
-        peers_[socket].relay.reset();
+        endGames(id, "left");
+        auto peer = peers_.find(socket);
+        if (peer == peers_.end()) return;
+        peer->observer = true; peer->muted = true; peer->relay.reset();
+        const auto invitations = std::exchange(peer->gameInvitations, {});
+        for (const auto& invitation : invitations)
+            writeChat(socket, {{"kind", "game"}, {"now", std::max(history_->time(), clock_())},
+                {"state", QJsonObject{}}, {"removed", invitation}});
         broadcastRoster();
     } else if (type == "audioAck") {
         auto& peer = peers_[socket];
@@ -2261,7 +2279,7 @@ void LocalChannel::applyDecision(const QString& id, bool allow) {
 void LocalChannel::endMembership(const Peer& peer) {
     if (peer.pending) emit requestsChanged();
     if (peer.joined && !peer.controller) {
-        if (hostGame_.contains(peer.id) && hostGame_.end("disconnected")) publishGame();
+        endGames(peer.id, "disconnected");
         closeViewers(peer.id);
         publishPrivateContacts(peer.id);
         rotateChatKey(); broadcastRoster();
@@ -2299,7 +2317,7 @@ bool LocalChannel::disconnectMember(const QString& id, const QString& reason) {
         finishPeer(socket);
     }
     if (member) {
-        if (hostGame_.contains(id) && hostGame_.end("disconnected")) publishGame();
+        endGames(id, "disconnected");
         rotateChatKey(); publishPrivateContacts(id);
     }
     if (member && !voiceName.isEmpty() && (reason == "kicked" || reason == "blocked"))
@@ -2720,6 +2738,7 @@ void LocalChannel::connectClient(Client& c) {
 }
 
 void LocalChannel::closeClient(Client& c) {
+    if (c.id == joinedHostId_) pendingExternalJoin_.clear();
     if (pendingGameHost_ == c.id) { pendingGameHost_.clear(); pendingGameRequest_.clear(); }
     if (c.accepted && c.voice && c.id == joinedHostId_) {
         addNotice(c, "left", ownId(), session_.userName());
@@ -2738,15 +2757,16 @@ void LocalChannel::closeClient(Client& c) {
         socket->disconnect(this); socket->abort(); socket->deleteLater();
     }
     if (c.accepted) c.access = "offline";
-    if (!c.games.isEmpty()) {
-        auto state = c.games.last().toObject();
+    for (qsizetype i = c.games.size(); i > 0; --i) {
+        auto state = c.games[i - 1].toObject();
+        if (state.value("id") != c.gameId) { c.games.removeAt(i - 1); continue; }
         const auto phase = state.value("phase").toString();
         if (phase == "waiting" || phase == "preparing" || phase == "playing" || phase == "duel") {
             state.insert("phase", "cancelled"); state.insert("reason", "disconnected"); state.insert("choice", "");
-            state.insert("readyMs", 0); state.insert("turn", ""); state.insert("duel", QJsonObject{});
+            state.insert("turn", ""); state.insert("duel", QJsonObject{});
             auto players = state.value("players").toArray();
             for (qsizetype n = 0; n < players.size(); ++n) { auto player = players[n].toObject(); player.insert("chosen", false); players[n] = player; }
-            state.insert("players", players); c.games[c.games.size() - 1] = state;
+            state.insert("players", players); c.games[i - 1] = state;
         }
     }
     c.accepted = false; c.rosterSeen = false; c.members.clear(); c.onlineIds.clear(); c.presenceKnown = false; c.buffer.clear();
@@ -2762,6 +2782,7 @@ bool LocalChannel::leave() {
 }
 
 bool LocalChannel::leaveChannel(bool pauseAutoJoin) {
+    pendingExternalJoin_.clear();
     if (joined()) {
         if (const auto c = clients_.value(joinedHostId_)) addNotice(*c, "left", ownId(), session_.userName());
         emit channelEvent("leave", ChatContent::membershipText("left", session_.userName()));
@@ -2773,10 +2794,12 @@ bool LocalChannel::leaveChannel(bool pauseAutoJoin) {
     const auto id = std::exchange(joinedHostId_, {});
     if (auto c = clients_.value(id)) {
         c->voice = false;
+        for (qsizetype i = c->games.size(); i > 0; --i)
+            if (c->games[i - 1].toObject().value("id") != c->gameId) c->games.removeAt(i - 1);
         if (c->accepted) writeMessage(c->socket, {{"type", "voiceLeave"}});
         else { c->reconnectWanted = false; c->passwordRequired = false; closeClient(*c); }
     }
-    emit participantsChanged(); emit hostsChanged(); emit stateChanged();
+    emit participantsChanged(); emit hostsChanged(); emit stateChanged(); emit chatChanged();
     return setStatus(tr("Not joined to a voice channel."));
 }
 

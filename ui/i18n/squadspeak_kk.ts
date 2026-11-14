@@ -1229,6 +1229,10 @@
             <source>Import</source>
             <translation>Импорттау</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>Күйі белгісіз</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -3330,24 +3334,8 @@
             <translation>Шақырған: %1</translation>
         </message>
         <message>
-            <source>Ready</source>
-            <translation>Дайын</translation>
-        </message>
-        <message>
             <source>%1 wins!</source>
             <translation>%1 жеңді!</translation>
-        </message>
-        <message>
-            <source>Game ended. A player disconnected.</source>
-            <translation>Ойын аяқталды. Ойыншының байланысы үзілді.</translation>
-        </message>
-        <message>
-            <source>Game ended. A player left.</source>
-            <translation>Ойын аяқталды. Ойыншы шығып кетті.</translation>
-        </message>
-        <message>
-            <source>Waiting for a player</source>
-            <translation>Ойыншы күтілуде</translation>
         </message>
         <message>
             <source>Join</source>
@@ -3364,10 +3352,6 @@
         <message>
             <source>Game ended</source>
             <translation>Ойын аяқталды</translation>
-        </message>
-        <message>
-            <source>In progress</source>
-            <translation>Жүріп жатыр</translation>
         </message>
         <message>
             <source>Open</source>
@@ -3413,14 +3397,6 @@
             <translation>Ойын қолжетімді емес</translation>
         </message>
         <message>
-            <source>Ready in %1 s</source>
-            <translation>%1 с кейін дайын</translation>
-        </message>
-        <message>
-            <source>Choose your Core and Trap.</source>
-            <translation>Өзегің мен Тұзағыңды таңда.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>Бірдей элемент. Қайта таңда.</translation>
         </message>
@@ -3457,20 +3433,60 @@
             <translation>Су отты өшіреді</translation>
         </message>
         <message>
-            <source>Trap triggered</source>
-            <translation>Тұзақ іске қосылды</translation>
-        </message>
-        <message>
-            <source>Core captured</source>
-            <translation>Өзек алынды</translation>
-        </message>
-        <message>
             <source>Neutral</source>
             <translation>Бейтарап</translation>
         </message>
         <message>
             <source>Choose an element</source>
             <translation>Элемент таңда</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>Ақпарат</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>Жеңіс</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>Жеңіліс</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>Қалғаны</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>Жеңілгені</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>Ойыннан шығу керек пе?</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>Шықсаң, басқа ойыншы жеңеді.</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>Шақырудан бас тарту керек пе?</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>Алдымен Тұзақты, содан кейін Өзекті таңда. Бір торға жүр. Жеңу үшін қарсыластың Өзегін ал.</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>Алғашқы шайқаста элементін таңда. Тең болса, қайта таңдай аласың.</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>Қозғалмайды. Кез келген шабуылшыны жеңеді.</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>Қозғалмайды. Ойында қалу үшін оны қорға.</translation>
         </message>
     </context>
 </TS>

@@ -1229,6 +1229,10 @@
             <source>Import</source>
             <translation>Εισαγωγή</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>Άγνωστη κατάσταση</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -3330,24 +3334,8 @@
             <translation>Πρόσκληση από %1</translation>
         </message>
         <message>
-            <source>Ready</source>
-            <translation>Έτοιμος</translation>
-        </message>
-        <message>
             <source>%1 wins!</source>
             <translation>Ο παίκτης %1 κερδίζει!</translation>
-        </message>
-        <message>
-            <source>Game ended. A player disconnected.</source>
-            <translation>Το παιχνίδι τελείωσε. Ένας παίκτης αποσυνδέθηκε.</translation>
-        </message>
-        <message>
-            <source>Game ended. A player left.</source>
-            <translation>Το παιχνίδι τελείωσε. Ένας παίκτης αποχώρησε.</translation>
-        </message>
-        <message>
-            <source>Waiting for a player</source>
-            <translation>Αναμονή για παίκτη</translation>
         </message>
         <message>
             <source>Join</source>
@@ -3364,10 +3352,6 @@
         <message>
             <source>Game ended</source>
             <translation>Το παιχνίδι τελείωσε</translation>
-        </message>
-        <message>
-            <source>In progress</source>
-            <translation>Σε εξέλιξη</translation>
         </message>
         <message>
             <source>Open</source>
@@ -3413,14 +3397,6 @@
             <translation>Το παιχνίδι δεν είναι διαθέσιμο</translation>
         </message>
         <message>
-            <source>Ready in %1 s</source>
-            <translation>Έτοιμος σε %1 δ</translation>
-        </message>
-        <message>
-            <source>Choose your Core and Trap.</source>
-            <translation>Διάλεξε τον Πυρήνα και την Παγίδα σου.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>Ίδιο στοιχείο. Διάλεξε ξανά.</translation>
         </message>
@@ -3457,20 +3433,60 @@
             <translation>Το νερό σβήνει τη φωτιά</translation>
         </message>
         <message>
-            <source>Trap triggered</source>
-            <translation>Η παγίδα ενεργοποιήθηκε</translation>
-        </message>
-        <message>
-            <source>Core captured</source>
-            <translation>Ο Πυρήνας κατακτήθηκε</translation>
-        </message>
-        <message>
             <source>Neutral</source>
             <translation>Ουδέτερο</translation>
         </message>
         <message>
             <source>Choose an element</source>
             <translation>Διάλεξε ένα στοιχείο</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>Πληροφορίες</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>Νίκη</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>Ήττα</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>Απομένουν</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>Αιχμαλωτισμένα</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>Έξοδος από το παιχνίδι;</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>Αν φύγεις, κερδίζει ο άλλος παίκτης.</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>Ακύρωση πρόσκλησης;</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>Διάλεξε Παγίδα, μετά Πυρήνα. Κινήσου ένα τετράγωνο. Πάρε τον αντίπαλο Πυρήνα για να νικήσεις.</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>Διάλεξε στοιχείο στην πρώτη μάχη. Σε ισοπαλία διάλεξε ξανά.</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>Μένει ακίνητη. Νικά κάθε επιτιθέμενο.</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>Μένει ακίνητος. Προστάτεψέ τον για να μείνεις στο παιχνίδι.</translation>
         </message>
     </context>
 </TS>

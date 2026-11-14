@@ -1229,6 +1229,10 @@
             <source>Import</source>
             <translation>Importa</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>Estat desconegut</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -3330,24 +3334,8 @@
             <translation>Invitació de %1</translation>
         </message>
         <message>
-            <source>Ready</source>
-            <translation>A punt</translation>
-        </message>
-        <message>
             <source>%1 wins!</source>
             <translation>%1 guanya!</translation>
-        </message>
-        <message>
-            <source>Game ended. A player disconnected.</source>
-            <translation>La partida ha acabat. Un jugador ha perdut la connexió.</translation>
-        </message>
-        <message>
-            <source>Game ended. A player left.</source>
-            <translation>La partida ha acabat. Un jugador ha marxat.</translation>
-        </message>
-        <message>
-            <source>Waiting for a player</source>
-            <translation>Esperant un jugador</translation>
         </message>
         <message>
             <source>Join</source>
@@ -3364,10 +3352,6 @@
         <message>
             <source>Game ended</source>
             <translation>Partida acabada</translation>
-        </message>
-        <message>
-            <source>In progress</source>
-            <translation>En curs</translation>
         </message>
         <message>
             <source>Open</source>
@@ -3413,14 +3397,6 @@
             <translation>Partida no disponible</translation>
         </message>
         <message>
-            <source>Ready in %1 s</source>
-            <translation>A punt d’aquí a %1 s</translation>
-        </message>
-        <message>
-            <source>Choose your Core and Trap.</source>
-            <translation>Tria el teu Nucli i la teva Trampa.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>El mateix element. Torna a triar.</translation>
         </message>
@@ -3457,20 +3433,60 @@
             <translation>L’aigua apaga el foc</translation>
         </message>
         <message>
-            <source>Trap triggered</source>
-            <translation>Trampa activada</translation>
-        </message>
-        <message>
-            <source>Core captured</source>
-            <translation>Nucli capturat</translation>
-        </message>
-        <message>
             <source>Neutral</source>
             <translation>Neutral</translation>
         </message>
         <message>
             <source>Choose an element</source>
             <translation>Tria un element</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>Informació</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>Victòria</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>Derrota</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>Restants</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>Capturades</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>Vols sortir de la partida?</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>Si surts, guanya l’altra persona.</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>Vols cancel·lar la invitació?</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>Tria Trampa i després Nucli. Mou una casella. Captura el Nucli rival per guanyar.</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>Tria l’element al primer combat. Si hi ha empat, torna a triar.</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>No es mou. Venç qualsevol atacant.</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>No es mou. Protegeix-lo per continuar jugant.</translation>
         </message>
     </context>
 </TS>

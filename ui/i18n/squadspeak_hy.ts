@@ -1229,6 +1229,10 @@
             <source>Import</source>
             <translation>Ներմուծել</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>Կարգավիճակն անհայտ է</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -3330,24 +3334,8 @@
             <translation>Հրավիրել է %1-ը</translation>
         </message>
         <message>
-            <source>Ready</source>
-            <translation>Պատրաստ</translation>
-        </message>
-        <message>
             <source>%1 wins!</source>
             <translation>%1-ը հաղթում է։</translation>
-        </message>
-        <message>
-            <source>Game ended. A player disconnected.</source>
-            <translation>Խաղն ավարտվեց։ Խաղացողը կորցրեց կապը։</translation>
-        </message>
-        <message>
-            <source>Game ended. A player left.</source>
-            <translation>Խաղն ավարտվեց։ Խաղացողը հեռացավ։</translation>
-        </message>
-        <message>
-            <source>Waiting for a player</source>
-            <translation>Սպասում ենք խաղացողի</translation>
         </message>
         <message>
             <source>Join</source>
@@ -3364,10 +3352,6 @@
         <message>
             <source>Game ended</source>
             <translation>Խաղն ավարտվեց</translation>
-        </message>
-        <message>
-            <source>In progress</source>
-            <translation>Ընթացքում է</translation>
         </message>
         <message>
             <source>Open</source>
@@ -3413,14 +3397,6 @@
             <translation>Խաղն անհասանելի է</translation>
         </message>
         <message>
-            <source>Ready in %1 s</source>
-            <translation>Պատրաստ կլինի %1 վ-ից</translation>
-        </message>
-        <message>
-            <source>Choose your Core and Trap.</source>
-            <translation>Ընտրիր քո Միջուկն ու Թակարդը։</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>Նույն տարրն է։ Նորից ընտրիր։</translation>
         </message>
@@ -3457,20 +3433,60 @@
             <translation>Ջուրը հանգցնում է կրակը</translation>
         </message>
         <message>
-            <source>Trap triggered</source>
-            <translation>Թակարդը գործարկվեց</translation>
-        </message>
-        <message>
-            <source>Core captured</source>
-            <translation>Միջուկը գրավված է</translation>
-        </message>
-        <message>
             <source>Neutral</source>
             <translation>Չեզոք</translation>
         </message>
         <message>
             <source>Choose an element</source>
             <translation>Ընտրիր տարր</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>Տեղեկություն</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>Հաղթանակ</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>Պարտություն</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>Մնացած</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>Հաղթված</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>Դո՞ւրս գալ խաղից։</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>Եթե դուրս գաս, մյուս խաղացողը կհաղթի։</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>Չեղարկե՞լ հրավերը։</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>Ընտրիր Թակարդը, ապա Միջուկը։ Քայլիր մեկ վանդակ։ Հաղթելու համար գրավիր հակառակորդի Միջուկը։</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>Տարրը ընտրիր առաջին մարտում։ Ոչ-ոքիի դեպքում նորից ընտրիր։</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>Չի շարժվում։ Հաղթում է բոլոր հարձակվողներին։</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>Չի շարժվում։ Պաշտպանիր այն, որ մնաս խաղում։</translation>
         </message>
     </context>
 </TS>

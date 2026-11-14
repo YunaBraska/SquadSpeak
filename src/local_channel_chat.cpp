@@ -51,7 +51,6 @@ void LocalChannel::sendChatKey(QSslSocket* socket) {
     if (!history_ || !peers_.value(socket).joined || peers_.value(socket).controller) return;
     writeMessage(socket, {{"type", "chatKey"}, {"epoch", hostChatEpoch_},
         {"key", QString::fromLatin1(hostChatKey_.toBase64())}, {"lifetimeDays", peers_.value(socket).capabilities.contains("extended-retention") ? messageLifetimeDays() : std::min(messageLifetimeDays(), 30)}, {"now", std::max(history_->time(), clock_())}});
-    publishGame(socket);
 }
 
 void LocalChannel::rotateChatKey() {
@@ -235,7 +234,8 @@ bool LocalChannel::applyChat(Client& c, QJsonObject payload, bool keyMessage) {
         const auto kind = payload.value("kind").toString();
         if (kind == "game") {
             if (!c.privatePeer.isEmpty() || c.external() || !c.capabilities.contains("channel-games")
-                || !payload.value("state").isObject() || !applyGame(c, payload.value("state").toObject()))
+                || !payload.value("state").isObject() || (payload.contains("removed") && !payload.value("removed").isString())
+                || !applyGame(c, payload.value("state").toObject(), payload.value("removed").toString()))
                 throw std::runtime_error(QT_TRANSLATE_NOOP("LocalChannel", "Invalid game state."));
             if (c.id == pendingGameHost_ && payload.value("request").toString() == pendingGameRequest_) {
                 pendingGameHost_.clear(); pendingGameRequest_.clear();

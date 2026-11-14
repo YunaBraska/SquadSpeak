@@ -1229,6 +1229,10 @@
             <source>Import</source>
             <translation>Importa</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>Stato sconosciuto</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -3330,24 +3334,8 @@
             <translation>Invito di %1</translation>
         </message>
         <message>
-            <source>Ready</source>
-            <translation>Pronto</translation>
-        </message>
-        <message>
             <source>%1 wins!</source>
             <translation>%1 vince!</translation>
-        </message>
-        <message>
-            <source>Game ended. A player disconnected.</source>
-            <translation>Partita terminata. Un giocatore ha perso la connessione.</translation>
-        </message>
-        <message>
-            <source>Game ended. A player left.</source>
-            <translation>Partita terminata. Un giocatore è uscito.</translation>
-        </message>
-        <message>
-            <source>Waiting for a player</source>
-            <translation>In attesa di un giocatore</translation>
         </message>
         <message>
             <source>Join</source>
@@ -3364,10 +3352,6 @@
         <message>
             <source>Game ended</source>
             <translation>Partita terminata</translation>
-        </message>
-        <message>
-            <source>In progress</source>
-            <translation>In corso</translation>
         </message>
         <message>
             <source>Open</source>
@@ -3413,14 +3397,6 @@
             <translation>Partita non disponibile</translation>
         </message>
         <message>
-            <source>Ready in %1 s</source>
-            <translation>Pronto tra %1 s</translation>
-        </message>
-        <message>
-            <source>Choose your Core and Trap.</source>
-            <translation>Scegli il tuo Nucleo e la tua Trappola.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>Stesso elemento. Scegli di nuovo.</translation>
         </message>
@@ -3457,20 +3433,60 @@
             <translation>L’acqua spegne il fuoco</translation>
         </message>
         <message>
-            <source>Trap triggered</source>
-            <translation>Trappola attivata</translation>
-        </message>
-        <message>
-            <source>Core captured</source>
-            <translation>Nucleo catturato</translation>
-        </message>
-        <message>
             <source>Neutral</source>
             <translation>Neutrale</translation>
         </message>
         <message>
             <source>Choose an element</source>
             <translation>Scegli un elemento</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>Informazioni</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>Vittoria</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>Sconfitta</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>Rimaste</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>Catturate</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>Lasciare la partita?</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>Se esci, vince l’altro giocatore.</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>Annullare questo invito?</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>Scegli Trappola, poi Nucleo. Muoviti di una casella. Cattura il Nucleo avversario per vincere.</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>Scegli il suo elemento al primo scontro. In caso di pareggio scegli di nuovo.</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>Resta ferma. Sconfigge ogni attaccante.</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>Resta fermo. Proteggilo per restare in gioco.</translation>
         </message>
     </context>
 </TS>

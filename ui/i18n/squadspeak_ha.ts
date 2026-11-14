@@ -1229,6 +1229,10 @@
             <source>Import</source>
             <translation>Shigo</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>Ba a san hali ba</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -3330,24 +3334,8 @@
             <translation>Gayyata daga %1</translation>
         </message>
         <message>
-            <source>Ready</source>
-            <translation>A shirye</translation>
-        </message>
-        <message>
             <source>%1 wins!</source>
             <translation>%1 ya ci!</translation>
-        </message>
-        <message>
-            <source>Game ended. A player disconnected.</source>
-            <translation>An gama wasan. Wani ɗan wasa ya rasa haɗi.</translation>
-        </message>
-        <message>
-            <source>Game ended. A player left.</source>
-            <translation>An gama wasan. Wani ɗan wasa ya fita.</translation>
-        </message>
-        <message>
-            <source>Waiting for a player</source>
-            <translation>Ana jiran ɗan wasa</translation>
         </message>
         <message>
             <source>Join</source>
@@ -3364,10 +3352,6 @@
         <message>
             <source>Game ended</source>
             <translation>An gama wasan</translation>
-        </message>
-        <message>
-            <source>In progress</source>
-            <translation>Ana wasa</translation>
         </message>
         <message>
             <source>Open</source>
@@ -3413,14 +3397,6 @@
             <translation>Babu wasan</translation>
         </message>
         <message>
-            <source>Ready in %1 s</source>
-            <translation>A shirye cikin daƙiƙa %1</translation>
-        </message>
-        <message>
-            <source>Choose your Core and Trap.</source>
-            <translation>Zaɓi Cibiyarka da Tarkonka.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>Sinadari iri ɗaya. Sake zaɓa.</translation>
         </message>
@@ -3457,20 +3433,60 @@
             <translation>Ruwa yana kashe wuta</translation>
         </message>
         <message>
-            <source>Trap triggered</source>
-            <translation>Tarko ya tashi</translation>
-        </message>
-        <message>
-            <source>Core captured</source>
-            <translation>An kama Cibiya</translation>
-        </message>
-        <message>
             <source>Neutral</source>
             <translation>Tsaka tsaki</translation>
         </message>
         <message>
             <source>Choose an element</source>
             <translation>Zaɓi sinadari</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>Bayani</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>Nasara</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>Rashin nasara</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>Sauran</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>An ci</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>Bar wasan?</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>Idan ka fita, ɗayan ɗan wasan zai yi nasara.</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>Soke wannan gayyata?</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>Zaɓi Tarko, sannan Cibiya. Matsa murabba’i ɗaya. Kama Cibiyar abokin hamayya don cin nasara.</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>Zaɓi sinadarinsa a faɗa na farko. Idan kun yi kunnen doki, zaɓa kuma.</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>Ba ya motsi. Yana cin duk maharin.</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>Ba ta motsi. Kare ta don ka ci gaba da wasa.</translation>
         </message>
     </context>
 </TS>

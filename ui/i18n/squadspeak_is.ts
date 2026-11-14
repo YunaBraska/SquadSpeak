@@ -1229,6 +1229,10 @@
             <source>Import</source>
             <translation>Flytja inn</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>Staða óþekkt</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -3330,24 +3334,8 @@
             <translation>Boð frá %1</translation>
         </message>
         <message>
-            <source>Ready</source>
-            <translation>Tilbúinn</translation>
-        </message>
-        <message>
             <source>%1 wins!</source>
             <translation>%1 vinnur!</translation>
-        </message>
-        <message>
-            <source>Game ended. A player disconnected.</source>
-            <translation>Leik lokið. Leikmaður missti tengingu.</translation>
-        </message>
-        <message>
-            <source>Game ended. A player left.</source>
-            <translation>Leik lokið. Leikmaður fór.</translation>
-        </message>
-        <message>
-            <source>Waiting for a player</source>
-            <translation>Beðið eftir leikmanni</translation>
         </message>
         <message>
             <source>Join</source>
@@ -3364,10 +3352,6 @@
         <message>
             <source>Game ended</source>
             <translation>Leik lokið</translation>
-        </message>
-        <message>
-            <source>In progress</source>
-            <translation>Í gangi</translation>
         </message>
         <message>
             <source>Open</source>
@@ -3413,14 +3397,6 @@
             <translation>Leikurinn er ekki tiltækur</translation>
         </message>
         <message>
-            <source>Ready in %1 s</source>
-            <translation>Tilbúið eftir %1 s</translation>
-        </message>
-        <message>
-            <source>Choose your Core and Trap.</source>
-            <translation>Veldu Kjarnann þinn og Gildruna þína.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>Sama frumefni. Veldu aftur.</translation>
         </message>
@@ -3457,20 +3433,60 @@
             <translation>Vatn slekkur eld</translation>
         </message>
         <message>
-            <source>Trap triggered</source>
-            <translation>Gildra virkjuð</translation>
-        </message>
-        <message>
-            <source>Core captured</source>
-            <translation>Kjarni tekinn</translation>
-        </message>
-        <message>
             <source>Neutral</source>
             <translation>Hlutlaust</translation>
         </message>
         <message>
             <source>Choose an element</source>
             <translation>Veldu frumefni</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>Upplýsingar</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>Sigur</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>Tap</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>Eftir</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>Felldar</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>Yfirgefa leikinn?</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>Ef þú ferð vinnur hinn leikmaðurinn.</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>Hætta við boðið?</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>Veldu Gildru, síðan Kjarna. Færðu einn reit. Náðu Kjarna andstæðingsins til að vinna.</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>Veldu frumefni í fyrsta bardaga. Við jafntefli velurðu aftur.</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>Stendur kyrr. Sigrar alla árásarmenn.</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>Stendur kyrr. Verndaðu hann til að vera áfram í leiknum.</translation>
         </message>
     </context>
 </TS>

@@ -1229,6 +1229,10 @@
             <source>Import</source>
             <translation>Importuoti</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>Būsena nežinoma</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -3330,24 +3334,8 @@
             <translation>Pakvietė %1</translation>
         </message>
         <message>
-            <source>Ready</source>
-            <translation>Pasiruošęs</translation>
-        </message>
-        <message>
             <source>%1 wins!</source>
             <translation>%1 laimi!</translation>
-        </message>
-        <message>
-            <source>Game ended. A player disconnected.</source>
-            <translation>Žaidimas baigėsi. Žaidėjas prarado ryšį.</translation>
-        </message>
-        <message>
-            <source>Game ended. A player left.</source>
-            <translation>Žaidimas baigėsi. Žaidėjas išėjo.</translation>
-        </message>
-        <message>
-            <source>Waiting for a player</source>
-            <translation>Laukiama žaidėjo</translation>
         </message>
         <message>
             <source>Join</source>
@@ -3364,10 +3352,6 @@
         <message>
             <source>Game ended</source>
             <translation>Žaidimas baigėsi</translation>
-        </message>
-        <message>
-            <source>In progress</source>
-            <translation>Vyksta</translation>
         </message>
         <message>
             <source>Open</source>
@@ -3413,14 +3397,6 @@
             <translation>Žaidimas nepasiekiamas</translation>
         </message>
         <message>
-            <source>Ready in %1 s</source>
-            <translation>Pasiruošęs po %1 s</translation>
-        </message>
-        <message>
-            <source>Choose your Core and Trap.</source>
-            <translation>Pasirink savo Branduolį ir Spąstus.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>Tas pats elementas. Pasirink dar kartą.</translation>
         </message>
@@ -3457,20 +3433,60 @@
             <translation>Vanduo užgesina ugnį</translation>
         </message>
         <message>
-            <source>Trap triggered</source>
-            <translation>Spąstai suveikė</translation>
-        </message>
-        <message>
-            <source>Core captured</source>
-            <translation>Branduolys užimtas</translation>
-        </message>
-        <message>
             <source>Neutral</source>
             <translation>Neutralu</translation>
         </message>
         <message>
             <source>Choose an element</source>
             <translation>Pasirink elementą</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>Informacija</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>Pergalė</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>Pralaimėjimas</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>Liko</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>Nugalėta</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>Išeiti iš žaidimo?</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>Jei išeisi, laimės kitas žaidėjas.</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>Atšaukti kvietimą?</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>Pasirink Spąstus, tada Branduolį. Eik vieną langelį. Užimk priešininko Branduolį ir laimėk.</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>Elementą pasirink per pirmą kovą. Po lygiųjų pasirink iš naujo.</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>Nejuda. Nugali kiekvieną puolėją.</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>Nejuda. Saugok jį, kad liktum žaidime.</translation>
         </message>
     </context>
 </TS>

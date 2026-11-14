@@ -243,6 +243,10 @@ int main(int argc, char** argv) {
             if (!audio.voiceSending()) channel.sendAudio({});
         });
         AppFeedback feedback(audio, session, channel);
+        QObject::connect(&feedback, &AppFeedback::quitRequested, channels, [channels] {
+            QMetaObject::invokeMethod(channels, "confirmQuit");
+        });
+        QObject::connect(channels, SIGNAL(quitConfirmed()), &feedback, SLOT(shutdown()));
         QObject::connect(&channel, &LocalChannel::chatNotification, &app, [&](const QString& hostId, const QVariantMap& message) {
 #if defined(Q_OS_MACOS) || defined(Q_OS_IOS)
             QString name;
@@ -320,7 +324,9 @@ int main(int argc, char** argv) {
         };
         const auto idleIcon = speechIcon(false), speakingIcon = speechIcon(true);
         QMenu menu;
-        addTrayQuickActions(menu, session, channel, radio);
+        addTrayQuickActions(menu, session, channel, radio, [channels] {
+            QMetaObject::invokeMethod(channels, "leaveHost");
+        });
         menu.addSeparator();
         auto* channelsAction = menu.addAction(QCoreApplication::translate("Tray", "Channels"), &app, showChannels);
         auto* settingsAction = menu.addAction(QCoreApplication::translate("Tray", "Settings"), &app, showSettings);

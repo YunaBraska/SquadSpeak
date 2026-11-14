@@ -1229,6 +1229,10 @@
             <source>Import</source>
             <translation>Uvozi</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>Neznano stanje</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -3330,24 +3334,8 @@
             <translation>Povabilo od %1</translation>
         </message>
         <message>
-            <source>Ready</source>
-            <translation>Pripravljen</translation>
-        </message>
-        <message>
             <source>%1 wins!</source>
             <translation>%1 zmaga!</translation>
-        </message>
-        <message>
-            <source>Game ended. A player disconnected.</source>
-            <translation>Igra se je končala. Igralec je izgubil povezavo.</translation>
-        </message>
-        <message>
-            <source>Game ended. A player left.</source>
-            <translation>Igra se je končala. Igralec je odšel.</translation>
-        </message>
-        <message>
-            <source>Waiting for a player</source>
-            <translation>Čakanje na igralca</translation>
         </message>
         <message>
             <source>Join</source>
@@ -3364,10 +3352,6 @@
         <message>
             <source>Game ended</source>
             <translation>Igra se je končala</translation>
-        </message>
-        <message>
-            <source>In progress</source>
-            <translation>V teku</translation>
         </message>
         <message>
             <source>Open</source>
@@ -3413,14 +3397,6 @@
             <translation>Igra ni na voljo</translation>
         </message>
         <message>
-            <source>Ready in %1 s</source>
-            <translation>Pripravljen čez %1 s</translation>
-        </message>
-        <message>
-            <source>Choose your Core and Trap.</source>
-            <translation>Izberi svoje Jedro in Past.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>Enak element. Izberi znova.</translation>
         </message>
@@ -3457,20 +3433,60 @@
             <translation>Voda pogasi ogenj</translation>
         </message>
         <message>
-            <source>Trap triggered</source>
-            <translation>Past sprožena</translation>
-        </message>
-        <message>
-            <source>Core captured</source>
-            <translation>Jedro osvojeno</translation>
-        </message>
-        <message>
             <source>Neutral</source>
             <translation>Nevtralno</translation>
         </message>
         <message>
             <source>Choose an element</source>
             <translation>Izberi element</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>Informacije</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>Zmaga</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>Poraz</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>Preostalo</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>Osvojeno</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>Zapustiš igro?</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>Če odideš, zmaga drugi igralec.</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>Prekličeš povabilo?</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>Izberi Past, nato Jedro. Premakni se za eno polje. Osvoji nasprotnikovo Jedro za zmago.</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>Element izberi ob prvem boju. Ob izenačenju izbiraš znova.</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>Miruje. Premaga vsakega napadalca.</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>Miruje. Varuj ga, da ostaneš v igri.</translation>
         </message>
     </context>
 </TS>

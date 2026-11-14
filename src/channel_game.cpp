@@ -73,30 +73,26 @@ ChannelGame::Result ChannelGame::act(const QString& id, int round, const QString
         players_.push_back({sender, name});
         for (int i = 0; i < 14; ++i) board_[i] = {1, "neutral", false};
         phase_ = "preparing";
-        advance(now);
         return {true, true};
     }
     if (player == players_.end()) return {};
     const auto who = int(player - players_.begin());
-    if (action == "leave") return selection.isEmpty() ? Result{true, end("left")} : Result{};
+    if (action == "leave") return selection.isEmpty() ? Result{true, end("left", sender)} : Result{};
     if (action == "setup") {
-        if ((phase_ != "waiting" && phase_ != "preparing") || player->ready
+        if ((phase_ != "waiting" && phase_ != "preparing")
             || !fields(selection, {"core", "trap"}) || !integer(selection.value("core"), 0, 41)
-            || !integer(selection.value("trap"), 0, 41) || now > std::numeric_limits<qint64>::max() - 10000) return {};
+            || !integer(selection.value("trap"), 0, 41)) return {};
         const auto core = selection.value("core").toInt(), trap = selection.value("trap").toInt();
         const auto home = who == 0 ? 28 : 0;
         if (core == trap || core < home || core >= home + 14 || trap < home || trap >= home + 14) return {};
         if (player->core == core && player->trap == trap) return {true, false};
+        if (player->core >= 0) return {};
         for (int i = home; i < home + 14; ++i)
             board_[i] = {who, i == core ? QString("core") : i == trap ? QString("trap") : QString("neutral"), false};
-        player->core = core; player->trap = trap; player->readyAt = now + 10000;
-        return {true, true};
-    }
-    if (action == "ready") {
-        if (!selection.isEmpty() || player->core < 0 || (phase_ != "waiting" && phase_ != "preparing")) return {};
-        if (player->ready) return {true, false};
-        player->ready = true;
-        advance(now);
+        player->core = core; player->trap = trap;
+        if (players_.size() == 2 && players_[0].core >= 0 && players_[1].core >= 0) {
+            phase_ = "playing"; turn_ = int(random_.bounded(2));
+        }
         return {true, true};
     }
     if (round != round_) return {};
@@ -162,49 +158,31 @@ ChannelGame::Result ChannelGame::act(const QString& id, int round, const QString
     return {true, true};
 }
 
-bool ChannelGame::advance(qint64 now) {
-    if (phase_ != "waiting" && phase_ != "preparing") return false;
-    bool changed = false;
-    for (auto& player : players_) if (player.core >= 0 && !player.ready && now >= player.readyAt) {
-        player.ready = true; changed = true;
-    }
-    if (players_.size() == 2 && players_[0].ready && players_[1].ready) {
-        phase_ = "playing"; turn_ = int(random_.bounded(2)); changed = true;
-    }
-    return changed;
-}
-
-bool ChannelGame::end(const QString& reason) {
+bool ChannelGame::end(const QString& reason, const QString& departingIdentity) {
     if (!active()) return false;
-    phase_ = "cancelled"; reason_ = reason.left(64); turn_ = -1; duelFrom_ = -1; duelTo_ = -1;
+    if (!departingIdentity.isEmpty() && (!contains(departingIdentity) || (reason != "left" && reason != "disconnected"))) return false;
+    const bool forfeit = players_.size() == 2 && !departingIdentity.isEmpty();
+    phase_ = forfeit ? "finished" : "cancelled";
+    winner_ = forfeit ? players_[players_[0].id == departingIdentity ? 1 : 0].id : QString{};
+    reason_ = reason.left(64); turn_ = -1; duelFrom_ = -1; duelTo_ = -1;
     for (auto& player : players_) player.choice.clear();
     return true;
 }
 
-std::optional<qint64> ChannelGame::deadline() const {
-    std::optional<qint64> result;
-    if (phase_ == "waiting" || phase_ == "preparing") for (const auto& player : players_) if (player.core >= 0 && !player.ready)
-        result = result ? std::min(*result, player.readyAt) : player.readyAt;
-    return result;
-}
-
-QJsonObject ChannelGame::view(const QString& viewer, qint64 now) const {
+QJsonObject ChannelGame::view(const QString& viewer) const {
     if (id_.isEmpty()) return {};
     QJsonArray players, board;
     QString ownChoice;
-    qint64 readyMs = 0;
     int core = -1, trap = -1;
     bool setup = false;
     for (qsizetype i = 0; i < players_.size(); ++i) {
         const auto& player = players_[i];
-        players.append(QJsonObject{{"id", player.id}, {"name", player.name}, {"ready", player.ready}, {"chosen", !player.choice.isEmpty()}});
+        players.append(QJsonObject{{"id", player.id}, {"name", player.name}, {"ready", player.core >= 0}, {"chosen", !player.choice.isEmpty()}});
         if (player.id == viewer) {
             ownChoice = player.choice; setup = player.core >= 0;
             if (setup) {
                 if (board_[player.core].owner == i && board_[player.core].kind == "core") core = player.core;
                 trap = player.trap;
-                if (!player.ready && (phase_ == "waiting" || phase_ == "preparing"))
-                    readyMs = std::clamp<qint64>(player.readyAt - now, 0, 10000);
             }
         }
     }
@@ -216,47 +194,53 @@ QJsonObject ChannelGame::view(const QString& viewer, qint64 now) const {
     const QJsonObject duel = phase_ == "duel" ? QJsonObject{{"from", duelFrom_}, {"to", duelTo_}} : QJsonObject{};
     return {{"id", id_}, {"game", "elements"}, {"phase", phase_}, {"created", created_},
         {"owner", players_.front().id}, {"players", players}, {"capacity", 2}, {"round", round_},
-        {"choice", ownChoice}, {"readyMs", readyMs}, {"winner", winner_}, {"reason", reason_},
+        {"choice", ownChoice}, {"winner", winner_}, {"reason", reason_},
         {"board", board}, {"turn", turn_ >= 0 ? players_[turn_].id : QString{}},
         {"core", core}, {"trap", trap}, {"setup", setup}, {"duel", duel}, {"lastBattle", lastBattle_}};
 }
 
 bool ChannelGame::validView(const QJsonObject& state) {
     if (QJsonDocument(state).toJson(QJsonDocument::Compact).size() > 16 * 1024
-        || !hasFields(state, {"id", "game", "phase", "created", "owner", "players", "capacity", "round", "choice", "readyMs", "winner", "reason", "board", "turn", "core", "trap", "setup", "duel", "lastBattle"})
+        || !hasFields(state, {"id", "game", "phase", "created", "owner", "players", "capacity", "round", "choice", "winner", "reason", "board", "turn", "core", "trap", "setup", "duel", "lastBattle"})
         || !state.value("id").isString() || QUuid(state.value("id").toString()).isNull() || state.value("game") != "elements"
         || !integer(state.value("created"), 0, 9007199254740991LL) || !integer(state.value("round"), 1, std::numeric_limits<int>::max())
-        || !integer(state.value("capacity"), 2, 2) || !integer(state.value("readyMs"), 0, 10000)
+        || !integer(state.value("capacity"), 2, 2)
         || !state.value("setup").isBool() || !integer(state.value("core"), -1, 41) || !integer(state.value("trap"), -1, 41)
         || !state.value("players").isArray() || !state.value("board").isArray()
         || !state.value("duel").isObject() || !state.value("lastBattle").isObject()) return false;
     for (const auto* key : {"phase", "owner", "choice", "winner", "reason", "turn"}) if (!state.value(key).isString()) return false;
     const auto phase = state.value("phase").toString();
+    const auto reason = state.value("reason").toString();
+    const bool forfeit = phase == "finished" && (reason == "left" || reason == "disconnected");
     const auto players = state.value("players").toArray();
     const bool preparation = phase == "waiting" || phase == "preparing";
     const bool terminal = phase == "finished" || phase == "cancelled";
     if ((!preparation && !terminal && phase != "playing" && phase != "duel") || players.isEmpty() || players.size() > 2
         || (phase == "waiting" && players.size() != 1) || (phase != "waiting" && phase != "cancelled" && players.size() != 2)) return false;
     QStringList ids;
-    int chosen = 0;
+    int chosen = 0, ready = 0;
     for (const auto& value : players) {
         const auto player = value.toObject();
         const auto id = player.value("id").toString();
         if (!value.isObject() || !hasFields(player, {"id", "name", "ready", "chosen"}) || !playerId(id) || ids.contains(id)
             || !playerName(player.value("name")) || !player.value("ready").isBool() || !player.value("chosen").isBool()
-            || ((phase == "playing" || phase == "duel" || phase == "finished") && !player.value("ready").toBool())) return false;
+            || ((phase == "playing" || phase == "duel" || (phase == "finished" && !forfeit)) && !player.value("ready").toBool())) return false;
         ids.append(id);
         if (player.value("chosen").toBool()) ++chosen;
+        if (player.value("ready").toBool()) ++ready;
     }
-    if (state.value("owner") != ids.front() || chosen > 1 || (chosen && phase != "duel")) return false;
+    if (state.value("owner") != ids.front() || chosen > 1 || (chosen && phase != "duel")
+        || (phase == "preparing" && ready == 2)
+        || (forfeit && ready < 2 && (state.value("round") != 1 || !state.value("lastBattle").toObject().isEmpty()))) return false;
     const auto winner = state.value("winner").toString(), turn = state.value("turn").toString(), choice = state.value("choice").toString();
     if ((phase == "finished" ? !ids.contains(winner) : !winner.isEmpty())
         || ((phase == "playing" || phase == "duel") ? !ids.contains(turn) : !turn.isEmpty())
-        || (phase != "cancelled" && !state.value("reason").toString().isEmpty()) || state.value("reason").toString().size() > 64
+        || (phase != "cancelled" && !forfeit && !reason.isEmpty()) || reason.size() > 64
         || (!choice.isEmpty() && (phase != "duel" || !element(choice) || !chosen))) return false;
     const auto board = state.value("board").toArray();
     if (board.size() != 42) return false;
-    std::array<int, 2> counts{}, cores{}, traps{};
+    const bool initial = preparation || (forfeit && ready < 2);
+    std::array<int, 2> counts{}, cores{}, traps{}, hidden{}, movers{};
     for (int i = 0; i < 42; ++i) {
         if (!board[i].isObject()) return false;
         const auto piece = board[i].toObject();
@@ -268,21 +252,28 @@ bool ChannelGame::validView(const QJsonObject& state) {
             || (kind == "hidden" && piece.value("revealed").toBool()) || ++counts[who] > 14) return false;
         if (kind == "core" && ++cores[who] > 1) return false;
         if (kind == "trap" && ++traps[who] > 1) return false;
+        if (kind == "hidden") ++hidden[who];
+        if (movable(kind)) ++movers[who];
         const bool home = who == 0 ? i >= 28 : i < 14;
-        if (((kind == "core" || kind == "trap") && !home) || (preparation && (!home || piece.value("revealed").toBool()))) return false;
+        if (((kind == "core" || kind == "trap") && !home)
+            || (initial && (!home || piece.value("revealed").toBool() || element(kind)))) return false;
     }
-    for (int i = 0; i < ids.size(); ++i) if (counts[i] < 1 || (preparation && counts[i] != 14)) return false;
+    for (int i = 0; i < ids.size(); ++i) {
+        if (counts[i] < 1 || (initial && counts[i] != 14)) return false;
+        const bool prepared = players[i].toObject().value("ready").toBool();
+        if (initial && ((!prepared && (cores[i] || traps[i]))
+            || (prepared && hidden[i] == 0 && (cores[i] != 1 || traps[i] != 1)))) return false;
+    }
     const auto core = state.value("core").toInt(), trap = state.value("trap").toInt();
     if (!state.value("setup").toBool()) {
-        if (core != -1 || trap != -1 || !choice.isEmpty() || state.value("readyMs").toInteger() != 0) return false;
+        if (core != -1 || trap != -1 || !choice.isEmpty()) return false;
     } else {
-        if (trap < 0 || core == trap || (core < 0 && phase != "finished")) return false;
+        if (trap < 0 || core == trap || (core < 0 && (phase != "finished" || forfeit))) return false;
         const auto own = board[trap].toObject().value("owner").toString();
         if (board[trap].toObject().value("kind") != "trap" || !ids.contains(own)
             || (core >= 0 && (board[core].toObject().value("kind") != "core" || board[core].toObject().value("owner") != own))) return false;
         const auto player = players[ids.indexOf(own)].toObject();
-        if ((!choice.isEmpty() && !player.value("chosen").toBool())
-            || (state.value("readyMs").toInteger() > 0 && (!preparation || player.value("ready").toBool()))) return false;
+        if (!player.value("ready").toBool() || (!choice.isEmpty() && !player.value("chosen").toBool())) return false;
     }
     const auto duel = state.value("duel").toObject();
     if (phase == "duel") {
@@ -305,7 +296,7 @@ bool ChannelGame::validView(const QJsonObject& state) {
         if (chosen >= eligible) return false;
     } else if (!duel.isEmpty()) return false;
     const auto battle = state.value("lastBattle").toObject();
-    if (battle.isEmpty()) return phase != "duel" && phase != "finished";
+    if (battle.isEmpty()) return phase != "duel" && (phase != "finished" || forfeit);
     if (!hasFields(battle, {"number", "from", "to", "attacker", "defender", "attack", "defence", "winner", "effect"})
         || !integer(battle.value("number"), 1, state.value("round").toInt()) || !integer(battle.value("from"), 0, 41)
         || !integer(battle.value("to"), 0, 41) || !adjacent(battle.value("from").toInt(), battle.value("to").toInt())) return false;
@@ -313,7 +304,7 @@ bool ChannelGame::validView(const QJsonObject& state) {
     const auto attacker = battle.value("attacker").toString(), defender = battle.value("defender").toString();
     const auto attack = battle.value("attack").toString(), defence = battle.value("defence").toString();
     if (!ids.contains(attacker) || !ids.contains(defender) || attacker == defender || !movable(attack)
-        || (!movable(defence) && defence != "core" && defence != "trap")) return false;
+        || (!movable(defence) && defence != "core" && defence != "trap") || (forfeit && defence == "core")) return false;
     const bool attackWins = defence == "core" || (defence != "trap" && beats(attack, defence));
     const bool pending = movable(defence) && (attack == "neutral" || defence == "neutral" || attack == defence);
     const auto expectedWinner = pending ? QString{} : attackWins ? attacker : defender;
@@ -321,12 +312,18 @@ bool ChannelGame::validView(const QJsonObject& state) {
     const auto effect = pending ? (attack == "neutral" || defence == "neutral" ? QString("choose") : QString("tie"))
         : defence == "core" ? QString("capture") : defence == "trap" ? QString("trap")
         : surviving == "water" ? QString("extinguish") : surviving == "fire" ? QString("melt") : QString("freeze");
+    if (phase == "finished" && !forfeit && defence != "core") {
+        const auto loser = winner == ids[0] ? 1 : 0;
+        if (movers[loser] > 0 || hidden[loser] > 2 - cores[loser] - traps[loser]) return false;
+    }
     return battle.value("winner") == expectedWinner && battle.value("effect") == effect
-        && (!pending || phase == "duel" || phase == "cancelled")
-        && (phase != "finished" || winner == expectedWinner)
-        && (phase != "duel" || (pending && battle.value("from") == duel.value("from") && battle.value("to") == duel.value("to")
-            && attack == board[duel.value("from").toInt()].toObject().value("kind")
-            && defence == board[duel.value("to").toInt()].toObject().value("kind")
-            && attacker == board[duel.value("from").toInt()].toObject().value("owner")
-            && defender == board[duel.value("to").toInt()].toObject().value("owner")));
+        && (!pending || ((phase == "duel" || phase == "cancelled" || forfeit)
+            && attack == board[battle.value("from").toInt()].toObject().value("kind")
+            && defence == board[battle.value("to").toInt()].toObject().value("kind")
+            && attacker == board[battle.value("from").toInt()].toObject().value("owner")
+            && defender == board[battle.value("to").toInt()].toObject().value("owner")
+            && board[battle.value("from").toInt()].toObject().value("revealed").toBool()
+            && board[battle.value("to").toInt()].toObject().value("revealed").toBool()))
+        && (phase != "finished" || forfeit || winner == expectedWinner)
+        && (phase != "duel" || (pending && battle.value("from") == duel.value("from") && battle.value("to") == duel.value("to")));
 }

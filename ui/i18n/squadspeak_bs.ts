@@ -1229,6 +1229,10 @@
             <source>Import</source>
             <translation>Uvezi</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>Nepoznat status</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -3330,24 +3334,8 @@
             <translation>Poziv od %1</translation>
         </message>
         <message>
-            <source>Ready</source>
-            <translation>Spremno</translation>
-        </message>
-        <message>
             <source>%1 wins!</source>
             <translation>%1 pobjeđuje!</translation>
-        </message>
-        <message>
-            <source>Game ended. A player disconnected.</source>
-            <translation>Igra je završena. Igrač je izgubio vezu.</translation>
-        </message>
-        <message>
-            <source>Game ended. A player left.</source>
-            <translation>Igra je završena. Igrač je otišao.</translation>
-        </message>
-        <message>
-            <source>Waiting for a player</source>
-            <translation>Čekanje igrača</translation>
         </message>
         <message>
             <source>Join</source>
@@ -3364,10 +3352,6 @@
         <message>
             <source>Game ended</source>
             <translation>Igra je završena</translation>
-        </message>
-        <message>
-            <source>In progress</source>
-            <translation>U toku</translation>
         </message>
         <message>
             <source>Open</source>
@@ -3413,14 +3397,6 @@
             <translation>Igra nije dostupna</translation>
         </message>
         <message>
-            <source>Ready in %1 s</source>
-            <translation>Spremno za %1 s</translation>
-        </message>
-        <message>
-            <source>Choose your Core and Trap.</source>
-            <translation>Odaberi svoju Jezgru i Zamku.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>Isti element. Odaberi ponovo.</translation>
         </message>
@@ -3457,20 +3433,60 @@
             <translation>Voda gasi vatru</translation>
         </message>
         <message>
-            <source>Trap triggered</source>
-            <translation>Zamka aktivirana</translation>
-        </message>
-        <message>
-            <source>Core captured</source>
-            <translation>Jezgra osvojena</translation>
-        </message>
-        <message>
             <source>Neutral</source>
             <translation>Neutralno</translation>
         </message>
         <message>
             <source>Choose an element</source>
             <translation>Odaberi element</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>Informacije</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>Pobjeda</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>Poraz</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>Preostalo</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>Osvojeno</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>Napustiti igru?</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>Ako odeš, drugi igrač pobjeđuje.</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>Otkazati pozivnicu?</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>Odaberi Zamku, zatim Jezgru. Pomjeri se jedno polje. Osvoji protivničku Jezgru za pobjedu.</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>Odaberi element u prvoj borbi. Kod izjednačenja biraj ponovo.</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>Ne pomjera se. Pobjeđuje svakog napadača.</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>Ne pomjera se. Čuvaj je da ostaneš u igri.</translation>
         </message>
     </context>
 </TS>

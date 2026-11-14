@@ -1229,6 +1229,10 @@
             <source>Import</source>
             <translation>Importovať</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>Neznámy stav</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -3330,24 +3334,8 @@
             <translation>Pozvánka od %1</translation>
         </message>
         <message>
-            <source>Ready</source>
-            <translation>Pripravené</translation>
-        </message>
-        <message>
             <source>%1 wins!</source>
             <translation>%1 vyhráva!</translation>
-        </message>
-        <message>
-            <source>Game ended. A player disconnected.</source>
-            <translation>Hra sa skončila. Hráč stratil spojenie.</translation>
-        </message>
-        <message>
-            <source>Game ended. A player left.</source>
-            <translation>Hra sa skončila. Hráč odišiel.</translation>
-        </message>
-        <message>
-            <source>Waiting for a player</source>
-            <translation>Čaká sa na hráča</translation>
         </message>
         <message>
             <source>Join</source>
@@ -3364,10 +3352,6 @@
         <message>
             <source>Game ended</source>
             <translation>Hra sa skončila</translation>
-        </message>
-        <message>
-            <source>In progress</source>
-            <translation>Prebieha</translation>
         </message>
         <message>
             <source>Open</source>
@@ -3413,14 +3397,6 @@
             <translation>Hra nie je dostupná</translation>
         </message>
         <message>
-            <source>Ready in %1 s</source>
-            <translation>Pripravené o %1 s</translation>
-        </message>
-        <message>
-            <source>Choose your Core and Trap.</source>
-            <translation>Vyber si svoje Jadro a Pascu.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>Rovnaký živel. Vyber znova.</translation>
         </message>
@@ -3457,20 +3433,60 @@
             <translation>Voda uhasí oheň</translation>
         </message>
         <message>
-            <source>Trap triggered</source>
-            <translation>Pasca spustená</translation>
-        </message>
-        <message>
-            <source>Core captured</source>
-            <translation>Jadro dobyté</translation>
-        </message>
-        <message>
             <source>Neutral</source>
             <translation>Neutrálne</translation>
         </message>
         <message>
             <source>Choose an element</source>
             <translation>Vyber si živel</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>Informácie</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>Víťazstvo</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>Prehra</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>Zostávajúce</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>Získané</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>Opustiť hru?</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>Ak odídeš, vyhrá druhý hráč.</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>Zrušiť pozvánku?</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>Vyber Pascu, potom Jadro. Ťahaj o jedno pole. Získaj súperovo Jadro a vyhraj.</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>Vyber živel pri prvom súboji. Pri remíze vyberáš znova.</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>Nehýbe sa. Porazí každého útočníka.</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>Nehýbe sa. Chráň ho, aby si zostal v hre.</translation>
         </message>
     </context>
 </TS>

@@ -1229,6 +1229,10 @@
             <source>Import</source>
             <translation>Importēt</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>Statuss nav zināms</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -3330,24 +3334,8 @@
             <translation>Uzaicinājums no %1</translation>
         </message>
         <message>
-            <source>Ready</source>
-            <translation>Gatavs</translation>
-        </message>
-        <message>
             <source>%1 wins!</source>
             <translation>%1 uzvar!</translation>
-        </message>
-        <message>
-            <source>Game ended. A player disconnected.</source>
-            <translation>Spēle beidzās. Spēlētājs zaudēja savienojumu.</translation>
-        </message>
-        <message>
-            <source>Game ended. A player left.</source>
-            <translation>Spēle beidzās. Spēlētājs aizgāja.</translation>
-        </message>
-        <message>
-            <source>Waiting for a player</source>
-            <translation>Gaida spēlētāju</translation>
         </message>
         <message>
             <source>Join</source>
@@ -3364,10 +3352,6 @@
         <message>
             <source>Game ended</source>
             <translation>Spēle beidzās</translation>
-        </message>
-        <message>
-            <source>In progress</source>
-            <translation>Notiek</translation>
         </message>
         <message>
             <source>Open</source>
@@ -3413,14 +3397,6 @@
             <translation>Spēle nav pieejama</translation>
         </message>
         <message>
-            <source>Ready in %1 s</source>
-            <translation>Gatavs pēc %1 s</translation>
-        </message>
-        <message>
-            <source>Choose your Core and Trap.</source>
-            <translation>Izvēlies savu Kodolu un Lamatas.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>Tas pats elements. Izvēlies vēlreiz.</translation>
         </message>
@@ -3457,20 +3433,60 @@
             <translation>Ūdens nodzēš uguni</translation>
         </message>
         <message>
-            <source>Trap triggered</source>
-            <translation>Lamatas iedarbinātas</translation>
-        </message>
-        <message>
-            <source>Core captured</source>
-            <translation>Kodols ieņemts</translation>
-        </message>
-        <message>
             <source>Neutral</source>
             <translation>Neitrāls</translation>
         </message>
         <message>
             <source>Choose an element</source>
             <translation>Izvēlies elementu</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>Informācija</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>Uzvara</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>Zaudējums</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>Atlicis</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>Uzvarēts</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>Pamest spēli?</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>Ja aiziesi, uzvarēs otrs spēlētājs.</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>Atcelt uzaicinājumu?</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>Izvēlies Lamatas, tad Kodolu. Ej vienu lauciņu. Iegūsti pretinieka Kodolu, lai uzvarētu.</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>Izvēlies elementu pirmajā cīņā. Neizšķirta gadījumā izvēlies vēlreiz.</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>Nekustas. Uzvar katru uzbrucēju.</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>Nekustas. Sargā to, lai paliktu spēlē.</translation>
         </message>
     </context>
 </TS>

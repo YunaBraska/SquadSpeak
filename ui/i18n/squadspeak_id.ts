@@ -1229,6 +1229,10 @@
             <source>Import</source>
             <translation>Impor</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>Status tidak diketahui</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -3330,24 +3334,8 @@
             <translation>Diundang oleh %1</translation>
         </message>
         <message>
-            <source>Ready</source>
-            <translation>Siap</translation>
-        </message>
-        <message>
             <source>%1 wins!</source>
             <translation>%1 menang!</translation>
-        </message>
-        <message>
-            <source>Game ended. A player disconnected.</source>
-            <translation>Permainan berakhir. Koneksi seorang pemain terputus.</translation>
-        </message>
-        <message>
-            <source>Game ended. A player left.</source>
-            <translation>Permainan berakhir. Seorang pemain keluar.</translation>
-        </message>
-        <message>
-            <source>Waiting for a player</source>
-            <translation>Menunggu pemain</translation>
         </message>
         <message>
             <source>Join</source>
@@ -3364,10 +3352,6 @@
         <message>
             <source>Game ended</source>
             <translation>Permainan berakhir</translation>
-        </message>
-        <message>
-            <source>In progress</source>
-            <translation>Sedang berlangsung</translation>
         </message>
         <message>
             <source>Open</source>
@@ -3413,14 +3397,6 @@
             <translation>Permainan tidak tersedia</translation>
         </message>
         <message>
-            <source>Ready in %1 s</source>
-            <translation>Siap dalam %1 dtk</translation>
-        </message>
-        <message>
-            <source>Choose your Core and Trap.</source>
-            <translation>Pilih Inti dan Jebakanmu.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>Elemen sama. Pilih lagi.</translation>
         </message>
@@ -3457,20 +3433,60 @@
             <translation>Air memadamkan api</translation>
         </message>
         <message>
-            <source>Trap triggered</source>
-            <translation>Jebakan terpicu</translation>
-        </message>
-        <message>
-            <source>Core captured</source>
-            <translation>Inti direbut</translation>
-        </message>
-        <message>
             <source>Neutral</source>
             <translation>Netral</translation>
         </message>
         <message>
             <source>Choose an element</source>
             <translation>Pilih elemen</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>Informasi</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>Menang</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>Kalah</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>Tersisa</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>Dikalahkan</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>Keluar dari permainan?</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>Jika keluar, pemain lain menang.</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>Batalkan undangan ini?</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>Pilih Jebakan, lalu Inti. Bergerak satu petak. Rebut Inti lawan untuk menang.</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>Pilih elemennya pada pertarungan pertama. Jika seri, pilih lagi.</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>Diam di tempat. Mengalahkan semua penyerang.</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>Diam di tempat. Lindungi agar tetap bermain.</translation>
         </message>
     </context>
 </TS>

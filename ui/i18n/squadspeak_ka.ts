@@ -1229,6 +1229,10 @@
             <source>Import</source>
             <translation>იმპორტი</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>სტატუსი უცნობია</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -3330,24 +3334,8 @@
             <translation>მომწვევი: %1</translation>
         </message>
         <message>
-            <source>Ready</source>
-            <translation>მზადაა</translation>
-        </message>
-        <message>
             <source>%1 wins!</source>
             <translation>%1 იმარჯვებს!</translation>
-        </message>
-        <message>
-            <source>Game ended. A player disconnected.</source>
-            <translation>თამაში დასრულდა. მოთამაშეს კავშირი გაუწყდა.</translation>
-        </message>
-        <message>
-            <source>Game ended. A player left.</source>
-            <translation>თამაში დასრულდა. მოთამაშე გავიდა.</translation>
-        </message>
-        <message>
-            <source>Waiting for a player</source>
-            <translation>მოთამაშის მოლოდინი</translation>
         </message>
         <message>
             <source>Join</source>
@@ -3364,10 +3352,6 @@
         <message>
             <source>Game ended</source>
             <translation>თამაში დასრულდა</translation>
-        </message>
-        <message>
-            <source>In progress</source>
-            <translation>მიმდინარეობს</translation>
         </message>
         <message>
             <source>Open</source>
@@ -3413,14 +3397,6 @@
             <translation>თამაში მიუწვდომელია</translation>
         </message>
         <message>
-            <source>Ready in %1 s</source>
-            <translation>მზად იქნება %1 წამში</translation>
-        </message>
-        <message>
-            <source>Choose your Core and Trap.</source>
-            <translation>აირჩიე შენი ბირთვი და ხაფანგი.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>ერთნაირი სტიქია. აირჩიე თავიდან.</translation>
         </message>
@@ -3457,20 +3433,60 @@
             <translation>წყალი აქრობს ცეცხლს</translation>
         </message>
         <message>
-            <source>Trap triggered</source>
-            <translation>ხაფანგი გააქტიურდა</translation>
-        </message>
-        <message>
-            <source>Core captured</source>
-            <translation>ბირთვი აღებულია</translation>
-        </message>
-        <message>
             <source>Neutral</source>
             <translation>ნეიტრალური</translation>
         </message>
         <message>
             <source>Choose an element</source>
             <translation>აირჩიე სტიქია</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>ინფორმაცია</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>გამარჯვება</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>მარცხი</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>დარჩენილი</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>დამარცხებული</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>თამაშიდან გასვლა?</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>თუ გახვალ, მეორე მოთამაშე გაიმარჯვებს.</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>მოწვევის გაუქმება?</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>აირჩიე ხაფანგი, შემდეგ ბირთვი. იმოძრავე ერთი უჯრით. გამარჯვებისთვის აიღე მეტოქის ბირთვი.</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>ელემენტი პირველ ბრძოლაში აირჩიე. ფრის დროს ხელახლა ირჩევ.</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>არ მოძრაობს. ამარცხებს ყველა შემტევს.</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>არ მოძრაობს. დაიცავი, რომ თამაშში დარჩე.</translation>
         </message>
     </context>
 </TS>

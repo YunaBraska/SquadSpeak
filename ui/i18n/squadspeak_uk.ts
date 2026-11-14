@@ -1229,6 +1229,10 @@
             <source>Import</source>
             <translation>Імпортувати</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>Статус невідомий</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -3330,24 +3334,8 @@
             <translation>Запрошення від %1</translation>
         </message>
         <message>
-            <source>Ready</source>
-            <translation>Готово</translation>
-        </message>
-        <message>
             <source>%1 wins!</source>
             <translation>%1 перемагає!</translation>
-        </message>
-        <message>
-            <source>Game ended. A player disconnected.</source>
-            <translation>Гру завершено. Гравець утратив з’єднання.</translation>
-        </message>
-        <message>
-            <source>Game ended. A player left.</source>
-            <translation>Гру завершено. Гравець вийшов.</translation>
-        </message>
-        <message>
-            <source>Waiting for a player</source>
-            <translation>Очікування гравця</translation>
         </message>
         <message>
             <source>Join</source>
@@ -3364,10 +3352,6 @@
         <message>
             <source>Game ended</source>
             <translation>Гру завершено</translation>
-        </message>
-        <message>
-            <source>In progress</source>
-            <translation>Гра триває</translation>
         </message>
         <message>
             <source>Open</source>
@@ -3413,14 +3397,6 @@
             <translation>Гра недоступна</translation>
         </message>
         <message>
-            <source>Ready in %1 s</source>
-            <translation>Готовність за %1 с</translation>
-        </message>
-        <message>
-            <source>Choose your Core and Trap.</source>
-            <translation>Вибери своє Ядро та Пастку.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>Однакова стихія. Вибери знову.</translation>
         </message>
@@ -3457,20 +3433,60 @@
             <translation>Вода гасить вогонь</translation>
         </message>
         <message>
-            <source>Trap triggered</source>
-            <translation>Пастка спрацювала</translation>
-        </message>
-        <message>
-            <source>Core captured</source>
-            <translation>Ядро захоплено</translation>
-        </message>
-        <message>
             <source>Neutral</source>
             <translation>Нейтральний</translation>
         </message>
         <message>
             <source>Choose an element</source>
             <translation>Вибери стихію</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>Інформація</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>Перемога</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>Поразка</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>Залишилось</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>Переможено</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>Вийти з гри?</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>Якщо вийдеш, переможе інший гравець.</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>Скасувати запрошення?</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>Вибери Пастку, потім Ядро. Ходи на одну клітинку. Захопи чуже Ядро, щоб перемогти.</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>Вибери стихію в першому бою. За нічиєї можна вибрати знову.</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>Не рухається. Перемагає будь-якого нападника.</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>Не рухається. Захищай його, щоб залишитися в грі.</translation>
         </message>
     </context>
 </TS>

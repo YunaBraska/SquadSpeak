@@ -1229,6 +1229,10 @@
             <source>Import</source>
             <translation>Importer</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>État inconnu</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -3330,24 +3334,8 @@
             <translation>Invitation de %1</translation>
         </message>
         <message>
-            <source>Ready</source>
-            <translation>Prêt</translation>
-        </message>
-        <message>
             <source>%1 wins!</source>
             <translation>%1 gagne !</translation>
-        </message>
-        <message>
-            <source>Game ended. A player disconnected.</source>
-            <translation>Partie terminée. Un joueur a perdu la connexion.</translation>
-        </message>
-        <message>
-            <source>Game ended. A player left.</source>
-            <translation>Partie terminée. Un joueur est parti.</translation>
-        </message>
-        <message>
-            <source>Waiting for a player</source>
-            <translation>En attente d’un joueur</translation>
         </message>
         <message>
             <source>Join</source>
@@ -3364,10 +3352,6 @@
         <message>
             <source>Game ended</source>
             <translation>Partie terminée</translation>
-        </message>
-        <message>
-            <source>In progress</source>
-            <translation>En cours</translation>
         </message>
         <message>
             <source>Open</source>
@@ -3413,14 +3397,6 @@
             <translation>Partie indisponible</translation>
         </message>
         <message>
-            <source>Ready in %1 s</source>
-            <translation>Prêt dans %1 s</translation>
-        </message>
-        <message>
-            <source>Choose your Core and Trap.</source>
-            <translation>Choisis ton Noyau et ton Piège.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>Même élément. Choisis à nouveau.</translation>
         </message>
@@ -3457,20 +3433,60 @@
             <translation>L’eau éteint le feu</translation>
         </message>
         <message>
-            <source>Trap triggered</source>
-            <translation>Piège déclenché</translation>
-        </message>
-        <message>
-            <source>Core captured</source>
-            <translation>Noyau capturé</translation>
-        </message>
-        <message>
             <source>Neutral</source>
             <translation>Neutre</translation>
         </message>
         <message>
             <source>Choose an element</source>
             <translation>Choisis un élément</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>Infos</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>Victoire</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>Défaite</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>Restantes</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>Capturées</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>Quitter la partie ?</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>Si tu pars, l’autre joueur gagne.</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>Annuler cette invitation ?</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>Choisis le Piège, puis le Noyau. Avance d’une case. Capture le Noyau adverse pour gagner.</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>Choisis son élément au premier combat. En cas d’égalité, choisis à nouveau.</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>Reste immobile. Bat tout attaquant.</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>Reste immobile. Protège-le pour rester en jeu.</translation>
         </message>
     </context>
 </TS>

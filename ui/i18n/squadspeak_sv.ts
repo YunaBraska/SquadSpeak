@@ -1229,6 +1229,10 @@
             <source>Import</source>
             <translation>Importera</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>Okänd status</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -3330,24 +3334,8 @@
             <translation>Inbjuden av %1</translation>
         </message>
         <message>
-            <source>Ready</source>
-            <translation>Redo</translation>
-        </message>
-        <message>
             <source>%1 wins!</source>
             <translation>%1 vinner!</translation>
-        </message>
-        <message>
-            <source>Game ended. A player disconnected.</source>
-            <translation>Spelet är slut. En spelare tappade anslutningen.</translation>
-        </message>
-        <message>
-            <source>Game ended. A player left.</source>
-            <translation>Spelet är slut. En spelare lämnade spelet.</translation>
-        </message>
-        <message>
-            <source>Waiting for a player</source>
-            <translation>Väntar på en spelare</translation>
         </message>
         <message>
             <source>Join</source>
@@ -3364,10 +3352,6 @@
         <message>
             <source>Game ended</source>
             <translation>Spelet är slut</translation>
-        </message>
-        <message>
-            <source>In progress</source>
-            <translation>Pågår</translation>
         </message>
         <message>
             <source>Open</source>
@@ -3413,14 +3397,6 @@
             <translation>Spelet är inte tillgängligt</translation>
         </message>
         <message>
-            <source>Ready in %1 s</source>
-            <translation>Redo om %1 s</translation>
-        </message>
-        <message>
-            <source>Choose your Core and Trap.</source>
-            <translation>Välj din Kärna och din Fälla.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>Samma element. Välj igen.</translation>
         </message>
@@ -3457,20 +3433,60 @@
             <translation>Vatten släcker eld</translation>
         </message>
         <message>
-            <source>Trap triggered</source>
-            <translation>Fälla utlöst</translation>
-        </message>
-        <message>
-            <source>Core captured</source>
-            <translation>Kärnan erövrad</translation>
-        </message>
-        <message>
             <source>Neutral</source>
             <translation>Neutral</translation>
         </message>
         <message>
             <source>Choose an element</source>
             <translation>Välj ett element</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>Information</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>Seger</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>Förlust</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>Kvar</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>Tagna</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>Lämna spelet?</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>Om du lämnar vinner den andra spelaren.</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>Avbryt inbjudan?</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>Välj Fälla, sedan Kärna. Flytta en ruta. Ta motståndarens Kärna för att vinna.</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>Välj element vid första striden. Vid oavgjort väljer du igen.</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>Står still. Besegrar alla angripare.</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>Står still. Skydda den för att vara kvar i spelet.</translation>
         </message>
     </context>
 </TS>

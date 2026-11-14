@@ -1229,6 +1229,10 @@
             <source>Import</source>
             <translation>Importar</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>Status nunenconuschent</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -3330,24 +3334,8 @@
             <translation>Envidà da %1</translation>
         </message>
         <message>
-            <source>Ready</source>
-            <translation>Pront</translation>
-        </message>
-        <message>
             <source>%1 wins!</source>
             <translation>%1 gudogna!</translation>
-        </message>
-        <message>
-            <source>Game ended. A player disconnected.</source>
-            <translation>Il gieu è a fin. In giugader ha pers la connexiun.</translation>
-        </message>
-        <message>
-            <source>Game ended. A player left.</source>
-            <translation>Il gieu è a fin. In giugader è sortì.</translation>
-        </message>
-        <message>
-            <source>Waiting for a player</source>
-            <translation>Spetgar in giugader</translation>
         </message>
         <message>
             <source>Join</source>
@@ -3364,10 +3352,6 @@
         <message>
             <source>Game ended</source>
             <translation>Il gieu è a fin</translation>
-        </message>
-        <message>
-            <source>In progress</source>
-            <translation>En curs</translation>
         </message>
         <message>
             <source>Open</source>
@@ -3413,14 +3397,6 @@
             <translation>Gieu betg disponibel</translation>
         </message>
         <message>
-            <source>Ready in %1 s</source>
-            <translation>Pront en %1 s</translation>
-        </message>
-        <message>
-            <source>Choose your Core and Trap.</source>
-            <translation>Tscherna tes Minz e tia Trapla.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>Il medem element. Tscherna anc ina giada.</translation>
         </message>
@@ -3457,20 +3433,60 @@
             <translation>L’aua stizza il fieu</translation>
         </message>
         <message>
-            <source>Trap triggered</source>
-            <translation>Trapla activada</translation>
-        </message>
-        <message>
-            <source>Core captured</source>
-            <translation>Minz conquistà</translation>
-        </message>
-        <message>
             <source>Neutral</source>
             <translation>Neutral</translation>
         </message>
         <message>
             <source>Choose an element</source>
             <translation>Tscherna in element</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>Infurmaziuns</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>Victoria</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>Sconfitta</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>Restantas</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>Conquistadas</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>Bandunar il gieu?</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>Sche ti bandunas, gudogna l’auter giugader.</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>Annullar l’invitaziun?</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>Tscherna Trapla, lura Minz. Va in champ. Conquista il Minz adversari per gudagnar.</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>Tscherna l’element en l’emprim cumbat. Tar in pari tschernas ti danovamain.</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>Resta ferm. Batta mintga attatgader.</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>Resta ferm. Protegia el per restar en il gieu.</translation>
         </message>
     </context>
 </TS>

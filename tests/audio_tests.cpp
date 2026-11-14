@@ -318,7 +318,8 @@ private slots:
     void eventSoundAssetsAreDistinctBoundedPcm() {
         QSet<QByteArray> hashes;
         for (const auto* name : {"join", "leave", "kick", "ban", "message", "announcement",
-                "game-choose", "game-move", "game-melt", "game-freeze", "game-extinguish", "game-trap", "game-win", "game-end"}) {
+                "game-choose", "game-move", "game-melt", "game-freeze", "game-extinguish", "game-trap", "game-win", "game-end",
+                "piece-neutral", "piece-core", "piece-trap", "piece-fire", "piece-water", "piece-ice"}) {
             QFile file(QString(":/qt/qml/SquadSpeak/ui/sounds/%1.wav").arg(name));
             QVERIFY2(file.open(QIODevice::ReadOnly), name);
             const auto bytes = file.readAll();
@@ -340,7 +341,7 @@ private slots:
                 energy += double(sample) * sample;
             }
             QVERIFY(peak > 1000 && peak < 10000);
-            if (QByteArrayView(name).startsWith("game-")) {
+            if (QByteArrayView(name).startsWith("game-") || QByteArrayView(name).startsWith("piece-")) {
                 const auto duration = double(u32(40)) / u32(28);
                 QVERIFY2(duration >= 0.1 && duration <= 0.7, name);
                 const auto rms = std::sqrt(energy / (u32(40) / 2));
@@ -349,7 +350,7 @@ private slots:
             QCOMPARE(u16(44), 0); QCOMPARE(u16(int(bytes.size()) - 2), 0);
             hashes.insert(QCryptographicHash::hash(bytes, QCryptographicHash::Sha256));
         }
-        QCOMPARE(hashes.size(), 14);
+        QCOMPARE(hashes.size(), 20);
     }
 
     void echoDefaultsAndDeviceProfilesPersist() {

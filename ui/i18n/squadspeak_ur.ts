@@ -1229,6 +1229,10 @@
             <source>Import</source>
             <translation>درآمد کریں</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>حیثیت نامعلوم</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -3330,24 +3334,8 @@
             <translation>%1 کی طرف سے دعوت</translation>
         </message>
         <message>
-            <source>Ready</source>
-            <translation>تیار</translation>
-        </message>
-        <message>
             <source>%1 wins!</source>
             <translation>%1 جیت گیا!</translation>
-        </message>
-        <message>
-            <source>Game ended. A player disconnected.</source>
-            <translation>کھیل ختم ہوگیا۔ ایک کھلاڑی کا کنکشن ٹوٹ گیا۔</translation>
-        </message>
-        <message>
-            <source>Game ended. A player left.</source>
-            <translation>کھیل ختم ہوگیا۔ ایک کھلاڑی چلا گیا۔</translation>
-        </message>
-        <message>
-            <source>Waiting for a player</source>
-            <translation>کھلاڑی کا انتظار ہے</translation>
         </message>
         <message>
             <source>Join</source>
@@ -3364,10 +3352,6 @@
         <message>
             <source>Game ended</source>
             <translation>کھیل ختم ہوگیا</translation>
-        </message>
-        <message>
-            <source>In progress</source>
-            <translation>کھیل جاری ہے</translation>
         </message>
         <message>
             <source>Open</source>
@@ -3413,14 +3397,6 @@
             <translation>کھیل دستیاب نہیں</translation>
         </message>
         <message>
-            <source>Ready in %1 s</source>
-            <translation>%1 سیکنڈ میں تیار</translation>
-        </message>
-        <message>
-            <source>Choose your Core and Trap.</source>
-            <translation>اپنا مرکز اور جال چنو۔</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>ایک ہی عنصر ہے۔ دوبارہ چنو۔</translation>
         </message>
@@ -3457,20 +3433,60 @@
             <translation>پانی آگ بجھا دیتا ہے</translation>
         </message>
         <message>
-            <source>Trap triggered</source>
-            <translation>جال چل گیا</translation>
-        </message>
-        <message>
-            <source>Core captured</source>
-            <translation>مرکز پر قبضہ ہوگیا</translation>
-        </message>
-        <message>
             <source>Neutral</source>
             <translation>غیر جانب دار</translation>
         </message>
         <message>
             <source>Choose an element</source>
             <translation>ایک عنصر چنو</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>معلومات</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>فتح</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>شکست</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>باقی</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>شکست دیے گئے</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>کھیل چھوڑنا ہے؟</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>چھوڑنے پر دوسرا کھلاڑی جیت جائے گا۔</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>یہ دعوت منسوخ کرنی ہے؟</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>پہلے جال، پھر مرکز چنو۔ ایک خانہ چلو۔ جیتنے کے لیے مخالف کا مرکز پکڑو۔</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>پہلی لڑائی میں عنصر چنو۔ برابر ہونے پر دوبارہ چن سکتے ہو۔</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>نہیں ہلتا۔ ہر حملہ آور کو ہراتا ہے۔</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>نہیں ہلتا۔ کھیل میں رہنے کے لیے اس کی حفاظت کرو۔</translation>
         </message>
     </context>
 </TS>

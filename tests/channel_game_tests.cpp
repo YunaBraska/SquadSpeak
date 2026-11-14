@@ -14,12 +14,11 @@ struct Match final {
     explicit Match(quint32 seed) : game(seed) {}
     bool prepare(int core0 = 35, int trap0 = 36, int core1 = 0, int trap1 = 1) {
         if (!game.start(owner, "Owner", now++, 123456)) return false;
-        id = game.view(owner, now).value("id").toString();
+        id = game.view(owner).value("id").toString();
         return act(1, "join").accepted && act(0, "setup", {{"core", core0}, {"trap", trap0}}).accepted
-            && act(1, "setup", {{"core", core1}, {"trap", trap1}}).accepted
-            && act(0, "ready").accepted && act(1, "ready").accepted;
+            && act(1, "setup", {{"core", core1}, {"trap", trap1}}).accepted;
     }
-    QJsonObject view(const QString& viewer = owner) const { return game.view(viewer, now); }
+    QJsonObject view(const QString& viewer = owner) const { return game.view(viewer); }
     ChannelGame::Result act(int player, const QString& action, const QJsonObject& selection = {}, int round = -1) {
         return game.act(id, round < 0 ? view().value("round").toInt() : round,
             player == 0 ? owner : guest, player == 0 ? "Owner" : "Guest", action, selection, now++);
@@ -207,9 +206,9 @@ private slots:
             QCOMPARE(result.value("phase").toString(), QString("finished"));
             QVERIFY(!match.game.active());
             QVERIFY(!match.move(1, 13, 20));
-            QVERIFY(!match.game.advance(match.now + 20000));
-            QVERIFY(!match.game.deadline());
             QCOMPARE(match.view(guest).value("core").toInt(), -1);
+            auto forgedForfeit = result; forgedForfeit.insert("reason", "left");
+            QVERIFY(!ChannelGame::validView(forgedForfeit));
         }
         QVERIFY(ChannelGame::validView(result));
         QVERIFY(ChannelGame::validView(match.view(guest)));
@@ -260,30 +259,35 @@ private slots:
         QCOMPARE(board[0].toObject().value("kind").toString(), QString("core"));
         QCOMPARE(board[28].toObject().value("kind").toString(), QString("trap"));
         QCOMPARE(match.view().value("lastBattle").toObject().value("effect").toString(), QString("trap"));
-        QVERIFY(!match.game.deadline());
     }
 
-    void setupChangesResetCountdownAndKeepMovablePiecesNeutral() {
-        ChannelGame game(3); QVERIFY(game.start(owner, "Owner", 1000, 123456));
-        const auto id = game.view(owner, 1000).value("id").toString();
-        QVERIFY(game.act(id, 1, owner, "Owner", "setup", {{"core", 35}, {"trap", 36}}, 1001).changed);
-        const auto repeated = game.act(id, 1, owner, "Owner", "setup", {{"core", 35}, {"trap", 36}}, 2000);
+    void completingSetupLocksHiddenRolesAndReadiesImmediately() {
+        Match match(3);
+        QVERIFY(match.game.start(owner, "Owner", match.now++, 123456));
+        match.id = match.view().value("id").toString();
+        QVERIFY(match.act(0, "setup", {{"core", 35}, {"trap", 36}}).changed);
+        QCOMPARE(match.view().value("phase").toString(), QString("waiting"));
+        QVERIFY(match.view().value("players").toArray()[0].toObject().value("ready").toBool());
+        QVERIFY(!match.view().contains("readyMs"));
+        const auto before = match.view();
+        const auto repeated = match.act(0, "setup", {{"core", 35}, {"trap", 36}});
         QVERIFY(repeated.accepted); QVERIFY(!repeated.changed);
-        QCOMPARE(game.deadline(), std::optional<qint64>(11001));
-        QVERIFY(game.act(id, 1, owner, "Owner", "setup", {{"core", 37}, {"trap", 38}}, 2001).changed);
-        QCOMPARE(game.deadline(), std::optional<qint64>(12001));
+        QCOMPARE(match.view(), before);
+        QVERIFY(!match.act(0, "setup", {{"core", 37}, {"trap", 38}}).accepted);
+        QVERIFY(!match.act(0, "ready").accepted);
         QMap<QString, int> kinds;
-        for (const auto& value : game.view(owner, 2001).value("board").toArray()) {
+        for (const auto& value : match.view().value("board").toArray()) {
             const auto piece = value.toObject();
             if (!piece.isEmpty()) ++kinds[piece.value("kind").toString()];
         }
         QCOMPARE(kinds, (QMap<QString, int>{{"core", 1}, {"trap", 1}, {"neutral", 12}}));
-        QVERIFY(!game.advance(12000));
-        QVERIFY(game.act(id, 1, owner, "Owner", "ready", {}, 12000).accepted);
-        QVERIFY(!game.act(id, 1, owner, "Owner", "setup", {{"core", 35}, {"trap", 36}}, 12001).accepted);
-        QVERIFY(game.act(id, 1, guest, "Guest", "join", {}, 12002).accepted);
-        QVERIFY(!game.advance(90000));
-        QCOMPARE(game.view(owner, 90000).value("phase").toString(), QString("preparing"));
+        QVERIFY(match.act(1, "join").changed);
+        QCOMPARE(match.view().value("phase").toString(), QString("preparing"));
+        QVERIFY(match.act(1, "setup", {{"core", 0}, {"trap", 1}}).changed);
+        QCOMPARE(match.view().value("phase").toString(), QString("playing"));
+        QVERIFY(ChannelGame::validView(match.view(owner)));
+        QVERIFY(ChannelGame::validView(match.view(guest)));
+        QVERIFY(ChannelGame::validView(match.view(observer)));
     }
 
     void invalidMoves_data() {
@@ -323,6 +327,8 @@ private slots:
         QCOMPARE(match.view(), moved);
         QVERIFY(match.act(1, "leave").changed);
         QVERIFY(!match.game.active());
+        QCOMPARE(match.view().value("winner").toString(), owner);
+        QCOMPARE(match.view().value("phase").toString(), QString("finished"));
         QVERIFY(match.view().value("turn").toString().isEmpty());
         QVERIFY(!match.act(1, "leave").accepted);
         QVERIFY(!match.game.end("again"));
@@ -336,6 +342,104 @@ private slots:
         QVERIFY(match.view().value("lastBattle").toObject().isEmpty());
         QVERIFY(!match.game.act(oldId, 1, guest, "Guest", "join", {}, match.now++).accepted);
         QCOMPARE(match.view().value("players").toArray().size(), 1);
+    }
+
+    void leavingOrDisconnectingAwardsTheOpponent_data() {
+        QTest::addColumn<QString>("stage");
+        QTest::addColumn<int>("departing");
+        QTest::addColumn<QString>("reason");
+        for (const auto* stage : {"unprepared", "one-prepared", "playing", "duel", "after-battle"})
+            for (int departing = 0; departing < 2; ++departing)
+                for (const auto* reason : {"left", "disconnected"})
+                    QTest::newRow(qPrintable(QString("%1-%2-%3").arg(stage).arg(departing).arg(reason)))
+                        << QString(stage) << departing << QString(reason);
+    }
+    void leavingOrDisconnectingAwardsTheOpponent() {
+        QFETCH(QString, stage); QFETCH(int, departing); QFETCH(QString, reason);
+        Match match(3);
+        if (stage == "unprepared" || stage == "one-prepared") {
+            QVERIFY(match.game.start(owner, "Owner", match.now++, 123456));
+            match.id = match.view().value("id").toString();
+            QVERIFY(match.act(1, "join").accepted);
+            if (stage == "one-prepared") QVERIFY(match.act(0, "setup", {{"core", 35}, {"trap", 36}}).accepted);
+        } else {
+            QVERIFY(match.prepare());
+            if (stage == "duel" || stage == "after-battle") {
+                const int first = match.view().value("turn") == owner ? 0 : 1;
+                const int from = first == 0 ? 21 : 14, to = first == 0 ? 14 : 21;
+                QVERIFY(match.move(first, first == 0 ? 28 : 7, from));
+                QVERIFY(match.move(1 - first, first == 0 ? 7 : 28, to));
+                QVERIFY(match.move(first, from, to));
+                if (stage == "duel") QVERIFY(match.act(0, "choose", {{"choice", "water"}}).accepted);
+                else {
+                    QVERIFY(match.act(first, "choose", {{"choice", "fire"}}).accepted);
+                    QVERIFY(match.act(1 - first, "choose", {{"choice", "ice"}}).accepted);
+                }
+            }
+        }
+        const auto before = match.view();
+        QVERIFY(!match.game.end(reason, observer));
+        QVERIFY(!match.game.end("cancelled", departing == 0 ? owner : guest));
+        QCOMPARE(match.view(), before);
+        if (reason == "left") QVERIFY(match.act(departing, "leave").changed);
+        else QVERIFY(match.game.end(reason, departing == 0 ? owner : guest));
+        QCOMPARE(match.view().value("phase").toString(), QString("finished"));
+        QCOMPARE(match.view().value("winner").toString(), departing == 0 ? guest : owner);
+        QCOMPARE(match.view().value("reason").toString(), reason);
+        QVERIFY(!match.game.active());
+        QVERIFY(match.view().value("turn").toString().isEmpty());
+        QVERIFY(match.view().value("duel").toObject().isEmpty());
+        QVERIFY(match.view(owner).value("choice").toString().isEmpty());
+        QVERIFY(match.view(guest).value("choice").toString().isEmpty());
+        for (const auto& player : match.view().value("players").toArray())
+            QVERIFY(!player.toObject().value("chosen").toBool());
+        for (const auto& viewer : {owner, guest, observer}) QVERIFY(ChannelGame::validView(match.view(viewer)));
+        const auto ended = match.view();
+        QVERIFY(!match.game.end(reason, departing == 0 ? owner : guest));
+        QVERIFY(!match.act(departing, "leave").accepted);
+        QCOMPARE(match.view(), ended);
+        for (const auto& replacement : {QString{}, QString("arbitrary")}) {
+            auto invalid = ended; invalid.insert("reason", replacement);
+            QVERIFY(!ChannelGame::validView(invalid));
+        }
+        auto invalid = ended; invalid.insert("winner", observer);
+        QVERIFY(!ChannelGame::validView(invalid));
+        invalid = ended; invalid.insert("phase", "cancelled");
+        QVERIFY(!ChannelGame::validView(invalid));
+        if (stage == "unprepared" || stage == "one-prepared") {
+            invalid = ended; invalid.insert("round", 2);
+            QVERIFY(!ChannelGame::validView(invalid));
+            auto board = ended.value("board").toArray();
+            auto piece = board[28].toObject(); piece.insert("revealed", true); board[28] = piece;
+            invalid = ended; invalid.insert("board", board);
+            QVERIFY(!ChannelGame::validView(invalid));
+        }
+        if (stage == "duel") {
+            auto battle = ended.value("lastBattle").toObject();
+            battle.insert("attack", "ice"); battle.insert("defence", "ice"); battle.insert("effect", "tie");
+            invalid = ended; invalid.insert("lastBattle", battle);
+            QVERIFY(!ChannelGame::validView(invalid));
+        }
+    }
+
+    void loneDepartureAndUnknownShutdownDoNotInventAWinner_data() {
+        QTest::addColumn<bool>("twoPlayers");
+        QTest::addColumn<QString>("departing");
+        QTest::newRow("lone-departure") << false << owner;
+        QTest::newRow("lone-shutdown") << false << QString{};
+        QTest::newRow("two-player-unknown-shutdown") << true << QString{};
+    }
+    void loneDepartureAndUnknownShutdownDoNotInventAWinner() {
+        QFETCH(bool, twoPlayers); QFETCH(QString, departing);
+        Match match(3);
+        QVERIFY(match.game.start(owner, "Owner", match.now++, 123456));
+        match.id = match.view().value("id").toString();
+        if (twoPlayers) QVERIFY(match.act(1, "join").accepted);
+        QVERIFY(match.game.end("disconnected", departing));
+        QCOMPARE(match.view().value("phase").toString(), QString("cancelled"));
+        QVERIFY(match.view().value("winner").toString().isEmpty());
+        QVERIFY(ChannelGame::validView(match.view(owner)));
+        QVERIFY(ChannelGame::validView(match.view(observer)));
     }
 
     void snapshotValidationRejectsMalformedKnownFieldsButAllowsExtensions() {
@@ -384,7 +488,6 @@ private slots:
         auto disconnected = match.view();
         disconnected.insert("phase", "cancelled"); disconnected.insert("reason", "disconnected");
         disconnected.insert("choice", ""); disconnected.insert("turn", ""); disconnected.insert("duel", QJsonObject{});
-        disconnected.insert("readyMs", 0);
         auto players = disconnected.value("players").toArray();
         for (qsizetype i = 0; i < players.size(); ++i) { auto player = players[i].toObject(); player.insert("chosen", false); players[i] = player; }
         disconnected.insert("players", players);
@@ -394,40 +497,38 @@ private slots:
         QVERIFY(ChannelGame::validView(match.view(observer)));
     }
 
-    void setupIsPrivateAndRequiredBeforeReadiness() {
-        ChannelGame game(17);
-        QVERIFY(game.start(owner, "Owner", 1000, 123456));
-        const auto id = game.view(owner, 1000).value("id").toString();
-        QVERIFY(ChannelGame::validView(game.view(owner, 1000)));
-        QVERIFY(!game.deadline());
-        QVERIFY(!game.advance(12000));
-        QVERIFY(!game.act(id, 1, owner, "Owner", "ready", {}, 12001).accepted);
-        QVERIFY(game.act(id, 1, guest, "Guest", "join", {}, 12002).accepted);
-        QVERIFY(!game.act(id, 1, observer, "Observer", "join", {}, 12003).accepted);
-        QVERIFY(!game.act(id, 1, owner, "Owner", "setup", {{"core", 35}, {"trap", 35}}, 12004).accepted);
-        QVERIFY(!game.act(id, 1, owner, "Owner", "setup", {{"core", 0}, {"trap", 1}}, 12005).accepted);
-        QVERIFY(game.act(id, 1, owner, "Owner", "setup", {{"core", 35}, {"trap", 36}}, 12006).changed);
-        const auto ownView = game.view(owner, 12006);
+    void setupIsPrivateAndRequiredBeforePlay() {
+        Match match(17);
+        QVERIFY(match.game.start(owner, "Owner", match.now++, 123456));
+        match.id = match.view().value("id").toString();
+        QVERIFY(ChannelGame::validView(match.view()));
+        QVERIFY(!match.act(0, "ready").accepted);
+        QVERIFY(match.act(1, "join").accepted);
+        QVERIFY(!match.game.act(match.id, 1, observer, "Observer", "join", {}, match.now++).accepted);
+        for (const auto& selection : {QJsonObject{{"core", 35}, {"trap", 35}},
+                QJsonObject{{"core", 0}, {"trap", 1}}, QJsonObject{{"core", 35}},
+                QJsonObject{{"core", 35.5}, {"trap", 36}}}) {
+            const auto before = match.view();
+            QVERIFY(!match.act(0, "setup", selection).accepted);
+            QCOMPARE(match.view(), before);
+        }
+        QVERIFY(match.act(0, "setup", {{"core", 35}, {"trap", 36}}).changed);
+        const auto ownView = match.view(owner);
         QCOMPARE(ownView.value("core").toInt(), 35);
         QCOMPARE(ownView.value("trap").toInt(), 36);
-        QCOMPARE(ownView.value("readyMs").toInteger(), 10000);
-        QCOMPARE(game.deadline(), std::optional<qint64>(22006));
-        const auto publicView = game.view(observer, 12006);
+        QVERIFY(ownView.value("players").toArray()[0].toObject().value("ready").toBool());
+        const auto publicView = match.view(observer);
         QCOMPARE(publicView.value("core").toInt(), -1);
         QVERIFY(!publicView.value("setup").toBool());
         const auto board = publicView.value("board").toArray();
         QCOMPARE(board.size(), 42);
         for (int i = 28; i < 42; ++i) QCOMPARE(board[i].toObject().value("kind").toString(), QString("hidden"));
-        QVERIFY(game.advance(22006));
-        QCOMPARE(game.view(owner, 22006).value("phase").toString(), QString("preparing"));
-        QVERIFY(!game.deadline());
-        QVERIFY(!game.act(id, 1, owner, "Owner", "setup", {{"core", 37}, {"trap", 38}}, 22007).accepted);
-        QVERIFY(game.act(id, 1, guest, "Guest", "setup", {{"core", 0}, {"trap", 1}}, 22008).changed);
-        QVERIFY(game.act(id, 1, guest, "Guest", "ready", {}, 22009).changed);
-        QCOMPARE(game.view(owner, 22009).value("phase").toString(), QString("playing"));
-        QVERIFY(ChannelGame::validView(game.view(owner, 22009)));
-        QVERIFY(ChannelGame::validView(game.view(guest, 22009)));
-        QVERIFY(ChannelGame::validView(game.view(observer, 22009)));
+        QVERIFY(!match.move(0, 28, 21));
+        QVERIFY(match.act(1, "setup", {{"core", 0}, {"trap", 1}}).changed);
+        QCOMPARE(match.view().value("phase").toString(), QString("playing"));
+        QVERIFY(ChannelGame::validView(match.view(owner)));
+        QVERIFY(ChannelGame::validView(match.view(guest)));
+        QVERIFY(ChannelGame::validView(match.view(observer)));
     }
 };
 QTEST_GUILESS_MAIN(ChannelGameTests)

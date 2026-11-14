@@ -9,10 +9,14 @@ PanelWindow {
     id: root
     property var language: audio.language
     GameWindow {
-        id: gameWindow; network: root.network
+        id: gameWindow; network: root.network; voice: root.voice
         onFeedbackRequested: kind => { if (root.voice.eventSounds) audio.playEvent(kind) }
     }
     property string openedGame: ""
+    signal quitConfirmed()
+    function confirmQuit() {
+        gameWindow.confirmDeparture(function() { root.quitConfirmed() }, null, network.currentGame, network.ownId)
+    }
     readonly property var currentGame: current.currentGame || ({})
     onCurrentGameChanged: {
         const game = currentGame
@@ -22,6 +26,13 @@ PanelWindow {
         }
     }
     Component.onDestruction: gameWindow.hide()
+    Connections {
+        target: root.network
+        function onExternalJoinConfirmationRequested() {
+            gameWindow.confirmDeparture(function() { root.network.confirmExternalJoin(true) },
+                                        function() { root.network.confirmExternalJoin(false) })
+        }
+    }
     component DetailText: TextArea {
         readOnly: true; selectByMouse: true
         textFormat: TextEdit.PlainText; wrapMode: Text.WrapAnywhere
@@ -481,7 +492,7 @@ PanelWindow {
         expandedHosts = retained
         const ordered = []
         const disconnected = function(group) {
-            return !group.owned && !group.channels.some(entry => entry.online || entry.hosting)
+            return !group.owned && !group.channels.some(entry => entry.reachable || entry.online || entry.hosting)
                 && !group.privateChats.some(entry => entry.online)
         }
         const sortedGroups = Array.from(groups.values()).sort(function(a, b) {
@@ -580,9 +591,17 @@ PanelWindow {
         }
         if (entry && entry.private) return openPrivate(entry)
         if (entry && ["pending", "password", "connecting"].includes(entry.access)) return openHostChat(id)
-        return remote ? network.remoteAction("join", {hostId: id}) : network.joinSaved(id)
+        gameWindow.confirmDeparture(function() {
+            if (root.remote) root.network.remoteAction("join", {hostId: id}); else root.network.joinSaved(id)
+        })
+        return true
     }
-    function leaveHost() { return remote ? network.remoteAction("leave", {}) : network.leave() }
+    function leaveHost() {
+        gameWindow.confirmDeparture(function() {
+            if (root.remote) root.network.remoteAction("leave", {}); else root.network.leave()
+        })
+        return true
+    }
     function openSettings(page) {
         if (root.remote) return
         settingsPage = page
@@ -590,14 +609,17 @@ PanelWindow {
     }
     function closeSettings() { settings.close() }
     function controlDevice(id) {
-        if (!network.chooseRemoteOffer(id)) {
-            if (remoteTargets.visible) remoteTargets.error = network.controlStatus
-            else showNotice(network.controlStatus)
-            return false
-        }
-        remoteTargets.close(); settings.close()
+        gameWindow.confirmDeparture(function() {
+            if (!root.network.chooseRemoteOffer(id)) {
+                if (remoteTargets.visible) remoteTargets.error = root.network.controlStatus
+                else root.showNotice(root.network.controlStatus)
+                return
+            }
+            remoteTargets.close(); settings.close()
+        }, null, network.currentGame, network.ownId)
         return true
     }
+
     function showNotice(text) {
         if (text === lastNotice) return
         lastNotice = text; notice = text; noticeTimer.restart()
@@ -2069,7 +2091,7 @@ PanelWindow {
                                 Layout.leftMargin: 8; Layout.rightMargin: 8; spacing: 8
                                 Label {
                                     objectName: "disconnectedHosts_" + channelEntry.groupId
-                                    text: qsTr("Not connected"); color: Theme.muted; font.pixelSize: Theme.fontSize(11)
+                                    text: qsTr("Status unknown"); color: Theme.muted; font.pixelSize: Theme.fontSize(11)
                                 }
                                 Rectangle { Layout.fillWidth: true; implicitHeight: 1; color: Theme.border }
                             }
@@ -2087,7 +2109,7 @@ PanelWindow {
                                     Accessible.role: Accessible.Button
                                     Accessible.checkable: true
                                     Accessible.checked: channelEntry.groupExpanded
-                                    Accessible.description: channelEntry.groupDisconnected ? qsTr("Not connected") : ""
+                                    Accessible.description: channelEntry.groupDisconnected ? qsTr("Status unknown") : ""
                                     contentItem: Glyph { symbol: "down"; rotation: channelEntry.groupExpanded ? 0 : -90; color: Theme.muted }
                                     onClicked: root.toggleHost(channelEntry.groupId)
                                     Keys.onLeftPressed: if (channelEntry.groupExpanded) root.toggleHost(channelEntry.groupId)
@@ -2154,7 +2176,7 @@ PanelWindow {
                                     UnreadDot { objectName: "unreadChannel_" + modelData.id; visible: !!modelData.unread || (!channelEntry.grouped && channelEntry.groupUnread) }
                                     Label { visible: channelRow.privateConversation; text: modelData.peerOnline ? qsTr("Online") : qsTr("Offline"); color: Theme.muted; font.pixelSize: Theme.fontSize(11) }
                                     Glyph { objectName: "joinedChannel_" + modelData.id; visible: channelRow.active; symbol: "headphones"; description: qsTr("Connected to voice"); color: Theme.accent }
-                                    Glyph { objectName: "channelGame_" + modelData.id; visible: !!modelData.game; symbol: "game"; description: qsTranslate("GameCard", "Elements"); color: Theme.accent }
+                                    ElementsIcon { objectName: "channelGame_" + modelData.id; visible: !!modelData.game; implicitWidth: 24; implicitHeight: 24 }
                                     Glyph { objectName: "channelMusic_" + modelData.id; visible: !channelRow.privateConversation && !!modelData.music; symbol: "music"; description: qsTr("Radio"); color: Theme.accent }
                                     Label {
                                         visible: !channelRow.owned && !channelRow.privateConversation && !channelRow.privateFolder && !modelData.online
@@ -2175,7 +2197,7 @@ PanelWindow {
                                 activeFocusOnTab: true
                                 Accessible.role: Accessible.Button
                                 Accessible.name: modelData.name + (channelRow.owned ? ", " + qsTr("You host") : "") + (channelRow.active ? ", " + qsTr("Connected to voice") : "")
-                                Accessible.description: (channelEntry.groupDisconnected ? qsTr("Not connected") + "\n" : "") + channelEntry.groupOwner + "\n" + root.endpoint(modelData)
+                                Accessible.description: (channelEntry.groupDisconnected ? qsTr("Status unknown") + "\n" : "") + channelEntry.groupOwner + "\n" + root.endpoint(modelData)
                                 TextToolTip { objectName: "channelTooltip_" + modelData.id; parent: channelRow; text: channelEntry.groupOwner + "\n" + root.endpoint(modelData); visible: channelHover.containsMouse && !channelRow.privateFolder }
                                 Accessible.onPressAction: channelRow.privateFolder ? root.togglePrivateFolder(modelData.hostId) : root.openHostChat(modelData.id)
                                 Keys.onReturnPressed: channelRow.privateFolder ? root.togglePrivateFolder(modelData.hostId) : root.openHostChat(modelData.id)

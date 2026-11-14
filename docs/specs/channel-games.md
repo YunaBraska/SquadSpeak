@@ -6,37 +6,46 @@ rules on 2026-11-14.
 
 ## Shared experience
 
-Only an owned SquadSpeak channel offers starting a game. The channel owner starts
-and participates. Each channel has at most one active game. Each user can
-participate in at most one game at a time across channels and hosts. Starting or
-joining another game must not silently leave an existing one. Any approved chat
-participant can join without changing their voice connection. External providers
-and private conversations do not offer this action.
+Any participant in a native SquadSpeak voice channel can create and own a game.
+Several games may run in one channel. Each identity participates in at most one
+active game across channels and hosts. Starting or joining another game never
+silently replaces the current game. Voice membership is required to receive
+invitations or game state. External providers and private conversations do not
+offer this action.
 
-The chat shows an invitation with the inviter, game name, icon and Join action.
-Join is available only while a place is free. The channel also shows the game icon.
-The invitation stays in chat, while play opens in a separate game window.
-Reopening the same game focuses its existing window. Starting, joining, setup,
-readiness, turns and ending are authoritative host events. Repeated or stale
-actions must not create extra players, turns, games or windows.
+The chat invitation contains the creator, game name, element-circle icon and Join.
+It disappears when full or cancelled. The same icon marks a channel with a game.
+Play opens in one separate window, using the players' current voice-chat avatars
+and names. Existing participants focus that window instead of joining again.
 
-After joining, each player sees the board and a short explanation. Before actual
-readiness they must select their trap and protected target on two distinct home
-positions, hidden from their opponent. An introductory countdown must never
-choose these positions or bypass valid setup. Play starts only after both players
-have completed setup and become ready. Leave is always available to participants.
-Leaving or losing either player's connection ends this two-player game with a
-visible reason. In later games, the game's rules define how non-owner departures
-affect play. Owner departure always ends a game.
+Setup proceeds by hovering and clicking one Trap, then one Core on distinct home
+squares. Selection immediately readies the player and locks setup. Ready avatars
+glow. When both are ready, one player's avatar indicates their turn. There is no
+countdown or extra Ready button. First-fight and tied-fight element choices appear
+beside the player's fighting piece. The information button provides concise rules
+and tappable figure descriptions. Gameplay itself has no permanent rule paragraph.
 
-Games are live channel activities. They reuse authenticated encrypted chat
-transport and its access rules. They do not add a game server, database or account.
-Restarting a host ends its game. Invitation and result cards exist only during
-the current session and are not written to chat history. The client keeps at most
-160 session cards, matching the chat window budget. A live invitation remains
-reachable while browsing earlier messages.
-Late readers receive the current snapshot. Unknown optional game capabilities
-must preserve baseline chat under SS-165. Voice and chat remain usable during play.
+The door button and window close request confirmation before leaving an active
+game. Voice leave, channel switch and application quit use the same confirmation.
+Cancel preserves both game and voice. Confirm leaves the game. In a two-player
+game a known departure, disconnect or existing transport timeout awards the other
+player a win, including during setup. A lone invitation is cancelled. Unknown host
+shutdown ends the game without inventing a winner. There is no additional turn timer.
+Victory and defeat show both avatars, remaining pieces and captured pieces.
+
+Games reuse authenticated encrypted channel transport and its access rules. There
+is no game server, database or account. The channel host remains authoritative,
+while the participant who creates a game is its owner. Secret setup and pending
+choices must stay private. Repeated or stale commands cannot create extra players,
+turns, games or windows. Disconnect never automatically rejoins a game.
+
+Only active games remain on the host. Results are sent once to participants and
+removed from host memory. Clients retain current invitations and at most one
+personal result, dismissed when its window closes or a new game starts. No game
+cards enter persisted chat history. A broken connection may miss the remote result
+and instead show a local disconnection outcome. No result-replay cache is added.
+Late voice participants receive current open invitations. Capability negotiation
+preserves baseline chat for clients without games under SS-165.
 
 ## Elemental board rules
 
@@ -66,8 +75,7 @@ historical ICQ detail has been recovered:
   Core or eliminating their movable pieces wins the match.
 
 Fire, water and ice have distinct shapes as well as colors. Short melting,
-extinguishing and freezing effects explain outcomes without delaying actions or
-obscuring the board. Reduced motion uses a static outcome instead. Artwork and
+extinguishing and freezing effects explain outcomes while keeping the board visible. Reduced motion retains a brief visible impact and fade without travel or shaking. Artwork and
 effects follow SquadSpeak's style and do not reuse ICQ assets. Pieces use detailed,
 dimensional character artwork matching the avatars, with transparent silhouettes.
 Concealed opponents share one neutral character with no role clues. Selection,
@@ -75,13 +83,15 @@ ownership markers and shadows are rendered separately by the app. All figures
 must remain distinct and uncropped in compact and large windows.
 
 A compact water → fire → ice → water icon circle replaces the permanent rule
-paragraph. The same icons become the element selection controls during a fight.
+paragraph. The same icons become the nearby element choices during a fight.
 An accessible description preserves the complete rule. Movement, required choices,
 combat outcomes and game end have short local cues through App/Bot Sounds.
 Voice mute does not mute these cues. Disabled notification sounds or zero app
 volume silence them. Opening an existing game or receiving unrelated chat traffic
-must not replay old sounds. Effects never block actions, and there is no looping
-background music.
+must not replay old sounds. Movement visibly travels between squares. Combat has a short approach, impact and
+losing-figure effect before revealing the result. The local board waits for that
+brief transition before another action. Six original figure calls and combat cues
+share App/Bot Sounds. There is no looping background music.
 
 The host remains the trusted authority, as for channel chat. This feature does
 not introduce a separate game service or claim protection against a modified
@@ -107,24 +117,19 @@ The exact historical turn timeout, trap behavior and post-tie weapon persistence
 been independently established from an original PC manual. Do not silently add
 timeouts, advanced modes, rankings, spectators or additional games.
 
-After valid placement the ten-second introduction countdown begins. Ready skips
-it and locks setup. Closing the game window leaves the game, just like Leave.
-Changing setup before readiness restarts the countdown. Movement alone never
-reveals an opponent's element. A tie changes the two fighting pieces to their
-newly chosen elements. No per-turn timeout is added.
-
 ## Acceptance
 
-Exercise invitation, approved chat-only join, full lobby, concurrent joins and
+Exercise participant-created invitations, voice-only disclosure, parallel games, full lobbies and
 cross-channel/host attempts to join a second game. Verify private setup, invalid
-or overlapping role selections, premature Ready, legal/illegal moves, alternating
+or overlapping role selections, automatic readiness, legal/illegal moves, alternating
 turns, neutral first encounters, one-sided choice against an established element,
 all elemental outcomes, hidden tie choices, retained elements, trap and target encounters,
 replayed commands and terminal outcomes through the actual UI and TLS path.
 Verify Leave, window reopening, disconnect, host stop, late readers and restart.
-Reject unauthorized starts, unrelated channels, private/external chats and invalid
+Reject observer actions, unrelated channels, private/external chats and invalid
 commands. Check compact and large game windows, keyboard/touch controls, reduced
-motion and unchanged voice/chat participation.
+motion, actual avatar consistency, adjacent element choices, close/leave/switch/quit
+confirmation and cancellation, and voice/chat remaining usable during play.
 
 ## Later candidates
 

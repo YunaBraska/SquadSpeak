@@ -1229,6 +1229,10 @@
             <source>Import</source>
             <translation>İçe aktar</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>Durum bilinmiyor</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -3330,24 +3334,8 @@
             <translation>Davet eden: %1</translation>
         </message>
         <message>
-            <source>Ready</source>
-            <translation>Hazır</translation>
-        </message>
-        <message>
             <source>%1 wins!</source>
             <translation>%1 kazandı!</translation>
-        </message>
-        <message>
-            <source>Game ended. A player disconnected.</source>
-            <translation>Oyun bitti. Bir oyuncunun bağlantısı kesildi.</translation>
-        </message>
-        <message>
-            <source>Game ended. A player left.</source>
-            <translation>Oyun bitti. Bir oyuncu ayrıldı.</translation>
-        </message>
-        <message>
-            <source>Waiting for a player</source>
-            <translation>Oyuncu bekleniyor</translation>
         </message>
         <message>
             <source>Join</source>
@@ -3364,10 +3352,6 @@
         <message>
             <source>Game ended</source>
             <translation>Oyun bitti</translation>
-        </message>
-        <message>
-            <source>In progress</source>
-            <translation>Devam ediyor</translation>
         </message>
         <message>
             <source>Open</source>
@@ -3413,14 +3397,6 @@
             <translation>Oyun kullanılamıyor</translation>
         </message>
         <message>
-            <source>Ready in %1 s</source>
-            <translation>%1 sn sonra hazır</translation>
-        </message>
-        <message>
-            <source>Choose your Core and Trap.</source>
-            <translation>Çekirdeğini ve Tuzağını seç.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>Aynı element. Tekrar seç.</translation>
         </message>
@@ -3457,20 +3433,60 @@
             <translation>Su ateşi söndürür</translation>
         </message>
         <message>
-            <source>Trap triggered</source>
-            <translation>Tuzak tetiklendi</translation>
-        </message>
-        <message>
-            <source>Core captured</source>
-            <translation>Çekirdek ele geçirildi</translation>
-        </message>
-        <message>
             <source>Neutral</source>
             <translation>Nötr</translation>
         </message>
         <message>
             <source>Choose an element</source>
             <translation>Bir element seç</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>Bilgi</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>Zafer</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>Yenilgi</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>Kalan</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>Yenilen</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>Oyundan çıkılsın mı?</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>Çıkarsan diğer oyuncu kazanır.</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>Bu davet iptal edilsin mi?</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>Önce Tuzak, sonra Çekirdek seç. Bir kare ilerle. Kazanmak için rakibin Çekirdeğini ele geçir.</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>İlk savaşında elementini seç. Beraberlikte yeniden seçebilirsin.</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>Hareket etmez. Her saldırganı yener.</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>Hareket etmez. Oyunda kalmak için onu koru.</translation>
         </message>
     </context>
 </TS>

@@ -1229,6 +1229,10 @@
             <source>Import</source>
             <translation>Impordi</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>Olek teadmata</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -3330,24 +3334,8 @@
             <translation>Kutsuja: %1</translation>
         </message>
         <message>
-            <source>Ready</source>
-            <translation>Valmis</translation>
-        </message>
-        <message>
             <source>%1 wins!</source>
             <translation>%1 võidab!</translation>
-        </message>
-        <message>
-            <source>Game ended. A player disconnected.</source>
-            <translation>Mäng lõppes. Mängija ühendus katkes.</translation>
-        </message>
-        <message>
-            <source>Game ended. A player left.</source>
-            <translation>Mäng lõppes. Mängija lahkus.</translation>
-        </message>
-        <message>
-            <source>Waiting for a player</source>
-            <translation>Oodatakse mängijat</translation>
         </message>
         <message>
             <source>Join</source>
@@ -3364,10 +3352,6 @@
         <message>
             <source>Game ended</source>
             <translation>Mäng lõppes</translation>
-        </message>
-        <message>
-            <source>In progress</source>
-            <translation>Pooleli</translation>
         </message>
         <message>
             <source>Open</source>
@@ -3413,14 +3397,6 @@
             <translation>Mäng pole saadaval</translation>
         </message>
         <message>
-            <source>Ready in %1 s</source>
-            <translation>Valmis %1 s pärast</translation>
-        </message>
-        <message>
-            <source>Choose your Core and Trap.</source>
-            <translation>Vali oma Tuum ja Lõks.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>Sama element. Vali uuesti.</translation>
         </message>
@@ -3457,20 +3433,60 @@
             <translation>Vesi kustutab tule</translation>
         </message>
         <message>
-            <source>Trap triggered</source>
-            <translation>Lõks käivitus</translation>
-        </message>
-        <message>
-            <source>Core captured</source>
-            <translation>Tuum vallutatud</translation>
-        </message>
-        <message>
             <source>Neutral</source>
             <translation>Neutraalne</translation>
         </message>
         <message>
             <source>Choose an element</source>
             <translation>Vali element</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>Teave</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>Võit</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>Kaotus</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>Alles</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>Alistatud</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>Lahkud mängust?</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>Kui lahkud, võidab teine mängija.</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>Tühistad kutse?</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>Vali Lõks, siis Tuum. Liigu üks ruut. Valluta vastase Tuum, et võita.</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>Vali element esimeses võitluses. Viigi korral vali uuesti.</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>Ei liigu. Alistab iga ründaja.</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>Ei liigu. Kaitse seda, et mängu jääda.</translation>
         </message>
     </context>
 </TS>

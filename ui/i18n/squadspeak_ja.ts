@@ -1229,6 +1229,10 @@
             <source>Import</source>
             <translation>インポート</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>状態不明</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -3330,24 +3334,8 @@
             <translation>%1 からの招待</translation>
         </message>
         <message>
-            <source>Ready</source>
-            <translation>準備完了</translation>
-        </message>
-        <message>
             <source>%1 wins!</source>
             <translation>%1 の勝ち！</translation>
-        </message>
-        <message>
-            <source>Game ended. A player disconnected.</source>
-            <translation>ゲーム終了。プレイヤーの接続が切れました。</translation>
-        </message>
-        <message>
-            <source>Game ended. A player left.</source>
-            <translation>ゲーム終了。プレイヤーが退出しました。</translation>
-        </message>
-        <message>
-            <source>Waiting for a player</source>
-            <translation>プレイヤーを待っています</translation>
         </message>
         <message>
             <source>Join</source>
@@ -3364,10 +3352,6 @@
         <message>
             <source>Game ended</source>
             <translation>ゲーム終了</translation>
-        </message>
-        <message>
-            <source>In progress</source>
-            <translation>進行中</translation>
         </message>
         <message>
             <source>Open</source>
@@ -3413,14 +3397,6 @@
             <translation>ゲームを利用できません</translation>
         </message>
         <message>
-            <source>Ready in %1 s</source>
-            <translation>あと %1 秒で準備完了</translation>
-        </message>
-        <message>
-            <source>Choose your Core and Trap.</source>
-            <translation>コアと罠を選んでね。</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>同じ属性です。もう一度選んでね。</translation>
         </message>
@@ -3457,20 +3433,60 @@
             <translation>水が炎を消す</translation>
         </message>
         <message>
-            <source>Trap triggered</source>
-            <translation>罠が発動</translation>
-        </message>
-        <message>
-            <source>Core captured</source>
-            <translation>コアを奪取</translation>
-        </message>
-        <message>
             <source>Neutral</source>
             <translation>無属性</translation>
         </message>
         <message>
             <source>Choose an element</source>
             <translation>属性を選んでね</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>情報</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>勝利</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>敗北</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>残り</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>撃破</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>ゲームを退出？</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>退出すると相手の勝ちになるよ。</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>この招待を取り消す？</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>罠、次にコアを選ぶ。1マスずつ動かし、相手のコアを取れば勝ち。</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>最初の戦闘で属性を選ぶ。引き分けなら選び直せる。</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>動かない。攻撃してきた駒をすべて倒す。</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>動かない。取られると負けるので守ろう。</translation>
         </message>
     </context>
 </TS>

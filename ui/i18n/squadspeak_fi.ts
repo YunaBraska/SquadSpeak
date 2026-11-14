@@ -1229,6 +1229,10 @@
             <source>Import</source>
             <translation>Tuo</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>Tila tuntematon</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -3330,24 +3334,8 @@
             <translation>Kutsuja: %1</translation>
         </message>
         <message>
-            <source>Ready</source>
-            <translation>Valmis</translation>
-        </message>
-        <message>
             <source>%1 wins!</source>
             <translation>%1 voittaa!</translation>
-        </message>
-        <message>
-            <source>Game ended. A player disconnected.</source>
-            <translation>Peli päättyi. Pelaajan yhteys katkesi.</translation>
-        </message>
-        <message>
-            <source>Game ended. A player left.</source>
-            <translation>Peli päättyi. Pelaaja poistui.</translation>
-        </message>
-        <message>
-            <source>Waiting for a player</source>
-            <translation>Odotetaan pelaajaa</translation>
         </message>
         <message>
             <source>Join</source>
@@ -3364,10 +3352,6 @@
         <message>
             <source>Game ended</source>
             <translation>Peli päättyi</translation>
-        </message>
-        <message>
-            <source>In progress</source>
-            <translation>Käynnissä</translation>
         </message>
         <message>
             <source>Open</source>
@@ -3413,14 +3397,6 @@
             <translation>Peli ei ole saatavilla</translation>
         </message>
         <message>
-            <source>Ready in %1 s</source>
-            <translation>Valmis %1 s kuluttua</translation>
-        </message>
-        <message>
-            <source>Choose your Core and Trap.</source>
-            <translation>Valitse Ytimesi ja Ansasi.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>Sama elementti. Valitse uudelleen.</translation>
         </message>
@@ -3457,20 +3433,60 @@
             <translation>Vesi sammuttaa tulen</translation>
         </message>
         <message>
-            <source>Trap triggered</source>
-            <translation>Ansa laukesi</translation>
-        </message>
-        <message>
-            <source>Core captured</source>
-            <translation>Ydin vallattu</translation>
-        </message>
-        <message>
             <source>Neutral</source>
             <translation>Neutraali</translation>
         </message>
         <message>
             <source>Choose an element</source>
             <translation>Valitse elementti</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>Tietoa</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>Voitto</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>Tappio</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>Jäljellä</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>Voitetut</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>Poistutko pelistä?</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>Jos poistut, toinen pelaaja voittaa.</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>Perutaanko kutsu?</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>Valitse Ansa, sitten Ydin. Liiku yksi ruutu. Valtaa vastustajan Ydin voittaaksesi.</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>Valitse elementti ensimmäisessä taistelussa. Tasapelin jälkeen valitset uudelleen.</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>Pysyy paikallaan. Voittaa kaikki hyökkääjät.</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>Pysyy paikallaan. Suojele sitä pysyäksesi pelissä.</translation>
         </message>
     </context>
 </TS>

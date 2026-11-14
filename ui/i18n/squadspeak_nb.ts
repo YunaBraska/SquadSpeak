@@ -1229,6 +1229,10 @@
             <source>Import</source>
             <translation>Importer</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>Ukjent status</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -3330,24 +3334,8 @@
             <translation>Invitert av %1</translation>
         </message>
         <message>
-            <source>Ready</source>
-            <translation>Klar</translation>
-        </message>
-        <message>
             <source>%1 wins!</source>
             <translation>%1 vinner!</translation>
-        </message>
-        <message>
-            <source>Game ended. A player disconnected.</source>
-            <translation>Spillet er over. En spiller mistet forbindelsen.</translation>
-        </message>
-        <message>
-            <source>Game ended. A player left.</source>
-            <translation>Spillet er over. En spiller forlot spillet.</translation>
-        </message>
-        <message>
-            <source>Waiting for a player</source>
-            <translation>Venter på en spiller</translation>
         </message>
         <message>
             <source>Join</source>
@@ -3364,10 +3352,6 @@
         <message>
             <source>Game ended</source>
             <translation>Spillet er over</translation>
-        </message>
-        <message>
-            <source>In progress</source>
-            <translation>Pågår</translation>
         </message>
         <message>
             <source>Open</source>
@@ -3413,14 +3397,6 @@
             <translation>Spillet er ikke tilgjengelig</translation>
         </message>
         <message>
-            <source>Ready in %1 s</source>
-            <translation>Klar om %1 s</translation>
-        </message>
-        <message>
-            <source>Choose your Core and Trap.</source>
-            <translation>Velg Kjernen og Fellen din.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>Samme element. Velg på nytt.</translation>
         </message>
@@ -3457,20 +3433,60 @@
             <translation>Vann slukker ild</translation>
         </message>
         <message>
-            <source>Trap triggered</source>
-            <translation>Felle utløst</translation>
-        </message>
-        <message>
-            <source>Core captured</source>
-            <translation>Kjernen erobret</translation>
-        </message>
-        <message>
             <source>Neutral</source>
             <translation>Nøytral</translation>
         </message>
         <message>
             <source>Choose an element</source>
             <translation>Velg et element</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>Informasjon</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>Seier</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>Tap</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>Igjen</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>Slått ut</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>Forlate spillet?</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>Hvis du forlater, vinner den andre spilleren.</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>Avbryte invitasjonen?</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>Velg Felle, deretter Kjerne. Flytt én rute. Ta motstanderens Kjerne for å vinne.</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>Velg element i første kamp. Ved uavgjort velger du på nytt.</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>Står stille. Slår alle angripere.</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>Står stille. Beskytt den for å bli i spillet.</translation>
         </message>
     </context>
 </TS>

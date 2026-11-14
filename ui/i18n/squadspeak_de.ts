@@ -1229,6 +1229,10 @@
             <source>Import</source>
             <translation>Importieren</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>Status unbekannt</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -3330,24 +3334,8 @@
             <translation>Eingeladen von %1</translation>
         </message>
         <message>
-            <source>Ready</source>
-            <translation>Bereit</translation>
-        </message>
-        <message>
             <source>%1 wins!</source>
             <translation>%1 gewinnt!</translation>
-        </message>
-        <message>
-            <source>Game ended. A player disconnected.</source>
-            <translation>Spiel beendet. Ein Spieler hat die Verbindung verloren.</translation>
-        </message>
-        <message>
-            <source>Game ended. A player left.</source>
-            <translation>Spiel beendet. Ein Spieler hat das Spiel verlassen.</translation>
-        </message>
-        <message>
-            <source>Waiting for a player</source>
-            <translation>Warten auf einen Spieler</translation>
         </message>
         <message>
             <source>Join</source>
@@ -3364,10 +3352,6 @@
         <message>
             <source>Game ended</source>
             <translation>Spiel beendet</translation>
-        </message>
-        <message>
-            <source>In progress</source>
-            <translation>Läuft</translation>
         </message>
         <message>
             <source>Open</source>
@@ -3413,14 +3397,6 @@
             <translation>Spiel nicht verfügbar</translation>
         </message>
         <message>
-            <source>Ready in %1 s</source>
-            <translation>Bereit in %1 s</translation>
-        </message>
-        <message>
-            <source>Choose your Core and Trap.</source>
-            <translation>Wähle deinen Kern und deine Falle.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>Gleiches Element. Wähle erneut.</translation>
         </message>
@@ -3457,20 +3433,60 @@
             <translation>Wasser löscht Feuer</translation>
         </message>
         <message>
-            <source>Trap triggered</source>
-            <translation>Falle ausgelöst</translation>
-        </message>
-        <message>
-            <source>Core captured</source>
-            <translation>Kern erobert</translation>
-        </message>
-        <message>
             <source>Neutral</source>
             <translation>Neutral</translation>
         </message>
         <message>
             <source>Choose an element</source>
             <translation>Wähle ein Element</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>Info</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>Sieg</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>Niederlage</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>Übrig</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>Geschlagen</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>Spiel verlassen?</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>Wenn du gehst, gewinnt die andere Person.</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>Einladung zurückziehen?</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>Wähle Falle, dann Kern. Ziehe ein Feld. Erobere den anderen Kern zum Sieg.</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>Wähle das Element beim ersten Kampf. Bei Gleichstand wählst du neu.</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>Bleibt stehen. Besiegt jeden Angreifer.</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>Bleibt stehen. Beschütze ihn, um im Spiel zu bleiben.</translation>
         </message>
     </context>
 </TS>

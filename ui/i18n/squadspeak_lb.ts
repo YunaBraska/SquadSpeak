@@ -1229,6 +1229,10 @@
             <source>Import</source>
             <translation>Importéieren</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>Status onbekannt</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -3330,24 +3334,8 @@
             <translation>Invitéiert vu %1</translation>
         </message>
         <message>
-            <source>Ready</source>
-            <translation>Prett</translation>
-        </message>
-        <message>
             <source>%1 wins!</source>
             <translation>%1 gewënnt!</translation>
-        </message>
-        <message>
-            <source>Game ended. A player disconnected.</source>
-            <translation>D’Spill ass eriwwer. E Spiller huet d’Verbindung verluer.</translation>
-        </message>
-        <message>
-            <source>Game ended. A player left.</source>
-            <translation>D’Spill ass eriwwer. E Spiller ass fortgaangen.</translation>
-        </message>
-        <message>
-            <source>Waiting for a player</source>
-            <translation>Op e Spiller waarden</translation>
         </message>
         <message>
             <source>Join</source>
@@ -3364,10 +3352,6 @@
         <message>
             <source>Game ended</source>
             <translation>D’Spill ass eriwwer</translation>
-        </message>
-        <message>
-            <source>In progress</source>
-            <translation>Leeft</translation>
         </message>
         <message>
             <source>Open</source>
@@ -3413,14 +3397,6 @@
             <translation>Spill net disponibel</translation>
         </message>
         <message>
-            <source>Ready in %1 s</source>
-            <translation>Prett an %1 s</translation>
-        </message>
-        <message>
-            <source>Choose your Core and Trap.</source>
-            <translation>Wiel däi Kär an deng Fal.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>Dat selwecht Element. Wiel nach eng Kéier.</translation>
         </message>
@@ -3457,20 +3433,60 @@
             <translation>Waasser läscht Feier</translation>
         </message>
         <message>
-            <source>Trap triggered</source>
-            <translation>Fal ausgeléist</translation>
-        </message>
-        <message>
-            <source>Core captured</source>
-            <translation>Kär eruewert</translation>
-        </message>
-        <message>
             <source>Neutral</source>
             <translation>Neutral</translation>
         </message>
         <message>
             <source>Choose an element</source>
             <translation>Wiel en Element</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>Informatioun</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>Victoire</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>Néierlag</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>Iwwereg</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>Geschloen</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>Spill verloossen?</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>Wann s du gees, gewënnt déi aner Persoun.</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>Invitatioun zréckzéien?</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>Wiel Fal, dann Kär. Zéi ee Feld. Eruewer deen anere Kär fir ze gewannen.</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>Wiel d’Element am éischte Kampf. Bei Gläichstand wiels du nei.</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>Bleift stoen. Besiegt all Ugräifer.</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>Bleift stoen. Beschütz en, fir am Spill ze bleiwen.</translation>
         </message>
     </context>
 </TS>

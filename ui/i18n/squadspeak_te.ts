@@ -1229,6 +1229,10 @@
             <source>Import</source>
             <translation>దిగుమతి చేయండి</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>స్థితి తెలియదు</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -3330,24 +3334,8 @@
             <translation>%1 ఆహ్వానించారు</translation>
         </message>
         <message>
-            <source>Ready</source>
-            <translation>సిద్ధం</translation>
-        </message>
-        <message>
             <source>%1 wins!</source>
             <translation>%1 గెలిచారు!</translation>
-        </message>
-        <message>
-            <source>Game ended. A player disconnected.</source>
-            <translation>ఆట ముగిసింది. ఒక ఆటగాడి కనెక్షన్ తెగిపోయింది.</translation>
-        </message>
-        <message>
-            <source>Game ended. A player left.</source>
-            <translation>ఆట ముగిసింది. ఒక ఆటగాడు వెళ్లిపోయారు.</translation>
-        </message>
-        <message>
-            <source>Waiting for a player</source>
-            <translation>ఆటగాడి కోసం వేచి ఉంది</translation>
         </message>
         <message>
             <source>Join</source>
@@ -3364,10 +3352,6 @@
         <message>
             <source>Game ended</source>
             <translation>ఆట ముగిసింది</translation>
-        </message>
-        <message>
-            <source>In progress</source>
-            <translation>ఆట కొనసాగుతోంది</translation>
         </message>
         <message>
             <source>Open</source>
@@ -3413,14 +3397,6 @@
             <translation>ఆట అందుబాటులో లేదు</translation>
         </message>
         <message>
-            <source>Ready in %1 s</source>
-            <translation>%1 సెకన్లలో సిద్ధం</translation>
-        </message>
-        <message>
-            <source>Choose your Core and Trap.</source>
-            <translation>నీ కేంద్రకాన్ని, ఉచ్చును ఎంచుకో.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>ఒకే మూలకం. మళ్లీ ఎంచుకో.</translation>
         </message>
@@ -3457,20 +3433,60 @@
             <translation>నీరు నిప్పును ఆర్పుతుంది</translation>
         </message>
         <message>
-            <source>Trap triggered</source>
-            <translation>ఉచ్చు పనిచేసింది</translation>
-        </message>
-        <message>
-            <source>Core captured</source>
-            <translation>కేంద్రకాన్ని స్వాధీనం చేసుకున్నారు</translation>
-        </message>
-        <message>
             <source>Neutral</source>
             <translation>తటస్థం</translation>
         </message>
         <message>
             <source>Choose an element</source>
             <translation>ఒక మూలకాన్ని ఎంచుకో</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>సమాచారం</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>గెలుపు</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>ఓటమి</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>మిగిలినవి</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>ఓడించినవి</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>ఆట నుంచి వెళ్లాలా?</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>వెళ్లిపోతే మరో ఆటగాడు గెలుస్తాడు.</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>ఈ ఆహ్వానాన్ని రద్దు చేయాలా?</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>ముందు ఉచ్చు, తర్వాత కేంద్రకం ఎంచుకో. ఒక గడి కదులు. గెలవడానికి ప్రత్యర్థి కేంద్రకాన్ని పట్టుకో.</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>మొదటి పోరులో మూలకాన్ని ఎంచుకో. సమమైతే మళ్లీ ఎంచుకోవచ్చు.</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>కదలదు. ప్రతి దాడిచేసే పావును ఓడిస్తుంది.</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>కదలదు. ఆటలో ఉండటానికి దీన్ని కాపాడు.</translation>
         </message>
     </context>
 </TS>

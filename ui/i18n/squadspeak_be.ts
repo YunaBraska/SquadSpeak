@@ -1229,6 +1229,10 @@
             <source>Import</source>
             <translation>Імпартаваць</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>Статус невядомы</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -3330,24 +3334,8 @@
             <translation>Запрашэнне ад %1</translation>
         </message>
         <message>
-            <source>Ready</source>
-            <translation>Гатова</translation>
-        </message>
-        <message>
             <source>%1 wins!</source>
             <translation>%1 перамагае!</translation>
-        </message>
-        <message>
-            <source>Game ended. A player disconnected.</source>
-            <translation>Гульня скончана. Гулец страціў злучэнне.</translation>
-        </message>
-        <message>
-            <source>Game ended. A player left.</source>
-            <translation>Гульня скончана. Гулец выйшаў.</translation>
-        </message>
-        <message>
-            <source>Waiting for a player</source>
-            <translation>Чаканне гульца</translation>
         </message>
         <message>
             <source>Join</source>
@@ -3364,10 +3352,6 @@
         <message>
             <source>Game ended</source>
             <translation>Гульня скончана</translation>
-        </message>
-        <message>
-            <source>In progress</source>
-            <translation>Гульня ідзе</translation>
         </message>
         <message>
             <source>Open</source>
@@ -3413,14 +3397,6 @@
             <translation>Гульня недаступная</translation>
         </message>
         <message>
-            <source>Ready in %1 s</source>
-            <translation>Гатоўнасць праз %1 с</translation>
-        </message>
-        <message>
-            <source>Choose your Core and Trap.</source>
-            <translation>Выберы сваё Ядро і Пастку.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>Аднолькавая стыхія. Выберы зноў.</translation>
         </message>
@@ -3457,20 +3433,60 @@
             <translation>Вада тушыць агонь</translation>
         </message>
         <message>
-            <source>Trap triggered</source>
-            <translation>Пастка спрацавала</translation>
-        </message>
-        <message>
-            <source>Core captured</source>
-            <translation>Ядро захоплена</translation>
-        </message>
-        <message>
             <source>Neutral</source>
             <translation>Нейтральны</translation>
         </message>
         <message>
             <source>Choose an element</source>
             <translation>Выберы стыхію</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>Інфармацыя</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>Перамога</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>Паражэнне</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>Засталося</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>Пераможана</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>Выйсці з гульні?</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>Калі выйдзеш, пераможа іншы гулец.</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>Скасаваць запрашэнне?</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>Выберы Пастку, потым Ядро. Хадзі на адну клетку. Захапі чужое Ядро, каб перамагчы.</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>Выберы стыхію ў першым баі. Пры нічыёй выбірай зноў.</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>Не рухаецца. Перамагае любога нападніка.</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>Не рухаецца. Абараняй яго, каб застацца ў гульні.</translation>
         </message>
     </context>
 </TS>

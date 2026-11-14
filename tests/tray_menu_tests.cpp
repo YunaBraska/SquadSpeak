@@ -15,6 +15,26 @@
 class TrayMenuTests final : public QObject {
     Q_OBJECT
 private slots:
+    void leaveCanWaitForGameConfirmation() {
+        QTemporaryDir directory;
+        VoiceSession session(directory.filePath("session.json"));
+        LocalChannel channel(session, directory.filePath("channel.json"), TlsIdentity::create());
+        RadioPlayer radio(directory.filePath("radio.json"));
+        QMenu menu;
+        int requested = 0;
+        addTrayQuickActions(menu, session, channel, radio, [&requested] { ++requested; });
+        QVERIFY(channel.listen(QHostAddress::LocalHost, 0));
+        QVERIFY(channel.joinSaved(channel.ownId()));
+        QTRY_VERIFY(channel.joined());
+        auto* leave = menu.findChild<QAction*>("trayLeaveVoice");
+        QVERIFY(leave && leave->isVisible());
+        leave->trigger();
+        QCOMPARE(requested, 1);
+        QVERIFY(channel.joined());
+        QVERIFY(channel.leave());
+        QTRY_VERIFY(!channel.joined());
+    }
+
     void localVoiceActionsAppearOnlyWhileJoined() {
         QTemporaryDir directory;
         QVERIFY(directory.isValid());

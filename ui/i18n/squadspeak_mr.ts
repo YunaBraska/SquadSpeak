@@ -1229,6 +1229,10 @@
             <source>Import</source>
             <translation>आयात करा</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>स्थिती अज्ञात</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -3330,24 +3334,8 @@
             <translation>%1 कडून आमंत्रण</translation>
         </message>
         <message>
-            <source>Ready</source>
-            <translation>तयार</translation>
-        </message>
-        <message>
             <source>%1 wins!</source>
             <translation>%1 जिंकला!</translation>
-        </message>
-        <message>
-            <source>Game ended. A player disconnected.</source>
-            <translation>खेळ संपला. एका खेळाडूचे कनेक्शन तुटले.</translation>
-        </message>
-        <message>
-            <source>Game ended. A player left.</source>
-            <translation>खेळ संपला. एक खेळाडू निघून गेला.</translation>
-        </message>
-        <message>
-            <source>Waiting for a player</source>
-            <translation>खेळाडूची वाट पाहत आहे</translation>
         </message>
         <message>
             <source>Join</source>
@@ -3364,10 +3352,6 @@
         <message>
             <source>Game ended</source>
             <translation>खेळ संपला</translation>
-        </message>
-        <message>
-            <source>In progress</source>
-            <translation>खेळ सुरू आहे</translation>
         </message>
         <message>
             <source>Open</source>
@@ -3413,14 +3397,6 @@
             <translation>खेळ उपलब्ध नाही</translation>
         </message>
         <message>
-            <source>Ready in %1 s</source>
-            <translation>%1 सेकंदांत तयार</translation>
-        </message>
-        <message>
-            <source>Choose your Core and Trap.</source>
-            <translation>तुझा गाभा आणि सापळा निवड.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>तेच तत्त्व. पुन्हा निवड.</translation>
         </message>
@@ -3457,20 +3433,60 @@
             <translation>पाणी आग विझवते</translation>
         </message>
         <message>
-            <source>Trap triggered</source>
-            <translation>सापळा सक्रिय झाला</translation>
-        </message>
-        <message>
-            <source>Core captured</source>
-            <translation>गाभा ताब्यात घेतला</translation>
-        </message>
-        <message>
             <source>Neutral</source>
             <translation>तटस्थ</translation>
         </message>
         <message>
             <source>Choose an element</source>
             <translation>एक तत्त्व निवड</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>माहिती</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>विजय</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>पराभव</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>उरलेले</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>हरवलेले</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>खेळ सोडायचा?</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>सोडल्यास दुसरा खेळाडू जिंकेल.</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>हे आमंत्रण रद्द करायचे?</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>आधी सापळा, मग गाभा निवड. एक घर चाल. जिंकण्यासाठी प्रतिस्पर्ध्याचा गाभा पकड.</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>पहिल्या लढाईत तत्त्व निवड. बरोबरी झाल्यास पुन्हा निवडता येते.</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>हलत नाही. प्रत्येक हल्लेखोराला हरवतो.</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>हलत नाही. खेळात राहण्यासाठी त्याचे रक्षण कर.</translation>
         </message>
     </context>
 </TS>

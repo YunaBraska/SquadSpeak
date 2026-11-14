@@ -1229,6 +1229,10 @@
             <source>Import</source>
             <translation>Импортировать</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>Статус неизвестен</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -3330,24 +3334,8 @@
             <translation>Приглашение от %1</translation>
         </message>
         <message>
-            <source>Ready</source>
-            <translation>Готово</translation>
-        </message>
-        <message>
             <source>%1 wins!</source>
             <translation>%1 побеждает!</translation>
-        </message>
-        <message>
-            <source>Game ended. A player disconnected.</source>
-            <translation>Игра окончена. Игрок потерял соединение.</translation>
-        </message>
-        <message>
-            <source>Game ended. A player left.</source>
-            <translation>Игра окончена. Игрок вышел.</translation>
-        </message>
-        <message>
-            <source>Waiting for a player</source>
-            <translation>Ожидание игрока</translation>
         </message>
         <message>
             <source>Join</source>
@@ -3364,10 +3352,6 @@
         <message>
             <source>Game ended</source>
             <translation>Игра окончена</translation>
-        </message>
-        <message>
-            <source>In progress</source>
-            <translation>Идёт игра</translation>
         </message>
         <message>
             <source>Open</source>
@@ -3413,14 +3397,6 @@
             <translation>Игра недоступна</translation>
         </message>
         <message>
-            <source>Ready in %1 s</source>
-            <translation>Готовность через %1 с</translation>
-        </message>
-        <message>
-            <source>Choose your Core and Trap.</source>
-            <translation>Выбери своё Ядро и Ловушку.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>Одинаковая стихия. Выбери снова.</translation>
         </message>
@@ -3457,20 +3433,60 @@
             <translation>Вода тушит огонь</translation>
         </message>
         <message>
-            <source>Trap triggered</source>
-            <translation>Ловушка сработала</translation>
-        </message>
-        <message>
-            <source>Core captured</source>
-            <translation>Ядро захвачено</translation>
-        </message>
-        <message>
             <source>Neutral</source>
             <translation>Нейтральный</translation>
         </message>
         <message>
             <source>Choose an element</source>
             <translation>Выбери стихию</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>Информация</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>Победа</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>Поражение</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>Осталось</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>Побеждено</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>Выйти из игры?</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>Если выйдешь, победит другой игрок.</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>Отменить приглашение?</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>Выбери Ловушку, затем Ядро. Ходи на одну клетку. Захвати чужое Ядро, чтобы победить.</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>Выбери стихию в первом бою. При ничьей можно выбрать заново.</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>Не двигается. Побеждает любого нападающего.</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>Не двигается. Защищай его, чтобы остаться в игре.</translation>
         </message>
     </context>
 </TS>

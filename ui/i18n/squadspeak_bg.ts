@@ -1229,6 +1229,10 @@
             <source>Import</source>
             <translation>Импортиране</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>Неизвестен статус</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -3330,24 +3334,8 @@
             <translation>Покана от %1</translation>
         </message>
         <message>
-            <source>Ready</source>
-            <translation>Готово</translation>
-        </message>
-        <message>
             <source>%1 wins!</source>
             <translation>%1 печели!</translation>
-        </message>
-        <message>
-            <source>Game ended. A player disconnected.</source>
-            <translation>Играта приключи. Играч загуби връзката.</translation>
-        </message>
-        <message>
-            <source>Game ended. A player left.</source>
-            <translation>Играта приключи. Играч напусна.</translation>
-        </message>
-        <message>
-            <source>Waiting for a player</source>
-            <translation>Изчакване на играч</translation>
         </message>
         <message>
             <source>Join</source>
@@ -3364,10 +3352,6 @@
         <message>
             <source>Game ended</source>
             <translation>Играта приключи</translation>
-        </message>
-        <message>
-            <source>In progress</source>
-            <translation>В ход</translation>
         </message>
         <message>
             <source>Open</source>
@@ -3413,14 +3397,6 @@
             <translation>Играта е недостъпна</translation>
         </message>
         <message>
-            <source>Ready in %1 s</source>
-            <translation>Готовност след %1 сек</translation>
-        </message>
-        <message>
-            <source>Choose your Core and Trap.</source>
-            <translation>Избери своето Ядро и Капан.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>Еднаква стихия. Избери отново.</translation>
         </message>
@@ -3457,20 +3433,60 @@
             <translation>Водата гаси огъня</translation>
         </message>
         <message>
-            <source>Trap triggered</source>
-            <translation>Капанът се задейства</translation>
-        </message>
-        <message>
-            <source>Core captured</source>
-            <translation>Ядрото е превзето</translation>
-        </message>
-        <message>
             <source>Neutral</source>
             <translation>Неутрално</translation>
         </message>
         <message>
             <source>Choose an element</source>
             <translation>Избери стихия</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>Информация</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>Победа</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>Загуба</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>Останали</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>Победени</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>Напускане на играта?</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>Ако напуснеш, другият играч печели.</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>Отмяна на поканата?</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>Избери Капан, после Ядро. Мести с едно поле. Превземи чуждото Ядро, за да спечелиш.</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>Избери стихия при първия бой. При равенство избираш отново.</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>Не се движи. Побеждава всеки нападател.</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>Не се движи. Пази го, за да останеш в играта.</translation>
         </message>
     </context>
 </TS>

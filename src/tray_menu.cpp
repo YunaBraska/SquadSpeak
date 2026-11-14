@@ -6,7 +6,8 @@
 #include <QCoreApplication>
 #include <QMenu>
 
-void addTrayQuickActions(QMenu& menu, VoiceSession& session, LocalChannel& channel, RadioPlayer& radio) {
+void addTrayQuickActions(QMenu& menu, VoiceSession& session, LocalChannel& channel, RadioPlayer& radio,
+                         const std::function<void()>& leaveRequested) {
     const auto translate = [](const char* text) { return QCoreApplication::translate("Channels", text); };
     auto* mute = menu.addAction(translate("Mute microphone"));
     mute->setObjectName("trayMuteInput");
@@ -56,7 +57,8 @@ void addTrayQuickActions(QMenu& menu, VoiceSession& session, LocalChannel& chann
             : session.setDeafened(checked);
         if (!accepted) update();
     });
-    QObject::connect(leave, &QAction::triggered, &menu, [&channel, update] {
+    QObject::connect(leave, &QAction::triggered, &menu, [&channel, update, leaveRequested] {
+        if (leaveRequested) { leaveRequested(); return; }
         const bool accepted = channel.remoteMode() ? channel.remoteAction("leave") : channel.leave();
         if (!accepted) update();
     });

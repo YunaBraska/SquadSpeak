@@ -1229,6 +1229,10 @@
             <source>Import</source>
             <translation>Importă</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>Stare necunoscută</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -3330,24 +3334,8 @@
             <translation>Invitație de la %1</translation>
         </message>
         <message>
-            <source>Ready</source>
-            <translation>Gata</translation>
-        </message>
-        <message>
             <source>%1 wins!</source>
             <translation>%1 câștigă!</translation>
-        </message>
-        <message>
-            <source>Game ended. A player disconnected.</source>
-            <translation>Joc încheiat. Un jucător a pierdut conexiunea.</translation>
-        </message>
-        <message>
-            <source>Game ended. A player left.</source>
-            <translation>Joc încheiat. Un jucător a plecat.</translation>
-        </message>
-        <message>
-            <source>Waiting for a player</source>
-            <translation>Se așteaptă un jucător</translation>
         </message>
         <message>
             <source>Join</source>
@@ -3364,10 +3352,6 @@
         <message>
             <source>Game ended</source>
             <translation>Joc încheiat</translation>
-        </message>
-        <message>
-            <source>In progress</source>
-            <translation>În desfășurare</translation>
         </message>
         <message>
             <source>Open</source>
@@ -3413,14 +3397,6 @@
             <translation>Joc indisponibil</translation>
         </message>
         <message>
-            <source>Ready in %1 s</source>
-            <translation>Gata în %1 s</translation>
-        </message>
-        <message>
-            <source>Choose your Core and Trap.</source>
-            <translation>Alege-ți Nucleul și Capcana.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>Același element. Alege din nou.</translation>
         </message>
@@ -3457,20 +3433,60 @@
             <translation>Apa stinge focul</translation>
         </message>
         <message>
-            <source>Trap triggered</source>
-            <translation>Capcană declanșată</translation>
-        </message>
-        <message>
-            <source>Core captured</source>
-            <translation>Nucleu capturat</translation>
-        </message>
-        <message>
             <source>Neutral</source>
             <translation>Neutru</translation>
         </message>
         <message>
             <source>Choose an element</source>
             <translation>Alege un element</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>Informații</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>Victorie</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>Înfrângere</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>Rămase</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>Capturate</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>Părăsești jocul?</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>Dacă pleci, câștigă celălalt jucător.</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>Anulezi invitația?</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>Alege Capcana, apoi Nucleul. Mută un pătrat. Capturează Nucleul advers pentru a câștiga.</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>Alege elementul la prima luptă. La egalitate alegi din nou.</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>Nu se mișcă. Învinge orice atacator.</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>Nu se mișcă. Protejează-l ca să rămâi în joc.</translation>
         </message>
     </context>
 </TS>

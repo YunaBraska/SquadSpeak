@@ -1229,6 +1229,10 @@
             <source>Import</source>
             <translation>Nhập</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>Chưa rõ trạng thái</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -3330,24 +3334,8 @@
             <translation>Lời mời từ %1</translation>
         </message>
         <message>
-            <source>Ready</source>
-            <translation>Sẵn sàng</translation>
-        </message>
-        <message>
             <source>%1 wins!</source>
             <translation>%1 thắng!</translation>
-        </message>
-        <message>
-            <source>Game ended. A player disconnected.</source>
-            <translation>Trò chơi kết thúc. Một người chơi đã mất kết nối.</translation>
-        </message>
-        <message>
-            <source>Game ended. A player left.</source>
-            <translation>Trò chơi kết thúc. Một người chơi đã rời đi.</translation>
-        </message>
-        <message>
-            <source>Waiting for a player</source>
-            <translation>Đang chờ người chơi</translation>
         </message>
         <message>
             <source>Join</source>
@@ -3364,10 +3352,6 @@
         <message>
             <source>Game ended</source>
             <translation>Trò chơi kết thúc</translation>
-        </message>
-        <message>
-            <source>In progress</source>
-            <translation>Đang chơi</translation>
         </message>
         <message>
             <source>Open</source>
@@ -3413,14 +3397,6 @@
             <translation>Trò chơi không khả dụng</translation>
         </message>
         <message>
-            <source>Ready in %1 s</source>
-            <translation>Sẵn sàng sau %1 giây</translation>
-        </message>
-        <message>
-            <source>Choose your Core and Trap.</source>
-            <translation>Chọn Lõi và Bẫy của bạn.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>Cùng nguyên tố. Hãy chọn lại.</translation>
         </message>
@@ -3457,20 +3433,60 @@
             <translation>Nước dập tắt lửa</translation>
         </message>
         <message>
-            <source>Trap triggered</source>
-            <translation>Bẫy đã kích hoạt</translation>
-        </message>
-        <message>
-            <source>Core captured</source>
-            <translation>Lõi đã bị chiếm</translation>
-        </message>
-        <message>
             <source>Neutral</source>
             <translation>Trung tính</translation>
         </message>
         <message>
             <source>Choose an element</source>
             <translation>Chọn nguyên tố</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>Thông tin</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>Chiến thắng</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>Thất bại</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>Còn lại</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>Đã hạ</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>Rời trò chơi?</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>Nếu rời đi, người chơi kia sẽ thắng.</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>Hủy lời mời này?</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>Chọn Bẫy, rồi Lõi. Di chuyển một ô. Chiếm Lõi đối thủ để thắng.</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>Chọn nguyên tố trong trận đấu đầu tiên. Hòa thì chọn lại.</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>Đứng yên. Đánh bại mọi kẻ tấn công.</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>Đứng yên. Bảo vệ nó để tiếp tục chơi.</translation>
         </message>
     </context>
 </TS>

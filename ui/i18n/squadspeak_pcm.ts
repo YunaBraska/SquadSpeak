@@ -1229,6 +1229,10 @@
             <source>Import</source>
             <translation>Import</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>We no know di status</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -3330,24 +3334,8 @@
             <translation>Na %1 invite you</translation>
         </message>
         <message>
-            <source>Ready</source>
-            <translation>I don ready</translation>
-        </message>
-        <message>
             <source>%1 wins!</source>
             <translation>%1 don win!</translation>
-        </message>
-        <message>
-            <source>Game ended. A player disconnected.</source>
-            <translation>Game don end. One player connection don cut.</translation>
-        </message>
-        <message>
-            <source>Game ended. A player left.</source>
-            <translation>Game don end. One player don comot.</translation>
-        </message>
-        <message>
-            <source>Waiting for a player</source>
-            <translation>De wait for player</translation>
         </message>
         <message>
             <source>Join</source>
@@ -3364,10 +3352,6 @@
         <message>
             <source>Game ended</source>
             <translation>Game don end</translation>
-        </message>
-        <message>
-            <source>In progress</source>
-            <translation>Game de go on</translation>
         </message>
         <message>
             <source>Open</source>
@@ -3413,14 +3397,6 @@
             <translation>Game no dey available</translation>
         </message>
         <message>
-            <source>Ready in %1 s</source>
-            <translation>Go ready in %1 s</translation>
-        </message>
-        <message>
-            <source>Choose your Core and Trap.</source>
-            <translation>Choose your Core and Trap.</translation>
-        </message>
-        <message>
             <source>Same element. Choose again.</source>
             <translation>Na di same element. Choose again.</translation>
         </message>
@@ -3457,20 +3433,60 @@
             <translation>Water de quench Fire</translation>
         </message>
         <message>
-            <source>Trap triggered</source>
-            <translation>Trap don catch</translation>
-        </message>
-        <message>
-            <source>Core captured</source>
-            <translation>Dem don capture Core</translation>
-        </message>
-        <message>
             <source>Neutral</source>
             <translation>E neutral</translation>
         </message>
         <message>
             <source>Choose an element</source>
             <translation>Choose one element</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>Info</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>You win</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>You lose</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>Wetin remain</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>Wetin you beat</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>Leave di game?</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>If you leave, di oda player go win.</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>Cancel dis invite?</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>Choose Trap, den Core. Move one square. Catch di oda Core to win.</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>Choose im element for di first fight. If una tie, choose again.</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>E no dey move. E dey beat every attacker.</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>E no dey move. Protect am make you stay for game.</translation>
         </message>
     </context>
 </TS>
