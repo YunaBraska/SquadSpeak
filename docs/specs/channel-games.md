@@ -155,10 +155,55 @@ confirmation, setup, moves, scrollable help and cancelled/confirmed departure.
 
 ## Later candidates
 
+The next requested game is a multiplayer creature-and-trail game, followed by
+a compact strategy game inspired by **Final Fantasy VII Rebirth**'s Fort Condor.
+Both need their own name, original artwork and SquadSpeak styling.
+
+### Creature-and-trail game
+
+Confirmed on 2026-11-14: use score rounds with re-entry. Creatures collect fruit
+and grow longer tails. A collision costs points and length, then the player
+returns instead of waiting as a spectator for the rest of the round.
+
+[Curve Fever's developer description](https://store.steampowered.com/app/1133700)
+combines steering, trails, points and offensive/defensive powers. The official
+[slither.io description](https://apps.apple.com/us/app/slither-io/id1091944550)
+uses collecting, growth and head-to-body collisions. These are references for
+risk and interaction, not rules to copy wholesale.
+
+Proposed direction: warm avatar creatures, fruit and scarf- or vine-like tails,
+with a small number of readable interactions. The working name **Tangletrail**
+is a proposal. The round end condition, duration, capacity, collision penalties,
+own-tail and edge behavior, controls and departure rules remain undecided.
+Validate these with a playable keyboard/touch prototype before production integration.
+
+### Compact strategy game
+
+[Square Enix's Rebirth description](https://www.square-enix.com/ffvii/en-gb/games/rebirth/world/)
+describes deploying units, defending a base, attacking the opposing base and
+commander abilities. Rebirth is the requested reference, not Intergrade.
+
+Proposed presentation: a small 2.5D diorama with original dimensional character
+sprites, short walk cycles, shadows, smooth movement and clear impact effects.
+This can use the existing Qt Quick rendering approach without a new 3D engine.
+Unit roles, routes, resource rules, capacity and victory conditions need a
+separate agreed ruleset. No Fort Condor assets or names become game content.
+
+### Shared implementation boundary
+
+Reuse channel authorization, invitations, one active game per identity,
+Chat/Game navigation, voice portraits and confirmed departure where behavior
+matches. Current board rules and views are Elements-specific. Real-time trails
+need a host-owned simulation clock, validated inputs, bounded network updates
+and latency/capacity tests. Strategy needs its own unit and combat rules.
+Do not build a generic engine or introduce a runtime dependency before a
+complete second game demonstrates which behavior is actually shared.
+
+### Other ideas
+
 These use original SquadSpeak artwork and styling, not copied game assets:
 
 - Light trails: steer a trail and avoid walls and other trails.
-- Multiplayer Snake: collect food while avoiding growing snakes.
 - Four in a row: a compact two-player turn-based game.
 - Reversi: two players capture pieces by enclosing them.
 - Dots and boxes: take turns completing little squares.
@@ -166,7 +211,7 @@ These use original SquadSpeak artwork and styling, not copied game assets:
 - Reaction duel: react to a signal, with early presses counting as a miss.
 - Drawing guesses: one player draws while others guess in a game-specific input.
 
-Small turn-based games are the simplest next addition. Real-time trails and Snake
-need separate latency, input timing and capacity qualification. Reference examples
-include [Board Game Arena's Connect Four](https://en.boardgamearena.com/gamepanel?game=connectfour)
+Smaller turn-based alternatives remain ideas rather than the next priority.
+Reference examples include
+[Board Game Arena's Connect Four](https://en.boardgamearena.com/gamepanel?game=connectfour)
 and [AirConsole's group games](https://www.airconsole.com/games/games-for-groups).
