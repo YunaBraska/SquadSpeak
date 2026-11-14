@@ -51,24 +51,31 @@ All portraits use the same centered, aspect-preserving renderer. Circular backgr
 `ui/AvatarAtlas.js` is the single source for bundled atlas geometry and timing. `VoiceAvatar.qml` consumes it for both rectangular and circular rendering:
 
 - `stride`: horizontal cell width in pixels.
-- `inset`: crop margin on each edge, excluding padding or gutters.
 - Five `rows`, each with `top`, `bottom`, `frames`, `duration`, `repeats` and `pause`.
 - `frames` contains one or more positive clip frame counts; counts may differ within a row and between rows. `[1]` is a still state, `[12]` one twelve-frame animation and `[4, 8]` two variants. No placeholder frames or three-clip padding are required.
 - `duration` is the duration of one whole speaking clip, or the maximum duration of an idle move, in milliseconds. With `pause = 0`, `repeats` repeats the clip before another variant is selected. A positive `pause` enables the quiet schedule described above and bounds its randomized start delay; resting poses are not restricted to the first frame.
 - Atlas width is the largest row frame total multiplied by `stride`. Shorter rows leave transparent cells at the right. Rows tile the image height without gaps or overlap. Every crop stays within its state's physical row and inside the image. Row/cell dimensions and frame counts must be positive and finite.
 
-All twenty member sheets contain more than 30 drawn frames. Courier and the animated System portrait use 4 px display insets to exclude neighboring artwork at cell edges. Other sheets use zero inset. These are display crops only. `system.png` remains a separate static portrait.
+All twenty member sheets contain more than 30 drawn frames. Playback uses complete
+cells with transparent margins, without an additional display crop. Every cell
+must have a clear outer edge. `system.png` remains a separate static portrait.
 
-Ember Dragon's measured transparent separators do not follow its original fixed
-109 px grid. Its 120 frames are repacked into 123 px cells with clear side margins.
-All source pixels are preserved without resampling. This prevents neighboring
-horns and body fragments from appearing in a portrait.
+Courier, Mossling, Ember Dragon and the animated System portrait are repacked from
+their original sheets at commit `45d34f44173bfd6bc5a5c98247c47a03d3cc51cf`.
+Their drawn contours determine the frame boundaries, rather than an assumed grid.
+The 120/128/120/112 portraits are identified by their connected foreground
+(alpha above 128), in reading order. Each retains a two-pixel antialiasing margin.
+Where margins overlap, pixels belong to the nearest portrait. Every retained RGBA
+pixel is copied unchanged, with no resampling or redrawing. Frames are centered
+on a shared lower baseline in fixed-size cells with two pixels of transparent
+padding. Frame counts, state order and animation timing remain unchanged.
+The naturally straight lower edge of a drawn bust remains part of the artwork.
 
 | Dense sheet | PNG size | Cell width | Row heights, top to bottom | Clip frame counts |
 | --- | --- | --- | --- | --- |
-| Mossling | 3616 x 540 | 113 | 108, 108, 108, 108, 108 | 8/8/8; deafened 8/8/16 |
-| Courier | 2664 x 555 | 111 | 113, 112, 111, 113, 106 | 8/8/8 |
-| Ember Dragon | 2952 x 541 | 123 | 109, 107, 109, 107, 109 | 8/8/8 |
+| Mossling | 3904 x 560 | 122 | 112, 112, 112, 112, 112 | 8/8/8; deafened 8/8/16 |
+| Courier | 2880 x 615 | 120 | 123, 123, 123, 123, 123 | 8/8/8 |
+| Ember Dragon | 2808 x 590 | 117 | 118, 118, 118, 118, 118 | 8/8/8 |
 | Mechanic | 3072 x 655 | 128 | 131, 131, 131, 131, 131 | 8/8/8; deafened 8/4/4 |
 | Moon Owl | 3048 x 620 | 127 | 124, 124, 124, 124, 124 | 8/8/8 |
 | Mushroom Sage | 2940 x 680 | 140 | 136, 136, 136, 136, 136 | 7/7/7; deafened and sleeping 7/3/4 |
@@ -86,7 +93,7 @@ horns and body fragments from appearing in a portrait.
 | Frost Yeti | 2196 x 840 | 183 | 168, 168, 168, 168, 168 | 4/4/4 |
 | Raccoon Alchemist | 2184 x 835 | 182 | 167, 167, 167, 167, 167 | 4/4/4 |
 | Sunflower Knight | 2028 x 890 | 169 | 178, 178, 178, 178, 178 | 4/4/4 |
-| System | 2664 x 595 | 111 | 119, 119, 119, 119, 119 | 8/8/8; muted 8/4/4 |
+| System | 2880 x 605 | 120 | 121, 121, 121, 121, 121 | 8/8/8; muted 8/4/4 |
 
 Mechanic, Moon Owl and Mushroom Sage contain 112, 120 and 91 drawn frames respectively, replacing 30 each. Their source frames were rearranged without resampling into five state rows. Transparent outer padding was trimmed and complete crops aligned to a common center and bust baseline. Each pasted crop was verified byte for byte. Clip duration and idle pauses are unchanged, so additional frames do not speed up movement. Metadata never fabricates poses or infers emotions.
 
@@ -119,7 +126,7 @@ To reproduce the exported pixels with Pillow 12.3.0:
 4. Paste each crop at `(frame index * cell width, sum(previous row heights))` without an alpha mask or interpolation. Preserve source RGBA bytes, including transparent pixels; leave any bottom/right padding transparent.
 5. Verify each pasted rectangle against its source crop byte for byte, then save PNG with `compress_level=9`, without metadata. Reopen and verify decoded pixels. Compression-library changes can affect PNG bytes without changing pixels.
 
-| Shipped file | SHA-256 after rearrangement |
+| Historical file | SHA-256 after the 2026-10-05 rearrangement |
 | --- | --- |
 | `mossling.png` | `809d5296f411e40749a2782133d5def6116a3738e37bb62fd814475f565ec51d` |
 | `courier.png` | `a93dcd8eccbbcba773460528e51c67a7197698880462478714c656e3df22f7d1` |

@@ -3686,7 +3686,7 @@ TestCase {
         const item = createTemporaryObject(variablePortrait, view.contentItem, { identity: "" })
         verify(item)
         const counts = [[1], [6], [1, 1], [2, 3, 4, 1], [1]]
-        item.atlasLayout = { stride: 32, inset: 0, rows: counts.map(function(frames, row) {
+        item.atlasLayout = { stride: 32, rows: counts.map(function(frames, row) {
             return { top: row * 32, bottom: (row + 1) * 32,
                      frames: frames, duration: 600, repeats: 1, pause: 0 }
         }) }
@@ -3720,7 +3720,7 @@ TestCase {
         portrait.muted = false; portrait.deafened = false; portrait.sleeping = false
         portrait.level = 0.1; portrait.identity = ""
         // The same atlas width holds three clips with unequal frame counts.
-        const layout = { stride: 32, inset: 0, rows: [] }
+        const layout = { stride: 32, rows: [] }
         for (let row = 0; row < 5; ++row)
             layout.rows.push({ top: row * 32, bottom: (row + 1) * 32,
                                frames: row === 1 ? [3, 4, 5] : [2, 2, 2],
@@ -3791,7 +3791,7 @@ TestCase {
                         item.animationTime = variant * item.cycleLength + (frame + 0.5) * clip.duration / clip.frames[variant]
                         compare(item.variant, variant); compare(item.frame, frame)
                         const crop = canvas.crop
-                        compare(crop.y, clip.top + layout.inset, id + ": every variant stays on its state's physical row")
+                        compare(crop.y, clip.top, id + ": every variant stays on its state's physical row")
                         verify(crop.x >= 0 && crop.y >= 0 && crop.width > 0 && crop.height > 0)
                         verify(crop.x + crop.width <= artwork.sourceSize.width, id + " horizontal crop")
                         verify(crop.y + crop.height <= artwork.sourceSize.height, id + " vertical crop")
@@ -3801,18 +3801,24 @@ TestCase {
         }
     }
 
-    function test_dragonFramesExcludeNeighbouringPortraits() {
-        const item = createTemporaryObject(variablePortrait, view.contentItem, {avatar: "ember-dragon"})
-        const layout = Atlas.forAvatar("ember-dragon", false)
+    function test_avatarFramesKeepCompleteIsolatedContours_data() {
+        return session.avatars.concat(["system"]).map(avatar => ({tag: avatar, avatar: avatar}))
+    }
+    function test_avatarFramesKeepCompleteIsolatedContours(data) {
+        const item = createTemporaryObject(variablePortrait, view.contentItem,
+            {avatar: data.avatar, systemMessage: data.avatar === "system", animated: true})
+        const layout = Atlas.forAvatar(data.avatar, data.avatar === "system")
         const crops = []
         for (const row of layout.rows)
             for (let column = 0; column < row.frames.reduce((sum, count) => sum + count, 0); ++column)
                 crops.push(Atlas.frameRect(layout, row, column))
-        compare(crops.length, 120)
-        const detached = fixtures.avatarDetachedPixels(item.atlasSource, crops)
-        // This character has one connected silhouette. Allow isolated edge
-        // pixels, but not the neighbouring horns/body visible in the report.
-        verify(detached >= 0 && detached <= 2, "Detached pixels outside the dragon: " + detached)
+        const defects = fixtures.avatarFrameDefects(item.atlasSource, crops)
+        verify(defects.valid)
+        compare(defects.boundaryPixels, 0, "A frame must leave clear space around the complete portrait")
+        // These portraits have one connected silhouette. Other characters can
+        // intentionally have detached antennae or accessories.
+        if (["courier", "mossling", "system", "ember-dragon"].includes(data.avatar))
+            verify(defects.detachedPixels <= 2, "Detached pixels outside the portrait: " + defects.detachedPixels)
     }
 
     function test_voiceParticipants_data() {

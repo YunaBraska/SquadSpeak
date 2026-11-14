@@ -525,14 +525,19 @@ public slots:
     bool portraitHasDetail(QObject* object, bool grayscale = false) {
         return portraitsHaveDetail({object}, grayscale);
     }
-    int avatarDetachedPixels(const QUrl& source, const QVariantList& crops) {
+    QVariantMap avatarFrameDefects(const QUrl& source, const QVariantList& crops) {
         const QImage image(source.isLocalFile() ? source.toLocalFile() : ":" + source.path());
-        if (image.isNull() || crops.isEmpty()) return -1;
-        int worst = 0;
+        if (image.isNull() || crops.isEmpty()) return {{"valid", false}};
+        int worstDetached = 0, worstBoundary = 0;
         for (const auto& crop : crops) {
             const auto rect = crop.toRectF().toRect();
-            if (rect.isEmpty() || !image.rect().contains(rect)) return -1;
+            if (rect.isEmpty() || !image.rect().contains(rect)) return {{"valid", false}};
             auto frame = image.copy(rect).convertToFormat(QImage::Format_ARGB32);
+            int boundary = 0;
+            for (int y = 0; y < frame.height(); ++y) for (int x = 0; x < frame.width(); ++x)
+                if ((x == 0 || y == 0 || x == frame.width() - 1 || y == frame.height() - 1)
+                    && qAlpha(frame.pixel(x, y)) > 128) ++boundary;
+            worstBoundary = std::max(worstBoundary, boundary);
             int total = 0, largest = 0;
             for (int y = 0; y < frame.height(); ++y) for (int x = 0; x < frame.width(); ++x) {
                 if (qAlpha(frame.pixel(x, y)) <= 128) continue;
@@ -552,9 +557,9 @@ public slots:
                 total += area;
                 largest = std::max(largest, area);
             }
-            worst = std::max(worst, total - largest);
+            worstDetached = std::max(worstDetached, total - largest);
         }
-        return worst;
+        return {{"valid", true}, {"boundaryPixels", worstBoundary}, {"detachedPixels", worstDetached}};
     }
     bool portraitsHaveDetail(const QList<QObject*>& objects, bool grayscale = false) {
         if (objects.isEmpty()) return false;
