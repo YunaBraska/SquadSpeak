@@ -1065,13 +1065,21 @@ TestCase {
         tryVerify(function() { return ownGame().round === 7 && otherGame().round === 7 })
         tryCompare(ownBoard, "effectRunning", false)
         const cuesBeforeChat = gameFeedback.count
+        const chatBadge = visualChild(findChild(view, "gameViewTabs"), "gameChatUnread")
+        verify(chatBadge)
+        verify(!chatBadge.visible)
         verify(remoteChannel.sendChat("Ready? Let's play."))
         tryCompare(remoteChannel, "chatPending", false)
         tryVerify(function() { return channel.messages.some(m => m.text === "Ready? Let's play.") })
+        tryCompare(chatBadge, "visible", true)
         compare(gameFeedback.count, cuesBeforeChat, "Chat updates must not replay combat sounds")
         const beforeTab = ownGame().round
+        view.requestActivate(); tryCompare(view, "active", true)
+        verify(waitForPolish(view)); view.update(); verify(waitForRendering(chatBadge))
+        if (imageDirectory.length) verify(fixtures.saveWindow(view, imageDirectory + "/game-unread-" + data.tag + ".png"))
         verify(tab("gameChatTab")); tryCompare(panel, "visible", true)
         compare(panel.active, true)
+        tryCompare(chatBadge, "visible", false)
         tryVerify(function() { return fixtures.portraitHasDetail(findChild(panel, "messageAvatar_" + remoteChannel.ownId)) }, 5000,
             "The message portrait paints after switching from the game")
         if (imageDirectory.length) verify(fixtures.saveWindow(view, imageDirectory + "/game-chat-" + data.tag + ".png"))

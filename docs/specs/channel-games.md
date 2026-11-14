@@ -17,6 +17,8 @@ The chat invitation contains the creator, game name, element-circle icon and Joi
 It disappears when full or cancelled. The same icon marks a channel with a game.
 Play uses the channel's compact Chat / Game switch on every platform. Switching
 views preserves the game and voice connection. There is no separate game window.
+The Chat tab shows the channel's existing unread marker, including while playing.
+It clears only through the normal visible-chat read receipt at the latest message.
 The same voice avatars, speaking levels, animation preference and mute indicators
 are used in chat and game. Existing participants open their game instead of joining again.
 

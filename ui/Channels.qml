@@ -2231,12 +2231,34 @@ PanelWindow {
                         Repeater {
                             model: [qsTr("Chat"), qsTr("Game")]
                             TabButton {
+                                id: gameTab
                                 required property int index
                                 required property string modelData
+                                readonly property bool unread: index === 0 && !!root.inspectedChannel.unread
                                 objectName: index === 0 ? "gameChatTab" : "gamePlayTab"
                                 text: modelData; width: gameTabs.width / 2; implicitHeight: 34
+                                Accessible.description: unread ? qsTr("Unread messages") : ""
                                 onClicked: root.gameSelected = index === 1
-                                contentItem: Label { text: parent.text; color: parent.checked ? Theme.accentText : Theme.text; horizontalAlignment: Text.AlignHCenter; verticalAlignment: Text.AlignVCenter; elide: Text.ElideRight }
+                                contentItem: Item {
+                                    implicitWidth: tabLabel.implicitWidth + (gameTab.unread ? 13 : 0)
+                                    implicitHeight: tabLabel.implicitHeight
+                                    Row {
+                                        anchors.centerIn: parent; spacing: 6
+                                        Label {
+                                            id: tabLabel
+                                            width: Math.max(0, Math.min(implicitWidth, gameTab.availableWidth - (gameTab.unread ? 13 : 0)))
+                                            text: gameTab.text; font: gameTab.font
+                                            color: gameTab.checked ? Theme.accentText : Theme.text
+                                            elide: Text.ElideRight
+                                        }
+                                        UnreadDot {
+                                            objectName: gameTab.index === 0 ? "gameChatUnread" : ""
+                                            anchors.verticalCenter: parent.verticalCenter
+                                            visible: gameTab.unread
+                                            color: gameTab.checked ? Theme.accentText : Theme.accent
+                                        }
+                                    }
+                                }
                                 background: Rectangle { radius: Theme.controlRadius; color: parent.checked ? Theme.accent : "transparent" }
                             }
                         }
