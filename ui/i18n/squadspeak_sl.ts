@@ -1229,6 +1229,18 @@
             <source>Import</source>
             <translation>Uvozi</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>Neznano stanje</translation>
+        </message>
+        <message>
+            <source>Chat</source>
+            <translation>Klepet</translation>
+        </message>
+        <message>
+            <source>Game</source>
+            <translation>Igra</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1436,12 +1448,12 @@
             <translation>prejšnja sporočila</translation>
         </message>
         <message>
-            <source>Attach image</source>
-            <translation>Pripni sliko</translation>
-        </message>
-        <message>
             <source>Chat message. Markdown supported. Shift+Enter for a new line.</source>
             <translation>sporočilo klepeta. Markdown podprt. Shift+Enter za novo vrstico.</translation>
+        </message>
+        <message>
+            <source>Add</source>
+            <translation>Dodaj</translation>
         </message>
     </context>
     <context>
@@ -2647,6 +2659,14 @@
             <source>Identity imported.</source>
             <translation>Identiteta je uvožena.</translation>
         </message>
+        <message>
+            <source>Invalid game state.</source>
+            <translation>Neveljavno stanje igre.</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>To dejanje v igri ni več na voljo.</translation>
+        </message>
     </context>
     <context>
         <name>LocalLanguage</name>
@@ -3313,6 +3333,176 @@
         <message>
             <source>See you next time.</source>
             <translation>Do naslednjič.</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameCard</name>
+        <message>
+            <source>Invited by %1</source>
+            <translation>Povabilo od %1</translation>
+        </message>
+        <message>
+            <source>%1 wins!</source>
+            <translation>%1 zmaga!</translation>
+        </message>
+        <message>
+            <source>Join</source>
+            <translation>Pridružite se</translation>
+        </message>
+        <message>
+            <source>Leave</source>
+            <translation>Zapusti</translation>
+        </message>
+        <message>
+            <source>Elements</source>
+            <translation>Elementi</translation>
+        </message>
+        <message>
+            <source>Game ended</source>
+            <translation>Igra se je končala</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Odpri</translation>
+        </message>
+    </context>
+    <context>
+        <name>GamePane</name>
+        <message>
+            <source>Finish your current game first.</source>
+            <translation>Najprej končaj trenutno igro.</translation>
+        </message>
+        <message>
+            <source>Fire</source>
+            <translation>Ogenj</translation>
+        </message>
+        <message>
+            <source>Water</source>
+            <translation>Voda</translation>
+        </message>
+        <message>
+            <source>Ice</source>
+            <translation>Led</translation>
+        </message>
+        <message>
+            <source>Core</source>
+            <translation>Jedro</translation>
+        </message>
+        <message>
+            <source>Trap</source>
+            <translation>Past</translation>
+        </message>
+        <message>
+            <source>Unknown</source>
+            <translation>Neznano</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>To dejanje v igri ni več na voljo.</translation>
+        </message>
+        <message>
+            <source>Game unavailable</source>
+            <translation>Igra ni na voljo</translation>
+        </message>
+        <message>
+            <source>Same element. Choose again.</source>
+            <translation>Enak element. Izberi znova.</translation>
+        </message>
+        <message>
+            <source>Your turn</source>
+            <translation>Tvoja poteza</translation>
+        </message>
+        <message>
+            <source>%1's turn</source>
+            <translation>Na potezi je %1</translation>
+        </message>
+        <message>
+            <source>Waiting for the other player</source>
+            <translation>Čakanje na drugega igralca</translation>
+        </message>
+        <message>
+            <source>Water beats Fire. Fire beats Ice. Ice beats Water.</source>
+            <translation>Voda premaga ogenj. Ogenj premaga led. Led premaga vodo.</translation>
+        </message>
+        <message>
+            <source>Empty</source>
+            <translation>Prazno</translation>
+        </message>
+        <message>
+            <source>Ice freezes Water</source>
+            <translation>Led zamrzne vodo</translation>
+        </message>
+        <message>
+            <source>Fire melts Ice</source>
+            <translation>Ogenj stopi led</translation>
+        </message>
+        <message>
+            <source>Water extinguishes Fire</source>
+            <translation>Voda pogasi ogenj</translation>
+        </message>
+        <message>
+            <source>Neutral</source>
+            <translation>Nevtralno</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>Izberi element</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>Informacije</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>Zmaga</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>Poraz</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>Preostalo</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>Osvojeno</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>Zapustiš igro?</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>Če odideš, zmaga drugi igralec.</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>Prekličeš povabilo?</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>Izberi Past, nato Jedro. Premakni se za eno polje. Osvoji nasprotnikovo Jedro za zmago.</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>Element izberi ob prvem boju. Ob izenačenju izbiraš znova.</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>Miruje. Premaga vsakega napadalca.</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>Miruje. Varuj ga, da ostaneš v igri.</translation>
+        </message>
+        <message>
+            <source>Computer</source>
+            <translation>Računalnik</translation>
+        </message>
+        <message>
+            <source>Play against the computer?</source>
+            <translation>Igraš proti računalniku?</translation>
         </message>
     </context>
 </TS>

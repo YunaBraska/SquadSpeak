@@ -1229,6 +1229,18 @@
             <source>Import</source>
             <translation>Importo</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>Gjendje e panjohur</translation>
+        </message>
+        <message>
+            <source>Chat</source>
+            <translation>Bisedë</translation>
+        </message>
+        <message>
+            <source>Game</source>
+            <translation>Lojë</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1436,12 +1448,12 @@
             <translation>Mesazhe të mëparshme</translation>
         </message>
         <message>
-            <source>Attach image</source>
-            <translation>Bashkangjit imazhin</translation>
-        </message>
-        <message>
             <source>Chat message. Markdown supported. Shift+Enter for a new line.</source>
             <translation>Mesazh bisede. Markdown i mbështetur. Shift+Enter për një linjë të re.</translation>
+        </message>
+        <message>
+            <source>Add</source>
+            <translation>Shto</translation>
         </message>
     </context>
     <context>
@@ -2647,6 +2659,14 @@
             <source>Identity imported.</source>
             <translation>Identiteti u importua.</translation>
         </message>
+        <message>
+            <source>Invalid game state.</source>
+            <translation>Gjendje e pavlefshme e lojës.</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Ky veprim i lojës nuk është më i disponueshëm.</translation>
+        </message>
     </context>
     <context>
         <name>LocalLanguage</name>
@@ -3313,6 +3333,176 @@
         <message>
             <source>See you next time.</source>
             <translation>Deri herën tjetër.</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameCard</name>
+        <message>
+            <source>Invited by %1</source>
+            <translation>Ftesë nga %1</translation>
+        </message>
+        <message>
+            <source>%1 wins!</source>
+            <translation>%1 fiton!</translation>
+        </message>
+        <message>
+            <source>Join</source>
+            <translation>Bashkohu</translation>
+        </message>
+        <message>
+            <source>Leave</source>
+            <translation>Largohu</translation>
+        </message>
+        <message>
+            <source>Elements</source>
+            <translation>Elementet</translation>
+        </message>
+        <message>
+            <source>Game ended</source>
+            <translation>Loja përfundoi</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Hap</translation>
+        </message>
+    </context>
+    <context>
+        <name>GamePane</name>
+        <message>
+            <source>Finish your current game first.</source>
+            <translation>Përfundo fillimisht lojën aktuale.</translation>
+        </message>
+        <message>
+            <source>Fire</source>
+            <translation>Zjarr</translation>
+        </message>
+        <message>
+            <source>Water</source>
+            <translation>Ujë</translation>
+        </message>
+        <message>
+            <source>Ice</source>
+            <translation>Akull</translation>
+        </message>
+        <message>
+            <source>Core</source>
+            <translation>Bërthamë</translation>
+        </message>
+        <message>
+            <source>Trap</source>
+            <translation>Kurth</translation>
+        </message>
+        <message>
+            <source>Unknown</source>
+            <translation>E panjohur</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Ky veprim i lojës nuk është më i disponueshëm.</translation>
+        </message>
+        <message>
+            <source>Game unavailable</source>
+            <translation>Loja nuk është e disponueshme</translation>
+        </message>
+        <message>
+            <source>Same element. Choose again.</source>
+            <translation>I njëjti element. Zgjidh përsëri.</translation>
+        </message>
+        <message>
+            <source>Your turn</source>
+            <translation>Radha jote</translation>
+        </message>
+        <message>
+            <source>%1's turn</source>
+            <translation>Radha e %1</translation>
+        </message>
+        <message>
+            <source>Waiting for the other player</source>
+            <translation>Në pritje të lojtarit tjetër</translation>
+        </message>
+        <message>
+            <source>Water beats Fire. Fire beats Ice. Ice beats Water.</source>
+            <translation>Uji mund zjarrin. Zjarri mund akullin. Akulli mund ujin.</translation>
+        </message>
+        <message>
+            <source>Empty</source>
+            <translation>Bosh</translation>
+        </message>
+        <message>
+            <source>Ice freezes Water</source>
+            <translation>Akulli ngrin ujin</translation>
+        </message>
+        <message>
+            <source>Fire melts Ice</source>
+            <translation>Zjarri shkrin akullin</translation>
+        </message>
+        <message>
+            <source>Water extinguishes Fire</source>
+            <translation>Uji shuan zjarrin</translation>
+        </message>
+        <message>
+            <source>Neutral</source>
+            <translation>Neutrale</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>Zgjidh një element</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>Informacion</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>Fitore</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>Humbje</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>Mbetur</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>Të kapura</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>Të dalësh nga loja?</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>Nëse largohesh, fiton lojtari tjetër.</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>Ta anulosh ftesën?</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>Zgjidh Kurthin, pastaj Bërthamën. Lëviz një katror. Kap Bërthamën kundërshtare për të fituar.</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>Zgjidh elementin në betejën e parë. Në barazim zgjidh përsëri.</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>Nuk lëviz. Mund çdo sulmues.</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>Nuk lëviz. Mbroje për të qëndruar në lojë.</translation>
+        </message>
+        <message>
+            <source>Computer</source>
+            <translation>Kompjuter</translation>
+        </message>
+        <message>
+            <source>Play against the computer?</source>
+            <translation>Të luash kundër kompjuterit?</translation>
         </message>
     </context>
 </TS>

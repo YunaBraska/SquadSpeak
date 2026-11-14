@@ -1229,6 +1229,18 @@
             <source>Import</source>
             <translation>Importa</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>Status mhux magħruf</translation>
+        </message>
+        <message>
+            <source>Chat</source>
+            <translation>Chat</translation>
+        </message>
+        <message>
+            <source>Game</source>
+            <translation>Logħba</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1436,12 +1448,12 @@
             <translation>Messaġġi ta' qabel</translation>
         </message>
         <message>
-            <source>Attach image</source>
-            <translation>Ehmeż immaġni</translation>
-        </message>
-        <message>
             <source>Chat message. Markdown supported. Shift+Enter for a new line.</source>
             <translation>Messaġġ taċ-chat. Markdown huwa appoġġat. Shift+Enter għal linja ġdida.</translation>
+        </message>
+        <message>
+            <source>Add</source>
+            <translation>Żid</translation>
         </message>
     </context>
     <context>
@@ -2647,6 +2659,14 @@
             <source>Identity imported.</source>
             <translation>L-identità ġiet importata.</translation>
         </message>
+        <message>
+            <source>Invalid game state.</source>
+            <translation>Stat tal-logħba mhux validu.</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Din l-azzjoni tal-logħba m’għadhiex disponibbli.</translation>
+        </message>
     </context>
     <context>
         <name>LocalLanguage</name>
@@ -3313,6 +3333,176 @@
         <message>
             <source>See you next time.</source>
             <translation>Sal-ħin li jmiss.</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameCard</name>
+        <message>
+            <source>Invited by %1</source>
+            <translation>Stedina minn %1</translation>
+        </message>
+        <message>
+            <source>%1 wins!</source>
+            <translation>%1 rebaħ!</translation>
+        </message>
+        <message>
+            <source>Join</source>
+            <translation>Ingħaqad</translation>
+        </message>
+        <message>
+            <source>Leave</source>
+            <translation>Oħroġ</translation>
+        </message>
+        <message>
+            <source>Elements</source>
+            <translation>Elementi</translation>
+        </message>
+        <message>
+            <source>Game ended</source>
+            <translation>Il-logħba spiċċat</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Iftaħ</translation>
+        </message>
+    </context>
+    <context>
+        <name>GamePane</name>
+        <message>
+            <source>Finish your current game first.</source>
+            <translation>Lesti l-logħba attwali tiegħek l-ewwel.</translation>
+        </message>
+        <message>
+            <source>Fire</source>
+            <translation>Nar</translation>
+        </message>
+        <message>
+            <source>Water</source>
+            <translation>Ilma</translation>
+        </message>
+        <message>
+            <source>Ice</source>
+            <translation>Silġ</translation>
+        </message>
+        <message>
+            <source>Core</source>
+            <translation>Qalba</translation>
+        </message>
+        <message>
+            <source>Trap</source>
+            <translation>Nassa</translation>
+        </message>
+        <message>
+            <source>Unknown</source>
+            <translation>Mhux magħruf</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Din l-azzjoni tal-logħba m’għadhiex disponibbli.</translation>
+        </message>
+        <message>
+            <source>Game unavailable</source>
+            <translation>Il-logħba mhix disponibbli</translation>
+        </message>
+        <message>
+            <source>Same element. Choose again.</source>
+            <translation>L-istess element. Agħżel mill-ġdid.</translation>
+        </message>
+        <message>
+            <source>Your turn</source>
+            <translation>Imissek</translation>
+        </message>
+        <message>
+            <source>%1's turn</source>
+            <translation>Imiss lil %1</translation>
+        </message>
+        <message>
+            <source>Waiting for the other player</source>
+            <translation>Qed tistenna l-plejer l-ieħor</translation>
+        </message>
+        <message>
+            <source>Water beats Fire. Fire beats Ice. Ice beats Water.</source>
+            <translation>L-ilma jegħleb in-nar. In-nar jegħleb is-silġ. Is-silġ jegħleb l-ilma.</translation>
+        </message>
+        <message>
+            <source>Empty</source>
+            <translation>Vojt</translation>
+        </message>
+        <message>
+            <source>Ice freezes Water</source>
+            <translation>Is-silġ jiffriża l-ilma</translation>
+        </message>
+        <message>
+            <source>Fire melts Ice</source>
+            <translation>In-nar idewweb is-silġ</translation>
+        </message>
+        <message>
+            <source>Water extinguishes Fire</source>
+            <translation>L-ilma jitfi n-nar</translation>
+        </message>
+        <message>
+            <source>Neutral</source>
+            <translation>Newtrali</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>Agħżel element</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>Informazzjoni</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>Rebħa</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>Telfa</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>Fadal</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>Maqbuda</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>Titlaq mil-logħba?</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>Jekk titlaq, jirbaħ il-plejer l-ieħor.</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>Tħassar l-istedina?</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>Agħżel Nassa, imbagħad Qalba. Imxi kaxxa waħda. Aqbad il-Qalba l-oħra biex tirbaħ.</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>Agħżel l-element fl-ewwel ġlieda. Jekk tispiċċa ndaqs, agħżel mill-ġdid.</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>Ma tiċċaqlaqx. Tegħleb kull attakkant.</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>Ma tiċċaqlaqx. Ipproteġiha biex tibqa’ fil-logħba.</translation>
+        </message>
+        <message>
+            <source>Computer</source>
+            <translation>Kompjuter</translation>
+        </message>
+        <message>
+            <source>Play against the computer?</source>
+            <translation>Tilgħab kontra l-kompjuter?</translation>
         </message>
     </context>
 </TS>

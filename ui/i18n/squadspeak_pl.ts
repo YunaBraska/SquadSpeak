@@ -1229,6 +1229,18 @@
             <source>Import</source>
             <translation>Importuj</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>Status nieznany</translation>
+        </message>
+        <message>
+            <source>Chat</source>
+            <translation>Czat</translation>
+        </message>
+        <message>
+            <source>Game</source>
+            <translation>Gra</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1436,12 +1448,12 @@
             <translation>Wcześniejsze wiadomości</translation>
         </message>
         <message>
-            <source>Attach image</source>
-            <translation>Załącz obraz</translation>
-        </message>
-        <message>
             <source>Chat message. Markdown supported. Shift+Enter for a new line.</source>
             <translation>Wiadomość czatu. Obsługiwany Markdown. Shift+Enter tworzy nową linię.</translation>
+        </message>
+        <message>
+            <source>Add</source>
+            <translation>Dodaj</translation>
         </message>
     </context>
     <context>
@@ -2647,6 +2659,14 @@
             <source>Identity imported.</source>
             <translation>Tożsamość zaimportowana.</translation>
         </message>
+        <message>
+            <source>Invalid game state.</source>
+            <translation>Nieprawidłowy stan gry.</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Ta akcja w grze nie jest już dostępna.</translation>
+        </message>
     </context>
     <context>
         <name>LocalLanguage</name>
@@ -3313,6 +3333,176 @@
         <message>
             <source>See you next time.</source>
             <translation>Do następnego razu.</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameCard</name>
+        <message>
+            <source>Invited by %1</source>
+            <translation>Zaproszenie od %1</translation>
+        </message>
+        <message>
+            <source>%1 wins!</source>
+            <translation>%1 wygrywa!</translation>
+        </message>
+        <message>
+            <source>Join</source>
+            <translation>Dołącz</translation>
+        </message>
+        <message>
+            <source>Leave</source>
+            <translation>Opuść</translation>
+        </message>
+        <message>
+            <source>Elements</source>
+            <translation>Żywioły</translation>
+        </message>
+        <message>
+            <source>Game ended</source>
+            <translation>Gra zakończona</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Otwórz</translation>
+        </message>
+    </context>
+    <context>
+        <name>GamePane</name>
+        <message>
+            <source>Finish your current game first.</source>
+            <translation>Najpierw zakończ obecną grę.</translation>
+        </message>
+        <message>
+            <source>Fire</source>
+            <translation>Ogień</translation>
+        </message>
+        <message>
+            <source>Water</source>
+            <translation>Woda</translation>
+        </message>
+        <message>
+            <source>Ice</source>
+            <translation>Lód</translation>
+        </message>
+        <message>
+            <source>Core</source>
+            <translation>Rdzeń</translation>
+        </message>
+        <message>
+            <source>Trap</source>
+            <translation>Pułapka</translation>
+        </message>
+        <message>
+            <source>Unknown</source>
+            <translation>Nieznane</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Ta akcja w grze nie jest już dostępna.</translation>
+        </message>
+        <message>
+            <source>Game unavailable</source>
+            <translation>Gra niedostępna</translation>
+        </message>
+        <message>
+            <source>Same element. Choose again.</source>
+            <translation>Ten sam żywioł. Wybierz ponownie.</translation>
+        </message>
+        <message>
+            <source>Your turn</source>
+            <translation>Twój ruch</translation>
+        </message>
+        <message>
+            <source>%1's turn</source>
+            <translation>Ruch gracza %1</translation>
+        </message>
+        <message>
+            <source>Waiting for the other player</source>
+            <translation>Oczekiwanie na drugiego gracza</translation>
+        </message>
+        <message>
+            <source>Water beats Fire. Fire beats Ice. Ice beats Water.</source>
+            <translation>Woda pokonuje ogień. Ogień pokonuje lód. Lód pokonuje wodę.</translation>
+        </message>
+        <message>
+            <source>Empty</source>
+            <translation>Puste</translation>
+        </message>
+        <message>
+            <source>Ice freezes Water</source>
+            <translation>Lód zamraża wodę</translation>
+        </message>
+        <message>
+            <source>Fire melts Ice</source>
+            <translation>Ogień topi lód</translation>
+        </message>
+        <message>
+            <source>Water extinguishes Fire</source>
+            <translation>Woda gasi ogień</translation>
+        </message>
+        <message>
+            <source>Neutral</source>
+            <translation>Neutralne</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>Wybierz żywioł</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>Informacje</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>Zwycięstwo</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>Porażka</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>Pozostałe</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>Pokonane</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>Opuścić grę?</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>Jeśli wyjdziesz, wygra druga osoba.</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>Anulować zaproszenie?</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>Wybierz Pułapkę, potem Rdzeń. Ruszaj o jedno pole. Zdobądź Rdzeń przeciwnika, by wygrać.</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>Wybierz żywioł przy pierwszej walce. Po remisie wybierz ponownie.</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>Nie rusza się. Pokonuje każdego atakującego.</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>Nie rusza się. Chroń go, by pozostać w grze.</translation>
+        </message>
+        <message>
+            <source>Computer</source>
+            <translation>Komputer</translation>
+        </message>
+        <message>
+            <source>Play against the computer?</source>
+            <translation>Zagrać z komputerem?</translation>
         </message>
     </context>
 </TS>

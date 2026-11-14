@@ -1229,6 +1229,18 @@
             <source>Import</source>
             <translation>İçe aktar</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>Durum bilinmiyor</translation>
+        </message>
+        <message>
+            <source>Chat</source>
+            <translation>Sohbet</translation>
+        </message>
+        <message>
+            <source>Game</source>
+            <translation>Oyun</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1436,12 +1448,12 @@
             <translation>Önceki mesajlar</translation>
         </message>
         <message>
-            <source>Attach image</source>
-            <translation>Görsel ekle</translation>
-        </message>
-        <message>
             <source>Chat message. Markdown supported. Shift+Enter for a new line.</source>
             <translation>Sohbet mesajı. Markdown desteklenir. Yeni satır için Shift+Enter.</translation>
+        </message>
+        <message>
+            <source>Add</source>
+            <translation>Ekle</translation>
         </message>
     </context>
     <context>
@@ -2647,6 +2659,14 @@
             <source>Identity imported.</source>
             <translation>Kimlik içe aktarıldı.</translation>
         </message>
+        <message>
+            <source>Invalid game state.</source>
+            <translation>Geçersiz oyun durumu.</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Bu oyun eylemi artık kullanılamıyor.</translation>
+        </message>
     </context>
     <context>
         <name>LocalLanguage</name>
@@ -3313,6 +3333,176 @@
         <message>
             <source>See you next time.</source>
             <translation>Bir dahaki sefere görüşürüz.</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameCard</name>
+        <message>
+            <source>Invited by %1</source>
+            <translation>Davet eden: %1</translation>
+        </message>
+        <message>
+            <source>%1 wins!</source>
+            <translation>%1 kazandı!</translation>
+        </message>
+        <message>
+            <source>Join</source>
+            <translation>Katıl</translation>
+        </message>
+        <message>
+            <source>Leave</source>
+            <translation>Ayrıl</translation>
+        </message>
+        <message>
+            <source>Elements</source>
+            <translation>Elementler</translation>
+        </message>
+        <message>
+            <source>Game ended</source>
+            <translation>Oyun bitti</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Aç</translation>
+        </message>
+    </context>
+    <context>
+        <name>GamePane</name>
+        <message>
+            <source>Finish your current game first.</source>
+            <translation>Önce mevcut oyununu bitir.</translation>
+        </message>
+        <message>
+            <source>Fire</source>
+            <translation>Ateş</translation>
+        </message>
+        <message>
+            <source>Water</source>
+            <translation>Su</translation>
+        </message>
+        <message>
+            <source>Ice</source>
+            <translation>Buz</translation>
+        </message>
+        <message>
+            <source>Core</source>
+            <translation>Çekirdek</translation>
+        </message>
+        <message>
+            <source>Trap</source>
+            <translation>Tuzak</translation>
+        </message>
+        <message>
+            <source>Unknown</source>
+            <translation>Bilinmiyor</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Bu oyun eylemi artık kullanılamıyor.</translation>
+        </message>
+        <message>
+            <source>Game unavailable</source>
+            <translation>Oyun kullanılamıyor</translation>
+        </message>
+        <message>
+            <source>Same element. Choose again.</source>
+            <translation>Aynı element. Tekrar seç.</translation>
+        </message>
+        <message>
+            <source>Your turn</source>
+            <translation>Sıra sende</translation>
+        </message>
+        <message>
+            <source>%1's turn</source>
+            <translation>Sıra %1 adlı oyuncuda</translation>
+        </message>
+        <message>
+            <source>Waiting for the other player</source>
+            <translation>Diğer oyuncu bekleniyor</translation>
+        </message>
+        <message>
+            <source>Water beats Fire. Fire beats Ice. Ice beats Water.</source>
+            <translation>Su ateşi yener. Ateş buzu yener. Buz suyu yener.</translation>
+        </message>
+        <message>
+            <source>Empty</source>
+            <translation>Boş</translation>
+        </message>
+        <message>
+            <source>Ice freezes Water</source>
+            <translation>Buz suyu dondurur</translation>
+        </message>
+        <message>
+            <source>Fire melts Ice</source>
+            <translation>Ateş buzu eritir</translation>
+        </message>
+        <message>
+            <source>Water extinguishes Fire</source>
+            <translation>Su ateşi söndürür</translation>
+        </message>
+        <message>
+            <source>Neutral</source>
+            <translation>Nötr</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>Bir element seç</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>Bilgi</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>Zafer</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>Yenilgi</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>Kalan</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>Yenilen</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>Oyundan çıkılsın mı?</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>Çıkarsan diğer oyuncu kazanır.</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>Bu davet iptal edilsin mi?</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>Önce Tuzak, sonra Çekirdek seç. Bir kare ilerle. Kazanmak için rakibin Çekirdeğini ele geçir.</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>İlk savaşında elementini seç. Beraberlikte yeniden seçebilirsin.</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>Hareket etmez. Her saldırganı yener.</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>Hareket etmez. Oyunda kalmak için onu koru.</translation>
+        </message>
+        <message>
+            <source>Computer</source>
+            <translation>Bilgisayar</translation>
+        </message>
+        <message>
+            <source>Play against the computer?</source>
+            <translation>Bilgisayara karşı oynansın mı?</translation>
         </message>
     </context>
 </TS>

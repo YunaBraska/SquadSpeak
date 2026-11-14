@@ -113,7 +113,7 @@ do not become TS3 protocol features.
 | Individual-window sharing on Wayland | Planned | U135; first release shares the whole screen with optional computer audio. Window selection needs a portal-backed implementation and GNOME/KDE window-capture evidence |
 | User-supplied avatars | Planned | U121; format, transfer, storage and import contract remain deferred |
 | Voice changer and optional speech clarity processing | Planned | U126, SS-167/168, O-24; local, simple controls, audible bypass; no guaranteed studio-quality or voice-identity conversion |
-| Small multiplayer Channel games | Planned | U129, SS-169, O-26; choose the first game after release. Multiplayer Snake and ICQ-era games are inspiration; no game engine or exact catalog is selected |
+| Channel games (Elements) | Implemented | U129, SS-169, O-26; the first game is an [ICQ-inspired elemental board game](specs/channel-games.md). The board rules, private setup, shared Chat/Game view, optional computer opponent and TLS/UI journeys are implemented. A full match, including a secret tie choice and Core capture, was exercised between installed A/B copies. Light trails, Snake and other games remain proposals |
 | Host-created chat polls | Planned | U170, SS-182, O-29; chat "+", single/multiple choice, editable options, aggregate results and closing. Reuse chat infrastructure. Resolve the remaining lifecycle rules before implementation |
 
 ## Next implementation order

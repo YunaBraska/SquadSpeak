@@ -31,6 +31,12 @@ Canvas {
         if (symbol === "search") {
             c.beginPath(); c.arc(10, 10, 6, 0, Math.PI * 2); c.stroke()
             line([15, 15, 21, 21])
+        } else if (symbol === "info") {
+            c.beginPath(); c.arc(12, 12, 9, 0, Math.PI * 2); c.stroke()
+            line([12, 11, 12, 17]); c.beginPath(); c.arc(12, 7, 1, 0, Math.PI * 2); c.fill()
+        } else if (symbol === "trophy") {
+            line([6, 3, 18, 3, 17, 11, 12, 15, 7, 11, 6, 3]); line([12, 15, 12, 21]); line([7, 21, 17, 21])
+            line([6, 5, 2, 5, 3, 10, 7, 12]); line([18, 5, 22, 5, 21, 10, 17, 12])
         } else if (symbol === "copy") {
             c.strokeRect(8, 8, 13, 13); line([4, 16, 3, 16, 3, 3, 16, 3, 16, 4])
         } else if (symbol === "translate") {
@@ -51,6 +57,11 @@ Canvas {
             c.beginPath(); c.arc(12, 11, 8, Math.PI, Math.PI * 2); c.stroke()
             c.beginPath(); c.roundedRect(4, 11, 4, 9, 2, 2); c.stroke()
             c.beginPath(); c.roundedRect(16, 11, 4, 9, 2, 2); c.stroke()
+        } else if (symbol === "game") {
+            c.beginPath(); c.roundedRect(2, 6, 20, 13, 5, 5); c.stroke()
+            line([6, 12, 12, 12]); line([9, 9, 9, 15])
+            c.beginPath(); c.arc(17, 10, 1, 0, 7); c.fill()
+            c.beginPath(); c.arc(19, 14, 1, 0, 7); c.fill()
         } else if (symbol === "music") {
             line([9, 17, 9, 5, 20, 3, 20, 15])
             c.beginPath(); c.ellipse(3, 15, 6, 5); c.fill()

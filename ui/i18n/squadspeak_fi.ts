@@ -1229,6 +1229,18 @@
             <source>Import</source>
             <translation>Tuo</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>Tila tuntematon</translation>
+        </message>
+        <message>
+            <source>Chat</source>
+            <translation>Keskustelu</translation>
+        </message>
+        <message>
+            <source>Game</source>
+            <translation>Peli</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1436,12 +1448,12 @@
             <translation>Aikaisemmat viestit</translation>
         </message>
         <message>
-            <source>Attach image</source>
-            <translation>Lisää kuva</translation>
-        </message>
-        <message>
             <source>Chat message. Markdown supported. Shift+Enter for a new line.</source>
             <translation>Viesti. Markdown-muotoilu tuettu. Shift+Enter uuden rivin luomiseksi.</translation>
+        </message>
+        <message>
+            <source>Add</source>
+            <translation>Lisää</translation>
         </message>
     </context>
     <context>
@@ -2647,6 +2659,14 @@
             <source>Identity imported.</source>
             <translation>Identiteetti tuotu.</translation>
         </message>
+        <message>
+            <source>Invalid game state.</source>
+            <translation>Virheellinen pelitila.</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Tämä pelitoiminto ei ole enää käytettävissä.</translation>
+        </message>
     </context>
     <context>
         <name>LocalLanguage</name>
@@ -3313,6 +3333,176 @@
         <message>
             <source>See you next time.</source>
             <translation>Ensi kertaan.</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameCard</name>
+        <message>
+            <source>Invited by %1</source>
+            <translation>Kutsuja: %1</translation>
+        </message>
+        <message>
+            <source>%1 wins!</source>
+            <translation>%1 voittaa!</translation>
+        </message>
+        <message>
+            <source>Join</source>
+            <translation>Liity</translation>
+        </message>
+        <message>
+            <source>Leave</source>
+            <translation>Poistu</translation>
+        </message>
+        <message>
+            <source>Elements</source>
+            <translation>Elementit</translation>
+        </message>
+        <message>
+            <source>Game ended</source>
+            <translation>Peli päättyi</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Avaa</translation>
+        </message>
+    </context>
+    <context>
+        <name>GamePane</name>
+        <message>
+            <source>Finish your current game first.</source>
+            <translation>Pelaa nykyinen pelisi ensin loppuun.</translation>
+        </message>
+        <message>
+            <source>Fire</source>
+            <translation>Tuli</translation>
+        </message>
+        <message>
+            <source>Water</source>
+            <translation>Vesi</translation>
+        </message>
+        <message>
+            <source>Ice</source>
+            <translation>Jää</translation>
+        </message>
+        <message>
+            <source>Core</source>
+            <translation>Ydin</translation>
+        </message>
+        <message>
+            <source>Trap</source>
+            <translation>Ansa</translation>
+        </message>
+        <message>
+            <source>Unknown</source>
+            <translation>Tuntematon</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Tämä pelitoiminto ei ole enää käytettävissä.</translation>
+        </message>
+        <message>
+            <source>Game unavailable</source>
+            <translation>Peli ei ole saatavilla</translation>
+        </message>
+        <message>
+            <source>Same element. Choose again.</source>
+            <translation>Sama elementti. Valitse uudelleen.</translation>
+        </message>
+        <message>
+            <source>Your turn</source>
+            <translation>Sinun vuorosi</translation>
+        </message>
+        <message>
+            <source>%1's turn</source>
+            <translation>Pelaajan %1 vuoro</translation>
+        </message>
+        <message>
+            <source>Waiting for the other player</source>
+            <translation>Odotetaan toista pelaajaa</translation>
+        </message>
+        <message>
+            <source>Water beats Fire. Fire beats Ice. Ice beats Water.</source>
+            <translation>Vesi voittaa tulen. Tuli voittaa jään. Jää voittaa veden.</translation>
+        </message>
+        <message>
+            <source>Empty</source>
+            <translation>Tyhjä</translation>
+        </message>
+        <message>
+            <source>Ice freezes Water</source>
+            <translation>Jää jäädyttää veden</translation>
+        </message>
+        <message>
+            <source>Fire melts Ice</source>
+            <translation>Tuli sulattaa jään</translation>
+        </message>
+        <message>
+            <source>Water extinguishes Fire</source>
+            <translation>Vesi sammuttaa tulen</translation>
+        </message>
+        <message>
+            <source>Neutral</source>
+            <translation>Neutraali</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>Valitse elementti</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>Tietoa</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>Voitto</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>Tappio</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>Jäljellä</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>Voitetut</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>Poistutko pelistä?</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>Jos poistut, toinen pelaaja voittaa.</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>Perutaanko kutsu?</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>Valitse Ansa, sitten Ydin. Liiku yksi ruutu. Valtaa vastustajan Ydin voittaaksesi.</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>Valitse elementti ensimmäisessä taistelussa. Tasapelin jälkeen valitset uudelleen.</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>Pysyy paikallaan. Voittaa kaikki hyökkääjät.</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>Pysyy paikallaan. Suojele sitä pysyäksesi pelissä.</translation>
+        </message>
+        <message>
+            <source>Computer</source>
+            <translation>Tietokone</translation>
+        </message>
+        <message>
+            <source>Play against the computer?</source>
+            <translation>Pelataanko tietokonetta vastaan?</translation>
         </message>
     </context>
 </TS>

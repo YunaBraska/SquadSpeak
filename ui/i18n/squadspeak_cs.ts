@@ -1229,6 +1229,18 @@
             <source>Import</source>
             <translation>Importovat</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>Neznámý stav</translation>
+        </message>
+        <message>
+            <source>Chat</source>
+            <translation>Chat</translation>
+        </message>
+        <message>
+            <source>Game</source>
+            <translation>Hra</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1436,12 +1448,12 @@
             <translation>Předchozí zprávy</translation>
         </message>
         <message>
-            <source>Attach image</source>
-            <translation>Přidat obrázek</translation>
-        </message>
-        <message>
             <source>Chat message. Markdown supported. Shift+Enter for a new line.</source>
             <translation>Text zprávy. Podporována je syntaxe Markdown. Stisknutím Shift+Enter vytvoříte nový řádek.</translation>
+        </message>
+        <message>
+            <source>Add</source>
+            <translation>Přidat</translation>
         </message>
     </context>
     <context>
@@ -2647,6 +2659,14 @@
             <source>Identity imported.</source>
             <translation>Identita byla importována.</translation>
         </message>
+        <message>
+            <source>Invalid game state.</source>
+            <translation>Neplatný stav hry.</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Tato herní akce už není dostupná.</translation>
+        </message>
     </context>
     <context>
         <name>LocalLanguage</name>
@@ -3313,6 +3333,176 @@
         <message>
             <source>See you next time.</source>
             <translation>Uvidíme se příště.</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameCard</name>
+        <message>
+            <source>Invited by %1</source>
+            <translation>Pozvánka od %1</translation>
+        </message>
+        <message>
+            <source>%1 wins!</source>
+            <translation>%1 vyhrává!</translation>
+        </message>
+        <message>
+            <source>Join</source>
+            <translation>Připojit se</translation>
+        </message>
+        <message>
+            <source>Leave</source>
+            <translation>Opustit</translation>
+        </message>
+        <message>
+            <source>Elements</source>
+            <translation>Živly</translation>
+        </message>
+        <message>
+            <source>Game ended</source>
+            <translation>Hra skončila</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Otevřít</translation>
+        </message>
+    </context>
+    <context>
+        <name>GamePane</name>
+        <message>
+            <source>Finish your current game first.</source>
+            <translation>Nejdřív dokonči aktuální hru.</translation>
+        </message>
+        <message>
+            <source>Fire</source>
+            <translation>Oheň</translation>
+        </message>
+        <message>
+            <source>Water</source>
+            <translation>Voda</translation>
+        </message>
+        <message>
+            <source>Ice</source>
+            <translation>Led</translation>
+        </message>
+        <message>
+            <source>Core</source>
+            <translation>Jádro</translation>
+        </message>
+        <message>
+            <source>Trap</source>
+            <translation>Past</translation>
+        </message>
+        <message>
+            <source>Unknown</source>
+            <translation>Neznámé</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Tato herní akce už není dostupná.</translation>
+        </message>
+        <message>
+            <source>Game unavailable</source>
+            <translation>Hra není dostupná</translation>
+        </message>
+        <message>
+            <source>Same element. Choose again.</source>
+            <translation>Stejný živel. Vyber znovu.</translation>
+        </message>
+        <message>
+            <source>Your turn</source>
+            <translation>Jsi na tahu</translation>
+        </message>
+        <message>
+            <source>%1's turn</source>
+            <translation>Na tahu je %1</translation>
+        </message>
+        <message>
+            <source>Waiting for the other player</source>
+            <translation>Čekání na druhého hráče</translation>
+        </message>
+        <message>
+            <source>Water beats Fire. Fire beats Ice. Ice beats Water.</source>
+            <translation>Voda porazí oheň. Oheň porazí led. Led porazí vodu.</translation>
+        </message>
+        <message>
+            <source>Empty</source>
+            <translation>Prázdné</translation>
+        </message>
+        <message>
+            <source>Ice freezes Water</source>
+            <translation>Led zmrazí vodu</translation>
+        </message>
+        <message>
+            <source>Fire melts Ice</source>
+            <translation>Oheň roztaví led</translation>
+        </message>
+        <message>
+            <source>Water extinguishes Fire</source>
+            <translation>Voda uhasí oheň</translation>
+        </message>
+        <message>
+            <source>Neutral</source>
+            <translation>Neutrální</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>Vyber živel</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>Informace</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>Vítězství</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>Porážka</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>Zbývající</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>Získané</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>Opustit hru?</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>Když odejdeš, vyhraje druhý hráč.</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>Zrušit pozvánku?</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>Vyber Past, potom Jádro. Táhni o jedno pole. Získej soupeřovo Jádro a vyhraj.</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>Vyber živel při prvním souboji. Při remíze vybíráš znovu.</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>Nehýbe se. Porazí každého útočníka.</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>Nehýbe se. Chraň ho, abys zůstal ve hře.</translation>
+        </message>
+        <message>
+            <source>Computer</source>
+            <translation>Počítač</translation>
+        </message>
+        <message>
+            <source>Play against the computer?</source>
+            <translation>Hrát proti počítači?</translation>
         </message>
     </context>
 </TS>

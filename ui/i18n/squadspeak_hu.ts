@@ -1229,6 +1229,18 @@
             <source>Import</source>
             <translation>Importálás</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>Ismeretlen állapot</translation>
+        </message>
+        <message>
+            <source>Chat</source>
+            <translation>Csevegés</translation>
+        </message>
+        <message>
+            <source>Game</source>
+            <translation>Játék</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1436,12 +1448,12 @@
             <translation>Korábbi üzenetek</translation>
         </message>
         <message>
-            <source>Attach image</source>
-            <translation>Kép csatolása</translation>
-        </message>
-        <message>
             <source>Chat message. Markdown supported. Shift+Enter for a new line.</source>
             <translation>Csevegőüzenet. Markdown támogatott. Shift+Enter új sorhoz.</translation>
+        </message>
+        <message>
+            <source>Add</source>
+            <translation>Add</translation>
         </message>
     </context>
     <context>
@@ -2647,6 +2659,14 @@
             <source>Identity imported.</source>
             <translation>Identitás importálva.</translation>
         </message>
+        <message>
+            <source>Invalid game state.</source>
+            <translation>Érvénytelen játékállapot.</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Ez a játékművelet már nem érhető el.</translation>
+        </message>
     </context>
     <context>
         <name>LocalLanguage</name>
@@ -3313,6 +3333,176 @@
         <message>
             <source>See you next time.</source>
             <translation>Legközelebb találkozunk.</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameCard</name>
+        <message>
+            <source>Invited by %1</source>
+            <translation>Meghívó: %1</translation>
+        </message>
+        <message>
+            <source>%1 wins!</source>
+            <translation>%1 nyert!</translation>
+        </message>
+        <message>
+            <source>Join</source>
+            <translation>Csatlakozz</translation>
+        </message>
+        <message>
+            <source>Leave</source>
+            <translation>Kilépés</translation>
+        </message>
+        <message>
+            <source>Elements</source>
+            <translation>Elemek</translation>
+        </message>
+        <message>
+            <source>Game ended</source>
+            <translation>A játék véget ért</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Megnyitás</translation>
+        </message>
+    </context>
+    <context>
+        <name>GamePane</name>
+        <message>
+            <source>Finish your current game first.</source>
+            <translation>Előbb fejezd be a jelenlegi játékodat.</translation>
+        </message>
+        <message>
+            <source>Fire</source>
+            <translation>Tűz</translation>
+        </message>
+        <message>
+            <source>Water</source>
+            <translation>Víz</translation>
+        </message>
+        <message>
+            <source>Ice</source>
+            <translation>Jég</translation>
+        </message>
+        <message>
+            <source>Core</source>
+            <translation>Mag</translation>
+        </message>
+        <message>
+            <source>Trap</source>
+            <translation>Csapda</translation>
+        </message>
+        <message>
+            <source>Unknown</source>
+            <translation>Ismeretlen</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Ez a játékművelet már nem érhető el.</translation>
+        </message>
+        <message>
+            <source>Game unavailable</source>
+            <translation>A játék nem érhető el</translation>
+        </message>
+        <message>
+            <source>Same element. Choose again.</source>
+            <translation>Azonos elem. Válassz újra.</translation>
+        </message>
+        <message>
+            <source>Your turn</source>
+            <translation>Te következel</translation>
+        </message>
+        <message>
+            <source>%1's turn</source>
+            <translation>%1 következik</translation>
+        </message>
+        <message>
+            <source>Waiting for the other player</source>
+            <translation>Várakozás a másik játékosra</translation>
+        </message>
+        <message>
+            <source>Water beats Fire. Fire beats Ice. Ice beats Water.</source>
+            <translation>A víz legyőzi a tüzet. A tűz legyőzi a jeget. A jég legyőzi a vizet.</translation>
+        </message>
+        <message>
+            <source>Empty</source>
+            <translation>Üres</translation>
+        </message>
+        <message>
+            <source>Ice freezes Water</source>
+            <translation>A jég megfagyasztja a vizet</translation>
+        </message>
+        <message>
+            <source>Fire melts Ice</source>
+            <translation>A tűz megolvasztja a jeget</translation>
+        </message>
+        <message>
+            <source>Water extinguishes Fire</source>
+            <translation>A víz eloltja a tüzet</translation>
+        </message>
+        <message>
+            <source>Neutral</source>
+            <translation>Semleges</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>Válassz egy elemet</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>Információ</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>Győzelem</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>Vereség</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>Megmaradt</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>Legyőzött</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>Kilépsz a játékból?</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>Ha kilépsz, a másik játékos nyer.</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>Visszavonod a meghívást?</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>Válaszd ki a Csapdát, majd a Magot. Lépj egy mezőt. Foglald el a másik Magját a győzelemhez.</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>Válassz elemet az első harcban. Döntetlennél újra választhatsz.</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>Nem mozog. Minden támadót legyőz.</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>Nem mozog. Védd meg, hogy játékban maradj.</translation>
+        </message>
+        <message>
+            <source>Computer</source>
+            <translation>Számítógép</translation>
+        </message>
+        <message>
+            <source>Play against the computer?</source>
+            <translation>Játszol a számítógép ellen?</translation>
         </message>
     </context>
 </TS>

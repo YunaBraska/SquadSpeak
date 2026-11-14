@@ -1229,6 +1229,18 @@
             <source>Import</source>
             <translation>Importēt</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>Statuss nav zināms</translation>
+        </message>
+        <message>
+            <source>Chat</source>
+            <translation>Saruna</translation>
+        </message>
+        <message>
+            <source>Game</source>
+            <translation>Spēle</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1436,12 +1448,12 @@
             <translation>Iepriekšējie ziņojumi</translation>
         </message>
         <message>
-            <source>Attach image</source>
-            <translation>pievienojiet attēlu</translation>
-        </message>
-        <message>
             <source>Chat message. Markdown supported. Shift+Enter for a new line.</source>
             <translation>tērzēšanas ziņojums. Atbalstīta atzīme. Shift+Enter, lai atvērtu jaunu rindiņu.</translation>
+        </message>
+        <message>
+            <source>Add</source>
+            <translation>pievienot</translation>
         </message>
     </context>
     <context>
@@ -2647,6 +2659,14 @@
             <source>Identity imported.</source>
             <translation>Identitāte importēta.</translation>
         </message>
+        <message>
+            <source>Invalid game state.</source>
+            <translation>Nederīgs spēles stāvoklis.</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Šī spēles darbība vairs nav pieejama.</translation>
+        </message>
     </context>
     <context>
         <name>LocalLanguage</name>
@@ -3313,6 +3333,176 @@
         <message>
             <source>See you next time.</source>
             <translation>Līdz nākamajai reizei.</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameCard</name>
+        <message>
+            <source>Invited by %1</source>
+            <translation>Uzaicinājums no %1</translation>
+        </message>
+        <message>
+            <source>%1 wins!</source>
+            <translation>%1 uzvar!</translation>
+        </message>
+        <message>
+            <source>Join</source>
+            <translation>pievienojieties</translation>
+        </message>
+        <message>
+            <source>Leave</source>
+            <translation>Aiziet</translation>
+        </message>
+        <message>
+            <source>Elements</source>
+            <translation>Elementi</translation>
+        </message>
+        <message>
+            <source>Game ended</source>
+            <translation>Spēle beidzās</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Atvērt</translation>
+        </message>
+    </context>
+    <context>
+        <name>GamePane</name>
+        <message>
+            <source>Finish your current game first.</source>
+            <translation>Vispirms pabeidz pašreizējo spēli.</translation>
+        </message>
+        <message>
+            <source>Fire</source>
+            <translation>Uguns</translation>
+        </message>
+        <message>
+            <source>Water</source>
+            <translation>Ūdens</translation>
+        </message>
+        <message>
+            <source>Ice</source>
+            <translation>Ledus</translation>
+        </message>
+        <message>
+            <source>Core</source>
+            <translation>Kodols</translation>
+        </message>
+        <message>
+            <source>Trap</source>
+            <translation>Lamatas</translation>
+        </message>
+        <message>
+            <source>Unknown</source>
+            <translation>Nezināms</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Šī spēles darbība vairs nav pieejama.</translation>
+        </message>
+        <message>
+            <source>Game unavailable</source>
+            <translation>Spēle nav pieejama</translation>
+        </message>
+        <message>
+            <source>Same element. Choose again.</source>
+            <translation>Tas pats elements. Izvēlies vēlreiz.</translation>
+        </message>
+        <message>
+            <source>Your turn</source>
+            <translation>Tavs gājiens</translation>
+        </message>
+        <message>
+            <source>%1's turn</source>
+            <translation>%1 gājiens</translation>
+        </message>
+        <message>
+            <source>Waiting for the other player</source>
+            <translation>Gaida otru spēlētāju</translation>
+        </message>
+        <message>
+            <source>Water beats Fire. Fire beats Ice. Ice beats Water.</source>
+            <translation>Ūdens uzvar uguni. Uguns uzvar ledu. Ledus uzvar ūdeni.</translation>
+        </message>
+        <message>
+            <source>Empty</source>
+            <translation>Tukšs</translation>
+        </message>
+        <message>
+            <source>Ice freezes Water</source>
+            <translation>Ledus sasaldē ūdeni</translation>
+        </message>
+        <message>
+            <source>Fire melts Ice</source>
+            <translation>Uguns izkausē ledu</translation>
+        </message>
+        <message>
+            <source>Water extinguishes Fire</source>
+            <translation>Ūdens nodzēš uguni</translation>
+        </message>
+        <message>
+            <source>Neutral</source>
+            <translation>Neitrāls</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>Izvēlies elementu</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>Informācija</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>Uzvara</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>Zaudējums</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>Atlicis</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>Uzvarēts</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>Pamest spēli?</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>Ja aiziesi, uzvarēs otrs spēlētājs.</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>Atcelt uzaicinājumu?</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>Izvēlies Lamatas, tad Kodolu. Ej vienu lauciņu. Iegūsti pretinieka Kodolu, lai uzvarētu.</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>Izvēlies elementu pirmajā cīņā. Neizšķirta gadījumā izvēlies vēlreiz.</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>Nekustas. Uzvar katru uzbrucēju.</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>Nekustas. Sargā to, lai paliktu spēlē.</translation>
+        </message>
+        <message>
+            <source>Computer</source>
+            <translation>Dators</translation>
+        </message>
+        <message>
+            <source>Play against the computer?</source>
+            <translation>Spēlēt pret datoru?</translation>
         </message>
     </context>
 </TS>

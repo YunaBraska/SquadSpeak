@@ -1229,6 +1229,18 @@
             <source>Import</source>
             <translation>Impor</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>Status tidak diketahui</translation>
+        </message>
+        <message>
+            <source>Chat</source>
+            <translation>Obrolan</translation>
+        </message>
+        <message>
+            <source>Game</source>
+            <translation>Game</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1436,12 +1448,12 @@
             <translation>Pesan sebelumnya</translation>
         </message>
         <message>
-            <source>Attach image</source>
-            <translation>Lampirkan gambar</translation>
-        </message>
-        <message>
             <source>Chat message. Markdown supported. Shift+Enter for a new line.</source>
             <translation>Pesan chat. Mendukung Markdown. Shift+Enter untuk baris baru.</translation>
+        </message>
+        <message>
+            <source>Add</source>
+            <translation>Tambah</translation>
         </message>
     </context>
     <context>
@@ -2647,6 +2659,14 @@
             <source>Identity imported.</source>
             <translation>Identitas diimpor.</translation>
         </message>
+        <message>
+            <source>Invalid game state.</source>
+            <translation>Status permainan tidak valid.</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Aksi permainan ini sudah tidak tersedia.</translation>
+        </message>
     </context>
     <context>
         <name>LocalLanguage</name>
@@ -3313,6 +3333,176 @@
         <message>
             <source>See you next time.</source>
             <translation>Sampai jumpa lagi.</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameCard</name>
+        <message>
+            <source>Invited by %1</source>
+            <translation>Diundang oleh %1</translation>
+        </message>
+        <message>
+            <source>%1 wins!</source>
+            <translation>%1 menang!</translation>
+        </message>
+        <message>
+            <source>Join</source>
+            <translation>Gabung</translation>
+        </message>
+        <message>
+            <source>Leave</source>
+            <translation>Keluar</translation>
+        </message>
+        <message>
+            <source>Elements</source>
+            <translation>Elemen</translation>
+        </message>
+        <message>
+            <source>Game ended</source>
+            <translation>Permainan berakhir</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Buka</translation>
+        </message>
+    </context>
+    <context>
+        <name>GamePane</name>
+        <message>
+            <source>Finish your current game first.</source>
+            <translation>Selesaikan permainanmu saat ini dulu.</translation>
+        </message>
+        <message>
+            <source>Fire</source>
+            <translation>Api</translation>
+        </message>
+        <message>
+            <source>Water</source>
+            <translation>Air</translation>
+        </message>
+        <message>
+            <source>Ice</source>
+            <translation>Es</translation>
+        </message>
+        <message>
+            <source>Core</source>
+            <translation>Inti</translation>
+        </message>
+        <message>
+            <source>Trap</source>
+            <translation>Jebakan</translation>
+        </message>
+        <message>
+            <source>Unknown</source>
+            <translation>Tidak diketahui</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Aksi permainan ini sudah tidak tersedia.</translation>
+        </message>
+        <message>
+            <source>Game unavailable</source>
+            <translation>Permainan tidak tersedia</translation>
+        </message>
+        <message>
+            <source>Same element. Choose again.</source>
+            <translation>Elemen sama. Pilih lagi.</translation>
+        </message>
+        <message>
+            <source>Your turn</source>
+            <translation>Giliranmu</translation>
+        </message>
+        <message>
+            <source>%1's turn</source>
+            <translation>Giliran %1</translation>
+        </message>
+        <message>
+            <source>Waiting for the other player</source>
+            <translation>Menunggu pemain lain</translation>
+        </message>
+        <message>
+            <source>Water beats Fire. Fire beats Ice. Ice beats Water.</source>
+            <translation>Air mengalahkan api. Api mengalahkan es. Es mengalahkan air.</translation>
+        </message>
+        <message>
+            <source>Empty</source>
+            <translation>Kosong</translation>
+        </message>
+        <message>
+            <source>Ice freezes Water</source>
+            <translation>Es membekukan air</translation>
+        </message>
+        <message>
+            <source>Fire melts Ice</source>
+            <translation>Api mencairkan es</translation>
+        </message>
+        <message>
+            <source>Water extinguishes Fire</source>
+            <translation>Air memadamkan api</translation>
+        </message>
+        <message>
+            <source>Neutral</source>
+            <translation>Netral</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>Pilih elemen</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>Informasi</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>Menang</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>Kalah</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>Tersisa</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>Dikalahkan</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>Keluar dari permainan?</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>Jika keluar, pemain lain menang.</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>Batalkan undangan ini?</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>Pilih Jebakan, lalu Inti. Bergerak satu petak. Rebut Inti lawan untuk menang.</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>Pilih elemennya pada pertarungan pertama. Jika seri, pilih lagi.</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>Diam di tempat. Mengalahkan semua penyerang.</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>Diam di tempat. Lindungi agar tetap bermain.</translation>
+        </message>
+        <message>
+            <source>Computer</source>
+            <translation>Komputer</translation>
+        </message>
+        <message>
+            <source>Play against the computer?</source>
+            <translation>Main melawan komputer?</translation>
         </message>
     </context>
 </TS>

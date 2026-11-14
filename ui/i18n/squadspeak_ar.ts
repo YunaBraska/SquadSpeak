@@ -1229,6 +1229,18 @@
             <source>Import</source>
             <translation>استيراد</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>الحالة غير معروفة</translation>
+        </message>
+        <message>
+            <source>Chat</source>
+            <translation>الدردشة</translation>
+        </message>
+        <message>
+            <source>Game</source>
+            <translation>اللعبة</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1436,12 +1448,12 @@
             <translation>الرسائل السابقة</translation>
         </message>
         <message>
-            <source>Attach image</source>
-            <translation>إرفاق صورة</translation>
-        </message>
-        <message>
             <source>Chat message. Markdown supported. Shift+Enter for a new line.</source>
             <translation>رسالة دردشة. Markdown مدعوم. Shift+Enter لسطر جديد.</translation>
+        </message>
+        <message>
+            <source>Add</source>
+            <translation>إضافة</translation>
         </message>
     </context>
     <context>
@@ -2647,6 +2659,14 @@
             <source>Identity imported.</source>
             <translation>تم استيراد الهوية.</translation>
         </message>
+        <message>
+            <source>Invalid game state.</source>
+            <translation>حالة اللعبة غير صالحة.</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>لم يعد هذا الإجراء متاحًا في اللعبة.</translation>
+        </message>
     </context>
     <context>
         <name>LocalLanguage</name>
@@ -3313,6 +3333,176 @@
         <message>
             <source>See you next time.</source>
             <translation>إلى اللقاء.</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameCard</name>
+        <message>
+            <source>Invited by %1</source>
+            <translation>دعوة من %1</translation>
+        </message>
+        <message>
+            <source>%1 wins!</source>
+            <translation>فاز %1!</translation>
+        </message>
+        <message>
+            <source>Join</source>
+            <translation>انضمام</translation>
+        </message>
+        <message>
+            <source>Leave</source>
+            <translation>مغادرة</translation>
+        </message>
+        <message>
+            <source>Elements</source>
+            <translation>العناصر</translation>
+        </message>
+        <message>
+            <source>Game ended</source>
+            <translation>انتهت اللعبة</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>فتح</translation>
+        </message>
+    </context>
+    <context>
+        <name>GamePane</name>
+        <message>
+            <source>Finish your current game first.</source>
+            <translation>أنهِ لعبتك الحالية أولًا.</translation>
+        </message>
+        <message>
+            <source>Fire</source>
+            <translation>نار</translation>
+        </message>
+        <message>
+            <source>Water</source>
+            <translation>ماء</translation>
+        </message>
+        <message>
+            <source>Ice</source>
+            <translation>جليد</translation>
+        </message>
+        <message>
+            <source>Core</source>
+            <translation>النواة</translation>
+        </message>
+        <message>
+            <source>Trap</source>
+            <translation>الفخ</translation>
+        </message>
+        <message>
+            <source>Unknown</source>
+            <translation>مجهول</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>لم يعد هذا الإجراء متاحًا في اللعبة.</translation>
+        </message>
+        <message>
+            <source>Game unavailable</source>
+            <translation>اللعبة غير متاحة</translation>
+        </message>
+        <message>
+            <source>Same element. Choose again.</source>
+            <translation>العنصر نفسه. اختر مجددًا.</translation>
+        </message>
+        <message>
+            <source>Your turn</source>
+            <translation>دورك</translation>
+        </message>
+        <message>
+            <source>%1's turn</source>
+            <translation>دور %1</translation>
+        </message>
+        <message>
+            <source>Waiting for the other player</source>
+            <translation>في انتظار اللاعب الآخر</translation>
+        </message>
+        <message>
+            <source>Water beats Fire. Fire beats Ice. Ice beats Water.</source>
+            <translation>الماء يهزم النار. النار تهزم الجليد. الجليد يهزم الماء.</translation>
+        </message>
+        <message>
+            <source>Empty</source>
+            <translation>فارغ</translation>
+        </message>
+        <message>
+            <source>Ice freezes Water</source>
+            <translation>الجليد يجمّد الماء</translation>
+        </message>
+        <message>
+            <source>Fire melts Ice</source>
+            <translation>النار تذيب الجليد</translation>
+        </message>
+        <message>
+            <source>Water extinguishes Fire</source>
+            <translation>الماء يطفئ النار</translation>
+        </message>
+        <message>
+            <source>Neutral</source>
+            <translation>محايد</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>اختر عنصرًا</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>معلومات</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>انتصار</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>هزيمة</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>المتبقي</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>المأسور</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>مغادرة اللعبة؟</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>إذا غادرت، يفوز اللاعب الآخر.</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>إلغاء هذه الدعوة؟</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>اختر الفخ ثم النواة. تحرك مربعًا واحدًا. استولِ على نواة الخصم لتفوز.</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>اختر عنصرها في أول قتال. عند التعادل اختر مجددًا.</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>يبقى ثابتًا. يهزم كل مهاجم.</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>تبقى ثابتة. احمها لتبقى في اللعبة.</translation>
+        </message>
+        <message>
+            <source>Computer</source>
+            <translation>الكمبيوتر</translation>
+        </message>
+        <message>
+            <source>Play against the computer?</source>
+            <translation>هل تريد اللعب ضد الكمبيوتر؟</translation>
         </message>
     </context>
 </TS>

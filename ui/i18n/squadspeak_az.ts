@@ -1229,6 +1229,18 @@
             <source>Import</source>
             <translation>İdxal et</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>Status məlum deyil</translation>
+        </message>
+        <message>
+            <source>Chat</source>
+            <translation>Söhbət</translation>
+        </message>
+        <message>
+            <source>Game</source>
+            <translation>Oyun</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1436,12 +1448,12 @@
             <translation>Əvvəlki mesajlar</translation>
         </message>
         <message>
-            <source>Attach image</source>
-            <translation>Şəkil əlavə edin</translation>
-        </message>
-        <message>
             <source>Chat message. Markdown supported. Shift+Enter for a new line.</source>
             <translation>Söhbət mesajı. Markdown dəstəklənir. Yeni sətir üçün Shift+Enter.</translation>
+        </message>
+        <message>
+            <source>Add</source>
+            <translation>Əlavə et</translation>
         </message>
     </context>
     <context>
@@ -2647,6 +2659,14 @@
             <source>Identity imported.</source>
             <translation>Şəxsiyyət idxal edildi.</translation>
         </message>
+        <message>
+            <source>Invalid game state.</source>
+            <translation>Yanlış oyun vəziyyəti.</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Bu oyun əməliyyatı artıq əlçatan deyil.</translation>
+        </message>
     </context>
     <context>
         <name>LocalLanguage</name>
@@ -3313,6 +3333,176 @@
         <message>
             <source>See you next time.</source>
             <translation>Gələn dəfə görüşərik.</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameCard</name>
+        <message>
+            <source>Invited by %1</source>
+            <translation>Dəvət edən: %1</translation>
+        </message>
+        <message>
+            <source>%1 wins!</source>
+            <translation>%1 qalib gəldi!</translation>
+        </message>
+        <message>
+            <source>Join</source>
+            <translation>Qoşulun</translation>
+        </message>
+        <message>
+            <source>Leave</source>
+            <translation>Get</translation>
+        </message>
+        <message>
+            <source>Elements</source>
+            <translation>Elementlər</translation>
+        </message>
+        <message>
+            <source>Game ended</source>
+            <translation>Oyun bitdi</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Aç</translation>
+        </message>
+    </context>
+    <context>
+        <name>GamePane</name>
+        <message>
+            <source>Finish your current game first.</source>
+            <translation>Əvvəlcə cari oyununu bitir.</translation>
+        </message>
+        <message>
+            <source>Fire</source>
+            <translation>Od</translation>
+        </message>
+        <message>
+            <source>Water</source>
+            <translation>Su</translation>
+        </message>
+        <message>
+            <source>Ice</source>
+            <translation>Buz</translation>
+        </message>
+        <message>
+            <source>Core</source>
+            <translation>Özək</translation>
+        </message>
+        <message>
+            <source>Trap</source>
+            <translation>Tələ</translation>
+        </message>
+        <message>
+            <source>Unknown</source>
+            <translation>Naməlum</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Bu oyun əməliyyatı artıq əlçatan deyil.</translation>
+        </message>
+        <message>
+            <source>Game unavailable</source>
+            <translation>Oyun əlçatan deyil</translation>
+        </message>
+        <message>
+            <source>Same element. Choose again.</source>
+            <translation>Eyni element. Yenidən seç.</translation>
+        </message>
+        <message>
+            <source>Your turn</source>
+            <translation>Sənin növbəndir</translation>
+        </message>
+        <message>
+            <source>%1's turn</source>
+            <translation>Növbə %1 oyunçusundadır</translation>
+        </message>
+        <message>
+            <source>Waiting for the other player</source>
+            <translation>Digər oyunçu gözlənilir</translation>
+        </message>
+        <message>
+            <source>Water beats Fire. Fire beats Ice. Ice beats Water.</source>
+            <translation>Su odu məğlub edir. Od buzu məğlub edir. Buz suyu məğlub edir.</translation>
+        </message>
+        <message>
+            <source>Empty</source>
+            <translation>Boş</translation>
+        </message>
+        <message>
+            <source>Ice freezes Water</source>
+            <translation>Buz suyu dondurur</translation>
+        </message>
+        <message>
+            <source>Fire melts Ice</source>
+            <translation>Od buzu əridir</translation>
+        </message>
+        <message>
+            <source>Water extinguishes Fire</source>
+            <translation>Su odu söndürür</translation>
+        </message>
+        <message>
+            <source>Neutral</source>
+            <translation>Neytral</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>Element seç</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>Məlumat</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>Qələbə</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>Məğlubiyyət</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>Qalan</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>Məğlub edilən</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>Oyundan çıxılsın?</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>Çıxsan, digər oyunçu qalib gəlir.</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>Bu dəvət ləğv edilsin?</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>Əvvəl Tələ, sonra Özək seç. Bir xana hərəkət et. Qazanmaq üçün rəqibin Özəyini ələ keçir.</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>İlk döyüşdə elementini seç. Heç-heçədə yenidən seçə bilərsən.</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>Hərəkət etmir. Hər hücumçunu məğlub edir.</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>Hərəkət etmir. Oyunda qalmaq üçün onu qoru.</translation>
+        </message>
+        <message>
+            <source>Computer</source>
+            <translation>Kompüter</translation>
+        </message>
+        <message>
+            <source>Play against the computer?</source>
+            <translation>Kompüterə qarşı oynamaq istəyirsən?</translation>
         </message>
     </context>
 </TS>

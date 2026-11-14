@@ -6,7 +6,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     target_link_libraries(squadspeak PRIVATE "-framework AppKit")
 endif()
 set_target_properties(squadspeak PROPERTIES LINKER_LANGUAGE CXX)
-set(squad_qml_files Theme.qml PanelWindow.qml PanelDialog.qml TextToolTip.qml ActionButton.qml EntryField.qml ChoiceBox.qml OptionCheck.qml Glyph.qml ProviderIcon.qml AudioSettings.qml Channels.qml ChatPanel.qml VoiceAvatar.qml AvatarAtlas.js SettingSlider.qml SettingToggle.qml SpectrumView.qml ScreenPanel.qml)
+set(squad_qml_files Theme.qml PanelWindow.qml PanelDialog.qml TextToolTip.qml ActionButton.qml EntryField.qml ChoiceBox.qml OptionCheck.qml Glyph.qml ProviderIcon.qml AudioSettings.qml Channels.qml ChatPanel.qml GameCard.qml GamePane.qml GameBoard.qml ElementsIcon.qml VoiceAvatar.qml AvatarAtlas.js SettingSlider.qml SettingToggle.qml SpectrumView.qml ScreenPanel.qml)
 set(squad_resource_files icons/app.png icons/teamspeak.png icons/mumble.png avatars/mossling.png avatars/courier.png avatars/mechanic.png avatars/system.png avatars/system-animated.png
     avatars/ember-dragon.png
     avatars/moon-owl.png
@@ -24,7 +24,13 @@ set(squad_resource_files icons/app.png icons/teamspeak.png icons/mumble.png avat
     avatars/comet-axolotl.png
     avatars/frost-yeti.png
     avatars/raccoon-alchemist.png
-    avatars/sunflower-knight.png)
+    avatars/sunflower-knight.png
+    games/elements/fire.png
+    games/elements/water.png
+    games/elements/ice.png
+    games/elements/core.png
+    games/elements/trap.png
+    games/elements/hidden.png)
 foreach(squad_file IN LISTS squad_qml_files squad_resource_files)
     set_source_files_properties("${squad_file}" PROPERTIES QT_RESOURCE_ALIAS "ui/${squad_file}")
 endforeach()

@@ -8,12 +8,14 @@ Item {
     implicitHeight: chatLayout.implicitHeight
     required property var network
     property Component emptyContent: null
+    readonly property var invitations: (current.games || []).filter(g => g.phase === "waiting" && (g.players || []).length < g.capacity)
     readonly property bool showingEmptyContent: emptyContent !== null && !!current.chatReady && !current.historyLoading
-        && !(current.messages || []).length && !current.hasOlderMessages && !current.hasNewerMessages && !current.chatError
+        && !(current.messages || []).length && !invitations.length && !current.hasOlderMessages && !current.hasNewerMessages && !current.chatError
     property bool animatedAvatars: true
     property double animationTime: 0
     property var memberLevel: function(id) { return 0 }
     signal memberRequested(var member, bool contextual)
+    signal gameRequested(string host, string id)
     property bool active: visible
     property bool readable: active
     property string readReceipt: ""
@@ -28,6 +30,8 @@ Item {
             && (!current.hasNewerMessages || n.created <= last)).map(n => ({
                 sequence: "notice:" + n.id, created: n.created, event: n.event, local: true,
                 name: "", sender: "", text: ""}))
+        for (const game of invitations)
+            notices.push({sequence: "game:" + game.id, created: game.created, local: true, game: game.id, name: "", sender: "", text: ""})
         const rows = messages.slice()
         for (const notice of notices) {
             const index = rows.findIndex(row => row.created > notice.created)
@@ -258,7 +262,7 @@ Item {
                             || ({id: message.sender, name: message.name, avatarId: message.avatarId || message.avatar, provider: message.provider || ""})
                         readonly property string translationKey: root.hostId + ":" + message.sequence
                         readonly property var translated: { root.language.revision; return root.language.result(translationKey) }
-                        readonly property bool wantsTranslation: root.translationEnabled && !systemMessage && !own
+                        readonly property bool wantsTranslation: root.translationEnabled && !systemMessage && !message.game && !own
                         readonly property bool hasTranslation: wantsTranslation && translated.original === message.text && translated.target === root.translationPreference.incomingTarget && !!translated.text && !translated.pending
                         property bool showOriginal: false
                         Timer {
@@ -282,7 +286,7 @@ Item {
                             objectName: "messageBody_" + messageRow.message.sequence
                             x: messageRow.own ? messageRow.width - width - 6 : 6
                             y: 6
-                            width: messageRow.width * 0.88 - 12
+                            width: messageRow.width * (messageRow.message.game ? 1 : 0.88) - 12
                             layoutDirection: messageRow.own ? Qt.RightToLeft : Qt.LeftToRight
                             spacing: 8
                             Loader {
@@ -338,8 +342,22 @@ Item {
                                         else root.language.openSettings()
                                     }
                                 }
+                                Loader {
+                                    Layout.fillWidth: true
+                                    active: !!messageRow.message.game
+                                    visible: active
+                                    sourceComponent: GameCard {
+                                        objectName: "gameCard_" + messageRow.message.game
+                                        game: (root.current.games || []).find(g => g.id === messageRow.message.game) || ({})
+                                        identity: root.current.ownId || ""
+                                        canJoin: !!root.current.canStartGame
+                                        onActionRequested: (action, selection) => { root.sendError = root.network.gameAction(action, selection) ? "" : qsTranslate("GamePane", "Finish your current game first.") }
+                                        onOpenRequested: root.gameRequested(root.hostId, game.id)
+                                    }
+                                }
                                 TextEdit {
                                     id: messageText
+                                    visible: !messageRow.message.game
                                     objectName: "messageText_" + messageRow.message.sequence
                                     Layout.fillWidth: true
                                     readonly property var presentation: {
@@ -443,7 +461,8 @@ Item {
                 id: composer
                 anchors.fill: parent; anchors.margins: 4; spacing: 2
                 ActionButton {
-                    text: qsTr("Attach image"); glyph: "plus"; iconOnly: true; flat: true; visible: !root.remote && !root.current.externalChat
+                    objectName: "chatAdd"
+                    text: qsTr("Add"); glyph: "plus"; iconOnly: true; flat: true; visible: !root.current.externalChat && (!root.remote || !!root.current.canStartGame)
                     enabled: !chatContent.busy && !root.current.chatPending && !!root.current.chatReady
                     Layout.alignment: Qt.AlignBottom
                     onClicked: attachmentMenu.popup()
@@ -451,8 +470,17 @@ Item {
         popupType: Popup.Item
                         background: Rectangle { implicitWidth: 240; implicitHeight: 40; radius: Theme.controlRadius; color: Theme.surface; border.color: Theme.border }
                         id: attachmentMenu
-                        MenuItem { text: qsTr("Choose image..."); onTriggered: chooseImage.open() }
-                        MenuItem { text: qsTr("Paste image"); onTriggered: { root.attachmentHost = root.hostId; chatContent.pasteImage() } }
+                        objectName: "chatAddMenu"
+                        MenuItem {
+                            objectName: "startGame"
+                            visible: !!root.current.canStartGame; height: visible ? implicitHeight : 0
+                            text: qsTranslate("GameCard", "Elements")
+                            onTriggered: {
+                                root.network.gameAction("start", {id: "", round: 0})
+                            }
+                        }
+                        MenuItem { visible: !root.remote; height: visible ? implicitHeight : 0; text: qsTr("Choose image..."); onTriggered: chooseImage.open() }
+                        MenuItem { visible: !root.remote; height: visible ? implicitHeight : 0; text: qsTr("Paste image"); onTriggered: { root.attachmentHost = root.hostId; chatContent.pasteImage() } }
                     }
                 }
                 ScrollView {

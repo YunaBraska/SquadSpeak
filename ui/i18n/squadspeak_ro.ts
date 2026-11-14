@@ -1229,6 +1229,18 @@
             <source>Import</source>
             <translation>Importă</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>Stare necunoscută</translation>
+        </message>
+        <message>
+            <source>Chat</source>
+            <translation>Chat</translation>
+        </message>
+        <message>
+            <source>Game</source>
+            <translation>Joc</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1436,12 +1448,12 @@
             <translation>Mesaje anterioare</translation>
         </message>
         <message>
-            <source>Attach image</source>
-            <translation>Atașați imaginea</translation>
-        </message>
-        <message>
             <source>Chat message. Markdown supported. Shift+Enter for a new line.</source>
             <translation>Mesaj de chat. Reducere acceptată. Shift+Enter pentru o linie nouă.</translation>
+        </message>
+        <message>
+            <source>Add</source>
+            <translation>Adăugați</translation>
         </message>
     </context>
     <context>
@@ -2647,6 +2659,14 @@
             <source>Identity imported.</source>
             <translation>Identitate importată.</translation>
         </message>
+        <message>
+            <source>Invalid game state.</source>
+            <translation>Stare de joc nevalidă.</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Această acțiune de joc nu mai este disponibilă.</translation>
+        </message>
     </context>
     <context>
         <name>LocalLanguage</name>
@@ -3313,6 +3333,176 @@
         <message>
             <source>See you next time.</source>
             <translation>Pe data viitoare.</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameCard</name>
+        <message>
+            <source>Invited by %1</source>
+            <translation>Invitație de la %1</translation>
+        </message>
+        <message>
+            <source>%1 wins!</source>
+            <translation>%1 câștigă!</translation>
+        </message>
+        <message>
+            <source>Join</source>
+            <translation>Alăturați-vă</translation>
+        </message>
+        <message>
+            <source>Leave</source>
+            <translation>Părăsește</translation>
+        </message>
+        <message>
+            <source>Elements</source>
+            <translation>Elemente</translation>
+        </message>
+        <message>
+            <source>Game ended</source>
+            <translation>Joc încheiat</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Deschide</translation>
+        </message>
+    </context>
+    <context>
+        <name>GamePane</name>
+        <message>
+            <source>Finish your current game first.</source>
+            <translation>Termină mai întâi jocul curent.</translation>
+        </message>
+        <message>
+            <source>Fire</source>
+            <translation>Foc</translation>
+        </message>
+        <message>
+            <source>Water</source>
+            <translation>Apă</translation>
+        </message>
+        <message>
+            <source>Ice</source>
+            <translation>Gheață</translation>
+        </message>
+        <message>
+            <source>Core</source>
+            <translation>Nucleu</translation>
+        </message>
+        <message>
+            <source>Trap</source>
+            <translation>Capcană</translation>
+        </message>
+        <message>
+            <source>Unknown</source>
+            <translation>Necunoscut</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Această acțiune de joc nu mai este disponibilă.</translation>
+        </message>
+        <message>
+            <source>Game unavailable</source>
+            <translation>Joc indisponibil</translation>
+        </message>
+        <message>
+            <source>Same element. Choose again.</source>
+            <translation>Același element. Alege din nou.</translation>
+        </message>
+        <message>
+            <source>Your turn</source>
+            <translation>Rândul tău</translation>
+        </message>
+        <message>
+            <source>%1's turn</source>
+            <translation>Rândul lui %1</translation>
+        </message>
+        <message>
+            <source>Waiting for the other player</source>
+            <translation>Se așteaptă celălalt jucător</translation>
+        </message>
+        <message>
+            <source>Water beats Fire. Fire beats Ice. Ice beats Water.</source>
+            <translation>Apa bate focul. Focul bate gheața. Gheața bate apa.</translation>
+        </message>
+        <message>
+            <source>Empty</source>
+            <translation>Gol</translation>
+        </message>
+        <message>
+            <source>Ice freezes Water</source>
+            <translation>Gheața îngheață apa</translation>
+        </message>
+        <message>
+            <source>Fire melts Ice</source>
+            <translation>Focul topește gheața</translation>
+        </message>
+        <message>
+            <source>Water extinguishes Fire</source>
+            <translation>Apa stinge focul</translation>
+        </message>
+        <message>
+            <source>Neutral</source>
+            <translation>Neutru</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>Alege un element</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>Informații</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>Victorie</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>Înfrângere</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>Rămase</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>Capturate</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>Părăsești jocul?</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>Dacă pleci, câștigă celălalt jucător.</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>Anulezi invitația?</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>Alege Capcana, apoi Nucleul. Mută un pătrat. Capturează Nucleul advers pentru a câștiga.</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>Alege elementul la prima luptă. La egalitate alegi din nou.</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>Nu se mișcă. Învinge orice atacator.</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>Nu se mișcă. Protejează-l ca să rămâi în joc.</translation>
+        </message>
+        <message>
+            <source>Computer</source>
+            <translation>Calculator</translation>
+        </message>
+        <message>
+            <source>Play against the computer?</source>
+            <translation>Joci împotriva calculatorului?</translation>
         </message>
     </context>
 </TS>

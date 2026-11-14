@@ -184,16 +184,25 @@ void LocalChannel::Discovery::pump() {
 
 void LocalChannel::Discovery::announce() {
     if (owner_.service_) { owner_.service_->discovery_.announce(); return; }
-    if (heartbeat_.isActive() && socket_.state() != QAbstractSocket::BoundState) {
-        start(); return;
-    }
     const auto now = owner_.clock_();
     const auto previousError = error;
     bool changed = false;
     for (auto it = hosts.begin(); it != hosts.end();) {
         if (it.key() != owner_.ownId() && !it->direct && !it->scanned && now - it->seen > 6000) {
             it = hosts.erase(it); changed = true;
-        } else ++it;
+        } else {
+            if (it->fresh && now - it->seen > 6000) {
+                it->fresh = false;
+                const auto c = owner_.clients_.value(it.key());
+                const auto* host = owner_.ownChannel(it.key());
+                changed |= !(c && c->accepted) && !(host && host->hosting());
+            }
+            ++it;
+        }
+    }
+    if (heartbeat_.isActive() && socket_.state() != QAbstractSocket::BoundState) {
+        if (changed) emit owner_.hostsChanged();
+        start(); return;
     }
     if (socket_.state() == QAbstractSocket::BoundState) {
         const auto current = discoveryInterfaces();

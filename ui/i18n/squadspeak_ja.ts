@@ -1229,6 +1229,18 @@
             <source>Import</source>
             <translation>インポート</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>状態不明</translation>
+        </message>
+        <message>
+            <source>Chat</source>
+            <translation>チャット</translation>
+        </message>
+        <message>
+            <source>Game</source>
+            <translation>ゲーム</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1436,12 +1448,12 @@
             <translation>以前のメッセージ</translation>
         </message>
         <message>
-            <source>Attach image</source>
-            <translation>画像を添付</translation>
-        </message>
-        <message>
             <source>Chat message. Markdown supported. Shift+Enter for a new line.</source>
             <translation>チャットメッセージ. Markdown対応. Shift+Enterで改行します.</translation>
+        </message>
+        <message>
+            <source>Add</source>
+            <translation>追加</translation>
         </message>
     </context>
     <context>
@@ -2647,6 +2659,14 @@
             <source>Identity imported.</source>
             <translation>IDをインポートしました。</translation>
         </message>
+        <message>
+            <source>Invalid game state.</source>
+            <translation>ゲームの状態が無効です。</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>このゲーム操作はもう利用できません。</translation>
+        </message>
     </context>
     <context>
         <name>LocalLanguage</name>
@@ -3313,6 +3333,176 @@
         <message>
             <source>See you next time.</source>
             <translation>また今度。</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameCard</name>
+        <message>
+            <source>Invited by %1</source>
+            <translation>%1 からの招待</translation>
+        </message>
+        <message>
+            <source>%1 wins!</source>
+            <translation>%1 の勝ち！</translation>
+        </message>
+        <message>
+            <source>Join</source>
+            <translation>参加</translation>
+        </message>
+        <message>
+            <source>Leave</source>
+            <translation>退出</translation>
+        </message>
+        <message>
+            <source>Elements</source>
+            <translation>エレメント</translation>
+        </message>
+        <message>
+            <source>Game ended</source>
+            <translation>ゲーム終了</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>開く</translation>
+        </message>
+    </context>
+    <context>
+        <name>GamePane</name>
+        <message>
+            <source>Finish your current game first.</source>
+            <translation>まず今のゲームを終えてね。</translation>
+        </message>
+        <message>
+            <source>Fire</source>
+            <translation>炎</translation>
+        </message>
+        <message>
+            <source>Water</source>
+            <translation>水</translation>
+        </message>
+        <message>
+            <source>Ice</source>
+            <translation>氷</translation>
+        </message>
+        <message>
+            <source>Core</source>
+            <translation>コア</translation>
+        </message>
+        <message>
+            <source>Trap</source>
+            <translation>罠</translation>
+        </message>
+        <message>
+            <source>Unknown</source>
+            <translation>不明</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>このゲーム操作はもう利用できません。</translation>
+        </message>
+        <message>
+            <source>Game unavailable</source>
+            <translation>ゲームを利用できません</translation>
+        </message>
+        <message>
+            <source>Same element. Choose again.</source>
+            <translation>同じ属性です。もう一度選んでね。</translation>
+        </message>
+        <message>
+            <source>Your turn</source>
+            <translation>あなたの番</translation>
+        </message>
+        <message>
+            <source>%1's turn</source>
+            <translation>%1 の番</translation>
+        </message>
+        <message>
+            <source>Waiting for the other player</source>
+            <translation>相手を待っています</translation>
+        </message>
+        <message>
+            <source>Water beats Fire. Fire beats Ice. Ice beats Water.</source>
+            <translation>水は炎に、炎は氷に、氷は水に勝ちます。</translation>
+        </message>
+        <message>
+            <source>Empty</source>
+            <translation>空きマス</translation>
+        </message>
+        <message>
+            <source>Ice freezes Water</source>
+            <translation>氷が水を凍らせる</translation>
+        </message>
+        <message>
+            <source>Fire melts Ice</source>
+            <translation>炎が氷を溶かす</translation>
+        </message>
+        <message>
+            <source>Water extinguishes Fire</source>
+            <translation>水が炎を消す</translation>
+        </message>
+        <message>
+            <source>Neutral</source>
+            <translation>無属性</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>属性を選んでね</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>情報</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>勝利</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>敗北</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>残り</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>撃破</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>ゲームを退出？</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>退出すると相手の勝ちになるよ。</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>この招待を取り消す？</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>罠、次にコアを選ぶ。1マスずつ動かし、相手のコアを取れば勝ち。</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>最初の戦闘で属性を選ぶ。引き分けなら選び直せる。</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>動かない。攻撃してきた駒をすべて倒す。</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>動かない。取られると負けるので守ろう。</translation>
+        </message>
+        <message>
+            <source>Computer</source>
+            <translation>コンピュータ</translation>
+        </message>
+        <message>
+            <source>Play against the computer?</source>
+            <translation>コンピュータと対戦しますか？</translation>
         </message>
     </context>
 </TS>

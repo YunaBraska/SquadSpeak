@@ -1229,6 +1229,18 @@
             <source>Import</source>
             <translation>आयात करा</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>स्थिती अज्ञात</translation>
+        </message>
+        <message>
+            <source>Chat</source>
+            <translation>चॅट</translation>
+        </message>
+        <message>
+            <source>Game</source>
+            <translation>खेळ</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1436,12 +1448,12 @@
             <translation>पूर्वीचे संदेश</translation>
         </message>
         <message>
-            <source>Attach image</source>
-            <translation>प्रतिमा संलग्न करा</translation>
-        </message>
-        <message>
             <source>Chat message. Markdown supported. Shift+Enter for a new line.</source>
             <translation>चॅट संदेश. मार्कडाउन समर्थित. नवीन ओळीसाठी Shift+Enter.</translation>
+        </message>
+        <message>
+            <source>Add</source>
+            <translation>ॲड</translation>
         </message>
     </context>
     <context>
@@ -2647,6 +2659,14 @@
             <source>Identity imported.</source>
             <translation>ओळख आयात झाली.</translation>
         </message>
+        <message>
+            <source>Invalid game state.</source>
+            <translation>खेळाची स्थिती अवैध आहे.</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>खेळातील ही कृती आता उपलब्ध नाही.</translation>
+        </message>
     </context>
     <context>
         <name>LocalLanguage</name>
@@ -3313,6 +3333,176 @@
         <message>
             <source>See you next time.</source>
             <translation>पुन्हा भेटू.</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameCard</name>
+        <message>
+            <source>Invited by %1</source>
+            <translation>%1 कडून आमंत्रण</translation>
+        </message>
+        <message>
+            <source>%1 wins!</source>
+            <translation>%1 जिंकला!</translation>
+        </message>
+        <message>
+            <source>Join</source>
+            <translation>सामील व्हा</translation>
+        </message>
+        <message>
+            <source>Leave</source>
+            <translation>सोडा</translation>
+        </message>
+        <message>
+            <source>Elements</source>
+            <translation>तत्त्वे</translation>
+        </message>
+        <message>
+            <source>Game ended</source>
+            <translation>खेळ संपला</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>उघडा</translation>
+        </message>
+    </context>
+    <context>
+        <name>GamePane</name>
+        <message>
+            <source>Finish your current game first.</source>
+            <translation>आधी तुझा सध्याचा खेळ पूर्ण कर.</translation>
+        </message>
+        <message>
+            <source>Fire</source>
+            <translation>आग</translation>
+        </message>
+        <message>
+            <source>Water</source>
+            <translation>पाणी</translation>
+        </message>
+        <message>
+            <source>Ice</source>
+            <translation>बर्फ</translation>
+        </message>
+        <message>
+            <source>Core</source>
+            <translation>गाभा</translation>
+        </message>
+        <message>
+            <source>Trap</source>
+            <translation>सापळा</translation>
+        </message>
+        <message>
+            <source>Unknown</source>
+            <translation>अज्ञात</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>खेळातील ही कृती आता उपलब्ध नाही.</translation>
+        </message>
+        <message>
+            <source>Game unavailable</source>
+            <translation>खेळ उपलब्ध नाही</translation>
+        </message>
+        <message>
+            <source>Same element. Choose again.</source>
+            <translation>तेच तत्त्व. पुन्हा निवड.</translation>
+        </message>
+        <message>
+            <source>Your turn</source>
+            <translation>तुझी पाळी</translation>
+        </message>
+        <message>
+            <source>%1's turn</source>
+            <translation>%1 ची पाळी</translation>
+        </message>
+        <message>
+            <source>Waiting for the other player</source>
+            <translation>दुसऱ्या खेळाडूची वाट पाहत आहे</translation>
+        </message>
+        <message>
+            <source>Water beats Fire. Fire beats Ice. Ice beats Water.</source>
+            <translation>पाणी आगीला हरवते. आग बर्फाला हरवते. बर्फ पाण्याला हरवतो.</translation>
+        </message>
+        <message>
+            <source>Empty</source>
+            <translation>रिकामे</translation>
+        </message>
+        <message>
+            <source>Ice freezes Water</source>
+            <translation>बर्फ पाणी गोठवतो</translation>
+        </message>
+        <message>
+            <source>Fire melts Ice</source>
+            <translation>आग बर्फ वितळवते</translation>
+        </message>
+        <message>
+            <source>Water extinguishes Fire</source>
+            <translation>पाणी आग विझवते</translation>
+        </message>
+        <message>
+            <source>Neutral</source>
+            <translation>तटस्थ</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>एक तत्त्व निवड</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>माहिती</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>विजय</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>पराभव</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>उरलेले</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>हरवलेले</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>खेळ सोडायचा?</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>सोडल्यास दुसरा खेळाडू जिंकेल.</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>हे आमंत्रण रद्द करायचे?</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>आधी सापळा, मग गाभा निवड. एक घर चाल. जिंकण्यासाठी प्रतिस्पर्ध्याचा गाभा पकड.</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>पहिल्या लढाईत तत्त्व निवड. बरोबरी झाल्यास पुन्हा निवडता येते.</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>हलत नाही. प्रत्येक हल्लेखोराला हरवतो.</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>हलत नाही. खेळात राहण्यासाठी त्याचे रक्षण कर.</translation>
+        </message>
+        <message>
+            <source>Computer</source>
+            <translation>संगणक</translation>
+        </message>
+        <message>
+            <source>Play against the computer?</source>
+            <translation>संगणकाविरुद्ध खेळायचे?</translation>
         </message>
     </context>
 </TS>

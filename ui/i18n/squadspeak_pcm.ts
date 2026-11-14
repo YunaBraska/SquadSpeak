@@ -1229,6 +1229,18 @@
             <source>Import</source>
             <translation>Import</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>We no know di status</translation>
+        </message>
+        <message>
+            <source>Chat</source>
+            <translation>Chat</translation>
+        </message>
+        <message>
+            <source>Game</source>
+            <translation>Game</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1436,12 +1448,12 @@
             <translation>Earlier messages</translation>
         </message>
         <message>
-            <source>Attach image</source>
-            <translation>Attach image</translation>
-        </message>
-        <message>
             <source>Chat message. Markdown supported. Shift+Enter for a new line.</source>
             <translation>Chat message. Markdown dey work. Shift+Enter go start new line.</translation>
+        </message>
+        <message>
+            <source>Add</source>
+            <translation>Add</translation>
         </message>
     </context>
     <context>
@@ -2261,6 +2273,14 @@
         <message>
             <source>Identity imported.</source>
             <translation>Identity don import.</translation>
+        </message>
+        <message>
+            <source>Invalid game state.</source>
+            <translation>Di game state no correct.</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>You no fit do dis game action again.</translation>
         </message>
     </context>
     <context>
@@ -3313,6 +3333,176 @@
         <message>
             <source>See you next time.</source>
             <translation>Till next time.</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameCard</name>
+        <message>
+            <source>Invited by %1</source>
+            <translation>Na %1 invite you</translation>
+        </message>
+        <message>
+            <source>%1 wins!</source>
+            <translation>%1 don win!</translation>
+        </message>
+        <message>
+            <source>Join</source>
+            <translation>Join</translation>
+        </message>
+        <message>
+            <source>Leave</source>
+            <translation>Leave</translation>
+        </message>
+        <message>
+            <source>Elements</source>
+            <translation>Di Elements</translation>
+        </message>
+        <message>
+            <source>Game ended</source>
+            <translation>Game don end</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Open</translation>
+        </message>
+    </context>
+    <context>
+        <name>GamePane</name>
+        <message>
+            <source>Finish your current game first.</source>
+            <translation>Finish di game wey you de play first.</translation>
+        </message>
+        <message>
+            <source>Fire</source>
+            <translation>Fire</translation>
+        </message>
+        <message>
+            <source>Water</source>
+            <translation>Water</translation>
+        </message>
+        <message>
+            <source>Ice</source>
+            <translation>Ice</translation>
+        </message>
+        <message>
+            <source>Core</source>
+            <translation>Core</translation>
+        </message>
+        <message>
+            <source>Trap</source>
+            <translation>Trap</translation>
+        </message>
+        <message>
+            <source>Unknown</source>
+            <translation>We no know</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>You no fit do dis game action again.</translation>
+        </message>
+        <message>
+            <source>Game unavailable</source>
+            <translation>Game no dey available</translation>
+        </message>
+        <message>
+            <source>Same element. Choose again.</source>
+            <translation>Na di same element. Choose again.</translation>
+        </message>
+        <message>
+            <source>Your turn</source>
+            <translation>Na your turn</translation>
+        </message>
+        <message>
+            <source>%1's turn</source>
+            <translation>Na %1 turn</translation>
+        </message>
+        <message>
+            <source>Waiting for the other player</source>
+            <translation>De wait for di oda player</translation>
+        </message>
+        <message>
+            <source>Water beats Fire. Fire beats Ice. Ice beats Water.</source>
+            <translation>Water beat Fire. Fire beat Ice. Ice beat Water.</translation>
+        </message>
+        <message>
+            <source>Empty</source>
+            <translation>Nothing dey here</translation>
+        </message>
+        <message>
+            <source>Ice freezes Water</source>
+            <translation>Ice de freeze Water</translation>
+        </message>
+        <message>
+            <source>Fire melts Ice</source>
+            <translation>Fire de melt Ice</translation>
+        </message>
+        <message>
+            <source>Water extinguishes Fire</source>
+            <translation>Water de quench Fire</translation>
+        </message>
+        <message>
+            <source>Neutral</source>
+            <translation>E neutral</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>Choose one element</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>Info</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>You win</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>You lose</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>Wetin remain</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>Wetin you beat</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>Leave di game?</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>If you leave, di oda player go win.</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>Cancel dis invite?</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>Choose Trap, den Core. Move one square. Catch di oda Core to win.</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>Choose im element for di first fight. If una tie, choose again.</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>E no dey move. E dey beat every attacker.</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>E no dey move. Protect am make you stay for game.</translation>
+        </message>
+        <message>
+            <source>Computer</source>
+            <translation>Computer</translation>
+        </message>
+        <message>
+            <source>Play against the computer?</source>
+            <translation>You wan play against computer?</translation>
         </message>
     </context>
 </TS>

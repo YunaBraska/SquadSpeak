@@ -1229,6 +1229,18 @@
             <source>Import</source>
             <translation>Importéieren</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>Status onbekannt</translation>
+        </message>
+        <message>
+            <source>Chat</source>
+            <translation>Chat</translation>
+        </message>
+        <message>
+            <source>Game</source>
+            <translation>Spill</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1436,12 +1448,12 @@
             <translation>Fréier Messagen</translation>
         </message>
         <message>
-            <source>Attach image</source>
-            <translation>Befestegt Bild</translation>
-        </message>
-        <message>
             <source>Chat message. Markdown supported. Shift+Enter for a new line.</source>
             <translation>Chat Message. Markdown ënnerstëtzt. Shift + Enter fir eng nei Zeil.</translation>
+        </message>
+        <message>
+            <source>Add</source>
+            <translation>Dobäi</translation>
         </message>
     </context>
     <context>
@@ -2647,6 +2659,14 @@
             <source>Identity imported.</source>
             <translation>Identitéit importéiert.</translation>
         </message>
+        <message>
+            <source>Invalid game state.</source>
+            <translation>Ongültege Spillzoustand.</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Dës Spillaktioun ass net méi disponibel.</translation>
+        </message>
     </context>
     <context>
         <name>LocalLanguage</name>
@@ -3313,6 +3333,176 @@
         <message>
             <source>See you next time.</source>
             <translation>Bis déi nächste Kéier.</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameCard</name>
+        <message>
+            <source>Invited by %1</source>
+            <translation>Invitéiert vu %1</translation>
+        </message>
+        <message>
+            <source>%1 wins!</source>
+            <translation>%1 gewënnt!</translation>
+        </message>
+        <message>
+            <source>Join</source>
+            <translation>eng</translation>
+        </message>
+        <message>
+            <source>Leave</source>
+            <translation>Verloossen</translation>
+        </message>
+        <message>
+            <source>Elements</source>
+            <translation>Elementer</translation>
+        </message>
+        <message>
+            <source>Game ended</source>
+            <translation>D’Spill ass eriwwer</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Opmaachen</translation>
+        </message>
+    </context>
+    <context>
+        <name>GamePane</name>
+        <message>
+            <source>Finish your current game first.</source>
+            <translation>Maach fir d’éischt däin aktuellt Spill fäerdeg.</translation>
+        </message>
+        <message>
+            <source>Fire</source>
+            <translation>Feier</translation>
+        </message>
+        <message>
+            <source>Water</source>
+            <translation>Waasser</translation>
+        </message>
+        <message>
+            <source>Ice</source>
+            <translation>Äis</translation>
+        </message>
+        <message>
+            <source>Core</source>
+            <translation>Kär</translation>
+        </message>
+        <message>
+            <source>Trap</source>
+            <translation>Fal</translation>
+        </message>
+        <message>
+            <source>Unknown</source>
+            <translation>Onbekannt</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Dës Spillaktioun ass net méi disponibel.</translation>
+        </message>
+        <message>
+            <source>Game unavailable</source>
+            <translation>Spill net disponibel</translation>
+        </message>
+        <message>
+            <source>Same element. Choose again.</source>
+            <translation>Dat selwecht Element. Wiel nach eng Kéier.</translation>
+        </message>
+        <message>
+            <source>Your turn</source>
+            <translation>Du bass drun</translation>
+        </message>
+        <message>
+            <source>%1's turn</source>
+            <translation>%1 ass drun</translation>
+        </message>
+        <message>
+            <source>Waiting for the other player</source>
+            <translation>Op deen anere Spiller waarden</translation>
+        </message>
+        <message>
+            <source>Water beats Fire. Fire beats Ice. Ice beats Water.</source>
+            <translation>Waasser schléit Feier. Feier schléit Äis. Äis schléit Waasser.</translation>
+        </message>
+        <message>
+            <source>Empty</source>
+            <translation>Eidel</translation>
+        </message>
+        <message>
+            <source>Ice freezes Water</source>
+            <translation>Äis léisst Waasser gefréieren</translation>
+        </message>
+        <message>
+            <source>Fire melts Ice</source>
+            <translation>Feier schmëlzt Äis</translation>
+        </message>
+        <message>
+            <source>Water extinguishes Fire</source>
+            <translation>Waasser läscht Feier</translation>
+        </message>
+        <message>
+            <source>Neutral</source>
+            <translation>Neutral</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>Wiel en Element</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>Informatioun</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>Victoire</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>Néierlag</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>Iwwereg</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>Geschloen</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>Spill verloossen?</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>Wann s du gees, gewënnt déi aner Persoun.</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>Invitatioun zréckzéien?</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>Wiel Fal, dann Kär. Zéi ee Feld. Eruewer deen anere Kär fir ze gewannen.</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>Wiel d’Element am éischte Kampf. Bei Gläichstand wiels du nei.</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>Bleift stoen. Besiegt all Ugräifer.</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>Bleift stoen. Beschütz en, fir am Spill ze bleiwen.</translation>
+        </message>
+        <message>
+            <source>Computer</source>
+            <translation>Computer</translation>
+        </message>
+        <message>
+            <source>Play against the computer?</source>
+            <translation>Géint de Computer spillen?</translation>
         </message>
     </context>
 </TS>

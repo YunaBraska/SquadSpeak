@@ -39,6 +39,7 @@ public:
         return audio_.playEvent("start", greetings.at(QRandomGenerator::global()->bounded(int(greetings.size()))));
     }
 
+public slots:
     void shutdown() {
         if (quitting_) return;
         audio_.cancelNotifications();
@@ -52,12 +53,13 @@ public:
     }
 
 signals:
+    void quitRequested();
     void shutdownReady();
 
 protected:
     bool eventFilter(QObject*, QEvent* event) override {
         if (event->type() != QEvent::Quit || ready_) return false;
-        shutdown();
+        if (!quitting_) emit quitRequested();
         event->ignore();
         return true;
     }

@@ -1229,6 +1229,18 @@
             <source>Import</source>
             <translation>আমদানি</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>অবস্থা অজানা</translation>
+        </message>
+        <message>
+            <source>Chat</source>
+            <translation>চ্যাট</translation>
+        </message>
+        <message>
+            <source>Game</source>
+            <translation>খেলা</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1436,12 +1448,12 @@
             <translation>আগের বার্তা</translation>
         </message>
         <message>
-            <source>Attach image</source>
-            <translation>ছবি সংযুক্ত করুন</translation>
-        </message>
-        <message>
             <source>Chat message. Markdown supported. Shift+Enter for a new line.</source>
             <translation>চ্যাট বার্তা। মার্কডাউন সমর্থিত। একটি নতুন লাইনের জন্য Shift+Enter।</translation>
+        </message>
+        <message>
+            <source>Add</source>
+            <translation>যোগ করুন</translation>
         </message>
     </context>
     <context>
@@ -2647,6 +2659,14 @@
             <source>Identity imported.</source>
             <translation>পরিচয় আমদানি হয়েছে।</translation>
         </message>
+        <message>
+            <source>Invalid game state.</source>
+            <translation>খেলার অবস্থা সঠিক নয়।</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>খেলার এই কাজটি আর করা যাচ্ছে না।</translation>
+        </message>
     </context>
     <context>
         <name>LocalLanguage</name>
@@ -3313,6 +3333,176 @@
         <message>
             <source>See you next time.</source>
             <translation>আবার দেখা হবে।</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameCard</name>
+        <message>
+            <source>Invited by %1</source>
+            <translation>%1 আমন্ত্রণ জানিয়েছে</translation>
+        </message>
+        <message>
+            <source>%1 wins!</source>
+            <translation>%1 জিতেছে!</translation>
+        </message>
+        <message>
+            <source>Join</source>
+            <translation>যোগ দিন</translation>
+        </message>
+        <message>
+            <source>Leave</source>
+            <translation>ছেড়ে দিন</translation>
+        </message>
+        <message>
+            <source>Elements</source>
+            <translation>উপাদান</translation>
+        </message>
+        <message>
+            <source>Game ended</source>
+            <translation>খেলা শেষ</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>খুলুন</translation>
+        </message>
+    </context>
+    <context>
+        <name>GamePane</name>
+        <message>
+            <source>Finish your current game first.</source>
+            <translation>আগে তোমার বর্তমান খেলা শেষ করো।</translation>
+        </message>
+        <message>
+            <source>Fire</source>
+            <translation>আগুন</translation>
+        </message>
+        <message>
+            <source>Water</source>
+            <translation>জল</translation>
+        </message>
+        <message>
+            <source>Ice</source>
+            <translation>বরফ</translation>
+        </message>
+        <message>
+            <source>Core</source>
+            <translation>কেন্দ্র</translation>
+        </message>
+        <message>
+            <source>Trap</source>
+            <translation>ফাঁদ</translation>
+        </message>
+        <message>
+            <source>Unknown</source>
+            <translation>অজানা</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>খেলার এই কাজটি আর করা যাচ্ছে না।</translation>
+        </message>
+        <message>
+            <source>Game unavailable</source>
+            <translation>খেলা উপলভ্য নয়</translation>
+        </message>
+        <message>
+            <source>Same element. Choose again.</source>
+            <translation>একই উপাদান। আবার বেছে নাও।</translation>
+        </message>
+        <message>
+            <source>Your turn</source>
+            <translation>তোমার পালা</translation>
+        </message>
+        <message>
+            <source>%1's turn</source>
+            <translation>%1-এর পালা</translation>
+        </message>
+        <message>
+            <source>Waiting for the other player</source>
+            <translation>অন্য খেলোয়াড়ের অপেক্ষায়</translation>
+        </message>
+        <message>
+            <source>Water beats Fire. Fire beats Ice. Ice beats Water.</source>
+            <translation>জল আগুনকে হারায়। আগুন বরফকে হারায়। বরফ জলকে হারায়।</translation>
+        </message>
+        <message>
+            <source>Empty</source>
+            <translation>খালি</translation>
+        </message>
+        <message>
+            <source>Ice freezes Water</source>
+            <translation>বরফ জল জমিয়ে দেয়</translation>
+        </message>
+        <message>
+            <source>Fire melts Ice</source>
+            <translation>আগুন বরফ গলিয়ে দেয়</translation>
+        </message>
+        <message>
+            <source>Water extinguishes Fire</source>
+            <translation>জল আগুন নিভিয়ে দেয়</translation>
+        </message>
+        <message>
+            <source>Neutral</source>
+            <translation>নিরপেক্ষ</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>একটি উপাদান বেছে নাও</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>তথ্য</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>জয়</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>পরাজয়</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>বাকি</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>হারানো</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>খেলা ছেড়ে যাবে?</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>চলে গেলে অন্য খেলোয়াড় জিতবে।</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>এই আমন্ত্রণ বাতিল করবে?</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>প্রথমে ফাঁদ, তারপর কেন্দ্র বেছে নাও। এক ঘর চলো। জিততে প্রতিপক্ষের কেন্দ্র দখল করো।</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>প্রথম লড়াইয়ে উপাদান বেছে নাও। সমান হলে আবার বেছে নিতে পারবে।</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>নড়ে না। সব আক্রমণকারীকে হারায়।</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>নড়ে না। খেলায় থাকতে একে রক্ষা করো।</translation>
+        </message>
+        <message>
+            <source>Computer</source>
+            <translation>কম্পিউটার</translation>
+        </message>
+        <message>
+            <source>Play against the computer?</source>
+            <translation>কম্পিউটারের বিরুদ্ধে খেলবে?</translation>
         </message>
     </context>
 </TS>

@@ -1229,6 +1229,18 @@
             <source>Import</source>
             <translation>იმპორტი</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>სტატუსი უცნობია</translation>
+        </message>
+        <message>
+            <source>Chat</source>
+            <translation>ჩატი</translation>
+        </message>
+        <message>
+            <source>Game</source>
+            <translation>თამაში</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1436,12 +1448,12 @@
             <translation>ადრეული შეტყობინებები</translation>
         </message>
         <message>
-            <source>Attach image</source>
-            <translation>სურათის მიმაგრება</translation>
-        </message>
-        <message>
             <source>Chat message. Markdown supported. Shift+Enter for a new line.</source>
             <translation>ჩატის შეტყობინება. Markdown-ის მხარდაჭერა. Shift+Enter ახალი ხაზისთვის.</translation>
+        </message>
+        <message>
+            <source>Add</source>
+            <translation>დამატება</translation>
         </message>
     </context>
     <context>
@@ -2647,6 +2659,14 @@
             <source>Identity imported.</source>
             <translation>იდენტობა იმპორტირებულია.</translation>
         </message>
+        <message>
+            <source>Invalid game state.</source>
+            <translation>თამაშის არასწორი მდგომარეობა.</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>თამაშის ეს მოქმედება აღარ არის ხელმისაწვდომი.</translation>
+        </message>
     </context>
     <context>
         <name>LocalLanguage</name>
@@ -3313,6 +3333,176 @@
         <message>
             <source>See you next time.</source>
             <translation>შემდეგ შეხვედრამდე.</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameCard</name>
+        <message>
+            <source>Invited by %1</source>
+            <translation>მომწვევი: %1</translation>
+        </message>
+        <message>
+            <source>%1 wins!</source>
+            <translation>%1 იმარჯვებს!</translation>
+        </message>
+        <message>
+            <source>Join</source>
+            <translation>შეუერთდი</translation>
+        </message>
+        <message>
+            <source>Leave</source>
+            <translation>წადი</translation>
+        </message>
+        <message>
+            <source>Elements</source>
+            <translation>სტიქიები</translation>
+        </message>
+        <message>
+            <source>Game ended</source>
+            <translation>თამაში დასრულდა</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>გახსნა</translation>
+        </message>
+    </context>
+    <context>
+        <name>GamePane</name>
+        <message>
+            <source>Finish your current game first.</source>
+            <translation>ჯერ მიმდინარე თამაში დაასრულე.</translation>
+        </message>
+        <message>
+            <source>Fire</source>
+            <translation>ცეცხლი</translation>
+        </message>
+        <message>
+            <source>Water</source>
+            <translation>წყალი</translation>
+        </message>
+        <message>
+            <source>Ice</source>
+            <translation>ყინული</translation>
+        </message>
+        <message>
+            <source>Core</source>
+            <translation>ბირთვი</translation>
+        </message>
+        <message>
+            <source>Trap</source>
+            <translation>ხაფანგი</translation>
+        </message>
+        <message>
+            <source>Unknown</source>
+            <translation>უცნობი</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>თამაშის ეს მოქმედება აღარ არის ხელმისაწვდომი.</translation>
+        </message>
+        <message>
+            <source>Game unavailable</source>
+            <translation>თამაში მიუწვდომელია</translation>
+        </message>
+        <message>
+            <source>Same element. Choose again.</source>
+            <translation>ერთნაირი სტიქია. აირჩიე თავიდან.</translation>
+        </message>
+        <message>
+            <source>Your turn</source>
+            <translation>შენი სვლაა</translation>
+        </message>
+        <message>
+            <source>%1's turn</source>
+            <translation>%1-ის სვლაა</translation>
+        </message>
+        <message>
+            <source>Waiting for the other player</source>
+            <translation>მეორე მოთამაშის მოლოდინი</translation>
+        </message>
+        <message>
+            <source>Water beats Fire. Fire beats Ice. Ice beats Water.</source>
+            <translation>წყალი ამარცხებს ცეცხლს. ცეცხლი ამარცხებს ყინულს. ყინული ამარცხებს წყალს.</translation>
+        </message>
+        <message>
+            <source>Empty</source>
+            <translation>ცარიელი</translation>
+        </message>
+        <message>
+            <source>Ice freezes Water</source>
+            <translation>ყინული ყინავს წყალს</translation>
+        </message>
+        <message>
+            <source>Fire melts Ice</source>
+            <translation>ცეცხლი ადნობს ყინულს</translation>
+        </message>
+        <message>
+            <source>Water extinguishes Fire</source>
+            <translation>წყალი აქრობს ცეცხლს</translation>
+        </message>
+        <message>
+            <source>Neutral</source>
+            <translation>ნეიტრალური</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>აირჩიე სტიქია</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>ინფორმაცია</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>გამარჯვება</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>მარცხი</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>დარჩენილი</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>დამარცხებული</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>თამაშიდან გასვლა?</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>თუ გახვალ, მეორე მოთამაშე გაიმარჯვებს.</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>მოწვევის გაუქმება?</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>აირჩიე ხაფანგი, შემდეგ ბირთვი. იმოძრავე ერთი უჯრით. გამარჯვებისთვის აიღე მეტოქის ბირთვი.</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>ელემენტი პირველ ბრძოლაში აირჩიე. ფრის დროს ხელახლა ირჩევ.</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>არ მოძრაობს. ამარცხებს ყველა შემტევს.</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>არ მოძრაობს. დაიცავი, რომ თამაშში დარჩე.</translation>
+        </message>
+        <message>
+            <source>Computer</source>
+            <translation>კომპიუტერი</translation>
+        </message>
+        <message>
+            <source>Play against the computer?</source>
+            <translation>ითამაშებ კომპიუტერის წინააღმდეგ?</translation>
         </message>
     </context>
 </TS>

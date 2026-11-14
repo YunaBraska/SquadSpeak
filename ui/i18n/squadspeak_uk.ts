@@ -1229,6 +1229,18 @@
             <source>Import</source>
             <translation>Імпортувати</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>Статус невідомий</translation>
+        </message>
+        <message>
+            <source>Chat</source>
+            <translation>Чат</translation>
+        </message>
+        <message>
+            <source>Game</source>
+            <translation>Гра</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1436,12 +1448,12 @@
             <translation>попередні повідомлення</translation>
         </message>
         <message>
-            <source>Attach image</source>
-            <translation>Додайте зображення</translation>
-        </message>
-        <message>
             <source>Chat message. Markdown supported. Shift+Enter for a new line.</source>
             <translation>повідомлення чату. Підтримується уцінка. Shift+Enter для нового рядка.</translation>
+        </message>
+        <message>
+            <source>Add</source>
+            <translation>Додати</translation>
         </message>
     </context>
     <context>
@@ -2647,6 +2659,14 @@
             <source>Identity imported.</source>
             <translation>Ідентифікатор імпортовано.</translation>
         </message>
+        <message>
+            <source>Invalid game state.</source>
+            <translation>Неприпустимий стан гри.</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Ця дія в грі більше недоступна.</translation>
+        </message>
     </context>
     <context>
         <name>LocalLanguage</name>
@@ -3313,6 +3333,176 @@
         <message>
             <source>See you next time.</source>
             <translation>До наступного разу.</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameCard</name>
+        <message>
+            <source>Invited by %1</source>
+            <translation>Запрошення від %1</translation>
+        </message>
+        <message>
+            <source>%1 wins!</source>
+            <translation>%1 перемагає!</translation>
+        </message>
+        <message>
+            <source>Join</source>
+            <translation>Приєднуйтесь</translation>
+        </message>
+        <message>
+            <source>Leave</source>
+            <translation>Вийти</translation>
+        </message>
+        <message>
+            <source>Elements</source>
+            <translation>Стихії</translation>
+        </message>
+        <message>
+            <source>Game ended</source>
+            <translation>Гру завершено</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Відкрити</translation>
+        </message>
+    </context>
+    <context>
+        <name>GamePane</name>
+        <message>
+            <source>Finish your current game first.</source>
+            <translation>Спочатку заверши поточну гру.</translation>
+        </message>
+        <message>
+            <source>Fire</source>
+            <translation>Вогонь</translation>
+        </message>
+        <message>
+            <source>Water</source>
+            <translation>Вода</translation>
+        </message>
+        <message>
+            <source>Ice</source>
+            <translation>Лід</translation>
+        </message>
+        <message>
+            <source>Core</source>
+            <translation>Ядро</translation>
+        </message>
+        <message>
+            <source>Trap</source>
+            <translation>Пастка</translation>
+        </message>
+        <message>
+            <source>Unknown</source>
+            <translation>Невідомо</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Ця дія в грі більше недоступна.</translation>
+        </message>
+        <message>
+            <source>Game unavailable</source>
+            <translation>Гра недоступна</translation>
+        </message>
+        <message>
+            <source>Same element. Choose again.</source>
+            <translation>Однакова стихія. Вибери знову.</translation>
+        </message>
+        <message>
+            <source>Your turn</source>
+            <translation>Твій хід</translation>
+        </message>
+        <message>
+            <source>%1's turn</source>
+            <translation>Хід гравця %1</translation>
+        </message>
+        <message>
+            <source>Waiting for the other player</source>
+            <translation>Очікування іншого гравця</translation>
+        </message>
+        <message>
+            <source>Water beats Fire. Fire beats Ice. Ice beats Water.</source>
+            <translation>Вода перемагає вогонь. Вогонь перемагає лід. Лід перемагає воду.</translation>
+        </message>
+        <message>
+            <source>Empty</source>
+            <translation>Порожньо</translation>
+        </message>
+        <message>
+            <source>Ice freezes Water</source>
+            <translation>Лід заморожує воду</translation>
+        </message>
+        <message>
+            <source>Fire melts Ice</source>
+            <translation>Вогонь розтоплює лід</translation>
+        </message>
+        <message>
+            <source>Water extinguishes Fire</source>
+            <translation>Вода гасить вогонь</translation>
+        </message>
+        <message>
+            <source>Neutral</source>
+            <translation>Нейтральний</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>Вибери стихію</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>Інформація</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>Перемога</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>Поразка</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>Залишилось</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>Переможено</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>Вийти з гри?</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>Якщо вийдеш, переможе інший гравець.</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>Скасувати запрошення?</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>Вибери Пастку, потім Ядро. Ходи на одну клітинку. Захопи чуже Ядро, щоб перемогти.</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>Вибери стихію в першому бою. За нічиєї можна вибрати знову.</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>Не рухається. Перемагає будь-якого нападника.</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>Не рухається. Захищай його, щоб залишитися в грі.</translation>
+        </message>
+        <message>
+            <source>Computer</source>
+            <translation>Комп’ютер</translation>
+        </message>
+        <message>
+            <source>Play against the computer?</source>
+            <translation>Зіграти проти комп’ютера?</translation>
         </message>
     </context>
 </TS>

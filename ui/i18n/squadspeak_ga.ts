@@ -1229,6 +1229,18 @@
             <source>Import</source>
             <translation>Iompórtáil</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>Stádas anaithnid</translation>
+        </message>
+        <message>
+            <source>Chat</source>
+            <translation>Comhrá</translation>
+        </message>
+        <message>
+            <source>Game</source>
+            <translation>Cluiche</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1436,12 +1448,12 @@
             <translation>Teachtaireachtaí níos luaithe</translation>
         </message>
         <message>
-            <source>Attach image</source>
-            <translation>Ceangail íomhá</translation>
-        </message>
-        <message>
             <source>Chat message. Markdown supported. Shift+Enter for a new line.</source>
             <translation>Teachtaireacht comhrá. Markdown tacaithe. Shift+Iontráil le haghaidh líne nua.</translation>
+        </message>
+        <message>
+            <source>Add</source>
+            <translation>Cuir</translation>
         </message>
     </context>
     <context>
@@ -2647,6 +2659,14 @@
             <source>Identity imported.</source>
             <translation>Iompórtáladh an chéannacht.</translation>
         </message>
+        <message>
+            <source>Invalid game state.</source>
+            <translation>Staid chluiche neamhbhailí.</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Níl an gníomh cluiche seo ar fáil a thuilleadh.</translation>
+        </message>
     </context>
     <context>
         <name>LocalLanguage</name>
@@ -3313,6 +3333,176 @@
         <message>
             <source>See you next time.</source>
             <translation>Go dtí an chéad uair eile.</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameCard</name>
+        <message>
+            <source>Invited by %1</source>
+            <translation>Cuireadh ó %1</translation>
+        </message>
+        <message>
+            <source>%1 wins!</source>
+            <translation>Tá an bua ag %1!</translation>
+        </message>
+        <message>
+            <source>Join</source>
+            <translation>Bígí</translation>
+        </message>
+        <message>
+            <source>Leave</source>
+            <translation>Fág</translation>
+        </message>
+        <message>
+            <source>Elements</source>
+            <translation>Dúile</translation>
+        </message>
+        <message>
+            <source>Game ended</source>
+            <translation>Tá an cluiche thart</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Oscail</translation>
+        </message>
+    </context>
+    <context>
+        <name>GamePane</name>
+        <message>
+            <source>Finish your current game first.</source>
+            <translation>Críochnaigh do chluiche reatha ar dtús.</translation>
+        </message>
+        <message>
+            <source>Fire</source>
+            <translation>Tine</translation>
+        </message>
+        <message>
+            <source>Water</source>
+            <translation>Uisce</translation>
+        </message>
+        <message>
+            <source>Ice</source>
+            <translation>Oighear</translation>
+        </message>
+        <message>
+            <source>Core</source>
+            <translation>Croí</translation>
+        </message>
+        <message>
+            <source>Trap</source>
+            <translation>Gaiste</translation>
+        </message>
+        <message>
+            <source>Unknown</source>
+            <translation>Anaithnid</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Níl an gníomh cluiche seo ar fáil a thuilleadh.</translation>
+        </message>
+        <message>
+            <source>Game unavailable</source>
+            <translation>Níl an cluiche ar fáil</translation>
+        </message>
+        <message>
+            <source>Same element. Choose again.</source>
+            <translation>An dúil chéanna. Roghnaigh arís.</translation>
+        </message>
+        <message>
+            <source>Your turn</source>
+            <translation>Do sheal</translation>
+        </message>
+        <message>
+            <source>%1's turn</source>
+            <translation>Seal %1</translation>
+        </message>
+        <message>
+            <source>Waiting for the other player</source>
+            <translation>Ag fanacht leis an imreoir eile</translation>
+        </message>
+        <message>
+            <source>Water beats Fire. Fire beats Ice. Ice beats Water.</source>
+            <translation>Buaileann uisce tine. Buaileann tine oighear. Buaileann oighear uisce.</translation>
+        </message>
+        <message>
+            <source>Empty</source>
+            <translation>Folamh</translation>
+        </message>
+        <message>
+            <source>Ice freezes Water</source>
+            <translation>Reonn oighear uisce</translation>
+        </message>
+        <message>
+            <source>Fire melts Ice</source>
+            <translation>Leánn tine oighear</translation>
+        </message>
+        <message>
+            <source>Water extinguishes Fire</source>
+            <translation>Múchann uisce tine</translation>
+        </message>
+        <message>
+            <source>Neutral</source>
+            <translation>Neodrach</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>Roghnaigh dúil</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>Eolas</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>Bua</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>Cailleadh</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>Fágtha</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>Gafa</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>Fág an cluiche?</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>Má fhágann tú, buann an t-imreoir eile.</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>Cealaigh an cuireadh?</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>Roghnaigh Gaiste, ansin Croí. Bog cearnóg amháin. Gabh an Croí eile le buachan.</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>Roghnaigh a eilimint sa chéad troid. Roghnaigh arís má bhíonn comhscór ann.</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>Ní bhogann sé. Cloíonn sé gach ionsaitheoir.</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>Ní bhogann sé. Cosain é le fanacht sa chluiche.</translation>
+        </message>
+        <message>
+            <source>Computer</source>
+            <translation>Ríomhaire</translation>
+        </message>
+        <message>
+            <source>Play against the computer?</source>
+            <translation>Imirt in aghaidh an ríomhaire?</translation>
         </message>
     </context>
 </TS>

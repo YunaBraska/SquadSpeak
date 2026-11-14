@@ -1229,6 +1229,18 @@
             <source>Import</source>
             <translation>Flytja inn</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>Staða óþekkt</translation>
+        </message>
+        <message>
+            <source>Chat</source>
+            <translation>Spjall</translation>
+        </message>
+        <message>
+            <source>Game</source>
+            <translation>Leikur</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1436,12 +1448,12 @@
             <translation>Fyrri skilaboð</translation>
         </message>
         <message>
-            <source>Attach image</source>
-            <translation>Læt mynd fylgja með</translation>
-        </message>
-        <message>
             <source>Chat message. Markdown supported. Shift+Enter for a new line.</source>
             <translation>Spjallboð. Markdown stutt. Shift+Enter fyrir nýja línu.</translation>
+        </message>
+        <message>
+            <source>Add</source>
+            <translation>Bæta við</translation>
         </message>
     </context>
     <context>
@@ -2647,6 +2659,14 @@
             <source>Identity imported.</source>
             <translation>Auðkenni flutt inn.</translation>
         </message>
+        <message>
+            <source>Invalid game state.</source>
+            <translation>Ógild leikstaða.</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Þessi leikaðgerð er ekki lengur í boði.</translation>
+        </message>
     </context>
     <context>
         <name>LocalLanguage</name>
@@ -3313,6 +3333,176 @@
         <message>
             <source>See you next time.</source>
             <translation>Sjáumst næst.</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameCard</name>
+        <message>
+            <source>Invited by %1</source>
+            <translation>Boð frá %1</translation>
+        </message>
+        <message>
+            <source>%1 wins!</source>
+            <translation>%1 vinnur!</translation>
+        </message>
+        <message>
+            <source>Join</source>
+            <translation>Vertu með</translation>
+        </message>
+        <message>
+            <source>Leave</source>
+            <translation>Farið</translation>
+        </message>
+        <message>
+            <source>Elements</source>
+            <translation>Frumefni</translation>
+        </message>
+        <message>
+            <source>Game ended</source>
+            <translation>Leik lokið</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Opna</translation>
+        </message>
+    </context>
+    <context>
+        <name>GamePane</name>
+        <message>
+            <source>Finish your current game first.</source>
+            <translation>Ljúktu fyrst núverandi leik.</translation>
+        </message>
+        <message>
+            <source>Fire</source>
+            <translation>Eldur</translation>
+        </message>
+        <message>
+            <source>Water</source>
+            <translation>Vatn</translation>
+        </message>
+        <message>
+            <source>Ice</source>
+            <translation>Ís</translation>
+        </message>
+        <message>
+            <source>Core</source>
+            <translation>Kjarni</translation>
+        </message>
+        <message>
+            <source>Trap</source>
+            <translation>Gildra</translation>
+        </message>
+        <message>
+            <source>Unknown</source>
+            <translation>Óþekkt</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Þessi leikaðgerð er ekki lengur í boði.</translation>
+        </message>
+        <message>
+            <source>Game unavailable</source>
+            <translation>Leikurinn er ekki tiltækur</translation>
+        </message>
+        <message>
+            <source>Same element. Choose again.</source>
+            <translation>Sama frumefni. Veldu aftur.</translation>
+        </message>
+        <message>
+            <source>Your turn</source>
+            <translation>Þú átt leik</translation>
+        </message>
+        <message>
+            <source>%1's turn</source>
+            <translation>%1 á leik</translation>
+        </message>
+        <message>
+            <source>Waiting for the other player</source>
+            <translation>Beðið eftir hinum leikmanninum</translation>
+        </message>
+        <message>
+            <source>Water beats Fire. Fire beats Ice. Ice beats Water.</source>
+            <translation>Vatn sigrar eld. Eldur sigrar ís. Ís sigrar vatn.</translation>
+        </message>
+        <message>
+            <source>Empty</source>
+            <translation>Tómt</translation>
+        </message>
+        <message>
+            <source>Ice freezes Water</source>
+            <translation>Ís frystir vatn</translation>
+        </message>
+        <message>
+            <source>Fire melts Ice</source>
+            <translation>Eldur bræðir ís</translation>
+        </message>
+        <message>
+            <source>Water extinguishes Fire</source>
+            <translation>Vatn slekkur eld</translation>
+        </message>
+        <message>
+            <source>Neutral</source>
+            <translation>Hlutlaust</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>Veldu frumefni</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>Upplýsingar</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>Sigur</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>Tap</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>Eftir</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>Felldar</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>Yfirgefa leikinn?</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>Ef þú ferð vinnur hinn leikmaðurinn.</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>Hætta við boðið?</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>Veldu Gildru, síðan Kjarna. Færðu einn reit. Náðu Kjarna andstæðingsins til að vinna.</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>Veldu frumefni í fyrsta bardaga. Við jafntefli velurðu aftur.</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>Stendur kyrr. Sigrar alla árásarmenn.</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>Stendur kyrr. Verndaðu hann til að vera áfram í leiknum.</translation>
+        </message>
+        <message>
+            <source>Computer</source>
+            <translation>Tölva</translation>
+        </message>
+        <message>
+            <source>Play against the computer?</source>
+            <translation>Spila á móti tölvunni?</translation>
         </message>
     </context>
 </TS>

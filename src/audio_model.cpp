@@ -372,6 +372,10 @@ bool AudioModel::playEvent(const QString& kind, const QString& text) {
     else if (kind == "rejected") sound = "kick";
     else if (kind == "request") sound = "message";
     else if (kind == "kick" || kind == "ban" || kind == "message" || kind == "announcement") sound = kind;
+    else if (kind == "game-choose" || kind == "game-move" || kind == "game-melt" || kind == "game-freeze"
+        || kind == "game-extinguish" || kind == "game-trap" || kind == "game-win" || kind == "game-end"
+        || kind == "piece-neutral" || kind == "piece-core" || kind == "piece-trap"
+        || kind == "piece-fire" || kind == "piece-water" || kind == "piece-ice") sound = kind;
     else return false;
     return playSound(sound, notificationVolume_, kind, text);
 }

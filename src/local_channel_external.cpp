@@ -10,6 +10,7 @@
 #include <QUuid>
 #include <QtEndian>
 #include <algorithm>
+#include <utility>
 #include <opus.h>
 
 namespace {
@@ -173,11 +174,26 @@ bool LocalChannel::externalCommand(const QJsonObject& command) {
     return ss_ts_command(external_->handle, reinterpret_cast<const uint8_t*>(bytes.constData()), size_t(bytes.size())) != 0;
 }
 
-bool LocalChannel::joinExternal(const QString& id, const QString& suppliedPassword, bool remember) {
+bool LocalChannel::confirmExternalJoin(bool confirmed) {
+    const auto id = std::exchange(pendingExternalJoin_, {});
+    if (id.isEmpty()) return false;
+    return !confirmed || joinExternal(id, {}, false, true);
+}
+
+bool LocalChannel::joinExternal(const QString& id, const QString& suppliedPassword, bool remember, bool departureConfirmed) {
     if (!ready() || hostOnly_ || service_ || remoteMode()) return false;
     const auto entry = savedChannels_.value(id).toObject();
     const auto* provider = externalVoiceProvider(entry.value("protocol").toString());
     if (!provider) return false;
+    if (!pendingExternalJoin_.isEmpty()) return pendingExternalJoin_ == id;
+    const auto current = clients_.value(joinedHostId_);
+    const auto game = currentGame();
+    if (!departureConfirmed && current && current->accepted && current->voice && !current->external()
+        && !game.isEmpty() && game.value("phase") != "finished" && game.value("phase") != "cancelled") {
+        pendingExternalJoin_ = id;
+        emit externalJoinConfirmationRequested();
+        return true;
+    }
     const auto device = entry.value("deviceId").toString();
     auto c = clients_.value(id);
     if (!c) {

@@ -11,7 +11,7 @@
 
 namespace {
 const QSet<QString> knownChatKinds{
-    QStringLiteral("history"), QStringLiteral("send"), QStringLiteral("message"), QStringLiteral("time"),
+    QStringLiteral("game"), QStringLiteral("history"), QStringLiteral("send"), QStringLiteral("message"), QStringLiteral("time"),
     QStringLiteral("error"), QStringLiteral("imageStart"), QStringLiteral("imageChunk"),
     QStringLiteral("imageGet"), QStringLiteral("imageOffset"), QStringLiteral("imageData"), QStringLiteral("imageError")};
 }
@@ -127,6 +127,7 @@ bool LocalChannel::hostChat(QSslSocket* socket, const QJsonObject& message) {
         const auto kind = payload.value("kind").toString();
         if (!validMessageType(kind)) { socket->abort(); return false; }
         if (!knownChatKinds.contains(kind)) return true;
+        if (kind == "game") return hostGameAction(socket, payload);
         if (payload.value("kind") == "history") {
             const auto request = payload.value("request").toString();
             if (QUuid(request).isNull() || !payload.contains("cursor") || !payload.contains("direction")) {
@@ -231,6 +232,17 @@ bool LocalChannel::applyChat(Client& c, QJsonObject payload, bool keyMessage) {
             retryChat(c); return true;
         }
         const auto kind = payload.value("kind").toString();
+        if (kind == "game") {
+            if (!c.privatePeer.isEmpty() || c.external() || !c.capabilities.contains("channel-games")
+                || !payload.value("state").isObject() || (payload.contains("removed") && !payload.value("removed").isString())
+                || !applyGame(c, payload.value("state").toObject(), payload.value("removed").toString()))
+                throw std::runtime_error(QT_TRANSLATE_NOOP("LocalChannel", "Invalid game state."));
+            if (c.id == pendingGameHost_ && payload.value("request").toString() == pendingGameRequest_) {
+                pendingGameHost_.clear(); pendingGameRequest_.clear();
+            }
+            c.chatError = payload.value("error").toString().left(256);
+            emit chatChanged(); emit hostsChanged(); return true;
+        }
         if (kind == "error") {
             c.historyRequest.clear();
             c.pending = {}; c.pendingImage.clear(); c.chatError = payload.value("error").toString().left(512); emit chatChanged(); return true;

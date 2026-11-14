@@ -1229,6 +1229,18 @@
             <source>Import</source>
             <translation>Importer</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>Ukjent status</translation>
+        </message>
+        <message>
+            <source>Chat</source>
+            <translation>Chat</translation>
+        </message>
+        <message>
+            <source>Game</source>
+            <translation>Spill</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1436,12 +1448,12 @@
             <translation>Tidligere meldinger</translation>
         </message>
         <message>
-            <source>Attach image</source>
-            <translation>Legg ved bilde</translation>
-        </message>
-        <message>
             <source>Chat message. Markdown supported. Shift+Enter for a new line.</source>
             <translation>Chat-melding. Markdown støttes. Shift+Enter for en ny linje.</translation>
+        </message>
+        <message>
+            <source>Add</source>
+            <translation>Legg til</translation>
         </message>
     </context>
     <context>
@@ -2647,6 +2659,14 @@
             <source>Identity imported.</source>
             <translation>Identitet importert.</translation>
         </message>
+        <message>
+            <source>Invalid game state.</source>
+            <translation>Ugyldig spilltilstand.</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Denne spillhandlingen er ikke lenger tilgjengelig.</translation>
+        </message>
     </context>
     <context>
         <name>LocalLanguage</name>
@@ -3313,6 +3333,176 @@
         <message>
             <source>See you next time.</source>
             <translation>Vi ses neste gang.</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameCard</name>
+        <message>
+            <source>Invited by %1</source>
+            <translation>Invitert av %1</translation>
+        </message>
+        <message>
+            <source>%1 wins!</source>
+            <translation>%1 vinner!</translation>
+        </message>
+        <message>
+            <source>Join</source>
+            <translation>Bli med</translation>
+        </message>
+        <message>
+            <source>Leave</source>
+            <translation>Gå</translation>
+        </message>
+        <message>
+            <source>Elements</source>
+            <translation>Elementer</translation>
+        </message>
+        <message>
+            <source>Game ended</source>
+            <translation>Spillet er over</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Åpne</translation>
+        </message>
+    </context>
+    <context>
+        <name>GamePane</name>
+        <message>
+            <source>Finish your current game first.</source>
+            <translation>Avslutt det nåværende spillet ditt først.</translation>
+        </message>
+        <message>
+            <source>Fire</source>
+            <translation>Ild</translation>
+        </message>
+        <message>
+            <source>Water</source>
+            <translation>Vann</translation>
+        </message>
+        <message>
+            <source>Ice</source>
+            <translation>Is</translation>
+        </message>
+        <message>
+            <source>Core</source>
+            <translation>Kjerne</translation>
+        </message>
+        <message>
+            <source>Trap</source>
+            <translation>Felle</translation>
+        </message>
+        <message>
+            <source>Unknown</source>
+            <translation>Ukjent</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Denne spillhandlingen er ikke lenger tilgjengelig.</translation>
+        </message>
+        <message>
+            <source>Game unavailable</source>
+            <translation>Spillet er ikke tilgjengelig</translation>
+        </message>
+        <message>
+            <source>Same element. Choose again.</source>
+            <translation>Samme element. Velg på nytt.</translation>
+        </message>
+        <message>
+            <source>Your turn</source>
+            <translation>Din tur</translation>
+        </message>
+        <message>
+            <source>%1's turn</source>
+            <translation>Det er %1 sin tur</translation>
+        </message>
+        <message>
+            <source>Waiting for the other player</source>
+            <translation>Venter på den andre spilleren</translation>
+        </message>
+        <message>
+            <source>Water beats Fire. Fire beats Ice. Ice beats Water.</source>
+            <translation>Vann slår ild. Ild slår is. Is slår vann.</translation>
+        </message>
+        <message>
+            <source>Empty</source>
+            <translation>Tom</translation>
+        </message>
+        <message>
+            <source>Ice freezes Water</source>
+            <translation>Is fryser vann</translation>
+        </message>
+        <message>
+            <source>Fire melts Ice</source>
+            <translation>Ild smelter is</translation>
+        </message>
+        <message>
+            <source>Water extinguishes Fire</source>
+            <translation>Vann slukker ild</translation>
+        </message>
+        <message>
+            <source>Neutral</source>
+            <translation>Nøytral</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>Velg et element</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>Informasjon</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>Seier</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>Tap</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>Igjen</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>Slått ut</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>Forlate spillet?</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>Hvis du forlater, vinner den andre spilleren.</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>Avbryte invitasjonen?</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>Velg Felle, deretter Kjerne. Flytt én rute. Ta motstanderens Kjerne for å vinne.</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>Velg element i første kamp. Ved uavgjort velger du på nytt.</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>Står stille. Slår alle angripere.</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>Står stille. Beskytt den for å bli i spillet.</translation>
+        </message>
+        <message>
+            <source>Computer</source>
+            <translation>Datamaskin</translation>
+        </message>
+        <message>
+            <source>Play against the computer?</source>
+            <translation>Spille mot datamaskinen?</translation>
         </message>
     </context>
 </TS>

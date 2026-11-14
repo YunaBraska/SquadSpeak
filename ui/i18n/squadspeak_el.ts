@@ -1229,6 +1229,18 @@
             <source>Import</source>
             <translation>Εισαγωγή</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>Άγνωστη κατάσταση</translation>
+        </message>
+        <message>
+            <source>Chat</source>
+            <translation>Συνομιλία</translation>
+        </message>
+        <message>
+            <source>Game</source>
+            <translation>Παιχνίδι</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1436,12 +1448,12 @@
             <translation>Παλαιότερα μηνύματα</translation>
         </message>
         <message>
-            <source>Attach image</source>
-            <translation>Επισύναψη εικόνας</translation>
-        </message>
-        <message>
             <source>Chat message. Markdown supported. Shift+Enter for a new line.</source>
             <translation>Μήνυμα συνομιλίας. Υποστηρίζεται το Markdown. Shift+Enter για νέα γραμμή.</translation>
+        </message>
+        <message>
+            <source>Add</source>
+            <translation>Προσθήκη</translation>
         </message>
     </context>
     <context>
@@ -2647,6 +2659,14 @@
             <source>Identity imported.</source>
             <translation>Η ταυτότητα εισήχθη.</translation>
         </message>
+        <message>
+            <source>Invalid game state.</source>
+            <translation>Μη έγκυρη κατάσταση παιχνιδιού.</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Αυτή η ενέργεια παιχνιδιού δεν είναι πλέον διαθέσιμη.</translation>
+        </message>
     </context>
     <context>
         <name>LocalLanguage</name>
@@ -3313,6 +3333,176 @@
         <message>
             <source>See you next time.</source>
             <translation>Μέχρι την επόμενη φορά.</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameCard</name>
+        <message>
+            <source>Invited by %1</source>
+            <translation>Πρόσκληση από %1</translation>
+        </message>
+        <message>
+            <source>%1 wins!</source>
+            <translation>Ο παίκτης %1 κερδίζει!</translation>
+        </message>
+        <message>
+            <source>Join</source>
+            <translation>Συμμετοχή</translation>
+        </message>
+        <message>
+            <source>Leave</source>
+            <translation>Φύγε</translation>
+        </message>
+        <message>
+            <source>Elements</source>
+            <translation>Στοιχεία</translation>
+        </message>
+        <message>
+            <source>Game ended</source>
+            <translation>Το παιχνίδι τελείωσε</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Άνοιγμα</translation>
+        </message>
+    </context>
+    <context>
+        <name>GamePane</name>
+        <message>
+            <source>Finish your current game first.</source>
+            <translation>Ολοκλήρωσε πρώτα το τρέχον παιχνίδι σου.</translation>
+        </message>
+        <message>
+            <source>Fire</source>
+            <translation>Φωτιά</translation>
+        </message>
+        <message>
+            <source>Water</source>
+            <translation>Νερό</translation>
+        </message>
+        <message>
+            <source>Ice</source>
+            <translation>Πάγος</translation>
+        </message>
+        <message>
+            <source>Core</source>
+            <translation>Πυρήνας</translation>
+        </message>
+        <message>
+            <source>Trap</source>
+            <translation>Παγίδα</translation>
+        </message>
+        <message>
+            <source>Unknown</source>
+            <translation>Άγνωστο</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Αυτή η ενέργεια παιχνιδιού δεν είναι πλέον διαθέσιμη.</translation>
+        </message>
+        <message>
+            <source>Game unavailable</source>
+            <translation>Το παιχνίδι δεν είναι διαθέσιμο</translation>
+        </message>
+        <message>
+            <source>Same element. Choose again.</source>
+            <translation>Ίδιο στοιχείο. Διάλεξε ξανά.</translation>
+        </message>
+        <message>
+            <source>Your turn</source>
+            <translation>Η σειρά σου</translation>
+        </message>
+        <message>
+            <source>%1's turn</source>
+            <translation>Σειρά του παίκτη %1</translation>
+        </message>
+        <message>
+            <source>Waiting for the other player</source>
+            <translation>Αναμονή για τον άλλο παίκτη</translation>
+        </message>
+        <message>
+            <source>Water beats Fire. Fire beats Ice. Ice beats Water.</source>
+            <translation>Το νερό νικά τη φωτιά. Η φωτιά νικά τον πάγο. Ο πάγος νικά το νερό.</translation>
+        </message>
+        <message>
+            <source>Empty</source>
+            <translation>Κενό</translation>
+        </message>
+        <message>
+            <source>Ice freezes Water</source>
+            <translation>Ο πάγος παγώνει το νερό</translation>
+        </message>
+        <message>
+            <source>Fire melts Ice</source>
+            <translation>Η φωτιά λιώνει τον πάγο</translation>
+        </message>
+        <message>
+            <source>Water extinguishes Fire</source>
+            <translation>Το νερό σβήνει τη φωτιά</translation>
+        </message>
+        <message>
+            <source>Neutral</source>
+            <translation>Ουδέτερο</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>Διάλεξε ένα στοιχείο</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>Πληροφορίες</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>Νίκη</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>Ήττα</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>Απομένουν</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>Αιχμαλωτισμένα</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>Έξοδος από το παιχνίδι;</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>Αν φύγεις, κερδίζει ο άλλος παίκτης.</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>Ακύρωση πρόσκλησης;</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>Διάλεξε Παγίδα, μετά Πυρήνα. Κινήσου ένα τετράγωνο. Πάρε τον αντίπαλο Πυρήνα για να νικήσεις.</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>Διάλεξε στοιχείο στην πρώτη μάχη. Σε ισοπαλία διάλεξε ξανά.</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>Μένει ακίνητη. Νικά κάθε επιτιθέμενο.</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>Μένει ακίνητος. Προστάτεψέ τον για να μείνεις στο παιχνίδι.</translation>
+        </message>
+        <message>
+            <source>Computer</source>
+            <translation>Υπολογιστής</translation>
+        </message>
+        <message>
+            <source>Play against the computer?</source>
+            <translation>Παιχνίδι εναντίον του υπολογιστή;</translation>
         </message>
     </context>
 </TS>

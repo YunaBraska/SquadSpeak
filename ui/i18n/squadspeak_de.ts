@@ -1229,6 +1229,18 @@
             <source>Import</source>
             <translation>Importieren</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>Status unbekannt</translation>
+        </message>
+        <message>
+            <source>Chat</source>
+            <translation>Chat</translation>
+        </message>
+        <message>
+            <source>Game</source>
+            <translation>Spiel</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1436,12 +1448,12 @@
             <translation>Frühere Nachrichten</translation>
         </message>
         <message>
-            <source>Attach image</source>
-            <translation>Bild anhängen</translation>
-        </message>
-        <message>
             <source>Chat message. Markdown supported. Shift+Enter for a new line.</source>
             <translation>Chatnachricht. Markdown wird unterstützt. Umschalt+Enter für eine neue Zeile.</translation>
+        </message>
+        <message>
+            <source>Add</source>
+            <translation>Hinzufügen</translation>
         </message>
     </context>
     <context>
@@ -2647,6 +2659,14 @@
             <source>Identity imported.</source>
             <translation>Identität importiert.</translation>
         </message>
+        <message>
+            <source>Invalid game state.</source>
+            <translation>Ungültiger Spielzustand.</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Diese Spielaktion ist nicht mehr verfügbar.</translation>
+        </message>
     </context>
     <context>
         <name>LocalLanguage</name>
@@ -3313,6 +3333,176 @@
         <message>
             <source>See you next time.</source>
             <translation>Bis zum nächsten Mal.</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameCard</name>
+        <message>
+            <source>Invited by %1</source>
+            <translation>Eingeladen von %1</translation>
+        </message>
+        <message>
+            <source>%1 wins!</source>
+            <translation>%1 gewinnt!</translation>
+        </message>
+        <message>
+            <source>Join</source>
+            <translation>Beitreten</translation>
+        </message>
+        <message>
+            <source>Leave</source>
+            <translation>Verlassen</translation>
+        </message>
+        <message>
+            <source>Elements</source>
+            <translation>Elemente</translation>
+        </message>
+        <message>
+            <source>Game ended</source>
+            <translation>Spiel beendet</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Öffnen</translation>
+        </message>
+    </context>
+    <context>
+        <name>GamePane</name>
+        <message>
+            <source>Finish your current game first.</source>
+            <translation>Beende zuerst dein aktuelles Spiel.</translation>
+        </message>
+        <message>
+            <source>Fire</source>
+            <translation>Feuer</translation>
+        </message>
+        <message>
+            <source>Water</source>
+            <translation>Wasser</translation>
+        </message>
+        <message>
+            <source>Ice</source>
+            <translation>Eis</translation>
+        </message>
+        <message>
+            <source>Core</source>
+            <translation>Kern</translation>
+        </message>
+        <message>
+            <source>Trap</source>
+            <translation>Falle</translation>
+        </message>
+        <message>
+            <source>Unknown</source>
+            <translation>Unbekannt</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Diese Spielaktion ist nicht mehr verfügbar.</translation>
+        </message>
+        <message>
+            <source>Game unavailable</source>
+            <translation>Spiel nicht verfügbar</translation>
+        </message>
+        <message>
+            <source>Same element. Choose again.</source>
+            <translation>Gleiches Element. Wähle erneut.</translation>
+        </message>
+        <message>
+            <source>Your turn</source>
+            <translation>Du bist dran</translation>
+        </message>
+        <message>
+            <source>%1's turn</source>
+            <translation>%1 ist dran</translation>
+        </message>
+        <message>
+            <source>Waiting for the other player</source>
+            <translation>Warten auf den anderen Spieler</translation>
+        </message>
+        <message>
+            <source>Water beats Fire. Fire beats Ice. Ice beats Water.</source>
+            <translation>Wasser schlägt Feuer. Feuer schlägt Eis. Eis schlägt Wasser.</translation>
+        </message>
+        <message>
+            <source>Empty</source>
+            <translation>Leer</translation>
+        </message>
+        <message>
+            <source>Ice freezes Water</source>
+            <translation>Eis friert Wasser ein</translation>
+        </message>
+        <message>
+            <source>Fire melts Ice</source>
+            <translation>Feuer schmilzt Eis</translation>
+        </message>
+        <message>
+            <source>Water extinguishes Fire</source>
+            <translation>Wasser löscht Feuer</translation>
+        </message>
+        <message>
+            <source>Neutral</source>
+            <translation>Neutral</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>Wähle ein Element</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>Info</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>Sieg</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>Niederlage</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>Übrig</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>Geschlagen</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>Spiel verlassen?</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>Wenn du gehst, gewinnt die andere Person.</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>Einladung zurückziehen?</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>Wähle Falle, dann Kern. Ziehe ein Feld. Erobere den anderen Kern zum Sieg.</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>Wähle das Element beim ersten Kampf. Bei Gleichstand wählst du neu.</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>Bleibt stehen. Besiegt jeden Angreifer.</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>Bleibt stehen. Beschütze ihn, um im Spiel zu bleiben.</translation>
+        </message>
+        <message>
+            <source>Computer</source>
+            <translation>Computer</translation>
+        </message>
+        <message>
+            <source>Play against the computer?</source>
+            <translation>Gegen den Computer spielen?</translation>
         </message>
     </context>
 </TS>

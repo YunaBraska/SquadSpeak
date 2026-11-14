@@ -359,6 +359,547 @@ public:
 class ChannelTests final : public QObject {
     Q_OBJECT
 private slots:
+    void computerOpponentUsesOnlyTheGameSeatAndCancelsPendingWork() {
+        QTemporaryDir dir;
+        Device host(dir.filePath("host"), "Host"), guest(dir.filePath("guest"), "Guest");
+        QVERIFY(host.listenWithUdp());
+        QVERIFY(host.channel.decide(guest.channel.ownId(), true));
+        QVERIFY(host.join(host.channel)); QTRY_VERIFY(host.channel.chatReady());
+        QVERIFY(guest.join(host.channel)); QTRY_VERIFY(guest.channel.chatReady());
+        QVERIFY(host.channel.gameAction("start", {{"id", ""}, {"round", 0}}));
+        QTRY_COMPARE(guest.channel.games().size(), 1);
+        const auto id = guest.channel.games().first().toMap().value("id");
+        QVERIFY(guest.channel.gameAction("computer", {{"id", id}, {"round", 1}}));
+        QTRY_VERIFY(!guest.channel.chatError().isEmpty());
+        QCOMPARE(host.channel.currentGame().value("players").toList().size(), 1);
+        QVERIFY(host.channel.gameAction("computer", {{"id", id}, {"round", 0}}));
+        QTRY_VERIFY(!host.channel.chatError().isEmpty());
+        QCOMPARE(host.channel.currentGame().value("players").toList().size(), 1);
+        QVERIFY(host.channel.gameAction("computer", {{"id", id}, {"round", 1}}));
+        QTRY_COMPARE(host.channel.currentGame().value("players").toList().size(), 2);
+        QVERIFY(host.channel.currentGame().value("players").toList()[1].toMap().value("computer").toBool());
+        QTRY_VERIFY(guest.channel.games().isEmpty());
+        QVERIFY(participant(host.channel, "computer").isEmpty());
+        QVERIFY(participant(guest.channel, "computer").isEmpty());
+        QVERIFY(host.channel.gameView(host.channel.ownId(), id.toString(), "computer").isEmpty());
+        QVERIFY(!host.channel.gameAction("leave", {{"id", id}, {"round", 1}}, host.channel.ownId(), "computer"));
+        for (const auto& value : host.channel.savedChannels()) {
+            QVERIFY(value.toMap().value("id") != "computer");
+            QVERIFY(value.toMap().value("deviceId") != "computer");
+        }
+        QVERIFY(host.channel.gameAction("computer", {{"id", id}, {"round", 1}}));
+        QTRY_VERIFY(!host.channel.chatError().isEmpty());
+        QCOMPARE(host.channel.currentGame().value("players").toList().size(), 2);
+        QVERIFY(host.channel.gameAction("setup", {{"id", id}, {"round", 1}, {"core", 35}, {"trap", 36}}));
+        QTRY_COMPARE(host.channel.currentGame().value("phase").toString(), QString("playing"));
+        QTRY_COMPARE(host.channel.currentGame().value("turn").toString(), host.channel.ownId());
+        const auto round = host.channel.currentGame().value("round");
+        QVERIFY(host.channel.gameAction("move", {{"id", id}, {"round", round}, {"from", 28}, {"to", 21}}));
+        QTRY_COMPARE(host.channel.currentGame().value("turn").toString(), QString("computer"));
+        QVERIFY(host.channel.gameAction("leave", {{"id", id}, {"round", host.channel.currentGame().value("round")}}));
+        QTRY_COMPARE(host.channel.currentGame().value("winner").toString(), QString("computer"));
+        QVERIFY(host.channel.gameAction("start", {{"id", ""}, {"round", 0}}));
+        QTRY_COMPARE(host.channel.currentGame().value("phase").toString(), QString("waiting"));
+        const auto next = host.channel.currentGame();
+        QTimer fence; fence.setSingleShot(true); fence.start(1400);
+        QVERIFY(waitForEvents(&fence, &QTimer::timeout, [&] { return !fence.isActive(); }, 4000));
+        QCOMPARE(host.channel.currentGame(), next);
+        QCOMPARE(host.channel.currentGame().value("players").toList().size(), 1);
+        QVERIFY(host.channel.hostHistory().value("records").toArray().isEmpty());
+    }
+
+    void computerWorkStopsOnConnectionLossOrHostClose_data() {
+        QTest::addColumn<bool>("hostClose");
+        QTest::newRow("creator-disconnect") << false;
+        QTest::newRow("host-close") << true;
+    }
+    void computerWorkStopsOnConnectionLossOrHostClose() {
+        QFETCH(bool, hostClose);
+        QTemporaryDir dir;
+        Device host(dir.filePath("host"), "Host"), creator(dir.filePath("creator"), "Creator");
+        QVERIFY(host.listenWithUdp());
+        QVERIFY(host.channel.decide(creator.channel.ownId(), true));
+        DelayedLink link(host.channel.port()); link.videoOnly = true;
+        QVERIFY(creator.channel.join(host.channel.ownId(), "127.0.0.1", link.port()));
+        QTRY_VERIFY(creator.channel.chatReady());
+        QVERIFY(creator.channel.gameAction("start", {{"id", ""}, {"round", 0}}));
+        QTRY_VERIFY(!creator.channel.gameId().isEmpty());
+        const auto previous = creator.channel.gameId();
+        QVERIFY(creator.channel.gameAction("computer", {{"id", previous}, {"round", 1}}));
+        QTRY_COMPARE(creator.channel.currentGame().value("players").toList().size(), 2);
+        if (hostClose) QVERIFY(host.channel.stopHost());
+        else QVERIFY(link.disconnectPrimary());
+        QTRY_VERIFY(!creator.channel.chatReady());
+        QTRY_COMPARE(creator.channel.currentGame().value("phase").toString(), QString("cancelled"));
+        QTRY_VERIFY(participant(host.channel, creator.channel.ownId()).isEmpty());
+        if (hostClose) QVERIFY(host.listenWithUdp());
+        QVERIFY(creator.join(host.channel)); QTRY_VERIFY(creator.channel.chatReady());
+        QVERIFY(creator.channel.gameAction("start", {{"id", ""}, {"round", 0}}));
+        QTRY_COMPARE(creator.channel.currentGame().value("phase").toString(), QString("waiting"));
+        QVERIFY(creator.channel.gameId() != previous);
+        const auto next = creator.channel.currentGame();
+        QTimer fence; fence.setSingleShot(true); fence.start(1400);
+        QVERIFY(waitForEvents(&fence, &QTimer::timeout, [&] { return !fence.isActive(); }, 4000));
+        QCOMPARE(creator.channel.currentGame(), next);
+        QCOMPARE(creator.channel.currentGame().value("players").toList().size(), 1);
+    }
+
+    void humanJoinAndComputerSeatRace_data() {
+        QTest::addColumn<bool>("computerFirst");
+        QTest::newRow("computer-sent-first") << true;
+        QTest::newRow("human-sent-first") << false;
+    }
+    void humanJoinAndComputerSeatRace() {
+        QFETCH(bool, computerFirst);
+        QTemporaryDir dir;
+        Device host(dir.filePath("host"), "Host"), guest(dir.filePath("guest"), "Guest");
+        QVERIFY(host.listenWithUdp());
+        QVERIFY(host.channel.decide(guest.channel.ownId(), true));
+        QVERIFY(host.join(host.channel)); QTRY_VERIFY(host.channel.chatReady());
+        QVERIFY(guest.join(host.channel)); QTRY_VERIFY(guest.channel.chatReady());
+        QVERIFY(host.channel.gameAction("start", {{"id", ""}, {"round", 0}}));
+        QTRY_COMPARE(guest.channel.games().size(), 1);
+        const auto id = guest.channel.games().first().toMap().value("id");
+        const auto computer = [&] { return host.channel.gameAction("computer", {{"id", id}, {"round", 1}}); };
+        const auto human = [&] { return guest.channel.gameAction("join", {{"id", id}, {"round", 1}}); };
+        if (computerFirst) { QVERIFY(computer()); QVERIFY(human()); }
+        else { QVERIFY(human()); QVERIFY(computer()); }
+        QTRY_COMPARE(host.channel.currentGame().value("players").toList().size(), 2);
+        const auto seat = host.channel.currentGame().value("players").toList()[1].toMap();
+        if (seat.value("computer").toBool()) {
+            QCOMPARE(seat.value("id").toString(), QString("computer"));
+            QTRY_VERIFY(!guest.channel.chatError().isEmpty());
+            QVERIFY(guest.channel.currentGame().isEmpty());
+            QVERIFY(guest.channel.games().isEmpty());
+        } else {
+            QCOMPARE(seat.value("id").toString(), guest.channel.ownId());
+            QTRY_VERIFY(!host.channel.chatError().isEmpty());
+            QTRY_COMPARE(guest.channel.currentGame().value("id"), id);
+        }
+        QCOMPARE(host.channel.currentGame().value("players").toList().size(), 2);
+        QVERIFY(host.channel.gameAction("leave", {{"id", id}, {"round", 1}}));
+        QTRY_COMPARE(host.channel.currentGame().value("phase").toString(), QString("finished"));
+    }
+
+    void parallelGamesRequireVoiceAndRetainOnlyPersonalResults() {
+        QTemporaryDir dir;
+        Device host(dir.filePath("host"), "Host"), first(dir.filePath("first"), "First"),
+            second(dir.filePath("second"), "Second"), fourth(dir.filePath("fourth"), "Fourth"),
+            observer(dir.filePath("observer"), "Observer"), late(dir.filePath("late"), "Late");
+        QVERIFY(host.listenWithUdp());
+        for (auto* d : {&host, &first, &second, &fourth, &observer, &late})
+            QVERIFY(host.channel.decide(d->channel.ownId(), true));
+        for (auto* d : {&host, &first, &second, &fourth}) {
+            QVERIFY(d->join(host.channel)); QTRY_VERIFY(d->channel.joined());
+            QTRY_VERIFY(d->channel.chatReady());
+        }
+        QVERIFY(observer.channel.openChat(host.channel.ownId(), "127.0.0.1", host.channel.port()));
+        QTRY_VERIFY(observer.channel.chatReady());
+        QVERIFY(!observer.channel.canStartGame());
+        QVERIFY(!observer.channel.gameAction("start", {{"id", ""}, {"round", 0}}));
+        QVERIFY(first.channel.gameAction("start", {{"id", ""}, {"round", 0}}));
+        QTRY_VERIFY(!first.channel.gameId().isEmpty());
+        const auto a = first.channel.gameId();
+        QTRY_COMPARE(second.channel.games().size(), 1);
+        QVERIFY(second.channel.gameId().isEmpty());
+        QVERIFY(second.channel.gameAction("start", {{"id", ""}, {"round", 0}}));
+        QTRY_VERIFY(!second.channel.gameId().isEmpty());
+        const auto b = second.channel.gameId();
+        QVERIFY(a != b);
+        QTRY_COMPARE(host.channel.games().size(), 2);
+        QVERIFY(host.channel.gameAction("join", {{"id", a}, {"round", 1}}));
+        QTRY_COMPARE(host.channel.currentGame().value("players").toList().size(), 2);
+        QTRY_COMPARE(fourth.channel.games().size(), 1);
+        QCOMPARE(fourth.channel.games().first().toMap().value("id").toString(), b);
+        QVERIFY(fourth.channel.gameAction("join", {{"id", b}, {"round", 1}}));
+        QTRY_COMPARE(second.channel.currentGame().value("players").toList().size(), 2);
+        for (auto* d : {&host, &first, &second, &fourth}) QTRY_COMPARE(d->channel.games().size(), 1);
+        QVERIFY(observer.channel.games().isEmpty());
+        QVERIFY(!first.channel.gameAction("join", {{"id", a}, {"round", 1}}));
+        QVERIFY(!first.channel.gameAction("join", {{"id", b}, {"round", 1}}));
+        QVERIFY(late.join(host.channel)); QTRY_VERIFY(late.channel.joined()); QTRY_VERIFY(late.channel.chatReady());
+        QVERIFY(late.channel.gameAction("join", {{"id", a}, {"round", 1}}));
+        QTRY_VERIFY(!late.channel.chatError().isEmpty());
+        QVERIFY(late.channel.games().isEmpty());
+        QVERIFY(host.channel.gameAction("leave", {{"id", a}, {"round", 1}}));
+        QTRY_COMPARE(first.channel.currentGame().value("winner").toString(), first.channel.ownId());
+        QTRY_COMPARE(host.channel.currentGame().value("phase").toString(), QString("finished"));
+        QCOMPARE(second.channel.currentGame().value("id").toString(), b);
+        QVERIFY(late.channel.gameAction("join", {{"id", a}, {"round", 1}}));
+        QTRY_VERIFY(!late.channel.chatError().isEmpty());
+        for (int repeat = 0; repeat < 3; ++repeat) {
+            QVERIFY(host.channel.gameAction("start", {{"id", ""}, {"round", 0}}));
+            QTRY_COMPARE(host.channel.currentGame().value("phase").toString(), QString("waiting"));
+            const auto next = host.channel.gameId(); QVERIFY(next != a);
+            QVERIFY(host.channel.gameAction("leave", {{"id", next}, {"round", 1}}));
+            QTRY_COMPARE(host.channel.currentGame().value("phase").toString(), QString("cancelled"));
+            QCOMPARE(host.channel.games().size(), 1);
+        }
+        QVERIFY(host.channel.gameAction("dismiss", {{"id", host.channel.gameId()}}));
+        QVERIFY(host.channel.currentGame().isEmpty()); QVERIFY(host.channel.gameId().isEmpty());
+        QVERIFY(host.channel.hostHistory().value("records").toArray().isEmpty());
+        QVERIFY(observer.channel.games().isEmpty());
+    }
+
+    void gameOwnedChannelsAndRemoteControlShareAuthorization_data() {
+        QTest::addColumn<bool>("additionalChannel");
+        QTest::newRow("primary") << false;
+#if !SQUADSPEAK_STORE_BUILD
+        QTest::newRow("additional") << true;
+#endif
+    }
+
+    void gameOwnedChannelsAndRemoteControlShareAuthorization() {
+        QFETCH(bool, additionalChannel);
+        QTemporaryDir dir;
+        Device host(dir.filePath("host"), "Owner"), guest(dir.filePath("guest"), "Guest"), controller(dir.filePath("controller"), "Controller");
+        QVERIFY(host.listenWithUdp());
+        if (additionalChannel) QVERIFY(host.session.setSupporterEnabled(true));
+        const auto id = additionalChannel ? host.channel.addOwnedChannel("Games") : host.channel.ownId();
+        QVERIFY(!id.isEmpty());
+        auto* owner = host.channel.ownChannel(id); QVERIFY(owner);
+        QVERIFY(owner->decide(guest.channel.ownId(), true));
+        if (additionalChannel) {
+            QVERIFY(guest.channel.openAddress("127.0.0.1:" + QString::number(host.channel.port())));
+            QTRY_VERIFY(!guest.channel.directBusy());
+            QTRY_VERIFY(guest.channel.availableHosts().size() >= 2);
+        }
+        QVERIFY(host.channel.join(id, "127.0.0.1", host.channel.port()));
+        QVERIFY(guest.channel.join(id, "127.0.0.1", host.channel.port()));
+        QTRY_VERIFY(host.channel.canStartGame()); QTRY_VERIFY(guest.channel.chatReady());
+        QVERIFY(controller.channel.pairAddress("127.0.0.1:" + QString::number(host.channel.port())));
+        QTRY_COMPARE(host.channel.controlRequests().size(), 1);
+        QVERIFY(host.channel.decideControl(controller.channel.ownId(), true));
+        QTRY_VERIFY(controller.channel.controlConnected());
+        QVERIFY(!controller.channel.gameAction("start", {{"id", ""}, {"round", 0}}));
+        QVERIFY(host.channel.setRemotePermission(controller.channel.ownId(), true));
+        QTRY_VERIFY(controller.channel.remoteAllowed());
+        QVERIFY(controller.channel.setRemoteMode(true));
+        QTRY_VERIFY(controller.channel.remoteView().value("canStartGame").toBool());
+        QVERIFY(controller.channel.gameAction("start", {{"id", ""}, {"round", 0}}));
+        QTRY_COMPARE(guest.channel.games().size(), 1);
+        const auto gameId = guest.channel.games().last().toMap().value("id");
+        QCOMPARE(guest.channel.games().last().toMap().value("owner").toString(), host.channel.ownId());
+        QTRY_COMPARE(controller.channel.remoteView().value("games").toList().size(), 1);
+        QVERIFY(guest.channel.gameAction("join", {{"id", gameId}, {"round", 1}}));
+        QTRY_COMPARE(host.channel.games().last().toMap().value("players").toList().size(), 2);
+        // Switching to remote control closes local connections. An old game
+        // window must never act using the replacement participant.
+        QVERIFY(controller.channel.setRemoteMode(false));
+        QVERIFY(controller.listenWithUdp());
+        QVERIFY(controller.join(controller.channel));
+        QTRY_VERIFY(controller.channel.canStartGame());
+        QVERIFY(controller.channel.gameAction("start", {{"id", ""}, {"round", 0}}));
+        QTRY_VERIFY(!controller.channel.currentGame().isEmpty());
+        const auto localGame = controller.channel.currentGame().value("id").toString();
+        QVERIFY(controller.channel.setRemoteMode(true));
+        QTRY_VERIFY(controller.channel.remoteAllowed());
+        // Permission arrives before the restored remote game snapshot.
+        QTRY_COMPARE(controller.channel.gameView(id, gameId.toString(), host.channel.ownId()).value("id"), gameId);
+        QVERIFY(controller.channel.gameView(controller.channel.ownId(), localGame, controller.channel.ownId()).isEmpty());
+        QVERIFY(controller.channel.gameView(id, gameId.toString(), guest.channel.ownId()).isEmpty());
+        QVERIFY(!controller.channel.gameAction("leave", {{"id", gameId}, {"round", 1}}, id, guest.channel.ownId()));
+        QVERIFY(!controller.channel.gameAction("leave", {{"id", localGame}, {"round", 1}}, controller.channel.ownId(), controller.channel.ownId()));
+        QCOMPARE(guest.channel.games().last().toMap().value("phase").toString(), QString("preparing"));
+        QVERIFY(controller.channel.gameAction("leave", {{"id", gameId}, {"round", 1}}, id, host.channel.ownId()));
+        QTRY_COMPARE(guest.channel.games().last().toMap().value("phase").toString(), QString("finished"));
+        QVERIFY(controller.channel.setRemoteMode(false));
+        QVERIFY(controller.channel.gameView(id, gameId.toString(), host.channel.ownId()).isEmpty());
+        QVERIFY(!controller.channel.gameAction("leave", {{"id", gameId}, {"round", 1}}, id, host.channel.ownId()));
+        QVERIFY(host.channel.gameAction("dismiss", {{"id", gameId}}));
+        if (!additionalChannel) host.channel.leave();
+        QVERIFY(host.join(host.channel));
+        QTRY_VERIFY(host.channel.canStartGame()); QVERIFY(host.channel.games().isEmpty());
+        QVERIFY(host.channel.gameAction("join", {{"id", gameId}, {"round", 1}}));
+        QTRY_VERIFY(!host.channel.chatError().isEmpty()); QVERIFY(host.channel.games().isEmpty());
+        QVERIFY(host.channel.openPrivateChat(id, guest.channel.ownId()));
+        QTRY_VERIFY(host.channel.chatReady()); QVERIFY(host.channel.privateChat());
+        QVERIFY(!host.channel.canStartGame());
+        QVERIFY(!host.channel.gameAction("start", {{"id", ""}, {"round", 0}}));
+    }
+
+    void gameParticipationIsExclusiveAcrossHosts() {
+        QTemporaryDir dir;
+        Device host(dir.filePath("host"), "Host"), guest(dir.filePath("guest"), "Guest");
+        QVERIFY(host.listenWithUdp()); QVERIFY(guest.listenWithUdp());
+        QVERIFY(host.channel.decide(guest.channel.ownId(), true));
+        QVERIFY(host.join(host.channel));
+        QVERIFY(guest.join(host.channel));
+        QTRY_VERIFY(host.channel.chatReady()); QTRY_VERIFY(guest.channel.chatReady());
+        QVERIFY(host.channel.gameAction("start", {{"id", ""}, {"round", 0}}));
+        QTRY_COMPARE(guest.channel.games().size(), 1);
+        const auto game = guest.channel.games().last().toMap();
+        QVERIFY(guest.channel.openChat(guest.channel.ownId(), "127.0.0.1", guest.channel.port()));
+        QTRY_VERIFY(guest.channel.chatReady());
+        QVERIFY(guest.channel.gameAction("join", {{"id", game.value("id")}, {"round", 1}}, host.channel.ownId()));
+        QVERIFY(!guest.channel.gameAction("start", {{"id", ""}, {"round", 0}}));
+        QTRY_COMPARE(guest.channel.currentGame().value("id"), game.value("id"));
+        QVERIFY(!guest.channel.canStartGame());
+        QVERIFY(!guest.channel.gameAction("start", {{"id", ""}, {"round", 0}}));
+        // Actions still address the game after the displayed chat changes.
+        QVERIFY(guest.channel.gameAction("leave", {{"id", game.value("id")}, {"round", 1}}, host.channel.ownId()));
+        QTRY_COMPARE(guest.channel.currentGame().value("phase").toString(), QString("finished"));
+        QVERIFY(guest.join(guest.channel)); QTRY_VERIFY(guest.channel.joined());
+        QTRY_VERIFY(guest.channel.canStartGame());
+        QVERIFY(guest.channel.gameAction("start", {{"id", ""}, {"round", 0}}));
+        QTRY_COMPARE(guest.channel.currentGame().value("hostId").toString(), guest.channel.ownId());
+    }
+
+    void gameModerationEndsMatch_data() {
+        QTest::addColumn<bool>("ban");
+        QTest::newRow("kick") << false;
+        QTest::newRow("ban") << true;
+    }
+    void gameModerationEndsMatch() {
+        QFETCH(bool, ban);
+        QTemporaryDir dir;
+        Device host(dir.filePath("host"), "Owner"), guest(dir.filePath("guest"), "Guest");
+        QVERIFY(host.listenWithUdp());
+        for (auto* d : {&host, &guest}) {
+            QVERIFY(host.channel.decide(d->channel.ownId(), true));
+            QVERIFY(d->join(host.channel));
+            QTRY_VERIFY(d->channel.chatReady());
+        }
+        QVERIFY(host.channel.gameAction("start", {{"id", ""}, {"round", 0}}));
+        QTRY_COMPARE(guest.channel.games().size(), 1);
+        const auto id = guest.channel.games().last().toMap().value("id");
+        QVERIFY(guest.channel.gameAction("join", {{"id", id}, {"round", 1}}));
+        QTRY_COMPARE(host.channel.games().last().toMap().value("players").toList().size(), 2);
+        QVERIFY(ban ? host.channel.setBlocked(guest.channel.ownId(), true) : host.channel.kick(guest.channel.ownId()));
+        QTRY_COMPARE(host.channel.games().last().toMap().value("phase").toString(), QString("finished"));
+        QVERIFY(host.channel.canStartGame());
+    }
+
+    void gameSetupStartsImmediatelyAndLeaveForfeits() {
+        QTemporaryDir dir;
+        Device host(dir.filePath("host"), "Owner"), guest(dir.filePath("guest"), "Guest");
+        QVERIFY(host.listenWithUdp());
+        for (auto* d : {&host, &guest}) {
+            QVERIFY(host.channel.decide(d->channel.ownId(), true));
+            QVERIFY(d->join(host.channel));
+            QTRY_VERIFY(d->channel.chatReady());
+        }
+        QVERIFY(host.channel.gameAction("start", {{"id", ""}, {"round", 0}}));
+        QTRY_COMPARE(guest.channel.games().size(), 1);
+        const auto id = guest.channel.games().last().toMap().value("id");
+        QVERIFY(guest.channel.gameAction("join", {{"id", id}, {"round", 1}}));
+        QTRY_COMPARE(host.channel.games().last().toMap().value("players").toList().size(), 2);
+        QVERIFY(!host.channel.gameAction("ready", {{"id", id}, {"round", 1}}));
+        QCOMPARE(host.channel.games().last().toMap().value("phase").toString(), QString("preparing"));
+        QVERIFY(host.channel.gameAction("setup", {{"id", id}, {"round", 1}, {"core", 35}, {"trap", 36}}));
+        QVERIFY(guest.channel.gameAction("setup", {{"id", id}, {"round", 1}, {"core", 0}, {"trap", 1}}));
+        QTRY_COMPARE(host.channel.games().last().toMap().value("phase").toString(), QString("playing"));
+        QVERIFY(guest.channel.gameAction("leave", {{"id", id}, {"round", 1}}));
+        QTRY_COMPARE(host.channel.games().last().toMap().value("phase").toString(), QString("finished"));
+        QCOMPARE(host.channel.games().last().toMap().value("reason").toString(), QString("left"));
+    }
+
+    void voiceGameKeepsChoicesPrivateAndHistoryUnchanged() {
+        QTemporaryDir dir;
+        Device host(dir.filePath("host"), "Owner"), guest(dir.filePath("guest"), "Guest"), observer(dir.filePath("observer"), "Observer");
+        QVERIFY(host.listenWithUdp());
+        for (auto* device : {&host, &guest, &observer}) {
+            QVERIFY(host.channel.decide(device->channel.ownId(), true));
+            QVERIFY(device == &observer ? device->channel.openChat(host.channel.ownId(), "127.0.0.1", host.channel.port()) : device->join(host.channel));
+            QTRY_VERIFY(device->channel.chatReady());
+            QCOMPARE(device->channel.joined(), device != &observer);
+        }
+        const auto current = [](const Device& d) { return d.channel.games().isEmpty() ? QVariantMap{} : d.channel.games().last().toMap(); };
+        const auto act = [&](Device& d, const QString& action) {
+            const auto state = current(d);
+            return d.channel.gameAction(action, {{"id", state.value("id", QString{})}, {"round", state.value("round", 0)}});
+        };
+        QVERIFY(host.channel.canStartGame()); QVERIFY(guest.channel.canStartGame());
+        QVERIFY(!act(observer, "start"));
+        QVERIFY(act(host, "start")); QVERIFY(!act(host, "start")); // Reserve the pending game before another click.
+        QTRY_COMPARE(guest.channel.games().size(), 1);
+        QVERIFY(observer.channel.games().isEmpty());
+        QTRY_COMPARE(current(host).value("phase").toString(), QString("waiting"));
+        QTRY_COMPARE(guest.channel.games().size(), 1);
+        QVERIFY(act(guest, "join"));
+        QTRY_COMPARE(current(host).value("players").toList().size(), 2);
+        QVERIFY(!act(observer, "join"));
+        QVERIFY(observer.channel.games().isEmpty());
+        QVERIFY(host.channel.gameAction("setup", {{"id", current(host).value("id")}, {"round", 1}, {"core", 35}, {"trap", 36}}));
+        QVERIFY(guest.channel.gameAction("setup", {{"id", current(guest).value("id")}, {"round", 1}, {"core", 0}, {"trap", 1}}));
+        QTRY_VERIFY(current(host).value("setup").toBool()); QTRY_VERIFY(current(guest).value("setup").toBool());
+        QVERIFY(observer.channel.games().isEmpty());
+        QCOMPARE(current(guest).value("board").toList()[35].toMap().value("kind").toString(), QString("hidden"));
+        QCOMPARE(current(host).value("board").toList()[0].toMap().value("kind").toString(), QString("hidden"));
+        QTRY_COMPARE(current(host).value("phase").toString(), QString("playing"));
+        QTRY_COMPARE(current(guest).value("phase").toString(), QString("playing"));
+        auto& mover = current(host).value("turn").toString() == host.channel.ownId() ? host : guest;
+        const int from = &mover == &host ? 28 : 7;
+        const int to = &mover == &host ? 21 : 14;
+        QVERIFY(mover.channel.gameAction("move", {{"id", current(mover).value("id")}, {"round", 1}, {"from", from}, {"to", to}}));
+        QTRY_COMPARE(current(host).value("round").toInt(), 2);
+        QTRY_COMPARE(current(guest).value("round").toInt(), 2);
+        QCOMPARE(current(&mover == &host ? guest : host).value("board").toList()[to].toMap().value("kind").toString(), QString("hidden"));
+        QVERIFY(mover.channel.gameAction("move", {{"id", current(mover).value("id")}, {"round", 1}, {"from", to}, {"to", from}}));
+        QTRY_VERIFY(!mover.channel.chatError().isEmpty());
+        QCOMPARE(current(host).value("round").toInt(), 2);
+        auto& responder = &mover == &host ? guest : host;
+        const int responseFrom = &mover == &host ? 7 : 28, responseTo = &mover == &host ? 14 : 21;
+        const auto move = [&](Device& d, int source, int target) {
+            return d.channel.gameAction("move", {{"id", current(d).value("id")}, {"round", current(d).value("round")},
+                {"from", source}, {"to", target}});
+        };
+        const auto choose = [&](Device& d, const QString& element) {
+            return d.channel.gameAction("choose", {{"id", current(d).value("id")}, {"round", current(d).value("round")}, {"choice", element}});
+        };
+        QVERIFY(move(responder, responseFrom, responseTo));
+        QTRY_COMPARE(current(mover).value("round").toInt(), 3);
+        QVERIFY(move(mover, to, responseTo));
+        QTRY_COMPARE(current(host).value("phase").toString(), QString("duel"));
+        QTRY_COMPARE(current(mover).value("phase").toString(), QString("duel"));
+        QTRY_COMPARE(current(responder).value("phase").toString(), QString("duel"));
+        QVERIFY(choose(mover, "fire"));
+        QTRY_COMPARE(current(mover).value("choice").toString(), QString("fire"));
+        QVERIFY(current(responder).value("choice").toString().isEmpty());
+        QCOMPARE(current(host).value("board").toList()[to].toMap().value("kind").toString(), QString("neutral"));
+        QVERIFY(choose(responder, "fire"));
+        QTRY_COMPARE(current(mover).value("round").toInt(), 4);
+        QTRY_COMPARE(current(responder).value("round").toInt(), 4);
+        QTRY_COMPARE(current(host).value("lastBattle").toMap().value("effect").toString(), QString("tie"));
+        QVERIFY(choose(mover, "water"));
+        QTRY_COMPARE(current(mover).value("choice").toString(), QString("water"));
+        QVERIFY(current(responder).value("choice").toString().isEmpty());
+        QVERIFY(choose(responder, "fire"));
+        QTRY_COMPARE(current(host).value("round").toInt(), 5);
+        QCOMPARE(current(host).value("lastBattle").toMap().value("effect").toString(), QString("extinguish"));
+        QCOMPARE(current(host).value("board").toList()[responseTo].toMap().value("kind").toString(), QString("water"));
+        QTRY_COMPARE(current(guest).value("round").toInt(), 5);
+        QVERIFY(act(guest, "leave"));
+        QTRY_COMPARE(current(host).value("phase").toString(), QString("finished"));
+        QTRY_VERIFY(host.channel.canStartGame());
+        QVERIFY(host.channel.messages().isEmpty()); QVERIFY(guest.channel.messages().isEmpty());
+        QVERIFY(host.channel.hostHistory().value("records").toArray().isEmpty());
+        QVERIFY(guest.channel.sendChat("Still here"));
+        QTRY_COMPARE(observer.channel.messages().size(), 1);
+        QVERIFY(host.channel.joined()); QVERIFY(guest.channel.joined()); QVERIFY(!observer.channel.joined());
+    }
+
+    void externalVoiceJoinDefersUntilConfirmationButNativeBrowseDoesNot() {
+        QTemporaryDir dir;
+        Device host(dir.filePath("host"), "Host"), guest(dir.filePath("guest"), "Guest"),
+            other(dir.filePath("other"), "Native browser target");
+        QVERIFY(host.listenWithUdp()); QVERIFY(other.listenWithUdp());
+        QVERIFY(host.channel.decide(guest.channel.ownId(), true));
+        QVERIFY(other.channel.decide(guest.channel.ownId(), true));
+        QVERIFY(host.join(host.channel)); QTRY_VERIFY(host.channel.chatReady());
+        QVERIFY(guest.join(host.channel)); QTRY_VERIFY(guest.channel.chatReady());
+        QVERIFY(host.channel.gameAction("start", {{"id", ""}, {"round", 0}}));
+        QTRY_COMPARE(guest.channel.games().size(), 1);
+        const auto id = guest.channel.games().first().toMap().value("id");
+        QVERIFY(guest.channel.gameAction("join", {{"id", id}, {"round", 1}}));
+        QTRY_COMPARE(guest.channel.currentGame().value("players").toList().size(), 2);
+        QSignalSpy confirmation(&guest.channel, &LocalChannel::externalJoinConfirmationRequested);
+        QVERIFY(guest.channel.openAddress("127.0.0.1:" + QString::number(other.channel.port())));
+        QTRY_COMPARE(guest.channel.chatHostId(), other.channel.ownId());
+        QTRY_VERIFY(guest.channel.chatReady());
+        QCOMPARE(confirmation.size(), 0);
+        const auto before = guest.channel.currentGame();
+        QVERIFY(guest.channel.addTeamSpeak("127.0.0.1:1", "temporary input"));
+        QCOMPARE(confirmation.size(), 1);
+        QCOMPARE(guest.channel.currentGame(), before);
+        QCOMPARE(guest.channel.joinedHostId(), host.channel.ownId());
+        QVERIFY(guest.channel.addTeamSpeak("127.0.0.1:1"));
+        QCOMPARE(confirmation.size(), 1);
+        QVERIFY(guest.channel.confirmExternalJoin(false));
+        QVERIFY(!guest.channel.confirmExternalJoin(true));
+        QCOMPARE(guest.channel.currentGame(), before);
+        QCOMPARE(guest.channel.joinedHostId(), host.channel.ownId());
+        QVERIFY(guest.channel.addTeamSpeak("127.0.0.1:1"));
+        QCOMPARE(confirmation.size(), 2);
+        QVERIFY(guest.channel.leave());
+        QVERIFY(!guest.channel.confirmExternalJoin(true));
+        QTRY_COMPARE(host.channel.currentGame().value("winner").toString(), host.channel.ownId());
+    }
+
+    void voiceDepartureForfeitsWithoutDisclosure_data() {
+        QTest::addColumn<QString>("mode");
+        for (const auto* mode : {"leave", "switch", "disconnect"}) QTest::newRow(mode) << QString(mode);
+    }
+    void voiceDepartureForfeitsWithoutDisclosure() {
+        QFETCH(QString, mode);
+        QTemporaryDir dir;
+        Device host(dir.filePath("host"), "Host"), guest(dir.filePath("guest"), "Guest"),
+            other(dir.filePath("other"), "Other host");
+        QVERIFY(host.listenWithUdp()); QVERIFY(other.listenWithUdp());
+        QVERIFY(host.channel.decide(guest.channel.ownId(), true));
+        QVERIFY(other.channel.decide(guest.channel.ownId(), true));
+        QVERIFY(host.join(host.channel)); QTRY_VERIFY(host.channel.chatReady());
+        DelayedLink link(host.channel.port());
+        link.videoOnly = true; // Track the primary TLS stream for explicit disconnection.
+        QVERIFY(guest.channel.join(host.channel.ownId(), "127.0.0.1", mode == "disconnect" ? link.port() : host.channel.port()));
+        QTRY_VERIFY(guest.channel.chatReady()); QTRY_VERIFY(guest.channel.joined());
+        QVERIFY(host.channel.gameAction("start", {{"id", ""}, {"round", 0}}));
+        QTRY_COMPARE(guest.channel.games().size(), 1);
+        const auto id = guest.channel.games().first().toMap().value("id");
+        QVERIFY(guest.channel.gameAction("join", {{"id", id}, {"round", 1}}));
+        QTRY_COMPARE(host.channel.currentGame().value("players").toList().size(), 2);
+        QTRY_COMPARE(guest.channel.currentGame().value("players").toList().size(), 2);
+        if (mode == "leave") QVERIFY(guest.channel.leave());
+        else if (mode == "switch") QVERIFY(guest.join(other.channel));
+        else QVERIFY(link.disconnectPrimary());
+        QTRY_COMPARE(host.channel.currentGame().value("phase").toString(), QString("finished"));
+        QCOMPARE(host.channel.currentGame().value("winner").toString(), host.channel.ownId());
+        QTRY_COMPARE(guest.channel.currentGame().value("phase").toString(), mode == "disconnect" ? QString("cancelled") : QString("finished"));
+        if (mode == "leave") {
+            QVERIFY(!guest.channel.joined());
+            QVERIFY(!guest.channel.canStartGame());
+            QVERIFY(!guest.channel.gameAction("join", {{"id", id}, {"round", 1}}));
+        }
+        QVERIFY(host.channel.canStartGame());
+    }
+
+    void gameDisconnectForfeitsAndRestartHasNoStoredGame() {
+        QTemporaryDir dir;
+        const auto identity = TlsIdentity::create();
+        auto host = std::make_unique<Device>(dir.filePath("host"), "Owner", identity);
+        Device guest(dir.filePath("guest"), "Guest"), late(dir.filePath("late"), "Late reader");
+        QVERIFY(host->listenWithUdp());
+        for (auto* device : {host.get(), &guest, &late}) QVERIFY(host->channel.decide(device->channel.ownId(), true));
+        for (auto* device : {host.get(), &guest}) {
+            QVERIFY(device->join(host->channel));
+            QTRY_VERIFY(device->channel.chatReady());
+        }
+        QVERIFY(host->channel.gameAction("start", {{"id", ""}, {"round", 0}}));
+        QTRY_COMPARE(guest.channel.games().size(), 1);
+        const auto id = guest.channel.games().last().toMap().value("id");
+        QVERIFY(guest.channel.gameAction("join", {{"id", id}, {"round", 1}}));
+        QTRY_COMPARE(host->channel.games().last().toMap().value("players").toList().size(), 2);
+        QVERIFY(late.channel.openChat(host->channel.ownId(), "127.0.0.1", host->channel.port()));
+        QTRY_VERIFY(late.channel.chatReady());
+        QVERIFY(late.channel.games().isEmpty());
+        QVERIFY(guest.channel.closeChat(host->channel.ownId()));
+        QCOMPARE(guest.channel.currentGame().value("phase").toString(), QString("cancelled"));
+        QTRY_COMPARE(host->channel.currentGame().value("phase").toString(), QString("finished"));
+        QCOMPARE(host->channel.currentGame().value("winner").toString(), host->channel.ownId());
+        const auto departure = host->channel.currentGame().value("reason").toString();
+        QVERIFY(departure == "left" || departure == "disconnected");
+        QTRY_VERIFY(host->channel.canStartGame());
+        QVERIFY(host->channel.gameAction("start", {{"id", ""}, {"round", 0}}));
+        QTRY_COMPARE(host->channel.currentGame().value("phase").toString(), QString("waiting"));
+        QCOMPARE(host->channel.games().size(), 1);
+        QVERIFY(host->channel.stopHost());
+        QTRY_COMPARE(host->channel.currentGame().value("phase").toString(), QString("cancelled"));
+        QVERIFY(host->channel.closeChat(host->channel.ownId()));
+        QVERIFY(host->listenWithUdp());
+        QVERIFY(host->join(host->channel));
+        QTRY_VERIFY(host->channel.canStartGame());
+        QVERIFY(host->channel.gameAction("start", {{"id", ""}, {"round", 0}}));
+        QTRY_COMPARE(host->channel.currentGame().value("phase").toString(), QString("waiting"));
+        QVERIFY(host->channel.stopHost());
+        host.reset();
+        host = std::make_unique<Device>(dir.filePath("host"), "Owner", identity);
+        QVERIFY(host->listenWithUdp());
+        QVERIFY(host->join(host->channel));
+        QTRY_VERIFY(host->channel.canStartGame());
+        QVERIFY(host->channel.games().isEmpty());
+        QVERIFY(host->channel.hostHistory().value("records").toArray().isEmpty());
+    }
+
 #if QT_CONFIG(process)
     void capacityProcessesStopCleanly_data() {
         QTest::addColumn<QString>("mode");
@@ -2697,7 +3238,11 @@ private slots:
         });
         source.start();
         QVERIFY2(waitForEvents([&] {
-            return link.videoDatagrams > 20 && !frames.isEmpty() && !host.channel.screenTiers().isEmpty();
+            if (link.videoDatagrams <= 20 || frames.isEmpty()) return false;
+            // Once delivery is proven, drain the final ACK instead of racing
+            // another producer tick for the momentary send-ready state.
+            source.stop();
+            return !host.channel.screenTiers().isEmpty();
         }, 5000), qPrintable(QString("UDP warmup: %1 datagrams, %2 frames, viewer tier %3")
             .arg(link.videoDatagrams).arg(frames.size()).arg(viewer.channel.screenView().value("tier").toInt())));
         source.stop(); disconnect(warmup); frames.clear();
@@ -4526,17 +5071,67 @@ private slots:
                 if (value.toMap().value("id").toString() == host.channel.ownId()) return true;
             return false;
         };
+        const auto discovered = [&] {
+            for (const auto& value : scanner.channel.hosts())
+                if (value.toMap().value("id").toString() == host.channel.ownId()) return value.toMap();
+            return QVariantMap{};
+        };
         QVERIFY(scanner.channel.setDiscoverySearch(true));
         QTRY_VERIFY(found());
         QTRY_VERIFY(!scanner.channel.discoverySearching());
+        QVERIFY(discovered().value("reachable").toBool());
+        QUdpSocket source;
+        QVERIFY(source.bind(QHostAddress::AnyIPv4, 0));
+        const auto interface = multicastInterface();
+        QVERIFY(interface.isValid());
+        source.setMulticastInterface(interface);
+        source.setSocketOption(QAbstractSocket::MulticastTtlOption, 0);
+        source.setSocketOption(QAbstractSocket::MulticastLoopbackOption, 1);
+        QJsonObject message{{"protocol", "squadspeak/1"}, {"id", host.channel.ownId()},
+            {"name", "Reachability baseline"}, {"port", port}};
+        const auto send = [&] {
+            const auto data = QJsonDocument(message).toJson(QJsonDocument::Compact);
+            return source.writeDatagram(data, QHostAddress("239.255.85.73"), 48762) == data.size();
+        };
+        QVERIFY(send());
+        QTRY_COMPARE(discovered().value("name").toString(), QString("Reachability baseline"));
+        message.insert("name", host.channel.channelName());
+        QVERIFY(send());
+        QTRY_COMPARE(discovered().value("name").toString(), host.channel.channelName());
         now += 10000;
-        QTest::qWait(1800); // Cross the public discovery heartbeat without refreshing the TCP-only host.
+        QTRY_VERIFY_WITH_TIMEOUT(!discovered().value("reachable").toBool(), 3000);
         QVERIFY(found());
+        DiscoveryChanges changes(scanner.channel, {host.channel.ownId()});
+        QVERIFY(send());
+        QTRY_VERIFY(discovered().value("reachable").toBool());
+        QCOMPARE(changes.size(), 1);
+        changes.clear();
+        for (int repeat = 0; repeat < 5; ++repeat) QVERIFY(send());
+        // A changed announcement confirms the preceding identical ones were consumed.
+        message.insert("name", "Reachability barrier");
+        QVERIFY(send());
+        QTRY_COMPARE(discovered().value("name").toString(), QString("Reachability barrier"));
+        QCOMPARE(changes.size(), 1);
+        message.insert("name", host.channel.channelName());
+        QVERIFY(send());
+        QTRY_COMPARE(discovered().value("name").toString(), host.channel.channelName());
+        QVERIFY(!scanner.channel.joined());
+        QVERIFY(scanner.channel.savedChannels().isEmpty());
+        QVERIFY(host.channel.requests().isEmpty());
         if (selected) {
+            // The multicast fixture uses its local interface address. Rediscover
+            // the TCP-only fixture's loopback endpoint before opening its chat.
+            QVERIFY(scanner.channel.setDiscoverySearch(true));
+            QTRY_VERIFY(!scanner.channel.discoverySearching());
+            QCOMPARE(discovered().value("address").toString(), QString("127.0.0.1"));
             QVERIFY(scanner.channel.openSavedChat(host.channel.ownId()));
             QTRY_COMPARE(host.channel.requests().size(), 1);
             QTRY_COMPARE(scanner.channel.savedChannels().first().toMap().value("access").toString(), QString("pending"));
+            QVERIFY(scanner.channel.savedChannels().first().toMap().value("reachable").toBool());
+            QVERIFY(!scanner.channel.savedChannels().first().toMap().value("online").toBool());
         }
+        now += 6001;
+        QTRY_VERIFY_WITH_TIMEOUT(!discovered().value("reachable").toBool(), 3000);
         QVERIFY(scanner.channel.setDiscoverySearch(false));
         QTRY_VERIFY(!found());
         if (selected) {
@@ -4544,10 +5139,12 @@ private slots:
             QCOMPARE(saved.size(), 1);
             QCOMPARE(saved.first().toMap().value("name").toString(), host.channel.channelName());
             QCOMPARE(saved.first().toMap().value("access").toString(), QString("pending"));
+            QVERIFY(!saved.first().toMap().value("reachable").toBool());
             QVERIFY(!scanner.channel.chatReady());
             QVERIFY(scanner.channel.participants().isEmpty());
             QVERIFY(host.channel.decide(scanner.channel.ownId(), true));
             QTRY_VERIFY(scanner.channel.chatReady());
+            QVERIFY(scanner.channel.savedChannels().first().toMap().value("reachable").toBool());
             QCOMPARE(scanner.channel.savedChannels().first().toMap().value("name").toString(), host.channel.channelName());
         }
     }
@@ -6471,6 +7068,16 @@ private slots:
             {"event", QJsonObject{{"kind", "left"}, {"member", QString(64, 'a')}, {"name", "Member"}}}};
         QTest::newRow("local-notice-after-disconnect") << QJsonObject{{"notices", QJsonArray{notice}}} << true;
         QTest::newRow("lifetime-overflow") << QJsonObject{{"chatLifetimeDays", QJsonValue(qint64(1) + (qint64(1) << 54))}} << false;
+        ChannelGame activity;
+        QVERIFY(activity.start(QString(64, 'a'), "Owner", 0, 1000));
+        const auto game = activity.view(QString(64, 'a'));
+        QTest::newRow("valid-game") << QJsonObject{{"games", QJsonArray{game}}, {"gameId", game.value("id")}, {"canStartGame", false}} << true;
+        QTest::newRow("games-not-array") << QJsonObject{{"games", game}} << false;
+        QTest::newRow("duplicate-game") << QJsonObject{{"games", QJsonArray{game, game}}} << false;
+        QTest::newRow("invalid-game") << QJsonObject{{"games", QJsonArray{QJsonObject{{"phase", "choosing"}}}}} << false;
+        auto brokenGame = game; brokenGame.insert("lastBattle", QJsonObject{{"number", 1}, {"from", 99}});
+        QTest::newRow("incomplete-battle") << QJsonObject{{"games", QJsonArray{brokenGame}}} << false;
+        QTest::newRow("game-permission-not-bool") << QJsonObject{{"canStartGame", "yes"}} << false;
         QTest::newRow("notice-not-array") << QJsonObject{{"notices", notice}} << false;
         QTest::newRow("duplicate-notice") << QJsonObject{{"notices", QJsonArray{notice, notice}}} << false;
         auto invalid = notice; invalid.insert("created", 1.5);
@@ -6521,6 +7128,7 @@ private slots:
             {"chatLifetimeDays", 1}
         };
         for (auto it = fields.constBegin(); it != fields.constEnd(); ++it) snapshot.insert(it.key(), it.value());
+        if (fields.contains("games") && !fields.contains("gameId")) snapshot.insert("gameId", "");
         const auto bytes = QJsonDocument(snapshot).toJson(QJsonDocument::Compact);
         const auto id = QUuid::createUuid().toString(QUuid::WithoutBraces);
         control->write(wireFrame({{"type", "remoteViewStart"}, {"id", id}, {"size", bytes.size()}})

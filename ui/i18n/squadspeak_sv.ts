@@ -1229,6 +1229,18 @@
             <source>Import</source>
             <translation>Importera</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>Okänd status</translation>
+        </message>
+        <message>
+            <source>Chat</source>
+            <translation>Chatt</translation>
+        </message>
+        <message>
+            <source>Game</source>
+            <translation>Spel</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1436,12 +1448,12 @@
             <translation>Tidigare meddelanden</translation>
         </message>
         <message>
-            <source>Attach image</source>
-            <translation>Bifoga bild</translation>
-        </message>
-        <message>
             <source>Chat message. Markdown supported. Shift+Enter for a new line.</source>
             <translation>Chattmeddelande. Markdown stöds. Shift+Enter för ny rad.</translation>
+        </message>
+        <message>
+            <source>Add</source>
+            <translation>Lägg till</translation>
         </message>
     </context>
     <context>
@@ -2647,6 +2659,14 @@
             <source>Identity imported.</source>
             <translation>Identiteten har importerats.</translation>
         </message>
+        <message>
+            <source>Invalid game state.</source>
+            <translation>Ogiltigt spelläge.</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Den här spelåtgärden är inte längre tillgänglig.</translation>
+        </message>
     </context>
     <context>
         <name>LocalLanguage</name>
@@ -3313,6 +3333,176 @@
         <message>
             <source>See you next time.</source>
             <translation>Vi ses nästa gång.</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameCard</name>
+        <message>
+            <source>Invited by %1</source>
+            <translation>Inbjuden av %1</translation>
+        </message>
+        <message>
+            <source>%1 wins!</source>
+            <translation>%1 vinner!</translation>
+        </message>
+        <message>
+            <source>Join</source>
+            <translation>Anslut</translation>
+        </message>
+        <message>
+            <source>Leave</source>
+            <translation>Lämna</translation>
+        </message>
+        <message>
+            <source>Elements</source>
+            <translation>Element</translation>
+        </message>
+        <message>
+            <source>Game ended</source>
+            <translation>Spelet är slut</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>Öppna</translation>
+        </message>
+    </context>
+    <context>
+        <name>GamePane</name>
+        <message>
+            <source>Finish your current game first.</source>
+            <translation>Avsluta ditt nuvarande spel först.</translation>
+        </message>
+        <message>
+            <source>Fire</source>
+            <translation>Eld</translation>
+        </message>
+        <message>
+            <source>Water</source>
+            <translation>Vatten</translation>
+        </message>
+        <message>
+            <source>Ice</source>
+            <translation>Is</translation>
+        </message>
+        <message>
+            <source>Core</source>
+            <translation>Kärna</translation>
+        </message>
+        <message>
+            <source>Trap</source>
+            <translation>Fälla</translation>
+        </message>
+        <message>
+            <source>Unknown</source>
+            <translation>Okänd</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>Den här spelåtgärden är inte längre tillgänglig.</translation>
+        </message>
+        <message>
+            <source>Game unavailable</source>
+            <translation>Spelet är inte tillgängligt</translation>
+        </message>
+        <message>
+            <source>Same element. Choose again.</source>
+            <translation>Samma element. Välj igen.</translation>
+        </message>
+        <message>
+            <source>Your turn</source>
+            <translation>Din tur</translation>
+        </message>
+        <message>
+            <source>%1's turn</source>
+            <translation>Det är %1s tur</translation>
+        </message>
+        <message>
+            <source>Waiting for the other player</source>
+            <translation>Väntar på den andra spelaren</translation>
+        </message>
+        <message>
+            <source>Water beats Fire. Fire beats Ice. Ice beats Water.</source>
+            <translation>Vatten slår eld. Eld slår is. Is slår vatten.</translation>
+        </message>
+        <message>
+            <source>Empty</source>
+            <translation>Tom</translation>
+        </message>
+        <message>
+            <source>Ice freezes Water</source>
+            <translation>Is fryser vatten</translation>
+        </message>
+        <message>
+            <source>Fire melts Ice</source>
+            <translation>Eld smälter is</translation>
+        </message>
+        <message>
+            <source>Water extinguishes Fire</source>
+            <translation>Vatten släcker eld</translation>
+        </message>
+        <message>
+            <source>Neutral</source>
+            <translation>Neutral</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>Välj ett element</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>Information</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>Seger</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>Förlust</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>Kvar</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>Tagna</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>Lämna spelet?</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>Om du lämnar vinner den andra spelaren.</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>Avbryt inbjudan?</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>Välj Fälla, sedan Kärna. Flytta en ruta. Ta motståndarens Kärna för att vinna.</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>Välj element vid första striden. Vid oavgjort väljer du igen.</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>Står still. Besegrar alla angripare.</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>Står still. Skydda den för att vara kvar i spelet.</translation>
+        </message>
+        <message>
+            <source>Computer</source>
+            <translation>Dator</translation>
+        </message>
+        <message>
+            <source>Play against the computer?</source>
+            <translation>Spela mot datorn?</translation>
         </message>
     </context>
 </TS>

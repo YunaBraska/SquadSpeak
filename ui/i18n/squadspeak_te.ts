@@ -1229,6 +1229,18 @@
             <source>Import</source>
             <translation>దిగుమతి చేయండి</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>స్థితి తెలియదు</translation>
+        </message>
+        <message>
+            <source>Chat</source>
+            <translation>చాట్</translation>
+        </message>
+        <message>
+            <source>Game</source>
+            <translation>ఆట</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1436,12 +1448,12 @@
             <translation>మునుపటి సందేశాలు</translation>
         </message>
         <message>
-            <source>Attach image</source>
-            <translation>చిత్రాన్ని జతచేయండి</translation>
-        </message>
-        <message>
             <source>Chat message. Markdown supported. Shift+Enter for a new line.</source>
             <translation>చాట్ సందేశం. మార్క్‌డౌన్ ఉపయోగించబడుతుంది. కొత్త లైన్ కోసం Shift+Enter నొక్కండి.</translation>
+        </message>
+        <message>
+            <source>Add</source>
+            <translation>చేర్చు</translation>
         </message>
     </context>
     <context>
@@ -2647,6 +2659,14 @@
             <source>Identity imported.</source>
             <translation>గుర్తింపు దిగుమతి అయింది.</translation>
         </message>
+        <message>
+            <source>Invalid game state.</source>
+            <translation>ఆట స్థితి చెల్లదు.</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>ఈ ఆట చర్య ఇక అందుబాటులో లేదు.</translation>
+        </message>
     </context>
     <context>
         <name>LocalLanguage</name>
@@ -3313,6 +3333,176 @@
         <message>
             <source>See you next time.</source>
             <translation>మళ్లీ కలుద్దాం.</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameCard</name>
+        <message>
+            <source>Invited by %1</source>
+            <translation>%1 ఆహ్వానించారు</translation>
+        </message>
+        <message>
+            <source>%1 wins!</source>
+            <translation>%1 గెలిచారు!</translation>
+        </message>
+        <message>
+            <source>Join</source>
+            <translation>చేరండి</translation>
+        </message>
+        <message>
+            <source>Leave</source>
+            <translation>వెళ్లిపో</translation>
+        </message>
+        <message>
+            <source>Elements</source>
+            <translation>మూలకాలు</translation>
+        </message>
+        <message>
+            <source>Game ended</source>
+            <translation>ఆట ముగిసింది</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>తెరవండి</translation>
+        </message>
+    </context>
+    <context>
+        <name>GamePane</name>
+        <message>
+            <source>Finish your current game first.</source>
+            <translation>ముందు నీ ప్రస్తుత ఆటను పూర్తి చేయి.</translation>
+        </message>
+        <message>
+            <source>Fire</source>
+            <translation>నిప్పు</translation>
+        </message>
+        <message>
+            <source>Water</source>
+            <translation>నీరు</translation>
+        </message>
+        <message>
+            <source>Ice</source>
+            <translation>మంచు</translation>
+        </message>
+        <message>
+            <source>Core</source>
+            <translation>కేంద్రకం</translation>
+        </message>
+        <message>
+            <source>Trap</source>
+            <translation>ఉచ్చు</translation>
+        </message>
+        <message>
+            <source>Unknown</source>
+            <translation>తెలియదు</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>ఈ ఆట చర్య ఇక అందుబాటులో లేదు.</translation>
+        </message>
+        <message>
+            <source>Game unavailable</source>
+            <translation>ఆట అందుబాటులో లేదు</translation>
+        </message>
+        <message>
+            <source>Same element. Choose again.</source>
+            <translation>ఒకే మూలకం. మళ్లీ ఎంచుకో.</translation>
+        </message>
+        <message>
+            <source>Your turn</source>
+            <translation>నీ వంతు</translation>
+        </message>
+        <message>
+            <source>%1's turn</source>
+            <translation>%1 వంతు</translation>
+        </message>
+        <message>
+            <source>Waiting for the other player</source>
+            <translation>మరో ఆటగాడి కోసం వేచి ఉంది</translation>
+        </message>
+        <message>
+            <source>Water beats Fire. Fire beats Ice. Ice beats Water.</source>
+            <translation>నీరు నిప్పును ఓడిస్తుంది. నిప్పు మంచును ఓడిస్తుంది. మంచు నీటిని ఓడిస్తుంది.</translation>
+        </message>
+        <message>
+            <source>Empty</source>
+            <translation>ఖాళీ</translation>
+        </message>
+        <message>
+            <source>Ice freezes Water</source>
+            <translation>మంచు నీటిని గడ్డకట్టిస్తుంది</translation>
+        </message>
+        <message>
+            <source>Fire melts Ice</source>
+            <translation>నిప్పు మంచును కరిగిస్తుంది</translation>
+        </message>
+        <message>
+            <source>Water extinguishes Fire</source>
+            <translation>నీరు నిప్పును ఆర్పుతుంది</translation>
+        </message>
+        <message>
+            <source>Neutral</source>
+            <translation>తటస్థం</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>ఒక మూలకాన్ని ఎంచుకో</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>సమాచారం</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>గెలుపు</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>ఓటమి</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>మిగిలినవి</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>ఓడించినవి</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>ఆట నుంచి వెళ్లాలా?</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>వెళ్లిపోతే మరో ఆటగాడు గెలుస్తాడు.</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>ఈ ఆహ్వానాన్ని రద్దు చేయాలా?</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>ముందు ఉచ్చు, తర్వాత కేంద్రకం ఎంచుకో. ఒక గడి కదులు. గెలవడానికి ప్రత్యర్థి కేంద్రకాన్ని పట్టుకో.</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>మొదటి పోరులో మూలకాన్ని ఎంచుకో. సమమైతే మళ్లీ ఎంచుకోవచ్చు.</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>కదలదు. ప్రతి దాడిచేసే పావును ఓడిస్తుంది.</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>కదలదు. ఆటలో ఉండటానికి దీన్ని కాపాడు.</translation>
+        </message>
+        <message>
+            <source>Computer</source>
+            <translation>కంప్యూటర్</translation>
+        </message>
+        <message>
+            <source>Play against the computer?</source>
+            <translation>కంప్యూటర్‌తో ఆడాలా?</translation>
         </message>
     </context>
 </TS>

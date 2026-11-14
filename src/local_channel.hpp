@@ -16,6 +16,7 @@
 #include <QSet>
 #include <QSslServer>
 #include <QTimer>
+#include "channel_game.hpp"
 #include <QThreadPool>
 #include <QUdpSocket>
 #include <QNetworkInterface>
@@ -62,6 +63,10 @@ class LocalChannel final : public QObject {
     Q_PROPERTY(QVariantList ownedChannels READ ownedChannels NOTIFY ownedChannelsChanged)
     Q_PROPERTY(QString chatHostId READ chatHostId NOTIFY chatChanged)
     Q_PROPERTY(QVariantList notices READ notices NOTIFY chatChanged)
+    Q_PROPERTY(QVariantList games READ games NOTIFY chatChanged)
+    Q_PROPERTY(QString gameId READ gameId NOTIFY chatChanged)
+    Q_PROPERTY(QVariantMap currentGame READ currentGame NOTIFY chatChanged)
+    Q_PROPERTY(bool canStartGame READ canStartGame NOTIFY chatChanged)
     Q_PROPERTY(QVariantList chatMembers READ chatMembers NOTIFY participantsChanged)
     Q_PROPERTY(QStringList chatOnlineIds READ chatOnlineIds NOTIFY participantsChanged)
     Q_PROPERTY(bool chatPresenceKnown READ chatPresenceKnown NOTIFY participantsChanged)
@@ -165,6 +170,7 @@ public:
     [[nodiscard]] bool joinedExternalVoice() const;
     Q_INVOKABLE bool addMumble(const QString& endpoint, const QString& password = {});
     Q_INVOKABLE bool addTeamSpeak(const QString& endpoint, const QString& password = {});
+    Q_INVOKABLE bool confirmExternalJoin(bool confirmed);
     Q_INVOKABLE QString teamSpeakIdentityId() const;
     Q_INVOKABLE QVariantMap prepareTeamSpeakIdentityImport(const QUrl& file);
     Q_INVOKABLE bool confirmTeamSpeakIdentityImport();
@@ -186,6 +192,12 @@ public:
     Q_INVOKABLE bool canPrivateChat(const QString& hostId, const QString& peerId) const;
     Q_INVOKABLE bool openPrivateChat(const QString& hostId, const QString& peerId);
     Q_INVOKABLE bool setPrivateBlocked(const QString& conversation, bool blocked);
+    [[nodiscard]] QVariantList games() const;
+    [[nodiscard]] QString gameId() const;
+    [[nodiscard]] bool canStartGame() const;
+    [[nodiscard]] QVariantMap currentGame() const;
+    Q_INVOKABLE QVariantMap gameView(const QString& host, const QString& id, const QString& identity = {}) const;
+    Q_INVOKABLE bool gameAction(const QString& action, const QVariantMap& selection, const QString& host = {}, const QString& identity = {});
     Q_INVOKABLE bool sendChat(const QString& text, const QByteArray& image = {});
     bool sendSystemMessage(const QString& text);
     // Reads one bounded page from this owned channel, without joining as a user.
@@ -261,6 +273,7 @@ public:
     bool acknowledgeScreen(const QString& hostId, qint64 serial, int decodeMilliseconds);
 
 signals:
+    void externalJoinConfirmationRequested();
     void ownedChannelsChanged();
     void screenChanged();
     void screenFrameReceived(const QString& hostId, qint64 serial, const QJsonObject& format, const QByteArray& packet);
@@ -322,10 +335,11 @@ private:
         ~ExternalVoice();
     };
     std::shared_ptr<ExternalVoice> external_;
+    QString pendingExternalJoin_;
     QTimer externalTimer_;
     bool addExternal(const QString& provider, const QString& endpoint, const QString& password);
     void probeExternal(const QString& address, quint16 mumblePort, quint16 teamSpeakPort);
-    bool joinExternal(const QString& id, const QString& password = {}, bool remember = false);
+    bool joinExternal(const QString& id, const QString& password = {}, bool remember = false, bool departureConfirmed = false);
     void pollExternal();
     void externalEvent(const QJsonObject& event);
     bool externalCommand(const QJsonObject& command);
@@ -395,6 +409,8 @@ private:
         QString chatEpoch;
         QJsonArray messages;
         QVariantList notices;
+        QJsonArray games;
+        QString gameId;
         qint64 lastChatSequence = 0;
         qint64 unreadExpires = 0;
         QJsonObject pending;
@@ -473,6 +489,9 @@ private:
         bool sleeping = false;
         QString avatar = QStringLiteral("mossling");
         qint64 lastSpoke = 0;
+        qint64 gameWindow = 0;
+        int gameRequests = 0;
+        QSet<QString> gameInvitations;
         bool pending = false;
         bool controller = false;
         bool held = false;
@@ -527,7 +546,7 @@ private:
     qint64 botLastActive_ = 0;
     std::shared_ptr<Relay> musicRelay_;
     struct Attempt final { int count = 0; qint64 next = 0; };
-    struct Host final { QString name; QString address; quint16 port = 0; qint64 seen = 0; bool direct = false; bool scanned = false; QString deviceId; };
+    struct Host final { QString name; QString address; quint16 port = 0; qint64 seen = 0; bool direct = false; bool scanned = false; QString deviceId; bool fresh = true; };
     bool setStatus(QString text, bool result = true);
     bool setControlStatus(QString text, bool result = true);
     bool persist(const QSet<QString>& approved, const QHash<QString, Attempt>& attempts, bool requestsAllowed,
@@ -662,6 +681,19 @@ private:
         QList<Target> queue_;
         QHash<QSslSocket*, Probe> probes_;
     } discovery_{*this};
+    bool hostGameAction(QSslSocket* socket, const QJsonObject& command);
+    bool applyGame(Client& client, const QJsonObject& state, const QString& removed = {});
+    static bool validGameState(const QJsonObject& state);
+    void sendGames(QSslSocket* socket);
+    void publishGame(const QString& id, QSslSocket* actor = nullptr, const QString& receipt = {});
+    void endGames(const QString& identity, const QString& reason);
+    void refreshComputerTimer();
+    void playComputers();
+    QString pendingGameHost_, pendingGameRequest_;
+    QVariantMap detachedGame_;
+    QHash<QString, ChannelGame> hostGames_;
+    QHash<QString, qint64> computerDue_;
+    QTimer computerTimer_;
     QTimer controlTimer_;
     QTimer maintenanceTimer_;
     QTimer autoJoinTimer_;

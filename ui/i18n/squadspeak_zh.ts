@@ -1229,6 +1229,18 @@
             <source>Import</source>
             <translation>导入</translation>
         </message>
+        <message>
+            <source>Status unknown</source>
+            <translation>状态未知</translation>
+        </message>
+        <message>
+            <source>Chat</source>
+            <translation>聊天</translation>
+        </message>
+        <message>
+            <source>Game</source>
+            <translation>游戏</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
@@ -1436,12 +1448,12 @@
             <translation>较早的消息</translation>
         </message>
         <message>
-            <source>Attach image</source>
-            <translation>附加图片</translation>
-        </message>
-        <message>
             <source>Chat message. Markdown supported. Shift+Enter for a new line.</source>
             <translation>聊天消息.支持 Markdown.按 Shift+Enter 换行.</translation>
+        </message>
+        <message>
+            <source>Add</source>
+            <translation>添加</translation>
         </message>
     </context>
     <context>
@@ -2647,6 +2659,14 @@
             <source>Identity imported.</source>
             <translation>身份已导入。</translation>
         </message>
+        <message>
+            <source>Invalid game state.</source>
+            <translation>游戏状态无效。</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>此游戏操作已不可用。</translation>
+        </message>
     </context>
     <context>
         <name>LocalLanguage</name>
@@ -3313,6 +3333,176 @@
         <message>
             <source>See you next time.</source>
             <translation>下次见。</translation>
+        </message>
+    </context>
+    <context>
+        <name>GameCard</name>
+        <message>
+            <source>Invited by %1</source>
+            <translation>%1 发起了邀请</translation>
+        </message>
+        <message>
+            <source>%1 wins!</source>
+            <translation>%1 获胜！</translation>
+        </message>
+        <message>
+            <source>Join</source>
+            <translation>加入</translation>
+        </message>
+        <message>
+            <source>Leave</source>
+            <translation>离开</translation>
+        </message>
+        <message>
+            <source>Elements</source>
+            <translation>元素</translation>
+        </message>
+        <message>
+            <source>Game ended</source>
+            <translation>游戏结束</translation>
+        </message>
+        <message>
+            <source>Open</source>
+            <translation>打开</translation>
+        </message>
+    </context>
+    <context>
+        <name>GamePane</name>
+        <message>
+            <source>Finish your current game first.</source>
+            <translation>请先完成当前游戏。</translation>
+        </message>
+        <message>
+            <source>Fire</source>
+            <translation>火</translation>
+        </message>
+        <message>
+            <source>Water</source>
+            <translation>水</translation>
+        </message>
+        <message>
+            <source>Ice</source>
+            <translation>冰</translation>
+        </message>
+        <message>
+            <source>Core</source>
+            <translation>核心</translation>
+        </message>
+        <message>
+            <source>Trap</source>
+            <translation>陷阱</translation>
+        </message>
+        <message>
+            <source>Unknown</source>
+            <translation>未知</translation>
+        </message>
+        <message>
+            <source>That game action is no longer available.</source>
+            <translation>此游戏操作已不可用。</translation>
+        </message>
+        <message>
+            <source>Game unavailable</source>
+            <translation>游戏不可用</translation>
+        </message>
+        <message>
+            <source>Same element. Choose again.</source>
+            <translation>元素相同。请重新选择。</translation>
+        </message>
+        <message>
+            <source>Your turn</source>
+            <translation>轮到你了</translation>
+        </message>
+        <message>
+            <source>%1's turn</source>
+            <translation>轮到 %1 了</translation>
+        </message>
+        <message>
+            <source>Waiting for the other player</source>
+            <translation>等待另一名玩家</translation>
+        </message>
+        <message>
+            <source>Water beats Fire. Fire beats Ice. Ice beats Water.</source>
+            <translation>水胜火，火胜冰，冰胜水。</translation>
+        </message>
+        <message>
+            <source>Empty</source>
+            <translation>空</translation>
+        </message>
+        <message>
+            <source>Ice freezes Water</source>
+            <translation>冰冻结水</translation>
+        </message>
+        <message>
+            <source>Fire melts Ice</source>
+            <translation>火融化冰</translation>
+        </message>
+        <message>
+            <source>Water extinguishes Fire</source>
+            <translation>水熄灭火</translation>
+        </message>
+        <message>
+            <source>Neutral</source>
+            <translation>无属性</translation>
+        </message>
+        <message>
+            <source>Choose an element</source>
+            <translation>选择元素</translation>
+        </message>
+        <message>
+            <source>Information</source>
+            <translation>信息</translation>
+        </message>
+        <message>
+            <source>Victory</source>
+            <translation>胜利</translation>
+        </message>
+        <message>
+            <source>Defeat</source>
+            <translation>失败</translation>
+        </message>
+        <message>
+            <source>Remaining</source>
+            <translation>剩余</translation>
+        </message>
+        <message>
+            <source>Captured</source>
+            <translation>击败</translation>
+        </message>
+        <message>
+            <source>Leave game?</source>
+            <translation>离开游戏？</translation>
+        </message>
+        <message>
+            <source>Leaving gives the other player the win.</source>
+            <translation>离开后，另一名玩家获胜。</translation>
+        </message>
+        <message>
+            <source>Cancel this invitation?</source>
+            <translation>取消邀请？</translation>
+        </message>
+        <message>
+            <source>Choose Trap, then Core. Move one square. Capture the other Core to win.</source>
+            <translation>先选陷阱，再选核心。每次移动一格。夺取对方核心即可获胜。</translation>
+        </message>
+        <message>
+            <source>Choose its element in its first fight. Ties let you choose again.</source>
+            <translation>首次战斗时选择元素。平局时可以重新选择。</translation>
+        </message>
+        <message>
+            <source>Stays put. Defeats every attacker.</source>
+            <translation>不能移动。击败所有进攻者。</translation>
+        </message>
+        <message>
+            <source>Stays put. Protect it to stay in the game.</source>
+            <translation>不能移动。保护它才能留在游戏中。</translation>
+        </message>
+        <message>
+            <source>Computer</source>
+            <translation>电脑</translation>
+        </message>
+        <message>
+            <source>Play against the computer?</source>
+            <translation>要与电脑对战吗？</translation>
         </message>
     </context>
 </TS>
