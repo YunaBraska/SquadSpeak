@@ -164,6 +164,7 @@ Both need their own name, original artwork and SquadSpeak styling.
 Confirmed on 2026-11-14: use score rounds with re-entry. Creatures collect fruit
 and grow longer tails. A collision costs points and length, then the player
 returns instead of waiting as a spectator for the rest of the round.
+An elapsed-time limit must not decide the round's end.
 
 [Curve Fever's developer description](https://store.steampowered.com/app/1133700)
 combines steering, trails, points and offensive/defensive powers. The official
@@ -173,9 +174,20 @@ risk and interaction, not rules to copy wholesale.
 
 Proposed direction: warm avatar creatures, fruit and scarf- or vine-like tails,
 with a small number of readable interactions. The working name **Tangletrail**
-is a proposal. The round end condition, duration, capacity, collision penalties,
+is a proposal. The round end condition, capacity, collision penalties,
 own-tail and edge behavior, controls and departure rules remain undecided.
 Validate these with a playable keyboard/touch prototype before production integration.
+
+Two non-timed end conditions are under discussion, not approved rules:
+
+- Finite harvest: a fixed shared fruit supply. The last pickup ends the round
+  and the highest score wins. Collisions cost points and length but do not
+  regenerate fruit. [Pac-Man's publisher description](https://www.xbox.com/en-GB/games/store/pac-man/bz65bv9hsrxg)
+  provides the clear-the-field reference. This is the simpler proposed prototype.
+- Fill the nest: carried fruit becomes safe score only after delivery, and the
+  first full nest wins. This adds carrying, delivery and interception behavior.
+  [Crash Team Rumble's developer guide](https://support.activision.com/crash-team-rumble/articles/crash-team-rumble-gameplay)
+  documents collecting and banking fruit as the victory objective.
 
 ### Compact strategy game
 
