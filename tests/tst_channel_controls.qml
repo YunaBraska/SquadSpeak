@@ -911,6 +911,7 @@ TestCase {
     }
     function test_gameBoardChatOnlyJourney(data) {
         session.setLanguage(data.language)
+        verify(session.setTheme(data.tag === "wide" || data.tag === "rtl" ? "dark" : "light"))
         view.width = data.width; view.height = data.height
         verify(fixtures.startHost())
         verify(channel.decide(remoteChannel.ownId, true))
@@ -966,6 +967,15 @@ TestCase {
         verify(fixtures.pressAccessible(findChild(remoteBoard, "gameReady")))
         tryVerify(function() { return ownGame().phase === "playing" && otherGame().phase === "playing" })
         verify(!channel.joined && !remoteChannel.joined)
+        const renderedKinds = ({})
+        for (let cell = 0; cell < 42; ++cell) {
+            const art = visualChild(board.contentItem, "gamePiece_" + cell)
+            verify(art !== null)
+            const piece = ownGame().board[cell]
+            tryCompare(art, "status", piece.kind ? Image.Ready : Image.Null)
+            if (piece.kind) renderedKinds[piece.kind] = true
+        }
+        compare(Object.keys(renderedKinds).length, 6, "All roles, including concealed opponents, have artwork")
         compare(findChild(board, "battleSummary").visible, false)
         const mover = ownGame().turn === channel.ownId ? board : remoteBoard
         const from = mover === board ? 28 : 7, to = mover === board ? 21 : 14
@@ -1007,6 +1017,7 @@ TestCase {
         tryVerify(function() { return ownGame().phase === "cancelled" && otherGame().phase === "cancelled" })
         remoteBoard.close()
         verify(!channel.joined && !remoteChannel.joined)
+        verify(session.setTheme("system"))
     }
 
     function test_disconnectedHostsHaveASeparateSectionAndReconnectInPlace() {

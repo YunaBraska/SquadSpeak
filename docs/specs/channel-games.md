@@ -62,7 +62,11 @@ historical ICQ detail has been recovered:
 Fire, water and ice have distinct shapes as well as colors. Short melting,
 extinguishing and freezing effects explain outcomes without delaying actions or
 obscuring the board. Reduced motion uses a static outcome instead. Artwork and
-effects follow SquadSpeak's style and do not reuse ICQ assets.
+effects follow SquadSpeak's style and do not reuse ICQ assets. Pieces use detailed,
+dimensional character artwork matching the avatars, with transparent silhouettes.
+Concealed opponents share one neutral character with no role clues. Selection,
+ownership markers and shadows are rendered separately by the app. All figures
+must remain distinct and uncropped in compact and large windows.
 
 The host remains the trusted authority, as for channel chat. This feature does
 not introduce a separate game service or claim protection against a modified

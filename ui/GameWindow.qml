@@ -173,37 +173,29 @@ PanelWindow {
                             }
                             contentItem: Item {
                                 Canvas {
-                                    id: pieceArt
                                     anchors.fill: parent; visible: !!cellButton.kind
                                     onWidthChanged: requestPaint()
                                     onHeightChanged: requestPaint()
-                                    Connections { target: cellButton; function onKindChanged() { pieceArt.requestPaint() } function onOwnChanged() { pieceArt.requestPaint() } }
-                                    Connections { target: Theme; function onDarkChanged() { pieceArt.requestPaint() } }
                                     onPaint: {
-                                        const c = getContext("2d"), k = cellButton.kind
-                                        c.reset(); c.scale(width / 64, height / 64)
-                                        c.fillStyle = cellButton.own ? (Theme.dark ? "#284b48" : "#d5ece3") : (Theme.dark ? "#503847" : "#f2dce6")
-                                        c.beginPath(); c.ellipse(6, 48, 52, 10); c.fill()
-                                        c.strokeStyle = Theme.dark ? "#f7efdf" : "#514950"; c.lineWidth = 2
-                                        c.fillStyle = k === "fire" ? "#ee9958" : k === "water" ? "#66b6e6" : k === "ice" ? "#b3e9eb"
-                                            : k === "core" ? "#c8a5ea" : k === "trap" ? "#c3a284" : "#a7adb8"
-                                        c.beginPath()
-                                        if (k === "fire") { c.moveTo(16, 50); c.bezierCurveTo(1, 32, 29, 23, 23, 8); c.bezierCurveTo(49, 17, 37, 29, 47, 24); c.bezierCurveTo(63, 50, 46, 58, 16, 50) }
-                                        else if (k === "water") { c.moveTo(32, 7); c.bezierCurveTo(22, 25, 8, 31, 12, 44); c.bezierCurveTo(18, 62, 51, 59, 53, 42); c.bezierCurveTo(55, 30, 39, 20, 32, 7) }
-                                        else if (k === "ice" || k === "core") { c.moveTo(32, 6); c.lineTo(52, 22); c.lineTo(48, 47); c.lineTo(32, 58); c.lineTo(16, 47); c.lineTo(12, 22) }
-                                        else if (k === "trap") { c.moveTo(9, 18); c.lineTo(55, 18); c.lineTo(50, 51); c.lineTo(14, 51) }
-                                        else { c.arc(32, 33, 22, 0, Math.PI * 2) }
-                                        c.closePath(); c.fill(); c.stroke()
-                                        c.fillStyle = "#30353e"
-                                        if (k === "hidden") { c.font = "bold 28px sans-serif"; c.textAlign = "center"; c.fillText("?", 32, 44) }
-                                        else {
-                                            c.beginPath(); c.arc(24, 34, 2.4, 0, Math.PI * 2); c.arc(40, 34, 2.4, 0, Math.PI * 2); c.fill()
-                                            c.beginPath(); c.moveTo(27, 43); c.quadraticCurveTo(32, 47, 37, 43); c.stroke()
-                                            if (k === "ice") { c.beginPath(); c.moveTo(32, 9); c.lineTo(30, 24); c.lineTo(40, 21); c.stroke() }
-                                            if (k === "core") { c.fillStyle = "#fff3af"; c.beginPath(); c.arc(32, 19, 5, 0, Math.PI * 2); c.fill() }
-                                            if (k === "trap") { c.beginPath(); c.moveTo(9, 18); c.lineTo(32, 10); c.lineTo(55, 18); c.stroke() }
-                                        }
+                                        const c = getContext("2d")
+                                        c.reset(); c.save()
+                                        c.translate(width / 2, height * 0.88); c.scale(width * 0.36, height * 0.08)
+                                        const shade = c.createRadialGradient(0, 0, 0, 0, 0, 1)
+                                        shade.addColorStop(0, "rgba(0, 0, 0, 0.30)"); shade.addColorStop(1, "transparent")
+                                        c.fillStyle = shade; c.fillRect(-1, -1, 2, 2); c.restore()
                                     }
+                                }
+                                Image {
+                                    id: pieceArt
+                                    objectName: "gamePiece_" + cellButton.cell
+                                    anchors.fill: parent
+                                    source: !cellButton.kind ? "" : Qt.resolvedUrl("games/elements/"
+                                        + (["fire", "water", "ice", "core", "trap"].includes(cellButton.kind) ? cellButton.kind : "hidden") + ".png")
+                                    sourceSize: Qt.size(192, 192)
+                                    fillMode: Image.PreserveAspectFit
+                                    asynchronous: true; smooth: true; mipmap: true
+                                    scale: root.selected === cellButton.cell ? 1.06 : 1
+                                    Behavior on scale { NumberAnimation { duration: Theme.reducedMotion ? 0 : 120 } }
                                 }
                                 Label { anchors.bottom: parent.bottom; anchors.right: parent.right; text: cellButton.own ? "●" : "◇"; color: Theme.text; font.pixelSize: 11; visible: !!cellButton.piece.owner }
                             }
