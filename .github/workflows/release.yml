@@ -36,4 +36,3 @@ jobs:
     with:
       commit_sha: ${{ needs.verify.outputs.commit_sha }}
       version: ${{ needs.verify.outputs.version }}
-      release_mode: release
