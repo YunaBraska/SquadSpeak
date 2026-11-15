@@ -1972,6 +1972,10 @@
             <translation>Η πρόσβαση στη συσκευή στη θύρα %1 δεν είναι διαθέσιμη: %2</translation>
         </message>
         <message>
+            <source>Device access on port %1 is unavailable for media: %2</source>
+            <translation type="unfinished"></translation>
+        </message>
+        <message>
             <source>Own channel opened.</source>
             <translation>Άνοιξε το δικό του κανάλι.</translation>
         </message>

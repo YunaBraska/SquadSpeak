@@ -1972,6 +1972,10 @@
             <translation>Пристапот до уредот на портата %1 е недостапен: %2</translation>
         </message>
         <message>
+            <source>Device access on port %1 is unavailable for media: %2</source>
+            <translation type="unfinished"></translation>
+        </message>
+        <message>
             <source>Own channel opened.</source>
             <translation>Отворен сопствен канал.</translation>
         </message>

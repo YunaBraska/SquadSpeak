@@ -1972,6 +1972,10 @@
             <translation>Az eszköz hozzáférése a(z) %1 porton nem érhető el: %2</translation>
         </message>
         <message>
+            <source>Device access on port %1 is unavailable for media: %2</source>
+            <translation type="unfinished"></translation>
+        </message>
+        <message>
             <source>Own channel opened.</source>
             <translation>Saját csatorna megnyitva.</translation>
         </message>

@@ -1972,6 +1972,10 @@
             <translation>Սարքի մուտքը %1 նավահանգստում անհասանելի է՝ %2</translation>
         </message>
         <message>
+            <source>Device access on port %1 is unavailable for media: %2</source>
+            <translation type="unfinished"></translation>
+        </message>
+        <message>
             <source>Own channel opened.</source>
             <translation>Բացվեց սեփական ալիքը:</translation>
         </message>

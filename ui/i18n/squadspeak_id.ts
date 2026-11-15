@@ -1972,6 +1972,10 @@
             <translation>Akses perangkat pada port %1 tidak tersedia: %2</translation>
         </message>
         <message>
+            <source>Device access on port %1 is unavailable for media: %2</source>
+            <translation type="unfinished"></translation>
+        </message>
+        <message>
             <source>Own channel opened.</source>
             <translation>Kanal sendiri dibuka.</translation>
         </message>

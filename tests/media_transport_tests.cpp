@@ -924,8 +924,8 @@ private slots:
         QVERIFY2(port < 22000, qPrintable(QString("No shared TCP/UDP port in 21000-21999: %1; %2")
             .arg(tcp.errorString(), udp.errorString())));
         tcp.close();
-        QVERIFY2(owner.listen(QHostAddress::LocalHost, port), qPrintable(owner.status()));
         udp.close();
+        QVERIFY2(owner.listen(QHostAddress::LocalHost, port), qPrintable(owner.status()));
         QVERIFY(owner.decide(guest.ownId(), true));
         QVERIFY(owner.join(owner.ownId(), "127.0.0.1", owner.port())); QTRY_VERIFY(owner.joined());
         QVERIFY(owner.setScreenSharing(true));

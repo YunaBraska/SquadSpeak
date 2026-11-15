@@ -1972,6 +1972,10 @@
             <translation>Prieiga prie įrenginio prievado %1 nepasiekiama: %2</translation>
         </message>
         <message>
+            <source>Device access on port %1 is unavailable for media: %2</source>
+            <translation type="unfinished"></translation>
+        </message>
+        <message>
             <source>Own channel opened.</source>
             <translation>atidarytas nuosavas kanalas.</translation>
         </message>

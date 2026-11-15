@@ -1972,6 +1972,10 @@
             <translation>Den Apparatzougang um Port %1 ass net verfügbar: %2</translation>
         </message>
         <message>
+            <source>Device access on port %1 is unavailable for media: %2</source>
+            <translation type="unfinished"></translation>
+        </message>
+        <message>
             <source>Own channel opened.</source>
             <translation>Eegent Kanal opgemaach.</translation>
         </message>

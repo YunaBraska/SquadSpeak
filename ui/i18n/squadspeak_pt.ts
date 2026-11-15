@@ -1972,6 +1972,10 @@
             <translation>O acesso do dispositivo na porta %1 está indisponível: %2</translation>
         </message>
         <message>
+            <source>Device access on port %1 is unavailable for media: %2</source>
+            <translation type="unfinished"></translation>
+        </message>
+        <message>
             <source>Own channel opened.</source>
             <translation>O canal próprio foi aberto.</translation>
         </message>
