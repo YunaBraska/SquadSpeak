@@ -3326,6 +3326,10 @@ private slots:
         QVERIFY(host.channel.sendScreenFrame(nextTier, format, payload, true));
         QVERIFY(waitForEvents([&] { return frames.size() == received + 1; }));
         QVERIFY(viewer.channel.chatReady());
+        // Close the separate screen transport before the next data row. Its
+        // network callbacks otherwise overlap the next loopback negotiation.
+        QVERIFY(viewer.channel.watchScreen(host.channel.ownId(), false));
+        QVERIFY(waitForEvents([&] { return host.channel.screenTiers().isEmpty(); }, 5000));
     }
     void hostingClientsKeepVoiceAndScreenDatagramsIndependent_data() {
         QTest::addColumn<QString>("occupiedProtocol");

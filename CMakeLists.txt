@@ -867,9 +867,15 @@ if(BUILD_TESTING)
     # The suite launches dozens of real processes. Competing codec workloads
     # must not consume its aggregate budget or its per-operation deadlines.
     set_tests_properties(headless_contract PROPERTIES TIMEOUT 240 RUN_SERIAL TRUE)
+    # The portable UI suite stays offscreen. Its cue-queue contract needs a
+    # real audio backend on macOS, otherwise QSoundEffect cannot finish a cue.
+    set(audio_controls_platform ${ui_test_platform})
+    if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+        set(audio_controls_platform cocoa)
+    endif()
     add_test(NAME audio_controls COMMAND controls_tests -input "${CMAKE_CURRENT_SOURCE_DIR}/tests/tst_controls.qml")
     set_tests_properties(audio_controls PROPERTIES
-        ENVIRONMENT "QT_QPA_PLATFORM=${ui_test_platform};QT_QUICK_BACKEND=software;QT_QUICK_CONTROLS_STYLE=Basic")
+        ENVIRONMENT "QT_QPA_PLATFORM=${audio_controls_platform};QT_QUICK_BACKEND=software;QT_QUICK_CONTROLS_STYLE=Basic")
     # Darwin 23.2 is macOS 14.2, the first per-process Core Audio stream probe.
     # Keep native acceptance out of portable suites instead of skipping it there.
     if(CMAKE_SYSTEM_NAME STREQUAL "Darwin" AND CMAKE_HOST_SYSTEM_VERSION VERSION_GREATER_EQUAL 23.2)
