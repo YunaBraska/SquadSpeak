@@ -1262,6 +1262,7 @@ TestCase {
         verify(audio.setNotificationVolume(0))
         if (data.landscape !== undefined) orientChat(data.landscape)
         else { view.width = data.width; view.height = data.height }
+        verify(waitForPolish(view))
         const tap = item => {
             verify(item && item.visible && item.enabled)
             verify(waitForPolish(view))
@@ -1270,7 +1271,7 @@ TestCase {
             finger.release(0, item, item.width / 2, item.height / 2).commit()
         }
         verify(fixtures.startHost()); verify(channel.joinSaved(channel.ownId))
-        tryCompare(channel, "chatReady", true)
+        tryVerify(function() { return channel.joined && channel.chatReady })
         view.chatExpanded = true
         const chat = findChild(view, "chatPanel")
         tap(findChild(chat, "chatAdd"))
