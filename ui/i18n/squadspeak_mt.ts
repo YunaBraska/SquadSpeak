@@ -1972,10 +1972,6 @@
             <translation>L-aċċess għall-apparat fuq il-port %1 mhux disponibbli: %2</translation>
         </message>
         <message>
-            <source>Device access on port %1 is unavailable for media: %2</source>
-            <translation>Device access on port %1 is unavailable for media: %2</translation>
-        </message>
-        <message>
             <source>Own channel opened.</source>
             <translation>Infetaħ kanal proprju.</translation>
         </message>

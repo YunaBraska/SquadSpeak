@@ -1972,10 +1972,6 @@
             <translation>Dostop do naprave na vratih %1 ni na voljo: %2</translation>
         </message>
         <message>
-            <source>Device access on port %1 is unavailable for media: %2</source>
-            <translation>Device access on port %1 is unavailable for media: %2</translation>
-        </message>
-        <message>
             <source>Own channel opened.</source>
             <translation>Odprt lastni kanal.</translation>
         </message>

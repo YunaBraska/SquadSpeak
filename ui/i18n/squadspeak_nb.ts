@@ -1972,10 +1972,6 @@
             <translation>Enhetstilgang på port %1 er utilgjengelig: %2</translation>
         </message>
         <message>
-            <source>Device access on port %1 is unavailable for media: %2</source>
-            <translation>Device access on port %1 is unavailable for media: %2</translation>
-        </message>
-        <message>
             <source>Own channel opened.</source>
             <translation>Egen kanal åpnet.</translation>
         </message>

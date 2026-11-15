@@ -1972,10 +1972,6 @@
             <translation>पोर्ट %1 वर उपकरण प्रवेश अनुपलब्ध आहे: %2</translation>
         </message>
         <message>
-            <source>Device access on port %1 is unavailable for media: %2</source>
-            <translation>Device access on port %1 is unavailable for media: %2</translation>
-        </message>
-        <message>
             <source>Own channel opened.</source>
             <translation>स्वतःचे चॅनेल उघडले.</translation>
         </message>

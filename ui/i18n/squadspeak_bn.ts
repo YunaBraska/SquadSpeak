@@ -1972,10 +1972,6 @@
             <translation>পোর্ট %1-এ ডিভাইস অ্যাক্সেস অনুপলব্ধ: %2</translation>
         </message>
         <message>
-            <source>Device access on port %1 is unavailable for media: %2</source>
-            <translation>Device access on port %1 is unavailable for media: %2</translation>
-        </message>
-        <message>
             <source>Own channel opened.</source>
             <translation>নিজস্ব চ্যানেল খোলা হয়েছে।</translation>
         </message>

@@ -1972,10 +1972,6 @@
             <translation>Qasja e pajisjes në portën %1 është e padisponueshme: %2</translation>
         </message>
         <message>
-            <source>Device access on port %1 is unavailable for media: %2</source>
-            <translation>Device access on port %1 is unavailable for media: %2</translation>
-        </message>
-        <message>
             <source>Own channel opened.</source>
             <translation>Kanali i vet u hap.</translation>
         </message>

@@ -1972,10 +1972,6 @@
             <translation>Aðgangur tækis á gátt %1 er ekki tiltækur: %2</translation>
         </message>
         <message>
-            <source>Device access on port %1 is unavailable for media: %2</source>
-            <translation>Device access on port %1 is unavailable for media: %2</translation>
-        </message>
-        <message>
             <source>Own channel opened.</source>
             <translation>Eigin rás opnuð.</translation>
         </message>

@@ -1587,10 +1587,6 @@
             <translation>Pristup uređaju na portu %1 nije dostupan: %2</translation>
         </message>
         <message>
-            <source>Device access on port %1 is unavailable for media: %2</source>
-            <translation>Device access on port %1 is unavailable for media: %2</translation>
-        </message>
-        <message>
             <source>Own channel opened.</source>
             <translation>Otvoren vlastiti kanal.</translation>
         </message>

@@ -1972,10 +1972,6 @@
             <translation>Apparaattoegang op poort %1 is niet beschikbaar: %2</translation>
         </message>
         <message>
-            <source>Device access on port %1 is unavailable for media: %2</source>
-            <translation>Device access on port %1 is unavailable for media: %2</translation>
-        </message>
-        <message>
             <source>Own channel opened.</source>
             <translation>Eigen kanaal geopend.</translation>
         </message>

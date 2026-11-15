@@ -1972,10 +1972,6 @@
             <translation>%1 portunda cihaz girişi mümkün deyil: %2</translation>
         </message>
         <message>
-            <source>Device access on port %1 is unavailable for media: %2</source>
-            <translation>Device access on port %1 is unavailable for media: %2</translation>
-        </message>
-        <message>
             <source>Own channel opened.</source>
             <translation>Öz kanalı açıldı.</translation>
         </message>
