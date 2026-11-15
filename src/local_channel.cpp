@@ -1432,13 +1432,6 @@ bool LocalChannel::startService(const QHostAddress& address, quint16 port) {
     server_.setSslConfiguration(identity_->configuration());
     server_.setHandshakeTimeout(5000);
     if (!server_.listen(address, port)) return setStatus(tr("Device access on port %1 is unavailable: %2").arg(port).arg(server_.errorString()), false);
-    const auto boundPort = server_.serverPort();
-    QUdpSocket mediaReservation;
-    if (!mediaReservation.bind(address, boundPort, QUdpSocket::DontShareAddress)) {
-        const auto error = mediaReservation.errorString();
-        server_.close();
-        return setStatus(tr("Device access on port %1 is unavailable for media: %2").arg(boundPort).arg(error), false);
-    }
     emit stateChanged();
     if (!hostOnly_) QTimer::singleShot(0, this, &LocalChannel::tryAutoJoin);
     return true;

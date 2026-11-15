@@ -114,9 +114,15 @@ struct Device final {
         auto port = firstPort;
         do {
             // Windows excludes whole ranges independently for TCP and UDP.
-            // Ask the production host to verify both protocols for each
-            // candidate. A TCP-only reservation cannot prove media will bind.
-            if (channel.startService(address, port)) return channel.listen(address, port);
+            // Walk distinct candidates instead of asking TCP for another port
+            // which may still be inside the same UDP exclusion range.
+            QTcpServer reservation;
+            QUdpSocket mediaReservation;
+            if (reservation.listen(QHostAddress::Any, port)
+                && mediaReservation.bind(QHostAddress::Any, port, QUdpSocket::DontShareAddress)) {
+                reservation.close();
+                if (channel.startService(address, port)) return channel.listen(address, port);
+            }
             port = port == 65535 ? 1024 : quint16(port + 1);
         } while (port != firstPort);
         qWarning() << "No shared TCP/UDP test port is available:" << channel.status();
