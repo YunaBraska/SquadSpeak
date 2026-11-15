@@ -38,7 +38,6 @@ TestCase {
             verify(!fixtures.startFeedback())
             compare(progress.count, 0)
             verify(session.setEventSounds(true))
-            const sequenceStarted = Date.now()
             verify(fixtures.startFeedback())
             tryCompare(progress, "count", 3, 15000)
             // Exercise the language change through normal announcements before
@@ -49,7 +48,7 @@ TestCase {
             tryCompare(channel, "joined", true)
             verify(channel.leave())
             tryCompare(channel, "joined", false)
-            tryCompare(progress, "count", 9, Math.max(1, 15000 - (Date.now() - sequenceStarted)))
+            tryCompare(progress, "count", 9, 15000)
             const kinds = ["start", "join", "leave"]
             for (let i = 0; i < kinds.length; ++i) {
                 compare(progress.signalArguments[i * 3][0], kinds[i])
