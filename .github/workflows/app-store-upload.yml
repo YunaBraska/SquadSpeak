@@ -16,7 +16,7 @@ jobs:
 
   upload:
     needs: package
-    uses: YunaBraska/YunaBraska/.github/workflows/wc_macos_app_store_upload.yml@172316ba468bd7bbdf0d57ea28856d68b7aacb2e
+    uses: YunaBraska/YunaBraska/.github/workflows/wc_macos_app_store_upload.yml@3ad4cf3c1827b30d89bc13a0f331bc998fe31c46
     with:
       app_name: SquadSpeak
     secrets: inherit
