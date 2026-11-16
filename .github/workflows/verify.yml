@@ -376,8 +376,12 @@ jobs:
         $nasmVersion = & "$nasmDir/nasm.exe" -v
         if ($LASTEXITCODE -ne 0 -or $nasmVersion -notmatch '^NASM version 3\.02(?: |$)') { throw "Unexpected NASM version: $nasmVersion" }
         Write-Host $nasmVersion
-        choco install protoc --version=33.0.0 --no-progress --yes
-        if ($LASTEXITCODE -ne 0) { throw "Protobuf compiler installation failed" }
+        for ($attempt = 1; $attempt -le 3; ++$attempt) {
+          choco install protoc --version=33.0.0 --no-progress --yes
+          if ($LASTEXITCODE -eq 0) { break }
+          if ($attempt -eq 3) { throw "Protobuf compiler installation failed with exit code $LASTEXITCODE" }
+          Start-Sleep -Seconds (5 * $attempt)
+        }
         protoc --version
         if ($LASTEXITCODE -ne 0) { throw "Protobuf compiler is unavailable" }
         python -m pip install --disable-pip-version-check meson==1.12.1

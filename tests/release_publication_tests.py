@@ -286,6 +286,17 @@ else: sys.exit(7)
                               (self.repo / "CMakeLists.txt").read_text())[1].split(",")
         self.assertIn("SQUAD_SOAK_PACING", preserved)
 
+    def test_windows_bootstrap_retries_transient_protobuf_download_failures(self):
+        workflow = (self.repo / ".github/workflows/verify.yml").read_text()
+        protobuf_install = re.search(
+            r"for \(\$attempt = 1; \$attempt -le 3; \+\+\$attempt\) \{\n"
+            r"\s+choco install protoc --version=33\.0\.0 --no-progress --yes\n"
+            r"\s+if \(\$LASTEXITCODE -eq 0\) \{ break \}\n"
+            r"\s+if \(\$attempt -eq 3\) \{ throw \"Protobuf compiler installation failed with exit code \$LASTEXITCODE\" \}\n"
+            r"\s+Start-Sleep -Seconds \(5 \* \$attempt\)\n"
+            r"\s+\}", workflow)
+        self.assertIsNotNone(protobuf_install)
+
     def test_network_launcher_keeps_function_inventory_and_resource_guards(self):
         executable = self.root / "network contract"
         executable.write_text("#!" + sys.executable + "\n" + '''import sys
