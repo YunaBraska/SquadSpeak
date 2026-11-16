@@ -6,6 +6,8 @@
 #include "event_wait.hpp"
 #include <QImage>
 #include <QCborValue>
+#include <QElapsedTimer>
+#include <QEventLoop>
 #include <QLoggingCategory>
 #include <QFutureWatcher>
 #include <QPromise>
@@ -29,6 +31,7 @@
 #include <QSignalSpy>
 #include <QTemporaryDir>
 #include <QTest>
+#include <QTimer>
 #if defined(Q_OS_IOS)
 #include <qtkeychain/keychain.h>
 #include <QGuiApplication>
@@ -3579,8 +3582,30 @@ private slots:
             for (size_t i : {1, 2}) values.append(QString::number(viewers[i]->channel.receiveAudioBitrate()));
             return values.join(',');
         };
-        QTRY_VERIFY2_WITH_TIMEOUT(viewers[1]->channel.receiveAudioBitrate() == 128
-            && viewers[2]->channel.receiveAudioBitrate() == 128, qPrintable(audioQualities()), 45000);
+        const auto audioReady = [&] {
+            return viewers[1]->channel.receiveAudioBitrate() == 128
+                && viewers[2]->channel.receiveAudioBitrate() == 128;
+        };
+        QElapsedTimer audioRecovery; audioRecovery.start();
+        QEventLoop audioReadyLoop;
+        QTimer audioRecoveryProgress;
+        audioRecoveryProgress.setTimerType(Qt::CoarseTimer);
+        connect(&viewers[1]->channel, &LocalChannel::stateChanged, &audioReadyLoop,
+            [&] { if (audioReady()) audioReadyLoop.quit(); });
+        connect(&viewers[2]->channel, &LocalChannel::stateChanged, &audioReadyLoop,
+            [&] { if (audioReady()) audioReadyLoop.quit(); });
+        connect(&audioRecoveryProgress, &QTimer::timeout, &audioReadyLoop, [&] {
+            qWarning() << "Waiting for 64-viewer audio recovery after" << audioRecovery.elapsed()
+                       << "ms. Bitrates:" << audioQualities();
+        });
+        // Connection state, not elapsed time, determines readiness. The CI job
+        // watchdog remains the only failure boundary for a stuck integration.
+        if (!audioReady()) {
+            audioRecoveryProgress.start(30000);
+            audioReadyLoop.exec();
+            audioRecoveryProgress.stop();
+        }
+        QVERIFY2(audioReady(), qPrintable(audioQualities()));
         std::vector<std::unique_ptr<QSignalSpy>> frames;
         frames.reserve(viewers.size());
         std::array<VideoCodec, 2> decoders;

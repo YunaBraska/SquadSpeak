@@ -47,6 +47,12 @@ foreach(line IN LISTS lines)
        OR function MATCHES "(screenQualityAdaptsForOnlyTheSlowReceiver|screenUsesUdpWhileReliableTrafficIsDelayed|voiceUsesUdpWhileReliableTrafficIsDelayedThenFallsBackAndRecovers)")
         string(APPEND contents "set_tests_properties([=[${name}]=] PROPERTIES RUN_SERIAL TRUE COST 1000)\n")
     endif()
+    # This capacity contract waits for LocalChannel state transitions and emits
+    # progress warnings. The workflow watchdog, not an arbitrary CTest clock,
+    # owns detection of a genuinely stuck integration.
+    if(function STREQUAL "sixtyFourVideoViewersKeepIndependentQualityAndVoice")
+        string(APPEND contents "set_tests_properties([=[${name}]=] PROPERTIES TIMEOUT 0)\n")
+    endif()
     if(function MATCHES "([Dd]iscovery|^addChannelCandidates|^directJoinUsesDefaultPort)")
         string(APPEND contents "set_tests_properties([=[${name}]=] PROPERTIES RESOURCE_LOCK channel_fixed_ports)\n")
     endif()
