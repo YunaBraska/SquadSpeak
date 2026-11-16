@@ -2055,11 +2055,11 @@ TestCase {
         view.language = languageDisplay
         const dialog = findChild(view, "languageDownloadDialog")
         view.hide()
-        languageDisplay.preparation = {source: "fr", target: "de"}
         verify(!dialog.visible)
         compare(languageDisplay.downloads, 0)
         view.show(); view.raise(); view.requestActivate()
         tryCompare(view, "active", true)
+        languageDisplay.preparation = {source: "fr", target: "de"}
         tryCompare(dialog, "opened", true)
         verify(waitForRendering(dialog.contentItem))
         if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/language-download.png"))
