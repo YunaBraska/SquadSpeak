@@ -355,19 +355,23 @@ LocalChannel::LocalChannel(VoiceSession& session, QString storageFile, std::opti
             emit stateChanged();
         }
         for (auto* socket : peers_.keys()) {
-            auto& peer = peers_[socket];
-            if (elapsed - peer.lastActivity > (peer.closing ? 5000 : 8000)) { socket->abort(); continue; }
-            if (peer.joined && !peer.controller && (!peer.observer || receivesScreenAudio(peer)) && peer.adaptiveAudio && (!peer.media || !peer.media->udpActive())) {
-                if ((peer.audioProbeSent >= 0 && elapsed - peer.audioProbeSent > 350) || queuedBytes(socket) > 16384)
+            auto peer = peers_.find(socket);
+            if (peer == peers_.end()) continue;
+            if (elapsed - peer->lastActivity > (peer->closing ? 5000 : 8000)) { socket->abort(); continue; }
+            if (peer->joined && !peer->controller && (!peer->observer || receivesScreenAudio(*peer)) && peer->adaptiveAudio && (!peer->media || !peer->media->udpActive())) {
+                if ((peer->audioProbeSent >= 0 && elapsed - peer->audioProbeSent > 350) || queuedBytes(socket) > 16384)
                     sampleAudioLink(socket, -1);
-                if (!peers_.contains(socket)) continue;
-                if (peer.audioProbeSent < 0) {
-                    peer.audioProbeSent = elapsed;
-                    writeMessage(socket, {{"type", "audioProbe"}, {"serial", ++peer.audioProbe}});
+                peer = peers_.find(socket);
+                if (peer == peers_.end()) continue;
+                if (peer->audioProbeSent < 0) {
+                    peer->audioProbeSent = elapsed;
+                    writeMessage(socket, {{"type", "audioProbe"}, {"serial", ++peer->audioProbe}});
                 }
             }
-            if (peer.joined && !peer.controller && !peer.sleeping && clock_() - peer.lastSpoke >= 3600000) {
-                peer.sleeping = true; broadcastRoster();
+            peer = peers_.find(socket);
+            if (peer == peers_.end()) continue;
+            if (peer->joined && !peer->controller && !peer->sleeping && clock_() - peer->lastSpoke >= 3600000) {
+                peer->sleeping = true; broadcastRoster();
             }
         }
         for (auto* socket : viewers_.keys()) {
@@ -1783,11 +1787,18 @@ void LocalChannel::acceptSocket(QSslSocket* socket) {
     Peer peer; peer.id = id; peer.lastActivity = controlClock_.elapsed();
     peers_.insert(socket, std::move(peer));
     connect(socket, &QSslSocket::readyRead, this, [this, socket] { readPeer(socket); });
-    connect(socket, &QSslSocket::disconnected, this, [this, socket] {
-        const auto previous = peers_.take(socket);
-        socket->deleteLater();
+    const auto removePeer = [this, socket] {
+        const auto peer = peers_.find(socket);
+        if (peer == peers_.end()) return;
+        const auto previous = std::move(*peer);
+        peers_.erase(peer);
         endMembership(previous);
+    };
+    connect(socket, &QSslSocket::disconnected, this, [removePeer, socket] {
+        removePeer();
+        socket->deleteLater();
     });
+    connect(socket, &QObject::destroyed, this, removePeer);
     QTimer::singleShot(5000, socket, [this, socket] {
         if (peers_.contains(socket) && peers_.value(socket).name.isEmpty()) socket->abort();
     });

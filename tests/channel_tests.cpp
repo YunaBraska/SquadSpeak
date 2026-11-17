@@ -1756,6 +1756,62 @@ private slots:
         client.abort();
         QTRY_COMPARE(upstream->state(), QAbstractSocket::UnconnectedState);
     }
+    void pendingExpiryCanStopHostingDuringSocketMaintenance() {
+        QTemporaryDir dir;
+        Device host(dir.filePath("host"), "Owner");
+        QVERIFY(host.channel.listen(QHostAddress::LocalHost));
+        std::array<QSslSocket, 2> pending;
+        for (auto& socket : pending) {
+            socket.setSslConfiguration(TlsIdentity::create().configuration());
+            connect(&socket, &QSslSocket::sslErrors, &socket,
+                [&socket](const QList<QSslError>& errors) { socket.ignoreSslErrors(errors); });
+            socket.connectToHostEncrypted("127.0.0.1", host.channel.port());
+            QTRY_VERIFY(socket.isEncrypted());
+            const auto hello = wireFrame({{"type", "hello"}, {"version", 1}, {"name", "Pending member"},
+                {"available", true}, {"muted", true}});
+            QCOMPARE(socket.write(hello), hello.size());
+        }
+        QTRY_COMPARE(host.channel.requests().size(), 2);
+        Device otherHost(dir.filePath("other-host"), "Other owner");
+        QVERIFY(otherHost.channel.listen(QHostAddress::LocalHost));
+        QSslSocket other;
+        other.setSslConfiguration(TlsIdentity::create().configuration());
+        connect(&other, &QSslSocket::sslErrors, &other,
+            [&other](const QList<QSslError>& errors) { other.ignoreSslErrors(errors); });
+        other.connectToHostEncrypted("127.0.0.1", otherHost.channel.port());
+        QTRY_VERIFY(other.isEncrypted());
+        other.write(wireFrame({{"type", "hello"}, {"version", 1}, {"name", "Other pending member"},
+            {"available", true}, {"muted", true}}));
+        QTRY_COMPARE(otherHost.channel.requests().size(), 1);
+        QTimer keepAlive;
+        connect(&keepAlive, &QTimer::timeout, &other, [&] { other.write(wireFrame({{"type", "ping"}})); });
+        keepAlive.start(1000);
+        bool stopped = false;
+        const auto stopOnExpiry = connect(&host.channel, &LocalChannel::requestsChanged, &host.channel, [&] {
+            if (!stopped && host.channel.requests().size() < 2) {
+                stopped = true;
+                host.channel.stopHost();
+            }
+        });
+        const auto disconnectOnExit = qScopeGuard([&] { disconnect(stopOnExpiry); });
+        // Pending peers expire after eight seconds. Stopping the host from the
+        // first departure also removes the remaining maintenance snapshot entry.
+        QVERIFY(waitForEvents(&host.channel, &LocalChannel::requestsChanged, [&] { return stopped; }, 10000));
+        disconnect(stopOnExpiry);
+        QVERIFY(host.channel.requests().isEmpty());
+        for (auto& socket : pending) QTRY_COMPARE(socket.state(), QAbstractSocket::UnconnectedState);
+        keepAlive.stop();
+        // The independent connection already exists, so its expiry services
+        // later maintenance without reusing either destroyed socket's address.
+        QVERIFY(waitForEvents(&otherHost.channel, &LocalChannel::requestsChanged,
+            [&] { return otherHost.channel.requests().isEmpty(); }, 10000));
+        QVERIFY(host.channel.listen(QHostAddress::LocalHost));
+        Device member(dir.filePath("member"), "Member");
+        QVERIFY(host.channel.decide(member.channel.ownId(), true));
+        QVERIFY(member.join(host.channel));
+        QTRY_VERIFY(member.channel.joined());
+        QTRY_COMPARE(host.channel.hostParticipants().size(), 1);
+    }
     void approvalSurvivesClientSourceAddressChangeButNotIdentityReplacement() {
         QTemporaryDir dir;
         const auto identity = TlsIdentity::create();
