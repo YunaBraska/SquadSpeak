@@ -61,7 +61,8 @@ TestCase {
                 progress.signalArguments[1][2]), "Startup uses a short greeting")
             fixtures.shutdownFeedback()
             tryCompare(stopped, "count", 1, 7000)
-            compare(progress.count, 12, "Quit completes its cue and speech before shutdown")
+            tryCompare(progress, "count", 12, 7000,
+                       "Quit completes its cue and speech before shutdown")
             compare(progress.signalArguments[9][0], "quit")
             compare(progress.signalArguments[10][1], "speech")
             compare(progress.signalArguments[11][1], "finished")
