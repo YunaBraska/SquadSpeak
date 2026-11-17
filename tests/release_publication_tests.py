@@ -131,6 +131,15 @@ else: sys.exit(7)
         self.git("commit", "--quiet", "-am", "Change source")
         self.assertEqual(self.mode()["release_mode"], "release")
 
+    def test_existing_same_day_stable_version_becomes_a_successful_build(self):
+        self.repository()
+        (self.root / "source.cpp").write_text("changed\n")
+        self.git("commit", "--quiet", "-am", "Change source")
+        for scenario in ("release", "tag"):
+            with self.subTest(collision=scenario):
+                self.assertEqual(self.mode(SCENARIO=scenario, COLLISION_VERSION="2026.10.4")["release_mode"], "build")
+        self.assertTrue((self.root / "trace.jsonl").exists())
+
     def test_documentation_tests_and_workflows_require_force(self):
         self.repository()
         self.git("tag", "2026.10.3")
@@ -218,12 +227,13 @@ else: sys.exit(7)
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(self.outputs()["version"], "2026.10.4")
 
-    def test_existing_stable_release_tag_or_api_failure_stops_before_builds(self):
-        for scenario in ("release", "tag", "network"):
-            with self.subTest(failure=scenario):
-                result = self.run_step("Resolve build version", "verify.yml", SCENARIO=scenario)
-                self.assertNotEqual(result.returncode, 0)
-                self.assertFalse((self.root / "output").exists())
+    def test_release_collision_lookup_failure_stops_before_builds(self):
+        self.repository()
+        (self.root / "source.cpp").write_text("changed\n")
+        self.git("commit", "--quiet", "-am", "Change source")
+        result = self.run_step("Read build mode", "verify.yml", SCENARIO="network")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertFalse((self.root / "output").exists())
 
     def test_snapshot_resolution_accepts_replacement_without_api_calls(self):
         result = self.run_step("Resolve build version", "verify.yml", RELEASE_MODE="snapshot",
