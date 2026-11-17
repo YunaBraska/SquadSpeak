@@ -253,6 +253,9 @@ TestCase {
         remoteChannel.stopHost()
         channel.leave()
         channel.stopHost()
+        tryVerify(function() {
+            return channel.hostClients.length === 0 && remoteChannel.hostClients.length === 0
+        })
         view.width = Qt.platform.os === "android" ? view.Screen.desktopAvailableWidth : 520
         view.height = Qt.platform.os === "android" ? view.Screen.desktopAvailableHeight : 700
     }
