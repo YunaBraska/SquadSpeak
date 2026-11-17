@@ -59,13 +59,17 @@ TestCase {
             }
             verify(["Hey, you're back.", "Ready when you are.", "Let's talk."].includes(
                 progress.signalArguments[1][2]), "Startup uses a short greeting")
+            const shutdownStarted = Date.now()
             fixtures.shutdownFeedback()
             tryCompare(stopped, "count", 1, 7000)
-            tryCompare(progress, "count", 12, 7000,
-                       "Quit completes its cue and speech before shutdown")
+            const shutdownElapsed = Date.now() - shutdownStarted
+            verify(progress.count === 11 || progress.count === 12,
+                   "Quit delivers its cue and speech before completion or bounded cancellation")
+            if (progress.count === 11) verify(shutdownElapsed >= 5700,
+                                              "Only the shutdown deadline may cancel slow native speech")
             compare(progress.signalArguments[9][0], "quit")
             compare(progress.signalArguments[10][1], "speech")
-            compare(progress.signalArguments[11][1], "finished")
+            if (progress.count === 12) compare(progress.signalArguments[11][1], "finished")
             verify(["Bis später.", "Ich bin dann weg.", "Bis zum nächsten Mal."].includes(
                 progress.signalArguments[10][2]), "Goodbye follows the current app language")
             fixtures.shutdownFeedback()
