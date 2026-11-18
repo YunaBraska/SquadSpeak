@@ -421,13 +421,17 @@ short test. Audio uses 64 clients and four simultaneous senders by default.
 `SQUAD_SOAK_SPEAKERS` accepts 2 up to the selected client count to measure greater overlap.
 `SQUAD_SOAK_CLIENTS` accepts 8-256. Eight clients provide a smaller control
 for distinguishing simultaneous-speaker load from distribution to many listeners.
-The hosted Intel workflow uses 32 clients and two simultaneous senders with
-`SQUAD_SOAK_PACING=delivery`. It waits for every listener and at least 20 ms of
-source time before sending the next frame. It requires every packet, including
+The hosted macOS workflows use 32 clients and two simultaneous senders with
+`SQUAD_SOAK_PACING=delivery`. They wait for every listener and at least 20 ms of
+source time before sending the next frame. They require every packet, including
 the final frame, within five seconds.
 All source-to-receiver bindings, mono/stereo rows and delayed callbacks remain
 checked. This mode proves complete delivery and decoding, not realtime capacity.
 This fixture setting does not restrict the application or certify greater overlap.
+The Linux matrix executes the full >64-client admission and 64-viewer video
+contracts. Hosted macOS runners execute the native codec, delivery, bundle and
+package contracts but exclude those two scale cases because their virtualized
+TLS and VideoToolbox capacity varies independently of the application.
 Set `QTEST_FUNCTION_TIMEOUT` above the requested duration plus setup
 and teardown; Qt Test otherwise stops each function after 300 seconds.
 Video extends the first 4K phase to 30 frames per requested second,
