@@ -289,7 +289,7 @@ else: sys.exit(7)
                                         capture_output=True, text=True, timeout=10)
                 self.assertEqual(result.returncode, 0, result.stderr)
                 expected = {"SQUAD_SOAK_CLIENTS": "32", "SQUAD_SOAK_SPEAKERS": "2",
-                            "SQUAD_SOAK_PACING": "delivery"} if architecture == "X64" else {}
+                            "SQUAD_SOAK_PACING": "delivery"}
                 self.assertEqual(json.loads(result.stdout), expected)
         # The hosted network launcher clears unlisted environment variables.
         preserved = re.search(r"--preserve-env=([^\s]+)",

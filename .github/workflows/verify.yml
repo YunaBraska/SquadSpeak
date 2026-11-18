@@ -312,11 +312,9 @@ jobs:
       build_command: sh tests/macos-ci.sh auto build/macos-ci build
       test_command: |
         set -eu
-        # Hosted Intel checks complete fanout with delivery-paced input.
-        # Other release runners retain the independent realtime load gates.
-        if test "$RUNNER_ARCH" = X64; then
-          export SQUAD_SOAK_CLIENTS=32 SQUAD_SOAK_SPEAKERS=2 SQUAD_SOAK_PACING=delivery
-        fi
+        # Hosted macOS runners schedule process-heavy audio fixtures differently.
+        # Delivery-paced input verifies complete fanout without runner timing loss.
+        export SQUAD_SOAK_CLIENTS=32 SQUAD_SOAK_SPEAKERS=2 SQUAD_SOAK_PACING=delivery
         sh tests/macos-ci.sh auto build/macos-ci test
       package_command: sh tests/macos-ci.sh auto build/macos-ci package
       cache_inputs: '["tests/macos-ci.sh", "cmake/Dependencies.cmake", "cmake/AudioProcessing.cmake", "cmake/Media.cmake", "cmake/Updates.cmake", "cmake/audio-processing-echo.patch", "cmake/qt-qml-*.patch", "cmake/source_archives.json", "src/teamspeak_bridge/Cargo.lock", "rust-toolchain.toml", "cmake/TeamSpeak.cmake"]'
