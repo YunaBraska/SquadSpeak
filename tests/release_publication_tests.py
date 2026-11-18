@@ -296,16 +296,12 @@ else: sys.exit(7)
                               (self.repo / "CMakeLists.txt").read_text())[1].split(",")
         self.assertIn("SQUAD_SOAK_PACING", preserved)
 
-    def test_windows_bootstrap_retries_transient_protobuf_download_failures(self):
+    def test_windows_bootstrap_uses_verified_official_protobuf_archive(self):
         workflow = (self.repo / ".github/workflows/verify.yml").read_text()
-        protobuf_install = re.search(
-            r"for \(\$attempt = 1; \$attempt -le 3; \+\+\$attempt\) \{\n"
-            r"\s+choco install protoc --version=33\.0\.0 --no-progress --yes\n"
-            r"\s+if \(\$LASTEXITCODE -eq 0\) \{ break \}\n"
-            r"\s+if \(\$attempt -eq 3\) \{ throw \"Protobuf compiler installation failed with exit code \$LASTEXITCODE\" \}\n"
-            r"\s+Start-Sleep -Seconds \(5 \* \$attempt\)\n"
-            r"\s+\}", workflow)
-        self.assertIsNotNone(protobuf_install)
+        self.assertIn('https://github.com/protocolbuffers/protobuf/releases/download/v33.0/protoc-33.0-win64.zip', workflow)
+        self.assertIn('3742cd49c8b6bd78b6760540367eb0ff62fa70a1032e15dafe131bfaf296986a', workflow)
+        self.assertIn("build/windows-ci/tools/protoc-33.0", workflow)
+        self.assertNotIn('choco install protoc', workflow)
 
     def test_network_launcher_keeps_function_inventory_and_resource_guards(self):
         executable = self.root / "network contract"

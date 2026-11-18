@@ -376,14 +376,23 @@ jobs:
         $nasmVersion = & "$nasmDir/nasm.exe" -v
         if ($LASTEXITCODE -ne 0 -or $nasmVersion -notmatch '^NASM version 3\.02(?: |$)') { throw "Unexpected NASM version: $nasmVersion" }
         Write-Host $nasmVersion
-        for ($attempt = 1; $attempt -le 3; ++$attempt) {
-          choco install protoc --version=33.0.0 --no-progress --yes
-          if ($LASTEXITCODE -eq 0) { break }
-          if ($attempt -eq 3) { throw "Protobuf compiler installation failed with exit code $LASTEXITCODE" }
-          Start-Sleep -Seconds (5 * $attempt)
+        $protocRoot = "$env:GITHUB_WORKSPACE/build/windows-ci/tools/protoc-33.0"
+        $protoc = Join-Path $protocRoot 'bin/protoc.exe'
+        if (-not (Test-Path $protoc -PathType Leaf)) {
+          $archive = Join-Path $env:RUNNER_TEMP 'protoc-33.0-win64.zip'
+          curl.exe --fail --location --silent --show-error --connect-timeout 20 --max-time 180 --retry 3 --retry-all-errors --retry-max-time 300 `
+            --output "$archive.partial" 'https://github.com/protocolbuffers/protobuf/releases/download/v33.0/protoc-33.0-win64.zip'
+          if ($LASTEXITCODE -ne 0) { throw "Official Protobuf compiler download failed with exit code $LASTEXITCODE" }
+          Move-Item "$archive.partial" $archive -Force
+          if ((Get-FileHash $archive -Algorithm SHA256).Hash.ToLower() -ne '3742cd49c8b6bd78b6760540367eb0ff62fa70a1032e15dafe131bfaf296986a') {
+            throw 'Official Protobuf compiler archive checksum mismatch'
+          }
+          Expand-Archive -LiteralPath $archive -DestinationPath $protocRoot -Force
         }
-        protoc --version
-        if ($LASTEXITCODE -ne 0) { throw "Protobuf compiler is unavailable" }
+        $protocVersion = & $protoc --version
+        if ($LASTEXITCODE -ne 0 -or $protocVersion -ne 'libprotoc 33.0') { throw "Unexpected Protobuf compiler: $protocVersion" }
+        Add-Content -Path $env:GITHUB_PATH -Value (Join-Path $protocRoot 'bin')
+        $env:Path = "$(Join-Path $protocRoot 'bin');$env:Path"
         python -m pip install --disable-pip-version-check meson==1.12.1
         if ($LASTEXITCODE -ne 0) { throw "Meson installation failed" }
         ./tests/windows-audio.ps1 -BuildRoot "$env:GITHUB_WORKSPACE/build/windows-ci"
@@ -425,6 +434,7 @@ jobs:
       cache_inputs: '["tests/windows-ci.ps1", "cmake/Dependencies.cmake", "cmake/AudioProcessing.cmake", "cmake/Media.cmake", "cmake/Updates.cmake", "cmake/audio-processing-echo.patch", "cmake/qt-qml-*.patch", "cmake/source_archives.json", "src/teamspeak_bridge/Cargo.lock", "rust-toolchain.toml", "cmake/TeamSpeak.cmake"]'
       cache_paths: |
         build/windows-ci/dependencies/prefix
+        build/windows-ci/tools/protoc-33.0
         build/windows-ci/app/teamspeak
         ~/.cargo/registry
         ~/.cargo/git
