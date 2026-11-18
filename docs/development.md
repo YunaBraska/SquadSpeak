@@ -827,9 +827,9 @@ Before Store publication, review the selected distribution terms against the pro
 
 Keep the channel/chat layout, themes, portraits and shared QML controls. Adapt the containing window to safe areas, touch targets, the software keyboard and iPad resizing. The mobile entrypoint opens a normal window without a tray. Double-click and hover affordances still need a complete tap/long-press review.
 
-The iOS build now has a reproducible Simulator path. The pinned Qt 6.11.3 kit provides an arm64 device slice and an x86_64 Simulator slice. On Apple Silicon, the x86_64 Simulator build requires Rosetta and the installed universal iOS 26 Simulator runtime. The dependency script currently builds the Simulator only. It does not certify an arm64 device package or device/runtime parity. The [Qt platform table](https://doc.qt.io/qt-6.11/supported-platforms.html) describes the supported SDK and device configurations.
+The iOS build has separate, reproducible Simulator and iPhoneOS dependency paths. The pinned Qt 6.11.3 kit provides an arm64 device slice and an x86_64 Simulator slice. On Apple Silicon, the x86_64 Simulator build requires Rosetta and the installed universal iOS 26 Simulator runtime. The two paths use distinct markers and reject a dependency prefix from the other SDK. A successful arm64 device build does not certify device/runtime behavior. The [Qt platform table](https://doc.qt.io/qt-6.11/supported-platforms.html) describes the supported SDK and device configurations.
 
-Ninja embeds a stable application identifier in each Simulator executable for keychain access. This uses the Simulator's entitlement section, not a development certificate. `native_identity_contract` verifies creation, reload and cleanup in the real simulated keychain. Simulators share the Mac's network, so concurrent app instances need distinct host ports.
+Ninja embeds the established direct-distribution identifier in each Simulator executable for keychain access. This uses the Simulator's entitlement section, not a development certificate. The signed Store adapters override it with the registered `berlin.yuna.squadspeak` identifier, so macOS, iPhone and iPad share one Store app while direct macOS installations retain their existing data namespace. `native_identity_contract` verifies creation, reload and cleanup in the real simulated keychain. Simulators share the Mac's network, so concurrent app instances need distinct host ports.
 
 Build the target dependencies into a clean prefix. The prefix must match the SDK, architecture and deployment target. Do not point an iOS build at host macOS libraries:
 
@@ -837,6 +837,14 @@ Build the target dependencies into a clean prefix. The prefix must match the SDK
 IOS_ARCH=x86_64 sh cmake/build-mobile-dependencies.sh ios-simulator \
   /private/tmp/squadspeak-ios-deps-x86-v3 \
   /private/tmp/squadspeak-ios-deps-x86-build 17.0
+```
+
+For an arm64 iPhoneOS archive, use a separate prefix:
+
+```sh
+sh cmake/build-mobile-dependencies.sh ios-device \
+  /private/tmp/squadspeak-ios-device-deps-v1 \
+  /private/tmp/squadspeak-ios-device-build 17.0
 ```
 
 Configure and build with the matching Qt iOS kit and the macOS Qt host tools. Choose a simulator ID from `xcrun simctl list devices available` before configuring:

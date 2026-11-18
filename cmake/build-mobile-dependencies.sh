@@ -3,17 +3,18 @@ set -eu
 set -f
 
 if test "$#" -lt 2 || test "$#" -gt 4; then
-    printf '%s\n' 'Usage: sh cmake/build-mobile-dependencies.sh ios-simulator|android PREFIX [BUILD_ROOT] [MIN_VERSION]' >&2
+    printf '%s\n' 'Usage: sh cmake/build-mobile-dependencies.sh ios-simulator|ios-device|android PREFIX [BUILD_ROOT] [MIN_VERSION]' >&2
     exit 2
 fi
 mode=$1
 prefix_arg=$2
 build_root_arg=${3:-}
 minimum=${4:-}
-test "$mode" = ios-simulator || test "$mode" = android || {
-    printf '%s\n' 'First argument must be ios-simulator or android.' >&2
-    exit 2
-}
+case "$mode" in
+    ios-simulator|ios-device) ios=true ;;
+    android) ios=false ;;
+    *) printf '%s\n' 'First argument must be ios-simulator, ios-device or android.' >&2; exit 2 ;;
+esac
 prefix=$(CDPATH='' cd "$prefix_arg" 2>/dev/null && pwd || { mkdir -p "$prefix_arg"; CDPATH='' cd "$prefix_arg"; pwd; })
 build_root=${build_root_arg:-"$prefix/.build"}
 build_root=$(CDPATH='' cd "$build_root" 2>/dev/null && pwd || { mkdir -p "$build_root"; CDPATH='' cd "$build_root"; pwd; })
@@ -23,21 +24,37 @@ for tool in cmake ninja make curl shasum tar ar; do
     command -v "$tool" >/dev/null || { printf '%s\n' "$tool is required." >&2; exit 2; }
 done
 
-if test "$mode" = ios-simulator; then
-    config_revision=3
+if test "$ios" = true; then
     for tool in xcrun lipo; do command -v "$tool" >/dev/null || { printf '%s\n' "$tool is required." >&2; exit 2; }; done
     deployment_target=${minimum:-17.0}
-    sdk=${IOS_SDK:-iphonesimulator}
-    architecture=${IOS_ARCH:-$(uname -m)}
-    test "$sdk" = iphonesimulator || { printf '%s\n' 'This script currently supports only the iOS Simulator SDK.' >&2; exit 2; }
-    case "$architecture" in arm64|x86_64) ;; *) printf '%s\n' 'IOS_ARCH must be arm64 or x86_64.' >&2; exit 2 ;; esac
+    if test "$mode" = ios-simulator; then
+        config_revision=3
+        sdk=${IOS_SDK:-iphonesimulator}
+        architecture=${IOS_ARCH:-$(uname -m)}
+        test "$sdk" = iphonesimulator || { printf '%s\n' 'iOS Simulator builds require the iphonesimulator SDK.' >&2; exit 2; }
+        case "$architecture" in arm64|x86_64) ;; *) printf '%s\n' 'IOS_ARCH must be arm64 or x86_64 for the Simulator.' >&2; exit 2 ;; esac
+        target="${architecture}-apple-ios${deployment_target}-simulator"
+        openssl_target="iossimulator-${architecture}-xcrun"
+        marker="$prefix/.squadspeak-ios-simulator-dependencies"
+        platform_label='iOS Simulator'
+        apple_platform=IOSSIMULATOR
+        deployment_flag=-mios-simulator-version-min
+    else
+        config_revision=1
+        sdk=${IOS_SDK:-iphoneos}
+        architecture=${IOS_ARCH:-arm64}
+        test "$sdk" = iphoneos || { printf '%s\n' 'iOS device builds require the iphoneos SDK.' >&2; exit 2; }
+        test "$architecture" = arm64 || { printf '%s\n' 'IOS_ARCH must be arm64 for iOS devices.' >&2; exit 2; }
+        target="arm64-apple-ios${deployment_target}"
+        openssl_target=ios64-xcrun
+        marker="$prefix/.squadspeak-ios-device-dependencies"
+        platform_label='iOS Device'
+        apple_platform=IOS
+        deployment_flag=-miphoneos-version-min
+    fi
     sysroot=$(xcrun --sdk "$sdk" --show-sdk-path)
     clang=$(xcrun --sdk "$sdk" --find clang)
     clangxx=$(xcrun --sdk "$sdk" --find clang++)
-    target="${architecture}-apple-ios${deployment_target}-simulator"
-    openssl_target="iossimulator-${architecture}-xcrun"
-    marker="$prefix/.squadspeak-ios-dependencies"
-    platform_label='iOS Simulator'
     archive_tool=ar
 else
     config_revision=6
@@ -74,7 +91,7 @@ else
     platform_label="Android $architecture API $api"
 fi
 
-if test "$mode" = ios-simulator; then
+if test "$ios" = true; then
     identity=$(cat <<EOF2
 sdk=$sdk
 architecture=$architecture
@@ -110,9 +127,9 @@ validate_static_library() {
     check_dir=$(mktemp -d "${TMPDIR:-/tmp}/squad-mobile-library.XXXXXX")
     member=$("$archive_tool" -t "$library" | awk '$0 !~ /^(__\.SYMDEF|\/)/ { print; exit }')
     test -n "$member" || { rm -rf "$check_dir"; return 1; }
-    if test "$mode" = ios-simulator; then
+    if test "$ios" = true; then
         lipo -verify_arch "$architecture" "$library" >/dev/null 2>&1 || { rm -rf "$check_dir"; return 1; }
-        if ! (cd "$check_dir" && "$archive_tool" -x "$library" "$member" && xcrun vtool -show-build "$check_dir/$member" 2>/dev/null | grep -q 'platform IOSSIMULATOR'); then
+        if ! (cd "$check_dir" && "$archive_tool" -x "$library" "$member" && xcrun vtool -show-build "$check_dir/$member" 2>/dev/null | grep -q "platform $apple_platform"); then
             rm -rf "$check_dir"; return 1
         fi
     else
@@ -187,9 +204,9 @@ fetch FFmpeg-n7.1.5.tar.gz https://github.com/FFmpeg/FFmpeg/archive/refs/tags/n7
 openssl_source="$build_root/sources/openssl-3.6.5"
 (
     cd "$openssl_source"
-    if test "$mode" = ios-simulator; then
-        CFLAGS="-O3 -isysroot $sysroot -mios-simulator-version-min=$deployment_target" \
-        LDFLAGS="-isysroot $sysroot -mios-simulator-version-min=$deployment_target" \
+    if test "$ios" = true; then
+        CFLAGS="-O3 -isysroot $sysroot $deployment_flag=$deployment_target" \
+        LDFLAGS="-isysroot $sysroot $deployment_flag=$deployment_target" \
             ./Configure "$openssl_target" no-shared no-tests --prefix="$prefix" --libdir=lib
     else
         # OpenSSL's supported variant mechanism sets both filenames and SONAMEs.
@@ -211,7 +228,7 @@ EOF2
 )
 
 toolchain="$build_root/mobile-toolchain.cmake"
-if test "$mode" = ios-simulator; then
+if test "$ios" = true; then
 cat > "$toolchain" <<EOF2
 set(CMAKE_SYSTEM_NAME iOS)
 set(CMAKE_OSX_SYSROOT $sdk CACHE STRING "Apple SDK" FORCE)
@@ -241,7 +258,7 @@ for dependency in opus-1.6.1 libsamplerate-0.2.2; do
 done
 
 ffmpeg_source="$build_root/sources/FFmpeg-n7.1.5"
-if test "$mode" = ios-simulator; then
+if test "$ios" = true; then
     ffmpeg_cpu_flags=""
     if test "$architecture" = x86_64; then ffmpeg_cpu_flags="--disable-x86asm --disable-runtime-cpudetect --disable-mmx --disable-mmxext --disable-sse --disable-sse2 --disable-sse3 --disable-sse4 --disable-sse42"; fi
     (cd "$ffmpeg_source" && ./configure --prefix="$prefix" --target-os=darwin --arch="$architecture" --enable-cross-compile --cc="$clang" --sysroot="$sysroot" --disable-programs --disable-doc --disable-debug --disable-autodetect --disable-shared --enable-static --enable-network --enable-avformat --enable-swresample --disable-avfilter --disable-avdevice --enable-videotoolbox --enable-securetransport --enable-pic $ffmpeg_cpu_flags --extra-cflags="-target $target -isysroot $sysroot" --extra-ldflags="-target $target -isysroot $sysroot" && make -j3 && make install)
