@@ -33,7 +33,7 @@ if test ! -x "$ios_qt/bin/qt-cmake"; then
     "$toolchain/aqt/bin/pip" install --disable-pip-version-check \
         'git+https://github.com/miurahr/aqtinstall.git@8c3695d4a4e1ceabf6a74dc6c79681656dc6b74b'
     "$toolchain/aqt/bin/aqt" install-qt mac ios 6.11.3 ios --autodesktop \
-        --base https://master.qt.io --outputdir "$qt_root" --modules qtmultimedia qtimageformats
+        --base https://master.qt.io --outputdir "$qt_root" -m qtmultimedia qtimageformats
 fi
 test "$("$ios_qt/bin/qmake" -query QT_VERSION)" = 6.11.3
 test -x "$host_qt/bin/qmake"
