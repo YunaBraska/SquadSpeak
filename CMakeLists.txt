@@ -840,14 +840,6 @@ if(BUILD_TESTING)
             env "QT_LOGGING_RULES=")
     endif()
     set(channel_discovery_file "${CMAKE_CURRENT_BINARY_DIR}/channel_contract_discovered.cmake")
-    # Each channel contract starts real TLS and UDP peers. Hosted macOS ARM
-    # runners intermittently terminate concurrent channel processes without a
-    # test assertion, so keep that one process group isolated there. Other
-    # suites and platforms remain parallel.
-    set(channel_test_resource_lock)
-    if(APPLE AND "$ENV{GITHUB_ACTIONS}" STREQUAL "true")
-        set(channel_test_resource_lock channel_network)
-    endif()
     set_property(DIRECTORY APPEND PROPERTY TEST_INCLUDE_FILES "${channel_discovery_file}")
     set_property(TARGET channel_tests APPEND PROPERTY LINK_DEPENDS
         "${CMAKE_CURRENT_SOURCE_DIR}/cmake/DiscoverChannelTests.cmake")
@@ -857,7 +849,6 @@ if(BUILD_TESTING)
             -DCHANNEL_TEST_EXECUTABLE=$<TARGET_FILE:channel_tests>
             -DOUTPUT_FILE=${channel_discovery_file}
             "-DTEST_LAUNCHER=${network_test_launcher}"
-            "-DCHANNEL_TEST_RESOURCE_LOCK=${channel_test_resource_lock}"
             -P "${CMAKE_CURRENT_SOURCE_DIR}/cmake/DiscoverChannelTests.cmake"
         VERBATIM)
     if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
