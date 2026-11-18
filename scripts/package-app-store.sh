@@ -9,7 +9,7 @@ case "$2" in *[!0-9]*|'') printf 'Invalid build number.\n' >&2; exit 2 ;; esac
 root=$(CDPATH='' cd "$(dirname "$0")/.." && pwd)
 stage=$(mktemp -d "${RUNNER_TEMP:-/tmp}/squadspeak-store.XXXXXX")
 trap 'rm -rf "$stage"' EXIT HUP INT TERM
-export SQUADSPEAK_VERSION="$1" SQUADSPEAK_STORE_BUILD=ON
+export SQUADSPEAK_VERSION="$1" SQUADSPEAK_STORE_BUILD=ON SQUADSPEAK_BUNDLE_ID="$APP_STORE_BUNDLE_ID"
 unset SQUADSPEAK_UPDATE_PUBLIC_KEY UPDATE_PUBLIC_KEY
 sh "$root/tests/macos-ci.sh" auto "$stage/build" prepare
 sh "$root/tests/macos-ci.sh" auto "$stage/build" build

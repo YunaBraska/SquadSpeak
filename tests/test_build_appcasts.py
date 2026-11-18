@@ -2,7 +2,6 @@
 import base64
 import pathlib
 import plistlib
-import re
 import subprocess
 import sys
 import tempfile
@@ -15,8 +14,7 @@ BUILDER = pathlib.Path(__file__).resolve().parents[1] / "cmake" / "build_appcast
 SPARKLE = "http://www.andymatuschak.org/xml-namespaces/sparkle"
 PUBLIC_KEY = base64.b64encode(bytes(range(32))).decode()
 SIGNATURE = base64.b64encode(bytes(range(64))).decode()
-APP_ID = re.search(r'MACOSX_BUNDLE_GUI_IDENTIFIER "([^"]+)"',
-                   (BUILDER.parents[1] / "ui/CMakeLists.txt").read_text()).group(1)
+APP_ID = "app.squadspeak.desktop"
 
 
 class AppcastBuilderTests(unittest.TestCase):

@@ -12,6 +12,50 @@ import unittest
 
 
 class ReleaseVersionTests(unittest.TestCase):
+    def test_apple_bundle_identifier_matches_the_registered_store_identifier(self):
+        source = Path(__file__).resolve().parents[1]
+        app_store = (source / ".github/workflows/app-store.yml").read_text(encoding="utf-8")
+        app_store_upload = (source / ".github/workflows/app-store-upload.yml").read_text(encoding="utf-8")
+        bundle = (source / "ui/CMakeLists.txt").read_text(encoding="utf-8")
+        appcast = (source / "cmake/build_appcasts.py").read_text(encoding="utf-8")
+        self.assertIn("bundle_id: berlin.yuna.squadspeak", app_store)
+        self.assertIn("version: ${{ inputs.version }}", app_store)
+        self.assertIn("version: ${{ inputs.version }}", app_store_upload)
+        self.assertIn("wc_ios_app_store.yml@be05e1943fb3b026c4e57d1d6f20771b9a3d8628", app_store)
+        self.assertIn("artifact_extension: ipa", app_store_upload)
+        self.assertIn('set(SQUADSPEAK_BUNDLE_ID "app.squadspeak.desktop"', bundle)
+        self.assertIn('MACOSX_BUNDLE_GUI_IDENTIFIER "${SQUADSPEAK_BUNDLE_ID}"', bundle)
+        self.assertIn('SQUADSPEAK_BUNDLE_ID="$APP_STORE_BUNDLE_ID"',
+                      (source / "scripts/package-app-store.sh").read_text(encoding="utf-8"))
+        self.assertIn('-DSQUADSPEAK_BUNDLE_ID="$APP_STORE_BUNDLE_ID"',
+                      (source / "scripts/package-ios-app-store.sh").read_text(encoding="utf-8"))
+        self.assertIn('("CFBundleIdentifier", "app.squadspeak.desktop")', appcast)
+
+    def test_ios_device_dependencies_cannot_reuse_the_simulator_prefix(self):
+        script = (Path(__file__).resolve().parents[1] / "cmake/build-mobile-dependencies.sh").read_text(encoding="utf-8")
+        self.assertIn("ios-simulator|ios-device|android", script)
+        self.assertIn("sdk=${IOS_SDK:-iphoneos}", script)
+        self.assertIn("marker=\"$prefix/.squadspeak-ios-device-dependencies\"", script)
+        self.assertIn("apple_platform=IOS", script)
+        self.assertIn("deployment_flag=-miphoneos-version-min", script)
+        self.assertIn("marker=\"$prefix/.squadspeak-ios-simulator-dependencies\"", script)
+
+    def test_ios_store_package_keeps_public_and_apple_build_versions_separate(self):
+        script = (Path(__file__).resolve().parents[1] / "scripts/package-ios-app-store.sh").read_text(encoding="utf-8")
+        for required in (
+            'Expected marketing version and build number.',
+            'SQUADSPEAK_VERSION="$1"',
+            'SQUADSPEAK_APPLE_BUILD_NUMBER="$2"',
+            'CMAKE_XCODE_ATTRIBUTE_CODE_SIGN_STYLE=Manual',
+            'CMAKE_XCODE_ATTRIBUTE_CODE_SIGNING_REQUIRED=YES',
+            'CMAKE_XCODE_ATTRIBUTE_PROVISIONING_PROFILE="$IOS_APP_STORE_PROFILE_UUID"',
+            'Payload/SquadSpeak.app',
+            'dist/app-store/SquadSpeak.ipa',
+            'codesign --verify --deep --strict',
+        ):
+            with self.subTest(required=required):
+                self.assertIn(required, script)
+
     def resolve(self, value=None, epoch="1791072000"):
         command = ["cmake"]
         if value is not None:
@@ -49,6 +93,30 @@ class ReleaseVersionTests(unittest.TestCase):
             metadata = plistlib.loads((root / "out/bundle.plist").read_bytes())
             self.assertEqual(metadata["CFBundleVersion"], "2026.10.5")
             self.assertEqual(metadata["CFBundleShortVersionString"], "2026.10.5")
+
+    def test_apple_build_number_is_independent_from_the_marketing_version(self):
+        repo = Path(__file__).resolve().parents[1]
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "CMakeLists.txt").write_text(
+                'cmake_minimum_required(VERSION 3.24)\n'
+                f'include("{repo.as_posix()}/cmake/Version.cmake")\n'
+                'project(SquadSpeak VERSION ${SQUADSPEAK_NUMERIC_VERSION} LANGUAGES NONE)\n'
+                f'configure_file("{repo.as_posix()}/src/Info.plist.in" bundle.plist)\n')
+            configured = subprocess.run(["cmake", "-S", str(root), "-B", str(root / "out"),
+                "-DSQUADSPEAK_VERSION=2026.11.18",
+                "-DSQUADSPEAK_APPLE_BUILD_NUMBER=44280001"], capture_output=True, text=True)
+            self.assertEqual(configured.returncode, 0, configured.stdout + configured.stderr)
+            metadata = plistlib.loads((root / "out/bundle.plist").read_bytes())
+            self.assertEqual(metadata["CFBundleShortVersionString"], "2026.11.18")
+            self.assertEqual(metadata["CFBundleVersion"], "44280001")
+
+    def test_invalid_apple_build_number_fails_before_configuration(self):
+        result = subprocess.run(["cmake", "-DSQUADSPEAK_APPLE_BUILD_NUMBER=1.02", "-P",
+            str(Path(__file__).resolve().parents[1] / "cmake/Version.cmake")],
+            text=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("SQUADSPEAK_APPLE_BUILD_NUMBER", result.stdout)
 
     def test_invalid_versions_fail_before_configuration(self):
         for version in ("", "2026.01.09", "v2026.1.9", "2026.1", "2026.1.9.1", "1.2.3;bad", "1.2.3\n",
