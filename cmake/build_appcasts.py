@@ -45,7 +45,7 @@ def verify_archive(archive: pathlib.Path, expected_key: str, version: str):
             metadata = plistlib.loads(bundle.read("squadspeak.app/Contents/Info.plist"))
     except (OSError, zipfile.BadZipFile, KeyError, plistlib.InvalidFileException) as error:
         raise ValueError(f"cannot inspect app metadata in {archive}: {error}")
-    for field, expected in (("CFBundleIdentifier", "app.squadspeak.desktop"), ("CFBundleVersion", version),
+    for field, expected in (("CFBundleIdentifier", "berlin.yuna.squadspeak"), ("CFBundleVersion", version),
                             ("CFBundleShortVersionString", version)):
         if not isinstance(metadata, dict) or metadata.get(field) != expected:
             raise ValueError(f"archive {field} does not match the release: {archive}")

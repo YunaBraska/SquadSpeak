@@ -2,14 +2,28 @@ name: "🛍️ CD · App Store"
 
 on:
   workflow_dispatch:
+    inputs:
+      version:
+        description: Existing stable marketing version to package.
+        required: true
+        type: string
 
 permissions:
   contents: read
 
 jobs:
-  package:
-    uses: YunaBraska/YunaBraska/.github/workflows/wc_macos_app_store.yml@6c254c34cccee8f75f5baa0f63dc3b5376cd24f2
+  macos:
+    uses: YunaBraska/YunaBraska/.github/workflows/wc_macos_app_store.yml@be05e1943fb3b026c4e57d1d6f20771b9a3d8628
     with:
       app_name: SquadSpeak
       bundle_id: berlin.yuna.squadspeak
+      version: ${{ inputs.version }}
+    secrets: inherit
+
+  ios:
+    uses: YunaBraska/YunaBraska/.github/workflows/wc_ios_app_store.yml@be05e1943fb3b026c4e57d1d6f20771b9a3d8628
+    with:
+      app_name: SquadSpeak
+      bundle_id: berlin.yuna.squadspeak
+      version: ${{ inputs.version }}
     secrets: inherit

@@ -130,7 +130,7 @@ endif()
 configure_file(../src/Info.plist.in "${CMAKE_CURRENT_BINARY_DIR}/Info.plist.in" @ONLY)
 set_target_properties(squadspeak PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}"
-    MACOSX_BUNDLE_GUI_IDENTIFIER "app.squadspeak.desktop"
+    MACOSX_BUNDLE_GUI_IDENTIFIER "berlin.yuna.squadspeak"
     MACOSX_BUNDLE_BUNDLE_NAME "SquadSpeak"
     MACOSX_BUNDLE_INFO_PLIST "${CMAKE_CURRENT_BINARY_DIR}/Info.plist.in")
 if(IOS)
