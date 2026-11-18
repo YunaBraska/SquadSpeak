@@ -157,6 +157,16 @@ QVariantMap participant(const LocalChannel& channel, const QString& id) {
         if (entry.toMap().value("id").toString() == id) return entry.toMap();
     return {};
 }
+
+QVariantMap firstGame(const LocalChannel& channel) {
+    const auto games = channel.games();
+    return games.isEmpty() ? QVariantMap{} : games.constFirst().toMap();
+}
+
+QVariantMap lastGame(const LocalChannel& channel) {
+    const auto games = channel.games();
+    return games.isEmpty() ? QVariantMap{} : games.constLast().toMap();
+}
 QVariantList memberMessages(const LocalChannel& channel) {
     QVariantList records;
     for (const auto& record : channel.messages())
@@ -371,7 +381,7 @@ private slots:
         QVERIFY(guest.join(host.channel)); QTRY_VERIFY(guest.channel.chatReady());
         QVERIFY(host.channel.gameAction("start", {{"id", ""}, {"round", 0}}));
         QTRY_COMPARE(guest.channel.games().size(), 1);
-        const auto id = guest.channel.games().first().toMap().value("id");
+        const auto id = firstGame(guest.channel).value("id");
         QVERIFY(guest.channel.gameAction("computer", {{"id", id}, {"round", 1}}));
         QTRY_VERIFY(!guest.channel.chatError().isEmpty());
         QCOMPARE(host.channel.currentGame().value("players").toList().size(), 1);
@@ -462,7 +472,7 @@ private slots:
         QVERIFY(guest.join(host.channel)); QTRY_VERIFY(guest.channel.chatReady());
         QVERIFY(host.channel.gameAction("start", {{"id", ""}, {"round", 0}}));
         QTRY_COMPARE(guest.channel.games().size(), 1);
-        const auto id = guest.channel.games().first().toMap().value("id");
+        const auto id = firstGame(guest.channel).value("id");
         const auto computer = [&] { return host.channel.gameAction("computer", {{"id", id}, {"round", 1}}); };
         const auto human = [&] { return guest.channel.gameAction("join", {{"id", id}, {"round", 1}}); };
         if (computerFirst) { QVERIFY(computer()); QVERIFY(human()); }
@@ -513,7 +523,7 @@ private slots:
         QVERIFY(host.channel.gameAction("join", {{"id", a}, {"round", 1}}));
         QTRY_COMPARE(host.channel.currentGame().value("players").toList().size(), 2);
         QTRY_COMPARE(fourth.channel.games().size(), 1);
-        QCOMPARE(fourth.channel.games().first().toMap().value("id").toString(), b);
+        QCOMPARE(firstGame(fourth.channel).value("id").toString(), b);
         QVERIFY(fourth.channel.gameAction("join", {{"id", b}, {"round", 1}}));
         QTRY_COMPARE(second.channel.currentGame().value("players").toList().size(), 2);
         for (auto* d : {&host, &first, &second, &fourth}) QTRY_COMPARE(d->channel.games().size(), 1);
@@ -581,11 +591,11 @@ private slots:
         QTRY_VERIFY(controller.channel.remoteView().value("canStartGame").toBool());
         QVERIFY(controller.channel.gameAction("start", {{"id", ""}, {"round", 0}}));
         QTRY_COMPARE(guest.channel.games().size(), 1);
-        const auto gameId = guest.channel.games().last().toMap().value("id");
-        QCOMPARE(guest.channel.games().last().toMap().value("owner").toString(), host.channel.ownId());
+        const auto gameId = lastGame(guest.channel).value("id");
+        QCOMPARE(lastGame(guest.channel).value("owner").toString(), host.channel.ownId());
         QTRY_COMPARE(controller.channel.remoteView().value("games").toList().size(), 1);
         QVERIFY(guest.channel.gameAction("join", {{"id", gameId}, {"round", 1}}));
-        QTRY_COMPARE(host.channel.games().last().toMap().value("players").toList().size(), 2);
+        QTRY_COMPARE(lastGame(host.channel).value("players").toList().size(), 2);
         // Switching to remote control closes local connections. An old game
         // window must never act using the replacement participant.
         QVERIFY(controller.channel.setRemoteMode(false));
@@ -603,9 +613,9 @@ private slots:
         QVERIFY(controller.channel.gameView(id, gameId.toString(), guest.channel.ownId()).isEmpty());
         QVERIFY(!controller.channel.gameAction("leave", {{"id", gameId}, {"round", 1}}, id, guest.channel.ownId()));
         QVERIFY(!controller.channel.gameAction("leave", {{"id", localGame}, {"round", 1}}, controller.channel.ownId(), controller.channel.ownId()));
-        QCOMPARE(guest.channel.games().last().toMap().value("phase").toString(), QString("preparing"));
+        QCOMPARE(lastGame(guest.channel).value("phase").toString(), QString("preparing"));
         QVERIFY(controller.channel.gameAction("leave", {{"id", gameId}, {"round", 1}}, id, host.channel.ownId()));
-        QTRY_COMPARE(guest.channel.games().last().toMap().value("phase").toString(), QString("finished"));
+        QTRY_COMPARE(lastGame(guest.channel).value("phase").toString(), QString("finished"));
         QVERIFY(controller.channel.setRemoteMode(false));
         QVERIFY(controller.channel.gameView(id, gameId.toString(), host.channel.ownId()).isEmpty());
         QVERIFY(!controller.channel.gameAction("leave", {{"id", gameId}, {"round", 1}}, id, host.channel.ownId()));
@@ -631,7 +641,7 @@ private slots:
         QTRY_VERIFY(host.channel.chatReady()); QTRY_VERIFY(guest.channel.chatReady());
         QVERIFY(host.channel.gameAction("start", {{"id", ""}, {"round", 0}}));
         QTRY_COMPARE(guest.channel.games().size(), 1);
-        const auto game = guest.channel.games().last().toMap();
+        const auto game = lastGame(guest.channel);
         QVERIFY(guest.channel.openChat(guest.channel.ownId(), "127.0.0.1", guest.channel.port()));
         QTRY_VERIFY(guest.channel.chatReady());
         QVERIFY(guest.channel.gameAction("join", {{"id", game.value("id")}, {"round", 1}}, host.channel.ownId()));
@@ -665,11 +675,11 @@ private slots:
         }
         QVERIFY(host.channel.gameAction("start", {{"id", ""}, {"round", 0}}));
         QTRY_COMPARE(guest.channel.games().size(), 1);
-        const auto id = guest.channel.games().last().toMap().value("id");
+        const auto id = lastGame(guest.channel).value("id");
         QVERIFY(guest.channel.gameAction("join", {{"id", id}, {"round", 1}}));
-        QTRY_COMPARE(host.channel.games().last().toMap().value("players").toList().size(), 2);
+        QTRY_COMPARE(lastGame(host.channel).value("players").toList().size(), 2);
         QVERIFY(ban ? host.channel.setBlocked(guest.channel.ownId(), true) : host.channel.kick(guest.channel.ownId()));
-        QTRY_COMPARE(host.channel.games().last().toMap().value("phase").toString(), QString("finished"));
+        QTRY_COMPARE(lastGame(host.channel).value("phase").toString(), QString("finished"));
         QVERIFY(host.channel.canStartGame());
     }
 
@@ -684,17 +694,17 @@ private slots:
         }
         QVERIFY(host.channel.gameAction("start", {{"id", ""}, {"round", 0}}));
         QTRY_COMPARE(guest.channel.games().size(), 1);
-        const auto id = guest.channel.games().last().toMap().value("id");
+        const auto id = lastGame(guest.channel).value("id");
         QVERIFY(guest.channel.gameAction("join", {{"id", id}, {"round", 1}}));
-        QTRY_COMPARE(host.channel.games().last().toMap().value("players").toList().size(), 2);
+        QTRY_COMPARE(lastGame(host.channel).value("players").toList().size(), 2);
         QVERIFY(!host.channel.gameAction("ready", {{"id", id}, {"round", 1}}));
-        QCOMPARE(host.channel.games().last().toMap().value("phase").toString(), QString("preparing"));
+        QCOMPARE(lastGame(host.channel).value("phase").toString(), QString("preparing"));
         QVERIFY(host.channel.gameAction("setup", {{"id", id}, {"round", 1}, {"core", 35}, {"trap", 36}}));
         QVERIFY(guest.channel.gameAction("setup", {{"id", id}, {"round", 1}, {"core", 0}, {"trap", 1}}));
-        QTRY_COMPARE(host.channel.games().last().toMap().value("phase").toString(), QString("playing"));
+        QTRY_COMPARE(lastGame(host.channel).value("phase").toString(), QString("playing"));
         QVERIFY(guest.channel.gameAction("leave", {{"id", id}, {"round", 1}}));
-        QTRY_COMPARE(host.channel.games().last().toMap().value("phase").toString(), QString("finished"));
-        QCOMPARE(host.channel.games().last().toMap().value("reason").toString(), QString("left"));
+        QTRY_COMPARE(lastGame(host.channel).value("phase").toString(), QString("finished"));
+        QCOMPARE(lastGame(host.channel).value("reason").toString(), QString("left"));
     }
 
     void voiceGameKeepsChoicesPrivateAndHistoryUnchanged() {
@@ -707,7 +717,7 @@ private slots:
             QTRY_VERIFY(device->channel.chatReady());
             QCOMPARE(device->channel.joined(), device != &observer);
         }
-        const auto current = [](const Device& d) { return d.channel.games().isEmpty() ? QVariantMap{} : d.channel.games().last().toMap(); };
+        const auto current = [](const Device& d) { return lastGame(d.channel); };
         const auto act = [&](Device& d, const QString& action) {
             const auto state = current(d);
             return d.channel.gameAction(action, {{"id", state.value("id", QString{})}, {"round", state.value("round", 0)}});
@@ -793,7 +803,7 @@ private slots:
         QVERIFY(guest.join(host.channel)); QTRY_VERIFY(guest.channel.chatReady());
         QVERIFY(host.channel.gameAction("start", {{"id", ""}, {"round", 0}}));
         QTRY_COMPARE(guest.channel.games().size(), 1);
-        const auto id = guest.channel.games().first().toMap().value("id");
+        const auto id = firstGame(guest.channel).value("id");
         QVERIFY(guest.channel.gameAction("join", {{"id", id}, {"round", 1}}));
         QTRY_COMPARE(guest.channel.currentGame().value("players").toList().size(), 2);
         QSignalSpy confirmation(&guest.channel, &LocalChannel::externalJoinConfirmationRequested);
@@ -838,7 +848,7 @@ private slots:
         QTRY_VERIFY(guest.channel.chatReady()); QTRY_VERIFY(guest.channel.joined());
         QVERIFY(host.channel.gameAction("start", {{"id", ""}, {"round", 0}}));
         QTRY_COMPARE(guest.channel.games().size(), 1);
-        const auto id = guest.channel.games().first().toMap().value("id");
+        const auto id = firstGame(guest.channel).value("id");
         QVERIFY(guest.channel.gameAction("join", {{"id", id}, {"round", 1}}));
         QTRY_COMPARE(host.channel.currentGame().value("players").toList().size(), 2);
         QTRY_COMPARE(guest.channel.currentGame().value("players").toList().size(), 2);
@@ -869,9 +879,9 @@ private slots:
         }
         QVERIFY(host->channel.gameAction("start", {{"id", ""}, {"round", 0}}));
         QTRY_COMPARE(guest.channel.games().size(), 1);
-        const auto id = guest.channel.games().last().toMap().value("id");
+        const auto id = lastGame(guest.channel).value("id");
         QVERIFY(guest.channel.gameAction("join", {{"id", id}, {"round", 1}}));
-        QTRY_COMPARE(host->channel.games().last().toMap().value("players").toList().size(), 2);
+        QTRY_COMPARE(lastGame(host->channel).value("players").toList().size(), 2);
         QVERIFY(late.channel.openChat(host->channel.ownId(), "127.0.0.1", host->channel.port()));
         QTRY_VERIFY(late.channel.chatReady());
         QVERIFY(late.channel.games().isEmpty());

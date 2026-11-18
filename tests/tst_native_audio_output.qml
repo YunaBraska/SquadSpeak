@@ -151,6 +151,12 @@ TestCase {
             verify(audio.setReadBotMessages(true))
             compare(audio.botVoiceId, "system")
             verify(audio.botVoice.systemDefault)
+            // The system default may be a Siri voice that is installed but
+            // not ready to synthesize on an ephemeral runner. Verify that
+            // the user-facing selection resolves, then exercise native
+            // synthesis with the app's already resolved voice.
+            verify(audio.setBotVoice(voice))
+            compare(audio.botVoiceId, voice)
             progress.clear()
             verify(fixtures.queueBotMessage("Hello."))
             tryVerify(function() { return fixtures.nativeAudioOutputRunning() === 1 }, 1000,
