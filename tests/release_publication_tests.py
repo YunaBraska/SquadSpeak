@@ -271,7 +271,7 @@ else: sys.exit(7)
                 self.assertNotIn(private_key, result.stdout + result.stderr)
                 self.assertFalse((self.root / "update-key.der").exists())
 
-    def test_only_intel_ci_requests_delivery_paced_audio(self):
+    def test_macos_ci_requests_delivery_paced_audio(self):
         workflow = (self.repo / ".github/workflows/verify.yml").read_text()
         command = re.search(r"^  macos:\n.*?^      test_command: \|\n((?:        [^\n]*\n)+)",
                             workflow, re.MULTILINE | re.DOTALL)
