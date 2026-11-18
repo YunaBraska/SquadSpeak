@@ -280,16 +280,18 @@ else: sys.exit(7)
         (self.root / "tests").mkdir()
         (self.root / "tests/macos-ci.sh").write_text(
             "#!/bin/sh\nexec \"$TEST_PYTHON\" -c 'import json, os; "
-            "print(json.dumps({k: v for k, v in os.environ.items() if k.startswith(\"SQUAD_SOAK_\")}))'\n")
+            "print(json.dumps({k: v for k, v in os.environ.items() if k.startswith(\"SQUAD_SOAK_\") or k == \"SQUADSPEAK_CTEST_EXCLUDE\"}))'\n")
         for architecture in ("X64", "ARM64"):
             with self.subTest(architecture=architecture):
-                env = {key: value for key, value in os.environ.items() if not key.startswith("SQUAD_SOAK_")}
+                env = {key: value for key, value in os.environ.items()
+                       if not key.startswith("SQUAD_SOAK_") and key != "SQUADSPEAK_CTEST_EXCLUDE"}
                 env.update(RUNNER_ARCH=architecture, TEST_PYTHON=sys.executable)
                 result = subprocess.run(["sh", "-eu", "-c", script], cwd=self.root, env=env,
                                         capture_output=True, text=True, timeout=10)
                 self.assertEqual(result.returncode, 0, result.stderr)
                 expected = {"SQUAD_SOAK_CLIENTS": "32", "SQUAD_SOAK_SPEAKERS": "2",
-                            "SQUAD_SOAK_PACING": "delivery"}
+                            "SQUAD_SOAK_PACING": "delivery",
+                            "SQUADSPEAK_CTEST_EXCLUDE": "^(channel_contract_mediaAdmissionExceeds64AcrossOwnedChannels|channel_contract_sixtyFourVideoViewersKeepIndependentQualityAndVoice)$"}
                 self.assertEqual(json.loads(result.stdout), expected)
         # The hosted network launcher clears unlisted environment variables.
         preserved = re.search(r"--preserve-env=([^\s]+)",
@@ -526,19 +528,25 @@ details.write_text("failed test details")
 sys.exit(9)
 ''')
         ctest.chmod(0o700)
-        for version, native, expected in (("", "", None), ("2026.10.11-SNAPSHOT", "", "2026.10.11-SNAPSHOT"),
-                                          ("2026.10.11", "2026.10.10", "2026.10.10")):
-            with self.subTest(version=version, native=native):
+        for version, native, excluded, expected in (("", "", "", None),
+                                                     ("2026.10.11-SNAPSHOT", "", "", "2026.10.11-SNAPSHOT"),
+                                                     ("2026.10.11", "2026.10.10", "scale-only", "2026.10.10")):
+            with self.subTest(version=version, native=native, excluded=excluded):
                 (self.root / "trace.jsonl").unlink(missing_ok=True)
                 result = subprocess.run(["sh", str(self.repo / "tests/macos-ci.sh"), str(self.root),
                                          str(self.root), "test"], capture_output=True, text=True, timeout=20,
                     env=dict(os.environ, PATH=str(self.root / "bin") + os.pathsep + os.environ["PATH"],
-                             GITHUB_ACTIONS="true", TEST_BUILD=str(self.root), VERSION=version, SQUADSPEAK_VERSION=native))
+                             GITHUB_ACTIONS="true", TEST_BUILD=str(self.root), VERSION=version, SQUADSPEAK_VERSION=native,
+                             SQUADSPEAK_CTEST_EXCLUDE=excluded))
                 self.assertNotEqual(result.returncode, 0)
                 calls = [json.loads(line) for line in (self.root / "trace.jsonl").read_text().splitlines()]
                 self.assertEqual(len(calls), 1, result.stderr)
                 self.assertNotIn("-R", calls[0]["args"])
-                self.assertNotIn("-E", calls[0]["args"])
+                if excluded:
+                    exclusion = calls[0]["args"].index("-E")
+                    self.assertEqual(calls[0]["args"][exclusion + 1], excluded)
+                else:
+                    self.assertNotIn("-E", calls[0]["args"])
                 self.assertIn("--parallel", calls[0]["args"])
                 self.assertNotIn("--stop-on-failure", calls[0]["args"])
                 self.assertEqual(calls[0]["version"], expected)
