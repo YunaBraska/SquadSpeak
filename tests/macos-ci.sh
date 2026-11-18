@@ -96,6 +96,9 @@ fi
 if test -n "${SQUADSPEAK_UPDATE_PUBLIC_KEY:-}"; then
     set -- "$@" "-DSQUADSPEAK_UPDATE_PUBLIC_KEY=$SQUADSPEAK_UPDATE_PUBLIC_KEY"
 fi
+if test -n "${SQUADSPEAK_BUNDLE_ID:-}"; then
+    set -- "$@" "-DSQUADSPEAK_BUNDLE_ID=$SQUADSPEAK_BUNDLE_ID"
+fi
 if test "${SQUADSPEAK_STORE_BUILD:-OFF}" = ON; then
     set -- "$@" -DSQUADSPEAK_STORE_BUILD=ON
 fi

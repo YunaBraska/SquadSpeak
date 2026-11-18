@@ -23,8 +23,13 @@ class ReleaseVersionTests(unittest.TestCase):
         self.assertIn("version: ${{ inputs.version }}", app_store_upload)
         self.assertIn("wc_ios_app_store.yml@be05e1943fb3b026c4e57d1d6f20771b9a3d8628", app_store)
         self.assertIn("artifact_extension: ipa", app_store_upload)
-        self.assertIn('MACOSX_BUNDLE_GUI_IDENTIFIER "berlin.yuna.squadspeak"', bundle)
-        self.assertIn('("CFBundleIdentifier", "berlin.yuna.squadspeak")', appcast)
+        self.assertIn('set(SQUADSPEAK_BUNDLE_ID "app.squadspeak.desktop"', bundle)
+        self.assertIn('MACOSX_BUNDLE_GUI_IDENTIFIER "${SQUADSPEAK_BUNDLE_ID}"', bundle)
+        self.assertIn('SQUADSPEAK_BUNDLE_ID="$APP_STORE_BUNDLE_ID"',
+                      (source / "scripts/package-app-store.sh").read_text(encoding="utf-8"))
+        self.assertIn('-DSQUADSPEAK_BUNDLE_ID="$APP_STORE_BUNDLE_ID"',
+                      (source / "scripts/package-ios-app-store.sh").read_text(encoding="utf-8"))
+        self.assertIn('("CFBundleIdentifier", "app.squadspeak.desktop")', appcast)
 
     def test_ios_device_dependencies_cannot_reuse_the_simulator_prefix(self):
         script = (Path(__file__).resolve().parents[1] / "cmake/build-mobile-dependencies.sh").read_text(encoding="utf-8")

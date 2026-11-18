@@ -829,7 +829,7 @@ Keep the channel/chat layout, themes, portraits and shared QML controls. Adapt t
 
 The iOS build has separate, reproducible Simulator and iPhoneOS dependency paths. The pinned Qt 6.11.3 kit provides an arm64 device slice and an x86_64 Simulator slice. On Apple Silicon, the x86_64 Simulator build requires Rosetta and the installed universal iOS 26 Simulator runtime. The two paths use distinct markers and reject a dependency prefix from the other SDK. A successful arm64 device build does not certify device/runtime behavior. The [Qt platform table](https://doc.qt.io/qt-6.11/supported-platforms.html) describes the supported SDK and device configurations.
 
-Ninja embeds a stable application identifier in each Simulator executable for keychain access. This uses the Simulator's entitlement section, not a development certificate. `native_identity_contract` verifies creation, reload and cleanup in the real simulated keychain. Simulators share the Mac's network, so concurrent app instances need distinct host ports.
+Ninja embeds the established direct-distribution identifier in each Simulator executable for keychain access. This uses the Simulator's entitlement section, not a development certificate. The signed Store adapters override it with the registered `berlin.yuna.squadspeak` identifier, so macOS, iPhone and iPad share one Store app while direct macOS installations retain their existing data namespace. `native_identity_contract` verifies creation, reload and cleanup in the real simulated keychain. Simulators share the Mac's network, so concurrent app instances need distinct host ports.
 
 Build the target dependencies into a clean prefix. The prefix must match the SDK, architecture and deployment target. Do not point an iOS build at host macOS libraries:
 
@@ -872,7 +872,7 @@ Boot and install the application and the supported simulator contracts:
 DEVICE_ID='replace-with-simulator-udid'
 xcrun simctl boot "$DEVICE_ID"
 xcrun simctl install "$DEVICE_ID" build/ios-simulator/squadspeak.app
-xcrun simctl launch --console-pty --arch=x86_64 "$DEVICE_ID" berlin.yuna.squadspeak --smoke-test
+xcrun simctl launch --console-pty --arch=x86_64 "$DEVICE_ID" app.squadspeak.desktop --smoke-test
 ctest --test-dir build/ios-simulator --output-on-failure \
   -R '^(chat_content_contract|channel_controls|game_controls|channel_contract|mixer_contract|media_transport_contract|video_contract)$'
 ```

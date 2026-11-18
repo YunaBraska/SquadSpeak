@@ -107,6 +107,14 @@ if(ANDROID)
         QT_ANDROID_PACKAGE_SOURCE_DIR "${squad_android_package}"
         QT_ANDROID_EXTRA_LIBS "${squad_android_libraries}")
 endif()
+# Direct downloads retain their established identifier. Store packaging supplies
+# the registered Store identifier so it can share one App Store record across
+# macOS, iPhone and iPad without migrating direct-install user data.
+set(SQUADSPEAK_BUNDLE_ID "app.squadspeak.desktop" CACHE STRING "Application bundle identifier")
+if(NOT SQUADSPEAK_BUNDLE_ID MATCHES "^[A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)+$")
+    message(FATAL_ERROR "SQUADSPEAK_BUNDLE_ID must be a dotted application identifier.")
+endif()
+
 # Qt reads this template before CMake generates the bundle to link both the
 # permission plugin and its request entrypoint. Expand XML fragments now while
 # leaving CMake's ${MACOSX_BUNDLE_*} placeholders for bundle generation.
@@ -130,7 +138,7 @@ endif()
 configure_file(../src/Info.plist.in "${CMAKE_CURRENT_BINARY_DIR}/Info.plist.in" @ONLY)
 set_target_properties(squadspeak PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}"
-    MACOSX_BUNDLE_GUI_IDENTIFIER "berlin.yuna.squadspeak"
+    MACOSX_BUNDLE_GUI_IDENTIFIER "${SQUADSPEAK_BUNDLE_ID}"
     MACOSX_BUNDLE_BUNDLE_NAME "SquadSpeak"
     MACOSX_BUNDLE_INFO_PLIST "${CMAKE_CURRENT_BINARY_DIR}/Info.plist.in")
 if(IOS)
