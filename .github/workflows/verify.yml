@@ -313,11 +313,12 @@ jobs:
       test_command: |
         set -eu
         # Native macOS still verifies audio delivery, codecs and packages. The
-        # Linux runners prove the >64-client and >64-video-viewer contracts.
+        # Linux runners prove the process-heavy scale contracts, while macOS
+        # focuses on native adapter and packaged-application behavior.
         # GitHub's hosted macOS VMs do not guarantee enough TLS or VideoToolbox
         # capacity for those process-heavy scale tests.
         export SQUAD_SOAK_CLIENTS=32 SQUAD_SOAK_SPEAKERS=2 SQUAD_SOAK_PACING=delivery
-        export SQUADSPEAK_CTEST_EXCLUDE='^(channel_contract_mediaAdmissionExceeds64AcrossOwnedChannels|channel_contract_sixtyFourVideoViewersKeepIndependentQualityAndVoice)$'
+        export SQUADSPEAK_CTEST_EXCLUDE='^(channel_contract_mediaAdmissionExceeds64AcrossOwnedChannels|channel_contract_sixtyFourClientsHaveOneConsistentRosterAndAudioFanout|channel_contract_sixtyFourVideoViewersKeepIndependentQualityAndVoice)$'
         sh tests/macos-ci.sh auto build/macos-ci test
       package_command: sh tests/macos-ci.sh auto build/macos-ci package
       cache_inputs: '["tests/macos-ci.sh", "cmake/Dependencies.cmake", "cmake/AudioProcessing.cmake", "cmake/Media.cmake", "cmake/Updates.cmake", "cmake/audio-processing-echo.patch", "cmake/qt-qml-*.patch", "cmake/source_archives.json", "src/teamspeak_bridge/Cargo.lock", "rust-toolchain.toml", "cmake/TeamSpeak.cmake"]'
