@@ -26,17 +26,9 @@ jobs:
       force: ${{ inputs.force }}
     secrets: inherit
 
-  app_store_upload:
+  publish:
     needs: verify
     if: needs.verify.outputs.release_mode == 'release'
-    uses: ./.github/workflows/app-store-upload.yml
-    with:
-      version: ${{ needs.verify.outputs.version }}
-    secrets: inherit
-
-  publish:
-    needs: [verify, app_store_upload]
-    if: needs.verify.outputs.release_mode == 'release' && needs.app_store_upload.result == 'success'
     permissions:
       actions: read
       contents: write

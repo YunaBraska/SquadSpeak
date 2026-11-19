@@ -1,12 +1,6 @@
 name: "🛍️ CD · App Store Upload"
 
 on:
-  workflow_call:
-    inputs:
-      version:
-        description: Stable marketing version to package and upload.
-        required: true
-        type: string
   workflow_dispatch:
     inputs:
       version:
