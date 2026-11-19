@@ -298,6 +298,14 @@ else: sys.exit(7)
                               (self.repo / "CMakeLists.txt").read_text())[1].split(",")
         self.assertIn("SQUAD_SOAK_PACING", preserved)
 
+    def test_media_transport_relies_on_its_bounded_protocol_assertions(self):
+        source = (self.repo / "CMakeLists.txt").read_text(encoding="utf-8")
+        properties = re.search(
+            r"set_tests_properties\(media_transport_contract PROPERTIES ([^)]+)\)", source)
+        self.assertIsNotNone(properties)
+        self.assertIn("RUN_SERIAL TRUE", properties[1])
+        self.assertNotIn("TIMEOUT", properties[1])
+
     def test_windows_bootstrap_retries_transient_protobuf_download_failures(self):
         workflow = (self.repo / ".github/workflows/verify.yml").read_text()
         protobuf_install = re.search(
