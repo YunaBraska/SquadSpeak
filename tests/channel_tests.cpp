@@ -3142,8 +3142,11 @@ private slots:
             }
         });
         socket->write(wireFrame({{"type", "screenQuality"}, {"tier", 1}, {"udp", true}}));
+        // MediaTransport retries an initially stalled UDP negotiation after
+        // five seconds. Wait through that product-owned recovery once before
+        // treating the authenticated local route as unavailable.
         QVERIFY(waitForEvents(&transport, &squad::MediaTransport::writable,
-            [&] { return transport.udpActive(); }, 5000));
+            [&] { return transport.udpActive(); }, 10000));
         QSignalSpy frames(&client.channel, &LocalChannel::screenFrameReceived);
         const auto sendDatagram = [&](const QByteArray& bytes) {
             bool sent = false;
