@@ -664,30 +664,12 @@ elif name == "xcrun" and args[:2] == ["notarytool", "log"]:
                     self.assertEqual(json.loads((build / "artifacts/notarization-log.json").read_text())["status"], scenario)
                 self.assertEqual(list(self.root.glob("squadspeak-package.*")), [])
 
-    def test_publish_only_after_all_uploads_succeed(self):
-        assets = self.root / "release-assets"
-        assets.mkdir()
-        (assets / "package.zip").write_bytes(b"package fixture")
-        trace = self.root / "trace.jsonl"
-        for mode, calls in (("upload-failure", 1), ("promotion-failure", 2)):
-            with self.subTest(mode=mode):
-                result = self.run_step("Publish the tested desktop release", SCENARIO=mode)
-                self.assertNotEqual(result.returncode, 0)
-                self.assertFalse((self.root / "public").exists())
-                self.assertEqual((self.root / "uploaded").exists(), mode == "promotion-failure")
-                self.assertEqual(len(trace.read_text(encoding="utf-8").splitlines()), calls)
-                trace.unlink()
-                (self.root / "uploaded").unlink(missing_ok=True)
-        result = self.run_step("Publish the tested desktop release")
-        self.assertEqual(result.returncode, 0, result.stderr)
-        calls = [json.loads(line) for line in trace.read_text(encoding="utf-8").splitlines()]
-        self.assertIn("--draft", calls[0])
-        self.assertIn("--target", calls[0])
-        self.assertIn("a" * 40, calls[0])
-        self.assertIn("--draft=false", calls[1])
-        self.assertIn("--prerelease=false", calls[1])
-        self.assertIn("--latest=true", calls[1])
-        self.assertTrue((self.root / "public").exists())
+    def test_release_uses_the_canonical_shared_publisher(self):
+        workflow = (self.repo / ".github/workflows/publish.yml").read_text(encoding="utf-8")
+        self.assertIn("YunaBraska/YunaBraska/.github/workflows/wc_github_create_release.yml@bd11b43a566c8ada526b953d4aa3bedde349341f", workflow)
+        self.assertIn("artifact_name: release-assets-${{ inputs.commit_sha }}", workflow)
+        self.assertIn("release_notes_file: release-notes.md", workflow)
+        self.assertNotIn("gh release ", workflow)
 
     def test_publication_rejects_prerelease_version(self):
         (self.root / "release-assets").mkdir()
