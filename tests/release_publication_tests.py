@@ -684,6 +684,8 @@ elif name == "xcrun" and args[:2] == ["notarytool", "log"]:
         self.assertIn("--draft", calls[0])
         self.assertIn("--target", calls[0])
         self.assertIn("a" * 40, calls[0])
+        title = calls[0].index("--title")
+        self.assertEqual(calls[0][title + 1], "2026.10.4")
         self.assertIn("--draft=false", calls[1])
         self.assertIn("--prerelease=false", calls[1])
         self.assertIn("--latest=true", calls[1])
