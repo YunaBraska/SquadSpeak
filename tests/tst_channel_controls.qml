@@ -253,6 +253,9 @@ TestCase {
         remoteChannel.stopHost()
         channel.leave()
         channel.stopHost()
+        tryVerify(function() {
+            return channel.hostClients.length === 0 && remoteChannel.hostClients.length === 0
+        })
         view.width = Qt.platform.os === "android" ? view.Screen.desktopAvailableWidth : 520
         view.height = Qt.platform.os === "android" ? view.Screen.desktopAvailableHeight : 700
     }
@@ -1262,6 +1265,7 @@ TestCase {
         verify(audio.setNotificationVolume(0))
         if (data.landscape !== undefined) orientChat(data.landscape)
         else { view.width = data.width; view.height = data.height }
+        verify(waitForPolish(view))
         const tap = item => {
             verify(item && item.visible && item.enabled)
             verify(waitForPolish(view))
@@ -1270,7 +1274,7 @@ TestCase {
             finger.release(0, item, item.width / 2, item.height / 2).commit()
         }
         verify(fixtures.startHost()); verify(channel.joinSaved(channel.ownId))
-        tryCompare(channel, "chatReady", true)
+        tryVerify(function() { return channel.joined && channel.chatReady })
         view.chatExpanded = true
         const chat = findChild(view, "chatPanel")
         tap(findChild(chat, "chatAdd"))
@@ -2054,11 +2058,11 @@ TestCase {
         view.language = languageDisplay
         const dialog = findChild(view, "languageDownloadDialog")
         view.hide()
-        languageDisplay.preparation = {source: "fr", target: "de"}
         verify(!dialog.visible)
         compare(languageDisplay.downloads, 0)
         view.show(); view.raise(); view.requestActivate()
         tryCompare(view, "active", true)
+        languageDisplay.preparation = {source: "fr", target: "de"}
         tryCompare(dialog, "opened", true)
         verify(waitForRendering(dialog.contentItem))
         if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/language-download.png"))

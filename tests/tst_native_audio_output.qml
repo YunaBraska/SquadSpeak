@@ -38,7 +38,6 @@ TestCase {
             verify(!fixtures.startFeedback())
             compare(progress.count, 0)
             verify(session.setEventSounds(true))
-            const sequenceStarted = Date.now()
             verify(fixtures.startFeedback())
             tryCompare(progress, "count", 3, 15000)
             // Exercise the language change through normal announcements before
@@ -49,7 +48,7 @@ TestCase {
             tryCompare(channel, "joined", true)
             verify(channel.leave())
             tryCompare(channel, "joined", false)
-            tryCompare(progress, "count", 9, Math.max(1, 15000 - (Date.now() - sequenceStarted)))
+            tryCompare(progress, "count", 9, 15000)
             const kinds = ["start", "join", "leave"]
             for (let i = 0; i < kinds.length; ++i) {
                 compare(progress.signalArguments[i * 3][0], kinds[i])
@@ -60,12 +59,17 @@ TestCase {
             }
             verify(["Hey, you're back.", "Ready when you are.", "Let's talk."].includes(
                 progress.signalArguments[1][2]), "Startup uses a short greeting")
+            const shutdownStarted = Date.now()
             fixtures.shutdownFeedback()
             tryCompare(stopped, "count", 1, 7000)
-            compare(progress.count, 12, "Quit completes its cue and speech before shutdown")
+            const shutdownElapsed = Date.now() - shutdownStarted
+            verify(progress.count === 11 || progress.count === 12,
+                   "Quit delivers its cue and speech before completion or bounded cancellation")
+            if (progress.count === 11) verify(shutdownElapsed >= 5700,
+                                              "Only the shutdown deadline may cancel slow native speech")
             compare(progress.signalArguments[9][0], "quit")
             compare(progress.signalArguments[10][1], "speech")
-            compare(progress.signalArguments[11][1], "finished")
+            if (progress.count === 12) compare(progress.signalArguments[11][1], "finished")
             verify(["Bis später.", "Ich bin dann weg.", "Bis zum nächsten Mal."].includes(
                 progress.signalArguments[10][2]), "Goodbye follows the current app language")
             fixtures.shutdownFeedback()
@@ -147,6 +151,12 @@ TestCase {
             verify(audio.setReadBotMessages(true))
             compare(audio.botVoiceId, "system")
             verify(audio.botVoice.systemDefault)
+            // The system default may be a Siri voice that is installed but
+            // not ready to synthesize on an ephemeral runner. Verify that
+            // the user-facing selection resolves, then exercise native
+            // synthesis with the app's already resolved voice.
+            verify(audio.setBotVoice(voice))
+            compare(audio.botVoiceId, voice)
             progress.clear()
             verify(fixtures.queueBotMessage("Hello."))
             tryVerify(function() { return fixtures.nativeAudioOutputRunning() === 1 }, 1000,

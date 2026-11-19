@@ -421,13 +421,17 @@ short test. Audio uses 64 clients and four simultaneous senders by default.
 `SQUAD_SOAK_SPEAKERS` accepts 2 up to the selected client count to measure greater overlap.
 `SQUAD_SOAK_CLIENTS` accepts 8-256. Eight clients provide a smaller control
 for distinguishing simultaneous-speaker load from distribution to many listeners.
-The hosted Intel workflow uses 32 clients and two simultaneous senders with
-`SQUAD_SOAK_PACING=delivery`. It waits for every listener and at least 20 ms of
-source time before sending the next frame. It requires every packet, including
+The hosted macOS workflows use 32 clients and two simultaneous senders with
+`SQUAD_SOAK_PACING=delivery`. They wait for every listener and at least 20 ms of
+source time before sending the next frame. They require every packet, including
 the final frame, within five seconds.
 All source-to-receiver bindings, mono/stereo rows and delayed callbacks remain
 checked. This mode proves complete delivery and decoding, not realtime capacity.
 This fixture setting does not restrict the application or certify greater overlap.
+The Linux matrix executes the full >64-client admission and 64-viewer video
+contracts. Hosted macOS runners execute the native codec, delivery, bundle and
+package contracts but exclude those two scale cases because their virtualized
+TLS and VideoToolbox capacity varies independently of the application.
 Set `QTEST_FUNCTION_TIMEOUT` above the requested duration plus setup
 and teardown; Qt Test otherwise stops each function after 300 seconds.
 Video extends the first 4K phase to 30 frames per requested second,
@@ -827,9 +831,9 @@ Before Store publication, review the selected distribution terms against the pro
 
 Keep the channel/chat layout, themes, portraits and shared QML controls. Adapt the containing window to safe areas, touch targets, the software keyboard and iPad resizing. The mobile entrypoint opens a normal window without a tray. Double-click and hover affordances still need a complete tap/long-press review.
 
-The iOS build now has a reproducible Simulator path. The pinned Qt 6.11.3 kit provides an arm64 device slice and an x86_64 Simulator slice. On Apple Silicon, the x86_64 Simulator build requires Rosetta and the installed universal iOS 26 Simulator runtime. The dependency script currently builds the Simulator only. It does not certify an arm64 device package or device/runtime parity. The [Qt platform table](https://doc.qt.io/qt-6.11/supported-platforms.html) describes the supported SDK and device configurations.
+The iOS build has separate, reproducible Simulator and iPhoneOS dependency paths. The pinned Qt 6.11.3 kit provides an arm64 device slice and an x86_64 Simulator slice. On Apple Silicon, the x86_64 Simulator build requires Rosetta and the installed universal iOS 26 Simulator runtime. The two paths use distinct markers and reject a dependency prefix from the other SDK. A successful arm64 device build does not certify device/runtime behavior. The [Qt platform table](https://doc.qt.io/qt-6.11/supported-platforms.html) describes the supported SDK and device configurations.
 
-Ninja embeds a stable application identifier in each Simulator executable for keychain access. This uses the Simulator's entitlement section, not a development certificate. `native_identity_contract` verifies creation, reload and cleanup in the real simulated keychain. Simulators share the Mac's network, so concurrent app instances need distinct host ports.
+Ninja embeds the established direct-distribution identifier in each Simulator executable for keychain access. This uses the Simulator's entitlement section, not a development certificate. The signed Store adapters override it with the registered `berlin.yuna.squadspeak` identifier, so macOS, iPhone and iPad share one Store app while direct macOS installations retain their existing data namespace. `native_identity_contract` verifies creation, reload and cleanup in the real simulated keychain. Simulators share the Mac's network, so concurrent app instances need distinct host ports.
 
 Build the target dependencies into a clean prefix. The prefix must match the SDK, architecture and deployment target. Do not point an iOS build at host macOS libraries:
 
@@ -837,6 +841,14 @@ Build the target dependencies into a clean prefix. The prefix must match the SDK
 IOS_ARCH=x86_64 sh cmake/build-mobile-dependencies.sh ios-simulator \
   /private/tmp/squadspeak-ios-deps-x86-v3 \
   /private/tmp/squadspeak-ios-deps-x86-build 17.0
+```
+
+For an arm64 iPhoneOS archive, use a separate prefix:
+
+```sh
+sh cmake/build-mobile-dependencies.sh ios-device \
+  /private/tmp/squadspeak-ios-device-deps-v1 \
+  /private/tmp/squadspeak-ios-device-build 17.0
 ```
 
 Configure and build with the matching Qt iOS kit and the macOS Qt host tools. Choose a simulator ID from `xcrun simctl list devices available` before configuring:

@@ -839,8 +839,13 @@ private slots:
             std::unique_ptr<squad::MediaTransport> host, client;
             std::unique_ptr<QSignalSpy> atHost, atClient;
         };
+        constexpr int peerCount = 3;
+        constexpr int sourceCount = 2;
+        constexpr int queuedFrames = 6;
+        constexpr int framesPerEndpoint = sourceCount * queuedFrames;
+        constexpr int expectedFrames = peerCount * 2 * framesPerEndpoint;
         int fallback = 0;
-        std::array<Pair, 4> peers;
+        std::array<Pair, peerCount> peers;
         const auto packet = speech();
         QVERIFY(!packet.isEmpty());
         for (auto& pair : peers) {
@@ -871,12 +876,13 @@ private slots:
         }
         const auto setupFallback = fallback;
         SendGate gate;
-        gate.setSendCost(std::chrono::microseconds(1500));
-        // Eight independent connections, two sources each, six queued frames
-        // per source. At 1.5 ms per native send, one worker needs 144 ms for
-        // these 96 packets. Two can finish in 72 ms, below speech's 120 ms
-        // deadline. No source exceeds the production six-frame queue limit.
-        for (int frame = 0; frame < 6; ++frame)
+        gate.setSendCost(std::chrono::microseconds(1700));
+        // Six independent connections, two sources each, six queued frames
+        // per source. At 1.7 ms per native send, one worker needs 122.4 ms.
+        // Two finish in 61.2 ms, below speech's 120 ms freshness deadline.
+        // That leaves a real runner room for a brief scheduler interruption
+        // without making the test's two-worker contract optional.
+        for (int frame = 0; frame < queuedFrames; ++frame)
             for (auto& pair : peers)
                 for (auto* sender : {pair.host.get(), pair.client.get()}) {
                     QVERIFY(sender->send(first, packet));
@@ -884,7 +890,7 @@ private slots:
                 }
         const bool delivered = waitForEvents([&] {
             return std::all_of(peers.begin(), peers.end(), [](const auto& pair) {
-                return pair.atHost->size() == 12 && pair.atClient->size() == 12;
+                return pair.atHost->size() == framesPerEndpoint && pair.atClient->size() == framesPerEndpoint;
             });
         }, 3000);
         int packets = 0, gaps = 0;
@@ -894,11 +900,12 @@ private slots:
                     ++packets; gaps += event.at(2).toInt();
                     QCOMPARE(event.at(1).toByteArray(), packet);
                 }
-        qInfo() << "Short native sends delivered" << packets << "of 96; gaps" << gaps
+        qInfo() << "Short native sends delivered" << packets << "of" << expectedFrames << "gaps" << gaps
                 << "maximum controlled native cost us" << gate.maximumCostUs();
         QCOMPARE(fallback, setupFallback);
         QCOMPARE(gaps, 0);
-        QVERIFY2(delivered, qPrintable(QString("Received %1 / 96 packets despite short native sends").arg(packets)));
+        QVERIFY2(delivered, qPrintable(QString("Received %1 / %2 packets despite short native sends")
+            .arg(packets).arg(expectedFrames)));
     }
     void hostProtectsExistingMediaDuringSharedSenderOverload_data() {
         QTest::addColumn<int>("blockedSenders");
@@ -924,8 +931,8 @@ private slots:
         QVERIFY2(port < 22000, qPrintable(QString("No shared TCP/UDP port in 21000-21999: %1; %2")
             .arg(tcp.errorString(), udp.errorString())));
         tcp.close();
-        QVERIFY2(owner.listen(QHostAddress::LocalHost, port), qPrintable(owner.status()));
         udp.close();
+        QVERIFY2(owner.listen(QHostAddress::LocalHost, port), qPrintable(owner.status()));
         QVERIFY(owner.decide(guest.ownId(), true));
         QVERIFY(owner.join(owner.ownId(), "127.0.0.1", owner.port())); QTRY_VERIFY(owner.joined());
         QVERIFY(owner.setScreenSharing(true));

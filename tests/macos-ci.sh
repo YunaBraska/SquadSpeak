@@ -96,6 +96,9 @@ fi
 if test -n "${SQUADSPEAK_UPDATE_PUBLIC_KEY:-}"; then
     set -- "$@" "-DSQUADSPEAK_UPDATE_PUBLIC_KEY=$SQUADSPEAK_UPDATE_PUBLIC_KEY"
 fi
+if test -n "${SQUADSPEAK_BUNDLE_ID:-}"; then
+    set -- "$@" "-DSQUADSPEAK_BUNDLE_ID=$SQUADSPEAK_BUNDLE_ID"
+fi
 if test "${SQUADSPEAK_STORE_BUILD:-OFF}" = ON; then
     set -- "$@" -DSQUADSPEAK_STORE_BUILD=ON
 fi
@@ -109,8 +112,16 @@ if command -v ccache >/dev/null 2>&1; then ccache --show-stats; fi
 fi
 if test "$phase" = test || test "$phase" = all; then
 result=0
-QT_LOGGING_RULES='squadspeak.discovery.debug=true' ctest --parallel "${CTEST_PARALLEL_LEVEL:-4}" --test-dir "$build_root/app" --output-on-failure --no-tests=error \
-    --output-junit "$build_root/artifacts/ctest.xml" --output-log "$build_root/artifacts/ctest.log" || result=$?
+run_ctest() {
+    if test -n "${SQUADSPEAK_CTEST_EXCLUDE:-}"; then
+        QT_LOGGING_RULES='squadspeak.discovery.debug=true' ctest --parallel "${CTEST_PARALLEL_LEVEL:-4}" --test-dir "$build_root/app" --output-on-failure --no-tests=error \
+            --output-junit "$build_root/artifacts/ctest.xml" --output-log "$build_root/artifacts/ctest.log" -E "$SQUADSPEAK_CTEST_EXCLUDE"
+        return
+    fi
+    QT_LOGGING_RULES='squadspeak.discovery.debug=true' ctest --parallel "${CTEST_PARALLEL_LEVEL:-4}" --test-dir "$build_root/app" --output-on-failure --no-tests=error \
+        --output-junit "$build_root/artifacts/ctest.xml" --output-log "$build_root/artifacts/ctest.log"
+}
+run_ctest || result=$?
 cp "$build_root/app/Testing/Temporary/LastTest.log" "$build_root/artifacts/test-details.log"
 if test -d "$build_root/app/smoke"; then cp -R "$build_root/app/smoke" "$build_root/artifacts/"; fi
 test "$result" -eq 0

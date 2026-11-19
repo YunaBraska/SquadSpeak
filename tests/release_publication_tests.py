@@ -131,6 +131,15 @@ else: sys.exit(7)
         self.git("commit", "--quiet", "-am", "Change source")
         self.assertEqual(self.mode()["release_mode"], "release")
 
+    def test_existing_same_day_stable_version_becomes_a_successful_build(self):
+        self.repository()
+        (self.root / "source.cpp").write_text("changed\n")
+        self.git("commit", "--quiet", "-am", "Change source")
+        for scenario in ("release", "tag"):
+            with self.subTest(collision=scenario):
+                self.assertEqual(self.mode(SCENARIO=scenario, COLLISION_VERSION="2026.10.4")["release_mode"], "build")
+        self.assertTrue((self.root / "trace.jsonl").exists())
+
     def test_documentation_tests_and_workflows_require_force(self):
         self.repository()
         self.git("tag", "2026.10.3")
@@ -218,12 +227,13 @@ else: sys.exit(7)
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(self.outputs()["version"], "2026.10.4")
 
-    def test_existing_stable_release_tag_or_api_failure_stops_before_builds(self):
-        for scenario in ("release", "tag", "network"):
-            with self.subTest(failure=scenario):
-                result = self.run_step("Resolve build version", "verify.yml", SCENARIO=scenario)
-                self.assertNotEqual(result.returncode, 0)
-                self.assertFalse((self.root / "output").exists())
+    def test_release_collision_lookup_failure_stops_before_builds(self):
+        self.repository()
+        (self.root / "source.cpp").write_text("changed\n")
+        self.git("commit", "--quiet", "-am", "Change source")
+        result = self.run_step("Read build mode", "verify.yml", SCENARIO="network")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertFalse((self.root / "output").exists())
 
     def test_snapshot_resolution_accepts_replacement_without_api_calls(self):
         result = self.run_step("Resolve build version", "verify.yml", RELEASE_MODE="snapshot",
@@ -261,7 +271,7 @@ else: sys.exit(7)
                 self.assertNotIn(private_key, result.stdout + result.stderr)
                 self.assertFalse((self.root / "update-key.der").exists())
 
-    def test_only_intel_ci_requests_delivery_paced_audio(self):
+    def test_macos_ci_requests_delivery_paced_audio(self):
         workflow = (self.repo / ".github/workflows/verify.yml").read_text()
         command = re.search(r"^  macos:\n.*?^      test_command: \|\n((?:        [^\n]*\n)+)",
                             workflow, re.MULTILINE | re.DOTALL)
@@ -270,21 +280,34 @@ else: sys.exit(7)
         (self.root / "tests").mkdir()
         (self.root / "tests/macos-ci.sh").write_text(
             "#!/bin/sh\nexec \"$TEST_PYTHON\" -c 'import json, os; "
-            "print(json.dumps({k: v for k, v in os.environ.items() if k.startswith(\"SQUAD_SOAK_\")}))'\n")
+            "print(json.dumps({k: v for k, v in os.environ.items() if k.startswith(\"SQUAD_SOAK_\") or k == \"SQUADSPEAK_CTEST_EXCLUDE\"}))'\n")
         for architecture in ("X64", "ARM64"):
             with self.subTest(architecture=architecture):
-                env = {key: value for key, value in os.environ.items() if not key.startswith("SQUAD_SOAK_")}
+                env = {key: value for key, value in os.environ.items()
+                       if not key.startswith("SQUAD_SOAK_") and key != "SQUADSPEAK_CTEST_EXCLUDE"}
                 env.update(RUNNER_ARCH=architecture, TEST_PYTHON=sys.executable)
                 result = subprocess.run(["sh", "-eu", "-c", script], cwd=self.root, env=env,
                                         capture_output=True, text=True, timeout=10)
                 self.assertEqual(result.returncode, 0, result.stderr)
                 expected = {"SQUAD_SOAK_CLIENTS": "32", "SQUAD_SOAK_SPEAKERS": "2",
-                            "SQUAD_SOAK_PACING": "delivery"} if architecture == "X64" else {}
+                            "SQUAD_SOAK_PACING": "delivery",
+                            "SQUADSPEAK_CTEST_EXCLUDE": "^(channel_contract_mediaAdmissionExceeds64AcrossOwnedChannels|channel_contract_sixtyFourClientsHaveOneConsistentRosterAndAudioFanout|channel_contract_sixtyFourVideoViewersKeepIndependentQualityAndVoice)$"}
                 self.assertEqual(json.loads(result.stdout), expected)
         # The hosted network launcher clears unlisted environment variables.
         preserved = re.search(r"--preserve-env=([^\s]+)",
                               (self.repo / "CMakeLists.txt").read_text())[1].split(",")
         self.assertIn("SQUAD_SOAK_PACING", preserved)
+
+    def test_windows_bootstrap_retries_transient_protobuf_download_failures(self):
+        workflow = (self.repo / ".github/workflows/verify.yml").read_text()
+        protobuf_install = re.search(
+            r"for \(\$attempt = 1; \$attempt -le 3; \+\+\$attempt\) \{\n"
+            r"\s+choco install protoc --version=33\.0\.0 --no-progress --yes\n"
+            r"\s+if \(\$LASTEXITCODE -eq 0\) \{ break \}\n"
+            r"\s+if \(\$attempt -eq 3\) \{ throw \"Protobuf compiler installation failed with exit code \$LASTEXITCODE\" \}\n"
+            r"\s+Start-Sleep -Seconds \(5 \* \$attempt\)\n"
+            r"\s+\}", workflow)
+        self.assertIsNotNone(protobuf_install)
 
     def test_network_launcher_keeps_function_inventory_and_resource_guards(self):
         executable = self.root / "network contract"
@@ -292,6 +315,7 @@ else: sys.exit(7)
 if sys.argv[1] == "-functions":
     print("boundedDiscoveryAcceptsKnownHosts()")
     print("sixtyFourClientsHaveOneConsistentRosterAndAudioFanout()")
+    print("sixtyFourVideoViewersKeepIndependentQualityAndVoice()")
     print("repeatedDiscoveryDoesNotRebuildUnchangedChannels()")
     print("discoveryRefreshesLivenessWithoutRepeatingVisibleUpdates()")
     print("unchangedDiscoveryHeartbeatDoesNotRebuildChannels()")
@@ -323,16 +347,18 @@ else:
                                     capture_output=True, text=True, timeout=15)
             self.assertEqual(result.returncode, 0, result.stderr)
             tests = json.loads(result.stdout)["tests"]
-            self.assertEqual(len(tests), 6)
+            self.assertEqual(len(tests), 7)
             properties = [{p["name"]: p["value"] for p in test["properties"]} for test in tests]
             self.assertEqual(properties[0]["RESOURCE_LOCK"], ["channel_fixed_ports"])
             self.assertTrue(properties[1]["RUN_SERIAL"])
-            for discovery in properties[2:]:
+            self.assertTrue(properties[2]["RUN_SERIAL"])
+            self.assertEqual(properties[2]["TIMEOUT"], 0.0)
+            for discovery in properties[3:]:
                 self.assertEqual(discovery.get("RESOURCE_LOCK"), ["channel_fixed_ports"])
             result = subprocess.run(["ctest", "--test-dir", str(self.root), "--parallel", "2", "-V"],
                                     capture_output=True, text=True, timeout=15)
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
-            self.assertEqual(result.stdout.count("EXECUTED "), 6)
+            self.assertEqual(result.stdout.count("EXECUTED "), 7)
 
     def test_ci_qml_selectors_exist_before_native_builds(self):
         available = set()
@@ -502,19 +528,25 @@ details.write_text("failed test details")
 sys.exit(9)
 ''')
         ctest.chmod(0o700)
-        for version, native, expected in (("", "", None), ("2026.10.11-SNAPSHOT", "", "2026.10.11-SNAPSHOT"),
-                                          ("2026.10.11", "2026.10.10", "2026.10.10")):
-            with self.subTest(version=version, native=native):
+        for version, native, excluded, expected in (("", "", "", None),
+                                                     ("2026.10.11-SNAPSHOT", "", "", "2026.10.11-SNAPSHOT"),
+                                                     ("2026.10.11", "2026.10.10", "scale-only", "2026.10.10")):
+            with self.subTest(version=version, native=native, excluded=excluded):
                 (self.root / "trace.jsonl").unlink(missing_ok=True)
                 result = subprocess.run(["sh", str(self.repo / "tests/macos-ci.sh"), str(self.root),
                                          str(self.root), "test"], capture_output=True, text=True, timeout=20,
                     env=dict(os.environ, PATH=str(self.root / "bin") + os.pathsep + os.environ["PATH"],
-                             GITHUB_ACTIONS="true", TEST_BUILD=str(self.root), VERSION=version, SQUADSPEAK_VERSION=native))
+                             GITHUB_ACTIONS="true", TEST_BUILD=str(self.root), VERSION=version, SQUADSPEAK_VERSION=native,
+                             SQUADSPEAK_CTEST_EXCLUDE=excluded))
                 self.assertNotEqual(result.returncode, 0)
                 calls = [json.loads(line) for line in (self.root / "trace.jsonl").read_text().splitlines()]
                 self.assertEqual(len(calls), 1, result.stderr)
                 self.assertNotIn("-R", calls[0]["args"])
-                self.assertNotIn("-E", calls[0]["args"])
+                if excluded:
+                    exclusion = calls[0]["args"].index("-E")
+                    self.assertEqual(calls[0]["args"][exclusion + 1], excluded)
+                else:
+                    self.assertNotIn("-E", calls[0]["args"])
                 self.assertIn("--parallel", calls[0]["args"])
                 self.assertNotIn("--stop-on-failure", calls[0]["args"])
                 self.assertEqual(calls[0]["version"], expected)
@@ -657,174 +689,11 @@ elif name == "xcrun" and args[:2] == ["notarytool", "log"]:
         self.assertIn("--latest=true", calls[1])
         self.assertTrue((self.root / "public").exists())
 
-    def snapshot_service(self, releases):
-        state = self.root / "github.json"
-        state.write_text(json.dumps({"releases": releases, "latest": "2026.10.3",
-                                     "tags": {tag: "c" * 40 for tag in releases}}))
-        jq = self.root / "bin/jq"
-        jq.write_text("#!/bin/sh\nexit 99\n")
-        jq.chmod(0o700)
-        gh = self.root / "bin/gh"
-        gh.write_text("#!" + sys.executable + "\n" + r'''import json, os, pathlib, sys
-args = sys.argv[1:]
-path = pathlib.Path("github.json")
-state = json.loads(path.read_text())
-with open(os.environ["TRACE"], "a") as log: log.write(json.dumps(args) + "\n")
-scenario = os.environ.get("SCENARIO", "")
-releases = state["releases"]
-def value(flag): return args[args.index(flag) + 1]
-if args[0] == "api":
-    if scenario == "network": sys.exit(4)
-    if "git/ref/heads/" in args[1]:
-        print("b" * 40 if scenario == "stale" else os.environ["SOURCE_REVISION"])
-    elif "matching-refs" in " ".join(args):
-        print("\n".join("refs/tags/" + tag for tag in state["tags"] if tag == os.environ["RELEASE_VERSION"]))
-    elif "PATCH" in args:
-        state["tags"][os.environ["RELEASE_VERSION"]] = os.environ["SOURCE_REVISION"]
-        path.write_text(json.dumps(state))
-    else:
-        print(json.dumps([list(releases.values())]))
-    sys.exit(0)
-tag = args[2]
-if args[:2] == ["release", "create"]:
-    if tag in releases: sys.exit("duplicate release")
-    releases[tag] = {"tag_name": tag, "draft": "--draft" in args,
-                     "prerelease": "--prerelease" in args, "complete": scenario != "upload-failure",
-                     "sha": value("--target")}
-elif args[:2] == ["release", "delete"]:
-    if scenario == "delete-failure": sys.exit(5)
-    del releases[tag]
-    if "--cleanup-tag" in args: state["tags"].pop(tag, None)
-elif args[:2] == ["release", "edit"]:
-    if scenario == "promotion-failure": sys.exit(8)
-    release = releases.pop(tag)
-    if not release["complete"]: sys.exit("incomplete package upload")
-    tag = value("--tag")
-    if tag in releases: sys.exit("duplicate tag")
-    release.update(tag_name=tag, draft=False, prerelease="--prerelease=true" in args)
-    releases[tag] = release
-    state["tags"].setdefault(tag, release["sha"])
-    if state["tags"][tag] != release["sha"]: sys.exit("tag points to wrong source")
-    if "--latest=true" in args: state["latest"] = tag
-else: sys.exit("unexpected GitHub call")
-path.write_text(json.dumps(state))
-if scenario == "upload-failure" and args[1] == "create": sys.exit(5)
-''')
-        gh.chmod(0o700)
-        assets = self.root / "release-assets"
-        assets.mkdir(exist_ok=True)
-        (assets / "package.zip").write_bytes(b"package fixture")
-        return state
-
-    def publish_snapshot(self, **values):
-        return self.run_step("Publish the tested desktop release", RELEASE_MODE="snapshot",
-                             RELEASE_VERSION="2026.10.4-SNAPSHOT", **values)
-
-    def test_snapshot_replaces_packages_and_cleans_only_obsolete_snapshots(self):
-        stable = {"tag_name": "2026.10.3", "draft": False, "prerelease": False}
-        current = {"tag_name": "2026.10.4-SNAPSHOT", "draft": False, "prerelease": True,
-                   "sha": "c" * 40, "complete": True}
-        legacy = {"tag_name": "2026.10.4-SNAPSHOT.17", "draft": False, "prerelease": True}
-        older = {"tag_name": "2026.10.3-SNAPSHOT", "draft": False, "prerelease": True}
-        other = {"tag_name": "manual-preview", "draft": True, "prerelease": True}
-        state = self.snapshot_service({r["tag_name"]: r for r in (stable, current, legacy, older, other)})
-        for revision in ("a" * 40, "d" * 40):
-            result = self.publish_snapshot(SOURCE_REVISION=revision)
-            self.assertEqual(result.returncode, 0, result.stderr)
-            after = json.loads(state.read_text())
-            self.assertEqual(set(after["releases"]), {stable["tag_name"], current["tag_name"], other["tag_name"]})
-            self.assertEqual(after["releases"][stable["tag_name"]], stable)
-            self.assertEqual(after["releases"][other["tag_name"]], other)
-            snapshot = after["releases"][current["tag_name"]]
-            self.assertEqual(snapshot["sha"], revision)
-            self.assertEqual(after["tags"][current["tag_name"]], revision)
-            self.assertNotIn(legacy["tag_name"], after["tags"])
-            self.assertNotIn(older["tag_name"], after["tags"])
-            self.assertTrue(snapshot["complete"] and snapshot["prerelease"])
-            self.assertFalse(snapshot["draft"])
-            self.assertEqual(after["latest"], stable["tag_name"])
-        notes = (self.root / "release-notes.md").read_text()
-        self.assertIn("Snapshot preview", notes)
-        self.assertNotIn("squadspeak.rb is", notes)
-
-    def test_first_snapshot_and_retry_after_partial_upload(self):
-        state = self.snapshot_service({})
-        failed = self.publish_snapshot(SCENARIO="upload-failure")
-        self.assertNotEqual(failed.returncode, 0)
-        self.assertTrue(json.loads(state.read_text())["releases"]["snapshot-upload"]["draft"])
-        result = self.publish_snapshot()
-        self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertEqual(set(json.loads(state.read_text())["releases"]), {"2026.10.4-SNAPSHOT"})
-
-    def test_snapshot_failure_or_stale_build_does_not_remove_previous_download(self):
-        current = {"tag_name": "2026.10.4-SNAPSHOT", "draft": False, "prerelease": True,
-                   "sha": "c" * 40, "complete": True}
-        state = self.snapshot_service({current["tag_name"]: current})
-        for scenario in ("network", "stale", "upload-failure", "delete-failure"):
-            with self.subTest(scenario=scenario):
-                result = self.publish_snapshot(SCENARIO=scenario)
-                self.assertEqual(result.returncode == 0, scenario == "stale", result.stderr)
-                self.assertEqual(json.loads(state.read_text())["releases"][current["tag_name"]], current)
-
-    def test_promotion_failure_retains_complete_draft_for_retry(self):
-        state = self.snapshot_service({"2026.10.4-SNAPSHOT": {
-            "tag_name": "2026.10.4-SNAPSHOT", "draft": False, "prerelease": True}})
-        self.assertNotEqual(self.publish_snapshot(SCENARIO="promotion-failure").returncode, 0)
-        draft = json.loads(state.read_text())["releases"]["snapshot-upload"]
-        self.assertTrue(draft["draft"] and draft["complete"])
-        result = self.publish_snapshot()
-        self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertEqual(set(json.loads(state.read_text())["releases"]), {"2026.10.4-SNAPSHOT"})
-
-    def test_orphaned_snapshot_tag_moves_to_the_tested_revision(self):
-        state = self.snapshot_service({})
-        before = json.loads(state.read_text())
-        before["tags"]["2026.10.4-SNAPSHOT"] = "c" * 40
-        state.write_text(json.dumps(before))
-        result = self.publish_snapshot()
-        self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertEqual(json.loads(state.read_text())["tags"]["2026.10.4-SNAPSHOT"], "a" * 40)
-
-    def test_snapshot_never_overwrites_stable_immutable_or_public_staging_release(self):
-        for collision in ({"tag_name": "2026.10.4-SNAPSHOT", "draft": False, "prerelease": False},
-                          {"tag_name": "2026.10.4-SNAPSHOT", "draft": False, "prerelease": True, "immutable": True},
-                          {"tag_name": "snapshot-upload", "draft": False, "prerelease": True}):
-            with self.subTest(collision=collision):
-                state = self.snapshot_service({collision["tag_name"]: collision})
-                before = state.read_text()
-                self.assertNotEqual(self.publish_snapshot().returncode, 0)
-                self.assertEqual(state.read_text(), before)
-
-    def test_snapshot_package_set_omits_update_feeds_and_homebrew(self):
-        assets = self.root / "release-assets"
-        assets.mkdir()
-        expected = self.assets[:-2]
-        for name in expected:
-            (assets / name).write_bytes(name.encode())
-        values = dict(RELEASE_MODE="snapshot", RELEASE_VERSION="2026.10.4-SNAPSHOT")
-        for name in ("appcast-macos-arm64.xml", "squadspeak.rb"):
-            (assets / name).write_text("unexpected")
-            result = self.run_step("Verify package set and create checksums", **values)
-            self.assertNotEqual(result.returncode, 0)
-            self.assertFalse((assets / "SHA256SUMS").exists())
-            (assets / name).unlink()
-        result = self.run_step("Verify package set and create checksums", **values)
-        self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertFalse((assets / "squadspeak.rb").exists())
-        checksums = (assets / "SHA256SUMS").read_text()
-        self.assertEqual(len(checksums.splitlines()), len(expected))
-        for name in expected:
-            self.assertIn("  " + name + "\n", checksums)
-
-    def test_publication_mode_must_match_version(self):
+    def test_publication_rejects_prerelease_version(self):
         (self.root / "release-assets").mkdir()
-        for mode, version in (("snapshot", "2026.10.4"), ("release", "2026.10.4-SNAPSHOT"),
-                              ("unknown", "2026.10.4")):
-            with self.subTest(mode=mode):
-                result = self.run_step("Verify package set and create checksums",
-                                       RELEASE_MODE=mode, RELEASE_VERSION=version)
-                self.assertNotEqual(result.returncode, 0)
-                self.assertFalse((self.root / "release-assets/SHA256SUMS").exists())
+        result = self.run_step("Verify package set and create checksums", RELEASE_VERSION="2026.10.4-SNAPSHOT")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertFalse((self.root / "release-assets/SHA256SUMS").exists())
 
     def test_package_set_rejects_missing_empty_and_unexpected_files(self):
         assets = self.root / "release-assets"
