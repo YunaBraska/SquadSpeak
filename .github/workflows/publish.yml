@@ -93,7 +93,7 @@ jobs:
     permissions:
       actions: read
       contents: write
-    uses: YunaBraska/YunaBraska/.github/workflows/wc_github_create_release.yml@a989b376b6f85e9643c12231a44640036f8ad1c2
+    uses: YunaBraska/YunaBraska/.github/workflows/wc_github_create_release.yml@f122a3096e6ac9b674320772242bc6d47cf396c7
     with:
       artifact_name: release-assets-${{ inputs.commit_sha }}
       artifact_path: release-assets
