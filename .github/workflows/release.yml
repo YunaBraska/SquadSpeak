@@ -40,7 +40,7 @@ jobs:
   chocolatey:
     needs: [verify, publish]
     if: needs.publish.result == 'success'
-    uses: YunaBraska/YunaBraska/.github/workflows/wc_chocolatey_publish.yml@97f62c478daba54a57f8f0150fb45170b4ad5b59
+    uses: YunaBraska/YunaBraska/.github/workflows/wc_chocolatey_publish.yml@a989b376b6f85e9643c12231a44640036f8ad1c2
     with:
       package_id: squadspeak
       display_name: SquadSpeak
