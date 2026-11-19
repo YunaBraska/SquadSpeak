@@ -1,5 +1,5 @@
 Rust dependency notices
-Cargo.lock SHA256: a03ddd30968562222fffbd6515f25093eaac92f358d2a0a13b51cd8157de288b
+Cargo.lock SHA256: 08dc9dd51c73556ffc22d2d37293b703e713a487665f1171749b0928858ebacb
 
 Package: aead 0.5.2
 Source: registry+https://github.com/rust-lang/crates.io-index
@@ -123,7 +123,7 @@ Source: registry+https://github.com/rust-lang/crates.io-index
 License: MIT
 Notice: 45f522cacecb1023856e46df79ca625dfc550c94910078bd8aec6e02880b3d42
 
-Package: cc 1.8.0
+Package: cc 1.11.1
 Source: registry+https://github.com/rust-lang/crates.io-index
 License: MIT OR Apache-2.0
 Notice: a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2
@@ -373,7 +373,7 @@ License: MIT/Apache-2.0
 Notice: 3708458dee7f359ac6c9c5558023ed481be87e5372c43ebd7f2ca7ad23c12026
 Notice: 8d0c1d1d4b2bebf5b9211f0e883d5a482b7808f3ed31320da14ddee95811f4ef
 
-Package: find-msvc-tools 0.1.14
+Package: find-msvc-tools 0.1.15
 Source: registry+https://github.com/rust-lang/crates.io-index
 License: MIT OR Apache-2.0
 Notice: a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2
@@ -849,7 +849,7 @@ License: MIT OR Apache-2.0
 Notice: a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2
 Notice: 23f18e03dc49df91622fe2a76176497404e46ced8a715d9d2b67a7446571cca3
 
-Package: openssl 0.10.81
+Package: openssl 0.10.82
 Source: registry+https://github.com/rust-lang/crates.io-index
 License: Apache-2.0
 Notice: f3d4287b4a21c5176fea2f9bd4ae800696004e2fb8e05cbc818be513f188a941
@@ -867,7 +867,7 @@ License: MIT OR Apache-2.0
 Notice: a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2
 Notice: 378f5840b258e2779c39418f3f2d7b2ba96f1c7917dd6be0713f88305dbda397
 
-Package: openssl-sys 0.9.117
+Package: openssl-sys 0.9.118
 Source: registry+https://github.com/rust-lang/crates.io-index
 License: MIT
 Notice: 378f5840b258e2779c39418f3f2d7b2ba96f1c7917dd6be0713f88305dbda397
