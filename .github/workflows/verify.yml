@@ -238,7 +238,7 @@ jobs:
             mode: store
           - runner: ubuntu-24.04
             mode: sanitizers
-    uses: YunaBraska/YunaBraska/.github/workflows/wc_cpp_linux_build.yml@64ded0126229fc7bb53ffa1cbd3b8ce1ce2ed80c
+    uses: YunaBraska/YunaBraska/.github/workflows/wc_cpp_linux_build.yml@469372e592d87a003dbfae15ef8d50194bcea7e5
     with:
       ref: ${{ needs.prepare.outputs.commit_sha }}
       version: ${{ needs.prepare.outputs.version }}
@@ -299,7 +299,7 @@ jobs:
 
   macos:
     needs: prepare
-    uses: YunaBraska/YunaBraska/.github/workflows/wc_cpp_macos_build.yml@64ded0126229fc7bb53ffa1cbd3b8ce1ce2ed80c
+    uses: YunaBraska/YunaBraska/.github/workflows/wc_cpp_macos_build.yml@469372e592d87a003dbfae15ef8d50194bcea7e5
     with:
       ref: ${{ needs.prepare.outputs.commit_sha }}
       version: ${{ needs.prepare.outputs.version }}
@@ -354,7 +354,7 @@ jobs:
 
   windows:
     needs: prepare
-    uses: YunaBraska/YunaBraska/.github/workflows/wc_cpp_windows_build.yml@64ded0126229fc7bb53ffa1cbd3b8ce1ce2ed80c
+    uses: YunaBraska/YunaBraska/.github/workflows/wc_cpp_windows_build.yml@469372e592d87a003dbfae15ef8d50194bcea7e5
     with:
       ref: ${{ needs.prepare.outputs.commit_sha }}
       version: ${{ needs.prepare.outputs.version }}
