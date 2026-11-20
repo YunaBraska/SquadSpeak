@@ -3,6 +3,11 @@ name: "🔄 CD · Release Snapshot"
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - README.md
+      - docs/**
+      - doc/**
+      - .github/workflows/product-pages.yml
   workflow_dispatch:
 
 permissions:
