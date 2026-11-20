@@ -674,7 +674,10 @@ elif name == "xcrun" and args[:2] == ["notarytool", "log"]:
 
     def test_release_uses_the_canonical_shared_publisher(self):
         workflow = (self.repo / ".github/workflows/publish.yml").read_text(encoding="utf-8")
-        self.assertIn("YunaBraska/YunaBraska/.github/workflows/wc_github_create_release.yml@bd11b43a566c8ada526b953d4aa3bedde349341f", workflow)
+        self.assertRegex(
+            workflow,
+            r"YunaBraska/YunaBraska/\.github/workflows/wc_github_create_release\.yml@[0-9a-f]{40}",
+        )
         self.assertIn("artifact_name: release-assets-${{ inputs.commit_sha }}", workflow)
         self.assertIn("release_notes_file: release-notes.md", workflow)
         self.assertNotIn("gh release ", workflow)

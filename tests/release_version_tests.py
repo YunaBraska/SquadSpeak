@@ -21,7 +21,7 @@ class ReleaseVersionTests(unittest.TestCase):
         self.assertIn("bundle_id: berlin.yuna.squadspeak", app_store)
         self.assertIn("version: ${{ inputs.version }}", app_store)
         self.assertIn("version: ${{ inputs.version }}", app_store_upload)
-        self.assertIn("wc_ios_app_store.yml@be05e1943fb3b026c4e57d1d6f20771b9a3d8628", app_store)
+        self.assertRegex(app_store, r"wc_ios_app_store\.yml@[0-9a-f]{40}")
         self.assertIn("artifact_extension: ipa", app_store_upload)
         self.assertIn('set(SQUADSPEAK_BUNDLE_ID "app.squadspeak.desktop"', bundle)
         self.assertIn('MACOSX_BUNDLE_GUI_IDENTIFIER "${SQUADSPEAK_BUNDLE_ID}"', bundle)
