@@ -9,6 +9,7 @@
 #include <QNetworkAccessManager>
 #include <QTimer>
 #include <QUrl>
+#include <QVariantList>
 #include <functional>
 
 // Owns the OS account's GitHub sign-in and encrypted supporter evidence.
@@ -17,6 +18,7 @@ class License final : public QObject {
     Q_OBJECT
     Q_PROPERTY(bool configured READ configured CONSTANT)
     Q_PROPERTY(bool directDistribution READ directDistribution CONSTANT)
+    Q_PROPERTY(QVariantList donationLinks READ donationLinks CONSTANT)
     Q_PROPERTY(QUrl purchaseUrl READ purchaseUrl CONSTANT)
     Q_PROPERTY(bool busy READ busy NOTIFY changed)
     Q_PROPERTY(bool active READ active NOTIFY changed)
@@ -41,6 +43,7 @@ public:
     [[nodiscard]] static QString storageDirectory();
     [[nodiscard]] static bool directDistribution();
     [[nodiscard]] static QUrl purchaseUrl();
+    [[nodiscard]] QVariantList donationLinks() const;
     [[nodiscard]] bool configured() const { return directDistribution() && !product_.isEmpty(); }
     [[nodiscard]] bool busy() const { return busy_; }
     [[nodiscard]] bool active() const;

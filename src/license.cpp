@@ -54,6 +54,18 @@ QUrl License::purchaseUrl() {
     // Checkout stays unavailable until the paid buyer flow is verified.
     return {};
 }
+QVariantList License::donationLinks() const {
+#if SQUADSPEAK_STORE_BUILD
+    return {};
+#else
+    return {
+        QVariantMap{{"key", "sponsors"}, {"label", "GitHub Sponsors"}, {"url", "https://github.com/sponsors/YunaBraska"}},
+        QVariantMap{{"key", "coffee"}, {"label", "Buy Me a Coffee"}, {"url", "https://buymeacoffee.com/YunaBraska"}},
+        QVariantMap{{"key", "kofi"}, {"label", "Ko-fi"}, {"url", "https://ko-fi.com/YunaBraska"}},
+        QVariantMap{{"key", "liberapay"}, {"label", "Liberapay"}, {"url", "https://liberapay.com/YunaBraska"}}
+    };
+#endif
+}
 QJsonObject License::policy() const {
     auto result = product_;
     result.remove("client_id");

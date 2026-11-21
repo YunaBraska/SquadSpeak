@@ -13,7 +13,7 @@ permissions:
 
 jobs:
   macos:
-    uses: YunaBraska/YunaBraska/.github/workflows/wc_macos_app_store.yml@469372e592d87a003dbfae15ef8d50194bcea7e5
+    uses: YunaBraska/YunaBraska/.github/workflows/wc_macos_app_store.yml@7574419a0f5ec718f55507d06844613d5fcf920e
     with:
       app_name: SquadSpeak
       bundle_id: berlin.yuna.squadspeak
@@ -21,7 +21,7 @@ jobs:
     secrets: inherit
 
   ios:
-    uses: YunaBraska/YunaBraska/.github/workflows/wc_ios_app_store.yml@469372e592d87a003dbfae15ef8d50194bcea7e5
+    uses: YunaBraska/YunaBraska/.github/workflows/wc_ios_app_store.yml@7574419a0f5ec718f55507d06844613d5fcf920e
     with:
       app_name: SquadSpeak
       bundle_id: berlin.yuna.squadspeak
