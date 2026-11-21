@@ -243,6 +243,8 @@ PanelWindow {
     readonly property bool animateAvatars: voice.avatarAnimation === "on"
         || (voice.avatarAnimation === "system" && !Theme.reducedMotion)
     property var supporter: typeof supporterLicense !== "undefined" ? supporterLicense : null
+    readonly property var donationLinks: supporter !== null && supporter.donationLinks !== undefined
+        ? supporter.donationLinks : []
     property var updates: typeof appUpdates !== "undefined" ? appUpdates : null
     component AvatarShelf: PathView {
         id: avatarShelf
@@ -1270,17 +1272,17 @@ PanelWindow {
                             }
                         }
                         Label {
-                            visible: root.supporter !== null && root.supporter.donationLinks.length > 0
+                            visible: root.donationLinks.length > 0
                             text: qsTr("Support development")
                             font.weight: Font.DemiBold
                             Layout.fillWidth: true
                             wrapMode: Text.Wrap
                         }
                         GridLayout {
-                            visible: root.supporter !== null && root.supporter.donationLinks.length > 0
+                            visible: root.donationLinks.length > 0
                             columns: 2; Layout.fillWidth: true
                             Repeater {
-                                model: root.supporter === null ? [] : root.supporter.donationLinks
+                                model: root.donationLinks
                                 ActionButton { required property var modelData; objectName: "aboutLink_" + modelData.key; Layout.fillWidth: true; text: modelData.label; onClicked: Qt.openUrlExternally(modelData.url) }
                             }
                         }
