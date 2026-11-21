@@ -1269,8 +1269,15 @@ PanelWindow {
                                 ActionButton { required property var modelData; objectName: "aboutLink_" + modelData.key; Layout.fillWidth: true; text: modelData.label; onClicked: Qt.openUrlExternally(modelData.url) }
                             }
                         }
-                        Label { text: qsTr("Support development"); font.weight: Font.DemiBold; Layout.fillWidth: true; wrapMode: Text.Wrap }
+                        Label {
+                            visible: root.supporter !== null && root.supporter.directDistribution
+                            text: qsTr("Support development")
+                            font.weight: Font.DemiBold
+                            Layout.fillWidth: true
+                            wrapMode: Text.Wrap
+                        }
                         GridLayout {
+                            visible: root.supporter !== null && root.supporter.directDistribution
                             columns: 2; Layout.fillWidth: true
                             Repeater {
                                 model: [

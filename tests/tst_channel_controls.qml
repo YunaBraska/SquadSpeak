@@ -4841,6 +4841,15 @@ TestCase {
         view.closeSettings()
     }
 
+    function test_storeBuildHidesDonationLinks() {
+        if (supporterLicense.directDistribution) return
+        view.openSettings(3)
+        const content = findChild(view, "settingsDialog").contentItem
+        for (const key of ["sponsors", "coffee", "kofi", "liberapay"])
+            verify(!visualChild(content, "aboutLink_" + key))
+        view.closeSettings()
+    }
+
     function test_aboutVersionFitsAvailableWidth_data() {
         return [
             { tag: "stable-narrow", version: "2026.10.11", width: 320 },
