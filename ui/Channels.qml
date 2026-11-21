@@ -1270,22 +1270,17 @@ PanelWindow {
                             }
                         }
                         Label {
-                            visible: root.supporter !== null && root.supporter.directDistribution
+                            visible: root.supporter !== null && root.supporter.donationLinks.length > 0
                             text: qsTr("Support development")
                             font.weight: Font.DemiBold
                             Layout.fillWidth: true
                             wrapMode: Text.Wrap
                         }
                         GridLayout {
-                            visible: root.supporter !== null && root.supporter.directDistribution
+                            visible: root.supporter !== null && root.supporter.donationLinks.length > 0
                             columns: 2; Layout.fillWidth: true
                             Repeater {
-                                model: [
-                                    {key: "sponsors", label: "GitHub Sponsors", url: "https://github.com/sponsors/YunaBraska"},
-                                    {key: "coffee", label: "Buy Me a Coffee", url: "https://buymeacoffee.com/YunaBraska"},
-                                    {key: "kofi", label: "Ko-fi", url: "https://ko-fi.com/YunaBraska"},
-                                    {key: "liberapay", label: "Liberapay", url: "https://liberapay.com/YunaBraska"}
-                                ]
+                                model: root.supporter === null ? [] : root.supporter.donationLinks
                                 ActionButton { required property var modelData; objectName: "aboutLink_" + modelData.key; Layout.fillWidth: true; text: modelData.label; onClicked: Qt.openUrlExternally(modelData.url) }
                             }
                         }
