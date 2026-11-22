@@ -78,6 +78,8 @@ def main():
         metadata = plistlib.load(source)
     if metadata.get("LSApplicationCategoryType") != "public.app-category.social-networking":
         errors.append({"check": "application_category"})
+    if not metadata.get("NSScreenCaptureUsageDescription", "").strip():
+        errors.append({"check": "screen_capture_permission_text"})
     if "SUPublicEDKey" in metadata:
         try:
             assert len(base64.b64decode(metadata["SUPublicEDKey"], validate=True)) == 32

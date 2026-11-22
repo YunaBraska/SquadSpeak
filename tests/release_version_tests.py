@@ -93,6 +93,8 @@ class ReleaseVersionTests(unittest.TestCase):
             metadata = plistlib.loads((root / "out/bundle.plist").read_bytes())
             self.assertEqual(metadata["CFBundleVersion"], "2026.10.5")
             self.assertEqual(metadata["CFBundleShortVersionString"], "2026.10.5")
+            self.assertEqual(metadata["NSScreenCaptureUsageDescription"],
+                             "SquadSpeak captures a screen, window, or app only when you start screen sharing in a channel.")
 
     def test_apple_build_number_is_independent_from_the_marketing_version(self):
         repo = Path(__file__).resolve().parents[1]
