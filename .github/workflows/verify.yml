@@ -157,7 +157,7 @@ jobs:
           } >> "$GITHUB_OUTPUT"
       - name: "🧾 Read snapshot SemVer"
         id: semver
-        uses: YunaBraska/semver-info-action@494f1601936e3cdfc8a7b1135975eebb16041991
+        uses: YunaBraska/semver-info-action@b37cf79ceeeb481038abd7d820f73d1625e77bd8
         with:
           semver-a: ${{ steps.mode.outputs.latest_tag }}
           semver-b: 0.0.1
