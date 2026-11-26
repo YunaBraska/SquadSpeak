@@ -174,10 +174,12 @@ private slots:
         QVERIFY(!license.configured()); QVERIFY(!license.signIn()); QVERIFY(!license.signOut());
         QVERIFY(!license.refresh()); QVERIFY(!license.active());
         QVERIFY(License::distributionProduct().isEmpty()); QVERIFY(License::purchaseUrl().isEmpty());
+        QVERIFY(license.donationLinks().isEmpty());
         QVERIFY(QDir(dir.path()).entryList(QDir::Files).isEmpty());
 #else
         QVERIFY(license.configured()); QVERIFY(License::directDistribution());
         QVERIFY(License::purchaseUrl().isEmpty());
+        QCOMPARE(license.donationLinks().size(), 4);
 #endif
     }
 #if !SQUADSPEAK_STORE_BUILD

@@ -27,6 +27,9 @@ class ReleaseVersionTests(unittest.TestCase):
         self.assertIn('MACOSX_BUNDLE_GUI_IDENTIFIER "${SQUADSPEAK_BUNDLE_ID}"', bundle)
         self.assertIn('SQUADSPEAK_BUNDLE_ID="$APP_STORE_BUNDLE_ID"',
                       (source / "scripts/package-app-store.sh").read_text(encoding="utf-8"))
+        for domain in ("github.com/sponsors", "buymeacoffee.com", "ko-fi.com", "liberapay.com"):
+            with self.subTest(domain=domain):
+                self.assertIn(domain, (source / "scripts/package-app-store.sh").read_text(encoding="utf-8"))
         self.assertIn('-DSQUADSPEAK_BUNDLE_ID="$APP_STORE_BUNDLE_ID"',
                       (source / "scripts/package-ios-app-store.sh").read_text(encoding="utf-8"))
         self.assertIn('("CFBundleIdentifier", "app.squadspeak.desktop")', appcast)
