@@ -590,11 +590,14 @@ elif args[0] == "wait": print(0)
         self.assertEqual(result.returncode, 0, result.stderr)
 
     def test_macos_package_signs_nested_helpers_and_requires_accepted_notarization(self):
-        boundary = "#!" + sys.executable + "\n" + '''import json, os, pathlib, sys
+        boundary = "#!" + sys.executable + "\n" + '''import json, os, pathlib, plistlib, sys
 name = pathlib.Path(sys.argv[0]).name
 args = sys.argv[1:]
 with open(os.environ["TRACE"], "a") as output:
     output.write(json.dumps([name] + args) + "\\n")
+    if name == "codesign" and "--entitlements" in args:
+        payload = plistlib.loads(pathlib.Path(args[args.index("--entitlements") + 1]).read_bytes())
+        output.write(json.dumps(["entitlements", payload]) + "\\n")
 scenario = os.environ["SCENARIO"]
 if name == "uname": print("arm64")
 elif name == "cmake":
@@ -610,6 +613,7 @@ elif name == "ditto":
     if "-x" in args: destination.mkdir(parents=True, exist_ok=True)
     else: destination.write_bytes(b"archive")
 elif name == "python3":
+    if args[0].endswith("check_macos_bundle.py") and scenario == "permission-failure": sys.exit(10)
     if not args[0].endswith("check_macos_bundle.py"):
         os.execv(sys.executable, [sys.executable] + args)
 elif name == "xcrun" and args[:2] == ["notarytool", "submit"]:
@@ -624,8 +628,8 @@ elif name == "xcrun" and args[:2] == ["notarytool", "log"]:
             path = self.root / "bin" / name
             path.write_text(boundary)
             path.chmod(0o700)
-        for scenario in ("Accepted", "Invalid", "In Progress", "malformed", "submit-failure",
-                         "log-failure", "signing-failure"):
+        for scenario in ("Accepted", "Adhoc", "Invalid", "In Progress", "malformed", "submit-failure",
+                         "log-failure", "signing-failure", "permission-failure"):
             with self.subTest(scenario=scenario):
                 trace = self.root / "trace.jsonl"
                 trace.unlink(missing_ok=True)
@@ -638,9 +642,32 @@ elif name == "xcrun" and args[:2] == ["notarytool", "log"]:
                     str(self.root), str(build), "package"], capture_output=True, text=True, timeout=20,
                     env=dict(os.environ, PATH=str(self.root / "bin") + os.pathsep + os.environ["PATH"],
                         TRACE=str(trace), SCENARIO=scenario, TMPDIR=str(self.root), RUNNER_TEMP=str(self.root),
-                        MACOS_SIGNING_IDENTITY="Release Test", MACOS_NOTARY_PROFILE="test-profile", SIGN_UPDATES="false"))
+                        MACOS_SIGNING_IDENTITY="-" if scenario == "Adhoc" else "Release Test",
+                        MACOS_NOTARY_PROFILE="" if scenario == "Adhoc" else "test-profile", SIGN_UPDATES="false"))
                 calls = [json.loads(line) for line in trace.read_text().splitlines()]
                 stapling = [call[1:3] for call in calls if call[0] == "xcrun" and call[1] == "stapler"]
+                if scenario in ("Accepted", "Adhoc"):
+                    self.assertEqual(result.returncode, 0, result.stderr)
+                    final_signature = next(call for call in reversed(calls)
+                                           if call[0] == "codesign" and "--sign" in call)
+                    self.assertIn("--entitlements", final_signature)
+                    self.assertNotIn("--deep", final_signature)
+                    self.assertEqual([call[1] for call in calls if call[0] == "entitlements"], [{
+                        "com.apple.security.device.audio-input": True,
+                        "com.apple.security.cs.allow-jit": True,
+                    }])
+                    self.assertEqual(sum(call[0] == "python3" and call[1].endswith("check_macos_bundle.py")
+                                         for call in calls), 3)
+                    permission_check = next(i for i, call in enumerate(calls) if "--permissions-only" in call)
+                    self.assertGreater(permission_check, calls.index(final_signature))
+                    if scenario == "Adhoc":
+                        self.assertEqual(final_signature[final_signature.index("--sign") + 1], "-")
+                        self.assertFalse(any(call[0] == "xcrun" for call in calls))
+                    else:
+                        self.assertEqual(final_signature[final_signature.index("--options") + 1], "runtime")
+                        self.assertIn("--timestamp", final_signature)
+                        self.assertLess(permission_check, next(i for i, call in enumerate(calls)
+                                                               if call[1:3] == ["notarytool", "submit"]))
                 if scenario == "Accepted":
                     self.assertEqual(result.returncode, 0, result.stderr)
                     self.assertEqual(stapling, [["stapler", "staple"], ["stapler", "validate"]])
@@ -665,16 +692,21 @@ elif name == "xcrun" and args[:2] == ["notarytool", "log"]:
                     log = next(i for i, call in enumerate(calls) if call[1:3] == ["notarytool", "log"])
                     staple = next(i for i, call in enumerate(calls) if call[1:3] == ["stapler", "staple"])
                     self.assertLess(log, staple)
-                else:
+                elif scenario != "Adhoc":
                     self.assertNotEqual(result.returncode, 0, result.stdout)
                     self.assertEqual(stapling, [])
+                    if scenario == "permission-failure":
+                        self.assertFalse(any(call[0] in ("xcrun", "ditto") for call in calls))
                 if scenario in ("Accepted", "Invalid", "In Progress"):
                     self.assertEqual(json.loads((build / "artifacts/notarization-log.json").read_text())["status"], scenario)
                 self.assertEqual(list(self.root.glob("squadspeak-package.*")), [])
 
     def test_release_uses_the_canonical_shared_publisher(self):
         workflow = (self.repo / ".github/workflows/publish.yml").read_text(encoding="utf-8")
-        self.assertIn("YunaBraska/YunaBraska/.github/workflows/wc_github_create_release.yml@bd11b43a566c8ada526b953d4aa3bedde349341f", workflow)
+        self.assertRegex(
+            workflow,
+            r"YunaBraska/YunaBraska/\.github/workflows/wc_github_create_release\.yml@[0-9a-f]{40}",
+        )
         self.assertIn("artifact_name: release-assets-${{ inputs.commit_sha }}", workflow)
         self.assertIn("release_notes_file: release-notes.md", workflow)
         self.assertNotIn("gh release ", workflow)

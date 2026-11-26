@@ -16,6 +16,12 @@ sh "$root/tests/macos-ci.sh" auto "$stage/build" build
 cmake --install "$stage/build/app" --prefix "$stage/install"
 app="$stage/install/squadspeak.app"
 test ! -d "$app/Contents/Frameworks/Sparkle.framework"
+for forbidden_domain in github.com/sponsors buymeacoffee.com ko-fi.com liberapay.com; do
+    if strings "$app/Contents/MacOS/squadspeak" | grep -Fq "$forbidden_domain"; then
+        printf 'Store app must not contain %s.\n' "$forbidden_domain" >&2
+        exit 1
+    fi
+done
 plist="$app/Contents/Info.plist"
 /usr/libexec/PlistBuddy -c "Set :CFBundleIdentifier $APP_STORE_BUNDLE_ID" "$plist"
 /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $1" "$plist"

@@ -157,7 +157,7 @@ jobs:
           } >> "$GITHUB_OUTPUT"
       - name: "🧾 Read snapshot SemVer"
         id: semver
-        uses: YunaBraska/semver-info-action@494f1601936e3cdfc8a7b1135975eebb16041991
+        uses: YunaBraska/semver-info-action@b37cf79ceeeb481038abd7d820f73d1625e77bd8
         with:
           semver-a: ${{ steps.mode.outputs.latest_tag }}
           semver-b: 0.0.1
@@ -238,7 +238,7 @@ jobs:
             mode: store
           - runner: ubuntu-24.04
             mode: sanitizers
-    uses: YunaBraska/YunaBraska/.github/workflows/wc_cpp_linux_build.yml@0c16fe69a5b69ad9da903c444f855b19d4d555fc
+    uses: YunaBraska/YunaBraska/.github/workflows/wc_cpp_linux_build.yml@c50354ba274461b06a13b961d219629d3bb57ae2
     with:
       ref: ${{ needs.prepare.outputs.commit_sha }}
       version: ${{ needs.prepare.outputs.version }}
@@ -299,7 +299,7 @@ jobs:
 
   macos:
     needs: prepare
-    uses: YunaBraska/YunaBraska/.github/workflows/wc_cpp_macos_build.yml@0c16fe69a5b69ad9da903c444f855b19d4d555fc
+    uses: YunaBraska/YunaBraska/.github/workflows/wc_cpp_macos_build.yml@c50354ba274461b06a13b961d219629d3bb57ae2
     with:
       ref: ${{ needs.prepare.outputs.commit_sha }}
       version: ${{ needs.prepare.outputs.version }}
@@ -354,7 +354,7 @@ jobs:
 
   windows:
     needs: prepare
-    uses: YunaBraska/YunaBraska/.github/workflows/wc_cpp_windows_build.yml@0c16fe69a5b69ad9da903c444f855b19d4d555fc
+    uses: YunaBraska/YunaBraska/.github/workflows/wc_cpp_windows_build.yml@c50354ba274461b06a13b961d219629d3bb57ae2
     with:
       ref: ${{ needs.prepare.outputs.commit_sha }}
       version: ${{ needs.prepare.outputs.version }}
