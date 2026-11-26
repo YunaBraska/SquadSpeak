@@ -13,6 +13,7 @@
     @squad_platform_plist@
     <key>NSMicrophoneUsageDescription</key><string>SquadSpeak uses your selected microphone for voice chat and microphone previews.</string>
     <key>NSAudioCaptureUsageDescription</key><string>SquadSpeak uses speaker audio locally to reduce microphone echo. This reference is never saved or shared.</string>
+    <key>NSScreenCaptureUsageDescription</key><string>SquadSpeak captures a screen, window, or app only when you start screen sharing in a channel.</string>
     <key>NSLocalNetworkUsageDescription</key><string>SquadSpeak discovers and connects to channels on your local network.</string>
     <key>NSHighResolutionCapable</key><true/>
     @squad_update_plist@
