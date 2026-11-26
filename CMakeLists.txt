@@ -669,6 +669,11 @@ if(BUILD_TESTING)
         add_test(NAME release_publication COMMAND ${Python3_EXECUTABLE}
             "${CMAKE_CURRENT_SOURCE_DIR}/tests/release_publication_tests.py")
     endif()
+    if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+        add_test(NAME macos_package_permissions COMMAND ${Python3_EXECUTABLE}
+            "${CMAKE_CURRENT_SOURCE_DIR}/tests/macos_permissions_tests.py")
+        set_tests_properties(macos_package_permissions PROPERTIES TIMEOUT 90)
+    endif()
     add_test(NAME update_feeds COMMAND ${Python3_EXECUTABLE}
         "${CMAKE_CURRENT_SOURCE_DIR}/tests/test_build_appcasts.py")
     if(TARGET squad_updater)

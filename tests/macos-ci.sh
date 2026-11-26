@@ -172,11 +172,6 @@ if ! cmake --install "$build_root/app" --prefix "$stage_root/install"; then
 fi
 app="$stage_root/install/squadspeak.app"
 if test "${MACOS_SIGNING_IDENTITY:--}" != -; then
-    cat > "$app/Contents/Resources/entitlements.plist" <<'ENTITLEMENTS'
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0"><dict><key>com.apple.security.cs.allow-jit</key><true/></dict></plist>
-ENTITLEMENTS
     # macdeployqt signs the framework, but not Sparkle's nested executables.
     sparkle="$app/Contents/Frameworks/Sparkle.framework/Versions/B"
     for helper in XPCServices/Installer.xpc Autoupdate Updater.app; do
@@ -196,9 +191,18 @@ ENTITLEMENTS
         cmp -s "$source" "$target"
         codesign --force --sign "$MACOS_SIGNING_IDENTITY" --options runtime --timestamp "$target"
     done
-    codesign --force --deep --sign "$MACOS_SIGNING_IDENTITY" --options runtime --timestamp "$app"
-    codesign --verify --deep --strict "$app"
 fi
+# Sign only the final app here. --deep would also give its microphone access to
+# nested helpers. Keep the input outside Resources so macdeployqt cannot apply
+# it to every library it deploys. Ad-hoc packages exercise the same capabilities.
+set -- --force --sign "${MACOS_SIGNING_IDENTITY:--}" --entitlements "$source_root/scripts/macos.entitlements"
+if test "${MACOS_SIGNING_IDENTITY:--}" != -; then
+    set -- "$@" --options runtime --timestamp
+fi
+codesign "$@" "$app"
+python3 "$source_root/tests/check_macos_bundle.py" "$app" \
+    --minimum-system 13.0 --architecture "$architecture" --report "$build_root/artifacts/permissions.json" \
+    --permissions-only
 if test -n "${MACOS_NOTARY_PROFILE:-}"; then
     ditto -c -k --sequesterRsrc --keepParent "$app" "$stage_root/notarization.zip"
     report="$build_root/artifacts/notarization.json"

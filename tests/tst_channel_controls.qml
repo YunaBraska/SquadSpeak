@@ -4504,7 +4504,9 @@ TestCase {
         verify(channel.join(channel.ownId, "127.0.0.1", channel.servicePort))
         tryCompare(channel, "chatReady", true)
         membershipEvents.clear()
-        tryVerify(function() { return channel.participants.length === 64 && view.chatMembers.length === 64 }, 30000)
+        // The fixture admits 63 TLS peers in sequence. One second per peer plus
+        // UI propagation leaves a bounded deadline on slower native runners.
+        tryVerify(function() { return channel.participants.length === 64 && view.chatMembers.length === 64 }, 90000)
         verify(membershipEvents.signalArguments.every(event => event[0] !== "leave"),
             "Preparing roster participants must not disconnect the owner")
         const more = findChild(view, "voiceMembers")
@@ -4820,11 +4822,15 @@ TestCase {
         const expected = {
             repository: "https://github.com/YunaBraska/SquadSpeak",
             privacy: "https://yunabraska.github.io/SquadSpeak/privacy.html",
-            issues: "https://github.com/YunaBraska/SquadSpeak/issues/new",
-            sponsors: "https://github.com/sponsors/YunaBraska",
-            coffee: "https://buymeacoffee.com/YunaBraska",
-            kofi: "https://ko-fi.com/YunaBraska",
-            liberapay: "https://liberapay.com/YunaBraska"
+            issues: "https://github.com/YunaBraska/SquadSpeak/issues/new"
+        }
+        if (supporterLicense.directDistribution) {
+            Object.assign(expected, {
+                sponsors: "https://github.com/sponsors/YunaBraska",
+                coffee: "https://buymeacoffee.com/YunaBraska",
+                kofi: "https://ko-fi.com/YunaBraska",
+                liberapay: "https://liberapay.com/YunaBraska"
+            })
         }
         for (const key of Object.keys(expected)) {
             const button = visualChild(findChild(view, "settingsDialog").contentItem, "aboutLink_" + key)
@@ -4838,6 +4844,15 @@ TestCase {
         view.width = 360; view.height = 480
         waitForRendering(view.contentItem)
         verify(about.width <= findChild(view, "settingsScroll").availableWidth)
+        view.closeSettings()
+    }
+
+    function test_storeBuildHidesDonationLinks() {
+        if (supporterLicense.directDistribution) return
+        view.openSettings(3)
+        const content = findChild(view, "settingsDialog").contentItem
+        for (const key of ["sponsors", "coffee", "kofi", "liberapay"])
+            verify(!visualChild(content, "aboutLink_" + key))
         view.closeSettings()
     }
 

@@ -31,18 +31,13 @@ def main():
     parser.add_argument("--architecture", required=True, choices=("arm64", "x86_64"))
     parser.add_argument("--report", required=True, type=Path)
     parser.add_argument("--qml-reference", type=Path)
+    parser.add_argument("--permissions-only", action="store_true",
+                        help="Verify signed microphone and QML capabilities before notarization.")
     args = parser.parse_args()
     app = args.app.resolve(strict=True)
     environment = {k: v for k, v in os.environ.items() if not k.startswith(("QT_", "QML", "DYLD_"))}
     environment.update(QT_QPA_PLATFORM="offscreen", QT_QUICK_BACKEND="software", QT_QUICK_CONTROLS_STYLE="Basic")
     errors = []
-    license_file = app / "Contents/Resources/LICENSE"
-    if not license_file.is_file() or license_file.read_bytes() != (Path(__file__).resolve().parents[1] / "LICENSE").read_bytes():
-        errors.append({"check": "project_license"})
-    for relative in ("Contents/Frameworks/QtTest.framework", "Contents/Frameworks/QtQuickTest.framework",
-                     "Contents/Resources/qml/QtTest"):
-        if (app / relative).exists():
-            errors.append({"check": "test_runtime_in_app", "path": relative})
 
     def run(arguments, **kwargs):
         return subprocess.run(arguments, env=environment, stdout=subprocess.PIPE,
@@ -52,6 +47,41 @@ def main():
         if result.returncode:
             errors.append({"check": name, "exit": result.returncode,
                            "diagnostic": result.stderr.decode(errors="replace")[-4096:]})
+
+    # A valid signature and an enabled macOS privacy switch are insufficient:
+    # Hardened Runtime also requires audio-input in the executable's signature.
+    signature = run(["/usr/bin/codesign", "--verify", "--deep", "--strict", str(app)])
+    check_process("signature", signature)
+    signed = run(["/usr/bin/codesign", "--display", "--entitlements", "-", "--xml", str(app)])
+    check_process("signed_entitlements", signed)
+    try:
+        entitlements = plistlib.loads(signed.stdout)
+        if not isinstance(entitlements, dict):
+            raise ValueError("Entitlements must be a dictionary")
+    except (ValueError, plistlib.InvalidFileException):
+        entitlements = {}
+    for key in ("com.apple.security.device.audio-input", "com.apple.security.cs.allow-jit"):
+        if entitlements.get(key) is not True:
+            errors.append({"check": "required_entitlement", "key": key})
+    with (app / "Contents/Info.plist").open("rb") as source:
+        metadata = plistlib.load(source)
+    usage = metadata.get("NSMicrophoneUsageDescription")
+    if not isinstance(usage, str) or not usage.strip():
+        errors.append({"check": "microphone_usage_description"})
+    if args.permissions_only:
+        report = dict(app=str(app), errors=errors)
+        args.report.parent.mkdir(parents=True, exist_ok=True)
+        args.report.write_text(json.dumps(report, indent=2) + "\n")
+        print(json.dumps(report, indent=2))
+        return bool(errors)
+
+    license_file = app / "Contents/Resources/LICENSE"
+    if not license_file.is_file() or license_file.read_bytes() != (Path(__file__).resolve().parents[1] / "LICENSE").read_bytes():
+        errors.append({"check": "project_license"})
+    for relative in ("Contents/Frameworks/QtTest.framework", "Contents/Frameworks/QtQuickTest.framework",
+                     "Contents/Resources/qml/QtTest"):
+        if (app / relative).exists():
+            errors.append({"check": "test_runtime_in_app", "path": relative})
 
     if args.qml_reference:
         # Deployment changes paths and code signatures, but retains the linked
@@ -74,8 +104,6 @@ def main():
         if len(copies) != 1 or not next(iter(copies)).is_relative_to(app):
             errors.append({"check": "ffmpeg_runtime", "library": library, "copies": len(copies)})
 
-    with (app / "Contents/Info.plist").open("rb") as source:
-        metadata = plistlib.load(source)
     if metadata.get("LSApplicationCategoryType") != "public.app-category.social-networking":
         errors.append({"check": "application_category"})
     if not metadata.get("NSScreenCaptureUsageDescription", "").strip():
@@ -228,8 +256,6 @@ def main():
     check_process("image_worker", worker)
     if not worker.stdout.startswith(b"\x89PNG\r\n\x1a\n"):
         errors.append({"check": "image_worker_png"})
-    signature = run(["/usr/bin/codesign", "--verify", "--deep", "--strict", str(app)])
-    check_process("signature", signature)
     binaries = []
     for path in (app / "Contents").rglob("*"):
         if not path.is_file() or path.is_symlink():
