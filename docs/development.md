@@ -792,6 +792,17 @@ The macOS build workflow owns signing and notarization. Optional secrets are
 Developer ID identity signs the deployed bundle before package checks. Notary
 credentials additionally submit and staple it before the final archive is tested.
 An isolated runner keychain and imported credentials are removed after the job.
+The final app signature embeds `scripts/macos.entitlements`, including microphone
+access and QML JIT. Sign the app without `--deep` so its capabilities do not
+propagate to helpers. `check_macos_bundle.py --permissions-only` verifies the
+actual signature before notarization. The full package check repeats this on
+the staged app and extracted archive, including ad-hoc builds. An enabled macOS
+Microphone switch cannot compensate for a missing `audio-input` entitlement.
+`macos_package_permissions` tests real signatures with missing, disabled and
+invalid capabilities, a missing usage description, and a modified bundle. These
+checks cover package requirements, not user consent or hardware capture. Verify
+the installed app through LaunchServices with microphone preview, mute/unmute,
+and restart when changing its signing or capture path.
 Without those secrets, packages use ad-hoc signatures. Quit running copies before replacing their bundles. An ad-hoc code identity changes with the build, so privacy permissions can require renewed approval even when System Settings still shows an enabled entry. Reuse a consistent signing identity. Apple specifically requires an Apple-issued identity for reliable Local Network tracking. A local self-signed identity alone does not guarantee that macOS will avoid duplicate Local Network rows across builds. For the local A/B copies, `tests/prepare_two_apps.py` defaults to the existing `SquadSpeak Local Development` identity. For Local Network tests, pass an existing Apple Development identity with
 `--sign-identity`. A free Personal Team in Xcode can provision this identity
 through automatic signing without paid Developer Program enrollment. Reuse it

@@ -4504,7 +4504,9 @@ TestCase {
         verify(channel.join(channel.ownId, "127.0.0.1", channel.servicePort))
         tryCompare(channel, "chatReady", true)
         membershipEvents.clear()
-        tryVerify(function() { return channel.participants.length === 64 && view.chatMembers.length === 64 }, 30000)
+        // The fixture admits 63 TLS peers in sequence. One second per peer plus
+        // UI propagation leaves a bounded deadline on slower native runners.
+        tryVerify(function() { return channel.participants.length === 64 && view.chatMembers.length === 64 }, 90000)
         verify(membershipEvents.signalArguments.every(event => event[0] !== "leave"),
             "Preparing roster participants must not disconnect the owner")
         const more = findChild(view, "voiceMembers")
