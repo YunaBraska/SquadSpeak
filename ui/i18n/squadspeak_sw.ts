@@ -1241,6 +1241,14 @@
             <source>Game</source>
             <translation>Mchezo</translation>
         </message>
+        <message>
+            <source>Previous station</source>
+            <translation>Kituo kilichotangulia</translation>
+        </message>
+        <message>
+            <source>Next station</source>
+            <translation>Kituo kinachofuata</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>

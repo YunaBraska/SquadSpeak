@@ -1241,6 +1241,14 @@
             <source>Game</source>
             <translation>Peli</translation>
         </message>
+        <message>
+            <source>Previous station</source>
+            <translation>Edellinen asema</translation>
+        </message>
+        <message>
+            <source>Next station</source>
+            <translation>Seuraava asema</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>

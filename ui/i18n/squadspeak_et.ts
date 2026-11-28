@@ -1241,6 +1241,14 @@
             <source>Game</source>
             <translation>Mäng</translation>
         </message>
+        <message>
+            <source>Previous station</source>
+            <translation>Eelmine jaam</translation>
+        </message>
+        <message>
+            <source>Next station</source>
+            <translation>Järgmine jaam</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>

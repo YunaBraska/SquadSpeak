@@ -1241,6 +1241,14 @@
             <source>Game</source>
             <translation>Leikur</translation>
         </message>
+        <message>
+            <source>Previous station</source>
+            <translation>Fyrri stöð</translation>
+        </message>
+        <message>
+            <source>Next station</source>
+            <translation>Næsta stöð</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>

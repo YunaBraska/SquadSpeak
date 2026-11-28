@@ -1241,6 +1241,14 @@
             <source>Game</source>
             <translation>Cluiche</translation>
         </message>
+        <message>
+            <source>Previous station</source>
+            <translation>An stáisiún roimhe</translation>
+        </message>
+        <message>
+            <source>Next station</source>
+            <translation>An chéad stáisiún eile</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>

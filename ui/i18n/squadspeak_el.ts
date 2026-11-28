@@ -1241,6 +1241,14 @@
             <source>Game</source>
             <translation>Παιχνίδι</translation>
         </message>
+        <message>
+            <source>Previous station</source>
+            <translation>Προηγούμενος σταθμός</translation>
+        </message>
+        <message>
+            <source>Next station</source>
+            <translation>Επόμενος σταθμός</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>

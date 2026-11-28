@@ -250,6 +250,89 @@ private slots:
         QVERIFY(std::none_of(after.cbegin(), after.cend(), [&](const auto& v) { return v.toMap().value("id").toString() == id; }));
     }
 
+    void adjacentPlaybackFollowsUnfilteredStationOrderAndWraps() {
+        QTemporaryDir dir;
+        RadioStation station;
+        RadioPlayer radio(dir.filePath("radio.json"));
+        QSignalSpy saved(&radio, &RadioPlayer::stationSaved);
+        QVERIFY(radio.saveStation("", "Local Station", station.url()));
+        QTRY_COMPARE_WITH_TIMEOUT(saved.size(), 1, 17000);
+        QVERIFY(saved.first().at(1).toBool());
+
+        const auto page = radio.searchStations("", 0, 2);
+        const auto first = page.value("items").toList();
+        const auto last = radio.searchStations("", page.value("total").toInt() - 1, 1).value("items").toList();
+        QCOMPARE(first.size(), 2);
+        QCOMPARE(last.size(), 1);
+        const auto manualId = first[0].toMap().value("id").toString();
+        const auto firstCatalogId = first[1].toMap().value("id").toString();
+        const auto lastCatalogId = last[0].toMap().value("id").toString();
+        QCOMPARE(manualId, saved.first().at(0).toMap().value("id").toString());
+        QVERIFY(radio.play(manualId));
+
+        const auto playAdjacent = [&](int direction) {
+            bool played = false;
+            return QMetaObject::invokeMethod(&radio, "playAdjacent", qReturnArg(played), direction) && played;
+        };
+        QVERIFY(playAdjacent(1));
+        QCOMPARE(radio.selectedId(), firstCatalogId);
+        QVERIFY(playAdjacent(-1));
+        QCOMPARE(radio.selectedId(), manualId);
+        QVERIFY(playAdjacent(-1));
+        QCOMPARE(radio.selectedId(), lastCatalogId);
+        QVERIFY(playAdjacent(1));
+        QCOMPARE(radio.selectedId(), manualId);
+        QVERIFY(radio.active());
+        QCOMPARE(radio.state(), QString("unavailable"));
+    }
+
+    void adjacentPlaybackRejectsUnsupportedDirection() {
+        QTemporaryDir dir;
+        RadioPlayer radio(dir.filePath("radio.json"));
+        const auto entries = radio.searchStations("", 0, 1).value("items").toList();
+        QCOMPARE(entries.size(), 1);
+        const auto id = entries.first().toMap().value("id").toString();
+        QVERIFY(radio.play(id));
+        QVERIFY(!radio.playAdjacent(0));
+        QCOMPARE(radio.selectedId(), id);
+        QVERIFY(radio.active());
+    }
+
+    void adjacentPlaybackDoesNotStartAStoppedSelection() {
+        QTemporaryDir dir;
+        RadioPlayer radio(dir.filePath("radio.json"));
+        QVERIFY(!radio.playAdjacent(1));
+        const auto entries = radio.searchStations("", 0, 1).value("items").toList();
+        QCOMPARE(entries.size(), 1);
+        const auto id = entries.first().toMap().value("id").toString();
+        QVERIFY(radio.play(id));
+        QVERIFY(radio.stop());
+        QVERIFY(!radio.playAdjacent(1));
+        QCOMPARE(radio.selectedId(), id);
+        QVERIFY(!radio.active());
+        QCOMPARE(radio.state(), QString("stopped"));
+    }
+
+    void adjacentPlaybackPreservesSelectionMissingFromCatalog() {
+        QTemporaryDir dir;
+        const auto path = dir.filePath("radio.json");
+        const QString id = "78bc50c7-99e8-439f-8939-839ab4be0293";
+        const QJsonObject previousStation{{"id", id}, {"name", "Removed station"}, {"url", "https://example.test/live"}};
+        const QJsonDocument previousSettings(QJsonObject{{"version", 1}, {"stations", QJsonArray{}},
+            {"selected", id}, {"playing", true}, {"catalogSelection", previousStation}});
+        QFile file(path);
+        QVERIFY(file.open(QIODevice::WriteOnly));
+        const auto bytes = previousSettings.toJson();
+        QCOMPARE(file.write(bytes), bytes.size());
+        file.close();
+
+        RadioPlayer radio(path);
+        QVERIFY(!radio.playAdjacent(1));
+        QCOMPARE(radio.selectedId(), id);
+        QVERIFY(radio.active());
+        QVERIFY(!radio.error().isEmpty());
+    }
+
     void oneNamedSystemBotWritesAndStreamsWithoutJoiningAsAMember() {
         QTemporaryDir dir;
         qint64 now = 1700000000000;

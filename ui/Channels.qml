@@ -43,32 +43,6 @@ PanelWindow {
         Accessible.role: Accessible.StaticText
         Accessible.name: qsTr("Unread messages")
     }
-    component MenuAction: MenuItem {
-        id: action
-        property bool destructive: false
-        leftPadding: 12
-        rightPadding: checkable ? 36 : 12
-        height: visible ? implicitHeight : 0
-        contentItem: Label {
-            text: action.text
-            font: action.font
-            color: action.destructive ? Theme.danger : Theme.text
-            opacity: action.enabled ? 1 : 0.45
-            verticalAlignment: Text.AlignVCenter
-            elide: Text.ElideRight
-        }
-        background: Rectangle { implicitWidth: 240; implicitHeight: 36; radius: Theme.smallRadius; color: action.highlighted ? Theme.raised : "transparent" }
-        indicator: Rectangle {
-            x: action.width - width - 12
-            y: (action.height - height) / 2
-            implicitWidth: 16; implicitHeight: 16
-            visible: action.checkable
-            color: "transparent"
-            border.color: action.checked ? Theme.accent : Theme.muted
-            radius: Theme.smallRadius
-            Glyph { anchors.centerIn: parent; width: 12; height: 12; symbol: "check"; color: Theme.accent; visible: action.checked }
-        }
-    }
     component DetailPane: Page {
         id: pane
         parent: detailArea
@@ -107,11 +81,12 @@ PanelWindow {
         id: summary
         required property string hostId
         required property var members
+        property bool compact: false
         readonly property bool active: hostId === root.activeHost
         spacing: 4
         Row {
             objectName: summary.visible ? "memberSummary_" + summary.hostId : ""
-            visible: summary.members.length > 0
+            visible: summary.members.length > 0 && !summary.compact
             spacing: -5
             activeFocusOnTab: true
             Accessible.role: Accessible.Button
@@ -120,7 +95,7 @@ PanelWindow {
             Keys.onReturnPressed: root.toggleMembers(summary.hostId)
             Keys.onSpacePressed: root.toggleMembers(summary.hostId)
             Repeater {
-                model: summary.visible ? summary.members.slice(0, 3) : []
+                model: summary.visible && !summary.compact ? summary.members.slice(0, 3) : []
                 VoiceAvatar {
                     id: memberAvatar
                     required property var modelData
@@ -144,8 +119,9 @@ PanelWindow {
         }
         ActionButton {
             objectName: summary.visible ? "showMembers_" + summary.hostId : ""
-            visible: summary.members.length > 3
-            text: "+" + (summary.members.length - 3)
+            visible: summary.members.length > (summary.compact ? 0 : 3)
+            text: summary.compact ? summary.members.length.toString() : "+" + (summary.members.length - 3)
+            glyph: summary.compact ? "person" : ""
             flat: true
             Accessible.name: qsTr("Show all %1 members").arg(summary.members.length)
             onClicked: root.toggleMembers(summary.hostId)
@@ -210,9 +186,10 @@ PanelWindow {
         id: grid
         property string hostId: ""
         property bool gallery: false
+        readonly property bool stackedPortraits: gallery && height >= 102
         clip: true
         cellWidth: gallery ? width / Math.max(1, Math.min(count, Math.floor(width / 116))) : width < 350 ? width : width / 2
-        cellHeight: gallery ? count === 1 ? height : 88 + Theme.fontSize(18) : Math.max(54, Theme.fontSize(32) + 16)
+        cellHeight: gallery ? count === 1 ? height : Math.min(height, 88 + Theme.fontSize(18)) : Math.max(54, Theme.fontSize(32) + 16)
         cacheBuffer: 0
         ScrollBar.vertical: ScrollBar { policy: grid.contentHeight > grid.height ? ScrollBar.AlwaysOn : ScrollBar.AsNeeded }
         delegate: MemberTile {
@@ -220,8 +197,9 @@ PanelWindow {
             width: grid.cellWidth; height: grid.cellHeight
             objectName: "member_" + modelData.id
             member: modelData; hostId: grid.hostId
-            stacked: grid.gallery
-            portraitSize: grid.gallery ? grid.count === 1 ? Math.max(16, Math.min(144, grid.height - Theme.fontSize(18) - 12, grid.width - 8)) : 72 : 44
+            stacked: grid.stackedPortraits
+            portraitSize: grid.gallery ? Math.max(0, Math.min(grid.stackedPortraits ? (grid.count === 1 ? 144 : 72) : 32,
+                grid.cellHeight - (grid.stackedPortraits ? Theme.fontSize(18) + 12 : 8), grid.cellWidth - 8)) : 44
             animate: y + height >= grid.contentY && y <= grid.contentY + grid.height
         }
     }
@@ -349,6 +327,8 @@ PanelWindow {
     property var privateFolderExpanded: ({})
     property var expandedHosts: ({})
     readonly property var selectedOwner: { const revision = network.ownedChannels; return remote ? null : network.ownChannel(selectedHost) }
+    readonly property var inspectedOwner: { const revision = network.ownedChannels; return remote ? null : network.ownChannel(inspectedHost) }
+    readonly property var chatRadio: { const revision = network.ownedChannels; return inspectedOwner ? radio.forChannel(inspectedHost) : null }
     readonly property var managedHost: selectedOwner || network
     readonly property var memberHost: { const revision = network.ownedChannels; return remote ? null : network.ownChannel(selectedMemberHost) }
     readonly property bool canModerateMember: !remote && !selectedMember.music && selectedMember.id !== network.ownId
@@ -1549,33 +1529,12 @@ PanelWindow {
                     }
                 }
                 ActionButton { Layout.fillWidth: true; primary: true; horizontalAlignment: Text.AlignLeft; objectName: "joinChannel"; text: qsTr("Join"); visible: root.activeHost !== root.selectedHost; enabled: root.network.ready && root.activeHost !== root.selectedHost; onClicked: root.joinHost(root.selectedHost) }
-                ActionButton { Layout.fillWidth: true; horizontalAlignment: Text.AlignLeft; objectName: "leaveMenuItem"; destructive: true; text: qsTr("Leave"); visible: root.activeHost === root.selectedHost; onClicked: root.leaveHost() }
                 ActionButton { Layout.fillWidth: true; flat: true; horizontalAlignment: Text.AlignLeft;
                     objectName: "managePrivateMessages"
                     text: qsTr("Messages")
                     visible: root.privateChatsForHost(root.selectedHost).length > 0
                     onClicked: { privateMessages.hostId = root.selectedHost; privateMessages.hostDeviceId = root.privateDeviceForHost(root.selectedHost); privateMessages.open() }
                 }
-                ActionButton { Layout.fillWidth: true; flat: true; horizontalAlignment: Text.AlignLeft;
-                    objectName: "shareScreen"
-                    visible: !!root.screen && !root.remote && !!root.selectedOwner
-                    readonly property bool sharingHere: root.screen && root.screen.active && root.screen.hostId === root.selectedHost
-                    text: sharingHere ? qsTr("Stop sharing") : qsTr("Share screen")
-                    destructive: sharingHere
-                    enabled: sharingHere || (root.selectedOwner && root.selectedOwner.hosting && root.screen && !root.screen.active && !root.screen.watching)
-                    onClicked: {
-                        if (root.screen.active) root.screen.stop()
-                        else { root.screen.refreshSources(); screenPicker.open() }
-                    }
-                }
-                OptionCheck { Layout.fillWidth: true;
-                    objectName: "screenAudioWhileSharing"
-                    text: root.screen && root.screen.computerAudio ? qsTr("Computer audio") : qsTr("App audio")
-                    visible: !root.remote && !!root.selectedOwner && root.screen && root.screen.active && root.screen.audioAvailable && root.screen.hostId === root.selectedHost
-                    checked: root.screen && root.screen.audioEnabled
-                    onClicked: root.screen.setAudioEnabled(checked)
-                }
-                ActionButton { Layout.fillWidth: true; flat: true; horizontalAlignment: Text.AlignLeft; objectName: "browseStations"; text: qsTr("Browse stations"); enabled: !!root.hostRadio; visible: !root.remote && !!root.selectedOwner; onClicked: radioBrowser.open() }
                 Item {
                     Layout.fillWidth: true
                     id: channelMusic
@@ -2324,7 +2283,11 @@ PanelWindow {
                     RowLayout {
                         Layout.fillWidth: true
                         visible: !root.compactInput && !root.inspectedChannel.private
-                        MemberSummary { hostId: root.inspectedHost; members: root.inspectedChannel.members || []; visible: !!root.inspectedChannel.online && !root.viewingVoice }
+                        MemberSummary {
+                            hostId: root.inspectedHost; members: root.inspectedChannel.members || []
+                            visible: !!root.inspectedChannel.online && !root.viewingVoice
+                            compact: conversation.availableWidth < 440 && root.chatRadio && root.chatRadio.active
+                        }
                         Label { text: root.accessLabel(root.inspectedChannel.access); visible: !root.inspectedChannel.online; color: Theme.muted }
                         Item { Layout.fillWidth: true }
                         Label {
@@ -2335,7 +2298,38 @@ PanelWindow {
                             ToolTip.visible: expiryHover.hovered
                             HoverHandler { id: expiryHover }
                         }
-                        ActionButton { objectName: "joinViewedChannel"; text: qsTr("Join"); visible: !root.inspectedChannel.private && root.activeHost !== root.inspectedHost; flat: true; onClicked: root.joinHost(root.inspectedHost) }
+                        Repeater {
+                            model: [
+                                {name: "previousStation", text: qsTr("Previous station"), glyph: "previous", step: -1},
+                                {name: "stopChatStation", text: qsTr("Stop"), glyph: "stop", step: 0},
+                                {name: "nextStation", text: qsTr("Next station"), glyph: "next", step: 1}
+                            ]
+                            ActionButton {
+                                required property var modelData
+                                objectName: modelData.name
+                                visible: root.chatRadio && root.chatRadio.active
+                                text: modelData.text; glyph: modelData.glyph; iconOnly: true; flat: true
+                                onClicked: if (root.chatRadio) {
+                                    const player = root.chatRadio
+                                    const ok = modelData.step ? player.playAdjacent(modelData.step) : player.stop()
+                                    if (!ok && player.error) root.showNotice(player.error)
+                                }
+                            }
+                        }
+                        ActionButton {
+                            objectName: "leaveViewedChannel"
+                            text: qsTr("Leave"); glyph: "close"; iconOnly: true; flat: true
+                            destructive: true
+                            visible: root.viewingVoice
+                            onClicked: root.leaveHost()
+                        }
+                        ActionButton {
+                            objectName: "joinViewedChannel"; text: qsTr("Join")
+                            iconOnly: conversation.availableWidth < 440 && root.chatRadio && root.chatRadio.active
+                            glyph: iconOnly ? "headphones" : ""
+                            visible: !root.inspectedChannel.private && root.activeHost !== root.inspectedHost
+                            flat: true; onClicked: root.joinHost(root.inspectedHost)
+                        }
                     }
                     Loader {
                         Layout.fillWidth: true
@@ -2353,6 +2347,16 @@ PanelWindow {
                         id: chat
                         objectName: "chatPanel"
                         network: root.network; animatedAvatars: root.animateAvatars
+                        hostedChannel: root.inspectedOwner
+                        screenShare: root.screen
+                        onStationsRequested: {
+                            root.selectedHost = root.inspectedHost
+                            radioBrowser.open()
+                        }
+                        onScreenRequested: {
+                            if (root.screen.active) root.screen.stop()
+                            else { root.selectedHost = root.inspectedHost; root.screen.refreshSources(); screenPicker.open() }
+                        }
                         animationTime: root.avatarTime
                         memberLevel: function(id) { return root.inspectedHost === root.activeHost ? root.memberLevel(id) : 0 }
                         emptyContent: root.viewingVoice && !root.inspectedChannel.private ? voiceRoster : null
@@ -2395,7 +2399,7 @@ PanelWindow {
                     id: activeSpeakers
                     objectName: "activeSpeakers"
                     Layout.fillWidth: true; Layout.minimumWidth: 0
-                    Layout.preferredHeight: 42 + Theme.fontSize(18)
+                    Layout.preferredHeight: root.height < 500 ? Math.max(36, Theme.fontSize(18) + 8) : 42 + Theme.fontSize(18)
                     orientation: ListView.Horizontal; clip: true; cacheBuffer: 0
                     model: root.speakers
                     ScrollBar.horizontal: ScrollBar {
@@ -2407,7 +2411,7 @@ PanelWindow {
                         objectName: "speaker_" + modelData.id
                         member: modelData; hostId: root.activeHost
                         width: Math.min(132, activeSpeakers.width / Math.min(3, Math.max(1, activeSpeakers.count)))
-                        height: activeSpeakers.height; stacked: true; portraitSize: 32
+                        height: activeSpeakers.height; stacked: root.height >= 500; portraitSize: root.height < 500 ? 28 : 32
                         animate: x + width >= activeSpeakers.contentX && x <= activeSpeakers.contentX + activeSpeakers.width
                     }
                     Label {

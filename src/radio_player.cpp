@@ -65,6 +65,27 @@ int searchScore(const QStringList& query, const QString& name, const QString& me
     return total;
 }
 
+struct StationSearchEntry {
+    QJsonObject item;
+    bool manual;
+};
+
+QList<StationSearchEntry> distinctStations(const QJsonArray& manual, const QJsonArray& directory) {
+    QList<StationSearchEntry> entries;
+    entries.reserve(manual.size() + directory.size());
+    QSet<QString> urls, ids;
+    for (qsizetype i = 0; i < manual.size() + directory.size(); ++i) {
+        const bool isManual = i < manual.size();
+        auto item = (isManual ? manual[i] : directory[i - manual.size()]).toObject();
+        const auto url = QUrl(item.value("url").toString()).toString(QUrl::FullyEncoded);
+        const auto id = item.value("id").toString();
+        if (urls.contains(url) || ids.contains(id)) continue;
+        urls.insert(url); ids.insert(id);
+        entries.append({std::move(item), isManual});
+    }
+    return entries;
+}
+
 QAudioFormat streamFormat() {
     QAudioFormat format;
     format.setSampleRate(48000);
@@ -294,27 +315,21 @@ QVariantMap RadioPlayer::searchStations(const QString& query, int offset, int li
     if (query.size() > 256 || offset < 0 || limit < 1 || limit > 128)
         return {{"items", QVariantList{}}, {"total", 0}};
     const auto terms = searchText(query).split(' ', Qt::SkipEmptyParts);
-    const auto manual = saved_.value("stations").toArray();
-    const auto directory = catalog().value("stations").toArray();
-    QList<std::pair<int, int>> matches;
-    QSet<QString> urls, ids;
-    for (int i = 0; i < manual.size() + directory.size(); ++i) {
-        const auto item = (i < manual.size() ? manual[i] : directory[i - manual.size()]).toObject();
-        const auto url = QUrl(item.value("url").toString()).toString(QUrl::FullyEncoded);
-        const auto id = item.value("id").toString();
-        if (urls.contains(url) || ids.contains(id)) continue;
-        urls.insert(url); ids.insert(id);
+    const auto entries = distinctStations(saved_.value("stations").toArray(), catalog().value("stations").toArray());
+    QList<std::pair<int, qsizetype>> matches;
+    for (qsizetype i = 0; i < entries.size(); ++i) {
+        const auto& [item, manual] = entries[i];
         const auto metadata = item.value("country").toString() + ' ' + item.value("countryCode").toString()
             + ' ' + item.value("language").toString() + ' ' + item.value("tags").toString();
         const auto score = searchScore(terms, searchText(item.value("name").toString()), searchText(metadata));
-        if (score >= 0) matches.append({score + (i < manual.size() ? 0 : 100000), i});
+        if (score >= 0) matches.append({score + (manual ? 0 : 100000), i});
     }
     std::stable_sort(matches.begin(), matches.end(), [](const auto& a, const auto& b) { return a.first < b.first; });
     QVariantList items;
     for (qsizetype n = offset; n < matches.size() && items.size() < limit; ++n) {
-        const auto i = matches[n].second;
-        auto item = (i < manual.size() ? manual[i] : directory[i - manual.size()]).toObject().toVariantMap();
-        item.insert("manual", i < manual.size()); items.append(item);
+        const auto& [entry, manual] = entries[matches[n].second];
+        auto item = entry.toVariantMap();
+        item.insert("manual", manual); items.append(item);
     }
     return {{"items", items}, {"total", matches.size()}};
 }
@@ -450,6 +465,21 @@ bool RadioPlayer::play(const QString& id) {
     if (!persist(next)) return false;
     attempts_ = 0; startStream(); emit changed(); return true;
 }
+
+bool RadioPlayer::playAdjacent(int direction) {
+    if (!active() || (direction != -1 && direction != 1)) return false;
+    const auto selected = selectedId();
+    const auto entries = distinctStations(saved_.value("stations").toArray(), catalog().value("stations").toArray());
+    for (qsizetype i = 0; i < entries.size(); ++i) {
+        if (entries[i].item.value("id").toString() != selected) continue;
+        const auto adjacent = (i + direction + entries.size()) % entries.size();
+        return play(entries[adjacent].item.value("id").toString());
+    }
+    error_ = tr("This station no longer exists.");
+    emit changed();
+    return false;
+}
+
 bool RadioPlayer::stop() {
     auto next = saved_; next.insert("playing", false);
     if (!persist(next)) return false;

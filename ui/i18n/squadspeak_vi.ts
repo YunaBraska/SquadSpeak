@@ -1241,6 +1241,14 @@
             <source>Game</source>
             <translation>Trò chơi</translation>
         </message>
+        <message>
+            <source>Previous station</source>
+            <translation>Đài trước</translation>
+        </message>
+        <message>
+            <source>Next station</source>
+            <translation>Đài tiếp theo</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>

@@ -75,6 +75,8 @@ TestCase {
         function previewSource(index, sink) { ++previewCalls; selectedSource = index; return true }
         function stopPreview() { ++stopPreviewCalls; return true }
         function detach(sink) { return true }
+        function attach(host, sink, preview) { return true }
+        function stop() { active = false; return true }
         function refreshSources() { ++refreshCalls; return true }
         function setAudioEnabled(enabled) { audioEnabled = enabled; return true }
     }
@@ -235,6 +237,7 @@ TestCase {
         findChild(view, "settingsDialog").close()
         findChild(view, "channelInfoDialog").close()
         const requestInfo = findChild(view, "requestInfoDialog"); if (requestInfo) requestInfo.close()
+        findChild(view, "chatAddMenu").close()
         findChild(view, "stationEditor").close()
         findChild(view, "radioBrowser").close()
         findChild(view, "newOwnChannelDialog").close()
@@ -259,6 +262,159 @@ TestCase {
         view.width = Qt.platform.os === "android" ? view.Screen.desktopAvailableWidth : 520
         view.height = Qt.platform.os === "android" ? view.Screen.desktopAvailableHeight : 700
     }
+    function test_chatActionsLiveBesideTheConversation_data() {
+        return [{tag: "small", width: 360, height: 440}, {tag: "large", width: 1100, height: 820}]
+    }
+    function test_chatActionsLiveBesideTheConversation(data) {
+        view.width = data.width; view.height = data.height
+        verify(fixtures.startHost())
+        verify(channel.joinSaved(channel.ownId)); tryCompare(channel, "joined", true)
+        view.screen = captureDisplay
+        verify(channel.openChat(channel.ownId, "127.0.0.1", channel.servicePort))
+        tryCompare(channel, "chatReady", true); tryCompare(channel, "historyLoading", false)
+        view.chatExpanded = true
+        verify(waitForPolish(view))
+        const menu = findChild(view, "chatAddMenu")
+        mouseClick(findChild(view, "chatAdd")); tryCompare(menu, "opened", true)
+        for (const name of ["browseStations", "shareScreen", "startGame", "chooseChatImage", "pasteChatImage"]) {
+            const action = findChild(view, name)
+            verify(action !== null, name)
+            compare(action.menu, menu, name + " belongs to the composer menu")
+            verify(action.glyph.length > 0, name + " has an icon")
+        }
+        verify(waitForRendering(findChild(view, "browseStations")))
+        const menuPosition = menu.contentItem.mapToItem(view.contentItem, 0, 0)
+        verify(menuPosition.y >= 0 && menuPosition.y + menu.contentItem.height <= view.contentItem.height)
+        if (imageDirectory.length) verify(fixtures.saveWindow(view, imageDirectory + "/chat-add-menu-" + data.tag + ".png"))
+        mouseClick(findChild(view, "browseStations"))
+        const browser = findChild(view, "radioBrowser")
+        tryCompare(browser, "opened", true)
+        compare(view.selectedHost, channel.ownId)
+        browser.close()
+        const leave = findChild(view, "leaveViewedChannel")
+        verify(leave && leave.visible && leave.enabled)
+        compare(leave.glyph, "close")
+        mouseClick(leave); tryCompare(channel, "joined", false)
+        verify(channel.chatReady, "Leave keeps the text conversation available")
+        verify(!leave.visible)
+    }
+
+    function test_stationTransportUsesTheViewedChannel() {
+        verify(fixtures.startHost())
+        verify(channel.joinSaved(channel.ownId)); tryCompare(channel, "joined", true)
+        verify(fixtures.populateMembers(8)); tryVerify(function() { return channel.participants.length === 9 })
+        verify(fixtures.startRemoteHost())
+        verify(remoteChannel.decide(channel.ownId, true))
+        verify(channel.join(remoteChannel.ownId, "127.0.0.1", remoteChannel.servicePort)); tryCompare(channel, "joined", true)
+        verify(channel.openChat(channel.ownId, "127.0.0.1", channel.servicePort))
+        tryCompare(channel, "chatReady", true)
+        view.chatExpanded = true; view.width = 360; view.height = 440
+        const stations = []
+        try {
+            for (const name of ["Forest radio", "Moon radio"]) {
+                stationSaves.clear()
+                verify(radio.saveStation("", name, fixtures.stationUrl() + "?station=" + stations.length))
+                tryCompare(stationSaves, "count", 1, 17000)
+                verify(stationSaves.signalArguments[0][1])
+                stations.push(stationSaves.signalArguments[0][0].id)
+            }
+            const ordered = radio.searchStations("", 0, 2).items.map(entry => entry.id)
+            verify(ordered.every(id => stations.includes(id)))
+            verify(radio.play(ordered[0])); tryCompare(radio, "state", "playing", 17000)
+            tryVerify(function() { return visualChild(view.contentItem, "nextStation") !== null })
+            const next = visualChild(view.contentItem, "nextStation"), previous = visualChild(view.contentItem, "previousStation")
+            verify(waitForPolish(view)); verify(waitForFrame(view.contentItem))
+            const members = visualChild(view.contentItem, "showMembers_" + channel.ownId)
+            verify(members && members.visible)
+            compare(members.text, "8")
+            for (const scale of [100, 200]) {
+                verify(session.setTextScale(scale)); verify(waitForPolish(view))
+                for (const button of [members, next, previous, findChild(view, "joinViewedChannel")]) {
+                    const position = button.mapToItem(view.contentItem, 0, 0)
+                    verify(button.width >= 36 && position.x >= 0 && position.x + button.width <= view.contentItem.width,
+                           "Radio and join controls fit beside a populated participant summary")
+                }
+            }
+            verify(session.setTextScale(100))
+            next.forceActiveFocus()
+            mouseClick(next); compare(radio.selectedId, ordered[1])
+            verify(next.activeFocus, "Changing stations keeps keyboard focus on the transport")
+            tryCompare(radio, "state", "playing", 17000)
+            mouseClick(previous); compare(radio.selectedId, ordered[0])
+            tryCompare(radio, "state", "playing", 17000)
+            const stop = visualChild(view.contentItem, "stopChatStation"), leave = findChild(view, "leaveViewedChannel")
+            verify(!leave.visible, "Viewing the hosted radio does not offer leaving a different voice channel")
+            compare(channel.joinedHostId, remoteChannel.ownId)
+            verify(waitForFrame(view.contentItem))
+            if (imageDirectory.length) verify(fixtures.saveWindow(view, imageDirectory + "/chat-radio-controls.png"))
+            mouseClick(stop); compare(radio.active, false)
+            tryCompare(stop, "visible", false)
+            verify(channel.joined, "Stopping radio leaves the voice connection intact")
+            compare(channel.joinedHostId, remoteChannel.ownId)
+        } finally {
+            radio.stop()
+            for (const id of stations) verify(radio.removeStation(id))
+        }
+    }
+
+    function test_hostUtilitiesRemainAvailableWithoutChat() {
+        verify(fixtures.startHost())
+        openOwnChatActions(); findChild(view, "chatAddMenu").close()
+        captureDisplay.active = true; captureDisplay.hostId = channel.ownId
+        view.screen = captureDisplay
+        verify(channel.stopHost()); tryCompare(channel, "chatReady", false)
+        const add = findChild(view, "chatAdd"), menu = findChild(view, "chatAddMenu")
+        verify(add.visible && add.enabled)
+        mouseClick(add); tryCompare(menu, "opened", true)
+        verify(findChild(view, "browseStations").enabled)
+        verify(!findChild(view, "chooseChatImage").enabled)
+        verify(!findChild(view, "pasteChatImage").enabled)
+        const share = findChild(view, "shareScreen")
+        verify(share.visible && share.enabled)
+        compare(share.text, "Stop sharing")
+        view.selectedHost = remoteChannel.ownId
+        verify(waitForRendering(share)); mouseClick(share)
+        compare(captureDisplay.active, false)
+        compare(view.selectedHost, remoteChannel.ownId, "Stopping does not retarget an open details pane")
+    }
+
+    function test_compactRosterLeavesRoomForNotices_data() {
+        return [{tag: "small", width: 390, height: 440, count: 1},
+                {tag: "minimum-group", width: 360, height: 360, count: 8},
+                {tag: "large", width: 1100, height: 820, count: 1}]
+    }
+    function test_compactRosterLeavesRoomForNotices(data) {
+        verify(session.setAvatar("courier")); verify(session.setAvatarAnimation("off"))
+        view.width = data.width; view.height = data.height
+        verify(fixtures.startHost())
+        verify(channel.openChat(channel.ownId, "127.0.0.1", channel.servicePort))
+        tryCompare(channel, "chatReady", true); tryCompare(channel, "historyLoading", false)
+        for (let i = 0; i < 3; ++i) {
+            verify(channel.joinSaved(channel.ownId)); tryCompare(channel, "joined", true)
+            verify(channel.leave()); tryCompare(channel, "joined", false)
+        }
+        verify(channel.joinSaved(channel.ownId)); tryCompare(channel, "joined", true)
+        verify(fixtures.populateMembers(data.count - 1))
+        view.chatExpanded = true
+        const chat = findChild(view, "chatPanel"), history = findChild(chat, "chatHistory")
+        tryVerify(function() { return chat.showingEmptyContent && chat.records.length >= 5 })
+        verify(waitForPolish(view)); verify(waitForFrame(view.contentItem))
+        const roster = findChild(view, "voiceRoster")
+        tryCompare(roster, "count", data.count)
+        verify(roster.height <= chat.height * 0.4 + 1, "Participants use at most 40% when notices are present")
+        verify(history.height > roster.height, "The history gets more space than the roster")
+        roster.positionViewAtIndex(roster.model.findIndex(member => member.id === channel.ownId), GridView.Beginning)
+        tryVerify(function() { return visualChild(roster, "member_" + channel.ownId) !== null })
+        const tile = visualChild(roster, "member_" + channel.ownId)
+        const avatar = findChild(tile, "participantAvatar")
+        verify(avatar.height >= 24 && avatar.height <= roster.height)
+        verify(tile.height <= roster.height, "A full participant row fits the smallest window")
+        tryVerify(function() { return fixtures.portraitHasDetail(avatar) }, 5000,
+                  "Avatar " + avatar.width + "x" + avatar.height + " in roster " + roster.width + "x" + roster.height)
+        verify(waitForFrame(view.contentItem))
+        if (imageDirectory.length) verify(fixtures.saveWindow(view, imageDirectory + "/compact-chat-" + data.tag + ".png"))
+    }
+
     function test_joinedChannelCannotBeJoinedAgain() {
         verify(fixtures.startHost())
         verify(channel.joinSaved(channel.ownId))
@@ -302,8 +458,7 @@ TestCase {
         captureDisplay.startSucceeds = false
         view.screen = captureDisplay; view.selectedHost = channel.ownId
         const share = findChild(view, "shareScreen"), picker = findChild(view, "screenPicker")
-        findChild(view, "channelInfoDialog").open()
-        tryCompare(findChild(view, "channelInfoDialog"), "opened", true)
+        openOwnChatActions()
         waitForRendering(share)
         mouseClick(share)
         tryCompare(picker, "opened", true)
@@ -386,8 +541,7 @@ TestCase {
         view.screen = captureDisplay
         view.selectedHost = channel.ownId
         const share = findChild(view, "shareScreen")
-        findChild(view, "channelInfoDialog").open()
-        tryCompare(findChild(view, "channelInfoDialog"), "opened", true)
+        openOwnChatActions()
         verify(share.visible)
         verify(share.enabled)
         waitForRendering(share)
@@ -403,8 +557,7 @@ TestCase {
         captureDisplay.active = true
         captureDisplay.computerAudio = false
         const menuAudio = findChild(view, "screenAudioWhileSharing")
-        findChild(view, "channelInfoDialog").open()
-        tryCompare(findChild(view, "channelInfoDialog"), "opened", true)
+        openOwnChatActions()
         verify(menuAudio.visible)
         compare(menuAudio.text, "App audio")
         captureDisplay.audioAvailable = false
@@ -420,16 +573,27 @@ TestCase {
         compare(captureDisplay.audioEnabled, true)
         view.selectedHost = remoteChannel.ownId
         captureDisplay.hostId = remoteChannel.ownId
-        findChild(view, "channelInfoDialog").open()
-        tryCompare(findChild(view, "channelInfoDialog"), "opened", true)
+        openOwnChatActions()
         verify(!menuAudio.visible)
-        findChild(view, "channelInfoDialog").close()
+        findChild(view, "chatAddMenu").close()
     }
 
     function cleanupTestCase() {
         // Destroy the windows while the event loop can still release canvases.
         scene.active = false
         wait(0)
+    }
+
+    function openOwnChatActions() {
+        view.closeSettings()
+        if (view.details) view.details.close()
+        verify(channel.openChat(channel.ownId, "127.0.0.1", channel.servicePort))
+        tryCompare(channel, "chatReady", true)
+        view.chatExpanded = true
+        verify(waitForPolish(view)); verify(waitForFrame(view.contentItem))
+        const menu = findChild(view, "chatAddMenu")
+        mouseClick(findChild(view, "chatAdd")); tryCompare(menu, "opened", true)
+        return menu
     }
 
     function openOwnChannelInfo() {
@@ -596,19 +760,14 @@ TestCase {
             verify(channel.openChat(channel.ownId, "127.0.0.1", channel.servicePort))
             tryCompare(channel, "chatReady", true)
             compare(surface.color.toString(), voiceColor)
-            const footer = findChild(view, "voiceConnection"), info = findChild(view, "channelInfoDialog")
-            mouseClick(footer); tryCompare(info, "opened", true)
-            verify(waitForPolish(view)); verify(waitForFrame(view.contentItem))
-            const leave = findChild(info, "leaveMenuItem"), join = findChild(info, "joinChannel")
-            const scroll = findChild(info, "channelInfoScroll")
+            const leave = findChild(view, "leaveViewedChannel"), join = findChild(view, "joinViewedChannel")
             verify(leave.visible && leave.enabled); verify(!join.visible)
-            const position = leave.mapToItem(scroll, 0, 0)
-            verify(position.y >= 0 && position.y + leave.height <= scroll.height,
-                   "Leave must be reachable immediately without scrolling")
+            const position = leave.mapToItem(view.contentItem, 0, 0)
+            verify(position.y >= 0 && position.y + leave.height <= view.contentItem.height,
+                   "Leave must be reachable immediately without opening channel details")
             if (imageDirectory.length) verify(fixtures.saveWindow(view, imageDirectory + "/channel-actions-" + data.tag + ".png"))
             mouseClick(leave); tryCompare(channel, "joined", false)
             verify(join.visible && join.enabled); verify(!leave.visible)
-            info.close(); tryCompare(info, "visible", false)
             compare(surface.color.toString(), chatOnlyColor)
             verify(channel.chatReady, "Leaving voice preserves text chat")
             if (imageDirectory.length) { verify(waitForPolish(view)); verify(waitForFrame(view.contentItem));
@@ -3771,8 +3930,7 @@ TestCase {
         reveal(item)
         verify(item.visible && item.enabled)
         verify(item.indicator.visible)
-        const leave = findChild(view, "leaveMenuItem")
-        compare(leave.contentItem.children.find(c => c.text === leave.text).color, Theme.danger)
+        verify(findChild(menu, "leaveMenuItem") === null, "Leaving is available directly in the chat")
         if (imageDirectory.length > 0) verify(fixtures.saveWindow(view, imageDirectory + "/channel-menu-actions.png"))
         menu.close()
     }
@@ -4905,8 +5063,7 @@ TestCase {
         view.closeSettings()
         view.selectedHost = channel.ownId
         const browse = findChild(view, "browseStations")
-        const menu = findChild(view, "channelInfoDialog")
-        menu.open(); tryCompare(menu, "opened", true)
+        openOwnChatActions()
         verify(browse.visible)
         waitForRendering(browse); mouseClick(browse)
         const results = findChild(view, "radioResults")

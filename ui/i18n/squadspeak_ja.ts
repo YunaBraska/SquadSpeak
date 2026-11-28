@@ -1241,6 +1241,14 @@
             <source>Game</source>
             <translation>ゲーム</translation>
         </message>
+        <message>
+            <source>Previous station</source>
+            <translation>前の放送局</translation>
+        </message>
+        <message>
+            <source>Next station</source>
+            <translation>次の放送局</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>

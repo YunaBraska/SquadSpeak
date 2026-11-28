@@ -1241,6 +1241,14 @@
             <source>Game</source>
             <translation>Žaidimas</translation>
         </message>
+        <message>
+            <source>Previous station</source>
+            <translation>Ankstesnė stotis</translation>
+        </message>
+        <message>
+            <source>Next station</source>
+            <translation>Kita stotis</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>

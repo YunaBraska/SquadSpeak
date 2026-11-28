@@ -1241,6 +1241,14 @@
             <source>Game</source>
             <translation>Խաղ</translation>
         </message>
+        <message>
+            <source>Previous station</source>
+            <translation>Նախորդ կայանը</translation>
+        </message>
+        <message>
+            <source>Next station</source>
+            <translation>Հաջորդ կայանը</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>

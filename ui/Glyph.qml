@@ -85,6 +85,16 @@ Canvas {
         } else if (symbol === "image") {
             line([3, 3, 21, 3, 21, 21, 3, 21, 3, 3]); line([3, 17, 9, 11, 14, 16, 17, 13, 21, 17])
             c.beginPath(); c.arc(16, 8, 2, 0, 7); c.stroke()
+        } else if (symbol === "paste") {
+            line([8, 5, 4, 5, 4, 21, 20, 21, 20, 5, 16, 5])
+            line([8, 3, 16, 3, 16, 7, 8, 7, 8, 3])
+            line([8, 12, 16, 12]); line([8, 16, 14, 16])
+        } else if (symbol === "screen") {
+            line([3, 4, 21, 4, 21, 16, 3, 16, 3, 4])
+            line([12, 16, 12, 21]); line([8, 21, 16, 21])
+        } else if (symbol === "previous" || symbol === "next") {
+            if (symbol === "previous") { c.translate(24, 0); c.scale(-1, 1) }
+            line([5, 5, 16, 12, 5, 19, 5, 5]); line([19, 5, 19, 19])
         } else if (symbol === "send") {
             line([4, 4, 21, 12, 4, 20, 7, 12, 4, 4]); line([7, 12, 15, 12])
         } else if (symbol === "more") {

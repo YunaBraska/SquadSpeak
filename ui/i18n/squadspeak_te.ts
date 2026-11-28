@@ -1241,6 +1241,14 @@
             <source>Game</source>
             <translation>ఆట</translation>
         </message>
+        <message>
+            <source>Previous station</source>
+            <translation>మునుపటి స్టేషన్</translation>
+        </message>
+        <message>
+            <source>Next station</source>
+            <translation>తదుపరి స్టేషన్</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>

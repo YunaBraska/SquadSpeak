@@ -1241,6 +1241,14 @@
             <source>Game</source>
             <translation>Játék</translation>
         </message>
+        <message>
+            <source>Previous station</source>
+            <translation>Előző állomás</translation>
+        </message>
+        <message>
+            <source>Next station</source>
+            <translation>Következő állomás</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>

@@ -47,6 +47,8 @@ public:
     Q_INVOKABLE bool cancelStationCheck();
     Q_INVOKABLE bool removeStation(const QString& id);
     Q_INVOKABLE bool play(const QString& id);
+    // Moves through the unfiltered station list while active, wrapping at either end.
+    Q_INVOKABLE bool playAdjacent(int direction);
     Q_INVOKABLE bool stop();
     bool setAvailable(bool available);
     bool bind(LocalChannel& channel);

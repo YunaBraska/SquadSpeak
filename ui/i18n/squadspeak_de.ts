@@ -1241,6 +1241,14 @@
             <source>Game</source>
             <translation>Spiel</translation>
         </message>
+        <message>
+            <source>Previous station</source>
+            <translation>Vorheriger Sender</translation>
+        </message>
+        <message>
+            <source>Next station</source>
+            <translation>Nächster Sender</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
