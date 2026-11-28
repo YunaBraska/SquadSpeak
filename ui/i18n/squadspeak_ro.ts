@@ -1241,6 +1241,14 @@
             <source>Game</source>
             <translation>Joc</translation>
         </message>
+        <message>
+            <source>Previous station</source>
+            <translation>Postul anterior</translation>
+        </message>
+        <message>
+            <source>Next station</source>
+            <translation>Postul următor</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>

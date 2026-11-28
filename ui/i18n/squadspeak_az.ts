@@ -1241,6 +1241,14 @@
             <source>Game</source>
             <translation>Oyun</translation>
         </message>
+        <message>
+            <source>Previous station</source>
+            <translation>Əvvəlki stansiya</translation>
+        </message>
+        <message>
+            <source>Next station</source>
+            <translation>Növbəti stansiya</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>

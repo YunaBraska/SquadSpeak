@@ -1241,6 +1241,14 @@
             <source>Game</source>
             <translation>თამაში</translation>
         </message>
+        <message>
+            <source>Previous station</source>
+            <translation>წინა სადგური</translation>
+        </message>
+        <message>
+            <source>Next station</source>
+            <translation>შემდეგი სადგური</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>

@@ -1241,6 +1241,14 @@
             <source>Game</source>
             <translation>Spēle</translation>
         </message>
+        <message>
+            <source>Previous station</source>
+            <translation>Iepriekšējā stacija</translation>
+        </message>
+        <message>
+            <source>Next station</source>
+            <translation>Nākamā stacija</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>

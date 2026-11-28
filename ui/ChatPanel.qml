@@ -8,6 +8,12 @@ Item {
     implicitHeight: chatLayout.implicitHeight
     required property var network
     property Component emptyContent: null
+    property var hostedChannel: null
+    property var screenShare: null
+    readonly property bool sharingHere: screenShare && screenShare.active && screenShare.hostId === hostId
+    readonly property bool canAttach: !chatContent.busy && !current.chatPending && !!current.chatReady
+    signal stationsRequested()
+    signal screenRequested()
     readonly property var invitations: (current.games || []).filter(g => g.phase === "waiting" && (g.players || []).length < g.capacity)
     readonly property bool showingEmptyContent: emptyContent !== null && !!current.chatReady && !current.historyLoading
         && !(current.messages || []).length && !invitations.length && !current.hasOlderMessages && !current.hasNewerMessages && !current.chatError
@@ -181,7 +187,8 @@ Item {
         anchors.fill: parent
         spacing: 6
         Loader {
-            Layout.fillWidth: true; Layout.fillHeight: true
+            Layout.fillWidth: true; Layout.fillHeight: root.records.length === 0
+            Layout.preferredHeight: root.records.length ? Math.min(220, Math.max(0, chatLayout.height - composerArea.height - chatLayout.spacing * 2) * 0.4) : -1
             active: root.showingEmptyContent; visible: active
             sourceComponent: root.emptyContent
         }
@@ -189,8 +196,7 @@ Item {
             id: history
             objectName: "chatHistory"
             visible: !root.showingEmptyContent || root.records.length > 0
-            Layout.fillWidth: true; Layout.fillHeight: !root.showingEmptyContent; Layout.minimumHeight: 16
-            Layout.preferredHeight: root.showingEmptyContent ? Math.min(contentHeight, 64) : -1
+            Layout.fillWidth: true; Layout.fillHeight: true; Layout.minimumHeight: 16
             clip: true
             contentWidth: width
             contentHeight: messageColumn.height
@@ -454,6 +460,7 @@ Item {
             }
         }
         Rectangle {
+            id: composerArea
             Layout.fillWidth: true
             implicitHeight: composer.implicitHeight + 8
             color: Theme.input; radius: Theme.panelRadius; border.color: draft.activeFocus ? Theme.accent : Theme.border
@@ -463,24 +470,51 @@ Item {
                 ActionButton {
                     objectName: "chatAdd"
                     text: qsTr("Add"); glyph: "plus"; iconOnly: true; flat: true; visible: !root.current.externalChat && (!root.remote || !!root.current.canStartGame)
-                    enabled: !chatContent.busy && !root.current.chatPending && !!root.current.chatReady
+                    enabled: (!root.remote && !!root.hostedChannel) || root.canAttach
                     Layout.alignment: Qt.AlignBottom
-                    onClicked: attachmentMenu.popup()
+                    onClicked: attachmentMenu.open()
                     Menu {
-        popupType: Popup.Item
+                        popupType: Popup.Item
                         background: Rectangle { implicitWidth: 240; implicitHeight: 40; radius: Theme.controlRadius; color: Theme.surface; border.color: Theme.border }
                         id: attachmentMenu
                         objectName: "chatAddMenu"
-                        MenuItem {
+                        x: 0; y: -height
+                        margins: 8
+                        MenuAction {
+                            objectName: "browseStations"
+                            text: qsTranslate("Channels", "Browse stations"); glyph: "music"
+                            visible: !root.remote && !!root.hostedChannel
+                            onTriggered: root.stationsRequested()
+                        }
+                        MenuAction {
+                            objectName: "shareScreen"
+                            text: root.sharingHere ? qsTranslate("Channels", "Stop sharing") : qsTranslate("Channels", "Share screen")
+                            glyph: root.sharingHere ? "stop" : "screen"
+                            destructive: root.sharingHere
+                            visible: !root.remote && !!root.hostedChannel && !!root.screenShare
+                            enabled: root.sharingHere || (root.hostedChannel && root.hostedChannel.hosting && root.screenShare && !root.screenShare.active && !root.screenShare.watching)
+                            onTriggered: root.screenRequested()
+                        }
+                        MenuAction {
+                            objectName: "screenAudioWhileSharing"
+                            text: root.screenShare && root.screenShare.computerAudio ? qsTranslate("Channels", "Computer audio") : qsTranslate("Channels", "App audio")
+                            glyph: "speaker"; checkable: true
+                            visible: !root.remote && !!root.hostedChannel && root.sharingHere && root.screenShare.audioAvailable
+                            checked: root.screenShare && root.screenShare.audioEnabled
+                            onTriggered: root.screenShare.setAudioEnabled(checked)
+                        }
+                        MenuAction {
+                            glyph: "game"
                             objectName: "startGame"
+                            enabled: root.canAttach
                             visible: !!root.current.canStartGame; height: visible ? implicitHeight : 0
                             text: qsTranslate("GameCard", "Elements")
                             onTriggered: {
                                 root.network.gameAction("start", {id: "", round: 0})
                             }
                         }
-                        MenuItem { visible: !root.remote; height: visible ? implicitHeight : 0; text: qsTr("Choose image..."); onTriggered: chooseImage.open() }
-                        MenuItem { visible: !root.remote; height: visible ? implicitHeight : 0; text: qsTr("Paste image"); onTriggered: { root.attachmentHost = root.hostId; chatContent.pasteImage() } }
+                        MenuAction { objectName: "chooseChatImage"; glyph: "image"; visible: !root.remote; enabled: root.canAttach; text: qsTr("Choose image..."); onTriggered: chooseImage.open() }
+                        MenuAction { objectName: "pasteChatImage"; glyph: "paste"; visible: !root.remote; enabled: root.canAttach; text: qsTr("Paste image"); onTriggered: { root.attachmentHost = root.hostId; chatContent.pasteImage() } }
                     }
                 }
                 ScrollView {

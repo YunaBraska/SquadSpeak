@@ -1241,6 +1241,14 @@
             <source>Game</source>
             <translation>Wasa</translation>
         </message>
+        <message>
+            <source>Previous station</source>
+            <translation>Tashar baya</translation>
+        </message>
+        <message>
+            <source>Next station</source>
+            <translation>Tasha ta gaba</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>

@@ -1241,6 +1241,14 @@
             <source>Game</source>
             <translation>Игра</translation>
         </message>
+        <message>
+            <source>Previous station</source>
+            <translation>Prethodna stanica</translation>
+        </message>
+        <message>
+            <source>Next station</source>
+            <translation>Sledeća stanica</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>

@@ -1241,6 +1241,14 @@
             <source>Game</source>
             <translation>Spel</translation>
         </message>
+        <message>
+            <source>Previous station</source>
+            <translation>Vorige zender</translation>
+        </message>
+        <message>
+            <source>Next station</source>
+            <translation>Volgende zender</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>

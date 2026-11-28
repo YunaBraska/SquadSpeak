@@ -1241,6 +1241,14 @@
             <source>Game</source>
             <translation>Logħba</translation>
         </message>
+        <message>
+            <source>Previous station</source>
+            <translation>Stazzjon preċedenti</translation>
+        </message>
+        <message>
+            <source>Next station</source>
+            <translation>Stazzjon li jmiss</translation>
+        </message>
     </context>
     <context>
         <name>ChatContent</name>
